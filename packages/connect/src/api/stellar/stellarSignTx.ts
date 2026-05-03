@@ -1,5 +1,17 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/stellarSignTx.js
 
+import {
+    Asset,
+    Keypair,
+    type Memo,
+    MemoHash,
+    MemoID,
+    MemoReturn,
+    MemoText,
+    type Signer,
+    type Transaction,
+} from '@stellar/stellar-sdk';
+
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type {
     StellarOperationMessage,
@@ -8,6 +20,7 @@ import type {
 import { StellarOperation } from '@trezor/connect-common/src/types/api/stellar';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import type { TypedCall } from '../../device/DeviceCommands';
 
@@ -239,3 +252,157 @@ export const stellarSignTx = async (
 
     return processTxRequest(typedCall, operations, 0);
 };
+
+// Inlined from the deprecated @trezor/connect-plugin-stellar so callers can pass
+// a `@stellar/stellar-sdk` Transaction directly to TrezorConnect.stellarSignTransaction.
+// The lazy-loaded stellar chunk pays the @stellar/stellar-sdk bundle cost; non-Stellar
+// consumers do not.
+
+const transformSigner = (signer: Signer) => {
+    let type = 0;
+    let key: string | undefined;
+    const { weight } = signer;
+    if ('ed25519PublicKey' in signer) {
+        const keyPair = Keypair.fromPublicKey(signer.ed25519PublicKey);
+        key = keyPair.rawPublicKey().toString('hex');
+    }
+    if ('preAuthTx' in signer && signer.preAuthTx instanceof Buffer) {
+        type = 1;
+        key = signer.preAuthTx.toString('hex');
+    }
+    if ('sha256Hash' in signer && signer.sha256Hash instanceof Buffer) {
+        type = 2;
+        key = signer.sha256Hash.toString('hex');
+    }
+
+    return { type, key, weight };
+};
+
+const transformAsset = (asset: Asset) => {
+    if (asset.isNative()) {
+        return {
+            type: 0,
+            code: asset.getCode(),
+        };
+    }
+
+    return {
+        type: asset.getAssetType() === 'credit_alphanum4' ? 1 : 2,
+        code: asset.getCode(),
+        issuer: asset.getIssuer(),
+    };
+};
+
+const transformAmount = (amount: number | string) =>
+    new BigNumber(amount).times(10000000).toString();
+
+const transformMemo = (memo: Memo) => {
+    switch (memo.type) {
+        case MemoText:
+            return { type: 1, text: memo.value!.toString('utf-8') };
+        case MemoID:
+            return { type: 2, id: memo.value!.toString('utf-8') };
+        case MemoHash:
+            return { type: 3, hash: memo.value!.toString('hex') };
+        case MemoReturn:
+            return { type: 4, hash: memo.value!.toString('hex') };
+        default:
+            return { type: 0 };
+    }
+};
+
+const transformTimebounds = (timebounds: Transaction['timeBounds']) => {
+    if (!timebounds) return undefined;
+
+    return {
+        minTime: Number.parseInt(timebounds.minTime, 10),
+        maxTime: Number.parseInt(timebounds.maxTime, 10),
+    };
+};
+
+export const transformTransaction = (path: string | number[], transaction: Transaction) => {
+    const amounts = [
+        'amount',
+        'sendMax',
+        'destAmount',
+        'sendAmount',
+        'destMin',
+        'startingBalance',
+        'limit',
+        'buyAmount',
+    ];
+    const assets = ['asset', 'sendAsset', 'destAsset', 'selling', 'buying', 'line'];
+
+    const operations = transaction.operations.map((o, i) => {
+        const operation: any = { ...o };
+
+        if (operation.signer) {
+            operation.signer = transformSigner(operation.signer);
+        }
+
+        if (operation.path) {
+            operation.path = operation.path.map(transformAsset);
+        }
+
+        if (typeof operation.price === 'string') {
+            // @ts-expect-error access internal stellar-sdk XDR for price ratio
+            const xdrOperation = transaction.tx.operations()[i];
+            operation.price = {
+                n: xdrOperation.body().value().price().n(),
+                d: xdrOperation.body().value().price().d(),
+            };
+        }
+
+        amounts.forEach(field => {
+            if (typeof operation[field] === 'string') {
+                operation[field] = transformAmount(operation[field]);
+            }
+        });
+
+        assets.forEach(field => {
+            if (operation[field]) {
+                operation[field] = transformAsset(operation[field]);
+            }
+        });
+
+        if (operation.type === 'allowTrust') {
+            const allowTrustAsset = new Asset(operation.assetCode, operation.trustor);
+            operation.assetType = transformAsset(allowTrustAsset).type;
+        }
+
+        if (operation.type === 'manageData' && operation.value) {
+            operation.value = operation.value.toString('hex');
+        }
+        if (operation.type === 'manageBuyOffer') {
+            operation.amount = operation.buyAmount;
+            delete operation.buyAmount;
+        }
+        operation.type = o.type;
+
+        return operation;
+    });
+
+    return {
+        path,
+        networkPassphrase: transaction.networkPassphrase,
+        transaction: {
+            source: transaction.source,
+            fee: Number.parseInt(transaction.fee, 10),
+            sequence: transaction.sequence,
+            memo: transformMemo(transaction.memo),
+            timebounds: transformTimebounds(transaction.timeBounds),
+            operations,
+        } as StellarTransaction,
+    };
+};
+
+// Duck-type detection: stellar-sdk Transaction exposes operations as Operation[],
+// `fee` as a string, and a `tx` XDR getter. Trezor's StellarTransaction shape
+// has `fee: number`. We deliberately avoid `instanceof Transaction` to remain
+// compatible with callers that bring their own (semver-compatible) stellar-sdk version.
+export const isRawStellarTransaction = (tx: unknown): tx is Transaction =>
+    typeof tx === 'object' &&
+    tx !== null &&
+    typeof (tx as { fee?: unknown }).fee === 'string' &&
+    Array.isArray((tx as { operations?: unknown }).operations) &&
+    typeof (tx as { networkPassphrase?: unknown }).networkPassphrase === 'string';

@@ -222,11 +222,27 @@ export const StellarTransaction = Type.Object({
     operations: Type.Array(StellarOperation), // Proto: calculated array length > "num_operations"
 });
 
+// Loose duck-typed shape for `@stellar/stellar-sdk`'s Transaction. We accept it
+// at the API boundary so callers no longer need the deprecated
+// `@trezor/connect-plugin-stellar` to pre-transform; @trezor/connect normalizes
+// such inputs into StellarTransaction internally.
+export type StellarRawSdkTransactionShape = Static<typeof StellarRawSdkTransactionShape>;
+export const StellarRawSdkTransactionShape = Type.Object(
+    {
+        fee: Type.String(), // stellar-sdk uses string; StellarTransaction uses number — disambiguator
+        networkPassphrase: Type.String(),
+        source: Type.String(),
+        sequence: Type.String(),
+        operations: Type.Array(Type.Unknown()),
+    },
+    { additionalProperties: true },
+);
+
 export type StellarSignTransaction = Static<typeof StellarSignTransaction>;
 export const StellarSignTransaction = Type.Object({
     path: DerivationPath,
     networkPassphrase: Type.String(),
-    transaction: StellarTransaction,
+    transaction: Type.Union([StellarTransaction, StellarRawSdkTransactionShape]),
     payment_req: Type.Optional(PROTO.PaymentRequest),
 });
 

@@ -3,7 +3,7 @@
     "version": "10.0.0-alpha.1",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-plugin-stellar",
-    "description": "@trezor/connect plugin for Stellar",
+    "description": "DEPRECATED — Stellar transaction transformation is now handled internally by @trezor/connect@10. See README for migration.",
     "license": "SEE LICENSE IN LICENSE.md",
     "repository": {
         "type": "git",
@@ -41,19 +41,12 @@
         "CHANGELOG.md"
     ],
     "peerDependencies": {
-        "@stellar/stellar-sdk": "^13.3.0",
-        "@trezor/connect": "9.x.x",
         "tslib": "^2.6.2"
     },
     "devDependencies": {
-        "@stellar/stellar-sdk": "14.5.0",
         "@trezor/eslint": "workspace:*"
     },
-    "dependencies": {
-        "@trezor/utils": "workspace:*"
-    },
     "scripts": {
-        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",

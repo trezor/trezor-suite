@@ -119,14 +119,11 @@ const updateConnectChangelog = async (
 
 const bumpConnect = async () => {
     try {
-        const mainPackages = [
-            'connect-plugin-ethereum',
-            'connect-plugin-stellar',
-            'connect-webextension',
-            'connect-mobile',
-            'connect-web',
-            'connect',
-        ];
+        // connect-plugin-ethereum and connect-plugin-stellar are deprecated in 10.x
+        // (their logic was inlined into @trezor/connect). Both 10.x releases are stubs
+        // and the package sources are frozen — no need to auto-bump them on every
+        // connect release. Keep them removed from this list unless the stubs themselves change.
+        const mainPackages = ['connect-webextension', 'connect-mobile', 'connect-web', 'connect'];
 
         const results = await Promise.all(
             mainPackages.map(async pkg => {

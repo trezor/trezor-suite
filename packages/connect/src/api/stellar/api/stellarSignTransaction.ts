@@ -10,6 +10,7 @@ import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import * as helper from '../stellarSignTx';
+import { isRawStellarTransaction, transformTransaction } from '../stellarSignTx';
 
 type Params = {
     path: number[];
@@ -29,17 +30,31 @@ export default class StellarSignTransaction extends AbstractMethod<
 > {
     constructor(message: MethodMessage<'stellarSignTransaction'>) {
         const { payload } = message;
-        // validate incoming parameters
-        Assert(StellarSignTransactionSchema, payload);
 
-        const path = validatePath(payload.path, 3);
-        // incoming data should be in stellar-sdk format
-        const { transaction } = payload;
+        // Callers may pass a raw `@stellar/stellar-sdk` Transaction directly
+        // (Connect 10 inlines what was previously @trezor/connect-plugin-stellar's
+        // transformTransaction). We normalize before schema validation so the
+        // schema can stay strict on the protobuf-aligned StellarTransaction shape.
+        const normalizedPayload = isRawStellarTransaction(payload.transaction)
+            ? {
+                  ...payload,
+                  ...transformTransaction(payload.path, payload.transaction),
+              }
+            : payload;
+
+        // validate incoming parameters
+        Assert(StellarSignTransactionSchema, normalizedPayload);
+
+        const path = validatePath(normalizedPayload.path, 3);
+        // After normalization, `transaction` is always the strict StellarTransaction
+        // shape — the pre-transform branch produced one and the strict-input branch
+        // already had one. The schema's union is for the public API surface only.
+        const transaction = normalizedPayload.transaction as StellarTransaction;
         const params = {
             path,
-            networkPassphrase: payload.networkPassphrase,
+            networkPassphrase: normalizedPayload.networkPassphrase,
             transaction,
-            payment_req: payload.payment_req,
+            payment_req: normalizedPayload.payment_req,
         };
 
         super(message, params);

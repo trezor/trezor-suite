@@ -19,12 +19,14 @@ This version removes support for legacy iframe and popup integration methods and
 Features:
 
 - Tron support (`tronGetAddress`, `tronSignTransaction`)
+- `stellarSignTransaction` now accepts a `@stellar/stellar-sdk` `Transaction` object directly. Callers no longer need to pre-transform via `@trezor/connect-plugin-stellar`; passing the raw `Transaction` (alongside `path` and `networkPassphrase`) works for all Stellar-capable Trezor models. The pre-transformed protobuf-aligned shape still works for backwards compatibility. Implementation lives in the lazy-loaded stellar chunk, so non-Stellar consumers do not pay the bundle cost.
 
 Deprecations:
 
 - Remove connect-iframe and connect-popup integration
 - Remove EOS support
 - Remove NEM support
+- `@trezor/connect-plugin-stellar` is deprecated. Its logic was inlined into `@trezor/connect`. When upgrading to Connect 10, drop your direct dependency on the plugin and remove manual `transformTransaction` calls. The 10.x release of the plugin is a stub that throws a deprecation error pointing at the migration.
 
 Commits:
 

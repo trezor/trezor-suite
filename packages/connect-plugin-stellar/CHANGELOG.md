@@ -1,3 +1,17 @@
+# 10.0.0-alpha.1 — DEPRECATED
+
+This package is deprecated. The Stellar transaction transformation has been inlined into `@trezor/connect@10`; callers should pass a `@stellar/stellar-sdk` `Transaction` directly to `TrezorConnect.stellarSignTransaction` (alongside `path` and `networkPassphrase`) and connect will normalize it internally.
+
+The 10.x release is a stub: `transformTransaction` throws a deprecation error. The implementation now lives in `packages/connect/src/api/stellar/stellarSignTx.ts`, where it is used internally by the lazy-loaded stellar module.
+
+Migration:
+
+- Upgrade `@trezor/connect` to 10.x.
+- Stop calling `transformTransaction`. Pass `path` + `networkPassphrase` + the stellar-sdk `Transaction` directly to `TrezorConnect.stellarSignTransaction`.
+- Remove `@trezor/connect-plugin-stellar` from your `dependencies`.
+
+If you stay on `@trezor/connect@9`, keep this package pinned to the 9.x line.
+
 # 9.2.3
 
 - fix: add depcheck scripts for all the package.json-s (a4f8b09e38)

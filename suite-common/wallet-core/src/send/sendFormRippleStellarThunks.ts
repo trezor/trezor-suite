@@ -17,13 +17,8 @@ import {
     networkAmountToSmallestUnit,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
-import { buildSendTransaction, toStroops } from '@trezor/blockchain-link-utils/src/stellar';
-import TrezorConnect, {
-    type FeeLevel,
-    type RipplePayment,
-    type StellarOperation,
-    type TokenInfo,
-} from '@trezor/connect';
+import { buildSendTransaction } from '@trezor/blockchain-link-utils/src/stellar';
+import TrezorConnect, { type FeeLevel, type RipplePayment, type TokenInfo } from '@trezor/connect';
 import { StellarAssetType } from '@trezor/protobuf/src/definitions';
 import { BigNumber } from '@trezor/utils';
 
@@ -296,22 +291,6 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                   }))(token.contract.split('-'))
                 : { type: StellarAssetType.NATIVE };
 
-            let operation: StellarOperation;
-            if (destinationActivated) {
-                operation = {
-                    type: 'payment',
-                    asset,
-                    amount: toStroops(formState.outputs[0].amount).toString(),
-                    destination: formState.outputs[0].address,
-                };
-            } else {
-                operation = {
-                    type: 'createAccount',
-                    startingBalance: toStroops(formState.outputs[0].amount).toString(),
-                    destination: formState.outputs[0].address,
-                };
-            }
-
             const transaction = buildSendTransaction({
                 descriptor: selectedAccount.descriptor,
                 sequence: selectedAccount.misc.stellarSequence,
@@ -324,9 +303,9 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                 isTestnet: isTestnet(selectedAccount.symbol),
             });
 
-            // It would be better if we could use `@trezor/connect-plugin-stellar`.
-            // const transformedTransaction = transformTransaction(selectedAccount.path, transaction);
-            const transformedTransaction = {
+            // Connect 10 normalizes the stellar-sdk Transaction internally
+            // (used to be done via @trezor/connect-plugin-stellar's transformTransaction).
+            response = await TrezorConnect.stellarSignTransaction({
                 device: {
                     path: device.path,
                     instance: device.instance,
@@ -335,23 +314,10 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                 },
                 path: selectedAccount.path,
                 networkPassphrase: transaction.networkPassphrase,
-                transaction: {
-                    source: transaction.source,
-                    fee: Number.parseInt(transaction.fee, 10),
-                    sequence: transaction.sequence,
-                    memo: formState.destinationTag
-                        ? { type: 1, text: formState.destinationTag }
-                        : { type: 0 },
-                    timebounds: {
-                        minTime: 0,
-                        maxTime: 0,
-                    },
-                    operations: [operation],
-                },
+                transaction,
                 payment_req: paymentRequests?.[0] ?? undefined,
                 chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
-            };
-            response = await TrezorConnect.stellarSignTransaction(transformedTransaction);
+            });
 
             if (response.success) {
                 const signature = Buffer.from(response.payload.signature, 'hex').toString('base64');

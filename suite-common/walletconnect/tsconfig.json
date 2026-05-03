@@ -22,9 +22,6 @@
         {
             "path": "../../packages/connect-plugin-ethereum"
         },
-        {
-            "path": "../../packages/connect-plugin-stellar"
-        },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }

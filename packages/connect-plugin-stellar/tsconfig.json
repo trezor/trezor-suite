@@ -2,8 +2,5 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "./libDev" },
     "include": ["."],
-    "references": [
-        { "path": "../utils" },
-        { "path": "../eslint" }
-    ]
+    "references": [{ "path": "../eslint" }]
 }

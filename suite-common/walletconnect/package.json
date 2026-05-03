@@ -30,7 +30,6 @@
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/connect-plugin-ethereum": "workspace:*",
-        "@trezor/connect-plugin-stellar": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/type-utils": "workspace:^",
         "@trezor/utils": "workspace:*",

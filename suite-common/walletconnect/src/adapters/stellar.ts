@@ -14,7 +14,6 @@ import { type Network, getNetwork, networksCollection } from '@suite-common/wall
 import { selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect, { type CallMethodResponse } from '@trezor/connect';
-import { transformTransaction } from '@trezor/connect-plugin-stellar';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
 import { selectSessionByTopic } from '../walletConnectReducer';
@@ -105,13 +104,15 @@ const stellarSignXDR = createThunk<
             throw new Error('Account not found');
         }
 
-        const transformedTransaction = transformTransaction(account.path, transaction);
-
+        // Connect 10 normalizes the stellar-sdk Transaction internally
+        // (used to be done via @trezor/connect-plugin-stellar's transformTransaction).
         dispatch(
             trezorConnectPopupActions.connectPopupCallThunk({
                 method: 'stellarSignTransaction',
                 payload: {
-                    ...transformedTransaction,
+                    path: account.path,
+                    networkPassphrase: transaction.networkPassphrase,
+                    transaction,
                     device,
                 },
                 source: {
