@@ -50,8 +50,7 @@ export const recolorLottieAnimation = (
             node.forEach(walk);
         } else if (typeof node === 'object' && node !== null) {
             for (const key in node) {
-                // eslint-disable-next-line no-prototype-builtins
-                if (node.hasOwnProperty(key)) {
+                if (Object.prototype.hasOwnProperty.call(node, key)) {
                     const value = node[key];
 
                     // Simple rgba color
