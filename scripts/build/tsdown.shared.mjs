@@ -31,8 +31,9 @@ const POST_BUILD_SCRIPT = resolve(import.meta.dirname, 'post-build.mjs');
 const INLINE_DEVDEP_TYPES_SCRIPT = resolve(import.meta.dirname, '..', 'inline-devdep-types.mjs');
 
 const DEFAULT_UNBUNDLE_GLOB = [
-    'src/**/*.ts',
-    '!src/**/*.test.ts',
+    'src/**/*.{ts,js}',
+    '!src/**/*.d.ts',
+    '!src/**/*.test.{ts,js}',
     '!src/**/__tests__/**',
     '!src/**/__fixtures__/**',
     '!src/**/__mocks__/**',

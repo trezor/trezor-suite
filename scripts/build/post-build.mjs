@@ -88,6 +88,17 @@ function appendMjsToRelative(content, fileDir) {
     });
 }
 
+// rolldown-plugin-dts emits invalid `typeof void 0` in declaration files when the
+// source uses `typeof undefined` (semantically identical types). Rewrite it back so
+// consumers' .d.ts parsers don't choke. Restricted to declaration files since
+// `typeof void 0` is not meaningful in runtime code.
+const TYPEOF_VOID_0_RE = /typeof void 0/g;
+
+function fixTypeofVoid0(content) {
+    return content.replace(TYPEOF_VOID_0_RE, 'undefined');
+}
+
+
 const jsExts = mode === 'esm' ? ['.mjs'] : ['.js', '.cjs'];
 const dtsExts = mode === 'esm' ? ['.d.mts'] : ['.d.ts', '.d.cts'];
 const allFiles = walkFiles(outDir, [...jsExts, ...dtsExts]);
@@ -101,6 +112,7 @@ for (const file of allFiles) {
         rewritten = appendMjsToTrezorLib(rewritten);
         if (file.endsWith('.d.mts')) {
             rewritten = appendMjsToRelative(rewritten, dirname(file));
+            rewritten = fixTypeofVoid0(rewritten);
         }
     }
     if (rewritten !== original) {
