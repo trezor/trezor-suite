@@ -16,14 +16,10 @@ import {
     type YieldFlowDisplayToken,
     type YieldSessionDataAmountPayload,
     getApprovalRequestAmount,
-    getWithdrawRequestAmount,
-    getYieldApprovalModalParams,
-    getYieldSupplyTransaction,
-    getYieldWithdrawTransaction,
     openYieldApproveModal,
+    prepareYieldAction,
     setYieldGenericError,
     stablecoinYieldActions,
-    submitYieldOpportunity,
 } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -324,28 +320,25 @@ export const submitYieldActionThunk = createThunk(
         dispatch(stablecoinYieldActions.startSubmittingAction({ flowType, flowKey, amount }));
 
         try {
-            const { response, verification } = await submitYieldOpportunity({
+            const preparedAction = await prepareYieldAction({
                 flowType,
                 flowData,
-                amount: requestAmount,
+                amount,
             });
 
-            if (verification === 'failure') {
+            if (preparedAction.type === 'error') {
                 setYieldGenericError({ dispatch, flowType, flowKey });
 
                 return;
             }
 
-            const { transactions } = response.data;
-            const approvalModalParams = getYieldApprovalModalParams(transactions);
-
-            if (approvalModalParams) {
+            if (preparedAction.type === 'approval-required') {
                 dispatch(
                     stablecoinYieldActions.setApprovalResponse({
                         flowType,
                         flowKey,
-                        approvedSpender: approvalModalParams.spender,
-                        revokeTransactions: transactions,
+                        approvedSpender: preparedAction.approvalModalParams.spender,
+                        revokeTransactions: preparedAction.transactions,
                     }),
                 );
                 dispatch(stablecoinYieldActions.enterModifyMode({ flowType, flowKey }));
@@ -355,36 +348,23 @@ export const submitYieldActionThunk = createThunk(
                     flowKey,
                     flowType,
                     flowData,
-                    amount: requestAmount,
-                    spender: approvalModalParams.spender,
-                    transactionId: approvalModalParams.transactionId,
+                    amount: preparedAction.requestAmount,
+                    spender: preparedAction.approvalModalParams.spender,
+                    transactionId: preparedAction.approvalModalParams.transactionId,
                     txType: 'approve',
                 });
 
                 return;
             }
 
-            const actionTransaction =
-                flowType === 'supply'
-                    ? getYieldSupplyTransaction(transactions)
-                    : getYieldWithdrawTransaction(transactions);
-
-            if (!actionTransaction?.id) {
-                setYieldGenericError({ dispatch, flowType, flowKey });
-
-                return;
-            }
-
-            const isWithdraw = flowType === 'withdraw';
-            const reviewAmount = isWithdraw ? requestAmount : amount;
-            const reviewToken = isWithdraw ? flowData.receiptToken : flowData.token;
+            const reviewToken = flowType === 'withdraw' ? flowData.receiptToken : flowData.token;
             const vaultName = flowData.vault.outputToken?.name ?? flowData.vault.metadata.name;
 
             const result = await sendYieldTransaction({
                 account: flowData.account,
-                amount: reviewAmount,
+                amount: preparedAction.reviewAmount,
                 token: reviewToken,
-                transaction: actionTransaction,
+                transaction: preparedAction.actionTransaction,
                 flowType,
                 vaultName,
                 dispatch,
@@ -396,7 +376,7 @@ export const submitYieldActionThunk = createThunk(
             }
 
             await submitTransactionHash(
-                { transactionId: actionTransaction.id },
+                { transactionId: preparedAction.actionTransaction.id },
                 { hash: result.txid },
             );
 
@@ -410,17 +390,6 @@ export const submitYieldActionThunk = createThunk(
                 }),
             );
 
-            const receiptAmount =
-                flowType === 'supply'
-                    ? (getWithdrawRequestAmount({
-                          networkSymbol: flowData.account.symbol,
-                          amount,
-                          token: flowData.token,
-                          receiptToken: flowData.receiptToken,
-                          pricePerShare: flowData.vault.state?.pricePerShareState?.price,
-                      }) ?? amount)
-                    : requestAmount;
-
             dispatch(
                 stablecoinYieldActions.setPendingTx({
                     flowType,
@@ -431,7 +400,7 @@ export const submitYieldActionThunk = createThunk(
                         amount,
                         createdTimestamp: new Date().getTime(),
                     },
-                    receiptAmount,
+                    receiptAmount: preparedAction.receiptAmount,
                 }),
             );
         } catch {
