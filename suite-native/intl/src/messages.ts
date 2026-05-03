@@ -1806,8 +1806,8 @@ export const messages = {
                 infoText: 'This token represents your deposit and all rewards in stablecoin yield.',
                 vault: 'Vault',
                 apy: 'Annual percentage yield',
-                supplied: 'Supplied',
-                supplyMore: 'Supply more',
+                supplied: 'Deposited',
+                supplyMore: 'Deposit more',
                 withdraw: 'Withdraw',
                 apyBreakdown: {
                     apyLabel: '{apy} APY',
@@ -2562,7 +2562,7 @@ export const messages = {
             subtitle: 'Your stablecoins are put to work in lending protocols to earn yield.',
             benefits: {
                 first: {
-                    title: 'The supplied amount of {tokenSymbol} is locked until you withdraw it.',
+                    title: 'The deposited amount of {tokenSymbol} is locked until you withdraw it.',
                     description: 'Withdrawal is instant.',
                 },
                 second: {
@@ -2575,16 +2575,16 @@ export const messages = {
                     description: 'These tokens represent your vault position.',
                 },
             },
-            timelineCardTitle: 'Supply timeline',
-            timelineBottomSheetTitle: 'Supply timeline & fees',
-            supplyTimelineTitle: 'Supply',
+            timelineCardTitle: 'Deposit timeline',
+            timelineBottomSheetTitle: 'Deposit timeline & fees',
+            supplyTimelineTitle: 'Deposit',
             supplyTimeline: {
                 first: {
                     title: 'Approve spending transaction',
                     description: 'Network fee',
                 },
                 second: {
-                    title: 'Sign supplying transaction',
+                    title: 'Sign deposit transaction',
                     description: 'Network fee',
                 },
                 third: {
@@ -2607,24 +2607,24 @@ export const messages = {
         yieldConsentsScreen: {
             title: 'Before you continue',
             providerCard: {
-                title: 'Supplying to {providerName}',
+                title: 'Depositing to {providerName}',
                 firstItem:
-                    '{providerName} maintains and protects your supplied {tokenSymbol} with their smart contracts, infrastructure, and technology.',
+                    '{providerName} maintains and protects your deposited {tokenSymbol} with their smart contracts, infrastructure, and technology.',
                 secondItem:
-                    "When supplying, the responsibility for your funds' security transitions from your Trezor to {providerName}.",
+                    "When depositing, the responsibility for your funds' security transitions from your Trezor to {providerName}.",
             },
         },
         yieldSupplyFlowScreen: {
             step: 'Step {stepNumber} of {stepCount}',
             approvalStepTitle: 'Select amount & approve',
-            modalTitle: 'Supply',
-            supplyTransactionStepTitle: 'Supply transaction',
-            supplyCompleteStepTitle: 'Supply complete',
-            amountToSupply: 'Amount to supply',
-            supplyMax: 'Supply max',
+            modalTitle: 'Deposit',
+            supplyTransactionStepTitle: 'Deposit transaction',
+            supplyCompleteStepTitle: 'Deposit complete',
+            amountToSupply: 'Amount to deposit',
+            supplyMax: 'Deposit max',
             balance: 'Balance:',
             approvalLimit: 'Approval limit',
-            perSupply: 'Per supply',
+            perSupply: 'Per deposit',
             estimatedRewardsLabel: 'Estimated yearly rewards',
             approvalLimitSheet: {
                 title: 'Select approval limit',

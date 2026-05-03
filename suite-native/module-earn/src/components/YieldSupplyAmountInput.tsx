@@ -40,7 +40,7 @@ export const YieldSupplyAmountInput = ({
             value={value}
             placeholder="0"
             keyboardType="numeric"
-            accessibilityLabel="amount to supply input"
+            accessibilityLabel="amount to deposit input"
             editable={!isDisabled}
             onChangeText={handleChangeValue}
             onBlur={() => {
