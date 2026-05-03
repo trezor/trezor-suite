@@ -20,14 +20,13 @@ import {
     selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { getAccountFiatBalance } from '@suite-common/wallet-utils';
+import { getAccountFiatBalance, isStakingSymbol } from '@suite-common/wallet-utils';
 import {
     getAccountListSections,
     sortAccountsByNetworksAndAccountTypes,
 } from '@suite-native/accounts';
 import {
     type NativeStakingRootState,
-    doesCoinSupportStaking,
     getAccountCryptoBalanceWithStaking,
 } from '@suite-native/staking';
 import { BigNumber } from '@trezor/utils';
@@ -114,7 +113,7 @@ const selectDeviceAssetsWithBalances = createMemoizedSelector(
     ],
     (accounts, deviceNetworksWithAssets, baseCurrencyCode, rates) => {
         const accountsWithFiatBalance = accounts.map(account => {
-            const shouldIncludeStaking = doesCoinSupportStaking(account.symbol);
+            const shouldIncludeStaking = isStakingSymbol(account.symbol);
 
             const fiatValue = getAccountFiatBalance({
                 account,

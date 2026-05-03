@@ -13,7 +13,7 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
-import { signEthClaimTransactionNativeThunk } from '@suite-native/staking';
+import { signStakeTransactionNativeThunk } from '@suite-native/staking';
 
 import { handleEarnReviewError } from '../utils';
 import { useEarnReviewBackNavigation } from './useEarnReviewBackNavigation';
@@ -53,7 +53,11 @@ export const useHandleOnClaimTransactionReview = ({
         if (!precomposedTransaction) return;
 
         const response = await dispatch(
-            signEthClaimTransactionNativeThunk({ accountKey, precomposedTransaction }),
+            signStakeTransactionNativeThunk({
+                accountKey,
+                stakeType: 'claim',
+                precomposedTransaction,
+            }),
         );
 
         if (isFulfilled(response)) {

@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { Box, Card, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -13,10 +14,10 @@ import {
 } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { CRYPTO_BALANCE_DECIMALS, isMobileSupportedStakingNetwork } from '../constants';
+import { CRYPTO_BALANCE_DECIMALS } from '../constants';
+import { EarnClaimAlert } from './EarnClaimAlert';
 import { useMessageSystemStaking } from '../hooks/useMessageSystemStaking';
 import { type EarnDepositsCardActiveItem } from '../types';
-import { EarnClaimAlert } from './EarnClaimAlert';
 
 const itemCardStyle = prepareNativeStyle(utils => ({
     marginBottom: utils.spacings.sp16,
@@ -62,7 +63,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
     const { applyStyle } = useNativeStyles();
     const isStakingItem = item.type === 'staking';
     const isStablecoinYieldItem = item.type === 'stablecoin-yield';
-    const isSupportedStaking = isStakingItem && isMobileSupportedStakingNetwork(item.symbol);
+    const isSupportedStaking = isStakingItem && isSupportedEthStakingNetworkSymbol(item.symbol);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
     const apy = useStakingSelector(state =>

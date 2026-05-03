@@ -13,13 +13,13 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
-import { signEthUnstakeTransactionNativeThunk } from '@suite-native/staking';
+import { signStakeTransactionNativeThunk } from '@suite-native/staking';
 
 import { handleEarnReviewError } from '../utils';
 import { useEarnReviewBackNavigation } from './useEarnReviewBackNavigation';
 import { useEarnSelectedPrecomposedTransaction } from './useEarnSelectedPrecomposedTransaction';
 import { useShowDeviceDisconnectedDuringEarnReviewAlert } from './useShowDeviceDisconnectedDuringEarnReviewAlert';
-import { useShowPushTransactionFailedDuringUnstakeReviewAlert } from './useShowPushTransactionFailedDuringUnstakeReviewAlert';
+import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
 
 type NavigationProps = StackNavigationProps<
     RootStackParamList,
@@ -28,13 +28,11 @@ type NavigationProps = StackNavigationProps<
 
 type HandleOnUnstakeTransactionReviewProps = {
     accountKey: AccountKey;
-    amount: string;
     onTransactionSubmitted: (txid: string) => void;
 };
 
 export const useHandleOnUnstakeTransactionReview = ({
     accountKey,
-    amount,
     onTransactionSubmitted,
 }: HandleOnUnstakeTransactionReviewProps) => {
     useEarnReviewBackNavigation('unstake', accountKey);
@@ -43,7 +41,7 @@ export const useHandleOnUnstakeTransactionReview = ({
     const navigation = useNavigation<NavigationProps>();
     const showDeviceDisconnectedAlert = useShowDeviceDisconnectedDuringEarnReviewAlert();
     const { showPushTransactionFailedAlert, showPendingTransactionConflictAlert } =
-        useShowPushTransactionFailedDuringUnstakeReviewAlert();
+        useShowPushTransactionFailedDuringReviewAlert('unstake');
     const precomposedTransaction = useEarnSelectedPrecomposedTransaction('unstake', accountKey);
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
@@ -55,9 +53,9 @@ export const useHandleOnUnstakeTransactionReview = ({
         if (!precomposedTransaction) return;
 
         const response = await dispatch(
-            signEthUnstakeTransactionNativeThunk({
+            signStakeTransactionNativeThunk({
                 accountKey,
-                amount,
+                stakeType: 'unstake',
                 precomposedTransaction,
             }),
         );
@@ -88,7 +86,6 @@ export const useHandleOnUnstakeTransactionReview = ({
         });
     }, [
         accountKey,
-        amount,
         analytics,
         dispatch,
         navigation,

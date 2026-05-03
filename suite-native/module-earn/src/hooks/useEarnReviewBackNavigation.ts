@@ -3,9 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { cancelSignSendFormTransactionThunk, formDraftActions } from '@suite-common/wallet-core';
+import { cancelSignSendFormTransactionThunk } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { getFormDraftKey } from '@suite-common/wallet-utils';
 import {
     type TransactionReviewOutputsState,
     selectIsTransactionReviewInProgress,
@@ -29,7 +28,6 @@ export const useEarnReviewBackNavigation = (
     useEffect(() => {
         const cleanup = () => {
             dispatch(cancelSignSendFormTransactionThunk());
-            dispatch(formDraftActions.removeDraft({ key: getFormDraftKey(formType, accountKey) }));
         };
 
         const unsubscribe = navigation.addListener('beforeRemove', e => {

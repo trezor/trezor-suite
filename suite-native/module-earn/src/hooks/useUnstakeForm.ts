@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { getEthereumStakingAddressByType } from '@suite-common/staking';
+import { buildUnstakeData, getEthereumStakingAddressByType } from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
+import { UNSTAKE_INTERCHANGES } from '@suite-common/wallet-constants';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
@@ -10,7 +11,6 @@ import { useForm, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import {
     type NativeStakingRootState,
-    buildUnstakeCalldata,
     ethToWei,
     selectStakedBalanceByAccountKey,
 } from '@suite-native/staking';
@@ -57,7 +57,7 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
         return buildEarnComposeFormState(
             getEthereumStakingAddressByType(account.symbol, 'unstake'),
             '0',
-            buildUnstakeCalldata(ethToWei(amountValue)),
+            buildUnstakeData(ethToWei(amountValue), UNSTAKE_INTERCHANGES),
         );
     }, [account, isValid, amountValue]);
 
