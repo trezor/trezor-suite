@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
 
 import { useQuery } from '@suite-common/react-query';
+import { simulateUnstake } from '@suite-common/staking';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
-import { simulateUnstakeNative } from '@suite-native/staking';
 import { BigNumber, resolveAfter } from '@trezor/utils';
 
 const DEBOUNCE_MS = 300;
@@ -38,7 +38,7 @@ export const useApproximateInstantUnstakeAmount = (accountKey: AccountKey, amoun
                     return null;
                 }
 
-                const result = await simulateUnstakeNative({ amount, from: descriptor, symbol });
+                const result = await simulateUnstake({ amount, from: descriptor, symbol });
 
                 if (signal.aborted || !result || !new BigNumber(result).gt(0)) {
                     return null;
@@ -47,7 +47,7 @@ export const useApproximateInstantUnstakeAmount = (accountKey: AccountKey, amoun
                 return result;
             } catch (error) {
                 if (__DEV__ && !signal.aborted) {
-                    console.warn('simulateUnstakeNative failed', error);
+                    console.warn('simulateUnstake failed', error);
                 }
 
                 return null;

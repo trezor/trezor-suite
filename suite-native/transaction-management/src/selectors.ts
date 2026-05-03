@@ -26,13 +26,17 @@ import {
     getFormDraftKey,
     getIsUpdatedSendFlow,
     getTransactionReviewOutputState,
-    isFormDraftKeyPrefix,
     isRbfBumpFeeTransaction,
 } from '@suite-common/wallet-utils';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
 import { type NativeSendRootState } from './sendFormSlice';
 import { type StatefulReviewOutput } from './types';
+
+const isStakingPrefix = (
+    prefix: FormDraftWithSendKeyPrefix,
+): prefix is 'stake' | 'unstake' | 'claim' =>
+    prefix === 'stake' || prefix === 'unstake' || prefix === 'claim';
 
 export type TransactionReviewOutputsState = NativeSendRootState &
     AccountsRootState &
@@ -135,11 +139,13 @@ export const selectTransactionReviewOutputsFromDraft = (
     accountKey: AccountKey,
     tokenContract?: TokenAddress,
 ) => {
-    const formDraft = isFormDraftKeyPrefix(prefix)
-        ? // TODO: right now we do not use account key in trading-exchange for drafts
-          // and this piece of code is not used anywhere else
-          selectFormDraft<FormState>(state, getFormDraftKey(prefix, ''))
-        : selectSendFormDraftByKey(state, accountKey, tokenContract);
+    const formDraft =
+        prefix === 'send'
+            ? selectSendFormDraftByKey(state, accountKey, tokenContract)
+            : selectFormDraft<FormState>(
+                  state,
+                  getFormDraftKey(prefix, isStakingPrefix(prefix) ? accountKey : ''),
+              );
 
     return selectTransactionReviewOutputs(state, accountKey, tokenContract, formDraft);
 };

@@ -13,7 +13,7 @@ import {
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
-type ReviewFormType = 'stake' | 'claim' | 'yield-approval';
+type ReviewFormType = 'stake' | 'unstake' | 'claim' | 'yield-approval';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     AppTabsParamList,
@@ -47,6 +47,22 @@ const translationKeys = {
                 'earn.earnTransactionDataReviewScreen.pendingTransactionConflictAlert.description',
             primaryButton:
                 'earn.earnTransactionDataReviewScreen.pendingTransactionConflictAlert.primaryButton',
+        },
+    },
+    unstake: {
+        pushFailed: {
+            title: 'earn.unstakeTransactionDataReviewScreen.pushTransactionFailedAlert.title',
+            description:
+                'earn.unstakeTransactionDataReviewScreen.pushTransactionFailedAlert.description',
+            primaryButton:
+                'earn.unstakeTransactionDataReviewScreen.pushTransactionFailedAlert.primaryButton',
+        },
+        pendingConflict: {
+            title: 'earn.unstakeTransactionDataReviewScreen.pendingTransactionConflictAlert.title',
+            description:
+                'earn.unstakeTransactionDataReviewScreen.pendingTransactionConflictAlert.description',
+            primaryButton:
+                'earn.unstakeTransactionDataReviewScreen.pendingTransactionConflictAlert.primaryButton',
         },
     },
     claim: {

@@ -44,7 +44,6 @@
         "@suite-native/sentry": "workspace:*",
         "@suite-native/services": "workspace:*",
         "@suite-native/settings": "workspace:*",
-        "@suite-native/staking": "workspace:*",
         "@suite-native/theme": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@trezor/analytics-uploader": "workspace:*",

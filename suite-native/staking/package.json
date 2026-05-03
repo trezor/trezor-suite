@@ -12,7 +12,9 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@reduxjs/toolkit": "2.11.2",
         "@suite-common/device": "workspace:*",
+        "@suite-common/mev": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/staking": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
@@ -30,6 +32,8 @@
         "web3-utils": "^4.3.3"
     },
     "devDependencies": {
-        "@suite-common/suite-types": "workspace:*"
+        "@suite-common/message-system": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/test-utils": "workspace:*"
     }
 }

@@ -3,7 +3,10 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { getEthereumStakingAddressByType } from '@suite-common/staking';
+import {
+    buildClaimWithdrawRequestData,
+    getEthereumStakingAddressByType,
+} from '@suite-common/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import {
@@ -24,7 +27,6 @@ import {
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import {
-    CLAIM_CALLDATA,
     type NativeStakingRootState,
     selectCanClaimByAccountKey,
     selectClaimableAmountByAccountKey,
@@ -67,7 +69,7 @@ export const ClaimReviewScreen = () => {
             buildEarnComposeFormState(
                 getEthereumStakingAddressByType(symbol, 'claim'),
                 '0',
-                CLAIM_CALLDATA,
+                buildClaimWithdrawRequestData(),
             ),
         [symbol],
     );

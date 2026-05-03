@@ -1,14 +1,13 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { getEthereumStakingAddressByType } from '@suite-common/staking';
+import { buildStakeData, getEthereumStakingAddressByType } from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { useForm, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
-import { STAKE_CALLDATA } from '@suite-native/staking';
 
 import { type EarnFormValues, earnFormValidationSchema } from '../earnFormSchema';
 import { buildEarnComposeFormState } from '../utils';
@@ -47,7 +46,7 @@ export const useEarnForm = (accountKey: AccountKey) => {
         return buildEarnComposeFormState(
             getEthereumStakingAddressByType(account.symbol, 'stake'),
             amountValue,
-            STAKE_CALLDATA,
+            buildStakeData(),
         );
     }, [account, isValid, amountValue]);
 
