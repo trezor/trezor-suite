@@ -2620,6 +2620,7 @@ export const messages = {
             modalTitle: 'Deposit',
             supplyTransactionStepTitle: 'Deposit transaction',
             supplyCompleteStepTitle: 'Deposit complete',
+            approvedAmount: 'Approved amount',
             amountToSupply: 'Amount to deposit',
             supplyMax: 'Deposit max',
             balance: 'Balance:',

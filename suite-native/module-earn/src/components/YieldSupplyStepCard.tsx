@@ -1,3 +1,4 @@
+import { type YieldFlowStepId } from '@suite-common/wallet-core';
 import {
     BottomSheetModal,
     Box,
@@ -13,6 +14,7 @@ import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { EarnModalStepIndicator } from './EarnModalStepIndicator';
+import { yieldSupplyFlowSteps } from '../presets/yieldSupplyFlowPresets';
 
 const stepCardStyle = prepareNativeStyle(utils => ({
     width: '100%',
@@ -29,28 +31,19 @@ const bottomSheetFooterStyle = prepareNativeStyle(utils => ({
     paddingBottom: utils.spacings.sp16,
 }));
 
-const steps = [
-    {
-        id: 'approval',
-        label: <Translation id="earn.yieldSupplyFlowScreen.approvalStepTitle" />,
-    },
-    {
-        id: 'supply',
-        label: <Translation id="earn.yieldSupplyFlowScreen.supplyTransactionStepTitle" />,
-    },
-    {
-        id: 'complete',
-        label: <Translation id="earn.yieldSupplyFlowScreen.supplyCompleteStepTitle" />,
-    },
-];
-
 type YieldSupplyStepCardProps = {
+    currentStep?: YieldFlowStepId;
     isDisabled?: boolean;
 };
 
-export const YieldSupplyStepCard = ({ isDisabled = false }: YieldSupplyStepCardProps) => {
+export const YieldSupplyStepCard = ({
+    currentStep: currentStepId = 'approve',
+    isDisabled = false,
+}: YieldSupplyStepCardProps) => {
     const { applyStyle } = useNativeStyles();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+    const currentStep = yieldSupplyFlowSteps.find(({ stepId }) => stepId === currentStepId)!;
+    const currentStepIndex = yieldSupplyFlowSteps.indexOf(currentStep);
 
     return (
         <>
@@ -64,12 +57,13 @@ export const YieldSupplyStepCard = ({ isDisabled = false }: YieldSupplyStepCardP
                         <Text variant="body-sm">
                             <Translation
                                 id="earn.yieldSupplyFlowScreen.step"
-                                values={{ stepNumber: 1, stepCount: steps.length }}
+                                values={{
+                                    stepNumber: currentStepIndex + 1,
+                                    stepCount: yieldSupplyFlowSteps.length,
+                                }}
                             />
                         </Text>
-                        <Text variant="body-md-strong">
-                            <Translation id="earn.yieldSupplyFlowScreen.approvalStepTitle" />
-                        </Text>
+                        <Text variant="body-md-strong">{currentStep.label}</Text>
                     </VStack>
                     <Icon name="caretUpDown" size="large" color="contentPrimary" />
                 </HStack>
@@ -87,8 +81,10 @@ export const YieldSupplyStepCard = ({ isDisabled = false }: YieldSupplyStepCardP
                 }
                 onClose={closeModal}
             >
-                {/* TODO: Derive current step from the full supply flow once it is implemented. */}
-                <EarnModalStepIndicator currentStepIndex={0} steps={steps} />
+                <EarnModalStepIndicator
+                    currentStepIndex={currentStepIndex}
+                    steps={yieldSupplyFlowSteps}
+                />
             </BottomSheetModal>
         </>
     );

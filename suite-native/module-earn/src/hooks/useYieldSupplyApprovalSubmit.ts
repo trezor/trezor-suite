@@ -79,8 +79,12 @@ export const useYieldSupplyApprovalSubmit = ({
                     return;
                 }
 
+                if (session.step === 'action') {
+                    return;
+                }
+
                 if (!session.approval.modalState) {
-                    showSupplyWorkInProgress('Already approved');
+                    showSupplyWorkInProgress();
 
                     return;
                 }

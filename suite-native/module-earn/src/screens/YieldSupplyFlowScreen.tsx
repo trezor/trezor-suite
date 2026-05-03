@@ -15,6 +15,7 @@ import { FeeSelector } from '@suite-native/transaction-management';
 import { YieldApprovalPendingModal } from '../components/YieldApprovalPendingModal';
 import { YieldSupplyAmountInputCard } from '../components/YieldSupplyAmountInputCard';
 import { YieldSupplyApprovalLimitBottomSheet } from '../components/YieldSupplyApprovalLimitBottomSheet';
+import { YieldSupplyApprovedAmountCard } from '../components/YieldSupplyApprovedAmountCard';
 import { YieldSupplyFlowFooter } from '../components/YieldSupplyFlowFooter';
 import { YieldSupplyFlowScreenHeader } from '../components/YieldSupplyFlowScreenHeader';
 import { YieldSupplyInfoBottomSheet } from '../components/YieldSupplyInfoBottomSheet';
@@ -71,7 +72,11 @@ export const YieldSupplyFlowScreen = () => {
         'supply',
     );
     const isApprovalPending = approvalPendingTransaction !== undefined;
-    const isFlowLocked = isApprovalPending;
+    const currentStep = stablecoinYieldSession?.step ?? 'approve';
+    const isActionStep = currentStep === 'action';
+    const approvedAmount = stablecoinYieldSession?.approval.lastApprovedAmount;
+    const isApprovedAmountVisible = isActionStep && !!approvedAmount;
+    const isApprovalInputLocked = isApprovalPending || isActionStep;
     const {
         formDraft: approvalFeeFormDraft,
         formDraftKey: approvalFeeFormDraftKey,
@@ -83,7 +88,7 @@ export const YieldSupplyFlowScreen = () => {
         approvalLimitType,
         flowData,
         flowKey,
-        isEnabled: isValid && !isFlowLocked,
+        isEnabled: isValid && !isApprovalInputLocked,
         tokenContract: route.params.tokenContract,
     });
     const { handleSubmitApproval, isCheckingApproval } = useYieldSupplyApprovalSubmit({
@@ -105,7 +110,12 @@ export const YieldSupplyFlowScreen = () => {
     });
 
     const handleSubmit = form.handleSubmit(async ({ amount }) => {
-        if (isFlowLocked || !isApprovalFeeReady || isComposingApprovalFee) {
+        if (
+            isActionStep ||
+            isApprovalInputLocked ||
+            !isApprovalFeeReady ||
+            isComposingApprovalFee
+        ) {
             return;
         }
 
@@ -131,7 +141,7 @@ export const YieldSupplyFlowScreen = () => {
             header={
                 <YieldSupplyFlowScreenHeader
                     account={account}
-                    isDisabled={isFlowLocked}
+                    isDisabled={isApprovalPending}
                     onInfoPress={openInfoBottomSheet}
                     tokenContract={route.params.tokenContract}
                     vaultName={vault.metadata.name}
@@ -143,10 +153,11 @@ export const YieldSupplyFlowScreen = () => {
                     apy={apy}
                     isDisabled={
                         !isValid ||
+                        isActionStep ||
                         !isApprovalFeeReady ||
                         isComposingApprovalFee ||
                         isCheckingApproval ||
-                        isFlowLocked
+                        isApprovalInputLocked
                     }
                     isLoading={isCheckingApproval}
                     onPress={handleSubmit}
@@ -156,13 +167,25 @@ export const YieldSupplyFlowScreen = () => {
         >
             <Form form={form}>
                 <VStack spacing="sp16">
-                    <YieldSupplyStepCard isDisabled={isFlowLocked} />
+                    <YieldSupplyStepCard currentStep={currentStep} isDisabled={isApprovalPending} />
+
+                    {isApprovedAmountVisible && (
+                        <Box paddingHorizontal="sp16">
+                            <YieldSupplyApprovedAmountCard
+                                accountSymbol={account.symbol}
+                                amount={approvedAmount}
+                                tokenContract={route.params.tokenContract}
+                                tokenSymbol={tokenSymbol}
+                            />
+                        </Box>
+                    )}
 
                     <Box paddingHorizontal="sp16">
                         <YieldSupplyAmountInputCard
                             approvalLimitTitle={approvalLimitTitle}
                             balance={token.balance}
-                            isDisabled={isFlowLocked}
+                            isApprovalLimitVisible={!isActionStep}
+                            isDisabled={isApprovalInputLocked}
                             isMaxSelected={isMaxSelected}
                             onAmountChange={handleAmountChange}
                             onApprovalLimitPress={openApprovalLimitBottomSheet}
@@ -170,18 +193,20 @@ export const YieldSupplyFlowScreen = () => {
                             tokenSymbol={tokenSymbol}
                         />
                     </Box>
-                    <Box paddingHorizontal="sp16">
-                        <FeeSelector
-                            accountKey={account.key}
-                            tokenContract={route.params.tokenContract}
-                            updateThunk={updateApprovalFeeLevelThunk}
-                            selectedFee={selectedApprovalFee}
-                            selectedFeePerUnit={approvalFeeFormDraft?.feePerUnit}
-                            formDraft={approvalFeeFormDraft}
-                            formDraftKey={approvalFeeFormDraftKey}
-                            isDisabled={isFlowLocked}
-                        />
-                    </Box>
+                    {!isActionStep && (
+                        <Box paddingHorizontal="sp16">
+                            <FeeSelector
+                                accountKey={account.key}
+                                tokenContract={route.params.tokenContract}
+                                updateThunk={updateApprovalFeeLevelThunk}
+                                selectedFee={selectedApprovalFee}
+                                selectedFeePerUnit={approvalFeeFormDraft?.feePerUnit}
+                                formDraft={approvalFeeFormDraft}
+                                formDraftKey={approvalFeeFormDraftKey}
+                                isDisabled={isApprovalPending}
+                            />
+                        </Box>
+                    )}
                 </VStack>
             </Form>
             <YieldSupplyInfoBottomSheet
