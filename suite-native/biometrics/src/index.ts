@@ -1,5 +1,6 @@
 export * from './biometricsUtils';
 export * from './biometricsSlice';
+export * from './biometricsThunks';
 export * from './biometricsSelectors';
 export * from './types';
 export * from './components/BiometricsModalRenderer';

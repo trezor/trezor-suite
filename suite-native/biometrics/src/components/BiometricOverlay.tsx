@@ -8,7 +8,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { BiometricsIcon } from './BiometricsIcon';
 import { selectShouldUserBeAuthenticated } from '../biometricsSelectors';
-import { authenticateUserThunk } from '../biometricsSlice';
+import { authenticateUserThunk } from '../biometricsThunks';
 
 const overlayWrapperStyle = prepareNativeStyle(utils => ({
     ...StyleSheet.absoluteFillObject,
