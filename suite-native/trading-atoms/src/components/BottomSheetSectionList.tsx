@@ -18,8 +18,6 @@ export type TradingBottomSheetSectionListProps<T, U> = Omit<
     | 'keyExtractor'
     | 'data'
     | 'estimatedItemSize'
-    // computed automatically
-    | 'estimatedListHeight'
     // not supported
     | 'getItemType'
     | 'overrideItemLayout'
@@ -43,6 +41,7 @@ export const BottomSheetSectionList = <T, U = undefined>({
     noSingletonSectionHeader,
     itemStyle,
     SectionEmptyComponent,
+    estimatedListHeight,
     ...rest
 }: TradingBottomSheetSectionListProps<T, U>) => {
     const {
@@ -59,7 +58,7 @@ export const BottomSheetSectionList = <T, U = undefined>({
         SectionEmptyComponent,
     });
 
-    const listHeight = Dimensions.get('window').height * 0.9;
+    const listHeight = estimatedListHeight ?? Dimensions.get('window').height * 0.9;
 
     return (
         <BottomSheetFlashList<ListInternalItemShape<T, U>>
