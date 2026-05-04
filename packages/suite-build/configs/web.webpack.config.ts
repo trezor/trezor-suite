@@ -39,39 +39,38 @@ const config: webpack.Configuration = {
     plugins: [
         new CopyWebpackPlugin({
             patterns: [
-                'browser-detection',
-                'fonts',
-                'images',
-                'oauth',
-                'videos',
-                'guide/assets',
-                'favicon.js',
-            ]
-                .map(dir => ({
+                ...[
+                    'browser-detection',
+                    'fonts',
+                    'images',
+                    'oauth',
+                    'videos',
+                    'guide/assets',
+                    'favicon.js',
+                ].map(dir => ({
                     from: path.join(__dirname, '..', '..', 'suite-data', 'files', dir),
                     to: path.join(baseDir, 'build', 'static', dir),
-                }))
-                .concat([
-                    {
-                        from: path.join(
-                            __dirname,
-                            '../../../',
-                            'suite-common',
-                            'message-system',
-                            'files',
-                            'config.v1.ts',
-                        ),
-                        to: path.join(baseDir, 'build', 'static', 'message-system'),
-                    },
-                    {
-                        from: path.join(
-                            path.dirname(require.resolve('@suite-common/flags/package.json')),
-                            'assets',
-                            'flags',
-                        ),
-                        to: path.join(baseDir, 'build', 'static', 'flags'),
-                    },
-                ]),
+                })),
+                {
+                    from: path.join(
+                        __dirname,
+                        '../../../',
+                        'suite-common',
+                        'message-system',
+                        'files',
+                        'config.v1.ts',
+                    ),
+                    to: path.join(baseDir, 'build', 'static', 'message-system'),
+                },
+                {
+                    from: path.join(
+                        path.dirname(require.resolve('@suite-common/flags/package.json')),
+                        'assets',
+                        'flags',
+                    ),
+                    to: path.join(baseDir, 'build', 'static', 'flags'),
+                },
+            ],
             options: {
                 concurrency: 100,
             },

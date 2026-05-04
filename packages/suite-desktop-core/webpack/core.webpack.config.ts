@@ -83,22 +83,18 @@ const config: webpack.Configuration = {
         { app: isDev ? 'app-with-devtools' : 'app' },
         { preload: 'preload' },
         ...threads.map(thread => ({ [String(thread)]: thread })),
-        { [winHelloChildProcessKey]: winHelloChildProcessPath },
     ].reduce(
         (prev, cur) => ({
             ...prev,
             ...Object.entries(cur).reduce(
                 (acc, [key, value]) => ({
                     ...acc,
-                    [key]:
-                        key === winHelloChildProcessKey
-                            ? value
-                            : path.resolve(__dirname, `../src/${value}.ts`),
+                    [key]: path.resolve(__dirname, `../src/${value}.ts`),
                 }),
                 {},
             ),
         }),
-        {},
+        { [winHelloChildProcessKey]: winHelloChildProcessPath },
     ),
     output: {
         filename: '[name].js',

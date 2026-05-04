@@ -56,28 +56,24 @@ const config: webpack.Configuration = {
     },
     plugins: [
         new CopyWebpackPlugin({
-            patterns: ['bin', 'fonts', 'images', 'videos', 'guide/assets']
-                .map(dir => ({
+            patterns: [
+                ...['bin', 'fonts', 'images', 'videos', 'guide/assets'].map(dir => ({
                     from: path.join(__dirname, '..', '..', 'suite-data', 'files', dir),
                     to: path.join(baseDir, 'build', 'static', dir),
-                }))
-                .concat([
-                    {
-                        from: messageSystemFile,
-                        to: path.join(baseDir, 'build', 'static', 'message-system'),
-                    },
-                ])
+                })),
+                {
+                    from: messageSystemFile,
+                    to: path.join(baseDir, 'build', 'static', 'message-system'),
+                },
                 // include FW binaries from @trezor/connect-common
-                .concat([
-                    {
-                        from: path.join(__dirname, '../../', 'connect-data/files/firmware'),
-                        to: path.join(baseDir, 'build/static/bin/firmware'),
-                    },
-                ])
-                .concat(
-                    isCodesignBuild
-                        ? []
-                        : {
+                {
+                    from: path.join(__dirname, '../../', 'connect-data/files/firmware'),
+                    to: path.join(baseDir, 'build/static/bin/firmware'),
+                },
+                ...(isCodesignBuild
+                    ? []
+                    : [
+                          {
                               from: path.join(
                                   __dirname,
                                   '../../',
@@ -85,29 +81,24 @@ const config: webpack.Configuration = {
                               ),
                               to: path.join(baseDir, 'build/static/bin/devkit/firmware'),
                           },
-                )
-                .concat([
-                    {
-                        from: path.join(__dirname, '../../', 'transport-bridge/dist/ui'),
-                        to: path.join(baseDir, 'build/node-bridge/ui'),
-                    },
-                ])
-                .concat([
-                    {
-                        from: path.join(__dirname, '../../', 'suite-desktop/releaseNotes'),
-                        to: path.join(baseDir, 'build'),
-                    },
-                ])
-                .concat([
-                    {
-                        from: path.join(
-                            path.dirname(require.resolve('@suite-common/flags/package.json')),
-                            'assets',
-                            'flags',
-                        ),
-                        to: path.join(baseDir, 'build', 'static', 'flags'),
-                    },
-                ]),
+                      ]),
+                {
+                    from: path.join(__dirname, '../../', 'transport-bridge/dist/ui'),
+                    to: path.join(baseDir, 'build/node-bridge/ui'),
+                },
+                {
+                    from: path.join(__dirname, '../../', 'suite-desktop/releaseNotes'),
+                    to: path.join(baseDir, 'build'),
+                },
+                {
+                    from: path.join(
+                        path.dirname(require.resolve('@suite-common/flags/package.json')),
+                        'assets',
+                        'flags',
+                    ),
+                    to: path.join(baseDir, 'build', 'static', 'flags'),
+                },
+            ],
             options: {
                 concurrency: 100,
             },
