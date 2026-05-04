@@ -98,6 +98,23 @@ function fixTypeofVoid0(content) {
     return content.replace(TYPEOF_VOID_0_RE, 'undefined');
 }
 
+// In ESM, native Node.js requires JSON imports to carry the `with { type: 'json' }`
+// attribute. tsdown emits the bare `from '…/foo.json'` form; add the attribute here.
+// Also covers known external bare specifiers that ship JSON modules (e.g. `bitcoin-ops`).
+const EXTERNAL_JSON_IMPORTS = ['bitcoin-ops'];
+
+const JSON_IMPORT_RE =
+    /(import\s+(?:[^'"`]+\s+from\s+)?|export\s+[^'"`]+from\s+)(['"])([^'"`]+)(['"])(\s*;?)/g;
+
+function addJsonImportAttributes(content) {
+    return content.replace(JSON_IMPORT_RE, (full, pre, q1, spec, q2, end) => {
+        const isJson = spec.endsWith('.json') || EXTERNAL_JSON_IMPORTS.includes(spec);
+        if (!isJson) return full;
+        if (/with\s*\{/.test(full)) return full;
+        const trimmedEnd = end.replace(/;$/, '');
+        return `${pre}${q1}${spec}${q2}${trimmedEnd} with { type: 'json' }${end.endsWith(';') ? ';' : ''}`;
+    });
+}
 
 const jsExts = mode === 'esm' ? ['.mjs'] : ['.js', '.cjs'];
 const dtsExts = mode === 'esm' ? ['.d.mts'] : ['.d.ts', '.d.cts'];
@@ -110,6 +127,9 @@ for (const file of allFiles) {
     rewritten = rewriteDynamicTsExt(rewritten);
     if (mode === 'esm') {
         rewritten = appendMjsToTrezorLib(rewritten);
+        if (file.endsWith('.mjs')) {
+            rewritten = addJsonImportAttributes(rewritten);
+        }
         if (file.endsWith('.d.mts')) {
             rewritten = appendMjsToRelative(rewritten, dirname(file));
             rewritten = fixTypeofVoid0(rewritten);
