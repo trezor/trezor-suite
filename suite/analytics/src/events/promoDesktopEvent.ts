@@ -8,7 +8,7 @@ type Attributes = {
 
 export const promoDesktopEvent: EventDef<Attributes, EventType.PromoDesktop> = {
     name: EventType.PromoDesktop,
-    descriptionTrigger: 'A user clicks the desktop promo banner',
+    descriptionTrigger: 'User clicks on the desktop application promotional banner',
     changelog: [{ version: '23.5.2', notes: 'added' }],
 
     attributes: {

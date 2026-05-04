@@ -41,15 +41,18 @@ export const stakingNavigateEvent: EventDef<Attributes, EventType.StakingNavigat
     attributes: {
         action: {
             changelog: [{ version: '25.4.0', notes: 'added' }],
+            description: 'User action: "navigate" when proceeding to staking, "cancel" when dismissing the navigation',
         },
         from: {
             changelog: [
                 { version: '25.4.0', notes: 'added' },
                 { version: '25.12.0', notes: 'dashboard/staking-dashboard changed in 25.12' },
             ],
+            description: 'The location or UI element from which staking navigation was initiated (e.g., "sidebar", "dashboard/assets", "account/banner")',
         },
         networkSymbol: {
             changelog: [{ version: '25.4.0', notes: 'added' }],
+            description: 'The blockchain network symbol for staking (e.g., "eth", "ada", "sol")',
         },
     },
 };

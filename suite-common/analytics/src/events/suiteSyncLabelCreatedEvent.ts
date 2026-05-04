@@ -9,7 +9,7 @@ type Attributes = {
 
 export const suiteSyncLabelCreatedEvent: EventDef<Attributes, EventType.SuiteSyncLabelCreated> = {
     name: EventType.SuiteSyncLabelCreated,
-    descriptionTrigger: 'When user saves a non-empty label to any entity in Suite Sync',
+    descriptionTrigger: 'User saves or updates a label for any entity (wallet, account, address, output) in Suite Sync',
     changelog: [{ version: '26.4.1', notes: 'added' }],
     attributes: {
         entity_type: {

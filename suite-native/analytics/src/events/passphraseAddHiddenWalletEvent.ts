@@ -9,7 +9,7 @@ export const passphraseAddHiddenWalletEvent: EventDef<
     EventType.PassphraseAddHiddenWallet
 > = {
     name: EventType.PassphraseAddHiddenWallet,
-    descriptionTrigger: '?',
-    changelog: [{ version: '?', notes: 'added' }],
+    descriptionTrigger: 'User successfully creates a hidden wallet using a passphrase',
+    changelog: [{ version: '26.2.2', notes: 'added' }],
     attributes: {},
 };

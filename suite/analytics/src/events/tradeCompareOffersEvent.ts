@@ -10,12 +10,13 @@ type Attributes = {
 
 export const tradeCompareOffersEvent: EventDef<Attributes, EventType.TradeCompareOffers> = {
     name: EventType.TradeCompareOffers,
-    descriptionTrigger: '?',
-    changelog: [{ version: '?', notes: 'added' }],
+    descriptionTrigger: 'User compares multiple trading offers from different providers',
+    changelog: [{ version: '25.9.1', notes: 'added' }],
 
     attributes: {
         type: {
-            changelog: [{ version: '?', notes: 'added' }],
+            description: 'The type of trading comparison: "exchange" for exchange offers, "buy" for buy offers, "sell" for sell offers',
+            changelog: [{ version: '25.9.1', notes: 'added' }],
         },
     },
 };

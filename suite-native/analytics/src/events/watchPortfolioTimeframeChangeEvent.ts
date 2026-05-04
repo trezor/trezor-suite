@@ -11,13 +11,13 @@ export const watchPortfolioTimeframeChangeEvent: EventDef<
     EventType.WatchPortfolioTimeframeChange
 > = {
     name: EventType.WatchPortfolioTimeframeChange,
-    descriptionTrigger: 'On every timeframe (scope) change of balance chart.',
+    descriptionTrigger: 'User changes the timeframe for the portfolio balance chart (e.g., 1D, 7D, 1M, 1Y, All)',
     changelog: [{ version: '23.4.1', notes: 'added' }],
 
     attributes: {
         timeframe: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The selected timeframe for the portfolio graph',
+            description: 'The selected timeframe for the portfolio graph (e.g., "1D" for 1 day, "7D" for 7 days, "1M" for 1 month, "1Y" for 1 year, "ALL" for all time)',
         },
     },
 };

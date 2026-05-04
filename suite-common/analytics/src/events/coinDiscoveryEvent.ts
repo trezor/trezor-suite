@@ -17,68 +17,68 @@ type Attributes = {
 
 export const coinDiscoveryEvent: EventDef<Attributes, EventType.CoinDiscovery> = {
     name: EventType.CoinDiscovery,
-    descriptionTrigger: 'Coin discovery - when wallet is discovered',
+    descriptionTrigger: 'During device connection, a wallet coin/network is discovered and its accounts are scanned, including any associated tokens and staking opportunities',
     changelog: [
         { version: '26.3.1', notes: 'added on desktop' },
-        { version: '26.2.3', notes: 'added on mobile' },
+        { version: '26.2.2', notes: 'added on mobile' },
     ],
 
     attributes: {
         discoveryId: {
             changelog: [
                 { version: '26.3.1', notes: 'added on desktop' },
-                { version: '26.2.3', notes: 'added on mobile' },
+                { version: '26.2.2', notes: 'added on mobile' },
             ],
-            description: 'Discovery id (device.path)',
+            description: 'Unique identifier for the discovery process (typically device.path)',
         },
         symbol: {
             changelog: [
                 { version: '26.3.1', notes: 'added on desktop' },
-                { version: '26.2.3', notes: 'added on mobile' },
+                { version: '26.2.2', notes: 'added on mobile' },
             ],
-            description: 'Coin symbol',
+            description: 'The blockchain network symbol discovered (e.g., "btc", "eth", "sol")',
         },
         numberOfAccounts: {
             changelog: [
                 { version: '26.3.1', notes: 'added on desktop' },
-                { version: '26.2.3', notes: 'added on mobile' },
+                { version: '26.2.2', notes: 'added on mobile' },
             ],
-            description: 'Number of accounts',
+            description: 'Total number of accounts found for this network during discovery',
         },
         numberOfNonZeroAccounts: {
             changelog: [
                 { version: '26.3.1', notes: 'added on desktop' },
-                { version: '26.2.3', notes: 'added on mobile' },
+                { version: '26.2.2', notes: 'added on mobile' },
             ],
-            description: 'Number of non zero accounts',
+            description: 'Number of accounts that contain funds (non-zero balance)',
         },
         tokenAddresses: {
             changelog: [
                 { version: '26.3.1', notes: 'added on desktop' },
-                { version: '26.2.3', notes: 'added on mobile' },
+                { version: '26.2.2', notes: 'added on mobile' },
             ],
-            description: 'Token addresses',
+            description: 'Smart contract addresses of detected tokens on this network',
         },
         tokenSymbols: {
             changelog: [
                 { version: '26.3.1', notes: 'added on desktop' },
-                { version: '26.2.3', notes: 'added on mobile' },
+                { version: '26.2.2', notes: 'added on mobile' },
             ],
-            description: 'Token symbols',
+            description: 'Symbols/tickers of detected tokens (e.g., "USDC", "DAI", "USDT")',
         },
         numberOfStakedAccounts: {
             changelog: [
                 { version: '26.3.1', notes: 'added on desktop' },
-                { version: '26.2.3', notes: 'added on mobile' },
+                { version: '26.2.2', notes: 'added on mobile' },
             ],
-            description: 'Number of staked accounts',
+            description: 'Number of accounts with staking positions on this network',
         },
         stakingProviders: {
             changelog: [
                 { version: '26.4.1', notes: 'added on desktop' },
                 { version: '26.4.1', notes: 'added on mobile' },
             ],
-            description: 'Staking providers detected for the coin',
+            description: 'List of staking service providers detected for this coin (e.g., "lido", "rocketpool")',
         },
     },
 };

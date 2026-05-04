@@ -8,7 +8,7 @@ export const deviceConnectionDevicePairedEvent: EventDef<
     EventType.DeviceConnectionDevicePaired
 > = {
     name: EventType.DeviceConnectionDevicePaired,
-    descriptionTrigger: ' User successfully finish bluetooth pairing',
+    descriptionTrigger: 'User successfully completes Bluetooth pairing with a device',
     changelog: [{ version: '25.11.1', notes: 'added' }],
     attributes: {},
 };

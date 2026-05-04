@@ -6,7 +6,6 @@ type Attributes = Record<string, number>;
 
 export const accountsStatusEvent: EventDef<Attributes, EventType.AccountsStatus> = {
     name: EventType.AccountsStatus,
-    descriptionTrigger:
-        'Fired when discovery of all accounts is completed (app start, coin added, account added), shows number of specific accounts with some transaction history',
+    descriptionTrigger: 'Application completes discovery of all accounts after app start, coin addition, or account creation, tracking accounts with transaction history',
     changelog: [{ version: '1.14.0', notes: 'added' }],
 };

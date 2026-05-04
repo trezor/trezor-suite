@@ -11,12 +11,13 @@ export const settingsDeviceChangeBrightnessEvent: EventDef<
     EventType.SettingsDeviceChangeBrightness
 > = {
     name: EventType.SettingsDeviceChangeBrightness,
-    descriptionTrigger: '?',
-    changelog: [{ version: '?', notes: 'added' }],
+    descriptionTrigger: 'User adjusts the screen brightness level on their device',
+    changelog: [{ version: '24.6.1', notes: 'added' }],
 
     attributes: {
         value: {
-            changelog: [{ version: '?', notes: 'added' }],
+            description: 'The brightness level set by the user, typically a numeric value between 0 and 100 representing the percentage',
+            changelog: [{ version: '24.6.1', notes: 'added' }],
         },
     },
 };

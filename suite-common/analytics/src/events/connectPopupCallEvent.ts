@@ -13,7 +13,7 @@ type Attributes = {
 
 export const connectPopupCallEvent: EventDef<Attributes, EventType.ConnectPopupCall> = {
     name: EventType.ConnectPopupCall,
-    descriptionTrigger: 'Connect Popup call from 3rd party app',
+    descriptionTrigger: 'An external third-party application makes a request through the Connect Popup API',
     changelog: [{ version: '25.5.0', notes: 'added' }],
     attributes: {
         origin: {

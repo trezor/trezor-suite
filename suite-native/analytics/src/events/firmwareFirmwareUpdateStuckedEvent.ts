@@ -22,11 +22,13 @@ export const firmwareFirmwareUpdateStuckedEvent: EventDef<
     EventType.FirmwareFirmwareUpdateStucked
 > = {
     name: EventType.FirmwareFirmwareUpdateStucked,
-    descriptionTrigger:
-        'On displayed stucked button, user clicked it and displayed part 1 or part 2 or modal that should help resolve that',
+    descriptionTrigger: 'User encounters a stuck firmware update and clicks the "Stucked" button to view recovery instructions or troubleshooting help',
     changelog: [{ version: '25.1.2', notes: 'Added' }],
     attributes: {
-        model: { changelog: [{ version: '25.1.2', notes: 'added' }] },
+        model: {
+            changelog: [{ version: '25.1.2', notes: 'added' }],
+            description: 'The device model identifier',
+        },
         fromBootloaderVersion: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
             description: 'Bootloader version string aka `1.2.3`',
@@ -39,10 +41,25 @@ export const firmwareFirmwareUpdateStuckedEvent: EventDef<
             changelog: [{ version: '25.1.2', notes: 'added' }],
             description: 'FW version aka `1.2.3`',
         },
-        fromFwType: { changelog: [{ version: '25.1.2', notes: 'added' }] },
-        toFwType: { changelog: [{ version: '25.1.2', notes: 'added' }] },
-        location: { changelog: [{ version: '25.1.2', notes: 'added' }] },
-        duration: { changelog: [{ version: '25.1.2', notes: 'added' }] },
-        stuckedType: { changelog: [{ version: '25.1.2', notes: 'added' }] },
+        fromFwType: {
+            changelog: [{ version: '25.1.2', notes: 'added' }],
+            description: 'The firmware type before update (e.g., "official", "beta", or "none")',
+        },
+        toFwType: {
+            changelog: [{ version: '25.1.2', notes: 'added' }],
+            description: 'The target firmware type (e.g., "official", "beta")',
+        },
+        location: {
+            changelog: [{ version: '25.1.2', notes: 'added' }],
+            description: 'Where the firmware update was initiated: "settings", "onboarding", or null',
+        },
+        duration: {
+            changelog: [{ version: '25.1.2', notes: 'added' }],
+            description: 'How long the firmware update process was stuck, in milliseconds',
+        },
+        stuckedType: {
+            changelog: [{ version: '25.1.2', notes: 'added' }],
+            description: 'The specific stuck state: "uploading" if stuck during upload, "installing" if stuck during installation, "restarting" if stuck during restart',
+        },
     },
 };

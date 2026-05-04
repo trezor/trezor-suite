@@ -18,13 +18,12 @@ export const deviceSetupSecurityCheckEvent: EventDef<
     EventType.DeviceSetupSecurityCheck
 > = {
     name: EventType.DeviceSetupSecurityCheck,
-    descriptionTrigger: 'User has some concerns during security check.',
+    descriptionTrigger: 'During device onboarding, user expresses concerns about device authenticity or security during the security verification check',
     changelog: [{ version: '25.5.1', notes: 'added' }],
     attributes: {
         location: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description:
-                'Describes what was user unsure about and through which action exited the security check.',
+            description: 'The type of security concern: "deviceLooksDifferent" (device appearance), "firmwareAlreadyInstalled" (firmware present), "untrustedReseller" (seller concern), "securitySeal" (seal issue), or "packaging" (packaging concern)',
         },
     },
 };

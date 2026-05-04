@@ -17,13 +17,12 @@ export const demoAccountQuestionnaireLinksEvent: EventDef<
     EventType.DemoAccountQuestionnaireLinks
 > = {
     name: EventType.DemoAccountQuestionnaireLinks,
-    descriptionTrigger:
-        'User clicks on one of the articles or clicks on "Back to dashboard" button or clicks back',
+    descriptionTrigger: 'User clicks on an educational article link or returns to the dashboard from the demo account questionnaire',
     changelog: [{ version: '25.12.1', notes: 'added' }],
     attributes: {
         option: {
             changelog: [{ version: '25.12.1', notes: 'added' }],
-            description: 'The selected link option',
+            description: 'The selected link: "hardwareWallet" for hardware wallet info, "trezorSecurity" for security info, "TS7" for TS7 info, "dashboard" for return to dashboard',
         },
     },
 };

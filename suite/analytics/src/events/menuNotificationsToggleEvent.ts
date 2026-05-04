@@ -9,12 +9,13 @@ type Attributes = {
 export const menuNotificationsToggleEvent: EventDef<Attributes, EventType.MenuNotificationsToggle> =
     {
         name: EventType.MenuNotificationsToggle,
-        descriptionTrigger: 'Notification (Bell icon in top-right corner)',
+        descriptionTrigger: 'User clicks the bell icon in the top-right corner to toggle notification settings on or off',
         changelog: [{ version: '1.9.0', notes: 'added' }],
 
         attributes: {
             value: {
                 changelog: [{ version: '1.9.0', notes: 'added' }],
+                description: 'true if notifications are enabled, false if disabled',
             },
         },
     };

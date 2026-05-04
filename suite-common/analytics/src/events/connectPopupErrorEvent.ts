@@ -14,7 +14,7 @@ type Attributes = {
 
 export const connectPopupErrorEvent: EventDef<Attributes, EventType.ConnectPopupError> = {
     name: EventType.ConnectPopupError,
-    descriptionTrigger: 'Connect Popup call error',
+    descriptionTrigger: 'An error occurs during a Connect Popup call from an external application',
     changelog: [{ version: '25.5.0', notes: 'added' }],
     attributes: {
         origin: {
