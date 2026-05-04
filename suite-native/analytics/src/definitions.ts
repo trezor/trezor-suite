@@ -1,5 +1,5 @@
 import { type EarnAnalyticsStep } from '@suite-common/suite-types';
-import { type TradingType } from '@suite-common/trading';
+import { type TradingTypeWithConcierge } from '@suite-common/trading';
 import { type FirmwareType } from '@trezor/connect';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 
@@ -11,7 +11,9 @@ export type AnalyticsSendFlowStep =
     | 'destination_tag_review';
 
 export type CountryChangeContextCheck = 'settings' | 'onboarding';
-export type CountryChangeContext = Exclude<TradingType, 'exchange'> | CountryChangeContextCheck;
+export type CountryChangeContext =
+    | Exclude<TradingTypeWithConcierge, 'exchange'>
+    | CountryChangeContextCheck;
 export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 
 export type DeviceAuthenticityCheckResult = 'successful' | 'compromised' | 'cancelled' | 'failed';

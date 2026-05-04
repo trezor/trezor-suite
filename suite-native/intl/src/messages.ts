@@ -3147,6 +3147,7 @@ export const messages = {
                 concierge: 'Concierge',
             },
             concierge: {
+                noProvidersAvailable: 'No providers available for this country.',
                 alert: {
                     labelBuy:
                         'For buys over 50,000 EUR, use Concierge for competitive, private, and secure trades.',
