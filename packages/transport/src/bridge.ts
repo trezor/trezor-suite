@@ -1,7 +1,6 @@
-import type { AbstractTransportParams } from './transports/abstract';
-import { BridgeTransport } from './transports/bridge';
+import type { AbstractTransportParams } from '@trezor/transport-abstract';
 
-export { BridgeTransport };
+import { BridgeTransport } from './transports/bridge';
 
 /**
  * Bridge listens on two HTTP ports — `21328` (node-bridge) and the default

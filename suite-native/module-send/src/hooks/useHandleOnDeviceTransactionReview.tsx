@@ -26,7 +26,7 @@ import {
     selectIsTransactionReviewInProgress,
     useShowReviewCancellationAlert,
 } from '@suite-native/transaction-management';
-import { TRANSPORT_ERROR } from '@trezor/transport';
+import { TRANSPORT_ERROR } from '@trezor/transport-abstract';
 
 import { useShowDeviceDisconnectedAlert } from './useShowDeviceDisconnectedAlert';
 

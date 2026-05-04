@@ -8,6 +8,7 @@
         { "path": "../protocol" },
         { "path": "../theme" },
         { "path": "../transport" },
+        { "path": "../transport-abstract" },
         { "path": "../utils" }
     ]
 }

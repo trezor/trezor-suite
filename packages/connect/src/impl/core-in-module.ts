@@ -24,7 +24,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
 import { ConnectEmitter } from '@trezor/connect-common/src/types/emitter';
 import { initLog } from '@trezor/connect-common/src/utils/debug';
-import { TRANSPORT } from '@trezor/transport';
+import { TRANSPORT } from '@trezor/transport-abstract';
 import { cloneObject, createDeferredManager } from '@trezor/utils';
 
 import { initCoreState } from '../core';

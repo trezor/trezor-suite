@@ -1,5 +1,4 @@
-import { type AbstractTransportParams } from '@trezor/transport/src/transports/abstract';
-import { AbstractApiTransport } from '@trezor/transport/src/transports/abstractApi';
+import { AbstractApiTransport, type AbstractTransportParams } from '@trezor/transport-abstract';
 
 import { BluetoothApi } from './bluetooth-api';
 import { type TrezorBluetoothSettings } from './types';

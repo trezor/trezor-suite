@@ -5,8 +5,8 @@
         "types": ["jest", "node"]
     },
     "references": [
-        { "path": "../protobuf" },
         { "path": "../protocol" },
+        { "path": "../transport-abstract" },
         { "path": "../type-utils" },
         { "path": "../utils" },
         { "path": "../eslint" }

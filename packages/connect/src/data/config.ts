@@ -1,5 +1,5 @@
 import type { FirmwareRule } from '@trezor/connect-common';
-import { TREZOR_USB_DESCRIPTORS } from '@trezor/transport/src/constants';
+import { TREZOR_USB_DESCRIPTORS } from '@trezor/transport-abstract';
 
 type Config = {
     webusb: typeof TREZOR_USB_DESCRIPTORS;

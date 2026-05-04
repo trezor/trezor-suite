@@ -3,7 +3,7 @@ import type { DeviceModelInternal } from '@trezor/device-utils';
 import type { ThpCredentials, ThpPairingMethod } from '@trezor/protocol';
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
-import type { Transport } from '@trezor/transport';
+import type { Transport } from '@trezor/transport-abstract';
 import type { PartialRecord } from '@trezor/type-utils';
 
 import type { FirmwareChannel } from './firmware';

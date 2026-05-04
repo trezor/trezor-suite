@@ -1,7 +1,7 @@
 import type { FeaturesNarrowing, FirmwareType } from '@trezor/device-utils';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { ThpStateSerialized } from '@trezor/protocol';
-import type { Descriptor } from '@trezor/transport';
+import type { Descriptor } from '@trezor/transport-abstract';
 import type { Branded } from '@trezor/type-utils';
 
 import type { FirmwareCapability, FirmwareReleaseConfigInfo } from './firmware';

@@ -68,8 +68,8 @@ import { buildHistoricRatesFromStorage } from '@suite-common/wallet-utils';
 import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { createBridgeTransports } from '@trezor/transport/src/bridge';
-import { WebUsbTransport } from '@trezor/transport/src/web';
+import { createBridgeTransports } from '@trezor/transport';
+import { WebUsbTransport } from '@trezor/transport-web';
 
 import { type StorageLoadAction } from 'src/actions/suite/storageActions';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';

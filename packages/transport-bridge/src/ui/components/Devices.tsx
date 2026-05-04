@@ -1,5 +1,5 @@
 import { H2 } from '@trezor/components/src/components/typography/Heading/Heading';
-import { type Descriptor } from '@trezor/transport/src/types';
+import { type Descriptor } from '@trezor/transport-abstract';
 
 import { Card } from './Card';
 import { Device } from './Device';

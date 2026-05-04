@@ -1,7 +1,7 @@
 import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 import { v1 as protocolV1 } from '@trezor/protocol';
-import { buildMessage } from '@trezor/transport/src/utils/send';
+import { buildMessage } from '@trezor/transport-abstract/src/utils/send';
 import { Log, bufferUtils } from '@trezor/utils';
 
 import { calculateFirmwareHash } from '../../api/firmware/calculateFirmwareHash';

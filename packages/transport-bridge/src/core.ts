@@ -7,24 +7,29 @@ import {
     v1 as protocolV1,
     v2 as protocolV2,
 } from '@trezor/protocol';
-import { type AbstractApi } from '@trezor/transport/src/api/abstract';
 import { UdpApi } from '@trezor/transport/src/api/udp';
-import { UsbApi } from '@trezor/transport/src/api/usb';
-import { THP_STATE_ERROR } from '@trezor/transport/src/errors';
-import { SessionsBackground } from '@trezor/transport/src/sessions/background';
-import { SessionsClient } from '@trezor/transport/src/sessions/client';
-import { callThpMessage, receiveThpMessage, sendThpMessage } from '@trezor/transport/src/thp';
-import { type AcquireInput, type ReleaseInput } from '@trezor/transport/src/transports/abstract';
 import {
+    type AbstractApi,
+    type AcquireInput,
     type BridgeProtocolMessage,
     type DescriptorApiLevel,
     type PathInternal,
+    type ReleaseInput,
     type Session,
-} from '@trezor/transport/src/types';
-import { createProtocolMessage } from '@trezor/transport/src/utils/bridgeProtocolMessage';
-import { receive as receiveUtil } from '@trezor/transport/src/utils/receive';
-import { error, success, unknownError } from '@trezor/transport/src/utils/result';
-import { createChunks, sendChunks } from '@trezor/transport/src/utils/send';
+    UsbApi,
+} from '@trezor/transport-abstract';
+import { THP_STATE_ERROR } from '@trezor/transport-abstract/src/errors';
+import { SessionsBackground } from '@trezor/transport-abstract/src/sessions/background';
+import { SessionsClient } from '@trezor/transport-abstract/src/sessions/client';
+import {
+    callThpMessage,
+    receiveThpMessage,
+    sendThpMessage,
+} from '@trezor/transport-abstract/src/thp';
+import { createProtocolMessage } from '@trezor/transport-abstract/src/utils/bridgeProtocolMessage';
+import { receive as receiveUtil } from '@trezor/transport-abstract/src/utils/receive';
+import { error, success, unknownError } from '@trezor/transport-abstract/src/utils/result';
+import { createChunks, sendChunks } from '@trezor/transport-abstract/src/utils/send';
 import { type Log } from '@trezor/utils';
 
 export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => {

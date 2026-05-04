@@ -1,14 +1,14 @@
 import {
     AbstractApi,
     type AbstractApiConstructorParams,
+    DEVICE_TYPE,
     type OpenDeviceChannel,
-} from '@trezor/transport/src/api/abstract';
-import { DEVICE_TYPE } from '@trezor/transport/src/constants';
-import * as ERRORS from '@trezor/transport/src/errors';
-import { type PathInternal } from '@trezor/transport/src/types';
-import { getBLEDescriptorModel } from '@trezor/transport/src/utils/descriptor';
-import { readMessageBuffer } from '@trezor/transport/src/utils/readMessageBuffer';
-import { error, success } from '@trezor/transport/src/utils/result';
+    type PathInternal,
+} from '@trezor/transport-abstract';
+import * as ERRORS from '@trezor/transport-abstract/src/errors';
+import { getBLEDescriptorModel } from '@trezor/transport-abstract/src/utils/descriptor';
+import { readMessageBuffer } from '@trezor/transport-abstract/src/utils/readMessageBuffer';
+import { error, success } from '@trezor/transport-abstract/src/utils/result';
 
 import { TrezorBluetooth } from './trezor-bluetooth';
 import { type BluetoothDevice, type TrezorBluetoothSettings } from './types';

@@ -1,9 +1,9 @@
 import EventEmitter from 'events';
 
 import { getFreePort } from '@trezor/node-utils';
-import { AbstractApi } from '@trezor/transport/src/api/abstract';
 import { UdpApi } from '@trezor/transport/src/api/udp';
-import { bridgeApiCall } from '@trezor/transport/src/utils/bridgeApiCall';
+import { AbstractApi } from '@trezor/transport-abstract';
+import { bridgeApiCall } from '@trezor/transport-abstract/src/utils/bridgeApiCall';
 import { resolveAfter } from '@trezor/utils';
 
 import { TrezordNode } from '../src/http';

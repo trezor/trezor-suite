@@ -7,10 +7,10 @@
     "include": ["./src"],
     "references": [
         {
-            "path": "../protobuf"
+            "path": "../protocol"
         },
         {
-            "path": "../protocol"
+            "path": "../transport-abstract"
         },
         {
             "path": "../type-utils"

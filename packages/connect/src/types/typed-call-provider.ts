@@ -1,5 +1,5 @@
 import type { MessagesSchema as Messages } from '@trezor/protobuf';
-import type { MessageResponse } from '@trezor/transport';
+import type { MessageResponse } from '@trezor/transport-abstract';
 
 type AbortableOptions = {
     timeout?: number;

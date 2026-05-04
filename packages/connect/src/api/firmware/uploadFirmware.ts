@@ -4,7 +4,7 @@ import { DEVICE, UI_REQUEST, createUiMessage } from '@trezor/connect-common';
 import type { CoreEventMessage, FirmwareUpdateFlowType, PROTO } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
-import { TRANSPORT } from '@trezor/transport';
+import { TRANSPORT } from '@trezor/transport-abstract';
 import { isWithinRange } from '@trezor/utils/src/versionUtils';
 
 import type { TypedCall } from '../../device/DeviceCommands';

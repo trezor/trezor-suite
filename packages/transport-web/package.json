@@ -1,0 +1,65 @@
+{
+    "name": "@trezor/transport-web",
+    "version": "1.0.0-alpha.1",
+    "description": "Browser-only transports for @trezor/connect: WebUSB and SharedWorker-backed sessions backend.",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "keywords": [
+        "Trezor",
+        "transport",
+        "webusb"
+    ],
+    "main": "./src/index.ts",
+    "sideEffects": false,
+    "publishConfig": {
+        "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
+        "exports": {
+            ".": {
+                "import": {
+                    "types": "./libESM/index.d.mts",
+                    "default": "./libESM/index.mjs"
+                },
+                "require": {
+                    "types": "./lib/index.d.ts",
+                    "default": "./lib/index.js"
+                }
+            },
+            "./lib/*": {
+                "types": "./lib/*.d.ts",
+                "default": "./lib/*.js"
+            },
+            "./libESM/*": "./libESM/*"
+        }
+    },
+    "files": [
+        "lib/",
+        "libESM/",
+        "CHANGELOG.md"
+    ],
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build tsconfig.json",
+        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
+        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
+        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "devDependencies": {
+        "@trezor/eslint": "workspace:*",
+        "@types/node": "22.13.10",
+        "@types/sharedworker": "^0.0.223"
+    },
+    "dependencies": {
+        "@trezor/transport-abstract": "workspace:*"
+    },
+    "peerDependencies": {
+        "tslib": "^2.6.2"
+    }
+}

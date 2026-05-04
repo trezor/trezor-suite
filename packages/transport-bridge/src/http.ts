@@ -12,10 +12,14 @@ import {
     parseBodyText,
 } from '@trezor/node-utils';
 import { checkOrigin } from '@trezor/node-utils/src/http';
-import { type AbstractApi } from '@trezor/transport/src/api/abstract';
-import { SESSION_NOT_FOUND, UNEXPECTED_ERROR } from '@trezor/transport/src/errors';
-import { type Descriptor, type PathPublic, type Session } from '@trezor/transport/src/types';
-import { validateProtocolMessage } from '@trezor/transport/src/utils/bridgeProtocolMessage';
+import {
+    type AbstractApi,
+    type Descriptor,
+    type PathPublic,
+    type Session,
+} from '@trezor/transport-abstract';
+import { SESSION_NOT_FOUND, UNEXPECTED_ERROR } from '@trezor/transport-abstract/src/errors';
+import { validateProtocolMessage } from '@trezor/transport-abstract/src/utils/bridgeProtocolMessage';
 import { type Log, Throttler, arrayPartition } from '@trezor/utils';
 
 import { createCore } from './core';

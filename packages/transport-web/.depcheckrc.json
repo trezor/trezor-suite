@@ -1,0 +1,4 @@
+{
+    "ignore-patterns": ["libDev", "lib"],
+    "ignores": ["@types/sharedworker"]
+}

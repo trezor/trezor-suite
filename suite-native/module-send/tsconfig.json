@@ -61,7 +61,9 @@
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/theme" },
-        { "path": "../../packages/transport" },
+        {
+            "path": "../../packages/transport-abstract"
+        },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
         { "path": "../test-utils" },

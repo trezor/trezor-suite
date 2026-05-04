@@ -12,6 +12,6 @@
     },
     "dependencies": {
         "@trezor/react-native-usb": "workspace:*",
-        "@trezor/transport": "workspace:*"
+        "@trezor/transport-abstract": "workspace:*"
     }
 }

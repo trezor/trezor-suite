@@ -41,6 +41,12 @@
             "path": "../transport"
         },
         {
+            "path": "../transport-abstract"
+        },
+        {
+            "path": "../transport-web"
+        },
+        {
             "path": "../type-utils"
         },
         {

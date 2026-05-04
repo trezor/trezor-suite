@@ -9,8 +9,7 @@ import TrezorConnect, {
     UI_RESPONSE,
 } from '@trezor/connect';
 import { type IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
-import { createBridgeTransports } from '@trezor/transport/src/bridge';
-import { NodeUsbTransport, UdpTransport } from '@trezor/transport/src/node';
+import { NodeUsbTransport, UdpTransport, createBridgeTransports } from '@trezor/transport';
 import { parseElectrumUrl } from '@trezor/utils';
 
 import { bluetoothModuleState } from './bluetooth';

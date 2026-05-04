@@ -20,7 +20,7 @@ const config: webpack.Configuration = {
             filename: 'workers/[name].js',
             import: path.resolve(
                 __dirname,
-                '../../transport/src/sessions/background-sharedworker.ts',
+                '../../transport-web/src/sessions/background-sharedworker.ts',
             ),
             // Use importScripts-based chunk loading so vendor/runtime chunks load in a worker context
             chunkLoading: 'import-scripts',

@@ -22,6 +22,8 @@
         { "path": "../protocol" },
         { "path": "../schema-utils" },
         { "path": "../transport" },
+        { "path": "../transport-abstract" },
+        { "path": "../transport-web" },
         { "path": "../type-utils" },
         { "path": "../utils" },
         { "path": "../utxo-lib" },

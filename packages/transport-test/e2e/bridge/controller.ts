@@ -7,7 +7,7 @@ import * as bitcoinProto from '@trezor/protobuf/src/definitions/messages-bitcoin
 import * as commonProto from '@trezor/protobuf/src/definitions/messages-common_pb';
 import * as managementProto from '@trezor/protobuf/src/definitions/messages-management_pb';
 import * as messagesProto from '@trezor/protobuf/src/definitions/messages_pb';
-import { BridgeTransport } from '@trezor/transport/src/bridge';
+import { BridgeTransport } from '@trezor/transport';
 import { TrezordNode } from '@trezor/transport-bridge/src';
 import { TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 import { Log, scheduleAction } from '@trezor/utils';

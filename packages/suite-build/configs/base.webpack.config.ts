@@ -52,6 +52,7 @@ const config: webpack.Configuration = {
             vm: require.resolve('vm-browserify'),
             // Not required
             child_process: false,
+            dgram: false,
             fs: false,
             net: false,
             tls: false,

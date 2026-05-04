@@ -1,7 +1,7 @@
 // todo: transport should eventually stop being dependency of connect-common, we don't want to pull
 // usb dependencies for example. so maybe we are going to split this package into transport-types and transport-rest
 
-import type { TRANSPORT, Transport } from '@trezor/transport';
+import type { TRANSPORT, Transport } from '@trezor/transport-abstract';
 
 import { serializeError } from '../constants/errors';
 import type { ConnectSettings } from '../types/settings';

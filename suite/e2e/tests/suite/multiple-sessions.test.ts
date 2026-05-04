@@ -1,5 +1,5 @@
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
-import { BridgeTransport } from '@trezor/transport/src/bridge';
+import { BridgeTransport } from '@trezor/transport';
 
 import { expect, test } from '../../support/fixtures';
 import { DashboardPage } from '../../support/pageObjects/dashboardPage';

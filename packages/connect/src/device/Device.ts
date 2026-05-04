@@ -26,9 +26,14 @@ import {
 } from '@trezor/device-utils';
 import type { TransportProtocol } from '@trezor/protocol';
 import { thp as protocolThp, v1 as protocolV1, v2 as protocolV2 } from '@trezor/protocol';
-import type { Descriptor, Session, Transport } from '@trezor/transport';
-import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
-import type { TransportDeviceEvent } from '@trezor/transport/src/transports/abstract';
+import {
+    type Descriptor,
+    type Session,
+    TRANSPORT,
+    TRANSPORT_ERROR,
+    type Transport,
+    type TransportDeviceEvent,
+} from '@trezor/transport-abstract';
 import type { Deferred } from '@trezor/utils';
 import { TypedEmitter, createDeferred, isArrayMember, versionUtils } from '@trezor/utils';
 import type { VersionArray } from '@trezor/utils/src/versionUtils';

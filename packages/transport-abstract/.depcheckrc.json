@@ -1,0 +1,9 @@
+{
+    "ignore-patterns": ["libDev", "lib"],
+    "ignores": [
+        "@types/sharedworker",
+        "@types/bytebuffer",
+        "@babel/preset-env",
+        "@babel/preset-typescript"
+    ]
+}

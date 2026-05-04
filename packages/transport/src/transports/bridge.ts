@@ -5,31 +5,29 @@ import {
     bridge as protocolBridge,
     v1 as protocolV1,
 } from '@trezor/protocol';
-import { versionUtils } from '@trezor/utils';
-
 import {
     AbstractTransport,
     type AbstractTransportMethodParams,
     type AbstractTransportParams,
-} from './abstract';
-import { TRANSPORT } from '../constants';
-import * as ERRORS from '../errors';
+    type AnyError,
+    type AsyncResultWithTypedError,
+    type BridgeCommonErrors,
+    type BridgeProtocolMessage,
+    type Descriptor,
+    type Session,
+    TRANSPORT,
+} from '@trezor/transport-abstract';
+import * as ERRORS from '@trezor/transport-abstract/src/errors';
+import { parseThpMessage } from '@trezor/transport-abstract/src/thp/receive';
+import { bridgeApiCall } from '@trezor/transport-abstract/src/utils/bridgeApiCall';
+import * as bridgeApiResult from '@trezor/transport-abstract/src/utils/bridgeApiResult';
+import { createProtocolMessage } from '@trezor/transport-abstract/src/utils/bridgeProtocolMessage';
+import { receiveAndParse } from '@trezor/transport-abstract/src/utils/receive';
+import { error, success } from '@trezor/transport-abstract/src/utils/result';
+import { buildMessage } from '@trezor/transport-abstract/src/utils/send';
+import { versionUtils } from '@trezor/utils';
+
 import { ping } from '../pinger/ping';
-import { parseThpMessage } from '../thp/receive';
-import type {
-    AnyError,
-    AsyncResultWithTypedError,
-    BridgeCommonErrors,
-    BridgeProtocolMessage,
-    Descriptor,
-    Session,
-} from '../types';
-import { bridgeApiCall } from '../utils/bridgeApiCall';
-import * as bridgeApiResult from '../utils/bridgeApiResult';
-import { createProtocolMessage } from '../utils/bridgeProtocolMessage';
-import { receiveAndParse } from '../utils/receive';
-import { error, success } from '../utils/result';
-import { buildMessage } from '../utils/send';
 
 const DEFAULT_URL = 'http://127.0.0.1';
 const DEFAULT_PORT = 21325;

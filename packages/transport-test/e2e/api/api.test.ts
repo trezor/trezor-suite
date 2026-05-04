@@ -1,5 +1,5 @@
-import { UsbApi } from '@trezor/transport/src/api/usb';
-import type { UsbInterfaceApi } from '@trezor/transport/src/types/usbInterface';
+import { UsbApi } from '@trezor/transport-abstract/src/api/usb';
+import type { UsbInterfaceApi } from '@trezor/transport-abstract/src/types/usbInterface';
 
 import { debug, error, info, sharedTest, success } from './shared';
 import { assertEquals, assertFailure, assertMessage, assertSuccess, buildMessage } from './utils';

@@ -1,4 +1,4 @@
-import { applyBridgeApiCallHeaders } from '../utils/applyBridgeApiCallHeaders';
+import { applyBridgeApiCallHeaders } from '@trezor/transport-abstract/src/utils/applyBridgeApiCallHeaders';
 
 export const ping = (url: string) =>
     fetch(url, {

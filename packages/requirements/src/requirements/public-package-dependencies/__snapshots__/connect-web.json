@@ -8,10 +8,12 @@
         "@trezor/protobuf",
         "@trezor/protocol",
         "@trezor/schema-utils",
+        "@trezor/transport-abstract",
         "@trezor/type-utils",
         "@trezor/utils",
         "@trezor/websocket-client",
         "bignumber.js",
+        "cross-fetch",
         "ts-mixer",
         "tslib",
         "ws"

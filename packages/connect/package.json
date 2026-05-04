@@ -133,6 +133,8 @@
         "@trezor/protocol": "workspace:*",
         "@trezor/schema-utils": "workspace:*",
         "@trezor/transport": "workspace:*",
+        "@trezor/transport-abstract": "workspace:*",
+        "@trezor/transport-web": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",

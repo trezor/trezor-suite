@@ -5,9 +5,13 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { initLog } from '@trezor/connect-common/src/utils/debug';
 import { MessagesSchema as Messages } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
-import type { MessageResponse, Session, Transport } from '@trezor/transport';
-import { TRANSPORT } from '@trezor/transport';
-import { isErrorWithoutDeviceInteraction } from '@trezor/transport/src/errors-groups';
+import {
+    type MessageResponse,
+    type Session,
+    TRANSPORT,
+    type Transport,
+} from '@trezor/transport-abstract';
+import { isErrorWithoutDeviceInteraction } from '@trezor/transport-abstract/src/errors-groups';
 import { scheduleAction } from '@trezor/utils';
 
 import type { IDevice } from '../types/idevice';

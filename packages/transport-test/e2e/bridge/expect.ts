@@ -1,4 +1,4 @@
-import { DEVICE_TYPE } from '@trezor/transport/src/constants';
+import { DEVICE_TYPE } from '@trezor/transport-abstract';
 
 import { env } from './controller';
 

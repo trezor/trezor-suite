@@ -1,7 +1,7 @@
 import type { ConnectSettings, DeviceUniquePath } from '@trezor/connect-common';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import type { FirmwareHash } from '@trezor/protobuf/src/definitions';
-import type { Descriptor } from '@trezor/transport';
+import type { Descriptor } from '@trezor/transport-abstract';
 import { Log } from '@trezor/utils';
 
 import { DataManager } from '../../data/DataManager';

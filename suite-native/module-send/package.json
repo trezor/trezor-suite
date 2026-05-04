@@ -52,7 +52,7 @@
         "@trezor/react-utils": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "@trezor/transport": "workspace:*",
+        "@trezor/transport-abstract": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
         "jotai": "2.17.1",

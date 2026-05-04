@@ -1,0 +1,25 @@
+{
+    "extends": "../../tsconfig.libESM.json",
+    "include": ["./src"],
+    "compilerOptions": {
+        "outDir": "./libESM",
+        "types": ["node"]
+    },
+    "references": [
+        {
+            "path": "../protobuf"
+        },
+        {
+            "path": "../protocol"
+        },
+        {
+            "path": "../type-utils"
+        },
+        {
+            "path": "../utils"
+        },
+        {
+            "path": "../eslint"
+        }
+    ]
+}

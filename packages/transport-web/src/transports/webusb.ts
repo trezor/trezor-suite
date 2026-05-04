@@ -1,8 +1,12 @@
-import { type AbstractTransportMethodParams, type AbstractTransportParams } from './abstract';
-import { AbstractApiTransport } from './abstractApi';
-import { UsbApi } from '../api/usb';
+import {
+    AbstractApiTransport,
+    type AbstractTransportMethodParams,
+    type AbstractTransportParams,
+    UsbApi,
+    type UsbInterfaceApi,
+} from '@trezor/transport-abstract';
+
 import { BrowserSessionsBackground } from '../sessions/background-browser';
-import type { UsbInterfaceApi } from '../types/usbInterface';
 
 const defaultSessionsBackgroundUrl =
     window.location.origin +

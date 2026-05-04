@@ -218,6 +218,7 @@
         { "path": "../theme" },
         { "path": "../transport" },
         { "path": "../transport-bluetooth" },
+        { "path": "../transport-web" },
         { "path": "../type-utils" },
         { "path": "../urls" },
         { "path": "../utils" },

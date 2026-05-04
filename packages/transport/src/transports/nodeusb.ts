@@ -1,8 +1,10 @@
 import { WebUSB } from 'usb';
 
-import { type AbstractTransportParams } from './abstract';
-import { AbstractApiTransport } from './abstractApi';
-import { UsbApi } from '../api/usb';
+import {
+    AbstractApiTransport,
+    type AbstractTransportParams,
+    UsbApi,
+} from '@trezor/transport-abstract';
 
 // notes:
 // to make it work on Linux I needed to run `sudo chmod -R 777 /dev/bus/usb/` which is obviously not

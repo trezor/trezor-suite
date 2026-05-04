@@ -1,7 +1,7 @@
 import { ERRORS, type UpdateConnectSettings, factory } from '@trezor/connect-common';
-import { TRANSPORT } from '@trezor/transport';
 import { createBridgeTransports } from '@trezor/transport/src/bridge';
-import { WebUsbTransport } from '@trezor/transport/src/web';
+import { TRANSPORT } from '@trezor/transport-abstract';
+import { WebUsbTransport } from '@trezor/transport-web';
 
 import { config } from './data/config';
 import { CoreInModule } from './impl/core-in-module';

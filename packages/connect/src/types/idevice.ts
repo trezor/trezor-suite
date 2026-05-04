@@ -26,7 +26,7 @@ import type {
     TransportProtocol,
     thp as protocolThp,
 } from '@trezor/protocol';
-import type { Descriptor, Transport } from '@trezor/transport';
+import type { Descriptor, Transport } from '@trezor/transport-abstract';
 import type { TypedEmitter, VersionArray } from '@trezor/utils';
 
 import type { TypedCallProvider } from './typed-call-provider';

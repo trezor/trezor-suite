@@ -1,4 +1,4 @@
-import type { Transport } from '@trezor/transport';
+import type { Transport } from '@trezor/transport-abstract';
 
 import type { TrezorConnect } from '../../..';
 

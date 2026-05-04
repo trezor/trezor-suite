@@ -12,7 +12,7 @@ import {
 
 import { EventEmitter } from 'events';
 
-import { readMessageBuffer } from '@trezor/transport/src/utils/readMessageBuffer';
+import { readMessageBuffer } from '@trezor/transport-abstract/src/utils/readMessageBuffer';
 import type { TimerId } from '@trezor/type-utils';
 
 import {

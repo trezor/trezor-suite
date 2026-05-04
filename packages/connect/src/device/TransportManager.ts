@@ -1,5 +1,4 @@
-import type { Transport } from '@trezor/transport';
-import { TRANSPORT } from '@trezor/transport';
+import { TRANSPORT, type Transport } from '@trezor/transport-abstract';
 import { TypedEmitter, resolveAfter } from '@trezor/utils';
 
 const createOverrideLock = () => {
