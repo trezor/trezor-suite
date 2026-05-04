@@ -58,21 +58,25 @@ const preCallHook = async <M extends CallMethodKeys>({
         // Parse common parameters (path, chainId) from payload
         let path: Bip43Path;
         let chainId = 1;
-        if (isCallMethod(method, 'ethereumSignTransaction', payload)) {
-            path = getSerializedPath(validatePath(payload.path)) as Bip43Path;
-            chainId = payload.transaction.chainId || 1;
+        // Cast to unknown because the generic `payload: Omit<CallMethodParams<M>, 'method'>`
+        // would intersect badly with the predicate's narrowed shape in the else-if branch
+        // and collapse the second variant to `never`.
+        const erasedPayload: unknown = payload;
+        if (isCallMethod(method, 'ethereumSignTransaction', erasedPayload)) {
+            path = getSerializedPath(validatePath(erasedPayload.path)) as Bip43Path;
+            chainId = erasedPayload.transaction.chainId || 1;
 
             if (txSigningPrecomposed) {
                 dispatch(
                     _storePrecomposedTransaction({
-                        typedPayload: payload,
+                        typedPayload: erasedPayload,
                         txSigningPrecomposed,
                     }),
                 );
             }
-        } else if (isCallMethod(method, 'ethereumSignTypedData', payload)) {
-            path = getSerializedPath(validatePath(payload.path)) as Bip43Path;
-            chainId = Number(payload.data.domain.chainId) || 1;
+        } else if (isCallMethod(method, 'ethereumSignTypedData', erasedPayload)) {
+            path = getSerializedPath(validatePath(erasedPayload.path)) as Bip43Path;
+            chainId = Number(erasedPayload.data.domain.chainId) || 1;
         } else {
             return;
         }
@@ -155,7 +159,9 @@ const preCallHook = async <M extends CallMethodKeys>({
                 if (!methodInfo.success) {
                     throw methodInfo.error;
                 }
-                const infoPayload = methodInfo.payload as MethodInfo;
+                // `__info: true` makes Connect return a MethodInfo payload at runtime,
+                // but the TS overload still resolves to the regular signed-tx shape.
+                const infoPayload = methodInfo.payload as unknown as MethodInfo;
                 txSigningPrecomposed = infoPayload.precomposed;
                 if (txSigningPrecomposed)
                     dispatch(

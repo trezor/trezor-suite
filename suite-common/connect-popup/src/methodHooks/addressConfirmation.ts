@@ -5,7 +5,14 @@ import { connectPopupActions } from '../connectPopupActions';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
 import { type PostCallHookParams, type PreCallHookParams } from './types';
 
-type AddressLikeResponse = Address | HDNodeResponse | SolanaPublicKey;
+// `methodsPublicKey` covers methods returning HDNodeResponse, SolanaPublicKey, and other
+// PublicKey variants (Cardano, Tezos). They all carry `publicKey: string` and the more
+// specific shapes add their own fields, so the variant fields are kept optional here to
+// keep structural narrowing inside `displayAddress` open-ended (otherwise narrowing on
+// the known specific shapes would collapse the catch-all branch to `never`).
+type AddressLikeResponse =
+    | Address
+    | ({ publicKey: string } & Partial<HDNodeResponse> & Partial<SolanaPublicKey>);
 
 const methodsAddress = [
     'getAddress',

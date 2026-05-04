@@ -36,5 +36,5 @@ export type PostCallHookParams<M extends CallMethodKeys> = PreCallHookParams<M> 
 export const isCallMethod = <K extends CallMethodKeys>(
     method: CallMethodKeys,
     targetMethod: K,
-    payload: unknown,
-): payload is Omit<CallMethodParams<K>, 'method'> => method === targetMethod;
+    _payload: unknown,
+): _payload is Omit<CallMethodParams<K>, 'method'> => method === targetMethod;
