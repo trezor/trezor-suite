@@ -80,15 +80,16 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     const { outputs, sendCryptoSelect } = getValues();
     const values = useWatch<TradingSellExchangeFormProps>({ control });
     const previousValues = useRef<typeof values | null>(isNotFormPage ? draftUpdated : null);
-    const tokenAddress = outputs?.[0]?.token;
-    const tokenData = account.tokens?.find(t => t.contract === tokenAddress);
-    const isBalanceZero = tokenData
-        ? isZero(tokenData.balance || '0')
-        : isZero(account.formattedBalance);
-
     const sendCryptoAccount = useSelector(state =>
         selectAccountByKey(state, sendCryptoSelect?.accountKey),
     );
+    const tokenAddress = outputs?.[0]?.token;
+    const tokenData = (sendCryptoAccount ?? account).tokens?.find(
+        t => t.contract.toLowerCase() === tokenAddress?.toLowerCase(),
+    );
+    const isBalanceZero = tokenData
+        ? isZero(tokenData.balance || '0')
+        : isZero(account.formattedBalance);
     const tradingFiatValues = useTradingFiatValues({
         cryptoId: sendCryptoSelect?.id,
         amount: sendCryptoAccount?.balance,
@@ -247,7 +248,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         const cryptoAmountWithReserve = isNetworkReserveEnabled
             ? getCryptoAmountWithReserve({
                   symbol: account.symbol,
-                  contractAddress: tokenAddress,
+                  contractAddress: tokenAddress ?? tokenData?.contract,
                   balance: account.formattedBalance,
                   amount: cryptoInputValue,
                   fee: feeInUnits?.toString(),
