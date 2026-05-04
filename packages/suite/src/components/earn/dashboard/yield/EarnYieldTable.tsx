@@ -67,11 +67,7 @@ export const EarnYieldTable = () => {
         () =>
             yieldAccountOpportunities.flatMap(opportunity => {
                 // Merkl rewards are claimable only for accounts that already hold a vault position.
-                if (
-                    !opportunity.hasVaultPosition ||
-                    !opportunity.account ||
-                    !isEarnYieldClaimSupported(opportunity.networkSymbol)
-                ) {
+                if (!opportunity.account || !isEarnYieldClaimSupported(opportunity.networkSymbol)) {
                     return [];
                 }
 
