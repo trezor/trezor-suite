@@ -1,10 +1,46 @@
 import type { BaseWorker } from '@trezor/blockchain-link/src/workers/baseWorker';
-import BlockbookWorker from '@trezor/blockchain-link/src/workers/blockbook';
-import BlockfrostWorker from '@trezor/blockchain-link/src/workers/blockfrost';
-import RippleWorker from '@trezor/blockchain-link/src/workers/ripple';
-import StellarWorker from '@trezor/blockchain-link/src/workers/stellar';
 
 type WorkerAsyncImporter = () => Promise<BaseWorker<unknown>>;
+
+const BlockbookWorker = () =>
+    new Worker(
+        new URL(
+            /* webpackChunkName: "workers/blockbook-worker" */
+            '@trezor/blockchain-link/src/workers/blockbook',
+            import.meta.url,
+        ),
+        { type: 'module' },
+    );
+
+const BlockfrostWorker = () =>
+    new Worker(
+        new URL(
+            /* webpackChunkName: "workers/blockfrost-worker" */
+            '@trezor/blockchain-link/src/workers/blockfrost',
+            import.meta.url,
+        ),
+        { type: 'module' },
+    );
+
+const RippleWorker = () =>
+    new Worker(
+        new URL(
+            /* webpackChunkName: "workers/ripple-worker" */
+            '@trezor/blockchain-link/src/workers/ripple',
+            import.meta.url,
+        ),
+        { type: 'module' },
+    );
+
+const StellarWorker = () =>
+    new Worker(
+        new URL(
+            /* webpackChunkName: "workers/stellar-worker" */
+            '@trezor/blockchain-link/src/workers/stellar',
+            import.meta.url,
+        ),
+        { type: 'module' },
+    );
 
 // Solana has some issues with worker-loader, so it's not used in the browser
 const SolanaWorker: WorkerAsyncImporter = () =>

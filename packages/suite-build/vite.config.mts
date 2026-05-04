@@ -376,28 +376,43 @@ const faviconPlugin = (): Plugin => {
     };
 };
 
-// Plugin to handle workers similar to webpack's worker-loader
-const workerPlugin = (): Plugin => ({
-    name: 'worker-loader',
-    transform(_code, id) {
-        if (/\/workers\/[^/]+\/index\.ts$/.test(id) || /pinger\/pingWorker.ts$/.test(id)) {
-            // Return a virtual module that creates a web worker
-            console.log('[VITE] Transforming worker:', id);
+// Plugin to resolve bare module specifiers (e.g. @trezor/blockchain-link/src/workers/blockbook)
+// inside new Worker(new URL(..., import.meta.url)) calls.
+// In dev mode, Vite doesn't bundle — the browser constructs the URL at runtime and has no way to
+// resolve bare package specifiers, so we must expand them to /@fs/ paths that the dev server
+// can serve directly. In production, rolldown resolves them through the alias config at build time.
+const resolveWorkerUrlsPlugin = (): Plugin => ({
+    name: 'resolve-worker-urls',
+    enforce: 'pre',
+    apply: 'serve',
+    transform(code) {
+        if (!code.includes('new Worker') || !code.includes('import.meta.url')) return null;
 
-            return {
-                code: `
-                    const worker = () => {
-                        console.log('[VITE] Creating worker from:', '${id}');
-                        return new Worker(new URL('${id}', import.meta.url), { type: 'module' });
-                    };
-                    export default worker;
-                `,
-                // Use an empty source map to preserve the original file's mapping
-                map: { mappings: '' },
-            };
-        }
+        let changed = false;
+        const transformed = code.replace(
+            /new URL\((['"])(@[^'"]+)\1,\s*import\.meta\.url\)/g,
+            (match, _quote, specifier) => {
+                for (const a of alias) {
+                    if (
+                        typeof a.find === 'string' &&
+                        typeof a.replacement === 'string' &&
+                        specifier.startsWith(a.find)
+                    ) {
+                        const rest = specifier.slice(a.find.length);
+                        const abs = a.replacement + rest;
+                        // Append index.ts if no file extension present
+                        const withExt = /\.[cm]?[jt]sx?$/.test(abs) ? abs : `${abs}/index.ts`;
+                        changed = true;
 
-        return null;
+                        return `new URL('/@fs${withExt}', import.meta.url)`;
+                    }
+                }
+
+                return match;
+            },
+        );
+
+        return changed ? { code: transformed, map: null } : null;
     },
 });
 
@@ -586,7 +601,7 @@ export default defineConfig({
         sessionsSharedWorkerPlugin(),
         faviconPlugin(),
         viteCommonjs(),
-        workerPlugin(),
+        resolveWorkerUrlsPlugin(),
         wasm(),
         react(),
         babel({
