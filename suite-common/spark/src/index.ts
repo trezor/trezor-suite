@@ -3,6 +3,7 @@ export * from './createSparkCompositionRoot';
 export * from './feature/createAddSparkAccount';
 export * from './feature/createEnsureSparkWallet';
 export * from './feature/createEnsureSparkOwnerSecret';
+export * from './feature/createInitializeRunningSparkWallet';
 export * from './feature/createSyncSparkWallet';
 export * from './feature/createSubmitSparkLightningSend';
 export * from './feature/sparkFeatureSelectors';

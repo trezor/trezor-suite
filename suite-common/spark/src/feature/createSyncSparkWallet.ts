@@ -84,13 +84,21 @@ export const createSyncSparkWallet =
     async params => {
         const runningSparkWallet = await deps.ensureSparkWallet(params);
 
-        if (runningSparkWallet === null) {
+        if (!runningSparkWallet.success) {
+            deps.dispatch(
+                sparkActions.setSparkWalletError({
+                    accountNumber: params.accountNumber,
+                    error: runningSparkWallet.error.message,
+                    walletDescriptor: params.walletDescriptor,
+                }),
+            );
+
             return false;
         }
 
         return deps.syncSparkWalletState({
             ...params,
-            runningSparkWallet,
+            runningSparkWallet: runningSparkWallet.payload,
             setLoading: params.setLoading,
         });
     };

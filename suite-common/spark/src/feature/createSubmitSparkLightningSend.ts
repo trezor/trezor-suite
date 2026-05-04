@@ -35,15 +35,23 @@ export const createSubmitSparkLightningSend =
             ...params,
         });
 
-        if (ensuredSparkWallet === null) {
+        if (!ensuredSparkWallet.success) {
+            deps.dispatch(
+                sparkActions.setSparkWalletError({
+                    accountNumber: params.accountNumber,
+                    error: ensuredSparkWallet.error.message,
+                    walletDescriptor: params.walletDescriptor,
+                }),
+            );
+
             return false;
         }
 
         const sendResult = await paySparkLightningInvoice({
             amountSats: params.amountSats,
             invoice: params.invoice,
-            wallet: ensuredSparkWallet.wallet,
-            walletKey: ensuredSparkWallet.walletKey,
+            wallet: ensuredSparkWallet.payload.wallet,
+            walletKey: ensuredSparkWallet.payload.walletKey,
         });
 
         if (!sendResult.success) {

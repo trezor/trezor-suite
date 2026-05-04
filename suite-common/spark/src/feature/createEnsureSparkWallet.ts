@@ -1,12 +1,13 @@
-import { SparkWalletEvent } from '@buildonspark/spark-sdk';
 import type { Dispatch } from '@reduxjs/toolkit';
 
 import type { WalletDescriptor } from '@suite-common/wallet-types';
+import { type Result, err, ok } from '@trezor/type-utils';
 
 import {
     type DeviceStaticSessionId,
     type EnsureSparkOwnerSecretDep,
 } from './createEnsureSparkOwnerSecret';
+import { type InitializeRunningSparkWalletDep } from './createInitializeRunningSparkWallet';
 import {
     type RunningSparkWallet,
     type RunningSparkWalletRepositoryDep,
@@ -16,8 +17,7 @@ import { type SyncSparkWalletStateDep } from './createSyncSparkWallet';
 import { sparkActions } from './sparkFeatureReducer';
 import { createSparkWalletKey } from '../accounts/sparkAccounts';
 import { getErrorMessage } from '../sdk/getErrorMessage';
-import { getSparkWalletMnemonic } from '../sdk/getSparkWalletMnemonic';
-import { initializeSparkWallet } from '../sdk/initializeSparkWallet';
+import { type SparkWalletClientError, getSparkWalletMnemonic } from '../sdk/getSparkWalletMnemonic';
 
 export type SparkWalletParams = {
     accountNumber: number;
@@ -27,9 +27,25 @@ export type SparkWalletParams = {
 
 export type EnsureSparkWalletParams = SparkWalletParams;
 
+export type EnsureSparkWalletError =
+    | {
+          type: 'EnsureSparkOwnerSecretFailed';
+          message: string;
+      }
+    | {
+          type: 'GetSparkWalletMnemonicFailed';
+          message: string;
+      }
+    | {
+          type: 'InitializeRunningSparkWalletFailed';
+          message: string;
+      };
+
+export type EnsureSparkWalletResult = Result<RunningSparkWallet, EnsureSparkWalletError>;
+
 export type EnsureSparkWallet = (
     params: EnsureSparkWalletParams,
-) => Promise<RunningSparkWallet | null>;
+) => Promise<EnsureSparkWalletResult>;
 
 export type EnsureSparkWalletDep = {
     ensureSparkWallet: EnsureSparkWallet;
@@ -38,17 +54,52 @@ export type EnsureSparkWalletDep = {
 export type EnsureSparkWalletDeps = {
     dispatch: Dispatch;
 } & EnsureSparkOwnerSecretDep &
+    InitializeRunningSparkWalletDep &
     RunningSparkWalletRepositoryDep &
     SparkWalletSubscriptionStorageDep &
     SyncSparkWalletStateDep;
 
 export const createEnsureSparkWallet = (deps: EnsureSparkWalletDeps): EnsureSparkWallet => {
+    const mapEnsureSparkWalletError = (
+        error: SparkWalletClientError | { message: string },
+    ): EnsureSparkWalletError => ({
+        message: error.message,
+        type: 'GetSparkWalletMnemonicFailed',
+    });
+
+    const handleAsyncRunningSparkWalletError = (
+        error: unknown,
+        params: EnsureSparkWalletParams,
+        walletKey: string,
+    ): EnsureSparkWalletResult => {
+        const message = getErrorMessage(error);
+
+        deps.runningSparkWalletRepository.delete(walletKey);
+        deps.sparkWalletSubscriptionStorage.dispose(walletKey);
+        deps.dispatch(
+            sparkActions.setSparkWalletError({
+                accountNumber: params.accountNumber,
+                error: message,
+                walletDescriptor: params.walletDescriptor,
+            }),
+        );
+
+        return err({
+            message,
+            type: 'InitializeRunningSparkWalletFailed',
+        });
+    };
+
     const ensureSparkWallet: EnsureSparkWallet = async params => {
         const walletKey = createSparkWalletKey(params);
         const existingRunningSparkWallet = deps.runningSparkWalletRepository.get(walletKey);
 
         if (existingRunningSparkWallet !== null) {
-            return existingRunningSparkWallet;
+            try {
+                return ok(await existingRunningSparkWallet);
+            } catch (error) {
+                return handleAsyncRunningSparkWalletError(error, params, walletKey);
+            }
         }
 
         const ownerSecretResult = await deps.ensureSparkOwnerSecret({
@@ -56,80 +107,30 @@ export const createEnsureSparkWallet = (deps: EnsureSparkWalletDeps): EnsureSpar
         });
 
         if (!ownerSecretResult.success) {
-            deps.dispatch(
-                sparkActions.setSparkWalletError({
-                    accountNumber: params.accountNumber,
-                    error: ownerSecretResult.error.message,
-                    walletDescriptor: params.walletDescriptor,
-                }),
-            );
-
-            return null;
+            return err({
+                message: ownerSecretResult.error.message,
+                type: 'EnsureSparkOwnerSecretFailed',
+            });
         }
 
         const mnemonicResult = getSparkWalletMnemonic(ownerSecretResult.payload);
 
         if (!mnemonicResult.success) {
-            deps.dispatch(
-                sparkActions.setSparkWalletError({
-                    accountNumber: params.accountNumber,
-                    error: mnemonicResult.error.message,
-                    walletDescriptor: params.walletDescriptor,
-                }),
-            );
-
-            return null;
+            return err(mapEnsureSparkWalletError(mnemonicResult.error));
         }
 
-        const runningSparkWallet = initializeSparkWallet({
-            accountNumber: params.accountNumber,
+        const runningSparkWallet = deps.initializeRunningSparkWallet({
+            ...params,
             mnemonic: mnemonicResult.payload,
-        }).then(wallet => {
-            const nextRunningSparkWallet: RunningSparkWallet = {
-                mnemonic: mnemonicResult.payload,
-                wallet,
-                walletKey,
-            };
-
-            const syncWallet = () => {
-                void deps.syncSparkWalletState({
-                    ...params,
-                    runningSparkWallet: nextRunningSparkWallet,
-                });
-            };
-
-            wallet.on(SparkWalletEvent.TransferClaimed, syncWallet);
-            wallet.on(SparkWalletEvent.DepositConfirmed, syncWallet);
-            wallet.on(SparkWalletEvent.StreamConnected, syncWallet);
-
-            deps.sparkWalletSubscriptionStorage.add({
-                walletKey,
-                unsubscribe: () => {
-                    wallet.off(SparkWalletEvent.TransferClaimed, syncWallet);
-                    wallet.off(SparkWalletEvent.DepositConfirmed, syncWallet);
-                    wallet.off(SparkWalletEvent.StreamConnected, syncWallet);
-                },
-            });
-
-            return nextRunningSparkWallet;
+            walletKey,
         });
 
         deps.runningSparkWalletRepository.set(walletKey, runningSparkWallet);
 
         try {
-            return await runningSparkWallet;
+            return ok(await runningSparkWallet);
         } catch (error) {
-            deps.runningSparkWalletRepository.delete(walletKey);
-            deps.sparkWalletSubscriptionStorage.dispose(walletKey);
-            deps.dispatch(
-                sparkActions.setSparkWalletError({
-                    accountNumber: params.accountNumber,
-                    error: getErrorMessage(error),
-                    walletDescriptor: params.walletDescriptor,
-                }),
-            );
-
-            return null;
+            return handleAsyncRunningSparkWalletError(error, params, walletKey);
         }
     };
 

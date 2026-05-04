@@ -16,6 +16,7 @@ import {
     type EnsureSparkWalletDep,
     createEnsureSparkWallet,
 } from './feature/createEnsureSparkWallet';
+import { createInitializeRunningSparkWallet } from './feature/createInitializeRunningSparkWallet';
 import { createRunningSparkWalletRepository } from './feature/createRunningSparkWalletRepository';
 import { createSparkWalletSubscriptionStorage } from './feature/createSparkWalletSubscriptionStorage';
 import { createSubmitSparkLightningSend } from './feature/createSubmitSparkLightningSend';
@@ -53,9 +54,17 @@ export const createSparkCompositionRoot = (deps: SparkCompositionRootDeps): Spar
     const sparkWalletSubscriptionStorage = createSparkWalletSubscriptionStorage();
     const syncSparkWalletState = createSyncSparkWalletState({ dispatch: deps.dispatch });
 
+    const initializeRunningSparkWallet = createInitializeRunningSparkWallet({
+        dispatch: deps.dispatch,
+        runningSparkWalletRepository,
+        sparkWalletSubscriptionStorage,
+        syncSparkWalletState,
+    });
+
     const ensureSparkWallet = createEnsureSparkWallet({
         dispatch: deps.dispatch,
         ensureSparkOwnerSecret,
+        initializeRunningSparkWallet,
         runningSparkWalletRepository,
         sparkWalletSubscriptionStorage,
         syncSparkWalletState,
