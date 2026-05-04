@@ -1,24 +1,14 @@
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 
 import { useNavigation, usePreventRemove } from '@react-navigation/native';
 
 import { useFormatters } from '@suite-common/formatters';
-import { getExplorerUrl } from '@suite-common/wallet-config';
-import {
-    type ExplorerState,
-    type TransactionsRootState,
-    selectExplorer,
-    selectIsTransactionPending,
-    selectTransactionByAccountKeyAndTxid,
-} from '@suite-common/wallet-core';
 import { redactNumericalSubstring } from '@suite-common/wallet-utils';
 import { events } from '@suite-native/analytics';
 import { Button, HStack, Text, VStack, useDiscreetMode } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { useInAppRating } from '@suite-native/in-app-rating';
 import { Translation } from '@suite-native/intl';
-import { useOpenLink } from '@suite-native/link';
 import {
     Screen,
     ScreenHeader,
@@ -27,7 +17,8 @@ import {
     type TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
-import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
+import { type TypedTokenTransfer } from '@suite-native/tokens';
+import { useTransactionDetails } from '@suite-native/transaction-management';
 import {
     InstantStakeBanner,
     TransactionName,
@@ -46,18 +37,12 @@ export const TransactionDetailScreen = ({
     const { CryptoAmountFormatter: cryptoAmountFormatter } = useFormatters();
     const { isDiscreetMode } = useDiscreetMode();
     const { txid, accountKey, tokenContract, closeActionType = 'back', source } = route.params;
-    const openLink = useOpenLink();
-    const transaction = useSelector((state: TransactionsRootState) =>
-        selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
-    ) as WalletAccountTransaction;
-    const blockchainExplorer = useSelector((state: ExplorerState) =>
-        selectExplorer(state, transaction?.symbol),
-    );
-    const isPending = useSelector((state: TransactionsRootState) =>
-        selectIsTransactionPending(state, accountKey, txid),
-    );
 
-    const tokenTransfer = transaction?.tokens.find(token => token.contract === tokenContract);
+    const { transaction, isPending, tokenTransfer, openInBlockchain } = useTransactionDetails({
+        accountKey,
+        txid,
+        tokenContract,
+    });
 
     usePreventRemove(source === 'send', ({ data }) => {
         navigation.dispatch(data.action);
@@ -93,12 +78,10 @@ export const TransactionDetailScreen = ({
         : formattedUnstakeAmount;
 
     const handleOpenBlockchain = () => {
-        if (!blockchainExplorer) return;
         analytics.report({
             type: events.transactionDetailExploreInBlockchainEvent.name,
         });
-        const explorerUrl = getExplorerUrl(blockchainExplorer, 'tx');
-        openLink(`${explorerUrl}${transaction.txid}`);
+        openInBlockchain();
     };
 
     return (

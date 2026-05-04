@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
@@ -13,6 +14,7 @@ export type FeeSummaryCardProps = {
     symbol: NetworkSymbol;
     networkType: NetworkType;
     areFeesLoading: boolean;
+    label?: ReactNode;
     onPress?: () => void;
     testID?: string;
     withCaret?: boolean;
@@ -23,6 +25,7 @@ export const FeeSummaryCard = ({
     symbol,
     networkType,
     areFeesLoading,
+    label,
     onPress,
     testID,
     withCaret,
@@ -37,7 +40,7 @@ export const FeeSummaryCard = ({
                 <HStack justifyContent="space-between" alignItems="center">
                     <VStack spacing="sp4">
                         <Text variant="body-sm">
-                            <FeeLabelTranslation networkType={networkType} />
+                            {label ?? <FeeLabelTranslation networkType={networkType} />}
                         </Text>
                     </VStack>
                     <HStack alignItems="center" spacing="sp8">

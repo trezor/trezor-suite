@@ -33,6 +33,7 @@
         { "path": "../navigation" },
         { "path": "../services" },
         { "path": "../tokens" },
+        { "path": "../transaction-management" },
         { "path": "../transactions" },
         { "path": "../../packages/connect" },
         {
