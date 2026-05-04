@@ -627,6 +627,7 @@ export const getAccountDescriptor = async (api: TrezorConnect) => {
         payload.descriptor.toLowerCase();
         payload.path.toLowerCase();
         payload.legacyXpub?.toLowerCase();
+        payload.outputDescriptorBip380?.toLowerCase();
     }
 
     const bundle = await api.getAccountDescriptor({
