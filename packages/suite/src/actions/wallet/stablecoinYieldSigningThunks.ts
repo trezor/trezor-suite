@@ -31,6 +31,7 @@ import {
     setYieldGenericError,
     stablecoinYieldActions,
     submitYieldOpportunity,
+    synchronizeSentTransactionThunk,
 } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import {
@@ -314,6 +315,15 @@ const sendYieldTransaction = async ({
         if (!pushResponse.success) {
             throw new Error(pushResponse.error.message);
         }
+
+        dispatch(
+            synchronizeSentTransactionThunk({
+                selectedAccount: account,
+                precomposedTransaction,
+                precomposedForm: formState,
+                txid: pushResponse.payload.txid,
+            }),
+        );
 
         return pushResponse.payload;
     } finally {
@@ -773,6 +783,15 @@ export const claimMerkleRewardsThunk = createThunk(
                 if (!pushResponse.success) {
                     throw new Error(pushResponse.error.message);
                 }
+
+                dispatch(
+                    synchronizeSentTransactionThunk({
+                        selectedAccount: account,
+                        precomposedTransaction,
+                        precomposedForm: formState,
+                        txid: pushResponse.payload.txid,
+                    }),
+                );
 
                 dispatch(
                     notificationsActions.addToast({
