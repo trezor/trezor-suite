@@ -18,6 +18,7 @@ import type { SparkWalletSubscriptionStorageDep } from './createSparkWalletSubsc
 import type { SyncSparkWalletStateDep } from './createSyncSparkWallet';
 import { sparkActions } from './sparkFeatureReducer';
 import { initializeSparkWallet } from '../sdk/initializeSparkWallet';
+import { withSparkTimeout } from '../sdk/withSparkTimeout';
 
 export type InitializeRunningSparkWalletParams = SparkWalletParams & {
     trezorSecret: SuiteSyncOwnerSecretHex;
@@ -51,15 +52,21 @@ type SparkWalletEventHandlerMap = {
 export const createInitializeRunningSparkWallet =
     (deps: InitializeRunningSparkWalletDeps): InitializeRunningSparkWallet =>
     async params => {
-        const signer = await deps.createFakeSparkSigner({
-            accountNumber: params.accountNumber,
-            trezorSecret: params.trezorSecret,
-        });
+        const signer = await withSparkTimeout(
+            deps.createFakeSparkSigner({
+                accountNumber: params.accountNumber,
+                trezorSecret: params.trezorSecret,
+            }),
+            'createFakeSparkSigner',
+        );
 
-        const wallet = await initializeSparkWallet({
-            accountNumber: params.accountNumber,
-            signer,
-        });
+        const wallet = await withSparkTimeout(
+            initializeSparkWallet({
+                accountNumber: params.accountNumber,
+                signer,
+            }),
+            'initializeSparkWallet',
+        );
 
         const runningSparkWallet: RunningSparkWallet = {
             wallet,

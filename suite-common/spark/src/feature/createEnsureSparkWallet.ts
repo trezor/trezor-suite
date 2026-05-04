@@ -60,6 +60,8 @@ export const createEnsureSparkWallet = (deps: EnsureSparkWalletDeps): EnsureSpar
         params: EnsureSparkWalletParams,
         walletKey: string,
     ): EnsureSparkWalletResult => {
+        console.error('createEnsureSparkWallet failed', error);
+
         const message = getErrorMessage(error);
 
         deps.runningSparkWalletRepository.delete(walletKey);

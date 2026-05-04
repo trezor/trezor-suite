@@ -67,6 +67,12 @@ export type UserContextPayload =
           decision: Deferred<boolean>;
       }
     | {
+          type: 'spark-signer-confirmation';
+          decision: Deferred<boolean>;
+          methodName: string;
+          paramsJson: string;
+      }
+    | {
           type: 'review-transaction-rbf-previous-transaction-mined-error';
           decision?: Deferred<boolean>;
       }

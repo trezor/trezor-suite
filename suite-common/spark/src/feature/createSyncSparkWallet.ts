@@ -6,6 +6,7 @@ import { sparkActions } from './sparkFeatureReducer';
 import { getErrorMessage } from '../sdk/getErrorMessage';
 import { getSparkWalletBalance } from '../sdk/getSparkWalletBalance';
 import { getSparkWalletTransfers } from '../sdk/getSparkWalletTransfers';
+import { withSparkTimeout } from '../sdk/withSparkTimeout';
 
 export type SyncSparkWalletStateParams = SparkWalletParams & {
     runningSparkWallet: RunningSparkWallet;
@@ -35,10 +36,14 @@ export const createSyncSparkWalletState =
         }
 
         try {
-            const [balanceSats, transfers] = await Promise.all([
+            const balanceSats = await withSparkTimeout(
                 getSparkWalletBalance(params.runningSparkWallet.wallet),
+                'getSparkWalletBalance',
+            );
+            const transfers = await withSparkTimeout(
                 getSparkWalletTransfers(params.runningSparkWallet.wallet),
-            ]);
+                'getSparkWalletTransfers',
+            );
 
             deps.dispatch(
                 sparkActions.setSparkWalletLoaded({
@@ -51,6 +56,8 @@ export const createSyncSparkWalletState =
 
             return true;
         } catch (error) {
+            console.error('createSyncSparkWalletState failed', error);
+
             deps.dispatch(
                 sparkActions.setSparkWalletError({
                     accountNumber: params.accountNumber,

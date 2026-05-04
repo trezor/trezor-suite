@@ -84,6 +84,7 @@ type DeferredModals = Extract<
             | 'disable-tor'
             | 'request-enable-tor'
             | 'disable-tor-stop-coinjoin'
+            | 'spark-signer-confirmation'
             | 'tor-loading'
             | 'review-transaction'
             | 'import-transaction';

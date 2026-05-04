@@ -48,6 +48,7 @@ import { PinMismatchModal } from './PinMismatchModal';
 import { QrScannerModal } from './QrScannerModal/QrScannerModal';
 import { RequestEnableTorModal } from './RequestEnableTorModal';
 import { SafetyChecksModal } from './SafetyChecksModal';
+import { SparkSignerConfirmationModal } from './SparkSignerConfirmationModal';
 import { StakeChangeDelegateModal } from './StakeChangeDelegateModal/StakeChangeDelegateModal';
 import { TorLoadingModal } from './TorLoadingModal';
 import { TxDetailModal } from './TxDetailModal/TxDetailModal';
@@ -103,6 +104,8 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
             return <TxDetailModal {...payload} onCancel={onCancel} />;
         case 'review-transaction':
             return <TransactionReviewModal {...payload} />;
+        case 'spark-signer-confirmation':
+            return <SparkSignerConfirmationModal {...payload} onCancel={onCancel} />;
         case 'review-transaction-rbf-previous-transaction-mined-error':
             return <TransactionReviewModal {...payload} />;
         case 'import-transaction':

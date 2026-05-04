@@ -17,6 +17,7 @@ export const initializeSparkWallet = async ({
         signer,
         options: {
             network: SPARK_SDK_NETWORK,
+            signerWithPreExistingKeys: true,
         },
     });
 

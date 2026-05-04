@@ -14,7 +14,7 @@ import {
     type MetadataMigrationDep,
     createMetadataMigrationCompositionRoot,
 } from '@suite/metadata-migration';
-import { closeModal, openModal } from '@suite/modal';
+import { closeModal, openDeferredModal, openModal } from '@suite/modal';
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
 import {
@@ -148,6 +148,14 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     });
 
     const spark = createSparkCompositionRoot({
+        confirmSparkSignerOperation: params =>
+            deps.dispatch(
+                openDeferredModal({
+                    type: 'spark-signer-confirmation',
+                    methodName: params.methodName,
+                    paramsJson: params.paramsJson,
+                }) as never,
+            ) as Promise<boolean>,
         dispatch: deps.dispatch,
         ensureWalletSuiteSyncOn: suiteSync.ensureWalletSuiteSyncOn,
         getState: deps.getState,
