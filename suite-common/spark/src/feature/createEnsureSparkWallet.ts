@@ -17,7 +17,6 @@ import { type SyncSparkWalletStateDep } from './createSyncSparkWallet';
 import { sparkActions } from './sparkFeatureReducer';
 import { createSparkWalletKey } from '../accounts/sparkAccounts';
 import { getErrorMessage } from '../sdk/getErrorMessage';
-import { type SparkWalletClientError, getSparkWalletMnemonic } from '../sdk/getSparkWalletMnemonic';
 
 export type SparkWalletParams = {
     accountNumber: number;
@@ -30,10 +29,6 @@ export type EnsureSparkWalletParams = SparkWalletParams;
 export type EnsureSparkWalletError =
     | {
           type: 'EnsureSparkOwnerSecretFailed';
-          message: string;
-      }
-    | {
-          type: 'GetSparkWalletMnemonicFailed';
           message: string;
       }
     | {
@@ -60,13 +55,6 @@ export type EnsureSparkWalletDeps = {
     SyncSparkWalletStateDep;
 
 export const createEnsureSparkWallet = (deps: EnsureSparkWalletDeps): EnsureSparkWallet => {
-    const mapEnsureSparkWalletError = (
-        error: SparkWalletClientError | { message: string },
-    ): EnsureSparkWalletError => ({
-        message: error.message,
-        type: 'GetSparkWalletMnemonicFailed',
-    });
-
     const handleAsyncRunningSparkWalletError = (
         error: unknown,
         params: EnsureSparkWalletParams,
@@ -113,15 +101,9 @@ export const createEnsureSparkWallet = (deps: EnsureSparkWalletDeps): EnsureSpar
             });
         }
 
-        const mnemonicResult = getSparkWalletMnemonic(ownerSecretResult.payload);
-
-        if (!mnemonicResult.success) {
-            return err(mapEnsureSparkWalletError(mnemonicResult.error));
-        }
-
         const runningSparkWallet = deps.initializeRunningSparkWallet({
             ...params,
-            mnemonic: mnemonicResult.payload,
+            trezorSecret: ownerSecretResult.payload,
             walletKey,
         });
 

@@ -1,4 +1,3 @@
-import { type Mnemonic } from '@evolu/common';
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import type { WalletDescriptor } from '@suite-common/wallet-types';
@@ -25,7 +24,6 @@ export type SparkWalletState = {
     error: string | null;
     lastLoadedAt: number | null;
     lightningInvoice: string;
-    mnemonic: Mnemonic | null;
     status: SparkWalletStatus;
     transfers: SparkTransfer[];
     walletDescriptor: WalletDescriptor;
@@ -52,7 +50,6 @@ const createSparkWalletState = ({
     error: null,
     lastLoadedAt: null,
     lightningInvoice: '',
-    mnemonic: null,
     status: 'idle',
     transfers: [],
     walletDescriptor,
@@ -165,7 +162,6 @@ const sparkFeatureSlice = createSlice({
                 balanceSats: string | null;
                 bitcoinDepositAddress?: string;
                 lightningInvoice?: string;
-                mnemonic: SparkWalletState['mnemonic'];
                 transfers?: SparkTransfer[];
                 walletDescriptor: WalletDescriptor;
             }>,
@@ -181,7 +177,6 @@ const sparkFeatureSlice = createSlice({
             walletState.lastLoadedAt = Date.now();
             walletState.lightningInvoice =
                 action.payload.lightningInvoice ?? walletState.lightningInvoice;
-            walletState.mnemonic = action.payload.mnemonic;
             walletState.status = 'loaded';
             walletState.transfers = action.payload.transfers ?? walletState.transfers;
 

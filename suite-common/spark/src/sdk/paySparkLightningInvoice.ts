@@ -3,7 +3,20 @@ import { type SparkWallet } from '@buildonspark/spark-sdk';
 import { type Result, err, ok } from '@trezor/type-utils';
 
 import { getErrorMessage } from './getErrorMessage';
-import { type SparkWalletClientError } from './getSparkWalletMnemonic';
+
+export type SparkWalletClientError =
+    | {
+          type: 'SparkSignerInitializationFailed';
+          message: string;
+      }
+    | {
+          type: 'SparkWalletInitializationFailed';
+          message: string;
+      }
+    | {
+          type: 'SparkWalletOperationFailed';
+          message: string;
+      };
 
 const DEFAULT_LIGHTNING_SEND_MAX_FEE_SATS = 1_000;
 

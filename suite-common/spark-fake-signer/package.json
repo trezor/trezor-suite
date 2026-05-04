@@ -12,7 +12,10 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@buildonspark/spark-sdk": "^0.7.13"
+        "@buildonspark/spark-sdk": "^0.7.13",
+        "@evolu/common": "8.0.0-next.3",
+        "@suite-common/suite-sync-storage": "workspace:*",
+        "@trezor/type-utils": "workspace:*"
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*"

@@ -46,7 +46,6 @@ describe('sparkFeatureReducer', () => {
             error: null,
             lastLoadedAt: null,
             lightningInvoice: '',
-            mnemonic: null,
             status: 'idle',
             transfers: [],
             walletDescriptor,
@@ -95,7 +94,6 @@ describe('sparkFeatureReducer', () => {
             sparkActions.setSparkWalletLoaded({
                 accountNumber: 0,
                 balanceSats: '123',
-                mnemonic: 'test mnemonic' as never,
                 walletDescriptor,
             }),
         );
@@ -104,7 +102,6 @@ describe('sparkFeatureReducer', () => {
             expect.objectContaining({
                 balanceSats: '123',
                 error: null,
-                mnemonic: 'test mnemonic',
                 status: 'loaded',
             }),
         );

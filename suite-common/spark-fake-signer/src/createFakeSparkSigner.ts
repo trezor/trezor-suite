@@ -1,8 +1,12 @@
 import { DefaultSparkSigner, type SparkSigner } from '@buildonspark/spark-sdk';
 
+import { type SuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
+
+import { deriveSparkMnemonicFromSuiteSyncSecret } from './sparkMnemonic';
+
 export type CreateFakeSparkSignerParams = {
     accountNumber: number;
-    trezorSecret: Uint8Array | string;
+    trezorSecret: SuiteSyncOwnerSecretHex;
 };
 
 export type CreateFakeSparkSigner = (params: CreateFakeSparkSignerParams) => Promise<SparkSigner>;
@@ -15,7 +19,13 @@ export class FakeSparkSigner implements SparkSigner {
     private readonly sparkSigner: SparkSigner = new DefaultSparkSigner();
 
     init = async ({ accountNumber, trezorSecret }: CreateFakeSparkSignerParams): Promise<void> => {
-        await this.sparkSigner.createSparkWalletFromSeed(trezorSecret, accountNumber);
+        const sparkMnemonic = deriveSparkMnemonicFromSuiteSyncSecret(trezorSecret);
+
+        if (!sparkMnemonic.success) {
+            throw new Error(sparkMnemonic.error.type);
+        }
+
+        await this.sparkSigner.createSparkWalletFromSeed(sparkMnemonic.payload, accountNumber);
     };
 
     getIdentityPublicKey: SparkSigner['getIdentityPublicKey'] = () =>

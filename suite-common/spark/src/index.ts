@@ -14,4 +14,3 @@ export * from './ui/SparkAccountsMenu';
 export * from './ui/SparkHistoryView';
 export * from './ui/SparkReceiveView';
 export * from './ui/SparkSendView';
-export * from './wallet/sparkMnemonic';

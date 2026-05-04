@@ -6,6 +6,7 @@ import {
 import type { Dispatch } from '@reduxjs/toolkit';
 
 import type { CreateFakeSparkSignerDep } from '@suite-common/spark-fake-signer';
+import { type SuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
 
 import type { SparkWalletParams } from './createEnsureSparkWallet';
 import type { HandleSparkWalletIncomingTransactionDep } from './createHandleSparkWalletIncomingTransaction';
@@ -19,7 +20,7 @@ import { sparkActions } from './sparkFeatureReducer';
 import { initializeSparkWallet } from '../sdk/initializeSparkWallet';
 
 export type InitializeRunningSparkWalletParams = SparkWalletParams & {
-    mnemonic: string;
+    trezorSecret: SuiteSyncOwnerSecretHex;
     walletKey: string;
 };
 
@@ -52,7 +53,7 @@ export const createInitializeRunningSparkWallet =
     async params => {
         const signer = await deps.createFakeSparkSigner({
             accountNumber: params.accountNumber,
-            trezorSecret: params.mnemonic,
+            trezorSecret: params.trezorSecret,
         });
 
         const wallet = await initializeSparkWallet({
@@ -61,14 +62,15 @@ export const createInitializeRunningSparkWallet =
         });
 
         const runningSparkWallet: RunningSparkWallet = {
-            mnemonic: params.mnemonic,
             wallet,
             walletKey: params.walletKey,
         };
 
         const eventContext = {
-            ...params,
+            accountNumber: params.accountNumber,
+            deviceStaticSessionId: params.deviceStaticSessionId,
             runningSparkWallet,
+            walletDescriptor: params.walletDescriptor,
         };
 
         const eventHandlers: SparkWalletEventHandlerMap = {

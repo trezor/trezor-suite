@@ -42,9 +42,9 @@ const suiteSyncOwnerSecretHexToOwnerSecret = (
     return ok(ownerSecret.value);
 };
 
-export const deriveSparkEntropyFromSuiteSyncSecret = (
+export const deriveSparkMnemonicFromSuiteSyncSecret = (
     ownerSecretHex: SuiteSyncOwnerSecretHex,
-): Result<OwnerSecret, SparkMnemonicDerivationError> => {
+): Result<Mnemonic, SparkMnemonicDerivationError> => {
     const ownerSecret = suiteSyncOwnerSecretHexToOwnerSecret(ownerSecretHex);
 
     if (!ownerSecret.success) {
@@ -59,17 +59,5 @@ export const deriveSparkEntropyFromSuiteSyncSecret = (
         return err({ type: 'InvalidSparkMnemonicEntropy' });
     }
 
-    return ok(sparkEntropy.value);
-};
-
-export const deriveSparkMnemonicFromSuiteSyncSecret = (
-    ownerSecretHex: SuiteSyncOwnerSecretHex,
-): Result<Mnemonic, SparkMnemonicDerivationError> => {
-    const sparkEntropy = deriveSparkEntropyFromSuiteSyncSecret(ownerSecretHex);
-
-    if (!sparkEntropy.success) {
-        return sparkEntropy;
-    }
-
-    return ok(ownerSecretToMnemonic(sparkEntropy.payload));
+    return ok(ownerSecretToMnemonic(sparkEntropy.value));
 };

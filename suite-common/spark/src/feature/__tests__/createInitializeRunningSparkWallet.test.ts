@@ -6,6 +6,7 @@ import {
 import { configureStore } from '@reduxjs/toolkit';
 
 import { createFakeSparkSigner } from '@suite-common/spark-fake-signer';
+import { asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
 import { createNotificationsReducer } from '@suite-common/toast-notifications';
 import { asWalletDescriptor } from '@suite-common/wallet-types';
 
@@ -22,6 +23,9 @@ jest.mock('../../sdk/initializeSparkWallet', () => ({
 
 const walletDescriptor = asWalletDescriptor('wallet-1');
 const deviceStaticSessionId = 'device@static-session:1';
+const trezorSecret = asSuiteSyncOwnerSecretHex(
+    '4a8b2c1d5e6f708192a3b4c5d6e7f80911223344556677889900aabbccddeeff',
+);
 
 type RegisteredSparkWalletEvents = Partial<{
     [TEvent in SparkWalletEventType]: SparkWalletEvents[TEvent];
@@ -115,14 +119,14 @@ describe('createInitializeRunningSparkWallet', () => {
         await initializeRunningSparkWallet({
             accountNumber: 1,
             deviceStaticSessionId,
-            mnemonic: 'mnemonic',
+            trezorSecret,
             walletDescriptor,
             walletKey: 'wallet-1:1',
         });
 
         expect(fakeSparkSignerFactory).toHaveBeenCalledWith({
             accountNumber: 1,
-            trezorSecret: 'mnemonic',
+            trezorSecret,
         });
         expect(initializeSparkWalletMock).toHaveBeenCalledWith({
             accountNumber: 1,
@@ -134,14 +138,11 @@ describe('createInitializeRunningSparkWallet', () => {
         expect(handleSparkWalletIncomingTransaction).toHaveBeenCalledWith({
             accountNumber: 1,
             deviceStaticSessionId,
-            mnemonic: 'mnemonic',
             runningSparkWallet: {
-                mnemonic: 'mnemonic',
                 wallet,
                 walletKey: 'wallet-1:1',
             },
             walletDescriptor,
-            walletKey: 'wallet-1:1',
         });
         expect(syncSparkWalletState).not.toHaveBeenCalled();
     });
@@ -174,7 +175,7 @@ describe('createInitializeRunningSparkWallet', () => {
         await initializeRunningSparkWallet({
             accountNumber: 1,
             deviceStaticSessionId,
-            mnemonic: 'mnemonic',
+            trezorSecret,
             walletDescriptor,
             walletKey: 'wallet-1:1',
         });
@@ -184,14 +185,11 @@ describe('createInitializeRunningSparkWallet', () => {
         expect(handleSparkWalletIncomingTransaction).toHaveBeenCalledWith({
             accountNumber: 1,
             deviceStaticSessionId,
-            mnemonic: 'mnemonic',
             runningSparkWallet: {
-                mnemonic: 'mnemonic',
                 wallet,
                 walletKey: 'wallet-1:1',
             },
             walletDescriptor,
-            walletKey: 'wallet-1:1',
         });
     });
 
@@ -222,7 +220,7 @@ describe('createInitializeRunningSparkWallet', () => {
         await initializeRunningSparkWallet({
             accountNumber: 1,
             deviceStaticSessionId,
-            mnemonic: 'mnemonic',
+            trezorSecret,
             walletDescriptor,
             walletKey: 'wallet-1:1',
         });
@@ -260,7 +258,7 @@ describe('createInitializeRunningSparkWallet', () => {
         const runningSparkWallet = await initializeRunningSparkWallet({
             accountNumber: 1,
             deviceStaticSessionId,
-            mnemonic: 'mnemonic',
+            trezorSecret,
             walletDescriptor,
             walletKey: 'wallet-1:1',
         });
@@ -270,10 +268,8 @@ describe('createInitializeRunningSparkWallet', () => {
         expect(syncSparkWalletState).toHaveBeenCalledWith({
             accountNumber: 1,
             deviceStaticSessionId,
-            mnemonic: 'mnemonic',
             runningSparkWallet,
             walletDescriptor,
-            walletKey: 'wallet-1:1',
         });
     });
 });

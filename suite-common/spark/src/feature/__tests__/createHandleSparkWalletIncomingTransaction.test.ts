@@ -34,7 +34,6 @@ describe('createHandleSparkWalletIncomingTransaction', () => {
             accountNumber: 1,
             deviceStaticSessionId,
             runningSparkWallet: {
-                mnemonic: 'mnemonic',
                 wallet: {} as never,
                 walletKey: 'wallet-1:1',
             },
@@ -69,7 +68,6 @@ describe('createHandleSparkWalletIncomingTransaction', () => {
             accountNumber: 1,
             deviceStaticSessionId,
             runningSparkWallet: {
-                mnemonic: 'mnemonic',
                 wallet: {} as never,
                 walletKey: 'wallet-1:1',
             },

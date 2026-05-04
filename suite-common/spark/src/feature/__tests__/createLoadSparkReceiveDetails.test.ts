@@ -26,7 +26,6 @@ describe('createLoadSparkReceiveDetails', () => {
         const ensureSparkWallet: EnsureSparkWallet = jest.fn().mockResolvedValue({
             success: true,
             payload: {
-                mnemonic: 'mnemonic',
                 wallet: { id: 'wallet' } as never,
                 walletKey: 'wallet-1:0',
             },

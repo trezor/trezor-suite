@@ -2,6 +2,8 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../suite-sync-storage" },
+        { "path": "../../packages/type-utils" },
         { "path": "../../packages/eslint" }
     ]
 }

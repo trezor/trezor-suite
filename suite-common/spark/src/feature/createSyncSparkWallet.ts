@@ -44,7 +44,6 @@ export const createSyncSparkWalletState =
                 sparkActions.setSparkWalletLoaded({
                     accountNumber: params.accountNumber,
                     balanceSats,
-                    mnemonic: params.runningSparkWallet.mnemonic as never,
                     transfers,
                     walletDescriptor: params.walletDescriptor,
                 }),

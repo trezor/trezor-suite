@@ -1,3 +1,5 @@
+import { asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
+
 const mockCreateSparkWalletFromSeed = jest.fn();
 const mockGetIdentityPublicKey = jest.fn();
 
@@ -31,6 +33,10 @@ jest.mock('@buildonspark/spark-sdk', () => ({
 import { createFakeSparkSigner } from '../createFakeSparkSigner';
 
 describe('createFakeSparkSigner', () => {
+    const trezorSecret = asSuiteSyncOwnerSecretHex(
+        '4a8b2c1d5e6f708192a3b4c5d6e7f80911223344556677889900aabbccddeeff',
+    );
+
     beforeEach(() => {
         jest.clearAllMocks();
     });
@@ -38,17 +44,17 @@ describe('createFakeSparkSigner', () => {
     it('initializes the fake signer with the provided Trezor secret', async () => {
         const fakeSparkSigner = await createFakeSparkSigner()({
             accountNumber: 7,
-            trezorSecret: 'seed words',
+            trezorSecret,
         });
 
-        expect(mockCreateSparkWalletFromSeed).toHaveBeenCalledWith('seed words', 7);
+        expect(mockCreateSparkWalletFromSeed).toHaveBeenCalledWith(expect.any(String), 7);
         expect(fakeSparkSigner).toBeDefined();
     });
 
     it('delegates signer methods to the underlying sdk signer', async () => {
         const fakeSparkSigner = await createFakeSparkSigner()({
             accountNumber: 1,
-            trezorSecret: 'seed words',
+            trezorSecret,
         });
 
         await fakeSparkSigner.getIdentityPublicKey();

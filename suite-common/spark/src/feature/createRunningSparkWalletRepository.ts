@@ -1,7 +1,6 @@
 import { type SparkWallet } from '@buildonspark/spark-sdk';
 
 export type RunningSparkWallet = {
-    mnemonic: string;
     wallet: SparkWallet;
     walletKey: string;
 };
