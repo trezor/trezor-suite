@@ -4,16 +4,14 @@ import { isValidElement } from 'react';
 import { useRouter } from 'next/router';
 import { DiscordIcon, GitHubIcon } from 'nextra/icons';
 
-import { Icon, type IconName } from '@trezor/components';
-
 import { Anchor } from './components/anchor';
 import { Flexsearch } from './components/flexsearch';
 import { Footer } from './components/footer';
-import { MatchSorterSearch } from './components/match-sorter-search';
 import { Navbar } from './components/navbar';
 import { ThemeSwitch } from './components/theme-switch';
 import { TOC } from './components/toc';
 import { DEFAULT_LOCALE } from './constants';
+import { useThemeConfig } from './contexts/theme-config-context';
 import { useConfig } from './contexts/useConfig';
 import type { DocsThemeConfig } from './schema';
 import { getGitIssueUrl } from './utils/get-git-issue-url';
@@ -42,9 +40,16 @@ export const DEFAULT_THEME: DocsThemeConfig = {
         icon: (
             <>
                 <DiscordIcon />
-                <span className="nx-sr-only">Discord</span>
+                <span className="_sr-only">Discord</span>
             </>
         ),
+    },
+    color: {
+        hue: {
+            dark: 204,
+            light: 212,
+        },
+        saturation: 100,
     },
     darkMode: true,
     direction: 'ltr',
@@ -62,24 +67,25 @@ export const DEFAULT_THEME: DocsThemeConfig = {
                 </Anchor>
             );
         },
-        text: 'Edit this page',
+        content: 'Edit this page',
     },
     feedback: {
         content: 'Question? Give us feedback →',
         labels: 'feedback',
         useLink() {
             const config = useConfig();
+            const themeConfig = useThemeConfig();
 
             return getGitIssueUrl({
-                labels: config.feedback.labels,
-                repository: config.docsRepositoryBase,
-                title: `Feedback for “${config.title}”`,
+                labels: themeConfig.feedback.labels,
+                repository: themeConfig.docsRepositoryBase,
+                title: `Feedback for "${config.title}"`,
             });
         },
     },
     footer: {
         component: Footer,
-        text: `MIT ${new Date().getFullYear()} © Nextra.`,
+        content: `MIT ${new Date().getFullYear()} © Nextra.`,
     },
     gitTimestamp: function GitTimestamp({ timestamp }) {
         const { locale = DEFAULT_LOCALE } = useRouter();
@@ -100,7 +106,6 @@ export const DEFAULT_THEME: DocsThemeConfig = {
     head: (
         <>
             <meta httpEquiv="Content-Language" content="en" />
-            {/* other meta tags get set by next-seo */}
         </>
     ),
     i18n: [],
@@ -118,34 +123,20 @@ export const DEFAULT_THEME: DocsThemeConfig = {
         content: 'Submit an issue about broken link →',
         labels: 'bug',
     },
-    primaryHue: {
-        dark: 204,
-        light: 212,
-    },
-    primarySaturation: {
-        dark: 100,
-        light: 100,
-    },
     project: {
         icon: (
             <>
                 <GitHubIcon />
-                <span className="nx-sr-only">GitHub</span>
+                <span className="_sr-only">GitHub</span>
             </>
         ),
     },
     search: {
-        component: function Search({ className, directories }) {
-            const config = useConfig();
-
-            return config.flexsearch ? (
-                <Flexsearch className={className} />
-            ) : (
-                <MatchSorterSearch className={className} directories={directories} />
-            );
+        component: function Search({ className }) {
+            return <Flexsearch className={className} />;
         },
         emptyResult: (
-            <span className="nx-block nx-select-none nx-p-8 nx-text-center nx-text-sm nx-text-gray-400">
+            <span className="_block _select-none _p-8 _text-center _text-sm _text-gray-400">
                 No results found.
             </span>
         ),
@@ -164,24 +155,9 @@ export const DEFAULT_THEME: DocsThemeConfig = {
             return `${text}…`;
         },
     },
-    serverSideError: {
-        content: 'Submit an issue about error in url →',
-        labels: 'bug',
-    },
+    seo: {},
     sidebar: {
         defaultMenuCollapseLevel: 1,
-        titleComponent: ({ title, icon }) => (
-            <div
-                style={{
-                    alignItems: 'center',
-                    display: 'flex',
-                    gap: '0.5rem',
-                }}
-            >
-                {icon && <Icon name={icon as IconName} size={16} />}
-                {title}
-            </div>
-        ),
         toggleButton: false,
     },
     themeSwitch: {
@@ -197,13 +173,12 @@ export const DEFAULT_THEME: DocsThemeConfig = {
         },
     },
     toc: {
-        backToTop: false,
+        backToTop: null,
         component: TOC,
         extraContent: null,
         float: true,
         title: 'On This Page',
     },
-    useNextSeoProps: () => ({ titleTemplate: '%s – Nextra' }),
 };
 
 export const DEEP_OBJECT_KEYS = Object.entries(DEFAULT_THEME)

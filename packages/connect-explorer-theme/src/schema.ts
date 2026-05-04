@@ -32,7 +32,7 @@ const i18nSchema = z.array(
     z.strictObject({
         direction: z.enum(['ltr', 'rtl']).optional(),
         locale: z.string(),
-        text: z.string(),
+        name: z.string(),
     }),
 );
 
@@ -41,13 +41,27 @@ const fc = [isFunction, { message: 'Must be React.FC' }] as const;
 
 export const themeSchema = z.strictObject({
     banner: z.strictObject({
+        content: z.custom<ReactNode | FC>(...reactNode).optional(),
         dismissible: z.boolean(),
         key: z.string(),
-        text: z.custom<ReactNode | FC>(...reactNode).optional(),
     }),
     chat: z.strictObject({
         icon: z.custom<ReactNode | FC>(...reactNode),
         link: z.string().startsWith('https://').optional(),
+    }),
+    color: z.strictObject({
+        hue: z.number().or(
+            z.strictObject({
+                dark: z.number(),
+                light: z.number(),
+            }),
+        ),
+        saturation: z.number().or(
+            z.strictObject({
+                dark: z.number(),
+                light: z.number(),
+            }),
+        ),
     }),
     components: z.record(z.string(), z.custom<FC>(...fc)).optional(),
     darkMode: z.boolean(),
@@ -63,7 +77,7 @@ export const themeSchema = z.strictObject({
                 }>
             >(...fc)
             .or(z.null()),
-        text: z.custom<ReactNode | FC>(...reactNode),
+        content: z.custom<ReactNode | FC>(...reactNode),
     }),
     faviconGlyph: z.string().optional(),
     feedback: z.strictObject({
@@ -73,7 +87,7 @@ export const themeSchema = z.strictObject({
     }),
     footer: z.strictObject({
         component: z.custom<ReactNode | FC<{ menu: boolean }>>(...reactNode),
-        text: z.custom<ReactNode | FC>(...reactNode),
+        content: z.custom<ReactNode | FC>(...reactNode),
     }),
     gitTimestamp: z.custom<ReactNode | FC<{ timestamp: Date }>>(...reactNode),
     head: z.custom<ReactNode | FC>(...reactNode),
@@ -106,42 +120,21 @@ export const themeSchema = z.strictObject({
         content: z.custom<ReactNode | FC>(...reactNode),
         labels: z.string(),
     }),
-    primaryHue: z.number().or(
-        z.strictObject({
-            dark: z.number(),
-            light: z.number(),
-        }),
-    ),
-    primarySaturation: z.number().or(
-        z.strictObject({
-            dark: z.number(),
-            light: z.number(),
-        }),
-    ),
     project: z.strictObject({
         icon: z.custom<ReactNode | FC>(...reactNode),
         link: z.string().startsWith('https://').optional(),
     }),
+    seo: z.custom<Omit<NextSeoProps, 'title'> | ((path: string) => Omit<NextSeoProps, 'title'>)>(),
     search: z.strictObject({
-        component: z.custom<ReactNode | FC<{ className?: string; directories: Item[] }>>(
-            ...reactNode,
-        ),
+        component: z.custom<ReactNode | FC<{ className?: string }>>(...reactNode),
         emptyResult: z.custom<ReactNode | FC>(...reactNode),
         error: z.string().or(z.function().output(z.string())),
         loading: z.custom<ReactNode | FC>(...reactNode),
-        // Can't be React component
         placeholder: z.string().or(z.function().output(z.string())),
-    }),
-    serverSideError: z.strictObject({
-        content: z.custom<ReactNode | FC>(...reactNode),
-        labels: z.string(),
     }),
     sidebar: z.strictObject({
         autoCollapse: z.boolean().optional(),
         defaultMenuCollapseLevel: z.number().min(1).int(),
-        titleComponent: z.custom<
-            ReactNode | FC<{ title: string; type: string; route: string; icon?: string }>
-        >(...reactNode),
         toggleButton: z.boolean(),
     }),
     themeSwitch: z.strictObject({
@@ -149,19 +142,15 @@ export const themeSchema = z.strictObject({
         useOptions: themeOptionsSchema.or(z.function().output(themeOptionsSchema)),
     }),
     toc: z.strictObject({
-        backToTop: z.boolean(),
+        backToTop: z.custom<ReactNode | FC>(...reactNode),
         component: z.custom<ReactNode | FC<TOCProps>>(...reactNode),
         extraContent: z.custom<ReactNode | FC>(...reactNode),
         float: z.boolean(),
-        headingComponent: z.custom<FC<{ id: string; children: string }>>(...fc).optional(),
         title: z.custom<ReactNode | FC>(...reactNode),
     }),
-    useNextSeoProps: z.custom<() => NextSeoProps | void>(isFunction),
 });
 
 export type DocsThemeConfig = z.infer<typeof themeSchema>;
-// deepPartial was removed in zod v4, so PartialDocsThemeConfig is computed via TypeScript utility
-// i18n override: if provided, `locale` and `text` remain required within each element
 export type PartialDocsThemeConfig = Omit<DeepPartial<DocsThemeConfig>, 'i18n'> & {
     i18n?: z.infer<typeof i18nSchema>;
 };

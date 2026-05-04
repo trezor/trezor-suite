@@ -8,7 +8,7 @@ import { type z } from 'zod';
 
 import { Select } from '@trezor/components';
 
-import { useConfig } from '../contexts/useConfig';
+import { useThemeConfig } from '../contexts/theme-config';
 import { type themeOptionsSchema } from '../schema';
 
 type ThemeSwitchProps = {
@@ -21,7 +21,7 @@ type ThemeOptions = z.infer<typeof themeOptionsSchema>;
 export function ThemeSwitch({ lite }: ThemeSwitchProps): ReactElement {
     const { setTheme, resolvedTheme, theme = '' } = useTheme();
     const mounted = useMounted();
-    const config = useConfig().themeSwitch;
+    const config = useThemeConfig().themeSwitch;
 
     const IconToUse = mounted && resolvedTheme === 'dark' ? MoonIcon : SunIcon;
     const options: ThemeOptions =
@@ -54,12 +54,12 @@ export function ThemeSwitch({ lite }: ThemeSwitchProps): ReactElement {
                     return (
                         <div
                             className={cn(
-                                'nx-flex nx-w-full nx-px-2 nx-items-center nx-gap-2 nx-text-sm nx-font-medium nx-capitalize nx-transition-colors',
-                                'nx-text-gray-600 dark:nx-text-gray-400 hover:nx-text-gray-900 dark:hover:nx-text-gray-50',
+                                '_flex _w-full _px-2 _items-center _gap-2 _text-sm _font-medium _capitalize _transition-colors',
+                                '_text-gray-600 dark:_text-gray-400 hover:_text-gray-900 dark:hover:_text-gray-50',
                             )}
                         >
                             <IconToUse />
-                            <span className={lite ? 'md:nx-hidden' : ''}>{option.label}</span>
+                            <span className={lite ? 'md:_hidden' : ''}>{option.label}</span>
                         </div>
                     );
                 }

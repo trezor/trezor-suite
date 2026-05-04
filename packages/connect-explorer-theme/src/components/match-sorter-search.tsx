@@ -36,7 +36,7 @@ export function MatchSorterSearch({
             value={search}
             onChange={setSearch}
             className={className}
-            overlayClassName="nx-w-full"
+            overlayClassName="_w-full"
             results={results}
         />
     );

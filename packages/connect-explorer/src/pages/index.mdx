@@ -3,7 +3,7 @@ auto_sections: false
 icon: lightning
 ---
 
-import { Card, Cards, Steps, Tabs } from 'nextra/components';
+import { Cards, Steps, Tabs } from 'nextra/components';
 
 import { Button, CollapsibleBox } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -49,11 +49,11 @@ import IconWeb from '../components/icons/IconWeb';
     Depending on your environment you need to chose the right package and follow the particular guide:
 
     <Cards num={2}>
-        <Card icon={<IconNode />} title="Node.js" href="#nodejs" />
-        <Card icon={<IconWeb />} title="Web" href="#web" />
-        <Card icon={<IconExtension />} title="Web extension" href="#web-extension" />
+        <Cards.Card icon={<IconNode />} title="Node.js" href="#nodejs" />
+        <Cards.Card icon={<IconWeb />} title="Web" href="#web" />
+        <Cards.Card icon={<IconExtension />} title="Web extension" href="#web-extension" />
         <BetaOnly>
-            <Card icon={<IconMobile />} title="Mobile" href="#mobile" />
+            <Cards.Card icon={<IconMobile />} title="Mobile" href="#mobile" />
         </BetaOnly>
     </Cards>
 
@@ -76,7 +76,7 @@ import IconWeb from '../components/icons/IconWeb';
 
 </HiddenNextraHeading>
 <SectionCard>
-    <SdkHeading className='nx-text-slate-900 dark:nx-text-slate-100'>
+    <SdkHeading className='_text-slate-900 dark:_text-slate-100'>
         <IconNode />
         <SdkName>Node.js</SdkName>
         <SdkTag></SdkTag>
@@ -172,7 +172,7 @@ import IconWeb from '../components/icons/IconWeb';
 
 </HiddenNextraHeading>
 <SectionCard>
-    <SdkHeading className='nx-text-slate-900 dark:nx-text-slate-100'>
+    <SdkHeading className='_text-slate-900 dark:_text-slate-100'>
         <IconWeb />
         <SdkName>Web</SdkName>
         <SdkTag>DOM required</SdkTag>
@@ -283,7 +283,7 @@ import IconWeb from '../components/icons/IconWeb';
 
 </HiddenNextraHeading>
 <SectionCard>
-    <SdkHeading className='nx-text-slate-900 dark:nx-text-slate-100'>
+    <SdkHeading className='_text-slate-900 dark:_text-slate-100'>
         <IconExtension />
         <SdkName>Web extension</SdkName>
         <SdkTag>Using service worker</SdkTag>
@@ -323,7 +323,7 @@ import IconWeb from '../components/icons/IconWeb';
             <LinkButton
                 intent="neutral"
                 priority="secondary"
-                className="nx-mt-4 nx-mb-8"
+                className="_mt-4 _mb-8"
                 size="small"
                 iconLeft="bookOpenText"
                 href="/guides/webextension-implementation-tutorial">
@@ -410,7 +410,7 @@ import IconWeb from '../components/icons/IconWeb';
 
 </HiddenNextraHeading>
 <SectionCard>
-    <SdkHeading className='nx-text-slate-900 dark:nx-text-slate-100'>
+    <SdkHeading className='_text-slate-900 dark:_text-slate-100'>
         <IconMobile />
         <SdkName>Mobile</SdkName>
         <SdkTag>Using deep linking</SdkTag>
@@ -451,7 +451,7 @@ import IconWeb from '../components/icons/IconWeb';
             <LinkButton
                 intent="neutral"
                 priority="secondary"
-                className="nx-mt-4 nx-mb-8"
+                className="_mt-4 _mb-8"
                 size="small"
                 iconRight="arrowRight"
                 href="/details/deeplinking">
