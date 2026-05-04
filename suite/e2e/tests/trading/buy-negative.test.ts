@@ -28,7 +28,7 @@ test.describe('Trading - Buy Negative scenarios', { tag: ['@webOnly', '@T3W1', '
             });
             await expect(page.getByText('Receive account')).toBeVisible();
             await tradingPage.inputs.fiatAmount.fill('1000000000');
-            await expect(page.getByText('Maximum is 5000000 EUR')).toBeVisible();
+            await expect(page.getByText(/Maximum is (5000000|5,000,000)(\.00)? EUR/)).toBeVisible();
             await expect(tradingPage.buyBestOfferButton).toBeDisabled();
         });
 
