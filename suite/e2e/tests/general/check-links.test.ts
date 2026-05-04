@@ -79,8 +79,9 @@ async function fetchWithRetry(page: Page, url: string, maxRetries = 3) {
 }
 
 test.describe('Check Links', { tag: ['@webOnly', '@nightlyOnly', '@T3T1'] }, () => {
-    test.beforeEach(async ({ onboardingPage }) => {
+    test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
     });
 
     test(

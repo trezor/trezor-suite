@@ -36,8 +36,13 @@ export class AssetsSection {
     }
 
     @step()
-    async enableNetworkViaActivateAssetsModal(symbol: NetworkSymbol) {
-        await this.activateAssetsModalNetworkButton(symbol).click();
+    async enableNetworkViaActivateAssetsModal(symbol: NetworkSymbol | NetworkSymbol[]) {
+        const symbols = Array.isArray(symbol) ? symbol : [symbol];
+
+        for (const s of symbols) {
+            await this.activateAssetsModalNetworkButton(s).click();
+        }
+
         await this.activateAssetsModalSaveButton.click();
     }
 

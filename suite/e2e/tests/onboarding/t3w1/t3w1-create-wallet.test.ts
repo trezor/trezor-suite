@@ -19,7 +19,15 @@ test.describe('Onboarding - create wallet', { tag: ['@T3W1'] }, () => {
                 priority: TestPriority.Critical,
             }),
         },
-        async ({ page, device, onboardingPage, devicePrompt, analyticsSection, dashboardPage }) => {
+        async ({
+            page,
+            device,
+            onboardingPage,
+            devicePrompt,
+            analyticsSection,
+            dashboardPage,
+            assetsSection,
+        }) => {
             await onboardingPage.optionallyDismissFwHashCheckError();
             await analyticsSection.continueButton.click();
 
@@ -54,6 +62,9 @@ test.describe('Onboarding - create wallet', { tag: ['@T3W1'] }, () => {
             await device.pressYes();
 
             await test.step('Finish wallet creation', async () => {
+                await dashboardPage.discoveryEmptyPrimaryButton.click();
+                await assetsSection.enableNetworkViaActivateAssetsModal(['btc', 'eth']);
+
                 await expect(onboardingPage.suiteLoadedIndicator).toBeVisible({ timeout: 30_000 });
                 await expect(dashboardPage.walletReady).toBeVisible({ timeout: 30_000 });
             });
