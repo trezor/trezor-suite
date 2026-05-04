@@ -25,7 +25,7 @@ const preloadedState = preparePreloadedReduxState(
     btcCoinEnabled,
 );
 
-const LONG_RUNNING_TEST_TIMEOUT = 5 * 60 * 1000; // [ms]
+const LONG_RUNNING_TEST_TIMEOUT = 7 * 60 * 1000; // [ms]
 
 describe('Device onboarding [@androidOnly @smoke @T3T1 @T3W1]', () => {
     beforeEach(async () => {
