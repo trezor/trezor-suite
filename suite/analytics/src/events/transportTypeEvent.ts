@@ -9,7 +9,7 @@ type Attributes = {
 
 export const transportTypeEvent: EventDef<Attributes, EventType.TransportType> = {
     name: EventType.TransportType,
-    descriptionTrigger: 'On app start (when TRANSPORT.START action is fired)',
+    descriptionTrigger: 'Application initializes and detects the available device transport type (WebUSB, bridge, or other)',
     possibleImprovements: 'Possible improvement: could be part of Suite ready',
     changelog: [
         {
@@ -20,12 +20,12 @@ export const transportTypeEvent: EventDef<Attributes, EventType.TransportType> =
 
     attributes: {
         type: {
+            description: 'The device transport type: "WebUsbPlugin" for WebUSB, "bridge" for Trezor Bridge transport',
             changelog: [{ version: '1.0.0', notes: 'added' }],
-            description: 'WebUsbPlugin, bridge',
         },
         version: {
+            description: 'The transport/bridge server version in format (e.g., "2.0.30" for bridge)',
             changelog: [{ version: '1.0.0', notes: 'added' }],
-            description: 'Version in server format',
         },
     },
 };

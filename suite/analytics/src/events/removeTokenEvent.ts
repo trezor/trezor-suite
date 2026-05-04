@@ -9,15 +9,17 @@ type Attributes = {
 
 export const removeTokenEvent: EventDef<Attributes, EventType.RemoveToken> = {
     name: EventType.RemoveToken,
-    descriptionTrigger: '?',
-    changelog: [{ version: '?', notes: 'added' }],
+    descriptionTrigger: 'User removes a custom token or hides a token from their portfolio',
+    changelog: [{ version: '25.12.1', notes: 'added' }],
 
     attributes: {
         networkSymbol: {
-            changelog: [{ version: '?', notes: 'added' }],
+            description: 'The blockchain network symbol where the token exists (e.g., "eth", "matic", "btc")',
+            changelog: [{ version: '25.12.1', notes: 'added' }],
         },
         token: {
-            changelog: [{ version: '?', notes: 'added' }],
+            description: 'The contract address or token identifier of the token being removed',
+            changelog: [{ version: '25.12.1', notes: 'added' }],
         },
     },
 };

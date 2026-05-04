@@ -9,14 +9,16 @@ type Attributes = {
 
 export const settingsCoinsEvent: EventDef<Attributes, EventType.SettingsCoins> = {
     name: EventType.SettingsCoins,
-    descriptionTrigger: 'Settings > Crypto > enable/disable coin',
+    descriptionTrigger: 'User enables or disables visibility of a cryptocurrency coin in Settings > Crypto > Coin settings',
     changelog: [{ version: '1.19.0', notes: 'added' }],
 
     attributes: {
         symbol: {
+            description: 'The blockchain network or cryptocurrency symbol being toggled (e.g., "btc", "eth", "doge")',
             changelog: [{ version: '1.19.0', notes: 'added' }],
         },
         value: {
+            description: 'Whether the coin is enabled (true) or disabled (false)',
             changelog: [{ version: '1.19.0', notes: 'added' }],
         },
     },

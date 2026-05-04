@@ -9,11 +9,12 @@ type Attributes = {
 export const selectWalletTypeEvent: EventDef<Attributes, EventType.SelectWalletType> = {
     name: EventType.SelectWalletType,
     descriptionTrigger:
-        'Fired when "Standard" or "Hidden" wallet is selected in the "Select wallet type" modal. "Passphrase" has to be enabled on the device to see this modal.',
+        'User selects a wallet type (Standard or Hidden) in the Select Wallet Type modal. This modal only appears when passphrase protection is enabled on the device.',
     changelog: [{ version: '1.5.0', notes: 'added' }],
 
     attributes: {
         type: {
+            description: 'The wallet type selected: "standard" for normal wallet, "hidden" for hidden wallet (created with passphrase)',
             changelog: [{ version: '1.5.0', notes: 'added' }],
         },
     },

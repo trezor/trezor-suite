@@ -9,8 +9,8 @@ export const settingsDeviceChangeWipeCodeEvent: EventDef<
     EventType.SettingsDeviceChangeWipeCode
 > = {
     name: EventType.SettingsDeviceChangeWipeCode,
-    descriptionTrigger: '?',
-    changelog: [{ version: '?', notes: 'added' }],
+    descriptionTrigger: 'User modifies the wipe code on their device through settings',
+    changelog: [{ version: '24.2.1', notes: 'added' }],
 
     attributes: {},
 };

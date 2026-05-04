@@ -8,7 +8,7 @@ export const settingsDeviceChangeLabelEvent: EventDef<
     EventType.SettingsDeviceChangeLabel
 > = {
     name: EventType.SettingsDeviceChangeLabel,
-    descriptionTrigger: 'Settings > Device > CUSTOMIZATION > Device name',
+    descriptionTrigger: 'User changes the device name/label in device customization settings',
     changelog: [{ version: '1.0.0', notes: 'added' }],
     attributes: {},
 };

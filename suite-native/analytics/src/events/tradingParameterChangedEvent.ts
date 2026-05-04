@@ -38,11 +38,11 @@ export const tradingParameterChangedEvent: EventDef<Attributes, EventType.Tradin
                         notes: 'extended with `settings` and `onboarding` values',
                     },
                 ],
-                description: 'Type of trade executed buy/sell etc.',
+                description: 'Type of trade or context: "buy" for purchasing crypto, "sell" for selling crypto, "exchange" for swapping, "settings" for country setting, "onboarding" for initial setup',
             },
             parameter: {
                 changelog: [{ version: '25.5.1', notes: 'added' }],
-                description: 'The name of parameter that was changed by the user.',
+                description: 'The parameter that was changed: "fiat" for fiat amount, "cryptoFrom" for sending crypto, "cryptoTo" for receiving crypto, "paymentMethod" for payment type, "provider" for exchange provider, "country" for country selection',
             },
         },
     };

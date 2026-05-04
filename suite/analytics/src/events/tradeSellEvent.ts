@@ -19,7 +19,7 @@ type Attributes = {
 
 export const tradeSellEvent: EventDef<Attributes, EventType.TradeSell> = {
     name: EventType.TradeSell,
-    descriptionTrigger: 'fired on every step during the sell flow',
+    descriptionTrigger: 'User navigates through the sell flow, with tracking at each step of the process',
     changelog: [{ version: '25.5.2', notes: 'added' }],
 
     attributes: {

@@ -11,8 +11,7 @@ type Attributes = {
 export const tradingCountrySelectionEvent: EventDef<Attributes, EventType.TradingCountrySelection> =
     {
         name: EventType.TradingCountrySelection,
-        descriptionTrigger:
-            'User interacts with country selection modal. Either selects country or dismisses it.',
+        descriptionTrigger: 'User interacts with country selection modal to select a country or dismiss the modal during trading flow',
         changelog: [{ version: '25.11.1', notes: 'added' }],
         attributes: {
             type: {

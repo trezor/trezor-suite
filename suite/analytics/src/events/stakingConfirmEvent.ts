@@ -9,7 +9,7 @@ type Attributes = {
 
 export const stakingConfirmEvent: EventDef<Attributes, EventType.StakingConfirm> = {
     name: EventType.StakingConfirm,
-    descriptionTrigger: 'fired when a stake/unstake/claim transaction has been created and sent',
+    descriptionTrigger: 'A stake/unstake/claim transaction is created and sent to the blockchain',
     changelog: [{ version: '25.4.0', notes: 'added' }],
 
     attributes: {

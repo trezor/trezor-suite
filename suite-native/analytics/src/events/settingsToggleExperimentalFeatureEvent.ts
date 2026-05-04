@@ -13,17 +13,17 @@ export const settingsToggleExperimentalFeatureEvent: EventDef<
     EventType.SettingsToggleExperimentalFeature
 > = {
     name: EventType.SettingsToggleExperimentalFeature,
-    descriptionTrigger: 'On toggling an experimental feature in settings',
+    descriptionTrigger: 'User enables or disables an experimental feature in settings',
     changelog: [{ version: '26.4.1', notes: 'added' }],
 
     attributes: {
         feature: {
             changelog: [{ version: '26.4.1', notes: 'added' }],
-            description: 'The identifier of the experimental feature',
+            description: 'The identifier of the experimental feature being toggled (e.g., "new-ui", "advanced-trading", "beta-functionality")',
         },
         value: {
             changelog: [{ version: '26.4.1', notes: 'added' }],
-            description: 'Whether the experimental feature was enabled or disabled',
+            description: 'true if the experimental feature was enabled (user opted into beta functionality), false if disabled (sticking to stable features)',
         },
     },
 };

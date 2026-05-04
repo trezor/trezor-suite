@@ -11,11 +11,12 @@ export const settingsGeneralChangeFiatEvent: EventDef<
     EventType.SettingsGeneralChangeFiat
 > = {
     name: EventType.SettingsGeneralChangeFiat,
-    descriptionTrigger: 'Settings > Application > LOCALIZATION > Fiat currency',
+    descriptionTrigger: 'User changes the fiat currency for price display in Settings > Application > Localization > Fiat currency',
     changelog: [{ version: '1.0.0', notes: 'added' }],
 
     attributes: {
         fiat: {
+            description: 'The selected fiat currency code (e.g., "USD" for US Dollar, "EUR" for Euro, "CZK" for Czech Koruna)',
             changelog: [{ version: '1.0.0', notes: 'added' }],
         },
     },
