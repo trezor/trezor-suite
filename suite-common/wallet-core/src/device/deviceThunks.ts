@@ -296,26 +296,15 @@ type DeviceConnectThunksParams = {
 export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, void>(
     `${DEVICE_MODULE_PREFIX}/deviceConnectThunk`,
     ({ type, device }, { dispatch, getState }) => {
-        const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(getState());
         // TODO (THP phase): Using selectIsFirmwareInstallationRunning = (hidden) circular dependency.
         const isFwInstallation = selectIsFirmwareInstallationRunning(getState());
         switch (type) {
             case DEVICE.CONNECT:
-                dispatch(
-                    deviceActions.connectDevice({
-                        device,
-                        isAutoEjectEnabled,
-                    }),
-                );
+                dispatch(deviceActions.connectDevice({ device }));
                 dispatch(selectNewlyConnectedDeviceThunk({ device }));
                 break;
             case DEVICE.CONNECT_UNACQUIRED:
-                dispatch(
-                    deviceActions.connectUnacquiredDevice({
-                        device,
-                        isAutoEjectEnabled,
-                    }),
-                );
+                dispatch(deviceActions.connectUnacquiredDevice({ device }));
                 if (getIsThpDevice(device) && !isFwInstallation) {
                     // This needs to be re-selected to convert Device to TrezorDevice.
                     const requestedDevice = selectDevices(getState()).find(

@@ -33,7 +33,6 @@ const connect: Fixture<
                     device: mockConnectDevice({
                         path: '1',
                     }),
-                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -61,7 +60,6 @@ const connect: Fixture<
                     device: mockConnectDevice({
                         path: '1',
                     }),
-                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -95,7 +93,6 @@ const connect: Fixture<
                     device: mockConnectDevice({
                         path: '1',
                     }),
-                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -124,7 +121,6 @@ const connect: Fixture<
                     device: mockConnectDevice({
                         path: '1',
                     }),
-                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -159,7 +155,6 @@ const connect: Fixture<
                     device: mockConnectDevice({
                         path: '1',
                     }),
-                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -197,7 +192,6 @@ const connect: Fixture<
                     device: mockConnectDevice({
                         path: '1',
                     }),
-                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -220,7 +214,6 @@ const connect: Fixture<
                         type: 'unacquired',
                         path: '1',
                     }),
-                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -250,7 +243,6 @@ const connect: Fixture<
                         type: 'unacquired',
                         path: '1',
                     }),
-                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -284,7 +276,6 @@ const connect: Fixture<
                         status: 'thp-locked',
                         path: '1',
                     }),
-                    isAutoEjectEnabled: false,
                 },
             },
         ],
