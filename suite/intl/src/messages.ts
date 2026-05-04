@@ -11188,6 +11188,28 @@ export const messages = defineMessages({
         id: 'TR_CONNECT_ERROR_CANCELED',
         defaultMessage: 'Request was canceled by the user',
     },
+    TR_CONNECT_ERROR_POPUP_BLOCKED: {
+        id: 'TR_CONNECT_ERROR_POPUP_BLOCKED',
+        defaultMessage:
+            'The popup window was blocked by your browser. Please allow popups for this website.',
+    },
+    TR_CONNECT_ERROR_HANDSHAKE_TIMEOUT: {
+        id: 'TR_CONNECT_ERROR_HANDSHAKE_TIMEOUT',
+        defaultMessage: 'The connection timed out. Please try again.',
+    },
+    TR_CONNECT_ERROR_IFRAME_BLOCKED: {
+        id: 'TR_CONNECT_ERROR_IFRAME_BLOCKED',
+        defaultMessage:
+            'The connection was blocked by your browser. Check your content blocking settings.',
+    },
+    TR_CONNECT_ERROR_ENV_NOT_SUPPORTED: {
+        id: 'TR_CONNECT_ERROR_ENV_NOT_SUPPORTED',
+        defaultMessage: 'Your browser or environment does not support Trezor Connect.',
+    },
+    TR_CONNECT_ERROR_STORAGE_ACCESS_DENIED: {
+        id: 'TR_CONNECT_ERROR_STORAGE_ACCESS_DENIED',
+        defaultMessage: 'Storage access was denied. Please check your browser privacy settings.',
+    },
     TR_NO_CONNECTED_APPS_DESCRIPTION: {
         id: 'TR_NO_CONNECTED_APPS_DESCRIPTION',
         defaultMessage: 'Use your Trezor with third-party apps and wallets to manage your assets.',

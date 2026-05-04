@@ -122,6 +122,24 @@ export const ConnectErrorModal = () => {
         if (isCancelled) return <Translation id="TR_CONNECT_ERROR_CANCELED" />;
         if (isNoTransportError) return <Translation id="TR_BRIDGE_NEEDED_DESCRIPTION" />;
 
+        if (popupCall.error?.code === 'Handshake_Error') {
+            if (popupCall.error.message === 'popup-blocked')
+                return <Translation id="TR_CONNECT_ERROR_POPUP_BLOCKED" />;
+            if (
+                popupCall.error.message === 'handshake-timeout' ||
+                popupCall.error.message === 'iframe-timeout'
+            )
+                return <Translation id="TR_CONNECT_ERROR_HANDSHAKE_TIMEOUT" />;
+            if (popupCall.error.message === 'iframe-blocked')
+                return <Translation id="TR_CONNECT_ERROR_IFRAME_BLOCKED" />;
+            if (popupCall.error.message === 'env-not-supported')
+                return <Translation id="TR_CONNECT_ERROR_ENV_NOT_SUPPORTED" />;
+            if (popupCall.error.message === 'storage-access-denied')
+                return <Translation id="TR_CONNECT_ERROR_STORAGE_ACCESS_DENIED" />;
+
+            return <Translation id="TR_CONNECT_ERROR_GENERIC_DESCRIPTION" />;
+        }
+
         if (popupCall.error?.message === UI_REQUEST.BOOTLOADER)
             return <Translation id="TR_DEVICE_IN_BOOTLOADER" />;
         if (popupCall.error?.message === UI_REQUEST.NOT_IN_BOOTLOADER)
