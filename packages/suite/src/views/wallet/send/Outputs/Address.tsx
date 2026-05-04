@@ -485,7 +485,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         }
 
         if (autocorrectMessage) {
-            return <Icon name="warningCircle" size={16} intent="warning" />;
+            return <Icon name="info" size={16} intent="info" />;
         }
 
         if (isAddressWithLabel) {
