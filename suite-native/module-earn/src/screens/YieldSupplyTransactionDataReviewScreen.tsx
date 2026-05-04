@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 
 import {
     type StablecoinYieldRootState,
-    getStablecoinYieldFlowKey,
     selectStablecoinYieldSession,
 } from '@suite-common/wallet-core';
 import { Box, Text, VStack } from '@suite-native/atoms';
@@ -17,6 +16,7 @@ import {
 import { ReviewOutputItemList } from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useYieldReviewTransaction } from '../hooks/useYieldReviewTransaction';
 
 const spacerStyle = prepareNativeStyle(_ => ({
@@ -28,13 +28,13 @@ export const YieldSupplyTransactionDataReviewScreen = ({
 }: StackProps<YieldStackParamList, YieldStackRoutes.YieldSupplyReview>) => {
     const { applyStyle } = useNativeStyles();
     const { accountKey, tokenContract } = route.params;
-    const flowKey = getStablecoinYieldFlowKey(route.params);
+    const { flowKey } = useResolvedYieldFlowData({ ...route.params, displayError: false });
     const reviewTransaction = useYieldReviewTransaction({ accountKey });
     const stablecoinYieldSession = useSelector((state: StablecoinYieldRootState) =>
-        selectStablecoinYieldSession(state, 'supply', flowKey),
+        flowKey ? selectStablecoinYieldSession(state, 'supply', flowKey) : undefined,
     );
 
-    if (!reviewTransaction || stablecoinYieldSession.step !== 'action') {
+    if (!reviewTransaction || stablecoinYieldSession?.step !== 'action') {
         return null;
     }
 

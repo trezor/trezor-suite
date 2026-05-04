@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
-import { type Account } from '@suite-common/wallet-types';
+import { type YieldFlowToken } from '@suite-common/wallet-core';
+import { type TokenSymbol } from '@suite-common/wallet-types';
 import { useForm, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 
@@ -9,11 +10,9 @@ import {
     yieldSupplyFormValidationSchema,
 } from '../yieldSupplyFormSchema';
 
-type AccountToken = NonNullable<Account['tokens']>[number];
-
 type UseYieldSupplyFormParams = {
-    token: AccountToken | null;
-    tokenSymbol: string;
+    token: YieldFlowToken | null;
+    tokenSymbol: TokenSymbol | null;
 };
 
 export const useYieldSupplyForm = ({ token, tokenSymbol }: UseYieldSupplyFormParams) => {

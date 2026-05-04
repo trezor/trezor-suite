@@ -84,7 +84,6 @@ export type EarnStackParamList = {
 };
 
 export type YieldFlowParams = {
-    yieldId: string;
     accountKey: AccountKey;
     tokenContract: TokenAddress;
 };
