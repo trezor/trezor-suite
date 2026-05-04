@@ -22,7 +22,7 @@
         "./src/transports/webusb": "./src/transports/webusb.browser.ts"
     },
     "react-native": {
-        "./src/transports/nodeusb": "./src/transports/nodeusb.browser.ts",
+        "./src/transports/nodeusb": "./src/transports/nodeusb.native.ts",
         "./src/transports/webusb": "./src/transports/webusb.ts"
     },
     "publishConfig": {
