@@ -22,14 +22,12 @@ export const DEVICE_MODULE_PREFIX = '@suite/device';
 
 export type DeviceConnectActionPayload = {
     device: Device;
-    isAutoEjectEnabled: boolean;
 };
 
 export type DeviceStateActionPayload = {
     device: AcquiredDevice;
     state: DeviceState & { staticSessionId: StaticSessionId };
     useEmptyPassphrase: boolean;
-    isAutoEjectEnabled: boolean;
 };
 
 const connectDevice = createAction(DEVICE.CONNECT, (payload: DeviceConnectActionPayload) => ({

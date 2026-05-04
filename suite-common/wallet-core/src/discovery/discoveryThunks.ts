@@ -7,6 +7,7 @@ import {
     selectDevices,
     selectEntropyCheckResultByDeviceId,
     selectSelectedDevice,
+    shouldDeviceBeRemembered,
 } from '@suite-common/device';
 import {
     type AnyAction,
@@ -137,6 +138,7 @@ export const applyDeviceStatesThunk = createThunk<
 
             // now we expect that there is exactly one device without state - meaning that we want to update its state
             const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(getState());
+            const remember = shouldDeviceBeRemembered({ isAutoEjectEnabled, device });
 
             if (devicesByPathWithoutState.length === 1) {
                 dispatch(
@@ -144,18 +146,18 @@ export const applyDeviceStatesThunk = createThunk<
                         device,
                         state: newDeviceState,
                         useEmptyPassphrase,
-                        isAutoEjectEnabled,
                     }),
                 );
+                dispatch(deviceActions.setRememberDevice({ device, remember }));
             } else {
                 dispatch(
                     deviceActions.addAuthorizedDevice({
                         device,
                         state: newDeviceState,
                         useEmptyPassphrase,
-                        isAutoEjectEnabled,
                     }),
                 );
+                dispatch(deviceActions.setRememberDevice({ device, remember }));
 
                 // select the device after deviceReducer updates it (it's a new object reference)
                 const newlyAddedDevice = selectDeviceByStaticSessionId(getState(), staticSessionId);
@@ -724,13 +726,11 @@ export const runAdditionalDiscoveryThunk = createThunk(
         assertStaticSessionId(deviceStateResponse.payload.state);
 
         if (device.useEmptyPassphrase) {
-            const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(getState());
             dispatch(
                 deviceActions.setDeviceState({
                     device,
                     state: deviceStateResponse.payload.state,
                     useEmptyPassphrase: device.useEmptyPassphrase,
-                    isAutoEjectEnabled,
                 }),
             );
         }
