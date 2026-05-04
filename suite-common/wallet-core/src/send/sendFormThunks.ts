@@ -243,7 +243,7 @@ export const cancelSignSendFormTransactionThunk = createThunk(
     },
 );
 
-const synchronizeSentTransactionThunk = createThunk(
+export const synchronizeSentTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/synchronizePendingTransactionsThunk`,
     (
         {
