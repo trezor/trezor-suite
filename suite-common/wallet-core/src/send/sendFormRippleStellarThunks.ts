@@ -305,6 +305,8 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
 
             // Connect 10 normalizes the stellar-sdk Transaction internally
             // (used to be done via @trezor/connect-plugin-stellar's transformTransaction).
+            // `chunkify` was previously passed here but is not part of stellarSignTransaction's
+            // public schema and the stellar handler ignores it — dropped along with the migration.
             response = await TrezorConnect.stellarSignTransaction({
                 device: {
                     path: device.path,
@@ -316,7 +318,6 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                 networkPassphrase: transaction.networkPassphrase,
                 transaction,
                 payment_req: paymentRequests?.[0] ?? undefined,
-                chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
             });
 
             if (response.success) {
