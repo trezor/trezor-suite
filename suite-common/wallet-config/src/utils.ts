@@ -138,7 +138,7 @@ export const getNetworkByEvmChainId = (chainId: number) =>
 export const getNetworkDisplaySymbol = (symbol: NetworkSymbol) => getNetwork(symbol).displaySymbol;
 
 export const getDisplaySymbol = (coinSymbol: string, contractAddress?: string | null) => {
-    const MAX_SYMBOL_LENGTH = 8;
+    const MAX_SYMBOL_LENGTH = 10;
     const isTokenSymbolLong = coinSymbol.length > MAX_SYMBOL_LENGTH;
 
     const symbol = coinSymbol.toLowerCase();
