@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { Button, type ButtonProps } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-import type TrezorConnectBrowser from '@trezor/connect/src/index-browser';
+import type TrezorConnectBrowser from '@trezor/connect/src/index.browser';
 
 const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation();

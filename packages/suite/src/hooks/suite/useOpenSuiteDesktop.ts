@@ -1,5 +1,5 @@
 import TrezorConnect from '@trezor/connect';
-import type TrezorConnectBrowser from '@trezor/connect/src/index-browser';
+import type TrezorConnectBrowser from '@trezor/connect/src/index.browser';
 import { useWindowFocus } from '@trezor/react-utils';
 import { SUITE_BRIDGE_DEEPLINK, SUITE_URL } from '@trezor/urls';
 
