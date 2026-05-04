@@ -1,5 +1,4 @@
-import { type Address, type CallMethodKeys, type SolanaPublicKey } from '@trezor/connect';
-import { type HDNodeResponse } from '@trezor/connect-common/src/types/api/getPublicKey';
+import { type Address, type CallMethodKeys } from '@trezor/connect';
 
 import { connectPopupActions } from '../connectPopupActions';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
@@ -7,12 +6,16 @@ import { type PostCallHookParams, type PreCallHookParams } from './types';
 
 // `methodsPublicKey` covers methods returning HDNodeResponse, SolanaPublicKey, and other
 // PublicKey variants (Cardano, Tezos). They all carry `publicKey: string` and the more
-// specific shapes add their own fields, so the variant fields are kept optional here to
-// keep structural narrowing inside `displayAddress` open-ended (otherwise narrowing on
-// the known specific shapes would collapse the catch-all branch to `never`).
-type AddressLikeResponse =
-    | Address
-    | ({ publicKey: string } & Partial<HDNodeResponse> & Partial<SolanaPublicKey>);
+// specific shapes add their own fields. The optional fields are listed inline so that
+// structural narrowing inside `displayAddress` doesn't collapse to `never` for the
+// catch-all branch (which would happen with separate union members).
+type PublicKeyLikeResponse = {
+    publicKey: string;
+    xpub?: string;
+    xpubSegwit?: string;
+    publicKeyBase58?: string;
+};
+type AddressLikeResponse = Address | PublicKeyLikeResponse;
 
 const methodsAddress = [
     'getAddress',
@@ -72,11 +75,11 @@ export async function postCallHook<M extends CallMethodKeys>({
                     : originalPayload;
             const displayAddress = () => {
                 if ('address' in item) return item.address;
-                // For SOL
-                if ('publicKeyBase58' in item) return item.publicKeyBase58;
                 // NOTE: it's possible in some cases there will be a mismatch between the public key format on the device and the one in the app
+                // For SOL
+                if (item.publicKeyBase58) return item.publicKeyBase58;
                 // For BTC
-                if ('xpub' in item) return item.xpubSegwit || item.xpub;
+                if (item.xpub) return item.xpubSegwit || item.xpub;
 
                 // For other altcoins
                 return item.publicKey;
