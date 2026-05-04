@@ -37,7 +37,7 @@
             }
         },
         "browser": {
-            "ws": "./lib/ws.browser.js"
+            "ws": "./libESM/ws.browser.mjs"
         },
         "react-native": {
             "__comment__": "Hotfix for issue where RN metro bundler resolve relatives paths wrong",
