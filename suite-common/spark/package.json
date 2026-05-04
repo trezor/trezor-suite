@@ -20,6 +20,7 @@
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-sync-storage": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
+        "@suite-common/toast-notifications": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/type-utils": "workspace:*",

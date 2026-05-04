@@ -181,6 +181,7 @@
   "TOAST_COIN_SCHEME_PROTOCOL_AMOUNT": "Amount:",
   "TOAST_COIN_SCHEME_PROTOCOL_HEADER": "Go to an account to send",
   "TOAST_COPY_TO_CLIPBOARD": "Copied",
+  "TOAST_SPARK_RECEIVE_SUCCESS": "Spark money received",
   "TOAST_DEVICE_WIPED": "Trezor wiped successfully",
   "TOAST_DISCOVERY_ERROR": "Account discovery error: {error}",
   "TOAST_ESTIMATED_FEE_ERROR": "Network fee estimate unavailable. Using backup value instead.",

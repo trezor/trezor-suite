@@ -18,12 +18,8 @@
         {
             "path": "../../suite-common/analytics-redux"
         },
-        {
-            "path": "../../suite-common/assets"
-        },
-        {
-            "path": "../../suite-common/bip329"
-        },
+        { "path": "../../suite-common/assets" },
+        { "path": "../../suite-common/bip329" },
         {
             "path": "../../suite-common/bip329-types"
         },
@@ -43,9 +39,7 @@
         {
             "path": "../../suite-common/dependency-injection"
         },
-        {
-            "path": "../../suite-common/device"
-        },
+        { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/device-authenticity"
         },
@@ -55,15 +49,11 @@
         {
             "path": "../../suite-common/earn-staking-api"
         },
-        {
-            "path": "../../suite-common/feedback"
-        },
+        { "path": "../../suite-common/feedback" },
         {
             "path": "../../suite-common/fiat-services"
         },
-        {
-            "path": "../../suite-common/firmware"
-        },
+        { "path": "../../suite-common/firmware" },
         {
             "path": "../../suite-common/firmware-authenticity"
         },
@@ -74,18 +64,14 @@
         {
             "path": "../../suite-common/geolocation"
         },
-        {
-            "path": "../../suite-common/logger"
-        },
+        { "path": "../../suite-common/logger" },
         {
             "path": "../../suite-common/message-system"
         },
         {
             "path": "../../suite-common/metadata-types"
         },
-        {
-            "path": "../../suite-common/mev"
-        },
+        { "path": "../../suite-common/mev" },
         {
             "path": "../../suite-common/platform-encryption"
         },
@@ -95,15 +81,8 @@
         {
             "path": "../../suite-common/redux-utils"
         },
-        {
-            "path": "../../suite-common/sentry"
-        },
-        {
-            "path": "../../suite-common/spark"
-        },
-        {
-            "path": "../../suite-common/staking"
-        },
+        { "path": "../../suite-common/sentry" },
+        { "path": "../../suite-common/staking" },
         {
             "path": "../../suite-common/staking-solana"
         },
@@ -137,24 +116,18 @@
         {
             "path": "../../suite-common/suite-utils"
         },
-        {
-            "path": "../../suite-common/support"
-        },
+        { "path": "../../suite-common/support" },
         {
             "path": "../../suite-common/test-utils"
         },
-        {
-            "path": "../../suite-common/thp"
-        },
+        { "path": "../../suite-common/thp" },
         {
             "path": "../../suite-common/toast-notifications"
         },
         {
             "path": "../../suite-common/token-definitions"
         },
-        {
-            "path": "../../suite-common/trading"
-        },
+        { "path": "../../suite-common/trading" },
         {
             "path": "../../suite-common/transaction-search"
         },
@@ -182,54 +155,30 @@
         {
             "path": "../../suite-common/walletconnect"
         },
-        {
-            "path": "../../suite/analytics"
-        },
-        {
-            "path": "../../suite/backup"
-        },
-        {
-            "path": "../../suite/desktop-update"
-        },
-        {
-            "path": "../../suite/device"
-        },
-        {
-            "path": "../../suite/experimental"
-        },
+        { "path": "../../suite/analytics" },
+        { "path": "../../suite/backup" },
+        { "path": "../../suite/desktop-update" },
+        { "path": "../../suite/device" },
+        { "path": "../../suite/experimental" },
         {
             "path": "../../suite/feature-feedback"
         },
         {
             "path": "../../suite/firmware-upgrade"
         },
-        {
-            "path": "../../suite/flags"
-        },
-        {
-            "path": "../../suite/github"
-        },
+        { "path": "../../suite/flags" },
+        { "path": "../../suite/github" },
         {
             "path": "../../suite/idb-migration-utils"
         },
-        {
-            "path": "../../suite/intl"
-        },
-        {
-            "path": "../../suite/locks"
-        },
-        {
-            "path": "../../suite/metadata"
-        },
+        { "path": "../../suite/intl" },
+        { "path": "../../suite/locks" },
+        { "path": "../../suite/metadata" },
         {
             "path": "../../suite/metadata-migration"
         },
-        {
-            "path": "../../suite/modal"
-        },
-        {
-            "path": "../../suite/nfc"
-        },
+        { "path": "../../suite/modal" },
+        { "path": "../../suite/nfc" },
         {
             "path": "../../suite/onboarding-components"
         },
@@ -239,107 +188,39 @@
         {
             "path": "../../suite/platform-encryption-webauthn"
         },
-        {
-            "path": "../../suite/recovery"
-        },
-        {
-            "path": "../../suite/router"
-        },
-        {
-            "path": "../../suite/settings"
-        },
-        {
-            "path": "../../suite/suite-sync"
-        },
-        {
-            "path": "../../suite/thp"
-        },
-        {
-            "path": "../../suite/trading"
-        },
-        {
-            "path": "../../suite/tx-simulation"
-        },
-        {
-            "path": "../address-validator"
-        },
-        {
-            "path": "../analytics-uploader"
-        },
-        {
-            "path": "../asset-utils"
-        },
-        {
-            "path": "../blockchain-link"
-        },
-        {
-            "path": "../blockchain-link-types"
-        },
-        {
-            "path": "../blockchain-link-utils"
-        },
-        {
-            "path": "../coinjoin"
-        },
-        {
-            "path": "../components"
-        },
-        {
-            "path": "../connect"
-        },
-        {
-            "path": "../connect-common"
-        },
-        {
-            "path": "../crypto-utils"
-        },
-        {
-            "path": "../device-utils"
-        },
-        {
-            "path": "../dom-utils"
-        },
-        {
-            "path": "../env-utils"
-        },
-        {
-            "path": "../ipc-proxy"
-        },
-        {
-            "path": "../product-components"
-        },
-        {
-            "path": "../react-utils"
-        },
-        {
-            "path": "../styles"
-        },
-        {
-            "path": "../suite-data"
-        },
-        {
-            "path": "../suite-desktop-api"
-        },
-        {
-            "path": "../suite-storage"
-        },
-        {
-            "path": "../theme"
-        },
-        {
-            "path": "../transport-bluetooth"
-        },
-        {
-            "path": "../type-utils"
-        },
-        {
-            "path": "../urls"
-        },
-        {
-            "path": "../utils"
-        },
-        {
-            "path": "../eslint"
-        }
+        { "path": "../../suite/recovery" },
+        { "path": "../../suite/router" },
+        { "path": "../../suite/settings" },
+        { "path": "../../suite/suite-sync" },
+        { "path": "../../suite/thp" },
+        { "path": "../../suite/trading" },
+        { "path": "../../suite/tx-simulation" },
+        { "path": "../address-validator" },
+        { "path": "../analytics-uploader" },
+        { "path": "../asset-utils" },
+        { "path": "../blockchain-link" },
+        { "path": "../blockchain-link-types" },
+        { "path": "../blockchain-link-utils" },
+        { "path": "../coinjoin" },
+        { "path": "../components" },
+        { "path": "../connect" },
+        { "path": "../connect-common" },
+        { "path": "../crypto-utils" },
+        { "path": "../device-utils" },
+        { "path": "../dom-utils" },
+        { "path": "../env-utils" },
+        { "path": "../ipc-proxy" },
+        { "path": "../product-components" },
+        { "path": "../react-utils" },
+        { "path": "../styles" },
+        { "path": "../suite-data" },
+        { "path": "../suite-desktop-api" },
+        { "path": "../suite-storage" },
+        { "path": "../theme" },
+        { "path": "../transport-bluetooth" },
+        { "path": "../type-utils" },
+        { "path": "../urls" },
+        { "path": "../utils" },
+        { "path": "../eslint" }
     ]
 }

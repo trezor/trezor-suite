@@ -16,7 +16,12 @@ import {
     type EnsureSparkWalletDep,
     createEnsureSparkWallet,
 } from './feature/createEnsureSparkWallet';
+import { createHandleSparkWalletIncomingTransaction } from './feature/createHandleSparkWalletIncomingTransaction';
 import { createInitializeRunningSparkWallet } from './feature/createInitializeRunningSparkWallet';
+import {
+    type LoadSparkReceiveDetailsDep,
+    createLoadSparkReceiveDetails,
+} from './feature/createLoadSparkReceiveDetails';
 import { createRunningSparkWalletRepository } from './feature/createRunningSparkWalletRepository';
 import { createSparkWalletSubscriptionStorage } from './feature/createSparkWalletSubscriptionStorage';
 import { createSubmitSparkLightningSend } from './feature/createSubmitSparkLightningSend';
@@ -30,6 +35,7 @@ import {
 export type Spark = AddSparkAccountDep &
     EnsureSparkOwnerSecretDep &
     EnsureSparkWalletDep &
+    LoadSparkReceiveDetailsDep &
     SyncSparkWalletDep &
     SubmitSparkLightningSendDep;
 
@@ -53,9 +59,14 @@ export const createSparkCompositionRoot = (deps: SparkCompositionRootDeps): Spar
     const runningSparkWalletRepository = createRunningSparkWalletRepository();
     const sparkWalletSubscriptionStorage = createSparkWalletSubscriptionStorage();
     const syncSparkWalletState = createSyncSparkWalletState({ dispatch: deps.dispatch });
+    const handleSparkWalletIncomingTransaction = createHandleSparkWalletIncomingTransaction({
+        dispatch: deps.dispatch,
+        syncSparkWalletState,
+    });
 
     const initializeRunningSparkWallet = createInitializeRunningSparkWallet({
         dispatch: deps.dispatch,
+        handleSparkWalletIncomingTransaction,
         runningSparkWalletRepository,
         sparkWalletSubscriptionStorage,
         syncSparkWalletState,
@@ -68,6 +79,11 @@ export const createSparkCompositionRoot = (deps: SparkCompositionRootDeps): Spar
         runningSparkWalletRepository,
         sparkWalletSubscriptionStorage,
         syncSparkWalletState,
+    });
+
+    const loadSparkReceiveDetails = createLoadSparkReceiveDetails({
+        dispatch: deps.dispatch,
+        ensureSparkWallet,
     });
 
     const syncSparkWallet = createSyncSparkWallet({
@@ -91,6 +107,7 @@ export const createSparkCompositionRoot = (deps: SparkCompositionRootDeps): Spar
         addSparkAccount,
         ensureSparkOwnerSecret,
         ensureSparkWallet,
+        loadSparkReceiveDetails,
         syncSparkWallet,
         submitSparkLightningSend,
     };

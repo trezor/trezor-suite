@@ -3,7 +3,9 @@ import type { Dispatch } from '@reduxjs/toolkit';
 import { type EnsureSparkWalletDep, type SparkWalletParams } from './createEnsureSparkWallet';
 import { type RunningSparkWallet } from './createRunningSparkWalletRepository';
 import { sparkActions } from './sparkFeatureReducer';
-import { loadSparkWalletSnapshot } from '../sdk/loadSparkWalletSnapshot';
+import { getErrorMessage } from '../sdk/getErrorMessage';
+import { getSparkWalletBalance } from '../sdk/getSparkWalletBalance';
+import { getSparkWalletTransfers } from '../sdk/getSparkWalletTransfers';
 
 export type SyncSparkWalletStateParams = SparkWalletParams & {
     runningSparkWallet: RunningSparkWallet;
@@ -32,36 +34,34 @@ export const createSyncSparkWalletState =
             );
         }
 
-        const walletSnapshot = await loadSparkWalletSnapshot({
-            mnemonic: params.runningSparkWallet.mnemonic,
-            wallet: params.runningSparkWallet.wallet,
-        });
+        try {
+            const [balanceSats, transfers] = await Promise.all([
+                getSparkWalletBalance(params.runningSparkWallet.wallet),
+                getSparkWalletTransfers(params.runningSparkWallet.wallet),
+            ]);
 
-        if (!walletSnapshot.success) {
+            deps.dispatch(
+                sparkActions.setSparkWalletLoaded({
+                    accountNumber: params.accountNumber,
+                    balanceSats,
+                    mnemonic: params.runningSparkWallet.mnemonic as never,
+                    transfers,
+                    walletDescriptor: params.walletDescriptor,
+                }),
+            );
+
+            return true;
+        } catch (error) {
             deps.dispatch(
                 sparkActions.setSparkWalletError({
                     accountNumber: params.accountNumber,
-                    error: walletSnapshot.error.message,
+                    error: getErrorMessage(error),
                     walletDescriptor: params.walletDescriptor,
                 }),
             );
 
             return false;
         }
-
-        deps.dispatch(
-            sparkActions.setSparkWalletLoaded({
-                accountNumber: params.accountNumber,
-                balanceSats: walletSnapshot.payload.balanceSats,
-                bitcoinDepositAddress: walletSnapshot.payload.bitcoinDepositAddress,
-                lightningInvoice: walletSnapshot.payload.lightningInvoice,
-                mnemonic: walletSnapshot.payload.mnemonic as never,
-                transfers: walletSnapshot.payload.transfers,
-                walletDescriptor: params.walletDescriptor,
-            }),
-        );
-
-        return true;
     };
 
 export type SyncSparkWalletParams = SparkWalletParams & {

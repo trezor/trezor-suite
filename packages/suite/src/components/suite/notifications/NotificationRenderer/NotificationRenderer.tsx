@@ -153,6 +153,13 @@ export const NotificationRenderer = ({
                 message: 'TOAST_COPY_TO_CLIPBOARD',
             });
 
+        case 'spark-receive-success':
+            return renderNotificationView(render, notification, {
+                variant: 'success',
+                message: 'TOAST_SPARK_RECEIVE_SUCCESS',
+                icon: 'check',
+            });
+
         case 'raw-tx-sent':
             return renderNotificationView(render, notification, {
                 variant: 'success',

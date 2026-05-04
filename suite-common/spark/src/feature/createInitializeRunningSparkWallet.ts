@@ -6,6 +6,7 @@ import {
 import type { Dispatch } from '@reduxjs/toolkit';
 
 import type { SparkWalletParams } from './createEnsureSparkWallet';
+import type { HandleSparkWalletIncomingTransactionDep } from './createHandleSparkWalletIncomingTransaction';
 import type {
     RunningSparkWallet,
     RunningSparkWalletRepositoryDep,
@@ -31,6 +32,7 @@ export type InitializeRunningSparkWalletDep = {
 export type InitializeRunningSparkWalletDeps = {
     dispatch: Dispatch;
 } & RunningSparkWalletRepositoryDep &
+    HandleSparkWalletIncomingTransactionDep &
     SparkWalletSubscriptionStorageDep &
     SyncSparkWalletStateDep;
 
@@ -63,14 +65,12 @@ export const createInitializeRunningSparkWallet =
 
         const eventHandlers: SparkWalletEventHandlerMap = {
             [SparkWalletEvent.All]: (_eventName, ..._args) => {},
-            [SparkWalletEvent.BalanceUpdate]: _balance => {
-                void deps.syncSparkWalletState(eventContext);
-            },
+            [SparkWalletEvent.BalanceUpdate]: _balance => {},
             [SparkWalletEvent.TransferClaimed]: () => {
-                void deps.syncSparkWalletState(eventContext);
+                void deps.handleSparkWalletIncomingTransaction(eventContext);
             },
             [SparkWalletEvent.DepositConfirmed]: () => {
-                void deps.syncSparkWalletState(eventContext);
+                void deps.handleSparkWalletIncomingTransaction(eventContext);
             },
             [SparkWalletEvent.StreamConnected]: () => {
                 void deps.syncSparkWalletState(eventContext);

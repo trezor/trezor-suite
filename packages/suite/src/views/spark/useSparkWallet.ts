@@ -57,7 +57,7 @@ export const useSparkWallet = () => {
             return;
         }
 
-        if (wallet?.status === 'loading' || wallet?.status === 'loaded') {
+        if (wallet?.status !== 'idle') {
             return;
         }
 
@@ -125,10 +125,9 @@ export const useSparkWallet = () => {
             return;
         }
 
-        void spark.syncSparkWallet({
+        void spark.loadSparkReceiveDetails({
             accountNumber: selectedAccount.accountNumber,
             deviceStaticSessionId,
-            setLoading: true,
             walletDescriptor,
         });
     };
@@ -141,7 +140,7 @@ export const useSparkWallet = () => {
         void spark.syncSparkWallet({
             accountNumber: selectedAccount.accountNumber,
             deviceStaticSessionId,
-            setLoading: true,
+            setLoading: false,
             walletDescriptor,
         });
     };

@@ -140,6 +140,24 @@ const sparkFeatureSlice = createSlice({
 
             state.walletsByKey[walletKey] = walletState;
         },
+        setSparkWalletReceiveDetails: (
+            state,
+            action: PayloadAction<{
+                accountNumber: number;
+                bitcoinDepositAddress: string;
+                lightningInvoice: string;
+                walletDescriptor: WalletDescriptor;
+            }>,
+        ) => {
+            const walletKey = createSparkWalletKey(action.payload);
+            const walletState =
+                state.walletsByKey[walletKey] ?? createSparkWalletState(action.payload);
+
+            walletState.bitcoinDepositAddress = action.payload.bitcoinDepositAddress;
+            walletState.lightningInvoice = action.payload.lightningInvoice;
+
+            state.walletsByKey[walletKey] = walletState;
+        },
         setSparkWalletLoaded: (
             state,
             action: PayloadAction<{

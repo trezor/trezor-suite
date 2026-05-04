@@ -71,8 +71,7 @@ export const SparkLayout = ({ children }: SparkLayoutProps) => {
                 <Column gap={12}>
                     <Text typographyStyle="body-md-strong">Loading Spark wallet</Text>
                     <Text color="contentSecondary">
-                        Syncing Spark balance, history, and receive details for the selected
-                        account.
+                        Syncing Spark balance and recent activity for the selected account.
                     </Text>
                 </Column>
             </Card>

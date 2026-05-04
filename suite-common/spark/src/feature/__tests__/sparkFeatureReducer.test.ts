@@ -111,6 +111,33 @@ describe('sparkFeatureReducer', () => {
         expect(loadedState.walletsByKey['wallet-1:0'].lastLoadedAt).not.toBeNull();
     });
 
+    it('stores receive details without changing loaded wallet data', () => {
+        const stateWithAccount = sparkReducer(
+            initialSparkState,
+            sparkActions.addSparkAccount({
+                accountNumber: 0,
+                walletDescriptor,
+            }),
+        );
+        const receiveDetailsState = sparkReducer(
+            stateWithAccount,
+            sparkActions.setSparkWalletReceiveDetails({
+                accountNumber: 0,
+                bitcoinDepositAddress: 'bc1qaddress',
+                lightningInvoice: 'lnbc1invoice',
+                walletDescriptor,
+            }),
+        );
+
+        expect(receiveDetailsState.walletsByKey['wallet-1:0']).toEqual(
+            expect.objectContaining({
+                bitcoinDepositAddress: 'bc1qaddress',
+                lightningInvoice: 'lnbc1invoice',
+                status: 'idle',
+            }),
+        );
+    });
+
     it('stores wallet error state', () => {
         const stateWithAccount = sparkReducer(
             initialSparkState,

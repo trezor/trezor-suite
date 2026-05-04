@@ -24,13 +24,6 @@ export type SubmitSparkLightningSendDeps = {
 export const createSubmitSparkLightningSend =
     (deps: SubmitSparkLightningSendDeps): SubmitSparkLightningSend =>
     async params => {
-        deps.dispatch(
-            sparkActions.setSparkWalletLoading({
-                accountNumber: params.accountNumber,
-                walletDescriptor: params.walletDescriptor,
-            }),
-        );
-
         const ensuredSparkWallet = await deps.ensureSparkWallet({
             ...params,
         });

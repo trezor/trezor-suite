@@ -125,6 +125,7 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
               | 'auto-updater-no-new'
               | 'auto-eject-settings'
               | 'qr-incorrect-address'
+              | 'spark-receive-success'
               | 'copy-to-clipboard'
               | 'tor-is-slow'
               | 'coinjoin-interrupted'

@@ -3929,6 +3929,10 @@ export const messages = defineMessages({
         id: 'TOAST_COPY_TO_CLIPBOARD',
         defaultMessage: 'Copied',
     },
+    TOAST_SPARK_RECEIVE_SUCCESS: {
+        id: 'TOAST_SPARK_RECEIVE_SUCCESS',
+        defaultMessage: 'Spark money received',
+    },
     TOAST_TX_COMPOSED: {
         id: 'TOAST_TX_COMPOSED',
         defaultMessage: '{content}',

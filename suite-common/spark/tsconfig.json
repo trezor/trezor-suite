@@ -1,38 +1,17 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev"
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../platform-encryption"
-        },
-        {
-            "path": "../redux-utils"
-        },
-        {
-            "path": "../suite-sync"
-        },
-        {
-            "path": "../suite-sync-storage"
-        },
-        {
-            "path": "../suite-sync-types"
-        },
-        {
-            "path": "../wallet-types"
-        },
-        {
-            "path": "../../packages/components"
-        },
-        {
-            "path": "../test-utils"
-        },
-        {
-            "path": "../../packages/type-utils"
-        },
-        {
-            "path": "../../packages/eslint"
-        }
+        { "path": "../platform-encryption" },
+        { "path": "../redux-utils" },
+        { "path": "../suite-sync" },
+        { "path": "../suite-sync-storage" },
+        { "path": "../suite-sync-types" },
+        { "path": "../toast-notifications" },
+        { "path": "../wallet-types" },
+        { "path": "../../packages/components" },
+        { "path": "../../packages/type-utils" },
+        { "path": "../test-utils" },
+        { "path": "../../packages/eslint" }
     ]
 }
