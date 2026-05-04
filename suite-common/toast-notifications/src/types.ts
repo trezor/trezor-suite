@@ -106,6 +106,11 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
           error?: string;
       }
     | {
+          type: 'spark-device-work';
+          methodName: string;
+          paramsJson: string;
+      }
+    | {
           type:
               | 'settings-applied'
               | 'pin-changed'

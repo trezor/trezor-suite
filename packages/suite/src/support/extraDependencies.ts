@@ -48,6 +48,7 @@ import {
     selectIsSuiteSyncEnabled,
     selectSuiteSyncWalletLabel,
 } from '@suite-common/suite-sync';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
@@ -156,6 +157,15 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
                     paramsJson: params.paramsJson,
                 }) as never,
             ) as Promise<boolean>,
+        notifySparkDeviceWork: params => {
+            deps.dispatch(
+                notificationsActions.addToast({
+                    type: 'spark-device-work',
+                    methodName: params.methodName,
+                    paramsJson: params.paramsJson,
+                }),
+            );
+        },
         dispatch: deps.dispatch,
         ensureWalletSuiteSyncOn: suiteSync.ensureWalletSuiteSyncOn,
         getState: deps.getState,

@@ -10,13 +10,16 @@ describe('sparkFeatureReducer', () => {
             sparkReducer(undefined, {
                 type: 'init',
             }),
-        ).toEqual(initialSparkState);
+        ).toEqual({
+            ...initialSparkState,
+            isEnabled: true,
+        });
     });
 
     it('toggles spark enablement', () => {
-        expect(sparkReducer(initialSparkState, sparkActions.setSparkEnabled(true))).toEqual({
+        expect(sparkReducer(initialSparkState, sparkActions.setSparkEnabled(false))).toEqual({
             ...initialSparkState,
-            isEnabled: true,
+            isEnabled: false,
         });
     });
 

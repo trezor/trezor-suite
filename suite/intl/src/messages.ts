@@ -3929,6 +3929,10 @@ export const messages = defineMessages({
         id: 'TOAST_COPY_TO_CLIPBOARD',
         defaultMessage: 'Copied',
     },
+    TOAST_SPARK_DEVICE_WORK: {
+        id: 'TOAST_SPARK_DEVICE_WORK',
+        defaultMessage: 'Trezor device performed work for {methodName} with params {paramsJson}',
+    },
     TOAST_SPARK_RECEIVE_SUCCESS: {
         id: 'TOAST_SPARK_RECEIVE_SUCCESS',
         defaultMessage: 'Spark money received',

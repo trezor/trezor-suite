@@ -153,6 +153,17 @@ export const NotificationRenderer = ({
                 message: 'TOAST_COPY_TO_CLIPBOARD',
             });
 
+        case 'spark-device-work':
+            return renderNotificationView(render, notification, {
+                variant: 'warning',
+                message: 'TOAST_SPARK_DEVICE_WORK' as TranslationKey,
+                icon: 'warning',
+                values: {
+                    methodName: notification.methodName,
+                    paramsJson: notification.paramsJson,
+                },
+            });
+
         case 'spark-receive-success':
             return renderNotificationView(render, notification, {
                 variant: 'success',

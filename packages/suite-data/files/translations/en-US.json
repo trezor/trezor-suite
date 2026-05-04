@@ -181,6 +181,7 @@
   "TOAST_COIN_SCHEME_PROTOCOL_AMOUNT": "Amount:",
   "TOAST_COIN_SCHEME_PROTOCOL_HEADER": "Go to an account to send",
   "TOAST_COPY_TO_CLIPBOARD": "Copied",
+  "TOAST_SPARK_DEVICE_WORK": "Trezor device performed work for {methodName} with params {paramsJson}",
   "TOAST_SPARK_RECEIVE_SUCCESS": "Spark money received",
   "TOAST_DEVICE_WIPED": "Trezor wiped successfully",
   "TOAST_DISCOVERY_ERROR": "Account discovery error: {error}",

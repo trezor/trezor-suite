@@ -1,4 +1,7 @@
 import { goto } from '@suite/router';
+import { selectSelectedDevice } from '@suite-common/device';
+import { selectSelectedSparkAccount } from '@suite-common/spark';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Row, Text } from '@trezor/components';
 
 import {
@@ -6,13 +9,18 @@ import {
     PageHeader,
     SubpageNavigation,
 } from 'src/components/suite/layouts/SuiteLayout';
-import { useDispatch } from 'src/hooks/suite';
-
-import { useSparkWallet } from './useSparkWallet';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const SparkHeader = () => {
     const dispatch = useDispatch();
-    const { selectedAccount } = useSparkWallet();
+    const device = useSelector(selectSelectedDevice);
+    const deviceStaticSessionId = device?.state?.staticSessionId;
+    const walletDescriptor = deviceStaticSessionId
+        ? parseDeviceStaticSessionId(deviceStaticSessionId).walletDescriptor
+        : null;
+    const selectedAccount = useSelector(state =>
+        walletDescriptor ? selectSelectedSparkAccount(state, walletDescriptor) : undefined,
+    );
 
     const items: NavigationItem[] = [
         {

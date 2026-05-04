@@ -3,6 +3,7 @@ import type { Dispatch } from '@reduxjs/toolkit';
 import type { PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import {
     type ConfirmSparkSignerOperationDep,
+    type NotifySparkDeviceWorkDep,
     createFakeSparkSigner,
 } from '@suite-common/spark-fake-signer';
 import type {
@@ -54,6 +55,7 @@ type SparkStoreDeps = {
 
 export type SparkCompositionRootDeps = SparkStoreDeps &
     ConfirmSparkSignerOperationDep &
+    NotifySparkDeviceWorkDep &
     PlatformEncryptionDep &
     EnsureWalletSuiteSyncOnDep &
     TurnOnSuiteSyncDep;
@@ -66,6 +68,7 @@ export const createSparkCompositionRoot = (deps: SparkCompositionRootDeps): Spar
     const syncSparkWalletState = createSyncSparkWalletState({ dispatch: deps.dispatch });
     const fakeSparkSigner = createFakeSparkSigner({
         confirmSparkSignerOperation: deps.confirmSparkSignerOperation,
+        notifySparkDeviceWork: deps.notifySparkDeviceWork,
     });
     const handleSparkWalletIncomingTransaction = createHandleSparkWalletIncomingTransaction({
         dispatch: deps.dispatch,

@@ -58,7 +58,7 @@ const createSparkWalletState = ({
 
 export const initialSparkState: SparkState = {
     accountsByWalletDescriptor: {},
-    isEnabled: false,
+    isEnabled: true,
     selectedAccountNumberByWalletDescriptor: {},
     walletsByKey: {},
 };

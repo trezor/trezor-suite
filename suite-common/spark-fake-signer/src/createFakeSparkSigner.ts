@@ -35,8 +35,18 @@ export type ConfirmSparkSignerOperationDep = {
     confirmSparkSignerOperation: ConfirmSparkSignerOperation;
 };
 
+export type NotifySparkDeviceWorkParams = {
+    methodName: string;
+    paramsJson: string;
+};
+
+export type NotifySparkDeviceWork = (params: NotifySparkDeviceWorkParams) => void;
+
+export type NotifySparkDeviceWorkDep = {
+    notifySparkDeviceWork: NotifySparkDeviceWork;
+};
+
 type PrivateKeyMethodName =
-    | 'createSparkWalletFromSeed'
     | 'decryptEcies'
     | 'getStaticDepositSecretKey'
     | 'getStaticDepositSigningKey'
@@ -74,7 +84,7 @@ const serializeSparkSignerOperationParams = (params: unknown[]) => {
 
 export class FakeSparkSigner implements SparkSigner {
     constructor(
-        private readonly deps: ConfirmSparkSignerOperationDep,
+        private readonly deps: ConfirmSparkSignerOperationDep & NotifySparkDeviceWorkDep,
         private readonly sparkSigner: SparkSigner = new DefaultSparkSigner(),
     ) {}
 
@@ -127,6 +137,29 @@ export class FakeSparkSigner implements SparkSigner {
                 throw error;
             }
         });
+
+    private runNotifiedDeviceWorkOperation = <TReturn>(
+        methodName: string,
+        params: unknown[],
+        operation: () => Promise<TReturn>,
+    ): Promise<TReturn> => {
+        const paramsJson = serializeSparkSignerOperationParams(params);
+
+        this.deps.notifySparkDeviceWork({
+            methodName,
+            paramsJson,
+        });
+
+        return this.enqueuePrivateKeyOperation(async () => {
+            try {
+                return await operation();
+            } catch (error) {
+                console.error(`FakeSparkSigner.${methodName} failed`, error);
+
+                throw error;
+            }
+        });
+    };
 
     // This initializes the signer from the Suite Sync owner secret and derives
     // the Spark wallet keys. It must stay inside the signer because it is the
@@ -292,7 +325,7 @@ export class FakeSparkSigner implements SparkSigner {
     // This derives the whole Spark wallet from seed material. It is the core
     // wallet secret expansion step and must stay on the device.
     createSparkWalletFromSeed: SparkSigner['createSparkWalletFromSeed'] = (seed, accountNumber) =>
-        this.runPrivateKeyOperation(
+        this.runNotifiedDeviceWorkOperation(
             'createSparkWalletFromSeed',
             [seed, accountNumber],
             async () => {
@@ -311,7 +344,9 @@ export class FakeSparkSigner implements SparkSigner {
     // the device-backed signer, but returning a public key does not require an
     // explicit user confirmation or any direct user interaction.
     getPublicKeyFromDerivation: SparkSigner['getPublicKeyFromDerivation'] = keyDerivation =>
-        this.sparkSigner.getPublicKeyFromDerivation(keyDerivation);
+        this.runNotifiedDeviceWorkOperation('getPublicKeyFromDerivation', [keyDerivation], () =>
+            this.sparkSigner.getPublicKeyFromDerivation(keyDerivation),
+        );
 
     // This performs scalar arithmetic on two derived private keys. It is
     // private-key manipulation and must remain on the device.
@@ -367,7 +402,7 @@ export class FakeSparkSigner implements SparkSigner {
 }
 
 export const createFakeSparkSigner =
-    (deps: ConfirmSparkSignerOperationDep): CreateFakeSparkSigner =>
+    (deps: ConfirmSparkSignerOperationDep & NotifySparkDeviceWorkDep): CreateFakeSparkSigner =>
     async params => {
         const fakeSparkSigner = new FakeSparkSigner(deps);
 

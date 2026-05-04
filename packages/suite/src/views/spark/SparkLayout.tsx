@@ -1,27 +1,76 @@
+import { selectSelectedDevice } from '@suite-common/device';
+import {
+    selectIsSparkEnabled,
+    selectSelectedSparkAccount,
+    selectSparkAccountsByWalletDescriptor,
+    selectSparkWalletByAccountNumber,
+} from '@suite-common/spark';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Text } from '@trezor/components';
 
-import { useLayout } from 'src/hooks/suite';
+import { useLayout, useSelector } from 'src/hooks/suite';
+import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
 import { SparkHeader } from './SparkHeader';
-import { useSparkWallet } from './useSparkWallet';
 
 type SparkLayoutProps = {
     children?: React.ReactNode;
 };
 
 export const SparkLayout = ({ children }: SparkLayoutProps) => {
-    const {
-        addAccount,
-        device,
-        isEnabled,
-        walletDescriptor,
-        accounts,
-        reloadSelectedAccount,
-        selectedAccount,
-        wallet,
-    } = useSparkWallet();
+    const { spark } = useSuiteServices();
+    const device = useSelector(selectSelectedDevice);
+    const isEnabled = useSelector(selectIsSparkEnabled);
+    const deviceStaticSessionId = device?.state?.staticSessionId;
+    const walletDescriptor = deviceStaticSessionId
+        ? parseDeviceStaticSessionId(deviceStaticSessionId).walletDescriptor
+        : null;
+    const accounts = useSelector(state =>
+        walletDescriptor ? selectSparkAccountsByWalletDescriptor(state, walletDescriptor) : [],
+    );
+    const selectedAccount = useSelector(state =>
+        walletDescriptor ? selectSelectedSparkAccount(state, walletDescriptor) : undefined,
+    );
+    const wallet = useSelector(state =>
+        walletDescriptor && selectedAccount
+            ? selectSparkWalletByAccountNumber(state, {
+                  accountNumber: selectedAccount.accountNumber,
+                  walletDescriptor,
+              })
+            : undefined,
+    );
 
     useLayout('Spark', <SparkHeader />);
+
+    const addAccount = () => {
+        if (!walletDescriptor || !deviceStaticSessionId) {
+            return;
+        }
+
+        const nextAccountNumber =
+            accounts.length > 0
+                ? Math.max(...accounts.map(account => account.accountNumber)) + 1
+                : 0;
+
+        void spark.addSparkAccount({
+            accountNumber: nextAccountNumber,
+            deviceStaticSessionId,
+            walletDescriptor,
+        });
+    };
+
+    const reloadSelectedAccount = () => {
+        if (!deviceStaticSessionId || !walletDescriptor || !selectedAccount) {
+            return;
+        }
+
+        void spark.syncSparkWallet({
+            accountNumber: selectedAccount.accountNumber,
+            deviceStaticSessionId,
+            setLoading: false,
+            walletDescriptor,
+        });
+    };
 
     if (!isEnabled) {
         return (

@@ -1,19 +1,54 @@
 import { useEffect } from 'react';
 
-import { SparkReceiveView } from '@suite-common/spark';
+import { selectSelectedDevice } from '@suite-common/device';
+import {
+    SparkReceiveView,
+    selectSelectedSparkAccount,
+    selectSparkWalletByAccountNumber,
+} from '@suite-common/spark';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Box } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 
 import { QrCode } from 'src/components/suite/QrCode';
+import { useSelector } from 'src/hooks/suite';
+import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
 import { SparkLayout } from '../SparkLayout';
-import { useSparkWallet } from '../useSparkWallet';
 
 export const SparkReceive = () => {
-    const { refreshLightningInvoice, wallet } = useSparkWallet();
+    const { spark } = useSuiteServices();
+    const device = useSelector(selectSelectedDevice);
+    const deviceStaticSessionId = device?.state?.staticSessionId;
+    const walletDescriptor = deviceStaticSessionId
+        ? parseDeviceStaticSessionId(deviceStaticSessionId).walletDescriptor
+        : null;
+    const selectedAccount = useSelector(state =>
+        walletDescriptor ? selectSelectedSparkAccount(state, walletDescriptor) : undefined,
+    );
+    const wallet = useSelector(state =>
+        walletDescriptor && selectedAccount
+            ? selectSparkWalletByAccountNumber(state, {
+                  accountNumber: selectedAccount.accountNumber,
+                  walletDescriptor,
+              })
+            : undefined,
+    );
+
+    const refreshLightningInvoice = () => {
+        if (!walletDescriptor || !selectedAccount || !deviceStaticSessionId) {
+            return;
+        }
+
+        void spark.loadSparkReceiveDetails({
+            accountNumber: selectedAccount.accountNumber,
+            deviceStaticSessionId,
+            walletDescriptor,
+        });
+    };
 
     useEffect(() => {
-        if (!wallet) {
+        if (!wallet || !walletDescriptor || !selectedAccount || !deviceStaticSessionId) {
             return;
         }
 
@@ -21,8 +56,12 @@ export const SparkReceive = () => {
             return;
         }
 
-        refreshLightningInvoice();
-    }, [refreshLightningInvoice, wallet]);
+        void spark.loadSparkReceiveDetails({
+            accountNumber: selectedAccount.accountNumber,
+            deviceStaticSessionId,
+            walletDescriptor,
+        });
+    }, [deviceStaticSessionId, selectedAccount, spark, wallet, walletDescriptor]);
 
     return (
         <SparkLayout>
