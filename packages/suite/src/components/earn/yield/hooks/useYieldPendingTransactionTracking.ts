@@ -21,7 +21,7 @@ const getPollIntervalMs = (blockTime: number | undefined): number => {
     if (!blockTime) return DEFAULT_PENDING_TX_POLL_INTERVAL_MS;
 
     return Math.max(
-        (blockTime / BLOCK_TIME_TO_POLL_INTERVAL_RATIO) * 60 * 1000,
+        (blockTime / BLOCK_TIME_TO_POLL_INTERVAL_RATIO) * 1000,
         MIN_PENDING_TX_POLL_INTERVAL_MS,
     );
 };
