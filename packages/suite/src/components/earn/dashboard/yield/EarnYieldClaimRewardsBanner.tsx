@@ -49,7 +49,10 @@ export const EarnYieldClaimRewardsBanner = ({
                     {isValueLoading ? (
                         <SkeletonRectangle width={50} height={16} animate />
                     ) : (
-                        <BaseCurrencyAmountFormatter value={value} currency={currency} />
+                        <>
+                            {!isClaimDisabled && '≈ '}
+                            <BaseCurrencyAmountFormatter value={value} currency={currency} />
+                        </>
                     )}
                 </Row>
             }
