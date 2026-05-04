@@ -5,11 +5,11 @@ import {
     sendFormActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import type { CallMethodKeys, SolanaSignTransaction } from '@trezor/connect';
+import type { CallMethodKeys } from '@trezor/connect';
 import { getSerializedPath, validatePath } from '@trezor/connect/src/utils/pathUtils';
 
 import { connectPopupActions } from '../connectPopupActions';
-import { type PostCallHookParams, type PreCallHookParams } from './types';
+import { type PostCallHookParams, type PreCallHookParams, isCallMethod } from './types';
 import { createPlaceholderAccount } from './utils';
 
 const temporaryAccounts: Account[] = [];
@@ -22,8 +22,8 @@ const preCallHook = async <M extends CallMethodKeys>({
     txSigningPrecomposed,
 }: PreCallHookParams<M>) => {
     try {
-        if (method === 'solanaSignTransaction' && txSigningPrecomposed) {
-            const typedPayload = payload as any as SolanaSignTransaction;
+        if (isCallMethod(method, 'solanaSignTransaction', payload) && txSigningPrecomposed) {
+            const typedPayload = payload;
             const path = getSerializedPath(validatePath(typedPayload.path)) as Bip43Path;
             const network = getNetwork(typedPayload.additionalInfo?.isDevnet ? 'dsol' : 'sol');
             // Try to find matching account

@@ -5,11 +5,11 @@ import {
     sendFormActions,
 } from '@suite-common/wallet-core';
 import { type Account, type FormOptions } from '@suite-common/wallet-types';
-import type { CallMethodKeys, SignTransaction } from '@trezor/connect';
+import type { CallMethodKeys } from '@trezor/connect';
 import { getSerializedPath } from '@trezor/connect/src/utils/pathUtils';
 
 import { connectPopupActions } from '../connectPopupActions';
-import { type PostCallHookParams, type PreCallHookParams } from './types';
+import { type PostCallHookParams, type PreCallHookParams, isCallMethod } from './types';
 import { createPlaceholderAccount } from './utils';
 
 const temporaryAccounts: Account[] = [];
@@ -22,8 +22,8 @@ const preCallHook = async <M extends CallMethodKeys>({
     txSigningPrecomposed,
 }: PreCallHookParams<M>) => {
     try {
-        if (method === 'signTransaction' && txSigningPrecomposed) {
-            const typedPayload = payload as any as SignTransaction;
+        if (isCallMethod(method, 'signTransaction', payload) && txSigningPrecomposed) {
+            const typedPayload = payload;
             const network = getNetwork(typedPayload.coin as NetworkSymbol);
             if (!network) {
                 throw new Error(`Network not supported`);

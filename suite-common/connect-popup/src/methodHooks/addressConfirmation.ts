@@ -5,6 +5,8 @@ import { connectPopupActions } from '../connectPopupActions';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
 import { type PostCallHookParams, type PreCallHookParams } from './types';
 
+type AddressLikeResponse = Address | HDNodeResponse | SolanaPublicKey;
+
 const methodsAddress = [
     'getAddress',
     'ethereumGetAddress',
@@ -55,7 +57,7 @@ export async function postCallHook<M extends CallMethodKeys>({
     if (methods.includes(method) && response.success) {
         const bundledResponse = (
             Array.isArray(response.payload) ? response.payload : [response.payload]
-        ) as Address[] | HDNodeResponse[];
+        ) as AddressLikeResponse[];
         const addresses = bundledResponse.map((item, index) => {
             const validatePayload =
                 'bundle' in originalPayload && Array.isArray(originalPayload.bundle)
@@ -63,13 +65,11 @@ export async function postCallHook<M extends CallMethodKeys>({
                     : originalPayload;
             const displayAddress = () => {
                 if ('address' in item) return item.address;
-
+                // For SOL
+                if ('publicKeyBase58' in item) return item.publicKeyBase58;
                 // NOTE: it's possible in some cases there will be a mismatch between the public key format on the device and the one in the app
                 // For BTC
-                if (method === 'getPublicKey') return item.xpubSegwit || item.xpub;
-                // For SOL
-                if (method === 'solanaGetPublicKey')
-                    return (item as any as SolanaPublicKey).publicKeyBase58;
+                if ('xpub' in item) return item.xpubSegwit || item.xpub;
 
                 // For other altcoins
                 return item.publicKey;

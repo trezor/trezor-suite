@@ -23,3 +23,18 @@ export type PostCallHookParams<M extends CallMethodKeys> = PreCallHookParams<M> 
     originalPayload: Omit<CallMethodParams<M>, 'method'>;
     response: Ok<CallMethodResponse<M>> | Err<SerializedError>;
 };
+
+/**
+ * Narrows method+payload pair to a specific method `K`. TypeScript can't infer
+ * that `payload` matches `CallMethodParams<K>` from a generic `M extends CallMethodKeys`
+ * just by checking `method === K`, so we encode the relationship in a type guard.
+ *
+ * The `payload` parameter is typed as `unknown` to avoid an intersection between
+ * `CallMethodParams<M>` and `CallMethodParams<K>` (which would collapse to `never`
+ * for distinct methods); after the predicate we narrow it directly to `K`'s shape.
+ */
+export const isCallMethod = <K extends CallMethodKeys>(
+    method: CallMethodKeys,
+    targetMethod: K,
+    payload: unknown,
+): payload is Omit<CallMethodParams<K>, 'method'> => method === targetMethod;
