@@ -36,6 +36,7 @@
         { "path": "../helpers" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../scrollview" },
         { "path": "../services" },

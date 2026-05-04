@@ -3,15 +3,26 @@ import type { TransactionStatus } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { type TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
 import { type TestStore, renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { mockTransaction } from '@suite-native/tokens';
 import { exchangeQuotes } from '@suite-native/trading-fixtures';
+import { useTransactionDetails } from '@suite-native/transaction-management';
 
 import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
 import { TradingConfirmingScreen } from '../TradingConfirmingScreen';
+
+const mockOpenInBlockchain = jest.fn();
+
+jest.mock('@suite-native/transaction-management', () => ({
+    ...jest.requireActual('@suite-native/transaction-management'),
+    useTransactionDetails: jest.fn(),
+}));
 
 jest.mock('@suite-common/device', () => ({
     ...jest.requireActual('@suite-common/device'),
     selectIsDeviceConnected: () => true,
 }));
+
+const mockUseTransactionDetails = useTransactionDetails as jest.Mock;
 
 const testQuote = exchangeQuotes[0];
 
@@ -80,6 +91,13 @@ describe('TradingConfirmingScreen', () => {
             approvalTxid: null,
             setApprovalTxid: jest.fn(),
         });
+        mockUseTransactionDetails.mockReturnValue({
+            transaction: null,
+            openInBlockchain: mockOpenInBlockchain,
+            isPending: false,
+            tokenTransfer: undefined,
+            explorerUrl: null,
+        });
     });
 
     it('should render approve header when variant is approve', () => {
@@ -118,5 +136,29 @@ describe('TradingConfirmingScreen', () => {
         renderScreen();
 
         expect(mockNavigation.popToTop).not.toHaveBeenCalled();
+    });
+
+    it('should render the explore in blockchain button', () => {
+        const { getByText } = renderScreen();
+
+        expect(
+            getByText(
+                getTranslation('moduleTrading.tradingConfirmationScreen.exploreInBlockchain'),
+            ),
+        ).toBeOnTheScreen();
+    });
+
+    it('should render date when transaction has blockTime', () => {
+        mockUseTransactionDetails.mockReturnValue({
+            transaction: mockTransaction,
+            openInBlockchain: mockOpenInBlockchain,
+            isPending: false,
+            tokenTransfer: undefined,
+            explorerUrl: 'https://etherscan.io/tx/test-txid',
+        });
+
+        const { getByText } = renderScreen();
+
+        expect(getByText('Date')).toBeOnTheScreen();
     });
 });

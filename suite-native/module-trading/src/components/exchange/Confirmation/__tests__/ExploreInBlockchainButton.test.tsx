@@ -1,36 +1,26 @@
-import { Linking } from 'react-native';
-
 import { getTranslation } from '@suite-native/intl';
 import { renderWithBasicProvider, screen, userEvent } from '@suite-native/test-utils';
 
 import { ExploreInBlockchainButton } from '../ExploreInBlockchainButton';
 
 describe('ExploreInBlockchainButton', () => {
-    const mockOpenURL = jest.spyOn(Linking, 'openURL');
-
-    const renderButton = () => renderWithBasicProvider(<ExploreInBlockchainButton />);
-
-    beforeEach(() => {
-        mockOpenURL.mockClear();
-    });
-
     const getButtonByText = () =>
         screen.getByText(
             getTranslation('moduleTrading.tradingConfirmationScreen.exploreInBlockchain'),
         );
 
-    it('should render button with correct label', () => {
-        renderButton();
+    it('renders the button with correct label', () => {
+        renderWithBasicProvider(<ExploreInBlockchainButton onPress={jest.fn()} />);
 
         expect(getButtonByText()).toBeOnTheScreen();
     });
 
-    it('should open URL when pressed', async () => {
-        renderButton();
+    it('calls onPress when pressed', async () => {
+        const onPress = jest.fn();
+        renderWithBasicProvider(<ExploreInBlockchainButton onPress={onPress} />);
 
         await userEvent.press(getButtonByText());
 
-        expect(mockOpenURL).toHaveBeenCalledTimes(1);
-        expect(mockOpenURL).toHaveBeenCalledWith('https://trezor.io/');
+        expect(onPress).toHaveBeenCalledTimes(1);
     });
 });

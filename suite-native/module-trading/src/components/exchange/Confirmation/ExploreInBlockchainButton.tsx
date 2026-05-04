@@ -1,20 +1,16 @@
-import { Linking } from 'react-native';
 import { LinearTransition } from 'react-native-reanimated';
 
 import { AnimatedBox, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-export const ExploreInBlockchainButton = () => {
-    const openTransactionInBlockchain = () => {
-        // TODO 27125: open transaction in blockchain explorer instead of trezor.io
-        Linking.openURL('https://trezor.io/');
-    };
-
-    return (
-        <AnimatedBox layout={LinearTransition}>
-            <Button onPress={openTransactionInBlockchain} iconRight="arrowUpRight" intent="neutral">
-                <Translation id="moduleTrading.tradingConfirmationScreen.exploreInBlockchain" />
-            </Button>
-        </AnimatedBox>
-    );
+type ExploreInBlockchainButtonProps = {
+    onPress: () => void;
 };
+
+export const ExploreInBlockchainButton = ({ onPress }: ExploreInBlockchainButtonProps) => (
+    <AnimatedBox layout={LinearTransition}>
+        <Button onPress={onPress} iconRight="arrowUpRight" intent="neutral" priority="secondary">
+            <Translation id="moduleTrading.tradingConfirmationScreen.exploreInBlockchain" />
+        </Button>
+    </AnimatedBox>
+);

@@ -13,6 +13,7 @@ import {
 } from '@suite-native/navigation';
 import { useTransactionStatusOverride } from '@suite-native/trading-debug';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
+import { useTransactionDetails } from '@suite-native/transaction-management';
 
 import { ConfirmationQuoteDebugView } from '../components/exchange/Confirmation/ConfirmationQuoteDebugView';
 import { ExchangeConfirmationHeader } from '../components/exchange/Confirmation/ExchangeConfirmationHeader';
@@ -54,6 +55,11 @@ export const TradingConfirmingScreen = ({
 
     const { status, forceStatus } = useTransactionStatusOverride(originalStatus);
 
+    const { transaction, openInBlockchain } = useTransactionDetails({
+        accountKey,
+        txid: approvalTxid,
+    });
+
     const { isConfirmed, isFailed, isPending } = status;
 
     useFocusEffect(
@@ -77,8 +83,8 @@ export const TradingConfirmingScreen = ({
                     isFailed={isFailed}
                     isPending={isPending}
                 />
-                <ExchangeConfirmationInfo flowType={flowType} />
-                <ExploreInBlockchainButton />
+                <ExchangeConfirmationInfo flowType={flowType} transaction={transaction} />
+                <ExploreInBlockchainButton onPress={openInBlockchain} />
             </Screen>
         </TradingDeviceConnectionGuard>
     );
