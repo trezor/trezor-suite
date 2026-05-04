@@ -177,8 +177,13 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
         this.handleCoreMessage(response);
     }
 
-    public cancel(error?: string) {
-        this.handleCoreMessage({ type: POPUP.CLOSED, payload: error ? { error } : null });
+    public cancel(params?: string | { error?: string; callId?: string }) {
+        console.log('params in cancel core-in-module', params);
+        const payload =
+            typeof params === 'string'
+                ? { error: params }
+                : params ?? null;
+        this.handleCoreMessage({ type: POPUP.CLOSED, payload });
     }
 
     public dispose() {

@@ -1,1 +1,1 @@
-export declare function cancel(params?: string): void;
+export declare function cancel(params?: string | { error?: string; callId?: string }): void;

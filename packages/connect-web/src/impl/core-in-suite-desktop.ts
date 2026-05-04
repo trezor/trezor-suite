@@ -30,7 +30,9 @@ export class CoreInSuiteDesktop implements ConnectImpl {
         return Promise.resolve(undefined);
     }
 
-    public cancel(_error?: string) {
+    public cancel(_error?: string | { error?: string; callId?: string }) {
+        console.log('cancel in CoreInSuiteDesktop');
+        //TODO: do it here as well
         this.ws.sendMessage({
             type: POPUP.CLOSED,
             payload: { error: _error },

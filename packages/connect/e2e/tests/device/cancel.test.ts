@@ -12,6 +12,8 @@ const getAddress = (showOnTrezor: boolean, coin: string = 'regtest') =>
     });
 
 const passphraseHandler = (value: string) => () => {
+    console.log('passphraseHandler');
+    console.log('value', value);
     TrezorConnect.uiResponse({
         type: 'ui-receive_passphrase',
         payload: {
@@ -23,6 +25,7 @@ const passphraseHandler = (value: string) => () => {
 };
 
 const addressHandler = () => () => {
+    console.log('addressHandler');
     TrezorConnect.uiResponse({
         type: 'ui-receive_confirmation',
         payload: true,
@@ -152,6 +155,34 @@ describe('TrezorConnect.cancel', () => {
 
         expect(response.success).toEqual(false);
 
+        await assertGetAddressWorks();
+    });
+
+    it.only('Passphrase request - Cancel by callId', async () => {
+        await setup(controller, {
+            mnemonic: 'mnemonic_all',
+            passphrase_protection: true,
+        });
+        await initTrezorConnect(controller);
+
+        // Start a call with a specific callId
+        const callA = TrezorConnect.getAddress({
+            path: "m/84'/1'/0'/0/0",
+            coin: 'regtest',
+            showOnTrezor: false,
+            callId: 'call-A',
+        });
+
+        // Wait for passphrase prompt then cancel only this call by its callId
+        await new Promise<void>(resolve => {
+            TrezorConnect.on('ui-request_passphrase', () => resolve());
+        });
+        TrezorConnect.cancel({ callId: 'call-A' });
+
+        const responseA = await callA;
+        expect(responseA.success).toEqual(false);
+
+        // After a targeted cancel the device should still be usable
         await assertGetAddressWorks();
     });
 

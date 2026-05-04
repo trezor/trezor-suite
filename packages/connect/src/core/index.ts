@@ -649,12 +649,35 @@ const registerDeviceEvents =
  * @returns {void}
  * @memberof Core
  */
-const onPopupClosed = (context: CoreContext, customErrorMessage?: string) => {
+const onPopupClosed = (context: CoreContext, customErrorMessage?: string, callId?: string) => {
+    console.log('onPopupClosed');
+    console.log('onPopupClosed');
+    console.log('onPopupClosed');
+    console.log('onPopupClosed');
+    console.log('callId', callId);
     const { uiPromises, deviceList, callMethods, resetWaitForFirstMethod, sendCoreMessage } =
         context;
     const error = customErrorMessage
         ? ERRORS.TypedError('Method_Cancel', customErrorMessage)
         : ERRORS.TypedError('Method_Interrupted');
+
+    if (callId) {
+        const method = callMethods.find(m => m.callId === callId);
+        if (method) {
+            // Interrupt the device if it is currently running this method.
+            // This throws inside device.run(), which triggers the normal error-response
+            // path in onCallDevice — so we don't send a response manually here.
+            if (method.device?.isUsedHere()) {
+                method.device.interrupt(error);
+            } else {
+                // Device not yet acquired — reject pending UI promises to unblock the method.
+                uiPromises.rejectAll(error);
+            }
+        }
+
+        return;
+    }
+
     // Device was already acquired. Try to interrupt running action which will throw error from onCall try/catch block
     if (deviceList.isConnected() && deviceList.getDeviceCount() > 0) {
         deviceList.getAllDevices().forEach(d => {
@@ -768,6 +791,7 @@ export class Core extends EventEmitter {
     }
 
     handleMessage(message: CoreRequestMessage) {
+        console.log('handleMessage in core');
         _log.debug('handleMessage', message.type);
 
         switch (message.type) {
@@ -776,6 +800,7 @@ export class Core extends EventEmitter {
                 onPopupClosed(
                     this.getCoreContext(),
                     message.payload ? message.payload.error : null,
+                    message.payload?.callId,
                 );
                 break;
 
