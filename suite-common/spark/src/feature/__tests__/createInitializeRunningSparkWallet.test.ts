@@ -5,11 +5,16 @@ import {
 } from '@buildonspark/spark-sdk';
 import { configureStore } from '@reduxjs/toolkit';
 
+import { createFakeSparkSigner } from '@suite-common/spark-fake-signer';
 import { createNotificationsReducer } from '@suite-common/toast-notifications';
 import { asWalletDescriptor } from '@suite-common/wallet-types';
 
 import { initializeSparkWallet } from '../../sdk/initializeSparkWallet';
 import { createInitializeRunningSparkWallet } from '../createInitializeRunningSparkWallet';
+
+jest.mock('@suite-common/spark-fake-signer', () => ({
+    createFakeSparkSigner: jest.fn(),
+}));
 
 jest.mock('../../sdk/initializeSparkWallet', () => ({
     initializeSparkWallet: jest.fn(),
@@ -69,10 +74,15 @@ const createMockWallet = () => {
 };
 
 describe('createInitializeRunningSparkWallet', () => {
+    const createFakeSparkSignerMock = jest.mocked(createFakeSparkSigner);
     const initializeSparkWalletMock = jest.mocked(initializeSparkWallet);
+    let fakeSparkSignerFactory: jest.Mock;
 
     beforeEach(() => {
         jest.clearAllMocks();
+
+        fakeSparkSignerFactory = jest.fn().mockResolvedValue('signer' as never);
+        createFakeSparkSignerMock.mockReturnValue(fakeSparkSignerFactory as never);
     });
 
     it('delegates transfer-claimed events to the incoming transaction handler', async () => {
@@ -94,6 +104,7 @@ describe('createInitializeRunningSparkWallet', () => {
         initializeSparkWalletMock.mockResolvedValue(wallet as never);
 
         const initializeRunningSparkWallet = createInitializeRunningSparkWallet({
+            createFakeSparkSigner: fakeSparkSignerFactory,
             dispatch: store.dispatch,
             handleSparkWalletIncomingTransaction,
             runningSparkWalletRepository,
@@ -107,6 +118,15 @@ describe('createInitializeRunningSparkWallet', () => {
             mnemonic: 'mnemonic',
             walletDescriptor,
             walletKey: 'wallet-1:1',
+        });
+
+        expect(fakeSparkSignerFactory).toHaveBeenCalledWith({
+            accountNumber: 1,
+            trezorSecret: 'mnemonic',
+        });
+        expect(initializeSparkWalletMock).toHaveBeenCalledWith({
+            accountNumber: 1,
+            signer: 'signer',
         });
 
         registeredEvents[SparkWalletEvent.TransferClaimed]?.('transfer-id', 1n);
@@ -135,6 +155,7 @@ describe('createInitializeRunningSparkWallet', () => {
         initializeSparkWalletMock.mockResolvedValue(wallet as never);
 
         const initializeRunningSparkWallet = createInitializeRunningSparkWallet({
+            createFakeSparkSigner: fakeSparkSignerFactory,
             dispatch: store.dispatch,
             handleSparkWalletIncomingTransaction,
             runningSparkWalletRepository: {
@@ -182,6 +203,7 @@ describe('createInitializeRunningSparkWallet', () => {
         initializeSparkWalletMock.mockResolvedValue(wallet as never);
 
         const initializeRunningSparkWallet = createInitializeRunningSparkWallet({
+            createFakeSparkSigner: fakeSparkSignerFactory,
             dispatch: store.dispatch,
             handleSparkWalletIncomingTransaction: jest.fn(),
             runningSparkWalletRepository: {
@@ -219,6 +241,7 @@ describe('createInitializeRunningSparkWallet', () => {
         initializeSparkWalletMock.mockResolvedValue(wallet as never);
 
         const initializeRunningSparkWallet = createInitializeRunningSparkWallet({
+            createFakeSparkSigner: fakeSparkSignerFactory,
             dispatch: store.dispatch,
             handleSparkWalletIncomingTransaction: jest.fn(),
             runningSparkWalletRepository: {

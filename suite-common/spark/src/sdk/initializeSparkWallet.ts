@@ -1,20 +1,20 @@
-import { SparkWallet } from '@buildonspark/spark-sdk';
+import { type SparkSigner, SparkWallet } from '@buildonspark/spark-sdk';
 
 const SPARK_SDK_NETWORK = 'MAINNET';
 const DEFAULT_SPARK_PRIVACY_ENABLED = true;
 
 type InitializeSparkWalletParams = {
     accountNumber: number;
-    mnemonic: string;
+    signer: SparkSigner;
 };
 
 export const initializeSparkWallet = async ({
     accountNumber,
-    mnemonic,
+    signer,
 }: InitializeSparkWalletParams) => {
     const { wallet } = await SparkWallet.initialize({
-        mnemonicOrSeed: mnemonic,
         accountNumber,
+        signer,
         options: {
             network: SPARK_SDK_NETWORK,
         },

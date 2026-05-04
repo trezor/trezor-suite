@@ -1,6 +1,7 @@
 import type { Dispatch } from '@reduxjs/toolkit';
 
 import type { PlatformEncryptionDep } from '@suite-common/platform-encryption';
+import { createFakeSparkSigner } from '@suite-common/spark-fake-signer';
 import type {
     EnsureWalletSuiteSyncOnDep,
     TurnOnSuiteSyncDep,
@@ -59,12 +60,14 @@ export const createSparkCompositionRoot = (deps: SparkCompositionRootDeps): Spar
     const runningSparkWalletRepository = createRunningSparkWalletRepository();
     const sparkWalletSubscriptionStorage = createSparkWalletSubscriptionStorage();
     const syncSparkWalletState = createSyncSparkWalletState({ dispatch: deps.dispatch });
+    const fakeSparkSigner = createFakeSparkSigner();
     const handleSparkWalletIncomingTransaction = createHandleSparkWalletIncomingTransaction({
         dispatch: deps.dispatch,
         syncSparkWalletState,
     });
 
     const initializeRunningSparkWallet = createInitializeRunningSparkWallet({
+        createFakeSparkSigner: fakeSparkSigner,
         dispatch: deps.dispatch,
         handleSparkWalletIncomingTransaction,
         runningSparkWalletRepository,

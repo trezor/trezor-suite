@@ -1,0 +1,20 @@
+{
+    "name": "@suite-common/spark-fake-signer",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@buildonspark/spark-sdk": "^0.7.13"
+    },
+    "devDependencies": {
+        "@trezor/eslint": "workspace:*"
+    }
+}

@@ -5,6 +5,8 @@ import {
 } from '@buildonspark/spark-sdk';
 import type { Dispatch } from '@reduxjs/toolkit';
 
+import type { CreateFakeSparkSignerDep } from '@suite-common/spark-fake-signer';
+
 import type { SparkWalletParams } from './createEnsureSparkWallet';
 import type { HandleSparkWalletIncomingTransactionDep } from './createHandleSparkWalletIncomingTransaction';
 import type {
@@ -31,7 +33,8 @@ export type InitializeRunningSparkWalletDep = {
 
 export type InitializeRunningSparkWalletDeps = {
     dispatch: Dispatch;
-} & RunningSparkWalletRepositoryDep &
+} & CreateFakeSparkSignerDep &
+    RunningSparkWalletRepositoryDep &
     HandleSparkWalletIncomingTransactionDep &
     SparkWalletSubscriptionStorageDep &
     SyncSparkWalletStateDep;
@@ -47,9 +50,14 @@ type SparkWalletEventHandlerMap = {
 export const createInitializeRunningSparkWallet =
     (deps: InitializeRunningSparkWalletDeps): InitializeRunningSparkWallet =>
     async params => {
+        const signer = await deps.createFakeSparkSigner({
+            accountNumber: params.accountNumber,
+            trezorSecret: params.mnemonic,
+        });
+
         const wallet = await initializeSparkWallet({
             accountNumber: params.accountNumber,
-            mnemonic: params.mnemonic,
+            signer,
         });
 
         const runningSparkWallet: RunningSparkWallet = {
