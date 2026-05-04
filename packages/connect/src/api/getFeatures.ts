@@ -5,7 +5,7 @@ import { UI } from '../events';
 
 export default class GetFeatures extends AbstractMethod<'getFeatures'> {
     init() {
-        this.requiredPermissions = [];
+        this.requiredPermissions = ['read'];
         this.useUi = false;
         this.allowDeviceMode = [...this.allowDeviceMode, UI.INITIALIZE, UI.BOOTLOADER];
         this.useDeviceState = false;
