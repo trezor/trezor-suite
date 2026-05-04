@@ -2194,6 +2194,10 @@ export const messages = {
             recipients: {
                 title: 'Recipient & amount',
                 addressLabel: 'Recipient address',
+                address: {
+                    convertedToLowercase: 'The address was converted to lowercase.',
+                    addedBitcoincashPrefix: 'The “bitcoincash:” prefix was added to the address.',
+                },
                 checksum: {
                     label: 'We’ve adjusted the casing of your address to match checksum format. <link>Learn more</link>',
                     alert: {

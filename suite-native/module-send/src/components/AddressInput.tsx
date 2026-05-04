@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
@@ -11,13 +11,19 @@ import {
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { convertAmountSubunitsToUnits, isAddressValid } from '@suite-common/wallet-utils';
+import {
+    convertAmountSubunitsToUnits,
+    hasBitcoinCashAddressPrefix,
+    isAddressValid,
+    isBech32AddressUppercase,
+    isBitcoinCashAddressUppercase,
+} from '@suite-common/wallet-utils';
 import { type NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { isDebugEnv } from '@suite-native/config';
 import { TextInputField, useFormContext } from '@suite-native/forms';
-import { Translation } from '@suite-native/intl';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { HELP_CENTER_EVM_ADDRESS_CHECKSUM, HELP_CENTER_SOLANA_HELP_URL } from '@trezor/urls';
 
 import { AddressInfoMessage } from './AddressInfoMessage';
@@ -27,6 +33,8 @@ import { useAddressValidationAlerts } from '../hooks/useAddressValidationAlerts/
 import { useSolAssociatedTokenAddress } from '../hooks/useAddressValidationAlerts/useSolAssociatedTokenAddress';
 import { type SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { getOutputFieldName } from '../utils';
+
+const AUTOCORRECT_MESSAGE_TIMEOUT_MS = 3000;
 
 type AddressInputProps = {
     index: number;
@@ -55,6 +63,52 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
 
     const { wasAddressChecksummed } = useAddressValidationAlerts({ inputIndex: index });
 
+    const [autocorrectMessageId, setAutocorrectMessageId] = useState<TxKeyPath | null>(null);
+    const autocorrectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const showAutocorrectMessage = (messageId: TxKeyPath) => {
+        setAutocorrectMessageId(messageId);
+        if (autocorrectTimeoutRef.current) {
+            clearTimeout(autocorrectTimeoutRef.current);
+        }
+        autocorrectTimeoutRef.current = setTimeout(() => {
+            setAutocorrectMessageId(null);
+            autocorrectTimeoutRef.current = null;
+        }, AUTOCORRECT_MESSAGE_TIMEOUT_MS);
+    };
+
+    useEffect(
+        () => () => {
+            if (autocorrectTimeoutRef.current) {
+                clearTimeout(autocorrectTimeoutRef.current);
+            }
+        },
+        [],
+    );
+
+    // Mirror desktop behavior by silently autocorrecting addresses that Trezor would otherwise
+    // reject: bech32/CashAddr addresses must be lowercase, and BCH addresses must include the
+    // `bitcoincash:` prefix.
+    const autocorrectAddress = (newValue: string): string => {
+        if (isBitcoinCashAddressUppercase(newValue) || isBech32AddressUppercase(newValue)) {
+            showAutocorrectMessage('moduleSend.outputs.recipients.address.convertedToLowercase');
+
+            return newValue.toLowerCase();
+        }
+
+        if (
+            symbol === 'bch' &&
+            !hasBitcoinCashAddressPrefix(newValue) &&
+            isAddressValid(`bitcoincash:${newValue}`, symbol)
+        ) {
+            showAutocorrectMessage('moduleSend.outputs.recipients.address.addedBitcoincashPrefix');
+
+            return `bitcoincash:${newValue}`;
+        }
+
+        return newValue;
+    };
+
     const handleScanAddressQRCode = (qrCodeData: string) => {
         const erc681 =
             account?.networkType === 'ethereum' ? parseErc681TransferUri(qrCodeData) : null;
@@ -81,8 +135,9 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
             return;
         }
 
-        setValue(addressFieldName, qrCodeData, { shouldValidate: true });
-        if (symbol && isAddressValid(qrCodeData, symbol)) {
+        const corrected = autocorrectAddress(qrCodeData);
+        setValue(addressFieldName, corrected, { shouldValidate: true });
+        if (symbol && isAddressValid(corrected, symbol)) {
             analytics.report({
                 type: events.sendAddressFilledEvent.name,
                 payload: { method: 'qr' },
@@ -91,13 +146,17 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
     };
 
     const handleChangeValue = (newValue: string) => {
-        if (symbol && isAddressValid(newValue, symbol)) {
+        const corrected = autocorrectAddress(newValue);
+        if (corrected !== newValue) {
+            setValue(addressFieldName, corrected, { shouldValidate: true });
+        }
+        if (symbol && isAddressValid(corrected, symbol)) {
             analytics.report({
                 type: events.sendAddressFilledEvent.name,
                 payload: { method: 'manual' },
             });
             checkSolAssociatedTokenAddress({
-                value: newValue,
+                value: corrected,
                 symbol,
                 fieldName: addressFieldName,
             });
@@ -159,6 +218,7 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
                     link={HELP_CENTER_EVM_ADDRESS_CHECKSUM}
                 />
             )}
+            {autocorrectMessageId && <AddressInfoMessage txId={autocorrectMessageId} />}
             {isSolATA && (
                 <AddressInfoMessage
                     type="warning"

@@ -9,7 +9,7 @@ import { type Color } from '@trezor/theme';
 type AddressInfoMessageType = 'info' | 'warning';
 type AddressInfoMessageProps = {
     txId: TxKeyPath;
-    link: string;
+    link?: string;
     type?: AddressInfoMessageType;
 };
 
@@ -41,15 +41,18 @@ export const AddressInfoMessage = ({ txId, link, type = 'info' }: AddressInfoMes
                         <Translation
                             id={txId}
                             values={{
-                                link: linkChunk => (
-                                    <Link
-                                        href={link}
-                                        label={linkChunk}
-                                        textVariant="body-xs"
-                                        isUnderlined
-                                        textColor={color}
-                                    />
-                                ),
+                                link: linkChunk =>
+                                    link ? (
+                                        <Link
+                                            href={link}
+                                            label={linkChunk}
+                                            textVariant="body-xs"
+                                            isUnderlined
+                                            textColor={color}
+                                        />
+                                    ) : (
+                                        linkChunk
+                                    ),
                             }}
                         />
                     </Text>
