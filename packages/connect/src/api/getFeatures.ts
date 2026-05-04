@@ -20,7 +20,7 @@ export default class GetFeatures extends AbstractMethod<'getFeatures'> {
     }
 
     get requiredPermissions(): MethodPermission[] {
-        return [];
+        return ['read'];
     }
 
     checkFirmwareRange() {

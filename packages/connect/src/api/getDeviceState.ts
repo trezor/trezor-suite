@@ -7,7 +7,7 @@ import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class GetDeviceState extends AbstractMethod<'getDeviceState'> {
     get requiredPermissions(): MethodPermission[] {
-        return [];
+        return ['read'];
     }
 
     run() {
