@@ -83,6 +83,10 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
         }
 
         dispatch(stablecoinYieldActions.initSession({ flowType: 'claim', flowKey }));
+
+        return () => {
+            dispatch(stablecoinYieldActions.disposeSession({ flowType: 'claim', flowKey }));
+        };
     }, [dispatch, flowKey]);
 
     useYieldPendingTransactionTracking({
