@@ -49,7 +49,6 @@ export type NotifySparkDeviceWorkDep = {
 type PrivateKeyMethodName =
     | 'decryptEcies'
     | 'getStaticDepositSecretKey'
-    | 'getStaticDepositSigningKey'
     | 'htlcHMAC'
     | 'signFrost'
     | 'signMessageWithIdentityKey'
@@ -268,11 +267,11 @@ export class FakeSparkSigner implements SparkSigner {
     getNonceForSelfCommitment: SparkSigner['getNonceForSelfCommitment'] = selfCommitment =>
         this.sparkSigner.getNonceForSelfCommitment(selfCommitment);
 
-    // This derives the static deposit public key for a given index. Even though
-    // it returns a public key, the derivation depends on device-held secret
-    // tree and should stay on the device.
+    // This derives the static deposit public key for a given index. It still
+    // runs on the device-backed signer, but returning a public key does not
+    // require an explicit user confirmation or any direct user interaction.
     getStaticDepositSigningKey: SparkSigner['getStaticDepositSigningKey'] = idx =>
-        this.runPrivateKeyOperation('getStaticDepositSigningKey', [idx], () =>
+        this.runNotifiedDeviceWorkOperation('getStaticDepositSigningKey', [idx], () =>
             this.sparkSigner.getStaticDepositSigningKey(idx),
         );
 
