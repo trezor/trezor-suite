@@ -2,8 +2,10 @@
 
 const legacyResults = [
     {
-        // getOwnershipId not supported on T1B1 and T2T1 below 2.5.3
-        rules: ['1', '<2.5.3'],
+        // getOwnershipId not supported on T2T1 below 2.5.3.
+        // Current T1B1 firmware (1-latest in nightly) supports it,
+        // so the model rule is intentionally not included here.
+        rules: ['<2.5.3'],
         success: false,
     },
 ];
