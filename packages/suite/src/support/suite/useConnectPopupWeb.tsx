@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { connectPopupActions } from '@suite-common/connect-popup';
 import { CORE_CALL, POPUP } from '@trezor/connect';
+
+import { useDispatch } from 'src/hooks/suite';
 
 import {
     type ConnectPopupLink,
@@ -15,6 +18,7 @@ const webChannel = {
 };
 
 export const useConnectPopupWeb = () => {
+    const dispatch = useDispatch();
     const [incomingMessages, setIncomingMessages] = useState<ConnectPopupMessage[]>([]);
     // Start with '*' because we don't know the opener's origin yet.
     // Protocol messages sent before the first incoming message (e.g.
@@ -42,12 +46,7 @@ export const useConnectPopupWeb = () => {
         return {
             sendMessage: (message: ConnectPopupOutgoingMessage) => {
                 message.channel = webChannel;
-                if (broadcast) {
-                    broadcast.postMessage(message);
-                } else {
-                    // TODO: show warning to user
-                    console.warn('BroadcastChannel not available', initialUrl.current);
-                }
+                broadcast.postMessage(message);
             },
             get origin() {
                 return originRef.current;
@@ -73,8 +72,12 @@ export const useConnectPopupWeb = () => {
         }
 
         if (requestErr) {
-            // TODO: show warning to user
-            console.warn('Popup opened with error', { requestErr });
+            dispatch(
+                connectPopupActions.setError({
+                    code: 'Handshake_Error',
+                    message: requestErr,
+                }),
+            );
 
             return;
         }
@@ -83,9 +86,13 @@ export const useConnectPopupWeb = () => {
         try {
             broadcastChannel = new BroadcastChannel(`@trezor/connect-popup/${requestId}`);
             setBroadcast(broadcastChannel);
-        } catch (error) {
-            // TODO: show warning to user
-            console.warn('BroadcastChannel is not supported in this browser', error);
+        } catch {
+            dispatch(
+                connectPopupActions.setError({
+                    code: 'Popup_ConnectionMissing',
+                    message: 'BroadcastChannel is not supported in this browser',
+                }),
+            );
 
             return;
         }
@@ -95,8 +102,12 @@ export const useConnectPopupWeb = () => {
             broadcastChannel.removeEventListener('message', onMessage);
             broadcastChannel.close();
             setBroadcast(null);
-            // TODO: show warning to user
-            console.warn('Popup handshake timeout');
+            dispatch(
+                connectPopupActions.setError({
+                    code: 'Handshake_Error',
+                    message: 'handshake-timeout',
+                }),
+            );
         }, 3000);
 
         const onMessage = (event: MessageEvent) => {
@@ -155,5 +166,5 @@ export const useConnectPopupWeb = () => {
             broadcastChannel.close();
             window.removeEventListener('beforeunload', onBeforeUnload);
         };
-    }, []);
+    }, [dispatch]);
 };
