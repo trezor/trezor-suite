@@ -764,8 +764,17 @@ export const runAdditionalDiscoveryThunk = createThunk(
 
         // have Connect check the discovered account with persisted xpub hashes, but those are valid only for standard wallet
         const entropyCheckResult = selectEntropyCheckResultByDeviceId(getState(), device.id);
+        // NOTE: pass only staticSessionId (not the full updatedDevice) to avoid overwriting the freshly-derived
+        // sessionId in Connect's in-memory Device cache with the stale value stored in Redux state.
+        // Connect's setState merge logic preserves the up-to-date sessionId when only staticSessionId is provided.
+        // This mirrors the behaviour of runDiscoveryThunk and prevents repeated passphrase prompts.
         const result = await TrezorConnect.discoverAccounts({
-            device: updatedDevice,
+            device: {
+                path: updatedDevice.path,
+                instance: updatedDevice.instance,
+                state: { staticSessionId },
+                useEmptyPassphrase: updatedDevice.useEmptyPassphrase,
+            },
             coins: accountsParam,
             entropyCheckResult,
         });
