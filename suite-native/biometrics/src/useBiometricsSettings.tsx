@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 
-import { BiometricsToggleResult, toggleBiometricsSettingsThunk } from './biometricsSlice';
+import { BiometricsToggleResult, toggleBiometricsSettingsThunk } from './biometricsThunks';
 
 export const useBiometricsSettings = () => {
     const { showAlert } = useAlert();
