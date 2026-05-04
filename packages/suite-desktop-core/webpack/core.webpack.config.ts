@@ -154,9 +154,11 @@ const config: webpack.Configuration = {
         splitChunks: {
             chunks: 'all',
             name(_: any, chunks: any) {
-                return chunks.length === 1
-                    ? chunks[0].name
-                    : `shared/${chunks.map((item: any) => item.name.split('/').pop()).join('~')}`;
+                if (chunks.every((item: any) => item.name)) {
+                    return chunks.length > 1
+                        ? `shared/${chunks.map((item: any) => item.name.split('/').pop()).join('~')}`
+                        : chunks[0].name;
+                }
             },
         },
         minimizer: [

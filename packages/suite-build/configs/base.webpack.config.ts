@@ -69,6 +69,12 @@ const config: webpack.Configuration = {
     },
     optimization: {
         splitChunks: {
+            chunks: 'all',
+            name(_: any, chunks: any) {
+                if (chunks.length > 1 && chunks.every((item: any) => item.name)) {
+                    return `shared/${chunks.map((item: any) => item.name.split('/').pop()).join('~')}`;
+                }
+            },
             cacheGroups: {
                 react: {
                     chunks: 'initial',
