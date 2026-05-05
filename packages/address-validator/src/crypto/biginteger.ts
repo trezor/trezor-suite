@@ -19,7 +19,7 @@
 */
 const moduleExports: { JSBigInt?: any } = {};
 
-(function (exports) {
+(function (mod) {
     /*
         Class: BigInteger
         An arbitrarily-large integer.
@@ -1461,7 +1461,7 @@ const moduleExports: { JSBigInt?: any } = {};
         })();
     })();
 
-    exports.JSBigInt = BigInteger; // exports.BigInteger changed to exports.JSBigInt
+    mod.JSBigInt = BigInteger; // exports.BigInteger changed to exports.JSBigInt
 })(moduleExports);
 
 export const JSBigInt = moduleExports.JSBigInt;
