@@ -1,11 +1,12 @@
 import { type ExitYieldResponseSuccess, TransactionDtoType } from '../../api';
 import { verifyExitTransactions } from '../../verification/exit';
 
-const YIELD_ID = 'ethereum-usdt-steakusdt-0xbeef047a543e45807105e51a8bbefcc5950fcfba-4626-vault';
+const YIELD_ID =
+    'ethereum-usdt-steakusdt-0xe4db1c5a1b709ce4d2ada6985d9d506e58f73829-third-party-oav';
 const ADDRESS = '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3';
 
 const WITHDRAW_UNSIGNED_TX =
-    '{"from":"0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3","gasLimit":"0x071918","to":"0xbEef047a543E45807105E51A8BBEFCc5950fcfBa","data":"0xba0876520000000000000000000000000000000000000000000000000c7a27dbf69bc4850000000000000000000000009ea3721b5bf3b64b4418c38b603154d2d597fae30000000000000000000000009ea3721b5bf3b64b4418c38b603154d2d597fae3","nonce":667,"type":2,"maxFeePerGas":"0x17d78400","maxPriorityFeePerGas":"0x054e0840","chainId":1}';
+    '{"from":"0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3","gasLimit":"0x071918","to":"0xe4db1c5a1b709ce4d2ada6985d9d506e58f73829","data":"0xba0876520000000000000000000000000000000000000000000000000c7a27dbf69bc4850000000000000000000000009ea3721b5bf3b64b4418c38b603154d2d597fae30000000000000000000000009ea3721b5bf3b64b4418c38b603154d2d597fae3","nonce":667,"type":2,"maxFeePerGas":"0x17d78400","maxPriorityFeePerGas":"0x054e0840","chainId":1}';
 
 const mockResponse = (transactions: { type: TransactionDtoType; unsignedTransaction: unknown }[]) =>
     ({ data: { transactions } }) as unknown as ExitYieldResponseSuccess;
