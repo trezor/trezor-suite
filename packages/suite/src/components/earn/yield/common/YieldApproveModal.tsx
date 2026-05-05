@@ -19,7 +19,6 @@ export type YieldApproveModalProps = {
     account: Account;
     spender: string;
     preapprovedAmount?: string;
-    preapprovedAmountIsUnlimited?: boolean;
     txType: 'approve' | 'revoke' | 'revoke-only';
     onCancel: () => void;
     onSuccess: (txid: string) => void;
@@ -31,7 +30,6 @@ export const YieldApproveModal = ({
     account,
     spender,
     preapprovedAmount,
-    preapprovedAmountIsUnlimited,
     txType,
     onCancel,
     onSuccess,
@@ -155,7 +153,6 @@ export const YieldApproveModal = ({
                 spender={spender}
                 logoSourceType="url"
                 preapprovedAmount={preapprovedAmount}
-                preapprovedAmountIsUnlimited={preapprovedAmountIsUnlimited}
                 onCancel={handleOnRevokeCancel}
                 onConfirm={handleOnRevokeConfirm}
             />

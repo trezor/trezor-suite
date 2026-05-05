@@ -44,7 +44,7 @@ export const ApproveModal = (props: ApproveModalProps) => {
         approvalType,
         isLoading,
         composedLevels,
-        composeErrorMessage,
+        composedLevelsError,
         canSubmit,
         data,
         methods,
@@ -127,14 +127,14 @@ export const ApproveModal = (props: ApproveModalProps) => {
                         />
                     </Box>
 
-                    {composeErrorMessage && (
+                    {composedLevelsError && (
                         <Banner
                             intent="critical"
                             icon="warning"
                             description={
                                 <Translation
-                                    id={composeErrorMessage.id}
-                                    values={composeErrorMessage.values}
+                                    id={composedLevelsError.id}
+                                    values={composedLevelsError.values}
                                 />
                             }
                         />

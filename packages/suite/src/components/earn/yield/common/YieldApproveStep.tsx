@@ -57,7 +57,6 @@ export type YieldApproveStepProps = {
     approvedAmount?: string;
     isApprovedAmountLoading?: boolean;
     hasApprovedAmountError?: boolean;
-    isApprovedAmountUnlimited?: boolean;
     approvalAction: YieldApprovalAction;
     canRevokeAllowance: boolean;
     warning?: ReactNode;
@@ -78,7 +77,6 @@ export const YieldApproveStep = ({
     approvedAmount,
     isApprovedAmountLoading = false,
     hasApprovedAmountError = false,
-    isApprovedAmountUnlimited = false,
     approvalAction,
     canRevokeAllowance,
     warning,
@@ -99,14 +97,13 @@ export const YieldApproveStep = ({
         canRevokeAllowance && !isApprovedAmountLoading && !hasApprovedAmountError;
     const onRevokeClick = shouldEnableRevoke ? onRevoke : undefined;
 
-    return (
-        <>
-            {variant === 'active' && (
+    switch (variant) {
+        case 'active':
+            return (
                 <Column gap={16}>
                     <YieldApprovedAmountCard
                         token={token}
                         amount={approvedAmountValue}
-                        isUnlimited={isApprovedAmountUnlimited}
                         isLoading={isApprovedAmountLoading}
                         hasError={hasApprovedAmountError}
                         onRevoke={onRevokeClick}
@@ -144,17 +141,15 @@ export const YieldApproveStep = ({
                         />
                     )}
                 </Column>
-            )}
-
-            {variant === 'done' && (
+            );
+        case 'done':
+            return (
                 <YieldApprovedAmountCard
                     token={token}
                     amount={approvedAmountValue}
-                    isUnlimited={isApprovedAmountUnlimited}
                     isLoading={isApprovedAmountLoading}
                     hasError={hasApprovedAmountError}
                 />
-            )}
-        </>
-    );
+            );
+    }
 };

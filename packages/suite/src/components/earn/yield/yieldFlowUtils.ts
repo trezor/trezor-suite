@@ -37,15 +37,17 @@ export type YieldNetworkFeeWarning = {
 export const isAmountGreaterThan = ({ amount, threshold }: AmountComparisonParams): boolean =>
     !!amount && !!threshold && new BigNumber(amount).gt(threshold);
 
+type GetYieldNetworkFeeWarningParams = {
+    availableBalance: string;
+    requiredFee: BigNumber;
+    networkDisplaySymbol: string;
+};
+
 export const getYieldNetworkFeeWarning = ({
     availableBalance,
     requiredFee,
     networkDisplaySymbol,
-}: {
-    availableBalance: string;
-    requiredFee: BigNumber;
-    networkDisplaySymbol: string;
-}): YieldNetworkFeeWarning | null => {
+}: GetYieldNetworkFeeWarningParams): YieldNetworkFeeWarning | null => {
     if (requiredFee.isZero() || new BigNumber(availableBalance || '0').gte(requiredFee)) {
         return null;
     }

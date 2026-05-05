@@ -7,7 +7,7 @@ import { type EarnParams } from '@suite/router';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type YieldActionFlowType,
-    type StablecoinYieldAllowanceStatus,
+    type YieldAllowanceStatus,
     type YieldApproveModalState,
     type YieldFlowDisplayToken,
     type YieldFlowFormValues,
@@ -73,12 +73,11 @@ export type UseYieldFlowResult = {
     approveModalState: YieldApproveModalState | null;
     pendingTransaction: YieldPendingTransactionState | null;
     allowanceAmount: string;
-    allowanceStatus: StablecoinYieldAllowanceStatus;
+    allowanceStatus: YieldAllowanceStatus;
     approvalAction: YieldApprovalAction;
     canRevokeAllowance: boolean;
     approvalNetworkFeeWarning: YieldNetworkFeeWarning | null;
     actionNetworkFeeWarning: YieldNetworkFeeWarning | null;
-    isApprovedAmountUnlimited: boolean;
     isAmountEmpty: boolean;
     isAmountTooHigh: boolean;
     isApprovalInsufficient: boolean;
@@ -408,9 +407,7 @@ export const useYieldFlow = ({
 
     const isAmountEmpty = !liveAmount;
     const allowanceAmount = session.approval.allowanceAmount ?? '0';
-    const canRevokeAllowance =
-        session.approval.isAllowanceUnlimited ||
-        isAmountGreaterThan({ amount: allowanceAmount, threshold: '0' });
+    const canRevokeAllowance = isAmountGreaterThan({ amount: allowanceAmount, threshold: '0' });
     const isAmountTooHigh = isAmountGreaterThan({ amount: liveAmount, threshold: maxAmount });
     const isApprovalInsufficient =
         !session.approval.isModifyMode &&
@@ -470,7 +467,6 @@ export const useYieldFlow = ({
         canRevokeAllowance,
         approvalNetworkFeeWarning: networkFeeWarning.approvalNetworkFeeWarning,
         actionNetworkFeeWarning: networkFeeWarning.actionNetworkFeeWarning,
-        isApprovedAmountUnlimited: session.approval.isAllowanceUnlimited,
         isAmountEmpty,
         isAmountTooHigh,
         isApprovalInsufficient,
