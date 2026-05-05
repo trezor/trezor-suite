@@ -52,3 +52,5 @@ export const selectIsCoinsFilterVisible = (state: SuiteSettingsRootState) =>
     state.suiteSettings.isCoinsFilterVisible;
 export const selectIsN4w1BackupEnabled = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.isN4w1BackupEnabled;
+export const selectShowTranslationKeys = (state: SuiteSettingsRootState) =>
+    state.suiteSettings.debug.showTranslationKeys;
