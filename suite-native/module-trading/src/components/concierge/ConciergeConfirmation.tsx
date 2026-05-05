@@ -17,7 +17,7 @@ export const ConciergeConfirmation = () => {
     }
 
     return (
-        <Button onPress={handlePress} iconRight="arrowUpRight">
+        <Button onPress={handlePress} iconRight="arrowSquareOut">
             <Translation id="generic.buttons.continue" />
         </Button>
     );
