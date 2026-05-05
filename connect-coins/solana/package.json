@@ -1,0 +1,15 @@
+{
+    "name": "@connect-coins/solana",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest --passWithNoTests",
+        "type-check": "yarn g:tsc --build tsconfig.json",
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm"
+    },
+    "dependencies": {}
+}
