@@ -18,7 +18,7 @@ import {
 } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
-import { type MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
+import { type MethodPermission } from '@trezor/connect';
 
 import { ConnectAppIcon } from '../components/ConnectAppIcon';
 

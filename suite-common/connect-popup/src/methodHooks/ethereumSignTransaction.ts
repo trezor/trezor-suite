@@ -11,8 +11,8 @@ import type {
     CallMethodKeys,
     EthereumSignTransaction,
     EthereumSignTypedData,
+    MethodInfo,
 } from '@trezor/connect';
-import { type MethodInfo } from '@trezor/connect/src/core/AbstractMethod';
 import { getSerializedPath, validatePath } from '@trezor/connect/src/utils/pathUtils';
 
 import { connectPopupActions } from '../connectPopupActions';
