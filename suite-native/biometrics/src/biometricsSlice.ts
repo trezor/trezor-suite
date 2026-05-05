@@ -1,12 +1,18 @@
 import { createSlice, isAnyOf } from '@reduxjs/toolkit';
 
 import {
+    type BiometricsToggleFulfilledResult,
     BiometricsToggleResult,
     authenticateUserThunk,
     handleBiometricsAppStateChangeThunk,
     toggleBiometricsSettingsThunk,
 } from './biometricsThunks';
 import { AuthenticateError, type BiometricsSliceState } from './types';
+
+const isBiometricsEnabledByToggleResult: Record<BiometricsToggleFulfilledResult, boolean> = {
+    [BiometricsToggleResult.Enabled]: true,
+    [BiometricsToggleResult.Disabled]: false,
+};
 
 export const biometricsSliceInitialState: BiometricsSliceState = {
     isUserAuthenticated: false,
@@ -36,20 +42,14 @@ export const biometricsSlice = createSlice({
             })
             .addCase(authenticateUserThunk.rejected, (state, { payload }) => {
                 if (payload === AuthenticateError.AuthenticationFailed) {
-                    state.biometricsError = payload ?? null;
+                    state.biometricsError = payload;
                 }
             })
             .addCase(toggleBiometricsSettingsThunk.pending, state => {
                 state.isTogglingBiometricsSettingsOption = true;
             })
             .addCase(toggleBiometricsSettingsThunk.fulfilled, (state, { payload }) => {
-                if (payload === BiometricsToggleResult.Enabled) {
-                    state.isBiometricsEnabled = true;
-                }
-
-                if (payload === BiometricsToggleResult.Disabled) {
-                    state.isBiometricsEnabled = false;
-                }
+                state.isBiometricsEnabled = isBiometricsEnabledByToggleResult[payload];
             })
             .addCase(handleBiometricsAppStateChangeThunk.fulfilled, (state, { payload }) => {
                 if (payload?.isUserAuthenticated !== undefined) {

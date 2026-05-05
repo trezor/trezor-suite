@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { Box, PressableOpacity, Text } from '@suite-native/atoms';
 import { Icon, iconSizes } from '@suite-native/icons';
@@ -7,7 +7,6 @@ import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { BiometricsIcon } from './BiometricsIcon';
-import { selectShouldUserBeAuthenticated } from '../biometricsSelectors';
 import { authenticateUserThunk } from '../biometricsThunks';
 
 const overlayWrapperStyle = prepareNativeStyle(utils => ({
@@ -35,12 +34,8 @@ export const BiometricOverlay = ({ isBiometricsAuthButtonVisible }: BiometricOve
 
     const dispatch = useDispatch();
 
-    const shouldUserBeAuthenticated = useSelector(selectShouldUserBeAuthenticated);
-
     const triggerManualAuthentication = () => {
-        if (shouldUserBeAuthenticated) {
-            dispatch(authenticateUserThunk());
-        }
+        dispatch(authenticateUserThunk());
     };
 
     return (

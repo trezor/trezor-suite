@@ -22,6 +22,15 @@ export enum BiometricsToggleResult {
     BiometricsNotAvailable = 'biometrics-not-available',
 }
 
+export type BiometricsToggleFulfilledResult = Extract<
+    BiometricsToggleResult,
+    BiometricsToggleResult.Enabled | BiometricsToggleResult.Disabled
+>;
+
+type BiometricsToggleRejectReason =
+    | BiometricsToggleResult.BiometricsNotAvailable
+    | AuthenticateError;
+
 export type BiometricsAppStateChangePayload = {
     isUserAuthenticated?: boolean;
     goneToBackgroundAtTimestamp?: number;
@@ -52,9 +61,9 @@ export const authenticateUserThunk = createThunk<
 });
 
 export const toggleBiometricsSettingsThunk = createThunk<
-    BiometricsToggleResult,
+    BiometricsToggleFulfilledResult,
     void,
-    { rejectValue: BiometricsToggleResult | AuthenticateError }
+    { rejectValue: BiometricsToggleRejectReason }
 >(
     `${BIOMETRICS_THUNK_PREFIX}/toggleBiometricsSettings`,
     async (_, { getState, rejectWithValue, dispatch, extra }) => {
@@ -93,11 +102,11 @@ export const toggleBiometricsSettingsThunk = createThunk<
 
 export const handleBiometricsAppStateChangeThunk = createThunk<
     BiometricsAppStateChangePayload | undefined,
-    { currentAppState: AppStateStatus },
+    { nextAppState: AppStateStatus },
     { rejectValue: BiometricsAppStateChangeRejectReason }
 >(
     `${BIOMETRICS_THUNK_PREFIX}/handleAppStateChange`,
-    ({ currentAppState }, { getState, dispatch, rejectWithValue }) => {
+    ({ nextAppState }, { getState, dispatch, rejectWithValue }) => {
         const goneToBackgroundAtTimestamp = selectGoneToBackgroundAtTimestamp(getState());
         const shouldUserBeAuthenticated = selectShouldUserBeAuthenticated(getState());
         const isTogglingBiometricsInProgress = selectIsTogglingBiometrics(getState());
@@ -108,9 +117,9 @@ export const handleBiometricsAppStateChangeThunk = createThunk<
             return rejectWithValue('biometrics-disabled');
         }
 
-        switch (currentAppState) {
+        switch (nextAppState) {
             case 'active':
-                if (goneToBackgroundAtTimestamp !== null && !shouldRevokeAuth) {
+                if (!shouldRevokeAuth) {
                     // Returning to the foreground within the keep-logged-in window: restore prior auth.
                     return { isUserAuthenticated: true };
                 }
@@ -135,6 +144,8 @@ export const handleBiometricsAppStateChangeThunk = createThunk<
 
             case 'inactive':
                 if (isTogglingBiometricsInProgress) {
+                    // Native biometrics prompt moves the app to inactive while toggling from settings.
+                    // Keep the current authentication state and only refresh the background timestamp.
                     return { goneToBackgroundAtTimestamp: Date.now() };
                 }
 
