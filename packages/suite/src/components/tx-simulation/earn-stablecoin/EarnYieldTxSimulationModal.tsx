@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { type UserContextModalType } from '@suite/modal';
-import { composeSupplyTxSimmulationAction } from '@suite-common/earn-stablecoin/src/tx-simulation';
+import { composeStablecoinYieldTxSimmulationAction } from '@suite-common/earn-stablecoin/src/tx-simulation';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 
 import { useSelector } from 'src/hooks/suite';
@@ -20,7 +20,7 @@ export function EarnYieldTxSimulationModal({
     decision,
     closeModal,
 }: EarnYieldTxSimulationModalProps) {
-    const parsedData = useMemo(() => composeSupplyTxSimmulationAction(data), [data]);
+    const parsedData = useMemo(() => composeStablecoinYieldTxSimmulationAction(data), [data]);
     const account = useSelector(state =>
         parsedData ? selectAccountByKey(state, parsedData.accountKey) : null,
     );
