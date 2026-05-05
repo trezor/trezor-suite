@@ -122,6 +122,7 @@
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:^",
+        "@trezor/connect-flow": "workspace:*",
         "@trezor/crypto-utils": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/dom-utils": "workspace:*",

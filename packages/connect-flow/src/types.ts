@@ -3,6 +3,7 @@ export const SUBPROCESS_TYPE = {
     REQUEST_PASSPHRASE_ON_DEVICE: 'ui-request_passphrase_on_device',
     REQUEST_PIN: 'ui-request_pin',
     REQUEST_BUTTON: 'ui-request_button',
+    REQUEST_CONFIRMATION: 'ui-request_confirmation',
     COMPLETE: 'flow-complete',
     ERROR: 'flow-error',
 } as const;
@@ -11,6 +12,7 @@ export type SubProcessType = (typeof SUBPROCESS_TYPE)[keyof typeof SUBPROCESS_TY
 
 export interface SubProcessBase {
     readonly callId: string;
+    readonly requestId?: string;
     cancel(): void;
 }
 
@@ -31,6 +33,16 @@ export type RequestPinSubProcess = SubProcessBase & {
 export type RequestButtonSubProcess = SubProcessBase & {
     type: typeof SUBPROCESS_TYPE.REQUEST_BUTTON;
     code: string;
+    data?:
+        | { type: 'address'; serializedPath: string; address: string }
+        | { type: 'message'; message: string };
+};
+
+export type RequestConfirmationSubProcess = SubProcessBase & {
+    type: typeof SUBPROCESS_TYPE.REQUEST_CONFIRMATION;
+    view: string;
+    label?: string;
+    confirm: (value: boolean) => void;
 };
 
 export type CompleteSubProcess<TResult> = SubProcessBase & {
@@ -48,6 +60,7 @@ export type AnySubProcess<TResult> =
     | RequestPassphraseOnDeviceSubProcess
     | RequestPinSubProcess
     | RequestButtonSubProcess
+    | RequestConfirmationSubProcess
     | CompleteSubProcess<TResult>
     | ErrorSubProcess;
 
@@ -74,9 +87,33 @@ export type WalletSubProcess =
     | RequestPassphraseOnDeviceSubProcess
     | RequestPinSubProcess
     | RequestButtonSubProcess
+    | RequestConfirmationSubProcess
     | CompleteSubProcess<WalletResult>
+    | ErrorSubProcess;
+
+export interface GetAddressOptions {
+    devicePath?: string;
+    path: string | number[];
+    coin?: string;
+    showOnTrezor?: boolean;
+}
+
+export interface AddressResult {
+    address: string;
+    path: number[];
+    serializedPath: string;
+}
+
+export type GetAddressSubProcess =
+    | RequestPassphraseSubProcess
+    | RequestPassphraseOnDeviceSubProcess
+    | RequestPinSubProcess
+    | RequestButtonSubProcess
+    | RequestConfirmationSubProcess
+    | CompleteSubProcess<AddressResult>
     | ErrorSubProcess;
 
 export interface ConnectService {
     createWallet(options: CreateWalletOptions): Process<WalletSubProcess>;
+    getAddress(options: GetAddressOptions): Process<GetAddressSubProcess>;
 }
