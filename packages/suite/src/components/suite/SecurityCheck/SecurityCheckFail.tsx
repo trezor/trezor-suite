@@ -1,9 +1,10 @@
 import { type ReactNode } from 'react';
 
 import { Translation, type TranslationKey } from '@suite/intl';
-import { Column, Divider, H2, Paragraph, Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Column, Divider, H2, Paragraph } from '@trezor/components';
+import { breakpoints } from '@trezor/theme';
 
+import { ContentFlex } from 'src/support/suite/ContentFlex';
 import { SecurityChecklist } from 'src/views/onboarding/steps/DeviceAuthenticityStep/SecurityChecklist';
 import { type SecurityChecklistItem } from 'src/views/onboarding/steps/DeviceAuthenticityStep/types';
 
@@ -26,7 +27,7 @@ export const SecurityCheckFail = ({
     useCompromisedImage = true,
 }: SecurityCheckFailProps) => (
     <SecurityCheckLayout isFailed={useCompromisedImage}>
-        <Column gap={spacings.sm} padding={{ top: spacings.xs }}>
+        <Column gap={12} padding={{ top: 8 }}>
             <H2>
                 <Translation id={heading} />
             </H2>
@@ -34,10 +35,16 @@ export const SecurityCheckFail = ({
                 <Translation id={text} />
             </Paragraph>
         </Column>
-        <Divider margin={{ vertical: spacings.xl }} />
+        <Divider margin={{ vertical: 32 }} />
         <SecurityChecklist items={checklistItems} />
-        <Row flexWrap="wrap" gap={spacings.xl} width="100%" margin={{ top: spacings.xxxxl }}>
+        <ContentFlex
+            breakpoint={breakpoints.tablet}
+            alignItems="center"
+            gap={12}
+            margin={{ top: 48 }}
+            width="100%"
+        >
             {ctaSection}
-        </Row>
+        </ContentFlex>
     </SecurityCheckLayout>
 );

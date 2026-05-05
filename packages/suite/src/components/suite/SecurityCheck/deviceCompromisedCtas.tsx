@@ -1,7 +1,6 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { deviceActions } from '@suite-common/device';
-import { Button } from '@trezor/components';
 import {
     HELP_CENTER_ENTROPY_CHECK_URL,
     TREZOR_SUPPORT_DEVICE_AUTHENTICATION_FAILED_URL,
@@ -11,6 +10,8 @@ import {
 
 import { useDispatch } from 'src/hooks/suite';
 
+import { SecurityCheckButton } from './SecurityCheckButton';
+
 type ContactSupportProps = {
     supportUrl: Url;
 };
@@ -18,9 +19,9 @@ export const ContactSupport = ({ supportUrl }: ContactSupportProps) => {
     const chatUrl = `${supportUrl}#open-chat`;
 
     return (
-        <Button href={chatUrl} flex="1" size="large">
+        <SecurityCheckButton href={chatUrl}>
             <Translation id="TR_CONTACT_TREZOR_SUPPORT" />
-        </Button>
+        </SecurityCheckButton>
     );
 };
 
@@ -40,15 +41,14 @@ type DismissButtonProps = {
     onClick: () => void;
 };
 const DismissButton = ({ onClick }: DismissButtonProps) => (
-    <Button
+    <SecurityCheckButton
         intent="neutral"
         priority="secondary"
         onClick={onClick}
-        size="large"
         data-testid="@device-compromised/dismiss-button"
     >
         <Translation id="TR_DISMISS" />
-    </Button>
+    </SecurityCheckButton>
 );
 
 export const DismissFwAuthenticityCheckButton = () => {
