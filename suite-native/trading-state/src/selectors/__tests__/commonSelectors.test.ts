@@ -43,6 +43,7 @@ import {
     selectIsAmountInputActive,
     selectIsTradingBlacklisted,
     selectIsTradingBuyEnabled,
+    selectIsTradingConciergeEnabled,
     selectIsTradingEnabled,
     selectIsTradingExchangeEnabled,
     selectIsTradingSellEnabled,
@@ -77,6 +78,7 @@ const getPreloadedState = ({
     buy,
     sell,
     exchange,
+    concierge,
     blacklist,
     residence,
     countryCode,
@@ -84,6 +86,7 @@ const getPreloadedState = ({
     buy?: boolean;
     sell?: boolean;
     exchange?: boolean;
+    concierge?: boolean;
     blacklist?: boolean;
     residence?: boolean;
     countryCode?: TradingCountryCode | undefined;
@@ -105,6 +108,12 @@ const getPreloadedState = ({
         features.push({
             domain: 'trading.exchange',
             flag: exchange,
+        });
+    }
+    if (concierge !== undefined) {
+        features.push({
+            domain: 'trading.concierge',
+            flag: concierge,
         });
     }
     if (blacklist !== undefined) {
@@ -229,6 +238,24 @@ describe('commonSelectors', () => {
 
         it('should correctly select that sell is enabled if remote feature is not set', () => {
             expect(selectIsTradingSellEnabled(getPreloadedState({}))).toBe(true);
+        });
+    });
+
+    describe('selectIsTradingConciergeEnabled', () => {
+        it('should correctly select that concierge is enabled if remote feature is enabled', () => {
+            expect(selectIsTradingConciergeEnabled(getPreloadedState({ concierge: true }))).toBe(
+                true,
+            );
+        });
+
+        it('should correctly select that concierge is disabled if remote feature is disabled', () => {
+            expect(selectIsTradingConciergeEnabled(getPreloadedState({ concierge: false }))).toBe(
+                false,
+            );
+        });
+
+        it('should correctly select that concierge is enabled if remote feature is not set', () => {
+            expect(selectIsTradingConciergeEnabled(getPreloadedState({}))).toBe(true);
         });
     });
 

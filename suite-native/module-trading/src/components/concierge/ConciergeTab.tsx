@@ -1,11 +1,16 @@
+import { useSelector } from 'react-redux';
+
+import { selectIsTradingConciergeEnabled } from '@suite-native/trading-state';
+
 import { ConciergeTabContent } from './ConciergeTabContent';
+import { TradingTypeDisabled } from '../general/Error/TradingTypeDisabled';
 
-export const ConciergeTab = () => (
-    // const isExchangeEnabled =
+export const ConciergeTab = () => {
+    const isConciergeEnabled = useSelector(selectIsTradingConciergeEnabled);
 
-    // if (!isExchangeEnabled) {
-    //     return <TradingTypeDisabled tradingType="exchange" />;
-    // }
+    if (!isConciergeEnabled) {
+        return <TradingTypeDisabled tradingType="concierge" />;
+    }
 
-    <ConciergeTabContent />
-);
+    return <ConciergeTabContent />;
+};

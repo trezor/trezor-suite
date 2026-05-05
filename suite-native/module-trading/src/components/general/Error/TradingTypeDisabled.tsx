@@ -1,13 +1,13 @@
-import { type TradingType } from '@suite-common/trading';
+import { type TradingTypeWithConcierge } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
 import { WarningCard } from '@suite-native/trading-atoms';
 import { exhaustive } from '@trezor/type-utils';
 
 export type TradingTypeDisabledProps = {
-    tradingType: TradingType;
+    tradingType: TradingTypeWithConcierge;
 };
 
-const useTitle = (tradingType: TradingType) => {
+const useTitle = (tradingType: TradingTypeWithConcierge) => {
     const { translate } = useTranslate();
     let tradingTypeTitle: string;
 
@@ -22,6 +22,10 @@ const useTitle = (tradingType: TradingType) => {
 
         case 'sell':
             tradingTypeTitle = translate('moduleTrading.tradingScreen.tabs.sell');
+            break;
+
+        case 'concierge':
+            tradingTypeTitle = translate('moduleTrading.tradingScreen.tabs.concierge');
             break;
 
         default:
