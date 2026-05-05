@@ -27,11 +27,14 @@ class DeviceManagerActions {
 
     async assertDeviceSwitcherState({
         title,
+        timeout,
     }: {
         title: 'Connected' | 'Disconnected' | 'Hi there!';
+        timeout?: number;
     }) {
         await waitForVisible(
             element(by.id('@device-manager/device-switch').withDescendant(by.text(title))),
+            { timeout },
         );
     }
 }

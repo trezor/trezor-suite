@@ -72,8 +72,8 @@ describe('passphrase flow [@androidOnly @smoke @T3T1 @T3W1]', () => {
 
     describe('with passphrase not allowed on Trezor', () => {
         beforeEach(async () => {
-            await openApp({ args: { preloadedState } });
             await prepareTrezorEmulator({ passphrase_protection: true });
+            await openApp({ args: { preloadedState } });
             await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
         });
 
@@ -102,8 +102,9 @@ describe('passphrase flow [@androidOnly @smoke @T3T1 @T3W1]', () => {
 
     describe('with passphrase already allowed on Trezor', () => {
         beforeEach(async () => {
-            await openApp({ args: { preloadedState } });
             await prepareTrezorEmulator({ passphrase_protection: true });
+            await openApp({ args: { preloadedState } });
+            await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
         });
 
         it('Open empty passphrase wallet', async () => {

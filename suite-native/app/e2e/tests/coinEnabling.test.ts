@@ -13,8 +13,8 @@ const preloadedState = preparePreloadedReduxState(onboardingCompletedState);
 
 describe('Coin enabling [@androidOnly @T3T1 @T3W1]', () => {
     beforeEach(async () => {
-        await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator();
+        await openApp({ args: { preloadedState } });
     });
 
     it('Coin Enabling', async () => {

@@ -190,9 +190,9 @@ export const createImportedDeviceThunk = createThunk<
     undefined,
     { rejectValue: { error: 'already-created' } }
 >(`${DEVICE_MODULE_PREFIX}/createImportedDevice`, (_, { dispatch, getState, rejectWithValue }) => {
-    const device = selectDeviceById(getState(), PORTFOLIO_TRACKER_DEVICE_ID);
-
-    if (device) return rejectWithValue({ error: 'already-created' });
+    if (selectDeviceById(getState(), PORTFOLIO_TRACKER_DEVICE_ID)) {
+        return rejectWithValue({ error: 'already-created' });
+    }
 
     dispatch(
         deviceActions.createDeviceInstance({
@@ -200,7 +200,11 @@ export const createImportedDeviceThunk = createThunk<
         }),
     );
 
-    dispatch(selectDeviceThunk({ device: portfolioTrackerDevice }));
+    const selectedDevice = selectSelectedDevice(getState());
+
+    if (selectedDevice === undefined) {
+        dispatch(selectDeviceThunk({ device: portfolioTrackerDevice }));
+    }
 });
 
 type ConfirmAddressOnDeviceThunk = {

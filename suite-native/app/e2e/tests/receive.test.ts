@@ -5,6 +5,7 @@ import { btcDiscoveryFinishedStateT3W1 } from '../fixtures/btcDiscoveryFinishedS
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { onAccountDetail } from '../pageObjects/accountDetailActions';
 import { onAccountReceive } from '../pageObjects/accountReceiveActions';
+import { onDeviceManager } from '../pageObjects/deviceManagerActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
@@ -20,8 +21,9 @@ const preloadedState = preparePreloadedReduxState(
 
 describe('Receive [@androidOnly @smoke @T3T1 @T3W1]', () => {
     beforeEach(async () => {
-        await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator();
+        await openApp({ args: { preloadedState } });
+        await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
     });
 
     it('Generate device confirmed receive address.', async () => {

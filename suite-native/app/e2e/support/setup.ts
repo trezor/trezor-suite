@@ -85,6 +85,33 @@ const isDebugTestBuild = async () => {
     return isDebugBuild;
 };
 
+const waitForBridgeReady = async ({ retries = 20, intervalMs = 500 } = {}) => {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const response = await fetch('http://127.0.0.1:21325/', { method: 'POST' });
+            if (response.ok) return;
+        } catch {
+            // bridge not ready yet
+        }
+        await new Promise(resolve => setTimeout(resolve, intervalMs));
+    }
+    throw new Error('Trezor bridge did not become ready in time');
+};
+
+const waitForDeviceEnumerated = async ({ retries = 60, intervalMs = 1000 } = {}) => {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const response = await fetch('http://127.0.0.1:21325/enumerate', { method: 'POST' });
+            const devices = await response.json();
+            if (Array.isArray(devices) && devices.length > 0) return;
+        } catch {
+            // bridge not ready yet
+        }
+        await new Promise(resolve => setTimeout(resolve, intervalMs));
+    }
+    throw new Error('No device visible to Trezor bridge after enumerate polling');
+};
+
 const wipeAppData = async () => {
     await device.uninstallApp();
     await device.installApp();
@@ -117,6 +144,11 @@ export const openApp = async ({
         });
     }
 
+    if (getModelFromEnv() === Model.T3W1) {
+        await onDevicePrompt.allowConnectToTrezor();
+        await onDeviceOnboarding.enterTHPPairingCode();
+    }
+
     if (launchArgs.preloadedState) {
         // wait for preloaded state to be applied
         await appIsFullyLoaded();
@@ -138,8 +170,7 @@ export const prepareTrezorEmulator = async ({
     seed = MNEMONICS.mnemonic_immune,
     passphrase_protection = false,
     model = getModelFromEnv(),
-    args,
-}: PrepareTrezorEmulatorProps & { args?: LaunchArguments } = {}) => {
+}: PrepareTrezorEmulatorProps = {}) => {
     if (platform === 'android') {
         const { currentTestName, testPath } = jestExpect.getState();
         await TrezorUserEnvLink.logTestDetails(
@@ -158,14 +189,8 @@ export const prepareTrezorEmulator = async ({
             });
         }
         await TrezorUserEnvLink.startBridge('node-bridge');
-    }
-    // ATM we need to terminate app, start without new instance in order for the emulator to connect to the app
-    await device.terminateApp();
-    await openApp({ newInstance: false, wipeData: false, args });
-
-    if (getModelFromEnv() === Model.T3W1) {
-        await onDevicePrompt.allowConnectToTrezor();
-        await onDeviceOnboarding.enterTHPPairingCode();
+        await waitForBridgeReady();
+        await waitForDeviceEnumerated();
     }
 };
 
