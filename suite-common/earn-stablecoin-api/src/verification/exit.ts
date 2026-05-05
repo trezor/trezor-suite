@@ -38,12 +38,12 @@ const verifyRedeem = (
 
 const getTransactionStatus = (
     tx: ExitYieldResponseSuccess['data']['transactions'][number],
-    vaultAddress: `0x${string}` | undefined,
+    vaultAddress: `0x${string}`,
     address: string,
 ): TransactionVerificationStatus => {
     const parsed = parseUnsignedEvmTransaction(tx.unsignedTransaction);
 
-    if (!parsed || !vaultAddress) return 'skipped';
+    if (!parsed) return 'failed';
 
     switch (tx.type) {
         case TransactionDtoType.WITHDRAW:
@@ -58,6 +58,8 @@ export const verifyExitTransactions = (
     { yieldId, address }: VerifyExitTransactionsParams,
 ): VerificationStatus => {
     const vaultAddress = EVM_VAULT_ADDRESSES[yieldId];
+
+    if (!vaultAddress) return 'failure';
 
     const statuses = response.data.transactions.map(tx =>
         getTransactionStatus(tx, vaultAddress, address),

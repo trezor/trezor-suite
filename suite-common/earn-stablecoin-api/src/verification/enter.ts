@@ -39,7 +39,7 @@ const verifySupply = (
 
 const getTransactionStatus = (
     tx: EnterYieldResponseSuccess['data']['transactions'][number],
-    vaultAddress: `0x${string}` | undefined,
+    vaultAddress: `0x${string}`,
     address: `0x${string}`,
     amountBigInt: bigint,
 ): TransactionVerificationStatus => {
@@ -47,7 +47,7 @@ const getTransactionStatus = (
 
     const parsed = parseUnsignedEvmTransaction(tx.unsignedTransaction);
 
-    if (!parsed || !vaultAddress) return 'skipped';
+    if (!parsed) return 'failed';
 
     switch (tx.type) {
         case TransactionDtoType.APPROVAL:
@@ -65,6 +65,9 @@ export const verifyEnterTransactions = (
     { yieldId, address, amount, decimals }: VerifyEnterTransactionsParams,
 ): VerificationStatus => {
     const vaultAddress = EVM_VAULT_ADDRESSES[yieldId];
+
+    if (!vaultAddress) return 'failure';
+
     const amountBigInt = BigInt(
         new BigNumber(amount).times(new BigNumber(10).pow(decimals)).toFixed(0),
     );

@@ -58,13 +58,13 @@ describe('verifyExitTransactions', () => {
         );
     });
 
-    it('returns skipped when vault is not in constants', () => {
+    it('returns failure when vault is not in constants', () => {
         const response = mockResponse([
             { type: TransactionDtoType.WITHDRAW, unsignedTransaction: WITHDRAW_UNSIGNED_TX },
         ]);
 
         expect(
             verifyExitTransactions(response, { yieldId: 'unknown-yield-id', address: ADDRESS }),
-        ).toBe('skipped');
+        ).toBe('failure');
     });
 });
