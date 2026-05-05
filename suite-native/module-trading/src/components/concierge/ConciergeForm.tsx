@@ -4,7 +4,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { ConciergeConfirmation } from './ConciergeConfirmation';
 import { ConciergeInfoCard } from './ConciergeInfoCard';
 import { ConciergeProviderPicker } from './ConciergeProviderPicker';
-import { TradingCountryOfResidencePicker } from '../general/TradingCountryOfResidencePicker';
+import { TradingLocationPickers } from '../general/TradingLocationPickers';
 
 const dividerStyle = prepareNativeStyle(({ colors }) => ({
     borderBottomColor: colors.surfaceFillPage,
@@ -17,10 +17,7 @@ export const ConciergeForm = () => {
         <VStack spacing="sp16">
             <ConciergeInfoCard />
             <Card noPadding>
-                <TradingCountryOfResidencePicker
-                    testID="@trading/concierge/country"
-                    context="concierge"
-                />
+                <TradingLocationPickers hideSubdivisionPicker context="concierge" />
                 <Divider style={applyStyle(dividerStyle)} />
                 <ConciergeProviderPicker />
             </Card>
