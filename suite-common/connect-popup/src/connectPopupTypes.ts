@@ -1,6 +1,5 @@
 import { type AccountKey, type TxSimulationAction } from '@suite-common/wallet-types';
-import { type CallMethodKeys } from '@trezor/connect';
-import { type MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
+import { type CallMethodKeys, type MethodPermission } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 
 export type ManifestPartial = {
