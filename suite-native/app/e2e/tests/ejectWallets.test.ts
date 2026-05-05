@@ -1,5 +1,6 @@
 import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
+import { autoEjectAlertShownState } from '../fixtures/autoEjectAlertShownState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { regtestDiscoveryFinishedStateT3T1 } from '../fixtures/regtestDiscoveryFinishedStateT3T1';
 import { regtestDiscoveryFinishedStateT3W1 } from '../fixtures/regtestDiscoveryFinishedStateT3W1';
@@ -12,6 +13,7 @@ import { getModelFromEnv } from '../support/utils';
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
+    autoEjectAlertShownState,
     getModelFromEnv() === Model.T3T1
         ? regtestDiscoveryFinishedStateT3T1
         : regtestDiscoveryFinishedStateT3W1,
