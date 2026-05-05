@@ -299,7 +299,7 @@ const handleMessageInCoreMode = (
     }
 
     if (data.type === POPUP.HANDSHAKE) {
-        handshake(data, getState().settings?.origin || '');
+        handshake(data, event.origin);
         const core = ensureCore();
         const transports = core.getActiveTransports();
         setState({ ...data, transports });
@@ -536,15 +536,9 @@ const handshake = (handshake2: PopupHandshake, origin: string) => {
 
     clearTimeout(handshakeTimeout);
 
-    let thirdPartyOrigin = origin;
-    // `origin` is empty string when using `BroadcastChannel` in iframe popup mode,
-    // so when that happens we use origin from settings and validate it with `parseConnectSettings`.
-    if (origin === '' && payload.settings.origin) {
-        thirdPartyOrigin = payload.settings.origin;
-    }
     // when this message comes from iframe, settings is already validated.
     // when there is no iframe, we must validate it here
-    const trustedSettings = parseConnectSettings(payload.settings, thirdPartyOrigin);
+    const trustedSettings = parseConnectSettings(payload.settings, origin);
     // useCoreInPopup is internal setting passed from connect-web
     if (typeof payload.settings.useCoreInPopup === 'boolean') {
         trustedSettings.useCoreInPopup = payload.settings.useCoreInPopup;
