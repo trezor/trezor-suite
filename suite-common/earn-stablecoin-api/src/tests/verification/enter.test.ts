@@ -64,7 +64,7 @@ describe('verifyEnterTransactions', () => {
         ).toBe('skipped');
     });
 
-    it('returns skipped when vault is not in constants', () => {
+    it('returns failure when vault is not in constants', () => {
         const response = mockResponse([
             { type: TransactionDtoType.APPROVAL, unsignedTransaction: APPROVAL_UNSIGNED_TX },
             { type: TransactionDtoType.SUPPLY, unsignedTransaction: SUPPLY_UNSIGNED_TX },
@@ -77,7 +77,7 @@ describe('verifyEnterTransactions', () => {
                 amount: AMOUNT,
                 decimals: DECIMALS,
             }),
-        ).toBe('skipped');
+        ).toBe('failure');
     });
 
     it('returns failure when amount does not match', () => {
