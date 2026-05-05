@@ -81,9 +81,10 @@ Result with only one public key
 {
     success: true,
     payload: {
-        publicKey: string,
         path: Array<number>,
         serializedPath: string,
+        publicKey: string,            // base58check-encoded public key (`edpk…`)
+        displayablePublicKey: string, // canonical user-facing form (= publicKey)
     }
 }
 ```
@@ -94,9 +95,9 @@ Result with bundle of public keys
 {
     success: true,
     payload: [
-        { path, serializedPath, publicKey }, // account 1
-        { path, serializedPath, publicKey }, // account 2
-        { path, serializedPath, publicKey }, // account 3
+        { path, serializedPath, publicKey, displayablePublicKey }, // account 1
+        { path, serializedPath, publicKey, displayablePublicKey }, // account 2
+        { path, serializedPath, publicKey, displayablePublicKey }, // account 3
     ]
 }
 ```

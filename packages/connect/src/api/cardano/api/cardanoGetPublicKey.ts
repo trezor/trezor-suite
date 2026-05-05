@@ -86,7 +86,9 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
             responses.push({
                 path: batch.address_n,
                 serializedPath: getSerializedPath(batch.address_n),
-                publicKey: message.xpub,
+                publicKey: message.node.public_key,
+                xpub: message.xpub,
+                displayablePublicKey: message.xpub,
                 node: message.node,
             });
 

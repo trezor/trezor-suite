@@ -103,7 +103,44 @@ export const GetPublicKey = Type.Object({
 
 export type PublicKey = Static<typeof PublicKey>;
 export const PublicKey = Type.Object({
+    /**
+     * Per-coin raw public key encoding:
+     * - Bitcoin/Ethereum: hex-encoded compressed public key (33 bytes)
+     * - Solana/Cardano: hex-encoded raw public key (32 bytes)
+     * - Tezos: base58check-encoded public key (`edpk…`)
+     */
     publicKey: Type.String(),
     path: Type.Array(Type.Number()),
     serializedPath: Type.String(),
+    /**
+     * Canonical user-facing representation of the public key for the given coin.
+     * - Bitcoin: `xpubSegwit ?? xpub` (SLIP-132 form matching the requested
+     *   scriptType, e.g. ypub/zpub for SegWit, `tr(...)` descriptor for Taproot)
+     * - Ethereum: `xpub`
+     * - Cardano: extended public key (xpub)
+     * - Solana: base58-encoded address (same value as `publicKeyBase58`)
+     * - Tezos: base58check-encoded public key, `edpk…` (same value as `publicKey`)
+     *
+     * Generic consumers (e.g. UI components that need to display *some* canonical
+     * identifier without knowing the coin) should read this field. Coin-specific
+     * consumers should read the per-coin response type instead, which exposes the
+     * fields that genuinely apply to that coin (e.g. `xpub`, `xpubSegwit`,
+     * `publicKeyBase58`, `node`).
+     *
+     * Relation to what firmware shows on the device screen for
+     * `showOnTrezor: true`:
+     * - Bitcoin (legacy/SegWit), Cardano, Solana, Tezos: byte-identical to the
+     *   firmware display.
+     * - Bitcoin Taproot: same logical descriptor, but firmware renders the bare
+     *   account-level form with `h`-notation (e.g. `tr([fp/86h/0h/0h]xpub…)`),
+     *   while this field is the BIP-389 multipath descriptor with `'`-notation
+     *   and trailing `/<0;1>/*` used to derive both external and change
+     *   addresses (e.g. `tr([fp/86'/0'/0']xpub…/<0;1>/*)`).
+     * - Ethereum: firmware shows the raw compressed public key (`publicKey`,
+     *   33 bytes hex); this field is the `xpub` because that's the more useful
+     *   identifier in host-side UIs. Suite displays the xpub, the device shows
+     *   the compressed key — both are correct representations of the same
+     *   underlying secp256k1 point at the requested path.
+     */
+    displayablePublicKey: Type.String(),
 });

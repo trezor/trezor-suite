@@ -70,11 +70,13 @@ export default class SolanaGetPublicKey extends AbstractMethod<
         for (let i = 0; i < this.params.length; i++) {
             const batch = this.params[i];
             const { message } = await cmd.typedCall('SolanaGetPublicKey', 'SolanaPublicKey', batch);
+            const publicKeyBase58 = base58.encode(Buffer.from(message.public_key, 'hex'));
             responses.push({
                 path: batch.address_n,
                 serializedPath: getSerializedPath(batch.address_n),
                 publicKey: message.public_key,
-                publicKeyBase58: base58.encode(Buffer.from(message.public_key, 'hex')),
+                publicKeyBase58,
+                displayablePublicKey: publicKeyBase58,
             });
 
             if (this.hasBundle) {

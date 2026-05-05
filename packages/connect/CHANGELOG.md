@@ -23,10 +23,19 @@ Features:
 
 Breaking changes:
 
-- `getAccountDescriptor` has been removed. The per-coin `*GetPublicKey` methods (`getPublicKey`, `ethereumGetPublicKey`, `cardanoGetPublicKey`, `solanaGetPublicKey`, `tezosGetPublicKey`) now return the same fields after the response-shape unification, so the dedicated descriptor entry point is no longer needed. Consumers that previously called `getAccountDescriptor` should call the appropriate `*GetPublicKey` for the target coin. TODO: exact field mapping (e.g. previous `payload.descriptor`) will be documented as part of the `*GetPublicKey` response-shape unification PR.
+- `getAccountDescriptor` has been removed. The per-coin `*GetPublicKey` methods (`getPublicKey`, `ethereumGetPublicKey`, `cardanoGetPublicKey`, `solanaGetPublicKey`, `tezosGetPublicKey`) now return the same fields after the response-shape unification, so the dedicated descriptor entry point is no longer needed. Consumers that previously called `getAccountDescriptor` should call the appropriate `*GetPublicKey` for the target coin. Field mapping from the old `getAccountDescriptor` payload:
+    - `payload.descriptor` → Bitcoin: `result.descriptor` on `getPublicKey`. Non-Bitcoin coins did not return a descriptor; use `result.displayablePublicKey` for the canonical user-facing form.
+    - `payload.path` (serialized string) → `result.serializedPath` on every `*GetPublicKey`.
+    - For a generic, per-coin agnostic consumer that just needs the canonical user-facing public-key string, read the new `result.displayablePublicKey` field.
 - **`@trezor/connect` and every package in its dependency closure now ship ESM only.** Several transitive dependencies (`@noble/curves`, `@noble/hashes`, `@scure/base`, `@scure/bip39`, `@solana/kit`, `@solana-program/*`, `viem`, `node-fetch@3+`) are already ESM-only, so a CJS consumer of `@trezor/connect` cannot statically import them in any case. To keep the build pipeline consistent, the entire connect ecosystem follows suit: `@trezor/connect`, `@trezor/connect-web`, `@trezor/connect-webextension`, `@trezor/connect-mobile`, `@trezor/connect-common`, `@trezor/connect-data`, `@trezor/connect-plugin-ethereum`, `@trezor/connect-plugin-stellar`, `@trezor/blockchain-link`, `@trezor/blockchain-link-utils`, `@trezor/blockchain-link-types`, `@trezor/utxo-lib`, `@trezor/device-authenticity`, `@trezor/address-validator`, `@trezor/utils`, `@trezor/transport`, `@trezor/protobuf`, `@trezor/protocol`, `@trezor/schema-utils`, `@trezor/crypto-utils`, `@trezor/device-utils`, `@trezor/env-utils`, `@trezor/type-utils`, `@trezor/websocket-client`. Migration:
     - ESM consumer: replace `const TrezorConnect = require('@trezor/connect').default` with `import TrezorConnect from '@trezor/connect'`. Set `"type": "module"` in your `package.json` or use the `.mjs` extension.
     - CJS consumer that cannot migrate: use a dynamic import — `const TrezorConnect = (await import('@trezor/connect')).default;` — or stay on v9.
+- All `*GetPublicKey` methods now return a `displayablePublicKey: string` field — the canonical user-facing representation per coin (`xpubSegwit ?? xpub` for Bitcoin, i.e. ypub/zpub for SegWit and `tr(...)` descriptor for Taproot; xpub for Ethereum/Cardano; base58 for Solana; base58check `edpk…` for Tezos). Generic consumers can display any public-key response without per-coin branching. The shared `PublicKey` base stays minimal (only `displayablePublicKey` is added); per-coin extras remain on per-coin response types.
+- `cardanoGetPublicKey` now exposes the Cardano extended public key via the explicit `xpub: string` field.
+
+Breaking changes:
+
+- `cardanoGetPublicKey`: the `publicKey` field is now the raw 32-byte public key in hex (consistent with other coins). The Cardano extended public key previously returned in `publicKey` is now exposed via the new explicit `xpub` field. Update consumers to read `xpub` (or `displayablePublicKey`) for the extended key.
 
 Deprecations:
 

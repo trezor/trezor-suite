@@ -98,31 +98,35 @@ export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
             publicKey = hdnodeUtils.xpubDerive(resKey, childKey, suffix, network, coinInfo.network);
         }
 
+        const xpub =
+            network !== coinInfo.network
+                ? hdnodeUtils.convertXpub(publicKey.xpub, network, coinInfo.network)
+                : publicKey.xpub;
+        const xpubSegwit = network !== coinInfo.network ? publicKey.xpub : undefined;
+
         const response: HDNodeResponse = {
             path,
             serializedPath: getSerializedPath(path),
             childNum: publicKey.node.child_num,
-            xpub: publicKey.xpub,
+            xpub,
             chainCode: publicKey.node.chain_code,
             publicKey: publicKey.node.public_key,
             fingerprint: publicKey.node.fingerprint,
             rootFingerprint: publicKey.root_fingerprint,
             depth: publicKey.node.depth,
             descriptor: publicKey.descriptor,
+            displayablePublicKey: xpubSegwit ?? xpub,
+            ...(xpubSegwit !== undefined && { xpubSegwit }),
         };
 
-        if (network !== coinInfo.network) {
-            response.xpubSegwit = response.xpub;
-            response.xpub = hdnodeUtils.convertXpub(publicKey.xpub, network, coinInfo.network);
-        }
-
         if (isTaprootPath(path)) {
-            const { checksum, xpub: xpubSegwit } = resolveDescriptorForTaproot({
+            const { checksum, xpub: taprootXpubSegwit } = resolveDescriptorForTaproot({
                 response,
                 publicKey,
             });
-            response.xpubSegwit = xpubSegwit;
+            response.xpubSegwit = taprootXpubSegwit;
             response.descriptorChecksum = checksum;
+            response.displayablePublicKey = taprootXpubSegwit;
         }
 
         return response;

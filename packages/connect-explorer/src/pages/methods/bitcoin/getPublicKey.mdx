@@ -83,19 +83,29 @@ Result with only one public key
 {
     success: true,
     payload: {
-        path: Array<number>, // hardended path
-        serializedPath: string, // serialized path
-        xpub: string,        // xpub in legacy format
-        xpubSegwit?: string, // optional for segwit accounts: xpub in segwit format
-        chainCode: string,   // BIP-32 serialization format
-        childNum: number,    // BIP-32 serialization format
-        publicKey: string,   // BIP-32 serialization format
-        fingerprint: number, // BIP-32 serialization format
-        depth: number,       // BIP-32 serialization format
-        descriptor?: string, // BIP-380 descriptor. Not available for model One
+        path: Array<number>,          // hardended path
+        serializedPath: string,       // serialized path
+        xpub: string,                 // xpub in legacy format
+        xpubSegwit?: string,          // optional for segwit accounts: xpub in segwit format (SLIP-132)
+        chainCode: string,            // BIP-32 serialization format
+        childNum: number,             // BIP-32 serialization format
+        publicKey: string,            // BIP-32 serialization format
+        fingerprint: number,          // BIP-32 serialization format
+        depth: number,                // BIP-32 serialization format
+        descriptor?: string,          // BIP-380 descriptor. Not available for model One
+        displayablePublicKey: string, // canonical user-facing form: xpubSegwit ?? xpub (SLIP-132 form matching the requested scriptType — e.g. ypub/zpub for SegWit, tr(...) descriptor for Taproot)
     }
 }
 ```
+
+> **`displayablePublicKey` vs. firmware display.** For legacy and SegWit
+> accounts the field is byte-identical to what the device shows when
+> `showOnTrezor: true`. For Taproot the device renders the bare account-level
+> descriptor with `h`-notation (e.g. `tr([fp/86h/0h/0h]xpub…)`), whereas
+> `displayablePublicKey` is the BIP-389 multipath descriptor with
+> `'`-notation and trailing `/<0;1>/*` (e.g. `tr([fp/86'/0'/0']xpub…/<0;1>/*)`).
+> Both describe the same key; the multipath form is what host-side wallets need
+> to derive both external and change addresses.
 
 [Read more about BIP32 serialization format](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#Serialization_format)
 
@@ -105,9 +115,9 @@ Result with bundle of public keys
 {
     success: true,
     payload: [
-        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth, descriptor }, // account 1
-        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth, descriptor }, // account 2
-        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth, descriptor }  // account 3
+        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth, descriptor, displayablePublicKey }, // account 1
+        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth, descriptor, displayablePublicKey }, // account 2
+        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth, descriptor, displayablePublicKey }  // account 3
     ]
 }
 ```
