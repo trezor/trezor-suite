@@ -93,6 +93,7 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
                 publicKey: publicKey.node.public_key,
                 fingerprint: publicKey.node.fingerprint,
                 depth: publicKey.node.depth,
+                displayablePublicKey: publicKey.xpub,
             };
 
             responses.push(response);

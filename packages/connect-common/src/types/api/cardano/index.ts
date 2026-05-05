@@ -85,6 +85,9 @@ export const CardanoGetPublicKey = Type.Intersect([
 ]);
 
 export interface CardanoPublicKey extends PublicKey {
+    /** Cardano extended public key (xpub). Equals `displayablePublicKey`. */
+    xpub: string;
+    /** Raw HDNode proto returned by the firmware. */
     node: PROTO.HDNodeType;
 }
 

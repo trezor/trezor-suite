@@ -77,6 +77,7 @@ export default class TezosGetPublicKey extends AbstractMethod<
                 path: batch.address_n,
                 serializedPath: getSerializedPath(batch.address_n),
                 publicKey: message.public_key,
+                displayablePublicKey: message.public_key,
             });
 
             if (this.hasBundle) {

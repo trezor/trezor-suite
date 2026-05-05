@@ -12,6 +12,8 @@ const originalResponse: HDNodeResponse = {
     publicKey: '0349ef2fb24926afb58adf0a405ad74dd19e766485b19044477bbb067deff2ce64',
     fingerprint: 1998437481,
     depth: 3,
+    displayablePublicKey:
+        'xpub6CXYpDGLuWpjqFXRTbo8LMYVsiiRjwWiDY7iwDkq1mk4GDYE7TWmSBCnNmbcVYQK4T56RZRRwhCAG7ucTBHAG2rhWHpXdMQtkZVDeVuv33p',
 };
 
 const publicKey: Messages.PublicKey = {

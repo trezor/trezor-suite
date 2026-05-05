@@ -77,18 +77,24 @@ Result with only one public key
 {
     success: true,
     payload: {
-        path: Array<number>, // hardended path
-        serializedPath: string, // serialized path
-        xpub: string,        // xpub in legacy format
-        xpubSegwit?: string, // optional for segwit accounts: xpub in segwit format
-        chainCode: string,   // BIP32 serialization format
-        childNum: number,    // BIP32 serialization format
-        publicKey: string,   // BIP32 serialization format
-        fingerprint: number, // BIP32 serialization format
-        depth: number,       // BIP32 serialization format
+        path: Array<number>,          // hardended path
+        serializedPath: string,       // serialized path
+        publicKey: string,            // hex-encoded compressed public key (33 bytes)
+        xpub: string,                 // xpub in legacy format (BIP32)
+        chainCode: string,            // BIP32 serialization format
+        childNum: number,             // BIP32 serialization format
+        fingerprint: number,          // BIP32 serialization format
+        depth: number,                // BIP32 serialization format
+        displayablePublicKey: string, // canonical user-facing form (= xpub)
     }
 }
 ```
+
+> **`displayablePublicKey` vs. firmware display.** With `showOnTrezor: true` the
+> device shows the raw compressed `publicKey` (33-byte hex). This field is the
+> `xpub` instead, because that's the more useful identifier in host-side UIs
+> (Trezor Suite displays the xpub in its address-confirmation modal). Both are
+> correct representations of the same secp256k1 point at the requested path.
 
 [Read more about BIP32 serialization format](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#Serialization_format)
 
@@ -98,9 +104,9 @@ Result with bundle of public keys
 {
     success: true,
     payload: [
-        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth }, // account 1
-        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth }, // account 2
-        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth }  // account 3
+        { path, serializedPath, publicKey, xpub, chainCode, childNum, fingerprint, depth, displayablePublicKey }, // account 1
+        { path, serializedPath, publicKey, xpub, chainCode, childNum, fingerprint, depth, displayablePublicKey }, // account 2
+        { path, serializedPath, publicKey, xpub, chainCode, childNum, fingerprint, depth, displayablePublicKey }  // account 3
     ]
 }
 ```

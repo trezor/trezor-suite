@@ -86,9 +86,11 @@ Result with only one public key
 {
     success: true,
     payload: {
-        path: Array<number>, // hardended path
+        path: Array<number>, // BIP32 derivation path
         serializedPath: string,
-        publicKey: string,
+        publicKey: string,             // raw 32-byte public key in hex
+        xpub: string,                  // Cardano extended public key
+        displayablePublicKey: string,  // canonical user-facing form (= xpub)
         node: HDPubNode,
     }
 }
@@ -100,12 +102,18 @@ Result with a bundle of public keys
 {
     success: true,
     payload: [
-        { path: Array<number>, serializedPath: string, publicKey: string, node: HDPubNode }, // account 1
-        { path: Array<number>, serializedPath: string, publicKey: string, node: HDPubNode}, // account 2
-        { path: Array<number>, serializedPath: string, publicKey: string, node: HDPubNode }  // account 3
+        { path, serializedPath, publicKey, xpub, displayablePublicKey, node }, // account 1
+        { path, serializedPath, publicKey, xpub, displayablePublicKey, node }, // account 2
+        { path, serializedPath, publicKey, xpub, displayablePublicKey, node }, // account 3
     ]
 }
 ```
+
+> **Breaking change (version 10):** the `publicKey` field is now the raw 32-byte
+> public key in hex (consistent with other coins). The Cardano extended public
+> key previously returned in `publicKey` is exposed via the new explicit `xpub`
+> field. Use `displayablePublicKey` if you want the canonical user-facing form
+> without per-coin branching.
 
 Error
 

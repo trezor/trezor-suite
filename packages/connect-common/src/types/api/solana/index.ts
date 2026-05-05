@@ -14,6 +14,8 @@ export const SolanaPublicKey = Type.Intersect([
         publicKeyBase58: Type.String(),
     }),
 ]);
+// Note: `publicKeyBase58` is required on Solana responses and equals
+// `displayablePublicKey` from the shared `PublicKey` base.
 
 // solanaSignTransaction
 

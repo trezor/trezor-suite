@@ -1,5 +1,4 @@
-import { type Address, type CallMethodKeys, type SolanaPublicKey } from '@trezor/connect';
-import { type HDNodeResponse } from '@trezor/connect-common/src/types/api/getPublicKey';
+import { type Address, type CallMethodKeys, type PublicKey } from '@trezor/connect';
 
 import { connectPopupActions } from '../connectPopupActions';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
@@ -55,28 +54,19 @@ export async function postCallHook<M extends CallMethodKeys>({
     if (methods.includes(method) && response.success) {
         const bundledResponse = (
             Array.isArray(response.payload) ? response.payload : [response.payload]
-        ) as Address[] | HDNodeResponse[];
+        ) as (Address | PublicKey)[];
         const addresses = bundledResponse.map((item, index) => {
             const validatePayload =
                 'bundle' in originalPayload && Array.isArray(originalPayload.bundle)
                     ? originalPayload.bundle[index]
                     : originalPayload;
-            const displayAddress = () => {
-                if ('address' in item) return item.address;
-
-                // NOTE: it's possible in some cases there will be a mismatch between the public key format on the device and the one in the app
-                // For BTC
-                if (method === 'getPublicKey') return item.xpubSegwit || item.xpub;
-                // For SOL
-                if (method === 'solanaGetPublicKey')
-                    return (item as any as SolanaPublicKey).publicKeyBase58;
-
-                // For other altcoins
-                return item.publicKey;
-            };
+            // `displayablePublicKey` is the per-coin canonical user-facing
+            // representation populated by `@trezor/connect` (xpubSegwit/xpub for
+            // Bitcoin, base58 for Solana, hex for Tezos, etc.).
+            const displayAddress = 'address' in item ? item.address : item.displayablePublicKey;
 
             return {
-                address: displayAddress(),
+                address: displayAddress,
                 validated: 'not-started' as const,
                 loading: false,
                 validatePayload,

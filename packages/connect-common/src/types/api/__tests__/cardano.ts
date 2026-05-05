@@ -200,6 +200,8 @@ export const cardanoGetPublicKey = async (api: TrezorConnect) => {
         payload.path.map(p => p);
         payload.serializedPath.toLowerCase();
         payload.publicKey.toLowerCase();
+        payload.xpub.toLowerCase();
+        payload.displayablePublicKey.toLowerCase();
         payload.node.chain_code.toLowerCase();
         // @ts-expect-error
         payload.map(p => p);
@@ -212,6 +214,8 @@ export const cardanoGetPublicKey = async (api: TrezorConnect) => {
             item.path.map(p => p);
             item.serializedPath.toLowerCase();
             item.publicKey.toLowerCase();
+            item.xpub.toLowerCase();
+            item.displayablePublicKey.toLowerCase();
             item.node.chain_code.toLowerCase();
         });
         // @ts-expect-error

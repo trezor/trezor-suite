@@ -78,10 +78,11 @@ Result with only one public key
 {
     success: true,
     payload: {
-        path: Array<number>, // hardended path
+        path: Array<number>,          // hardended path
         serializedPath: string,
-        publicKey: string,
-        publicKeyBase58: string,
+        publicKey: string,            // hex-encoded raw public key (32 bytes)
+        publicKeyBase58: string,      // base58-encoded address form
+        displayablePublicKey: string, // canonical user-facing form (= publicKeyBase58)
     }
 }
 ```
@@ -92,9 +93,9 @@ Result with a bundle of public keys
 {
     success: true,
     payload: [
-        { path: Array<number>, serializedPath: string, publicKey: string }, // account 1
-        { path: Array<number>, serializedPath: string, publicKey: string }, // account 2
-        { path: Array<number>, serializedPath: string, publicKey: string }  // account 3
+        { path, serializedPath, publicKey, publicKeyBase58, displayablePublicKey }, // account 1
+        { path, serializedPath, publicKey, publicKeyBase58, displayablePublicKey }, // account 2
+        { path, serializedPath, publicKey, publicKeyBase58, displayablePublicKey }  // account 3
     ]
 }
 ```
