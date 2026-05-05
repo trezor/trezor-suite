@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { AppState, type AppStateStatus } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -17,21 +17,18 @@ export const BiometricsModalRenderer = () => {
     const shouldUserBeAuthenticated = useSelector(selectShouldUserBeAuthenticated);
     const isBiometricsOptionEnabled = useSelector(selectIsBiometricsEnabled);
 
-    const handleBiometricsAppStateChange = useCallback(
-        (nextAppState: AppStateStatus) => {
-            dispatch(
-                handleBiometricsAppStateChangeThunk({
-                    currentAppState: nextAppState,
-                }),
-            );
-        },
-        [dispatch],
-    );
-
     useEffect(() => {
         if (!isBiometricsOptionEnabled) {
             return;
         }
+
+        const handleBiometricsAppStateChange = (nextAppState: AppStateStatus) => {
+            dispatch(
+                handleBiometricsAppStateChangeThunk({
+                    nextAppState,
+                }),
+            );
+        };
 
         handleBiometricsAppStateChange(AppState.currentState);
 
@@ -40,7 +37,7 @@ export const BiometricsModalRenderer = () => {
         return () => {
             subscription.remove();
         };
-    }, [dispatch, handleBiometricsAppStateChange, isBiometricsOptionEnabled]);
+    }, [dispatch, isBiometricsOptionEnabled]);
 
     return shouldUserBeAuthenticated ? (
         <BiometricOverlay isBiometricsAuthButtonVisible={!!biometricsError} />

@@ -11,5 +11,5 @@ export const getIsBiometricsFeatureAvailable = async () => {
 
 // Revoke user authentication if the timeout has run out.
 export const getShouldRevokeAuth = (goneToBackgroundAtTimestamp: number | null) =>
-    goneToBackgroundAtTimestamp &&
+    goneToBackgroundAtTimestamp === null ||
     goneToBackgroundAtTimestamp < Date.now() - KEEP_LOGGED_IN_TIMEOUT;

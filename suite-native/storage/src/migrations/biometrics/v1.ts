@@ -1,5 +1,3 @@
-import { type PersistedState } from 'redux-persist';
-
 import { unecryptedJotaiStorage } from '../../atomWithUnecryptedStorage';
 import { isPersistedState } from '../../migrationTypes';
 
@@ -17,9 +15,9 @@ const parseStoredBoolean = (value: string | undefined | null): boolean | undefin
 
 const BIOMETRICS_PERSISTED_ATOM_STORAGE_KEY = 'isBiometricsOptionEnabled';
 
-export const migrateBiometricsAtomToRedux = (oldState: unknown): PersistedState => {
+export const migrateBiometricsAtomToRedux = (oldState: unknown) => {
     if (!oldState || !isPersistedState(oldState)) {
-        return oldState as PersistedState;
+        return undefined;
     }
 
     const storedValue = parseStoredBoolean(
@@ -27,10 +25,13 @@ export const migrateBiometricsAtomToRedux = (oldState: unknown): PersistedState 
     );
 
     if (typeof storedValue !== 'boolean') {
-        return oldState;
+        return undefined;
     }
 
     unecryptedJotaiStorage.remove(BIOMETRICS_PERSISTED_ATOM_STORAGE_KEY);
 
-    return { ...oldState, isBiometricsEnabled: storedValue } as PersistedState;
+    return {
+        ...oldState,
+        isBiometricsEnabled: storedValue,
+    };
 };
