@@ -20,7 +20,7 @@ function getSuiteWebUrl() {
     }
 
     // Extract branch from BASE_URL (e.g., "https://dev.suite.sldev.cz/suite-web/develop/web" -> "develop")
-    const branchMatch = baseUrl.match(/suite-web\/(.*?)\/web/);
+    const branchMatch = baseUrl.match(/suite-web\/(.*?)\/web\/?$/);
     if (branchMatch) {
         return `https://dev.suite.sldev.cz/suite-web/${branchMatch[1]}/web`;
     }
