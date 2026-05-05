@@ -14,6 +14,7 @@ const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsTradingBuyEnabled]: '💰 Trading Buy',
     [FeatureFlagEnum.IsTradingExchangeEnabled]: '💰 Trading Swap',
     [FeatureFlagEnum.IsTradingSellEnabled]: '💰 Trading Sell',
+    [FeatureFlagEnum.IsTradingConciergeEnabled]: '💰 Trading Concierge',
     [FeatureFlagEnum.AreTradingExchangeDexesEnabled]: '💰 Trading Exchange Dexes',
     [FeatureFlagEnum.IsTradingResidenceCheckEnabled]: '💰 Trading Residence Check',
     [FeatureFlagEnum.IsTradingDebugEnabled]: '💰 Trading Debug Mode',
