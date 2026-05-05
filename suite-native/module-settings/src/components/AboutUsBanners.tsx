@@ -9,7 +9,7 @@ import { TREZOR_INSTAGRAM_URL, TREZOR_TIKTOK_URL, TREZOR_X_URL } from '@trezor/u
 
 const cardStyle = prepareNativeStyle<{ backgroundColor: Color }>((utils, { backgroundColor }) => ({
     paddingHorizontal: utils.spacings.sp24,
-    paddingVertical: utils.spacings.sp24 * 2,
+    paddingVertical: utils.spacings.sp24,
     backgroundColor: utils.colors[backgroundColor],
 }));
 
@@ -37,10 +37,10 @@ export const AboutUsBanners = () => {
                     })}
                 >
                     <VStack spacing="sp24" style={applyStyle(stackStyle)}>
-                        <Icon color="contentButtonBrandPrimary" name="trezorLogo" />
+                        <Icon color="contentPrimaryInverse" name="trezorLogo" />
                         <Text
                             textAlign="center"
-                            color="contentButtonBrandPrimary"
+                            color="contentPrimaryInverse"
                             variant="headline-sm"
                             style={applyStyle(trezorDescriptionTextStyle)}
                         >
@@ -65,35 +65,24 @@ export const AboutUsBanners = () => {
                         <HStack spacing="sp24">
                             <IconButton
                                 intent="neutral"
-                                priority="secondary"
+                                priority="primary"
+                                isInverse={true}
                                 iconName="twitterLogo"
-                                accessibilityRole="link"
-                                accessibilityLabel="X"
                                 onPress={() => openLink(TREZOR_X_URL, { enforce: true })}
                             />
                             <IconButton
                                 intent="neutral"
-                                priority="secondary"
+                                priority="primary"
+                                isInverse={true}
                                 iconName="tiktokLogo"
-                                accessibilityRole="link"
-                                accessibilityLabel="tiktok"
-                                onPress={() =>
-                                    openLink(TREZOR_TIKTOK_URL, {
-                                        enforce: true,
-                                    })
-                                }
+                                onPress={() => openLink(TREZOR_TIKTOK_URL, { enforce: true })}
                             />
                             <IconButton
                                 intent="neutral"
-                                priority="secondary"
+                                priority="primary"
+                                isInverse={true}
                                 iconName="instagramLogo"
-                                accessibilityRole="link"
-                                accessibilityLabel="instagram"
-                                onPress={() =>
-                                    openLink(TREZOR_INSTAGRAM_URL, {
-                                        enforce: true,
-                                    })
-                                }
+                                onPress={() => openLink(TREZOR_INSTAGRAM_URL, { enforce: true })}
                             />
                         </HStack>
                     </VStack>
