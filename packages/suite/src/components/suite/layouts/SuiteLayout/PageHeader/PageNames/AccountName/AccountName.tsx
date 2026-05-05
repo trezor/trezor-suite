@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 
+import { selectRouteName } from '@suite/router';
 import { type Account } from '@suite-common/wallet-types';
 
 import { HEADER_HEIGHT } from 'src/constants/suite/layout';
+import { useSelector } from 'src/hooks/suite';
 import { useOptionalAccountHeaderContext } from 'src/support/suite/AccountHeaderProvider';
 
 import { AccountDetails } from './AccountDetails';
@@ -13,12 +15,24 @@ interface AccountNameProps {
 
 export const AccountName = ({ selectedAccount }: AccountNameProps) => {
     const [isScrolled, setIsScrolled] = useState(false);
+    const routeName = useSelector(selectRouteName);
     const accountHeaderContext = useOptionalAccountHeaderContext();
     const balanceSectionRef = accountHeaderContext?.balanceSectionRef;
+    const isOverviewRoute = routeName === 'wallet-index';
 
     useEffect(() => {
+        if (!isOverviewRoute) {
+            setIsScrolled(true);
+
+            return;
+        }
+
         const target = balanceSectionRef?.current;
-        if (!target) return;
+        if (!target) {
+            setIsScrolled(false);
+
+            return;
+        }
 
         const observer = new IntersectionObserver(
             ([entry]) => {
@@ -35,7 +49,7 @@ export const AccountName = ({ selectedAccount }: AccountNameProps) => {
 
         return () => observer.disconnect();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [balanceSectionRef?.current]);
+    }, [balanceSectionRef?.current, isOverviewRoute]);
 
     return (
         <AccountDetails

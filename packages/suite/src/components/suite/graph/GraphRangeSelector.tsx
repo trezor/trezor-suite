@@ -1,55 +1,10 @@
-import { useRef, useState } from 'react';
-
-import {
-    differenceInMonths,
-    endOfToday,
-    startOfDay,
-    startOfToday,
-    subDays,
-    subMonths,
-    subYears,
-} from 'date-fns';
-import styled, { css } from 'styled-components';
+import { endOfToday, startOfDay, startOfToday, subDays, subMonths, subYears } from 'date-fns';
 
 import { Translation } from '@suite/intl';
-import {
-    Popover,
-    type PopoverPlacement,
-    type PopoverRef,
-    Row,
-    Timerange,
-} from '@trezor/components';
-import { typography } from '@trezor/theme';
+import { Row, SelectBar, Spinner } from '@trezor/components';
 
-import { useGraph, useLocales } from 'src/hooks/suite';
+import { useGraph } from 'src/hooks/suite';
 import { type GraphRange } from 'src/types/wallet/graph';
-
-const RangeItem = styled.div<{ $selected: boolean; $separated?: boolean }>`
-    display: flex;
-    ${({ $selected }) => ($selected ? typography['body-sm-strong'] : typography['body-sm'])}
-    text-align: center;
-    color: ${({ theme, $selected }) => ($selected ? theme.contentPrimary : theme.contentSecondary)};
-    cursor: pointer;
-    text-transform: uppercase;
-    font-variant-numeric: tabular-nums;
-
-    & + & {
-        margin-left: 12px;
-    }
-
-    &:hover {
-        color: ${({ theme }) => theme.contentPrimary};
-    }
-
-    ${({ $separated }) =>
-        $separated &&
-        css`
-            border-left: 1px solid ${({ theme }) => theme.legacyBorderElevation2};
-            padding-left: 15px;
-            margin-left: 15px;
-            text-transform: capitalize;
-        `};
-`;
 
 const END_OF_TODAY = endOfToday();
 const RANGES = [
@@ -77,18 +32,11 @@ const RANGES = [
         endDate: END_OF_TODAY,
         groupBy: 'month',
     },
-    {
-        label: 'all',
-        startDate: null,
-        endDate: null,
-        groupBy: 'month',
-    },
+    { label: 'all', startDate: null, endDate: null, groupBy: 'month' },
 ] as const;
 
 const getFormattedLabel = (rangeLabel: GraphRange['label']) => {
     switch (rangeLabel) {
-        case 'range':
-            return <Translation id="TR_RANGE" />;
         case 'all':
             return <Translation id="TR_ALL" />;
         case 'year':
@@ -105,81 +53,42 @@ const getFormattedLabel = (rangeLabel: GraphRange['label']) => {
 
 interface GraphRangeSelectorProps {
     onSelectedRange?: (range: GraphRange) => void;
-    placement?: PopoverPlacement;
+    isDisabled?: boolean;
+    isLoading?: boolean;
 }
 
-export const GraphRangeSelector = ({ onSelectedRange, placement }: GraphRangeSelectorProps) => {
-    const [customTimerangeStart, setCustomTimerangeStart] = useState<Date>();
-    const [customTimerangeEnd, setCustomTimerangeEnd] = useState<Date>();
-
-    const popoverRef = useRef<PopoverRef>(undefined);
-    const locale = useLocales();
+export const GraphRangeSelector = ({
+    onSelectedRange,
+    isDisabled = false,
+    isLoading = false,
+}: GraphRangeSelectorProps) => {
     const { selectedRange, setSelectedRange } = useGraph();
 
-    const clearCustomTimerange = () => {
-        setCustomTimerangeStart(undefined);
-        setCustomTimerangeEnd(undefined);
-    };
-
-    const setCustomTimerange = (startDate: Date, endDate: Date) => {
-        setCustomTimerangeStart(startDate);
-        setCustomTimerangeEnd(endDate);
-
-        popoverRef.current!.close();
-
-        const range: GraphRange = {
-            label: 'range',
-            startDate,
-            endDate,
-            groupBy: differenceInMonths(startDate, endDate) <= 1 ? 'day' : 'month',
-        };
-
-        setSelectedRange(range);
-
-        if (onSelectedRange) {
-            onSelectedRange(range);
-        }
-    };
-
     return (
-        <Row>
-            {RANGES.map(range => (
-                <RangeItem
-                    key={range.label}
-                    $selected={range.label === selectedRange.label}
-                    onClick={() => {
-                        setSelectedRange(range);
-                        if (onSelectedRange) {
-                            onSelectedRange(range);
-                        }
-                        clearCustomTimerange();
-                    }}
-                    data-testid={`@dashboard/graph/range-${range.label}`}
-                >
-                    {getFormattedLabel(range.label)}
-                </RangeItem>
-            ))}
-            <Popover
-                ref={popoverRef}
-                placement={placement}
-                content={
-                    <Timerange
-                        onSubmit={(startDate: Date, endDate: Date) =>
-                            setCustomTimerange(startDate, endDate)
-                        }
-                        startDate={customTimerangeStart}
-                        endDate={customTimerangeEnd}
-                        onCancel={() => popoverRef.current!.close()}
-                        ctaSubmit={<Translation id="TR_CONFIRM" />}
-                        ctaCancel={<Translation id="TR_CANCEL" />}
-                        locale={locale}
-                    />
-                }
-            >
-                <RangeItem $selected={selectedRange.label === 'range'} $separated>
-                    <Translation id="TR_RANGE" />
-                </RangeItem>
-            </Popover>
+        <Row gap={16} alignItems="center">
+            <SelectBar
+                size="small"
+                data-testid="@graph/range-selector"
+                selectedOption={selectedRange.label}
+                isDisabled={isDisabled}
+                options={RANGES.map(range => ({
+                    label: getFormattedLabel(range.label),
+                    value: range.label,
+                }))}
+                onChange={selectedLabel => {
+                    const range = RANGES.find(({ label }) => label === selectedLabel);
+                    if (!range) {
+                        return;
+                    }
+
+                    setSelectedRange(range);
+
+                    if (onSelectedRange) {
+                        onSelectedRange(range);
+                    }
+                }}
+            />
+            {isLoading && <Spinner size={32} isDisabled={true} />}
         </Row>
     );
 };

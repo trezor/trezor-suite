@@ -459,7 +459,6 @@ describe('Storage actions', () => {
                             },
                         ],
                         selectedRange: SETTINGS.DEFAULT_GRAPH_RANGE,
-                        selectedView: 'linear',
                         error: null,
                         isLoading: false,
                     },

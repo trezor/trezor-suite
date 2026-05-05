@@ -16,7 +16,7 @@ export class DashboardPage {
     readonly dashboardHeader: Locator;
     readonly graph: Locator;
     readonly graphRangeSelector = (range: graphRangeOptions) =>
-        this.page.getByTestId(`@dashboard/graph/range-${range}`);
+        this.page.getByTestId(`@graph/range-selector/${range}`);
     readonly deviceSwitchingOpenButton: Locator;
     readonly deviceSwitchingCloseButton: Locator;
     readonly modal: Locator;
