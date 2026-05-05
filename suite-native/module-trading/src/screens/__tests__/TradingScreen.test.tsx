@@ -46,6 +46,10 @@ jest.mock('../../hooks/exchange/useExchangeData', () => ({
     }),
 }));
 
+jest.mock('../../components/concierge/ConciergeAlert', () => ({
+    ConciergeAlert: () => null,
+}));
+
 const overridesWithEnabledBuy: PreloadedStatePartial<TradingTestPreloadedState> = {
     featureFlags: createTradingFeatureFlags({
         [FeatureFlag.IsTradingBuyEnabled]: true,

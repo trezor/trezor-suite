@@ -22,6 +22,10 @@ jest.mock('../../../hooks/sell/useSellData', () => ({
     }),
 }));
 
+jest.mock('../../concierge/ConciergeAlert', () => ({
+    ConciergeAlert: () => null,
+}));
+
 describe('SellTab', () => {
     const renderSellTab = async (overrides: Record<string, unknown> = {}) => {
         const result = renderWithTradingProvider(<SellTab />, {
