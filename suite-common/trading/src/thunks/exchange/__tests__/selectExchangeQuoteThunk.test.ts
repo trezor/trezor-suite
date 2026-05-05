@@ -126,6 +126,60 @@ describe('selectExchangeQuoteThunk', () => {
         expect(store.getState().wallet.trading.exchange.selectedQuote).toEqual(quote);
     });
 
+    it('should save DEX quote when status is CONFIRM', async () => {
+        const { quote, state } = getDataMocks();
+        const dexQuote = { ...quote, isDex: true, status: 'CONFIRM' as const };
+        const { store, mockNextStep } = getMocks(state, { status: 'running' });
+
+        await store
+            .dispatch(
+                exchangeThunks.selectQuoteThunk({
+                    quote: dexQuote,
+                    nextStep: mockNextStep,
+                }),
+            )
+            .unwrap();
+
+        expect(mockNextStep).toHaveBeenCalledTimes(1);
+        expect(store.getState().wallet.trading.exchange.selectedQuote).toEqual(dexQuote);
+    });
+
+    it('should save DEX quote when status is SIGN_DATA', async () => {
+        const { quote, state } = getDataMocks();
+        const dexQuote = { ...quote, isDex: true, status: 'SIGN_DATA' as const };
+        const { store, mockNextStep } = getMocks(state, { status: 'running' });
+
+        await store
+            .dispatch(
+                exchangeThunks.selectQuoteThunk({
+                    quote: dexQuote,
+                    nextStep: mockNextStep,
+                }),
+            )
+            .unwrap();
+
+        expect(mockNextStep).toHaveBeenCalledTimes(1);
+        expect(store.getState().wallet.trading.exchange.selectedQuote).toEqual(dexQuote);
+    });
+
+    it('should not save DEX quote with other statuses but still call nextStep', async () => {
+        const { quote, state } = getDataMocks();
+        const dexQuote = { ...quote, isDex: true, status: 'APPROVAL_REQ' as const };
+        const { store, mockNextStep } = getMocks(state, { status: 'running' });
+
+        await store
+            .dispatch(
+                exchangeThunks.selectQuoteThunk({
+                    quote: dexQuote,
+                    nextStep: mockNextStep,
+                }),
+            )
+            .unwrap();
+
+        expect(mockNextStep).toHaveBeenCalledTimes(1);
+        expect(store.getState().wallet.trading.exchange.selectedQuote).toBeUndefined();
+    });
+
     describe('should not be possible to save selected quote', () => {
         it('when exchangeInfo is undefined', async () => {
             const { quote, state } = getDataMocks();

@@ -56,7 +56,7 @@ const TokenEnabledValues = ({
 }: TokenEnabledValuesProps) => {
     let amount: string | undefined;
 
-    if (flowType !== 'approve' && flowType !== 'revoke') {
+    if (!flowType || flowType === 'swap') {
         amount = tokenContract ? totalSpent : BigNumber(totalSpent).minus(fee).toString();
     }
 

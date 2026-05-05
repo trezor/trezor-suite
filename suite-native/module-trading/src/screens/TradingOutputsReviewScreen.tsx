@@ -20,7 +20,7 @@ export const TradingExchangeOutputsReviewScreen = ({
         signAndSendTransaction,
         isTransactionSendConsentRequested,
         resolveTransactionSendConsent,
-    } = useExchangeFlow();
+    } = useExchangeFlow({ flowType });
     const analyticsReportCallback = useExchangeAnalyticReportCallback();
 
     return (

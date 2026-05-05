@@ -30,6 +30,18 @@ describe('ExchangeConfirmationTitle', () => {
         ).toBeOnTheScreen();
     });
 
+    it('should display revoke title when flowType is revoke-and-approve', () => {
+        const { getByText } = renderTitle({
+            flowType: 'revoke-and-approve',
+            isFailed: false,
+            isPending: true,
+        });
+
+        expect(
+            getByText(getTranslation('moduleTrading.tradingConfirmationScreen.revokeTitle')),
+        ).toBeOnTheScreen();
+    });
+
     it('should display subtitle', () => {
         const { getByText } = renderTitle({
             flowType: 'approve',

@@ -294,6 +294,82 @@ describe('ReviewOutputItem', () => {
         });
     });
 
+    describe('exchange revoke-and-approve flow', () => {
+        it('should render Token revoke for type "address"', () => {
+            const { getByTestId } = renderReviewOutputItem({
+                reviewOutput: {
+                    type: 'address',
+                    value: '0x1234567890abcdef1234567890abcdef12345678',
+                    state: 'active',
+                },
+                flowType: 'revoke-and-approve',
+            });
+
+            expect(getByTestId('review-output-card/title')).toHaveTextContent(
+                getTranslation('transactionManagement.review.outputs.tokenRevocationLabel'),
+            );
+            expect(getByTestId('review-output-card/content')).toHaveTextContent(
+                getTranslation('transactionManagement.review.outputs.tokenRevocationDescription'),
+            );
+        });
+
+        it('should render "Revoke approval from" for type "contract"', () => {
+            const { getByTestId } = renderReviewOutputItem({
+                reviewOutput: {
+                    state: undefined,
+                    type: 'contract',
+                    value: '1inch Aggregation Router V6',
+                },
+                flowType: 'revoke-and-approve',
+            });
+
+            expect(getByTestId('review-output-card/title')).toHaveTextContent(
+                getTranslation('transactionManagement.review.outputs.revokeApprovalFromLabel'),
+            );
+            expect(getByTestId('review-output-card/content')).toHaveTextContent(
+                '1inch Aggregation Router V6',
+            );
+        });
+
+        it('should render Revoke info for type "approve_data"', () => {
+            const { getByTestId } = renderReviewOutputItem({
+                reviewOutput: {
+                    state: undefined,
+                    token: {
+                        balance: '33.231005',
+                        contract: '0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c',
+                        decimals: 6,
+                        name: 'Aave Ethereum USDC',
+                        standard: 'ERC20',
+                        symbol: 'aEthUSDC',
+                    },
+                    type: 'approve_data',
+                    value: '20000000',
+                    value2: 'Ethereum',
+                },
+                flowType: 'revoke-and-approve',
+            });
+
+            const content = getByTestId('review-output-card/content');
+
+            expect(getByTestId('review-output-card/title')).toHaveTextContent(
+                getTranslation('transactionManagement.review.outputs.revokeLabel'),
+            );
+            expect(
+                within(content).getByText(
+                    getTranslation('transactionManagement.review.outputs.tokenLabel'),
+                ),
+            ).toBeTruthy();
+            expect(within(content).getByText('aEthUSDC')).toBeTruthy();
+            expect(
+                within(content).getByText(
+                    getTranslation('transactionManagement.review.outputs.chainLabel'),
+                ),
+            ).toBeTruthy();
+            expect(within(content).getByText('Ethereum')).toBeTruthy();
+        });
+    });
+
     describe('exchange revoke flow', () => {
         it('should render Token revoke for type "address"', () => {
             const { getByTestId } = renderReviewOutputItem({

@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -10,7 +10,7 @@ import {
     selectTradingExchangeActiveQuote,
 } from '@suite-common/trading';
 import { events } from '@suite-native/analytics';
-import { TradingStackRoutes } from '@suite-native/navigation';
+import { type ExchangeFlowType, TradingStackRoutes } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
@@ -31,7 +31,11 @@ export type TradingExchangeSignAndSendTransactionProps = {
     onError: (error: TradingSendRejectedProps) => void;
 };
 
-export const useExchangeFlow = () => {
+export type UseExchangeFlowProps = {
+    flowType?: ExchangeFlowType;
+};
+
+export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
     const navigation =
         useNavigation<
             TradingStackNavigationProp<
@@ -51,11 +55,17 @@ export const useExchangeFlow = () => {
     useFocusEffect(
         useCallback(() => {
             if (quoteStatus === 'APPROVAL_PENDING') {
+                // 'swap' and undefined both map to 'approve': the approval tx
+                // is always the first step before a swap, so confirming it means approving.
+                const confirmingFlowType =
+                    flowType === 'revoke' || flowType === 'revoke-and-approve'
+                        ? flowType
+                        : 'approve';
                 navigation.navigate(TradingStackRoutes.TradingConfirming, {
-                    flowType: 'approve',
+                    flowType: confirmingFlowType,
                 });
             }
-        }, [quoteStatus, navigation]),
+        }, [quoteStatus, navigation, flowType]),
     );
 
     const getCommonFunctions = useCallback(
@@ -95,6 +105,8 @@ export const useExchangeFlow = () => {
         [openBrowserForFormData, analytics, quote],
     );
 
+    const baseCommonFunctions = useMemo(() => getCommonFunctions(), [getCommonFunctions]);
+
     const {
         txnErrorString,
         composeRequest,
@@ -105,9 +117,9 @@ export const useExchangeFlow = () => {
         isTransactionSendConsentRequested,
     } = useTradingTransaction({
         tradeType: 'exchange',
-        returnUrl: getCommonFunctions()?.returnUrl,
-        processResponseData: getCommonFunctions()?.processResponseData,
-        triggerAnalyticsTradeConfirmation: getCommonFunctions()?.triggerAnalyticsTradeConfirmation,
+        returnUrl: baseCommonFunctions?.returnUrl,
+        processResponseData: baseCommonFunctions?.processResponseData,
+        triggerAnalyticsTradeConfirmation: baseCommonFunctions?.triggerAnalyticsTradeConfirmation,
     });
 
     // changing trade state and initial confirmation
