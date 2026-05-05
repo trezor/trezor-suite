@@ -24,6 +24,7 @@ describe('selectHomeScreenState', () => {
                     devices: [{ id: 'device_id' }],
                 },
                 wallet: {
+                    settings: { enabledNetworks: ['btc'] },
                     accounts: [{ deviceState: TEST_SESSION_ID, visible: true }],
                 },
             });
@@ -170,6 +171,22 @@ describe('selectHomeScreenState', () => {
         });
     });
 
+    describe('noNetworkConfigured', () => {
+        it('should return noNetworkConfigured when device is connected, initialized and not authorized', () => {
+            const state = buildState({
+                device: {
+                    selectedDevice: {
+                        connected: true,
+                        features: { initialized: true },
+                    },
+                    devices: [{ id: 'device_id' }],
+                },
+            });
+
+            expect(selectHomeScreenState(state)).toBe('noNetworkConfigured');
+        });
+    });
+
     describe('emptyPortfolioTracker', () => {
         it('should return emptyPortfolioTracker when portfolio tracker is selected alongside a real device', () => {
             const state = buildState({
@@ -181,6 +198,9 @@ describe('selectHomeScreenState', () => {
                         state: {},
                     },
                     devices: [{ id: 'real_device_id' }, { id: PORTFOLIO_TRACKER_DEVICE_ID }],
+                },
+                wallet: {
+                    settings: { enabledNetworks: ['btc'] },
                 },
             });
 

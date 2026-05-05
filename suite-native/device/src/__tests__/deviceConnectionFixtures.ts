@@ -460,20 +460,6 @@ export const deviceConnectAuthorizedFixtures: NavigationFixture[] = [
         },
     },
     {
-        description: 'navigates to CoinEnablingInit when connected new and network is NOT enabled',
-        initialState: buildInitialState({}),
-        action: {
-            type: deviceActions.connectDevice.type,
-            payload: { device: mockSuiteDevice() },
-        },
-        expectedNavigation: {
-            route: RootStackRoutes.AuthorizeDeviceStack,
-            params: {
-                screen: AuthorizeDeviceStackRoutes.CoinEnablingInit,
-            },
-        },
-    },
-    {
         description: 'Skips coin enabling for bitcoin only FW and goes to connecting screen',
         initialState: buildInitialState({
             device: {
