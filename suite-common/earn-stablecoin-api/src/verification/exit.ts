@@ -59,7 +59,13 @@ export const verifyExitTransactions = (
 ): VerificationStatus => {
     const vaultAddress = EVM_VAULT_ADDRESSES[yieldId];
 
-    if (!vaultAddress) return 'failure';
+    if (!vaultAddress) {
+        console.error(
+            new Error(`Yield with id ${yieldId} does not have a corresponding vault address`),
+        );
+
+        return 'failure';
+    }
 
     const statuses = response.data.transactions.map(tx =>
         getTransactionStatus(tx, vaultAddress, address),

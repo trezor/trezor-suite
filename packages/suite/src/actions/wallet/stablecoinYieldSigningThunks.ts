@@ -338,8 +338,8 @@ const sendYieldTransaction = async ({
         );
 
         return pushResponse.payload;
-        // eslint-disable-next-line no-useless-catch
     } catch (error) {
+        console.error(error);
         throw error;
     } finally {
         dispatch(stablecoinYieldActions.discardTransaction());
@@ -418,31 +418,27 @@ export const submitYieldActionThunk = createThunk(
                 return;
             }
 
-            let selectedFee: EvmSelectedFee | null = null;
+            if (typeof actionTransaction.unsignedTransaction !== 'string') {
+                setYieldGenericError({ dispatch, flowType, flowKey });
 
-            if (flowType === 'supply') {
-                if (typeof actionTransaction.unsignedTransaction !== 'string') {
-                    setYieldGenericError({ dispatch, flowType, flowKey });
-
-                    return;
-                }
-
-                const userAcceptedTxSimulation = await dispatch(
-                    openDeferredModal({
-                        type: 'earn-yield-tx-simulation',
-                        data: {
-                            unsignedSupplyTx: actionTransaction.unsignedTransaction,
-                            account: flowData.account,
-                        } satisfies SupplyTxSimulationParams,
-                    }),
-                );
-
-                if (userAcceptedTxSimulation?.value === false) {
-                    return;
-                }
-
-                selectedFee = userAcceptedTxSimulation?.selectedFee ?? null;
+                return;
             }
+
+            const userAcceptedTxSimulation = await dispatch(
+                openDeferredModal({
+                    type: 'earn-yield-tx-simulation',
+                    data: {
+                        unsignedSupplyTx: actionTransaction.unsignedTransaction,
+                        account: flowData.account,
+                    } satisfies SupplyTxSimulationParams,
+                }),
+            );
+
+            if (userAcceptedTxSimulation?.value === false) {
+                return;
+            }
+
+            const selectedFee = userAcceptedTxSimulation?.selectedFee ?? null;
 
             const isWithdraw = flowType === 'withdraw';
             const reviewAmount = isWithdraw ? requestAmount : amount;
