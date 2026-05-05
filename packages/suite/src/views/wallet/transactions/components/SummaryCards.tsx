@@ -20,8 +20,6 @@ import { InfoCard } from './InfoCard';
 
 const getFormattedLabelLong = (rangeLabel: GraphRange['label']) => {
     switch (rangeLabel) {
-        case 'range':
-            return <Translation id="TR_RANGE" />;
         case 'all':
             return <Translation id="TR_ALL" />;
         case 'year':

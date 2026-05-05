@@ -149,16 +149,19 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                             <Row gap={4}>
                                 <AmountUnitSwitchWrapper symbol={symbol}>
                                     <FormattedCryptoAmount
+                                        data-testid="@wallet/account/crypto-balance"
                                         value={formattedBalance}
                                         symbol={symbol}
                                     />
                                 </AmountUnitSwitchWrapper>
                                 {shallDisplayBaseCurrency && (
-                                    <BaseCurrencyValue
-                                        amount={formattedBalance}
-                                        symbol={symbol}
-                                        showApproximationIndicator
-                                    />
+                                    <span data-testid="@wallet/account/fiat-amount">
+                                        <BaseCurrencyValue
+                                            amount={formattedBalance}
+                                            symbol={symbol}
+                                            showApproximationIndicator
+                                        />
+                                    </span>
                                 )}
                             </Row>
                         </Text>

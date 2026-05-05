@@ -1,4 +1,4 @@
-import { differenceInMonths, fromUnixTime, isWithinInterval } from 'date-fns';
+import { fromUnixTime, isWithinInterval } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { resetTime } from '@suite-common/suite-utils';
@@ -20,7 +20,6 @@ import {
     type CommonAggregatedHistory,
     type GraphData,
     type GraphRange,
-    type GraphScale,
 } from 'src/types/wallet/graph';
 
 import { type FiatValueMap, type GraphDataPoint, type TypeName } from './types';
@@ -184,35 +183,13 @@ export const sumFiatValueMap = (valueMap: FiatValueMap, obj: FiatValueMap) => {
     return newMap;
 };
 
-const calcMinYDomain = (minMaxValues: [number, number]) => {
-    // Used in calculating domain interval for Y axis with log scale
-    // We could simply use minimum coin value (eg 0.00000001) as our minimum, but that would results in
-    // Y axis with values/labels 0.00000001, 0.0000001, 0.000001, 0.0001...
-    // So instead we calculate what smallest value we need to show without any value being of of the range.
-    // Maybe we could instead just calculate our own set of ticks
-    const [minDataValue] = minMaxValues;
-    const decimals = minDataValue.toString().split('.')[1]?.length;
-    const min = decimals && decimals > 0 ? 1 / 10 ** decimals : 0.00000001;
-
-    return min;
-    // return 0.00000001;
-};
-
 export const calcYDomain = (
-    type: 'fiat' | 'crypto',
-    scale: GraphScale,
     minMaxValues: [number, number],
     lastBalance?: string,
 ): [number, number] => {
     const [, maxDataValue] = minMaxValues;
-    const maxValueMultiplier = scale === 'linear' ? 1.2 : 10;
-
-    let minValue: number;
-    if (scale === 'linear') {
-        minValue = 0;
-    } else {
-        minValue = type === 'fiat' ? 0.01 : calcMinYDomain(minMaxValues);
-    }
+    const maxValueMultiplier = 1.2;
+    const minValue = 0;
 
     if (maxDataValue > 0) {
         return [minValue, maxDataValue * maxValueMultiplier];
@@ -255,14 +232,7 @@ export const calcXDomain = (
         case 'day':
             xPadding = 3600 * 24; // 1 day
             break;
-        case 'range':
-            if (differenceInMonths(range.endDate, range.startDate) <= 1) {
-                xPadding = 3600 * 24; // 1 day
-            } else {
-                xPadding = 3600 * 24 * 14; // 14 days
-            }
-            break;
-        default: // 12 hours
+        case 'week':
             xPadding = 3600 * 12;
             break;
     }

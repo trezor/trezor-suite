@@ -7,17 +7,20 @@ import {
     getNetworkDisplaySymbol,
     getNetworkFeatures,
 } from '@suite-common/wallet-config';
+import { Column } from '@trezor/components';
 
 import { AccountExceptionLayout } from 'src/components/wallet';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { type Account } from 'src/types/wallet';
+import { AccountOverviewBalance } from 'src/views/wallet/transactions/components/AccountOverviewBalance';
 
 interface AccountEmptyProps {
     account: Account;
 }
 
 export const AccountEmpty = ({ account }: AccountEmptyProps) => {
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const dispatch = useDispatch();
     const analytics = useAnalytics();
 
@@ -55,54 +58,57 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
     };
 
     return (
-        <AccountExceptionLayout
-            data-testid="@accounts/empty-account"
-            title={<Translation id="TR_ACCOUNT_IS_EMPTY_TITLE" />}
-            description={
-                isTokensNetwork ? (
-                    <Translation
-                        id="TR_ACCOUNT_WITH_TOKENS_IS_EMPTY_DESCRIPTION"
-                        values={{ networkName, networkDisplaySymbol: displaySymbol }}
-                    />
-                ) : (
-                    <Translation
-                        id="TR_ACCOUNT_IS_EMPTY_DESCRIPTION"
-                        values={{ network: displaySymbol }}
-                    />
-                )
-            }
-            iconName="arrowsLeftRight"
-            iconVariant="neutral"
-            actions={[
-                {
-                    'data-testid': '@accounts/empty-account/buy',
-                    key: '1',
-                    onClick: handleNavigateToBuyPage,
-                    iconLeft: 'currencyCircleDollar',
-                    children: isTokensNetwork ? (
-                        <Translation id="TR_BUY" />
+        <Column alignItems="stretch" gap={20}>
+            <AccountOverviewBalance selectedAccount={selectedAccount} />
+            <AccountExceptionLayout
+                data-testid="@accounts/empty-account"
+                title={<Translation id="TR_ACCOUNT_IS_EMPTY_TITLE" />}
+                description={
+                    isTokensNetwork ? (
+                        <Translation
+                            id="TR_ACCOUNT_WITH_TOKENS_IS_EMPTY_DESCRIPTION"
+                            values={{ networkName, networkDisplaySymbol: displaySymbol }}
+                        />
                     ) : (
                         <Translation
-                            id="TR_BUY_NETWORK"
-                            values={{ networkDisplaySymbol: displaySymbol }}
+                            id="TR_ACCOUNT_IS_EMPTY_DESCRIPTION"
+                            values={{ network: displaySymbol }}
                         />
-                    ),
-                },
-                {
-                    'data-testid': '@accounts/empty-account/receive',
-                    key: '2',
-                    onClick: handleNavigateToReceivePage,
-                    iconLeft: 'arrowDown',
-                    children: isTokensNetwork ? (
-                        <Translation id="TR_RECEIVE" />
-                    ) : (
-                        <Translation
-                            id="TR_RECEIVE_NETWORK"
-                            values={{ networkDisplaySymbol: displaySymbol }}
-                        />
-                    ),
-                },
-            ]}
-        />
+                    )
+                }
+                iconName="arrowsLeftRight"
+                iconVariant="neutral"
+                actions={[
+                    {
+                        'data-testid': '@accounts/empty-account/buy',
+                        key: '1',
+                        onClick: handleNavigateToBuyPage,
+                        iconLeft: 'currencyCircleDollar',
+                        children: isTokensNetwork ? (
+                            <Translation id="TR_BUY" />
+                        ) : (
+                            <Translation
+                                id="TR_BUY_NETWORK"
+                                values={{ networkDisplaySymbol: displaySymbol }}
+                            />
+                        ),
+                    },
+                    {
+                        'data-testid': '@accounts/empty-account/receive',
+                        key: '2',
+                        onClick: handleNavigateToReceivePage,
+                        iconLeft: 'arrowDown',
+                        children: isTokensNetwork ? (
+                            <Translation id="TR_RECEIVE" />
+                        ) : (
+                            <Translation
+                                id="TR_RECEIVE_NETWORK"
+                                values={{ networkDisplaySymbol: displaySymbol }}
+                            />
+                        ),
+                    },
+                ]}
+            />
+        </Column>
     );
 };

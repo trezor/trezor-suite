@@ -31,7 +31,7 @@ test.describe('T2T1 - Device settings', { tag: ['@T2T1'] }, () => {
             });
 
             await test.step('Change display rotation', async () => {
-                await page.getByTestId('select-bar/East').click();
+                await page.getByTestId('@settings/device/rotation-button/East').click();
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await device.pressYes();
                 await devicePrompt.confirmOnDevicePromptIsHidden();

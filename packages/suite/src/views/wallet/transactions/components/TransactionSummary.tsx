@@ -11,7 +11,6 @@ import { BigNumber } from '@trezor/utils';
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { GraphRangeSelector, HiddenPlaceholder, TransactionsGraph } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 import { type Account } from 'src/types/wallet';
 import {
     aggregateBalanceHistory,
@@ -19,9 +18,9 @@ import {
     getMinMaxValueFromData,
     isNetworkWithGraphFeature,
 } from 'src/utils/wallet/graph';
+import { AccountOverviewBalance } from 'src/views/wallet/transactions/components/AccountOverviewBalance';
 
 import { SummaryCards } from './SummaryCards';
-import { TransactionSummaryDropdown } from './TransactionSummaryDropdown';
 
 const ErrorMessage = styled.div`
     display: flex;
@@ -41,6 +40,7 @@ interface TransactionSummaryProps {
 }
 
 export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const selectedRange = useSelector(state => state.wallet.graph.selectedRange);
     const graph = useSelector(state => state.wallet.graph);
 
@@ -95,23 +95,15 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
         );
 
     const isGraphSupported = isNetworkWithGraphFeature(account.symbol, account.backendType);
-    const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
 
     return (
         <Column alignItems="stretch" gap={20}>
+            <AccountOverviewBalance selectedAccount={selectedAccount} />
             {isGraphSupported && (
-                <>
-                    <Row justifyContent="space-between" alignItems="center">
-                        <GraphRangeSelector
-                            onSelectedRange={onSelectedRange}
-                            placement={{ position: 'bottom', alignment: 'end' }}
-                        />
-                        <TransactionSummaryDropdown />
-                    </Row>
-
-                    <Column alignItems="stretch">
-                        {error ? (
-                            <Card>
+                <Column alignItems="stretch">
+                    {error ? (
+                        <Card paddingType="none">
+                            <Column alignItems="stretch" padding={24} gap={16}>
                                 <Row height={320} overflow="visible" alignItems="stretch">
                                     <ErrorMessage>
                                         <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
@@ -125,16 +117,18 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                                         </Button>
                                     </ErrorMessage>
                                 </Row>
-                            </Card>
-                        ) : (
-                            <HiddenPlaceholder enforceIntensity={8}>
-                                <Card
-                                    overflow="visible"
-                                    paddingType={isContentBelowBreakpoint ? 'none' : 'normal'}
-                                >
+                                <GraphRangeSelector
+                                    onSelectedRange={onSelectedRange}
+                                    isLoading={isLoading}
+                                />
+                            </Column>
+                        </Card>
+                    ) : (
+                        <HiddenPlaceholder enforceIntensity={8}>
+                            <Card overflow="visible" paddingType="none">
+                                <Column alignItems="stretch" padding={24} gap={16}>
                                     <Row height={320} overflow="visible" alignItems="stretch">
                                         <TransactionsGraph
-                                            hideToolbar
                                             variant="one-asset"
                                             xTicks={xTicks}
                                             account={account}
@@ -147,16 +141,20 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                                             localCurrency={baseCurrencyCode}
                                             onRefresh={onRefresh}
                                             selectedRange={selectedRange}
-                                            receivedValueFn={data => data.received}
-                                            sentValueFn={data => data.sent}
-                                            balanceValueFn={data => data.balance}
+                                            receivedValueFn={entry => entry.received}
+                                            sentValueFn={entry => entry.sent}
+                                            balanceValueFn={entry => entry.balance}
                                         />
                                     </Row>
-                                </Card>
-                            </HiddenPlaceholder>
-                        )}
-                    </Column>
-                </>
+                                    <GraphRangeSelector
+                                        onSelectedRange={onSelectedRange}
+                                        isLoading={isLoading}
+                                    />
+                                </Column>
+                            </Card>
+                        </HiddenPlaceholder>
+                    )}
+                </Column>
             )}
             <SummaryCards
                 selectedRange={selectedRange}

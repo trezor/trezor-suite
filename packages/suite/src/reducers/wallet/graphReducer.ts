@@ -7,25 +7,18 @@ import { GRAPH } from 'src/actions/wallet/constants';
 import { SETTINGS } from 'src/config/suite';
 import { type Action as SuiteAction } from 'src/types/suite';
 import { type Account, type WalletAction } from 'src/types/wallet';
-import {
-    type AccountIdentifier,
-    type GraphData,
-    type GraphRange,
-    type GraphScale,
-} from 'src/types/wallet/graph';
+import { type AccountIdentifier, type GraphData, type GraphRange } from 'src/types/wallet/graph';
 
 export interface State {
     data: GraphData[];
     error: null | AccountIdentifier[];
     isLoading: boolean;
     selectedRange: GraphRange;
-    selectedView: GraphScale;
 }
 
 const initialState: State = {
     data: [],
     selectedRange: SETTINGS.DEFAULT_GRAPH_RANGE,
-    selectedView: 'linear',
     error: null,
     isLoading: false,
 };
@@ -107,9 +100,6 @@ const graphReducer = (state: State = initialState, action: WalletAction | SuiteA
                 break;
             case GRAPH.SET_SELECTED_RANGE:
                 draft.selectedRange = action.payload;
-                break;
-            case GRAPH.SET_SELECTED_VIEW:
-                draft.selectedView = action.payload;
                 break;
             case accountsActions.removeAccount.type: {
                 if (accountsActions.removeAccount.match(action)) {

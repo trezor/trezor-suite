@@ -220,7 +220,7 @@ export const SelectBar = <V extends ValueTypes>({
                                         $isDisabled={!!isDisabled}
                                         $isSelected={isSelected}
                                         data-isdisabled={!!isDisabled}
-                                        data-testid={`select-bar/${String(option.value)}`}
+                                        data-testid={`${dataTest ?? 'select-bar'}/${String(option.value)}`}
                                     >
                                         <Column
                                             padding={mapSizeToPadding(size)}

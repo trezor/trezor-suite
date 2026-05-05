@@ -4,7 +4,6 @@ import {
     isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
@@ -30,7 +29,7 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
     const { route } = useSelector(state => state.router);
 
     return (
-        <Column gap={spacings.sm}>
+        <Column gap={12}>
             {account?.symbol &&
                 isSupportedEthStakingNetworkSymbol(account.symbol) &&
                 route?.name === 'wallet-staking' && (
@@ -52,6 +51,9 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
             <CardanoLegacyBanner account={account} />
             {account?.networkType === 'stellar' && <StellarLimitedHistoryBanner />}
             {account?.symbol && <StakingBanner account={account} />}
+            {account?.symbol && account?.accountType && (
+                <ContextMessage context={Context.getAccount(account.symbol, account.accountType)} />
+            )}
         </Column>
     );
 };

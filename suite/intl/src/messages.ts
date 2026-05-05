@@ -2836,6 +2836,18 @@ export const messages = defineMessages({
         defaultMessage: 'Incl. tokens & staking',
         id: 'TR_INCLUDING_TOKENS_AND_STAKING',
     },
+    TR_BALANCE_EXCLUDES_TOKENS: {
+        defaultMessage: "Token amounts aren't included in the balance.",
+        id: 'TR_BALANCE_EXCLUDES_TOKENS',
+    },
+    TR_BALANCE_EXCLUDES_STAKING: {
+        defaultMessage: "Staked amounts aren't included in the balance.",
+        id: 'TR_BALANCE_EXCLUDES_STAKING',
+    },
+    TR_BALANCE_EXCLUDES_TOKENS_AND_STAKING: {
+        defaultMessage: "Token and staked amounts aren't included in the balance.",
+        id: 'TR_BALANCE_EXCLUDES_TOKENS_AND_STAKING',
+    },
     TR_NETWORK_TITLE: {
         defaultMessage: 'Network',
         id: 'TR_NETWORK_TITLE',
@@ -7529,10 +7541,6 @@ export const messages = defineMessages({
     TR_GRAPH_VIEW: {
         id: 'TR_GRAPH_VIEW',
         defaultMessage: 'Graph view',
-    },
-    TR_SHOW_GRAPH: {
-        id: 'TR_SHOW_GRAPH',
-        defaultMessage: 'Show graph',
     },
     TR_DATE_DAY_LONG: {
         id: 'TR_DATE_DAY_LONG',

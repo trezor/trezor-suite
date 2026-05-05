@@ -21,7 +21,6 @@
 @storybook/react-webpack5
 @types/pako
 @types/pdfmake
-@types/react-date-range
 @types/zxcvbn
 @zxing/library
 autoprefixer
@@ -49,7 +48,6 @@ polished
 postcss-loader
 postcss-styled-syntax
 qrcode.react
-react-date-range
 react-fela
 react-focus-lock
 react-helmet-async

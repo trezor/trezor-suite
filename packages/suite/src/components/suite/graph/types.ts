@@ -13,7 +13,6 @@ export interface CommonGraphProps {
     xTicks: number[];
     localCurrency: string;
     minMaxValues: [number, number];
-    hideToolbar?: boolean;
     onRefresh?: (abortController?: AbortController) => Promise<unknown>;
 }
 
