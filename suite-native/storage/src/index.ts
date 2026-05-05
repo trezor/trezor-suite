@@ -12,6 +12,7 @@ export * from './migrations/account/v3';
 export * from './migrations/device/v2';
 export * from './migrations/device/v3';
 export * from './migrations/device/v4';
+export * from './migrations/device/v5';
 export * from './migrations/wallet/transactions/v2';
 export * from './migrations/wallet/accounts/v2';
 export * from './migrations/wallet/accounts/v3';

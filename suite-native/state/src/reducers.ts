@@ -49,6 +49,7 @@ import { appSettingsPersistWhitelist, appSettingsReducer } from '@suite-native/s
 import {
     type MMKVStorageDep,
     backfillDeviceAuthenticityChecks,
+    backfillManualCheckResult,
     backfillPortfolioTrackerUnavailableCapabilities,
     blockchainPersistTransform,
     bluetoothPersistTransform,
@@ -231,7 +232,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         reducer: deviceReducer,
         persistedKeys: ['devices', 'persistentDeviceData'],
         key: 'devices',
-        version: 4,
+        version: 5,
         transforms: [devicePersistTransform],
         migrations: {
             2: (oldState: any /* FIXME */) => {
@@ -256,6 +257,14 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                 );
 
                 return { ...oldState, devices: migratedDevices };
+            },
+            5: (oldState: any /* FIXME */) => {
+                if (!oldState?.persistentDeviceData) return oldState;
+                const migratedPersistentDeviceData = backfillManualCheckResult(
+                    oldState.persistentDeviceData,
+                );
+
+                return { ...oldState, persistentDeviceData: migratedPersistentDeviceData };
             },
         },
         storage: deps.mmkvStorage,
