@@ -21,6 +21,10 @@ jest.mock('../../../hooks/buy/useBuyData', () => ({
     }),
 }));
 
+jest.mock('../../concierge/ConciergeAlert', () => ({
+    ConciergeAlert: () => null,
+}));
+
 describe('TradingTabContent', () => {
     const renderTradingTabContent = (isBlacklisted: boolean = false) =>
         renderWithTradingProvider(<TradingTabContent />, {

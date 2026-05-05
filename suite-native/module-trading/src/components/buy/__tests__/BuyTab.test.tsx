@@ -19,6 +19,10 @@ jest.mock('@suite-native/trading-state', () => ({
     selectIsTradingBuyEnabled: jest.fn(),
 }));
 
+jest.mock('../../concierge/ConciergeAlert', () => ({
+    ConciergeAlert: () => null,
+}));
+
 describe('BuyTab', () => {
     beforeEach(() => {
         mockUseTradingBuyData = jest.fn(() => ({

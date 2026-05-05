@@ -17,6 +17,10 @@ jest.mock('../../../hooks/general/useFocusedValueWatch', () =>
     jest.requireActual('../../../hooks/general/useFocusedValueWatch'),
 );
 
+jest.mock('../../concierge/ConciergeAlert', () => ({
+    ConciergeAlert: () => null,
+}));
+
 describe('BuyForm', () => {
     const residenceCheckDisabledOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
         featureFlags: createTradingFeatureFlags(),
