@@ -13,6 +13,7 @@ import {
     variantToColorMap,
     variantToIconName,
 } from './presets';
+import { IconButton } from '../Button/IconButton';
 
 const alertWrapperStyle = prepareNativeStyle<
     Omit<InlineAlertBoxStyles, 'buttonColorProps'> & { isButtonVisible: boolean }
@@ -36,6 +37,7 @@ export type InlineAlertBoxProps = Omit<BoxProps, 'style'> & {
     title: Exclude<ReactNode, null | undefined>;
     variant?: InlineAlertBoxVariant;
     buttonLabel?: ReactNode;
+    buttonIcon?: IconName;
     onButtonPress?: () => void;
     iconName?: IconName;
     viewLeft?: ReactNode;
@@ -45,6 +47,7 @@ export type InlineAlertBoxProps = Omit<BoxProps, 'style'> & {
 export const InlineAlertBox = ({
     title,
     buttonLabel,
+    buttonIcon,
     onButtonPress,
     iconName,
     buttonProps,
@@ -81,6 +84,14 @@ export const InlineAlertBox = ({
                 >
                     {buttonLabel}
                 </Button>
+            )}
+            {buttonIcon && (
+                <IconButton
+                    iconName={buttonIcon}
+                    size="medium"
+                    {...buttonColorProps}
+                    onPress={onButtonPress}
+                />
             )}
         </HStack>
     );
