@@ -37,7 +37,6 @@ export const YieldSupplyForm = () => {
         canRevokeAllowance,
         approvalNetworkFeeWarning,
         actionNetworkFeeWarning,
-        isApprovedAmountUnlimited,
         isAmountEmpty,
         isAmountTooHigh,
         isApprovalInsufficient,
@@ -215,7 +214,6 @@ export const YieldSupplyForm = () => {
                                         approvedAmount={allowanceAmount || undefined}
                                         isApprovedAmountLoading={allowanceStatus === 'loading'}
                                         hasApprovedAmountError={allowanceStatus === 'error'}
-                                        isApprovedAmountUnlimited={isApprovedAmountUnlimited}
                                         approvalAction={approvalAction}
                                         canRevokeAllowance={canRevokeAllowance}
                                         warning={

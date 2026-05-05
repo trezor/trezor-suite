@@ -6,6 +6,7 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
+import { isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { Banner, Box, Column, Icon, Modal, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { borders } from '@trezor/theme';
@@ -27,21 +28,12 @@ interface RevokeModalProps {
     spender: string;
     logoSourceType?: ProviderLogoSourceType;
     preapprovedAmount?: string;
-    preapprovedAmountIsUnlimited?: boolean;
     onConfirm?: () => void;
     onCancel?: () => void;
 }
 
 export const RevokeModal = (props: RevokeModalProps) => {
-    const {
-        account,
-        provider,
-        spender,
-        cryptoId,
-        logoSourceType,
-        preapprovedAmount,
-        preapprovedAmountIsUnlimited,
-    } = props;
+    const { account, provider, spender, cryptoId, logoSourceType, preapprovedAmount } = props;
     const { device } = useDevice();
 
     const context = useAllowanceModal({
@@ -55,7 +47,7 @@ export const RevokeModal = (props: RevokeModalProps) => {
         token,
         isLoading,
         composedLevels,
-        composeErrorMessage,
+        composedLevelsError,
         canSubmit,
         methods,
         handleClose,
@@ -66,6 +58,8 @@ export const RevokeModal = (props: RevokeModalProps) => {
     if (!token?.symbol) return null;
 
     const displaySymbol = getDisplaySymbol(token.symbol, token.contract);
+    const isPreapprovedAmountUnlimited =
+        !!preapprovedAmount && isAllowanceUnlimited(preapprovedAmount, token.decimals);
 
     return (
         <FormProvider {...methods}>
@@ -127,7 +121,7 @@ export const RevokeModal = (props: RevokeModalProps) => {
                                     <Row gap={12}>
                                         <TradingCoinLogo cryptoId={cryptoId} size={24} />
                                         <Text>
-                                            {preapprovedAmountIsUnlimited ? (
+                                            {isPreapprovedAmountUnlimited ? (
                                                 <Translation id="TR_APPROVE_AMOUNT_UNLIMITED" />
                                             ) : (
                                                 `${preapprovedAmount ?? '∞'} ${displaySymbol}`
@@ -167,14 +161,14 @@ export const RevokeModal = (props: RevokeModalProps) => {
                         />
                     </Box>
 
-                    {composeErrorMessage && (
+                    {composedLevelsError && (
                         <Banner
                             intent="critical"
                             icon="warning"
                             description={
                                 <Translation
-                                    id={composeErrorMessage.id}
-                                    values={composeErrorMessage.values}
+                                    id={composedLevelsError.id}
+                                    values={composedLevelsError.values}
                                 />
                             }
                         />

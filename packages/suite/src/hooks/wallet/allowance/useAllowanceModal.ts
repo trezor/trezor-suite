@@ -71,7 +71,7 @@ export const useAllowanceModal = ({
         methods,
     });
     const selectedComposedLevel = composedLevels?.[selectedFee];
-    const composeErrorMessage = useMemo(() => {
+    const composedLevelsError = useMemo(() => {
         if (selectedComposedLevel?.type !== 'error') {
             return undefined;
         }
@@ -83,11 +83,11 @@ export const useAllowanceModal = ({
         }
 
         return {
-            id: errorMessage.id as TranslationKey,
+            id: errorMessage.id satisfies TranslationKey,
             values: errorMessage.values,
         };
     }, [selectedComposedLevel]);
-    const canSubmit = !isComposing && !!composedTransaction && !composeErrorMessage;
+    const canSubmit = !isComposing && !!composedTransaction && !composedLevelsError;
 
     const composeRequestRef = useCurrentRef(composeRequest);
     const onSelectApprovalTypeRef = useCurrentRef(onSelectApprovalType);
@@ -147,7 +147,7 @@ export const useAllowanceModal = ({
         feeInfo,
         composedLevels,
         composedTransaction,
-        composeErrorMessage,
+        composedLevelsError,
         canSubmit,
         selectedFee,
         data,

@@ -12,7 +12,11 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { type YieldFlowType, type YieldPendingTransactionState } from './stablecoinYieldTypes';
+import type {
+    YieldFlowResolvedData,
+    YieldFlowType,
+    YieldPendingTransactionState,
+} from './stablecoinYieldTypes';
 
 type TokenLike = {
     address?: string | null;
@@ -310,3 +314,9 @@ export const getYieldApprovalModalParams = (transactions: TransactionDto[]) => {
 
     return getYieldModalParams(approvalTransaction);
 };
+
+const getVaultAddressFromYieldId = (yieldId: string) =>
+    yieldId.match(/0x[a-fA-F0-9]{40}/)?.[0] ?? null;
+
+export const getAllowanceSpender = (flowData: YieldFlowResolvedData) =>
+    flowData.receiptToken.contractAddress ?? getVaultAddressFromYieldId(flowData.vault.id);

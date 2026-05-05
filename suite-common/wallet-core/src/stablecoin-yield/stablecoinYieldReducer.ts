@@ -23,7 +23,7 @@ type StablecoinYieldSerializedTx = {
     symbol: NetworkSymbol;
 };
 
-export type StablecoinYieldAllowanceStatus = 'idle' | 'loading' | 'loaded' | 'error';
+export type YieldAllowanceStatus = 'idle' | 'loading' | 'loaded' | 'error';
 
 export const STABLECOIN_YIELD_PREFIX = '@suite-common/wallet-core/stablecoin-yield';
 
@@ -43,9 +43,8 @@ export type StablecoinYieldSessionState = {
         submitTxHashTransactionId: string | null;
         isSubmitting: boolean;
         isPending: boolean;
-        allowanceStatus: StablecoinYieldAllowanceStatus;
+        allowanceStatus: YieldAllowanceStatus;
         isInitializingAllowance: boolean;
-        isAllowanceUnlimited: boolean;
         isModifyMode: boolean;
         isRevokeRequired: boolean;
         revokeTransactions: TransactionDto[] | null;
@@ -89,7 +88,6 @@ export const initialStablecoinYieldSessionState: StablecoinYieldSessionState = {
         isPending: false,
         allowanceStatus: 'idle',
         isInitializingAllowance: false,
-        isAllowanceUnlimited: false,
         isModifyMode: false,
         isRevokeRequired: false,
         revokeTransactions: null,
@@ -269,7 +267,6 @@ export const stablecoinYieldSlice = createSlice({
             withSession(state, action.payload, session => {
                 session.approval.allowanceStatus = 'loading';
                 session.approval.isInitializingAllowance = true;
-                session.approval.isAllowanceUnlimited = false;
             });
         },
         finishInitializingAllowance(
@@ -282,31 +279,23 @@ export const stablecoinYieldSlice = createSlice({
         },
         setInitializedAllowance(
             state,
-            action: PayloadAction<
-                StablecoinYieldSessionActionPayload & {
-                    amount: string;
-                    isUnlimited: boolean;
-                }
-            >,
+            action: PayloadAction<StablecoinYieldSessionActionPayload & { amount: string }>,
         ) {
             withSession(state, action.payload, session => {
                 session.approval.allowanceAmount = action.payload.amount;
                 session.approval.allowanceStatus = 'loaded';
-                session.approval.isAllowanceUnlimited = action.payload.isUnlimited;
             });
         },
         setAllowanceError(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
             withSession(state, action.payload, session => {
                 session.approval.allowanceAmount = null;
                 session.approval.allowanceStatus = 'error';
-                session.approval.isAllowanceUnlimited = false;
             });
         },
         invalidateAllowance(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
             withSession(state, action.payload, session => {
                 session.approval.allowanceStatus = 'idle';
                 session.approval.isInitializingAllowance = false;
-                session.approval.isAllowanceUnlimited = false;
             });
         },
         enterModifyMode(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
@@ -353,7 +342,6 @@ export const stablecoinYieldSlice = createSlice({
             withSession(state, action.payload, session => {
                 session.approval.isModifyMode = false;
                 session.approval.allowanceAmount = '0';
-                session.approval.isAllowanceUnlimited = false;
                 session.approval.allowanceStatus = 'loaded';
                 session.approval.isRevokeRequired = false;
                 session.approval.isPending = false;

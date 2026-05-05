@@ -1,4 +1,6 @@
+import type { YieldDto } from '@suite-common/earn-stablecoin-api';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { Account } from '@suite-common/wallet-types';
 
 export const YIELD_FLOW_TYPES = ['supply', 'withdraw', 'claim'] as const;
 export const YIELD_FLOW_STEPS = ['approve', 'action', 'complete'] as const;
@@ -23,6 +25,13 @@ export type YieldFlowToken = YieldFlowDisplayToken & {
     balance: string;
 };
 
+export type YieldFlowResolvedData = {
+    account: Account;
+    vault: YieldDto;
+    token: YieldFlowToken;
+    receiptToken: YieldFlowDisplayToken;
+};
+
 export type YieldFlowCompleteValue = {
     token: YieldFlowDisplayToken;
     amount: string;
@@ -33,7 +42,6 @@ export type YieldApproveModalState = {
     contractAddress: string;
     spender: string;
     preapprovedAmount?: string;
-    preapprovedAmountIsUnlimited?: boolean;
     txType: Extract<YieldPendingTransactionState['type'], 'approve' | 'revoke' | 'revoke-only'>;
 };
 
