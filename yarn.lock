@@ -15838,6 +15838,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/connect-flow@workspace:packages/connect-flow":
+  version: 0.0.0-use.local
+  resolution: "@trezor/connect-flow@workspace:packages/connect-flow"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/connect-mobile@workspace:*, @trezor/connect-mobile@workspace:^, @trezor/connect-mobile@workspace:packages/connect-mobile":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-mobile@workspace:packages/connect-mobile"
