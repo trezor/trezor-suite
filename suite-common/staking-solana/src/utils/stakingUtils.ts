@@ -9,7 +9,6 @@ import {
     type PrepareStakeSolTxParams,
     type PrepareStakeSolTxResponse,
     type PriorityFees,
-    type SolanaTx,
 } from '@suite-common/staking-solana-types';
 import {
     SOL_COMPUTE_UNIT_LIMIT,
@@ -21,26 +20,12 @@ import { type BlockbookFee as Fee } from '@trezor/blockchain-link-types';
 
 import { claim, createTransactionShimCommon, stake, unstake } from './transactionUtils';
 
-export const transformTx = (
+const transformTx = (
     tx: CompilableTransactionMessage & TransactionMessageWithBlockhashLifetime,
-    path: string | number[],
-    tokenAccountsInfos?: {
-        baseAddress: string;
-        tokenProgram: string;
-        tokenMint: string;
-        tokenAccount: string;
-    }[],
-): SolanaTx => {
+) => {
     const compilableTx = compileTransaction(tx);
-    const txShim = createTransactionShimCommon(compilableTx);
-    const transformedTx = {
-        path,
-        serializedTx: txShim.serializeMessage(),
-        additionalInfo: tokenAccountsInfos ? { tokenAccountsInfos } : undefined,
-        txShim,
-    };
 
-    return transformedTx;
+    return createTransactionShimCommon(compilableTx);
 };
 
 // Type guard to check if transaction is of type CompilableTransactionMessage
@@ -68,7 +53,6 @@ const getStakingParams = (estimatedFee?: Fee[number]) => {
 
 export const prepareStakeSolTx = async ({
     from,
-    path,
     amount,
     symbol,
     selectedBlockchain,
@@ -92,11 +76,11 @@ export const prepareStakeSolTx = async ({
             throw new Error('Transaction is not compilable');
         }
 
-        const transformedTx = transformTx(stakeTx, path);
+        const txShim = transformTx(stakeTx);
 
         return {
             success: true,
-            tx: transformedTx,
+            txShim,
             solanaTxMeta: tx.txMeta,
         };
     } catch (e) {
@@ -111,7 +95,6 @@ export const prepareStakeSolTx = async ({
 
 export const prepareUnstakeSolTx = async ({
     from,
-    path,
     amount,
     symbol,
     selectedBlockchain,
@@ -128,11 +111,11 @@ export const prepareUnstakeSolTx = async ({
             url: selectedBlockchain.url,
             params,
         });
-        const transformedTx = transformTx(tx.unstakeTx, path);
+        const txShim = transformTx(tx.unstakeTx);
 
         return {
             success: true,
-            tx: transformedTx,
+            txShim,
             solanaTxMeta: tx.txMeta,
         };
     } catch (e) {
@@ -147,7 +130,6 @@ export const prepareUnstakeSolTx = async ({
 
 export const prepareClaimSolTx = async ({
     from,
-    path,
     symbol,
     selectedBlockchain,
     estimatedFee,
@@ -160,11 +142,11 @@ export const prepareClaimSolTx = async ({
             url: selectedBlockchain.url,
             params,
         });
-        const transformedTx = transformTx(tx.claimTx, path);
+        const txShim = transformTx(tx.claimTx);
 
         return {
             success: true,
-            tx: transformedTx,
+            txShim,
             solanaTxMeta: tx.txMeta,
         };
     } catch (e) {

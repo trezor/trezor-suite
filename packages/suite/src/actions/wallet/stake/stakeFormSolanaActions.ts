@@ -105,7 +105,6 @@ const getTransactionData = async (
     if (stakeType === 'stake') {
         txData = await prepareStakeSolTx({
             from: account.descriptor,
-            path: account.path,
             amount: formValues.outputs[0].amount,
             symbol: account.symbol,
             selectedBlockchain,
@@ -116,7 +115,6 @@ const getTransactionData = async (
     if (stakeType === 'unstake') {
         txData = await prepareUnstakeSolTx({
             from: account.descriptor,
-            path: account.path,
             amount: formValues.outputs[0].amount,
             symbol: account.symbol,
             selectedBlockchain,
@@ -127,7 +125,6 @@ const getTransactionData = async (
     if (stakeType === 'claim') {
         txData = await prepareClaimSolTx({
             from: account.descriptor,
-            path: account.path,
             symbol: account.symbol,
             selectedBlockchain,
             estimatedFee,
@@ -147,7 +144,7 @@ async function estimateFee(
         coin: account.symbol,
         request: {
             specific: {
-                data: txData.tx.txShim.serialize(),
+                data: txData.txShim.serialize(),
                 newAccountProgramName: 'staking',
             },
         },
@@ -304,7 +301,7 @@ export const signTransaction =
                 useEmptyPassphrase: device.useEmptyPassphrase,
             },
             path: account.path,
-            serializedTx: txData.tx.txShim.serializeMessage(),
+            serializedTx: txData.txShim.serializeMessage(),
             chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
         });
 
@@ -334,7 +331,7 @@ export const signTransaction =
             return signedTx;
         }
 
-        txData.tx.txShim.addSignature(address(account.descriptor), signedTx.payload.signature);
+        txData.txShim.addSignature(address(account.descriptor), signedTx.payload.signature);
 
-        return txData.tx.txShim.serialize();
+        return txData.txShim.serialize();
     };
