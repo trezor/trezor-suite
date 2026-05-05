@@ -22,6 +22,7 @@ export const InlineAlertBox: InlineAlertBoxStory = {
     args: {
         title: 'Something very important to communicate.',
         buttonLabel: 'Button',
+        buttonIcon: undefined,
         variant: 'info',
         iconName: undefined,
         buttonProps: undefined,
@@ -32,6 +33,10 @@ export const InlineAlertBox: InlineAlertBoxStory = {
         },
         buttonLabel: {
             control: { type: 'text' },
+        },
+        buttonIcon: {
+            control: { type: 'select' },
+            options: ICON_NAMES,
         },
         viewLeft: {
             control: false,
