@@ -3,6 +3,7 @@
 ## 26.5.0
 
 - reset Ethereum account nonces to `-1` in order to force account refresh for DeFi tokens
+- backfill `manualCheckResult` to all `persistentDeviceData` entries (all previously known devices assumed confirmed)
 
 ## 26.4.0.2
 
