@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useCallback } from 'react';
 
-import { type RouteProp, useRoute } from '@react-navigation/native';
+import { type RouteProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 
 import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -8,7 +8,8 @@ import {
     DynamicScreenHeader,
     Screen,
     type SettingsStackParamList,
-    type SettingsStackRoutes,
+    SettingsStackRoutes,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 import { AboutUsBanners } from '../components/AboutUsBanners';
@@ -18,20 +19,24 @@ import { LegalSection } from '../components/LegalSection';
 import { NeedHelpSection } from '../components/NeedHelpSection';
 import { useContactSupportAlert } from '../components/useContactSupportAlert';
 
+type NavigationProp = StackNavigationProps<SettingsStackParamList, SettingsStackRoutes.SettingsSupport>;
+
 export const SettingsSupportScreen = () => {
     const route =
         useRoute<RouteProp<SettingsStackParamList, SettingsStackRoutes.SettingsSupport>>();
+    const navigation = useNavigation<NavigationProp>();
     const { showContactSupportAlert } = useContactSupportAlert();
-    const hasAutoOpenedRef = useRef(false);
 
-    useEffect(() => {
-        if (route.params?.autoOpenContactSupport && !hasAutoOpenedRef.current) {
-            hasAutoOpenedRef.current = true;
-            showContactSupportAlert({
-                initialShareSystemInfo: route.params.shareSystemInfo,
-            });
-        }
-    }, [route.params, showContactSupportAlert]);
+    useFocusEffect(
+        useCallback(() => {
+            const { autoOpenContactSupport, shareSystemInfo } = route.params ?? {};
+            if (!autoOpenContactSupport) return;
+
+            // One-shot param: clear immediately to avoid re-triggering on subsequent focus.
+            navigation.setParams({ autoOpenContactSupport: undefined, shareSystemInfo: undefined });
+            showContactSupportAlert({ initialShareSystemInfo: shareSystemInfo });
+        }, [route.params, navigation, showContactSupportAlert]),
+    );
 
     return (
         <Screen

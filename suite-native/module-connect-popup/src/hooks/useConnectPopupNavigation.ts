@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -62,9 +62,17 @@ export const useConnectPopupNavigation = () => {
             }
         } else if (url && isConnectPopupUrl(url)) {
             dispatch(connectPopupDeeplinkThunk({ url }));
-        } else if (url && isGuideSupportUrl(url)) {
+        }
+    }, [url, dispatch]);
+
+    // Guide-support deeplinks are handled via a direct Linking.addEventListener rather than the
+    // Linking.useURL() state hook. This ensures every deeplink invocation triggers navigation,
+    // including repeated calls with the same URL while the app is running in the background
+    // (Linking.useURL() would not update its state in that case, so the effect would not re-fire).
+    const handleGuideSupportUrl = useCallback(
+        (rawUrl: string) => {
             try {
-                const parsedUrl = new URL(url);
+                const parsedUrl = new URL(rawUrl);
                 const shareSystemInfo = parsedUrl.searchParams.get('shareSystemInfo') === '1';
                 navigation.navigate(RootStackRoutes.SettingsScreenStack, {
                     screen: SettingsStackRoutes.SettingsSupport,
@@ -73,8 +81,28 @@ export const useConnectPopupNavigation = () => {
             } catch {
                 // Malformed url, ignore
             }
-        }
-    }, [url, dispatch, navigation]);
+        },
+        [navigation],
+    );
+
+    useEffect(() => {
+        // Cold-start: check whether the app was opened with a guide-support URL.
+        Linking.getInitialURL().then(initialUrl => {
+            if (initialUrl && isGuideSupportUrl(initialUrl)) {
+                handleGuideSupportUrl(initialUrl);
+            }
+        });
+
+        // Background: subscribe to URL events so every invocation navigates,
+        // even when the same URL is re-used and Linking.useURL() would not re-fire.
+        const subscription = Linking.addEventListener('url', ({ url: eventUrl }) => {
+            if (isGuideSupportUrl(eventUrl)) {
+                handleGuideSupportUrl(eventUrl);
+            }
+        });
+
+        return () => subscription.remove();
+    }, [handleGuideSupportUrl]);
 
     useEffect(() => {
         if (connectPopupCall?.state === 'deeplink-callback') {
