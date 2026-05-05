@@ -53,12 +53,14 @@ describe('AppTabNavigator', () => {
                 [FeatureFlag.IsTradingBuyEnabled]: false,
                 [FeatureFlag.IsTradingExchangeEnabled]: false,
                 [FeatureFlag.IsTradingSellEnabled]: false,
+                [FeatureFlag.IsTradingConciergeEnabled]: false,
                 [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
             },
             messageSystem: mockMessageSystemStateWithFeatureFlags({
                 'trading.buy': false,
                 'trading.exchange': false,
                 'trading.sell': false,
+                'trading.concierge': false,
             }),
         });
 

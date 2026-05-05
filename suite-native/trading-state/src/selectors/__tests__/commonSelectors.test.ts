@@ -269,10 +269,15 @@ describe('commonSelectors', () => {
                 expect(selectIsTradingEnabled(getPreloadedState({}))).toBe(true);
             });
 
-            it('should correctly select that trading is not enabled when buy, exchange and sell are disabled', () => {
+            it('should correctly select that trading is not enabled when buy, exchange, sell and concierge are disabled', () => {
                 expect(
                     selectIsTradingEnabled(
-                        getPreloadedState({ buy: false, exchange: false, sell: false }),
+                        getPreloadedState({
+                            buy: false,
+                            exchange: false,
+                            sell: false,
+                            concierge: false,
+                        }),
                     ),
                 ).toBe(false);
             });
@@ -347,9 +352,15 @@ describe('commonSelectors', () => {
 
     describe('selectEnabledTradingTypes', () => {
         it.each([
-            [{ buy: true, exchange: true, sell: true }, ['buy', 'exchange', 'sell']],
-            [{ buy: false, exchange: true, sell: true }, ['exchange', 'sell']],
-            [{ buy: false, exchange: false, sell: false }, []],
+            [
+                { buy: true, exchange: true, sell: true, concierge: true },
+                ['buy', 'exchange', 'sell', 'concierge'],
+            ],
+            [
+                { buy: false, exchange: true, sell: true, concierge: true },
+                ['exchange', 'sell', 'concierge'],
+            ],
+            [{ buy: false, exchange: false, sell: false, concierge: false }, []],
         ])(
             'should return order array of allowed tradingTypes, case %#',
             (flags, expectedReturn) => {

@@ -9,7 +9,7 @@ export type TradingTypeAwareContextMessageProps = Omit<ContextMessageProps, 'con
 export const TradingTypeAwareContextMessage = (props: TradingTypeAwareContextMessageProps) => {
     const activeType = useSelector(selectActiveTradingType);
 
-    if (!activeType) {
+    if (!activeType || activeType === 'concierge') {
         return null;
     }
 
