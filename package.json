@@ -32,6 +32,8 @@
         "suite:dev:desktop": "yarn workspace @trezor/suite-desktop dev",
         "analytics:docs-dev": "node scripts/analytics-docs-dev.mjs",
         "native:start": "yarn workspace @suite-native/app start",
+        "connect:explorer": "yarn workspace @trezor/connect-explorer dev",
+        "connect:cli": "yarn workspace @trezor/connect-cli cli",
         "_______ Code validation _______": "Static code analysis (incl. autofixes), like formatting, testing, linting, type checking...",
         "type-check": "yarn nx affected --target=type-check",
         "type-check:all": "yarn nx run-many --target=type-check",
