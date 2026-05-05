@@ -1,6 +1,7 @@
 import {
     type DeviceRootState,
     selectDeviceStaticSessionId,
+    selectHasOnlyPortfolioDevice,
     selectIsDeviceAuthorized,
     selectIsDeviceBackedUp,
     selectIsDeviceConnected,
@@ -22,6 +23,7 @@ import {
     type DiscoveryRootState,
     selectHasOnlyEmptyPortfolioTracker,
     selectHasRunningDiscovery,
+    selectIsAnyNetworkEnabled,
     selectIsDiscoveredDeviceAccountless,
 } from '@suite-common/wallet-core';
 import { type NativeDeviceRootState, selectIsDeviceSetupSupported } from '@suite-native/device';
@@ -82,6 +84,8 @@ export const selectShouldDisplaySuiteSyncFirmwareUpdateAlert = createMemoizedSel
 );
 
 export const selectHomeScreenState = (state: NativeDeviceRootState): HomeScreenState => {
+    const isAnyNetworkEnabled = selectIsAnyNetworkEnabled(state);
+    const hasOnlyPortfolioDevice = selectHasOnlyPortfolioDevice(state);
     const isDiscoveredDeviceAccountless = selectIsDiscoveredDeviceAccountless(state);
     const isDeviceAuthorized = selectIsDeviceAuthorized(state);
     const isDeviceUnlocked = selectIsDeviceUnlocked(state);
@@ -97,6 +101,7 @@ export const selectHomeScreenState = (state: NativeDeviceRootState): HomeScreenS
             (isDeviceAuthorized || // Initial state: empty portfolio device that is authorized.
                 !isDeviceUnlocked)) || // Device is locked (PIN not entered).
         !isDeviceInitialized ||
+        (!isAnyNetworkEnabled && !hasOnlyPortfolioDevice) ||
         wasDeviceWiped;
 
     if (!isEmptyStateShown) {
@@ -112,6 +117,10 @@ export const selectHomeScreenState = (state: NativeDeviceRootState): HomeScreenS
         (wasDeviceWiped || (!isDeviceInitialized && isDeviceUnlocked))
     ) {
         return 'uninitializedDevice';
+    }
+
+    if (isDeviceConnected && isDeviceInitialized && !isAnyNetworkEnabled) {
+        return 'noNetworkConfigured';
     }
 
     const hasOnlyEmptyPortfolioTracker = selectHasOnlyEmptyPortfolioTracker(state);
