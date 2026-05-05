@@ -113,6 +113,7 @@ export function useGetMerkleRewards<Address extends string>(
             const fetcher = merkleHttpClient('/v1/users/:address/rewards', {
                 method: 'GET',
                 schema: merkleRewardsResponseSchema,
+                cache: 'no-store',
             });
 
             const requests = queryEntries.map(entry =>
