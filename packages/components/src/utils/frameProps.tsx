@@ -74,6 +74,9 @@ type UserSelect = (typeof userSelects)[number];
 const objectFits = ['none', 'fill', 'contain', 'cover', 'scale-down'] as const;
 export type ObjectFit = (typeof objectFits)[number];
 
+const objectPositions = ['left', 'center', 'right', 'top', 'bottom'] as const;
+export type ObjectPosition = (typeof objectPositions)[number];
+
 const displays = ['block', 'inline', 'inline-block', 'flex', 'inline-flex'] as const;
 export type Display = (typeof displays)[number];
 
@@ -97,6 +100,7 @@ export type FrameProps = {
     aspectRatio?: `${number}` | `${number} / ${number}`;
     userSelect?: UserSelect;
     objectFit?: ObjectFit;
+    objectPosition?: ObjectPosition;
     display?: Display;
 };
 export type FramePropsKeys = keyof FrameProps;
@@ -144,6 +148,7 @@ export const withFrameProps = ({
     $opacity,
     $userSelect,
     $objectFit,
+    $objectPosition,
     $display,
 }: TransientFrameProps) => css`
     ${$margin &&
@@ -242,6 +247,10 @@ export const withFrameProps = ({
     css`
         object-fit: ${$objectFit};
     `};
+    ${$objectPosition &&
+    css`
+        object-position: ${$objectPosition};
+    `};
     ${$display &&
     css`
         display: ${$display};
@@ -314,6 +323,13 @@ const getStorybookType = (key: FramePropsKeys) => {
         case 'objectFit':
             return {
                 options: objectFits,
+                control: {
+                    type: 'select',
+                },
+            };
+        case 'objectPosition':
+            return {
+                options: objectPositions,
                 control: {
                     type: 'select',
                 },
@@ -400,6 +416,7 @@ export const getFramePropsStory = (allowedFrameProps: Array<FramePropsKeys>) => 
             ...(allowedFrameProps.includes('aspectRatio') ? { aspectRatio: undefined } : {}),
             ...(allowedFrameProps.includes('userSelect') ? { userSelect: undefined } : {}),
             ...(allowedFrameProps.includes('objectFit') ? { objectFit: undefined } : {}),
+            ...(allowedFrameProps.includes('objectPosition') ? { objectPosition: undefined } : {}),
             ...(allowedFrameProps.includes('display') ? { display: undefined } : {}),
         },
         argTypes,

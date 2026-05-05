@@ -9377,6 +9377,18 @@ export const messages = defineMessages({
         id: 'TR_PROMO_BANNER_DASHBOARD_TS7_BUTTON',
         defaultMessage: 'Learn more',
     },
+    TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_TITLE',
+        defaultMessage: 'Earn on your stablecoins',
+    },
+    TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_DESCRIPTION',
+        defaultMessage: 'Get yield on USDC and USDT with Trezor-grade security.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_BUTTON: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_BUTTON',
+        defaultMessage: 'Learn more',
+    },
     TR_ENABLE_AUTOSTOP_COINJOIN: {
         id: 'TR_ENABLE_AUTOSTOP_COINJOIN',
         defaultMessage: 'Stop coinjoin after this round',

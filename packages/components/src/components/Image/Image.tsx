@@ -23,6 +23,7 @@ export const allowedImageFrameProps = [
     'maxHeight',
     'flex',
     'objectFit',
+    'objectPosition',
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedImageFrameProps)[number]>;
 
