@@ -10,12 +10,14 @@ export type TradingLocationPickersProps = {
     context: CountryChangeContext;
     testID: string;
     hasCountrySubdivisionBottomBorder?: boolean;
+    hideSubdivisionPicker?: boolean;
 };
 
 export const TradingLocationPickers = ({
     context,
     testID,
     hasCountrySubdivisionBottomBorder = false,
+    hideSubdivisionPicker = false,
 }: TradingLocationPickersProps) => {
     const { watch } = useFormContext<TradingLocationFormValues>();
     const selectedCountry = watch('country');
@@ -26,12 +28,14 @@ export const TradingLocationPickers = ({
             <CountryOfResidencePicker
                 testID={`${testID}/country`}
                 context={context}
-                noBottomBorder={!isSubdivisionRequired}
+                noBottomBorder={!isSubdivisionRequired || hideSubdivisionPicker}
             />
-            <CountrySubdivisionPicker
-                testID={`${testID}/country-subdivision`}
-                noBottomBorder={!hasCountrySubdivisionBottomBorder}
-            />
+            {!hideSubdivisionPicker && (
+                <CountrySubdivisionPicker
+                    testID={`${testID}/country-subdivision`}
+                    noBottomBorder={!hasCountrySubdivisionBottomBorder}
+                />
+            )}
         </>
     );
 };
