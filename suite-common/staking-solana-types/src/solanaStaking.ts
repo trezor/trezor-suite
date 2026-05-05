@@ -1,7 +1,6 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Blockchain } from '@suite-common/wallet-types';
 import { type BlockbookFee as Fee } from '@trezor/blockchain-link-types';
-import type { SolanaSignTransaction } from '@trezor/connect';
 
 export const supportedSolanaNetworkSymbols = ['sol', 'dsol'] as const;
 
@@ -25,13 +24,8 @@ export type SolanaTxMeta = {
     feeIncludingRentLamports: string;
 };
 
-export type SolanaTx = SolanaSignTransaction & {
-    txShim: TransactionShim;
-};
-
 export interface PrepareStakeSolTxParams {
     from: string;
-    path: string | number[];
     amount: string;
     symbol: NetworkSymbol;
     selectedBlockchain: Blockchain;
@@ -43,7 +37,7 @@ export type PrepareClaimSolTxParams = Omit<PrepareStakeSolTxParams, 'amount'>;
 export type PrepareStakeSolTxResponse =
     | {
           success: true;
-          tx: SolanaTx;
+          txShim: TransactionShim;
           solanaTxMeta: SolanaTxMeta;
       }
     | {
