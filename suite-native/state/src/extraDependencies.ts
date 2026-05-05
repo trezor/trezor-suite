@@ -30,6 +30,8 @@ import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';
 import { ok } from '@trezor/type-utils';
 
+import { selectShowConnectLogs } from './connectDebugSlice';
+
 const deviceType = Device.isDevice ? 'device' : 'emulator';
 
 const bridgeTransport = new BridgeTransport({ port: 21328, id: 'bridge' });
@@ -110,8 +112,9 @@ export const extraDependencies: ExtraDependenciesStatic = {
     selectors: {
         selectLanguage: selectSupportedLanguageLocale,
         selectTokenDefinitionsEnabledNetworks,
-        selectDebugSettings: () => ({
+        selectDebugSettings: state => ({
             transports,
+            showConnectLogs: selectShowConnectLogs(state),
         }),
         selectTradingEnvironment,
         // this selector is not used in native app, but it is used in @suite-common/trading in loadInitialDataThunk

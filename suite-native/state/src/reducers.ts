@@ -71,6 +71,7 @@ import { tradingInitialState, tradingSlice } from '@suite-native/trading-state';
 import { sendFormSlice } from '@suite-native/transaction-management';
 
 import { appReducer } from './appSlice';
+import { connectDebugReducer } from './connectDebugSlice';
 import { extraDependencies } from './extraDependencies';
 
 const transactionsReducer = prepareTransactionsReducer(extraDependencies);
@@ -270,6 +271,14 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
+    const connectDebugPersistedReducer = preparePersistReducer({
+        reducer: connectDebugReducer,
+        persistedKeys: ['showConnectLogs'],
+        key: 'connectDebug',
+        version: 1,
+        storage: deps.mmkvStorage,
+    });
+
     const bannerFlagsPersistedReducer = preparePersistReducer({
         reducer: bannerFlagsReducer,
         persistedKeys: bannerFlagsPersistWhitelist,
@@ -361,6 +370,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             appSettings: appSettingsPersistedReducer,
             bannerFlags: bannerFlagsPersistedReducer,
             bluetooth: bluetoothPersistedReducer,
+            connectDebug: connectDebugPersistedReducer,
             featureFeedback: featureFeedbackPersistedReducer,
             connectPopup: connectPopupPersistedReducer,
             device: devicePersistedReducer,

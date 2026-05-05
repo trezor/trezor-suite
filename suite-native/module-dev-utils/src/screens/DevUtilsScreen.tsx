@@ -5,6 +5,7 @@ import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
 import { AnalyticsLogging } from '../components/AnalyticsLogging';
 import { ComponentDemoCard } from '../components/ComponentDemoCard';
+import { ConnectLogsCard } from '../components/ConnectLogsCard';
 import { DangerZoneCard } from '../components/DangerZoneCard';
 import { DebuggingCard } from '../components/DebuggingCard';
 import { FeatureFlagsCard } from '../components/FeatureFlagsCard';
@@ -34,6 +35,7 @@ export const DevUtilsScreen = () => (
             <FirmwareSourceCard />
             <SuiteSyncRelaySettings />
             <SuiteSyncQuotaManager />
+            {isDevelopOrDebugEnv() && <ConnectLogsCard />}
             <DebuggingCard />
             <DangerZoneCard />
         </VStack>
