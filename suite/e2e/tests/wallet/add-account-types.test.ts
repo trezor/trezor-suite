@@ -96,7 +96,7 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
             });
 
             await dashboardPage.dashboardMenuButton.click();
-            await walletPage.openAccount();
+            await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
 
             analytics.interceptAnalytics();
             await walletPage.filterAccountsButton.click();
