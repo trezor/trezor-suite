@@ -66,14 +66,27 @@ export const EarnYieldTable = () => {
     const merkleRewardsSources = useMemo(
         () =>
             yieldAccountOpportunities.flatMap(opportunity => {
-                if (!opportunity.account || !isEarnYieldClaimSupported(opportunity.networkSymbol)) {
+                const { networkSymbol, account } = opportunity;
+                if (
+                    !(
+                        isEarnYieldClaimSupported(networkSymbol) &&
+                        account &&
+                        account.networkType === 'ethereum'
+                    )
+                ) {
+                    return [];
+                }
+
+                const isApproveTx = Number(account.misc.nonce) === 0;
+
+                if (isApproveTx) {
                     return [];
                 }
 
                 return [
                     {
-                        networkSymbol: opportunity.networkSymbol,
-                        address: opportunity.account.descriptor,
+                        networkSymbol,
+                        address: account.descriptor,
                     },
                 ];
             }),
