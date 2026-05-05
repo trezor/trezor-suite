@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useSetAtom } from 'jotai';
 
 import {
+    deviceActions,
     selectHasDeviceFirmwareInstalled,
+    selectSelectedDevice,
     selectShouldOfferUpdateFirmware,
 } from '@suite-common/device';
 import { events } from '@suite-native/analytics';
@@ -65,10 +67,13 @@ export const UninitializedDeviceLandingScreen = ({
     DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
     RootStackParamList
 >) => {
+    const dispatch = useDispatch();
     const analytics = useAnalytics();
     const deviceModel = params.deviceModel as SetupSupportingDeviceModel;
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
     const shouldOfferUpdateFirmware = useSelector(selectShouldOfferUpdateFirmware);
+    const device = useSelector(selectSelectedDevice);
+    const deviceId = device?.id;
 
     const resetOnboardingAnalytics = useSetAtom(resetOnboardingAnalyticsAtom);
     const updateOnboardingAnalytics = useSetAtom(updateOnboardingAnalyticsAtom);
@@ -77,6 +82,7 @@ export const UninitializedDeviceLandingScreen = ({
         useNavigateToNextScreenAfterFirmwareInstallation();
 
     const handleConfirmButtonPress = () => {
+        dispatch(deviceActions.setManualDeviceCheckSuccess({ deviceId }));
         if (hasDeviceFirmwareInstalled) {
             if (shouldOfferUpdateFirmware) {
                 navigation.replace(DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate);

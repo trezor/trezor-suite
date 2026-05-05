@@ -116,6 +116,7 @@ const SecurityCheckContent = ({
     const { isBelowTablet } = useLayoutSize();
     const recoveryStatus = useSelector(selectRecoveryStatus);
     const device = useSelector(selectSelectedDevice);
+    const deviceId = device?.id;
     const deviceModel = device?.features?.internal_model || DeviceModelInternal.UNKNOWN;
     const isOnboardingActive = useSelector(selectIsOnboardingActive);
     const [isFailed, setIsFailed] = useState(false);
@@ -141,8 +142,9 @@ const SecurityCheckContent = ({
         ? firmwareInstalledChecklist
         : getNoFirmwareChecklist(isBelowTablet);
 
-    const toggleView = () => setIsFailed(current => !current);
+    const toggleIsDeviceRejected = () => setIsFailed(current => !current);
     const handleContinueButtonClick = () => {
+        dispatch(deviceActions.setManualDeviceCheckSuccess({ deviceId }));
         if (shouldAuthenticateSelectedDevice) {
             goToDeviceAuthentication();
         } else {
@@ -151,6 +153,7 @@ const SecurityCheckContent = ({
     };
 
     const handleSetupButtonClick = () => {
+        dispatch(deviceActions.setManualDeviceCheckSuccess({ deviceId }));
         analytics.report({
             type: events.deviceSetupStartedEvent.name,
             payload: {
@@ -190,7 +193,11 @@ const SecurityCheckContent = ({
         <SecurityCheckFail
             ctaSection={
                 <>
-                    <SecurityCheckButton intent="neutral" priority="secondary" onClick={toggleView}>
+                    <SecurityCheckButton
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={toggleIsDeviceRejected}
+                    >
                         <Translation id="TR_BACK" />
                     </SecurityCheckButton>
                     <ContactSupport supportUrl={supportUrl} />
@@ -214,7 +221,7 @@ const SecurityCheckContent = ({
                     priority="secondary"
                     size="small"
                     isUnderlined
-                    onClick={toggleView}
+                    onClick={toggleIsDeviceRejected}
                 >
                     <Translation id="TR_CONNECTED_DIFFERENT_DEVICE" />
                 </TextButton>
@@ -232,7 +239,11 @@ const SecurityCheckContent = ({
                 gap={12}
                 margin={{ top: 48 }}
             >
-                <SecurityCheckButton intent="neutral" priority="secondary" onClick={toggleView}>
+                <SecurityCheckButton
+                    intent="neutral"
+                    priority="secondary"
+                    onClick={toggleIsDeviceRejected}
+                >
                     <Translation id={secondaryButtonText} />
                 </SecurityCheckButton>
                 {initialized ? (

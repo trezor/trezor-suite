@@ -158,6 +158,11 @@ const setDeviceAuthenticityResult = createAction(
     }),
 );
 
+const setManualDeviceCheckSuccess = createAction(
+    `${DEVICE_MODULE_PREFIX}/setManualDeviceCheckSuccess`,
+    (payload: { deviceId: TrezorDevice['id'] }) => ({ payload }),
+);
+
 // Use in tests only! See deviceReducer for the property definition.
 const setSimulatedEntropyCheckFail = createAction(
     `${DEVICE_MODULE_PREFIX}/setSimulatedEntropyCheckFail`,
@@ -188,5 +193,6 @@ export const deviceActions = {
     setDiscovered,
     devicePushNotification,
     setDeviceAuthenticityResult,
+    setManualDeviceCheckSuccess,
     setSimulatedEntropyCheckFail,
 };

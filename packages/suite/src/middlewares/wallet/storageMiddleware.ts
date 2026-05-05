@@ -330,6 +330,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     deviceActions.deviceChanged,
                     deviceActions.setEntropyCheckResult,
                     deviceActions.setDeviceAuthenticityResult,
+                    deviceActions.setManualDeviceCheckSuccess,
                     deviceActions.clearDevicePersistentData,
                     deviceActions.forgetDevicePersistentData,
                 )(action)
