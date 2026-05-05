@@ -105,6 +105,12 @@ export const selectIsTradingSellEnabled = (state: MessageSystemRootState & Featu
     selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingSellEnabled) ||
     selectIsFeatureEnabled(state, Feature.trading.sell, true);
 
+export const selectIsTradingConciergeEnabled = (
+    state: MessageSystemRootState & FeatureFlagsRootState,
+) =>
+    selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingConciergeEnabled) ||
+    selectIsFeatureEnabled(state, Feature.trading.concierge, true);
+
 export const selectIsTradingEnabled = (
     state: MessageSystemRootState & FeatureFlagsRootState & TradingRootState,
 ) => {

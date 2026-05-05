@@ -10,6 +10,7 @@ export const FeatureFlag = {
     IsTradingBuyEnabled: 'isTradingBuyEnabled',
     IsTradingExchangeEnabled: 'isTradingExchangeEnabled',
     IsTradingSellEnabled: 'isTradingSellEnabled',
+    IsTradingConciergeEnabled: 'isTradingConciergeEnabled',
     AreTradingExchangeDexesEnabled: 'areTradingExchangeDexesEnabled',
     IsTradingResidenceCheckEnabled: 'isTradingResidenceCheckEnabled',
     IsTradingDebugEnabled: 'isTradingDebugEnabled',
@@ -38,6 +39,8 @@ export const featureFlagsInitialState: FeatureFlagsState = {
         process.env.EXPO_PUBLIC_FF_IS_TRADING_SWAP_ENABLED === 'true',
     [FeatureFlag.IsTradingSellEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_TRADING_SELL_ENABLED === 'true',
+    [FeatureFlag.IsTradingConciergeEnabled]:
+        process.env.EXPO_PUBLIC_FF_IS_TRADING_CONCIERGE_ENABLED === 'true',
     [FeatureFlag.AreTradingExchangeDexesEnabled]:
         process.env.EXPO_PUBLIC_FF_ARE_TRADING_EXCHANGE_DEXES_ENABLED === 'true',
     [FeatureFlag.IsTradingResidenceCheckEnabled]:
@@ -57,6 +60,7 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsTradingBuyEnabled,
     FeatureFlag.IsTradingExchangeEnabled,
     FeatureFlag.IsTradingSellEnabled,
+    FeatureFlag.IsTradingConciergeEnabled,
     FeatureFlag.AreTradingExchangeDexesEnabled,
     FeatureFlag.IsTradingResidenceCheckEnabled,
     FeatureFlag.IsTradingDebugEnabled,
