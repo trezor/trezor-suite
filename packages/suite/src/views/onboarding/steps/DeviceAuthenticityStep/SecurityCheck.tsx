@@ -14,7 +14,6 @@ import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constant
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import {
     Box,
-    Button,
     Card,
     Column,
     Divider,
@@ -27,7 +26,7 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { DeviceModelInternal, models } from '@trezor/device-utils';
-import { breakpoints, spacings } from '@trezor/theme';
+import { breakpoints } from '@trezor/theme';
 import {
     TREZOR_RESELLERS_URL,
     TREZOR_SUPPORT_FW_ALREADY_INSTALLED,
@@ -37,13 +36,13 @@ import {
 
 import { Hologram } from 'src/components/onboarding/Hologram';
 import { TrezorLink } from 'src/components/suite';
+import { SecurityCheckButton } from 'src/components/suite/SecurityCheck/SecurityCheckButton';
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { SecurityCheckLayout } from 'src/components/suite/SecurityCheck/SecurityCheckLayout';
 import { ContactSupport } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
 import { useDispatch, useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
-import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
-import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
+import { ContentFlex } from 'src/support/suite/ContentFlex';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 import { SecurityChecklist } from './SecurityChecklist';
@@ -102,27 +101,6 @@ const getNoFirmwareChecklist = (isBelowTablet: boolean) =>
         },
     ] as const satisfies SecurityChecklistItem[];
 
-type ButtonFlexProps = {
-    children: React.ReactNode;
-};
-
-const ButtonFlex = ({ children }: ButtonFlexProps) => {
-    const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
-
-    return (
-        <ContentFlex
-            isReversed={isContentBelowBreakpoint}
-            alignItems={isContentBelowBreakpoint ? 'center' : 'stretch'}
-            flexWrap="wrap"
-            gap={spacings.xl}
-            width="100%"
-            margin={{ top: spacings.xxxxl }}
-        >
-            {children}
-        </ContentFlex>
-    );
-};
-
 type SecurityCheckContentProps = {
     goToDeviceAuthentication: () => void;
     goToSuiteOrNextDevice: () => void;
@@ -140,7 +118,6 @@ const SecurityCheckContent = ({
     const device = useSelector(selectSelectedDevice);
     const deviceModel = device?.features?.internal_model || DeviceModelInternal.UNKNOWN;
     const isOnboardingActive = useSelector(selectIsOnboardingActive);
-    const { contentWidth } = useResponsiveContext();
     const [isFailed, setIsFailed] = useState(false);
 
     const { goToNextStep, rerun, updateAnalytics } = useOnboarding();
@@ -209,30 +186,22 @@ const SecurityCheckContent = ({
         [device],
     );
 
-    const isContentBelowMobile = !!(contentWidth && contentWidth < breakpoints.mobile);
-
     return isFailed ? (
         <SecurityCheckFail
             ctaSection={
-                <ButtonFlex>
-                    <Button
-                        intent="neutral"
-                        priority="secondary"
-                        onClick={toggleView}
-                        size={isContentBelowMobile ? 'medium' : 'large'}
-                        minWidth={100}
-                    >
+                <>
+                    <SecurityCheckButton intent="neutral" priority="secondary" onClick={toggleView}>
                         <Translation id="TR_BACK" />
-                    </Button>
+                    </SecurityCheckButton>
                     <ContactSupport supportUrl={supportUrl} />
-                </ButtonFlex>
+                </>
             }
             heading="TR_PLAY_IT_SAFE"
             text="TR_DEVICE_COMPROMISED_TEXT_SOFT"
         />
     ) : (
         <SecurityCheckLayout imageMode="ROTATE">
-            <Column gap={spacings.sm}>
+            <Column gap={12}>
                 <Paragraph intent="neutral" priority="secondary">
                     <Translation id="TR_YOU_HAVE_CONNECTED" />
                 </Paragraph>
@@ -250,33 +219,30 @@ const SecurityCheckContent = ({
                     <Translation id="TR_CONNECTED_DIFFERENT_DEVICE" />
                 </TextButton>
             </Column>
-            <Divider margin={{ vertical: spacings.xxl }} />
-            <Column gap={spacings.md}>
+            <Divider margin={{ vertical: 32 }} />
+            <Column gap={16}>
                 <H3>
                     <Translation id={headingText} />
                 </H3>
                 <SecurityChecklist items={checklistItems} />
             </Column>
-            <ButtonFlex>
-                <Button
-                    intent="neutral"
-                    priority="secondary"
-                    onClick={toggleView}
-                    size={isContentBelowMobile ? 'medium' : 'large'}
-                    minWidth={240}
-                >
+            <ContentFlex
+                breakpoint={breakpoints.tablet}
+                alignItems="center"
+                gap={12}
+                margin={{ top: 48 }}
+            >
+                <SecurityCheckButton intent="neutral" priority="secondary" onClick={toggleView}>
                     <Translation id={secondaryButtonText} />
-                </Button>
+                </SecurityCheckButton>
                 {initialized ? (
-                    <Button
+                    <SecurityCheckButton
                         data-testid="@onboarding/complete-onboarding"
                         onClick={handleContinueButtonClick}
-                        size="large"
                         intent="brand"
-                        minWidth={240}
                     >
                         <Translation id="TR_YES_CONTINUE" />
-                    </Button>
+                    </SecurityCheckButton>
                 ) : (
                     <Tooltip
                         content={
@@ -284,19 +250,18 @@ const SecurityCheckContent = ({
                                 <Translation id="TR_TAKES_N_MINUTES" />
                             </Note>
                         }
+                        width="100%"
                     >
-                        <Button
+                        <SecurityCheckButton
                             onClick={handleSetupButtonClick}
                             data-testid="@analytics/continue-button"
-                            size="large"
                             intent="brand"
-                            minWidth={240}
                         >
                             <Translation id={primaryButtonTopText} />
-                        </Button>
+                        </SecurityCheckButton>
                     </Tooltip>
                 )}
-            </ButtonFlex>
+            </ContentFlex>
         </SecurityCheckLayout>
     );
 };
