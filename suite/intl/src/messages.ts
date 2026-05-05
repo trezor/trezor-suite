@@ -2979,8 +2979,12 @@ export const messages = defineMessages({
         id: 'TR_RECEIVE',
     },
     TR_RECEIVE_DESCRIPTION: {
-        defaultMessage: 'Learn how to <a>choose the right network</a> to receive your tokens',
+        defaultMessage: 'Choose an account to receive assets into',
         id: 'TR_RECEIVE_DESCRIPTION',
+    },
+    TR_SWAP_TO_NETWORK_DESCRIPTION: {
+        defaultMessage: 'Learn how to <a>choose the right network</a> to receive your tokens',
+        id: 'TR_SWAP_TO_NETWORK_DESCRIPTION',
     },
     TR_RECEIVE_SEARCH: {
         defaultMessage: 'Search account',
