@@ -20,6 +20,7 @@ export interface DebugModeOptions {
     isUnlockedBootloaderAllowed: boolean;
     showConnectLogs: boolean;
     isN4w1BackupEnabled: boolean;
+    showTranslationKeys: boolean;
 }
 
 export interface AutodetectSettings {
@@ -78,6 +79,7 @@ export const suiteSettingsInitialState: SuiteSettingsState = {
         isUnlockedBootloaderAllowed: false,
         showConnectLogs: false,
         isN4w1BackupEnabled: false,
+        showTranslationKeys: false,
     },
     autodetect: {
         language: true,

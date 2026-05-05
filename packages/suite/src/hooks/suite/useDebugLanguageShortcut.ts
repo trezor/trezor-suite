@@ -4,6 +4,7 @@ import {
     selectAutodetectLanguage,
     selectIsDebugModeActive,
     selectLanguage,
+    selectShowTranslationKeys,
     suiteSettingsActions,
 } from '@suite/settings';
 import { LANGUAGES, type Locale } from '@suite-common/suite-types';
@@ -22,6 +23,7 @@ export const useDebugLanguageShortcut = () => {
     const isDebug = useSelector(selectIsDebugModeActive);
     const language = useSelector(selectLanguage);
     const isLanguageAutodetect = useSelector(selectAutodetectLanguage);
+    const showTranslationKeys = useSelector(selectShowTranslationKeys);
 
     const onLanguageKeys = useCallback(
         (event: KeyboardEvent) => {
@@ -43,8 +45,22 @@ export const useDebugLanguageShortcut = () => {
                 }
                 dispatch(suiteSettingsActions.setLanguage(languages[nextIndex].value));
             }
+
+            const isToggleTranslationKeys =
+                event.ctrlKey &&
+                (event.key === KEYBOARD_CODE.FUNCTION_KEY_TWELVE ||
+                    event.code === KEYBOARD_CODE.FUNCTION_KEY_TWELVE);
+
+            if (isToggleTranslationKeys) {
+                event.preventDefault();
+                dispatch(
+                    suiteSettingsActions.setDebugMode({
+                        showTranslationKeys: !showTranslationKeys,
+                    }),
+                );
+            }
         },
-        [language, dispatch, isLanguageAutodetect],
+        [language, dispatch, isLanguageAutodetect, showTranslationKeys],
     );
 
     useEffect(() => {
