@@ -66,7 +66,13 @@ export const verifyEnterTransactions = (
 ): VerificationStatus => {
     const vaultAddress = EVM_VAULT_ADDRESSES[yieldId];
 
-    if (!vaultAddress) return 'failure';
+    if (!vaultAddress) {
+        console.error(
+            new Error(`Yield with id ${yieldId} does not have a corresponding vault address`),
+        );
+
+        return 'failure';
+    }
 
     const amountBigInt = BigInt(
         new BigNumber(amount).times(new BigNumber(10).pow(decimals)).toFixed(0),

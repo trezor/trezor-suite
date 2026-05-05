@@ -29,6 +29,7 @@ export type YieldActionStepProps = {
     token: YieldFlowDisplayToken;
     summaryValue: ReactNode;
     isDisabled?: boolean;
+    isPending?: boolean;
     warning?: ReactNode;
     networkFeeWarning?: ReactNode;
     pendingTransaction?: YieldPendingTransactionState;
@@ -42,6 +43,7 @@ export const YieldActionStep = ({
     token,
     summaryValue,
     isDisabled = false,
+    isPending = false,
     warning,
     networkFeeWarning,
     pendingTransaction,
@@ -74,7 +76,8 @@ export const YieldActionStep = ({
                 size="large"
                 width="100%"
                 onClick={onSubmit}
-                isDisabled={isDisabled || !!pendingTransaction}
+                isDisabled={isDisabled}
+                isLoading={isPending}
             >
                 <Translation id={submitTranslationId} />
             </Button>

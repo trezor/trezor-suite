@@ -276,6 +276,7 @@ export const YieldSupplyForm = () => {
                                                 isApprovalInsufficient ||
                                                 isSubmittingAction
                                             }
+                                            isPending={isSubmittingAction}
                                             pendingTransaction={supplyPendingTransaction}
                                             onMaxClick={() => setAmountInput(maxAmount)}
                                             onSubmit={handleOnSupply}

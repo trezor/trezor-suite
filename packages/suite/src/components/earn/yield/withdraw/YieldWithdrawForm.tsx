@@ -129,6 +129,7 @@ export const YieldWithdrawForm = () => {
                                 ) : undefined
                             }
                             isDisabled={!liveAmount || isAmountTooHigh || isSubmittingAction}
+                            isPending={isSubmittingAction}
                             pendingTransaction={withdrawPendingTransaction}
                             onMaxClick={() => setAmountInput(maxAmount)}
                             onSubmit={handleOnWithdraw}
