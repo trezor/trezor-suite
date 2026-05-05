@@ -8,7 +8,7 @@ import {
 } from '@suite-common/wallet-config';
 import { type AccountKey, type TxSimulationMethod } from '@suite-common/wallet-types';
 
-const supplyTxSimulationParams = z.strictObject({
+const stablecoinYieldTxSimulationParams = z.strictObject({
     account: z.object({
         key: z.string(),
         networkType: z.enum(networksCollection.map(n => n.networkType)),
@@ -19,10 +19,10 @@ const supplyTxSimulationParams = z.strictObject({
     unsignedSupplyTx: z.string(),
 });
 
-export type SupplyTxSimulationParams = z.infer<typeof supplyTxSimulationParams>;
+export type StablecoinYieldTxSimulationParams = z.infer<typeof stablecoinYieldTxSimulationParams>;
 
-export function composeSupplyTxSimmulationAction(unknownParams: unknown) {
-    const parsedParams = supplyTxSimulationParams.safeParse(unknownParams);
+export function composeStablecoinYieldTxSimmulationAction(unknownParams: unknown) {
+    const parsedParams = stablecoinYieldTxSimulationParams.safeParse(unknownParams);
 
     if (!parsedParams.success) {
         return null;

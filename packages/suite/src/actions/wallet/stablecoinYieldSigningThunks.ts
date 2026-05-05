@@ -3,7 +3,7 @@ import { fromWei } from 'web3-utils';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { asEvmAddress, buildClaim } from '@suite-common/calldata';
 import { selectSelectedDevice } from '@suite-common/device';
-import { type SupplyTxSimulationParams } from '@suite-common/earn-stablecoin/src/tx-simulation';
+import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin/src/tx-simulation';
 import {
     type TransactionDto,
     flattenEvmFees,
@@ -430,7 +430,7 @@ export const submitYieldActionThunk = createThunk(
                     data: {
                         unsignedSupplyTx: actionTransaction.unsignedTransaction,
                         account: flowData.account,
-                    } satisfies SupplyTxSimulationParams,
+                    } satisfies StablecoinYieldTxSimulationParams,
                 }),
             );
 

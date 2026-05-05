@@ -1,1 +1,1 @@
-export * from './supplyTxSimulationTrigger';
+export * from './txSimulationAction';
