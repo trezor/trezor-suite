@@ -2163,6 +2163,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@connect-coins/solana@workspace:connect-coins/solana":
+  version: 0.0.0-use.local
+  resolution: "@connect-coins/solana@workspace:connect-coins/solana"
+  dependencies:
+    "@solana-program/compute-budget": "npm:^0.8.0"
+    "@solana-program/memo": "npm:^0.7.0"
+    "@solana-program/stake": "npm:^0.2.1"
+    "@solana-program/system": "npm:^0.7.0"
+    "@solana-program/token": "npm:^0.5.1"
+    "@solana-program/token-2022": "npm:^0.4.2"
+    "@solana/kit": "npm:^2.3.0"
+    "@solana/rpc-api": "npm:^2.3.0"
+    "@solana/rpc-types": "npm:^2.3.0"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@craftzdog/react-native-buffer@npm:^6.0.5":
   version: 6.1.1
   resolution: "@craftzdog/react-native-buffer@npm:6.1.1"
