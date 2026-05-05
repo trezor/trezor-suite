@@ -82,6 +82,7 @@ export * from './Sheet/hooks/useBottomSheetModal';
 export * from './AnimatedDoubleView/AnimatedDoubleView';
 export * from './AnimatedDoubleView/AnimatedDoubleInput';
 export * from './Pressable';
+export * from './useTapGesture';
 export * from './SegmentedControl';
 export * from './ProgressBar';
 
