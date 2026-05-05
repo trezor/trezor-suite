@@ -1,8 +1,13 @@
-import { tradingExchangeActions, useAllowanceTxTracking } from '@suite-common/trading';
+import {
+    selectTradingExchangePreselectedQuote,
+    selectTradingExchangeSelectedQuote,
+    tradingExchangeActions,
+    useAllowanceTxTracking,
+} from '@suite-common/trading';
 import type { TransactionStatus } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { type TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
-import { type TestStore, renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { type TestStore, act, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { mockTransaction } from '@suite-native/tokens';
 import { exchangeQuotes } from '@suite-native/trading-fixtures';
 import { useTransactionDetails } from '@suite-native/transaction-management';
@@ -22,15 +27,35 @@ jest.mock('@suite-common/device', () => ({
     selectIsDeviceConnected: () => true,
 }));
 
+const mockConfirmApproval = jest.fn().mockResolvedValue({});
+
+jest.mock('../../hooks/exchange/Approval/useApprovalFlow', () => ({
+    useApprovalFlow: () => ({
+        confirmApproval: mockConfirmApproval,
+    }),
+}));
+
 const mockUseTransactionDetails = useTransactionDetails as jest.Mock;
 
 const testQuote = exchangeQuotes[0];
 
+const mockAddListener = jest.fn(
+    (
+        _event: string,
+        _listener: (e: {
+            data: { action: { type: string; payload?: { count?: number } } };
+        }) => void,
+    ) => jest.fn(),
+);
+
 const mockNavigation = {
     navigate: jest.fn(),
     goBack: jest.fn(),
+    dispatch: jest.fn(),
     popToTop: jest.fn(),
+    push: jest.fn(),
     setOptions: jest.fn(),
+    addListener: mockAddListener,
 } as any;
 
 let routeParams: TradingStackParamList[TradingStackRoutes.TradingConfirming] = {
@@ -84,6 +109,7 @@ describe('TradingConfirmingScreen', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockConfirmApproval.mockResolvedValue({});
         store = createTradingLightStore({ tradeType: 'exchange' });
         store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
         mockUseAllowanceTxTracking.mockReturnValue({
@@ -99,6 +125,12 @@ describe('TradingConfirmingScreen', () => {
             explorerUrl: null,
         });
     });
+
+    const confirmedStatus = {
+        status: { isConfirmed: true, isFailed: false, isPending: false } as TransactionStatus,
+        approvalTxid: 'some-txid',
+        setApprovalTxid: jest.fn(),
+    };
 
     it('should render approve header when variant is approve', () => {
         const { getByTestId } = renderScreen({ flowType: 'approve' });
@@ -120,22 +152,84 @@ describe('TradingConfirmingScreen', () => {
         );
     });
 
-    it('should call navigation.popToTop when transaction is confirmed', () => {
-        mockUseAllowanceTxTracking.mockReturnValue({
-            status: { isConfirmed: true, isFailed: false, isPending: false } as TransactionStatus,
-            approvalTxid: 'some-txid',
-            setApprovalTxid: jest.fn(),
-        });
-
-        renderScreen();
-
-        expect(mockNavigation.popToTop).toHaveBeenCalled();
-    });
-
-    it('should not call navigation.popToTop when transaction is not confirmed', () => {
+    it('should not navigate when transaction is not confirmed', () => {
         renderScreen();
 
         expect(mockNavigation.popToTop).not.toHaveBeenCalled();
+        expect(mockNavigation.push).not.toHaveBeenCalled();
+    });
+
+    it('approve: navigates to TradingExchangePreview after confirmApproval succeeds', async () => {
+        mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
+
+        renderScreen({ flowType: 'approve' });
+
+        await act(async () => {
+            await Promise.resolve(); // flush confirmApproval promise
+        });
+
+        expect(mockNavigation.popToTop).toHaveBeenCalled();
+        expect(mockNavigation.push).toHaveBeenCalledWith(
+            TradingStackRoutes.TradingExchangePreview,
+            {
+                isApproved: true,
+            },
+        );
+    });
+
+    it('approve: saves quote with CONFIRM status when confirmApproval returns APPROVAL_PENDING', async () => {
+        mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
+        mockConfirmApproval.mockResolvedValue({ ...testQuote, status: 'APPROVAL_PENDING' });
+
+        renderScreen({ flowType: 'approve' });
+
+        await act(async () => {
+            await Promise.resolve();
+        });
+
+        expect(selectTradingExchangeSelectedQuote(store.getState())).toEqual(
+            expect.objectContaining({ status: 'CONFIRM' }),
+        );
+        expect(mockNavigation.popToTop).toHaveBeenCalled();
+    });
+
+    it('approve: does not navigate when confirmApproval fails', async () => {
+        mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
+        mockConfirmApproval.mockResolvedValue(undefined);
+
+        renderScreen({ flowType: 'approve' });
+
+        await act(async () => {
+            await Promise.resolve();
+        });
+
+        expect(mockNavigation.popToTop).not.toHaveBeenCalled();
+        expect(mockNavigation.push).not.toHaveBeenCalled();
+    });
+
+    it('revoke-and-approve: navigates to TradingExchangeApproval and clears selectedQuote', () => {
+        mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
+
+        renderScreen({ flowType: 'revoke-and-approve' });
+
+        expect(mockNavigation.popToTop).toHaveBeenCalled();
+        expect(mockNavigation.push).toHaveBeenCalledWith(
+            TradingStackRoutes.TradingExchangeApproval,
+            { isRevoked: true },
+        );
+        expect(selectTradingExchangeSelectedQuote(store.getState())).toBeUndefined();
+    });
+
+    it('revoke: pops to top and clears selectedQuote and preselectedQuote', () => {
+        store.dispatch(tradingExchangeActions.savePreselectedQuote(testQuote));
+        mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
+
+        renderScreen({ flowType: 'revoke' });
+
+        expect(mockNavigation.popToTop).toHaveBeenCalled();
+        expect(mockNavigation.push).not.toHaveBeenCalled();
+        expect(selectTradingExchangeSelectedQuote(store.getState())).toBeUndefined();
+        expect(selectTradingExchangePreselectedQuote(store.getState())).toBeUndefined();
     });
 
     it('should render the explore in blockchain button', () => {
@@ -160,5 +254,25 @@ describe('TradingConfirmingScreen', () => {
         const { getByText } = renderScreen();
 
         expect(getByText('Date')).toBeOnTheScreen();
+    });
+
+    it('should clear selected quote on back navigation', () => {
+        renderScreen();
+
+        const [, listener] =
+            mockAddListener.mock.calls.find(([event]) => event === 'beforeRemove') ?? [];
+        listener?.({ data: { action: { type: 'GO_BACK' } } });
+
+        expect(selectTradingExchangeSelectedQuote(store.getState())).toBeUndefined();
+    });
+
+    it('should not clear selected quote on programmatic popToTop (POP with count > 1)', () => {
+        renderScreen();
+
+        const [, listener] =
+            mockAddListener.mock.calls.find(([event]) => event === 'beforeRemove') ?? [];
+        listener?.({ data: { action: { type: 'POP', payload: { count: 3 } } } });
+
+        expect(selectTradingExchangeSelectedQuote(store.getState())).toEqual(testQuote);
     });
 });

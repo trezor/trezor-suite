@@ -61,7 +61,7 @@ export const ReviewOutputItemContent = ({
                     </Text>
                 );
             }
-            if (flowType === 'revoke') {
+            if (flowType === 'revoke' || flowType === 'revoke-and-approve') {
                 return (
                     <Text variant="body-sm">
                         <Translation id="transactionManagement.review.outputs.tokenRevocationDescription" />
@@ -72,7 +72,11 @@ export const ReviewOutputItemContent = ({
             return <AddressFormatter value={value} format="full" variant="body-sm" />;
 
         case 'contract':
-            if (flowType === 'approve' || flowType === 'revoke') {
+            if (
+                flowType === 'approve' ||
+                flowType === 'revoke' ||
+                flowType === 'revoke-and-approve'
+            ) {
                 return <Text variant="body-sm">{value}</Text>;
             }
 
@@ -123,7 +127,7 @@ export const ReviewOutputItemContent = ({
                     </VStack>
                 );
             }
-            if (flowType === 'revoke' && token) {
+            if ((flowType === 'revoke' || flowType === 'revoke-and-approve') && token) {
                 return (
                     <VStack>
                         <HStack justifyContent="space-between">

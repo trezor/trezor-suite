@@ -9,7 +9,7 @@ import {
 } from '@suite-native/trading-fixtures';
 
 import { createTradingTestStore } from '../../../__tests__/tradingTestUtils';
-import { useExchangeFlow } from '../useExchangeFlow';
+import { type UseExchangeFlowProps, useExchangeFlow } from '../useExchangeFlow';
 
 const mockNavigate = jest.fn();
 
@@ -71,7 +71,13 @@ describe('useExchangeFlow', () => {
         });
     };
 
-    const renderUseExchangeFlow = ({ store }: { store: TestStore }) => {
+    const renderUseExchangeFlow = ({
+        store,
+        flowType,
+    }: {
+        store: TestStore;
+        flowType?: UseExchangeFlowProps['flowType'];
+    }) => {
         const reportMock = jest.fn();
 
         (useAnalytics as jest.Mock).mockReturnValue({
@@ -80,7 +86,8 @@ describe('useExchangeFlow', () => {
 
         return {
             reportMock,
-            result: renderHookWithStoreProvider(() => useExchangeFlow(), { store }).result,
+            result: renderHookWithStoreProvider(() => useExchangeFlow({ flowType }), { store })
+                .result,
         };
     };
 
@@ -281,6 +288,58 @@ describe('useExchangeFlow', () => {
 
             expect(mockNavigate).toHaveBeenCalledWith(TradingStackRoutes.TradingConfirming, {
                 flowType: 'approve',
+            });
+        });
+
+        it('should navigate with flowType revoke when quoteStatus is APPROVAL_PENDING and flowType is revoke', () => {
+            const tradingState = getInitializedTradingStateWithQuotes();
+            tradingState.exchange.tradingAccountKey = btc1AccountKey;
+            tradingState.exchange.receiveAccountKey = btc2AccountKey;
+            tradingState.exchange.selectedQuote = {
+                ...tradingState.exchange.quotes[0],
+                status: 'APPROVAL_PENDING',
+            };
+
+            const store = createTradingTestStore({
+                tradeType: 'exchange',
+                overrides: {
+                    wallet: {
+                        trading: tradingState,
+                        accounts: getMockAccounts(),
+                    },
+                },
+            });
+
+            renderUseExchangeFlow({ store, flowType: 'revoke' });
+
+            expect(mockNavigate).toHaveBeenCalledWith(TradingStackRoutes.TradingConfirming, {
+                flowType: 'revoke',
+            });
+        });
+
+        it('should navigate with flowType revoke-and-approve when quoteStatus is APPROVAL_PENDING and flowType is revoke-and-approve', () => {
+            const tradingState = getInitializedTradingStateWithQuotes();
+            tradingState.exchange.tradingAccountKey = btc1AccountKey;
+            tradingState.exchange.receiveAccountKey = btc2AccountKey;
+            tradingState.exchange.selectedQuote = {
+                ...tradingState.exchange.quotes[0],
+                status: 'APPROVAL_PENDING',
+            };
+
+            const store = createTradingTestStore({
+                tradeType: 'exchange',
+                overrides: {
+                    wallet: {
+                        trading: tradingState,
+                        accounts: getMockAccounts(),
+                    },
+                },
+            });
+
+            renderUseExchangeFlow({ store, flowType: 'revoke-and-approve' });
+
+            expect(mockNavigate).toHaveBeenCalledWith(TradingStackRoutes.TradingConfirming, {
+                flowType: 'revoke-and-approve',
             });
         });
 

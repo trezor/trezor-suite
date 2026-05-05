@@ -25,6 +25,7 @@ const TitleTranslation = ({ flowType }: { flowType: ConfirmingScreenFlowType }) 
         case 'approve':
             return <Translation id="moduleTrading.tradingConfirmationScreen.approveTitle" />;
         case 'revoke':
+        case 'revoke-and-approve':
             return <Translation id="moduleTrading.tradingConfirmationScreen.revokeTitle" />;
         default:
             return exhaustive(flowType);

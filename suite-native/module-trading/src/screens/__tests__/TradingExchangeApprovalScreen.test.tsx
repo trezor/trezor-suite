@@ -37,6 +37,15 @@ jest.mock('../../hooks/exchange/Approval/useEvmApprovalFees', () => ({
     }),
 }));
 
+const mockAddListener = jest.fn(
+    (
+        _event: string,
+        _listener: (e: {
+            data: { action: { type: string; payload?: { count?: number } } };
+        }) => void,
+    ) => jest.fn(),
+);
+
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useRoute: () =>
@@ -71,9 +80,12 @@ describe('TradingExchangeApprovalScreen', () => {
 
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-    const renderScreen = () => {
+    const renderScreen = (params: Record<string, unknown> = {}) => {
         const result = renderWithTradingProvider(
-            <TradingExchangeApprovalScreen route={{ params: {} } as any} navigation={{} as any} />,
+            <TradingExchangeApprovalScreen
+                route={{ params } as any}
+                navigation={{ addListener: mockAddListener } as any}
+            />,
             { store, tradeType: 'exchange' },
         );
 
@@ -153,15 +165,39 @@ describe('TradingExchangeApprovalScreen', () => {
         expect(errorSpy).toHaveBeenCalledWith('No quote to confirm approval');
     });
 
-    it('should clear selected quote on unmount', () => {
+    it('should clear selected quote on back navigation', () => {
         store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
-        const { unmount: localUnmount } = renderScreen();
+        renderScreen();
 
-        localUnmount();
-        unmount = undefined;
+        // Simulate the beforeRemove event with a GO_BACK action (back button / swipe back).
+        const [, listener] =
+            mockAddListener.mock.calls.find(([event]) => event === 'beforeRemove') ?? [];
+        listener?.({ data: { action: { type: 'GO_BACK' } } });
 
         const selectedQuote = selectTradingExchangeSelectedQuote(store.getState());
         expect(selectedQuote).toBeUndefined();
+    });
+
+    it('should not clear selected quote on programmatic popToTop (POP with count > 1)', () => {
+        store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
+        renderScreen();
+
+        const [, listener] =
+            mockAddListener.mock.calls.find(([event]) => event === 'beforeRemove') ?? [];
+        listener?.({ data: { action: { type: 'POP', payload: { count: 3 } } } });
+
+        const selectedQuote = selectTradingExchangeSelectedQuote(store.getState());
+        expect(selectedQuote).toEqual({ ...testQuote, approvalType: 'MINIMAL' });
+    });
+
+    it('should render revoke success alert when isRevoked is true', () => {
+        const { getByText } = renderScreen({ isRevoked: true });
+
+        expect(
+            getByText(
+                getTranslation('moduleTrading.tradingExchangeApprovalScreen.revokeSuccessAlert'),
+            ),
+        ).toBeOnTheScreen();
     });
 
     it('should display device guard when device is not connected', () => {

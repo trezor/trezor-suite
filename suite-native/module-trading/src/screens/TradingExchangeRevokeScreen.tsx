@@ -35,6 +35,7 @@ type TradingExchangeRevokeScreenProps = StackToStackCompositeScreenProps<
 
 export const TradingExchangeRevokeScreen = ({
     route: { params },
+    navigation,
 }: TradingExchangeRevokeScreenProps) => {
     const { shouldIncreaseLimit } = params;
     const dispatch = useDispatch();
@@ -104,12 +105,25 @@ export const TradingExchangeRevokeScreen = ({
         };
     }, [quote, isReady, dispatch, confirmApproval]);
 
-    useEffect(
-        () => () => {
-            dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
-        },
-        [dispatch],
-    );
+    useEffect(() => {
+        // Clear the selected quote only when the user navigates backward (back button / swipe back).
+        // popToTop() translates to POP with count > 1 — those removals are programmatic forward
+        // navigation so the quote must remain in Redux for the next screen to read it.
+        const unsubscribe = navigation.addListener('beforeRemove', e => {
+            const { type, payload } = e.data.action as {
+                type: string;
+                payload?: { count?: number };
+            };
+            const isSingleBackPress =
+                type === 'GO_BACK' || (type === 'POP' && (payload?.count ?? 1) <= 1);
+
+            if (isSingleBackPress) {
+                dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
+            }
+        });
+
+        return unsubscribe;
+    }, [dispatch, navigation]);
 
     if (!quote) {
         return (
@@ -150,7 +164,7 @@ export const TradingExchangeRevokeScreen = ({
                     <ApprovalButton
                         isReady={isRevokeReady}
                         isDisabled={!!error}
-                        flowType="revoke"
+                        flowType={shouldIncreaseLimit ? 'revoke-and-approve' : 'revoke'}
                     />
                 }
             >

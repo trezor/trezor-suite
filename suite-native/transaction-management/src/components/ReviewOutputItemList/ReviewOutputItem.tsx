@@ -34,7 +34,7 @@ const OutputLabel = ({
             if (flowType === 'approve') {
                 return <Translation id="transactionManagement.review.outputs.tokenApprovalLabel" />;
             }
-            if (flowType === 'revoke') {
+            if (flowType === 'revoke' || flowType === 'revoke-and-approve') {
                 return (
                     <Translation id="transactionManagement.review.outputs.tokenRevocationLabel" />
                 );
@@ -49,7 +49,7 @@ const OutputLabel = ({
             if (flowType === 'approve') {
                 return <Translation id="transactionManagement.review.outputs.approveToLabel" />;
             }
-            if (flowType === 'revoke') {
+            if (flowType === 'revoke' || flowType === 'revoke-and-approve') {
                 return (
                     <Translation id="transactionManagement.review.outputs.revokeApprovalFromLabel" />
                 );
@@ -63,7 +63,7 @@ const OutputLabel = ({
         case 'network':
             return <Translation id="transactionManagement.review.outputs.networkLabel" />;
         case 'approve_data':
-            if (flowType === 'revoke') {
+            if (flowType === 'revoke' || flowType === 'revoke-and-approve') {
                 return <Translation id="transactionManagement.review.outputs.revokeLabel" />;
             }
 

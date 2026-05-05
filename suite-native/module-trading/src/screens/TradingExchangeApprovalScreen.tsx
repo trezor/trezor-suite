@@ -35,6 +35,7 @@ type TradingExchangeApprovalScreenProps = StackToStackCompositeScreenProps<
 
 export const TradingExchangeApprovalScreen = ({
     route: { params },
+    navigation,
 }: TradingExchangeApprovalScreenProps) => {
     const { shouldIncreaseLimit, isRevoked } = params;
     const dispatch = useDispatch();
@@ -78,11 +79,14 @@ export const TradingExchangeApprovalScreen = ({
 
         hasConfirmedRef.current = true;
 
-        const quoteWithType = quote.approvalType
-            ? quote
-            : ({ ...quote, approvalType: 'MINIMAL' } satisfies ExchangeTrade);
+        // When arriving from a revoke-and-approve flow the quote still carries approvalType: 'ZERO'
+        // from the revoke step. Reset it to 'MINIMAL' so we sign an approval, not another revoke.
+        const needsTypeReset = !quote.approvalType || isRevoked;
+        const quoteWithType = needsTypeReset
+            ? ({ ...quote, approvalType: 'MINIMAL' } satisfies ExchangeTrade)
+            : quote;
 
-        if (!quote.approvalType) {
+        if (needsTypeReset) {
             dispatch(tradingExchangeActions.saveSelectedQuote(quoteWithType));
         }
 
@@ -101,14 +105,27 @@ export const TradingExchangeApprovalScreen = ({
         return () => {
             isActive = false;
         };
-    }, [quote, isReady, dispatch, confirmApproval]);
+    }, [quote, isReady, isRevoked, dispatch, confirmApproval]);
 
-    useEffect(
-        () => () => {
-            dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
-        },
-        [dispatch],
-    );
+    useEffect(() => {
+        // Clear the selected quote only when the user navigates backward (back button / swipe back).
+        // popToTop() translates to POP with count > 1 — those removals are programmatic forward
+        // navigation so the quote must remain in Redux for the next screen to read it.
+        const unsubscribe = navigation.addListener('beforeRemove', e => {
+            const { type, payload } = e.data.action as {
+                type: string;
+                payload?: { count?: number };
+            };
+            const isSingleBackPress =
+                type === 'GO_BACK' || (type === 'POP' && (payload?.count ?? 1) <= 1);
+
+            if (isSingleBackPress) {
+                dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
+            }
+        });
+
+        return unsubscribe;
+    }, [dispatch, navigation]);
 
     if (!quote) {
         return (

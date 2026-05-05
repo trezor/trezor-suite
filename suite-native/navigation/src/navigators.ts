@@ -471,7 +471,7 @@ export type TransactionDetailStackParamList = {
     };
 };
 
-export type ConfirmingScreenFlowType = 'approve' | 'revoke';
+export type ConfirmingScreenFlowType = 'approve' | 'revoke' | 'revoke-and-approve';
 export type ExchangeFlowType = 'swap' | ConfirmingScreenFlowType;
 
 export type TradingStackParamList = {

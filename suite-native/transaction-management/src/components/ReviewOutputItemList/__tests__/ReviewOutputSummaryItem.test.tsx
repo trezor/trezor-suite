@@ -89,31 +89,32 @@ describe('ReviewOutputSummaryItem', () => {
         ).toBeTruthy();
     });
 
-    it.each<'approve' | 'revoke'>(['approve', 'revoke'])(
-        'should not render "amount" for flowType "%s"',
-        flowType => {
-            const { getByText, queryByText } = renderReviewOutputSummaryItem({
-                summaryOutput: {
-                    totalSpent: '1000',
-                    fee: '10',
-                    state: 'active',
-                },
-                symbol: 'eth',
-                flowType,
-            });
+    it.each<'approve' | 'revoke' | 'revoke-and-approve'>([
+        'approve',
+        'revoke',
+        'revoke-and-approve',
+    ])('should not render "amount" for flowType "%s"', flowType => {
+        const { getByText, queryByText } = renderReviewOutputSummaryItem({
+            summaryOutput: {
+                totalSpent: '1000',
+                fee: '10',
+                state: 'active',
+            },
+            symbol: 'eth',
+            flowType,
+        });
 
-            expect(
-                queryByText(
-                    /ReviewOutputItemValues: \[transactionManagement\.review\.outputs\.summary\.amount\]/,
-                ),
-            ).toBeNull();
-            expect(
-                getByText(
-                    'ReviewOutputItemValues: [transactionManagement.review.outputs.summary.maxFee]-[10]',
-                ),
-            ).toBeTruthy();
-        },
-    );
+        expect(
+            queryByText(
+                /ReviewOutputItemValues: \[transactionManagement\.review\.outputs\.summary\.amount\]/,
+            ),
+        ).toBeNull();
+        expect(
+            getByText(
+                'ReviewOutputItemValues: [transactionManagement.review.outputs.summary.maxFee]-[10]',
+            ),
+        ).toBeTruthy();
+    });
 
     it('should render "amount" and "max fee" for USDC', () => {
         const { getByText } = renderReviewOutputSummaryItem({
