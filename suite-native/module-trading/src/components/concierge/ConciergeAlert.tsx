@@ -10,7 +10,7 @@ import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
 import { useTradingTabs } from '../../hooks/general/useTradingTabs';
-import { CRYPTO_MAX__FORM_TYPE } from '../../utils/buy/buyFormValidationSchema';
+import { CRYPTO_MAX_FORM_TYPE } from '../../utils/buy/buyFormValidationSchema';
 
 type Props = {
     tradingType: 'buy' | 'sell';
@@ -47,14 +47,14 @@ export const ConciergeAlert = ({ tradingType }: Props) => {
     const fiatLimit = data?.minFiatLimits?.[formValues.fiatCurrency];
     const isFiatAmountDefined = fiatAmount !== undefined && fiatAmount !== '';
 
-    const otcProviders = getOtcProvidersByCountry(data, formValues.country.value);
+    const otcProviders = getOtcProvidersByCountry(data, formValues?.country?.value);
 
     const isConciergeAvailable =
         (otcProviders.length > 0 &&
             fiatLimit !== undefined &&
             isFiatAmountDefined &&
             Number(fiatAmount) >= fiatLimit) ||
-        (otcProviders.length > 0 && errors.cryptoValue?.type === CRYPTO_MAX__FORM_TYPE);
+        (otcProviders.length > 0 && errors.cryptoValue?.type === CRYPTO_MAX_FORM_TYPE);
 
     const alertTitle =
         tradingType === 'buy' ? (

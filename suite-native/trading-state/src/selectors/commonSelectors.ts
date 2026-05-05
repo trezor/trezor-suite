@@ -16,6 +16,7 @@ import {
     type TradingRootStateWithDeviceAndAccounts,
     type TradingTransaction,
     type TradingType,
+    type TradingTypeWithConcierge,
     cryptoIdToSymbol,
     isFinalStatus,
     selectDeviceTradingTrades,
@@ -121,14 +122,25 @@ export const selectIsTradingEnabled = (
     return (
         selectIsTradingBuyEnabled(state) ||
         selectIsTradingExchangeEnabled(state) ||
-        selectIsTradingSellEnabled(state)
+        selectIsTradingSellEnabled(state) ||
+        selectIsTradingConciergeEnabled(state)
     );
 };
 
 export const selectEnabledTradingTypes = createFeatureFlagsMemoizedSelector(
-    [selectIsTradingBuyEnabled, selectIsTradingExchangeEnabled, selectIsTradingSellEnabled],
-    (isTradingBuyEnabled, isTradingExchangeEnabled, isTradingSellEnabled) => {
-        const enabledTypes: TradingType[] = [];
+    [
+        selectIsTradingBuyEnabled,
+        selectIsTradingExchangeEnabled,
+        selectIsTradingSellEnabled,
+        selectIsTradingConciergeEnabled,
+    ],
+    (
+        isTradingBuyEnabled,
+        isTradingExchangeEnabled,
+        isTradingSellEnabled,
+        isTradingConciergeEnabled,
+    ) => {
+        const enabledTypes: TradingTypeWithConcierge[] = [];
 
         if (isTradingBuyEnabled) {
             enabledTypes.push('buy');
@@ -138,6 +150,9 @@ export const selectEnabledTradingTypes = createFeatureFlagsMemoizedSelector(
         }
         if (isTradingSellEnabled) {
             enabledTypes.push('sell');
+        }
+        if (isTradingConciergeEnabled) {
+            enabledTypes.push('concierge');
         }
 
         return enabledTypes;
