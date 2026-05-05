@@ -1,17 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { events } from '@suite/analytics';
-import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectRecoveryStatus } from '@suite/recovery';
 import { goto } from '@suite/router';
 import {
-    selectIsDeviceAuthenticityCheckEnabled,
-    selectIsUnlockedBootloaderAllowed,
-} from '@suite/settings';
-import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
-import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
-import { type AcquiredDevice } from '@suite-common/suite-types';
+    deviceActions,
+    selectSelectedDevice,
+    selectShouldDoDeviceManualCheck,
+} from '@suite-common/device';
 import {
     Box,
     Card,
@@ -42,6 +39,10 @@ import { SecurityCheckLayout } from 'src/components/suite/SecurityCheck/Security
 import { ContactSupport } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
 import { useDispatch, useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
+import {
+    selectAllDevicesRequiringSecurityCheck,
+    selectShouldCheckDeviceAuthenticity,
+} from 'src/selectors/suite/securityCheckSelectors';
 import { ContentFlex } from 'src/support/suite/ContentFlex';
 import { useAnalytics } from 'src/support/useAnalytics';
 
@@ -101,17 +102,9 @@ const getNoFirmwareChecklist = (isBelowTablet: boolean) =>
         },
     ] as const satisfies SecurityChecklistItem[];
 
-type SecurityCheckContentProps = {
-    goToDeviceAuthentication: () => void;
-    goToSuiteOrNextDevice: () => void;
-    shouldAuthenticateSelectedDevice: boolean;
-};
+type ManualDeviceCheckProps = { onConfirm: () => void };
 
-const SecurityCheckContent = ({
-    goToDeviceAuthentication,
-    goToSuiteOrNextDevice,
-    shouldAuthenticateSelectedDevice,
-}: SecurityCheckContentProps) => {
+const ManualDeviceCheck = ({ onConfirm }: ManualDeviceCheckProps) => {
     const analytics = useAnalytics();
     const { isBelowTablet } = useLayoutSize();
     const recoveryStatus = useSelector(selectRecoveryStatus);
@@ -145,11 +138,7 @@ const SecurityCheckContent = ({
     const toggleIsDeviceRejected = () => setIsFailed(current => !current);
     const handleContinueButtonClick = () => {
         dispatch(deviceActions.setManualDeviceCheckSuccess({ deviceId }));
-        if (shouldAuthenticateSelectedDevice) {
-            goToDeviceAuthentication();
-        } else {
-            goToSuiteOrNextDevice();
-        }
+        onConfirm();
     };
 
     const handleSetupButtonClick = () => {
@@ -279,68 +268,65 @@ const SecurityCheckContent = ({
 
 export const SecurityCheck = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
-    const devices = useSelector(selectDevices);
-    const { initialRun } = useSelector(selectFlags);
-    const isDeviceAuthenticityCheckEnabled = useSelector(selectIsDeviceAuthenticityCheckEnabled);
-    const isUnlockedBootloaderAllowed = useSelector(selectIsUnlockedBootloaderAllowed);
+    const selectedDeviceId = selectedDevice?.id;
     const dispatch = useDispatch();
     const { goToSuite } = useOnboarding();
-    const [isAuthenticityCheckStep, setIsAuthenticityCheckStep] = useState(false);
     const [checkedDevices, setCheckedDevices] = useState<string[]>([]);
 
-    const isDebugDevice = (device: AcquiredDevice) =>
-        isUnlockedBootloaderAllowed && device.features.bootloader_locked === false;
+    const shouldDisplayManualDeviceCheck = useSelector(state =>
+        selectShouldDoDeviceManualCheck(state, selectedDeviceId),
+    );
+    const shouldDisplayDeviceAuthenticityCheck = useSelector(state =>
+        selectShouldCheckDeviceAuthenticity(state, selectedDevice),
+    );
 
-    const shouldAuthenticateSelectedDevice =
-        !!selectedDevice?.features?.internal_model &&
-        SUPPORTS_DEVICE_AUTHENTICITY_CHECK[selectedDevice.features.internal_model] &&
-        initialRun &&
-        isDeviceAuthenticityCheckEnabled &&
-        !isDebugDevice(selectedDevice);
+    // This cannot be decided only based on redux state, because the Authenticity Check screen has a result screen,
+    // so after the check itself is complete (not needed as per redux state) we need to stay on it.
+    const [isAuthenticityCheckStep, setIsAuthenticityCheckStep] = useState(
+        // Edge case: start at Device Authenticity step if it is required, and Manual Device Check has already been done.
+        !shouldDisplayManualDeviceCheck && shouldDisplayDeviceAuthenticityCheck,
+    );
 
-    // If there are multiple devices connected, check all of them before continuing to Suite.
-    const goToSuiteOrNextDevice = (onSelectNext?: () => void) => {
-        const nextDeviceToCheck = devices
-            .filter(device => device.id !== selectedDevice?.id)
-            .find(device => device.id && !checkedDevices.includes(device.id));
+    const allDevicesRequiringSecurityCheck = useSelector(selectAllDevicesRequiringSecurityCheck);
+
+    // Finish up the Security Check – but if there are multiple devices eligible for either
+    // Manual Device Check or Device Authenticity check, check all of them before continuing to Suite.
+    const goToSuiteOrNextDevice = () => {
+        const nextDeviceToCheck = allDevicesRequiringSecurityCheck.find(
+            ({ id }) => !!id && id !== selectedDeviceId && !checkedDevices.includes(id),
+        );
 
         if (nextDeviceToCheck !== undefined) {
-            onSelectNext?.();
-            setCheckedDevices(prev => [...prev, selectedDevice?.id ?? '']); // Device ID must be available as firmware is already installed.
+            setIsAuthenticityCheckStep(false); // Next device → reset to first step (it might not even support DAC)
+            setCheckedDevices(prev => [...prev, selectedDeviceId ?? '']); // Device ID must be available as firmware is already installed.
             dispatch(deviceActions.selectDevice(nextDeviceToCheck));
         } else {
             goToSuite();
         }
     };
 
-    // Edge case:
-    // Devices A and B are connected, only device A supports authenticity check.
-    // Device A disconnects while on the first screen of the check.
-    useEffect(() => {
-        if (isAuthenticityCheckStep && !shouldAuthenticateSelectedDevice) {
-            setIsAuthenticityCheckStep(false);
+    // Finish up the Security Check unless there is still Device Authenticity Check needed to be done.
+    const onManualDeviceCheckConfirm = () => {
+        if (shouldDisplayDeviceAuthenticityCheck) {
+            setIsAuthenticityCheckStep(true);
+        } else {
+            goToSuiteOrNextDevice();
         }
-    }, [isAuthenticityCheckStep, shouldAuthenticateSelectedDevice]);
+    };
 
+    // Device Authenticity Check is the 2nd step
     if (isAuthenticityCheckStep) {
         return (
             <Box padding={{ top: 40 }} width="100%">
-                <DeviceAuthenticityStep
-                    goToNext={() => goToSuiteOrNextDevice(() => setIsAuthenticityCheckStep(false))}
-                />
+                <DeviceAuthenticityStep goToNext={goToSuiteOrNextDevice} />
             </Box>
         );
     }
 
-    const goToDeviceAuthentication = () => setIsAuthenticityCheckStep(true);
-
+    // Manual Device Check is the 1st step (and default view on this page)
     return (
         <Card paddingType="large">
-            <SecurityCheckContent
-                goToDeviceAuthentication={goToDeviceAuthentication}
-                goToSuiteOrNextDevice={goToSuiteOrNextDevice}
-                shouldAuthenticateSelectedDevice={shouldAuthenticateSelectedDevice}
-            />
+            <ManualDeviceCheck onConfirm={onManualDeviceCheckConfirm} />
         </Card>
     );
 };

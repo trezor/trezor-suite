@@ -113,7 +113,6 @@ export class OnboardingPage {
         if (this.device.hasTHP) {
             await this.devicePrompt.allowConnectToTrezor();
             await this.enterTHPPairingCode();
-            await this.enableAutoconnect();
         }
     }
 
@@ -125,8 +124,9 @@ export class OnboardingPage {
         await this.analyticsSection.continueButton.click();
 
         await this.pairTHP();
-
         await this.completeOnboardingButton.click();
+        await this.enableAutoconnect();
+
         if (this.device.hasSecureElement && this.device.model !== Model.T3W1) {
             await this.passThroughAuthenticityCheck();
         }
@@ -140,10 +140,12 @@ export class OnboardingPage {
 
     @step()
     async enableAutoconnect() {
-        await this.settingsPage.navigateTo('device');
-        await this.settingsPage.deviceTab.autoconnectSwitch.click();
-        await this.devicePrompt.allowConnectToTrezor();
-        await this.settingsPage.closeSettings();
+        if (this.device.hasTHP) {
+            await this.settingsPage.navigateTo('device');
+            await this.settingsPage.deviceTab.autoconnectSwitch.click();
+            await this.devicePrompt.allowConnectToTrezor();
+            await this.settingsPage.closeSettings();
+        }
     }
 
     @step()

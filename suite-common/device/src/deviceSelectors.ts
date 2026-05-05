@@ -73,6 +73,12 @@ export const selectEntropyCheckResultByDeviceId = createMemoizedSelector(
     persistentDeviceData => persistentDeviceData?.lastEntropyCheckResult,
 );
 
+export const selectShouldDoDeviceManualCheck = createMemoizedSelector(
+    [selectPersistentDeviceDataById, (_state, deviceId: TrezorDevice['id']) => deviceId],
+    (persistentDeviceData, deviceId) =>
+        typeof deviceId === 'string' && persistentDeviceData?.manualCheckResult?.success !== true,
+);
+
 // Use in tests only! See deviceReducer for the property definition.
 export const selectSimulatedEntropyCheckFail = (state: DeviceRootState) =>
     state.device.simulatedEntropyCheckFail;
@@ -338,11 +344,11 @@ export const selectDeviceById = createMemoizedSelector(
     (devices, deviceId) => devices.find(device => device.id === deviceId),
 );
 
-export const selectDeviceAuthenticity = (state: DeviceRootState) =>
-    state.device.persistentDeviceData;
-
 export const selectDeviceAuthenticityByDeviceId = createMemoizedSelector(
-    [(_state: DeviceRootState, deviceId: TrezorDevice['id']) => deviceId, selectDeviceAuthenticity],
+    [
+        (_state: DeviceRootState, deviceId: TrezorDevice['id']) => deviceId,
+        selectPersistentDeviceData,
+    ],
     (deviceId, persistentDeviceData) =>
         deviceId
             ? persistentDeviceData.find(data => data.device_id === deviceId)?.authenticityResult
