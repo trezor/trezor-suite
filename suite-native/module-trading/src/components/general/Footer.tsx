@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import type { ProviderMetadata } from 'invity-api';
 
 import { selectTradingProviderMetadata } from '@suite-common/trading';
-import { AnimatedBox, Divider, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { AnimatedBox, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { selectIsAmountInputActive } from '@suite-native/trading-state';
@@ -70,8 +70,6 @@ export const Footer = ({ isFormMountedRecently }: FooterProps) => {
                 exiting={FadeOutDown}
                 layout={isFormMountedRecently ? undefined : LinearTransition}
             >
-                <Divider marginTop="sp16" marginBottom="sp16" />
-
                 <VStack alignItems="center">
                     <FooterProviderContent provider={providerInfo} />
 

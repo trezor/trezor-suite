@@ -1,4 +1,4 @@
-import { type TradingType } from '@suite-common/trading';
+import { type TradingTypeWithConcierge } from '@suite-common/trading';
 
 import {
     type PreloadedStatePartial,
@@ -13,16 +13,18 @@ jest.mock('@suite-native/trading-state', () => ({
     selectIsTradingBuyEnabled: () => false,
     selectIsTradingExchangeEnabled: () => false,
     selectIsTradingSellEnabled: () => false,
+    selectIsTradingConciergeEnabled: () => false,
 }));
 
 describe('ActiveTab', () => {
     const renderActiveTab = (overrides: PreloadedStatePartial<TradingTestPreloadedState>) =>
         renderWithTradingProvider(<ActiveTab />, { overrides });
 
-    it.each<[TradingType, string]>([
+    it.each<[TradingTypeWithConcierge, string]>([
         ['buy', 'Buy disabled'],
         ['exchange', 'Swap disabled'],
         ['sell', 'Sell disabled'],
+        ['concierge', 'Concierge disabled'],
     ])('should display correct trading type tab for %s', (tradingType, expectedTitle) => {
         const { getByText } = renderActiveTab({
             wallet: { trading: { activeTradingType: tradingType } },

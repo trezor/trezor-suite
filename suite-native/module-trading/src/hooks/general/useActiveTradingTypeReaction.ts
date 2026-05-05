@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { type TradingType } from '@suite-common/trading';
+import { type TradingTypeWithConcierge } from '@suite-common/trading';
 import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
 import { selectEnabledTradingTypes, tradingActions } from '@suite-native/trading-state';
 
@@ -14,7 +14,7 @@ export const useActiveTradingTypeReaction = () => {
     const tradingType = params?.tradingType;
 
     useEffect(() => {
-        let activeTradingType: TradingType = 'buy';
+        let activeTradingType: TradingTypeWithConcierge = 'buy';
 
         if (tradingType && enabledTradingTypes.includes(tradingType)) {
             activeTradingType = tradingType;
