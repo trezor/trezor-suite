@@ -1,5 +1,5 @@
 import { ChainAddressKey } from '@suite-common/earn-stablecoin-api';
-import { getNetworkByEvmChainId, isEarnYieldClaimSupported } from '@suite-common/wallet-config';
+import { getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -18,7 +18,6 @@ export const getClaimableAccounts = ({
     Object.entries(rewards).flatMap(([key, accountRewards]) => {
         const { chainId, address } = ChainAddressKey.parse(key);
         const network = getNetworkByEvmChainId(chainId);
-
         const account = visibleAccounts.find(
             a =>
                 a.symbol === network?.symbol &&
@@ -29,20 +28,7 @@ export const getClaimableAccounts = ({
             return [];
         }
 
-        if (!network || !isEarnYieldClaimSupported(network.symbol)) {
-            return [];
-        }
-
-        const claimableRewards = accountRewards.filter(reward =>
-            new BigNumber(reward.claimable).gt(0),
-        );
-
-        if (claimableRewards.length === 0) {
-            return [];
-        }
-
-        const hasAnyFiatAmount = claimableRewards.some(reward => reward.fiat.claimable !== null);
-        const totalFiatAmount = claimableRewards.reduce(
+        const totalFiatAmount = accountRewards.reduce(
             (total, reward) => total.plus(reward.fiat.claimable ?? '0'),
             new BigNumber(0),
         );
@@ -50,7 +36,9 @@ export const getClaimableAccounts = ({
         return [
             {
                 account,
-                totalFiatAmount: hasAnyFiatAmount ? asBaseCurrencyAmount(totalFiatAmount) : null,
+                totalFiatAmount: totalFiatAmount.isPositive()
+                    ? asBaseCurrencyAmount(totalFiatAmount)
+                    : null,
             },
         ];
     });

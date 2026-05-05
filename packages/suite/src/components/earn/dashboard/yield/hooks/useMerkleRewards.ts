@@ -41,7 +41,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export type MerkleRewardWithFiat =
     MerkleRewardsByChainAndAddress[keyof MerkleRewardsByChainAndAddress][number] & {
-        claimable: string;
+        claimable: BaseCurrencyAmount;
         fiat: {
             amount: BaseCurrencyAmount | null;
             claimed: BaseCurrencyAmount | null;
@@ -50,10 +50,7 @@ export type MerkleRewardWithFiat =
         };
     };
 
-export type MerkleRewardsWithFiatRecord = Record<
-    keyof MerkleRewardsByChainAndAddress,
-    MerkleRewardWithFiat[]
->;
+export type MerkleRewardsWithFiatRecord = Record<string, MerkleRewardWithFiat[]>;
 
 export type MerkleRewardsSource = {
     networkSymbol: NetworkSymbol;
@@ -84,7 +81,7 @@ function extendMerkleRewardsWithFiat(
     currentFiatRates: RatesByKey | undefined,
 ) {
     const toFiatFromSubunits = (
-        valueInSubunits: string | null,
+        valueInSubunits: BigNumber | string | null,
         decimals: number,
         rate: number | undefined,
     ) => {
@@ -94,7 +91,11 @@ function extendMerkleRewardsWithFiat(
 
         return toFiatCurrency({
             amount: subunitsToUnits({
-                value: asAmountSubunit(new BigNumber(valueInSubunits)),
+                value: asAmountSubunit(
+                    typeof valueInSubunits === 'string'
+                        ? new BigNumber(valueInSubunits)
+                        : valueInSubunits,
+                ),
                 decimals,
             }),
             rate,
@@ -108,10 +109,9 @@ function extendMerkleRewardsWithFiat(
             const network = getNetworkByEvmChainId(chainId);
 
             const rewardsWithFiat = rewards.map(reward => {
-                const claimable = new BigNumber(reward.amount)
-                    .minus(reward.claimed)
-                    .minus(reward.pending)
-                    .toFixed();
+                const claimable = asBaseCurrencyAmount(
+                    new BigNumber(reward.amount).minus(reward.claimed).minus(reward.pending),
+                );
 
                 if (!network) {
                     return {
@@ -211,7 +211,7 @@ export function useMerkleRewards(sources: MerkleRewardsSource[]) {
             new BigNumber(0),
         );
 
-        return new BigNumber(result.toFixed(2));
+        return asBaseCurrencyAmount(new BigNumber(result.toFixed(2)));
     }, [rewardsWithFiat]);
 
     return {
@@ -220,7 +220,7 @@ export function useMerkleRewards(sources: MerkleRewardsSource[]) {
             data: {
                 rewards: rewardsWithFiat,
                 totalRewardsToClaim: {
-                    value: asBaseCurrencyAmount(totalRewardsToClaim),
+                    value: totalRewardsToClaim,
                     currency: baseCurrency,
                 },
             },
