@@ -36,30 +36,30 @@ type LogEntry = {
 
 const DEFAULT_PATH = "m/44'/0'/0'/0/0";
 
-const formatStepDetail = (step: GetAddressSubProcess): string | undefined => {
-    switch (step.type) {
+const formatSubprocessDetail = (subprocess: GetAddressSubProcess): string | undefined => {
+    switch (subprocess.type) {
         case SUBPROCESS_TYPE.REQUEST_BUTTON:
-            return `code=${step.code}`;
+            return `code=${subprocess.code}`;
         case SUBPROCESS_TYPE.REQUEST_CONFIRMATION:
-            return `view=${step.view}${step.label ? ` label=${step.label}` : ''}`;
+            return `view=${subprocess.view}${subprocess.label ? ` label=${subprocess.label}` : ''}`;
         case SUBPROCESS_TYPE.COMPLETE:
-            return JSON.stringify(step.result);
+            return JSON.stringify(subprocess.result);
         case SUBPROCESS_TYPE.ERROR:
-            return step.error.message;
+            return subprocess.error.message;
         default:
             return undefined;
     }
 };
 
-const PinStepModal = ({
-    step,
+const PinSubprocessModal = ({
+    subprocess,
 }: {
-    step: Extract<GetAddressSubProcess, { type: 'ui-request_pin' }>;
+    subprocess: Extract<GetAddressSubProcess, { type: 'ui-request_pin' }>;
 }) => {
     const device = useSelector(selectSelectedDevice);
     const [pin, setPin] = useState('');
     const handleSubmit = () => {
-        step.send(pin);
+        subprocess.send(pin);
         setPin('');
     };
 
@@ -69,11 +69,11 @@ const PinStepModal = ({
                 title="Confirm on Trezor"
                 deviceModelInternal={device?.features?.internal_model}
                 deviceUnitColor={device?.features?.unit_color}
-                onCancel={step.cancel}
+                onCancel={subprocess.cancel}
             />
             <Modal.ModalBase
                 heading="Enter PIN"
-                onCancel={step.cancel}
+                onCancel={subprocess.cancel}
                 width={400}
                 bottomContent={
                     <>
@@ -81,7 +81,7 @@ const PinStepModal = ({
                             Confirm
                         </Modal.Button>
                         <Modal.Button
-                            onClick={step.cancel}
+                            onClick={subprocess.cancel}
                             intent="neutral"
                             priority="secondary"
                             flex="1"
@@ -97,14 +97,14 @@ const PinStepModal = ({
     );
 };
 
-const PassphraseStepModal = ({
-    step,
+const PassphraseSubprocessModal = ({
+    subprocess,
 }: {
-    step: Extract<GetAddressSubProcess, { type: 'ui-request_passphrase' }>;
+    subprocess: Extract<GetAddressSubProcess, { type: 'ui-request_passphrase' }>;
 }) => {
     const device = useSelector(selectSelectedDevice);
     const [passphrase, setPassphrase] = useState('');
-    const handleSubmit = () => step.send(passphrase);
+    const handleSubmit = () => subprocess.send(passphrase);
 
     return (
         <Modal.Backdrop>
@@ -112,11 +112,11 @@ const PassphraseStepModal = ({
                 title="Confirm on Trezor"
                 deviceModelInternal={device?.features?.internal_model}
                 deviceUnitColor={device?.features?.unit_color}
-                onCancel={step.cancel}
+                onCancel={subprocess.cancel}
             />
             <Modal.ModalBase
                 heading="Enter passphrase"
-                onCancel={step.cancel}
+                onCancel={subprocess.cancel}
                 width={400}
                 bottomContent={
                     <>
@@ -124,7 +124,7 @@ const PassphraseStepModal = ({
                             Confirm
                         </Modal.Button>
                         <Modal.Button
-                            onClick={step.cancel}
+                            onClick={subprocess.cancel}
                             intent="neutral"
                             priority="secondary"
                             flex="1"
@@ -153,10 +153,10 @@ const PassphraseStepModal = ({
     );
 };
 
-const ConfirmationStepModal = ({
-    step,
+const ConfirmationSubprocessModal = ({
+    subprocess,
 }: {
-    step: Extract<GetAddressSubProcess, { type: 'ui-request_confirmation' }>;
+    subprocess: Extract<GetAddressSubProcess, { type: 'ui-request_confirmation' }>;
 }) => {
     const device = useSelector(selectSelectedDevice);
 
@@ -166,17 +166,17 @@ const ConfirmationStepModal = ({
                 title="Confirm on Trezor"
                 deviceModelInternal={device?.features?.internal_model}
                 deviceUnitColor={device?.features?.unit_color}
-                onCancel={() => step.confirm(false)}
+                onCancel={() => subprocess.confirm(false)}
             />
             <Modal.ModalBase
                 width={400}
                 bottomContent={
                     <>
-                        <Modal.Button onClick={() => step.confirm(true)} flex="1">
+                        <Modal.Button onClick={() => subprocess.confirm(true)} flex="1">
                             Confirm
                         </Modal.Button>
                         <Modal.Button
-                            onClick={() => step.confirm(false)}
+                            onClick={() => subprocess.confirm(false)}
                             intent="neutral"
                             priority="secondary"
                             flex="1"
@@ -188,48 +188,48 @@ const ConfirmationStepModal = ({
             >
                 <Column alignItems="center" gap={spacings.md}>
                     {device && <DeviceConfirmImage device={device} />}
-                    <H2 align="center">Confirm: {step.view}</H2>
-                    {step.label && <Paragraph align="center">{step.label}</Paragraph>}
+                    <H2 align="center">Confirm: {subprocess.view}</H2>
+                    {subprocess.label && <Paragraph align="center">{subprocess.label}</Paragraph>}
                 </Column>
             </Modal.ModalBase>
         </Modal.Backdrop>
     );
 };
 
-const StepModal = ({ step }: { step: GetAddressSubProcess }) => {
+const SubprocessModal = ({ subprocess }: { subprocess: GetAddressSubProcess }) => {
     const device = useSelector(selectSelectedDevice);
     if (!device) return null;
 
-    switch (step.type) {
+    switch (subprocess.type) {
         case SUBPROCESS_TYPE.REQUEST_CONFIRMATION:
             // 'no-backup' (and any view ModalSwitcher knows about) is rendered by
             // suite's global ModalSwitcher — see the redux-dispatch effect in
             // ConnectFlowPlayground that sets state.modal.context for us.
-            if (step.view === 'no-backup') return null;
+            if (subprocess.view === 'no-backup') return null;
 
-            return <ConfirmationStepModal step={step} />;
+            return <ConfirmationSubprocessModal subprocess={subprocess} />;
 
         case SUBPROCESS_TYPE.REQUEST_BUTTON:
-            if (step.data?.type === 'address') {
+            if (subprocess.data?.type === 'address') {
                 return (
                     <ConfirmAddressModal
-                        addressPath={step.data.serializedPath}
-                        value={step.data.address}
-                        onCancel={step.cancel}
+                        addressPath={subprocess.data.serializedPath}
+                        value={subprocess.data.address}
+                        onCancel={subprocess.cancel}
                     />
                 );
             }
 
-            return <ConfirmActionModal device={device} onCancel={step.cancel} />;
+            return <ConfirmActionModal device={device} onCancel={subprocess.cancel} />;
 
         case SUBPROCESS_TYPE.REQUEST_PASSPHRASE_ON_DEVICE:
             return <PassphraseOnDeviceModal device={device} />;
 
         case SUBPROCESS_TYPE.REQUEST_PIN:
-            return <PinStepModal step={step} />;
+            return <PinSubprocessModal subprocess={subprocess} />;
 
         case SUBPROCESS_TYPE.REQUEST_PASSPHRASE:
-            return <PassphraseStepModal step={step} />;
+            return <PassphraseSubprocessModal subprocess={subprocess} />;
 
         case SUBPROCESS_TYPE.COMPLETE:
         case SUBPROCESS_TYPE.ERROR:
@@ -241,7 +241,7 @@ const StepModal = ({ step }: { step: GetAddressSubProcess }) => {
 };
 
 export const ConnectFlowPlayground = () => {
-    const { process, step, start, cancel, devicePath } = useConnectService(
+    const { process, subprocess, start, cancel, devicePath } = useConnectService(
         CONNECT_METHOD.GET_ADDRESS,
     );
     const dispatch = useDispatch();
@@ -250,17 +250,21 @@ export const ConnectFlowPlayground = () => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        if (!step) return;
+        if (!subprocess) return;
         setLog(prev => [
             ...prev,
-            { callId: step.callId, type: step.type, detail: formatStepDetail(step) },
+            {
+                callId: subprocess.callId,
+                type: subprocess.type,
+                detail: formatSubprocessDetail(subprocess),
+            },
         ]);
-        if (step.type === SUBPROCESS_TYPE.COMPLETE) {
-            setResult(step.result);
-        } else if (step.type === SUBPROCESS_TYPE.ERROR) {
-            setError(step.error.message);
+        if (subprocess.type === SUBPROCESS_TYPE.COMPLETE) {
+            setResult(subprocess.result);
+        } else if (subprocess.type === SUBPROCESS_TYPE.ERROR) {
+            setError(subprocess.error.message);
         }
-    }, [step]);
+    }, [subprocess]);
 
     const handleStart = () => {
         setLog([]);
@@ -294,13 +298,6 @@ export const ConnectFlowPlayground = () => {
             setError(e instanceof Error ? e.message : String(e));
         }
     };
-
-    useEffect(
-        () => () => {
-            cancel();
-        },
-        [cancel],
-    );
 
     const running = process !== null;
 
@@ -356,7 +353,7 @@ export const ConnectFlowPlayground = () => {
                     </ActionButton>
                 )}
             </ActionColumn>
-            {step && <StepModal step={step} />}
+            {subprocess && <SubprocessModal subprocess={subprocess} />}
         </SectionItem>
     );
 };

@@ -137,17 +137,17 @@ describe('createConnectService.createWallet', () => {
         const proc = service.createWallet({ devicePath: 'p1', usePassphrase: true });
         const iter = proc.run();
 
-        const stepP = iter.next();
+        const subprocessP = iter.next();
         mock.emit({
             type: 'ui-request_passphrase',
             payload: { device: { path: 'p1' } },
             requestId: 'r1',
             callId: proc.callId,
         });
-        const step = await stepP;
-        expect(step.value.callId).toBe(proc.callId);
+        const subprocess = await subprocessP;
+        expect(subprocess.value.callId).toBe(proc.callId);
 
-        step.value.cancel();
+        subprocess.value.cancel();
 
         const next = await iter.next();
         expect(next.done).toBe(true);
@@ -160,7 +160,7 @@ describe('createConnectService.createWallet', () => {
         const proc = service.createWallet({ devicePath: 'p1', usePassphrase: false });
         const iter = proc.run();
 
-        const stepP = iter.next();
+        const subprocessP = iter.next();
         // Foreign callId: must be filtered out — would otherwise corrupt the flow
         mock.emit({
             type: 'ui-button',
@@ -169,8 +169,8 @@ describe('createConnectService.createWallet', () => {
         });
         mock.resolveGetDeviceState({ state: '0x1' });
 
-        const step = await stepP;
-        expect(step.value.type).toBe(SUBPROCESS_TYPE.COMPLETE);
+        const subprocess = await subprocessP;
+        expect(subprocess.value.type).toBe(SUBPROCESS_TYPE.COMPLETE);
     });
 
     it('yields flow-error when the underlying call fails', async () => {
@@ -180,14 +180,14 @@ describe('createConnectService.createWallet', () => {
         const proc = service.createWallet({ devicePath: 'p1', usePassphrase: false });
         const iter = proc.run();
 
-        const stepP = iter.next();
+        const subprocessP = iter.next();
         mock.rejectGetDeviceState('Device disconnected');
-        const step = await stepP;
+        const subprocess = await subprocessP;
 
-        expect(step.value.type).toBe(SUBPROCESS_TYPE.ERROR);
-        expect(step.value.callId).toBe(proc.callId);
-        if (step.value.type !== SUBPROCESS_TYPE.ERROR) throw new Error('unreachable');
-        expect(step.value.error.message).toBe('Device disconnected');
+        expect(subprocess.value.type).toBe(SUBPROCESS_TYPE.ERROR);
+        expect(subprocess.value.callId).toBe(proc.callId);
+        if (subprocess.value.type !== SUBPROCESS_TYPE.ERROR) throw new Error('unreachable');
+        expect(subprocess.value.error.message).toBe('Device disconnected');
 
         const next = await iter.next();
         expect(next.done).toBe(true);
@@ -225,15 +225,15 @@ describe('createConnectService.createWallet', () => {
         const proc = service.createWallet({ devicePath: 'p1', usePassphrase: true });
         const iter = proc.run();
 
-        const stepP = iter.next();
+        const subprocessP = iter.next();
         mock.emit({
             type: 'ui-request_passphrase',
             payload: { device: { path: 'p1' } },
             requestId: 'r1',
             callId: proc.callId,
         });
-        const step = await stepP;
-        expect(step.value.type).toBe(SUBPROCESS_TYPE.REQUEST_PASSPHRASE);
+        const subprocess = await subprocessP;
+        expect(subprocess.value.type).toBe(SUBPROCESS_TYPE.REQUEST_PASSPHRASE);
 
         proc.cancel();
 
@@ -309,35 +309,35 @@ describe('createConnectService.createWallet', () => {
         });
 
         const seen: string[] = [];
-        for await (const step of iter) {
-            switch (step.type) {
+        for await (const subprocess of iter) {
+            switch (subprocess.type) {
                 case SUBPROCESS_TYPE.REQUEST_PASSPHRASE: {
-                    const _narrow: RequestPassphraseSubProcess = step;
+                    const _narrow: RequestPassphraseSubProcess = subprocess;
                     void _narrow;
 
-                    step.send('hunter2', { save: false });
-                    step.cancel();
+                    subprocess.send('hunter2', { save: false });
+                    subprocess.cancel();
                     seen.push('passphrase');
                     setImmediate(() => mock.resolveGetDeviceState({ state: '0xhidden' }));
                     break;
                 }
                 case SUBPROCESS_TYPE.REQUEST_PASSPHRASE_ON_DEVICE: {
-                    const _narrow: RequestPassphraseOnDeviceSubProcess = step;
+                    const _narrow: RequestPassphraseOnDeviceSubProcess = subprocess;
                     void _narrow;
                     seen.push('passphrase_on_device');
                     break;
                 }
                 case SUBPROCESS_TYPE.REQUEST_PIN: {
-                    step.send('1234');
-                    const _narrow: RequestPinSubProcess = step;
+                    subprocess.send('1234');
+                    const _narrow: RequestPinSubProcess = subprocess;
                     void _narrow;
                     seen.push('pin');
                     break;
                 }
                 case SUBPROCESS_TYPE.REQUEST_BUTTON: {
-                    const _narrow: RequestButtonSubProcess = step;
+                    const _narrow: RequestButtonSubProcess = subprocess;
                     void _narrow;
-                    const { code } = step;
+                    const { code } = subprocess;
                     seen.push(`button:${code}`);
                     setImmediate(() =>
                         mock.emit({
@@ -350,21 +350,21 @@ describe('createConnectService.createWallet', () => {
                     break;
                 }
                 case SUBPROCESS_TYPE.COMPLETE: {
-                    const _narrow: CompleteSubProcess<WalletResult> = step;
+                    const _narrow: CompleteSubProcess<WalletResult> = subprocess;
                     void _narrow;
-                    const { result } = step;
+                    const { result } = subprocess;
                     seen.push(`complete:${result.deviceState}`);
                     break;
                 }
                 case SUBPROCESS_TYPE.ERROR: {
-                    const _narrow: ErrorSubProcess = step;
+                    const _narrow: ErrorSubProcess = subprocess;
                     void _narrow;
-                    const { error } = step;
+                    const { error } = subprocess;
                     seen.push(`error:${error.message}`);
                     break;
                 }
                 default: {
-                    const _exhaustive: never = step;
+                    const _exhaustive: never = subprocess;
                     void _exhaustive;
                 }
             }
@@ -381,18 +381,18 @@ describe('createConnectService.createWallet', () => {
         const finalP = proc.toPromise();
         const iter = proc.run();
 
-        const stepP = iter.next();
+        const subprocessP = iter.next();
         mock.emit({
             type: 'ui-request_passphrase',
             payload: { device: { path: 'p1' } },
             requestId: 'r1',
             callId: proc.callId,
         });
-        const step = await stepP;
-        if (step.value.type !== SUBPROCESS_TYPE.REQUEST_PASSPHRASE) {
+        const subprocess = await subprocessP;
+        if (subprocess.value.type !== SUBPROCESS_TYPE.REQUEST_PASSPHRASE) {
             throw new Error('unreachable');
         }
-        step.value.send('pw');
+        subprocess.value.send('pw');
 
         const drain = (async () => {
             for await (const _ of iter) {

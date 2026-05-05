@@ -36,14 +36,14 @@ type MethodOptions<M extends ConnectMethod> = M extends 'getAddress'
 
 type MethodProcess<M extends ConnectMethod> = Process<MethodSubProcess<M>>;
 
-type StepCallback<M extends ConnectMethod> = (step: MethodSubProcess<M>) => void;
+type SubprocessCallback<M extends ConnectMethod> = (subprocess: MethodSubProcess<M>) => void;
 
 interface UseConnectServiceResult<M extends ConnectMethod> {
     connectService: ConnectService;
     process: MethodProcess<M> | null;
-    step: MethodSubProcess<M> | null;
+    subprocess: MethodSubProcess<M> | null;
     devicePath: string | undefined;
-    start: (options: MethodOptions<M>, onStep?: StepCallback<M>) => MethodProcess<M>;
+    start: (options: MethodOptions<M>, onSubprocess?: SubprocessCallback<M>) => MethodProcess<M>;
     cancel: () => void;
 }
 
@@ -87,7 +87,7 @@ export const useConnectService = <M extends ConnectMethod>(
     );
 
     const [process, setProcess] = useState<MethodProcess<M> | null>(null);
-    const [step, setStep] = useState<MethodSubProcess<M> | null>(null);
+    const [subprocess, setSubprocess] = useState<MethodSubProcess<M> | null>(null);
     const procRef = useRef<MethodProcess<M> | null>(null);
 
     // Cancel any in-flight process when the component unmounts so we don't
@@ -99,28 +99,31 @@ export const useConnectService = <M extends ConnectMethod>(
         [],
     );
 
-    const drive = useCallback(async (proc: MethodProcess<M>, onStep?: StepCallback<M>) => {
-        procRef.current = proc;
-        setProcess(proc);
-        setStep(null);
-        try {
-            for await (const next of proc.run()) {
-                setStep(next);
-                onStep?.(next);
+    const drive = useCallback(
+        async (proc: MethodProcess<M>, onSubprocess?: SubprocessCallback<M>) => {
+            procRef.current = proc;
+            setProcess(proc);
+            setSubprocess(null);
+            try {
+                for await (const next of proc.run()) {
+                    setSubprocess(next);
+                    onSubprocess?.(next);
+                }
+            } finally {
+                if (procRef.current === proc) {
+                    procRef.current = null;
+                    setProcess(null);
+                    setSubprocess(null);
+                }
             }
-        } finally {
-            if (procRef.current === proc) {
-                procRef.current = null;
-                setProcess(null);
-                setStep(null);
-            }
-        }
-    }, []);
+        },
+        [],
+    );
 
     const start = useCallback(
-        (options: MethodOptions<M>, onStep?: StepCallback<M>) => {
+        (options: MethodOptions<M>, onSubprocess?: SubprocessCallback<M>) => {
             const proc = createProcess(connectService, method, options, devicePath);
-            void drive(proc, onStep);
+            void drive(proc, onSubprocess);
 
             return proc;
         },
@@ -131,5 +134,5 @@ export const useConnectService = <M extends ConnectMethod>(
         procRef.current?.cancel();
     }, []);
 
-    return { connectService, process, step, devicePath, start, cancel };
+    return { connectService, process, subprocess, devicePath, start, cancel };
 };
