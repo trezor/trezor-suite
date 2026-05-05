@@ -54,7 +54,6 @@ const EditableContainer = styled.span<{
     $isEditable: boolean;
     $isEmpty: boolean;
     $placeholder: string | undefined;
-    $isDisabled: boolean;
     $hasDisplayValue: boolean;
     $isActive: boolean;
 }>`
@@ -111,7 +110,6 @@ type ContainerProps = {
     $gap: SpacingValuesNew;
     $isActive: boolean;
     $isAlwaysActive: boolean;
-    $isDisabled: boolean;
 } & TransientProps<AllowedFrameProps>;
 
 const Container = styled.span<ContainerProps>`
@@ -127,7 +125,7 @@ const Container = styled.span<ContainerProps>`
     box-sizing: content-box;
     padding: var(--padding);
     padding-left: ${({ $gap }) => $gap}px;
-    cursor: ${({ $isDisabled }) => ($isDisabled ? 'inherit' : 'pointer')};
+    cursor: ${({ $isAlwaysActive }) => ($isAlwaysActive ? 'pointer' : 'inherit')};
 
     &::before {
         content: '';
@@ -341,15 +339,19 @@ export const EditableText = ({
 
     const handleContainerClick = useCallback(
         (e: React.MouseEvent<HTMLElement>) => {
-            e.stopPropagation();
-
             if (isEditable) {
+                e.stopPropagation();
+
                 return;
             }
 
-            handleEdit();
+            if (isAlwaysActive) {
+                e.stopPropagation();
+
+                handleEdit();
+            }
         },
-        [handleEdit, isEditable],
+        [handleEdit, isEditable, isAlwaysActive],
     );
 
     const handlePaste = (e: React.ClipboardEvent<HTMLElement>) => {
@@ -376,7 +378,11 @@ export const EditableText = ({
 
         const handleOuterClick = (e: MouseEvent) => {
             if (!containerRef?.current?.contains(e.target as Node)) {
-                handleCancel();
+                if (isDirty) {
+                    handleSave();
+                } else {
+                    handleCancel();
+                }
             }
         };
 
@@ -385,7 +391,7 @@ export const EditableText = ({
         return () => {
             document.removeEventListener('click', handleOuterClick);
         };
-    }, [isEditable, handleCancel]);
+    }, [isEditable, handleCancel, handleSave, isDirty]);
 
     useShortcuts({ isEditable, isDirty, handleSave, handleCancel });
 
@@ -399,7 +405,6 @@ export const EditableText = ({
             $gap={gap}
             $isActive={isActive && !isDisabled}
             $isAlwaysActive={isAlwaysActive && !isDisabled}
-            $isDisabled={isDisabled}
             {...frameProps}
         >
             {leftAddon && (
@@ -438,7 +443,6 @@ export const EditableText = ({
                         $placeholder={placeholder}
                         $isEmpty={isEmpty}
                         $isEditable={isEditable}
-                        $isDisabled={isDisabled}
                         $isActive={isActive}
                         $hasDisplayValue={hasDisplayValue}
                         autoCapitalize="off"
