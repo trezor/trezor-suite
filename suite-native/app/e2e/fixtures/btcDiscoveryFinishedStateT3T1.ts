@@ -115,13 +115,14 @@ export const btcDiscoveryFinishedStateT3T1: PreloadedState = {
                 name: 'Trezor Safe 5',
                 descriptor: {
                     apiType: 'usb',
+                    id: '127.0.0.1:21324',
                 },
                 type: 'acquired',
                 id: '7ED4F891C5F1098B60B881DE',
                 label: 'Trezor T - Tester',
                 state: {
                     deriveCardano: false,
-                    sessionId: '86034a5d2d85aecea8a4c045e73f3a9d1a3c69abb15c43bd5c2e12bd0bf6cf9b',
+                    sessionId: '01',
                     staticSessionId:
                         'mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@7ED4F891C5F1098B60B881DE:0',
                 },

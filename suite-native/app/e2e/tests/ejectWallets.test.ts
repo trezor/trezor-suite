@@ -26,15 +26,14 @@ const navigateToEjectWallets = async () => {
 
 describe('Eject wallets [@androidOnly @T3T1 @T3W1]', () => {
     beforeEach(async () => {
-        await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator();
+        await openApp({ args: { preloadedState } });
+        await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
     });
 
     // Two devices are displayed in device manager, one connected and one disconnected
     it('Eject single wallet with disconnected device', async () => {
-        await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
         await TrezorUserEnvLink.stopEmu();
-
         await onDeviceManager.assertDeviceSwitcherState({ title: 'Disconnected' });
         await navigateToEjectWallets();
         await onSettings.ejectSingleWallet();
@@ -48,7 +47,6 @@ describe('Eject wallets [@androidOnly @T3T1 @T3W1]', () => {
 
     // Two devices are displayed in device manager, one connected and one disconnected
     it('Eject single wallet with connected device', async () => {
-        await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
         await navigateToEjectWallets();
         await onSettings.ejectSingleWallet();
 
@@ -62,7 +60,6 @@ describe('Eject wallets [@androidOnly @T3T1 @T3W1]', () => {
     });
 
     it('Auto eject settings toggle switch', async () => {
-        await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
         await navigateToEjectWallets();
 
         await onSettings.toggleAutoEject();

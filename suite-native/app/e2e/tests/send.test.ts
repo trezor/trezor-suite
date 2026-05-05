@@ -68,8 +68,8 @@ describe('Send transaction flow. [@androidOnly @smoke @T3T1 @T3W1]', () => {
     });
 
     beforeEach(async () => {
-        await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator();
+        await openApp({ args: { preloadedState } });
 
         await onHome.waitForScreen();
         await onTabBar.navigateToMyAssets();

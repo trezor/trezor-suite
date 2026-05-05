@@ -14,8 +14,8 @@ const preloadedStateT1B1 = preparePreloadedReduxState(
 
 describe('Device Settings T1B1 [@androidOnly @T1B1]', () => {
     beforeEach(async () => {
-        await openApp({ args: { preloadedState: preloadedStateT1B1 } });
         await prepareTrezorEmulator({ model: Model.T1B1 });
+        await openApp({ args: { preloadedState: preloadedStateT1B1 } });
         await onDeviceManager.tapDeviceSwitch();
         await onDeviceManager.tapDeviceSettingsButton();
     });

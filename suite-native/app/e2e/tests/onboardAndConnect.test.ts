@@ -5,8 +5,8 @@ import { waitForVisible } from '../support/utils';
 
 describe('Go through onboarding and connect Trezor. [@androidOnly @T3T1]', () => {
     beforeEach(async () => {
-        await openApp({});
         await prepareTrezorEmulator();
+        await openApp({});
     });
 
     it('Navigate to dashboard', async () => {

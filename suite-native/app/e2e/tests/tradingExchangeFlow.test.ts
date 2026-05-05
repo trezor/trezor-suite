@@ -48,11 +48,11 @@ describe('Trade Exchange [@androidOnly]', () => {
         });
 
         beforeEach(async () => {
-            await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
             await prepareTrezorEmulator({
                 seed: MNEMONICS.mnemonic_academic,
                 passphrase_protection: true,
             });
+            await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
             await waitForVisible(by.text('Connected'));
             await onPassphrase.openPassphraseWallet(passphrase);
             await onHome.waitForScreen();
@@ -88,11 +88,11 @@ describe('Trade Exchange [@androidOnly]', () => {
         });
 
         beforeEach(async () => {
-            await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
             await prepareTrezorEmulator({
                 seed: MNEMONICS.mnemonic_academic,
                 passphrase_protection: true,
             });
+            await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
             await waitForVisible(by.text('Connected'));
             await onPassphrase.openPassphraseWallet(passphrase);
             await tradingExchangeActions.openForm();

@@ -29,8 +29,8 @@ const LONG_RUNNING_TEST_TIMEOUT = 7 * 60 * 1000; // [ms]
 
 describe('Device onboarding [@androidOnly @smoke @T3T1 @T3W1]', () => {
     beforeEach(async () => {
-        await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator({ seed: '' });
+        await openApp({ args: { preloadedState } });
         await onDeviceOnboarding.proceedToCreateOrRecoverCrossroads();
     });
 
