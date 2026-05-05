@@ -22,6 +22,7 @@ import {
     type DiscoveryRootState,
     selectHasOnlyEmptyPortfolioTracker,
     selectHasRunningDiscovery,
+    selectIsAnyNetworkEnabled,
     selectIsDiscoveredDeviceAccountless,
 } from '@suite-common/wallet-core';
 import { type NativeDeviceRootState, selectIsDeviceSetupSupported } from '@suite-native/device';
@@ -82,6 +83,7 @@ export const selectShouldDisplaySuiteSyncFirmwareUpdateAlert = createMemoizedSel
 );
 
 export const selectHomeScreenState = (state: NativeDeviceRootState): HomeScreenState => {
+    const isAnyNetworkEnabled = selectIsAnyNetworkEnabled(state);
     const isDiscoveredDeviceAccountless = selectIsDiscoveredDeviceAccountless(state);
     const isDeviceAuthorized = selectIsDeviceAuthorized(state);
     const isDeviceUnlocked = selectIsDeviceUnlocked(state);
@@ -97,6 +99,7 @@ export const selectHomeScreenState = (state: NativeDeviceRootState): HomeScreenS
             (isDeviceAuthorized || // Initial state: empty portfolio device that is authorized.
                 !isDeviceUnlocked)) || // Device is locked (PIN not entered).
         !isDeviceInitialized ||
+        !isAnyNetworkEnabled ||
         wasDeviceWiped;
 
     if (!isEmptyStateShown) {
@@ -120,6 +123,10 @@ export const selectHomeScreenState = (state: NativeDeviceRootState): HomeScreenS
     // accounts, or when a device is connected but not authorized (PIN enter cancelled).
     if (hasOnlyEmptyPortfolioTracker || !isDeviceAuthorized) {
         return 'emptyPortfolioCrossroads';
+    }
+
+    if (isDeviceInitialized && !isAnyNetworkEnabled) {
+        return 'noNetworkConfigured';
     }
 
     return 'emptyPortfolioTracker';

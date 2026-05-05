@@ -14,6 +14,7 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { EmptyPortfolioCrossroads } from './components/EmptyPortfolioCrossroads';
 import { EmptyPortfolioTrackerState } from './components/EmptyPortfolioTrackerState';
+import { NoNetworksConfigured } from './components/NoNetworksConfigured';
 import { PortfolioContent } from './components/PortfolioContent';
 import { type PortfolioGraphRef } from './components/PortfolioGraph';
 import { UninitializedConnectedDeviceState } from './components/UninitializedConnectedDeviceState';
@@ -53,6 +54,8 @@ export const HomeScreen = () => {
                 return <PortfolioContent ref={portfolioContentRef} />;
             case 'uninitializedDevice':
                 return <UninitializedConnectedDeviceState />;
+            case 'noNetworkConfigured':
+                return <NoNetworksConfigured />;
             case 'emptyPortfolioCrossroads':
                 return <EmptyPortfolioCrossroads />;
             case 'emptyPortfolioTracker':

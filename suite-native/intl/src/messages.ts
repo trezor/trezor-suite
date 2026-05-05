@@ -118,6 +118,12 @@ export const messages = {
                 subtitle: 'You can do this anytime.',
                 button: 'Start setup',
             },
+            initializedDevice: {
+                title: 'Your wallet is ready',
+                subtitle:
+                    'Add the networks you want to use. You can buy or receive assets on any network you enable.',
+                button: 'Get started',
+            },
             portfolioTracker: {
                 title: 'Get started',
                 subtitle: 'Sync your coin addresses and view your portfolio balance.',
@@ -3550,6 +3556,13 @@ export const messages = {
             cantDeactivateTitle: "You can't deactivate a token with a balance",
             cantDeactivateDescription:
                 'You need to transfer or convert your balance to zero first. Try selling for XLM.',
+        },
+    },
+    networks: {
+        initialSetup: {
+            title: 'Add your networks',
+            subtitle: 'You can buy or receive assets on any network you enable.',
+            banner: 'You can customize these anytime in Settings.',
         },
     },
 };
