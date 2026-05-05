@@ -27,6 +27,11 @@ describe(getRandomString.name, () => {
         expect(() => getRandomString(10, '')).toThrow(RangeError);
     });
 
+    it('throws for an alphabet with duplicate characters', () => {
+        expect(() => getRandomString(10, 'aab')).toThrow(RangeError);
+        expect(() => getRandomString(10, '0123456789a0')).toThrow(RangeError);
+    });
+
     it('produces distinct values across calls', () => {
         const samples = new Set(Array.from({ length: 100 }, () => getRandomString(16)));
         expect(samples.size).toBe(100);
