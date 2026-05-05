@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { Translation, type TranslationKey } from '@suite/intl';
-import { Icon, Link, Row, Text, Tooltip } from '@trezor/components';
+import { Row, Text, TextButton, Tooltip } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
 
@@ -51,10 +51,14 @@ export function CollapsibleFeesHeader({
             <Tooltip
                 addon={
                     networkType === 'ethereum' && (
-                        <Link href={HELP_CENTER_TRANSACTION_FEES_URL} target="_blank">
-                            <Icon size={12} intent="warning" name="lightbulb" />
+                        <TextButton
+                            size="small"
+                            intent="neutral"
+                            priority="secondary"
+                            href={HELP_CENTER_TRANSACTION_FEES_URL}
+                        >
                             <Translation id="TR_LEARN" />
-                        </Link>
+                        </TextButton>
                     )
                 }
                 hasIcon

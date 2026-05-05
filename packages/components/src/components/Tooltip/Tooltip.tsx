@@ -128,6 +128,7 @@ export const Tooltip = ({
                 style={{ zIndex }}
                 arrowRender={hasArrow ? TooltipArrow : undefined}
                 appendTo={appendTo}
+                onClick={e => e.stopPropagation()}
             >
                 <ThemeProvider theme={{ variant: 'dark', ...intermediaryTheme.dark }}>
                     <TooltipBox
