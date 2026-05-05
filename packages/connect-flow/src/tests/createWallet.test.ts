@@ -14,7 +14,6 @@ import type {
 } from '../types';
 
 // Compile-time only — IsExact is `true` iff A and B are structurally equal.
-// (No runtime use; it's referenced by `assertType` calls below.)
 type IsExact<A, B> =
     (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2
         ? (<T>() => T extends B ? 1 : 2) extends <T>() => T extends A ? 1 : 2
@@ -34,7 +33,11 @@ describe('createConnectService.createWallet', () => {
         const firstStepP = iter.next();
 
         expect(mock.getDeviceStateCalls).toEqual([
-            { device: { path: 'p1' }, useEmptyPassphrase: true },
+            {
+                device: { path: 'p1' },
+                useEmptyPassphrase: true,
+                callId: proc.callId,
+            },
         ]);
 
         mock.resolveGetDeviceState({ state: '0xstate' });
@@ -63,6 +66,7 @@ describe('createConnectService.createWallet', () => {
             type: 'ui-request_passphrase',
             payload: { device: { path: 'p1' } },
             requestId: 'req-1',
+            callId: proc.callId,
         });
 
         const first = await firstStepP;
@@ -99,8 +103,9 @@ describe('createConnectService.createWallet', () => {
 
         const p1 = iter.next();
         mock.emit({
-            type: 'ui-request_button',
+            type: 'ui-button',
             payload: { device: { path: 'p1' }, code: 'ButtonRequest_ProtectCall' },
+            callId: proc.callId,
         });
         const s1 = await p1;
         expect(s1.value.type).toBe(SUBPROCESS_TYPE.REQUEST_BUTTON);
@@ -113,6 +118,7 @@ describe('createConnectService.createWallet', () => {
         mock.emit({
             type: 'ui-request_passphrase_on_device',
             payload: { device: { path: 'p1' } },
+            callId: proc.callId,
         });
         const s2 = await p2;
         expect(s2.value.type).toBe(SUBPROCESS_TYPE.REQUEST_PASSPHRASE_ON_DEVICE);
@@ -136,18 +142,18 @@ describe('createConnectService.createWallet', () => {
             type: 'ui-request_passphrase',
             payload: { device: { path: 'p1' } },
             requestId: 'r1',
+            callId: proc.callId,
         });
         const step = await stepP;
         expect(step.value.callId).toBe(proc.callId);
 
-        // cancel via the subprocess (not via proc directly)
         step.value.cancel();
 
         const next = await iter.next();
         expect(next.done).toBe(true);
     });
 
-    it('ignores events from other devices', async () => {
+    it('ignores events tagged with a different callId', async () => {
         const mock = createTrezorConnectMock();
         const service = createConnectService({ trezorConnect: mock });
 
@@ -155,9 +161,11 @@ describe('createConnectService.createWallet', () => {
         const iter = proc.run();
 
         const stepP = iter.next();
+        // Foreign callId: must be filtered out — would otherwise corrupt the flow
         mock.emit({
-            type: 'ui-request_button',
-            payload: { device: { path: 'OTHER' }, code: 'x' },
+            type: 'ui-button',
+            payload: { device: { path: 'p1' }, code: 'x' },
+            callId: 'some-other-call',
         });
         mock.resolveGetDeviceState({ state: '0x1' });
 
@@ -222,6 +230,7 @@ describe('createConnectService.createWallet', () => {
             type: 'ui-request_passphrase',
             payload: { device: { path: 'p1' } },
             requestId: 'r1',
+            callId: proc.callId,
         });
         const step = await stepP;
         expect(step.value.type).toBe(SUBPROCESS_TYPE.REQUEST_PASSPHRASE);
@@ -248,7 +257,6 @@ describe('createConnectService.createWallet', () => {
         const proc = service.createWallet({ devicePath: 'p1', usePassphrase: false });
         const finalP = proc.toPromise();
 
-        // toPromise() should have started the underlying call without needing run()
         expect(mock.getDeviceStateCalls).toHaveLength(1);
         mock.resolveGetDeviceState({ state: '0xabc' });
 
@@ -285,20 +293,18 @@ describe('createConnectService.createWallet', () => {
 
         const proc = service.createWallet({ devicePath: 'p1', usePassphrase: true });
 
-        // Compile-time: ResultOf<WalletSubProcess> must be exactly WalletResult
         assertType<IsExact<ResultOf<WalletSubProcess>, WalletResult>>();
 
-        // Compile-time: the iterator's element type is exactly WalletSubProcess
         const iter = proc.run();
         type IterElement =
             Awaited<ReturnType<typeof iter.next>> extends IteratorResult<infer V> ? V : never;
         assertType<IsExact<IterElement, WalletSubProcess>>();
 
-        // Drive the flow: button -> passphrase -> complete
         setImmediate(() => {
             mock.emit({
-                type: 'ui-request_button',
+                type: 'ui-button',
                 payload: { device: { path: 'p1' }, code: 'BR1' },
+                callId: proc.callId,
             });
         });
 
@@ -306,10 +312,11 @@ describe('createConnectService.createWallet', () => {
         for await (const step of iter) {
             switch (step.type) {
                 case SUBPROCESS_TYPE.REQUEST_PASSPHRASE: {
-                    // narrowed to RequestPassphraseSubProcess
                     const _narrow: RequestPassphraseSubProcess = step;
                     void _narrow;
+
                     step.send('hunter2', { save: false });
+                    step.cancel();
                     seen.push('passphrase');
                     setImmediate(() => mock.resolveGetDeviceState({ state: '0xhidden' }));
                     break;
@@ -330,13 +337,14 @@ describe('createConnectService.createWallet', () => {
                 case SUBPROCESS_TYPE.REQUEST_BUTTON: {
                     const _narrow: RequestButtonSubProcess = step;
                     void _narrow;
-                    const { code } = step; // .code only exists on this variant
+                    const { code } = step;
                     seen.push(`button:${code}`);
                     setImmediate(() =>
                         mock.emit({
                             type: 'ui-request_passphrase',
                             payload: { device: { path: 'p1' } },
                             requestId: 'r1',
+                            callId: proc.callId,
                         }),
                     );
                     break;
@@ -344,19 +352,18 @@ describe('createConnectService.createWallet', () => {
                 case SUBPROCESS_TYPE.COMPLETE: {
                     const _narrow: CompleteSubProcess<WalletResult> = step;
                     void _narrow;
-                    const { result } = step; // .result only on COMPLETE
+                    const { result } = step;
                     seen.push(`complete:${result.deviceState}`);
                     break;
                 }
                 case SUBPROCESS_TYPE.ERROR: {
                     const _narrow: ErrorSubProcess = step;
                     void _narrow;
-                    const { error } = step; // .error only on ERROR
+                    const { error } = step;
                     seen.push(`error:${error.message}`);
                     break;
                 }
                 default: {
-                    // exhaustiveness check — `step` should be `never` here
                     const _exhaustive: never = step;
                     void _exhaustive;
                 }
@@ -374,12 +381,12 @@ describe('createConnectService.createWallet', () => {
         const finalP = proc.toPromise();
         const iter = proc.run();
 
-        // First step is the passphrase prompt
         const stepP = iter.next();
         mock.emit({
             type: 'ui-request_passphrase',
             payload: { device: { path: 'p1' } },
             requestId: 'r1',
+            callId: proc.callId,
         });
         const step = await stepP;
         if (step.value.type !== SUBPROCESS_TYPE.REQUEST_PASSPHRASE) {
@@ -387,7 +394,6 @@ describe('createConnectService.createWallet', () => {
         }
         step.value.send('pw');
 
-        // Drain remaining iterator steps in parallel with finishing the call
         const drain = (async () => {
             for await (const _ of iter) {
                 // ignore

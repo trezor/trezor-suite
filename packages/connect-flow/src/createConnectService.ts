@@ -7,16 +7,19 @@ import type {
 } from './trezorConnectLike';
 import { SUBPROCESS_TYPE } from './types';
 import type {
+    AddressResult,
     AnySubProcess,
     ConnectService,
     CreateWalletOptions,
+    GetAddressOptions,
+    GetAddressSubProcess,
     Process,
     WalletResult,
     WalletSubProcess,
 } from './types';
 
 let counter = 0;
-const nextCallId = () => `call-${Date.now()}-${++counter}`;
+const nextCallId = () => `create-connect-service-call-${Date.now()}-${++counter}`;
 
 interface SubProcessContext {
     callId: string;
@@ -27,8 +30,8 @@ const mapEventToSubProcess = <TResult>(
     event: UiEvent,
     trezorConnect: TrezorConnectLike,
     ctx: SubProcessContext,
-): AnySubProcess<TResult> => {
-    const base = { callId: ctx.callId, cancel: ctx.cancel };
+): AnySubProcess<TResult> | undefined => {
+    const base = { callId: ctx.callId, requestId: event.requestId, cancel: ctx.cancel };
     switch (event.type) {
         case 'ui-request_passphrase':
             return {
@@ -60,14 +63,36 @@ const mapEventToSubProcess = <TResult>(
                     });
                 },
             };
-        case 'ui-request_button':
-            return { ...base, type: SUBPROCESS_TYPE.REQUEST_BUTTON, code: event.payload.code };
+        case 'ui-button':
+            return {
+                ...base,
+                type: SUBPROCESS_TYPE.REQUEST_BUTTON,
+                code: event.payload.code,
+                data: event.payload.data,
+            };
+        case 'ui-request_confirmation':
+            return {
+                ...base,
+                type: SUBPROCESS_TYPE.REQUEST_CONFIRMATION,
+                view: event.payload.view,
+                label: event.payload.label,
+                confirm: value => {
+                    trezorConnect.uiResponse({
+                        type: 'ui-receive_confirmation',
+                        payload: value,
+                        requestId: event.requestId,
+                    });
+                },
+            };
+        default:
+            // Real TrezorConnect emits many UI events beyond the ones we model
+            // (ui-window, ui-bundle_progress, ui-close_window, etc.). Ignore them.
+            return undefined;
     }
 };
 
 interface FlowContext<TResult> {
-    devicePath: string;
-    invoke: () => Promise<ConnectResult<TResult>>;
+    invoke: (callId: string) => Promise<ConnectResult<TResult>>;
 }
 
 const buildProcess = <TResult>(
@@ -90,8 +115,6 @@ const buildProcess = <TResult>(
         resolveResult = resolve;
         rejectResult = reject;
     });
-    // Suppress "unhandled rejection" if no one calls toPromise() — the rejection
-    // is still observable to anyone who awaits resultPromise later.
     resultPromise.catch(() => {});
 
     const cleanup = () => {
@@ -109,7 +132,11 @@ const buildProcess = <TResult>(
     };
 
     const cancelFn = () => {
+        if (cancelled) return;
         cancelled = true;
+        // Tell TrezorConnect to abort the in-flight call so the device stops
+        // waiting on the user and the next call isn't queued behind it.
+        trezorConnect.cancel('Process cancelled');
         rejectResult(new Error('Process cancelled'));
         cleanup();
     };
@@ -121,13 +148,16 @@ const buildProcess = <TResult>(
         started = true;
 
         listener = (event: UiEvent) => {
-            if (event.payload?.device?.path !== context.devicePath) return;
-            channel.push(mapEventToSubProcess<TResult>(event, trezorConnect, subCtx));
+            // Filter by callId — TrezorConnect echoes our callId on every UI event
+            // it emits during this method call.
+            if (event.callId !== callId) return;
+            const sub = mapEventToSubProcess<TResult>(event, trezorConnect, subCtx);
+            if (sub) channel.push(sub);
         };
         trezorConnect.on('UI_EVENT', listener);
 
         context
-            .invoke()
+            .invoke(callId)
             .then(result => {
                 if (result.success) {
                     resolveResult(result.payload);
@@ -214,14 +244,18 @@ export const createConnectService = (deps: {
     };
 
     return {
+        getProcess: ({ processId }: { processId: string }) => null,
+        getInState: (options: { processId: string; timeout?: number }) =>
+            // TODO: implement
+            Promise.resolve(null),
         createWallet: (options: CreateWalletOptions): Process<WalletSubProcess> =>
             guard<WalletResult>(() =>
                 buildProcess<WalletResult>(trezorConnect, activeRef, {
-                    devicePath: options.devicePath,
-                    invoke: async () => {
+                    invoke: async callId => {
                         const result = await trezorConnect.getDeviceState({
                             device: { path: options.devicePath },
                             useEmptyPassphrase: !options.usePassphrase,
+                            callId,
                         });
                         if (!result.success) return result;
 
@@ -230,6 +264,20 @@ export const createConnectService = (deps: {
                             payload: { deviceState: result.payload.state },
                         };
                     },
+                }),
+            ),
+
+        getAddress: (options: GetAddressOptions): Process<GetAddressSubProcess> =>
+            guard<AddressResult>(() =>
+                buildProcess<AddressResult>(trezorConnect, activeRef, {
+                    invoke: callId =>
+                        trezorConnect.getAddress({
+                            ...(options.devicePath ? { device: { path: options.devicePath } } : {}),
+                            path: options.path,
+                            coin: options.coin,
+                            showOnTrezor: options.showOnTrezor,
+                            callId,
+                        }),
                 }),
             ),
     };

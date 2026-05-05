@@ -19,6 +19,7 @@ import { Backends } from './Backends';
 import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
 import { ClearDevicePersistentData } from './ClearDevicePersistentData';
 import { CoinjoinApi } from './CoinjoinApi';
+import { ConnectFlowPlayground } from './ConnectFlowPlayground';
 import { ConnectPopup } from './ConnectPopup';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { Devkit } from './Devkit';
@@ -155,6 +156,7 @@ export const SettingsDebug = () => {
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="TrezorConnect">
                 <TrezorConnectLogs />
                 {isDesktop() && <ConnectPopup />}
+                <ConnectFlowPlayground />
             </SettingsSection>
             <SettingsSection
                 hasVerticalLayout={hasContentBelowTabletWidth}
