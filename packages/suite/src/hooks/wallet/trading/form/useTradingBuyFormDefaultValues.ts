@@ -12,6 +12,7 @@ import {
     getDefaultCountrySubdivision,
     getSupportedFiatCurrencyWithFallback,
     regional,
+    selectTradingInfo,
     useTradingAssets,
 } from '@suite-common/trading';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
@@ -25,6 +26,7 @@ export const useTradingBuyFormDefaultValues = (
     buyInfo: TradingBuyInfoSelector | undefined,
 ): TradingBuyFormDefaultValuesProps => {
     const { isTorEnabled } = useSelector(selectTorState);
+    const { coins } = useSelector(selectTradingInfo);
     const { createAssetOptionFromCryptoId } = useTradingAssets();
 
     const country = !isTorEnabled
@@ -37,10 +39,14 @@ export const useTradingBuyFormDefaultValues = (
         [buyInfo?.buyInfo?.subdivision],
     );
 
-    const defaultCrypto = useMemo(
-        () => createAssetOptionFromCryptoId(cryptoId),
-        [createAssetOptionFromCryptoId, cryptoId],
-    );
+    const defaultCrypto = useMemo(() => {
+        // coins is read via ref inside createAssetOptionFromCryptoId (stable callback);
+        // referencing it here keeps the linter active while ensuring recompute after API load.
+        void coins;
+
+        return createAssetOptionFromCryptoId(cryptoId);
+    }, [createAssetOptionFromCryptoId, cryptoId, coins]);
+
     const defaultPaymentMethod: TradingPaymentMethodListProps = useMemo(
         () => ({
             value: TRADING_DEFAULT_PAYMENT_METHOD,
