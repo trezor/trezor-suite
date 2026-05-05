@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
 import { useSelector } from 'react-redux';
 
@@ -56,6 +56,7 @@ const tabsStyle = prepareNativeStyle(({ spacings }) => ({
 }));
 
 export const HeaderTabs = () => {
+    const listRef = useRef<FlatList>(null);
     const { applyStyle } = useNativeStyles();
     const { activeTab, setActiveTab } = useTradingTabs();
     const data = useTabsData();
@@ -65,6 +66,24 @@ export const HeaderTabs = () => {
         selectIsFeatureFlagEnabled(state, FeatureFlag.AreTradingExchangeDexesEnabled),
     );
     const analytics = useAnalytics();
+
+    const activeTabIndex = useMemo(
+        () => data.findIndex(tab => tab.key === activeTab),
+        [data, activeTab],
+    );
+
+    useEffect(() => {
+        if (activeTabIndex < 0) {
+            return;
+        }
+
+        listRef.current?.scrollToIndex({
+            index: activeTabIndex,
+            animated: true,
+            viewPosition: 0.5,
+        });
+    }, [activeTabIndex]);
+
     const onTabPress = (tab: TradingTypeWithConcierge) => {
         if (tab === activeTab) {
             return;
@@ -85,6 +104,7 @@ export const HeaderTabs = () => {
         <>
             <HStack justifyContent="space-between">
                 <FlatList
+                    ref={listRef}
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     accessible={true}
@@ -101,6 +121,11 @@ export const HeaderTabs = () => {
                     )}
                     data={data}
                     extraData={activeTab}
+                    onScrollToIndexFailed={({ index, averageItemLength }) => {
+                        listRef.current?.scrollToOffset({
+                            offset: averageItemLength * index,
+                        });
+                    }}
                 />
                 {areTradingExchangeDexesEnabled && (
                     <IconButton
