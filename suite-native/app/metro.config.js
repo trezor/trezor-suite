@@ -5,8 +5,17 @@ const { withRozeniteReduxDevTools } = require('@rozenite/redux-devtools-plugin/m
 const { getSentryExpoConfig } = require('@sentry/react-native/metro');
 const { withStorybook } = require('@storybook/react-native/metro/withStorybook');
 const { mergeConfig } = require('metro-config');
+const path = require('path');
 
 const { metroSecureResolver } = require('@trezor/bundler-security/src/metroSecureResolver');
+
+// Metro recursively follows nested node_modules symlinks and gets stuck
+// We need to ignore nested monorepo dependencies
+const monorepoRoot = path.resolve(__dirname, '../..');
+const escRoot = monorepoRoot.replace(/[/\\^$*+?.()|[\]{}]/g, '\\$&');
+const NESTED_WORKSPACE_NM = new RegExp(
+    `^${escRoot}/(?!suite-native/app/).+/node_modules/(?:@suite-native|@suite-common|@trezor)/`,
+);
 
 // Learn more https://docs.expo.io/guides/customizing-metro
 
@@ -32,7 +41,7 @@ const config = {
     },
     resolver: {
         unstable_enablePackageExports: false,
-        blockList: [/libDev/],
+        blockList: [/libDev/, NESTED_WORKSPACE_NM],
         extraNodeModules: {
             // modules needed for trezor-connect
             crypto: require.resolve('crypto-browserify'),
