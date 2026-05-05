@@ -37,7 +37,7 @@ export const variantToColorMap = {
     neutral: {
         backgroundColor: 'legacyBackgroundTertiaryDefaultOnElevation1',
         borderColor: 'legacyBackgroundTertiaryDefaultOnElevation0',
-        buttonColorProps: { intent: 'brand', priority: 'primary' },
+        buttonColorProps: { intent: 'neutral', priority: 'primary' },
     },
     critical: {
         backgroundColor: 'legacyBackgroundAlertRedSubtleOnElevation1',
