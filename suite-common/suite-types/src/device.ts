@@ -95,6 +95,9 @@ type PersistedFeatureKey = UnionSubset<
     | 'initialized'
 >;
 
+// Only successful result is persisted, because rejection by user is treated the same as check not done yet → check will pop up.
+export type ManualCheckResult = { success: true };
+
 export type PersistentDeviceData = Pick<AcquiredDevice, PersistedDeviceKey> &
     Pick<Features, PersistedFeatureKey> & {
         firmwareVersion: VersionArray | null;
@@ -102,6 +105,7 @@ export type PersistentDeviceData = Pick<AcquiredDevice, PersistedDeviceKey> &
         lastEntropyCheckResult?: EntropyCheckResult;
         delegatedIdentityKey: EncryptedHex<DelegatedIdentityKey> | null;
         descriptor?: AcquiredDevice['descriptor'];
+        manualCheckResult?: ManualCheckResult;
         authenticityResult?: StoredAuthenticateDeviceResult;
     };
 

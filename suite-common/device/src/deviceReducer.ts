@@ -30,6 +30,7 @@ export type DeviceReducerState = {
     /**
      * Because we have `devices` as merged DEVICE+WALLET we persist
      * data that are DEVICE only here to separate them.
+     * TODO consider extracting to a subreducer persistentDeviceDataReducer
      */
     persistentDeviceData: PersistentDeviceData[]; // is an array since there is not a single primary id, device can be matched by various criteria
 
@@ -556,6 +557,18 @@ export const setDeviceAuthenticity = (
     data.authenticityResult = result;
 };
 
+export const setManualDeviceCheckSuccess = (
+    draft: DeviceReducerState,
+    deviceId: TrezorDevice['id'],
+) => {
+    const data = draft.persistentDeviceData.find(
+        persistentDeviceData => persistentDeviceData.device_id === deviceId,
+    );
+    // expected to exist; device must have been connected or changed for this action to happen
+    if (data === undefined) return;
+    data.manualCheckResult = { success: true };
+};
+
 // called after successful wipeDevice
 const requestDeviceReconnect = (draft: DeviceReducerState) => {
     // only acquired devices
@@ -658,6 +671,9 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
             .addCase(deviceActions.setDeviceAuthenticityResult, (state, { payload }) => {
                 // nullish deviceId is impossible unless meta checks (id) are disabled. If it is nullish, it's no-op.
                 setDeviceAuthenticity(state, payload.deviceId, payload.result);
+            })
+            .addCase(deviceActions.setManualDeviceCheckSuccess, (state, { payload }) => {
+                setManualDeviceCheckSuccess(state, payload.deviceId);
             })
             .addCase(deviceActions.dismissFirmwareAuthenticityCheck, (state, { payload }) => {
                 if (!state.dismissedSecurityChecks) {
