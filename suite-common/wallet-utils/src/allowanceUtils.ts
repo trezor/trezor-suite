@@ -7,4 +7,4 @@ import { unitsToSubunits } from './amountUtils';
 export const isAllowanceUnlimited = (amountUnits: string, decimals: number): boolean =>
     new BigNumber(
         unitsToSubunits({ value: asAmountUnit(new BigNumber(amountUnits)), decimals }),
-    ).eq(new BigNumber(UINT256_MAX));
+    ).gte(new BigNumber(UINT256_MAX).dividedBy(2).integerValue());
