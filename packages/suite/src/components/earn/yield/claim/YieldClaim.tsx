@@ -16,6 +16,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { Banner, Button, Card, Column, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
+import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { claimMerkleRewardsThunk } from 'src/actions/wallet/stablecoinYieldSigningThunks';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -96,7 +97,16 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     });
 
     const handleClaim = async () => {
-        if (!account || !flowKey || !isDeviceConnected || claimableRewards.length === 0) return;
+        if (!account || !flowKey || claimableRewards.length === 0) return;
+
+        if (!isDeviceConnected) {
+            if (device?.descriptor?.apiType === 'bluetooth') {
+                dispatch(setConnectionMode('bluetooth'));
+            }
+            dispatch(setConnectionModal(true));
+
+            return;
+        }
 
         analytics.report({
             type: events.yieldClaimEvent.name,
@@ -209,8 +219,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                             isDisabled={
                                 merkleRewardsQuery.isLoading ||
                                 claimableRewards.length === 0 ||
-                                isClaiming ||
-                                !isDeviceConnected
+                                isClaiming
                             }
                             isLoading={isClaimSubmitting}
                             onClick={handleClaim}

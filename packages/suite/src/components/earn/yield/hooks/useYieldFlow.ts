@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { type UseFormReturn, useForm } from 'react-hook-form';
 
+import { useDevice } from '@suite/device';
 import { type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type EarnParams } from '@suite/router';
@@ -28,6 +29,7 @@ import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import type { BulletListItemState } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
 
+import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { submitYieldActionThunk } from 'src/actions/wallet/stablecoinYieldSigningThunks';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -111,6 +113,7 @@ export const useYieldFlow = ({
     flowType,
 }: UseYieldFlowProps): UseYieldFlowResult => {
     const dispatch = useDispatch();
+    const { device } = useDevice();
     const methods = useForm<YieldFlowFormValues>({
         defaultValues: {
             amountInput: '',
@@ -282,7 +285,22 @@ export const useYieldFlow = ({
         [methodsRef],
     );
 
+    const openDeviceConnectionModal = useCallback(() => {
+        if (device?.descriptor?.apiType === 'bluetooth') {
+            dispatch(setConnectionMode('bluetooth'));
+        }
+        dispatch(setConnectionModal(true));
+    }, [device, dispatch]);
+
+    const isDeviceConnected = !!device?.connected && !!device?.available;
+
     const submitApprove = useCallback(() => {
+        if (!isDeviceConnected) {
+            openDeviceConnectionModal();
+
+            return;
+        }
+
         if (!token || !receiptToken || !vault) {
             dispatch(
                 stablecoinYieldActions.setError({
@@ -305,9 +323,26 @@ export const useYieldFlow = ({
                 amount,
             }),
         );
-    }, [account, flowKey, flowType, receiptToken, dispatch, token, vault, methodsRef]);
+    }, [
+        account,
+        flowKey,
+        flowType,
+        receiptToken,
+        dispatch,
+        token,
+        vault,
+        methodsRef,
+        isDeviceConnected,
+        openDeviceConnectionModal,
+    ]);
 
     const revokeAllowance = useCallback(() => {
+        if (!isDeviceConnected) {
+            openDeviceConnectionModal();
+
+            return;
+        }
+
         if (!token || !receiptToken || !vault) {
             dispatch(
                 stablecoinYieldActions.setError({
@@ -342,6 +377,8 @@ export const useYieldFlow = ({
         vault,
         methodsRef,
         session.approval.allowanceAmount,
+        isDeviceConnected,
+        openDeviceConnectionModal,
     ]);
 
     const liveAmount = methods.watch('amountInput');
@@ -365,6 +402,12 @@ export const useYieldFlow = ({
     }, [approvalAction, revokeAllowance, submitApprove]);
 
     const submitAction = useCallback(() => {
+        if (!isDeviceConnected) {
+            openDeviceConnectionModal();
+
+            return;
+        }
+
         if (!token || !receiptToken || !vault) {
             dispatch(
                 stablecoinYieldActions.setError({
@@ -387,7 +430,18 @@ export const useYieldFlow = ({
                 amount,
             }),
         );
-    }, [account, flowKey, flowType, receiptToken, dispatch, token, vault, methodsRef]);
+    }, [
+        account,
+        flowKey,
+        flowType,
+        receiptToken,
+        dispatch,
+        token,
+        vault,
+        methodsRef,
+        isDeviceConnected,
+        openDeviceConnectionModal,
+    ]);
 
     const handleApproveModalCancel = useCallback(async () => {
         await dispatch(
