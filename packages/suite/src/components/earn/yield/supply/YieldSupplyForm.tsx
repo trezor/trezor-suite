@@ -24,7 +24,6 @@ export const YieldSupplyForm = () => {
         token,
         receiptToken,
         apy,
-        liveAmount,
         completedAmount,
         completedReceiptAmount,
         maxAmount,
@@ -232,7 +231,7 @@ export const YieldSupplyForm = () => {
                                             ) : undefined
                                         }
                                         isDisabled={
-                                            !liveAmount || isAmountTooHigh || isSubmittingApprove
+                                            isAmountEmpty || isAmountTooHigh || isSubmittingApprove
                                         }
                                         isLoading={isSubmittingApprove}
                                         pendingApproveTransaction={approvalPendingTransaction}
