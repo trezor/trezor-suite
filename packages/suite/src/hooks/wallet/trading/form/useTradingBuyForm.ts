@@ -66,7 +66,6 @@ export const useTradingBuyForm = ({
     const analytics = useAnalytics();
     const type = 'buy';
     const isFormPage = pageType === 'form';
-    const isOffersPage = pageType === 'offers';
     const dispatch = useDispatch();
 
     const buyInfo = useSelector(selectTradingBuyInfo);
@@ -191,19 +190,6 @@ export const useTradingBuyForm = ({
         setValue,
     });
 
-    const goToOffers = async () => {
-        await handleChange();
-
-        dispatch(goto({ routeName: 'wallet-trading-buy-offers' }));
-
-        analytics.report({
-            type: events.tradeCompareOffersEvent.name,
-            payload: {
-                type: 'buy',
-            },
-        });
-    };
-
     const confirmTrade = async ({
         trade,
         receiveAddress,
@@ -258,37 +244,19 @@ export const useTradingBuyForm = ({
 
         const { name, networkSymbol, contractAddress } = draftUpdated?.cryptoSelect ?? {};
 
-        switch (pageType) {
-            case 'form': {
-                analytics.report({
-                    type: events.tradeBuyEvent.name,
-                    payload: {
-                        action: 'continue',
-                        step: 'buy-form',
-                        cryptoLabel: name,
-                        cryptoNetworkSymbol: networkSymbol,
-                        cryptoContractAddress: contractAddress ?? undefined,
-                        exchangeName: quote?.exchange,
-                        paymentMethod: draftUpdated?.paymentMethod?.value,
-                        countryOfResidence: draftUpdated?.countrySelect?.value,
-                    },
-                });
-                break;
-            }
-            case 'offers': {
-                analytics.report({
-                    type: events.tradeBuyEvent.name,
-                    payload: {
-                        action: 'continue',
-                        step: 'offers-form',
-                        exchangeName: quote?.exchange,
-                        paymentMethod: draftUpdated?.paymentMethod?.value,
-                        countryOfResidence: draftUpdated?.countrySelect?.value,
-                    },
-                });
-                break;
-            }
-        }
+        analytics.report({
+            type: events.tradeBuyEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'buy-form',
+                cryptoLabel: name,
+                cryptoNetworkSymbol: networkSymbol,
+                cryptoContractAddress: contractAddress ?? undefined,
+                exchangeName: quote?.exchange,
+                paymentMethod: draftUpdated?.paymentMethod?.value,
+                countryOfResidence: draftUpdated?.countrySelect?.value,
+            },
+        });
 
         await dispatch(
             buyThunks.selectQuoteThunk({
@@ -444,12 +412,12 @@ export const useTradingBuyForm = ({
 
     useEffect(() => {
         // We need to clear quotes on offers page without redirecting to form page
-        if (!quotesRequest && !isFormPage && !isOffersPage) {
+        if (!quotesRequest && !isFormPage) {
             dispatch(goto({ routeName: 'wallet-trading-buy' }));
 
             return;
         }
-    }, [quotesRequest, isFormPage, isOffersPage, dispatch]);
+    }, [quotesRequest, isFormPage, dispatch]);
 
     useEffect(() => {
         if (isFromRedirect && quotesRequest) {
@@ -504,7 +472,6 @@ export const useTradingBuyForm = ({
         selectQuote,
         onQuoteSelected,
         confirmTrade,
-        goToOffers,
         verifyAddress,
         removeDraft,
         setAmountLimits: (limits: TradingAmountLimitProps | undefined) => {

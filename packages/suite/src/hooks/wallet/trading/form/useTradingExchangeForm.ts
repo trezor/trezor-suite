@@ -286,43 +286,25 @@ export const useTradingExchangeForm = ({
                 ? exchangeInfo?.providerInfos[quote.exchange]
                 : null;
 
-        switch (pageType) {
-            case 'form': {
-                analytics.report({
-                    type: events.tradeExchangeEvent.name,
-                    payload: {
-                        action: 'continue',
-                        step: 'exchange-form',
-                        sendCryptoLabel: sendCryptoSelect?.displaySymbol,
-                        sendCryptoNetworkSymbol: sendCryptoSelect?.networkSymbol,
-                        sendCryptoContractAddress: sendCryptoSelect?.contractAddress ?? undefined,
-                        receiveCryptoLabel: receiveCryptoSelect?.displaySymbol,
-                        receiveCryptoNetworkSymbol: receiveCryptoSelect?.networkSymbol,
-                        receiveCryptoContractAddress:
-                            receiveCryptoSelect?.contractAddress ?? undefined,
-                        exchangeType,
-                        exchangeName: provider?.companyName,
-                        rateType,
-                        fractionButton: helpers.fractionButton
-                            ? `${(100 / helpers.fractionButton).toString()}%`
-                            : undefined,
-                    },
-                });
-                break;
-            }
-            case 'offers': {
-                analytics.report({
-                    type: events.tradeExchangeEvent.name,
-                    payload: {
-                        action: 'continue',
-                        step: 'offers-form',
-                        exchangeType,
-                        exchangeName: provider?.companyName,
-                    },
-                });
-                break;
-            }
-        }
+        analytics.report({
+            type: events.tradeExchangeEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'exchange-form',
+                sendCryptoLabel: sendCryptoSelect?.displaySymbol,
+                sendCryptoNetworkSymbol: sendCryptoSelect?.networkSymbol,
+                sendCryptoContractAddress: sendCryptoSelect?.contractAddress ?? undefined,
+                receiveCryptoLabel: receiveCryptoSelect?.displaySymbol,
+                receiveCryptoNetworkSymbol: receiveCryptoSelect?.networkSymbol,
+                receiveCryptoContractAddress: receiveCryptoSelect?.contractAddress ?? undefined,
+                exchangeType,
+                exchangeName: provider?.companyName,
+                rateType,
+                fractionButton: helpers.fractionButton
+                    ? `${(100 / helpers.fractionButton).toString()}%`
+                    : undefined,
+            },
+        });
 
         await dispatch(
             exchangeThunks.selectQuoteThunk({
@@ -486,19 +468,6 @@ export const useTradingExchangeForm = ({
                 nextStep,
             }),
         );
-    };
-
-    const goToOffers = async () => {
-        await handleChange();
-
-        dispatch(goto({ routeName: 'wallet-trading-exchange-offers' }));
-
-        analytics.report({
-            type: events.tradeCompareOffersEvent.name,
-            payload: {
-                type: 'exchange',
-            },
-        });
     };
 
     const verifyAddress =
@@ -808,7 +777,6 @@ export const useTradingExchangeForm = ({
         composedTransactionInfo,
         changeFeeLevel,
         setAmountLimits,
-        goToOffers,
         onQuoteSelected,
         sendTransaction,
         signDataAndConfirm,

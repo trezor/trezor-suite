@@ -78,7 +78,6 @@ const OfferBadgeWrap = styled.div`
 interface TradingOffersItemProps {
     quote: TradingTradeType;
     context: TradingFormContextValues<TradingType>;
-    isBestRate: boolean;
 }
 
 const actionButtonText = (

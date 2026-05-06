@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 
-import { getBestRatedQuote } from '@suite-common/trading';
 import { Column } from '@trezor/components';
 
 import { WalletSubpageHeading } from 'src/components/wallet';
@@ -10,38 +9,25 @@ import { TradingFeaturedOffersItem } from 'src/views/wallet/trading/common/Tradi
 export const TradingFeaturedOffers = () => {
     const context = useTradingFormContext();
     const {
-        type,
         form: { state },
         quotes,
     } = context;
 
-    const featuredAndBestRatedQuotes = useMemo(() => {
-        const featuredQuotes = quotes?.filter(quote => quote.infoNote);
-        const noFeaturedOffers = !featuredQuotes || featuredQuotes.length === 0;
+    const featuredQuotes = useMemo(() => {
+        const filtered = quotes?.filter(quote => quote.infoNote);
+        const noFeaturedOffers = !filtered || filtered.length === 0;
         if (state.isFormLoading || state.isFormInvalid || noFeaturedOffers) return null;
 
-        const bestRatedQuote = getBestRatedQuote(quotes, type);
+        return filtered;
+    }, [quotes, state.isFormInvalid, state.isFormLoading]);
 
-        return {
-            featuredQuotes,
-            bestRatedQuote,
-        };
-    }, [quotes, state.isFormInvalid, state.isFormLoading, type]);
-
-    if (!featuredAndBestRatedQuotes) return null;
-
-    const { featuredQuotes, bestRatedQuote } = featuredAndBestRatedQuotes;
+    if (!featuredQuotes) return null;
 
     return (
         <Column>
             <WalletSubpageHeading title="TR_TRADING_FEATURED_OFFERS_HEADING" />
             {featuredQuotes.map(quote => (
-                <TradingFeaturedOffersItem
-                    key={quote?.orderId}
-                    context={context}
-                    quote={quote}
-                    isBestRate={bestRatedQuote?.orderId === quote?.orderId}
-                />
+                <TradingFeaturedOffersItem key={quote?.orderId} context={context} quote={quote} />
             ))}
         </Column>
     );
