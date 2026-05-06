@@ -34,10 +34,9 @@ export type {
     PrecomposedTransactionNonFinalCardano,
 } from './api/cardanoComposeTransaction';
 export type { RecoveryDevice } from './api/recoveryDevice';
-export type { AuthenticateDeviceResult } from './api/authenticateDevice';
+export type { AuthenticateDeviceParams, AuthenticateDeviceResult } from './api/authenticateDevice';
 export { CipherKeyValue } from './api/cipherKeyValue';
 export { ApplySettings } from './api/applySettings';
-export { AuthenticateDeviceParams } from './api/authenticateDevice';
 export { AuthorizeCoinjoin } from './api/authorizeCoinjoin';
 export * from './api/uiResponse';
 export type {

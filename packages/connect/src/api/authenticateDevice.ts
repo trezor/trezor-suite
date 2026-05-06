@@ -1,10 +1,8 @@
-import {
-    AuthenticateDeviceParams,
-    type MethodPermission,
-    UI_REQUEST,
-} from '@trezor/connect-common';
+import { UI_REQUEST } from '@trezor/connect-common';
+import type { MethodPermission } from '@trezor/connect-common';
 import type { VerifyAuthenticityProofResult } from '@trezor/device-authenticity';
 import {
+    AuthenticateDeviceParams,
     deviceAuthenticityBlacklistConfig,
     deviceAuthenticityConfig,
     getRandomChallenge,
