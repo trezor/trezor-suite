@@ -30,6 +30,7 @@ import {
     fromBaseCurrencyToCryptoUnit,
     getCryptoAmountWithReserve,
     getDecimalsForBaseCurrency,
+    isErc4626,
     isZero,
 } from '@suite-common/wallet-utils';
 import { BigNumber, isChanged } from '@trezor/utils';
@@ -94,7 +95,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         cryptoId: sendCryptoSelect?.id,
         amount: sendCryptoAccount?.balance,
         fiatCurrency: getValues().outputs?.[0]?.currency?.value || undefined,
-        isErc4626: !!tokenData?.protocols?.erc4626,
+        isErc4626: !!tokenData && isErc4626(tokenData),
     });
 
     const { getAssetDecimals } = useTradingAssetDecimals();

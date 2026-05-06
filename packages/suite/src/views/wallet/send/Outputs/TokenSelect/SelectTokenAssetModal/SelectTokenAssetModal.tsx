@@ -92,7 +92,7 @@ export function SelectTokenAssetModal({
                     {
                         symbol: account.symbol,
                         tokenAddress: (newlySelectedToken?.contract || '') as TokenAddress,
-                        protocols: newlySelectedToken?.protocols?.erc4626 ? ['erc4626'] : undefined,
+                        protocols: newlySelectedToken?.protocols,
                     },
                 ],
                 baseCurrencyCode: currencyValue.value as BaseCurrencyCode,
