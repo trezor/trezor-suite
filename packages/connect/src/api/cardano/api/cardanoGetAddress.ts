@@ -3,6 +3,7 @@
 import {
     Bundle,
     CardanoGetAddress as CardanoGetAddressSchema,
+    type MethodPermission,
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';
@@ -10,12 +11,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import type {
-    MethodContext,
-    MethodMessage,
-    MethodPermission,
-    MethodReturnType,
-} from '../../../core/AbstractMethod';
+import type { MethodContext, MethodMessage, MethodReturnType } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { fromHardened, getSerializedPath } from '../../../utils/pathUtils';

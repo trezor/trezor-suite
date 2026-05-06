@@ -1,5 +1,6 @@
 import { CoinSelectionError, trezorUtils } from '@fivebinaries/coin-selection';
 
+import { type MethodPermission } from '@trezor/connect-common';
 import {
     type CardanoComposeTransactionParams,
     CardanoComposeTransactionParamsSchema,
@@ -7,7 +8,7 @@ import {
 } from '@trezor/connect-common/src/types/api/cardanoComposeTransaction';
 import { Assert } from '@trezor/schema-utils';
 
-import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
+import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { composeTxPlan } from '../cardanoUtils';
 

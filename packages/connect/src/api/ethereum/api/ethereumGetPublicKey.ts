@@ -3,18 +3,14 @@ import {
     Bundle,
     type EthereumNetworkInfo,
     GetPublicKey as GetPublicKeySchema,
+    type MethodPermission,
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import type {
-    MethodContext,
-    MethodMessage,
-    MethodPermission,
-    MethodReturnType,
-} from '../../../core/AbstractMethod';
+import type { MethodContext, MethodMessage, MethodReturnType } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';

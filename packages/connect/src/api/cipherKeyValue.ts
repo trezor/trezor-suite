@@ -2,6 +2,7 @@
 
 import {
     CipherKeyValue as CipherKeyValueSchema,
+    type MethodPermission,
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';
@@ -9,7 +10,7 @@ import { Bundle } from '@trezor/connect-common/src/types/params';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import type { MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { bundlify } from './common/paramsValidator';
 import { validatePath } from '../utils/pathUtils';

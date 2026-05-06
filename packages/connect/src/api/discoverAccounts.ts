@@ -11,6 +11,7 @@ import {
     ERRORS,
     type EntropyCheckResult,
     type FirmwareRange,
+    type MethodPermission,
     PAGING,
     UI_REQUEST,
     createUiMessage,
@@ -18,7 +19,7 @@ import {
 import { arrayPartition, getSynchronize, versionUtils } from '@trezor/utils';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import type { MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import type { AccountDescriptor } from '../device/DeviceCommands';

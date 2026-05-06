@@ -1,9 +1,10 @@
 import { bytesToHex } from '@noble/hashes/utils.js';
 
+import { type MethodPermission } from '@trezor/connect-common';
 import { TronComposeTransaction as TronComposeTransactionSchema } from '@trezor/connect-common/src/types/api/tron';
 import { Assert } from '@trezor/schema-utils';
 
-import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
+import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { TRON_BANDWIDTH_FORMULA_OVERHEAD, encodeTronContractRawData } from '../tronEncode';
 

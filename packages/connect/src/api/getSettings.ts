@@ -1,6 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetSettings.js
 
-import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import { type MethodPermission } from '@trezor/connect-common';
+
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import * as settingsStore from '../data/settingsStore';
 

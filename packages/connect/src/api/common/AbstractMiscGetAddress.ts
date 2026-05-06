@@ -1,6 +1,7 @@
 import {
     Bundle,
     GetAddress as GetAddressSchema,
+    type MethodPermission,
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';
@@ -8,12 +9,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import { bundlify } from './paramsValidator';
-import type {
-    MethodContext,
-    MethodMessage,
-    MethodPermission,
-    MethodReturnType,
-} from '../../core/AbstractMethod';
+import type { MethodContext, MethodMessage, MethodReturnType } from '../../core/AbstractMethod';
 import { AbstractMethod } from '../../core/AbstractMethod';
 import { fromHardened, getSerializedPath, validatePath } from '../../utils/pathUtils';
 
