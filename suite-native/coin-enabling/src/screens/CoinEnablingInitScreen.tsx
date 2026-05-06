@@ -91,7 +91,7 @@ export const CoinEnablingInitScreen = () => {
                         <ScreenFooterGradient />
                         <Box marginHorizontal="sp16" marginBottom="sp16">
                             <Button onPress={handleSubmit} testID="@coin-enabling/button-save">
-                                <Translation id="generic.buttons.confirmSelection" />
+                                <Translation id="generic.buttons.confirm" />
                             </Button>
                         </Box>
                     </Animated.View>
