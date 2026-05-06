@@ -6,9 +6,5 @@
         "types": ["jest", "node", "web"]
     },
     "include": ["./src"],
-    "references": [
-        {
-            "path": "../utils"
-        }
-    ]
+    "references": [{ "path": "../utils" }]
 }

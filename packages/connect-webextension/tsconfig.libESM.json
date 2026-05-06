@@ -6,14 +6,8 @@
         "types": ["chrome", "w3c-web-usb"]
     },
     "references": [
-        {
-            "path": "../connect-common"
-        },
-        {
-            "path": "../connect-web"
-        },
-        {
-            "path": "../eslint"
-        }
+        { "path": "../connect-common" },
+        { "path": "../connect-web" },
+        { "path": "../eslint" }
     ]
 }
