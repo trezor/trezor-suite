@@ -58,6 +58,7 @@ export type YieldApproveStepProps = {
     variant: 'active' | 'done';
     summaryValue: ReactNode;
     isDisabled?: boolean;
+    isLoading?: boolean;
     /** Current on-chain allowance amount fetched by RPC. */
     approvedAmount?: string;
     isApprovedAmountLoading?: boolean;
@@ -79,6 +80,7 @@ export const YieldApproveStep = ({
     variant,
     summaryValue,
     isDisabled = false,
+    isLoading = false,
     approvedAmount,
     isApprovedAmountLoading = false,
     hasApprovedAmountError = false,
@@ -99,7 +101,7 @@ export const YieldApproveStep = ({
     });
     const approvedAmountValue = approvedAmount ?? '0';
     const shouldEnableRevoke =
-        canRevokeAllowance && !isApprovedAmountLoading && !hasApprovedAmountError;
+        canRevokeAllowance && !isApprovedAmountLoading && !hasApprovedAmountError && !isLoading;
     const onRevokeClick = shouldEnableRevoke ? onRevoke : undefined;
 
     switch (variant) {
@@ -135,11 +137,12 @@ export const YieldApproveStep = ({
                         width="100%"
                         onClick={onApprovalSubmit}
                         isDisabled={isDisabled || !!pendingApproveTransaction || !onApprovalSubmit}
+                        isLoading={isLoading}
                     >
                         <Translation id={approveButtonId} />
                     </Button>
 
-                    {approvalAction === 'revoke' && (
+                    {approvalAction === 'revoke' && !isDisabled && (
                         <Banner
                             intent="warning"
                             icon="warning"

@@ -368,6 +368,7 @@ export const submitYieldRevokeThunk = createThunk(
         const fallbackSpender = approval.approvedSpender ?? getAllowanceSpender(flowData);
 
         dispatch(stablecoinYieldActions.clearError({ flowType, flowKey }));
+        dispatch(stablecoinYieldActions.startSubmittingApproval({ flowType, flowKey }));
 
         try {
             const { response, verification } = await submitYieldOpportunity({
@@ -429,6 +430,8 @@ export const submitYieldRevokeThunk = createThunk(
             if (!isRevokeModalOpen) {
                 setYieldGenericError({ dispatch, flowType, flowKey });
             }
+        } finally {
+            dispatch(stablecoinYieldActions.finishSubmittingApproval({ flowType, flowKey }));
         }
     },
 );
