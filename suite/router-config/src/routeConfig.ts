@@ -233,21 +233,6 @@ export const routes = [
         params: walletParams,
     },
     {
-        name: 'wallet-trading-buy-offers',
-        pattern: '/accounts/coinmarket/buy/offers',
-        app: 'wallet',
-    },
-    {
-        name: 'wallet-trading-sell-offers',
-        pattern: '/accounts/coinmarket/sell/offers',
-        app: 'wallet',
-    },
-    {
-        name: 'wallet-trading-exchange-offers',
-        pattern: '/accounts/coinmarket/exchange/offers',
-        app: 'wallet',
-    },
-    {
         name: 'wallet-trading-buy-detail',
         pattern: '/accounts/coinmarket/buy/detail',
         app: 'wallet',

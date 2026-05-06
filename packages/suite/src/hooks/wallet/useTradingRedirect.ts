@@ -129,7 +129,7 @@ export const useTradingRedirect = () => {
         prefilledAccountFromRedirect(params);
         dispatch(tradingBuyActions.saveQuoteRequest(request));
         dispatch(tradingBuyActions.setIsFromRedirect(true));
-        dispatch(goto({ routeName: 'wallet-trading-buy-offers' }));
+        dispatch(goto({ routeName: 'wallet-trading-buy' }));
     };
 
     const redirectToSellOffers = (params: SellOfferRedirectParams) => {
@@ -184,7 +184,7 @@ export const useTradingRedirect = () => {
         dispatch(tradingSellActions.saveTransactionId(orderId));
         dispatch(
             goto({
-                routeName: orderId ? 'wallet-trading-sell-confirm' : 'wallet-trading-sell-offers',
+                routeName: orderId ? 'wallet-trading-sell-confirm' : 'wallet-trading-sell',
             }),
         );
     };
