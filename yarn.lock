@@ -9357,7 +9357,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/addresses@npm:2.3.0, @solana/addresses@npm:^2.3.0":
+"@solana/addresses@npm:2.3.0":
   version: 2.3.0
   resolution: "@solana/addresses@npm:2.3.0"
   dependencies:
@@ -9492,7 +9492,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/keys@npm:2.3.0, @solana/keys@npm:^2.3.0":
+"@solana/keys@npm:2.3.0":
   version: 2.3.0
   resolution: "@solana/keys@npm:2.3.0"
   dependencies:
@@ -10861,7 +10861,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/staking-solana@workspace:*, @suite-common/staking-solana@workspace:suite-common/staking-solana":
+"@suite-common/staking-solana@workspace:suite-common/staking-solana":
   version: 0.0.0-use.local
   resolution: "@suite-common/staking-solana@workspace:suite-common/staking-solana"
   dependencies:
@@ -10870,7 +10870,6 @@ __metadata:
     "@solana-program/stake": "npm:^0.2.1"
     "@solana-program/system": "npm:^0.7.0"
     "@solana/kit": "npm:^2.3.0"
-    "@suite-common/staking-solana-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
@@ -10890,7 +10889,6 @@ __metadata:
     "@connect-coins/solana": "workspace:*"
     "@suite-common/calldata": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"
-    "@suite-common/staking-solana-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -11351,7 +11349,6 @@ __metadata:
     "@scure/base": "npm:^2.0.0"
     "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
-    "@suite-common/staking-solana-types": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -15219,10 +15216,6 @@ __metadata:
   dependencies:
     "@connect-coins/solana": "workspace:*"
     "@noble/hashes": "npm:^2.0.1"
-    "@solana/addresses": "npm:^2.3.0"
-    "@solana/keys": "npm:^2.3.0"
-    "@solana/rpc-api": "npm:^2.3.0"
-    "@solana/rpc-types": "npm:^2.3.0"
     "@stellar/stellar-sdk": "npm:14.5.0"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/env-utils": "workspace:*"
@@ -15240,12 +15233,6 @@ __metadata:
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
     "@connect-coins/solana": "workspace:*"
-    "@solana-program/compute-budget": "npm:^0.8.0"
-    "@solana-program/stake": "npm:^0.2.1"
-    "@solana-program/token": "npm:^0.5.1"
-    "@solana-program/token-2022": "npm:^0.4.2"
-    "@solana/kit": "npm:^2.3.0"
-    "@solana/rpc-types": "npm:^2.3.0"
     "@stellar/stellar-sdk": "npm:14.5.0"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
@@ -15578,15 +15565,8 @@ __metadata:
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
     "@scure/bip39": "npm:^1.5.1"
-    "@solana-program/compute-budget": "npm:^0.8.0"
-    "@solana-program/memo": "npm:^0.7.0"
-    "@solana-program/system": "npm:^0.7.0"
-    "@solana-program/token": "npm:^0.5.1"
-    "@solana-program/token-2022": "npm:^0.4.2"
-    "@solana/kit": "npm:^2.3.0"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
-    "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/connect-data": "workspace:*"
     "@trezor/crypto-utils": "workspace:*"
@@ -16112,10 +16092,6 @@ __metadata:
     "@playwright/browser-firefox": "npm:1.58.2"
     "@playwright/browser-webkit": "npm:1.58.2"
     "@playwright/test": "npm:1.58.2"
-    "@solana-program/stake": "npm:^0.2.1"
-    "@solana/addresses": "npm:^2.3.0"
-    "@solana/kit": "npm:^2.3.0"
-    "@solana/rpc-types": "npm:^2.3.0"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/e2e-evolu-client": "workspace:*"
@@ -16210,7 +16186,6 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@sentry/core": "npm:10.50.0"
-    "@solana/kit": "npm:^2.3.0"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/assets": "workspace:*"
@@ -16244,8 +16219,6 @@ __metadata:
     "@suite-common/schemas": "workspace:^"
     "@suite-common/sentry": "workspace:*"
     "@suite-common/staking": "workspace:*"
-    "@suite-common/staking-solana": "workspace:*"
-    "@suite-common/staking-solana-types": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-rbf-labels-migrations": "workspace:*"
