@@ -3,7 +3,11 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../earn-stablecoin-api" },
+        { "path": "../schemas" },
         { "path": "../wallet-config" },
-        { "path": "../wallet-types" }
+        { "path": "../wallet-types" },
+        {
+            "path": "../../packages/connect-common"
+        }
     ]
 }

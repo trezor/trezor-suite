@@ -8,11 +8,7 @@ import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-confi
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { type EvmSelectedFee } from '@suite-common/wallet-types';
-import {
-    getConvertedOrDefaultFeeInfo,
-    hasEip1559MaxPriorityFee,
-    isEip1559,
-} from '@suite-common/wallet-utils';
+import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -94,9 +90,14 @@ export function useEvmTxSimulationFeesForm({
             maxFeePerGas: values.maxFeePerGas ?? selectedFeeInfo?.maxFeePerGas,
             maxPriorityFeePerGas:
                 values.maxPriorityFeePerGas ?? selectedFeeInfo?.maxPriorityFeePerGas,
+            baseFeePerGas: values.baseFeePerGas ?? selectedFeeInfo?.baseFeePerGas,
         };
 
-        if (isEip1559(eip1559payload) && hasEip1559MaxPriorityFee(eip1559payload)) {
+        if (
+            eip1559payload.maxFeePerGas &&
+            eip1559payload.maxPriorityFeePerGas &&
+            eip1559payload.baseFeePerGas
+        ) {
             return {
                 type: 'eip1559',
                 gasLimit: numberToHex(values.feeLimit),
@@ -104,6 +105,7 @@ export function useEvmTxSimulationFeesForm({
                 maxPriorityFeePerGas: numberToHex(
                     toWei(eip1559payload.maxPriorityFeePerGas, 'gwei'),
                 ),
+                baseFeePerGas: numberToHex(toWei(eip1559payload.baseFeePerGas, 'gwei')),
             };
         }
 

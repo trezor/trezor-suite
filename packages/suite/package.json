@@ -51,6 +51,7 @@
         "@suite-common/platform-encryption": "workspace:*",
         "@suite-common/react-query": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/schemas": "workspace:^",
         "@suite-common/sentry": "workspace:*",
         "@suite-common/staking": "workspace:*",
         "@suite-common/staking-solana": "workspace:*",
