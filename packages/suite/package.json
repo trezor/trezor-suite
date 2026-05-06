@@ -14,6 +14,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@connect-coins/solana": "workspace:*",
         "@floating-ui/react": "^0.27.17",
         "@formatjs/intl": "4.1.2",
         "@hookform/resolvers": "^5.2.2",

@@ -7,6 +7,7 @@
     },
     "include": [".", "**/*.json"],
     "references": [
+        { "path": "../../connect-coins/solana" },
         { "path": "../blockchain-link-types" },
         { "path": "../blockchain-link-utils" },
         { "path": "../env-utils" },

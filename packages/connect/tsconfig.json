@@ -10,6 +10,7 @@
         ]
     },
     "references": [
+        { "path": "../../connect-coins/solana" },
         { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
         { "path": "../blockchain-link-utils" },

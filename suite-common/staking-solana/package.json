@@ -12,6 +12,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@connect-coins/solana": "workspace:*",
         "@solana-program/compute-budget": "^0.8.0",
         "@solana-program/stake": "^0.2.1",
         "@solana-program/system": "^0.7.0",
