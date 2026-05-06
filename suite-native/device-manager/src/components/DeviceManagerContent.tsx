@@ -8,10 +8,11 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 
 import {
     PORTFOLIO_TRACKER_DEVICE_ID,
+    selectDeviceStaticSessionId,
+    selectIsDeviceConnected,
     selectIsDeviceInitialized,
     selectIsDeviceProtectedByPassphrase,
     selectIsPortfolioTrackerDevice,
-    selectSelectedDevice,
 } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectDeviceThunk, selectHasRunningDiscovery } from '@suite-common/wallet-core';
@@ -60,9 +61,10 @@ export const DeviceManagerContent = () => {
     const isPassphraseEnabledOnDevice = useSelector(selectIsDeviceProtectedByPassphrase);
     const shouldFactoryResetBeVisible = useSelector(selectShouldFactoryResetBeVisible);
 
-    const hasDiscovery = useSelector(selectHasRunningDiscovery);
-    const device = useSelector(selectSelectedDevice);
+    const hasRunningDiscovery = useSelector(selectHasRunningDiscovery);
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
+    const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
 
     const navigation = useNavigation<NavigationProp>();
     const currentRoute = useRoute();
@@ -98,16 +100,16 @@ export const DeviceManagerContent = () => {
         });
     };
 
-    if (!device) {
-        return null;
-    }
-
     // based on DeviceManagerModal header height and top offset
     const scrollViewTopOffset = insets.top + utils.spacings.sp24 + HEADER_HEIGHT;
     const scrollViewMaxHeight = CONTENT_MAX_HEIGHT - scrollViewTopOffset;
 
     const isAddHiddenWalletButtonVisible =
-        !hasDiscovery && device?.connected && isDeviceInitialized && isPassphraseEnabledOnDevice;
+        !hasRunningDiscovery &&
+        isDeviceConnected &&
+        isDeviceInitialized &&
+        deviceStaticSessionId &&
+        isPassphraseEnabledOnDevice;
 
     const isDeviceListVisible = isChangeDeviceRequested || isPortfolioTrackerDevice;
 
@@ -142,7 +144,9 @@ export const DeviceManagerContent = () => {
                             layout={LinearTransition}
                             marginTop={!isDeviceListVisible ? 'sp12' : undefined}
                         >
-                            <WalletList onSelectDevice={handleSelectDevice} />
+                            {deviceStaticSessionId && (
+                                <WalletList onSelectDevice={handleSelectDevice} />
+                            )}
                             <VStack paddingHorizontal="sp16" paddingBottom="sp16" spacing="sp12">
                                 <DeviceSettingsButton />
                                 {isAddHiddenWalletButtonVisible && <AddHiddenWalletButton />}
