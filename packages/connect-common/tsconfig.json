@@ -6,6 +6,7 @@
     },
     "include": ["."],
     "references": [
+        { "path": "../device-authenticity" },
         { "path": "../device-utils" },
         { "path": "../protobuf" },
         { "path": "../protocol" },
@@ -14,7 +15,6 @@
         { "path": "../utils" },
         { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
-        { "path": "../device-authenticity" },
         { "path": "../transport" },
         { "path": "../utxo-lib" }
     ]

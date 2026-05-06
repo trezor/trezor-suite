@@ -1,9 +1,13 @@
 {
     "prod": [
         "@bufbuild/protobuf",
+        "@noble/curves",
+        "@noble/post-quantum",
         "@sinclair/typebox",
         "@trezor/connect-common",
         "@trezor/connect-web",
+        "@trezor/crypto-utils",
+        "@trezor/device-authenticity",
         "@trezor/device-utils",
         "@trezor/protobuf",
         "@trezor/protocol",
