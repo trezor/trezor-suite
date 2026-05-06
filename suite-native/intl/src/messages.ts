@@ -10,7 +10,6 @@ export const messages = {
             cancel: 'Cancel',
             close: 'Close',
             confirm: 'Confirm',
-            confirmSelection: 'Confirm selection',
             continue: 'Continue',
             done: 'Done',
             dismiss: 'Dismiss',

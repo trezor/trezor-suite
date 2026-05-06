@@ -83,7 +83,7 @@ export const SendUtxoScreenFooter = ({
                 {!missingToAmount && (
                     <Animated.View entering={SlideInDown.duration(300)} exiting={SlideOutDown}>
                         <Button onPress={onSubmit}>
-                            <Translation id="generic.buttons.confirmSelection" />
+                            <Translation id="generic.buttons.confirm" />
                         </Button>
                     </Animated.View>
                 )}

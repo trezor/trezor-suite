@@ -14,7 +14,7 @@ describe('SendUtxosScreenFooter', () => {
 
         expect(getByText('Selected')).toBeTruthy();
         expect(getByText('8 BTC')).toBeTruthy();
-        expect(getByText('Confirm selection')).toBeTruthy();
+        expect(getByText('Confirm')).toBeTruthy();
     });
 
     it('should show remaining amount when amount is provided and selected total is less than amount', () => {
