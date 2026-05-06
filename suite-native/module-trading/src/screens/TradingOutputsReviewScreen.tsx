@@ -1,7 +1,7 @@
 import {
+    type RootStackParamList,
+    type RootStackRoutes,
     type StackProps,
-    type TradingStackParamList,
-    type TradingStackRoutes,
 } from '@suite-native/navigation';
 import {
     useExchangeAnalyticReportCallback,
@@ -14,7 +14,7 @@ import { useSellFlow } from '../hooks/sell/useSellFlow';
 
 export const TradingExchangeOutputsReviewScreen = ({
     route,
-}: StackProps<TradingStackParamList, TradingStackRoutes.TradingExchangeOutputsReview>) => {
+}: StackProps<RootStackParamList, RootStackRoutes.TradingExchangeOutputsReview>) => {
     const { accountKey, tokenContract, orderId, flowType } = route.params;
     const {
         signAndSendTransaction,
@@ -40,7 +40,7 @@ export const TradingExchangeOutputsReviewScreen = ({
 
 export const TradingSellOutputsReviewScreen = ({
     route,
-}: StackProps<TradingStackParamList, TradingStackRoutes.TradingSellOutputsReview>) => {
+}: StackProps<RootStackParamList, RootStackRoutes.TradingSellOutputsReview>) => {
     const { accountKey, tokenContract, orderId } = route.params;
     const {
         signAndSendTransaction,

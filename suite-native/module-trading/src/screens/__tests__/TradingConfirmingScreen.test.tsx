@@ -1,12 +1,12 @@
+import type { TransactionStatus } from '@suite-common/trading';
 import {
     selectTradingExchangePreselectedQuote,
     selectTradingExchangeSelectedQuote,
     tradingExchangeActions,
     useAllowanceTxTracking,
 } from '@suite-common/trading';
-import type { TransactionStatus } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
-import { type TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
+import { type RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
 import { type TestStore, act, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { mockTransaction } from '@suite-native/tokens';
 import { exchangeQuotes } from '@suite-native/trading-fixtures';
@@ -58,13 +58,13 @@ const mockNavigation = {
     addListener: mockAddListener,
 } as any;
 
-let routeParams: TradingStackParamList[TradingStackRoutes.TradingConfirming] = {
+let routeParams: RootStackParamList[RootStackRoutes.TradingConfirming] = {
     flowType: 'approve',
 };
 
 const mockUseRoute = () => ({
     key: 'route-key',
-    name: TradingStackRoutes.TradingConfirming as const,
+    name: RootStackRoutes.TradingConfirming as const,
     params: routeParams,
 });
 
@@ -94,7 +94,7 @@ describe('TradingConfirmingScreen', () => {
     let store: TestStore;
 
     const renderScreen = (
-        routeProps: Partial<TradingStackParamList[TradingStackRoutes.TradingConfirming]> = {},
+        routeProps: Partial<RootStackParamList[RootStackRoutes.TradingConfirming]> = {},
     ) => {
         routeParams = {
             flowType: 'approve',
@@ -169,12 +169,9 @@ describe('TradingConfirmingScreen', () => {
         });
 
         expect(mockNavigation.popToTop).toHaveBeenCalled();
-        expect(mockNavigation.push).toHaveBeenCalledWith(
-            TradingStackRoutes.TradingExchangePreview,
-            {
-                isApproved: true,
-            },
-        );
+        expect(mockNavigation.push).toHaveBeenCalledWith(RootStackRoutes.TradingExchangePreview, {
+            isApproved: true,
+        });
     });
 
     it('approve: saves quote with CONFIRM status when confirmApproval returns APPROVAL_PENDING', async () => {
@@ -213,10 +210,9 @@ describe('TradingConfirmingScreen', () => {
         renderScreen({ flowType: 'revoke-and-approve' });
 
         expect(mockNavigation.popToTop).toHaveBeenCalled();
-        expect(mockNavigation.push).toHaveBeenCalledWith(
-            TradingStackRoutes.TradingExchangeApproval,
-            { isRevoked: true },
-        );
+        expect(mockNavigation.push).toHaveBeenCalledWith(RootStackRoutes.TradingExchangeApproval, {
+            isRevoked: true,
+        });
         expect(selectTradingExchangeSelectedQuote(store.getState())).toBeUndefined();
     });
 

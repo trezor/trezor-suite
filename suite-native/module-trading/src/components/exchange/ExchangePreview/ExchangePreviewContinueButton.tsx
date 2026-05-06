@@ -14,10 +14,9 @@ import { type TokenAddress } from '@suite-common/wallet-types';
 import { Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    type AppTabsParamList,
-    type StackToTabCompositeNavigationProp,
-    type TradingStackParamList,
-    TradingStackRoutes,
+    type RootStackParamList,
+    RootStackRoutes,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -27,10 +26,9 @@ export type ExchangePreviewContinueButtonProps = {
     onSignTransactionNavigation: () => void;
 };
 
-type NavigationProp = StackToTabCompositeNavigationProp<
-    TradingStackParamList,
-    TradingStackRoutes.TradingExchangePreview,
-    AppTabsParamList
+type NavigationProp = StackNavigationProps<
+    RootStackParamList,
+    RootStackRoutes.TradingExchangePreview
 >;
 
 const footerStyle = prepareNativeStyle(utils => ({
@@ -65,14 +63,11 @@ export const ExchangePreviewContinueButton = memo(
                 ? (parseCryptoId(quote.send)?.contractAddress as TokenAddress)
                 : undefined;
 
-            navigation.navigate({
-                name: TradingStackRoutes.TradingExchangeOutputsReview,
-                params: {
-                    accountKey: fromAccount.key,
-                    tokenContract,
-                    orderId: quote.orderId ?? '',
-                    flowType: 'swap',
-                },
+            navigation.navigate(RootStackRoutes.TradingExchangeOutputsReview, {
+                accountKey: fromAccount.key,
+                tokenContract,
+                orderId: quote.orderId ?? '',
+                flowType: 'swap',
             });
             onSignTransactionNavigation();
         };

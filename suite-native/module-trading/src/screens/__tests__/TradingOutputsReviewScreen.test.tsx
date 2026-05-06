@@ -1,11 +1,7 @@
 import { type RouteProp } from '@react-navigation/native';
 
 import { type TokenAddress } from '@suite-common/wallet-types';
-import type {
-    StackProps,
-    TradingStackParamList,
-    TradingStackRoutes,
-} from '@suite-native/navigation';
+import type { RootStackParamList, RootStackRoutes, StackProps } from '@suite-native/navigation';
 import { type TestStore } from '@suite-native/test-utils-store';
 
 import {
@@ -105,19 +101,20 @@ const createExchangeRouteParams = (tokenContract?: TokenAddress) => ({
     accountKey: TEST_ACCOUNT_KEY,
     tokenContract,
     orderId: TEST_ORDER_ID,
+    flowType: 'swap',
 });
 
 // Helper function to create route for sell
 const createSellRoute = (params: ReturnType<typeof createSellRouteParams>) =>
     ({
         params,
-    }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingSellOutputsReview>;
+    }) as RouteProp<RootStackParamList, RootStackRoutes.TradingSellOutputsReview>;
 
 // Helper function to create route for exchange
 const createExchangeRoute = (params: ReturnType<typeof createExchangeRouteParams>) =>
     ({
         params,
-    }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingExchangeOutputsReview>;
+    }) as RouteProp<RootStackParamList, RootStackRoutes.TradingExchangeOutputsReview>;
 
 describe('TradingSellOutputsReviewScreen', () => {
     let store: TestStore;
@@ -133,8 +130,8 @@ describe('TradingSellOutputsReviewScreen', () => {
     describe('TradingSellOutputsReviewScreen', () => {
         const renderScreen = (
             route: StackProps<
-                TradingStackParamList,
-                TradingStackRoutes.TradingSellOutputsReview
+                RootStackParamList,
+                RootStackRoutes.TradingSellOutputsReview
             >['route'],
         ) => {
             const result = renderWithTradingProvider(
@@ -176,8 +173,8 @@ describe('TradingSellOutputsReviewScreen', () => {
     describe('TradingExchangeOutputsReviewScreen', () => {
         const renderScreen = (
             route: StackProps<
-                TradingStackParamList,
-                TradingStackRoutes.TradingExchangeOutputsReview
+                RootStackParamList,
+                RootStackRoutes.TradingExchangeOutputsReview
             >['route'],
         ) => {
             const result = renderWithTradingProvider(

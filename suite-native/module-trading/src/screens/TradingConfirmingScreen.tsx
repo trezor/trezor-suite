@@ -11,10 +11,9 @@ import {
 import { sendFormActions } from '@suite-common/wallet-core';
 import {
     type RootStackParamList,
+    RootStackRoutes,
     Screen,
-    type StackToStackCompositeScreenProps,
-    type TradingStackParamList,
-    TradingStackRoutes,
+    type StackProps,
 } from '@suite-native/navigation';
 import { useTransactionStatusOverride } from '@suite-native/trading-debug';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
@@ -29,10 +28,9 @@ import { ExploreInBlockchainButton } from '../components/exchange/Confirmation/E
 import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
 import { useApprovalFlow } from '../hooks/exchange/Approval/useApprovalFlow';
 
-export type TradingConfirmingScreenProps = StackToStackCompositeScreenProps<
-    TradingStackParamList,
-    TradingStackRoutes.TradingConfirming,
-    RootStackParamList
+export type TradingConfirmingScreenProps = StackProps<
+    RootStackParamList,
+    RootStackRoutes.TradingConfirming
 >;
 
 export const TradingConfirmingScreen = ({
@@ -117,7 +115,7 @@ export const TradingConfirmingScreen = ({
 
                         dispatch(sendFormActions.dispose());
                         navigation.popToTop();
-                        navigation.push(TradingStackRoutes.TradingExchangePreview, {
+                        navigation.push(RootStackRoutes.TradingExchangePreview, {
                             isApproved: true,
                         });
                         break;
@@ -128,7 +126,7 @@ export const TradingConfirmingScreen = ({
                         dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
                         // preselectedQuote is preserved in the store, so we can navigate to the approval screen with it
                         navigation.popToTop();
-                        navigation.push(TradingStackRoutes.TradingExchangeApproval, {
+                        navigation.push(RootStackRoutes.TradingExchangeApproval, {
                             isRevoked: true,
                         });
                         break;

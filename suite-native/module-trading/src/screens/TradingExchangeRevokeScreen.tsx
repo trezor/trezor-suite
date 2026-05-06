@@ -14,11 +14,10 @@ import { Translation } from '@suite-native/intl';
 import {
     DynamicScreenHeader,
     type RootStackParamList,
+    type RootStackRoutes,
     Screen,
     ScreenHeader,
-    type StackToStackCompositeScreenProps,
-    type TradingStackParamList,
-    type TradingStackRoutes,
+    type StackProps,
 } from '@suite-native/navigation';
 
 import { ApprovalButton } from '../components/exchange/Approval/ApprovalButton';
@@ -27,10 +26,9 @@ import { TradingDeviceConnectionGuard } from '../components/general/TradingDevic
 import { useApprovalFlow } from '../hooks/exchange/Approval/useApprovalFlow';
 import { useEvmApprovalFees } from '../hooks/exchange/Approval/useEvmApprovalFees';
 
-type TradingExchangeRevokeScreenProps = StackToStackCompositeScreenProps<
-    TradingStackParamList,
-    TradingStackRoutes.TradingExchangeRevoke,
-    RootStackParamList
+type TradingExchangeRevokeScreenProps = StackProps<
+    RootStackParamList,
+    RootStackRoutes.TradingExchangeRevoke
 >;
 
 export const TradingExchangeRevokeScreen = ({

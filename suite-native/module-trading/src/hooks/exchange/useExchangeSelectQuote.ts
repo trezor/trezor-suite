@@ -15,6 +15,7 @@ import {
 } from '@suite-common/trading';
 import {
     type RootStackParamList,
+    RootStackRoutes,
     type StackToStackCompositeNavigationProps,
     type TradingStackParamList,
     TradingStackRoutes,
@@ -103,24 +104,24 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
     const selectQuote = () =>
         dispatchSelectQuote('continue', approvalStatus => {
             if (approvalStatus === 'approved' || approvalStatus === 'not_needed') {
-                return navigation.navigate(TradingStackRoutes.TradingExchangePreview, {});
+                return navigation.navigate(RootStackRoutes.TradingExchangePreview, {});
             }
 
             dispatch(tradingExchangeActions.savePreselectedQuote(candidateQuote));
 
             switch (approvalStatus) {
                 case 'needs_increase':
-                    return navigation.navigate(TradingStackRoutes.TradingExchangeApproval, {
+                    return navigation.navigate(RootStackRoutes.TradingExchangeApproval, {
                         shouldIncreaseLimit: true,
                     });
 
                 case 'needs_revoke':
-                    return navigation.navigate(TradingStackRoutes.TradingExchangeRevoke, {
+                    return navigation.navigate(RootStackRoutes.TradingExchangeRevoke, {
                         shouldIncreaseLimit: true,
                     });
 
                 case 'needs_approval':
-                    return navigation.navigate(TradingStackRoutes.TradingExchangeApproval, {});
+                    return navigation.navigate(RootStackRoutes.TradingExchangeApproval, {});
 
                 case null:
                     // do nothing (should not happen when quote is defined)
@@ -144,7 +145,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
                 case 'approved':
                     dispatch(tradingExchangeActions.savePreselectedQuote(candidateQuote));
 
-                    return navigation.navigate(TradingStackRoutes.TradingExchangeRevoke, {
+                    return navigation.navigate(RootStackRoutes.TradingExchangeRevoke, {
                         shouldIncreaseLimit: false,
                     });
 

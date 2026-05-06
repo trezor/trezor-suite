@@ -9,9 +9,9 @@ import { Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     type ExchangeFlowType,
+    type RootStackParamList,
+    RootStackRoutes,
     type StackNavigationProps,
-    type TradingStackParamList,
-    TradingStackRoutes,
 } from '@suite-native/navigation';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -30,7 +30,7 @@ export type ApprovalButtonProps = {
 export const ApprovalButton = ({ isReady, isDisabled, flowType }: ApprovalButtonProps) => {
     const navigation =
         useNavigation<
-            StackNavigationProps<TradingStackParamList, TradingStackRoutes.TradingExchangeApproval>
+            StackNavigationProps<RootStackParamList, RootStackRoutes.TradingExchangeApproval>
         >();
 
     const quote = useSelector(selectTradingExchangeSelectedQuote);
@@ -50,7 +50,7 @@ export const ApprovalButton = ({ isReady, isDisabled, flowType }: ApprovalButton
 
             return;
         }
-        navigation.navigate(TradingStackRoutes.TradingExchangeOutputsReview, {
+        navigation.navigate(RootStackRoutes.TradingExchangeOutputsReview, {
             accountKey: fromAccount.key,
             tokenContract,
             orderId: quote.orderId ?? '',

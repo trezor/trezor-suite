@@ -456,6 +456,31 @@ export type RootStackParamList = {
     [RootStackRoutes.PassphraseStack]: NavigatorScreenParams<PassphraseStackParamList>;
     [RootStackRoutes.StellarManageTokenStack]: NavigatorScreenParams<StellarManageTokenStackParamList>;
     [RootStackRoutes.FeatureFeedbackModal]: { feature: ExperimentalFeature };
+    [RootStackRoutes.TradingExchangePreview]: {
+        isApproved?: boolean;
+    };
+    [RootStackRoutes.TradingExchangeApproval]: {
+        shouldIncreaseLimit?: boolean;
+        isRevoked?: boolean;
+    };
+    [RootStackRoutes.TradingExchangeRevoke]: {
+        shouldIncreaseLimit?: boolean;
+    };
+    [RootStackRoutes.TradingSellPreview]: undefined;
+    [RootStackRoutes.TradingSellOutputsReview]: {
+        accountKey: AccountKey;
+        tokenContract?: TokenAddress;
+        orderId: string;
+    };
+    [RootStackRoutes.TradingExchangeOutputsReview]: {
+        accountKey: AccountKey;
+        tokenContract?: TokenAddress;
+        orderId: string;
+        flowType: ExchangeFlowType;
+    };
+    [RootStackRoutes.TradingConfirming]: {
+        flowType: ConfirmingScreenFlowType;
+    };
 };
 
 export type TransactionDetailStackParamList = {
@@ -482,31 +507,6 @@ export type TradingStackParamList = {
         tradingType: Exclude<TradingType, 'sell'>;
     };
     [TradingStackRoutes.TradingHistory]: undefined;
-    [TradingStackRoutes.TradingExchangePreview]: {
-        isApproved?: boolean;
-    };
-    [TradingStackRoutes.TradingExchangeApproval]: {
-        shouldIncreaseLimit?: boolean;
-        isRevoked?: boolean;
-    };
-    [TradingStackRoutes.TradingExchangeRevoke]: {
-        shouldIncreaseLimit?: boolean;
-    };
-    [TradingStackRoutes.TradingSellPreview]: undefined;
-    [TradingStackRoutes.TradingSellOutputsReview]: {
-        accountKey: AccountKey;
-        tokenContract?: TokenAddress;
-        orderId: string;
-    };
-    [TradingStackRoutes.TradingExchangeOutputsReview]: {
-        accountKey: AccountKey;
-        tokenContract?: TokenAddress;
-        orderId: string;
-        flowType: ExchangeFlowType;
-    };
-    [TradingStackRoutes.TradingConfirming]: {
-        flowType: ConfirmingScreenFlowType;
-    };
 };
 
 export type StellarManageTokenStackParamList = {

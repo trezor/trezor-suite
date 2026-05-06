@@ -129,13 +129,10 @@ describe('SellPreviewContinueButton', () => {
         await userEvent.press(getByText('Continue'));
 
         expect(consoleWarnSpy).not.toHaveBeenCalled();
-        expect(mockNavigate).toHaveBeenCalledWith({
-            name: 'TradingSellOutputsReview',
-            params: {
-                accountKey: 'eth-account-1',
-                orderId: banxaCreditCardSellQuote.orderId,
-                tokenContract: undefined,
-            },
+        expect(mockNavigate).toHaveBeenCalledWith('TradingSellOutputsReview', {
+            accountKey: 'eth-account-1',
+            orderId: banxaCreditCardSellQuote.orderId,
+            tokenContract: undefined,
         });
         expect(mockOnSignTransactionNavigation).toHaveBeenCalledTimes(1);
     });

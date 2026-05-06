@@ -10,10 +10,9 @@ import { type TokenAddress } from '@suite-common/wallet-types';
 import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    type AppTabsParamList,
-    type StackToTabCompositeNavigationProp,
-    type TradingStackParamList,
-    TradingStackRoutes,
+    type RootStackParamList,
+    RootStackRoutes,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
 
@@ -23,11 +22,7 @@ export type SellPreviewContinueButtonProps = {
     onSignTransactionNavigation: () => void;
 };
 
-type NavigationProp = StackToTabCompositeNavigationProp<
-    TradingStackParamList,
-    TradingStackRoutes.TradingSellPreview,
-    AppTabsParamList
->;
+type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.TradingSellPreview>;
 
 const SELL_PREVIEW_CONTINUE_BUTTON_TEST_ID = '@trading/sell-preview/continue-button';
 
@@ -56,13 +51,10 @@ export const SellPreviewContinueButton = memo(
                 ? (parseCryptoId(quote.cryptoCurrency)?.contractAddress as TokenAddress)
                 : undefined;
 
-            navigation.navigate({
-                name: TradingStackRoutes.TradingSellOutputsReview,
-                params: {
-                    accountKey: fromAccount.key,
-                    tokenContract,
-                    orderId: quote.orderId ?? '',
-                },
+            navigation.navigate(RootStackRoutes.TradingSellOutputsReview, {
+                accountKey: fromAccount.key,
+                tokenContract,
+                orderId: quote.orderId ?? '',
             });
             onSignTransactionNavigation();
         };
