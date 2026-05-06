@@ -37,6 +37,7 @@ type ButtonContainerProps = TransientProps<AllowedIconButtonFrameProps> & {
     $priority: ButtonPriority;
     $intent: ButtonIntent;
     $isInverse: boolean;
+    $isFloating: boolean;
     disabled: boolean;
 };
 
@@ -45,8 +46,8 @@ const Container = styled.button<ButtonContainerProps>`
 
     border-radius: ${({ $size }) => mapSizeToBorderRadius($size)};
 
-    ${({ $intent, $priority, disabled, $isInverse, theme }) =>
-        mapPropsToCSS($intent, $priority, disabled, $isInverse, theme)}
+    ${({ $intent, $priority, disabled, $isInverse, $isFloating, theme }) =>
+        mapPropsToCSS($intent, $priority, disabled, $isInverse, theme, $isFloating)}
 
     ${withFrameProps}
 `;
@@ -62,6 +63,7 @@ export const IconButton = ({
     'data-testid': dataTestId,
     icon,
     size = 'medium',
+    isFloating = false,
     ...props
 }: IconButtonProps) => {
     const frameProps = pickAndPrepareFrameProps(props, allowedIconButtonFrameProps);
@@ -80,6 +82,7 @@ export const IconButton = ({
             $priority={priority}
             $intent={intent}
             $isInverse={isInverse}
+            $isFloating={isFloating}
             {...buttonProps}
             {...frameProps}
         >
