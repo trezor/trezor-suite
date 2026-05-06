@@ -117,16 +117,16 @@ export const selectHomeScreenState = (state: NativeDeviceRootState): HomeScreenS
         return 'uninitializedDevice';
     }
 
+    if (isDeviceConnected && isDeviceInitialized && !isAnyNetworkEnabled) {
+        return 'noNetworkConfigured';
+    }
+
     const hasOnlyEmptyPortfolioTracker = selectHasOnlyEmptyPortfolioTracker(state);
 
     // Crossroads is displayed when there is no real device connected and portfolio tracker has no
     // accounts, or when a device is connected but not authorized (PIN enter cancelled).
     if (hasOnlyEmptyPortfolioTracker || !isDeviceAuthorized) {
         return 'emptyPortfolioCrossroads';
-    }
-
-    if (isDeviceInitialized && !isAnyNetworkEnabled) {
-        return 'noNetworkConfigured';
     }
 
     return 'emptyPortfolioTracker';

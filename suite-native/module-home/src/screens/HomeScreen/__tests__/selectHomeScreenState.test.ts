@@ -178,7 +178,6 @@ describe('selectHomeScreenState', () => {
                     selectedDevice: {
                         connected: true,
                         features: { initialized: true },
-                        state: {},
                     },
                     devices: [{ id: 'device_id' }],
                 },
