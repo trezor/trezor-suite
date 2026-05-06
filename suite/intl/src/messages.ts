@@ -1226,7 +1226,7 @@ export const messages = defineMessages({
         id: 'TR_TRADING_KYC_NO_KYC',
     },
     TR_TRADING_KYC_ANONYMOUS: {
-        defaultMessage: 'Anonymous.',
+        defaultMessage: 'Anonymous',
         id: 'TR_TRADING_KYC_ANONYMOUS',
     },
 

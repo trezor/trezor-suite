@@ -62,7 +62,7 @@ export const TradingUtilsKyc = ({
                         size={12}
                         data-testid="@trading/kyc/dex"
                     />
-                    <Text typographyStyle="body-xs" color="contentBrand">
+                    <Text typographyStyle="body-sm" color="contentBrand">
                         <Translation id="TR_TRADING_KYC_ANONYMOUS" />
                     </Text>
                 </Row>
@@ -80,7 +80,7 @@ export const TradingUtilsKyc = ({
         return (
             <Tooltip content={kycPolicyTranslation} placement="bottom">
                 <TooltipText>
-                    <Text color="contentWarning" typographyStyle="body-xs">
+                    <Text color="contentWarning" typographyStyle="body-sm">
                         <Row gap={4}>
                             <Icon name="identificationCard" color="contentWarning" size={12} />
                             <Translation id={kycTitle} />
