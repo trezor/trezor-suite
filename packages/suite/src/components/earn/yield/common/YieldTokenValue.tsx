@@ -27,6 +27,7 @@ export const YieldTokenValue = ({ token, amount }: YieldTokenValueProps) => {
                 contractAddress={token.contractAddress}
                 placeholder={token.symbol}
                 showNetworkIcon
+                isBordered={false}
             />
             <Text typographyStyle="body-md-strong">
                 <FormattedCryptoAmount value={roundedAmount} symbol={token.symbol} />

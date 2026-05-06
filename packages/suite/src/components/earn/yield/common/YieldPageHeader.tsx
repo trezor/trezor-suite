@@ -97,6 +97,7 @@ export const YieldPageHeader = ({ analyticsStep, account, routeParams }: YieldPa
                                 contractAddress={vault?.token?.address}
                                 showNetworkIcon
                                 size={32}
+                                isBordered={false}
                             />
                         )}
                         <Column gap={2} overflow="hidden">

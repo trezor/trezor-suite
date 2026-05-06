@@ -32,6 +32,7 @@ export const YieldApprovedAmountCard = ({
                     contractAddress={token.contractAddress ?? null}
                     placeholder={token.symbol}
                     showNetworkIcon
+                    isBordered={false}
                 />
                 <ApprovedAmountValue
                     amount={amount}

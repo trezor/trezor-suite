@@ -26,6 +26,7 @@ export const YieldRewardItem = ({
                 contractAddress={tokenAddress}
                 placeholder={tokenSymbol}
                 size={24}
+                isBordered={false}
             />
             <HiddenPlaceholder>
                 <Text typographyStyle="body-md-strong">
