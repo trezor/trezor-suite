@@ -1,9 +1,6 @@
-import styled from 'styled-components';
-
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
-import { Box, Button, Column, Image, Paragraph, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Box, Button, Column, Image, Paragraph, Row, Text } from '@trezor/components';
 
 import { useDispatch, useLayoutSize } from 'src/hooks/suite';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
@@ -15,12 +12,6 @@ type StablecoinYieldBannerProps = {
     onCTAClick: () => void;
     isVisible: boolean;
 };
-
-const ImageContainer = styled.div`
-    height: 100%;
-    display: flex;
-    align-items: flex-end;
-`;
 
 const Title = ({ isVerticalLayout }: { isVerticalLayout: boolean }) => {
     const { isBelowLaptop } = useLayoutSize();
@@ -81,14 +72,14 @@ export const StablecoinYieldBanner = ({
                 <ContentFlex
                     height="100%"
                     margin={{
-                        right: isBelowDesktop ? undefined : spacings.xxxxl,
+                        right: isBelowDesktop ? undefined : 48,
                     }}
                     justifyContent="space-between"
-                    gap={spacings.xl}
+                    gap={24}
                     alignItems="center"
                 >
-                    <Column gap={isBelowDesktop ? spacings.md : spacings.xl}>
-                        <Column gap={isBelowLaptop ? spacings.xxs : spacings.xs}>
+                    <Column gap={isBelowDesktop ? 16 : 24}>
+                        <Column gap={isBelowLaptop ? 4 : 8}>
                             <Title isVerticalLayout={isVerticalLayout} />
                             <Description />
                         </Column>
@@ -96,14 +87,14 @@ export const StablecoinYieldBanner = ({
                         <CTAButton onClick={handleCTAClick} isBelowLaptop={isBelowLaptop} />
                     </Column>
 
-                    <ImageContainer>
+                    <Row height="100%" alignItems="flex-end">
                         <Image
                             image="DASHBOARD_PROMO_BANNER_STABLECOIN_YIELD"
                             height="100%"
                             objectFit="cover"
                             objectPosition="left"
                         />
-                    </ImageContainer>
+                    </Row>
                 </ContentFlex>
                 <CloseButton onClose={onClose} />
             </Box>
