@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { type TradingTradeType } from '@suite-common/trading';
-import { Modal } from '@trezor/components';
+import { Box, Modal } from '@trezor/components';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
@@ -36,11 +36,13 @@ export const TradingOffersModal = ({ onClose, onSelect }: TradingOffersModalProp
             width={600}
             height={680}
         >
-            {isTradingExchangeContext(context) ? (
-                <TradingOffersModalExchange onSelect={handleSelect} />
-            ) : (
-                <TradingOffersModalGroup quotes={deduplicatedQuotes} onSelect={handleSelect} />
-            )}
+            <Box padding={{ bottom: 16 }}>
+                {isTradingExchangeContext(context) ? (
+                    <TradingOffersModalExchange onSelect={handleSelect} />
+                ) : (
+                    <TradingOffersModalGroup quotes={deduplicatedQuotes} onSelect={handleSelect} />
+                )}
+            </Box>
         </Modal>
     );
 };
