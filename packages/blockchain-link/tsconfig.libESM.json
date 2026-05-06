@@ -7,32 +7,14 @@
     },
     "include": ["./src"],
     "references": [
-        {
-            "path": "../blockchain-link-types"
-        },
-        {
-            "path": "../blockchain-link-utils"
-        },
-        {
-            "path": "../env-utils"
-        },
-        {
-            "path": "../utils"
-        },
-        {
-            "path": "../utxo-lib"
-        },
-        {
-            "path": "../websocket-client"
-        },
-        {
-            "path": "../e2e-utils"
-        },
-        {
-            "path": "../eslint"
-        },
-        {
-            "path": "../type-utils"
-        }
+        { "path": "../blockchain-link-types" },
+        { "path": "../blockchain-link-utils" },
+        { "path": "../env-utils" },
+        { "path": "../utils" },
+        { "path": "../utxo-lib" },
+        { "path": "../websocket-client" },
+        { "path": "../e2e-utils" },
+        { "path": "../eslint" },
+        { "path": "../type-utils" }
     ]
 }

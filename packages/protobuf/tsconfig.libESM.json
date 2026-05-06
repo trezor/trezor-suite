@@ -1,12 +1,6 @@
 {
     "extends": "../../tsconfig.libESM.json",
     "include": ["./src"],
-    "compilerOptions": {
-        "outDir": "./libESM"
-    },
-    "references": [
-        {
-            "path": "../eslint"
-        }
-    ]
+    "compilerOptions": { "outDir": "./libESM" },
+    "references": [{ "path": "../eslint" }]
 }

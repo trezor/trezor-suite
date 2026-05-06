@@ -6,20 +6,10 @@
         "types": ["chrome", "w3c-web-usb"]
     },
     "references": [
-        {
-            "path": "../connect-common"
-        },
-        {
-            "path": "../utils"
-        },
-        {
-            "path": "../websocket-client"
-        },
-        {
-            "path": "../eslint"
-        },
-        {
-            "path": "../type-utils"
-        }
+        { "path": "../connect-common" },
+        { "path": "../utils" },
+        { "path": "../websocket-client" },
+        { "path": "../eslint" },
+        { "path": "../type-utils" }
     ]
 }

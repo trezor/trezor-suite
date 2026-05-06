@@ -6,20 +6,10 @@
         "types": ["w3c-web-usb", "node"]
     },
     "references": [
-        {
-            "path": "../protobuf"
-        },
-        {
-            "path": "../protocol"
-        },
-        {
-            "path": "../type-utils"
-        },
-        {
-            "path": "../utils"
-        },
-        {
-            "path": "../eslint"
-        }
+        { "path": "../protobuf" },
+        { "path": "../protocol" },
+        { "path": "../type-utils" },
+        { "path": "../utils" },
+        { "path": "../eslint" }
     ]
 }

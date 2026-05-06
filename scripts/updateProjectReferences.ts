@@ -150,17 +150,14 @@ import { getWorkspacesList } from './utils/getWorkspacesList';
 
             if (workspaceLibConfig !== null) {
                 workspaceLibConfig.references = expectedLibReferences;
-                fs.writeFileSync(
-                    workspaceLibConfigPath,
-                    await serializeConfig(workspaceLibConfig, 2),
-                );
+                fs.writeFileSync(workspaceLibConfigPath, await serializeConfig(workspaceLibConfig));
             }
 
             if (workspaceLibESMConfig !== null) {
                 workspaceLibESMConfig.references = expectedLibReferences;
                 fs.writeFileSync(
                     workspaceLibESMConfigPath,
-                    await serializeConfig(workspaceLibESMConfig, 2),
+                    await serializeConfig(workspaceLibESMConfig),
                 );
             }
         });
