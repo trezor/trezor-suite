@@ -6,7 +6,7 @@ import type {
     YieldFlowDisplayToken,
     YieldPendingTransactionState,
 } from '@suite-common/wallet-core';
-import { Button, Column } from '@trezor/components';
+import { Banner, Button, Column } from '@trezor/components';
 
 import { YieldAmountCard } from './YieldAmountCard';
 import { YieldApprovedAmountCard } from './YieldApprovedAmountCard';
@@ -27,7 +27,8 @@ const approveStepTranslationMap = {
 type ApproveButtonTranslationId =
     | 'TR_EARN_YIELD_REVOKE_APPROVAL'
     | 'TR_EARN_YIELD_INCREASE_APPROVAL'
-    | 'TR_APPROVE_DATA_TITLE';
+    | 'TR_APPROVE_DATA_TITLE'
+    | 'TR_CONTINUE';
 
 type GetApproveButtonTranslationIdParams = {
     approvalAction: YieldApprovalAction;
@@ -42,6 +43,10 @@ const getApproveButtonTranslationId = ({
 
     if (approvalAction === 'increase') {
         return 'TR_EARN_YIELD_INCREASE_APPROVAL';
+    }
+
+    if (approvalAction === 'continue') {
+        return 'TR_CONTINUE';
     }
 
     return 'TR_APPROVE_DATA_TITLE';
@@ -133,6 +138,16 @@ export const YieldApproveStep = ({
                     >
                         <Translation id={approveButtonId} />
                     </Button>
+
+                    {approvalAction === 'revoke' && (
+                        <Banner
+                            intent="warning"
+                            icon="warning"
+                            description={
+                                <Translation id="TR_EXCHANGE_APPROVAL_FORM_REVOKE_BANNER" />
+                            }
+                        />
+                    )}
 
                     {pendingApproveTransaction && (
                         <YieldPendingTransaction

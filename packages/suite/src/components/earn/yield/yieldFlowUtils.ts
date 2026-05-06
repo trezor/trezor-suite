@@ -27,7 +27,7 @@ type GetYieldApprovalActionParams = {
     tokenContractAddress?: string | null;
 };
 
-export type YieldApprovalAction = 'approve' | 'increase' | 'revoke';
+export type YieldApprovalAction = 'approve' | 'continue' | 'increase' | 'revoke';
 
 export type YieldNetworkFeeWarning = {
     availableAmount: string;
@@ -85,17 +85,20 @@ export const getYieldApprovalAction = ({
     const allowanceAmountValue = new BigNumber(allowanceAmount || '0');
     const liveAmountValue = new BigNumber(liveAmount || '0');
     const hasAllowanceAmount = !!allowanceAmount && !allowanceAmountValue.isZero();
-    const isAmountChanged = hasAllowanceAmount && !liveAmountValue.eq(allowanceAmountValue);
     const isIncreasing = hasAllowanceAmount && liveAmountValue.gt(allowanceAmountValue);
     const needsZeroApprovalReset =
         !!tokenContractAddress && !tokenSupportsIncreasingAllowance(tokenContractAddress);
 
-    if (isRevokeRequired || (isAmountChanged && needsZeroApprovalReset)) {
+    if (isRevokeRequired || (isIncreasing && needsZeroApprovalReset)) {
         return 'revoke';
     }
 
     if (isIncreasing) {
         return 'increase';
+    }
+
+    if (hasAllowanceAmount) {
+        return 'continue';
     }
 
     return 'approve';
