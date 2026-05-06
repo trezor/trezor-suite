@@ -1,9 +1,8 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { type TradingTradeType } from '@suite-common/trading';
 import { typography } from '@trezor/theme';
-
-import { type TradingOffersItemProps } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersItem';
 
 const TooltipRow = styled.div`
     display: flex;
@@ -22,7 +21,7 @@ const TooltipValue = styled.div`
 `;
 
 // IN TESTING MODE
-export const TradingUtilsTooltipFee = (_props: Pick<TradingOffersItemProps, 'quote'>) => (
+export const TradingUtilsTooltipFee = (_props: { quote: TradingTradeType }) => (
     <>
         <TooltipRow>
             <TooltipProperty>

@@ -1,12 +1,12 @@
 import { Translation, useTranslation } from '@suite/intl';
+import { type TradingTradeType } from '@suite-common/trading';
 import { Icon, Tooltip } from '@trezor/components';
 
 import { TooltipIcon, TooltipText, TooltipWrap } from 'src/views/wallet/trading';
-import { type TradingOffersItemProps } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersItem';
 import { TradingUtilsTooltipFee } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsTooltipFee';
 
 // IN TESTING MODE
-export const TradingUtilsTooltip = ({ quote }: Pick<TradingOffersItemProps, 'quote'>) => {
+export const TradingUtilsTooltip = ({ quote }: { quote: TradingTradeType }) => {
     const { translationString } = useTranslation();
     const isFeesIncluded = false;
     const notIncludedContent = translationString('TR_TRADING_FEES_ON_WEBSITE');
