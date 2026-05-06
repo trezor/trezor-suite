@@ -272,19 +272,16 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
                 : maxAmount;
 
             setValue(TRADING_FORM_OUTPUT_AMOUNT, cryptoInputValue, { shouldDirty: true });
+        } else {
+            setValue(TRADING_FORM_OUTPUT_AMOUNT, '', { shouldDirty: true });
         }
 
         setValue(TRADING_FORM_OUTPUT_MAX, 0, { shouldDirty: true });
+        setValue(TRADING_FORM_OUTPUT_FIAT, '', { shouldDirty: true });
         clearErrors([TRADING_FORM_OUTPUT_FIAT, TRADING_FORM_OUTPUT_AMOUNT]);
 
         setFractionButton(1);
-
-        if (type === 'exchange') {
-            dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
-        }
-
         composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
-        setValue(TRADING_FORM_OUTPUT_FIAT, '', { shouldDirty: true });
     };
 
     // call change handler on every change of text inputs with debounce

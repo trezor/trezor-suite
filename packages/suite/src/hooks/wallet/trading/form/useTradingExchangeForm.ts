@@ -200,7 +200,9 @@ export const useTradingExchangeForm = ({
     const isAmountEmpty = output?.amount === '';
     const noProviders = Object.keys(exchangeInfo?.providerInfos ?? {}).length === 0;
     const isInitialDataLoading = !exchangeInfo?.providerInfos;
-
+    const isFormLoading = isInitialDataLoading || formState.isSubmitting || isLoading;
+    const isFormInvalid = !(formIsValid && hasValues) || !isReceiveAddressFormValid;
+    const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
     const { getAssetDecimals } = useTradingAssetDecimals();
     const decimals = useMemo(
         () =>
@@ -238,10 +240,6 @@ export const useTradingExchangeForm = ({
         methods,
         setShowReserveBanner,
     });
-
-    const isFormLoading = isInitialDataLoading || formState.isSubmitting || isLoading;
-    const isFormInvalid = !(formIsValid && hasValues) || !isReceiveAddressFormValid;
-    const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
 
     const { toggleAmountInCrypto } = useTradingCurrencySwitcher({
         account,
