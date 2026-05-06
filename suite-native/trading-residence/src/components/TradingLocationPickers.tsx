@@ -15,7 +15,7 @@ export type TradingLocationPickersProps = {
 export const TradingLocationPickers = ({
     context,
     testID,
-    hasCountrySubdivisionBottomBorder = true,
+    hasCountrySubdivisionBottomBorder = false,
 }: TradingLocationPickersProps) => {
     const { watch } = useFormContext<TradingLocationFormValues>();
     const selectedCountry = watch('country');

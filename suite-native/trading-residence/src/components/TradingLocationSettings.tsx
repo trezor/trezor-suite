@@ -47,7 +47,6 @@ export const TradingLocationSettings = ({ context, children }: TradingLocationSe
                                     <TradingLocationPickers
                                         context={context}
                                         testID="@trading-residence"
-                                        hasCountrySubdivisionBottomBorder={false}
                                     />
                                 </Card>
                                 <TradingAvailability />
