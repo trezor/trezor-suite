@@ -157,14 +157,17 @@ export const PassphraseInputCard = ({
                             bottomText={errorMessage}
                             hasError={!!errorMessage}
                             rightContent={
-                                <Icon
-                                    size={18}
-                                    intent="neutral"
-                                    priority="secondary"
-                                    name={showPassword ? 'eyeClosed' : 'eye'}
-                                    onClick={() => setShowPassword(prev => !prev)}
-                                    data-testid="@passphrase/show-toggle"
-                                />
+                                // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+                                <span onMouseDown={e => e.preventDefault()}>
+                                    <Icon
+                                        size={18}
+                                        intent="neutral"
+                                        priority="secondary"
+                                        name={showPassword ? 'eyeClosed' : 'eye'}
+                                        onClick={() => setShowPassword(prev => !prev)}
+                                        data-testid="@passphrase/show-toggle"
+                                    />
+                                </span>
                             }
                         />
                         <AnimatePresence initial={false}>
