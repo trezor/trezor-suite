@@ -7633,6 +7633,74 @@ export const messages = defineMessages({
         id: 'TR_GUIDE_SUPPORT_AND_FEEDBACK',
         defaultMessage: 'Support & Feedback',
     },
+    TR_GUIDE_KEYBOARD_SHORTCUTS: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS',
+        defaultMessage: 'Keyboard shortcuts',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_GENERAL: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_GENERAL',
+        defaultMessage: 'General',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_FIND: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_FIND',
+        defaultMessage: 'Find in page',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_OPEN_GUIDE: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_OPEN_GUIDE',
+        defaultMessage: 'Open/close guide',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_PASSPHRASE: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_PASSPHRASE',
+        defaultMessage: 'Open passphrase wallet',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_SWITCH_DEVICE: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SWITCH_DEVICE',
+        defaultMessage: 'Open wallet switcher',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_SETTINGS: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SETTINGS',
+        defaultMessage: 'Open settings',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_LOCK_APP: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_LOCK_APP',
+        defaultMessage: 'Lock app',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_SWITCH_ACCOUNT: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SWITCH_ACCOUNT',
+        defaultMessage: 'Switch to account 1–9',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_SEND: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SEND',
+        defaultMessage: 'New transaction',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_TOGGLE_THEME: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_TOGGLE_THEME',
+        defaultMessage: 'Toggle dark/light theme',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_SEARCH_ACCOUNTS: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SEARCH_ACCOUNTS',
+        defaultMessage: 'Search accounts',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_DESKTOP: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_DESKTOP',
+        defaultMessage: 'Desktop',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_DEBUG: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_DEBUG',
+        defaultMessage: 'Debug',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_LANGUAGE_NEXT: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_LANGUAGE_NEXT',
+        defaultMessage: 'Next language',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_LANGUAGE_PREV: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_LANGUAGE_PREV',
+        defaultMessage: 'Previous language',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_LANGUAGE_KEYS_SWITCH: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_LANGUAGE_KEYS_SWITCH',
+        defaultMessage: 'Switch language keys/values',
+    },
     TR_GUIDE_ARTICLES: {
         id: 'TR_GUIDE_ARTICLES',
         defaultMessage: 'Articles',
