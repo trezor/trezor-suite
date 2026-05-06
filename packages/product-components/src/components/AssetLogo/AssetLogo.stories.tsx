@@ -48,6 +48,9 @@ const meta: Meta<AssetLogoProps> = {
         shouldTryToFetch: {
             control: { type: 'boolean' },
         },
+        isBordered: {
+            control: { type: 'boolean' },
+        },
     },
 };
 
@@ -60,6 +63,7 @@ export const NativeCoin: StoryObj<AssetLogoProps> = {
         placeholder: 'ETH',
         shouldTryToFetch: true,
         showNetworkIcon: false,
+        isBordered: true,
         ...getFramePropsStory(allowedAssetLogoFrameProps).args,
     },
 };
@@ -72,6 +76,7 @@ export const Token: StoryObj<AssetLogoProps> = {
         placeholder: 'USDC',
         shouldTryToFetch: true,
         showNetworkIcon: true,
+        isBordered: true,
         ...getFramePropsStory(allowedAssetLogoFrameProps).args,
     },
 };

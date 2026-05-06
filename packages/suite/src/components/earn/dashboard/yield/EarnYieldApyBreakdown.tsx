@@ -50,6 +50,7 @@ export const EarnYieldApyBreakdown = ({
                         contractAddress={reward.token.address}
                         showNetworkIcon
                         size={20}
+                        isBordered={false}
                     />
                     <Column flex="1">
                         <Text typographyStyle="body-sm">{reward.token.symbol}</Text>
