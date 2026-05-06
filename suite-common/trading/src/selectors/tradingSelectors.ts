@@ -36,7 +36,6 @@ import {
 } from '../types';
 import {
     cryptoIdToNetwork,
-    getBestRatedQuote,
     getTradingQuotesByPaymentMethod,
     isBuyTrade,
     isExchangeProvider,
@@ -660,11 +659,6 @@ export const selectValidTradingBuyQuotes = createMemoizedSelector(
     },
 );
 
-export const selectTradingBuyBestQuote = createMemoizedSelector(
-    [selectValidTradingBuyQuotes],
-    quotes => getBestRatedQuote(quotes, 'buy'),
-);
-
 export const selectValidTradingSellQuotes = createMemoizedSelector(
     [selectTradingSellQuotes],
     quotes => {
@@ -672,11 +666,6 @@ export const selectValidTradingSellQuotes = createMemoizedSelector(
 
         return quotes.filter(item => item.rate && item.rate !== 0);
     },
-);
-
-export const selectTradingSellBestQuote = createMemoizedSelector(
-    [selectValidTradingSellQuotes],
-    quotes => getBestRatedQuote(quotes, 'sell'),
 );
 
 export const selectTradingBuyAccountKey = (state: TradingRootState) =>

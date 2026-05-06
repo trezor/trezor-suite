@@ -34,7 +34,6 @@ import {
     selectTradingActiveSection,
     selectTradingBuy,
     selectTradingBuyAmountLimits,
-    selectTradingBuyBestQuote,
     selectTradingBuyInfo,
     selectTradingBuyIsFromRedirect,
     selectTradingBuyIsLoading,
@@ -80,7 +79,6 @@ import {
     selectTradingProviderMetadata,
     selectTradingSellAccountKey,
     selectTradingSellAmountLimits,
-    selectTradingSellBestQuote,
     selectTradingSellFormStep,
     selectTradingSellInfo,
     selectTradingSellIsFromRedirect,
@@ -1041,18 +1039,6 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingBuyBestQuote.name, () => {
-        it('should return the best rated buy quote', () => {
-            expect(selectTradingBuyBestQuote(state)?.orderId).toBe('orderId3');
-        });
-
-        it('should return undefined when there are no valid quotes', () => {
-            state.wallet.trading.buy.quotes = [];
-
-            expect(selectTradingBuyBestQuote(state)).toBeUndefined();
-        });
-    });
-
     describe('bestBuyQuotePerPaymentMethodProjection', () => {
         it('should return the first valid quote for each payment method sorted by rate', () => {
             const quotes = state.wallet.trading.buy.quotes.map(quote => ({
@@ -1432,20 +1418,6 @@ describe('tradingSelectors', () => {
             expect(selectTradingSellQuotesByPaymentMethod(state, 'creditCard')).toBe(
                 selectTradingSellQuotesByPaymentMethod(state, 'creditCard'),
             );
-        });
-    });
-
-    describe(selectTradingSellBestQuote.name, () => {
-        it('should return the best rated sell quote', () => {
-            expect(selectTradingSellBestQuote(state)?.orderId).toBe(
-                '05a031d0-2c7a-4e7f-9001-67cec1253fae',
-            );
-        });
-
-        it('should return undefined when there are no valid quotes', () => {
-            state.wallet.trading.sell.quotes = [];
-
-            expect(selectTradingSellBestQuote(state)).toBeUndefined();
         });
     });
 
