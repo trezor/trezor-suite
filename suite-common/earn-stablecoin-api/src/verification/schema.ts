@@ -1,11 +1,6 @@
 import { z } from 'zod';
 
-const evmHexString = z
-    .string()
-    .startsWith('0x')
-    .transform(s => s as `0x${string}`);
-
-const evmNumberLike = z.union([z.number(), evmHexString]);
+import { evmHexString, evmNumberLike } from '@suite-common/schemas/src/evm';
 
 export const UnsignedEvmTransactionSchema = z.object({
     from: evmHexString,
@@ -55,52 +50,3 @@ export const parseUnsignedEvmTransactionForSigning = (
         return null;
     }
 };
-
-export const EvmFeeSchema = z.union([
-    z.object({
-        type: z.literal('eip1559'),
-        maxFeePerGas: evmHexString,
-        maxPriorityFeePerGas: evmHexString,
-        gasLimit: evmHexString,
-    }),
-    z.object({
-        type: z.literal('legacy'),
-        gasPrice: evmHexString,
-        gasLimit: evmHexString,
-    }),
-]);
-
-type EvmFee = z.infer<typeof EvmFeeSchema>;
-type EvmFeeType<Type extends EvmFee['type']> = Extract<EvmFee, { type: Type }>;
-
-export function parseEvmFee(raw: unknown) {
-    const result = EvmFeeSchema.safeParse(raw);
-
-    return result.success ? result.data : null;
-}
-
-export function flattenEvmFees(fee: EvmFee) {
-    const result: Pick<EvmFee, 'gasLimit'> & {
-        gasPrice?: EvmFeeType<'legacy'>['gasPrice'];
-        maxFeePerGas?: EvmFeeType<'eip1559'>['maxFeePerGas'];
-        maxPriorityFeePerGas?: EvmFeeType<'eip1559'>['maxPriorityFeePerGas'];
-    } = {
-        gasLimit: fee.gasLimit,
-    };
-
-    switch (fee.type) {
-        case 'eip1559':
-            Object.assign(result, {
-                maxFeePerGas: fee.maxFeePerGas,
-                maxPriorityFeePerGas: fee.maxPriorityFeePerGas,
-            });
-            break;
-        case 'legacy':
-            Object.assign(result, {
-                gasPrice: fee.gasPrice,
-            });
-            break;
-    }
-
-    return result;
-}

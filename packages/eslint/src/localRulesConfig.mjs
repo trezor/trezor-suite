@@ -29,6 +29,7 @@ const publishableTrezorPackages = [
     '@trezor/utils',
     '@trezor/utxo-lib',
     '@trezor/websocket-client',
+    '@suite-common/schemas',
 ];
 
 /** @type {Config[]} */

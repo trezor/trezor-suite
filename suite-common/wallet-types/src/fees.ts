@@ -3,6 +3,7 @@ export type EvmSelectedFee =
           type: 'eip1559';
           maxFeePerGas: string;
           maxPriorityFeePerGas: string;
+          baseFeePerGas: string;
           gasLimit: string;
       }
     | {
