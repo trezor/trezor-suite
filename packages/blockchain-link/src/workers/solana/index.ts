@@ -1,22 +1,10 @@
 import {
-    type AccountInfoBase,
-    type Address,
-    type ClusterUrl,
-    type RpcMainnet,
-    type RpcSubscriptionsMainnet,
-    type RpcTransportMainnet,
     SOLANA_ERROR__BLOCK_HEIGHT_EXCEEDED,
     SOLANA_ERROR__JSON_RPC__SERVER_ERROR_SEND_TRANSACTION_PREFLIGHT_FAILURE,
     SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_CONNECTION_CLOSED,
     SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_FAILED_TO_CONNECT,
     SOLANA_ERROR__RPC__TRANSPORT_HTTP_ERROR,
     SOLANA_ERROR__TRANSACTION_ERROR__BLOCKHASH_NOT_FOUND,
-    type Signature,
-    type Slot,
-    type SolanaRpcApiMainnet,
-    type SolanaRpcResponse,
-    type SolanaRpcSubscriptionsApi,
-    type TransactionWithBlockhashLifetime,
     address,
     assertTransactionIsFullySigned,
     createDefaultRpcTransport,
@@ -37,12 +25,28 @@ import {
 import { getTokenSize as _getTokenSize } from '@solana-program/token';
 import { getTokenSize as _getToken2022Size } from '@solana-program/token-2022';
 
+import type {
+    AccountInfoBase,
+    Address,
+    ClusterUrl,
+    ParsedTransactionWithMeta,
+    RpcMainnet,
+    RpcSubscriptionsMainnet,
+    RpcTransportMainnet,
+    Signature,
+    Slot,
+    SolanaRpcApiMainnet,
+    SolanaRpcResponse,
+    SolanaRpcSubscriptionsApi,
+    SolanaTokenAccountInfo,
+    SolanaValidParsedTxWithMeta,
+    TransactionWithBlockhashLifetime,
+} from '@connect-coins/solana/types';
 import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
 import type {
     AccountInfo,
     MessageTypes,
     Response,
-    SolanaTokenAccountInfo,
     SubscriptionAccountInfo,
     TokenDetailByMint,
     TokenInfo,
@@ -54,10 +58,6 @@ import {
     tokenProgramsInfo,
     transformTokenInfo,
 } from '@trezor/blockchain-link-utils/src/solana';
-import type {
-    ParsedTransactionWithMeta,
-    SolanaValidParsedTxWithMeta,
-} from '@trezor/blockchain-link-utils/src/solana-types';
 import { getSuiteVersion } from '@trezor/env-utils';
 import { type IntervalId } from '@trezor/type-utils';
 import { BigNumber, createDeferred, createLazy } from '@trezor/utils';

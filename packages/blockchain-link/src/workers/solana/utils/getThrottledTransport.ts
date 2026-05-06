@@ -1,5 +1,4 @@
-import { type ClusterUrl, type RpcTransportFromClusterUrl } from '@solana/kit';
-
+import type { ClusterUrl, RpcTransportFromClusterUrl } from '@connect-coins/solana/types';
 import { type TimerId } from '@trezor/type-utils';
 
 const DEFAULT_MAX_RPS = 4; // Default maximum requests per second

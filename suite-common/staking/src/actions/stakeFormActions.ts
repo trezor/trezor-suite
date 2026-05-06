@@ -1,4 +1,4 @@
-import { type EstimatedFee } from '@suite-common/staking-solana-types';
+import type { EstimatedFee } from '@connect-coins/solana/types';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type ComposeActionContext,

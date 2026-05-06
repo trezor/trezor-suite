@@ -1,5 +1,10 @@
 import { address } from '@solana/kit';
 
+import type {
+    EstimatedFee,
+    PrepareStakeSolTxResponse,
+    SolanaTxMeta,
+} from '@connect-coins/solana/types';
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type ExtraDependencies } from '@suite-common/redux-utils';
@@ -12,11 +17,6 @@ import {
     prepareStakeSolTx,
     prepareUnstakeSolTx,
 } from '@suite-common/staking-solana';
-import {
-    type EstimatedFee,
-    type PrepareStakeSolTxResponse,
-    type SolanaTxMeta,
-} from '@suite-common/staking-solana-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -41,7 +41,7 @@ import {
 import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
 import { type BlockbookFee as Fee } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, isArrayMember } from '@trezor/utils';
 
 import { type Dispatch, type GetState } from 'src/types/suite';
 
@@ -98,6 +98,10 @@ const getTransactionData = async (
     }
 
     const { account } = selectedAccount;
+
+    if (!isArrayMember(account.symbol, ['sol', 'dsol'])) {
+        return;
+    }
 
     const selectedBlockchain = blockchain[account.symbol];
 

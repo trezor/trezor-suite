@@ -1,6 +1,7 @@
+import type { Network } from '@connect-coins/solana/constants';
+
 import { getSolanaValidatorFixtures } from '../__fixtures__/connection';
 import { getSolanaValidator } from '../connection';
-import { type Network } from '../types';
 
 describe('getSolanaValidator', () => {
     getSolanaValidatorFixtures.forEach(fixture => {

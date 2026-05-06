@@ -1,4 +1,13 @@
-import { type SolanaTokenAccountInfo } from '@trezor/blockchain-link-types';
+import type {
+    AccountInfo,
+    Address,
+    ParsedAccountData,
+    ParsedInstruction,
+    ParsedTransactionWithMeta,
+    PartiallyDecodedInstruction,
+    SolanaTokenAccountInfo,
+    SolanaValidParsedTxWithMeta,
+} from '@connect-coins/solana/types';
 import {
     type StakeType,
     type Target,
@@ -11,16 +20,6 @@ import {
 import { isCodesignBuild } from '@trezor/env-utils';
 import { arrayPartition } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-
-import type {
-    AccountInfo,
-    Address,
-    ParsedAccountData,
-    ParsedInstruction,
-    ParsedTransactionWithMeta,
-    PartiallyDecodedInstruction,
-    SolanaValidParsedTxWithMeta,
-} from './solana-types';
 
 export type ApiTokenAccount = {
     account: AccountInfo<ParsedAccountData>;

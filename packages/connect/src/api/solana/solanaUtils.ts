@@ -1,12 +1,12 @@
-import {
-    type Blockhash,
-    type CompilableTransactionMessage,
-    type SignatureBytes,
-    type Transaction,
-    type TransactionMessage,
-} from '@solana/kit';
 import { getAddMemoInstruction } from '@solana-program/memo';
 
+import type {
+    Blockhash,
+    CompilableTransactionMessage,
+    SignatureBytes,
+    Transaction,
+    TransactionMessage,
+} from '@connect-coins/solana/types';
 import type { TokenAccount } from '@trezor/blockchain-link-types';
 import { solanaUtils as SolanaBlockchainLinkUtils } from '@trezor/blockchain-link-utils';
 import type { TokenProgramName } from '@trezor/blockchain-link-utils/src/solana';
