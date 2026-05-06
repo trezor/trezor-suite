@@ -11,7 +11,16 @@ import {
 } from '@suite-common/wallet-utils';
 import { selectAreTestnetsEnabled } from '@suite-native/settings';
 
-import { type EarnPromoListDataItem, type StakingEarnItem } from '../types';
+import {
+    type EarnPromoListDataItem,
+    type EarnProviderListItem,
+    type StakingEarnItem,
+} from '../types';
+
+export const EVERSTAKE_PROVIDER_LIST_ITEM = {
+    id: 'everstake-provider',
+    type: 'provider',
+} as const satisfies EarnProviderListItem;
 
 type UseStakingListDataReturn = {
     activeItems: StakingEarnItem[];

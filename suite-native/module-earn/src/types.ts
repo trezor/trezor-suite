@@ -43,7 +43,16 @@ export type SkeletonLoaderItem = {
     id: string;
 };
 
-export type EarnPromoListDataItem = EarnPromoItem | EarnPromoSectionType | SkeletonLoaderItem;
+export type EarnProviderListItem = {
+    type: 'provider';
+    id: string;
+};
+
+export type EarnPromoListDataItem =
+    | EarnPromoItem
+    | EarnPromoSectionType
+    | SkeletonLoaderItem
+    | EarnProviderListItem;
 
 export type EarnDepositsCardActiveItem =
     | {
