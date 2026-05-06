@@ -10850,17 +10850,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/staking-solana-types@workspace:*, @suite-common/staking-solana-types@workspace:suite-common/staking-solana-types":
-  version: 0.0.0-use.local
-  resolution: "@suite-common/staking-solana-types@workspace:suite-common/staking-solana-types"
-  dependencies:
-    "@suite-common/wallet-config": "workspace:*"
-    "@suite-common/wallet-types": "workspace:*"
-    "@trezor/blockchain-link-types": "workspace:*"
-    "@trezor/connect": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
 "@suite-common/staking-solana@workspace:suite-common/staking-solana":
   version: 0.0.0-use.local
   resolution: "@suite-common/staking-solana@workspace:suite-common/staking-solana"
