@@ -4,7 +4,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
 import { events } from '@suite-native/analytics';
-import { ListItemSkeleton, TitleHeader, VStack } from '@suite-native/atoms';
+import { ListItemSkeleton, TitleHeader, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
@@ -30,14 +30,19 @@ const getEarnListItemKey = (item: EarnPromoListDataItem) =>
 
 const EarnScreenContent = () => {
     const analytics = useAnalytics();
+    const { bottomSheetRef: stablecoinYieldBottomSheetRef, openModal: openStablecoinYieldModal } =
+        useBottomSheetModal();
 
     const {
         promoListData: stakingPromoItems,
         activeItems: stakingActiveItems,
         accountStakedWithFiveBinaries,
     } = useStakingListData();
-    const { promoListData: stablecoinYieldPromoItems, activeItems: stablecoinYieldActiveItems } =
-        useStablecoinYieldListData();
+    const {
+        promoListData: stablecoinYieldPromoItems,
+        activeItems: stablecoinYieldActiveItems,
+        isLoading: isYieldLoading,
+    } = useStablecoinYieldListData();
 
     const {
         handleStakingPromoPress,
@@ -67,13 +72,11 @@ const EarnScreenContent = () => {
     const handlePromoItemPress = useCallback(
         (item: EarnPromoItem) => {
             if (item.type === 'stablecoin-yield') {
-                if (!item.accountKey || !item.contractAddress) {
-                    return;
-                }
-
                 analytics.report({
                     type: events.earnStablecoinYieldTilePressedEvent.name,
                 });
+
+                openStablecoinYieldModal();
 
                 return;
             }
@@ -84,7 +87,7 @@ const EarnScreenContent = () => {
 
             handleStakingPromoPress(item);
         },
-        [analytics, handleStakingPromoPress],
+        [analytics, handleStakingPromoPress, openStablecoinYieldModal],
     );
 
     const renderItem = useCallback(
@@ -126,6 +129,7 @@ const EarnScreenContent = () => {
                     getItemType={getEarnListItemType}
                     ListHeaderComponent={
                         <EarnScreenListHeader
+                            isStablecoinYieldLoading={isYieldLoading}
                             cardanoStakingAccountKey={accountStakedWithFiveBinaries?.key}
                             stakingActiveItems={stakingActiveItems}
                             stablecoinYieldActiveItems={stablecoinYieldActiveItems}
@@ -136,6 +140,7 @@ const EarnScreenContent = () => {
                 />
 
                 <EarnItemInfoModal ref={infoSheetRef} type="staking" />
+                <EarnItemInfoModal ref={stablecoinYieldBottomSheetRef} type="stablecoin-yield" />
                 <ChooseStakingAccountBottomSheet
                     ref={chooseAccountSheetRef}
                     accounts={chosenAccounts}
