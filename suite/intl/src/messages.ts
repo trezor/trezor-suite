@@ -11783,4 +11783,56 @@ export const messages = defineMessages({
         id: 'MEMO_SWITCH',
         defaultMessage: 'Add memo',
     },
+    TR_COMMAND_PALETTE_PLACEHOLDER: {
+        id: 'TR_COMMAND_PALETTE_PLACEHOLDER',
+        defaultMessage: 'Search commands...',
+    },
+    TR_COMMAND_PALETTE_NO_RESULTS: {
+        id: 'TR_COMMAND_PALETTE_NO_RESULTS',
+        defaultMessage: 'No commands found',
+    },
+    TR_COMMAND_PALETTE_NAVIGATE: {
+        id: 'TR_COMMAND_PALETTE_NAVIGATE',
+        defaultMessage: 'navigate',
+    },
+    TR_COMMAND_PALETTE_SELECT: {
+        id: 'TR_COMMAND_PALETTE_SELECT',
+        defaultMessage: 'select',
+    },
+    TR_COMMAND_PALETTE_CLOSE: {
+        id: 'TR_COMMAND_PALETTE_CLOSE',
+        defaultMessage: 'close',
+    },
+    TR_COMMAND_PALETTE_CATEGORY_NAVIGATION: {
+        id: 'TR_COMMAND_PALETTE_CATEGORY_NAVIGATION',
+        defaultMessage: 'Navigation',
+    },
+    TR_COMMAND_PALETTE_CATEGORY_ACTIONS: {
+        id: 'TR_COMMAND_PALETTE_CATEGORY_ACTIONS',
+        defaultMessage: 'Actions',
+    },
+    TR_COMMAND_PALETTE_CATEGORY_SETTINGS: {
+        id: 'TR_COMMAND_PALETTE_CATEGORY_SETTINGS',
+        defaultMessage: 'Settings',
+    },
+    TR_COMMAND_PALETTE_CATEGORY_ACCOUNTS: {
+        id: 'TR_COMMAND_PALETTE_CATEGORY_ACCOUNTS',
+        defaultMessage: 'Accounts',
+    },
+    TR_COMMAND_PALETTE_SWITCH_DEVICE: {
+        id: 'TR_COMMAND_PALETTE_SWITCH_DEVICE',
+        defaultMessage: 'Switch device',
+    },
+    TR_COMMAND_PALETTE_DEVICE_SETTINGS: {
+        id: 'TR_COMMAND_PALETTE_DEVICE_SETTINGS',
+        defaultMessage: 'Device settings',
+    },
+    TR_COMMAND_PALETTE_TOGGLE_THEME: {
+        id: 'TR_COMMAND_PALETTE_TOGGLE_THEME',
+        defaultMessage: 'Toggle theme',
+    },
+    TR_COMMAND_PALETTE_BIOMETRIC_LOCK: {
+        id: 'TR_COMMAND_PALETTE_BIOMETRIC_LOCK',
+        defaultMessage: 'Biometric lock',
+    },
 } as const);

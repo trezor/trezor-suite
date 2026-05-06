@@ -11,7 +11,9 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { bioAuthActions } from 'src/actions/suite/bioAuthActions';
 import { requestBioAuthChangeThunk } from 'src/actions/suite/bioAuthThunks';
+import { useCommandPalette } from 'src/components/suite/CommandPalette/CommandPaletteProvider';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectIsBioAuthEnabled } from 'src/reducers/bioAuth';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
 export const AppShortcuts = () => {
@@ -26,13 +28,20 @@ export const AppShortcuts = () => {
     const currentTheme = useSelector(selectTheme);
     const autodetectTheme = useSelector(selectAutodetectTheme);
 
-    const isBioAuthEnabled = useSelector(state => state.bioAuth.bioAuthEnabled);
+    const isBioAuthEnabled = useSelector(selectIsBioAuthEnabled);
     const { translationString } = useTranslation();
+    const commandPalette = useCommandPalette();
 
     useEvent('keydown', e => {
         const { altKey, metaKey, ctrlKey, shiftKey } = e;
         const isDeviceSelected = selectedDevice !== undefined;
         const cmdOrCtrl = metaKey || ctrlKey;
+
+        // press ALT + Space to toggle Command Palette
+        if (altKey && !shiftKey && !cmdOrCtrl && e.code === KEYBOARD_CODE.SPACE) {
+            e.preventDefault();
+            commandPalette.toggle();
+        }
 
         // press ALT + P to show PassphraseModal
         if (
