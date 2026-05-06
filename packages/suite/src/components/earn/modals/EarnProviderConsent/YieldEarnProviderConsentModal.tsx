@@ -9,7 +9,9 @@ import { selectTradingCoinSymbolByCryptoId, toTokenCryptoId } from '@suite-commo
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import { MORPHO_DISCLAIMER_URL, TREZOR_SUITE_TOS_URL } from '@trezor/urls';
 
+import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
@@ -98,23 +100,24 @@ export const YieldEarnProviderConsentModal = ({
     return (
         <EarnProviderConsentModalLayout
             heading={<Translation id="TR_EARN_SUPPLY_TOKEN" values={{ symbol: supplySymbol }} />}
-            description={
-                <Translation
-                    id="TR_EARN_YOUR_SUPPLIED_FUNDS_MAINTAINED"
-                    values={{ providerName }}
-                />
-            }
             banners={
                 <YieldProviderConsentBanners
                     networkType={account.networkType}
-                    displaySymbol={supplySymbol}
                     providerName={providerName}
                 />
             }
             consentText={
                 <Translation
-                    id="TR_EARN_CONSENT_TO_SUPPLY_WITH_PROVIDER"
-                    values={{ providerName }}
+                    id="TR_EARN_CONSENT_PROTOCOL_TERMS_AND_DISCLAIMER"
+                    values={{
+                        providerName,
+                        tos: chunks => (
+                            <TrezorLink href={TREZOR_SUITE_TOS_URL}>{chunks}</TrezorLink>
+                        ),
+                        disclaimer: chunks => (
+                            <TrezorLink href={MORPHO_DISCLAIMER_URL}>{chunks}</TrezorLink>
+                        ),
+                    }}
                 />
             }
             onConfirm={handleOnConfirm}

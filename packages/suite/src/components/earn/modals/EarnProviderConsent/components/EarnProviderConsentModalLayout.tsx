@@ -10,7 +10,7 @@ import { useSelector } from 'src/hooks/suite';
 
 interface EarnProviderConsentModalLayoutProps {
     heading: ReactNode;
-    description: ReactNode;
+    description?: ReactNode;
     banners: ReactNode;
     consentText: ReactNode;
     onConfirm: () => void;
