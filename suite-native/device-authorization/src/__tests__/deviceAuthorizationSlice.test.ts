@@ -1,5 +1,5 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { UI_REQUEST } from '@trezor/connect/src/exports';
+import { UI_REQUEST } from '@trezor/connect';
 
 import {
     type DeviceAuthorizationState,
