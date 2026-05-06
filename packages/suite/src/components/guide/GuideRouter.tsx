@@ -15,6 +15,7 @@ import {
     Guide,
     GuideArticle,
     GuideCategory,
+    GuideShortcuts,
     SupportFeedbackSelection,
 } from 'src/components/guide';
 import { MIN_CONTENT_WIDTH } from 'src/constants/suite/layout';
@@ -36,6 +37,8 @@ const getGuideContent = (activeView: ActiveView) => {
             return <Feedback type="SUGGESTION" />;
         case 'GUIDE_DEFAULT':
             return <Guide />;
+        case 'KEYBOARD_SHORTCUTS':
+            return <GuideShortcuts />;
         default:
             exhaustive(activeView);
     }
