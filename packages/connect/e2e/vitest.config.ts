@@ -8,6 +8,53 @@ import { type Plugin, defineConfig } from 'vitest/config';
 const isWebProject = process.env.VITEST_PROJECT === 'browser';
 const nodeRequire = createRequire(import.meta.url);
 
+const alias = [
+    {
+        find: '@trezor/blockchain-link',
+        replacement: path.resolve(__dirname, '../../blockchain-link'),
+    },
+];
+
+// Plugin to resolve bare module specifiers (e.g. @trezor/blockchain-link/src/workers/blockbook)
+// inside new Worker(new URL(..., import.meta.url)) calls.
+// In dev mode, Vite doesn't bundle — the browser constructs the URL at runtime and has no way to
+// resolve bare package specifiers, so we must expand them to /@fs/ paths that the dev server
+// can serve directly. In production, rolldown resolves them through the alias config at build time.
+const resolveWorkerUrlsPlugin = (): Plugin => ({
+    name: 'resolve-worker-urls',
+    enforce: 'pre',
+    apply: 'serve',
+    transform(code) {
+        if (!code.includes('new Worker') || !code.includes('import.meta.url')) return null;
+
+        let changed = false;
+        const transformed = code.replace(
+            /new URL\(\s*(?:\/\*.*?\*\/)?\s*(['"])(@[^'"]+)\1,\s*import\.meta\.url,?\s*\)/gm,
+            (match, _quote, specifier) => {
+                for (const a of alias) {
+                    if (
+                        typeof a.find === 'string' &&
+                        typeof a.replacement === 'string' &&
+                        specifier.startsWith(a.find)
+                    ) {
+                        const rest = specifier.slice(a.find.length);
+                        const abs = a.replacement + rest;
+                        // Append index.ts if no file extension present
+                        const withExt = /\.[cm]?[jt]sx?$/.test(abs) ? abs : `${abs}/index.ts`;
+                        changed = true;
+
+                        return `new URL('/@fs${withExt}', import.meta.url)`;
+                    }
+                }
+
+                return match;
+            },
+        );
+
+        return changed ? { code: transformed, map: null } : null;
+    },
+});
+
 /**
  * Vite plugin that provides the TX_CACHE data as a virtual module.
  * In Node environment, __txcache__/index.js uses fs.readdirSync which works fine.
@@ -175,6 +222,7 @@ export default defineConfig(
             },
             plugins: [
                 txCachePlugin(),
+                resolveWorkerUrlsPlugin(),
                 ...(isWebProject
                     ? [
                           wasm(),
