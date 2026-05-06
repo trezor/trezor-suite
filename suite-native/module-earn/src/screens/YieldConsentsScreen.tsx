@@ -25,13 +25,13 @@ export const YieldConsentsScreen = () => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
     const route = useRoute<RouteProps>();
-    const { providerName, tokenSymbol, vault } = useResolvedYieldFlowData(route.params);
+    const { providerName, tokenSymbol, resolutionStatus } = useResolvedYieldFlowData(route.params);
 
     const handleNavigateToYieldSupplyFlow = () => {
         navigation.navigate(YieldStackRoutes.YieldSupplyFlow, route.params);
     };
 
-    if (!vault || !tokenSymbol) {
+    if (resolutionStatus !== 'resolved') {
         return;
     }
 
@@ -42,7 +42,7 @@ export const YieldConsentsScreen = () => {
                     <Translation id="earn.yieldConsentsScreen.title" />
                 </Text>
                 <YieldConsentsProviderCard
-                    providerName={providerName ?? ''}
+                    providerName={providerName}
                     tokenSymbol={tokenSymbol}
                     onConfirm={handleNavigateToYieldSupplyFlow}
                 />

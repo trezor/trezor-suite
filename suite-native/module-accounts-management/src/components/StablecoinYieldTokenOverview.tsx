@@ -1,21 +1,14 @@
-import { useCallback, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useCallback } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
-import {
-    type AccountsRootState,
-    getConvertedOutputTokenBalanceToInputTokenAmount,
-    selectAccountByKey,
-} from '@suite-common/wallet-core';
+import { getConvertedOutputTokenBalanceToInputTokenAmount } from '@suite-common/wallet-core';
 import {
     type AccountKey,
     type TokenAddress,
     toTokenAddress,
     toTokenSymbol,
 } from '@suite-common/wallet-types';
-import { getApyPercent, getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import {
     Box,
@@ -31,14 +24,13 @@ import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { TokenAmountFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { useWorkInProgressAlert } from '@suite-native/module-earn';
+import { useResolvedYieldFlowData, useWorkInProgressAlert } from '@suite-native/module-earn';
 import {
     type RootStackParamList,
     RootStackRoutes,
     type StackNavigationProps,
     YieldStackRoutes,
 } from '@suite-native/navigation';
-import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
 import { StablecoinYieldApyBreakdown } from './StablecoinYieldApyBreakdown';
 
@@ -58,35 +50,12 @@ export const StablecoinYieldTokenOverview = ({
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
     const isEnabled = useFeatureFlag(FeatureFlag.IsStablecoinYieldEnabled);
-    const { yieldOpportunities } = useAllYieldOpportunities({ enabled: isEnabled });
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
-    );
-    const token = useSelector((state: TokensRootState) =>
-        selectAccountTokenInfo(state, accountKey, tokenContract),
-    );
-
-    const vault = useMemo(() => {
-        if (!account) {
-            return undefined;
-        }
-
-        const normalizedContract = getContractAddressForNetworkSymbol(
-            account.symbol,
-            tokenContract,
-        );
-
-        return yieldOpportunities.find(
-            v =>
-                v.outputToken?.address &&
-                getContractAddressForNetworkSymbol(account.symbol, v.outputToken.address) ===
-                    normalizedContract,
-        );
-    }, [account, yieldOpportunities, tokenContract]);
-
-    const apyPercent =
-        vault?.rewardRate.total != null ? getApyPercent(vault.rewardRate.total)?.toFixed(2) : null;
-    const apy = apyPercent !== null ? `~${apyPercent}%` : null;
+    const { account, apy, resolutionStatus, token, vault } = useResolvedYieldFlowData({
+        accountKey,
+        tokenContract,
+        displayError: false,
+    });
+    const apyValueText = apy !== null ? `~${apy.toFixed(2)}%` : null;
 
     const handleOpenApyAlert = useCallback(() => {
         if (!account || !vault) {
@@ -97,7 +66,7 @@ export const StablecoinYieldTokenOverview = ({
             title: vault.outputToken?.name ?? '',
             description: translate(
                 'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.apyLabel',
-                { apy },
+                { apy: apyValueText },
             ),
             appendix: (
                 <StablecoinYieldApyBreakdown
@@ -111,7 +80,7 @@ export const StablecoinYieldTokenOverview = ({
             primaryButtonTitle: translate('generic.buttons.close'),
             testID: '@account-detail/stablecoin-yield/apy-breakdown-alert',
         });
-    }, [account, apy, showAlert, translate, vault]);
+    }, [account, apyValueText, showAlert, translate, vault]);
 
     const handleSupplyMorePress = useCallback(() => {
         if (!vault?.token.address) {
@@ -122,16 +91,15 @@ export const StablecoinYieldTokenOverview = ({
             screen: YieldStackRoutes.HowYieldWorks,
             params: {
                 accountKey,
-                tokenContract: toTokenAddress(vault.token.address),
-                yieldId: vault.id,
+                tokenContract,
             },
         });
-    }, [accountKey, navigation, vault]);
+    }, [accountKey, navigation, tokenContract, vault?.token.address]);
 
-    if (!isEnabled || !vault?.token.address) return null;
+    if (!isEnabled || resolutionStatus !== 'resolved' || !vault?.token.address) return null;
 
-    const apyColor = apy === null ? 'contentSecondary' : 'contentPrimary';
-    const apyValue = apy ?? <Translation id="earn.notAvailable" />;
+    const apyColor = apyValueText === null ? 'contentSecondary' : 'contentPrimary';
+    const apyValue = apyValueText ?? <Translation id="earn.notAvailable" />;
     const suppliedPosition =
         account && token?.balance !== undefined
             ? {
