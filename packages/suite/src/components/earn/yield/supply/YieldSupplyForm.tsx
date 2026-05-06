@@ -234,6 +234,7 @@ export const YieldSupplyForm = () => {
                                         isDisabled={
                                             !liveAmount || isAmountTooHigh || isSubmittingApprove
                                         }
+                                        isLoading={isSubmittingApprove}
                                         pendingApproveTransaction={approvalPendingTransaction}
                                         onMaxClick={() => setAmountInput(maxAmount)}
                                         onApprovalSubmit={handleOnApprovalSubmit}
