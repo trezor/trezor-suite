@@ -99,11 +99,9 @@ const config: webpack.Configuration = {
     output: {
         filename: '[name].js',
         chunkFilename: a => {
-            const { name, id } = a.chunk ?? {};
-
-            if (id && typeof id === 'string' && /node_modules/.test(id)) return `vendor/[name].js`;
-
-            if (name && /-api-index-ts$/.test(name)) return `${name.replace(/-index-ts$/, '')}.js`;
+            const chunkName = a.chunk?.name;
+            if (chunkName && /-worker$/.test(chunkName)) return `workers/${chunkName}.js`;
+            if (chunkName && /-api$/.test(chunkName)) return `coins/${chunkName}.js`;
 
             return '[name].js';
         },

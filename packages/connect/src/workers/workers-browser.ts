@@ -9,15 +9,13 @@ type WorkerAsyncImporter = () => Promise<BaseWorker<unknown>>;
 // Solana has some issues with worker-loader, so it's not used in the browser
 const SolanaWorker: WorkerAsyncImporter = () =>
     import(
-        /* webpackChunkName: "workers/solana-worker" */
-        '@trezor/blockchain-link/src/workers/solana'
+        /* webpackChunkName: "solana-worker" */ '@trezor/blockchain-link/src/workers/solana'
     ).then(w => w.default());
 const ElectrumWorker = undefined;
 
 const EvmRpcWorker: WorkerAsyncImporter = () =>
     import(
-        /* webpackChunkName: "workers/evm-rpc-worker" */
-        '@trezor/blockchain-link/src/workers/evm-rpc'
+        /* webpackChunkName: "evm-rpc-worker" */ '@trezor/blockchain-link/src/workers/evm-rpc'
     ).then(w => w.default());
 
 export {

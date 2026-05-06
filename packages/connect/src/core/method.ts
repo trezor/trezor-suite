@@ -17,7 +17,7 @@ export const getMethod = async (message: CoreCallMessage): Promise<AbstractMetho
     const methodModule = getMethodModule(method);
     const methods = methodModule
         ? await import(
-              /* webpackChunkName: "coins/[request]" */ /* @vite-ignore */ `../api/${methodModule}/api/index.ts`
+              /* webpackChunkName: "[request]" */ /* @vite-ignore */ `../api/${methodModule}/api/index.ts`
           )
         : Methods;
     const MethodConstructor = methods[method];
