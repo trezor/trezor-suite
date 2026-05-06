@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react';
 
-import { useBottomSheetModal as useBottomSheetModalContext } from '@gorhom/bottom-sheet';
 import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
@@ -31,7 +30,6 @@ const getEarnListItemKey = (item: EarnPromoListDataItem) =>
 
 const EarnScreenContent = () => {
     const analytics = useAnalytics();
-    const { dismissAll } = useBottomSheetModalContext();
 
     const {
         promoListData: stakingPromoItems,
@@ -68,8 +66,6 @@ const EarnScreenContent = () => {
 
     const handlePromoItemPress = useCallback(
         (item: EarnPromoItem) => {
-            dismissAll();
-
             if (item.type === 'stablecoin-yield') {
                 if (!item.accountKey || !item.contractAddress) {
                     return;
@@ -88,7 +84,7 @@ const EarnScreenContent = () => {
 
             handleStakingPromoPress(item);
         },
-        [analytics, dismissAll, handleStakingPromoPress],
+        [analytics, handleStakingPromoPress],
     );
 
     const renderItem = useCallback(

@@ -106,7 +106,7 @@ export const YieldSupplyApprovalTransactionDataReviewScreen = () => {
         route.params,
     );
 
-    if (resolutionStatus !== 'resolved' || !tokenSymbol || !flowData || !flowKey) {
+    if (resolutionStatus !== 'resolved') {
         return null;
     }
 
