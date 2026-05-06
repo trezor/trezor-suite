@@ -20,6 +20,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "devDependencies": {
+        "@connect-coins/solana": "workspace:*",
         "@currents/playwright": "^1.22.2",
         "@evolu/common": "8.0.0-next.5",
         "@playwright/browser-chromium": "1.58.2",

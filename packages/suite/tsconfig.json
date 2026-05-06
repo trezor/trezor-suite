@@ -12,6 +12,7 @@
     },
     "include": [".", "e2e", "**/*.json"],
     "references": [
+        { "path": "../../connect-coins/solana" },
         {
             "path": "../../suite-common/analytics"
         },

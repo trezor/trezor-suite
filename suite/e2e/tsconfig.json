@@ -11,6 +11,7 @@
         "scripts/**/*.ts"
     ],
     "references": [
+        { "path": "../../connect-coins/solana" },
         {
             "path": "../../suite-common/analytics"
         },

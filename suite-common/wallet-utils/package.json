@@ -13,6 +13,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@connect-coins/solana": "workspace:*",
         "@scure/base": "^2.0.0",
         "@suite-common/earn-staking-api": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",

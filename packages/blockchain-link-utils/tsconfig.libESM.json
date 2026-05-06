@@ -3,6 +3,7 @@
     "include": ["./src"],
     "compilerOptions": { "outDir": "./libESM" },
     "references": [
+        { "path": "../../connect-coins/solana" },
         { "path": "../env-utils" },
         { "path": "../utils" },
         { "path": "../blockchain-link-types" },

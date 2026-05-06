@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../connect-coins/solana" },
         { "path": "../earn-stablecoin-api" },
         { "path": "../wallet-constants" },
         { "path": "../../packages/device-utils" },
