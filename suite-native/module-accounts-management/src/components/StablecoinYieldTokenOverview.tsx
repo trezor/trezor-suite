@@ -99,7 +99,7 @@ export const StablecoinYieldTokenOverview = ({
         });
     }, [accountKey, navigation, tokenContract, vault?.token.address]);
 
-    if (!isEnabled || resolutionStatus !== 'resolved' || !vault?.token.address) return null;
+    if (resolutionStatus !== 'resolved' || !vault?.token.address) return null;
 
     const apyColor = apyValueText === null ? 'contentSecondary' : 'contentPrimary';
     const apyValue = apyValueText ?? <Translation id="earn.notAvailable" />;
@@ -185,7 +185,7 @@ export const StablecoinYieldTokenOverview = ({
                             </HStack>
                         )}
                     </HStack>
-                    {suppliedPosition && (
+                    {isEnabled && suppliedPosition && (
                         <HStack spacing="sp12">
                             <Box flex={1}>
                                 <Button
