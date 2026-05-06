@@ -86,6 +86,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@trezor/device-authenticity": "workspace:^",
         "@trezor/device-utils": "workspace:*",
         "@trezor/protobuf": "workspace:*",
         "@trezor/protocol": "workspace:^",
@@ -100,7 +101,6 @@
         "@fivebinaries/coin-selection": "3.0.0",
         "@trezor/blockchain-link": "workspace:^",
         "@trezor/blockchain-link-types": "workspace:^",
-        "@trezor/device-authenticity": "workspace:^",
         "@trezor/transport": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
         "@types/chrome": "^0.1.40",
