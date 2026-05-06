@@ -34,8 +34,8 @@ export const YieldSupplyFlowScreen = () => {
     } = useBottomSheetModal();
     const {
         account,
-        apy,
         flowData,
+        apy,
         flowKey,
         token,
         tokenSymbol,
@@ -43,7 +43,8 @@ export const YieldSupplyFlowScreen = () => {
         vaultTokenName,
         resolutionStatus,
     } = useResolvedYieldFlowData(route.params);
-    const supplyForm = useYieldSupplyForm({ token, tokenSymbol: tokenSymbol ?? '' });
+
+    const supplyForm = useYieldSupplyForm({ token, tokenSymbol });
     const { amountValue, form, handleAmountChange, handleMaxChange, isMaxSelected } = supplyForm;
     const {
         formState: { isValid },
@@ -57,9 +58,9 @@ export const YieldSupplyFlowScreen = () => {
     } = useYieldApprovalFees({
         amount: amountValue,
         approvalLimitType,
-        flowData,
         flowKey,
         isEnabled: isValid,
+        flowData,
         tokenContract: route.params.tokenContract,
     });
     const { handleSubmitApproval, isCheckingApproval } = useYieldSupplyApprovalSubmit({
@@ -78,16 +79,7 @@ export const YieldSupplyFlowScreen = () => {
         await handleSubmitApproval(amount);
     });
 
-    if (
-        resolutionStatus !== 'resolved' ||
-        !vault ||
-        !account ||
-        !token ||
-        !tokenSymbol ||
-        !flowData ||
-        !flowKey ||
-        !vaultTokenName
-    ) {
+    if (resolutionStatus !== 'resolved') {
         return null;
     }
 

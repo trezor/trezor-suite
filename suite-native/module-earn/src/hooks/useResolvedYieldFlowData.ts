@@ -7,18 +7,18 @@ import { type YieldDto, useAllYieldOpportunities } from '@suite-common/earn-stab
 import { getNetworkByYieldXyzId } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
-    type YieldFlowResolvedData as StablecoinYieldFlowData,
+    type YieldFlowDisplayToken,
+    type YieldFlowResolvedData,
+    type YieldFlowToken,
     getStablecoinYieldFlowKey,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
 import { type Account, type TokenSymbol, toTokenSymbol } from '@suite-common/wallet-types';
-import { getApyPercent } from '@suite-common/wallet-utils';
+import { getApyPercent, getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import { useTranslate } from '@suite-native/intl';
 import { type YieldFlowParams } from '@suite-native/navigation';
 import { capitalizeFirstLetter } from '@trezor/utils';
-
-type YieldFlowToken = NonNullable<Account['tokens']>[number];
 
 export type YieldFlowResolutionStatus =
     | 'resolved'
@@ -27,30 +27,39 @@ export type YieldFlowResolutionStatus =
     | 'missing-account'
     | 'missing-token';
 
-type YieldFlowReceiptToken = {
-    symbol: string;
-    decimals: number;
-    contractAddress: string | null;
-    coingeckoId?: string;
-};
-
-export type ResolvedYieldFlowData = {
+type UnresolvedYieldFlowData = {
     account: Account | null;
     apy: number | null;
-    flowData: StablecoinYieldFlowData | null;
     flowKey: string | null;
     providerName: string | null;
-    receiptToken: YieldFlowReceiptToken | null;
-    resolutionStatus: YieldFlowResolutionStatus;
+    receiptToken: YieldFlowDisplayToken | null;
+    resolutionStatus: Exclude<YieldFlowResolutionStatus, 'resolved'>;
+    flowData: YieldFlowResolvedData | null;
     token: YieldFlowToken | null;
     tokenSymbol: TokenSymbol | null;
     vault: YieldDto | null;
     vaultTokenName: string | null;
 };
 
+type YieldFlowDataResolved = {
+    account: Account;
+    apy: number | null;
+    flowKey: string;
+    providerName: string;
+    receiptToken: YieldFlowDisplayToken;
+    flowData: YieldFlowResolvedData;
+    resolutionStatus: 'resolved';
+    token: YieldFlowToken;
+    tokenSymbol: TokenSymbol;
+    vault: YieldDto;
+    vaultTokenName: string;
+};
+
+export type ResolvedYieldFlowData = UnresolvedYieldFlowData | YieldFlowDataResolved;
+
 type ResolveYieldFlowDataParams = {
     account: Account | null;
-    params: YieldFlowParams;
+    tokenContract: string;
     yieldOpportunities: YieldDto[];
 };
 
@@ -59,98 +68,108 @@ type GetMatchingTokenParams = {
     tokenContract: string;
 };
 
-const normalizeContractAddress = (value: string) => value.toLowerCase();
+type YieldFlowProps = { displayError?: boolean } & YieldFlowParams;
 
 const defaultFlowData: ResolvedYieldFlowData = {
     account: null,
     apy: null,
-    flowData: null,
     flowKey: null,
     providerName: null,
     receiptToken: null,
     resolutionStatus: 'missing-vault',
     token: null,
+    flowData: null,
     tokenSymbol: null,
     vault: null,
     vaultTokenName: null,
 };
 
-const getMatchingToken = ({ account, tokenContract }: GetMatchingTokenParams) => {
-    const normalizedTokenContract = normalizeContractAddress(tokenContract);
+const getMatchingToken = ({ account, tokenContract }: GetMatchingTokenParams) =>
+    account.tokens?.find(token => {
+        const normalizedAccountTokenContract = getContractAddressForNetworkSymbol(
+            account.symbol,
+            token.contract,
+        );
 
-    return (
-        account.tokens?.find(token => {
-            const normalizedAccountTokenContract = normalizeContractAddress(token.contract);
-
-            return normalizedAccountTokenContract === normalizedTokenContract;
-        }) ?? null
-    );
-};
+        return normalizedAccountTokenContract === tokenContract;
+    }) ?? null;
 
 export const resolveYieldFlowData = ({
     account,
-    params,
+    tokenContract,
     yieldOpportunities,
 }: ResolveYieldFlowDataParams): ResolvedYieldFlowData => {
+    if (!account) {
+        return {
+            ...defaultFlowData,
+            resolutionStatus: 'missing-account',
+        };
+    }
+
+    const normalizedContract = getContractAddressForNetworkSymbol(account.symbol, tokenContract);
+
     const vault = yieldOpportunities.find(
-        yieldOpportunity => yieldOpportunity.id === params.yieldId,
+        v =>
+            v.outputToken?.address &&
+            getContractAddressForNetworkSymbol(account.symbol, v.outputToken.address) ===
+                normalizedContract,
     );
 
-    if (!vault) {
+    if (!vault?.outputToken) {
         return defaultFlowData;
     }
 
     const network = getNetworkByYieldXyzId(vault.network);
     const apy = getApyPercent(vault.rewardRate.total);
     const providerName = capitalizeFirstLetter(vault.providerId);
-    const vaultTokenName = vault.outputToken?.name ?? null;
+    const vaultTokenName = vault.outputToken?.name;
     const resolvedVaultData = {
-        ...defaultFlowData,
         apy,
         providerName,
-        resolutionStatus: 'missing-network' as const,
         tokenSymbol: toTokenSymbol(vault.token.symbol.toUpperCase()),
         vault,
         vaultTokenName,
     };
 
     if (!network) {
-        return resolvedVaultData;
-    }
-
-    if (!account) {
         return {
+            ...defaultFlowData,
             ...resolvedVaultData,
-            resolutionStatus: 'missing-account',
+            resolutionStatus: 'missing-network',
         };
     }
-
     const token = getMatchingToken({
         account,
-        tokenContract: params.tokenContract,
+        tokenContract: normalizedContract,
     });
 
     if (!token) {
         return {
-            ...resolvedVaultData,
+            ...defaultFlowData,
             account,
+            ...resolvedVaultData,
             resolutionStatus: 'missing-token',
         };
     }
 
     const receiptToken = {
-        symbol: vault.outputToken?.symbol ?? token.symbol ?? vault.token.symbol,
-        decimals: vault.outputToken?.decimals ?? token.decimals ?? vault.token.decimals,
-        contractAddress: vault.outputToken?.address ?? null,
-        coingeckoId: vault.outputToken?.coinGeckoId ?? vault.token.coinGeckoId,
+        symbol: vault.outputToken.symbol,
+        decimals: vault.outputToken.decimals,
+        contractAddress: vault.outputToken.address,
+        coingeckoId: vault.outputToken.coinGeckoId ?? vault.token.coinGeckoId,
     };
     const tokenSymbol = toTokenSymbol(
         token.symbol?.toUpperCase() ?? vault.token.symbol.toUpperCase(),
     );
-    const flowKey = getStablecoinYieldFlowKey({ ...params, accountKey: account.key });
-    const flowData: StablecoinYieldFlowData = {
-        account,
+    const flowKey = getStablecoinYieldFlowKey({
+        tokenContract,
+        accountKey: account.key,
+        yieldId: vault.id,
+    });
+
+    const flowData: YieldFlowResolvedData = {
         vault,
+        account,
         token: {
             balance: token.balance ?? '0',
             contractAddress: token.contract,
@@ -168,20 +187,22 @@ export const resolveYieldFlowData = ({
 
     return {
         ...resolvedVaultData,
-        account,
+        ...flowData,
         flowData,
         flowKey,
-        receiptToken,
         resolutionStatus: 'resolved',
-        token,
         tokenSymbol,
     };
 };
 
-export const useResolvedYieldFlowData = (params: YieldFlowParams) => {
+export const useResolvedYieldFlowData = ({
+    accountKey,
+    tokenContract,
+    displayError = true,
+}: YieldFlowProps) => {
     const { yieldOpportunities } = useAllYieldOpportunities();
     const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, params.accountKey),
+        selectAccountByKey(state, accountKey),
     );
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
@@ -192,10 +213,10 @@ export const useResolvedYieldFlowData = (params: YieldFlowParams) => {
         () =>
             resolveYieldFlowData({
                 account,
-                params,
+                tokenContract,
                 yieldOpportunities,
             }),
-        [account, params, yieldOpportunities],
+        [account, tokenContract, yieldOpportunities],
     );
 
     const handleGoBack = useCallback(() => {
@@ -203,7 +224,11 @@ export const useResolvedYieldFlowData = (params: YieldFlowParams) => {
     }, [navigation]);
 
     useEffect(() => {
-        if (resolvedFlowData.resolutionStatus === 'resolved' || hasDisplayedAlertRef.current) {
+        if (
+            !displayError ||
+            resolvedFlowData.resolutionStatus === 'resolved' ||
+            hasDisplayedAlertRef.current
+        ) {
             return;
         }
 
@@ -216,7 +241,7 @@ export const useResolvedYieldFlowData = (params: YieldFlowParams) => {
             primaryButtonTitle: translate('generic.buttons.close'),
             onPressPrimaryButton: handleGoBack,
         });
-    }, [handleGoBack, resolvedFlowData.resolutionStatus, showAlert, translate]);
+    }, [displayError, handleGoBack, resolvedFlowData.resolutionStatus, showAlert, translate]);
 
     return resolvedFlowData;
 };

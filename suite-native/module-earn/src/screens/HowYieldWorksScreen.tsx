@@ -21,7 +21,7 @@ type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoute
 export const HowYieldWorksScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const route = useRoute<RouteProp<YieldStackParamList, YieldStackRoutes.HowYieldWorks>>();
-    const { vault, apy, tokenSymbol, vaultTokenName, resolutionStatus } = useResolvedYieldFlowData(
+    const { apy, tokenSymbol, vaultTokenName, resolutionStatus } = useResolvedYieldFlowData(
         route.params,
     );
 
@@ -29,13 +29,13 @@ export const HowYieldWorksScreen = () => {
         navigation.navigate(YieldStackRoutes.YieldConsents, route.params);
     };
 
-    if (resolutionStatus !== 'resolved' || !vault) {
+    if (resolutionStatus !== 'resolved') {
         return null;
     }
 
     const { benefitItems, timelineSections } = createHowYieldWorksPreset({
-        tokenSymbol: tokenSymbol || '',
-        vaultTokenName: vaultTokenName || '',
+        tokenSymbol,
+        vaultTokenName,
         apy,
     });
 

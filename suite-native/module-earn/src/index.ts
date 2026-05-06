@@ -12,6 +12,7 @@ export { UnstakeTransactionDataReviewScreen } from './screens/UnstakeTransaction
 export { ClaimReviewScreen } from './screens/ClaimReviewScreen';
 export { ClaimTransactionDataReviewScreen } from './screens/ClaimTransactionDataReviewScreen';
 export { FiveBinariesHomeBanner } from './components/FiveBinariesHomeBanner';
+export { useResolvedYieldFlowData } from './hooks/useResolvedYieldFlowData';
 export { useWorkInProgressAlert } from './hooks/useWorkInProgressAlert';
 export { useStakingDetailNavigation } from './hooks/useStakingDetailNavigation';
 export { useStakingNavigateAnalytics } from './hooks/useStakingNavigateAnalytics';
