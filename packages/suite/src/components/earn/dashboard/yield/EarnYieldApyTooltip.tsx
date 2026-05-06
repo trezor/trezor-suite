@@ -33,7 +33,13 @@ export const EarnYieldApyTooltip = ({
 
     return (
         <Tooltip
-            content={<EarnYieldApyBreakdown rewards={rewards} networkSymbol={networkSymbol} />}
+            content={
+                <EarnYieldApyBreakdown
+                    rewards={rewards}
+                    networkSymbol={networkSymbol}
+                    underlyingToken={vault.token}
+                />
+            }
             maxWidth={600}
             placement="top"
             hasArrow
