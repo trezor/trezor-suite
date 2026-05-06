@@ -15,11 +15,11 @@
     "sideEffects": false,
     "main": "src/index",
     "browser": {
-        "ws": "./src/ws.browser"
+        "ws": "./src/ws-browser"
     },
     "react-native": {
         "__comment__": "Hotfix for issue where RN metro bundler resolve relatives paths wrong",
-        "ws": "@trezor/websocket-client/src/ws.native.ts"
+        "ws": "@trezor/websocket-client/src/ws-native.ts"
     },
     "publishConfig": {
         "main": "./lib/index.js",
@@ -37,11 +37,11 @@
             }
         },
         "browser": {
-            "ws": "./lib/ws.browser.js"
+            "ws": "./lib/ws-browser.js"
         },
         "react-native": {
             "__comment__": "Hotfix for issue where RN metro bundler resolve relatives paths wrong",
-            "ws": "@trezor/websocket-client/lib/ws.native.js"
+            "ws": "@trezor/websocket-client/lib/ws-native.js"
         }
     },
     "files": [

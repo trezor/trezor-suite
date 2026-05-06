@@ -20,10 +20,10 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "browser": {
-        "./src/index": "./src/index.browser.ts",
-        "./src/index.ts": "./src/index.browser.ts",
-        "./src/utils/assets": "./src/utils/assets.browser.ts",
-        "./src/workers/workers": "./src/workers/workers.browser.ts"
+        "./src/index": "./src/index-browser.ts",
+        "./src/index.ts": "./src/index-browser.ts",
+        "./src/utils/assets": "./src/utils/assets-browser.ts",
+        "./src/workers/workers": "./src/workers/workers-browser.ts"
     },
     "react-native": {
         "./src/index": "./src/index.ts",
@@ -52,13 +52,13 @@
             "./libESM/*": "./libESM/*"
         },
         "browser": {
-            "./lib/index.js": "./lib/index.browser.js",
-            "./lib/index": "./lib/index.browser.js",
-            "./lib/utils/assets": "./lib/utils/assets.browser.js",
-            "./lib/workers/workers": "./lib/workers/workers.browser.js",
-            "./libESM/index.mjs": "./libESM/index.browser.mjs",
-            "./libESM/utils/assets.mjs": "./libESM/utils/assets.browser.mjs",
-            "./libESM/workers/workers.mjs": "./libESM/workers/workers.browser.mjs",
+            "./lib/index.js": "./lib/index-browser.js",
+            "./lib/index": "./lib/index-browser.js",
+            "./lib/utils/assets": "./lib/utils/assets-browser.js",
+            "./lib/workers/workers": "./lib/workers/workers-browser.js",
+            "./libESM/index.mjs": "./libESM/index-browser.mjs",
+            "./libESM/utils/assets.mjs": "./libESM/utils/assets-browser.mjs",
+            "./libESM/workers/workers.mjs": "./libESM/workers/workers-browser.mjs",
             "./lib/data/*": "./lib/data/*.js",
             "./lib/exports": "./lib/exports.js",
             "./lib/impl/*": "./lib/impl/*.js",

@@ -2,7 +2,7 @@ import { FirmwareProgressBar, useFirmwareDesktopUpdate } from '@suite/firmware-u
 import { Translation } from '@suite/intl';
 import { Banner, Card, Column } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-import type TrezorConnectBrowser from '@trezor/connect/src/index.browser';
+import type TrezorConnectBrowser from '@trezor/connect/src/index-browser';
 
 import { FirmwareOffer, ReconnectDevicePrompt, RotatingPhrases } from 'src/components/firmware';
 import { useSelector } from 'src/hooks/suite/useSelector';
