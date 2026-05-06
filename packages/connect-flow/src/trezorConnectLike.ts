@@ -1,64 +1,23 @@
-export type ButtonRequestData =
-    | {
-          type: 'address';
-          serializedPath: string;
-          address: string;
-      }
-    | {
-          type: 'message';
-          message: string;
-      };
+import type { PopupEventMessage, UiEventMessage, UiResponseEvent } from '@trezor/connect-common';
+import { UI_REQUEST, UI_RESPONSE } from '@trezor/connect-common';
 
-export type UiEvent =
-    | {
-          type: 'ui-request_passphrase';
-          payload: { device: { path: string } };
-          requestId?: string;
-          callId?: string;
-      }
-    | {
-          type: 'ui-request_passphrase_on_device';
-          payload: { device: { path: string } };
-          requestId?: string;
-          callId?: string;
-      }
-    | {
-          type: 'ui-request_pin';
-          payload: { device: { path: string }; type: string };
-          requestId?: string;
-          callId?: string;
-      }
-    | {
-          type: 'ui-button';
-          payload: {
-              device: { path: string };
-              code: string;
-              data?: ButtonRequestData;
-          };
-          requestId?: string;
-          callId?: string;
-      }
-    | {
-          type: 'ui-request_confirmation';
-          payload: { view: string; label?: string };
-          requestId?: string;
-          callId?: string;
-      };
+export { UI_REQUEST, UI_RESPONSE };
+export type { UiEventMessage, PopupEventMessage, UiResponseEvent };
 
-export type UiResponse =
-    | {
-          type: 'ui-receive_passphrase';
-          payload: { value: string; save: boolean; passphraseOnDevice: boolean };
-          requestId?: string;
-      }
-    | { type: 'ui-receive_pin'; payload: { value: string }; requestId?: string }
-    | { type: 'ui-receive_confirmation'; payload: boolean; requestId?: string };
+// Every UI event TrezorConnect can emit on the UI_EVENT channel. The flow
+// surfaces all variants by default so any wrapped method's events are visible
+// without an opt-in; per-method narrowing is opt-in via
+// `Extract<UiEvent, { type: ... }>` at the consumer.
+export type UiEvent = UiEventMessage;
+
+// Real TrezorConnect.on('UI_EVENT', cb) emits both UI events and popup messages
+// on the same channel. Listener accepts both so a real TrezorConnect instance
+// is structurally assignable to TrezorConnectLike.
+export type UiEventListener = (event: UiEventMessage | PopupEventMessage) => void;
 
 export type ConnectResult<T> =
     | { success: true; payload: T }
     | { success: false; payload: { error: string; code?: string } };
-
-export type UiEventListener = (event: UiEvent) => void;
 
 export interface GetDeviceStateParams {
     device: { path: string };
@@ -83,7 +42,7 @@ export interface GetAddressResult {
 export interface TrezorConnectLike {
     on(event: 'UI_EVENT', listener: UiEventListener): void;
     off(event: 'UI_EVENT', listener: UiEventListener): void;
-    uiResponse(response: UiResponse): void;
+    uiResponse(response: UiResponseEvent): void;
     cancel(message?: string): void;
     getDeviceState(params: GetDeviceStateParams): Promise<ConnectResult<{ state: string }>>;
     getAddress(params: GetAddressParams): Promise<ConnectResult<GetAddressResult>>;

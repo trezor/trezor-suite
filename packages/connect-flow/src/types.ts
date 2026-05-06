@@ -1,9 +1,16 @@
+import type { UiRequestConfirmation } from '@trezor/connect-common';
+
+import { UI_REQUEST, type UiEvent } from './trezorConnectLike';
+
+// Values come straight from connect-common's UI_REQUEST constants — there is no
+// intermediate string definition that could drift from the real event types.
+// Only interactive UI events get a dedicated SUBPROCESS_TYPE entry; everything
+// else flows through the umbrella `UiNotificationSubProcess` and discriminates
+// directly on the underlying `UI_REQUEST.*` value.
 export const SUBPROCESS_TYPE = {
-    REQUEST_PASSPHRASE: 'ui-request_passphrase',
-    REQUEST_PASSPHRASE_ON_DEVICE: 'ui-request_passphrase_on_device',
-    REQUEST_PIN: 'ui-request_pin',
-    REQUEST_BUTTON: 'ui-request_button',
-    REQUEST_CONFIRMATION: 'ui-request_confirmation',
+    REQUEST_PASSPHRASE: UI_REQUEST.REQUEST_PASSPHRASE,
+    REQUEST_PIN: UI_REQUEST.REQUEST_PIN,
+    REQUEST_CONFIRMATION: UI_REQUEST.REQUEST_CONFIRMATION,
     COMPLETE: 'flow-complete',
     ERROR: 'flow-error',
 } as const;
@@ -16,13 +23,17 @@ export interface SubProcessBase {
     cancel(): void;
 }
 
+// UI events the flow exposes as interactive subprocesses — the consumer must
+// produce a response (PIN / passphrase / confirmation value) to unblock the
+// device call. Everything else falls into UiNotificationSubProcess.
+type InteractiveEventType =
+    | typeof UI_REQUEST.REQUEST_PIN
+    | typeof UI_REQUEST.REQUEST_PASSPHRASE
+    | typeof UI_REQUEST.REQUEST_CONFIRMATION;
+
 export type RequestPassphraseSubProcess = SubProcessBase & {
     type: typeof SUBPROCESS_TYPE.REQUEST_PASSPHRASE;
     send: (passphrase: string, options?: { save?: boolean }) => void;
-};
-
-export type RequestPassphraseOnDeviceSubProcess = SubProcessBase & {
-    type: typeof SUBPROCESS_TYPE.REQUEST_PASSPHRASE_ON_DEVICE;
 };
 
 export type RequestPinSubProcess = SubProcessBase & {
@@ -30,20 +41,19 @@ export type RequestPinSubProcess = SubProcessBase & {
     send: (pin: string) => void;
 };
 
-export type RequestButtonSubProcess = SubProcessBase & {
-    type: typeof SUBPROCESS_TYPE.REQUEST_BUTTON;
-    code: string;
-    data?:
-        | { type: 'address'; serializedPath: string; address: string }
-        | { type: 'message'; message: string };
-};
-
 export type RequestConfirmationSubProcess = SubProcessBase & {
     type: typeof SUBPROCESS_TYPE.REQUEST_CONFIRMATION;
-    view: string;
+    view: UiRequestConfirmation['payload']['view'];
     label?: string;
     confirm: (value: boolean) => void;
 };
+
+// Non-interactive UI events pass through with their original payload preserved
+// so consumers can discriminate by `type` and read the full event data
+// (e.g. `subprocess.payload.code` for `'ui-button'`,
+// `subprocess.payload.progress` for `'ui-bundle_progress'`).
+export type UiNotificationSubProcess = SubProcessBase &
+    Exclude<UiEvent, { type: InteractiveEventType }>;
 
 export type CompleteSubProcess<TResult> = SubProcessBase & {
     type: typeof SUBPROCESS_TYPE.COMPLETE;
@@ -57,10 +67,9 @@ export type ErrorSubProcess = SubProcessBase & {
 
 export type AnySubProcess<TResult> =
     | RequestPassphraseSubProcess
-    | RequestPassphraseOnDeviceSubProcess
     | RequestPinSubProcess
-    | RequestButtonSubProcess
     | RequestConfirmationSubProcess
+    | UiNotificationSubProcess
     | CompleteSubProcess<TResult>
     | ErrorSubProcess;
 
@@ -82,14 +91,7 @@ export interface WalletResult {
     deviceState: string;
 }
 
-export type WalletSubProcess =
-    | RequestPassphraseSubProcess
-    | RequestPassphraseOnDeviceSubProcess
-    | RequestPinSubProcess
-    | RequestButtonSubProcess
-    | RequestConfirmationSubProcess
-    | CompleteSubProcess<WalletResult>
-    | ErrorSubProcess;
+export type WalletSubProcess = AnySubProcess<WalletResult>;
 
 export interface GetAddressOptions {
     devicePath?: string;
@@ -104,14 +106,7 @@ export interface AddressResult {
     serializedPath: string;
 }
 
-export type GetAddressSubProcess =
-    | RequestPassphraseSubProcess
-    | RequestPassphraseOnDeviceSubProcess
-    | RequestPinSubProcess
-    | RequestButtonSubProcess
-    | RequestConfirmationSubProcess
-    | CompleteSubProcess<AddressResult>
-    | ErrorSubProcess;
+export type GetAddressSubProcess = AnySubProcess<AddressResult>;
 
 export interface ConnectService {
     createWallet(options: CreateWalletOptions): Process<WalletSubProcess>;

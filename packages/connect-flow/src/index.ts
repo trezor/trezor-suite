@@ -2,15 +2,18 @@ export { createConnect } from './connect';
 export { createConnectService } from './createConnectService';
 export { createTrezorConnectMock } from './mock';
 export type { TrezorConnectMock } from './mock';
+export { UI_REQUEST, UI_RESPONSE } from './trezorConnectLike';
 export type {
-    TrezorConnectLike,
-    UiEvent,
-    UiResponse,
-    UiEventListener,
     ConnectResult,
-    GetDeviceStateParams,
     GetAddressParams,
     GetAddressResult,
+    GetDeviceStateParams,
+    PopupEventMessage,
+    TrezorConnectLike,
+    UiEvent,
+    UiEventListener,
+    UiEventMessage,
+    UiResponseEvent,
 } from './trezorConnectLike';
 export { SUBPROCESS_TYPE } from './types';
 export type {
@@ -23,14 +26,13 @@ export type {
     GetAddressOptions,
     GetAddressSubProcess,
     Process,
-    RequestButtonSubProcess,
     RequestConfirmationSubProcess,
-    RequestPassphraseOnDeviceSubProcess,
     RequestPassphraseSubProcess,
     RequestPinSubProcess,
     ResultOf,
     SubProcessBase,
     SubProcessType,
+    UiNotificationSubProcess,
     WalletResult,
     WalletSubProcess,
 } from './types';

@@ -3,20 +3,21 @@ import type {
     GetAddressParams,
     GetAddressResult,
     GetDeviceStateParams,
+    PopupEventMessage,
     TrezorConnectLike,
-    UiEvent,
     UiEventListener,
-    UiResponse,
+    UiEventMessage,
+    UiResponseEvent,
 } from './trezorConnectLike';
 
 export interface TrezorConnectMock extends TrezorConnectLike {
     /** Emit a UI event to all listeners. Test helper. */
-    emit: (event: UiEvent) => void;
+    emit: (event: UiEventMessage | PopupEventMessage) => void;
     resolveGetDeviceState: (payload: { state: string }) => void;
     rejectGetDeviceState: (error: string) => void;
     resolveGetAddress: (payload: GetAddressResult) => void;
     rejectGetAddress: (error: string) => void;
-    readonly uiResponses: ReadonlyArray<UiResponse>;
+    readonly uiResponses: ReadonlyArray<UiResponseEvent>;
     readonly getDeviceStateCalls: ReadonlyArray<GetDeviceStateParams>;
     readonly getAddressCalls: ReadonlyArray<GetAddressParams>;
 }
@@ -25,7 +26,7 @@ type Pending<T> = { resolve: (value: ConnectResult<T>) => void };
 
 export const createTrezorConnectMock = (): TrezorConnectMock => {
     const listeners = new Set<UiEventListener>();
-    const uiResponses: UiResponse[] = [];
+    const uiResponses: UiResponseEvent[] = [];
     const getDeviceStateCalls: GetDeviceStateParams[] = [];
     const getAddressCalls: GetAddressParams[] = [];
     let pendingDeviceState: Pending<{ state: string }> | null = null;

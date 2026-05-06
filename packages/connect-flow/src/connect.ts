@@ -18,24 +18,15 @@
  *   process.cancel();
  */
 
-import { exhaustive } from '@trezor/type-utils';
+import { UI_REQUEST, type UiEvent } from './trezorConnectLike';
 
-import type { UiEvent } from './trezorConnectLike';
-
-// Compile-time guarantee: this object MUST have one entry per UiEvent variant.
-// Adding a new variant to UiEvent without listing it here fails the
-// `satisfies` check below. Used at runtime as a whitelist so the listener
-// drops events outside our local model before they reach `augment`.
-const KNOWN_UI_EVENT_TYPES = {
-    'ui-request_pin': true,
-    'ui-request_passphrase': true,
-    'ui-request_passphrase_on_device': true,
-    'ui-button': true,
-    'ui-request_confirmation': true,
-} satisfies Record<UiEvent['type'], true>;
+// TrezorConnect emits both UI events and popup messages on the same
+// `UI_EVENT` channel. Built from `UI_REQUEST` so any newly added UI variant
+// is automatically recognised — this filter only rejects popup messages.
+const UI_REQUEST_VALUES: ReadonlySet<string> = new Set(Object.values(UI_REQUEST));
 
 const isLocalUiEvent = (event: { type?: unknown }): event is UiEvent =>
-    typeof event.type === 'string' && event.type in KNOWN_UI_EVENT_TYPES;
+    typeof event.type === 'string' && UI_REQUEST_VALUES.has(event.type);
 
 // Loose, structural shape of what we actually need from the trezorConnect dep.
 // Real `TrezorConnect` (with its many `on` overloads) and the local
@@ -164,6 +155,8 @@ export const createConnect = (deps: { trezorConnect: ConnectDeps }) => {
         const base = { ...event, callId, cancel };
         const { requestId } = event;
 
+        console.log('event', event);
+
         switch (event.type) {
             case 'ui-request_pin':
                 return {
@@ -171,7 +164,7 @@ export const createConnect = (deps: { trezorConnect: ConnectDeps }) => {
                     send: (pin: string) =>
                         trezorConnect.uiResponse({
                             type: 'ui-receive_pin',
-                            payload: { value: pin },
+                            payload: pin,
                             requestId,
                         }),
                 } as SubProcess<TResult>;
@@ -202,17 +195,11 @@ export const createConnect = (deps: { trezorConnect: ConnectDeps }) => {
                         }),
                 } as SubProcess<TResult>;
 
-            // Events we know about but pass through with just `cancel`.
-            case 'ui-request_passphrase_on_device':
-            case 'ui-button':
-                return base as SubProcess<TResult>;
-
             default:
-                // Listener-level whitelist guarantees every event reaching
-                // `augment` is a known variant, so this branch is unreachable.
-                // `exhaustive()` enforces this at both compile-time (param is
-                // `never`) and runtime (throws if somehow hit).
-                return exhaustive(event, 'Unhandled local UiEvent in augment');
+                // Non-interactive UI event — pass through with `cancel`/`callId`
+                // so the consumer can read the original payload (firmware
+                // progress, bundle progress, button request data, etc.).
+                return base as SubProcess<TResult>;
         }
     };
 

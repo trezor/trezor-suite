@@ -36,6 +36,14 @@ export const factory = <
     init: InitType<SettingsType>;
     call: CallMethod;
 } & ExtraMethodsType => {
+    // Some host environments (notably the suite-desktop renderer's IPC proxy)
+    // expose a partial EventEmitter without `listenerCount`. Treat the
+    // missing method as "nobody is listening" — same default the non-getaddress
+    // path uses — instead of throwing on every getAddress call.
+    const hasListenerForAddressValidation = () =>
+        typeof eventEmitter.listenerCount === 'function' &&
+        eventEmitter.listenerCount(UI_REQUEST.ADDRESS_VALIDATION) > 0;
+
     const callableMethods = Object.fromEntries(
         connectCallableMethods.map(method => [
             method,
@@ -44,7 +52,7 @@ export const factory = <
                     ...params,
                     method,
                     useEventListener: method.toLowerCase().endsWith('getaddress')
-                        ? eventEmitter.listenerCount(UI_REQUEST.ADDRESS_VALIDATION) > 0
+                        ? hasListenerForAddressValidation()
                         : undefined,
                 }),
         ]),
