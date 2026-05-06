@@ -1,9 +1,13 @@
 import { EventChannel } from './eventChannel';
-import type {
-    ConnectResult,
-    TrezorConnectLike,
-    UiEvent,
-    UiEventListener,
+import {
+    type ConnectResult,
+    type PopupEventMessage,
+    type TrezorConnectLike,
+    UI_REQUEST,
+    UI_RESPONSE,
+    type UiEvent,
+    type UiEventListener,
+    type UiEventMessage,
 } from './trezorConnectLike';
 import { SUBPROCESS_TYPE } from './types';
 import type {
@@ -26,20 +30,28 @@ interface SubProcessContext {
     cancel: () => void;
 }
 
+// Distinguish UI events from popup messages on the shared `UI_EVENT` channel.
+// Built from `UI_REQUEST` so any newly added UI event variant is automatically
+// recognised without touching this filter.
+const UI_REQUEST_VALUES: ReadonlySet<string> = new Set(Object.values(UI_REQUEST));
+
+const isUiEvent = (event: UiEventMessage | PopupEventMessage): event is UiEvent =>
+    UI_REQUEST_VALUES.has(event.type);
+
 const mapEventToSubProcess = <TResult>(
     event: UiEvent,
     trezorConnect: TrezorConnectLike,
     ctx: SubProcessContext,
-): AnySubProcess<TResult> | undefined => {
+): AnySubProcess<TResult> => {
     const base = { callId: ctx.callId, requestId: event.requestId, cancel: ctx.cancel };
     switch (event.type) {
-        case 'ui-request_passphrase':
+        case UI_REQUEST.REQUEST_PASSPHRASE:
             return {
                 ...base,
                 type: SUBPROCESS_TYPE.REQUEST_PASSPHRASE,
                 send: (passphrase, options) => {
                     trezorConnect.uiResponse({
-                        type: 'ui-receive_passphrase',
+                        type: UI_RESPONSE.RECEIVE_PASSPHRASE,
                         payload: {
                             value: passphrase,
                             save: options?.save ?? false,
@@ -49,28 +61,19 @@ const mapEventToSubProcess = <TResult>(
                     });
                 },
             };
-        case 'ui-request_passphrase_on_device':
-            return { ...base, type: SUBPROCESS_TYPE.REQUEST_PASSPHRASE_ON_DEVICE };
-        case 'ui-request_pin':
+        case UI_REQUEST.REQUEST_PIN:
             return {
                 ...base,
                 type: SUBPROCESS_TYPE.REQUEST_PIN,
                 send: pin => {
                     trezorConnect.uiResponse({
-                        type: 'ui-receive_pin',
-                        payload: { value: pin },
+                        type: UI_RESPONSE.RECEIVE_PIN,
+                        payload: pin,
                         requestId: event.requestId,
                     });
                 },
             };
-        case 'ui-button':
-            return {
-                ...base,
-                type: SUBPROCESS_TYPE.REQUEST_BUTTON,
-                code: event.payload.code,
-                data: event.payload.data,
-            };
-        case 'ui-request_confirmation':
+        case UI_REQUEST.REQUEST_CONFIRMATION:
             return {
                 ...base,
                 type: SUBPROCESS_TYPE.REQUEST_CONFIRMATION,
@@ -78,16 +81,17 @@ const mapEventToSubProcess = <TResult>(
                 label: event.payload.label,
                 confirm: value => {
                     trezorConnect.uiResponse({
-                        type: 'ui-receive_confirmation',
+                        type: UI_RESPONSE.RECEIVE_CONFIRMATION,
                         payload: value,
                         requestId: event.requestId,
                     });
                 },
             };
         default:
-            // Real TrezorConnect emits many UI events beyond the ones we model
-            // (ui-window, ui-bundle_progress, ui-close_window, etc.). Ignore them.
-            return undefined;
+            // Non-interactive UI event — pass through with the original event
+            // payload so consumers can discriminate by `type` and read the
+            // full data (e.g. `payload.code` for button requests).
+            return { ...base, ...event } as AnySubProcess<TResult>;
     }
 };
 
@@ -147,12 +151,15 @@ const buildProcess = <TResult>(
         if (started) return;
         started = true;
 
-        listener = (event: UiEvent) => {
+        listener = event => {
+            // Drop popup messages — TrezorConnect emits both UI events and
+            // popup messages on the same `UI_EVENT` channel.
+            if (!isUiEvent(event)) return;
             // Filter by callId — TrezorConnect echoes our callId on every UI event
             // it emits during this method call.
             if (event.callId !== callId) return;
             const sub = mapEventToSubProcess<TResult>(event, trezorConnect, subCtx);
-            if (sub) channel.push(sub);
+            channel.push(sub);
         };
         trezorConnect.on('UI_EVENT', listener);
 
@@ -244,10 +251,6 @@ export const createConnectService = (deps: {
     };
 
     return {
-        getProcess: ({ processId }: { processId: string }) => null,
-        getInState: (options: { processId: string; timeout?: number }) =>
-            // TODO: implement
-            Promise.resolve(null),
         createWallet: (options: CreateWalletOptions): Process<WalletSubProcess> =>
             guard<WalletResult>(() =>
                 buildProcess<WalletResult>(trezorConnect, activeRef, {

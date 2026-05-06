@@ -1,11 +1,10 @@
 import { createConnectService } from '../createConnectService';
 import { createTrezorConnectMock } from '../mock';
+import { UI_REQUEST } from '../trezorConnectLike';
 import { SUBPROCESS_TYPE } from '../types';
 import type {
     CompleteSubProcess,
     ErrorSubProcess,
-    RequestButtonSubProcess,
-    RequestPassphraseOnDeviceSubProcess,
     RequestPassphraseSubProcess,
     RequestPinSubProcess,
     ResultOf,
@@ -108,9 +107,9 @@ describe('createConnectService.createWallet', () => {
             callId: proc.callId,
         });
         const s1 = await p1;
-        expect(s1.value.type).toBe(SUBPROCESS_TYPE.REQUEST_BUTTON);
-        if (s1.value.type === SUBPROCESS_TYPE.REQUEST_BUTTON) {
-            expect(s1.value.code).toBe('ButtonRequest_ProtectCall');
+        expect(s1.value.type).toBe(UI_REQUEST.REQUEST_BUTTON);
+        if (s1.value.type === UI_REQUEST.REQUEST_BUTTON) {
+            expect(s1.value.payload.code).toBe('ButtonRequest_ProtectCall');
         }
         expect(s1.value.callId).toBe(proc.callId);
 
@@ -121,7 +120,7 @@ describe('createConnectService.createWallet', () => {
             callId: proc.callId,
         });
         const s2 = await p2;
-        expect(s2.value.type).toBe(SUBPROCESS_TYPE.REQUEST_PASSPHRASE_ON_DEVICE);
+        expect(s2.value.type).toBe(UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE);
         expect(s2.value.callId).toBe(proc.callId);
 
         const p3 = iter.next();
@@ -316,14 +315,11 @@ describe('createConnectService.createWallet', () => {
                     void _narrow;
 
                     subprocess.send('hunter2', { save: false });
-                    subprocess.cancel();
                     seen.push('passphrase');
                     setImmediate(() => mock.resolveGetDeviceState({ state: '0xhidden' }));
                     break;
                 }
-                case SUBPROCESS_TYPE.REQUEST_PASSPHRASE_ON_DEVICE: {
-                    const _narrow: RequestPassphraseOnDeviceSubProcess = subprocess;
-                    void _narrow;
+                case UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE: {
                     seen.push('passphrase_on_device');
                     break;
                 }
@@ -334,10 +330,8 @@ describe('createConnectService.createWallet', () => {
                     seen.push('pin');
                     break;
                 }
-                case SUBPROCESS_TYPE.REQUEST_BUTTON: {
-                    const _narrow: RequestButtonSubProcess = subprocess;
-                    void _narrow;
-                    const { code } = subprocess;
+                case UI_REQUEST.REQUEST_BUTTON: {
+                    const { code } = subprocess.payload;
                     seen.push(`button:${code}`);
                     setImmediate(() =>
                         mock.emit({
@@ -364,8 +358,9 @@ describe('createConnectService.createWallet', () => {
                     break;
                 }
                 default: {
-                    const _exhaustive: never = subprocess;
-                    void _exhaustive;
+                    // Other non-interactive UI notifications (UiNotificationSubProcess
+                    // is an open union) are not asserted by this test.
+                    break;
                 }
             }
         }

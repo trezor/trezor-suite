@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 import { closeModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -13,7 +13,6 @@ import {
     TextColumn,
 } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
-import { exhaustive } from '@trezor/type-utils';
 
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
 import { PinMatrix } from 'src/components/suite/PinMatrix/PinMatrix';
@@ -23,9 +22,18 @@ import { PassphraseOnDeviceModal } from 'src/components/suite/modals/ReduxModal/
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const connect = createConnect({ trezorConnect: TrezorConnect });
-const wrappedGetAddress = connect(TrezorConnect.getAddress);
 
-type GetAddressProcess = ReturnType<typeof wrappedGetAddress>;
+// Type-only helper. The body is never executed — `_typeHelper` is only used
+// to derive the wrapped getAddress signature without invoking
+// `TrezorConnect.getAddress` at module load. In suite-desktop the renderer's
+// `TrezorConnect` methods are still the dummy stubs from index.renderer.ts at
+// import time; the IPC-proxy override only happens later in MainDesktop.tsx
+// (see `Object.keys(TrezorConnect).forEach(...)`), so capturing the method
+// at module level locks in the stub. Deferring the runtime call into a
+// useMemo inside the component picks up the real proxy method.
+const _typeHelper = () => connect(TrezorConnect.getAddress);
+type WrappedGetAddress = ReturnType<typeof _typeHelper>;
+type GetAddressProcess = ReturnType<WrappedGetAddress>;
 type Subprocess = ReturnType<GetAddressProcess['run']> extends AsyncIterable<infer T> ? T : never;
 type AddressResult = Extract<Subprocess, { type: 'complete' }>['result'];
 
@@ -48,7 +56,9 @@ const formatDetail = (sub: Subprocess): string | undefined => {
         case 'ui-request_passphrase_on_device':
             return undefined;
         default:
-            return exhaustive(sub, 'Unhandled subprocess in formatDetail');
+            // UiNotificationSubProcess is an open union of all UI events — only
+            // the interactive/terminal ones are formatted here.
+            return undefined;
     }
 };
 
@@ -238,7 +248,9 @@ const SubprocessModal = ({ subprocess }: { subprocess: Subprocess }) => {
             return null;
 
         default:
-            return exhaustive(subprocess, 'Unhandled subprocess in SubprocessModal');
+            // UiNotificationSubProcess is an open union of all UI events — only
+            // the interactive/terminal ones get a dedicated modal.
+            return null;
     }
 };
 
@@ -255,6 +267,13 @@ export const ConnectWrapPlayground = () => {
     const [error, setError] = useState<string | null>(null);
 
     const procRef = useRef<GetAddressProcess | null>(null);
+
+    // Capture the wrapped getAddress lazily on mount — see `_typeHelper`
+    // comment above; capturing earlier would lock in the renderer stubs.
+    const wrappedGetAddress: WrappedGetAddress = useMemo(
+        () => connect(TrezorConnect.getAddress),
+        [],
+    );
 
     const handleStart = async () => {
         if (!devicePath) return;

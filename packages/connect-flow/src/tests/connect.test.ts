@@ -68,7 +68,7 @@ describe('createConnect', () => {
         }
 
         expect(mock.uiResponses).toEqual([
-            { type: 'ui-receive_pin', payload: { value: '1234' }, requestId: 'req-1' },
+            { type: 'ui-receive_pin', payload: '1234', requestId: 'req-1' },
         ]);
 
         // Resolve the underlying call so the iterator finishes.

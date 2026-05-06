@@ -1,5 +1,8 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
-    "references": []
+    "references": [
+        { "path": "../connect-common" },
+        { "path": "../type-utils" }
+    ]
 }

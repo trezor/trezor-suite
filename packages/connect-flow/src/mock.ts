@@ -4,19 +4,31 @@ import type {
     GetAddressResult,
     GetDeviceStateParams,
     TrezorConnectLike,
-    UiEvent,
     UiEventListener,
-    UiResponse,
+    UiEventMessage,
+    UiResponseEvent,
 } from './trezorConnectLike';
+
+/**
+ * Loose shape for UI events emitted in tests — lets a test build a synthetic
+ * event (e.g. a `ui-button` or `ui-request_pin`) without constructing a fully
+ * branded TrezorConnect payload (`device.path` is `DeviceUniquePath`, etc.).
+ */
+export type EmittableTestEvent = {
+    type: string;
+    payload?: unknown;
+    requestId?: string;
+    callId?: string;
+};
 
 export interface TrezorConnectMock extends TrezorConnectLike {
     /** Emit a UI event to all listeners. Test helper. */
-    emit: (event: UiEvent) => void;
+    emit: (event: EmittableTestEvent) => void;
     resolveGetDeviceState: (payload: { state: string }) => void;
     rejectGetDeviceState: (error: string) => void;
     resolveGetAddress: (payload: GetAddressResult) => void;
     rejectGetAddress: (error: string) => void;
-    readonly uiResponses: ReadonlyArray<UiResponse>;
+    readonly uiResponses: ReadonlyArray<UiResponseEvent>;
     readonly getDeviceStateCalls: ReadonlyArray<GetDeviceStateParams>;
     readonly getAddressCalls: ReadonlyArray<GetAddressParams>;
 }
@@ -25,7 +37,7 @@ type Pending<T> = { resolve: (value: ConnectResult<T>) => void };
 
 export const createTrezorConnectMock = (): TrezorConnectMock => {
     const listeners = new Set<UiEventListener>();
-    const uiResponses: UiResponse[] = [];
+    const uiResponses: UiResponseEvent[] = [];
     const getDeviceStateCalls: GetDeviceStateParams[] = [];
     const getAddressCalls: GetAddressParams[] = [];
     let pendingDeviceState: Pending<{ state: string }> | null = null;
@@ -59,7 +71,7 @@ export const createTrezorConnectMock = (): TrezorConnectMock => {
             });
         },
         emit: event => {
-            listeners.forEach(l => l(event));
+            listeners.forEach(l => l(event as UiEventMessage));
         },
         resolveGetDeviceState: payload => {
             if (!pendingDeviceState) throw new Error('No pending getDeviceState call');

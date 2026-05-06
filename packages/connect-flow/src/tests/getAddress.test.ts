@@ -1,5 +1,6 @@
 import { createConnectService } from '../createConnectService';
 import { createTrezorConnectMock } from '../mock';
+import { UI_REQUEST } from '../trezorConnectLike';
 import { SUBPROCESS_TYPE } from '../types';
 
 describe('createConnectService.getAddress', () => {
@@ -61,9 +62,9 @@ describe('createConnectService.getAddress', () => {
             callId: proc.callId,
         });
         const s1 = await p1;
-        expect(s1.value.type).toBe(SUBPROCESS_TYPE.REQUEST_BUTTON);
-        if (s1.value.type === SUBPROCESS_TYPE.REQUEST_BUTTON) {
-            expect(s1.value.code).toBe('ButtonRequest_Address');
+        expect(s1.value.type).toBe(UI_REQUEST.REQUEST_BUTTON);
+        if (s1.value.type === UI_REQUEST.REQUEST_BUTTON) {
+            expect(s1.value.payload.code).toBe('ButtonRequest_Address');
         }
 
         const p2 = iter.next();
