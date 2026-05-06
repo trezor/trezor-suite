@@ -162,7 +162,7 @@ export const PassphraseInputCard = ({
                                     intent="neutral"
                                     priority="secondary"
                                     name={showPassword ? 'eyeClosed' : 'eye'}
-                                    onClick={() => setShowPassword(!showPassword)}
+                                    onClick={() => setShowPassword(prev => !prev)}
                                     data-testid="@passphrase/show-toggle"
                                 />
                             }
