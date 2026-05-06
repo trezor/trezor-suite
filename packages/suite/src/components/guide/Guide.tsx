@@ -31,6 +31,10 @@ export const Guide = () => {
         });
     };
 
+    const handleShortcutsClick = () => {
+        dispatch(setView('KEYBOARD_SHORTCUTS'));
+    };
+
     return (
         <GuideViewWrapper>
             <GuideHeader label={<Translation id="TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER" />} />
@@ -41,13 +45,34 @@ export const Guide = () => {
                         <>
                             <Box>
                                 <GuideSectionHeadline id="TR_GUIDE_HELP_TITLE" />
-                                <GuideItem
-                                    onClick={handleFeedbackButtonClick}
-                                    data-testid="@guide/button-feedback"
-                                    icon={<IconCircle name="lifebuoy" size={32} intent="neutral" />}
-                                >
-                                    <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
-                                </GuideItem>
+                                <Column gap={8}>
+                                    <GuideItem
+                                        onClick={handleFeedbackButtonClick}
+                                        data-testid="@guide/button-feedback"
+                                        icon={
+                                            <IconCircle
+                                                name="lifebuoy"
+                                                size={32}
+                                                intent="neutral"
+                                            />
+                                        }
+                                    >
+                                        <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
+                                    </GuideItem>
+                                    <GuideItem
+                                        onClick={handleShortcutsClick}
+                                        data-testid="@guide/button-shortcuts"
+                                        icon={
+                                            <IconCircle
+                                                name="keyboard"
+                                                size={32}
+                                                intent="neutral"
+                                            />
+                                        }
+                                    >
+                                        <Translation id="TR_GUIDE_KEYBOARD_SHORTCUTS" />
+                                    </GuideItem>
+                                </Column>
                             </Box>
                             <Box margin={{ top: 16 }}>
                                 <GuideSectionHeadline id="TR_GUIDE_GUIDES_TITLE" />
