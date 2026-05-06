@@ -42,6 +42,9 @@ const config: DocsThemeConfig = {
     footer: {
         text: 'Copyright belongs to Trezor company s.r.o. All rights reserved.',
     },
+    editLink: {
+        component: null,
+    },
 };
 
 export default config;
