@@ -23,6 +23,7 @@ export const Button: StoryObj<ButtonProps> = {
         isDisabled: false,
         isLoading: false,
         isInverse: false,
+        isFloating: false,
         shortcut: undefined,
         ...getFramePropsStory(allowedButtonFrameProps).args,
     },
@@ -55,6 +56,9 @@ export const Button: StoryObj<ButtonProps> = {
             type: 'boolean',
         },
         isInverse: {
+            type: 'boolean',
+        },
+        isFloating: {
             type: 'boolean',
         },
         iconLeft: {

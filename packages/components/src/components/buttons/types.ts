@@ -21,6 +21,7 @@ export type ButtonPriority = Extract<UIPriority, (typeof buttonPriorities)[numbe
 export type CommonButtonProps = {
     intent?: ButtonIntent;
     priority?: ButtonPriority;
+    isFloating?: boolean;
     isLoading?: boolean;
     isDisabled?: boolean;
     isInverse?: boolean;

@@ -297,24 +297,35 @@ export const mapPropsToCSS = (
     isDisabled: boolean,
     isInverse: boolean,
     theme: DefaultTheme,
+    isFloating: boolean,
 ): RuleSet<object> => {
     const inverseKey: InverseKey = isInverse ? 'inverse' : 'normal';
+    const getBackground = (backgroundColor: Color) =>
+        isFloating
+            ? css`
+                  background:
+                      linear-gradient(${theme[backgroundColor]}, ${theme[backgroundColor]}),
+                      ${theme['surfaceFillRaised']};
+              `
+            : css`
+                  background: ${theme[backgroundColor]};
+              `;
 
     if (isDisabled) {
         return css`
-            background: ${theme[backgroundMapDisabled[inverseKey][priority]]};
+            ${getBackground(backgroundMapDisabled[inverseKey][priority])}
         `;
     }
 
     return css`
-        background: ${theme[backgroundMapBase[inverseKey][priority][intent]]};
+        ${getBackground(backgroundMapBase[inverseKey][priority][intent])}
 
         &:hover {
-            background: ${theme[backgroundMapHovered[inverseKey][priority][intent]]};
+            ${getBackground(backgroundMapHovered[inverseKey][priority][intent])}
         }
 
         &:active {
-            background: ${theme[backgroundMapPressed[inverseKey][priority][intent]]};
+            ${getBackground(backgroundMapPressed[inverseKey][priority][intent])}
         }
     `;
 };

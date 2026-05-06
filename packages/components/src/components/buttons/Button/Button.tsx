@@ -45,6 +45,7 @@ type ButtonContainerProps = TransientProps<AllowedButtonFrameProps> & {
     $priority: ButtonPriority;
     $intent: ButtonIntent;
     $isInverse: boolean;
+    $isFloating: boolean;
     disabled: boolean;
 };
 
@@ -53,8 +54,8 @@ const Container = styled.button<ButtonContainerProps>`
 
     border-radius: ${({ $size }) => mapSizeToBorderRadius($size)};
 
-    ${({ $intent, $priority, disabled, $isInverse, theme }) =>
-        mapPropsToCSS($intent, $priority, disabled, $isInverse, theme)}
+    ${({ $intent, $priority, disabled, $isInverse, $isFloating, theme }) =>
+        mapPropsToCSS($intent, $priority, disabled, $isInverse, theme, $isFloating)}
 
     ${withFrameProps}
 `;
@@ -76,6 +77,7 @@ export const Button = ({
     iconRight,
     shortcut,
     size = 'medium',
+    isFloating = false,
     ...props
 }: ButtonProps) => {
     const frameProps = pickAndPrepareFrameProps(props, allowedButtonFrameProps);
@@ -94,6 +96,7 @@ export const Button = ({
             $priority={priority}
             $isInverse={isInverse}
             $intent={intent}
+            $isFloating={isFloating}
             {...frameProps}
             {...buttonProps}
         >
