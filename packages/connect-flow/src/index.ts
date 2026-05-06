@@ -1,3 +1,4 @@
+export { createConnect } from './connect';
 export { createConnectService } from './createConnectService';
 export { createTrezorConnectMock } from './mock';
 export type { TrezorConnectMock } from './mock';
