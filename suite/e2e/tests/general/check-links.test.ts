@@ -4,10 +4,12 @@ import { routes } from '@suite/router-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
+import { OnboardingPage } from '../../support/pageObjects/onboarding/onboardingPage';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 async function getAllLinksFromAllPages(
     page: Page,
+    onboardingPage: OnboardingPage,
     testInfo: TestInfo,
     paths: Array<string>,
 ): Promise<Set<string>> {
@@ -19,25 +21,7 @@ async function getAllLinksFromAllPages(
 
             // Ensure the page is loaded by asserting the element is attached to the DOM.
             // For unknown reasons, this is the only available method to wait for the page to load.
-            const pageContent = page
-                .locator('[data-testid^="@welcome"]')
-                .or(page.locator('[data-testid^="@suite-layout"]'))
-                .or(page.locator('[data-testid^="@onboarding"]'))
-                .first();
-
-            try {
-                await pageContent.waitFor({ state: 'attached', timeout: 10_000 });
-            } catch {
-                await test.step(`Page element not found for ${path}, reloading...`, async () => {
-                    await page.reload({ waitUntil: 'domcontentloaded', timeout: 10_000 });
-                });
-            }
-
-            await expect(
-                pageContent,
-                `The page element for route "${path}" should be attached`,
-            ).toBeAttached();
-            await expect(page.getByTestId('@suite/bundle-loader')).toBeHidden();
+            await onboardingPage.verifySuiteIsLoaded();
 
             // Extract all hrefs in a single browser operation to reduce network latency in CI.
             const allHrefs = await page
@@ -94,7 +78,7 @@ test.describe('Check Links', { tag: ['@webOnly', '@nightlyOnly', '@T3T1'] }, () 
                 stream: TestStream.Foundation,
             }),
         },
-        async ({ page }, testInfo) => {
+        async ({ page, onboardingPage }, testInfo) => {
             let allUrls = new Set<string>();
 
             const urlsToCheck: string[] = [];
@@ -115,7 +99,7 @@ test.describe('Check Links', { tag: ['@webOnly', '@nightlyOnly', '@T3T1'] }, () 
 
                 // After onboarding, the URL is cleared to the base domain by the application's routing logic.
                 // We need to navigate back to the correct base URL for the test environment.
-                allUrls = await getAllLinksFromAllPages(page, testInfo, allPaths);
+                allUrls = await getAllLinksFromAllPages(page, onboardingPage, testInfo, allPaths);
             });
 
             await test.step('Filter known broken links', () => {
