@@ -1,7 +1,8 @@
 import fetch from 'cross-fetch';
 import { promises as fs } from 'fs';
 
-import { httpRequest as browserHttpRequest, tryLocalAssetRequire } from './assetUtils';
+import { tryLocalAssetRequire } from './assetUtils';
+import { httpRequest as browserHttpRequest } from './assets.browser';
 import type { HttpRequestOptions, HttpRequestReturnType, HttpRequestType } from './assetsTypes';
 
 if (global && typeof global.fetch !== 'function') {
