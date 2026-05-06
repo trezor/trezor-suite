@@ -1,6 +1,6 @@
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
-import { TradingStackRoutes } from '@suite-native/navigation';
+import { RootStackRoutes } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
@@ -286,7 +286,7 @@ describe('useExchangeFlow', () => {
 
             renderUseExchangeFlow({ store });
 
-            expect(mockNavigate).toHaveBeenCalledWith(TradingStackRoutes.TradingConfirming, {
+            expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.TradingConfirming, {
                 flowType: 'approve',
             });
         });
@@ -312,7 +312,7 @@ describe('useExchangeFlow', () => {
 
             renderUseExchangeFlow({ store, flowType: 'revoke' });
 
-            expect(mockNavigate).toHaveBeenCalledWith(TradingStackRoutes.TradingConfirming, {
+            expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.TradingConfirming, {
                 flowType: 'revoke',
             });
         });
@@ -338,7 +338,7 @@ describe('useExchangeFlow', () => {
 
             renderUseExchangeFlow({ store, flowType: 'revoke-and-approve' });
 
-            expect(mockNavigate).toHaveBeenCalledWith(TradingStackRoutes.TradingConfirming, {
+            expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.TradingConfirming, {
                 flowType: 'revoke-and-approve',
             });
         });
@@ -349,7 +349,7 @@ describe('useExchangeFlow', () => {
             renderUseExchangeFlow({ store });
 
             expect(mockNavigate).not.toHaveBeenCalledWith(
-                TradingStackRoutes.TradingConfirming,
+                RootStackRoutes.TradingConfirming,
                 expect.anything(),
             );
         });

@@ -40,6 +40,13 @@ export enum RootStackRoutes {
     FeatureFeedbackModal = 'FeatureFeedbackModal',
     UnstakeFlow = 'UnstakeFlow',
     UnstakeTransactionDataReview = 'UnstakeTransactionDataReview',
+    TradingExchangePreview = 'TradingExchangePreview',
+    TradingExchangeApproval = 'TradingExchangeApproval',
+    TradingExchangeRevoke = 'TradingExchangeRevoke',
+    TradingSellPreview = 'TradingSellPreview',
+    TradingConfirming = 'TradingConfirming',
+    TradingSellOutputsReview = 'TradingSellOutputsReview',
+    TradingExchangeOutputsReview = 'TradingExchangeOutputsReview',
 }
 
 export enum AppTabsRoutes {
@@ -279,13 +286,6 @@ export enum TradingStackRoutes {
     Trading = 'Trading',
     ReceiveAccounts = 'ReceiveAccounts',
     TradingHistory = 'TradingHistory',
-    TradingExchangePreview = 'TradingExchangePreview',
-    TradingExchangeApproval = 'TradingExchangeApproval',
-    TradingExchangeRevoke = 'TradingExchangeRevoke',
-    TradingSellPreview = 'TradingSellPreview',
-    TradingSellOutputsReview = 'TradingSellOutputsReview',
-    TradingExchangeOutputsReview = 'TradingExchangeOutputsReview',
-    TradingConfirming = 'TradingConfirming',
 }
 
 export enum TransactionDetailStackRoutes {

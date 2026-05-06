@@ -4,7 +4,7 @@ import type { ExchangeTrade } from 'invity-api';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
 import { getTranslation } from '@suite-native/intl';
-import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
+import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import {
     type TestStore,
@@ -41,7 +41,7 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () =>
         ({
             params: {},
-        }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingExchangePreview>,
+        }) as RouteProp<RootStackParamList, RootStackRoutes.TradingExchangePreview>,
 }));
 
 jest.mock('@suite-native/services', () => {

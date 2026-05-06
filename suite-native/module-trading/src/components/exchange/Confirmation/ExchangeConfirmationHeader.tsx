@@ -12,21 +12,16 @@ import { Translation } from '@suite-native/intl';
 import {
     type ConfirmingScreenFlowType,
     type RootStackParamList,
+    type RootStackRoutes,
     ScreenHeader,
-    type StackToStackCompositeNavigationProps,
-    type TradingStackParamList,
-    type TradingStackRoutes,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 export type ExchangeConfirmationHeaderProps = {
     flowType: ConfirmingScreenFlowType;
 };
 
-type NavigationProp = StackToStackCompositeNavigationProps<
-    TradingStackParamList,
-    TradingStackRoutes.TradingConfirming,
-    RootStackParamList
->;
+type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.TradingConfirming>;
 
 export const ExchangeConfirmationHeader = ({ flowType }: ExchangeConfirmationHeaderProps) => {
     const navigation = useNavigation<NavigationProp>();

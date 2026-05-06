@@ -8,10 +8,10 @@ import { isFinalStatus, selectTradingExchangeSelectedQuote } from '@suite-common
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import {
+    type RootStackParamList,
+    type RootStackRoutes,
     Screen,
     type StackProps,
-    type TradingStackParamList,
-    type TradingStackRoutes,
 } from '@suite-native/navigation';
 import { useExchangeAnalyticReportCallback } from '@suite-native/trading-analytics';
 import {
@@ -33,8 +33,8 @@ import { clearTradingStateThunk } from '../thunks';
 import { getReceiveAccountAddressText } from '../utils/general/receiveAccountUtils';
 
 export type TradingExchangePreviewScreenProps = StackProps<
-    TradingStackParamList,
-    TradingStackRoutes.TradingExchangePreview
+    RootStackParamList,
+    RootStackRoutes.TradingExchangePreview
 >;
 
 const TradingExchangePreviewScreenContent = ({

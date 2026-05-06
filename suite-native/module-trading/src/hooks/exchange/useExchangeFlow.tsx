@@ -10,11 +10,15 @@ import {
     selectTradingExchangeActiveQuote,
 } from '@suite-common/trading';
 import { events } from '@suite-native/analytics';
-import { type ExchangeFlowType, TradingStackRoutes } from '@suite-native/navigation';
+import {
+    type ExchangeFlowType,
+    type RootStackParamList,
+    RootStackRoutes,
+    type StackNavigationProps,
+} from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
-import type { TradingStackNavigationProp } from '@suite-native/trading-types';
 
 import { useTradingTransaction } from '../general/useTradingTransaction';
 
@@ -38,9 +42,10 @@ export type UseExchangeFlowProps = {
 export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
     const navigation =
         useNavigation<
-            TradingStackNavigationProp<
-                | TradingStackRoutes.TradingExchangePreview
-                | TradingStackRoutes.TradingExchangeOutputsReview
+            StackNavigationProps<
+                RootStackParamList,
+                | RootStackRoutes.TradingExchangePreview
+                | RootStackRoutes.TradingExchangeOutputsReview
             >
         >();
     const dispatch = useDispatch();
@@ -61,7 +66,7 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
                     flowType === 'revoke' || flowType === 'revoke-and-approve'
                         ? flowType
                         : 'approve';
-                navigation.navigate(TradingStackRoutes.TradingConfirming, {
+                navigation.navigate(RootStackRoutes.TradingConfirming, {
                     flowType: confirmingFlowType,
                 });
             }
