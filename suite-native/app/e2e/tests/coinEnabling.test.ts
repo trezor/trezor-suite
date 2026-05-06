@@ -18,6 +18,9 @@ describe('Coin enabling [@androidOnly @T3T1 @T3W1]', () => {
     });
 
     it('Coin Enabling', async () => {
+        await onHome.waitForScreen();
+        await onHome.tapGetStartedButton();
+
         await onCoinEnabling.waitForInitScreen();
         await onCoinEnabling.toggleNetwork('btc');
         await onCoinEnabling.clickOnConfirmButton();

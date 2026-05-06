@@ -33,7 +33,7 @@ export const NoNetworksConfigured = () => {
                     title={<Translation id="moduleHome.emptyState.initializedDevice.title" />}
                     subtitle={<Translation id="moduleHome.emptyState.initializedDevice.subtitle" />}
                 />
-                <Button onPress={navigateToNetworkConfiguration}>
+                <Button onPress={navigateToNetworkConfiguration} testID="@home/get-started-button">
                     <Translation id="moduleHome.emptyState.initializedDevice.button" />
                 </Button>
             </VStack>

@@ -17,6 +17,10 @@ class HomeActions {
         await element(by.id('@screen/mainScrollView')).scrollTo('bottom');
     }
 
+    async tapGetStartedButton() {
+        await element(by.id('@home/get-started-button')).tap();
+    }
+
     async tapSyncCoinsButton() {
         await this.scrollScreenToBottom();
         await element(by.id('@home/portfolio/sync-coins-button')).tap();
