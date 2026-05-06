@@ -52,6 +52,10 @@
             "./libESM/*": "./libESM/*"
         },
         "browser": {
+            "./lib/index.js": "./lib/index.browser.js",
+            "./lib/index": "./lib/index.browser.js",
+            "./lib/utils/assets": "./lib/utils/assets.browser.js",
+            "./lib/workers/workers": "./lib/workers/workers.browser.js",
             "./libESM/index.mjs": "./libESM/index.browser.mjs",
             "./libESM/utils/assets.mjs": "./libESM/utils/assets.browser.mjs",
             "./libESM/workers/workers.mjs": "./libESM/workers/workers.browser.mjs",

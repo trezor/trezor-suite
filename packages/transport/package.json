@@ -62,13 +62,13 @@
             }
         },
         "browser": {
-            "./libESM/pinger/ping": "./libESM/pinger/ping.browser.mjs",
-            "./libESM/transports/nodeusb": "./libESM/transports/nodeusb.browser.mjs",
-            "./libESM/transports/udp": "./libESM/transports/udp.browser.mjs",
-            "./libESM/transports/webusb": "./libESM/transports/webusb.browser.mjs"
+            "./lib/pinger/ping": "./lib/pinger/ping.browser.js",
+            "./lib/transports/nodeusb": "./lib/transports/nodeusb.browser.js",
+            "./lib/transports/udp": "./lib/transports/udp.browser.js",
+            "./lib/transports/webusb": "./lib/transports/webusb.browser.js"
         },
         "react-native": {
-            "./lib/transports/nodeusb": "./lib/transports/nodeusb.native.js",
+            "./lib/transports/nodeusb": "./lib/transports/nodeusb.browser.js",
             "./lib/transports/webusb": "./lib/transports/webusb.js"
         }
     },

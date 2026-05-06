@@ -4,21 +4,5 @@
         "module": "ESNext",
         "moduleResolution": "Bundler",
         "target": "ES2023"
-    },
-    "exclude": [
-        "**/node_modules",
-        "**/lib",
-        "**/libESM",
-        "**/libDev",
-        "**/build",
-        "**/build-electron",
-        "**/dist",
-        "**/coverage",
-        "**/public",
-        "**/tests",
-        "**/__tests__",
-        "**/__fixtures__",
-        "**/__mocks__/**",
-        "**/*.test.ts"
-    ]
+    }
 }
