@@ -27,7 +27,7 @@ export const ClearStorage = () => {
                     <ActionColumn>
                         <ActionButton
                             onClick={handleClick}
-                            intent="brand"
+                            intent="warning"
                             data-testid="@settings/reset-app-button"
                         >
                             <Translation id="TR_CLEAR_STORAGE" />
