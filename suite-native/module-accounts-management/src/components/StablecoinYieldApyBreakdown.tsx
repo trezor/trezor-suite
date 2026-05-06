@@ -13,17 +13,23 @@ import { getApyBreakdownDescriptionKey, sortApyRewards } from '../utils';
 type StablecoinYieldApyBreakdownProps = {
     networkSymbol: NetworkSymbol;
     rewards: RewardDto[];
+    tokenSymbol: string;
 };
 
 type RewardRowProps = {
     reward: RewardDto;
     networkSymbol: NetworkSymbol;
+    tokenSymbol: string;
 };
 
-const RewardRow = ({ reward, networkSymbol }: RewardRowProps) => {
+const RewardRow = ({ reward, networkSymbol, tokenSymbol }: RewardRowProps) => {
     const rewardRatePercent = getApyPercent(reward.rate);
-    const descriptionKey = getApyBreakdownDescriptionKey(reward.yieldSource);
     const rewardSymbol = reward.token.symbol || reward.token.name || '';
+    const descriptionKey = getApyBreakdownDescriptionKey({
+        yieldSource: reward.yieldSource,
+        rewardTokenSymbol: rewardSymbol,
+        tokenSymbol,
+    });
 
     return (
         <HStack spacing="sp8" alignItems="center">
@@ -47,7 +53,7 @@ const RewardRow = ({ reward, networkSymbol }: RewardRowProps) => {
                     {descriptionKey && (
                         <Box style={{ marginLeft: cryptoIconSizes.extraSmall }} paddingLeft="sp8">
                             <Text variant="body-sm" color="contentSecondary">
-                                <Translation id={descriptionKey} />
+                                <Translation id={descriptionKey} values={{ tokenSymbol }} />
                             </Text>
                         </Box>
                     )}
@@ -60,6 +66,7 @@ const RewardRow = ({ reward, networkSymbol }: RewardRowProps) => {
 export const StablecoinYieldApyBreakdown = ({
     networkSymbol,
     rewards,
+    tokenSymbol,
 }: StablecoinYieldApyBreakdownProps) => {
     const sortedRewards = useMemo(() => sortApyRewards(rewards), [rewards]);
 
@@ -71,6 +78,7 @@ export const StablecoinYieldApyBreakdown = ({
                         key={`${reward.token.symbol}-${reward.yieldSource}-${index}`}
                         reward={reward}
                         networkSymbol={networkSymbol}
+                        tokenSymbol={tokenSymbol}
                     />
                 ))}
                 <HStack spacing="sp8" alignItems="center">

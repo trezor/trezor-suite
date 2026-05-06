@@ -1812,8 +1812,9 @@ export const messages = {
                 apyBreakdown: {
                     apyLabel: '{apy} APY',
                     autoCompounded: 'Automatically added and compounded.',
-                    manualCompound: 'Manually claim and deposit to compound.',
-                    footer: 'APY may change over time.',
+                    manualCompound:
+                        'Manually claim. Swap to {tokenSymbol} and deposit to compound.',
+                    footer: 'APY can change over time.',
                 },
             },
         },
@@ -2325,6 +2326,7 @@ export const messages = {
     earn: {
         staking: 'Staking',
         stablecoinYield: 'Stablecoin yield',
+        poweredBy: 'Powered by',
         vaultName: '{vaultName} Vault',
         portfolioTracker: {
             alert: {
