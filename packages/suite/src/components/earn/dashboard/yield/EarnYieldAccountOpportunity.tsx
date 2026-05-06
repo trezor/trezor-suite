@@ -224,14 +224,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                         symbol={opportunity.networkSymbol}
                         iconToken={opportunity.vault.token}
                         showAssetNetworkIcon
-                        subtitle={
-                            <Translation
-                                id="TR_EARN_VAULT_NAME"
-                                values={{
-                                    vaultName: opportunity.vault.outputToken?.name ?? '',
-                                }}
-                            />
-                        }
+                        subtitle={opportunity.vault.outputToken?.name ?? ''}
                         tokenBalance={{
                             value: opportunity.additionalSupplyAmount,
                             symbol: opportunity.suppliedSymbol,

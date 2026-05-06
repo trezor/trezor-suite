@@ -34,6 +34,7 @@ export const DOCS_ANALYTICS_URL: Url = withPlatformUtm(
 
 export const TREZOR_SUITE_TOS_URL: Url = 'https://trezor.io/documents/suite_terms_of_use.pdf';
 export const TREZOR_TRADING_LEARN_MORE_URL: Url = 'https://trezor.io/trade-features';
+export const MORPHO_DISCLAIMER_URL: Url = 'https://morpho.org/disclaimers/';
 
 // =====================
 // 🆘 SUPPORT

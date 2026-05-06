@@ -8,7 +8,6 @@ import {
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
-import { useTranslate } from '@suite-native/intl';
 
 import {
     type EarnPromoListDataItem,
@@ -31,7 +30,6 @@ type UseStablecoinYieldListDataReturn = {
 export const useStablecoinYieldListData = () => {
     const accounts = useSelector(selectVisibleDeviceAccounts);
     const isDebugEnabled = useStablecoinYieldFlag();
-    const { translate } = useTranslate();
 
     const { yieldOpportunities, isLoading } = useAllYieldOpportunities({
         enabled: isDebugEnabled,
@@ -89,9 +87,7 @@ export const useStablecoinYieldListData = () => {
             const defaultYieldItem: StablecoinYieldEarnItem = {
                 id: vault.id,
                 type: 'stablecoin-yield',
-                vaultName: vault.outputToken?.name
-                    ? translate('earn.vaultName', { vaultName: vault.outputToken.name })
-                    : '',
+                vaultName: vault.outputToken?.name ?? '',
                 tokenSymbol: stablecoinSymbol,
                 networkSymbol: network.symbol,
                 contractAddress: tokenContractAddress,
@@ -135,5 +131,5 @@ export const useStablecoinYieldListData = () => {
         const promoListData: EarnPromoListDataItem[] = ['stablecoin-yield', ...promoItems];
 
         return { activeItems, promoListData };
-    }, [accounts, yieldOpportunities, isDebugEnabled, isLoading, translate]);
+    }, [accounts, yieldOpportunities, isDebugEnabled, isLoading]);
 };

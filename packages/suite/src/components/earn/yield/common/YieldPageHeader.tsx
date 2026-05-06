@@ -101,7 +101,7 @@ export const YieldPageHeader = ({ analyticsStep, account, routeParams }: YieldPa
                         )}
                         <Column gap={2} overflow="hidden">
                             <Text typographyStyle="body-md-strong" ellipsisLineCount={1}>
-                                <Translation id="TR_EARN_VAULT_NAME" values={{ vaultName }} />
+                                {vaultName}
                             </Text>
                             {account && (
                                 <AccountLabel

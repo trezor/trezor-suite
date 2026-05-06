@@ -22,7 +22,10 @@ export const YieldEarnInANutshellHighlights = ({
         {
             icon: 'lockSimple',
             content: (
-                <Translation id="TR_EARN_YIELD_NUTSHELL_AMOUNT_LOCKED" values={{ supplySymbol }} />
+                <Translation
+                    id="TR_EARN_YIELD_NUTSHELL_DEPOSITED_AMOUNT"
+                    values={{ supplySymbol }}
+                />
             ),
         },
         {
@@ -53,7 +56,7 @@ export const YieldEarnInANutshellHighlights = ({
                       icon: 'plusCircle' as const,
                       content: (
                           <Translation
-                              id="TR_EARN_YIELD_NUTSHELL_PROTOCOL_REWARDS"
+                              id="TR_EARN_YIELD_NUTSHELL_CLAIM_REWARDS"
                               values={{
                                   rewardsSymbol: (
                                       <FormattedList type="conjunction" value={rewardsSymbols} />

@@ -9681,10 +9681,6 @@ export const messages = defineMessages({
         id: 'TR_EARN_STABLECOIN_YIELD_TITLE',
         defaultMessage: 'Stablecoin yield',
     },
-    TR_EARN_VAULT_NAME: {
-        id: 'TR_EARN_VAULT_NAME',
-        defaultMessage: '{vaultName} Vault',
-    },
     TR_EARN_YIELD_PENDING_SUPPLY: {
         id: 'TR_EARN_YIELD_PENDING_SUPPLY',
         defaultMessage: 'Confirming deposit...',
@@ -10076,10 +10072,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_SUPPLYING_IN_A_NUTSHELL',
         defaultMessage: 'Stablecoin yield explained',
     },
-    TR_EARN_YIELD_NUTSHELL_AMOUNT_LOCKED: {
-        id: 'TR_EARN_YIELD_NUTSHELL_AMOUNT_LOCKED',
+    TR_EARN_YIELD_NUTSHELL_DEPOSITED_AMOUNT: {
+        id: 'TR_EARN_YIELD_NUTSHELL_DEPOSITED_AMOUNT',
         defaultMessage:
-            'The deposited amount of {supplySymbol} is locked until you withdraw it. Withdrawal is instant.',
+            'The deposited amount of {supplySymbol} is always available. Withdrawal is instant.',
     },
     TR_EARN_YIELD_NUTSHELL_COMPOUND_INTEREST: {
         id: 'TR_EARN_YIELD_NUTSHELL_COMPOUND_INTEREST',
@@ -10090,10 +10086,10 @@ export const messages = defineMessages({
         defaultMessage:
             'Deposit {supplySymbol} to receive {vaultSymbol} tokens. These tokens represent your vault position.',
     },
-    TR_EARN_YIELD_NUTSHELL_PROTOCOL_REWARDS: {
-        id: 'TR_EARN_YIELD_NUTSHELL_PROTOCOL_REWARDS',
+    TR_EARN_YIELD_NUTSHELL_CLAIM_REWARDS: {
+        id: 'TR_EARN_YIELD_NUTSHELL_CLAIM_REWARDS',
         defaultMessage:
-            'You will earn {rewardsSymbol} tokens as rewards. These must be claimed separately.',
+            "You'll earn {rewardsSymbol} tokens as rewards. These could be temporary & must be claimed separately.",
     },
     TR_EARN_YIELD_APPROVE_SPENDING_TRANSACTION: {
         id: 'TR_EARN_YIELD_APPROVE_SPENDING_TRANSACTION',
@@ -10123,24 +10119,25 @@ export const messages = defineMessages({
         id: 'TR_EARN_SUPPLY_TOKEN',
         defaultMessage: 'Deposit {symbol}',
     },
-    TR_EARN_SUPPLY_PROVIDER_MANAGES: {
-        id: 'TR_EARN_SUPPLY_PROVIDER_MANAGES',
+    TR_EARN_SUPPLY_RECEIPT_TOKENS_INFO: {
+        id: 'TR_EARN_SUPPLY_RECEIPT_TOKENS_INFO',
         defaultMessage:
-            '{providerName} maintains and protects your deposited {networkDisplaySymbol} with their smart contracts, infrastructure, and technology.',
+            "Your tokens will be transferred to the {providerName} protocol's smart contracts. You'll receive receipt tokens representing your proportional claim on the vault's assets.",
     },
-    TR_EARN_SUPPLY_PROVIDER_NO_LIABILITY: {
-        id: 'TR_EARN_SUPPLY_PROVIDER_NO_LIABILITY',
+    TR_EARN_SUPPLY_FULL_CONTROL_INFO: {
+        id: 'TR_EARN_SUPPLY_FULL_CONTROL_INFO',
         defaultMessage:
-            "When depositing, the responsibility for your funds' security transitions from your Trezor to {providerName}.",
+            'You keep full control. Your Trezor stays the signer. You can withdraw anytime, subject to vault liquidity.',
     },
-    TR_EARN_SUPPLY_PROVIDER_SMART_CONTRACT_RISK: {
-        id: 'TR_EARN_SUPPLY_PROVIDER_SMART_CONTRACT_RISK',
+    TR_EARN_SUPPLY_PROTOCOL_RISKS_INFO: {
+        id: 'TR_EARN_SUPPLY_PROTOCOL_RISKS_INFO',
         defaultMessage:
-            "Depositing assets involves smart contract risks. {providerName} applies rigorous security measures, but can't guarantee against all losses.",
+            'Smart contract, oracle, and curator risks apply. Yield is variable and not guaranteed.',
     },
-    TR_EARN_CONSENT_TO_SUPPLY_WITH_PROVIDER: {
-        id: 'TR_EARN_CONSENT_TO_SUPPLY_WITH_PROVIDER',
-        defaultMessage: 'I acknowledge and consent to deposit with {providerName}.',
+    TR_EARN_CONSENT_PROTOCOL_TERMS_AND_DISCLAIMER: {
+        id: 'TR_EARN_CONSENT_PROTOCOL_TERMS_AND_DISCLAIMER',
+        defaultMessage:
+            "Accessing the {providerName} Protocol through this app is governed by Trezor's <tos>Terms of Use</tos> and <disclaimer>{providerName}'s Disclaimer</disclaimer>.",
     },
     TR_EARN_PROVIDER_UPDATE: {
         id: 'TR_EARN_PROVIDER_UPDATE',
@@ -10594,10 +10591,6 @@ export const messages = defineMessages({
     TR_EARN_YOUR_STAKED_FUNDS_MAINTAINED: {
         id: 'TR_EARN_YOUR_STAKED_FUNDS_MAINTAINED',
         defaultMessage: 'Your staked funds are maintained by {providerName}.',
-    },
-    TR_EARN_YOUR_SUPPLIED_FUNDS_MAINTAINED: {
-        id: 'TR_EARN_YOUR_SUPPLIED_FUNDS_MAINTAINED',
-        defaultMessage: 'Your deposited funds are maintained by {providerName}.',
     },
     TR_EARN_STAKE_EVERSTAKE_MANAGES: {
         id: 'TR_EARN_STAKE_EVERSTAKE_MANAGES',

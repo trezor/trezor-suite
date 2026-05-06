@@ -94,11 +94,7 @@ export const StablecoinYieldTokenOverview = ({
         }
 
         showAlert({
-            title: vault.outputToken?.name ? (
-                <Translation id="earn.vaultName" values={{ vaultName: vault.outputToken.name }} />
-            ) : (
-                ''
-            ),
+            title: vault.outputToken?.name ?? '',
             description: translate(
                 'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.apyLabel',
                 { apy },
@@ -171,16 +167,7 @@ export const StablecoinYieldTokenOverview = ({
                         <Text variant="body-sm" color="contentSecondary">
                             <Translation id="moduleAccounts.accountDetail.stablecoinYield.vault" />
                         </Text>
-                        <Text variant="body-sm">
-                            {vault.outputToken?.name ? (
-                                <Translation
-                                    id="earn.vaultName"
-                                    values={{ vaultName: vault.outputToken.name }}
-                                />
-                            ) : (
-                                ''
-                            )}
-                        </Text>
+                        <Text variant="body-sm">{vault.outputToken?.name ?? ''}</Text>
                     </HStack>
                     <CardDivider />
                     <PressableOpacity

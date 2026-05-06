@@ -2330,7 +2330,6 @@ export const messages = {
     earn: {
         staking: 'Staking',
         stablecoinYield: 'Stablecoin yield',
-        vaultName: '{vaultName} Vault',
         portfolioTracker: {
             alert: {
                 title: 'Staking is disabled in the portfolio tracker',
