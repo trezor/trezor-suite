@@ -1,4 +1,11 @@
-import { Box, Card, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import {
+    Box,
+    Card,
+    ListItemSkeleton,
+    Text,
+    VStack,
+    useBottomSheetModal,
+} from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -15,11 +22,13 @@ const cardHeaderStyle = prepareNativeStyle(utils => ({
 type EarnDepositsCardProps = {
     stakingActiveItems: StakingEarnItem[];
     stablecoinYieldActiveItems: StablecoinYieldEarnItem[];
+    isStablecoinYieldLoading: boolean;
 };
 
 export const EarnDepositsCard = ({
     stakingActiveItems,
     stablecoinYieldActiveItems,
+    isStablecoinYieldLoading,
 }: EarnDepositsCardProps) => {
     const { applyStyle } = useNativeStyles();
     const { stakingRow, stablecoinYieldRow, totalDepositedFiatAmount } = useEarnDepositsCardData({
@@ -62,6 +71,7 @@ export const EarnDepositsCard = ({
                             onPress={openStakingSheet}
                         />
                     )}
+
                     {stablecoinYieldRow && (
                         <EarnDepositsCardRow
                             key={stablecoinYieldRow.type}
@@ -69,6 +79,7 @@ export const EarnDepositsCard = ({
                             onPress={openStablecoinYieldSheet}
                         />
                     )}
+                    {isStablecoinYieldLoading && <ListItemSkeleton />}
                 </Card>
             </Box>
 

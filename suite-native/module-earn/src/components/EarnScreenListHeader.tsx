@@ -10,12 +10,14 @@ type EarnScreenListHeaderProps = {
     cardanoStakingAccountKey?: AccountKey;
     stakingActiveItems: StakingEarnItem[];
     stablecoinYieldActiveItems: StablecoinYieldEarnItem[];
+    isStablecoinYieldLoading: boolean;
 };
 
 export const EarnScreenListHeader = ({
     cardanoStakingAccountKey,
     stakingActiveItems,
     stablecoinYieldActiveItems,
+    isStablecoinYieldLoading,
 }: EarnScreenListHeaderProps) => {
     if (stakingActiveItems.length === 0 && stablecoinYieldActiveItems.length === 0) {
         return null;
@@ -27,6 +29,7 @@ export const EarnScreenListHeader = ({
                 <CardanoStakingInfoBanner accountKey={cardanoStakingAccountKey} />
             )}
             <EarnDepositsCard
+                isStablecoinYieldLoading={isStablecoinYieldLoading}
                 stakingActiveItems={stakingActiveItems}
                 stablecoinYieldActiveItems={stablecoinYieldActiveItems}
             />

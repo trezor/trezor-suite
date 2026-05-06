@@ -14,7 +14,6 @@ import {
     type SkeletonLoaderItem,
     type StablecoinYieldEarnItem,
 } from '../types';
-import { useStablecoinYieldFlag } from './useStablecoinYieldFlag';
 
 const STABLECOIN_SKELETON_ITEMS: SkeletonLoaderItem[] = [
     { type: 'skeleton-loader', id: 'skeleton-0' },
@@ -25,28 +24,22 @@ const STABLECOIN_SKELETON_ITEMS: SkeletonLoaderItem[] = [
 type UseStablecoinYieldListDataReturn = {
     activeItems: StablecoinYieldEarnItem[];
     promoListData: EarnPromoListDataItem[];
+    isLoading: boolean;
 };
 
 export const useStablecoinYieldListData = () => {
     const accounts = useSelector(selectVisibleDeviceAccounts);
-    const isDebugEnabled = useStablecoinYieldFlag();
 
-    const { yieldOpportunities, isLoading } = useAllYieldOpportunities({
-        enabled: isDebugEnabled,
-    });
+    const { yieldOpportunities, isLoading } = useAllYieldOpportunities();
 
     return useMemo<UseStablecoinYieldListDataReturn>(() => {
-        if (!isDebugEnabled) {
-            return { activeItems: [], promoListData: [] };
-        }
-
         if (isLoading) {
             const promoListData: EarnPromoListDataItem[] = [
                 'stablecoin-yield',
                 ...STABLECOIN_SKELETON_ITEMS,
             ];
 
-            return { activeItems: [], promoListData };
+            return { activeItems: [], promoListData, isLoading };
         }
 
         const activeItems: StablecoinYieldEarnItem[] = [];
@@ -130,6 +123,6 @@ export const useStablecoinYieldListData = () => {
 
         const promoListData: EarnPromoListDataItem[] = ['stablecoin-yield', ...promoItems];
 
-        return { activeItems, promoListData };
-    }, [accounts, yieldOpportunities, isDebugEnabled, isLoading]);
+        return { activeItems, promoListData, isLoading };
+    }, [accounts, yieldOpportunities, isLoading]);
 };
