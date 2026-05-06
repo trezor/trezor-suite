@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { UI_REQUEST } from '@trezor/connect/src/exports';
+import { UI_REQUEST } from '@trezor/connect';
 
 import {
     isFlowEndingButtonRequest,
