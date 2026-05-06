@@ -4,6 +4,8 @@ export const EXPLORER_LOOKBACK_DAYS = 2; // window used by Tests Explorer to dis
 
 export const AUTO_QUARANTINE_PREFIX = '[auto-quarantine]';
 
+export const QUARANTINE_EXPIRATION_DAYS = 7; // auto-quarantine actions expire after this many days
+
 /**
  * Heuristic thresholds
  */

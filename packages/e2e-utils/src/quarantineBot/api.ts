@@ -1,11 +1,15 @@
 import { type computeStats, normalizeTitlePath } from './actions';
-import { AUTO_QUARANTINE_PREFIX, EXPLORER_LOOKBACK_DAYS } from './config';
+import {
+    AUTO_QUARANTINE_PREFIX,
+    EXPLORER_LOOKBACK_DAYS,
+    QUARANTINE_EXPIRATION_DAYS,
+} from './config';
 import { createAction, currentsRequest, getActions } from '../currentsApi/api';
 import type { Action, TestExplorerItem, TestsExplorerResponse } from '../currentsApi/types';
 import { debug } from '../logger';
 
 export async function getAutoQuarantineActions(projectId: string): Promise<Action[]> {
-    const actions = await getActions(projectId);
+    const actions = await getActions(projectId, 'active');
 
     return actions.filter(
         a => a.name.startsWith(AUTO_QUARANTINE_PREFIX) && a.action.some(r => r.op === 'quarantine'),
@@ -22,6 +26,9 @@ function postQuarantineAction(
     description: string,
 ): Promise<Action> {
     const name = `${AUTO_QUARANTINE_PREFIX} ${titlePath.join(' > ').slice(0, 80)}`;
+    const expiresAfter = new Date(
+        Date.now() + QUARANTINE_EXPIRATION_DAYS * 24 * 60 * 60 * 1000,
+    ).toISOString();
 
     return createAction(projectId, {
         name,
@@ -31,6 +38,7 @@ function postQuarantineAction(
             op: 'AND',
             cond: [{ type: 'titlePath', op: 'incAll', value: titlePath }],
         },
+        expiresAfter,
     });
 }
 
