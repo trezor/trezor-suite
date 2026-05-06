@@ -112,6 +112,23 @@ const config: webpack.Configuration = {
         // Throw error on missing exports instead of warning
         strictExportPresence: true,
         rules: [
+            {
+                test: /pinger[\\/]pingWorker.ts/i,
+                loader: 'worker-loader',
+                options: {
+                    filename: 'js/workers/ping-worker.[contenthash].js',
+                },
+            },
+            // fakin solana. for some reason it can't be running in a worker. at least becauses of playwright tests, where we can't manipulate time in the worker context, but
+            // I hope there were more reasons not to use worker for solana
+            // TODO worker-loader not needed anymore; we may create workers directly
+            ...['blockbook', 'ripple', 'blockfrost', 'stellar' /* solana */].map(worker => ({
+                test: new RegExp(`workers[\\/]${worker}[\\/]index`, 'i'),
+                loader: 'worker-loader',
+                options: {
+                    filename: `js/workers/${worker}-worker.[contenthash].js`,
+                },
+            })),
             // Allow extensionless imports from ESM packages in node_modules (webpack 5 strict ESM)
             {
                 test: /\.m?js$/,

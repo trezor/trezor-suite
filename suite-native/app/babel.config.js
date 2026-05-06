@@ -7,7 +7,7 @@ module.exports = function (api) {
                 plugins: [['transform-remove-console', { exclude: ['error'] }]],
             },
         },
-        presets: [['babel-preset-expo', { unstable_transformImportMeta: true }]],
+        presets: ['babel-preset-expo'],
         plugins: [
             ['@babel/plugin-transform-class-static-block'],
             // react-native-reanimated plugin has to be listed last
