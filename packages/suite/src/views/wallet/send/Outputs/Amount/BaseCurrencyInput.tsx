@@ -200,7 +200,7 @@ export const BaseCurrencyInput = ({
                             {
                                 symbol: account.symbol,
                                 tokenAddress: token?.contract as TokenAddress,
-                                protocols: token?.protocols?.erc4626 ? ['erc4626'] : undefined,
+                                protocols: token?.protocols,
                             },
                         ],
                         baseCurrencyCode: selected.value as BaseCurrencyCode,

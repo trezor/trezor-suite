@@ -337,8 +337,8 @@ export interface Token {
     totalReceived?: string;
     /** Total amount of tokens sent. */
     totalSent?: string;
-    /** Optional protocol-specific enrichments requested by the caller. */
-    protocols?: ContractInfoProtocols;
+    /** Protocol identifiers the contract participates in (e.g., "erc4626"); for fresh per-vault data, use getContractInfo. */
+    protocols?: TokenProtocols;
 }
 export interface Address {
     /** Current page index. */
@@ -405,6 +405,7 @@ export interface Address {
         | { payloadType: string; payload?: any };
 }
 export type ContractInfoProtocol = 'erc4626';
+export type TokenProtocols = ContractInfoProtocol[];
 export interface ContractInfoProtocols {
     /** ERC4626 vault details when explicitly requested and detected. */
     erc4626?: Erc4626Token;
