@@ -45,10 +45,10 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     const claimSession = useSelector(state =>
         selectStablecoinYieldSession(state, 'claim', flowKey),
     );
-    const isClaiming =
+    const isClaimSubmitting =
         claimSession.action.isSubmitting ||
-        !!claimSession.action.pendingTransaction ||
         (!!yieldTxReview.precomposedTx && yieldTxReview.accountKey === account?.key);
+    const isClaiming = isClaimSubmitting || !!claimSession.action.pendingTransaction;
     const isDeviceConnected = !!device?.connected && device.available;
     const isClaimSupported = !!account && isEarnYieldClaimSupported(account.symbol);
 
@@ -212,7 +212,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                                 isClaiming ||
                                 !isDeviceConnected
                             }
-                            isLoading={isClaiming}
+                            isLoading={isClaimSubmitting}
                             onClick={handleClaim}
                         >
                             <Translation id="TR_EARN_YIELD_CLAIM" />
