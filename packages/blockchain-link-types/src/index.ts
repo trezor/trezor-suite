@@ -8,7 +8,6 @@ export type { BlockEvent, FiatRatesEvent, NotificationEvent } from './responses'
 export type { Message } from './messages';
 export type { Events } from './events';
 export * from './baseCurrency';
-export { StakeState } from './solana';
 
 export type * as MessageTypes from './messages';
 export type * as ResponseTypes from './responses';
@@ -40,8 +39,6 @@ export type {
     Utxo as ElectrumUtxo,
     StatusChange as ElectrumStatusChange,
 } from './electrum';
-
-export type { SolanaTokenAccountInfo } from './solana';
 
 export type {
     AssetBalance,
