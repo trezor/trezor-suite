@@ -9745,9 +9745,17 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_REVIEW_WITHDRAW_DESCRIPTION',
         defaultMessage: 'Review details to redeem from vault',
     },
-    TR_EARN_YIELD_VAULT: {
-        id: 'TR_EARN_YIELD_VAULT',
-        defaultMessage: 'Vault',
+    TR_EARN_YIELD_DEPOSIT_TO: {
+        id: 'TR_EARN_YIELD_DEPOSIT_TO',
+        defaultMessage: 'Deposit to',
+    },
+    TR_EARN_YIELD_REDEEM_FROM: {
+        id: 'TR_EARN_YIELD_REDEEM_FROM',
+        defaultMessage: 'Redeem from',
+    },
+    TR_EARN_YIELD_VAULT_NAME: {
+        id: 'TR_EARN_YIELD_VAULT_NAME',
+        defaultMessage: '{vault} Vault',
     },
     TR_EARN_YIELD_REVIEW_SUPPLY_AMOUNT: {
         id: 'TR_EARN_YIELD_REVIEW_SUPPLY_AMOUNT',
