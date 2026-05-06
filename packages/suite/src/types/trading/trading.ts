@@ -27,15 +27,9 @@ import type {
 import { type Account } from '@suite-common/wallet-types';
 import { type AssetLogoProps, type AssetOptionBaseProps } from '@trezor/product-components';
 
-export type TradingPageType = 'form' | 'offers' | 'confirm' | 'retry';
+export type TradingPageType = 'form' | 'confirm' | 'retry';
 
 export type UseTradingFormCommonProps = {
-    /**
-     * Difference between form and offers is that on the offers page are used all data filled in the form
-     * but on the form page we prefill form with only some data from draft
-     *
-     * default value is 'form'
-     */
     pageType?: TradingPageType;
 };
 
