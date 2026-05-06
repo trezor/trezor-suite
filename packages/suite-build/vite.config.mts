@@ -390,7 +390,7 @@ const resolveWorkerUrlsPlugin = (): Plugin => ({
 
         let changed = false;
         const transformed = code.replace(
-            /new URL\((['"])(@[^'"]+)\1,\s*import\.meta\.url\)/g,
+            /new URL\(\s*(?:\/\*.*?\*\/)?\s*(['"])(@[^'"]+)\1,\s*import\.meta\.url,?\s*\)/gm,
             (match, _quote, specifier) => {
                 for (const a of alias) {
                     if (
