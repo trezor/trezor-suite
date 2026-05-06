@@ -2163,7 +2163,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@connect-coins/solana@workspace:connect-coins/solana":
+"@connect-coins/solana@workspace:*, @connect-coins/solana@workspace:connect-coins/solana":
   version: 0.0.0-use.local
   resolution: "@connect-coins/solana@workspace:connect-coins/solana"
   dependencies:
