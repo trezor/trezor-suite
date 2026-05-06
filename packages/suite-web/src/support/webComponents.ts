@@ -83,11 +83,6 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             /* webpackChunkName: "trading" */ 'src/views/wallet/trading/buy/TradingBuyDetail'
         ).then(({ TradingBuyDetail }) => ({ default: TradingBuyDetail })),
     ),
-    'wallet-trading-buy-offers': lazy(() =>
-        import(
-            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/buy/TradingBuyOffers'
-        ).then(({ TradingBuyOffers }) => ({ default: TradingBuyOffers })),
-    ),
     'wallet-trading-buy-confirm': lazy(() =>
         import(
             /* webpackChunkName: "trading" */ 'src/views/wallet/trading/buy/TradingBuyConfirm'
@@ -103,11 +98,6 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             /* webpackChunkName: "trading" */ 'src/views/wallet/trading/sell/TradingSellDetail'
         ).then(({ TradingSellDetail }) => ({ default: TradingSellDetail })),
     ),
-    'wallet-trading-sell-offers': lazy(() =>
-        import(
-            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/sell/TradingSellOffers'
-        ).then(({ TradingSellOffers }) => ({ default: TradingSellOffers })),
-    ),
     'wallet-trading-sell-confirm': lazy(() =>
         import(
             /* webpackChunkName: "trading" */ 'src/views/wallet/trading/sell/TradingSellConfirm'
@@ -122,11 +112,6 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
         import(
             /* webpackChunkName: "trading" */ 'src/views/wallet/trading/exchange/TradingExchangeDetail'
         ).then(({ TradingExchangeDetail }) => ({ default: TradingExchangeDetail })),
-    ),
-    'wallet-trading-exchange-offers': lazy(() =>
-        import(
-            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/exchange/TradingExchangeOffers'
-        ).then(({ TradingExchangeOffers }) => ({ default: TradingExchangeOffers })),
     ),
     'wallet-trading-exchange-confirm': lazy(() =>
         import(

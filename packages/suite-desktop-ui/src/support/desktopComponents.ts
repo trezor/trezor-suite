@@ -26,17 +26,14 @@ import { Tokens } from 'src/views/wallet/tokens';
 import { TradingBuyConfirm } from 'src/views/wallet/trading/buy/TradingBuyConfirm';
 import { TradingBuyDetail } from 'src/views/wallet/trading/buy/TradingBuyDetail';
 import { TradingBuyForm } from 'src/views/wallet/trading/buy/TradingBuyForm';
-import { TradingBuyOffers } from 'src/views/wallet/trading/buy/TradingBuyOffers';
 import { TradingConciergeDetail } from 'src/views/wallet/trading/concierge/TradingConciergeDetail';
 import { TradingExchangeConfirm } from 'src/views/wallet/trading/exchange/TradingExchangeConfirm';
 import { TradingExchangeDetail } from 'src/views/wallet/trading/exchange/TradingExchangeDetail';
 import { TradingExchangeForm } from 'src/views/wallet/trading/exchange/TradingExchangeForm';
-import { TradingExchangeOffers } from 'src/views/wallet/trading/exchange/TradingExchangeOffers';
 import { TradingRedirect } from 'src/views/wallet/trading/redirect/TradingRedirect';
 import { TradingSellConfirm } from 'src/views/wallet/trading/sell/TradingSellConfirm';
 import { TradingSellDetail } from 'src/views/wallet/trading/sell/TradingSellDetail';
 import { TradingSellForm } from 'src/views/wallet/trading/sell/TradingSellForm';
-import { TradingSellOffers } from 'src/views/wallet/trading/sell/TradingSellOffers';
 import { TradingTransactions } from 'src/views/wallet/trading/transactions/TradingTransactions';
 import { Transactions } from 'src/views/wallet/transactions/Transactions';
 
@@ -60,15 +57,12 @@ export const desktopComponents: Record<PageName, ComponentType> = {
     'wallet-nfts': Nfts,
     'wallet-trading-buy': TradingBuyForm,
     'wallet-trading-buy-detail': TradingBuyDetail,
-    'wallet-trading-buy-offers': TradingBuyOffers,
     'wallet-trading-buy-confirm': TradingBuyConfirm,
     'wallet-trading-sell': TradingSellForm,
     'wallet-trading-sell-detail': TradingSellDetail,
-    'wallet-trading-sell-offers': TradingSellOffers,
     'wallet-trading-sell-confirm': TradingSellConfirm,
     'wallet-trading-exchange': TradingExchangeForm,
     'wallet-trading-exchange-detail': TradingExchangeDetail,
-    'wallet-trading-exchange-offers': TradingExchangeOffers,
     'wallet-trading-exchange-confirm': TradingExchangeConfirm,
     'wallet-trading-concierge': TradingConciergeDetail,
     'wallet-trading-redirect': TradingRedirect,

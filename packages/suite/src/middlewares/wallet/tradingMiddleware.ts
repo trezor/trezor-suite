@@ -41,7 +41,6 @@ export const tradingMiddleware =
             const isExchangeCreationFlow = [
                 'wallet-trading-exchange',
                 'wallet-trading-exchange-confirm',
-                'wallet-trading-exchange-offers',
             ].some(name => name === routeName);
             const isExchangeTransactionDetail = routeName === 'wallet-trading-exchange-detail';
             const nextModalAccountKey = selectTradingModalAccountKey(nextState);
