@@ -1,15 +1,4 @@
 import {
-    type Address,
-    type Base64EncodedWireTransaction,
-    type CompilableTransactionMessage,
-    type CompiledTransactionMessage,
-    type GetFeeForMessageApi,
-    type GetRecentPrioritizationFeesApi,
-    type Rpc,
-    type SignaturesMap,
-    type SimulateTransactionApi,
-    type TransactionMessageBytes,
-    type TransactionMessageBytesBase64,
     getBase64Decoder,
     getCompiledTransactionMessageEncoder,
     getTransactionEncoder,
@@ -22,6 +11,19 @@ import {
     getSetComputeUnitLimitInstructionDataEncoder,
 } from '@solana-program/compute-budget';
 
+import type {
+    Address,
+    Base64EncodedWireTransaction,
+    CompilableTransactionMessage,
+    CompiledTransactionMessage,
+    GetFeeForMessageApi,
+    GetRecentPrioritizationFeesApi,
+    Rpc,
+    SignaturesMap,
+    SimulateTransactionApi,
+    TransactionMessageBytes,
+    TransactionMessageBytesBase64,
+} from '@connect-coins/solana/types';
 import { COMPUTE_BUDGET_PROGRAM_ID } from '@trezor/blockchain-link-utils/src/solana';
 import { safeBigIntStringify } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';

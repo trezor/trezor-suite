@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { StakeState } from '@connect-coins/solana/constants';
 import { Translation } from '@suite/intl';
 import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT, claim, unstake } from '@suite-common/staking-solana';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
@@ -12,9 +13,8 @@ import {
     getOutputTxAmount,
     getSolanaStakingAccountsByStatus,
 } from '@suite-common/wallet-utils';
-import { StakeState } from '@trezor/blockchain-link-types';
 import { Banner } from '@trezor/components';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, isArrayMember } from '@trezor/utils';
 
 interface SolanaStakingLimitBannerProps {
     account: Account;
@@ -35,7 +35,11 @@ export const SolanaStakingLimitBanner = ({
     const selectedBlockchain = blockchain[account.symbol];
 
     useEffect(() => {
-        if (account.networkType !== 'solana') return;
+        if (account.networkType !== 'solana' || !isArrayMember(account.symbol, ['sol', 'dsol'])) {
+            return;
+        }
+
+        const network = account.symbol;
 
         const outputTxAmount = getOutputTxAmount(composedLevels);
         if (!outputTxAmount || !selectedBlockchain?.url) return;
@@ -43,7 +47,7 @@ export const SolanaStakingLimitBanner = ({
         const estimateTx = async () => {
             if (type === 'unstake') {
                 const { unstakeAmount } = await unstake({
-                    network: account.symbol,
+                    network,
                     sender: account.descriptor,
                     lamports: BigInt(outputTxAmount),
                     source: WALLET_SDK_SOURCE,
@@ -60,7 +64,7 @@ export const SolanaStakingLimitBanner = ({
 
             if (type === 'claim') {
                 const { totalClaimAmount } = await claim({
-                    network: account.symbol,
+                    network,
                     sender: account.descriptor,
                     url: selectedBlockchain.url,
                 });

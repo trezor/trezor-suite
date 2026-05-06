@@ -1,15 +1,13 @@
-import {
-    type CompilableTransactionMessage,
-    type TransactionMessageWithBlockhashLifetime,
-    compileTransaction,
-} from '@solana/kit';
+import { compileTransaction } from '@solana/kit';
 
-import {
-    type PrepareClaimSolTxParams,
-    type PrepareStakeSolTxParams,
-    type PrepareStakeSolTxResponse,
-    type PriorityFees,
-} from '@suite-common/staking-solana-types';
+import type {
+    CompilableTransactionMessage,
+    PrepareClaimSolTxParams,
+    PrepareStakeSolTxParams,
+    PrepareStakeSolTxResponse,
+    PriorityFees,
+    TransactionMessageWithBlockhashLifetime,
+} from '@connect-coins/solana/types';
 import {
     SOL_COMPUTE_UNIT_LIMIT,
     SOL_COMPUTE_UNIT_PRICE,

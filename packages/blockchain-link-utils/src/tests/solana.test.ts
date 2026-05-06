@@ -1,3 +1,7 @@
+import type {
+    ParsedTransactionWithMeta,
+    SolanaValidParsedTxWithMeta,
+} from '@connect-coins/solana/types';
 import { type TokenTransfer, type Transaction } from '@trezor/blockchain-link-types/src';
 
 import {
@@ -13,7 +17,6 @@ import {
     transformTokenInfo,
     transformTransaction,
 } from '../solana';
-import { type ParsedTransactionWithMeta, type SolanaValidParsedTxWithMeta } from '../solana-types';
 import { fixtures } from './fixtures/solana';
 
 describe('solana/utils', () => {

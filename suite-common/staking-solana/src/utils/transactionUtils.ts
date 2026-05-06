@@ -1,12 +1,4 @@
 import {
-    type Account,
-    type Address,
-    type Blockhash,
-    type CompilableTransactionMessage,
-    type Instruction,
-    type SignatureBytes,
-    type Transaction,
-    type TransactionMessageWithBlockhashLifetime,
     address,
     appendTransactionMessageInstruction,
     compileTransactionMessage,
@@ -31,7 +23,6 @@ import {
 } from '@solana-program/compute-budget';
 import {
     STAKE_PROGRAM_ADDRESS,
-    type StakeStateAccount,
     getDeactivateInstruction,
     getDelegateStakeInstruction,
     getInitializeInstruction,
@@ -44,7 +35,27 @@ import {
     getTransferSolInstruction,
 } from '@solana-program/system';
 
-import { type SolanaTxMeta } from '@suite-common/staking-solana-types';
+import { StakeState } from '@connect-coins/solana/constants';
+import type {
+    Account,
+    Address,
+    Blockhash,
+    ClaimParams,
+    ClaimResponse,
+    CompilableTransactionMessage,
+    Connection,
+    Delegations,
+    Instruction,
+    Params,
+    SignatureBytes,
+    SolanaTxMeta,
+    StakeParams,
+    StakeResponse,
+    StakeStateAccount,
+    Transaction,
+    TransactionMessageWithBlockhashLifetime,
+    UnstakeResponse,
+} from '@connect-coins/solana/types';
 import {
     SOL_BASE_FEE,
     SOL_COMPUTE_UNIT_LIMIT,
@@ -56,7 +67,6 @@ import {
     isStake,
     stakeAccountState,
 } from '@trezor/blockchain-link/src/workers/solana/utils/stakingAccounts';
-import { StakeState } from '@trezor/blockchain-link-types';
 import { COMPUTE_BUDGET_PROGRAM_ID } from '@trezor/blockchain-link-utils/src/solana';
 import { serializeError } from '@trezor/utils';
 
@@ -70,16 +80,6 @@ import {
     STAKE_CONFIG_ACCOUNT,
     STAKE_HISTORY_ACCOUNT,
 } from '../constants';
-import {
-    type ClaimParams,
-    type ClaimResponse,
-    type Connection,
-    type Delegations,
-    type Params,
-    type StakeParams,
-    type StakeResponse,
-    type UnstakeResponse,
-} from '../types';
 
 const formatEverstakeSource = (source: string): string => {
     const timestamp = new Date().getTime();

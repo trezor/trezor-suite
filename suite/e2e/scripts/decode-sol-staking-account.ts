@@ -1,12 +1,13 @@
 import { address } from '@solana/addresses';
 import { parseBase64RpcAccount } from '@solana/kit';
+import { decodeStakeStateAccount } from '@solana-program/stake';
+import * as fs from 'node:fs';
+
 import type {
     AccountInfoBase,
     AccountInfoWithBase64EncodedData,
     Lamports,
-} from '@solana/rpc-types';
-import { decodeStakeStateAccount } from '@solana-program/stake';
-import * as fs from 'node:fs';
+} from '@connect-coins/solana/types';
 
 type StakeAccountInfo = {
     data: [string, 'base64'];
