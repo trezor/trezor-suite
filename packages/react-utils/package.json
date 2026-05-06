@@ -8,11 +8,17 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest"
     },
     "dependencies": {
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.2.4"
+    },
+    "devDependencies": {
+        "@testing-library/react": "^16.3.2",
+        "@types/react": "19.2.14",
+        "react-dom": "19.2.4"
     }
 }

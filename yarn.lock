@@ -16398,9 +16398,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/react-utils@workspace:packages/react-utils"
   dependencies:
+    "@testing-library/react": "npm:^16.3.2"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@types/react": "npm:19.2.14"
     react: "npm:19.2.4"
+    react-dom: "npm:19.2.4"
   languageName: unknown
   linkType: soft
 
