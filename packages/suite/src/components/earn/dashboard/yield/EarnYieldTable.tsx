@@ -77,9 +77,9 @@ export const EarnYieldTable = () => {
                     return [];
                 }
 
-                const isApproveTx = Number(account.misc.nonce) === 0;
+                const isEmptyAccount = Number(account.misc.nonce ?? 0) < 1;
 
-                if (isApproveTx) {
+                if (isEmptyAccount) {
                     return [];
                 }
 
@@ -135,19 +135,23 @@ export const EarnYieldTable = () => {
                     <EarnFeatureDisabledBanner content={content} />
                 ) : (
                     <Column gap={16} alignItems="center">
-                        <EarnYieldClaimRewardsBanner
-                            value={merkleRewardsQuery.data.totalRewardsToClaim.value}
-                            currency={merkleRewardsQuery.data.totalRewardsToClaim.currency}
-                            isValueLoading={merkleRewardsQuery.isLoading}
-                            isClaimDisabled={isClaimDisabled}
-                            onClaim={() => setIsClaimModalOpen(true)}
-                        />
-                        {isClaimModalOpen && (
-                            <EarnYieldClaimSelectAccountModal
-                                claimableAccounts={claimableAccounts}
-                                onSelect={handleClaimableAccountSelect}
-                                onClose={() => setIsClaimModalOpen(false)}
-                            />
+                        {(isYieldActive || claimableAccounts.length > 0) && (
+                            <>
+                                <EarnYieldClaimRewardsBanner
+                                    value={merkleRewardsQuery.data.totalRewardsToClaim.value}
+                                    currency={merkleRewardsQuery.data.totalRewardsToClaim.currency}
+                                    isValueLoading={merkleRewardsQuery.isLoading}
+                                    isClaimDisabled={isClaimDisabled}
+                                    onClaim={() => setIsClaimModalOpen(true)}
+                                />
+                                {isClaimModalOpen && (
+                                    <EarnYieldClaimSelectAccountModal
+                                        claimableAccounts={claimableAccounts}
+                                        onSelect={handleClaimableAccountSelect}
+                                        onClose={() => setIsClaimModalOpen(false)}
+                                    />
+                                )}
+                            </>
                         )}
                         <Card paddingType="none">
                             <Table isRowHighlightedOnHover margin={{ top: 8 }}>

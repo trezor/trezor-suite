@@ -16,6 +16,15 @@ export const getClaimableAccounts = ({
     visibleAccounts,
 }: GetClaimableAccountsParams): EarnYieldClaimableAccount[] =>
     Object.entries(rewards).flatMap(([key, accountRewards]) => {
+        const totalClaimable = accountRewards.reduce(
+            (total, reward) => total.plus(reward.claimable),
+            new BigNumber(0),
+        );
+
+        if (!totalClaimable.gt(0)) {
+            return [];
+        }
+
         const { chainId, address } = ChainAddressKey.parse(key);
         const network = getNetworkByEvmChainId(chainId);
         const account = visibleAccounts.find(
