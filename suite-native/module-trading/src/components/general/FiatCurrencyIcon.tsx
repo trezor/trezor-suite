@@ -1,7 +1,8 @@
 import { type FiatCurrencyCode } from 'invity-api';
 
 import { getFiatCurrencyFlag } from '@suite-common/flags';
-import { Flag, RoundedIcon, type RoundedIconSize } from '@suite-native/atoms';
+import { Flag, type RoundedIconSize } from '@suite-native/atoms';
+import { Icon } from '@suite-native/icons';
 
 export type FiatCurrencyIconProps = {
     size: 'extraSmall' | 'small' | 'medium';
@@ -18,15 +19,12 @@ export const FiatCurrencyIcon = ({ size, value }: FiatCurrencyIconProps) => {
     const flag = getFiatCurrencyFlag(value);
 
     return flag ? (
-        <RoundedIcon intent="neutral" size={fiatIconSizes[size]}>
-            <Flag country={flag} />
-        </RoundedIcon>
+        <Flag country={flag} size={fiatIconSizes[size]} />
     ) : (
-        <RoundedIcon
-            testID="@trading/fiat-currency-icon-fallback"
+        <Icon
             name="coin"
-            intent="neutral"
             size={fiatIconSizes[size]}
+            testID="@trading/fiat-currency-icon-fallback"
         />
     );
 };
