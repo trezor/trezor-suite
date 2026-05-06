@@ -73,6 +73,7 @@ export const StablecoinYieldTokenOverview = ({
                     networkSymbol={account.symbol}
                     rewards={vault.rewardRate.components}
                     underlyingToken={vault.token}
+                    tokenSymbol={vault.token.symbol}
                 />
             ),
             textAlign: 'center',

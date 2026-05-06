@@ -18,17 +18,19 @@ type StablecoinYieldApyBreakdownProps = {
     networkSymbol: NetworkSymbol;
     rewards: RewardDto[];
     underlyingToken: TokenDto | undefined;
+    tokenSymbol: string;
 };
 
 type RewardRowProps = {
     reward: RewardDto;
     networkSymbol: NetworkSymbol;
+    tokenSymbol: string;
 };
 
-const RewardRow = ({ reward, networkSymbol }: RewardRowProps) => {
+const RewardRow = ({ reward, networkSymbol, tokenSymbol }: RewardRowProps) => {
     const rewardRatePercent = getApyPercent(reward.rate);
-    const descriptionKey = getApyBreakdownDescriptionKey(reward.yieldSource);
     const rewardSymbol = reward.token.symbol || reward.token.name || '';
+    const descriptionKey = getApyBreakdownDescriptionKey(reward.yieldSource);
 
     return (
         <HStack spacing="sp8" alignItems="center">
@@ -52,7 +54,7 @@ const RewardRow = ({ reward, networkSymbol }: RewardRowProps) => {
                     {descriptionKey && (
                         <Box style={{ marginLeft: cryptoIconSizes.extraSmall }} paddingLeft="sp8">
                             <Text variant="body-sm" color="contentSecondary">
-                                <Translation id={descriptionKey} />
+                                <Translation id={descriptionKey} values={{ tokenSymbol }} />
                             </Text>
                         </Box>
                     )}
@@ -66,6 +68,7 @@ export const StablecoinYieldApyBreakdown = ({
     networkSymbol,
     rewards,
     underlyingToken,
+    tokenSymbol,
 }: StablecoinYieldApyBreakdownProps) => {
     const sortedRewards = useMemo(
         () => sortRewardsByUnderlyingToken(rewards, underlyingToken),
@@ -80,6 +83,7 @@ export const StablecoinYieldApyBreakdown = ({
                         key={`${reward.token.symbol}-${reward.yieldSource}-${index}`}
                         reward={reward}
                         networkSymbol={networkSymbol}
+                        tokenSymbol={tokenSymbol}
                     />
                 ))}
                 <HStack spacing="sp8" alignItems="center">
