@@ -6,6 +6,7 @@ import {
     type TradingExchangeFormProps,
     type TradingSellFormProps,
 } from '@suite-common/trading';
+import { isErc4626 } from '@suite-common/wallet-utils';
 import { Row } from '@trezor/components';
 
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
@@ -54,7 +55,7 @@ export const AssetPickerInputBalance = memo(function AssetPickerInputBalance({
         amount,
         cryptoId: value?.id,
         fiatCurrency: getValues('outputs')?.[0]?.currency?.value || undefined,
-        isErc4626: !!accountOrToken?.token?.protocols?.erc4626,
+        isErc4626: !!accountOrToken?.token && isErc4626(accountOrToken.token),
     });
 
     if (!fiatValues || !value) {

@@ -103,7 +103,7 @@ export const selectTickerFromAccounts = (
                         ({
                             symbol: account.symbol,
                             tokenAddress: token.contract as TokenAddress,
-                            protocols: token.protocols?.erc4626 ? ['erc4626'] : undefined,
+                            protocols: token.protocols,
                         }) satisfies TickerId,
                 ),
         ]),

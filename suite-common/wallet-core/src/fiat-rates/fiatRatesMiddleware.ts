@@ -111,7 +111,7 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
             const tokenTickers = tokens.map(token => ({
                 symbol,
                 tokenAddress: token.contract as TokenAddress,
-                protocols: token.protocols?.erc4626 ? ['erc4626'] : undefined,
+                protocols: token.protocols,
             })) satisfies TickerId[];
             // include main account fiat rate ticker
             const tickers = [...tokenTickers, { symbol }];
