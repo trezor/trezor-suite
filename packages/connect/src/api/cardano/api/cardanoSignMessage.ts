@@ -1,6 +1,6 @@
 import * as cbor from 'cbor';
 
-import { CARDANO } from '@trezor/connect-common';
+import { CARDANO, type MethodPermission } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import {
     type CardanoMessageHeaders,
@@ -10,7 +10,7 @@ import {
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
+import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { hasHexPrefix, isHexString } from '../../../utils/formatUtils';

@@ -1,11 +1,7 @@
-import type { PROTO } from '@trezor/connect-common';
+import type { MethodPermission, PROTO } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import type {
-    MethodMessage,
-    MethodPermission,
-    MethodReturnType,
-} from '../../../core/AbstractMethod';
+import type { MethodMessage, MethodReturnType } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { HD_HARDENED, validatePath } from '../../../utils/pathUtils';

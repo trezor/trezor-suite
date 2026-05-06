@@ -21,11 +21,6 @@ import type { Device } from '../device/Device';
 import type { UiPromiseCreator } from '../events/ui-promise';
 
 export { DEFAULT_FIRMWARE_RANGE };
-// TODO: drop this re-export and migrate the ~50 internal `packages/connect/src/api/**`
-// imports to pull `MethodPermission` / `MethodInfo` directly from `@trezor/connect-common`.
-// Kept here as a transitional shim to keep this PR focused on the public-surface change;
-// the cleanup will follow up alongside the deep-import ESLint guardrail (#27376).
-export type { MethodInfo, MethodPermission };
 
 export type Payload<M> = Extract<CallMethodPayload, { method: M }> & { override?: boolean };
 export type MethodReturnType<M extends CallMethodPayload['method']> = CallMethodResponse<M>;

@@ -1,4 +1,6 @@
-import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import { type MethodPermission } from '@trezor/connect-common';
+
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class GetNonce extends AbstractMethod<'getNonce'> {

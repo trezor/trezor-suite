@@ -1,8 +1,8 @@
-import { UI_REQUEST } from '@trezor/connect-common';
+import { type MethodPermission, UI_REQUEST } from '@trezor/connect-common';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class GetFirmwareHash extends AbstractMethod<

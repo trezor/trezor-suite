@@ -1,12 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainEstimateFee.js
 
-import type { CoinInfo } from '@trezor/connect-common';
+import type { CoinInfo, MethodPermission } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import type {
     MethodContext,
     MethodMessage,
-    MethodPermission,
     MethodReturnType,
     Payload,
 } from '../core/AbstractMethod';

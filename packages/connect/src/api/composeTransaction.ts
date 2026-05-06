@@ -7,6 +7,7 @@ import {
     DEFAULT_SORTING_STRATEGY,
     type DiscoveryAccount,
     ERRORS,
+    type MethodPermission,
     type PrecomposeParams,
     type PrecomposedResult,
     type RefTransaction,
@@ -21,7 +22,7 @@ import { resolveAfter } from '@trezor/utils/src/resolveAfter';
 import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trezor/utxo-lib';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import type { MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { requestExistingAccounts } from './common/requestExistingAccounts';
 import { fixCoinInfoNetwork, getBitcoinNetwork } from '../data/coinInfo';

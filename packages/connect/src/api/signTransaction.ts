@@ -3,6 +3,7 @@
 import type {
     AccountAddresses,
     BitcoinNetworkInfo,
+    MethodPermission,
     PROTO,
     RefTransaction,
     TransactionOptions,
@@ -31,7 +32,7 @@ import {
 } from './bitcoin';
 import type { Blockchain } from '../backend/BlockchainLink';
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import type { MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { getLabel } from '../utils/pathUtils';

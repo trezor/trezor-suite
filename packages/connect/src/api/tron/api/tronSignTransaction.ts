@@ -2,6 +2,7 @@ import { bytesToHex } from '@noble/hashes/utils.js';
 
 import { TronSignTransaction as TronSignTransactionSchema } from '@trezor/connect-common';
 import type {
+    MethodPermission,
     PROTO,
     TronContractInput,
     TronContracts,
@@ -10,7 +11,7 @@ import type {
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
+import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { validatePath } from '../../../utils/pathUtils';
 import { encodeTronContractRawData } from '../tronEncode';

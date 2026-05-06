@@ -5,13 +5,14 @@ import type {
     EthereumNetworkInfoDefinitionValues,
     EthereumTransaction,
     EthereumTransactionEIP1559,
+    MethodPermission,
     TokenInfo,
 } from '@trezor/connect-common';
 import type { MessagesSchema } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 import { BigNumber } from '@trezor/utils';
 
-import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
+import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';

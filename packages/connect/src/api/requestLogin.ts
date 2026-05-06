@@ -1,11 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/RequestLogin.js
 
-import type { ConnectSettings } from '@trezor/connect-common';
+import type { ConnectSettings, MethodPermission } from '@trezor/connect-common';
 import { RequestLoginSchema } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import * as settingsStore from '../data/settingsStore';
 

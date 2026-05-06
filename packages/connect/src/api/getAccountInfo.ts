@@ -8,17 +8,13 @@ import type {
     DerivationPath,
     DiscoveryAccount,
     GetAccountInfo as GetAccountInfoParams,
+    MethodPermission,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { resolveAfter } from '@trezor/utils/src/resolveAfter';
 
 import { type Blockchain, initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import type {
-    MethodContext,
-    MethodMessage,
-    MethodPermission,
-    MethodReturnType,
-} from '../core/AbstractMethod';
+import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import { Discovery } from './common/Discovery';

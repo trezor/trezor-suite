@@ -1,7 +1,7 @@
-import { UI_REQUEST } from '@trezor/connect-common';
+import { type MethodPermission, UI_REQUEST } from '@trezor/connect-common';
 import type { ThpCredentials } from '@trezor/protocol';
 
-import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import * as settingsStore from '../data/settingsStore';
 

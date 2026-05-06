@@ -1,18 +1,18 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAddress.js
 
-import { type BitcoinNetworkInfo, Bundle, type PROTO } from '@trezor/connect-common';
+import {
+    type BitcoinNetworkInfo,
+    Bundle,
+    type MethodPermission,
+    type PROTO,
+} from '@trezor/connect-common';
 import { UI_REQUEST, createUiMessage } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { GetAddress as GetAddressSchema } from '@trezor/connect-common/src/types/api/getAddress';
 import { Assert } from '@trezor/schema-utils';
 
 import { bundlify, validateCoinPath } from './common/paramsValidator';
-import type {
-    MethodContext,
-    MethodMessage,
-    MethodPermission,
-    MethodReturnType,
-} from '../core/AbstractMethod';
+import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { fixCoinInfoNetwork, getBitcoinNetwork, getUniqueNetworks } from '../data/coinInfo';
 import { getLabel, getSerializedPath, validatePath } from '../utils/pathUtils';

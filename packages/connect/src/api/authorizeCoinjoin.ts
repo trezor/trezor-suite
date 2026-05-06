@@ -1,8 +1,11 @@
-import { AuthorizeCoinjoin as AuthorizeCoinjoinSchema } from '@trezor/connect-common';
+import {
+    AuthorizeCoinjoin as AuthorizeCoinjoinSchema,
+    type MethodPermission,
+} from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { getScriptType, validatePath } from '../utils/pathUtils';

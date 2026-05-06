@@ -1,7 +1,7 @@
-import { DEVICE, createDeviceMessage } from '@trezor/connect-common';
+import { DEVICE, type MethodPermission, createDeviceMessage } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import type { MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class SetBusy extends AbstractMethod<'setBusy', PROTO.SetBusy> {
