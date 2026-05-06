@@ -5,11 +5,10 @@ export const getApyBreakdownDescriptionKey = (
     yieldSource: RewardDtoYieldSource,
 ): TxKeyPath | null => {
     switch (yieldSource) {
-        case 'lending_interest':
-            return 'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.autoCompounded';
         case 'protocol_incentive':
             return 'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.manualCompound';
+        case 'lending_interest':
         default:
-            return null;
+            return 'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.autoCompounded';
     }
 };
