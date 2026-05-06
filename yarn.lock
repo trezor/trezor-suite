@@ -11123,6 +11123,7 @@ __metadata:
     "@suite-common/calldata": "workspace:^"
     "@suite-common/http-client": "workspace:^"
     "@suite-common/react-query": "workspace:^"
+    "@suite-common/schemas": "workspace:^"
     "@trezor/env-utils": "workspace:*"
     "@trezor/utils": "workspace:^"
     orval: "npm:8.8.0"
@@ -11136,8 +11137,10 @@ __metadata:
   resolution: "@suite-common/earn-stablecoin@workspace:suite-common/earn-stablecoin"
   dependencies:
     "@suite-common/earn-stablecoin-api": "workspace:^"
+    "@suite-common/schemas": "workspace:^"
     "@suite-common/wallet-config": "workspace:^"
     "@suite-common/wallet-types": "workspace:^"
+    "@trezor/connect-common": "workspace:^"
     zod: "npm:4.3.6"
   languageName: unknown
   linkType: soft
@@ -11437,6 +11440,14 @@ __metadata:
     redux: "npm:^5.0.1"
     redux-thunk: "npm:^3.1.0"
     reselect: "npm:5.1.1"
+  languageName: unknown
+  linkType: soft
+
+"@suite-common/schemas@workspace:^, @suite-common/schemas@workspace:suite-common/schemas":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/schemas@workspace:suite-common/schemas"
+  dependencies:
+    zod: "npm:4.3.6"
   languageName: unknown
   linkType: soft
 
@@ -16817,6 +16828,7 @@ __metadata:
     "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/react-query": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/schemas": "workspace:^"
     "@suite-common/sentry": "workspace:*"
     "@suite-common/staking": "workspace:*"
     "@suite-common/staking-solana": "workspace:*"
