@@ -10,6 +10,7 @@
         "// yarn depcheck does not support *.mdx files by default. It may solvable by custom-parser. But it is probably not worth the hassle",
         "remark-gfm",
         "swr",
-        "@suite-common/icons"
+        "@suite-common/icons",
+        "@trezor/device-authenticity"
     ]
 }

@@ -21,6 +21,7 @@
         "@trezor/connect-mobile": "workspace:^",
         "@trezor/connect-web": "workspace:^",
         "@trezor/connect-webextension": "workspace:^",
+        "@trezor/device-authenticity": "workspace:^",
         "@trezor/protobuf": "workspace:^",
         "@trezor/schema-utils": "workspace:^",
         "@trezor/theme": "workspace:^",

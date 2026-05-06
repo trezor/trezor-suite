@@ -17,3 +17,4 @@ export { deviceAuthenticityBlacklistConfig } from './config/deviceAuthenticityBl
 export { DeviceAuthenticityBlacklistConfig } from './config/deviceAuthenticityBlacklistConfigTypes';
 export { deviceAuthenticityConfig } from './config/deviceAuthenticityConfig';
 export { DeviceAuthenticityConfig } from './config/deviceAuthenticityConfigTypes';
+export { AuthenticateDeviceParams } from './authenticateDeviceParams';
