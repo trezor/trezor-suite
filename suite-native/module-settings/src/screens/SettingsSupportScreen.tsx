@@ -1,6 +1,11 @@
 import { useCallback } from 'react';
 
-import { type RouteProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+import {
+    type RouteProp,
+    useFocusEffect,
+    useNavigation,
+    useRoute,
+} from '@react-navigation/native';
 
 import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -19,7 +24,10 @@ import { LegalSection } from '../components/LegalSection';
 import { NeedHelpSection } from '../components/NeedHelpSection';
 import { useContactSupportAlert } from '../components/useContactSupportAlert';
 
-type NavigationProp = StackNavigationProps<SettingsStackParamList, SettingsStackRoutes.SettingsSupport>;
+type NavigationProp = StackNavigationProps<
+    SettingsStackParamList,
+    SettingsStackRoutes.SettingsSupport
+>;
 
 export const SettingsSupportScreen = () => {
     const route =
@@ -33,7 +41,10 @@ export const SettingsSupportScreen = () => {
             if (!autoOpenContactSupport) return;
 
             // One-shot param: clear immediately to avoid re-triggering on subsequent focus.
-            navigation.setParams({ autoOpenContactSupport: undefined, shareSystemInfo: undefined });
+            navigation.setParams({
+                autoOpenContactSupport: undefined,
+                shareSystemInfo: undefined,
+            });
             showContactSupportAlert({ initialShareSystemInfo: shareSystemInfo });
         }, [route.params, navigation, showContactSupportAlert]),
     );
