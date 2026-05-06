@@ -405,7 +405,8 @@ export const useYieldFlow = ({
         [dispatch, flowKey, flowType],
     );
 
-    const isAmountEmpty = !liveAmount;
+    const isAmountEmpty =
+        !liveAmount || !isAmountGreaterThan({ amount: liveAmount, threshold: '0' });
     const allowanceAmount = session.approval.allowanceAmount ?? '0';
     const canRevokeAllowance = isAmountGreaterThan({ amount: allowanceAmount, threshold: '0' });
     const isAmountTooHigh = isAmountGreaterThan({ amount: liveAmount, threshold: maxAmount });
