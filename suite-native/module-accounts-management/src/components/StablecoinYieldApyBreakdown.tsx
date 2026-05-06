@@ -1,6 +1,10 @@
 import { useMemo } from 'react';
 
-import { type RewardDto } from '@suite-common/earn-stablecoin-api';
+import {
+    type RewardDto,
+    type TokenDto,
+    sortRewardsByUnderlyingToken,
+} from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { getApyPercent } from '@suite-common/wallet-utils';
@@ -8,11 +12,12 @@ import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork, Icon, cryptoIconSizes } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
-import { getApyBreakdownDescriptionKey, sortApyRewards } from '../utils';
+import { getApyBreakdownDescriptionKey } from '../utils';
 
 type StablecoinYieldApyBreakdownProps = {
     networkSymbol: NetworkSymbol;
     rewards: RewardDto[];
+    underlyingToken: TokenDto | undefined;
 };
 
 type RewardRowProps = {
@@ -60,8 +65,12 @@ const RewardRow = ({ reward, networkSymbol }: RewardRowProps) => {
 export const StablecoinYieldApyBreakdown = ({
     networkSymbol,
     rewards,
+    underlyingToken,
 }: StablecoinYieldApyBreakdownProps) => {
-    const sortedRewards = useMemo(() => sortApyRewards(rewards), [rewards]);
+    const sortedRewards = useMemo(
+        () => sortRewardsByUnderlyingToken(rewards, underlyingToken),
+        [rewards, underlyingToken],
+    );
 
     return (
         <Box testID="@account-detail/stablecoin-yield/apy-breakdown-sheet">

@@ -107,6 +107,7 @@ export const StablecoinYieldTokenOverview = ({
                 <StablecoinYieldApyBreakdown
                     networkSymbol={account.symbol}
                     rewards={vault.rewardRate.components}
+                    underlyingToken={vault.token}
                 />
             ),
             textAlign: 'center',
