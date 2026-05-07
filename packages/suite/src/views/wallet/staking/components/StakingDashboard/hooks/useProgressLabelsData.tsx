@@ -1,12 +1,9 @@
 import { useMemo } from 'react';
 
+import { SOLANA_EPOCH_DAYS } from '@connect-coins/solana/constants';
 import { Translation } from '@suite/intl';
 import { type NetworkType } from '@suite-common/wallet-config';
-import {
-    CARDANO_ACTIVATION_PERIOD_DAYS,
-    CARDANO_EPOCH_DAYS,
-    SOLANA_EPOCH_DAYS,
-} from '@suite-common/wallet-constants';
+import { CARDANO_ACTIVATION_PERIOD_DAYS, CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
     type Account,
     type StakeType,

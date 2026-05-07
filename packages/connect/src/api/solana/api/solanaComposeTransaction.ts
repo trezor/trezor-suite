@@ -1,4 +1,5 @@
-import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/blockchain-link-utils/src/solana';
+import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@connect-coins/solana/constants';
+import solana from '@connect-coins/solana/runtime';
 import type { CoinInfo, MethodPermission } from '@trezor/connect-common';
 import { SolanaComposeTransaction as SolanaComposeTransactionSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
@@ -8,12 +9,6 @@ import { initBlockchain, isBackendSupported } from '../../../backend/BlockchainL
 import type { MethodContext, MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getCoinInfo } from '../../../data/coinInfo';
-import {
-    buildTokenTransferTransaction,
-    buildTransferTransaction,
-    dummyPriorityFeesForFeeEstimation,
-    fetchAccountOwnerAndTokenInfoForAddress,
-} from '../solanaUtils';
 
 type SolanaComposeTransactionParams = SolanaComposeTransactionSchema & {
     coinInfo: CoinInfo;
@@ -70,12 +65,32 @@ export default class SolanaComposeTransaction extends AbstractMethod<
             throw ERRORS.TypedError('Method_InvalidParameter', 'toAddress not found');
         }
 
-        const [recipientAccountOwner, recipientTokenAccounts] = this.params.token
-            ? await fetchAccountOwnerAndTokenInfoForAddress(
-                  backend,
-                  this.params.toAddress,
-                  this.params.token.mint,
-                  this.params.token.program,
+        const {
+            getAssociatedTokenAccountAddress,
+            buildTokenTransferTransaction,
+            buildTransferTransaction,
+        } = await solana();
+
+        const { token, toAddress } = this.params;
+        const [recipientAccountOwner, recipientTokenAccounts] = token
+            ? await backend.getAccountInfo({ descriptor: toAddress }).then(accountInfo =>
+                  // Fetch data about recipient account owner if this is a token transfer
+                  // We need this in order to validate the address and ensure transfers go through
+                  !accountInfo
+                      ? ([undefined, undefined] as const)
+                      : getAssociatedTokenAccountAddress(toAddress, token.mint, token.program).then(
+                            associatedTokenAccount => {
+                                const accountOwner = accountInfo?.misc?.owner;
+                                const tokenInfo = accountInfo?.tokens
+                                    ?.find(t => t.contract === token.mint)
+                                    ?.accounts?.find(
+                                        account =>
+                                            associatedTokenAccount.toString() === account.publicKey,
+                                    );
+
+                                return [accountOwner, tokenInfo] as const;
+                            },
+                        ),
               )
             : [undefined, undefined];
 
@@ -92,7 +107,7 @@ export default class SolanaComposeTransaction extends AbstractMethod<
                       recipientTokenAccounts,
                       this.params.blockHash,
                       this.params.lastValidBlockHeight,
-                      this.params.priorityFees || dummyPriorityFeesForFeeEstimation,
+                      this.params.priorityFees,
                       this.params.token.program,
                       this.params.memo,
                   )
@@ -103,13 +118,13 @@ export default class SolanaComposeTransaction extends AbstractMethod<
 
         const tx = tokenTransferTxAndDestinationAddress
             ? tokenTransferTxAndDestinationAddress.transaction
-            : await buildTransferTransaction(
+            : buildTransferTransaction(
                   this.params.fromAddress,
                   this.params.toAddress,
                   this.params.amount,
                   this.params.blockHash,
                   this.params.lastValidBlockHeight,
-                  this.params.priorityFees || dummyPriorityFeesForFeeEstimation,
+                  this.params.priorityFees,
                   this.params.memo,
               );
 

@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 
+import { SOLANA_EPOCH_DAYS } from '@connect-coins/solana/constants';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { getDaysToAddToPoolInitial } from '@suite-common/staking';
 import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { selectEthValidatorsQueue } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Card, Checkbox, Column, Modal } from '@trezor/components';

@@ -1,31 +1,4 @@
-import {
-    decompileTransactionMessage,
-    getBase16Encoder,
-    getCompiledTransactionMessageDecoder,
-    getTransactionDecoder,
-    pipe,
-} from '@solana/kit';
-import {
-    COMPUTE_BUDGET_PROGRAM_ADDRESS,
-    ComputeBudgetInstruction,
-    identifyComputeBudgetInstruction,
-    parseSetComputeUnitLimitInstruction,
-    parseSetComputeUnitPriceInstruction,
-} from '@solana-program/compute-budget';
-import {
-    SYSTEM_PROGRAM_ADDRESS,
-    SystemInstruction,
-    identifySystemInstruction,
-    parseCreateAccountInstruction,
-    parseTransferSolInstruction,
-} from '@solana-program/system';
-import {
-    TOKEN_PROGRAM_ADDRESS,
-    TokenInstruction,
-    identifyTokenInstruction,
-    parseTransferCheckedInstruction,
-} from '@solana-program/token';
-
+import solana from '@connect-coins/solana/runtime';
 import {
     SolanaSignTransaction as SolanaSignTransactionSchema,
     SolanaTxAdditionalInfo,
@@ -44,7 +17,6 @@ import {
     encodePaymentRequestAmount,
 } from '../../../utils/paymentRequest';
 import { getSolanaTokenDefinition } from '../solanaDefinitions';
-import { SOLANA_BASE_FEE, createTransactionShimFromHex } from '../solanaUtils';
 
 type Params = { proto: PROTO.SolanaSignTx; serialize: boolean; symbols?: (string | undefined)[] };
 
@@ -123,24 +95,10 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
 
     async payloadToPrecomposed() {
         try {
-            let messageBytes;
-            if (this.params.serialize) {
-                const transaction = pipe(
-                    this.params.proto.serialized_tx,
-                    getBase16Encoder().encode,
-                    getTransactionDecoder().decode,
-                );
-                messageBytes = transaction.messageBytes;
-            } else {
-                messageBytes = getBase16Encoder().encode(this.params.proto.serialized_tx);
-            }
-            const compiledMessage = pipe(
-                messageBytes,
-                getCompiledTransactionMessageDecoder().decode,
-            );
-            const message = decompileTransactionMessage(compiledMessage);
-            const baseFee = new BigNumber(SOLANA_BASE_FEE).multipliedBy(
-                compiledMessage.header.numSignerAccounts,
+            const { getDecompiledMessage } = await solana();
+            const { message, baseFee, instructions } = getDecompiledMessage(
+                this.params.proto.serialized_tx,
+                this.params.serialize,
             );
             const outputs = [];
             let feePerUnit = new BigNumber(0);
@@ -148,73 +106,37 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
             let rent = new BigNumber(0);
             let sendAmount = new BigNumber(0);
             let token: TokenInfo | undefined;
-            for (const instruction of message.instructions) {
-                // Fee decoding
-                if (
-                    instruction.programAddress === COMPUTE_BUDGET_PROGRAM_ADDRESS &&
-                    instruction.data
-                ) {
-                    const data = instruction.data as Uint8Array;
-                    const type = identifyComputeBudgetInstruction({ data });
-                    if (type === ComputeBudgetInstruction.SetComputeUnitPrice) {
-                        const parsed = parseSetComputeUnitPriceInstruction({
-                            data,
-                            programAddress: COMPUTE_BUDGET_PROGRAM_ADDRESS,
-                        });
+            for (const instruction of instructions) {
+                const { type, parsed } = instruction;
+
+                switch (type) {
+                    case 'unit-price': {
                         feePerUnit = new BigNumber(parsed.data.microLamports.toString());
+                        break;
                     }
-                    if (type === ComputeBudgetInstruction.SetComputeUnitLimit) {
-                        const parsed = parseSetComputeUnitLimitInstruction({
-                            data,
-                            programAddress: COMPUTE_BUDGET_PROGRAM_ADDRESS,
-                        });
+                    case 'unit-limit': {
                         feeLimit = new BigNumber(parsed.data.units.toString());
+                        break;
                     }
-                }
-                // Transfer instruction decoding
-                if (
-                    instruction.programAddress === SYSTEM_PROGRAM_ADDRESS &&
-                    instruction.data &&
-                    instruction.accounts
-                ) {
-                    const instructionSafe = {
-                        ...instruction,
-                        data: instruction.data as Uint8Array,
-                        accounts: instruction.accounts,
-                    };
-                    const type = identifySystemInstruction(instructionSafe);
-                    if (type === SystemInstruction.TransferSol) {
-                        const parsed = parseTransferSolInstruction(instructionSafe);
+                    case 'transfer-sol': {
                         outputs.push({
                             address: parsed.accounts.destination.address,
                             amount: parsed.data.amount.toString(),
                             script_type: 'PAYTOADDRESS' as const,
                         });
                         sendAmount = sendAmount.plus(parsed.data.amount.toString());
-                    } else if (type === SystemInstruction.CreateAccount) {
-                        const parsed = parseCreateAccountInstruction(instructionSafe);
+                        break;
+                    }
+                    case 'create-account': {
                         outputs.push({
                             address: parsed.accounts.newAccount.address,
                             amount: parsed.data.lamports.toString(),
                             script_type: 'PAYTOADDRESS' as const,
                         });
                         rent = rent.plus(parsed.data.lamports.toString());
+                        break;
                     }
-                }
-                // Tokens
-                if (
-                    instruction.programAddress === TOKEN_PROGRAM_ADDRESS &&
-                    instruction.data &&
-                    instruction.accounts
-                ) {
-                    const instructionSafe = {
-                        ...instruction,
-                        data: instruction.data as Uint8Array,
-                        accounts: instruction.accounts,
-                    };
-                    const type = identifyTokenInstruction(instructionSafe);
-                    if (type === TokenInstruction.TransferChecked) {
-                        const parsed = parseTransferCheckedInstruction(instructionSafe);
+                    case 'transfer-checked': {
                         const destinationATA = parsed.accounts.destination.address;
                         const tokenAccountInfos =
                             this.params.proto.additional_info?.token_accounts_infos ?? [];
@@ -242,7 +164,11 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
                             decimals: parsed.data.decimals,
                             symbol: this.params.symbols?.[tokenInfoIndex],
                         };
+                        break;
                     }
+                    case 'other':
+                    default:
+                        break;
                 }
             }
             if (outputs.length === 0) {
@@ -252,7 +178,7 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
             const fee = baseFee.plus(feePerUnit.multipliedBy(feeLimit).dividedBy(1e6));
             const totalSpent = sendAmount.plus(rent).plus(fee);
 
-            const result = {
+            return {
                 type: 'final' as const,
                 inputs: [],
                 outputsPermutation: [0],
@@ -269,13 +195,9 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
                 createdTimestamp:
                     'blockhash' in message.lifetimeConstraint ? new Date().getTime() : undefined,
             };
-
-            return Promise.resolve(result);
         } catch (e) {
             // Don't throw errors from this method
             console.error('Error in payloadToPrecomposed', e);
-
-            return Promise.resolve(undefined);
         }
     }
 
@@ -283,7 +205,8 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
         const cmd = this.getDevice().getCommands();
 
         if (this.params.serialize) {
-            const tx = await createTransactionShimFromHex(this.params.proto.serialized_tx);
+            const { createTransactionShimFromHex } = await solana();
+            const tx = createTransactionShimFromHex(this.params.proto.serialized_tx);
 
             const addressCall = await cmd.typedCall('SolanaGetAddress', 'SolanaAddress', {
                 address_n: this.params.proto.address_n,
