@@ -124,6 +124,11 @@ export const messages = {
                     'Add the networks you want to use. You can buy or receive assets on any network you enable.',
                 button: 'Get started',
             },
+            discoveryNotFinished: {
+                title: 'Reconnect your Trezor',
+                subtitle:
+                    'Your Trezor was disconnected before any assets could be discovered. Reconnect it to finish setup.',
+            },
             portfolioTracker: {
                 title: 'Get started',
                 subtitle: 'Sync your coin addresses and view your portfolio balance.',

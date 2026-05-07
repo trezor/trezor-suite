@@ -93,6 +93,7 @@ export const selectHomeScreenState = (state: NativeDeviceRootState): HomeScreenS
     const isPortfolioTrackerDevice = selectIsPortfolioTrackerDevice(state);
     const hasOnlyEmptyPortfolioTracker = selectHasOnlyEmptyPortfolioTracker(state);
     const isDiscoveredDeviceAccountless = selectIsDiscoveredDeviceAccountless(state);
+    const hasRunningDiscovery = selectHasRunningDiscovery(state);
 
     // Crossroads is displayed either when there is no real device connected and the portfolio tracker
     // has no accounts, or when a device is connected but PIN entry or THP confirmation was canceled.
@@ -114,6 +115,10 @@ export const selectHomeScreenState = (state: NativeDeviceRootState): HomeScreenS
         if (isDeviceInitialized && !isAnyNetworkEnabled) {
             return 'noNetworkConfigured';
         }
+    }
+
+    if (isDiscoveredDeviceAccountless && !hasRunningDiscovery) {
+        return 'discoveryNotFinished';
     }
 
     return 'portfolioContent';

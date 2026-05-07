@@ -128,6 +128,7 @@ const usedIcons = [
     'piggyBankFilled',
     'pictureFrame',
     'plugs',
+    'plugsConnected',
     'plus',
     'plusCircle',
     'power',
