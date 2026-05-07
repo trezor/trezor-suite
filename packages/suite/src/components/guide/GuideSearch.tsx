@@ -56,9 +56,7 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
     const { searchResult, loading } = useGuideSearch(query, pageRoot);
 
     useEffect(() => {
-        if (setSearchActive) {
-            setSearchActive(!!searchResult.length || !!query);
-        }
+        setSearchActive?.(!!searchResult.length || !!query);
     }, [query, searchResult, setSearchActive, loading]);
 
     return (

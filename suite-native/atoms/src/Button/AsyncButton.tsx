@@ -15,9 +15,7 @@ export const AsyncButton = ({ onPress, onReject, ...props }: AsyncButtonProps) =
         try {
             await onPress();
         } catch (error) {
-            if (onReject) {
-                onReject(error);
-            }
+            onReject?.(error);
         }
         setIsLoading(false);
     };

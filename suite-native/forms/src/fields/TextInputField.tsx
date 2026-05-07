@@ -48,16 +48,12 @@ export const TextInputField = forwardRef<InputType, FieldProps>(
 
         const handleOnBlur = () => {
             hookFormOnBlur();
-            if (onBlur) {
-                onBlur();
-            }
+            onBlur?.();
         };
 
         const handleOnChange = (text: string) => {
             onChange(text);
-            if (onChangeText) {
-                onChangeText(text);
-            }
+            onChangeText?.(text);
         };
 
         return (

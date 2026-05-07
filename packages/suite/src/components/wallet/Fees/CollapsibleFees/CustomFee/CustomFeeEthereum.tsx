@@ -38,15 +38,11 @@ export const CustomFeeEthereum = ({
     const customMaxPriorityFeePerGas = getValues('maxPriorityFeePerGas');
 
     useEffect(() => {
-        if (trigger) {
-            trigger(MAX_PRIORITY_FEE_PER_GAS);
-        }
+        trigger?.(MAX_PRIORITY_FEE_PER_GAS);
     }, [customMaxFeePerGas, trigger]);
 
     useEffect(() => {
-        if (trigger) {
-            trigger(MAX_FEE_PER_GAS);
-        }
+        trigger?.(MAX_FEE_PER_GAS);
     }, [customMaxPriorityFeePerGas, trigger]);
 
     const recommendedMaxFeePerGas = levels.find(level => level.label === 'normal')?.maxFeePerGas;
