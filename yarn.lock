@@ -15254,6 +15254,7 @@ __metadata:
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
+    "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite/analytics": "workspace:*"
     "@suite/intl": "workspace:*"
