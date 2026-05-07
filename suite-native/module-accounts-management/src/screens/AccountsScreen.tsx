@@ -11,35 +11,30 @@ import { Box } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
-import { useStakingDetailNavigation, useStakingNavigateAnalytics } from '@suite-native/module-earn';
 import {
     type RootStackParamList,
     RootStackRoutes,
     Screen,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { doesCoinSupportStaking } from '@suite-native/staking';
+import { isNetworkWithTokens } from '@suite-native/tokens';
 
 export const AccountsScreen = () => {
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>>();
-    const { navigateToStakingDetail } = useStakingDetailNavigation();
-    const reportStakingNavigate = useStakingNavigateAnalytics();
-
     const [accountsFilterValue, setAccountsFilterValue] = useState<string>('');
 
-    const handleSelectAccount: OnSelectAccount = ({ account, tokenAddress, isStaking }) => {
-        if (isStaking) {
-            reportStakingNavigate(account);
-            navigateToStakingDetail({
-                accountKey: account.key,
-                symbol: account.symbol,
-            });
+    const handleSelectAccount: OnSelectAccount = ({ account }) => {
+        const { key: accountKey, symbol } = account;
+
+        if (isNetworkWithTokens(symbol) || doesCoinSupportStaking(symbol)) {
+            navigation.navigate(RootStackRoutes.AccountAssets, { accountKey });
 
             return;
         }
         navigation.navigate(RootStackRoutes.AccountDetail, {
-            accountKey: account.key,
-            tokenContract: tokenAddress,
+            accountKey,
             closeActionType: 'back',
         });
     };
@@ -58,12 +53,7 @@ export const AccountsScreen = () => {
             <Box marginTop="sp12">
                 <AccountsRediscoveryNeededWarning />
             </Box>
-            <AccountsList
-                onSelectAccount={handleSelectAccount}
-                filterValue={accountsFilterValue}
-                hideTokensIntoModal
-                isStakingPressable
-            />
+            <AccountsList onSelectAccount={handleSelectAccount} filterValue={accountsFilterValue} />
         </Screen>
     );
 };

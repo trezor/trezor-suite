@@ -6,7 +6,7 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
-import { AccountsScreen } from '../screens/AccountsScreen/AccountsScreen';
+import { AccountsScreen } from '../screens/AccountsScreen';
 
 const AccountsStack = createNativeStackNavigator<AccountsStackParamList>();
 

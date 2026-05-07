@@ -6,6 +6,7 @@ import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { BootloaderModeScreen } from '@suite-native/device-bootloader-mode';
 import { AccountsImportStackNavigator } from '@suite-native/module-accounts-import';
 import {
+    AccountAssetsScreen,
     AccountDetailScreen,
     AccountSettingsScreen,
 } from '@suite-native/module-accounts-management';
@@ -100,6 +101,11 @@ export const RootStackNavigator = () => {
             <RootStack.Screen
                 name={RootStackRoutes.TransactionDetailStack}
                 component={TransactionDetailStackNavigator}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.AccountAssets }}
+                name={RootStackRoutes.AccountAssets}
+                component={AccountAssetsScreen}
             />
             <RootStack.Screen
                 options={{ title: RootStackRoutes.AccountDetail }}
