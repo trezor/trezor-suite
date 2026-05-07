@@ -140,7 +140,7 @@ const buildProtobufMessage = (override: any = {}) => {
                   fw_major,
                   fw_minor,
                   fw_patch,
-                  firmware_present: override.data?.bootloader_mode ? false : true,
+                  firmware_present: !override.data?.bootloader_mode,
                   model,
                   internal_model,
                   revision: latest.firmware_revision, // used in calculateFirmwareHashMock

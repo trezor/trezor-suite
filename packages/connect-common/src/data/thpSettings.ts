@@ -2,14 +2,8 @@ import type { ConnectSettings, ThpSettings } from '../types/settings';
 
 export const parseThpSettings = ({ manifest, thp }: Partial<ConnectSettings>): ThpSettings => {
     const settings: ThpSettings = {
-        pairingMethods: [],
+        pairingMethods: Array.isArray(thp?.pairingMethods) ? thp.pairingMethods : ['CodeEntry'],
     };
-
-    if (Array.isArray(thp?.pairingMethods)) {
-        settings.pairingMethods = thp.pairingMethods;
-    } else {
-        settings.pairingMethods = ['CodeEntry'];
-    }
 
     if (typeof thp?.hostName === 'string') {
         settings.hostName = thp.hostName;

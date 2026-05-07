@@ -25,11 +25,7 @@ const initialState: State = {
 
 const updateError = (draft: State) => {
     const failedGraphData = draft.data.filter(d => d.error);
-    if (failedGraphData.length > 0) {
-        draft.error = failedGraphData.map(a => a.account);
-    } else {
-        draft.error = null;
-    }
+    draft.error = failedGraphData.length > 0 ? failedGraphData.map(a => a.account) : null;
 };
 
 const update = (draft: State, payload: GraphData) => {

@@ -24,11 +24,7 @@ export const enhanceSignTx = (
         // use branch_id from backend or fallback to default
         if (typeof options.branch_id !== 'number') {
             const backend = findBackend(coinInfo.shortcut);
-            if (backend && backend.serverInfo?.consensusBranchId) {
-                options.branch_id = backend.serverInfo.consensusBranchId;
-            } else {
-                options.branch_id = 0xc2d6d0b4;
-            }
+            options.branch_id = backend?.serverInfo?.consensusBranchId || 0xc2d6d0b4;
         }
     }
 

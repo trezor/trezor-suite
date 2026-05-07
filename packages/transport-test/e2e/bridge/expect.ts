@@ -4,7 +4,7 @@ import { env } from './controller';
 
 const { USE_HW, USE_NODE_BRIDGE } = env;
 
-const debug = USE_NODE_BRIDGE ? undefined : USE_HW ? false : true;
+const debug = USE_NODE_BRIDGE ? undefined : !USE_HW;
 const debugSession = USE_NODE_BRIDGE ? undefined : null;
 
 const path = USE_NODE_BRIDGE ? expect.any(String) : '1';

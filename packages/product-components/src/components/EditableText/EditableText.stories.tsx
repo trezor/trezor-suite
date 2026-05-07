@@ -74,7 +74,7 @@ export const EditableText: StoryObj<EditableTextProps> = {
         maxWidth: undefined,
         onSubmit: async (value: string) => {
             const result = await new Promise(resolve =>
-                setTimeout(() => resolve(value === 'error' ? false : true), 300),
+                setTimeout(() => resolve(value !== 'error'), 300),
             );
 
             action('onSubmit')(value);
