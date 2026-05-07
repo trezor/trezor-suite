@@ -18,6 +18,11 @@ export interface CommonParams {
     keepSession?: boolean;
     useCardanoDerivation?: boolean;
     /**
+     * Client-provided correlation token forwarded to related UI events during this call.
+     * Must be a valid UUID; the method validator throws `Method_InvalidParameter` otherwise.
+     */
+    callId?: string;
+    /**
      * internal flag. if set to true, call will only return info about the method, not execute it.
      * todo: this should be moved to another argument instead of mixing this with params
      */

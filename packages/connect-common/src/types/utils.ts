@@ -6,17 +6,24 @@ export type MessageFactoryFn<Group, Event> = UnionToIntersection<
             ? (
                   type: Event['type'],
                   payload: Event['payload'],
-                  requestId?: string,
+                  options?: { requestId?: string; callId?: string },
               ) => {
                   event: Group;
                   type: Event['type'];
                   payload: Event['payload'];
                   requestId?: string;
+                  callId?: string;
               }
             : (
                   type: Event['type'],
                   payload?: undefined,
-                  requestId?: string,
-              ) => { event: Group; type: Event['type']; payload: undefined; requestId?: string }
+                  options?: { requestId?: string; callId?: string },
+              ) => {
+                  event: Group;
+                  type: Event['type'];
+                  payload: undefined;
+                  requestId?: string;
+                  callId?: string;
+              }
         : never
 >;
