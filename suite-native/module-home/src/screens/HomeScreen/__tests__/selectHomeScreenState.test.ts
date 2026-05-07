@@ -223,6 +223,27 @@ describe('selectHomeScreenState', () => {
         });
     });
 
+    describe('discoveryNotFinished', () => {
+        it('should return discoveryNotFinished when device is accountless and discovery failed', () => {
+            const state = buildState({
+                device: {
+                    selectedDevice: {
+                        path: '03d8e657',
+                        features: { initialized: true, unlocked: true },
+                        state: {},
+                    },
+                    devices: [{ id: 'device_id' }],
+                },
+                wallet: {
+                    settings: { enabledNetworks: ['btc'] },
+                    discovery: { '03d8e657': { status: 'failed' } },
+                },
+            });
+
+            expect(selectHomeScreenState(state)).toBe('discoveryNotFinished');
+        });
+    });
+
     describe('emptyPortfolioTracker', () => {
         it('should return emptyPortfolioTracker when portfolio tracker is selected alongside a real device', () => {
             const state = buildState({

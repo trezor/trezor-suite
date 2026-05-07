@@ -3,4 +3,5 @@ export type HomeScreenState =
     | 'emptyPortfolioTracker'
     | 'uninitializedDevice'
     | 'noNetworkConfigured'
+    | 'discoveryNotFinished'
     | 'portfolioContent';

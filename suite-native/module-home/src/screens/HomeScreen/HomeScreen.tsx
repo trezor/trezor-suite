@@ -12,6 +12,7 @@ import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Screen } from '@suite-native/navigation';
 import { exhaustive } from '@trezor/type-utils';
 
+import { DiscoveryNotFinished } from './components/DiscoveryNotFinished';
 import { EmptyPortfolioCrossroads } from './components/EmptyPortfolioCrossroads';
 import { EmptyPortfolioTrackerState } from './components/EmptyPortfolioTrackerState';
 import { NoNetworksConfigured } from './components/NoNetworksConfigured';
@@ -58,6 +59,8 @@ export const HomeScreen = () => {
                 return <UninitializedConnectedDeviceState />;
             case 'noNetworkConfigured':
                 return <NoNetworksConfigured />;
+            case 'discoveryNotFinished':
+                return <DiscoveryNotFinished />;
             case 'portfolioContent':
                 return <PortfolioContent ref={portfolioContentRef} />;
             default:
