@@ -1778,6 +1778,19 @@ export const messages = {
         accountsScreen: {
             title: 'My assets',
         },
+        accountAssetsScreen: {
+            tab: {
+                tokens: 'Tokens{count, plural, =0 {} other { #}}',
+                defi: 'DeFi{count, plural, =0 {} other { #}}',
+                hidden: 'Hidden',
+            },
+            hiddenTokensSection: {
+                title: 'Unrecognized tokens',
+                warning: "We don't recognize this token. It may be unsafe—proceed with caution.",
+                emptyTitle: 'No unrecognized tokens',
+                emptySubtitle: 'All your tokens are recognized.',
+            },
+        },
         accountSettingsScreen: {
             coin: 'Coin',
             accountType: 'Account type',
