@@ -1,4 +1,5 @@
 import { FirmwareType } from '@trezor/connect';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: extract firmwareUtils to a shared location and remove this exception (see #27376 deferred work)
 import {
     buildLocalFirmwareFileName,
     buildLocalReleaseName,

@@ -2,6 +2,7 @@ import { FirmwareProgressBar, useFirmwareDesktopUpdate } from '@suite/firmware-u
 import { Translation } from '@suite/intl';
 import { Banner, Card, Column } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: expose the browser-specific TrezorConnect type via the @trezor/connect barrel and remove this exception (see #27376)
 import type TrezorConnectBrowser from '@trezor/connect/src/index.browser';
 
 import { FirmwareOffer, ReconnectDevicePrompt, RotatingPhrases } from 'src/components/firmware';

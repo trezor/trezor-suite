@@ -5,6 +5,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { type Account, type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import TrezorConnect, { type Address, type PROTO } from '@trezor/connect';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: extract pathUtils to a shared location and remove this exception (see #27376 deferred work)
 import { validatePath } from '@trezor/connect/src/utils/pathUtils';
 
 import { invityAPI } from '../../../invityAPI';
