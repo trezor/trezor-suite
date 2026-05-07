@@ -36,18 +36,21 @@ Use `currents-get-runs` with `projectId`, `branches=["develop"]`, `tags=["nightl
 Note the `runId` and `completionState` for each platform. If no run is found, note it in
 the report and continue with the other platform.
 
-## Step 2 — Identify failed specs
+## Step 2 — Identify failed and pending specs
 
 For each run, use `currents-get-run-details` with the `runId`. Collect all spec instances
-with at least one failure. Note each `instanceId` and spec file path.
+with at least one failure **or at least one pending test**. Note each `instanceId` and spec
+file path.
 
-> `currents-get-run-details` returns instance-level pass/fail counts — enough to identify
-> which instances failed. It does **not** contain per-test error messages or artifact URLs.
-> Those only come from `currents-get-spec-instance` in Step 3, which is always required.
+> Pending tests are executed fully and carry the same error messages and artifacts as a failed test. Treat them identically to failed tests.
+
+> `currents-get-run-details` returns instance-level pass/fail/skip counts — enough to identify
+> which instances need investigation. It does **not** contain per-test error messages or artifact
+> URLs. Those only come from `currents-get-spec-instance` in Step 3, which is always required.
 
 ## Step 3 — Get full debugging data per instance
 
-For each failed `instanceId`, use `currents-get-spec-instance` and extract:
+For each failed or pending `instanceId`, use `currents-get-spec-instance` and extract:
 
 - Per-test error messages and stack traces
 - Screenshot URLs
@@ -108,7 +111,7 @@ Web run: <runId> — <N> failures
 Desktop run: <runId> — <N> failures
 ```
 
-For each failing test:
+For each failing or pending test:
 
 ```
 ### <test title>
@@ -162,6 +165,12 @@ For each fix task assign:
 - **`validations`** — list of `{ platform, group, spec }` entries covering **all** affected
   platform/group/spec combinations. Every group where the failure was observed must be
   included — the fix agent will verify the fix on each one.
+
+  **Before adding a validation entry, check the test file's `describe` block tags:**
+  - If the test carries `@desktopOnly`, do **not** add a `platform: "web"` entry — the web
+    playwright config excludes it via `grepInvert` and playwright will report "No tests found".
+  - If the test carries `@webOnly`, do **not** add a `platform: "desktop"` entry for the same reason.
+  - Only include a platform in `validations` if that platform actually ran the test.
 
 Tasks with `fix_scope` of `PRODUCT_BUG` or `INFRA` go into `skipped` instead of `fix_tasks`.
 

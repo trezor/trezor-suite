@@ -30,7 +30,7 @@ unset MCP_CONNECTION_NONBLOCKING
     --settings packages/e2e-utils/src/fixBot/settings.json \
     --mcp-config packages/e2e-utils/src/fixBot/mcp.json \
     --strict-mcp-config \
-    < packages/e2e-utils/src/fixBot/AGENT.md
+    < packages/e2e-utils/src/fixBot/ANALYSIS_AGENT.md
 
 DATE="$(date +%Y-%m-%d)"
 echo ""
