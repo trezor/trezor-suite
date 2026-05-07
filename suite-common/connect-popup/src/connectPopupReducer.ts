@@ -144,6 +144,12 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
             .addCase(connectPopupActions.forgetAppPermissions, (state, { payload }) => {
                 state.permissions = state.permissions.filter(p => p.origin !== payload.origin);
             })
+            .addCase(connectPopupActions.setAppSilentMode, (state, { payload }) => {
+                const permission = state.permissions.find(p => p.origin === payload.origin);
+                if (permission) {
+                    permission.silentMode = payload.silentMode;
+                }
+            })
             .addCase(connectPopupActions.txSimulation, (state, { payload }) => {
                 if (state.activeCall?.state === 'ongoing') {
                     const newActiveCall = {
@@ -192,6 +198,13 @@ export const selectConnectPopupCallWithState = <CallState extends ConnectPopupCa
 
 export const selectConnectAppPermissions = (state: ConnectPopupStateRootState) =>
     state.connectPopup.permissions.filter(p => p.type !== CALL_SOURCE_WALLETCONNECT);
+
+export const selectIsConnectAppSilentModeByOrigin = (
+    state: ConnectPopupStateRootState,
+    origin: string | undefined,
+) =>
+    !!origin &&
+    state.connectPopup.permissions.some(p => p.origin === origin && p.silentMode === true);
 
 export const selectWalletConnectAppPermissions = (state: ConnectPopupStateRootState) =>
     state.connectPopup.permissions.filter(p => p.type === CALL_SOURCE_WALLETCONNECT);

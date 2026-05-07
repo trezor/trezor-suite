@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { openModal } from '@suite/modal';
+import { MODAL_CONTEXT_DEVICE, openModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
 import {
     CALL_SOURCE_DESKTOP_WS,
@@ -10,9 +10,14 @@ import {
     getPopupCallDeferred,
     queuePopupCall,
     selectConnectPopupCall,
+    selectIsConnectAppSilentModeByOrigin,
 } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
-import TrezorConnect, { type CallMethodKeys, type CallMethodPayload } from '@trezor/connect';
+import TrezorConnect, {
+    type CallMethodKeys,
+    type CallMethodPayload,
+    UI_REQUEST,
+} from '@trezor/connect';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -145,15 +150,47 @@ export const useConnectPopupDesktop = () => {
     }, [dispatch, analytics, lifecycle.status]);
 
     // App focus control
+    const callOrigin = popupCall && 'source' in popupCall ? popupCall.source.origin : undefined;
+    const isSilentMode = useSelector(state =>
+        selectIsConnectAppSilentModeByOrigin(state, callOrigin),
+    );
+    // True when Suite is showing a modal that needs user input (passphrase,
+    // PIN, recovery word). Silent mode still focuses the window in these cases
+    // because the user can't respond to the device without seeing Suite.
+    const isUserInputModalOpen = useSelector(state => {
+        const { modal } = state;
+        if (modal.context !== MODAL_CONTEXT_DEVICE) return false;
+        if (!('windowType' in modal) || !modal.windowType) return false;
+
+        return (
+            [
+                UI_REQUEST.REQUEST_PIN,
+                UI_REQUEST.INVALID_PIN,
+                UI_REQUEST.REQUEST_PASSPHRASE,
+                UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE,
+                UI_REQUEST.REQUEST_WORD,
+            ] as string[]
+        ).includes(modal.windowType);
+    });
+
     const [currentlyOngoing, setCurrentlyOngoing] = useState(false);
     const [wasVisible, setWasVisible] = useState(false);
     useEffect(() => {
-        if (
-            // Permission request
-            popupCall?.state === 'permission-request' ||
-            // Call ongoing - show only if method uses UI
-            (popupCall?.state === 'ongoing' && popupCall?.methodInfo.useUi)
-        ) {
+        const shouldFocus = (() => {
+            if (!popupCall) return false;
+            if (popupCall.state === 'permission-request') return true;
+            if (popupCall.state === 'address-confirmation') return true;
+            if (popupCall.state === 'ongoing' && popupCall.methodInfo.useUi) {
+                // Silent mode only focuses when the user has to type something
+                // into Suite (passphrase/PIN/word). Device-side confirmations
+                // and simple ongoing calls stay in the background.
+                return !isSilentMode || isUserInputModalOpen;
+            }
+
+            return false;
+        })();
+
+        if (shouldFocus) {
             // Only trigger once
             if (currentlyOngoing) return;
 
@@ -166,11 +203,12 @@ export const useConnectPopupDesktop = () => {
         }
 
         if (popupCall?.state === 'finished') {
-            setCurrentlyOngoing(false);
-            // Once finished, hide app if it was not visible before
-            if (!wasVisible) {
+            // Only hide if we actually focused during this call, otherwise
+            // we'd hide a window the user was using before the call started.
+            if (currentlyOngoing && !wasVisible) {
                 desktopApi.appHide();
             }
+            setCurrentlyOngoing(false);
         }
-    }, [popupCall, currentlyOngoing, wasVisible]);
+    }, [popupCall, currentlyOngoing, wasVisible, isSilentMode, isUserInputModalOpen]);
 };

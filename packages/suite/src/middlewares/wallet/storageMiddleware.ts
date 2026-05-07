@@ -300,6 +300,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 isAnyOf(
                     connectPopupActions.rememberAppPermissions,
                     connectPopupActions.forgetAppPermissions,
+                    connectPopupActions.setAppSilentMode,
                     walletConnectActions.saveSession,
                     walletConnectActions.removeSession,
                 )(action)
