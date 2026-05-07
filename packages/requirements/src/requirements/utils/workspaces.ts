@@ -13,18 +13,28 @@ export type WorkspaceEntry = {
 };
 
 const workspacesCache = new Map<string, ReadonlyArray<WorkspaceEntry>>();
+const workspaceDirectoryMapCache = new Map<string, ReadonlyMap<string, string>>();
 
 export const listAllWorkspaces = (repoRoot: string): ReadonlyArray<WorkspaceEntry> => {
-    const cached = workspacesCache.get(repoRoot);
+    const cacheKey = resolve(repoRoot);
+    const cached = workspacesCache.get(cacheKey);
 
     if (cached !== undefined) {
         return cached;
     }
 
-    const rawOutput = execFileSync('yarn', ['workspaces', 'list', '--json'], {
-        cwd: repoRoot,
-        encoding: 'utf-8',
-    });
+    let rawOutput: string;
+
+    try {
+        rawOutput = execFileSync('yarn', ['workspaces', 'list', '--json'], {
+            cwd: cacheKey,
+            encoding: 'utf-8',
+        });
+    } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+
+        throw new Error(`Failed to list workspaces in ${cacheKey}: ${message}`);
+    }
 
     const workspaces = rawOutput
         .trim()
@@ -33,12 +43,29 @@ export const listAllWorkspaces = (repoRoot: string): ReadonlyArray<WorkspaceEntr
         .map(line => JSON.parse(line) as YarnWorkspaceInfo)
         .map(workspace => ({
             name: workspace.name,
-            dir: resolve(repoRoot, workspace.location),
+            dir: resolve(cacheKey, workspace.location),
         }));
 
-    workspacesCache.set(repoRoot, workspaces);
+    workspacesCache.set(cacheKey, workspaces);
 
     return workspaces;
+};
+
+export const getWorkspaceDirectoryMap = (repoRoot: string): ReadonlyMap<string, string> => {
+    const cacheKey = resolve(repoRoot);
+    const cached = workspaceDirectoryMapCache.get(cacheKey);
+
+    if (cached !== undefined) {
+        return cached;
+    }
+
+    const map = new Map(
+        listAllWorkspaces(cacheKey).map(workspace => [workspace.name, workspace.dir]),
+    );
+
+    workspaceDirectoryMapCache.set(cacheKey, map);
+
+    return map;
 };
 
 export const readPackageJson = <T>(workspaceDir: string): T =>
