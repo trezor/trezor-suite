@@ -129,6 +129,53 @@ body {
     list-style-type: none;
 }
 
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #0d0d0d;
+    }
+
+    .title {
+        color: #ffffff;
+    }
+
+    .subtitle {
+        color: #ffffff;
+    }
+
+    .buttonSecondary {
+        background: #1c1c1c;
+        color: #4caf93;
+        border: 1px solid #333333;
+    }
+
+    .browser {
+        border: 1px solid #333333;
+    }
+
+    .browser:hover {
+        border: 1px solid #555555;
+        box-shadow:
+            0px 2px 2px #1a1a1a,
+            0px 4px 28px #1a1a1a;
+    }
+
+    .name {
+        color: #ffffff;
+    }
+
+    .hr {
+        border-top: 1px solid #333333;
+    }
+
+    .continueInfo {
+        color: #ffffff;
+    }
+
+    .continueButton {
+        color: #ffffff;
+    }
+}
+
 @media (max-width: 900px) {
     .title {
         font-size: 40px;
