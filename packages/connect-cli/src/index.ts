@@ -153,6 +153,7 @@ const run = async () => {
     console.log('Running @trezor/connect CLI with args', args);
 
     TrezorConnect.on('DEVICE_EVENT', async event => {
+        console.info('DEVICE_EVENT', event);
         if (event.type === 'device-connect_unacquired' || event.type === 'device-connect') {
             if (testIsRunning) {
                 return;
@@ -203,7 +204,7 @@ const run = async () => {
     });
 
     TrezorConnect.on('UI_EVENT', async event => {
-        console.warn('UI_EVENT', event.type);
+        console.info('UI_EVENT', event);
 
         if (event.type === 'ui-request_confirmation') {
             return TrezorConnect.uiResponse({
