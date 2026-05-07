@@ -169,6 +169,8 @@ jobs:
         run: yarn format:verify
       - name: Verify TS Project References
         run: yarn verify-project-references
+      - name: Verify Workflow Path Filters
+        run: yarn gen:workflow-paths:check
       - name: Detect unused dependencies
         run: yarn depcheck
       - name: Install Socket Firewall

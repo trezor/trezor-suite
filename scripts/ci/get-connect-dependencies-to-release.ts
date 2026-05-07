@@ -6,76 +6,58 @@ import util from 'node:util';
 import path from 'node:path';
 import semver from 'semver';
 
-import { getNpmRemoteGreatestVersion, getTrezorPackageDir } from './helpers';
+import { computePublishClosure } from './connect-publish-graph';
+import { readWorkspaceDeps } from './read-workspace-deps';
+import { getNpmRemoteGreatestVersion } from './helpers';
 
 const readFile = util.promisify(fs.readFile);
 
-const nonReleaseDependencies: string[] = [];
+const ROOT = path.join(import.meta.dirname, '..', '..');
 
-const checkNonReleasedDependencies = async (packageName: string) => {
+const ROOT_PACKAGES = [
+    'connect',
+    'connect-web',
+    'connect-mobile',
+    'connect-webextension',
+    'connect-plugin-stellar',
+    'connect-plugin-ethereum',
+];
+
+// We do not want to include `connect`, `connect-web`, `connect-webextension` and
+// `connect-mobile` since we want to release those separately and we always want
+// to release them.
+const ALWAYS_RELEASED_SEPARATELY = [
+    'connect',
+    'connect-web',
+    'connect-webextension',
+    'connect-mobile',
+];
+
+const isPackageBumped = async (packageName: string): Promise<boolean> => {
     const rawPackageJSON = await readFile(
-        path.join(getTrezorPackageDir(packageName), 'package.json'),
+        path.join(ROOT, 'packages', packageName, 'package.json'),
         'utf-8',
     );
-
-    const packageJSON = JSON.parse(rawPackageJSON);
-    const {
-        version: localVersion,
-        dependencies,
-        // devDependencies // We should ignore devDependencies.
-    } = packageJSON;
-
+    const { version: localVersion } = JSON.parse(rawPackageJSON);
     const remoteGreatestVersion = await getNpmRemoteGreatestVersion(`@trezor/${packageName}`);
 
-    // If local version is greatest than the greatest one in NPM we add it to the release.
-    if (!remoteGreatestVersion || semver.gt(localVersion, remoteGreatestVersion as string)) {
-        const index = nonReleaseDependencies.indexOf(packageName);
-        if (index > -1) {
-            nonReleaseDependencies.splice(index, 1);
-        }
-        nonReleaseDependencies.push(packageName);
-    }
-
-    if (!dependencies || !Object.keys(dependencies)) {
-        return;
-    }
-
-    // eslint-disable-next-line no-restricted-syntax
-    for await (const [dependency] of Object.entries(dependencies)) {
-        // is not a dependency released from monorepo. we don't care
-        if (!dependency.startsWith('@trezor')) {
-            // eslint-disable-next-line no-continue
-            continue;
-        }
-        const name = dependency.split('/')[1];
-        if (!name) {
-            continue;
-        }
-
-        await checkNonReleasedDependencies(name);
-    }
+    // A missing remote version means the package was never published, so it needs releasing.
+    return !remoteGreatestVersion || semver.gt(localVersion, remoteGreatestVersion as string);
 };
 
 const getConnectDependenciesToRelease = async () => {
-    // We check what dependencies need to be released because they have version bumped locally
-    // and remote greatest version is lower than the local one.
-    await checkNonReleasedDependencies('connect');
-    await checkNonReleasedDependencies('connect-web');
-    await checkNonReleasedDependencies('connect-mobile');
-    await checkNonReleasedDependencies('connect-webextension');
-    await checkNonReleasedDependencies('connect-plugin-stellar');
-    await checkNonReleasedDependencies('connect-plugin-ethereum');
+    const closure = computePublishClosure(ROOT_PACKAGES, readWorkspaceDeps);
 
-    // We do not want to include `connect`, `connect-web` and `connect-webextension` since we want
-    // to release those separately and we always want to release them.
-    const onlyDependenciesToRelease = nonReleaseDependencies.filter(item => {
-        return !['connect', 'connect-web', 'connect-webextension', 'connect-mobile'].includes(item);
-    });
+    const candidates = [...closure].filter(pkg => !ALWAYS_RELEASED_SEPARATELY.includes(pkg));
 
-    // We use `onlyDependenciesToRelease` to trigger NPM releases
-    const dependenciesToRelease = JSON.stringify(onlyDependenciesToRelease);
+    const dependenciesToRelease: string[] = [];
+    for (const pkg of candidates) {
+        if (await isPackageBumped(pkg)) {
+            dependenciesToRelease.push(pkg);
+        }
+    }
 
-    process.stdout.write(dependenciesToRelease);
+    process.stdout.write(JSON.stringify(dependenciesToRelease));
 };
 
 getConnectDependenciesToRelease();
