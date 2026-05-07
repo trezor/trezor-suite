@@ -6,13 +6,19 @@ const checkVersions = (packages: string[], deploymentType: string): void => {
     const versions = packages.map(packageName => getLocalVersion(packageName));
 
     const isCorrectType = versions.every(version => {
-        const isBeta = semver.prerelease(version);
-        return (deploymentType === 'canary' && isBeta) || (deploymentType === 'stable' && !isBeta);
+        const prerelease = semver.prerelease(version);
+        const releaseType = prerelease
+            ? prerelease[0] === 'alpha'
+                ? 'alpha'
+                : 'canary'
+            : 'stable';
+
+        return deploymentType === releaseType;
     });
 
     if (!isCorrectType) {
         console.error(
-            `Mixed deployment types detected. All versions should be either "stable" or "canary".`,
+            `Mixed deployment types detected. All versions should be "stable", "alpha", or "canary".`,
         );
         process.exit(1);
     } else {
