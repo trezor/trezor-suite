@@ -5,6 +5,7 @@ import { type Account } from '@suite-common/wallet-types';
 import {
     getAccountTotalStakingBalance,
     getStakingLimitsByNetworkSymbol,
+    sortByCoin,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { BigNumber, arrayPartition } from '@trezor/utils';
@@ -110,8 +111,7 @@ export const useStakingAccountsVisibility = ({
         const hasSolBaseAccount = alwaysVisibleAccounts.some(account => account.symbol === 'sol');
         const hasAdaBaseAccount = alwaysVisibleAccounts.some(account => account.symbol === 'ada');
 
-        const sortedInsufficientFundsAccounts =
-            accountsInsufficientFunds.toSorted(sortAccountsByBalance);
+        const sortedInsufficientFundsAccounts = sortByCoin([...accountsInsufficientFunds]);
 
         const additionalAccounts: Account[] = [];
 
@@ -139,21 +139,20 @@ export const useStakingAccountsVisibility = ({
             if (account) additionalAccounts.push(account);
         }
 
-        return additionalAccounts.toSorted(sortAccountsByBalance);
+        return sortByCoin([...additionalAccounts]);
     }, [
         alwaysVisibleAccounts,
         accountsInsufficientFunds,
         ethNotActivated,
         solNotActivated,
         adaNotActivated,
-        sortAccountsByBalance,
     ]);
 
     const collapsedAccounts = [...alwaysVisibleAccounts, ...collapsedInsufficientFundsAccounts];
 
     const expandedAccounts = [
         ...alwaysVisibleAccounts,
-        ...accountsInsufficientFunds.toSorted(sortAccountsByBalance),
+        ...sortByCoin([...accountsInsufficientFunds]),
     ];
 
     const displayedAccounts = isExpanded ? expandedAccounts : collapsedAccounts;
