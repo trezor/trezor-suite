@@ -25,7 +25,10 @@ import { LogWriter, initLog, setLogWriter } from '@trezor/connect/src/utils/debu
 import { isConnectOutdated } from '@trezor/connect/src/utils/versionCheck';
 import { EventType, analytics } from '@trezor/connect-analytics';
 import { getSystemInfo } from '@trezor/connect-common';
-import { parseConnectSettings } from '@trezor/connect-iframe/src/connectSettings';
+import {
+    isOriginWhitelisted,
+    parseConnectSettings,
+} from '@trezor/connect-iframe/src/connectSettings';
 import { initLogWriterWithSrcPath } from '@trezor/connect-iframe/src/sharedLoggerUtils';
 import { reactEventBus } from '@trezor/connect-ui/src/utils/eventBus';
 import { ErrorViewProps } from '@trezor/connect-ui/src/views/Error';
@@ -536,9 +539,23 @@ const handshake = (handshake2: PopupHandshake, origin: string) => {
 
     clearTimeout(handshakeTimeout);
 
+    let finalOrigin = origin;
+    // allow overriding the origin from settings if the event comes from the same trusted origin.
+    // in the web extension, the content script sends the handshake message from the same origin,
+    // but provides the actual extension origin in the settings.
+    const overrideOrigin = getState().settings?.origin;
+    if (
+        overrideOrigin &&
+        window.origin === origin &&
+        isOriginWhitelisted(origin) &&
+        overrideOrigin !== origin
+    ) {
+        finalOrigin = overrideOrigin;
+    }
+
     // when this message comes from iframe, settings is already validated.
     // when there is no iframe, we must validate it here
-    const trustedSettings = parseConnectSettings(payload.settings, origin);
+    const trustedSettings = parseConnectSettings(payload.settings, finalOrigin);
     // useCoreInPopup is internal setting passed from connect-web
     if (typeof payload.settings.useCoreInPopup === 'boolean') {
         trustedSettings.useCoreInPopup = payload.settings.useCoreInPopup;
