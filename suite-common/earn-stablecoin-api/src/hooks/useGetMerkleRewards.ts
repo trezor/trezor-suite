@@ -116,38 +116,36 @@ export function useGetMerkleRewards<Address extends string>(
                 cache: 'no-store',
             });
 
-            const requests = queryEntries.map(entry =>
-                fetcher({
-                    routeParams: { address: entry.address },
-                    params: {
-                        chainId: entry.chainId,
-                        claimableOnly: true,
-                    },
-                }),
+            // Group requested chainIds by address so each address triggers a single batched
+            // HTTP request (Merkl accepts a comma-separated `chainId` list).
+            const chainIdsByAddress = queryEntries.reduce<Record<Address, number[]>>(
+                (acc, { address, chainId }) => {
+                    (acc[address] ??= []).push(chainId);
+
+                    return acc;
+                },
+                {} as Record<Address, number[]>,
             );
 
-            const usersChainRewards = await Promise.all(requests);
+            const requests = Object.entries(chainIdsByAddress).map(async entry => {
+                const [address, chainIds] = entry as [Address, number[]];
 
-            // Link the response with the query entries, flatten the rewards, select needed fields
-            const rewardsResult = usersChainRewards.map((userChainRewards, index) => {
-                const { address, chainId } = queryEntries[index];
+                const userChainRewards = await fetcher({
+                    routeParams: { address },
+                    params: {
+                        chainId: chainIds.join(','),
+                        claimableOnly: true,
+                    },
+                });
 
-                return {
-                    address,
-                    chainId,
-                    rewards: userChainRewards
-                        .map(chainRewards =>
-                            chainRewards.rewards.map(reward => {
-                                const { token, proofs, amount, claimed, pending, root } = reward;
-
-                                return { token, proofs, amount, claimed, pending, root };
-                            }),
-                        )
-                        .flat(1),
-                };
+                return { address, userChainRewards };
             });
 
-            const rewardsByChainAndAddress = rewardsResult.reduce<
+            const responses = await Promise.all(requests);
+
+            // Initialize every requested key with an empty array so consumers see all
+            // (chainId, address) pairs even when Merkl omits chains with no rewards.
+            const rewardsByChainAndAddress = queryEntries.reduce<
                 Record<
                     ReturnType<typeof ChainAddressKey.compose>,
                     Pick<
@@ -155,13 +153,25 @@ export function useGetMerkleRewards<Address extends string>(
                         'token' | 'proofs' | 'amount' | 'claimed' | 'pending' | 'root'
                     >[]
                 >
-            >((result, { address, chainId, rewards }) => {
-                const key = ChainAddressKey.compose(chainId, address);
-
-                result[key] = rewards;
+            >((result, { address, chainId }) => {
+                result[ChainAddressKey.compose(chainId, address)] = [];
 
                 return result;
             }, {});
+
+            for (const { address, userChainRewards } of responses) {
+                for (const chainRewards of userChainRewards) {
+                    const key = ChainAddressKey.compose(chainRewards.chain.id, address);
+
+                    if (key in rewardsByChainAndAddress) {
+                        rewardsByChainAndAddress[key] = chainRewards.rewards.map(reward => {
+                            const { token, proofs, amount, claimed, pending, root } = reward;
+
+                            return { token, proofs, amount, claimed, pending, root };
+                        });
+                    }
+                }
+            }
 
             return rewardsByChainAndAddress;
         },
