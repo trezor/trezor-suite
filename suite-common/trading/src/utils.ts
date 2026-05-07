@@ -210,8 +210,7 @@ export const mapTestnetSymbol = (
     symbol: NetworkSymbol,
 ): Exclude<NetworkSymbol, 'test' | 'tsep' | 'thod' | 'txrp' | 'txlm'> => {
     if (symbol === 'test') return 'btc';
-    if (symbol === 'tsep') return 'eth';
-    if (symbol === 'thod') return 'eth';
+    if (symbol === 'tsep' || symbol === 'thod') return 'eth';
     if (symbol === 'txrp') return 'xrp';
     if (symbol === 'txlm') return 'xlm';
 

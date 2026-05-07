@@ -1048,15 +1048,19 @@ export const isSameUtxo = (a: AccountUtxo, b: AccountUtxo) =>
  * Returns true if the network uses receive address instead of XPUB.
  */
 export const isAddressBasedNetwork = (networkType: NetworkType) => {
-    if (networkType === 'bitcoin') return false;
-    if (networkType === 'cardano') return false;
-    if (networkType === 'ethereum') return true;
-    if (networkType === 'tron') return true;
-    if (networkType === 'ripple') return true;
-    if (networkType === 'solana') return true;
-    if (networkType === 'stellar') return true;
-
-    return exhaustive(networkType);
+    switch (networkType) {
+        case 'bitcoin':
+        case 'cardano':
+            return false;
+        case 'ethereum':
+        case 'tron':
+        case 'ripple':
+        case 'solana':
+        case 'stellar':
+            return true;
+        default:
+            return exhaustive(networkType);
+    }
 };
 
 export const accountEqualTo = (a: Account) => (b: Account) =>

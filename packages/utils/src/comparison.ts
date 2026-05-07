@@ -1,9 +1,7 @@
 export const deepEqual = (a: any, b: any): boolean => {
     if (a === b) return true;
 
-    if (typeof a !== typeof b) return false;
-    if (a === null || b === null) return false;
-    if (typeof a !== 'object') return false;
+    if (typeof a !== typeof b || a === null || b === null || typeof a !== 'object') return false;
 
     if (Array.isArray(a) !== Array.isArray(b)) return false;
 
