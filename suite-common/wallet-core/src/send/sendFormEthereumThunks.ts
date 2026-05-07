@@ -409,7 +409,7 @@ export const signEthereumSendFormTransactionThunk = createThunk<
             maxPriorityFeePerGas: precomposedTransaction.maxPriorityFeePerGas,
             gasPrice: precomposedTransaction.feePerByte,
             nonce,
-            payment_req: paymentRequests?.[0] ?? undefined,
+            payment_req: paymentRequests?.[0],
         });
 
         const response = await TrezorConnect.ethereumSignTransaction({
