@@ -9,7 +9,6 @@ const mapPositionToTop = (position: DashedLinePosition) => {
         case 'middleToBottom':
             return '50%';
         case 'topToBottom':
-            return borders.widths.large;
         case 'topToMiddle':
             return borders.widths.large;
     }
@@ -18,7 +17,6 @@ const mapPositionToTop = (position: DashedLinePosition) => {
 const mapPositionToBottom = (position: DashedLinePosition) => {
     switch (position) {
         case 'middleToBottom':
-            return '0';
         case 'topToBottom':
             return '0';
         case 'topToMiddle':
