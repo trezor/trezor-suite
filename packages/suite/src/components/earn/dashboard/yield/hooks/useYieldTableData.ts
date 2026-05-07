@@ -1,11 +1,7 @@
 import { useMemo } from 'react';
 
 import { type TokenDto, type YieldDto } from '@suite-common/earn-stablecoin-api';
-import {
-    NORMAL_ACCOUNT_TYPE,
-    type NetworkSymbol,
-    getNetworkByYieldXyzId,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkByYieldXyzId } from '@suite-common/wallet-config';
 import {
     doTokensMatch,
     getConvertedOutputTokenBalanceToInputTokenAmount,
@@ -123,9 +119,7 @@ export const useYieldTableData = ({
             }
 
             const networkAccounts = visibleAccounts.filter(
-                account =>
-                    account.accountType === NORMAL_ACCOUNT_TYPE &&
-                    account.symbol === network.symbol,
+                account => account.symbol === network.symbol,
             );
 
             return networkAccounts.map(account => ({
