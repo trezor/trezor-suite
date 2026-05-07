@@ -1,5 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 
+import { type Account } from '@suite-common/wallet-types';
+import { sortByCoin } from '@suite-common/wallet-utils';
+
 import { type YieldAccountOpportunity } from '../types';
 
 type UseYieldAccountsVisibilityProps = {
@@ -31,9 +34,19 @@ export const useYieldAccountsVisibility = ({
                 return;
             }
 
-            const fallbackOpportunity = yieldAccountOpportunities.find(
+            const vaultOpportunities = yieldAccountOpportunities.filter(
                 opportunity => opportunity.vault.id === vaultId,
             );
+            const vaultAccounts = vaultOpportunities
+                .map(opportunity => opportunity.account)
+                .filter((account): account is Account => account !== undefined);
+            const [firstAccountByCoinOrder] = sortByCoin([...vaultAccounts]);
+
+            const fallbackOpportunity = firstAccountByCoinOrder
+                ? vaultOpportunities.find(
+                      opportunity => opportunity.account?.key === firstAccountByCoinOrder.key,
+                  )
+                : vaultOpportunities[0];
 
             if (fallbackOpportunity) {
                 visibleOpportunityKeys.add(fallbackOpportunity.key);
