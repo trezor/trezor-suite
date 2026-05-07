@@ -27,9 +27,9 @@ export const messageToBuffer = (message: string) => {
         }
 
         return Buffer.from(clean, 'hex');
-    } else {
-        return Buffer.from(message, 'utf8');
     }
+
+    return Buffer.from(message, 'utf8');
 };
 
 export const messageToHex = (message: string) => messageToBuffer(message).toString('hex');

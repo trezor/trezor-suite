@@ -515,11 +515,10 @@ export const fetchTransactionsPageThunk = createThunk(
             dispatch(updateAction);
 
             return result.payload;
-        } else {
-            const error = result ? result.error.message : 'unknown error';
-
-            throw new Error(error);
         }
+        const error = result ? result.error.message : 'unknown error';
+
+        throw new Error(error);
     },
 );
 

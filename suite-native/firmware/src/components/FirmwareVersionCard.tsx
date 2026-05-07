@@ -65,17 +65,18 @@ export const FirmwareVersionCard = ({ isUpdateRequired, children }: FirmwareVers
                 variant: 'critical',
                 children: <Translation id="firmware.versionCard.status.updateRequired" />,
             };
-        } else if (isFirmwareUpgradable) {
+        }
+        if (isFirmwareUpgradable) {
             return {
                 variant: 'info',
                 children: <Translation id="firmware.versionCard.status.updateAvailable" />,
             };
-        } else {
-            return {
-                variant: 'success',
-                children: <Translation id="firmware.versionCard.status.upToDate" />,
-            };
         }
+
+        return {
+            variant: 'success',
+            children: <Translation id="firmware.versionCard.status.upToDate" />,
+        };
     })();
     const firmwareType = isBtcOnly ? 'firmware.typeBitcoinOnly' : 'firmware.typeUniversal';
 

@@ -124,40 +124,34 @@ export const firmwareUpdate = createThunk<
                 error: firmwareUpdateResponse.error.message,
                 connectResponse: firmwareUpdateResponse,
             });
-        } else {
-            const {
-                versionCheck,
-                bootloaderVersion,
-                binaryVersion,
-                installedVersion,
-                releaseVersion,
-            } = firmwareUpdateResponse.payload;
+        }
+        const { versionCheck, bootloaderVersion, binaryVersion, installedVersion, releaseVersion } =
+            firmwareUpdateResponse.payload;
 
-            dispatch(firmwareActions.setStatus('done'));
+        dispatch(firmwareActions.setStatus('done'));
 
-            // TODO: Add to the if-else block above and add handle in UI.
-            if (!binary && !versionCheck) {
-                reportSecurityCheck({
-                    level: 'error',
-                    checkType: 'Firmware version',
-                    contextData: {
-                        model: device.features?.internal_model,
-                        revision: device.features?.revision,
-                        vendor: device.features?.fw_vendor,
-                        bootloaderVersion,
-                        binaryVersion,
-                        installedVersion,
-                        releaseVersion,
-                        error: 'Unexpected firmware version change during firmware update.',
-                    },
-                });
-            }
-
-            return fulfillWithValue({
-                device,
-                ...targetProperties,
-                connectResponse: firmwareUpdateResponse,
+        // TODO: Add to the if-else block above and add handle in UI.
+        if (!binary && !versionCheck) {
+            reportSecurityCheck({
+                level: 'error',
+                checkType: 'Firmware version',
+                contextData: {
+                    model: device.features?.internal_model,
+                    revision: device.features?.revision,
+                    vendor: device.features?.fw_vendor,
+                    bootloaderVersion,
+                    binaryVersion,
+                    installedVersion,
+                    releaseVersion,
+                    error: 'Unexpected firmware version change during firmware update.',
+                },
             });
         }
+
+        return fulfillWithValue({
+            device,
+            ...targetProperties,
+            connectResponse: firmwareUpdateResponse,
+        });
     },
 );

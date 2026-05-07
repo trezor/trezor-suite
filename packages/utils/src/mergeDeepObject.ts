@@ -49,11 +49,12 @@ interface IObject {
 const mergeValuesWithPath = (target: any, value: any, [key, ...rest]: string[]): any => {
     if (key === undefined) {
         return mergeValues(target, value);
-    } else if (!isObject(target)) {
-        return { [key]: mergeValuesWithPath({}, value, rest) };
-    } else {
-        return { ...target, [key]: mergeValuesWithPath(target[key], value, rest) };
     }
+    if (!isObject(target)) {
+        return { [key]: mergeValuesWithPath({}, value, rest) };
+    }
+
+    return { ...target, [key]: mergeValuesWithPath(target[key], value, rest) };
 };
 
 const mergeValues = (target: any, value: any) => {
@@ -61,11 +62,12 @@ const mergeValues = (target: any, value: any) => {
         return mergeDeepObject.options.mergeArrays
             ? Array.from(new Set((target as unknown[]).concat(value)))
             : value;
-    } else if (isObject(target) && isObject(value)) {
-        return mergeDeepObject(target, value);
-    } else {
-        return value;
     }
+    if (isObject(target) && isObject(value)) {
+        return mergeDeepObject(target, value);
+    }
+
+    return value;
 };
 
 export const mergeDeepObject = <T extends IObject[]>(...objects: T): TMerged<T[number]> =>

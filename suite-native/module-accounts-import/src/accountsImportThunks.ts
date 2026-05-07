@@ -162,9 +162,9 @@ export const getAccountInfoThunk = createThunk<
                 );
 
                 return fetchedAccountInfo.payload;
-            } else {
-                return rejectWithValue(fetchedAccountInfo.error.message);
             }
+
+            return rejectWithValue(fetchedAccountInfo.error.message);
         } catch (error) {
             return rejectWithValue(error?.message);
         }

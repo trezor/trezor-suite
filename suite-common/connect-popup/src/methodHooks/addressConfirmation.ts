@@ -34,12 +34,12 @@ const preCallHook = <M extends CallMethodKeys>({ method, payload }: PreCallHookP
                     showOnTrezor: false,
                 })),
             };
-        } else {
-            return {
-                ...payload,
-                showOnTrezor: false,
-            };
         }
+
+        return {
+            ...payload,
+            showOnTrezor: false,
+        };
     }
 
     return payload;

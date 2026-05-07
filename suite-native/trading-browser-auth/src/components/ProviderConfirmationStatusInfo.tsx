@@ -42,12 +42,11 @@ export const ProviderConfirmationStatusInfo = () => {
             }, RESOLVE_ANIMATION_DURATION_MS);
 
             return () => clearTimeout(timeout);
-        } else {
-            setLoadingState('idle');
-            setDisplayStatus(status);
-
-            return () => {};
         }
+        setLoadingState('idle');
+        setDisplayStatus(status);
+
+        return () => {};
     }, [displayStatus, status]);
 
     if (NOT_VISIBLE_STATUSES.includes(displayStatus)) {

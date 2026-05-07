@@ -498,18 +498,17 @@ export const pushSendFormRawTransactionThunk = createThunk(
             dispatch(syncAccountsWithBlockchainThunk(payload.symbol));
 
             return fulfillWithValue(true);
-        } else {
-            console.warn(sentTx.error.message);
-
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'sign-tx-error',
-                    error: sentTx.error.message,
-                }),
-            );
-
-            return rejectWithValue(sentTx.error.message);
         }
+        console.warn(sentTx.error.message);
+
+        dispatch(
+            notificationsActions.addToast({
+                type: 'sign-tx-error',
+                error: sentTx.error.message,
+            }),
+        );
+
+        return rejectWithValue(sentTx.error.message);
     },
 );
 

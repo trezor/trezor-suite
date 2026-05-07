@@ -199,9 +199,9 @@ export const unsubscribeBlockchainThunk = createThunk(
                     }));
 
                 return [...transformedRemovedAccounts, { symbol, blocks: true, accounts: [] }];
-            } else {
-                return [{ symbol, accounts: accountsToSubscribe, blocks: true }];
             }
+
+            return [{ symbol, accounts: accountsToSubscribe, blocks: true }];
         });
 
         return Promise.all(
