@@ -27,14 +27,9 @@ import { readWorkspaceDeps } from './read-workspace-deps';
 const ROOT = path.resolve(import.meta.dirname, '..', '..');
 const WORKFLOWS_DIR = path.join(ROOT, '.github', 'workflows');
 
-const CONNECT_PUBLISH_ROOTS = [
-    'connect',
-    'connect-web',
-    'connect-mobile',
-    'connect-webextension',
-    'connect-plugin-stellar',
-    'connect-plugin-ethereum',
-];
+// Plugins (`connect-plugin-*`) are intentionally excluded — they're released
+// out-of-band from connect proper and live on a different test surface.
+const CONNECT_PUBLISH_ROOTS = ['connect', 'connect-web', 'connect-mobile', 'connect-webextension'];
 
 const SENTINEL_CONFIGS: Record<string, { roots: string[] }> = {
     CONNECT_PUBLISH_DEPS: { roots: CONNECT_PUBLISH_ROOTS },
