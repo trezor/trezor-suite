@@ -2,8 +2,8 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import * as semver from 'semver';
 
+import { listAllWorkspaces, readPackageJson } from '../../workspaces';
 import type { Requirement } from '../Requirement';
-import { listAllWorkspaces, readPackageJson } from '../utils/workspaces';
 
 /**
  * Dependencies where version differences are intentional (e.g. ongoing major-version
