@@ -35,6 +35,7 @@ import {
 } from '@trezor/urls';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
+import { selectDesktopSuiteSyncInteraction } from 'src/actions/suiteSync/suiteSyncSlice';
 import { AddressLabeling, Labeling } from 'src/components/suite';
 import { InputError } from 'src/components/wallet';
 import { type InputErrorProps } from 'src/components/wallet/InputError';
@@ -68,7 +69,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         getDefaultValue,
         formState: { errors },
         setValue,
-        metadataEnabled,
         watch,
         setDraftSaveRequest,
         trigger,
@@ -93,6 +93,11 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const broadcastEnabled = options.includes('broadcast');
     const isOnline = useSelector(state => state.suite.online);
     const isDebug = useSelector(selectIsDebugModeActive);
+    const suiteSyncInteraction = useSelector(state =>
+        account ? selectDesktopSuiteSyncInteraction(state, account.deviceState) : null,
+    );
+
+    const shouldShowLabelAction = suiteSyncInteraction === null || !!device?.connected;
 
     const [isExternalAddressCheckWarningDismissed, setIsExternalAddressCheckWarningDismissed] =
         useState(false);
@@ -499,7 +504,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             labelRight={
                 <Row gap={spacings.md}>
                     {isDebug && <DevSelfAddress outputId={outputId} account={account} />}
-                    {metadataEnabled && broadcastEnabled && (
+                    {shouldShowLabelAction && broadcastEnabled && (
                         <Text typographyStyle="body-sm" as="div">
                             <Labeling
                                 deviceStaticSessionId={device.state.staticSessionId}
