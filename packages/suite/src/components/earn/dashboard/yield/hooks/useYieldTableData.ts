@@ -19,7 +19,9 @@ import { useSelector } from 'src/hooks/suite';
 
 import {
     compareYieldRowsByAvailableBalanceDesc,
+    compareYieldRowsByNetworkOnly,
     compareYieldRowsBySuppliedAmountDesc,
+    compareYieldRowsByTokenNetworkOrder,
 } from '../../utils/earnYieldUtils';
 import {
     type YieldAccountOpportunity,
@@ -141,12 +143,12 @@ export const useYieldTableData = ({
         });
 
         const activeOpportunities: YieldAccountOpportunity[] = [];
-        const supplyableOpportunities: YieldAccountOpportunity[] = [];
-        const buyOnlyOpportunities: YieldAccountOpportunity[] = [];
+        const depositableOpportunities: YieldAccountOpportunity[] = [];
+        const noBalanceOpportunities: YieldAccountOpportunity[] = [];
 
         allOpportunities.forEach(opportunity => {
             const hasMatchedInputToken = opportunity.matchedInputToken !== undefined;
-            const hasSupplyableBalance = new BigNumber(opportunity.additionalSupplyAmount).gt(0);
+            const hasDepositableBalance = new BigNumber(opportunity.additionalSupplyAmount).gt(0);
 
             if (opportunity.hasVaultPosition) {
                 activeOpportunities.push(opportunity);
@@ -154,19 +156,23 @@ export const useYieldTableData = ({
                 return;
             }
 
-            if (hasMatchedInputToken && hasSupplyableBalance) {
-                supplyableOpportunities.push(opportunity);
+            if (hasMatchedInputToken && hasDepositableBalance) {
+                depositableOpportunities.push(opportunity);
 
                 return;
             }
 
-            buyOnlyOpportunities.push(opportunity);
+            noBalanceOpportunities.push(opportunity);
         });
 
         return [
-            ...activeOpportunities.toSorted(compareYieldRowsBySuppliedAmountDesc),
-            ...supplyableOpportunities.toSorted(compareYieldRowsByAvailableBalanceDesc),
-            ...buyOnlyOpportunities.toSorted(compareYieldRowsByAvailableBalanceDesc),
+            ...activeOpportunities
+                .toSorted(compareYieldRowsBySuppliedAmountDesc)
+                .toSorted(compareYieldRowsByNetworkOnly),
+            ...depositableOpportunities
+                .toSorted(compareYieldRowsByAvailableBalanceDesc)
+                .toSorted(compareYieldRowsByTokenNetworkOrder),
+            ...noBalanceOpportunities.toSorted(compareYieldRowsByTokenNetworkOrder),
         ];
     }, [availableVaults, visibleAccounts, visibleAccountSymbols]);
 
