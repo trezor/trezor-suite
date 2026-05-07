@@ -24,7 +24,5 @@ export function shouldAttemptToLoadNextPageForVisibleTransactions({
 
     const pagesByVisibleTransactions = Math.ceil(currentNumberOfVisibleTransactions / perPage);
 
-    if (pagesByVisibleTransactions === 0 && totalNumberOfTransactions > 0) return true;
-
-    return false;
+    return pagesByVisibleTransactions === 0 && totalNumberOfTransactions > 0;
 }

@@ -16,12 +16,5 @@ export const isRecoveryInProgress = (features: PROTO.Features) => {
         return true;
     }
 
-    const isShamirAdditionalBackupRecovery =
-        recovery_status === 'Backup' && backup_availability === 'NotAvailable';
-
-    if (isShamirAdditionalBackupRecovery) {
-        return true;
-    }
-
-    return false;
+    return recovery_status === 'Backup' && backup_availability === 'NotAvailable';
 };
