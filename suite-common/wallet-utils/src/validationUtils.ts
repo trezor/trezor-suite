@@ -114,9 +114,5 @@ export const checkIsAddressNotUsedNotChecksummed = (
         return false;
     }
 
-    if (!hasHistory && address === address.toLowerCase()) {
-        return true;
-    }
-
-    return false;
+    return address === address.toLowerCase();
 };

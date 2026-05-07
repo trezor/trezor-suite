@@ -11,19 +11,12 @@ function useIsRefetchDisabled() {
     const modal = useSelector(state => state.modal);
     const setMaxOutputId = useWatch<FormState, 'setMaxOutputId'>({ name: 'setMaxOutputId' });
 
-    if (setMaxOutputId !== undefined) {
-        return true;
-    }
-
-    if (
-        modal.context === MODAL_CONTEXT_DEVICE &&
-        modal.windowType !== undefined &&
-        REFETCH_FEES_EXCLUDED_MODAL_WINDOW_TYPES.includes(modal.windowType)
-    ) {
-        return true;
-    }
-
-    return false;
+    return (
+        setMaxOutputId !== undefined ||
+        (modal.context === MODAL_CONTEXT_DEVICE &&
+            modal.windowType !== undefined &&
+            REFETCH_FEES_EXCLUDED_MODAL_WINDOW_TYPES.includes(modal.windowType))
+    );
 }
 
 interface UseFetchFeesProps {

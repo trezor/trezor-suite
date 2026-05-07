@@ -15,13 +15,8 @@ type ArrayToDictionary = {
  * @returns Dictionary object with array items as values
  */
 
-const validateKey = (key: unknown): key is DictionaryKey => {
-    if (['string', 'number'].includes(typeof key)) {
-        return true;
-    }
-
-    return false;
-};
+const validateKey = (key: unknown): key is DictionaryKey =>
+    ['string', 'number'].includes(typeof key);
 
 export const arrayToDictionary: ArrayToDictionary = <T, Fn extends GetKey<T>>(
     array: T[],

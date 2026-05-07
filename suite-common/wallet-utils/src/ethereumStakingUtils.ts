@@ -143,9 +143,5 @@ export const hasStakeInPendingDepositedState = (account: Account) => {
 
     const { pendingDepositedBalance, pendingBalance } = pool;
 
-    if (new BigNumber(pendingDepositedBalance).gt(0) && new BigNumber(pendingBalance).lte(0)) {
-        return true;
-    }
-
-    return false;
+    return new BigNumber(pendingDepositedBalance).gt(0) && new BigNumber(pendingBalance).lte(0);
 };

@@ -25,11 +25,7 @@ export const GuideViewWrapper = ({ children }: GuideViewWrapperProps) => {
     const [isScrolled, setIsScrolled] = useState<boolean>(false);
 
     const onScroll: UIEventHandler<HTMLDivElement> = useCallback(e => {
-        if (e?.currentTarget?.scrollTop) {
-            setIsScrolled(true);
-        } else {
-            setIsScrolled(false);
-        }
+        setIsScrolled(!!e?.currentTarget?.scrollTop);
     }, []);
 
     return (

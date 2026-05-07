@@ -21,11 +21,7 @@ function stacksEqual(a: Buffer[], b: Buffer[]): boolean {
 }
 
 function chunkHasUncompressedPubkey(chunk: StackElement): boolean {
-    if (Buffer.isBuffer(chunk) && chunk.length === 65 && chunk[0] === 0x04 && ecc.isPoint(chunk)) {
-        return true;
-    }
-
-    return false;
+    return Buffer.isBuffer(chunk) && chunk.length === 65 && chunk[0] === 0x04 && ecc.isPoint(chunk);
 }
 
 // input: <>
