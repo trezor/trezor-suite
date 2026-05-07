@@ -1,19 +1,24 @@
 import {
     type CreateSqliteDriverDep,
     type CreateWebSocket,
+    createBroadcastChannel,
     createConsole,
     createConsoleStoreOutput,
-    createInMemoryLeaderLock,
     createMessageChannel,
     createMessagePort,
     createRun,
     createSharedWorker,
     createWebSocket,
     createWorker,
+    testCreateLockManager,
 } from '@evolu/common';
 import {
+    type CreateDbWorker,
     type DbWorkerInit,
+    type EvoluPlatformDeps,
     type SharedWorkerInput,
+    type SharedWorkerOutput,
+    createEvoluDeps,
     initSharedWorker,
     startDbWorker,
 } from '@evolu/common/local-first';
@@ -27,39 +32,55 @@ const isolatedInMemorySqliteDeps: CreateSqliteDriverDep = {
 export const createNodeEvoluDeps = () => {
     const consoleStoreOutput = createConsoleStoreOutput();
     const console = createConsole({ output: consoleStoreOutput });
+    const lockManager = testCreateLockManager();
 
-    const run = createRun({
+    const nodeCreateWebSocket: CreateWebSocket = (url, options) =>
+        createWebSocket(url, {
+            ...options,
+            WebSocketConstructor: WebSocket as unknown as typeof globalThis.WebSocket,
+        });
+
+    const sharedWorkerRun = createRun({
         console,
         consoleStoreOutputEntry: consoleStoreOutput.entry,
+        createBroadcastChannel,
         createMessageChannel,
         createMessagePort,
-        createWebSocket: ((url, options) =>
-            createWebSocket(url, {
-                ...options,
-                WebSocketConstructor: WebSocket as unknown as typeof globalThis.WebSocket,
-            })) as CreateWebSocket,
+        createWebSocket: nodeCreateWebSocket,
+        lockManager,
     });
 
-    const workerRun = createRun({
+    const dbWorkerRun = createRun({
         console,
         consoleStoreOutputEntry: consoleStoreOutput.entry,
+        createBroadcastChannel,
         createMessagePort,
-        leaderLock: createInMemoryLeaderLock(),
+        lockManager,
         createSqliteDriver: isolatedInMemorySqliteDeps.createSqliteDriver,
     });
 
-    const createDbWorker = () =>
+    const createDbWorker: CreateDbWorker = () =>
         createWorker<DbWorkerInit>(self => {
-            workerRun(startDbWorker(self));
+            dbWorkerRun(startDbWorker(self));
         });
 
-    const sharedWorker = createSharedWorker<SharedWorkerInput>(self => {
-        run(initSharedWorker(self));
+    const sharedWorker = createSharedWorker<SharedWorkerInput, SharedWorkerOutput>(self => {
+        sharedWorkerRun(initSharedWorker(self));
     });
 
-    return run.addDeps({
+    const platformDeps: EvoluPlatformDeps = {
+        console,
+        createBroadcastChannel,
         createDbWorker,
+        createMessageChannel,
+        lockManager,
         reloadApp: () => {},
         sharedWorker,
-    });
+    };
+
+    const evoluDeps = createEvoluDeps(platformDeps);
+    const run = createRun(evoluDeps);
+    run.onAbort(() => evoluDeps[Symbol.dispose]());
+
+    return run;
 };

@@ -1,21 +1,22 @@
 import {
     CreateSqliteDriverDep,
     CreateWebSocket,
+    createBroadcastChannel,
     createConsoleStoreOutput,
-    createInMemoryLeaderLock,
     createMessageChannel,
     createMessagePort,
     createSharedWorker,
-    createSqlite,
     createWorker,
-    lazyVoid,
-    ok,
+    testCreateLockManager,
     testCreateRun,
-    testName,
 } from '@evolu/common';
 import {
-    DbWorkerInit,
-    SharedWorkerInput,
+    type CreateDbWorker,
+    type DbWorkerInit,
+    type EvoluPlatformDeps,
+    type SharedWorkerInput,
+    type SharedWorkerOutput,
+    createEvoluDeps,
     initSharedWorker,
     startDbWorker,
 } from '@evolu/common/local-first';
@@ -25,45 +26,53 @@ export const testCreateSqliteDeps: CreateSqliteDriverDep = {
     createSqliteDriver: name => createBetterSqliteDriver(name, { mode: 'memory' }),
 };
 
-export const testCreateRunWithEvoluDeps = async ({
+export const testCreateRunWithEvoluDeps = ({
     createWebSocket,
 }: {
     createWebSocket: CreateWebSocket;
 }) => {
     const consoleStoreOutput = createConsoleStoreOutput();
+    const lockManager = testCreateLockManager();
 
-    const run = testCreateRun({
-        // console: createConsole({ level: "debug" }),
-        createMessageChannel,
+    const sharedWorkerRun = testCreateRun({
         consoleStoreOutputEntry: consoleStoreOutput.entry,
+        createBroadcastChannel,
+        createMessageChannel,
         createMessagePort,
         createWebSocket,
+        lockManager,
     });
 
-    const driver = await run.orThrow(testCreateSqliteDeps.createSqliteDriver(testName));
-
-    const workerRun = testCreateRun({
+    const dbWorkerRun = testCreateRun({
         consoleStoreOutputEntry: consoleStoreOutput.entry,
+        createBroadcastChannel,
         createMessagePort,
-        leaderLock: createInMemoryLeaderLock(),
-        createSqliteDriver: () => () => ok(driver),
+        lockManager,
+        createSqliteDriver: testCreateSqliteDeps.createSqliteDriver,
     });
 
-    const createDbWorker = () =>
+    const createDbWorker: CreateDbWorker = () =>
         createWorker<DbWorkerInit>(self => {
-            workerRun(startDbWorker(self));
+            dbWorkerRun(startDbWorker(self));
         });
 
-    const sharedWorker = createSharedWorker<SharedWorkerInput>(self => {
-        run(initSharedWorker(self));
+    const sharedWorker = createSharedWorker<SharedWorkerInput, SharedWorkerOutput>(self => {
+        sharedWorkerRun(initSharedWorker(self));
     });
 
-    const sqlite = await workerRun.orThrow(createSqlite(testName));
-
-    return run.addDeps({
+    const platformDeps: EvoluPlatformDeps = {
+        console: sharedWorkerRun.deps.console,
+        createBroadcastChannel,
         createDbWorker,
-        reloadApp: lazyVoid,
+        createMessageChannel,
+        lockManager,
+        reloadApp: () => {},
         sharedWorker,
-        sqlite,
-    });
+    };
+
+    const evoluDeps = createEvoluDeps(platformDeps);
+    const run = testCreateRun(evoluDeps);
+    run.onAbort(() => evoluDeps[Symbol.dispose]());
+
+    return run;
 };
