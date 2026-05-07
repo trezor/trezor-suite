@@ -9,16 +9,17 @@ import {
     selectAccountByKey,
     selectAccountDefiTokensCount,
 } from '@suite-common/wallet-core';
-import { type NativeAccountsRootState, selectAccountListSections } from '@suite-native/accounts';
+import {
+    type NativeAccountsRootState,
+    selectAccountListSectionsWithZeroBalanceGroup,
+} from '@suite-native/accounts';
 import { VStack } from '@suite-native/atoms';
 import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-native/navigation';
 
 import { AccountAssetsScreenHeader } from '../components/AccountAssets/AccountAssetsScreenHeader';
-import {
-    type AccountAssetsTab,
-    AccountAssetsTabBar,
-} from '../components/AccountAssets/AccountAssetsTabBar';
+import { AccountAssetsTabBar } from '../components/AccountAssets/AccountAssetsTabBar';
 import { AccountAssetsTabContent } from '../components/AccountAssets/AccountAssetsTabContent';
+import { type AccountAssetsTab } from '../components/AccountAssets/types';
 
 export const AccountAssetsScreen = () => {
     const { params } = useRoute<RouteProp<RootStackParamList, RootStackRoutes.AccountAssets>>();
@@ -30,7 +31,7 @@ export const AccountAssetsScreen = () => {
         selectAccountByKey(state, accountKey),
     );
     const sections = useSelector((state: NativeAccountsRootState) =>
-        selectAccountListSections(state, accountKey),
+        selectAccountListSectionsWithZeroBalanceGroup(state, accountKey),
     );
     const defiTokenCount = useSelector((state: TokensRootState) =>
         selectAccountDefiTokensCount(state, accountKey),

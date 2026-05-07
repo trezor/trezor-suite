@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { isStakingSymbol } from '@suite-common/wallet-utils';
 import {
     AccountsList,
     type OnSelectAccount,
@@ -17,7 +18,6 @@ import {
     Screen,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { doesCoinSupportStaking } from '@suite-native/staking';
 import { isNetworkWithTokens } from '@suite-native/tokens';
 
 export const AccountsScreen = () => {
@@ -28,7 +28,7 @@ export const AccountsScreen = () => {
     const handleSelectAccount: OnSelectAccount = ({ account }) => {
         const { key: accountKey, symbol } = account;
 
-        if (isNetworkWithTokens(symbol) || doesCoinSupportStaking(symbol)) {
+        if (isNetworkWithTokens(symbol) || isStakingSymbol(symbol)) {
             navigation.navigate(RootStackRoutes.AccountAssets, { accountKey });
 
             return;

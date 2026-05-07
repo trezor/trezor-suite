@@ -1,3 +1,4 @@
+export * from './Accordion/AccordionContent';
 export * from './Accordion/AccordionList';
 export * from './BaseAmountInputs';
 export * from './InlineAlertBox/InlineAlertBox';

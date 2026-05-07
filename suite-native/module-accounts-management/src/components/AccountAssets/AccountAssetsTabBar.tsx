@@ -5,9 +5,8 @@ import { Button } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { type AccountAssetsTab } from './types';
 import { useActiveTabScroll } from './useActiveTabScroll';
-
-export type AccountAssetsTab = 'tokens' | 'defi' | 'hidden' | 'inactive';
 
 const scrollStyle = prepareNativeStyle(() => ({
     flexGrow: 0,

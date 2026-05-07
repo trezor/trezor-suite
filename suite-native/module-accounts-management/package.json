@@ -53,7 +53,6 @@
         "@suite-native/navigation": "workspace:*",
         "@suite-native/qr-code": "workspace:*",
         "@suite-native/services": "workspace:*",
-        "@suite-native/staking": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@suite-native/tokens": "workspace:*",
         "@suite-native/transactions": "workspace:*",
@@ -68,6 +67,7 @@
         "react": "19.2.4",
         "react-hook-form": "^7.71.2",
         "react-native": "0.83.2",
+        "react-native-reanimated": "~4.2.1",
         "react-redux": "9.2.0"
     }
 }

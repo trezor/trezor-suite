@@ -10,7 +10,7 @@ import {
     AccountsListTokenItem,
     type NativeAccountsRootState,
     type OnSelectAccount,
-    selectAccountListSections,
+    selectAccountListSectionsWithZeroBalanceGroup,
 } from '@suite-native/accounts';
 import { Box } from '@suite-native/atoms';
 import { useStakingDetailNavigation } from '@suite-native/module-earn';
@@ -19,6 +19,8 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+
+import { ZeroBalanceTokensSection } from './ZeroBalanceTokensSection';
 
 type ActiveTokensTabProps = {
     accountKey: AccountKey;
@@ -30,7 +32,7 @@ export const ActiveTokensTab = ({ accountKey }: ActiveTokensTabProps) => {
     const { navigateToStakingDetail } = useStakingDetailNavigation();
 
     const sections = useSelector((state: NativeAccountsRootState) =>
-        selectAccountListSections(state, accountKey),
+        selectAccountListSectionsWithZeroBalanceGroup(state, accountKey),
     );
 
     const handleSelectAccount: OnSelectAccount = useCallback(
@@ -100,6 +102,14 @@ export const ActiveTokensTab = ({ accountKey }: ActiveTokensTabProps) => {
                                         hasAnyKnownTokens: true,
                                     })
                                 }
+                            />
+                        );
+                    case 'zeroBalance':
+                        return (
+                            <ZeroBalanceTokensSection
+                                key="zero-balance"
+                                tokens={item.tokens}
+                                account={item.account}
                             />
                         );
                     default:

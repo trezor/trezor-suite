@@ -40,6 +40,11 @@ export type AccountSelectBottomSheetSection = (
           account: Account;
           token: TokenInfoBranded;
       }
+    | {
+          type: 'zeroBalance';
+          account: Account;
+          tokens: TokenInfoBranded[];
+      }
 ) & {
     isFirst?: boolean;
     isLast?: boolean;

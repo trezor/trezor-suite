@@ -1,11 +1,11 @@
 import { type AccountKey } from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
 
-import { type AccountAssetsTab } from './AccountAssetsTabBar';
 import { ActiveTokensTab } from './ActiveTokensTab';
 import { DefiTokensTab } from './DefiTokensTab';
 import { HiddenTokensTab } from './HiddenTokensTab';
 import { InactiveTokensTab } from './InactiveTokensTab';
+import { type AccountAssetsTab } from './types';
 
 type AccountAssetsTabContentProps = {
     accountKey: AccountKey;

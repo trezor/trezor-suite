@@ -6,7 +6,7 @@ import {
     type ScrollView,
 } from 'react-native';
 
-import { type AccountAssetsTab } from './AccountAssetsTabBar';
+import { type AccountAssetsTab } from './types';
 
 export const useActiveTabScroll = (activeTab: AccountAssetsTab) => {
     const scrollViewRef = useRef<ScrollView>(null);
