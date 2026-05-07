@@ -121,9 +121,8 @@ export class BluetoothApi extends AbstractApi {
             if (this.readSubscription[path]) {
                 // already subscribed to TX (read) characteristics
                 return Promise.resolve(success(undefined));
-            } else {
-                this.readSubscription[path] = true;
             }
+            this.readSubscription[path] = true;
         }
 
         return this.api

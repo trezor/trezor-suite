@@ -198,19 +198,17 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             const inputsTotal: BigNumber = inputs.reduce((bn, input) => {
                 if (typeof input.amount === 'string') {
                     return bn.plus(input.amount);
-                } else {
-                    if (!refTxs) {
-                        throw ERRORS.TypedError(
-                            'Runtime',
-                            'refTxs are required for precomposed transaction info when input amount is not provided',
-                        );
-                    }
-                    const refTx = refTxs.find(tx => tx.hash === input.prev_hash);
-                    const refOutput =
-                        refTx?.outputs?.[input.prev_index] ??
-                        refTx?.bin_outputs?.[input.prev_index];
-                    if (refOutput) return bn.plus(refOutput.amount);
                 }
+                if (!refTxs) {
+                    throw ERRORS.TypedError(
+                        'Runtime',
+                        'refTxs are required for precomposed transaction info when input amount is not provided',
+                    );
+                }
+                const refTx = refTxs.find(tx => tx.hash === input.prev_hash);
+                const refOutput =
+                    refTx?.outputs?.[input.prev_index] ?? refTx?.bin_outputs?.[input.prev_index];
+                if (refOutput) return bn.plus(refOutput.amount);
 
                 return bn;
             }, new BigNumber(0));

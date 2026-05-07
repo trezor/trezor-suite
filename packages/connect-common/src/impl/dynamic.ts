@@ -169,16 +169,16 @@ export class TrezorConnectDynamic implements ConnectFactoryDependencies<Record<n
 
         if (coreMode === 'suite-desktop') {
             return 'core-in-suite-desktop';
-        } else if (coreMode === 'suite-web') {
-            return 'core-in-suite-web';
-        } else {
-            if (coreMode && coreMode !== 'auto') {
-                console.warn(`Invalid coreMode: ${coreMode}`);
-            }
-
-            // TODO for webextension, default was previously core-in-suite-web
-            return 'core-in-suite-desktop';
         }
+        if (coreMode === 'suite-web') {
+            return 'core-in-suite-web';
+        }
+        if (coreMode && coreMode !== 'auto') {
+            console.warn(`Invalid coreMode: ${coreMode}`);
+        }
+
+        // TODO for webextension, default was previously core-in-suite-web
+        return 'core-in-suite-desktop';
     }
 
     private async handleBeforeCall() {

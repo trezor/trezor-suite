@@ -93,11 +93,7 @@ export function Sidebar({
     const hasMenu = config.darkMode || hasI18n || config.sidebar.toggleButton;
     const getDataToggleAnimation = () => {
         if (showToggleAnimation) {
-            if (showSidebar) {
-                return 'show';
-            } else {
-                return 'hide';
-            }
+            return showSidebar ? 'show' : 'hide';
         }
 
         return 'off';

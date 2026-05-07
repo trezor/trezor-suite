@@ -124,46 +124,43 @@ export const ActionsContainer = ({
                     />
                 </>
             );
-        } else {
-            return (
-                <>
+        }
+
+        return (
+            <>
+                <IconButton
+                    data-testid="@metadata/edit"
+                    intent="neutral"
+                    icon="pencilSimple"
+                    onClick={onEdit}
+                    tooltip={{
+                        content: (
+                            <FormattedMessage id="TR_LABELING_EDIT_LABEL" defaultMessage="Edit" />
+                        ),
+                        delayShow: 1000,
+                    }}
+                    {...commonProps}
+                />
+                {isDeleteButtonVisible && (
                     <IconButton
-                        data-testid="@metadata/edit"
-                        intent="neutral"
-                        icon="pencilSimple"
-                        onClick={onEdit}
+                        data-testid="@metadata/delete"
+                        intent="critical"
+                        icon="trash"
+                        onClick={onDelete}
                         tooltip={{
                             content: (
                                 <FormattedMessage
-                                    id="TR_LABELING_EDIT_LABEL"
-                                    defaultMessage="Edit"
+                                    id="TR_LABELING_REMOVE_LABEL"
+                                    defaultMessage="Remove"
                                 />
                             ),
                             delayShow: 1000,
                         }}
                         {...commonProps}
                     />
-                    {isDeleteButtonVisible && (
-                        <IconButton
-                            data-testid="@metadata/delete"
-                            intent="critical"
-                            icon="trash"
-                            onClick={onDelete}
-                            tooltip={{
-                                content: (
-                                    <FormattedMessage
-                                        id="TR_LABELING_REMOVE_LABEL"
-                                        defaultMessage="Remove"
-                                    />
-                                ),
-                                delayShow: 1000,
-                            }}
-                            {...commonProps}
-                        />
-                    )}
-                </>
-            );
-        }
+                )}
+            </>
+        );
     };
 
     return (

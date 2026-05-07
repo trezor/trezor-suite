@@ -57,18 +57,18 @@ export async function findProcessFromIncomingPort(
                         const appName = appPathMatch[2];
 
                         return { name: appName, pid, fullPath: appPathMatch[0] };
-                    } else {
-                        // Binary in unusual location, show warning
-                        return { name, pid, fullPath, warning: true };
                     }
-                } else {
-                    const fullPathCommand = `cat /proc/${pid}/cmdline`;
-                    const fullPathRaw = await spawnAndCollectStdout(fullPathCommand);
-                    const fullPath = fullPathRaw.split('\0')[0].trim();
-                    // Binaries can be all over the place on Linux, so we don't check the path
 
-                    return { name, pid, fullPath };
+                    // Binary in unusual location, show warning
+                    return { name, pid, fullPath, warning: true };
                 }
+
+                const fullPathCommand = `cat /proc/${pid}/cmdline`;
+                const fullPathRaw = await spawnAndCollectStdout(fullPathCommand);
+                const fullPath = fullPathRaw.split('\0')[0].trim();
+
+                // Binaries can be all over the place on Linux, so we don't check the path
+                return { name, pid, fullPath };
             }
 
             return undefined;
@@ -98,10 +98,10 @@ export async function findProcessFromIncomingPort(
                 const appPathMatch = fullPath.match(appPathRegex);
                 if (appPathMatch) {
                     return { name: appName, pid: record.pid, fullPath };
-                } else {
-                    // Binary in unusual location, show warning
-                    return { name: appName, pid: record.pid, fullPath, warning: true };
                 }
+
+                // Binary in unusual location, show warning
+                return { name: appName, pid: record.pid, fullPath, warning: true };
             }
 
             return undefined;

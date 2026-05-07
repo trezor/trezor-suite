@@ -20,9 +20,9 @@ const replaceMeta = (
                 item.children.flatMap(page => {
                     if (page.kind === 'Folder' || page.kind === 'MdxPage') {
                         return [mapping(page)];
-                    } else {
-                        return [];
                     }
+
+                    return [];
                 }),
             ),
         });

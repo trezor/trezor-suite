@@ -121,20 +121,16 @@ export class UsbApi extends AbstractApi {
     private matchDeviceType(device: UsbDeviceLike) {
         const isBootloader = device.productId === WEBUSB_BOOTLOADER_PRODUCT;
         if (device.deviceVersionMajor === 2) {
-            if (isBootloader) {
-                return DEVICE_TYPE.TypeT2Boot;
-            } else {
-                return DEVICE_TYPE.TypeT2;
-            }
-        } else {
-            if (isBootloader) {
-                return DEVICE_TYPE.TypeT1WebusbBoot;
-            } else if (device.vendorId === T1_HID_VENDOR && device.productId === T1_HID_PRODUCT) {
-                return DEVICE_TYPE.TypeT1Hid;
-            } else {
-                return DEVICE_TYPE.TypeT1Webusb;
-            }
+            return isBootloader ? DEVICE_TYPE.TypeT2Boot : DEVICE_TYPE.TypeT2;
         }
+        if (isBootloader) {
+            return DEVICE_TYPE.TypeT1WebusbBoot;
+        }
+        if (device.vendorId === T1_HID_VENDOR && device.productId === T1_HID_PRODUCT) {
+            return DEVICE_TYPE.TypeT1Hid;
+        }
+
+        return DEVICE_TYPE.TypeT1Webusb;
     }
 
     private devicesToDescriptors(): DescriptorApiLevel[] {

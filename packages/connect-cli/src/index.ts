@@ -30,32 +30,32 @@ const waitForPairingTag = async (uiEvent: UiRequestThpPairing) => {
         }
 
         return resp;
-    } else {
-        const state = await debugLinkState(uiEvent.payload);
-        if (!state?.success) {
-            throw new Error('DebugLinkState missing: ' + state.error);
-        }
-        const { payload } = state;
-        if (payload.type !== 'DebugLinkPairingInfo') {
-            throw new Error(
-                'DebugLinkState missing, received ' + state.payload.type,
-                // state.payload.message,
-            );
-        }
-        const { code_entry_code, code_qr_code, nfc_secret_trezor } = payload.message;
-        if (selectedMethod === ThpPairingMethod.CodeEntry && code_entry_code) {
-            return Number(code_entry_code).toString().padStart(6, '0');
-        }
-        if (selectedMethod === ThpPairingMethod.QrCode && code_qr_code) {
-            // NOTE: qrcode throws from firmware: Pairing tag cancelled (Failure) ?
-            return code_qr_code;
-        }
-        if (selectedMethod === ThpPairingMethod.NFC && nfc_secret_trezor) {
-            return nfc_secret_trezor;
-        }
-
-        return 'unknown-tag';
     }
+
+    const state = await debugLinkState(uiEvent.payload);
+    if (!state?.success) {
+        throw new Error('DebugLinkState missing: ' + state.error);
+    }
+    const { payload } = state;
+    if (payload.type !== 'DebugLinkPairingInfo') {
+        throw new Error(
+            'DebugLinkState missing, received ' + state.payload.type,
+            // state.payload.message,
+        );
+    }
+    const { code_entry_code, code_qr_code, nfc_secret_trezor } = payload.message;
+    if (selectedMethod === ThpPairingMethod.CodeEntry && code_entry_code) {
+        return Number(code_entry_code).toString().padStart(6, '0');
+    }
+    if (selectedMethod === ThpPairingMethod.QrCode && code_qr_code) {
+        // NOTE: qrcode throws from firmware: Pairing tag cancelled (Failure) ?
+        return code_qr_code;
+    }
+    if (selectedMethod === ThpPairingMethod.NFC && nfc_secret_trezor) {
+        return nfc_secret_trezor;
+    }
+
+    return 'unknown-tag';
 };
 
 const cliStatePath = path.join(__dirname, 'thp-state.dat');

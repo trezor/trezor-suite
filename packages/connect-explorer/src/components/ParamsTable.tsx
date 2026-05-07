@@ -119,14 +119,16 @@ export const ParamsTable = ({ schema, topLevelSchema, descriptions }: ParamsTabl
                 <ParamsTable key={i} schema={param} {...common} />
             </div>
         ));
-    } else if (schema[Kind] === 'Intersect') {
+    }
+    if (schema[Kind] === 'Intersect') {
         return schema.allOf?.map((param: TSchema, i: number) => (
             <div key={i}>
                 {i > 0 && <h3>and</h3>}
                 <ParamsTable schema={param} {...common} />
             </div>
         ));
-    } else if (schema[Kind] === 'Object') {
+    }
+    if (schema[Kind] === 'Object') {
         return Object.entries(schema.properties)?.map(([name, value]: [string, any]) => (
             <SingleParam
                 name={name}
@@ -137,13 +139,9 @@ export const ParamsTable = ({ schema, topLevelSchema, descriptions }: ParamsTabl
                 {...common}
             />
         ));
-    } else {
-        return (
-            <SingleParam
-                name=""
-                value={schema[Kind] === 'Array' ? schema.items : schema}
-                {...common}
-            />
-        );
     }
+
+    return (
+        <SingleParam name="" value={schema[Kind] === 'Array' ? schema.items : schema} {...common} />
+    );
 };
