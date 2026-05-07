@@ -45,7 +45,7 @@ const confirmSignMessageOnDevice = async (page: Page, device: DeviceFixture) => 
 test.describe('TrezorConnect silent mode', { tag: ['@T3T1', '@T3W1', '@desktopOnly'] }, () => {
     test.use({ electronConf: { exposeConnectWs: true } });
     test.beforeEach(async ({ onboardingPage }) => {
-        await onboardingPage.completeOnboarding();
+        await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
         await test.step('Initialize TrezorConnect', async () => {
             await TrezorConnect.init({
                 manifest: {
