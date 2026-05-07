@@ -58,7 +58,7 @@ export const getTestnets = ({
 }: GetTestnetsProps) =>
     allNetworks.filter(
         n =>
-            n.testnet === true &&
+            n.testnet &&
             useTestnetNetworks &&
             (!n.isDebugOnlyNetwork || debug) &&
             (!n.isExperimentalOnlyNetwork || useExperimentalNetworks),

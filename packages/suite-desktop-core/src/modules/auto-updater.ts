@@ -77,7 +77,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
     // possibility to override the default behavior. This wraps the original function, bypassing it if `isManualCheck`
     const isUserWithinRolloutDefaultMethod = autoUpdater.isUserWithinRollout;
     autoUpdater.isUserWithinRollout = async updateInfo =>
-        isManualCheck === true
+        isManualCheck
             ? // do not force if it is set to exactly 0, so we can completely stop distributing a release in case of trouble
               updateInfo.stagingPercentage !== 0
             : await isUserWithinRolloutDefaultMethod(updateInfo);

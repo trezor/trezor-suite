@@ -27,7 +27,7 @@ export const useExampleCSV = (): string => {
     }`;
     const lines = [headerLine, example1];
 
-    if (network.testnet === true) return lines.join('\n');
+    if (network.testnet) return lines.join('\n');
 
     // Inserting fiat rate is only available for mainnet networks
     const example2 = `${addresses[1]},4.9,USD${
