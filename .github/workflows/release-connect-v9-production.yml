@@ -8,10 +8,11 @@ on:
   workflow_dispatch:
     inputs:
       deploymentType:
-        description: "Select the deployment type. (example: canary, stable)"
+        description: "Select the deployment type. (example: alpha, canary, stable)"
         required: true
         type: choice
         options:
+          - alpha
           - canary
           - stable
 

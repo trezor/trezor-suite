@@ -103,7 +103,9 @@ jobs:
         if: matrix.package != 'no-packages-to-release'
         id: set_deployment_type
         run: |
-          if [ "${{ needs.identify-release-packages.outputs.deploymentType }}" == "canary" ]; then
+          if [ "${{ needs.identify-release-packages.outputs.deploymentType }}" == "alpha" ]; then
+            echo "DEPLOYMENT_TYPE=alpha" >> $GITHUB_ENV
+          elif [ "${{ needs.identify-release-packages.outputs.deploymentType }}" == "canary" ]; then
             echo "DEPLOYMENT_TYPE=beta" >> $GITHUB_ENV
           else
             echo "DEPLOYMENT_TYPE=latest" >> $GITHUB_ENV
@@ -134,7 +136,9 @@ jobs:
       - name: Set deployment type
         id: set_deployment_type
         run: |
-          if [ "${{ needs.identify-release-packages.outputs.deploymentType }}" == "canary" ]; then
+          if [ "${{ needs.identify-release-packages.outputs.deploymentType }}" == "alpha" ]; then
+            echo "DEPLOYMENT_TYPE=alpha" >> $GITHUB_ENV
+          elif [ "${{ needs.identify-release-packages.outputs.deploymentType }}" == "canary" ]; then
             echo "DEPLOYMENT_TYPE=beta" >> $GITHUB_ENV
           else
             echo "DEPLOYMENT_TYPE=latest" >> $GITHUB_ENV
