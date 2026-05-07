@@ -1,6 +1,6 @@
+import { SOL_COMPUTE_UNIT_LIMIT } from '@connect-coins/solana/constants';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { SOL_COMPUTE_UNIT_LIMIT } from '@suite-common/wallet-constants';
 import {
     type Account,
     type ComposeActionContext,
@@ -22,7 +22,7 @@ import {
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import type { TokenInfo } from '@trezor/blockchain-link-types';
-import { tokenStandardToTokenProgramName } from '@trezor/blockchain-link-utils/src/solana';
+import { solanaUtils } from '@trezor/blockchain-link-utils';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
@@ -214,7 +214,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             token: tokenInfo
                 ? {
                       mint: tokenInfo.contract,
-                      program: tokenStandardToTokenProgramName(tokenInfo.standard),
+                      program: solanaUtils.tokenStandardToTokenProgramName(tokenInfo.standard),
                       decimals: tokenInfo.decimals,
                       accounts: tokenInfo.accounts ?? [],
                   }
@@ -363,7 +363,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             token: token
                 ? {
                       mint: token.contract,
-                      program: tokenStandardToTokenProgramName(token.standard),
+                      program: solanaUtils.tokenStandardToTokenProgramName(token.standard),
                       decimals: token.decimals,
                       accounts: token.accounts ?? [],
                   }

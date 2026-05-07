@@ -1,5 +1,11 @@
-import { address } from '@solana/kit';
-
+import {
+    MIN_SOL_AMOUNT_FOR_STAKING,
+    MIN_SOL_BALANCE_FOR_STAKING,
+    MIN_SOL_FOR_WITHDRAWALS,
+    SOL_STAKING_OPERATION_FEE,
+    supportedSolanaNetworkSymbols,
+} from '@connect-coins/solana/constants';
+import solana from '@connect-coins/solana/runtime';
 import type {
     EstimatedFee,
     PrepareStakeSolTxResponse,
@@ -12,19 +18,8 @@ import {
     calculate,
     composeStakingTransaction,
 } from '@suite-common/staking/src/actions/stakeFormActions';
-import {
-    prepareClaimSolTx,
-    prepareStakeSolTx,
-    prepareUnstakeSolTx,
-} from '@suite-common/staking-solana';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    MIN_SOL_AMOUNT_FOR_STAKING,
-    MIN_SOL_BALANCE_FOR_STAKING,
-    MIN_SOL_FOR_WITHDRAWALS,
-    SOL_STAKING_OPERATION_FEE,
-} from '@suite-common/wallet-constants';
 import { selectAddressDisplayType } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -41,6 +36,7 @@ import {
 import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
 import { type BlockbookFee as Fee } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
+import { getSuiteVersion } from '@trezor/env-utils';
 import { BigNumber, isArrayMember } from '@trezor/utils';
 
 import { type Dispatch, type GetState } from 'src/types/suite';
@@ -99,19 +95,33 @@ const getTransactionData = async (
 
     const { account } = selectedAccount;
 
-    if (!isArrayMember(account.symbol, ['sol', 'dsol'])) {
+    if (!isArrayMember(account.symbol, supportedSolanaNetworkSymbols)) {
         return;
     }
 
     const selectedBlockchain = blockchain[account.symbol];
+
+    const {
+        selectSolanaConnection,
+        selectSolanaValidator,
+        prepareStakeSolTx,
+        prepareUnstakeSolTx,
+        prepareClaimSolTx,
+    } = await solana();
+
+    const connection = selectSolanaConnection(
+        selectedBlockchain.url,
+        `Trezor Suite ${getSuiteVersion()}`,
+    );
+    const validator = selectSolanaValidator(account.symbol);
 
     let txData;
     if (stakeType === 'stake') {
         txData = await prepareStakeSolTx({
             from: account.descriptor,
             amount: formValues.outputs[0].amount,
-            symbol: account.symbol,
-            selectedBlockchain,
+            connection,
+            validator,
             estimatedFee,
         });
     }
@@ -120,8 +130,8 @@ const getTransactionData = async (
         txData = await prepareUnstakeSolTx({
             from: account.descriptor,
             amount: formValues.outputs[0].amount,
-            symbol: account.symbol,
-            selectedBlockchain,
+            connection,
+            validator,
             estimatedFee,
         });
     }
@@ -129,8 +139,7 @@ const getTransactionData = async (
     if (stakeType === 'claim') {
         txData = await prepareClaimSolTx({
             from: account.descriptor,
-            symbol: account.symbol,
-            selectedBlockchain,
+            connection,
             estimatedFee,
         });
     }
@@ -334,6 +343,8 @@ export const signTransaction =
 
             return signedTx;
         }
+
+        const { address } = await solana();
 
         txData.txShim.addSignature(address(account.descriptor), signedTx.payload.signature);
 

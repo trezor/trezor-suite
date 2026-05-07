@@ -1,3 +1,7 @@
+import {
+    EVERSTAKE_SOLANA_DEVNET_VALIDATOR,
+    EVERSTAKE_SOLANA_MAINNET_VALIDATOR,
+} from '@connect-coins/solana/constants';
 import { EVERSTAKE_POOLS, FIVE_BINARIES_POOLS } from '@suite-common/wallet-constants';
 
 export type StakingProviderId = 'everstake' | 'fivebinaries';
@@ -9,9 +13,6 @@ export type StakingProvider = {
     cardanoPoolIds: string[];
     ethereumPoolNames: string[];
 };
-
-export const EVERSTAKE_SOLANA_MAINNET_VALIDATOR = '9QU2QSxhb24FUX3Tu2FpczXjpK3VYrvRudywSZaM29mF';
-export const EVERSTAKE_SOLANA_DEVNET_VALIDATOR = 'GkqYQysEGmuL6V2AJoNnWZUz2ZBGWhzQXsJiXm2CLKAN';
 
 export const EVERSTAKE_PROVIDER: StakingProvider = {
     id: 'everstake',

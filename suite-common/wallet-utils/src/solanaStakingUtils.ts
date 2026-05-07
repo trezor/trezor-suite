@@ -1,7 +1,10 @@
-import { StakeState } from '@connect-coins/solana/constants';
+import {
+    SOLANA_EPOCH_DAYS,
+    StakeState,
+    supportedSolanaNetworkSymbols,
+} from '@connect-coins/solana/constants';
 import type { SupportedSolanaNetworkSymbols } from '@connect-coins/solana/types';
 import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
-import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { type Account } from '@suite-common/wallet-types';
 import { type SolanaStakingAccount } from '@trezor/blockchain-link-types';
 import { BigNumber, isArrayMember } from '@trezor/utils';
@@ -11,7 +14,7 @@ import { formatNetworkAmount } from './amountUtils';
 export function isSupportedSolStakingNetworkSymbol(
     symbol: NetworkSymbol,
 ): symbol is SupportedSolanaNetworkSymbols {
-    return isArrayMember(symbol, ['sol', 'dsol']);
+    return isArrayMember(symbol, supportedSolanaNetworkSymbols);
 }
 
 export const getSolanaStakingSymbols = (networkSymbols: NetworkSymbol[]) =>

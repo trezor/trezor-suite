@@ -1,5 +1,6 @@
+import { SOLANA_EPOCH_DAYS } from '@connect-coins/solana/constants';
 import { type NetworkType } from '@suite-common/wallet-config';
-import { SOLANA_EPOCH_DAYS, UNSTAKING_ETH_PERIOD } from '@suite-common/wallet-constants';
+import { UNSTAKING_ETH_PERIOD } from '@suite-common/wallet-constants';
 
 type GetUnstakingPeriodInDaysFixture = {
     description: string;
