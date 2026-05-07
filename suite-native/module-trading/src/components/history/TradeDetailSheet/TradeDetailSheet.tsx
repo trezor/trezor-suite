@@ -9,6 +9,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { TradeDetailFooter } from './TradeDetailFooter';
 import { TradeDetailHeader } from './TradeDetailHeader';
 import { TradeDetailInfo } from './TradeDetailInfo';
+import { TradeDetailProviderCard } from './TradeDetailProviderCard';
 import { TradeDetailTransactionInfo } from './TradeDetailTransactionInfo';
 import { getTradeTitle } from '../../../utils/general/utils';
 import { Footer } from '../../general/Footer';
@@ -58,6 +59,7 @@ export const TradeDetailSheet = memo(({ orderId, isVisible, onDismiss }: TradeDe
             isCloseDisplayed
         >
             <TradeDetailHeader orderId={orderId} onOpenedBrowser={onOpenedBrowser} />
+            <TradeDetailProviderCard orderId={orderId} />
             <TradeDetailTransactionInfo orderId={orderId} />
             <TradeDetailInfo orderId={orderId} />
             <TradeDetailFooter orderId={orderId} />
