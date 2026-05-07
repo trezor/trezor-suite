@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
-import { Page, test as base } from '@playwright/test';
+import { ElectronApplication, Page, test as base } from '@playwright/test';
 
 import { TestAnnotationType } from '@trezor/e2e-utils';
 import { SetupEmu, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
@@ -26,6 +26,7 @@ type SuiteBaseFixture = {
     device: DeviceFixture;
     url: string;
     trezorUserEnv: TrezorUserEnv;
+    electronApp: ElectronApplication | undefined;
     page: Page;
     exceptionLogger: void;
     coverageMapCollector: void;
@@ -145,12 +146,21 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
         await use(getUrl(testInfo, target));
     },
 
-    page: async ({ target, locale, colorScheme, context, electronConf }, use, testInfo) => {
+    electronApp: async ({ target, locale, colorScheme, electronConf }, use, testInfo) => {
         if (isDesktopProject(target)) {
             const suite = await electronSetup(testInfo, locale, colorScheme, electronConf);
-            enhancePage(suite.window);
-            await use(suite.window);
+            await use(suite.electronApp);
             await electronTeardown(suite, testInfo, electronConf);
+        } else {
+            await use(undefined);
+        }
+    },
+
+    page: async ({ target, context, electronApp }, use) => {
+        if (isDesktopProject(target)) {
+            const window = await electronApp!.firstWindow();
+            enhancePage(window);
+            await use(window);
         } else {
             const page = await webSetup(context);
             enhancePage(page);
