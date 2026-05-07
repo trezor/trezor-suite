@@ -1783,12 +1783,12 @@ export const messages = {
                 tokens: 'Tokens{count, plural, =0 {} other { #}}',
                 defi: 'DeFi{count, plural, =0 {} other { #}}',
                 hidden: 'Hidden',
+                inactive: 'Inactive',
             },
             hiddenTokensSection: {
                 title: 'Unrecognized tokens',
                 warning: "We don't recognize this token. It may be unsafe—proceed with caution.",
-                emptyTitle: 'No unrecognized tokens',
-                emptySubtitle: 'All your tokens are recognized.',
+                emptyTitle: 'No hidden tokens',
             },
         },
         accountSettingsScreen: {

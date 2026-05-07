@@ -9,19 +9,14 @@ import {
 import { ActivationFeeScreen } from '../screens/ActivationFeeScreen';
 import { DeactivationFeeScreen } from '../screens/DeactivationFeeScreen';
 import { ManualTokenInputScreen } from '../screens/ManualTokenInputScreen';
-import { TokenSelectionScreen } from '../screens/TokenSelectionScreen';
 
 const StellarManageTokenStack = createNativeStackNavigator<StellarManageTokenStackParamList>();
 
 export const StellarManageTokenStackNavigator = () => (
     <StellarManageTokenStack.Navigator
-        initialRouteName={StellarManageTokenStackRoutes.TokenSelection}
+        initialRouteName={StellarManageTokenStackRoutes.ManualTokenInput}
         screenOptions={stackNavigationOptionsConfig}
     >
-        <StellarManageTokenStack.Screen
-            name={StellarManageTokenStackRoutes.TokenSelection}
-            component={TokenSelectionScreen}
-        />
         <StellarManageTokenStack.Screen
             name={StellarManageTokenStackRoutes.ManualTokenInput}
             component={ManualTokenInputScreen}

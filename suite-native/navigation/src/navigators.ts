@@ -510,9 +510,6 @@ export type TradingStackParamList = {
 };
 
 export type StellarManageTokenStackParamList = {
-    [StellarManageTokenStackRoutes.TokenSelection]: {
-        accountKey: AccountKey;
-    };
     [StellarManageTokenStackRoutes.ManualTokenInput]: {
         accountKey: AccountKey;
     };

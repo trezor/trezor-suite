@@ -293,7 +293,6 @@ export enum TransactionDetailStackRoutes {
 }
 
 export enum StellarManageTokenStackRoutes {
-    TokenSelection = 'TokenSelection',
     ManualTokenInput = 'ManualTokenInput',
     ActivationFee = 'ActivationFee',
     DeactivationFee = 'DeactivationFee',

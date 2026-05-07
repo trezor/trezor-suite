@@ -35,18 +35,15 @@ export const HiddenTokensTab = ({ accountKey }: HiddenTokensTabProps) => {
 
     if (hiddenTokens.length === 0) {
         return (
-            <VStack spacing="sp24" marginTop="sp24">
+            <Card>
                 <PictogramTitleHeader
                     variant="info"
-                    icon="eyeSlash"
+                    icon="coins"
                     title={
                         <Translation id="moduleAccountManagement.accountAssetsScreen.hiddenTokensSection.emptyTitle" />
                     }
-                    subtitle={
-                        <Translation id="moduleAccountManagement.accountAssetsScreen.hiddenTokensSection.emptySubtitle" />
-                    }
                 />
-            </VStack>
+            </Card>
         );
     }
 
