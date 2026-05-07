@@ -80,7 +80,7 @@ const useBackendUrlInput = (symbol: NetworkSymbol, type: BackendOption, currentU
         }
 
         // Check if already exists
-        if (currentUrls.find(url => url === value)) {
+        if (currentUrls.includes(value)) {
             return translationString('TR_CUSTOM_BACKEND_BACKEND_ALREADY_ADDED');
         }
     };

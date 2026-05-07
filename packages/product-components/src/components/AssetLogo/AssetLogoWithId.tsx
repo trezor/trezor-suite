@@ -167,7 +167,7 @@ export const AssetLogoWithId = ({
             address => !failedAddressesCache.has(makeAddressKey(coingeckoIdLogo, address)),
         );
 
-        const hasNative = filtered.some(addr => addr === ZERO_ADDRESS);
+        const hasNative = filtered.includes(ZERO_ADDRESS);
 
         for (const address of filtered) {
             const url1x = getAssetLogoUrl({
