@@ -265,7 +265,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
      */
     private splitSegments(pathname: string) {
         const [baseSegments, paramsSegments] = arrayPartition(
-            pathname.split('/').filter(segment => segment),
+            pathname.split('/').filter(Boolean),
             segment => !segment.includes(':'),
         );
 
@@ -353,14 +353,14 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
      */
     private findBestMatchingRoute = (pathname: string, method = 'GET') => {
         // Split and filter to get only actual path segments (no empty strings from leading/trailing /)
-        const requestSegments = pathname.split('/').filter(s => s);
+        const requestSegments = pathname.split('/').filter(Boolean);
         const routes = this.routes.filter(r => r.method === method || r.method === '*');
 
         let bestMatch: { route: Route; specificity: number } | undefined;
 
         for (const route of routes) {
             // Split and filter to get only actual route segments
-            const routeSegments = route.pathname.split('/').filter(s => s);
+            const routeSegments = route.pathname.split('/').filter(Boolean);
             const expectedSegmentCount = routeSegments.length + route.params.length;
 
             // Request must have exactly the number of segments expected by this route
@@ -470,10 +470,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
             return;
         }
 
-        const paramsSegments = pathname
-            .replace(route.pathname, '')
-            .split('/')
-            .filter(segment => segment);
+        const paramsSegments = pathname.replace(route.pathname, '').split('/').filter(Boolean);
 
         let isSegmentInvalid = false;
         const requestWithParams = request as RequestWithParams;

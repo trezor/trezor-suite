@@ -453,7 +453,7 @@ export const getFirstDeviceInstance = (
         .sort(options.sortingFn);
 
 export const getPhysicalDeviceUniqueIds = (devices: TrezorDevice[]) =>
-    [...new Set(devices.map(d => d.id))].filter(id => id) as string[];
+    [...new Set(devices.map(d => d.id))].filter(Boolean) as string[];
 
 export const getPhysicalDeviceCount = (devices: TrezorDevice[]) =>
     getPhysicalDeviceUniqueIds(devices).length;

@@ -120,7 +120,7 @@ export const groupTransactionsByDate = (
     return (
         [...transactions]
             // There could be some undefined/null in array, not sure how it happens. Maybe related to pagination?
-            .filter(transaction => !!transaction)
+            .filter(Boolean)
             .sort(sortByBlockHeight)
             .reduce<GroupedTransactionsByDate>((r, item) => {
                 // pending txs are grouped as 'no-blocktime' only if blockTime is unavailable (otherwise sorted by blockTime)

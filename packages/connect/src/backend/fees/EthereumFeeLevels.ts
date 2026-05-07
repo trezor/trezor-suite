@@ -70,7 +70,7 @@ export class EthereumFeeLevels extends MiscFeeLevels {
                     };
                 });
 
-                this.levels = levels.filter(level => level) as FeeLevel[];
+                this.levels = levels.filter(Boolean) as FeeLevel[];
             } else {
                 this.levels[0] = {
                     ...this.levels[0],

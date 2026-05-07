@@ -295,7 +295,7 @@ export const saveAccountHistoricRates =
     (_dispatch: Dispatch, getState: GetState) => {
         if (!db.isAccessible()) return Promise.resolve();
         const allTxs = getState().wallet.transactions.transactions;
-        const accTxs = (allTxs[accountKey] || []).filter(tx => !!tx);
+        const accTxs = (allTxs[accountKey] || []).filter(Boolean);
 
         const accHistoricRates = selectHistoricRatesByTransactions(historicRates, accTxs);
 

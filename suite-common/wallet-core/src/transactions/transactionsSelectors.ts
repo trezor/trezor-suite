@@ -83,7 +83,7 @@ export const selectAccountTransactionsWithNulls = (
 
 export const selectAccountTransactions = createMemoizedSelector(
     [selectAccountTransactionsWithNulls],
-    transactions => returnStableArrayIfEmpty(transactions.filter(t => !!t)),
+    transactions => returnStableArrayIfEmpty(transactions.filter(Boolean)),
 );
 
 export const selectPendingAccountAddresses = createMemoizedSelector(

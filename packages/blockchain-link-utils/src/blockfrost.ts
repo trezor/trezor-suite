@@ -209,7 +209,7 @@ export const filterTokenTransfers = (
             });
     });
 
-    return transfers.filter(t => !!t) as TokenTransfer[];
+    return transfers.filter(Boolean) as TokenTransfer[];
 };
 
 export const transformTransaction = (

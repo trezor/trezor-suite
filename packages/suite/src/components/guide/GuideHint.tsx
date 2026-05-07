@@ -26,7 +26,7 @@ export const GuideHint = ({ children }: BlockquoteHTMLAttributes<HTMLQuoteElemen
         }
 
         return false;
-    })?.filter(child => !!child);
+    })?.filter(Boolean);
     const intent = message?.[0]?.startsWith(WARNING_EMOJI) ? 'warning' : 'brand';
 
     let updatedMessage: string[] | undefined;

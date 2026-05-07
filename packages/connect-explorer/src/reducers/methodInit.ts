@@ -32,7 +32,7 @@ const schemaToFields = (schema: TSchema, name = ''): Field<any>[] => {
             return schemaToFields(field, key).map(field => {
                 const output = {
                     ...field,
-                    name: [key, field.name].filter(v => v).join('.'),
+                    name: [key, field.name].filter(Boolean).join('.'),
                     optional: field.optional || schema[OptionalKind] === 'Optional',
                 };
                 // If the array is optional, set the items to an empty array by default

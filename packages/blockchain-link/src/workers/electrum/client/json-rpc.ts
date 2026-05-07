@@ -104,7 +104,7 @@ export class JsonRpcClient {
     onReceive(chunk: string) {
         const msgs = (this.buffer + chunk).split('\n');
         this.buffer = msgs.pop() || '';
-        msgs.filter(msg => !!msg).forEach(this.onMessage, this);
+        msgs.filter(Boolean).forEach(this.onMessage, this);
     }
 
     onEnd(e: unknown) {

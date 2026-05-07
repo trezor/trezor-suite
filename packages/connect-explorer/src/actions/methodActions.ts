@@ -125,7 +125,7 @@ export const onCodeChange = (value: string) => (dispatch: Dispatch, getState: Ge
         const { fields } = getState().method;
         const parsed = JSON5.parse(value);
         const processField = (field: Field<unknown>) => {
-            const valuePath = [...(field.path || []), ...field.name.split('.')].filter(f => !!f);
+            const valuePath = [...(field.path || []), ...field.name.split('.')].filter(Boolean);
             const value = getDeepValue(parsed, valuePath);
 
             if (field.type === 'array') {
