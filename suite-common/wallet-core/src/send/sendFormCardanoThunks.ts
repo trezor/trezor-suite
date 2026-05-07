@@ -157,7 +157,7 @@ export const signCardanoSendFormTransactionThunk = createThunk<
                 message: 'Account network type is not Cardano.',
             });
 
-        const payment_req = paymentRequests?.[0] ?? undefined;
+        const payment_req = paymentRequests?.[0];
 
         // todo: add chunkify once we allow it for Cardano
         const response = await TrezorConnect.cardanoSignTransaction({

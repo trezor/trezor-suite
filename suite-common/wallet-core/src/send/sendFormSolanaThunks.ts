@@ -387,7 +387,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             });
         }
 
-        const payment_req = paymentRequests?.[0] ?? undefined;
+        const payment_req = paymentRequests?.[0];
 
         const response = await TrezorConnect.solanaSignTransaction({
             device: {
