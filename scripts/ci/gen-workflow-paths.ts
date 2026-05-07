@@ -21,11 +21,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { computePublishClosure } from './connect-publish-graph';
-import { readWorkspaceDeps } from './read-workspace-deps';
+import { computePublishClosure, createReadWorkspaceDeps } from '@trezor/requirements';
 
 const ROOT = path.resolve(import.meta.dirname, '..', '..');
 const WORKFLOWS_DIR = path.join(ROOT, '.github', 'workflows');
+const readWorkspaceDeps = createReadWorkspaceDeps(ROOT);
 
 // Plugins (`connect-plugin-*`) are intentionally excluded — they're released
 // out-of-band from connect proper and live on a different test surface.
