@@ -28,7 +28,7 @@ export const useYieldApprovalReviewNavigation = ({
 
     const cleanupApprovalReview = useCallback(() => {
         dispatch(cancelSignSendFormTransactionThunk());
-        dispatch(handleYieldApproveCancelThunk({ flowType: 'supply', flowKey }));
+        dispatch(handleYieldApproveCancelThunk({ flowType: 'deposit', flowKey }));
     }, [dispatch, flowKey]);
 
     useEffect(() => {

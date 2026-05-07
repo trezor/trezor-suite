@@ -250,9 +250,9 @@ export type EvmTransactionPurpose =
     | 'approve'
     | 'revoke'
     | 'unknown'
-    | ''
-    | 'supply'
-    | 'withdraw';
+    | 'deposit'
+    | 'withdraw'
+    | '';
 
 export interface RbfTransactionParamsEthereum {
     type: 'ethereum';

@@ -90,7 +90,7 @@ export const useYieldApprovalReview = ({
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
     const session = useSelector((state: StablecoinYieldRootState) =>
-        selectStablecoinYieldSession(state, 'supply', flowKey),
+        selectStablecoinYieldSession(state, 'deposit', flowKey),
     );
     const { approval } = session;
 
@@ -109,7 +109,7 @@ export const useYieldApprovalReview = ({
     });
 
     useEffect(() => {
-        dispatch(stablecoinYieldActions.initSession({ flowType: 'supply', flowKey }));
+        dispatch(stablecoinYieldActions.initSession({ flowType: 'deposit', flowKey }));
     }, [dispatch, flowKey]);
 
     const handleSubmitApprovalReview = useCallback(async () => {
@@ -203,7 +203,7 @@ export const useYieldApprovalReview = ({
 
         const { txid } = pushResponse.payload.payload;
 
-        await dispatch(handleYieldApproveSuccessTxidThunk({ flowType: 'supply', flowKey, txid }));
+        await dispatch(handleYieldApproveSuccessTxidThunk({ flowType: 'deposit', flowKey, txid }));
         dispatch(formDraftActions.removeDraft({ key: formDraftKey }));
         setIsSendingApproval(false);
 

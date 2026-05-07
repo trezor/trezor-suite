@@ -122,7 +122,7 @@ export const useYieldApprovalFees = ({
                 formDraftKey: approvalFormDraftKey,
             } = composeApprovalFeeParams;
             const approvalContractAddress = getApprovalContractAddress({
-                flowType: 'supply',
+                flowType: 'deposit',
                 flowData: approvalFlowData,
             });
 

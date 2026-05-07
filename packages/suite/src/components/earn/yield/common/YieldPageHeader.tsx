@@ -42,7 +42,7 @@ export const YieldPageHeader = ({ analyticsStep, account, routeParams }: YieldPa
                 from: (() => {
                     switch (analyticsStep) {
                         case 'yield-supply':
-                            return 'supply-form';
+                            return 'deposit-form';
                         case 'yield-withdraw':
                             return 'withdraw-form';
                     }

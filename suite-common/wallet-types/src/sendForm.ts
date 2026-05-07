@@ -95,6 +95,6 @@ export interface FormState {
 }
 
 export type YieldFormMetadata = {
-    type: 'supply' | 'withdraw';
+    type: 'deposit' | 'withdraw';
     vaultName: string;
 };

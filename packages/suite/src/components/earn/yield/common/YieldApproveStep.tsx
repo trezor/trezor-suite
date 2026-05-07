@@ -14,7 +14,7 @@ import { YieldPendingTransaction } from './YieldPendingTransaction';
 import type { YieldApprovalAction } from '../yieldFlowUtils';
 
 const approveStepTranslationMap = {
-    supply: {
+    deposit: {
         amountLabelTranslationId: 'TR_EARN_YIELD_AMOUNT_TO_SUPPLY',
         balanceLabelTranslationId: 'TR_BALANCE',
     },

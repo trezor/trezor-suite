@@ -69,7 +69,7 @@ describe('Message system types', () => {
 
         describe('getEarnYield', () => {
             it.each([
-                ['supply', 'earn.yield.supply'],
+                ['deposit', 'earn.yield.deposit'],
                 ['withdraw', 'earn.yield.withdraw'],
                 ['claim', 'earn.yield.claim'],
             ] as const)('getEarnYield(%s) → %s', (type, expected) => {

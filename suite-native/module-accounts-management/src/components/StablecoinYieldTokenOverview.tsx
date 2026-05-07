@@ -213,7 +213,7 @@ export const StablecoinYieldTokenOverview = ({
                                     intent="brand"
                                     priority="secondary"
                                     size="medium"
-                                    testID="@account-detail/stablecoin-yield/supply-more-button"
+                                    testID="@account-detail/stablecoin-yield/deposit-more-button"
                                 >
                                     <Translation id="moduleAccounts.accountDetail.stablecoinYield.supplyMore" />
                                 </Button>

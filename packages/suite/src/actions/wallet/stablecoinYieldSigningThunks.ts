@@ -417,7 +417,7 @@ export const submitYieldActionThunk = createThunk(
             }
 
             const actionTransaction =
-                flowType === 'supply'
+                flowType === 'deposit'
                     ? getYieldSupplyTransaction(transactions)
                     : getYieldWithdrawTransaction(transactions);
 
@@ -478,7 +478,7 @@ export const submitYieldActionThunk = createThunk(
 
             dispatch(
                 notificationsActions.addToast({
-                    type: flowType === 'supply' ? 'tx-yield-supply' : 'tx-yield-withdraw',
+                    type: flowType === 'deposit' ? 'tx-yield-supply' : 'tx-yield-withdraw',
                     descriptor: flowData.account.descriptor,
                     symbol: flowData.account.symbol,
                     txid: result.txid,
@@ -486,7 +486,7 @@ export const submitYieldActionThunk = createThunk(
             );
 
             const receiptAmount =
-                flowType === 'supply'
+                flowType === 'deposit'
                     ? (getWithdrawRequestAmount({
                           networkSymbol: flowData.account.symbol,
                           amount,

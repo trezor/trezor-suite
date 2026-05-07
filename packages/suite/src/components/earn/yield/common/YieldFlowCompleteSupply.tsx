@@ -25,7 +25,7 @@ export const YieldFlowCompleteSupply = ({
     networkSymbol,
 }: YieldFlowCompleteSupplyProps) => (
     <YieldFlowComplete
-        type="supply"
+        type="deposit"
         heading={<Translation id="TR_EARN_YIELD_SUPPLY_COMPLETE" />}
         description={<Translation id="TR_EARN_YIELD_SUPPLY_COMPLETE_DESCRIPTION" />}
         showFeedback

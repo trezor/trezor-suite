@@ -79,8 +79,8 @@ export const YieldEarnInANutshellModal = ({
             type: events.yieldNavigateEvent.name,
             payload: {
                 action: 'continue',
-                from: 'supply-in-a-nutshell-modal',
-                to: 'supply-morpho-modal',
+                from: 'deposit-in-a-nutshell-modal',
+                to: 'deposit-morpho-modal',
                 networkSymbol: account.symbol,
                 contractAddress: vault?.token.address,
             },
@@ -94,8 +94,8 @@ export const YieldEarnInANutshellModal = ({
             type: events.yieldNavigateEvent.name,
             payload: {
                 action: 'cancel',
-                from: 'supply-in-a-nutshell-modal',
-                to: 'supply-in-a-nutshell-modal',
+                from: 'deposit-in-a-nutshell-modal',
+                to: 'deposit-in-a-nutshell-modal',
                 networkSymbol: account.symbol,
                 contractAddress: vault?.token.address,
             },

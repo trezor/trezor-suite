@@ -12,7 +12,7 @@ import { YieldAmountCard } from './YieldAmountCard';
 import { YieldPendingTransaction } from './YieldPendingTransaction';
 
 const actionStepTranslationMap = {
-    supply: {
+    deposit: {
         amountLabelTranslationId: 'TR_EARN_YIELD_AMOUNT_TO_SUPPLY',
         submitTranslationId: 'TR_EARN_YIELD_SUPPLY',
         balanceLabelTranslationId: 'TR_BALANCE',
