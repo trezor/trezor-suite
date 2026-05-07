@@ -2,13 +2,16 @@ import react from '@vitejs/plugin-react';
 import { type Plugin, defineConfig } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
-// Plugin to transform require() for SVG files in icons.ts to ESM-compatible import.meta.url
-const iconsRequirePlugin = (): Plugin => ({
-    name: 'icons-require-plugin',
+// Plugin to transform require() for SVG files to ESM-compatible import.meta.url
+const svgRequirePlugin = (): Plugin => ({
+    name: 'svg-require-plugin',
     enforce: 'pre',
     transform(code, id) {
-        const cleanId = id.split('?')[0];
-        if (!cleanId.replace(/\\/g, '/').includes('suite-common/icons/src/icons.ts')) {
+        const cleanId = id.split('?')[0].replace(/\\/g, '/');
+        if (
+            !cleanId.includes('suite-common/icons/src/icons.ts') &&
+            !cleanId.includes('suite-common/illustrations/src/illustrations.ts')
+        ) {
             return null;
         }
 
@@ -28,7 +31,7 @@ const iconsRequirePlugin = (): Plugin => ({
 export default defineConfig({
     base: process.env.BASE_PATH ?? '/',
     plugins: [
-        iconsRequirePlugin(),
+        svgRequirePlugin(),
         react(),
         nodePolyfills({
             globals: {
