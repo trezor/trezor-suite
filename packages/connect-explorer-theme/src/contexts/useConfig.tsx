@@ -1,11 +1,24 @@
 import { createContext, useContext } from 'react';
 
 import type { FrontMatter, PageOpts } from 'nextra';
+import { type normalizePages } from 'nextra/normalize-pages';
 
-import type { DocsThemeConfig } from '../schema';
-export type Config<FrontMatterType = FrontMatter> = DocsThemeConfig &
-    Pick<PageOpts<FrontMatterType>, 'flexsearch' | 'title' | 'frontMatter'>;
-export const ConfigContext = createContext<Config>({} as Config);
+export type Config<FrontMatterType = FrontMatter> = Pick<
+    PageOpts<FrontMatterType>,
+    'title' | 'frontMatter' | 'filePath' | 'timestamp'
+> & {
+    hideSidebar: boolean;
+    normalizePagesResult: ReturnType<typeof normalizePages>;
+};
+
+export const ConfigContext = createContext<Config>({
+    title: '',
+    frontMatter: {},
+    filePath: '',
+    hideSidebar: false,
+    normalizePagesResult: {} as ReturnType<typeof normalizePages>,
+});
+
 export function useConfig<FrontMatterType = FrontMatter>() {
-    return useContext<Config<FrontMatterType>>(ConfigContext);
+    return useContext(ConfigContext) as Config<FrontMatterType>;
 }

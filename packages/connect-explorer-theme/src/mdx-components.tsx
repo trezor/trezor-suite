@@ -3,16 +3,21 @@ import type { ComponentProps, HTMLProps, PropsWithChildren, ReactElement, ReactN
 import { Children, cloneElement, useEffect, useRef, useState } from 'react';
 
 import cn from 'clsx';
+import type { Heading } from 'nextra';
 import { Code, Pre, Table, Td, Th, Tr } from 'nextra/components';
-import type { Components } from 'nextra/mdx';
+import { useMounted } from 'nextra/hooks';
+import type { MDXComponents } from 'nextra/mdx';
 
 import { Card } from '@trezor/components';
 
-import { Anchor, Collapse } from './components';
+import { Anchor, Breadcrumb, Collapse, NavLinks, Sidebar, SkipNavContent } from './components';
 import type { AnchorProps } from './components/anchor';
 import { useIntersectionObserver, useSetActiveAnchor, useSlugs } from './contexts/active-anchor';
 import { DetailsProvider, useDetails } from './contexts/details';
+import { useThemeConfig } from './contexts/theme-config';
+import { useConfig } from './contexts/useConfig';
 import type { DocsThemeConfig } from './schema';
+import { renderComponent } from './utils/render';
 
 // Anchor links
 function HeadingLink({
@@ -56,15 +61,15 @@ function HeadingLink({
             className={
                 // can be added by footnotes
                 className === 'sr-only'
-                    ? 'nx-sr-only'
+                    ? '_sr-only'
                     : cn(
-                          'nx-font-semibold nx-tracking-tight nx-text-slate-900 dark:nx-text-slate-100 first:nx-mt-0 nx-mb-[-4]',
+                          '_font-semibold _tracking-tight _text-slate-900 dark:_text-slate-100 first:_mt-0 _mb-[-4]',
                           {
-                              h2: 'nx-mt-8 nx-text-3xl',
-                              h3: 'nx-mt-6 nx-text-2xl',
-                              h4: 'nx-mt-6 nx-text-xl',
-                              h5: 'nx-mt-6 nx-text-lg',
-                              h6: 'nx-mt-6 nx-text-base',
+                              h2: '_mt-8 _text-3xl',
+                              h3: '_mt-6 _text-2xl',
+                              h4: '_mt-6 _text-xl',
+                              h5: '_mt-6 _text-lg',
+                              h6: '_mt-6 _text-base',
                           }[Tag],
                       )
             }
@@ -136,7 +141,7 @@ const Details = ({ children, open, ...props }: ComponentProps<'details'>): React
 
     return (
         <details
-            className="nx-my-4 nx-rounded nx-border nx-border-gray-200 nx-bg-white nx-p-2 nx-shadow-sm first:nx-mt-0 dark:nx-border-neutral-800 dark:nx-bg-neutral-900"
+            className="_my-4 _rounded _border _border-gray-200 _bg-white _p-2 _shadow-sm first:_mt-0 dark:_border-neutral-800 dark:_bg-neutral-900"
             {...props}
             open={delayedOpenState}
             {...(openState && { 'data-expanded': true })}
@@ -153,9 +158,9 @@ const Summary = (props: ComponentProps<'summary'>): ReactElement => {
     return (
         <summary
             className={cn(
-                'nx-flex nx-items-center nx-cursor-pointer nx-list-none nx-p-1 nx-transition-colors hover:nx-bg-gray-100 dark:hover:nx-bg-neutral-800',
-                "before:nx-mr-1 before:nx-inline-block before:nx-transition-transform before:nx-content-[''] dark:before:nx-invert before:nx-shrink-0",
-                'rtl:before:nx-rotate-180 [[data-expanded]>&]:before:nx-rotate-90',
+                '_flex _items-center _cursor-pointer _list-none _p-1 _transition-colors hover:_bg-gray-100 dark:hover:_bg-neutral-800',
+                "before:_mr-1 before:_inline-block before:_transition-transform before:_content-[''] dark:before:_invert before:_shrink-0",
+                'rtl:before:_rotate-180 [[data-expanded]>&]:before:_rotate-90',
             )}
             {...props}
             onClick={e => {
@@ -173,12 +178,99 @@ export const Link = ({ href = '', className, ...props }: AnchorProps) => (
         href={href}
         newWindow={EXTERNAL_HREF_REGEX.test(href)}
         className={cn(
-            'nx-text-primary-600 nx-underline nx-decoration-from-font [text-underline-position:from-font]',
+            '_text-primary-600 _underline _decoration-from-font [text-underline-position:from-font]',
             className,
         )}
         {...props}
     />
 );
+
+const classes = {
+    toc: cn('nextra-toc _order-last _hidden _w-64 _shrink-0 xl:_block print:_hidden'),
+    main: cn('_w-full _break-words'),
+};
+
+interface BodyProps {
+    themeContext: any;
+    frontMatter: any;
+    children: ReactNode;
+}
+
+function Body({ themeContext, children }: BodyProps): ReactElement {
+    const config = useConfig();
+    const themeConfig = useThemeConfig();
+    const mounted = useMounted();
+
+    const { activeType, activeIndex, activePath, flatDocsDirectories } =
+        config.normalizePagesResult;
+
+    const breadcrumb =
+        activeType !== 'page' && themeContext.breadcrumb ? (
+            <Breadcrumb activePath={activePath} />
+        ) : null;
+
+    const navigation =
+        activeType !== 'page' && themeContext.pagination ? (
+            <NavLinks flatDirectories={flatDocsDirectories} currentIndex={activeIndex} />
+        ) : null;
+
+    if (themeContext.layout === 'raw') {
+        return <div className={classes.main}>{children}</div>;
+    }
+
+    const date =
+        themeContext.timestamp && themeConfig.gitTimestamp && config.timestamp
+            ? new Date(config.timestamp)
+            : null;
+
+    const gitTimestampEl =
+        // Because a user's time zone may be different from the server page
+        mounted && date ? (
+            <div className="_mt-12 _mb-8 _block _text-xs _text-gray-500 ltr:_text-right rtl:_text-left dark:_text-gray-400">
+                {renderComponent(themeConfig.gitTimestamp, { timestamp: date })}
+            </div>
+        ) : (
+            <div className="_mt-16" />
+        );
+
+    const content = (
+        <>
+            {children}
+            {gitTimestampEl}
+            {navigation}
+        </>
+    );
+
+    const body = themeConfig.main?.({ children: content }) || content;
+
+    if (themeContext.layout === 'full') {
+        return (
+            <article
+                className={cn(
+                    classes.main,
+                    'nextra-content _min-h-[calc(100vh-var(--nextra-navbar-height))] _pl-[max(env(safe-area-inset-left),1.5rem)] _pr-[max(env(safe-area-inset-right),1.5rem)]',
+                )}
+            >
+                {body as ReactNode}
+            </article>
+        );
+    }
+
+    return (
+        <article
+            className={cn(
+                classes.main,
+                'nextra-content _flex _min-h-[calc(100vh-var(--nextra-navbar-height))] _min-w-0 _justify-center _pb-8 _pr-[calc(env(safe-area-inset-right)-1.5rem)]',
+                themeContext.typesetting === 'article' && 'nextra-body-typesetting-article',
+            )}
+        >
+            <main className="_w-full _min-w-0 _max-w-6xl _px-6 _pt-4 md:_px-12">
+                {breadcrumb}
+                {body as ReactNode}
+            </main>
+        </article>
+    );
+}
 
 export const getComponents = ({
     frontMatter,
@@ -188,10 +280,66 @@ export const getComponents = ({
     frontMatter: any;
     isRawLayout?: boolean;
     components?: DocsThemeConfig['components'];
-}): Components => {
+}): MDXComponents => {
     const context = { index: 0 };
 
     return {
+        wrapper: function NextraWrapper({
+            toc,
+            children,
+        }: {
+            toc: Heading[];
+            children: ReactNode;
+        }) {
+            const config = useConfig();
+            const themeConfig = useThemeConfig();
+            const {
+                activeType,
+                activeThemeContext: themeContext,
+                docsDirectories,
+                directories,
+            } = config.normalizePagesResult;
+
+            const tocEl =
+                activeType === 'page' || !themeContext.toc || themeContext.layout !== 'default' ? (
+                    themeContext.layout !== 'full' &&
+                    themeContext.layout !== 'raw' && (
+                        <nav className={classes.toc} aria-label="table of contents" />
+                    )
+                ) : (
+                    <nav className={cn(classes.toc, '_px-4')} aria-label="table of contents">
+                        {renderComponent(themeConfig.toc.component, {
+                            toc: themeConfig.toc.float ? toc : [],
+                            filePath: config.filePath,
+                        })}
+                    </nav>
+                );
+
+            return (
+                <div
+                    className={cn(
+                        '_mx-auto _flex',
+                        themeContext.layout !== 'raw' && '_max-w-[90rem]',
+                    )}
+                >
+                    <Sidebar
+                        docsDirectories={docsDirectories}
+                        fullDirectories={directories}
+                        toc={toc}
+                        asPopover={config.hideSidebar}
+                        includePlaceholder={themeContext.layout === 'default'}
+                    />
+                    {tocEl}
+                    <SkipNavContent />
+                    <Body
+                        frontMatter={frontMatter}
+                        themeContext={{ ...themeContext, ...frontMatter }}
+                    >
+                        {children}
+                    </Body>
+                </div>
+            );
+        },
         section: props => {
             const maxRank = 2;
             if (
@@ -227,7 +375,7 @@ export const getComponents = ({
         h1: props => (
             // eslint-disable-next-line jsx-a11y/heading-has-content
             <h1
-                className="nx-mt-2 nx-mb-2 nx-text-4xl nx-font-bold nx-tracking-tight nx-text-slate-900 dark:nx-text-slate-100"
+                className="_mt-2 _mb-2 _text-4xl _font-bold _tracking-tight _text-slate-900 dark:_text-slate-100"
                 {...props}
             />
         ),
@@ -236,42 +384,37 @@ export const getComponents = ({
         h4: props => <HeadingLink tag="h4" context={context} {...props} />,
         h5: props => <HeadingLink tag="h5" context={context} {...props} />,
         h6: props => <HeadingLink tag="h6" context={context} {...props} />,
-        ul: props => (
-            <ul className="nx-mt-6 nx-list-disc first:nx-mt-0 ltr:nx-ml-6 rtl:nx-mr-6" {...props} />
-        ),
+        ul: props => <ul className="_mt-6 _list-disc first:_mt-0 ltr:_ml-6 rtl:_mr-6" {...props} />,
         ol: props => (
-            <ol
-                className="nx-mt-6 nx-list-decimal first:nx-mt-0 ltr:nx-ml-6 rtl:nx-mr-6"
-                {...props}
-            />
+            <ol className="_mt-6 _list-decimal first:_mt-0 ltr:_ml-6 rtl:_mr-6" {...props} />
         ),
-        li: props => <li className="nx-my-2" {...props} />,
+        li: props => <li className="_my-2" {...props} />,
         blockquote: props => (
             <blockquote
                 className={cn(
-                    'nx-mt-6 nx-border-gray-300 nx-italic nx-text-gray-700 dark:nx-border-gray-700 dark:nx-text-gray-400',
-                    'first:nx-mt-0 ltr:nx-border-l-2 ltr:nx-pl-6 rtl:nx-border-r-2 rtl:nx-pr-6',
+                    '_mt-6 _border-gray-300 _italic _text-gray-700 dark:_border-gray-700 dark:_text-gray-400',
+                    'first:_mt-0 ltr:_border-l-2 ltr:_pl-6 rtl:_border-r-2 rtl:_pr-6',
                 )}
                 {...props}
             />
         ),
         hr: props => (
             <hr
-                className="nx-my-8 nx-border-neutral-200/70 contrast-more:nx-border-neutral-400 dark:nx-border-primary-100/10 contrast-more:dark:nx-border-neutral-400"
+                className="_my-8 _border-neutral-200/70 contrast-more:_border-neutral-400 dark:_border-primary-100/10 contrast-more:dark:_border-neutral-400"
                 {...props}
             />
         ),
         a: Link,
         table: props => (
-            <Table className={cn('nextra-scrollbar nx-mt-6 nx-p-0 first:nx-mt-0')} {...props} />
+            <Table className={cn('nextra-scrollbar _mt-6 _p-0 first:_mt-0')} {...props} />
         ),
-        p: props => <p className="nx-mt-4 nx-leading-7 first:nx-mt-0" {...props} />,
+        p: props => <p className="_mt-4 _leading-7 first:_mt-0" {...props} />,
         tr: Tr,
         th: Th,
         td: Td,
         details: Details,
         summary: Summary,
-        pre: props => <Pre className={cn('nx-bg-neutral-500/5')} {...props} />,
+        pre: props => <Pre {...props} />,
         code: Code,
         ...components,
     };

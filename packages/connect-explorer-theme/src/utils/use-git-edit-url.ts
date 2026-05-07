@@ -1,10 +1,10 @@
 import gitUrlParse from 'git-url-parse';
 
-import { useConfig } from '../contexts/useConfig';
+import { useThemeConfig } from '../contexts/theme-config';
 
 export function useGitEditUrl(filePath = ''): string {
-    const config = useConfig();
-    const repo = gitUrlParse(config.docsRepositoryBase || '');
+    const themeConfig = useThemeConfig();
+    const repo = gitUrlParse(themeConfig.docsRepositoryBase || '');
 
     if (!repo) throw new Error('Invalid `docsRepositoryBase` URL!');
 

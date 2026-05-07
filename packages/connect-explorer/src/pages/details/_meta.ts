@@ -1,0 +1,6 @@
+export default {
+    commonParams: 'Common parameters',
+    events: 'Events',
+    path: 'Path',
+    protobuf: 'Protobuf schema',
+};

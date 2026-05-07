@@ -1,106 +1,55 @@
 import type { ReactElement, ReactNode } from 'react';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import type { PageMapItem, PageOpts } from 'nextra';
-import { metaSchema } from 'nextra/normalize-pages';
-import { ZodError } from 'zod';
+import { useRouter } from 'next/router';
+import type { PageOpts } from 'nextra';
+import { useFSRoute } from 'nextra/hooks';
 
-import type { DocsThemeConfig } from '../schema';
-import { themeSchema } from '../schema';
-import { DEEP_OBJECT_KEYS, DEFAULT_THEME } from '../theme';
 import { MenuProvider } from './menu';
 import { type Config, ConfigContext } from './useConfig';
+import { patchedNormalizePages } from '../utils/patch-normalize-pages';
 
-let theme: DocsThemeConfig;
-let isValidated = false;
-
-function normalizeZodMessage(error: unknown): string {
-    if (!(error instanceof ZodError)) {
-        return String(error);
-    }
-
-    return error.issues
-        .flatMap(issue => {
-            const themePath = issue.path.length > 0 && `Path: "${issue.path.join('.')}"`;
-            const nestedErrors =
-                issue.code === 'invalid_union'
-                    ? issue.errors.flatMap(errs =>
-                          errs.map(e =>
-                              [e.message, e.path.length > 0 && `Path: "${e.path.join('.')}"`]
-                                  .filter(Boolean)
-                                  .join('. '),
-                          ),
-                      )
-                    : [];
-
-            return [[issue.message, themePath].filter(Boolean).join('. '), ...nestedErrors];
-        })
-        .join('\n');
-}
-
-function validateMeta(pageMap: PageMapItem[]) {
-    for (const pageMapItem of pageMap) {
-        if (pageMapItem.kind === 'Meta') {
-            for (const [key, data] of Object.entries(pageMapItem.data)) {
-                try {
-                    metaSchema.parse(data);
-                } catch (error) {
-                    console.error(
-                        `[nextra-theme-docs] Error validating _meta.json file for "${key}" property.\n\n${normalizeZodMessage(
-                            error,
-                        )}`,
-                    );
-                }
-            }
-        } else if (pageMapItem.kind === 'Folder') {
-            validateMeta(pageMapItem.children);
-        }
-    }
-}
-
-export const ConfigProvider = ({
+export function ConfigProvider({
     children,
-    value: { themeConfig, pageOpts },
+    value: pageOpts,
 }: {
     children: ReactNode;
-    value: { themeConfig: DocsThemeConfig; pageOpts: PageOpts };
-}): ReactElement => {
+    value: PageOpts;
+}): ReactElement {
     const [menu, setMenu] = useState(false);
-    // Merge only on first load
-    theme ||= {
-        ...DEFAULT_THEME,
-        ...Object.fromEntries(
-            Object.entries(themeConfig).map(([key, value]) => [
-                key,
-                value && typeof value === 'object' && DEEP_OBJECT_KEYS.includes(key)
-                    ? { ...DEFAULT_THEME[key], ...value }
-                    : value,
-            ]),
-        ),
-    };
-    if (process.env.NODE_ENV !== 'production' && !isValidated) {
-        try {
-            themeSchema.parse(theme);
-        } catch (error) {
-            console.error(
-                `[nextra-theme-docs] Error validating theme config file.\n\n${normalizeZodMessage(
-                    error,
-                )}`,
-            );
-        }
-        validateMeta(pageOpts.pageMap);
-        isValidated = true;
-    }
+    const { asPath } = useRouter();
+    const fsPath = useFSRoute();
+
+    const normalizePagesResult = useMemo(
+        () => patchedNormalizePages({ list: pageOpts.pageMap, route: fsPath }),
+        [pageOpts.pageMap, fsPath],
+    );
+
+    const { activeType, activeThemeContext: themeContext } = normalizePagesResult;
+
     const extendedConfig: Config = {
-        ...theme,
-        flexsearch: pageOpts.flexsearch,
         title: pageOpts.title,
         frontMatter: pageOpts.frontMatter,
+        filePath: pageOpts.filePath,
+        timestamp: pageOpts.timestamp,
+        hideSidebar:
+            !themeContext.sidebar || themeContext.layout === 'raw' || activeType === 'page',
+        normalizePagesResult,
     };
+
+    useEffect(() => {
+        setMenu(false);
+    }, [asPath]);
+
+    useEffect(() => {
+        document.body.classList.toggle('max-md:_overflow-hidden', menu);
+    }, [menu]);
+
+    const menuValue = useMemo(() => ({ menu, setMenu }), [menu]);
 
     return (
         <ConfigContext.Provider value={extendedConfig}>
-            <MenuProvider value={{ menu, setMenu }}>{children}</MenuProvider>
+            <MenuProvider value={menuValue}>{children}</MenuProvider>
         </ConfigContext.Provider>
     );
-};
+}
