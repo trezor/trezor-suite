@@ -20,14 +20,12 @@ export const interceptTlsConnect: Interceptor = ({ context, validateRequest }) =
             optionsOrPort.rejectUnauthorized =
                 optionsOrPort.rejectUnauthorized ??
                 !isWhitelistedHost(optionsOrPort.host, context.notRequiredTorDomainsList);
+        } else if (typeof optionsOrHost === 'object') {
+            // case: connect(port: number, options?: ConnectionOptions, secureConnectListener?: () => void): TLSSocket;
+            hostname = optionsOrHost.host ?? '';
         } else {
-            if (typeof optionsOrHost === 'object') {
-                // case: connect(port: number, options?: ConnectionOptions, secureConnectListener?: () => void): TLSSocket;
-                hostname = optionsOrHost.host ?? '';
-            } else {
-                // case: connect(port: number, host?: string, options?: ConnectionOptions, secureConnectListener?: () => void): TLSSocket;
-                hostname = typeof optionsOrHost === 'string' ? optionsOrHost : 'unknown';
-            }
+            // case: connect(port: number, host?: string, options?: ConnectionOptions, secureConnectListener?: () => void): TLSSocket;
+            hostname = typeof optionsOrHost === 'string' ? optionsOrHost : 'unknown';
         }
 
         context.handler({

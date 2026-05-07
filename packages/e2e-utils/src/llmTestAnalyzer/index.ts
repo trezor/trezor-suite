@@ -404,32 +404,27 @@ const main = async () => {
         log(`Cache written: ${cacheFile}`);
         reportUsageTotals(apiKey);
         if (failed > 0) process.exit(1);
+    } else if (testFiles.length === 1) {
+        const analysis = await analyzeTestFile(testFiles[0], apiKey);
+        output(JSON.stringify(analysis, null, 2));
     } else {
-        if (testFiles.length === 1) {
-            const analysis = await analyzeTestFile(testFiles[0], apiKey);
-            output(JSON.stringify(analysis, null, 2));
-        } else {
-            const results: Record<string, TestAnalysis> = {};
-            const gitRoot = getGitRoot(path.dirname(testFiles[0]));
-            let failed = 0;
-            for (const testFile of testFiles) {
-                try {
-                    results[path.relative(gitRoot, testFile)] = await analyzeTestFile(
-                        testFile,
-                        apiKey,
-                    );
-                } catch (err) {
-                    error(
-                        `Failed to analyze ${testFile}:`,
-                        err instanceof Error ? err.message : err,
-                    );
-                    failed++;
-                }
+        const results: Record<string, TestAnalysis> = {};
+        const gitRoot = getGitRoot(path.dirname(testFiles[0]));
+        let failed = 0;
+        for (const testFile of testFiles) {
+            try {
+                results[path.relative(gitRoot, testFile)] = await analyzeTestFile(
+                    testFile,
+                    apiKey,
+                );
+            } catch (err) {
+                error(`Failed to analyze ${testFile}:`, err instanceof Error ? err.message : err);
+                failed++;
             }
-            output(JSON.stringify(results, null, 2));
-            reportUsageTotals(apiKey);
-            if (failed > 0) process.exit(1);
         }
+        output(JSON.stringify(results, null, 2));
+        reportUsageTotals(apiKey);
+        if (failed > 0) process.exit(1);
     }
 };
 

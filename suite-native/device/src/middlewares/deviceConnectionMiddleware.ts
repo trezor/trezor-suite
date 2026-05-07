@@ -199,20 +199,18 @@ deviceConnectionMiddleware.startListening({
                 screen: DeviceOnboardingStackRoutes.DeviceDisconnected,
                 params: { wasDeviceConnectedViaBluetooth },
             });
-        } else {
-            if (!checkIsHomeStackFocused()) {
-                navigationContainerRef.reset({
-                    index: 0,
-                    routes: [
-                        {
-                            name: RootStackRoutes.AppTabs,
-                            params: {
-                                screen: HomeStackRoutes.Home,
-                            },
+        } else if (!checkIsHomeStackFocused()) {
+            navigationContainerRef.reset({
+                index: 0,
+                routes: [
+                    {
+                        name: RootStackRoutes.AppTabs,
+                        params: {
+                            screen: HomeStackRoutes.Home,
                         },
-                    ],
-                });
-            }
+                    },
+                ],
+            });
         }
     },
 });

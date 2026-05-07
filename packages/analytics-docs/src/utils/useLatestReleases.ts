@@ -48,8 +48,8 @@ export const useLatestReleases = (): {
                     const version = parseVersionFromTag(tag);
                     if (tag.includes('@mobile')) {
                         if (latestMobile === null) latestMobile = version;
-                    } else {
-                        if (latestDesktop === null) latestDesktop = version;
+                    } else if (latestDesktop === null) {
+                        latestDesktop = version;
                     }
                     if (latestDesktop !== null && latestMobile !== null) break;
                 }

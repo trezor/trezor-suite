@@ -54,10 +54,8 @@ export const useWipeDevice = () => {
             navigation.navigate(DeviceSettingsStackRoutes.WipeDeviceStack, {
                 screen: WipeDeviceStackRoutes.WipeDeviceLoadingScreen,
             });
-        } else {
-            if (navigation.canGoBack()) {
-                navigation.goBack();
-            }
+        } else if (navigation.canGoBack()) {
+            navigation.goBack();
         }
     };
 

@@ -64,10 +64,8 @@ const linuxAutoStart = (enabled: boolean) => {
             LINUX_DESKTOP,
         );
         fs.chmodSync(path.join(os.homedir(), LINUX_AUTOSTART_DIR, LINUX_AUTOSTART_FILE), 0o755);
-    } else {
-        if (isAutoStartEnabled()) {
-            fs.unlinkSync(path.join(os.homedir(), LINUX_AUTOSTART_DIR, LINUX_AUTOSTART_FILE));
-        }
+    } else if (isAutoStartEnabled()) {
+        fs.unlinkSync(path.join(os.homedir(), LINUX_AUTOSTART_DIR, LINUX_AUTOSTART_FILE));
     }
 };
 
