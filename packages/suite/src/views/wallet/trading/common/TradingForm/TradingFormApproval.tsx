@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import styled, { type DefaultTheme } from 'styled-components';
 
 import { events } from '@suite/analytics';
@@ -15,6 +13,7 @@ import {
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Banner, Button, Column } from '@trezor/components';
 import { PendingTransactionInfo } from '@trezor/product-components';
+import { useAsyncClickHandler } from '@trezor/react-utils';
 
 import { Address } from 'src/components/suite/Address';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -60,10 +59,13 @@ export const TradingFormApproval = () => {
 
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
-    const [isApproveButtonLoading, setIsApproveButtonLoading] = useState(false);
-    const [isRevokeButtonLoading, setIsRevokeButtonLoading] = useState(false);
-    const [isSwapButtonLoading, setIsSwapButtonLoading] = useState(false);
-    const [isRefreshButtonLoading, setIsRefreshButtonLoading] = useState(false);
+    const { handleClick: handleApproveClick, disabled: isApproveButtonLoading } =
+        useAsyncClickHandler();
+    const { handleClick: handleRevokeClick, disabled: isRevokeButtonLoading } =
+        useAsyncClickHandler();
+    const { handleClick: handleSwapClick, disabled: isSwapButtonLoading } = useAsyncClickHandler();
+    const { handleClick: handleRefreshClick, disabled: isRefreshButtonLoading } =
+        useAsyncClickHandler();
 
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
 
@@ -89,11 +91,9 @@ export const TradingFormApproval = () => {
         });
 
         allowanceState.setApprovalType('APPROVE');
-        setIsApproveButtonLoading(true);
 
         await approveTransaction(selectedQuote);
 
-        setIsApproveButtonLoading(false);
         context.setIsApproval(true);
         allowanceState.openApproveModal();
     };
@@ -113,11 +113,9 @@ export const TradingFormApproval = () => {
         });
 
         allowanceState.setApprovalType('REVOKE');
-        setIsRevokeButtonLoading(true);
 
         await revokeApproval(selectedQuote);
 
-        setIsRevokeButtonLoading(false);
         context.setIsApproval(true);
         allowanceState.openRevokeModal();
     };
@@ -136,14 +134,10 @@ export const TradingFormApproval = () => {
             },
         });
 
-        setIsSwapButtonLoading(true);
-
         const newTrade = await confirmApproval({
             trade: { ...selectedQuote, status: 'CONFIRM', approvalType: undefined },
             receiveAddress: selectedQuote.receiveAddress,
         });
-
-        setIsSwapButtonLoading(false);
 
         if (!newTrade || newTrade.status === 'ERROR') {
             return;
@@ -162,12 +156,8 @@ export const TradingFormApproval = () => {
             },
         });
 
-        setIsRefreshButtonLoading(true);
-
         resetSelectedOffer();
         await refreshQuotes();
-
-        setIsRefreshButtonLoading(false);
     };
 
     const isApproveButtonDisabled =
@@ -212,7 +202,7 @@ export const TradingFormApproval = () => {
                             {!isIncreasingAllowanceSupported ? (
                                 <>
                                     <Button
-                                        onClick={onRevokeClick}
+                                        onClick={() => handleRevokeClick(onRevokeClick)}
                                         intent="brand"
                                         size="large"
                                         width="100%"
@@ -233,7 +223,9 @@ export const TradingFormApproval = () => {
                             ) : (
                                 <>
                                     <Button
-                                        onClick={onApproveTransactionClick}
+                                        onClick={() =>
+                                            handleApproveClick(onApproveTransactionClick)
+                                        }
                                         intent="brand"
                                         size="large"
                                         width="100%"
@@ -256,7 +248,7 @@ export const TradingFormApproval = () => {
                                             isApproveButtonDisabled ||
                                             isApproveButtonLoading
                                                 ? null
-                                                : onRevokeClick()
+                                                : handleRevokeClick(onRevokeClick)
                                         }
                                         $disabled={
                                             isRevokeButtonDisabled || isApproveButtonDisabled
@@ -269,7 +261,7 @@ export const TradingFormApproval = () => {
                         </>
                     ) : (
                         <Button
-                            onClick={onApproveTransactionClick}
+                            onClick={() => handleApproveClick(onApproveTransactionClick)}
                             intent="brand"
                             size="large"
                             width="100%"
@@ -285,7 +277,7 @@ export const TradingFormApproval = () => {
             {approvalStep === 'APPROVED' && (
                 <>
                     <Button
-                        onClick={onProceedToSwapClick}
+                        onClick={() => handleSwapClick(onProceedToSwapClick)}
                         intent="brand"
                         size="large"
                         width="100%"
@@ -302,7 +294,7 @@ export const TradingFormApproval = () => {
                             isSwapButtonDisabled ||
                             isSwapButtonLoading
                                 ? null
-                                : onRevokeClick()
+                                : handleRevokeClick(onRevokeClick)
                         }
                         $disabled={isRevokeButtonDisabled || isSwapButtonDisabled}
                     >
@@ -319,7 +311,7 @@ export const TradingFormApproval = () => {
 
             {(!approvalStep || approvalStep === 'ERROR') && (
                 <Button
-                    onClick={onRefreshClick}
+                    onClick={() => handleRefreshClick(onRefreshClick)}
                     intent="brand"
                     size="large"
                     width="100%"
