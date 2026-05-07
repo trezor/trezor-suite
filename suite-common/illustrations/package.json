@@ -13,7 +13,7 @@
     },
     "devDependencies": {
         "chalk": "^5.6.2",
-        "prettier": "^3.8.1",
+        "prettier": "^3.8.3",
         "svgo": "^4.0.1"
     }
 }

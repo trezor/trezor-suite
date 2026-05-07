@@ -10450,7 +10450,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/utils": "workspace:^"
     orval: "npm:8.8.0"
-    prettier: "npm:^3.8.1"
+    prettier: "npm:^3.8.3"
     zod: "npm:4.3.6"
   languageName: unknown
   linkType: soft
@@ -10477,7 +10477,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     orval: "npm:8.8.0"
-    prettier: "npm:^3.8.1"
+    prettier: "npm:^3.8.3"
     zod: "npm:4.3.6"
   languageName: unknown
   linkType: soft
@@ -10623,7 +10623,7 @@ __metadata:
   dependencies:
     chalk: "npm:^5.6.2"
     fantasticon: "npm:4.1.0"
-    prettier: "npm:^3.8.1"
+    prettier: "npm:^3.8.3"
     sharp: "npm:^0.34.2"
     svgo: "npm:^4.0.1"
   languageName: unknown
@@ -10634,7 +10634,7 @@ __metadata:
   resolution: "@suite-common/illustrations@workspace:suite-common/illustrations"
   dependencies:
     chalk: "npm:^5.6.2"
-    prettier: "npm:^3.8.1"
+    prettier: "npm:^3.8.3"
     svgo: "npm:^4.0.1"
   languageName: unknown
   linkType: soft
@@ -14182,7 +14182,7 @@ __metadata:
     "@trezor/styles-native": "workspace:*"
     expo: "npm:~55.0.3"
     expo-video: "npm:~55.0.10"
-    prettier: "npm:^3.8.1"
+    prettier: "npm:^3.8.3"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
@@ -15799,7 +15799,7 @@ __metadata:
     cross-fetch: "npm:^4.1.0"
     fs-extra: "npm:^11.3.1"
     minimatch: "npm:^10.2.4"
-    prettier: "npm:^3.8.1"
+    prettier: "npm:^3.8.3"
     rollup: "npm:^4.60.1"
     rollup-plugin-dts: "npm:^6.4.1"
     semver: "npm:^7.7.1"
@@ -38615,12 +38615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^3.8.1":
-  version: 3.8.1
-  resolution: "prettier@npm:3.8.1"
+"prettier@npm:^3.8.3":
+  version: 3.8.3
+  resolution: "prettier@npm:3.8.3"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 10/3da1cf8c1ef9bea828aa618553696c312e951f810bee368f6887109b203f18ee869fe88f66e65f9cf60b7cb1f2eae859892c860a300c062ff8ec69c381fc8dbd
+  checksum: 10/4b3b12cbb29e4c96bed936e5d070167552500c18d37676fb3e0caae6199c42860662608e4dc116230698f6e2bb0267ef2548158224c92d40f188d309d72fdd6f
   languageName: node
   linkType: hard
 
@@ -44006,7 +44006,7 @@ __metadata:
     node-gyp: "npm:12.2.0"
     nx: "npm:^22.6.1"
     patch-package: "npm:8.0.1"
-    prettier: "npm:^3.8.1"
+    prettier: "npm:^3.8.3"
     rimraf: "npm:^6.1.2"
     ts-node: "npm:^10.9.2"
     tslib: "npm:^2.6.2"
