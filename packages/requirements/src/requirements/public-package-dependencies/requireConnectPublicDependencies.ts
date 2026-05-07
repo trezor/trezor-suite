@@ -1,8 +1,8 @@
-import { execFileSync } from 'node:child_process';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { join } from 'node:path';
 
 import type { Requirement } from '../Requirement';
+import { listAllWorkspaces, readPackageJson } from '../utils/workspaces';
 
 type PackageJson = {
     readonly name?: string;
@@ -15,10 +15,6 @@ type PackageJson = {
 type WorkspacePackage = {
     readonly name: string;
     readonly packageJson: PackageJson;
-};
-
-type YarnWorkspaceInfo = {
-    readonly location: string;
 };
 
 type Snapshot = {
@@ -42,44 +38,11 @@ const SNAPSHOT_DIR = join(
 
 const readJson = <T>(filePath: string): T => JSON.parse(readFileSync(filePath, 'utf8')) as T;
 
-const readPackageJson = (dirPath: string): PackageJson =>
-    readJson<PackageJson>(join(dirPath, 'package.json'));
-
-const listWorkspaceDirs = (repoRoot: string): ReadonlyArray<string> => {
-    let rawOutput: string;
-
-    try {
-        rawOutput = execFileSync('yarn', ['workspaces', 'list', '--json'], {
-            cwd: repoRoot,
-            encoding: 'utf-8',
-        });
-    } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
-
-        throw new Error(`Failed to list workspaces: ${message}`);
-    }
-
-    const parsedWorkspaces = rawOutput
-        .trim()
-        .split('\n')
-        .filter(Boolean)
-        .map(line => JSON.parse(line) as YarnWorkspaceInfo);
-
-    const workspaceDirs = new Set<string>([repoRoot]);
-
-    for (const workspace of parsedWorkspaces) {
-        workspaceDirs.add(resolve(repoRoot, workspace.location));
-    }
-
-    return [...workspaceDirs];
-};
-
 const collectWorkspacePackages = (repoRoot: string) => {
     const pkgMap = new Map<string, WorkspacePackage>();
-    const workspaceDirs = listWorkspaceDirs(repoRoot);
 
-    for (const dirPath of workspaceDirs) {
-        const packageJson = readPackageJson(dirPath);
+    for (const workspace of listAllWorkspaces(repoRoot)) {
+        const packageJson = readPackageJson<PackageJson>(workspace.dir);
         if (!packageJson.name) continue;
 
         pkgMap.set(packageJson.name, {
