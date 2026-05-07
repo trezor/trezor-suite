@@ -34,7 +34,7 @@ export const TransactionHeading = ({
                     }}
                 />
             }
-            tooltipMaxWidth={250}
+            tooltipMaxWidth={300}
             isActive={isPhishingTransaction}
             hasIcon
         >
