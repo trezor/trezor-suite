@@ -156,7 +156,8 @@ export const config: Config = {
                 T2B1: '0',
                 T3B1: '0',
                 T3T1: '0',
-                T3W1: '2.11.2',
+                // TODO update this, when it is clear which version will support it https://github.com/trezor/trezor-suite/issues/27486
+                T3W1: '0',
             },
         },
         {
