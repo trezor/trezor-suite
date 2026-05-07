@@ -1,5 +1,4 @@
-import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -7,6 +6,7 @@ import { typedObjectKeys } from '@trezor/utils';
 
 import type { AllowedOnlyInRule, ForbiddenDepsConfig } from './forbiddenDepsTypes';
 import type { Requirement } from '../Requirement';
+import { listAllWorkspaces, readPackageJson } from '../utils/workspaces';
 
 const FORBIDDEN_DEPS_CONFIG_FILE = 'forbiddenDeps.config.ts';
 
@@ -33,11 +33,6 @@ type DependencyOccurrence = {
     readonly name: string;
 };
 
-type YarnWorkspaceInfo = {
-    readonly name: string;
-    readonly location: string;
-};
-
 type WorkspaceDirectories = ReadonlyMap<string, string>;
 
 type WorkspaceDirectoryResolver = (props: {
@@ -46,14 +41,6 @@ type WorkspaceDirectoryResolver = (props: {
 }) => string | undefined;
 
 type ForbiddenDepsConfigLoader = (workspaceDir: string) => Promise<ForbiddenDepsConfig | undefined>;
-
-const workspaceDirectoriesCache = new Map<string, WorkspaceDirectories>();
-
-const readPackageJson = (workspaceDir: string): PackageJson => {
-    const packageJsonPath = join(workspaceDir, PACKAGE_JSON_FILE);
-
-    return JSON.parse(readFileSync(packageJsonPath, 'utf-8')) as PackageJson;
-};
 
 const collectDependencyOccurrences = (
     packageJson: PackageJson,
@@ -100,31 +87,8 @@ const loadForbiddenDepsConfig: ForbiddenDepsConfigLoader = async workspaceDir =>
     return configModule.forbiddenDepsConfig ?? configModule.default;
 };
 
-const getWorkspaceDirectoryResolver = (repoRoot: string): WorkspaceDirectories => {
-    const cachedWorkspaceDirectories = workspaceDirectoriesCache.get(repoRoot);
-
-    if (cachedWorkspaceDirectories !== undefined) {
-        return cachedWorkspaceDirectories;
-    }
-
-    const rawOutput = execFileSync('yarn', ['workspaces', 'list', '--json'], {
-        cwd: repoRoot,
-        encoding: 'utf-8',
-    });
-
-    const workspaceDirectories = new Map<string, string>(
-        rawOutput
-            .trim()
-            .split('\n')
-            .filter(Boolean)
-            .map(line => JSON.parse(line) as YarnWorkspaceInfo)
-            .map(workspace => [workspace.name, join(repoRoot, workspace.location)]),
-    );
-
-    workspaceDirectoriesCache.set(repoRoot, workspaceDirectories);
-
-    return workspaceDirectories;
-};
+const getWorkspaceDirectoryResolver = (repoRoot: string): WorkspaceDirectories =>
+    new Map(listAllWorkspaces(repoRoot).map(workspace => [workspace.name, workspace.dir]));
 
 const getWorkspaceDirectoryByName: WorkspaceDirectoryResolver = ({ repoRoot, workspaceName }) =>
     getWorkspaceDirectoryResolver(repoRoot).get(workspaceName);
@@ -240,7 +204,7 @@ export const requireForbiddenDeps: Requirement<'workspace'> = {
         let packageJson: PackageJson;
 
         try {
-            packageJson = readPackageJson(context.workspaceDir);
+            packageJson = readPackageJson<PackageJson>(context.workspaceDir);
         } catch {
             return [
                 `${context.workspaceName}: ${PACKAGE_JSON_FILE} is missing or contains invalid JSON.`,
