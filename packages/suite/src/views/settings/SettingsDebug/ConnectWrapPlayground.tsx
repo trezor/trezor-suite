@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { closeModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -13,7 +13,6 @@ import {
     TextColumn,
 } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
-import { exhaustive } from '@trezor/type-utils';
 
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
 import { PinMatrix } from 'src/components/suite/PinMatrix/PinMatrix';
@@ -21,6 +20,8 @@ import { ConfirmAddressModal } from 'src/components/suite/modals/ReduxModal/Conf
 import { ConfirmActionModal } from 'src/components/suite/modals/ReduxModal/DeviceContextModal/ConfirmActionModal';
 import { PassphraseOnDeviceModal } from 'src/components/suite/modals/ReduxModal/DeviceContextModal/PassphraseOnDeviceModal';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+
+import { useConnect } from './useConnect';
 
 const connect = createConnect({ trezorConnect: TrezorConnect });
 
@@ -36,7 +37,6 @@ const _typeHelper = () => connect(TrezorConnect.getAddress);
 type WrappedGetAddress = ReturnType<typeof _typeHelper>;
 type GetAddressProcess = ReturnType<WrappedGetAddress>;
 type Subprocess = ReturnType<GetAddressProcess['run']> extends AsyncIterable<infer T> ? T : never;
-type AddressResult = Extract<Subprocess, { type: 'complete' }>['result'];
 
 type LogEntry = { type: Subprocess['type']; detail?: string };
 
@@ -57,7 +57,7 @@ const formatDetail = (sub: Subprocess): string | undefined => {
         case 'ui-request_passphrase_on_device':
             return undefined;
         default:
-            return exhaustive(sub, 'Unhandled subprocess in formatDetail');
+            return undefined;
     }
 };
 
@@ -247,81 +247,57 @@ const SubprocessModal = ({ subprocess }: { subprocess: Subprocess }) => {
             return null;
 
         default:
-            return exhaustive(subprocess, 'Unhandled subprocess in SubprocessModal');
+            return null;
     }
 };
+
+// Wrap TrezorConnect.getAddress through a lambda so the property is read at
+// invocation time, not at module-load time. In suite-desktop the renderer's
+// `TrezorConnect` methods are still the dummy stubs from index.renderer.ts at
+// import time; the IPC-proxy override only happens later in MainDesktop.tsx
+// (`Object.keys(TrezorConnect).forEach(...)`). Capturing the method directly
+// would lock in the stub.
+const lazyGetAddress: typeof TrezorConnect.getAddress = ((args: any) =>
+    TrezorConnect.getAddress(args)) as typeof TrezorConnect.getAddress;
+const wrappedGetAddress: WrappedGetAddress = connect(lazyGetAddress);
 
 export const ConnectWrapPlayground = () => {
     const device = useSelector(selectSelectedDevice);
     const devicePath = device?.path;
     const dispatch = useDispatch();
 
-    const [log, setLog] = useState<LogEntry[]>([]);
-    const [running, setRunning] = useState(false);
-    const [callId, setCallId] = useState<string | null>(null);
-    const [subprocess, setSubprocess] = useState<Subprocess | null>(null);
-    const [result, setResult] = useState<AddressResult | null>(null);
-    const [error, setError] = useState<string | null>(null);
+    const { start, cancel, subprocess, callId, running, log, result, error } =
+        useConnect(wrappedGetAddress);
 
-    const procRef = useRef<GetAddressProcess | null>(null);
+    // Mirror confirmation events into suite's redux modal slice so the
+    // global ModalSwitcher can render the real modal (e.g. NoBackupModal).
+    useEffect(() => {
+        if (!subprocess) return;
+        if (subprocess.type === 'ui-request_confirmation') {
+            dispatch({
+                type: UI_REQUEST.REQUEST_CONFIRMATION,
+                payload: { view: subprocess.payload.view, label: subprocess.payload.label },
+                requestId: subprocess.requestId,
+            });
+        } else {
+            dispatch(closeModal());
+        }
+    }, [subprocess, dispatch]);
 
-    // Capture the wrapped getAddress lazily on mount — see `_typeHelper`
-    // comment above; capturing earlier would lock in the renderer stubs.
-    const wrappedGetAddress: WrappedGetAddress = useMemo(
-        () => connect(TrezorConnect.getAddress),
-        [],
-    );
-
-    const handleStart = async () => {
+    const handleStart = () => {
         if (!devicePath) return;
-        setLog([]);
-        setResult(null);
-        setError(null);
-        setSubprocess(null);
-
-        const proc = wrappedGetAddress({
+        start({
             device: { path: devicePath },
             path: DEFAULT_PATH,
             coin: 'btc',
             showOnTrezor: true,
         });
-        procRef.current = proc;
-        setCallId(proc.id);
-        setRunning(true);
-
-        try {
-            for await (const sub of proc.run()) {
-                setSubprocess(sub);
-                setLog(prev => [...prev, { type: sub.type, detail: formatDetail(sub) }]);
-
-                // Mirror confirmation events into suite's redux modal slice so the
-                // global ModalSwitcher can render the real modal (e.g. NoBackupModal).
-                if (sub.type === 'ui-request_confirmation') {
-                    dispatch({
-                        type: UI_REQUEST.REQUEST_CONFIRMATION,
-                        payload: { view: sub.payload.view, label: sub.payload.label },
-                        requestId: sub.requestId,
-                    });
-                } else {
-                    dispatch(closeModal());
-                }
-
-                if (sub.type === 'complete') setResult(sub.result);
-                if (sub.type === 'error') setError(sub.error.message);
-            }
-        } finally {
-            if (procRef.current === proc) {
-                procRef.current = null;
-                setRunning(false);
-                setSubprocess(null);
-                setCallId(null);
-            }
-        }
     };
 
-    const handleCancel = () => {
-        procRef.current?.cancel();
-    };
+    const logEntries: LogEntry[] = log.map(sub => ({
+        type: sub.type,
+        detail: formatDetail(sub),
+    }));
 
     return (
         <SectionItem data-testid="@settings/debug/connect-wrap-playground">
@@ -349,12 +325,12 @@ export const ConnectWrapPlayground = () => {
                         )}
                         {error && (
                             <span>
-                                ✗ error: <code>{error}</code>
+                                ✗ error: <code>{error.message}</code>
                             </span>
                         )}
-                        {log.length > 0 && (
+                        {logEntries.length > 0 && (
                             <ul style={{ marginTop: 8 }}>
-                                {log.map((entry, i) => (
+                                {logEntries.map((entry, i) => (
                                     <li key={i}>
                                         <code>{entry.type}</code>
                                         {entry.detail ? ` — ${entry.detail}` : ''}
@@ -367,7 +343,7 @@ export const ConnectWrapPlayground = () => {
             />
             <ActionColumn>
                 {running ? (
-                    <ActionButton intent="critical" onClick={handleCancel}>
+                    <ActionButton intent="critical" onClick={cancel}>
                         Cancel
                     </ActionButton>
                 ) : (
@@ -376,7 +352,16 @@ export const ConnectWrapPlayground = () => {
                     </ActionButton>
                 )}
             </ActionColumn>
-            {subprocess && <SubprocessModal subprocess={subprocess} />}
+            {[subprocess].map(truthySubprocess => {
+                if (!truthySubprocess) {
+                    return null;
+                }
+
+                switch (truthySubprocess.type) {
+                    default:
+                        return <SubprocessModal subprocess={truthySubprocess} />;
+                }
+            })}
         </SectionItem>
     );
 };
