@@ -18,7 +18,7 @@
         "cross-fetch": "^4.1.0",
         "fs-extra": "^11.3.1",
         "minimatch": "^10.2.4",
-        "prettier": "^3.8.1",
+        "prettier": "^3.8.3",
         "rollup": "^4.60.1",
         "rollup-plugin-dts": "^6.4.1",
         "semver": "^7.7.1",

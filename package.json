@@ -102,7 +102,7 @@
     },
     "resolutions": {
         "typescript": "5.9.3",
-        "prettier": "^3.8.1",
+        "prettier": "^3.8.3",
         "react-native": "0.83.2",
         "type-fest": "5.5.0",
         "bcrypto": "5.4.0",
@@ -152,7 +152,7 @@
         "node-gyp": "12.2.0",
         "nx": "^22.6.1",
         "patch-package": "8.0.1",
-        "prettier": "^3.8.1",
+        "prettier": "^3.8.3",
         "rimraf": "^6.1.2",
         "ts-node": "^10.9.2",
         "tslib": "^2.6.2",
