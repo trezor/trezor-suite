@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { selectIsDebugModeActive } from '@suite/settings';
 import { Context } from '@suite-common/message-system';
 import { NORMAL_ACCOUNT_TYPE, isEarnYieldClaimSupported } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
@@ -33,6 +34,7 @@ export const EarnYieldTable = () => {
         useMessageSystemEarnDashboard('yield');
     const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
 
+    const isDebugMode = useSelector(selectIsDebugModeActive);
     const visibleAccounts = useSelector(selectVisibleDeviceAccounts);
     const visibleAccountSymbols = useMemo(() => {
         const normalAccounts = visibleAccounts.filter(
@@ -69,7 +71,7 @@ export const EarnYieldTable = () => {
                 const { networkSymbol, account } = opportunity;
                 if (
                     !(
-                        isEarnYieldClaimSupported(networkSymbol) &&
+                        isEarnYieldClaimSupported(networkSymbol, { isDebugMode }) &&
                         account &&
                         account.networkType === 'ethereum'
                     )
@@ -77,7 +79,8 @@ export const EarnYieldTable = () => {
                     return [];
                 }
 
-                const isEmptyAccount = Number(account.misc.nonce ?? 0) < 1;
+                // account with nonce 1 sent only 1 tx (when user supplies, first tx is approval)
+                const isEmptyAccount = Number(account?.misc?.nonce ?? 0) <= 1;
 
                 if (isEmptyAccount) {
                     return [];
@@ -90,7 +93,7 @@ export const EarnYieldTable = () => {
                     },
                 ];
             }),
-        [yieldAccountOpportunities],
+        [yieldAccountOpportunities, isDebugMode],
     );
     const { merkleRewardsQuery } = useMerkleRewards(merkleRewardsSources);
     const { rewards } = merkleRewardsQuery.data;

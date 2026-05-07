@@ -4,6 +4,7 @@ import { events } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { selectIsDebugModeActive } from '@suite/settings';
 import { ChainAddressKey } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
 import { isEarnYieldClaimSupported } from '@suite-common/wallet-config';
@@ -46,12 +47,14 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     const claimSession = useSelector(state =>
         selectStablecoinYieldSession(state, 'claim', flowKey),
     );
+    const isDebugMode = useSelector(selectIsDebugModeActive);
     const isClaimSubmitting =
         claimSession.action.isSubmitting ||
         (!!yieldTxReview.precomposedTx && yieldTxReview.accountKey === account?.key);
     const isClaiming = isClaimSubmitting || !!claimSession.action.pendingTransaction;
     const isDeviceConnected = !!device?.connected && device.available;
-    const isClaimSupported = !!account && isEarnYieldClaimSupported(account.symbol);
+    const isClaimSupported =
+        !!account && isEarnYieldClaimSupported(account.symbol, { isDebugMode });
 
     const merkleRewardsSources = useMemo(
         () =>

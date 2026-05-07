@@ -81,7 +81,8 @@ export type NetworkFeature =
     | 'nft-definitions'
     | 'eip1559'
     | 'mev-protection'
-    | 'graph';
+    | 'graph'
+    | 'claim-rewards';
 
 type Level = `/${number}'`;
 type MaybeApostrophe = `'` | '';

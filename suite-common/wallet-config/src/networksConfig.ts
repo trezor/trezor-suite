@@ -63,6 +63,7 @@ export const networks = {
             'eip1559',
             'mev-protection',
             'graph',
+            'claim-rewards',
         ],
         backendTypes: ['blockbook', 'evm-rpc'],
         accountTypes: {
