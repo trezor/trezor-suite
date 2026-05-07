@@ -6,7 +6,7 @@ type Result = { [key: string]: string };
 const occurrences = (text: string, delimiter: string) => {
     // special chars needs to be escaped in RegExp
     const specialChars = '!@#$^&%*()+=-[]/{}|:<>?,.';
-    const escaped = specialChars.indexOf(delimiter) >= 0 ? '\\' : '';
+    const escaped = specialChars.includes(delimiter) ? '\\' : '';
     const regExp = new RegExp(escaped + delimiter, 'g');
 
     return (text.match(regExp) || []).length;

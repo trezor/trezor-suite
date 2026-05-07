@@ -317,7 +317,7 @@ const prepareContent = (
 };
 
 export const sanitizeCsvValue = (value: string) => {
-    if (value.indexOf(CSV_SEPARATOR) !== -1) {
+    if (value.includes(CSV_SEPARATOR)) {
         return `"${value.replace(/"/g, '""')}"`;
     }
 

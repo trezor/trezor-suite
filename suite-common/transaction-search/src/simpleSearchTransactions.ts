@@ -21,7 +21,7 @@ const groupTransactionIdsByAddress = (transactions: WalletAccountTransaction[]) 
                 addresses[address] = [];
             }
 
-            if (addresses[address].indexOf(txid) === -1) {
+            if (!addresses[address].includes(txid)) {
                 addresses[address].push(txid);
             }
         });

@@ -301,7 +301,7 @@ const subscribeAccounts = async (ctx: Context, accounts: SubscriptionAccountInfo
     const { state } = ctx;
     const prevAddresses = state.getAddresses();
     state.addAccounts(accounts);
-    const uniqueAddresses = state.getAddresses().filter(a => prevAddresses.indexOf(a) < 0);
+    const uniqueAddresses = state.getAddresses().filter(a => !prevAddresses.includes(a));
     if (uniqueAddresses.length > 0) {
         if (!state.getSubscription('notification')) {
             api.on('transaction', ev => onTransaction(ctx, ev));
@@ -399,7 +399,7 @@ const unsubscribeAccounts = async (ctx: Context, accounts?: SubscriptionAccountI
     const prevAddresses = state.getAddresses();
     state.removeAccounts(accounts || state.getAccounts());
     const addresses = state.getAddresses();
-    const uniqueAddresses = prevAddresses.filter(a => addresses.indexOf(a) < 0);
+    const uniqueAddresses = prevAddresses.filter(a => !addresses.includes(a));
     await unsubscribeAddresses(ctx, uniqueAddresses);
 };
 
