@@ -65,6 +65,8 @@ export * from './stablecoin-yield/stablecoinYieldApprovalThunks';
 export * from './stablecoin-yield/stablecoinYieldTypes';
 export * from './stablecoin-yield/stablecoinYieldUtils';
 export * from './token/stellarTokenThunks';
+export * from './tokens/tokenSelectors';
+export * from './tokens/tokenUtils';
 export * from './transactions/transactionsActions';
 export * from './transactions/transactionsReducer';
 export type * from './transactions/transactionsReducerTypes';
