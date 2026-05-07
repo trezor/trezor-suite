@@ -38,12 +38,10 @@ function taggedHash(prefix: TaggedHashPrefix, data: Buffer): Buffer {
 }
 
 function tapTweakPubkey(pubkey: Buffer, tapTreeRoot?: Buffer) {
-    let tapTweak: Buffer;
-    if (tapTreeRoot) {
-        tapTweak = taggedHash('TapTweak', Buffer.concat([pubkey, tapTreeRoot]));
-    } else {
-        tapTweak = taggedHash('TapTweak', pubkey);
-    }
+    const tapTweak = taggedHash(
+        'TapTweak',
+        tapTreeRoot ? Buffer.concat([pubkey, tapTreeRoot]) : pubkey,
+    );
 
     const tweakedPubkey = ecc.pointAddScalar(
         Buffer.concat([EVEN_Y_COORD_PREFIX, pubkey]),

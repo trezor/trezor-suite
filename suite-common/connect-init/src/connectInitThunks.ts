@@ -213,13 +213,8 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                 firmwareChannel: getEffectiveFirmwareChannel(getState()),
             });
         } catch (error) {
-            let formattedError: string;
-            if (typeof error === 'string') {
-                formattedError = error;
-            } else {
-                formattedError = error.code ? `${error.code}: ${error.message}` : error.message;
-            }
-            throw new Error(formattedError);
+            if (typeof error === 'string') throw new Error(error);
+            throw new Error(error.code ? `${error.code}: ${error.message}` : error.message);
         }
     },
 );

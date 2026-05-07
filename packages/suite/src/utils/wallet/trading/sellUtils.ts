@@ -14,13 +14,9 @@ export const createQuoteLink = async (
 ) => {
     const assetPrefix = process.env.ASSET_PREFIX || '';
     const locationOrigin = getLocationOrigin();
-    let hash: string;
-
-    if (request.amountInCrypto) {
-        hash = `qc/${request.country}/${request.fiatCurrency}/${request.cryptoStringAmount}/${request.cryptoCurrency}/${request.paymentMethod}`;
-    } else {
-        hash = `qf/${request.country}/${request.fiatCurrency}/${request.fiatStringAmount}/${request.cryptoCurrency}/${request.paymentMethod}`;
-    }
+    let hash = request.amountInCrypto
+        ? `qc/${request.country}/${request.fiatCurrency}/${request.cryptoStringAmount}/${request.cryptoCurrency}/${request.paymentMethod}`
+        : `qf/${request.country}/${request.fiatCurrency}/${request.fiatStringAmount}/${request.cryptoCurrency}/${request.paymentMethod}`;
     if (orderId) {
         hash = `p-${hash}/${orderId}`;
     }

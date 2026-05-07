@@ -44,26 +44,24 @@ export const useFeeSelection = ({
                 payload: { value: feeLevel },
             });
 
-            let thunkParams: UpdateSelectedFeeLevelThunkParams;
-            if (feeLevel === 'custom') {
-                thunkParams = {
-                    accountKey,
-                    tokenContract,
-                    feeLevelLabel: 'custom',
-                    feePerUnit: customFeePerUnit!,
-                    feeLimit: customFeeLimit,
-                    maxFeePerGas: customMaxFeePerGas,
-                    maxPriorityFeePerGas: customMaxPriorityFeePerGas,
-                    formDraftKey,
-                };
-            } else {
-                thunkParams = {
-                    accountKey,
-                    tokenContract,
-                    feeLevelLabel: feeLevel,
-                    formDraftKey,
-                };
-            }
+            const thunkParams: UpdateSelectedFeeLevelThunkParams =
+                feeLevel === 'custom'
+                    ? {
+                          accountKey,
+                          tokenContract,
+                          feeLevelLabel: 'custom',
+                          feePerUnit: customFeePerUnit!,
+                          feeLimit: customFeeLimit,
+                          maxFeePerGas: customMaxFeePerGas,
+                          maxPriorityFeePerGas: customMaxPriorityFeePerGas,
+                          formDraftKey,
+                      }
+                    : {
+                          accountKey,
+                          tokenContract,
+                          feeLevelLabel: feeLevel,
+                          formDraftKey,
+                      };
 
             dispatch(updateThunk(thunkParams));
         },

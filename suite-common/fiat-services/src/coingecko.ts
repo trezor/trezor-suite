@@ -25,12 +25,9 @@ const rateLimiter = new RateLimiter(1_000, 15_000);
 
 const fetchCoinGecko = async (url: string, skipCache?: boolean) => {
     try {
-        let res: Response;
-        if (skipCache) {
-            res = await fetchUrl(url, { headers: { 'X-Bypass-Cache': '1' } });
-        } else {
-            res = await rateLimiter.limit(signal => fetchUrl(url, { signal }));
-        }
+        const res = skipCache
+            ? await fetchUrl(url, { headers: { 'X-Bypass-Cache': '1' } })
+            : await rateLimiter.limit(signal => fetchUrl(url, { signal }));
         if (!res.ok) {
             console.warn(`Coingecko: Fiat rates failed to fetch: ${res.status}`);
 

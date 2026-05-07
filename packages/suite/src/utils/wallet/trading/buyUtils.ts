@@ -8,13 +8,9 @@ import { type Account } from 'src/types/wallet';
 export const createQuoteLink = async (request: BuyTradeQuoteRequest, account: Account) => {
     const assetPrefix = process.env.ASSET_PREFIX || '';
     const locationOrigin = getLocationOrigin();
-    let hash: string;
-
-    if (request.wantCrypto) {
-        hash = `qc/${request.country}/${request.fiatCurrency}/${request.cryptoStringAmount}/${request.receiveCurrency}/${request.paymentMethod}`;
-    } else {
-        hash = `qf/${request.country}/${request.fiatCurrency}/${request.fiatStringAmount}/${request.receiveCurrency}/${request.paymentMethod}`;
-    }
+    const hash = request.wantCrypto
+        ? `qc/${request.country}/${request.fiatCurrency}/${request.cryptoStringAmount}/${request.receiveCurrency}/${request.paymentMethod}`
+        : `qf/${request.country}/${request.fiatCurrency}/${request.fiatStringAmount}/${request.receiveCurrency}/${request.paymentMethod}`;
 
     const params = `offers/${account.symbol}/${account.accountType}/${account.index}/${hash}`;
 

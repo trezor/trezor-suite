@@ -293,21 +293,18 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                   }))(token.contract.split('-'))
                 : { type: StellarAssetType.NATIVE };
 
-            let operation: StellarOperation;
-            if (destinationActivated) {
-                operation = {
-                    type: 'payment',
-                    asset,
-                    amount: toStroops(formState.outputs[0].amount).toString(),
-                    destination: formState.outputs[0].address,
-                };
-            } else {
-                operation = {
-                    type: 'createAccount',
-                    startingBalance: toStroops(formState.outputs[0].amount).toString(),
-                    destination: formState.outputs[0].address,
-                };
-            }
+            const operation: StellarOperation = destinationActivated
+                ? {
+                      type: 'payment',
+                      asset,
+                      amount: toStroops(formState.outputs[0].amount).toString(),
+                      destination: formState.outputs[0].address,
+                  }
+                : {
+                      type: 'createAccount',
+                      startingBalance: toStroops(formState.outputs[0].amount).toString(),
+                      destination: formState.outputs[0].address,
+                  };
 
             const transaction = buildSendTransaction({
                 descriptor: selectedAccount.descriptor,

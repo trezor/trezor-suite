@@ -82,12 +82,8 @@ export const save: {
     }
     const { dir, file } = resolvedPathResult.payload;
 
-    let data: string | Buffer;
-    if (encoding === 'binary') {
-        data = Buffer.from(content as ArrayBuffer);
-    } else {
-        data = content as string;
-    }
+    const data: string | Buffer =
+        encoding === 'binary' ? Buffer.from(content as ArrayBuffer) : (content as string);
 
     try {
         try {
