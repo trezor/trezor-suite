@@ -4,6 +4,7 @@ export enum RootStackRoutes {
     DeviceOnboardingStack = 'DeviceOnboardingStack',
     AccountsImport = 'AccountsImport',
     AuthorizeDeviceStack = 'AuthorizeDeviceStack',
+    AccountAssets = 'AccountAssets',
     AccountDetail = 'AccountDetail',
     StakingDetail = 'StakingDetail',
     StakingManagement = 'StakingManagement',

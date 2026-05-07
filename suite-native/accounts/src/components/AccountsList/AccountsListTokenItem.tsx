@@ -15,6 +15,7 @@ type AccountListTokenItemProps = {
     hasBackground?: boolean;
     isFirst?: boolean;
     isLast?: boolean;
+    showFiatValue?: boolean;
 };
 
 export const AccountsListTokenItem = ({
@@ -24,6 +25,7 @@ export const AccountsListTokenItem = ({
     hasBackground,
     isFirst,
     isLast,
+    showFiatValue = true,
 }: AccountListTokenItemProps) => {
     const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, account.key, token.contract),
@@ -41,11 +43,13 @@ export const AccountsListTokenItem = ({
             }
             title={getTokenName(token.name)}
             mainValue={
-                <TokenToFiatAmountFormatter
-                    symbol={account.symbol}
-                    value={balance}
-                    contract={token.contract}
-                />
+                showFiatValue && (
+                    <TokenToFiatAmountFormatter
+                        symbol={account.symbol}
+                        value={balance}
+                        contract={token.contract}
+                    />
+                )
             }
             secondaryValue={
                 <TokenAmountFormatter

@@ -400,6 +400,7 @@ export type RootStackParamList = {
     [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };
     [RootStackRoutes.TransactionDetailStack]: NavigatorScreenParams<TransactionDetailStackParamList>;
     [RootStackRoutes.DevUtils]: undefined;
+    [RootStackRoutes.AccountAssets]: { accountKey: AccountKey };
     [RootStackRoutes.AccountDetail]: AccountDetailParams;
     [RootStackRoutes.StakingDetail]: { accountKey: AccountKey };
     [RootStackRoutes.StakingManagement]: { accountKey: AccountKey };

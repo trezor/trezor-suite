@@ -81,6 +81,9 @@ const valuesContainerStyle = prepareNativeStyle(utils => ({
     alignItems: 'flex-end',
     justifyContent: 'center',
     paddingLeft: utils.spacings.sp8,
+    // body-md line height (24) + body-sm line height (20) — ensures consistent height
+    // when mainValue is absent so secondaryValue stays vertically centred
+    minHeight: utils.spacings.sp24 + utils.spacings.sp20,
 }));
 
 export const AccountsListItemBase = ({
@@ -115,7 +118,9 @@ export const AccountsListItemBase = ({
             <Box flexDirection="row" alignItems="center" flex={1}>
                 <Box marginRight="sp16">{icon}</Box>
                 <Box style={applyStyle(accountDescriptionStyle)}>
-                    <Text testID="@accountList/item/title">{title}</Text>
+                    <Text numberOfLines={1} ellipsizeMode="tail" testID="@accountList/item/title">
+                        {title}
+                    </Text>
                     {secondaryTitle}
                     <HStack spacing="sp4" alignItems="center">
                         {badges}
