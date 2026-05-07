@@ -15,12 +15,8 @@ export const useDevice = (): Result => {
     const isDeviceOrUiLocked = useSelector(selectIsDeviceOrUiLocked);
 
     const isLocked = useCallback(
-        (ignoreDisconnectedDevice = false) => {
-            if (!device?.connected && !ignoreDisconnectedDevice) return true;
-            if (isDeviceOrUiLocked) return true;
-
-            return false;
-        },
+        (ignoreDisconnectedDevice = false) =>
+            (!device?.connected && !ignoreDisconnectedDevice) || isDeviceOrUiLocked,
         [device, isDeviceOrUiLocked],
     );
 

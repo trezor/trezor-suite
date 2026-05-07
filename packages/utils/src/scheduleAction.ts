@@ -72,8 +72,7 @@ const maybeRejectAfterMs = (ms: number | undefined, reason: Error, clear: AbortS
 const rejectWhenAborted = (signal: AbortSignal | undefined, clear: AbortSignal) =>
     new Promise<never>((_, reject) => {
         const errorSignal = new RejectWhenAbortedError();
-        if (clear.aborted) return reject(errorSignal);
-        if (signal?.aborted) return reject(errorSignal);
+        if (clear.aborted || signal?.aborted) return reject(errorSignal);
         const onAbort = () => reject(errorSignal);
         signal?.addEventListener('abort', onAbort);
         const onClear = () => {

@@ -24,9 +24,8 @@ export const InstantlyAvailableRow = ({
         selectAccountByKey(state, accountKey),
     );
 
-    if (!account) return null;
-    if (approximatedAmount === null) return null;
-    if (new BigNumber(approximatedAmount).lte(0)) return null;
+    if (!account || approximatedAmount === null || new BigNumber(approximatedAmount).lte(0))
+        return null;
 
     const showInfoAlert = () =>
         showAlert({

@@ -37,8 +37,11 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
         return true;
     }
 
-    if (action.type === METADATA.SET_DEVICE_METADATA) return true;
-    if (action.type === METADATA.SET_DEVICE_METADATA_PASSWORDS) return true;
+    if (
+        action.type === METADATA.SET_DEVICE_METADATA ||
+        action.type === METADATA.SET_DEVICE_METADATA_PASSWORDS
+    )
+        return true;
 
     if (isAnyDeviceEventAction(action)) return true;
 

@@ -466,7 +466,6 @@ export class BridgeTransport extends AbstractTransport {
             case '/listen':
                 return bridgeApiResult.devices(response.payload);
             case '/release':
-                return bridgeApiResult.empty(response.payload);
             case '/abort':
                 return bridgeApiResult.empty(response.payload);
             default:

@@ -12,11 +12,6 @@ const getBuyTradeData = (status: BuyTradeStatus) => {
     switch (message) {
         case 'TR_BUY_STATUS_PENDING':
         case 'TR_BUY_STATUS_ACTION_REQUIRED':
-            return {
-                icon: 'clock',
-                intent: 'warning',
-                statusMessageId: message,
-            } as const;
         case 'TR_BUY_STATUS_PENDING_GO_TO_GATEWAY':
             return {
                 icon: 'clock',

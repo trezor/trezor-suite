@@ -11,8 +11,11 @@ export function shouldAttemptToLoadNextPageForVisibleTransactions({
     currentNumberOfVisibleTransactions: number;
     numberOfPagesRequested: number;
 }): boolean {
-    if (totalNumberOfTransactions === 0) return false;
-    if (currentNumberOfTransactions === totalNumberOfTransactions) return false;
+    if (
+        totalNumberOfTransactions === 0 ||
+        currentNumberOfTransactions === totalNumberOfTransactions
+    )
+        return false;
 
     const requestedNumberOfVisibleItems = numberOfPagesRequested * perPage;
     if (requestedNumberOfVisibleItems > Math.ceil(totalNumberOfTransactions / perPage) * perPage)

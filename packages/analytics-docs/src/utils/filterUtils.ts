@@ -7,8 +7,8 @@ type AnalyticsJsonShape = {
 export const getEventsFromJson = (input: unknown): EventDoc[] => {
     const data = input as AnalyticsJsonShape;
 
-    if (!data || typeof data !== 'object') return [];
-    if (!data.events || typeof data.events !== 'object') return [];
+    if (!data || typeof data !== 'object' || !data.events || typeof data.events !== 'object')
+        return [];
 
     return Object.values(data.events);
 };

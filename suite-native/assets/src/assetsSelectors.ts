@@ -142,8 +142,7 @@ const selectDeviceAssetsWithBalances = createMemoizedSelector(
             const fiatBalance = networkAccounts.reduce<BigNumber | null>((sum, { fiatValue }) => {
                 // If any account has null fiat data, set the network fiat to null.
                 // This prevents showing partial/incomplete values to users - we show loading state until all data is available.
-                if (sum === null) return null;
-                if (fiatValue == null) return null;
+                if (sum === null || fiatValue == null) return null;
 
                 return sum.plus(fiatValue);
             }, new BigNumber(0));

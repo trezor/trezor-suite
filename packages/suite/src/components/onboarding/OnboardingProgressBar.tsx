@@ -41,8 +41,7 @@ const useOnboardingStepCategoriesInPath = () => {
 
 const getState = (index: number, indexOfActiveStep: number): BulletListItemState => {
     // When active category is not in the visible list (e.g. final step), all visible steps are done.
-    if (indexOfActiveStep === -1) return 'done';
-    if (index < indexOfActiveStep) return 'done';
+    if (indexOfActiveStep === -1 || index < indexOfActiveStep) return 'done';
     if (index === indexOfActiveStep) return 'default';
 
     return 'pending';
