@@ -27,7 +27,6 @@ export const ThpGlobalModalManager = () => {
             case 'BeforeConnectionInfo':
                 return null;
             case 'ConfirmConnectionBeforePairing':
-                return <ThpConnectionModal device={device} />;
             case 'ConfirmOnlyConnection':
                 return <ThpConnectionModal device={device} />;
             case 'CodeEntry':

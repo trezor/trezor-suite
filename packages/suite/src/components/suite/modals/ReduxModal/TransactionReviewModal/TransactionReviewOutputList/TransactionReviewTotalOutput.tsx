@@ -54,7 +54,6 @@ const getLines = ({
     const feeLabelId = ((network: NetworkType) => {
         switch (network) {
             case 'ethereum':
-                return 'MAX_FEE';
             case 'stellar':
                 return 'MAX_FEE';
             case 'solana':

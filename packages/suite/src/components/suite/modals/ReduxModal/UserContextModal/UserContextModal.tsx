@@ -103,7 +103,6 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
         case 'transaction-detail':
             return <TxDetailModal {...payload} onCancel={onCancel} />;
         case 'review-transaction':
-            return <TransactionReviewModal {...payload} />;
         case 'review-transaction-rbf-previous-transaction-mined-error':
             return <TransactionReviewModal {...payload} />;
         case 'import-transaction':

@@ -24,19 +24,14 @@ type BackendsFormData = {
 const validateUrl = (type: BackendOption, value: string) => {
     switch (type) {
         case 'blockbook':
-            return isUrlWithQuery(value);
         case 'blockfrost':
+        case 'solana':
+        case 'ripple':
+        case 'stellar':
+        case 'evm-rpc':
             return isUrlWithQuery(value);
         case 'electrum':
             return isElectrumUrl(value);
-        case 'solana':
-            return isUrlWithQuery(value);
-        case 'ripple':
-            return isUrlWithQuery(value);
-        case 'stellar':
-            return isUrlWithQuery(value);
-        case 'evm-rpc':
-            return isUrlWithQuery(value);
         default:
             return false;
     }
