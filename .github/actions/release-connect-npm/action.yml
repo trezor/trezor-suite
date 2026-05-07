@@ -2,10 +2,11 @@ name: "NPM Connect Deploy Action"
 description: "Releases to NPM any Connect package or Trezor dependency"
 inputs:
   deploymentType:
-    description: "Specifies the deployment type for the npm package. Choose 'beta' for pre-release versions that are not ready for production use, and 'production' for stable versions intended for end-users."
+    description: "Specifies the deployment type for the npm package. Use 'alpha' for early prereleases, 'beta' for prereleases close to production, and 'latest' for stable versions intended for end-users."
     required: true
     type: choice
     options:
+      - alpha
       - beta
       - latest
   packageName:
