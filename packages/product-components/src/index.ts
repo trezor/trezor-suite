@@ -15,6 +15,7 @@ export { CoinLogo, type CoinLogoType } from './components/CoinLogo/CoinLogo';
 export { isCoinSymbol } from './constants/coins';
 export { AssetShareIndicator } from './components/AssetShareIndicator/AssetShareIndicator';
 export * from './components/TokenIconSet/TokenIconSet';
+export * from './components/NetworkIconSet/NetworkIconSet';
 export { TokenTabs, type TokenTab } from './components/SelectAssetModal/TokenTabs';
 export { NumberInput } from './components/NumberInput/NumberInput';
 export { InputWithOptions } from './components/InputWithOptions/InputWithOptions';
