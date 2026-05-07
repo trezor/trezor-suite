@@ -6,13 +6,14 @@ import util from 'node:util';
 import path from 'node:path';
 import semver from 'semver';
 
-import { computePublishClosure } from './connect-publish-graph';
-import { readWorkspaceDeps } from './read-workspace-deps';
+import { computePublishClosure, createReadWorkspaceDeps } from '@trezor/requirements';
+
 import { getNpmRemoteGreatestVersion } from './helpers';
 
 const readFile = util.promisify(fs.readFile);
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
+const readWorkspaceDeps = createReadWorkspaceDeps(ROOT);
 
 const ROOT_PACKAGES = [
     'connect',
