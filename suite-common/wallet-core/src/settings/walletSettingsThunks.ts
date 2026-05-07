@@ -19,7 +19,7 @@ export const changeCoinVisibility = createThunk<
     void
 >(WALLET_SETTINGS.CHANGE_COIN_VISIBILITY, ({ symbol, shouldBeVisible }, { dispatch, getState }) => {
     let enabledNetworks = selectEnabledNetworks(getState());
-    const isAlreadyHidden = enabledNetworks.find(enabledSymbol => enabledSymbol === symbol);
+    const isAlreadyHidden = enabledNetworks.includes(symbol);
     if (!shouldBeVisible) {
         enabledNetworks = enabledNetworks.filter(enabledSymbol => enabledSymbol !== symbol);
     } else if (!isAlreadyHidden) {

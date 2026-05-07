@@ -163,8 +163,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                         key === 'call'
                             ? params.method.startsWith('cardano')
                             : key.startsWith('cardano');
-                    const cardanoEnabled =
-                        !!enabledNetworks.find(a => a === 'ada') || isCardanoMethod;
+                    const cardanoEnabled = enabledNetworks.includes('ada') || isCardanoMethod;
 
                     const result = await synchronize(() =>
                         original({ ...params, useCardanoDerivation: cardanoEnabled }),

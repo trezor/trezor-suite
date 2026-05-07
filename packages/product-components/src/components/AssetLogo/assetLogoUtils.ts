@@ -44,7 +44,7 @@ export const getCoingeckoIdAndContractAddressIncludesNativeTokens = (
         .concat(contractAddress ?? [])
         .map(addr => addr ?? ZERO_ADDRESS);
 
-    const hasNative = addresses.some(addr => addr === ZERO_ADDRESS);
+    const hasNative = addresses.includes(ZERO_ADDRESS);
 
     const shouldUseTradeId = hasNative && !!mainNetworkSymbol && isNetworkSymbol(mainNetworkSymbol);
 
