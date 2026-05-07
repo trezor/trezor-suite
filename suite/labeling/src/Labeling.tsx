@@ -106,23 +106,22 @@ export const Labeling = ({
                     }
 
                     return result.success;
-                } else {
-                    setShowEnableSuiteSyncModal(true);
-
-                    return new Promise<boolean>(resolve => {
-                        suiteSyncTurnOnEditResolveRef.current = resolve;
-                    });
                 }
-            } else {
-                return await dispatch(
-                    metadataLabelingActions.init(
-                        // Provide force=true argument (user wants to enable metadata).
-                        true,
-                        // If this is wallet(device) label, provide unique identifier entityKey which equals to device.state.
-                        deviceState,
-                    ),
-                );
+                setShowEnableSuiteSyncModal(true);
+
+                return new Promise<boolean>(resolve => {
+                    suiteSyncTurnOnEditResolveRef.current = resolve;
+                });
             }
+
+            return await dispatch(
+                metadataLabelingActions.init(
+                    // Provide force=true argument (user wants to enable metadata).
+                    true,
+                    // If this is wallet(device) label, provide unique identifier entityKey which equals to device.state.
+                    deviceState,
+                ),
+            );
         }
 
         return true;
@@ -167,11 +166,11 @@ export const Labeling = ({
                 }
 
                 return true;
-            } else {
-                return await dispatch(
-                    metadataLabelingActions.addMetadata({ ...payload, value: value || undefined }),
-                );
             }
+
+            return await dispatch(
+                metadataLabelingActions.addMetadata({ ...payload, value: value || undefined }),
+            );
         },
         [deviceStaticSessionId, dispatch, isSuiteSyncEnabled, payload],
     );

@@ -219,12 +219,12 @@ export const TradingFormInputFiat = ({
                                       ),
                                       currency: selectedCurrencyLabel,
                                   });
-                              } else {
-                                  return translationString('TR_BUY_VALIDATION_ERROR_MINIMUM_FIAT', {
-                                      minimum: context.amountLimits.minCrypto,
-                                      currency: selectedCurrencyLabel,
-                                  });
                               }
+
+                              return translationString('TR_BUY_VALIDATION_ERROR_MINIMUM_FIAT', {
+                                  minimum: context.amountLimits.minCrypto,
+                                  currency: selectedCurrencyLabel,
+                              });
                           }
                       },
                   },

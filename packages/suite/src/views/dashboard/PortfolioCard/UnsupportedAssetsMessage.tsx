@@ -53,16 +53,17 @@ const Message = ({ affectedNetworks, hasTokens }: MessageProps) => {
                 values={{ networks: networksString }}
             />
         );
-    } else if (hasNetworks) {
+    }
+    if (hasNetworks) {
         return (
             <Translation
                 id="TR_GRAPH_MISSING_DATA_NETWORKS"
                 values={{ networks: networksString }}
             />
         );
-    } else {
-        return <Translation id="TR_GRAPH_MISSING_DATA_TOKENS" />;
     }
+
+    return <Translation id="TR_GRAPH_MISSING_DATA_TOKENS" />;
 };
 
 type UnsupportedAssetsMessageProps = {

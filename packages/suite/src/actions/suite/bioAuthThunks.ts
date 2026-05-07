@@ -79,9 +79,9 @@ export const requestBioAuthChangeThunk = createThunk(
         });
         if (!result.success) {
             return handleError(result.message, dispatch, messageError);
-        } else {
-            await desktopApi.setBioAuthSettings({ enabled: payload });
         }
+
+        await desktopApi.setBioAuthSettings({ enabled: payload });
     },
 );
 

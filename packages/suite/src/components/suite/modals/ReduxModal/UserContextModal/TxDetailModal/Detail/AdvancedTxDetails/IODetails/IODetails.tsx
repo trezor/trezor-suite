@@ -79,17 +79,17 @@ export const IODetails = ({ tx }: IODetailsProps) => {
                     />
                 </>
             );
-        } else {
-            return (
-                <IOGroup
-                    tx={tx}
-                    inputs={tx.details.vin}
-                    outputs={tx.details.vout}
-                    isUtxoBased
-                    isPhishingTransaction={isPhishingTransaction}
-                />
-            );
         }
+
+        return (
+            <IOGroup
+                tx={tx}
+                inputs={tx.details.vin}
+                outputs={tx.details.vout}
+                isUtxoBased
+                isPhishingTransaction={isPhishingTransaction}
+            />
+        );
     };
 
     return (

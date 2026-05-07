@@ -96,9 +96,9 @@ export const DecreasedOutputs = () => {
         if (account.accountType === 'coinjoin') {
             if (coinjoinRegisteredUtxos.length > 0) {
                 return 'TR_UTXO_REGISTERED_IN_COINJOIN_RBF_WARNING';
-            } else {
-                return 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_RBF_WARNING';
             }
+
+            return 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_RBF_WARNING';
         }
 
         return 'TR_DECREASE_TX';

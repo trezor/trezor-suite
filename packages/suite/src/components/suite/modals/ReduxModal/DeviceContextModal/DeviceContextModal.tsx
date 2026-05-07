@@ -72,9 +72,9 @@ export const DeviceContextModal = ({
             // See https://github.com/trezor/trezor-firmware/issues/5120
             if (selectedAccount?.networkType === 'stellar') {
                 return <TransactionReviewModal type="sign-transaction" />;
-            } else {
-                return <ConfirmActionModal device={device} />;
             }
+
+            return <ConfirmActionModal device={device} />;
         }
         case 'ButtonRequest_Address':
             return data?.type === 'address' ? (

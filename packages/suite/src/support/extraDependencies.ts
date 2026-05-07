@@ -313,9 +313,9 @@ export const extraDependencies: ExtraDependenciesStatic = {
                         ...device,
                         thp: persistentDeviceData.thp,
                     };
-                } else {
-                    return device;
                 }
+
+                return device;
             });
 
             state.persistentDeviceData = payload.persistentDeviceData ?? [];

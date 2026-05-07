@@ -16,11 +16,12 @@ const getIconIntent = (
 ) => {
     if (isPending) {
         return 'warning';
-    } else if (isPhishingTransaction || type === 'failed') {
-        return 'critical';
-    } else {
-        return 'neutral';
     }
+    if (isPhishingTransaction || type === 'failed') {
+        return 'critical';
+    }
+
+    return 'neutral';
 };
 
 export const TransactionTypeIcon = ({

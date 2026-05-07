@@ -38,18 +38,16 @@ const sortFromNewestToOldest: UtxoSortingFunctionWithContext =
     (a, b) => {
         if (a.blockHeight > 0 && b.blockHeight > 0) {
             return b.blockHeight - a.blockHeight;
-        } else {
-            // Pending transactions do not have blockHeight, so we must use blockTime of the transaction instead.
-            const getBlockTime = (txid: string) => {
-                const transaction = accountTransactions.find(
-                    transaction => transaction.txid === txid,
-                );
-
-                return transaction?.blockTime ?? 0;
-            };
-
-            return getBlockTime(b.txid) - getBlockTime(a.txid);
         }
+
+        // Pending transactions do not have blockHeight, so we must use blockTime of the transaction instead.
+        const getBlockTime = (txid: string) => {
+            const transaction = accountTransactions.find(transaction => transaction.txid === txid);
+
+            return transaction?.blockTime ?? 0;
+        };
+
+        return getBlockTime(b.txid) - getBlockTime(a.txid);
     };
 
 const utxoSortMap: Record<UtxoSorting, UtxoSortingFunctionWithContext> = {
