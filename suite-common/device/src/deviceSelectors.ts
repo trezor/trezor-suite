@@ -590,11 +590,6 @@ export const selectDeviceUpdateFirmwareVersion = (state: DeviceRootState) => {
 
 export const selectFirmwareChangelog = (state: DeviceRootState) => {
     const device = selectSelectedDevice(state);
-    const isBitcoinOnlyFirmware = selectHasBitcoinOnlyFirmware(state);
-
-    if (isBitcoinOnlyFirmware) {
-        return device?.firmwareReleaseConfigInfo?.release.changelog;
-    }
 
     return device?.firmwareReleaseConfigInfo?.release.changelog;
 };

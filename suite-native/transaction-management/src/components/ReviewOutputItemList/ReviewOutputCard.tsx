@@ -24,7 +24,6 @@ const cardStyle = prepareNativeStyle<{ isConfirmed: boolean }>((utils, { isConfi
         condition: isConfirmed,
         style: {
             backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation1,
-            borderColor: utils.colors.borderNeutral,
         },
     },
 }));
@@ -33,7 +32,6 @@ export const ReviewOutputCard = ({ children, title, outputState }: ReviewOutputC
     const { applyStyle } = useNativeStyles();
 
     const isConfirmed = outputState === 'success';
-    const dividerColor = isConfirmed ? 'borderNeutral' : 'borderNeutral';
 
     return (
         <Card style={applyStyle(cardStyle, { isConfirmed })}>
@@ -44,7 +42,7 @@ export const ReviewOutputCard = ({ children, title, outputState }: ReviewOutputC
                         {title}
                     </Text>
                 </HStack>
-                <CardDivider color={dividerColor} horizontalPadding="sp16" />
+                <CardDivider color="borderNeutral" horizontalPadding="sp16" />
                 <Box paddingLeft="sp24" testID={REVIEW_OUTPUT_CARD_TEST_ID + '/content'}>
                     {children}
                 </Box>
