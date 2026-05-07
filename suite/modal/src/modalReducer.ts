@@ -153,12 +153,11 @@ const modalReducer = (state: State = initialState, action: AnyAction): State => 
         case UI_REQUEST.CLOSE_UI_WINDOW:
             // Always close device-driven modals when the device signals CLOSE_UI_WINDOW,
             // even if preserve is set (preserve protects user-context modals, not device prompts).
-            // Preserve the flag so a subsequent MODAL_OPEN_USER_CONTEXT re-open still benefits from it.
             if (
                 state.context === MODAL_CONTEXT_DEVICE ||
                 state.context === MODAL_CONTEXT_DEVICE_CONFIRMATION
             ) {
-                return { context: MODAL_CONTEXT_NONE, preserve: state.preserve };
+                return initialState;
             }
 
             return state.preserve ? state : initialState;
