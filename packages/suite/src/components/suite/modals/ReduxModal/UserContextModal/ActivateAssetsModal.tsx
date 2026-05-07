@@ -135,7 +135,7 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
                             isDisabled={isApplyPending}
                             data-testid="@modal/activate-assets/save"
                         >
-                            <Translation id="TR_ADD" />
+                            <Translation id="TR_CONFIRM" />
                         </Modal.Button>
                     ) : null
                 }

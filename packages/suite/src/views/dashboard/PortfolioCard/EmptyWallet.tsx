@@ -3,7 +3,7 @@ import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Button, Column, H3, Illustration, Paragraph, Row, Text } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
+import { NetworkIconSet } from '@trezor/product-components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -47,11 +47,7 @@ export const EmptyWallet = () => {
                     <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                         <Translation id="TR_READY_ON" />:
                     </Paragraph>
-                    <Row gap={4} flexWrap="wrap">
-                        {enabledNetworks.map(network => (
-                            <CoinLogo key={network} symbol={network} size={16} />
-                        ))}
-                    </Row>
+                    <NetworkIconSet networks={enabledNetworks} size={20} gap={12} />
                 </Row>
             )}
             <Row gap={12} margin={{ top: 16 }}>
