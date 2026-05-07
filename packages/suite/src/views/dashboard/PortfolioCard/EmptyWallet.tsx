@@ -1,13 +1,22 @@
+import styled from 'styled-components';
+
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
-import { Button, Column, H3, Illustration, Paragraph, Row, Text } from '@trezor/components';
+import { Box, Button, Column, H3, Illustration, Paragraph, Row, Text } from '@trezor/components';
 import { NetworkIconSet } from '@trezor/product-components';
+import { borders } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
+
+const RoundedBorder = styled.div`
+    padding: 4px 6px 4px 12px;
+    border: dashed 1px ${({ theme }) => theme.elementBorderField};
+    border-radius: ${borders.radii.full};
+`;
 
 export const EmptyWallet = () => {
     const dispatch = useDispatch();
@@ -45,12 +54,21 @@ export const EmptyWallet = () => {
                 <Translation id="TR_DASHBOARD_EMPTY_WALLET_DESC" />
             </Text>
             {enabledNetworks.length > 0 && !isBitcoinOnlyFirmware && (
-                <Row gap={8} flexWrap="wrap" margin={{ top: 12 }}>
-                    <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
-                        <Translation id="TR_READY_ON" />:
-                    </Paragraph>
-                    <NetworkIconSet networks={enabledNetworks} size={20} gap={12} />
-                </Row>
+                <RoundedBorder>
+                    <Row gap={8} flexWrap="wrap">
+                        <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
+                            <Translation id="TR_READY_ON" />:
+                        </Paragraph>
+                        <Box height={20}>
+                            <NetworkIconSet
+                                networks={enabledNetworks}
+                                size={20}
+                                gap={16}
+                                maxVisibleIcons={undefined}
+                            />
+                        </Box>
+                    </Row>
+                </RoundedBorder>
             )}
             <Row gap={12} margin={{ top: 16 }}>
                 <Button

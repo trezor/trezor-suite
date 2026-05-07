@@ -7,8 +7,6 @@ import { type SpacingValuesNew, type TypographyStyle, borders } from '@trezor/th
 
 import { type AssetLogoSize } from '../AssetLogo/AssetLogoWithId';
 
-export const MAX_VISIBLE_ICONS = 3;
-
 const mapSizeToTypographyStyle = (size: AssetLogoSize): TypographyStyle => {
     const typographyStyleMap: Record<AssetLogoSize, TypographyStyle> = {
         20: 'body-xs',
@@ -24,6 +22,7 @@ const Container = styled.div<{
     $length: number;
     $size: AssetLogoSize;
     $gap: SpacingValuesNew;
+    $maxVisibleIcons: number;
     $isCountVisible: boolean;
     $isCentered: boolean;
 }>`
@@ -31,8 +30,9 @@ const Container = styled.div<{
     display: flex;
     align-items: center;
 
-    ${({ $isCentered, $size, $gap, $length, $isCountVisible }) => {
-        const visibleCount = $length > 3 ? 3 + Number($isCountVisible) : $length;
+    ${({ $isCentered, $size, $gap, $length, $maxVisibleIcons, $isCountVisible }) => {
+        const visibleCount =
+            $length > $maxVisibleIcons ? $maxVisibleIcons + Number($isCountVisible) : $length;
 
         return $isCentered
             ? css`
@@ -43,12 +43,14 @@ const Container = styled.div<{
               `;
     }}
 
-    ${({ $length, $gap, $isCountVisible }) =>
+    ${({ $length, $gap, $maxVisibleIcons, $isCountVisible }) =>
         $length > 1 &&
         css`
             display: grid;
             grid-template-columns: repeat(
-                ${$length > 3 ? 3 + Number($isCountVisible) : $length},
+                ${$length > $maxVisibleIcons
+                    ? $maxVisibleIcons + Number($isCountVisible)
+                    : $length},
                 ${$gap}px
             );
             justify-items: center;
@@ -89,6 +91,7 @@ export type IconSetBaseProps = {
     count: number;
     size: AssetLogoSize;
     gap: SpacingValuesNew;
+    maxVisibleIcons?: number;
     isCountVisible?: boolean;
     isCentered?: boolean;
     children: ReactNode;
@@ -98,10 +101,13 @@ export const IconSetBase = ({
     count,
     size,
     gap,
+    maxVisibleIcons,
     isCountVisible = false,
     isCentered = false,
     children,
 }: IconSetBaseProps) => {
+    const effectiveMaxVisibleIcons = maxVisibleIcons ?? count;
+
     if (count === 0) {
         return null;
     }
@@ -111,14 +117,15 @@ export const IconSetBase = ({
             $length={count}
             $size={size}
             $gap={gap}
+            $maxVisibleIcons={effectiveMaxVisibleIcons}
             $isCountVisible={isCountVisible}
             $isCentered={isCentered}
         >
             {children}
-            {count > MAX_VISIBLE_ICONS && isCountVisible && (
+            {count > effectiveMaxVisibleIcons && isCountVisible && (
                 <CountContainer $size={size}>
                     <Text typographyStyle={mapSizeToTypographyStyle(size)} intent="neutral">
-                        +{count - MAX_VISIBLE_ICONS}
+                        +{count - effectiveMaxVisibleIcons}
                     </Text>
                 </CountContainer>
             )}
