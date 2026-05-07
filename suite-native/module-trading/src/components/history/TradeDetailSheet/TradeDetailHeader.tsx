@@ -41,8 +41,6 @@ export const TradeDetailHeader = ({ orderId, onOpenedBrowser }: TradeDetailHeade
     return (
         <TradeDetailAlert
             alertType={statusStep}
-            provider={trade.data.exchange}
-            tradeType={trade.tradeType}
             orderId={orderId}
             onOpenedBrowser={onOpenedBrowser}
         />

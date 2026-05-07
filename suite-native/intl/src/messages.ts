@@ -3431,16 +3431,8 @@ export const messages = {
                 buy: 'Buy',
                 exchange: 'Swap',
                 sell: 'Sell',
-                buttons: {
-                    providerSupport: 'Go to provider support',
-                    proceedToPay: 'Proceed to pay',
-                },
-                pendingAlert: {
-                    title: 'Transaction pending...',
-                    description:
-                        'Your sell transaction is being processed. Please wait for confirmation.',
-                    button: 'Go to provider support',
-                },
+                checkOrderStatus: 'Check order status on provider’s website',
+                providerSupport: 'Go to provider support',
             },
         },
         error: {
