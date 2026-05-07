@@ -13,6 +13,7 @@ export type ContentSecurityPolicyRules = {
     'frame-ancestors': string[];
     'base-uri': string[];
     'object-src': string[];
+    'frame-src': string[];
 };
 
 /**

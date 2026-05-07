@@ -71,6 +71,8 @@ const PRODUCTION_SECURITY_HEADERS = {
         'frame-ancestors': ['self'],
         'base-uri': ['none'],
         'object-src': ['self'],
+        // trezorsuite deeplinks are opened using iframes to avoid issues with navigation
+        'frame-src': ['self', 'trezorsuite://*'],
         'report-uri': SENTRY_REPORT_URL,
         'report-to': 'csp-endpoint',
     },
