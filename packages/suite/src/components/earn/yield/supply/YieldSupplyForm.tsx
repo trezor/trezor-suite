@@ -21,6 +21,7 @@ export const YieldSupplyForm = () => {
 
     const {
         account,
+        vault,
         token,
         receiptToken,
         apy,
@@ -155,6 +156,8 @@ export const YieldSupplyForm = () => {
                     {flow.currentStep === 'complete' ? (
                         <YieldFlowCompleteSupply
                             apy={apy}
+                            vault={vault}
+                            networkSymbol={account.symbol}
                             input={{
                                 token,
                                 amount: completedAmount,
