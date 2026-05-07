@@ -70,7 +70,7 @@ const waitForThpPairingConfirmation = async ({
             {
                 view: thpPairingError ? 'thp-pairing-failed' : 'thp-pairing-start',
             },
-            uiPromise.requestId,
+            { requestId: uiPromise.requestId },
         ),
     );
 

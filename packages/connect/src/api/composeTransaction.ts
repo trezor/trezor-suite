@@ -293,7 +293,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
                         accountTypes: discovery.types.map(t => t.type),
                         accounts: discovery.accounts,
                     },
-                    dfd.requestId,
+                    { requestId: dfd.requestId },
                 ),
             );
             const uiResp = await dfd.promise;
@@ -321,7 +321,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
                         coinInfo,
                         accounts,
                     },
-                    dfd.requestId,
+                    { requestId: dfd.requestId },
                 ),
             );
         });
@@ -333,7 +333,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
                         type: 'end',
                         coinInfo,
                     },
-                    dfd.requestId,
+                    { requestId: dfd.requestId },
                 ),
             );
         });
@@ -354,7 +354,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
                     accountTypes: discovery.types.map(t => t.type),
                     coinInfo,
                 },
-                dfd.requestId,
+                { requestId: dfd.requestId },
             ),
         );
 
@@ -435,7 +435,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
                             feeLevels: composer.getFeeLevelList(),
                             coinInfo: this.params.coinInfo,
                         },
-                        resp.requestId,
+                        { requestId: resp.requestId },
                     ),
                 );
 
