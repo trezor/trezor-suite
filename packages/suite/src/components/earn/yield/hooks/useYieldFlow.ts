@@ -466,6 +466,7 @@ export const useYieldFlow = ({
     const isAmountTooHigh = isAmountGreaterThan({ amount: liveAmount, threshold: maxAmount });
     const isApprovalInsufficient =
         !session.approval.isModifyMode &&
+        session.approval.allowanceStatus === 'loaded' &&
         isAmountGreaterThan({
             amount: liveAmount,
             threshold: session.approval.allowanceAmount ?? undefined,
