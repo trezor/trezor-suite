@@ -13,6 +13,7 @@ import type {
     UiRequestButtonData,
     UiRequestConfirmation,
 } from '@trezor/connect-common';
+import { isStaticSessionId } from '@trezor/device-utils';
 import type { Capability } from '@trezor/protobuf/src/definitions';
 import { isNotUndefined, versionUtils } from '@trezor/utils';
 
@@ -46,25 +47,14 @@ export type MethodMessage<Name extends CallMethodPayload['method']> = {
 };
 
 function validateStaticSessionId(input: unknown): StaticSessionId {
-    if (typeof input !== 'string')
+    if (!isStaticSessionId(input)) {
         throw ERRORS.TypedError(
             'Method_InvalidParameter',
             'DeviceState: invalid staticSessionId: ' + input,
         );
-    const [firstTestnetAddress, rest] = input.split('@');
-    const [deviceId, instance] = rest.split(':');
-    if (
-        typeof firstTestnetAddress === 'string' &&
-        typeof deviceId === 'string' &&
-        typeof instance === 'string' &&
-        Number.parseInt(instance) >= 0
-    ) {
-        return input as StaticSessionId;
     }
-    throw ERRORS.TypedError(
-        'Method_InvalidParameter',
-        'DeviceState: invalid staticSessionId: ' + input,
-    );
+
+    return input;
 }
 
 // validate expected state from method parameter.

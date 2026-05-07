@@ -1,4 +1,4 @@
-import type { FeaturesNarrowing, FirmwareType } from '@trezor/device-utils';
+import type { FeaturesNarrowing, FirmwareType, StaticSessionId } from '@trezor/device-utils';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { ThpStateSerialized } from '@trezor/protocol';
 import type { Descriptor } from '@trezor/transport';
@@ -60,17 +60,10 @@ export type UnavailableCapability =
     | 'update-required'
     | 'trezor-connect-outdated';
 
-/**
- * This is ID assigned to Device object at point where it first interacts
- * with the Wallet (passphrase or standard).
- *
- * Format: `{first testnet address}@{device.features.device_id}:{device.instance}`
- */
-export type StaticSessionId = `${string}@${string}:${number}`;
+export type { StaticSessionId };
 
 export type DeviceState = {
     sessionId?: string; // dynamic value: Features.session_id
-    // ${first testnet address}@${device.features.device_id}:${device.instance}
     staticSessionId?: StaticSessionId;
     deriveCardano?: boolean;
 };

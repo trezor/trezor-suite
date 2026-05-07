@@ -11,6 +11,7 @@ import type {
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { initLog } from '@trezor/connect-common/src/utils/debug';
+import { parseStaticSessionId } from '@trezor/device-utils';
 import type { Transport } from '@trezor/transport';
 import { TRANSPORT } from '@trezor/transport';
 import type { Descriptor, ApiType as TransportApiType } from '@trezor/transport/src/types';
@@ -360,7 +361,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     }
 
     getDeviceByStaticState(state: StaticSessionId): Device | undefined {
-        const deviceId = state.split('@')[1].split(':')[0];
+        const { deviceId } = parseStaticSessionId(state);
 
         return this.getPrioritizedDevices().find(d => d.features?.device_id === deviceId);
     }
