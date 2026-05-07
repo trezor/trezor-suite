@@ -61,9 +61,7 @@ export const useExitAlert = (handleContinueButtonPress?: () => void) => {
                 }
             },
             onPressSecondaryButton: () => {
-                if (handleContinueButtonPress) {
-                    handleContinueButtonPress();
-                }
+                handleContinueButtonPress?.();
             },
         });
     }, [

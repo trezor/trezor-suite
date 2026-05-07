@@ -181,9 +181,7 @@ export const useSendFormImport = ({
     // wait for data population (rerender) and trigger form validation
     const [trigger, setTriggerFn] = useState<(() => Promise<void>) | undefined>(undefined);
     useEffect(() => {
-        if (trigger) {
-            trigger();
-        }
+        trigger?.();
     }, [trigger]);
 
     const validateImportedTransaction = (triggerFn: () => Promise<void>) => {

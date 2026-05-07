@@ -59,9 +59,7 @@ export const useTradingCurrencySwitcher = <T extends TradingAllFormProps>({
         setValue('amountInCrypto', !amountInCrypto);
 
         // should be allowed only in sell/exchange
-        if (composeRequest) {
-            composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
-        }
+        composeRequest?.(TRADING_FORM_OUTPUT_AMOUNT);
     };
 
     useDidUpdate(() => {

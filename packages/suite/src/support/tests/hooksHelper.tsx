@@ -122,6 +122,6 @@ export const actionSequence = async <A extends UserAction[]>(
         }
 
         // action complete. run test
-        if (callback) callback(action);
+        callback?.(action);
     }
 };

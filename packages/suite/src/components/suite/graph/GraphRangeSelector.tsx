@@ -83,9 +83,7 @@ export const GraphRangeSelector = ({
 
                     setSelectedRange(range);
 
-                    if (onSelectedRange) {
-                        onSelectedRange(range);
-                    }
+                    onSelectedRange?.(range);
                 }}
             />
             {isLoading && <Spinner size={32} isDisabled={true} />}

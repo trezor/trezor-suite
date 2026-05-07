@@ -187,7 +187,7 @@ export const useFees = <TFieldValues extends FeesFormValues>({
         }
 
         // on change callback
-        if (onChange) onChange(selectedFeeRef.current, level);
+        onChange?.(selectedFeeRef.current, level);
 
         selectedFeeRef.current = selectedFee;
     };

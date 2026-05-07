@@ -378,9 +378,7 @@ const bootstrapIframe = (): Promise<void> => {
 
                     // Restart forwarding messages between suite-web and 3rd party window (in case it was already started by a previous handshake attempt).
                     // This ensures that we are forwarding messages through the correct BroadcastChannel instance.
-                    if (stopForwarding) {
-                        stopForwarding();
-                    }
+                    stopForwarding?.();
                     stopForwarding = startForwarding(broadcast, window.parent, ownerOrigin);
 
                     window.parent.postMessage(getConfirmHandshake(event.data), ownerOrigin);

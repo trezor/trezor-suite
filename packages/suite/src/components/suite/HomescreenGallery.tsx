@@ -66,9 +66,7 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
             dispatch(applySettings({ homescreen: hex }));
         }
 
-        if (onConfirm) {
-            onConfirm();
-        }
+        onConfirm?.();
     };
 
     const homescreens = getHomescreens(isBitcoinOnlyFirmware); // Get the homescreens based on the firmware type
