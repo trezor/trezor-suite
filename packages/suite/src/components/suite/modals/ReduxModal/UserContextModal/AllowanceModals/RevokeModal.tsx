@@ -9,6 +9,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { Banner, Box, Column, Icon, Modal, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
+import { useAsyncClickHandler } from '@trezor/react-utils';
 import { borders } from '@trezor/theme';
 
 import { AccountLabeling } from 'src/components/suite/labeling';
@@ -35,6 +36,7 @@ interface RevokeModalProps {
 export const RevokeModal = (props: RevokeModalProps) => {
     const { account, provider, spender, cryptoId, logoSourceType, preapprovedAmount } = props;
     const { device } = useDevice();
+    const { handleClick, disabled: isConfirmInProgress } = useAsyncClickHandler();
 
     const context = useAllowanceModal({
         ...props,
@@ -76,9 +78,9 @@ export const RevokeModal = (props: RevokeModalProps) => {
                 bottomContent={
                     <>
                         <Modal.Button
-                            isLoading={isLoading}
-                            isDisabled={!device?.connected || !canSubmit}
-                            onClick={confirmAndSend}
+                            isLoading={isLoading || isConfirmInProgress}
+                            isDisabled={!device?.connected || !canSubmit || isConfirmInProgress}
+                            onClick={() => handleClick(confirmAndSend)}
                         >
                             <Translation id="TR_CONTINUE" />
                         </Modal.Button>

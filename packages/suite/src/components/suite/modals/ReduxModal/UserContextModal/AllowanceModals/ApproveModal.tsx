@@ -8,6 +8,7 @@ import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Box, Column, Modal, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
+import { useAsyncClickHandler } from '@trezor/react-utils';
 import { borders } from '@trezor/theme';
 
 import { AccountLabeling } from 'src/components/suite/labeling';
@@ -35,6 +36,7 @@ interface ApproveModalProps {
 export const ApproveModal = (props: ApproveModalProps) => {
     const { account, provider, spender, cryptoId, logoSourceType } = props;
     const { device } = useDevice();
+    const { handleClick, disabled: isConfirmInProgress } = useAsyncClickHandler();
     const context = useAllowanceModal({ ...props, type: 'APPROVE' });
 
     const {
@@ -71,9 +73,9 @@ export const ApproveModal = (props: ApproveModalProps) => {
                 bottomContent={
                     <>
                         <Modal.Button
-                            isLoading={isLoading}
-                            isDisabled={!device?.connected || !canSubmit}
-                            onClick={confirmAndSend}
+                            isLoading={isLoading || isConfirmInProgress}
+                            isDisabled={!device?.connected || !canSubmit || isConfirmInProgress}
+                            onClick={() => handleClick(confirmAndSend)}
                         >
                             <Translation id="TR_CONTINUE" />
                         </Modal.Button>
