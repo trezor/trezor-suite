@@ -54,9 +54,7 @@ export const isFilterValueMatchingAccount = (
         account.tokens?.some(token => token.name?.toLowerCase().includes(lowerCaseFilterValue)) ??
         false;
 
-    if (isMatchingTokenName) return true;
-
-    return false;
+    return isMatchingTokenName;
 };
 
 /**

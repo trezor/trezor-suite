@@ -262,11 +262,7 @@ export const getSelectedDevice = (
         }
 
         // special case we need to use after wipe device (which changes device_id)
-        if (d.instance === instance && d.path.length > 0 && d.path === device.path) {
-            return true;
-        }
-
-        return false;
+        return d.instance === instance && d.path.length > 0 && d.path === device.path;
     });
 };
 

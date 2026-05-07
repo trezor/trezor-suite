@@ -246,9 +246,7 @@ const shouldHideProgressBar = ({
 
             // Hide progress not staking with us,
             // but show it when pending tx as it can be update provider
-            if (!isStakedWithEverstake && hasNoPendingTx) return true;
-
-            return false;
+            return !isStakedWithEverstake && hasNoPendingTx;
         }
 
         case 'ethereum': {

@@ -17,7 +17,5 @@ export const selectIsNetworkSendFlowEnabled = (
         FeatureFlag.IsCardanoSendEnabled,
     );
 
-    if (networkType !== 'cardano' || isCardanoSendEnabled) return true;
-
-    return false;
+    return networkType !== 'cardano' || isCardanoSendEnabled;
 };
