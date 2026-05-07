@@ -498,7 +498,7 @@ export const fetchTransactionsPageThunk = createThunk(
             throw new Error(`Account not found: ${accountKey}`);
         }
 
-        if (result && result.success) {
+        if (result?.success) {
             const updateAction = accountsActions.updateAccount(currentAccount, result.payload);
             const updatedAccount = updateAction.payload;
             const updatedTransactions = result.payload.history.transactions || [];

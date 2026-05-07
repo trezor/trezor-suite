@@ -99,7 +99,7 @@ export const TradingFormApproval = () => {
     };
 
     const onRevokeClick = async () => {
-        if (!selectedQuote || !selectedQuote.receiveAddress) {
+        if (!selectedQuote?.receiveAddress) {
             return;
         }
 
@@ -121,7 +121,7 @@ export const TradingFormApproval = () => {
     };
 
     const onProceedToSwapClick = async () => {
-        if (!selectedQuote || !selectedQuote.receiveAddress) {
+        if (!selectedQuote?.receiveAddress) {
             return;
         }
 

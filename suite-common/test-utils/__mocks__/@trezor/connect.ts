@@ -21,7 +21,7 @@ const getNextFixture = (_methodName: string) => {
 
 const result = (methodName: string, defaults: any) =>
     jest.fn(params => {
-        if (params && params.__info) {
+        if (params?.__info) {
             realMethods['init']({
                 manifest: {
                     email: '',

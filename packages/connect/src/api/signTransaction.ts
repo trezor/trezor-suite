@@ -254,7 +254,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
 
         // TODO: validate inputs address_n's === same account
         const accountPath = inputs.find(i => i.address_n);
-        if (!accountPath || !accountPath.address_n) {
+        if (!accountPath?.address_n) {
             throw ERRORS.TypedError('Runtime', 'Account not found');
         }
         const address_n = accountPath.address_n.slice(0, 3);

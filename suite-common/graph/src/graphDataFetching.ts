@@ -110,7 +110,7 @@ const getBalanceFromAccountInfo = ({
     const findTokenBalance = () => {
         const token = accountInfo.tokens?.find(t => t.contract === contractId);
 
-        if (token && token.balance) {
+        if (token?.balance) {
             // this is raw value from getAccountInfo, we need to divide it by 10^decimals (in redux it's already formatted)
             return new BigNumber(token.balance).div(10 ** token.decimals).toFixed();
         }

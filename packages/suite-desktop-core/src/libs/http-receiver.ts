@@ -97,7 +97,7 @@ export const createHttpReceiver = (options?: { port?: number }) => {
         allowReferers(['', 'localhost:3000', '*.invity.io', 'invity.io']),
         (request, response) => {
             const { query } = parseRequestUrl(request.url);
-            if (query && query.p) {
+            if (query?.p) {
                 httpReceiver.emit('buy/redirect', query.p.toString());
             }
 
@@ -149,7 +149,7 @@ export const createHttpReceiver = (options?: { port?: number }) => {
         allowReferers(['']), // No referer
         (request, response) => {
             const { query } = parseRequestUrl(request.url);
-            if (query && query.p) {
+            if (query?.p) {
                 httpReceiver.emit('sell/redirect', query.p.toString());
             }
 
@@ -163,7 +163,7 @@ export const createHttpReceiver = (options?: { port?: number }) => {
         allowReferers(['']), // No referer
         (request, response) => {
             const { query } = parseRequestUrl(request.url);
-            if (query && query.p) {
+            if (query?.p) {
                 httpReceiver.emit('exchange/redirect', query.p.toString());
             }
 

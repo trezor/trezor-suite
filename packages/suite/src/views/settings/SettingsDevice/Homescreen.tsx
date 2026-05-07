@@ -61,7 +61,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
     };
 
     const onUploadHomescreen = async (files: FileList | null) => {
-        if (!files || !files.length) return;
+        if (!files?.length) return;
         let file = files[0];
 
         let validationResult = await validateImage({ file, deviceModelInternal });

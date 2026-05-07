@@ -6,7 +6,7 @@ export const findSubjectContentByOid = (
 ): Uint8Array<ArrayBufferLike> | null => {
     const subjectItems = deviceCert.tbsCertificate.subject;
     const matchedItem = subjectItems.find(({ algorithmOid }) => algorithmOid === oid);
-    if (!matchedItem || !matchedItem.parameters) return null;
+    if (!matchedItem?.parameters) return null;
 
     return matchedItem.parameters.asn1.contents;
 };

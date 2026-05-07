@@ -14,7 +14,7 @@ import { type Action, type AppState, type Dispatch, type TrezorDevice } from 'sr
 
 const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: TrezorDevice) => {
     // no device, no redirect
-    if (!device || !device.features) {
+    if (!device?.features) {
         return;
     }
 

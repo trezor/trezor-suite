@@ -30,7 +30,7 @@ export const RecoveryStep = () => {
     const recoveryWordRequestInputType = useSelector(selectRecoveryWordRequestInputType);
     const dispatch = useDispatch();
 
-    if (!device || !device.features) {
+    if (!device?.features) {
         return null;
     }
 

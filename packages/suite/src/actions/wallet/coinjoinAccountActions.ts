@@ -796,7 +796,7 @@ export const restoreCoinjoinSession =
         }
         // get fresh data from reducer
         const coinjoinAccount = selectCoinjoinAccountByKey(getState(), account.key);
-        if (!coinjoinAccount || !coinjoinAccount.session) {
+        if (!coinjoinAccount?.session) {
             return errorToast('Coinjoin account session is missing');
         }
 

@@ -196,7 +196,7 @@ const updateSession = (
     }: ExtractActionPayload<typeof COINJOIN.SESSION_ROUND_CHANGED>,
 ) => {
     const account = getAccount(draft, accountKey);
-    if (!account || !account.session) return;
+    if (!account?.session) return;
 
     const { roundPhase } = account.session;
     const { phase, phaseDeadline } = round;
@@ -222,7 +222,7 @@ const sessionTxSigned = (
     payload: ExtractActionPayload<typeof COINJOIN.SESSION_TX_SIGNED>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
-    if (!account || !account.session) return;
+    if (!account?.session) return;
     account.rawLiquidityClue = payload.rawLiquidityClue;
     account.session = {
         ...account.session,
@@ -250,7 +250,7 @@ const removeTxCandidate = (
 ) => {
     payload.accountKeys.forEach(key => {
         const account = getAccount(draft, key);
-        if (account && account.transactionCandidates) {
+        if (account?.transactionCandidates) {
             account.transactionCandidates = account.transactionCandidates.filter(
                 tx => tx.roundId !== payload.round.id,
             );
@@ -266,7 +266,7 @@ const updateSessionStarting = (
     payload: ExtractActionPayload<typeof COINJOIN.SESSION_STARTING>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
-    if (!account || !account.session) return;
+    if (!account?.session) return;
     if (payload.isStarting) {
         account.session = {
             ...account.session,
@@ -302,7 +302,7 @@ const pauseSession = (
     payload: ExtractActionPayload<typeof COINJOIN.SESSION_PAUSE>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
-    if (!account || !account.session) return;
+    if (!account?.session) return;
 
     delete account.session.roundPhase;
     delete account.session.sessionDeadline;
@@ -316,7 +316,7 @@ const restoreSession = (
     payload: ExtractActionPayload<typeof COINJOIN.SESSION_RESTORE>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
-    if (!account || !account.session) return;
+    if (!account?.session) return;
 
     delete account.session.paused;
     delete account.session.isAutoStopEnabled;
@@ -402,7 +402,7 @@ const updateSessionPhase = (
         accountKey => getAccount(draft, accountKey) || [],
     );
 
-    if (!accounts || !accounts.length) {
+    if (!accounts?.length) {
         return;
     }
 

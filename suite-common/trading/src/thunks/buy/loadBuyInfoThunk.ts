@@ -13,7 +13,7 @@ export const loadBuyInfoThunk = createThunk<BuyInfo>(
     async (_, { fulfillWithValue }) => {
         const buyInfo = await invityAPI.getBuyList();
 
-        if (!buyInfo || !buyInfo.providers) {
+        if (!buyInfo?.providers) {
             return fulfillWithValue({
                 buyInfo: {
                     country: regional.UNKNOWN_COUNTRY,

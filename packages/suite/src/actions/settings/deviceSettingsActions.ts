@@ -130,7 +130,7 @@ export const resetDevice =
             }
         }
 
-        if (!device || !device.features) return;
+        if (!device?.features) return;
 
         if (device.mode !== 'initialize') {
             dispatch(

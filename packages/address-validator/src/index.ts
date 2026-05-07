@@ -13,7 +13,7 @@ export function validate(
 ): boolean {
     const currency = currencies.getByNameOrSymbol(currencyNameOrSymbol || DEFAULT_CURRENCY_NAME);
 
-    if (currency && currency.validator) {
+    if (currency?.validator) {
         return currency.validator.isValidAddress(address, currency, networkType);
     }
 
@@ -26,7 +26,7 @@ export function getAddressType(
     networkType?: string,
 ): AddressType | undefined {
     const currency = currencies.getByNameOrSymbol(currencyNameOrSymbol || DEFAULT_CURRENCY_NAME);
-    if (!currency || !currency.validator) {
+    if (!currency?.validator) {
         throw new Error('getAddressType: No validator for currency: ' + currencyNameOrSymbol);
     }
     if (currency.validator.getAddressType) {

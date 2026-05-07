@@ -131,7 +131,7 @@ export const closeModalApp = createThunk<void, boolean | undefined>(
         ).suiteRouterHistory.getLocation();
         const route = findRoute(location.pathname);
 
-        if (route && route.isForegroundApp) {
+        if (route?.isForegroundApp) {
             dispatch(goto({ routeName: 'suite-index' }));
 
             return;

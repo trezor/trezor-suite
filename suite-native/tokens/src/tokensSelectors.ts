@@ -44,7 +44,7 @@ export const selectAccountTokenInfo = createMemoizedSelector(
         (_state, _accountKey?: AccountKey, tokenAddress?: TokenAddress) => tokenAddress,
     ],
     (account, tokenAddress?: TokenAddress): TokenInfoBranded | null => {
-        if (!account || !account.tokens) {
+        if (!account?.tokens) {
             return null;
         }
 

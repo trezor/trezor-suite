@@ -62,14 +62,14 @@ export const PinStep = () => {
                 }
             }
 
-            if (device && device.features.pin_protection) {
+            if (device?.features.pin_protection) {
                 setStatus('success');
                 goToNextStep();
             }
         }
     }, [device, goToNextStep]);
 
-    if (!device || !device.features) {
+    if (!device?.features) {
         return null;
     }
 

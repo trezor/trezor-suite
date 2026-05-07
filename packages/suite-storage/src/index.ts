@@ -273,7 +273,7 @@ class CommonDB<TDBStructure> {
                 return index.getAll(keyRange);
             }
 
-            if (filters && filters.reverse) {
+            if (filters?.reverse) {
                 // get items in reverse order
                 let cursor = await index.openCursor(undefined, 'prev');
                 const items = [];
