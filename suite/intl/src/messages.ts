@@ -11214,6 +11214,15 @@ export const messages = defineMessages({
         id: 'TR_NO_CONNECTED_APPS_DESCRIPTION',
         defaultMessage: 'Use your Trezor with third-party apps and wallets to manage your assets.',
     },
+    TR_CONNECT_APP_SILENT_MODE: {
+        id: 'TR_CONNECT_APP_SILENT_MODE',
+        defaultMessage: 'Keep Suite hidden',
+    },
+    TR_CONNECT_APP_SILENT_MODE_DESCRIPTION: {
+        id: 'TR_CONNECT_APP_SILENT_MODE_DESCRIPTION',
+        defaultMessage:
+            'Suite will only appear when action is required, such as entering PIN or passphrase.',
+    },
     TR_PERMISSION_READ: {
         id: 'TR_PERMISSION_READ',
         defaultMessage: 'Access public keys from your Trezor device',

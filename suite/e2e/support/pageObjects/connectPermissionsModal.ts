@@ -5,6 +5,7 @@ export class ConnectPermissionsModal {
     readonly appName: Locator;
     readonly processParagraph: Locator;
     readonly rememberCheckbox: Locator;
+    readonly silentModeCheckbox: Locator;
     readonly confirmButton: Locator;
     readonly cancelButton: Locator;
 
@@ -15,6 +16,9 @@ export class ConnectPermissionsModal {
         this.appName = page.getByTestId('@connect-permissions-modal/app-name');
         this.processParagraph = page.getByTestId('@connect-permissions-modal/paragraph-process');
         this.rememberCheckbox = page.getByTestId('@connect-permissions-modal/remember-checkbox');
+        this.silentModeCheckbox = page.getByTestId(
+            '@connect-permissions-modal/silent-mode-checkbox',
+        );
         this.confirmButton = page.getByTestId('@connect-permissions-modal/confirm-button');
         this.cancelButton = page.getByTestId('@connect-permissions-modal/cancel-button');
     }

@@ -77,6 +77,13 @@ const forgetAppPermissions = createAction(
     }),
 );
 
+const setAppSilentMode = createAction(
+    `${ACTION_PREFIX}/setAppSilentMode`,
+    (payload: { origin: string; silentMode: boolean }) => ({
+        payload,
+    }),
+);
+
 const txSimulation = createAction(
     `${ACTION_PREFIX}/txSimulation`,
     (payload: Pick<ConnectPopupCallWithState<'tx-simulation'>, 'fromAddress'>) => ({
@@ -105,6 +112,7 @@ export const connectPopupActions = {
     setError,
     rememberAppPermissions,
     forgetAppPermissions,
+    setAppSilentMode,
     txSimulation,
     setSelectedFee,
     switchDevice,
