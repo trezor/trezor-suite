@@ -15,7 +15,6 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
             await settingsPage.toggleTestnetNetworks();
             await settingsPage.navigateTo('coins');
             await settingsPage.coinsTab.enableNetwork('regtest');
-
             await trezorUserEnv.sendToAddressAndMineBlock({
                 address: ADDRESS_INDEX_1,
                 btc_amount: 1,
@@ -48,6 +47,7 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
         await page.getByTestId('@send/header-dropdown/locktime').click();
         await page.getByTestId('locktime-option/input').click();
         await page.getByTestId('locktime-option/option/block').click();
+        await expect(page.getByTestId('locktime-blockheight-input')).toBeVisible();
         await page.getByTestId('locktime-blockheight-input').fill('1000');
 
         await tradingPage.sendButton.click();
