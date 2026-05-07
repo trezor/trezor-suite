@@ -70,7 +70,7 @@ const PRODUCTION_SECURITY_HEADERS = {
         'form-action': ['self'],
         'frame-ancestors': ['self'],
         'base-uri': ['none'],
-        'object-src': ['self'],
+        'object-src': ['none'],
         // trezorsuite deeplinks are opened using iframes to avoid issues with navigation
         'frame-src': ['self', 'trezorsuite://*'],
         'report-uri': SENTRY_REPORT_URL,
