@@ -10,6 +10,7 @@ import {
     getStakingPath,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { PROTO } from '@trezor/connect';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: extract pathUtils to a shared location and remove this exception (see #27376 deferred work)
 import { getSerializedPath } from '@trezor/connect/src/utils/pathUtils';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type Result } from '@trezor/type-utils';

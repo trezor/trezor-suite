@@ -4,6 +4,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import type { Network } from '@suite-common/wallet-config';
 import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: blocked on blockchain plugin modularisation; remove this exception once Solana helpers are exposed via a public API (see #27376 deferred work)
 import { getAssociatedTokenAccountAddress } from '@trezor/connect/src/api/solana/solanaUtils';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';

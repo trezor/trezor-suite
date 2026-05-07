@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { Button, type ButtonProps } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: expose the browser-specific TrezorConnect type via the @trezor/connect barrel and remove this exception (see #27376)
 import type TrezorConnectBrowser from '@trezor/connect/src/index.browser';
 
 const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {

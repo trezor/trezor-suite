@@ -6,6 +6,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account, type FormOptions } from '@suite-common/wallet-types';
 import type { CallMethodKeys, SignTransaction } from '@trezor/connect';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: extract pathUtils to a shared location and remove this exception (see #27376 deferred work)
 import { getSerializedPath } from '@trezor/connect/src/utils/pathUtils';
 
 import { connectPopupActions } from '../connectPopupActions';
