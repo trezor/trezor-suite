@@ -8,20 +8,20 @@ type Attributes = {
     from: AttributeDef<
         | 'earn-dashboard'
         | 'account-defi-tokens'
-        | 'supply-in-a-nutshell-modal'
-        | 'supply-morpho-modal'
+        | 'deposit-in-a-nutshell-modal'
+        | 'deposit-morpho-modal'
         | 'claim-select-account-modal'
-        | 'supply-form'
+        | 'deposit-form'
         | 'withdraw-form'
         | 'claim-form'
     >;
     to: AttributeDef<
         | 'earn-dashboard'
-        | 'supply-form'
+        | 'deposit-form'
         | 'withdraw-form'
         | 'claim-form'
-        | 'supply-in-a-nutshell-modal'
-        | 'supply-morpho-modal'
+        | 'deposit-in-a-nutshell-modal'
+        | 'deposit-morpho-modal'
         | 'claim-select-account-modal'
     >;
     networkSymbol?: AttributeDef<string>;

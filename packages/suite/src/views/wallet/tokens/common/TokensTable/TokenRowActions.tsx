@@ -140,7 +140,7 @@ const TokenRowBasicActions = ({
             payload: {
                 action: 'continue',
                 from: 'account-defi-tokens',
-                to: 'supply-form',
+                to: 'deposit-form',
                 networkSymbol: account.symbol,
                 contractAddress,
             },

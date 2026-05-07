@@ -12,7 +12,7 @@ export const useYieldSupply = ({
     account,
     routeParams,
 }: UseYieldSupplyProps): YieldFlowContextValues | null => {
-    const flowResult = useYieldFlow({ account, routeParams, flowType: 'supply' });
+    const flowResult = useYieldFlow({ account, routeParams, flowType: 'deposit' });
     const { vault, token, receiptToken } = flowResult;
 
     if (!token || !receiptToken || !vault) {

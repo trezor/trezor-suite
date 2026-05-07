@@ -98,7 +98,7 @@ export const Feature = {
             yield: 'earn.dashboard.yield',
         } as const satisfies Record<EarnDashboardType, string>,
         yield: {
-            supply: 'earn.yield.supply',
+            deposit: 'earn.yield.deposit',
             withdraw: 'earn.yield.withdraw',
             claim: 'earn.yield.claim',
         } as const satisfies Record<YieldFlowType, string>,
@@ -157,7 +157,7 @@ const getLegalContext = (key: LegalContextKey) => `legal.${key}` as const;
  * - `getStaking('eth')` → 'accounts.eth.staking'
  * - `getTrading('buy')` → 'trading.buy'
  * - `getEarnDashboard('yield')` → 'earn.dashboard.yield'
- * - `getEarnYield('supply')` → 'earn.yield.supply'
+ * - `getEarnYield('deposit')` → 'earn.yield.deposit'
  * - `getEarnYield('claim')` → 'earn.yield.claim'
  * - `getSettings('device')` → 'settings.device'
 

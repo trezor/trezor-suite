@@ -21,7 +21,7 @@ type YieldSupplyProps = {
 };
 
 export const YieldSupply = ({ account, routeParams }: YieldSupplyProps) => {
-    const { isDisabled, content } = useMessageSystemYield('supply');
+    const { isDisabled, content } = useMessageSystemYield('deposit');
     const allowanceContextValue = useAllowance({ account });
     const yieldSupplyContextValues = useYieldSupply({ account, routeParams });
 
@@ -32,9 +32,9 @@ export const YieldSupply = ({ account, routeParams }: YieldSupplyProps) => {
     return (
         <AllowanceContext.Provider value={allowanceContextValue}>
             <Column gap={24}>
-                <ContextMessage context={Context.getEarnYield('supply')} />
+                <ContextMessage context={Context.getEarnYield('deposit')} />
                 {isDisabled ? (
-                    <YieldDisabledBanner type="supply" content={content} />
+                    <YieldDisabledBanner type="deposit" content={content} />
                 ) : (
                     <YieldSupplyContext.Provider value={yieldSupplyContextValues}>
                         <FormProvider {...yieldSupplyContextValues.methods}>

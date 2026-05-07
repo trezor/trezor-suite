@@ -2,7 +2,7 @@ import type { YieldDto } from '@suite-common/earn-stablecoin-api';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
 
-export const YIELD_FLOW_TYPES = ['supply', 'withdraw', 'claim'] as const;
+export const YIELD_FLOW_TYPES = ['deposit', 'withdraw', 'claim'] as const;
 export const YIELD_FLOW_STEPS = ['approve', 'action', 'complete'] as const;
 
 export type YieldFlowType = (typeof YIELD_FLOW_TYPES)[number];
@@ -46,7 +46,7 @@ export type YieldApproveModalState = {
 };
 
 export type YieldPendingTransactionState = {
-    type: 'approve' | 'revoke' | 'revoke-only' | 'supply' | 'withdraw' | 'claim';
+    type: 'approve' | 'revoke' | 'revoke-only' | 'deposit' | 'withdraw' | 'claim';
     txid: string;
     amount: string;
 };

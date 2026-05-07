@@ -20,7 +20,7 @@ const partialAccount = z.object({
 
 const stablecoinYieldTxSimulationParams = z.discriminatedUnion('flow', [
     z.strictObject({
-        flow: z.union([z.literal('supply'), z.literal('withdraw')]),
+        flow: z.union([z.literal('deposit'), z.literal('withdraw')]),
         account: partialAccount,
         unsignedTx: z.string(),
     }),
@@ -45,7 +45,7 @@ function composeUnsignedEvmTx(
     params: StablecoinYieldTxSimulationParams,
 ): EthereumSignTransaction['transaction'] {
     switch (params.flow) {
-        case 'supply':
+        case 'deposit':
         case 'withdraw': {
             const {
                 to,

@@ -139,7 +139,7 @@ export const useYieldFlow = ({
 
     const session = useSelector(state => selectStablecoinYieldSession(state, flowType, flowKey));
 
-    const maxAmount = flowType === 'supply' ? (token?.balance ?? '') : suppliedAmount;
+    const maxAmount = flowType === 'deposit' ? (token?.balance ?? '') : suppliedAmount;
 
     useEffect(() => {
         if (!flowKey) {
@@ -171,7 +171,7 @@ export const useYieldFlow = ({
     );
 
     useEffect(() => {
-        if (flowType !== 'supply' || allowanceStatus !== 'idle') {
+        if (flowType !== 'deposit' || allowanceStatus !== 'idle') {
             return;
         }
 
@@ -495,7 +495,7 @@ export const useYieldFlow = ({
         });
 
         return {
-            approvalNetworkFeeWarning: flowType === 'supply' ? warning : null,
+            approvalNetworkFeeWarning: flowType === 'deposit' ? warning : null,
             actionNetworkFeeWarning: warning,
         };
     }, [account.availableBalance, account.networkType, account.symbol, feeInfo, flowType]);

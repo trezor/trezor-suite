@@ -11,7 +11,7 @@ import { useDispatch } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 type YieldFlowCompleteProps = {
-    type: 'supply' | 'withdraw' | 'claim';
+    type: 'deposit' | 'withdraw' | 'claim';
     heading: ReactNode;
     description: ReactNode;
     showFeedback?: boolean;

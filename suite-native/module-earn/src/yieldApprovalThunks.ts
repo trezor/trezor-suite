@@ -51,7 +51,7 @@ export const prepareYieldApprovalReviewTransactionThunk = createThunk(
         const formDraft = selectDeepCopyOfFormDraft(getState(), formDraftKey) as
             | FormState
             | undefined;
-        const { approval } = selectStablecoinYieldSession(getState(), 'supply', flowKey);
+        const { approval } = selectStablecoinYieldSession(getState(), 'deposit', flowKey);
 
         if (!approval.modalState) {
             return rejectWithValue('Approval review transaction is not ready.');
