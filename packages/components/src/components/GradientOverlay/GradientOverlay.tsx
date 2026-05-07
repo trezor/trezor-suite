@@ -26,10 +26,5 @@ export const Gradient = styled.div<{
 export const GradientOverlay = ({ hiddenFrom = '50%', forcedElevation }: GradientOverlayProps) => {
     const { parentElevation } = useElevation(forcedElevation);
 
-    return (
-        <Gradient
-            $elevation={forcedElevation === undefined ? parentElevation : forcedElevation}
-            $hiddenFrom={hiddenFrom}
-        />
-    );
+    return <Gradient $elevation={forcedElevation ?? parentElevation} $hiddenFrom={hiddenFrom} />;
 };

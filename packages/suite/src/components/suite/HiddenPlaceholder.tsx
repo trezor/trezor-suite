@@ -123,7 +123,7 @@ export const HiddenPlaceholder = ({
             onMouseLeave={onMouseLeave}
             onMouseMove={onMouseMove}
             $discreetMode={discreetMode}
-            $intensity={enforceIntensity !== undefined ? enforceIntensity : automaticIntensity}
+            $intensity={enforceIntensity ?? automaticIntensity}
             $minWidth={shouldEnforceMinWidth ? wrapperMinWidth : undefined}
             className={className}
             ref={ref}

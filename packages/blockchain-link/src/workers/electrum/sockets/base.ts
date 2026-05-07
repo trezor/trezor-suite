@@ -37,8 +37,8 @@ export abstract class SocketBase implements ISocket {
     constructor({ host, port, timeout, keepAlive }: SocketConfig) {
         this.host = host;
         this.port = port;
-        this.timeout = timeout !== undefined ? timeout : TIMEOUT;
-        this.keepAlive = keepAlive !== undefined ? keepAlive : KEEP_ALIVE;
+        this.timeout = timeout ?? TIMEOUT;
+        this.keepAlive = keepAlive ?? KEEP_ALIVE;
     }
 
     async connect(listener: SocketListener) {

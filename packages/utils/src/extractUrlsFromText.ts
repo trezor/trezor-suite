@@ -10,7 +10,7 @@ export const extractUrlsFromText = (text: string) => {
 
     matches.forEach(match => {
         const url = match[0];
-        const index = match.index !== undefined ? match.index : -1; // Ensure index is defined
+        const index = match.index ?? -1;
 
         // Capture text before the URL
         if (lastIndex < index) {

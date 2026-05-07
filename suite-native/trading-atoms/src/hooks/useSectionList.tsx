@@ -118,7 +118,7 @@ const transformToInternalFlatListData = <T, U = undefined>({
                         isFirst: index === 0,
                         isLast: index === data.length - 1 && isLastItemRounded,
                         sectionData,
-                        isEnabled: item.isEnabled !== undefined ? item.isEnabled : true,
+                        isEnabled: item.isEnabled ?? true,
                     },
                 }),
             );

@@ -29,7 +29,7 @@ export const StoreBadge = ({ url, image, isHighlighted, onClick }: StoreBadgePro
     const onMouseLeave = () => {
         setIsHovered(false);
     };
-    const highlighted = isHighlighted !== undefined ? isHighlighted : isHovered;
+    const highlighted = isHighlighted ?? isHovered;
 
     return (
         <TrezorLink href={url} onClick={onClick}>
