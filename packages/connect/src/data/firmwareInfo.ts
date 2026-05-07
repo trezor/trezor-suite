@@ -423,7 +423,7 @@ const getChangelog = (releases: FirmwareRelease[], features: StrictFeatures) => 
 };
 
 const isRequired = (changelog: ReturnType<typeof getChangelog>) => {
-    if (!changelog || !changelog.length) return null;
+    if (!changelog?.length) return null;
 
     return changelog.some(item => item.required);
 };

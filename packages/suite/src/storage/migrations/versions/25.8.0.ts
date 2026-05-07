@@ -11,7 +11,7 @@ export default createMigration<SuiteDBSchema>('25.8.0', async (db, tx) => {
         const store = tx.objectStore('suiteSettings');
         const suiteSettings = await store.get('suite');
 
-        if (suiteSettings && suiteSettings.settings) {
+        if (suiteSettings?.settings) {
             if (
                 typeof suiteSettings.settings.language === 'string' &&
                 suiteSettings.settings.language.length === 2

@@ -72,7 +72,7 @@ function assertDeviceIsAuthorized(device?: TrezorDevice): asserts device is Auth
 }
 
 function assertDeviceIsAcquired(device?: TrezorDevice): asserts device is AcquiredDevice {
-    if (!device || !device.features) {
+    if (!device?.features) {
         throw new Error('assertion error: device is not acquired');
     }
 }

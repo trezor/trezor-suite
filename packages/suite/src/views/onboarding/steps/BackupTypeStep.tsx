@@ -59,7 +59,7 @@ export const BackupTypeStep = () => {
         }
     }, [deviceModel, handleSubmit, unitPackaging, deviceDefaultBackupType]);
 
-    if (!device || !device.features) {
+    if (!device?.features) {
         return null;
     }
 

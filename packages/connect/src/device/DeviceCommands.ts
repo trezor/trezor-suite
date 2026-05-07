@@ -138,7 +138,7 @@ export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
                 script_type = 'SPENDADDRESS';
             }
         }
-        if (multisig && multisig.pubkeys) {
+        if (multisig?.pubkeys) {
             // convert xpub strings to HDNodeTypes
             multisig.pubkeys.forEach(pk => {
                 if (typeof pk.node === 'string') {

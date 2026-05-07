@@ -608,7 +608,7 @@ export const useTradingExchangeForm = ({
 
         const quote = requiresApproval ? selectedQuote : dexQuotes[0];
 
-        if (!quote || !quote.dexTx) {
+        if (!quote?.dexTx) {
             setValue('transactionData', '');
             setValue(TRADING_FORM_OUTPUT_ADDRESS, '');
 

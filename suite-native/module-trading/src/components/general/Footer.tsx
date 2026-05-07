@@ -20,7 +20,7 @@ interface FooterProviderContentProps {
 }
 
 const FooterProviderContent = ({ provider }: FooterProviderContentProps) => {
-    if (!provider || !provider.termsUrl) {
+    if (!provider?.termsUrl) {
         return (
             <Text variant="body-sm" color="contentSecondary" textAlign="center">
                 <Translation id="moduleTrading.tradingScreen.footer.termsAndConditionsGeneric" />

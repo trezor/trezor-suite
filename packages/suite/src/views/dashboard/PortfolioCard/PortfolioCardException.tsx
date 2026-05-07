@@ -195,7 +195,7 @@ export const PortfolioCardException = ({
                         action: async () => {
                             // enable passphrase
                             const result = await dispatch(applySettings({ use_passphrase: true }));
-                            if (!result || !result.success) return;
+                            if (!result?.success) return;
                             // restart discovery
                             dispatch(startOrRestartDiscoveryThunk());
                         },

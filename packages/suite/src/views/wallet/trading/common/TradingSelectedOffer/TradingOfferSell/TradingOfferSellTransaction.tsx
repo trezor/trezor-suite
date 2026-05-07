@@ -67,7 +67,7 @@ export const TradingSelectedOfferSellTransaction = () => {
     });
     const sellTrade = trade?.data || selectedQuote;
 
-    if (!sellTrade || !sellTrade.exchange) return null;
+    if (!sellTrade?.exchange) return null;
 
     const {
         exchange,

@@ -340,7 +340,7 @@ export const getTradingFormState = ({
 
             const networkData = cryptoIdToNetworkAndContractAddress(trade.cryptoCurrency);
 
-            if (!networkData || !networkData.network) {
+            if (!networkData?.network) {
                 return defaultState;
             }
 
