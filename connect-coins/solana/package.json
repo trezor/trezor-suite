@@ -6,6 +6,7 @@
     "sideEffects": false,
     "exports": {
         "./constants": "./src/constants/index.ts",
+        "./runtime": "./src/runtime/index.ts",
         "./types": "./src/types/index.ts"
     },
     "scripts": {
