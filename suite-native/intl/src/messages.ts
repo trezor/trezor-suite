@@ -1785,6 +1785,9 @@ export const messages = {
                 hidden: 'Hidden',
                 inactive: 'Inactive',
             },
+            zeroBalanceSection: {
+                title: 'Zero-balance tokens',
+            },
             hiddenTokensSection: {
                 title: 'Unrecognized tokens',
                 warning: "We don't recognize this token. It may be unsafe—proceed with caution.",

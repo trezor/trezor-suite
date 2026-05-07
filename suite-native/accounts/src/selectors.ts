@@ -37,8 +37,8 @@ import {
     getFiatRateKey,
     getFirstFreshAddress,
     isCardanoStakingActive,
-    isStakingSymbol,
     isErc4626,
+    isStakingSymbol,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { isNetworkWithTokens, selectAccountTokenInfo } from '@suite-native/tokens';
@@ -146,6 +146,7 @@ export const selectAccountTokenFiatBalance = createMemoizedSelector(
 export const getAccountListSections = (
     account: Account,
     tokenDefinitions: SimpleTokenStructure | undefined,
+    groupZeroBalance = false,
 ) => {
     const sections: AccountSelectBottomSheetSection[] = [];
     const isNetworkSupportingTokens = isNetworkWithTokens(account.symbol);
@@ -164,7 +165,16 @@ export const getAccountListSections = (
         account.networkType === 'stellar'
             ? tokens
             : tokens.filter(token => parseFloat(token?.balance ?? '0') > 0);
-    const hasAnyKnownTokens = isNetworkSupportingTokens && !!tokensWithBalance.length;
+
+    const zeroBalanceTokens: TokenInfoBranded[] =
+        groupZeroBalance && account.networkType !== 'stellar'
+            ? (tokens
+                  .filter(token => parseFloat(token?.balance ?? '0') === 0)
+                  .filter(token => !isErc4626(token)) as TokenInfoBranded[])
+            : [];
+
+    const hasAnyKnownTokens =
+        isNetworkSupportingTokens && !!(tokensWithBalance.length + zeroBalanceTokens.length);
 
     const stakingBalance = getAccountTotalStakingBalance(account) ?? '0';
 
@@ -196,22 +206,23 @@ export const getAccountListSections = (
     }
 
     if (hasAnyKnownTokens) {
-        // For Stellar, show all tokens (trustlines) regardless of balance since they are explicitly activated
-        // For other networks, only show tokens with balance > 0
-        const tokensToShow =
-            account.networkType === 'stellar'
-                ? tokens
-                : tokens.filter(token => parseFloat(token?.balance ?? '0') > 0);
-        tokensToShow
-            .filter(token => !isErc4626(token))
-            .forEach((token, index) => {
-                sections.push({
-                    type: 'token',
-                    account,
-                    token: token as TokenInfoBranded,
-                    isLast: index === tokensToShow.length - 1,
-                });
+        const tokensToShow = tokensWithBalance.filter(token => !isErc4626(token));
+        tokensToShow.forEach((token, index) => {
+            sections.push({
+                type: 'token',
+                account,
+                token: token as TokenInfoBranded,
+                isLast: index === tokensToShow.length - 1 && zeroBalanceTokens.length === 0,
             });
+        });
+
+        if (zeroBalanceTokens.length > 0) {
+            sections.push({
+                type: 'zeroBalance',
+                account,
+                tokens: zeroBalanceTokens,
+            });
+        }
     }
 
     return sections;
@@ -230,6 +241,20 @@ export const selectAccountListSections = createMemoizedSelector(
         );
 
         return getAccountListSections(account, networkTokenDefinitions);
+    },
+);
+
+export const selectAccountListSectionsWithZeroBalanceGroup = createMemoizedSelector(
+    [selectAccountByKey, selectTokenDefinitions],
+    (account, tokenDefinitions) => {
+        if (!account) return EMPTY_ARRAY;
+
+        const networkTokenDefinitions = getSimpleCoinDefinitionsByNetwork(
+            tokenDefinitions,
+            account.symbol,
+        );
+
+        return getAccountListSections(account, networkTokenDefinitions, true);
     },
 );
 
