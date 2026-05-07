@@ -201,7 +201,7 @@ const updateSession = (
     const { roundPhase } = account.session;
     const { phase, phaseDeadline } = round;
 
-    if (typeof roundPhase !== 'undefined' && roundPhase !== phase) {
+    if (roundPhase !== undefined && roundPhase !== phase) {
         account.session.sessionPhaseQueue = [];
     }
 

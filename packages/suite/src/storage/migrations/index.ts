@@ -477,7 +477,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
     if (oldVersion < 33) {
         await updateAll(transaction, 'messageSystem', messageSystem => {
             Object.values(messageSystem.dismissedMessages).forEach(dismissedMessage => {
-                if (typeof dismissedMessage.feature === 'undefined') {
+                if (dismissedMessage.feature === undefined) {
                     dismissedMessage.feature = false;
                 }
             });

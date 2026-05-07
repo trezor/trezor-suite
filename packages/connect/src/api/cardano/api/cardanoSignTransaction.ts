@@ -214,10 +214,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
                 payload.signingMode,
             ),
             additionalWitnessRequests,
-            derivationType:
-                typeof payload.derivationType !== 'undefined'
-                    ? payload.derivationType
-                    : PROTO.CardanoDerivationType.ICARUS_TREZOR,
+            derivationType: payload.derivationType ?? PROTO.CardanoDerivationType.ICARUS_TREZOR,
             includeNetworkId: payload.includeNetworkId,
             tagCborSets: payload.tagCborSets,
             unsignedTx: 'unsignedTx' in payload ? payload.unsignedTx : undefined,

@@ -33,10 +33,7 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
             const path = validatePath(batch.path, 3);
             const proto = {
                 address_n: path,
-                derivation_type:
-                    typeof batch.derivationType !== 'undefined'
-                        ? batch.derivationType
-                        : PROTO.CardanoDerivationType.ICARUS_TREZOR,
+                derivation_type: batch.derivationType ?? PROTO.CardanoDerivationType.ICARUS_TREZOR,
                 show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : false,
             };
 

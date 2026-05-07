@@ -43,7 +43,7 @@ export const StepInitial = ({
         updateAnalytics({ firmware: 'install' });
     };
 
-    const isCustomFirmware = typeof isCustomFirmwareUploaded !== 'undefined';
+    const isCustomFirmware = isCustomFirmwareUploaded !== undefined;
 
     return (
         <Modal.ModalBase

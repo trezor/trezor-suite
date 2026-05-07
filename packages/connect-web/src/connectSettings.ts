@@ -1,5 +1,5 @@
 export const getEnv = () => {
-    if (typeof chrome !== 'undefined' && typeof chrome.runtime?.onConnect !== 'undefined') {
+    if (typeof chrome !== 'undefined' && chrome.runtime?.onConnect !== undefined) {
         return 'webextension';
     }
     if (typeof navigator !== 'undefined') {

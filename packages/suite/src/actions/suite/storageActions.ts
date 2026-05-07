@@ -464,7 +464,7 @@ const saveMetadata = async (metadata: Partial<Pick<MetadataState, MetadataPersis
 
     // remove undefined in metadata arg
     typedObjectKeys(metadata).forEach(key => {
-        if (typeof metadata[key] === 'undefined') {
+        if (metadata[key] === undefined) {
             delete metadata[key];
         }
     });

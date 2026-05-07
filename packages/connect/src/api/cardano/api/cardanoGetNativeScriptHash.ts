@@ -54,10 +54,7 @@ export default class CardanoGetNativeScriptHash extends AbstractMethod<
         const params = {
             script: scriptToProto(payload.script),
             display_format: payload.displayFormat,
-            derivation_type:
-                typeof payload.derivationType !== 'undefined'
-                    ? payload.derivationType
-                    : PROTO.CardanoDerivationType.ICARUS_TREZOR,
+            derivation_type: payload.derivationType ?? PROTO.CardanoDerivationType.ICARUS_TREZOR,
         };
 
         super(message, params);

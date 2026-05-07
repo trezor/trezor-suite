@@ -45,10 +45,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
                 address_parameters: addressParametersToProto(batch.addressParameters),
                 protocol_magic: batch.protocolMagic,
                 network_id: batch.networkId,
-                derivation_type:
-                    typeof batch.derivationType !== 'undefined'
-                        ? batch.derivationType
-                        : PROTO.CardanoDerivationType.ICARUS_TREZOR,
+                derivation_type: batch.derivationType ?? PROTO.CardanoDerivationType.ICARUS_TREZOR,
                 show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : true,
                 chunkify: typeof batch.chunkify === 'boolean' ? batch.chunkify : false,
             };

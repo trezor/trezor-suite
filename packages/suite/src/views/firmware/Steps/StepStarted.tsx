@@ -17,7 +17,7 @@ export const StepStarted = ({
     isCustomFirmwareUploaded,
     install,
 }: StepStartedProps) => {
-    const isCustomFirmware = typeof isCustomFirmwareUploaded !== 'undefined';
+    const isCustomFirmware = isCustomFirmwareUploaded !== undefined;
 
     return (
         <Modal.ModalBase
