@@ -3,8 +3,14 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { type TokensRootState, selectAccountDefiTokensCount } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type TokensRootState,
+    selectAccountByKey,
+    selectAccountDefiTokensCount,
+} from '@suite-common/wallet-core';
 import { type NativeAccountsRootState, selectAccountListSections } from '@suite-native/accounts';
+import { VStack } from '@suite-native/atoms';
 import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-native/navigation';
 
 import { AccountAssetsScreenHeader } from '../components/AccountAssets/AccountAssetsScreenHeader';
@@ -20,6 +26,9 @@ export const AccountAssetsScreen = () => {
 
     const [activeTab, setActiveTab] = useState<AccountAssetsTab>('tokens');
 
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
     const sections = useSelector((state: NativeAccountsRootState) =>
         selectAccountListSections(state, accountKey),
     );
@@ -28,16 +37,20 @@ export const AccountAssetsScreen = () => {
     );
 
     const tokenCount = sections.filter(item => item.type === 'token').length;
+    const showInactiveTab = account?.networkType === 'stellar';
 
     return (
         <Screen header={<AccountAssetsScreenHeader accountKey={accountKey} />}>
-            <AccountAssetsTabBar
-                activeTab={activeTab}
-                tokenCount={tokenCount}
-                defiTokenCount={defiTokenCount}
-                onTabChange={setActiveTab}
-            />
-            <AccountAssetsTabContent accountKey={accountKey} activeTab={activeTab} />
+            <VStack spacing="sp32">
+                <AccountAssetsTabBar
+                    activeTab={activeTab}
+                    tokenCount={tokenCount}
+                    defiTokenCount={defiTokenCount}
+                    showInactiveTab={showInactiveTab ?? false}
+                    onTabChange={setActiveTab}
+                />
+                <AccountAssetsTabContent accountKey={accountKey} activeTab={activeTab} />
+            </VStack>
         </Screen>
     );
 };

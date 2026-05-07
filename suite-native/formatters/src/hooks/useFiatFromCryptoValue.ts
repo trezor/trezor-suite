@@ -41,13 +41,19 @@ export const useFiatFromCryptoValue = ({
 
     const isTestnetCoin = isTestnet(symbol);
 
-    if (!cryptoValue || !rate || currentRate?.error || isTestnetCoin) return null;
+    if (!cryptoValue || isTestnetCoin) return null;
 
     if (tokenAddress) {
         const decimalValue = convertTokenValueToDecimal(cryptoValue, tokenDecimals);
 
+        // Zero balance always yields zero fiat regardless of rate — rate: 1 is a dummy (0 × n = 0).
+        if (decimalValue.isZero()) return toFiatCurrency({ amount: '0', rate: 1 });
+        if (!rate || currentRate?.error) return null;
+
         return toFiatCurrency({ amount: decimalValue.toString(), rate });
     }
+
+    if (!rate || currentRate?.error) return null;
 
     return convertCryptoToFiatAmount({
         amount: cryptoValue,

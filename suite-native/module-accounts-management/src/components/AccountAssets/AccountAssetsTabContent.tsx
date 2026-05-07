@@ -5,6 +5,7 @@ import { type AccountAssetsTab } from './AccountAssetsTabBar';
 import { ActiveTokensTab } from './ActiveTokensTab';
 import { DefiTokensTab } from './DefiTokensTab';
 import { HiddenTokensTab } from './HiddenTokensTab';
+import { InactiveTokensTab } from './InactiveTokensTab';
 
 type AccountAssetsTabContentProps = {
     accountKey: AccountKey;
@@ -22,6 +23,8 @@ export const AccountAssetsTabContent = ({
             return <DefiTokensTab accountKey={accountKey} />;
         case 'hidden':
             return <HiddenTokensTab accountKey={accountKey} />;
+        case 'inactive':
+            return <InactiveTokensTab accountKey={accountKey} />;
         default:
             return exhaustive(activeTab);
     }

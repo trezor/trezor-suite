@@ -1,11 +1,9 @@
-import { Pressable } from 'react-native';
-
 import { type StellarTokenInfo } from '@suite-common/wallet-types';
-import { Box, Text } from '@suite-native/atoms';
+import { Box, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-type TokenListItemProps = {
+type InactiveTokenListItemProps = {
     token: StellarTokenInfo;
     onPress: () => void;
 };
@@ -27,11 +25,11 @@ const iconContainerStyle = prepareNativeStyle(utils => ({
     marginRight: utils.spacings.sp12,
 }));
 
-export const TokenListItem = ({ token, onPress }: TokenListItemProps) => {
+export const InactiveTokenListItem = ({ token, onPress }: InactiveTokenListItemProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Pressable onPress={onPress}>
+        <PressableOpacity onPress={onPress}>
             <Box style={applyStyle(containerStyle)}>
                 <Box style={applyStyle(iconContainerStyle)}>
                     <CryptoIcon symbol="xlm" contractAddress={token.contract} size="small" />
@@ -43,6 +41,6 @@ export const TokenListItem = ({ token, onPress }: TokenListItemProps) => {
                     </Text>
                 </Box>
             </Box>
-        </Pressable>
+        </PressableOpacity>
     );
 };

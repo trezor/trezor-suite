@@ -41,20 +41,9 @@ export const StellarTokenActions = ({ accountKey, tokenContract }: StellarTokenA
         selectAccountTokenBalance(state, accountKey, tokenContract),
     );
 
-    if (!account || account.networkType !== 'stellar') {
+    if (!account || account.networkType !== 'stellar' || !tokenContract) {
         return null;
     }
-
-    const isTokenDetail = !!tokenContract;
-
-    const handleActivateToken = () => {
-        navigation.navigate(RootStackRoutes.StellarManageTokenStack, {
-            screen: StellarManageTokenStackRoutes.TokenSelection,
-            params: {
-                accountKey,
-            },
-        });
-    };
 
     const handleDeactivateToken = async () => {
         // Check if token has balance > 0
@@ -77,7 +66,7 @@ export const StellarTokenActions = ({ accountKey, tokenContract }: StellarTokenA
             const result = await dispatch(
                 composeStellarTrustlineFeesThunk({
                     accountKey,
-                    tokenContract: tokenContract!,
+                    tokenContract,
                 }),
             );
 
@@ -86,7 +75,7 @@ export const StellarTokenActions = ({ accountKey, tokenContract }: StellarTokenA
                     screen: StellarManageTokenStackRoutes.DeactivationFee,
                     params: {
                         accountKey,
-                        tokenContract: tokenContract!,
+                        tokenContract,
                     },
                 });
             } else {
@@ -104,33 +93,17 @@ export const StellarTokenActions = ({ accountKey, tokenContract }: StellarTokenA
         }
     };
 
-    if (isTokenDetail) {
-        return (
-            <Box paddingHorizontal="sp16">
-                <Button
-                    intent="neutral"
-                    priority="secondary"
-                    onPress={handleDeactivateToken}
-                    isLoading={isComposingFees}
-                    isDisabled={isComposingFees}
-                    testID="@account-detail/deactivate-token-button"
-                >
-                    <Translation id="moduleStellarToken.accountDetail.deactivateToken" />
-                </Button>
-            </Box>
-        );
-    }
-
     return (
         <Box paddingHorizontal="sp16">
             <Button
                 intent="neutral"
                 priority="secondary"
-                iconLeft="plus"
-                onPress={handleActivateToken}
-                testID="@account-detail/activate-token-button"
+                onPress={handleDeactivateToken}
+                isLoading={isComposingFees}
+                isDisabled={isComposingFees}
+                testID="@account-detail/deactivate-token-button"
             >
-                <Translation id="moduleStellarToken.accountDetail.activateToken" />
+                <Translation id="moduleStellarToken.accountDetail.deactivateToken" />
             </Button>
         </Box>
     );
