@@ -25,7 +25,6 @@ import { AddTokenModal } from './AddTokenModal';
 import type { ReduxModalProps } from '../ReduxModalProps';
 import { AdvancedCoinSettingsModal } from './AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
 import { ApplicationLogModal } from './ApplicationLogModal';
-import { BackgroundGalleryModal } from './BackgroundGalleryModal';
 import { PinInvalidModal } from '../DeviceContextModal/PinInvalidModal';
 import { TransactionReviewModal } from '../TransactionReviewModal/TransactionReviewModal';
 import { UnhideTokenModal } from '../UnhideTokenModal';
@@ -92,8 +91,6 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
             return <ConfirmAddressModal {...payload} onCancel={onCancel} />;
         case 'xpub':
             return <ConfirmXpubModal {...payload} onCancel={onCancel} />;
-        case 'device-background-gallery':
-            return <BackgroundGalleryModal onCancel={onCancel} />;
         case 'device-authenticity-check-opt-out':
             return <DeviceAuthenticityOptOutModal onCancel={onCancel} />;
         case 'firmware-authenticity-checks-opt-out':

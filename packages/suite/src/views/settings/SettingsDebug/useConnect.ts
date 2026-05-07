@@ -1,67 +1,85 @@
 import { useCallback, useRef, useState } from 'react';
 
-type ConnectProcess<TSub> = {
+type ConnectProcess<TSub, TResult> = {
     readonly id: string;
-    run(): AsyncIterable<TSub>;
+    run(): AsyncIterableIterator<TSub>;
+    toPromise(): Promise<TResult>;
     cancel(): void;
 };
 
-type WrappedMethod<TParams, TSub> = (params: TParams) => ConnectProcess<TSub>;
+type WrappedMethod<TParams, TSub, TResult> = (params: TParams) => ConnectProcess<TSub, TResult>;
 
 type ResultOf<TSub> = Extract<TSub, { type: 'complete' }> extends { result: infer R } ? R : never;
 
+type ProcessHandle<TSub, TResult> = {
+    readonly id: string;
+    /**
+     * The single underlying iterator from `proc.run()`. The hook is already
+     * consuming this iterator to drive the `subprocess` state, so callers
+     * should pick exactly one mode of consumption:
+     *   - read `subprocess` from the hook return (don't touch this), OR
+     *   - iterate `subprocessIterator` themselves and ignore `subprocess`.
+     * Doing both at once will race for events.
+     */
+    subprocessIterator: AsyncIterableIterator<TSub>;
+    toPromise(): Promise<TResult>;
+    cancel(): void;
+};
+
 export const useConnect = <TParams, TSub extends { type: string }>(
-    wrappedMethod: WrappedMethod<TParams, TSub>,
+    wrappedMethod: WrappedMethod<TParams, TSub, ResultOf<TSub>>,
 ) => {
     const [subprocess, setSubprocess] = useState<TSub | null>(null);
-    const [callId, setCallId] = useState<string | null>(null);
     const [running, setRunning] = useState(false);
-    const [log, setLog] = useState<TSub[]>([]);
-    const [result, setResult] = useState<ResultOf<TSub> | null>(null);
-    const [error, setError] = useState<Error | null>(null);
 
-    const procRef = useRef<ConnectProcess<TSub> | null>(null);
+    const procRef = useRef<ConnectProcess<TSub, ResultOf<TSub>> | null>(null);
     const wrappedRef = useRef(wrappedMethod);
     wrappedRef.current = wrappedMethod;
 
-    const start = useCallback(async (params: TParams) => {
+    const start = useCallback((params: TParams): ProcessHandle<TSub, ResultOf<TSub>> => {
         procRef.current?.cancel();
-
-        setLog([]);
-        setSubprocess(null);
-        setResult(null);
-        setError(null);
-
         const proc = wrappedRef.current(params);
         procRef.current = proc;
-        setCallId(proc.id);
         setRunning(true);
+        setSubprocess(null);
 
-        try {
-            for await (const sub of proc.run()) {
-                setSubprocess(sub);
-                setLog(prev => [...prev, sub]);
+        const subprocessIterator = proc.run();
 
-                if (sub.type === 'complete') {
-                    setResult((sub as unknown as { result: ResultOf<TSub> }).result);
+        // Background iteration drives `subprocess` state. If the caller also
+        // iterates `subprocessIterator`, the hook's loop will race them — see
+        // the comment on `ProcessHandle.subprocessIterator`.
+        (async () => {
+            try {
+                for await (const sub of subprocessIterator) {
+                    setSubprocess(sub);
                 }
-                if (sub.type === 'error') {
-                    setError((sub as unknown as { error: Error }).error);
+            } catch {
+                // Surfaced via toPromise(); nothing to do here.
+            } finally {
+                if (procRef.current === proc) {
+                    procRef.current = null;
+                    setSubprocess(null);
+                    setRunning(false);
                 }
             }
-        } finally {
-            if (procRef.current === proc) {
-                procRef.current = null;
-                setRunning(false);
-                setSubprocess(null);
-                setCallId(null);
-            }
-        }
+        })();
+
+        return {
+            id: proc.id,
+            subprocessIterator,
+            toPromise: () => proc.toPromise(),
+            cancel: () => proc.cancel(),
+        };
     }, []);
 
     const cancel = useCallback(() => {
         procRef.current?.cancel();
     }, []);
 
-    return { start, cancel, subprocess, callId, running, log, result, error };
+    // True while a call is in flight but no subprocess prompt is currently
+    // active — i.e. between events, when the device is doing background work
+    // and the UI shouldn't render a subprocess modal.
+    const loading = running && subprocess === null;
+
+    return { start, cancel, subprocess, running, loading };
 };

@@ -52,9 +52,6 @@ export type UserContextPayload =
           onConfirm?: () => void;
       }
     | {
-          type: 'device-background-gallery';
-      }
-    | {
           type: 'transaction-detail';
           txid: string;
           descriptor: Account['descriptor'];
