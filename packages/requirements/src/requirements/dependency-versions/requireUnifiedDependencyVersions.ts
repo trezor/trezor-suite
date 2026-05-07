@@ -1,9 +1,9 @@
-import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { join } from 'node:path';
 import * as semver from 'semver';
 
 import type { Requirement } from '../Requirement';
+import { listAllWorkspaces, readPackageJson } from '../utils/workspaces';
 
 /**
  * Dependencies where version differences are intentional (e.g. ongoing major-version
@@ -31,42 +31,14 @@ type VersionOccurrence = {
     readonly depType: 'dependencies' | 'devDependencies' | 'resolutions';
 };
 
-type YarnWorkspaceInfo = {
-    readonly location: string;
-};
-
-const readPackageJson = (dir: string): PackageJson => {
-    const pkgPath = join(dir, 'package.json');
-
-    return JSON.parse(readFileSync(pkgPath, 'utf-8')) as PackageJson;
-};
-
-const listWorkspaceDirs = (repoRoot: string): ReadonlyArray<string> => {
-    const rawOutput = execFileSync('yarn', ['workspaces', 'list', '--json'], {
-        cwd: repoRoot,
-        encoding: 'utf-8',
-    });
-
-    const parsedWorkspaces = rawOutput
-        .trim()
-        .split('\n')
-        .filter(Boolean)
-        .map(line => JSON.parse(line) as YarnWorkspaceInfo);
-
-    const workspaceDirs = new Set<string>([repoRoot]);
-
-    for (const workspace of parsedWorkspaces) {
-        workspaceDirs.add(resolve(repoRoot, workspace.location));
-    }
-
-    return [...workspaceDirs];
-};
+const listWorkspaceDirs = (repoRoot: string): ReadonlyArray<string> =>
+    listAllWorkspaces(repoRoot).map(workspace => workspace.dir);
 
 const collectDependencyVersions = (workspaceDirs: ReadonlyArray<string>) => {
     const depMap = new Map<string, VersionOccurrence[]>();
 
     for (const dir of workspaceDirs) {
-        const pkg = readPackageJson(dir);
+        const pkg = readPackageJson<PackageJson>(dir);
         const workspaceName = pkg.name ?? dir;
 
         for (const depType of ['dependencies', 'devDependencies', 'resolutions'] as const) {
