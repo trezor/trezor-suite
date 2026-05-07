@@ -1,7 +1,6 @@
 import {
     type DeviceRootState,
     selectDeviceStaticSessionId,
-    selectHasOnlyPortfolioDevice,
     selectIsDeviceAuthorized,
     selectIsDeviceBackedUp,
     selectIsDeviceConnected,
@@ -84,52 +83,38 @@ export const selectShouldDisplaySuiteSyncFirmwareUpdateAlert = createMemoizedSel
 );
 
 export const selectHomeScreenState = (state: NativeDeviceRootState): HomeScreenState => {
-    const isAnyNetworkEnabled = selectIsAnyNetworkEnabled(state);
-    const hasOnlyPortfolioDevice = selectHasOnlyPortfolioDevice(state);
-    const isDiscoveredDeviceAccountless = selectIsDiscoveredDeviceAccountless(state);
-    const isDeviceAuthorized = selectIsDeviceAuthorized(state);
+    const isDeviceConnected = selectIsDeviceConnected(state);
     const isDeviceUnlocked = selectIsDeviceUnlocked(state);
+    const isDeviceAuthorized = selectIsDeviceAuthorized(state);
+    const isDeviceSetupSupported = selectIsDeviceSetupSupported(state);
     const isDeviceInitialized = selectIsDeviceInitialized(state);
     const isReconnectRequested = selectIsReconnectRequested(state);
-
-    // The reconnect requested flag is set only after the device is wiped. It indicates the old data
-    // is still in Redux but the physical device is already in initialize state and ready for setup.
-    const wasDeviceWiped = isReconnectRequested;
-
-    const isEmptyStateShown =
-        (isDiscoveredDeviceAccountless &&
-            (isDeviceAuthorized || // Initial state: empty portfolio device that is authorized.
-                !isDeviceUnlocked)) || // Device is locked (PIN not entered).
-        !isDeviceInitialized ||
-        (!isAnyNetworkEnabled && !hasOnlyPortfolioDevice) ||
-        wasDeviceWiped;
-
-    if (!isEmptyStateShown) {
-        return 'portfolioContent';
-    }
-
-    const isDeviceConnected = selectIsDeviceConnected(state);
-    const isDeviceSetupSupported = selectIsDeviceSetupSupported(state);
-
-    if (
-        isDeviceSetupSupported &&
-        isDeviceConnected &&
-        (wasDeviceWiped || (!isDeviceInitialized && isDeviceUnlocked))
-    ) {
-        return 'uninitializedDevice';
-    }
-
-    if (isDeviceConnected && isDeviceInitialized && !isAnyNetworkEnabled) {
-        return 'noNetworkConfigured';
-    }
-
+    const isAnyNetworkEnabled = selectIsAnyNetworkEnabled(state);
+    const isPortfolioTrackerDevice = selectIsPortfolioTrackerDevice(state);
     const hasOnlyEmptyPortfolioTracker = selectHasOnlyEmptyPortfolioTracker(state);
+    const isDiscoveredDeviceAccountless = selectIsDiscoveredDeviceAccountless(state);
 
-    // Crossroads is displayed when there is no real device connected and portfolio tracker has no
-    // accounts, or when a device is connected but not authorized (PIN enter cancelled).
-    if (hasOnlyEmptyPortfolioTracker || !isDeviceAuthorized) {
+    // Crossroads is displayed either when there is no real device connected and the portfolio tracker
+    // has no accounts, or when a device is connected but PIN entry or THP confirmation was canceled.
+    if (hasOnlyEmptyPortfolioTracker || (!isDeviceUnlocked && !isDeviceAuthorized)) {
         return 'emptyPortfolioCrossroads';
     }
 
-    return 'emptyPortfolioTracker';
+    if (isPortfolioTrackerDevice && isDiscoveredDeviceAccountless) {
+        return 'emptyPortfolioTracker';
+    }
+
+    if (isDeviceConnected) {
+        // The isReconnectRequested flag is set only after the device is wiped. It indicates that old data
+        // is still in Redux but the physical device is already in initialize state and ready for setup.
+        if (isDeviceSetupSupported && (!isDeviceInitialized || isReconnectRequested)) {
+            return 'uninitializedDevice';
+        }
+
+        if (isDeviceInitialized && !isAnyNetworkEnabled) {
+            return 'noNetworkConfigured';
+        }
+    }
+
+    return 'portfolioContent';
 };

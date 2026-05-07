@@ -50,16 +50,16 @@ export const HomeScreen = () => {
 
     const renderContent = () => {
         switch (homeScreenState) {
-            case 'portfolioContent':
-                return <PortfolioContent ref={portfolioContentRef} />;
-            case 'uninitializedDevice':
-                return <UninitializedConnectedDeviceState />;
-            case 'noNetworkConfigured':
-                return <NoNetworksConfigured />;
             case 'emptyPortfolioCrossroads':
                 return <EmptyPortfolioCrossroads />;
             case 'emptyPortfolioTracker':
                 return <EmptyPortfolioTrackerState />;
+            case 'uninitializedDevice':
+                return <UninitializedConnectedDeviceState />;
+            case 'noNetworkConfigured':
+                return <NoNetworksConfigured />;
+            case 'portfolioContent':
+                return <PortfolioContent ref={portfolioContentRef} />;
             default:
                 return exhaustive(homeScreenState);
         }
