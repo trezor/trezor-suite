@@ -39,6 +39,7 @@ export * from './isNotNull';
 export * from './isNotNullOrUndefined';
 export * from './isNotUndefined';
 export * from './isUrl';
+export * from './isUUID';
 export * from './isWhitelistedHost';
 export * from './logs';
 export * from './logsManager';
