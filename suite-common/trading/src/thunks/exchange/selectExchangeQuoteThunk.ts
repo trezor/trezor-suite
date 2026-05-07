@@ -25,7 +25,7 @@ export const selectExchangeQuoteThunk = createThunk(
             return;
         }
 
-        if (!quote.isDex) {
+        if (!quote.isDex || quote.status === 'CONFIRM' || quote.status === 'SIGN_DATA') {
             dispatch(tradingExchangeActions.saveSelectedQuote(quote));
         }
 
