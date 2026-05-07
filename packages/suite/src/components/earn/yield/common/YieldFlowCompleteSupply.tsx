@@ -1,8 +1,10 @@
 import { Translation } from '@suite/intl';
+import { type YieldDto } from '@suite-common/earn-stablecoin-api';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldFlowCompleteValue } from '@suite-common/wallet-core';
 import { Divider, Row, Text } from '@trezor/components';
 
-import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
+import { EarnYieldApyTooltip } from 'src/components/earn/dashboard/yield/EarnYieldApyTooltip';
 
 import { YieldFlowComplete } from './YieldFlowComplete';
 import { YieldFlowTransferRow } from './YieldFlowTransferRow';
@@ -11,9 +13,17 @@ type YieldFlowCompleteSupplyProps = {
     input: YieldFlowCompleteValue;
     output: YieldFlowCompleteValue;
     apy?: number | null;
+    vault: YieldDto;
+    networkSymbol: NetworkSymbol;
 };
 
-export const YieldFlowCompleteSupply = ({ input, output, apy }: YieldFlowCompleteSupplyProps) => (
+export const YieldFlowCompleteSupply = ({
+    input,
+    output,
+    apy,
+    vault,
+    networkSymbol,
+}: YieldFlowCompleteSupplyProps) => (
     <YieldFlowComplete
         type="supply"
         heading={<Translation id="TR_EARN_YIELD_SUPPLY_COMPLETE" />}
@@ -29,7 +39,11 @@ export const YieldFlowCompleteSupply = ({ input, output, apy }: YieldFlowComplet
                 <Translation id="TR_EARN_DASHBOARD_TABLE_APY" />
             </Text>
             <Text typographyStyle="body-md-strong">
-                <ApyValue apy={apy} />
+                <EarnYieldApyTooltip
+                    vault={vault}
+                    apyPercentage={apy ?? null}
+                    networkSymbol={networkSymbol}
+                />
             </Text>
         </Row>
         <Divider color="borderNeutral" margin={0} />

@@ -63,7 +63,9 @@ export const YieldEarnInANutshellModal = ({
         {
             heading: <Translation id="TR_EARN_SUPPLYING_PROCESS" />,
             badge: <Translation id="TR_TX_FEE" />,
-            content: <YieldSupplyingInfo apy={yieldApy} />,
+            content: (
+                <YieldSupplyingInfo apy={yieldApy} vault={vault} networkSymbol={account.symbol} />
+            ),
         },
         {
             heading: <Translation id="TR_EARN_WITHDRAWING_PROCESS" />,

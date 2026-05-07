@@ -1,3 +1,5 @@
+import { type ReactNode } from 'react';
+
 import styled from 'styled-components';
 
 import { type YieldDto } from '@suite-common/earn-stablecoin-api';
@@ -18,35 +20,27 @@ type EarnYieldApyTooltipProps = {
     vault: YieldDto;
     apyPercentage: number | null;
     networkSymbol: NetworkSymbol;
+    children?: ReactNode;
 };
 
 export const EarnYieldApyTooltip = ({
     vault,
     apyPercentage,
     networkSymbol,
-}: EarnYieldApyTooltipProps) => {
-    const { components: rewards } = vault.rewardRate;
-
-    if (!rewards?.length) {
-        return <ApyValue apy={apyPercentage} />;
-    }
-
-    return (
-        <Tooltip
-            content={
-                <EarnYieldApyBreakdown
-                    rewards={rewards}
-                    networkSymbol={networkSymbol}
-                    underlyingToken={vault.token}
-                />
-            }
-            maxWidth={600}
-            placement="top"
-            hasArrow
-        >
-            <Abbr>
-                <ApyValue apy={apyPercentage} />
-            </Abbr>
-        </Tooltip>
-    );
-};
+    children,
+}: EarnYieldApyTooltipProps) => (
+    <Tooltip
+        content={
+            <EarnYieldApyBreakdown
+                rewards={vault.rewardRate.components}
+                networkSymbol={networkSymbol}
+                underlyingToken={vault.token}
+            />
+        }
+        maxWidth={600}
+        placement="top"
+        hasArrow
+    >
+        <Abbr>{children ?? <ApyValue apy={apyPercentage} />}</Abbr>
+    </Tooltip>
+);
