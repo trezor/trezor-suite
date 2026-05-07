@@ -95,15 +95,19 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
         [isAccountEligibleForTrade],
     );
 
+    // Once prefilled.key is cleared the account is already determined; don't restrict eligibility
+    // to a token that may belong to a different network than what the user just selected.
+    const eligibilityCryptoId = prefilled.key ? prefilled.cryptoId : undefined;
+
     const account = useMemo(() => {
-        if (preferredAccount && isAccountEligibleForTrade(preferredAccount, prefilled.cryptoId)) {
+        if (preferredAccount && isAccountEligibleForTrade(preferredAccount, eligibilityCryptoId)) {
             return preferredAccount;
         }
 
         const sameSymbolAccount = visibileDeviceAccounts.find(
             acc =>
                 acc.symbol === preferredAccount?.symbol &&
-                isAccountEligibleForTrade(acc, prefilled.cryptoId),
+                isAccountEligibleForTrade(acc, eligibilityCryptoId),
         );
 
         if (sameSymbolAccount) {
@@ -116,7 +120,7 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
         isAccountEligibleForTrade,
         pickFallbackAccount,
         preferredAccount,
-        prefilled.cryptoId,
+        eligibilityCryptoId,
     ]);
 
     const cryptoId = useMemo(() => {
