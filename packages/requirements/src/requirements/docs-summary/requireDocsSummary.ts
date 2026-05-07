@@ -1,8 +1,8 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
+import { stripComments } from '../../stripComments';
 import type { Requirement } from '../Requirement';
-import { stripComments } from '../utils/stripComments';
 
 const DOCS_DIR = 'docs';
 const SUMMARY_FILE = 'SUMMARY.md';

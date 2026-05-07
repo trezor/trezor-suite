@@ -5,8 +5,8 @@ import { pathToFileURL } from 'node:url';
 import { typedObjectKeys } from '@trezor/utils';
 
 import type { AllowedOnlyInRule, ForbiddenDepsConfig } from './forbiddenDepsTypes';
+import { getWorkspaceDirectoryMap, readPackageJson } from '../../workspaces';
 import type { Requirement } from '../Requirement';
-import { getWorkspaceDirectoryMap, readPackageJson } from '../utils/workspaces';
 
 const FORBIDDEN_DEPS_CONFIG_FILE = 'forbiddenDeps.config.ts';
 

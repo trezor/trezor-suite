@@ -1,8 +1,8 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
+import { stripComments } from '../../stripComments';
 import type { Requirement } from '../Requirement';
-import { stripComments } from '../utils/stripComments';
 
 const SKILLS_DIR = 'skills';
 const AGENTS_FILE = 'AGENTS.md';
