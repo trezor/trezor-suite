@@ -38,6 +38,7 @@ import {
     getFirstFreshAddress,
     isCardanoStakingActive,
     isStakingSymbol,
+    isErc4626,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { isNetworkWithTokens, selectAccountTokenInfo } from '@suite-native/tokens';
@@ -201,14 +202,16 @@ export const getAccountListSections = (
             account.networkType === 'stellar'
                 ? tokens
                 : tokens.filter(token => parseFloat(token?.balance ?? '0') > 0);
-        tokensToShow.forEach((token, index) => {
-            sections.push({
-                type: 'token',
-                account,
-                token: token as TokenInfoBranded,
-                isLast: index === tokensToShow.length - 1,
+        tokensToShow
+            .filter(token => !isErc4626(token))
+            .forEach((token, index) => {
+                sections.push({
+                    type: 'token',
+                    account,
+                    token: token as TokenInfoBranded,
+                    isLast: index === tokensToShow.length - 1,
+                });
             });
-        });
     }
 
     return sections;
