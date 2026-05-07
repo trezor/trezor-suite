@@ -1,4 +1,4 @@
-import { PORTFOLIO_TRACKER_DEVICE_ID } from '@suite-common/device';
+import { PORTFOLIO_TRACKER_DEVICE_ID, PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
 import { createStoreFromPreloadedState } from '@suite-native/test-utils-store';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -26,6 +26,43 @@ describe('selectHomeScreenState', () => {
                 wallet: {
                     settings: { enabledNetworks: ['btc'] },
                     accounts: [{ deviceState: TEST_SESSION_ID, visible: true }],
+                },
+            });
+
+            expect(selectHomeScreenState(state)).toBe('portfolioContent');
+        });
+
+        it('should return portfolioContent when device is disconnected, authorized and has accounts', () => {
+            const state = buildState({
+                device: {
+                    selectedDevice: {
+                        connected: false,
+                        state: { staticSessionId: TEST_SESSION_ID },
+                        features: { initialized: true },
+                    },
+                    devices: [{ id: 'device_id' }],
+                },
+                wallet: {
+                    settings: { enabledNetworks: ['btc'] },
+                    accounts: [{ deviceState: TEST_SESSION_ID, visible: true }],
+                },
+            });
+
+            expect(selectHomeScreenState(state)).toBe('portfolioContent');
+        });
+
+        it('should return portfolioContent when portfolio tracker with accounts is selected', () => {
+            const state = buildState({
+                device: {
+                    selectedDevice: {
+                        id: PORTFOLIO_TRACKER_DEVICE_ID,
+                        state: { staticSessionId: PORTFOLIO_TRACKER_DEVICE_STATE },
+                        features: { unlocked: true },
+                    },
+                    devices: [{ id: PORTFOLIO_TRACKER_DEVICE_ID }],
+                },
+                wallet: {
+                    accounts: [{ deviceState: PORTFOLIO_TRACKER_DEVICE_STATE, visible: true }],
                 },
             });
 
@@ -80,10 +117,8 @@ describe('selectHomeScreenState', () => {
                         reconnectRequested: true,
                         features: {
                             initialized: true,
+                            unlocked: true,
                             internal_model: DeviceModelInternal.T3B1,
-                            major_version: 2,
-                            minor_version: 6,
-                            patch_version: 3,
                         },
                         state: {},
                     },
@@ -172,12 +207,13 @@ describe('selectHomeScreenState', () => {
     });
 
     describe('noNetworkConfigured', () => {
-        it('should return noNetworkConfigured when device is connected, initialized and not authorized', () => {
+        it('should return noNetworkConfigured when device is connected, initialized, authorized, but no network is configured', () => {
             const state = buildState({
                 device: {
                     selectedDevice: {
                         connected: true,
                         features: { initialized: true },
+                        state: {},
                     },
                     devices: [{ id: 'device_id' }],
                 },
@@ -193,7 +229,6 @@ describe('selectHomeScreenState', () => {
                 device: {
                     selectedDevice: {
                         id: PORTFOLIO_TRACKER_DEVICE_ID,
-                        connected: false,
                         features: { initialized: true },
                         state: {},
                     },

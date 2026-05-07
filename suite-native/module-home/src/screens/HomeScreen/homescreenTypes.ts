@@ -1,6 +1,6 @@
 export type HomeScreenState =
-    | 'portfolioContent'
+    | 'emptyPortfolioCrossroads'
+    | 'emptyPortfolioTracker'
     | 'uninitializedDevice'
     | 'noNetworkConfigured'
-    | 'emptyPortfolioCrossroads'
-    | 'emptyPortfolioTracker';
+    | 'portfolioContent';
