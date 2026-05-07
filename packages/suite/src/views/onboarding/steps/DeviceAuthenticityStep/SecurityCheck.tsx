@@ -237,7 +237,7 @@ const ManualDeviceCheck = ({ onConfirm }: ManualDeviceCheckProps) => {
                 </SecurityCheckButton>
                 {initialized ? (
                     <SecurityCheckButton
-                        data-testid="@onboarding/complete-onboarding"
+                        data-testid="@onboarding/confirm-manual-device-check"
                         onClick={handleContinueButtonClick}
                         intent="brand"
                     >

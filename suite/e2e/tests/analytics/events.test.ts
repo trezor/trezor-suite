@@ -163,7 +163,7 @@ test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
             await settingsPage.analyticsSwitch.click();
             await settingsPage.closeSettings();
             await page.reload();
-            await onboardingPage.completeOnboardingButton.click();
+            await onboardingPage.confirmManualDeviceCheckButton.click();
         });
 
         await test.step('Wait for analytics events and validate event types', async () => {
