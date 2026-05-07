@@ -149,6 +149,14 @@ export const applyDeviceStatesThunk = createThunk<
                     }),
                 );
                 dispatch(deviceActions.setRememberDevice({ device, remember }));
+
+                // select the device after deviceReducer updates it (it's a new object reference)
+                const newlyAddedDevice = selectDeviceByStaticSessionId(getState(), staticSessionId);
+                if (newlyAddedDevice === undefined) {
+                    return rejectWithValue('applyDeviceStatesThunk: newly added device not found');
+                }
+
+                return fulfillWithValue({ device: newlyAddedDevice });
             } else {
                 dispatch(
                     deviceActions.addAuthorizedDevice({
@@ -165,9 +173,9 @@ export const applyDeviceStatesThunk = createThunk<
                     return rejectWithValue('applyDeviceStatesThunk: newly added device not found');
                 }
                 dispatch(selectDeviceThunk({ device: newlyAddedDevice }));
-            }
 
-            return fulfillWithValue({ device });
+                return fulfillWithValue({ device: newlyAddedDevice });
+            }
         } catch (error) {
             console.error('applyDeviceStatesThunk error', error);
 
