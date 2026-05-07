@@ -6,7 +6,7 @@ import { typedObjectKeys } from '@trezor/utils';
 
 import type { AllowedOnlyInRule, ForbiddenDepsConfig } from './forbiddenDepsTypes';
 import type { Requirement } from '../Requirement';
-import { listAllWorkspaces, readPackageJson } from '../utils/workspaces';
+import { getWorkspaceDirectoryMap, readPackageJson } from '../utils/workspaces';
 
 const FORBIDDEN_DEPS_CONFIG_FILE = 'forbiddenDeps.config.ts';
 
@@ -88,7 +88,7 @@ const loadForbiddenDepsConfig: ForbiddenDepsConfigLoader = async workspaceDir =>
 };
 
 const getWorkspaceDirectoryResolver = (repoRoot: string): WorkspaceDirectories =>
-    new Map(listAllWorkspaces(repoRoot).map(workspace => [workspace.name, workspace.dir]));
+    getWorkspaceDirectoryMap(repoRoot);
 
 const getWorkspaceDirectoryByName: WorkspaceDirectoryResolver = ({ repoRoot, workspaceName }) =>
     getWorkspaceDirectoryResolver(repoRoot).get(workspaceName);
