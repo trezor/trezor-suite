@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { selectIsDebugModeActive } from '@suite/settings';
 import { events } from '@suite-common/analytics';
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { CALL_SOURCE_WALLETCONNECT } from '@suite-common/connect-popup/src/connectPopupTypes';
@@ -21,6 +22,7 @@ export const ConnectPermissionsModal = () => {
     const [isSilentMode, setIsSilentMode] = useState(false);
     const dispatch = useDispatch();
     const popupCall = useSelector(selectConnectPopupCall);
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
     if (!popupCall || popupCall?.state !== 'permission-request') return null;
 
     const { method, methodInfo, source } = popupCall;
@@ -158,7 +160,7 @@ export const ConnectPermissionsModal = () => {
                                     >
                                         <Translation id="TR_CONNECT_MODAL_REMEMBER" />
                                     </Checkbox>
-                                    {isRemembered && (
+                                    {isRemembered && isDebugModeActive && (
                                         <Tooltip
                                             content={
                                                 <Translation id="TR_CONNECT_APP_SILENT_MODE_DESCRIPTION" />
