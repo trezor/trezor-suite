@@ -121,42 +121,42 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                     className: 'not-empty-css',
                 },
             };
-        } else {
-            const keys: {
-                [coin: string]: { coinInfo: CoinInfo; values: DerivationPath[] };
-            } = {};
-            this.params.forEach(b => {
-                if (!keys[b.coinInfo.label]) {
-                    keys[b.coinInfo.label] = {
-                        coinInfo: b.coinInfo,
-                        values: [],
-                    };
-                }
-                keys[b.coinInfo.label].values.push(b.descriptor || b.address_n);
-            });
-
-            // prepare html for popup
-            const str: string[] = [];
-            Object.keys(keys).forEach((k, _i, _a) => {
-                const details = keys[k];
-                details.values.forEach(acc => {
-                    // if (i === 0) str += this.params.length > 1 ? ': ' : ' ';
-                    // if (i > 0) str += ', ';
-                    str.push(k);
-                    str.push(' ');
-                    if (typeof acc === 'string') {
-                        str.push(acc);
-                    } else {
-                        str.push(getAccountLabel(acc, details.coinInfo));
-                    }
-                });
-            });
-
-            return {
-                view: 'export-account-info' as const,
-                label: `Export info for: ${str.join('')}`,
-            };
         }
+
+        const keys: {
+            [coin: string]: { coinInfo: CoinInfo; values: DerivationPath[] };
+        } = {};
+        this.params.forEach(b => {
+            if (!keys[b.coinInfo.label]) {
+                keys[b.coinInfo.label] = {
+                    coinInfo: b.coinInfo,
+                    values: [],
+                };
+            }
+            keys[b.coinInfo.label].values.push(b.descriptor || b.address_n);
+        });
+
+        // prepare html for popup
+        const str: string[] = [];
+        Object.keys(keys).forEach((k, _i, _a) => {
+            const details = keys[k];
+            details.values.forEach(acc => {
+                // if (i === 0) str += this.params.length > 1 ? ': ' : ' ';
+                // if (i > 0) str += ', ';
+                str.push(k);
+                str.push(' ');
+                if (typeof acc === 'string') {
+                    str.push(acc);
+                } else {
+                    str.push(getAccountLabel(acc, details.coinInfo));
+                }
+            });
+        });
+
+        return {
+            view: 'export-account-info' as const,
+            label: `Export info for: ${str.join('')}`,
+        };
     }
 
     async run(context: MethodContext) {

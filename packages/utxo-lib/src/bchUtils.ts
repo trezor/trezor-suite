@@ -78,14 +78,14 @@ const decodeCashAddressWithPrefix = (address: string): DecodedAddress => {
 const decodeCashAddress = (address: string): DecodedAddress => {
     if (address.includes(':')) {
         return decodeCashAddressWithPrefix(address);
-    } else {
-        const prefixes = ['bitcoincash', 'bchtest', 'bchreg'];
-        for (const prefix of prefixes) {
-            try {
-                return decodeCashAddressWithPrefix(prefix + ':' + address);
-            } catch {
-                /* ignore */
-            }
+    }
+
+    const prefixes = ['bitcoincash', 'bchtest', 'bchreg'];
+    for (const prefix of prefixes) {
+        try {
+            return decodeCashAddressWithPrefix(prefix + ':' + address);
+        } catch {
+            /* ignore */
         }
     }
     throw new Error('Invalid cashaddr address');

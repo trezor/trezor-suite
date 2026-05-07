@@ -44,9 +44,9 @@ const getProgress = (
             100;
 
         return progress;
-    } else {
-        return value > max ? 100 : 0;
     }
+
+    return value > max ? 100 : 0;
 };
 
 const getLinearGradient = (progress: number, theme: DefaultTheme, disabled?: boolean): string => {

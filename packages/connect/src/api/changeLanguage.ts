@@ -43,8 +43,8 @@ export default class ChangeLanguage extends AbstractMethod<'changeLanguage', Cha
 
         if (binary) {
             return changeLanguage({ device: this.getDevice(), binary });
-        } else {
-            return changeLanguage({ device: this.getDevice(), language });
         }
+
+        return changeLanguage({ device: this.getDevice(), language });
     }
 }

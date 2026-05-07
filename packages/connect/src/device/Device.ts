@@ -266,9 +266,9 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
                     );
 
                     return result;
-                } else {
-                    throw new Error(result.error.code);
                 }
+
+                throw new Error(result.error.code);
             })
             .finally(() => {
                 this.acquirePromise = undefined;

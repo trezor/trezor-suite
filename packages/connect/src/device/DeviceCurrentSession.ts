@@ -138,25 +138,25 @@ export class DeviceCurrentSession implements TypedCallProvider {
 
         if (isExpectedResponse(payload, expectedType)) {
             return payload;
-        } else {
-            // handle possible race condition - Bridge may have some unread message in buffer, read it
-            // TODO could be possible to remove
-            await scheduleAction(
-                abort =>
-                    this.transport.receive({
-                        session: this.session,
-                        protocol: this.device.protocol,
-                        thpState: this.device.getThpState(),
-                        signal: abort,
-                    }),
-                { timeout: 500 },
-            ).catch(() => {});
-
-            throw ERRORS.TypedError(
-                'Runtime',
-                `assertType: Response of unexpected type: ${receivedType}. Should be ${expectedType}`,
-            );
         }
+
+        // handle possible race condition - Bridge may have some unread message in buffer, read it
+        // TODO could be possible to remove
+        await scheduleAction(
+            abort =>
+                this.transport.receive({
+                    session: this.session,
+                    protocol: this.device.protocol,
+                    thpState: this.device.getThpState(),
+                    signal: abort,
+                }),
+            { timeout: 500 },
+        ).catch(() => {});
+
+        throw ERRORS.TypedError(
+            'Runtime',
+            `assertType: Response of unexpected type: ${receivedType}. Should be ${expectedType}`,
+        );
     }
 
     private async callLoop<T extends Messages.MessageKey>(

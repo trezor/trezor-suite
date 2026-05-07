@@ -304,17 +304,17 @@ const getInstallationParams = (device: Device, params: Params) => {
             updateFlowType: getUpdateFlowType(),
             btcOnly,
         };
-    } else {
-        // if device connected initially in bootloader mode:
-        // manual: false - device is already in bootloader, so this field doesn't matter
-        // upgrade: false - we don't know if supported, so take the safest route and don't use these features
-        return {
-            manual: false,
-            upgrade: false,
-            updateFlowType: 'unknown_flow' as const,
-            btcOnly,
-        };
     }
+
+    // if device connected initially in bootloader mode:
+    // manual: false - device is already in bootloader, so this field doesn't matter
+    // upgrade: false - we don't know if supported, so take the safest route and don't use these features
+    return {
+        manual: false,
+        upgrade: false,
+        updateFlowType: 'unknown_flow' as const,
+        btcOnly,
+    };
 };
 
 const getFwHeader = (binary: ArrayBuffer) => Buffer.from(binary.slice(0, 6000)).toString('hex');

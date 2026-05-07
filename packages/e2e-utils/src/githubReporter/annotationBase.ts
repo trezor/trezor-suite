@@ -106,12 +106,12 @@ export abstract class TestReportProviderBase {
     get testRun(): string {
         if (this.isManual) {
             return 'Manual';
-        } else {
-            // Capitalize first letter of testProject
-            const project = this.testProject;
-
-            return capitalizeFirstLetter(project);
         }
+
+        // Capitalize first letter of testProject
+        const project = this.testProject;
+
+        return capitalizeFirstLetter(project);
     }
 
     get osMatrix(): string[] {

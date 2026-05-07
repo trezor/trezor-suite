@@ -381,12 +381,12 @@ const calculateShouldOfferRelease = (
         // When deviceId is null, it means device is fresh so we always want to install latest FW,
         // unless rolloutProbability is 0, in that case we should never offer it.
         return rolloutProbability > 0;
-    } else {
-        // If deviceId is provided, use the deterministic approach.
-        const deterministicValueToCompare = getIntegerInRangeFromString(deviceId, 101);
-
-        return deterministicValueToCompare < rolloutProbability;
     }
+
+    // If deviceId is provided, use the deterministic approach.
+    const deterministicValueToCompare = getIntegerInRangeFromString(deviceId, 101);
+
+    return deterministicValueToCompare < rolloutProbability;
 };
 
 const getChangelog = (releases: FirmwareRelease[], features: StrictFeatures) => {

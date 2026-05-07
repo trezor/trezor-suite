@@ -345,8 +345,8 @@ export const selectAddressByNetworkAndPath = createMemoizedSelector(
                     .concat(account.addresses.change)
                     .find(a => a.path === path);
                 if (address) return address.address;
-            } else {
-                if (account.path === path) return account.descriptor;
+            } else if (account.path === path) {
+                return account.descriptor;
             }
         }
 

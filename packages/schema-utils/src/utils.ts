@@ -23,9 +23,9 @@ export function setDeepValue(obj: any, [prop, ...path]: string[], value: any) {
 export function getDeepValue(obj: any, [prop, ...path]: (string | number)[]): any {
     if (!path.length) {
         return obj[prop];
-    } else {
-        if (!(prop in obj)) return undefined;
-
-        return getDeepValue(obj[prop], path);
     }
+
+    if (!(prop in obj)) return undefined;
+
+    return getDeepValue(obj[prop], path);
 }
