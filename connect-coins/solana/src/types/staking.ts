@@ -33,7 +33,7 @@ export type SolanaTxMeta = {
     feeIncludingRentLamports: string;
 };
 
-type Fee = {
+export type Fee = {
     feePerUnit: string;
     feePerTx?: string;
     feeLimit?: string;
@@ -42,12 +42,12 @@ type Fee = {
 export interface PrepareStakeSolTxParams {
     from: string;
     amount: string;
-    symbol: SupportedSolanaNetworkSymbols;
-    selectedBlockchain: { url?: string };
+    connection: Connection;
+    validator: Address;
     estimatedFee?: Fee;
 }
 
-export type PrepareClaimSolTxParams = Omit<PrepareStakeSolTxParams, 'amount'>;
+export type PrepareClaimSolTxParams = Omit<PrepareStakeSolTxParams, 'amount' | 'validator'>;
 
 export type PrepareStakeSolTxResponse =
     | {
@@ -113,18 +113,17 @@ export type Params<Blockhash> = {
     };
 };
 
-export interface StakeParams<T> {
-    network: SupportedSolanaNetworkSymbols;
+export interface ClaimParams<T> {
+    connection: Connection;
     sender: string;
-    lamports: bigint;
-    source: string;
-    url?: string;
     params?: T;
 }
 
-export interface ClaimParams<T> {
-    network: SupportedSolanaNetworkSymbols;
-    sender: string;
-    url?: string;
-    params?: T;
+export interface UnstakeParams<T> extends ClaimParams<T> {
+    lamports: bigint;
+    source: string;
+}
+
+export interface StakeParams<T> extends UnstakeParams<T> {
+    validator: Address;
 }

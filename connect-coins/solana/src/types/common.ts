@@ -1,10 +1,17 @@
-import type { AccountInfoBase, Signature } from '@solana/kit';
-import type { GetTransactionApi } from '@solana/rpc-api';
+import type {
+    AccountInfoBase,
+    RpcMainnet,
+    RpcSubscriptionsMainnet,
+    Signature,
+    SolanaRpcSubscriptionsApi,
+} from '@solana/kit';
+import type { GetTransactionApi, SolanaRpcApiMainnet } from '@solana/rpc-api';
 import type {
     AccountInfoWithBase58EncodedData,
     AccountInfoWithBase64EncodedData,
     AccountInfoWithBase64EncodedZStdCompressedData,
     AccountInfoWithJsonData,
+    ClusterUrl,
 } from '@solana/rpc-types';
 
 import type {
@@ -13,6 +20,10 @@ import type {
     ObjectsOnly,
     Overloads,
 } from '@trezor/type-utils';
+
+import type { tokenProgramNames } from '../constants';
+
+export type TokenProgramName = (typeof tokenProgramNames)[number];
 
 export interface SolanaStakingAccount {
     status: string;
@@ -72,3 +83,9 @@ export type AccountInfo<
         | AccountInfoWithBase64EncodedZStdCompressedData['data']
         | AccountInfoWithJsonData['data'],
 > = AccountInfoBase & Readonly<{ data: TData }>;
+
+export type SolanaAPI = Readonly<{
+    clusterUrl: ClusterUrl;
+    rpc: RpcMainnet<SolanaRpcApiMainnet>;
+    rpcSubscriptions: RpcSubscriptionsMainnet<SolanaRpcSubscriptionsApi>;
+}>;
