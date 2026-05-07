@@ -25,7 +25,5 @@ export const InitRosenitePlugin = memo(() => {
         });
     }, [getMMKVStorage]);
 
-    return Boolean(mmkvStorage) && mmkvStorage ? (
-        <InitRosenitePluginInternal mmkvStorage={mmkvStorage} />
-    ) : null;
+    return mmkvStorage ? <InitRosenitePluginInternal mmkvStorage={mmkvStorage} /> : null;
 });

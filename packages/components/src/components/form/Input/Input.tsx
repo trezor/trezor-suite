@@ -78,7 +78,7 @@ export const Input = ({
         return props;
     }, {} as InputHTMLProps);
 
-    const hasShowClearButton = showClearButton && !!value && value.length > 0;
+    const hasShowClearButton = showClearButton && !!value;
 
     return (
         <FormCell {...formCellProps} data-testid={dataTest}>

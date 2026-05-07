@@ -263,7 +263,7 @@ const selectInputsForBlameRound = ({
         const inputs: AliceShape[] = [];
         accountCandidates.forEach(account => {
             const utxos = account.blameOf ? account.blameOf[round.blameOf] : null;
-            if (utxos && utxos.length > 0) {
+            if (utxos?.length) {
                 logger.info(
                     `Found blame round for account ~~${account.accountKey}~~ with ${utxos.length} inputs`,
                 );

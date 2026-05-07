@@ -24,7 +24,7 @@ export const TaprootBanner = ({ account }: TaprootBannerProps) => {
     const dispatch = useDispatch();
 
     const isVisible =
-        !taprootBannerClosed && account && account.empty && getBip43Type(account.path) === 'bip86';
+        !taprootBannerClosed && account?.empty && getBip43Type(account.path) === 'bip86';
 
     if (!isVisible) {
         return null;

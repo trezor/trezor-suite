@@ -39,7 +39,7 @@ const getChangeInfo = (event: EventDoc, version: string): ChangeInfo => {
     const isEventAddedInThisVersion = eventAddedVersion === version;
 
     const eventChanges = event.changelog?.entries?.filter(e => e.version === version);
-    if (eventChanges && eventChanges.length > 0) {
+    if (eventChanges?.length) {
         if (isEventAddedInThisVersion) {
             info.isEventAdded = true;
         } else {
@@ -49,7 +49,7 @@ const getChangeInfo = (event: EventDoc, version: string): ChangeInfo => {
 
     for (const [attrName, attrDoc] of Object.entries(event.attributes)) {
         const attrChanges = attrDoc.changelog?.entries?.filter(e => e.version === version);
-        if (attrChanges && attrChanges.length > 0) {
+        if (attrChanges?.length) {
             const attrAddedVersion = attrDoc.changelog?.addedInVersion;
             const isAttrAddedInThisVersion = attrAddedVersion === version;
 

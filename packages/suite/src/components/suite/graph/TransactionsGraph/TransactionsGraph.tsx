@@ -72,9 +72,7 @@ const useTransactionGraphUpdater = ({
     const newestTransactions = allTransactions
         .slice(0, 3)
         .flat()
-        .filter((tx): tx is WalletAccountTransaction =>
-            Boolean(Boolean(tx) && tx && !isPending(tx)),
-        );
+        .filter((tx): tx is WalletAccountTransaction => Boolean(tx && !isPending(tx)));
 
     const promiseId = newestTransactions.map(tx => tx.txid).join('-');
 

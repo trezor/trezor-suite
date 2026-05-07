@@ -56,7 +56,7 @@ const getTransportsParam = (
     const bluetooth = bluetoothModuleState.getTransport();
     if (!bluetooth) return transports;
 
-    if (transports && transports.length > 0) {
+    if (transports?.length) {
         return [...transports, bluetooth];
     }
 
