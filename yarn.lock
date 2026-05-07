@@ -10850,27 +10850,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/staking-solana@workspace:suite-common/staking-solana":
-  version: 0.0.0-use.local
-  resolution: "@suite-common/staking-solana@workspace:suite-common/staking-solana"
-  dependencies:
-    "@connect-coins/solana": "workspace:*"
-    "@solana-program/compute-budget": "npm:^0.8.0"
-    "@solana-program/stake": "npm:^0.2.1"
-    "@solana-program/system": "npm:^0.7.0"
-    "@solana/kit": "npm:^2.3.0"
-    "@suite-common/wallet-config": "workspace:*"
-    "@suite-common/wallet-constants": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
-    "@trezor/blockchain-link": "workspace:*"
-    "@trezor/blockchain-link-types": "workspace:*"
-    "@trezor/blockchain-link-utils": "workspace:*"
-    "@trezor/env-utils": "workspace:*"
-    "@trezor/type-utils": "workspace:*"
-    "@trezor/utils": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
 "@suite-common/staking@workspace:*, @suite-common/staking@workspace:suite-common/staking":
   version: 0.0.0-use.local
   resolution: "@suite-common/staking@workspace:suite-common/staking"
