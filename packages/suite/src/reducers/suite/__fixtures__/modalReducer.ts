@@ -206,7 +206,7 @@ export default [
                 type: UI_REQUEST.CLOSE_UI_WINDOW,
             },
         ],
-        result: { context: MODAL_CONTEXT_NONE, preserve: true },
+        result: initialState,
     },
     {
         description:
@@ -221,7 +221,7 @@ export default [
                 type: UI_REQUEST.CLOSE_UI_WINDOW,
             },
         ],
-        result: { context: MODAL_CONTEXT_NONE, preserve: true },
+        result: initialState,
     },
     {
         description: 'UI_REQUEST.CLOSE_UI_WINDOW with preserve=true keeps user context modal open',
