@@ -18,6 +18,7 @@ import {
 import { type SuiteSync } from '@suite-common/suite-sync-types';
 import { type TrezorConnect } from '@trezor/connect';
 
+import { createOnSharedWorkerUnsupported } from './createOnSharedWorkerUnsupported';
 import { createTurnOnDesktopSuiteSync } from './turnOnDesktopSuiteSync';
 
 type SuiteSyncDesktopCompositionRootDeps = {
@@ -36,7 +37,12 @@ export const createSuiteSyncDesktopCompositionRoot = (
         formatter: createConsoleFormatter()({ timestampFormat: 'absolute' }),
     });
 
-    const evoluDeps = createEvoluDeps({ console });
+    const evoluDeps = createEvoluDeps({
+        console,
+        onSharedWorkerUnsupported: createOnSharedWorkerUnsupported({
+            dispatch: deps.dispatch,
+        }),
+    });
 
     const run = createRun(evoluDeps);
 
