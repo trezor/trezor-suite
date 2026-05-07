@@ -367,7 +367,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                         coinInfo,
                         accounts,
                     },
-                    dfd.requestId,
+                    { requestId: dfd.requestId },
                 ),
             );
         });
@@ -379,7 +379,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                         type: 'end',
                         coinInfo,
                     },
-                    dfd.requestId,
+                    { requestId: dfd.requestId },
                 ),
             );
         });
@@ -399,7 +399,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                     defaultAccountType,
                     coinInfo,
                 },
-                dfd.requestId,
+                { requestId: dfd.requestId },
             ),
         );
 

@@ -15,7 +15,7 @@ import type {
 } from '@trezor/connect-common';
 import { isStaticSessionId } from '@trezor/device-utils';
 import type { Capability } from '@trezor/protobuf/src/definitions';
-import { isNotUndefined, versionUtils } from '@trezor/utils';
+import { isNotUndefined, isUUID, versionUtils } from '@trezor/utils';
 
 import { DEFAULT_FIRMWARE_RANGE, getFirmwareRange } from '../api/common/paramsValidator';
 import type { Device } from '../device/Device';
@@ -52,6 +52,19 @@ function validateStaticSessionId(input: unknown): StaticSessionId {
     return input;
 }
 
+function validateCallId(callId: unknown): string | undefined {
+    if (callId === undefined) return undefined;
+
+    if (!isUUID(callId)) {
+        throw ERRORS.TypedError(
+            'Method_InvalidParameter',
+            `callId must be a valid UUID, got: ${callId}`,
+        );
+    }
+
+    return callId;
+}
+
 // validate expected state from method parameter.
 // it could be undefined
 function validateDeviceState(device: CallMethodPayload['device']): DeviceState | undefined {
@@ -82,6 +95,8 @@ function validateDeviceState(device: CallMethodPayload['device']): DeviceState |
 
 export abstract class AbstractMethod<Name extends CallMethodPayload['method'], Params = undefined> {
     public responseID: string;
+
+    public callId?: string;
 
     public device: Device | undefined;
 
@@ -138,6 +153,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         this.name = payload.method;
         this.params = params;
         this.responseID = message.id ?? '';
+        this.callId = validateCallId(payload.callId);
         this.deviceState = validateDeviceState(payload.device);
         this.keepSession = typeof payload.keepSession === 'boolean' ? payload.keepSession : false;
         this.skipFinalReload = true;

@@ -8,6 +8,7 @@ import {
     DEVICE,
     POPUP,
     RESPONSE_EVENT,
+    UI_EVENT,
     UI_REQUEST,
     UI_RESPONSE,
     createDeviceMessage,
@@ -54,6 +55,21 @@ import { createUiPromiseManager } from '../utils/uiPromiseManager';
 const _log = initLog('Core');
 
 type CoreContext = ReturnType<Core['getCoreContext']>;
+
+const createSendCoreMessageWithCallId =
+    (sendCoreMessage: CoreContext['sendCoreMessage'], callId?: string) =>
+    (message: CoreEventMessage) => {
+        const isUiRequestMessage = message.event === UI_EVENT && message.type.startsWith('ui-');
+        const hasCallId = 'callId' in message && Boolean(message.callId);
+
+        if (callId && isUiRequestMessage && !hasCallId) {
+            sendCoreMessage({ ...message, callId } as CoreEventMessage);
+
+            return;
+        }
+
+        sendCoreMessage(message);
+    };
 
 /**
  * Find device by device path. Returned device may be unacquired.
@@ -116,7 +132,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
                     {
                         view: 'no-backup',
                     },
-                    uiPromise.requestId,
+                    { requestId: uiPromise.requestId },
                 ),
             );
 
@@ -217,22 +233,31 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
         return Promise.resolve();
     }
 
+    const sendCoreMessageWithCallId = createSendCoreMessageWithCallId(
+        sendCoreMessage,
+        method.callId,
+    );
+    const methodContext: CoreContext = {
+        ...context,
+        sendCoreMessage: sendCoreMessageWithCallId,
+    };
+
     // this method is not using the device, there is no need to acquire
     if (!method.useDevice) {
         try {
             const response = await method.run({
-                sendCoreMessage,
+                sendCoreMessage: sendCoreMessageWithCallId,
                 createUiPromise: uiPromises.create,
             });
-            sendCoreMessage(createResponseMessage(method.responseID, true, response));
+            sendCoreMessageWithCallId(createResponseMessage(method.responseID, true, response));
         } catch (error) {
-            sendCoreMessage(createResponseMessage(method.responseID, false, { error }));
+            sendCoreMessageWithCallId(createResponseMessage(method.responseID, false, { error }));
         }
 
         return Promise.resolve();
     }
 
-    return await onCallDevice(context, message, method);
+    return await onCallDevice(methodContext, message, method);
 };
 
 const onCallDevice = async (
@@ -464,7 +489,7 @@ const onDevicePinHandler =
             createUiMessage(
                 UI_REQUEST.REQUEST_PIN,
                 { device: device.toMessageObject(), type },
-                uiPromise.requestId,
+                { requestId: uiPromise.requestId },
             ),
         );
         // wait for pin
@@ -493,7 +518,7 @@ const onDeviceWordHandler =
             createUiMessage(
                 UI_REQUEST.REQUEST_WORD,
                 { device: device.toMessageObject(), type },
-                uiPromise.requestId,
+                { requestId: uiPromise.requestId },
             ),
         );
         // wait for word
@@ -523,7 +548,7 @@ const onDevicePassphraseHandler =
             createUiMessage(
                 UI_REQUEST.REQUEST_PASSPHRASE,
                 { device: device.toMessageObject() },
-                uiPromise.requestId,
+                { requestId: uiPromise.requestId },
             ),
         );
         // wait for passphrase
@@ -569,7 +594,7 @@ const onThpPairingHandler =
                     device: device.toMessageObject(),
                     ...payload,
                 },
-                uiPromise.requestId,
+                { requestId: uiPromise.requestId },
             ),
         );
         // wait for response
@@ -844,11 +869,15 @@ export class Core extends EventEmitter {
                     assertDeviceListConnected(this.deviceList);
 
                     const coreContext = this.getCoreContext();
+                    const sendCoreMessageWithCallId = createSendCoreMessageWithCallId(
+                        this.sendCoreMessage.bind(this),
+                        message.payload.callId,
+                    );
                     onCallFirmwareUpdate({
                         params: message.payload,
                         context: {
                             deviceList: this.deviceList,
-                            postMessage: this.sendCoreMessage.bind(this),
+                            postMessage: sendCoreMessageWithCallId,
                             selectDevice: path => selectDevice(coreContext, { path }),
                             log: _log,
                             abortSignal: this.abortController.signal,
