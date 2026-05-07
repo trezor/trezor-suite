@@ -10072,8 +10072,8 @@ export const messages = defineMessages({
         id: 'TR_EARN_NOT_AVAILABLE',
         defaultMessage: 'Not available',
     },
-    TR_STAKE_N_A: {
-        id: 'TR_STAKE_N_A',
+    TR_EARN_APY_N_A: {
+        id: 'TR_EARN_APY_N_A',
         defaultMessage: 'N/A',
     },
     TR_EARN_APY_REQUIRED: {

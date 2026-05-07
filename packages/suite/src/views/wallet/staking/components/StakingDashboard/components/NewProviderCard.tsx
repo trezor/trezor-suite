@@ -8,9 +8,9 @@ import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 import { Button, Card, Column, H3, Icon, Paragraph, Row, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
 interface NewProviderCardProps {
     account: Account;

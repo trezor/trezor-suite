@@ -13,8 +13,8 @@ import { selectEthValidatorsQueue, selectPoolStatsApy } from '@suite-common/wall
 import { type Account } from '@suite-common/wallet-types';
 import { BulletList } from '@trezor/components';
 
+import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useSelector } from 'src/hooks/suite';
-import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
 import { EarnInfoRow } from './EarnInfoRow';
 

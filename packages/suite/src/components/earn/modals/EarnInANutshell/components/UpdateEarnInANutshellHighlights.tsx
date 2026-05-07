@@ -6,7 +6,7 @@ import {
 } from '@suite-common/wallet-config';
 import { exhaustive } from '@trezor/type-utils';
 
-import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
+import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 
 import {
     type EarnInANutshellHighlight,
