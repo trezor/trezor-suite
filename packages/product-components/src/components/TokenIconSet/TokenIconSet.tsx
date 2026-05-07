@@ -5,13 +5,15 @@ import { type SpacingValuesNew } from '@trezor/theme';
 
 import { AssetLogo } from '../AssetLogo/AssetLogo';
 import { type AssetLogoSize } from '../AssetLogo/AssetLogoWithId';
-import { IconSetBase, IconWrapper, MAX_VISIBLE_ICONS } from '../IconSet/IconSetBase';
+import { IconSetBase, IconWrapper } from '../IconSet/IconSetBase';
 
 export type TokenIconSetProps = {
     symbol: NetworkSymbol;
     tokens: { contract: string; symbol?: string }[]; // tokens represented by their contract addresses and symbols
     size: AssetLogoSize;
     gap: SpacingValuesNew;
+    /** Maximum number of icons to show. When `undefined`, all icons are shown. @default 3 */
+    maxVisibleIcons?: number;
     isCountVisible?: boolean;
     isCentered?: boolean;
     /**
@@ -25,6 +27,7 @@ export const TokenIconSet = ({
     tokens,
     size,
     gap,
+    maxVisibleIcons,
     isCountVisible = false,
     isCentered = false,
     reverseVisibleTokens = true,
@@ -32,7 +35,8 @@ export const TokenIconSet = ({
     const { length } = tokens;
 
     const visibleTokensContent = useMemo(() => {
-        const visibleTokens = tokens.slice(0, MAX_VISIBLE_ICONS);
+        const visibleTokens =
+            maxVisibleIcons !== undefined ? tokens.slice(0, maxVisibleIcons) : [...tokens];
         const orderedTokens = reverseVisibleTokens ? visibleTokens.reverse() : visibleTokens;
 
         return orderedTokens?.map(token => (
@@ -46,13 +50,14 @@ export const TokenIconSet = ({
                 />
             </IconWrapper>
         ));
-    }, [tokens, reverseVisibleTokens, symbol, size, gap, length]);
+    }, [tokens, maxVisibleIcons, reverseVisibleTokens, symbol, size, gap, length]);
 
     return (
         <IconSetBase
             count={length}
             size={size}
             gap={gap}
+            maxVisibleIcons={maxVisibleIcons}
             isCountVisible={isCountVisible}
             isCentered={isCentered}
         >
