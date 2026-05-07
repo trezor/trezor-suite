@@ -29,11 +29,11 @@ import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { DashboardSection } from 'src/components/dashboard';
+import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
 import { DiscoveryWarning } from './DiscoveryWarning';
 

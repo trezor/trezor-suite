@@ -23,11 +23,11 @@ import {
 import { Button, Column, Icon, Paragraph, Row, Table } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
+import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
-import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
 import { EarnAccountCell } from '../common/EarnAccountCell';
 import { EarnRewardsAmount } from '../common/EarnRewardsAmount';

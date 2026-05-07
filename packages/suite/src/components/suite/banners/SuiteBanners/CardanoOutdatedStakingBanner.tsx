@@ -4,8 +4,8 @@ import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { selectPoolStatsApy } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 
+import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
 export const CardanoOutdatedStakingBanner = () => {
     const dispatch = useDispatch();

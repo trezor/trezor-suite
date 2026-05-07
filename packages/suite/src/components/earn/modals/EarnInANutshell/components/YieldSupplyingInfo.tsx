@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { BulletList } from '@trezor/components';
 
-import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
+import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 
 import { EarnInfoRow } from './EarnInfoRow';
 
@@ -22,7 +22,14 @@ export const YieldSupplyingInfo = ({ apy }: YieldSupplyingInfoProps) => (
         {apy !== null && (
             <EarnInfoRow
                 heading={<Translation id="TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK" />}
-                content={{ text: <ApyValue apy={apy} /> }}
+                content={{
+                    text: (
+                        <Translation
+                            id="TR_EARN_APY_APPROX"
+                            values={{ apyPercent: formatApyValue(apy) }}
+                        />
+                    ),
+                }}
             />
         )}
     </BulletList>

@@ -19,9 +19,9 @@ import { Banner } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
+import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
 type StakingBannerProps = {
     account: Account;
