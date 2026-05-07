@@ -21,8 +21,6 @@ on:
       - "packages/connect-common/**"
       - "packages/connect-data/**"
       - "packages/connect-mobile/**"
-      - "packages/connect-plugin-ethereum/**"
-      - "packages/connect-plugin-stellar/**"
       - "packages/connect-web/**"
       - "packages/connect-webextension/**"
       - "packages/crypto-utils/**"
