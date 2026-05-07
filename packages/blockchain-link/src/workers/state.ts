@@ -22,7 +22,7 @@ export class WorkerState {
 
         return addr.filter(a => {
             if (typeof a !== 'string') return false;
-            if (seen.indexOf(a) >= 0) return false;
+            if (seen.includes(a)) return false;
             seen.push(a);
 
             return true;
@@ -30,7 +30,7 @@ export class WorkerState {
     }
 
     addAddresses(addr: string[]) {
-        const unique = this.validateAddresses(addr).filter(a => this.addresses.indexOf(a) < 0);
+        const unique = this.validateAddresses(addr).filter(a => !this.addresses.includes(a));
         this.addresses = this.addresses.concat(unique);
 
         return unique;
@@ -42,7 +42,7 @@ export class WorkerState {
 
     removeAddresses(addr: string[]) {
         const unique = this.validateAddresses(addr);
-        this.addresses = this.addresses.filter(a => unique.indexOf(a) < 0);
+        this.addresses = this.addresses.filter(a => !unique.includes(a));
 
         return this.addresses;
     }
@@ -53,7 +53,7 @@ export class WorkerState {
 
         return acc.filter(a => {
             if (a && typeof a === 'object' && typeof a.descriptor === 'string') {
-                if (seen.indexOf(a.descriptor) >= 0) return false;
+                if (seen.includes(a.descriptor)) return false;
                 seen.push(a.descriptor);
 
                 return true;
@@ -113,7 +113,7 @@ export class WorkerState {
             (addr, acc) => addr.concat(this.getAccountAddresses(acc)),
             [] as string[],
         );
-        this.accounts = this.accounts.filter(a => accountsToRemove.indexOf(a) < 0);
+        this.accounts = this.accounts.filter(a => !accountsToRemove.includes(a));
         this.removeAddresses(addressesToRemove);
 
         return this.accounts;

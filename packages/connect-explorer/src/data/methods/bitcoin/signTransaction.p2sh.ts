@@ -55,7 +55,7 @@ export default [
                 value: 'test',
                 affect: ['inputs', 'outputs'],
                 data: select
-                    .filter(c => c.affectedValue.indexOf('m/49') >= 0)
+                    .filter(c => c.affectedValue.includes('m/49'))
                     .map(v => {
                         const example = examples[v.value as keyof typeof examples];
 

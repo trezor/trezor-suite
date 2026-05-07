@@ -268,7 +268,7 @@ export const transformTransaction = (
     ) {
         // all inputs and outputs are mine
         type = 'self';
-        targets = outputs.filter(o => internal.indexOf(o) < 0);
+        targets = outputs.filter(o => !internal.includes(o));
         // recalculate amount, amount spent is just a fee
         amount = blockfrostTxData.txData.fees;
 
@@ -298,7 +298,7 @@ export const transformTransaction = (
         }
     } else {
         type = 'sent';
-        targets = outputs.filter(o => internal.indexOf(o) < 0);
+        targets = outputs.filter(o => !internal.includes(o));
         // regular targets
         if (voutLength) {
             // bitcoin-like transaction

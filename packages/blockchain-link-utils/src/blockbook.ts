@@ -60,16 +60,16 @@ export const filterTokenTransfers = (
         .filter(transfer => {
             if (transfer && typeof transfer === 'object') {
                 return (
-                    (transfer.from && all.indexOf(transfer.from) >= 0) ||
-                    (transfer.to && all.indexOf(transfer.to) >= 0)
+                    (transfer.from && all.includes(transfer.from)) ||
+                    (transfer.to && all.includes(transfer.to))
                 );
             }
 
             return false;
         })
         .map(transfer => {
-            const isIncoming = transfer.from && all.indexOf(transfer.from) >= 0;
-            const isOutgoing = transfer.to && all.indexOf(transfer.to) >= 0;
+            const isIncoming = transfer.from && all.includes(transfer.from);
+            const isOutgoing = transfer.to && all.includes(transfer.to);
 
             let type: TokenTransfer['type'];
             if (isIncoming && isOutgoing) {
@@ -208,7 +208,7 @@ export const transformTransaction = (
     const myInternalTransfers = filterEthereumInternalTransfers(descriptor, tx.ethereumSpecific);
 
     const isNonChangeOutput = (o: VinVout) =>
-        addresses ? filterTargets(addresses.change, tx.vout).indexOf(o) < 0 : true;
+        addresses ? !filterTargets(addresses.change, tx.vout).includes(o) : true;
 
     const isNonZero = (o: VinVout) => o.value && o.value !== '0';
 
@@ -365,7 +365,7 @@ export const transformAddresses = (
 
     if (addresses.length < 1) return undefined;
     const internal = addresses.filter(a => a.path.split('/')[4] === '1');
-    const external = addresses.filter(a => internal.indexOf(a) < 0);
+    const external = addresses.filter(a => !internal.includes(a));
 
     return {
         change: internal,

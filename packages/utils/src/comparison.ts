@@ -55,7 +55,7 @@ export const isChanged = (prev?: any, current?: any, filter?: { [k: string]: str
         if (prevKeys.length !== currentKeys.length) return true;
 
         // 6. "prev" has keys which "current" doesn't have
-        const prevDifference = prevKeys.find(k => currentKeys.indexOf(k) < 0);
+        const prevDifference = prevKeys.find(k => !currentKeys.includes(k));
         if (prevDifference) return true;
 
         // 8. observe every key recursive

@@ -180,7 +180,7 @@ const connectDevice = (draft: DeviceReducerState, { state, ...device }: Device) 
     // get not affected devices
     // and exclude unacquired devices with current "device_id" (they will become acquired)
     const otherDevices: TrezorDevice[] = draft.devices.filter(
-        d => affectedDevices.indexOf(d as AcquiredDevice) < 0 && unacquiredDevices.indexOf(d) < 0,
+        d => !affectedDevices.includes(d as AcquiredDevice) && !unacquiredDevices.includes(d),
     );
 
     // clear draft
@@ -268,9 +268,7 @@ const changeDevice = (
                 (d.mode === 'bootloader' && d.remember && d.id === device.id)),
     ) as AcquiredDevice[];
 
-    const otherDevices = draft.devices.filter(
-        d => affectedDevices.indexOf(d as AcquiredDevice) === -1,
-    );
+    const otherDevices = draft.devices.filter(d => !affectedDevices.includes(d as AcquiredDevice));
     // clear draft
     draft.devices.splice(0, draft.devices.length);
     // fill draft with not affected devices
