@@ -44,7 +44,7 @@ export const OptionStyled = styled.div<{ $hasHoverInteraction?: boolean; $disabl
     color: ${({ $disabled, theme }) => ($disabled ? theme.contentSecondary : undefined)};
 
     ${({ $hasHoverInteraction }) =>
-        $hasHoverInteraction === true
+        $hasHoverInteraction
             ? css`
                   &:hover {
                       background-color: ${({ theme }) => theme.legacyBackgroundSurfaceElevation2};

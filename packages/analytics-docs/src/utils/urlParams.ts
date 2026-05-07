@@ -38,8 +38,8 @@ export const updateUrl = (
     if (query) params.set('q', query);
     if (platform !== 'all') params.set('platform', platform);
     if (sort !== 'az') params.set('sort', sort);
-    if (sidebarOpen === true) params.set('sidebar', 'true');
-    if (liveLogOpen === true) params.set('liveLog', 'true');
+    if (sidebarOpen) params.set('sidebar', 'true');
+    if (liveLogOpen) params.set('liveLog', 'true');
     const search = params.toString();
     const url = search ? `${window.location.pathname}?${search}` : window.location.pathname;
 

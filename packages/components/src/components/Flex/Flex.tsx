@@ -107,7 +107,7 @@ const Container = styled.div<ContainerProps>`
     display: flex;
 
     flex-flow: ${({ $direction, $isReversed, $flexWrap }) =>
-        `${$direction}${$isReversed === true ? '-reverse' : ''} ${$flexWrap}`};
+        `${$direction}${$isReversed ? '-reverse' : ''} ${$flexWrap}`};
     flex: ${({ $flex }) => $flex};
     gap: ${({ $rowGap, $columnGap }) => `${$rowGap}px ${$columnGap}px`};
     justify-content: ${({ $justifyContent }) => $justifyContent};
