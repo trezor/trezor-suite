@@ -43,7 +43,6 @@ import {
 const getFeeLabel = (networkType: NetworkType) => {
     switch (networkType) {
         case 'ethereum':
-            return 'MAX_FEE';
         case 'stellar':
             return 'MAX_FEE';
         case 'solana':
