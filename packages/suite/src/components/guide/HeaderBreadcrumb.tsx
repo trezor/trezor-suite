@@ -69,13 +69,11 @@ export const HeaderBreadcrumb = () => {
     return (
         <Row gap={4} maxWidth="calc(100% - 36px - 8px)" flexWrap="wrap">
             <TextButton
-                onClick={() => {
-                    if (grandParentNode) {
-                        navigateToCategory(grandParentNode);
-                    } else {
-                        navigateToGuideDashboard();
-                    }
-                }}
+                onClick={() =>
+                    grandParentNode
+                        ? navigateToCategory(grandParentNode)
+                        : navigateToGuideDashboard()
+                }
                 size="small"
                 isUnderlined
                 intent="neutral"
