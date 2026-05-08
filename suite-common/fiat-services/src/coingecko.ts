@@ -125,7 +125,7 @@ export const fetchCurrentFiatRates = async (
 
         if (rates) {
             return {
-                ts: new Date().getTime() / 1000,
+                ts: Date.now() / 1000,
                 rates: rates.market_data?.current_price,
             };
         }
@@ -198,7 +198,7 @@ export const getFiatRatesForTimestamps = async (
             return {
                 symbol: ticker.symbol,
                 tickers,
-                ts: new Date().getTime(),
+                ts: Date.now(),
             };
         }
     }
@@ -238,7 +238,7 @@ export const fetchLastWeekRates = async (
                 return {
                     symbol,
                     tickers,
-                    ts: new Date().getTime(),
+                    ts: Date.now(),
                 };
             }
         }

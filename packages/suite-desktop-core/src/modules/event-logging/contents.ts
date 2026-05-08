@@ -29,7 +29,7 @@ export const init: ModuleInit = ({ mainWindowProxy }) => {
 
         let unresponsiveStart = 0;
         mainWindow.webContents.on('unresponsive', () => {
-            unresponsiveStart = +new Date();
+            unresponsiveStart = Date.now();
             logger.warn(SERVICE_NAME, 'Unresponsive');
         });
 
@@ -37,7 +37,7 @@ export const init: ModuleInit = ({ mainWindowProxy }) => {
             if (unresponsiveStart !== 0) {
                 logger.warn(
                     SERVICE_NAME,
-                    `Responsive again after ${(+new Date() - unresponsiveStart / 1000).toFixed(1)}s`,
+                    `Responsive again after ${(Date.now() - unresponsiveStart / 1000).toFixed(1)}s`,
                 );
                 unresponsiveStart = 0;
             }

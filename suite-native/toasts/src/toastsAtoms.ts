@@ -22,7 +22,7 @@ export const addToastAtom = atom(null, (get, set, addedToast: ToastWithoutId) =>
     const toasts = get(toastsAtom);
 
     if (A.all(toasts, ({ message }) => message !== addedToast.message)) {
-        toasts.push({ ...addedToast, id: new Date().getTime() });
+        toasts.push({ ...addedToast, id: Date.now() });
     }
 
     set(toastsAtom, [...toasts]);

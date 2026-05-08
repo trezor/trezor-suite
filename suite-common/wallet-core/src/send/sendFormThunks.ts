@@ -742,7 +742,7 @@ export const enhancePrecomposedTransactionThunk = createThunk<
                 formState: formValues,
                 precomposedTransaction: {
                     ...enhancedPrecomposedTransaction,
-                    createdTimestamp: new Date().getTime(),
+                    createdTimestamp: Date.now(),
                     isTokenKnown,
                 },
                 accountKey: selectedAccount.key,

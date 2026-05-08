@@ -94,7 +94,7 @@ export const getTtl = (testnet: boolean) => {
     // https://cardano.stackexchange.com/questions/491/calculate-timestamp-from-slot/494#494
     const shelleySlot = testnet ? 6192449 : 4924800;
     const shelleyTimestamp = testnet ? 1672848449 : 1596491091;
-    const currentTimestamp = Math.floor(new Date().getTime() / 1000);
+    const currentTimestamp = Math.floor(Date.now() / 1000);
     const currentSlot = shelleySlot + currentTimestamp - shelleyTimestamp;
 
     return currentSlot + CARDANO_DEFAULT_TTL_OFFSET;

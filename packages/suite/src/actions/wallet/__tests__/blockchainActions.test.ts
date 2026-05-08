@@ -141,7 +141,7 @@ describe('Blockchain Actions', () => {
             expect(actions).toMatchObject(f.actions);
             if (actions.length) {
                 // wait for reconnection timeout
-                const timeout = actions[0].payload.time - new Date().getTime() + 500;
+                const timeout = actions[0].payload.time - Date.now() + 500;
                 jest.setTimeout(10000);
                 await new Promise(resolve => setTimeout(resolve, timeout));
                 expect(TrezorConnect.blockchainUnsubscribeFiatRates).toHaveBeenCalledTimes(1);

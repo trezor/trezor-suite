@@ -240,7 +240,7 @@ export const getFiatRatesForTimestamps = (
                     );
 
                     return {
-                        ts: new Date().getTime(),
+                        ts: Date.now(),
                         symbol: ticker.symbol,
                         tickers: validTickers,
                     };

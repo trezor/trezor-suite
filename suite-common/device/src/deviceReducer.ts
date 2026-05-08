@@ -120,7 +120,7 @@ const merge = (
  * @returns
  */
 const connectDevice = (draft: DeviceReducerState, { state, ...device }: Device) => {
-    const currentTime = new Date().getTime();
+    const currentTime = Date.now();
 
     const deviceCommonFields = {
         connected: true,
@@ -399,7 +399,7 @@ const updateTimestamp = (draft: DeviceReducerState, device?: TrezorDevice) => {
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
     if (!draft.devices[index]) return;
     // update timestamp
-    const currentTime = new Date().getTime();
+    const currentTime = Date.now();
     draft.devices[index].ts = currentTime;
     draft.devices[index].firstConnectedTimestamp =
         draft.devices[index].firstConnectedTimestamp ?? currentTime;
@@ -418,7 +418,7 @@ const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
 
     const isPortfolioTrackerDevice = device.id === PORTFOLIO_TRACKER_DEVICE_ID;
 
-    const currentTime = new Date().getTime();
+    const currentTime = Date.now();
     const newDevice: TrezorDevice = {
         ...device,
         remember: true,

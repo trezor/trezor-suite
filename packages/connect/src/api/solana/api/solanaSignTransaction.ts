@@ -193,7 +193,7 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
                 token,
                 // Countdown for blockhash-constrained transactions
                 createdTimestamp:
-                    'blockhash' in message.lifetimeConstraint ? new Date().getTime() : undefined,
+                    'blockhash' in message.lifetimeConstraint ? Date.now() : undefined,
             };
         } catch (e) {
             // Don't throw errors from this method

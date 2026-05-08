@@ -359,7 +359,7 @@ export const fixLoadedCoinjoinAccount = ({
 // Clean AnonymityGains from old records.
 export const cleanAnonymityGains = (anonymityGainsHistory: AnonymityGainPerRound[]) => {
     const oldestRelevantTimestamp =
-        new Date().getTime() - ANONYMITY_GAINS_HINDSIGHT_DAYS * 24 * 60 * 60 * 1000;
+        Date.now() - ANONYMITY_GAINS_HINDSIGHT_DAYS * 24 * 60 * 60 * 1000;
 
     return anonymityGainsHistory
         .filter(level => level.timestamp > oldestRelevantTimestamp)

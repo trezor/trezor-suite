@@ -20,7 +20,7 @@ const initialSettings: ConnectSettings = {
     transports: undefined,
     pendingTransportEvent: true,
     env: 'node',
-    timestamp: new Date().getTime(),
+    timestamp: Date.now(),
     sharedLogger: true,
     transportReconnect: true,
 };

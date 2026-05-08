@@ -4,7 +4,7 @@ import { composeTxPlan, getTtl, prepareCertificates, transformUtxos } from '../c
 describe('cardano utils', () => {
     let dateSpy: any;
     beforeAll(() => {
-        dateSpy = jest.spyOn(Date.prototype, 'getTime').mockReturnValue(1653394389512);
+        dateSpy = jest.spyOn(Date, 'now').mockReturnValue(1653394389512);
     });
 
     afterAll(() => {

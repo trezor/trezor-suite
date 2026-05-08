@@ -100,7 +100,7 @@ export const replaceTransactionThunk = createThunk(
                     ...origTx.tx,
                     txid: newTxid,
                     fee: precomposedTransaction.fee,
-                    blockTime: Math.round(new Date().getTime() / 1000),
+                    blockTime: Math.round(Date.now() / 1000),
                     // TODO: details: {}, is it worth it?
                 };
 
@@ -413,7 +413,7 @@ export const addFakePendingCardanoTxThunk = createThunk(
         const fakeTx = {
             type: 'sent' as const,
             txid,
-            blockTime: Math.floor(new Date().getTime() / 1000),
+            blockTime: Math.floor(Date.now() / 1000),
             blockHash: undefined,
             // amounts (as most of props below) don't matter much since it is temp fake anyway
             amount: precomposedTransaction.totalSpent,

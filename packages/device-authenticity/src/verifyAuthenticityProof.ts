@@ -122,7 +122,7 @@ const verifyDeviceAndCACertificates = async ({
     }
 
     const caCertValidityFrom = caCert.tbsCertificate.validity.from.getTime();
-    if (caCertValidityFrom > new Date().getTime()) {
+    if (caCertValidityFrom > Date.now()) {
         throw new Error(`CA validity from ${caCertValidityFrom} can't be in the future!`);
     }
     const modelFromSubject = parseModelFromDeviceCertSubject(deviceCert);

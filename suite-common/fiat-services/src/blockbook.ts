@@ -61,7 +61,7 @@ const getMultiTickers = async (
 
     return (
         rates && {
-            ts: new Date().getTime(),
+            ts: Date.now(),
             symbol: ticker,
             tickers: rates.map((rate, i) => ({ ...rate, ts: timestamps[i] })),
         }

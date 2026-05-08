@@ -93,7 +93,7 @@ export class ElectrumClient extends BatchingJsonRpcClient implements ElectrumAPI
     }
 
     request(method: string, ...params: any[]) {
-        this.timeLastCall = new Date().getTime();
+        this.timeLastCall = Date.now();
 
         return super.request(method, ...params);
     }
@@ -105,7 +105,7 @@ export class ElectrumClient extends BatchingJsonRpcClient implements ElectrumAPI
         this.keepAliveHandle = setInterval(async () => {
             if (
                 this.timeLastCall !== 0 &&
-                new Date().getTime() > this.timeLastCall + KEEP_ALIVE_INTERVAL / 2
+                Date.now() > this.timeLastCall + KEEP_ALIVE_INTERVAL / 2
             ) {
                 await (this as ElectrumAPI).request('server.ping').catch(err => {
                     console.error(`Ping to server failed: [${err}]`);

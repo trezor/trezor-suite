@@ -34,7 +34,7 @@ const remove = createAction(
 // Shared function to transform payload to NotificationEntry
 const toastPayloadTransform = (payload: ToastPayload): NotificationEntry => ({
     context: 'toast' as const,
-    id: new Date().getTime(),
+    id: Date.now(),
     seen: true,
     ...payload,
 });
@@ -64,7 +64,7 @@ export const addEvent = createAction(
     (payload: NotificationEventPayload): AddNotificationAction => ({
         payload: {
             context: 'event',
-            id: new Date().getTime(),
+            id: Date.now(),
             ...payload,
         },
     }),

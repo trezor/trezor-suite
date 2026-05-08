@@ -50,7 +50,7 @@ export class CoinjoinMempoolController implements MempoolControllerShape {
         this.onDisconnect = () => {
             this._status = 'stopped';
         };
-        this.lastPurge = new Date().getTime();
+        this.lastPurge = Date.now();
         this._status = 'stopped';
     }
 
@@ -126,7 +126,7 @@ export class CoinjoinMempoolController implements MempoolControllerShape {
                             addTx(txid),
                 ),
             );
-            this.lastPurge = new Date().getTime();
+            this.lastPurge = Date.now();
 
             return [...this.mempool.values()];
         }
@@ -159,7 +159,7 @@ export class CoinjoinMempoolController implements MempoolControllerShape {
             iteration++;
         }
 
-        this.lastPurge = new Date().getTime();
+        this.lastPurge = Date.now();
 
         return Array.from(set, txid => this.mempool.get(txid)!);
     }
@@ -177,7 +177,7 @@ export class CoinjoinMempoolController implements MempoolControllerShape {
     }
 
     async update(force?: boolean) {
-        const now = new Date().getTime();
+        const now = Date.now();
         if (now - this.lastPurge < MEMPOOL_PURGE_CYCLE && !force) return;
 
         const mempoolTxids = await this.client

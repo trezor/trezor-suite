@@ -18,7 +18,7 @@ export const useBackendReconnection = (
     useEffect(() => {
         if (!resolveTime) return;
         const interval = setInterval(() => {
-            const secToResolve = Math.round((resolveTime - new Date().getTime()) / 1000);
+            const secToResolve = Math.round((resolveTime - Date.now()) / 1000);
             setTime(secToResolve);
         }, 500);
 

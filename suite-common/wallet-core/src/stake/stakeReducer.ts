@@ -18,7 +18,7 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
             if (action.payload) {
                 state.precomposedTx = {
                     ...action.payload.transactionInfo,
-                    createdTimestamp: new Date().getTime(),
+                    createdTimestamp: Date.now(),
                 };
                 // Deep-cloning to prevent buggy interaction between react-hook-form and immer, see https://github.com/orgs/react-hook-form/discussions/3715#discussioncomment-2151458
                 // Otherwise, whenever the outputs fieldArray is updated after the form draft or precomposedForm is saved, there is na error:
