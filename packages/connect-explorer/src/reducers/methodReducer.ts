@@ -32,7 +32,7 @@ const findFieldsNested = (
     if (!schema) return undefined;
 
     const remainingPath = field.path?.slice(currentDepth);
-    if (!remainingPath || remainingPath.length === 0) {
+    if (!remainingPath?.length) {
         return schema.find(f => f.name === field.name);
     }
 

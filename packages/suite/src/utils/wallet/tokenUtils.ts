@@ -71,7 +71,7 @@ export const hasVisibleTokens = (
     tokenDefinitions: Partial<TokenDefinitionsState>,
     isNft: boolean = false,
 ): boolean => {
-    if (!tokens || tokens.length === 0) return false;
+    if (!tokens?.length) return false;
 
     const coinDefinitions = tokenDefinitions?.[symbol]?.coin;
     if (!coinDefinitions) return false;

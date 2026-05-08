@@ -10,7 +10,7 @@ type MessageSystemDevicesProps = {
 export const MessageSystemDevices = ({ devices }: MessageSystemDevicesProps) => {
     const [expanded, setExpanded] = useState(false);
 
-    if (!devices || devices.length === 0) {
+    if (!devices?.length) {
         return (
             <InfoItem label="Devices" iconName="devices" intent="neutral" priority="primary">
                 -

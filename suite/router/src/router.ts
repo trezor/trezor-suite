@@ -143,7 +143,7 @@ const modalAppParamsDefaultValues: ModalAppParams = {
 
 const validateModalAppParams = (hash: HashString, params?: Route['params']): ModalAppParams => {
     const splitted = parseHash(hash);
-    if (!splitted || splitted.length === 0) return modalAppParamsDefaultValues;
+    if (!splitted?.length) return modalAppParamsDefaultValues;
 
     return {
         ...modalAppParamsDefaultValues,

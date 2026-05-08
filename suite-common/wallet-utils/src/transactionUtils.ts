@@ -857,7 +857,7 @@ const enhanceTokenTransfers = (
     tokenTransfers: AccountTransaction['tokens'],
     accountSymbol: Account['symbol'],
 ) => {
-    if (!tokenTransfers || tokenTransfers.length === 0) {
+    if (!tokenTransfers?.length) {
         return tokenTransfers;
     }
 

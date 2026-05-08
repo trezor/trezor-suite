@@ -328,7 +328,7 @@ const getIntermediaryMessageRelease = (features: Features) => {
     }
 
     const deviceIntermediaryReleases = config[features.internal_model];
-    if (!deviceIntermediaryReleases || deviceIntermediaryReleases.length === 0) {
+    if (!deviceIntermediaryReleases?.length) {
         // No intermediary releases are defined for this model.
         return;
     }

@@ -94,7 +94,7 @@ export const poolBech32ToHex = (poolId: string): string => {
 };
 
 export const selectBestCardanoPool = (pools?: AdaPools['pools']) => {
-    if (!pools || pools.length === 0) return CARDANO_EVERSTAKE_STAKING_POOL;
+    if (!pools?.length) return CARDANO_EVERSTAKE_STAKING_POOL;
 
     // find the one within the threshold
     const bestPool = pools.find(pool => pool.saturation < CARDANO_POOL_SATURATION_SAFE_THRESHOLD);

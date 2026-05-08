@@ -124,7 +124,7 @@ export const getMinMaxValueFromData = <TType extends TypeName, TValue extends Bi
     extractReceivedValue: (sourceData: GraphDataPoint<TType>) => TValue | undefined,
     extractBalanceValue: (sourceData: GraphDataPoint<TType>) => TValue | undefined,
 ): [TValue, TValue] => {
-    if (!data || data.length === 0) {
+    if (!data?.length) {
         return [new BigNumber(0) as TValue, new BigNumber(0) as TValue];
     }
     let maxSent = new BigNumber(extractSentValue(data[0]) || 0);

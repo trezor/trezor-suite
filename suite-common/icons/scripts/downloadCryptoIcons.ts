@@ -136,7 +136,7 @@ async function ensureDirectoryExists(path: string) {
     const updatedIcons = (await getUpdatedIconsList()) ?? {};
 
     const coins = await getCoinList();
-    if (!coins || coins.length === 0) {
+    if (!coins?.length) {
         throw new Error('No coins found');
     }
 

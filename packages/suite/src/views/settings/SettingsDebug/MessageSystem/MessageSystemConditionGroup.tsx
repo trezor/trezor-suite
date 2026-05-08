@@ -11,7 +11,7 @@ type MessageSystemConditionGroupProps = {
 
 // TODO: Add rarely used conditions: duration, browser, transport, settings.
 export const MessageSystemConditionGroup = ({ conditions }: MessageSystemConditionGroupProps) => {
-    if (!conditions || conditions.length === 0) {
+    if (!conditions?.length) {
         return (
             <InfoItem label="Conditions" iconName="checkFat" intent="neutral" priority="primary">
                 -

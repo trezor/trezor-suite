@@ -22,7 +22,7 @@ export const findBestCompatibleRelease = (
     currentVesion: CurrentVersion,
     checkProperty: VersionCheckProperty,
 ): FirmwareRelease | undefined => {
-    if (!availableFirmwares || availableFirmwares.length === 0) {
+    if (!availableFirmwares?.length) {
         return;
     }
 

@@ -114,7 +114,7 @@ export const fetchCurrentFiatRates = async (
     options?: FetchCurrentFiatRatesOptions,
 ) => {
     const coinUrls = buildCoinUrls(ticker);
-    if (!coinUrls || coinUrls.length === 0) return null;
+    if (!coinUrls?.length) return null;
 
     const urlParams =
         'tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false&localization=false';
@@ -174,7 +174,7 @@ export const getFiatRatesForTimestamps = async (
 ): Promise<HistoricalResponse | null> => {
     const coinUrls = buildCoinUrls(ticker); // Assuming this now returns an array of URLs
     const urlEndpoint = `market_chart/range`;
-    if (!coinUrls || coinUrls.length === 0) return null;
+    if (!coinUrls?.length) return null;
 
     // sort timestamps chronologically to get the minimum and maximum values
     const sortedTimestampsInSeconds = [...timestamps].sort((ts1, ts2) => ts1 - ts2);
@@ -222,7 +222,7 @@ export const fetchLastWeekRates = async (
     const urlEndpoint = `market_chart`;
     const urlParams = `vs_currency=${fiatCurrencyCode}&days=7`;
     const coinUrls = buildCoinUrls(ticker);
-    if (!coinUrls || coinUrls.length === 0) return null;
+    if (!coinUrls?.length) return null;
 
     const { symbol } = ticker;
 
