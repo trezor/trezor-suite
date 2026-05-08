@@ -7,6 +7,7 @@ import { useDispatch } from 'src/hooks/suite';
 type SignedMessageData = {
     message?: string;
     address?: string;
+    isElectrum?: boolean;
 
     /* Due to wrong abstraction in `useSignVerifyForm` this needs to be optional.
     If we ever separate Sign and Verify forms this shall be set to required.
@@ -25,7 +26,7 @@ ${signature}
 -----END ${network} SIGNED MESSAGE-----`;
 
 export const useCopySignedMessage = <T extends SignedMessageData>(
-    { message, address, signature }: T,
+    { message, address, signature, isElectrum }: T,
     network?: Network,
 ) => {
     const dispatch = useDispatch();
@@ -33,7 +34,7 @@ export const useCopySignedMessage = <T extends SignedMessageData>(
     const canCopy = address && signature;
 
     const formatMessage = () => {
-        if (network?.networkType === 'cardano') {
+        if (network?.networkType === 'cardano' || isElectrum) {
             return signature || '';
         }
 
