@@ -41,7 +41,7 @@ export default class SignMessage extends AbstractMethod<'signMessage', Params> {
         const proto = {
             address_n: path,
             message: messageHex,
-            coin_name: coinInfo ? coinInfo.name : undefined,
+            coin_name: coinInfo?.name,
             script_type: scriptType && scriptType !== 'SPENDMULTISIG' ? scriptType : 'SPENDADDRESS', // script_type 'SPENDMULTISIG' throws Failure_FirmwareError
             no_script_type: payload.no_script_type,
         };

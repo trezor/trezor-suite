@@ -20,9 +20,9 @@ import fixtures from '../__fixtures__/onboardingActions';
 // }
 
 const getInitialState = (custom?: any) => {
-    const suite = custom ? custom.suite : undefined;
-    const onboarding = custom ? custom.onboarding : undefined;
-    const device = custom ? custom.device : undefined;
+    const suite = custom?.suite;
+    const onboarding = custom?.onboarding;
+    const device = custom?.device;
 
     return {
         onboarding: {

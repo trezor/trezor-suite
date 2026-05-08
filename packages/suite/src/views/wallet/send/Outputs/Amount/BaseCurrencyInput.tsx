@@ -76,7 +76,7 @@ export const BaseCurrencyInput = ({
     const tokenInputName = `outputs.${outputId}.token` as const;
 
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
-    const error = outputError ? outputError.fiat : undefined;
+    const error = outputError?.fiat;
     const baseCurrencyValue = getDefaultValue(baseCurrencyInputName, output.fiat || '');
     const tokenContractAddress = getDefaultValue(tokenInputName, output.token);
 
@@ -134,7 +134,7 @@ export const BaseCurrencyInput = ({
     // Amount input has an error and Fiat has not (but it should)
     // usually this happens after Fiat > Amount recalculation (from here, onChange event)
     // or as a result on composeTransaction process
-    const amountError = outputError ? outputError.amount : undefined;
+    const amountError = outputError?.amount;
     const errorToDisplay = !error && baseCurrencyValue && amountError ? amountError : error;
 
     const isLowAnonymity = isLowAnonymityWarning(outputError);

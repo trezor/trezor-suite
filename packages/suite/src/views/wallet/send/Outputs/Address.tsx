@@ -85,7 +85,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     // however if address is changed compose process may return `AMOUNT_IS_NOT_ENOUGH` which should appear under the amount filed.
     const amountInputName = `outputs.${outputId}.amount` as const;
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
-    const addressError = outputError ? outputError.address : undefined;
+    const addressError = outputError?.address;
     const addressValue = getDefaultValue(inputName, output.address || '');
     const recipientId = outputId + 1;
     const label = watch(`outputs.${outputId}.label`, '');

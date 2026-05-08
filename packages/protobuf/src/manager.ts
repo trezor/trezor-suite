@@ -189,7 +189,7 @@ export const ProtobufManager = () => {
         const wireTypeExtension = extensions['wire_type'];
         const wireTypeOption = unknownOptions.find(o => o.no === wireTypeExtension?.number);
 
-        return wireTypeOption ? wireTypeOption.data[0] : undefined;
+        return wireTypeOption?.data[0];
     };
 
     const findEnum = (enumName: string) => enums[enumName];

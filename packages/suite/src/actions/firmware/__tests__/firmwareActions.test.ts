@@ -22,9 +22,9 @@ interface InitialState {
 }
 
 const getInitialState = (override?: InitialState): any => {
-    const suite = override ? override.suite : undefined;
-    const suiteSettings = override ? override.suiteSettings : undefined;
-    const device = override ? override.device : undefined;
+    const suite = override?.suite;
+    const suiteSettings = override?.suiteSettings;
+    const device = override?.device;
 
     return {
         suite: {

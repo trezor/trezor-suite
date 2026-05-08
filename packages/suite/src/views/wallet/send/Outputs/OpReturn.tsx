@@ -28,8 +28,8 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
     const hexValue = watch(inputHexName);
 
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
-    const asciiError = outputError ? outputError.dataAscii : undefined;
-    const hexError = outputError ? outputError.dataHex : undefined;
+    const asciiError = outputError?.dataAscii;
+    const hexError = outputError?.dataHex;
 
     const { ref: asciiRef, ...asciiField } = register(inputAsciiName, {
         onChange: event => {

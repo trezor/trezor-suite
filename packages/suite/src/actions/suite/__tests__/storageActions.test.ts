@@ -112,27 +112,15 @@ type PartialState = Pick<
 };
 
 const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
-    suite: suiteReducer(
-        prevState ? prevState.suite : undefined,
-        action || ({ type: 'foo' } as any),
-    ),
+    suite: suiteReducer(prevState?.suite, action || ({ type: 'foo' } as any)),
     suiteSettings: prevState?.suiteSettings ?? suiteSettingsInitialState,
-    flags: flagsReducer(
-        prevState ? prevState.flags : undefined,
-        action || ({ type: 'foo' } as any),
-    ),
-    suiteSync: suiteSyncReducer(
-        prevState ? prevState.suiteSync : undefined,
-        action || ({ type: 'foo' } as any),
-    ),
+    flags: flagsReducer(prevState?.flags, action || ({ type: 'foo' } as any)),
+    suiteSync: suiteSyncReducer(prevState?.suiteSync, action || ({ type: 'foo' } as any)),
     suiteSyncQuotaManager: quotaManagerSliceReducer(
-        prevState ? prevState.suiteSyncQuotaManager : undefined,
+        prevState?.suiteSyncQuotaManager,
         action || ({ type: 'foo' } as any),
     ),
-    device: deviceReducer(
-        prevState ? prevState.device : undefined,
-        action || ({ type: 'foo' } as any),
-    ),
+    device: deviceReducer(prevState?.device, action || ({ type: 'foo' } as any)),
     wallet: {
         accounts: accountsReducer(prevState?.wallet?.accounts, action || ({ type: 'foo' } as any)),
         coinjoin: coinjoinReducer(prevState?.wallet?.coinjoin, action || ({ type: 'foo' } as any)),

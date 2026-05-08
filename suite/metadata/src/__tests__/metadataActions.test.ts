@@ -53,7 +53,7 @@ interface InitialState {
 }
 
 const getInitialState = (state?: InitialState) => {
-    const metadata = state ? state.metadata : undefined;
+    const metadata = state?.metadata;
     const suite = state ? state.suite : {};
     const suiteSettings = state?.suiteSettings ?? {};
 

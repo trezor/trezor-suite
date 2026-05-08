@@ -46,7 +46,7 @@ const setTrezorConnectFixtures = (fixture: any) => {
                 success: true,
                 payload: {
                     state: {
-                        staticSessionId: `state@device-id:${device ? device.instance : undefined}`,
+                        staticSessionId: `state@device-id:${device?.instance}`,
                     },
                 },
             },

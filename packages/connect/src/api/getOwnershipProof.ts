@@ -35,7 +35,7 @@ export default class GetOwnershipProof extends AbstractMethod<
 
             return {
                 address_n,
-                coin_name: coinInfo ? coinInfo.name : undefined,
+                coin_name: coinInfo?.name,
                 multisig: batch.multisig,
                 script_type,
                 user_confirmation: batch.userConfirmation,

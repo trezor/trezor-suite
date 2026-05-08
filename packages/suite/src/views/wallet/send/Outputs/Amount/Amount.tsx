@@ -77,7 +77,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     const maxOutputId = getDefaultValue('setMaxOutputId');
     const isSendMaxActive = maxOutputId === outputId;
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
-    const error = outputError ? outputError.amount : undefined;
+    const error = outputError?.amount;
 
     const selectedBaseCurrency = watch(currencyInputName);
 
