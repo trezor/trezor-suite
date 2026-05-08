@@ -62,7 +62,7 @@ export const getAccountTransactions = (
 ) => transactions[accountKey] || [];
 
 export const isPending = (tx: WalletAccountTransaction | AccountTransaction) => {
-    if (tx && tx.solanaSpecific?.status === 'confirmed') {
+    if (tx?.solanaSpecific?.status === 'confirmed') {
         return false;
     }
 
