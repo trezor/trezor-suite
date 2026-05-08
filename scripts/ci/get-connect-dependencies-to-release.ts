@@ -19,6 +19,11 @@ const readWorkspaceDeps = createReadWorkspaceDeps(ROOT);
 // @trezor/* dep closure, and as the exclude list for the output — these four
 // are released by `deploy-npm-connect` (a hardcoded matrix), not by
 // `deploy-npm-connect-dependencies` (which consumes this script's output).
+//
+// Kept in sync with `CONNECT_PUBLISH_ROOTS` in
+// `scripts/ci/gen-workflow-paths.ts`. If they diverge, either one or both
+// should justify it inline; if they stay identical for long enough, extract
+// to a shared module.
 const CONNECT_PUBLISH_ROOTS = ['connect', 'connect-web', 'connect-mobile', 'connect-webextension'];
 
 const isPackageBumped = async (packageName: string): Promise<boolean> => {
