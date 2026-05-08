@@ -38,11 +38,11 @@ const FORMAT_MAP: { [format in FirmwareFormat]: DeviceModelInternal[] } = {
 
 export const parseFirmwareFormat = (fw: ArrayBuffer): FirmwareFormat | undefined => {
     const firmwareView = new Uint8Array(fw);
-    const header = String.fromCharCode(...Array.from(firmwareView.slice(0, 4)));
+    const header = String.fromCharCode(...firmwareView.slice(0, 4));
 
     switch (header) {
         case 'TRZR': {
-            const headerEmbedded = String.fromCharCode(...Array.from(firmwareView.slice(256, 260)));
+            const headerEmbedded = String.fromCharCode(...firmwareView.slice(256, 260));
 
             return headerEmbedded === 'TRZF' ? FirmwareFormat.T1_EMBEDDED_V2 : FirmwareFormat.T1;
         }

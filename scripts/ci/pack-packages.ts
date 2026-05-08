@@ -81,7 +81,7 @@ const validatePackagePublishTargets = async (pkg: string) => {
         return !builtFilesRelative.some(file => matcher.test(file));
     });
 
-    return Array.from(new Set(missingTargets)).sort();
+    return [...new Set(missingTargets)].sort();
 };
 
 const validatePublishTargets = async (packages: string[]) => {

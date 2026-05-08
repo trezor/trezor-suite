@@ -145,7 +145,7 @@ export const deriveAddresses = (
     const change = type === 'receive' ? 0 : 1;
     const changeNode = node.derive(change);
 
-    return Array.from(Array(count).keys())
+    return [...Array(count).keys()]
         .map(i => changeNode.derive(from + i).publicKey)
         .map(a => getAddress(a).address || throwError('Cannot convert pubkey to address'))
         .map((address, i) => ({

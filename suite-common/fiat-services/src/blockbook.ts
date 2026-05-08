@@ -69,7 +69,7 @@ const getMultiTickers = async (
 };
 
 const getLastWeekTimestamps = () =>
-    Array.from(Array(7).keys()).map(i => {
+    [...Array(7).keys()].map(i => {
         const date = new Date();
         date.setDate(date.getDate() - 7 + i);
 

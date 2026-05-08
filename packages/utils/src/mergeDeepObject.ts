@@ -60,7 +60,7 @@ const mergeValuesWithPath = (target: any, value: any, [key, ...rest]: string[]):
 const mergeValues = (target: any, value: any) => {
     if (Array.isArray(target) && Array.isArray(value)) {
         return mergeDeepObject.options.mergeArrays
-            ? Array.from(new Set((target as unknown[]).concat(value)))
+            ? [...new Set((target as unknown[]).concat(value))]
             : value;
     }
     if (isObject(target) && isObject(value)) {

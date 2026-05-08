@@ -78,7 +78,7 @@ export const ConfirmOnDevicePillContent = ({
 
                 {hasSteps && activeStep <= steps && (
                     <Row gap={spacings.xxs} width={70} margin={{ top: spacings.xs }}>
-                        {Array.from(Array(steps).keys()).map((step, index) => (
+                        {[...Array(steps).keys()].map((step, index) => (
                             <Step
                                 key={step}
                                 $isActive={isStepActive(index, activeStep)}
