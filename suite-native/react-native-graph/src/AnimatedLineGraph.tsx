@@ -174,7 +174,7 @@ export function AnimatedLineGraph<TEventPayload extends object>({
     const drawingWidth = useMemo(() => width - 2 * horizontalPadding, [horizontalPadding, width]);
 
     const lineWidth = useMemo(() => {
-        const lastPoint = pointsInRange[pointsInRange.length - 1];
+        const lastPoint = pointsInRange.at(-1);
 
         if (lastPoint == null) return drawingWidth;
 
@@ -357,7 +357,7 @@ export function AnimatedLineGraph<TEventPayload extends object>({
         (fingerX: number) => {
             const fingerXInRange = Math.max(fingerX - horizontalPadding, 0);
 
-            const lastDate = pointsInRange[pointsInRange.length - 1]?.date;
+            const lastDate = pointsInRange.at(-1)?.date;
 
             if (!lastDate) return;
 

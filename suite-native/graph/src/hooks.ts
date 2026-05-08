@@ -218,7 +218,7 @@ export const useGraphAtoms = <TGraphPoint extends FiatGraphPoint>({
     const setSelectedPoint = useSetAtom(selectedPointAtom);
     const setReferencePoint = useSetAtom(referencePointAtom);
 
-    const lastPoint: TGraphPoint | undefined = graphPoints[graphPoints.length - 1];
+    const lastPoint: TGraphPoint | undefined = graphPoints.at(-1);
     const referencePoint: TGraphPoint | undefined = useMemo(
         () => graphPoints.find(point => point.value > 0) ?? graphPoints[0],
         [graphPoints],

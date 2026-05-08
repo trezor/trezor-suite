@@ -327,7 +327,7 @@ export const selectAreAllAccountTransactionsLoadedFromNowUntilTimestamp = create
     ],
     (areAllTransactionsLoaded, transactions, timestamp) => {
         if (areAllTransactionsLoaded) return true;
-        const lastTransaction = transactions[transactions.length - 1];
+        const lastTransaction = transactions.at(-1);
 
         return lastTransaction?.blockTime && lastTransaction.blockTime < timestamp;
     },

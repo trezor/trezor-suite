@@ -216,7 +216,7 @@ export const calcXDomain = (
 ): [number, number] => {
     const start = ticks[0];
     const lastTick = ticks[ticks.length - 1];
-    const lastData = data[data.length - 1];
+    const lastData = data.at(-1);
     // if the last data point is after last tick/label use datapoint's timestamp to mark the end of the interval
     const end = lastData && lastTick < lastData.time ? lastData.time : lastTick;
 
@@ -254,10 +254,10 @@ export const calcFakeGraphDataForTimestamps = (
 ) => {
     const balanceData: CommonAggregatedHistory[] = [];
     const firstDataPoint = data[0];
-    const lastDataPoint = data[data.length - 1];
+    const lastDataPoint = data.at(-1);
 
     const firstTimestamp = timestamps[0];
-    const lastTimestamp = timestamps[timestamps.length - 1];
+    const lastTimestamp = timestamps.at(-1);
 
     if (data.length === 0) {
         timestamps.forEach(ts => {

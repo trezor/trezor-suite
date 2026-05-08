@@ -15,7 +15,7 @@ export const getHost = (url: unknown) => {
         const parts = uri.split('.');
 
         // allow localhost subdomains
-        if (parts[parts.length - 1] === 'localhost') return 'localhost';
+        if (parts.at(-1) === 'localhost') return 'localhost';
 
         return parts.length > 2
             ? // slice subdomain

@@ -157,7 +157,7 @@ export const SelectBar = <V extends ValueTypes>({
             if (previousIndex >= 0) {
                 option = options[previousIndex];
             } else {
-                option = options[options.length - 1];
+                option = options.at(-1);
             }
         } else if (e.key === 'ArrowRight') {
             const previousIndex = selectedOptionIndex + 1;

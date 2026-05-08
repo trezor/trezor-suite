@@ -13,7 +13,7 @@ export const usePin = (buttonRequests: ButtonRequest[], requestId?: string) => {
     const [pin, setPin] = useState('');
     const [submitted, setSubmitted] = useState(false);
 
-    const pinRequestType = buttonRequests[buttonRequests.length - 1];
+    const pinRequestType = buttonRequests.at(-1);
     const isSettingNewWipeCode =
         pinRequestType?.code && NEW_WIPE_CODE_REQUEST_TYPES.includes(pinRequestType?.code);
     const isSettingNewPin =

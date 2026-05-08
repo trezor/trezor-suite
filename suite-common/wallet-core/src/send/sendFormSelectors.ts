@@ -96,5 +96,5 @@ export const selectSendFormReviewLastButtonCode = (
     const sendFormReviewRequest = selectSendFormButtonRequestCodes(state, symbol);
 
     // Return the last button request code from the filtered list
-    return sendFormReviewRequest[sendFormReviewRequest.length - 1] ?? null;
+    return sendFormReviewRequest.at(-1) ?? null;
 };

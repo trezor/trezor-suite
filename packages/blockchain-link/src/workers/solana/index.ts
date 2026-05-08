@@ -62,7 +62,7 @@ const getAllSignatures = async (
             signature: info.signature,
             slot: info.slot,
         }));
-        lastSignature = signatures[signatures.length - 1];
+        lastSignature = signatures.at(-1);
         keepFetching = signatures.length === defaultValueLimit && fullHistory;
         allSignatures = [...allSignatures, ...signatures];
     }
