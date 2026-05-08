@@ -165,7 +165,7 @@ const InnerModalBase = ({
                     <Box position={{ type: 'relative' }} overflow="hidden" flex="1">
                         <ShadowTop />
                         <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
-                            <Column padding={padding ? padding : spacings.md}>
+                            <Column padding={padding || spacings.md}>
                                 {iconName && (
                                     <Box
                                         margin={{

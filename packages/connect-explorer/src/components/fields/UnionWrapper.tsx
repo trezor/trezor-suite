@@ -30,7 +30,7 @@ interface UnionWrapperProps {
 export const UnionWrapper = ({ field, onChange, children }: UnionWrapperProps) => (
     <Wrapper>
         <UnionHeader>
-            <p>{field.name ? field.name : 'Union'}</p>
+            <p>{field.name || 'Union'}</p>
             <SelectBar
                 selectedOption={0}
                 options={field.labels.map((label, index) => ({ value: index, label }))}

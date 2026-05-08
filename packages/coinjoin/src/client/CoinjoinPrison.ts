@@ -61,7 +61,7 @@ export class CoinjoinPrison
 
     detain(inmate: DetainObject, options: DetainOptions = {}) {
         const sentenceStart = Date.now();
-        const sentenceEnd = Date.now() + (options.sentenceEnd ? options.sentenceEnd : 6 * 60000);
+        const sentenceEnd = Date.now() + (options.sentenceEnd || 6 * 60000);
 
         let id: string;
         let type: CoinjoinPrisonInmate['type'];

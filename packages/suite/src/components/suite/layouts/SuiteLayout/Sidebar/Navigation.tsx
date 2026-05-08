@@ -76,7 +76,7 @@ export const Navigation = ({ children }: NavigationProps) => {
         <Column alignItems={isSidebarCollapsed ? 'center' : 'stretch'} gap={4} margin={8} as="nav">
             {children ?? null}
             {navItems.map(item => {
-                const Component = item.CustomComponent ? item.CustomComponent : NavigationItem;
+                const Component = item.CustomComponent || NavigationItem;
 
                 return <Component key={item.nameId} {...item} />;
             })}

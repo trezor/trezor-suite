@@ -27,10 +27,8 @@ export const Device = ({ device }: DeviceProps) => {
             {/* I am inclined not to translate model, path and session */}
             <div>model: {modelName}</div>
             <div>path: {device.path}</div>
-            <div>session: {device.session ? device.session : 'none'}</div>
-            {device.session && (
-                <div>session owner: {device.sessionOwner ? device.sessionOwner : 'unknown'}</div>
-            )}
+            <div>session: {device.session || 'none'}</div>
+            {device.session && <div>session owner: {device.sessionOwner || 'unknown'}</div>}
         </div>
     );
 };

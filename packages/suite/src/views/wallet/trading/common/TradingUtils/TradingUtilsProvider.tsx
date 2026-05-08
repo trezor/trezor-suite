@@ -42,7 +42,7 @@ export const TradingUtilsProvider = ({
                     {providerName}
                 </>
             ) : (
-                <>{exchange ? exchange : <Translation id="TR_TRADING_UNKNOWN_PROVIDER" />}</>
+                <>{exchange || <Translation id="TR_TRADING_UNKNOWN_PROVIDER" />}</>
             )}
         </Wrapper>
     );

@@ -48,7 +48,7 @@ const Container = ({ title, description, cta, dataTestBase, image }: ContainerPr
 
     return (
         <Column gap={spacings.xxs} data-testid={`@exception/${dataTestBase}`} alignItems="center">
-            {image ? image : <IconCircle name="warning" size={96} intent="warning" />}
+            {image || <IconCircle name="warning" size={96} intent="warning" />}
             <H3 data-testid={`@exception/${dataTestBase}/header`} margin={{ top: spacings.md }}>
                 <Translation id={title} />
             </H3>

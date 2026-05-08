@@ -172,8 +172,8 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     const response = await client.request({
         command: 'account_tx',
         account: payload.descriptor,
-        ledger_index_min: payload.from ? payload.from : undefined,
-        ledger_index_max: payload.to ? payload.to : undefined,
+        ledger_index_min: payload.from || undefined,
+        ledger_index_max: payload.to || undefined,
         limit: payload.pageSize || 25,
         marker: payload.marker,
         api_version: 2,

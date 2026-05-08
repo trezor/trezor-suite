@@ -1011,7 +1011,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
                 name: this.name,
                 transportSessionOwner: this.sessionAcquired ? undefined : sessionOwner,
                 thp: this.getDeviceThp(),
-                status: this.busy ? this.busy : undefined,
+                status: this.busy || undefined,
             };
         }
         const defaultLabel = 'My Trezor';
