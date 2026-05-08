@@ -15,24 +15,11 @@ const readFile = util.promisify(fs.readFile);
 const ROOT = path.join(import.meta.dirname, '..', '..');
 const readWorkspaceDeps = createReadWorkspaceDeps(ROOT);
 
-const ROOT_PACKAGES = [
-    'connect',
-    'connect-web',
-    'connect-mobile',
-    'connect-webextension',
-    'connect-plugin-stellar',
-    'connect-plugin-ethereum',
-];
-
-// We do not want to include `connect`, `connect-web`, `connect-webextension` and
-// `connect-mobile` since we want to release those separately and we always want
-// to release them.
-const ALWAYS_RELEASED_SEPARATELY = [
-    'connect',
-    'connect-web',
-    'connect-webextension',
-    'connect-mobile',
-];
+// The connect distribution packages. Used both as BFS roots to compute the
+// @trezor/* dep closure, and as the exclude list for the output — these four
+// are released by `deploy-npm-connect` (a hardcoded matrix), not by
+// `deploy-npm-connect-dependencies` (which consumes this script's output).
+const CONNECT_PUBLISH_ROOTS = ['connect', 'connect-web', 'connect-mobile', 'connect-webextension'];
 
 const isPackageBumped = async (packageName: string): Promise<boolean> => {
     const rawPackageJSON = await readFile(
@@ -47,9 +34,9 @@ const isPackageBumped = async (packageName: string): Promise<boolean> => {
 };
 
 const getConnectDependenciesToRelease = async () => {
-    const closure = computePublishClosure(ROOT_PACKAGES, readWorkspaceDeps);
+    const closure = computePublishClosure(CONNECT_PUBLISH_ROOTS, readWorkspaceDeps);
 
-    const candidates = [...closure].filter(pkg => !ALWAYS_RELEASED_SEPARATELY.includes(pkg));
+    const candidates = [...closure].filter(pkg => !CONNECT_PUBLISH_ROOTS.includes(pkg));
 
     const dependenciesToRelease: string[] = [];
     for (const pkg of candidates) {
