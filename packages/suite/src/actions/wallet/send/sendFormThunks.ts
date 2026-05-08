@@ -150,7 +150,7 @@ const applySendFormMetadataLabelsThunk = createThunk<
                 // final ordering of outputs differs from order in send form
                 // outputsPermutation contains mapping from @trezor/utxo-lib outputs to send form outputs
                 // mapping goes like this: Array<@trezor/utxo-lib index : send form index>
-                const outputIndex = outputsPermutation.findIndex(p => p === index);
+                const outputIndex = outputsPermutation.indexOf(index);
                 const outputMetadata: Extract<MetadataAddPayload, { type: 'outputLabel' }> = {
                     type: 'outputLabel',
                     entityKey: selectedAccount.key,

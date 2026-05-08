@@ -53,7 +53,7 @@ export const addTransactionLabelingThunk = createThunk<
                     // final ordering of outputs differs from order in send form
                     // outputsPermutation contains mapping from @trezor/utxo-lib outputs to send form outputs
                     // mapping goes like this: Array<@trezor/utxo-lib index : send form index>
-                    const outputIndex = outputsPermutation.findIndex(p => p === index);
+                    const outputIndex = outputsPermutation.indexOf(index);
 
                     acc.push({
                         // Todo: this works only for bitcoin-like networks where txTargetId is the outputIndex (number)

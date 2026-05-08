@@ -55,7 +55,7 @@ workers.forEach(instance => {
                     if (Array.isArray(request.accounts_proposed)) {
                         // unlike blockbook ripple is not clearing out whole state, it clears only requested one
                         request.accounts_proposed.forEach((address: string) => {
-                            const index = subscribedAddresses.findIndex(a => a === address);
+                            const index = subscribedAddresses.indexOf(address);
                             if (index >= 0) {
                                 subscribedAddresses.splice(index, 1);
                             }

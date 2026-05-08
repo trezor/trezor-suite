@@ -23,10 +23,7 @@ export const backupSlice = createSlice({
 
                 return;
             }
-            state.userConfirmed.splice(
-                state.userConfirmed.findIndex(r => r === payload),
-                1,
-            );
+            state.userConfirmed.splice(state.userConfirmed.indexOf(payload), 1);
         },
         setInProgress: (state, { payload }: PayloadAction<boolean>) => {
             state.inProgress = payload;

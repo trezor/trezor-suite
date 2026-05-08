@@ -311,7 +311,7 @@ const createOutputsCredentials = async (params: CreateOutputsCredentials): Promi
         });
 
         // remove amount from list
-        const amountIndex = amounts.findIndex(a => a === amountPair.amount);
+        const amountIndex = amounts.indexOf(amountPair.amount);
         const updatedAmounts = amounts.slice(0);
         updatedAmounts.splice(amountIndex, 1);
 
