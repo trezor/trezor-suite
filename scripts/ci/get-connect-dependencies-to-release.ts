@@ -8,18 +8,13 @@ import semver from 'semver';
 
 import { computePublishClosure, createReadWorkspaceDeps } from '@trezor/requirements';
 
+import { CONNECT_PUBLISH_ROOTS } from './connect-publish-roots';
 import { getNpmRemoteGreatestVersion } from './helpers';
 
 const readFile = util.promisify(fs.readFile);
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
 const readWorkspaceDeps = createReadWorkspaceDeps(ROOT);
-
-// The connect distribution packages. Used both as BFS roots to compute the
-// @trezor/* dep closure, and as the exclude list for the output — these four
-// are released by `deploy-npm-connect` (a hardcoded matrix), not by
-// `deploy-npm-connect-dependencies` (which consumes this script's output).
-const CONNECT_PUBLISH_ROOTS = ['connect', 'connect-web', 'connect-mobile', 'connect-webextension'];
 
 const isPackageBumped = async (packageName: string): Promise<boolean> => {
     const rawPackageJSON = await readFile(

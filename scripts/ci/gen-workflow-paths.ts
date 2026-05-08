@@ -26,13 +26,11 @@ import path from 'node:path';
 
 import { computePublishClosure, createReadWorkspaceDeps } from '@trezor/requirements';
 
+import { CONNECT_PUBLISH_ROOTS } from './connect-publish-roots';
+
 const ROOT = path.resolve(import.meta.dirname, '..', '..');
 const WORKFLOWS_DIR = path.join(ROOT, '.github', 'workflows');
 const readWorkspaceDeps = createReadWorkspaceDeps(ROOT);
-
-// Plugins (`connect-plugin-*`) are intentionally excluded — they're released
-// out-of-band from connect proper and live on a different test surface.
-const CONNECT_PUBLISH_ROOTS = ['connect', 'connect-web', 'connect-mobile', 'connect-webextension'];
 
 const SENTINEL_CONFIGS: Record<string, { roots: string[]; files: string[] }> = {
     CONNECT_PUBLISH_DEPS: {
