@@ -4,7 +4,7 @@ import { EventType } from '../constants';
 
 type Attributes = {
     action: AttributeDef<'continue' | 'cancel'>;
-    step: AttributeDef<'sell-form' | 'offers-form' | 'confirm-and-send-transaction'>;
+    step: AttributeDef<'sell-form' | 'confirm-and-send-transaction'>;
 
     cryptoLabel?: AttributeDef<string>;
     cryptoNetworkSymbol?: AttributeDef<string>;
@@ -29,8 +29,11 @@ export const tradeSellEvent: EventDef<Attributes, EventType.TradeSell> = {
         },
         step: {
             description:
-                'sell flow step: `sell-form` | `offers-form` | `sell-terms-modal` | `confirm-and-send-transaction` | `status-pending` | `status-success` | `status-error`',
-            changelog: [{ version: '25.5.2', notes: 'added' }],
+                'sell flow step: `sell-form` | `sell-terms-modal` | `confirm-and-send-transaction` | `status-pending` | `status-success` | `status-error`',
+            changelog: [
+                { version: '25.5.2', notes: 'added' },
+                { version: '26.6.1', notes: 'removed `offers-form` value' },
+            ],
         },
         cryptoLabel: {
             description: 'e.g. `BTC`, `ETH`, `SOL` etc.',
