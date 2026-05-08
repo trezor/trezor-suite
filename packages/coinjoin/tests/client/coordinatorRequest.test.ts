@@ -17,7 +17,7 @@ describe('http', () => {
     });
 
     afterAll(() => {
-        if (server) server.close();
+        server?.close();
     });
 
     it('with 500 error', async () => {

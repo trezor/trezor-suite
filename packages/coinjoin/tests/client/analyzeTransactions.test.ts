@@ -50,7 +50,7 @@ describe('analyzeTransactions', () => {
     });
 
     afterAll(() => {
-        if (server) server.close();
+        server?.close();
     });
 
     it('Regtest: simple analyze', async () => {

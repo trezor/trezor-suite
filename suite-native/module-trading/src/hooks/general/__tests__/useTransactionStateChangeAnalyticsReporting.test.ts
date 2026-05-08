@@ -45,7 +45,7 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        if (reportMock) reportMock.mockClear();
+        reportMock?.mockClear();
     });
 
     afterEach(() => {

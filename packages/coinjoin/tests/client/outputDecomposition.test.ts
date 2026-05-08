@@ -16,7 +16,7 @@ describe('outputRegistration', () => {
     });
 
     afterAll(() => {
-        if (server) server.close();
+        server?.close();
     });
 
     it('outputDecomposition errors. missing data in input', async () => {

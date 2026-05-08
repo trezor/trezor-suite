@@ -265,7 +265,7 @@ const prepareResponse = (parent: HTMLElement, response: any, isError = false) =>
     const close = document.createElement('div');
     close.className = 'close';
     close.onclick = () => {
-        if (div.parentElement) div.parentElement.removeChild(div);
+        div.parentElement?.removeChild(div);
     };
     div.append(close);
     const pre = document.createElement('pre');

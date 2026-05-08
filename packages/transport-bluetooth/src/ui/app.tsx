@@ -66,7 +66,7 @@ export const App: React.FC = () => {
         document.head.appendChild(style);
 
         return () => {
-            if (style.parentNode) style.parentNode.removeChild(style);
+            style.parentNode?.removeChild(style);
         };
     }, []);
 

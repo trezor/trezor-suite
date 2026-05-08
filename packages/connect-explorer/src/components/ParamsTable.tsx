@@ -37,7 +37,7 @@ const SingleParam = ({
         topLevelSchema?.[Kind] === 'Object' &&
         !isTopLevel &&
         value.$id &&
-        Object.entries(topLevelSchema.properties).some(([_, val]: any) => val.$id === value.$id)
+        Object.values(topLevelSchema.properties).some((val: any) => val.$id === value.$id)
     ) {
         // If the object is a reference to the top level object, don't show descendants
         hasDescendants = false;

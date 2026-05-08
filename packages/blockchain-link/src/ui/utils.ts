@@ -2,7 +2,7 @@ export const onClear = () => {
     const responses = document.getElementsByClassName('response');
     while (responses.length) {
         const r = responses[0];
-        if (r.parentElement) r.parentElement.removeChild(r);
+        r.parentElement?.removeChild(r);
     }
 };
 

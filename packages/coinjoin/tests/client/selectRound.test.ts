@@ -48,7 +48,7 @@ describe('selectRound', () => {
 
     afterAll(() => {
         jest.clearAllMocks();
-        if (server) server.close();
+        server?.close();
     });
 
     it('no available candidates in status Rounds', async () => {

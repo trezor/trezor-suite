@@ -28,7 +28,7 @@ describe('connectionConfirmation', () => {
     });
 
     afterAll(() => {
-        if (server) server.close();
+        server?.close();
     });
 
     it('try to confirm without registrationData', async () => {

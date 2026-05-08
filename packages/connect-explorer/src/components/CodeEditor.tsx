@@ -25,7 +25,7 @@ export const CodeEditor = ({ code, codeChange, schema }: CodeEditorProps) => {
                 s.type = ['number', 'string'];
             }
             if (s.properties) {
-                Object.entries(s.properties).forEach(([_, v]) => {
+                Object.values(s.properties).forEach(v => {
                     inner(v);
                 });
             }

@@ -97,7 +97,7 @@ export const useFindInPage = () => {
         if (!el) return;
 
         const old = el.querySelector(MARK_HIGHLIGHT_PULSE_SELECTOR);
-        if (old) old.remove();
+        old?.remove();
 
         const pulse = document.createElement('span');
         pulse.className = MARK_HIGHLIGHT_PULSE_CLASSNAME;
