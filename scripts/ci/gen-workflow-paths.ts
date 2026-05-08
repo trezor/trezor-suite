@@ -27,8 +27,10 @@ const ROOT = path.resolve(import.meta.dirname, '..', '..');
 const WORKFLOWS_DIR = path.join(ROOT, '.github', 'workflows');
 const readWorkspaceDeps = createReadWorkspaceDeps(ROOT);
 
-// Plugins (`connect-plugin-*`) are intentionally excluded — they're released
-// out-of-band from connect proper and live on a different test surface.
+// Kept in sync with `CONNECT_PUBLISH_ROOTS` in
+// `scripts/ci/get-connect-dependencies-to-release.ts`. If they diverge,
+// either one or both should justify it inline; if they stay identical for
+// long enough, extract to a shared module.
 const CONNECT_PUBLISH_ROOTS = ['connect', 'connect-web', 'connect-mobile', 'connect-webextension'];
 
 const SENTINEL_CONFIGS: Record<string, { roots: string[] }> = {
