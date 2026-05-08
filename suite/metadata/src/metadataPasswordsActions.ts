@@ -218,26 +218,26 @@ export const addPasswordMetadata =
             cloneObject(provider.data[fileName]) ||
             METADATA_PASSWORDS.DEFAULT_PASSWORD_MANAGER_STATE;
 
-        if ('config' in metadata) {
-            metadata.entries[nextId] = payload;
-
-            dispatch(
-                metadataDataThunks.setMetadata({
-                    provider,
-                    fileName,
-                    data: metadata,
-                }),
-            );
-
-            metadataDataThunks.encryptAndSaveMetadata({
-                providerInstance,
-                fileName,
-                data: metadata,
-                aesKey,
-            });
-        } else {
+        if (!('config' in metadata)) {
             return Promise.resolve({ success: false, error: 'trying to edit wrong object' });
         }
+
+        metadata.entries[nextId] = payload;
+
+        dispatch(
+            metadataDataThunks.setMetadata({
+                provider,
+                fileName,
+                data: metadata,
+            }),
+        );
+
+        metadataDataThunks.encryptAndSaveMetadata({
+            providerInstance,
+            fileName,
+            data: metadata,
+            aesKey,
+        });
     };
 
 export const removePasswordMetadata =
@@ -259,24 +259,24 @@ export const removePasswordMetadata =
 
         const metadata = cloneObject(provider.data[fileName]);
 
-        if (metadata && 'config' in metadata) {
-            delete metadata.entries[index];
-
-            dispatch(
-                metadataDataThunks.setMetadata({
-                    provider,
-                    fileName,
-                    data: metadata,
-                }),
-            );
-
-            metadataDataThunks.encryptAndSaveMetadata({
-                providerInstance,
-                fileName,
-                data: metadata,
-                aesKey,
-            });
-        } else {
+        if (!metadata || !('config' in metadata)) {
             return Promise.resolve({ success: false, error: 'trying to edit wrong object' });
         }
+
+        delete metadata.entries[index];
+
+        dispatch(
+            metadataDataThunks.setMetadata({
+                provider,
+                fileName,
+                data: metadata,
+            }),
+        );
+
+        metadataDataThunks.encryptAndSaveMetadata({
+            providerInstance,
+            fileName,
+            data: metadata,
+            aesKey,
+        });
     };
