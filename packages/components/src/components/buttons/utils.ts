@@ -30,7 +30,7 @@ export const pickButtonProps = ({
 
     return {
         as: isLink ? 'a' : 'button',
-        disabled: isLink ? false : isDisabled || isLoading,
+        disabled: !isLink && (isDisabled || isLoading),
         onPointerDown: handlePointerDown,
         onClick,
         type: isLink ? undefined : type,

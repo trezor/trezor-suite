@@ -197,8 +197,8 @@ export abstract class AbstractApi extends TypedEmitter<{
             return this.unknownError(err);
         } finally {
             this.lock[path] = {
-                read: lock.read ? false : this.lock[path].read,
-                write: lock.write ? false : this.lock[path].write,
+                read: !lock.read && this.lock[path].read,
+                write: !lock.write && this.lock[path].write,
             };
         }
     };

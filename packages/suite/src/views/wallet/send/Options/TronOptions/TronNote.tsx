@@ -31,7 +31,7 @@ export const TronNote = ({ close }: TronNoteProps) => {
     const asciiValue = watch(inputAsciiName);
     const hexValue = watch(inputHexName);
 
-    const isHexTooLong = !hexValue ? false : hexValue.length > formInputsMaxLength.tronNote;
+    const isHexTooLong = !!hexValue && hexValue.length > formInputsMaxLength.tronNote;
     const error = isHexTooLong ? translationString('TR_TRON_NOTE_TOO_LONG') : undefined;
 
     useEffect(() => {

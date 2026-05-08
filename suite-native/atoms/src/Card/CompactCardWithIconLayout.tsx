@@ -88,7 +88,7 @@ export const CompactCardWithIconLayout = ({
                     borderColor={borderColor ?? undefined}
                     animatedStyle={animatedStyle}
                     // Android shadow does not work well with the Reanimated opacity animation.
-                    noShadow={Platform.OS === 'android' ? true : noShadow}
+                    noShadow={Platform.OS === 'android' || noShadow}
                     {...cardProps}
                 >
                     <HStack

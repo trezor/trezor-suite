@@ -76,7 +76,7 @@ export const useFilteredEvents = () => {
 
     const filteredEvents = useMemo(() => {
         const byPlatformAndQuery = allEvents
-            .filter(e => (platform === 'all' ? true : e.platform.includes(platform)))
+            .filter(e => platform === 'all' || e.platform.includes(platform))
             .filter(e =>
                 normalizedQuery
                     ? fuzzyMatch(normalizedQuery, e.name) ||
