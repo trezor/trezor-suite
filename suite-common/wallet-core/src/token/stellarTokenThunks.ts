@@ -118,30 +118,28 @@ const manageTrustline = async (
         },
     });
 
-    if (response.success) {
-        const signature = Buffer.from(response.payload.signature, 'hex').toString('base64');
-        transaction.addSignature(account.descriptor, signature);
-        const serializedTx = transaction.toEnvelope().toXDR('hex');
-
-        // Submit transaction to the network
-        const pushResponse = await TrezorConnect.pushTransaction({
-            tx: serializedTx,
-            coin: account.symbol,
-            identity: tryGetAccountIdentity(account),
-        });
-
-        if (pushResponse.success) {
-            return;
-        } else {
-            return rejectWithValue({
-                error: 'sign-transaction-failed',
-                message: pushResponse.error.message,
-            });
-        }
-    } else {
+    if (!response.success) {
         return rejectWithValue({
             error: 'sign-transaction-failed',
             message: response.error.message,
+        });
+    }
+
+    const signature = Buffer.from(response.payload.signature, 'hex').toString('base64');
+    transaction.addSignature(account.descriptor, signature);
+    const serializedTx = transaction.toEnvelope().toXDR('hex');
+
+    // Submit transaction to the network
+    const pushResponse = await TrezorConnect.pushTransaction({
+        tx: serializedTx,
+        coin: account.symbol,
+        identity: tryGetAccountIdentity(account),
+    });
+
+    if (!pushResponse.success) {
+        return rejectWithValue({
+            error: 'sign-transaction-failed',
+            message: pushResponse.error.message,
         });
     }
 };

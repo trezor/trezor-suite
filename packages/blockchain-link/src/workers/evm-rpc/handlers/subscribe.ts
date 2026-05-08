@@ -63,16 +63,14 @@ export const subscribe = async (
 ): Promise<Responses.Subscribe> => {
     const { payload } = request;
 
-    let response: { subscribed: boolean };
-
-    if (payload.type === 'block') {
-        response = await subscribeBlock(request);
-    } else {
+    if (payload.type !== 'block') {
         throw new CustomError(
             'invalid_param',
             `Subscription type '${payload.type}' not supported by EVM RPC worker`,
         );
     }
+
+    const response = await subscribeBlock(request);
 
     return {
         type: RESPONSES.SUBSCRIBE,
@@ -83,16 +81,14 @@ export const subscribe = async (
 export const unsubscribe = (request: Request<MessageTypes.Unsubscribe>): Responses.Unsubscribe => {
     const { payload } = request;
 
-    let response: { subscribed: boolean };
-
-    if (payload.type === 'block') {
-        response = unsubscribeBlock(request);
-    } else {
+    if (payload.type !== 'block') {
         throw new CustomError(
             'invalid_param',
             `Unsubscription type '${payload.type}' not supported by EVM RPC worker`,
         );
     }
+
+    const response = unsubscribeBlock(request);
 
     return {
         type: RESPONSES.UNSUBSCRIBE,
