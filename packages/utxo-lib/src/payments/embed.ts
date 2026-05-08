@@ -47,15 +47,13 @@ export function p2data(a: Payment, opts?: PaymentOpts): Payment {
     });
 
     // extended validation
-    if (opts.validate) {
-        if (a.output) {
-            const chunks = bscript.decompile(a.output);
-            if (chunks![0] !== OPS.OP_RETURN) throw new TypeError('Output is invalid');
-            if (!chunks!.slice(1).every(v => isBuffer(v))) throw new TypeError('Output is invalid');
+    if (opts.validate && a.output) {
+        const chunks = bscript.decompile(a.output);
+        if (chunks![0] !== OPS.OP_RETURN) throw new TypeError('Output is invalid');
+        if (!chunks!.slice(1).every(v => isBuffer(v))) throw new TypeError('Output is invalid');
 
-            if (a.data && !stacksEqual(a.data, o.data as Buffer[]))
-                throw new TypeError('Data mismatch');
-        }
+        if (a.data && !stacksEqual(a.data, o.data as Buffer[]))
+            throw new TypeError('Data mismatch');
     }
 
     return Object.assign(o, a);

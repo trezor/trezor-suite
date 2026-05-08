@@ -112,12 +112,12 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                 state.scanStatus = status;
             })
             .addCase(deviceActions.deviceDisconnect, (state, { payload: { descriptor } }) => {
-                if (descriptor.apiType === 'bluetooth' && descriptor.id !== undefined) {
-                    if (state.nearbyDevices !== null) {
-                        state.nearbyDevices = state.nearbyDevices.filter(
-                            it => it.id !== descriptor.id,
-                        );
-                    }
+                if (
+                    descriptor.apiType === 'bluetooth' &&
+                    descriptor.id !== undefined &&
+                    state.nearbyDevices !== null
+                ) {
+                    state.nearbyDevices = state.nearbyDevices.filter(it => it.id !== descriptor.id);
                 }
             })
             .addCase(bluetoothActions.enableAutoConnect, (state, { payload }) => {

@@ -33,10 +33,8 @@ const executeRequirement = <T extends RequirementScope>({
     context,
     mode,
 }: ExecuteRequirementProps<T>): Promise<ReadonlyArray<string>> => {
-    if (mode === 'fix') {
-        if (requirement.fix !== undefined) {
-            return requirement.fix(context);
-        }
+    if (mode === 'fix' && requirement.fix !== undefined) {
+        return requirement.fix(context);
     }
 
     return requirement.verify(context);

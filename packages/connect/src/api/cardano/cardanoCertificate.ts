@@ -156,43 +156,39 @@ export const transformCertificate = (
 ): CertificateWithPoolOwnersAndRelays => {
     Assert(CardanoCertificate, certificate);
 
-    if (certificate.type === PROTO.CardanoCertificateType.STAKE_DELEGATION) {
-        if (!certificate.pool) {
-            throw ERRORS.TypedError(
-                'Method_InvalidParameter',
-                'pool must be supplied for STAKE_DELEGATION',
-            );
-        }
-    }
-
-    if (certificate.type === PROTO.CardanoCertificateType.STAKE_POOL_REGISTRATION) {
-        if (!certificate.poolParameters) {
-            throw ERRORS.TypedError(
-                'Method_InvalidParameter',
-                'poolParameters must be supplied for STAKE_POOL_REGISTRATION',
-            );
-        }
+    if (certificate.type === PROTO.CardanoCertificateType.STAKE_DELEGATION && !certificate.pool) {
+        throw ERRORS.TypedError(
+            'Method_InvalidParameter',
+            'pool must be supplied for STAKE_DELEGATION',
+        );
     }
 
     if (
-        certificate.type === PROTO.CardanoCertificateType.STAKE_REGISTRATION_CONWAY ||
-        certificate.type === PROTO.CardanoCertificateType.STAKE_DEREGISTRATION_CONWAY
+        certificate.type === PROTO.CardanoCertificateType.STAKE_POOL_REGISTRATION &&
+        !certificate.poolParameters
     ) {
-        if (!certificate.deposit) {
-            throw ERRORS.TypedError(
-                'Method_InvalidParameter',
-                'deposit must be supplied for STAKE_REGISTRATION_CONWAY or STAKE_DEREGISTRATION_CONWAY',
-            );
-        }
+        throw ERRORS.TypedError(
+            'Method_InvalidParameter',
+            'poolParameters must be supplied for STAKE_POOL_REGISTRATION',
+        );
     }
 
-    if (certificate.type === PROTO.CardanoCertificateType.VOTE_DELEGATION) {
-        if (!certificate.dRep) {
-            throw ERRORS.TypedError(
-                'Method_InvalidParameter',
-                'dRep must be supplied for VOTE_DELEGATION',
-            );
-        }
+    if (
+        (certificate.type === PROTO.CardanoCertificateType.STAKE_REGISTRATION_CONWAY ||
+            certificate.type === PROTO.CardanoCertificateType.STAKE_DEREGISTRATION_CONWAY) &&
+        !certificate.deposit
+    ) {
+        throw ERRORS.TypedError(
+            'Method_InvalidParameter',
+            'deposit must be supplied for STAKE_REGISTRATION_CONWAY or STAKE_DEREGISTRATION_CONWAY',
+        );
+    }
+
+    if (certificate.type === PROTO.CardanoCertificateType.VOTE_DELEGATION && !certificate.dRep) {
+        throw ERRORS.TypedError(
+            'Method_InvalidParameter',
+            'dRep must be supplied for VOTE_DELEGATION',
+        );
     }
 
     const { poolParameters, poolOwners, poolRelays } = transformPoolParameters(

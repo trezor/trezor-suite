@@ -36,10 +36,8 @@ const schemaToFields = (schema: TSchema, name = ''): Field<any>[] => {
                     optional: field.optional || schema[OptionalKind] === 'Optional',
                 };
                 // If the array is optional, set the items to an empty array by default
-                if (output.type === 'array') {
-                    if (output.optional) {
-                        output.items = [];
-                    }
+                if (output.type === 'array' && output.optional) {
+                    output.items = [];
                 }
 
                 return output;
