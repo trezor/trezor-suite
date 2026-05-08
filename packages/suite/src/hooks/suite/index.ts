@@ -10,7 +10,6 @@ export { useFilteredModal } from './useFilteredModal';
 export { usePreferredModal } from './usePreferredModal';
 export { useFormattersConfig } from './useFormattersConfig';
 export { useAnonymityStatus } from './useAnonymityStatus';
-export { useCountdownTimer } from './useCountdownTimer';
 export { useDispatch } from './useDispatch';
 export { useDebugLanguageShortcut } from './useDebugLanguageShortcut';
 export { useDisplayMode } from './useDisplayMode';

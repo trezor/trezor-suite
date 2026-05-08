@@ -96,5 +96,13 @@ describe('ReviewOutputItemList', () => {
 
             expect(queryByTestId('sliding-footer-overlay')).toBeNull();
         });
+
+        it('should not render for Solana accounts', () => {
+            const { queryByTestId } = renderReviewOutputItemList({
+                accountKey: 'sol-account-1' as AccountKey,
+            });
+
+            expect(queryByTestId('sliding-footer-overlay')).toBeNull();
+        });
     });
 });

@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
-import { selectIsDeviceRemembered } from '@suite-common/device';
 import { sendFormActions } from '@suite-common/wallet-core';
 import {
     type AccountKey,
@@ -17,7 +16,7 @@ import {
     type RootStackParamList,
     RootStackRoutes,
     type SendStackParamList,
-    SendStackRoutes,
+    type SendStackRoutes,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { signTransactionNativeThunk } from '@suite-native/send';
@@ -26,9 +25,8 @@ import {
     selectIsTransactionReviewInProgress,
     useShowReviewCancellationAlert,
 } from '@suite-native/transaction-management';
-import { TRANSPORT_ERROR } from '@trezor/transport-common';
 
-import { useShowDeviceDisconnectedAlert } from './useShowDeviceDisconnectedAlert';
+import { useHandleCommonSignRejection } from './useHandleCommonSignRejection';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     SendStackParamList,
@@ -50,10 +48,9 @@ export const useHandleOnDeviceTransactionReview = ({
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
     const { showAlert } = useAlert();
-    const isViewOnlyDevice = useSelector(selectIsDeviceRemembered);
 
     const showReviewCancellationAlert = useShowReviewCancellationAlert();
-    const showDeviceDisconnectedAlert = useShowDeviceDisconnectedAlert();
+    const handleCommonSignRejection = useHandleCommonSignRejection({ accountKey, tokenContract });
 
     const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
         selectIsTransactionReviewInProgress(state, 'send', accountKey, tokenContract),
@@ -90,21 +87,15 @@ export const useHandleOnDeviceTransactionReview = ({
         );
 
         if (isRejected(response)) {
-            const errorCode = response.payload?.errorCode;
-            const message = response.payload?.message;
-
-            if (
-                errorCode === 'Failure_PinCancelled' || // User cancelled the pin entry on device
-                errorCode === 'Method_Cancel' || // User canceled the pin entry in the app UI.
-                errorCode === 'Failure_ActionCancelled' // User canceled the review on device OR device got locked before the review was finished.
-            ) {
-                navigation.popTo(SendStackRoutes.SendOutputs, {
-                    accountKey,
-                    tokenContract,
-                });
-
+            if (response.payload?.error === 'sign-transaction-timeout') {
                 return;
             }
+
+            if (handleCommonSignRejection(response.payload)) {
+                return;
+            }
+
+            const errorCode = response.payload?.errorCode;
 
             if (
                 errorCode === 'Device_InvalidState' || // Incorrect Passphrase submitted.
@@ -120,24 +111,6 @@ export const useHandleOnDeviceTransactionReview = ({
                 return;
             }
 
-            // Device disconnected during the review.
-            if (
-                message === TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION ||
-                message === TRANSPORT_ERROR.UNEXPECTED_ERROR
-            ) {
-                if (isViewOnlyDevice) {
-                    navigation.popTo(SendStackRoutes.SendOutputs, {
-                        accountKey,
-                        tokenContract,
-                        postNavigationAction: 'deviceDisconnectedAlert',
-                    });
-                } else {
-                    showDeviceDisconnectedAlert();
-                }
-
-                return;
-            }
-
             navigation.navigate(RootStackRoutes.AccountDetail, {
                 accountKey,
                 tokenContract,
@@ -148,9 +121,8 @@ export const useHandleOnDeviceTransactionReview = ({
         accountKey,
         tokenContract,
         transaction,
-        isViewOnlyDevice,
         navigation,
-        showDeviceDisconnectedAlert,
+        handleCommonSignRejection,
         dispatch,
         showAlert,
     ]);
