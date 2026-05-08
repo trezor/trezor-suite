@@ -93,14 +93,22 @@ const navigateOutOfSendFlowAction = ({
 type OutputsReviewFooterParams = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
+    isPastDeadline?: boolean;
+    isSendInProgress: boolean;
+    setIsSendInProgress: (value: boolean) => void;
 };
 
-export const OutputsReviewFooter = ({ accountKey, tokenContract }: OutputsReviewFooterParams) => {
+export const OutputsReviewFooter = ({
+    accountKey,
+    tokenContract,
+    isPastDeadline = false,
+    isSendInProgress,
+    setIsSendInProgress,
+}: OutputsReviewFooterParams) => {
     const [txid, setTxid] = useState<string>('');
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
     const { showAlert } = useAlert();
-    const [isSendInProgress, setIsSendInProgress] = useState(false);
     const wasAppLeftDuringReview = useAtomValue(wasAppLeftDuringReviewAtom);
     const { setSelectedUtxos } = useUtxoSelection(accountKey);
     const { translate } = useTranslate();
@@ -135,8 +143,18 @@ export const OutputsReviewFooter = ({ accountKey, tokenContract }: OutputsReview
     }
 
     const isSolanaAccount = account.networkType === 'solana';
+    const isSendDisabled = isSolanaAccount && isPastDeadline;
+
+    const handleRetryAfterExpiry = () => {
+        dispatch(cleanupSendFormThunk({ accountKey, tokenContract, shouldDeleteDraft: false }));
+        navigation.navigate(SendStackRoutes.SendOutputs, {
+            accountKey,
+            tokenContract,
+        });
+    };
 
     const handleSendTransaction = async () => {
+        if (isSendDisabled) return;
         setIsSendInProgress(true);
 
         const sendResponse = await dispatch(
@@ -177,15 +195,7 @@ export const OutputsReviewFooter = ({ accountKey, tokenContract }: OutputsReview
             ),
             primaryButtonTitle: <Translation id="generic.buttons.tryAgain" />,
             primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
-            onPressPrimaryButton: () => {
-                dispatch(
-                    cleanupSendFormThunk({ accountKey, tokenContract, shouldDeleteDraft: false }),
-                );
-                navigation.navigate(SendStackRoutes.SendOutputs, {
-                    accountKey,
-                    tokenContract,
-                });
-            },
+            onPressPrimaryButton: handleRetryAfterExpiry,
             secondaryButtonTitle: (
                 <Translation id="moduleSend.review.outputs.errorAlert.secondaryButtonTitle" />
             ),
@@ -214,6 +224,7 @@ export const OutputsReviewFooter = ({ accountKey, tokenContract }: OutputsReview
                 <SignSuccessMessage />
                 <Button
                     isLoading={isSendInProgress}
+                    isDisabled={isSendDisabled}
                     accessibilityRole="button"
                     accessibilityLabel={translate('generic.validateForm')}
                     testID="@send/send-transaction-button"

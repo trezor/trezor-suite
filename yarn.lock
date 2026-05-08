@@ -16023,6 +16023,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:19.2.14"
+    date-fns: "npm:^4.1.0"
     react: "npm:19.2.4"
     react-dom: "npm:19.2.4"
   languageName: unknown

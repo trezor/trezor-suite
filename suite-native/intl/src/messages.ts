@@ -3441,6 +3441,15 @@ export const messages = {
             title: 'We’ve reserved {amount} {displaySymbol} to cover any extra network fees.',
             buttonTitle: 'Manage',
         },
+        txValidityTimer: {
+            countdown: '{seconds}s left to confirm',
+            confirming: 'Confirming transaction',
+            expiredTitle: 'Transaction expired',
+            expiredAlert: {
+                title: 'Transaction confirmation expired',
+                description: 'Your funds are safe. Try again to continue.',
+            },
+        },
         fees: {
             levels: {
                 low: 'Low',

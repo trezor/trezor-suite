@@ -1,7 +1,7 @@
 import { act, render } from '@testing-library/react';
 
-import { fixtures } from 'src/hooks/suite/__fixtures__/useCountdownTimer';
-import { useCountdownTimer } from 'src/hooks/suite/useCountdownTimer';
+import { useCountdownTimer } from '../timer/useCountdownTimer';
+import { fixtures } from './__fixtures__/useCountdownTimer';
 
 type Result = ReturnType<typeof useCountdownTimer>;
 
@@ -19,21 +19,31 @@ const Component = ({
 };
 
 describe('useCountdownTimer', () => {
-    fixtures.forEach(({ desc, duration, expected }) => {
-        it(desc, () => {
-            jest.useFakeTimers();
+    beforeEach(() => {
+        jest.useFakeTimers();
+    });
 
+    afterEach(() => {
+        jest.useRealTimers();
+    });
+
+    fixtures.forEach(({ desc, duration, options, expected }) => {
+        it(desc, () => {
             let result: Result = {
                 duration: {},
                 isPastDeadline: false,
             };
 
+            const params: Parameters<typeof useCountdownTimer> = options
+                ? [Date.now() + duration, options]
+                : [Date.now() + duration];
+
             const { unmount } = render(
-                <Component params={[Date.now() + duration]} callback={res => (result = res)} />,
+                <Component params={params} callback={res => (result = res)} />,
             );
 
             act(() => {
-                jest.advanceTimersToNextTimer(1000); // wait 1 second
+                jest.advanceTimersByTime(1000);
             });
 
             expect(result).toEqual(expected);

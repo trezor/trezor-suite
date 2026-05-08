@@ -5,4 +5,5 @@ export * from './ReviewOutputItemList/ReviewOutputItemValues';
 export * from './ReviewOutputItemList/ReviewOutputSummaryItem';
 export * from './SlidingFooterOverlay';
 export * from './SignSuccessMessage';
+export * from './TxValidityTimer';
 export * from './fees';

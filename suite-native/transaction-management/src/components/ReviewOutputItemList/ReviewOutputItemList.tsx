@@ -1,10 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import {
-    type AccountsRootState,
-    selectAccountByKey,
-    selectAccountNetworkSymbol,
-} from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import {
     type AccountKey,
     type FormDraftWithSendKeyPrefix,
@@ -51,22 +47,23 @@ export const ReviewOutputItemList = ({
         useSelector((state: TransactionReviewOutputsState) =>
             selectReviewSummaryOutput(state, prefix, accountKey, tokenContract),
         ) || undefined;
-    const accountSymbol = useSelector((state: AccountsRootState) =>
-        selectAccountNetworkSymbol(state, accountKey),
-    );
-    const isTron = useSelector(
-        (state: AccountsRootState) => selectAccountByKey(state, accountKey)?.networkType === 'tron',
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
     );
 
     const { activeStepBottomOffset, handleReadListItemHeight } = useActiveStepOffset(activeStep);
 
-    if (!accountSymbol) {
+    if (!account) {
         return (
             <ErrorMessage
                 errorMessage={<Translation id="transactionManagement.review.outputs.noAccount" />}
             />
         );
     }
+
+    const { symbol: accountSymbol, networkType } = account;
+    const isTron = networkType === 'tron';
+    const isSolana = networkType === 'solana';
 
     return (
         <>
@@ -96,7 +93,7 @@ export const ReviewOutputItemList = ({
                     )}
                 </VStack>
             )}
-            {!isTransactionAlreadySigned && (
+            {!isTransactionAlreadySigned && !isSolana && (
                 <SlidingFooterOverlay activeStepOffset={activeStepBottomOffset} />
             )}
         </>

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
@@ -17,12 +17,14 @@ import {
 } from '@suite-native/navigation';
 import {
     ReviewOutputItemList,
+    TxValidityTimer,
     selectIsTransactionAlreadySigned,
     useOutputsReviewBackInterceptor,
 } from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { OutputsReviewFooter } from '../components/OutputsReviewFooter';
+import { useTxValidityFlow } from '../hooks/useTxValidityFlow';
 
 const spacerStyle = prepareNativeStyle(_ => ({
     height: 150,
@@ -33,7 +35,8 @@ export const SendOutputsReviewScreen = ({
 }: StackProps<SendStackParamList, SendStackRoutes.SendOutputsReview>) => {
     const { accountKey, tokenContract } = route.params;
 
-    const { confirmOnTrezorRef, closeSheet } = useConfirmOnTrezorController();
+    const { confirmOnTrezorRef, closeSheet, revealConfirmOnTrezorSheet } =
+        useConfirmOnTrezorController();
 
     const { applyStyle } = useNativeStyles();
 
@@ -42,11 +45,20 @@ export const SendOutputsReviewScreen = ({
     );
 
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
-
     const showOutputsReviewFooter = isTransactionAlreadySigned && account;
+
+    const [isSendInProgress, setIsSendInProgress] = useState(false);
 
     const navigateToInitialScreen = useNavigateToInitialScreen();
     useOutputsReviewBackInterceptor(navigateToInitialScreen);
+
+    const { showTimer, secondsLeft, isPastDeadline, isBroadcasting, onRetry, isRetryDisabled } =
+        useTxValidityFlow({
+            accountKey,
+            tokenContract,
+            revealConfirmOnTrezorSheet,
+            isSendInProgress,
+        });
 
     useEffect(() => {
         if (showOutputsReviewFooter) {
@@ -66,13 +78,30 @@ export const SendOutputsReviewScreen = ({
             }
         >
             <VStack flex={1} spacing="sp16" justifyContent="space-between">
-                <ReviewOutputItemList
-                    prefix="send"
-                    accountKey={accountKey}
-                    tokenContract={tokenContract}
-                />
+                <VStack spacing="sp16">
+                    {showTimer && (
+                        <TxValidityTimer
+                            secondsLeft={secondsLeft}
+                            isPastDeadline={isPastDeadline}
+                            isBroadcasting={isBroadcasting}
+                            onRetry={onRetry}
+                            isRetryDisabled={isRetryDisabled}
+                        />
+                    )}
+                    <ReviewOutputItemList
+                        prefix="send"
+                        accountKey={accountKey}
+                        tokenContract={tokenContract}
+                    />
+                </VStack>
                 {showOutputsReviewFooter ? (
-                    <OutputsReviewFooter accountKey={accountKey} tokenContract={tokenContract} />
+                    <OutputsReviewFooter
+                        accountKey={accountKey}
+                        tokenContract={tokenContract}
+                        isPastDeadline={isPastDeadline}
+                        isSendInProgress={isSendInProgress}
+                        setIsSendInProgress={setIsSendInProgress}
+                    />
                 ) : (
                     <Box style={applyStyle(spacerStyle)} />
                 )}
