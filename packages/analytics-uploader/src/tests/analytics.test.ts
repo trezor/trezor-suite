@@ -21,7 +21,7 @@ describe('analytics', () => {
         // @ts-expect-error
         jest.spyOn(global, 'fetch').mockImplementation(() => mockFetchPromise);
 
-        const timestamp = new Date().getTime();
+        const timestamp = Date.now();
         jest.spyOn(Date, 'now').mockImplementation(() => timestamp);
         jest.spyOn(console, 'error').mockImplementation(() => {});
 
@@ -72,7 +72,7 @@ describe('analytics', () => {
         // @ts-expect-error
         jest.spyOn(global, 'fetch').mockImplementation(() => mockFetchPromise);
 
-        const timestamp = new Date().getTime();
+        const timestamp = Date.now();
         jest.spyOn(Date, 'now').mockImplementation(() => timestamp);
         jest.spyOn(console, 'error').mockImplementation(() => {});
 

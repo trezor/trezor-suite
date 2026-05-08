@@ -32,7 +32,7 @@ export const useFirmwareDesktopUpdate = () => {
             firmware.uiEvent?.type === UI_REQUEST.FIRMWARE_PROGRESS &&
             firmware.uiEvent.payload.operation === 'start-flashing'
         ) {
-            setStartTime(new Date().getTime());
+            setStartTime(Date.now());
         }
     }, [firmware.uiEvent, startTime]);
 
@@ -42,7 +42,7 @@ export const useFirmwareDesktopUpdate = () => {
         }
 
         const interval = setInterval(() => {
-            const now = new Date().getTime();
+            const now = Date.now();
 
             if (now - startTime > TIME_THRESHOLD_SLOW_INSTALLATION_MS) {
                 if (

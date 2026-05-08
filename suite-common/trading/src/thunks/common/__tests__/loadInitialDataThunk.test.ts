@@ -91,7 +91,7 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
     const getCurrentAccountDescriptorMock = jest.spyOn(invityAPI, 'getCurrentAccountDescriptor');
     const setInvityServersEnvironmentMock = jest.spyOn(invityAPI, 'setInvityServersEnvironment');
 
-    const mockedLastLoadedTimestamp = new Date().getTime();
+    const mockedLastLoadedTimestamp = Date.now();
     jest.spyOn(Date, 'now').mockImplementation(() => mockedLastLoadedTimestamp);
 
     const store = initStore({

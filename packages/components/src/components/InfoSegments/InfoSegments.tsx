@@ -34,7 +34,7 @@ export const InfoSegments = ({
     gap = 4,
     'data-testid': dataTestId,
 }: InfoSegmentsProps) => {
-    const validChildren = Children.toArray(children).filter(child => Boolean(child));
+    const validChildren = Children.toArray(children).filter(Boolean);
     const id = useId();
     const iconProps: Pick<IconProps, 'intent' | 'priority' | 'isDisabled'> = {
         intent: intent ?? 'neutral',
