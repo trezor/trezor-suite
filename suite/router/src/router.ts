@@ -32,7 +32,7 @@ export type RouterPath = {
 export const getPrefixedURL = (url: string) => {
     // do not use object destructuring https://github.com/webpack/webpack/issues/5392
     const prefix = process.env.ASSET_PREFIX;
-    if (prefix && url.indexOf(prefix) !== 0) return prefix + url;
+    if (prefix && !url.startsWith(prefix)) return prefix + url;
 
     return url;
 };
@@ -40,7 +40,7 @@ export const getPrefixedURL = (url: string) => {
 export const stripPrefixedURL = (url: string) => {
     // do not use object destructuring https://github.com/webpack/webpack/issues/5392
     const prefix = process.env.ASSET_PREFIX;
-    if (typeof prefix === 'string' && url.indexOf(prefix) === 0) {
+    if (typeof prefix === 'string' && url.startsWith(prefix)) {
         url = url.slice(prefix.length);
     }
 
