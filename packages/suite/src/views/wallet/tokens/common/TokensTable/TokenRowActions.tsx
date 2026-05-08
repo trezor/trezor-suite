@@ -98,10 +98,9 @@ const TokenRowBasicActions = ({
     const tokenCryptoId = toTokenCryptoId(account.symbol, contractAddress);
     const tokenTradingOptions = coins?.[tokenCryptoId]?.services;
 
-    const canBuyToken = !!tokenTradingOptions && tokenTradingOptions.buy;
-    const canSwapToken =
-        (!!tokenTradingOptions && tokenTradingOptions.exchange) || token.balance === '0';
-    const canSellToken = !!tokenTradingOptions && tokenTradingOptions.sell;
+    const canBuyToken = !!tokenTradingOptions?.buy;
+    const canSwapToken = !!tokenTradingOptions?.exchange || token.balance === '0';
+    const canSellToken = !!tokenTradingOptions?.sell;
     const canReceiveToken = !isDeviceLocked && !isDeviceCompromised;
 
     const availableVault = yieldOpportunities?.find(
