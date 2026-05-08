@@ -108,7 +108,7 @@ const updateRawLiquidityClue = async (
     const result = await Promise.all(
         accounts.map(account => {
             const externalAmounts = tx.outputs
-                .filter(o => !account.changeAddresses.find(addr => addr.address === o.address))
+                .filter(o => !account.changeAddresses.some(addr => addr.address === o.address))
                 .map(o => o.amount);
 
             return middleware.updateLiquidityClue(

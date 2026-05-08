@@ -52,7 +52,7 @@ export const isAckExpected = (bytesOrMagic: Buffer | number[]) => {
         );
 
     if (Array.isArray(bytesOrMagic)) {
-        return !bytesOrMagic.find(n => isCreateChannelMessage(n));
+        return !bytesOrMagic.some(isCreateChannelMessage);
     }
 
     return !isCreateChannelMessage(bytesOrMagic.readUInt8());

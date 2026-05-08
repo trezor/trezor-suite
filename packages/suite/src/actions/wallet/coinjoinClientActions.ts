@@ -242,7 +242,7 @@ export const setBusyScreen =
         const uniquePhysicalDevices = uniqueDeviceStates.reduce(
             (result, state) => {
                 const device = devices.find(d => d.connected && d.state?.staticSessionId === state);
-                if (device && !result.find(d => d.id === device.id)) {
+                if (device && !result.some(d => d.id === device.id)) {
                     return result.concat(device);
                 }
 
@@ -426,7 +426,7 @@ export const onCoinjoinRoundChanged =
 
                 const accountsWithAutostop = coinjoinAccountsWithSession.filter(
                     ({ key, session }) =>
-                        !accountsReachingMaxRounds.find(accout => accout.key === key) &&
+                        !accountsReachingMaxRounds.some(accout => accout.key === key) &&
                         session?.isAutoStopEnabled,
                 );
 

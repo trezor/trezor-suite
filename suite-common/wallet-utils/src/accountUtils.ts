@@ -899,7 +899,7 @@ export const getUtxoFromSignedTransaction = ({
     ) =>
         account.utxo?.filter(
             u =>
-                !inputs.find(i => i.prev_hash === u.txid && i.prev_index === u.vout) &&
+                !inputs.some(i => i.prev_hash === u.txid && i.prev_index === u.vout) &&
                 u.txid !== prevTxid,
         ) || [];
 
@@ -926,7 +926,7 @@ export const getUtxoFromSignedTransaction = ({
         // check if utxo should be added
         // may be spent already in case of rbf
         const utxoSpent =
-            prevTxid && !replaceUtxo.find(u => u.address === addr?.address && u.vout === vout);
+            prevTxid && !replaceUtxo.some(u => u.address === addr?.address && u.vout === vout);
 
         if (addr && !utxoSpent) {
             utxo.unshift({

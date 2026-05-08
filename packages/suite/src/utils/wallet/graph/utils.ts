@@ -307,7 +307,7 @@ export const calcFakeGraphDataForTimestamps = (
             if (
                 ts > firstDataPoint.time &&
                 ts < lastDataPoint.time &&
-                !data.find(d => d.time === ts)
+                !data.some(d => d.time === ts)
             ) {
                 const closest = data.findIndex(d => d.time >= ts);
                 balanceData.push({

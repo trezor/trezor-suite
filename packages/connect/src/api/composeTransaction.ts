@@ -137,7 +137,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
     }
 
     get info() {
-        const sendMax = this.params?.outputs.find(o => o.type === 'send-max') !== undefined;
+        const sendMax = this.params.outputs.some(o => o.type === 'send-max');
 
         if (sendMax) {
             return 'Send maximum amount';
