@@ -103,9 +103,11 @@ test.describe('Onboarding - T2T1 in recovery mode', { tag: ['@webOnly', '@T2T1']
         page,
         device,
         devicePrompt,
+        onboardingPage,
+        dashboardPage,
     }) => {
         await test.step('Start recovery', async () => {
-            await page.getByTestId('@onboarding/recovery/start-button').click();
+            await onboardingPage.startRecoveryButton.click();
             await devicePrompt.confirmOnDevicePromptIsShown();
             await device.pressYes();
             await devicePrompt.confirmOnDevicePromptIsShown();
@@ -141,8 +143,11 @@ test.describe('Onboarding - T2T1 in recovery mode', { tag: ['@webOnly', '@T2T1']
         });
 
         await test.step('Finish onboarding', async () => {
-            await page.getByTestId('@onboarding/recovery/continue-button').click();
-            await page.getByTestId('@onboarding/skip-button').click();
+            await onboardingPage.continueRecoveryButton.click();
+            await onboardingPage.pin.skip();
+            await onboardingPage.finalButton.click();
+
+            await dashboardPage.verifyDiscoveryEmpty();
         });
     });
 });
