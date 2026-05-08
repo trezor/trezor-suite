@@ -22,27 +22,27 @@ export const variantToColorMap = {
     info: {
         backgroundColor: 'legacyBackgroundAlertBlueSubtleOnElevation1',
         borderColor: 'legacyBackgroundAlertBlueSubtleOnElevationNegative',
-        buttonColorProps: { intent: 'info', priority: 'primary' },
+        buttonColorProps: { intent: 'info', priority: 'secondary' },
     },
     success: {
         backgroundColor: 'legacyBackgroundPrimarySubtleOnElevation1',
         borderColor: 'legacyBackgroundPrimarySubtleOnElevationNegative',
-        buttonColorProps: { intent: 'brand', priority: 'primary' },
+        buttonColorProps: { intent: 'brand', priority: 'secondary' },
     },
     warning: {
         backgroundColor: 'legacyBackgroundAlertYellowSubtleOnElevation1',
         borderColor: 'legacyBackgroundAlertYellowSubtleOnElevationNegative',
-        buttonColorProps: { intent: 'warning', priority: 'primary' },
+        buttonColorProps: { intent: 'warning', priority: 'secondary' },
     },
     neutral: {
         backgroundColor: 'legacyBackgroundTertiaryDefaultOnElevation1',
         borderColor: 'legacyBackgroundTertiaryDefaultOnElevation0',
-        buttonColorProps: { intent: 'neutral', priority: 'primary' },
+        buttonColorProps: { intent: 'neutral', priority: 'secondary' },
     },
     critical: {
         backgroundColor: 'legacyBackgroundAlertRedSubtleOnElevation1',
         borderColor: 'legacyBackgroundAlertRedSubtleOnElevationNegative',
-        buttonColorProps: { intent: 'critical', priority: 'primary' },
+        buttonColorProps: { intent: 'critical', priority: 'secondary' },
     },
 } as const satisfies Record<InlineAlertBoxVariant, InlineAlertBoxStyles>;
 
