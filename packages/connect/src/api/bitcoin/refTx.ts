@@ -36,7 +36,7 @@ export const requireReferencedTransactions = (
     }
     const inputTypes = ['SPENDTAPROOT', 'EXTERNAL'];
 
-    return !!inputs.find(input => !inputTypes.find(t => t === input.script_type));
+    return inputs.some(input => !inputTypes.some(t => t === input.script_type));
 };
 
 // Get array of unique referenced transactions ids
@@ -348,7 +348,7 @@ export const validateReferencedTransactions = ({
 
     // check if all required transactions defined by inputs/outputs were provided
     refTxs.concat(origTxs).forEach(hash => {
-        if (!transformedTxs.find(tx => tx.hash === hash)) {
+        if (!transformedTxs.some(tx => tx.hash === hash)) {
             throw TypedError('Method_InvalidParameter', `refTx: ${hash} not provided`);
         }
     });

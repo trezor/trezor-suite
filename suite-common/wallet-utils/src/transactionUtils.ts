@@ -428,8 +428,8 @@ const filterAnalyzeResult = (result: Analyze) => {
 
     return {
         newTransactions: result.newTransactions,
-        add: result.add.filter(a => !preserve.find(tx => tx.txid === a.txid)),
-        remove: result.remove.filter(a => !preserve.find(tx => tx.txid === a.txid)),
+        add: result.add.filter(a => !preserve.some(tx => tx.txid === a.txid)),
+        remove: result.remove.filter(a => !preserve.some(tx => tx.txid === a.txid)),
     };
 };
 

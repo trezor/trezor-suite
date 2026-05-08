@@ -120,7 +120,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
 
         // stop here if account is not outdated and there are no pending transactions
 
-        if (!accountOutdated && !accountTxs.find(isPending)) {
+        if (!accountOutdated && !accountTxs.some(isPending)) {
             dispatch(accountsActions.updateAccountRefreshTimestamp(account));
 
             return;

@@ -196,7 +196,7 @@ export class UdpApi extends AbstractApi {
         // find all disconnected devices and cancel reading (if any)
         const [disconnected] = arrayPartition(
             this.devices,
-            device => !devices.find(d => d.path === device.path),
+            device => !devices.some(d => d.path === device.path),
         );
         disconnected.forEach(d => this.readBuffer.cancelRead(d.path));
 

@@ -97,7 +97,7 @@ export class Status extends TypedEmitter<StatusEvents> {
                     .filter(
                         prevRound =>
                             prevRound.Phase < RoundPhase.Ended &&
-                            !next.find(nextRound => prevRound.Id === nextRound.Id),
+                            !next.some(nextRound => prevRound.Id === nextRound.Id),
                     )
                     .map(r => ({ ...r, phase: RoundPhase.Ended })),
             );
