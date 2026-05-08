@@ -4,7 +4,7 @@ import { EventType } from '../constants';
 
 type Attributes = {
     action: AttributeDef<'continue' | 'cancel'>;
-    step: AttributeDef<'buy-form' | 'offers-form'>;
+    step: AttributeDef<'buy-form'>;
 
     cryptoLabel?: AttributeDef<string>;
     cryptoNetworkSymbol?: AttributeDef<string>;
@@ -26,7 +26,10 @@ export const tradeBuyEvent: EventDef<Attributes, EventType.TradeBuy> = {
             changelog: [{ version: '25.5.0', notes: 'added' }],
         },
         step: {
-            changelog: [{ version: '25.5.0', notes: 'added' }],
+            changelog: [
+                { version: '25.5.0', notes: 'added' },
+                { version: '26.6.1', notes: 'removed `offers-form` value' },
+            ],
         },
         cryptoLabel: {
             description: 'e.g. `BTC`, `ETH`, `SOL` etc.',
