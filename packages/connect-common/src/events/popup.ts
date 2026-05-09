@@ -16,8 +16,6 @@ export const POPUP = {
     CLOSED: 'popup-closed',
     // Message called from inline element in popup.html (window.closeWindow), this is used only with webextensions to properly handle popup close event
     CLOSE_WINDOW: 'window.close',
-    // not used anymore, will removed in https://github.com/trezor/trezor-suite/pull/24471
-    CONTENT_SCRIPT_LOADED: 'popup-content-script-loaded',
 } as const;
 
 export interface PopupInit {
@@ -45,11 +43,6 @@ export interface PopupClosedMessage {
     payload: { error: any } | null;
 }
 
-export interface PopupContentScriptLoaded {
-    type: typeof POPUP.CONTENT_SCRIPT_LOADED;
-    payload: { id: string; contentScriptVersion: number };
-}
-
 export interface PopupCloseWindow {
     type: typeof POPUP.CLOSE_WINDOW;
     payload: typeof undefined;
@@ -62,7 +55,6 @@ export type PopupEvent =
       }
     | PopupInit
     | PopupHandshake
-    | PopupContentScriptLoaded
     | PopupCloseWindow
     | PopupClosedMessage;
 
