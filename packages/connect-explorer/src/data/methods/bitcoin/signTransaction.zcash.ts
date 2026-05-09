@@ -1,20 +1,14 @@
-import { select } from './common';
-
 const name = 'signTransaction';
-const docs = 'methods/signTransaction.md';
 
 export default [
     {
-        url: '/method/signTransaction-zcash',
         name,
-        docs,
         submitButton: 'Sign transaction',
         fields: [
             {
                 name: 'coin',
                 type: 'hidden',
                 value: 'zcash',
-                data: select,
             },
             {
                 name: 'inputs',
@@ -58,20 +52,17 @@ export default [
             },
             {
                 name: 'versionGroupId',
-                label: 'Version group id',
                 type: 'number',
                 value: '0x892f2085',
             },
             {
                 name: 'push',
-                label: 'Push transaction',
                 type: 'checkbox',
                 defaultValue: false,
                 value: false,
             },
             {
                 name: 'chunkify',
-                label: 'Display recipient address in chunks of 4 characters',
                 type: 'checkbox',
                 value: false,
             },

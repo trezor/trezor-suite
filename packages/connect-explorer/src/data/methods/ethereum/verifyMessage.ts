@@ -2,9 +2,7 @@ import { select } from './common';
 
 export default [
     {
-        url: '/method/ethereumVerifyMessage',
         name: 'ethereumVerifyMessage',
-        docs: 'methods/ethereumVerifyMessage.md',
         submitButton: 'Verify message',
 
         fields: [
@@ -32,7 +30,6 @@ export default [
             },
             {
                 name: 'hex',
-                label: 'Convert message from hex',
                 type: 'checkbox',
                 optional: true,
                 defaultValue: false,

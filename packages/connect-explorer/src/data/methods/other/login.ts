@@ -1,11 +1,8 @@
 const name = 'requestLogin';
-const docs = 'methods/requestLogin.md';
 
 export default [
     {
-        url: '/method/requestLogin-sync',
         name,
-        docs,
         submitButton: 'Login',
         fields: [
             {
@@ -21,9 +18,7 @@ export default [
         ],
     },
     {
-        url: '/method/requestLogin-async',
         name,
-        docs,
         submitButton: 'Login',
         fields: [
             {

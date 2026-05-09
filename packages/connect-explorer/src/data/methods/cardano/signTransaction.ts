@@ -1,7 +1,6 @@
 import { cardanoDerivationType, cardanoTxSigningMode } from './common';
 
 const name = 'cardanoSignTransaction';
-const docs = 'methods/cardanoSignTransaction.md';
 
 // todo: taken from connect tests. make it sharable
 const SAMPLE_INPUTS = {
@@ -36,20 +35,16 @@ const tx = {
 
 export default [
     {
-        url: '/method/cardanoSignTransaction',
         name,
-        docs,
         submitButton: 'Sign transaction',
         fields: [
             {
                 name: 'protocolMagic',
-                label: 'Protocol magic',
                 type: 'number',
                 value: 764824073,
             },
             {
                 name: 'networkId',
-                label: 'Network id',
                 type: 'number',
                 value: 1,
             },
@@ -72,7 +67,6 @@ export default [
             cardanoDerivationType,
             {
                 name: 'chunkify',
-                label: 'Display recipient address in chunks of 4 characters',
                 type: 'checkbox',
                 value: false,
             },

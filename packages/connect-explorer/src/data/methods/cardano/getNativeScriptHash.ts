@@ -3,13 +3,10 @@ import { CardanoNativeScriptType } from '@trezor/protobuf/src/definitions';
 import { cardanoDerivationType, cardanoNativeScriptHashDisplayFormat } from './common';
 
 const name = 'cardanoGetNativeScriptHash';
-const docs = 'methods/cardanoGetNativeScriptHash.md';
 
 export default [
     {
-        url: '/method/cardanoGetNativeScriptHash',
         name,
-        docs,
         submitButton: 'Submit',
 
         fields: [

@@ -1,7 +1,6 @@
 import { select } from './common';
 
 const name = 'getAccountInfo';
-const docs = 'methods/getAccountInfo.md';
 
 const batch = [
     {
@@ -13,14 +12,12 @@ const batch = [
     },
     {
         name: 'descriptor',
-        label: 'Public key',
         type: 'input-long',
         optional: true,
         value: ``,
     },
     {
         name: 'path',
-        label: 'OR Bip44 path',
         type: 'input',
         optional: true,
         value: `m/84'/1'/0'`,
@@ -37,7 +34,6 @@ const usingPath = [
     },
     {
         name: 'path',
-        label: 'Bip44 path',
         type: 'input',
         value: `m/84'/1'/0'`,
     },
@@ -52,7 +48,6 @@ const usingAddress = [
     },
     {
         name: 'descriptor',
-        label: 'Public key',
         type: 'input-long',
         value: ``,
     },
@@ -60,25 +55,19 @@ const usingAddress = [
 
 export default [
     {
-        url: '/method/getAccountInfo',
         name,
-        docs,
         submitButton: 'Get account info',
 
         fields: usingPath,
     },
     {
-        url: '/method/getAccountInfo-xpub',
         name,
-        docs,
         submitButton: 'Get account info',
 
         fields: usingAddress,
     },
     {
-        url: '/method/getAccountInfo-bundle',
         name,
-        docs,
         submitButton: 'Get multiple accounts',
 
         fields: [
@@ -96,9 +85,7 @@ export default [
         ],
     },
     {
-        url: '/method/getAccountInfo-discovery',
         name,
-        docs,
         submitButton: 'Get account info',
 
         fields: [
@@ -111,16 +98,13 @@ export default [
         ],
     },
     {
-        url: '/method/getAccountInfo-advanced',
         name,
-        docs,
         submitButton: 'Get account info',
 
         fields: [
             ...batch,
             {
                 name: 'details',
-                placeholder: 'Select details',
                 type: 'select',
                 optional: true,
                 data: [
@@ -158,14 +142,12 @@ export default [
                 value: ``,
             },
             {
-                label: 'From block',
                 name: 'from',
                 type: 'number',
                 optional: true,
                 value: ``,
             },
             {
-                label: 'To block',
                 name: 'to',
                 type: 'number',
                 optional: true,

@@ -49,31 +49,11 @@ const examples = {
             address: 'DUCd1B3YBiXL5By15yXgSLZtEkvwsgEdqS',
         },
     ],
-    nmc: [
-        {
-            amount: '20000',
-            address: 'N4n9hyYH5EDfhmCRS3qqzh7crLbuXrku6d',
-        },
-    ],
-    vtc: [
-        {
-            amount: '20000',
-            address: '33GN5Aq3tqBbF3f2HBfCRZi6fyS3baEQWH',
-        },
-    ],
-    cpc: [
-        {
-            amount: '20000',
-            address: 'CMSgH7wq4kV9ogmSPB5rBmPceQJy3oA9Bu',
-        },
-    ],
 };
 
 export default [
     {
-        url: '/method/composeTransaction',
         name: 'composeTransaction',
-        docs: 'methods/composeTransaction.md',
         submitButton: 'Compose transaction',
         fields: [
             {
@@ -97,7 +77,6 @@ export default [
             },
             {
                 name: 'push',
-                label: 'Push transaction',
                 type: 'checkbox',
                 defaultValue: false,
                 value: false,

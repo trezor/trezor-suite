@@ -1,7 +1,6 @@
 import { select } from './common';
 
 const name = 'signTransaction';
-const docs = 'methods/signTransaction.md';
 
 const test = {
     inputs: [
@@ -44,9 +43,7 @@ const examples = {
 
 export default [
     {
-        url: '/method/signTransaction-p2sh',
         name,
-        docs,
         submitButton: 'Sign transaction',
         fields: [
             {
@@ -77,14 +74,12 @@ export default [
             },
             {
                 name: 'push',
-                label: 'Push transaction',
                 type: 'checkbox',
                 defaultValue: false,
                 value: false,
             },
             {
                 name: 'chunkify',
-                label: 'Display recipient address in chunks of 4 characters',
                 type: 'checkbox',
                 value: false,
             },

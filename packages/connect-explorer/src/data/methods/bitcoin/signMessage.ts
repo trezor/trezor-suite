@@ -2,15 +2,12 @@ import { select } from './common';
 
 export default [
     {
-        url: '/method/signMessage',
         name: 'signMessage',
-        docs: 'methods/signMessage.md',
         submitButton: 'Sign message',
 
         fields: [
             {
                 name: 'path',
-                label: 'Bip44 path',
                 type: 'input',
                 value: `m/49'/0'/0'/0/0`,
             },

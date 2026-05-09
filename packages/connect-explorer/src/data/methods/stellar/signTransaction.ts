@@ -1,5 +1,4 @@
 const name = 'stellarSignTransaction';
-const docs = 'methods/stellarSignTransaction.md';
 
 const example = `{
     source: "GAXSFOOGF4ELO5HT5PTN23T5XE6D5QWL3YBHSVQ2HWOFEJNYYMRJENBV",
@@ -28,14 +27,11 @@ const example = `{
 
 export default [
     {
-        url: '/method/stellarSignTransaction',
         name,
-        docs,
         submitButton: 'Sign transaction',
         fields: [
             {
                 name: 'path',
-                label: 'Bip44 path',
                 type: 'input',
                 value: `m/44'/148'/0'`,
             },
