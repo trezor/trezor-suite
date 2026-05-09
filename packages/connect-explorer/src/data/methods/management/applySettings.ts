@@ -1,10 +1,7 @@
 const name = 'applySettings';
-const docs = 'methods/applySettings.md';
 
 export default [
     {
-        docs,
-        url: '/method/applySettings',
         name,
         submitButton: 'Apply settings',
         fields: [
@@ -16,10 +13,8 @@ export default [
             },
             {
                 name: 'passphrase_source',
-                label: 'passphrase source',
                 type: 'select',
                 optional: true,
-                placeholder: 'Select',
                 data: [
                     { value: 0, label: 'Ask' },
                     { value: 1, label: 'Device' },
@@ -27,25 +22,21 @@ export default [
                 ],
             },
             {
-                label: 'use passphrase',
                 name: 'use_passphrase',
                 type: 'checkbox',
                 optional: true,
                 value: false,
             },
             {
-                label: 'auto lock delay (ms)',
                 name: 'auto_lock_delay_ms',
                 type: 'number',
                 value: '',
                 optional: true,
             },
             {
-                label: 'display rotation',
                 name: 'display_rotation',
                 type: 'select',
                 optional: true,
-                placeholder: 'Select',
                 data: [
                     { value: 0, label: '↑' },
                     { value: 90, label: '→' },
@@ -54,11 +45,9 @@ export default [
                 ],
             },
             {
-                label: 'safety checks',
                 name: 'safety_checks',
                 type: 'select',
                 optional: true,
-                placeholder: 'Select',
                 data: [
                     { value: 'Strict', label: 'Strict' },
                     { value: 'PromptAlways', label: 'PromptAlways' },

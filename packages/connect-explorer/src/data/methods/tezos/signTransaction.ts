@@ -1,5 +1,4 @@
 const name = 'tezosSignTransaction';
-const docs = 'methods/tezosSignTransaction.md';
 const example = {
     transaction: {
         source: 'tz1ckrgqGGGBt4jGDmwFhtXc1LNpZJUnA9F2',
@@ -14,14 +13,11 @@ const example = {
 
 export default [
     {
-        url: '/method/tezosSignTransaction',
         name,
-        docs,
         submitButton: 'Sign transaction',
         fields: [
             {
                 name: 'path',
-                label: 'Bip44 path',
                 type: 'input',
                 value: `m/44'/1729'/0'`,
             },
@@ -37,7 +33,6 @@ export default [
             },
             {
                 name: 'chunkify',
-                label: 'Display recipient address in chunks of 4 characters',
                 type: 'checkbox',
                 value: false,
             },

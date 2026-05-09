@@ -1,16 +1,13 @@
 const name = 'moneroGetWatchKey';
-const docs = 'methods/moneroGetWatchKey.md';
 
 const fields = [
     {
         name: 'path',
-        label: 'Bip44 path',
         type: 'input',
         value: `m/44'/128'/0'`,
     },
     {
         name: 'networkType',
-        label: 'Network Type',
         type: 'select',
         value: 0,
         data: [
@@ -24,9 +21,7 @@ const fields = [
 
 export default [
     {
-        url: '/method/moneroGetWatchKey',
         name,
-        docs,
         submitButton: 'Get watch-only credentials',
         fields,
     },

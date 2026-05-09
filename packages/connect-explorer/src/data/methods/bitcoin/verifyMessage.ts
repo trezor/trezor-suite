@@ -2,9 +2,7 @@ import { select } from './common';
 
 export default [
     {
-        url: '/method/verifyMessage',
         name: 'verifyMessage',
-        docs: 'methods/verifyMessage.md',
         submitButton: 'Verify message',
 
         fields: [

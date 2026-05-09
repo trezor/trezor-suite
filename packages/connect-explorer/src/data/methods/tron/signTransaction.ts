@@ -1,11 +1,8 @@
 const name = 'tronSignTransaction';
-const docs = 'methods/tronSignTransaction.md';
 
 export default [
     {
-        url: '/method/tronSignTransaction',
         name,
-        docs,
         submitButton: 'Sign transaction',
         fields: [
             {

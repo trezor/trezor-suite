@@ -1,5 +1,4 @@
 const name = 'rippleSignTransaction';
-const docs = 'methods/rippleSignTransaction.md';
 
 const example = {
     fee: '12',
@@ -13,14 +12,11 @@ const example = {
 
 export default [
     {
-        url: '/method/rippleSignTransaction',
         name,
-        docs,
         submitButton: 'Sign transaction',
         fields: [
             {
                 name: 'path',
-                label: 'Bip44 path',
                 type: 'input',
                 value: `m/44'/144'/0'/0/0`,
             },
@@ -31,7 +27,6 @@ export default [
             },
             {
                 name: 'chunkify',
-                label: 'Display recipient address in chunks of 4 characters',
                 type: 'checkbox',
                 value: false,
             },
