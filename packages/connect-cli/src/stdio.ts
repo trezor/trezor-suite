@@ -24,7 +24,6 @@ export const stdioManager = () => {
                     });
                 }, 10);
             }),
-            abort: () => rl.close(),
         };
     };
 };
