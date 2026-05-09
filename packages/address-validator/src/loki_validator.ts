@@ -29,11 +29,11 @@ function validateNetwork(
 
     switch (networkType) {
         case 'prod':
-            return network.prod.indexOf(at) >= 0;
+            return network.prod.includes(at);
         case 'testnet':
-            return network.testnet.indexOf(at) >= 0;
+            return network.testnet.includes(at);
         case 'both':
-            return network.prod.indexOf(at) >= 0 || network.testnet.indexOf(at) >= 0;
+            return network.prod.includes(at) || network.testnet.includes(at);
         default:
             return false;
     }
