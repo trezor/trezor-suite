@@ -32,8 +32,6 @@ export const addMessage = (id: string): Deferred<any> => {
     return deferred;
 };
 
-export const hasMessage = (id: string) => !!messages[id];
-
 export const deleteMessage = (id: string) => {
     delete messages[id];
 };
