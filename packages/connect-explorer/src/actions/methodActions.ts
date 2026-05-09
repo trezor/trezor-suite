@@ -9,7 +9,6 @@ import type { Dispatch, Field, GetState } from '../types';
 import {
     ADD_BATCH,
     FIELD_CHANGE,
-    FIELD_DATA_CHANGE,
     REMOVE_BATCH,
     RESPONSE,
     SET_MANUAL_MODE,
@@ -34,12 +33,6 @@ export const onFieldChange = (field: Field<any>, value: any) => ({
     type: FIELD_CHANGE,
     field,
     value,
-});
-
-export const onFieldDataChange = (field: Field<any>, data: any) => ({
-    type: FIELD_DATA_CHANGE,
-    field,
-    data,
 });
 
 export const onBatchAdd = (field: Field<any>, item: any) => ({
@@ -93,31 +86,6 @@ export const onSubmit = () => async (dispatch: Dispatch, getState: GetState) => 
     });
     dispatch({ type: SET_METHOD_PROCESSING, payload: false });
     dispatch(onResponse(response));
-};
-
-export const onVerify = () => (dispatch: Dispatch, getState: GetState) => {
-    const { method } = getState();
-    if (!method) throw new Error('method not specified');
-
-    const verifyMethodValues = {
-        address: method.response.payload.address,
-        signature: method.response.payload.signature,
-        coin: method.params.coin,
-        message: method.params.message,
-        hex: undefined,
-        publicKey: undefined,
-    } as any;
-
-    // ethereum extra field
-    if ('hex' in method.params) {
-        verifyMethodValues.hex = method.params.hex;
-    }
-
-    method.fields.forEach((f: any) => {
-        if (verifyMethodValues[f.name]) {
-            dispatch(onFieldChange(f, verifyMethodValues[f.name]));
-        }
-    });
 };
 
 export const onCodeChange = (value: string) => (dispatch: Dispatch, getState: GetState) => {

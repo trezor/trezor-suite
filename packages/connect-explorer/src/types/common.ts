@@ -13,7 +13,6 @@ export interface FieldCommon {
     path?: FieldPath;
     name: string;
     optional?: boolean;
-    omit?: boolean;
 }
 
 export interface FieldBasic<Value> extends FieldCommon {
@@ -24,7 +23,6 @@ export interface FieldBasic<Value> extends FieldCommon {
         | 'checkbox'
         | 'textarea'
         | 'number'
-        | 'address'
         | 'json'
         | 'function'
         | 'file';

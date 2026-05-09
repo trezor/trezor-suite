@@ -10,7 +10,6 @@ import type { Field } from './common';
 export const SET_METHOD = 'method_set';
 export const SET_SCHEMA = 'schema_set';
 export const FIELD_CHANGE = 'method_field_change';
-export const FIELD_DATA_CHANGE = 'method_field_data_change';
 export const ADD_BATCH = 'method_add_batch';
 export const REMOVE_BATCH = 'method_remove_batch';
 export const SET_UNION = 'method_set_union';
@@ -29,7 +28,6 @@ export type MethodAction =
     | { type: typeof SET_METHOD; methodConfig: any }
     | { type: typeof SET_SCHEMA; method: keyof TrezorConnectType; schema: TSchema }
     | { type: typeof FIELD_CHANGE; field: Field<any>; value: any }
-    | { type: typeof FIELD_DATA_CHANGE; field: Field<any>; data: any }
     | { type: typeof ADD_BATCH; field: Field<any>; item: any }
     | { type: typeof REMOVE_BATCH; field: Field<any>; batch: any[] }
     | { type: typeof SET_UNION; field: Field<any>; current: any }

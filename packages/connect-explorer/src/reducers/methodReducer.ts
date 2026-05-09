@@ -10,7 +10,6 @@ import type { MethodAction, TrezorConnectAction } from '../types/actions';
 import {
     ADD_BATCH,
     FIELD_CHANGE,
-    FIELD_DATA_CHANGE,
     REMOVE_BATCH,
     RESPONSE,
     SET_MANUAL_MODE,
@@ -59,16 +58,6 @@ const onFieldChange = (state: MethodState, _field: Field<any>, value: any) => {
     }
 
     return updateParams({ ...state, fields: newState.fields });
-};
-
-// Update field data
-const onFieldDataChange = (state: MethodState, _field: Field<any>, data: any) => {
-    const newState = state;
-    const field = findField(newState, _field);
-    if (!field || !isFieldBasic(field)) return state;
-    field.data = data;
-
-    return updateParams(newState);
 };
 
 // Add new batch
@@ -120,9 +109,6 @@ export default function method(state: MethodState = initialState, action: Action
         case FIELD_CHANGE:
             return onFieldChange(state, action.field, action.value);
 
-        case FIELD_DATA_CHANGE:
-            return onFieldDataChange(state, action.field, action.data);
-
         case ADD_BATCH:
             return onAddBatch(state, action.field, action.item);
 
@@ -135,7 +121,6 @@ export default function method(state: MethodState = initialState, action: Action
         case RESPONSE:
             return {
                 ...state,
-                tab: 'response',
                 response: action.response,
             };
 

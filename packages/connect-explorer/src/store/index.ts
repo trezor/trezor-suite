@@ -11,16 +11,8 @@ const middleware = [thunk, trezorConnectMiddleware] as Middleware<Dispatch, AppS
 
 let composedEnhancers: any;
 if (process.env.NODE_ENV === 'development') {
-    const excludeLogger = (_getState: any, action: any): boolean => {
-        const excluded: Array<string> = ['LOG_TO_EXCLUDE', 'log__add'];
-        const pass: Array<string> = excluded.filter(act => action.type === act);
-
-        return pass.length === 0;
-    };
-
     const logger = createLogger({
         level: 'info',
-        predicate: excludeLogger,
         collapsed: true,
     });
 
