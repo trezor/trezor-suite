@@ -20,9 +20,8 @@ export const useNotificationForDisconnectedDevice = () => {
         const deviceId = selectedDevice?.id;
 
         if (deviceId) {
-            const isNotificationSeenOnThisDevice = seenDisconnectNotificationForDeviceIds
-                ? seenDisconnectNotificationForDeviceIds.some(id => id === selectedDevice?.id)
-                : false;
+            const isNotificationSeenOnThisDevice =
+                seenDisconnectNotificationForDeviceIds?.includes(deviceId) ?? false;
 
             const isNotificationVisible =
                 recentlyDisconnectedDevice === deviceId &&

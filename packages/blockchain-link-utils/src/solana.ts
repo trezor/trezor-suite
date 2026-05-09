@@ -32,7 +32,7 @@ import type {
     TokenProgramName,
 } from '@trezor/coins-solana/types';
 import { isCodesignBuild } from '@trezor/env-utils';
-import { arrayPartition } from '@trezor/utils';
+import { arrayPartition, isArrayMember } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 export type ApiTokenAccount = {
@@ -71,7 +71,7 @@ export const getTokenNameAndSymbol = (mint: string, tokenDetailByMint: TokenDeta
 };
 
 const isTokenProgramName = (programName: string): programName is TokenProgramName =>
-    tokenProgramNames.some(name => name === programName);
+    isArrayMember(programName, tokenProgramNames);
 
 export const tokenStandardToTokenProgramName = (standard: TokenStandard): TokenProgramName => {
     const tokenProgram = Object.entries(tokenProgramsInfo).find(

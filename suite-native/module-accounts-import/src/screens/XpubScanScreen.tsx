@@ -45,7 +45,7 @@ const isBtcTestnetXpub = (xpubAddress: string) => {
 
     const btcTestnetPrefixes = ['tpub', 'upub', 'vpub', 'Upub', 'Vpub'];
 
-    return btcTestnetPrefixes.some(prefix => prefix === xpub.slice(0, 4));
+    return btcTestnetPrefixes.includes(xpub.slice(0, 4));
 };
 
 export const XpubScanScreen = ({

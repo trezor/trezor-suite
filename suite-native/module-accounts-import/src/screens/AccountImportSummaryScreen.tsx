@@ -39,9 +39,7 @@ export const AccountImportSummaryScreen = ({
     );
     const supportedNetworks = useSelector(selectDiscoveryNetworkSymbols);
 
-    const isAccountImportSupported = supportedNetworks.some(
-        supportedSymbol => supportedSymbol === networkSymbol,
-    );
+    const isAccountImportSupported = supportedNetworks.includes(networkSymbol);
 
     if (!isAccountImportSupported) {
         return (

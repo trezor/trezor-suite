@@ -3,6 +3,7 @@
  */
 import { isMacOs, isWindows } from '@trezor/env-utils';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
+import { isArrayMember } from '@trezor/utils';
 
 import { restartApp } from '../libs/app-utils';
 import { initConnectPopupResponseHandler } from '../libs/connect-popup-messages';
@@ -70,10 +71,7 @@ export const initBackground: ModuleInitBackground = ({
             validateIpcMessage({ ipcEvent });
             try {
                 // Use deeplink URLs for trading redirects on macOS/Windows only
-                if (
-                    TRADING_REDIRECT_PATHS.some(path => path === pathname) &&
-                    (isMacOs() || isWindows())
-                ) {
+                if (isArrayMember(pathname, TRADING_REDIRECT_PATHS) && (isMacOs() || isWindows())) {
                     receiver.activateRoute(pathname);
 
                     return `trezorsuite:/${pathname}`;

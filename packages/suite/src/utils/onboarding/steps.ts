@@ -79,9 +79,7 @@ export const isStepUsed = (step: Step, props: IsStepUsedProps): boolean => {
         return true;
     }
 
-    return onboardingPath.every((pathMember: AnyPath) =>
-        step.path?.some((stepPathMember: AnyPath) => stepPathMember === pathMember),
-    );
+    return onboardingPath.every((pathMember: AnyPath) => step.path?.includes(pathMember));
 };
 
 export const isStepCategoryUsed = (stepCategory: StepCategory, props: IsStepUsedProps): boolean =>
