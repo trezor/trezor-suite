@@ -16,7 +16,7 @@ function fileExistsWithCaseSync(filepath: string) {
         return true;
     }
     const filenames = fs.readdirSync(dir);
-    if (filenames.indexOf(path.basename(filepath)) === -1) {
+    if (!filenames.includes(path.basename(filepath))) {
         return false;
     }
 

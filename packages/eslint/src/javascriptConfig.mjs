@@ -56,6 +56,12 @@ export const javascriptConfig = [
                     selector:
                         "CallExpression[callee.name='useSelector'] MemberExpression[object.name='state']:matches([property.type='Identifier'])",
                 },
+                {
+                    message:
+                        'Use Array/String .includes() instead of .indexOf() comparison (e.g. `arr.indexOf(x) >= 0` → `arr.includes(x)`, `arr.indexOf(x) === -1` → `!arr.includes(x)`).',
+                    selector:
+                        "BinaryExpression[left.type='CallExpression'][left.callee.type='MemberExpression'][left.callee.property.name='indexOf']:matches([operator='>='][right.value=0], [operator='<'][right.value=0], [operator='>'][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1], [operator='==='][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1], [operator='!=='][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1], [operator='=='][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1], [operator='!='][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1])",
+                },
             ],
             'object-shorthand': [
                 'error',
