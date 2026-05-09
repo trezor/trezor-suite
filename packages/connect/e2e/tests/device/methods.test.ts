@@ -35,7 +35,7 @@ const getFixtures = () => {
     let subset = Object.values(fixtures);
     if (includedMethods) {
         const methodsArr = includedMethods.split(',');
-        subset = subset.filter(f => methodsArr.some(includedM => includedM === f.method));
+        subset = subset.filter(f => methodsArr.includes(f.method));
     } else if (excludedMethods) {
         const methodsArr = excludedMethods.split(',');
         subset = subset.filter(f => !methodsArr.includes(f.method));

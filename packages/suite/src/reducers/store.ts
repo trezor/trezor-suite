@@ -94,7 +94,7 @@ const getCustomMiddleware = (getExtra: () => ExtraDependencies | null) => {
             // https://redux-toolkit.js.org/api/createAsyncThunk#promise-lifecycle-actions
             !action?.meta?.requestId &&
             // explicitly excluded actions
-            !loggerExcludedActions.some(act => action.type === act);
+            !loggerExcludedActions.includes(action.type);
 
         const logger = createLogger({
             level: 'info',

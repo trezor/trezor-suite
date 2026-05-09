@@ -19,7 +19,7 @@ export const parseIdbVersion = (raw: string): VersionInfo => {
         .split('.')
         .map(part => part.trim());
 
-    if ((parts.length !== 3 && parts.length !== 4) || parts.some(part => part === '')) {
+    if ((parts.length !== 3 && parts.length !== 4) || parts.includes('')) {
         throw new Error(
             `Invalid IDB version: "${raw}". Expected "major.minor.patch" or "major.minor.patch.revision".`,
         );
