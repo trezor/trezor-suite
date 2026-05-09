@@ -92,10 +92,6 @@ export class ThreadProxy<_Target extends object> {
         this.lifecycle.on(event, listener);
     }
 
-    unwatch(event: LifecycleEvent) {
-        this.lifecycle.removeAllListeners(event);
-    }
-
     /** Removes all the listeners and kills the process (ignoring possible `keepAlive`) */
     dispose() {
         this.lifecycle.emit('disposed');
