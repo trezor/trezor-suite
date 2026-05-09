@@ -223,16 +223,6 @@ export abstract class BaseProcess {
         });
     }
 
-    /**
-     * Restart the process
-     * @param force Force the restart
-     */
-    async restart() {
-        this.logger.info(this.logTopic, 'Restarting');
-        await this.stop();
-        await this.start();
-    }
-
     private onError(err: Error) {
         this.logger.error(this.logTopic, err.message);
     }
