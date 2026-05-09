@@ -165,18 +165,6 @@ export const estimatePhaseDeadline = (round: Round) => {
     return phaseDeadline;
 };
 
-export const findNearestDeadline = (rounds: Round[]) => {
-    const now = Date.now();
-    const deadlines = rounds.map(r => {
-        const phaseDeadline = estimatePhaseDeadline(r);
-        const timeLeft = phaseDeadline ? new Date(phaseDeadline).getTime() - now : 0;
-
-        return timeLeft > 0 ? timeLeft : now;
-    });
-
-    return Math.min(...deadlines);
-};
-
 // get relevant round data from the most recent round
 const getDataFromRounds = (rounds: Round[]) => {
     const lastRound = rounds.at(-1);
