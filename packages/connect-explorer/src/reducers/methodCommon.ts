@@ -12,7 +12,6 @@ export interface MethodState {
     params: Record<string, unknown>;
     response?: unknown;
     javascriptCode?: string;
-    addressValidation?: boolean;
     schema?: TSchema;
     manualMode?: boolean;
     processing: boolean;
@@ -25,7 +24,6 @@ export const initialState: MethodState = {
     params: {},
     javascriptCode: undefined,
     response: undefined,
-    addressValidation: false,
     manualMode: false,
     processing: false,
 };
@@ -33,9 +31,6 @@ export const initialState: MethodState = {
 // Converts the fields into a params object
 export const getParam = (field: FieldBasic<any>, $params: Record<string, any> = {}) => {
     const params = $params;
-    if (field.omit) {
-        return params;
-    }
     if (
         field.optional &&
         ((!field.value && field.value !== 0 && field.value !== false) || field.value === '')

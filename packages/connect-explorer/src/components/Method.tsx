@@ -34,11 +34,9 @@ import {
 interface Props {
     actions: {
         onSubmit: typeof methodActions.onSubmit;
-        onVerify: typeof methodActions.onVerify;
         onBatchAdd: typeof methodActions.onBatchAdd;
         onBatchRemove: typeof methodActions.onBatchRemove;
         onFieldChange: typeof methodActions.onFieldChange;
-        onFieldDataChange: typeof methodActions.onFieldDataChange;
         onSetUnion: typeof methodActions.onSetUnion;
     };
 }
@@ -102,9 +100,6 @@ export const getField = (field: Field<any> | FieldWithBundle<any>, props: Props)
                     onChange={props.actions.onFieldChange}
                 />
             );
-        case 'address':
-            return <Input key={field.name} field={field} onChange={props.actions.onFieldChange} />;
-
         case 'checkbox':
             return (
                 <Checkbox
@@ -214,24 +209,6 @@ const Sticky = styled.div`
     width: 100%;
 `;
 
-interface VerifyButtonProps {
-    onClick: (url: string) => void;
-    name: string;
-}
-
-export const VerifyButton = ({ name, onClick }: VerifyButtonProps) => {
-    const signMethods = ['signMessage', 'ethereumSignMessage'];
-    const verifyUrls = ['/method/verifyMessage', '/method/ethereumVerifyMessage'];
-    const index = signMethods.indexOf(name);
-    if (index < 0) return null;
-
-    return (
-        <Button margin={{ top: 12 }} onClick={() => onClick(verifyUrls[index])}>
-            Verify response
-        </Button>
-    );
-};
-
 type SubmitButtonProps = {
     onClick: ButtonProps['onClick'];
     isLoading: boolean;
@@ -250,11 +227,9 @@ export const Method = () => {
     const actions = useActions({
         onSubmit: methodActions.onSubmit,
         onCancelCall: methodActions.onCancelCall,
-        onVerify: methodActions.onVerify,
         onBatchAdd: methodActions.onBatchAdd,
         onBatchRemove: methodActions.onBatchRemove,
         onFieldChange: methodActions.onFieldChange,
-        onFieldDataChange: methodActions.onFieldDataChange,
         onSetUnion: methodActions.onSetUnion,
         onCodeChange: methodActions.onCodeChange,
     });
@@ -356,9 +331,6 @@ export const Method = () => {
                             <CopyToClipboard getValue={() => JSON.stringify(response, null, 2)} />
                         </CopyWrapper>
                         {json}
-                        {/*response && response.success && (
-                            <VerifyButton name={name} onClick={onVerify} />
-                        )*/}
                     </Container>
                 </Sticky>
             </div>

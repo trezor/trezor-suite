@@ -39,7 +39,6 @@ export const Settings = () => {
         {
             name: 'coreMode',
             type: 'select' as const,
-            key: 'coreMode',
             value: coreMode || 'auto',
             data: [
                 { value: 'auto', label: 'Auto' },
