@@ -22,7 +22,6 @@ import {
     filterQuotesAccordingTags,
     getDefaultCountry,
     getDefaultCountrySubdivision,
-    getTagAndInfoNote,
     getTradingFormState,
     getTradingPaymentMethods,
     getTradingQuotesByPaymentMethod,
@@ -66,39 +65,6 @@ describe('mapTestnetCryptoCurrency', () => {
             expect(mapTestnetSymbol(symbol)).toStrictEqual(expectedValue);
         },
     );
-});
-
-describe('getTagAndInfoNote', () => {
-    it('should return tag and info not from passed data', () => {
-        expect(getTagAndInfoNote({})).toStrictEqual({ infoNote: '', tag: '' });
-        expect(getTagAndInfoNote({ infoNote: '' })).toStrictEqual({ infoNote: '', tag: '' });
-        expect(getTagAndInfoNote({ infoNote: 'Foo' })).toStrictEqual({ infoNote: 'Foo', tag: '' });
-        expect(getTagAndInfoNote({ infoNote: ' #Foo' })).toStrictEqual({
-            infoNote: '',
-            tag: 'Foo',
-        });
-        expect(getTagAndInfoNote({ infoNote: 'Foo#Bar' })).toStrictEqual({
-            infoNote: 'Foo#Bar',
-            tag: '',
-        });
-        expect(getTagAndInfoNote({ infoNote: '#Foo' })).toStrictEqual({ infoNote: '', tag: 'Foo' });
-        expect(getTagAndInfoNote({ infoNote: '# Foo' })).toStrictEqual({
-            infoNote: '',
-            tag: ' Foo',
-        });
-        expect(getTagAndInfoNote({ infoNote: '##Bar' })).toStrictEqual({
-            infoNote: 'Bar',
-            tag: '',
-        });
-        expect(getTagAndInfoNote({ infoNote: '#Foo#Bar' })).toStrictEqual({
-            infoNote: 'Bar',
-            tag: 'Foo',
-        });
-        expect(getTagAndInfoNote({ infoNote: '  #Foo#Bar \t' })).toStrictEqual({
-            infoNote: 'Bar',
-            tag: 'Foo',
-        });
-    });
 });
 
 describe('filterQuotesAccordingTags', () => {

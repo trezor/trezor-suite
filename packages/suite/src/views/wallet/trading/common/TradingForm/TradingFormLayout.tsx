@@ -11,7 +11,6 @@ import { useSelector } from 'src/hooks/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { ContentFlex } from 'src/support/suite/ContentFlex';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
-import { TradingFeaturedOffers } from 'src/views/wallet/trading/common/TradingFeaturedOffers/TradingFeaturedOffers';
 import { TradingFormOffer } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer';
 
 import { ReceiveAddressModalControlsProvider } from '../TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
@@ -41,7 +40,6 @@ export const TradingFormLayout = ({ children }: TradingFormLayoutProps) => {
                 </ReceiveAddressModalControlsProvider>
             </form>
             <ContextMessage context={Context.getLegal('gateway')} />
-            <TradingFeaturedOffers />
         </Column>
     );
 };
