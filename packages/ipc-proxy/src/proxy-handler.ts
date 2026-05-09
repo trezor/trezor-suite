@@ -149,11 +149,9 @@ export const createIpcProxyHandler = <Api extends EventEmitterApi>(
 
     return () => {
         // TODO: walk thru all instances, disable, remove listeners, remove references
-        const unregistered = [];
         ipcMain.eventNames().forEach(name => {
             if (typeof name === 'string' && name.startsWith(`${channel}/`)) {
                 ipcMain.removeAllListeners(name);
-                unregistered.push(name);
             }
         });
 
