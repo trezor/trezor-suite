@@ -74,6 +74,8 @@
 
 /packages/styles @trezor/suite-growth
 
+/packages/dom-utils @trezor/suite-growth
+
 /suite/src/messages.ts @pavelmario
 
 /suite-common/graph @trezor/suite-mobile
