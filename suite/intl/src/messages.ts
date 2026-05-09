@@ -1178,20 +1178,6 @@ export const messages = defineMessages({
         defaultMessage: 'Decentralized exchange',
         dynamic: true,
     },
-    TR_TRADING_FEATURED_OFFERS_HEADING: {
-        defaultMessage: 'Featured offers',
-        id: 'TR_TRADING_FEATURED_OFFERS_HEADING',
-    },
-    TR_TRADING_FEATURED_OFFER_PAYMENT_METHOD_BUY_LABEL: {
-        defaultMessage: 'Payment:',
-        id: 'TR_TRADING_FEATURED_OFFER_PAYMENT_METHOD_BUY_LABEL',
-        dynamic: true,
-    },
-    TR_TRADING_FEATURED_OFFER_PAYMENT_METHOD_SELL_LABEL: {
-        defaultMessage: 'Payout method:',
-        id: 'TR_TRADING_FEATURED_OFFER_PAYMENT_METHOD_SELL_LABEL',
-        dynamic: true,
-    },
     TR_TRADING_NO_METHODS_AVAILABLE: {
         defaultMessage: 'No payout methods',
         id: 'TR_TRADING_NO_METHODS_AVAILABLE',
