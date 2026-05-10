@@ -9609,6 +9609,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_AMOUNT_TO_WITHDRAW',
         defaultMessage: 'Withdrawal amount',
     },
+    TR_EARN_YIELD_ENTER_AMOUNT_IN_TOKEN: {
+        id: 'TR_EARN_YIELD_ENTER_AMOUNT_IN_TOKEN',
+        defaultMessage: 'Enter amount in {tokenSymbol}',
+    },
     TR_EARN_YIELD_APPROVED_AMOUNT: {
         id: 'TR_EARN_YIELD_APPROVED_AMOUNT',
         defaultMessage: 'Approved amount',

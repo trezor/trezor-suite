@@ -29,7 +29,12 @@ export const YieldWithdrawForm = () => {
         isAmountEmpty,
         isAmountTooHigh,
         isSubmittingAction,
+        inputTokenSymbol,
+        otherUnitTokenSymbol,
+        canToggleWithdrawUnit,
+        withdrawInputUnit,
         setAmountInput,
+        toggleWithdrawInputUnit,
         submitAction,
         openPendingTransaction,
         flow,
@@ -114,9 +119,12 @@ export const YieldWithdrawForm = () => {
 
                         <YieldActionStep
                             flowType="withdraw"
-                            token={token}
+                            token={withdrawInputUnit === 'shares' ? receiptToken : token}
                             summaryValue={
-                                <FormattedCryptoAmount value={maxAmount} symbol={token.symbol} />
+                                <FormattedCryptoAmount
+                                    value={maxAmount}
+                                    symbol={inputTokenSymbol}
+                                />
                             }
                             warning={
                                 <YieldActionStepWarning isInsufficientFunds={isAmountTooHigh} />
@@ -131,6 +139,14 @@ export const YieldWithdrawForm = () => {
                             isDisabled={isAmountEmpty || isAmountTooHigh || isSubmittingAction}
                             isPending={isSubmittingAction}
                             pendingTransaction={withdrawPendingTransaction}
+                            unitToggle={
+                                canToggleWithdrawUnit
+                                    ? {
+                                          otherTokenSymbol: otherUnitTokenSymbol,
+                                          onClick: toggleWithdrawInputUnit,
+                                      }
+                                    : undefined
+                            }
                             onMaxClick={() => setAmountInput(maxAmount)}
                             onSubmit={handleOnWithdraw}
                             onPendingTxClick={openPendingTransaction}

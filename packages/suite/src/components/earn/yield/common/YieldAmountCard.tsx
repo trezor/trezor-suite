@@ -6,7 +6,7 @@ import type { TranslationKey } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { formInputsMaxLength } from '@suite-common/validators';
 import type { YieldFlowFormValues } from '@suite-common/wallet-core';
-import { Button, Card, Column, Row, Text } from '@trezor/components';
+import { Button, Card, Column, Row, Text, TextButton } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
@@ -21,10 +21,16 @@ type YieldAmountCardHeadingProps = {
     amountLabelTranslationId?: TranslationKey;
 };
 
+export type YieldAmountCardUnitToggleProps = {
+    otherTokenSymbol: string;
+    onClick: () => void;
+};
+
 type YieldAmountCardProps = {
     tokenSymbol: string;
     summary?: YieldAmountCardSummaryProps;
     heading?: YieldAmountCardHeadingProps;
+    unitToggle?: YieldAmountCardUnitToggleProps;
     warning?: ReactNode;
     isDisabled?: boolean;
 };
@@ -33,6 +39,7 @@ export const YieldAmountCard = ({
     tokenSymbol,
     summary,
     heading,
+    unitToggle,
     warning,
     isDisabled = false,
 }: YieldAmountCardProps) => {
@@ -51,6 +58,19 @@ export const YieldAmountCard = ({
                             }
                         />
                     </Text>
+                    {unitToggle && (
+                        <TextButton
+                            type="button"
+                            size="small"
+                            onClick={unitToggle.onClick}
+                            isUnderlined
+                        >
+                            <Translation
+                                id="TR_EARN_YIELD_ENTER_AMOUNT_IN_TOKEN"
+                                values={{ tokenSymbol: unitToggle.otherTokenSymbol }}
+                            />
+                        </TextButton>
+                    )}
                 </Row>
                 <NumberInput
                     name="amountInput"
