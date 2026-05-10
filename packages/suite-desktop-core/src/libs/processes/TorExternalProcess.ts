@@ -5,7 +5,6 @@ import { type Status } from './BaseProcess';
 export type TorProcessStatus = Status & { isBootstrapping?: boolean };
 
 export class TorExternalProcess {
-    isStopped = true;
     torController: TorControllerExternal;
     port: number;
     host: string;
@@ -35,12 +34,10 @@ export class TorExternalProcess {
     }
 
     public async start(): Promise<void> {
-        this.isStopped = false;
         await this.torController.waitUntilAlive();
     }
 
     public stop() {
         // We should not stop External Tor Process but ignore it.
-        this.isStopped = true;
     }
 }
