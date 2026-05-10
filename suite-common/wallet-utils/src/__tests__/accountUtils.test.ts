@@ -17,7 +17,6 @@ import {
     hasNetworkFeatures,
     isTestnet,
     parseBIP44Path,
-    readUtxoOutpoint,
     sortByBIP44AddressIndex,
     sortByCoin,
     substituteBip43Path,
@@ -263,21 +262,13 @@ describe('account utils', () => {
         expect(hasNetworkFeatures(ethAcc, ['tokens', 'rbf'])).toEqual(true);
     });
 
-    it('getUtxoOutpoint/readUtxoOutpoint', () => {
+    it('getUtxoOutpoint', () => {
         expect(
             getUtxoOutpoint({
                 txid: '0dac366fd8a67b2a89fbb0d31086e7acded7a5bbf9ef9daa935bc873229ef5b5',
                 vout: 1,
             }),
         ).toEqual('b5f59e2273c85b93aa9deff9bba5d7deace78610d3b0fb892a7ba6d86f36ac0d01000000');
-        expect(
-            readUtxoOutpoint(
-                'b5f59e2273c85b93aa9deff9bba5d7deace78610d3b0fb892a7ba6d86f36ac0d01000000',
-            ),
-        ).toEqual({
-            txid: '0dac366fd8a67b2a89fbb0d31086e7acded7a5bbf9ef9daa935bc873229ef5b5',
-            vout: 1,
-        });
     });
 
     it('sortByBIP44AddressIndex', () => {
