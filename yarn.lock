@@ -2434,12 +2434,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@electron/fuses@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@electron/fuses@npm:2.1.0"
+"@electron/fuses@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "@electron/fuses@npm:2.1.1"
   bin:
     electron-fuses: dist/bin.js
-  checksum: 10/478b12695807adc49af5c7619410d6401b7431828b7618441837ef192670dac73a3e7dc0762df47186898e759f85e48abfbe6fa2d1ca5e57d862b3ec27ac0b2b
+  checksum: 10/63f6fd359d3f6ea6e4e6b38c7b074d08cace9829822c47348c8c075b3d5997538225055217fb75d094a2540dd9c619d2dd5e11f79c558aa1fef9caf80fd7e4f8
   languageName: node
   linkType: hard
 
@@ -15936,7 +15936,7 @@ __metadata:
   dependencies:
     "@suite-common/platform-encryption": "workspace:*"
     "@trezor/type-utils": "workspace:*"
-    electron: "npm:41.0.4"
+    electron: "npm:41.3.0"
   languageName: unknown
   linkType: soft
 
@@ -15944,7 +15944,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop-core@workspace:packages/suite-desktop-core"
   dependencies:
-    "@electron/fuses": "npm:^2.1.0"
+    "@electron/fuses": "npm:^2.1.1"
     "@electron/notarize": "npm:3.1.1"
     "@sentry/electron": "npm:^7.10.0"
     "@sentry/webpack-plugin": "npm:^5.1.1"
@@ -15974,7 +15974,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/electron-localshortcut": "npm:^3.1.3"
     chalk: "npm:^5.6.2"
-    electron: "npm:41.0.4"
+    electron: "npm:41.3.0"
     electron-devtools-installer: "npm:^4.0.0"
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:11.0.2"
@@ -16038,7 +16038,7 @@ __metadata:
   resolution: "@trezor/suite-desktop@workspace:packages/suite-desktop"
   dependencies:
     blake-hash: "npm:^2.0.0"
-    electron: "npm:41.0.4"
+    electron: "npm:41.3.0"
     electron-builder: "npm:26.8.1"
     openpgp: "npm:^6.3.0"
     usb: "npm:^2.17.0"
@@ -22139,7 +22139,7 @@ __metadata:
   dependencies:
     "@trezor/connect": "workspace:*"
     "@trezor/eslint": "workspace:*"
-    electron: "npm:41.0.4"
+    electron: "npm:41.3.0"
     electron-builder: "npm:26.8.1"
   languageName: unknown
   linkType: soft
@@ -24417,16 +24417,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:41.0.4":
-  version: 41.0.4
-  resolution: "electron@npm:41.0.4"
+"electron@npm:41.3.0":
+  version: 41.3.0
+  resolution: "electron@npm:41.3.0"
   dependencies:
     "@electron/get": "npm:^2.0.0"
     "@types/node": "npm:^24.9.0"
     extract-zip: "npm:^2.0.1"
   bin:
     electron: cli.js
-  checksum: 10/2c5b42833917683281493e65e4bedee748c224d20271ceecb0ab89ee64884fb49133c12f615d4c57bbefcc34249f41e27b27a6f28dbbe29f0e492482200b0869
+  checksum: 10/ec6eb7d6a865f94ce8c1856d3cdea7fb654c8d8eaa08d20a8558f559a004cbc056bf88cc7d78bf5fe82502fefe3e29017b368c15109c5f5c1d6294a5720de4af
   languageName: node
   linkType: hard
 
