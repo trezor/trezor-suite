@@ -30,7 +30,6 @@
 abortcontroller-polyfill
 ajv
 bignumber.js
-bip66
 bitcoin-ops
 blake-hash
 bn.js

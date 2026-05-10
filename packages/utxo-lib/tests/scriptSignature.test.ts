@@ -55,11 +55,4 @@ describe('Script Signatures', () => {
             });
         });
     });
-
-    describe('toDER', () => {
-        it('returns the 1-byte 0x00 ZERO buffer when input is all zero bytes', () => {
-            const result = bscriptSig.toDER(Buffer.alloc(32, 0));
-            expect(result.equals(Buffer.from([0x00]))).toBe(true);
-        });
-    });
 });
