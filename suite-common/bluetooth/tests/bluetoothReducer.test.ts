@@ -1,14 +1,14 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { deviceActions } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { Device, asBluetoothDeviceId } from '@trezor/connect';
+import { type Device, asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { bluetoothActions } from '../src/bluetoothActions';
 import { prepareBluetoothReducerCreator, prepareInitialState } from '../src/bluetoothReducer';
-import { BluetoothDeviceCommon, BluetoothManufacturerData } from '../src/types';
+import type { BluetoothDeviceCommon, BluetoothManufacturerData } from '../src/types';
 
 const manufacturerData: BluetoothManufacturerData = {
     deviceModel: DeviceModelInternal.T3W1,

@@ -1,5 +1,5 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { StaticSessionId } from '@trezor/connect';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { StaticSessionId } from '@trezor/connect';
 
 import {
     Account,

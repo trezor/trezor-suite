@@ -1,6 +1,6 @@
 import { exec } from 'child_process';
 
-import { IntervalId } from '@trezor/type-utils';
+import type { IntervalId } from '@trezor/type-utils';
 
 export class NetworkAnalyzer {
     interval?: string | number | IntervalId;

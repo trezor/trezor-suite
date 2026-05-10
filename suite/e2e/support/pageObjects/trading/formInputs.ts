@@ -1,6 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 
-import { TradingCountryCode } from '@suite-common/trading';
+import type { TradingCountryCode } from '@suite-common/trading';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { calculatePercentageOfBalance, step } from '../../common';

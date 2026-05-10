@@ -1,6 +1,6 @@
 import { expect as detoxExpect } from 'detox';
 
-import { DeviceReducerState, deviceReducerInitialState } from '@suite-common/device';
+import { type DeviceReducerState, deviceReducerInitialState } from '@suite-common/device';
 import { Model } from '@trezor/trezor-user-env-link';
 
 import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';

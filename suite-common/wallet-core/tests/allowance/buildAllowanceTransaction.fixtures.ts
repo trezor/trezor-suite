@@ -1,5 +1,5 @@
-import { PrecomposedTransaction } from '@suite-common/wallet-types';
-import { FeeLevel, TokenInfo } from '@trezor/connect';
+import type { PrecomposedTransaction } from '@suite-common/wallet-types';
+import type { FeeLevel, TokenInfo } from '@trezor/connect';
 
 interface BuildAllowanceTransactionFixture {
     description: string;

@@ -1,7 +1,7 @@
 import { Locator, Page } from '@playwright/test';
 import { CryptoId } from 'invity-api';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { step } from '../../common';
 import { AssetPickerNetworkFilter, BuyAsset, SellAsset } from '../../types';

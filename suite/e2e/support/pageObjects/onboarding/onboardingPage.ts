@@ -2,7 +2,7 @@ import { Locator, Page, expect } from '@playwright/test';
 
 import { setFlag } from '@suite/flags';
 import { suiteSettingsActions } from '@suite/settings';
-import { BackupType } from '@suite-common/suite-types';
+import type { BackupType } from '@suite-common/suite-types';
 import { Model } from '@trezor/trezor-user-env-link';
 
 import { step } from '../../common';
