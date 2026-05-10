@@ -30,7 +30,6 @@
 @walletconnect/react-native-compat
 @walletconnect/types
 @walletconnect/utils
-base-x
 buffer
 cbor
 clsx

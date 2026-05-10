@@ -1,4 +1,4 @@
-import baseX from 'base-x';
+import { utils } from '@scure/base';
 import crc from 'crc';
 
 import * as cryptoUtils from './crypto/utils';
@@ -7,7 +7,7 @@ import type { Currency } from './currency-types';
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 
-const base32 = baseX(ALPHABET);
+const base32 = utils.chain(utils.radix(32), utils.alphabet(ALPHABET), utils.join(''));
 const regexp = new RegExp('^[' + ALPHABET + ']{56}$');
 const ed25519PublicKeyVersionByte = 6 << 3;
 
