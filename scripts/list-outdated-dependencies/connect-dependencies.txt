@@ -48,7 +48,6 @@ html-inline-script-webpack-plugin
 http-server
 intersection-observer
 json5
-jssha
 lodash
 match-sorter
 next
