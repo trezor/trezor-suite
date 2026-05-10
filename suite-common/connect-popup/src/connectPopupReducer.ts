@@ -205,6 +205,3 @@ export const selectIsConnectAppSilentModeByOrigin = (
 ) =>
     !!origin &&
     state.connectPopup.permissions.some(p => p.origin === origin && p.silentMode === true);
-
-export const selectWalletConnectAppPermissions = (state: ConnectPopupStateRootState) =>
-    state.connectPopup.permissions.filter(p => p.type === CALL_SOURCE_WALLETCONNECT);
