@@ -103,10 +103,12 @@ export const QrWithLaser = () => {
     const laserOpacity = useDerivedValue(() => interpolate(progress.value, [0, 0.5, 1], [0, 1, 0]));
 
     useEffect(() => {
-        progress.value = withRepeat(
-            withTiming(1, { duration: 1200, easing: Easing.bezier(0, 0, 0.3, 1) }),
-            ENDLESS_ANIMATION_VALUE,
-            false,
+        progress.set(
+            withRepeat(
+                withTiming(1, { duration: 1200, easing: Easing.bezier(0, 0, 0.3, 1) }),
+                ENDLESS_ANIMATION_VALUE,
+                false,
+            ),
         );
     }, [progress]);
 

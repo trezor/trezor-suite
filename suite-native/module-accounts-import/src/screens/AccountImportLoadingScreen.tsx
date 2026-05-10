@@ -65,7 +65,7 @@ export const AccountImportLoadingScreen = ({
 
                 // This is needed because handleResult calls safelyShowImportError, which calls handleResult,
                 // so one of them is always going to be used before it was defined. However, the functionality is fine here so it's not a problem.
-                // eslint-disable-next-line @typescript-eslint/no-use-before-define
+                // eslint-disable-next-line @typescript-eslint/no-use-before-define, react-hooks/immutability
                 handleResult();
             });
         },

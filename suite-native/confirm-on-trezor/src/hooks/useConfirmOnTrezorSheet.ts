@@ -52,12 +52,14 @@ export const useConfirmOnTrezorSheet = ({ controlRef }: Props) => {
         (index: number) => {
             'worklet';
             const targetY = snapPoints[index];
-            translateY.value = withSpring(targetY, {
-                damping: 20,
-                stiffness: 180,
-                mass: 1,
-            });
-            currentIndex.value = index;
+            translateY.set(
+                withSpring(targetY, {
+                    damping: 20,
+                    stiffness: 180,
+                    mass: 1,
+                }),
+            );
+            currentIndex.set(index);
         },
         [snapPoints, translateY, currentIndex],
     );
@@ -106,13 +108,11 @@ export const useConfirmOnTrezorSheet = ({ controlRef }: Props) => {
     const panGesture = Gesture.Pan()
         .enabled(!isFullscreen)
         .onStart(() => {
-            prevTranslationY.value = translateY.value;
+            prevTranslationY.set(translateY.value);
         })
         .onUpdate(e => {
-            translateY.value = clamp(
-                prevTranslationY.value + e.translationY,
-                snapPoints[1],
-                snapPoints[0],
+            translateY.set(
+                clamp(prevTranslationY.value + e.translationY, snapPoints[1], snapPoints[0]),
             );
         })
         .onEnd(e => {
