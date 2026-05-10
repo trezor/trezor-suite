@@ -13,7 +13,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@sentry/electron": "^7.10.0",
+        "@sentry/electron": "^7.11.0",
         "@suite/analytics": "workspace:*",
         "@suite/desktop-update": "workspace:*",
         "@suite/flags": "workspace:*",
