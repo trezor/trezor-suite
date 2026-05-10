@@ -101,15 +101,15 @@ export function toHex(arrayOfBytes: ArrayLike<number>): string {
     return hex;
 }
 
-export function sha256(payload: string, format: 'HEX' | 'TEXT' = 'HEX'): string {
-    const sha = new jsSHA('SHA-256', format);
+export function sha256(payload: string): string {
+    const sha = new jsSHA('SHA-256', 'HEX');
     sha.update(payload);
 
-    return sha.getHash(format);
+    return sha.getHash('HEX');
 }
 
-export function sha256x2(buffer: string, format: 'HEX' | 'TEXT' = 'HEX'): string {
-    return sha256(sha256(buffer, format), format);
+export function sha256x2(buffer: string): string {
+    return sha256(sha256(buffer));
 }
 
 export function sha256Checksum(payload: string): string {
