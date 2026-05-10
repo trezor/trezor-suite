@@ -45,7 +45,7 @@ export const getScriptPubKeyFromAddress = (
 };
 
 // check WabiSabi.scriptPubKey format by OP and return AllowedScriptType
-export const getScriptTypeFromScriptPubKey = (scriptPubKey: string): AllowedScriptTypes => {
+const getScriptTypeFromScriptPubKey = (scriptPubKey: string): AllowedScriptTypes => {
     if (scriptPubKey.startsWith('0 ')) {
         return 'P2WPKH';
     }
