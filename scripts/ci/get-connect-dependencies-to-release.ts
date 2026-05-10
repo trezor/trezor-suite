@@ -1,34 +1,30 @@
 // This script should check what packages from the repository have a higher version than in NPM
 // and stdout out those to be used by GitHub workflow.
 
-import fs from 'node:fs';
 import path from 'node:path';
-import util from 'node:util';
 import semver from 'semver';
 
 import {
     computePublishClosure,
     createReadWorkspaceDeps,
-    listWorkspacePackages,
+    getWorkspaceDirectoryMap,
+    readPackageJson,
 } from '@trezor/requirements';
 
 import { CONNECT_PUBLISH_ROOTS } from './connect-publish-roots';
 import { getNpmRemoteGreatestVersion } from './helpers';
 
-const readFile = util.promisify(fs.readFile);
-
 const ROOT = path.join(import.meta.dirname, '..', '..');
 const readWorkspaceDeps = createReadWorkspaceDeps(ROOT);
-const workspaces = listWorkspacePackages(ROOT);
+const workspaceDirs = getWorkspaceDirectoryMap(ROOT);
 
 const isPackageBumped = async (packageName: string): Promise<boolean> => {
-    const workspace = workspaces.get(`@trezor/${packageName}`);
-    if (workspace === undefined) {
+    const dir = workspaceDirs.get(`@trezor/${packageName}`);
+    if (dir === undefined) {
         throw new Error(`Closure references @trezor/${packageName} but no such workspace exists.`);
     }
 
-    const rawPackageJSON = await readFile(path.join(workspace.dir, 'package.json'), 'utf-8');
-    const { version: localVersion } = JSON.parse(rawPackageJSON);
+    const { version: localVersion } = readPackageJson<{ version: string }>(dir);
     const remoteGreatestVersion = await getNpmRemoteGreatestVersion(`@trezor/${packageName}`);
 
     // A missing remote version means the package was never published, so it needs releasing.
