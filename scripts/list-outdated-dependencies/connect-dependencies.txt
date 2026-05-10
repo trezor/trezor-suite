@@ -31,7 +31,6 @@
 @walletconnect/types
 @walletconnect/utils
 base-x
-browserify-bignum
 buffer
 cbor
 clsx
