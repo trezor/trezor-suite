@@ -29,7 +29,6 @@
 abortcontroller-polyfill
 ajv
 bignumber.js
-bitcoin-ops
 bn.js
 cashaddrjs
 event-target-shim

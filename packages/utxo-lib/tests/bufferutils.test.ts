@@ -23,6 +23,7 @@ describe('bufferutils', () => {
                 const d = bufferutils.readPushDataInt(buffer, 0);
                 const fopcode = parseInt(f.hexPD.substring(0, 2), 16);
 
+                if (d === null) throw new Error('expected non-null');
                 expect(d.opcode).toEqual(fopcode);
                 expect(d.number).toEqual(f.dec);
                 expect(d.size).toEqual(buffer.length);

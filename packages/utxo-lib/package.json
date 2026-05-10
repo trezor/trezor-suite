@@ -53,11 +53,9 @@
         "@scure/base": "^2.0.0",
         "@sinclair/typebox": "^0.34.49",
         "@trezor/utils": "workspace:*",
-        "bitcoin-ops": "^1.4.1",
         "bn.js": "5.2.3",
         "cashaddrjs": "0.4.4",
         "int64-buffer": "^1.1.0",
-        "pushdata-bitcoin": "^1.0.1",
         "varuint-bitcoin": "2.0.0",
         "wif": "^5.0.0"
     },

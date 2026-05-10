@@ -61,7 +61,6 @@ postcss
 postcss-cli
 postcss-import
 postcss-lightningcss
-pushdata-bitcoin
 react-inspector
 remark-gemoji
 remark-gfm
