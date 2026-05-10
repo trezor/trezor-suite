@@ -150,7 +150,7 @@
         "jest-environment-node": "^29.7.0",
         "jest-expo": "~55.0.9",
         "node-gyp": "12.2.0",
-        "nx": "^22.6.1",
+        "nx": "^22.7.0",
         "patch-package": "8.0.1",
         "prettier": "^3.8.3",
         "rimraf": "^6.1.2",
