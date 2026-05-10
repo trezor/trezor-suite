@@ -40,8 +40,6 @@ export const setAppInit = (deferred: Deferred<void> | undefined) => {
     appInit = deferred;
 };
 
-export const getAppInit = () => appInit;
-
 /**
  * Register the shared IPC handlers for connect-popup/response and connect-popup/ready.
  * Must be called exactly once, before any connect-popup calls are made.
