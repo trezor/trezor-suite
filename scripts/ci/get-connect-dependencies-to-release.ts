@@ -6,7 +6,11 @@ import util from 'node:util';
 import path from 'node:path';
 import semver from 'semver';
 
-import { computePublishClosure, createReadWorkspaceDeps } from '@trezor/requirements';
+import {
+    computePublishClosure,
+    createReadWorkspaceDeps,
+    listWorkspacePackages,
+} from '@trezor/requirements';
 
 import { getNpmRemoteGreatestVersion } from './helpers';
 
@@ -14,6 +18,7 @@ const readFile = util.promisify(fs.readFile);
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
 const readWorkspaceDeps = createReadWorkspaceDeps(ROOT);
+const workspaces = listWorkspacePackages(ROOT);
 
 // The connect distribution packages. Used both as BFS roots to compute the
 // @trezor/* dep closure, and as the exclude list for the output — these four
@@ -27,10 +32,12 @@ const readWorkspaceDeps = createReadWorkspaceDeps(ROOT);
 const CONNECT_PUBLISH_ROOTS = ['connect', 'connect-web', 'connect-mobile', 'connect-webextension'];
 
 const isPackageBumped = async (packageName: string): Promise<boolean> => {
-    const rawPackageJSON = await readFile(
-        path.join(ROOT, 'packages', packageName, 'package.json'),
-        'utf-8',
-    );
+    const workspace = workspaces.get(`@trezor/${packageName}`);
+    if (workspace === undefined) {
+        throw new Error(`Closure references @trezor/${packageName} but no such workspace exists.`);
+    }
+
+    const rawPackageJSON = await readFile(path.join(workspace.dir, 'package.json'), 'utf-8');
     const { version: localVersion } = JSON.parse(rawPackageJSON);
     const remoteGreatestVersion = await getNpmRemoteGreatestVersion(`@trezor/${packageName}`);
 
