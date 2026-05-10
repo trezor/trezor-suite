@@ -16723,7 +16723,6 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/utils": "workspace:*"
     cashaddrjs: "npm:0.4.4"
-    int64-buffer: "npm:^1.1.0"
     minimaldata: "npm:^1.0.2"
     varuint-bitcoin: "npm:2.0.0"
     wif: "npm:^5.0.0"
@@ -30066,13 +30065,6 @@ __metadata:
     strip-ansi: "npm:^6.0.0"
     through: "npm:^2.3.6"
   checksum: 10/052c6fce2d467343ced6500080b4b70eaf2ca996933fc3b5c9b0dd1ea275dd9c2a1070880f5f163f42bd13acf25c1ab8ab384444c1a413050db34aab69112583
-  languageName: node
-  linkType: hard
-
-"int64-buffer@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "int64-buffer@npm:1.1.0"
-  checksum: 10/00619b84074ae49468b903dc1426c919e0eec38d33b1a85d73e62b1214ea91e66d0fb2785a8a30cde6d7c9326c2a32d2155fcc5c2e1dc09b22733b0d5c8c2078
   languageName: node
   linkType: hard
 

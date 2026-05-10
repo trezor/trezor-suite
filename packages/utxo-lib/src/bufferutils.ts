@@ -5,7 +5,6 @@
 // - added `BufferWritter` "writeInt64", "writeUInt16" methods.
 // - `BufferWritter.writeUInt64` is accepting string or number.
 
-import { Int64LE } from 'int64-buffer';
 import * as varuint from 'varuint-bitcoin';
 
 import { bufferUtils } from '@trezor/utils';
@@ -14,6 +13,17 @@ import * as pushdata from './script/pushdata';
 import { BufferSchema, Type, UInt32, assertType } from './types/validation';
 
 const OUT_OF_RANGE_ERROR = 'value out of range';
+
+const UINT64_MAX = 2n ** 64n - 1n;
+const INT64_MIN = -(2n ** 63n);
+const INT64_MAX = 2n ** 63n - 1n;
+
+// `DataView` is used over `Buffer.writeBigInt64LE` / `writeBigUInt64LE` on purpose: the
+// browser Buffer polyfill (buffer@5.x, pulled in via node-stdlib-browser) does not implement
+// those methods, so calling them throws at runtime in Suite Web. `DataView.setBig(U)int64` is
+// a native ECMAScript API available in every supported browser and in Node.
+const dataViewOf = (buffer: Buffer) =>
+    new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength);
 
 export function verifuint(value: number, max: number) {
     if (typeof value !== 'number') throw new Error('cannot write a non-number as a number');
@@ -67,20 +77,28 @@ export function writeUInt64LEasString(buffer: Buffer, value: string | number, of
     if (typeof value !== 'string') {
         return writeUInt64LE(buffer, value, offset);
     }
-    const v = new Int64LE(value);
-    v.toBuffer().copy(buffer, offset);
+
+    if (value.trim() === '') {
+        throw new Error('cannot write an empty string as a number');
+    }
+
+    const bigintValue = BigInt(value);
+    if (bigintValue < 0n || bigintValue > UINT64_MAX) {
+        throw new RangeError(OUT_OF_RANGE_ERROR);
+    }
+
+    dataViewOf(buffer).setBigUint64(offset, bigintValue, true);
 
     return offset + 8;
 }
 
 export function writeInt64LE(buffer: Buffer, value: number, offset: number) {
-    const v = new Int64LE(value);
-    const a = v.toArray();
-    for (let i = 0; i < 8; i++) {
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const byte: number = a[i];
-        buffer.writeUInt8(byte, offset + i);
+    const bigintValue = BigInt(value);
+    if (bigintValue < INT64_MIN || bigintValue > INT64_MAX) {
+        throw new RangeError(OUT_OF_RANGE_ERROR);
     }
+
+    dataViewOf(buffer).setBigInt64(offset, bigintValue, true);
 
     return offset + 8;
 }
