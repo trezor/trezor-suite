@@ -25,14 +25,14 @@ export function usePanGesture({ enabled, holdDuration = 300 }: Config): Result {
                 .enabled(enabled)
                 .activateAfterLongPress(holdDuration)
                 .onChange(e => {
-                    x.value = e.x;
-                    y.value = e.y;
+                    x.set(e.x);
+                    y.set(e.y);
                 })
                 .onStart(() => {
-                    isPanGestureActive.value = true;
+                    isPanGestureActive.set(true);
                 })
                 .onEnd(() => {
-                    isPanGestureActive.value = false;
+                    isPanGestureActive.set(false);
                 }),
         [enabled, holdDuration, isPanGestureActive, x, y],
     );

@@ -158,7 +158,7 @@
         "tslib": "^2.6.2",
         "tsx": "^4.21.0",
         "typescript": "5.9.3",
-        "typescript-eslint": "^8.57.2",
+        "typescript-eslint": "^8.59.0",
         "version-bump-prompt": "^6.1.0"
     },
     "dependenciesMeta": {

@@ -89,6 +89,7 @@ export const ConfigProvider = ({
             );
         }
         validateMeta(pageOpts.pageMap);
+        // eslint-disable-next-line react-hooks/globals
         isValidated = true;
     }
     const extendedConfig: Config = {

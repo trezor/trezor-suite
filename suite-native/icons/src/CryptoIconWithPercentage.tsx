@@ -65,10 +65,12 @@ export const CryptoIconWithPercentage = ({
     const percentageFill = useDerivedValue(() => mix(animationProgress.value, 0, 0.999));
 
     useEffect(() => {
-        animationProgress.value = withTiming(percentage / 100, {
-            duration: 2000,
-            easing: Easing.ease,
-        });
+        animationProgress.set(
+            withTiming(percentage / 100, {
+                duration: 2000,
+                easing: Easing.ease,
+            }),
+        );
     }, [animationProgress, percentage]);
 
     return (

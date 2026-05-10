@@ -31,11 +31,11 @@ function HeadingLink({
     const observer = useIntersectionObserver();
     const obRef = useRef<HTMLAnchorElement>(null);
 
+    /* eslint-disable react-hooks/immutability */
     useEffect(() => {
         if (!id) return;
         const heading = obRef.current;
         if (!heading) return;
-        // eslint-disable-next-line react-hooks/immutability
         slugs.set(heading, [id, (context.index += 1)]);
         observer?.observe(heading);
 
@@ -50,6 +50,7 @@ function HeadingLink({
             });
         };
     }, [id, context, slugs, observer, setActiveAnchor]);
+    /* eslint-enable react-hooks/immutability */
 
     return (
         <Tag

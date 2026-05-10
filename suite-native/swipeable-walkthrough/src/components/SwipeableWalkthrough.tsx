@@ -29,9 +29,9 @@ export const SwipeableWalkthrough = ({
             translationY < -PAN_GESTURE_DETECTION_THRESHOLD &&
             currentStepIndex.value < totalSteps - 1
         ) {
-            currentStepIndex.value += 1;
+            currentStepIndex.set(value => value + 1);
         } else if (translationY > PAN_GESTURE_DETECTION_THRESHOLD && currentStepIndex.value > 0) {
-            currentStepIndex.value -= 1;
+            currentStepIndex.set(value => value - 1);
         }
     });
 

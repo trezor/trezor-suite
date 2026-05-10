@@ -232,7 +232,7 @@ export function AnimatedLineGraph<TEventPayload extends object>({
             path = createGraphPath(createGraphPathProps);
         }
 
-        commands.value = path.toCmds();
+        commands.set(path.toCmds());
 
         if (gradientPath != null) {
             const previous = gradientPaths.value;
@@ -241,14 +241,14 @@ export function AnimatedLineGraph<TEventPayload extends object>({
                 from = from.interpolate(previous.from, interpolateProgress.value) ?? from;
 
             if (gradientPath.isInterpolatable(from)) {
-                gradientPaths.value = {
+                gradientPaths.set({
                     from,
                     to: gradientPath,
-                };
+                });
             } else {
-                gradientPaths.value = {
+                gradientPaths.set({
                     to: gradientPath,
-                };
+                });
             }
         }
 
@@ -258,31 +258,33 @@ export function AnimatedLineGraph<TEventPayload extends object>({
             from = from.interpolate(previous.from, interpolateProgress.value) ?? from;
 
         if (path.isInterpolatable(from)) {
-            paths.value = {
+            paths.set({
                 from,
                 to: path,
-            };
+            });
         } else {
-            paths.value = {
+            paths.set({
                 to: path,
-            };
+            });
         }
 
         setCommandsChanged(commandsChanged + 1);
         setEventsWithCords(null);
 
-        interpolateProgress.value = 0;
-        interpolateProgress.value = withSpring(
-            1,
-            {
-                mass: 1,
-                stiffness: 500,
-                damping: 400,
-                velocity: 0,
-            },
-            () => {
-                runOnJS(calculateEventsPoints)();
-            },
+        interpolateProgress.set(0);
+        interpolateProgress.set(
+            withSpring(
+                1,
+                {
+                    mass: 1,
+                    stiffness: 500,
+                    damping: 400,
+                    velocity: 0,
+                },
+                () => {
+                    runOnJS(calculateEventsPoints)();
+                },
+            ),
         );
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
@@ -330,22 +332,24 @@ export function AnimatedLineGraph<TEventPayload extends object>({
 
     const stopPulsating = useCallback(() => {
         cancelAnimation(indicatorPulseAnimation);
-        indicatorPulseAnimation.value = 0;
+        indicatorPulseAnimation.set(0);
     }, [indicatorPulseAnimation]);
 
     const startPulsating = useCallback(() => {
-        indicatorPulseAnimation.value = withRepeat(
-            withDelay(
-                1000,
-                withSequence(
-                    withTiming(1, { duration: 1100 }),
-                    withTiming(0, { duration: 0 }), // revert to 0
-                    withTiming(0, { duration: 1200 }), // delay between pulses
-                    withTiming(1, { duration: 1100 }),
-                    withTiming(1, { duration: 2000 }), // delay after both pulses
+        indicatorPulseAnimation.set(
+            withRepeat(
+                withDelay(
+                    1000,
+                    withSequence(
+                        withTiming(1, { duration: 1100 }),
+                        withTiming(0, { duration: 0 }), // revert to 0
+                        withTiming(0, { duration: 1200 }), // delay between pulses
+                        withTiming(1, { duration: 1100 }),
+                        withTiming(1, { duration: 2000 }), // delay after both pulses
+                    ),
                 ),
+                -1,
             ),
-            -1,
         );
     }, [indicatorPulseAnimation]);
 
@@ -382,11 +386,11 @@ export function AnimatedLineGraph<TEventPayload extends object>({
             const y = getYForX(commands.value, fingerX);
 
             if (y != null) {
-                circleX.value = fingerX;
-                circleY.value = y;
+                circleX.set(fingerX);
+                circleY.set(y);
             }
 
-            if (isActive.value) pathEnd.value = fingerX / width;
+            if (isActive.value) pathEnd.set(fingerX / width);
         },
         // pathRange.x must be extra included in deps otherwise onPointSelected doesn't work, IDK why
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -395,12 +399,14 @@ export function AnimatedLineGraph<TEventPayload extends object>({
 
     const setIsActive = useCallback(
         (active: boolean) => {
-            indicatorRadius.value = withSpring(!active ? INDICATOR_RADIUS : 0, {
-                mass: 1,
-                stiffness: 1000,
-                damping: 50,
-                velocity: 0,
-            });
+            indicatorRadius.set(
+                withSpring(!active ? INDICATOR_RADIUS : 0, {
+                    mass: 1,
+                    stiffness: 1000,
+                    damping: 50,
+                    velocity: 0,
+                }),
+            );
 
             if (active) {
                 onGestureStart?.();
@@ -408,7 +414,7 @@ export function AnimatedLineGraph<TEventPayload extends object>({
             } else {
                 onGestureEnd?.();
                 pointSelectedIndex.current = undefined;
-                pathEnd.value = 1;
+                pathEnd.set(1);
                 startPulsating();
             }
         },
@@ -435,7 +441,7 @@ export function AnimatedLineGraph<TEventPayload extends object>({
     );
 
     useEffect(() => {
-        if (pointsInRange.length !== 0 && commands.value.length !== 0) pathEnd.value = 1;
+        if (pointsInRange.length !== 0 && commands.value.length !== 0) pathEnd.set(1);
     }, [commands, pathEnd, pointsInRange.length]);
 
     useEffect(() => {
