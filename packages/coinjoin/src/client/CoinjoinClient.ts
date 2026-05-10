@@ -280,10 +280,6 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
         };
     }
 
-    getRounds() {
-        return this.rounds.map(round => round.toSerialized());
-    }
-
     getRoundsInCriticalPhase() {
         return this.rounds.flatMap(round =>
             round.isInCriticalPhase() ? round.toSerialized() : [],
