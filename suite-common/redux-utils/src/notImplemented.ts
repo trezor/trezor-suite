@@ -29,12 +29,6 @@ export const notImplementedThunk = (type: string) =>
         return thunkPayload;
     });
 
-export const notImplementedOriginalReduxThunk = (type: string) => () => (thunkPayload: any) => {
-    mockedConsoleLog(`Calling not implemented thunk: ${type} and payload: `);
-
-    return thunkPayload;
-};
-
 export const notImplementedSelector =
     <TReturn>(name: string, mockedReturnValue: TReturn, selectorArgs: any = {}) =>
     () => {
