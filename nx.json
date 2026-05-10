@@ -53,6 +53,7 @@
         "lint:js": {
             "inputs": [
                 "{projectRoot}/**/*",
+                "!{projectRoot}/.eslintcache",
                 "{workspaceRoot}/eslint.config.mjs",
                 "{workspaceRoot}/packages/eslint/**/*"
             ],
