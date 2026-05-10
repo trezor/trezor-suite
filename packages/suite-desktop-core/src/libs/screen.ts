@@ -2,9 +2,9 @@ import { screen } from 'electron';
 
 export const MIN_WIDTH = 420;
 export const MIN_HEIGHT = 420;
-export const MAX_WIDTH = 1920;
-export const MAX_HEIGHT = 1080;
-export const WINDOW_SIZE_FACTOR = 0.8;
+const MAX_WIDTH = 1920;
+const MAX_HEIGHT = 1080;
+const WINDOW_SIZE_FACTOR = 0.8;
 
 export const getInitialWindowSize = () => {
     const { bounds } = screen.getPrimaryDisplay();
