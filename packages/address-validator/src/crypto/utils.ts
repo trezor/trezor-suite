@@ -1,4 +1,3 @@
-import BigNum from 'browserify-bignum';
 import groestl from 'groestl-hash-js';
 import jsSHA from 'jssha';
 
@@ -149,7 +148,19 @@ export function groestl512x2(hexString: string): string {
 }
 
 export function bigNumberToBuffer(bignumber: number | string, size?: number): Buffer {
-    return new BigNum(bignumber).toBuffer({ size, endian: 'big' });
+    const value = BigInt(bignumber);
+    if (value < 0n) {
+        throw new Error('converting negative numbers to Buffers not supported yet');
+    }
+
+    let hex = value.toString(16);
+    if (hex.length % 2) hex = '0' + hex;
+
+    const blockSize = size ?? 1;
+    const targetLength = Math.ceil(hex.length / (2 * blockSize)) * blockSize;
+    const padding = '0'.repeat(2 * targetLength - hex.length);
+
+    return Buffer.from(padding + hex, 'hex');
 }
 
 export const base58 = base58Decode;
