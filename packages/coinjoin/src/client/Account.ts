@@ -47,7 +47,6 @@ export class Account {
     maxRounds: number;
     skipRounds?: [number, number];
     skipRoundCounter = 0;
-    signedRounds: string[] = [];
     rawLiquidityClue: RawLiquidityClue;
 
     constructor(account: RegisterAccountParams, network: Network) {
