@@ -82,9 +82,9 @@
         "@trezor/type-utils": "workspace:*",
         "@types/jest": "29.5.12",
         "@types/node": "22.13.10",
-        "html-webpack-plugin": "5.6.6",
+        "html-webpack-plugin": "5.6.7",
         "tiny-worker": "^2.3.0",
-        "webpack": "5.105.4"
+        "webpack": "5.106.2"
     },
     "dependencies": {
         "@solana-program/compute-budget": "^0.8.0",
