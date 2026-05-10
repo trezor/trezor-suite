@@ -48,10 +48,6 @@ export class TorControllerExternal extends EventEmitter {
         this.options.port = port;
     }
 
-    public getTorConfiguration() {
-        return '';
-    }
-
     public async waitUntilAlive() {
         this.startBootstrap();
 
