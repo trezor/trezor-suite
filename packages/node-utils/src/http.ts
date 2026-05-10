@@ -311,10 +311,6 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         this.registerRoute(pathname, 'GET', handler);
     }
 
-    public delete(pathname: string, handler: AnyRequestHandler[]) {
-        this.registerRoute(pathname, 'DELETE', handler);
-    }
-
     /**
      * Register common handlers that are run for all requests before route handlers
      */

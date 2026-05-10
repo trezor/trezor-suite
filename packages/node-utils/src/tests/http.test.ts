@@ -861,40 +861,4 @@ describe('HttpServer', () => {
             expect(rootHandler).toHaveBeenCalled();
         });
     });
-
-    describe('DELETE route', () => {
-        test('DELETE route matches DELETE requests', async () => {
-            const handler = jest.fn((_request, response) => {
-                response.end('deleted');
-            });
-
-            server.delete('/resource', [handler]);
-            await server.start();
-            const { address, port } = server.getServerAddress();
-
-            const res = await fetch(`http://${address}:${port}/resource`, {
-                method: 'DELETE',
-            });
-
-            expect(res.status).toEqual(200);
-            await expect(res.text()).resolves.toEqual('deleted');
-            expect(handler).toHaveBeenCalled();
-        });
-
-        test('DELETE route does not match GET, POST, or PUT', async () => {
-            const handler = jest.fn((_request, response) => {
-                response.end('deleted');
-            });
-
-            server.delete('/resource', [handler]);
-            await server.start();
-            const { address, port } = server.getServerAddress();
-
-            for (const method of ['GET', 'POST', 'PUT']) {
-                const res = await fetch(`http://${address}:${port}/resource`, { method });
-                expect(res.status).toEqual(404);
-            }
-            expect(handler).not.toHaveBeenCalled();
-        });
-    });
 });
