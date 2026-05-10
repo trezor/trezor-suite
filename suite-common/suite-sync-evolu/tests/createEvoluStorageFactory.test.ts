@@ -1,12 +1,12 @@
-import { Run, testCreateWebSocket } from '@evolu/common';
-import { EvoluPlatformDeps } from '@evolu/common/local-first';
+import { type Run, testCreateWebSocket } from '@evolu/common';
+import type { EvoluPlatformDeps } from '@evolu/common/local-first';
 
 import {
-    SuiteSyncAccount,
-    SuiteSyncAddress,
-    SuiteSyncOutput,
-    SuiteSyncOwner,
-    SuiteSyncWallet,
+    type SuiteSyncAccount,
+    type SuiteSyncAddress,
+    type SuiteSyncOutput,
+    type SuiteSyncOwner,
+    type SuiteSyncWallet,
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,
 } from '@suite-common/suite-sync-storage';

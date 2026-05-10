@@ -1,9 +1,9 @@
 import { asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { BluetoothManufacturerData, prepareInitialState, prepareSelectAllDevices } from '../src';
-import { WithBluetoothState } from '../src/bluetoothSelectors';
-import { BluetoothDeviceCommon } from '../src/types';
+import { type BluetoothManufacturerData, prepareInitialState, prepareSelectAllDevices } from '../src';
+import type { WithBluetoothState } from '../src/bluetoothSelectors';
+import type { BluetoothDeviceCommon } from '../src/types';
 
 const manufacturerData: BluetoothManufacturerData = {
     deviceModel: DeviceModelInternal.T3W1,

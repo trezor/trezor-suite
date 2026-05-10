@@ -3,7 +3,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { createBluetoothDeviceCommon } from '../mocks';
 import { filterOutOldDuplicates } from '../src/filterOutOldDuplicates';
-import { BluetoothDeviceCommon } from '../src/types';
+import type { BluetoothDeviceCommon } from '../src/types';
 import type { BluetoothManufacturerData } from '../src/types';
 
 const mockedManufacturerData: BluetoothManufacturerData = {

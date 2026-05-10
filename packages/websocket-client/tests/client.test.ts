@@ -1,4 +1,4 @@
-import { ServerOptions, WebSocket, WebSocketServer } from 'ws';
+import { type ServerOptions, type WebSocket, WebSocketServer } from 'ws';
 
 import { WebsocketClient } from '../src/client';
 

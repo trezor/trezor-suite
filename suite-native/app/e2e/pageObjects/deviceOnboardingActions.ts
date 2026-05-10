@@ -1,4 +1,4 @@
-import { BackupType } from '@suite-common/suite-types';
+import type { BackupType } from '@suite-common/suite-types';
 import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import {

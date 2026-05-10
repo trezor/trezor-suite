@@ -2,8 +2,8 @@ import { CryptoId } from 'invity-api';
 import { RequireExactlyOne } from 'type-fest';
 
 import { AnalyticsDesktopEvents } from '@suite/analytics';
-import { NetworkConfigWithoutTestnets, NetworkSymbol } from '@suite-common/wallet-config';
-import { TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
+import type { NetworkConfigWithoutTestnets, NetworkSymbol } from '@suite-common/wallet-config';
+import type { TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 
 import { LaunchSuiteParams } from '../electron';
 

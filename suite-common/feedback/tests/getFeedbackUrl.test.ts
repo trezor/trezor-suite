@@ -1,6 +1,6 @@
 import { isCodesignBuild } from '@trezor/env-utils';
 
-import { FeedbackType } from '../src';
+import type { FeedbackType } from '../src';
 import { FEEDBACK_ENDPOINT, getFeedbackUrl } from '../src/getFeedbackUrl';
 
 jest.mock('@trezor/env-utils', () => ({

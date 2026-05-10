@@ -1,4 +1,4 @@
-import { EthValidatorsQueue, StakingBatch } from '@suite-common/earn-staking-api';
+import type { EthValidatorsQueue, StakingBatch } from '@suite-common/earn-staking-api';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import ETH_BASE_TX from '../../../fixtures/staking/eth-base-tx.json';

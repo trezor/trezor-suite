@@ -1,6 +1,6 @@
-import { SupportedLocaleCode } from '@suite-native/intl';
+import type { SupportedLocaleCode } from '@suite-native/intl';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { PROTO } from '@trezor/connect';
+import type { PROTO } from '@trezor/connect';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onTabBar } from './tabBarActions';

@@ -1,6 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { step } from '../common';
 import { DevicePrompt } from './devicePrompt';

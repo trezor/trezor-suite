@@ -4,7 +4,7 @@ import { readdirSync } from 'node:fs';
 import path from 'node:path';
 
 import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
-import { TradingCountryCode, regional } from '@suite-common/trading';
+import { type TradingCountryCode, regional } from '@suite-common/trading';
 import { getAccountDecimals, localizeNumber } from '@suite-common/wallet-utils';
 import { Model } from '@trezor/trezor-user-env-link';
 import { BigNumber, splitStringEveryNCharacters } from '@trezor/utils';

@@ -1,6 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 
-import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
+import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';

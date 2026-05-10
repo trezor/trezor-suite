@@ -1,4 +1,4 @@
-import { ComposeRequest } from '../src';
+import type { ComposeRequest } from '../src';
 import { validateAndParseRequest as validate } from '../src/compose/request';
 import * as NETWORKS from '../src/networks';
 

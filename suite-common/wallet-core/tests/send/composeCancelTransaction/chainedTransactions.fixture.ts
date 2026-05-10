@@ -1,4 +1,4 @@
-import { ChainedTransactions, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type ChainedTransactions, asAccountDescriptor } from '@suite-common/wallet-types';
 
 export const chainedTxsFixture: ChainedTransactions = {
     own: [

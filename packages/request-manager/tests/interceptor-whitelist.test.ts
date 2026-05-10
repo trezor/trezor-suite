@@ -4,7 +4,7 @@ import tls, { TLSSocket } from 'tls';
 import WebSocket from 'ws';
 
 import { createInterceptor } from '../src';
-import { InterceptorOptions } from '../src/types';
+import type { InterceptorOptions } from '../src/types';
 
 const WHITELISTED_DOMAIN = 'url-that-is-valid-and-white-listed-but-does-not-exists.com';
 const NOT_WHITELISTED_DOMAIN = 'not-white-listed-but-does-not-exists.com';

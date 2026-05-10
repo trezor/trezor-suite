@@ -1,4 +1,4 @@
-import { AnyDesc } from '@bufbuild/protobuf';
+import type { AnyDesc } from '@bufbuild/protobuf';
 
 import { ProtobufManager } from '../src/manager';
 

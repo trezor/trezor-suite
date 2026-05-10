@@ -2,8 +2,8 @@ import * as http from 'http';
 
 import { getFreePort } from '@trezor/node-utils';
 
-import { CoinjoinClientEvents } from '../../src/types/client';
-import { Logger } from '../../src/types/logger';
+import type { CoinjoinClientEvents } from '../../src/types/client';
+import type { Logger } from '../../src/types/logger';
 import { AFFILIATE_INFO, DEFAULT_ROUND, FEE_RATE_MEDIANS } from '../fixtures/round.fixture';
 
 // Mock coordinator and middleware responses
