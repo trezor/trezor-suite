@@ -8,7 +8,7 @@ import type {
 } from '@suite-common/wallet-core';
 import { Button, Column } from '@trezor/components';
 
-import { YieldAmountCard } from './YieldAmountCard';
+import { YieldAmountCard, type YieldAmountCardUnitToggleProps } from './YieldAmountCard';
 import { YieldPendingTransaction } from './YieldPendingTransaction';
 
 const actionStepTranslationMap = {
@@ -33,6 +33,7 @@ export type YieldActionStepProps = {
     warning?: ReactNode;
     networkFeeWarning?: ReactNode;
     pendingTransaction?: YieldPendingTransactionState;
+    unitToggle?: YieldAmountCardUnitToggleProps;
     onMaxClick?: () => void;
     onSubmit: () => void;
     onPendingTxClick: (txid: string) => void;
@@ -47,6 +48,7 @@ export const YieldActionStep = ({
     warning,
     networkFeeWarning,
     pendingTransaction,
+    unitToggle,
     onMaxClick,
     onSubmit,
     onPendingTxClick,
@@ -66,6 +68,7 @@ export const YieldActionStep = ({
                 heading={{
                     amountLabelTranslationId,
                 }}
+                unitToggle={pendingTransaction ? undefined : unitToggle}
                 warning={warning}
                 isDisabled={!!pendingTransaction}
             />

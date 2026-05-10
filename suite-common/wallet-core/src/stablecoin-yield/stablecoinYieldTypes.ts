@@ -4,13 +4,16 @@ import type { Account } from '@suite-common/wallet-types';
 
 export const YIELD_FLOW_TYPES = ['deposit', 'withdraw', 'claim'] as const;
 export const YIELD_FLOW_STEPS = ['approve', 'action', 'complete'] as const;
+export const YIELD_WITHDRAW_INPUT_UNITS = ['asset', 'shares'] as const;
 
 export type YieldFlowType = (typeof YIELD_FLOW_TYPES)[number];
 export type YieldActionFlowType = Exclude<YieldFlowType, 'claim'>;
 export type YieldFlowStepId = (typeof YIELD_FLOW_STEPS)[number];
+export type YieldWithdrawInputUnit = (typeof YIELD_WITHDRAW_INPUT_UNITS)[number];
 
 export type YieldFlowFormValues = {
     amountInput: string;
+    withdrawInputUnit: YieldWithdrawInputUnit;
 };
 
 export type YieldFlowDisplayToken = {
