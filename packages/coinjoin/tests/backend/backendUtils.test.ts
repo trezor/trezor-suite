@@ -1,6 +1,6 @@
-import { deriveAddresses as deriveAddressesOriginal, networks } from '@trezor/utxo-lib';
+import { deriveAddresses as deriveAddressesOriginal } from '@trezor/utxo-lib';
 
-import { deriveAddresses, doesTxContainAddress, isTaprootTx } from '../../src/backend/backendUtils';
+import { deriveAddresses, doesTxContainAddress } from '../../src/backend/backendUtils';
 import { SEGWIT_RECEIVE_ADDRESSES, SEGWIT_XPUB } from '../fixtures/methods.fixture';
 
 const PARAMS = [SEGWIT_XPUB, 'receive', 0, 10] as const;
@@ -48,16 +48,6 @@ describe('backendUtils', () => {
             expect(deriveAddresses(ADDRESSES.slice(0, 5), SEGWIT_XPUB, 'receive', 3, 5)).toEqual(
                 ADDRESSES.slice(3, 8),
             );
-        });
-    });
-
-    describe('isTaprootTx', () => {
-        it('taproot tx', () => {
-            expect(isTaprootTx(TAPROOT_TX, networks.regtest)).toBe(true);
-        });
-
-        it('non-taproot tx', () => {
-            expect(isTaprootTx(NON_TAPROOT_TX, networks.regtest)).toBe(false);
         });
     });
 

@@ -25,9 +25,6 @@ const doesAnyAddressFulfill = (
 export const isTaprootAddress = (address: string, network: Network) =>
     btcAddress.getAddressType(address, network) === 'p2tr';
 
-export const isTaprootTx = (tx: VinVoutAddressTx, network: Network) =>
-    doesAnyAddressFulfill(tx, address => isTaprootAddress(address, network));
-
 export const doesTxContainAddress = (address: string) => (tx: VinVoutAddressTx) =>
     doesAnyAddressFulfill(tx, addr => addr === address);
 
