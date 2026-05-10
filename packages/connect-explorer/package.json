@@ -58,10 +58,10 @@
         "babel-plugin-styled-components": "^2.1.4",
         "copy-webpack-plugin": "^14.0.0",
         "eslint-plugin-mdx": "^3.7.0",
-        "html-webpack-plugin": "5.6.6",
+        "html-webpack-plugin": "5.6.7",
         "rimraf": "^6.1.2",
         "typescript-styled-plugin": "^0.18.3",
-        "webpack": "5.105.4",
+        "webpack": "5.106.2",
         "webpack-cli": "^7.0.2"
     }
 }
