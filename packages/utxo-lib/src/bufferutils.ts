@@ -7,11 +7,11 @@
 
 import BN from 'bn.js';
 import { Int64LE } from 'int64-buffer';
-import pushdata from 'pushdata-bitcoin';
 import * as varuint from 'varuint-bitcoin';
 
 import { bufferUtils } from '@trezor/utils';
 
+import * as pushdata from './script/pushdata';
 import { BufferSchema, Type, UInt32, assertType } from './types/validation';
 
 const OUT_OF_RANGE_ERROR = 'value out of range';
@@ -109,22 +109,11 @@ export function cloneBuffer(buffer: Buffer): Buffer {
     return clone;
 }
 
-type PushDataSize = (len: number) => number;
-type ReadPushDataInt = (
-    buffer: Buffer,
-    offset: number,
-) => {
-    opcode: number;
-    number: number;
-    size: number;
-};
-type WritePushDataInt = (buffer: Buffer, number: number, offset: number) => number;
-
-export const pushDataSize: PushDataSize = pushdata.encodingLength;
-export const readPushDataInt: ReadPushDataInt = pushdata.decode;
+export const pushDataSize = pushdata.encodingLength;
+export const readPushDataInt = pushdata.decode;
 // export const varIntBuffer = varuint.encode; // TODO: not-used
 export const varIntSize = varuint.encodingLength;
-export const writePushDataInt: WritePushDataInt = pushdata.encode;
+export const writePushDataInt = pushdata.encode;
 export const { reverseBuffer, getChunkSize } = bufferUtils;
 
 /**

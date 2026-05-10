@@ -1,12 +1,12 @@
 // upstream: https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/ts_src/script.ts
 // differences:
-// - bitcoin-ops extended by decred codes.
+// - OP codes table extended by decred codes.
 
 import { DER } from '@noble/curves/abstract/weierstrass.js';
-import pushdata from 'pushdata-bitcoin';
 
 import * as ecc from '../noble-compatibility';
 import { OPS, REVERSE_OPS } from './ops';
+import * as pushdata from './pushdata';
 import * as scriptNumber from './scriptNumber';
 import * as scriptSignature from './scriptSignature';
 import type { Stack, StackElement } from '../types';

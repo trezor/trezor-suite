@@ -16690,12 +16690,10 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/bn.js": "npm:^5.2.0"
-    bitcoin-ops: "npm:^1.4.1"
     bn.js: "npm:5.2.3"
     cashaddrjs: "npm:0.4.4"
     int64-buffer: "npm:^1.1.0"
     minimaldata: "npm:^1.0.2"
-    pushdata-bitcoin: "npm:^1.0.1"
     varuint-bitcoin: "npm:2.0.0"
     wif: "npm:^5.0.0"
   peerDependencies:
@@ -20632,7 +20630,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bitcoin-ops@npm:^1.3.0, bitcoin-ops@npm:^1.4.1":
+"bitcoin-ops@npm:^1.3.0":
   version: 1.4.1
   resolution: "bitcoin-ops@npm:1.4.1"
   checksum: 10/3daa3303d6af49c0727041b5d7801a20c5806d00f1cc1afa2d53099974e30a7b1e7e9e578723dd25f5e120903f2725c595c0205d5d99a6578ad65213d74d806d

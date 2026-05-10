@@ -14,7 +14,7 @@ const isTrezorLibESMImport = src => trezorLibESMPattern.test(src);
 const externalCjsSubpaths = [];
 const isExternalCjsSubpath = src => externalCjsSubpaths.includes(src);
 
-const externalJsonImports = ['bitcoin-ops'];
+const externalJsonImports = [];
 
 /**
  * Babel plugin to rewrite import/export statements to their runtime ESM extensions.
