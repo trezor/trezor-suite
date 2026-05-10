@@ -25,14 +25,6 @@ export function info(res: UnknownPayload) {
     return success({ version, configured, protocolMessages });
 }
 
-export function version(res: UnknownPayload) {
-    if (!isString(res)) {
-        return error({ code: ERRORS.WRONG_RESULT_TYPE });
-    }
-
-    return success(res.trim());
-}
-
 export function devices(res: UnknownPayload) {
     if (isString(res)) {
         return error({ code: ERRORS.WRONG_RESULT_TYPE });
