@@ -19,7 +19,7 @@ export type TokenIconSetProps = {
     /**
      * If true, visible tokens will be displayed from the last token to the first.
      */
-    reverseVisibleTokens?: boolean;
+    isReversed?: boolean;
 };
 
 export const TokenIconSet = ({
@@ -30,16 +30,15 @@ export const TokenIconSet = ({
     maxVisibleIcons,
     isCountVisible = false,
     isCentered = false,
-    reverseVisibleTokens = true,
+    isReversed = true,
 }: TokenIconSetProps) => {
     const { length } = tokens;
 
     const visibleTokensContent = useMemo(() => {
         const visibleTokens =
-            maxVisibleIcons !== undefined ? tokens.slice(0, maxVisibleIcons) : [...tokens];
-        const orderedTokens = reverseVisibleTokens ? visibleTokens.reverse() : visibleTokens;
+            maxVisibleIcons !== undefined ? tokens.slice(0, maxVisibleIcons) : tokens;
 
-        return orderedTokens?.map(token => (
+        return visibleTokens.map(token => (
             <IconWrapper key={token.contract} $size={size} $gap={gap} $length={length}>
                 <AssetLogo
                     size={size}
@@ -50,7 +49,7 @@ export const TokenIconSet = ({
                 />
             </IconWrapper>
         ));
-    }, [tokens, maxVisibleIcons, reverseVisibleTokens, symbol, size, gap, length]);
+    }, [tokens, maxVisibleIcons, symbol, size, gap, length]);
 
     return (
         <IconSetBase
@@ -60,6 +59,7 @@ export const TokenIconSet = ({
             maxVisibleIcons={maxVisibleIcons}
             isCountVisible={isCountVisible}
             isCentered={isCentered}
+            isReversed={isReversed}
         >
             {visibleTokensContent}
         </IconSetBase>
