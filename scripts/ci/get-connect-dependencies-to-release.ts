@@ -6,7 +6,11 @@ import path from 'node:path';
 import util from 'node:util';
 import semver from 'semver';
 
-import { computePublishClosure, createReadWorkspaceDeps } from '@trezor/requirements';
+import {
+    computePublishClosure,
+    createReadWorkspaceDeps,
+    listWorkspacePackages,
+} from '@trezor/requirements';
 
 import { CONNECT_PUBLISH_ROOTS } from './connect-publish-roots';
 import { getNpmRemoteGreatestVersion } from './helpers';
@@ -15,12 +19,15 @@ const readFile = util.promisify(fs.readFile);
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
 const readWorkspaceDeps = createReadWorkspaceDeps(ROOT);
+const workspaces = listWorkspacePackages(ROOT);
 
 const isPackageBumped = async (packageName: string): Promise<boolean> => {
-    const rawPackageJSON = await readFile(
-        path.join(ROOT, 'packages', packageName, 'package.json'),
-        'utf-8',
-    );
+    const workspace = workspaces.get(`@trezor/${packageName}`);
+    if (workspace === undefined) {
+        throw new Error(`Closure references @trezor/${packageName} but no such workspace exists.`);
+    }
+
+    const rawPackageJSON = await readFile(path.join(workspace.dir, 'package.json'), 'utf-8');
     const { version: localVersion } = JSON.parse(rawPackageJSON);
     const remoteGreatestVersion = await getNpmRemoteGreatestVersion(`@trezor/${packageName}`);
 

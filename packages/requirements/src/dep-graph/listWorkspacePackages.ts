@@ -25,7 +25,10 @@ export type WorkspacePackageJson = {
 };
 
 export type WorkspacePackage = {
+    /** Absolute path to the workspace directory. */
     readonly dir: string;
+    /** Path relative to `repoRoot`, slash-separated (e.g. `packages/connect`, `suite/e2e`). */
+    readonly location: string;
     readonly packageJson: WorkspacePackageJson;
 };
 
@@ -45,13 +48,14 @@ export const listWorkspacePackages = (repoRoot: string): ReadonlyMap<string, Wor
     const result = new Map<string, WorkspacePackage>();
     for (const line of rawOutput.trim().split('\n').filter(Boolean)) {
         const workspace = JSON.parse(line) as YarnWorkspaceInfo;
-        const dir = join(repoRoot, workspace.location);
+        const location = workspace.location.replaceAll('\\', '/');
+        const dir = join(repoRoot, location);
         const packageJson = JSON.parse(
             readFileSync(join(dir, 'package.json'), 'utf-8'),
         ) as WorkspacePackageJson;
 
         if (packageJson.name) {
-            result.set(packageJson.name, { dir, packageJson });
+            result.set(packageJson.name, { dir, location, packageJson });
         }
     }
 
