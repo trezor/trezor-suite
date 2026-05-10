@@ -28,10 +28,10 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@noble/hashes": "^2.0.1",
         "@scure/base": "^2.0.0",
         "cbor": "^10.0.12",
-        "crc": "^3.8.0",
-        "jssha": "2.3.1"
+        "crc": "^3.8.0"
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*"

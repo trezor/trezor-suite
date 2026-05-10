@@ -1,4 +1,5 @@
-import jsSHA from 'jssha';
+import { sha256 as nobleSha256 } from '@noble/hashes/sha2.js';
+import { bytesToHex, hexToBytes } from '@noble/hashes/utils.js';
 
 import * as base32Module from './base32';
 import { decode as base58Decode } from './base58';
@@ -108,19 +109,16 @@ export function toHex(arrayOfBytes: ArrayLike<number>): string {
     return hex;
 }
 
-export function sha256(payload: string): string {
-    const sha = new jsSHA('SHA-256', 'HEX');
-    sha.update(payload);
-
-    return sha.getHash('HEX');
+export function sha256(hexPayload: string): string {
+    return bytesToHex(nobleSha256(hexToBytes(hexPayload)));
 }
 
-export function sha256x2(buffer: string): string {
-    return sha256(sha256(buffer));
+export function sha256x2(hexPayload: string): string {
+    return sha256(sha256(hexPayload));
 }
 
-export function sha256Checksum(payload: string): string {
-    return sha256(sha256(payload)).substr(0, 8);
+export function sha256Checksum(hexPayload: string): string {
+    return sha256(sha256(hexPayload)).substr(0, 8);
 }
 
 export function blake256(hexString: string): string {
