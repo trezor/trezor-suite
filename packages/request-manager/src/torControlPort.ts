@@ -29,7 +29,6 @@ export class TorControlPort {
     options: TorConnectionOptions;
     socket: Socket;
     isSocketConnected = false;
-    isCircuitDone = false;
     clientNonce = '';
 
     onMessageReceived: (message: string) => void;
