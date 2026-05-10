@@ -59,63 +59,63 @@ export const fixtures = {
     ],
     invalid: [
         {
-            exception: 'DER sequence length is too short',
+            exception: 'tlv.decode: wrong tlv',
             hex: 'ffffffffffffff01',
         },
         {
-            exception: 'DER sequence length is too long',
+            exception: 'tlv.decode: wrong tlv',
             hex: 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff01',
         },
         {
-            exception: 'Expected DER sequence',
+            exception: 'tlv.decode: wrong tlv',
             hex: '00ffff0400ffffff020400ffffff01',
         },
         {
-            exception: 'DER sequence length is invalid',
+            exception: 'tlv.decode(long): byte length is too big',
             hex: '30ff020400ffffff020400ffffff01',
         },
         {
-            exception: 'DER sequence length is invalid',
+            exception: 'invalid signature: left bytes after parsing',
             hex: '300c030400ffffff030400ffffff000001',
         },
         {
-            exception: 'Expected DER integer',
+            exception: 'tlv.decode: wrong tlv',
             hex: '300cff0400ffffff020400ffffff01',
         },
         {
-            exception: 'Expected DER integer (2)',
+            exception: 'tlv.decode: wrong tlv',
             hex: '300c020200ffffff020400ffffff01',
         },
         {
-            exception: 'R length is zero',
+            exception: 'invalid signature integer: empty',
             hex: '30080200020400ffffff01',
         },
         {
-            exception: 'S length is zero',
+            exception: 'invalid signature integer: empty',
             hex: '3008020400ffffff020001',
         },
         {
-            exception: 'R length is too long',
+            exception: 'tlv.decode(long): byte length is too big',
             hex: '300c02dd00ffffff020400ffffff01',
         },
         {
-            exception: 'S length is invalid',
+            exception: 'tlv.decode(long): byte length is too big',
             hex: '300c020400ffffff02dd00ffffff01',
         },
         {
-            exception: 'R value is negative',
+            exception: 'invalid signature integer: negative',
             hex: '300c020480000000020400ffffff01',
         },
         {
-            exception: 'S value is negative',
+            exception: 'invalid signature integer: negative',
             hex: '300c020400ffffff02048000000001',
         },
         {
-            exception: 'R value excessively padded',
+            exception: 'invalid signature integer: unnecessary leading zero',
             hex: '300c02040000ffff020400ffffff01',
         },
         {
-            exception: 'S value excessively padded',
+            exception: 'invalid signature integer: unnecessary leading zero',
             hex: '300c020400ffffff02040000ffff01',
         },
         {

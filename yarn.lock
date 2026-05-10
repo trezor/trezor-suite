@@ -16618,7 +16618,6 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/bn.js": "npm:^5.2.0"
-    bip66: "npm:^2.0.0"
     bitcoin-ops: "npm:^1.4.1"
     bn.js: "npm:5.2.3"
     cashaddrjs: "npm:0.4.4"
@@ -20558,13 +20557,6 @@ __metadata:
   dependencies:
     file-uri-to-path: "npm:1.0.0"
   checksum: 10/593d5ae975ffba15fbbb4788fe5abd1e125afbab849ab967ab43691d27d6483751805d98cb92f7ac24a2439a8a8678cd0131c535d5d63de84e383b0ce2786133
-  languageName: node
-  linkType: hard
-
-"bip66@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "bip66@npm:2.0.0"
-  checksum: 10/919b25d3ed2b9d774eefe550ae6e825e29e1aa450fc1af12e7cef39115a8bc867018b5aa3d8e68b459ec198decabfc1ebe2bdbae9edfdca61c97e862d1db098d
   languageName: node
   linkType: hard
 

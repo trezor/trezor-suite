@@ -2,7 +2,7 @@
 // differences:
 // - bitcoin-ops extended by decred codes.
 
-import * as bip66 from 'bip66';
+import { DER } from '@noble/curves/abstract/weierstrass.js';
 import pushdata from 'pushdata-bitcoin';
 
 import * as ecc from '../noble-compatibility';
@@ -205,7 +205,13 @@ export function isCanonicalScriptSignature(buffer: Buffer) {
     if (!isBuffer(buffer)) return false;
     if (!isDefinedHashType(buffer[buffer.length - 1])) return false;
 
-    return bip66.check(buffer.subarray(0, -1));
+    try {
+        DER.toSig(buffer.subarray(0, -1));
+
+        return true;
+    } catch {
+        return false;
+    }
 }
 
 export const number = scriptNumber;
