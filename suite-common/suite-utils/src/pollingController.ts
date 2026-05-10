@@ -38,8 +38,4 @@ export class PollingController {
         }
         this.start(callback, intervalMs);
     }
-
-    isScheduled() {
-        return this.intervalId !== null;
-    }
 }
