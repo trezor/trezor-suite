@@ -15,6 +15,11 @@ export type NetworkIconSetProps = {
     maxVisibleIcons?: number;
     isCountVisible?: boolean;
     isCentered?: boolean;
+    /**
+     * If true, visible networks will be displayed from the last network to the first.
+     * This affects stacking order when icons overlap.
+     */
+    isReversed?: boolean;
 };
 
 export const NetworkIconSet = ({
@@ -24,6 +29,7 @@ export const NetworkIconSet = ({
     maxVisibleIcons,
     isCountVisible = false,
     isCentered = false,
+    isReversed = true,
 }: NetworkIconSetProps) => {
     const { length } = networks;
 
@@ -46,6 +52,7 @@ export const NetworkIconSet = ({
             maxVisibleIcons={maxVisibleIcons}
             isCountVisible={isCountVisible}
             isCentered={isCentered}
+            isReversed={isReversed}
         >
             {visibleContent}
         </IconSetBase>

@@ -30,6 +30,7 @@ export const TokenIconSet: StoryObj<TokenIconSetProps> = {
         gap: 16,
         isCountVisible: false,
         isCentered: false,
+        isReversed: false,
     },
     argTypes: {
         tokens: {
@@ -66,6 +67,9 @@ export const TokenIconSet: StoryObj<TokenIconSetProps> = {
             control: 'boolean',
         },
         isCentered: {
+            control: 'boolean',
+        },
+        isReversed: {
             control: 'boolean',
         },
     },

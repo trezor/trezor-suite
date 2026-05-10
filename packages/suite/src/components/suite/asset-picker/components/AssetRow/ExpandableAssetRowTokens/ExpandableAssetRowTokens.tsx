@@ -79,7 +79,7 @@ export function ExpandableAssetRowTokens({
                                     gap={20}
                                     isCentered={false}
                                     isCountVisible
-                                    reverseVisibleTokens={false}
+                                    isReversed={false}
                                 />
                             )}
 

@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { Children, type ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
@@ -63,6 +63,8 @@ export const IconWrapper = styled.div<{ $size: number; $gap: number; $length: nu
     ${({ $size, $gap, $length }) =>
         $length > 1 &&
         css`
+            height: ${$size}px;
+
             &:not(:last-child) {
                 mask: radial-gradient(
                     circle at calc(50% + ${$gap}px) 50%,
@@ -94,6 +96,7 @@ export type IconSetBaseProps = {
     maxVisibleIcons?: number;
     isCountVisible?: boolean;
     isCentered?: boolean;
+    isReversed?: boolean;
     children: ReactNode;
 };
 
@@ -104,6 +107,7 @@ export const IconSetBase = ({
     maxVisibleIcons,
     isCountVisible = false,
     isCentered = false,
+    isReversed = false,
     children,
 }: IconSetBaseProps) => {
     const effectiveMaxVisibleIcons = maxVisibleIcons ?? count;
@@ -111,6 +115,9 @@ export const IconSetBase = ({
     if (count === 0) {
         return null;
     }
+
+    const childrenArray = Children.toArray(children);
+    const orderedChildren = isReversed ? childrenArray.reverse() : childrenArray;
 
     return (
         <Container
@@ -121,7 +128,7 @@ export const IconSetBase = ({
             $isCountVisible={isCountVisible}
             $isCentered={isCentered}
         >
-            {children}
+            {orderedChildren}
             {count > effectiveMaxVisibleIcons && isCountVisible && (
                 <CountContainer $size={size}>
                     <Text typographyStyle={mapSizeToTypographyStyle(size)} intent="neutral">
