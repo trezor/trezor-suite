@@ -15,6 +15,7 @@ import {
     type YieldFlowStepId,
     type YieldFlowToken,
     type YieldPendingTransactionState,
+    type YieldWithdrawInputUnit,
     handleYieldApproveCancelThunk,
     handleYieldApproveSuccessTxidThunk,
     initYieldAllowanceThunk,
@@ -65,8 +66,13 @@ export type UseYieldFlowResult = {
     receiptToken: YieldFlowDisplayToken | null;
     apy: number | null;
     suppliedAmount: string;
+    suppliedSharesAmount: string;
     flowKey: string;
     maxAmount: string;
+    withdrawInputUnit: YieldWithdrawInputUnit;
+    inputTokenSymbol: string;
+    otherUnitTokenSymbol: string;
+    canToggleWithdrawUnit: boolean;
     liveAmount: string;
     actionAmount: string | null;
     completedAmount: string;
@@ -86,6 +92,7 @@ export type UseYieldFlowResult = {
     isSubmittingApprove: boolean;
     isSubmittingAction: boolean;
     setAmountInput: (amount: string) => void;
+    toggleWithdrawInputUnit: () => void;
     submitApprovalAction: () => void;
     submitAction: () => void;
     revokeAllowance: () => void;
@@ -117,15 +124,17 @@ export const useYieldFlow = ({
     const methods = useForm<YieldFlowFormValues>({
         defaultValues: {
             amountInput: '',
+            withdrawInputUnit: 'asset',
         },
     });
     const methodsRef = useCurrentRef(methods);
     const initAllowancePromiseRef = useRef<{ abort: () => void } | null>(null);
 
-    const { vault, token, receiptToken, apy, suppliedAmount, flowKey } = useResolvedYieldFlowData({
-        account,
-        routeParams,
-    });
+    const { vault, token, receiptToken, apy, suppliedAmount, suppliedSharesAmount, flowKey } =
+        useResolvedYieldFlowData({
+            account,
+            routeParams,
+        });
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
     const feeInfo = useMemo(
         () =>
@@ -139,7 +148,25 @@ export const useYieldFlow = ({
 
     const session = useSelector(state => selectStablecoinYieldSession(state, flowType, flowKey));
 
-    const maxAmount = flowType === 'deposit' ? (token?.balance ?? '') : suppliedAmount;
+    const withdrawInputUnit = methods.watch('withdrawInputUnit');
+    const isSharesInput = flowType === 'withdraw' && withdrawInputUnit === 'shares';
+    const canToggleWithdrawUnit = flowType === 'withdraw' && !!token && !!receiptToken;
+
+    const getWithdrawMaxAmount = () => {
+        if (isSharesInput) {
+            return suppliedSharesAmount;
+        }
+
+        return suppliedAmount;
+    };
+    const maxAmount = flowType === 'deposit' ? (token?.balance ?? '') : getWithdrawMaxAmount();
+
+    const inputTokenSymbol = isSharesInput
+        ? (receiptToken?.symbol ?? '')
+        : (token?.symbol ?? '');
+    const otherUnitTokenSymbol = isSharesInput
+        ? (token?.symbol ?? '')
+        : (receiptToken?.symbol ?? '');
 
     useEffect(() => {
         if (!flowKey) {
@@ -153,7 +180,7 @@ export const useYieldFlow = ({
             dispatch(stablecoinYieldActions.skipApprovalStep({ flowType, flowKey }));
         }
 
-        methodsRef.current.reset({ amountInput: '' });
+        methodsRef.current.reset({ amountInput: '', withdrawInputUnit: 'asset' });
 
         return () => {
             dispatch(stablecoinYieldActions.disposeSession({ flowType, flowKey }));
@@ -225,7 +252,10 @@ export const useYieldFlow = ({
 
         if (prevStep !== null && prevStep !== nextStep) {
             if (prevStep === 'approve' && nextStep === 'action') {
-                methodsRef.current.reset({ amountInput: session.action.amount ?? '' });
+                methodsRef.current.reset({
+                    amountInput: session.action.amount ?? '',
+                    withdrawInputUnit: methodsRef.current.getValues('withdrawInputUnit'),
+                });
             }
 
             if (prevStep === 'action' && nextStep === 'approve') {
@@ -235,6 +265,7 @@ export const useYieldFlow = ({
                         actionAmount: session.action.amount,
                         maxAmount,
                     }),
+                    withdrawInputUnit: methodsRef.current.getValues('withdrawInputUnit'),
                 });
             }
         }
@@ -293,6 +324,18 @@ export const useYieldFlow = ({
     }, [device, dispatch]);
 
     const isDeviceConnected = !!device?.connected && !!device?.available;
+
+    const toggleWithdrawInputUnit = useCallback(() => {
+        if (!token || !receiptToken || flowType !== 'withdraw') {
+            return;
+        }
+
+        const currentUnit = methodsRef.current.getValues('withdrawInputUnit');
+        const nextUnit: YieldWithdrawInputUnit = currentUnit === 'shares' ? 'asset' : 'shares';
+
+        methodsRef.current.setValue('withdrawInputUnit', nextUnit);
+        methodsRef.current.setValue('amountInput', '');
+    }, [flowType, methodsRef, receiptToken, token]);
 
     const submitApprove = useCallback(() => {
         if (!isDeviceConnected) {
@@ -508,8 +551,13 @@ export const useYieldFlow = ({
         receiptToken,
         apy,
         suppliedAmount,
+        suppliedSharesAmount,
         flowKey,
         maxAmount,
+        withdrawInputUnit,
+        inputTokenSymbol,
+        otherUnitTokenSymbol,
+        canToggleWithdrawUnit,
         liveAmount,
         actionAmount: session.action.amount,
         completedAmount: session.result.completedAmount,
@@ -533,6 +581,7 @@ export const useYieldFlow = ({
             session.approval.modalState !== null,
         isSubmittingAction: session.action.isSubmitting,
         setAmountInput,
+        toggleWithdrawInputUnit,
         submitApprovalAction,
         submitAction,
         revokeAllowance,

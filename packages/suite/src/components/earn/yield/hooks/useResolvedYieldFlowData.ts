@@ -55,6 +55,7 @@ type UseResolvedYieldFlowDataResult = {
     receiptToken: YieldFlowDisplayToken | null;
     apy: number | null;
     suppliedAmount: string;
+    suppliedSharesAmount: string;
     flowKey: string;
 };
 
@@ -146,6 +147,8 @@ export const useResolvedYieldFlowData = ({
           })
         : '0';
 
+    const suppliedSharesAmount = matchedOutputToken?.balance ?? '0';
+
     const flowKey = getStablecoinYieldFlowKey({
         accountKey: account.key,
         tokenContract: resolvedContractAddress,
@@ -161,6 +164,7 @@ export const useResolvedYieldFlowData = ({
         receiptToken,
         apy,
         suppliedAmount,
+        suppliedSharesAmount,
         flowKey,
     };
 };
