@@ -1,8 +1,7 @@
 import { type NetworkDtoId } from '@suite-common/earn-stablecoin-api';
 import { exhaustive } from '@trezor/type-utils';
-import { isArrayMember } from '@trezor/utils';
 
-import { PROD_STAKING_SYMBOLS, type ProdStakingNetworkSymbol, networks } from './networksConfig';
+import { networks } from './networksConfig';
 import {
     type AccountType,
     type Network,
@@ -126,14 +125,6 @@ export const isNetworkSymbol = (symbol: NetworkSymbolExtended): symbol is Networ
 export const getNetwork = (symbol: NetworkSymbol): Network => networks[symbol];
 
 /**
- * Check wether the network has a settlement layer. Used to check Ethereum L2s.
- * @param symbol
- * @returns boolean
- */
-export const hasNetworkSettlementLayer = (symbol: NetworkSymbol) =>
-    !!getNetwork(symbol).settlementLayer;
-
-/**
  * Use instead of getNetwork, if there is not a guarantee that the symbol is a valid network symbol.
  * @param symbol
  */
@@ -189,7 +180,3 @@ export const getNetworkDecimals = (symbol: NetworkSymbolExtended) => {
 
 export const getNetworkByYieldXyzId = (yieldXyzId: NetworkDtoId) =>
     networksCollection.find(n => n.yieldXyzId === yieldXyzId) ?? null;
-
-export const isProdStakingNetworkSymbol = (
-    symbol: NetworkSymbol,
-): symbol is ProdStakingNetworkSymbol => isArrayMember(symbol, PROD_STAKING_SYMBOLS);
