@@ -22,11 +22,6 @@ const getIpcMethods = (ipcProxy: IpcProxyApi, channelName: string, instanceId: s
         (...args: any[]) =>
             ipcProxy.request(channelName, instanceId, method, args);
 
-    const invoke =
-        (method: string) =>
-        (...args: any[]) =>
-            ipcProxy.invoke(channelName, instanceId, method, args);
-
     const setOrClearHandler = (eventName: string) => {
         const eventListeners = listeners.filter(l => l.eventName === eventName);
         if (eventListeners.length) {
@@ -53,7 +48,6 @@ const getIpcMethods = (ipcProxy: IpcProxyApi, channelName: string, instanceId: s
     return {
         create,
         request,
-        invoke,
         addListener,
         removeListener,
     };
