@@ -39,6 +39,8 @@ button:disabled {
 #send_message_input { width: 100%; height: 80px; }
 `;
 
+const getErrorMessage = (e: unknown): string => (e instanceof Error ? e.message : String(e));
+
 const getPort = () => {
     // UI served from the server
     if (window.location.port) {
@@ -146,8 +148,8 @@ export const App = () => {
         try {
             const res = await api().send('start_scan');
             setDevices(res.devices);
-        } catch (e: any) {
-            writeOutput({ error: e.message });
+        } catch (e: unknown) {
+            writeOutput({ error: getErrorMessage(e) });
         }
     };
 
@@ -155,8 +157,8 @@ export const App = () => {
         try {
             const r = await api().send('stop_scan');
             writeOutput(r);
-        } catch (e: any) {
-            writeOutput({ error: e.message });
+        } catch (e: unknown) {
+            writeOutput({ error: getErrorMessage(e) });
         }
     };
 
@@ -164,8 +166,8 @@ export const App = () => {
         try {
             const r = await api().send('get_info');
             writeOutput(r);
-        } catch (e: any) {
-            writeOutput({ error: e.message });
+        } catch (e: unknown) {
+            writeOutput({ error: getErrorMessage(e) });
         }
     };
 
@@ -173,8 +175,8 @@ export const App = () => {
         try {
             const r = await api().send('enumerate');
             writeOutput(r);
-        } catch (e: any) {
-            writeOutput({ error: e.message });
+        } catch (e: unknown) {
+            writeOutput({ error: getErrorMessage(e) });
         }
     };
 
@@ -184,8 +186,8 @@ export const App = () => {
             const r = await api().send('connect_device', { id: idToUse, timeout: 10000 });
             writeOutput(r);
             setDeviceId(idToUse);
-        } catch (e: any) {
-            writeOutput({ error: e.message });
+        } catch (e: unknown) {
+            writeOutput({ error: getErrorMessage(e) });
         }
     };
 
@@ -194,8 +196,8 @@ export const App = () => {
         try {
             const r = await api().send('disconnect_device', { id: idToUse });
             writeOutput(r);
-        } catch (e: any) {
-            writeOutput({ error: e.message });
+        } catch (e: unknown) {
+            writeOutput({ error: getErrorMessage(e) });
         }
     };
 
@@ -203,8 +205,8 @@ export const App = () => {
         try {
             const r = await api().send('forget_device', { id: deviceId });
             writeOutput(r);
-        } catch (e: any) {
-            writeOutput({ error: e.message });
+        } catch (e: unknown) {
+            writeOutput({ error: getErrorMessage(e) });
         }
     };
 
@@ -215,8 +217,8 @@ export const App = () => {
                 characteristic: selectRef.current?.value || undefined,
             });
             writeOutput(r);
-        } catch (e: any) {
-            writeOutput({ error: e.message });
+        } catch (e: unknown) {
+            writeOutput({ error: getErrorMessage(e) });
         }
     };
 
@@ -227,8 +229,8 @@ export const App = () => {
                 characteristic: selectRef.current?.value || undefined,
             });
             writeOutput(r);
-        } catch (e: any) {
-            writeOutput({ error: e.message });
+        } catch (e: unknown) {
+            writeOutput({ error: getErrorMessage(e) });
         }
     };
 
@@ -238,8 +240,8 @@ export const App = () => {
             const data = MSG.concat(new Array(244 - MSG.length).fill(0));
             const r = await api().send('write', { id: deviceId, data });
             writeOutput(r);
-        } catch (e: any) {
-            writeOutput({ error: e.message });
+        } catch (e: unknown) {
+            writeOutput({ error: getErrorMessage(e) });
         }
     };
 
@@ -247,8 +249,8 @@ export const App = () => {
         try {
             const r = await api().send('read', { id: deviceId });
             writeOutput(r);
-        } catch (e: any) {
-            writeOutput({ error: e.message });
+        } catch (e: unknown) {
+            writeOutput({ error: getErrorMessage(e) });
         }
     };
 
@@ -258,8 +260,8 @@ export const App = () => {
             const state = { devices: value.map(d => ({ id: d, macAddress: d })) };
             const r = await api().send('set_state', state);
             writeOutput(r);
-        } catch (e: any) {
-            writeOutput({ error: e.message });
+        } catch (e: unknown) {
+            writeOutput({ error: getErrorMessage(e) });
         }
     };
 
@@ -270,8 +272,8 @@ export const App = () => {
             const json = JSON.parse(value);
             const resp = await api().sendMessage(json);
             writeOutput(resp);
-        } catch (e) {
-            writeOutput({ error: e.message });
+        } catch (e: unknown) {
+            writeOutput({ error: getErrorMessage(e) });
         }
     };
 
@@ -290,7 +292,9 @@ export const App = () => {
                                         setConnected(true);
                                         writeOutput('API connected');
                                     })
-                                    .catch((e: any) => writeOutput({ error: e.message }))
+                                    .catch((e: unknown) =>
+                                        writeOutput({ error: getErrorMessage(e) }),
+                                    )
                             }
                         >
                             Connect API `{connected ? '✅' : '❌'}
