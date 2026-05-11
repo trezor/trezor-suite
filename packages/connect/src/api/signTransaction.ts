@@ -226,7 +226,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             }
             const feePerByte = fee.dividedBy(bytes);
 
-            return {
+            const result = {
                 type: 'final' as const,
                 inputs,
                 outputs,
@@ -236,9 +236,13 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                 feePerByte: feePerByte.toString(),
                 bytes,
             };
+
+            return Promise.resolve(result);
         } catch (e) {
             // Don't throw errors from this method
             console.error('Error in payloadToPrecomposed', e);
+
+            return Promise.resolve(undefined);
         }
     }
 

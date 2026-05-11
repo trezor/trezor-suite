@@ -243,9 +243,9 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         };
     }
 
-    public payloadToPrecomposed(): PrecomposeResultFinal | undefined {
+    public payloadToPrecomposed(): Promise<PrecomposeResultFinal | undefined> {
         // Suite uses precomposed result for transaction review modals
-        return undefined;
+        return Promise.resolve(undefined);
     }
 
     public checkDeviceCapability() {
