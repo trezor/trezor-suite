@@ -1,4 +1,3 @@
-import { FeatureFlag } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import {
     act,
@@ -20,9 +19,7 @@ describe('ExchangeSendContent', () => {
     const preloadedState = createTradingPreloadedState({
         tradeType: 'exchange',
         overrides: {
-            featureFlags: createTradingFeatureFlags({
-                [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
-            }),
+            featureFlags: createTradingFeatureFlags(),
         },
     });
 

@@ -11,7 +11,6 @@ export type LaunchArguments = {
     areExperimentalOnlyNetworksEnabled?: boolean;
     preloadedState?: string; // stringified object
     isFirmwareUpdateEnabled?: boolean;
-    areTradingExchangeDexesEnabled?: boolean;
     isTradingResidenceCheckEnabled?: boolean;
     isTradingDebugEnabled?: boolean;
     isN4w1BackupEnabled?: boolean;

@@ -1,4 +1,3 @@
-import { FeatureFlag } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import { act, fireEvent } from '@suite-native/test-utils-store';
 import { btc1NormalAccount, btcAsset } from '@suite-native/trading-fixtures';
@@ -48,9 +47,7 @@ describe('ExchangeReceiveAccountPicker', () => {
     let exchangeForm: ExchangeFormType;
 
     const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
-        featureFlags: createTradingFeatureFlags({
-            [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
-        }),
+        featureFlags: createTradingFeatureFlags(),
     };
 
     const renderExchangeForm = () => {

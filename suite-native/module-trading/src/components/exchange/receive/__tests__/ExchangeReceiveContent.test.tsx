@@ -1,4 +1,3 @@
-import { FeatureFlag } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import {
@@ -21,9 +20,7 @@ describe('ExchangeReceiveContent', () => {
     const preloadedState = createTradingPreloadedState({
         tradeType: 'exchange',
         overrides: {
-            featureFlags: createTradingFeatureFlags({
-                [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
-            }),
+            featureFlags: createTradingFeatureFlags(),
             wallet: {
                 trading: {
                     exchange: {

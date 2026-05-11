@@ -21,7 +21,11 @@ import { type Account, type SelectedAccountStatus } from '@suite-common/wallet-t
 import { getCurrencies } from '@trezor/address-validator';
 import { exhaustive } from '@trezor/type-utils';
 
-import { groupTradingExchangeQuotesProjection } from './utils/groupTradingExchangeQuotesProjection';
+import {
+    EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES,
+    type GroupedTradingExchangeQuotes,
+    groupTradingExchangeQuotesProjection,
+} from './utils/groupTradingExchangeQuotesProjection';
 import { bestQuotePerPaymentMethodProjection } from './utils/quotePerPaymentMethodProjection';
 import { type BuyInfo, type TradingBuyState } from '../reducers/buyReducer';
 import { type ExchangeInfo, type TradingExchangeState } from '../reducers/exchangeReducer';
@@ -48,6 +52,8 @@ import {
     getTradingPlatformsInfoByCryptoId,
     getTradingSymbolAndContractAddressByCryptoId,
 } from '../utils/infoUtils';
+
+export { EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES, type GroupedTradingExchangeQuotes };
 
 type SelectedAccountRootState = {
     wallet: {

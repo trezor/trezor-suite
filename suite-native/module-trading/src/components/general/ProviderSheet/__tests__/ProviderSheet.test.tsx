@@ -1,5 +1,8 @@
-import { type TradingTradeType, type TradingType } from '@suite-common/trading';
-import { FeatureFlag } from '@suite-native/feature-flags';
+import {
+    EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES,
+    type TradingTradeType,
+    type TradingType,
+} from '@suite-common/trading';
 import { screen } from '@suite-native/test-utils-store';
 import { mercuryoApplePayBuyQuote } from '@suite-native/trading-fixtures';
 
@@ -46,25 +49,14 @@ describe('ProviderSheet', () => {
     });
 
     it('should render all section headers for exchange', () => {
-        const { getByText } = renderProviderSheet(
-            { tradingType: 'exchange', quotes: { fixed: [], float: [], dex: [] } },
-            { featureFlags: { [FeatureFlag.AreTradingExchangeDexesEnabled]: true } },
-        );
+        const { getByText } = renderProviderSheet({
+            tradingType: 'exchange',
+            quotes: EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES,
+        });
 
         expect(getByText('Fixed-rate CEX')).toBeOnTheScreen();
         expect(getByText('Floating-rate CEX')).toBeOnTheScreen();
         expect(getByText('DEX')).toBeOnTheScreen();
-    });
-
-    it('should not render DEX section header for exchange when DEXes are disabled', () => {
-        const { queryByText, getByText } = renderProviderSheet(
-            { tradingType: 'exchange', quotes: { fixed: [], float: [], dex: [] } },
-            { featureFlags: { [FeatureFlag.AreTradingExchangeDexesEnabled]: false } },
-        );
-
-        expect(getByText('Fixed-rate CEX')).toBeOnTheScreen();
-        expect(getByText('Floating-rate CEX')).toBeOnTheScreen();
-        expect(queryByText('DEX')).toBeNull();
     });
 
     it('should render provided quotes', () => {

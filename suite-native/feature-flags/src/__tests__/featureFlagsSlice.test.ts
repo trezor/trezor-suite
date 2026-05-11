@@ -17,7 +17,6 @@ describe('featureFlagsSlice', () => {
             expect(initialState).toEqual({
                 areDebugOnlyNetworksEnabled: false,
                 areExperimentalOnlyNetworksEnabled: false,
-                areTradingExchangeDexesEnabled: false,
                 isCardanoSendEnabled: false,
                 isDebugKeysAllowed: false,
                 isTradingBuyEnabled: false,
@@ -45,7 +44,6 @@ describe('featureFlagsSlice', () => {
                 isTradingBuyEnabled: false,
                 isTradingExchangeEnabled: false,
                 isTradingSellEnabled: false,
-                areTradingExchangeDexesEnabled: false,
                 isTradingResidenceCheckEnabled: false,
                 isTradingConciergeEnabled: false,
                 isTradingDebugEnabled: false,

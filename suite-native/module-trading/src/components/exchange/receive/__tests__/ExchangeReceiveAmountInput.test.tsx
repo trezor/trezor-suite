@@ -22,7 +22,6 @@ describe('ExchangeReceiveAmountInput', () => {
     const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
         featureFlags: {
             ...featureFlagsInitialState,
-            [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
             [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
         },
     };
