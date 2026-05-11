@@ -2,6 +2,7 @@ import { FormProvider } from 'react-hook-form';
 
 import { type EarnParams } from '@suite/router';
 import { Context } from '@suite-common/message-system';
+import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
 
@@ -21,9 +22,14 @@ type YieldSupplyProps = {
 };
 
 export const YieldSupply = ({ account, routeParams }: YieldSupplyProps) => {
-    const { isDisabled, content } = useMessageSystemYield('deposit');
     const allowanceContextValue = useAllowance({ account });
     const yieldSupplyContextValues = useYieldSupply({ account, routeParams });
+    const vaultContractAddress = yieldSupplyContextValues
+        ? getYieldVaultContractAddress(yieldSupplyContextValues.vault)
+        : undefined;
+    const { isDisabled, content, variant } = useMessageSystemYield('deposit', {
+        vaultContractAddress,
+    });
 
     if (!yieldSupplyContextValues) {
         return null;
@@ -34,7 +40,7 @@ export const YieldSupply = ({ account, routeParams }: YieldSupplyProps) => {
             <Column gap={24}>
                 <ContextMessage context={Context.getEarnYield('deposit')} />
                 {isDisabled ? (
-                    <YieldDisabledBanner type="deposit" content={content} />
+                    <YieldDisabledBanner type="deposit" content={content} variant={variant} />
                 ) : (
                     <YieldSupplyContext.Provider value={yieldSupplyContextValues}>
                         <FormProvider {...yieldSupplyContextValues.methods}>

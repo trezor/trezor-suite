@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
-import { DashboardAnchor, useAnchor } from '@suite/router';
+import { EarnAnchor, useAnchor } from '@suite/router';
 import { Context } from '@suite-common/message-system';
 import { type StakingNetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -25,7 +25,7 @@ import { useCryptoCurrentRate } from './hooks/useCryptoCurrencyRate';
 import { useStakingAccountsVisibility } from './hooks/useStakingAccountsVisibility';
 
 export const EarnStakingTable = () => {
-    const { anchorRef, shouldHighlight } = useAnchor(DashboardAnchor.Staking);
+    const { anchorRef, shouldHighlight } = useAnchor(EarnAnchor.Staking);
     const ethCurrentRate = useCryptoCurrentRate('eth');
     const solCurrentRate = useCryptoCurrentRate('sol');
     const adaCurrentRate = useCryptoCurrentRate('ada');

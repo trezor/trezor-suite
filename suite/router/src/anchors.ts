@@ -4,12 +4,13 @@ export type AnchorSettingSection =
     | 'general-settings'
     | 'device-settings'
     | 'coin-settings'
-    | 'dashboard';
+    | 'earn';
 
 type Anchor = `@${AnchorSettingSection}/${string}`;
 
-export const DashboardAnchor = {
-    Staking: '@dashboard/staking',
+export const EarnAnchor = {
+    Staking: '@earn/staking',
+    Yield: '@earn/yield',
 } satisfies { [key: string]: Anchor };
 
 export const SettingsAnchor = {
@@ -64,13 +65,11 @@ export const SettingsAnchor = {
     UnsupportedCrypto: '@coin-settings/unsupported-crypto',
 } satisfies { [key: string]: Anchor };
 
-export type SettingsAnchorValue = (typeof SettingsAnchor)[keyof typeof SettingsAnchor];
-
 export const mapAnchorToRoute: Record<AnchorSettingSection, Route['name']> = {
     'general-settings': 'settings-index',
     'device-settings': 'settings-device',
     'coin-settings': 'settings-coins',
-    dashboard: 'suite-index',
+    earn: 'suite-earn',
 };
 
 export const AccountTransactionBaseAnchor = '@account/transaction';
