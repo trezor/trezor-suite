@@ -18,7 +18,7 @@ import {
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
     type TradingStackParamList,
-    TradingStackRoutes,
+    type TradingStackRoutes,
 } from '@suite-native/navigation';
 import { useExchangeAnalyticReportCallback } from '@suite-native/trading-analytics';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
@@ -34,7 +34,7 @@ import { isFullySelectedReceiveAccount } from '../../utils/general/receiveAccoun
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     TradingStackParamList,
-    TradingStackRoutes.ReceiveAccounts,
+    TradingStackRoutes.Trading,
     RootStackParamList
 >;
 
@@ -68,7 +68,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
     const selectReceiveAccount = () => {
         const selectedNetworkSymbol = getSymbolFromTradeableAsset(receiveAsset);
         if (selectedNetworkSymbol) {
-            navigation.navigate(TradingStackRoutes.ReceiveAccounts, {
+            navigation.navigate(RootStackRoutes.ReceiveAccounts, {
                 symbol: selectedNetworkSymbol,
                 tradingType: 'exchange',
             });

@@ -1,6 +1,6 @@
 import { type RouteProp } from '@react-navigation/native';
 
-import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
+import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
 import { fireEvent } from '@suite-native/test-utils-store';
 import { accounts, getBuyTrade } from '@suite-native/trading-fixtures';
 
@@ -18,7 +18,7 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () =>
         ({
             params: undefined,
-        }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingHistory>,
+        }) as RouteProp<RootStackParamList, RootStackRoutes.TradingHistory>,
 }));
 
 jest.mock('@suite-native/trading-atoms', () => ({

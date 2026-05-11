@@ -10,9 +10,10 @@ import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
+    RootStackRoutes,
     type StackToStackCompositeNavigationProps,
     type TradingStackParamList,
-    TradingStackRoutes,
+    type TradingStackRoutes,
 } from '@suite-native/navigation';
 import { selectIsAmountInputActive } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -25,7 +26,7 @@ export type HistoryButtonProps = {
 
 export type NavigationProps = StackToStackCompositeNavigationProps<
     TradingStackParamList,
-    TradingStackRoutes.TradingHistory,
+    TradingStackRoutes.Trading,
     RootStackParamList
 >;
 
@@ -44,7 +45,7 @@ const HistoryButtonMemoized = memo(({ isFormMountedRecently }: HistoryButtonProp
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
 
-    const handleOnPress = () => navigation.navigate(TradingStackRoutes.TradingHistory);
+    const handleOnPress = () => navigation.navigate(RootStackRoutes.TradingHistory);
 
     return (
         <AnimatedBox

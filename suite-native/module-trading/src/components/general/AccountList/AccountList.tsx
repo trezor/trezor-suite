@@ -9,9 +9,8 @@ import { type TradingType, tradingBuyActions, tradingExchangeActions } from '@su
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type RootStackParamList,
-    type StackToStackCompositeNavigationProps,
-    type TradingStackParamList,
-    type TradingStackRoutes,
+    type RootStackRoutes,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useSectionList } from '@suite-native/trading-atoms';
 import {
@@ -32,11 +31,7 @@ import {
 } from '../../../hooks/general/useReceiveAccountsListData';
 import { isFullySelectedReceiveAccount } from '../../../utils/general/receiveAccountUtils';
 
-type NavigationProp = StackToStackCompositeNavigationProps<
-    TradingStackParamList,
-    TradingStackRoutes.ReceiveAccounts,
-    RootStackParamList
->;
+type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.ReceiveAccounts>;
 
 export type AccountsListProps = {
     symbol: NetworkSymbol;

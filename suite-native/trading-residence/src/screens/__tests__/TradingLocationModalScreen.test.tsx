@@ -5,11 +5,7 @@ import { messageSystemInitialState } from '@suite-common/message-system';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
 import { localeReducer } from '@suite-native/intl';
-import {
-    RootStackRoutes,
-    type TradingStackParamList,
-    type TradingStackRoutes,
-} from '@suite-native/navigation';
+import { type RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import {
     createLightStore,
@@ -48,7 +44,7 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () =>
         ({
             params: undefined,
-        }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingHistory>,
+        }) as RouteProp<RootStackParamList, RootStackRoutes.TradingHistory>,
     useNavigation: () => ({
         dispatch: mockNavigationDispatch,
     }),

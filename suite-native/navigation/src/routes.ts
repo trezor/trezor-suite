@@ -47,6 +47,8 @@ export enum RootStackRoutes {
     TradingConfirming = 'TradingConfirming',
     TradingSellOutputsReview = 'TradingSellOutputsReview',
     TradingExchangeOutputsReview = 'TradingExchangeOutputsReview',
+    ReceiveAccounts = 'ReceiveAccounts',
+    TradingHistory = 'TradingHistory',
 }
 
 export enum AppTabsRoutes {
@@ -284,8 +286,6 @@ export enum SettingsStackRoutes {
 
 export enum TradingStackRoutes {
     Trading = 'Trading',
-    ReceiveAccounts = 'ReceiveAccounts',
-    TradingHistory = 'TradingHistory',
 }
 
 export enum TransactionDetailStackRoutes {
