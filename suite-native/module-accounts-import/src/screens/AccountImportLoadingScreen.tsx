@@ -12,12 +12,11 @@ import {
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 import { type AccountInfo } from '@trezor/connect';
+import { resolveAfter } from '@trezor/utils';
 
 import { getAccountInfoThunk } from '../accountsImportThunks';
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { useShowImportError } from '../useShowImportError';
-
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const AccountImportLoadingScreen = ({
     navigation,
@@ -58,7 +57,7 @@ export const AccountImportLoadingScreen = ({
         async (onRetry?: () => Promise<void>) => {
             // Delay displaying the error message to avoid freezing the app on iOS. If an error occurs too quickly during the
             // transition from ScanQRCodeModalScreen, the error modal won't appear, resulting in a frozen app.
-            await sleep(1000);
+            await resolveAfter(1000);
             showImportError(error, () => {
                 if (!onRetry) return;
                 onRetry();
