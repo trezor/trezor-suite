@@ -36,8 +36,14 @@ interface WebsocketResponse {
     response: any;
 }
 
+interface WebsocketClientOptions {
+    url?: string;
+    timeout?: number;
+    pingTimeout?: number;
+}
+
 export class WebsocketClient extends WebsocketClientBase<WebsocketClientEvents> {
-    constructor(options: any = {}) {
+    constructor(options: WebsocketClientOptions = {}) {
         super({
             ...options,
             url: options.url || USER_ENV_URL.WEBSOCKET,
