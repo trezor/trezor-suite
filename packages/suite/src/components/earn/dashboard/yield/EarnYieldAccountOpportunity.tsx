@@ -165,7 +165,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
 
         dispatch(
             goto({
-                routeName: 'earn-supply',
+                routeName: 'earn-deposit',
                 params: getEarnRouteParams({
                     account: opportunity.account,
                     yieldId: opportunity.vault.id,

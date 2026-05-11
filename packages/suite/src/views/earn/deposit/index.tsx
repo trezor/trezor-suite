@@ -2,7 +2,7 @@ import { YieldSupply } from 'src/components/earn';
 
 import { useEarnLayout } from '../useEarnLayout';
 
-export const EarnSupply = () => {
+export const EarnDeposit = () => {
     const { account, routeParams } = useEarnLayout({ analyticsStep: 'yield-supply' });
 
     if (!account || !routeParams) {

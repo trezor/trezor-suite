@@ -46,7 +46,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                               nameId: 'TR_EARN',
                               icon: 'piggyBank',
                               goToRoute: 'suite-earn',
-                              routes: ['suite-earn', 'earn-supply', 'earn-withdraw', 'earn-claim'],
+                              routes: ['suite-earn', 'earn-deposit', 'earn-withdraw', 'earn-claim'],
                           } as NavigationItemProps,
                       ]
                     : []),

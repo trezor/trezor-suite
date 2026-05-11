@@ -13,10 +13,10 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             default: Earn,
         })),
     ),
-    'earn-supply': lazy(() =>
-        import(/* webpackChunkName: "earn" */ 'src/views/earn/supply/index').then(
-            ({ EarnSupply }) => ({
-                default: EarnSupply,
+    'earn-deposit': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/deposit/index').then(
+            ({ EarnDeposit }) => ({
+                default: EarnDeposit,
             }),
         ),
     ),
