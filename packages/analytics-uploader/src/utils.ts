@@ -52,14 +52,12 @@ export const getUrl = (app: App, isDev: boolean, environment?: Environment) => {
 const reportEventError = (
     type: ReportEventProps['type'],
     retry: ReportEventProps['retry'],
-    err: any,
+    err: unknown,
 ) => {
-    let errorMessage = err?.error?.message || err?.message;
-
-    if (typeof errorMessage !== 'string') {
-        // this should never happen
-        errorMessage = 'Unknown error.';
-    }
+    const e = err as { error?: { message?: unknown }; message?: unknown } | null | undefined;
+    const raw = e?.error?.message ?? e?.message;
+    // this should never not be a string
+    let errorMessage = typeof raw === 'string' ? raw : 'Unknown error.';
 
     // to circumvent sentry inbound filter
     if (errorMessage.includes('Failed to fetch')) {
