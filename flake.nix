@@ -42,7 +42,6 @@
           pkgs.git-lfs
           pkgs.gnupg
           pkgs.mdbook
-          pkgs.xorg.xhost
           pkgs.docker
           pkgs.docker-compose
           pkgs.nodejs_24
@@ -114,7 +113,7 @@
                  androidEnv.jdk
                  androidEnv.androidSdk
                ] ++ androidEnv.extraPackages;
-              
+
               NIX_PATCHELF_LIBRARY_PATH = "${pkgs.openssl.out}/lib:${pkgs.zlib}/lib:${pkgs.gcc.cc.lib}/lib";
               NIX_CC = "${pkgs.gcc}";
 

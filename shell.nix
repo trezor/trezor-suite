@@ -38,7 +38,6 @@ in
       git-lfs
       gnupg
       mdbook
-      xorg.xhost     # for e2e tests running on localhost
       docker         # for e2e tests running on localhost
       docker-compose # for e2e tests running on localhost
       nodejs
