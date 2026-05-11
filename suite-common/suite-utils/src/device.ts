@@ -11,7 +11,7 @@ import {
 import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
 import * as URLS from '@trezor/urls';
-import { hasProp, isArrayMember } from '@trezor/utils';
+import { hasProp, isArrayMember, unique } from '@trezor/utils';
 
 export const deviceStatuses = [
     'acquired',
@@ -453,7 +453,7 @@ export const getFirstDeviceInstance = (
         .sort(options.sortingFn);
 
 export const getPhysicalDeviceUniqueIds = (devices: TrezorDevice[]) =>
-    [...new Set(devices.map(d => d.id))].filter(id => id) as string[];
+    unique(devices.map(d => d.id).filter(id => id)) as string[];
 
 export const getPhysicalDeviceCount = (devices: TrezorDevice[]) =>
     getPhysicalDeviceUniqueIds(devices).length;

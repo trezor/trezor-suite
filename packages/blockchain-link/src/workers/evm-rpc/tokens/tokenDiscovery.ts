@@ -1,6 +1,7 @@
 import { type Log, type PublicClient, parseAbiItem } from 'viem';
 
 import type { TokenInfo } from '@trezor/blockchain-link-types';
+import { unique } from '@trezor/utils';
 
 import { getTokenInfo } from './tokenInfo';
 import { TOKEN_DISCOVERY } from '../constants';
@@ -80,7 +81,7 @@ export const discoverTokens = async (
     }
 
     const allLogs = [...incomingLogs, ...outgoingLogs];
-    const contractAddresses = [...new Set(allLogs.map(log => log.address.toLowerCase()))];
+    const contractAddresses = unique(allLogs.map(log => log.address.toLowerCase()));
 
     if (contractAddresses.length === 0) {
         return [];

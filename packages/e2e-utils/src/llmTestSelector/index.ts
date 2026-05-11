@@ -4,6 +4,8 @@ import { createHash } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
+import { unique } from '@trezor/utils';
+
 import { error, log, output } from '../logger';
 import type { CoverageIndex } from '../testCoverage/types';
 
@@ -118,7 +120,7 @@ const getChangedFiles = (headRef = 'HEAD'): string[] => {
         .filter((l: string) => l.length > 0);
 
     // Deduplicate
-    return [...new Set(files)].filter(isAllowedFile);
+    return unique(files).filter(isAllowedFile);
 };
 
 // ---------------------------------------------------------------------------

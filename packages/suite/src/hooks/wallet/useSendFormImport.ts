@@ -19,6 +19,7 @@ import {
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode, baseCurrencies } from '@trezor/blockchain-link-types';
+import { unique } from '@trezor/utils';
 
 import { useDispatch } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
@@ -56,7 +57,7 @@ export const useSendFormImport = ({
         }
 
         const currencies = result.map(it => it.currency.toLowerCase());
-        const uniqueCurrencies = [...new Set(currencies)];
+        const uniqueCurrencies = unique(currencies);
 
         for (const currency of uniqueCurrencies) {
             const fiatRateKey = getFiatRateKey(network.symbol, currency as BaseCurrencyCode);

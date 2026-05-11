@@ -12,7 +12,7 @@ import {
     asTimestamp,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { typedObjectKeys } from '@trezor/utils';
+import { typedObjectKeys, unique } from '@trezor/utils';
 
 const ONE_HOUR_IN_SECONDS = 60 * 60;
 
@@ -134,7 +134,7 @@ export const fetchTransactionsRates = async (
     rates: TickerResult[],
 ) => {
     const roundedTimestamps = roundTimestampsToNearestPastHour(timestamps);
-    const uniqueTimestamps = [...new Set(roundedTimestamps)];
+    const uniqueTimestamps = unique(roundedTimestamps);
 
     try {
         const results = await getFiatRatesForTimestamps(

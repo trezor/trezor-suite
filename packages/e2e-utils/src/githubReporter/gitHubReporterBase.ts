@@ -1,6 +1,6 @@
 import type { Octokit } from '@octokit/rest';
 
-import { scheduleAction } from '@trezor/utils';
+import { scheduleAction, unique } from '@trezor/utils';
 
 import { type TestReportProviderBase } from './annotationBase';
 import { GitHubProject } from './gitHubProject';
@@ -94,7 +94,7 @@ abstract class GitHubReporterBase implements LoggingFunctions {
 
     protected logInstructionsForRerun(): void {
         const failedCount = this.failedTestFilenames.length;
-        const uniqueFailedFilenames = [...new Set(this.failedTestFilenames)];
+        const uniqueFailedFilenames = unique(this.failedTestFilenames);
 
         this.logError(LOG_VISUAL_SEPARATOR);
         this.logError(`GITHUB REPORTER SUMMARY: ~${failedCount} test(s) failed to report`);

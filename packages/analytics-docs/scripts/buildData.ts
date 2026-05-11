@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import type { EventDef } from '@suite-common/analytics';
+import { unique } from '@trezor/utils';
 
 import type { EventDoc } from '../src/types';
 import {
@@ -84,7 +85,7 @@ const getPackageRoots = (): string[] => {
         findPackageRoot(path.join(getPackageRoot(name), 'package.json')),
     ).filter((x): x is string => Boolean(x));
 
-    return [...new Set(roots)];
+    return unique(roots);
 };
 
 const getEventFileGlobs = (packageRoots: string[]): string[] =>

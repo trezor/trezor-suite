@@ -1,4 +1,6 @@
 /* eslint-disable no-console */
+import { unique } from '@trezor/utils';
+
 import {
     AdvancedTokenStructure,
     SimpleTokenStructure,
@@ -57,5 +59,5 @@ export const fetchNftData = async (assetPlatformId: string, structure: TokenStru
         }, {});
     }
 
-    return [...new Set(allData.map(item => item.contract_address))] as SimpleTokenStructure;
+    return unique(allData.map(item => item.contract_address)) as SimpleTokenStructure;
 };

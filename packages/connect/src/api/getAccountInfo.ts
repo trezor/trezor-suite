@@ -12,6 +12,7 @@ import type {
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { resolveAfter } from '@trezor/utils/src/resolveAfter';
+import { unique } from '@trezor/utils/src/unique';
 
 import { type Blockchain, initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
@@ -334,7 +335,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         context.sendCoreMessage(
             createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
                 type: 'complete',
-                accountTypes: [...new Set(accounts.map(a => a.type))],
+                accountTypes: unique(accounts.map(a => a.type)),
                 defaultAccountType,
                 coinInfo,
                 accounts,

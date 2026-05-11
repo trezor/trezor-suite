@@ -19,6 +19,7 @@ import {
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { promiseAllSequence } from '@trezor/utils/src/promiseAllSequence';
 import { resolveAfter } from '@trezor/utils/src/resolveAfter';
+import { unique } from '@trezor/utils/src/unique';
 import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trezor/utxo-lib';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
@@ -262,7 +263,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         context.sendCoreMessage(
             createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
                 type: 'complete',
-                accountTypes: [...new Set(accounts.map(a => a.type))],
+                accountTypes: unique(accounts.map(a => a.type)),
                 coinInfo,
                 accounts,
             }),
