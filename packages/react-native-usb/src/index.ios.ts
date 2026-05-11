@@ -11,8 +11,8 @@ export class WebUSB {
         // do nothing
     }
 
-    requestDevice = async (..._params: any[]): Promise<any> => {};
-    addEventListener = (..._params: any[]): any => {};
-    removeEventListener = (..._params: any[]): any => {};
-    dispatchEvent = (..._params: any[]): any => {};
+    requestDevice = async (..._params: unknown[]): Promise<any> => {};
+    addEventListener = (..._params: unknown[]): void => {};
+    removeEventListener = (..._params: unknown[]): void => {};
+    dispatchEvent = (..._params: unknown[]): boolean => false;
 }

@@ -1,11 +1,11 @@
 // TODO: implement these properties, because they are part of WebUSB specs, but very low priority we are not using them anywhere
-type USBConfiguration = any;
-type USBControlTransferParameters = any;
-type USBInTransferResult = any;
-type USBOutTransferResult = any;
-type USBDirection = any;
-type USBIsochronousInTransferResult = any;
-type USBIsochronousOutTransferResult = any;
+type USBConfiguration = unknown;
+type USBControlTransferParameters = unknown;
+type USBInTransferResult = unknown;
+type USBOutTransferResult = unknown;
+type USBDirection = unknown;
+type USBIsochronousInTransferResult = unknown;
+type USBIsochronousOutTransferResult = unknown;
 
 export interface NativeDevice {
     // TODO: implement commented out properties, because they are part of WebUSB specs, but very low priority we are not using them anywhere

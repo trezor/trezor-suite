@@ -5,7 +5,7 @@ import { ReactNativeUsbModule } from './ReactNativeUsbModule';
 
 const DEBUG_LOGS = false;
 
-const debugLog = (...args: any[]) => {
+const debugLog = (...args: unknown[]) => {
     if (DEBUG_LOGS) {
         // eslint-disable-next-line no-console
         console.log(...args);
@@ -30,7 +30,7 @@ const releaseInterface = (deviceName: string, interfaceNumber: number) =>
 const transferIn = async (deviceName: string, endpointNumber: number, length: number) => {
     const perf = performance.now();
     const data = await ReactNativeUsbModule.transferIn(deviceName, endpointNumber, length)
-        .catch((error: any) => {
+        .catch((error: unknown) => {
             debugLog('JS: USB read error: ', error);
             throw error;
         })
@@ -155,7 +155,7 @@ export function onDeviceDisconnect(listener: (event: OnConnectEvent) => void): E
     });
 }
 
-export async function getDevices(): Promise<any> {
+export async function getDevices(): Promise<WebUSBDevice[]> {
     const devices = await ReactNativeUsbModule.getDevices();
 
     return devices.map((device: NativeDevice) => createWebUSBDevice(device));
@@ -172,8 +172,8 @@ export class WebUSB {
     }
 
     // TODO: implement these commented out properties, because they are part of WebUSB specs, but very low priority we are not using them anywhere
-    requestDevice = async (..._params: any[]): Promise<any> => {};
-    addEventListener = (..._params: any[]): any => {};
-    removeEventListener = (..._params: any[]): any => {};
-    dispatchEvent = (..._params: any[]): any => {};
+    requestDevice = async (..._params: unknown[]): Promise<any> => {};
+    addEventListener = (..._params: unknown[]): void => {};
+    removeEventListener = (..._params: unknown[]): void => {};
+    dispatchEvent = (..._params: unknown[]): boolean => false;
 }
