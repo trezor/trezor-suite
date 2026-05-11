@@ -80,10 +80,10 @@ describe('AddressFormatter', () => {
         );
 
         it.each([
-            ['EVM', EVM_ADDRESS, '0xde0B2956...cb697BAe'],
-            ['BTC', BTC_ADDRESS, 'bc1qar0s...wf5mdq'],
-            ['ADA', ADA_ADDRESS, 'addr1qyu...spd3k22'],
-            ['SOL', SOL_ADDRESS, '14CCvQzQ...cdfbZVBS'],
+            ['EVM', EVM_ADDRESS, '0xde0B...cb697BAe'],
+            ['BTC', BTC_ADDRESS, 'bc1q...wf5mdq'],
+            ['ADA', ADA_ADDRESS, 'addr...spd3k22'],
+            ['SOL', SOL_ADDRESS, '14CC...cdfbZVBS'],
         ])(
             'returns continuous string with truncation for %s when isChunked is false',
             (_label, address, expected) => {
