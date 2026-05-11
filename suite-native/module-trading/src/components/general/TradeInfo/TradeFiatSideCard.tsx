@@ -3,43 +3,17 @@ import { type ReactNode } from 'react';
 import { type FiatCurrencyCode } from 'invity-api';
 
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
 import { TradeInfoHeader, TradeInfoRow } from '@suite-native/trading-atoms';
 import type { ExtendedSellCryptoPaymentMethod } from '@suite-native/trading-types';
 
 import { FiatCurrencyIcon } from '../FiatCurrencyIcon';
+import { PaymentMethodTranslation } from '../PaymentMethodTranslation';
 
 export type TradeFiatSideCardProps = {
     paymentMethod: ExtendedSellCryptoPaymentMethod;
     amount: ReactNode;
     title: ReactNode;
     fiatCurrency: FiatCurrencyCode;
-};
-const paymentMethodNamesMap: Record<ExtendedSellCryptoPaymentMethod, ReactNode> = {
-    bankTransfer: (
-        <Translation id="moduleTrading.tradingSellPreviewScreen.paymentMethods.bankTransfer" />
-    ),
-    creditCard: (
-        <Translation id="moduleTrading.tradingSellPreviewScreen.paymentMethods.creditCard" />
-    ),
-    sepa: <Translation id="moduleTrading.tradingSellPreviewScreen.paymentMethods.sepa" />,
-    ach: <Translation id="moduleTrading.tradingSellPreviewScreen.paymentMethods.ach" />,
-    skrill: <Translation id="moduleTrading.tradingSellPreviewScreen.paymentMethods.skrill" />,
-
-    neteller: <Translation id="moduleTrading.tradingSellPreviewScreen.paymentMethods.neteller" />,
-    payid: <Translation id="moduleTrading.tradingSellPreviewScreen.paymentMethods.payid" />,
-    dcinterac: <Translation id="moduleTrading.tradingSellPreviewScreen.paymentMethods.dcinterac" />,
-    fasterPayment: (
-        <Translation id="moduleTrading.tradingSellPreviewScreen.paymentMethods.fasterPayment" />
-    ),
-};
-
-const getPaymentMethodTranslation = (paymentMethod: ExtendedSellCryptoPaymentMethod | string) => {
-    if (paymentMethod in paymentMethodNamesMap) {
-        return paymentMethodNamesMap[paymentMethod as ExtendedSellCryptoPaymentMethod];
-    }
-
-    return paymentMethod;
 };
 
 export const TradeFiatSideCard = ({
@@ -52,7 +26,9 @@ export const TradeFiatSideCard = ({
         <TradeInfoHeader
             title={title}
             rightContent={
-                <Text variant="body-sm">{getPaymentMethodTranslation(paymentMethod)}</Text>
+                <Text variant="body-sm">
+                    <PaymentMethodTranslation paymentMethod={paymentMethod} />
+                </Text>
             }
         />
         <TradeInfoRow>

@@ -15,6 +15,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { useSheetControls } from '../../../hooks/general/useSheetControls';
 import { useSellFormContext } from '../../../hooks/sell/useSellFormContext';
 import { PaymentMethodSheet } from '../../general/PaymentMethodSheet/PaymentMethodSheet';
+import { PaymentMethodTranslation } from '../../general/PaymentMethodTranslation';
 
 const RECEIVE_METHOD_PICKER_TEST_ID = '@trading/sell/receive-method-picker';
 
@@ -46,7 +47,10 @@ const SellReceiveMethodPickerRight = ({
                 accessibilityLabel={translate('moduleTrading.tradingScreen.selectedReceiveMethod')}
                 testID={RECEIVE_METHOD_PICKER_TEST_ID + '/value'}
             >
-                {selectedValue.paymentMethodName}
+                <PaymentMethodTranslation
+                    paymentMethod={selectedValue.paymentMethod}
+                    paymentMethodName={selectedValue.paymentMethodName}
+                />
             </Text>
         );
     }

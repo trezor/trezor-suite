@@ -72,11 +72,7 @@ describe('SellPreviewView', () => {
             getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.toFiat')),
         ).toBeOnTheScreen();
         expect(
-            getByText(
-                getTranslation(
-                    'moduleTrading.tradingSellPreviewScreen.paymentMethods.bankTransfer',
-                ),
-            ),
+            getByText(getTranslation('moduleTrading.paymentMethods.bankTransfer')),
         ).toBeOnTheScreen();
     });
 
@@ -93,11 +89,7 @@ describe('SellPreviewView', () => {
             getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.toFiat')),
         ).toBeOnTheScreen();
         expect(
-            getByText(
-                getTranslation(
-                    'moduleTrading.tradingSellPreviewScreen.paymentMethods.bankTransfer',
-                ),
-            ),
+            getByText(getTranslation('moduleTrading.paymentMethods.bankTransfer')),
         ).toBeOnTheScreen();
         expect(getByText('Transaction error occurred')).toBeOnTheScreen();
     });

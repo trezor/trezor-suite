@@ -8,6 +8,7 @@ import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
+import { PaymentMethodTranslation } from '../PaymentMethodTranslation';
 
 export type PaymentMethodListItemProps<T extends BuyTrade | SellFiatTrade> = {
     quote: T;
@@ -72,7 +73,10 @@ export const PaymentMethodListItem = <T extends BuyTrade | SellFiatTrade>({
                         numberOfLines={1}
                         ellipsizeMode="tail"
                     >
-                        {quote.paymentMethodName ?? ''}
+                        <PaymentMethodTranslation
+                            paymentMethod={quote.paymentMethod}
+                            paymentMethodName={quote.paymentMethodName}
+                        />
                     </Text>
                 </HStack>
                 {!!formattedRate && (
