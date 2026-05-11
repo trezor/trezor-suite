@@ -7,6 +7,7 @@ import path from 'path';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { ensureDirectoryExists } from '@trezor/node-utils';
 import { type TimerId } from '@trezor/type-utils';
+import { isArrayMember } from '@trezor/utils';
 
 import { getBuildInfo, getComputerInfo } from './info';
 import { getSwitchValue, hasSwitch } from './process-switches';
@@ -14,8 +15,7 @@ import { getSwitchValue, hasSwitch } from './process-switches';
 const logLevels = ['mute', 'error', 'warn', 'info', 'debug'] as const;
 
 export type LogLevel = (typeof logLevels)[number];
-const isLogLevel = (level: string): level is LogLevel =>
-    !!level && logLevels.includes(level as LogLevel);
+const isLogLevel = (level: string): level is LogLevel => isArrayMember(level, logLevels);
 
 export type Options = {
     colors: boolean; // Console output has colors

@@ -26,10 +26,10 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 import { DATA_URL } from '@trezor/urls';
-import { capitalizeFirstLetter, getSynchronize } from '@trezor/utils';
+import { capitalizeFirstLetter, getSynchronize, isArrayMember } from '@trezor/utils';
 
 import { blacklist } from './blacklist';
-import { type ConnectKey, type ConnectWebKey } from './types';
+import { type ConnectKey } from './types';
 
 const CONNECT_INIT_MODULE = '@common/connect-init';
 
@@ -149,7 +149,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
         const synchronize = getSynchronize();
 
         Object.keys(TrezorConnect)
-            .filter(k => !blacklist.includes(k as ConnectWebKey))
+            .filter(k => !isArrayMember(k, blacklist))
             .forEach(key => {
                 // typescript complains about params and return type, need to be "any"
                 const original: any = TrezorConnect[key as ConnectKey];
