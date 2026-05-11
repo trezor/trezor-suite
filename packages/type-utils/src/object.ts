@@ -40,7 +40,7 @@ export type RequireAtLeastOne<T, K extends keyof T = keyof T> = {
 }[K] &
     Omit<T, K>;
 
-export type NarrowObjectWithKey<T, K extends PropertyKey> = T extends any
+export type NarrowObjectWithKey<T, K extends PropertyKey> = T extends unknown
     ? K extends keyof T
         ? T
         : never
