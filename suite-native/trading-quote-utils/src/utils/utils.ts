@@ -200,13 +200,23 @@ export const getFormDraftKeyPrefixFromTradingType = (tradingType: TradingType) =
     `trading-${tradingType}` as const satisfies FormDraftKeyPrefix;
 
 export const getErrorStrFromThunkRejectedValue = (rejectedValue: unknown) => {
-    const asAny = rejectedValue as any;
-    if (asAny?.error?.error) {
-        return `[${asAny.error.error}]: ${asAny.error.message ?? 'No description'}`;
-    }
-
-    if (asAny?.error?.message) {
-        return asAny.error.message;
+    if (
+        rejectedValue !== null &&
+        typeof rejectedValue === 'object' &&
+        'error' in rejectedValue &&
+        rejectedValue.error !== null &&
+        typeof rejectedValue.error === 'object'
+    ) {
+        const { error: errorCode, message } = rejectedValue.error as {
+            error?: unknown;
+            message?: unknown;
+        };
+        if (typeof errorCode === 'string') {
+            return `[${errorCode}]: ${typeof message === 'string' ? message : 'No description'}`;
+        }
+        if (typeof message === 'string') {
+            return message;
+        }
     }
 
     if (rejectedValue instanceof Error) {
