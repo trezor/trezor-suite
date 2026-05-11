@@ -54,7 +54,7 @@ export const useForgetDevice = () => {
             });
             showToast({
                 icon: 'check',
-                variant: 'default',
+                intent: 'neutral',
                 message: translate('moduleDeviceSettings.forgetDevice.successToast'),
             });
         }

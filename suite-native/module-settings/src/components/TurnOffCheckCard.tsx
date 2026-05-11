@@ -21,7 +21,7 @@ const TurnOnButton = ({ onTurnOn }: { onTurnOn: () => void }) => {
     const handleButtonPress = () => {
         onTurnOn();
         showToast({
-            variant: 'default',
+            intent: 'neutral',
             message: <Translation id="moduleSettings.advanced.authenticityChecks.toastOn" />,
             icon: 'check',
         });

@@ -6,7 +6,7 @@ import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
-import { type Toast as ToastInterface, type ToastVariant } from '../toastsAtoms';
+import { type ToastIntent, type Toast as ToastInterface } from '../toastsAtoms';
 import { useToast } from '../useToast';
 
 type ToastProps = {
@@ -18,81 +18,82 @@ const TOAST_ANIMATION_DURATION = 500;
 
 type ToastStyle = {
     backgroundColor: Color;
+    borderColor: Color;
     iconBackgroundColor: Color;
-    textColor: Color;
-    iconColor: Color;
+    contentColor: Color;
 };
 
-const ToastContainerStyle = prepareNativeStyle<{ backgroundColor: Color; hasIcon: boolean }>(
-    (utils, { backgroundColor, hasIcon }) => ({
-        backgroundColor: utils.colors[backgroundColor],
-        paddingVertical: utils.spacings.sp4,
-        paddingLeft: utils.spacings.sp4,
-        paddingRight: utils.spacings.sp16,
-        borderRadius: utils.borders.radii.round,
-        extend: [
-            {
-                condition: !hasIcon,
-                style: {
-                    paddingLeft: utils.spacings.sp16,
-                    paddingVertical: 14,
-                },
+const ToastContainerStyle = prepareNativeStyle<{
+    backgroundColor: Color;
+    borderColor: Color;
+    hasIcon: boolean;
+}>((utils, { backgroundColor, borderColor, hasIcon }) => ({
+    backgroundColor: utils.colors[backgroundColor],
+    borderWidth: 1,
+    borderColor: utils.colors[borderColor],
+    paddingVertical: utils.spacings.sp4,
+    paddingLeft: utils.spacings.sp4,
+    paddingRight: utils.spacings.sp16,
+    borderRadius: utils.borders.radii.round,
+    ...utils.boxShadows.medium,
+    extend: [
+        {
+            condition: !hasIcon,
+            style: {
+                paddingLeft: utils.spacings.sp16,
+                paddingVertical: 14,
             },
-        ],
+        },
+    ],
+}));
+
+const IconContainerStyle = prepareNativeStyle<{ backgroundColor: Color }>(
+    (utils, { backgroundColor }) => ({
+        padding: utils.spacings.sp12,
+        borderRadius: utils.borders.radii.round,
+        backgroundColor: utils.colors[backgroundColor],
     }),
 );
 
-const IconContainerStyle = prepareNativeStyle<{
-    backgroundColor: Color;
-    isDefaultVariant: boolean;
-}>((utils, { backgroundColor, isDefaultVariant }) => ({
-    padding: utils.spacings.sp12,
-    borderRadius: utils.borders.radii.round,
-    backgroundColor: utils.transparentize(
-        isDefaultVariant ? 0.75 : 0,
-        utils.colors[backgroundColor],
-    ),
-}));
-
-const toastVariantToStyleMap = {
-    default: {
-        backgroundColor: 'legacyBackgroundNeutralBold',
-        iconBackgroundColor: 'contentSecondary',
-        textColor: 'contentButtonBrandPrimary',
-        iconColor: 'contentButtonBrandPrimary',
+const toastIntentToStyleMap = {
+    neutral: {
+        backgroundColor: 'surfaceFillModelessNeutralDark',
+        borderColor: 'surfaceBorderModelessNeutralDark',
+        iconBackgroundColor: 'elementFillOnDarkNeutralSoft',
+        contentColor: 'contentOnDarkPrimary',
     },
-    success: {
-        backgroundColor: 'legacyBackgroundPrimarySubtleOnElevation0',
-        iconBackgroundColor: 'legacyBackgroundPrimarySubtleOnElevation1',
-        textColor: 'contentBrand',
-        iconColor: 'contentBrand',
+    brand: {
+        backgroundColor: 'surfaceFillModelessBrand',
+        borderColor: 'surfaceBorderModelessBrand',
+        iconBackgroundColor: 'elementFillBrandSoft',
+        contentColor: 'contentBrand',
     },
     warning: {
-        backgroundColor: 'legacyBackgroundAlertYellowSubtleOnElevation0',
-        iconBackgroundColor: 'legacyBackgroundAlertYellowSubtleOnElevation1',
-        textColor: 'contentWarning',
-        iconColor: 'contentWarning',
+        backgroundColor: 'surfaceFillModelessWarning',
+        borderColor: 'surfaceBorderModelessWarning',
+        iconBackgroundColor: 'elementFillWarningSoft',
+        contentColor: 'contentWarning',
     },
-    error: {
-        backgroundColor: 'legacyBackgroundAlertRedSubtleOnElevation0',
-        iconBackgroundColor: 'legacyBackgroundAlertRedSubtleOnElevation1',
-        textColor: 'contentCritical',
-        iconColor: 'contentCritical',
+    critical: {
+        backgroundColor: 'surfaceFillModelessCritical',
+        borderColor: 'surfaceBorderModelessCritical',
+        iconBackgroundColor: 'elementFillCriticalSoft',
+        contentColor: 'contentCritical',
     },
     info: {
-        backgroundColor: 'legacyBackgroundAlertBlueSubtleOnElevation0',
-        iconBackgroundColor: 'legacyBackgroundAlertBlueSubtleOnElevation1',
-        textColor: 'contentInfo',
-        iconColor: 'contentInfo',
+        backgroundColor: 'surfaceFillModelessInfo',
+        borderColor: 'surfaceBorderModelessInfo',
+        iconBackgroundColor: 'elementFillInfoSoft',
+        contentColor: 'contentInfo',
     },
-} as const satisfies Record<ToastVariant, ToastStyle>;
+} as const satisfies Record<ToastIntent, ToastStyle>;
 
 export const Toast = ({ toast }: ToastProps) => {
     const { hideToast } = useToast();
     const { applyStyle } = useNativeStyles();
-    const { variant, icon, message } = toast;
-    const { backgroundColor, iconBackgroundColor, textColor, iconColor } =
-        toastVariantToStyleMap[variant];
+    const { intent, icon, message } = toast;
+    const { backgroundColor, borderColor, iconBackgroundColor, contentColor } =
+        toastIntentToStyleMap[intent];
 
     useEffect(() => {
         const timeout = setTimeout(() => hideToast(toast.id), TOAST_VISIBLE_DURATION);
@@ -104,20 +105,23 @@ export const Toast = ({ toast }: ToastProps) => {
         <Animated.View
             entering={FadeIn.duration(TOAST_ANIMATION_DURATION)}
             exiting={FadeOut.duration(TOAST_ANIMATION_DURATION)}
-            style={applyStyle(ToastContainerStyle, { backgroundColor, hasIcon: !!icon })}
+            style={applyStyle(ToastContainerStyle, {
+                backgroundColor,
+                borderColor,
+                hasIcon: !!icon,
+            })}
         >
             <HStack spacing="sp12" alignItems="center">
                 {icon && (
                     <Box
                         style={applyStyle(IconContainerStyle, {
                             backgroundColor: iconBackgroundColor,
-                            isDefaultVariant: variant === 'default',
                         })}
                     >
-                        <Icon name={icon} color={iconColor} size="medium" />
+                        <Icon name={icon} color={contentColor} size="medium" />
                     </Box>
                 )}
-                <Text color={textColor} variant="body-sm" testID="@toast">
+                <Text color={contentColor} variant="body-sm" testID="@toast">
                     {message}
                 </Text>
             </HStack>

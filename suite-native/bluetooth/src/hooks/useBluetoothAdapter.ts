@@ -91,7 +91,7 @@ export const useBluetoothAdapter = () => {
                     } else if (event.connectionStatus.type === 'pairing-canceled') {
                         showToast({
                             message: translate('bluetooth.toasts.pairingCanceled'),
-                            variant: 'default',
+                            intent: 'neutral',
                         });
                     } else if (event.connectionStatus.type === 'pairing-error') {
                         showPairingFailedAlert();

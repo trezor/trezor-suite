@@ -28,7 +28,7 @@ export const ProductionDebug = ({ children }: ProductionDebugProps) => {
         if (tapsCount === 7) {
             setIsDevButtonVisible(true);
             showToast({
-                variant: 'default',
+                intent: 'neutral',
                 message: 'Dev utils enabled.',
                 icon: 'check',
             });

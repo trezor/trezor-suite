@@ -91,7 +91,7 @@ export const AccountSettingsExportBip329Card = ({
 
         if (result.success) {
             showToast({
-                variant: 'default',
+                intent: 'neutral',
                 message: (
                     <Translation id="moduleAccounts.accountSettingsExportBip329Button.exportSuccessfulToast" />
                 ),
@@ -104,7 +104,7 @@ export const AccountSettingsExportBip329Card = ({
         switch (result.reason) {
             case 'exportFailed':
                 showToast({
-                    variant: 'error',
+                    intent: 'critical',
                     message: (
                         <Translation id="moduleAccounts.accountSettingsExportBip329Button.exportFailedToast" />
                     ),
@@ -113,7 +113,7 @@ export const AccountSettingsExportBip329Card = ({
                 return;
             case 'fileSavingNotSupported':
                 showToast({
-                    variant: 'error',
+                    intent: 'critical',
                     message: (
                         <Translation id="moduleAccounts.accountSettingsExportBip329Button.fileSavingNotSupported" />
                     ),

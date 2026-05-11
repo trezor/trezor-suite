@@ -80,7 +80,7 @@ export const useShowAutoEjectAlert = () => {
                             message: (
                                 <Translation id="moduleSettings.viewOnly.autoEject.alert.successToast" />
                             ),
-                            variant: 'default',
+                            intent: 'neutral',
                         });
                     },
                 });

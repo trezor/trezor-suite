@@ -69,7 +69,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
             ) {
                 showToast({
                     icon: 'warningCircle',
-                    variant: 'default',
+                    intent: 'neutral',
                     message: <Translation id="moduleReceive.deviceCancelError" />,
                 });
                 if (navigation.canGoBack()) {

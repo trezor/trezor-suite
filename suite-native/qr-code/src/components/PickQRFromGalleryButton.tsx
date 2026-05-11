@@ -28,7 +28,7 @@ export const PickQRFromGalleryButton = ({
         } catch {
             onError();
             showToast({
-                variant: 'error',
+                intent: 'critical',
                 icon: 'warning',
                 message: <Translation id="qrCode.pickImageError" />,
             });

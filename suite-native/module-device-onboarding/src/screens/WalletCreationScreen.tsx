@@ -69,7 +69,7 @@ export const WalletCreationScreen = () => {
             const isDefinitiveError = code && DEFINITIVE_ERRORS.includes(code);
             // inconclusive, so repeat the attempt
             if (!isDefinitiveError || getIsIgnoredEntropyCheckError(message)) {
-                showToast({ variant: 'error', message });
+                showToast({ intent: 'critical', message });
                 // This code is OK, but the eslint plugin crashes on recursive calls
                 // eslint-disable-next-line react-hooks/immutability
                 handleCreateAndBackupWallet();

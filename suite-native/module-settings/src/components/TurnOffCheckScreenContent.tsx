@@ -77,7 +77,7 @@ export const TurnOffCheckScreenContent = ({ title, onConfirm }: TurnOffCheckScre
             navigation.navigate(SettingsStackRoutes.SettingsAdvanced);
         }
         showToast({
-            variant: 'default',
+            intent: 'neutral',
             message: <Translation id="moduleSettings.advanced.authenticityChecks.toastOff" />,
             icon: 'check',
         });

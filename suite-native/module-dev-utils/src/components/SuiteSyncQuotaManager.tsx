@@ -45,7 +45,7 @@ export const SuiteSyncQuotaManager = () => {
         dispatch(updateQuotaManagerBaseUrl({ baseUrl: values.suiteSyncQuotaManagerUrl }));
         showToast({
             message: 'Quota Manager URL updated',
-            variant: 'success',
+            intent: 'brand',
         });
     });
 

@@ -20,7 +20,7 @@ export const WalletRememberModeIconButton = ({ device }: { device: TrezorDevice 
             dispatch(deviceActions.setRememberDevice({ device, remember: !device.remember }));
             if (device.remember) {
                 showToast({
-                    variant: 'default',
+                    intent: 'neutral',
                     message: (
                         <Translation id="moduleSettings.viewOnly.autoEject.toast.walletsWillBeEjected" />
                     ),
@@ -29,7 +29,7 @@ export const WalletRememberModeIconButton = ({ device }: { device: TrezorDevice 
         } else {
             dispatch(deviceActions.forgetDevice({ device }));
             showToast({
-                variant: 'default',
+                intent: 'neutral',
                 message: <Translation id="moduleSettings.viewOnly.autoEject.toast.walletEjected" />,
             });
         }

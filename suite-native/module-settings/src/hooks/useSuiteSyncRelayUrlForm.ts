@@ -65,7 +65,7 @@ export const useSuiteSyncRelayUrlForm = () => {
 
             await suiteSync.changeRelayUrl({ relayUrl });
             showToast({
-                variant: 'success',
+                intent: 'brand',
                 message: translate('moduleSettings.items.features.suiteSync.relayUrl.saved'),
             });
             onSuccess?.();

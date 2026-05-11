@@ -3,12 +3,12 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 import { ICON_NAMES } from '@suite-native/icons';
 
 import { Toast as ToastComponent } from '../components/Toast';
-import { type ToastVariant } from '../toastsAtoms';
+import { type ToastIntent } from '../toastsAtoms';
 
-const TOAST_VARIANTS: ToastVariant[] = ['default', 'success', 'warning', 'error', 'info'];
+const TOAST_INTENTS: ToastIntent[] = ['neutral', 'brand', 'warning', 'critical', 'info'];
 
 type ToastArgs = {
-    variant: ToastVariant;
+    intent: ToastIntent;
     message: string;
     icon?: (typeof ICON_NAMES)[number];
 };
@@ -17,11 +17,11 @@ type ToastStory = StoryObj<ToastArgs>;
 
 const meta: Meta<ToastArgs> = {
     title: 'Toasts',
-    render: ({ variant, message, icon }) => (
+    render: ({ intent, message, icon }) => (
         <ToastComponent
             toast={{
                 id: 0,
-                variant,
+                intent,
                 message,
                 icon,
             }}
@@ -34,14 +34,14 @@ export default meta;
 export const Toast: ToastStory = {
     name: 'Toast',
     args: {
-        variant: 'default',
+        intent: 'neutral',
         message: 'This is a toast message.',
         icon: undefined,
     },
     argTypes: {
-        variant: {
+        intent: {
             control: { type: 'select' },
-            options: TOAST_VARIANTS,
+            options: TOAST_INTENTS,
         },
         message: {
             control: { type: 'text' },
