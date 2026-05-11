@@ -252,6 +252,7 @@ export type EvmTransactionPurpose =
     | 'unknown'
     | 'deposit'
     | 'withdraw'
+    | 'redeem'
     | '';
 
 export interface RbfTransactionParamsEthereum {

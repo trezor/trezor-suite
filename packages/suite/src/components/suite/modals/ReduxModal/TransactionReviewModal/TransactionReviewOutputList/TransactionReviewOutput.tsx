@@ -92,6 +92,32 @@ const approvalStrings: Record<EvmApprovalPurpose, Record<'value' | 'label', Tran
     },
 };
 
+const yieldStrings: Record<
+    Extract<EvmTransactionPurpose, 'deposit' | 'withdraw' | 'redeem'>,
+    Record<'value' | 'label' | 'amount', TranslationKey>
+> = {
+    deposit: {
+        value: 'TR_EARN_YIELD_REVIEW_SUPPLY_DESCRIPTION',
+        label: 'TR_EARN_YIELD_REVIEW_SUPPLY_TITLE',
+        amount: 'TR_EARN_YIELD_REVIEW_SUPPLY_AMOUNT',
+    },
+    withdraw: {
+        value: 'TR_EARN_YIELD_REVIEW_WITHDRAW_DESCRIPTION',
+        label: 'TR_EARN_YIELD_REVIEW_WITHDRAW_TITLE',
+        amount: 'TR_EARN_YIELD_REVIEW_WITHDRAW_AMOUNT',
+    },
+    redeem: {
+        value: 'TR_EARN_YIELD_REVIEW_REDEEM_DESCRIPTION',
+        label: 'TR_EARN_YIELD_REVIEW_REDEEM_TITLE',
+        amount: 'TR_EARN_YIELD_REVIEW_REDEEM_AMOUNT',
+    },
+};
+
+const isYieldAction = (
+    evmTxType: EvmTransactionPurpose | undefined,
+): evmTxType is 'deposit' | 'withdraw' | 'redeem' =>
+    evmTxType === 'deposit' || evmTxType === 'withdraw' || evmTxType === 'redeem';
+
 const getTranslationValues = (
     networkType: NetworkType,
     stakeType?: StakeType,
@@ -112,17 +138,8 @@ const getTranslationValues = (
         return getStakeTranslations(stakeType, networkType);
     }
 
-    if (evmTxType === 'deposit' || evmTxType === 'withdraw') {
-        const isSupply = evmTxType === 'deposit';
-
-        return {
-            label: isSupply
-                ? 'TR_EARN_YIELD_REVIEW_SUPPLY_TITLE'
-                : 'TR_EARN_YIELD_REVIEW_WITHDRAW_TITLE',
-            value: isSupply
-                ? 'TR_EARN_YIELD_REVIEW_SUPPLY_DESCRIPTION'
-                : 'TR_EARN_YIELD_REVIEW_WITHDRAW_DESCRIPTION',
-        };
+    if (isYieldAction(evmTxType)) {
+        return yieldStrings[evmTxType];
     }
 
     return null;
@@ -176,13 +193,16 @@ const getOutputTitle = (
                 return <Translation id="TR_EARN_YIELD_DEPOSIT_TO" />;
             }
             if (evmTxType === 'withdraw') {
+                return <Translation id="TR_EARN_YIELD_WITHDRAW_FROM" />;
+            }
+            if (evmTxType === 'redeem') {
                 return <Translation id="TR_EARN_YIELD_REDEEM_FROM" />;
             }
 
             return <Translation id={translation ? translation.label : 'TR_RECIPIENT_ADDRESS'} />;
 
         case 'amount':
-            if (evmTxType === 'deposit' || evmTxType === 'withdraw') {
+            if (isYieldAction(evmTxType)) {
                 return <Translation id="AMOUNT" />;
             }
 
@@ -320,7 +340,7 @@ const getOutputLines = ({
                 device,
             );
 
-            if (evmTxType === 'deposit' || evmTxType === 'withdraw') {
+            if (isYieldAction(evmTxType)) {
                 if (type === 'data' && translationValues) {
                     return [
                         {
@@ -397,19 +417,11 @@ const getOutputLines = ({
                 },
             ];
         case 'amount': {
-            if (evmTxType === 'deposit' || evmTxType === 'withdraw') {
+            if (isYieldAction(evmTxType)) {
                 return [
                     {
                         id: 'amount',
-                        label: (
-                            <Translation
-                                id={
-                                    evmTxType === 'deposit'
-                                        ? 'TR_EARN_YIELD_REVIEW_SUPPLY_AMOUNT'
-                                        : 'TR_EARN_YIELD_REVIEW_WITHDRAW_AMOUNT'
-                                }
-                            />
-                        ),
+                        label: <Translation id={yieldStrings[evmTxType].amount} />,
                         value,
                         type: 'amount',
                         token: token || nativeToken,
