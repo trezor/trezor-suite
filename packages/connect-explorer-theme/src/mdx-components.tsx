@@ -3,6 +3,7 @@ import type { ComponentProps, HTMLProps, PropsWithChildren, ReactElement, ReactN
 import { Children, cloneElement, useEffect, useRef, useState } from 'react';
 
 import cn from 'clsx';
+import type { FrontMatter } from 'nextra';
 import { Code, Pre, Table, Td, Th, Tr } from 'nextra/components';
 import type { Components } from 'nextra/mdx';
 
@@ -186,7 +187,7 @@ export const getComponents = ({
     isRawLayout,
     components,
 }: {
-    frontMatter: any;
+    frontMatter: FrontMatter;
     isRawLayout?: boolean;
     components?: DocsThemeConfig['components'];
 }): Components => {
