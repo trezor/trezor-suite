@@ -29,6 +29,7 @@
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/coins-solana": "workspace:*",
+        "@trezor/coins-stellar": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
