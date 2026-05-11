@@ -872,10 +872,6 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         return this.features === undefined;
     }
 
-    isUnreadable() {
-        return !!this.unreadableError;
-    }
-
     private disconnect() {
         _log.debug('Disconnect cleanup');
 
@@ -938,10 +934,6 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
     getUniquePath() {
         return this.uniquePath;
-    }
-
-    isT1() {
-        return this.features ? this.features.major_version === 1 : false;
     }
 
     hasUnexpectedMode(allow: string[]) {
