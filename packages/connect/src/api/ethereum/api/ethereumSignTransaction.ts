@@ -171,7 +171,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
                 }
             }
 
-            return {
+            const result = {
                 type: 'final' as const,
                 inputs: [],
                 outputsPermutation: [0],
@@ -214,9 +214,13 @@ export default class EthereumSignTransaction extends AbstractMethod<
                     : undefined,
                 network: this.params.network,
             };
+
+            return Promise.resolve(result);
         } catch (e) {
             // Don't throw errors from this method
             console.error('Error in payloadToPrecomposed', e);
+
+            return Promise.resolve(undefined);
         }
     }
 

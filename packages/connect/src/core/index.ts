@@ -208,7 +208,7 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
         const response = method.getMethodInfo();
 
         if (message.payload.__precomposed) {
-            response.precomposed = method.payloadToPrecomposed();
+            response.precomposed = await method.payloadToPrecomposed();
         }
         sendCoreMessage(createResponseMessage(method.responseID, true, response));
 

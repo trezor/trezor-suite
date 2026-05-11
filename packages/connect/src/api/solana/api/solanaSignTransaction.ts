@@ -121,7 +121,7 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
         return 'Sign Solana transaction';
     }
 
-    payloadToPrecomposed() {
+    async payloadToPrecomposed() {
         try {
             let messageBytes;
             if (this.params.serialize) {
@@ -252,7 +252,7 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
             const fee = baseFee.plus(feePerUnit.multipliedBy(feeLimit).dividedBy(1e6));
             const totalSpent = sendAmount.plus(rent).plus(fee);
 
-            return {
+            const result = {
                 type: 'final' as const,
                 inputs: [],
                 outputsPermutation: [0],
@@ -269,9 +269,13 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
                 createdTimestamp:
                     'blockhash' in message.lifetimeConstraint ? new Date().getTime() : undefined,
             };
+
+            return Promise.resolve(result);
         } catch (e) {
             // Don't throw errors from this method
             console.error('Error in payloadToPrecomposed', e);
+
+            return Promise.resolve(undefined);
         }
     }
 
