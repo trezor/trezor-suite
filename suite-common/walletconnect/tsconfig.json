@@ -15,6 +15,7 @@
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
+        { "path": "../../coins/coins-stellar" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"
