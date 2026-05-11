@@ -46,7 +46,7 @@ export class CoinjoinBackendClient implements CoinjoinBackendClientShape {
         this.logger = settings.logger;
         this.blockbookUrls = arrayShuffle(settings.blockbookUrls, { randomInt: getWeakRandomInt });
         this.onionDomains = settings.onionDomains ?? {};
-        this.blockbookRequestId = Math.floor(Math.random() * settings.blockbookUrls.length);
+        this.blockbookRequestId = getWeakRandomInt(0, settings.blockbookUrls.length);
         this.websockets = new CoinjoinWebsocketController(settings);
 
         // This allows to subscribe to mempool WS disconnecting in this.subscribeMempoolTxs(),
