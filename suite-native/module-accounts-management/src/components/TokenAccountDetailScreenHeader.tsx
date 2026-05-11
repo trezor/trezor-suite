@@ -65,7 +65,7 @@ export const TokenAccountDetailScreenHeader = ({
     );
 
     const handleGoBack = useCallback(() => {
-        navigation.popTo(RootStackRoutes.AccountAssets, {
+        navigation.navigate(RootStackRoutes.AccountAssets, {
             accountKey,
             tab: tokenTab,
         });
