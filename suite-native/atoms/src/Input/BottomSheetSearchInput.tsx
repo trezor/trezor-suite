@@ -5,6 +5,7 @@ import { type TextInput } from 'react-native-gesture-handler';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 
 import { useNativeStyles } from '@trezor/styles-native';
+import { noop } from '@trezor/utils';
 
 import { Box } from '../Box';
 import { type SurfaceElevation } from '../types';
@@ -28,8 +29,6 @@ export type BottomSheetSearchInputProps = {
 
 export type BottomSheetSearchInputRef = TextInput | null;
 
-const noOp = () => {};
-
 export const BottomSheetSearchInput = forwardRef<
     BottomSheetSearchInputRef,
     BottomSheetSearchInputProps
@@ -41,8 +40,8 @@ export const BottomSheetSearchInput = forwardRef<
             maxLength,
             isDisabled = false,
             elevation = '0',
-            onFocus = noOp,
-            onBlur = noOp,
+            onFocus = noop,
+            onBlur = noop,
             value,
             autoCorrect,
             testId,

@@ -1,6 +1,7 @@
 import { type ReactNode, type RefObject, useCallback, useRef, useState } from 'react';
 
 import { useUpdateEffect } from '@suite-native/helpers';
+import { noop } from '@trezor/utils';
 
 import {
     ANIMATED_DOUBLE_VIEW_SWITCH_ANIMATION_DURATION,
@@ -20,8 +21,6 @@ export type AnimatedDoubleInputProps = {
     onInputSwitch?: (activeView: ActiveView) => void;
     switchLabel?: string;
 };
-
-const noop = () => {};
 
 export const AnimatedDoubleInput = ({
     renderPrimary,

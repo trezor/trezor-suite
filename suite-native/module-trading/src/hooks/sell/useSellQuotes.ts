@@ -16,6 +16,7 @@ import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { sellActions } from '@suite-native/trading-state';
 import { type AbortablePromise, type SellFormType } from '@suite-native/trading-types';
 import { useDebounce } from '@trezor/react-utils';
+import { noop } from '@trezor/utils';
 
 import { tradingSellFormToTradingSellFormProps } from '../../utils/sell/quotesUtils';
 import { useQuotesInvalidator } from '../general/useQuotesInvalidator';
@@ -44,8 +45,6 @@ const defaultState: ShouldFetchSellQuotesRef = {
     countrySubdivision: undefined,
     accountDescriptor: undefined,
 } as const;
-
-const noop = () => {};
 
 const useShouldFetchSellQuotes = ({ watch, control }: SellFormType): ShouldFetchSellQuotes => {
     const prevState = useRef<ShouldFetchSellQuotesRef>(defaultState);

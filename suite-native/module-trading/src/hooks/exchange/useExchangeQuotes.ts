@@ -21,6 +21,7 @@ import { exchangeActions, selectExchangeQuotes } from '@suite-native/trading-sta
 import { type AbortablePromise, type ExchangeFormType } from '@suite-native/trading-types';
 import { type Analytics } from '@trezor/analytics-uploader';
 import { useDebounce } from '@trezor/react-utils';
+import { noop } from '@trezor/utils';
 
 import { tradingExchangeFormToTradingExchangeFormProps } from '../../utils/exchange/quotesUtils';
 import { useQuotesInvalidator } from '../general/useQuotesInvalidator';
@@ -31,8 +32,6 @@ type ShouldFetchExchangeQuotesRef = {
     sendCryptoAmount: string | undefined;
     accountDescriptor: string | undefined;
 };
-
-const noop = () => {};
 
 const defaultState = {
     sendAsset: undefined,

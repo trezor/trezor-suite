@@ -40,6 +40,7 @@ import {
     usePrecomposedTransactionError,
 } from '@suite-native/transaction-management';
 import TrezorConnect from '@trezor/connect';
+import { noop } from '@trezor/utils';
 
 import { useConsent } from './useConsent';
 import { composeTradingTransactionThunk, signAndPushSendFormTransactionThunk } from '../../thunks';
@@ -289,9 +290,9 @@ export const useTradingTransaction = ({
                             shouldSendInSats,
                             isSlip24Active,
                             nextStep,
-                            processResponseData: processResponseData || (() => {}),
+                            processResponseData: processResponseData || noop,
                             triggerAnalyticsTradeConfirmation:
-                                triggerAnalyticsTradeConfirmation || (() => {}),
+                                triggerAnalyticsTradeConfirmation || noop,
                             signAndPushSendFormTransaction,
                         }),
                     ).unwrap();

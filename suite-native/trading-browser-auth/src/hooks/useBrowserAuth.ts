@@ -15,6 +15,7 @@ import { useTranslate } from '@suite-native/intl';
 import { captureSentryException } from '@suite-native/sentry';
 import { tradingActions } from '@suite-native/trading-state';
 import { exhaustive } from '@trezor/type-utils';
+import { noop } from '@trezor/utils';
 
 import type { BrowserAuthRet } from './useBrowserAuthTypes';
 import { useBrowserStateChangeCallbacks } from './useBrowserStateChangeCallbacks';
@@ -30,8 +31,6 @@ class BrowserAuthError extends Error {
         this.name = 'BrowserAuthError';
     }
 }
-
-const noop = () => {};
 
 const useLastErrorMessageDispatcher = (tradingType: TradingType | undefined) => {
     const dispatch = useDispatch();
