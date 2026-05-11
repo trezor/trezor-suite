@@ -31,7 +31,10 @@ import type { BulletListItemState } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
-import { submitYieldActionThunk } from 'src/actions/wallet/stablecoinYieldSigningThunks';
+import {
+    submitYieldDepositThunk,
+    submitYieldWithdrawThunk,
+} from 'src/actions/wallet/stablecoin-yield';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { useResolvedYieldFlowData } from './useResolvedYieldFlowData';
@@ -161,9 +164,7 @@ export const useYieldFlow = ({
     };
     const maxAmount = flowType === 'deposit' ? (token?.balance ?? '') : getWithdrawMaxAmount();
 
-    const inputTokenSymbol = isSharesInput
-        ? (receiptToken?.symbol ?? '')
-        : (token?.symbol ?? '');
+    const inputTokenSymbol = isSharesInput ? (receiptToken?.symbol ?? '') : (token?.symbol ?? '');
     const otherUnitTokenSymbol = isSharesInput
         ? (token?.symbol ?? '')
         : (receiptToken?.symbol ?? '');
@@ -465,10 +466,24 @@ export const useYieldFlow = ({
 
         const amount = methodsRef.current.getValues('amountInput');
 
+        if (flowType === 'withdraw') {
+            const currentInputUnit = methodsRef.current.getValues('withdrawInputUnit');
+
+            void dispatch(
+                submitYieldWithdrawThunk({
+                    flowKey,
+                    flowData: { account, vault, token, receiptToken },
+                    amount,
+                    withdrawInputUnit: currentInputUnit,
+                }),
+            );
+
+            return;
+        }
+
         void dispatch(
-            submitYieldActionThunk({
+            submitYieldDepositThunk({
                 flowKey,
-                flowType,
                 flowData: { account, vault, token, receiptToken },
                 amount,
             }),
