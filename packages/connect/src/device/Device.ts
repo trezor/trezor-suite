@@ -497,7 +497,12 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         if (acquireNeeded || !staticSessionId || (!deriveCardano && options.useCardanoDerivation)) {
             // update features
             try {
-                await handshakeCancel({ device: this, logger: _log, signal: abortSignal });
+                await handshakeCancel({
+                    device: this,
+                    logger: _log,
+                    signal: abortSignal,
+                    cancelNeeded: acquireNeeded && this.protocol.name !== 'v2',
+                });
 
                 if (this.protocol.name === 'v2') {
                     const withInteraction = !!fn;

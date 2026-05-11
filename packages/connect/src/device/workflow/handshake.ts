@@ -13,6 +13,7 @@ type Context = {
     device: WorkflowContext['device'];
     signal: AbortSignal;
     logger?: Log;
+    cancelNeeded?: boolean;
 };
 
 const isLegacyBridge = (transport: Context['device']['transport']) =>
@@ -27,9 +28,11 @@ const isLegacyBridge = (transport: Context['device']['transport']) =>
 //         the 'use device here' button and here you go. Yet I didn't want to burden every TrezorConnect method call with this but we may reconsider this.
 // note 5: ad note 4. it is not so problematic anymore since cleanup on dispose has been improved in https://github.com/trezor/trezor-suite/pull/16930
 // note 6: T1 with older bootloader (1.8.0) doesn't respond to Cancel message, so we better ignore those
-export const handshakeCancel = async ({ device, logger, signal }: Context) => {
+// note 7: when a session is freshly acquired (param cancelNeeded), cached features belong to the prior session
+//         Cancel must run regardless to flush any residual transport state (e.g. T1B1 leaves a spontaneous Failure_UnexpectedMessage after resetDevice)
+export const handshakeCancel = async ({ device, logger, signal, cancelNeeded }: Context) => {
     // device handshake already done
-    if (device.features || device.getThpState()?.properties) {
+    if (!cancelNeeded && (device.features || device.getThpState()?.properties)) {
         return;
     }
 
@@ -91,6 +94,16 @@ export const handshakeCancel = async ({ device, logger, signal }: Context) => {
                 result.payload.message.code === 'Failure_Busy'
             ) {
                 throw TypedError(result.payload.message.code, result.payload.message.message);
+            }
+
+            // Stale residual from a prior session; only drain when cancelNeeded — otherwise it is a legitimate Cancel response.
+            if (
+                cancelNeeded &&
+                result.payload.type === 'Failure' &&
+                result.payload.message.code === 'Failure_UnexpectedMessage'
+            ) {
+                logger?.debug(`handshake Cancel drained stale Failure_UnexpectedMessage`);
+                continue;
             }
 
             return;

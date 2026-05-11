@@ -150,7 +150,37 @@ describe('workflow/handshake', () => {
         expect(readMock).toHaveBeenCalledTimes(10);
     });
 
-    it('skipped. Device with features', async () => {
+    it('drains stale Failure_UnexpectedMessage before reading actual response', async () => {
+        // T1B1 firmware (v1.14.1+) can leave a spontaneous Failure_UnexpectedMessage in the
+        // transport buffer after some operations (e.g. resetDevice entropy check). That stale
+        // message must be drained so the actual Cancel response is not left for initialize().
+        //
+        // Protocol frame: ?## (3f 23 23) + type BE u16 (00 03 = Failure) + len BE u32 + protobuf
+        // Failure{code: UnexpectedMessage=1}: payload 08 01 → 3f23230003000000020801
+        // Failure{code: ActionCancelled=4}:   payload 08 04 → 3f23230003000000020804
+        const staleMessage = Buffer.from('3f23230003000000020801', 'hex');
+        const cancelResponse = Buffer.from('3f23230003000000020804', 'hex');
+
+        let readAttempt = 0;
+        const readMock = jest.fn(() => {
+            if (readAttempt === 0) {
+                readAttempt++;
+
+                return Promise.resolve({ success: true, payload: staleMessage });
+            }
+
+            return Promise.resolve({ success: true, payload: cancelResponse });
+        });
+
+        const { device, abortController, transport } = await getAcquiredDevice({ read: readMock });
+        const sendSpy = jest.spyOn(transport, 'send');
+        await handshakeCancel({ device, signal: abortController.signal, cancelNeeded: true });
+
+        expect(sendSpy).toHaveBeenCalledTimes(1); // Cancel was sent
+        expect(readMock).toHaveBeenCalledTimes(2); // stale drained, then actual response
+    });
+
+    it('skipped. Device with features on same ongoing session', async () => {
         const { device, abortController, transport } = await getAcquiredDevice();
         await device.getFeatures();
 
@@ -158,6 +188,19 @@ describe('workflow/handshake', () => {
         await handshakeCancel({ device, signal: abortController.signal });
 
         expect(sendSpy).toHaveBeenCalledTimes(0);
+    });
+
+    it('NOT skipped. Device with features but freshly acquired session', async () => {
+        // Simulates: previous call (e.g. resetDevice) left device.features set, then released
+        // the session. Next call acquires a new session — Cancel must run to flush residual
+        // transport state regardless of the cached features.
+        const { device, abortController, transport } = await getAcquiredDevice();
+        await device.getFeatures();
+
+        const sendSpy = jest.spyOn(transport, 'send');
+        await handshakeCancel({ device, signal: abortController.signal, cancelNeeded: true });
+
+        expect(sendSpy).toHaveBeenCalledTimes(1);
     });
 
     it('skipped. Device with protocol v2', async () => {
