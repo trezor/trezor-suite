@@ -1,4 +1,4 @@
-import { type Log, type LogMessage as UtilsLogMessage } from '@trezor/utils';
+import { type Log, type LogWriter, type LogMessage as UtilsLogMessage } from '@trezor/utils';
 
 /** take an instance of ILogger and return mimicked instance of Log while keeping more or less the same behavior  */
 export const convertILoggerToLog = (
@@ -15,8 +15,8 @@ export const convertILoggerToLog = (
     enabled: true,
     css: '',
     MAX_ENTRIES: 1000,
-    setColors: (_colors: any) => {},
-    setWriter: (_logWriter: any) => {},
+    setColors: (_colors: Record<string, string>) => {},
+    setWriter: (_logWriter: LogWriter) => {},
     addMessage: (_msg: UtilsLogMessage) => {},
     logWriter: undefined,
     getLog: (): UtilsLogMessage[] =>
