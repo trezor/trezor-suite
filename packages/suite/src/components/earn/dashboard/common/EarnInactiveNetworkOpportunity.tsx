@@ -4,7 +4,11 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { selectEnabledNetworks, selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import {
+    selectEnabledNetworks,
+    selectHasRunningDiscovery,
+    startOrRestartDiscoveryThunk,
+} from '@suite-common/wallet-core';
 import { Button, Paragraph, TOOLTIP_DELAY_NORMAL, Table, Tooltip } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -27,7 +31,8 @@ export const EarnInactiveNetworkOpportunity = ({
     const { device } = useDevice();
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-    const isDiscoveringThisNetwork = isDiscoveryRunning && enabledNetworks.includes(symbol);
+    const isNetworkEnabled = enabledNetworks.includes(symbol);
+    const isDiscoveringThisNetwork = isDiscoveryRunning && isNetworkEnabled;
     const { name } = getNetwork(symbol);
 
     const isDeviceDisconnected = !device || !device.connected;
@@ -36,8 +41,14 @@ export const EarnInactiveNetworkOpportunity = ({
         <Translation id="TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT" />
     ) : undefined;
 
-    const openAddAcountModal = () => {
+    const handleActivate = () => {
         if (!device) {
+            return;
+        }
+
+        if (isNetworkEnabled) {
+            dispatch(startOrRestartDiscoveryThunk());
+
             return;
         }
 
@@ -82,7 +93,7 @@ export const EarnInactiveNetworkOpportunity = ({
                 >
                     <Button
                         size="small"
-                        onClick={openAddAcountModal}
+                        onClick={handleActivate}
                         isDisabled={isButtonDisabled}
                         isLoading={isDiscoveringThisNetwork}
                     >
