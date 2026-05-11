@@ -22,7 +22,7 @@ export const useSuiteSyncErrorHandler = () => {
             case 'DeviceCancelled':
             case 'SuiteSyncUpdateError':
                 showToast({
-                    variant: 'error',
+                    intent: 'critical',
                     icon: 'warning',
                     message: translate(suiteSyncErrorMessageMap[type]),
                 });
@@ -33,7 +33,7 @@ export const useSuiteSyncErrorHandler = () => {
                 // enabled and will fetch keys the next time the device connects.
                 if (isDeviceConnected) {
                     showToast({
-                        variant: 'error',
+                        intent: 'critical',
                         icon: 'warning',
                         message: translate(suiteSyncErrorMessageMap[type]),
                     });

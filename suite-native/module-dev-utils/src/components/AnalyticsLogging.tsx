@@ -48,7 +48,7 @@ export const AnalyticsLogging = () => {
         reset({ analyticsUrl: trimmedUrl });
         showToast({
             message: url ? 'Analytics URL updated' : 'Analytics URL reset to default',
-            variant: 'success',
+            intent: 'brand',
         });
     });
 
@@ -58,7 +58,7 @@ export const AnalyticsLogging = () => {
         analytics.setUrl(undefined);
         showToast({
             message: 'Analytics URL reset to default',
-            variant: 'success',
+            intent: 'brand',
         });
     };
 

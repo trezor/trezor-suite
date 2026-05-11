@@ -28,7 +28,7 @@ export const useDeviceCompromisedNotification = () => {
         if (revisionCheckError === null) return;
         if (getIsRevisionCheckErrorWithNotification(revisionCheckError)) {
             showToast({
-                variant: 'error',
+                intent: 'critical',
                 message: translate(revisionCheckNotifications[revisionCheckError]),
             });
         }

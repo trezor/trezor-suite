@@ -41,7 +41,7 @@ export const useFirmwareLanguage = () => {
             const unwrappedResult = result.payload;
             if (unwrappedResult.success) {
                 showToast({
-                    variant: 'default',
+                    intent: 'neutral',
                     message: translate('firmware.changeLanguage.success', {
                         languageName: LANGUAGES[language].name,
                     }),

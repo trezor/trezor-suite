@@ -57,7 +57,7 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
         (messageKey: TxKeyPath) => {
             showToast({
                 icon: 'check',
-                variant: 'success',
+                intent: 'brand',
                 message: <Translation id={messageKey} />,
             });
         },

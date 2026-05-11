@@ -42,12 +42,12 @@ export const useDeviceAutoConnect = () => {
         if (result && isRejected(result)) {
             TrezorConnect.cancel();
             showToast({
-                variant: 'error',
+                intent: 'critical',
                 message: translate('moduleDeviceSettings.autoConnect.errorToast'),
             });
         } else {
             showToast({
-                variant: 'success',
+                intent: 'brand',
                 message: translate('moduleDeviceSettings.autoConnect.successToast'),
             });
         }

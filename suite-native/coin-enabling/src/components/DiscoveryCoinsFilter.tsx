@@ -40,7 +40,7 @@ export const DiscoveryCoinsFilter = ({
         if (!isDeviceConnected && isEnabled) {
             const { name } = getNetwork(symbol);
             showToast({
-                variant: 'default',
+                intent: 'neutral',
                 message: (
                     <Translation
                         id="moduleSettings.coinEnabling.toasts.coinEnabled"

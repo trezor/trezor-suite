@@ -28,7 +28,7 @@ export const useTogglePassphrase = () => {
 
         if (!response.success) {
             showToast({
-                variant: 'default',
+                intent: 'neutral',
                 message: response.error.message,
                 icon: 'check',
             });

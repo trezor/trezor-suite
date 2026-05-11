@@ -79,7 +79,7 @@ export const useTurnOnSuiteSyncGuard = () => {
                 case 'DeviceCancelled':
                 case 'DeviceError':
                     showToast({
-                        variant: 'error',
+                        intent: 'critical',
                         icon: 'warning',
                         message: translate(suiteSyncErrorMessageMap[type]),
                     });

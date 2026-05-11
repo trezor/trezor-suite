@@ -50,7 +50,7 @@ export const DeviceFirmwareCard = () => {
     const handleOnPress = () => {
         if (!isFirmwareUpdateEnabled) {
             showToast({
-                variant: 'warning',
+                intent: 'warning',
                 message: <Translation id="firmware.updateNotAvailable" />,
                 icon: 'warning',
             });

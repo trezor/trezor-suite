@@ -29,7 +29,7 @@ export const WalletConnectPairBottomSheet = ({
             .unwrap()
             .catch(error => {
                 showToast({
-                    variant: 'warning',
+                    intent: 'warning',
                     message: error.message,
                 });
             })

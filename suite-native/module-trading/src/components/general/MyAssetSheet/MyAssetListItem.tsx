@@ -38,7 +38,7 @@ export const MyAssetListItem = ({ account, asset, onPress }: MyAssetListItemProp
             onPress(tradeableAsset, account);
         } else {
             showToast({
-                variant: 'default',
+                intent: 'neutral',
                 message: <Translation id="moduleTrading.myAssetSheet.noPair.toast" />,
             });
         }

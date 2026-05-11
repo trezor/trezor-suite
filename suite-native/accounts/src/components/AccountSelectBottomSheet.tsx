@@ -59,7 +59,7 @@ export const AccountSelectBottomSheet = React.memo(
                                         });
                                     } else {
                                         showToast({
-                                            variant: 'warning',
+                                            intent: 'warning',
                                             message: (
                                                 <Translation id="accountList.stakingDisabled" />
                                             ),

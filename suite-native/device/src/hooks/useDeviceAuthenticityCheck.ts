@@ -106,7 +106,7 @@ export const useDeviceAuthenticityCheck = () => {
     const handleDeviceAccessError = useCallback(
         (error: string) => {
             showToast({
-                variant: 'error',
+                intent: 'critical',
                 message: translate('moduleDeviceSettings.authenticity.toast.failed', { error }),
             });
             reportCheckResult('failed', error);
@@ -120,7 +120,7 @@ export const useDeviceAuthenticityCheck = () => {
                 // Error code is Failure_ProcessError, but  Not all Failure_ProcessError codes mean the bootloader is unlocked,
                 // so this custom condition prevents false positives for that case.
                 showToast({
-                    variant: 'error',
+                    intent: 'critical',
                     message: translate('moduleDeviceSettings.authenticity.toast.error', {
                         error,
                     }),
@@ -135,7 +135,7 @@ export const useDeviceAuthenticityCheck = () => {
                 case 'Failure_PinCancelled': // PIN entry cancelled on T3T1
                     navigation.goBack();
                     showToast({
-                        variant: 'info',
+                        intent: 'info',
                         message: translate('moduleDeviceSettings.authenticity.toast.canceled'),
                     });
                     reportCheckResult('cancelled');
@@ -143,7 +143,7 @@ export const useDeviceAuthenticityCheck = () => {
                 default:
                     navigation.goBack();
                     showToast({
-                        variant: 'error',
+                        intent: 'critical',
                         message: translate('moduleDeviceSettings.authenticity.toast.error', {
                             error,
                         }),

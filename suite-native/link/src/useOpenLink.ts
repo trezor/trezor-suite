@@ -12,7 +12,7 @@ export const useOpenLink = () => {
 
     const showErrorToast = useCallback(() => {
         showToast({
-            variant: 'error',
+            intent: 'critical',
             icon: 'warning',
             message: 'Unable to open the link',
         });

@@ -20,7 +20,7 @@ export const ForgetDeviceFinishScreen = () => {
             navigation.addListener('beforeRemove', () => {
                 showToast({
                     icon: 'check',
-                    variant: 'default',
+                    intent: 'neutral',
                     message: <Translation id="moduleDeviceSettings.forgetDevice.successToast" />,
                 });
             }),

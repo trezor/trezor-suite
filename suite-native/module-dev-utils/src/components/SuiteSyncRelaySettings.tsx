@@ -34,7 +34,7 @@ export const SuiteSyncRelaySettings = () => {
         await suiteSync.changeRelayUrl({ relayUrl: values.suiteSyncRelayUrl });
         showToast({
             message: 'Suite Sync relay URL updated',
-            variant: 'success',
+            intent: 'brand',
         });
     });
 
@@ -51,7 +51,7 @@ export const SuiteSyncRelaySettings = () => {
         form.reset({ suiteSyncRelayUrl: DEFAULT_SUITE_SYNC_RELAY_URL });
         showToast({
             message: 'Suite Sync relay URL reset to default',
-            variant: 'success',
+            intent: 'brand',
         });
     };
 
