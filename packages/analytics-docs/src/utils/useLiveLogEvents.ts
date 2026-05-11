@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { removeTrailingSlashes } from '@trezor/utils';
+
 import type { LiveLogEvent } from '../types';
 
 const STREAM_PATH = '/api/analytics-events/stream';
 const CLEAR_PATH = '/api/analytics-events/clear';
 
-const joinUrl = (baseUrl: string, path: string) => `${baseUrl.replace(/\/+$/, '')}${path}`;
+const joinUrl = (baseUrl: string, path: string) => `${removeTrailingSlashes(baseUrl)}${path}`;
 
 export const useLiveLogEvents = (baseUrl: string) => {
     const [events, setEvents] = useState<LiveLogEvent[]>([]);
