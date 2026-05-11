@@ -21,6 +21,7 @@ export const SellToFiatTradePreviewCard = ({ quote }: SellToFiatTradePreviewCard
         <TradeFiatSideCard
             fiatCurrency={quote.fiatCurrency as FiatCurrencyCode}
             paymentMethod={quote.paymentMethod}
+            paymentMethodName={quote.paymentMethodName}
             amount={
                 !!toStringValue && (
                     <Text variant="body-sm" color="contentBrand">

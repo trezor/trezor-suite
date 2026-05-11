@@ -11,6 +11,7 @@ import { PaymentMethodTranslation } from '../PaymentMethodTranslation';
 
 export type TradeFiatSideCardProps = {
     paymentMethod: ExtendedSellCryptoPaymentMethod;
+    paymentMethodName?: string;
     amount: ReactNode;
     title: ReactNode;
     fiatCurrency: FiatCurrencyCode;
@@ -21,13 +22,17 @@ export const TradeFiatSideCard = ({
     amount,
     title,
     fiatCurrency,
+    paymentMethodName,
 }: TradeFiatSideCardProps) => (
     <Card noPadding>
         <TradeInfoHeader
             title={title}
             rightContent={
                 <Text variant="body-sm">
-                    <PaymentMethodTranslation paymentMethod={paymentMethod} />
+                    <PaymentMethodTranslation
+                        paymentMethod={paymentMethod}
+                        paymentMethodName={paymentMethodName}
+                    />
                 </Text>
             }
         />
