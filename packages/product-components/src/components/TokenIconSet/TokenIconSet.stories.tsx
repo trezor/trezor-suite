@@ -63,6 +63,20 @@ export const TokenIconSet: StoryObj<TokenIconSetProps> = {
                 type: 'select',
             },
         },
+        maxVisibleIcons: {
+            options: [null, undefined, 1, 2, 3, 4],
+            control: {
+                type: 'select',
+                labels: {
+                    null: 'Unlimited (null)',
+                    undefined: 'Default (3)',
+                    1: '1',
+                    2: '2',
+                    3: '3',
+                    4: '4',
+                },
+            },
+        },
         isCountVisible: {
             control: 'boolean',
         },

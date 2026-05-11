@@ -64,7 +64,7 @@ export const EmptyWallet = () => {
                                 networks={enabledNetworks}
                                 size={20}
                                 gap={16}
-                                maxVisibleIcons={undefined}
+                                maxVisibleIcons={null}
                             />
                         </Box>
                     </Row>
