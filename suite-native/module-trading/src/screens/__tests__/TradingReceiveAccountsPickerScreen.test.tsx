@@ -2,7 +2,7 @@ import { type RouteProp } from '@react-navigation/native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
+import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
 import { accounts } from '@suite-native/trading-fixtures';
 
 import {
@@ -22,7 +22,7 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () =>
         ({
             params: { ...mockRouteParams },
-        }) as RouteProp<TradingStackParamList, TradingStackRoutes.ReceiveAccounts>,
+        }) as RouteProp<RootStackParamList, RootStackRoutes.ReceiveAccounts>,
 }));
 
 const overridesWithAccounts = (

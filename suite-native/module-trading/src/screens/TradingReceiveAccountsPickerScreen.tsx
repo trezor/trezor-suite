@@ -10,10 +10,10 @@ import {
 } from '@suite-native/module-add-accounts';
 import {
     type AddCoinFlowType,
+    type RootStackParamList,
+    type RootStackRoutes,
     Screen,
     ScreenHeader,
-    type TradingStackParamList,
-    type TradingStackRoutes,
 } from '@suite-native/navigation';
 import {
     selectBuySelectedReceiveAccount,
@@ -26,7 +26,7 @@ import { type ReceiveAccountsListMode } from '../hooks/general/useReceiveAccount
 export const TradingReceiveAccountsPickerScreen = () => {
     const {
         params: { symbol, tradingType },
-    } = useRoute<RouteProp<TradingStackParamList, TradingStackRoutes.ReceiveAccounts>>();
+    } = useRoute<RouteProp<RootStackParamList, RootStackRoutes.ReceiveAccounts>>();
 
     const accountSelector =
         tradingType === 'buy'

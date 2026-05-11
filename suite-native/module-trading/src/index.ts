@@ -3,6 +3,8 @@ export * from './screens/TradingConfirmingScreen';
 export * from './screens/TradingExchangeApprovalScreen';
 export * from './screens/TradingExchangePreviewScreen';
 export * from './screens/TradingExchangeRevokeScreen';
+export * from './screens/TradingHistoryScreen';
 export * from './screens/TradingOutputsReviewScreen';
+export * from './screens/TradingReceiveAccountsPickerScreen';
 export * from './screens/TradingSellPreviewScreen';
 export * from './thunks';

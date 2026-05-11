@@ -14,9 +14,10 @@ import {
 import { events } from '@suite-native/analytics';
 import {
     type RootStackParamList,
+    RootStackRoutes,
     type StackToStackCompositeNavigationProps,
     type TradingStackParamList,
-    TradingStackRoutes,
+    type TradingStackRoutes,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
@@ -32,7 +33,7 @@ import {
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     TradingStackParamList,
-    TradingStackRoutes.ReceiveAccounts,
+    TradingStackRoutes.Trading,
     RootStackParamList
 >;
 
@@ -73,7 +74,7 @@ export const useBuyFlow = (form: BuyFormType) => {
     const selectReceiveAccount = () => {
         const selectedNetworkSymbol = getSymbolFromTradeableAsset(asset);
         if (selectedNetworkSymbol) {
-            navigation.navigate(TradingStackRoutes.ReceiveAccounts, {
+            navigation.navigate(RootStackRoutes.ReceiveAccounts, {
                 symbol: selectedNetworkSymbol,
                 tradingType: 'buy',
             });

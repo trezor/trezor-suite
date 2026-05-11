@@ -481,6 +481,11 @@ export type RootStackParamList = {
     [RootStackRoutes.TradingConfirming]: {
         flowType: ConfirmingScreenFlowType;
     };
+    [RootStackRoutes.ReceiveAccounts]: {
+        symbol: NetworkSymbol;
+        tradingType: Exclude<TradingType, 'sell'>;
+    };
+    [RootStackRoutes.TradingHistory]: undefined;
 };
 
 export type TransactionDetailStackParamList = {
@@ -502,11 +507,6 @@ export type ExchangeFlowType = 'swap' | ConfirmingScreenFlowType;
 
 export type TradingStackParamList = {
     [TradingStackRoutes.Trading]: { tradingType?: TradingType };
-    [TradingStackRoutes.ReceiveAccounts]: {
-        symbol: NetworkSymbol;
-        tradingType: Exclude<TradingType, 'sell'>;
-    };
-    [TradingStackRoutes.TradingHistory]: undefined;
 };
 
 export type StellarManageTokenStackParamList = {

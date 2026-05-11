@@ -1,7 +1,7 @@
 import { type RouteProp } from '@react-navigation/native';
 
 import { events } from '@suite-native/analytics';
-import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
+import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { renderWithStoreProvider, screen, userEvent } from '@suite-native/test-utils-store';
 
@@ -25,7 +25,7 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () =>
         ({
             params: undefined,
-        }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingHistory>,
+        }) as RouteProp<RootStackParamList, RootStackRoutes.TradingHistory>,
 }));
 
 jest.mock('../../hooks/useExitOnboardingFlow', () => ({

@@ -11,9 +11,10 @@ import { Translation, useTranslate } from '@suite-native/intl';
 import { type CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
 import {
     type RootStackParamList,
+    RootStackRoutes,
     type StackToStackCompositeNavigationProps,
     type TradingStackParamList,
-    TradingStackRoutes,
+    type TradingStackRoutes,
 } from '@suite-native/navigation';
 import { OverviewRow } from '@suite-native/trading-atoms';
 import { type ReceiveAccount } from '@suite-native/trading-types';
@@ -44,7 +45,7 @@ type ReceiveAccountPickerRightProps = {
 
 export type NavigationProps = StackToStackCompositeNavigationProps<
     TradingStackParamList,
-    TradingStackRoutes.ReceiveAccounts,
+    TradingStackRoutes.Trading,
     RootStackParamList
 >;
 
@@ -131,7 +132,7 @@ export const ReceiveAccountPicker = ({
     }
 
     const openAccountPicker = () =>
-        navigation.navigate(TradingStackRoutes.ReceiveAccounts, { symbol, tradingType });
+        navigation.navigate(RootStackRoutes.ReceiveAccounts, { symbol, tradingType });
 
     const addressText = getReceiveAccountAddressText(receiveAccount) ?? '';
 
