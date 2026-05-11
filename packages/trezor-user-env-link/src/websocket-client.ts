@@ -2,6 +2,7 @@
 
 import fetch from 'cross-fetch';
 
+import { resolveAfter } from '@trezor/utils';
 import {
     WebsocketClient as WebsocketClientBase,
     type WebsocketResponse as WebsocketResponseData,
@@ -21,8 +22,6 @@ const USER_ENV_URL = {
     WEBSOCKET: `ws://127.0.0.1:9001/`,
     DASHBOARD: `http://127.0.0.1:9002`,
 };
-
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export type WebsocketClientEvents = {
     firmwares: Firmwares;
@@ -115,7 +114,7 @@ export class WebsocketClient extends WebsocketClientBase<WebsocketClientEvents> 
             if (i === limit - 1) {
                 console.log(`cant connect to trezor-user-env: ${error}\n`);
             }
-            await delay(1000);
+            await resolveAfter(1000);
 
             try {
                 const res = await fetch(USER_ENV_URL.DASHBOARD);

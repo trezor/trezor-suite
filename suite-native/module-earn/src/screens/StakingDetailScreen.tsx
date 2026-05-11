@@ -10,11 +10,10 @@ import { isStakingSymbol, parseAccountKey } from '@suite-common/wallet-utils';
 import { ContextMessage } from '@suite-native/message-system';
 import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-native/navigation';
 import { useNativeStyles } from '@trezor/styles-native';
+import { resolveAfter } from '@trezor/utils';
 
 import { StakingDetailScreenHeader } from '../components/StakingDetailScreenHeader';
 import { StakingInfo } from '../components/StakingInfo';
-
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const StakingDetailScreen = () => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.StakingDetail>>();
@@ -33,7 +32,7 @@ export const StakingDetailScreen = () => {
         setIsRefreshing(true);
         await dispatch(initStakeDataThunk());
         // sleep little bit because it's too fast
-        await sleep(1000);
+        await resolveAfter(1000);
         setIsRefreshing(false);
     }, [dispatch]);
 
