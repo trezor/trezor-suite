@@ -21,9 +21,9 @@
  */
 export const getMutex = () => {
     const DEFAULT_ID = Symbol();
-    const locks: Record<keyof any, Promise<void>> = {};
+    const locks: Record<PropertyKey, Promise<void>> = {};
 
-    return async (lockId: keyof any = DEFAULT_ID) => {
+    return async (lockId: PropertyKey = DEFAULT_ID) => {
         while (locks[lockId]) {
             await locks[lockId];
         }
