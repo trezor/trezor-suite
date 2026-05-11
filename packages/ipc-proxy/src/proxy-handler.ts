@@ -39,9 +39,8 @@ interface IpcMainEvents<Api> {
     '/request': [string, ...Parameters<ApiUnion<Api>>]; // responseEvent, methodName, ...params
 }
 
-interface IpcMainHandlers<Api> {
+interface IpcMainHandlers {
     '/create': [string, ...any[]]; // channelName, ...params of interface constructor
-    '/invoke': Parameters<ApiUnion<Api>>; // methodName, ...params
 }
 
 export interface ElectronIpcMainEvent {
@@ -56,9 +55,9 @@ interface ElectronIpcMain<Api> {
         listener: (event: ElectronIpcMainEvent, args: IpcMainEvents<Api>[K]) => void,
     ): any;
     on(channel: string, listener: (event: ElectronIpcMainInvokeEvent, ...args: any[]) => void): any; // just to type compatibility with original Electron.IpcMain
-    handle<K extends keyof IpcMainHandlers<Api>, Key extends string>(
+    handle<K extends keyof IpcMainHandlers, Key extends string>(
         channel: `${Key}${K}`,
-        listener: (event: ElectronIpcMainInvokeEvent, args: IpcMainHandlers<Api>[K]) => void,
+        listener: (event: ElectronIpcMainInvokeEvent, args: IpcMainHandlers[K]) => void,
     ): any;
     handle(
         channel: string,
@@ -137,14 +136,6 @@ export const createIpcProxyHandler = <Api extends EventEmitterApi>(
                 });
             }
         });
-
-        ipcMain.handle(`${instancePrefix}/invoke`, async (ipcEventInvoke, params) => {
-            validateIpcMessage({ ipcEvent: ipcEventInvoke });
-
-            const payload = await onRequest(...params);
-
-            return payload;
-        });
     });
 
     return () => {
@@ -156,7 +147,5 @@ export const createIpcProxyHandler = <Api extends EventEmitterApi>(
         });
 
         ipcMain.removeHandler(`${channel}/create`);
-        // ipcMain.removeHandler(`${instancePrefix}/invoke`); // TODO: filter unregistered to get instancePrefix
-        // TODO remove all invoke handlers
     };
 };
