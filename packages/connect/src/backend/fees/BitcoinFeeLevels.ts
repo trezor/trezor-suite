@@ -2,6 +2,7 @@
 
 import type { BitcoinNetworkInfo } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { clamp } from '@trezor/utils/src/number';
 
 import type { Blockchain } from '../Blockchain';
 import { MiscFeeLevels } from './MiscFeeLevels';
@@ -33,7 +34,7 @@ export class BitcoinFeeLevels extends MiscFeeLevels {
                 // in case of invalid blockbook response, keep the previous or default data
                 if (isNaN(feePerB) || feePerB < 0) return;
 
-                const trimmedFeePerUnit = Math.min(maxFee, Math.max(minFee, feePerB));
+                const trimmedFeePerUnit = clamp(feePerB, minFee, maxFee);
                 this.levels[index].feePerUnit = trimmedFeePerUnit.toString();
             });
             this.wasFetchedSuccessfully = true;

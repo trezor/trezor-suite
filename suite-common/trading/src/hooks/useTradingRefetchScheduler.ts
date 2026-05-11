@@ -1,11 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { clamp } from '@trezor/utils';
+
 import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS } from '../constants';
 import { useSelector } from './useSelector';
 import { tradingActions } from '../reducers/tradingCommonReducer';
 import { selectTradingQuoteRefetchingState } from '../selectors/tradingSelectors';
-import { clamp } from '../utils/numberUtils';
 
 type UseTradingRefetchSchedulerProps = {
     onRefetch: () => void;
