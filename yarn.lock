@@ -12210,6 +12210,7 @@ __metadata:
     "@trezor/connect-mobile": "workspace:^"
     "@trezor/e2e-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/react-native-nfc": "workspace:*"
     "@trezor/react-native-usb": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
@@ -13512,6 +13513,7 @@ __metadata:
     "@suite-native/bluetooth": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-authorization": "workspace:*"
+    "@suite-native/feature-flags": "workspace:*"
     "@suite-native/firmware": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/helpers": "workspace:*"
@@ -13525,6 +13527,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/react-native-nfc": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -14295,6 +14298,7 @@ __metadata:
     "@suite-native/graph": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/message-system": "workspace:*"
+    "@suite-native/module-device-settings": "workspace:*"
     "@suite-native/send": "workspace:*"
     "@suite-native/sentry": "workspace:*"
     "@suite-native/services": "workspace:*"
@@ -16379,6 +16383,17 @@ __metadata:
   resolution: "@trezor/protocol@workspace:packages/protocol"
   peerDependencies:
     tslib: ^2.6.2
+  languageName: unknown
+  linkType: soft
+
+"@trezor/react-native-nfc@workspace:*, @trezor/react-native-nfc@workspace:packages/react-native-nfc":
+  version: 0.0.0-use.local
+  resolution: "@trezor/react-native-nfc@workspace:packages/react-native-nfc"
+  peerDependencies:
+    expo: "*"
+    expo-modules-core: "*"
+    react: "*"
+    react-native: "*"
   languageName: unknown
   linkType: soft
 

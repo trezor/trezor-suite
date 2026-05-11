@@ -109,6 +109,7 @@ export enum DeviceSettingsStackRoutes {
     DeviceAuthenticityStack = 'DeviceAuthenticityStack',
     WipeDevice = 'WipeDevice',
     WipeDeviceStack = 'WipeDeviceStack',
+    HealthCheck = 'HealthCheck',
 }
 
 export enum DeviceNameStackRoutes {

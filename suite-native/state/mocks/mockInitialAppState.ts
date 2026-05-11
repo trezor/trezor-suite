@@ -64,6 +64,7 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
     logs: logsSliceInitialState,
     messageSystem: messageSystemInitialState,
     nativeFirmware: nativeFirmwareInitialState,
+    nfcTags: { labels: {} },
     notifications: createNotificationsReducer<TxKeyPath>().initialState,
     pendingCoinVisibility: pendingCoinVisibilitySlice.getInitialState(),
     suiteSync: initialSuiteSyncState,

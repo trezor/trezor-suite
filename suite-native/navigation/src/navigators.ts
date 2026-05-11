@@ -287,6 +287,17 @@ export type DeviceSettingsStackParamList = {
     [DeviceSettingsStackRoutes.WipeDeviceStack]:
         | NavigatorScreenParams<WipeDeviceStackParamList>
         | undefined;
+    [DeviceSettingsStackRoutes.HealthCheck]:
+        | {
+              ndefRecords?: Array<{
+                  tnf: number;
+                  type: string;
+                  id: string;
+                  payload: string;
+                  payloadText: string | null;
+              }>;
+          }
+        | undefined;
 };
 
 export type DeviceNameStackParamList = {

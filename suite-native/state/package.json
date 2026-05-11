@@ -47,6 +47,7 @@
         "@suite-native/graph": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/message-system": "workspace:*",
+        "@suite-native/module-device-settings": "workspace:*",
         "@suite-native/send": "workspace:*",
         "@suite-native/sentry": "workspace:*",
         "@suite-native/services": "workspace:*",

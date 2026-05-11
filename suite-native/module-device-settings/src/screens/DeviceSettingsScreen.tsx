@@ -8,6 +8,7 @@ import {
 } from '@suite-common/device';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { TitledSection, VStack } from '@suite-native/atoms';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader, useNavigateToInitialScreen } from '@suite-native/navigation';
 
@@ -17,6 +18,7 @@ import { DeviceConnectionCard } from '../components/DeviceConnectionCard';
 import { DeviceFirmwareCard } from '../components/DeviceFirmwareCard';
 import { DeviceInfo } from '../components/DeviceInfo';
 import { DevicePinProtectionCard } from '../components/DevicePinProtectionCard';
+import { HealthCheckCard } from '../components/HealthCheckCard';
 import { WipeDeviceCard } from '../components/WipeDeviceCard';
 import { useDeviceChangedCheck } from '../hooks/useDeviceChangedCheck';
 
@@ -29,6 +31,7 @@ export const DeviceSettingsScreen = () => {
     const deviceName = useSelector(selectDeviceName);
     const deviceLabel = useSelector(selectDeviceLabel);
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
+    const isN4w1BackupEnabled = useFeatureFlag(FeatureFlag.IsN4w1BackupEnabled);
 
     if (!deviceModel || !deviceName) {
         return null;
@@ -45,6 +48,7 @@ export const DeviceSettingsScreen = () => {
                 >
                     <DeviceFirmwareCard />
                     <DeviceConnectionCard />
+                    {isN4w1BackupEnabled && <HealthCheckCard />}
                 </TitledSection>
                 <TitledSection
                     title={<Translation id="moduleDeviceSettings.sectionTitles.security" />}

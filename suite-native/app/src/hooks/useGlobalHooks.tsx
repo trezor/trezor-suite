@@ -12,6 +12,7 @@ import {
 } from '@suite-native/device';
 import { useHandleDeviceAuthorization } from '@suite-native/device-authorization';
 import { useConnectPopupNavigation } from '@suite-native/module-connect-popup';
+import { useHealthCheckDeeplink } from '@suite-native/module-device-settings';
 
 /**
  * @description This hook is used to initialize all the hooks,
@@ -22,6 +23,7 @@ export const useGlobalHooks = () => {
 
     useBlockchainConnectionManager();
     useConnectPopupNavigation();
+    useHealthCheckDeeplink();
 
     useBluetoothAdapter();
 

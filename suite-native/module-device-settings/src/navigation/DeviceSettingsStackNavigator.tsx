@@ -24,6 +24,7 @@ import { DeviceConnectionScreen } from '../screens/DeviceConnectionScreen';
 import { DeviceFirmwareScreen } from '../screens/DeviceFirmwareScreen';
 import { DeviceSettingsScreen } from '../screens/DeviceSettingsScreen';
 import { ForgetDeviceScreen } from '../screens/ForgetDeviceScreen';
+import { HealthCheckScreen } from '../screens/HealthCheckScreen';
 import { PinProtectionScreen } from '../screens/PinProtectionScreen';
 import { WipeDeviceScreen } from '../screens/WipeDeviceScreen';
 
@@ -65,6 +66,10 @@ export const DeviceSettingsStackNavigator = () => (
         <DeviceSettingsStack.Screen
             name={DeviceSettingsStackRoutes.WipeDevice}
             component={WipeDeviceScreen}
+        />
+        <DeviceSettingsStack.Screen
+            name={DeviceSettingsStackRoutes.HealthCheck}
+            component={HealthCheckScreen}
         />
         <DeviceSettingsStack.Group screenOptions={{ animation: 'slide_from_bottom' }}>
             <DeviceSettingsStack.Screen

@@ -143,6 +143,7 @@ const getPlugins = (): ExpoPlugins => {
                 },
             },
         ],
+        '@trezor/react-native-nfc/plugins/withNfc.js',
         '@trezor/react-native-usb/plugins/withUSBDevice.js',
         [
             './plugins/withAndroidMainActivityAttributes.js',
