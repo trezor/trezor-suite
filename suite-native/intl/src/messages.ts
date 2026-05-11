@@ -2038,7 +2038,7 @@ export const messages = {
         },
         accountDetailContentScreen: {
             coinPriceCard: {
-                changeIn24h: '24h change',
+                changeIn7d: '7d change',
                 coinPrice: '{coinName} price',
             },
         },

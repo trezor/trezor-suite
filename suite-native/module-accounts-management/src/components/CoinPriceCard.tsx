@@ -2,17 +2,19 @@ import { useSelector } from 'react-redux';
 
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Box, Card, PriceChangeBadge, Text } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useDayCoinPriceChange } from '../hooks/useDayCoinPriceChange';
 
 type CoinPriceCardProps = {
     accountKey: AccountKey;
+    tokenContract?: TokenAddress;
 };
 
 type PriceChangeIndicatorProps = {
@@ -48,36 +50,41 @@ const PriceChangeIndicator = ({ valuePercentageChange }: PriceChangeIndicatorPro
     return (
         <Box style={applyStyle(indicatorContainer)}>
             <Text variant="body-xs" color="contentSecondary">
-                <Translation id="moduleAccountManagement.accountDetailContentScreen.coinPriceCard.changeIn24h" />
+                <Translation id="moduleAccountManagement.accountDetailContentScreen.coinPriceCard.changeIn7d" />
             </Text>
             <PriceChangeBadge valuePercentageChange={valuePercentageChange} />
         </Box>
     );
 };
 
-export const CoinPriceCard = ({ accountKey }: CoinPriceCardProps) => {
+export const CoinPriceCard = ({ accountKey, tokenContract }: CoinPriceCardProps) => {
     const { applyStyle } = useNativeStyles();
 
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
-    const { currentValue, valuePercentageChange } = useDayCoinPriceChange(symbol);
+    const token = useSelector((state: TokensRootState) =>
+        selectAccountTokenInfo(state, accountKey, tokenContract),
+    );
+    const { currentValue, valuePercentageChange } = useDayCoinPriceChange(symbol, tokenContract);
 
     if (!symbol) return null;
 
-    const coinName = getNetworkDisplaySymbolName(symbol);
+    const tokenName = token?.name ?? token?.symbol;
+    const mainnetName = getNetworkDisplaySymbolName(symbol);
+    const assetName = tokenName ?? mainnetName;
 
     return (
         <Card style={applyStyle(cardStyle)}>
             <Box flexDirection="row" alignItems="center" flex={1}>
                 <Box marginRight="sp16">
-                    <CryptoIconWithNetwork symbol={symbol} />
+                    <CryptoIconWithNetwork symbol={symbol} contractAddress={tokenContract} />
                 </Box>
                 <Box style={applyStyle(cardContentStyle)}>
                     <Text variant="body-xs" color="contentSecondary">
                         <Translation
                             id="moduleAccountManagement.accountDetailContentScreen.coinPriceCard.coinPrice"
-                            values={{ coinName }}
+                            values={{ coinName: assetName }}
                         />
                     </Text>
                     <BaseCurrencyAmountFormatter
@@ -87,6 +94,7 @@ export const CoinPriceCard = ({ accountKey }: CoinPriceCardProps) => {
                         isDiscreetText={false}
                         numberOfLines={1}
                         adjustsFontSizeToFit
+                        maximumFractionDigits={tokenContract ? 8 : 2}
                     />
                 </Box>
             </Box>
