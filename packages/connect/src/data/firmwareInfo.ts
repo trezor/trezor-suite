@@ -18,7 +18,12 @@ import {
     getFirmwareOrBootloaderVersionArray,
     getFirmwareVersionArray,
 } from '@trezor/device-utils';
-import { getIntegerInRangeFromString, removeTrailingSlashes, versionUtils } from '@trezor/utils';
+import {
+    getIntegerInRangeFromString,
+    isNotNull,
+    removeTrailingSlashes,
+    versionUtils,
+} from '@trezor/utils';
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import * as firmwareReleaseStore from './firmwareReleaseStore';
@@ -228,7 +233,7 @@ export const createLocalFirmwareConfig = (baseConfig: FirmwareReleaseConfig) => 
 
             return [modelKey, releases];
         })
-        .filter(entry => entry !== null);
+        .filter(isNotNull);
 
     return Object.fromEntries(releaseEntries);
 };
@@ -263,7 +268,7 @@ export const createRemoteFirmwareConfig = async (config: FirmwareReleaseConfig) 
         },
     );
 
-    const validEntries = (await Promise.all(releaseEntryPromises)).filter(entry => entry !== null);
+    const validEntries = (await Promise.all(releaseEntryPromises)).filter(isNotNull);
 
     return Object.fromEntries(validEntries);
 };

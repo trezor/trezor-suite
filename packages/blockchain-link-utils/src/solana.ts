@@ -32,7 +32,7 @@ import type {
     TokenProgramName,
 } from '@trezor/coins-solana/types';
 import { isCodesignBuild } from '@trezor/env-utils';
-import { arrayPartition, isArrayMember } from '@trezor/utils';
+import { arrayPartition, isArrayMember, isNotNullOrUndefined } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 export type ApiTokenAccount = {
@@ -258,7 +258,7 @@ export function getNativeEffects(transaction: ParsedTransactionWithMeta): Transa
                 amount: balanceDiff.postBalance.minus(balanceDiff.preBalance),
             };
         })
-        .filter((effect): effect is TransactionEffect => !!effect)
+        .filter(isNotNullOrUndefined)
         .filter(({ amount }) => !amount.isZero()); // filter out zero effects
 }
 

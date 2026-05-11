@@ -29,7 +29,7 @@ import {
     type TokenTransfer,
 } from '@trezor/connect';
 import { type Branded } from '@trezor/type-utils';
-import { BigNumber, arrayPartition, typedObjectKeys } from '@trezor/utils';
+import { BigNumber, arrayPartition, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
 import { isCardanoStakingTx } from './cardanoStakingUtils';
@@ -460,7 +460,7 @@ export const analyzeTransactions = (
     }
 
     // make sure the known transactions are sorted properly
-    const knownSorted = knownRest.filter(tx => tx != null).sort(sortByBlockHeight);
+    const knownSorted = knownRest.filter(isNotNullOrUndefined).sort(sortByBlockHeight);
     // run thru all fresh txs
     fresh.forEach((tx, i) => {
         const height = tx.blockHeight;

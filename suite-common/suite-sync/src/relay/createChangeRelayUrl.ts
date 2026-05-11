@@ -5,6 +5,7 @@ import {
     type SuiteSyncStorageRepositoryDep,
 } from '@suite-common/suite-sync-types';
 import { type StaticSessionId } from '@trezor/connect';
+import { isNotNull } from '@trezor/utils';
 
 import { setSuiteSyncRelayUrl } from '../suiteSyncSlice';
 import { DEFAULT_SUITE_SYNC_RELAY_URL } from './relayUrl';
@@ -30,7 +31,7 @@ export const createChangeRelayUrl =
             const storageId = createStorageIdFromDeviceStaticSessionId(deviceStaticSessionId);
             const storage = deps.suiteSyncStorageRepository.get(storageId);
 
-            if (storage !== null) {
+            if (isNotNull(storage)) {
                 await storage.updateRelayUrl(normalizedUrl);
             }
         }
