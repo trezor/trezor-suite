@@ -1,11 +1,9 @@
+import { removeTrailingSlashes } from '@trezor/utils';
+
 const STORAGE_KEY = 'analytics-docs-log-server-base-url';
 const URL_PARAM = 'logServer';
 
-const normalizeBaseUrl = (input: string): string => {
-    const trimmed = input.trim().replace(/\/+$/, '');
-
-    return trimmed;
-};
+const normalizeBaseUrl = (input: string): string => removeTrailingSlashes(input.trim());
 
 export const getDefaultLogServerBaseUrl = (): string =>
     typeof window !== 'undefined'

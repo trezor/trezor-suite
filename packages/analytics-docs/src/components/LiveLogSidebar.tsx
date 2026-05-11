@@ -24,6 +24,7 @@ import {
     variables,
 } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
+import { removeTrailingSlashes } from '@trezor/utils';
 
 import type { LiveLogEvent } from '../types';
 import { fuzzyMatch, getEventId } from '../utils/filterUtils';
@@ -313,7 +314,7 @@ export const LiveLogSidebar = ({ onEventClick, filterQuery }: LiveLogSidebarProp
                         <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
                             In Suite, set Custom Analytics URL (Settings → Debug) to{' '}
                             <Text isMonospaced typographyStyle="inherit">
-                                {`${logServerBaseUrl.replace(/\/+$/, '')}/log`}
+                                {`${removeTrailingSlashes(logServerBaseUrl)}/log`}
                             </Text>
                         </Text>
                     </Box>
@@ -427,7 +428,7 @@ export const LiveLogSidebar = ({ onEventClick, filterQuery }: LiveLogSidebarProp
                                 This controls where analytics-docs connects for live events (SSE)
                                 and where Suite should send events to{' '}
                                 <Text isMonospaced typographyStyle="inherit">
-                                    {`${(logServerInput.trim() || getDefaultLogServerBaseUrl()).replace(/\/+$/, '')}/log`}
+                                    {`${removeTrailingSlashes(logServerInput.trim() || getDefaultLogServerBaseUrl())}/log`}
                                 </Text>
                                 .
                             </Text>
