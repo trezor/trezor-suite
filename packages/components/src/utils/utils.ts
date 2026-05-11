@@ -1,6 +1,7 @@
 import { css } from 'styled-components';
 
 import { type CSSColor } from '@trezor/theme';
+import { clamp } from '@trezor/utils';
 
 export const focusStyleTransition = 'box-shadow 0.1s ease-out, border-color 0.1s ease-out';
 
@@ -18,7 +19,7 @@ export const commonFocusStyles = css`
 
 export const addAlphaToHex = (hex: CSSColor, percent: number): CSSColor => {
     const cleanHex = hex.replace(/^#/, '');
-    const clampedPercent = Math.min(1, Math.max(0, percent));
+    const clampedPercent = clamp(percent, 0, 1);
 
     const normalizedHex =
         cleanHex.length === 3 || cleanHex.length === 4

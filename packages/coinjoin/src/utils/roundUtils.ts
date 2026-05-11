@@ -1,4 +1,4 @@
-import { getWeakRandomNumberInRange } from '@trezor/utils';
+import { clamp, getWeakRandomNumberInRange } from '@trezor/utils';
 import { type Network, Transaction, bufferutils } from '@trezor/utxo-lib';
 
 import {
@@ -69,9 +69,6 @@ export const readTimeSpan = (ts: string) => {
 
     return date.getTime() - now;
 };
-
-const clamp = (value: number, min = Number.NEGATIVE_INFINITY, max = Number.POSITIVE_INFINITY) =>
-    Math.min(Math.max(value, min), max);
 
 export const scheduleDelay = (
     deadline: number,

@@ -30,7 +30,7 @@ import {
     vec,
 } from '@shopify/react-native-skia';
 
-import { hexToRgba } from '@trezor/utils';
+import { clamp, hexToRgba } from '@trezor/utils';
 
 import { BlurOverlay } from './BlurOverlay';
 import {
@@ -361,7 +361,7 @@ export function AnimatedLineGraph<TEventPayload extends object>({
                 (fingerXInRange / getXInRange(drawingWidth, lastDate, pathRange.x)) *
                     (pointsInRange.length - 1),
             );
-            const pointIndex = Math.min(Math.max(index, 0), pointsInRange.length - 1);
+            const pointIndex = clamp(index, 0, pointsInRange.length - 1);
 
             if (pointSelectedIndex.current !== pointIndex) {
                 const dataPoint = pointsInRange[pointIndex];

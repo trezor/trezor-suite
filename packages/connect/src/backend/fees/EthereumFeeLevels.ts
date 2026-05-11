@@ -1,5 +1,6 @@
 import type { EthereumNetworkInfo, FeeLevel } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { clamp } from '@trezor/utils/src/number';
 
 import type { Blockchain } from '../Blockchain';
 import { MiscFeeLevels } from './MiscFeeLevels';
@@ -25,9 +26,7 @@ export class EthereumFeeLevels extends MiscFeeLevels {
             const feeInWei = new BigNumber(response.feePerUnit).toNumber();
 
             // validate gas price from backend; clamp and round to integer wei (backend may return decimal)
-            const feePerUnit = new BigNumber(
-                Math.min(maxFeeInWei, Math.max(minFeeInWei, feeInWei)),
-            ).toFixed(0);
+            const feePerUnit = new BigNumber(clamp(feeInWei, minFeeInWei, maxFeeInWei)).toFixed(0);
 
             if (eip1559?.baseFeePerGas) {
                 const minMaxPriorityFeePerGas = new BigNumber(this.coinInfo.minPriorityFee)
