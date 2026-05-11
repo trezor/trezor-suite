@@ -24,5 +24,6 @@ export * from './migrations/locale/v2';
 export * from './transforms/blockchainTransforms';
 export * from './transforms/bluetoothTransforms';
 export * from './transforms/deviceTransforms';
+export * from './transforms/tokenDefinitionsTransforms';
 export * from './transforms/walletTransforms';
 export * from './transforms/utils';

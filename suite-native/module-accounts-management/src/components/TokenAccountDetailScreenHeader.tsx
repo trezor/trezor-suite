@@ -20,6 +20,8 @@ import {
 } from '@suite-native/navigation';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
+import { TokenScreenHeaderSettings } from './TokenScreenHeaderSettings';
+
 type TokenAccountDetailScreenHeaderProps = {
     accountKey: AccountKey;
     tokenContract: TokenAddress;
@@ -89,6 +91,9 @@ export const TokenAccountDetailScreenHeader = ({
                         </VStack>
                     </HStack>
                 </Box>
+            }
+            rightIcon={
+                <TokenScreenHeaderSettings accountKey={accountKey} tokenContract={tokenContract} />
             }
             closeActionType={closeActionType}
         />

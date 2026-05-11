@@ -13,8 +13,8 @@ import {
 import {
     type SimpleTokenStructure,
     type TokenDefinitionsRootState,
-    filterKnownTokens,
     getSimpleCoinDefinitionsByNetwork,
+    isTokenDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import {
@@ -147,6 +147,8 @@ export const getAccountListSections = (
     account: Account,
     tokenDefinitions: SimpleTokenStructure | undefined,
     groupZeroBalance = false,
+    hiddenContracts: string[] = [],
+    shownContracts: string[] = [],
 ) => {
     const sections: AccountSelectBottomSheetSection[] = [];
     const isNetworkSupportingTokens = isNetworkWithTokens(account.symbol);
@@ -156,10 +158,21 @@ export const getAccountListSections = (
     // For Stellar, show all tokens without filtering.
     // Unlike EVM chains where tokens can be airdropped as spam, Stellar tokens (trustlines)
     // require explicit user action to activate. See tokensSelectors.ts for details.
+    const hiddenSet = new Set(hiddenContracts.map(c => c.toLowerCase()));
+    const shownSet = new Set(shownContracts.map(c => c.toLowerCase()));
     const tokens =
         account.networkType === 'stellar'
             ? (account.tokens ?? [])
-            : filterKnownTokens(tokenDefinitions, account.symbol, account.tokens ?? []);
+            : (account.tokens ?? [])
+                  .filter(
+                      token =>
+                          isTokenDefinitionKnown(
+                              tokenDefinitions,
+                              account.symbol,
+                              token.contract,
+                          ) || shownSet.has(token.contract.toLowerCase()),
+                  )
+                  .filter(token => !hiddenSet.has(token.contract.toLowerCase()));
 
     const tokensWithBalance =
         account.networkType === 'stellar'
@@ -239,8 +252,15 @@ export const selectAccountListSections = createMemoizedSelector(
             tokenDefinitions,
             account.symbol,
         );
+        const coinDefs = tokenDefinitions[account.symbol]?.coin;
 
-        return getAccountListSections(account, networkTokenDefinitions);
+        return getAccountListSections(
+            account,
+            networkTokenDefinitions,
+            false,
+            coinDefs?.hide ?? [],
+            coinDefs?.show ?? [],
+        );
     },
 );
 
@@ -253,8 +273,15 @@ export const selectAccountListSectionsWithZeroBalanceGroup = createMemoizedSelec
             tokenDefinitions,
             account.symbol,
         );
+        const coinDefs = tokenDefinitions[account.symbol]?.coin;
 
-        return getAccountListSections(account, networkTokenDefinitions, true);
+        return getAccountListSections(
+            account,
+            networkTokenDefinitions,
+            true,
+            coinDefs?.hide ?? [],
+            coinDefs?.show ?? [],
+        );
     },
 );
 

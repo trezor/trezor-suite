@@ -65,6 +65,7 @@ import {
     migrateTransactionsBnbToBsc,
     migrateTransactionsDeprecateNetworks,
     preparePersistReducer,
+    tokenDefinitionsPersistTransform,
     walletPersistTransform,
     walletStopPersistTransform,
 } from '@suite-native/storage';
@@ -395,8 +396,12 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         } as const),
         // 'wallet' and 'graph' need to be persisted at the top level to ensure device state
         // is accessible for transformation.
-        persistedKeys: ['wallet', 'graph'],
-        transforms: [walletPersistTransform, graphPersistTransform],
+        persistedKeys: ['wallet', 'graph', 'tokenDefinitions'],
+        transforms: [
+            walletPersistTransform,
+            graphPersistTransform,
+            tokenDefinitionsPersistTransform,
+        ],
         mergeLevel: 2,
         key: 'root',
         version: 4,
