@@ -31,7 +31,7 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
         const { background } = this;
 
         return new Promise(resolve => {
-            const onmessage = (message: MessageEvent<any>) => {
+            const onmessage = (message: MessageEvent<HandleMessageResponse<M>>) => {
                 if (params.id === message.data.id) {
                     resolve(message.data);
                     background.port.removeEventListener('message', onmessage);
