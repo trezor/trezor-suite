@@ -1,6 +1,6 @@
 // upstream: https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/ts_src/payments/lazy.ts
 
-export function prop(object: Record<string, any>, name: string, f: () => any) {
+export function prop(object: object, name: string, f: () => unknown) {
     Object.defineProperty(object, name, {
         configurable: true,
         enumerable: true,
