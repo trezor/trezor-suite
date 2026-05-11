@@ -1,9 +1,11 @@
+import type { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
+import type { DiscoveryStatus } from '@suite-common/wallet-types';
 import {
     type PassphraseStackParamList,
     PassphraseStackRoutes,
@@ -12,9 +14,10 @@ import {
 import {
     PassphraseDuplicateAlert,
     PassphraseFlowDoneRedirect,
+    PassphraseFlowFailedRedirect,
     PassphraseMismatchAlert,
-    useRedirectOnPassphraseCompletion,
 } from '@suite-native/passphrase';
+import { exhaustive } from '@trezor/type-utils';
 
 import { PassphraseConfirmOnTrezorScreen } from './screens/PassphraseConfirmOnTrezorScreen';
 import { PassphraseEmptyWalletScreen } from './screens/PassphraseEmptyWalletScreen';
@@ -25,21 +28,11 @@ import { PassphraseVerifyEmptyWalletScreen } from './screens/PassphraseVerifyEmp
 
 const PassphraseStack = createNativeStackNavigator<PassphraseStackParamList>();
 
-export const PassphraseStackNavigator = () => {
-    const selectedDevice = useSelector(selectSelectedDevice);
-    const discovery = useSelector(selectDiscoveryForSelectedDevice);
-
-    useRedirectOnPassphraseCompletion();
-
-    if (!selectedDevice || !discovery) return null;
-
-    const passphraseState = discovery.status;
-
-    return (
-        <PassphraseStack.Navigator
-            screenOptions={{ ...stackNavigationOptionsConfig, gestureEnabled: false }}
-        >
-            {['starting', 'enter-passphrase'].includes(passphraseState) && (
+const renderPassphraseStackScreens = (passphraseState: DiscoveryStatus['status']): ReactNode => {
+    switch (passphraseState) {
+        case 'starting':
+        case 'enter-passphrase':
+            return (
                 <>
                     <PassphraseStack.Screen
                         name={PassphraseStackRoutes.PassphraseForm}
@@ -54,23 +47,24 @@ export const PassphraseStackNavigator = () => {
                         component={PassphraseEnterOnTrezorScreen}
                     />
                 </>
-            )}
+            );
 
-            {passphraseState === 'progress' && (
+        case 'progress':
+            return (
                 <PassphraseStack.Screen
                     name={PassphraseStackRoutes.PassphraseLoading}
                     component={PassphraseLoadingScreen}
                 />
-            )}
+            );
 
-            {passphraseState === 'confirm-empty-passphrase' && (
+        case 'confirm-empty-passphrase':
+            return (
                 <>
                     <PassphraseStack.Screen
                         name={PassphraseStackRoutes.PassphraseEmptyWallet}
                         component={PassphraseEmptyWalletScreen}
                     />
-                    {/* The PassphraseVerifyEmptyWallet screen is shown when user confirms they want to use an empty passphrase */}
-
+                    {/* The PassphraseVerifyEmptyWallet screen is shown when user confirms they want to use an empty passphrase. */}
                     <PassphraseStack.Screen
                         name={PassphraseStackRoutes.PassphraseVerifyEmptyWallet}
                         component={PassphraseVerifyEmptyWalletScreen}
@@ -84,9 +78,10 @@ export const PassphraseStackNavigator = () => {
                         component={PassphraseEnterOnTrezorScreen}
                     />
                 </>
-            )}
+            );
 
-            {passphraseState === 'passphrase-mismatch' && (
+        case 'passphrase-mismatch':
+            return (
                 <PassphraseStack.Screen
                     name={PassphraseStackRoutes.PassphraseMismatchAlert}
                     component={function PassphraseMismatchAlertScreen() {
@@ -97,12 +92,13 @@ export const PassphraseStackNavigator = () => {
                         );
                     }}
                 />
-            )}
+            );
 
-            {passphraseState === 'passphrase-duplicate' && (
+        case 'passphrase-duplicate':
+            return (
                 <PassphraseStack.Screen
                     name={PassphraseStackRoutes.PassphraseDuplicateAlert}
-                    component={function PassphraseMismatchAlertScreen() {
+                    component={function PassphraseDuplicateAlertScreen() {
                         return (
                             <PassphraseDuplicateAlert>
                                 <PassphraseLoadingScreen />
@@ -110,13 +106,46 @@ export const PassphraseStackNavigator = () => {
                         );
                     }}
                 />
-            )}
+            );
 
-            {/* This is a catch-all route that handles failures and completion redirects */}
-            <PassphraseStack.Screen
-                name={PassphraseStackRoutes.PassphraseRedirecting}
-                component={PassphraseFlowDoneRedirect}
-            />
+        case 'complete':
+            return (
+                <PassphraseStack.Screen
+                    name={PassphraseStackRoutes.PassphraseRedirectingSuccess}
+                    component={PassphraseFlowDoneRedirect}
+                />
+            );
+
+        case 'cancelled':
+        case 'failed':
+            return (
+                <PassphraseStack.Screen
+                    name={PassphraseStackRoutes.PassphraseRedirectingFailure}
+                    component={PassphraseFlowFailedRedirect}
+                />
+            );
+
+        default:
+            return exhaustive(passphraseState);
+    }
+};
+
+export const PassphraseStackNavigator = () => {
+    const selectedDevice = useSelector(selectSelectedDevice);
+    const discovery = useSelector(selectDiscoveryForSelectedDevice);
+
+    if (!selectedDevice || !discovery) {
+        // TODO revert before merge?
+        throw new Error('No device or discovery found.');
+    }
+
+    const passphraseState = discovery.status;
+
+    return (
+        <PassphraseStack.Navigator
+            screenOptions={{ ...stackNavigationOptionsConfig, gestureEnabled: false }}
+        >
+            {renderPassphraseStackScreens(passphraseState)}
         </PassphraseStack.Navigator>
     );
 };

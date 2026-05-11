@@ -55,6 +55,8 @@ export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNo
                 primaryButtonTitle: (
                     <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.passphraseMismatchAlert.primaryButton" />
                 ),
+                // TODO this needs to be done based on the location where it's used
+                // In passphrase creation it cannot navigate to AuthorizeDeviceStack so the onPress handlers need to be passed as props.
                 onPressPrimaryButton: () => {
                     if (!device) return;
 
