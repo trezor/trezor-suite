@@ -70,9 +70,11 @@ export const TouchableSwitchRow = ({
                         <HStack justifyContent="space-between" flex={1}>
                             <VStack flex={1} spacing="sp2">
                                 <Text variant="body-md-strong">{text}</Text>
-                                <Text variant="body-sm" color="contentSecondary">
-                                    {description}
-                                </Text>
+                                {description && (
+                                    <Text variant="body-sm" color="contentSecondary">
+                                        {description}
+                                    </Text>
+                                )}
                             </VStack>
                             <Switch
                                 testID={testID}

@@ -12473,6 +12473,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-accounts-management@workspace:suite-native/module-accounts-management"
   dependencies:
+    "@gorhom/bottom-sheet": "npm:5.2.8"
     "@react-navigation/native": "npm:7.1.28"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.11.2"
@@ -13673,6 +13674,7 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
+    "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
