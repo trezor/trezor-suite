@@ -1,6 +1,5 @@
 export { Calldata } from './calldata';
 export { Verifier } from './verifier';
-export { buildClaim } from './builder/evm/claim';
 export { EVM_ABI } from './constants/evm';
 export { type EvmAddress, asEvmAddress } from './types/evm';
 export { type TronAddress, asTronAddress } from './types/tron';

@@ -18,7 +18,7 @@ import { Banner, Button, Card, Column, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
-import { claimMerkleRewardsThunk } from 'src/actions/wallet/stablecoinYieldSigningThunks';
+import { claimMerkleRewardsThunk } from 'src/actions/wallet/stablecoin-yield';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
