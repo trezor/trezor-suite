@@ -54,10 +54,7 @@ export const ConciergeProviderSheet = ({
         [providers],
     );
 
-    const estimatedListHeight = useMemo(
-        () => providers.length * ESTIMATED_ITEM_HEIGHT,
-        [providers.length],
-    );
+    const estimatedListHeight = providers.length * ESTIMATED_ITEM_HEIGHT;
 
     return (
         <BottomSheetSectionList<OtcProviderType>

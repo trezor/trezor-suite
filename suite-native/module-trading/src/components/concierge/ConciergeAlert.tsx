@@ -16,7 +16,7 @@ type Props = {
     tradingType: 'buy' | 'sell';
 };
 
-type ConciergeFormValues = {
+export type ConciergeAlertFormValues = {
     fiatCurrency: FiatCurrencyCode;
     fiatValue?: string;
     fiatStringAmount?: string;
@@ -29,7 +29,7 @@ const getConciergeFiatAmount = ({
     values,
 }: {
     tradingType: Props['tradingType'];
-    values: ConciergeFormValues;
+    values: ConciergeAlertFormValues;
 }) => (tradingType === 'buy' ? values.fiatValue : values.fiatStringAmount);
 
 export const ConciergeAlert = ({ tradingType }: Props) => {
@@ -39,7 +39,7 @@ export const ConciergeAlert = ({ tradingType }: Props) => {
     const {
         getValues,
         formState: { errors },
-    } = useFormContext<ConciergeFormValues>();
+    } = useFormContext<ConciergeAlertFormValues>();
     const formValues = getValues();
 
     const fiatAmount = getConciergeFiatAmount({ tradingType, values: formValues });

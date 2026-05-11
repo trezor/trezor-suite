@@ -1,12 +1,5 @@
-import { type FiatCurrencyCode } from 'invity-api';
-
-import {
-    type TradingCountryOption,
-    type TradingOTC,
-    nonSanctionedRegional,
-    useFetchOtc,
-} from '@suite-common/trading';
-import { useFormContext } from '@suite-native/forms';
+import { type TradingOTC, nonSanctionedRegional, type useFetchOtc } from '@suite-common/trading';
+import { type useFormContext } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 
 import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
@@ -14,29 +7,33 @@ import {
     CRYPTO_MAX_FORM_TYPE,
     CRYPTO_MIN_FORM_TYPE,
 } from '../../../utils/buy/buyFormValidationSchema';
-import { ConciergeAlert } from '../ConciergeAlert';
+import { ConciergeAlert, type ConciergeAlertFormValues } from '../ConciergeAlert';
 
+type FormErrors = {
+    cryptoValue?: {
+        type: string;
+    };
+};
+
+const mockUseFetchOtc = jest.fn();
 jest.mock('@suite-common/trading', () => {
     const actual = jest.requireActual('@suite-common/trading');
 
     return {
         ...actual,
-        useFetchOtc: jest.fn(),
+        useFetchOtc: (...args: any[]) => mockUseFetchOtc(...args),
     };
 });
 
-type ConciergeFormValues = {
-    fiatCurrency: FiatCurrencyCode;
-    fiatValue?: string;
-    fiatStringAmount?: string;
-    country: TradingCountryOption;
-    cryptoValue?: string;
-};
+const mockUseFormContext = jest.fn();
+jest.mock('@suite-native/forms', () => {
+    const actual = jest.requireActual('@suite-native/forms');
 
-const mockUseFetchOtc = useFetchOtc as jest.MockedFunction<typeof useFetchOtc>;
-const mockUseFormContext = useFormContext as unknown as jest.MockedFunction<
-    () => ReturnType<typeof useFormContext<ConciergeFormValues>>
->;
+    return {
+        ...actual,
+        useFormContext: (...args: any[]) => mockUseFormContext(...args),
+    };
+});
 
 const otcData = {
     country: 'CZ',
@@ -57,29 +54,14 @@ const defaultFormValues = {
     fiatCurrency: 'usd',
     fiatValue: '',
     fiatStringAmount: '',
-} satisfies ConciergeFormValues;
-
-type FormErrors = {
-    cryptoValue?: {
-        type: string;
-    };
-};
-
-jest.mock('@suite-native/forms', () => {
-    const actual = jest.requireActual('@suite-native/forms');
-
-    return {
-        ...actual,
-        useFormContext: jest.fn(),
-    };
-});
+} satisfies ConciergeAlertFormValues;
 
 const mockConciergeForm = ({
     errors = {},
     values = {},
 }: {
     errors?: FormErrors;
-    values?: Partial<ConciergeFormValues>;
+    values?: Partial<ConciergeAlertFormValues>;
 } = {}) => {
     mockUseFormContext.mockReturnValue({
         getValues: () => ({
@@ -89,7 +71,7 @@ const mockConciergeForm = ({
         formState: {
             errors,
         },
-    } as unknown as ReturnType<typeof useFormContext<ConciergeFormValues>>);
+    } as unknown as ReturnType<typeof useFormContext<ConciergeAlertFormValues>>);
 };
 
 const renderConciergeAlert = ({
@@ -98,7 +80,7 @@ const renderConciergeAlert = ({
     errors,
 }: {
     tradingType?: 'buy' | 'sell';
-    values?: Partial<ConciergeFormValues>;
+    values?: Partial<ConciergeAlertFormValues>;
     errors?: FormErrors;
 } = {}) => {
     mockConciergeForm({ errors, values });

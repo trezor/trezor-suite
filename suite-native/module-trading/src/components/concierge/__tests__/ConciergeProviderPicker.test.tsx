@@ -2,7 +2,7 @@ import {
     type TradingCountryCode,
     type TradingOTC,
     nonSanctionedRegional,
-    useFetchOtc,
+    type useFetchOtc,
 } from '@suite-common/trading';
 import { yup } from '@suite-common/validators';
 import { Form, useForm } from '@suite-native/forms';
@@ -12,16 +12,15 @@ import { type ConciergeFormValues } from '@suite-native/trading-types';
 
 import { ConciergeProviderPicker } from '../ConciergeProviderPicker';
 
+const mockUseFetchOtc = jest.fn();
 jest.mock('@suite-common/trading', () => {
     const actual = jest.requireActual('@suite-common/trading');
 
     return {
         ...actual,
-        useFetchOtc: jest.fn(),
+        useFetchOtc: (...args: any[]) => mockUseFetchOtc(...args),
     };
 });
-
-const mockUseFetchOtc = useFetchOtc as jest.MockedFunction<typeof useFetchOtc>;
 
 const otcData = {
     country: 'CZ',

@@ -19,13 +19,15 @@ export const ConciergeProviderPicker = () => {
         hideSheet();
     };
 
+    const hasMultipleProviders = providers.length > 1;
+
     return (
         <>
             {selectedProvider ? (
                 <OverviewRow
                     title={translate('moduleTrading.tradingScreen.provider')}
                     noBottomBorder
-                    noCaret={!selectedProvider}
+                    noCaret={!hasMultipleProviders}
                     onPress={showSheet}
                     testID={PROVIDER_PICKER_TEST_ID}
                 >

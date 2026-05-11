@@ -1,4 +1,4 @@
-import { type TradingOTC, useFetchOtc } from '@suite-common/trading';
+import { type TradingOTC, type useFetchOtc } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent, screen, userEvent, waitFor } from '@suite-native/test-utils-store';
 import { residenceCheckDisabledState } from '@suite-native/trading-fixtures';
@@ -10,16 +10,15 @@ import {
 } from '../../../__tests__/tradingTestUtils';
 import { ConciergeTabContent } from '../ConciergeTabContent';
 
+const mockUseFetchOtc = jest.fn();
 jest.mock('@suite-common/trading', () => {
     const actual = jest.requireActual('@suite-common/trading');
 
     return {
         ...actual,
-        useFetchOtc: jest.fn(),
+        useFetchOtc: (...args: any[]) => mockUseFetchOtc(...args),
     };
 });
-
-const mockUseFetchOtc = useFetchOtc as jest.MockedFunction<typeof useFetchOtc>;
 
 const otcData = {
     country: 'CZ',
