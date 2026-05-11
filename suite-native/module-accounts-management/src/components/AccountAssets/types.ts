@@ -1,1 +1,1 @@
-export type AccountAssetsTab = 'tokens' | 'defi' | 'hidden' | 'inactive';
+export type { AccountAssetsTab } from '@suite-native/navigation';
