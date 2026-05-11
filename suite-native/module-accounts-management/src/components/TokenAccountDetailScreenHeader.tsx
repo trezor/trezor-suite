@@ -1,6 +1,12 @@
+import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type RouteProp, useRoute } from '@react-navigation/native';
+import {
+    type NavigationProp,
+    type RouteProp,
+    useNavigation,
+    useRoute,
+} from '@react-navigation/native';
 
 import { type SuiteSyncDataRootState, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
 import {
@@ -13,13 +19,10 @@ import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { parseAccountKey, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Badge, Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
-import {
-    type RootStackParamList,
-    type RootStackRoutes,
-    ScreenHeader,
-} from '@suite-native/navigation';
+import { type RootStackParamList, RootStackRoutes, ScreenHeader } from '@suite-native/navigation';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
+import { selectAssetTabOfAccountToken } from '../selectors';
 import { TokenScreenHeaderSettings } from './TokenScreenHeaderSettings';
 
 type TokenAccountDetailScreenHeaderProps = {
@@ -54,6 +57,19 @@ export const TokenAccountDetailScreenHeader = ({
     );
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.AccountDetail>>();
     const { closeActionType } = route.params;
+
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+    const tokenTab = useSelector((state: TokensRootState) =>
+        selectAssetTabOfAccountToken(state, accountKey, tokenContract),
+    );
+
+    const handleGoBack = useCallback(() => {
+        navigation.popTo(RootStackRoutes.AccountAssets, {
+            accountKey,
+            tab: tokenTab,
+        });
+    }, [navigation, accountKey, tokenTab]);
 
     if (!symbol) {
         return null;
@@ -96,6 +112,7 @@ export const TokenAccountDetailScreenHeader = ({
                 <TokenScreenHeaderSettings accountKey={accountKey} tokenContract={tokenContract} />
             }
             closeActionType={closeActionType}
+            closeAction={handleGoBack}
         />
     );
 };
