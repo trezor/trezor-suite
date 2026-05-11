@@ -1,5 +1,7 @@
 import * as readline from 'readline';
 
+import { isNotUndefined } from '@trezor/utils';
+
 import { extractKeyFromAction } from './actions';
 import { createManualQuarantineAction } from './api';
 import { PROJECTS } from './config';
@@ -76,7 +78,7 @@ export async function quarantineFromRun(
     // if the same test failed in multiple specs within the same run.
     const existingActions = await getAllQuarantineActions(projectId);
     const existingTitleKeys = new Set(
-        existingActions.map(a => extractKeyFromAction(a)).filter(Boolean),
+        existingActions.map(a => extractKeyFromAction(a)).filter(isNotUndefined),
     );
     debug(`existing quarantine actions for project: ${existingActions.length}`);
 

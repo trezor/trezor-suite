@@ -9,7 +9,7 @@ import {
     type Transaction,
 } from '@trezor/blockchain-link-types/src';
 import { isCodesignBuild } from '@trezor/env-utils';
-import { arrayPartition } from '@trezor/utils';
+import { arrayPartition, isNotNullOrUndefined } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import type {
@@ -279,7 +279,7 @@ export function getNativeEffects(transaction: ParsedTransactionWithMeta): Transa
                 amount: balanceDiff.postBalance.minus(balanceDiff.preBalance),
             };
         })
-        .filter((effect): effect is TransactionEffect => !!effect)
+        .filter(isNotNullOrUndefined)
         .filter(({ amount }) => !amount.isZero()); // filter out zero effects
 }
 

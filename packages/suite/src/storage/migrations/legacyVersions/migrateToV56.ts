@@ -10,6 +10,7 @@ import {
     getContractAddressForNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import { type OnUpgradeFunc } from '@trezor/suite-storage';
+import { isNotUndefined } from '@trezor/utils';
 
 import { type SuiteDBSchema } from 'src/storage/definitions';
 import { type DBWalletAccountTransactionCompatible } from 'src/storage/migrations';
@@ -62,7 +63,7 @@ const findAccountForTrade = (
                 ),
             ) ?? []),
             getNetwork(account.symbol).tradeCryptoId,
-        ].filter(Boolean) as CryptoId[];
+        ].filter(isNotUndefined);
 
         return account.descriptor === address && cryptoIds.includes(cryptoId);
     });

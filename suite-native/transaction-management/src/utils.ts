@@ -1,5 +1,5 @@
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, isNotNull } from '@trezor/utils';
 
 export const getFeeDecimals = ({ symbol }: { symbol: NetworkSymbol }) => {
     const network = getNetwork(symbol);
@@ -31,7 +31,7 @@ export const getFeeValue = ({
 
     const decimals = getFeeDecimals({ symbol });
 
-    if (decimals !== null) {
+    if (isNotNull(decimals)) {
         return new BigNumber(feeRate).decimalPlaces(decimals, 1 /*ROUND_DOWN*/).toFixed();
     }
 

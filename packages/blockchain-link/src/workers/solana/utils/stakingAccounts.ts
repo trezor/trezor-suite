@@ -14,6 +14,7 @@ import {
 
 import { type SolanaStakingAccount } from '@trezor/blockchain-link-types';
 import { StakeState } from '@trezor/blockchain-link-types';
+import { isNotUndefined } from '@trezor/utils';
 
 export const STAKE_ACCOUNT_V2_SIZE = 200;
 export const FILTER_DATA_SIZE = 200n;
@@ -123,5 +124,5 @@ export const getSolanaStakingData = async (
                 };
             }
         })
-        .filter(account => account !== undefined);
+        .filter(isNotUndefined);
 };

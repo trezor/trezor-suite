@@ -32,7 +32,7 @@ import {
 } from '@suite-native/transaction-management';
 import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
 import { type Ok } from '@trezor/type-utils';
-import { isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
+import { isNotNull, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './constants';
 
@@ -205,7 +205,7 @@ export const sendTransactionThunk = createThunk<
 
         const formValues = selectSendFormDraftByKey(getState(), selectedAccount.key, tokenContract);
 
-        if (formValues !== null) {
+        if (isNotNull(formValues)) {
             await dispatch(
                 addTransactionLabelingThunk({
                     txId: sendResponse.payload.payload.txid,

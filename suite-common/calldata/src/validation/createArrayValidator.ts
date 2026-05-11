@@ -1,6 +1,8 @@
+import { isNotNull } from '@trezor/utils';
+
 import { type ValidationResult } from '../types/validation';
 
-const allValid = <T>(values: (T | null)[]): values is T[] => values.every(v => v !== null);
+const allValid = <T>(values: (T | null)[]): values is T[] => values.every(isNotNull);
 
 export const createArrayValidator =
     <Input, Output, Context = Record<string, unknown>>(

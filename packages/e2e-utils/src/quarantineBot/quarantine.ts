@@ -1,3 +1,5 @@
+import { isNotUndefined } from '@trezor/utils';
+
 import { computeStats, extractKeyFromAction, getTestKey, normalizeTitlePath } from './actions';
 import { createQuarantineAction } from './api';
 import {
@@ -27,7 +29,7 @@ export async function quarantineFailingTests(
     log(`\n── [${projectLabel}] Checking for failing tests to quarantine ──`);
 
     const alreadyQuarantinedKeys = new Set(
-        existingActions.map(a => extractKeyFromAction(a)).filter(Boolean) as string[],
+        existingActions.map(a => extractKeyFromAction(a)).filter(isNotUndefined),
     );
     debug(`  already quarantined keys: ${alreadyQuarantinedKeys.size}`);
 

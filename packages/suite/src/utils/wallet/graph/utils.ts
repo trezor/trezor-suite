@@ -12,7 +12,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/connect';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, isNotUndefined } from '@trezor/utils';
 
 import { type AppState } from 'src/reducers/store';
 import { type State as GraphState } from 'src/reducers/wallet/graphReducer';
@@ -169,8 +169,8 @@ export const getMinMaxValueFromData = <TType extends TypeName, TValue extends Bi
     const maxValue = BigNumber.max(maxSent, maxReceived, maxBalance);
 
     const minsToCompare = [minSent, minReceived, minBalance]
-        .filter(m => !!m)
-        .map(m => m!.toNumber());
+        .filter(isNotUndefined)
+        .map(m => m.toNumber());
     const minValue = BigNumber.min(...minsToCompare);
 
     return [minValue as TValue, maxValue as TValue];

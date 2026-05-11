@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 
-import { type Account } from '@suite-common/wallet-types';
 import { sortByCoin } from '@suite-common/wallet-utils';
+import { isNotUndefined } from '@trezor/utils';
 
 import { type YieldAccountOpportunity } from '../types';
 
@@ -39,7 +39,7 @@ export const useYieldAccountsVisibility = ({
             );
             const vaultAccounts = vaultOpportunities
                 .map(opportunity => opportunity.account)
-                .filter((account): account is Account => account !== undefined);
+                .filter(isNotUndefined);
             const [firstAccountByCoinOrder] = sortByCoin([...vaultAccounts]);
 
             const fallbackOpportunity = firstAccountByCoinOrder

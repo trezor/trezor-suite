@@ -1,7 +1,7 @@
 import { type Log, type PublicClient, parseAbiItem } from 'viem';
 
 import type { TokenInfo } from '@trezor/blockchain-link-types';
-import { unique } from '@trezor/utils';
+import { isNotNull, unique } from '@trezor/utils';
 
 import { getTokenInfo } from './tokenInfo';
 import { TOKEN_DISCOVERY } from '../constants';
@@ -93,5 +93,5 @@ export const discoverTokens = async (
 
     const tokens = await Promise.all(tokenPromises);
 
-    return tokens.filter((token): token is TokenInfo => token !== null);
+    return tokens.filter(isNotNull);
 };

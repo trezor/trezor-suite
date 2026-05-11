@@ -1,5 +1,6 @@
 import { type EnsureSuiteSyncOwner } from '@suite-common/suite-sync-types';
 import { ok } from '@trezor/type-utils';
+import { isNotNull } from '@trezor/utils';
 
 import { type LoadSuiteSyncOwnerFromStateDep } from './createLoadSuiteSyncOwnerFromState';
 import { type RetrieveSuiteSyncOwnerKeysDep } from './createRetrieveSuiteSyncOwner';
@@ -21,7 +22,7 @@ export const createEnsureSuiteSyncOwner =
             deviceStaticId: device.state.staticSessionId,
         });
 
-        if (currentSuiteSyncOwner !== null) {
+        if (isNotNull(currentSuiteSyncOwner)) {
             return ok(currentSuiteSyncOwner);
         }
 

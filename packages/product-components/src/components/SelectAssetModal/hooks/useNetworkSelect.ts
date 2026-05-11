@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { isNotNull } from '@trezor/utils';
 
 export interface SearchAssetSelectConfig {
     networks: NetworkSymbol[];
@@ -20,7 +21,7 @@ export const useNetworkSelect = (config?: SearchAssetSelectConfig) => {
 
                 return network ? { label: network.name, value: network.symbol } : null;
             })
-            .filter(option => !!option);
+            .filter(isNotNull);
 
         return includeAllOption
             ? [{ label: allLabel ?? 'All networks', value: undefined }, ...networkOptions]

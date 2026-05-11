@@ -1,3 +1,5 @@
+import { isNotNull } from '@trezor/utils';
+
 import { type ResultsToValidate } from './types';
 
 const failAllResults = ({
@@ -29,7 +31,7 @@ const failAllResults = ({
 export const validateSerialNumbers = (resultsToValidate: ResultsToValidate): ResultsToValidate => {
     const { optigaResult, tropicResult, mcuResult } = resultsToValidate;
 
-    const availableResults = [optigaResult, tropicResult, mcuResult].filter(r => r !== null);
+    const availableResults = [optigaResult, tropicResult, mcuResult].filter(isNotNull);
     // Cannot happen, see authenticateDevice, there'll always be at least failed optigaResult (it's always required).
     if (availableResults.length === 0) return resultsToValidate;
 

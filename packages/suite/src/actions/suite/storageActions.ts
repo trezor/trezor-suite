@@ -26,7 +26,7 @@ import {
     selectHistoricRatesByTransactions,
 } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
-import { cloneObject } from '@trezor/utils';
+import { cloneObject, isNotNullOrUndefined } from '@trezor/utils';
 
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
 import { db } from 'src/storage';
@@ -295,7 +295,7 @@ export const saveAccountHistoricRates =
     (_dispatch: Dispatch, getState: GetState) => {
         if (!db.isAccessible()) return Promise.resolve();
         const allTxs = getState().wallet.transactions.transactions;
-        const accTxs = (allTxs[accountKey] || []).filter(tx => !!tx);
+        const accTxs = (allTxs[accountKey] || []).filter(isNotNullOrUndefined);
 
         const accHistoricRates = selectHistoricRatesByTransactions(historicRates, accTxs);
 

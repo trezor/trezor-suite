@@ -28,7 +28,7 @@ import {
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { typedObjectKeys } from '@trezor/utils';
+import { isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
 import type { TransactionsRootState } from './transactionsReducerTypes';
 import type { AccountsRootState } from '../accounts/accountsReducer';
@@ -83,7 +83,7 @@ export const selectAccountTransactionsWithNulls = (
 
 export const selectAccountTransactions = createMemoizedSelector(
     [selectAccountTransactionsWithNulls],
-    transactions => returnStableArrayIfEmpty(transactions.filter(t => !!t)),
+    transactions => returnStableArrayIfEmpty(transactions.filter(isNotNullOrUndefined)),
 );
 
 export const selectPendingAccountAddresses = createMemoizedSelector(
