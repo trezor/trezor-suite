@@ -101,7 +101,7 @@ export type ConstWithOptionalFields<
  *  const p: P = { b: { d: 1 } }; // As everything is deeply optional
  *  ```
  */
-export type DeepPartial<T> = T extends () => any
+export type DeepPartial<T> = T extends () => unknown
     ? T
     : T extends { [key: string]: any }
       ? { [P in keyof T]?: DeepPartial<T[P]> }
