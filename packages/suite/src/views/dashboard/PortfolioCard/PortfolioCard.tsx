@@ -144,7 +144,9 @@ export const PortfolioCard = memo(() => {
     ) : null;
 
     const header =
-        (discovery && discoveryStatus?.status === 'exception') || isWalletEmpty ? null : (
+        (discovery && discoveryStatus?.status === 'exception') ||
+        isWalletEmpty ||
+        isDeviceEmpty ? null : (
             <PortfolioCardHeader
                 discovery={discovery}
                 fiatAmount={walletBalance}

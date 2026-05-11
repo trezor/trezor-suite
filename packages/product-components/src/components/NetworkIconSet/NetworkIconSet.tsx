@@ -1,32 +1,19 @@
 import { useMemo } from 'react';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type SpacingValuesNew } from '@trezor/theme';
 
-import { type AssetLogoSize } from '../AssetLogo/AssetLogoWithId';
 import { CoinLogo } from '../CoinLogo/CoinLogo';
-import { IconSetBase, IconWrapper } from '../IconSet/IconSetBase';
+import { type CommonIconSetProps, IconSetBase, IconWrapper } from '../IconSet/IconSetBase';
 
-export type NetworkIconSetProps = {
+export type NetworkIconSetProps = CommonIconSetProps & {
     networks: NetworkSymbol[];
-    size: AssetLogoSize;
-    gap: SpacingValuesNew;
-    /** Maximum number of icons to show. When `undefined`, all icons are shown. @default 3 */
-    maxVisibleIcons?: number;
-    isCountVisible?: boolean;
-    isCentered?: boolean;
-    /**
-     * If true, visible networks will be displayed from the last network to the first.
-     * This affects stacking order when icons overlap.
-     */
-    isReversed?: boolean;
 };
 
 export const NetworkIconSet = ({
     networks,
     size,
     gap,
-    maxVisibleIcons,
+    maxVisibleIcons = 3,
     isCountVisible = false,
     isCentered = false,
     isReversed = true,
@@ -35,7 +22,7 @@ export const NetworkIconSet = ({
 
     const visibleContent = useMemo(() => {
         const visibleNetworks =
-            maxVisibleIcons !== undefined ? networks.slice(0, maxVisibleIcons) : networks;
+            maxVisibleIcons !== null ? networks.slice(0, maxVisibleIcons) : networks;
 
         return visibleNetworks.map(network => (
             <IconWrapper key={network} $size={size} $gap={gap} $length={length}>

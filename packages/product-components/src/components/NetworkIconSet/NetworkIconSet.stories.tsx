@@ -62,11 +62,12 @@ export const NetworkIconSet: StoryObj<NetworkIconSetProps> = {
             },
         },
         maxVisibleIcons: {
-            options: [undefined, 1, 2, 3, 4],
+            options: [null, undefined, 1, 2, 3, 4],
             control: {
                 type: 'select',
                 labels: {
-                    undefined: 'All',
+                    null: 'Unlimited (null)',
+                    undefined: 'Default (3)',
                     1: '1',
                     2: '2',
                     3: '3',

@@ -89,14 +89,18 @@ const CountContainer = styled.div<{ $size: AssetLogoSize }>`
     background: ${({ theme }) => theme.legacyBackgroundTertiaryDefaultOnElevationNegative};
 `;
 
-export type IconSetBaseProps = {
-    count: number;
+export type CommonIconSetProps = {
     size: AssetLogoSize;
     gap: SpacingValuesNew;
-    maxVisibleIcons?: number;
+    /** Maximum number of icons to show. When `null`, all icons are shown. @default 3 */
+    maxVisibleIcons?: number | null;
     isCountVisible?: boolean;
     isCentered?: boolean;
     isReversed?: boolean;
+};
+
+export type IconSetBaseProps = CommonIconSetProps & {
+    count: number;
     children: ReactNode;
 };
 
@@ -104,7 +108,7 @@ export const IconSetBase = ({
     count,
     size,
     gap,
-    maxVisibleIcons,
+    maxVisibleIcons = 3,
     isCountVisible = false,
     isCentered = false,
     isReversed = false,
