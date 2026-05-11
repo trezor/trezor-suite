@@ -25,7 +25,7 @@ import {
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type TransactionTarget } from '@trezor/connect';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, isNotNull } from '@trezor/utils';
 
 type AccountTransactionForExports = Omit<WalletAccountTransaction, 'targets'> & {
     targets: (TransactionTarget & { metadataLabel?: string })[];
@@ -313,7 +313,7 @@ const prepareContent = (
 
             return [...targets, ...tokens, ...internalTransfers, ...cardanoStaking];
         })
-        .filter(record => record !== null) as Fields[];
+        .filter(isNotNull) as Fields[];
 };
 
 export const sanitizeCsvValue = (value: string) => {

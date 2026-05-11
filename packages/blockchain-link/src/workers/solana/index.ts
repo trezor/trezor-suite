@@ -24,7 +24,7 @@ import type {
 } from '@trezor/coins-solana/types';
 import { getSuiteVersion } from '@trezor/env-utils';
 import { type IntervalId } from '@trezor/type-utils';
-import { BigNumber, createDeferred, createLazy } from '@trezor/utils';
+import { BigNumber, createDeferred, createLazy, isNotNullOrUndefined } from '@trezor/utils';
 
 import { BaseWorker, CONTEXT, type ContextType } from '../baseWorker';
 
@@ -38,10 +38,6 @@ type SignatureWithSlot = {
     signature: Signature;
     slot: Slot;
 };
-
-function nonNullable<T>(value: T): value is NonNullable<T> {
-    return value !== null && value !== undefined;
-}
 
 const getAllSignatures = async (
     api: SolanaAPI,
@@ -90,7 +86,7 @@ const fetchTransactionPage = async (
                     .send(),
             ),
         )
-    ).filter(nonNullable);
+    ).filter(isNotNullOrUndefined);
 
 const isValidTransaction = (tx: ParsedTransactionWithMeta): tx is SolanaValidParsedTxWithMeta =>
     !!(tx?.meta && tx.transaction && tx.blockTime);
@@ -259,7 +255,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
                     tokenMetadata,
                 ),
             )
-            .filter((tx): tx is Transaction => !!tx);
+            .filter(isNotNullOrUndefined);
 
         const transactions: Transaction[] = await Promise.all(
             page.map(async tx => {

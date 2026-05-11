@@ -1,3 +1,5 @@
+import { isNotNull } from '@trezor/utils';
+
 import { type IssueCode, type ValidationResult } from '../types/validation';
 
 export type ValidateFn<Input> = (input: Input) => IssueCode | null;
@@ -19,7 +21,7 @@ export const createValidator =
     (input: Input, path: string, context?: Context): ValidationResult<Output> => {
         for (const validateFn of config.validate) {
             const code = validateFn(input);
-            if (code !== null) {
+            if (isNotNull(code)) {
                 return { value: null, issues: [{ code, path }] };
             }
         }
@@ -28,7 +30,7 @@ export const createValidator =
 
         const inspectIssues = (config.inspect ?? [])
             .map(inspectFn => inspectFn(normalizedValue, context))
-            .filter((code): code is IssueCode => code !== null)
+            .filter(isNotNull)
             .map(code => ({ code, path }));
 
         return { value: normalizedValue, issues: inspectIssues };

@@ -26,7 +26,7 @@ import {
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
 import { type TimerId, exhaustive } from '@trezor/type-utils';
-import { BigNumber, typedObjectKeys } from '@trezor/utils';
+import { BigNumber, isNotUndefined, typedObjectKeys } from '@trezor/utils';
 
 import { FIAT_RATES_MODULE_PREFIX, REFETCH_INTERVAL } from './fiatRatesConstants';
 import { selectTickersToBeUpdated } from './fiatRatesSelectors';
@@ -136,7 +136,7 @@ export const updateTxsFiatRatesThunk = createThunk(
 
         const timestamps = txs
             .map(tx => (tx.blockTime !== undefined ? asTimestamp(tx.blockTime) : undefined))
-            .filter(it => it !== undefined);
+            .filter(isNotUndefined);
 
         await fetchTransactionsRates(
             { symbol: account.symbol },
@@ -167,7 +167,7 @@ export const updateTxsFiatRatesThunk = createThunk(
 
             const tokenTimestamps = groupedTokensTxs[token]
                 .map(tx => (tx.blockTime !== undefined ? asTimestamp(tx.blockTime) : undefined))
-                .filter(it => it !== undefined);
+                .filter(isNotUndefined);
 
             await fetchTransactionsRates(
                 {

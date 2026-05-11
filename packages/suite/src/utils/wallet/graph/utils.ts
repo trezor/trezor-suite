@@ -169,8 +169,8 @@ export const getMinMaxValueFromData = <TType extends TypeName, TValue extends Bi
     const maxValue = BigNumber.max(maxSent, maxReceived, maxBalance);
 
     const minsToCompare = [minSent, minReceived, minBalance]
-        .filter(m => !!m)
-        .map(m => m!.toNumber());
+        .filter((m): m is TValue => !!m)
+        .map(m => m.toNumber());
     const minValue = BigNumber.min(...minsToCompare);
 
     return [minValue as TValue, maxValue as TValue];

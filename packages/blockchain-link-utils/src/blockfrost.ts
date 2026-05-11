@@ -13,6 +13,7 @@ import type {
     Utxo,
     VinVout,
 } from '@trezor/blockchain-link-types';
+import { isNotNullOrUndefined } from '@trezor/utils';
 import { BigNumber, type BigNumberValue } from '@trezor/utils/src/bigNumber';
 
 import { enhanceVinVout, filterTargets, sumVinVout, transformTarget } from './utils';
@@ -209,7 +210,7 @@ export const filterTokenTransfers = (
             });
     });
 
-    return transfers.filter(t => !!t) as TokenTransfer[];
+    return transfers.filter(isNotNullOrUndefined);
 };
 
 export const transformTransaction = (

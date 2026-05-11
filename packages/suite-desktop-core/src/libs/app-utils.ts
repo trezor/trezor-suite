@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import { mergeDeepObject } from '@trezor/utils';
+import { isNotNull, mergeDeepObject } from '@trezor/utils';
 
 import { app } from '../typed-electron';
 
@@ -48,7 +48,7 @@ export const processStatePatch = (): ProcessStatePatchResult =>
     // not using getSwitchValue because this is a very customized way to parse process switches
     process.argv
         .map(arg => arg.match(STATE_ASSIGNMENT_REGEX))
-        .filter(match => match !== null)
+        .filter(isNotNull)
         .map((assignment: RegExpMatchArray) => {
             const [_, key, value] = assignment;
 
