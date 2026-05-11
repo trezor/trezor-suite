@@ -2,6 +2,7 @@ import {
     type TransactionDto,
     TransactionDtoStatus,
     TransactionDtoType,
+    type YieldDto,
     parseUnsignedEvmTransaction,
 } from '@suite-common/earn-stablecoin-api';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
@@ -318,5 +319,8 @@ export const getYieldApprovalModalParams = (transactions: TransactionDto[]) => {
 const getVaultAddressFromYieldId = (yieldId: string) =>
     yieldId.match(/0x[a-fA-F0-9]{40}/)?.[0] ?? null;
 
+export const getYieldVaultContractAddress = (vault: Pick<YieldDto, 'id' | 'outputToken'>) =>
+    vault.outputToken?.address ?? getVaultAddressFromYieldId(vault.id);
+
 export const getAllowanceSpender = (flowData: YieldFlowResolvedData) =>
-    flowData.receiptToken.contractAddress ?? getVaultAddressFromYieldId(flowData.vault.id);
+    flowData.receiptToken.contractAddress ?? getYieldVaultContractAddress(flowData.vault);

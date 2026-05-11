@@ -2,7 +2,7 @@ import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
-import { Banner, Row, SkeletonRectangle } from '@trezor/components';
+import { Banner, Row, SkeletonRectangle, Tooltip } from '@trezor/components';
 
 import { useAnalytics } from 'src/support/useAnalytics';
 
@@ -11,6 +11,7 @@ type EarnYieldClaimRewardsBannerProps = {
     currency: string;
     isValueLoading?: boolean;
     isClaimDisabled?: boolean;
+    claimDisabledTooltip?: React.ReactNode;
     onClaim?: () => void;
 };
 
@@ -19,6 +20,7 @@ export const EarnYieldClaimRewardsBanner = ({
     currency,
     isValueLoading,
     isClaimDisabled,
+    claimDisabledTooltip,
     onClaim,
 }: EarnYieldClaimRewardsBannerProps) => {
     const analytics = useAnalytics();
@@ -57,9 +59,15 @@ export const EarnYieldClaimRewardsBanner = ({
                 </Row>
             }
             rightContent={
-                <Banner.Button isDisabled={isClaimDisabled} onClick={handleOnClaim}>
-                    <Translation id="TR_EARN_CLAIM_REWARDS_BUTTON" />
-                </Banner.Button>
+                <Tooltip content={claimDisabledTooltip}>
+                    <Banner.Button
+                        isDisabled={isClaimDisabled}
+                        iconLeft={claimDisabledTooltip ? 'info' : undefined}
+                        onClick={handleOnClaim}
+                    >
+                        <Translation id="TR_EARN_CLAIM_REWARDS_BUTTON" />
+                    </Banner.Button>
+                </Tooltip>
             }
         />
     );

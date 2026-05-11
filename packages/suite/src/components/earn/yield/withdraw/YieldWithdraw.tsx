@@ -2,6 +2,7 @@ import { FormProvider } from 'react-hook-form';
 
 import { type EarnParams } from '@suite/router';
 import { Context } from '@suite-common/message-system';
+import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
 
@@ -21,9 +22,14 @@ type YieldWithdrawProps = {
 };
 
 export const YieldWithdraw = ({ account, routeParams }: YieldWithdrawProps) => {
-    const { isDisabled, content } = useMessageSystemYield('withdraw');
     const allowanceContextValue = useAllowance({ account });
     const yieldWithdrawContextValues = useYieldWithdraw({ account, routeParams });
+    const vaultContractAddress = yieldWithdrawContextValues
+        ? getYieldVaultContractAddress(yieldWithdrawContextValues.vault)
+        : undefined;
+    const { isDisabled, content, variant } = useMessageSystemYield('withdraw', {
+        vaultContractAddress,
+    });
 
     if (!yieldWithdrawContextValues) {
         return null;
@@ -34,7 +40,7 @@ export const YieldWithdraw = ({ account, routeParams }: YieldWithdrawProps) => {
             <Column gap={24}>
                 <ContextMessage context={Context.getEarnYield('withdraw')} />
                 {isDisabled ? (
-                    <YieldDisabledBanner type="withdraw" content={content} />
+                    <YieldDisabledBanner type="withdraw" content={content} variant={variant} />
                 ) : (
                     <YieldWithdrawContext.Provider value={yieldWithdrawContextValues}>
                         <FormProvider {...yieldWithdrawContextValues.methods}>
