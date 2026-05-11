@@ -15509,6 +15509,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/coins-stellar@workspace:coins/coins-stellar":
+  version: 0.0.0-use.local
+  resolution: "@trezor/coins-stellar@workspace:coins/coins-stellar"
+  dependencies:
+    "@stellar/stellar-sdk": "npm:14.5.0"
+    "@trezor/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/components@workspace:*, @trezor/components@workspace:^, @trezor/components@workspace:packages/components":
   version: 0.0.0-use.local
   resolution: "@trezor/components@workspace:packages/components"
