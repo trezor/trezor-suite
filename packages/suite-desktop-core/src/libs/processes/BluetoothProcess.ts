@@ -27,10 +27,6 @@ export class BluetoothProcess extends BaseProcess {
         return `http://localhost:${this.port}/`;
     }
 
-    getPort() {
-        return this.port;
-    }
-
     async status(): Promise<Status> {
         if (!this.process) {
             return {
