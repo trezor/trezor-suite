@@ -1852,6 +1852,7 @@ export const messages = {
         emptyState: {
             title: 'No assets',
             subtitle: 'Connect your Trezor or sync coins to view and track assets.',
+            addSubtitle: 'Start adding coins you want to use.',
             receiveSubtitle: 'Connect your Trezor or sync coins to view and receive assets.',
             searchAgain: 'Search again',
         },

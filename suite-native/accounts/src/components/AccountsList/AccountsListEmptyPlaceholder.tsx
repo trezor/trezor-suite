@@ -1,5 +1,8 @@
+import { useSelector } from 'react-redux';
+
 import { useRoute } from '@react-navigation/native';
 
+import { selectIsDeviceConnected } from '@suite-common/device';
 import { Box, PictogramTitleHeader } from '@suite-native/atoms';
 import { type IconName } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
@@ -28,25 +31,28 @@ export const AccountsListEmptyPlaceholder = ({
         route.name === ReceiveStackRoutes.ReceiveAccounts ||
         route.name === ReceiveStackRoutes.ReceiveAccount;
 
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
+
     const getIcon = (): IconName => {
         if (!isFilterEmpty) {
             return 'magnifyingGlass';
         }
-
         if (isReceiveRoute) {
             return 'arrowLineDown';
         }
 
-        return 'discover';
+        return 'coins';
     };
 
     const getSubtitle = (): TxKeyPath => {
         if (!isFilterEmpty) {
             return 'moduleAccounts.emptyState.searchAgain';
         }
-
         if (isReceiveRoute) {
             return 'moduleAccounts.emptyState.receiveSubtitle';
+        }
+        if (isDeviceConnected) {
+            return 'moduleAccounts.emptyState.addSubtitle';
         }
 
         return 'moduleAccounts.emptyState.subtitle';
