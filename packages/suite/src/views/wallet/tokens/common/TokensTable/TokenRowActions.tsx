@@ -148,7 +148,7 @@ const TokenRowBasicActions = ({
 
         dispatch(
             goto({
-                routeName: 'earn-supply',
+                routeName: 'earn-deposit',
                 params: getEarnRouteParams({
                     account,
                     yieldId,

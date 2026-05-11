@@ -64,7 +64,7 @@ export const useEarnProviderConsentActions = ({
                 if (yieldContext) {
                     dispatch(
                         goto({
-                            routeName: 'earn-supply',
+                            routeName: 'earn-deposit',
                             params: getEarnRouteParams({
                                 account,
                                 yieldId: yieldContext.id,

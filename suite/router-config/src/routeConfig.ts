@@ -36,8 +36,8 @@ export const routes = [
         app: 'earn',
     },
     {
-        name: 'earn-supply',
-        pattern: '/earn/supply',
+        name: 'earn-deposit',
+        pattern: '/earn/deposit',
         app: 'earn',
         params: earnParams,
     },
