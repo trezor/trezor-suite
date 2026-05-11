@@ -1,4 +1,5 @@
 import { type AccountKey } from '@suite-common/wallet-types';
+import { getTranslation } from '@suite-native/intl';
 import { type TestStore, act } from '@suite-native/test-utils-store';
 
 import {
@@ -42,13 +43,12 @@ describe('useTradingOutputsReviewErrorAlert', () => {
         expect(mockShowAlert).toHaveBeenCalledTimes(1);
         expect(mockShowAlert).toHaveBeenCalledWith({
             icon: 'warningCircle',
-            title: 'Transaction failed',
-            description:
-                'There has been an unexpected error, please try sending your transaction again.',
-            primaryButtonTitle: 'Try again',
+            title: getTranslation('moduleSend.review.outputs.errorAlert.generic.title'),
+            description: getTranslation('moduleSend.review.outputs.errorAlert.generic.description'),
+            primaryButtonTitle: getTranslation('generic.buttons.tryAgain'),
             primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
             onPressPrimaryButton: mockOnRetry,
-            secondaryButtonTitle: 'Cancel',
+            secondaryButtonTitle: getTranslation('generic.buttons.cancel'),
             secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
             onPressSecondaryButton: mockOnCancel,
         });
@@ -68,8 +68,10 @@ describe('useTradingOutputsReviewErrorAlert', () => {
         expect(mockShowAlert).toHaveBeenCalledTimes(1);
         expect(mockShowAlert).toHaveBeenCalledWith(
             expect.objectContaining({
-                title: 'Transaction failed due to timeout',
-                description: 'Make sure you send the transaction within 1 minute from signing.',
+                title: getTranslation('moduleSend.review.outputs.errorAlert.solana.title'),
+                description: getTranslation(
+                    'moduleSend.review.outputs.errorAlert.solana.description',
+                ),
             }),
         );
     });
