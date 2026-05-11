@@ -1,6 +1,7 @@
 import { deflateRaw } from 'pako';
 
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { splitStringEveryNCharacters } from '@trezor/utils';
 
 import { HAS_MONOCHROME_SCREEN } from 'src/constants/suite/device';
 import { type TrezorDevice } from 'src/types/suite/index';
@@ -159,14 +160,6 @@ const evenPad = (val: string) => {
     return `0${val}`;
 };
 
-const chunkString = (size: number, str: string) => {
-    const re = new RegExp(`.{1,${size}}`, 'g');
-    const result = str.match(re);
-    if (!result) return [];
-
-    return result;
-};
-
 // Convert RGB to grayscale using the formula grayscale = 0.299 * R + 0.587 * G + 0.114 * B
 const toGrayscale = (red: number, green: number, blue: number): number =>
     Math.round(0.299 * red + 0.587 * green + 0.114 * blue);
@@ -212,7 +205,7 @@ const toig = (imageData: ImageData, deviceModelInternal: DeviceModelInternal) =>
     if (length.length % 2 > 0) {
         length = evenPad(length);
     }
-    length = chunkString(2, length).reverse().join('');
+    length = splitStringEveryNCharacters(length, 2).reverse().join('');
     header += rightPad(8, length);
 
     return header + byteArrayToHexString(packed);
