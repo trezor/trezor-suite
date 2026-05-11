@@ -16,7 +16,7 @@ export const interceptFetch: Interceptor = ({ context, validateRequest }) => {
         const isTorRequired = getIsTorRequired(options as Readonly<RequestOptions>);
 
         if (isTorEnabled) {
-            return nodeFetch(url as string, options as RequestInit) as Promise<any>;
+            return nodeFetch(url as string, options as RequestInit) as unknown as Promise<Response>;
         }
 
         if (isTorRequired && !context.allowTorBypass) {
