@@ -1782,7 +1782,7 @@ export const messages = {
             tab: {
                 tokens: 'Tokens{count, plural, =0 {} other { #}}',
                 defi: 'DeFi{count, plural, =0 {} other { #}}',
-                hidden: 'Hidden',
+                hidden: 'Hidden{count, plural, =0 {} other { #}}',
                 inactive: 'Inactive',
             },
             zeroBalanceSection: {
@@ -1793,6 +1793,15 @@ export const messages = {
                 warning: "We don't recognize this token. It may be unsafe—proceed with caution.",
                 emptyTitle: 'No hidden tokens',
             },
+            hiddenByUserSection: {
+                title: 'Hidden tokens',
+            },
+        },
+        tokenSettings: {
+            contractAddress: 'Contract address',
+            network: 'Network',
+            balance: 'Balance',
+            hideToken: 'Hide token',
         },
         accountSettingsScreen: {
             coin: 'Coin',

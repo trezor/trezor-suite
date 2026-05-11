@@ -31,6 +31,7 @@ type AccountAssetsTabBarProps = {
     activeTab: AccountAssetsTab;
     tokenCount: number;
     defiTokenCount: number;
+    hiddenTokenCount: number;
     showInactiveTab: boolean;
     onTabChange: (tab: AccountAssetsTab) => void;
 };
@@ -38,6 +39,7 @@ type AccountAssetsTabBarProps = {
 const getTabsConfig = (
     tokenCount: number,
     defiTokenCount: number,
+    hiddenTokenCount: number,
     showInactiveTab: boolean,
 ): TabItem[] => [
     {
@@ -58,6 +60,7 @@ const getTabsConfig = (
         tab: 'hidden',
         icon: 'eyeSlash',
         translationId: 'moduleAccountManagement.accountAssetsScreen.tab.hidden',
+        translationValues: { count: hiddenTokenCount },
         isVisible: true,
     },
     {
@@ -72,6 +75,7 @@ export const AccountAssetsTabBar = ({
     activeTab,
     tokenCount,
     defiTokenCount,
+    hiddenTokenCount,
     showInactiveTab,
     onTabChange,
 }: AccountAssetsTabBarProps) => {
@@ -90,7 +94,7 @@ export const AccountAssetsTabBar = ({
             scrollEventThrottle={16}
             onLayout={handleScrollViewLayout}
         >
-            {getTabsConfig(tokenCount, defiTokenCount, showInactiveTab)
+            {getTabsConfig(tokenCount, defiTokenCount, hiddenTokenCount, showInactiveTab)
                 .filter(({ isVisible }) => isVisible)
                 .map(({ tab, icon, translationId, translationValues }) => (
                     <View key={tab} onLayout={handleTabLayout(tab)}>

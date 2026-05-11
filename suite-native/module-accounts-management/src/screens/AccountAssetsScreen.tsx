@@ -8,6 +8,7 @@ import {
     type TokensRootState,
     selectAccountByKey,
     selectAccountDefiTokensCount,
+    selectAccountManuallyHiddenTokensCount,
 } from '@suite-common/wallet-core';
 import {
     type NativeAccountsRootState,
@@ -36,6 +37,9 @@ export const AccountAssetsScreen = () => {
     const defiTokenCount = useSelector((state: TokensRootState) =>
         selectAccountDefiTokensCount(state, accountKey),
     );
+    const manuallyHiddenTokens = useSelector((state: TokensRootState) =>
+        selectAccountManuallyHiddenTokensCount(state, accountKey),
+    );
 
     const tokenCount = sections.filter(item => item.type === 'token').length;
     const showInactiveTab = account?.networkType === 'stellar';
@@ -47,6 +51,7 @@ export const AccountAssetsScreen = () => {
                     activeTab={activeTab}
                     tokenCount={tokenCount}
                     defiTokenCount={defiTokenCount}
+                    hiddenTokenCount={manuallyHiddenTokens}
                     showInactiveTab={showInactiveTab ?? false}
                     onTabChange={setActiveTab}
                 />

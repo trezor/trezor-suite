@@ -48,6 +48,35 @@ export const selectAccountHiddenTokens = createMemoizedSelector(
     },
 );
 
+export const selectAccountManuallyHiddenTokens = createMemoizedSelector(
+    [selectAccountTokens],
+    (tokenCategories): TokenInfoBranded[] => {
+        if (!tokenCategories) return [];
+
+        return [
+            ...tokenCategories.hiddenWithBalance,
+            ...tokenCategories.hiddenWithoutBalance,
+        ] as TokenInfoBranded[];
+    },
+);
+
+export const selectAccountUnrecognizedTokens = createMemoizedSelector(
+    [selectAccountTokens],
+    (tokenCategories): TokenInfoBranded[] => {
+        if (!tokenCategories) return [];
+
+        return [
+            ...tokenCategories.unverifiedWithBalance,
+            ...tokenCategories.unverifiedWithoutBalance,
+        ] as TokenInfoBranded[];
+    },
+);
+
+export const selectAccountManuallyHiddenTokensCount = createMemoizedSelector(
+    [selectAccountManuallyHiddenTokens],
+    (tokens): number => tokens.length,
+);
+
 export const selectAccountDefiTokens = createMemoizedSelector(
     [selectAccountTokens],
     (tokenCategories): TokenInfoBranded[] => {

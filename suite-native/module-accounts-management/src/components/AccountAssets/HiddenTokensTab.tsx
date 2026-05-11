@@ -6,7 +6,8 @@ import {
     type AccountsRootState,
     type TokensRootState,
     selectAccountByKey,
-    selectAccountHiddenTokens,
+    selectAccountManuallyHiddenTokens,
+    selectAccountUnrecognizedTokens,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { AccountsListTokenItem } from '@suite-native/accounts';
@@ -29,11 +30,14 @@ export const HiddenTokensTab = ({ accountKey }: HiddenTokensTabProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const hiddenTokens = useSelector((state: TokensRootState) =>
-        selectAccountHiddenTokens(state, accountKey),
+    const manuallyHiddenTokens = useSelector((state: TokensRootState) =>
+        selectAccountManuallyHiddenTokens(state, accountKey),
+    );
+    const unrecognizedTokens = useSelector((state: TokensRootState) =>
+        selectAccountUnrecognizedTokens(state, accountKey),
     );
 
-    if (hiddenTokens.length === 0) {
+    if (manuallyHiddenTokens.length === 0 && unrecognizedTokens.length === 0) {
         return (
             <Card>
                 <PictogramTitleHeader
@@ -51,35 +55,64 @@ export const HiddenTokensTab = ({ accountKey }: HiddenTokensTabProps) => {
 
     return (
         <VStack spacing="sp16">
-            <Text variant="headline-sm">
-                <Translation id="moduleAccountManagement.accountAssetsScreen.hiddenTokensSection.title" />
-            </Text>
-            <Card
-                noPadding
-                alertProps={{
-                    variant: 'warning',
-                    title: (
-                        <Translation id="moduleAccountManagement.accountAssetsScreen.hiddenTokensSection.warning" />
-                    ),
-                }}
-            >
-                {hiddenTokens.map((token, index) => (
-                    <AccountsListTokenItem
-                        key={token.contract}
-                        token={token}
-                        account={account}
-                        isLast={index === hiddenTokens.length - 1}
-                        showFiatValue={false}
-                        onSelectAccount={() =>
-                            navigation.navigate(RootStackRoutes.AccountDetail, {
-                                accountKey,
-                                tokenContract: token.contract,
-                                closeActionType: 'back',
-                            })
-                        }
-                    />
-                ))}
-            </Card>
+            {manuallyHiddenTokens.length > 0 && (
+                <>
+                    <Text variant="headline-sm">
+                        <Translation id="moduleAccountManagement.accountAssetsScreen.hiddenByUserSection.title" />
+                    </Text>
+                    <Card noPadding>
+                        {manuallyHiddenTokens.map((token, index) => (
+                            <AccountsListTokenItem
+                                key={token.contract}
+                                token={token}
+                                account={account}
+                                isLast={index === manuallyHiddenTokens.length - 1}
+                                showFiatValue={false}
+                                onSelectAccount={() =>
+                                    navigation.navigate(RootStackRoutes.AccountDetail, {
+                                        accountKey,
+                                        tokenContract: token.contract,
+                                        closeActionType: 'back',
+                                    })
+                                }
+                            />
+                        ))}
+                    </Card>
+                </>
+            )}
+            {unrecognizedTokens.length > 0 && (
+                <>
+                    <Text variant="headline-sm">
+                        <Translation id="moduleAccountManagement.accountAssetsScreen.hiddenTokensSection.title" />
+                    </Text>
+                    <Card
+                        noPadding
+                        alertProps={{
+                            variant: 'warning',
+                            title: (
+                                <Translation id="moduleAccountManagement.accountAssetsScreen.hiddenTokensSection.warning" />
+                            ),
+                        }}
+                    >
+                        {unrecognizedTokens.map((token, index) => (
+                            <AccountsListTokenItem
+                                key={token.contract}
+                                token={token}
+                                account={account}
+                                isLast={index === unrecognizedTokens.length - 1}
+                                showFiatValue={false}
+                                onSelectAccount={() =>
+                                    navigation.navigate(RootStackRoutes.AccountDetail, {
+                                        accountKey,
+                                        tokenContract: token.contract,
+                                        closeActionType: 'back',
+                                    })
+                                }
+                            />
+                        ))}
+                    </Card>
+                </>
+            )}
         </VStack>
     );
 };
