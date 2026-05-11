@@ -4,8 +4,8 @@ import type { DeviceRootState } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
-    filterKnownTokens,
     getSimpleCoinDefinitionsByNetwork,
+    isTokenDefinitionKnown,
     selectIsSpecificCoinDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
@@ -196,10 +196,19 @@ export const selectAccountKnownTokens = createMemoizedSelector(
             account.symbol,
         );
 
-        const knownTokens = filterKnownTokens(
-            tokenDefinitionsForNetwork,
-            account.symbol,
-            account.tokens ?? [],
+        const coinDefs = tokenDefinitions[account.symbol]?.coin;
+        const hiddenSet = new Set((coinDefs?.hide ?? []).map(c => c.toLowerCase()));
+        const shownSet = new Set((coinDefs?.show ?? []).map(c => c.toLowerCase()));
+
+        const knownTokens = (account.tokens ?? []).filter(
+            token =>
+                (isTokenDefinitionKnown(
+                    tokenDefinitionsForNetwork,
+                    account.symbol,
+                    token.contract,
+                ) ||
+                    shownSet.has(token.contract.toLowerCase())) &&
+                !hiddenSet.has(token.contract.toLowerCase()),
         ) as TokenInfoBranded[];
 
         return returnStableArrayIfEmpty(knownTokens);
