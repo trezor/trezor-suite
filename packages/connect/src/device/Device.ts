@@ -501,7 +501,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
                     device: this,
                     logger: _log,
                     signal: abortSignal,
-                    cancelNeeded: acquireNeeded && this.protocol.name !== 'v2',
+                    cancelNeeded: acquireNeeded && this.protocol.name === 'v1',
                 });
 
                 if (this.protocol.name === 'v2') {
