@@ -7,7 +7,7 @@ import { applyBridgeApiCallHeaders } from './applyBridgeApiCallHeaders';
 import { error, success, unknownError } from './result';
 
 export type HttpRequestOptions = {
-    body?: Array<any> | Record<string, unknown> | string;
+    body?: unknown[] | Record<string, unknown> | string;
     url: string;
     method: 'POST' | 'GET';
     skipContentTypeHeader?: boolean;
