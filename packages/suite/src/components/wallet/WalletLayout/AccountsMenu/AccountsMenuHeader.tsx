@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { selectIsCoinsFilterVisible, suiteSettingsActions } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectAllAccountsToList } from '@suite-common/wallet-core';
+import { selectAllAccountsToList, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Box, Column, Divider, Icon, Row, SkeletonRectangle, Tooltip } from '@trezor/components';
 
 import { CollapsedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
-import { useAccountSearch, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
 
 import { AccountSearchBox } from './AccountSearchBox';
 import { AddAccountButton } from './AddAccountButton';
@@ -36,11 +36,10 @@ export const AccountsMenuHeader = () => {
 
     const device = useSelector(selectSelectedDevice);
     const accounts = useSelector(selectAllAccountsToList);
-    const { discovery } = useDiscovery();
 
     const isEmpty = accounts.length === 0;
 
-    const isDiscoveryRunning = discovery?.status === 'progress';
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const isCoinsFilterVisible = useSelector(selectIsCoinsFilterVisible);
     const dispatch = useDispatch();
     const availableNetworksSymbols = useAvailableNetworkSymbols();
