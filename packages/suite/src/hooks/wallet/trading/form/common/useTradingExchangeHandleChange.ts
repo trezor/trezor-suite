@@ -8,6 +8,7 @@ import {
     useTradingRefetchScheduler,
 } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
+import { noop } from '@trezor/utils';
 
 import { useDispatch } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -24,8 +25,6 @@ type TradingExchangeUseHandleChangeProps = {
 type PromiseType = {
     abort: (message?: string) => void;
 } | null;
-
-const noop = () => {};
 
 /**
  * Wrapping the handleRequestThunk to have a better control
