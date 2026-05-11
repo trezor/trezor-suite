@@ -10,6 +10,7 @@
         {
             "path": "../../packages/blockchain-link-utils"
         },
+        { "path": "../../coins/coins-stellar" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/utils" }
     ]

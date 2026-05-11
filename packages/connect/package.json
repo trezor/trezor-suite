@@ -91,6 +91,7 @@
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/coins-solana": "workspace:*",
+        "@trezor/coins-stellar": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/connect-data": "workspace:*",
         "@trezor/crypto-utils": "workspace:*",

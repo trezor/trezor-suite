@@ -10,6 +10,7 @@
         { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
         { "path": "../../coins/coins-solana" },
+        { "path": "../../coins/coins-stellar" },
         { "path": "../connect-common" },
         { "path": "../connect-data" },
         { "path": "../crypto-utils" },

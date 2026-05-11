@@ -4,6 +4,7 @@
     "compilerOptions": { "outDir": "./lib" },
     "references": [
         { "path": "../../coins/coins-solana" },
+        { "path": "../../coins/coins-stellar" },
         { "path": "../env-utils" },
         { "path": "../utils" },
         { "path": "../blockchain-link-types" },

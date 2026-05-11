@@ -212,6 +212,7 @@
         { "path": "../blockchain-link-utils" },
         { "path": "../coinjoin" },
         { "path": "../../coins/coins-solana" },
+        { "path": "../../coins/coins-stellar" },
         { "path": "../components" },
         { "path": "../connect" },
         { "path": "../connect-common" },
