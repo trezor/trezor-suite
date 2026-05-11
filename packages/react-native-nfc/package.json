@@ -1,0 +1,23 @@
+{
+    "name": "@trezor/react-native-nfc",
+    "version": "1.0.0",
+    "description": "React Native NFC intent reader for Android",
+    "main": "src/index",
+    "scripts": {
+        "type-check": "yarn g:tsc --build tsconfig.json",
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "keywords": [
+        "react-native",
+        "expo",
+        "nfc"
+    ],
+    "license": "See LICENSE.md in repo root",
+    "peerDependencies": {
+        "expo": "*",
+        "expo-modules-core": "*",
+        "react": "*",
+        "react-native": "*"
+    }
+}
