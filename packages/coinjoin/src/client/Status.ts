@@ -1,5 +1,5 @@
 import type { TimerId } from '@trezor/type-utils';
-import { TypedEmitter } from '@trezor/utils';
+import { TypedEmitter, getWeakRandomInt } from '@trezor/utils';
 
 import * as coordinator from './coordinator';
 import { coordinatorRequest } from './coordinatorRequest';
@@ -214,7 +214,7 @@ export class Status extends TypedEmitter<StatusEvents> {
     async getStatus() {
         if (!this.enabled) return Promise.resolve();
 
-        const identity = this.identities[Math.floor(Math.random() * this.identities.length)];
+        const identity = this.identities[getWeakRandomInt(0, this.identities.length)];
         const status = await coordinator.getStatus({
             baseUrl: this.settings.coordinatorUrl,
             signal: this.abortController.signal,

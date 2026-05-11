@@ -1,4 +1,5 @@
 import type { HistoricRates, TimestampedRates } from '@suite-common/wallet-types';
+import { getWeakRandomInt } from '@trezor/utils';
 
 import { fetchUrl } from './fetch';
 import { RateLimiter } from './limiter';
@@ -11,7 +12,7 @@ const ENDPOINTS = {
 type Ticker = keyof typeof ENDPOINTS;
 
 const randomEndpoint = (ticker: Ticker) =>
-    ENDPOINTS[ticker][Math.floor(Math.random() * ENDPOINTS[ticker].length)];
+    ENDPOINTS[ticker][getWeakRandomInt(0, ENDPOINTS[ticker].length)];
 
 const getQuery = (query?: { currency?: string; timestamp?: number | string }) =>
     Object.entries(query || {})
