@@ -3,6 +3,8 @@
 
 import { type KeysOfUnion } from '@trezor/type-utils';
 
+import { isSafeObjectKey } from './isSafeObjectKey';
+
 type TIndexValue<T, K extends PropertyKey, D = never> = T extends any
     ? K extends keyof T
         ? T[K]
@@ -73,7 +75,7 @@ export const mergeDeepObject = <T extends IObject[]>(...objects: T): TMerged<T[n
         }
 
         Object.keys(current).forEach(key => {
-            if (['__proto__', 'constructor', 'prototype'].includes(key)) {
+            if (!isSafeObjectKey(key)) {
                 return;
             }
 
