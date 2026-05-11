@@ -13,12 +13,14 @@ import {
     toTokenCryptoId,
     tradingActions,
 } from '@suite-common/trading';
+import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
-import { Button, Column, Icon, Paragraph, Row, Table } from '@trezor/components';
+import { Button, Column, Icon, Paragraph, Row, Table, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 import { EarnYieldApyTooltip } from './EarnYieldApyTooltip';
@@ -39,6 +41,9 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
     const [isFirmwareModalOpen, setIsFirmwareModalOpen] = useState(false);
     const selectedDevice = useSelector(selectSelectedDevice);
     const isFirmwareOutdated = !isStablecoinYieldSupported(selectedDevice);
+    const vaultContractAddress = getYieldVaultContractAddress(opportunity.vault);
+    const depositMessageSystem = useMessageSystemYield('deposit', { vaultContractAddress });
+    const withdrawMessageSystem = useMessageSystemYield('withdraw', { vaultContractAddress });
 
     const hasSuppliedBalance = opportunity.hasVaultPosition;
     const hasDisplayableSuppliedAmount = new BigNumber(opportunity.suppliedAmount).gt(0);
@@ -209,6 +214,10 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
         );
     };
 
+    const isDepositDisabled = depositMessageSystem.isDisabled;
+    const isWithdrawDisabled = withdrawMessageSystem.isDisabled;
+    const isSupplyNowDisabled = !opportunity.vault.status.enter || isDepositDisabled;
+
     return (
         <>
             {isFirmwareModalOpen && (
@@ -319,28 +328,42 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                     <Row justifyContent="flex-end" gap={8}>
                         {hasSuppliedBalance && (
                             <>
-                                <Button size="small" onClick={navigateToYieldSupply}>
-                                    <Translation id="TR_EARN_YIELD_DASHBOARD_SUPPLY_MORE" />
-                                </Button>
-                                <Button
-                                    size="small"
-                                    intent="brand"
-                                    priority="secondary"
-                                    onClick={navigateToYieldWithdraw}
-                                >
-                                    <Translation id="TR_EARN_YIELD_DASHBOARD_WITHDRAW" />
-                                </Button>
+                                <Tooltip content={depositMessageSystem.content}>
+                                    <Button
+                                        size="small"
+                                        isDisabled={isDepositDisabled}
+                                        iconLeft={isDepositDisabled ? 'info' : undefined}
+                                        onClick={navigateToYieldSupply}
+                                    >
+                                        <Translation id="TR_EARN_YIELD_DASHBOARD_SUPPLY_MORE" />
+                                    </Button>
+                                </Tooltip>
+                                <Tooltip content={withdrawMessageSystem.content}>
+                                    <Button
+                                        size="small"
+                                        intent="brand"
+                                        priority="secondary"
+                                        isDisabled={isWithdrawDisabled}
+                                        iconLeft={isWithdrawDisabled ? 'info' : undefined}
+                                        onClick={navigateToYieldWithdraw}
+                                    >
+                                        <Translation id="TR_EARN_YIELD_DASHBOARD_WITHDRAW" />
+                                    </Button>
+                                </Tooltip>
                             </>
                         )}
 
                         {!hasSuppliedBalance && hasMatchedTokenWithBalance && (
-                            <Button
-                                size="small"
-                                isDisabled={!opportunity.vault.status.enter}
-                                onClick={openYieldSupplyFlow}
-                            >
-                                <Translation id="TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW" />
-                            </Button>
+                            <Tooltip content={depositMessageSystem.content}>
+                                <Button
+                                    size="small"
+                                    isDisabled={isSupplyNowDisabled}
+                                    iconLeft={isDepositDisabled ? 'info' : undefined}
+                                    onClick={openYieldSupplyFlow}
+                                >
+                                    <Translation id="TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW" />
+                                </Button>
+                            </Tooltip>
                         )}
 
                         {!hasSuppliedBalance && !hasMatchedTokenWithBalance && (

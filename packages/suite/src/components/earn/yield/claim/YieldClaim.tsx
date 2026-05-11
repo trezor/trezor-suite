@@ -41,7 +41,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     const { device } = useDevice();
     const flowKey = account?.key ?? '';
     const hasReportedSuccessRef = useRef(false);
-    const { isDisabled, content } = useMessageSystemYield('claim');
+    const { isDisabled, content, variant } = useMessageSystemYield('claim');
 
     const yieldTxReview = useSelector(selectStablecoinYieldTxReview);
     const claimSession = useSelector(state =>
@@ -188,7 +188,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                 </Text>
 
                 {isDisabled ? (
-                    <YieldDisabledBanner type="claim" content={content} />
+                    <YieldDisabledBanner type="claim" content={content} variant={variant} />
                 ) : (
                     <>
                         <Card>
