@@ -42,5 +42,5 @@ export const PaymentMethodTranslation = ({
         return <Translation id={paymentMethodTranslationId} />;
     }
 
-    return paymentMethodName ?? paymentMethod ?? null;
+    return (paymentMethodName || paymentMethod) ?? '';
 };

@@ -37,8 +37,15 @@ describe('PaymentMethodTranslation', () => {
     it('should render payment method when payment method name is missing', () => {
         const { getByText } = renderPaymentMethodTranslation({
             paymentMethod: 'customMethod',
+            paymentMethodName: '',
         });
 
         expect(getByText('customMethod')).toBeOnTheScreen();
+    });
+
+    it('should render empty string when no payment method or name is provided', () => {
+        const { getByText } = renderPaymentMethodTranslation({});
+
+        expect(getByText('')).toBeOnTheScreen();
     });
 });
