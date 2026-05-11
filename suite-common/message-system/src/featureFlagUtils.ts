@@ -16,3 +16,33 @@ export const parseTimeoutThresholdsPerModel = (
 
     return override;
 };
+
+const getYieldVaultContractAddresses = (payload: Feature['payload']) => {
+    if (!Array.isArray(payload?.vaultContractAddresses)) {
+        return [];
+    }
+
+    return payload.vaultContractAddresses
+        .filter((address): address is string => typeof address === 'string' && address !== '')
+        .map(address => address.toLowerCase());
+};
+
+export const isYieldFeatureApplicableForVault = ({
+    feature,
+    vaultContractAddress,
+}: {
+    feature: Feature;
+    vaultContractAddress?: string | null;
+}) => {
+    if (feature.payload === undefined) {
+        return true;
+    }
+
+    if (!vaultContractAddress) {
+        return false;
+    }
+
+    return getYieldVaultContractAddresses(feature.payload).includes(
+        vaultContractAddress.toLowerCase(),
+    );
+};
