@@ -5,6 +5,7 @@ import { Translation } from '@suite/intl';
 import { type Explorer } from '@suite-common/wallet-config';
 import { Button, Column, InfoItem, Input, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { type useExplorerForm } from 'src/hooks/settings/useExplorerForm';
 
@@ -45,7 +46,7 @@ export const ExplorerConfigForm = ({ form }: ExplorerConfigProps) => {
     const { explorerConfig, setDefaultValues, usesDefaultExplorer, input, explorer } = form;
 
     const explorerKeys = useMemo(() => {
-        const keys = Object.keys(explorer) as (keyof Explorer)[];
+        const keys = typedObjectKeys(explorer);
 
         return keys.filter(key => key !== 'base' && input.fields[key].value !== undefined);
     }, [explorer, input]);

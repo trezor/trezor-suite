@@ -1,15 +1,14 @@
 import { useEffect } from 'react';
 
 import {
-    type Breakpoint,
     type BreakpointFlagName,
     type BreakpointFlags,
-    type BreakpointValue,
     aboveBreakpoint,
     belowBreakpoint,
     breakpoints,
     getBreakpointFlagNames,
 } from '@trezor/theme';
+import { typedObjectEntries } from '@trezor/utils';
 
 import { updateBreakpoints } from 'src/actions/suite/windowActions';
 import { useDispatch } from 'src/hooks/suite';
@@ -18,22 +17,21 @@ const Resize = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const queryList: Array<{ mq: MediaQueryList; flag: BreakpointFlagName }> = (
-            Object.entries(breakpoints) as [Breakpoint, BreakpointValue][]
-        ).flatMap(([breakpoint, breakpointValue]) => {
-            const [belowFlag, aboveFlag] = getBreakpointFlagNames(breakpoint);
+        const queryList: Array<{ mq: MediaQueryList; flag: BreakpointFlagName }> =
+            typedObjectEntries(breakpoints).flatMap(([breakpoint, breakpointValue]) => {
+                const [belowFlag, aboveFlag] = getBreakpointFlagNames(breakpoint);
 
-            return [
-                {
-                    mq: window.matchMedia(belowBreakpoint(breakpointValue)),
-                    flag: belowFlag,
-                },
-                {
-                    mq: window.matchMedia(aboveBreakpoint(breakpointValue)),
-                    flag: aboveFlag,
-                },
-            ];
-        });
+                return [
+                    {
+                        mq: window.matchMedia(belowBreakpoint(breakpointValue)),
+                        flag: belowFlag,
+                    },
+                    {
+                        mq: window.matchMedia(aboveBreakpoint(breakpointValue)),
+                        flag: aboveFlag,
+                    },
+                ];
+            });
 
         const initialFlags = queryList.reduce<Partial<BreakpointFlags>>((acc, { mq, flag }) => {
             acc[flag] = mq.matches;

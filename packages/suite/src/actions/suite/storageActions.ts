@@ -26,7 +26,7 @@ import {
     selectHistoricRatesByTransactions,
 } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
-import { cloneObject, isNotNullOrUndefined } from '@trezor/utils';
+import { cloneObject, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
 import { db } from 'src/storage';
@@ -463,13 +463,11 @@ const saveMetadata = async (metadata: Partial<Pick<MetadataState, MetadataPersis
     if (!db.isAccessible()) return;
 
     // remove undefined in metadata arg
-    (Object.keys as unknown as (args: any) => MetadataPersistentKeys[])(metadata).forEach(
-        (key: MetadataPersistentKeys) => {
-            if (typeof metadata[key] === 'undefined') {
-                delete metadata[key];
-            }
-        },
-    );
+    typedObjectKeys(metadata).forEach(key => {
+        if (typeof metadata[key] === 'undefined') {
+            delete metadata[key];
+        }
+    });
     const savedMetadata = await db.getItemByPK('metadata', 'state');
     const nextMetadata = { ...savedMetadata, ...metadata } as Pick<
         MetadataState,

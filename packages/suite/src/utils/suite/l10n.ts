@@ -1,5 +1,6 @@
 import { LANGUAGES, type Locale } from '@suite-common/suite-types';
 import { getPlatformLanguages } from '@trezor/env-utils';
+import { typedObjectKeys } from '@trezor/utils';
 
 const DEFAULT_LOCALE = 'en-US';
 
@@ -12,7 +13,7 @@ export const getOsLocale = (defaultLocale: Locale = DEFAULT_LOCALE): Locale => {
 
     const isLocale = (lang: string): lang is Locale => lang in LANGUAGES;
 
-    const suiteLanguageCodes = Object.keys(LANGUAGES) as Locale[];
+    const suiteLanguageCodes = typedObjectKeys(LANGUAGES);
     for (const platformLanguage of platformLanguages) {
         if (isLocale(platformLanguage)) {
             return platformLanguage;
