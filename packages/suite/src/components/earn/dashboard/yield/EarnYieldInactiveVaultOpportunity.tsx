@@ -2,7 +2,11 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { getNetwork } from '@suite-common/wallet-config';
-import { selectEnabledNetworks, selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import {
+    selectEnabledNetworks,
+    selectHasRunningDiscovery,
+    startOrRestartDiscoveryThunk,
+} from '@suite-common/wallet-core';
 import { Button, TOOLTIP_DELAY_NORMAL, Table, Tooltip } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -22,8 +26,8 @@ export const EarnYieldInactiveVaultOpportunity = ({
     const { device } = useDevice();
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-    const isDiscoveringThisNetwork =
-        isDiscoveryRunning && enabledNetworks.includes(opportunity.networkSymbol);
+    const isNetworkEnabled = enabledNetworks.includes(opportunity.networkSymbol);
+    const isDiscoveringThisNetwork = isDiscoveryRunning && isNetworkEnabled;
     const { name } = getNetwork(opportunity.networkSymbol);
 
     const isDeviceDisconnected = !device || !device.connected;
@@ -32,8 +36,14 @@ export const EarnYieldInactiveVaultOpportunity = ({
         <Translation id="TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT" />
     ) : undefined;
 
-    const openAddAccountModal = () => {
+    const handleActivate = () => {
         if (!device) {
+            return;
+        }
+
+        if (isNetworkEnabled) {
+            dispatch(startOrRestartDiscoveryThunk());
+
             return;
         }
 
@@ -81,7 +91,7 @@ export const EarnYieldInactiveVaultOpportunity = ({
                 >
                     <Button
                         size="small"
-                        onClick={openAddAccountModal}
+                        onClick={handleActivate}
                         isDisabled={isButtonDisabled}
                         isLoading={isDiscoveringThisNetwork}
                     >
