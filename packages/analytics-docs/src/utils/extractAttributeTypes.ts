@@ -11,6 +11,8 @@ import {
     ts,
 } from 'ts-morph';
 
+import { unique } from '@trezor/utils';
+
 /** Options for the attribute type extraction (tsconfig path and globs for event files). */
 type ExtractOptions = {
     tsConfigFilePath: string;
@@ -142,7 +144,7 @@ const formatTypeAsString = (t: Type, contextNode: Node): string => {
         const parts = t.getUnionTypes();
         if (parts.length > 80) return t.getText(contextNode, FORMAT_FLAGS);
         const rendered = parts.map(p => formatTypeAsString(p, contextNode));
-        const uniq = [...new Set(rendered)];
+        const uniq = unique(rendered);
 
         return uniq.join('\n| ');
     }

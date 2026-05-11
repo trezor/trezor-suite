@@ -14,6 +14,7 @@ import {
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type FiatCurrencyItem, type SellFormValues } from '@suite-native/trading-types';
+import { unique } from '@trezor/utils';
 
 import {
     selectTradingResidenceCountry,
@@ -36,7 +37,7 @@ export const selectSellSupportedFiatCurrencies = (state: TradingRootState) =>
 export const selectSellSupportedFiatCurrenciesList = createMemoizedSelector(
     [selectSellSupportedFiatCurrencies],
     (currencies): FiatCurrencyItem[] =>
-        [...new Set(currencies)].map(code => ({
+        unique(currencies).map(code => ({
             value: code,
             displayValue: code.toUpperCase(),
             label: getCurrencyLabel(code),

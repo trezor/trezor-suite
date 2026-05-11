@@ -1,5 +1,7 @@
 import { createIntl, createIntlCache } from 'react-intl';
 
+import { unique } from '@trezor/utils';
+
 import { messages } from './messages';
 import { type TxKeyPath } from './types';
 import { flatten } from './utils';
@@ -60,7 +62,7 @@ export const getTranslation = (
     // Throw an error if translation expects a value that was not provided.
     const placeholderRegex = /\{(\w+)(?:,\s*\w+[^}]*)?}/g;
     const matches = template.matchAll(placeholderRegex);
-    const placeholders = Array.from(new Set(Array.from(matches, m => m[1])));
+    const placeholders = unique(Array.from(matches, m => m[1]));
 
     if (placeholders.length > 0) {
         const providedKeys = values ? Object.keys(values) : [];

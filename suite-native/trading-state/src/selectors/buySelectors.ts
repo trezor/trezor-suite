@@ -23,6 +23,7 @@ import {
     getReceiveAccountFromAccountAndAddressString,
 } from '@suite-native/trading-atoms';
 import { type BuyFormValues, type FiatCurrencyItem } from '@suite-native/trading-types';
+import { unique } from '@trezor/utils';
 
 import { getAssetByEnabledNetworksFilter } from '../utils';
 import {
@@ -120,7 +121,7 @@ export const selectBuyFormDefaultValues = createMemoizedSelector(
 export const selectBuySupportedFiatCurrenciesList = createMemoizedSelector(
     [selectBuySupportedFiatCurrencies],
     (currencies): FiatCurrencyItem[] =>
-        [...new Set(currencies)].map(code => ({
+        unique(currencies).map(code => ({
             value: code,
             displayValue: code.toUpperCase(),
             label: getCurrencyLabel(code),

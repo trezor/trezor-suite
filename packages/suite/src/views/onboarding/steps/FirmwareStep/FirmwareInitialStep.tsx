@@ -14,6 +14,7 @@ import { type AcquiredDevice } from '@suite-common/suite-types';
 import { type ButtonProps, Card, Column, Link, Note, Row, Tooltip } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal, isBitcoinOnlyDevice } from '@trezor/device-utils';
+import { unique } from '@trezor/utils';
 
 import { FirmwareOffer } from 'src/components/firmware';
 import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
@@ -118,7 +119,7 @@ export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
 
     // todo: move to utils device.ts
     const devicesConnected = devices.filter(device => device?.connected);
-    const multipleDevicesConnected = [...new Set(devicesConnected.map(d => d.path))].length > 1;
+    const multipleDevicesConnected = unique(devicesConnected.map(d => d.path)).length > 1;
 
     // The first condition is a defensive measure against https://github.com/trezor/trezor-suite/issues/17246, I could not reproduce the error.
     const shouldCheckSeed = !isOnboarding && device?.mode !== 'initialize';
