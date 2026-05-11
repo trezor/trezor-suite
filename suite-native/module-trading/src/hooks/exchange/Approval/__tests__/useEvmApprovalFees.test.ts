@@ -1,6 +1,7 @@
 import { tradingActions } from '@suite-common/trading';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
+import { getTranslation } from '@suite-native/intl';
 import {
     type TestStore,
     renderHookWithStoreProvider,
@@ -139,7 +140,7 @@ describe('useEvmApprovalFees', () => {
 
         await waitFor(() => {
             expect(result.current.error).toBe(
-                'Failed to estimate approval fees. Please try again.',
+                getTranslation('moduleTrading.composeAllowanceError'),
             );
         });
 
