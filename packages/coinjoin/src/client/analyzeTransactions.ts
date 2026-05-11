@@ -38,7 +38,7 @@ const isInternal = (
     vinvout: AnalyzeInternalVinVout | AnalyzeExternalVinVout,
 ): vinvout is AnalyzeInternalVinVout => 'Address' in vinvout;
 
-export const getRawLiquidityClue = (
+const getRawLiquidityClue = (
     transactions: Transaction[],
     options: AnalyzeTransactionsOptions,
 ): Promise<middleware.RawLiquidityClue> => {
