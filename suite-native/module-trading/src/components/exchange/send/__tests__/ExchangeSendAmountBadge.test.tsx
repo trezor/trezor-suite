@@ -1,4 +1,4 @@
-import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
+import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import { act } from '@suite-native/test-utils-store';
 import { btcAsset } from '@suite-native/trading-fixtures';
@@ -20,7 +20,6 @@ describe('ExchangeSendAmountBadge', () => {
     const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
         featureFlags: {
             ...featureFlagsInitialState,
-            [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
         },
     };
 

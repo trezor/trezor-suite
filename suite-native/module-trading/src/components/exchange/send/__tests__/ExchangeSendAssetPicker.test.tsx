@@ -7,7 +7,7 @@ import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
+import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import { localeReducer } from '@suite-native/intl';
 import {
@@ -77,7 +77,6 @@ describe('ExchangeSendAssetPicker', () => {
         device: deviceInitialState,
         featureFlags: {
             ...featureFlagsInitialState,
-            [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
         },
         messageSystem: messageSystemInitialState,
         suiteSync: initialSuiteSyncState,

@@ -2,7 +2,11 @@ import type { CryptoId } from 'invity-api';
 
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
-import { FeatureFlag, type FeatureFlagsRootState } from '@suite-native/feature-flags';
+import {
+    FeatureFlag,
+    type FeatureFlagsRootState,
+    featureFlagsInitialState,
+} from '@suite-native/feature-flags';
 import { exchangeQuotes, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
 
 import { type TradingRootState } from '../../reducers';
@@ -23,7 +27,7 @@ describe('exchangeSelectors', () => {
         state = {
             wallet: getWalletState({ tradeType: 'exchange' }),
             featureFlags: {
-                [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
+                ...featureFlagsInitialState,
                 [FeatureFlag.AreDebugOnlyNetworksEnabled]: false,
                 [FeatureFlag.AreExperimentalOnlyNetworksEnabled]: false,
             } as FeatureFlagsRootState['featureFlags'],
@@ -195,7 +199,7 @@ describe('exchangeSelectors', () => {
             });
         });
 
-        it('should group quotes by fixed/float/dex when DEX feature flag is enabled', () => {
+        it('should group quotes by fixed/float/dex', () => {
             state.wallet.trading.exchange.quotes = exchangeQuotes;
 
             const groupedQuotes = selectGroupedExchangeQuotes(state);
@@ -226,15 +230,6 @@ describe('exchangeSelectors', () => {
                     }),
                 ],
             });
-        });
-
-        it('should exclude DEX quotes when DEX feature flag is disabled', () => {
-            state.wallet.trading.exchange.quotes = exchangeQuotes;
-            state.featureFlags[FeatureFlag.AreTradingExchangeDexesEnabled] = false;
-
-            const groupedQuotes = selectGroupedExchangeQuotes(state);
-
-            expect(groupedQuotes.dex).toEqual([]);
         });
 
         it('should be stable', () => {

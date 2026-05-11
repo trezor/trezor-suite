@@ -7,7 +7,6 @@ import {
 } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
-import { FeatureFlag } from '@suite-native/feature-flags';
 import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     btcAsset,
@@ -71,9 +70,6 @@ describe('useExchangeForm', () => {
                     settings: {
                         bitcoinAmountUnit,
                     },
-                },
-                featureFlags: {
-                    [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
                 },
             },
         });

@@ -22,14 +22,9 @@ jest.mock('@suite-native/services', () => {
 });
 
 describe('Header', () => {
-    const getFFOverrides = ({
-        areTradingExchangeDexesEnabled = true,
-    }: {
-        areTradingExchangeDexesEnabled?: boolean;
-    } = {}): PreloadedStatePartial<TradingTestPreloadedState> => ({
+    const getFFOverrides = (): PreloadedStatePartial<TradingTestPreloadedState> => ({
         featureFlags: {
             ...featureFlagsInitialState,
-            [FeatureFlag.AreTradingExchangeDexesEnabled]: areTradingExchangeDexesEnabled,
             [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
         },
     });
@@ -76,7 +71,6 @@ describe('Header', () => {
             ...getFFOverrides(),
             featureFlags: {
                 ...featureFlagsInitialState,
-                [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
                 [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
                 [FeatureFlag.IsTradingBuyEnabled]: config.buy,
                 [FeatureFlag.IsTradingExchangeEnabled]: config.exchange,
@@ -116,14 +110,6 @@ describe('Header', () => {
         const { renderer } = renderHeader();
 
         expect(renderer.getByLabelText('Advanced settings')).toBeOnTheScreen();
-    });
-
-    it('should not display settings wheel when AreTradingExchangeDexesEnabled is disabled', () => {
-        const { renderer } = renderHeader(
-            getFFOverrides({ areTradingExchangeDexesEnabled: false }),
-        );
-
-        expect(renderer.queryByLabelText('Advanced settings')).toBeNull();
     });
 
     describe('analytics', () => {

@@ -6,6 +6,13 @@ export type GroupedTradingExchangeQuotes = {
     dex: ExchangeTrade[];
 };
 
+/** Read-only sentinel; do not mutate (shared empty arrays). */
+export const EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES: GroupedTradingExchangeQuotes = {
+    fixed: [],
+    float: [],
+    dex: [],
+};
+
 type ExchangeProvidersMap = Record<string, Pick<ExchangeProviderInfo, 'isFixedRate'> | undefined>;
 
 export const groupTradingExchangeQuotesProjection = (

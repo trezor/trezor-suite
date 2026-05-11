@@ -1,5 +1,5 @@
 import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
+import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import { act, userEvent } from '@suite-native/test-utils-store';
 import { btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
@@ -33,7 +33,6 @@ describe('ExchangeSendAmountInput', () => {
     const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
         featureFlags: {
             ...featureFlagsInitialState,
-            [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
         },
     };
 

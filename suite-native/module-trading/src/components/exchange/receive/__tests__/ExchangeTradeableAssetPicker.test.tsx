@@ -1,4 +1,4 @@
-import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
+import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import { type TestStore, screen } from '@suite-native/test-utils-store';
 import { type ExchangeFormType } from '@suite-native/trading-types';
@@ -23,7 +23,6 @@ describe('ExchangeTradeableAssetPicker', () => {
                 device: { selectedDevice: { firmwareType } },
                 featureFlags: {
                     ...featureFlagsInitialState,
-                    [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
                 },
             },
         });

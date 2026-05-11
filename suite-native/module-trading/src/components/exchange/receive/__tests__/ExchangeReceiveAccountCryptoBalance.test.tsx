@@ -19,7 +19,6 @@ describe('ExchangeReceiveAccountCryptoBalance', () => {
     const preloadedState = {
         featureFlags: {
             ...featureFlagsInitialState,
-            [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
             [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
         },
         wallet: getWalletState({ tradeType: 'exchange' }),

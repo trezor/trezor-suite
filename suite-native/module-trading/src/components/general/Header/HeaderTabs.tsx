@@ -1,15 +1,12 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
-import { useSelector } from 'react-redux';
 
 import { type TradingTypeWithConcierge } from '@suite-common/trading';
 import { events } from '@suite-native/analytics';
 import { HStack, IconButton, useBottomSheetModal } from '@suite-native/atoms';
-import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import { type IconName } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
-import { type TradingWithFeatureFlagsRootState } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { HeaderTab } from './HeaderTab';
@@ -62,9 +59,6 @@ export const HeaderTabs = () => {
     const data = useTabsData();
     const { translate } = useTranslate();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
-    const areTradingExchangeDexesEnabled = useSelector((state: TradingWithFeatureFlagsRootState) =>
-        selectIsFeatureFlagEnabled(state, FeatureFlag.AreTradingExchangeDexesEnabled),
-    );
     const analytics = useAnalytics();
 
     const activeTabIndex = useMemo(
@@ -127,16 +121,14 @@ export const HeaderTabs = () => {
                         });
                     }}
                 />
-                {areTradingExchangeDexesEnabled && (
-                    <IconButton
-                        iconName="gear"
-                        size="medium"
-                        intent="neutral"
-                        priority="secondary"
-                        accessibilityLabel={translate('moduleTrading.tradingScreen.tabs.settings')}
-                        onPress={openModal}
-                    />
-                )}
+                <IconButton
+                    iconName="gear"
+                    size="medium"
+                    intent="neutral"
+                    priority="secondary"
+                    accessibilityLabel={translate('moduleTrading.tradingScreen.tabs.settings')}
+                    onPress={openModal}
+                />
             </HStack>
             <AdvancedSettingsSheet ref={bottomSheetRef} closeModal={closeModal} />
         </>
