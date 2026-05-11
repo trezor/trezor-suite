@@ -1,12 +1,8 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-    type NavigationProp,
-    type RouteProp,
-    useNavigation,
-    useRoute,
-} from '@react-navigation/native';
+import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { type SuiteSyncDataRootState, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
 import {
@@ -58,17 +54,25 @@ export const TokenAccountDetailScreenHeader = ({
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.AccountDetail>>();
     const { closeActionType } = route.params;
 
-    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
     const tokenTab = useSelector((state: TokensRootState) =>
         selectAssetTabOfAccountToken(state, accountKey, tokenContract),
     );
 
     const handleGoBack = useCallback(() => {
-        navigation.popTo(RootStackRoutes.AccountAssets, {
-            accountKey,
-            tab: tokenTab,
-        });
+        const isAccountAssetsInStack = navigation
+            .getState()
+            .routes.some(stackRoute => stackRoute.name === RootStackRoutes.AccountAssets);
+
+        if (isAccountAssetsInStack) {
+            navigation.popTo(RootStackRoutes.AccountAssets, {
+                accountKey,
+                tab: tokenTab,
+            });
+        } else {
+            navigation.goBack();
+        }
     }, [navigation, accountKey, tokenTab]);
 
     if (!symbol) {
