@@ -116,12 +116,11 @@ export const messages = {
             uninitializedDevice: {
                 title: 'Your Trezor is ready to set up',
                 subtitle: 'You can do this anytime.',
-                button: 'Start setup',
+                button: 'Set up my Trezor',
             },
             initializedDevice: {
                 title: 'Your wallet is ready',
-                subtitle:
-                    'Add the networks you want to use. You can buy or receive assets on any network you enable.',
+                subtitle: 'Add the coins you want to use.',
                 button: 'Get started',
             },
             discoveryNotFinished: {
@@ -194,7 +193,7 @@ export const messages = {
         numberOfTokens: '+{numberOfTokens, plural, one{1 Token} other{# Tokens}}',
         staking: 'Staking',
         rewardsReduced: 'Rewards reduced',
-        stakingDisabled: "Staking isn't available in this context.",
+        stakingDisabled: 'Staking is currently unavailable.',
     },
     assets: {
         dashboard: {
@@ -272,7 +271,7 @@ export const messages = {
         deviceCard: {
             connect: {
                 actionButton: 'Connect',
-                pairingHint: 'Confirm the Bluetooth pairing request on your Trezor as well.',
+                pairingHint: 'Make sure the pairing code on your Trezor matches.',
             },
             remove: {
                 actionButton: 'Pair again',
@@ -292,7 +291,7 @@ export const messages = {
             },
             subtitle: "Here's what you have in your account.",
             tokens: 'Tokens:',
-            syncAnotherCoinButton: 'Sync another coin',
+            syncAnotherCoinButton: 'Sync another asset',
         },
         coinList: {
             mainnets: 'Select a coin to sync',
@@ -593,7 +592,7 @@ export const messages = {
             title: 'Permissions',
             read: 'Access public keys from your Trezor device',
             write: 'Permit transaction and data signing on Trezor',
-            management: 'Modify device settings',
+            management: 'Change device settings',
             push_tx: 'Broadcast transactions to the blockchain',
         },
         simulation: {
@@ -625,14 +624,14 @@ export const messages = {
         },
         connectionStatus: {
             loading: 'Loading...',
-            discoveryRunning: 'Discovery running, please wait...',
+            discoveryRunning: 'Discovery running...',
         },
         errors: {
             requestFailed: 'Request failed',
             deviceNotConnected: 'Device not connected.',
             invalidCallback: 'Invalid callback URL',
             invalidParams: 'Invalid parameters from calling app',
-            versionUnsupported: 'Unsupported version. Please update your Trezor Suite app.',
+            versionUnsupported: 'Unsupported version. Update your Trezor Suite app.',
             methodNotAllowed: 'Method not allowed for security reasons.',
             methodCanceled: 'Call canceled by user.',
             unknownError: 'Unknown error occurred ({code}).',
@@ -662,11 +661,10 @@ export const messages = {
                 dangerous: 'Dangerous',
             },
             errors: {
-                requestExpired:
-                    'Request has expired. Please go back to the application and try again.',
+                requestExpired: 'This request has expired. Return to the app and try again.',
                 isScam: 'The request was detected as a scam and was blocked automatically.',
                 unableToVerify:
-                    'We were unable to verify the request authenticity. Please make sure you trust the source.',
+                    "We couldn't verify the authenticity of this request. Ensure you trust the source before proceeding.",
                 requiredNetworksNotActivated:
                     'Some required networks are inactive. Activate them for full app compatibility.',
                 noNetworksActivated:
@@ -678,9 +676,9 @@ export const messages = {
         incompatibleFirmwareModalAppendix: {
             title: 'Follow these steps',
             lines: {
-                '1': '1. Connect Trezor to Desktop Suite',
-                '2': '2. Navigate to Settings menu',
-                '3': '3. Install update',
+                '1': '1. Connect your Trezor the Trezor Suite desktop app',
+                '2': '2. Go to device settings',
+                '3': '3. Update firmware',
             },
         },
         noSeedModal: {
@@ -748,8 +746,7 @@ export const messages = {
         bootloaderScreen: {
             factoryResetCard: {
                 title: 'Forgot your PIN or just want to reset your Trezor?',
-                description:
-                    'This will reset all stored data on your Trezor. Proceed with caution.',
+                description: 'This will erase all data on your Trezor. Proceed with caution.',
                 buttonTitle: 'Factory reset',
             },
             reconnectCard: {
@@ -822,9 +819,9 @@ export const messages = {
             successToast: 'Device forgotten',
         },
         pinProtection: {
-            title: 'PIN protection',
-            content: 'PIN protects your device against physical attack.',
-            alertBoxTitle: 'Pin not set',
+            title: 'PIN',
+            content: 'Your PIN keeps your Trezor safe from unauthorized access.',
+            alertBoxTitle: "Your PIN isn't set",
             cardSubtitle: {
                 enable: 'Set a PIN for your Trezor',
                 changeOrRemove: 'Change or remove PIN',
@@ -832,7 +829,7 @@ export const messages = {
             pictograms: {
                 enable: {
                     title: "Your PIN isn't set",
-                    subtitle: 'Set your PIN to protect against unauthorized access to your Trezor.',
+                    subtitle: 'Set your PIN to protect your Trezor from unauthorized access.',
                 },
                 change: {
                     title: 'Your PIN is set',
@@ -840,16 +837,16 @@ export const messages = {
             },
             actions: {
                 enable: {
-                    success: 'Device PIN has been enabled.',
-                    canceled: 'Enable PIN has been canceled.',
+                    success: 'PIN enabled',
+                    canceled: 'Enable PIN canceled',
                 },
                 change: {
-                    success: 'Device PIN has been changed.',
-                    canceled: 'Change PIN has been canceled.',
+                    success: 'PIN changed',
+                    canceled: 'Change PIN canceled',
                 },
                 disable: {
-                    success: 'Device PIN has been disabled.',
-                    canceled: 'Disable PIN has been canceled.',
+                    success: 'PIN disabled',
+                    canceled: 'Disable PIN canceled',
                 },
             },
             errors: {
@@ -925,7 +922,7 @@ export const messages = {
             noBackupAlert: {
                 title: 'Do you really want to proceed without backup?',
                 description:
-                    'Although unlikely, you may need to restore your wallet in case of firmware update issue.',
+                    'In the unlikely event of a firmware update issue, you may need your wallet backup to restore access. Verify it before you continue.',
                 primaryButton: 'No, create wallet backup',
                 secondaryButton: 'Yes, update firmware',
             },
@@ -1022,8 +1019,8 @@ export const messages = {
                     subtitle: 'Hide wallet without connected Trezor',
                 },
                 networks: {
-                    title: 'Networks',
-                    subtitle: 'Enable networks to receive assets',
+                    title: 'Coins',
+                    subtitle: 'Enable coins to receive assets',
                 },
                 suiteSync: {
                     title: 'Suite Sync',
@@ -1242,20 +1239,15 @@ export const messages = {
             discreetMode: 'Discreet mode',
         },
         networks: {
-            title: 'Networks',
+            title: 'Coins',
             subtitle: {
                 configurable:
-                    'Enable networks to buy or receive assets. Turn off networks you don’t intend to use to speed up loading.',
+                    'Enable coins to buy or receive assets. Disable unused coins to improve loading speed.',
                 bitcoinOnly:
-                    'Your device is running Bitcoin-only firmware. There’s nothing more to configure here.',
+                    'This device is running Bitcoin-only firmware. No extra configuration is available.',
             },
         },
         coinEnabling: {
-            initialSetup: {
-                title: 'Choose coins you want to use with your Trezor.',
-                subtitle:
-                    'The more coins are enabled, the longer it takes to load the app. You can always add more later.',
-            },
             bottomNote:
                 'Didn’t find what you’re looking for? Check if it’s not a token running one of the listed coin’s network.',
             toasts: {
@@ -1292,7 +1284,7 @@ export const messages = {
                     walletsWillBeEjected: 'Will be ejected after disconnecting Trezor',
                 },
                 alert: {
-                    title: 'Your balances are still visible even when your Trezor is disconnected.',
+                    title: 'Your balances are still visible even when your Trezor is disconnected',
                     subtitle:
                         'You can always eject your wallets at any time. Funds can’t be moved without a connected device.',
                     primaryButtonTitle: 'Got it',
@@ -1508,7 +1500,7 @@ export const messages = {
                     format: '2-16 shares (20 words per share). Select the minimum number of shares required to recover your assets.',
                     storage:
                         'Store your shares separately in secure, private locations, or distribute them to trusted individuals. Never keep all shares together or store them digitally.',
-                    callout: 'Requires increased attention',
+                    callout: 'Extra caution required',
                     submitButton: 'Continue with Multi-share Backup',
                     alertButtonLabel: 'Learn more',
                 },
@@ -1549,10 +1541,10 @@ export const messages = {
         suspiciousDeviceScreen: {
             title: 'Let’s play it safe',
             subtitle:
-                'We want to be sure your device is in the best shape before you start using it.',
+                'Your Trezor’s security is our top priority. Before using it, reach out to Trezor Support—they’ll guide you through what to do next.',
             bullet1: 'Disconnect your device from your phone.',
             bullet2: 'Avoid using this device or sending any funds to it.',
-            bullet3: 'Go to the support page linked below and use the Chat option on the website.',
+            bullet3: 'Click below and use the Chat option on the Trezor Support page.',
             contactSupportButton: 'Contact Trezor Support',
         },
         securityCheckScreen: {
@@ -1585,10 +1577,10 @@ export const messages = {
         },
         deviceAuthenticitySuccessScreen: {
             title: 'Your Trezor is genuine',
-            subtitle: 'You’re good to go.',
+            subtitle: 'You can now be sure that your device is safe to use.',
         },
         deviceTutorialScreen: {
-            title: 'Continue with short tutorial on Trezor',
+            title: 'Continue with a short tutorial on your Trezor',
             actionLabel: 'Skip tutorial',
         },
         createOrRecoverCrossroadsScreen: {
@@ -1635,7 +1627,7 @@ export const messages = {
                     title: 'Wallet backup',
                     description: 'Recovers access to assets',
                     bullet1:
-                        'The only way to recover access to your assets if something happens to your Trezor.',
+                        'Use your wallet backup to recover access to your assets if something happens to your Trezor.',
                 },
             },
             step4: {
@@ -1692,7 +1684,7 @@ export const messages = {
             step1: {
                 callout: 'Using your wallet backup',
                 title: 'Regain access anytime',
-                step1: 'If your Trezor is lost, stolen, damaged, or you upgrade to a new one',
+                step1: 'If your Trezor is lost, stolen, damaged, or you upgrade to a new one:',
                 step2: 'Get a new Trezor',
                 step3: 'Enter your wallet backup',
                 step4: 'Regain access to your assets',
@@ -1838,15 +1830,15 @@ export const messages = {
                 infoText: 'This token represents your deposit and all rewards in stablecoin yield.',
                 vault: 'Vault',
                 apy: 'Annual percentage yield',
-                supplied: 'Supplied',
-                supplyMore: 'Supply more',
+                supplied: 'Deposited',
+                supplyMore: 'Deposit more',
                 withdraw: 'Withdraw',
                 apyBreakdown: {
                     apyLabel: '{apy} APY',
                     autoCompounded: 'Automatically added and compounded.',
                     manualCompound:
                         'Manually claim. Swap to {tokenSymbol} and deposit to compound.',
-                    footer: 'APY can change over time.',
+                    footer: 'APY may change over time.',
                 },
             },
         },
@@ -2065,12 +2057,12 @@ export const messages = {
         retrievengTakesLongerThanExpected:
             'Retrieving balances takes longer than usual. \n It may be caused by unstable internet connection.',
         timeSwitch: {
-            day: '1d',
-            week: '1w',
-            month: '1m',
-            sixMonths: '6m',
-            year: '1y',
-            all: 'all',
+            day: '1D',
+            week: '1W',
+            month: '1M',
+            sixMonths: '6M',
+            year: '1Y',
+            all: 'ALL',
         },
     },
     modulePassphrase: {
@@ -2223,7 +2215,6 @@ export const messages = {
                     memo: {
                         label: 'Memo',
                         addButton: 'Add memo',
-                        editButton: 'Edit memo',
                         inputPlaceholder: 'Enter your memo',
                         saveButton: 'Save memo',
                         removeButton: 'Remove memo',
@@ -2239,7 +2230,6 @@ export const messages = {
             note: {
                 label: 'Note',
                 addButton: 'Add note',
-                editButton: 'Edit note',
                 inputPlaceholder: 'Enter your note',
                 saveButton: 'Save note',
                 removeButton: 'Remove note',
@@ -2320,14 +2310,13 @@ export const messages = {
                 },
             },
             outputs: {
-                title: 'Review with Trezor',
+                title: 'Confirm on Trezor',
                 submitButton: 'Send transaction',
                 errorAlert: {
                     secondaryButtonTitle: 'I’ll do it later',
                     generic: {
                         title: 'Transaction failed',
-                        description:
-                            'There has been an unexpected error, please try sending your transaction again.',
+                        description: 'Something went wrong. Try again.',
                     },
                     solana: {
                         title: 'Transaction failed due to timeout',
@@ -2360,7 +2349,6 @@ export const messages = {
         staking: 'Staking',
         stablecoinYield: 'Stablecoin yield',
         poweredBy: 'Powered by',
-        vaultName: '{vaultName} Vault',
         portfolioTracker: {
             alert: {
                 title: 'Staking is disabled in the portfolio tracker',
@@ -2381,7 +2369,7 @@ export const messages = {
             yourStake: 'Your stake',
             stakedLabel: 'Staked',
             totalRewardsLabel: 'Total rewards',
-            autoRestakedBadge: 'Auto-restaked',
+            autoRestakedBadge: 'Automatically restaked',
             nextRewardLabel: 'Next reward in {value, plural, one {# day} other {# days}}',
             unstakeButton: 'Unstake',
             stakeButton: 'Stake',
@@ -2395,7 +2383,7 @@ export const messages = {
                 descriptionWithoutDays: "You've received {amount} {symbol} instantly.",
             },
             claim: {
-                readyToClaim: '{amount} unstaked, ready to be claimed',
+                readyToClaim: '{amount} unstaked and ready to claim',
                 claimButton: 'Claim',
             },
             unstakingItem: {
@@ -2417,9 +2405,9 @@ export const messages = {
             },
         },
         stakingInsufficientBalance: {
-            title: "You don't have enough {displaySymbol} balance",
-            subtitle: 'The minimum amount for staking is {minAmount} {displaySymbol}',
-            getButton: 'Get {displaySymbol}',
+            title: "You don't have enough {displaySymbol}",
+            subtitle: 'The minimum amount to stake is {minAmount} {displaySymbol}.',
+            getButton: 'Get more {displaySymbol}',
         },
         earnConsentsScreen: {
             title: 'Before you continue',
@@ -2437,34 +2425,34 @@ export const messages = {
             },
         },
         earnTransactionDataReviewScreen: {
-            title: 'Review with Trezor',
-            successMessage: 'You’re all set.',
+            title: 'Confirm on Trezor',
+            successMessage: 'You’re all set',
             viewTransactionButton: 'Stake now',
             pushTransactionFailedAlert: {
                 title: 'Transaction failed',
-                description: 'Failed to submit your stake transaction. Please try again.',
+                description: 'Failed to complete your stake transaction. Try again.',
                 primaryButton: 'Go to home',
             },
             pendingTransactionConflictAlert: {
                 title: 'Pending transaction detected',
                 description:
-                    'A stake transaction is already pending for this account. Please wait for it to be confirmed before staking again.',
+                    'A staking transaction is already pending for this account. Wait for it to confirm before staking again.',
                 primaryButton: 'Go to home',
             },
         },
         unstakeTransactionDataReviewScreen: {
-            title: 'Review with Trezor',
-            successMessage: "You're all set.",
+            title: 'Confirm on Trezor',
+            successMessage: "You're all set",
             viewTransactionButton: 'Unstake now',
             pushTransactionFailedAlert: {
                 title: 'Transaction failed',
-                description: 'Failed to submit your unstake transaction. Please try again.',
+                description: 'Failed to complete your unstake transaction. Try again.',
                 primaryButton: 'Go to home',
             },
             pendingTransactionConflictAlert: {
                 title: 'Pending transaction detected',
                 description:
-                    'An unstake transaction is already pending for this account. Please wait for it to be confirmed before unstaking again.',
+                    'An unstaking transaction is already pending for this account. Wait for it to confirm before unstaking again.',
                 primaryButton: 'Go to home',
             },
         },
@@ -2474,7 +2462,7 @@ export const messages = {
         },
         earnStakeOutputItem: {
             title: 'Stake',
-            description: 'Stake {symbol} on Everstake?',
+            description: 'Stake {displaySymbol} on Everstake?',
         },
         earnSummaryOutputItem: {
             title: 'Total including fee',
@@ -2492,17 +2480,17 @@ export const messages = {
             staked: 'Staked',
             unstakingTimeline: 'Unstaking timeline',
             unstakingPeriodInfo:
-                'The unstaking period is currently {days, plural, one {~# day} other {~# days}}',
+                'The unstaking period is currently {days, plural, one {~# day} other {~# days}}.',
             networkFeeWarning:
-                'Network fees may exceed this amount. Your balance may decrease. Enter higher amount.',
-            reviewAndSign: 'Review & Sign',
+                'Network fees may exceed this amount. Your balance may decrease. Enter a higher amount.',
+            reviewAndSign: 'Review & sign',
             amountLabel: 'Amount',
             stakeMaxButton: 'Stake max',
             unstakeMaxButton: 'Unstake max',
             withdrawalFeesBanner:
                 "We've left {amount} {displaySymbol} in your account so you can pay for withdrawal fees.",
             estimatedRewardsLabel: 'Estimated yearly rewards',
-            estimatedRewardsPlaceholder: 'To be calculated',
+            estimatedRewardsPlaceholder: 'Enter amount to see rewards',
             validation: {
                 amountIsZero: 'Amount must be greater than 0.',
                 amountBelowMinimum: 'Amount must be at least {amount} {symbol}.',
@@ -2563,19 +2551,18 @@ export const messages = {
             title: 'How {displaySymbol} staking works?',
             subtitle:
                 'Support the {networkName} network. Lock in your funds and earn staking rewards.',
-            infoBannerTitle: '<b>{totalStakedAmount}</b> currently staked with Trezor',
             benefits: {
                 first: {
                     title: 'Earn up to ~{potentialRewards} {displaySymbol} annually',
-                    description: 'When staking your total {displaySymbol} balance',
+                    description: 'When staking your full {displaySymbol} balance',
                 },
                 second: {
                     title: 'Compounds automatically',
-                    description: 'Rewards are re-staked for you',
+                    description: 'Rewards are automatically restaked',
                 },
                 third: {
                     title: 'Put your {displaySymbol} to work',
-                    description: 'Enjoy weekly growth while you hold',
+                    description: 'Earn weekly rewards while you stake',
                 },
             },
             timelineCardTitle: 'Staking timeline',
@@ -2714,10 +2701,6 @@ export const messages = {
                 amount: 'Amount',
                 approvalLimit: 'Approval limit',
             },
-            errorAlert: {
-                title: 'Approval is not ready',
-                description: 'The approval transaction could not be prepared. Try again later.',
-            },
             pushTransactionFailedAlert: {
                 title: 'Approval was not submitted',
                 description:
@@ -2762,7 +2745,7 @@ export const messages = {
         },
         claimReviewScreen: {
             title: 'Claim {displaySymbol}',
-            reviewAndSignButton: 'Review & Sign',
+            reviewAndSignButton: 'Review & sign',
             amountLabel: 'Amount',
             instantClaimBanner: "You'll claim the {displaySymbol} instantly",
             insufficientFeeBalance: {
@@ -2771,18 +2754,18 @@ export const messages = {
             },
         },
         claimTransactionDataReviewScreen: {
-            title: 'Review with Trezor',
-            successMessage: "You're all set.",
+            title: 'Confirm on Trezor',
+            successMessage: "You're all set",
             viewTransactionButton: 'Claim now',
             pushTransactionFailedAlert: {
                 title: 'Transaction failed',
-                description: 'Failed to submit your claim transaction. Please try again.',
+                description: 'Failed to complete your claim transaction. Try again.',
                 primaryButton: 'Go to home',
             },
             pendingTransactionConflictAlert: {
                 title: 'Pending transaction detected',
                 description:
-                    'A claim transaction is already pending for this account. Please wait for it to be confirmed before claiming again.',
+                    'A claim transaction is already pending for this account. Wait for it to confirm before claiming again.',
                 primaryButton: 'Go to home',
             },
         },
@@ -2792,7 +2775,7 @@ export const messages = {
             readyToClaim: '{amount} ready to be claimed',
         },
         stakingBottomSheet: {
-            title: 'To manage your staked funds, please use Trezor Suite for desktop.',
+            title: 'To manage your staked accounts, use the Trezor Suite app for desktop.',
             description: 'We currently support staking as view-only in Trezor Suite.',
         },
     },
@@ -2987,8 +2970,8 @@ export const messages = {
                 },
             },
         },
-        composeAllowanceError: 'Failed to estimate approval fees. Please try again.',
-        confirmApprovalError: 'Failed to confirm approval. Please try again.',
+        composeAllowanceError: 'Failed to estimate approval fees. Try again.',
+        confirmApprovalError: 'Failed to confirm approval. Try again.',
         tradingExchangeApprovalScreen: {
             approveTitle: 'Approve {symbol} spending',
             approveSubtitle: 'Approve provider to spend your {symbol} to swap.',
@@ -2999,7 +2982,7 @@ export const messages = {
             currentLimitLabel: 'Current limit',
             newLimitLabel: 'New limit',
             unlimitedLabel: 'Unlimited',
-            approveErrorAlert: 'Error approving token. Please try again later.',
+            approveErrorAlert: 'Failed to approve token. Try again.',
         },
         tradingExchangeRevokeScreen: {
             revokeTitle: 'Revoke {symbol} spending',
@@ -3010,7 +2993,7 @@ export const messages = {
             revokeErrorAlert: 'Error revoking spending limit. Try again.',
         },
         tradingReviewOutputs: {
-            title: 'Review with Trezor',
+            title: 'Confirm on Trezor',
             submitButton: 'Send transaction',
         },
         tradingConfirmationScreen: {
@@ -3020,7 +3003,7 @@ export const messages = {
             revokeTitle: 'Confirming revoke',
             subtitle: 'This may take a few moments.',
             pending: 'Pending',
-            error: 'Error confirming transaction. Please try again.',
+            error: 'Failed to confirm transaction. Try again.',
             date: 'Date',
             exploreInBlockchain: 'Explore in blockchain',
         },
@@ -3098,13 +3081,12 @@ export const messages = {
                 kycAlert: {
                     title: 'Identity verification required',
                     description:
-                        'Please complete the identity verification process to continue with your transaction.',
+                        'Complete the identity verification process to continue with your transaction.',
                     button: 'Go to provider support',
                 },
                 sendingAlert: {
                     title: 'Sending your crypto...',
-                    description:
-                        'Your transaction is being processed. Please wait for confirmation.',
+                    description: 'Your transaction is being processed. Wait for confirmation.',
                     button: 'Go to provider support',
                 },
                 buy: 'Buy',
@@ -3160,7 +3142,7 @@ export const messages = {
         seedBottomSheet: {
             title: 'It’s a good practice to check your backup before updating firmware.',
             description:
-                'Although unlikely, a firmware update might fail. If this were to happen, you would need to access your assets with your wallet backup.',
+                'In the unlikely event of a firmware update issue, you may need your wallet backup to restore access. Verify it before you continue.',
             continueButton: 'I’ve checked it',
             checkBackupButton: 'Check backup',
         },
@@ -3257,7 +3239,7 @@ export const messages = {
                 '5': 'Trezor’s hardware and firmware are completely open-source, giving you full transparency and control.',
                 '6': 'Trezor’s initial prototypes were created on Raspberry Pi boards.',
                 '7': 'Trezor played a key role in shaping industry wallet standards, including BIP-39 and BIP-44.',
-                '8': 'Trezor co-founder Marek "Slush" Palatinus launched the very first Bitcoin mining pool.',
+                '8': 'Trezor co-founder Marek "Slush" Palatinus launched the first Bitcoin mining pool.',
                 '9': 'Since 2023, Trezor has taken direct control of its chip supply chain to enhance security.',
                 '10': 'Trezor has earned the trust of users in over 150 countries worldwide.',
                 '11': 'In January 2025, Trezor introduced the Trezor Safe 5 Freedom Edition, a limited release of just 2,100 devices.',
@@ -3419,7 +3401,7 @@ export const messages = {
         precomposedTransaction: {
             errors: {
                 amountNotEnoughCurrencyFee:
-                    'Insufficient {networkDisplaySymbol} to cover the transaction fee.',
+                    'Insufficient {networkDisplaySymbol} to cover the transaction fee',
                 amountIsNotEnough: "You don't have enough funds.",
                 amountIsTooLow: 'Amount is too low.',
                 amountIsLessThanReserve: 'Recipient account requires minimum reserve to activate.',
@@ -3427,7 +3409,7 @@ export const messages = {
                 remainingBalanceLessThanRent:
                     'After sending this amount, your account will have SOL remaining lower than the rent.',
                 amountNotEnoughCurrencyFeeWithEthAmount:
-                    'Insufficient {networkDisplaySymbol} to cover the transaction fee.',
+                    'Insufficient {networkDisplaySymbol} to cover the transaction fee',
             },
         },
     },
@@ -3543,12 +3525,9 @@ export const messages = {
             deactivateToken: 'Deactivate token',
         },
         accountDetail: {
-            activateToken: 'Activate token',
             deactivateToken: 'Deactivate token',
         },
         tokenSelection: {
-            title: 'Select token',
-            subtitle: 'Activate a token below to receive it or trade it.',
             searchPlaceholder: 'Search token or address',
             activateManually: 'Activate token manually',
             noResults: 'No tokens found',
@@ -3589,9 +3568,9 @@ export const messages = {
     },
     networks: {
         initialSetup: {
-            title: 'Add your networks',
-            subtitle: 'You can buy or receive assets on any network you enable.',
-            banner: 'You can customize these anytime in Settings.',
+            title: 'Add your coins',
+            subtitle: 'You can buy or receive assets on any coin you enable.',
+            banner: 'Change your coins anytime in Settings.',
         },
     },
 };
