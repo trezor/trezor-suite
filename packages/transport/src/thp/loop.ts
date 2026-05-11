@@ -257,10 +257,17 @@ export const thpLoop = async ({
             case ThpLoopState.VERIFY_ACK: {
                 debug(`VERIFY_ACK`);
 
-                const ackResult = await receiveExpectedMessage(apiRead, thpState, signal, 500);
+                const ac = new AbortController();
+
+                setTimeout(() => {
+                    console.warn('ACK timeout reached. Assuming ACK was received and proceeding');
+                    ac.abort();
+                }, 500);
+
+                const ackResult = await apiRead(ac.signal);
                 if (!ackResult.success) {
                     switch (ackResult.error.code) {
-                        case 'Timeout':
+                        case 'Aborted by signal':
                             phase = ThpLoopState.DONE;
                             if (result) {
                                 thpState.setRecentMessage(protocolThp.getCRC(result.payload));
