@@ -5,13 +5,8 @@
  * @returns Array of results from actions
  */
 
-export const promiseAllSequence = async <
-    Fn extends () => PromiseLike<any>,
-    R = Awaited<ReturnType<Fn>>,
->(
-    actions: Fn[],
-) => {
-    const results: R[] = [];
+export const promiseAllSequence = async <T>(actions: Array<() => PromiseLike<T>>): Promise<T[]> => {
+    const results: T[] = [];
     // For some reason, the previous implementation with promise chaining
     // (https://github.com/trezor/trezor-suite/blob/100015c45451ed50e2b0906d78de73c0fd2883d1/packages/utils/src/promiseAllSequence.ts)
     // was significantly slower in some cases, therefore simple for cycle is used instead
