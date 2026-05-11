@@ -6,7 +6,7 @@ export class WorkerState {
     addresses: string[];
     accounts: SubscriptionAccountInfo[];
     subscription: { [key: string]: unknown };
-    cache: Cache;
+    cache: Cache<Promise<number>>;
     url?: string;
 
     constructor() {
