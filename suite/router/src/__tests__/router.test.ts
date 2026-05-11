@@ -44,14 +44,14 @@ describe('router', () => {
             expect(test('unknown-route')).toEqual('/');
             expect(test('wallet-index')).toEqual('/accounts');
             expect(
-                test('earn-supply', {
+                test('earn-deposit', {
                     symbol: 'eth',
                     accountIndex: 0,
                     accountType: 'normal',
                     yieldId: 'vault-1',
                     contractAddress: '0xabc',
                 }),
-            ).toEqual('/earn/supply#/eth/0/normal/vault-1/0xabc');
+            ).toEqual('/earn/deposit#/eth/0/normal/vault-1/0xabc');
             expect(
                 test('earn-withdraw', {
                     symbol: 'eth',
@@ -194,7 +194,7 @@ describe('router', () => {
 
             expect(
                 getAppWithParams({
-                    pathname: '/earn/supply',
+                    pathname: '/earn/deposit',
                     hash: '#/eth/0/normal/vault-1/0xabc',
                 }),
             ).toEqual({
@@ -206,7 +206,7 @@ describe('router', () => {
                     yieldId: 'vault-1',
                     contractAddress: '0xabc',
                 },
-                route: getRoute('earn-supply'),
+                route: getRoute('earn-deposit'),
             });
 
             expect(
@@ -228,13 +228,13 @@ describe('router', () => {
 
             expect(
                 getAppWithParams({
-                    pathname: '/earn/supply',
+                    pathname: '/earn/deposit',
                     hash: '#/eth/0/normal',
                 }),
             ).toEqual({
                 app: 'earn',
                 params: undefined,
-                route: getRoute('earn-supply'),
+                route: getRoute('earn-deposit'),
             });
 
             expect(
