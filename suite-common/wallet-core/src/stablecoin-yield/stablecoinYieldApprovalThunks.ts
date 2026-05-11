@@ -4,7 +4,6 @@ import {
     type TransactionDto,
     enterYield,
     exitYield,
-    submitTransactionHash,
     verifyEnterTransactions,
     verifyExitTransactions,
 } from '@suite-common/earn-stablecoin-api';
@@ -62,7 +61,6 @@ type OpenYieldApproveModalParams = YieldSessionDataPayload & {
     dispatch: Dispatch;
     amount: string;
     spender: string;
-    transactionId?: string;
     preapprovedAmount?: string;
     txType: 'approve' | 'revoke' | 'revoke-only';
 };
@@ -135,7 +133,6 @@ export const openYieldApproveModal = ({
     flowData,
     amount,
     spender,
-    transactionId,
     preapprovedAmount,
     txType,
 }: OpenYieldApproveModalParams) => {
@@ -158,7 +155,6 @@ export const openYieldApproveModal = ({
                 preapprovedAmount,
                 txType,
             },
-            txHashTransactionId: transactionId ?? null,
         }),
     );
 
@@ -196,7 +192,6 @@ export const openYieldRevokeModal = ({
         flowData,
         amount: getRevokeModalAmount({ flowType, amount: approveAmount, flowData }),
         spender,
-        transactionId: revokeModalParams?.transactionId,
         preapprovedAmount: allowanceAmount || undefined,
         txType: revokeModalParams ? 'revoke' : 'revoke-only',
     });
@@ -269,7 +264,7 @@ export const submitYieldOpportunity = async ({
 
 export const handleYieldApproveSuccessTxidThunk = createThunk(
     `${YIELD_THUNK_PREFIX}/handleApproveSuccessTxid`,
-    async (
+    (
         { flowType, flowKey, txid }: YieldSessionPayload & { txid: string },
         { dispatch, getState },
     ) => {
@@ -278,29 +273,18 @@ export const handleYieldApproveSuccessTxidThunk = createThunk(
 
         dispatch(stablecoinYieldActions.clearApprovalTransition({ flowType, flowKey }));
 
-        try {
-            if (approval.submitTxHashTransactionId) {
-                await submitTransactionHash(
-                    { transactionId: approval.submitTxHashTransactionId },
-                    { hash: txid },
-                );
-            }
-
-            dispatch(
-                stablecoinYieldActions.setPendingTx({
-                    flowType,
-                    flowKey,
-                    tx: {
-                        type: approveTxType,
-                        txid,
-                        amount: approval.modalState?.amount ?? '',
-                    },
-                }),
-            );
-            dispatch(stablecoinYieldActions.closeApprovalModal({ flowType, flowKey }));
-        } catch {
-            setYieldGenericError({ dispatch, flowType, flowKey });
-        }
+        dispatch(
+            stablecoinYieldActions.setPendingTx({
+                flowType,
+                flowKey,
+                tx: {
+                    type: approveTxType,
+                    txid,
+                    amount: approval.modalState?.amount ?? '',
+                },
+            }),
+        );
+        dispatch(stablecoinYieldActions.closeApprovalModal({ flowType, flowKey }));
     },
 );
 
@@ -515,7 +499,6 @@ export const submitYieldApproveThunk = createThunk(
                 flowData,
                 amount: requestAmount,
                 spender: approvalModalParams.spender,
-                transactionId: approvalModalParams.transactionId,
                 txType: 'approve',
             });
         } catch {

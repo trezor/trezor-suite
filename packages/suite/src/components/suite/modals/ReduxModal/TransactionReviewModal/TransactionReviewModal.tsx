@@ -10,7 +10,7 @@ import {
 import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
-import { cancelSignYieldTx } from 'src/actions/wallet/stablecoinYieldSigningThunks';
+import { cancelSignYieldTx } from 'src/actions/wallet/stablecoin-yield';
 import {
     cancelSignTx as cancelSignStakingTx,
     signTransaction,

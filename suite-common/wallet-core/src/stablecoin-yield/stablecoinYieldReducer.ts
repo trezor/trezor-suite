@@ -40,7 +40,6 @@ export type StablecoinYieldSessionState = {
     approval: {
         allowanceAmount: string | null;
         modalState: YieldApproveModalState | null;
-        submitTxHashTransactionId: string | null;
         isSubmitting: boolean;
         isPending: boolean;
         allowanceStatus: YieldAllowanceStatus;
@@ -83,7 +82,6 @@ export const initialStablecoinYieldSessionState: StablecoinYieldSessionState = {
     approval: {
         allowanceAmount: null,
         modalState: null,
-        submitTxHashTransactionId: null,
         isSubmitting: false,
         isPending: false,
         allowanceStatus: 'idle',
@@ -204,19 +202,16 @@ export const stablecoinYieldSlice = createSlice({
             action: PayloadAction<
                 StablecoinYieldSessionActionPayload & {
                     modalState: YieldApproveModalState;
-                    txHashTransactionId: string | null;
                 }
             >,
         ) {
             withSession(state, action.payload, session => {
                 session.approval.modalState = action.payload.modalState;
-                session.approval.submitTxHashTransactionId = action.payload.txHashTransactionId;
             });
         },
         closeApprovalModal(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
             withSession(state, action.payload, session => {
                 session.approval.modalState = null;
-                session.approval.submitTxHashTransactionId = null;
                 session.error = null;
             });
         },
@@ -303,7 +298,6 @@ export const stablecoinYieldSlice = createSlice({
                 session.approval.isModifyMode = true;
                 session.approval.modalState = null;
                 session.action.pendingTransaction = null;
-                session.approval.submitTxHashTransactionId = null;
                 session.error = null;
                 session.step = 'approve';
             });
