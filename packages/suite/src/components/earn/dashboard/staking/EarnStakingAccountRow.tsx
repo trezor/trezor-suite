@@ -20,12 +20,13 @@ import {
     getStakingLimitsByNetworkSymbol,
     isCardanoStakedOutsideEverstake,
 } from '@suite-common/wallet-utils';
-import { Button, Column, Icon, Paragraph, Row, Table } from '@trezor/components';
+import { Button, Column, Icon, Paragraph, Row, Table, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 
@@ -41,6 +42,7 @@ export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
     const isCardanoNetworkType = account.networkType === 'cardano';
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
     const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
+    const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account.symbol);
 
     const minStakingAmount = getStakingLimitsByNetworkSymbol(
         account.symbol,
@@ -271,15 +273,23 @@ export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
                     <PotentialRewardsCell />
 
                     <Table.Cell align="end">
-                        <Button intent="brand" size="small" onClick={navigateToStaking}>
-                            <Translation
-                                id={
-                                    state === 'staking-active'
-                                        ? 'TR_EARN_STAKING_DASHBOARD_STAKE_MORE'
-                                        : 'TR_EARN_STAKING_DASHBOARD_STAKE_NOW'
-                                }
-                            />
-                        </Button>
+                        <Tooltip content={stakingMessageContent}>
+                            <Button
+                                intent="brand"
+                                size="small"
+                                isDisabled={isStakingDisabled}
+                                iconLeft={isStakingDisabled ? 'info' : undefined}
+                                onClick={navigateToStaking}
+                            >
+                                <Translation
+                                    id={
+                                        state === 'staking-active'
+                                            ? 'TR_EARN_STAKING_DASHBOARD_STAKE_MORE'
+                                            : 'TR_EARN_STAKING_DASHBOARD_STAKE_NOW'
+                                    }
+                                />
+                            </Button>
+                        </Tooltip>
                     </Table.Cell>
                 </>
             )}
@@ -351,9 +361,17 @@ export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
                     </Table.Cell>
 
                     <Table.Cell align="end">
-                        <Button intent="brand" size="small" onClick={navigateToStaking}>
-                            <Translation id="TR_EARN_UPDATE_PROVIDER" />
-                        </Button>
+                        <Tooltip content={stakingMessageContent}>
+                            <Button
+                                intent="brand"
+                                size="small"
+                                isDisabled={isStakingDisabled}
+                                iconLeft={isStakingDisabled ? 'info' : undefined}
+                                onClick={navigateToStaking}
+                            >
+                                <Translation id="TR_EARN_UPDATE_PROVIDER" />
+                            </Button>
+                        </Tooltip>
                     </Table.Cell>
                 </>
             )}
