@@ -4,7 +4,7 @@ import type { UiResponseThpPairingTag } from '@trezor/connect-common';
 import { DEVICE } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { ThpPairingMethod, thp as protocolThp } from '@trezor/protocol';
-import { createDeferred } from '@trezor/utils';
+import { createDeferred, resolveAfter } from '@trezor/utils';
 
 import { abortThpWorkflow, thpCall } from './thpCall';
 import * as settingsStore from '../../data/settingsStore';
@@ -207,7 +207,7 @@ const waitForPairingTag = async (device: IDevice) => {
     }
 
     // node-bridge + usb: abort received on client side of http request resolves faster than server. result with "device call in progress"
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await resolveAfter(500);
 
     return processThpPairingResponse(device, pairingResponse).catch(e => {
         // catch pairing tag mismatch

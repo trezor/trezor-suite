@@ -47,6 +47,7 @@ import {
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { exhaustive } from '@trezor/type-utils';
+import { resolveAfter } from '@trezor/utils';
 
 import { useAddCoinAccountAlerts } from './useAddCoinAccountAlerts';
 
@@ -512,7 +513,7 @@ export const useAddCoinAccount = () => {
         if (networkSymbolWithTypeToBeAdded) {
             clearNetworkWithTypeToBeAdded();
             // TODO why timeout?
-            await new Promise(resolve => setTimeout(resolve, 100));
+            await resolveAfter(100);
             await addCoinAccount({
                 symbol: networkSymbolWithTypeToBeAdded[0],
                 accountType: networkSymbolWithTypeToBeAdded[1],

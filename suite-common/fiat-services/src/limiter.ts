@@ -1,4 +1,4 @@
-import { scheduleAction } from '@trezor/utils';
+import { resolveAfter, scheduleAction } from '@trezor/utils';
 
 // Poor man's rate limiter that slows down requests so there is a `delayMs` gap between them.
 export class RateLimiter {
@@ -19,7 +19,7 @@ export class RateLimiter {
 
         this.queue = resultPromise
             .catch(error => console.error(error)) // ensure errors don't stop the queue
-            .then(() => new Promise(res => setTimeout(res, this.delayMs)));
+            .then(() => resolveAfter(this.delayMs));
 
         return resultPromise;
     }

@@ -392,7 +392,7 @@ const init = async () => {
         mainWindow?.removeAllListeners();
         logger.exit();
 
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await resolveAfter(1000);
 
         readyToQuit = true;
         app.quit();

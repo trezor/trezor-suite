@@ -1,3 +1,5 @@
+import { resolveAfter } from '@trezor/utils';
+
 import { CURRENTS_API_BASE, DEVELOP_BRANCH, TEST_RESULTS_PAGE_SIZE } from './config';
 import { SpecFetchMode } from './types';
 import type {
@@ -45,7 +47,7 @@ export async function currentsRequest<T>(
         warn(
             `  [rate-limit] 429 received for ${url}. Waiting ${waitMs}ms before retry (${retries} left)…`,
         );
-        await new Promise(resolve => setTimeout(resolve, waitMs));
+        await resolveAfter(waitMs);
 
         return currentsRequest<T>(path, options, retries - 1);
     }
