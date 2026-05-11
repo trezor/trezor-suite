@@ -17,7 +17,8 @@ import { ConnectSubprocessModal } from 'src/components/suite/modals/ConnectSubpr
 import { getDefaultHomeScreenImage, getHomescreens } from 'src/constants/suite/homescreens';
 import { useDispatch } from 'src/hooks/suite';
 import { imagePathToHex } from 'src/utils/suite/homescreen';
-import { useConnect } from 'src/views/settings/SettingsDebug/useConnect';
+import { runConnect } from 'src/views/settings/SettingsDebug/runConnect';
+import { useConnectRun } from 'src/views/settings/SettingsDebug/useConnect';
 
 type HomescreensType = ReturnType<typeof getHomescreens>;
 type AnyImageName = HomescreensType[keyof HomescreensType][number];
@@ -46,11 +47,6 @@ const HomescreenImage = styled.img`
     border-radius: ${borders.radii.xs};
 `;
 
-// Lazy lambda — see ConnectWrapPlayground for context. Reading
-// `TrezorConnect.applySettings` at call time picks up the IPC-proxy override
-// installed by MainDesktop.tsx, instead of locking in the renderer stub.
-const connect = createConnect({ trezorConnect: TrezorConnect });
-
 type HomescreenGalleryProps = {
     onConfirm?: () => void;
 };
@@ -58,7 +54,14 @@ type HomescreenGalleryProps = {
 export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
-    const { start, subprocess } = useConnect(connect(TrezorConnect.applySettings));
+    const { start, subprocess } = useConnectRun(
+        runConnect(
+            connect => (isOriginalImage: boolean, homescreen: string) =>
+                isOriginalImage
+                    ? connect.applySettings({ homescreen_length: 0 })
+                    : connect.applySettings({ homescreen }),
+        ),
+    );
 
     const deviceModelInternal = device?.features?.internal_model;
 

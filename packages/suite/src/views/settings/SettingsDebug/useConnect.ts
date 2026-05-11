@@ -7,7 +7,9 @@ type ConnectProcess<TSub, TResult> = {
     cancel(): void;
 };
 
-type WrappedMethod<TParams, TSub, TResult> = (params: TParams) => ConnectProcess<TSub, TResult>;
+type WrappedMethod<TParams extends any[], TSub, TResult> = (
+    ...params: TParams
+) => ConnectProcess<TSub, TResult>;
 
 type ResultOf<TSub> = Extract<TSub, { type: 'complete' }> extends { result: infer R } ? R : never;
 
@@ -26,7 +28,7 @@ type ProcessHandle<TSub, TResult> = {
     cancel(): void;
 };
 
-export const useConnect = <TParams, TSub extends { type: string }>(
+export const useConnectRun = <TParams extends any[], TSub extends { type: string }>(
     wrappedMethod: WrappedMethod<TParams, TSub, ResultOf<TSub>>,
 ) => {
     const [subprocess, setSubprocess] = useState<TSub | null>(null);
@@ -36,9 +38,9 @@ export const useConnect = <TParams, TSub extends { type: string }>(
     const wrappedRef = useRef(wrappedMethod);
     wrappedRef.current = wrappedMethod;
 
-    const start = useCallback((params: TParams): ProcessHandle<TSub, ResultOf<TSub>> => {
+    const start = useCallback((...params: TParams): ProcessHandle<TSub, ResultOf<TSub>> => {
         procRef.current?.cancel();
-        const proc = wrappedRef.current(params);
+        const proc = wrappedRef.current(...params);
         procRef.current = proc;
         setRunning(true);
         setSubprocess(null);

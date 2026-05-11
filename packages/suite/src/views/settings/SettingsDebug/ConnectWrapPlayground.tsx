@@ -9,7 +9,7 @@ import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/pro
 import { ConnectSubprocessModal } from 'src/components/suite/modals/ConnectSubprocessModal';
 import { useSelector } from 'src/hooks/suite';
 
-import { useConnect } from './useConnect';
+import { useConnectRun } from './useConnect';
 
 const connect = createConnect({ trezorConnect: TrezorConnect });
 
@@ -61,7 +61,7 @@ export const ConnectWrapPlayground = () => {
     const device = useSelector(selectSelectedDevice);
     const devicePath = device?.path;
 
-    const { start, cancel, subprocess, running, loading } = useConnect(wrappedGetAddress);
+    const { start, cancel, subprocess, running, loading } = useConnectRun(wrappedGetAddress);
     const [callId, setCallId] = useState<string | null>(null);
     const [result, setResult] = useState<{ address: string } | null>(null);
     const [error, setError] = useState<Error | null>(null);
