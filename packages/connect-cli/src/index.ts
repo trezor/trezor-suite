@@ -60,7 +60,8 @@ const waitForPairingTag = async (uiEvent: UiRequestThpPairing) => {
 };
 
 const cliStatePath = path.join(__dirname, 'thp-state.dat');
-const readCliState = (): { credentials: NonNullable<Device['thp']>['credentials'] } => {
+type CliState = { credentials: NonNullable<Device['thp']>['credentials'] };
+const readCliState = (): CliState => {
     try {
         return JSON.parse(fs.readFileSync(cliStatePath, 'utf8'));
     } catch {
@@ -68,7 +69,7 @@ const readCliState = (): { credentials: NonNullable<Device['thp']>['credentials'
     }
 };
 
-const writeCliState = (data: any) => {
+const writeCliState = (data: CliState) => {
     fs.writeFileSync(cliStatePath, JSON.stringify(data, null, 2), 'utf8');
 };
 
@@ -291,7 +292,12 @@ const run = async () => {
         }
     });
 
-    let pairingMethods: any[] = ['CodeEntry', 'QrCode', 'NFC', 'SkipPairing'];
+    let pairingMethods: (keyof typeof ThpPairingMethod)[] = [
+        'CodeEntry',
+        'QrCode',
+        'NFC',
+        'SkipPairing',
+    ];
     if (args.pairing === 'none') {
         pairingMethods = ['SkipPairing'].concat(pairingMethods.filter(m => m === 'SkipPairing'));
     }
