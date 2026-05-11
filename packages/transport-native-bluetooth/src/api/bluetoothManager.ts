@@ -57,14 +57,14 @@ const eventNames = {
 
 const DEBUG_LOGS = false;
 
-const debugLog = (...args: any[]) => {
+const debugLog = (...args: unknown[]) => {
     if (DEBUG_LOGS) {
         // eslint-disable-next-line no-console
         console.log('BluetoothManager', ...args);
     }
 };
 
-const errorLog = (...args: any[]) => {
+const errorLog = (...args: unknown[]) => {
     console.error('BluetoothManager', ...args);
 };
 
@@ -105,7 +105,7 @@ class BluetoothManager {
         listener: (event: DeviceBatteryLevelChangeEvent) => void,
     ): Subscription => this.subscribeTo(eventNames.deviceBatteryLevelChange, listener);
 
-    private subscribeTo = (eventName: keyof typeof eventNames, listener: (arg: any) => void) => {
+    private subscribeTo = <T>(eventName: keyof typeof eventNames, listener: (arg: T) => void) => {
         this.eventEmitter.on(eventName, listener);
 
         return {
@@ -268,9 +268,9 @@ class BluetoothManager {
 
             try {
                 device = await this.getBleManager().connectToDevice(deviceId, connectionOptions);
-            } catch (error: any) {
+            } catch (error: unknown) {
                 debugLog(`Connect error`, { error });
-                if (error.errorCode === BleErrorCode.DeviceMTUChangeFailed) {
+                if ((error as BleError).errorCode === BleErrorCode.DeviceMTUChangeFailed) {
                     // If the MTU change did not work, try connecting without requesting it.
                     device = await this.getBleManager().connectToDevice(deviceId);
                 } else {
@@ -288,9 +288,9 @@ class BluetoothManager {
             debugLog('Device found but not connected. Connecting...', connectionOptions);
             try {
                 await device.connect(connectionOptions);
-            } catch (error: any) {
+            } catch (error: unknown) {
                 debugLog(`Connect error`, { error });
-                if (error.errorCode === BleErrorCode.DeviceMTUChangeFailed) {
+                if ((error as BleError).errorCode === BleErrorCode.DeviceMTUChangeFailed) {
                     debugLog(`Device mtu=${device.mtu}, reconnecting`);
                     await device.connect();
                 } else {
@@ -313,20 +313,21 @@ class BluetoothManager {
         return device;
     };
 
-    private handleConnectionError = (deviceId: DeviceId, error: any) => {
+    private handleConnectionError = (deviceId: DeviceId, error: unknown) => {
         errorLog('Error connecting to device', error);
+        const e = error as Error & { iosErrorCode?: number; reason?: string | null };
         if (
-            error.iosErrorCode === 14 /* CBError.Code.peerRemovedPairingInformation */ ||
-            error.reason === 'Peer removed pairing information'
+            e.iosErrorCode === 14 /* CBError.Code.peerRemovedPairingInformation */ ||
+            e.reason === 'Peer removed pairing information'
         ) {
             this.updateDeviceConnectionStatusChange({
                 deviceId,
-                connectionStatus: { type: 'pairing-error', error: error.message },
+                connectionStatus: { type: 'pairing-error', error: e.message },
             });
         } else {
             this.updateDeviceConnectionStatusChange({
                 deviceId,
-                connectionStatus: { type: 'connection-error', error: error.message },
+                connectionStatus: { type: 'connection-error', error: e.message },
             });
         }
     };
@@ -376,7 +377,7 @@ class BluetoothManager {
 
         try {
             await this.attemptToWriteAfterConnect(device, writeCharacteristic);
-        } catch (error: any) {
+        } catch (error: unknown) {
             debugLog(`Device ${device.id} pairing canceled`);
             this.updateDeviceConnectionStatusChange({
                 deviceId: device.id,
