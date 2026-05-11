@@ -25,7 +25,7 @@ export const AddressFormatter = makeFormatter<string, string, AddressFormatterDa
                 case 'long':
                     return [prefix, beginning, TRUNCATION_PLACEHOLDER, end];
                 case 'short':
-                    return [prefix, beginning?.split(' ')[0], TRUNCATION_PLACEHOLDER, end];
+                    return [prefix, beginning?.slice(0, 4), TRUNCATION_PLACEHOLDER, end];
             }
         })();
 
