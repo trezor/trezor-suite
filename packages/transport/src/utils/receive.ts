@@ -6,7 +6,11 @@ import { type AbstractApi } from '../api/abstract';
 
 type Receiver = () => ReturnType<AbstractApi['read']>;
 
-export async function receive<T extends Receiver>(receiver: T, protocol: TransportProtocol) {
+export async function receive<T extends Receiver>(
+    receiver: T,
+    protocol: TransportProtocol,
+    packetLossCallback?: () => void,
+) {
     const readResult = await receiver();
     if (!readResult.success) {
         return readResult;
@@ -31,12 +35,15 @@ export async function receive<T extends Receiver>(receiver: T, protocol: Transpo
             if (dataChunkHeader.compare(chunkHeader) !== 0) {
                 if (header.compare(data.subarray(0, header.length)) === 0) {
                     console.warn('Received header again. Restarting receiving process', {
+                        offset,
                         header: header.toString('hex'),
                         data: data.toString('hex'),
                     });
                     offset = payload.length;
 
                     Buffer.from(payload).copy(result, 0, 0, payload.length);
+
+                    packetLossCallback?.();
 
                     continue;
                 }

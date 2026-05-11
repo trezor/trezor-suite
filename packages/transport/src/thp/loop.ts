@@ -24,7 +24,7 @@ enum ThpLoopState {
     READ_RESPONSE,
     SEND_ACK,
     SEND_RECENT_ACK,
-    // VERIFY_ACK, // TODO verify that SEND_ACK was successful and device is not sending anything
+    VERIFY_ACK, // TODO verify that SEND_ACK was successful and device is not sending anything
     DONE,
 }
 
@@ -241,6 +241,9 @@ export const thpLoop = async ({
                     if (!ack.success) {
                         return ack;
                     }
+
+                    phase = ThpLoopState.VERIFY_ACK;
+                    break;
                 }
 
                 if (result) {
@@ -249,6 +252,28 @@ export const thpLoop = async ({
 
                 phase = ThpLoopState.DONE;
                 break;
+            }
+
+            case ThpLoopState.VERIFY_ACK: {
+                debug(`VERIFY_ACK`);
+
+                const ackResult = await receiveExpectedMessage(apiRead, thpState, signal, 500);
+                if (!ackResult.success) {
+                    switch (ackResult.error.code) {
+                        case 'Timeout':
+                            phase = ThpLoopState.DONE;
+                            if (result) {
+                                thpState.setRecentMessage(protocolThp.getCRC(result.payload));
+                            }
+
+                            break;
+
+                        default:
+                            phase = ThpLoopState.DONE; // ?
+                    }
+                } else {
+                    phase = ThpLoopState.SEND_ACK;
+                }
             }
         }
     }
