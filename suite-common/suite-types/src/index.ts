@@ -6,7 +6,6 @@ import {
 
 export * from './device';
 export type * from './firmware';
-export type * from './github';
 export type * from './guide';
 export type * from './messageSystem';
 export type * from './modal';
