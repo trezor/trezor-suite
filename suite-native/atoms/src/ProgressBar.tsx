@@ -1,6 +1,7 @@
 import { View } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { clamp } from '@trezor/utils';
 
 export type ProgressBarProps = {
     value: number;
@@ -16,7 +17,7 @@ const trackStyle = prepareNativeStyle(utils => ({
 
 const fillStyle = prepareNativeStyle((utils, { ratio }: { ratio: number }) => ({
     height: '100%',
-    width: `${Math.max(0, Math.min(100, ratio * 100)).toFixed(0)}%` as `${number}%`,
+    width: `${clamp(ratio * 100, 0, 100).toFixed(0)}%` as `${number}%`,
     backgroundColor: utils.colors.contentBrand,
     borderRadius: utils.borders.radii.r4,
 }));
