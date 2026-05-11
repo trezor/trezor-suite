@@ -526,8 +526,15 @@ export const getStakeFormsDefaultValues = ({
     selectedUtxos: [],
 });
 
+export type TransformTxInput = {
+    to: string;
+    value: string;
+    gasLimit: string | number;
+    data: string;
+};
+
 export const transformTx = (
-    tx: any,
+    tx: TransformTxInput,
     nonce: string,
     chainId: number,
     gasPrice?: string,
