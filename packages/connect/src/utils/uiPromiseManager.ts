@@ -1,6 +1,4 @@
-import { DEVICE } from '@trezor/connect-common';
-import type { DeviceUniquePath } from '@trezor/connect-common/src/types/device';
-import { arrayPartition, createDeferred } from '@trezor/utils';
+import { createDeferred } from '@trezor/utils';
 
 import type {
     AnyUiPromise,
@@ -67,27 +65,9 @@ export const createUiPromiseManager = () => {
         _uiPromises = [];
     };
 
-    const disconnected = (devicePath: DeviceUniquePath) => {
-        const [toResolve, toKeep] = arrayPartition(
-            _uiPromises,
-            (p): p is UiPromise<typeof DEVICE.DISCONNECT> =>
-                p.device?.getUniquePath() === devicePath && p.id === DEVICE.DISCONNECT,
-        );
-        toResolve.forEach(p => p.resolve({ type: DEVICE.DISCONNECT }));
-        _uiPromises = toKeep;
-
-        return !!toResolve.length || toKeep.some(p => p.device?.getUniquePath() === devicePath);
-    };
-
-    const get = <T extends UiPromiseResponse['type']>(type: T) => {
-        const uiPromise = _uiPromises.find(p => p.id === type) as UiPromise<T> | undefined;
-
-        return uiPromise?.promise ?? Promise.reject(new Error(`UiPromise ${type} doesn't exist`));
-    };
-
     const clear = () => {
         _uiPromises = [];
     };
 
-    return { exists, create, resolve, rejectAll, disconnected, get, clear };
+    return { exists, create, resolve, rejectAll, clear };
 };

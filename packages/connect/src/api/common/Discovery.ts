@@ -182,8 +182,4 @@ export class Discovery extends TypedEmitter<Events> {
     stop() {
         this.interrupted = !this.completed;
     }
-
-    dispose() {
-        this.accounts = [];
-    }
 }

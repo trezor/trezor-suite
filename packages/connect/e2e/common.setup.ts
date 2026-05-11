@@ -298,10 +298,3 @@ export const conditionalTest = (rules: string[], ...args: any) => {
     // @ts-expect-error
     return testMethod(...args);
 };
-
-export const conditionalDescribe = (rules: string[], ...args: any) => {
-    const testMethod = skipTest(rules) ? describe.skip : describe;
-
-    // @ts-expect-error
-    return testMethod(...args);
-};

@@ -53,9 +53,7 @@ const createAuthPenaltyManager = (priority: number) => {
         delete penalizedDevices[deviceID];
     };
 
-    const clear = () => Object.keys(penalizedDevices).forEach(key => delete penalizedDevices[key]);
-
-    return { get, add, remove, clear };
+    return { get, add, remove };
 };
 
 const getTransportInfo = (transport: Transport) => ({

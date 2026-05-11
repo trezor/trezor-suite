@@ -159,14 +159,12 @@ export interface IDevice {
 
     // ─── Status predicates ──────────────────────────────────────────────────────
     isUnacquired(): boolean;
-    isUnreadable(): boolean;
     isBootloader(): boolean;
     isInitialized(): boolean;
     isSeedless(): boolean;
     isUsed(): boolean;
     isUsedHere(): boolean;
     isUsedElsewhere(): boolean;
-    isT1(): boolean;
     atLeast(versions: string[] | string): boolean;
     hasUnexpectedMode(allow: string[]): string | null;
 
