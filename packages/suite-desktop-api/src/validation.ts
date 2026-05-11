@@ -4,26 +4,26 @@ import { type SuiteThemeVariant } from './messages';
 type Primitive = 'boolean' | 'string' | 'number';
 type OptionalPrimitive = Primitive | [Primitive, boolean];
 
-export const isPrimitive = (type: OptionalPrimitive, value: any) => {
+export const isPrimitive = (type: OptionalPrimitive, value: unknown) => {
     const [t, optional] = Array.isArray(type) ? type : [type];
     if (value == null && optional) return true;
 
     return typeof value === t;
 };
 
-export const isObject = (shape: { [key: string]: OptionalPrimitive }, value: any) => {
+export const isObject = (shape: { [key: string]: OptionalPrimitive }, value: unknown) => {
     if (value == null || typeof value !== 'object') return false;
     const keys = Object.keys(shape).map(key => {
         const type = shape[key]!;
 
-        return isPrimitive(type, value[key]);
+        return isPrimitive(type, (value as Record<string, unknown>)[key]);
     });
 
     return !keys.includes(false);
 };
 
 const validThemes: Array<SuiteThemeVariant> = ['light', 'dark', 'system'];
-export const isTheme = (theme: any) => validThemes.includes(theme);
+export const isTheme = (theme: unknown) => (validThemes as ReadonlyArray<unknown>).includes(theme);
 
 const validChannels: Array<keyof RendererChannels> = [
     'oauth/response',
@@ -56,4 +56,5 @@ const validChannels: Array<keyof RendererChannels> = [
     'bio-auth/settings-changed',
     'theme/system-change',
 ];
-export const isValidChannel = (channel: any) => validChannels.includes(channel);
+export const isValidChannel = (channel: unknown) =>
+    (validChannels as ReadonlyArray<unknown>).includes(channel);
