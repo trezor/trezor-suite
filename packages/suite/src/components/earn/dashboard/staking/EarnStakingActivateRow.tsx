@@ -4,11 +4,15 @@ import { selectPoolStatsApy } from '@suite-common/wallet-core';
 import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { EarnInactiveNetworkOpportunity } from '../common/EarnInactiveNetworkOpportunity';
 
 export const EarnStakingActivateRow = ({ symbol }: { symbol: NetworkSymbol }) => {
     const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: symbol }));
+    const { isStakingDisabled } = useMessageSystemStaking(symbol);
+
+    if (isStakingDisabled) return null;
 
     const { displaySymbol } = getNetwork(symbol);
     const minStakingAmount =
