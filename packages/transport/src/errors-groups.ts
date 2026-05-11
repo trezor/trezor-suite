@@ -1,3 +1,5 @@
+import { isArrayMember } from '@trezor/utils';
+
 import * as ERRORS from './errors';
 
 /**
@@ -17,4 +19,4 @@ const ERRORS_WITHOUT_DEVICE_INTERACTION = [
 export const isErrorWithoutDeviceInteraction = (
     error: string,
 ): error is (typeof ERRORS_WITHOUT_DEVICE_INTERACTION)[number] =>
-    ERRORS_WITHOUT_DEVICE_INTERACTION.includes(error as any);
+    isArrayMember(error, ERRORS_WITHOUT_DEVICE_INTERACTION);

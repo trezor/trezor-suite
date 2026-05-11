@@ -1,4 +1,5 @@
 import { type NetworkDtoId } from '@suite-common/earn-stablecoin-api';
+import { isArrayMember } from '@trezor/utils';
 
 import { PROD_STAKING_SYMBOLS, type ProdStakingNetworkSymbol, networks } from './networksConfig';
 import {
@@ -171,5 +172,4 @@ export const getNetworkByYieldXyzId = (yieldXyzId: NetworkDtoId) =>
 
 export const isProdStakingNetworkSymbol = (
     symbol: NetworkSymbol,
-): symbol is ProdStakingNetworkSymbol =>
-    PROD_STAKING_SYMBOLS.includes(symbol as ProdStakingNetworkSymbol);
+): symbol is ProdStakingNetworkSymbol => isArrayMember(symbol, PROD_STAKING_SYMBOLS);
