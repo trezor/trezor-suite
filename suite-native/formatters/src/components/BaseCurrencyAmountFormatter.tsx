@@ -17,6 +17,7 @@ type FiatAmountFormatterProps = FormatterProps<BaseCurrencyAmount | null> &
         isDiscreetText?: boolean;
         isForcedDiscreetMode?: boolean;
         isLoading?: boolean;
+        maximumFractionDigits?: number;
     };
 
 export const BaseCurrencyAmountFormatter = React.memo(
@@ -27,6 +28,7 @@ export const BaseCurrencyAmountFormatter = React.memo(
         isDiscreetText = true,
         isLoading = false,
         isForcedDiscreetMode,
+        maximumFractionDigits,
         ...otherProps
     }: FiatAmountFormatterProps) => {
         const { BaseCurrencyAmountFormatter: formatter } = useFormatters();
@@ -39,7 +41,9 @@ export const BaseCurrencyAmountFormatter = React.memo(
         }
 
         // in case of isForceDiscreetMode the value is blurred, so the real value does not matter
-        const formattedValue = isForcedDiscreetMode ? '$0.00' : formatter.format(value!);
+        const formattedValue = isForcedDiscreetMode
+            ? '$0.00'
+            : formatter.format(value!, { maximumFractionDigits });
 
         return (
             <AmountText

@@ -154,8 +154,7 @@ export const TransactionListHeader = memo(
             });
         };
 
-        const isTokenDetail = !!tokenContract;
-        const isPriceCardDisplayed = shallDisplayBaseCurrency && !isTokenDetail;
+        const isPriceCardDisplayed = shallDisplayBaseCurrency;
         const isStellarAccount = account.networkType === 'stellar';
 
         const isSendButtonDisplayed = isNetworkSendFlowEnabled && !isPortfolioTrackerDevice;
@@ -201,7 +200,9 @@ export const TransactionListHeader = memo(
                             )}
                         </HStack>
                     )}
-                    {isPriceCardDisplayed && <CoinPriceCard accountKey={accountKey} />}
+                    {isPriceCardDisplayed && (
+                        <CoinPriceCard accountKey={accountKey} tokenContract={tokenContract} />
+                    )}
                     {isStellarTokenActionsDisplayed && (
                         <StellarTokenActions
                             accountKey={accountKey}
