@@ -10,6 +10,7 @@ const publishableTrezorPackages = [
     '@trezor/blockchain-link-types',
     '@trezor/blockchain-link-utils',
     '@trezor/coins-solana',
+    '@trezor/coins-stellar',
     '@trezor/connect',
     '@trezor/connect-common',
     '@trezor/connect-data',
