@@ -11,6 +11,7 @@ import { Translation } from '@suite-native/intl';
 import { ProviderLogo } from '@suite-native/trading-atoms';
 
 import { TradeDetailInfoRow } from './TradeDetailInfoRow';
+import { PaymentMethodTranslation } from '../../general/PaymentMethodTranslation';
 
 type TradeDetailInfoProps = {
     orderId: string;
@@ -63,7 +64,14 @@ export const TradeDetailInfo = ({ orderId }: TradeDetailInfoProps) => {
                     />
                     <TradeDetailInfoRow
                         title={<Translation id="moduleTrading.tradeHistory.detail.method" />}
-                        content={trade.data.paymentMethodName}
+                        content={
+                            <Text variant="body-sm">
+                                <PaymentMethodTranslation
+                                    paymentMethod={trade.data.paymentMethod}
+                                    paymentMethodName={trade.data.paymentMethodName}
+                                />
+                            </Text>
+                        }
                     />
                 </>
             )}

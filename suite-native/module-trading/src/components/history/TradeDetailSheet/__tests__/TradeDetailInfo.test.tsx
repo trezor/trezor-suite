@@ -1,4 +1,5 @@
 import { type TradingTransaction } from '@suite-common/trading';
+import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     getBuyTrade,
@@ -40,7 +41,7 @@ describe('TradeDetailInfo', () => {
         );
 
         expect(getByText('Mercuryo')).toBeTruthy();
-        expect(getByText('Credit Card')).toBeTruthy();
+        expect(getByText(getTranslation('moduleTrading.paymentMethods.creditCard'))).toBeTruthy();
 
         expect(getByText(/0[45]\/10\/2025/)).toBeTruthy();
         expect(getByText(/[0-9]{1,2}:21/)).toBeTruthy();

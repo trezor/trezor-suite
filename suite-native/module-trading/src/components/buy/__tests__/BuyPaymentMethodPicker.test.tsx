@@ -5,7 +5,7 @@ import { tradingBuyActions } from '@suite-common/trading';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
-import { localeInitialState } from '@suite-native/intl';
+import { getTranslation, localeInitialState } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
 import {
     type PreloadedStatePartial,
@@ -31,6 +31,9 @@ import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyPaymentMethodPicker } from '../BuyPaymentMethodPicker';
 
 const reportMock = jest.fn();
+const creditCardPaymentMethodTranslation = getTranslation(
+    'moduleTrading.paymentMethods.creditCard',
+);
 
 jest.mock('@suite-native/services', () => {
     const original = jest.requireActual('@suite-native/services');
@@ -126,9 +129,11 @@ describe('BuyPaymentMethodPicker', () => {
             const { getByText, getByLabelText } = renderPaymentMethodPicker(withQuotes);
 
             fireEvent.press(getByText('Payment method'));
-            fireEvent.press(getByText('Credit Card'));
+            fireEvent.press(getByText(creditCardPaymentMethodTranslation));
 
-            expect(getByLabelText('Selected payment method')).toHaveTextContent('Credit Card');
+            expect(getByLabelText('Selected payment method')).toHaveTextContent(
+                creditCardPaymentMethodTranslation,
+            );
         });
 
         it('should display loader while quotes are fetched', () => {
@@ -158,7 +163,7 @@ describe('BuyPaymentMethodPicker', () => {
                 store.dispatch(tradingBuyActions.setIsLoading(true));
             });
 
-            expect(getByText('Credit Card')).toBeOnTheScreen();
+            expect(getByText(creditCardPaymentMethodTranslation)).toBeOnTheScreen();
         });
 
         describe('analytics', () => {
@@ -170,7 +175,7 @@ describe('BuyPaymentMethodPicker', () => {
                 const { getByText } = renderPaymentMethodPicker(withQuotes);
 
                 fireEvent.press(getByText('Payment method'));
-                fireEvent.press(getByText('Credit Card'));
+                fireEvent.press(getByText(creditCardPaymentMethodTranslation));
 
                 expect(reportMock).toHaveBeenCalledWith({
                     type: events.tradingParameterChangedEvent.name,
@@ -202,7 +207,7 @@ describe('BuyPaymentMethodPicker', () => {
                 });
 
                 fireEvent.press(getByText('Payment method'));
-                fireEvent.press(getAllByText('Credit Card')[1]);
+                fireEvent.press(getAllByText(creditCardPaymentMethodTranslation)[1]);
 
                 expect(reportMock).toHaveBeenCalledTimes(0);
             });

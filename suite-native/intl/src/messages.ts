@@ -2799,6 +2799,17 @@ export const messages = {
         },
     },
     moduleTrading: {
+        paymentMethods: {
+            bankTransfer: 'Bank Transfer',
+            creditCard: 'Credit/Debit Card',
+            sepa: 'SEPA',
+            ach: 'Automated Clearing House',
+            skrill: 'Skrill',
+            neteller: 'Neteller',
+            payid: 'PayID',
+            dcinterac: 'Interac',
+            fasterPayment: 'Faster Payment System',
+        },
         providerSheet: {
             title: 'Providers',
             fixed: {
@@ -2994,17 +3005,6 @@ export const messages = {
             title: 'Sell',
             fromAccount: 'From',
             toFiat: 'To',
-            paymentMethods: {
-                bankTransfer: 'Bank Transfer',
-                creditCard: 'Credit/Debit Card',
-                sepa: 'SEPA',
-                ach: 'Automated Clearing House',
-                skrill: 'Skrill',
-                neteller: 'Neteller',
-                payid: 'PayID',
-                dcinterac: 'Interac',
-                fasterPayment: 'Faster Payment System',
-            },
             bankAccount: 'Bank account',
             verified: 'Verified',
             notVerified: 'Not verified',

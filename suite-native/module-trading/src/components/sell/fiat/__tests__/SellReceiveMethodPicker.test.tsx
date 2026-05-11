@@ -1,5 +1,6 @@
 import { events } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
 import {
     act,
@@ -20,6 +21,9 @@ import { useSellForm } from '../../../../hooks/sell/useSellForm';
 import { SellReceiveMethodPicker } from '../SellReceiveMethodPicker';
 
 const reportMock = jest.fn();
+const creditCardPaymentMethodTranslation = getTranslation(
+    'moduleTrading.paymentMethods.creditCard',
+);
 
 jest.mock('@suite-native/services', () => {
     const original = jest.requireActual('@suite-native/services');
@@ -109,9 +113,11 @@ describe('SellReceiveMethodPicker', () => {
             const { getByText, getByLabelText } = renderSellReceiveMethodPicker(withQuotes);
 
             fireEvent.press(getByText('Receive method'));
-            fireEvent.press(getByText('Credit Card'));
+            fireEvent.press(getByText(creditCardPaymentMethodTranslation));
 
-            expect(getByLabelText('Selected receive method')).toHaveTextContent('Credit Card');
+            expect(getByLabelText('Selected receive method')).toHaveTextContent(
+                creditCardPaymentMethodTranslation,
+            );
         });
 
         describe('analytics', () => {
@@ -123,7 +129,7 @@ describe('SellReceiveMethodPicker', () => {
                 const { getByText } = renderSellReceiveMethodPicker(withQuotes);
 
                 fireEvent.press(getByText('Receive method'));
-                fireEvent.press(getByText('Credit Card'));
+                fireEvent.press(getByText(creditCardPaymentMethodTranslation));
 
                 expect(reportMock).toHaveBeenCalledWith({
                     type: events.tradingParameterChangedEvent.name,
