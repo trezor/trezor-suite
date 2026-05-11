@@ -1,6 +1,7 @@
 import { type CryptoId, type ExchangeProviderInfo } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
+import { unique } from '@trezor/utils';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
@@ -33,8 +34,8 @@ export const loadExchangeInfoThunk = createThunk<ExchangeInfo>(
 
         return fulfillWithValue({
             providerInfos,
-            buyCryptoIds: [...new Set(buyCryptoIds)],
-            sellCryptoIds: [...new Set(sellCryptoIds)],
+            buyCryptoIds: unique(buyCryptoIds),
+            sellCryptoIds: unique(sellCryptoIds),
         });
     },
 );

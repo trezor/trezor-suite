@@ -3,6 +3,8 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as readline from 'node:readline';
 
+import { unique } from '@trezor/utils';
+
 import { error, log, output } from '../logger';
 import type { CoverageIndex } from './types';
 
@@ -159,7 +161,7 @@ const main = async () => {
     const index: CoverageIndex = JSON.parse(fs.readFileSync(coverageMapFile, 'utf8'));
 
     const stdinFiles = await readStdin();
-    const changedFiles = [...new Set([...stdinFiles, ...explicitFiles])];
+    const changedFiles = unique([...stdinFiles, ...explicitFiles]);
 
     if (changedFiles.length === 0) {
         error('No changed files provided. Pipe git diff output or use --files.');

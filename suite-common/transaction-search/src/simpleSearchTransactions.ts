@@ -1,6 +1,6 @@
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { isTokenTransferMatchesSearch } from '@suite-common/wallet-utils';
-import { BigNumber, typedObjectKeys } from '@trezor/utils';
+import { BigNumber, typedObjectKeys, unique } from '@trezor/utils';
 
 import { getTargetAmounts } from './getTargetAmounts';
 import { numberSearchFilter } from './numberSearchFilter';
@@ -202,6 +202,6 @@ export const simpleSearchTransactions = (
 
     // Remove duplicate txIDs
     return transactions.filter(
-        t => [...new Set(txsToSearch)].includes(t.txid) || t.txid.includes(search),
+        t => unique(txsToSearch).includes(t.txid) || t.txid.includes(search),
     );
 };

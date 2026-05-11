@@ -20,6 +20,7 @@ import {
 import { type Account, type SelectedAccountStatus } from '@suite-common/wallet-types';
 import { getCurrencies } from '@trezor/address-validator';
 import { exhaustive } from '@trezor/type-utils';
+import { unique } from '@trezor/utils';
 
 import {
     EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES,
@@ -473,7 +474,7 @@ const getFilteredCryptoIds = (
 
     const supportedAddressValidatorSymbols = new Set(getCurrencies().map(c => c.symbol));
 
-    const uniqueSupportedCryptoIds = [...new Set(supportedCryptoIds).values()];
+    const uniqueSupportedCryptoIds = unique(supportedCryptoIds);
 
     return uniqueSupportedCryptoIds
         .filter(cryptoId => !!coins[cryptoId])
