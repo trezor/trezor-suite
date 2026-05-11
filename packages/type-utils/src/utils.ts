@@ -15,7 +15,7 @@
  *  type T = UnionToIntersection<A | B>; // A & B
  *  ```
  */
-export type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
+export type UnionToIntersection<U> = (U extends unknown ? (k: U) => void : never) extends (
     k: infer I,
 ) => void
     ? I
@@ -68,7 +68,7 @@ export type ObjectValues<T extends { [key: string]: any }> = T[keyof T];
  *  const w: W = { keep1: 1, keep2: true };
  *  ```
  */
-export type Without<T, K extends keyof T> = T extends any ? Omit<T, K> : never;
+export type Without<T, K extends keyof T> = T extends unknown ? Omit<T, K> : never;
 
 /**
  * Const with optional types.
