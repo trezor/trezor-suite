@@ -3192,7 +3192,6 @@ export const messages = {
             noProvider: 'No provider selected',
             rate: 'Rate',
             selectedRate: 'Selected rate',
-            kycWarning: 'This provider requires to know your identity.',
             countryOfResidence: 'Country of residence',
             noCountryOfResidence: 'No country of residence selected',
             selectedCountryOfResidence: 'Selected country of residence',
