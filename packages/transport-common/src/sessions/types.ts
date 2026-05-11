@@ -102,9 +102,9 @@ export interface HandleMessageApi {
     dispose: () => BackgroundResponse<void>;
 }
 
-type UnwrapParams<T, Fn> = Fn extends () => any
+type UnwrapParams<T, Fn> = Fn extends () => unknown
     ? Params & { type: T }
-    : Fn extends (payload: infer P) => any
+    : Fn extends (payload: infer P) => unknown
       ? Params & { type: T; payload: P }
       : never;
 
