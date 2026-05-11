@@ -20,6 +20,7 @@ import {
     restoreOrigOutputsOrder,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
+    type ComposeUtxo,
     DEFAULT_SORTING_STRATEGY,
     type FeeLevel,
     type Params,
@@ -102,10 +103,10 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
         // unspendable utxos are defined in `useSendForm` hook
         const utxo = formState.isCoinControlEnabled
             ? formState.selectedUtxos?.map(u => ({ ...u, required: true }))
-            : account.utxo.filter(u => {
+            : account.utxo.filter((u: ComposeUtxo) => {
                   const outpoint = getUtxoOutpoint(u);
 
-                  return (u as any).required || (!excludedUtxos?.[outpoint] && !prison?.[outpoint]);
+                  return u.required || (!excludedUtxos?.[outpoint] && !prison?.[outpoint]);
               });
 
         // certain change addresses might be temporary blocked by coinjoin process
