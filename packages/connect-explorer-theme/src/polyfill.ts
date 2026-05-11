@@ -1,7 +1,7 @@
 import { IS_BROWSER } from './constants';
 
 if (IS_BROWSER) {
-    let resizeTimer: any;
+    let resizeTimer: ReturnType<typeof setTimeout>;
 
     const addResizingClass = () => {
         document.body.classList.add('resizing');
