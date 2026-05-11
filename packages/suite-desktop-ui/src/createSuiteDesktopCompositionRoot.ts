@@ -8,7 +8,7 @@ import { type PreloadStoreAction } from 'src/support/suite/preloadStore';
 
 export const createSuiteDesktopCompositionRoot = (
     preloadStoreAction?: PreloadStoreAction,
-    statePatch?: Record<string, any>,
+    statePatch?: Record<string, unknown>,
 ) => {
     const history = createMemoryHistory();
     const platformEncryption = createElectronPlatformEncryption({ desktopApi });

@@ -71,7 +71,7 @@ export const init = async (container: HTMLElement) => {
 
     // Expose Redux store for Playwright/e2e tests
     if (typeof window !== 'undefined' && window.desktopFlags?.exposeStore) {
-        (window as any).store = store;
+        window.store = store;
     }
 
     // start logging to file if Debug menu is active
