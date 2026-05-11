@@ -20,14 +20,14 @@ export type OnUpgradeFunc<TDBStructure> = (
 ) => Promise<void>;
 
 class CommonDB<TDBStructure> {
-    private static instance: CommonDB<any>;
+    private static instance: CommonDB<unknown>;
     dbName!: string;
     version!: number;
     supported: boolean | undefined;
     blocking = false;
     blocked = false;
     onUpgrade!: OnUpgradeFunc<TDBStructure>;
-    onDowngrade!: () => any;
+    onDowngrade!: () => void;
     onBlocked?: () => void;
     onBlocking?: () => void;
 
@@ -41,12 +41,12 @@ class CommonDB<TDBStructure> {
         dbName: string,
         version: number,
         onUpgrade: OnUpgradeFunc<TDBStructure>,
-        onDowngrade: () => any,
+        onDowngrade: () => void,
         onBlocked?: () => void,
         onBlocking?: () => void,
     ) {
         if (CommonDB.instance) {
-            return CommonDB.instance;
+            return CommonDB.instance as unknown as CommonDB<TDBStructure>;
         }
 
         this.dbName = dbName;
@@ -61,7 +61,7 @@ class CommonDB<TDBStructure> {
 
         this.isSupported();
 
-        CommonDB.instance = this;
+        CommonDB.instance = this as unknown as CommonDB<unknown>;
     }
 
     static isDBAvailable = () => !!indexedDB || !!window.indexedDB || !!global.indexedDB;
@@ -226,7 +226,7 @@ class CommonDB<TDBStructure> {
     >(
         store: TStoreName,
         indexName?: TIndexName,
-        filters?: { key?: any; offset?: number; count?: number; reverse?: boolean },
+        filters?: { key?: IDBValidKey; offset?: number; count?: number; reverse?: boolean },
     ) => {
         const db = await this.getDB();
 
