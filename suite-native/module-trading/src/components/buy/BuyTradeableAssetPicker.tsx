@@ -6,6 +6,7 @@ import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { HStack } from '@suite-native/atoms';
 import { selectBuyTradeableAssets } from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';
+import { noop } from '@trezor/utils';
 
 import { BuyCryptoAmountInput } from './BuyCryptoAmountInput';
 import { BuyTradeableAssetsSheet } from './BuyTradeableAssetsSheet';
@@ -14,8 +15,6 @@ import { useSheetControls } from '../../hooks/general/useSheetControls';
 import { SelectTradeableAssetButton } from '../general/SelectTradeableAssetButton';
 
 const ASSET_PICKER_TEST_ID = '@trading/buy/asset-receive-button';
-
-const noop = () => {};
 
 export const BuyTradeableAssetPicker = () => {
     const inputRef = useRef<TextInput>(null);

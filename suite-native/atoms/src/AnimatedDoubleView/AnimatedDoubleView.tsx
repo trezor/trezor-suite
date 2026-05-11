@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { noop } from '@trezor/utils';
 
 import {
     ANIMATION_DURATION,
@@ -28,8 +29,6 @@ const viewsWrapperStyle = prepareNativeStyle(() => ({
     height: ANIMATED_DOUBLE_VIEW_WRAPPER_HEIGHT,
     justifyContent: 'space-between',
 }));
-
-const noop = () => {};
 
 export const AnimatedDoubleView = ({
     renderPrimary,
