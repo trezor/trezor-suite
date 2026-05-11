@@ -213,8 +213,8 @@ export abstract class AbstractApi extends TypedEmitter<{
 }
 
 export type AbstractApiAwaitedResult<K extends keyof AbstractApi> = AbstractApi[K] extends (
-    ...args: any[]
-) => any
+    ...args: never[]
+) => unknown
     ? Awaited<ReturnType<AbstractApi[K]>>
     : never;
 
