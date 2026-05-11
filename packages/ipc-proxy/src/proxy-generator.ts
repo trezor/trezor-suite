@@ -47,10 +47,6 @@ const createIpcProxyApi = (ipcRenderer: IpcRenderer, validChannels: string[]): I
             ipcRenderer.send(`${channelName}/${instanceId}/request`, [responseEvent, method, args]);
         });
 
-    const invoke = (channelName: string, instanceId: string, method: string, args: any[]) =>
-        validateChannel(channelName) &&
-        ipcRenderer.invoke(`${channelName}/${instanceId}/invoke`, [method, ...args]);
-
     const setHandler = (
         channelName: string,
         instanceId: string,
@@ -80,7 +76,6 @@ const createIpcProxyApi = (ipcRenderer: IpcRenderer, validChannels: string[]): I
     return {
         create,
         request,
-        invoke,
         setHandler,
         clearHandler,
     };
