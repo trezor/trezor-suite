@@ -4,9 +4,9 @@ export type EntityListener<T extends object> = {
     onChange: (payload: T[]) => void;
 };
 
-export type SuiteSyncUpdateError = { type: 'SuiteSyncUpdateError'; caused: any };
+export type SuiteSyncUpdateError = { type: 'SuiteSyncUpdateError'; caused: unknown };
 
-export const createSuiteSyncUpdateError = (caused: any): SuiteSyncUpdateError => ({
+export const createSuiteSyncUpdateError = (caused: unknown): SuiteSyncUpdateError => ({
     type: 'SuiteSyncUpdateError',
     caused,
 });
