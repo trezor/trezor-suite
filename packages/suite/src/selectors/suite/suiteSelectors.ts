@@ -14,11 +14,15 @@ import { getPrerequisiteName, isPrerequisiteGloballyExcluded } from 'src/utils/s
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<SuiteRootState>();
+const createPrerequisiteMemoizedSelector = createWeakMapSelector.withTypes<
+    SuiteRootState & RouterRootState & DeviceRootState
+>();
 
 export const selectIsSuiteOnline = (state: SuiteRootState) => state.suite.online;
 
 const selectTorStatus = (state: SuiteRootState) => state.suite.torStatus;
 const selectTorBootstrap = (state: SuiteRootState) => state.suite.torBootstrap;
+const selectSuiteTransport = (state: SuiteRootState) => state.suite.transport;
 
 export const selectTorState = createMemoizedSelector(
     [selectTorStatus, selectTorBootstrap],
@@ -46,22 +50,19 @@ export const selectHasTransportOfType = (type: TransportInfo['type']) => (state:
 export const selectTransportOfType = (type: TransportInfo['type']) => (state: SuiteRootState) =>
     state.suite.transport?.transports.find(t => t.type === type);
 
-export const selectPrerequisite = (
-    state: SuiteRootState & RouterRootState & DeviceRootState,
-): PrerequisiteType | null => {
-    const { transport } = state.suite;
-    const device = selectSelectedDevice(state);
-    const router = selectRouter(state);
+export const selectPrerequisite = createPrerequisiteMemoizedSelector(
+    [selectSuiteTransport, selectSelectedDevice, selectRouter],
+    (transport, device, router): PrerequisiteType | null => {
+        const prerequisite = getPrerequisiteName({ router, device, transport });
+        const isExcluded = isPrerequisiteGloballyExcluded({ router, prerequisite });
 
-    const prerequisite = getPrerequisiteName({ router, device, transport });
-    const isExcluded = isPrerequisiteGloballyExcluded({ router, prerequisite });
+        if (prerequisite === null || isExcluded) {
+            return null;
+        }
 
-    if (prerequisite === null || isExcluded) {
-        return null;
-    }
-
-    return prerequisite;
-};
+        return prerequisite;
+    },
+);
 
 // TODO use selectDeviceByDeviceRef from wallet-core; currently WIP in https://github.com/trezor/trezor-suite/pull/20955
 export const selectRecentlyConnectedDevice = (state: AppState): TrezorDevice | undefined =>
