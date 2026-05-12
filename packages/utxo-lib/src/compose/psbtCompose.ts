@@ -220,7 +220,9 @@ export function restorePsbtComposeResult<
     });
 
     if (context.excludedPsbtOutputIndex !== undefined && !composedChangeOutput) {
-        throw new Error('PSBT change output missing from compose result.');
+        // The change output was excluded from PSBT because it was recognized as change,
+        // but the composed result does not have a change output (e.g., because it was dust).
+        // This is perfectly valid, we simply tolerate its absence.
     }
 
     if (context.excludedPsbtOutputIndex === undefined && composedChangeOutput) {
@@ -239,12 +241,10 @@ export function restorePsbtComposeResult<
 
     context.psbtOutputDescriptors.forEach((psbtOutputDescriptor, psbtOutputIndex) => {
         if (psbtOutputIndex === context.excludedPsbtOutputIndex) {
-            if (!changeOutput) {
-                throw new Error('PSBT change output missing from compose result.');
+            if (changeOutput) {
+                outputs.push(changeOutput);
+                outputsPermutation.push(psbtOutputIndex);
             }
-
-            outputs.push(changeOutput);
-            outputsPermutation.push(psbtOutputIndex);
 
             return;
         }
