@@ -1,21 +1,19 @@
 import { type RouterRootState, selectRouter } from '@suite/router';
-import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type TransportInfo } from '@trezor/connect';
 
 import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
-import {
-    type AppState,
-    type PrerequisiteType,
-    TorStatus,
-    type TrezorDevice,
-} from 'src/types/suite';
+import { type PrerequisiteType, TorStatus, type TrezorDevice } from 'src/types/suite';
 import { getPrerequisiteName, isPrerequisiteGloballyExcluded } from 'src/utils/suite/prerequisites';
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<SuiteRootState>();
 const createPrerequisiteMemoizedSelector = createWeakMapSelector.withTypes<
     SuiteRootState & RouterRootState & DeviceRootState
+>();
+const createDeviceAwareMemoizedSelector = createWeakMapSelector.withTypes<
+    SuiteRootState & DeviceRootState
 >();
 
 export const selectIsSuiteOnline = (state: SuiteRootState) => state.suite.online;
@@ -64,12 +62,18 @@ export const selectPrerequisite = createPrerequisiteMemoizedSelector(
     },
 );
 
+const selectRecentlyConnectedDeviceRef = (state: SuiteRootState) =>
+    state.suite.recentlyConnectedDeviceRef;
+
 // TODO use selectDeviceByDeviceRef from wallet-core; currently WIP in https://github.com/trezor/trezor-suite/pull/20955
-export const selectRecentlyConnectedDevice = (state: AppState): TrezorDevice | undefined =>
-    state.suite.recentlyConnectedDeviceRef !== null
-        ? state.device.devices.find(
-              device =>
-                  state.suite.recentlyConnectedDeviceRef === device?.id ||
-                  state.suite.recentlyConnectedDeviceRef === device.path,
-          )
-        : undefined;
+export const selectRecentlyConnectedDevice = createDeviceAwareMemoizedSelector(
+    [selectRecentlyConnectedDeviceRef, selectDevices],
+    (recentlyConnectedDeviceRef, devices): TrezorDevice | undefined =>
+        recentlyConnectedDeviceRef !== null
+            ? devices.find(
+                  device =>
+                      recentlyConnectedDeviceRef === device?.id ||
+                      recentlyConnectedDeviceRef === device.path,
+              )
+            : undefined,
+);
