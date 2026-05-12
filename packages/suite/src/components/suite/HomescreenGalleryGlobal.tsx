@@ -8,6 +8,8 @@ import { resolveStaticPath } from '@trezor/env-utils';
 import { borders, spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
+import { type Subprocess } from 'src/components/suite/modals/ConnectSubprocessModal';
+import { UserContextModalWrapper } from 'src/components/suite/modals/UserContextModalWrapper';
 import { getDefaultHomeScreenImage, getHomescreens } from 'src/constants/suite/homescreens';
 import { useDispatch } from 'src/hooks/suite';
 import { imagePathToHex } from 'src/utils/suite/homescreen';
@@ -47,19 +49,23 @@ type HomescreenGalleryGlobalProps = {
 
 /**
  * Variant of `HomescreenGallery` that drives the call locally via
- * `useConnectRun.startManual` and manually iterates the subprocess stream,
- * sending every event through `handleDefault` — which dispatches it as an
- * action so the existing global modal stack (`modalReducer` /
- * `DeviceContextModal`) renders. The component itself renders no modal.
+ * `useConnectRun.startManual`. The consumer iterates `proc.run()` so it can
+ * branch per event (custom override vs. `handleDefault` fall-through). The
+ * hook still mirrors the current event onto its `subprocess` state as the
+ * iterator yields, so the component renders via `UserContextModalWrapper`
+ * straight from that state.
  *
- * Smoke-tests: startManual + handleDefault + the global modal stack for a
+ * Smoke-tests: consumer-driven for-await + hook-mirrored subprocess state +
+ * handleDefault fallback + manual modal wrapper rendering, all for a
  * callId-stamped call (which `connectInitThunks` will skip).
  */
 export const HomescreenGalleryGlobal = ({ onConfirm }: HomescreenGalleryGlobalProps) => {
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
 
-    const { startManual, handleDefault } = useConnectRun(runConnect(c => c.applySettings));
+    const { startManual, handleDefault, subprocess } = useConnectRun(
+        runConnect(c => c.applySettings),
+    );
 
     const deviceModelInternal = device?.features?.internal_model;
 
@@ -78,11 +84,13 @@ export const HomescreenGalleryGlobal = ({ onConfirm }: HomescreenGalleryGlobalPr
 
         const proc = startManual(params);
 
-        try {
-            // Drive subprocess iteration manually; every event is routed to the
-            // global modal stack via handleDefault. Runs in parallel with
-            // proc.toPromise() — they observe the same process independently.
+        // Iteration runs in parallel with proc.toPromise(). The for-await is
+        // where custom per-event overrides would live; here every event falls
+        // through to handleDefault (which dispatches to the global modal
+        // slice). The hook also mirrors each yielded event onto `subprocess`
+        // state, which drives the modal-wrapper render below.
 
+        try {
             for await (const sub of proc.run()) {
                 handleDefault(sub);
             }
@@ -100,22 +108,25 @@ export const HomescreenGalleryGlobal = ({ onConfirm }: HomescreenGalleryGlobalPr
     const isColorScreen = path.startsWith('COLOR');
 
     return (
-        <Grid gap={spacings.md} columns={4}>
-            {homescreens[deviceModelInternal].map(image => {
-                const src = resolveStaticPath(
-                    `images/homescreens/${path}/${image}.${isColorScreen ? 'jpg' : 'png'}`,
-                );
+        <>
+            <Grid gap={spacings.md} columns={4}>
+                {homescreens[deviceModelInternal].map(image => {
+                    const src = resolveStaticPath(
+                        `images/homescreens/${path}/${image}.${isColorScreen ? 'jpg' : 'png'}`,
+                    );
 
-                return (
-                    <HomescreenImage
-                        id={image}
-                        data-testid={`@modal/gallery-global/${path.toLowerCase()}/${image}`}
-                        key={image}
-                        onClick={() => setHomescreen(src, image)}
-                        src={src}
-                    />
-                );
-            })}
-        </Grid>
+                    return (
+                        <HomescreenImage
+                            id={image}
+                            data-testid={`@modal/gallery-global/${path.toLowerCase()}/${image}`}
+                            key={image}
+                            onClick={() => setHomescreen(src, image)}
+                            src={src}
+                        />
+                    );
+                })}
+            </Grid>
+            {subprocess && <UserContextModalWrapper subprocess={subprocess as Subprocess} />}
+        </>
     );
 };

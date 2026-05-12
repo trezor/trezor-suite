@@ -53,10 +53,11 @@ type StartManualFn<TParams extends any[], TSub, TResult> = (
     ...params: TParams
 ) => ManualProcessHandle<TSub, TResult>;
 
-// Connect-flow augmentation fields. Stripped before dispatching so the action
-// matches the UI_EVENT shape the rest of the app already handles, and so
-// non-serializable functions don't end up in Redux state.
-const AUGMENTATION_FIELDS = ['callId', 'cancel', 'send', 'confirm'] as const;
+// Non-serializable augmentation fields stripped before dispatching, so the
+// action matches the UI_EVENT shape and Redux serializability checks stay
+// happy. `callId` is intentionally preserved — the modal reducer uses it to
+// block the global modal stack from rendering UI for locally-owned calls.
+const AUGMENTATION_FIELDS = ['cancel', 'send', 'confirm'] as const;
 
 const subprocessToAction = (sub: Record<string, unknown>) => {
     const action: Record<string, unknown> = {};
@@ -171,13 +172,45 @@ export const useConnectRun = <TParams extends any[], TSub extends { type: string
                 // consuming events. Upstream `proc.run()` is still call-once.
                 run: (): AsyncIterableIterator<TSub> => {
                     const raw = proc.run();
+                    let sawTerminal = false;
+
                     const wrapped: AsyncIterableIterator<TSub> = {
                         [Symbol.asyncIterator]() {
                             return wrapped;
                         },
                         async next() {
                             const result = await raw.next();
-                            if (result.done) releaseProc(proc);
+                            if (result.done) {
+                                const wasCancelled = !sawTerminal;
+                                releaseProc(proc);
+                                if (wasCancelled) {
+                                    // Queue closed without a `complete` or
+                                    // `error` event → the call was cancelled.
+                                    // Surface to the consumer's catch.
+                                    throw new Error('Process cancelled');
+                                }
+
+                                return result;
+                            }
+
+                            // Mirror auto-mode: expose the current event as
+                            // hook state so consumers can render off it
+                            // (e.g. via UserContextModalWrapper) while their
+                            // own for-await drives custom routing.
+                            setSubprocess(result.value);
+
+                            const event = result.value as unknown as {
+                                type: string;
+                                error?: Error;
+                            };
+                            if (event.type === 'error') {
+                                sawTerminal = true;
+                                releaseProc(proc);
+                                throw event.error ?? new Error('Process errored');
+                            }
+                            if (event.type === 'complete') {
+                                sawTerminal = true;
+                            }
 
                             return result;
                         },
