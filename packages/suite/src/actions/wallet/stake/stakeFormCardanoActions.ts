@@ -1,4 +1,3 @@
-import type { EstimatedFee } from '@trezor/coins-solana/types'; // TODO should be Cardano instead?
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type AdaPools } from '@suite-common/earn-staking-api';
@@ -44,6 +43,7 @@ import {
     subunitsToUnits,
     validateCardanoDrep,
 } from '@suite-common/wallet-utils';
+import type { EstimatedFee } from '@trezor/coins-solana/types'; // TODO should be Cardano instead?
 import TrezorConnect, { type FeeLevel, PROTO } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 

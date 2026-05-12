@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 
-import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
 import { Translation } from '@suite/intl';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { CARDANO_ACTIVATION_PERIOD_DAYS, CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
@@ -14,6 +13,7 @@ import {
     getTxStakeType,
     isPending,
 } from '@suite-common/wallet-utils';
+import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
 import { Column, Paragraph } from '@trezor/components';
 
 import { type ProgressLabelData } from '../components/ProgressLabels/types';

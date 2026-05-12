@@ -1,9 +1,9 @@
 import React, { useRef } from 'react';
 
-import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
 import { Translation } from '@suite/intl';
 import { type SolanaRewardsHistory } from '@suite-common/earn-staking-api/src/staking';
 import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
+import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
 import {
     Card,
     Column,

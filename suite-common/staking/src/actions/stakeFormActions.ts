@@ -1,4 +1,3 @@
-import type { EstimatedFee } from '@trezor/coins-solana/types';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type ComposeActionContext,
@@ -13,6 +12,7 @@ import {
     convertAmountSubunitsToUnits,
     getExternalComposeOutput,
 } from '@suite-common/wallet-utils';
+import type { EstimatedFee } from '@trezor/coins-solana/types';
 import { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 

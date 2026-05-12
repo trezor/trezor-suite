@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
 import { Translation } from '@suite/intl';
 import { getDaysToAddToPoolInitial } from '@suite-common/staking';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
@@ -8,6 +7,7 @@ import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { CARDANO_ACTIVATION_PERIOD_DAYS, CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { selectEthValidatorsQueue, selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
 import { BulletList } from '@trezor/components';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
