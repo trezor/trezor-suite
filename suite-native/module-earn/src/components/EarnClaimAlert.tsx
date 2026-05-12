@@ -37,10 +37,11 @@ export const EarnClaimAlert = ({ claimableAmount, symbol, onClaimPress }: EarnCl
                     />
                 }
                 buttonLabel={
-                    <Text variant="body-sm-strong" color="contentPrimaryInverse">
+                    <Text variant="body-sm-strong" color="contentButtonBrandPrimary">
                         <Translation id="earn.claimableCard.claimButton" />
                     </Text>
                 }
+                buttonProps={{ priority: 'primary' }}
                 onButtonPress={onClaimPress}
             />
         </Box>
