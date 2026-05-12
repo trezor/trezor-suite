@@ -60,6 +60,7 @@ export const YieldActionStep = ({
         <Column gap={16}>
             <YieldAmountCard
                 tokenSymbol={token.symbol}
+                decimals={token.decimals}
                 summary={{
                     labelTranslationId: balanceLabelTranslationId,
                     value: summaryValue,
