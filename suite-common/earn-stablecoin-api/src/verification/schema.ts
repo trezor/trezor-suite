@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { evmHexString, evmNumberLike } from '@suite-common/schemas/src/evm';
+import { evmHexString } from '@suite-common/schemas/src/evm';
 
 export const UnsignedEvmTransactionSchema = z.object({
     from: evmHexString,
@@ -13,7 +13,10 @@ export type UnsignedEvmTransaction = z.infer<typeof UnsignedEvmTransactionSchema
 
 export const UnsignedEvmTransactionForSigningSchema = UnsignedEvmTransactionSchema.extend({
     gasLimit: evmHexString,
-    nonce: evmNumberLike,
+    nonce: z.union([
+        z.number().transform((n): `0x${string}` => `0x${n.toString(16)}`),
+        evmHexString,
+    ]),
     type: z.number().optional(),
     value: evmHexString.optional(),
     gasPrice: evmHexString.optional(),

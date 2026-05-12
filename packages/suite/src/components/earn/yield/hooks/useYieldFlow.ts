@@ -157,14 +157,17 @@ export const useYieldFlow = ({
     const isSharesInput = flowType === 'withdraw' && withdrawInputUnit === 'shares';
     const canToggleWithdrawUnit = flowType === 'withdraw' && !!token && !!receiptToken;
 
-    const getWithdrawMaxAmount = () => {
+    const getMaxAmount = () => {
+        if (flowType === 'deposit') {
+            return token?.balance ?? '';
+        }
         if (isSharesInput) {
             return suppliedSharesAmount;
         }
 
         return suppliedAmount;
     };
-    const maxAmount = flowType === 'deposit' ? (token?.balance ?? '') : getWithdrawMaxAmount();
+    const maxAmount = getMaxAmount();
 
     const inputTokenSymbol = isSharesInput ? (receiptToken?.symbol ?? '') : (token?.symbol ?? '');
     const otherUnitTokenSymbol = isSharesInput
