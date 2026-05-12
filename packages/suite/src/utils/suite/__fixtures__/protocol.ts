@@ -136,9 +136,9 @@ export const getProtocolInfo: getProtocolInfoFixture[] = [
     },
     {
         description: 'should parse ERC-681 token transfer URI on other EVM network',
-        uri: 'polygon:0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7/transfer?address=0x8e23ee67d1332ad560396262c48ffbb01f93d052&uint256=500000000000000000',
+        uri: 'ethereum:0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7@137/transfer?address=0x8e23ee67d1332ad560396262c48ffbb01f93d052&uint256=500000000000000000',
         result: {
-            scheme: 'polygon',
+            scheme: 'pol',
             address: '0x8e23ee67d1332ad560396262c48ffbb01f93d052',
             token: '0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7',
             tokenAmount: '500000000000000000',

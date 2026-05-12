@@ -1,5 +1,9 @@
 import { NETWORK_TO_PROTOCOLS, type Protocol } from '@suite-common/suite-constants';
-import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    getNetworkByEvmChainId,
+    isNetworkSymbol,
+} from '@suite-common/wallet-config';
 
 export type ProtocolToNetwork = {
     [P in Protocol]: NetworkSymbol;
@@ -29,7 +33,7 @@ export type Erc681TransferInfo = {
     contractAddress?: string; // ERC-20 token contract address (absent for plain ETH transfers)
     recipientAddress: string; // The transfer recipient address
     tokenAmount?: string; // Raw uint256 amount in the token's smallest unit (optional)
-    chainId?: number; // Optional EIP-155 chain ID from the @chainId suffix
+    networkSymbol?: NetworkSymbol; // Network symbol resolved from the @chainId suffix (e.g. 8453 → 'base')
 };
 
 const EVM_ADDRESS_REGEXP = /^0x[0-9a-fA-F]{40}$/;
@@ -65,10 +69,14 @@ export const parseErc681TransferUri = (uri: string): Erc681TransferInfo | null =
     //   "ethereum://addr"          → username='',   host=addr
     //   "ethereum://addr@chainId"  → username=addr, host=chainId
     let address: string;
-    let chainId: number | undefined;
+    let networkSymbol: NetworkSymbol | undefined;
     if (url.username) {
         address = url.username;
-        if (DIGITS_REGEXP.test(url.host)) chainId = Number(url.host);
+
+        const chainId = url.host;
+        if (!DIGITS_REGEXP.test(chainId)) return null;
+        networkSymbol = getNetworkByEvmChainId(Number(chainId))?.symbol;
+        if (!networkSymbol) return null;
     } else {
         address = url.host;
     }
@@ -82,7 +90,7 @@ export const parseErc681TransferUri = (uri: string): Erc681TransferInfo | null =
     if (functionName === '') {
         if (url.searchParams.size > 0) return null;
 
-        return { recipientAddress: address, chainId };
+        return { recipientAddress: address, networkSymbol };
     }
 
     if (functionName !== 'transfer') return null;
@@ -97,6 +105,6 @@ export const parseErc681TransferUri = (uri: string): Erc681TransferInfo | null =
         contractAddress: address,
         recipientAddress,
         tokenAmount: rawTokenAmount ?? undefined,
-        chainId,
+        networkSymbol,
     };
 };
