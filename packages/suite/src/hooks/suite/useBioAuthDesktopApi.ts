@@ -7,18 +7,14 @@ import {
     requestBioAuthChangeThunk,
     requestBioAuthValidationThunk,
 } from 'src/actions/suite/bioAuthThunks';
+import { selectBioAuthState } from 'src/reducers/bioAuth';
 
 import { useDispatch } from './useDispatch';
 import { useSelector } from './useSelector';
 
 export const useBioAuthDesktopApi = () => {
     const { isBioAuthAvailable, isBioAuthEnabled, isBioAuthValidationRequired, cancelled } =
-        useSelector(state => ({
-            isBioAuthAvailable: state.bioAuth.bioAuthAvailable,
-            isBioAuthEnabled: state.bioAuth.bioAuthEnabled,
-            isBioAuthValidationRequired: state.bioAuth.bioAuthValidationRequired,
-            cancelled: state.bioAuth.cancelled,
-        }));
+        useSelector(selectBioAuthState);
 
     const { translationString } = useTranslation();
     const dispatch = useDispatch();

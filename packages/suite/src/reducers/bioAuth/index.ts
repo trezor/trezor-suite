@@ -1,4 +1,4 @@
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { createReducerWithExtraDeps, createWeakMapSelector } from '@suite-common/redux-utils';
 
 import { bioAuthActions } from 'src/actions/suite/bioAuthActions';
 export interface BioAuthState {
@@ -21,6 +21,29 @@ export interface BioAuthState {
 export type BioAuthRootState = {
     bioAuth: BioAuthState;
 };
+
+const createMemoizedSelector = createWeakMapSelector.withTypes<BioAuthRootState>();
+
+const selectBioAuthAvailable = (state: BioAuthRootState) => state.bioAuth.bioAuthAvailable;
+const selectBioAuthEnabled = (state: BioAuthRootState) => state.bioAuth.bioAuthEnabled;
+const selectBioAuthValidationRequired = (state: BioAuthRootState) =>
+    state.bioAuth.bioAuthValidationRequired;
+const selectBioAuthCancelled = (state: BioAuthRootState) => state.bioAuth.cancelled;
+
+export const selectBioAuthState = createMemoizedSelector(
+    [
+        selectBioAuthAvailable,
+        selectBioAuthEnabled,
+        selectBioAuthValidationRequired,
+        selectBioAuthCancelled,
+    ],
+    (isBioAuthAvailable, isBioAuthEnabled, isBioAuthValidationRequired, cancelled) => ({
+        isBioAuthAvailable,
+        isBioAuthEnabled,
+        isBioAuthValidationRequired,
+        cancelled,
+    }),
+);
 
 const initialState: BioAuthState = {
     bioAuthEnabled: false,
