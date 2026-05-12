@@ -23,7 +23,6 @@ import {
     asAmountUnit,
     getAccountIdentity,
     getContractAddressForNetworkSymbol,
-    strip,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type EthereumSignTransaction, type TokenInfo } from '@trezor/connect';
@@ -31,14 +30,9 @@ import { BigNumber } from '@trezor/utils';
 
 import type { AppState, Dispatch } from 'src/types/suite';
 
-const serializeNonce = (nonce: number | `0x${string}`) =>
-    typeof nonce === 'number' ? `0x${nonce.toString(16)}` : nonce;
-
 export type ParsedTransactionForSigning = NonNullable<
     ReturnType<typeof parseUnsignedEvmTransactionForSigning>
 >;
-
-export const evmHexToBigNumber = (hex: `0x${string}`) => new BigNumber(strip(hex), 16);
 
 type BuildYieldReviewTokenParams = {
     token: YieldFlowDisplayToken;
@@ -64,7 +58,7 @@ const getTransactionForSigning = (
         to: parsedTransaction.to,
         value: parsedTransaction.value ?? '0x0',
         gasLimit: parsedTransaction.gasLimit,
-        nonce: serializeNonce(parsedTransaction.nonce),
+        nonce: parsedTransaction.nonce,
         data: parsedTransaction.data,
         chainId: parsedTransaction.chainId,
     };
@@ -113,9 +107,9 @@ export const buildYieldReviewState = ({
     flowType,
     vaultName,
 }: BuildYieldReviewStateParams): BuildYieldReviewStateResult => {
-    const gasLimit = evmHexToBigNumber(tx.gasLimit);
-    const gasPrice = evmHexToBigNumber(tx.maxFeePerGas ?? tx.gasPrice ?? ('0x0' as `0x${string}`));
-    const fee = gasLimit.multipliedBy(gasPrice);
+    const gasLimitBN = new BigNumber(tx.gasLimit);
+    const gasPriceBN = new BigNumber(tx.maxFeePerGas ?? tx.gasPrice ?? '0x0');
+    const fee = gasLimitBN.multipliedBy(gasPriceBN);
     const reviewToken = buildYieldReviewToken({ token, symbol });
     const amountSubunits = unitsToSubunits({
         value: asAmountUnit(new BigNumber(amount)),
@@ -127,11 +121,8 @@ export const buildYieldReviewState = ({
     > =
         tx.maxFeePerGas && tx.maxPriorityFeePerGas
             ? {
-                  maxFeePerGas: fromWei(evmHexToBigNumber(tx.maxFeePerGas).toFixed(0), 'gwei'),
-                  maxPriorityFeePerGas: fromWei(
-                      evmHexToBigNumber(tx.maxPriorityFeePerGas).toFixed(0),
-                      'gwei',
-                  ),
+                  maxFeePerGas: fromWei(tx.maxFeePerGas, 'gwei'),
+                  maxPriorityFeePerGas: fromWei(tx.maxPriorityFeePerGas, 'gwei'),
               }
             : {};
 
@@ -148,8 +139,8 @@ export const buildYieldReviewState = ({
             },
         ],
         selectedFee: 'custom',
-        feePerUnit: fromWei(gasPrice.toFixed(0), 'gwei'),
-        feeLimit: gasLimit.toFixed(0),
+        feePerUnit: fromWei(gasPriceBN.toFixed(0), 'gwei'),
+        feeLimit: gasLimitBN.toFixed(0),
         ...eip1559ReviewFields,
         options: ['broadcast', 'transactionData'],
         transactionData: tx.data,
@@ -162,8 +153,8 @@ export const buildYieldReviewState = ({
     const precomposedTransaction: PrecomposedTransactionFinal = {
         type: 'final',
         fee: fee.toFixed(0),
-        feePerByte: fromWei(gasPrice.toFixed(0), 'gwei'),
-        feeLimit: gasLimit.toFixed(0),
+        feePerByte: fromWei(gasPriceBN.toFixed(0), 'gwei'),
+        feeLimit: gasLimitBN.toFixed(0),
         totalSpent: reviewToken ? amountSubunits.toFixed(0) : amountSubunits.plus(fee).toFixed(0),
         bytes: 0,
         inputs: [],

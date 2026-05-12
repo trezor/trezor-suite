@@ -1,4 +1,4 @@
-import { fromWei, hexToNumberString, numberToHex } from 'web3-utils';
+import { fromWei, hexToNumberString } from 'web3-utils';
 
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { Calldata, asEvmAddress } from '@suite-common/calldata';
@@ -298,7 +298,7 @@ export const claimMerkleRewardsThunk = createThunk(
                         to: unsignedClaimTx.to,
                         chainId: unsignedClaimTx.chainId,
                         value: '0x0',
-                        nonce: numberToHex(unsignedClaimTx.nonce),
+                        nonce: unsignedClaimTx.nonce,
                         data: sanitizeHex(unsignedClaimTx.data),
                         gasLimit: parsedSelectedFee.gasLimit,
                         ...(parsedSelectedFee.type === 'eip1559'
