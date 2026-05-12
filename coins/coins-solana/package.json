@@ -4,11 +4,40 @@
     "private": true,
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
+    "main": "./src/index.ts",
     "exports": {
         "./constants": "./src/constants/index.ts",
         "./runtime": "./src/runtime/index.ts",
-        "./types": "./src/types/index.ts"
+        "./types": "./src/types/index.ts",
+        ".": "./src/index.ts"
     },
+    "publishConfig": {
+        "main": "./libESM/index.mjs",
+        "types": "./libESM/index.d.mts",
+        "type": "module",
+        "exports": {
+            "./constants": {
+                "types": "./libESM/constants/index.d.mts",
+                "default": "./libESM/constants/index.mjs"
+            },
+            "./runtime": {
+                "types": "./libESM/runtime/index.d.mts",
+                "default": "./libESM/runtime/index.mjs"
+            },
+            "./types": {
+                "types": "./libESM/types/index.d.mts",
+                "default": "./libESM/types/index.mjs"
+            },
+            ".": {
+                "types": "./libESM/index.d.mts",
+                "default": "./libESM/index.mjs"
+            }
+        }
+    },
+    "files": [
+        "libESM/",
+        "CHANGELOG.md"
+    ],
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
