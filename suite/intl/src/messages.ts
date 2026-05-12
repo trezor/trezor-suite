@@ -228,11 +228,6 @@ export const messages = defineMessages({
         defaultMessage:
             'Floating-rate offers may result in slight changes to the final amount due to market fluctuations, but they’re typically higher, so you could receive more crypto.',
     },
-    TR_EXCHANGE_FEES_INFO: {
-        id: 'TR_EXCHANGE_FEES_INFO',
-        defaultMessage:
-            'All fees included. Estimated transaction fee: {feeAmount} ({feeAmountFiat}).',
-    },
     TR_TRADING_DISABLED_DEFAULT: {
         defaultMessage: '{type} is currently disabled.',
         id: 'TR_TRADING_DISABLED_DEFAULT',
@@ -639,30 +634,6 @@ export const messages = defineMessages({
         id: 'TR_TRADING_EXCHANGE_DEX_OFFERS_HEADING_TOOLTIP',
         dynamic: true,
     },
-    TR_TRADING_EXCHANGE_COMPARATOR_FILTER_KYC_ALL: {
-        defaultMessage: 'All KYC options',
-        id: 'TR_TRADING_EXCHANGE_COMPARATOR_FILTER_KYC_ALL',
-    },
-    TR_TRADING_EXCHANGE_COMPARATOR_FILTER_NO_KYC: {
-        defaultMessage: 'KYC is never required',
-        id: 'TR_TRADING_EXCHANGE_COMPARATOR_FILTER_NO_KYC',
-    },
-    TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_ALL: {
-        defaultMessage: 'All CEX & DEX offers',
-        id: 'TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_ALL',
-    },
-    TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_FIXED_CEX: {
-        defaultMessage: 'Fixed-rate CEX',
-        id: 'TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_FIXED_CEX',
-    },
-    TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_FLOATING_CEX: {
-        defaultMessage: 'Floating-rate CEX',
-        id: 'TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_FLOATING_CEX',
-    },
-    TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_DEX: {
-        defaultMessage: 'DEX',
-        id: 'TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_DEX',
-    },
     TR_TRADING_EXCHANGE_SIGN_BANNER_TITLE: {
         defaultMessage: 'You’re swapping with {provider}',
         id: 'TR_TRADING_EXCHANGE_SIGN_BANNER_TITLE',
@@ -961,10 +932,6 @@ export const messages = defineMessages({
         defaultMessage: "Go to the provider's website",
         id: 'TR_BUY_DETAIL_WAITING_FOR_USER_GATE',
     },
-    TR_TRADING_OFFERS_EMPTY: {
-        defaultMessage: 'Select your from/to assets and amount to search for your best offer.',
-        id: 'TR_TRADING_OFFERS_EMPTY',
-    },
     TR_BUY_SELL_OFFERS_EMPTY: {
         defaultMessage: 'Select your assets and amount to search for your best offer.',
         id: 'TR_BUY_SELL_OFFERS_EMPTY',
@@ -1123,14 +1090,6 @@ export const messages = defineMessages({
     TR_TRADING_TRADE_FEE: {
         defaultMessage: 'Trade fee',
         id: 'TR_TRADING_TRADE_FEE',
-    },
-    TR_TRADING_OFFERS_REFRESH: {
-        defaultMessage: 'Offers refresh in',
-        id: 'TR_TRADING_OFFERS_REFRESH',
-    },
-    TR_TRADING_OFFERS_SELECT: {
-        defaultMessage: 'Select',
-        id: 'TR_TRADING_OFFERS_SELECT',
     },
     TR_TRADING_POPULAR_CURRENCIES: {
         defaultMessage: 'Popular currencies',
@@ -5870,10 +5829,6 @@ export const messages = defineMessages({
         id: 'TR_BALANCE',
         defaultMessage: 'Balance',
     },
-    TR_MY_PORTFOLIO: {
-        id: 'TR_MY_PORTFOLIO',
-        defaultMessage: 'Portfolio',
-    },
     TR_REWARD: {
         id: 'TR_REWARD',
         defaultMessage: 'Reward',
@@ -7264,10 +7219,6 @@ export const messages = defineMessages({
         id: 'TR_SEARCH_FAIL',
         defaultMessage: 'Search failed.',
     },
-    TR_RANGE: {
-        id: 'TR_RANGE',
-        defaultMessage: 'range',
-    },
     TR_BUMP_FEE: {
         id: 'TR_BUMP_FEE',
         defaultMessage: 'Speed up',
@@ -7514,18 +7465,6 @@ export const messages = defineMessages({
     TR_BYTES: {
         id: 'TR_BYTES',
         defaultMessage: 'bytes',
-    },
-    TR_GRAPH_LINEAR: {
-        id: 'TR_GRAPH_LINEAR',
-        defaultMessage: 'Linear',
-    },
-    TR_GRAPH_LOGARITHMIC: {
-        id: 'TR_GRAPH_LOGARITHMIC',
-        defaultMessage: 'Logarithmic',
-    },
-    TR_GRAPH_VIEW: {
-        id: 'TR_GRAPH_VIEW',
-        defaultMessage: 'Graph view',
     },
     TR_DATE_DAY_LONG: {
         id: 'TR_DATE_DAY_LONG',
