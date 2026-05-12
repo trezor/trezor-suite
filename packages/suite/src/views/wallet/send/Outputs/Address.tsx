@@ -375,8 +375,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     const checksumAndUsageValidationResult = checkIsAddressNotUsedNotChecksummed(
                         address,
                         payload.history,
-                        inputName,
-                        setValue,
+                        checksummed => setValue(inputName, checksummed, { shouldValidate: true }),
                         setHasAddressChecksummed,
                     );
                     if (checksumAndUsageValidationResult) {
