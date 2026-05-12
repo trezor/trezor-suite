@@ -799,23 +799,26 @@ export const selectMinAllowedInputWithFee = (state: CoinjoinRootState, accountKe
     return minAllowedInput + txSize * status.feeRateMedian;
 };
 
-export const selectIsNothingToAnonymizeByAccountKey = (
-    state: CoinjoinRootState,
-    accountKey: AccountKey,
-) => {
-    const minAllowedInputWithFee = selectMinAllowedInputWithFee(state, accountKey);
-    const account = selectAccountByKey(state, accountKey);
-    const targetAnonymity =
-        selectTargetAnonymityByAccountKey(state, accountKey) ?? DEFAULT_TARGET_ANONYMITY;
+export const selectIsNothingToAnonymizeByAccountKey = createMemoizedSelector(
+    [
+        selectMinAllowedInputWithFee,
+        (state: CoinjoinRootState, accountKey: AccountKey) =>
+            selectAccountByKey(state, accountKey)?.addresses?.anonymitySet,
+        (state: CoinjoinRootState, accountKey: AccountKey) =>
+            selectAccountByKey(state, accountKey)?.utxo,
+        (state: CoinjoinRootState, accountKey: AccountKey) =>
+            selectTargetAnonymityByAccountKey(state, accountKey) ?? DEFAULT_TARGET_ANONYMITY,
+    ],
+    (minAllowedInputWithFee, anonymitySetMaybe, utxosMaybe, targetAnonymity) => {
+        const anonymitySet = anonymitySetMaybe || {};
+        const utxos = utxosMaybe || [];
 
-    const anonymitySet = account?.addresses?.anonymitySet || {};
-    const utxos = account?.utxo || [];
-
-    // Return true if all non-private funds are too small.
-    return utxos
-        .filter(utxo => (anonymitySet[utxo.address] ?? 1) < targetAnonymity)
-        .every(utxo => new BigNumber(utxo.amount).lt(minAllowedInputWithFee));
-};
+        // Return true if all non-private funds are too small.
+        return utxos
+            .filter(utxo => (anonymitySet[utxo.address] ?? 1) < targetAnonymity)
+            .every(utxo => new BigNumber(utxo.amount).lt(minAllowedInputWithFee));
+    },
+);
 
 export const selectWeightedAnonymityByAccountKey = (
     state: CoinjoinRootState,
@@ -902,21 +905,20 @@ export const selectRoundsLeftByAccountKey = (state: CoinjoinRootState, accountKe
     return maxRounds - signedRounds.length;
 };
 
-export const selectHasAnonymitySetError = (state: CoinjoinRootState) => {
-    const selectedAccount = selectSelectedAccount(state);
+export const selectHasAnonymitySetError = createMemoizedSelector(
+    [
+        (state: CoinjoinRootState) => !!selectSelectedAccount(state),
+        (state: CoinjoinRootState) => selectSelectedAccount(state)?.addresses?.anonymitySet,
+        (state: CoinjoinRootState) => selectSelectedAccount(state)?.utxo,
+    ],
+    (hasSelectedAccount, anonymitySet, utxos) => {
+        if (!hasSelectedAccount) {
+            return false;
+        }
 
-    if (!selectedAccount) {
-        return false;
-    }
-
-    const { addresses, utxo: utxos } = selectedAccount;
-
-    const hasFaultyAnonymitySet = !utxos?.every(
-        ({ address }) => addresses?.anonymitySet?.[address] !== undefined,
-    );
-
-    return hasFaultyAnonymitySet;
-};
+        return !utxos?.every(({ address }) => anonymitySet?.[address] !== undefined);
+    },
+);
 
 export const selectCoinjoinSessionBlockerByAccountKey = (
     state: CoinjoinRootState & DeviceRootState & LocksRootState,
