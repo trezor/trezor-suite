@@ -170,19 +170,26 @@ export const selectTransactionIsMarkedAsNotScam = (
 export const selectAccountTransactionsMarkedAsNotScam = (
     state: TransactionsRootState,
     accountKey: AccountKey,
-) => state.wallet.transactions.phishing[accountKey] ?? [];
+) => returnStableArrayIfEmpty(state.wallet.transactions.phishing[accountKey]);
 
-export const selectPhishingTransactionsContext = (
-    state: TokenDefinitionsRootState & TransactionsRootState & FiatRatesRootState,
-    accountKey: AccountKey,
-    symbol: NetworkSymbol,
-) => {
-    const historicRates = selectHistoricFiatRates(state);
-    const tokenDefinitions = selectNetworkTokenDefinitions(state, symbol);
-    const txsMarkedAsNotScam = selectAccountTransactionsMarkedAsNotScam(state, accountKey);
+const createPhishingMemoizedSelector = createWeakMapSelector.withTypes<
+    TokenDefinitionsRootState & TransactionsRootState & FiatRatesRootState
+>();
 
-    return { tokenDefinitions, txsMarkedAsNotScam, historicRates };
-};
+export const selectPhishingTransactionsContext = createPhishingMemoizedSelector(
+    [
+        state => selectHistoricFiatRates(state),
+        (state, _accountKey: AccountKey, symbol: NetworkSymbol) =>
+            selectNetworkTokenDefinitions(state, symbol),
+        (state, accountKey: AccountKey, _symbol: NetworkSymbol) =>
+            selectAccountTransactionsMarkedAsNotScam(state, accountKey),
+    ],
+    (historicRates, tokenDefinitions, txsMarkedAsNotScam) => ({
+        tokenDefinitions,
+        txsMarkedAsNotScam,
+        historicRates,
+    }),
+);
 
 export const selectIsPhishingTransaction = (
     state: TokenDefinitionsRootState &
