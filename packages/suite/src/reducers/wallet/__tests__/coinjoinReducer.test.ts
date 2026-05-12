@@ -1,5 +1,6 @@
 import type { AccountKey } from '@suite-common/wallet-types';
 
+import { DEFAULT_TARGET_ANONYMITY } from 'src/services/coinjoin/config';
 import type { Action } from 'src/types/suite';
 
 import { actionFixtures, selectorFixtures } from '../__fixtures__/coinjoinReducer';
@@ -12,6 +13,7 @@ import {
     selectCoinjoinClient,
     selectMinAllowedInputWithFee,
     selectRegisteredUtxosByAccountKey,
+    selectTargetAnonymityByAccountKey,
 } from '../coinjoinReducer';
 
 describe('Coinjoin reducer actions', () => {
@@ -211,5 +213,75 @@ describe('selectMinAllowedInputWithFee', () => {
         expect(before).toBe(5505);
         // 5000 + 101 * 10 = 6010
         expect(after).toBe(6010);
+    });
+});
+
+describe('selectTargetAnonymityByAccountKey', () => {
+    const accountWithSetup = {
+        key: 'A' as AccountKey,
+        symbol: 'btc',
+        setup: { targetAnonymity: 42 },
+    };
+    const accountWithoutSetup = { key: 'B' as AccountKey, symbol: 'btc' };
+    const accountWithEmptySetup = { key: 'C' as AccountKey, symbol: 'btc', setup: {} };
+
+    const buildState = (accounts: unknown[]) =>
+        ({
+            wallet: {
+                coinjoin: { ...initialState, accounts },
+            },
+        }) as unknown as CoinjoinRootState;
+
+    it('returns the configured targetAnonymity when present', () => {
+        const state = buildState([accountWithSetup]);
+
+        expect(selectTargetAnonymityByAccountKey(state, 'A' as AccountKey)).toBe(42);
+    });
+
+    it('returns DEFAULT_TARGET_ANONYMITY when account exists but setup.targetAnonymity is missing', () => {
+        const state = buildState([accountWithoutSetup, accountWithEmptySetup]);
+
+        expect(selectTargetAnonymityByAccountKey(state, 'B' as AccountKey)).toBe(
+            DEFAULT_TARGET_ANONYMITY,
+        );
+        expect(selectTargetAnonymityByAccountKey(state, 'C' as AccountKey)).toBe(
+            DEFAULT_TARGET_ANONYMITY,
+        );
+    });
+
+    it('returns undefined when accountKey does not match any account', () => {
+        const state = buildState([accountWithSetup]);
+
+        expect(selectTargetAnonymityByAccountKey(state, 'Z' as AccountKey)).toBeUndefined();
+    });
+
+    it('returns undefined when accountKey is null', () => {
+        const state = buildState([accountWithSetup]);
+
+        expect(selectTargetAnonymityByAccountKey(state, null)).toBeUndefined();
+    });
+
+    it('returns the same primitive across repeated calls with the same args', () => {
+        const state = buildState([accountWithSetup]);
+
+        const first = selectTargetAnonymityByAccountKey(state, 'A' as AccountKey);
+        const second = selectTargetAnonymityByAccountKey(state, 'A' as AccountKey);
+
+        expect(first).toBe(42);
+        expect(second).toBe(first);
+    });
+
+    it('caches distinct accountKey lookups independently against the same accounts ref', () => {
+        const state = buildState([accountWithSetup, accountWithoutSetup]);
+
+        const a1 = selectTargetAnonymityByAccountKey(state, 'A' as AccountKey);
+        const b1 = selectTargetAnonymityByAccountKey(state, 'B' as AccountKey);
+        const a2 = selectTargetAnonymityByAccountKey(state, 'A' as AccountKey);
+        const b2 = selectTargetAnonymityByAccountKey(state, 'B' as AccountKey);
+
+        expect(a1).toBe(42);
+        expect(b1).toBe(DEFAULT_TARGET_ANONYMITY);
+        expect(a2).toBe(a1);
+        expect(b2).toBe(b1);
     });
 });

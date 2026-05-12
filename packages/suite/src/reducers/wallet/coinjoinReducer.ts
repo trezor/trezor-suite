@@ -652,15 +652,14 @@ export const selectSessionByAccountKey = (state: CoinjoinRootState, accountKey: 
     return coinjoinAccount?.session;
 };
 
-export const selectTargetAnonymityByAccountKey = (
-    state: CoinjoinRootState,
-    accountKey: AccountKey | null,
-) => {
-    const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
-    if (!coinjoinAccount) return;
+export const selectTargetAnonymityByAccountKey = createMemoizedSelector(
+    [selectCoinjoinAccountByKey],
+    coinjoinAccount => {
+        if (!coinjoinAccount) return;
 
-    return coinjoinAccount.setup?.targetAnonymity ?? DEFAULT_TARGET_ANONYMITY;
-};
+        return coinjoinAccount.setup?.targetAnonymity ?? DEFAULT_TARGET_ANONYMITY;
+    },
+);
 
 export const selectCurrentCoinjoinBalanceBreakdown = createMemoizedSelector(
     [
