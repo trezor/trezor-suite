@@ -266,6 +266,14 @@ describe('commonSelectors', () => {
                 ).toBe(true);
             });
         });
+
+        it('should return the same primitive across repeated calls with the same state', () => {
+            const state = getPreloadedState({ buy: true });
+            const first = selectIsTradingEnabled(state);
+            const second = selectIsTradingEnabled(state);
+            expect(first).toBe(second);
+            expect(first).toBe(true);
+        });
     });
 
     describe('selectTradeToBeOpened', () => {

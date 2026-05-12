@@ -105,19 +105,25 @@ export const selectIsTradingSellEnabled = (state: MessageSystemRootState & Featu
     selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingSellEnabled) ||
     selectIsFeatureEnabled(state, Feature.trading.sell, true);
 
-export const selectIsTradingEnabled = (
-    state: MessageSystemRootState & FeatureFlagsRootState & TradingRootState,
-) => {
-    if (!selectIsTradingEnabledForCountry(state)) {
-        return false;
-    }
+const createTradingEnabledMemoizedSelector = createWeakMapSelector.withTypes<
+    MessageSystemRootState & FeatureFlagsRootState & TradingRootState
+>();
 
-    return (
-        selectIsTradingBuyEnabled(state) ||
-        selectIsTradingExchangeEnabled(state) ||
-        selectIsTradingSellEnabled(state)
-    );
-};
+export const selectIsTradingEnabled = createTradingEnabledMemoizedSelector(
+    [
+        selectIsTradingEnabledForCountry,
+        selectIsTradingBuyEnabled,
+        selectIsTradingExchangeEnabled,
+        selectIsTradingSellEnabled,
+    ],
+    (isEnabledForCountry, isBuyEnabled, isExchangeEnabled, isSellEnabled): boolean => {
+        if (!isEnabledForCountry) {
+            return false;
+        }
+
+        return isBuyEnabled || isExchangeEnabled || isSellEnabled;
+    },
+);
 
 export const selectEnabledTradingTypes = createFeatureFlagsMemoizedSelector(
     [selectIsTradingBuyEnabled, selectIsTradingExchangeEnabled, selectIsTradingSellEnabled],
