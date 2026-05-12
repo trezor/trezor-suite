@@ -1,4 +1,5 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
+import { asDeviceUniquePath } from '@trezor/connect-common';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 // These hidden device constants are used in mobile app to hold all imported accounts.
@@ -18,9 +19,12 @@ export const portfolioTrackerDevice: TrezorDevice = {
     state: {
         staticSessionId: PORTFOLIO_TRACKER_DEVICE_STATE,
     },
+    descriptor: {
+        apiType: 'usb',
+    },
+    firstConnectedTimestamp: 0,
     label: 'My assets',
-    // @ts-expect-error - local override
-    path: 'imported-1',
+    path: asDeviceUniquePath('imported-1'),
     firmware: 'valid',
     name: 'Portfolio Tracker',
     features: {
