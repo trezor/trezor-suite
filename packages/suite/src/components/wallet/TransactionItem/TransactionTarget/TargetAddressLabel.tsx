@@ -1,7 +1,9 @@
 import { Translation } from '@suite/intl';
 import { selectIsLegacyLabelingVisible } from '@suite/metadata';
 import { type AccountLabels } from '@suite-common/metadata-types';
+import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
+import { type SuiteSyncAddress } from '@suite-common/suite-sync-storage';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { StaticSessionId } from '@trezor/connect';
 import { type ArrayElement } from '@trezor/type-utils';
@@ -30,7 +32,9 @@ export const TargetAddressLabel = ({
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
 
     const suiteSyncAddressLabels = useSelector(state =>
-        isSuiteSyncEnabled ? selectSuiteSyncAddressLabels(state, deviceStaticSessionId) : [],
+        isSuiteSyncEnabled
+            ? selectSuiteSyncAddressLabels(state, deviceStaticSessionId)
+            : returnStableArrayIfEmpty<SuiteSyncAddress>(),
     );
 
     if (isLocalTarget) {
