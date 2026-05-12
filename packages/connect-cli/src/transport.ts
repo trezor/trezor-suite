@@ -15,6 +15,8 @@ export const getCurrentTransport = () => {
     return 'usb';
 };
 
+const getLogger = () => (args.debug ? console : undefined);
+
 // if interaction is done by the user or resolved by DebugLink decision
 export const isDebugLinkInteraction = (type: string) =>
     (typeof args.debuglink === 'boolean' && args.debuglink) ||
@@ -22,8 +24,8 @@ export const isDebugLinkInteraction = (type: string) =>
 
 const debugTransport =
     getCurrentTransport() === 'udp'
-        ? new UdpTransport({ id: 'udp', debugLink: true })
-        : new NodeUsbTransport({ id: 'usb', debugLink: true });
+        ? new UdpTransport({ id: 'udp', debugLink: true, logger: getLogger() })
+        : new NodeUsbTransport({ id: 'usb', debugLink: true, logger: getLogger() });
 
 export const initDebugLink = async () => {
     if (args['interactive']) return;
@@ -120,7 +122,7 @@ export const debugLinkDecision = async () => {
 export const getTransport = async (): Promise<ConnectSettingsTransport> => {
     const transportName = getCurrentTransport();
 
-    const bluetoothApi = new TrezorBluetooth({ url: `ws://localhost:21327/` });
+    const bluetoothApi = new TrezorBluetooth({ url: `ws://localhost:21327/`, logger: getLogger() });
     if (transportName === 'bluetooth') {
         await bluetoothApi.connect();
         const enumerate = await bluetoothApi.send('start_scan');
@@ -136,6 +138,7 @@ export const getTransport = async (): Promise<ConnectSettingsTransport> => {
         return new BluetoothTransport({
             url: 'ws://127.0.0.1:21327',
             id: 'ble',
+            logger: getLogger(),
         });
     } else if (transportName === 'bridge') {
         return 'BridgeTransport';
