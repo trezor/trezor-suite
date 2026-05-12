@@ -1,46 +1,29 @@
 import { useMemo } from 'react';
 
-import type { SellFiatTrade } from 'invity-api';
-
-import { Translation } from '@suite/intl';
 import {
     isCountrySubdivisionEmpty,
     selectTradingComposedTransactionInfo,
     tradingSellActions,
 } from '@suite-common/trading';
-import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
-import { Button, Column } from '@trezor/components';
-import { breakpoints } from '@trezor/theme';
+import { Column } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { selectTorState } from 'src/selectors/suite/suiteSelectors';
-import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
-import {
-    getCryptoQuoteAmountProps,
-    getSelectedCryptoId,
-    getSelectedQuote,
-} from 'src/utils/wallet/trading/tradingTypingUtils';
-import {
-    tradingGetAmountLabels,
-    tradingGetSectionActionLabel,
-} from 'src/utils/wallet/trading/tradingUtils';
-import { TradingFormOfferOTC } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferOTC';
 import { TradingUtilsTorWarning } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsTorWarning';
 
 import { TradingFormOfferAmount } from '../common/TradingForm/TradingFormOffer/components/TradingFormOfferAmount/TradingFormOfferAmount';
+import { TradingFormOfferConfirmButton } from '../common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
+import { TradingFormOfferOTC } from '../common/TradingForm/TradingFormOffer/components/TradingFormOfferOTC';
 import { TradingFormOfferWarnings } from '../common/TradingForm/TradingFormOffer/components/TradingFormOffersWarnings';
+import { useTradingFormOfferCommon } from '../common/TradingForm/TradingFormOffer/hooks/useTradingFormOfferCommon';
 
 export const TradingFormSellOffer = () => {
     const dispatch = useDispatch();
-    const { isTorEnabled } = useSelector(selectTorState);
     const context = useTradingFormContext<'sell'>();
     const {
         account,
-        isAmountEmpty,
         watch,
         shouldSendInSats,
         sellInfo,
@@ -48,30 +31,15 @@ export const TradingFormSellOffer = () => {
         form: { state },
     } = context;
 
-    const areFeesLoading = useSelector(suiteState =>
-        selectAreFeesLoading(suiteState, account.symbol),
-    );
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
-    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
-    const { amountInCrypto, outputs } = watch();
+    const { outputs } = watch();
     const { amount, token } = outputs[0];
     const tokenAddress = token as TokenAddress | null;
     const areSatsUsed = !!shouldSendInSats;
 
     const fee = composedTransactionInfo?.composed?.fee;
     const isFeeRequiredButMissingValue = fee === undefined || fee === '';
-
-    const amountLabels = tradingGetAmountLabels({ type: 'sell', amountInCrypto });
-
-    const quote = getSelectedQuote(context) as SellFiatTrade | undefined;
-    const quoteAmounts = getCryptoQuoteAmountProps(quote, context);
-    const selectedCryptoId = getSelectedCryptoId(context);
-
-    const sendAmount =
-        !state.isLoadingOrInvalid && quoteAmounts?.sendAmount ? quoteAmounts.sendAmount : '0';
-
-    const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
     const isSubdivisionMissing = useMemo(() => {
         const { countrySelect, countrySubdivisionSelect } = watch();
@@ -86,31 +54,23 @@ export const TradingFormSellOffer = () => {
         areSatsUsed,
     });
 
+    const {
+        quote,
+        quoteAmounts,
+        noOffersWithTor,
+        isConfirmButtonLoading,
+        confirmButtonTranslationId,
+        sendAmount,
+        selectedAssetCryptoId,
+        amountLabels,
+        isBaseButtonDisabled,
+    } = useTradingFormOfferCommon<'sell'>();
+
     const isButtonDisabled =
-        isDiscoveryRunning ||
-        tradingDeviceDisconnected ||
-        state.isLoadingOrInvalid ||
-        !quote ||
+        isBaseButtonDisabled ||
         amountTooHigh ||
-        areFeesLoading ||
-        isFeeRequiredButMissingValue;
-
-    const isLoading = state.isFormLoading;
-
-    const receiveCurrency = quoteAmounts?.receiveCurrency;
-    const selectedAssetCryptoId =
-        !state.isLoadingOrInvalid && receiveCurrency
-            ? receiveCurrency
-            : (selectedCryptoId ?? undefined);
-
-    const isContentBelowBreakpoint = useIsContentBelowBreakpoint(breakpoints.tablet);
-    const noOffersWithTor = isTorEnabled && !quote && !isLoading;
-    const isConfirmButtonLoading = areFeesLoading || (state.isFormLoading && !isAmountEmpty);
-
-    const confirmButtonTranslationId =
-        state.isFormLoading && !isAmountEmpty
-            ? 'TR_TRADING_OFFER_LOOKING'
-            : tradingGetSectionActionLabel('sell');
+        isFeeRequiredButMissingValue ||
+        state.isFormLoading;
 
     const onSelectQuote = () => {
         if (!quote) return;
@@ -132,7 +92,7 @@ export const TradingFormSellOffer = () => {
                 amount={quoteAmounts?.receiveAmount ?? '0'}
                 sendAmount={sendAmount}
                 selectedAssetCryptoId={selectedAssetCryptoId}
-                shouldDisplayFiatAmount={!!amountInCrypto}
+                shouldDisplayFiatAmount={!!watch().amountInCrypto}
                 amountLabels={amountLabels}
             />
 
@@ -143,19 +103,13 @@ export const TradingFormSellOffer = () => {
 
             {noOffersWithTor && <TradingUtilsTorWarning tradingType="sell" noOffer={!quote} />}
 
-            <Button
+            <TradingFormOfferConfirmButton
                 onClick={onSelectQuote}
-                intent="brand"
-                margin={{ top: 16 }}
-                size="large"
-                isDisabled={isButtonDisabled || isLoading}
+                isDisabled={isButtonDisabled}
                 isLoading={isConfirmButtonLoading}
-                data-testid="@trading/form/sell-button"
-                minWidth={160}
-                width={isContentBelowBreakpoint ? undefined : '100%'}
-            >
-                <Translation id={confirmButtonTranslationId} />
-            </Button>
+                translationId={confirmButtonTranslationId}
+                testId="@trading/form/sell-button"
+            />
 
             <TradingFormOfferOTC />
         </Column>
