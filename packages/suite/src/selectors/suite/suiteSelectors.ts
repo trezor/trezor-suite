@@ -1,5 +1,6 @@
 import { type RouterRootState, selectRouter } from '@suite/router';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type TransportInfo } from '@trezor/connect';
 
 import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
@@ -12,12 +13,16 @@ import {
 import { getPrerequisiteName, isPrerequisiteGloballyExcluded } from 'src/utils/suite/prerequisites';
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 
+const createMemoizedSelector = createWeakMapSelector.withTypes<SuiteRootState>();
+
 export const selectIsSuiteOnline = (state: SuiteRootState) => state.suite.online;
 
-export const selectTorState = (state: SuiteRootState) => {
-    const { torStatus, torBootstrap } = state.suite;
+const selectTorStatus = (state: SuiteRootState) => state.suite.torStatus;
+const selectTorBootstrap = (state: SuiteRootState) => state.suite.torBootstrap;
 
-    return {
+export const selectTorState = createMemoizedSelector(
+    [selectTorStatus, selectTorBootstrap],
+    (torStatus, torBootstrap) => ({
         torStatus,
         isTorEnabled: getIsTorEnabled(torStatus),
         isTorLoading: getIsTorLoading(torStatus),
@@ -26,8 +31,8 @@ export const selectTorState = (state: SuiteRootState) => {
         isTorDisabled: torStatus === TorStatus.Disabled,
         isTorEnabling: torStatus === TorStatus.Enabling,
         torBootstrap,
-    };
-};
+    }),
+);
 
 export const selectSuiteTransports = (state: SuiteRootState) =>
     state.suite.transport?.transports.map(({ type, version }) => ({ type, version }));
