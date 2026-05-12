@@ -38,15 +38,16 @@ export const StakingManagementScreenHeader = () => {
                         <Text variant="body-md-strong" ellipsizeMode="tail" numberOfLines={1}>
                             <Translation id="earn.stakingDetailScreen.title" />
                         </Text>
-                        <Text variant="body-sm" numberOfLines={1} ellipsizeMode="tail">
-                            <AccountLabel
-                                accountDescriptor={accountDescriptor}
-                                networkSymbol={networkSymbol}
-                                deviceStaticSessionId={deviceStaticSessionId}
-                                color="contentSecondary"
-                                variant="body-sm"
-                            />
-                        </Text>
+                        <AccountLabel
+                            accountDescriptor={accountDescriptor}
+                            networkSymbol={networkSymbol}
+                            deviceStaticSessionId={deviceStaticSessionId}
+                            color="contentSecondary"
+                            variant="body-sm"
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                            showAccountTypeBadge
+                        />
                     </Box>
                 </HStack>
             }
