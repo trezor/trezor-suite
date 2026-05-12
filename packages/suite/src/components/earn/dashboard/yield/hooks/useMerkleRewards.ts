@@ -108,51 +108,67 @@ function extendMerkleRewardsWithFiat(
             const { chainId } = ChainAddressKey.parse(key);
             const network = getNetworkByEvmChainId(chainId);
 
-            const rewardsWithFiat = rewards.map(reward => {
-                const claimable = asBaseCurrencyAmount(
-                    new BigNumber(reward.amount).minus(reward.claimed).minus(reward.pending),
-                );
+            const rewardsWithFiat = rewards
+                .map(reward => {
+                    const claimableBN = new BigNumber(reward.amount)
+                        .minus(reward.claimed)
+                        .minus(reward.pending);
 
-                if (!network) {
+                    if (!claimableBN.gt(0)) {
+                        return null;
+                    }
+
+                    const claimable = asBaseCurrencyAmount(claimableBN);
+
+                    if (!network) {
+                        return {
+                            ...reward,
+                            claimable,
+                            fiat: {
+                                amount: null,
+                                claimed: null,
+                                pending: null,
+                                claimable: null,
+                            },
+                        };
+                    }
+
+                    const tokenAddress = getContractAddressForNetworkSymbol(
+                        network.symbol,
+                        reward.token.address,
+                    );
+                    const fiatRateKey = getFiatRateKey(
+                        network.symbol,
+                        baseCurrency,
+                        toTokenAddress(tokenAddress),
+                    );
+                    const rate = currentFiatRates?.[fiatRateKey]?.rate;
+                    const ticker = getTickerFromFiatRateKey(fiatRateKey);
+
+                    if (rate === undefined && ticker) {
+                        missingRateTickers.push(ticker);
+                    }
+
                     return {
                         ...reward,
                         claimable,
                         fiat: {
-                            amount: null,
-                            claimed: null,
-                            pending: null,
-                            claimable: null,
+                            amount: toFiatFromSubunits(reward.amount, reward.token.decimals, rate),
+                            claimed: toFiatFromSubunits(
+                                reward.claimed,
+                                reward.token.decimals,
+                                rate,
+                            ),
+                            pending: toFiatFromSubunits(
+                                reward.pending,
+                                reward.token.decimals,
+                                rate,
+                            ),
+                            claimable: toFiatFromSubunits(claimable, reward.token.decimals, rate),
                         },
                     };
-                }
-
-                const tokenAddress = getContractAddressForNetworkSymbol(
-                    network.symbol,
-                    reward.token.address,
-                );
-                const fiatRateKey = getFiatRateKey(
-                    network.symbol,
-                    baseCurrency,
-                    toTokenAddress(tokenAddress),
-                );
-                const rate = currentFiatRates?.[fiatRateKey]?.rate;
-                const ticker = getTickerFromFiatRateKey(fiatRateKey);
-
-                if (rate === undefined && ticker) {
-                    missingRateTickers.push(ticker);
-                }
-
-                return {
-                    ...reward,
-                    claimable,
-                    fiat: {
-                        amount: toFiatFromSubunits(reward.amount, reward.token.decimals, rate),
-                        claimed: toFiatFromSubunits(reward.claimed, reward.token.decimals, rate),
-                        pending: toFiatFromSubunits(reward.pending, reward.token.decimals, rate),
-                        claimable: toFiatFromSubunits(claimable, reward.token.decimals, rate),
-                    },
-                };
-            });
+                })
+                .filter(reward => reward !== null);
 
             return [key, rewardsWithFiat] as const;
         }),

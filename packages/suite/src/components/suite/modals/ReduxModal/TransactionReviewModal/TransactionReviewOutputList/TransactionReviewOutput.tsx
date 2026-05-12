@@ -115,8 +115,8 @@ const yieldStrings: Record<
 
 const isYieldAction = (
     evmTxType: EvmTransactionPurpose | undefined,
-): evmTxType is 'deposit' | 'withdraw' | 'redeem' =>
-    evmTxType === 'deposit' || evmTxType === 'withdraw' || evmTxType === 'redeem';
+): evmTxType is keyof typeof yieldStrings =>
+    !!evmTxType && Object.keys(yieldStrings).includes(evmTxType);
 
 const getTranslationValues = (
     networkType: NetworkType,

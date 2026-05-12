@@ -92,11 +92,9 @@ export const composeYieldWithdrawTransaction = async ({
         throw new Error(`Failed to encode withdraw calldata${issues ? `: ${issues}` : '.'}`);
     }
 
-    const { nonce } = await dispatch(
-        ethereumGetCurrentNonceThunk({ selectedAccount: account }),
-    ).unwrap();
+    const nonceTask = dispatch(ethereumGetCurrentNonceThunk({ selectedAccount: account })).unwrap();
 
-    const estimatedFee = await TrezorConnect.blockchainEstimateFee({
+    const estimatedFeeTask = TrezorConnect.blockchainEstimateFee({
         coin: account.symbol,
         identity: getAccountIdentity(account),
         request: {
@@ -109,6 +107,8 @@ export const composeYieldWithdrawTransaction = async ({
             },
         },
     });
+
+    const [{ nonce }, estimatedFee] = await Promise.all([nonceTask, estimatedFeeTask]);
 
     const estimatedGasLimit = estimatedFee.success
         ? estimatedFee.payload.levels[0]?.feeLimit

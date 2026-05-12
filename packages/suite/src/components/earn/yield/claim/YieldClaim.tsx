@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 import { events } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { selectIsDebugModeActive } from '@suite/settings';
-import { ChainAddressKey } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
 import { isEarnYieldClaimSupported } from '@suite-common/wallet-config';
 import {
@@ -15,7 +14,6 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Button, Card, Column, Text } from '@trezor/components';
-import { BigNumber } from '@trezor/utils';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { claimMerkleRewardsThunk } from 'src/actions/wallet/stablecoin-yield';
@@ -40,7 +38,6 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
     const flowKey = account?.key ?? '';
-    const hasReportedSuccessRef = useRef(false);
     const { isDisabled, content, variant } = useMessageSystemYield('claim');
 
     const yieldTxReview = useSelector(selectStablecoinYieldTxReview);
@@ -70,15 +67,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     const claimableRewards = useMemo(() => {
         if (!account || !isClaimSupported || !merkleRewardsQuery.isSuccess) return [];
 
-        return Object.entries(rewards)
-            .filter(([key]) => {
-                const { address } = ChainAddressKey.parse(key);
-
-                return address.toLowerCase() === account.descriptor.toLowerCase();
-            })
-            .flatMap(([, rewardList]) =>
-                rewardList.filter(reward => new BigNumber(reward.claimable).gt(0)),
-            );
+        return Object.values(rewards).flat();
     }, [account, isClaimSupported, merkleRewardsQuery.isSuccess, rewards]);
 
     useEffect(() => {
@@ -146,23 +135,6 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
         },
         [account, dispatch],
     );
-
-    useEffect(() => {
-        if (claimSession.step !== 'complete' || hasReportedSuccessRef.current) {
-            return;
-        }
-
-        analytics.report({
-            type: events.yieldClaimEvent.name,
-            payload: {
-                action: 'continue',
-                type: 'success',
-                networkSymbol: account?.symbol,
-            },
-        });
-
-        hasReportedSuccessRef.current = true;
-    }, [account?.symbol, analytics, claimSession.step]);
 
     if (!account) {
         return null;
