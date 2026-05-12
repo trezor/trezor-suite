@@ -9,6 +9,7 @@ import {
     coinjoinReducer,
     initialState,
     selectCoinjoinAccountByKey,
+    selectCoinjoinClient,
     selectRegisteredUtxosByAccountKey,
 } from '../coinjoinReducer';
 
@@ -94,6 +95,65 @@ describe('selectCoinjoinAccountByKey', () => {
 
         expect(a1).toBe(accountA);
         expect(b1).toBe(accountB);
+        expect(a2).toBe(a1);
+        expect(b2).toBe(b1);
+    });
+});
+
+describe('selectCoinjoinClient', () => {
+    const btcClient = { feeRateMedian: 12, status: 'available' };
+    const accountA = { key: 'A' as AccountKey, symbol: 'btc' };
+    const accountB = { key: 'B' as AccountKey, symbol: 'btc' };
+
+    const buildState = (accounts: unknown[], clients: Record<string, unknown> = {}) =>
+        ({
+            wallet: {
+                coinjoin: { ...initialState, accounts, clients },
+            },
+        }) as unknown as CoinjoinRootState;
+
+    it('returns the client matching the account symbol', () => {
+        const state = buildState([accountA], { btc: btcClient });
+
+        expect(selectCoinjoinClient(state, 'A' as AccountKey)).toBe(btcClient);
+    });
+
+    it('returns undefined when accountKey does not match any account', () => {
+        const state = buildState([accountA], { btc: btcClient });
+
+        expect(selectCoinjoinClient(state, 'Z' as AccountKey)).toBeUndefined();
+    });
+
+    it('returns undefined when accountKey is null', () => {
+        const state = buildState([accountA], { btc: btcClient });
+
+        expect(selectCoinjoinClient(state, null)).toBeUndefined();
+    });
+
+    it('returns undefined when no client is registered for the account symbol', () => {
+        const state = buildState([accountA], {});
+
+        expect(selectCoinjoinClient(state, 'A' as AccountKey)).toBeUndefined();
+    });
+
+    it('returns the same reference on repeated calls with the same args', () => {
+        const state = buildState([accountA], { btc: btcClient });
+
+        expect(selectCoinjoinClient(state, 'A' as AccountKey)).toBe(
+            selectCoinjoinClient(state, 'A' as AccountKey),
+        );
+    });
+
+    it('caches distinct accountKey lookups independently against the same accounts/clients refs', () => {
+        const state = buildState([accountA, accountB], { btc: btcClient });
+
+        const a1 = selectCoinjoinClient(state, 'A' as AccountKey);
+        const b1 = selectCoinjoinClient(state, 'B' as AccountKey);
+        const a2 = selectCoinjoinClient(state, 'A' as AccountKey);
+        const b2 = selectCoinjoinClient(state, 'B' as AccountKey);
+
+        expect(a1).toBe(btcClient);
+        expect(b1).toBe(btcClient);
         expect(a2).toBe(a1);
         expect(b2).toBe(b1);
     });

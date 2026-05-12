@@ -638,12 +638,11 @@ export const selectCoinjoinAccountByKey = createMemoizedSelector(
     (coinjoinAccounts, accountKey) => coinjoinAccounts.find(account => account.key === accountKey),
 );
 
-export const selectCoinjoinClient = (state: CoinjoinRootState, accountKey: AccountKey | null) => {
-    const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
-    const clients = selectCoinjoinClients(state);
-
-    return coinjoinAccount?.symbol && clients[coinjoinAccount?.symbol];
-};
+export const selectCoinjoinClient = createMemoizedSelector(
+    [selectCoinjoinAccountByKey, selectCoinjoinClients],
+    (coinjoinAccount, clients) =>
+        coinjoinAccount?.symbol ? clients[coinjoinAccount.symbol] : undefined,
+);
 
 export const selectSessionByAccountKey = (state: CoinjoinRootState, accountKey: AccountKey) => {
     const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
