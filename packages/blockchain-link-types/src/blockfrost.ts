@@ -194,7 +194,7 @@ export interface ParseAssetResult {
 
 export interface AddressNotification {
     address: string;
-    tx: any;
+    tx: BlockfrostTransaction;
 }
 
 export interface ServerInfo {
