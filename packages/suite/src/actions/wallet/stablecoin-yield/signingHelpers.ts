@@ -270,7 +270,12 @@ export const sendYieldTransaction = async ({
         if (!signingResponse.success) {
             dispatch(closeModal());
 
-            throw new Error(`${signingResponse.error.code}: ${signingResponse.error.message}`);
+            const { code } = signingResponse.error;
+            if (code === 'Failure_ActionCancelled' || code === 'Method_Cancel') {
+                return;
+            }
+
+            throw new Error(`${code}: ${signingResponse.error.message}`);
         }
 
         dispatch(
