@@ -2,6 +2,7 @@ import { type StakeDataState } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 
 import {
+    selectAccountCryptoBalanceWithStaking,
     selectApy,
     selectCanClaimByAccountKey,
     selectClaimableAmountByAccountKey,
@@ -316,6 +317,38 @@ describe('main staking selectors', () => {
             const result = selectApy(testState as any, { accountKey: 'etc1' as AccountKey });
 
             expect(result).toBeNull();
+        });
+    });
+
+    describe('selectAccountCryptoBalanceWithStaking', () => {
+        it('returns the same string reference across repeated calls when state is unchanged', () => {
+            const account = {
+                ...ethAccountWithClaimableStake,
+                formattedBalance: '2',
+            } as Account;
+            const testState = getTestState([account]);
+
+            const first = selectAccountCryptoBalanceWithStaking(
+                testState as any,
+                'eth1' as AccountKey,
+            );
+            const second = selectAccountCryptoBalanceWithStaking(
+                testState as any,
+                'eth1' as AccountKey,
+            );
+
+            expect(first).toBe(second);
+        });
+
+        it('returns "0" for a non-existent account', () => {
+            const testState = getTestState([ethAccountWithClaimableStake]);
+
+            const result = selectAccountCryptoBalanceWithStaking(
+                testState as any,
+                'non-existent' as AccountKey,
+            );
+
+            expect(result).toBe('0');
         });
     });
 

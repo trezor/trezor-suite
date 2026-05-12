@@ -1,5 +1,7 @@
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    type AccountsRootState,
     selectAccountByKey,
     selectAdaAccountHasStaked,
     selectEthValidatorsQueue,
@@ -47,6 +49,8 @@ import {
     selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol,
 } from './solanaStakingSelectors';
 import { type NativeStakingRootState } from './types';
+
+const createAccountsMemoizedSelector = createWeakMapSelector.withTypes<AccountsRootState>();
 
 // create empty array in advance so it will be always same on shallow comparison
 const EMPTY_ACCOUNT_ARRAY: Account[] = [];
@@ -99,14 +103,10 @@ export const getAccountCryptoBalanceWithStaking = (account: Account | null) => {
     }
 };
 
-export const selectAccountCryptoBalanceWithStaking = (
-    state: NativeStakingRootState,
-    accountKey: AccountKey,
-) => {
-    const account = selectAccountByKey(state, accountKey);
-
-    return getAccountCryptoBalanceWithStaking(account);
-};
+export const selectAccountCryptoBalanceWithStaking = createAccountsMemoizedSelector(
+    [selectAccountByKey],
+    account => getAccountCryptoBalanceWithStaking(account),
+);
 
 export const selectAccountHasStaking = (state: NativeStakingRootState, accountKey: AccountKey) => {
     const account = selectAccountByKey(state, accountKey);
