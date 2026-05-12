@@ -191,33 +191,39 @@ export const selectPhishingTransactionsContext = createPhishingMemoizedSelector(
     }),
 );
 
-export const selectIsPhishingTransaction = (
-    state: TokenDefinitionsRootState &
-        TransactionsRootState &
-        AccountsRootState &
-        FiatRatesRootState &
-        PhishingRootState,
-    txid: string,
-    accountKey: AccountKey,
-) => {
-    const transaction = selectTransactionByAccountKeyAndTxid(state, accountKey, txid);
-    if (!transaction) return createPhishingResult(false);
+const createIsPhishingTransactionMemoizedSelector = createWeakMapSelector.withTypes<
+    TokenDefinitionsRootState & TransactionsRootState & FiatRatesRootState & PhishingRootState
+>();
 
-    const { tokenDefinitions, txsMarkedAsNotScam, historicRates } =
-        selectPhishingTransactionsContext(state, accountKey, transaction.symbol);
+export const selectIsPhishingTransaction = createIsPhishingTransactionMemoizedSelector(
+    [
+        (state, txid: string, accountKey: AccountKey) =>
+            selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
+        (state, txid: string, accountKey: AccountKey) => {
+            const transaction = selectTransactionByAccountKeyAndTxid(state, accountKey, txid);
 
-    const dustPhishingIsEnabled = selectDustPhishingIsEnabled(state);
-    const dustPhishingThreshold = selectDustPhishingThreshold(state);
-    const dustThreshold = dustPhishingIsEnabled ? dustPhishingThreshold : undefined;
+            return transaction
+                ? selectPhishingTransactionsContext(state, accountKey, transaction.symbol)
+                : undefined;
+        },
+        selectDustPhishingIsEnabled,
+        selectDustPhishingThreshold,
+    ],
+    (transaction, phishingContext, dustPhishingIsEnabled, dustPhishingThreshold) => {
+        if (!transaction || !phishingContext) return createPhishingResult(false);
 
-    return isPhishingTransaction({
-        transaction,
-        tokenDefinitions,
-        historicRates,
-        txsMarkedAsNotScam,
-        dustThreshold,
-    });
-};
+        const { tokenDefinitions, txsMarkedAsNotScam, historicRates } = phishingContext;
+        const dustThreshold = dustPhishingIsEnabled ? dustPhishingThreshold : undefined;
+
+        return isPhishingTransaction({
+            transaction,
+            tokenDefinitions,
+            historicRates,
+            txsMarkedAsNotScam,
+            dustThreshold,
+        });
+    },
+);
 
 export const selectAccountStakeTypeTransactions = createMemoizedSelector(
     [selectAccountTransactions],
