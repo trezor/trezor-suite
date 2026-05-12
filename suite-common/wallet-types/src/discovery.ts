@@ -30,8 +30,8 @@ export type DiscoveryStatus = CommonDiscoveryStatus &
           }
         | {
               status: 'progress';
-              total: BundleProgress<any>['payload']['total'];
-              progress: BundleProgress<any>['payload']['progress'];
+              total: BundleProgress<unknown>['payload']['total'];
+              progress: BundleProgress<unknown>['payload']['progress'];
           }
         | {
               status: 'confirm-empty-passphrase';
