@@ -1,4 +1,4 @@
-import type { CORE_CALL } from './core-call';
+import type { CORE_CALL, CORE_CALL_CANCEL } from './core-call';
 import { type SerializedError, serializeError } from '../constants/errors';
 import type { DeviceState, DeviceUniquePath } from '../types';
 import type { TrezorConnect, TrezorConnectManagement } from '../types/api';
@@ -60,6 +60,11 @@ export interface CoreCallMessage {
     id: string;
     type: typeof CORE_CALL;
     payload: CallMethodPayload;
+}
+
+export interface CoreCallCancelMessage {
+    type: typeof CORE_CALL_CANCEL;
+    payload: { reason?: string } | null;
 }
 
 export const RESPONSE_EVENT = 'RESPONSE_EVENT';

@@ -1,7 +1,7 @@
 import type { Err } from '@trezor/type-utils';
 
 import type { BlockchainEventMessage } from './blockchain';
-import type { CoreCallMessage, MethodResponseMessage } from './call';
+import type { CoreCallCancelMessage, CoreCallMessage, MethodResponseMessage } from './call';
 import type { DeviceEventMessage } from './device';
 import type { PopupClosedMessage, PopupEventMessage } from './popup';
 import type {
@@ -19,6 +19,7 @@ export const CORE_EVENT = 'CORE_EVENT';
 
 export type CoreRequestMessage =
     | PopupClosedMessage
+    | CoreCallCancelMessage
     | TransportDisableWebUSB
     | TransportSetTransports
     | TransportRequestWebUSBDevice
