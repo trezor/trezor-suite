@@ -89,6 +89,16 @@ describe('CryptoAmountFormatter', () => {
             ).toBe('0.00014899… ETH');
         });
 
+        it('ETH fee preserves all 18 decimals without Number precision loss', () => {
+            expect(
+                CryptoAmountFormatter.format('1005309106970022', {
+                    symbol: 'eth',
+                    isBalance: false,
+                    maxDisplayedDecimals: 18,
+                }),
+            ).toBe('0.001005309106970022 ETH');
+        });
+
         describe('Formats correctly to Sats units', () => {
             it('BTC sats with symbol', () => {
                 expect(
