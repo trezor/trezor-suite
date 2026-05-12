@@ -21,16 +21,17 @@ describe('thp', () => {
 
     const thpState = new protocolThp.ThpState();
     const apiRead = jest.fn(
-        signal =>
+        (options: { signal?: AbortSignal } = {}) =>
             new Promise<any>((resolve, reject) => {
+                const { signal } = options;
                 const listener = () => {
-                    signal.removeEventListener('abort', listener);
+                    signal?.removeEventListener('abort', listener);
                     reject(new Error('Aborted'));
                 };
                 signal?.addEventListener('abort', listener);
 
                 setTimeout(() => {
-                    signal.removeEventListener('abort', listener);
+                    signal?.removeEventListener('abort', listener);
                     resolve({ success: true, payload: THP_ACK });
                 }, 100);
             }),
@@ -49,12 +50,12 @@ describe('thp', () => {
             const abortController = new AbortController();
             let attempt = 0;
             const apiRead = jest.fn(
-                signal =>
+                (options = {}) =>
                     new Promise<any>(resolve => {
                         if (++attempt < 5) {
                             resolve({ success: true, payload: Buffer.alloc(32) });
                         } else {
-                            signal?.addEventListener('abort', () => {
+                            options.signal?.addEventListener('abort', () => {
                                 resolve({
                                     success: false,
                                     error: { code: 'Aborted by signal in API' },
@@ -192,13 +193,13 @@ describe('thp', () => {
             jest.useFakeTimers();
 
             const apiRead = jest.fn(
-                signal =>
+                (options = {}) =>
                     new Promise<any>((_resolve, reject) => {
                         const listener = () => {
-                            signal.removeEventListener('abort', listener);
+                            options.signal?.removeEventListener('abort', listener);
                             reject(new Error('Aborted by signal inside API'));
                         };
-                        signal?.addEventListener('abort', listener);
+                        options.signal?.addEventListener('abort', listener);
                     }),
             );
 
@@ -290,13 +291,13 @@ describe('thp', () => {
                     ),
                 ],
                 apiWrite,
-                apiRead: (signal?: AbortSignal) =>
+                apiRead: (options = {}) =>
                     new Promise<any>((_resolve, reject) => {
                         const listener = () => {
-                            signal?.removeEventListener('abort', listener);
+                            options.signal?.removeEventListener('abort', listener);
                             reject(new Error('Aborted in api'));
                         };
-                        signal?.addEventListener('abort', listener);
+                        options.signal?.addEventListener('abort', listener);
                     }),
                 signal: abortController.signal,
             });

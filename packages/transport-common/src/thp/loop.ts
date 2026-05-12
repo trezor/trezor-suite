@@ -221,7 +221,7 @@ export const thpLoop = async ({
                 debug('SEND_RECENT_ACK');
 
                 const chunk = protocolThp.encodePreviousAck(thpState);
-                const ackResult = await apiWrite(chunk, signal);
+                const ackResult = await apiWrite(chunk, { signal });
                 if (!ackResult.success) {
                     return ackResult;
                 }
@@ -239,7 +239,7 @@ export const thpLoop = async ({
                 debug(`SEND_ACK ${isAckExpected} with piggyback ${thpState.isPiggybackAckEnabled}`);
 
                 if (!skipAck && isAckExpected && !thpState.isPiggybackAckEnabled) {
-                    const ack = await apiWrite(protocolThp.encodeAck(thpState), signal);
+                    const ack = await apiWrite(protocolThp.encodeAck(thpState), { signal });
                     if (!ack.success) {
                         return ack;
                     }

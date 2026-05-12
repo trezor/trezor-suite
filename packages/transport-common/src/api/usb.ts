@@ -1,6 +1,6 @@
 import { arrayPartition, createDeferred, getSynchronize, resolveAfter } from '@trezor/utils';
 
-import { AbstractApi, type AbstractApiConstructorParams } from './abstract';
+import { AbstractApi, type AbstractApiArgs, type AbstractApiConstructorParams } from './abstract';
 import {
     CONFIGURATION_ID,
     DEBUGLINK_ENDPOINT_ID,
@@ -224,7 +224,7 @@ export class UsbApi extends AbstractApi {
         return pending;
     }
 
-    public async read(path: string, signal?: AbortSignal) {
+    public async read(...[path, options]: AbstractApiArgs<'read'>) {
         const device = this.findDevice(path);
         if (!device) {
             return error({ code: ERRORS.DEVICE_NOT_FOUND });
@@ -233,7 +233,7 @@ export class UsbApi extends AbstractApi {
         try {
             this.logger?.debug('usb: device.transferIn');
             const res = await this.abortableMethod(() => this.getTransferIn(device), {
-                signal,
+                signal: options?.signal,
                 onAbort: () => this.resetDevice(path),
             });
             this.logger?.debug(
@@ -254,7 +254,7 @@ export class UsbApi extends AbstractApi {
         }
     }
 
-    public async write(path: string, buffer: Buffer, signal?: AbortSignal) {
+    public async write(...[path, buffer, options]: AbstractApiArgs<'write'>) {
         const device = this.findDevice(path);
         if (!device) {
             return error({ code: ERRORS.DEVICE_NOT_FOUND });
@@ -284,7 +284,7 @@ export class UsbApi extends AbstractApi {
                         this.debugLink ? DEBUGLINK_ENDPOINT_ID : ENDPOINT_ID,
                         newArray,
                     ),
-                { signal, onAbort: () => this.resetDevice(path) },
+                { signal: options?.signal, onAbort: () => this.resetDevice(path) },
             );
             this.logger?.debug(`usb: device.transferOut done.`);
             if (result.status !== 'ok') {
@@ -300,7 +300,7 @@ export class UsbApi extends AbstractApi {
         }
     }
 
-    public async openDevice(path: string, options: { reset: boolean; signal?: AbortSignal }) {
+    public async openDevice(...[path, options]: AbstractApiArgs<'openDevice'>) {
         // note: multiple retries to open device. reason:  when another window acquires device, changed session
         // is broadcasted to other clients. they are responsible for releasing interface, which takes some time.
         // if there is only one client working with device, this will succeed using only one attempt.
@@ -310,7 +310,7 @@ export class UsbApi extends AbstractApi {
         for (let i = 0; i < 5; i++) {
             this.logger?.debug(`usb: openDevice attempt ${i}`);
             const res = await this.openInternal(path, options);
-            if (res.success || options.signal?.aborted) {
+            if (res.success || options?.signal?.aborted) {
                 return res;
             }
 
@@ -320,10 +320,8 @@ export class UsbApi extends AbstractApi {
         return this.openInternal(path, options);
     }
 
-    private async openInternal(
-        path: string,
-        { reset, signal }: { reset: boolean; signal?: AbortSignal },
-    ) {
+    private async openInternal(...[path, options]: AbstractApiArgs<'openDevice'>) {
+        const { signal, reset } = options || { reset: false };
         const device = this.findDevice(path);
         if (!device) {
             return error({ code: ERRORS.DEVICE_NOT_FOUND });
@@ -393,7 +391,7 @@ export class UsbApi extends AbstractApi {
         return success(undefined);
     }
 
-    public async closeDevice(path: string) {
+    public async closeDevice(...[path]: AbstractApiArgs<'closeDevice'>) {
         let device = this.findDevice(path);
         if (!device) {
             return error({ code: ERRORS.DEVICE_NOT_FOUND });

@@ -2,6 +2,7 @@ import UDP from 'dgram';
 
 import {
     AbstractApi,
+    type AbstractApiArgs,
     type AbstractApiAwaitedResult,
     type AbstractApiConstructorParams,
     DEVICE_TYPE,
@@ -63,12 +64,13 @@ export class UdpApi extends AbstractApi {
         }
     }
 
-    public write(path: string, buffer: Buffer, signal?: AbortSignal) {
+    public write(...[path, buffer, options]: AbstractApiArgs<'write'>) {
         const parts = path.split(':');
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const hostname: string = parts[0];
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const port: string = parts[1];
+        const signal = options?.signal;
 
         return new Promise<AbstractApiAwaitedResult<'write'>>(resolve => {
             const listener = () => {
@@ -113,12 +115,12 @@ export class UdpApi extends AbstractApi {
         });
     }
 
-    public read(path: string, signal?: AbortSignal) {
-        return this.readBuffer.read(path, signal);
+    public read(...[path, options]: AbstractApiArgs<'read'>) {
+        return this.readBuffer.read(path, options?.signal);
     }
 
-    private async ping(path: string, signal?: AbortSignal) {
-        await this.write(path, PING, signal);
+    private async ping(path: PathInternal, signal?: AbortSignal) {
+        await this.write(path, PING, { signal });
         if (signal?.aborted) {
             throw new Error(ERRORS.ABORTED_BY_SIGNAL);
         }
@@ -208,12 +210,12 @@ export class UdpApi extends AbstractApi {
         }
     }
 
-    public openDevice(_path: string) {
+    public openDevice(...[_path]: AbstractApiArgs<'openDevice'>) {
         // todo: maybe ping?
         return Promise.resolve(success(undefined));
     }
 
-    public closeDevice(path: string) {
+    public closeDevice(...[path]: AbstractApiArgs<'closeDevice'>) {
         this.readBuffer.cancelRead(path);
 
         return Promise.resolve(success(undefined));
