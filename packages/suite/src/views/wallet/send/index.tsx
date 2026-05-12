@@ -62,22 +62,34 @@ interface SendLoadedProps extends SendProps {
 // children are only for test purposes, this prop is not available in regular build
 const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const accountKey = selectedAccount.account.key;
 
-    const props = useSelector(state => ({
-        localCurrency: state.wallet.settings.localCurrency,
-        fees: state.wallet.fees,
-        online: state.suite.online,
-        sendRaw: state.wallet.send.sendRaw,
-        metadataEnabled:
-            (state.metadata.enabled && !!state.metadata.providers[0]) || isSuiteSyncEnabled,
-        targetAnonymity: selectTargetAnonymityByAccountKey(state, selectedAccount.account.key),
-        prison: selectRegisteredUtxosByAccountKey(state, selectedAccount.account.key),
-    }));
+    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const fees = useSelector(state => state.wallet.fees);
+    const online = useSelector(state => state.suite.online);
+    const sendRaw = useSelector(state => state.wallet.send.sendRaw);
+    const isMetadataProviderConnected = useSelector(
+        state => state.metadata.enabled && !!state.metadata.providers[0],
+    );
+    const metadataEnabled = isMetadataProviderConnected || isSuiteSyncEnabled;
+    const targetAnonymity = useSelector(state =>
+        selectTargetAnonymityByAccountKey(state, accountKey),
+    );
+    const prison = useSelector(state => selectRegisteredUtxosByAccountKey(state, accountKey));
 
-    const sendContextValues = useSendForm({ ...props, selectedAccount });
+    const sendContextValues = useSendForm({
+        selectedAccount,
+        localCurrency,
+        fees,
+        online,
+        sendRaw,
+        metadataEnabled,
+        targetAnonymity,
+        prison,
+    });
 
     const { symbol } = selectedAccount.account;
-    if (props.sendRaw) {
+    if (sendRaw) {
         return (
             <WalletLayout title="TR_NAV_SEND" isSubpage account={selectedAccount}>
                 <SendRaw account={selectedAccount.account} />
