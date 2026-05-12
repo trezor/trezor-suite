@@ -4,8 +4,10 @@ import { FormProvider } from 'react-hook-form';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { selectIsMetadataProviderConnected } from '@suite/metadata';
 import { selectRouteName } from '@suite/router';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { selectBaseCurrency, selectFees, selectSendRaw } from '@suite-common/wallet-core';
 import { Banner, Column } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';
@@ -18,6 +20,8 @@ import {
     selectRegisteredUtxosByAccountKey,
     selectTargetAnonymityByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
+import { selectFullSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectIsSuiteOnline } from 'src/selectors/suite/suiteSelectors';
 
 import { Options } from './Options/Options';
 import { Outputs } from './Outputs/Outputs';
@@ -62,22 +66,32 @@ interface SendLoadedProps extends SendProps {
 // children are only for test purposes, this prop is not available in regular build
 const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const accountKey = selectedAccount.account.key;
 
-    const props = useSelector(state => ({
-        localCurrency: state.wallet.settings.localCurrency,
-        fees: state.wallet.fees,
-        online: state.suite.online,
-        sendRaw: state.wallet.send.sendRaw,
-        metadataEnabled:
-            (state.metadata.enabled && !!state.metadata.providers[0]) || isSuiteSyncEnabled,
-        targetAnonymity: selectTargetAnonymityByAccountKey(state, selectedAccount.account.key),
-        prison: selectRegisteredUtxosByAccountKey(state, selectedAccount.account.key),
-    }));
+    const localCurrency = useSelector(selectBaseCurrency);
+    const fees = useSelector(selectFees);
+    const online = useSelector(selectIsSuiteOnline);
+    const sendRaw = useSelector(selectSendRaw);
+    const isMetadataProviderConnected = useSelector(selectIsMetadataProviderConnected);
+    const metadataEnabled = isMetadataProviderConnected || isSuiteSyncEnabled;
+    const targetAnonymity = useSelector(state =>
+        selectTargetAnonymityByAccountKey(state, accountKey),
+    );
+    const prison = useSelector(state => selectRegisteredUtxosByAccountKey(state, accountKey));
 
-    const sendContextValues = useSendForm({ ...props, selectedAccount });
+    const sendContextValues = useSendForm({
+        selectedAccount,
+        localCurrency,
+        fees,
+        online,
+        sendRaw,
+        metadataEnabled,
+        targetAnonymity,
+        prison,
+    });
 
     const { symbol } = selectedAccount.account;
-    if (props.sendRaw) {
+    if (sendRaw) {
         return (
             <WalletLayout title="TR_NAV_SEND" isSubpage account={selectedAccount}>
                 <SendRaw account={selectedAccount.account} />
@@ -120,7 +134,7 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
 };
 
 const Send = ({ children }: SendProps) => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const selectedAccount = useSelector(selectFullSelectedAccount);
     const currentRoute = useSelector(selectRouteName);
 
     // alone selectedAccount.status is not enough, currently there is a race-condition that needs to be fixed in send form

@@ -17,6 +17,7 @@ export const selectSendSerializedTx = (state: SendRootState) => state.wallet.sen
 export const selectSendSignedTx = (state: SendRootState) => state.wallet.send.signedTx;
 export const selectSendFormDrafts = (state: SendRootState) => state.wallet.send.drafts;
 export const selectSendFormAccountKey = (state: SendRootState) => state.wallet.send.accountKey;
+export const selectSendRaw = (state: SendRootState) => state.wallet.send.sendRaw;
 export const selectPrecomposedSendForm = (state: SendRootState) =>
     state.wallet.send.precomposedForm;
 
