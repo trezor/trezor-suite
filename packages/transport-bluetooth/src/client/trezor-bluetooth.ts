@@ -139,24 +139,24 @@ export class TrezorBluetooth extends WebsocketClient<NotificationEvent> {
     send(method: 'close_device', params: CloseDeviceParams): Promise<Success>;
     send(method: 'read', params: ReadParams): Promise<{ data: number[] }>;
     send(method: 'write', params: WriteParams): Promise<Success>;
-    public send(method: string, params?: any) {
+    public send(method: string, params?: unknown) {
         if (method === 'connect_device') {
-            return this.connectDevice(params);
+            return this.connectDevice(params as ConnectDeviceParams);
         }
 
         if (method === 'write') {
-            return this.write(params);
+            return this.write(params as WriteParams);
         }
 
         if (method === 'open_device') {
-            this.writeBuffer[params.id] = {
+            this.writeBuffer[(params as { id: string }).id] = {
                 bytes: 0,
                 lastWrite: 0,
             };
         }
 
         if (method === 'close_device') {
-            delete this.writeBuffer[params.id];
+            delete this.writeBuffer[(params as { id: string }).id];
         }
 
         return this.sendMessage({ method, params });
