@@ -394,8 +394,10 @@ export const selectDeviceTradingTradesOrderedByDate: (
 export const selectDeviceHasTradingTrades = (state: TradingRootStateWithDeviceAndAccounts) =>
     selectDeviceTradingTrades(state).length > 0;
 
-export const selectTradingTradeByOrderId = (state: TradingRootState, orderId: string | undefined) =>
-    selectTradingTrades(state).find(t => orderId && t.data.orderId === orderId);
+export const selectTradingTradeByOrderId = createMemoizedSelector(
+    [selectTradingTrades, (_state: TradingRootState, orderId: string | undefined) => orderId],
+    (trades, orderId) => (orderId ? trades.find(t => t.data.orderId === orderId) : undefined),
+);
 
 export const selectTradingCoinInfoByCryptoId = (
     state: TradingRootState,

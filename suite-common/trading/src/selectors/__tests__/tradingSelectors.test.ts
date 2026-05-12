@@ -729,6 +729,28 @@ describe('tradingSelectors', () => {
         expect(selectTradingTradeByOrderId(state, 'unknown_order')).toBeUndefined();
     });
 
+    it('selectTradingTradeByOrderId should return undefined when orderId is undefined', () => {
+        expect(selectTradingTradeByOrderId(state, undefined)).toBeUndefined();
+    });
+
+    it('selectTradingTradeByOrderId should return the same reference across repeated calls with the same args', () => {
+        const first = selectTradingTradeByOrderId(state, 'orderId1');
+        const second = selectTradingTradeByOrderId(state, 'orderId1');
+
+        expect(first).toBe(second);
+    });
+
+    it('selectTradingTradeByOrderId should cache distinct orderId lookups independently', () => {
+        const trade1a = selectTradingTradeByOrderId(state, 'orderId1');
+        const trade2 = selectTradingTradeByOrderId(state, 'orderId2');
+        const trade1b = selectTradingTradeByOrderId(state, 'orderId1');
+
+        expect(trade1a).toBe(trade1b);
+        expect(trade1a).not.toBe(trade2);
+        expect(trade1a?.data.orderId).toBe('orderId1');
+        expect(trade2?.data.orderId).toBe('orderId2');
+    });
+
     describe(selectTradingCoinInfoByCryptoId.name, () => {
         it('should return coin data', () => {
             expect(selectTradingCoinInfoByCryptoId(state, 'bitcoin' as CryptoId)).toEqual({
