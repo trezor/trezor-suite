@@ -5,7 +5,7 @@ import { type AccountItem, isIgnoredBalanceHistoryCoin } from '@suite-common/gra
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
-    selectFilterKnownTokens,
+    isTokenDefinitionKnown,
 } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -20,24 +20,29 @@ type GraphCommonRootState = DeviceRootState & AccountsRootState & TokenDefinitio
 
 export const createMemoizedSelector = createWeakMapSelector.withTypes<GraphCommonRootState>();
 
-export const selectPortfolioGraphAccountItems = (state: GraphCommonRootState): AccountItem[] => {
-    const accounts = selectDeviceMainnetAccounts(state);
+export const selectPortfolioGraphAccountItems = createMemoizedSelector(
+    [selectDeviceMainnetAccounts, (state: GraphCommonRootState) => state.tokenDefinitions],
+    (accounts, tokenDefinitions): AccountItem[] =>
+        accounts.map(account => {
+            let tokensFilter: TokenAddress[] | undefined;
+            if (account.tokens) {
+                const coinDefinitions = tokenDefinitions?.[account.symbol]?.coin?.data;
+                tokensFilter = account.tokens
+                    .filter(token =>
+                        isTokenDefinitionKnown(coinDefinitions, account.symbol, token.contract),
+                    )
+                    .map(token => token.contract as TokenAddress);
+            }
 
-    return accounts.map(account => {
-        const knownTokens = account.tokens
-            ? selectFilterKnownTokens(state, account.symbol, account.tokens)
-            : undefined;
-        const tokensFilter = knownTokens?.map(token => token.contract as TokenAddress);
-
-        return {
-            symbol: account.symbol,
-            descriptor: account.descriptor,
-            identity: tryGetAccountIdentity(account),
-            accountKey: account.key,
-            tokensFilter,
-        };
-    });
-};
+            return {
+                symbol: account.symbol,
+                descriptor: account.descriptor,
+                identity: tryGetAccountIdentity(account),
+                accountKey: account.key,
+                tokensFilter,
+            };
+        }),
+);
 
 export const selectHasDeviceHistoryEnabledAccounts = createMemoizedSelector(
     [selectDeviceMainnetAccounts],

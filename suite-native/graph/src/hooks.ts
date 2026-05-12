@@ -12,7 +12,6 @@ import {
     useGetTimeFrameForHistoryHours,
     useGraphForAccounts,
 } from '@suite-common/graph';
-import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -157,8 +156,7 @@ export const useGraphForSingleAccount = ({
 
 export const useGraphForAllDeviceAccounts = ({ baseCurrencyCode }: CommonUseGraphParams) => {
     const dispatch = useDispatch();
-    // if we memoize selectPortfolioGraphAccountItems, it will randomly break so we need to use deep comparison instead to prevent unnecessary rerenders
-    const accountItems = useSelectorDeepComparison(selectPortfolioGraphAccountItems);
+    const accountItems = useSelector(selectPortfolioGraphAccountItems);
     const portfolioGraphTimeframe = useSelector(selectPortfolioGraphTimeframe);
     const isElectrumBackend = useSelector((state: BlockchainRootState) =>
         selectIsElectrumBackendSelected(state, 'btc'),
