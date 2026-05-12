@@ -10,11 +10,8 @@ import {
 } from '@suite-common/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import {
-    asAmountSubunit,
-    getStakingLimitsByNetworkSymbol,
-    subunitsToUnits,
-} from '@suite-common/wallet-utils';
+import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
+import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { AccountDetailsCard } from '@suite-native/accounts';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { Box, Button, FullAlertBox, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
@@ -31,7 +28,7 @@ import {
     selectCanClaimByAccountKey,
     selectClaimableAmountByAccountKey,
 } from '@suite-native/staking';
-import { FeeSelector } from '@suite-native/transaction-management';
+import { FeeSelector, selectFeeLevels } from '@suite-native/transaction-management';
 import { BigNumber } from '@trezor/utils';
 
 import { useComposeEarnFees } from '../hooks/useComposeEarnFees';
@@ -56,12 +53,10 @@ export const ClaimReviewScreen = () => {
             selectAccountByKey(state, accountKey)?.availableBalance ?? '0',
     );
 
-    const feeBuffer = getStakingLimitsByNetworkSymbol(symbol)?.MIN_BALANCE_FOR_FEE_BUFFER;
     const availableBalanceInUnits = subunitsToUnits({
         value: asAmountSubunit(new BigNumber(availableBalance)),
         symbol,
     });
-    const isInsufficientFeeBalance = !!feeBuffer && availableBalanceInUnits.lt(feeBuffer);
     const formattedAvailableBalance = `${availableBalanceInUnits.toString()} ${displaySymbol}`;
 
     const claimFormState = useMemo(
@@ -80,7 +75,17 @@ export const ClaimReviewScreen = () => {
         formDraftPrefix: 'claim',
     });
 
+    const feeLevels = useSelector(selectFeeLevels);
+    const selectedFeeTransaction = feeLevels[formDraft?.selectedFee ?? 'normal'];
+    const transactionFee = isFinalPrecomposedTransaction(selectedFeeTransaction)
+        ? selectedFeeTransaction.fee
+        : undefined;
+    const isInsufficientFeeBalance =
+        selectedFeeTransaction?.type === 'error' ||
+        (transactionFee !== undefined && new BigNumber(availableBalance).lt(transactionFee));
+
     const { analytics } = useServices<NativeAnalyticsDep>();
+
     const registerNavigateBackAnalytics = useNavigateBackAnalytics({
         type: events.stakingClaimEvent.name,
         payload: {
