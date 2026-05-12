@@ -1,9 +1,7 @@
-import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     cancelDiscoveryThunk,
@@ -11,37 +9,36 @@ import {
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import {
-    type AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
+    type PassphraseStackParamList,
+    PassphraseStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
+import { useAnalytics } from '@suite-native/services';
 
 import { selectHasPassphraseMismatchError } from '../passphraseSelectors';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes.PassphraseForm,
+    PassphraseStackParamList,
+    PassphraseStackRoutes.PassphraseForm,
     RootStackParamList
 >;
 
-export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNode }) => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+export const usePassphraseMismatchAlert = () => {
+    const { showAlert } = useAlert();
+    const analytics = useAnalytics();
     const navigation = useNavigation<NavigationProp>();
+    const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
     const navigateToInitialScreen = useNavigateToInitialScreen();
-
-    const { showAlert } = useAlert();
-
     const hasPassphraseMismatchError = useSelector(selectHasPassphraseMismatchError);
 
-    useEffect(() => {
+    const onPassphraseMismatchAlert = () => {
         // Wrong passphrase was entered during verifying empty wallet
         if (hasPassphraseMismatchError) {
             analytics.report({ type: events.passphraseMismatchEvent.name });
@@ -55,8 +52,6 @@ export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNo
                 primaryButtonTitle: (
                     <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.passphraseMismatchAlert.primaryButton" />
                 ),
-                // TODO this needs to be done based on the location where it's used
-                // In passphrase creation it cannot navigate to AuthorizeDeviceStack so the onPress handlers need to be passed as props.
                 onPressPrimaryButton: () => {
                     if (!device) return;
 
@@ -69,8 +64,8 @@ export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNo
                         }),
                     );
                     dispatch(runDiscoveryThunk({ device }));
-                    navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-                        screen: AuthorizeDeviceStackRoutes.PassphraseForm,
+                    navigation.navigate(RootStackRoutes.PassphraseStack, {
+                        screen: PassphraseStackRoutes.PassphraseForm,
                     });
                 },
                 primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
@@ -84,22 +79,14 @@ export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNo
 
                     analytics.report({
                         type: events.passphraseExitEvent.name,
-                        payload: { screen: AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor },
+                        payload: { screen: PassphraseStackRoutes.PassphraseConfirmOnTrezor },
                     });
                 },
                 secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
                 pictogramVariant: 'critical',
             });
         }
-    }, [
-        device,
-        dispatch,
-        hasPassphraseMismatchError,
-        analytics,
-        navigateToInitialScreen,
-        navigation,
-        showAlert,
-    ]);
+    };
 
-    return children ?? null;
+    return { onPassphraseMismatchAlert };
 };

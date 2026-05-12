@@ -3,8 +3,6 @@ import { ConfirmOnTrezorAnimation } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { PassphraseMismatchAlert } from './PassphraseMismatchAlert';
-
 const buttonWrapperStyle = prepareNativeStyle(_ => ({
     width: '100%',
 }));
@@ -23,28 +21,23 @@ export const PassphraseEnterOnTrezorScreenContent = ({
     const { applyStyle } = useNativeStyles();
 
     return (
-        <>
-            <Card style={applyStyle(cardStyle)}>
-                <VStack spacing={28}>
-                    <VStack justifyContent="center" alignItems="center" spacing="sp24">
-                        <ConfirmOnTrezorAnimation />
-                        <CenteredTitleHeader
-                            title={
-                                <Translation id="modulePassphrase.enterPassphraseOnTrezor.title" />
-                            }
-                            subtitle={
-                                <Translation id="modulePassphrase.enterPassphraseOnTrezor.subtitle" />
-                            }
-                        />
-                    </VStack>
-                    <Box style={applyStyle(buttonWrapperStyle)}>
-                        <Button onPress={onCancel} intent="critical" priority="secondary">
-                            <Translation id="generic.buttons.cancel" />
-                        </Button>
-                    </Box>
+        <Card style={applyStyle(cardStyle)}>
+            <VStack spacing={28}>
+                <VStack justifyContent="center" alignItems="center" spacing="sp24">
+                    <ConfirmOnTrezorAnimation />
+                    <CenteredTitleHeader
+                        title={<Translation id="modulePassphrase.enterPassphraseOnTrezor.title" />}
+                        subtitle={
+                            <Translation id="modulePassphrase.enterPassphraseOnTrezor.subtitle" />
+                        }
+                    />
                 </VStack>
-            </Card>
-            <PassphraseMismatchAlert />
-        </>
+                <Box style={applyStyle(buttonWrapperStyle)}>
+                    <Button onPress={onCancel} intent="critical" priority="secondary">
+                        <Translation id="generic.buttons.cancel" />
+                    </Button>
+                </Box>
+            </VStack>
+        </Card>
     );
 };

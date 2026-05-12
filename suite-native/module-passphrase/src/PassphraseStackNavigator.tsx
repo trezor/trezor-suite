@@ -15,7 +15,6 @@ import {
     PassphraseDuplicateAlert,
     PassphraseFlowDoneRedirect,
     PassphraseFlowFailedRedirect,
-    PassphraseMismatchAlert,
 } from '@suite-native/passphrase';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -25,6 +24,7 @@ import { PassphraseEnterOnTrezorScreen } from './screens/PassphraseEnterOnTrezor
 import { PassphraseFormScreen } from './screens/PassphraseFormScreen';
 import { PassphraseLoadingScreen } from './screens/PassphraseLoadingScreen';
 import { PassphraseVerifyEmptyWalletScreen } from './screens/PassphraseVerifyEmptyWalletScreen';
+import { PassphraseMismatchAlertScreen } from './screens/usePassphraseMismatchAlert';
 
 const PassphraseStack = createNativeStackNavigator<PassphraseStackParamList>();
 
@@ -84,13 +84,7 @@ const renderPassphraseStackScreens = (passphraseState: DiscoveryStatus['status']
             return (
                 <PassphraseStack.Screen
                     name={PassphraseStackRoutes.PassphraseMismatchAlert}
-                    component={function PassphraseMismatchAlertScreen() {
-                        return (
-                            <PassphraseMismatchAlert>
-                                <PassphraseLoadingScreen />
-                            </PassphraseMismatchAlert>
-                        );
-                    }}
+                    component={PassphraseMismatchAlertScreen}
                 />
             );
 
