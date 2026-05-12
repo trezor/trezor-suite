@@ -30,6 +30,7 @@ import { MessageSystemDebug } from './MessageSystem/MessageSystemDebug';
 import { Metadata } from './Metadata';
 import { N4w1Backup } from './N4w1Backup';
 import { OAuthApi } from './OAuthApi';
+import { PingDevice } from './PingDevice';
 import { PlatformEncrypton } from './PlatformEncrypton';
 import { PreField } from './PreField';
 import { QuotaManagerSettings } from './QuotaManagerSettings';
@@ -93,6 +94,7 @@ export const SettingsDebug = () => {
                 <CheckFirmwareAuthenticity />
                 <ClearDevicePersistentData />
                 <N4w1Backup />
+                <PingDevice />
             </SettingsSection>
             <SettingsSection isBelowLaptop={isBelowLaptop} title="Testing">
                 <ThrowTestingError />
