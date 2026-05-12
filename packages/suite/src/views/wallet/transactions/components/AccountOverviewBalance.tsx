@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
-import { selectBaseCurrency } from '@suite-common/wallet-core';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectAccountIsStakingActive, selectBaseCurrency } from '@suite-common/wallet-core';
 import { isTestnet } from '@suite-common/wallet-utils';
 import {
     Column,
@@ -51,6 +51,11 @@ type AccountOverviewBalanceProps = {
 
 export const AccountOverviewBalance = ({ selectedAccount }: AccountOverviewBalanceProps) => {
     const baseCurrency = useSelector(selectBaseCurrency);
+    const hasStaking = useSelector(state =>
+        selectedAccount.account
+            ? selectAccountIsStakingActive(state, selectedAccount.account.key)
+            : false,
+    );
     const { balanceSectionRef } = useAccountHeaderContext();
 
     const { account, loader, status } = selectedAccount;
@@ -71,9 +76,7 @@ export const AccountOverviewBalance = ({ selectedAccount }: AccountOverviewBalan
     const { symbol, formattedBalance } = account;
     const shouldDisplayBaseCurrency = baseCurrency !== symbol;
     const isMainnet = !isTestnet(symbol);
-    const features = getNetworkFeatures(symbol);
-    const hasTokens = features.includes('tokens');
-    const hasStaking = features.includes('staking');
+    const hasTokens = !!account.tokens?.length;
     const balanceExcludesTranslationId = getBalanceExcludesTranslationId(hasTokens, hasStaking);
 
     return (

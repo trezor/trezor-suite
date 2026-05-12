@@ -32,7 +32,7 @@ export interface CommonAggregatedHistory {
 
 export type GraphRange =
     | {
-          label: 'day' | 'week' | 'month' | 'year';
+          label: 'day' | 'week' | 'month' | 'year' | 'range';
           startDate: Date;
           endDate: Date;
           groupBy: 'month' | 'day';

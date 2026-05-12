@@ -1220,7 +1220,7 @@
   "TR_PRIVATE": "Приватный",
   "TR_PRIVATE_DESCRIPTION": "Анонимность не менее {targetAnonymity}",
   "TR_RANDOM_SEED_WORDS_DISCLAIMER": "Trezor может попросить Вас ввести некоторые слова, которые не являются частью Вашей резервной копии.",
-  "TR_RANGE": "диапазон",
+  "TR_RANGE": "Диапазон",
   "TR_READ_AND_UNDERSTOOD": "Я прочитал и понял вышеизложенное",
   "TR_REBOOT_INTO_BOOTLOADER": "Перезагрузите Ваш Trezor в режим загрузки",
   "TR_RECEIVE": "Получить",
