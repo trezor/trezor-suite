@@ -1,5 +1,3 @@
-import { type UseFormSetValue } from 'react-hook-form';
-
 import { toChecksumAddress } from 'web3-utils';
 
 import { type AccountInfo } from '@trezor/blockchain-link-types';
@@ -45,14 +43,13 @@ export const isHexValid = (value: string, prefix?: string) => {
 export const checkIsAddressNotUsedNotChecksummed = (
     address: string,
     history: AccountInfo['history'],
-    inputName: string,
-    setValue: UseFormSetValue<any>,
+    setChecksummedAddress: (value: string) => void,
     setHasAddressChecksummed: (value: boolean) => void,
 ) => {
     const hasHistory = history.total !== 0;
 
     if (hasHistory) {
-        setValue(inputName, toChecksumAddress(address), { shouldValidate: true });
+        setChecksummedAddress(toChecksumAddress(address));
         setHasAddressChecksummed(true);
 
         return false;
