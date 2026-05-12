@@ -614,6 +614,8 @@ const createDeviceAwareMemoizedSelector = createWeakMapSelector.withTypes<
     CoinjoinRootState & DeviceRootState
 >();
 
+const TAPROOT_TX_SIZE = getInputSize('Taproot') + getOutputSize('Taproot');
+
 export const selectCoinjoinAccounts = (state: CoinjoinRootState) => state.wallet.coinjoin.accounts;
 
 export const selectCoinjoinClients = (state: CoinjoinRootState) => state.wallet.coinjoin.clients;
@@ -785,15 +787,15 @@ export const selectDefaultMaxMiningFeeByAccountKey = (
     return maxMiningFeeConfig ?? getMaxFeePerVbyte(feeRateMedian, maxMiningFeeModifier);
 };
 
-export const selectMinAllowedInputWithFee = (state: CoinjoinRootState, accountKey: AccountKey) => {
-    const coinjoinClient = selectCoinjoinClient(state, accountKey);
-    const status = coinjoinClient || CLIENT_STATUS_FALLBACK;
-    const minAllowedInput = status.allowedInputAmounts.min;
-    const txSize = getInputSize('Taproot') + getOutputSize('Taproot');
+export const selectMinAllowedInputWithFee = createMemoizedSelector(
+    [selectCoinjoinClient],
+    coinjoinClient => {
+        const status = coinjoinClient || CLIENT_STATUS_FALLBACK;
 
-    // Add estimated fee based on weekly median fee rate.
-    return minAllowedInput + txSize * status.feeRateMedian;
-};
+        // Add estimated fee based on weekly median fee rate.
+        return status.allowedInputAmounts.min + TAPROOT_TX_SIZE * status.feeRateMedian;
+    },
+);
 
 export const selectIsNothingToAnonymizeByAccountKey = createMemoizedSelector(
     [

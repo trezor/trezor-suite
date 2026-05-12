@@ -10,6 +10,7 @@ import {
     initialState,
     selectCoinjoinAccountByKey,
     selectCoinjoinClient,
+    selectMinAllowedInputWithFee,
     selectRegisteredUtxosByAccountKey,
 } from '../coinjoinReducer';
 
@@ -156,5 +157,59 @@ describe('selectCoinjoinClient', () => {
         expect(b1).toBe(btcClient);
         expect(a2).toBe(a1);
         expect(b2).toBe(b1);
+    });
+});
+
+describe('selectMinAllowedInputWithFee', () => {
+    const accountA = { key: 'A' as AccountKey, symbol: 'btc' };
+    const btcClient = {
+        feeRateMedian: 5,
+        allowedInputAmounts: { min: 5000, max: 1_000_000 },
+    };
+
+    const buildState = (accounts: unknown[], clients: Record<string, unknown> = {}) =>
+        ({
+            wallet: {
+                coinjoin: { ...initialState, accounts, clients },
+            },
+        }) as unknown as CoinjoinRootState;
+
+    it('computes minAllowedInput + taprootTxSize * feeRateMedian for a registered client', () => {
+        // TAPROOT_TX_SIZE = getInputSize('Taproot') + getOutputSize('Taproot') = 58 + 43 = 101
+        // 5000 + 101 * 5 = 5505
+        const state = buildState([accountA], { btc: btcClient });
+
+        expect(selectMinAllowedInputWithFee(state, 'A' as AccountKey)).toBe(5505);
+    });
+
+    it('falls back to CLIENT_STATUS_FALLBACK when no client is registered for the account', () => {
+        const state = buildState([accountA], {});
+
+        const result = selectMinAllowedInputWithFee(state, 'A' as AccountKey);
+        expect(typeof result).toBe('number');
+        expect(Number.isFinite(result)).toBe(true);
+    });
+
+    it('returns the same number across repeated calls with the same args', () => {
+        const state = buildState([accountA], { btc: btcClient });
+
+        const first = selectMinAllowedInputWithFee(state, 'A' as AccountKey);
+        const second = selectMinAllowedInputWithFee(state, 'A' as AccountKey);
+
+        expect(second).toBe(first);
+    });
+
+    it('returns a different number when client feeRateMedian changes', () => {
+        const stateBefore = buildState([accountA], { btc: btcClient });
+        const stateAfter = buildState([accountA], {
+            btc: { ...btcClient, feeRateMedian: 10 },
+        });
+
+        const before = selectMinAllowedInputWithFee(stateBefore, 'A' as AccountKey);
+        const after = selectMinAllowedInputWithFee(stateAfter, 'A' as AccountKey);
+
+        expect(before).toBe(5505);
+        // 5000 + 101 * 10 = 6010
+        expect(after).toBe(6010);
     });
 });
