@@ -1,16 +1,19 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountKey,
+    type FormStateTradingCryptoCurrency,
+    type FormStateTradingFiatCurrency,
     type ReviewOutputType,
     type TokenAddress,
+    type TokenSymbol,
 } from '@suite-common/wallet-types';
-import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
+import { convertAmountSubunitsToUnits, isMaxAllowance } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { AddressFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { type ExchangeFlowType } from '@suite-native/navigation';
 import type { TokenInfo } from '@trezor/connect';
 
+import { ReviewOutputHexData } from './ReviewOutputHexData';
 import { ReviewOutputItemValues } from './ReviewOutputItemValues';
 
 export type ReviewOutputItemContentProps = {
@@ -21,6 +24,8 @@ export type ReviewOutputItemContentProps = {
     token?: TokenInfo;
     tokenContract?: TokenAddress;
     flowType?: ExchangeFlowType;
+    send?: FormStateTradingCryptoCurrency;
+    receive?: FormStateTradingCryptoCurrency | FormStateTradingFiatCurrency;
 };
 
 export const ReviewOutputItemContent = ({
@@ -31,6 +36,8 @@ export const ReviewOutputItemContent = ({
     token,
     tokenContract,
     flowType,
+    send,
+    receive,
 }: ReviewOutputItemContentProps) => {
     switch (outputType) {
         case 'amount':
@@ -54,7 +61,7 @@ export const ReviewOutputItemContent = ({
 
         case 'address':
         case 'regular_legacy':
-            if (flowType === 'approve') {
+            if (flowType === 'approve' || flowType === 'swap') {
                 return (
                     <Text variant="body-sm">
                         <Translation id="transactionManagement.review.outputs.tokenApprovalDescription" />
@@ -99,63 +106,126 @@ export const ReviewOutputItemContent = ({
                 </Text>
             );
 
-        case 'approve_data':
-            if (flowType === 'approve' && token) {
+        case 'approve_data': {
+            const isApproveDataExchangeFlow =
+                flowType === 'approve' ||
+                flowType === 'revoke' ||
+                flowType === 'revoke-and-approve';
+
+            const isApprovalTx = flowType === 'approve';
+            const isMaxApproval = isMaxAllowance(value);
+
+            const getPrimaryValue = () => {
+                if (!isApprovalTx && token?.symbol) {
+                    return <Text variant="body-sm">{token.symbol}</Text>;
+                }
+
+                if (!isApprovalTx) {
+                    return (
+                        <Text variant="body-sm">
+                            {isMaxApproval ? (
+                                <Translation id="transactionManagement.review.outputs.approveMaxAmount" />
+                            ) : (
+                                value
+                            )}
+                        </Text>
+                    );
+                }
+
+                if (isMaxApproval) {
+                    return (
+                        <Text variant="body-sm">
+                            <Translation id="transactionManagement.review.outputs.approveMaxAmount" />
+                        </Text>
+                    );
+                }
+
+                if (!token) {
+                    return <Text variant="body-sm">{value}</Text>;
+                }
+
                 return (
-                    <VStack>
-                        <HStack justifyContent="space-between">
-                            <Text variant="body-sm">
-                                <Translation id="transactionManagement.review.outputs.amountAllowanceLabel" />
-                            </Text>
-                            <Box flexShrink={1} alignItems="flex-end">
-                                <CryptoAmountFormatter
-                                    variant="body-sm"
-                                    color="contentPrimary"
-                                    textAlign="right"
-                                    value={convertAmountSubunitsToUnits(value, token.decimals)}
-                                    symbol={token.symbol as NetworkSymbol}
-                                    decimals={token.decimals}
-                                    isDiscreetText={false}
-                                />
-                            </Box>
-                        </HStack>
-                        {!!value2 && (
-                            <HStack justifyContent="space-between">
-                                <Text variant="body-sm">
-                                    <Translation id="transactionManagement.review.outputs.chainLabel" />
-                                </Text>
-                                <Text variant="body-sm">{value2}</Text>
-                            </HStack>
-                        )}
-                    </VStack>
+                    <CryptoAmountFormatter
+                        variant="body-sm"
+                        color="contentPrimary"
+                        textAlign="right"
+                        value={convertAmountSubunitsToUnits(value, token.decimals)}
+                        symbol={token.symbol as TokenSymbol}
+                        decimals={token.decimals}
+                        isDiscreetText={false}
+                    />
                 );
-            }
-            if ((flowType === 'revoke' || flowType === 'revoke-and-approve') && token) {
-                return (
-                    <VStack>
-                        <HStack justifyContent="space-between">
-                            <Text variant="body-sm">
-                                <Translation id="transactionManagement.review.outputs.tokenLabel" />
-                            </Text>
-                            <Text variant="body-sm">{token.symbol}</Text>
-                        </HStack>
-                        {!!value2 && (
-                            <HStack justifyContent="space-between">
-                                <Text variant="body-sm">
-                                    <Translation id="transactionManagement.review.outputs.chainLabel" />
-                                </Text>
-                                <Text variant="body-sm">{value2}</Text>
-                            </HStack>
-                        )}
-                    </VStack>
+            };
+
+            if (!isApproveDataExchangeFlow) {
+                console.warn(
+                    `ReviewOutputItemContent: Unsupported output type "${outputType}" with value "${value}".`,
                 );
+
+                return null;
             }
 
-            console.warn(
-                `ReviewOutputItemContent: Unsupported output type "${outputType}" with value "${value}".`,
+            return (
+                <VStack>
+                    <HStack justifyContent="space-between">
+                        <Text variant="body-sm">
+                            <Translation
+                                id={
+                                    isApprovalTx
+                                        ? 'transactionManagement.review.outputs.amountAllowanceLabel'
+                                        : 'transactionManagement.review.outputs.tokenLabel'
+                                }
+                            />
+                        </Text>
+                        <Box flexShrink={1} alignItems="flex-end">
+                            {getPrimaryValue()}
+                        </Box>
+                    </HStack>
+                    {!!value2 && (
+                        <HStack justifyContent="space-between">
+                            <Text variant="body-sm">
+                                <Translation id="transactionManagement.review.outputs.chainLabel" />
+                            </Text>
+                            <Text variant="body-sm">{value2}</Text>
+                        </HStack>
+                    )}
+                </VStack>
+            );
+        }
+
+        case 'data':
+            return <ReviewOutputHexData value={value} />;
+
+        case 'recipient_name':
+            return (
+                <Text variant="body-sm" selectable>
+                    {value}
+                </Text>
             );
 
-            return null;
+        case 'traded_assets': {
+            if (!send || !receive) {
+                return null;
+            }
+
+            const receiveDisplay =
+                'fiatCurrency' in receive
+                    ? `${receive.amount} ${receive.fiatCurrency}`
+                    : `${receive.amount} ${receive.symbol}`;
+
+            return (
+                <VStack spacing="sp12">
+                    <Text variant="body-sm">
+                        <Translation id="transactionManagement.review.outputs.tradedAssetsSendLabel" />
+                        {` ${send.amount} ${send.symbol}`}
+                    </Text>
+                    <Text variant="body-sm">
+                        <Translation id="transactionManagement.review.outputs.tradedAssetsReceiveLabel" />
+                        {` ${receiveDisplay}`}
+                    </Text>
+                </VStack>
+            );
+        }
 
         case 'note':
             return <Text variant="body-sm">{value}</Text>;

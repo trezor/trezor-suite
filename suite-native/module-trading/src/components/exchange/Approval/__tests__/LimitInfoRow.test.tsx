@@ -1,3 +1,5 @@
+import type { CryptoId } from 'invity-api';
+
 import { Text } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider, userEvent } from '@suite-native/test-utils-store';
@@ -8,6 +10,8 @@ import { LimitInfoRow } from '../LimitInfoRow';
 type LimitInfoRowProps = React.ComponentProps<typeof LimitInfoRow>;
 
 describe('LimitInfoRow', () => {
+    const cryptoIdWithoutCoinInfo = 'ethereum--0xWithoutObjectInCoinsInfo' as CryptoId;
+
     const defaultProps: LimitInfoRowProps = {
         onPress: jest.fn(),
     };
@@ -44,12 +48,28 @@ describe('LimitInfoRow', () => {
         expect(getByText('100 USDC')).toBeOnTheScreen();
     });
 
-    it('should render unlimited label when approval type is INFINITE', () => {
+    it('should render unlimited label and coin symbol when approval type is INFINITE', () => {
+        const unlimitedText = getTranslation(
+            'moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel',
+        );
+
         const { getByText } = renderLimitInfoRow({}, { approvalType: 'INFINITE' });
 
-        expect(
-            getByText(getTranslation('moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel')),
-        ).toBeOnTheScreen();
+        expect(getByText(new RegExp(`${unlimitedText}\\s*USDC`))).toBeOnTheScreen();
+    });
+
+    it('should render unlimited label without coin symbol when approval type is INFINITE and coin is missing in trading info', () => {
+        const unlimitedText = getTranslation(
+            'moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel',
+        );
+
+        const { getByText, queryByText } = renderLimitInfoRow(
+            {},
+            { approvalType: 'INFINITE', send: cryptoIdWithoutCoinInfo },
+        );
+
+        expect(queryByText('USDC')).toBeNull();
+        expect(getByText(new RegExp(`^${unlimitedText}\\s*$`))).toBeOnTheScreen();
     });
 
     it('should render children', () => {

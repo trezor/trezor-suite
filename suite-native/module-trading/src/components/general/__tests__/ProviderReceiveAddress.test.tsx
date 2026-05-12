@@ -3,6 +3,7 @@ import React from 'react';
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { type AccountKey } from '@suite-common/wallet-types';
+import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     banxaCreditCardSellQuote,
@@ -13,6 +14,16 @@ import {
 } from '@suite-native/trading-fixtures';
 
 import { ProviderReceiveAddress } from '../ProviderReceiveAddress';
+
+const receiveAddressLabel = (providerName: string) =>
+    getTranslation('moduleTrading.tradingExchangePreviewScreen.providerReceiveAddressLabel', {
+        providerName,
+    });
+
+const contractAddressLabel = (providerName: string) =>
+    getTranslation('moduleTrading.tradingExchangePreviewScreen.providerContractAddressLabel', {
+        providerName,
+    });
 
 describe('ProviderReceiveAddress', () => {
     // Use real fixtures for more realistic test data
@@ -60,47 +71,59 @@ describe('ProviderReceiveAddress', () => {
     it('should display provider name and receive address for exchange trade', () => {
         const { getByText } = renderProviderReceiveAddress(mockExchangeTrade, 'exchange');
 
-        // User should see the provider name in the label
-        expect(getByText("Mercuryo's receive address")).toBeTruthy();
-        // User should see the address split into readable chunks
-        expect(getByText('1A1z P1eP 5QGe fi2D MPTf TL5S Lmv7 Divf Na')).toBeTruthy();
+        expect(getByText(receiveAddressLabel('Mercuryo'))).toBeOnTheScreen();
+        expect(getByText('1A1z P1eP 5QGe fi2D MPTf TL5S Lmv7 Divf Na')).toBeOnTheScreen();
     });
 
     it('should display provider name and destination address for sell fiat trade', () => {
         const { getByText } = renderProviderReceiveAddress(mockSellFiatTrade, 'sell');
 
-        // User should see the provider name in the label
-        expect(getByText("Banxa's receive address")).toBeTruthy();
-        // User should see the address split into readable chunks
-        expect(getByText('1BvB MSEY stWe tqTF n5Au 4m4G Fg7x JaNV N2')).toBeTruthy();
+        expect(getByText(receiveAddressLabel('Banxa'))).toBeOnTheScreen();
+        expect(getByText('1BvB MSEY stWe tqTF n5Au 4m4G Fg7x JaNV N2')).toBeOnTheScreen();
     });
 
-    it('should show fallback text when provider info is not available', () => {
+    it('should display placeholder provider label and address when exchange provider info is missing', () => {
         const walletState = getWalletState({ tradeType: 'exchange' });
-        // Don't set provider info to simulate missing provider
         walletState.trading.exchange.exchangeInfo!.providerInfos = {};
+        walletState.trading.exchange.tradingAccountKey = 'btc-account-1' as AccountKey;
 
-        const { queryByText } = renderWithStoreProvider(
+        const placeholder = getTranslation(
+            'moduleTrading.tradingExchangePreviewScreen.providerNamePlaceholder',
+        );
+
+        const { getByText } = renderWithStoreProvider(
             <ProviderReceiveAddress trade={mockExchangeTrade} />,
             { preloadedState: { wallet: walletState } },
         );
 
-        // Component should not render when provider info is missing
-        expect(queryByText("Provider's receive address")).toBeFalsy();
+        expect(getByText(receiveAddressLabel(placeholder))).toBeOnTheScreen();
+        expect(getByText('1A1z P1eP 5QGe fi2D MPTf TL5S Lmv7 Divf Na')).toBeOnTheScreen();
     });
 
-    it('should show fallback text when provider company name is not available', () => {
-        const walletState = getWalletState({ tradeType: 'exchange' });
-        // Don't set provider info to simulate missing provider
-        walletState.trading.exchange.exchangeInfo!.providerInfos = {};
+    it('should display placeholder provider label and destination address when sell provider info is missing', () => {
+        const walletState = getWalletState({ tradeType: 'sell' });
+        walletState.trading.sell.sellInfo!.providerInfos = {};
+        walletState.trading.sell.tradingAccountKey = 'btc-account-1' as AccountKey;
 
-        const { queryByText } = renderWithStoreProvider(
-            <ProviderReceiveAddress trade={mockExchangeTrade} />,
+        const placeholder = getTranslation(
+            'moduleTrading.tradingExchangePreviewScreen.providerNamePlaceholder',
+        );
+
+        const { getByText } = renderWithStoreProvider(
+            <ProviderReceiveAddress trade={mockSellFiatTrade} />,
             { preloadedState: { wallet: walletState } },
         );
 
-        // Component should not render when company name is missing
-        expect(queryByText("Provider's receive address")).toBeFalsy();
+        expect(getByText(receiveAddressLabel(placeholder))).toBeOnTheScreen();
+        expect(getByText('1BvB MSEY stWe tqTF n5Au 4m4G Fg7x JaNV N2')).toBeOnTheScreen();
+    });
+
+    it('should display contract address label for DEX exchange trade', () => {
+        const dexTrade: ExchangeTrade = { ...mockExchangeTrade, isDex: true };
+        const { getByText } = renderProviderReceiveAddress(dexTrade, 'exchange');
+
+        expect(getByText(contractAddressLabel('Mercuryo'))).toBeOnTheScreen();
+        expect(getByText('1A1z P1eP 5QGe fi2D MPTf TL5S Lmv7 Divf Na')).toBeOnTheScreen();
     });
 
     it('should not render anything when receive address is missing for exchange trade', () => {
@@ -109,7 +132,7 @@ describe('ProviderReceiveAddress', () => {
         const { queryByText } = renderProviderReceiveAddress(tradeWithoutAddress, 'exchange');
 
         // User should not see any address information when address is missing
-        expect(queryByText("Mercuryo's receive address")).toBeFalsy();
+        expect(queryByText(receiveAddressLabel('Mercuryo'))).toBeNull();
     });
 
     it('should not render anything when destination address is missing for sell fiat trade', () => {
@@ -118,7 +141,7 @@ describe('ProviderReceiveAddress', () => {
         const { queryByText } = renderProviderReceiveAddress(tradeWithoutAddress, 'sell');
 
         // User should not see any address information when address is missing
-        expect(queryByText("Banxa's receive address")).toBeFalsy();
+        expect(queryByText(receiveAddressLabel('Banxa'))).toBeNull();
     });
 
     it('should display ethereum address with chunking for non-solana networks', () => {
@@ -151,6 +174,6 @@ describe('ProviderReceiveAddress', () => {
         );
 
         // Should not render anything when network symbol is undefined
-        expect(queryByText('1A1z P1eP 5QGe fi2D MPTf TL5S Lmv7 Divf Na')).toBeFalsy();
+        expect(queryByText('1A1z P1eP 5QGe fi2D MPTf TL5S Lmv7 Divf Na')).toBeNull();
     });
 });

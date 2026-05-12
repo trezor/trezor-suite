@@ -4,11 +4,13 @@ import {
     cryptoIdToNetworkAndContractAddress,
     selectTradingExchangeActiveQuote,
 } from '@suite-common/trading';
+import { isMaxAllowance } from '@suite-common/wallet-utils';
 import { HStack, Text } from '@suite-native/atoms';
 import { CryptoIcon, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { TradeInfoRow } from '@suite-native/trading-atoms';
 
+import { UnlimitedAllowanceLabel } from './UnlimitedAllowanceLabel';
 import { TradingCoinAmountFormatter } from '../../general/TradingCoinAmountFormatter';
 
 export const RevokeLimitInfoRow = () => {
@@ -20,6 +22,7 @@ export const RevokeLimitInfoRow = () => {
 
     const { send, preapprovedStringAmount } = quote;
     const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(send);
+    const isAllowanceUnlimited = isMaxAllowance(preapprovedStringAmount);
 
     return (
         <TradeInfoRow testID="ExchangeApproval/LimitRevoke">
@@ -34,12 +37,16 @@ export const RevokeLimitInfoRow = () => {
                         size="extraSmall"
                     />
                 )}
-                <TradingCoinAmountFormatter
-                    amount={preapprovedStringAmount}
-                    cryptoId={send}
-                    variant="body-sm-strong"
-                    color="contentPrimary"
-                />
+                {isAllowanceUnlimited ? (
+                    <UnlimitedAllowanceLabel cryptoId={send} />
+                ) : (
+                    <TradingCoinAmountFormatter
+                        amount={preapprovedStringAmount}
+                        cryptoId={send}
+                        variant="body-sm-strong"
+                        color="contentPrimary"
+                    />
+                )}
                 <Icon name="arrowRight" size="medium" color="contentSecondary" />
                 <TradingCoinAmountFormatter
                     amount="0"

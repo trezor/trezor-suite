@@ -45,16 +45,24 @@ export const ProviderReceiveAddress = ({ trade }: { trade: ExchangeTrade | SellF
         return null;
     }
 
+    const addressTitle =
+        tradeType === 'exchange' && (trade as ExchangeTrade).isDex ? (
+            <Translation
+                id="moduleTrading.tradingExchangePreviewScreen.providerContractAddressLabel"
+                values={{ providerName }}
+            />
+        ) : (
+            <Translation
+                id="moduleTrading.tradingExchangePreviewScreen.providerReceiveAddressLabel"
+                values={{ providerName }}
+            />
+        );
+
     return (
         <Animated.View entering={FadeIn}>
             <TradeInfoRow>
                 <VStack spacing="sp4">
-                    <Text variant="body-sm">
-                        <Translation
-                            id="moduleTrading.tradingExchangePreviewScreen.providerReceiveAddressLabel"
-                            values={{ providerName }}
-                        />
-                    </Text>
+                    <Text variant="body-sm">{addressTitle}</Text>
                     <AddressFormatter
                         value={receiveAddress}
                         format="full"
