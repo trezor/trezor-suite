@@ -52,36 +52,49 @@ const proxyWithCallId = (tc: TrezorConnectLike, callId: string): TrezorConnectLi
         },
     }) as TrezorConnectLike;
 
+// Context passed to the picker. `connect` is a per-process proxy that auto-
+// stamps `callId` onto each method call's first object arg, so simple
+// pickers stay one-liners. `callId` is also exposed as a raw string for
+// picker bodies that need to weave it into non-TrezorConnect work (logging,
+// dispatching tagged actions, coordinating with side effects).
+export type RunConnectCtx = {
+    connect: TrezorConnectLike;
+    callId: string;
+};
+
 /**
  * Factory bound to a specific `TrezorConnect`-like instance. The returned
  * `runConnect` takes a picker callback that selects which method to wrap:
  *
- *   const wrappedApplySettings = runConnect(c => c.applySettings);
+ *   const wrappedApplySettings = runConnect(({ connect }) => connect.applySettings);
  *   const proc = wrappedApplySettings({ device, homescreen });
  *
  * Or directly in `useConnect`:
  *
- *   const { start, subprocess } = useConnect(runConnect(c => c.applySettings));
+ *   const { start, subprocess } = useConnect(
+ *       runConnect(({ connect }) => connect.applySettings),
+ *   );
  *
  * Pickers can also be multi-arg wrappers, e.g.
  *
- *   const wrap = runConnect(c =>
+ *   const wrap = runConnect(({ connect }) =>
  *       (isOriginal: boolean, homescreen: string) =>
  *           isOriginal
- *               ? c.applySettings({ homescreen_length: 0 })
- *               : c.applySettings({ homescreen }),
+ *               ? connect.applySettings({ homescreen_length: 0 })
+ *               : connect.applySettings({ homescreen }),
  *   );
  *
  * The `connect` handed to the picker is a per-process proxy: every method
  * called through it has the current `callId` merged onto its first object
- * arg automatically, so picker bodies never need to thread callId through
- * themselves. The picker is invoked at call time, so the IPC-proxy override
- * installed during desktop boot is always picked up.
+ * arg automatically. `callId` is also passed explicitly for picker bodies
+ * that need it as a raw token (custom dispatches, logging, etc.). The
+ * picker is invoked at call time, so the IPC-proxy override installed
+ * during desktop boot is always picked up.
  */
 export const createRunConnect = (deps: { trezorConnect: TrezorConnectLike }) => {
     const _connect = createConnect({ trezorConnect: deps.trezorConnect });
 
-    return <M extends AnyMethod>(pick: (connect: TrezorConnectLike) => M) =>
+    return <M extends AnyMethod>(pick: (ctx: RunConnectCtx) => M) =>
         (...args: Parameters<M>): Process<SuccessPayloadOf<M>> =>
             _connect(({ callId }: { callId: string }) => {
                 // Pick is deferred until callId is known so the proxy can
@@ -89,7 +102,7 @@ export const createRunConnect = (deps: { trezorConnect: TrezorConnectLike }) => 
                 // picker body goes through `proxyWithCallId` and gets the
                 // callId stamped onto the params object.
                 const proxied = proxyWithCallId(deps.trezorConnect, callId);
-                const method = pick(proxied);
+                const method = pick({ connect: proxied, callId });
 
                 return method(...args);
             })({} as never) as unknown as Process<SuccessPayloadOf<M>>;

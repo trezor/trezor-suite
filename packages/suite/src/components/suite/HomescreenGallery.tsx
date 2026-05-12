@@ -55,10 +55,11 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
     const { device, isLocked } = useDevice();
     const { startManual, subprocess } = useConnectRun(
         runConnect(
-            connect => (isOriginalImage: boolean, homescreen: string) =>
-                isOriginalImage
-                    ? connect.applySettings({ homescreen_length: 0 })
-                    : connect.applySettings({ homescreen }),
+            ({ connect, callId }) =>
+                (isOriginalImage: boolean, homescreen: string) =>
+                    isOriginalImage
+                        ? connect.applySettings({ homescreen_length: 0, callId })
+                        : connect.applySettings({ homescreen, callId }),
         ),
     );
 

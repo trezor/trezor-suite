@@ -64,7 +64,7 @@ export const HomescreenGalleryGlobal = ({ onConfirm }: HomescreenGalleryGlobalPr
     const { device, isLocked } = useDevice();
 
     const { startManual, handleDefault, subprocess } = useConnectRun(
-        runConnect(c => c.applySettings),
+        runConnect(({ connect }) => connect.applySettings),
     );
 
     const deviceModelInternal = device?.features?.internal_model;
