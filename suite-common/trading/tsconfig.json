@@ -2,7 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../../connect-coins/solana" },
         { "path": "../device" },
         { "path": "../geolocation" },
         { "path": "../react-query" },
@@ -21,6 +20,7 @@
         {
             "path": "../../packages/blockchain-link-types"
         },
+        { "path": "../../coins/coins-solana" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"

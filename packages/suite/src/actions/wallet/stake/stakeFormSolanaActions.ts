@@ -4,13 +4,13 @@ import {
     MIN_SOL_FOR_WITHDRAWALS,
     SOL_STAKING_OPERATION_FEE,
     supportedSolanaNetworkSymbols,
-} from '@connect-coins/solana/constants';
-import solana from '@connect-coins/solana/runtime';
+} from '@trezor/coins-solana/constants';
+import solana from '@trezor/coins-solana/runtime';
 import type {
     EstimatedFee,
     PrepareStakeSolTxResponse,
     SolanaTxMeta,
-} from '@connect-coins/solana/types';
+} from '@trezor/coins-solana/types';
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type ExtraDependencies } from '@suite-common/redux-utils';

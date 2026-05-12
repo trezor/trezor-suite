@@ -1,4 +1,4 @@
-import { SOL_COMPUTE_UNIT_LIMIT } from '@connect-coins/solana/constants';
+import { SOL_COMPUTE_UNIT_LIMIT } from '@trezor/coins-solana/constants';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {

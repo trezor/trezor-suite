@@ -10,7 +10,7 @@ import {
     WSOL_MINT,
     tokenProgramNames,
     tokenProgramsInfo,
-} from '@connect-coins/solana/constants';
+} from '@trezor/coins-solana/constants';
 import type {
     AccountInfo,
     Address,
@@ -21,7 +21,7 @@ import type {
     SolanaTokenAccountInfo,
     SolanaValidParsedTxWithMeta,
     TokenProgramName,
-} from '@connect-coins/solana/types';
+} from '@trezor/coins-solana/types';
 import type {
     StakeType,
     Target,

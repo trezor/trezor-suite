@@ -5,7 +5,7 @@ import {
     MIN_SOL_BALANCE_FOR_STAKING,
     MIN_SOL_FOR_WITHDRAWALS,
     SOLANA_EPOCH_DAYS,
-} from '@connect-coins/solana/constants';
+} from '@trezor/coins-solana/constants';
 import {
     type NetworkSymbol,
     type NetworkType,

@@ -1,6 +1,6 @@
 import * as fs from 'node:fs';
 
-import solana from '@connect-coins/solana/runtime';
+import solana from '@trezor/coins-solana/runtime';
 
 const bigintReplacer = (_: string, value: unknown) =>
     typeof value === 'bigint' ? value.toString() : value;

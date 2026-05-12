@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT, StakeState } from '@connect-coins/solana/constants';
-import solana from '@connect-coins/solana/runtime';
+import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT, StakeState } from '@trezor/coins-solana/constants';
+import solana from '@trezor/coins-solana/runtime';
 import { Translation } from '@suite/intl';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { WALLET_SDK_SOURCE } from '@suite-common/wallet-constants';

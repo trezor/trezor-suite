@@ -1,4 +1,4 @@
-import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@connect-coins/solana/constants';
+import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/coins-solana/constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type AccountType,

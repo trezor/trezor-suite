@@ -76,10 +76,10 @@
         "webpack": "5.106.2"
     },
     "dependencies": {
-        "@connect-coins/solana": "workspace:*",
         "@stellar/stellar-sdk": "14.5.0",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
+        "@trezor/coins-solana": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",

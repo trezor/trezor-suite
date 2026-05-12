@@ -1,4 +1,4 @@
-import type { EstimatedFee } from '@connect-coins/solana/types'; // TODO should be Cardano instead?
+import type { EstimatedFee } from '@trezor/coins-solana/types'; // TODO should be Cardano instead?
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type AdaPools } from '@suite-common/earn-staking-api';

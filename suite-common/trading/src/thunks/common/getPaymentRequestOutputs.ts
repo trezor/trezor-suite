@@ -1,6 +1,6 @@
 import { type PaymentRequestOutput } from 'invity-api';
 
-import solana from '@connect-coins/solana/runtime';
+import solana from '@trezor/coins-solana/runtime';
 import { createThunk } from '@suite-common/redux-utils';
 import type { Network } from '@suite-common/wallet-config';
 import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
