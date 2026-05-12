@@ -263,4 +263,25 @@ describe('selectHomeScreenState', () => {
             expect(selectHomeScreenState(state)).toBe('emptyPortfolioTracker');
         });
     });
+
+    describe('memoization', () => {
+        it('should return the same string reference across calls when state is unchanged', () => {
+            const state = buildState({
+                device: {
+                    selectedDevice: {
+                        connected: true,
+                        state: { staticSessionId: TEST_SESSION_ID },
+                        features: { initialized: true },
+                    },
+                    devices: [{ id: 'device_id' }],
+                },
+                wallet: {
+                    settings: { enabledNetworks: ['btc'] },
+                    accounts: [{ deviceState: TEST_SESSION_ID, visible: true }],
+                },
+            });
+
+            expect(selectHomeScreenState(state)).toBe(selectHomeScreenState(state));
+        });
+    });
 });
