@@ -1,6 +1,7 @@
 import { createDeferred } from '@trezor/utils';
 
 import { UsbApi } from '../src/api/usb';
+import { PathInternal } from '../src/types';
 import type {
     UsbDeviceLike,
     UsbInTransferResultLike,
@@ -57,6 +58,8 @@ describe('api/usb', () => {
 
     afterAll(async () => {});
 
+    const devicePath = PathInternal('123');
+
     it('read aborted', async () => {
         const reset = jest.fn(() => Promise.resolve());
         const api = new UsbApi({
@@ -79,7 +82,7 @@ describe('api/usb', () => {
 
         const abortController = new AbortController();
         await api.enumerate(abortController.signal);
-        const promise = api.read('123', abortController.signal);
+        const promise = api.read(devicePath, { signal: abortController.signal });
         abortController.abort();
 
         const result = await promise;
@@ -107,7 +110,9 @@ describe('api/usb', () => {
 
         const abortController = new AbortController();
         await api.enumerate(abortController.signal);
-        const promise = api.write('123', Buffer.alloc(api.chunkSize), abortController.signal);
+        const promise = api.write(devicePath, Buffer.alloc(api.chunkSize), {
+            signal: abortController.signal,
+        });
         abortController.abort();
 
         const result = await promise;
@@ -147,7 +152,10 @@ describe('api/usb', () => {
 
         const abortController = new AbortController();
         await api.enumerate(abortController.signal);
-        const promise = api.openDevice('123', { reset: true, signal: abortController.signal });
+        const promise = api.openDevice(devicePath, {
+            reset: true,
+            signal: abortController.signal,
+        });
         abortController.abort();
 
         const result = await promise;
@@ -219,13 +227,15 @@ describe('api/usb', () => {
         const abortController = new AbortController();
         await api.enumerate(abortController.signal);
         for (let i = 0; i < 11; i++) {
-            await api.write('123', Buffer.alloc(0), abortController.signal);
-            await api.read('123', abortController.signal);
+            await api.write(devicePath, Buffer.alloc(0), {
+                signal: abortController.signal,
+            });
+            await api.read(devicePath, { signal: abortController.signal });
         }
 
         // this should not trigger onAbort (device.reset)
         abortController.abort();
-        await api.write('123', Buffer.alloc(0), abortController.signal);
+        await api.write(devicePath, Buffer.alloc(0), { signal: abortController.signal });
 
         expect(reset).toHaveBeenCalledTimes(0);
     });

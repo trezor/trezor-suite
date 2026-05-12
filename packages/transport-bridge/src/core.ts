@@ -98,7 +98,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         }
 
         const chunks = createChunks(encodedMessage, chunkHeader, api.chunkSize);
-        const apiWrite = (chunk: Buffer) => api.write(path, chunk, signal);
+        const apiWrite = (chunk: Buffer) => api.write(path, chunk, { signal });
         const sendResult = await sendChunks(chunks, apiWrite);
 
         return sendResult;
@@ -116,7 +116,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         logger?.debug(`core: readUtil protocol ${protocol.name}`);
         try {
             const receiveProtocol = protocol.name === 'bridge' ? protocolV1 : protocol;
-            const res = await receiveUtil(() => api.read(path, signal), receiveProtocol);
+            const res = await receiveUtil(() => api.read(path, { signal }), receiveProtocol);
             if (!res.success) return res;
             const { messageType, payload } = res.payload;
             logger?.debug(
@@ -269,14 +269,16 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
                 const [, chunkHeader] = protocol.getHeaders(bytes);
                 const chunks = createChunks(bytes, chunkHeader, api.chunkSize);
 
-                const apiWrite = (chunk: Buffer, attemptSignal?: AbortSignal) =>
-                    api.write(path, chunk, attemptSignal || signal);
-
                 const message = await callThpMessage({
                     thpState: state,
                     chunks,
-                    apiWrite,
-                    apiRead: attemptSignal => api.read(path, attemptSignal || signal),
+                    apiWrite: (chunk, options) =>
+                        api.write(path, chunk, {
+                            ...options,
+                            signal: options?.signal || signal,
+                        }),
+                    apiRead: options =>
+                        api.read(path, { ...options, signal: options?.signal || signal }),
                     signal,
                     logger,
                 });
@@ -343,8 +345,10 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
             const writeResult = await sendThpMessage({
                 thpState: state,
                 chunks,
-                apiWrite: (chunk, attemptSignal) => api.write(path, chunk, attemptSignal || signal),
-                apiRead: attemptSignal => api.read(path, attemptSignal || signal),
+                apiWrite: (chunk, options) =>
+                    api.write(path, chunk, { ...options, signal: options?.signal || signal }),
+                apiRead: options =>
+                    api.read(path, { ...options, signal: options?.signal || signal }),
                 signal,
                 logger,
                 skipAck: true,
@@ -392,9 +396,13 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
 
                 const message = await receiveThpMessage({
                     thpState: state,
-                    apiWrite: (chunk, attemptSignal) =>
-                        api.write(path, chunk, attemptSignal || signal),
-                    apiRead: attemptSignal => api.read(path, attemptSignal || signal),
+                    apiWrite: (chunk, options) =>
+                        api.write(path, chunk, {
+                            ...options,
+                            signal: options?.signal || signal,
+                        }),
+                    apiRead: options =>
+                        api.read(path, { ...options, signal: options?.signal || signal }),
                     signal,
                     logger,
                     skipAck: true,

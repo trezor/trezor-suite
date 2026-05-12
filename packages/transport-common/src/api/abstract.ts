@@ -68,7 +68,9 @@ export abstract class AbstractApi extends TypedEmitter<{
      */
     abstract read(
         path: PathInternal,
-        signal?: AbortSignal,
+        options?: {
+            signal?: AbortSignal;
+        },
     ): AsyncResultWithTypedError<
         Buffer,
         | typeof ERRORS.DEVICE_NOT_FOUND
@@ -86,7 +88,9 @@ export abstract class AbstractApi extends TypedEmitter<{
     abstract write(
         path: PathInternal,
         buffers: Buffer,
-        signal?: AbortSignal,
+        options?: {
+            signal?: AbortSignal;
+        },
     ): AsyncResultWithTypedError<
         undefined,
         | typeof ERRORS.DEVICE_NOT_FOUND
@@ -212,3 +216,12 @@ export type AbstractApiAwaitedResult<K extends keyof AbstractApi> = AbstractApi[
 ) => any
     ? Awaited<ReturnType<AbstractApi[K]>>
     : never;
+
+export type AbstractApiArgs<K extends keyof AbstractApi> = AbstractApi[K] extends (
+    ...args: any[]
+) => any
+    ? Parameters<AbstractApi[K]>
+    : never;
+
+export type AbstractApiArgsOmitPath<K extends keyof AbstractApi> =
+    AbstractApiArgs<K> extends [any, ...infer Rest] ? Rest : never;
