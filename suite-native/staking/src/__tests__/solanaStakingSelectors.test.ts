@@ -221,6 +221,41 @@ describe('selectors', () => {
                 ),
             ).toEqual([solAccountWithStaking]);
         });
+
+        it('should return the same stable empty-array reference when no sol account has staking', () => {
+            const testState = getTestState({
+                accounts: [solAccountNoStaking, etcAccount],
+            });
+
+            const first = selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol(
+                testState,
+                'sol',
+            );
+            const second = selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol(
+                testState,
+                'sol',
+            );
+
+            expect(first).toEqual([]);
+            expect(first).toBe(second);
+        });
+
+        it('should return the same array reference across calls when underlying state is unchanged', () => {
+            const testState = getTestState({
+                accounts: [solAccountWithStaking, solAccountNoStaking, etcAccount],
+            });
+
+            const first = selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol(
+                testState,
+                'sol',
+            );
+            const second = selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol(
+                testState,
+                'sol',
+            );
+
+            expect(first).toBe(second);
+        });
     });
 
     describe('selectSolStakingAccountsInfoByAccountKey', () => {
