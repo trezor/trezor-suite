@@ -1,4 +1,4 @@
-import { createWeakMapSelector } from '@suite-common/redux-utils';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -21,12 +21,14 @@ export const createMemoizedSelector = createWeakMapSelector.withTypes<NativeStak
 export const selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol = createMemoizedSelector(
     [selectDeviceAccounts, (_state, symbol: NetworkSymbol) => symbol],
     (accounts, symbol) =>
-        accounts.filter(
-            account =>
-                account.symbol === symbol &&
-                account.visible &&
-                account.networkType === 'solana' &&
-                !!account.misc?.solStakingAccounts?.length,
+        returnStableArrayIfEmpty(
+            accounts.filter(
+                account =>
+                    account.symbol === symbol &&
+                    account.visible &&
+                    account.networkType === 'solana' &&
+                    !!account.misc?.solStakingAccounts?.length,
+            ),
         ),
 );
 
