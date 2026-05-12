@@ -464,10 +464,24 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         },
         { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
+        const enhanceResponse = await dispatch(
+            enhancePrecomposedTransactionThunk({
+                transactionFormValues: formState,
+                precomposedTransaction,
+                selectedAccount,
+            }),
+        );
+
+        if (isRejected(enhanceResponse)) {
+            return rejectWithValue(enhanceResponse.payload);
+        }
+
+        const enhancedPrecomposedTransaction = enhanceResponse.payload;
+
         const signResult = await dispatch(
             signTradingTransactionThunk({
                 formState,
-                precomposedTransaction,
+                precomposedTransaction: enhancedPrecomposedTransaction,
                 selectedAccount,
                 paymentRequests,
             }),
