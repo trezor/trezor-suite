@@ -11,6 +11,7 @@ export enum KEYBOARD_CODE {
     KEY_L = 'KeyL',
     KEY_N = 'KeyN',
     KEY_P = 'KeyP',
+    KEY_R = 'KeyR',
     KEY_S = 'KeyS',
     KEY_T = 'KeyT',
 

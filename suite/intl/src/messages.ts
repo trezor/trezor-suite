@@ -7735,6 +7735,10 @@ export const messages = defineMessages({
         id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SEND',
         defaultMessage: 'New transaction',
     },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_RECEIVE: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_RECEIVE',
+        defaultMessage: 'Receive',
+    },
     TR_GUIDE_KEYBOARD_SHORTCUTS_TOGGLE_THEME: {
         id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_TOGGLE_THEME',
         defaultMessage: 'Toggle dark/light theme',
@@ -7743,9 +7747,13 @@ export const messages = defineMessages({
         id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SEARCH_ACCOUNTS',
         defaultMessage: 'Search accounts',
     },
-    TR_GUIDE_KEYBOARD_SHORTCUTS_DESKTOP: {
-        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_DESKTOP',
-        defaultMessage: 'Desktop',
+    TR_GUIDE_KEYBOARD_SHORTCUTS_WALLETS: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_WALLETS',
+        defaultMessage: 'Wallets & accounts',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_TRANSACTIONS: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_TRANSACTIONS',
+        defaultMessage: 'Transactions',
     },
     TR_GUIDE_KEYBOARD_SHORTCUTS_DEBUG: {
         id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_DEBUG',
@@ -7762,10 +7770,6 @@ export const messages = defineMessages({
     TR_GUIDE_KEYBOARD_SHORTCUTS_LANGUAGE_KEYS_SWITCH: {
         id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_LANGUAGE_KEYS_SWITCH',
         defaultMessage: 'Switch language keys/values',
-    },
-    TR_GUIDE_ARTICLES: {
-        id: 'TR_GUIDE_ARTICLES',
-        defaultMessage: 'Articles',
     },
     TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER: {
         id: 'TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER',
