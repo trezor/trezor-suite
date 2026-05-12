@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
@@ -11,6 +11,7 @@ import {
     composeSendFormTransactionFeeLevelsThunk,
     formDraftActions,
     selectAccountByKey,
+    selectAreFeesLoading,
     selectConvertedNetworkFeeInfo,
     selectDeepCopyOfFormDraft,
     useFormDraft,
@@ -21,7 +22,10 @@ import {
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
+    type NativeSendRootState,
     type UpdateSelectedFeeLevelThunkParams,
+    getFeeAvailability,
+    selectFeeLevels,
     transactionManagementActions,
 } from '@suite-native/transaction-management';
 import { useDebounce } from '@trezor/react-utils';
@@ -83,6 +87,7 @@ export const useComposeEarnFees = ({
         formDraftKey,
         saveDraft,
     } = useFormDraft<FormState>(formDraftPrefix, accountKey);
+    const [isComposingFeeLevels, setIsComposingFeeLevels] = useState(false);
     const formDraftRef = useRef(formDraft);
     formDraftRef.current = formDraft;
     const account = useSelector((state: AccountsRootState) =>
@@ -91,43 +96,77 @@ export const useComposeEarnFees = ({
     const feeInfo = useSelector((state: FeesRootState) =>
         selectConvertedNetworkFeeInfo(state, account?.symbol),
     );
+    const areFeesLoading = useSelector((state: FeesRootState) =>
+        selectAreFeesLoading(state, account?.symbol),
+    );
+    const feeLevels = useSelector((state: NativeSendRootState) => selectFeeLevels(state));
+    const selectedFee = formDraft?.selectedFee;
+    const selectedFeeLevel = selectedFee ? feeLevels[selectedFee] : undefined;
+    const fee = isFinalPrecomposedTransaction(selectedFeeLevel) ? selectedFeeLevel.fee : null;
+    const { isFeeUnavailable } = getFeeAvailability({
+        fee,
+        feeLevels,
+        selectedFee,
+        isLoading: areFeesLoading || isComposingFeeLevels,
+    });
 
     const composeFeeLevels = useCallback(async () => {
-        if (!formState || !account || !feeInfo) return;
+        if (!formState || !account || !feeInfo) {
+            setIsComposingFeeLevels(false);
 
-        const { selectedFee, feePerUnit, feeLimit, maxFeePerGas, maxPriorityFeePerGas } =
-            formDraftRef.current ?? {};
-
-        const mergedFormState = {
-            ...formState,
-            selectedFee: selectedFee ?? formState.selectedFee,
-            feePerUnit: feePerUnit ?? formState.feePerUnit,
-            feeLimit: feeLimit ?? formState.feeLimit,
-            maxFeePerGas: maxFeePerGas ?? formState.maxFeePerGas,
-            maxPriorityFeePerGas: maxPriorityFeePerGas ?? formState.maxPriorityFeePerGas,
-        };
-
-        const response = await dispatch(
-            composeSendFormTransactionFeeLevelsThunk({
-                formState: mergedFormState,
-                composeContext: { account, feeInfo, network: getNetwork(account.symbol) },
-            }),
-        );
-        if (!isFulfilled(response)) return;
-
-        dispatch(transactionManagementActions.storeFeeLevels({ feeLevels: response.payload }));
-
-        const normalLevel = response.payload.normal;
-        if (!mergedFormState.feePerUnit && isFinalPrecomposedTransaction(normalLevel)) {
-            mergedFormState.feePerUnit = normalLevel.feePerByte;
+            return;
         }
 
-        saveDraft(mergedFormState);
+        setIsComposingFeeLevels(true);
+
+        try {
+            const {
+                selectedFee: draftSelectedFee,
+                feePerUnit,
+                feeLimit,
+                maxFeePerGas,
+                maxPriorityFeePerGas,
+            } = formDraftRef.current ?? {};
+
+            const mergedFormState = {
+                ...formState,
+                selectedFee: draftSelectedFee ?? formState.selectedFee,
+                feePerUnit: feePerUnit ?? formState.feePerUnit,
+                feeLimit: feeLimit ?? formState.feeLimit,
+                maxFeePerGas: maxFeePerGas ?? formState.maxFeePerGas,
+                maxPriorityFeePerGas: maxPriorityFeePerGas ?? formState.maxPriorityFeePerGas,
+            };
+
+            const response = await dispatch(
+                composeSendFormTransactionFeeLevelsThunk({
+                    formState: mergedFormState,
+                    composeContext: { account, feeInfo, network: getNetwork(account.symbol) },
+                }),
+            );
+            if (!isFulfilled(response)) return;
+
+            dispatch(transactionManagementActions.storeFeeLevels({ feeLevels: response.payload }));
+
+            const normalLevel = response.payload.normal;
+            if (!mergedFormState.feePerUnit && isFinalPrecomposedTransaction(normalLevel)) {
+                mergedFormState.feePerUnit = normalLevel.feePerByte;
+            }
+
+            saveDraft(mergedFormState);
+        } finally {
+            setIsComposingFeeLevels(false);
+        }
     }, [dispatch, formState, account, feeInfo, saveDraft]);
 
     useEffect(() => {
+        setIsComposingFeeLevels(!!formState && !!account && !!feeInfo);
         debounce(composeFeeLevels);
-    }, [debounce, composeFeeLevels]);
+    }, [account, debounce, composeFeeLevels, feeInfo, formState]);
 
-    return { formDraft, formDraftKey, updateFeeLevelThunk: updateEarnSelectedFeeLevelThunk };
+    return {
+        formDraft,
+        formDraftKey,
+        isFeeUnavailable: formState !== undefined && !isComposingFeeLevels && isFeeUnavailable,
+        updateFeeLevelThunk: updateEarnSelectedFeeLevelThunk,
+    };
 };

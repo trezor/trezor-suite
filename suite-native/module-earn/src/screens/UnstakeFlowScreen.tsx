@@ -64,6 +64,7 @@ export const UnstakeFlowScreen = () => {
         showNetworkFeeWarning,
         formDraft,
         formDraftKey,
+        isFeeUnavailable,
         updateFeeLevelThunk,
         approximatedInstantEthAmount,
     } = unstakeForm;
@@ -96,7 +97,10 @@ export const UnstakeFlowScreen = () => {
                 <>
                     <ScreenFooterGradient />
                     <Box paddingHorizontal="sp16" paddingBottom="sp16">
-                        <Button isDisabled={!isValid} onPress={handleReviewAndSign}>
+                        <Button
+                            isDisabled={!isValid || isFeeUnavailable}
+                            onPress={handleReviewAndSign}
+                        >
                             <Translation id="earn.earnFormScreen.reviewAndSign" />
                         </Button>
                     </Box>

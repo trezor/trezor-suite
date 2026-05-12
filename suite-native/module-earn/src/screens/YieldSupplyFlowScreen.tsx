@@ -53,6 +53,7 @@ export const YieldSupplyFlowScreen = () => {
         formDraft: approvalFeeFormDraft,
         formDraftKey: approvalFeeFormDraftKey,
         isComposingApprovalFee,
+        isFeeUnavailable,
         selectedFee: selectedApprovalFee,
         updateFeeLevelThunk: updateApprovalFeeLevelThunk,
     } = useYieldApprovalFees({
@@ -102,7 +103,8 @@ export const YieldSupplyFlowScreen = () => {
                         !isValid ||
                         !isApprovalFeeReady ||
                         isComposingApprovalFee ||
-                        isCheckingApproval
+                        isCheckingApproval ||
+                        isFeeUnavailable
                     }
                     isLoading={isCheckingApproval}
                     onPress={handleSubmit}

@@ -64,7 +64,7 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
         );
     }, [account, isValid, amountValue]);
 
-    const { formDraft, formDraftKey, updateFeeLevelThunk } = useComposeEarnFees({
+    const { formDraft, formDraftKey, isFeeUnavailable, updateFeeLevelThunk } = useComposeEarnFees({
         accountKey,
         formState: unstakeFormState,
         formDraftPrefix: 'unstake',
@@ -94,6 +94,7 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
         showNetworkFeeWarning,
         formDraft,
         formDraftKey,
+        isFeeUnavailable,
         updateFeeLevelThunk,
         approximatedInstantEthAmount,
     };

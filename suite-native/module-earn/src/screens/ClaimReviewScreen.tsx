@@ -74,7 +74,7 @@ export const ClaimReviewScreen = () => {
         [symbol],
     );
 
-    const { formDraft, formDraftKey, updateFeeLevelThunk } = useComposeEarnFees({
+    const { formDraft, formDraftKey, isFeeUnavailable, updateFeeLevelThunk } = useComposeEarnFees({
         accountKey,
         formState: claimFormState,
         formDraftPrefix: 'claim',
@@ -120,7 +120,10 @@ export const ClaimReviewScreen = () => {
             }
             footer={
                 <Box paddingHorizontal="sp16" paddingBottom="sp16">
-                    <Button onPress={handleReviewAndSign} isDisabled={isInsufficientFeeBalance}>
+                    <Button
+                        onPress={handleReviewAndSign}
+                        isDisabled={isInsufficientFeeBalance || isFeeUnavailable}
+                    >
                         <Translation id="earn.claimReviewScreen.reviewAndSignButton" />
                     </Button>
                 </Box>

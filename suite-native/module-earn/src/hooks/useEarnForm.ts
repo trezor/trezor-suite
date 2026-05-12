@@ -50,7 +50,7 @@ export const useEarnForm = (accountKey: AccountKey) => {
         );
     }, [account, isValid, amountValue]);
 
-    const { formDraft, formDraftKey, updateFeeLevelThunk } = useComposeEarnFees({
+    const { formDraft, formDraftKey, isFeeUnavailable, updateFeeLevelThunk } = useComposeEarnFees({
         accountKey,
         formState: stakeFormState,
         formDraftPrefix: 'stake',
@@ -58,5 +58,13 @@ export const useEarnForm = (accountKey: AccountKey) => {
 
     if (!account) return null;
 
-    return { form, amountValue, account, formDraft, formDraftKey, updateFeeLevelThunk };
+    return {
+        form,
+        amountValue,
+        account,
+        formDraft,
+        formDraftKey,
+        isFeeUnavailable,
+        updateFeeLevelThunk,
+    };
 };
