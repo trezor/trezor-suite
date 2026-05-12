@@ -80,54 +80,58 @@ export const FilterAction = () => {
                 </Row>
             }
         >
-            <Dropdown
-                iconName="funnelSimple"
-                ref={dropdownRef}
-                placement={{ position: 'bottom', alignment: 'end' }}
-                isDisabled={false}
-                content={
-                    <Column maxWidth={250} padding={spacings.xxs} gap={spacings.md}>
-                        {options.map(option => (
-                            <Radio
-                                key={option.id}
-                                isChecked={
-                                    Boolean(suspiciousTransactionsHidden) === Boolean(option.id)
-                                }
-                                onChange={() => {
-                                    handleToggleSuspiciousTransactionsRequest(Boolean(option.id));
-                                }}
-                                data-testid={dataTest}
-                                verticalAlignment="center"
-                            >
-                                <Column>
-                                    <Text
-                                        typographyStyle="body-sm-strong"
-                                        intent={
-                                            Boolean(suspiciousTransactionsHidden) ===
-                                            Boolean(option.id)
-                                                ? 'brand'
-                                                : 'neutral'
-                                        }
-                                    >
-                                        {option.label}
-                                    </Text>
-                                    {'description' in option && option.description && (
-                                        <Paragraph
-                                            typographyStyle="body-xs"
-                                            intent="neutral"
-                                            priority="secondary"
-                                            textWrap="pretty"
+            <Tooltip content={<Translation id="TR_FILTER" />} placement="top">
+                <Dropdown
+                    iconName="funnelSimple"
+                    ref={dropdownRef}
+                    placement={{ position: 'bottom', alignment: 'end' }}
+                    isDisabled={false}
+                    content={
+                        <Column maxWidth={250} padding={spacings.xxs} gap={spacings.md}>
+                            {options.map(option => (
+                                <Radio
+                                    key={option.id}
+                                    isChecked={
+                                        Boolean(suspiciousTransactionsHidden) === Boolean(option.id)
+                                    }
+                                    onChange={() => {
+                                        handleToggleSuspiciousTransactionsRequest(
+                                            Boolean(option.id),
+                                        );
+                                    }}
+                                    data-testid={dataTest}
+                                    verticalAlignment="center"
+                                >
+                                    <Column>
+                                        <Text
+                                            typographyStyle="body-sm-strong"
+                                            intent={
+                                                Boolean(suspiciousTransactionsHidden) ===
+                                                Boolean(option.id)
+                                                    ? 'brand'
+                                                    : 'neutral'
+                                            }
                                         >
-                                            {option.description}
-                                        </Paragraph>
-                                    )}
-                                </Column>
-                            </Radio>
-                        ))}
-                    </Column>
-                }
-                data-testid={`${dataTest}/dropdown`}
-            />
+                                            {option.label}
+                                        </Text>
+                                        {'description' in option && option.description && (
+                                            <Paragraph
+                                                typographyStyle="body-xs"
+                                                intent="neutral"
+                                                priority="secondary"
+                                                textWrap="pretty"
+                                            >
+                                                {option.description}
+                                            </Paragraph>
+                                        )}
+                                    </Column>
+                                </Radio>
+                            ))}
+                        </Column>
+                    }
+                    data-testid={`${dataTest}/dropdown`}
+                />
+            </Tooltip>
         </Tooltip>
     );
 };
