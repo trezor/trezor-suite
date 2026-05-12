@@ -8,24 +8,26 @@ export interface RequestOptions extends ScheduleActionParams {
     userAgent?: string;
 }
 
-export const patchResponse = (obj: any) => {
+export const patchResponse = <T>(obj: T): T => {
     if (Array.isArray(obj)) {
-        for (let i = 0; i < obj.length; i++) {
-            patchResponse(obj[i]);
+        const arr = obj as unknown[];
+        for (let i = 0; i < arr.length; i++) {
+            patchResponse(arr[i]);
         }
     } else if (obj && typeof obj === 'object') {
-        Object.keys(obj).forEach(key => {
+        const record = obj as Record<string, unknown>;
+        Object.keys(record).forEach(key => {
             const newKey = capitalizeFirstLetter(key);
-            obj[newKey] = obj[key];
+            record[newKey] = record[key];
             if (key !== newKey) {
-                delete obj[key];
+                delete record[key];
             }
             // skip whole AffiliateData object because:
             // - keys are Round.Id hash and should not be PascalCased
             // - values contains affiliate flag "trezor" which is not in PascalCased
             // AffiliateData: { abcd0123: { trezor: 'base64=' } };
             if (newKey !== 'AffiliateData') {
-                patchResponse(obj[newKey]);
+                patchResponse(record[newKey]);
             }
         });
     }
