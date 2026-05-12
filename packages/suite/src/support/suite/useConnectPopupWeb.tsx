@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { connectPopupActions } from '@suite-common/connect-popup';
-import { CORE_CALL, POPUP } from '@trezor/connect';
+import { CORE_CALL, CORE_CALL_CANCEL, POPUP } from '@trezor/connect';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -133,7 +133,7 @@ export const useConnectPopupWeb = () => {
             if (
                 data.type === 'channel-handshake-request' ||
                 data.type === POPUP.HANDSHAKE ||
-                data.type === POPUP.CLOSED ||
+                data.type === CORE_CALL_CANCEL ||
                 data.type === CORE_CALL
             ) {
                 const normalized: ConnectPopupMessage =
