@@ -1,3 +1,5 @@
+import { type ExchangeTrade } from 'invity-api';
+
 import { createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Account } from '@suite-common/wallet-types';
@@ -22,7 +24,7 @@ export type SignDataAndConfirmThunkProps = {
 
     returnUrl: string;
     triggerAnalyticsTradeConfirmation: () => void;
-    processResponseData: (response: any) => void;
+    processResponseData: (response: ExchangeTrade) => void;
     nextStep: () => void;
 };
 
