@@ -115,7 +115,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
     };
 
     return (
-        <DashboardSection heading={<Translation id="TR_NAV_TRADE" />}>
+        <DashboardSection>
             <Card>
                 <Flex
                     direction={isBelowTablet ? 'column' : 'row'}

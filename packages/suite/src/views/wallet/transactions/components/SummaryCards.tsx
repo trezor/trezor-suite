@@ -20,6 +20,8 @@ import { InfoCard } from './InfoCard';
 
 const getFormattedLabelLong = (rangeLabel: GraphRange['label']) => {
     switch (rangeLabel) {
+        case 'range':
+            return <Translation id="TR_RANGE" />;
         case 'all':
             return <Translation id="TR_ALL" />;
         case 'year':
@@ -42,7 +44,6 @@ type SummaryCardProps = {
     localCurrency: BaseCurrencyCode;
     account: Account;
     isLoading?: boolean;
-    isGraphSupported: boolean;
 };
 
 const DateWrapper = styled.span`
@@ -63,7 +64,6 @@ export const SummaryCards = ({
     localCurrency,
     account,
     isLoading,
-    isGraphSupported,
 }: SummaryCardProps) => {
     const { isBelowDesktop } = useLayoutSize();
     const { BaseCurrencyAmountFormatter } = useFormatters();
@@ -117,41 +117,36 @@ export const SummaryCards = ({
                     ) : null
                 }
             />
-            {/* without graph data, we do not know incoming/outgoing info */}
-            {isGraphSupported && (
-                <>
-                    <InfoCard
-                        title={<Translation id="TR_INCOMING" />}
-                        value={totalReceivedAmount.toFixed()}
-                        secondaryValue={
-                            shallDisplayBaseCurrency && totalReceivedFiatMap[localCurrency] ? (
-                                <BaseCurrencyAmountFormatter
-                                    currency={localCurrency}
-                                    value={totalReceivedFiatMap[localCurrency]!}
-                                />
-                            ) : undefined
-                        }
-                        symbol={account.symbol}
-                        isLoading={isLoading}
-                        isNumeric
-                    />
-                    <InfoCard
-                        title={<Translation id="TR_OUTGOING" />}
-                        value={totalSentAmount.negated().toFixed()}
-                        secondaryValue={
-                            shallDisplayBaseCurrency && totalSentFiatMap[localCurrency] ? (
-                                <BaseCurrencyAmountFormatter
-                                    currency={localCurrency}
-                                    value={totalSentFiatMap[localCurrency]!}
-                                />
-                            ) : undefined
-                        }
-                        symbol={account.symbol}
-                        isLoading={isLoading}
-                        isNumeric
-                    />
-                </>
-            )}
+            <InfoCard
+                title={<Translation id="TR_INCOMING" />}
+                value={totalReceivedAmount.toFixed()}
+                secondaryValue={
+                    shallDisplayBaseCurrency && totalReceivedFiatMap[localCurrency] ? (
+                        <BaseCurrencyAmountFormatter
+                            currency={localCurrency}
+                            value={totalReceivedFiatMap[localCurrency]!}
+                        />
+                    ) : undefined
+                }
+                symbol={account.symbol}
+                isLoading={isLoading}
+                isNumeric
+            />
+            <InfoCard
+                title={<Translation id="TR_OUTGOING" />}
+                value={totalSentAmount.negated().toFixed()}
+                secondaryValue={
+                    shallDisplayBaseCurrency && totalSentFiatMap[localCurrency] ? (
+                        <BaseCurrencyAmountFormatter
+                            currency={localCurrency}
+                            value={totalSentFiatMap[localCurrency]!}
+                        />
+                    ) : undefined
+                }
+                symbol={account.symbol}
+                isLoading={isLoading}
+                isNumeric
+            />
         </Grid>
     );
 };

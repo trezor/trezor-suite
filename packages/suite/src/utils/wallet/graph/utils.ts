@@ -1,4 +1,4 @@
-import { fromUnixTime, isWithinInterval } from 'date-fns';
+import { differenceInMonths, fromUnixTime, isWithinInterval } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { resetTime } from '@suite-common/suite-utils';
@@ -231,6 +231,13 @@ export const calcXDomain = (
         case 'month':
         case 'day':
             xPadding = 3600 * 24; // 1 day
+            break;
+        case 'range':
+            if (differenceInMonths(range.endDate, range.startDate) <= 1) {
+                xPadding = 3600 * 24; // 1 day
+            } else {
+                xPadding = 3600 * 24 * 14; // 14 days
+            }
             break;
         case 'week':
             xPadding = 3600 * 12;
