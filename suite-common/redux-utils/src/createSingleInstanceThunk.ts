@@ -10,8 +10,8 @@ import { type CustomThunkAPI } from './extraDependenciesType'; // Adjust the imp
  * @description This function will ensure that there is only one ongoing promise for a given function with given arguments.
  * If there is an ongoing promise, it will return the same promise.
  */
-function ensureSingleRunningInstance<T extends (...args: any[]) => Promise<any>>(func: T): T {
-    const ongoingPromises = new Map<string, Promise<any>>();
+function ensureSingleRunningInstance<T extends (...args: any[]) => Promise<unknown>>(func: T): T {
+    const ongoingPromises = new Map<string, Promise<unknown>>();
 
     return function (this: any, ...args: Parameters<T>): ReturnType<T> {
         // It's fine to hardcode first argument as key, because thunks has only one argument (second argument is thunkAPI which is not important for this case)
