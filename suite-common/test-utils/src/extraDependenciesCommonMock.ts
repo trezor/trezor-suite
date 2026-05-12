@@ -91,7 +91,7 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
                 `Save data: ${data} into file: ${fileName}. Implementation on phone not ready.`,
             ),
         connectInitSettings,
-        migrateSuiteSyncLabelsForRbfTransaction: (_: any) => Promise.resolve([[], []]),
+        migrateSuiteSyncLabelsForRbfTransaction: () => Promise.resolve([[], []]),
     },
     selectors: {
         selectTokenDefinitionsEnabledNetworks: notImplementedSelector(
