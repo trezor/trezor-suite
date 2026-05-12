@@ -91,6 +91,7 @@ export type UseYieldFlowResult = {
     actionNetworkFeeWarning: YieldNetworkFeeWarning | null;
     isAmountEmpty: boolean;
     isAmountTooHigh: boolean;
+    isAmountInvalidDecimals: boolean;
     isApprovalInsufficient: boolean;
     isSubmittingApprove: boolean;
     isSubmittingAction: boolean;
@@ -125,6 +126,7 @@ export const useYieldFlow = ({
     const dispatch = useDispatch();
     const { device } = useDevice();
     const methods = useForm<YieldFlowFormValues>({
+        mode: 'onChange',
         defaultValues: {
             amountInput: '',
             withdrawInputUnit: 'asset',
@@ -522,6 +524,7 @@ export const useYieldFlow = ({
     const allowanceAmount = session.approval.allowanceAmount ?? '0';
     const canRevokeAllowance = isAmountGreaterThan({ amount: allowanceAmount, threshold: '0' });
     const isAmountTooHigh = isAmountGreaterThan({ amount: liveAmount, threshold: maxAmount });
+    const isAmountInvalidDecimals = !!methods.formState.errors.amountInput;
     const isApprovalInsufficient =
         !session.approval.isModifyMode &&
         session.approval.allowanceStatus === 'loaded' &&
@@ -588,6 +591,7 @@ export const useYieldFlow = ({
         actionNetworkFeeWarning: networkFeeWarning.actionNetworkFeeWarning,
         isAmountEmpty,
         isAmountTooHigh,
+        isAmountInvalidDecimals,
         isApprovalInsufficient,
         isSubmittingApprove:
             session.approval.isSubmitting ||

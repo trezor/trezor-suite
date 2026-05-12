@@ -1,15 +1,16 @@
-import { type ReactNode } from 'react';
+import { type ReactNode, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { Translation } from '@suite/intl';
+import { Translation, useTranslation } from '@suite/intl';
 import type { TranslationKey } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { formInputsMaxLength } from '@suite-common/validators';
 import type { YieldFlowFormValues } from '@suite-common/wallet-core';
-import { Button, Card, Column, Row, Text, TextButton } from '@trezor/components';
+import { Banner, Button, Card, Column, Row, Text, TextButton } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
+import { validateDecimals } from 'src/utils/suite/validation';
 
 type YieldAmountCardSummaryProps = {
     value: ReactNode;
@@ -28,6 +29,7 @@ export type YieldAmountCardUnitToggleProps = {
 
 type YieldAmountCardProps = {
     tokenSymbol: string;
+    decimals?: number;
     summary?: YieldAmountCardSummaryProps;
     heading?: YieldAmountCardHeadingProps;
     unitToggle?: YieldAmountCardUnitToggleProps;
@@ -37,6 +39,7 @@ type YieldAmountCardProps = {
 
 export const YieldAmountCard = ({
     tokenSymbol,
+    decimals,
     summary,
     heading,
     unitToggle,
@@ -44,7 +47,19 @@ export const YieldAmountCard = ({
     isDisabled = false,
 }: YieldAmountCardProps) => {
     const locale = useSelector(selectLanguage);
-    const { control } = useFormContext<YieldFlowFormValues>();
+    const { translationString } = useTranslation();
+    const {
+        control,
+        formState: { errors },
+    } = useFormContext<YieldFlowFormValues>();
+
+    const rules = useMemo(
+        () =>
+            decimals !== undefined
+                ? { validate: { decimals: validateDecimals(translationString, { decimals }) } }
+                : undefined,
+        [translationString, decimals],
+    );
 
     return (
         <Card paddingType="none">
@@ -76,6 +91,7 @@ export const YieldAmountCard = ({
                     name="amountInput"
                     locale={locale}
                     control={control}
+                    rules={rules}
                     maxLength={formInputsMaxLength.amount}
                     isDisabled={isDisabled}
                     rightContent={
@@ -104,6 +120,13 @@ export const YieldAmountCard = ({
                             </Button>
                         )}
                     </Row>
+                )}
+
+                {errors.amountInput?.message && (
+                    <Banner
+                        intent="warning"
+                        description={<Text>{errors.amountInput.message}</Text>}
+                    />
                 )}
 
                 {warning}

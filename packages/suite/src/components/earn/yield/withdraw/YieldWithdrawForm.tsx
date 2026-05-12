@@ -27,6 +27,7 @@ export const YieldWithdrawForm = () => {
         actionNetworkFeeWarning,
         isAmountEmpty,
         isAmountTooHigh,
+        isAmountInvalidDecimals,
         isSubmittingAction,
         inputTokenSymbol,
         otherUnitTokenSymbol,
@@ -122,7 +123,9 @@ export const YieldWithdrawForm = () => {
                                 />
                             }
                             warning={
-                                <YieldActionStepWarning isInsufficientFunds={isAmountTooHigh} />
+                                !isAmountInvalidDecimals && isAmountTooHigh ? (
+                                    <YieldActionStepWarning isInsufficientFunds={isAmountTooHigh} />
+                                ) : undefined
                             }
                             networkFeeWarning={
                                 actionNetworkFeeWarning ? (
@@ -131,7 +134,12 @@ export const YieldWithdrawForm = () => {
                                     />
                                 ) : undefined
                             }
-                            isDisabled={isAmountEmpty || isAmountTooHigh || isSubmittingAction}
+                            isDisabled={
+                                isAmountEmpty ||
+                                isAmountTooHigh ||
+                                isAmountInvalidDecimals ||
+                                isSubmittingAction
+                            }
                             isPending={isSubmittingAction}
                             pendingTransaction={withdrawPendingTransaction}
                             unitToggle={
