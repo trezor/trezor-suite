@@ -177,10 +177,10 @@ export abstract class AbstractMetadataProvider {
         }
     }
 
-    private runApiRequest<T extends () => ReturnType<R>, R extends (...args: any) => Result<any>>(
-        fn: T,
-        options: { retries: number; delay: number },
-    ) {
+    private runApiRequest<
+        T extends () => ReturnType<R>,
+        R extends (...args: any[]) => Result<unknown>,
+    >(fn: T, options: { retries: number; delay: number }) {
         let retried = 0;
 
         return new Promise<Awaited<ReturnType<R>>>(resolve => {
@@ -218,10 +218,10 @@ export abstract class AbstractMetadataProvider {
         });
     }
 
-    scheduleApiRequest<T extends () => ReturnType<R>, R extends (...args: any) => Result<any>>(
-        fn: T,
-        options: { retries: number; delay: number } = { retries: 3, delay: 1000 },
-    ) {
+    scheduleApiRequest<
+        T extends () => ReturnType<R>,
+        R extends (...args: any[]) => Result<unknown>,
+    >(fn: T, options: { retries: number; delay: number } = { retries: 3, delay: 1000 }) {
         const request = this.apiRequestQueue.then(() => this.runApiRequest<T, R>(fn, options));
         this.apiRequestQueue = request;
 
