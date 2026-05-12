@@ -111,24 +111,20 @@ class WinHelloChildProcess {
 
     private async handleRequest(request: IPCRequest): Promise<IPCResponse> {
         try {
-            let result: any;
-
             switch (request.method) {
-                case 'isHelloAvailable':
-                    result = await this.handleIsHelloAvailable();
-                    break;
-                case 'requestHello':
-                    result = await this.handleRequestHello(request.params?.message);
-                    break;
+                case 'isHelloAvailable': {
+                    const result = await this.handleIsHelloAvailable();
+
+                    return { id: request.id, success: true, result };
+                }
+                case 'requestHello': {
+                    const result = await this.handleRequestHello(request.params?.message);
+
+                    return { id: request.id, success: true, result };
+                }
                 default:
                     throw new Error(`Unknown method: ${request.method}`);
             }
-
-            return {
-                id: request.id,
-                success: true,
-                result,
-            };
         } catch (error) {
             return {
                 id: request.id,

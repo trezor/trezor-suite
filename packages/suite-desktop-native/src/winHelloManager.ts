@@ -19,7 +19,7 @@ export class WinHelloProcessManager implements WinHelloManager {
     private childProcess: ChildProcess | null = null;
     private pendingRequests = new Map<
         string,
-        { resolve: (value: any) => void; reject: (error: Error) => void }
+        { resolve: (value: never) => void; reject: (error: Error) => void }
     >();
     private isReady = false;
 
@@ -202,7 +202,7 @@ export class WinHelloProcessManager implements WinHelloManager {
         this.pendingRequests.delete(response.id);
 
         if (response.success) {
-            pending.resolve(response.result);
+            pending.resolve(response.result as never);
         } else {
             pending.reject(new Error(response.error || 'Unknown error'));
         }
