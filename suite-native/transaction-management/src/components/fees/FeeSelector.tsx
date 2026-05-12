@@ -7,14 +7,16 @@ import {
     type FormState,
     type TokenAddress,
 } from '@suite-common/wallet-types';
-import { useBottomSheetModal } from '@suite-native/atoms';
+import { InlineAlertBox, useBottomSheetModal } from '@suite-native/atoms';
 
 import { FeeSummaryCard } from './FeeSummaryCard';
 import { FeesBottomSheet } from './FeesBottomSheet';
 import { TronFeeSummaryCard } from './TronFeeSummaryCard/TronFeeSummaryCard';
 import { type FeesFormValues } from '../../feesFormSchema';
 import { type CustomFeeParams } from '../../hooks';
+import { getFeeAvailability } from '../../hooks/fees/feeAvailability';
 import { useFeesManagement } from '../../hooks/fees/useFeesManagement';
+import { usePrecomposedTransactionError } from '../../hooks/usePrecomposedTransactionError';
 import { updateFeeLimitThunk } from '../../thunks';
 import { type UpdateSelectedFeeLevelThunkParams } from '../../types';
 
@@ -43,6 +45,7 @@ export const FeeSelector = ({
         form,
         fee,
         feeLevels,
+        selectedFeeLevel,
         areFeesLoading,
         isSubmittable,
         symbol,
@@ -66,6 +69,18 @@ export const FeeSelector = ({
 
     const networkType = account?.networkType;
     const isTrc20 = networkType === 'tron' && !!tokenContract;
+    const { isFeeUnavailable, feeError } = getFeeAvailability({
+        fee,
+        feeLevels,
+        selectedFee: selectedFeeLevel,
+        isLoading: areFeesLoading,
+    });
+    const feeUnavailableErrorTitle = usePrecomposedTransactionError({
+        error: feeError,
+        networkSymbol: symbol,
+    });
+    const shouldShowFeeUnavailableAlert =
+        formDraft != null && isFeeUnavailable && !!feeUnavailableErrorTitle;
 
     const handleOpen = useCallback(() => {
         confirmedRef.current = false;
@@ -99,7 +114,13 @@ export const FeeSelector = ({
 
     const feeLimitSunOverride = isTrc20 ? form.watch('customFeeLimit') : undefined;
 
-    if (!symbol || !networkType || (!fee && !areFeesLoading)) return null;
+    if (!symbol || !networkType) return null;
+
+    if (shouldShowFeeUnavailableAlert) {
+        return <InlineAlertBox variant="critical" title={feeUnavailableErrorTitle} />;
+    }
+
+    if (!fee && !areFeesLoading) return null;
 
     return (
         <>

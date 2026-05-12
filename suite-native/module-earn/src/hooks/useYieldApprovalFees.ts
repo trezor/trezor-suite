@@ -20,7 +20,12 @@ import {
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
-import { transactionManagementActions } from '@suite-native/transaction-management';
+import {
+    type NativeSendRootState,
+    getFeeAvailability,
+    selectFeeLevels,
+    transactionManagementActions,
+} from '@suite-native/transaction-management';
 import { useDebounce } from '@trezor/react-utils';
 
 import { type ResolvedYieldFlowData } from './useResolvedYieldFlowData';
@@ -71,11 +76,20 @@ export const useYieldApprovalFees = ({
     const formDraft = useSelector((state: FormDraftRootState) =>
         formDraftKey ? selectFormDraft<FormState>(state, formDraftKey) : undefined,
     );
+    const feeLevels = useSelector((state: NativeSendRootState) => selectFeeLevels(state));
 
     const { customFee, selectedFee } = useMemo(
         () => getYieldApprovalFeeState(formDraft),
         [formDraft],
     );
+    const selectedFeeLevel = feeLevels[selectedFee];
+    const fee = isFinalPrecomposedTransaction(selectedFeeLevel) ? selectedFeeLevel.fee : null;
+    const { isFeeUnavailable } = getFeeAvailability({
+        fee,
+        feeLevels,
+        selectedFee,
+        isLoading: isComposingApprovalFee,
+    });
 
     const allowanceAmount = useMemo(() => {
         if (!amount || !flowData) {
@@ -204,6 +218,7 @@ export const useYieldApprovalFees = ({
         formDraft,
         formDraftKey,
         isComposingApprovalFee,
+        isFeeUnavailable,
         selectedFee,
         updateFeeLevelThunk: updateYieldApprovalSelectedFeeLevelThunk,
     };

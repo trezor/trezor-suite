@@ -1,3 +1,4 @@
+export * from './feeAvailability';
 export * from './useCustomFee';
 export * from './useFeeCalculation';
 export * from './useFeeSelection';
