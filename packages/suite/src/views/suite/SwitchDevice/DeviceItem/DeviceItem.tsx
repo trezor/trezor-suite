@@ -26,9 +26,9 @@ import {
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import type { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 
+import { CardWithDevice } from '../CardWithDevice';
 import { AddWalletButton } from './AddWalletButton';
 import { WalletInstance } from './WalletInstance';
-import { CardWithDevice } from '../CardWithDevice';
 
 type DeviceItemProps = {
     device: TrezorDevice;
@@ -125,7 +125,11 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
                                                 <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_ITEM_2" />
                                             </ListItem>
                                         </List>
-                                        <Row gap={spacings.sm} margin={{ top: spacings.xs }}>
+                                        <Row
+                                            gap={spacings.sm}
+                                            margin={{ top: spacings.xs }}
+                                            flexWrap="wrap"
+                                        >
                                             <Button
                                                 size="small"
                                                 onClick={() => {
