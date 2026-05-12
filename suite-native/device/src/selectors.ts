@@ -21,16 +21,14 @@ import {
     selectIsUnacquiredDevice,
     selectSelectedDevice,
 } from '@suite-common/device';
-import {
-    getFirmwareAuthenticityCheckErrors,
-    getIsHardRevisionCheckError,
-} from '@suite-common/firmware-authenticity';
+import { getIsHardRevisionCheckError } from '@suite-common/firmware-authenticity';
 import {
     Feature,
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { isDeviceKnown } from '@suite-common/suite-utils';
 import { type ThpRootState, selectThpAutoconnectStep } from '@suite-common/thp';
 import {
     type AccountsRootState,
@@ -195,21 +193,21 @@ type FwAuthenticityCheckState = NativeDeviceRootState &
 /**
  * Get firmware revision check error, or null if check was successful / skipped, if the check is enabled in settings and through message system.
  */
-export const selectFirmwareRevisionCheckErrorIfEnabled = (
-    state: FwAuthenticityCheckState,
-    device: Device,
-) => {
-    const { revisionCheckError } = getFirmwareAuthenticityCheckErrors(device);
-    const isFirmwareRevisionCheckEnabled = selectIsFirmwareRevisionCheckEnabled(state);
-    const isMessageSystemFeatureEnabled = selectIsFeatureEnabled(
-        state,
-        Feature.firmwareRevisionCheckMobile,
-        true,
-    );
-    const isCheckEnabled = isFirmwareRevisionCheckEnabled && isMessageSystemFeatureEnabled;
+export const selectFirmwareRevisionCheckErrorIfEnabled = createMemoizedSelector(
+    [
+        selectIsFirmwareRevisionCheckEnabled,
+        (state: FwAuthenticityCheckState) =>
+            selectIsFeatureEnabled(state, Feature.firmwareRevisionCheckMobile, true),
+        (_state: FwAuthenticityCheckState, device: Device) =>
+            isDeviceKnown(device) ? device.authenticityChecks.firmwareRevision : null,
+    ],
+    (isFirmwareRevisionCheckEnabled, isMessageSystemFeatureEnabled, revisionCheckResult) => {
+        const isCheckEnabled = isFirmwareRevisionCheckEnabled && isMessageSystemFeatureEnabled;
+        if (!isCheckEnabled) return null;
 
-    return isCheckEnabled ? revisionCheckError : null;
-};
+        return revisionCheckResult?.success === false ? revisionCheckResult.error : null;
+    },
+);
 export const selectSelectedDeviceFirmwareRevisionCheckErrorIfEnabled = (
     state: FwAuthenticityCheckState,
 ) => {
