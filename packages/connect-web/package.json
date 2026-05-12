@@ -20,28 +20,18 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "publishConfig": {
-        "main": "./lib/index.js",
-        "types": "./lib/index.d.ts",
+        "main": "./libESM/index.mjs",
+        "types": "./libESM/index.d.mts",
+        "type": "module",
         "exports": {
             ".": {
-                "import": {
-                    "types": "./libESM/index.d.mts",
-                    "default": "./libESM/index.mjs"
-                },
-                "require": {
-                    "types": "./lib/index.d.ts",
-                    "default": "./lib/index.js"
-                }
-            },
-            "./lib/impl/*": {
-                "types": "./lib/impl/*.d.ts",
-                "default": "./lib/impl/*.js"
+                "types": "./libESM/index.d.mts",
+                "default": "./libESM/index.mjs"
             },
             "./libESM/impl/*": "./libESM/impl/*"
         }
     },
     "files": [
-        "lib/",
         "libESM/",
         "CHANGELOG.md"
     ],
@@ -49,9 +39,7 @@
         "depcheck": "yarn g:depcheck",
         "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs && yarn build:dts:inline",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm && DTS_OUT_DIR=libESM yarn build:dts:inline",
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm && DTS_OUT_DIR=libESM yarn build:dts:inline",
         "build:dts:inline": "node ../../scripts/inline-devdep-types.mjs",
         "test:e2e": "yarn playwright install && yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"

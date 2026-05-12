@@ -6,30 +6,22 @@
     "private": true,
     "main": "src/index",
     "files": [
-        "lib/",
         "libESM/",
         "CHANGELOG.md"
     ],
     "publishConfig": {
-        "main": "./lib/index.js",
-        "types": "./lib/index.d.ts",
+        "main": "./libESM/index.mjs",
+        "types": "./libESM/index.d.mts",
+        "type": "module",
         "exports": {
             ".": {
-                "import": {
-                    "types": "./libESM/index.d.mts",
-                    "default": "./libESM/index.mjs"
-                },
-                "require": {
-                    "types": "./lib/index.d.ts",
-                    "default": "./lib/index.js"
-                }
+                "types": "./libESM/index.d.mts",
+                "default": "./libESM/index.mjs"
             }
         }
     },
     "scripts": {
-        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "type-check": "yarn g:tsc --build",
         "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",

@@ -109,9 +109,6 @@ export function cloneBuffer(buffer: Buffer): Buffer {
     return clone;
 }
 
-// These types need to be defined here, otherwise
-// importing @trezor/utxo-lib/lib from blockchain-link fails
-// because of missing pushdata-bitcoin types
 type PushDataSize = (len: number) => number;
 type ReadPushDataInt = (
     buffer: Buffer,

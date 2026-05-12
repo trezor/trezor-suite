@@ -99,7 +99,7 @@ const eip712Data = {
 
 // This functionality is separate from @trezor/connect, as it requires @metamask/eth-sig-utils,
 // which is a large JavaScript dependency
-const transformTypedDataPlugin = require('@trezor/connect-plugin-ethereum');
+import transformTypedDataPlugin from '@trezor/connect-plugin-ethereum';
 const { domain_separator_hash, message_hash } = transformTypedDataPlugin(eip712Data, true);
 
 TrezorConnect.ethereumSignTypedData({

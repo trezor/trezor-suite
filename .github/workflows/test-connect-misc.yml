@@ -78,11 +78,12 @@ jobs:
         run: yarn tsx ./scripts/ci/pack-packages.ts
 
       - name: Check exports
-        # `attw` is the binary for @arethetypeswrong/cli
+        # `attw` is the binary for @arethetypeswrong/cli; --profile esm-only
+        # skips node10/node16-cjs resolutions for our ESM-only packages.
         run: |
-          yarn exec attw --pack ./tmp/packed-packages/trezor-connect-web.tgz
-          yarn exec attw --pack ./tmp/packed-packages/trezor-connect-mobile.tgz
-          yarn exec attw --pack ./tmp/packed-packages/trezor-connect-webextension.tgz
+          yarn exec attw --pack ./tmp/packed-packages/trezor-connect-web.tgz --profile esm-only
+          yarn exec attw --pack ./tmp/packed-packages/trezor-connect-mobile.tgz --profile esm-only
+          yarn exec attw --pack ./tmp/packed-packages/trezor-connect-webextension.tgz --profile esm-only
 
       - name: Test local install
         run: ./packages/connect/e2e/test-connect-local.sh

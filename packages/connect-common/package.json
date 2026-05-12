@@ -18,56 +18,30 @@
     "description": "Collection of assets and utils used by trezor-connect library.",
     "main": "./src/index.ts",
     "files": [
-        "lib/",
         "libESM/",
         "CHANGELOG.md"
     ],
     "publishConfig": {
-        "main": "./lib/index.js",
-        "types": "./lib/index.d.ts",
+        "main": "./libESM/index.mjs",
+        "types": "./libESM/index.d.mts",
+        "type": "module",
         "exports": {
             ".": {
-                "import": {
-                    "types": "./libESM/index.d.mts",
-                    "default": "./libESM/index.mjs"
-                },
-                "require": {
-                    "types": "./lib/index.d.ts",
-                    "default": "./lib/index.js"
-                }
-            },
-            "./lib/*": {
-                "types": "./lib/*.d.ts",
-                "default": "./lib/*.js"
+                "types": "./libESM/index.d.mts",
+                "default": "./libESM/index.mjs"
             },
             "./libESM/*": "./libESM/*",
-            "./lib/constants": {
-                "types": "./lib/constants/index.d.ts",
-                "default": "./lib/constants/index.js"
-            },
             "./libESM/constants": {
                 "types": "./libESM/constants/index.d.mts",
                 "default": "./libESM/constants/index.mjs"
-            },
-            "./lib/data": {
-                "types": "./lib/data/index.d.ts",
-                "default": "./lib/data/index.js"
             },
             "./libESM/data": {
                 "types": "./libESM/data/index.d.mts",
                 "default": "./libESM/data/index.mjs"
             },
-            "./lib/events": {
-                "types": "./lib/events/index.d.ts",
-                "default": "./lib/events/index.js"
-            },
             "./libESM/events": {
                 "types": "./libESM/events/index.d.mts",
                 "default": "./libESM/events/index.mjs"
-            },
-            "./lib/types": {
-                "types": "./lib/types/index.d.ts",
-                "default": "./lib/types/index.js"
             },
             "./libESM/types": {
                 "types": "./libESM/types/index.d.mts",
@@ -76,9 +50,7 @@
         }
     },
     "scripts": {
-        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs && yarn build:dts:inline",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm && DTS_OUT_DIR=libESM yarn build:dts:inline",
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm && DTS_OUT_DIR=libESM yarn build:dts:inline",
         "build:dts:inline": "node ../../scripts/inline-devdep-types.mjs",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "test:unit": "yarn g:jest",

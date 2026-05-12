@@ -1,17 +1,16 @@
-const TrezorConnect = require('@trezor/connect').default;
-const {
-    TRANSPORT_EVENT,
-    UI_REQUEST,
-    UI_RESPONSE,
-    UI_EVENT,
+import TrezorConnect, {
+    DEVICE,
     DEVICE_EVENT,
     TRANSPORT,
-    DEVICE,
-} = require('@trezor/connect');
+    TRANSPORT_EVENT,
+    UI_EVENT,
+    UI_REQUEST,
+    UI_RESPONSE,
+} from '@trezor/connect';
 
 let inited = false;
 // SETUP trezor-connect
-exports.initTrezorConnect = sender => {
+export const initTrezorConnect = sender => {
     if (inited) return; // prevent multiple initialization
     inited = true;
 
@@ -95,7 +94,7 @@ exports.initTrezorConnect = sender => {
         });
 };
 
-exports.callTrezorConnect = (sender, message) => {
+export const callTrezorConnect = (sender, message) => {
     const { method, params } = message;
     TrezorConnect[method](params).then(response => {
         sender.send('trezor-connect', response);

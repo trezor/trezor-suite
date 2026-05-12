@@ -21,12 +21,17 @@ type PackageJson = {
     readonly publishConfig?: {
         readonly main?: string;
         readonly types?: string;
+        readonly type?: string;
         readonly exports?: ExportValueMap;
     };
 };
 
-const getExpectedExport = (exportKey: string): ExportValue | null => {
+const getExpectedExport = (exportKey: string, isEsmOnly: boolean): ExportValue | null => {
     if (exportKey === '.') {
+        if (isEsmOnly) {
+            return { types: './libESM/index.d.mts', default: './libESM/index.mjs' };
+        }
+
         return {
             import: { types: './libESM/index.d.mts', default: './libESM/index.mjs' },
             require: { types: './lib/index.d.ts', default: './lib/index.js' },
@@ -57,7 +62,9 @@ const getExpectedExport = (exportKey: string): ExportValue | null => {
     return { types: `${basePath}*.d.ts`, default: `${basePath}*.js` };
 };
 
-const validatePublicPackage = (packageJson: PackageJson): ReadonlyArray<string> => {
+const validatePublicPackage = (
+    packageJson: PackageJson,
+): { errors: ReadonlyArray<string>; isEsmOnly: boolean } => {
     const errors: string[] = [];
     const { publishConfig } = packageJson;
 
@@ -65,22 +72,41 @@ const validatePublicPackage = (packageJson: PackageJson): ReadonlyArray<string> 
         errors.push('Missing top-level "main" field');
     }
 
-    if (!publishConfig?.main) {
-        errors.push('Missing "publishConfig.main" field');
-    }
-    if (!publishConfig?.types) {
-        errors.push('Missing "publishConfig.types" field');
-    }
-
     const files = packageJson.files ?? [];
-    if (!files.some(f => f === 'lib/' || f === 'lib')) {
-        errors.push('"files" must include "lib/"');
-    }
+    const isEsmOnly = !files.some(f => f === 'lib/' || f === 'lib');
+
     if (!files.some(f => f === 'libESM/' || f === 'libESM')) {
         errors.push('"files" must include "libESM/"');
     }
 
-    return errors;
+    const expectedMain = isEsmOnly ? './libESM/index.mjs' : './lib/index.js';
+    const expectedTypes = isEsmOnly ? './libESM/index.d.mts' : './lib/index.d.ts';
+
+    if (!publishConfig?.main) {
+        errors.push('Missing "publishConfig.main" field');
+    } else if (publishConfig.main !== expectedMain) {
+        errors.push(
+            `Invalid "publishConfig.main": expected ${JSON.stringify(expectedMain)}, got ${JSON.stringify(publishConfig.main)}`,
+        );
+    }
+    if (!publishConfig?.types) {
+        errors.push('Missing "publishConfig.types" field');
+    } else if (publishConfig.types !== expectedTypes) {
+        errors.push(
+            `Invalid "publishConfig.types": expected ${JSON.stringify(expectedTypes)}, got ${JSON.stringify(publishConfig.types)}`,
+        );
+    }
+    if (isEsmOnly) {
+        if (!publishConfig?.type) {
+            errors.push('Missing "publishConfig.type" field');
+        } else if (publishConfig.type !== 'module') {
+            errors.push(
+                `Invalid "publishConfig.type": expected "module", got ${JSON.stringify(publishConfig.type)}`,
+            );
+        }
+    }
+
+    return { errors, isEsmOnly };
 };
 
 // Checks that "types" comes before "default" in a condition object.
@@ -108,6 +134,7 @@ const validateKeyOrder = (obj: ExportValue, context: string): ReadonlyArray<stri
 
 const validateExports = (
     exportsConfig: NonNullable<PackageJson['publishConfig']>['exports'],
+    isEsmOnly: boolean,
 ): ReadonlyArray<string> => {
     const errors: string[] = [];
     if (!exportsConfig) {
@@ -118,8 +145,20 @@ const validateExports = (
     }
 
     for (const [exportKey, exportValue] of Object.entries(exportsConfig)) {
+        const match = LIB_EXPORT_KEY_PATTERN.exec(exportKey);
+
+        // ESM-only packages do not ship lib/, so any ./lib/... export key would
+        // resolve to a non-existent file once published.
+        if (isEsmOnly && match && match[1] === 'lib') {
+            errors.push(
+                `Disallowed CJS export key ${JSON.stringify(exportKey)} in ESM-only package`,
+            );
+            continue;
+        }
+
         // String values are passthrough exports (e.g. "./libESM/*": "./libESM/*") and are always accepted.
-        const expectedValue = typeof exportValue !== 'string' ? getExpectedExport(exportKey) : null;
+        const expectedValue =
+            typeof exportValue !== 'string' ? getExpectedExport(exportKey, isEsmOnly) : null;
         if (
             expectedValue !== null &&
             JSON.stringify(exportValue) !== JSON.stringify(expectedValue)
@@ -129,8 +168,7 @@ const validateExports = (
             errors.push(`  Actual:   ${JSON.stringify(exportValue)}`);
         }
 
-        const match = LIB_EXPORT_KEY_PATTERN.exec(exportKey);
-        if (match) {
+        if (match && !isEsmOnly) {
             const counterpart = exportKey.replace(
                 /^\.\/(libESM|lib)/,
                 match[1] === 'lib' ? './libESM' : './lib',
@@ -186,11 +224,12 @@ export const requirePublishConfig: Requirement<'workspace'> = {
         const errors: string[] = [];
 
         if (parsed.publishConfig) {
-            for (const error of validatePublicPackage(parsed)) {
+            const { errors: pkgErrors, isEsmOnly } = validatePublicPackage(parsed);
+            for (const error of pkgErrors) {
                 errors.push(`${context.workspaceName}: ${error}`);
             }
 
-            for (const error of validateExports(parsed.publishConfig.exports)) {
+            for (const error of validateExports(parsed.publishConfig.exports, isEsmOnly)) {
                 errors.push(`${context.workspaceName}: ${error}`);
             }
         }

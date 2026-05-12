@@ -19,9 +19,8 @@
         "javascript"
     ],
     "files": [
-        "lib/",
         "libESM/",
-        "!lib/ui",
+        "!libESM/ui",
         "CHANGELOG.md"
     ],
     "main": "src/index.ts",
@@ -33,40 +32,29 @@
         "socks-proxy-agent": "@trezor/blockchain-link/src/utils/socks-proxy-agent.ts"
     },
     "publishConfig": {
-        "main": "./lib/index.js",
-        "types": "./lib/index.d.ts",
+        "main": "./libESM/index.mjs",
+        "types": "./libESM/index.d.mts",
+        "type": "module",
         "exports": {
             ".": {
-                "import": {
-                    "types": "./libESM/index.d.mts",
-                    "default": "./libESM/index.mjs"
-                },
-                "require": {
-                    "types": "./lib/index.d.ts",
-                    "default": "./lib/index.js"
-                }
-            },
-            "./lib/*": {
-                "types": "./lib/*.d.ts",
-                "default": "./lib/*.js"
+                "types": "./libESM/index.d.mts",
+                "default": "./libESM/index.mjs"
             },
             "./libESM/*": "./libESM/*"
         },
         "browser": {
-            "socks-proxy-agent": "./lib/utils/socks-proxy-agent.js"
+            "socks-proxy-agent": "./libESM/utils/socks-proxy-agent.mjs"
         },
         "react-native": {
             "__comment__": "Hotfix for issue where RN metro bundler resolve relatives paths wrong",
-            "socks-proxy-agent": "@trezor/blockchain-link/lib/utils/socks-proxy-agent.js"
+            "socks-proxy-agent": "@trezor/blockchain-link/libESM/utils/socks-proxy-agent.mjs"
         }
     },
     "scripts": {
         "dev": "webpack serve --config ./webpack/dev.js",
         "dev:electrum": "yarn g:tsx watch ./src/workers/electrum/devrun.ts",
         "dev:module": "USE_MODULES=true webpack serve --config ./webpack/dev.js",
-        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "build:workers": "yarn g:rimraf build && yarn build:workers-web && yarn build:workers-module",
         "build:workers-web": "webpack --config ./webpack/workers.web.js",
         "build:workers-module": "webpack --config ./webpack/workers.module.js",

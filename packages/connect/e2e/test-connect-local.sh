@@ -22,8 +22,8 @@ if [ ! -f "$OVERRIDES_FILE" ]; then
 fi
 
 OVERRIDES_CONTENT=$(cat "$OVERRIDES_FILE")
-CONNECT_PATH=$(node -e "console.log(JSON.parse(require('fs').readFileSync('$OVERRIDES_FILE'))['@trezor/connect'])")
-CONNECT_WEB_PATH=$(node -e "console.log(JSON.parse(require('fs').readFileSync('$OVERRIDES_FILE'))['@trezor/connect-web'])")
+CONNECT_PATH=$(node --input-type=module -e "import { readFileSync } from 'node:fs'; console.log(JSON.parse(readFileSync('$OVERRIDES_FILE'))['@trezor/connect'])")
+CONNECT_WEB_PATH=$(node --input-type=module -e "import { readFileSync } from 'node:fs'; console.log(JSON.parse(readFileSync('$OVERRIDES_FILE'))['@trezor/connect-web'])")
 
 trap "cd .. && rm -rf connect-implementation-local" EXIT
 
@@ -38,7 +38,8 @@ cat > package.json << EOF
   "name": "connect-implementation-local",
   "version": "1.0.0",
   "description": "Test local @trezor/connect packages",
-  "main": "index.js",
+  "type": "module",
+  "main": "index.mjs",
   "dependencies": {
     "@trezor/connect": "${CONNECT_PATH}",
     "@trezor/connect-web": "${CONNECT_WEB_PATH}",
@@ -53,20 +54,6 @@ echo "Installing dependencies..."
 npm install
 
 cat package.json
-
-cat > index.cjs << 'EOF'
-const assert = require('assert');
-const TrezorConnect = require('@trezor/connect').default;
-const TrezorConnectWeb = require('@trezor/connect-web').default;
-
-assert.ok(TrezorConnect, 'TrezorConnect should be defined');
-assert.strictEqual(typeof TrezorConnect.init, 'function', 'TrezorConnect.init should be a function');
-
-assert.ok(TrezorConnectWeb, 'TrezorConnectWeb should be defined');
-assert.strictEqual(typeof TrezorConnectWeb.init, 'function', 'TrezorConnectWeb.init should be a function');
-
-console.log('All CJS assertions passed.');
-EOF
 
 cat > index.mjs << 'EOF'
 import assert from 'node:assert';
@@ -104,7 +91,7 @@ import TrezorConnect from '@trezor/connect';
 import TrezorConnectWeb from '@trezor/connect-web';
 
 // Exercise subpath-imported types from devDependencies inlined into d.ts.
-// If any inline `import("@trezor/*/lib/...")` target is not resolvable
+// If any inline `import("@trezor/*/libESM/...")` target is not resolvable
 // (e.g. due to a missing exports-map entry in the producer package),
 // tsc --noEmit would fail here, signalling a regression that the runtime
 // smoke tests below cannot detect.
@@ -124,10 +111,6 @@ EOF
 echo ""
 echo "=== Type-checking consumer (tsc --noEmit) ==="
 ./node_modules/.bin/tsc --noEmit --project tsconfig.json
-
-echo ""
-echo "=== Testing CJS (node index.cjs) ==="
-node index.cjs
 
 echo ""
 echo "=== Testing ESM with tsx (yarn tsx index.mjs) ==="

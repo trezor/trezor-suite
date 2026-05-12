@@ -26,35 +26,18 @@
         "./src/transports/webusb": "./src/transports/webusb.ts"
     },
     "publishConfig": {
-        "main": "./lib/index.js",
-        "types": "./lib/index.d.ts",
+        "main": "./libESM/index.mjs",
+        "types": "./libESM/index.d.mts",
+        "type": "module",
         "exports": {
             ".": {
-                "import": {
-                    "types": "./libESM/index.d.mts",
-                    "default": "./libESM/index.mjs"
-                },
-                "require": {
-                    "types": "./lib/index.d.ts",
-                    "default": "./lib/index.js"
-                }
-            },
-            "./lib/*": {
-                "types": "./lib/*.d.ts",
-                "default": "./lib/*.js"
+                "types": "./libESM/index.d.mts",
+                "default": "./libESM/index.mjs"
             },
             "./libESM/*": "./libESM/*",
-            "./lib/thp": {
-                "types": "./lib/thp/index.d.ts",
-                "default": "./lib/thp/index.js"
-            },
             "./libESM/thp": {
                 "types": "./libESM/thp/index.d.mts",
                 "default": "./libESM/thp/index.mjs"
-            },
-            "./lib/types": {
-                "types": "./lib/types/index.d.ts",
-                "default": "./lib/types/index.js"
             },
             "./libESM/types": {
                 "types": "./libESM/types/index.d.mts",
@@ -68,21 +51,18 @@
             "./libESM/transports/webusb": "./libESM/transports/webusb.browser.mjs"
         },
         "react-native": {
-            "./lib/transports/nodeusb": "./lib/transports/nodeusb.native.js",
-            "./lib/transports/webusb": "./lib/transports/webusb.js"
+            "./libESM/transports/nodeusb": "./libESM/transports/nodeusb.native.mjs",
+            "./libESM/transports/webusb": "./libESM/transports/webusb.mjs"
         }
     },
     "files": [
-        "lib/",
         "libESM/",
         "CHANGELOG.md"
     ],
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "publish:lib": "./scripts/publish-lib.sh",
         "test:unit": "jest",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
