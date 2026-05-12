@@ -610,6 +610,10 @@ export const coinjoinReducer = (
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<CoinjoinRootState>();
 
+const createDeviceAwareMemoizedSelector = createWeakMapSelector.withTypes<
+    CoinjoinRootState & DeviceRootState
+>();
+
 export const selectCoinjoinAccounts = (state: CoinjoinRootState) => state.wallet.coinjoin.accounts;
 
 export const selectCoinjoinClients = (state: CoinjoinRootState) => state.wallet.coinjoin.clients;
@@ -920,50 +924,58 @@ export const selectHasAnonymitySetError = createMemoizedSelector(
     },
 );
 
-export const selectCoinjoinSessionBlockerByAccountKey = (
-    state: CoinjoinRootState & DeviceRootState & LocksRootState,
-    accountKey: AccountKey | null,
-) => {
-    if (accountKey === null) {
-        return;
-    }
+export const selectCoinjoinSessionBlockerByAccountKey = createDeviceAwareMemoizedSelector(
+    [
+        (_state: CoinjoinRootState, accountKey: AccountKey | null) => accountKey,
+        (state: CoinjoinRootState, accountKey: AccountKey | null) =>
+            accountKey !== null && !!selectSessionByAccountKey(state, accountKey)?.starting,
+        (state: CoinjoinRootState) => selectIsFeatureDisabled(state, Feature.coinjoin),
+        (state: CoinjoinRootState, accountKey: AccountKey | null) =>
+            accountKey !== null &&
+            selectCoinjoinClient(state, accountKey)?.status === 'unavailable',
+        (state: CoinjoinRootState) => state.suite.online,
+        (state: CoinjoinRootState, accountKey: AccountKey | null) =>
+            accountKey !== null && selectIsNothingToAnonymizeByAccountKey(state, accountKey),
+        (state: CoinjoinRootState) => selectTorState(state).isTorEnabled,
+        (state: CoinjoinRootState & DeviceRootState) => selectDeviceStatus(state),
+        (state: CoinjoinRootState, accountKey: AccountKey | null) => {
+            if (accountKey === null) return false;
+            const account = selectAccountByKey(state, accountKey);
 
-    if (selectSessionByAccountKey(state, accountKey)?.starting) {
-        return 'SESSION_STARTING';
-    }
-    if (selectIsFeatureDisabled(state, Feature.coinjoin)) {
-        return 'FEATURE_DISABLED';
-    }
-    if (selectCoinjoinClient(state, accountKey)?.status === 'unavailable') {
-        return 'COORDINATOR_UNAVAILABLE';
-    }
-    if (!state.suite.online) {
-        return 'OFFLINE';
-    }
-    if (selectIsNothingToAnonymizeByAccountKey(state, accountKey)) {
-        return 'NOTHING_TO_ANONYMIZE';
-    }
-    if (!selectTorState(state).isTorEnabled) {
-        return 'TOR_DISABLED';
-    }
-    if (!['connected', 'firmware-recommended'].includes(selectDeviceStatus(state) ?? '')) {
-        return 'DEVICE_DISCONNECTED';
-    }
-    const account = selectAccountByKey(state, accountKey);
-    if (account?.backendType === 'coinjoin' && account?.status === 'out-of-sync') {
-        return 'ACCOUNT_OUT_OF_SYNC';
-    }
-    if (selectIsDeviceOrUiLocked(state)) {
-        return 'DEVICE_LOCKED';
-    }
-    if (selectHasAnonymitySetError(state)) {
-        return 'ANONYMITY_ERROR';
-    }
-};
+            return account?.backendType === 'coinjoin' && account?.status === 'out-of-sync';
+        },
+        selectIsDeviceOrUiLocked,
+        selectHasAnonymitySetError,
+    ],
+    (
+        accountKey,
+        isSessionStarting,
+        isFeatureDisabled,
+        isCoordinatorUnavailable,
+        isOnline,
+        isNothingToAnonymize,
+        isTorEnabled,
+        deviceStatus,
+        isAccountOutOfSync,
+        isDeviceOrUiLocked,
+        hasAnonymitySetError,
+    ) => {
+        if (accountKey === null) return undefined;
+        if (isSessionStarting) return 'SESSION_STARTING';
+        if (isFeatureDisabled) return 'FEATURE_DISABLED';
+        if (isCoordinatorUnavailable) return 'COORDINATOR_UNAVAILABLE';
+        if (!isOnline) return 'OFFLINE';
+        if (isNothingToAnonymize) return 'NOTHING_TO_ANONYMIZE';
+        if (!isTorEnabled) return 'TOR_DISABLED';
+        if (!['connected', 'firmware-recommended'].includes(deviceStatus ?? ''))
+            return 'DEVICE_DISCONNECTED';
+        if (isAccountOutOfSync) return 'ACCOUNT_OUT_OF_SYNC';
+        if (isDeviceOrUiLocked) return 'DEVICE_LOCKED';
+        if (hasAnonymitySetError) return 'ANONYMITY_ERROR';
 
-const createDeviceAwareMemoizedSelector = createWeakMapSelector.withTypes<
-    CoinjoinRootState & DeviceRootState
->();
+        return undefined;
+    },
+);
 
 export const selectCurrentCoinjoinWheelStates = createDeviceAwareMemoizedSelector(
     [
