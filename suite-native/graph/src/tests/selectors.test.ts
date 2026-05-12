@@ -4,7 +4,10 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectDeviceMainnetAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
-import { selectDeviceHistoryIgnoredNetworkSymbols } from '../selectors';
+import {
+    selectDeviceHistoryIgnoredNetworkSymbols,
+    selectPortfolioGraphAccountItems,
+} from '../selectors';
 
 // Mock the dependencies
 jest.mock('@suite-common/wallet-core', () => ({
@@ -98,5 +101,76 @@ describe('selectDeviceHistoryIgnoredNetworkSymbols', () => {
         const result2 = selectDeviceHistoryIgnoredNetworkSymbols(mockState);
 
         expect(result1).toBe(result2);
+    });
+});
+
+describe('selectPortfolioGraphAccountItems', () => {
+    let mockState: TestState;
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+
+        mockState = {
+            device: {} as DeviceRootState['device'],
+            wallet: {} as AccountsRootState['wallet'],
+            tokenDefinitions: {} as TokenDefinitionsRootState['tokenDefinitions'],
+        } as TestState;
+    });
+
+    it('returns the same array reference across calls when inputs are unchanged', () => {
+        const accounts: Account[] = [
+            {
+                key: 'btc-key',
+                symbol: 'btc' as NetworkSymbol,
+                descriptor: 'btc-desc',
+            } as unknown as Account,
+            {
+                key: 'eth-key',
+                symbol: 'eth' as NetworkSymbol,
+                descriptor: 'eth-desc',
+            } as unknown as Account,
+        ];
+
+        mockSelectDeviceMainnetAccounts.mockReturnValue(accounts);
+
+        const result1 = selectPortfolioGraphAccountItems(mockState);
+        const result2 = selectPortfolioGraphAccountItems(mockState);
+
+        expect(result1).toBe(result2);
+        expect(result1).toHaveLength(2);
+        expect(result1[0]).toMatchObject({
+            symbol: 'btc',
+            descriptor: 'btc-desc',
+            accountKey: 'btc-key',
+            tokensFilter: undefined,
+        });
+    });
+
+    it('invalidates the cache when tokenDefinitions change so tokensFilter reflects fresh data', () => {
+        const accounts: Account[] = [
+            {
+                key: 'eth-key',
+                symbol: 'eth' as NetworkSymbol,
+                descriptor: 'eth-desc',
+                tokens: [{ contract: '0xabc' }],
+            } as unknown as Account,
+        ];
+
+        mockSelectDeviceMainnetAccounts.mockReturnValue(accounts);
+
+        const result1 = selectPortfolioGraphAccountItems(mockState);
+        expect(result1[0].tokensFilter).toEqual([]);
+
+        mockState = {
+            ...mockState,
+            tokenDefinitions: {
+                eth: { coin: { data: ['0xabc'] } },
+            } as TokenDefinitionsRootState['tokenDefinitions'],
+        };
+
+        const result2 = selectPortfolioGraphAccountItems(mockState);
+
+        expect(result2).not.toBe(result1);
+        expect(result2[0].tokensFilter).toEqual(['0xabc']);
     });
 });
