@@ -5,6 +5,7 @@ import {
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
 import { type EncryptedHex } from '@suite-common/platform-encryption';
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { type StaticSessionId } from '@trezor/connect';
 import { isNotNull } from '@trezor/utils';
@@ -19,6 +20,10 @@ export type WithSuiteSyncState = {
 };
 
 export type WithSuiteSyncAndDeviceState = WithSuiteSyncState & DeviceRootState;
+
+const createMemoizedSelector = createWeakMapSelector.withTypes<
+    WithSuiteSyncAndDeviceState & MessageSystemRootState
+>();
 
 /** Suite Sync is enabled by default; the message system can remotely disable it via `settings.suiteSync`. */
 export const selectIsSuiteSyncFeatureAvailable = (state: MessageSystemRootState) =>
@@ -68,40 +73,52 @@ export const selectSuiteSyncOwnerForDeviceStaticId = (
         ? (state.suiteSync.suiteSyncOwners[deviceStaticSessionId] ?? null)
         : null;
 
-export const selectSuiteSyncInteraction = (
-    state: WithSuiteSyncAndDeviceState & MessageSystemRootState,
-    deviceStaticSessionId: StaticSessionId | null,
-): SuiteSyncInteraction | null => {
-    if (deviceStaticSessionId === null) {
+export const selectSuiteSyncInteraction = createMemoizedSelector(
+    [
+        (
+            _state: WithSuiteSyncAndDeviceState & MessageSystemRootState,
+            deviceStaticSessionId: StaticSessionId | null,
+        ) => deviceStaticSessionId,
+        (state, deviceStaticSessionId) =>
+            deviceStaticSessionId !== null
+                ? selectDeviceByStaticSessionId(state, deviceStaticSessionId)
+                : undefined,
+        selectIsSuiteSyncEnabled,
+        (state, deviceStaticSessionId) =>
+            deviceStaticSessionId !== null
+                ? selectSuiteSyncOwnerForDeviceStaticId(state, deviceStaticSessionId)
+                : null,
+    ],
+    (deviceStaticSessionId, device, isSuiteSyncEnabled, owner): SuiteSyncInteraction | null => {
+        if (deviceStaticSessionId === null) {
+            return null;
+        }
+
+        if (device === undefined) {
+            return null;
+        }
+
+        // IMPORTANT: Order is very important here!
+
+        if (!isSuiteSyncSupportedByDevice(device)) {
+            return 'unsupported';
+        }
+
+        if (!isSuiteSyncEnabled) {
+            return 'suite-sync-off';
+        }
+
+        if (isFwUpgradeNeededForSuiteSync(device)) {
+            return 'firmware-upgrade-needed';
+        }
+
+        if (owner === null) {
+            return 'keys-needed';
+        }
+
         return null;
-    }
-
-    const device = selectDeviceByStaticSessionId(state, deviceStaticSessionId);
-
-    if (device === undefined) {
-        return null;
-    }
-
-    // IMPORTANT: Order is very important here!
-
-    if (!isSuiteSyncSupportedByDevice(device)) {
-        return 'unsupported';
-    }
-
-    if (!selectIsSuiteSyncEnabled(state)) {
-        return 'suite-sync-off';
-    }
-
-    if (isFwUpgradeNeededForSuiteSync(device)) {
-        return 'firmware-upgrade-needed';
-    }
-
-    if (selectSuiteSyncOwnerForDeviceStaticId(state, deviceStaticSessionId) === null) {
-        return 'keys-needed';
-    }
-
-    return null;
-};
+    },
+);
 
 export const selectHasDeviceSuiteSyncError = (
     state: WithSuiteSyncAndDeviceState,

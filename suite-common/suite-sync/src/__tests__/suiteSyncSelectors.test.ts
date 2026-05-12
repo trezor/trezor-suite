@@ -34,7 +34,7 @@ const createMockState = (
     messageSystem: messageSystemInitialState,
 });
 
-describe(selectSuiteSyncInteraction.name, () => {
+describe('selectSuiteSyncInteraction', () => {
     it('no interaction needed if device is not found', () => {
         const state = createMockState();
         state.device.devices = [];
@@ -128,6 +128,54 @@ describe(selectSuiteSyncInteraction.name, () => {
         const result = selectSuiteSyncInteraction(state, DEVICE_STATIC_SESSION_ID_123);
 
         expect(result).toBeNull();
+    });
+
+    it('returns the same result reference across repeated calls when state is unchanged', () => {
+        const state = createMockState(
+            {},
+            {
+                settings: {
+                    ...initialSuiteSyncState.settings,
+                    isSuiteSyncEnabled: true,
+                },
+            },
+        );
+
+        const first = selectSuiteSyncInteraction(state, DEVICE_STATIC_SESSION_ID_123);
+        const second = selectSuiteSyncInteraction(state, DEVICE_STATIC_SESSION_ID_123);
+
+        expect(first).toBe('keys-needed');
+        expect(second).toBe(first);
+    });
+
+    it('invalidates cache when suiteSyncOwners reference changes', () => {
+        const state = createMockState(
+            {},
+            {
+                settings: {
+                    ...initialSuiteSyncState.settings,
+                    isSuiteSyncEnabled: true,
+                },
+            },
+        );
+
+        const before = selectSuiteSyncInteraction(state, DEVICE_STATIC_SESSION_ID_123);
+
+        const nextState: typeof state = {
+            ...state,
+            suiteSync: {
+                ...state.suiteSync,
+                suiteSyncOwners: {
+                    [DEVICE_STATIC_SESSION_ID_123]:
+                        asEncryptedHex<SuiteSyncOwnerSerialized>('owner-key'),
+                },
+            },
+        };
+
+        const after = selectSuiteSyncInteraction(nextState, DEVICE_STATIC_SESSION_ID_123);
+
+        expect(before).toBe('keys-needed');
+        expect(after).toBeNull();
     });
 });
 
