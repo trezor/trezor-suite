@@ -22,7 +22,7 @@ export const TradingFormOfferCryptoAmount = ({ amount, cryptoId }: TradingCrypto
     }
 
     const network = cryptoId && cryptoIdToNetwork(cryptoId);
-    const hasAmount = amount && new BigNumber(amount).gt(0);
+    const hasAmount = new BigNumber(amount).gt(0);
 
     return (
         <Column alignItems="start">

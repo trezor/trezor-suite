@@ -1,22 +1,30 @@
 import { Translation } from '@suite/intl';
+import { isCountrySubdivisionEmpty } from '@suite-common/trading';
 import { Card, Paragraph } from '@trezor/components';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import {
+    isTradingBuyContext,
+    isTradingSellContext,
+} from 'src/utils/wallet/trading/tradingTypingUtils';
 
 type TradingFormOffersWarningsProps = {
-    isSubdivisionMissing: boolean;
     hasQuote: boolean;
 };
 
-export const TradingFormOfferWarnings = ({
-    isSubdivisionMissing,
-    hasQuote,
-}: TradingFormOffersWarningsProps) => {
+export const TradingFormOfferWarnings = ({ hasQuote }: TradingFormOffersWarningsProps) => {
     const context = useTradingFormContext();
     const {
         isAmountEmpty,
         form: { state },
     } = context;
+
+    const isSubdivisionMissing = (() => {
+        if (!isTradingBuyContext(context) && !isTradingSellContext(context)) return false;
+        const { countrySelect, countrySubdivisionSelect } = context.watch();
+
+        return isCountrySubdivisionEmpty(countrySelect?.value, countrySubdivisionSelect?.value);
+    })();
 
     return (
         <>

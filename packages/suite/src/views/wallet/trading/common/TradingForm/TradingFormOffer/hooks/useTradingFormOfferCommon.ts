@@ -11,6 +11,7 @@ import {
     getCryptoQuoteAmountProps,
     getSelectedCryptoId,
     getSelectedQuote,
+    isTradingExchangeContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 import {
     tradingGetAmountLabels,
@@ -48,11 +49,13 @@ export const useTradingFormOfferCommon = <T extends TradingType>() => {
 
     const sendAmount =
         !state.isLoadingOrInvalid && quoteAmounts?.sendAmount ? quoteAmounts.sendAmount : '0';
+    const receiveAmount =
+        !state.isLoadingOrInvalid && quoteAmounts?.receiveAmount ? quoteAmounts.receiveAmount : '0';
 
     const selectedAssetCryptoId =
         !state.isLoadingOrInvalid && quoteAmounts?.receiveCurrency
             ? quoteAmounts.receiveCurrency
-            : (selectedCryptoId ?? undefined);
+            : selectedCryptoId;
 
     const noOffersWithTor = isTorEnabled && !quote && !state.isFormLoading;
     const isConfirmButtonLoading = areFeesLoading || (state.isFormLoading && !isAmountEmpty);
@@ -78,8 +81,10 @@ export const useTradingFormOfferCommon = <T extends TradingType>() => {
         isConfirmButtonLoading,
         confirmButtonTranslationId,
         sendAmount,
+        receiveAmount,
         selectedAssetCryptoId,
         amountLabels,
         isBaseButtonDisabled,
+        shouldDisplayFiatAmount: isTradingExchangeContext(context) ? false : !!amountInCrypto,
     };
 };

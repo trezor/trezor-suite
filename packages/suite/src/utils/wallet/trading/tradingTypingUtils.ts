@@ -173,22 +173,25 @@ export const getPaymentMethod = (
     };
 };
 
-const getQuotesFilteredByProviderAndPaymentMethod = (
-    quotes: BuyTrade[] | SellFiatTrade[],
+const getQuotesFilteredByProviderAndPaymentMethod = <T extends BuyTrade | SellFiatTrade>(
+    quotes: T[],
     provider: string | undefined,
     paymentMethod: string | undefined,
-) =>
-    quotes
-        ?.filter(quote =>
-            paymentMethod
-                ? (quote as BuyTrade | SellFiatTrade).paymentMethod === paymentMethod
-                : true,
-        )
-        .filter(quote =>
-            provider ? (quote as BuyTrade | SellFiatTrade).exchange === provider : true,
-        );
+): T[] => {
+    let result = quotes;
+    if (paymentMethod !== undefined) {
+        result = result.filter(quote => quote.paymentMethod === paymentMethod);
+    }
+    if (provider !== undefined) {
+        result = result.filter(quote => quote.exchange === provider);
+    }
 
-export const getSelectedQuote = (context: TradingFormContextValues<TradingType>) => {
+    return result;
+};
+
+export const getSelectedQuote = (
+    context: TradingFormContextValues<TradingType>,
+): BuyTrade | SellFiatTrade | ExchangeTrade | undefined => {
     const { provider } = context.getValues();
 
     if (isTradingExchangeContext(context)) {
@@ -201,8 +204,16 @@ export const getSelectedQuote = (context: TradingFormContextValues<TradingType>)
 
     const { paymentMethod } = context.getValues();
 
-    return getQuotesFilteredByProviderAndPaymentMethod(
-        context.quotes,
+    if (isTradingBuyContext(context)) {
+        return getQuotesFilteredByProviderAndPaymentMethod<BuyTrade>(
+            context.quotes as BuyTrade[],
+            provider,
+            paymentMethod?.value,
+        )?.[0];
+    }
+
+    return getQuotesFilteredByProviderAndPaymentMethod<SellFiatTrade>(
+        context.quotes as SellFiatTrade[],
         provider,
         paymentMethod?.value,
     )?.[0];

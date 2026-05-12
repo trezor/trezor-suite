@@ -26,7 +26,7 @@ export const TradingFormOfferAmount = ({
 }: TradingFormOfferAmountProps) => (
     <Column gap={8} data-testid="@trading/best-offer" margin={{ bottom: 16 }}>
         {selectedAssetCryptoId && <Translation id={amountLabels.offerLabel} />}
-        {shouldDisplayFiatAmount ? (
+        {shouldDisplayFiatAmount || !selectedAssetCryptoId ? (
             <TradingFormOfferFiatAmount amount={tradingGetRoundedFiatAmount(sendAmount)} />
         ) : (
             <TradingFormOfferCryptoAmount amount={amount} cryptoId={selectedAssetCryptoId} />

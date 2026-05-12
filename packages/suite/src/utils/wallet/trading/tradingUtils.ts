@@ -1,7 +1,12 @@
 import { type ExtendedMessageDescriptor } from '@suite/intl';
 import type { TradingTradeType, TradingType } from '@suite-common/trading';
 import { type Network, type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { type PrecomposedLevels, type PrecomposedLevelsCardano } from '@suite-common/wallet-types';
+import {
+    type Output,
+    type PrecomposedLevels,
+    type PrecomposedLevelsCardano,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
 import { asAmountSubunit, substituteBip43Path, subunitsToUnits } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel, type TokenInfo } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
@@ -250,4 +255,13 @@ export const getFeeInUnits = ({
     }).toString();
 
     return feeInUnits;
+};
+
+export const getTradingFirstOutput = (outputs: Output[] | undefined) => {
+    const firstOutput = outputs?.[0];
+    const amount = firstOutput?.amount ?? '';
+    const token = firstOutput?.token ?? null;
+    const tokenAddress = token as TokenAddress | null;
+
+    return { amount, token, tokenAddress };
 };
