@@ -8,7 +8,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
+import { Button, Card, Divider, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -20,8 +20,6 @@ const EXPAND_DURATION = 400;
 const headerSectionStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.sp12,
     paddingHorizontal: utils.spacings.sp16,
-    borderBottomWidth: utils.borders.widths.small,
-    borderBottomColor: utils.colors.borderNeutral,
 }));
 
 const itemsSectionStyle = prepareNativeStyle(utils => ({
@@ -98,6 +96,7 @@ export const EarnConsentsDelegatingCard = ({
                 </Text>
             </HStack>
             <Animated.View onLayout={handleLayout} style={expandableStyle}>
+                <Divider />
                 <VStack spacing="sp16" style={applyStyle(itemsSectionStyle)}>
                     <EarnConsentsItem iconName="everstakeLogo" color="contentPrimary">
                         <Translation
