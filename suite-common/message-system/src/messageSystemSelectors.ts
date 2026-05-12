@@ -245,12 +245,13 @@ export const selectAllValidExperiments = createMemoizedSelector(
     },
 );
 
-export const selectExperimentById = (id: ExperimentId) =>
-    createMemoizedSelector([selectAllValidExperiments], allValidExperiments =>
+export const selectExperimentById = createMemoizedSelector(
+    [selectAllValidExperiments, (_state, id: ExperimentId) => id],
+    (allValidExperiments, id) =>
         allValidExperiments.find(
             (experiment): experiment is ExperimentsItemType => experiment.id === id,
         ),
-    );
+);
 
 export const selectActiveExperimentsWithVariants = createSelector(
     [selectAnalyticsInstanceId, selectAllValidExperiments],
@@ -275,8 +276,7 @@ export const selectActiveExperimentsWithVariants = createSelector(
 export const selectAllExperimentInclusionOverrides = (state: MessageSystemRootState) =>
     state.messageSystem.experimentInclusionOverrides;
 
-export const selectExperimentInclusionOverrideById = (id: ExperimentId) =>
-    createMemoizedSelector(
-        [selectAllExperimentInclusionOverrides],
-        inclusionOverrides => inclusionOverrides?.[id] ?? null,
-    );
+export const selectExperimentInclusionOverrideById = createMemoizedSelector(
+    [selectAllExperimentInclusionOverrides, (_state, id: ExperimentId) => id],
+    (inclusionOverrides, id) => inclusionOverrides?.[id] ?? null,
+);
