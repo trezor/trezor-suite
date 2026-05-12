@@ -31,6 +31,10 @@ export class WebUsbTransport extends AbstractApiTransport {
     }
 
     private async trySetSessionsBackground() {
+        if (typeof SharedWorker === 'undefined') return;
+        // detect SharedWorker polyfill, don't use it
+        if (Object.prototype.toString.call(SharedWorker.prototype) === '[object Object]') return;
+
         try {
             const response = await fetch(this.sessionsBackgroundUrl, { method: 'HEAD' });
             if (!response.ok) {
