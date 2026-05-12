@@ -33,7 +33,7 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedEditableTextFrameProps)
 export type EditableTextProps = AllowedFrameProps & {
     children?: ReactNode;
     onSubmit?: (value: string) => Promise<boolean>;
-    onEdit?: () => Promise<any>;
+    onEdit?: () => Promise<unknown>;
     onCancel?: () => void;
     isLoading?: boolean;
     isDisabled?: boolean;
