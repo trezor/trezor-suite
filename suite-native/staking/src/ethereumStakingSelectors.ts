@@ -1,3 +1,4 @@
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { getDaysToAddToPool, getDaysToAddToPoolInitial } from '@suite-common/staking';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
@@ -16,19 +17,20 @@ import {
 
 import { type NativeStakingRootState } from './types';
 
-export const selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol = (
-    state: NativeStakingRootState,
-    symbol: NetworkSymbol | null,
-) => {
-    const accounts = selectDeviceAccounts(state);
+const createMemoizedSelector = createWeakMapSelector.withTypes<NativeStakingRootState>();
 
-    return accounts.filter(
-        account =>
-            account.symbol === symbol &&
-            account.visible &&
-            !!getAccountEverstakeStakingPool(account),
-    );
-};
+export const selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol = createMemoizedSelector(
+    [selectDeviceAccounts, (_state, symbol: NetworkSymbol | null) => symbol],
+    (accounts, symbol) =>
+        returnStableArrayIfEmpty(
+            accounts.filter(
+                account =>
+                    account.symbol === symbol &&
+                    account.visible &&
+                    !!getAccountEverstakeStakingPool(account),
+            ),
+        ),
+);
 
 export const selectEthereumStakingPoolByAccountKey = (
     state: AccountsRootState,

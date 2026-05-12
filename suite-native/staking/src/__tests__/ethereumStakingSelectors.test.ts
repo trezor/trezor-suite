@@ -10,6 +10,7 @@ import {
     selectEthereumStakedBalanceByAccountKey,
     selectEthereumStakingPoolByAccountKey,
     selectEthereumTotalStakePendingByAccountKey,
+    selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol,
 } from '../ethereumStakingSelectors';
 
 const staticStateString = 'device@state:1';
@@ -95,6 +96,58 @@ const getTestState = (accounts: Account[]) => ({
 });
 
 describe('ethereumStakingSelectors', () => {
+    describe('selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol', () => {
+        it('should return only visible eth accounts that have an Everstake staking pool', () => {
+            const testState = getTestState([
+                ethAccountWithStaking,
+                ethAccountWithoutStaking,
+                ethAccountWithPendingStake,
+            ]);
+
+            const result = selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol(
+                testState as any,
+                'eth',
+            );
+
+            expect(result).toEqual([ethAccountWithStaking, ethAccountWithPendingStake]);
+        });
+
+        it('should return the same stable empty-array reference when no eth account has staking', () => {
+            const testState = getTestState([ethAccountWithoutStaking]);
+
+            const first = selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol(
+                testState as any,
+                'eth',
+            );
+            const second = selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol(
+                testState as any,
+                'eth',
+            );
+
+            expect(first).toEqual([]);
+            expect(first).toBe(second);
+        });
+
+        it('should return the same array reference across calls when underlying state is unchanged', () => {
+            const testState = getTestState([
+                ethAccountWithStaking,
+                ethAccountWithoutStaking,
+                ethAccountWithPendingStake,
+            ]);
+
+            const first = selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol(
+                testState as any,
+                'eth',
+            );
+            const second = selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol(
+                testState as any,
+                'eth',
+            );
+
+            expect(first).toBe(second);
+        });
+    });
+
     describe('selectEthereumStakingPoolByAccountKey', () => {
         it('should return staking pool for account with staking', () => {
             const testState = getTestState([ethAccountWithStaking]);
