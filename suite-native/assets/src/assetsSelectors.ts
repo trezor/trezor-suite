@@ -157,12 +157,14 @@ const selectDeviceAssetsWithBalances = createMemoizedSelector(
     },
 );
 
-export const selectAssetCryptoValue = (state: AssetsRootState, symbol: NetworkSymbol) => {
-    const assets = selectDeviceAssetsWithBalances(state);
-    const asset = assets.assets.find(a => a.symbol === symbol);
+export const selectAssetCryptoValue = createMemoizedSelector(
+    [selectDeviceAssetsWithBalances, (_state, symbol: NetworkSymbol) => symbol],
+    (assets, symbol) => {
+        const asset = assets.assets.find(a => a.symbol === symbol);
 
-    return asset?.assetBalance ?? '0';
-};
+        return asset?.assetBalance ?? '0';
+    },
+);
 
 export const selectAssetFiatValue = createMemoizedSelector(
     [selectDeviceAssetsWithBalances, (_state, symbol: NetworkSymbol) => symbol],
