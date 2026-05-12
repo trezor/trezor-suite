@@ -1,6 +1,9 @@
 import { type PayloadAction, createSelector } from '@reduxjs/toolkit';
 
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import {
+    type SuiteCompatibleSelector,
+    createReducerWithExtraDeps,
+} from '@suite-common/redux-utils';
 import { type FirmwareStatus, type TrezorDevice } from '@suite-common/suite-types';
 import {
     DEVICE,
@@ -135,7 +138,9 @@ export const selectSwitchFirmwareType = (state: RootState) => state.firmware.swi
 export const selectIsFirmwareInstallationRunning = (state: RootState) =>
     state.firmware.status === 'started';
 
-export const selectEffectiveFirmwareChannel = (selectAllowPrerelease: (state: any) => boolean) =>
+export const selectEffectiveFirmwareChannel = (
+    selectAllowPrerelease: SuiteCompatibleSelector<boolean>,
+) =>
     createSelector(
         selectFirmwareChannel,
         selectAllowPrerelease,
@@ -145,7 +150,9 @@ export const selectEffectiveFirmwareChannel = (selectAllowPrerelease: (state: an
             allowPrerelease ? 'production-early-access' : firmwareChannel,
     );
 
-export const selectIsProductionFirmwareChannel = (selectAllowPrerelease: (state: any) => boolean) =>
+export const selectIsProductionFirmwareChannel = (
+    selectAllowPrerelease: SuiteCompatibleSelector<boolean>,
+) =>
     createSelector(
         selectEffectiveFirmwareChannel(selectAllowPrerelease),
         (firmwareChannel): boolean =>
