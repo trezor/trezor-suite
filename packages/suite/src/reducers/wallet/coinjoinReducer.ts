@@ -703,27 +703,28 @@ export const selectRegisteredUtxosByAccountKey = createMemoizedSelector(
     },
 );
 
-export const selectSessionProgressByAccountKey = (
-    state: CoinjoinRootState,
-    accountKey: AccountKey | null,
-) => {
-    const relatedAccount = selectAccountByKey(state, accountKey);
-    const targetAnonymity = selectTargetAnonymityByAccountKey(state, accountKey);
+export const selectSessionProgressByAccountKey = createMemoizedSelector(
+    [
+        selectTargetAnonymityByAccountKey,
+        (state: CoinjoinRootState, accountKey: AccountKey | null) =>
+            selectAccountByKey(state, accountKey)?.addresses?.anonymitySet,
+        (state: CoinjoinRootState, accountKey: AccountKey | null) =>
+            selectAccountByKey(state, accountKey)?.balance,
+        (state: CoinjoinRootState, accountKey: AccountKey | null) =>
+            selectAccountByKey(state, accountKey)?.utxo,
+    ],
+    (targetAnonymity, anonymitySet, balance, utxos) => {
+        if (!balance || !utxos) {
+            return 0;
+        }
 
-    const { addresses, balance, utxo: utxos } = relatedAccount || {};
-
-    if (!balance || !utxos) {
-        return 0;
-    }
-
-    const progress = calculateAnonymityProgress({
-        targetAnonymity,
-        anonymitySet: addresses?.anonymitySet,
-        utxos,
-    });
-
-    return progress;
-};
+        return calculateAnonymityProgress({
+            targetAnonymity,
+            anonymitySet,
+            utxos,
+        });
+    },
+);
 
 export const selectCurrentCoinjoinSession = (state: CoinjoinRootState) => {
     const selectedAccount = selectSelectedAccount(state);
