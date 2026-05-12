@@ -1,4 +1,8 @@
-import { isTrezorDeviceWithState, selectDeviceByStaticSessionId } from '@suite-common/device';
+import {
+    type DeviceRootState,
+    isTrezorDeviceWithState,
+    selectDeviceByStaticSessionId,
+} from '@suite-common/device';
 import {
     type EnsureSubscribedStorageDep,
     type EnsureSuiteSyncKeysDep,
@@ -10,7 +14,7 @@ import { err } from '@trezor/type-utils';
 import { isFwUpgradeNeededForSuiteSync, isSuiteSyncSupportedByDevice } from '../suiteSyncUtils';
 
 export type EnsureWalletSuiteSyncOnDeps = {
-    getState: () => any;
+    getState: () => DeviceRootState;
 } & EnsureSubscribedStorageDep &
     EnsureSuiteSyncKeysDep &
     SubscriptionStorageDep;
