@@ -206,7 +206,7 @@ export const TrezorConnectDevice = Type.Object({
 
     telemetryGet: Type.Unsafe<typeof telemetryGet>(),
 
-    // todo: link docs
+    // https://connect.trezor.io/9/methods/device/pingDevice/
     pingDevice: Type.Unsafe<typeof pingDevice>(),
 });
 export type TrezorConnectDevice = Static<typeof TrezorConnectDevice>;
