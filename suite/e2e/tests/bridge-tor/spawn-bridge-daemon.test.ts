@@ -7,15 +7,13 @@ import { skipFixture } from '../../support/common';
 import { launchSuite, launchSuiteElectronApp } from '../../support/electron';
 import { expect, test } from '../../support/fixtures';
 
-test.use({ exceptionLogger: skipFixture });
-test.use({ context: undefined }); // disable default context fixture to be able to use beforeAll
 test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
-    test.describe.configure({ mode: 'serial' });
-    test.beforeAll(async ({ trezorUserEnv, onboardingPage }) => {
+    test.use({ exceptionLogger: skipFixture, startEmulator: false, setupEmulator: false });
+    test.beforeEach(async ({ trezorUserEnv, page }) => {
+        await page.close();
         // Ensure bridge is stopped so we properly test the electron app starting node-bridge module.
         await trezorUserEnv.connect();
         await trezorUserEnv.stopBridge();
-        await onboardingPage.verifySuiteIsLoaded();
     });
 
     test('App in daemon mode spawns node-bridge', async ({ request }, testInfo) => {

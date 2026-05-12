@@ -58,7 +58,9 @@ export const electronTeardown = async (
     const tracingPath =
         (testInfo as any)._tracing.maybeGenerateNextTraceRecordingPath() ??
         `${testInfo.outputDir}/trace.electron.zip`;
-    await suite.window.context().tracing.stop({ path: tracingPath });
+    if (!suite.window.isClosed()) {
+        await suite.window.context().tracing.stop({ path: tracingPath });
+    }
     testInfo.attachments.push({
         name: 'electron-logs.txt',
         path: `${testInfo.outputDir}/electron-logs.txt`,
