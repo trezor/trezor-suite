@@ -69,10 +69,7 @@ export const createFormStateForSendForm = ({
         if (exchangeQuote.isDex && exchangeQuote.dexTx) {
             outputAddress = exchangeQuote.dexTx.to;
             transactionData = exchangeQuote.dexTx.data;
-            // Gas limit adjustment only for the swap itself, not for approval transactions
-            if (exchangeQuote.status === 'CONFIRM') {
-                ethereumAdjustGasLimit = ETHEREUM_ADJUST_GAS_LIMIT;
-            }
+            ethereumAdjustGasLimit = ETHEREUM_ADJUST_GAS_LIMIT;
         }
 
         if (exchangeQuote.send) {
