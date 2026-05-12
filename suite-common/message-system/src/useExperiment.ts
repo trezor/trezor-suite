@@ -8,12 +8,16 @@ import {
     selectExperimentById,
     selectExperimentInclusionOverrideById,
 } from './messageSystemSelectors';
-import type { ExperimentId } from './messageSystemTypes';
+import type { ExperimentId, MessageSystemRootState } from './messageSystemTypes';
 
 export const useExperiment = (experimentId: ExperimentId) => {
     const instanceId = useSelector(selectAnalyticsInstanceId);
-    const experiment = useSelector(selectExperimentById(experimentId));
-    const inclusionOverride = useSelector(selectExperimentInclusionOverrideById(experimentId));
+    const experiment = useSelector((state: MessageSystemRootState) =>
+        selectExperimentById(state, experimentId),
+    );
+    const inclusionOverride = useSelector((state: MessageSystemRootState) =>
+        selectExperimentInclusionOverrideById(state, experimentId),
+    );
     const activeExperimentVariant = useMemo(
         () =>
             experiment && inclusionOverride != null
