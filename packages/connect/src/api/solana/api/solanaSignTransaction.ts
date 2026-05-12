@@ -1,4 +1,4 @@
-import solana from '@connect-coins/solana/runtime';
+import solana from '@trezor/coins-solana/runtime';
 import {
     SolanaSignTransaction as SolanaSignTransactionSchema,
     SolanaTxAdditionalInfo,

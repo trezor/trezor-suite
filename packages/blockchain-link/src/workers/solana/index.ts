@@ -1,5 +1,5 @@
-import { tokenProgramsInfo } from '@connect-coins/solana/constants';
-import solana from '@connect-coins/solana/runtime';
+import { tokenProgramsInfo } from '@trezor/coins-solana/constants';
+import solana from '@trezor/coins-solana/runtime';
 import type {
     AccountInfoBase,
     Address,
@@ -10,7 +10,7 @@ import type {
     SolanaRpcResponse,
     SolanaTokenAccountInfo,
     SolanaValidParsedTxWithMeta,
-} from '@connect-coins/solana/types';
+} from '@trezor/coins-solana/types';
 import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
 import type {
     AccountInfo,

@@ -65,7 +65,6 @@ export const importConfig = [
                             group: 'external',
                             position: 'before',
                         },
-                        { pattern: '@connect-coins/**', group: 'internal' },
                         { pattern: '@trezor/**', group: 'internal' }, // Translates to /packages/** */
                         { pattern: '@suite-native/**', group: 'internal' },
                         { pattern: '@suite-common/**', group: 'internal' },

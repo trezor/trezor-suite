@@ -2,13 +2,13 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../../connect-coins/solana" },
         { "path": "../calldata" },
         { "path": "../earn-staking-api" },
         { "path": "../wallet-config" },
         { "path": "../wallet-constants" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
+        { "path": "../../coins/coins-solana" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"

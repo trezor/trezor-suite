@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { SOLANA_EPOCH_DAYS } from '@connect-coins/solana/constants';
+import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { getDaysToAddToPoolInitial } from '@suite-common/staking';

@@ -1,4 +1,4 @@
-import type { SolanaAPI } from '@connect-coins/solana/types';
+import type { SolanaAPI } from '@trezor/coins-solana/types';
 import type { AccountInfoParams } from '@trezor/blockchain-link-types';
 
 import { BlockchainLink } from '../../src';

@@ -31,11 +31,6 @@ const scopes = {
         templatePath: 'package-template/',
         templatePackageJson: templatePackageJsonWeb,
     },
-    '@connect-coins': {
-        path: 'connect-coins/',
-        templatePath: 'package-template/',
-        templatePackageJson: templatePackageJsonWeb,
-    },
 } as const;
 
 const exitWithErrorMessage = (errorMessage: string) => {

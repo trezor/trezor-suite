@@ -12,7 +12,6 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@connect-coins/solana": "workspace:*",
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/analytics": "workspace:*",
@@ -40,6 +39,7 @@
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
+        "@trezor/coins-solana": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:^",
         "@trezor/device-utils": "workspace:*",

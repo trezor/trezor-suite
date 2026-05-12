@@ -133,13 +133,16 @@ export const getLocalVersion = (packageName: string) => {
     return packageJson.version;
 };
 
+export const getTrezorPackagesDir = (pkg: string) =>
+    pkg.startsWith('coins-') ? 'coins' : 'packages';
+
 export const getTrezorDependencies = async (
     rootDir: string,
     packageNameWithoutTrezorPrefix: string,
 ) => {
     const packageJsonPath = path.join(
         rootDir,
-        'packages',
+        getTrezorPackagesDir(packageNameWithoutTrezorPrefix),
         packageNameWithoutTrezorPrefix,
         'package.json',
     );

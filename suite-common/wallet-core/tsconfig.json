@@ -2,7 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../../connect-coins/solana" },
         { "path": "../analytics" },
         { "path": "../bluetooth" },
         { "path": "../calldata" },
@@ -36,6 +35,7 @@
         {
             "path": "../../packages/blockchain-link-utils"
         },
+        { "path": "../../coins/coins-solana" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"

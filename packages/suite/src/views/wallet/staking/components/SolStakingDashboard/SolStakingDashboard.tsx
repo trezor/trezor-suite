@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { withScope } from '@sentry/core';
 
-import { SOLANA_EPOCH_DAYS } from '@connect-coins/solana/constants';
+import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
 import { EARN_API_BASE_URL } from '@suite-common/earn-staking-api/src/constants';
 import { useSolanaRewardsHistory } from '@suite-common/earn-staking-api/src/staking';
 import {

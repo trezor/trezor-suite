@@ -1,7 +1,7 @@
 import {
     EVERSTAKE_SOLANA_DEVNET_VALIDATOR,
     EVERSTAKE_SOLANA_MAINNET_VALIDATOR,
-} from '@connect-coins/solana/constants';
+} from '@trezor/coins-solana/constants';
 import { EVERSTAKE_POOLS, FIVE_BINARIES_POOLS } from '@suite-common/wallet-constants';
 
 export type StakingProviderId = 'everstake' | 'fivebinaries';

@@ -12,7 +12,6 @@
     },
     "include": [".", "e2e", "**/*.json"],
     "references": [
-        { "path": "../../connect-coins/solana" },
         {
             "path": "../../suite-common/analytics"
         },
@@ -201,6 +200,7 @@
         { "path": "../blockchain-link-types" },
         { "path": "../blockchain-link-utils" },
         { "path": "../coinjoin" },
+        { "path": "../../coins/coins-solana" },
         { "path": "../components" },
         { "path": "../connect" },
         { "path": "../connect-common" },

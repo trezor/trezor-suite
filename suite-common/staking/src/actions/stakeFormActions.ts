@@ -1,4 +1,4 @@
-import type { EstimatedFee } from '@connect-coins/solana/types';
+import type { EstimatedFee } from '@trezor/coins-solana/types';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type ComposeActionContext,

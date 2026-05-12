@@ -3,7 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": [".", "**/*.json"],
     "references": [
-        { "path": "../../connect-coins/solana" },
         { "path": "../earn-staking-api" },
         { "path": "../fiat-services" },
         { "path": "../suite-constants" },
@@ -22,6 +21,7 @@
         {
             "path": "../../packages/blockchain-link-utils"
         },
+        { "path": "../../coins/coins-solana" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/type-utils" },

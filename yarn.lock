@@ -2163,24 +2163,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@connect-coins/solana@workspace:*, @connect-coins/solana@workspace:connect-coins/solana":
-  version: 0.0.0-use.local
-  resolution: "@connect-coins/solana@workspace:connect-coins/solana"
-  dependencies:
-    "@solana-program/compute-budget": "npm:^0.8.0"
-    "@solana-program/memo": "npm:^0.7.0"
-    "@solana-program/stake": "npm:^0.2.1"
-    "@solana-program/system": "npm:^0.7.0"
-    "@solana-program/token": "npm:^0.5.1"
-    "@solana-program/token-2022": "npm:^0.4.2"
-    "@solana/kit": "npm:^2.3.0"
-    "@solana/rpc-api": "npm:^2.3.0"
-    "@solana/rpc-types": "npm:^2.3.0"
-    "@trezor/type-utils": "workspace:*"
-    "@trezor/utils": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
 "@craftzdog/react-native-buffer@npm:^6.0.5":
   version: 6.1.1
   resolution: "@craftzdog/react-native-buffer@npm:6.1.1"
@@ -10854,13 +10836,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/staking@workspace:suite-common/staking"
   dependencies:
-    "@connect-coins/solana": "workspace:*"
     "@suite-common/calldata": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
+    "@trezor/coins-solana": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -11155,7 +11137,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/trading@workspace:suite-common/trading"
   dependencies:
-    "@connect-coins/solana": "workspace:*"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/device": "workspace:*"
     "@suite-common/geolocation": "workspace:*"
@@ -11173,6 +11154,7 @@ __metadata:
     "@testing-library/react": "npm:^16.3.2"
     "@trezor/address-validator": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/coins-solana": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/connect-plugin-ethereum": "workspace:*"
@@ -11229,9 +11211,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-config@workspace:suite-common/wallet-config"
   dependencies:
-    "@connect-coins/solana": "workspace:*"
     "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
+    "@trezor/coins-solana": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -11250,7 +11232,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-core@workspace:suite-common/wallet-core"
   dependencies:
-    "@connect-coins/solana": "workspace:*"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/analytics": "workspace:*"
@@ -11278,6 +11259,7 @@ __metadata:
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
+    "@trezor/coins-solana": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:^"
     "@trezor/device-utils": "workspace:*"
@@ -11313,7 +11295,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-utils@workspace:suite-common/wallet-utils"
   dependencies:
-    "@connect-coins/solana": "workspace:*"
     "@scure/base": "npm:^2.0.0"
     "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
@@ -11327,6 +11308,7 @@ __metadata:
     "@trezor/address-validator": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
+    "@trezor/coins-solana": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -15182,10 +15164,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link-utils@workspace:packages/blockchain-link-utils"
   dependencies:
-    "@connect-coins/solana": "workspace:*"
     "@noble/hashes": "npm:^2.0.1"
     "@stellar/stellar-sdk": "npm:14.5.0"
     "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/coins-solana": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -15200,10 +15182,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
-    "@connect-coins/solana": "workspace:*"
     "@stellar/stellar-sdk": "npm:14.5.0"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
+    "@trezor/coins-solana": "workspace:*"
     "@trezor/e2e-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
@@ -15252,6 +15234,24 @@ __metadata:
     node-fetch: "npm:^3.3.2"
     socks-proxy-agent: "npm:8.0.5"
     ws: "npm:^8.20.0"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/coins-solana@workspace:*, @trezor/coins-solana@workspace:coins/coins-solana":
+  version: 0.0.0-use.local
+  resolution: "@trezor/coins-solana@workspace:coins/coins-solana"
+  dependencies:
+    "@solana-program/compute-budget": "npm:^0.8.0"
+    "@solana-program/memo": "npm:^0.7.0"
+    "@solana-program/stake": "npm:^0.2.1"
+    "@solana-program/system": "npm:^0.7.0"
+    "@solana-program/token": "npm:^0.5.1"
+    "@solana-program/token-2022": "npm:^0.4.2"
+    "@solana/kit": "npm:^2.3.0"
+    "@solana/rpc-api": "npm:^2.3.0"
+    "@solana/rpc-types": "npm:^2.3.0"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -15526,7 +15526,6 @@ __metadata:
   dependencies:
     "@babel/preset-typescript": "npm:^7.28.5"
     "@bufbuild/protobuf": "npm:^2.11.0"
-    "@connect-coins/solana": "workspace:*"
     "@ethereumjs/common": "npm:^10.1.1"
     "@ethereumjs/tx": "npm:^10.1.1"
     "@fivebinaries/coin-selection": "npm:3.0.0"
@@ -15535,6 +15534,7 @@ __metadata:
     "@scure/bip39": "npm:^1.5.1"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/coins-solana": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/connect-data": "workspace:*"
     "@trezor/crypto-utils": "workspace:*"
@@ -16053,7 +16053,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-e2e@workspace:suite/e2e"
   dependencies:
-    "@connect-coins/solana": "workspace:*"
     "@currents/playwright": "npm:^1.22.2"
     "@evolu/common": "npm:8.0.0-next.5"
     "@playwright/browser-chromium": "npm:1.58.2"
@@ -16081,6 +16080,7 @@ __metadata:
     "@suite/router-config": "workspace:*"
     "@suite/settings": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:^"
+    "@trezor/coins-solana": "workspace:*"
     "@trezor/connect-web": "workspace:*"
     "@trezor/e2e-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
@@ -16147,7 +16147,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite@workspace:packages/suite"
   dependencies:
-    "@connect-coins/solana": "workspace:*"
     "@floating-ui/react": "npm:^0.27.17"
     "@formatjs/intl": "npm:4.1.2"
     "@hookform/resolvers": "npm:^5.2.2"
@@ -16248,6 +16247,7 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/coinjoin": "workspace:*"
+    "@trezor/coins-solana": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:^"
