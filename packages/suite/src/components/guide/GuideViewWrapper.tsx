@@ -12,7 +12,7 @@ const Wrapper = styled.div<{ $elevation: Elevation }>`
     flex-direction: column;
     overflow: hidden scroll;
     -webkit-app-region: no-drag;
-    min-width: ${variables.LAYOUT_SIZE.GUIDE_PANEL_CONTENT_WIDTH};
+    min-width: ${variables.LAYOUT_SIZE.GUIDE_PANEL_MIN_WIDTH - 1}px;
 `;
 
 export const ContentScrolledContext = createContext<boolean>(false);

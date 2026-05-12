@@ -59,6 +59,7 @@ export const initialAppState: AppState = {
         view: 'GUIDE_DEFAULT',
         indexNode: null,
         currentNode: null,
+        width: 350,
     },
     messageSystem: messageSystemInitialState,
     modal: {
