@@ -1,6 +1,7 @@
 import { G } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectDeviceButtonRequestsCodes } from '@suite-common/device';
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountKey,
@@ -11,6 +12,8 @@ import {
 import { getSendFormDraftKey } from '@suite-common/wallet-utils';
 
 import { type SendRootState } from './sendFormReducer';
+
+const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 
 export const selectSendPrecomposedTx = (state: SendRootState) => state.wallet.send.precomposedTx;
 export const selectSendSerializedTx = (state: SendRootState) => state.wallet.send.serializedTx;
@@ -42,26 +45,28 @@ export const selectSendFormDraftOutputsByAccountKey = (
     return draft?.outputs ?? null;
 };
 
-export const selectSendFormButtonRequestCodes = (state: DeviceRootState, symbol: NetworkSymbol) => {
-    const buttonRequestCodes = selectDeviceButtonRequestsCodes(state);
+export const selectSendFormButtonRequestCodes = createMemoizedSelector(
+    [selectDeviceButtonRequestsCodes, (_state: DeviceRootState, symbol: NetworkSymbol) => symbol],
+    (buttonRequestCodes, symbol) => {
+        const networkType = getNetworkType(symbol);
 
-    const networkType = getNetworkType(symbol);
+        const isCardano = networkType === 'cardano';
+        const isEthereum = networkType === 'ethereum';
+        const isStellar = networkType === 'stellar';
 
-    const isCardano = networkType === 'cardano';
-    const isEthereum = networkType === 'ethereum';
-    const isStellar = networkType === 'stellar';
-
-    return buttonRequestCodes.filter(
-        code =>
-            code === 'ButtonRequest_ConfirmOutput' ||
-            code === 'ButtonRequest_SignTx' ||
-            isCardano ||
-            (isEthereum && code === 'ButtonRequest_Other') ||
-            // This is a special case for T1B1 devices (Stellar).
-            // See https://github.com/trezor/trezor-firmware/issues/5120
-            (isStellar && (code === 'ButtonRequest_Other' || code === 'ButtonRequest_ProtectCall')),
-    );
-};
+        return buttonRequestCodes.filter(
+            code =>
+                code === 'ButtonRequest_ConfirmOutput' ||
+                code === 'ButtonRequest_SignTx' ||
+                isCardano ||
+                (isEthereum && code === 'ButtonRequest_Other') ||
+                // This is a special case for T1B1 devices (Stellar).
+                // See https://github.com/trezor/trezor-firmware/issues/5120
+                (isStellar &&
+                    (code === 'ButtonRequest_Other' || code === 'ButtonRequest_ProtectCall')),
+        );
+    },
+);
 
 export const selectSendFormReviewButtonRequestsCount = (
     state: DeviceRootState,
@@ -76,14 +81,14 @@ export const selectSendFormReviewButtonRequestsCount = (
     const sendFormReviewRequest = selectSendFormButtonRequestCodes(state, symbol);
 
     // While confirming decrease amount in RBF, 'ButtonRequest_ConfirmOutput' is called twice (confirm decrease address, confirm decrease amount).
-    if (
+    const shouldDropLast =
         G.isNumber(decreaseOutputId) &&
-        sendFormReviewRequest.filter(code => code === 'ButtonRequest_ConfirmOutput').length > 1
-    ) {
-        sendFormReviewRequest.splice(-1, 1);
-    }
+        sendFormReviewRequest.filter(code => code === 'ButtonRequest_ConfirmOutput').length > 1;
+    const adjustedLength = shouldDropLast
+        ? sendFormReviewRequest.length - 1
+        : sendFormReviewRequest.length;
 
-    return isCardano ? sendFormReviewRequest.length - 1 : sendFormReviewRequest.length;
+    return isCardano ? adjustedLength - 1 : adjustedLength;
 };
 
 export const selectSendFormReviewLastButtonCode = (
