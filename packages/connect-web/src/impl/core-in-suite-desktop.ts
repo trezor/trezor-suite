@@ -1,6 +1,7 @@
 import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 import {
     CORE_CALL,
+    CORE_CALL_CANCEL,
     type CallMethodAnyResponse,
     type CallMethodPayload,
     POPUP,
@@ -30,10 +31,10 @@ export class CoreInSuiteDesktop implements ConnectImpl {
         return Promise.resolve(undefined);
     }
 
-    public cancel(_error?: string) {
+    public cancel(reason?: string) {
         this.ws.sendMessage({
-            type: POPUP.CLOSED,
-            payload: { error: _error },
+            type: CORE_CALL_CANCEL,
+            payload: reason ? { reason } : null,
         });
     }
 
