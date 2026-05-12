@@ -1,4 +1,4 @@
-import { type MouseEvent } from 'react';
+import { type KeyboardEvent, type MouseEvent } from 'react';
 import { ReactSVG } from 'react-svg';
 
 import styled, { css } from 'styled-components';
@@ -103,7 +103,7 @@ const SVG = styled(ReactSVG)`
 export type IconProps = AllowedFrameProps & {
     name: IconName;
     size?: IconSize;
-    onClick?: (e: any) => void;
+    onClick?: (e: MouseEvent<HTMLDivElement> | KeyboardEvent<Element>) => void;
     'data-testid'?: string;
 } & ExclusiveColorOrIntent;
 
@@ -130,7 +130,7 @@ export const Icon = ({
         svg.setAttribute('height', '100%');
     };
 
-    const handleClick = (e: MouseEvent<any>) => {
+    const handleClick = (e: MouseEvent<HTMLDivElement>) => {
         onClick?.(e);
 
         // We need to stop default/propagation in case the icon is rendered in popup/modal so it won't close it.
