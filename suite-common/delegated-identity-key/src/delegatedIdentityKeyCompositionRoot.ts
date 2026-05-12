@@ -1,7 +1,7 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
 import { toGetter } from '@suite-common/dependency-injection';
-import { selectDeviceDelegatedIdentityKey } from '@suite-common/device';
+import { type DeviceRootState, selectDeviceDelegatedIdentityKey } from '@suite-common/device';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 
 import { createEnsureDelegatedIdentityKey } from './ensureDelegatedIdentityKey';
@@ -14,7 +14,7 @@ import { createSaveDelegatedIdentityKey } from './saveDelegatedIdentityKey';
 
 export type DelegatedIdentityKeyCompositionRootDeps = {
     dispatch: Dispatch;
-    getState: () => any;
+    getState: () => DeviceRootState;
     trezorConnect: RetrieveDelegatedIdentityKeyFromDeviceDeps['trezorConnect'];
 } & PlatformEncryptionDep;
 
