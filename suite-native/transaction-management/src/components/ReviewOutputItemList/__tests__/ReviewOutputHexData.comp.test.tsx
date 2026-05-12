@@ -1,0 +1,90 @@
+import { getTranslation } from '@suite-native/intl';
+import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
+
+import { ReviewOutputHexData } from '../ReviewOutputHexData';
+
+const mockCopyToClipboard = jest.fn();
+
+jest.mock('@suite-native/clipboard', () => ({
+    useCopyToClipboard: () => mockCopyToClipboard,
+}));
+
+describe('ReviewOutputHexData', () => {
+    const renderHexData = (value: string) =>
+        renderWithBasicProvider(<ReviewOutputHexData value={value} />);
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should render empty-state translation when value is empty', () => {
+        const { getByText } = renderHexData('');
+
+        expect(
+            getByText(getTranslation('transactionManagement.review.outputs.transactionDataEmpty')),
+        ).toBeOnTheScreen();
+    });
+
+    it('should render full value when length is at most 300 characters', () => {
+        const value = 'a'.repeat(300);
+        const { getByText, queryByText } = renderHexData(value);
+
+        expect(getByText(value)).toBeOnTheScreen();
+        expect(
+            queryByText(
+                getTranslation('transactionManagement.review.outputs.transactionDataShowMore'),
+            ),
+        ).toBeNull();
+    });
+
+    it('should truncate long value, expand on press, and collapse again', async () => {
+        const value = 'b'.repeat(301);
+        const truncated = 'b'.repeat(300);
+        const showMore = getTranslation(
+            'transactionManagement.review.outputs.transactionDataShowMore',
+        );
+        const showLess = getTranslation(
+            'transactionManagement.review.outputs.transactionDataShowLess',
+        );
+
+        const { getByText, queryByText } = renderHexData(value);
+
+        expect(getByText(truncated)).toBeOnTheScreen();
+        expect(queryByText(value)).toBeNull();
+        expect(getByText(showMore)).toBeOnTheScreen();
+
+        await userEvent.press(getByText(showMore));
+
+        expect(getByText(value)).toBeOnTheScreen();
+        expect(getByText(showLess)).toBeOnTheScreen();
+
+        await userEvent.press(getByText(showLess));
+
+        expect(getByText(truncated)).toBeOnTheScreen();
+        expect(queryByText(value)).toBeNull();
+    });
+
+    it('should expand truncated value when pressing the truncated hex body', async () => {
+        const value = 'c'.repeat(301);
+        const truncated = 'c'.repeat(300);
+        const showLess = getTranslation(
+            'transactionManagement.review.outputs.transactionDataShowLess',
+        );
+
+        const { getByText } = renderHexData(value);
+
+        await userEvent.press(getByText(truncated));
+
+        expect(getByText(value)).toBeOnTheScreen();
+        expect(getByText(showLess)).toBeOnTheScreen();
+    });
+
+    it('should copy full value on long press of the data control', async () => {
+        const value = '0xcafe';
+        const { getAllByRole } = renderHexData(value);
+
+        await userEvent.longPress(getAllByRole('button')[0]);
+
+        expect(mockCopyToClipboard).toHaveBeenCalledWith(value);
+    });
+});

@@ -8,7 +8,6 @@ import {
 } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
-import { UINT256_MAX } from '@suite-common/suite-constants';
 import { type Locale, type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
@@ -23,6 +22,7 @@ import {
     findAccountsByAddress,
     getCardanoFingerprint,
     isEvmApprovalTxByTextSignature,
+    isMaxAllowance,
     isTestnet,
     localizeNumber,
 } from '@suite-common/wallet-utils';
@@ -467,7 +467,7 @@ const getOutputLines = ({
             return output;
         }
         case 'approve_data': {
-            const isMaxApproval = new BigNumber(value).eq(UINT256_MAX);
+            const isMaxApproval = isMaxAllowance(value);
             const isApprovalTx = evmTxType === 'approve';
             const type = isMaxApproval || !isApprovalTx ? 'data' : 'amount';
             const getValue = () => {

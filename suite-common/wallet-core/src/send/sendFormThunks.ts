@@ -3,7 +3,6 @@ import { isRejected } from '@reduxjs/toolkit';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { type ActionsFromAsyncThunk, createThunk } from '@suite-common/redux-utils';
-import { UINT256_MAX } from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -32,6 +31,7 @@ import {
     isCardanoTx,
     isEvmApprovalTx,
     isExchangeTradingForm,
+    isMaxAllowance,
     subunitsToUnits,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
@@ -363,7 +363,7 @@ export const pushSendFormTransactionThunk = createThunk<
             const { txid } = pushTxResponse.payload;
 
             if (evmApprovalData && token) {
-                const isInfiniteApproval = new BigNumber(evmApprovalData.amount).eq(UINT256_MAX);
+                const isInfiniteApproval = isMaxAllowance(evmApprovalData.amount);
                 const amount = subunitsToUnits({
                     value: asAmountSubunit(new BigNumber(evmApprovalData.amount)),
                     decimals: token.decimals,

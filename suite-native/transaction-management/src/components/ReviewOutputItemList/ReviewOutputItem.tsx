@@ -31,7 +31,7 @@ const OutputLabel = ({
     switch (type) {
         case 'address':
         case 'regular_legacy':
-            if (flowType === 'approve') {
+            if (flowType === 'approve' || flowType === 'swap') {
                 return <Translation id="transactionManagement.review.outputs.tokenApprovalLabel" />;
             }
             if (flowType === 'revoke' || flowType === 'revoke-and-approve') {
@@ -59,6 +59,16 @@ const OutputLabel = ({
             }
 
             return <Translation id="transactionManagement.review.outputs.contractLabel" />;
+        case 'data':
+            return <Translation id="transactionManagement.review.outputs.transactionDataLabel" />;
+        case 'recipient_name':
+            return (
+                <Translation id="transactionManagement.review.outputs.recipientNameOutputLabel" />
+            );
+        case 'traded_assets':
+            return (
+                <Translation id="transactionManagement.review.outputs.tradedAssetsOutputLabel" />
+            );
         case 'timebounds':
             return <Translation id="transactionManagement.review.outputs.timeboundsLabel" />;
         case 'signing-with':
@@ -89,6 +99,9 @@ export const ReviewOutputItem = ({
 }: ReviewOutputItemProps) => {
     const { state, type, value, value2, token } = reviewOutput;
 
+    const tradedSend = reviewOutput.type === 'traded_assets' ? reviewOutput.send : undefined;
+    const tradedReceive = reviewOutput.type === 'traded_assets' ? reviewOutput.receive : undefined;
+
     return (
         <View onLayout={onLayout}>
             <ReviewOutputCard
@@ -103,6 +116,8 @@ export const ReviewOutputItem = ({
                     token={token}
                     tokenContract={tokenContract}
                     flowType={flowType}
+                    send={tradedSend}
+                    receive={tradedReceive}
                 />
             </ReviewOutputCard>
         </View>

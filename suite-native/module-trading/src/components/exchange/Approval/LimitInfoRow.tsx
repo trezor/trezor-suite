@@ -10,6 +10,7 @@ import { CryptoIcon, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { TradeInfoRow } from '@suite-native/trading-atoms';
 
+import { UnlimitedAllowanceLabel } from './UnlimitedAllowanceLabel';
 import { hasPreapprovedLimit } from '../../../utils/exchange/quotesUtils';
 import { TradingCoinAmountFormatter } from '../../general/TradingCoinAmountFormatter';
 
@@ -49,9 +50,7 @@ export const LimitInfoRow = ({ onPress, testID, withCaret, children }: LimitInfo
                             />
                         )}
                         {approvalType === 'INFINITE' ? (
-                            <Text variant="body-sm-strong">
-                                <Translation id="moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel" />
-                            </Text>
+                            <UnlimitedAllowanceLabel cryptoId={send} />
                         ) : (
                             <TradingCoinAmountFormatter
                                 amount={sendStringAmount}
