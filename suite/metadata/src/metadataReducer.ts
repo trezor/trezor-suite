@@ -19,7 +19,7 @@ import {
 import { type AnyAction, createWeakMapSelector } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { type DeviceState, type StaticSessionId } from '@trezor/connect';
 
 import * as METADATA from './metadataConstants';
@@ -175,29 +175,27 @@ export const selectLabelingDataForSelectedAccount = (state: {
     return provider.data[metadataKeys.fileName] as AccountLabels;
 };
 
-/**
- * @deprecated Legacy Labeling
- * Select metadata of type 'labels' for requested account
- */
-export const selectLabelingDataForAccount = (
-    state: { metadata: MetadataState; wallet: { accounts: Account[] } },
-    accountKey: AccountKey,
-) => {
-    const provider = selectSelectedProviderForLabels(state);
-    const account = selectAccountByKey(state, accountKey);
-    const metadataKeys = account?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION];
-
-    if (!metadataKeys || !metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
-        return DEFAULT_ACCOUNT_METADATA;
-    }
-
-    return provider.data[metadataKeys.fileName] as AccountLabels;
-};
-
 const createAccountLabelsLegacyMemoizedSelector = createWeakMapSelector.withTypes<{
     metadata: MetadataState;
     wallet: { accounts: Account[] };
 }>();
+
+/**
+ * @deprecated Legacy Labeling
+ * Select metadata of type 'labels' for requested account
+ */
+export const selectLabelingDataForAccount = createAccountLabelsLegacyMemoizedSelector(
+    [selectSelectedProviderForLabels, selectAccountByKey],
+    (provider, account): AccountLabels => {
+        const metadataKeys = account?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION];
+
+        if (!metadataKeys || !metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
+            return DEFAULT_ACCOUNT_METADATA;
+        }
+
+        return provider.data[metadataKeys.fileName] as AccountLabels;
+    },
+);
 
 /**
  * @deprecated Legacy Labeling
