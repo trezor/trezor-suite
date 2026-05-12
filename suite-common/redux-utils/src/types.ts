@@ -28,7 +28,7 @@ interface HasMatchFunction<T> {
     match: TypeGuard<T>;
 }
 type Matcher<T> = HasMatchFunction<T> | TypeGuard<T>;
-type ActionFromMatcher<M extends Matcher<any>> = M extends Matcher<infer T> ? T : never;
+type ActionFromMatcher<M extends Matcher<unknown>> = M extends Matcher<infer T> ? T : never;
 
 type AnyAsyncThunk = {
     pending: {
