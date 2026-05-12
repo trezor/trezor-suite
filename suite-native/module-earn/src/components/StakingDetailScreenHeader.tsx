@@ -45,13 +45,14 @@ export const StakingDetailScreenHeader = () => {
                             <Translation id="earn.stakingDetailScreen.title" />
                         </Text>
                     </HStack>
-                    <Text variant="body-sm" color="contentSecondary">
-                        <AccountLabel
-                            accountDescriptor={accountDescriptor}
-                            networkSymbol={networkSymbol}
-                            deviceStaticSessionId={deviceStaticSessionId}
-                        />
-                    </Text>
+                    <AccountLabel
+                        accountDescriptor={accountDescriptor}
+                        networkSymbol={networkSymbol}
+                        deviceStaticSessionId={deviceStaticSessionId}
+                        variant="body-sm"
+                        color="contentSecondary"
+                        showAccountTypeBadge
+                    />
                 </>
             }
             closeActionType="back"
