@@ -18,6 +18,7 @@ import {
 import { type NativeStakingRootState } from './types';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeStakingRootState>();
+const createAccountsMemoizedSelector = createWeakMapSelector.withTypes<AccountsRootState>();
 
 export const selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol = createMemoizedSelector(
     [selectDeviceAccounts, (_state, symbol: NetworkSymbol | null) => symbol],
@@ -32,15 +33,10 @@ export const selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol = cre
         ),
 );
 
-export const selectEthereumStakingPoolByAccountKey = (
-    state: AccountsRootState,
-    accountKey: AccountKey,
-) => {
-    const account = selectAccountByKey(state, accountKey);
-    if (!account) return null;
-
-    return getAccountEverstakeStakingPool(account);
-};
+export const selectEthereumStakingPoolByAccountKey = createAccountsMemoizedSelector(
+    [selectAccountByKey],
+    account => (account ? getAccountEverstakeStakingPool(account) : null),
+);
 
 export const selectEthereumAccountHasStaking = (
     state: NativeStakingRootState,

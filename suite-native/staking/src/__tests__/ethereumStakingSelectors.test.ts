@@ -193,6 +193,21 @@ describe('ethereumStakingSelectors', () => {
 
             expect(result).toBeNull();
         });
+
+        it('should return the same staking-pool reference across calls when underlying state is unchanged', () => {
+            const testState = getTestState([ethAccountWithStaking]);
+
+            const first = selectEthereumStakingPoolByAccountKey(
+                testState as any,
+                'eth1' as AccountKey,
+            );
+            const second = selectEthereumStakingPoolByAccountKey(
+                testState as any,
+                'eth1' as AccountKey,
+            );
+
+            expect(first).toBe(second);
+        });
     });
 
     describe('selectEthereumAccountHasStaking', () => {
