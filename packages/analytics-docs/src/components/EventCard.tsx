@@ -128,7 +128,7 @@ const Header = ({ event, onEdit }: HeaderProps) => {
                 flexWrap={isMobile ? 'wrap' : undefined}
             >
                 <Row gap={16} alignItems="center" overflow="auto" padding={{ bottom: 8 }}>
-                    <Tooltip content={toEventExportName(event.name)} hasArrow>
+                    <Tooltip content={toEventExportName(event.name)}>
                         <span
                             role="button"
                             tabIndex={0}

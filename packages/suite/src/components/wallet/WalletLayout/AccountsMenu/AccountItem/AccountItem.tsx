@@ -115,7 +115,6 @@ export const AccountItem = ({
                             </Box>
                         }
                         placement="right"
-                        hasArrow
                     >
                         <GhostContainer
                             isActive={isSelected}

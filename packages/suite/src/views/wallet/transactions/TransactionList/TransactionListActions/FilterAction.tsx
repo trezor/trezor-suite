@@ -58,7 +58,6 @@ export const FilterAction = () => {
     return (
         <Tooltip
             disableFlip
-            hasArrow
             isOpen={isOpen}
             placement="bottom-end"
             zIndex={zIndices.popover}

@@ -74,7 +74,6 @@ const StoreBadgeWithQr = ({
         <Tooltip
             isOpen={isTooltipOpen}
             cursor={isBelowTablet ? 'not-allowed' : undefined}
-            hasArrow
             content={
                 <Column alignItems="center">
                     <ImageContainer>

@@ -160,7 +160,6 @@ export const NavItem = (props: NavigationItemProps) => {
                 content={<Title nameId={nameId} values={values} />}
                 isActive={!expanded}
                 placement="right"
-                hasArrow
             >
                 <Icon
                     name={icon}
