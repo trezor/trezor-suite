@@ -8,6 +8,7 @@ import {
     selectPersistentDeviceDataById,
 } from '@suite-common/device';
 import { selectIsProductionFirmwareChannel } from '@suite-common/firmware';
+import { type SuiteCompatibleSelector } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { isDeviceKnown as getIsDeviceKnown, isDeviceAcquired } from '@suite-common/suite-utils';
 import { FIRMWARE } from '@trezor/connect';
@@ -20,7 +21,7 @@ import { hashCheckErrorScenarios, revisionCheckErrorScenarios } from './scenario
 // to avoid unnecessary wallet-core import
 type CommonProps = {
     device: TrezorDevice | undefined;
-    selectAllowPrerelease: (state: any) => boolean;
+    selectAllowPrerelease: SuiteCompatibleSelector<boolean>;
 };
 
 const useCommonData = ({ device }: Pick<CommonProps, 'device'>) => {
