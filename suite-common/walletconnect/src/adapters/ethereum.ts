@@ -17,6 +17,7 @@ import { getAccountIdentity, getMevProtectedTxData, sanitizeHex } from '@suite-c
 import TrezorConnect, {
     type CallMethodResponse,
     type EthereumSignTypedData,
+    type EthereumSignTypedDataTypes,
 } from '@trezor/connect';
 import { isAscii, isHex, throwError } from '@trezor/utils';
 
@@ -106,7 +107,7 @@ const ethereumRequestThunk = createThunk<
 
             // EIP-712 hashes for T1B1 are computed by @trezor/connect internally
             // since Connect 10 — pass `data` directly for all device models.
-            const payload: EthereumSignTypedData<any> = {
+            const payload: EthereumSignTypedData<EthereumSignTypedDataTypes> = {
                 path: account.path,
                 data: parsedData,
                 metamask_v4_compat: true,
