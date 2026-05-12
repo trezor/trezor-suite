@@ -21,61 +21,49 @@ type GetDiscoveryStatusParams = {
     };
 };
 
+// Singleton results so useSelector consumers stay reference-stable across dispatches.
+const WAITING_FOR_DEVICE: DiscoveryStatusType = {
+    status: 'loading',
+    type: 'waiting-for-device',
+};
+const DISCOVERY_EMPTY: DiscoveryStatusType = { status: 'exception', type: 'discovery-empty' };
+const DEVICE_UNAVAILABLE: DiscoveryStatusType = {
+    status: 'exception',
+    type: 'device-unavailable',
+};
+const DISCOVERY_FAILED: DiscoveryStatusType = { status: 'exception', type: 'discovery-failed' };
+const AUTH_LOADING: DiscoveryStatusType = { status: 'loading', type: 'auth' };
+const DISCOVERY_LOADING: DiscoveryStatusType = { status: 'loading', type: 'discovery' };
+
 const getDiscoveryStatus = ({
     device,
     discovery,
     accounts,
     walletSettings,
 }: GetDiscoveryStatusParams): DiscoveryStatusType | undefined => {
-    if (!device) {
-        return {
-            status: 'loading',
-            type: 'waiting-for-device',
-        };
-    }
+    if (!device) return WAITING_FOR_DEVICE;
 
-    if (walletSettings.enabledNetworks.length === 0) {
-        return {
-            status: 'exception',
-            type: 'discovery-empty',
-        };
-    }
+    if (walletSettings.enabledNetworks.length === 0) return DISCOVERY_EMPTY;
 
     if (
         discovery?.status === 'failed' &&
         discovery?.errorCode === 'Device_InvalidState' &&
         !device.available
     ) {
-        return {
-            status: 'exception',
-            type: 'device-unavailable',
-        };
+        return DEVICE_UNAVAILABLE;
     }
 
     if (
         (discovery?.status === 'failed' && discovery.error) ||
         (!isDiscoveryInProgress(discovery) && (accounts ?? []).some(a => a.failed))
     ) {
-        return {
-            status: 'exception',
-            type: 'discovery-failed',
-        };
+        return DISCOVERY_FAILED;
     }
 
     // if we failed to input pin or passphrase we don't have authorized device.
-    if (!device.state?.staticSessionId) {
-        return {
-            status: 'loading',
-            type: 'auth',
-        };
-    }
+    if (!device.state?.staticSessionId) return AUTH_LOADING;
 
-    if (isDiscoveryInProgress(discovery)) {
-        return {
-            status: 'loading',
-            type: 'discovery',
-        };
-    }
+    if (isDiscoveryInProgress(discovery)) return DISCOVERY_LOADING;
 
     return undefined;
 };
