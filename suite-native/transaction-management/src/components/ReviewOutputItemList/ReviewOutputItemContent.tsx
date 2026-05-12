@@ -107,14 +107,17 @@ export const ReviewOutputItemContent = ({
                             <Text variant="body-sm">
                                 <Translation id="transactionManagement.review.outputs.amountAllowanceLabel" />
                             </Text>
-                            <CryptoAmountFormatter
-                                variant="body-sm"
-                                color="contentPrimary"
-                                value={convertAmountSubunitsToUnits(value, token.decimals)}
-                                symbol={token.symbol as NetworkSymbol}
-                                decimals={token.decimals}
-                                isDiscreetText={false}
-                            />
+                            <Box flexShrink={1} alignItems="flex-end">
+                                <CryptoAmountFormatter
+                                    variant="body-sm"
+                                    color="contentPrimary"
+                                    textAlign="right"
+                                    value={convertAmountSubunitsToUnits(value, token.decimals)}
+                                    symbol={token.symbol as NetworkSymbol}
+                                    decimals={token.decimals}
+                                    isDiscreetText={false}
+                                />
+                            </Box>
                         </HStack>
                         {!!value2 && (
                             <HStack justifyContent="space-between">
