@@ -17,6 +17,7 @@
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/device": "workspace:*",
         "@suite-common/message-system": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-sync-storage": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
@@ -41,6 +42,8 @@
         "react-redux": "9.2.0"
     },
     "devDependencies": {
+        "@suite-common/platform-encryption": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*"
     }
 }

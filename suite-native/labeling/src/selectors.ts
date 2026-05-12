@@ -1,5 +1,6 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type SuiteSyncDataRootState,
     type WithSuiteSyncAndDeviceState,
@@ -21,23 +22,25 @@ export type CombinedLabelingState = SuiteSyncDataRootState &
     SettingsSliceRootState &
     MessageSystemRootState;
 
-export const selectIsLabellingAllowed = (
-    state: WithSuiteSyncAndDeviceState & SettingsSliceRootState & MessageSystemRootState,
-) => {
-    const isSuiteSyncFeatureAvailable = selectIsSuiteSyncFeatureAvailable(state);
-    const device = selectSelectedDevice(state);
+const createMemoizedSelector = createWeakMapSelector.withTypes<
+    WithSuiteSyncAndDeviceState & MessageSystemRootState
+>();
 
-    if (isSuiteSyncFeatureAvailable) {
-        const suiteSyncInteraction = selectSuiteSyncInteraction(
-            state,
-            device?.state?.staticSessionId ?? null,
-        );
+export const selectIsLabellingAllowed = createMemoizedSelector(
+    [
+        selectIsSuiteSyncFeatureAvailable,
+        state =>
+            selectSuiteSyncInteraction(
+                state,
+                selectSelectedDevice(state)?.state?.staticSessionId ?? null,
+            ),
+    ],
+    (isSuiteSyncFeatureAvailable, suiteSyncInteraction) => {
+        if (!isSuiteSyncFeatureAvailable) return false;
 
         return getIsSuiteSyncLabelingActionEnabled(suiteSyncInteraction);
-    }
-
-    return false;
-};
+    },
+);
 
 export const selectAccountLabel = (
     state: CombinedLabelingState,

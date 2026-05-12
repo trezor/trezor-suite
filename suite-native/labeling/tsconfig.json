@@ -7,6 +7,9 @@
             "path": "../../suite-common/message-system"
         },
         {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
             "path": "../../suite-common/suite-sync"
         },
         {
@@ -41,6 +44,12 @@
         { "path": "../toasts" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/type-utils" },
+        {
+            "path": "../../suite-common/platform-encryption"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
         { "path": "../test-utils-store" }
     ]
 }
