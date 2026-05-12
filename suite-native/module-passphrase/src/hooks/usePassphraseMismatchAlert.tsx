@@ -2,14 +2,17 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
+    type DiscoveryRootState,
     cancelDiscoveryThunk,
     runDiscoveryThunk,
+    selectDiscoveryByDevicePath,
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import {
     type PassphraseStackParamList,
@@ -19,9 +22,6 @@ import {
     type StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
-
-import { selectHasPassphraseMismatchError } from '../passphraseSelectors';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     PassphraseStackParamList,
@@ -31,16 +31,18 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 export const usePassphraseMismatchAlert = () => {
     const { showAlert } = useAlert();
-    const analytics = useAnalytics();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const navigation = useNavigation<NavigationProp>();
     const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
     const navigateToInitialScreen = useNavigateToInitialScreen();
-    const hasPassphraseMismatchError = useSelector(selectHasPassphraseMismatchError);
+    const discovery = useSelector((state: DiscoveryRootState) =>
+        selectDiscoveryByDevicePath(state, device?.path),
+    );
 
     const onPassphraseMismatchAlert = () => {
         // Wrong passphrase was entered during verifying empty wallet
-        if (hasPassphraseMismatchError) {
+        if (discovery?.status === 'passphrase-mismatch') {
             analytics.report({ type: events.passphraseMismatchEvent.name });
             showAlert({
                 title: (

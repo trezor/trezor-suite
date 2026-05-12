@@ -1,23 +1,24 @@
-import type { ReactNode } from 'react';
-import { useSelector } from 'react-redux';
+import { type ReactNode, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { useRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
+import { cancelDiscoveryThunk, selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
 import type { DiscoveryStatus } from '@suite-common/wallet-types';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
     type PassphraseStackParamList,
     PassphraseStackRoutes,
     stackNavigationOptionsConfig,
+    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import {
-    PassphraseDuplicateAlert,
-    PassphraseFlowDoneRedirect,
-    PassphraseFlowFailedRedirect,
-} from '@suite-native/passphrase';
+import { PassphraseDuplicateAlert } from '@suite-native/passphrase';
 import { exhaustive } from '@trezor/type-utils';
 
+import { useHandlePassphraseFlowDone } from './hooks/useHandlePassphraseFlowDone';
 import { PassphraseConfirmOnTrezorScreen } from './screens/PassphraseConfirmOnTrezorScreen';
 import { PassphraseEmptyWalletScreen } from './screens/PassphraseEmptyWalletScreen';
 import { PassphraseEnterOnTrezorScreen } from './screens/PassphraseEnterOnTrezorScreen';
@@ -28,7 +29,15 @@ import { PassphraseMismatchAlertScreen } from './screens/usePassphraseMismatchAl
 
 const PassphraseStack = createNativeStackNavigator<PassphraseStackParamList>();
 
-const renderPassphraseStackScreens = (passphraseState: DiscoveryStatus['status']): ReactNode => {
+const renderPassphraseStackScreens = ({
+    passphraseState,
+    onPassphraseFlowSuccess,
+    onPassphraseFlowFail,
+}: {
+    passphraseState: DiscoveryStatus['status'];
+    onPassphraseFlowSuccess: () => void;
+    onPassphraseFlowFail: () => void;
+}): ReactNode => {
     switch (passphraseState) {
         case 'starting':
         case 'enter-passphrase':
@@ -102,22 +111,13 @@ const renderPassphraseStackScreens = (passphraseState: DiscoveryStatus['status']
                 />
             );
 
-        case 'complete':
-            return (
-                <PassphraseStack.Screen
-                    name={PassphraseStackRoutes.PassphraseRedirectingSuccess}
-                    component={PassphraseFlowDoneRedirect}
-                />
-            );
-
         case 'cancelled':
         case 'failed':
-            return (
-                <PassphraseStack.Screen
-                    name={PassphraseStackRoutes.PassphraseRedirectingFailure}
-                    component={PassphraseFlowFailedRedirect}
-                />
-            );
+            onPassphraseFlowFail();
+            break;
+        case 'complete':
+            onPassphraseFlowSuccess();
+            break;
 
         default:
             return exhaustive(passphraseState);
@@ -127,19 +127,39 @@ const renderPassphraseStackScreens = (passphraseState: DiscoveryStatus['status']
 export const PassphraseStackNavigator = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const discovery = useSelector(selectDiscoveryForSelectedDevice);
+    const dispatch = useDispatch();
+    const navigateToInitialScreen = useNavigateToInitialScreen();
+    const onPassphraseFlowSuccess = useHandlePassphraseFlowDone();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const route = useRoute();
+    const passphraseState = discovery?.status;
 
-    if (!selectedDevice || !discovery) {
-        // TODO revert before merge?
-        throw new Error('No device or discovery found.');
-    }
+    const onPassphraseFlowFail = useCallback(() => {
+        if (passphraseState === 'cancelled' && selectedDevice) {
+            analytics.report({
+                type: events.passphraseExitEvent.name,
+                payload: { screen: route.name },
+            });
+            dispatch(cancelDiscoveryThunk(selectedDevice));
+        }
 
-    const passphraseState = discovery.status;
+        navigateToInitialScreen();
+    }, [analytics, dispatch, navigateToInitialScreen, passphraseState, route.name, selectedDevice]);
+
+    if (!selectedDevice || !discovery || !passphraseState) return null;
 
     return (
         <PassphraseStack.Navigator
             screenOptions={{ ...stackNavigationOptionsConfig, gestureEnabled: false }}
         >
-            {renderPassphraseStackScreens(passphraseState)}
+            {renderPassphraseStackScreens({
+                passphraseState,
+                onPassphraseFlowFail,
+                onPassphraseFlowSuccess: () => {
+                    navigateToInitialScreen();
+                    onPassphraseFlowSuccess();
+                },
+            })}
         </PassphraseStack.Navigator>
     );
 };

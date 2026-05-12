@@ -1,8 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 
-import { usePassphraseMismatchAlert } from '@suite-native/passphrase';
-
 import { PassphraseLoadingScreen } from './PassphraseLoadingScreen';
+import { usePassphraseMismatchAlert } from '../hooks/usePassphraseMismatchAlert';
 
 export const PassphraseMismatchAlertScreen = () => {
     const { onPassphraseMismatchAlert } = usePassphraseMismatchAlert();

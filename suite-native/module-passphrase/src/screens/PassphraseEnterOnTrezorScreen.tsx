@@ -10,8 +10,9 @@ import { useNavigateToInitialScreen } from '@suite-native/navigation';
 import {
     PassphraseContentScreenWrapper,
     PassphraseEnterOnTrezorScreenContent,
-    usePassphraseMismatchAlert,
 } from '@suite-native/passphrase';
+
+import { usePassphraseMismatchAlert } from '../hooks/usePassphraseMismatchAlert';
 
 export const PassphraseEnterOnTrezorScreen = () => {
     const dispatch = useDispatch();
