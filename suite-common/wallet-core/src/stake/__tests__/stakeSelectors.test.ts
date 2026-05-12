@@ -1,4 +1,4 @@
-import { selectEthNextRewardPayout } from '../stakeSelectors';
+import { selectCardanoPoolsInfo, selectEthNextRewardPayout } from '../stakeSelectors';
 
 const createStateWithNextRewardPayout = (nextRewardPayout?: number) =>
     ({
@@ -36,5 +36,41 @@ describe('selectEthNextRewardPayout', () => {
         const state = createStateWithNextRewardPayout(2.2 * 24 * 60 * 60);
 
         expect(selectEthNextRewardPayout(state)).toBe(2);
+    });
+});
+
+describe('selectCardanoPoolsInfo', () => {
+    const createStateWithAdaPools = (pools?: unknown[]) =>
+        ({
+            wallet: {
+                stake: {
+                    data: {
+                        data: {
+                            ada: pools === undefined ? undefined : { pools },
+                        },
+                    },
+                },
+            },
+        }) as any;
+
+    it('returns a stable empty array reference when ada data is missing', () => {
+        const stateA = createStateWithAdaPools();
+        const stateB = createStateWithAdaPools();
+
+        expect(selectCardanoPoolsInfo(stateA)).toBe(selectCardanoPoolsInfo(stateB));
+    });
+
+    it('returns a stable empty array reference when pools array is empty', () => {
+        const stateA = createStateWithAdaPools([]);
+        const stateB = createStateWithAdaPools([]);
+
+        expect(selectCardanoPoolsInfo(stateA)).toBe(selectCardanoPoolsInfo(stateB));
+    });
+
+    it('returns the underlying pools array when populated', () => {
+        const pools = [{ id: 'pool1' }];
+        const state = createStateWithAdaPools(pools);
+
+        expect(selectCardanoPoolsInfo(state)).toBe(pools);
     });
 });
