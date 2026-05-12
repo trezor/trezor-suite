@@ -726,18 +726,11 @@ export const selectSessionProgressByAccountKey = createMemoizedSelector(
     },
 );
 
-export const selectCurrentCoinjoinSession = (state: CoinjoinRootState) => {
-    const selectedAccount = selectSelectedAccount(state);
-    const coinjoinAccounts = selectCoinjoinAccounts(state);
-
-    const currentCoinjoinAccount = coinjoinAccounts.find(
-        account => account.key === selectedAccount?.key,
-    );
-
-    const { session } = currentCoinjoinAccount || {};
-
-    return session;
-};
+export const selectCurrentCoinjoinSession = createMemoizedSelector(
+    [(state: CoinjoinRootState) => selectSelectedAccount(state)?.key, selectCoinjoinAccounts],
+    (selectedAccountKey, coinjoinAccounts) =>
+        coinjoinAccounts.find(account => account.key === selectedAccountKey)?.session,
+);
 
 export const selectCurrentTargetAnonymity = (state: CoinjoinRootState) => {
     const selectedAccount = selectSelectedAccount(state);
