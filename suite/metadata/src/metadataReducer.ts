@@ -144,6 +144,9 @@ export const selectMetadata = (state: MetadataRootState) => state.metadata;
 export const selectIsMetadataEnabled = (state: MetadataRootState) =>
     state.metadata.enabled && !state.metadata.initiating;
 
+export const selectIsMetadataProviderConnected = (state: MetadataRootState) =>
+    state.metadata.enabled && !!state.metadata.providers[0];
+
 /**
  * Select currently selected provider for metadata of type 'labels'
  */
