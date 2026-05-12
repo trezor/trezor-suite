@@ -43,7 +43,6 @@ import {
 } from '../utils';
 import {
     getTradingCoinInfoByCryptoId,
-    getTradingCoinSymbolByCryptoId,
     getTradingNativeCoinSymbolByCryptoId,
     getTradingPlatformsInfoByCryptoId,
     getTradingSymbolAndContractAddressByCryptoId,
@@ -399,29 +398,26 @@ export const selectTradingTradeByOrderId = createMemoizedSelector(
     (trades, orderId) => (orderId ? trades.find(t => t.data.orderId === orderId) : undefined),
 );
 
-export const selectTradingCoinInfoByCryptoId = (
-    state: TradingRootState,
-    cryptoId: CryptoId | undefined,
-) => {
-    if (!cryptoId) {
-        return undefined;
-    }
-    const { coins = {} } = state.wallet.trading.info;
+export const selectTradingCoinInfoByCryptoId = createMemoizedSelector(
+    [
+        ({ wallet }: TradingRootState, _: CryptoId | undefined): Coins | undefined =>
+            wallet.trading.info.coins,
+        (_state: TradingRootState, cryptoId: CryptoId | undefined) => cryptoId,
+    ],
+    (coins, cryptoId) => {
+        if (!cryptoId) return undefined;
 
-    return getTradingCoinInfoByCryptoId(coins, cryptoId);
-};
+        return getTradingCoinInfoByCryptoId(coins ?? {}, cryptoId);
+    },
+);
 
-export const selectTradingCoinSymbolByCryptoId = (
-    state: TradingRootState,
-    cryptoId: CryptoId | undefined,
-) => {
-    if (cryptoId === undefined) {
-        return undefined;
-    }
-    const { coins = {} } = state.wallet.trading.info;
-
-    return getTradingCoinSymbolByCryptoId(coins, cryptoId);
-};
+export const selectTradingCoinSymbolByCryptoId = createMemoizedSelector(
+    [
+        (state: TradingRootState, cryptoId: CryptoId | undefined) =>
+            selectTradingCoinInfoByCryptoId(state, cryptoId),
+    ],
+    coinInfo => coinInfo?.symbol.toUpperCase(),
+);
 
 export const selectTradingPlatformByCryptoId = (
     state: TradingRootState,

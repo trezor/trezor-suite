@@ -751,7 +751,7 @@ describe('tradingSelectors', () => {
         expect(trade2?.data.orderId).toBe('orderId2');
     });
 
-    describe(selectTradingCoinInfoByCryptoId.name, () => {
+    describe('selectTradingCoinInfoByCryptoId', () => {
         it('should return coin data', () => {
             expect(selectTradingCoinInfoByCryptoId(state, 'bitcoin' as CryptoId)).toEqual({
                 symbol: 'btc',
@@ -768,15 +768,38 @@ describe('tradingSelectors', () => {
         it('should not return any data', () => {
             expect(selectTradingCoinInfoByCryptoId(state, undefined)).toBeUndefined();
         });
+
+        it('returns the same reference across repeated calls with the same cryptoId', () => {
+            const first = selectTradingCoinInfoByCryptoId(state, 'bitcoin' as CryptoId);
+            const second = selectTradingCoinInfoByCryptoId(state, 'bitcoin' as CryptoId);
+            expect(first).toBe(second);
+        });
+
+        it('caches distinct cryptoId lookups independently against the same state', () => {
+            const btc1 = selectTradingCoinInfoByCryptoId(state, 'bitcoin' as CryptoId);
+            const eth = selectTradingCoinInfoByCryptoId(state, 'ethereum' as CryptoId);
+            const btc2 = selectTradingCoinInfoByCryptoId(state, 'bitcoin' as CryptoId);
+            expect(btc1).toBe(btc2);
+            expect(btc1).not.toBe(eth);
+            expect(btc1?.symbol).toBe('btc');
+            expect(eth?.symbol).toBe('eth');
+        });
     });
 
-    describe(selectTradingCoinSymbolByCryptoId.name, () => {
+    describe('selectTradingCoinSymbolByCryptoId', () => {
         it('should return coin symbol', () => {
             expect(selectTradingCoinSymbolByCryptoId(state, 'bitcoin' as CryptoId)).toBe('BTC');
         });
 
         it('should not return any data', () => {
             expect(selectTradingCoinSymbolByCryptoId(state, undefined)).toBeUndefined();
+        });
+
+        it('returns the same primitive across repeated calls with the same cryptoId', () => {
+            const first = selectTradingCoinSymbolByCryptoId(state, 'bitcoin' as CryptoId);
+            const second = selectTradingCoinSymbolByCryptoId(state, 'bitcoin' as CryptoId);
+            expect(first).toBe(second);
+            expect(first).toBe('BTC');
         });
     });
 
