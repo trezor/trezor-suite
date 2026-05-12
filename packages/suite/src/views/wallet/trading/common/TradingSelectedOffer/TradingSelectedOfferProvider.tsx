@@ -9,12 +9,12 @@ import { Column, GhostContainer, Icon, Row, SkeletonRectangle, Text } from '@tre
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     getProvidersInfoProps,
+    getSelectedQuote,
     isTradingBuyContext,
     isTradingExchangeContext,
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 
-import { getSelectedQuote } from '../TradingForm/TradingFormOffer';
 import { TradingOffersModal } from '../TradingOffers/TradingOffersModal';
 import { TradingUtilsProvider } from '../TradingUtils/TradingUtilsProvider';
 

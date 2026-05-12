@@ -1,6 +1,7 @@
 import { type BuyTrade, type CryptoId, type ExchangeTrade, type SellFiatTrade } from 'invity-api';
 
 import {
+    TRADING_EXCHANGE_FORM_DEX,
     TRADING_FORM_FIAT_CURRENCY_SELECT,
     TRADING_FORM_OUTPUT_CURRENCY,
     type TradingBuyType,
@@ -170,4 +171,39 @@ export const getPaymentMethod = (
         paymentMethod: selectedQuoteTyped.paymentMethod,
         paymentMethodName: selectedQuoteTyped.paymentMethodName,
     };
+};
+
+const getQuotesFilteredByProviderAndPaymentMethod = (
+    quotes: BuyTrade[] | SellFiatTrade[],
+    provider: string | undefined,
+    paymentMethod: string | undefined,
+) =>
+    quotes
+        ?.filter(quote =>
+            paymentMethod
+                ? (quote as BuyTrade | SellFiatTrade).paymentMethod === paymentMethod
+                : true,
+        )
+        .filter(quote =>
+            provider ? (quote as BuyTrade | SellFiatTrade).exchange === provider : true,
+        );
+
+export const getSelectedQuote = (context: TradingFormContextValues<TradingType>) => {
+    const { provider } = context.getValues();
+
+    if (isTradingExchangeContext(context)) {
+        const { exchangeType } = context.getValues();
+        const quotes =
+            exchangeType === TRADING_EXCHANGE_FORM_DEX ? context.dexQuotes : context.cexQuotes;
+
+        return quotes?.find(quote => !provider || quote.exchange === provider) ?? quotes?.[0];
+    }
+
+    const { paymentMethod } = context.getValues();
+
+    return getQuotesFilteredByProviderAndPaymentMethod(
+        context.quotes,
+        provider,
+        paymentMethod?.value,
+    )?.[0];
 };
