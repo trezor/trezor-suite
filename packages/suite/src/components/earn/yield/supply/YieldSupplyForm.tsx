@@ -39,6 +39,7 @@ export const YieldSupplyForm = () => {
         actionNetworkFeeWarning,
         isAmountEmpty,
         isAmountTooHigh,
+        isAmountInvalidDecimals,
         isApprovalInsufficient,
         isSubmittingApprove,
         isSubmittingAction,
@@ -219,7 +220,7 @@ export const YieldSupplyForm = () => {
                                         approvalAction={approvalAction}
                                         canRevokeAllowance={canRevokeAllowance}
                                         warning={
-                                            isAmountTooHigh ? (
+                                            !isAmountInvalidDecimals && isAmountTooHigh ? (
                                                 <YieldActionStepWarning
                                                     isInsufficientFunds={isAmountTooHigh}
                                                 />
@@ -234,7 +235,10 @@ export const YieldSupplyForm = () => {
                                             ) : undefined
                                         }
                                         isDisabled={
-                                            isAmountEmpty || isAmountTooHigh || isSubmittingApprove
+                                            isAmountEmpty ||
+                                            isAmountTooHigh ||
+                                            isAmountInvalidDecimals ||
+                                            isSubmittingApprove
                                         }
                                         isLoading={isSubmittingApprove}
                                         pendingApproveTransaction={approvalPendingTransaction}
@@ -260,11 +264,15 @@ export const YieldSupplyForm = () => {
                                                 />
                                             }
                                             warning={
-                                                <YieldActionStepWarning
-                                                    isInsufficientFunds={isAmountTooHigh}
-                                                    isApprovalInsufficient={isApprovalInsufficient}
-                                                    onModifyApproval={enterModifyApproval}
-                                                />
+                                                !isAmountInvalidDecimals ? (
+                                                    <YieldActionStepWarning
+                                                        isInsufficientFunds={isAmountTooHigh}
+                                                        isApprovalInsufficient={
+                                                            isApprovalInsufficient
+                                                        }
+                                                        onModifyApproval={enterModifyApproval}
+                                                    />
+                                                ) : undefined
                                             }
                                             networkFeeWarning={
                                                 actionNetworkFeeWarning ? (
@@ -276,6 +284,7 @@ export const YieldSupplyForm = () => {
                                             isDisabled={
                                                 isAmountEmpty ||
                                                 isAmountTooHigh ||
+                                                isAmountInvalidDecimals ||
                                                 isApprovalInsufficient ||
                                                 isSubmittingAction
                                             }

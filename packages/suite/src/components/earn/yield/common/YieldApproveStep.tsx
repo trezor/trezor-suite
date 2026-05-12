@@ -118,6 +118,7 @@ export const YieldApproveStep = ({
 
                     <YieldAmountCard
                         tokenSymbol={token.symbol}
+                        decimals={token.decimals}
                         summary={{
                             labelTranslationId: balanceLabelTranslationId,
                             value: summaryValue,
