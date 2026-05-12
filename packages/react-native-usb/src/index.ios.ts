@@ -11,7 +11,10 @@ export class WebUSB {
         // do nothing
     }
 
-    requestDevice = async (..._params: unknown[]): Promise<any> => {};
+    requestDevice = (..._params: unknown[]): Promise<never> =>
+        Promise.reject(
+            new Error('requestDevice is not implemented in @trezor/react-native-usb (iOS)'),
+        );
     addEventListener = (..._params: unknown[]): void => {};
     removeEventListener = (..._params: unknown[]): void => {};
     dispatchEvent = (..._params: unknown[]): boolean => false;
