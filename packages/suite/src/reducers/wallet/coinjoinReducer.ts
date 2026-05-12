@@ -1040,38 +1040,47 @@ export const selectCurrentCoinjoinWheelStates = createDeviceAwareMemoizedSelecto
 );
 
 // return tuple of arguments used by startCoinjoinSession action
-export const selectStartCoinjoinSessionArguments = (
-    state: CoinjoinRootState,
-    accountKey: AccountKey,
-) => {
-    const selectedAccount = selectSelectedAccount(state);
-    const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
-    const coinjoinClient = selectCoinjoinClient(state, accountKey);
-    const roundsNeeded = selectRoundsNeededByAccountKey(state, accountKey);
-    const roundsFailRateBuffer = selectRoundsFailRateBuffer(state);
-    const defaultMaxMiningFee = selectDefaultMaxMiningFeeByAccountKey(state, accountKey);
-    const targetAnonymity =
-        selectTargetAnonymityByAccountKey(state, accountKey) ?? DEFAULT_TARGET_ANONYMITY;
-
-    if (!selectedAccount || !coinjoinAccount || !coinjoinClient) return;
-
-    const maxFeePerKvbyte = (coinjoinAccount.setup?.maxFeePerVbyte ?? defaultMaxMiningFee) * 1000; // Transform to kvB.
-    const maxRounds = getMaxRounds(roundsNeeded, roundsFailRateBuffer);
-    const skipRounds = getSkipRounds(
-        coinjoinAccount.setup ? coinjoinAccount.setup.skipRounds : SKIP_ROUNDS_BY_DEFAULT,
-    );
-
-    return [
+export const selectStartCoinjoinSessionArguments = createMemoizedSelector(
+    [
+        selectSelectedAccount,
+        selectCoinjoinAccountByKey,
+        selectCoinjoinClient,
+        selectRoundsNeededByAccountKey,
+        selectRoundsFailRateBuffer,
+        selectDefaultMaxMiningFeeByAccountKey,
+        (state: CoinjoinRootState, accountKey: AccountKey) =>
+            selectTargetAnonymityByAccountKey(state, accountKey) ?? DEFAULT_TARGET_ANONYMITY,
+    ],
+    (
         selectedAccount,
-        {
-            maxCoordinatorFeeRate: Math.min(coinjoinClient.coordinationFeeRate.rate, 0.01), // 1% max cap by suite
-            maxFeePerKvbyte,
-            maxRounds,
-            skipRounds,
-            targetAnonymity,
-        },
-    ] as const;
-};
+        coinjoinAccount,
+        coinjoinClient,
+        roundsNeeded,
+        roundsFailRateBuffer,
+        defaultMaxMiningFee,
+        targetAnonymity,
+    ) => {
+        if (!selectedAccount || !coinjoinAccount || !coinjoinClient) return;
+
+        const maxFeePerKvbyte =
+            (coinjoinAccount.setup?.maxFeePerVbyte ?? defaultMaxMiningFee) * 1000; // Transform to kvB.
+        const maxRounds = getMaxRounds(roundsNeeded, roundsFailRateBuffer);
+        const skipRounds = getSkipRounds(
+            coinjoinAccount.setup ? coinjoinAccount.setup.skipRounds : SKIP_ROUNDS_BY_DEFAULT,
+        );
+
+        return [
+            selectedAccount,
+            {
+                maxCoordinatorFeeRate: Math.min(coinjoinClient.coordinationFeeRate.rate, 0.01), // 1% max cap by suite
+                maxFeePerKvbyte,
+                maxRounds,
+                skipRounds,
+                targetAnonymity,
+            },
+        ] as const;
+    },
+);
 
 export const selectCurrentSessionDeadlineInfo = createMemoizedSelector(
     [selectCurrentCoinjoinSession],
