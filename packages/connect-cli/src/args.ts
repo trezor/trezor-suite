@@ -1,7 +1,7 @@
 export const HELP = `@trezor/connect CLI arguments:
 
   Transport options (default: usb)
-    --usb | --bridge | --udp | --bluetooth
+    yarn workspace @trezor/connect-cli [usb | bridge | udp | bluetooth]
 
   TrezorConnect logs (default: disabled)
     --debug                                   Enable TrezorConnect logs
