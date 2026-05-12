@@ -1,4 +1,4 @@
-import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { secondsToDays, selectBestCardanoPool } from '@suite-common/wallet-utils';
@@ -27,49 +27,52 @@ interface SelectPoolStatsApyProps {
     networkSymbol?: NetworkSymbol;
 }
 
-export const selectPoolStatsApy = (
-    state: StakeRootState,
-    { account, networkSymbol }: SelectPoolStatsApyProps,
-) => {
-    const data = selectStakeData(state);
-    const symbol = account?.symbol ?? networkSymbol;
+const createMemoizedSelector = createWeakMapSelector.withTypes<StakeRootState>();
 
-    if (!symbol || !data) {
-        return null;
-    }
+const selectPoolStatsSymbol = (_state: StakeRootState, props: SelectPoolStatsApyProps) =>
+    props.account?.symbol ?? props.networkSymbol;
 
-    switch (symbol) {
-        case 'eth':
-            return data.eth?.stats?.apy ?? null;
+const selectPoolStatsAccountPoolId = (_state: StakeRootState, props: SelectPoolStatsApyProps) =>
+    props.account?.networkType === 'cardano' ? props.account.misc.staking.poolId : undefined;
 
-        case 'sol':
-            return data.sol?.stats?.apy ?? null;
-
-        case 'ada': {
-            const poolStats = data.ada?.pools ?? [];
-
-            if (account?.networkType === 'cardano') {
-                const poolFromAccount = poolStats.find(
-                    pool => pool.id === account.misc.staking.poolId,
-                );
-
-                if (poolFromAccount) {
-                    return poolFromAccount.apy;
-                }
-            }
-
-            const bestPoolId = selectBestCardanoPool(poolStats).bech32;
-            const bestPool = bestPoolId
-                ? poolStats.find(pool => pool.id === bestPoolId)
-                : undefined;
-
-            return bestPool?.apy ?? null;
+export const selectPoolStatsApy = createMemoizedSelector(
+    [selectStakeData, selectPoolStatsSymbol, selectPoolStatsAccountPoolId],
+    (data, symbol, accountPoolId): number | null => {
+        if (!symbol || !data) {
+            return null;
         }
 
-        default:
-            return null;
-    }
-};
+        switch (symbol) {
+            case 'eth':
+                return data.eth?.stats?.apy ?? null;
+
+            case 'sol':
+                return data.sol?.stats?.apy ?? null;
+
+            case 'ada': {
+                const poolStats = data.ada?.pools ?? [];
+
+                if (accountPoolId) {
+                    const poolFromAccount = poolStats.find(pool => pool.id === accountPoolId);
+
+                    if (poolFromAccount) {
+                        return poolFromAccount.apy;
+                    }
+                }
+
+                const bestPoolId = selectBestCardanoPool(poolStats).bech32;
+                const bestPool = bestPoolId
+                    ? poolStats.find(pool => pool.id === bestPoolId)
+                    : undefined;
+
+                return bestPool?.apy ?? null;
+            }
+
+            default:
+                return null;
+        }
+    },
+);
 
 export const selectVotingDelegationOption = (state: StakeRootState): VotingDelegationOption =>
     selectStake(state).votingDelegation;
