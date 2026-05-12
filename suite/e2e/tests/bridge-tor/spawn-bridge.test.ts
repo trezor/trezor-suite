@@ -14,11 +14,10 @@ import { OnboardingPage } from '../../support/pageObjects/onboarding/onboardingP
 import { SettingsPage } from '../../support/pageObjects/settings/settingsPage';
 import { enhancePage } from '../../support/testExtends/enhancePage';
 
-test.use({ exceptionLogger: skipFixture });
 test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
-    test.describe.configure({ mode: 'serial' });
-
-    test.beforeEach(async ({ trezorUserEnv }) => {
+    test.use({ exceptionLogger: skipFixture, startEmulator: false, setupEmulator: false });
+    test.beforeEach(async ({ page, trezorUserEnv }) => {
+        await page.close();
         //Ensure bridge is stopped so we properly test the electron app starting node-bridge module.
         await trezorUserEnv.connect();
         await trezorUserEnv.stopBridge();
@@ -55,7 +54,6 @@ test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
         await expectBridgeToBeStopped(request);
     });
 
-    test.use({ startEmulator: false, setupEmulator: false });
     test('App acquired device, EXTERNAL bridge is restarted, app reconnects', async ({
         device,
         trezorUserEnv,
