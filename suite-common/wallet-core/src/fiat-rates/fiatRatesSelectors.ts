@@ -1,8 +1,11 @@
 import { A, F, pipe } from '@mobily/ts-belt';
 
+import { type DeviceRootState } from '@suite-common/device';
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
-    selectIsSpecificCoinDefinitionKnown,
+    isTokenDefinitionKnown,
+    selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import {
     type CryptoBaseCurrencyPair,
@@ -23,7 +26,12 @@ import { BigNumber } from '@trezor/utils';
 
 import { MAX_AGE } from './fiatRatesConstants';
 import { type FiatRatesRootState } from './fiatRatesTypes';
+import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectDeviceAccounts } from '../accounts/accountsSelectors';
+
+const createMemoizedSelector = createWeakMapSelector.withTypes<
+    FiatRatesRootState & TokenDefinitionsRootState & AccountsRootState & DeviceRootState
+>();
 
 export const selectCurrentFiatRates = (state: FiatRatesRootState): RatesByKey | undefined =>
     state.wallet.fiat?.['current'];
@@ -85,43 +93,45 @@ export const selectShouldUpdateFiatRate = (
     return currentTimestamp - lastSuccessfulFetchTimestamp > MAX_AGE[rateType];
 };
 
-export const selectTickerFromAccounts = (
-    state: FiatRatesRootState & TokenDefinitionsRootState,
-): TickerId[] => {
-    const accounts = selectDeviceAccounts(state as any);
-
-    return pipe(
-        accounts,
-        A.map(account => [
-            {
-                symbol: account.symbol,
-            } as TickerId,
-            ...(account.tokens || [])
-                .filter(token => new BigNumber(token.balance ?? '0').gt(0))
-                .map(
-                    token =>
-                        ({
-                            symbol: account.symbol,
-                            tokenAddress: token.contract as TokenAddress,
-                            protocols: token.protocols,
-                        }) satisfies TickerId,
-                ),
-        ]),
-        A.flat,
-        A.filter(
-            ticker =>
-                !ticker.tokenAddress ||
-                selectIsSpecificCoinDefinitionKnown(state, ticker.symbol, ticker.tokenAddress),
+export const selectTickerFromAccounts = createMemoizedSelector(
+    [selectDeviceAccounts, selectTokenDefinitions],
+    (accounts, tokenDefinitions): TickerId[] =>
+        pipe(
+            accounts,
+            A.map(account => [
+                {
+                    symbol: account.symbol,
+                } as TickerId,
+                ...(account.tokens || [])
+                    .filter(token => new BigNumber(token.balance ?? '0').gt(0))
+                    .map(
+                        token =>
+                            ({
+                                symbol: account.symbol,
+                                tokenAddress: token.contract as TokenAddress,
+                                protocols: token.protocols,
+                            }) satisfies TickerId,
+                    ),
+            ]),
+            A.flat,
+            A.filter(
+                ticker =>
+                    !ticker.tokenAddress ||
+                    !!isTokenDefinitionKnown(
+                        tokenDefinitions?.[ticker.symbol]?.coin?.data,
+                        ticker.symbol,
+                        ticker.tokenAddress,
+                    ),
+            ),
+            A.uniqBy(ticker =>
+                ticker.tokenAddress ? `${ticker.symbol}-${ticker.tokenAddress}` : ticker.symbol,
+            ),
+            F.toMutable,
         ),
-        A.uniqBy(ticker =>
-            ticker.tokenAddress ? `${ticker.symbol}-${ticker.tokenAddress}` : ticker.symbol,
-        ),
-        F.toMutable,
-    );
-};
+);
 
 export const selectTickersToBeUpdated = (
-    state: FiatRatesRootState & TokenDefinitionsRootState,
+    state: FiatRatesRootState & TokenDefinitionsRootState & AccountsRootState & DeviceRootState,
     currentTimestamp: Timestamp,
     fiatCurrency: BaseCurrencyCode,
     rateType: RateTypeWithoutHistoric,
