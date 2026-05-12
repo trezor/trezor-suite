@@ -169,17 +169,16 @@ export const PortfolioCard = memo(() => {
                                     {body}
                                 </Column>
                                 {showGraphControls && (
-                                    <Row gap={16} justifyContent="space-between">
+                                    <Row gap={32} justifyContent="space-between">
                                         <GraphRangeSelector onSelectedRange={onSelectedRange} />
                                         {showMissingDataTooltip && (
-                                            <Row gap={12}>
+                                            <Row gap={12} flex="1 1">
                                                 <Paragraph
                                                     typographyStyle="body-xs"
                                                     intent="neutral"
                                                     priority="secondary"
                                                     align="end"
                                                     textWrap="balance"
-                                                    maxWidth={400}
                                                 >
                                                     <UnsupportedAssetsMessage
                                                         affectedNetworks={affectedNetworks}

@@ -107,6 +107,7 @@ export * from './components/Note/Note';
 export * from './components/Popover/Popover';
 export * from './components/Popover/utils';
 export * from './components/ResizableBox/ResizableBox';
+export * from './components/Timerange/Timerange';
 export * from './components/skeletons/SkeletonCircle';
 export * from './components/skeletons/SkeletonRectangle';
 export * from './components/skeletons/SkeletonSpread';

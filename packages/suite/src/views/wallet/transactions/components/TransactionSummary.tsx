@@ -16,9 +16,7 @@ import {
     aggregateBalanceHistory,
     getGraphDataForInterval,
     getMinMaxValueFromData,
-    isNetworkWithGraphFeature,
 } from 'src/utils/wallet/graph';
-import { AccountOverviewBalance } from 'src/views/wallet/transactions/components/AccountOverviewBalance';
 
 import { SummaryCards } from './SummaryCards';
 
@@ -40,7 +38,6 @@ interface TransactionSummaryProps {
 }
 
 export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const selectedRange = useSelector(state => state.wallet.graph.selectedRange);
     const graph = useSelector(state => state.wallet.graph);
 
@@ -94,67 +91,60 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
             }),
         );
 
-    const isGraphSupported = isNetworkWithGraphFeature(account.symbol, account.backendType);
-
     return (
         <Column alignItems="stretch" gap={20}>
-            <AccountOverviewBalance selectedAccount={selectedAccount} />
-            {isGraphSupported && (
-                <Column alignItems="stretch">
-                    {error ? (
-                        <Card paddingType="none">
-                            <Column alignItems="stretch" padding={24} gap={16}>
-                                <Row height={320} overflow="visible" alignItems="stretch">
-                                    <ErrorMessage>
-                                        <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
-                                        <Button
-                                            onClick={() => onRefresh()}
-                                            iconLeft="repeat"
-                                            intent="neutral"
-                                            priority="secondary"
-                                        >
-                                            <Translation id="TR_RETRY" />
-                                        </Button>
-                                    </ErrorMessage>
-                                </Row>
-                                <GraphRangeSelector
-                                    onSelectedRange={onSelectedRange}
+            {error ? (
+                <Card paddingType="none">
+                    <Column alignItems="stretch" padding={24} gap={16}>
+                        <Row height={320} overflow="visible" alignItems="stretch">
+                            <ErrorMessage>
+                                <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
+                                <Button
+                                    onClick={() => onRefresh()}
+                                    iconLeft="repeat"
+                                    intent="neutral"
+                                    priority="secondary"
+                                >
+                                    <Translation id="TR_RETRY" />
+                                </Button>
+                            </ErrorMessage>
+                        </Row>
+                        <GraphRangeSelector
+                            onSelectedRange={onSelectedRange}
+                            isLoading={isLoading}
+                        />
+                    </Column>
+                </Card>
+            ) : (
+                <HiddenPlaceholder enforceIntensity={8}>
+                    <Card overflow="visible" paddingType="none">
+                        <Column alignItems="stretch" padding={24} gap={16}>
+                            <Row height={320} overflow="visible" alignItems="stretch">
+                                <TransactionsGraph
+                                    variant="one-asset"
+                                    xTicks={xTicks}
+                                    account={account}
                                     isLoading={isLoading}
+                                    data={data}
+                                    minMaxValues={[
+                                        minMaxValues[0].toNumber(),
+                                        minMaxValues[1].toNumber(),
+                                    ]}
+                                    localCurrency={baseCurrencyCode}
+                                    onRefresh={onRefresh}
+                                    selectedRange={selectedRange}
+                                    receivedValueFn={entry => entry.received}
+                                    sentValueFn={entry => entry.sent}
+                                    balanceValueFn={entry => entry.balance}
                                 />
-                            </Column>
-                        </Card>
-                    ) : (
-                        <HiddenPlaceholder enforceIntensity={8}>
-                            <Card overflow="visible" paddingType="none">
-                                <Column alignItems="stretch" padding={24} gap={16}>
-                                    <Row height={320} overflow="visible" alignItems="stretch">
-                                        <TransactionsGraph
-                                            variant="one-asset"
-                                            xTicks={xTicks}
-                                            account={account}
-                                            isLoading={isLoading}
-                                            data={data}
-                                            minMaxValues={[
-                                                minMaxValues[0].toNumber(),
-                                                minMaxValues[1].toNumber(),
-                                            ]}
-                                            localCurrency={baseCurrencyCode}
-                                            onRefresh={onRefresh}
-                                            selectedRange={selectedRange}
-                                            receivedValueFn={entry => entry.received}
-                                            sentValueFn={entry => entry.sent}
-                                            balanceValueFn={entry => entry.balance}
-                                        />
-                                    </Row>
-                                    <GraphRangeSelector
-                                        onSelectedRange={onSelectedRange}
-                                        isLoading={isLoading}
-                                    />
-                                </Column>
-                            </Card>
-                        </HiddenPlaceholder>
-                    )}
-                </Column>
+                            </Row>
+                            <GraphRangeSelector
+                                onSelectedRange={onSelectedRange}
+                                isLoading={isLoading}
+                            />
+                        </Column>
+                    </Card>
+                </HiddenPlaceholder>
             )}
             <SummaryCards
                 selectedRange={selectedRange}
@@ -162,7 +152,6 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                 data={data}
                 localCurrency={baseCurrencyCode}
                 account={account}
-                isGraphSupported={isGraphSupported}
                 isLoading={isLoading}
             />
         </Column>

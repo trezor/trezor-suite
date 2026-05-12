@@ -107,7 +107,7 @@ export class WalletPage {
         );
         this.transactionItem = this.page.getByTestId('@wallet/transaction-item');
         this.transactionAddress = this.page.getByTestId('@wallet/transaction/target-address');
-        this.fiatAmount = this.page.getByTestId('@wallet/account/fiat-amount');
+        this.fiatAmount = this.page.getByTestId('@wallet/account/fiat-amount').first();
         this.showMoreButton = this.page.getByTestId('@wallet/receive/used-address/show-more');
         this.topPanelBalance = this.page.getByTestId('@wallet/account/crypto-balance');
         this.topPanelBalanceWithSymbol = this.page.getByTestId(

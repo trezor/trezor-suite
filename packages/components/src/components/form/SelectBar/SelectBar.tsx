@@ -92,6 +92,7 @@ export type SelectBarProps<V extends ValueTypes> = {
     options: Option<V>[];
     selectedOption?: V;
     onChange?: (value: V) => void;
+    onOptionClick?: (value: V) => void;
     isDisabled?: boolean;
     isFullWidth?: boolean;
     orientation?: SelectBarOrientation;
@@ -105,6 +106,7 @@ export const SelectBar = <V extends ValueTypes>({
     options,
     selectedOption,
     onChange,
+    onOptionClick,
     isDisabled = false,
     isFullWidth,
     orientation = 'auto',
@@ -124,7 +126,13 @@ export const SelectBar = <V extends ValueTypes>({
 
     const handleOptionClick = useCallback(
         (option: Option<V>) => () => {
-            if (isDisabled || option.value === selectedOptionIn) {
+            if (isDisabled) {
+                return;
+            }
+
+            onOptionClick?.(option.value);
+
+            if (option.value === selectedOptionIn) {
                 return;
             }
 
@@ -132,7 +140,7 @@ export const SelectBar = <V extends ValueTypes>({
 
             onChange?.(option?.value);
         },
-        [isDisabled, selectedOptionIn, onChange],
+        [isDisabled, onOptionClick, selectedOptionIn, onChange],
     );
 
     const handleKeyboardNav = (e: KeyboardEvent) => {
