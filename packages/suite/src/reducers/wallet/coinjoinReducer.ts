@@ -766,25 +766,22 @@ export const selectIsAccountWithSessionByAccountKey = (
     return coinjoinAccounts.find(a => a.key === accountKey && a.session && !a.session.paused);
 };
 
-export const selectFeeRateMedianByAccountKey = (
-    state: CoinjoinRootState,
-    accountKey: AccountKey,
-) => {
-    const coinjoinClient = selectCoinjoinClient(state, accountKey);
+export const selectFeeRateMedianByAccountKey = createMemoizedSelector(
+    [(state: CoinjoinRootState, accountKey: AccountKey) => selectCoinjoinClient(state, accountKey)],
+    coinjoinClient => coinjoinClient?.feeRateMedian || FEE_RATE_MEDIAN_FALLBACK,
+);
 
-    return coinjoinClient?.feeRateMedian || FEE_RATE_MEDIAN_FALLBACK;
-};
-
-export const selectDefaultMaxMiningFeeByAccountKey = (
-    state: CoinjoinRootState,
-    accountKey: AccountKey,
-) => {
-    const feeRateMedian = selectFeeRateMedianByAccountKey(state, accountKey);
-    const maxMiningFeeModifier = selectMaxMiningFeeModifier(state);
-    const maxMiningFeeConfig = selectMaxMiningFeeConfig(state); // value defined in message system config has priority over default value (but not over custom value set by user)
-
-    return maxMiningFeeConfig ?? getMaxFeePerVbyte(feeRateMedian, maxMiningFeeModifier);
-};
+// value defined in message system config has priority over default value (but not over custom value set by user)
+export const selectDefaultMaxMiningFeeByAccountKey = createMemoizedSelector(
+    [
+        (state: CoinjoinRootState, accountKey: AccountKey) =>
+            selectFeeRateMedianByAccountKey(state, accountKey),
+        selectMaxMiningFeeModifier,
+        selectMaxMiningFeeConfig,
+    ],
+    (feeRateMedian, maxMiningFeeModifier, maxMiningFeeConfig) =>
+        maxMiningFeeConfig ?? getMaxFeePerVbyte(feeRateMedian, maxMiningFeeModifier),
+);
 
 export const selectMinAllowedInputWithFee = createMemoizedSelector(
     [selectCoinjoinClient],

@@ -11,6 +11,8 @@ import {
     initialState,
     selectCoinjoinAccountByKey,
     selectCoinjoinClient,
+    selectDefaultMaxMiningFeeByAccountKey,
+    selectFeeRateMedianByAccountKey,
     selectMinAllowedInputWithFee,
     selectRegisteredUtxosByAccountKey,
     selectTargetAnonymityByAccountKey,
@@ -283,5 +285,118 @@ describe('selectTargetAnonymityByAccountKey', () => {
         expect(b1).toBe(DEFAULT_TARGET_ANONYMITY);
         expect(a2).toBe(a1);
         expect(b2).toBe(b1);
+    });
+});
+
+describe('selectFeeRateMedianByAccountKey', () => {
+    const accountA = { key: 'A' as AccountKey, symbol: 'btc' };
+    const btcClient = { feeRateMedian: 7, allowedInputAmounts: { min: 5000, max: 1_000_000 } };
+
+    const buildState = (accounts: unknown[], clients: Record<string, unknown> = {}) =>
+        ({
+            wallet: {
+                coinjoin: { ...initialState, accounts, clients },
+            },
+        }) as unknown as CoinjoinRootState;
+
+    it('returns the registered client feeRateMedian for the account', () => {
+        const state = buildState([accountA], { btc: btcClient });
+
+        expect(selectFeeRateMedianByAccountKey(state, 'A' as AccountKey)).toBe(7);
+    });
+
+    it('falls back to FEE_RATE_MEDIAN_FALLBACK when no client is registered for the account', () => {
+        const state = buildState([accountA], {});
+
+        // FEE_RATE_MEDIAN_FALLBACK = 2
+        expect(selectFeeRateMedianByAccountKey(state, 'A' as AccountKey)).toBe(2);
+    });
+
+    it('falls back to FEE_RATE_MEDIAN_FALLBACK when client feeRateMedian is 0', () => {
+        const state = buildState([accountA], {
+            btc: { ...btcClient, feeRateMedian: 0 },
+        });
+
+        expect(selectFeeRateMedianByAccountKey(state, 'A' as AccountKey)).toBe(2);
+    });
+
+    it('returns the same number across repeated calls with the same args', () => {
+        const state = buildState([accountA], { btc: btcClient });
+
+        const first = selectFeeRateMedianByAccountKey(state, 'A' as AccountKey);
+        const second = selectFeeRateMedianByAccountKey(state, 'A' as AccountKey);
+
+        expect(second).toBe(first);
+    });
+
+    it('recomputes when client feeRateMedian changes', () => {
+        const stateBefore = buildState([accountA], { btc: btcClient });
+        const stateAfter = buildState([accountA], {
+            btc: { ...btcClient, feeRateMedian: 11 },
+        });
+
+        expect(selectFeeRateMedianByAccountKey(stateBefore, 'A' as AccountKey)).toBe(7);
+        expect(selectFeeRateMedianByAccountKey(stateAfter, 'A' as AccountKey)).toBe(11);
+    });
+});
+
+describe('selectDefaultMaxMiningFeeByAccountKey', () => {
+    const accountA = { key: 'A' as AccountKey, symbol: 'btc' };
+    const btcClient = { feeRateMedian: 7, allowedInputAmounts: { min: 5000, max: 1_000_000 } };
+
+    const buildState = (
+        accounts: unknown[],
+        clients: Record<string, unknown> = {},
+        maxFeePerVbyte: number | undefined = undefined,
+    ) =>
+        ({
+            wallet: {
+                coinjoin: {
+                    ...initialState,
+                    accounts,
+                    clients,
+                    config: { ...initialState.config, maxFeePerVbyte },
+                },
+            },
+        }) as unknown as CoinjoinRootState;
+
+    it('returns getMaxFeePerVbyte(feeRateMedian, maxMiningFeeModifier) when no config override', () => {
+        const state = buildState([accountA], { btc: btcClient });
+
+        // MAX_MINING_FEE_MODIFIER = 2.5, Math.round(7 * 2.5) = 18
+        expect(selectDefaultMaxMiningFeeByAccountKey(state, 'A' as AccountKey)).toBe(18);
+    });
+
+    it('returns the config override when maxFeePerVbyte is set in config', () => {
+        const state = buildState([accountA], { btc: btcClient }, 42);
+
+        expect(selectDefaultMaxMiningFeeByAccountKey(state, 'A' as AccountKey)).toBe(42);
+    });
+
+    it('uses FEE_RATE_MEDIAN_FALLBACK when no client is registered', () => {
+        const state = buildState([accountA], {});
+
+        // Math.round(2 * 2.5) = 5
+        expect(selectDefaultMaxMiningFeeByAccountKey(state, 'A' as AccountKey)).toBe(5);
+    });
+
+    it('returns the same number across repeated calls with the same args', () => {
+        const state = buildState([accountA], { btc: btcClient });
+
+        const first = selectDefaultMaxMiningFeeByAccountKey(state, 'A' as AccountKey);
+        const second = selectDefaultMaxMiningFeeByAccountKey(state, 'A' as AccountKey);
+
+        expect(second).toBe(first);
+    });
+
+    it('recomputes when client feeRateMedian changes', () => {
+        const stateBefore = buildState([accountA], { btc: btcClient });
+        const stateAfter = buildState([accountA], {
+            btc: { ...btcClient, feeRateMedian: 10 },
+        });
+
+        expect(selectDefaultMaxMiningFeeByAccountKey(stateBefore, 'A' as AccountKey)).toBe(18);
+        // Math.round(10 * 2.5) = 25
+        expect(selectDefaultMaxMiningFeeByAccountKey(stateAfter, 'A' as AccountKey)).toBe(25);
     });
 });
