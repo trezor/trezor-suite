@@ -8,7 +8,7 @@ import {
     selectDeviceLabelOrNameById,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { useSelectorDeepComparison } from '@suite-common/redux-utils';
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectHasOnlyEmptyPortfolioTracker } from '@suite-common/wallet-core';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Box, HStack } from '@suite-native/atoms';
@@ -52,6 +52,40 @@ export const itemStyle = prepareNativeStyle<{ isCompact: boolean }>((utils, { is
     },
 }));
 
+const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
+
+const selectMatchedDeviceDisplayInfo = createMemoizedSelector(
+    [
+        (state, deviceState: TrezorDevice['state'] | undefined) =>
+            selectDeviceByState(state, deviceState)?.id,
+        (state, deviceState: TrezorDevice['state'] | undefined) =>
+            selectDeviceByState(state, deviceState)?.name,
+        (state, deviceState: TrezorDevice['state'] | undefined) =>
+            selectDeviceByState(state, deviceState)?.connected,
+        (state, deviceState: TrezorDevice['state'] | undefined) =>
+            selectDeviceByState(state, deviceState)?.walletNumber,
+        (state, deviceState: TrezorDevice['state'] | undefined) =>
+            selectDeviceByState(state, deviceState)?.useEmptyPassphrase,
+        (state, deviceState: TrezorDevice['state'] | undefined) => {
+            const d = selectDeviceByState(state, deviceState);
+
+            return d ? selectDeviceLabelOrNameById(state, d.id) : '';
+        },
+    ],
+    (id, name, isConnected, walletNumber, useEmptyPassphrase, label) =>
+        id === undefined
+            ? null
+            : {
+                  id,
+                  name,
+                  isConnected: isConnected ?? false,
+                  label,
+                  walletNumber,
+                  isDeviceInBootloaderMode: false,
+                  useEmptyPassphrase,
+              },
+);
+
 export const DeviceItemContent = React.memo(
     ({
         deviceState,
@@ -64,35 +98,24 @@ export const DeviceItemContent = React.memo(
         const { applyStyle } = useNativeStyles();
         const shouldFactoryResetBeVisible = useSelector(selectShouldFactoryResetBeVisible);
         const selectedDevice = useSelector(selectSelectedDevice);
-
-        const device = useSelectorDeepComparison((state: DeviceRootState) => {
-            // select only what is needed to avoid unnecessary rerenders
-            const d = selectDeviceByState(state, deviceState);
-
-            if (!d && shouldFactoryResetBeVisible)
-                return {
-                    id: 'bootloader_device',
-                    name: selectedDevice?.name,
-                    label: selectedDevice?.label,
-                    walletNumber: 1,
-                    isConnected: true,
-                    isDeviceInBootloaderMode: true,
-                    useEmptyPassphrase: selectedDevice?.useEmptyPassphrase,
-                };
-
-            if (!d) return null;
-
-            return {
-                id: d.id,
-                name: d.name,
-                isConnected: d.connected,
-                label: selectDeviceLabelOrNameById(state, d.id),
-                walletNumber: d.walletNumber,
-                isDeviceInBootloaderMode: false,
-                useEmptyPassphrase: d.useEmptyPassphrase,
-            };
-        });
+        const matchedDeviceDisplayInfo = useSelector((state: DeviceRootState) =>
+            selectMatchedDeviceDisplayInfo(state, deviceState),
+        );
         const hasOnlyEmptyPortfolioTracker = useSelector(selectHasOnlyEmptyPortfolioTracker);
+
+        const device =
+            matchedDeviceDisplayInfo ??
+            (shouldFactoryResetBeVisible
+                ? {
+                      id: 'bootloader_device',
+                      name: selectedDevice?.name,
+                      label: selectedDevice?.label,
+                      walletNumber: 1,
+                      isConnected: true,
+                      isDeviceInBootloaderMode: true,
+                      useEmptyPassphrase: selectedDevice?.useEmptyPassphrase,
+                  }
+                : null);
 
         const isPortfolioTrackerDevice = device?.id === PORTFOLIO_TRACKER_DEVICE_ID;
 
