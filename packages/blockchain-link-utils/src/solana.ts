@@ -1,3 +1,12 @@
+import type {
+    StakeType,
+    Target,
+    TokenDetailByMint,
+    TokenInfo,
+    TokenStandard,
+    TokenTransfer,
+    Transaction,
+} from '@trezor/blockchain-link-types/src';
 import {
     ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY,
     COMPUTE_BUDGET_PROGRAM_ID,
@@ -22,15 +31,6 @@ import type {
     SolanaValidParsedTxWithMeta,
     TokenProgramName,
 } from '@trezor/coins-solana/types';
-import type {
-    StakeType,
-    Target,
-    TokenDetailByMint,
-    TokenInfo,
-    TokenStandard,
-    TokenTransfer,
-    Transaction,
-} from '@trezor/blockchain-link-types/src';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { arrayPartition } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';

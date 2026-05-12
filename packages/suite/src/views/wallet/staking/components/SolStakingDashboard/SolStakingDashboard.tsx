@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 
 import { withScope } from '@sentry/core';
 
-import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
 import { EARN_API_BASE_URL } from '@suite-common/earn-staking-api/src/constants';
 import { useSolanaRewardsHistory } from '@suite-common/earn-staking-api/src/staking';
 import {
@@ -14,6 +13,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
+import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
 import { Column, Flex, Grid } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';

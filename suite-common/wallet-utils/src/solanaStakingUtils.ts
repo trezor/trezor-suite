@@ -1,12 +1,12 @@
+import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
+import { type SolanaStakingAccount } from '@trezor/blockchain-link-types';
 import {
     SOLANA_EPOCH_DAYS,
     StakeState,
     supportedSolanaNetworkSymbols,
 } from '@trezor/coins-solana/constants';
 import type { SupportedSolanaNetworkSymbols } from '@trezor/coins-solana/types';
-import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
-import { type SolanaStakingAccount } from '@trezor/blockchain-link-types';
 import { BigNumber, isArrayMember } from '@trezor/utils';
 
 import { formatNetworkAmount } from './amountUtils';

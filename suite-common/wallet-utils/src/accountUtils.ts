@@ -1,4 +1,3 @@
-import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/coins-solana/constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type AccountType,
@@ -30,6 +29,7 @@ import {
     createAccountKey,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/coins-solana/constants';
 import TrezorConnect, {
     type AccountAddress,
     type AccountAddresses,

@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT, StakeState } from '@trezor/coins-solana/constants';
-import solana from '@trezor/coins-solana/runtime';
 import { Translation } from '@suite/intl';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { WALLET_SDK_SOURCE } from '@suite-common/wallet-constants';
@@ -13,6 +11,8 @@ import {
     getOutputTxAmount,
     getSolanaStakingAccountsByStatus,
 } from '@suite-common/wallet-utils';
+import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT, StakeState } from '@trezor/coins-solana/constants';
+import solana from '@trezor/coins-solana/runtime';
 import { Banner } from '@trezor/components';
 import { getSuiteVersion } from '@trezor/env-utils';
 import { BigNumber } from '@trezor/utils';

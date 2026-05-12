@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
 import { Translation } from '@suite/intl';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectEthValidatorsQueue } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
+import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
 import { BulletList } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

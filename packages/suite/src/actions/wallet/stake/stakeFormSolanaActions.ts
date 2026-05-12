@@ -1,16 +1,3 @@
-import {
-    MIN_SOL_AMOUNT_FOR_STAKING,
-    MIN_SOL_BALANCE_FOR_STAKING,
-    MIN_SOL_FOR_WITHDRAWALS,
-    SOL_STAKING_OPERATION_FEE,
-    supportedSolanaNetworkSymbols,
-} from '@trezor/coins-solana/constants';
-import solana from '@trezor/coins-solana/runtime';
-import type {
-    EstimatedFee,
-    PrepareStakeSolTxResponse,
-    SolanaTxMeta,
-} from '@trezor/coins-solana/types';
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type ExtraDependencies } from '@suite-common/redux-utils';
@@ -35,6 +22,19 @@ import {
 } from '@suite-common/wallet-types';
 import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
 import { type BlockbookFee as Fee } from '@trezor/blockchain-link-types';
+import {
+    MIN_SOL_AMOUNT_FOR_STAKING,
+    MIN_SOL_BALANCE_FOR_STAKING,
+    MIN_SOL_FOR_WITHDRAWALS,
+    SOL_STAKING_OPERATION_FEE,
+    supportedSolanaNetworkSymbols,
+} from '@trezor/coins-solana/constants';
+import solana from '@trezor/coins-solana/runtime';
+import type {
+    EstimatedFee,
+    PrepareStakeSolTxResponse,
+    SolanaTxMeta,
+} from '@trezor/coins-solana/types';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import { getSuiteVersion } from '@trezor/env-utils';
 import { BigNumber, isArrayMember } from '@trezor/utils';

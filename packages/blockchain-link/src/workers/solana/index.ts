@@ -1,3 +1,14 @@
+import type {
+    AccountInfo,
+    MessageTypes,
+    Response,
+    SubscriptionAccountInfo,
+    TokenDetailByMint,
+    TokenInfo,
+    Transaction,
+} from '@trezor/blockchain-link-types';
+import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
+import { solanaUtils } from '@trezor/blockchain-link-utils';
 import { tokenProgramsInfo } from '@trezor/coins-solana/constants';
 import solana from '@trezor/coins-solana/runtime';
 import type {
@@ -11,17 +22,6 @@ import type {
     SolanaTokenAccountInfo,
     SolanaValidParsedTxWithMeta,
 } from '@trezor/coins-solana/types';
-import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
-import type {
-    AccountInfo,
-    MessageTypes,
-    Response,
-    SubscriptionAccountInfo,
-    TokenDetailByMint,
-    TokenInfo,
-    Transaction,
-} from '@trezor/blockchain-link-types';
-import { solanaUtils } from '@trezor/blockchain-link-utils';
 import { getSuiteVersion } from '@trezor/env-utils';
 import { type IntervalId } from '@trezor/type-utils';
 import { BigNumber, createDeferred, createLazy } from '@trezor/utils';

@@ -1,12 +1,4 @@
 import {
-    MAX_SOL_AMOUNT_FOR_STAKING,
-    MIN_SOL_AMOUNT_FOR_STAKING,
-    MIN_SOL_BALANCE_FOR_FEE_BUFFER,
-    MIN_SOL_BALANCE_FOR_STAKING,
-    MIN_SOL_FOR_WITHDRAWALS,
-    SOLANA_EPOCH_DAYS,
-} from '@trezor/coins-solana/constants';
-import {
     type NetworkSymbol,
     type NetworkType,
     STAKING_SYMBOLS,
@@ -38,6 +30,14 @@ import {
     type StakingPoolExtended,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
+import {
+    MAX_SOL_AMOUNT_FOR_STAKING,
+    MIN_SOL_AMOUNT_FOR_STAKING,
+    MIN_SOL_BALANCE_FOR_FEE_BUFFER,
+    MIN_SOL_BALANCE_FOR_STAKING,
+    MIN_SOL_FOR_WITHDRAWALS,
+    SOLANA_EPOCH_DAYS,
+} from '@trezor/coins-solana/constants';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
