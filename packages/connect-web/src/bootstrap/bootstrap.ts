@@ -7,11 +7,11 @@ const logger = (() => {
         enable: () => {
             enabled = true;
         },
-        log: (...args: any[]) => {
+        log: (...args: unknown[]) => {
             // eslint-disable-next-line no-console
             if (enabled) console.log(...args);
         },
-        error: (...args: any[]) => {
+        error: (...args: unknown[]) => {
             console.error(...args);
         },
     };
