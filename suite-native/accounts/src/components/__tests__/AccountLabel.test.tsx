@@ -30,6 +30,18 @@ describe('AccountLabel', () => {
         visible: true,
     });
 
+    const ethLedgerAccount = mockWalletAccount({
+        symbol: 'eth',
+        accountLabel: 'ETH Ledger Account',
+        deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
+
+        accountType: 'ledger',
+        descriptor: asAccountDescriptor('eth1-ledger'),
+        visible: true,
+    });
+
+    const accounts = [ethAccount, ethLedgerAccount];
+
     const reducer = {
         locale: localeReducer,
         device: createStaticReducer(deviceInitialState),
@@ -38,7 +50,7 @@ describe('AccountLabel', () => {
         suiteSyncData: createStaticReducer(initialSuiteSyncDataState),
         wallet: combineReducers({
             settings: createStaticReducer(initialWalletSettingsState),
-            accounts: createStaticReducer([ethAccount]),
+            accounts: createStaticReducer(accounts),
         }),
     } as const;
 
@@ -49,7 +61,7 @@ describe('AccountLabel', () => {
                 preloadedState: {
                     wallet: {
                         settings: initialWalletSettingsState,
-                        accounts: [ethAccount],
+                        accounts,
                     },
                 } satisfies PreloadedStatePartial<StateFromReducersMapObject<typeof reducer>>,
             }),
@@ -88,5 +100,34 @@ describe('AccountLabel', () => {
         });
 
         expect(getByText('ETH Account #1')).toHaveProp('accessibilityLabel', 'ACCESSIBILITY_LABEL');
+    });
+
+    it('should render account type badge when showAccountTypeBadge is set', () => {
+        const { getByText } = renderAccountLabel({
+            account: ethLedgerAccount,
+            showAccountTypeBadge: true,
+        });
+
+        expect(getByText('ETH Ledger Account')).toBeOnTheScreen();
+        expect(getByText('Ledger')).toBeOnTheScreen();
+    });
+
+    it('should render account type badge for the descriptor variant when showAccountTypeBadge is set', () => {
+        const { getByText } = renderAccountLabel({
+            deviceStaticSessionId: ethLedgerAccount.deviceState,
+            networkSymbol: ethLedgerAccount.symbol,
+            accountDescriptor: ethLedgerAccount.descriptor,
+            showAccountTypeBadge: true,
+        });
+
+        expect(getByText('ETH Ledger Account')).toBeOnTheScreen();
+        expect(getByText('Ledger')).toBeOnTheScreen();
+    });
+
+    it('should not render account type badge when showAccountTypeBadge is not set', () => {
+        const { getByText, queryByText } = renderAccountLabel({ account: ethLedgerAccount });
+
+        expect(getByText('ETH Ledger Account')).toBeOnTheScreen();
+        expect(queryByText('Ledger')).not.toBeOnTheScreen();
     });
 });
