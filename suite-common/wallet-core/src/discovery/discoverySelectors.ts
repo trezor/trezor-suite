@@ -1,17 +1,24 @@
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
 import { type DeviceUniquePath } from '@trezor/connect';
 
 import { type DiscoveryRootState } from './discoveryReducer';
 
+const createMemoizedSelector = createWeakMapSelector.withTypes<
+    DiscoveryRootState & DeviceRootState
+>();
+
+const selectDiscoveries = (state: DiscoveryRootState) => state.wallet.discovery;
+
 export const selectDiscoveryByDevicePath = (state: DiscoveryRootState, path?: DeviceUniquePath) =>
     path !== undefined ? state.wallet.discovery[path] : undefined;
 
-export const selectDiscoveryForSelectedDevice = (state: DiscoveryRootState & DeviceRootState) => {
-    const selectedDevice = selectSelectedDevice(state);
-
-    return selectDiscoveryByDevicePath(state, selectedDevice?.path);
-};
+export const selectDiscoveryForSelectedDevice = createMemoizedSelector(
+    [selectDiscoveries, selectSelectedDevice],
+    (discoveries, selectedDevice) =>
+        selectedDevice?.path !== undefined ? discoveries[selectedDevice.path] : undefined,
+);
 
 export function isDiscoveryInProgress(
     discovery?: DiscoveryStatus,
@@ -30,11 +37,10 @@ export function isDiscoveryInProgress(
     );
 }
 
-export const selectHasRunningDiscovery = (state: DiscoveryRootState & DeviceRootState) => {
-    const discovery = selectDiscoveryForSelectedDevice(state);
-
-    return isDiscoveryInProgress(discovery);
-};
+export const selectHasRunningDiscovery = createMemoizedSelector(
+    [selectDiscoveryForSelectedDevice],
+    discovery => isDiscoveryInProgress(discovery),
+);
 
 /**
  * Helper selector called from components
@@ -44,10 +50,7 @@ export const selectIsDiscoveryStatusConfirmEmptyPassphrase = (
     path?: DeviceUniquePath,
 ) => selectDiscoveryByDevicePath(state, path)?.status === 'confirm-empty-passphrase';
 
-export const selectIsCreatingNewPassphraseWallet = (
-    state: DiscoveryRootState & DeviceRootState,
-) => {
-    const discovery = selectDiscoveryForSelectedDevice(state);
-
-    return discovery?.isAddingHiddenWallet;
-};
+export const selectIsCreatingNewPassphraseWallet = createMemoizedSelector(
+    [selectDiscoveryForSelectedDevice],
+    discovery => discovery?.isAddingHiddenWallet,
+);
