@@ -1,7 +1,13 @@
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 
 import { btcAccount, ethAccount } from '../__fixtures__/accounts';
-import { type TokensRootState, selectAccountTokenInfo } from '../tokensSelectors';
+import { mockTransaction } from '../__fixtures__/transactions';
+import {
+    type TokensRootState,
+    selectAccountStakeTypeTransactionsWithTokenTransfers,
+    selectAccountTokenInfo,
+    selectAccountTransactionsWithTokenTransfers,
+} from '../tokensSelectors';
 
 describe('tokensSelectors', () => {
     const getState = () =>
@@ -52,6 +58,65 @@ describe('tokensSelectors', () => {
                     '0x4d224452801ACEd8B2F0aebE155379bb5D594381' as TokenAddress,
                 ),
             ).toBeNull();
+        });
+    });
+
+    describe('selectAccountTransactionsWithTokenTransfers', () => {
+        const accountKey = ethAccount.key as AccountKey;
+        const getStateWithTransactions = (transactions: (typeof mockTransaction)[]) =>
+            ({
+                wallet: {
+                    accounts: [ethAccount],
+                    transactions: {
+                        transactions: { [accountKey]: transactions },
+                        fetchStatusDetail: {},
+                    },
+                },
+            }) as unknown as TokensRootState;
+
+        it('returns the same reference across repeated calls when state is unchanged', () => {
+            const state = getStateWithTransactions([mockTransaction]);
+            const first = selectAccountTransactionsWithTokenTransfers(state, accountKey);
+            const second = selectAccountTransactionsWithTokenTransfers(state, accountKey);
+            expect(first).toBe(second);
+        });
+
+        it('returns the same stable empty-array reference when there are no transactions', () => {
+            const state = getStateWithTransactions([]);
+            const first = selectAccountTransactionsWithTokenTransfers(state, accountKey);
+            const second = selectAccountTransactionsWithTokenTransfers(state, accountKey);
+            expect(first).toEqual([]);
+            expect(first).toBe(second);
+        });
+
+        it('passes the underlying transactions through unchanged', () => {
+            const state = getStateWithTransactions([mockTransaction]);
+            const result = selectAccountTransactionsWithTokenTransfers(state, accountKey);
+            expect(result).toHaveLength(1);
+            expect(result[0].txid).toBe(mockTransaction.txid);
+            expect(result[0].tokens).toBe(mockTransaction.tokens);
+        });
+    });
+
+    describe('selectAccountStakeTypeTransactionsWithTokenTransfers', () => {
+        const accountKey = ethAccount.key as AccountKey;
+        const getStateWithTransactions = (transactions: (typeof mockTransaction)[]) =>
+            ({
+                wallet: {
+                    accounts: [ethAccount],
+                    transactions: {
+                        transactions: { [accountKey]: transactions },
+                        fetchStatusDetail: {},
+                    },
+                },
+            }) as unknown as TokensRootState;
+
+        it('returns the same stable empty-array reference when there are no stake-type transactions', () => {
+            const state = getStateWithTransactions([mockTransaction]);
+            const first = selectAccountStakeTypeTransactionsWithTokenTransfers(state, accountKey);
+            const second = selectAccountStakeTypeTransactionsWithTokenTransfers(state, accountKey);
+            expect(first).toEqual([]);
+            expect(first).toBe(second);
         });
     });
 });

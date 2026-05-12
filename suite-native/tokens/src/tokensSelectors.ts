@@ -1,4 +1,4 @@
-import { A, pipe } from '@mobily/ts-belt';
+import { A } from '@mobily/ts-belt';
 
 import type { DeviceRootState } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
@@ -26,9 +26,9 @@ import {
     type TokenSymbol,
 } from '@suite-common/wallet-types';
 import { shouldUppercaseTokenSymbol } from '@suite-common/wallet-utils';
-import { type TokenInfo, type TokenTransfer } from '@trezor/blockchain-link';
+import { type TokenInfo } from '@trezor/blockchain-link';
 
-import { type TypedTokenTransfer, type WalletAccountTransaction } from './types';
+import { type WalletAccountTransaction } from './types';
 import { isNetworkWithTokens } from './utils';
 
 export type TokensRootState = AccountsRootState &
@@ -139,41 +139,18 @@ export const selectAnyOfTokensIsKnown = (
     return result;
 };
 
-export const selectAccountTransactionsWithTokenTransfers = createMemoizedSelector(
-    [selectAccountTransactions],
-    (transactions): WalletAccountTransaction[] =>
-        pipe(
-            transactions,
-            A.map(transaction => ({
-                ...transaction,
-                tokens: pipe(
-                    transaction?.tokens ?? [],
-                    A.map((tokenTransfer: TokenTransfer) => ({
-                        ...tokenTransfer,
-                        symbol: tokenTransfer.symbol,
-                    })),
-                ) as TypedTokenTransfer[],
-            })),
-        ) as WalletAccountTransaction[],
-);
+// Pure type adapters: TypedTokenTransfer differs from TokenTransfer only by symbol/contract branding, so the runtime cast preserves the upstream-memoized reference.
+export const selectAccountTransactionsWithTokenTransfers = (
+    state: TokensRootState,
+    accountKey: AccountKey,
+): WalletAccountTransaction[] =>
+    selectAccountTransactions(state, accountKey) as unknown as WalletAccountTransaction[];
 
-export const selectAccountStakeTypeTransactionsWithTokenTransfers = createMemoizedSelector(
-    [selectAccountStakeTypeTransactions],
-    (transactions): WalletAccountTransaction[] =>
-        pipe(
-            transactions,
-            A.map(transaction => ({
-                ...transaction,
-                tokens: pipe(
-                    transaction?.tokens ?? [],
-                    A.map((tokenTransfer: TokenTransfer) => ({
-                        ...tokenTransfer,
-                        symbol: tokenTransfer.symbol,
-                    })),
-                ) as TypedTokenTransfer[],
-            })),
-        ) as WalletAccountTransaction[],
-);
+export const selectAccountStakeTypeTransactionsWithTokenTransfers = (
+    state: TokensRootState,
+    accountKey: AccountKey,
+): WalletAccountTransaction[] =>
+    selectAccountStakeTypeTransactions(state, accountKey) as unknown as WalletAccountTransaction[];
 
 export const selectAccountKnownTokens = createMemoizedSelector(
     [selectAccountByKey, selectTokenDefinitions],
