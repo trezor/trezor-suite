@@ -23,7 +23,7 @@ type Domain = string;
 type EventName = `${Domain}/${string}` | `${string}`;
 
 type HasKeys<T> = keyof T extends never ? false : true;
-type IsAttributeMap<T> = T extends Record<string, AttributeDef<any>> ? true : false;
+type IsAttributeMap<T> = T extends Record<string, AttributeDef<unknown>> ? true : false;
 
 type AttributePayload<T> = NonNullable<T> extends AttributeDef<infer V> ? V : never;
 
