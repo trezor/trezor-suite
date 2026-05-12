@@ -2,18 +2,32 @@
 
 export type IpcProxyGenerator<T> = (
     channelName: string,
-    ...constructorParams: any[]
+    ...constructorParams: unknown[]
 ) => Promise<{
     target: T;
     proxy: {
-        get(target: T, p: string | symbol): any;
+        get(target: T, p: string | symbol): unknown;
     };
 }>;
 
 export type IpcProxyApi = {
-    create: (channelName: string, instanceId: string, constructorParams: any) => Promise<any>;
-    request: (channelName: string, instanceId: string, method: string, args: any[]) => Promise<any>;
-    setHandler: (channelName: string, instanceId: string, eventName: string, handler: any) => void;
+    create: (
+        channelName: string,
+        instanceId: string,
+        constructorParams: unknown,
+    ) => Promise<unknown>;
+    request: (
+        channelName: string,
+        instanceId: string,
+        method: string,
+        args: unknown[],
+    ) => Promise<unknown>;
+    setHandler: (
+        channelName: string,
+        instanceId: string,
+        eventName: string,
+        handler: (event: unknown[]) => void,
+    ) => void;
     clearHandler: (channelName: string, instanceId: string, eventName: string) => void;
 };
 
