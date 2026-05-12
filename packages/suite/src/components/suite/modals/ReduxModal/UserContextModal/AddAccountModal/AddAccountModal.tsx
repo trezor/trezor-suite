@@ -69,7 +69,9 @@ export const AddAccountModal = ({
     const isDebug = useSelector(selectIsDebugModeActive);
     const isCoinjoinPublic = useSelector(selectIsPublic);
     const enabledNetworkSymbols = useSelector(selectEnabledNetworks);
-    const useTestnetNetworks = useSelector(selectHasExperimentalFeature('testnet-networks'));
+    const useTestnetNetworks = useSelector(state =>
+        selectHasExperimentalFeature(state, 'testnet-networks'),
+    );
     const dispatch = useDispatch();
 
     const { showUnsupportedCoins, supportedMainnets, unsupportedMainnets, supportedTestnets } =

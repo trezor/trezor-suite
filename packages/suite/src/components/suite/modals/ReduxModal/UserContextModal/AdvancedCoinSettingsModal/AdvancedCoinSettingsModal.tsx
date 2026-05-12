@@ -46,7 +46,9 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
     const usesCustomExplorer = explorer.custom !== undefined;
 
     const isBitcoinNetwork = network.networkType === 'bitcoin';
-    const isGapLimitEnabled = useSelector(selectHasExperimentalFeature('gap-limit'));
+    const isGapLimitEnabled = useSelector(state =>
+        selectHasExperimentalFeature(state, 'gap-limit'),
+    );
 
     const gapLimitForm = useGapLimitForm(symbol);
     const explorerForm = useExplorerForm(symbol);

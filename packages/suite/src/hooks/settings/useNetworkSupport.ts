@@ -10,11 +10,15 @@ import { useSelector } from 'src/hooks/suite';
 export const useNetworkSupport = () => {
     const device = useSelector(selectSelectedDevice);
     const isDebug = useSelector(selectIsDebugModeActive);
-    const useExperimentalNetworks = useSelector(
-        selectHasExperimentalFeature('experimental-networks'),
+    const useExperimentalNetworks = useSelector(state =>
+        selectHasExperimentalFeature(state, 'experimental-networks'),
     );
-    const useTronViewOnly = useSelector(selectHasExperimentalFeature('tron-view-only'));
-    const useTestnetNetworks = useSelector(selectHasExperimentalFeature('testnet-networks'));
+    const useTronViewOnly = useSelector(state =>
+        selectHasExperimentalFeature(state, 'tron-view-only'),
+    );
+    const useTestnetNetworks = useSelector(state =>
+        selectHasExperimentalFeature(state, 'testnet-networks'),
+    );
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
 
     const mainnets = getMainnets({

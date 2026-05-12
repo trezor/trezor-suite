@@ -87,7 +87,9 @@ export const SettingsCoins = () => {
     const isDiscoveryButtonVisible = useSelector(state =>
         selectShowRediscoverButton(state, device),
     );
-    const useTestnetNetworks = useSelector(selectHasExperimentalFeature('testnet-networks'));
+    const useTestnetNetworks = useSelector(state =>
+        selectHasExperimentalFeature(state, 'testnet-networks'),
+    );
 
     const supportedEnabledNetworks = enabledNetworks.filter(enabledNetwork =>
         deviceSupportedNetworkSymbols.includes(enabledNetwork),

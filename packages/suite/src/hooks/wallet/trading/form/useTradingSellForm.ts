@@ -102,7 +102,9 @@ export const useTradingSellForm = ({
     const isSlip24FeatureEnabled = useSelector(state =>
         selectIsFeatureEnabled(state, Feature.trading.slip24, true),
     );
-    const isSlip24ExperimentalFeatureEnabled = useSelector(selectHasExperimentalFeature('slip24'));
+    const isSlip24ExperimentalFeatureEnabled = useSelector(state =>
+        selectHasExperimentalFeature(state, 'slip24'),
+    );
     const isSlip24Active = useSelector(state =>
         selectTradingIsSlip24Allowed(
             state,

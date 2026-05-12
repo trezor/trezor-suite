@@ -16,7 +16,9 @@ export const AccountNavigation = () => {
     const analytics = useAnalytics();
     const account = useSelector(selectSelectedAccount);
     const routerParams = useSelector(selectRouterParams) as WalletParams;
-    const enabledNftSection = useSelector(selectHasExperimentalFeature('nft-section'));
+    const enabledNftSection = useSelector(state =>
+        selectHasExperimentalFeature(state, 'nft-section'),
+    );
     const network = getNetworkOptional(routerParams?.symbol);
     const goToWithAnalytics = useGoToWithAnalytics(account);
 

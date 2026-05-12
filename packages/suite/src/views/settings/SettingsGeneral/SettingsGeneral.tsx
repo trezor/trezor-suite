@@ -66,10 +66,12 @@ export const SettingsGeneral = () => {
         return networkFeatures.includes('amount-unit');
     });
 
-    const torExternalExperimentalFeature = useSelector(
-        selectHasExperimentalFeature('tor-external'),
+    const torExternalExperimentalFeature = useSelector(state =>
+        selectHasExperimentalFeature(state, 'tor-external'),
     );
-    const mcpServerEnabled = useSelector(selectHasExperimentalFeature('mcp-server'));
+    const mcpServerEnabled = useSelector(state =>
+        selectHasExperimentalFeature(state, 'mcp-server'),
+    );
 
     const isProviderConnected = useSelector(selectSelectedProviderForLabels);
     const isMevProtectionSettingsVisible = useSelector(selectIsMevProtectionSettingsVisible);

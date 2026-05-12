@@ -1,6 +1,12 @@
 import { type ExperimentalFeature } from '@suite/experimental';
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 
 import { type SuiteSettingsRootState } from './settingsSlice';
+
+const createMemoizedSelector = createWeakMapSelector.withTypes<SuiteSettingsRootState>();
+
+const selectExperimentalFeaturesSlice = (state: SuiteSettingsRootState) =>
+    state.suiteSettings.experimental;
 
 export const selectSuiteSettings = (state: SuiteSettingsRootState) => state.suiteSettings;
 export const selectLanguage = (state: SuiteSettingsRootState) => state.suiteSettings.language;
@@ -31,9 +37,10 @@ export const selectExperimentalFeatures = (state: SuiteSettingsRootState) =>
     state.suiteSettings.experimental;
 export const selectIsExperimentalEnabled = (state: SuiteSettingsRootState) =>
     state.suiteSettings.experimental !== undefined;
-export const selectHasExperimentalFeature =
-    (feature: ExperimentalFeature) => (state: SuiteSettingsRootState) =>
-        state.suiteSettings.experimental?.includes(feature) ?? false;
+export const selectHasExperimentalFeature = createMemoizedSelector(
+    [selectExperimentalFeaturesSlice, (_state, feature: ExperimentalFeature) => feature],
+    (experimental, feature) => experimental?.includes(feature) ?? false,
+);
 export const selectIsDeviceAuthenticityCheckEnabled = (state: SuiteSettingsRootState) =>
     state.suiteSettings.enabledSecurityChecks.deviceAuthenticity;
 export const selectIsEntropyCheckEnabled = (state: SuiteSettingsRootState) =>
