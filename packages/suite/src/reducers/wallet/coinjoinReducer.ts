@@ -630,14 +630,13 @@ export const selectMaxMiningFeeModifier = (state: CoinjoinRootState) =>
 export const selectMaxMiningFeeConfig = (state: CoinjoinRootState) =>
     state.wallet.coinjoin.config.maxFeePerVbyte;
 
-export const selectCoinjoinAccountByKey = (
-    state: CoinjoinRootState,
-    accountKey: AccountKey | null,
-) => {
-    const coinjoinAccounts = selectCoinjoinAccounts(state);
-
-    return coinjoinAccounts.find(account => account.key === accountKey);
-};
+export const selectCoinjoinAccountByKey = createMemoizedSelector(
+    [
+        selectCoinjoinAccounts,
+        (_state: CoinjoinRootState, accountKey: AccountKey | null) => accountKey,
+    ],
+    (coinjoinAccounts, accountKey) => coinjoinAccounts.find(account => account.key === accountKey),
+);
 
 export const selectCoinjoinClient = (state: CoinjoinRootState, accountKey: AccountKey | null) => {
     const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
