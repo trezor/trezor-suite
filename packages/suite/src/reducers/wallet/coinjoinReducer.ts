@@ -658,22 +658,25 @@ export const selectTargetAnonymityByAccountKey = (
     return coinjoinAccount.setup?.targetAnonymity ?? DEFAULT_TARGET_ANONYMITY;
 };
 
-export const selectCurrentCoinjoinBalanceBreakdown = (state: CoinjoinRootState) => {
-    const selectedAccount = selectSelectedAccount(state);
-    const targetAnonymity = selectedAccount
-        ? selectTargetAnonymityByAccountKey(state, selectedAccount.key)
-        : undefined;
+export const selectCurrentCoinjoinBalanceBreakdown = createMemoizedSelector(
+    [
+        (state: CoinjoinRootState) => selectSelectedAccount(state)?.addresses?.anonymitySet,
+        (state: CoinjoinRootState) => selectSelectedAccount(state)?.utxo,
+        (state: CoinjoinRootState) => {
+            const selectedAccount = selectSelectedAccount(state);
 
-    const { addresses, utxo: utxos } = selectedAccount || {};
-
-    const balanceBreakdown = breakdownCoinjoinBalance({
-        targetAnonymity,
-        anonymitySet: addresses?.anonymitySet,
-        utxos,
-    });
-
-    return balanceBreakdown;
-};
+            return selectedAccount
+                ? selectTargetAnonymityByAccountKey(state, selectedAccount.key)
+                : undefined;
+        },
+    ],
+    (anonymitySet, utxos, targetAnonymity) =>
+        breakdownCoinjoinBalance({
+            targetAnonymity,
+            anonymitySet,
+            utxos,
+        }),
+);
 
 export const selectRegisteredUtxosByAccountKey = createMemoizedSelector(
     [selectCoinjoinAccountByKey],
@@ -1070,17 +1073,18 @@ export const selectStartCoinjoinSessionArguments = (
     ] as const;
 };
 
-export const selectCurrentSessionDeadlineInfo = (state: CoinjoinRootState) => {
-    const session = selectCurrentCoinjoinSession(state);
+export const selectCurrentSessionDeadlineInfo = createMemoizedSelector(
+    [selectCurrentCoinjoinSession],
+    session => {
+        const { roundPhase, roundPhaseDeadline, sessionDeadline } = session || {};
 
-    const { roundPhase, roundPhaseDeadline, sessionDeadline } = session || {};
-
-    return {
-        roundPhase,
-        roundPhaseDeadline,
-        sessionDeadline,
-    };
-};
+        return {
+            roundPhase,
+            roundPhaseDeadline,
+            sessionDeadline,
+        };
+    },
+);
 
 // Return true if it's not explicitly set to false in the message-system config.
 export const selectIsPublic = (state: CoinjoinRootState) =>
