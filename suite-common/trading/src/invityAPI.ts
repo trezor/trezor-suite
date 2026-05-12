@@ -142,7 +142,7 @@ class InvityAPI {
         method = 'POST',
         apiHeaderValue?: string,
         signal?: SignalType,
-    ): any {
+    ): RequestInit {
         const apiHeader = this.getOptionAPIHeader();
 
         return {
