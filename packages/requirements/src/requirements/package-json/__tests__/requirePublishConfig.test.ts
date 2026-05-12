@@ -25,6 +25,21 @@ const validPublicPackageJson = {
     files: ['lib/', 'libESM/', 'CHANGELOG.md'],
 };
 
+const validEsmOnlyPackageJson = {
+    name: '@trezor/example-esm',
+    main: 'src/index.ts',
+    publishConfig: {
+        main: './libESM/index.mjs',
+        types: './libESM/index.d.mts',
+        type: 'module',
+        exports: {
+            '.': { types: './libESM/index.d.mts', default: './libESM/index.mjs' },
+            './libESM/*': './libESM/*',
+        },
+    },
+    files: ['libESM/', 'CHANGELOG.md'],
+};
+
 describe(requirePublishConfig.name, () => {
     let workspaceDir: string;
     let context: WorkspaceContext;
@@ -130,16 +145,15 @@ describe(requirePublishConfig.name, () => {
             expect(errors).toContain('@trezor/example: Missing "publishConfig.types" field');
         });
 
-        it('reports missing lib/ in files array', async () => {
-            const pkg = {
-                ...validPublicPackageJson,
-                files: ['libESM/', 'CHANGELOG.md'],
-            };
-            writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(pkg));
+        it('accepts ESM-only package without lib/ in files array', async () => {
+            writeFileSync(
+                join(workspaceDir, 'package.json'),
+                JSON.stringify(validEsmOnlyPackageJson),
+            );
 
             const errors = await requirePublishConfig.verify(context);
 
-            expect(errors).toContain('@trezor/example: "files" must include "lib/"');
+            expect(errors.filter(e => e.includes('"files"'))).toEqual([]);
         });
 
         it('reports missing libESM/ in files array', async () => {
@@ -164,6 +178,123 @@ describe(requirePublishConfig.name, () => {
             const errors = await requirePublishConfig.verify(context);
 
             expect(errors.filter(e => e.includes('"files"'))).toEqual([]);
+        });
+    });
+
+    describe('verify - ESM-only package', () => {
+        it('passes for a valid ESM-only package', async () => {
+            writeFileSync(
+                join(workspaceDir, 'package.json'),
+                JSON.stringify(validEsmOnlyPackageJson),
+            );
+
+            const errors = await requirePublishConfig.verify(context);
+
+            expect(errors).toEqual([]);
+        });
+
+        it('reports invalid "." export shape for ESM-only package', async () => {
+            const pkg = {
+                ...validEsmOnlyPackageJson,
+                publishConfig: {
+                    ...validEsmOnlyPackageJson.publishConfig,
+                    exports: {
+                        '.': { import: './libESM/index.mjs' },
+                        './libESM/*': './libESM/*',
+                    },
+                },
+            };
+            writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(pkg));
+
+            const errors = await requirePublishConfig.verify(context);
+
+            expect(errors).toContain('@trezor/example: Invalid publishConfig.exports["."]');
+        });
+
+        it('reports missing publishConfig.type for ESM-only package', async () => {
+            const pkg = {
+                ...validEsmOnlyPackageJson,
+                publishConfig: {
+                    ...validEsmOnlyPackageJson.publishConfig,
+                    type: undefined,
+                },
+            };
+            writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(pkg));
+
+            const errors = await requirePublishConfig.verify(context);
+
+            expect(errors).toContain('@trezor/example: Missing "publishConfig.type" field');
+        });
+
+        it('reports invalid publishConfig.type for ESM-only package', async () => {
+            const pkg = {
+                ...validEsmOnlyPackageJson,
+                publishConfig: {
+                    ...validEsmOnlyPackageJson.publishConfig,
+                    type: 'commonjs',
+                },
+            };
+            writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(pkg));
+
+            const errors = await requirePublishConfig.verify(context);
+
+            expect(errors).toContain(
+                '@trezor/example: Invalid "publishConfig.type": expected "module", got "commonjs"',
+            );
+        });
+
+        it('does not require ./lib/* counterpart for ./libESM/* in ESM-only packages', async () => {
+            writeFileSync(
+                join(workspaceDir, 'package.json'),
+                JSON.stringify(validEsmOnlyPackageJson),
+            );
+
+            const errors = await requirePublishConfig.verify(context);
+
+            expect(errors.filter(e => e.includes('counterpart'))).toEqual([]);
+        });
+
+        it('rejects ./lib/* export key in ESM-only package', async () => {
+            const pkg = {
+                ...validEsmOnlyPackageJson,
+                publishConfig: {
+                    ...validEsmOnlyPackageJson.publishConfig,
+                    exports: {
+                        ...validEsmOnlyPackageJson.publishConfig.exports,
+                        './lib/*': { types: './lib/*.d.ts', default: './lib/*.js' },
+                    },
+                },
+            };
+            writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(pkg));
+
+            const errors = await requirePublishConfig.verify(context);
+
+            expect(errors).toContain(
+                '@trezor/example: Disallowed CJS export key "./lib/*" in ESM-only package',
+            );
+        });
+
+        it('rejects explicit ./lib/<subpath> export key in ESM-only package', async () => {
+            const pkg = {
+                ...validEsmOnlyPackageJson,
+                publishConfig: {
+                    ...validEsmOnlyPackageJson.publishConfig,
+                    exports: {
+                        ...validEsmOnlyPackageJson.publishConfig.exports,
+                        './lib/constants': {
+                            types: './lib/constants/index.d.ts',
+                            default: './lib/constants/index.js',
+                        },
+                    },
+                },
+            };
+            writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(pkg));
+
+            const errors = await requirePublishConfig.verify(context);
+
+            expect(errors).toContain(
+                '@trezor/example: Disallowed CJS export key "./lib/constants" in ESM-only package',
+            );
         });
     });
 

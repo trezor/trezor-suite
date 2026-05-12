@@ -1,8 +1,10 @@
-const { app, ipcMain, BrowserWindow } = require('electron');
-const path = require('path');
-const url = require('url');
+import { BrowserWindow, app, ipcMain } from 'electron';
+import path from 'node:path';
+import url, { fileURLToPath } from 'node:url';
 
-const { initTrezorConnect, callTrezorConnect } = require('./trezor-connect-ipc');
+import { callTrezorConnect, initTrezorConnect } from './trezor-connect-ipc.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 let mainWindow;
 
@@ -12,7 +14,7 @@ const init = () => {
         width: 1024,
         height: 775,
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
+            preload: path.join(__dirname, 'preload.cjs'),
         },
     });
 

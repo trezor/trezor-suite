@@ -2,6 +2,7 @@
     "name": "connect-example-electron-main",
     "version": "1.0.0",
     "description": "Example of electron app with @trezor/connect",
+    "type": "module",
     "main": "src/electron.js",
     "author": "Satoshilabs s.r.o <info@satoshilabs.com>",
     "license": "MIT",
@@ -22,6 +23,7 @@
         },
         "files": [
             "src/*.js",
+            "src/*.cjs",
             "src/index.html",
             "package.json"
         ],
