@@ -1626,7 +1626,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingProviderByNameAndTradeType.name, () => {
+    describe('selectTradingProviderByNameAndTradeType', () => {
         it('should return the correct provider for buy trade type', () => {
             const providerName = 'provider1';
             state.wallet.trading.buy.buyInfo = {
@@ -1680,6 +1680,46 @@ describe('tradingSelectors', () => {
             expect(() =>
                 selectTradingProviderByNameAndTradeType(state, 'provider1', 'invalid' as any),
             ).toThrow('Unreachable case: ["invalid"]');
+        });
+
+        it('should return the same reference across repeated calls with the same arguments', () => {
+            const providerName = 'provider1';
+            state.wallet.trading.buy.buyInfo = {
+                ...state.wallet.trading.buy.buyInfo,
+                providerInfos: {
+                    [providerName]: { name: providerName },
+                },
+            } as unknown as BuyInfo;
+
+            const first = selectTradingProviderByNameAndTradeType(state, providerName, 'buy');
+            const second = selectTradingProviderByNameAndTradeType(state, providerName, 'buy');
+            expect(first).toBe(second);
+        });
+
+        it('should cache distinct (name, type) lookups independently against the same state', () => {
+            const buyName = 'buyProvider';
+            const sellName = 'sellProvider';
+            state.wallet.trading.buy.buyInfo = {
+                ...state.wallet.trading.buy.buyInfo,
+                providerInfos: {
+                    [buyName]: { name: buyName },
+                },
+            } as unknown as BuyInfo;
+            state.wallet.trading.sell.sellInfo = {
+                ...state.wallet.trading.sell.sellInfo,
+                providerInfos: {
+                    [sellName]: { name: sellName },
+                },
+            } as unknown as SellInfo;
+
+            const buyResult = selectTradingProviderByNameAndTradeType(state, buyName, 'buy');
+            const sellResult = selectTradingProviderByNameAndTradeType(state, sellName, 'sell');
+            expect(buyResult).toEqual({ name: buyName });
+            expect(sellResult).toEqual({ name: sellName });
+            expect(selectTradingProviderByNameAndTradeType(state, buyName, 'buy')).toBe(buyResult);
+            expect(selectTradingProviderByNameAndTradeType(state, sellName, 'sell')).toBe(
+                sellResult,
+            );
         });
     });
 

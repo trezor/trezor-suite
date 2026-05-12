@@ -271,27 +271,25 @@ export const selectTradingExchangeProviders = (state: TradingRootState) =>
 export const selectTradingSellProviders = (state: TradingRootState) =>
     selectTradingSellInfo(state)?.providerInfos;
 
-export const selectTradingProviderByNameAndTradeType = (
-    state: TradingRootState,
-    name: string | undefined,
-    type: TradingType,
-) => {
-    if (!name) {
-        return undefined;
-    }
-
-    switch (type) {
-        case 'buy':
-            return selectTradingBuyProviders(state)?.[name];
-        case 'exchange':
-            return selectTradingExchangeProviders(state)?.[name];
-        case 'sell':
-            return selectTradingSellProviders(state)?.[name];
-
-        default:
-            return exhaustive(type);
-    }
-};
+export const selectTradingProviderByNameAndTradeType = createMemoizedSelector(
+    [
+        (state: TradingRootState, name: string | undefined, type: TradingType) => {
+            if (!name) return undefined;
+            switch (type) {
+                case 'buy':
+                    return selectTradingBuyProviders(state);
+                case 'exchange':
+                    return selectTradingExchangeProviders(state);
+                case 'sell':
+                    return selectTradingSellProviders(state);
+                default:
+                    return exhaustive(type);
+            }
+        },
+        (_state: TradingRootState, name: string | undefined) => name,
+    ],
+    (providers, name) => (name ? providers?.[name] : undefined),
+);
 
 export const selectTradingProviderKycPolicy = (
     state: TradingRootState,
