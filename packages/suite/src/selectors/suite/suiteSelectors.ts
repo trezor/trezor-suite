@@ -43,10 +43,14 @@ export const selectActiveTransports = (state: SuiteRootState) =>
     state.suite.transport?.transports ?? [];
 export const selectHasActiveTransport = (state: SuiteRootState) =>
     !!state.suite.transport?.transports.length;
-export const selectHasTransportOfType = (type: TransportInfo['type']) => (state: SuiteRootState) =>
-    state.suite.transport?.transports.some(t => t.type === type) ?? false;
-export const selectTransportOfType = (type: TransportInfo['type']) => (state: SuiteRootState) =>
-    state.suite.transport?.transports.find(t => t.type === type);
+export const selectHasTransportOfType = createMemoizedSelector(
+    [selectSuiteTransport, (_state: SuiteRootState, type: TransportInfo['type']) => type],
+    (transport, type) => transport?.transports.some(t => t.type === type) ?? false,
+);
+export const selectTransportOfType = createMemoizedSelector(
+    [selectSuiteTransport, (_state: SuiteRootState, type: TransportInfo['type']) => type],
+    (transport, type) => transport?.transports.find(t => t.type === type),
+);
 
 export const selectPrerequisite = createPrerequisiteMemoizedSelector(
     [selectSuiteTransport, selectSelectedDevice, selectRouter],

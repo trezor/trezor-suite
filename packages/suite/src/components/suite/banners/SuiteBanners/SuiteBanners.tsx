@@ -51,7 +51,7 @@ type SuiteBannersProps = {
 };
 
 export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
-    const bridge = useSelector(selectTransportOfType('BridgeTransport'));
+    const bridge = useSelector(state => selectTransportOfType(state, 'BridgeTransport'));
     const device = useSelector(selectSelectedDevice);
     const isOnline = useSelector(state => state.suite.online);
     const bannerMessage = useSelector(selectBannerMessage);

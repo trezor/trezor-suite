@@ -49,7 +49,9 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
         if (isBluetoothMode) onReScanClick();
     }, [isBluetoothMode, onReScanClick]);
 
-    const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
+    const isWebUsbTransport = useSelector(state =>
+        selectHasTransportOfType(state, 'WebUsbTransport'),
+    );
 
     const allowPairAgain =
         notConnectedNearbyDevices?.length === 0 && notConnectedKnownDevices.length > 0;

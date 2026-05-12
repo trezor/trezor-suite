@@ -6,7 +6,7 @@ import { useBridgeDesktopApi } from 'src/hooks/suite/useBridgeDesktopApi';
 import { selectTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 export const TransportBackends = () => {
-    const bridge = useSelector(selectTransportOfType('BridgeTransport'));
+    const bridge = useSelector(state => selectTransportOfType(state, 'BridgeTransport'));
 
     const {
         bridgeProcess,

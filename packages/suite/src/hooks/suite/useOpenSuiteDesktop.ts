@@ -8,7 +8,9 @@ import { useSelector } from 'src/hooks/suite';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 export const useOpenSuiteDesktop = () => {
-    const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
+    const isWebUsbTransport = useSelector(state =>
+        selectHasTransportOfType(state, 'WebUsbTransport'),
+    );
     const windowFocused = useWindowFocus();
     const handleOpenSuite = () => {
         const iframe = document.createElement('iframe');

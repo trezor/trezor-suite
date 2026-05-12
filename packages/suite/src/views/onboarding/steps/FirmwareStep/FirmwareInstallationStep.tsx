@@ -15,7 +15,9 @@ type FirmwareInstallationStepProps = {
 
 export const FirmwareInstallationStep = ({ install, onSuccess }: FirmwareInstallationStepProps) => {
     const { status, showReconnectPrompt, targetType, reconnectEvent } = useFirmwareDesktopUpdate();
-    const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
+    const isWebUsbTransport = useSelector(state =>
+        selectHasTransportOfType(state, 'WebUsbTransport'),
+    );
 
     const getInnerActionComponent = () => {
         if (

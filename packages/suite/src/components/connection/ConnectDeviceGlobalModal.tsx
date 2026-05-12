@@ -58,7 +58,9 @@ type ConnectModalContentProps = {
 };
 
 const ConnectModalContent = ({ children, isBluetoothMode }: ConnectModalContentProps) => {
-    const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
+    const isWebUsbTransport = useSelector(state =>
+        selectHasTransportOfType(state, 'WebUsbTransport'),
+    );
 
     return (
         <Column alignItems="center" gap={32} overflow="hidden">
@@ -204,7 +206,9 @@ const ViaCableCard = ({ onClick }: ConnectionModeCardProps) => (
 export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void }) => {
     const analytics = useAnalytics();
     const [isModeSelected, setIsModeSelected] = useState(false);
-    const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
+    const isWebUsbTransport = useSelector(state =>
+        selectHasTransportOfType(state, 'WebUsbTransport'),
+    );
     const {
         toggleBluetoothMode,
         toggleShowHints,

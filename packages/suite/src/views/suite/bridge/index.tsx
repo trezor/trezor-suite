@@ -15,8 +15,8 @@ import {
 // it actually changes to "Install suite desktop"
 export const BridgeUnavailable = () => {
     const hasTransport = useSelector(selectHasActiveTransport);
-    const isWebUsb = useSelector(selectHasTransportOfType('WebUsbTransport'));
-    const bridge = useSelector(selectTransportOfType('BridgeTransport'));
+    const isWebUsb = useSelector(state => selectHasTransportOfType(state, 'WebUsbTransport'));
+    const bridge = useSelector(state => selectTransportOfType(state, 'BridgeTransport'));
     const dispatch = useDispatch();
 
     const handleOpenSuite = useOpenSuiteDesktop();

@@ -23,8 +23,12 @@ export const FirmwareInstallation = ({
 }: FirmwareInstallationProps) => {
     const { status, showReconnectPrompt, targetType, reconnectEvent, isSlow } =
         useFirmwareDesktopUpdate();
-    const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
-    const isBluetoothTransport = useSelector(selectHasTransportOfType('BluetoothTransport'));
+    const isWebUsbTransport = useSelector(state =>
+        selectHasTransportOfType(state, 'WebUsbTransport'),
+    );
+    const isBluetoothTransport = useSelector(state =>
+        selectHasTransportOfType(state, 'BluetoothTransport'),
+    );
 
     const displayIsSlow = isSlow && isBluetoothTransport;
 

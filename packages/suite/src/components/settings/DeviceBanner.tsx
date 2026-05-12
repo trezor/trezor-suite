@@ -26,7 +26,9 @@ export const DeviceBanner = ({
     rightContent,
 }: DeviceBannerProps) => {
     const { device } = useDevice();
-    const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
+    const isWebUsbTransport = useSelector(state =>
+        selectHasTransportOfType(state, 'WebUsbTransport'),
+    );
     const deviceConnectedButNotAcquired = device && !isDeviceAcquired(device);
     const selectedDeviceModelInternal = device?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
 

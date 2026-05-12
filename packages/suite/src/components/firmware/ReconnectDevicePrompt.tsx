@@ -86,7 +86,9 @@ interface ReconnectDevicePromptProps {
 
 export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePromptProps) => {
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
-    const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
+    const isWebUsbTransport = useSelector(state =>
+        selectHasTransportOfType(state, 'WebUsbTransport'),
+    );
     const {
         showManualReconnectPrompt,
         status,
