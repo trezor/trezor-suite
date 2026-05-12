@@ -86,7 +86,7 @@ export const Tooltip = ({
     addon,
     title,
     isOpen,
-    hasArrow,
+    hasArrow = true,
     hasIcon = false,
     appendTo,
     shift,
