@@ -8,8 +8,8 @@ import { spacingsPx, zIndices } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 
-// To match the width of the trigger button in the SupportFeedbackSelection component.
-const POPOVER_WIDTH = `calc(${variables.LAYOUT_SIZE.GUIDE_PANEL_CONTENT_WIDTH} - 2 * ${spacingsPx.lg})`;
+// To match the width of the trigger button in the SupportFeedbackSelection component at minimum guide width.
+const POPOVER_WIDTH = `calc(${variables.LAYOUT_SIZE.GUIDE_PANEL_MIN_WIDTH - 1}px - 2 * ${spacingsPx.lg})`;
 
 type SupportConsentPopoverProps = {
     children: ReactNode;

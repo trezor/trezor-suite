@@ -10,7 +10,8 @@ export type GuideAction =
     | { type: typeof GUIDE.SET_INDEX_NODE; payload: GuideCategory }
     | { type: typeof GUIDE.SET_VIEW; payload: ActiveView }
     | { type: typeof GUIDE.UNSET_NODE }
-    | { type: typeof GUIDE.OPEN_NODE; payload: GuideNode };
+    | { type: typeof GUIDE.OPEN_NODE; payload: GuideNode }
+    | { type: typeof GUIDE.SET_WIDTH; payload: number };
 
 export const open = (): GuideAction => ({
     type: GUIDE.OPEN,
@@ -22,6 +23,11 @@ export const close = (): GuideAction => ({
 
 export const unsetNode = (): GuideAction => ({
     type: GUIDE.UNSET_NODE,
+});
+
+export const setWidth = (payload: number): GuideAction => ({
+    type: GUIDE.SET_WIDTH,
+    payload,
 });
 
 export const setView = (payload: ActiveView) => (dispatch: Dispatch) => {
