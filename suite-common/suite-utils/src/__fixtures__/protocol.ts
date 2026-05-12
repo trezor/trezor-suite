@@ -120,4 +120,28 @@ export const parseErc681TransferUri: ParseErc681TransferUriFixture[] = [
             chainId: 137,
         },
     },
+    {
+        description: 'should parse ERC-681 URI with @chainId suffix - receiving ETH, no token',
+        uri: 'ethereum:0x8e23ee67d1332ad560396262c48ffbb01f93d052@8453',
+        result: {
+            recipientAddress: '0x8e23ee67d1332ad560396262c48ffbb01f93d052',
+            chainId: 8453,
+        },
+    },
+    {
+        description:
+            'should parse ERC-681 URI with @chainId suffix - receiving ETH, no token (double slash)',
+        uri: 'ethereum://0x8e23ee67d1332ad560396262c48ffbb01f93d052@8453',
+        result: {
+            recipientAddress: '0x8e23ee67d1332ad560396262c48ffbb01f93d052',
+            chainId: 8453,
+        },
+    },
+    {
+        description: 'should parse ERC-681 URI - plain ETH mainnet',
+        uri: 'ethereum://0x8e23ee67d1332ad560396262c48ffbb01f93d052',
+        result: {
+            recipientAddress: '0x8e23ee67d1332ad560396262c48ffbb01f93d052',
+        },
+    },
 ];

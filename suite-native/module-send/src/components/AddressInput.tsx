@@ -60,16 +60,18 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
             account?.networkType === 'ethereum' ? parseErc681TransferUri(qrCodeData) : null;
         if (erc681) {
             setValue(addressFieldName, erc681.recipientAddress, { shouldValidate: true });
-            setValue(tokenFieldName, erc681.contractAddress, { shouldDirty: true });
-            const token = account?.tokens?.find(
-                t => t.contract.toLowerCase() === erc681.contractAddress.toLowerCase(),
-            );
-            if (token && erc681.tokenAmount !== undefined) {
-                setValue(
-                    amountFieldName,
-                    convertAmountSubunitsToUnits(erc681.tokenAmount, token.decimals),
-                    { shouldValidate: true },
+            if (erc681.contractAddress) {
+                setValue(tokenFieldName, erc681.contractAddress, { shouldDirty: true });
+                const token = account?.tokens?.find(
+                    t => t.contract.toLowerCase() === erc681.contractAddress!.toLowerCase(),
                 );
+                if (token && erc681.tokenAmount !== undefined) {
+                    setValue(
+                        amountFieldName,
+                        convertAmountSubunitsToUnits(erc681.tokenAmount, token.decimals),
+                        { shouldValidate: true },
+                    );
+                }
             }
             analytics.report({
                 type: events.sendAddressFilledEvent.name,
