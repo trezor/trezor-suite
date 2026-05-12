@@ -17,6 +17,7 @@ import {
 } from '@suite-common/wallet-types';
 import { type UseFormReturn, useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
+import { BigNumber } from '@trezor/utils';
 
 import { type FeesFormValues, feesFormValidationSchema } from '../../feesFormSchema';
 import { selectFeeLevels } from '../../selectors';
@@ -28,7 +29,7 @@ const getDefaultFeeLimit = (
 ): string | undefined => {
     if (networkType === 'tron') return normalFee?.estimatedFeeLimit;
 
-    return normalFee?.feeLimit;
+    return normalFee?.estimatedFeeLimit ?? normalFee?.feeLimit;
 };
 
 const syncCustomFeeDefaults = (
@@ -43,8 +44,14 @@ const syncCustomFeeDefaults = (
         form.setValue('customFeePerUnit', feePerUnit);
     }
     const defaultFeeLimit = getDefaultFeeLimit(networkType, normalFee);
+    const isCurrentFeeLimitStale =
+        !!defaultFeeLimit &&
+        !!values.customFeeLimit &&
+        new BigNumber(values.customFeeLimit).lt(defaultFeeLimit);
     const shouldUpdateFeeLimit =
-        networkType === 'tron' ? !!defaultFeeLimit : !values.customFeeLimit && !!defaultFeeLimit;
+        networkType === 'tron'
+            ? !!defaultFeeLimit
+            : !!defaultFeeLimit && (!values.customFeeLimit || isCurrentFeeLimitStale);
     if (shouldUpdateFeeLimit) {
         form.setValue('customFeeLimit', defaultFeeLimit, { shouldValidate: true });
     }
