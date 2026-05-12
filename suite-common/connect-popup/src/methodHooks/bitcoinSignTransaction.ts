@@ -24,7 +24,7 @@ const preCallHook = async <M extends CallMethodKeys>({
 }: PreCallHookParams<M>) => {
     try {
         if (method === 'signTransaction' && txSigningPrecomposed) {
-            const typedPayload = payload as any as SignTransaction;
+            const typedPayload = payload as unknown as SignTransaction;
             const network = getNetwork(typedPayload.coin as NetworkSymbol);
             if (!network) {
                 throw new Error(`Network not supported`);
