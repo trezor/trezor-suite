@@ -1,3 +1,5 @@
+import { type Dispatch } from '@reduxjs/toolkit';
+
 import {
     type DeleteLabelsForSuiteSync,
     type DeleteLabelsForSuiteSyncDep,
@@ -103,7 +105,7 @@ const moveLabelsForSuiteSyncRbf =
     };
 
 export type MigrateSuiteSyncLabelsForRbfTransactionDeps = {
-    dispatch: (args: any) => void;
+    dispatch: Dispatch;
 } & GetOutputsDep &
     SetLabelsForSuiteSyncDep &
     DeleteLabelsForSuiteSyncDep;
