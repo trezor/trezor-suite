@@ -10,6 +10,8 @@ import { handshakeCancel } from '../workflow/handshake';
 
 const { createTestTransport } = global.JestMocks;
 
+type ReadWriteOptions = { signal?: AbortSignal };
+
 const getAcquiredDevice = async (apiMethods: any = {}) => {
     let emitTransportEvent: (d: any[]) => void = () => {};
     const transport = createTestTransport({
@@ -91,13 +93,13 @@ describe('workflow/handshake', () => {
         let readAttempt = 0;
         const abortSpy = jest.fn();
         const readMock = jest.fn(
-            (_, signal) =>
+            (_, { signal }: ReadWriteOptions) =>
                 new Promise(resolve => {
                     const timeout = setTimeout(
                         () => resolve({ success: true, payload: Buffer.alloc(readAttempt) }),
                         500 * readAttempt, // increase respond time on each attempt, should timeout on 3rd
                     );
-                    signal.addEventListener('abort', () => {
+                    signal?.addEventListener('abort', () => {
                         abortSpy();
                         clearTimeout(timeout);
                         resolve({ success: false });
@@ -121,10 +123,10 @@ describe('workflow/handshake', () => {
 
         const abortSpy = jest.fn();
         const readMock = jest.fn(
-            (_, signal) =>
+            (_, { signal }: ReadWriteOptions) =>
                 new Promise(resolve => {
                     const timeout = setTimeout(() => resolve({ success: false }), 2000);
-                    signal.addEventListener('abort', () => {
+                    signal?.addEventListener('abort', () => {
                         abortSpy();
                         clearTimeout(timeout);
                         resolve({ success: false });
@@ -177,10 +179,10 @@ describe('workflow/handshake', () => {
 
         const abortSpy = jest.fn();
         const writeMock = jest.fn(
-            (_a, _b, signal) =>
+            (_a, _b, { signal }: ReadWriteOptions) =>
                 new Promise(resolve => {
                     const timeout = setTimeout(() => resolve({ success: false }), 2000);
-                    signal.addEventListener('abort', () => {
+                    signal?.addEventListener('abort', () => {
                         abortSpy();
                         clearTimeout(timeout);
                         resolve({ success: false });
@@ -208,10 +210,10 @@ describe('workflow/handshake', () => {
 
         const abortSpy = jest.fn();
         const writeMock = jest.fn(
-            (_a, _b, signal) =>
+            (_a, _b, { signal }: ReadWriteOptions) =>
                 new Promise(resolve => {
                     const timeout = setTimeout(() => resolve({ success: false }), 2000);
-                    signal.addEventListener('abort', () => {
+                    signal?.addEventListener('abort', () => {
                         abortSpy();
                         clearTimeout(timeout);
                         resolve({ success: false });

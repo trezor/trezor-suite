@@ -3,7 +3,7 @@ import EventEmitter from 'events';
 import { getFreePort } from '@trezor/node-utils';
 import { bridgeApiCall } from '@trezor/transport';
 import { UdpApi } from '@trezor/transport/src/api/udp';
-import { AbstractApi } from '@trezor/transport-common';
+import { AbstractApi, AbstractApiArgs } from '@trezor/transport-common';
 import { resolveAfter } from '@trezor/utils';
 
 import { TrezordNode } from '../src/http';
@@ -544,12 +544,12 @@ describe('http', () => {
 
         it('/call aborted', async () => {
             const writeSpy = jest.fn(
-                (_p: any, _d: any, signal: AbortSignal) =>
+                (...[, , options]: AbstractApiArgs<'write'>) =>
                     new Promise(resolve => {
                         // simulate some api work
                         setTimeout(() => {
                             // and when done check if it was not aborted
-                            if (signal.aborted) {
+                            if (options?.signal?.aborted) {
                                 resolve({ success: false, error: 'Aborted' });
                             } else {
                                 resolve({ success: true, payload: [] });

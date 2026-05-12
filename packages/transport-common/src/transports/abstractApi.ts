@@ -5,7 +5,11 @@ import {
     type AbstractTransportMethodParams,
     type AbstractTransportParams,
 } from './abstract';
-import { type AbstractApi, type OpenDeviceChannel } from '../api/abstract';
+import {
+    type AbstractApi,
+    type AbstractApiArgsOmitPath,
+    type OpenDeviceChannel,
+} from '../api/abstract';
 import { TRANSPORT } from '../constants';
 import * as ERRORS from '../errors';
 import { SessionsBackground } from '../sessions/background';
@@ -257,17 +261,20 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     this.api.nativeWriteChunking ? 0 : this.api.chunkSize,
                 );
                 let progress = 0;
-                const apiWrite = (chunk: Buffer, attemptSignal?: AbortSignal) => {
+                const apiWrite = (...[chunk, options]: AbstractApiArgsOmitPath<'write'>) => {
                     if (chunks.length > 1) {
                         progress++;
                         this.emit(TRANSPORT.SEND_MESSAGE_PROGRESS, progress / chunks.length);
                     }
 
-                    return this.api.write(path, chunk, attemptSignal || signal);
+                    return this.api.write(path, chunk, {
+                        ...options,
+                        signal: options?.signal || signal,
+                    });
                 };
 
-                const apiRead = (attemptSignal?: AbortSignal) =>
-                    this.api.read(path, attemptSignal || signal);
+                const apiRead = (...[options]: AbstractApiArgsOmitPath<'read'>) =>
+                    this.api.read(path, { ...options, signal: options?.signal || signal });
 
                 if (protocol.name === 'v2') {
                     const prevNonce = thpState?.sendNonce;
@@ -353,14 +360,20 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     this.api.nativeWriteChunking ? 0 : this.api.chunkSize,
                 );
                 let progress = 0;
-                const apiWrite = (chunk: Buffer) => {
+                const apiWrite = (...[chunk, options]: AbstractApiArgsOmitPath<'write'>) => {
                     if (chunks.length > 1) {
                         progress++;
                         this.emit(TRANSPORT.SEND_MESSAGE_PROGRESS, progress / chunks.length);
                     }
 
-                    return this.api.write(path, chunk, signal);
+                    return this.api.write(path, chunk, {
+                        ...options,
+                        signal: options?.signal || signal,
+                    });
                 };
+                const apiRead = (...[options]: AbstractApiArgsOmitPath<'read'>) =>
+                    this.api.read(path, { ...options, signal: options?.signal || signal });
+
                 let sendResult;
                 if (protocol.name === 'v2') {
                     sendResult = await sendThpMessage({
@@ -368,7 +381,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                         skipAck: true,
                         chunks,
                         apiWrite,
-                        apiRead: attemptSignal => this.api.read(path, attemptSignal || signal),
+                        apiRead,
                         signal,
                         logger: this.logger,
                     });
@@ -411,16 +424,21 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 }
                 const { path } = getPathBySessionResponse.payload;
 
-                const apiRead = (attemptSignal?: AbortSignal) =>
-                    this.api.read(path, attemptSignal || signal);
+                const apiRead = (...[options]: AbstractApiArgsOmitPath<'read'>) =>
+                    this.api.read(path, { ...options, signal: options?.signal || signal });
+
+                const apiWrite = (...[chunk, options]: AbstractApiArgsOmitPath<'write'>) =>
+                    this.api.write(path, chunk, {
+                        ...options,
+                        signal: options?.signal || signal,
+                    });
 
                 const protocol = customProtocol || v1Protocol;
                 if (protocol.name === 'v2') {
                     const decoded = await receiveThpMessage({
                         thpState,
                         skipAck: true,
-                        apiWrite: (chunk, attemptSignal) =>
-                            this.api.write(path, chunk, attemptSignal || signal),
+                        apiWrite,
                         apiRead,
                         signal,
                         logger: this.logger,

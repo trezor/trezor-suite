@@ -8,7 +8,7 @@ import { THP_CONTROL_BYTE } from '@trezor/protocol/src/protocol-v2/constants';
 import { SCHEDULE_ACTION_TIMEOUT_ERROR_MESSAGE, scheduleAction } from '@trezor/utils';
 import type { Logger } from '@trezor/utils';
 
-import type { AbstractApi } from '../api/abstract';
+import type { AbstractApi, AbstractApiArgsOmitPath } from '../api/abstract';
 import { receive } from '../utils/receive';
 import { error } from '../utils/result';
 
@@ -32,8 +32,8 @@ type ReceiveExpectedMessageError = ReturnType<
 >;
 
 export type CommonProps = {
-    apiWrite: (chunk: Buffer, signal?: AbortSignal) => ReturnType<AbstractApi['write']>;
-    apiRead: (signal?: AbortSignal) => ReturnType<AbstractApi['read']>;
+    apiWrite: (...args: AbstractApiArgsOmitPath<'write'>) => ReturnType<AbstractApi['write']>;
+    apiRead: (...args: AbstractApiArgsOmitPath<'read'>) => ReturnType<AbstractApi['read']>;
     thpState?: ThpState;
     skipAck?: boolean;
     signal?: AbortSignal;
@@ -60,7 +60,7 @@ export const receiveExpectedMessage = async (
 ): Promise<ReceiveResult | ReceiveExpectedMessageError> => {
     // scheduleAction returns wrapped error from the apiRead or throws error from itself (timeout, deadline, signal)
     const receiveResult = await scheduleAction(
-        attemptSignal => receive(() => apiRead(attemptSignal), protocolV2),
+        attemptSignal => receive(() => apiRead({ signal: attemptSignal }), protocolV2),
         {
             signal,
             graceful: true,

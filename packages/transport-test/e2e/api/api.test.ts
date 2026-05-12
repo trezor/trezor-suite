@@ -2,6 +2,7 @@
 // not pull THP code (and its transitive `@trezor/protocol/protocol-thp/crypto`
 // node-only `crypto` import) into the browser bundle.
 import { UsbApi } from '@trezor/transport-common/src/api/usb';
+import type { PathInternal } from '@trezor/transport-common/src/types';
 import type { UsbInterfaceApi } from '@trezor/transport-common/src/types/usbInterface';
 
 import { debug, error, info, sharedTest, success } from './shared';
@@ -53,7 +54,7 @@ const runTests = async () => {
         info(`Running tests for ${f.description}`);
 
         const { api } = f;
-        let path: string;
+        let path: PathInternal;
 
         const getConnectedDevicePath = async () => {
             info('getConnectedDevicePath...');
@@ -114,7 +115,7 @@ const runTests = async () => {
 
             const abortController = new AbortController();
             debug('read with abort signal');
-            const readPromise = api.read(path, abortController.signal);
+            const readPromise = api.read(path, { signal: abortController.signal });
             debug('trigger abort');
             abortController.abort();
             const abortedResponse = await readPromise;
