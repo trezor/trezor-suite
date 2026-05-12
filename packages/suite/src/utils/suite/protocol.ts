@@ -34,7 +34,7 @@ export const getProtocolInfo = (
         const erc681 = parseErc681TransferUri(uri);
         if (erc681) {
             return {
-                scheme,
+                scheme: erc681.networkSymbol ?? scheme,
                 address: erc681.recipientAddress,
                 token: erc681.contractAddress,
                 tokenAmount: erc681.tokenAmount,
