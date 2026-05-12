@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
+import { AccountTypeBadge } from '@suite-native/accounts';
 import { Box, Card, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -110,6 +111,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
                             {secondaryDescription}
                         </Text>
                     )}
+                    <AccountTypeBadge accountKey={item.accountKey} alignSelf="flex-start" />
                 </VStack>
 
                 <VStack spacing="sp2" style={applyStyle(valuesStyle)}>
