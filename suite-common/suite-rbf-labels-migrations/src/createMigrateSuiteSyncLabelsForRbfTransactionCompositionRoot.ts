@@ -1,7 +1,10 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
 import { toGetter } from '@suite-common/dependency-injection';
-import { selectSuiteSyncOutputLabelsByAccount } from '@suite-common/suite-sync';
+import {
+    type SuiteSyncDataRootState,
+    selectSuiteSyncOutputLabelsByAccount,
+} from '@suite-common/suite-sync';
 import { type UpdateOutputLabelDep } from '@suite-common/suite-sync-types';
 
 import {
@@ -12,7 +15,7 @@ import {
 
 type MigrateSuiteSyncLabelsForRbfTransactionCompositionRootDeps = {
     dispatch: Dispatch;
-    getState: () => any;
+    getState: () => SuiteSyncDataRootState;
 } & UpdateOutputLabelDep;
 
 export const createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot = (
