@@ -54,6 +54,9 @@ const OutputLabel = ({
                     <Translation id="transactionManagement.review.outputs.revokeApprovalFromLabel" />
                 );
             }
+            if (flowType === 'swap') {
+                return <Translation id="transactionManagement.review.outputs.swapContractLabel" />;
+            }
 
             return <Translation id="transactionManagement.review.outputs.contractLabel" />;
         case 'timebounds':

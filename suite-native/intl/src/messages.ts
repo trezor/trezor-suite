@@ -3773,6 +3773,7 @@ export const messages = {
                 networkTestnet: 'Transaction is on testnet network',
                 signingWithLabel: 'Signing with',
                 contractLabel: 'Token address',
+                swapContractLabel: 'Swap contract address',
                 approveLabel: 'Approve',
                 revokeLabel: 'Revoke',
                 tokenApprovalLabel: 'Token approval',
