@@ -22,7 +22,7 @@ export type SuiteCompatibleSelector<TReturn> = (state: any) => TReturn;
 export type ActionType = string;
 
 interface TypeGuard<T> {
-    (value: any): value is T;
+    (value: unknown): value is T;
 }
 interface HasMatchFunction<T> {
     match: TypeGuard<T>;
