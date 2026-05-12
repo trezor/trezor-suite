@@ -43,12 +43,6 @@ const Interaction = styled.span`
     display: flex;
 `;
 
-const ImageContainer = styled.div`
-    img {
-        filter: invert(1);
-    }
-`;
-
 type QrType = 'app-store' | 'play-store';
 
 type StoreBadgeWithQrProps = {
@@ -77,13 +71,14 @@ const StoreBadgeWithQr = ({
             hasArrow
             content={
                 <Column alignItems="center">
-                    <ImageContainer>
-                        <Image
-                            margin={{ bottom: spacings.xs, top: spacings.xxxs }}
-                            image={image}
-                            height={26}
-                        />
-                    </ImageContainer>
+                    <Box
+                        backgroundColor="elementFillContrast"
+                        borderRadius={6}
+                        padding={{ vertical: spacings.xxxs, horizontal: spacings.xs }}
+                        margin={{ bottom: spacings.xs, top: spacings.xxxs }}
+                    >
+                        <Image image={image} height={26} />
+                    </Box>
                     <Box
                         height={140}
                         width={140}
