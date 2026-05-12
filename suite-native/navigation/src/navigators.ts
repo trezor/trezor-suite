@@ -216,6 +216,7 @@ export type DeviceOnboardingStackParamList = {
     [DeviceOnboardingStackRoutes.WalletBackupRecap]: undefined;
     [DeviceOnboardingStackRoutes.WalletRecoveryRecap]: undefined;
     [DeviceOnboardingStackRoutes.CreatePin]: undefined;
+    [DeviceOnboardingStackRoutes.Congratulations]: undefined;
 };
 
 export type AccountsImportStackParamList = {

@@ -16,6 +16,9 @@ const finishOnboardingFlow = async () => {
     await TrezorUserEnvLink.inputEmu('123');
     await TrezorUserEnvLink.pressYes();
 
+    await onDeviceOnboarding.waitForCongratulationsScreen();
+    await onDeviceOnboarding.dismissCongratulationsScreen();
+
     await onHome.waitForScreen();
 };
 

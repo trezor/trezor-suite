@@ -206,6 +206,14 @@ class DeviceOnboardingActions {
         await TrezorUserEnvLink.pressYes(); // press Continue
         await TrezorUserEnvLink.pressNo(); // reject backup flow early, so pending resetDevice settles
     }
+
+    async waitForCongratulationsScreen() {
+        await waitForVisible(by.id('@screen/Congratulations'));
+    }
+
+    async dismissCongratulationsScreen() {
+        await element(by.id('@deviceOnboarding/CongratulationsScreen/continueButton')).tap();
+    }
 }
 
 export const onDeviceOnboarding = new DeviceOnboardingActions();

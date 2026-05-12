@@ -3,31 +3,21 @@ import { useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    AppTabsRoutes,
     type DeviceOnboardingStackParamList,
-    type DeviceOnboardingStackRoutes,
-    HomeStackRoutes,
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackToStackCompositeNavigationProps,
+    DeviceOnboardingStackRoutes,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
-type NavigationProps = StackToStackCompositeNavigationProps<
+type NavigationProps = StackNavigationProps<
     DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
-    RootStackParamList
+    DeviceOnboardingStackRoutes
 >;
 
 export const useOnDeviceOnboardingFinishedNavigation = () => {
     const navigation = useNavigation<NavigationProps>();
 
     const onDeviceOnboardingFinishedNavigation = useCallback(() => {
-        navigation.popTo(RootStackRoutes.AppTabs, {
-            screen: AppTabsRoutes.HomeStack,
-            params: {
-                screen: HomeStackRoutes.Home,
-            },
-        });
+        navigation.navigate(DeviceOnboardingStackRoutes.Congratulations);
     }, [navigation]);
 
     return { onDeviceOnboardingFinishedNavigation };

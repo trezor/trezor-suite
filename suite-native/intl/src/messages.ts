@@ -1967,6 +1967,11 @@ export const messages = {
                 secondaryButton: 'Contact Trezor Support',
             },
         },
+        congratulationsScreen: {
+            title: "You're all set",
+            subtitle: 'Your {deviceName} is set up and ready for use.',
+            continueButton: 'Go to dashboard',
+        },
         deviceDisconnectedAlert: {
             title: 'Your Trezor has been disconnected',
             description: 'Connect your Trezor to start again.',
