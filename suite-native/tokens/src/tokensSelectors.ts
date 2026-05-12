@@ -206,22 +206,39 @@ export const selectHasDeviceAnyTokensForNetwork = (
     return A.any(accounts, account => selectAnyOfTokensIsKnown(state, account.key));
 };
 
-export const selectHasDeviceAnyTokensWithBalanceForNetwork = (
-    state: TokensRootState,
-    symbol: NetworkSymbol,
-) => {
-    if (!isNetworkWithTokens(symbol)) {
-        return false;
-    }
+export const selectHasDeviceAnyTokensWithBalanceForNetwork = createMemoizedSelector(
+    [
+        selectVisibleDeviceAccountsByNetworkSymbol,
+        selectTokenDefinitions,
+        (_state: TokensRootState, symbol: NetworkSymbol) => symbol,
+    ],
+    (accounts, tokenDefinitions, symbol) => {
+        if (!isNetworkWithTokens(symbol)) {
+            return false;
+        }
 
-    const accounts = selectVisibleDeviceAccountsByNetworkSymbol(state, symbol);
+        return A.any(accounts, account => {
+            if (!isNetworkWithTokens(account.symbol)) {
+                return false;
+            }
 
-    return A.any(accounts, account => {
-        const count = selectNumberOfAccountKnownTokensWithBalance(state, account.key);
+            const tokens = account.tokens ?? [];
 
-        return count > 0;
-    });
-};
+            // For Stellar, all tokens are considered "known" (trustlines require explicit user action).
+            // See comment in selectAccountKnownTokens for details.
+            const tokensToCheck =
+                account.networkType === 'stellar'
+                    ? tokens
+                    : filterKnownTokens(
+                          getSimpleCoinDefinitionsByNetwork(tokenDefinitions, account.symbol),
+                          account.symbol,
+                          tokens,
+                      );
+
+            return A.any(tokensToCheck, token => parseFloat(token?.balance ?? '0') > 0);
+        });
+    },
+);
 
 export const selectAccountHasAnyKnownToken = (state: TokensRootState, accountKey: AccountKey) => {
     const account = selectAccountByKey(state, accountKey);

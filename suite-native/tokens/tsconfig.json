@@ -23,6 +23,9 @@
         },
         {
             "path": "../../packages/blockchain-link"
+        },
+        {
+            "path": "../../suite-common/suite-types"
         }
     ]
 }

@@ -1,3 +1,4 @@
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 
 import { btcAccount, ethAccount } from '../__fixtures__/accounts';
@@ -7,6 +8,7 @@ import {
     selectAccountStakeTypeTransactionsWithTokenTransfers,
     selectAccountTokenInfo,
     selectAccountTransactionsWithTokenTransfers,
+    selectHasDeviceAnyTokensWithBalanceForNetwork,
 } from '../tokensSelectors';
 
 describe('tokensSelectors', () => {
@@ -117,6 +119,84 @@ describe('tokensSelectors', () => {
             const second = selectAccountStakeTypeTransactionsWithTokenTransfers(state, accountKey);
             expect(first).toEqual([]);
             expect(first).toBe(second);
+        });
+    });
+
+    describe('selectHasDeviceAnyTokensWithBalanceForNetwork', () => {
+        const ethDeviceState = ethAccount.deviceState as string;
+        const usdtContractLower = '0xdac17f958d2ee523a2206206994597c13d831ec7';
+        const apeContractLower = '0x4d224452801aced8b2f0aebe155379bb5d594381';
+        const sfContractLower = '0xed314bf44013612e8c00abd3cb6eade61cc8c72e';
+
+        const buildTestState = (
+            tokenDefinitions: Record<string, unknown>,
+            accounts = [btcAccount, ethAccount],
+        ) =>
+            ({
+                wallet: {
+                    accounts,
+                },
+                device: {
+                    devices: [
+                        {
+                            state: {
+                                sessionId: '1',
+                                staticSessionId: ethDeviceState,
+                            },
+                        } as TrezorDevice,
+                    ],
+                    selectedDevice: {
+                        state: {
+                            sessionId: '1',
+                            staticSessionId: ethDeviceState,
+                        },
+                    } as TrezorDevice,
+                },
+                tokenDefinitions,
+            }) as unknown as TokensRootState;
+
+        const definitionsWithUsdt = {
+            eth: { coin: { data: [usdtContractLower] } },
+        };
+
+        const definitionsWithApe = {
+            eth: { coin: { data: [apeContractLower] } },
+        };
+
+        const definitionsWithSf = {
+            eth: { coin: { data: [sfContractLower] } },
+        };
+
+        it('returns true when at least one known token has a positive balance', () => {
+            // The eth fixture's 'sf' token is the only one with a positive balance ('1');
+            // adding it to the known list should flip the result to true.
+            const state = buildTestState(definitionsWithSf);
+            expect(selectHasDeviceAnyTokensWithBalanceForNetwork(state, 'eth')).toBe(true);
+        });
+
+        it('returns false when no known token has a positive balance (ape is known but balance is 0)', () => {
+            const state = buildTestState(definitionsWithApe);
+
+            expect(selectHasDeviceAnyTokensWithBalanceForNetwork(state, 'eth')).toBe(false);
+        });
+
+        it('returns false when there are tokens with balance but none are in the known list', () => {
+            // 'sf' has balance '1' but is NOT in definitionsWithUsdt; usdt is known but balance is 0.
+            const state = buildTestState(definitionsWithUsdt);
+
+            expect(selectHasDeviceAnyTokensWithBalanceForNetwork(state, 'eth')).toBe(false);
+        });
+
+        it('returns the same primitive across repeated calls when state is unchanged', () => {
+            const state = buildTestState(definitionsWithApe);
+            const first = selectHasDeviceAnyTokensWithBalanceForNetwork(state, 'eth');
+            const second = selectHasDeviceAnyTokensWithBalanceForNetwork(state, 'eth');
+            expect(first).toBe(second);
+        });
+
+        it('returns false for a network that does not support tokens (e.g. btc)', () => {
+            const state = buildTestState(definitionsWithApe);
+            expect(selectHasDeviceAnyTokensWithBalanceForNetwork(state, 'btc')).toBe(false);
         });
     });
 });
