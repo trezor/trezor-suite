@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS, useFormatters } from '@suite-common/formatters';
-import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { AccountsListItemBase, StakingBadge } from '@suite-native/accounts';
@@ -94,7 +93,7 @@ const PercentageIcon = React.memo(({ symbol }: AssetItemSubComponentProps) => {
 export const AssetItem = React.memo(({ cryptoCurrencySymbol, onPress }: AssetItemProps) => {
     const navigation = useNavigation<NavigationType>();
     const { NetworkNameFormatter } = useFormatters();
-    const accountsKeysForNetworkSymbol = useSelectorDeepComparison((state: AssetsRootState) =>
+    const accountsKeysForNetworkSymbol = useSelector((state: AssetsRootState) =>
         selectVisibleDeviceAccountsKeysByNetworkSymbol(state, cryptoCurrencySymbol),
     );
 

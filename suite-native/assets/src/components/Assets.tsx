@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectIsDeviceAuthorized } from '@suite-common/device';
-import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { type OnSelectAccount } from '@suite-native/accounts';
@@ -39,7 +38,7 @@ export const Assets = () => {
     const navigation = useNavigation<NavigationProp>();
     const { navigateToStakingDetail } = useStakingDetailNavigation();
     const reportStakingNavigate = useStakingNavigateAnalytics();
-    const deviceNetworks = useSelectorDeepComparison(selectDeviceNetworksWithAssets);
+    const deviceNetworks = useSelector(selectDeviceNetworksWithAssets);
 
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
