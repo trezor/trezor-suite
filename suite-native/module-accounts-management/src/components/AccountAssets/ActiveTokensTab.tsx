@@ -1,7 +1,8 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
+import { FlashList } from '@shopify/flash-list';
 
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
@@ -10,9 +11,8 @@ import {
     AccountsListTokenItem,
     type NativeAccountsRootState,
     type OnSelectAccount,
-    selectAccountListSectionsWithZeroBalanceGroup,
+    selectActiveTokensTabSections,
 } from '@suite-native/accounts';
-import { Box } from '@suite-native/atoms';
 import { useStakingDetailNavigation } from '@suite-native/module-earn';
 import {
     type RootStackParamList,
@@ -26,13 +26,29 @@ type ActiveTokensTabProps = {
     accountKey: AccountKey;
 };
 
+type SectionItem = ReturnType<typeof selectActiveTokensTabSections>[number];
+type ActiveTokenListItem = SectionItem & { isLast: boolean };
+
+const getItemKey = (item: ActiveTokenListItem): string => {
+    switch (item.type) {
+        case 'account':
+            return item.account.key;
+        case 'staking':
+            return `${item.account.key}-staking`;
+        case 'token':
+            return item.token.contract;
+        case 'zeroBalance':
+            return 'zero-balance';
+    }
+};
+
 export const ActiveTokensTab = ({ accountKey }: ActiveTokensTabProps) => {
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountAssets>>();
     const { navigateToStakingDetail } = useStakingDetailNavigation();
 
     const sections = useSelector((state: NativeAccountsRootState) =>
-        selectAccountListSectionsWithZeroBalanceGroup(state, accountKey),
+        selectActiveTokensTabSections(state, accountKey),
     );
 
     const handleSelectAccount: OnSelectAccount = useCallback(
@@ -51,71 +67,66 @@ export const ActiveTokensTab = ({ accountKey }: ActiveTokensTabProps) => {
         [navigation, navigateToStakingDetail],
     );
 
-    const items = sections.filter(item => item.type !== 'sectionTitle');
+    const listItems: ActiveTokenListItem[] = useMemo(
+        () => sections.map((item, index, arr) => ({ ...item, isLast: index === arr.length - 1 })),
+        [sections],
+    );
+
+    const renderItem = useCallback(
+        ({ item }: { item: ActiveTokenListItem }) => {
+            switch (item.type) {
+                case 'account':
+                    return (
+                        <AccountsListItem
+                            {...item}
+                            hasBackground
+                            showDivider
+                            isNativeCoinOnly
+                            onPress={handleSelectAccount}
+                        />
+                    );
+                case 'staking':
+                    return (
+                        <AccountsListStakingItem
+                            {...item}
+                            hasBackground
+                            onPress={() =>
+                                handleSelectAccount({
+                                    account: item.account,
+                                    isStaking: true,
+                                    hasAnyKnownTokens: false,
+                                })
+                            }
+                        />
+                    );
+                case 'token':
+                    return (
+                        <AccountsListTokenItem
+                            {...item}
+                            hasBackground
+                            onSelectAccount={() =>
+                                handleSelectAccount({
+                                    account: item.account,
+                                    tokenAddress: item.token.contract,
+                                    tokenSymbol: item.token.symbol,
+                                    hasAnyKnownTokens: true,
+                                })
+                            }
+                        />
+                    );
+                case 'zeroBalance':
+                    return <ZeroBalanceTokensSection tokens={item.tokens} account={item.account} />;
+            }
+        },
+        [handleSelectAccount],
+    );
 
     return (
-        <Box>
-            {items.map((item, index) => {
-                const isLast = index === items.length - 1;
-
-                switch (item.type) {
-                    case 'account':
-                        return (
-                            <AccountsListItem
-                                key={item.account.key}
-                                {...item}
-                                hasBackground
-                                showDivider
-                                isNativeCoinOnly
-                                isLast={isLast}
-                                onPress={handleSelectAccount}
-                            />
-                        );
-                    case 'staking':
-                        return (
-                            <AccountsListStakingItem
-                                key={`${item.account.key}-staking`}
-                                {...item}
-                                hasBackground
-                                isLast={isLast}
-                                onPress={() =>
-                                    handleSelectAccount({
-                                        account: item.account,
-                                        isStaking: true,
-                                        hasAnyKnownTokens: false,
-                                    })
-                                }
-                            />
-                        );
-                    case 'token':
-                        return (
-                            <AccountsListTokenItem
-                                key={item.token.contract}
-                                {...item}
-                                hasBackground
-                                isLast={isLast}
-                                onSelectAccount={() =>
-                                    handleSelectAccount({
-                                        account: item.account,
-                                        tokenAddress: item.token.contract,
-                                        tokenSymbol: item.token.symbol,
-                                        hasAnyKnownTokens: true,
-                                    })
-                                }
-                            />
-                        );
-                    case 'zeroBalance':
-                        return (
-                            <ZeroBalanceTokensSection
-                                key="zero-balance"
-                                tokens={item.tokens}
-                                account={item.account}
-                            />
-                        );
-                    default:
-                        return null;
-                }
-            })}
-        </Box>
+        <FlashList
+            data={listItems}
+            keyExtractor={getItemKey}
+            getItemType={item => item.type}
+            renderItem={renderItem}
+        />
     );
 };

@@ -2013,9 +2013,6 @@ export const messages = {
                 warning: "We don't recognize this token. It may be unsafe—proceed with caution.",
                 emptyTitle: 'No hidden tokens',
             },
-            hiddenByUserSection: {
-                title: 'Hidden tokens',
-            },
         },
         tokenSettings: {
             contractAddress: 'Contract address',
