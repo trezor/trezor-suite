@@ -1,8 +1,10 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { View } from 'react-native';
 import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
+import { FlashList } from '@shopify/flash-list';
 
 import {
     type AccountKey,
@@ -10,7 +12,7 @@ import {
     type TokenAddress,
 } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
-import { Box, Button, Card, Loader, SearchInput, Text, VStack } from '@suite-native/atoms';
+import { Box, Button, Loader, SearchInput, Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     InactiveTokenListItem,
@@ -23,15 +25,33 @@ import {
     type StackNavigationProps,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
 type InactiveTokensTabProps = {
     accountKey: AccountKey;
 };
+
+const tokenItemWrapperStyle = prepareNativeStyle<{ isFirst: boolean; isLast: boolean }>(
+    (utils, { isFirst, isLast }) => ({
+        backgroundColor: utils.colors.surfaceFillRaised,
+        borderTopLeftRadius: isFirst ? utils.borders.radii.r16 : 0,
+        borderTopRightRadius: isFirst ? utils.borders.radii.r16 : 0,
+        borderBottomLeftRadius: isLast ? utils.borders.radii.r16 : 0,
+        borderBottomRightRadius: isLast ? utils.borders.radii.r16 : 0,
+        overflow: 'hidden',
+    }),
+);
+
+const listFooterStyle = prepareNativeStyle(utils => ({
+    paddingTop: utils.spacings.sp16,
+}));
 
 export const InactiveTokensTab = ({ accountKey }: InactiveTokensTabProps) => {
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountAssets>>();
     const { translate } = useTranslate();
     const { showAlert } = useAlert();
+    const { applyStyle } = useNativeStyles();
     const dispatch = useDispatch();
 
     const { inactiveTokens, isLoading } = useInactiveStellarTokens(accountKey);
@@ -89,46 +109,65 @@ export const InactiveTokensTab = ({ accountKey }: InactiveTokensTabProps) => {
         });
     }, [accountKey, navigation]);
 
-    return (
-        <VStack spacing="sp16">
-            <SearchInput
-                onChange={setSearchQuery}
-                placeholder={translate('moduleStellarToken.tokenSelection.searchPlaceholder')}
-            />
-
-            {isLoading ? (
-                <Box alignItems="center" justifyContent="center" paddingVertical="sp24">
-                    <Loader />
-                </Box>
-            ) : (
-                <Card noPadding>
-                    {filteredTokens.length === 0 ? (
-                        <Box padding="sp16" alignItems="center">
-                            <Text variant="body-md" color="contentSecondary">
-                                <Translation id="moduleStellarToken.tokenSelection.noResults" />
-                            </Text>
-                        </Box>
-                    ) : (
-                        filteredTokens.map((token: StellarTokenInfo) => (
-                            <InactiveTokenListItem
-                                key={token.contract}
-                                token={token}
-                                onPress={() => handleTokenPress(token.contract as TokenAddress)}
-                            />
-                        ))
-                    )}
-                </Card>
-            )}
-
-            <Button
-                intent="neutral"
-                priority="secondary"
-                iconLeft="plus"
-                onPress={handleManualActivate}
-                testID="@stellar-token/activate-manually-button"
+    const renderItem = useCallback(
+        ({ item, index }: { item: StellarTokenInfo; index: number }) => (
+            <View
+                style={applyStyle(tokenItemWrapperStyle, {
+                    isFirst: index === 0,
+                    isLast: index === filteredTokens.length - 1,
+                })}
             >
-                <Translation id="moduleStellarToken.tokenSelection.activateManually" />
-            </Button>
-        </VStack>
+                <InactiveTokenListItem
+                    token={item}
+                    onPress={() => handleTokenPress(item.contract as TokenAddress)}
+                />
+            </View>
+        ),
+        [applyStyle, filteredTokens.length, handleTokenPress],
+    );
+
+    return (
+        <FlashList
+            data={filteredTokens}
+            keyExtractor={item => item.contract}
+            renderItem={renderItem}
+            ListHeaderComponent={
+                <Box paddingBottom="sp16">
+                    <SearchInput
+                        onChange={setSearchQuery}
+                        placeholder={translate(
+                            'moduleStellarToken.tokenSelection.searchPlaceholder',
+                        )}
+                    />
+                    {isLoading && (
+                        <Box alignItems="center" justifyContent="center" paddingVertical="sp24">
+                            <Loader />
+                        </Box>
+                    )}
+                </Box>
+            }
+            ListEmptyComponent={
+                !isLoading ? (
+                    <Box padding="sp16" alignItems="center">
+                        <Text variant="body-md" color="contentSecondary">
+                            <Translation id="moduleStellarToken.tokenSelection.noResults" />
+                        </Text>
+                    </Box>
+                ) : null
+            }
+            ListFooterComponent={
+                <View style={applyStyle(listFooterStyle)}>
+                    <Button
+                        intent="neutral"
+                        priority="secondary"
+                        iconLeft="plus"
+                        onPress={handleManualActivate}
+                        testID="@stellar-token/activate-manually-button"
+                    >
+                        <Translation id="moduleStellarToken.tokenSelection.activateManually" />
+                    </Button>
+                </View>
+            }
+        />
     );
 };

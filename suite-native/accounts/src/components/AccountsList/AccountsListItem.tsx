@@ -14,15 +14,15 @@ import { CryptoIcon, CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { AccountLabel } from '@suite-native/labeling';
 import { type NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
-import {
-    type TokensRootState,
-    isNetworkWithTokens,
-    selectNumberOfAccountKnownTokensWithBalance,
-} from '@suite-native/tokens';
+import { isNetworkWithTokens } from '@suite-native/tokens';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
 import { StakingBadge } from './StakingBadge';
-import { type NativeAccountsRootState, selectAccountFiatBalance } from '../../selectors';
+import {
+    type NativeAccountsRootState,
+    selectAccountFiatBalance,
+    selectActiveAndDefiTokensCount,
+} from '../../selectors';
 import { type OnSelectAccount } from '../../types';
 
 export type AccountListItemProps = {
@@ -45,8 +45,8 @@ const CRYPTO_PRIMARY_BALANCE_TEXT_PROPS = [
 ];
 
 const TokenBadge = React.memo(({ accountKey }: { accountKey: AccountKey }) => {
-    const numberOfTokens = useSelector((state: TokensRootState) =>
-        selectNumberOfAccountKnownTokensWithBalance(state, accountKey),
+    const numberOfTokens = useSelector((state: NativeAccountsRootState) =>
+        selectActiveAndDefiTokensCount(state, accountKey),
     );
 
     return (
@@ -74,8 +74,7 @@ export const AccountsListItem = ({
         selectFormattedAccountType(state, account.key),
     );
     const accountHasKnownTokensWithBalance = useSelector(
-        (state: TokensRootState) =>
-            selectNumberOfAccountKnownTokensWithBalance(state, account.key) > 0,
+        (state: NativeAccountsRootState) => selectActiveAndDefiTokensCount(state, account.key) > 0,
     );
 
     const accountHasStaking = useSelector((state: NativeStakingRootState) =>

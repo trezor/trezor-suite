@@ -23,6 +23,7 @@ import {
     type TransactionsRootState,
     type WalletSettingsRootState,
     selectAccountByKey,
+    selectAccountDefiTokensCount,
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectIsAccountUtxoBased,
@@ -153,16 +154,11 @@ export const getAccountListSections = (
     const sections: AccountSelectBottomSheetSection[] = [];
     const isNetworkSupportingTokens = isNetworkWithTokens(account.symbol);
 
-    // TODO: unify with desktop when token management is ready,
-    // unhide token during activation automatically
-    // For Stellar, show all tokens without filtering.
-    // Unlike EVM chains where tokens can be airdropped as spam, Stellar tokens (trustlines)
-    // require explicit user action to activate. See tokensSelectors.ts for details.
     const hiddenSet = new Set(hiddenContracts.map(c => c.toLowerCase()));
     const shownSet = new Set(shownContracts.map(c => c.toLowerCase()));
     const tokens =
         account.networkType === 'stellar'
-            ? (account.tokens ?? [])
+            ? (account.tokens ?? []).filter(token => !hiddenSet.has(token.contract.toLowerCase()))
             : (account.tokens ?? [])
                   .filter(
                       token =>
@@ -174,17 +170,13 @@ export const getAccountListSections = (
                   )
                   .filter(token => !hiddenSet.has(token.contract.toLowerCase()));
 
-    const tokensWithBalance =
-        account.networkType === 'stellar'
-            ? tokens
-            : tokens.filter(token => parseFloat(token?.balance ?? '0') > 0);
+    const tokensWithBalance = tokens.filter(token => parseFloat(token?.balance ?? '0') > 0);
 
-    const zeroBalanceTokens: TokenInfoBranded[] =
-        groupZeroBalance && account.networkType !== 'stellar'
-            ? (tokens
-                  .filter(token => parseFloat(token?.balance ?? '0') === 0)
-                  .filter(token => !isErc4626(token)) as TokenInfoBranded[])
-            : [];
+    const zeroBalanceTokens: TokenInfoBranded[] = groupZeroBalance
+        ? (tokens
+              .filter(token => parseFloat(token?.balance ?? '0') === 0)
+              .filter(token => !isErc4626(token)) as TokenInfoBranded[])
+        : [];
 
     const hasAnyKnownTokens =
         isNetworkSupportingTokens && !!(tokensWithBalance.length + zeroBalanceTokens.length);
@@ -283,6 +275,16 @@ export const selectAccountListSectionsWithZeroBalanceGroup = createMemoizedSelec
             coinDefs?.show ?? [],
         );
     },
+);
+
+export const selectActiveTokensTabSections = createMemoizedSelector(
+    [selectAccountListSectionsWithZeroBalanceGroup],
+    sections => sections.filter(item => item.type !== 'sectionTitle'),
+);
+
+export const selectActiveAndDefiTokensCount = createMemoizedSelector(
+    [selectActiveTokensTabSections, selectAccountDefiTokensCount],
+    (sections, defiCount) => sections.filter(item => item.type === 'token').length + defiCount,
 );
 
 export const selectFreshAccountAddress = createMemoizedSelector(
