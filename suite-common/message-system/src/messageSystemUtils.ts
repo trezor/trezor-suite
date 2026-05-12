@@ -122,11 +122,10 @@ export const areSettingsCompatible = (
     settingsCondition: Settings[],
     currentSettings: CurrentSettings,
 ): boolean => {
-    const settings: {
-        [key: string]: any;
-    } = currentSettings.enabledNetworks.reduce((o, key) => Object.assign(o, { [key]: true }), {
-        tor: currentSettings.tor,
-    });
+    const settings: Record<string, boolean> = currentSettings.enabledNetworks.reduce(
+        (o, key) => Object.assign(o, { [key]: true }),
+        { tor: currentSettings.tor },
+    );
 
     return settingsCondition.some(settingCondition =>
         Object.entries(settingCondition).every(
