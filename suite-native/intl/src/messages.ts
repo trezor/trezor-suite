@@ -3066,7 +3066,6 @@ export const messages = {
             title: 'To manage your staked accounts, use the Trezor Suite app for desktop.',
             description: 'We currently support staking as view-only in Trezor Suite.',
         },
-        vaultName: '{vaultName} Vault',
         stakingAccountSelection: {
             title: 'Choose account',
         },
