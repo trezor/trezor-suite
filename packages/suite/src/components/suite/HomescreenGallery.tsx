@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 import { useDevice } from '@suite/device';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { Grid } from '@trezor/components';
 import {
     DeviceModelInternal,
@@ -54,7 +53,7 @@ type HomescreenGalleryProps = {
 export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
-    const { start, subprocess } = useConnectRun(
+    const { startManual, subprocess } = useConnectRun(
         runConnect(
             connect => (isOriginalImage: boolean, homescreen: string) =>
                 isOriginalImage
@@ -62,6 +61,8 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
                     : connect.applySettings({ homescreen }),
         ),
     );
+
+    console.log('subprocess', subprocess);
 
     const deviceModelInternal = device?.features?.internal_model;
 

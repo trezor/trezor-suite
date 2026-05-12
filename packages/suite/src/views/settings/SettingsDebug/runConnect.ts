@@ -30,6 +30,28 @@ type Process<R> = {
     toPromise(): Promise<R>;
 };
 
+// Wrap the TrezorConnect instance so every method call made through it
+// auto-stamps `callId` onto the first object arg. Built per-process because
+// `callId` is generated inside `createConnect` and only known once the
+// process exists — pickers that close over the proxy pick up the right
+// callId at invocation time, no plumbing needed at the call site.
+const proxyWithCallId = (tc: TrezorConnectLike, callId: string): TrezorConnectLike =>
+    new Proxy(tc, {
+        get(target, prop, receiver) {
+            const original = Reflect.get(target, prop, receiver);
+            if (typeof original !== 'function') return original;
+
+            return (firstArg: unknown, ...rest: unknown[]) => {
+                const stamped =
+                    firstArg && typeof firstArg === 'object'
+                        ? { ...(firstArg as object), callId }
+                        : firstArg;
+
+                return (original as (...a: unknown[]) => unknown).call(target, stamped, ...rest);
+            };
+        },
+    }) as TrezorConnectLike;
+
 /**
  * Factory bound to a specific `TrezorConnect`-like instance. The returned
  * `runConnect` takes a picker callback that selects which method to wrap:
@@ -41,31 +63,36 @@ type Process<R> = {
  *
  *   const { start, subprocess } = useConnect(runConnect(c => c.applySettings));
  *
- * The picker is invoked at call time (not at factory time / module load), so
- * the IPC-proxy override installed during desktop boot is always picked up.
+ * Pickers can also be multi-arg wrappers, e.g.
+ *
+ *   const wrap = runConnect(c =>
+ *       (isOriginal: boolean, homescreen: string) =>
+ *           isOriginal
+ *               ? c.applySettings({ homescreen_length: 0 })
+ *               : c.applySettings({ homescreen }),
+ *   );
+ *
+ * The `connect` handed to the picker is a per-process proxy: every method
+ * called through it has the current `callId` merged onto its first object
+ * arg automatically, so picker bodies never need to thread callId through
+ * themselves. The picker is invoked at call time, so the IPC-proxy override
+ * installed during desktop boot is always picked up.
  */
 export const createRunConnect = (deps: { trezorConnect: TrezorConnectLike }) => {
     const _connect = createConnect({ trezorConnect: deps.trezorConnect });
 
     return <M extends AnyMethod>(pick: (connect: TrezorConnectLike) => M) =>
-        (...args: Parameters<M>): Process<SuccessPayloadOf<M>> => {
-            const method = pick(deps.trezorConnect);
-            // Adapter lets `_connect` keep injecting `callId` into the first
-            // arg when it's an object (the TrezorConnect-method convention),
-            // while still forwarding any additional positional args verbatim
-            // for custom multi-arg pickers.
-            const adapter = (extra: { callId: string }) => {
-                const [first, ...rest] = args;
-                const firstWithCallId =
-                    first && typeof first === 'object'
-                        ? { ...(first as object), callId: extra.callId }
-                        : first;
+        (...args: Parameters<M>): Process<SuccessPayloadOf<M>> =>
+            _connect(({ callId }: { callId: string }) => {
+                // Pick is deferred until callId is known so the proxy can
+                // close over it. Every `connect.<method>(...)` inside the
+                // picker body goes through `proxyWithCallId` and gets the
+                // callId stamped onto the params object.
+                const proxied = proxyWithCallId(deps.trezorConnect, callId);
+                const method = pick(proxied);
 
-                return method(firstWithCallId, ...rest);
-            };
-
-            return _connect(adapter)({} as never) as unknown as Process<SuccessPayloadOf<M>>;
-        };
+                return method(...args);
+            })({} as never) as unknown as Process<SuccessPayloadOf<M>>;
 };
 
 /**
