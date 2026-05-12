@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const Tor = () => {
     const [hasTorError, setHasTorError] = useState(false);
-    const coinjoinAccounts = useSelector((state: any) => selectCoinjoinAccounts(state));
+    const coinjoinAccounts = useSelector(state => selectCoinjoinAccounts(state));
     const isCoinjoinAccount = coinjoinAccounts.length > 0;
     const torStatus = useSelector(state => state.tor.torStatus);
     const modalType = useSelector(selectModalType);
