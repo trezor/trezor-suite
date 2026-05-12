@@ -1,4 +1,4 @@
-import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getStatus } from '@suite-common/suite-utils';
@@ -10,13 +10,10 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>(
 /**
  * @deprecated This is a HACK, and it shall be refactored. See: https://github.com/trezor/trezor-suite/issues/22022
  */
-export const selectSelectedFirstThpDevice = (state: DeviceRootState) => {
+export const selectSelectedFirstThpDevice = createMemoizedSelector([selectDevices], devices => {
     // Use the last one as its more probable you want to use that one. While neither is correct,
     // I assume you will more likely be trying to pair the more recent device.
-
-    const unacquiredThp = state.device.devices.findLast(
-        device => getStatus(device) === 'device-thp-locked',
-    );
+    const unacquiredThp = devices.findLast(device => getStatus(device) === 'device-thp-locked');
 
     // This works on heuristic, if there is unacquired THP device we assume we want to work with that device.
     // This is relevant during THP pairing.
@@ -27,8 +24,8 @@ export const selectSelectedFirstThpDevice = (state: DeviceRootState) => {
     // In case there is no unacquired THP device, we still may be in a situation,
     // where we want to work with THP device. Currently, the use-case is `AutoconnectInfo` step,
     // where user works on (maybe) not-selected device, but the THP device is already acquired.
-    return state.device.devices.findLast(device => device.thp?.properties !== undefined);
-};
+    return devices.findLast(device => device.thp?.properties !== undefined);
+});
 
 export const selectSupportedNetworkByDevice = (device: TrezorDevice | undefined) => {
     const firmwareVersion = getFirmwareVersion(device);
