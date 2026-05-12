@@ -1,9 +1,9 @@
 import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 import {
     CORE_CALL,
+    CORE_CALL_CANCEL,
     type CallMethodAnyResponse,
     type CallMethodPayload,
-    POPUP,
     createErrorMessage,
 } from '@trezor/connect-common/src/events';
 import type { ConnectImpl, ConnectImplSettings } from '@trezor/connect-common/src/impl/dynamic';
@@ -32,8 +32,8 @@ export class CoreInSuiteWeb implements ConnectImpl {
         return Promise.resolve(undefined);
     }
 
-    public cancel(error?: string) {
-        this.logger.debug('cancel', error);
+    public cancel(reason?: string) {
+        this.logger.debug('cancel', reason);
 
         // Flush any pending outgoing messages so that the cancel is not
         // delayed behind queued sends (relevant for the webextension
@@ -41,8 +41,8 @@ export class CoreInSuiteWeb implements ConnectImpl {
         this._popupManager?.channel?.clearPendingSends();
         this._popupManager?.channel?.postMessage(
             {
-                type: POPUP.CLOSED,
-                payload: error ? { error } : {},
+                type: CORE_CALL_CANCEL,
+                payload: reason ? { reason } : null,
             },
             { usePromise: false },
         );
