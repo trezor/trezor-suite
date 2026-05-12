@@ -30,6 +30,7 @@ import {
     getPendingAccount,
     hasNetworkFeatures,
     isCardanoTx,
+    isEvmApprovalTx,
     isExchangeTradingForm,
     subunitsToUnits,
     tryGetAccountIdentity,
@@ -690,7 +691,19 @@ export const enhancePrecomposedTransactionThunk = createThunk<
             return precomposedTransaction;
         };
 
-        const enhancedPrecomposedTransaction = createRbfEnhancedTransaction();
+        let enhancedPrecomposedTransaction = createRbfEnhancedTransaction();
+
+        // Contract calldata (e.g. DEX swap) must not carry `token` on the precomposed object:
+        // signing uses prepareEthereumTransaction, which would replace calldata with an ERC-20
+        // transfer if `token` is set.
+        if (
+            selectedAccount.networkType === 'ethereum' &&
+            formValues.transactionData &&
+            !isEvmApprovalTx(formValues.transactionData)
+        ) {
+            enhancedPrecomposedTransaction = cloneObject(enhancedPrecomposedTransaction);
+            delete (enhancedPrecomposedTransaction as { token?: unknown }).token;
+        }
 
         let isTokenKnown;
         if (
