@@ -1,4 +1,4 @@
-import { useEvent } from 'react-use';
+import { useEffect, useRef } from 'react';
 
 import { useTranslation } from '@suite/intl';
 import { closeModalApp, goto } from '@suite/router';
@@ -28,7 +28,7 @@ export const AppShortcuts = () => {
     const isBioAuthEnabled = useSelector(state => state.bioAuth.bioAuthEnabled);
     const { translationString } = useTranslation();
 
-    useEvent('keydown', e => {
+    const handleKeyDown = (e: KeyboardEvent) => {
         const { altKey, metaKey, ctrlKey, shiftKey } = e;
         const isDeviceSelected = selectedDevice !== undefined;
         const cmdOrCtrl = metaKey || ctrlKey;
@@ -62,8 +62,14 @@ export const AppShortcuts = () => {
             e.preventDefault();
         }
 
-        // press CMD + , to show Settings
-        if (metaKey && e.code === KEYBOARD_CODE.COMMA && isDeviceSelected) {
+        // press CMD/CTRL + , to show Settings
+        if (
+            cmdOrCtrl &&
+            !altKey &&
+            !shiftKey &&
+            e.code === KEYBOARD_CODE.COMMA &&
+            isDeviceSelected
+        ) {
             dispatch(goto({ routeName: 'settings-index' }));
             e.preventDefault();
         }
@@ -112,9 +118,9 @@ export const AppShortcuts = () => {
                     goto({
                         routeName: 'wallet-index',
                         params: {
-                            symbol: account.symbol,
-                            accountIndex: account.index,
-                            accountType: account.accountType,
+                            symbol: account?.symbol,
+                            accountIndex: account?.index,
+                            accountType: account?.accountType,
                         },
                     }),
                 );
@@ -125,6 +131,12 @@ export const AppShortcuts = () => {
         if (altKey && e.code === KEYBOARD_CODE.KEY_S && isDeviceSelected) {
             e.preventDefault();
             dispatch(goto({ routeName: 'suite-index', params: { modal: 'send' } }));
+        }
+
+        // press ALT + R to open receive flow
+        if (altKey && e.code === KEYBOARD_CODE.KEY_R && isDeviceSelected) {
+            e.preventDefault();
+            dispatch(goto({ routeName: 'suite-index', params: { modal: 'receive' } }));
         }
 
         // press ALT + T to toggle dark/light theme
@@ -151,7 +163,21 @@ export const AppShortcuts = () => {
             );
             searchInput?.focus();
         }
-    });
+    };
+
+    // Keep a stable listener that always calls the latest handler, and listen in the capture
+    // phase so the shortcut fires before any descendant (charts, dropdowns, …) can swallow the
+    // event by stopping its propagation.
+    const handleKeyDownRef = useRef(handleKeyDown);
+    handleKeyDownRef.current = handleKeyDown;
+
+    useEffect(() => {
+        const listener = (event: KeyboardEvent) => handleKeyDownRef.current(event);
+
+        window.addEventListener('keydown', listener, { capture: true });
+
+        return () => window.removeEventListener('keydown', listener, { capture: true });
+    }, []);
 
     return null;
 };

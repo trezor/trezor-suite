@@ -59,19 +59,6 @@ export const Guide = () => {
                                     >
                                         <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
                                     </GuideItem>
-                                    <GuideItem
-                                        onClick={handleShortcutsClick}
-                                        data-testid="@guide/button-shortcuts"
-                                        icon={
-                                            <IconCircle
-                                                name="keyboard"
-                                                size={32}
-                                                intent="neutral"
-                                            />
-                                        }
-                                    >
-                                        <Translation id="TR_GUIDE_KEYBOARD_SHORTCUTS" />
-                                    </GuideItem>
                                 </Column>
                             </Box>
                             <Box margin={{ top: 16 }}>
@@ -81,6 +68,15 @@ export const Guide = () => {
                         </>
                     )}
                 </GuideContent>
+                <Box padding={16}>
+                    <GuideItem
+                        onClick={handleShortcutsClick}
+                        data-testid="@guide/button-shortcuts"
+                        icon={<IconCircle name="keyboard" size={32} intent="neutral" />}
+                    >
+                        <Translation id="TR_GUIDE_KEYBOARD_SHORTCUTS" />
+                    </GuideItem>
+                </Box>
             </Column>
         </GuideViewWrapper>
     );
