@@ -233,7 +233,7 @@ export const fetchLastWeekRates = async (
         const url = `${coinUrl}/${urlEndpoint}?${urlParams}`;
         const data = await fetchCoinGecko(url);
         if (data) {
-            const tickers = data.prices?.map((d: any) => ({
+            const tickers = data.prices?.map((d: [number, number]) => ({
                 ts: Math.floor(d[0] / 1000),
                 rates: { [fiatCurrencyCode]: d[1] },
             }));
