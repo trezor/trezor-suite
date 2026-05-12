@@ -6,7 +6,9 @@ import {
     selectLabelingDataForSelectedAccount,
 } from '@suite/metadata';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
+import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
+import { type SuiteSyncAddress } from '@suite-common/suite-sync-storage';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -110,7 +112,9 @@ export const UsedAddresses = ({
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
     const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
     const suiteSyncAddressLabels = useSelector(state =>
-        isSuiteSyncEnabled ? selectSuiteSyncAddressLabels(state, account.deviceState) : [],
+        isSuiteSyncEnabled
+            ? selectSuiteSyncAddressLabels(state, account.deviceState)
+            : returnStableArrayIfEmpty<SuiteSyncAddress>(),
     );
 
     if (

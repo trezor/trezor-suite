@@ -6,7 +6,9 @@ import {
     selectLabelingDataForAccount,
     selectLabelingValueBeingEdited,
 } from '@suite/metadata';
+import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
+import { type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import {
     type Target,
     selectBaseCurrency,
@@ -78,7 +80,9 @@ export const TransactionTarget = ({
     const labelingValueBeingEdited = useSelector(selectLabelingValueBeingEdited);
 
     const suiteSyncOutputLabels = useSelector(state =>
-        isSuiteSyncEnabled ? selectSuiteSyncOutputLabels(state, transaction.deviceState) : [],
+        isSuiteSyncEnabled
+            ? selectSuiteSyncOutputLabels(state, transaction.deviceState)
+            : returnStableArrayIfEmpty<SuiteSyncOutput>(),
     );
 
     const isSolanaUnstakeTx = transaction?.solanaSpecific?.stakeOperation?.type === 'unstake';
