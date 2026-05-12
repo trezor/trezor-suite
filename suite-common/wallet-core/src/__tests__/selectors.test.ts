@@ -2,7 +2,7 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
 import { type DeviceUniquePath, type StaticSessionId } from '@trezor/connect';
 
-import { selectShouldRediscover } from '../selectors';
+import { selectShouldRediscover, selectShowRediscoverButton } from '../selectors';
 
 const TEST_PATH = 'device-id:1' as DeviceUniquePath;
 const TEST_STATIC_SESSION_ID = 'static-session-1' as StaticSessionId;
@@ -71,5 +71,43 @@ describe('selectShouldRediscover', () => {
         const device = mockDevice();
 
         expect(selectShouldRediscover(state, device)).toBe(selectShouldRediscover(state, device));
+    });
+});
+
+describe('selectShowRediscoverButton', () => {
+    it('returns false when device has no staticSessionId', () => {
+        const state = createState({});
+        const device = mockDevice({ state: undefined });
+
+        expect(selectShowRediscoverButton(state, device)).toBe(false);
+    });
+
+    it('returns false when device argument is undefined', () => {
+        const state = createState({});
+
+        expect(selectShowRediscoverButton(state, undefined)).toBe(false);
+    });
+
+    it('returns false when discovery is currently running', () => {
+        const state = createState({ discovery: { status: 'starting' } });
+        const device = mockDevice();
+
+        expect(selectShowRediscoverButton(state, device)).toBe(false);
+    });
+
+    it('returns false when no enabled networks remain to be discovered', () => {
+        const state = createState({ enabledNetworks: [] });
+        const device = mockDevice();
+
+        expect(selectShowRediscoverButton(state, device)).toBe(false);
+    });
+
+    it('returns the same primitive across repeated calls with unchanged state', () => {
+        const state = createState({});
+        const device = mockDevice();
+
+        expect(selectShowRediscoverButton(state, device)).toBe(
+            selectShowRediscoverButton(state, device),
+        );
     });
 });

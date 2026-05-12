@@ -148,21 +148,29 @@ export const selectDiscoveryAccountsParam = (
         } as DiscoveryAccountsParam[number];
     });
 
-export const selectShowRediscoverButton = (
-    state: WalletCoreCompoundRootState,
-    device?: TrezorDevice,
-) => {
-    const staticSessionId = device?.state?.staticSessionId;
-    if (!staticSessionId) return false;
+export const selectShowRediscoverButton = createMemoizedSelector(
+    [
+        selectHasRunningDiscovery,
+        selectEnabledSupportedNetworks,
+        (_state: WalletCoreCompoundRootState, device?: TrezorDevice) =>
+            device?.state?.staticSessionId,
+        (state: WalletCoreCompoundRootState, device?: TrezorDevice) => {
+            const staticSessionId = device?.state?.staticSessionId;
 
-    if (selectHasRunningDiscovery(state)) return false;
+            return staticSessionId
+                ? selectAccountsByDeviceState(state, staticSessionId)
+                : undefined;
+        },
+    ],
+    (hasRunningDiscovery, enabledSupportedNetworks, staticSessionId, accounts) => {
+        if (!staticSessionId) return false;
+        if (hasRunningDiscovery) return false;
 
-    const symbols = selectEnabledSupportedNetworks(state);
-    const accounts = selectAccountsByDeviceState(state, staticSessionId);
-    const discoveredNetworks = new Set(accounts.map(account => account.symbol));
+        const discoveredNetworks = new Set((accounts ?? []).map(account => account.symbol));
 
-    return symbols.some(symbol => !discoveredNetworks.has(symbol));
-};
+        return enabledSupportedNetworks.some(symbol => !discoveredNetworks.has(symbol));
+    },
+);
 
 export const selectShouldRediscover = createMemoizedSelector(
     [
