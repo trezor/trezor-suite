@@ -5,14 +5,16 @@ import type { CryptoId } from 'invity-api';
 import { type MinimalExchangeFormProps } from '@suite-common/trading';
 import type { TokenAddress } from '@suite-common/wallet-types';
 import {
+    btc1NormalAccount,
     btcAsset,
+    eth1NormalAccount,
     ethAsset,
     getInitializedTradingState,
     jitoOnSolanaAsset,
     jupOnSolanaAsset,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
-import { type ExchangeFormType } from '@suite-native/trading-types';
+import { type ExchangeFormType, type ReceiveAccount } from '@suite-native/trading-types';
 
 import { renderHookWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
@@ -73,6 +75,37 @@ describe('quotesUtils', () => {
             } satisfies MinimalExchangeFormProps);
         });
 
+        it('should include fromAddress when provided', () => {
+            act(() => {
+                form.setValue('sendAsset', ethAsset);
+                form.setValue('receiveAsset', btcAsset);
+                form.setValue('sendCryptoAmount', '1');
+                form.setValue('sendAccount', eth1NormalAccount);
+            });
+
+            expect(tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toEqual({
+                sendCryptoSelect: { id: 'ethereum' as CryptoId },
+                receiveCryptoSelect: { id: 'bitcoin' as CryptoId },
+                outputs: [{ amount: '1' }],
+                fromAddress: 'eth1-normal',
+            } satisfies MinimalExchangeFormProps);
+        });
+
+        it('should not use btc account descriptor', () => {
+            act(() => {
+                form.setValue('sendAsset', btcAsset);
+                form.setValue('receiveAsset', ethAsset);
+                form.setValue('sendCryptoAmount', '1');
+                form.setValue('sendAccount', btc1NormalAccount);
+            });
+
+            expect(tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toEqual({
+                sendCryptoSelect: { id: 'bitcoin' as CryptoId },
+                receiveCryptoSelect: { id: 'ethereum' as CryptoId },
+                outputs: [{ amount: '1' }],
+            } satisfies MinimalExchangeFormProps);
+        });
+
         it('should make address lower case for eth based assets', () => {
             const alteredUsdcAsset = {
                 ...usdcAsset,
@@ -94,6 +127,73 @@ describe('quotesUtils', () => {
                     id: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
                 },
                 outputs: [{ amount: '1' }],
+            } satisfies MinimalExchangeFormProps);
+        });
+
+        it('should include receiveAddress when receiveAccount has an address', () => {
+            const receiveAccount: ReceiveAccount = {
+                account: btc1NormalAccount,
+                address: {
+                    address: 'btc-receive-addr',
+                    path: "m/44'/0'/0'/0/0",
+                    transfers: 0,
+                    balance: '0',
+                    sent: '0',
+                    received: '0',
+                },
+            };
+
+            act(() => {
+                form.setValue('sendAsset', ethAsset);
+                form.setValue('receiveAsset', btcAsset);
+                form.setValue('sendCryptoAmount', '1');
+                form.setValue('receiveAccount', receiveAccount);
+            });
+
+            expect(tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toEqual({
+                sendCryptoSelect: { id: 'ethereum' as CryptoId },
+                receiveCryptoSelect: { id: 'bitcoin' as CryptoId },
+                outputs: [{ amount: '1' }],
+                receiveAddress: 'btc-receive-addr',
+            } satisfies MinimalExchangeFormProps);
+        });
+
+        it('should not fall back to account descriptor for BTC when no address is set', () => {
+            const receiveAccount: ReceiveAccount = {
+                account: btc1NormalAccount,
+            };
+
+            act(() => {
+                form.setValue('sendAsset', ethAsset);
+                form.setValue('receiveAsset', btcAsset);
+                form.setValue('sendCryptoAmount', '1');
+                form.setValue('receiveAccount', receiveAccount);
+            });
+
+            expect(tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toEqual({
+                sendCryptoSelect: { id: 'ethereum' as CryptoId },
+                receiveCryptoSelect: { id: 'bitcoin' as CryptoId },
+                outputs: [{ amount: '1' }],
+            } satisfies MinimalExchangeFormProps);
+        });
+
+        it('should use  account descriptor for non-btc like networks', () => {
+            const receiveAccount: ReceiveAccount = {
+                account: eth1NormalAccount,
+            };
+
+            act(() => {
+                form.setValue('sendAsset', btcAsset);
+                form.setValue('receiveAsset', ethAsset);
+                form.setValue('sendCryptoAmount', '1');
+                form.setValue('receiveAccount', receiveAccount);
+            });
+
+            expect(tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toEqual({
+                sendCryptoSelect: { id: 'bitcoin' as CryptoId },
+                receiveCryptoSelect: { id: 'ethereum' as CryptoId },
+                outputs: [{ amount: '1' }],
+                receiveAddress: eth1NormalAccount.descriptor,
             } satisfies MinimalExchangeFormProps);
         });
 

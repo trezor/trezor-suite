@@ -18,7 +18,7 @@ import {
     getInitializedTradingState,
     usdtAsset,
 } from '@suite-native/trading-fixtures';
-import { type ExchangeFormValues } from '@suite-native/trading-types';
+import { type ExchangeFormValues, type ReceiveAccount } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
@@ -359,6 +359,53 @@ describe('useExchangeQuotes', () => {
             type: 'tradingExchange/clearQuotesAndQuotesRequest',
         });
         expect(store.getState().wallet.trading.exchange.quotes).toEqual([]);
+    });
+
+    it('should fill send and receive account when querying quotes if available', async () => {
+        const ethAccount = getEthAccount();
+        const btcAccount = getBtcAccount();
+        const store = getInitializedStore();
+
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const { result } = renderUseExchangeQuotes(store);
+        const { form } = result.current;
+
+        const receiveAccount: ReceiveAccount = {
+            account: btcAccount,
+            address: {
+                address: 'btc-receive-address',
+                path: "m/44'/0'/0'/0/0",
+                transfers: 0,
+                balance: '0',
+                sent: '0',
+                received: '0',
+            },
+        };
+
+        await act(async () => {
+            form.setValue('sendAsset', ethAsset);
+            form.setValue('receiveAsset', btcAsset);
+            form.setValue('sendCryptoAmount', '1');
+            form.setValue('receiveAccount', receiveAccount);
+            form.setValue('sendAccount', ethAccount);
+            await Promise.resolve();
+        });
+
+        expect(dispatchSpy).toHaveBeenCalledWith({
+            type: 'handleRequestThunkMock',
+            payload: {
+                formValues: {
+                    outputs: [{ amount: '1' }],
+                    sendCryptoSelect: { id: 'ethereum' as CryptoId },
+                    receiveCryptoSelect: { id: 'bitcoin' as CryptoId },
+                    fromAddress: ethAccount.descriptor,
+                    receiveAddress: 'btc-receive-address',
+                } satisfies MinimalExchangeFormProps,
+                network: expect.objectContaining({ tradeCryptoId: 'ethereum' }),
+                composeRequestCallback: expect.anything(),
+                shouldSendInSats: false,
+            },
+        });
     });
 
     describe('analytics', () => {
