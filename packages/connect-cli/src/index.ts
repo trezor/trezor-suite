@@ -133,6 +133,16 @@ const runTestCase = async (device: Device) => {
         case 'apply-settings':
             result = await TrezorConnect.applySettings({ device, ...params });
             break;
+        case 'ping-device':
+            // NOTE:
+            // firmware _PROTOBUF_BUFFER_SIZE = const(8704)
+            // T1B1 firmware Ping.message max_size:256
+            result = await TrezorConnect.pingDevice({
+                device,
+                message: 'a'.repeat(8000),
+                // button_protection: true,
+            });
+            break;
         default:
             result = await TrezorConnect.getAddress({ device, path: "m/44'/0'/0'/0/0", ...params });
     }
