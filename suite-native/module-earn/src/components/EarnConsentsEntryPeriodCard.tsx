@@ -7,7 +7,7 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import { Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
+import { Button, Card, Divider, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -20,8 +20,6 @@ const COLLAPSE_DURATION = 400;
 const headerSectionStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.sp12,
     paddingHorizontal: utils.spacings.sp16,
-    borderBottomWidth: utils.borders.widths.small,
-    borderBottomColor: utils.colors.borderNeutral,
 }));
 
 const itemsSectionStyle = prepareNativeStyle(utils => ({
@@ -94,6 +92,7 @@ export const EarnConsentsEntryPeriodCard = ({
                 </Text>
             </HStack>
             <Animated.View onLayout={handleLayout} style={collapsibleStyle}>
+                <Divider />
                 <VStack spacing="sp16" style={applyStyle(itemsSectionStyle)}>
                     <EarnConsentsItem iconName="calendarBlank" color="contentPrimary">
                         <Translation
