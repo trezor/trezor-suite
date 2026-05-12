@@ -227,7 +227,7 @@ describe('createFormStateForSendForm', () => {
             expect(formState.ethereumAdjustGasLimit).toBe('1.25');
         });
 
-        it('should not apply gas limit adjustment for DEX approval transactions', () => {
+        it('should apply gas limit adjustment for DEX approval transactions', () => {
             const dexApprovalQuote: ExchangeTrade = {
                 exchange: '1inch',
                 send: 'ethereum--0xTokenAddress' as any,
@@ -257,7 +257,7 @@ describe('createFormStateForSendForm', () => {
             expect(formState.outputs[0].address).toBe('0xDexRouterAddress');
             expect(formState.transactionData).toBe('0xapprovaldata');
             // No gas adjustment for approval transactions
-            expect(formState.ethereumAdjustGasLimit).toBe('');
+            expect(formState.ethereumAdjustGasLimit).toBe('1.25');
         });
 
         it('should not set DEX fields for CEX exchange quotes', () => {

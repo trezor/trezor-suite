@@ -107,8 +107,7 @@ export const sendDexTransactionThunk = createThunk<
                 amount: selectedQuote.dexTx.value,
                 destinationTag: selectedQuote.partnerPaymentExtraId,
                 recalculateCustomLimit: true,
-                ethereumAdjustGasLimit:
-                    selectedQuote.status === 'CONFIRM' ? ETHEREUM_ADJUST_GAS_LIMIT : undefined,
+                ethereumAdjustGasLimit: ETHEREUM_ADJUST_GAS_LIMIT,
                 setMaxOutputId,
                 signAndPushSendFormTransaction,
                 tradingFormState,
