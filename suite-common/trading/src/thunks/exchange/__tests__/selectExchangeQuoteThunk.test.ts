@@ -5,6 +5,7 @@ import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/t
 
 import { exchangeThunks } from '../';
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
+import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '../../../constants';
 import { invityAPI } from '../../../invityAPI';
 import { type ExchangeInfo, type TradingExchangeState } from '../../../reducers/exchangeReducer';
 import { type QuoteRefetchingState, initialState } from '../../../reducers/tradingCommonReducer';
@@ -178,6 +179,30 @@ describe('selectExchangeQuoteThunk', () => {
 
         expect(mockNextStep).toHaveBeenCalledTimes(1);
         expect(store.getState().wallet.trading.exchange.selectedQuote).toBeUndefined();
+    });
+
+    it('should save DEX quote when sending EVM native coin (no approval) before CONFIRM', async () => {
+        const { quote, state } = getDataMocks();
+        const nativeEthSend = `ethereum--${CONTRACT_ADDRESS_FOR_NATIVE_TOKEN}` as CryptoId;
+        const dexQuote = {
+            ...quote,
+            isDex: true,
+            send: nativeEthSend,
+            status: undefined,
+        };
+        const { store, mockNextStep } = getMocks(state, { status: 'running' });
+
+        await store
+            .dispatch(
+                exchangeThunks.selectQuoteThunk({
+                    quote: dexQuote,
+                    nextStep: mockNextStep,
+                }),
+            )
+            .unwrap();
+
+        expect(mockNextStep).toHaveBeenCalledTimes(1);
+        expect(store.getState().wallet.trading.exchange.selectedQuote).toEqual(dexQuote);
     });
 
     describe('should not be possible to save selected quote', () => {
