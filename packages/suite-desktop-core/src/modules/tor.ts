@@ -12,11 +12,11 @@ import { getFreePort } from '@trezor/node-utils';
 import { type BootstrapEvent } from '@trezor/request-manager';
 import { type BootstrapTorEvent, type HandshakeTorModule } from '@trezor/suite-desktop-api';
 
+import type { Dependencies } from './module';
 import { hasSwitch } from '../libs/process-switches';
 import { TorExternalProcess } from '../libs/processes/TorExternalProcess';
 import { TorProcess, type TorProcessStatus } from '../libs/processes/TorProcess';
 import { app, ipcMain } from '../typed-electron';
-import type { Dependencies } from './module';
 
 const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies) => {
     const { logger } = global;
@@ -336,7 +336,7 @@ type TorModule = (dependencies: Dependencies) => {
 
 export const init: TorModule = dependencies => {
     let loaded = false;
-    let getTarget: any;
+    let getTarget!: Awaited<ReturnType<typeof load>>;
 
     const onLoad = async () => {
         if (loaded) return { shouldRunTor: false };
