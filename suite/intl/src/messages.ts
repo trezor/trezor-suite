@@ -84,6 +84,10 @@ export const messages = defineMessages({
         description: 'Used as a variable for device name',
         id: 'TR_ANY_TREZOR',
     },
+    TR_FILTER: {
+        defaultMessage: 'Filter',
+        id: 'TR_FILTER',
+    },
     TR_HIDE_SCAM_TRANSACTIONS_TOOLTIP: {
         defaultMessage: 'Hide suspicious transactions for a cleaner view.',
         id: 'TR_HIDE_SCAM_TRANSACTIONS_TOOLTIP',
