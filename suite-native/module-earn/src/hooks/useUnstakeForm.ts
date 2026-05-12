@@ -6,7 +6,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { UNSTAKE_INTERCHANGES } from '@suite-common/wallet-constants';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
+import { getStakingLimitsByNetworkSymbol, isPositiveBalance } from '@suite-common/wallet-utils';
 import { useForm, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import {
@@ -54,10 +54,13 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
     const unstakeFormState = useMemo(() => {
         if (!account || !isValid || !amountValue) return undefined;
 
+        const amountWei = ethToWei(amountValue);
+        if (!isPositiveBalance(amountWei)) return undefined;
+
         return buildEarnComposeFormState(
             getEthereumStakingAddressByType(account.symbol, 'unstake'),
             '0',
-            buildUnstakeData(ethToWei(amountValue), UNSTAKE_INTERCHANGES),
+            buildUnstakeData(amountWei, UNSTAKE_INTERCHANGES),
         );
     }, [account, isValid, amountValue]);
 
