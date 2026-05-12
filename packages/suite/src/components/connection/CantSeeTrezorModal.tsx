@@ -46,8 +46,8 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
 
     // when this modal is displayed, scanning should start again in case it stopped due to timeout, so that user can act on the additional instructions
     useEffect(() => {
-        onReScanClick();
-    }, [onReScanClick]);
+        if (isBluetoothMode) onReScanClick();
+    }, [isBluetoothMode, onReScanClick]);
 
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
 
