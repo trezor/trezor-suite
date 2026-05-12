@@ -6,11 +6,13 @@ import {
     selectLabelingDataForSelectedAccount,
 } from '@suite/metadata';
 import { openModal } from '@suite/modal';
+import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     selectIsSuiteSyncEnabled,
     selectSuiteSyncAddressLabels,
     selectSuiteSyncOutputLabels,
 } from '@suite-common/suite-sync';
+import { type SuiteSyncAddress, type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
 import {
@@ -89,11 +91,15 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     const { addressLabels, outputLabels } = useSelector(selectLabelingDataForSelectedAccount);
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
     const suiteSyncAddressLabels = useSelector(state =>
-        isSuiteSyncEnabled ? selectSuiteSyncAddressLabels(state, account.deviceState) : [],
+        isSuiteSyncEnabled
+            ? selectSuiteSyncAddressLabels(state, account.deviceState)
+            : returnStableArrayIfEmpty<SuiteSyncAddress>(),
     );
 
     const suiteSyncOutputLabels = useSelector(state =>
-        isSuiteSyncEnabled ? selectSuiteSyncOutputLabels(state, account.deviceState) : [],
+        isSuiteSyncEnabled
+            ? selectSuiteSyncOutputLabels(state, account.deviceState)
+            : returnStableArrayIfEmpty<SuiteSyncOutput>(),
     );
     const { translationString } = useTranslation();
 
