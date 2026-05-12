@@ -202,10 +202,17 @@ const fixtures: Fixture[] = [
     },
 ];
 
-describe(selectShouldDisplayDeviceCompromisedOnRoute.name, () => {
+describe('selectShouldDisplayDeviceCompromisedOnRoute', () => {
     fixtures.forEach(f => {
         it(f.description, () => {
             expect(selectShouldDisplayDeviceCompromisedOnRoute(f.state as AppState)).toBe(f.result);
         });
+    });
+
+    it('returns the same primitive across repeated calls with the same state', () => {
+        const [first] = fixtures;
+        const a = selectShouldDisplayDeviceCompromisedOnRoute(first.state as AppState);
+        const b = selectShouldDisplayDeviceCompromisedOnRoute(first.state as AppState);
+        expect(a).toBe(b);
     });
 });

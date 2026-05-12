@@ -1,4 +1,5 @@
 import type { RouterAppWithParams } from '@suite/router';
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 
 import { selectShouldDisplayDeviceCompromised } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
 import type { AppState } from 'src/types/suite';
@@ -10,14 +11,16 @@ const ROUTES_TO_SKIP_FIRMWARE_CHECK: RouterAppWithParams['app'][] = [
     'firmware-custom',
 ];
 
-export const selectShouldDisplayDeviceCompromisedOnRoute = (state: AppState): boolean => {
-    const { router } = state;
+const createMemoizedSelector = createWeakMapSelector.withTypes<AppState>();
 
-    const shouldDisplayDeviceCompromised = selectShouldDisplayDeviceCompromised(state);
+const selectRouteApp = (state: AppState) => state.router.route?.app;
 
-    const displayOnRoute =
-        router.route?.app === undefined ||
-        !ROUTES_TO_SKIP_FIRMWARE_CHECK.includes(router.route?.app);
+export const selectShouldDisplayDeviceCompromisedOnRoute = createMemoizedSelector(
+    [selectShouldDisplayDeviceCompromised, selectRouteApp],
+    (shouldDisplayDeviceCompromised, routeApp): boolean => {
+        const displayOnRoute =
+            routeApp === undefined || !ROUTES_TO_SKIP_FIRMWARE_CHECK.includes(routeApp);
 
-    return displayOnRoute && shouldDisplayDeviceCompromised;
-};
+        return displayOnRoute && shouldDisplayDeviceCompromised;
+    },
+);

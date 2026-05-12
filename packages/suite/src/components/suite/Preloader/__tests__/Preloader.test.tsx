@@ -532,7 +532,9 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('displays DeviceCompromised when shouldDisplayDeviceCompromised is true', () => {
-        (selectShouldDisplayDeviceCompromisedOnRoute as jest.Mock).mockImplementation(() => true);
+        (selectShouldDisplayDeviceCompromisedOnRoute as unknown as jest.Mock).mockImplementation(
+            () => true,
+        );
 
         const store = initStore(getInitialState());
         const { unmount } = renderWithProviders(
@@ -543,7 +545,7 @@ describe(`${Preloader.name} component`, () => {
         expect(findByTestId('@device-compromised')).not.toBeNull();
 
         unmount();
-        (selectShouldDisplayDeviceCompromisedOnRoute as jest.Mock).mockImplementation(
+        (selectShouldDisplayDeviceCompromisedOnRoute as unknown as jest.Mock).mockImplementation(
             jest.requireActual('../selectShouldDisplayDeviceCompromisedOnRoute')
                 .selectShouldDisplayDeviceCompromisedOnRoute,
         );
