@@ -16,7 +16,7 @@ import {
     type PasswordManagerState,
     type WalletLabels,
 } from '@suite-common/metadata-types';
-import { type AnyAction } from '@suite-common/redux-utils';
+import { type AnyAction, createWeakMapSelector } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
@@ -194,36 +194,38 @@ export const selectLabelingDataForAccount = (
     return provider.data[metadataKeys.fileName] as AccountLabels;
 };
 
+const createAccountLabelsLegacyMemoizedSelector = createWeakMapSelector.withTypes<{
+    metadata: MetadataState;
+    wallet: { accounts: Account[] };
+}>();
+
 /**
  * @deprecated Legacy Labeling
  * Returns dict <account-key: account-label>
  */
-export const selectAccountLabelsLegacy = (state: {
-    metadata: MetadataState;
-    wallet: { accounts: Account[] };
-}) => {
-    const provider = selectSelectedProviderForLabels(state);
+export const selectAccountLabelsLegacy = createAccountLabelsLegacyMemoizedSelector(
+    [selectSelectedProviderForLabels, state => state.wallet.accounts],
+    (provider, accounts) =>
+        accounts.reduce(
+            (dict, account) => {
+                const metadataKeys = account?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION];
+                if (
+                    !metadataKeys ||
+                    !metadataKeys?.fileName ||
+                    !provider?.data[metadataKeys.fileName]
+                ) {
+                    return dict;
+                }
+                const data = provider.data[metadataKeys.fileName];
+                if ('accountLabel' in data) {
+                    dict[account.key] = data.accountLabel;
+                }
 
-    return state.wallet.accounts.reduce(
-        (dict, account) => {
-            const metadataKeys = account?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION];
-            if (
-                !metadataKeys ||
-                !metadataKeys?.fileName ||
-                !provider?.data[metadataKeys.fileName]
-            ) {
                 return dict;
-            }
-            const data = provider.data[metadataKeys.fileName];
-            if ('accountLabel' in data) {
-                dict[account.key] = data.accountLabel;
-            }
-
-            return dict;
-        },
-        {} as Record<string, string | undefined>,
-    );
-};
+            },
+            {} as Record<string, string | undefined>,
+        ),
+);
 
 /**
  * @deprecated Legacy Labeling
