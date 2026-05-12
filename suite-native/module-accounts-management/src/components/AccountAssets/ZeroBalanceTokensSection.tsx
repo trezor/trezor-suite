@@ -1,23 +1,19 @@
 import { useState } from 'react';
 import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
-import { useNavigation } from '@react-navigation/native';
-
-import { type Account, type TokenAddress, type TokenInfoBranded } from '@suite-common/wallet-types';
+import { type Account, type TokenInfoBranded } from '@suite-common/wallet-types';
 import { AccountsListTokenItem } from '@suite-native/accounts';
 import { AccordionContent, AnimatedBox, PressableOpacity, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import {
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackNavigationProps,
-} from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+import { type OnSelectAsset } from './types';
 
 type ZeroBalanceTokensSectionProps = {
     tokens: TokenInfoBranded[];
     account: Account;
+    onSelect: OnSelectAsset;
 };
 
 const ANIMATION_DURATION = 200;
@@ -35,9 +31,11 @@ const headerStyle = prepareNativeStyle<{ isOpen: boolean }>((utils, { isOpen }) 
     borderBottomRightRadius: isOpen ? 0 : utils.borders.radii.r16,
 }));
 
-export const ZeroBalanceTokensSection = ({ tokens, account }: ZeroBalanceTokensSectionProps) => {
-    const navigation =
-        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountAssets>>();
+export const ZeroBalanceTokensSection = ({
+    tokens,
+    account,
+    onSelect,
+}: ZeroBalanceTokensSectionProps) => {
     const { applyStyle } = useNativeStyles();
 
     const [isOpen, setIsOpen] = useState(false);
@@ -56,13 +54,6 @@ export const ZeroBalanceTokensSection = ({ tokens, account }: ZeroBalanceTokensS
             },
         ],
     }));
-
-    const handleSelectToken = (tokenContract: TokenAddress) =>
-        navigation.navigate(RootStackRoutes.AccountDetail, {
-            accountKey: account.key,
-            tokenContract,
-            closeActionType: 'back',
-        });
 
     return (
         <>
@@ -84,7 +75,9 @@ export const ZeroBalanceTokensSection = ({ tokens, account }: ZeroBalanceTokensS
                         isFirst={false}
                         isLast={index === tokens.length - 1}
                         showFiatValue={false}
-                        onSelectAccount={() => handleSelectToken(token.contract)}
+                        onSelectAccount={() =>
+                            onSelect({ tokenContract: token.contract, tokenSymbol: token.symbol })
+                        }
                     />
                 ))}
             </AccordionContent>

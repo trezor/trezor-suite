@@ -1,8 +1,6 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
     AccountsListItem,
@@ -14,21 +12,21 @@ import {
 } from '@suite-native/accounts';
 import { Box } from '@suite-native/atoms';
 import { useStakingDetailNavigation } from '@suite-native/module-earn';
-import {
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackNavigationProps,
-} from '@suite-native/navigation';
 
 import { ZeroBalanceTokensSection } from './ZeroBalanceTokensSection';
+import { type OnSelectAsset } from './types';
 
 type ActiveTokensTabProps = {
     accountKey: AccountKey;
+    onSelect: OnSelectAsset;
+    isStakingDisplayed: boolean;
 };
 
-export const ActiveTokensTab = ({ accountKey }: ActiveTokensTabProps) => {
-    const navigation =
-        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountAssets>>();
+export const ActiveTokensTab = ({
+    accountKey,
+    onSelect,
+    isStakingDisplayed,
+}: ActiveTokensTabProps) => {
     const { navigateToStakingDetail } = useStakingDetailNavigation();
 
     const sections = useSelector((state: NativeAccountsRootState) =>
@@ -36,19 +34,15 @@ export const ActiveTokensTab = ({ accountKey }: ActiveTokensTabProps) => {
     );
 
     const handleSelectAccount: OnSelectAccount = useCallback(
-        ({ account, tokenAddress, isStaking }) => {
+        ({ account, tokenAddress, tokenSymbol, isStaking }) => {
             if (isStaking) {
                 navigateToStakingDetail({ accountKey: account.key, symbol: account.symbol });
 
                 return;
             }
-            navigation.navigate(RootStackRoutes.AccountDetail, {
-                accountKey: account.key,
-                tokenContract: tokenAddress,
-                closeActionType: 'back',
-            });
+            onSelect({ tokenContract: tokenAddress, tokenSymbol });
         },
-        [navigation, navigateToStakingDetail],
+        [onSelect, navigateToStakingDetail],
     );
 
     const items = sections.filter(item => item.type !== 'sectionTitle');
@@ -72,6 +66,8 @@ export const ActiveTokensTab = ({ accountKey }: ActiveTokensTabProps) => {
                             />
                         );
                     case 'staking':
+                        if (!isStakingDisplayed) return null;
+
                         return (
                             <AccountsListStakingItem
                                 key={`${item.account.key}-staking`}
@@ -110,6 +106,7 @@ export const ActiveTokensTab = ({ accountKey }: ActiveTokensTabProps) => {
                                 key="zero-balance"
                                 tokens={item.tokens}
                                 account={item.account}
+                                onSelect={onSelect}
                             />
                         );
                     default:

@@ -1,7 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
 import {
     type AccountsRootState,
     type TokensRootState,
@@ -11,20 +9,15 @@ import {
 import { type AccountKey } from '@suite-common/wallet-types';
 import { AccountsListTokenItem } from '@suite-native/accounts';
 import { Box } from '@suite-native/atoms';
-import {
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackNavigationProps,
-} from '@suite-native/navigation';
+
+import { type OnSelectAsset } from './types';
 
 type DefiTokensTabProps = {
     accountKey: AccountKey;
+    onSelect: OnSelectAsset;
 };
 
-export const DefiTokensTab = ({ accountKey }: DefiTokensTabProps) => {
-    const navigation =
-        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountAssets>>();
-
+export const DefiTokensTab = ({ accountKey, onSelect }: DefiTokensTabProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -45,11 +38,7 @@ export const DefiTokensTab = ({ accountKey }: DefiTokensTabProps) => {
                     isFirst={index === 0}
                     isLast={index === defiTokens.length - 1}
                     onSelectAccount={() =>
-                        navigation.navigate(RootStackRoutes.AccountDetail, {
-                            accountKey,
-                            tokenContract: token.contract,
-                            closeActionType: 'back',
-                        })
+                        onSelect({ tokenContract: token.contract, tokenSymbol: token.symbol })
                     }
                 />
             ))}

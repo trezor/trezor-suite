@@ -10,8 +10,9 @@ import {
     type FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
-import { type AccountAssetsTab } from '@suite-native/navigation';
 import { type TokensRootState } from '@suite-native/tokens';
+
+import { type AccountAssetsTab } from './components/AccountAssets/types';
 
 export const selectAssetTabOfAccountToken = (
     state: TokensRootState,

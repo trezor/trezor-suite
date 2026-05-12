@@ -1,35 +1,51 @@
+import { useNavigation } from '@react-navigation/native';
+
 import { AccountsList, type OnSelectAccount } from '@suite-native/accounts';
 import { events } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import {
+    type RootStackParamList,
+    RootStackRoutes,
     Screen,
     ScreenHeader,
     type SendStackParamList,
     SendStackRoutes,
-    type StackProps,
+    type StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 
-export const SendAccountsScreen = ({
-    navigation,
-}: StackProps<SendStackParamList, SendStackRoutes.SendAccounts>) => {
+type NavigationProps = StackToStackCompositeNavigationProps<
+    RootStackParamList,
+    RootStackRoutes.AccountAssets,
+    SendStackParamList
+>;
+
+export const SendAccountsScreen = () => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const analytics = useAnalytics();
-    const navigateToSendFormScreen: OnSelectAccount = ({ account, tokenAddress, tokenSymbol }) => {
+    const navigation = useNavigation<NavigationProps>();
+
+    const handleSelectAccount: OnSelectAccount = ({ account, hasAnyKnownTokens }) => {
+        if (hasAnyKnownTokens) {
+            navigation.navigate(RootStackRoutes.AccountAssets, {
+                accountKey: account.key,
+                flowType: 'send',
+            });
+
+            return;
+        }
+
         analytics.report({
             type: events.sendFlowEnteredEvent.name,
             payload: {
                 location: 'dashboard',
                 assetSymbol: account.symbol,
-                tokenContract: tokenAddress,
-                tokenSymbol,
             },
         });
 
         navigation.navigate(SendStackRoutes.SendOutputs, {
             accountKey: account.key,
-            tokenContract: tokenAddress,
         });
     };
 
@@ -43,11 +59,7 @@ export const SendAccountsScreen = ({
                 />
             }
         >
-            <AccountsList
-                onSelectAccount={navigateToSendFormScreen}
-                isSendFilterEnabled
-                hideTokensIntoModal
-            />
+            <AccountsList onSelectAccount={handleSelectAccount} isSendFilterEnabled />
         </Screen>
     );
 };

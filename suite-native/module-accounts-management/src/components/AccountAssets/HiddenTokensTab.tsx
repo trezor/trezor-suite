@@ -1,7 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
 import {
     type AccountsRootState,
     type TokensRootState,
@@ -13,20 +11,15 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { AccountsListTokenItem } from '@suite-native/accounts';
 import { Card, PictogramTitleHeader, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackNavigationProps,
-} from '@suite-native/navigation';
+
+import { type OnSelectAsset } from './types';
 
 type HiddenTokensTabProps = {
     accountKey: AccountKey;
+    onSelect: OnSelectAsset;
 };
 
-export const HiddenTokensTab = ({ accountKey }: HiddenTokensTabProps) => {
-    const navigation =
-        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountAssets>>();
-
+export const HiddenTokensTab = ({ accountKey, onSelect }: HiddenTokensTabProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -69,10 +62,9 @@ export const HiddenTokensTab = ({ accountKey }: HiddenTokensTabProps) => {
                                 isLast={index === manuallyHiddenTokens.length - 1}
                                 showFiatValue={false}
                                 onSelectAccount={() =>
-                                    navigation.navigate(RootStackRoutes.AccountDetail, {
-                                        accountKey,
+                                    onSelect({
                                         tokenContract: token.contract,
-                                        closeActionType: 'back',
+                                        tokenSymbol: token.symbol,
                                     })
                                 }
                             />
@@ -102,10 +94,9 @@ export const HiddenTokensTab = ({ accountKey }: HiddenTokensTabProps) => {
                                 isLast={index === unrecognizedTokens.length - 1}
                                 showFiatValue={false}
                                 onSelectAccount={() =>
-                                    navigation.navigate(RootStackRoutes.AccountDetail, {
-                                        accountKey,
+                                    onSelect({
                                         tokenContract: token.contract,
-                                        closeActionType: 'back',
+                                        tokenSymbol: token.symbol,
                                     })
                                 }
                             />

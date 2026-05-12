@@ -56,6 +56,7 @@ type AddCoinFlowParams = RequireAllOrNone<
 
 export type CloseActionType = 'back' | 'close';
 export type AccountAssetsTab = 'tokens' | 'defi' | 'hidden' | 'inactive';
+export type AccountAssetsFlow = 'assets' | 'send';
 export type DeviceSuspicionCause =
     | 'deviceLooksDifferent'
     | 'firmwareAlreadyInstalled'
@@ -401,7 +402,11 @@ export type RootStackParamList = {
     [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };
     [RootStackRoutes.TransactionDetailStack]: NavigatorScreenParams<TransactionDetailStackParamList>;
     [RootStackRoutes.DevUtils]: undefined;
-    [RootStackRoutes.AccountAssets]: { accountKey: AccountKey; tab?: AccountAssetsTab };
+    [RootStackRoutes.AccountAssets]: {
+        accountKey: AccountKey;
+        tab?: AccountAssetsTab;
+        flowType?: AccountAssetsFlow;
+    };
     [RootStackRoutes.AccountDetail]: AccountDetailParams;
     [RootStackRoutes.StakingDetail]: { accountKey: AccountKey };
     [RootStackRoutes.StakingManagement]: { accountKey: AccountKey };
