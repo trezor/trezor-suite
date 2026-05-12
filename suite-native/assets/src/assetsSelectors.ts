@@ -2,7 +2,7 @@ import { A, F, G, pipe } from '@mobily/ts-belt';
 
 import { calculateAssetsPercentage } from '@suite-common/assets';
 import type { DeviceRootState } from '@suite-common/device';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
     getSimpleCoinDefinitionsByNetwork,
@@ -15,7 +15,6 @@ import {
     type WalletSettingsRootState,
     selectBaseCurrency,
     selectCurrentFiatRates,
-    selectDeviceAccounts,
     selectVisibleDeviceAccounts,
     selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
@@ -46,23 +45,15 @@ export type AssetsRootState = AccountsRootState &
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<AssetsRootState>();
 
-/*
-We do not memoize most of following selectors because they are using only with `useSelectorDeepComparison` hook which is faster than memoization.
-TODO: revalidate if this is still true for reselect
-*/
-
-export const selectVisibleDeviceAccountsKeysByNetworkSymbol = (
-    state: AssetsRootState,
-    symbol: NetworkSymbol | null,
-) => {
-    if (G.isNull(symbol)) return [];
-
-    const accounts = selectDeviceAccounts(state).filter(
-        account => account.symbol === symbol && account.visible,
-    );
-
-    return accounts.map(account => account.key);
-};
+export const selectVisibleDeviceAccountsKeysByNetworkSymbol = createMemoizedSelector(
+    [selectVisibleDeviceAccountsByNetworkSymbol],
+    accounts =>
+        pipe(
+            accounts,
+            A.map(account => account.key),
+            returnStableArrayIfEmpty,
+        ),
+);
 
 export const selectDeviceNetworksWithAssets = createMemoizedSelector(
     [selectVisibleDeviceAccounts],
