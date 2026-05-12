@@ -1,3 +1,4 @@
+import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { secondsToDays, selectBestCardanoPool } from '@suite-common/wallet-utils';
@@ -10,7 +11,7 @@ export const selectStake = (state: StakeRootState) => state.wallet.stake;
 export const selectStakeData = (state: StakeRootState) => selectStake(state).data.data;
 
 export const selectCardanoPoolsInfo = (state: StakeRootState) =>
-    selectStakeData(state).ada?.pools ?? [];
+    returnStableArrayIfEmpty(selectStakeData(state).ada?.pools);
 
 export const selectEthNextRewardPayout = (state: StakeRootState) => {
     const nextRewardPayout = selectStakeData(state).eth?.stats?.nextRewardPayout;
