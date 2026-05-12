@@ -12,42 +12,27 @@ import {
     selectFeatureConfig,
 } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
-import { type TrezorDevice } from '@suite-common/suite-types';
 import { getBrowserName } from '@suite-common/suite-utils';
 import { deviceConnectThunks, selectEnabledNetworks } from '@suite-common/wallet-core';
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
     DEVICE,
     DEVICE_EVENT,
-    type Device,
     TRANSPORT_EVENT,
     UI_EVENT,
-    UI_REQUEST,
 } from '@trezor/connect';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 import { DATA_URL } from '@trezor/urls';
 import { capitalizeFirstLetter, getSynchronize, isArrayMember } from '@trezor/utils';
 
 import { blacklist } from './blacklist';
-import { type ConnectKey } from './types';
+import { handleConnectUiAction } from './handleConnectUiAction';
+import { type ConnectInitHooks, type ConnectKey } from './types';
 
 const CONNECT_INIT_MODULE = '@common/connect-init';
 
 // If you are looking where connectInitSettings is defined, it is defined in packages/suite/src/support/extraDependencies.ts
 // or in suite-native/state/src/extraDependencies.ts depends on which platform this connectInitThunk runs.
-
-type ConnectInitHooks = Partial<
-    Record<
-        typeof DEVICE.CONNECT | typeof DEVICE.CONNECT_UNACQUIRED,
-        (device: Device, prevConnectedDevices: TrezorDevice[]) => void
-    >
-> &
-    Partial<
-        Record<
-            typeof UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED | typeof UI_REQUEST.REQUEST_WORD,
-            () => void
-        >
-    >;
 
 export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>(
     `${CONNECT_INIT_MODULE}/initThunk`,
@@ -97,49 +82,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
             if ('callId' in action && action.callId) {
                 return;
             }
-            if (action.type === UI_REQUEST.FIRMWARE_DOWNLOADED) {
-                // We are in web therefore we ignore `FIRMWARE_DOWNLOADED` action.
-                return;
-            }
-
-            // dispatch event as action
-            dispatch(action);
-
-            // this switch is still one more layer of indirection to be removed. connect actions are dispatched
-            // and could be handled directly in reducers
-            switch (action.type) {
-                case UI_REQUEST.REQUEST_PIN:
-                case UI_REQUEST.INVALID_PIN:
-                    dispatch(
-                        deviceActions.addButtonRequest({
-                            // todo: note that this is not 'threadsafe', currently selected device is not necessarily the device
-                            // connect call was made for
-                            device: selectSelectedDevice(getState()),
-                            buttonRequest: {
-                                code: action.payload.type ? action.payload.type : action.type,
-                            },
-                        }),
-                    );
-                    break;
-                case UI_REQUEST.REQUEST_BUTTON: {
-                    const { device: _, ...request } = action.payload;
-                    dispatch(
-                        deviceActions.addButtonRequest({
-                            device: selectSelectedDevice(getState()),
-                            buttonRequest: request,
-                        }),
-                    );
-                    break;
-                }
-            }
-
-            if (
-                connectInitHooks &&
-                (action.type === UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED ||
-                    action.type === UI_REQUEST.REQUEST_WORD)
-            ) {
-                connectInitHooks[action.type]?.();
-            }
+            handleConnectUiAction(action, { dispatch, getState, connectInitHooks });
         });
 
         TrezorConnect.on(TRANSPORT_EVENT, ({ event: _, ...action }) => {

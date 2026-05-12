@@ -8,8 +8,6 @@ import { resolveStaticPath } from '@trezor/env-utils';
 import { borders, spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
-import { type Subprocess } from 'src/components/suite/modals/ConnectSubprocessModal';
-import { UserContextModalWrapper } from 'src/components/suite/modals/UserContextModalWrapper';
 import { getDefaultHomeScreenImage, getHomescreens } from 'src/constants/suite/homescreens';
 import { useDispatch } from 'src/hooks/suite';
 import { imagePathToHex } from 'src/utils/suite/homescreen';
@@ -49,21 +47,17 @@ type HomescreenGalleryGlobalProps = {
 
 /**
  * Variant of `HomescreenGallery` that drives the call locally via
- * `useConnectRun.startManual`. The consumer iterates `proc.run()` so it can
- * branch per event (custom override vs. `handleDefault` fall-through). The
- * hook still mirrors the current event onto its `subprocess` state as the
- * iterator yields, so the component renders via `UserContextModalWrapper`
- * straight from that state.
- *
- * Smoke-tests: consumer-driven for-await + hook-mirrored subprocess state +
- * handleDefault fallback + manual modal wrapper rendering, all for a
- * callId-stamped call (which `connectInitThunks` will skip).
+ * `useConnectRun.startManual`, iterates `proc.run()` itself, and forwards
+ * every event through `handleDefault` — which now routes through the same
+ * `handleConnectUiAction` the global UI_EVENT listener uses. So the global
+ * `DeviceContextModal` stack renders for this scoped call exactly as it
+ * does for non-scoped calls.
  */
 export const HomescreenGalleryGlobal = ({ onConfirm }: HomescreenGalleryGlobalProps) => {
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
 
-    const { startManual, handleDefault, subprocess } = useConnectRun(
+    const { startManual, handleDefault } = useConnectRun(
         runConnect(({ connect }) => connect.applySettings),
     );
 
@@ -84,12 +78,9 @@ export const HomescreenGalleryGlobal = ({ onConfirm }: HomescreenGalleryGlobalPr
 
         const proc = startManual(params);
 
-        // Iteration runs in parallel with proc.toPromise(). The for-await is
-        // where custom per-event overrides would live; here every event falls
-        // through to handleDefault (which dispatches to the global modal
-        // slice). The hook also mirrors each yielded event onto `subprocess`
-        // state, which drives the modal-wrapper render below.
-
+        // For-await is the per-event hook for custom overrides; here every
+        // event falls through to handleDefault, which dispatches it via
+        // `handleConnectUiAction` so the global modal stack handles UI.
         try {
             for await (const sub of proc.run()) {
                 handleDefault(sub);
@@ -126,7 +117,6 @@ export const HomescreenGalleryGlobal = ({ onConfirm }: HomescreenGalleryGlobalPr
                     );
                 })}
             </Grid>
-            {subprocess && <UserContextModalWrapper subprocess={subprocess as Subprocess} />}
         </>
     );
 };

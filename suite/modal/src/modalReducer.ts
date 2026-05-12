@@ -68,14 +68,6 @@ const initialState: State = {
 };
 
 const modalReducer = (state: State = initialState, action: AnyAction): State => {
-    // UI events stamped with a `callId` are driven by a local connect-flow
-    // call (e.g. via `useConnectRun`). The local flow owns its UI; we don't
-    // surface those through the global modal stack here, regardless of which
-    // listener dispatched them.
-    if (action.callId && typeof action.type === 'string' && action.type.startsWith('ui-')) {
-        return state;
-    }
-
     switch (action.type) {
         // device with context assigned to modal was disconnected
         case DEVICE.DISCONNECT:

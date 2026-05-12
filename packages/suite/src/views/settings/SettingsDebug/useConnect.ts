@@ -1,7 +1,10 @@
 import { useCallback, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 
+import { handleConnectUiAction } from '@suite-common/connect-init';
+
 import { useDispatch } from 'src/hooks/suite';
+import { useStore } from 'src/hooks/suite/useStore';
 import type { Dispatch } from 'src/types/suite';
 
 type ConnectProcess<TSub, TResult> = {
@@ -70,14 +73,22 @@ const subprocessToAction = (sub: Record<string, unknown>) => {
     return action;
 };
 
+type GetState = Parameters<typeof handleConnectUiAction>[1]['getState'];
+
 const buildHandleDefault =
-    (dispatch: Dispatch) =>
+    (dispatch: Dispatch, getState: GetState) =>
     <TSub extends { type: string }>(sub: TSub): ReactNode => {
-        dispatch(
-            subprocessToAction(sub as unknown as Record<string, unknown>) as Parameters<
-                typeof dispatch
-            >[0],
-        );
+        const action = subprocessToAction(sub as unknown as Record<string, unknown>) as {
+            type: string;
+            payload?: any;
+        };
+        // Route through the same handler `connectInitThunks` uses for the
+        // global UI_EVENT listener, so scoped calls falling through to the
+        // default see identical side effects (dispatch + button-request
+        // bookkeeping). connectInitHooks intentionally omitted — those
+        // (INVALID_PIN_ATTEMPTS_DEPLETED, REQUEST_WORD) live in the boot
+        // closure and aren't relevant for the scoped-call default.
+        handleConnectUiAction(action, { dispatch, getState });
 
         return null;
     };
@@ -86,6 +97,7 @@ export const useConnectRun = <TParams extends any[], TSub extends { type: string
     wrappedMethod: WrappedMethod<TParams, TSub, ResultOf<TSub>>,
 ) => {
     const dispatch = useDispatch();
+    const store = useStore();
     const [subprocess, setSubprocess] = useState<TSub | null>(null);
     const [ui, setUi] = useState<ReactNode>(null);
     const [running, setRunning] = useState(false);
@@ -94,13 +106,14 @@ export const useConnectRun = <TParams extends any[], TSub extends { type: string
     const wrappedRef = useRef(wrappedMethod);
     wrappedRef.current = wrappedMethod;
 
-    // Baked-in default: dispatch the event as an action so the global
-    // `modalReducer` / `DeviceContextModal` stack handles UI exactly as it
-    // does for non-callId events in `connectInitThunks`. Returns `null`
-    // because rendering happens via Redux state, not locally.
+    // Baked-in default: route the event through `handleConnectUiAction` so
+    // the side effects (dispatch + button-request bookkeeping) match the
+    // global UI_EVENT listener in `connectInitThunks` exactly. Returns
+    // `null` because rendering happens via Redux state, not locally.
     const handleDefault = useCallback(
-        (sub: TSub): ReactNode => buildHandleDefault(dispatch)(sub),
-        [dispatch],
+        (sub: TSub): ReactNode =>
+            buildHandleDefault(dispatch, () => store.getState() as GetState)(sub),
+        [dispatch, store],
     );
 
     const claimProc = useCallback((proc: ConnectProcess<TSub, ResultOf<TSub>>) => {
