@@ -171,7 +171,7 @@ describe('sendTransactionThunk', () => {
             createThunk(
                 '@trading-exchange/thunk/sendDexTransactionThunk',
                 (_, { rejectWithValue }) => rejectWithValue(rejectValue),
-            ) as any,
+            ),
         );
 
         const result = await store.dispatch(
