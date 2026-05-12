@@ -15,7 +15,6 @@ export type * from './sign';
 export type * from './thp';
 export * from './languages';
 
-export type Selector<TReturnValue> = (state: any) => TReturnValue;
 export type SuiteCompatibleAction<TPayload> = (
     payload: TPayload,
 ) => AnyAction | ActionCreatorWithPayload<TPayload> | ActionCreatorWithoutPayload;
