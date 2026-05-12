@@ -1,5 +1,6 @@
 import { produce } from 'immer';
 
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type BreakpointFlags, initialBreakpointFlags } from '@trezor/theme';
 
 import { WINDOW } from 'src/actions/suite/constants';
@@ -33,10 +34,15 @@ const windowReducer = (state: State = initialState, action: Action): State =>
 
 export default windowReducer;
 
+const createMemoizedSelector = createWeakMapSelector.withTypes<WindowRootState>();
+
 export const selectIsWindowVisible = (state: WindowRootState) => state.window.isVisible;
 
-export const selectBreakpointFlags = (state: WindowRootState): BreakpointFlags => {
-    const { isVisible, ...breakpointFlags } = state.window;
+export const selectBreakpointFlags = createMemoizedSelector(
+    [(state: WindowRootState) => state.window],
+    (window): BreakpointFlags => {
+        const { isVisible: _isVisible, ...breakpointFlags } = window;
 
-    return breakpointFlags;
-};
+        return breakpointFlags;
+    },
+);
