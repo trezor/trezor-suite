@@ -97,7 +97,6 @@ export const DeviceSelector = () => {
             isOpen={recentlyConnectedDevice !== undefined}
             content={<RecentlyConnectedDeviceTooltipContent />}
             placement="right-end"
-            hasArrow
             zIndex={zIndices.popover /* to prevent it from appearing above modals */}
         >
             <Wrapper $isSidebarCollapsed={isSidebarCollapsed}>

@@ -1,12 +1,10 @@
-import React from 'react';
-
 import { type Meta, type StoryObj } from '@storybook/react';
 
-import { ButtonGroup, type ButtonGroupProps, allowedButtonGroupFrameProps } from './ButtonGroup';
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { Tooltip } from '../../Tooltip/Tooltip';
 import { Button } from '../Button/Button';
 import { buttonIntents, buttonPriorities, buttonSizes } from '../types';
+import { ButtonGroup, type ButtonGroupProps, allowedButtonGroupFrameProps } from './ButtonGroup';
 
 const meta: Meta<ButtonGroupProps> = {
     title: '🫵 Buttons',
@@ -18,7 +16,7 @@ export const ButtonGroups: StoryObj<typeof meta> = {
     render: args => (
         <ButtonGroup {...args}>
             <Button isLoading>Button 1</Button>
-            <Tooltip content="Ahoj!" cursor="pointer" hasArrow>
+            <Tooltip content="Ahoj!" cursor="pointer">
                 <Button>Button 2 with tooltip</Button>
             </Tooltip>
             <Button isDisabled>Button 3</Button>

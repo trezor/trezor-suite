@@ -18,7 +18,7 @@ type Rotation = { label: JSX.Element; value: DisplayRotationType };
 const DISPLAY_ROTATIONS: Array<Rotation> = [
     {
         label: (
-            <Tooltip content={<Translation id="TR_NORTH" />} cursor="pointer" hasArrow>
+            <Tooltip content={<Translation id="TR_NORTH" />} cursor="pointer">
                 <Icon name="arrowUp" />
             </Tooltip>
         ),
@@ -26,7 +26,7 @@ const DISPLAY_ROTATIONS: Array<Rotation> = [
     },
     {
         label: (
-            <Tooltip content={<Translation id="TR_EAST" />} cursor="pointer" hasArrow>
+            <Tooltip content={<Translation id="TR_EAST" />} cursor="pointer">
                 <Icon name="arrowLeft" />
             </Tooltip>
         ),
@@ -34,7 +34,7 @@ const DISPLAY_ROTATIONS: Array<Rotation> = [
     },
     {
         label: (
-            <Tooltip content={<Translation id="TR_SOUTH" />} cursor="pointer" hasArrow>
+            <Tooltip content={<Translation id="TR_SOUTH" />} cursor="pointer">
                 <Icon name="arrowDown" />
             </Tooltip>
         ),
@@ -42,7 +42,7 @@ const DISPLAY_ROTATIONS: Array<Rotation> = [
     },
     {
         label: (
-            <Tooltip content={<Translation id="TR_WEST" />} cursor="pointer" hasArrow>
+            <Tooltip content={<Translation id="TR_WEST" />} cursor="pointer">
                 <Icon name="arrowRight" />
             </Tooltip>
         ),

@@ -39,7 +39,6 @@ export const EarnYieldApyTooltip = ({
         }
         maxWidth={600}
         placement="top"
-        hasArrow
     >
         <Abbr>{children ?? <ApyValue apy={apyPercentage} />}</Abbr>
     </Tooltip>

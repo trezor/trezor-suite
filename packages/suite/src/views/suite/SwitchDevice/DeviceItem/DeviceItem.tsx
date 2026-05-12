@@ -162,7 +162,6 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
                                 isOpen={showTooltip && index === 0}
                                 width="100%"
                                 placement="right-start"
-                                hasArrow
                                 offset={30}
                             >
                                 <WalletInstance
