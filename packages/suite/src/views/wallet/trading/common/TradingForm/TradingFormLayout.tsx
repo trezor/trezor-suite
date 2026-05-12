@@ -11,8 +11,8 @@ import { useSelector } from 'src/hooks/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { ContentFlex } from 'src/support/suite/ContentFlex';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
+import { TradingFormOffer } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/TradingFormOffer';
 
-import { TradingFormOfferWrapper } from './TradingFormOffer/TradingFormOfferWrapper';
 import { ReceiveAddressModalControlsProvider } from '../TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
 interface TradingFormLayoutProps {
@@ -34,7 +34,7 @@ export const TradingFormLayout = ({ children }: TradingFormLayoutProps) => {
                     <ContentFlex gap={16} breakpoint={breakpoints.tablet} alignItems="stretch">
                         <Box flex="2">{children}</Box>
                         <Card flex="1">
-                            <TradingFormOfferWrapper />
+                            <TradingFormOffer />
                         </Card>
                     </ContentFlex>
                 </ReceiveAddressModalControlsProvider>

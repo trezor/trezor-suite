@@ -11,7 +11,9 @@ interface TradingFormOfferFiatAmountProps {
 
 export const TradingFormOfferFiatAmount = ({ amount }: TradingFormOfferFiatAmountProps) => {
     const locale = useSelector(selectLanguage);
-    const formattedAmount = amount ? new Intl.NumberFormat(locale).format(Number(amount)) : '';
+    const parsed = Number(amount);
+    const formattedAmount =
+        amount && !Number.isNaN(parsed) ? new Intl.NumberFormat(locale).format(parsed) : '';
 
     return (
         <Row gap={spacings.sm}>

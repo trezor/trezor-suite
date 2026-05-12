@@ -4,7 +4,7 @@ import { breakpoints } from '@trezor/theme';
 
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
-interface Props {
+interface TradingFormOfferConfirmButtonProps {
     onClick: () => void;
     isDisabled: boolean;
     isLoading: boolean;
@@ -18,7 +18,7 @@ export const TradingFormOfferConfirmButton = ({
     isLoading,
     translationId,
     testId,
-}: Props) => {
+}: TradingFormOfferConfirmButtonProps) => {
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint(breakpoints.tablet);
 
     return (

@@ -90,6 +90,8 @@ export const TradingFormOfferOTC = () => {
         return null;
     }
 
+    const isBuy = context.type === 'buy';
+
     return (
         <Banner
             intent="info"
@@ -97,11 +99,7 @@ export const TradingFormOfferOTC = () => {
                 <Column gap={16}>
                     <Text margin={{ bottom: 4 }}>
                         <Translation
-                            id={
-                                context.type === 'buy'
-                                    ? 'TR_TRADING_OTC_INFO_BUY'
-                                    : 'TR_TRADING_OTC_INFO_SELL'
-                            }
+                            id={isBuy ? 'TR_TRADING_OTC_INFO_BUY' : 'TR_TRADING_OTC_INFO_SELL'}
                             values={{
                                 minimumFiat: localizeNumber(displayedFiatLimit, locale),
                                 fiatSymbol: displayedFiatCurrency.toUpperCase(),
@@ -113,11 +111,7 @@ export const TradingFormOfferOTC = () => {
                         onClick={() => dispatch(goto({ routeName: 'wallet-trading-concierge' }))}
                     >
                         <Translation
-                            id={
-                                context.type === 'buy'
-                                    ? 'TR_TRADING_OTC_LINK_BUY'
-                                    : 'TR_TRADING_OTC_LINK_SELL'
-                            }
+                            id={isBuy ? 'TR_TRADING_OTC_LINK_BUY' : 'TR_TRADING_OTC_LINK_SELL'}
                         />
                     </Banner.Button>
                 </Column>
