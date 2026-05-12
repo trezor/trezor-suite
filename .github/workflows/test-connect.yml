@@ -229,7 +229,7 @@ jobs:
       testPattern: ${{ matrix.groups.pattern }}
       includeFilter: ${{ matrix.groups.includeFilter }}
       testsFirmware: ${{ matrix.firmware }}
-      testDescription: ${{ matrix.model }}-${{ matrix.firmware }}
+      testDescription: ${{ matrix.model }}-${{ matrix.firmware }}-${{ matrix.groups.name }}
       disable_cache_tx: ${{ matrix.disable_cache_tx }}
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
