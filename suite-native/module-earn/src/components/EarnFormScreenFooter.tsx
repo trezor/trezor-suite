@@ -27,6 +27,12 @@ const rewardsBoxStyle = prepareNativeStyle(utils => ({
     borderTopRightRadius: utils.borders.radii.r16,
     borderBottomLeftRadius: utils.borders.radii.r24,
     borderBottomRightRadius: utils.borders.radii.r24,
+    paddingBottom: utils.spacings.sp48,
+}));
+
+const continueButtonStyle = prepareNativeStyle(utils => ({
+    borderRadius: utils.borders.radii.round,
+    marginTop: -utils.spacings.sp40,
 }));
 
 type EarnFormScreenFooterProps = {
@@ -79,7 +85,7 @@ export const EarnFormScreenFooter = ({
             <ScreenFooterGradient />
             <Box style={applyStyle(screenFooterStyle)}>
                 <Animated.View style={[applyStyle(rewardsBoxStyle), rewardsAnimatedStyle]}>
-                    <VStack spacing="sp4" paddingVertical="sp12" alignItems="center">
+                    <VStack spacing="sp4" paddingTop="sp12" alignItems="center">
                         <Text variant="body-sm" color="contentPrimary">
                             <Translation id="earn.earnFormScreen.estimatedRewardsLabel" />
                         </Text>
@@ -98,6 +104,7 @@ export const EarnFormScreenFooter = ({
                     priority={buttonPriority}
                     onPress={onPress}
                     isDisabled={isDisabled}
+                    style={applyStyle(continueButtonStyle)}
                 >
                     <Translation id="generic.buttons.continue" />
                 </Button>
