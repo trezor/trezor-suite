@@ -105,7 +105,7 @@ export type ThpMessageKey = keyof ThpMessageType;
 
 export type ThpMessagePayload<T extends ThpMessageKey = ThpMessageKey> = ThpMessageType[T];
 
-export type ThpMessageResponse<T extends ThpMessageKey = ThpMessageKey> = T extends any
+export type ThpMessageResponse<T extends ThpMessageKey = ThpMessageKey> = T extends unknown
     ? {
           type: T;
           message: ThpMessagePayload<T>;
