@@ -119,7 +119,7 @@ const createMockState = (
         DesktopSuiteSyncRootState &
         MessageSystemRootState;
 
-describe(selectIsLabelActionEnabled.name, () => {
+describe('selectIsLabelActionEnabled', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });

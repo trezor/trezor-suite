@@ -5,6 +5,7 @@ import {
 } from '@suite/metadata';
 import { selectDeviceByStaticSessionId } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type WithSuiteSyncAndDeviceState,
     getIsSuiteSyncLabelingActionEnabled,
@@ -19,39 +20,46 @@ import {
 } from 'src/actions/suiteSync/suiteSyncSlice';
 import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
 
-export const selectIsLabelActionEnabled = (
-    state: WithSuiteSyncAndDeviceState &
-        MetadataRootState &
-        SuiteRootState &
-        DesktopSuiteSyncRootState &
-        MessageSystemRootState,
-    deviceStaticSessionId: StaticSessionId,
-    legacyEntityKey: string,
-): boolean => {
-    const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(state);
+type LabelActionState = WithSuiteSyncAndDeviceState &
+    MetadataRootState &
+    SuiteRootState &
+    DesktopSuiteSyncRootState &
+    MessageSystemRootState;
 
-    if (isSuiteSyncEnabled) {
-        const device = selectDeviceByStaticSessionId(state, deviceStaticSessionId);
-        const suiteSyncInteraction = selectDesktopSuiteSyncInteraction(
-            state,
-            deviceStaticSessionId,
-        );
+const createMemoizedSelector = createWeakMapSelector.withTypes<LabelActionState>();
 
-        if (suiteSyncInteraction === 'keys-needed' && device?.connected === false) {
-            return false;
+export const selectIsLabelActionEnabled = createMemoizedSelector(
+    [
+        selectIsSuiteSyncEnabled,
+        (state: LabelActionState, deviceStaticSessionId: StaticSessionId) =>
+            selectDeviceByStaticSessionId(state, deviceStaticSessionId),
+        (state: LabelActionState, deviceStaticSessionId: StaticSessionId) =>
+            selectDesktopSuiteSyncInteraction(state, deviceStaticSessionId),
+        (state: LabelActionState, deviceStaticSessionId: StaticSessionId) =>
+            selectIsSuiteSyncInitPossible(state, deviceStaticSessionId),
+        selectIsLabelingInitPossible,
+        (
+            state: LabelActionState,
+            deviceStaticSessionId: StaticSessionId,
+            legacyEntityKey: string,
+        ) => selectIsLabelingAvailableForEntity(state, legacyEntityKey, deviceStaticSessionId),
+    ],
+    (
+        isSuiteSyncEnabled,
+        device,
+        suiteSyncInteraction,
+        isSuiteSyncInitPossible,
+        isLegacyLabelingInitPossible,
+        isLegacyLabelingEnabled,
+    ): boolean => {
+        if (isSuiteSyncEnabled) {
+            if (suiteSyncInteraction === 'keys-needed' && device?.connected === false) {
+                return false;
+            }
+
+            return getIsSuiteSyncLabelingActionEnabled(suiteSyncInteraction);
         }
 
-        return getIsSuiteSyncLabelingActionEnabled(suiteSyncInteraction);
-    }
-
-    const isSuiteSyncInitPossible = selectIsSuiteSyncInitPossible(state, deviceStaticSessionId);
-
-    const isLegacyLabelingInitPossible = selectIsLabelingInitPossible(state);
-    const isLegacyLabelingEnabled = selectIsLabelingAvailableForEntity(
-        state,
-        legacyEntityKey,
-        deviceStaticSessionId,
-    );
-
-    return isSuiteSyncInitPossible || isLegacyLabelingEnabled || isLegacyLabelingInitPossible;
-};
+        return isSuiteSyncInitPossible || isLegacyLabelingEnabled || isLegacyLabelingInitPossible;
+    },
+);
