@@ -1,5 +1,10 @@
 import { ERRORS, WEBEXTENSION } from '@trezor/connect-common/src/constants';
-import { CORE_CALL, type CallMethod, POPUP } from '@trezor/connect-common/src/events';
+import {
+    CORE_CALL,
+    CORE_CALL_CANCEL,
+    type CallMethod,
+    POPUP,
+} from '@trezor/connect-common/src/events';
 import { createErrorMessage } from '@trezor/connect-common/src/events';
 import { factory } from '@trezor/connect-common/src/factory';
 import { type ConnectDynamicSettings } from '@trezor/connect-common/src/impl/dynamic';
@@ -16,12 +21,12 @@ const dispose = () => {
     return Promise.resolve(undefined);
 };
 
-const cancel = (error?: string) => {
+const cancel = (reason?: string) => {
     if (_channel) {
         _channel.postMessage(
             {
-                type: POPUP.CLOSED,
-                payload: error ? { error } : {},
+                type: CORE_CALL_CANCEL,
+                payload: reason ? { reason } : null,
             },
             { usePromise: false },
         );
