@@ -956,59 +956,85 @@ export const selectCoinjoinSessionBlockerByAccountKey = (
     }
 };
 
-export const selectCurrentCoinjoinWheelStates = (state: CoinjoinRootState & DeviceRootState) => {
-    const { notAnonymized } = selectCurrentCoinjoinBalanceBreakdown(state);
-    const { key, balance } = selectSelectedAccount(state) || {};
-    const coinjoinAccount = selectCoinjoinAccountByKey(state, key || null);
-    const coinjoinClient = selectCoinjoinClient(state, key || null);
-    const sessionProgress = selectSessionProgressByAccountKey(state, key || null);
+const createDeviceAwareMemoizedSelector = createWeakMapSelector.withTypes<
+    CoinjoinRootState & DeviceRootState
+>();
 
-    const coinjoinSessionBlocker = selectCoinjoinSessionBlockerByAccountKey(state, key || null);
+export const selectCurrentCoinjoinWheelStates = createDeviceAwareMemoizedSelector(
+    [
+        selectSelectedAccount,
+        selectCoinjoinAccounts,
+        selectCoinjoinClients,
+        (state: CoinjoinRootState) => state.wallet.coinjoin.config.legalDocumentsVersion,
+        (state: CoinjoinRootState) => selectCurrentCoinjoinBalanceBreakdown(state).notAnonymized,
+        (state: CoinjoinRootState) =>
+            selectSessionProgressByAccountKey(state, selectSelectedAccount(state)?.key || null),
+        (state: CoinjoinRootState & DeviceRootState) =>
+            selectCoinjoinSessionBlockerByAccountKey(
+                state,
+                selectSelectedAccount(state)?.key || null,
+            ),
+    ],
+    (
+        selectedAccount,
+        coinjoinAccounts,
+        coinjoinClients,
+        latestTezorLegalDocumentVersion,
+        notAnonymized,
+        sessionProgress,
+        coinjoinSessionBlocker,
+    ) => {
+        const { key, balance } = selectedAccount || {};
+        const coinjoinAccount = coinjoinAccounts.find(account => account.key === key);
+        const coinjoinClient = coinjoinAccount?.symbol
+            ? coinjoinClients[coinjoinAccount.symbol]
+            : undefined;
 
-    const { paused } = coinjoinAccount?.session || {};
+        const { paused } = coinjoinAccount?.session || {};
 
-    // session states
-    const isSessionActive = !!coinjoinAccount?.session;
-    const isPaused = !!paused;
-    const isLoading = coinjoinSessionBlocker === 'SESSION_STARTING';
-    const isAutoStopEnabled = coinjoinAccount?.session?.isAutoStopEnabled;
-    const isCriticalPhase = isRoundPhaseCritical(coinjoinAccount?.session?.roundPhase);
+        // session states
+        const isSessionActive = !!coinjoinAccount?.session;
+        const isPaused = !!paused;
+        const isLoading = coinjoinSessionBlocker === 'SESSION_STARTING';
+        const isAutoStopEnabled = coinjoinAccount?.session?.isAutoStopEnabled;
+        const isCriticalPhase = isRoundPhaseCritical(coinjoinAccount?.session?.roundPhase);
 
-    // account states
-    const isAccountEmpty = !balance || balance === '0';
-    const isNonePrivate = sessionProgress === 0;
-    const isAllPrivate = notAnonymized === '0';
-    const isCoinjoinUneco = !!balance && new BigNumber(balance).lt(UNECONOMICAL_COINJOIN_THRESHOLD);
+        // account states
+        const isAccountEmpty = !balance || balance === '0';
+        const isNonePrivate = sessionProgress === 0;
+        const isAllPrivate = notAnonymized === '0';
+        const isCoinjoinUneco =
+            !!balance && new BigNumber(balance).lt(UNECONOMICAL_COINJOIN_THRESHOLD);
 
-    const agreedToLegalDocumentVersions = coinjoinAccount?.agreedToLegalDocumentVersions;
-    const latestTezorLegalDocumentVersion = state.wallet.coinjoin.config.legalDocumentsVersion;
-    const latestZkSNACKsLegalDocumentVersion =
-        coinjoinClient?.version?.legalDocumentsVersion ?? ZKSNACKS_LEGAL_DOCUMENTS_VERSION;
+        const agreedToLegalDocumentVersions = coinjoinAccount?.agreedToLegalDocumentVersions;
+        const latestZkSNACKsLegalDocumentVersion =
+            coinjoinClient?.version?.legalDocumentsVersion ?? ZKSNACKS_LEGAL_DOCUMENTS_VERSION;
 
-    const isLegalDocumentConfirmed =
-        agreedToLegalDocumentVersions &&
-        agreedToLegalDocumentVersions.zkSNACKs === latestZkSNACKsLegalDocumentVersion &&
-        agreedToLegalDocumentVersions.trezor === latestTezorLegalDocumentVersion;
+        const isLegalDocumentConfirmed =
+            agreedToLegalDocumentVersions &&
+            agreedToLegalDocumentVersions.zkSNACKs === latestZkSNACKsLegalDocumentVersion &&
+            agreedToLegalDocumentVersions.trezor === latestTezorLegalDocumentVersion;
 
-    // error state
-    const isResumeBlockedByLastingIssue =
-        !!coinjoinSessionBlocker &&
-        !['DEVICE_LOCKED', 'SESSION_STARTING'].includes(coinjoinSessionBlocker);
+        // error state
+        const isResumeBlockedByLastingIssue =
+            !!coinjoinSessionBlocker &&
+            !['DEVICE_LOCKED', 'SESSION_STARTING'].includes(coinjoinSessionBlocker);
 
-    return {
-        isSessionActive,
-        isPaused,
-        isLoading,
-        isAutoStopEnabled,
-        isCriticalPhase,
-        isAccountEmpty,
-        isNonePrivate,
-        isAllPrivate,
-        isResumeBlockedByLastingIssue,
-        isCoinjoinUneco,
-        isLegalDocumentConfirmed,
-    };
-};
+        return {
+            isSessionActive,
+            isPaused,
+            isLoading,
+            isAutoStopEnabled,
+            isCriticalPhase,
+            isAccountEmpty,
+            isNonePrivate,
+            isAllPrivate,
+            isResumeBlockedByLastingIssue,
+            isCoinjoinUneco,
+            isLegalDocumentConfirmed,
+        };
+    },
+);
 
 // return tuple of arguments used by startCoinjoinSession action
 export const selectStartCoinjoinSessionArguments = (
