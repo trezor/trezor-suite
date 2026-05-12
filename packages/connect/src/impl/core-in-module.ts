@@ -1,8 +1,8 @@
 import {
     BLOCKCHAIN_EVENT,
     CORE_CALL,
+    CORE_CALL_CANCEL,
     DEVICE_EVENT,
-    POPUP,
     RESPONSE_EVENT,
     TRANSPORT_EVENT,
     UI_EVENT,
@@ -177,8 +177,8 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
         this.handleCoreMessage(response);
     }
 
-    public cancel(error?: string) {
-        this.handleCoreMessage({ type: POPUP.CLOSED, payload: error ? { error } : null });
+    public cancel(reason?: string) {
+        this.handleCoreMessage({ type: CORE_CALL_CANCEL, payload: reason ? { reason } : null });
     }
 
     public dispose() {
