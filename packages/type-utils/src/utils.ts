@@ -54,7 +54,7 @@ export type OptionalKey<M, K extends keyof M> = Omit<M, K> & Partial<Pick<M, K>>
  *  type V: ObjectValues<T>; // number | string
  *  ```
  */
-export type ObjectValues<T extends { [key: string]: any }> = T[keyof T];
+export type ObjectValues<T extends object> = T[keyof T];
 
 /**
  * Distributes the Omit across a union. using distributive conditional types to achieve this:
@@ -80,11 +80,7 @@ export type ConstWithOptionalFields<
     Fields extends string | number | symbol,
 > = {
     [Key in keyof Const]: {
-        [FieldKey in Fields]: Const[Key][FieldKey] extends
-            | string
-            | number
-            | { [key: string]: any }
-            | boolean
+        [FieldKey in Fields]: Const[Key][FieldKey] extends string | number | object | boolean
             ? Const[Key][FieldKey]
             : undefined;
     };
@@ -103,7 +99,7 @@ export type ConstWithOptionalFields<
  */
 export type DeepPartial<T> = T extends () => unknown
     ? T
-    : T extends { [key: string]: any }
+    : T extends object
       ? { [P in keyof T]?: DeepPartial<T[P]> }
       : T;
 
