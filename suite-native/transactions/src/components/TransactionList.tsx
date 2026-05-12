@@ -11,6 +11,7 @@ import {
     fetchAndUpdateAccountThunk,
     fetchTransactionsPageThunk,
     selectAccountByKey,
+    selectAreAllAccountTransactionsLoaded,
     selectBaseCurrency,
     selectIsLoadingAccountTransactions,
     selectIsPageAlreadyFetched,
@@ -145,6 +146,10 @@ export const TransactionList = ({
     );
     const isLoadingTransactions = useSelector((state: TransactionsRootState) =>
         selectIsLoadingAccountTransactions(state, accountKey),
+    );
+    const shouldDeferEmptyState = useSelector(
+        (state: TransactionsRootState & AccountsRootState) =>
+            stakingOnly && !selectAreAllAccountTransactionsLoaded(state, accountKey),
     );
 
     const transactions = useSelector((state: TransactionsRootState & TokensRootState) =>
@@ -294,7 +299,11 @@ export const TransactionList = ({
                 data={data}
                 renderItem={renderItem}
                 contentContainerStyle={applyStyle(sectionListContainerStyle)}
-                ListEmptyComponent={<TransactionsEmptyState accountKey={accountKey} />}
+                ListEmptyComponent={
+                    shouldDeferEmptyState ? null : (
+                        <TransactionsEmptyState accountKey={accountKey} />
+                    )
+                }
                 ListHeaderComponent={listHeaderComponent}
                 ListFooterComponent={
                     <TransactionsListFooter
