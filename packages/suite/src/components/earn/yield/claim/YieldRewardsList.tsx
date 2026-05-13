@@ -1,20 +1,19 @@
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
-import { getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount, toTokenSymbol } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, Row, Spinner, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { type MerkleRewardWithFiat } from '../../dashboard/yield/hooks/useMerkleRewards';
+import { type YieldAccountRewards } from './hooks/useMerkleRewards';
 import { YieldRewardItem } from '../common/YieldRewardItem';
 
 type YieldRewardsListProps = {
-    rewards: MerkleRewardWithFiat[];
+    accountRewards: YieldAccountRewards;
     isLoading: boolean;
 };
 
-export const YieldRewardsList = ({ rewards, isLoading }: YieldRewardsListProps) => {
+export const YieldRewardsList = ({ accountRewards, isLoading }: YieldRewardsListProps) => {
     const { BaseCurrencyAmountFormatter, CryptoAmountFormatter } = useFormatters();
 
     if (isLoading) {
@@ -25,7 +24,7 @@ export const YieldRewardsList = ({ rewards, isLoading }: YieldRewardsListProps) 
         );
     }
 
-    if (rewards.length === 0) {
+    if (accountRewards.rewards.length === 0) {
         return (
             <Text intent="neutral" priority="secondary">
                 <Translation id="TR_EARN_REWARDS_ARE_EMPTY" />
@@ -35,13 +34,7 @@ export const YieldRewardsList = ({ rewards, isLoading }: YieldRewardsListProps) 
 
     return (
         <Column gap={16}>
-            {rewards.map((reward, index) => {
-                const network = getNetworkByEvmChainId(reward.token.chainId);
-
-                if (!network) {
-                    return null;
-                }
-
+            {accountRewards.rewards.map((reward, index) => {
                 const claimableUnits = subunitsToUnits({
                     value: asAmountSubunit(new BigNumber(reward.claimable)),
                     decimals: reward.token.decimals,
@@ -66,7 +59,7 @@ export const YieldRewardsList = ({ rewards, isLoading }: YieldRewardsListProps) 
                         formattedFiatAmount={formattedFiatAmount}
                         tokenSymbol={reward.token.symbol}
                         tokenAddress={reward.token.address}
-                        networkSymbol={network.symbol}
+                        networkSymbol={accountRewards.account.symbol}
                     />
                 );
             })}

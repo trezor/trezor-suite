@@ -1,61 +1,6 @@
-import { ChainAddressKey } from '@suite-common/earn-stablecoin-api';
-import {
-    type AccountType,
-    getNetworkByEvmChainId,
-    networkSymbolCollection,
-    networks,
-} from '@suite-common/wallet-config';
-import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type AccountType, networkSymbolCollection, networks } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
-
-import { type EarnYieldClaimableAccount } from '../yield/EarnYieldClaimSelectAccountModal';
-import { type MerkleRewardsWithFiatRecord } from '../yield/hooks/useMerkleRewards';
-
-type GetClaimableAccountsParams = {
-    rewards: MerkleRewardsWithFiatRecord;
-    visibleAccounts: Account[];
-};
-
-export const getClaimableAccounts = ({
-    rewards,
-    visibleAccounts,
-}: GetClaimableAccountsParams): EarnYieldClaimableAccount[] =>
-    Object.entries(rewards).flatMap(([key, accountRewards]) => {
-        const totalClaimable = accountRewards.reduce(
-            (total, reward) => total.plus(reward.claimable),
-            new BigNumber(0),
-        );
-
-        if (!totalClaimable.gt(0)) {
-            return [];
-        }
-
-        const { chainId, address } = ChainAddressKey.parse(key);
-        const network = getNetworkByEvmChainId(chainId);
-        const account = visibleAccounts.find(
-            a =>
-                a.symbol === network?.symbol &&
-                a.descriptor.toLowerCase() === address.toLowerCase(),
-        );
-
-        if (!account) {
-            return [];
-        }
-
-        const totalFiatAmount = accountRewards.reduce(
-            (total, reward) => total.plus(reward.fiat.claimable ?? '0'),
-            new BigNumber(0),
-        );
-
-        return [
-            {
-                account,
-                totalFiatAmount: totalFiatAmount.isPositive()
-                    ? asBaseCurrencyAmount(totalFiatAmount)
-                    : null,
-            },
-        ];
-    });
 
 type YieldRowWithAvailableBalance = {
     additionalSupplyAmount: string;

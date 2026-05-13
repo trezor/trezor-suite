@@ -1,6 +1,5 @@
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
-import { getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount, toTokenSymbol } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, Text } from '@trezor/components';
@@ -8,13 +7,13 @@ import { BigNumber } from '@trezor/utils';
 
 import { YieldFlowComplete } from './YieldFlowComplete';
 import { YieldRewardItem } from './YieldRewardItem';
-import { type MerkleRewardWithFiat } from '../../dashboard/yield/hooks/useMerkleRewards';
+import { type YieldAccountRewards } from '../claim/hooks';
 
 type YieldFlowCompleteClaimProps = {
-    rewards: MerkleRewardWithFiat[];
+    accountRewards: YieldAccountRewards;
 };
 
-export const YieldFlowCompleteClaim = ({ rewards }: YieldFlowCompleteClaimProps) => {
+export const YieldFlowCompleteClaim = ({ accountRewards }: YieldFlowCompleteClaimProps) => {
     const { BaseCurrencyAmountFormatter, CryptoAmountFormatter } = useFormatters();
 
     return (
@@ -29,13 +28,7 @@ export const YieldFlowCompleteClaim = ({ rewards }: YieldFlowCompleteClaimProps)
                 </Text>
 
                 <Column gap={16}>
-                    {rewards.map((reward, index) => {
-                        const network = getNetworkByEvmChainId(reward.token.chainId);
-
-                        if (!network) {
-                            return null;
-                        }
-
+                    {accountRewards.rewards.map((reward, index) => {
                         const claimableUnits = subunitsToUnits({
                             value: asAmountSubunit(new BigNumber(reward.claimable)),
                             decimals: reward.token.decimals,
@@ -63,7 +56,7 @@ export const YieldFlowCompleteClaim = ({ rewards }: YieldFlowCompleteClaimProps)
                                 formattedFiatAmount={formattedFiatAmount}
                                 tokenSymbol={reward.token.symbol}
                                 tokenAddress={reward.token.address}
-                                networkSymbol={network.symbol}
+                                networkSymbol={accountRewards.account.symbol}
                             />
                         );
                     })}
