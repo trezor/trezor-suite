@@ -3,12 +3,11 @@ import {
     tradingActions,
     tradingBuyActions,
 } from '@suite-common/trading';
-import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     bnbAsset,
     buyQuotes,
-    getBtcAccount,
+    eth1NormalAccount,
     getInitializedTradingState,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
@@ -40,11 +39,11 @@ jest.mock('@suite-common/trading', () => ({
 describe('useBuyQuotes', () => {
     const getInitializedStore = () => {
         const tradingState = getInitializedTradingState();
-        tradingState.buy.tradingAccountKey = 'btc-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
+        tradingState.buy.tradingAccountKey = eth1NormalAccount.key;
 
         return createTradingLightStore({
             overrides: {
-                wallet: { trading: tradingState, accounts: [getBtcAccount()] },
+                wallet: { trading: tradingState, accounts: [eth1NormalAccount] },
             },
         });
     };
@@ -165,10 +164,7 @@ describe('useBuyQuotes', () => {
         [
             'receiveAccount',
             {
-                account: {
-                    key: 'btc1' as AccountKey, // Todo: create properly via `createAccountKey()`
-                    descriptor: 'descriptor_btc1',
-                } as Account,
+                account: eth1NormalAccount,
             },
         ],
     ] as [keyof BuyFormValues, BuyFormValues[keyof BuyFormValues]][])(
