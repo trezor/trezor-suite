@@ -1,5 +1,4 @@
 import {
-    address,
     createDefaultRpcTransport,
     createSolanaRpcFromTransport,
     createSolanaRpcSubscriptions,
@@ -8,16 +7,7 @@ import {
 
 import type { TimerId } from '@trezor/type-utils';
 
-import {
-    EVERSTAKE_SOLANA_DEVNET_VALIDATOR,
-    EVERSTAKE_SOLANA_MAINNET_VALIDATOR,
-} from '../constants';
-import type {
-    ClusterUrl,
-    RpcTransportFromClusterUrl,
-    RpcTransportMainnet,
-    SupportedSolanaNetworkSymbols,
-} from '../types';
+import type { ClusterUrl, RpcTransportFromClusterUrl, RpcTransportMainnet } from '../types';
 
 const DEFAULT_MAX_RPS = 4; // Default maximum requests per second
 const DEFAULT_INTERVAL = 1000; // Default interval in milliseconds (1 second)
@@ -177,15 +167,5 @@ export const selectSolanaConnection = (url?: string, userAgent?: string) => {
         return createSolanaRpcFromTransport(transport);
     } catch {
         throw new Error('Connection failed. Check your RPC URL and try again.');
-    }
-};
-
-export const selectSolanaValidator = (symbol: SupportedSolanaNetworkSymbols) => {
-    switch (symbol) {
-        case 'dsol':
-            return address(EVERSTAKE_SOLANA_DEVNET_VALIDATOR);
-        case 'sol':
-        default:
-            return address(EVERSTAKE_SOLANA_MAINNET_VALIDATOR);
     }
 };

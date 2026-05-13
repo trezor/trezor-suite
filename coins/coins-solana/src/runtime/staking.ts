@@ -1,16 +1,36 @@
-import { address, compileTransaction, parseBase64RpcAccount } from '@solana/kit';
-import { STAKE_PROGRAM_ADDRESS, decodeStakeStateAccount } from '@solana-program/stake';
+import {
+    address,
+    appendTransactionMessageInstruction,
+    createNoopSigner,
+    partiallySignTransactionMessageWithSigners,
+} from '@solana/kit';
+import {
+    getDeactivateInstruction,
+    getDelegateStakeInstruction,
+    getWithdrawInstruction,
+} from '@solana-program/stake';
 
-import { BigNumber } from '@trezor/utils';
+import { serializeError } from '@trezor/utils';
 
-import { SOL_COMPUTE_UNIT_LIMIT, SOL_COMPUTE_UNIT_PRICE, StakeState } from '../constants';
+import {
+    EVERSTAKE_SOLANA_DEVNET_VALIDATOR,
+    EVERSTAKE_SOLANA_MAINNET_VALIDATOR,
+    EVERSTAKE_VOTER_PUBKEYS,
+    MAX_CLAIM_ACCOUNTS,
+    MAX_DEACTIVATE_ACCOUNTS,
+    MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
+    MIN_AMOUNT,
+    STAKE_ACCOUNT_V2_SIZE,
+    StakeState,
+} from '../constants';
 import type {
-    AccountInfoBase,
-    AccountInfoWithBase64EncodedData,
-    Base58EncodedBytes,
-    CompilableTransactionMessage,
-    Fee,
-    Lamports,
+    Account,
+    Address,
+    Blockhash,
+    ClaimParams,
+    ClaimResponse,
+    Delegations,
+    Params,
     PrepareClaimSolTxParams,
     PrepareStakeSolTxParams,
     PrepareStakeSolTxResponse,
@@ -18,86 +38,35 @@ import type {
     RpcMainnet,
     SolanaRpcApiMainnet,
     SolanaStakingAccount,
+    SolanaTxMeta,
+    StakeParams,
+    StakeResponse,
     StakeStateAccount,
-    StakeStateV2,
-    TransactionMessageWithBlockhashLifetime,
+    SupportedSolanaNetworkSymbols,
+    UnstakeParams,
+    UnstakeResponse,
 } from '../types';
-import { claim, createTransactionShimCommon, stake, unstake } from './transactions';
+import { createTransactionShim } from './shim';
+import {
+    baseTx,
+    createAccountWithSeedTx,
+    getDelegations,
+    getFeeSummary,
+    getStakingParams,
+    isCompilableTransactionMessage,
+    isLockupInForce,
+    isStake,
+    split,
+    stakeAccountState,
+    timestampInSec,
+    toLamports,
+} from './stakingUtils';
 
-const FILTER_DATA_SIZE = 200n;
-const FILTER_OFFSET = 44n;
-
-const EVERSTAKE_VOTER_PUBKEYS = [
-    '9QU2QSxhb24FUX3Tu2FpczXjpK3VYrvRudywSZaM29mF', // mainnet
-    'GkqYQysEGmuL6V2AJoNnWZUz2ZBGWhzQXsJiXm2CLKAN', // devnet
-];
+const STAKE_HISTORY_ACCOUNT = address('SysvarStakeHistory1111111111111111111111111');
+const STAKE_CONFIG_ACCOUNT = address('StakeConfig11111111111111111111111111111111');
 
 /** @see {@link file://./../../../../suite-common/wallet-constants/src/stakingConstants.ts}  */
 const WALLET_SDK_SOURCE = '1';
-
-export const isStake = (state: StakeStateV2): state is Extract<StakeStateV2, { __kind: 'Stake' }> =>
-    state.__kind === 'Stake';
-
-export const stakeAccountState = (account: StakeStateAccount, currentEpoch: bigint): string => {
-    const { state } = account;
-
-    if (!isStake(state)) {
-        return StakeState.Inactive;
-    }
-
-    const { activationEpoch, deactivationEpoch } = state.fields[1].delegation;
-
-    if (activationEpoch > currentEpoch) {
-        return StakeState.Inactive;
-    }
-    if (activationEpoch === currentEpoch) {
-        // if you activate then deactivate in the same epoch,
-        // deactivationEpoch === activationEpoch.
-        // if you deactivate then activate again in the same epoch,
-        // the deactivationEpoch will be reset to EPOCH_MAX
-        if (deactivationEpoch === activationEpoch) return StakeState.Inactive;
-
-        return StakeState.Activating;
-    }
-    // activationEpoch < currentEpochBN
-    if (deactivationEpoch > currentEpoch) return StakeState.Active;
-    if (deactivationEpoch === currentEpoch) return StakeState.Deactivating;
-
-    return StakeState.Deactivated;
-};
-
-export const getDelegations = async (
-    rpc: RpcMainnet<SolanaRpcApiMainnet> | Rpc<SolanaRpcApiMainnet>,
-    descriptor: string,
-) => {
-    try {
-        const accounts = await rpc
-            .getProgramAccounts(STAKE_PROGRAM_ADDRESS, {
-                encoding: 'base64',
-                filters: [
-                    {
-                        dataSize: FILTER_DATA_SIZE, // Token account size
-                    },
-                    {
-                        memcmp: {
-                            bytes: descriptor as Base58EncodedBytes,
-                            encoding: 'base58',
-                            offset: FILTER_OFFSET,
-                        },
-                    },
-                ],
-            })
-            .send();
-
-        return accounts.map(account => {
-            const parsedAccount = parseBase64RpcAccount(account.pubkey, account.account);
-
-            return decodeStakeStateAccount(parsedAccount);
-        });
-    } catch {
-        throw new Error('Failed to fetch delegations');
-    }
-};
 
 export const getSolanaStakingData = async (
     rpc: RpcMainnet<SolanaRpcApiMainnet> | Rpc<SolanaRpcApiMainnet>,
@@ -137,36 +106,298 @@ export const getSolanaStakingData = async (
         .filter(account => account !== undefined);
 };
 
-const transformTx = (
-    tx: CompilableTransactionMessage & TransactionMessageWithBlockhashLifetime,
-) => {
-    const compilableTx = compileTransaction(tx);
+export const stake = async ({
+    connection,
+    validator,
+    sender,
+    lamports,
+    source,
+    params,
+}: StakeParams<Params<Blockhash>>): Promise<StakeResponse> => {
+    try {
+        // Get the minimum balance for rent exemption
+        const minimumRent = await connection
+            .getMinimumBalanceForRentExemption(BigInt(STAKE_ACCOUNT_V2_SIZE))
+            .send();
 
-    return createTransactionShimCommon(compilableTx);
+        const [
+            createStakeAccountInstruction,
+            initializeStakeAccountInstruction,
+            stakeAccountPublicKey,
+        ] = await createAccountWithSeedTx(address(sender), BigInt(lamports) + minimumRent, source);
+        const delegateInstruction = getDelegateStakeInstruction({
+            stake: stakeAccountPublicKey,
+            vote: validator,
+            stakeHistory: STAKE_HISTORY_ACCOUNT,
+            unused: STAKE_CONFIG_ACCOUNT,
+            stakeAuthority: createNoopSigner(address(sender)),
+        });
+
+        let transactionMessage = await baseTx(connection, sender, params);
+        transactionMessage = appendTransactionMessageInstruction(
+            createStakeAccountInstruction,
+            transactionMessage,
+        );
+        transactionMessage = appendTransactionMessageInstruction(
+            initializeStakeAccountInstruction,
+            transactionMessage,
+        );
+        transactionMessage = appendTransactionMessageInstruction(
+            delegateInstruction,
+            transactionMessage,
+        );
+
+        const signedTransactionMessage =
+            source === null
+                ? await partiallySignTransactionMessageWithSigners(transactionMessage)
+                : transactionMessage;
+
+        const feeSummary = getFeeSummary(transactionMessage);
+        const feeLamports = BigInt(feeSummary.feeLamports);
+        const feeIncludingRentLamports = (feeLamports + minimumRent).toString();
+        const deviceAmountLamports = (lamports + minimumRent).toString();
+        const txMeta: SolanaTxMeta = {
+            deviceAmountLamports,
+            feeLamports: feeSummary.feeLamports,
+            rentLamports: minimumRent.toString(),
+            feeIncludingRentLamports,
+        };
+
+        return {
+            stakeTx: signedTransactionMessage,
+            stakeAccount: stakeAccountPublicKey,
+            txMeta,
+        };
+    } catch (error) {
+        throw new Error(
+            `Solana staking: staking failed - ${error instanceof Error ? error.message : serializeError(error)}`,
+        );
+    }
 };
 
-// Type guard to check if transaction is of type CompilableTransactionMessage
-function isCompilableTransactionMessage(
-    tx: TransactionMessageWithBlockhashLifetime | CompilableTransactionMessage,
-): tx is CompilableTransactionMessage {
-    return (tx as CompilableTransactionMessage).feePayer !== undefined;
-}
+export const unstake = async ({
+    connection,
+    sender,
+    lamports,
+    source,
+    params,
+}: UnstakeParams<Params<Blockhash>>): Promise<UnstakeResponse> => {
+    try {
+        const stakeAccounts = await getDelegations(connection, sender);
 
-const getStakingParams = (estimatedFee?: Fee) =>
-    !estimatedFee || !estimatedFee.feePerUnit || !estimatedFee.feeLimit
-        ? {
-              computeUnitPrice: BigInt(SOL_COMPUTE_UNIT_PRICE),
-              computeUnitLimit: SOL_COMPUTE_UNIT_LIMIT,
-          }
-        : {
-              computeUnitPrice: BigInt(estimatedFee.feePerUnit),
-              computeUnitLimit: Number(estimatedFee.feeLimit), // solana package expects number
-          };
+        const epoch = params?.epoch || (await connection.getEpochInfo().send()).epoch;
+        const tm = timestampInSec();
 
-const toLamports = (amount: string) => {
-    const bAmount = new BigNumber(amount || '0');
+        let unstakeAmount = lamports;
+        let totalActiveStake: bigint = 0n;
+        const activeStakeAccounts = stakeAccounts.filter(acc => {
+            if (acc.data.state.__kind !== 'Stake') {
+                return false;
+            }
 
-    return bAmount.isNaN() ? '-1' : bAmount.times(10 ** 9).toString(10);
+            const isActive = !(
+                isLockupInForce(acc.data, epoch, BigInt(tm)) ||
+                stakeAccountState(acc.data, epoch) !== StakeState.Active
+            );
+
+            if (isActive) {
+                totalActiveStake = totalActiveStake + acc.data.state.fields[1].delegation.stake;
+            }
+
+            return isActive;
+        });
+
+        if (totalActiveStake < lamports) throw new Error('Active stake less than requested');
+
+        // ASC sort if num of accounts less than threshold otherwise DESC sorting
+        activeStakeAccounts.sort((a, b): number => {
+            const stakeA = isStake(a.data.state) ? a.data.state.fields[1].delegation.stake : 0n;
+            const stakeB = isStake(b.data.state) ? b.data.state.fields[1].delegation.stake : 0n;
+
+            if (activeStakeAccounts.length < MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT) {
+                return Number(stakeA - stakeB);
+            }
+
+            return Number(stakeB - stakeA);
+        });
+
+        const accountsToDeactivate: Delegations = [];
+        const accountsToSplit: [Account<StakeStateAccount, Address>, bigint][] = [];
+
+        let i = 0;
+        while (lamports > 0n && i < activeStakeAccounts.length) {
+            const acc = activeStakeAccounts[i];
+            if (acc === undefined || !isStake(acc.data.state)) {
+                i++;
+                continue;
+            }
+
+            const stakeAmount = acc.data.state.fields[1].delegation.stake;
+
+            // If reminder amount less than min stake amount stake account automatically become disabled
+            const isBelowThreshold = stakeAmount <= lamports || stakeAmount - lamports < MIN_AMOUNT;
+            if (isBelowThreshold) {
+                accountsToDeactivate.push(acc);
+                lamports = lamports - stakeAmount;
+                i++;
+
+                // Max num of deactivate instructions reached
+                if (accountsToDeactivate.length === MAX_DEACTIVATE_ACCOUNTS) {
+                    unstakeAmount -= lamports;
+                    break;
+                }
+                continue;
+            }
+
+            // Max num of deactivate instructions with split reached
+            if (accountsToDeactivate.length > MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT) {
+                unstakeAmount -= lamports;
+                break;
+            }
+
+            accountsToSplit.push([acc, lamports]);
+            break;
+        }
+
+        const senderPublicKey = address(sender);
+        let transactionMessage = await baseTx(connection, sender, params);
+
+        // Get the minimum balance for rent exemption. Send request only if split required
+        const minimumRent =
+            accountsToSplit.length > 0
+                ? await connection
+                      .getMinimumBalanceForRentExemption(BigInt(STAKE_ACCOUNT_V2_SIZE))
+                      .send()
+                : 0n;
+
+        for (const acc of accountsToSplit) {
+            const [splitInstructions, newStakeAccountPubkey] = await split(
+                senderPublicKey,
+                acc[1],
+                acc[0].address,
+                source,
+                // Need additional value for rent
+                minimumRent,
+            );
+
+            splitInstructions.forEach(
+                splitInstruction =>
+                    (transactionMessage = appendTransactionMessageInstruction(
+                        splitInstruction,
+                        transactionMessage,
+                    )),
+            );
+
+            const deactivateInstruction = getDeactivateInstruction({
+                stake: newStakeAccountPubkey,
+                stakeAuthority: createNoopSigner(address(sender)),
+            });
+
+            transactionMessage = appendTransactionMessageInstruction(
+                deactivateInstruction,
+                transactionMessage,
+            );
+        }
+
+        accountsToDeactivate.forEach(acc => {
+            const deactivateInstruction = getDeactivateInstruction({
+                stake: acc.address,
+                stakeAuthority: createNoopSigner(address(sender)),
+            });
+
+            transactionMessage = appendTransactionMessageInstruction(
+                deactivateInstruction,
+                transactionMessage,
+            );
+        });
+
+        if (transactionMessage.instructions.length === 0) {
+            throw new Error('Zero instructions');
+        }
+
+        const feeSummary = getFeeSummary(transactionMessage);
+        const feeLamports = BigInt(feeSummary.feeLamports);
+        const feeIncludingRentLamports = (feeLamports + minimumRent).toString();
+        const txMeta: SolanaTxMeta = {
+            deviceAmountLamports: unstakeAmount.toString(),
+            feeLamports: feeSummary.feeLamports,
+            rentLamports: minimumRent.toString(),
+            feeIncludingRentLamports,
+        };
+
+        return { unstakeTx: transactionMessage, unstakeAmount, txMeta };
+    } catch (error) {
+        throw new Error(
+            `Solana staking: unstaking failed - ${error instanceof Error ? error.message : serializeError(error)}`,
+        );
+    }
+};
+
+export const claim = async ({
+    connection,
+    sender,
+    params,
+}: ClaimParams<Params<Blockhash>>): Promise<ClaimResponse> => {
+    try {
+        const delegations = await getDelegations(connection, sender);
+
+        const epoch = params?.epoch || (await connection.getEpochInfo().send()).epoch;
+        const tm = timestampInSec();
+
+        const deactivatedStakeAccounts = delegations.filter(
+            acc =>
+                !isLockupInForce(acc.data, epoch, BigInt(tm)) &&
+                stakeAccountState(acc.data, epoch) === StakeState.Deactivated,
+        );
+
+        if (deactivatedStakeAccounts.length === 0)
+            throw new Error('Nothing to claim while claiming');
+
+        let transactionMessage = await baseTx(connection, sender, params);
+
+        let totalClaimableStake = 0n;
+        let accountsForClaim = 0;
+        for (const acc of deactivatedStakeAccounts) {
+            // Create the withdraw instruction
+            const withdrawInstruction = getWithdrawInstruction({
+                stake: acc.address,
+                recipient: address(sender),
+                stakeHistory: STAKE_HISTORY_ACCOUNT,
+                withdrawAuthority: createNoopSigner(address(sender)),
+                args: acc.lamports,
+            });
+
+            transactionMessage = appendTransactionMessageInstruction(
+                withdrawInstruction,
+                transactionMessage,
+            );
+
+            totalClaimableStake += acc.lamports;
+            accountsForClaim++;
+
+            if (accountsForClaim === MAX_CLAIM_ACCOUNTS) {
+                break;
+            }
+        }
+
+        const feeSummary = getFeeSummary(transactionMessage);
+        const txMeta: SolanaTxMeta = {
+            deviceAmountLamports: totalClaimableStake.toString(),
+            feeLamports: feeSummary.feeLamports,
+            rentLamports: '0',
+            feeIncludingRentLamports: feeSummary.feeLamports,
+        };
+
+        return {
+            claimTx: transactionMessage,
+            totalClaimAmount: totalClaimableStake,
+            txMeta,
+        };
+    } catch (error) {
+        throw new Error(
+            `Solana staking: claiming failed - ${error instanceof Error ? error.message : serializeError(error)}`,
+        );
+    }
 };
 
 export const prepareStakeSolTx = async ({
@@ -194,7 +425,7 @@ export const prepareStakeSolTx = async ({
             throw new Error('Transaction is not compilable');
         }
 
-        const txShim = transformTx(stakeTx);
+        const txShim = createTransactionShim(stakeTx);
 
         return {
             success: true,
@@ -227,7 +458,7 @@ export const prepareUnstakeSolTx = async ({
             source: WALLET_SDK_SOURCE,
             params,
         });
-        const txShim = transformTx(tx.unstakeTx);
+        const txShim = createTransactionShim(tx.unstakeTx);
 
         return {
             success: true,
@@ -256,7 +487,7 @@ export const prepareClaimSolTx = async ({
             sender: from,
             params,
         });
-        const txShim = transformTx(tx.claimTx);
+        const txShim = createTransactionShim(tx.claimTx);
 
         return {
             success: true,
@@ -273,40 +504,12 @@ export const prepareClaimSolTx = async ({
     }
 };
 
-type StakeAccountInfo = {
-    data: [string, 'base64'];
-    executable: boolean;
-    lamports: number;
-    owner: string;
-    rentEpoch: string;
-    space: number;
-};
-
-type StakeAccountWithKey = {
-    account: StakeAccountInfo;
-    pubkey: string;
-};
-
-const toRpcAccount = (
-    account: StakeAccountInfo,
-): AccountInfoBase & { rentEpoch: bigint } & AccountInfoWithBase64EncodedData => ({
-    data: account.data as AccountInfoWithBase64EncodedData['data'],
-    executable: account.executable,
-    lamports: BigInt(account.lamports) as Lamports,
-    owner: address(account.owner),
-    rentEpoch: BigInt(account.rentEpoch ?? 0),
-    space: BigInt(account.space ?? 0),
-});
-
-export const decodeStakeResponses = (accountWithKey: StakeAccountWithKey) => {
-    const parsed = parseBase64RpcAccount(
-        address(accountWithKey.pubkey),
-        toRpcAccount(accountWithKey.account),
-    );
-    const decoded = decodeStakeStateAccount(parsed);
-
-    return {
-        account: accountWithKey.pubkey,
-        decoded: decoded.data,
-    };
+export const selectSolanaValidator = (symbol: SupportedSolanaNetworkSymbols) => {
+    switch (symbol) {
+        case 'dsol':
+            return address(EVERSTAKE_SOLANA_DEVNET_VALIDATOR);
+        case 'sol':
+        default:
+            return address(EVERSTAKE_SOLANA_MAINNET_VALIDATOR);
+    }
 };

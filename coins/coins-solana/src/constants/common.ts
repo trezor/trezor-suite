@@ -18,8 +18,6 @@ export const SERUM_ASSET_OWNER_PHANTOM_DEPLOYMENT_PROGRAM_ID =
 export const MEMO_PROGRAM_PUBLIC_KEY = 'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr';
 export const MEMO_PROGRAM_PUBLIC_KEY_V1 = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo';
 
-export const STAKE_ACCOUNT_V2_SIZE = 200;
-
 export const MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT = 16;
 export const MAX_DEACTIVATE_ACCOUNTS = 22;
 export const MAX_CLAIM_ACCOUNTS = 16;
@@ -44,11 +42,3 @@ export enum Network {
     Mainnet = 'mainnet-beta',
     Devnet = 'devnet',
 }
-
-export const StakeState = {
-    Inactive: 'inactive',
-    Activating: 'activating',
-    Active: 'active',
-    Deactivating: 'deactivating',
-    Deactivated: 'deactivated',
-};
