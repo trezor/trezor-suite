@@ -1,6 +1,7 @@
 {
     "name": "@trezor/schema-utils",
     "version": "10.0.0-alpha.1",
+    "type": "module",
     "license": "MIT",
     "sideEffects": false,
     "main": "src/index.ts",
@@ -24,13 +25,13 @@
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
-        "codegen": "ts-node --skip-project ./src/codegen.ts",
+        "codegen": "tsx ./src/codegen.ts",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "devDependencies": {
         "@sinclair/typebox-codegen": "^0.11.1",
         "@trezor/eslint": "workspace:*",
-        "ts-node": "^10.9.2"
+        "tsx": "^4.21.0"
     },
     "dependencies": {
         "@sinclair/typebox": "^0.34.49",

@@ -1,8 +1,10 @@
-const WebSocket = require('ws');
+import WebSocket from 'ws';
 
-const { blockbookFixtures } = require('./blockbook');
-const { blockfrostFixtures } = require('./blockfrost');
-const { rippleFixtures } = require('./ripple');
+import { blockbookFixtures } from './blockbook.js';
+import { blockfrostFixtures } from './blockfrost.js';
+import { rippleFixtures } from './ripple.js';
+
+const { Server: WebSocketServer } = WebSocket;
 
 const DEFAULT_RESPONSES = {
     blockbook: blockbookFixtures,
@@ -10,8 +12,8 @@ const DEFAULT_RESPONSES = {
     blockfrost: blockfrostFixtures,
 };
 
-const createServer = () => {
-    const server = new WebSocket.Server({ port: 18088 });
+export const createServer = () => {
+    const server = new WebSocketServer({ port: 18088 });
 
     const processRequest = (ws, params, message) => {
         const request = JSON.parse(message);
@@ -53,8 +55,4 @@ const createServer = () => {
         server.on('listening', () => resolve(server));
         server.on('error', error => reject(error));
     });
-};
-
-module.exports = {
-    createServer,
 };

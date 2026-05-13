@@ -1,6 +1,7 @@
 {
     "name": "@trezor/type-utils",
     "version": "10.0.0-alpha.1",
+    "type": "module",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/type-utils",
     "license": "MIT",
     "repository": {

@@ -1,9 +1,11 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-const firmwareDir = path.resolve(__dirname, '..', 'files/firmware');
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+const firmwareDir = path.resolve(scriptDir, '..', 'files/firmware');
 
-const outputFile = path.resolve(__dirname, '../src/map-releases.ts');
+const outputFile = path.resolve(scriptDir, '../src/map-releases.ts');
 
 const toVarName = (s: string): string => s.replace(/[^a-zA-Z0-9]/g, '_');
 

@@ -15,7 +15,7 @@ if (typeof process !== 'undefined' && typeof process.nextTick !== 'function') {
 // browser uses a pre-built virtual module (see txCachePlugin in vitest.config.ts).
 const CACHE: Record<string, unknown> =
     typeof window === 'undefined'
-        ? (await import('./__txcache__')).CACHE
+        ? (await import('./__txcache__/index.js')).CACHE
         : (await import('virtual:txcache')).CACHE;
 
 globalThis.TestUtils = {
@@ -43,7 +43,7 @@ if (typeof window === 'undefined' && process.env.TESTS_USE_WS_CACHE === 'true') 
         const json = 'default' in mod ? mod.default : mod;
         const { transformCoinsJson } = await vi.importActual<{
             transformCoinsJson: (json: unknown) => unknown;
-        }>('./__wscache__');
+        }>('./__wscache__/index.js');
 
         return { default: transformCoinsJson(json) };
     });

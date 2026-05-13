@@ -1,6 +1,7 @@
 {
     "name": "@trezor/connect-plugin-ethereum",
     "version": "10.0.0-alpha.1",
+    "type": "module",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-plugin-ethereum",
     "description": "@trezor/connect plugin for Ethereum",

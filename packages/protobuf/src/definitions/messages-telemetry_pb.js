@@ -2,7 +2,7 @@
 // @generated from file messages-telemetry.proto (package hw.trezor.messages.telemetry, syntax proto2)
 import { fileDesc, messageDesc } from '@bufbuild/protobuf/codegenv2';
 
-import { file_options } from './options_pb';
+import { file_options } from './options_pb.js';
 export const file_messages_telemetry = fileDesc(
     'ChhtZXNzYWdlcy10ZWxlbWV0cnkucHJvdG8SHGh3LnRyZXpvci5tZXNzYWdlcy50ZWxlbWV0cnkiDgoMVGVsZW1ldHJ5R2V0ImMKCVRlbGVtZXRyeRISCgptaW5fdGVtcF9jGAEgASgREhIKCm1heF90ZW1wX2MYAiABKBESFgoOYmF0dGVyeV9lcnJvcnMYAyABKA0SFgoOYmF0dGVyeV9jeWNsZXMYBCABKA1CQQojY29tLnNhdG9zaGlsYWJzLnRyZXpvci5saWIucHJvdG9idWZCFlRyZXpvck1lc3NhZ2VUZWxlbWV0cnmAph0B',
     [file_options],

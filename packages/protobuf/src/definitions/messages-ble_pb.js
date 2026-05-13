@@ -2,7 +2,7 @@
 // @generated from file messages-ble.proto (package hw.trezor.messages.ble, syntax proto2)
 import { fileDesc, messageDesc } from '@bufbuild/protobuf/codegenv2';
 
-import { file_options } from './options_pb';
+import { file_options } from './options_pb.js';
 export const file_messages_ble = fileDesc(
     'ChJtZXNzYWdlcy1ibGUucHJvdG8SFmh3LnRyZXpvci5tZXNzYWdlcy5ibGUiJgoJQmxlVW5wYWlyEgsKA2FsbBgBIAEoCBIMCgRhZGRyGAIgASgMQjsKI2NvbS5zYXRvc2hpbGFicy50cmV6b3IubGliLnByb3RvYnVmQhBUcmV6b3JNZXNzYWdlQmxlgKYdAQ',
     [file_options],

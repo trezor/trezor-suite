@@ -1,17 +1,19 @@
 import fs from 'fs';
 import { createRequire } from 'module';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import wasm from 'vite-plugin-wasm';
 import { type Plugin, defineConfig } from 'vitest/config';
 
 const isWebProject = process.env.VITEST_PROJECT === 'browser';
 const nodeRequire = createRequire(import.meta.url);
+const e2eDir = path.dirname(fileURLToPath(import.meta.url));
 
 const alias = [
     {
         find: '@trezor/blockchain-link',
-        replacement: path.resolve(__dirname, '../../blockchain-link'),
+        replacement: path.resolve(e2eDir, '../../blockchain-link'),
     },
 ];
 
@@ -93,7 +95,7 @@ function txCachePlugin(): Plugin {
         },
         load(id: string) {
             if (id === resolvedVirtualModuleId) {
-                const cacheDir = path.resolve(__dirname, './__txcache__');
+                const cacheDir = path.resolve(e2eDir, './__txcache__');
                 const cache = cacheFiles(cacheDir);
 
                 return `export const CACHE = ${JSON.stringify(cache)};`;
@@ -210,13 +212,13 @@ export default defineConfig(
                         // fixtures are stable. This works at the Vite module graph level, affecting
                         // all transitive workspace consumers (e.g. @trezor/utxo-lib).
                         find: /.*\/getRandomInt$/,
-                        replacement: path.resolve(__dirname, './__mocks__/getRandomInt.ts'),
+                        replacement: path.resolve(e2eDir, './__mocks__/getRandomInt.ts'),
                     },
                     {
                         // "usb" package sets event listeners on the top level causing memory leaks.
                         // See: https://github.com/trezor/trezor-suite/pull/25952
                         find: /^usb$/,
-                        replacement: nodeRequire.resolve('../../transport/mocks/usb.js'),
+                        replacement: nodeRequire.resolve('../../transport/mocks/usb.cjs'),
                     },
                 ],
             },
@@ -274,7 +276,7 @@ export default defineConfig(
                   }
                 : undefined,
             test: {
-                root: path.resolve(__dirname, '..'),
+                root: path.resolve(e2eDir, '..'),
                 include: process.env.TESTS_PATTERN
                     ? process.env.TESTS_PATTERN.split(' ').map(p =>
                           p.endsWith('.test')
@@ -291,10 +293,10 @@ export default defineConfig(
                     shuffle: false,
                 },
                 setupFiles: [
-                    path.resolve(__dirname, './vitest.setup.ts'),
-                    path.resolve(__dirname, './common.setup.ts'),
+                    path.resolve(e2eDir, './vitest.setup.ts'),
+                    path.resolve(e2eDir, './common.setup.ts'),
                 ],
-                globalSetup: path.resolve(__dirname, './vitest.globalSetup.ts'),
+                globalSetup: path.resolve(e2eDir, './vitest.globalSetup.ts'),
                 ...(isWebProject
                     ? {
                           browser: {

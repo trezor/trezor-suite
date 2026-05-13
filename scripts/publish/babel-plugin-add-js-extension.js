@@ -3,6 +3,7 @@ import path from 'node:path';
 
 // Match relative imports without extension: "./x", "../x", "./x/y"
 const isRelativeImport = src => src.startsWith('.') && !path.extname(src);
+const isRelativeJsImport = src => src.startsWith('.') && path.extname(src) === '.js';
 
 // Match @trezor package imports to libESM without extension: "@trezor/utils/libESM/bigNumber"
 const trezorLibESMPattern = /^@trezor\/[^/]+\/libESM\/[^.]+$/;
@@ -16,15 +17,16 @@ const isExternalCjsSubpath = src => externalCjsSubpaths.includes(src);
 const externalJsonImports = ['bitcoin-ops'];
 
 /**
- * Babel plugin to add .js extension to import/export statements, used for valid ESM builds.
+ * Babel plugin to rewrite import/export statements to their runtime ESM extensions.
  * This way we can keep our codebase with moduleResolution: bundler (imports without extensions).
  *
  * For Node.js ESM compatibility:
- * - File imports: ./utils/helper → ./utils/helper.js
- * - Directory imports: ./constants → ./constants/index.js
- * - @trezor package imports: @trezor/utils/libESM/bigNumber → @trezor/utils/libESM/bigNumber.js
+ * - File imports: ./utils/helper → ./utils/helper.mjs
+ * - Directory imports: ./constants → ./constants/index.mjs
+ * - @trezor package imports: @trezor/utils/libESM/bigNumber → @trezor/utils/libESM/bigNumber.mjs
+ * - External CJS subpaths: some-package/subpath → some-package/subpath.js
  */
-const addJSExtensionPlugin = ({ types }) => {
+const addEsmExtensionPlugin = ({ types }) => {
     const modifyPath = (nodePath, state) => {
         const src = nodePath.node.source?.value;
         if (!src) return;
@@ -88,11 +90,22 @@ const addJSExtensionPlugin = ({ types }) => {
             } else {
                 nodePath.node.source = types.stringLiteral(src + '.mjs');
             }
+
+            return;
+        }
+
+        if (isRelativeJsImport(src)) {
+            const currentFileDir = path.dirname(state.filename);
+            const resolvedPath = path.resolve(currentFileDir, src);
+
+            if (fs.existsSync(resolvedPath)) {
+                nodePath.node.source = types.stringLiteral(src.replace(/\.js$/, '.mjs'));
+            }
         }
     };
 
     return {
-        name: 'add-js-extension',
+        name: 'add-esm-extension',
         visitor: {
             ImportDeclaration(nodePath, state) {
                 modifyPath(nodePath, state);
@@ -107,4 +120,4 @@ const addJSExtensionPlugin = ({ types }) => {
     };
 };
 
-export default addJSExtensionPlugin;
+export default addEsmExtensionPlugin;

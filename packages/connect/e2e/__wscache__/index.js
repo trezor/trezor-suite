@@ -1,8 +1,8 @@
-const { createServer } = require('./server');
+import { createServer } from './server.js';
 
 // Change all "blockchain_link" urls to localhost.
 // This method is used in vitest.globalSetup.ts and vitest.setup.ts
-const transformCoinsJson = json => {
+export const transformCoinsJson = json => {
     Object.keys(json).forEach(key => {
         json[key].forEach(coin => {
             if (coin.blockchain_link) {
@@ -18,4 +18,4 @@ const transformCoinsJson = json => {
     return json;
 };
 
-module.exports = { createServer, transformCoinsJson };
+export { createServer };

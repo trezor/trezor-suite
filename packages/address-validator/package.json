@@ -1,6 +1,7 @@
 {
     "name": "@trezor/address-validator",
     "version": "1.0.0",
+    "type": "module",
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "private": true,

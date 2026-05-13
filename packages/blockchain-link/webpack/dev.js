@@ -1,9 +1,9 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const webpack = require('webpack');
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import webpack from 'webpack';
 
-const { SRC, BUILD, PORT } = require('./constants');
+import { BUILD, PORT, SRC } from './constants.js';
 
-module.exports = {
+export default {
     target: 'web',
     mode: 'development',
     devtool: 'source-map',
@@ -56,7 +56,7 @@ module.exports = {
         hints: false,
     },
     plugins: [
-        // provide fallback plugins
+        // Provide fallback plugins.
         new webpack.ProvidePlugin({
             Buffer: ['buffer', 'Buffer'],
             process: 'process/browser.js',
