@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { AccountsList, AddAccountButton, type OnSelectAccount } from '@suite-native/accounts';
+import { AccountsListWithFilter, type OnSelectAccount } from '@suite-native/accounts';
 import { events } from '@suite-native/analytics';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
@@ -10,7 +10,6 @@ import {
     type ReceiveStackParamList,
     ReceiveStackRoutes,
     Screen,
-    ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
@@ -28,6 +27,7 @@ export const ReceiveAccountsScreen = () => {
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
         selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
     );
+
     if (hasFirmwareAuthenticityCheckHardFailed) return <ReceiveBlockedDeviceCompromisedScreen />;
 
     const navigateToReceiveScreen: OnSelectAccount = ({ account, tokenAddress, tokenSymbol }) => {
@@ -49,16 +49,13 @@ export const ReceiveAccountsScreen = () => {
     };
 
     return (
-        <Screen
-            header={
-                <ScreenHeader
-                    title={<Translation id="moduleReceive.receiveTitle" />}
-                    rightIcon={<AddAccountButton flowType="receive" />}
-                    closeActionType="close"
-                />
-            }
-        >
-            <AccountsList onSelectAccount={navigateToReceiveScreen} hideTokensIntoModal />
+        <Screen>
+            <AccountsListWithFilter
+                title={<Translation id="moduleReceive.receiveTitle" />}
+                onSelectAccount={navigateToReceiveScreen}
+                flowType="receive"
+                closeActionType="close"
+            />
         </Screen>
     );
 };
