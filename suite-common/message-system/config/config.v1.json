@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-04-28T12:00:00+00:00",
-    "sequence": 137,
+    "timestamp": "2026-05-13T12:00:00+00:00",
+    "sequence": 138,
     "actions": [
         {
             "conditions": [
@@ -1516,6 +1516,50 @@
                                 }
                             }
                         }
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "<=26.5.1",
+                        "mobile": "!",
+                        "web": "<=26.5.1"
+                    }
+                }
+            ],
+            "message": {
+                "id": "8bb03b3f-ff8c-45a0-9bf7-02b17ceaa0fe",
+                "priority": 1,
+                "dismissible": false,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en": "New earn opportunities coming soon.",
+                    "es": "Pronto llegarán nuevas oportunidades para ganar.",
+                    "cs": "Brzy přijdou nové možnosti, jak vydělávat.",
+                    "de": "Neue Möglichkeiten zum Verdienen kommen bald.",
+                    "fr": "De nouvelles opportunités de rendement arrivent bientôt.",
+                    "pt": "Novas oportunidades para ganhar em breve."
+                },
+                "feature": [
+                    {
+                        "domain": "earn.dashboard.yield",
+                        "flag": false
+                    },
+                    {
+                        "domain": "earn.yield.deposit",
+                        "flag": false
+                    },
+                    {
+                        "domain": "earn.yield.withdraw",
+                        "flag": false
+                    },
+                    {
+                        "domain": "earn.yield.claim",
+                        "flag": false
                     }
                 ]
             }
