@@ -3,6 +3,7 @@ import { A, D, G } from '@mobily/ts-belt';
 import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import {
     type AccountType,
+    type NetworkSymbol,
     getNetwork,
     networkSymbolCollection,
     networks,
@@ -69,6 +70,15 @@ export const filterAccountsByLabelAndNetworkNames = (
     if (!filterValue) return accounts;
 
     return A.filter(accounts, account => isFilterValueMatchingAccount(account, filterValue));
+};
+
+export const filterAccountsByNetworkSymbols = (
+    accounts: readonly AccountWithSuiteSyncLabel[],
+    networkSymbols: NetworkSymbol[],
+): readonly AccountWithSuiteSyncLabel[] => {
+    if (networkSymbols.length === 0) return accounts;
+
+    return A.filter(accounts, account => networkSymbols.includes(account.symbol));
 };
 
 export const filterSendAvailableAccounts = <T extends Account>(accounts: readonly T[]) =>

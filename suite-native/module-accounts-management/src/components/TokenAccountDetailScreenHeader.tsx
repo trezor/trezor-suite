@@ -7,6 +7,8 @@ import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { type SuiteSyncDataRootState, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
 import {
     type AccountsRootState,
+    type FiatRatesRootState,
+    type WalletSettingsRootState,
     selectAccountByKey,
     selectAccountNetworkSymbol,
     selectFormattedAccountType,
@@ -56,8 +58,9 @@ export const TokenAccountDetailScreenHeader = ({
 
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-    const tokenTab = useSelector((state: TokensRootState) =>
-        selectAssetTabOfAccountToken(state, accountKey, tokenContract),
+    const tokenTab = useSelector(
+        (state: TokensRootState & FiatRatesRootState & WalletSettingsRootState) =>
+            selectAssetTabOfAccountToken(state, accountKey, tokenContract),
     );
 
     const handleGoBack = useCallback(() => {
