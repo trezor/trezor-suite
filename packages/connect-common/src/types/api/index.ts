@@ -66,6 +66,7 @@ import type { moneroKeyImageSync } from './moneroKeyImageSync';
 import type { moneroSignTransaction } from './moneroSignTransaction';
 import type { off } from './off';
 import type { on } from './on';
+import type { pingDevice } from './pingDevice';
 import type { pushTransaction } from './pushTransaction';
 import type { recoveryDevice } from './recoveryDevice';
 import type { removeAllListeners } from './removeAllListeners';
@@ -204,6 +205,9 @@ export const TrezorConnectDevice = Type.Object({
     thpRemoveCredentials: Type.Unsafe<typeof thpRemoveCredentials>(),
 
     telemetryGet: Type.Unsafe<typeof telemetryGet>(),
+
+    // todo: link docs
+    pingDevice: Type.Unsafe<typeof pingDevice>(),
 });
 export type TrezorConnectDevice = Static<typeof TrezorConnectDevice>;
 

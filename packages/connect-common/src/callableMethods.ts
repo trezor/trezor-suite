@@ -62,6 +62,7 @@ const connectCallableMethodGroups = {
         'thpGetCredentials',
         'thpRemoveCredentials',
         'telemetryGet',
+        'pingDevice',
     ],
     blockchain: [
         'blockchainSubscribe',
