@@ -17,6 +17,7 @@ import {
     isTokenDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FiatRatesRootState,
@@ -53,6 +54,7 @@ import { isNetworkWithTokens, selectAccountTokenInfo } from '@suite-native/token
 import { type AccountSelectBottomSheetSection, type GroupedByTypeAccounts } from './types';
 import {
     filterAccountsByLabelAndNetworkNames,
+    filterAccountsByNetworkSymbols,
     filterSendAvailableAccounts,
     groupAccountsByNetworkAccountType,
     sortAccountsByNetworksAndAccountTypes,
@@ -86,8 +88,14 @@ export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = createMem
             _filterValue: string,
             isSendFilterEnabled: boolean = false,
         ) => isSendFilterEnabled,
+        (
+            _state: NativeAccountsRootState,
+            _filterValue: string,
+            _isSendFilterEnabled: boolean = false,
+            networkSymbols: NetworkSymbol[] = [],
+        ) => networkSymbols,
     ],
-    (accounts, filterValue, isSendFilterEnabled) => {
+    (accounts, filterValue, isSendFilterEnabled, networkSymbols) => {
         const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts);
         const sendFilteredAccounts = isSendFilterEnabled
             ? filterSendAvailableAccounts(sortedAccounts)
@@ -95,9 +103,36 @@ export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = createMem
 
         return pipe(
             sendFilteredAccounts,
+            accountsSorted => filterAccountsByNetworkSymbols(accountsSorted, networkSymbols),
             accountsSorted => filterAccountsByLabelAndNetworkNames(accountsSorted, filterValue),
             groupAccountsByNetworkAccountType,
         ) as GroupedByTypeAccounts;
+    },
+);
+
+export type NetworkFilterOption = {
+    symbol: NetworkSymbol;
+    accountCount: number;
+};
+
+export const selectNetworkFilterOptions = createMemoizedSelector(
+    [selectVisibleAccountsWithLabel],
+    accounts => {
+        const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts);
+        const seen = new Set<NetworkSymbol>();
+        const options: NetworkFilterOption[] = [];
+
+        for (const account of sortedAccounts) {
+            if (!seen.has(account.symbol)) {
+                seen.add(account.symbol);
+                options.push({
+                    symbol: account.symbol,
+                    accountCount: sortedAccounts.filter(a => a.symbol === account.symbol).length,
+                });
+            }
+        }
+
+        return options;
     },
 );
 

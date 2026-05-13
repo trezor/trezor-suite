@@ -1,0 +1,111 @@
+import { type Ref, forwardRef, useEffect, useState } from 'react';
+
+import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
+
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkFilterOption } from '@suite-native/accounts';
+import {
+    BottomSheetModal,
+    Button,
+    Card,
+    CheckBox,
+    HStack,
+    PressableOpacity,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
+import { CryptoIcon } from '@suite-native/icons';
+import { Translation, useTranslate } from '@suite-native/intl';
+
+type NetworkFilterBottomSheetProps = {
+    options: NetworkFilterOption[];
+    selectedSymbols: NetworkSymbol[];
+    onApply: (selected: NetworkSymbol[]) => void;
+    onClear: () => void;
+};
+
+export const NetworkFilterBottomSheet = forwardRef(
+    (
+        { options, selectedSymbols, onApply, onClear }: NetworkFilterBottomSheetProps,
+        ref: Ref<BottomSheetModalMethods>,
+    ) => {
+        const { translate } = useTranslate();
+        const [pendingSelection, setPendingSelection] = useState<NetworkSymbol[]>(selectedSymbols);
+
+        useEffect(() => {
+            setPendingSelection(selectedSymbols);
+        }, [selectedSymbols]);
+
+        const handleDismiss = () => {
+            setPendingSelection(selectedSymbols);
+        };
+
+        const handleSelectNetwork = (symbol: NetworkSymbol) => {
+            setPendingSelection(prev =>
+                prev.includes(symbol) ? prev.filter(s => s !== symbol) : [...prev, symbol],
+            );
+        };
+
+        const dismissBottomSheet = () => {
+            if (ref && 'current' in ref) {
+                ref.current?.dismiss();
+            }
+        };
+
+        const handleConfirmSelection = () => {
+            onApply(pendingSelection);
+            dismissBottomSheet();
+        };
+
+        const handleClear = () => {
+            onClear();
+            dismissBottomSheet();
+        };
+
+        return (
+            <BottomSheetModal
+                ref={ref}
+                title={translate('moduleAccountManagement.accountsScreen.networkFilter.title')}
+                isCloseDisplayed
+                onDismiss={handleDismiss}
+                footer={
+                    <VStack spacing="sp12" paddingHorizontal="sp16" paddingBottom="sp16">
+                        <Button onPress={handleConfirmSelection}>
+                            <Translation id="moduleAccountManagement.accountsScreen.networkFilter.applyButton" />
+                        </Button>
+                        <Button intent="neutral" priority="secondary" onPress={handleClear}>
+                            <Translation id="moduleAccountManagement.accountsScreen.networkFilter.clearButton" />
+                        </Button>
+                    </VStack>
+                }
+            >
+                <VStack spacing="sp12" paddingBottom="sp16">
+                    {options.map(({ symbol, accountCount }) => (
+                        <PressableOpacity key={symbol} onPress={() => handleSelectNetwork(symbol)}>
+                            <Card noShadow>
+                                <HStack alignItems="center" spacing="sp16">
+                                    <CryptoIcon symbol={symbol} />
+                                    <VStack flex={1} spacing={0}>
+                                        <Text variant="body-md-strong">
+                                            {getNetwork(symbol).name}
+                                        </Text>
+                                        <Text variant="body-sm" color="contentSecondary">
+                                            <Translation
+                                                id="moduleAccountManagement.accountsScreen.networkFilter.accountCount"
+                                                values={{ count: accountCount }}
+                                            />
+                                        </Text>
+                                    </VStack>
+                                    <CheckBox
+                                        isChecked={pendingSelection.includes(symbol)}
+                                        onChange={() => handleSelectNetwork(symbol)}
+                                    />
+                                </HStack>
+                            </Card>
+                        </PressableOpacity>
+                    ))}
+                </VStack>
+            </BottomSheetModal>
+        );
+    },
+);

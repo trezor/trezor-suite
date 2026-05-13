@@ -77,7 +77,7 @@ type AccountDetailParams = {
 } & AddCoinFlowParams;
 
 export type AccountsStackParamList = {
-    [AccountsStackRoutes.Accounts]: undefined;
+    [AccountsStackRoutes.Accounts]: { networksFilter?: NetworkSymbol[] };
 };
 
 export type EarnStackParamList = {
