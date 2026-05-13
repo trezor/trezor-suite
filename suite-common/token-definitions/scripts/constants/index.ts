@@ -18,4 +18,4 @@ export const STELLAR_EXPERT_URL = 'https://api.stellar.expert/explorer/public';
 
 export const NFTS_PER_PAGE = 250;
 
-export const YIELD_VAULTS_URL = 'https://earn.trezor.io/yield/v1/vaults';
+export const YIELD_VAULTS_URL = 'https://earn.trezor.io/yield/vaults/v1';
