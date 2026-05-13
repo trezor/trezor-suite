@@ -44,7 +44,7 @@ export const isStablecoinYieldSupported = (device: TrezorDevice | undefined) => 
 
     const firmware = getFirmwareVersionArray(device);
 
-    return firmware !== null && versionUtils.isNewerOrEqual(firmware, [2, 11, 2]);
+    return firmware !== null && versionUtils.isNewerOrEqual(firmware, [2, 12, 0]);
 };
 
 export const isTrezorDeviceWithState = (
