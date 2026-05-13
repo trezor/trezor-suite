@@ -1,6 +1,7 @@
 import cnBase58Module from './crypto/cnBase58';
 import * as cryptoUtils from './crypto/utils';
 import { addressType } from './crypto/utils';
+import type { Currency } from './currency-types';
 
 const cnBase58 = cnBase58Module as any;
 
@@ -54,7 +55,11 @@ function hextobin(hex: string): Uint8Array | null {
     return res;
 }
 
-export const isValidAddress = (address: string, currency?: any, networkType?: string): boolean => {
+export const isValidAddress = (
+    address: string,
+    currency?: Currency,
+    networkType?: string,
+): boolean => {
     const network = networkType || DEFAULT_NETWORK_TYPE;
     let addrKind = 'standard';
     if (network === 'testnet') {
@@ -84,7 +89,7 @@ export const isValidAddress = (address: string, currency?: any, networkType?: st
     return addrChecksum === hashChecksum;
 };
 
-export const getAddressType = (address: string, currency?: any, networkType?: string) => {
+export const getAddressType = (address: string, currency?: Currency, networkType?: string) => {
     if (isValidAddress(address, currency, networkType)) {
         return addressType.ADDRESS;
     }

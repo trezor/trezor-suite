@@ -1,6 +1,7 @@
 import * as base58 from './crypto/base58';
 import * as cryptoUtils from './crypto/utils';
 import { addressType } from './crypto/utils';
+import type { Currency } from './currency-types';
 
 const prefix = new Uint8Array([6, 161, 159]);
 
@@ -36,7 +37,7 @@ export const isValidAddress = (address: string): boolean => {
     }
 };
 
-export const getAddressType = (address: string, _currency?: any, _networkType?: string) => {
+export const getAddressType = (address: string, _currency?: Currency, _networkType?: string) => {
     if (isValidAddress(address)) {
         return addressType.ADDRESS;
     }

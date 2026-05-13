@@ -1,5 +1,6 @@
 import * as base58 from './crypto/base58';
 import { addressType } from './crypto/utils';
+import type { Currency } from './currency-types';
 
 const ALLOWED_CHARS = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
@@ -21,7 +22,7 @@ export const isValidAddress = (address: string): boolean => {
     return false;
 };
 
-export const getAddressType = (address: string, _currency?: any, _networkType?: string) => {
+export const getAddressType = (address: string, _currency?: Currency, _networkType?: string) => {
     if (isValidAddress(address)) {
         return addressType.ADDRESS;
     }

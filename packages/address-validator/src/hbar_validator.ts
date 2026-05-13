@@ -1,4 +1,5 @@
 import { addressType } from './crypto/utils';
+import type { Currency } from './currency-types';
 
 function isValidHBarAddress(address: string): boolean {
     const split = address.split('.');
@@ -14,7 +15,7 @@ function isValidHBarAddress(address: string): boolean {
 
 export const isValidAddress = (address: string): boolean => isValidHBarAddress(address);
 
-export const getAddressType = (address: string, _currency?: any, _networkType?: string) => {
+export const getAddressType = (address: string, _currency?: Currency, _networkType?: string) => {
     if (isValidAddress(address)) {
         return addressType.ADDRESS;
     }

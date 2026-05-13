@@ -1,4 +1,5 @@
 import { addressType } from './crypto/utils';
+import type { Currency } from './currency-types';
 
 function isValidICXAddress(address: string): boolean {
     const regex = /^hx[0-9a-f]{40}$/g;
@@ -8,7 +9,7 @@ function isValidICXAddress(address: string): boolean {
 
 export const isValidAddress = (address: string): boolean => isValidICXAddress(address);
 
-export const getAddressType = (address: string, _currency?: any, _networkType?: string) => {
+export const getAddressType = (address: string, _currency?: Currency, _networkType?: string) => {
     if (isValidAddress(address)) {
         return addressType.ADDRESS;
     }

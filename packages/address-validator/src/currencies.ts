@@ -4,6 +4,7 @@ import * as ARDRValidator from './ardr_validator';
 import * as ATOMValidator from './atom_validator';
 import * as BCHValidator from './bch_validator';
 import * as BTCValidator from './bitcoin_validator';
+import type { Currency } from './currency-types';
 import * as EOSValidator from './eos_validator';
 import * as ETHValidator from './ethereum_validator';
 import * as HBARValidator from './hbar_validator';
@@ -25,19 +26,7 @@ import * as XTZValidator from './tezos_validator';
 import * as TRXValidator from './tron_validator';
 import * as ZILValidator from './zil_validator';
 
-export interface Currency {
-    name: string;
-    symbol: string;
-    validator: any;
-    regexp?: string;
-    segwitHrp?: Record<string, string>;
-    addressTypes?: Record<string, (string | number)[]>;
-    iAddressTypes?: Record<string, (string | number)[]>;
-    subAddressTypes?: Record<string, (string | number)[]>;
-    expectedLength?: number;
-    hashFunction?: string;
-    regex?: RegExp;
-}
+export type { Currency, Validator } from './currency-types';
 
 const CURRENCIES: Currency[] = [
     {

@@ -2,6 +2,7 @@ import * as base58 from './crypto/base58';
 import * as bech32 from './crypto/bech32';
 import * as cryptoUtils from './crypto/utils';
 import { addressType } from './crypto/utils';
+import type { Currency } from './currency-types';
 
 const DEFAULT_NETWORK_TYPE = 'prod';
 
@@ -167,7 +168,7 @@ function isValidSegwitAddress(address: string, currency: any, networkType: strin
     return false;
 }
 
-export const getAddressType = (address: string, currency?: any, networkType?: string) => {
+export const getAddressType = (address: string, currency?: Currency, networkType?: string) => {
     const network = networkType || DEFAULT_NETWORK_TYPE;
     if (isValidPayToPublicKeyHashAddress(address, currency, network)) {
         return addressType.P2PKH;
@@ -191,7 +192,11 @@ export const getAddressType = (address: string, currency?: any, networkType?: st
     return undefined;
 };
 
-export const isValidAddress = (address: string, currency?: any, networkType?: string): boolean => {
+export const isValidAddress = (
+    address: string,
+    currency?: Currency,
+    networkType?: string,
+): boolean => {
     const network = networkType || DEFAULT_NETWORK_TYPE;
     const addrType = getAddressType(address, currency, network);
 

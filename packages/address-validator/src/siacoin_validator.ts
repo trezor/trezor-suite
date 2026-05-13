@@ -1,5 +1,6 @@
 import * as cryptoUtils from './crypto/utils';
 import { addressType } from './crypto/utils';
+import type { Currency } from './currency-types';
 
 function verifyChecksum(address: string): boolean {
     const checksumBytes = address.slice(0, 32 * 2);
@@ -17,7 +18,7 @@ export const isValidAddress = (address: string): boolean => {
     return verifyChecksum(address);
 };
 
-export const getAddressType = (address: string, _currency?: any, _networkType?: string) => {
+export const getAddressType = (address: string, _currency?: Currency, _networkType?: string) => {
     if (isValidAddress(address)) {
         return addressType.ADDRESS;
     }

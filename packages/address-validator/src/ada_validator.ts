@@ -4,6 +4,7 @@ import CRC from 'crc';
 
 import * as base58 from './crypto/base58';
 import { addressType } from './crypto/utils';
+import type { Currency } from './currency-types';
 
 const DEFAULT_NETWORK_TYPE = 'prod';
 
@@ -61,13 +62,17 @@ function isValidBech32Address(address: string, currency: any, networkType: strin
     return true;
 }
 
-export const isValidAddress = (address: string, currency?: any, networkType?: string): boolean => {
+export const isValidAddress = (
+    address: string,
+    currency?: Currency,
+    networkType?: string,
+): boolean => {
     const network = networkType || DEFAULT_NETWORK_TYPE;
 
     return isValidLegacyAddress(address) || isValidBech32Address(address, currency, network);
 };
 
-export const getAddressType = (address: string, currency?: any, networkType?: string) => {
+export const getAddressType = (address: string, currency?: Currency, networkType?: string) => {
     if (isValidAddress(address, currency, networkType)) {
         return addressType.ADDRESS;
     }
