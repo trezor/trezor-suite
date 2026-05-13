@@ -138,7 +138,8 @@ export const YieldWithdrawForm = () => {
                                 isAmountEmpty ||
                                 isAmountTooHigh ||
                                 isAmountInvalidDecimals ||
-                                isSubmittingAction
+                                isSubmittingAction ||
+                                !!withdrawPendingTransaction
                             }
                             isPending={isSubmittingAction}
                             pendingTransaction={withdrawPendingTransaction}
