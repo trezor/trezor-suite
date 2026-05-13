@@ -13,8 +13,9 @@ import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-nativ
 import { CryptoIconWithPercentage, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
+    AccountsStackRoutes,
     type AppTabsParamList,
-    type AppTabsRoutes,
+    AppTabsRoutes,
     type RootStackParamList,
     RootStackRoutes,
     type TabToStackCompositeNavigationProp,
@@ -39,7 +40,6 @@ import {
 
 type AssetItemProps = {
     cryptoCurrencySymbol: NetworkSymbol;
-    onPress?: (symbol: NetworkSymbol) => void;
 };
 
 type NavigationType = TabToStackCompositeNavigationProp<
@@ -91,7 +91,7 @@ const PercentageIcon = React.memo(({ symbol }: AssetItemSubComponentProps) => {
     );
 });
 
-export const AssetItem = React.memo(({ cryptoCurrencySymbol, onPress }: AssetItemProps) => {
+export const AssetItem = React.memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
     const navigation = useNavigation<NavigationType>();
     const { NetworkNameFormatter } = useFormatters();
     const accountsKeysForNetworkSymbol = useSelectorDeepComparison((state: AssetsRootState) =>
@@ -112,14 +112,16 @@ export const AssetItem = React.memo(({ cryptoCurrencySymbol, onPress }: AssetIte
                 accountKey: accountsKeysForNetworkSymbol[0],
                 closeActionType: 'back',
             });
-        } else if (onPress) {
-            onPress(cryptoCurrencySymbol);
+        } else {
+            navigation.navigate(AppTabsRoutes.AccountsStack, {
+                screen: AccountsStackRoutes.Accounts,
+                params: { networksFilter: [cryptoCurrencySymbol] },
+            });
         }
     };
 
     return (
         <AccountsListItemBase
-            disabled={!onPress}
             onPress={handleAssetPress}
             icon={<PercentageIcon symbol={cryptoCurrencySymbol} />}
             title={<NetworkNameFormatter value={cryptoCurrencySymbol} />}
