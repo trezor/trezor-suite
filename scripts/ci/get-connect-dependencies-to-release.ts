@@ -30,7 +30,7 @@ const checkNonReleasedDependencies = async (packageName: string) => {
     const remoteGreatestVersion = await getNpmRemoteGreatestVersion(`@trezor/${packageName}`);
 
     // If local version is greatest than the greatest one in NPM we add it to the release.
-    if (semver.gt(localVersion, remoteGreatestVersion as string)) {
+    if (!remoteGreatestVersion || semver.gt(localVersion, remoteGreatestVersion as string)) {
         const index = nonReleaseDependencies.indexOf(packageName);
         if (index > -1) {
             nonReleaseDependencies.splice(index, 1);
