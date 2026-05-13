@@ -231,12 +231,13 @@ export const submitYieldOpportunity = async ({
     switch (flowType) {
         case 'deposit': {
             const response = await enterYield({
-                yieldId: flowData.vault.id,
-                address: flowData.account.descriptor,
-                arguments: { amount },
+                body: {
+                    yieldId: flowData.vault.id,
+                    address: flowData.account.descriptor,
+                    arguments: { amount },
+                },
             });
             const verification = verifyEnterTransactions(response, {
-                yieldId: flowData.vault.id,
                 address: flowData.account.descriptor,
                 amount,
                 decimals: flowData.token.decimals,
@@ -246,12 +247,13 @@ export const submitYieldOpportunity = async ({
         }
         case 'withdraw': {
             const response = await exitYield({
-                yieldId: flowData.vault.id,
-                address: flowData.account.descriptor,
-                arguments: { amount },
+                body: {
+                    yieldId: flowData.vault.id,
+                    address: flowData.account.descriptor,
+                    arguments: { amount },
+                },
             });
             const verification = verifyExitTransactions(response, {
-                yieldId: flowData.vault.id,
                 address: flowData.account.descriptor,
             });
 
@@ -375,7 +377,7 @@ export const submitYieldRevokeThunk = createThunk(
                 return;
             }
 
-            const { transactions } = response.data;
+            const { transactions } = response;
             const spender =
                 getYieldRevokeModalParams(transactions)?.spender ??
                 getYieldSpenderFromTransactions(transactions) ??
@@ -459,7 +461,7 @@ export const submitYieldApproveThunk = createThunk(
                 return;
             }
 
-            const { transactions } = response.data;
+            const { transactions } = response;
             const approvalModalParams = getYieldApprovalModalParams(transactions);
             const revokeModalParams = getYieldRevokeModalParams(transactions);
             const spender =

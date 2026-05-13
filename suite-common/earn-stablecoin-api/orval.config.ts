@@ -1,76 +1,66 @@
 import { ClientGeneratorsBuilder, defineConfig } from 'orval';
 import { resolve } from 'path';
 
-const pascalCase = (value: string) =>
-    value
-        .replace(/[_-]+([a-z0-9])/g, (_, char: string) => char.toUpperCase())
-        .replace(/^[a-z]/, char => char.toUpperCase());
+import { YIELD_BASE_URL } from './src/constants';
 
 const camelCase = (value: string) => value.replace(/^[A-Z]/, char => char.toLowerCase());
 
-const OUTPUT_DIR = resolve(import.meta.dirname, './src/api');
+function renameAllExportsToCamelCase(implementation: string): string {
+    const pascalCaseNames: string[] = [];
+    const re = /export const ([A-Z][a-zA-Z0-9_]*) =/g;
+    let match;
+    while ((match = re.exec(implementation)) !== null) {
+        pascalCaseNames.push(match[1]);
+    }
+
+    let result = implementation;
+
+    for (const name of pascalCaseNames) {
+        result = result.replace(new RegExp(`\\b${name}\\b`, 'g'), camelCase(name));
+    }
+
+    return result;
+}
+
+const API_DIR = resolve(import.meta.dirname, './src/api');
 
 // eslint-disable-next-line import/no-default-export
 export default defineConfig({
-    yieldxyz: {
+    earnYield: {
         input: {
-            target: 'https://api.yield.xyz/docs.yaml',
+            target: `${YIELD_BASE_URL}/openapi`,
         },
         output: {
             mode: 'single',
-            target: resolve(OUTPUT_DIR, 'yieldxyz.ts'),
             mock: false,
+            target: resolve(API_DIR, 'schemas', 'index.ts'),
             clean: true,
             tsconfig: './tsconfig.json',
             packageJson: './package.json',
-            propertySortOrder: 'Specification',
+            indexFiles: true,
+            fileExtension: '.ts',
             client: clients => {
-                const fetchClient = clients.fetch;
+                const zodClient = clients.zod;
 
                 return {
-                    ...fetchClient,
+                    ...zodClient,
                     client: async (verbOptions, options, output) => {
-                        const result = await fetchClient.client(verbOptions, options, output);
-                        const methodName = camelCase(verbOptions.operationName);
+                        const result = await zodClient.client(verbOptions, options, output);
 
                         return {
                             ...result,
-                            // Make sure the exported methods are in camelCase
-                            implementation: result.implementation.replace(
-                                // Exclude `async` too because there's some Eslint requiring await in async functions ignoring the given fn can return a promise
-                                `export const ${verbOptions.operationName} = async`,
-                                `export const ${methodName} =`,
-                            ),
+                            implementation: renameAllExportsToCamelCase(result.implementation),
                         };
                     },
                 } satisfies ClientGeneratorsBuilder;
             },
-            // Prefer `fetch` over `axios`
-            httpClient: 'fetch',
-            indexFiles: true,
-            // Include response headers in the generated types and method results
-            headers: true,
+            schemas: {
+                type: 'typescript',
+                path: resolve(API_DIR, 'types'),
+            },
             override: {
-                useNamedParameters: true,
                 useTypeOverInterfaces: true,
                 enumGenerationType: 'const',
-
-                transformer: verb => {
-                    const [prefix] = verb.operationId.split('_');
-
-                    return {
-                        ...verb,
-                        // Make TS types PascalCase and remove the group prefix
-                        operationName: pascalCase(verb.operationName).replace(prefix, ''),
-                    };
-                },
-                mutator: {
-                    name: 'httpClient',
-                    path: resolve(import.meta.dirname, './src/httpClient.ts'),
-                },
-                fetch: {
-                    forceSuccessResponse: true,
-                },
             },
         },
     },

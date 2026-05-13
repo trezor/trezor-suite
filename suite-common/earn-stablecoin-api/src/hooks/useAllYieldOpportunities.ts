@@ -17,9 +17,9 @@ export const useAllYieldOpportunities = ({
     const queryResult = useQuery({
         queryKey: desktopQueryKeys.yieldOpportunities({ limit }),
         queryFn: async () => {
-            const { data } = await mutateAsync({ offset: 0, limit });
+            const response = await mutateAsync({ offset: 0, limit });
 
-            return data.items;
+            return response.items;
         },
         enabled,
         staleTime: queriesStaleTime.getYieldOpportunities,

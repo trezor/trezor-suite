@@ -1,4 +1,4 @@
-import { type RewardDto, type TokenDto } from '../../api';
+import { type RewardDto, type TokenDto } from '../../api/types';
 import { sortRewardsByUnderlyingToken } from '../../utils/sortRewardsByUnderlyingToken';
 
 const USDC: TokenDto = {

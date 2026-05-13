@@ -32,14 +32,14 @@ export function TxSimulationSuccessResult({
                     >
                         {assets_diffs.map((assetDiff, index) => (
                             <EvmTxSimulationAsset
-                                key={index}
+                                key={`asset-diff-${index}`}
                                 assetDiff={assetDiff}
                                 network={network}
                             />
                         ))}
                         {exposures.map((assetExposure, index) => (
                             <EvmTxSimulationAsset
-                                key={index}
+                                key={`asset-exposure-${index}`}
                                 assetExposure={assetExposure}
                                 network={network}
                             />
