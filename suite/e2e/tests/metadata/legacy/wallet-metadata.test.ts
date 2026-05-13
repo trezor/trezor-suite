@@ -8,9 +8,10 @@ test.describe(
     'Metadata - wallet labeling',
     { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'] },
     () => {
-        test.beforeEach(async ({ onboardingPage, metadataMock, metadataPage }) => {
+        test.beforeEach(async ({ onboardingPage, metadataMock, metadataPage, settingsPage }) => {
             await metadataMock.start(MetadataProvider.DROPBOX);
             await onboardingPage.completeOnboarding();
+            await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
             await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
         });
 
