@@ -50,7 +50,7 @@
     "dependencies": {
         "@noble/curves": "^2.0.1",
         "@noble/hashes": "^2.0.1",
-        "@scure/base": "^1.2.6",
+        "@scure/base": "^2.0.0",
         "@sinclair/typebox": "^0.34.49",
         "@trezor/utils": "workspace:*",
         "bip66": "^2.0.0",
