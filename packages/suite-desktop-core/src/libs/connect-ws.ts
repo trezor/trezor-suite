@@ -7,6 +7,7 @@ import {
     type CoreCallMessage,
     type Manifest,
     POPUP,
+    type PopupClosedMessage,
     type PopupHandshake,
 } from '@trezor/connect';
 import { parseManifest, parseVersion } from '@trezor/connect-common/src/data/connectSettings';
@@ -27,6 +28,7 @@ const LOG_PREFIX = 'connect-ws';
 type IncomingMessage =
     | (CoreCallMessage & { id: string })
     | (PopupHandshake & { id: string })
+    | (PopupClosedMessage & { id: string })
     | (CoreCallCancelMessage & { id: string })
     | { type: 'ping'; id: string };
 
@@ -49,6 +51,11 @@ const validateIncomingMessage = (message: any): message is IncomingMessage => {
     }
 
     if (message.type === CORE_CALL_CANCEL) {
+        return true;
+    }
+
+    // We need to handle `POPUP.CLOSED` for backward compatibility, for connect10 with older clients.
+    if (message.type === POPUP.CLOSED) {
         return true;
     }
 
@@ -138,6 +145,10 @@ export const exposeConnectWs = ({
                 manifest = parseManifest(message.payload.settings.manifest);
                 version = parseVersion(message.payload.settings.version);
                 ws.send(JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: 'ok' }));
+            } else if (message.type === POPUP.CLOSED) {
+                mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
+                    error: message.payload?.error,
+                });
             } else if (message.type === CORE_CALL_CANCEL) {
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
                     error: message.payload?.reason,

@@ -133,6 +133,7 @@ export const useConnectPopupWeb = () => {
             if (
                 data.type === 'channel-handshake-request' ||
                 data.type === POPUP.HANDSHAKE ||
+                data.type === POPUP.CLOSED ||
                 data.type === CORE_CALL_CANCEL ||
                 data.type === CORE_CALL
             ) {
