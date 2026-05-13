@@ -68,6 +68,7 @@
     - [@suite-common/test-utils](./tests/suite-common-test-utils.md)
     - [@suite-native/test-utils](./tests/suite-native-test-utils.md)
 - [Miscellaneous](./misc/index.md)
+    - [local development security](./misc/local-development-security.md)
     - [build](./misc/build.md)
     - [development on Windows](./misc/development-on-windows.md)
     - [development on Nix](./misc/development-on-nix.md)

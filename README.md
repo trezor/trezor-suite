@@ -16,6 +16,7 @@ Welcome to the Trezor Suite repository! This repository contains the source code
     - _Hint: you can have your shell [automatically switch versions](https://github.com/nvm-sh/nvm/blob/master/README.md#calling-nvm-use-automatically-in-a-directory-with-a-nvmrc-file) in each repo_
 - Enable [Yarn](https://yarnpkg.com/getting-started/install) through npm
 - Install [Git LFS](https://git-lfs.github.com/) (For Linux/Ubuntu, [after adding the repository](https://packagecloud.io/github/git-lfs/install) do `sudo apt-get install git-lfs`, more info [here](https://github.com/git-lfs/git-lfs/blob/main/INSTALLING.md))
+- Optional recommended: [setup Socket Firewall](https://docs.trezor.io/trezor-suite/misc/local-development-security.html)
 
 ### Getting started
 
