@@ -29,6 +29,13 @@ export async function receive<T extends Receiver>(receiver: T, protocol: Transpo
             const data = readResult.payload;
             const dataChunkHeader = data.subarray(0, chunkHeader.length);
             if (dataChunkHeader.compare(chunkHeader) !== 0) {
+                if (header.compare(data.subarray(0, header.length)) === 0) {
+                    offset = payload.length;
+                    console.warn('Restart message reception');
+
+                    continue;
+                }
+
                 throw new Error(`Unexpected chunkHeader ${dataChunkHeader.toString('hex')}`);
             }
 

@@ -89,6 +89,10 @@ describe('receive', () => {
             } as const),
         );
 
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
     test('protocol-v1 ne chunk', async () => {
         const result = await receive(getApiRead(['3f23230002000000060a046d656f77']), protocolV1);
         expect(result).toMatchObject({
@@ -109,18 +113,22 @@ describe('receive', () => {
     });
 
     test('protocol-v1 malformed initial packet', async () => {
+        const spyWarn = jest.spyOn(console, 'warn').mockImplementation();
         // protocol-v2 message
         const result = await receive(getApiRead(['2833da0004527eb068']), protocolV1);
         expect(result.success).toBe(false);
+        expect(spyWarn).toHaveBeenCalledTimes(1);
     });
 
     test('protocol-v1 malformed continuation packet', async () => {
+        const spyWarn = jest.spyOn(console, 'warn').mockImplementation();
         // missing 3f in second chunk
         const result = await receive(
             getApiRead(['3f23230002000000060a', '046d656f77']),
             protocolV1,
         );
         expect(result.success).toBe(false);
+        expect(spyWarn).toHaveBeenCalledTimes(1);
     });
 
     test('protocol-v2 receive one chunk', async () => {
@@ -139,6 +147,26 @@ describe('receive', () => {
             payload: { messageType: 32 },
         });
         expect(apiRead).toHaveBeenCalledTimes(3);
+    });
+
+    test('protocol-v2 handle packet loss', async () => {
+        const apiRead = getApiRead([
+            '2833da0004',
+            '8033da527e',
+            '2833da0004', // first chunk again
+            '8033da527e',
+            '2833da0004', // first chunk again
+            '8033da527e',
+            '8033dab068',
+        ]);
+        const spyWarn = jest.spyOn(console, 'warn').mockImplementation();
+        const result = await receive(apiRead, protocolV2);
+        expect(result).toMatchObject({
+            success: true,
+            payload: { messageType: 32 },
+        });
+        expect(apiRead).toHaveBeenCalledTimes(7);
+        expect(spyWarn).toHaveBeenCalledTimes(2);
     });
 
     test('protocol-v2 malformed initial packet', async () => {
