@@ -1,4 +1,5 @@
 import { type NetworkDtoId } from '@suite-common/earn-stablecoin-api';
+import { exhaustive } from '@trezor/type-utils';
 import { isArrayMember } from '@trezor/utils';
 
 import { PROD_STAKING_SYMBOLS, type ProdStakingNetworkSymbol, networks } from './networksConfig';
@@ -88,6 +89,25 @@ export const isTrezorInfraBasedNetwork = (symbol: NetworkSymbol) =>
     );
 
 export const getNetworkType = (symbol: NetworkSymbol) => networks[symbol]?.networkType;
+
+export const isAccountBasedNetwork = (symbol: NetworkSymbol) => {
+    const networkType = getNetworkType(symbol);
+    switch (networkType) {
+        case 'ethereum':
+        case 'ripple':
+        case 'solana':
+        case 'stellar':
+        case 'tron':
+            return true;
+
+        case 'bitcoin':
+        case 'cardano':
+            return false;
+
+        default:
+            return exhaustive(networkType);
+    }
+};
 
 // Takes into account just network features, not features for specific accountTypes.
 export const getNetworkFeatures = (symbol: NetworkSymbol): NetworkFeature[] =>
