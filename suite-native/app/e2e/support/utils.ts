@@ -83,16 +83,19 @@ export const waitToHaveText = async (
 ) => {
     const target = getTarget(elementOrMatcher);
     await waitForVisible(target, { timeout });
-    await scheduleAction(async () => {
-        const attributes = await target.getAttributes();
-        const actualText = (attributes as ElementAttributes).text;
+    await scheduleAction(
+        async () => {
+            const attributes = await target.getAttributes();
+            const actualText = (attributes as ElementAttributes).text;
 
-        if (actualText !== expectedText) {
-            throw new Error(
-                `waitForText(): target text "${actualText}" did not equal expected "${expectedText}" after ${timeout}ms`,
-            );
-        }
-    }, RETRY_CONF);
+            if (actualText !== expectedText) {
+                throw new Error(
+                    `waitForText(): target text "${actualText}" did not equal expected "${expectedText}" after ${timeout}ms`,
+                );
+            }
+        },
+        { ...RETRY_CONF, attempts: Math.ceil(timeout / RETRY_CONF.gap) },
+    );
 };
 
 export const waitToHaveRegex = async (

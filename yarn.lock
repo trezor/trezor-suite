@@ -10435,6 +10435,7 @@ __metadata:
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@trezor/utils": "workspace:*"
     ws: "npm:^8.20.0"
   languageName: unknown
   linkType: soft

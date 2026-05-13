@@ -75,7 +75,7 @@ const preloadedState = preparePreloadedReduxState(
     deviceChecksDisabledState,
 );
 
-describe.skip('Suite Sync - Labelling [@androidOnly @T3T1 @smoke]', () => {
+describe('Suite Sync - Labelling [@androidOnly @T3T1 @smoke]', () => {
     let evoluClient: NativeEvoluClient;
 
     beforeEach(async () => {
@@ -163,12 +163,19 @@ describe.skip('Suite Sync - Labelling [@androidOnly @T3T1 @smoke]', () => {
         // Seed the relay before enabling SuiteSync so the labels are ready to sync on connect.
         const addressSeed = immuneFixtures.createAddressSeed(FIRST_BTC_RECEIVE_ADDRESS);
         const outputSeed = immuneFixtures.createOutputSeed();
+        seedQuotaManagerData({ ownerId: immuneFixtures.ownerId });
         await evoluClient.init({ ownerSecret: immuneFixtures.ownerSecret });
         evoluClient.writeTo('wallet', immuneFixtures.walletSeed);
         evoluClient.writeTo('account', immuneFixtures.accountSeed);
         evoluClient.writeTo('address', addressSeed);
         evoluClient.writeTo('output', outputSeed);
-        seedQuotaManagerData({ ownerId: immuneFixtures.ownerId });
+
+        // Verify relay received the seeded data before the app connects.
+        await evoluClient.expectInTable(
+            'account',
+            [immuneFixtures.buildExpectedAccount({ label: immuneFixtures.accountSeed.label })],
+            { timeout: 30_000 },
+        );
 
         await onTabBar.navigateToSettings();
         await onSettings.enableSuiteSync();

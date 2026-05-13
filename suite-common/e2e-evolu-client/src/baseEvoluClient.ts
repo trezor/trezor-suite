@@ -14,6 +14,7 @@ import path from 'path';
 
 import { Schema, createEvoluAppOwnerFromTrezorData } from '@suite-common/suite-sync-evolu';
 import { type SuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
+import { scheduleAction } from '@trezor/utils';
 
 import { createNodeEvoluDeps } from './createEvoluNodeDeps';
 
@@ -161,20 +162,25 @@ const QUOTA_TOTAL_STORAGE_SIZE = 1048576;
 const QUOTA_UNSPENT_STORAGE_SIZE = 1038090;
 const QUOTA_DB_CREDENTIALS = '-U suite-sync -d suite-sync-gate';
 
-const waitForRelayReady = async (maxWaitMs = 30_000) => {
-    const pollIntervalMs = 500;
-    const deadline = Date.now() + maxWaitMs;
-
-    while (Date.now() < deadline) {
-        try {
+const waitForRelayReady = async (timeout = 30_000) => {
+    await scheduleAction(
+        async () => {
             await fetch(RELAY_HEALTH_URL);
 
-            return;
-        } catch {
-            await new Promise(resolve => setTimeout(resolve, pollIntervalMs));
-        }
-    }
-    throw new Error(`Evolu relay did not become healthy within ${maxWaitMs}ms after restart`);
+            // Verify the quota manager is up and its DB connection is live by making a real API call.
+            const quotaResponse = await fetch(`${QUOTA_URL}/storage/ask`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ publicKey: QUOTA_PUBLIC_KEY }),
+            });
+
+            // 5xx means the DB connection is not yet established — retry.
+            if (quotaResponse.status >= 500) {
+                throw new Error(`Quota manager not ready: HTTP ${quotaResponse.status}`);
+            }
+        },
+        { deadline: Date.now() + timeout, gap: 500 },
+    );
 };
 
 export const wipeAndRestartEvoluRelayServer = async () => {
