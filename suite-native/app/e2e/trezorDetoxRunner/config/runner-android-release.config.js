@@ -1,6 +1,6 @@
 const { noOtherDevice } = require('@trezor/e2e-utils');
 
-const target = 'android.emu.release';
+const target = 'android.emu.debug';
 
 /*
  * Android Release config

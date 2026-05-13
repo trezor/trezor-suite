@@ -1,4 +1,4 @@
-const target = 'android.emu.release';
+const target = 'android.emu.debug';
 
 /*
  * Android Release Nightly config

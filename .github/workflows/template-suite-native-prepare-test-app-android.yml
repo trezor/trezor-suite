@@ -80,7 +80,7 @@ jobs:
       - name: Check if native build exists in AWS bucket
         id: s3_build_cache
         run: |
-          if aws s3 ls s3://dev.suite.sldev.cz/suite-mobile/${{ steps.expo-fingerprint.outputs.HASH }} --summarize;
+          if aws s3 ls s3://dev.suite.sldev.cz/suite-mobile/${{ steps.expo-fingerprint.outputs.HASH }}-debug --summarize;
            then
              echo "hit=true"  >> $GITHUB_OUTPUT;
            else
@@ -149,12 +149,12 @@ jobs:
       - name: Build a new Detox test .apk
         if: steps.s3_build_cache.outputs.hit == 'false'
         working-directory: ./suite-native/app
-        run: yarn exec detox build -PreactNativeArchitectures=x86_64 --configuration android.emu.release
+        run: yarn exec detox build -PreactNativeArchitectures=x86_64 --configuration android.emu.debug
 
       - name: save .apk to the aws s3 bucket
         if: steps.s3_build_cache.outputs.hit == 'false'
         working-directory: ./suite-native/app/android/app/build/outputs
-        run: aws s3 cp . s3://dev.suite.sldev.cz/suite-mobile/${{ steps.expo-fingerprint.outputs.HASH }}/ --recursive
+        run: aws s3 cp . s3://dev.suite.sldev.cz/suite-mobile/${{ steps.expo-fingerprint.outputs.HASH }}-debug/ --recursive
 
       - name: Upload Android build artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
