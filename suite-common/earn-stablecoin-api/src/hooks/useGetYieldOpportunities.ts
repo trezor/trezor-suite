@@ -1,43 +1,25 @@
 import { type MutationOptions, desktopMutationKeys, useMutation } from '@suite-common/react-query';
 
-import {
-    type GetYieldResponseError,
-    type GetYieldsResponseSuccess,
-    type ProviderDto,
-    type YieldsControllerGetYieldsSort,
-    type YieldsControllerGetYieldsType,
-    getYields,
-} from '../api';
+import { type GetYieldsParams, type GetYieldsSort, type YieldsResponse } from '../api/types';
+import { getYields } from '../services';
 
 interface GetYieldOpportunitiesVariables {
     offset?: number;
     limit?: number;
-    sort?: YieldsControllerGetYieldsSort;
+    sort?: GetYieldsSort;
 }
 
 export interface UseGetYieldOpportunitiesProps {
-    /**
-     * @url https://docs.yield.xyz/reference/providerscontroller_getproviders
-     */
-    providers?: ProviderDto['id'][];
+    providers?: NonNullable<GetYieldsParams['providers']>;
 
-    types?: YieldsControllerGetYieldsType[];
+    types?: NonNullable<GetYieldsParams['types']>;
 
-    onSuccess?: MutationOptions<
-        GetYieldsResponseSuccess,
-        Error,
-        GetYieldOpportunitiesVariables
-    >['onSuccess'];
-    onError?: MutationOptions<
-        GetYieldResponseError,
-        Error,
-        GetYieldOpportunitiesVariables
-    >['onError'];
+    onSuccess?: MutationOptions<YieldsResponse, Error, GetYieldOpportunitiesVariables>['onSuccess'];
+    onError?: MutationOptions<YieldsResponse, Error, GetYieldOpportunitiesVariables>['onError'];
 }
 
 /**
  * Paginated list of Yield opportunities
- * @url https://docs.yield.xyz/reference/yieldscontroller_getyields
  */
 export function useGetYieldOpportunities({
     providers = ['morpho'],
@@ -45,15 +27,17 @@ export function useGetYieldOpportunities({
     onError,
     onSuccess,
 }: UseGetYieldOpportunitiesProps) {
-    return useMutation<GetYieldsResponseSuccess, Error, GetYieldOpportunitiesVariables>({
+    return useMutation<YieldsResponse, Error, GetYieldOpportunitiesVariables>({
         mutationKey: desktopMutationKeys.getYieldOpportunities,
         mutationFn: ({ offset = 0, limit = 20, sort = 'statusEnterDesc' }) =>
             getYields({
-                offset,
-                limit,
-                providers,
-                types,
-                sort,
+                params: {
+                    offset,
+                    limit,
+                    providers,
+                    types,
+                    sort,
+                },
             }),
         onError,
         onSuccess: (data, variables, onMutateResult, context) =>

@@ -1,7 +1,7 @@
-import { Verifier, asEvmAddress } from '@suite-common/calldata';
+import { Verifier } from '@suite-common/calldata';
+import { type EvmHexString, evmHexString } from '@suite-common/schemas/src/evm';
 import { BigNumber } from '@trezor/utils';
 
-import { type EnterYieldResponseSuccess, TransactionDtoStatus, TransactionDtoType } from '../api';
 import { parseUnsignedEvmTransaction } from './schema';
 import {
     type TransactionVerificationStatus,
@@ -9,27 +9,31 @@ import {
     aggregateStatuses,
     toStatus,
 } from './shared';
-import { EVM_VAULT_ADDRESSES } from '../constants/vaults';
+import {
+    type EnterYield200,
+    type TransactionDto,
+    TransactionDtoStatus,
+    TransactionDtoType,
+} from '../api/types';
 
 type VerifyEnterTransactionsParams = {
-    yieldId: string;
     address: string;
     amount: string;
     decimals: number;
 };
 
 const verifyApproval = (
-    calldata: `0x${string}`,
-    spender: `0x${string}`,
+    calldata: EvmHexString,
+    spender: EvmHexString,
     amount: bigint,
 ): TransactionVerificationStatus =>
     toStatus(Verifier.evm.erc20.approve(calldata, { spender, amount }).isValid);
 
 const verifySupply = (
-    calldata: `0x${string}`,
-    to: `0x${string}`,
-    vaultAddress: `0x${string}`,
-    receiver: `0x${string}`,
+    calldata: EvmHexString,
+    to: EvmHexString,
+    vaultAddress: EvmHexString,
+    receiver: EvmHexString,
     assets: bigint,
 ): TransactionVerificationStatus => {
     if (to.toLowerCase() !== vaultAddress.toLowerCase()) return 'failed';
@@ -38,9 +42,9 @@ const verifySupply = (
 };
 
 const getTransactionStatus = (
-    tx: EnterYieldResponseSuccess['data']['transactions'][number],
-    vaultAddress: `0x${string}`,
-    address: `0x${string}`,
+    tx: TransactionDto,
+    vaultAddress: EvmHexString,
+    address: EvmHexString,
     amountBigInt: bigint,
 ): TransactionVerificationStatus => {
     if (tx.status === TransactionDtoStatus.SKIPPED) return 'skipped';
@@ -61,25 +65,22 @@ const getTransactionStatus = (
 };
 
 export const verifyEnterTransactions = (
-    response: EnterYieldResponseSuccess,
-    { yieldId, address, amount, decimals }: VerifyEnterTransactionsParams,
+    { transactions, vaultAddress }: Pick<EnterYield200, 'transactions' | 'vaultAddress'>,
+    { address, amount, decimals }: VerifyEnterTransactionsParams,
 ): VerificationStatus => {
-    const vaultAddress = EVM_VAULT_ADDRESSES[yieldId];
-
-    if (!vaultAddress) {
-        console.error(
-            new Error(`Yield with id ${yieldId} does not have a corresponding vault address`),
-        );
-
-        return 'failure';
-    }
-
     const amountBigInt = BigInt(
         new BigNumber(amount).times(new BigNumber(10).pow(decimals)).toFixed(0),
     );
 
-    const statuses = response.data.transactions.map(tx =>
-        getTransactionStatus(tx, vaultAddress, asEvmAddress(address), amountBigInt),
+    const parsedVaultAddress = evmHexString.safeParse(vaultAddress);
+    const parsedAddress = evmHexString.safeParse(address);
+
+    if (!parsedVaultAddress.success || !parsedAddress.success) {
+        return 'failure';
+    }
+
+    const statuses = transactions.map(tx =>
+        getTransactionStatus(tx, parsedVaultAddress.data, parsedAddress.data, amountBigInt),
     );
 
     return aggregateStatuses(statuses);

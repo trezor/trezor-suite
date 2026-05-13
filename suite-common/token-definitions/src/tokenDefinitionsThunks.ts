@@ -10,17 +10,17 @@ import { fetchTokenDefinitions, getSupportedDefinitionTypes } from './tokenDefin
 
 const TOKEN_DEFINITIONS_MODULE = '@common/wallet-core/token-definitions';
 
-export const getTokenDefinitionThunk = createThunk(
-    `${TOKEN_DEFINITIONS_MODULE}/getNftTokenDefinition`,
-    async (
-        params: {
-            symbol: NetworkSymbol;
-            type: DefinitionType;
-        },
-        { fulfillWithValue, rejectWithValue },
-    ) => {
+export const getTokenDefinitionThunk = createThunk<
+    string[],
+    {
+        symbol: NetworkSymbol;
+        type: DefinitionType;
+    }
+>(
+    `${TOKEN_DEFINITIONS_MODULE}/getTokenDefinitionsThunk`,
+    async (params, { fulfillWithValue, rejectWithValue }) => {
         try {
-            const data = await fetchTokenDefinitions(
+            const data: string[] = await fetchTokenDefinitions(
                 params.symbol,
                 params.type,
                 TokenStructureType.SIMPLE,
