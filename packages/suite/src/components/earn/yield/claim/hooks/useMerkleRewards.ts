@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
 
@@ -7,7 +7,7 @@ import {
     type MerkleRewardsByChainAndAddress,
     useGetMerkleRewards,
 } from '@suite-common/earn-stablecoin-api';
-import { commonQueryKeys } from '@suite-common/react-query';
+import { commonQueryKeys, useQueryClient } from '@suite-common/react-query';
 import { getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
@@ -185,6 +185,24 @@ export function useMerkleRewards(accounts: YieldRewardsAccounts) {
     const merkleRewardsQueryEntries = useMerkleRewardsQueryEntries(resolvedAccounts);
     const merkleRewardsQuery = useGetMerkleRewards(merkleRewardsQueryEntries);
 
+    const queryClient = useQueryClient();
+    const refetchBypassingCache = useCallback(async () => {
+        const queryKey = commonQueryKeys.merkleRewards();
+        queryClient.setQueryDefaults(queryKey, {
+            meta: { bypassCache: true },
+        });
+        try {
+            await queryClient.refetchQueries(
+                { queryKey, exact: false },
+                { cancelRefetch: true, throwOnError: true },
+            );
+        } finally {
+            queryClient.setQueryDefaults(queryKey, {
+                meta: { bypassCache: false },
+            });
+        }
+    }, [queryClient]);
+
     const baseCurrency = useSelector(selectBaseCurrency);
     const currentFiatRates = useSelector(selectCurrentFiatRates);
     const { rewardsWithFiat, missingRateTickers } = useMemo(
@@ -222,7 +240,7 @@ export function useMerkleRewards(accounts: YieldRewardsAccounts) {
                 })
                 .filter(
                     (account): account is NonNullable<typeof account> =>
-                        !!account && account.totalClaimableFiatAmount.isPositive(),
+                        !!account && account.totalClaimableFiatAmount.gt(0),
                 ),
         [rewardsWithFiat, resolvedAccounts],
     );
@@ -260,6 +278,7 @@ export function useMerkleRewards(accounts: YieldRewardsAccounts) {
     return {
         merkleRewardsQuery: {
             ...merkleRewardsQuery,
+            refetchBypassingCache,
             data: {
                 accountsRewards,
                 totalRewardsToClaim: {

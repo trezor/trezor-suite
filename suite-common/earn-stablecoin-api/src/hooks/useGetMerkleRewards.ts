@@ -33,15 +33,16 @@ export function useGetMerkleRewards<Address extends string>(
     return useQuery({
         queryKey: commonQueryKeys.merkleRewards(queryEntries),
         staleTime: queriesStaleTime.getMerkleRewards,
-        async queryFn() {
+        async queryFn({ signal, meta }) {
             const requests = queryEntries.map(entry =>
                 getMerkleUserRewards({
                     routeParams: { address: entry.address },
                     params: {
                         chainId: entry.chainId,
                         claimableOnly: true,
-                        reloadChainId: entry.reloadChainId,
+                        reloadChainId: meta?.bypassCache ? entry.chainId : entry.reloadChainId,
                     },
+                    signal,
                 }),
             );
 
