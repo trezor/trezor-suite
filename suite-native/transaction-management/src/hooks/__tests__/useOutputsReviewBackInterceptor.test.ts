@@ -6,7 +6,7 @@ const mockShowReviewCancellationAlert = jest.fn();
 
 jest.mock('@suite-native/navigation', () => ({
     ...jest.requireActual('@suite-native/navigation'),
-    useOverrideBackNavigation: ({ onNavigateBack }: { onNavigateBack: () => void }) =>
+    usePreventNavigationRemove: ({ onNavigateBack }: { onNavigateBack: () => void }) =>
         onNavigateBack(),
 }));
 
