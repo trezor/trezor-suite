@@ -15,7 +15,7 @@ describe('UnlimitedAllowanceLabel', () => {
 
     const renderUnlimitedAllowanceLabel = (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
-        cryptoId: CryptoId = mercuryoFixedWorstQuote.send,
+        cryptoId: CryptoId = mercuryoFixedWorstQuote.send!,
     ) =>
         renderWithTradingProvider(<UnlimitedAllowanceLabel cryptoId={cryptoId} />, {
             tradeType: 'exchange',
