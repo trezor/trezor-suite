@@ -6,8 +6,8 @@ import { useNativeStyles } from '@trezor/styles-native';
 
 import { type EarnProvider } from '../types';
 
-const EVERSTAKE_LOGO_SOURCE = require('@trezor/suite-data/files/images/images/everstake-logo.svg');
-const MORPHO_LOGO_SOURCE = require('@trezor/suite-data/files/images/images/morpho-logo.svg');
+const EVERSTAKE_LOGO_SOURCE = require('../assets/everstake-logo.svg');
+const MORPHO_LOGO_SOURCE = require('../assets/morpho-logo.svg');
 
 const providerLogoMap = {
     everstake: {
