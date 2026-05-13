@@ -5,8 +5,7 @@ import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
-import { Button, Card, Column, H3, Icon, Paragraph, Row, Tooltip } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Banner, Tooltip } from '@trezor/components';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -42,46 +41,41 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
     };
 
     return (
-        <Card paddingType="large">
-            <Row alignItems="start" gap={spacings.xs}>
-                <Icon name="warning" intent="warning" size={32} />
-
-                <Column gap={spacings.xxxl}>
-                    <Column gap={spacings.xs}>
-                        <H3>
-                            <Translation
-                                id={
-                                    isStakedWithFiveBinaries
-                                        ? 'TR_STAKING_NEW_PROVIDER_OUTDATED_TITLE'
-                                        : 'TR_STAKING_NEW_PROVIDER_TITLE'
-                                }
-                                values={{ apy: formatApyValue(apy) }}
-                            />
-                        </H3>
-                        <Paragraph intent="neutral" priority="secondary" maxWidth={700}>
-                            <Translation
-                                id={
-                                    isStakedWithFiveBinaries
-                                        ? 'TR_STAKING_NEW_PROVIDER_OUTDATED_TEXT'
-                                        : 'TR_STAKING_NEW_PROVIDER_TEXT'
-                                }
-                                values={{ apy: formatApyValue(apy), displaySymbol }}
-                            />
-                        </Paragraph>
-                    </Column>
-
-                    <Tooltip content={stakingMessageContent}>
-                        <Button
-                            onClick={openStakeInANutshellModal}
-                            isDisabled={isStakingDisabled}
-                            iconLeft={isStakingDisabled ? 'info' : undefined}
-                            data-testid="@wallet/staking/empty-card/start-staking-button"
-                        >
-                            <Translation id="TR_EARN_UPDATE_PROVIDER" />
-                        </Button>
-                    </Tooltip>
-                </Column>
-            </Row>
-        </Card>
+        <Banner
+            icon
+            intent="warning"
+            title={
+                <Translation
+                    id={
+                        isStakedWithFiveBinaries
+                            ? 'TR_STAKING_NEW_PROVIDER_OUTDATED_TITLE'
+                            : 'TR_STAKING_NEW_PROVIDER_TITLE'
+                    }
+                    values={{ apy: formatApyValue(apy) }}
+                />
+            }
+            description={
+                <Translation
+                    id={
+                        isStakedWithFiveBinaries
+                            ? 'TR_STAKING_NEW_PROVIDER_OUTDATED_TEXT'
+                            : 'TR_STAKING_NEW_PROVIDER_TEXT'
+                    }
+                    values={{ apy: formatApyValue(apy), displaySymbol }}
+                />
+            }
+            rightContent={
+                <Tooltip content={stakingMessageContent}>
+                    <Banner.Button
+                        onClick={openStakeInANutshellModal}
+                        isDisabled={isStakingDisabled}
+                        iconLeft={isStakingDisabled ? 'info' : undefined}
+                        data-testid="@wallet/staking/empty-card/start-staking-button"
+                    >
+                        <Translation id="TR_EARN_UPDATE_PROVIDER" />
+                    </Banner.Button>
+                </Tooltip>
+            }
+        />
     );
 };

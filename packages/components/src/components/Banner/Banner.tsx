@@ -75,7 +75,12 @@ export const Banner = ({
                             </H4>
                         )}
                         {description && (
-                            <Paragraph typographyStyle="body-sm" intent={intent} priority="primary">
+                            <Paragraph
+                                typographyStyle="body-sm"
+                                intent={intent}
+                                priority="primary"
+                                textWrap="pretty"
+                            >
                                 {description}
                             </Paragraph>
                         )}
