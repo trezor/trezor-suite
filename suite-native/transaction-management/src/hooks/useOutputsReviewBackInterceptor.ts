@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useOverrideBackNavigation } from '@suite-native/navigation';
+import { usePreventNavigationRemove } from '@suite-native/navigation';
 
 import { useShowReviewCancellationAlert } from './useShowReviewCancellationAlert';
 
@@ -15,5 +15,5 @@ export const useOutputsReviewBackInterceptor = (onReviewCanceled: () => void) =>
         }
     }, [onReviewCanceled, showReviewCancellationAlert]);
 
-    useOverrideBackNavigation({ onNavigateBack });
+    usePreventNavigationRemove({ onNavigateBack });
 };
