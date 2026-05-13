@@ -7,6 +7,7 @@ import { getEvmApprovalTxData } from '@suite-common/wallet-utils';
 
 import { RevokeModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/RevokeModal';
 import { useAllowanceContext } from 'src/hooks/wallet/allowance';
+import { useModalLastValidParams } from 'src/hooks/wallet/trading/form/useModalLastValidParams';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -71,14 +72,11 @@ export const TradingRevokeModal = ({ cryptoId }: TradingRevokeModalProps) => {
 
         const preapprovedAmount = context.selectedQuote?.preapprovedStringAmount;
 
-        return {
-            provider,
-            spender,
-            preapprovedAmount,
-        };
+        return provider && spender ? { provider, spender, preapprovedAmount } : null;
     }, [context]);
 
-    const { provider, spender, preapprovedAmount } = revokeParams || {};
+    const { provider, spender, preapprovedAmount } =
+        useModalLastValidParams(revokeParams, state.isRevokeModalOpen) ?? {};
 
     if (!state.isRevokeModalOpen || !provider || !spender) return null;
 
