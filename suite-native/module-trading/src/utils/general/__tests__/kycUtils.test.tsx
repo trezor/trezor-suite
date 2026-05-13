@@ -16,15 +16,15 @@ describe('getKycPolicyWarningTranslation', () => {
     it.each([
         {
             kycPolicyType: 'KYC-required' as const,
-            expected: 'This provider requires identity verification.',
+            expected: 'This provider requires KYC.',
         },
         {
             kycPolicyType: 'KYC-norefund' as const,
-            expected: 'KYC is only requested in exceptional cases. KYC required for refunds.',
+            expected: 'KYC is only required in exceptional cases. It may be needed for refunds.',
         },
         {
             kycPolicyType: 'KYC-yesrefund' as const,
-            expected: "KYC is only requested in exceptional cases. It's not required for refunds.",
+            expected: "KYC is only required in exceptional cases. It's not needed for refunds.",
         },
     ])('should return correct translation for $kycPolicyType', ({ kycPolicyType, expected }) => {
         const result = renderTextWithTranslation(kycPolicyType);
