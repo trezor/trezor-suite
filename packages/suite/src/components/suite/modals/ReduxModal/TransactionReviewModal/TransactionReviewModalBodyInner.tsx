@@ -84,7 +84,7 @@ export type TransactionReviewModalBodyInnerProps = {
     isSending: boolean;
     setIsSending: (value: boolean) => void;
     handleTryAgain: (cancel: boolean) => void;
-    hasTxExpired: boolean;
+    hasTxReviewExpired: boolean;
     isRbfConfirmedError?: boolean;
 };
 
@@ -100,7 +100,7 @@ export const TransactionReviewModalBodyInner = ({
     precomposedForm,
     isSending,
     setIsSending,
-    hasTxExpired,
+    hasTxReviewExpired,
 }: TransactionReviewModalBodyInnerProps) => {
     const analytics = useAnalytics();
     const dispatch = useDispatch();
@@ -185,8 +185,6 @@ export const TransactionReviewModalBodyInner = ({
     const isCancelRbfAction = isRbfCancelTransaction(precomposedTx);
     const showSummary =
         !(isBumpFeeRbfAction && networkType === 'bitcoin') && networkType !== 'tron';
-
-    const isTxExpired = hasTxValidityExpired(deadline);
 
     const showTxValidityTimer = shouldShowTxValidityTimer({
         deadline,
@@ -281,8 +279,7 @@ export const TransactionReviewModalBodyInner = ({
                             handleTryAgain={handleTryAgain}
                             txInfoState={txInfoState}
                             actionTranslation={actionTranslation('button')}
-                            isTxExpired={isTxExpired}
-                            hasTxExpired={hasTxExpired}
+                            hasTxReviewExpired={hasTxReviewExpired}
                             stakeType={stakeType || undefined}
                             isRbfConfirmedError={isRbfConfirmedError}
                             account={account}
@@ -303,6 +300,7 @@ export const TransactionReviewModalBodyInner = ({
                     isRbfConfirmedError={isRbfConfirmedError}
                     onTryAgain={handleTryAgain}
                     areDetailsVisible={areDetailsVisible}
+                    hasTxReviewExpired={hasTxReviewExpired}
                 />
             </Modal.ModalBase>
         </ConnectModalBackdrop>

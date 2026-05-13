@@ -26,7 +26,6 @@ import { TransactionReviewOutputList } from './TransactionReviewOutputList';
 import { ExpiredTxValidity } from '../../UserContextModal/TxDetailModal/ExpiredTxValidity';
 import { ReplaceByFeeFailedOriginalTxConfirmed } from '../../UserContextModal/TxDetailModal/ReplaceByFeeFailedOriginalTxConfirmed';
 import { TransactionReviewDetails } from '../TransactionReviewDetails';
-import { hasTxValidityExpired } from '../utils';
 
 type TransactionReviewModalContentProps = {
     account: Account;
@@ -37,6 +36,7 @@ type TransactionReviewModalContentProps = {
     reviewStep: number;
     serializedTx?: SerializedTx;
     areDetailsVisible: boolean;
+    hasTxReviewExpired: boolean;
     isRbfConfirmedError?: boolean;
 };
 
@@ -49,6 +49,7 @@ export const TransactionReviewModalContent = ({
     precomposedForm,
     onTryAgain,
     isSending,
+    hasTxReviewExpired,
     isRbfConfirmedError,
 }: TransactionReviewModalContentProps) => {
     const { symbol, networkType } = account;
@@ -60,7 +61,6 @@ export const TransactionReviewModalContent = ({
     );
 
     const deadline = createdTxTimestamp + getTxValidityTimeoutInMs(account?.networkType);
-    const isTxExpired = hasTxValidityExpired(deadline);
 
     const isBumpFeeRbfAction =
         precomposedTx !== undefined && isRbfBumpFeeTransaction(precomposedTx);
@@ -106,7 +106,7 @@ export const TransactionReviewModalContent = ({
         );
     }
 
-    if (shouldCheckTxTimeValidity && isTxExpired && !isSending) {
+    if (shouldCheckTxTimeValidity && hasTxReviewExpired && !isSending) {
         return <ExpiredTxValidity symbol={symbol} />;
     }
 

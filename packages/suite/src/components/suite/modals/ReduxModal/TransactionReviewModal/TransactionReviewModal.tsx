@@ -1,3 +1,4 @@
+import { goto } from '@suite/router';
 import {
     cancelSignSendFormTransactionThunk,
     selectPrecomposedSendForm,
@@ -9,7 +10,10 @@ import {
 } from '@suite-common/wallet-core';
 import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 
-import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
+import {
+    removeSendFormDraftThunk,
+    signAndPushSendFormTransactionThunk,
+} from 'src/actions/wallet/send/sendFormThunks';
 import { cancelSignYieldTx } from 'src/actions/wallet/stablecoin-yield';
 import {
     cancelSignTx as cancelSignStakingTx,
@@ -60,16 +64,23 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
         }
     };
 
-    const handleSendTx = async () => {
-        await dispatch(
-            signAndPushSendFormTransactionThunk({
-                formState: send.precomposedForm!,
-                precomposedTransaction: send.precomposedTx!,
-                selectedAccount: selectedAccount.account,
-            }),
-        );
+    const handleSignAndPushSendTx = async () => {
+        try {
+            const result = await dispatch(
+                signAndPushSendFormTransactionThunk({
+                    formState: send.precomposedForm!,
+                    precomposedTransaction: send.precomposedTx!,
+                    selectedAccount: selectedAccount.account,
+                }),
+            ).unwrap();
 
-        dispatch(sendFormActions.discardTransaction());
+            if (result?.success) {
+                dispatch(removeSendFormDraftThunk());
+                dispatch(goto({ routeName: 'wallet-index', preserveParams: true }));
+            }
+        } catch {
+            // Error state is handled by signAndPushSendFormTransactionThunk.
+        }
     };
 
     const handleStakeTx = async () => {
@@ -84,7 +95,8 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
 
     const handleTryAgainSignTx = async () => {
         if (send.precomposedForm && send.precomposedTx) {
-            await handleSendTx();
+            dispatch(sendFormActions.clearSignedTransactionData());
+            await handleSignAndPushSendTx();
         } else if (stake.precomposedForm && stake.precomposedTx) {
             await handleStakeTx();
         }

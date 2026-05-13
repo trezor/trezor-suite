@@ -8,6 +8,7 @@ export const MODAL_OPEN_USER_CONTEXT = '@modal/open-user-context' as const;
 export const MODAL_CONTEXT_USER = '@modal/context-user' as const;
 export const MODAL_PRESERVE = '@modal/preserve' as const;
 export const MODAL_REMOVE_PRESERVE = '@modal/remove_preserve' as const;
+export const MODAL_PRESERVE_ON_TX_TIMEOUT = '@modal/preserve-on-tx-timeout' as const;
 
 export const REFETCH_FEES_EXCLUDED_MODAL_WINDOW_TYPES = [
     UI_REQUEST.REQUEST_PASSPHRASE,
