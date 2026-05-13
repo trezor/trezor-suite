@@ -1272,8 +1272,8 @@ export const messages = {
                     title: 'Auto-eject wallets',
                     description: 'Automatically eject all wallets when you disconnect your Trezor.',
                     alert: {
-                        titleNoConnectedTrezor: 'Enable auto-eject to eject all wallets',
-                        titleConnectedTrezor: 'when you disconnect your Trezor',
+                        titleNoConnectedTrezor: 'Enabling auto-eject will eject all wallets',
+                        titleConnectedTrezor: ' after disconnecting Trezor',
                         primaryButtonTitle: 'Enable auto-eject',
                     },
                 },
@@ -1761,7 +1761,7 @@ export const messages = {
         congratulationsScreen: {
             title: "You're all set",
             subtitle: 'Your {deviceName} is set up and ready for use.',
-            continueButton: 'Go to dashboard',
+            continueButton: 'Go to Dashboard',
         },
         deviceDisconnectedAlert: {
             title: 'Your Trezor has been disconnected',
@@ -1826,7 +1826,7 @@ export const messages = {
         },
         accountDetailContentScreen: {
             coinPriceCard: {
-                changeIn7d: '7d change',
+                changeIn7d: '7D change',
                 coinPrice: '{coinName} price',
             },
         },
@@ -2866,7 +2866,7 @@ export const messages = {
                 infoCard: {
                     title: 'Large trades, made simple',
                     description:
-                        'Get private, competitive pricing for trades over 50,000 EUR, handled by a dedicated specialist.',
+                        'Get private, competitive pricing for trades over 50,000 EUR, handled by a dedicated specialist.',
                     items: {
                         pricing: {
                             title: 'Competitive pricing',
@@ -3134,7 +3134,7 @@ export const messages = {
                 buy: 'Buy',
                 exchange: 'Swap',
                 sell: 'Sell',
-                checkOrderStatus: 'Check order status on provider’s website',
+                checkOrderStatus: 'Check order status on the provider’s website.',
                 providerSupport: 'Go to provider support',
             },
         },
