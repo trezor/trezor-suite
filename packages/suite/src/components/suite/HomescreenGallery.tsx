@@ -2,10 +2,15 @@ import styled from 'styled-components';
 
 import { useDevice } from '@suite/device';
 import { Grid } from '@trezor/components';
-import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import {
+    DeviceModelInternal,
+    getFirmwareVersionArray,
+    hasBitcoinOnlyFirmware,
+} from '@trezor/device-utils';
 import { resolveStaticPath } from '@trezor/env-utils';
 import { borders, spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
+import { versionUtils } from '@trezor/utils';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { getDefaultHomeScreenImage, getHomescreens } from 'src/constants/suite/homescreens';
@@ -55,14 +60,25 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
     const setHomescreen = async (imagePath: string, image: AnyImageName) => {
         if (isLocked()) return;
 
-        // original image is the default image already available in device, set it by empty string
         const isOriginalImage =
             getDefaultHomeScreenImage({ deviceModelInternal, isBitcoinOnlyFirmware }) === image;
 
         if (isOriginalImage) {
-            dispatch(applySettings({ homescreen_length: 0 }));
+            // Reset homescreen to factory default. Firmware >= 2.9.0 expects
+            // homescreen_length: 0; older firmware (e.g. Trezor One 1.x) does
+            // not recognize that field and returns "No setting provided", so
+            // fall back to an empty homescreen string.
+            const fwVersion = getFirmwareVersionArray(device);
+            const supportsHomescreenLength =
+                fwVersion !== null && versionUtils.isNewerOrEqual(fwVersion, '2.9.0');
+
+            dispatch(
+                applySettings(
+                    supportsHomescreenLength ? { homescreen_length: 0 } : { homescreen: '' },
+                ),
+            );
         } else {
-            const hex = isOriginalImage ? '' : await imagePathToHex(imagePath, deviceModelInternal);
+            const hex = await imagePathToHex(imagePath, deviceModelInternal);
             dispatch(applySettings({ homescreen: hex }));
         }
 
