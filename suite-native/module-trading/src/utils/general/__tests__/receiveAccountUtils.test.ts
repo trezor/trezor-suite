@@ -1,4 +1,4 @@
-import { getBtcAccount, getEthAccount } from '@suite-native/trading-fixtures';
+import { btc1NormalAccount, eth1NormalAccount } from '@suite-native/trading-fixtures';
 import type { Address } from '@trezor/blockchain-link-types';
 
 import {
@@ -13,11 +13,11 @@ describe('receiveAccountUtils', () => {
         });
 
         it('should be false when BTC like account is selected but no receive address is specified', () => {
-            expect(isFullySelectedReceiveAccount({ account: getBtcAccount() })).toBe(false);
+            expect(isFullySelectedReceiveAccount({ account: btc1NormalAccount })).toBe(false);
         });
 
         it('should be true when both account and address is selected', () => {
-            const btcAccount = getBtcAccount();
+            const btcAccount = btc1NormalAccount;
 
             expect(
                 isFullySelectedReceiveAccount({
@@ -28,7 +28,7 @@ describe('receiveAccountUtils', () => {
         });
 
         it('should be true when ETH like account is selected', () => {
-            expect(isFullySelectedReceiveAccount({ account: getEthAccount() })).toBe(true);
+            expect(isFullySelectedReceiveAccount({ account: eth1NormalAccount })).toBe(true);
         });
     });
 
@@ -40,37 +40,37 @@ describe('receiveAccountUtils', () => {
         it('should return undefined when only account is specified for BTC', () => {
             expect(
                 getReceiveAccountAddressText({
-                    account: getBtcAccount(),
+                    account: btc1NormalAccount,
                 }),
             ).toBeUndefined();
         });
 
         it('should return selected address', () => {
-            const btcAccount = getBtcAccount();
+            const btcAccount = btc1NormalAccount;
 
             expect(
                 getReceiveAccountAddressText({
                     account: btcAccount,
                     address: btcAccount.addresses!.used[0],
                 }),
-            ).toBe('1BTC');
+            ).toBe('USED1');
         });
 
         it('should return descriptor when ETH account is specified', () => {
             expect(
                 getReceiveAccountAddressText({
-                    account: getEthAccount(),
+                    account: eth1NormalAccount,
                 }),
-            ).toBe('descriptor-eth-account-1');
+            ).toBe('eth1-normal');
         });
 
         it('should ignore specified address for ETH', () => {
             expect(
                 getReceiveAccountAddressText({
-                    account: getEthAccount(),
+                    account: eth1NormalAccount,
                     address: { address: 'should_be_ignored' } as Address,
                 }),
-            ).toBe('descriptor-eth-account-1');
+            ).toBe('eth1-normal');
         });
     });
 });
