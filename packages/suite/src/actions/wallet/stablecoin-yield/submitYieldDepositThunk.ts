@@ -55,7 +55,7 @@ export const submitYieldDepositThunk = createThunk(
                 return;
             }
 
-            const { transactions } = response.data;
+            const { transactions } = response;
             const approvalModalParams = getYieldApprovalModalParams(transactions);
 
             if (approvalModalParams) {

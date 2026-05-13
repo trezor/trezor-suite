@@ -1,7 +1,7 @@
 import { numberToHex, toWei } from 'web3-utils';
 
 import { Calldata, asEvmAddress } from '@suite-common/calldata';
-import { EVM_VAULT_ADDRESSES } from '@suite-common/earn-stablecoin-api';
+import { getYieldVault } from '@suite-common/earn-stablecoin-api';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
@@ -41,20 +41,20 @@ export const composeYieldWithdrawTransaction = async ({
     getState,
 }: ComposeYieldWithdrawTransactionParams): Promise<string> => {
     const { vault, token, receiptToken } = flowData;
-    const vaultAddress = EVM_VAULT_ADDRESSES[vault.id];
 
-    if (!vaultAddress) {
-        throw new Error(`Vault ${vault.id} is not supported for self-composed withdraw.`);
-    }
-
+    const { address: vaultAddress } = await getYieldVault({
+        routeParams: {
+            networkSymbol: account.symbol,
+            vaultId: vault.id,
+        },
+    });
     const network = getNetwork(account.symbol);
 
     if (!network.chainId) {
         throw new Error(`Network ${account.symbol} is missing chainId.`);
     }
 
-    const vaultChainId = Number(vault.chainId);
-    if (!Number.isInteger(vaultChainId) || vaultChainId !== network.chainId) {
+    if (vault.chainId !== network.chainId) {
         throw new Error(
             `Account network chainId ${network.chainId} does not match vault chainId ${vault.chainId}.`,
         );

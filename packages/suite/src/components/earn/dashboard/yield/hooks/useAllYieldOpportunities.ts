@@ -12,16 +12,15 @@ const getAllYieldOpportunities = async ({ limit }: { limit: number }) => {
 
     while (fetchedItemsCount < totalItems) {
         const response = await getYields({
-            offset,
-            limit,
-            providers: ['morpho'],
-            types: ['vault'],
-            sort: 'statusEnterDesc',
+            params: {
+                offset,
+                limit,
+                providers: ['morpho'],
+                types: ['vault'],
+                sort: 'statusEnterDesc',
+            },
         });
-        const items = response.data.items ?? [];
-        const total = response.data.total ?? fetchedItemsCount;
-        const responseLimit = response.data.limit ?? limit;
-        const responseOffset = response.data.offset ?? offset;
+        const { items, total, limit: responseLimit, offset: responseOffset } = response;
 
         if (items.length === 0) {
             break;

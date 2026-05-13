@@ -1,4 +1,6 @@
-export * from './api';
+export * from './api/schemas';
+export * from './api/types';
+export * from './services';
 export * from './config';
 export * from './verification';
 export * from './hooks/useAllYieldOpportunities';
@@ -6,5 +8,5 @@ export * from './hooks/useGetYieldOpportunities';
 export * from './hooks/useEnterYieldOpportunity';
 export * from './hooks/useExitYieldOpportunity';
 export * from './hooks/useGetMerkleRewards';
-export * from './constants/vaults';
+export * from './constants';
 export * from './utils/sortRewardsByUnderlyingToken';

@@ -1,4 +1,4 @@
-import { type RewardDto, type TokenDto } from '../api/yieldxyz';
+import { type RewardDto, type TokenDto } from '../api/types';
 
 const isSameToken = (a: TokenDto, b: TokenDto) => {
     if (a.address && b.address) {

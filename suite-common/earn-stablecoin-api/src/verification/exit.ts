@@ -1,6 +1,6 @@
-import { Verifier, asEvmAddress } from '@suite-common/calldata';
+import { Verifier } from '@suite-common/calldata';
+import { type EvmHexString, evmHexString } from '@suite-common/schemas/src/evm';
 
-import { type ExitYieldResponseSuccess, TransactionDtoType } from '../api';
 import { parseUnsignedEvmTransaction } from './schema';
 import {
     type TransactionVerificationStatus,
@@ -8,18 +8,17 @@ import {
     aggregateStatuses,
     toStatus,
 } from './shared';
-import { EVM_VAULT_ADDRESSES } from '../constants/vaults';
+import { type ExitYield200, type TransactionDto, TransactionDtoType } from '../api/types';
 
 type VerifyExitTransactionsParams = {
-    yieldId: string;
     address: string;
 };
 
 const verifyRedeem = (
-    calldata: `0x${string}`,
-    to: `0x${string}`,
-    vaultAddress: `0x${string}`,
-    address: string,
+    calldata: EvmHexString,
+    to: EvmHexString,
+    vaultAddress: EvmHexString,
+    address: EvmHexString,
 ): TransactionVerificationStatus => {
     if (to.toLowerCase() !== vaultAddress.toLowerCase()) return 'failed';
 
@@ -27,8 +26,8 @@ const verifyRedeem = (
         calldata,
         {
             shares: 0n,
-            receiver: asEvmAddress(address),
-            owner: asEvmAddress(address),
+            receiver: address,
+            owner: address,
         },
         ['receiver', 'owner'],
     );
@@ -37,9 +36,9 @@ const verifyRedeem = (
 };
 
 const getTransactionStatus = (
-    tx: ExitYieldResponseSuccess['data']['transactions'][number],
-    vaultAddress: `0x${string}`,
-    address: string,
+    tx: TransactionDto,
+    vaultAddress: EvmHexString,
+    address: EvmHexString,
 ): TransactionVerificationStatus => {
     const parsed = parseUnsignedEvmTransaction(tx.unsignedTransaction);
 
@@ -54,21 +53,18 @@ const getTransactionStatus = (
 };
 
 export const verifyExitTransactions = (
-    response: ExitYieldResponseSuccess,
-    { yieldId, address }: VerifyExitTransactionsParams,
+    { transactions, vaultAddress }: Pick<ExitYield200, 'transactions' | 'vaultAddress'>,
+    { address }: VerifyExitTransactionsParams,
 ): VerificationStatus => {
-    const vaultAddress = EVM_VAULT_ADDRESSES[yieldId];
+    const parsedVaultAddress = evmHexString.safeParse(vaultAddress);
+    const parsedAddress = evmHexString.safeParse(address);
 
-    if (!vaultAddress) {
-        console.error(
-            new Error(`Yield with id ${yieldId} does not have a corresponding vault address`),
-        );
-
+    if (!parsedVaultAddress.success || !parsedAddress.success) {
         return 'failure';
     }
 
-    const statuses = response.data.transactions.map(tx =>
-        getTransactionStatus(tx, vaultAddress, address),
+    const statuses = transactions.map(tx =>
+        getTransactionStatus(tx, parsedVaultAddress.data, parsedAddress.data),
     );
 
     return aggregateStatuses(statuses);
