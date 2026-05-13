@@ -1,4 +1,3 @@
-/* eslint-disable no-self-assign */
 import { useEffect } from 'react';
 import {
     type SharedValue,
@@ -124,7 +123,6 @@ export const UpdateProgressIndicator = ({
     useEffect(() => {
         if (isStarting) {
             animatedBackgroundRadius.value = withTiming(0, { duration: 600 });
-            backgroundColorFinished.value = backgroundColorFinished.value;
 
             checkmarkAnimationProgress.value = 0;
             progressEnd.value = withSpring(0);
@@ -135,7 +133,6 @@ export const UpdateProgressIndicator = ({
         }
         if (isInProgress) {
             animatedBackgroundRadius.value = withTiming(0, { duration: 600 });
-            backgroundColorFinished.value = backgroundColorFinished.value;
 
             checkmarkAnimationProgress.value = 0;
             progressEnd.value = withSpring(progress / 100);
@@ -146,7 +143,7 @@ export const UpdateProgressIndicator = ({
         }
         if (isSuccess) {
             animatedBackgroundRadius.value = withSpring(CIRCLE_DIAMETER / 2);
-            backgroundColorFinished.value = utils.colors.contentBrand;
+            backgroundColorFinished.value = utils.colors.borderBrand;
 
             checkmarkAnimationProgress.value = withDelay(300, withSpring(1));
             progressEnd.value = 0;
@@ -157,7 +154,7 @@ export const UpdateProgressIndicator = ({
         }
         if (isError) {
             animatedBackgroundRadius.value = withSpring(CIRCLE_DIAMETER / 2);
-            backgroundColorFinished.value = utils.colors.legacyBackgroundAlertRedBold;
+            backgroundColorFinished.value = utils.colors.borderCritical;
 
             checkmarkAnimationProgress.value = 0;
             progressEnd.value = 0;
@@ -175,16 +172,13 @@ export const UpdateProgressIndicator = ({
         isError,
         isStarting,
         backgroundColorFinished,
-        utils.colors.legacyBackgroundAlertRedBold,
-        utils.colors.contentBrand,
+        utils.colors.borderBrand,
+        utils.colors.borderCritical,
         isInProgress,
         trezorLogoOpacity,
         errorSvgOpacity,
         paragraphOpacity,
     ]);
-
-    const paint = Skia.Paint();
-    paint.setColor(Skia.Color('#00FF00')); // green
 
     return (
         <Canvas style={{ width: CANVAS_SIZE, height: CANVAS_SIZE }}>
@@ -201,7 +195,7 @@ export const UpdateProgressIndicator = ({
                     path={progressCirclePath}
                     start={0}
                     end={progressEnd}
-                    color={utils.colors.contentBrand}
+                    color={utils.colors.borderBrand}
                     strokeCap="round"
                     strokeJoin="round"
                     strokeWidth={PROGRESS_STROKE_WIDTH}
@@ -249,7 +243,6 @@ export const UpdateProgressIndicator = ({
                         svg={crossSvg}
                         x={CIRCLE_CENTER - CIRCLE_DIAMETER / 4}
                         y={CIRCLE_CENTER - CIRCLE_DIAMETER / 4}
-                        color={utils.colors.legacyBackgroundAlertRedBold}
                         width={CIRCLE_DIAMETER / 2}
                         height={CIRCLE_DIAMETER / 2}
                     />

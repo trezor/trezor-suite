@@ -222,16 +222,15 @@ export const FirmwareInstallationScreenContent = ({
 
     const indicatorStatus: UpdateProgressIndicatorStatus = useMemo(() => {
         const isStarting = (status === 'started' && operation === null) || status === 'initial';
-        const isSuccess = operation === 'completed';
 
         if (isError) return 'error';
         if (isStarting) return 'starting';
-        if (isSuccess) return 'success';
-        if (!isStarting && !isSuccess && !isError) return 'inProgress';
+        if (isDone) return 'success';
+        if (!isStarting && !isError && !isDone) return 'inProgress';
 
         // shouldn't happen, but just to be safe
         return 'starting';
-    }, [status, operation, isError]);
+    }, [status, operation, isError, isDone]);
 
     const indicatorProgress = useMemo(() => {
         switch (indicatorStatus) {
