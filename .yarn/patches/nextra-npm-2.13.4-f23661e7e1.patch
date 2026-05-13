@@ -1,0 +1,15 @@
+diff --git a/dist/loader.mjs b/dist/loader.mjs
+index a14e95982f4b20d4d5f2dae903900dc5e1e325b0..98b314a88aa414c69777f84645c1e9988fe12374 100644
+--- a/dist/loader.mjs
++++ b/dist/loader.mjs
+@@ -28,6 +28,10 @@ var initGitRepo = (async () => {
+     const { Repository } = await import("@napi-rs/simple-git");
+     try {
+       const repository = Repository.discover(CWD);
++      if(repository.isWorktree()) {
++        // doesn't work inside git worktree
++        return {};
++      }
+       if (repository.isShallow()) {
+         if (process.env.VERCEL) {
+           console.warn(
