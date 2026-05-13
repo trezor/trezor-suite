@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
+import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
     type AccountsRootState,
     type TransactionsRootState,
@@ -28,7 +29,7 @@ import { useAnalytics } from '@suite-native/services';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { selectHasAccountAnyTransactions } from '@suite-native/transactions';
 
-import { selectIsNetworkSendFlowEnabled } from '../selectors';
+import { selectIsNetworkSendFlowEnabled, selectIsUnrecognizedToken } from '../selectors';
 import { SolanaLimitedHistoryBanner } from './AccountBanners/SolanaLimitedHistoryBanner';
 import { StellarLimitedHistoryBanner } from './AccountBanners/StellarLimitedHistoryBanner';
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
@@ -63,23 +64,20 @@ const TransactionListHeaderContent = ({
     const isTestnetAccount = useSelector((state: AccountsRootState) =>
         selectIsTestnetAccount(state, accountKey),
     );
+    const isUnrecognizedToken = useSelector(
+        (state: TokenDefinitionsRootState & AccountsRootState) =>
+            selectIsUnrecognizedToken(state, accountKey, tokenContract),
+    );
 
     if (!account) return null;
 
-    const isTokenAccount = !!tokenContract;
-
-    // Graph is temporarily hidden also for ERC20 tokens.
-    // Will be solved in issue: https://github.com/trezor/trezor-suite/issues/7839
-    const isGraphDisplayed = hasAccountTransactions && !isTestnetAccount && !isTokenAccount;
+    const isGraphDisplayed = hasAccountTransactions && !isTestnetAccount && !isUnrecognizedToken;
 
     if (isGraphDisplayed) {
-        return <AccountDetailGraph accountKey={accountKey} />;
-    }
-    if (isTokenAccount) {
         return <AccountDetailGraph accountKey={accountKey} tokenContract={tokenContract} />;
     }
 
-    if (isTestnetAccount) {
+    if (isTestnetAccount || isUnrecognizedToken) {
         return (
             <AccountDetailCryptoValue value={account.formattedBalance} symbol={account.symbol} />
         );
@@ -111,6 +109,10 @@ export const TransactionListHeader = memo(
         );
         const token = useSelector((state: TokensRootState) =>
             selectAccountTokenInfo(state, accountKey, tokenContract),
+        );
+        const isUnrecognizedToken = useSelector(
+            (state: TokenDefinitionsRootState & AccountsRootState) =>
+                selectIsUnrecognizedToken(state, accountKey, tokenContract),
         );
 
         if (!account) return null;
@@ -154,7 +156,7 @@ export const TransactionListHeader = memo(
             });
         };
 
-        const isPriceCardDisplayed = shallDisplayBaseCurrency;
+        const isPriceCardDisplayed = shallDisplayBaseCurrency && !isUnrecognizedToken;
         const isStellarAccount = account.networkType === 'stellar';
 
         const isSendButtonDisplayed = isNetworkSendFlowEnabled && !isPortfolioTrackerDevice;
