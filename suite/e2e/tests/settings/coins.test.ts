@@ -21,7 +21,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 stream: TestStream.Foundation,
             }),
         },
-        async ({ dashboardPage, settingsPage, assetsSection }) => {
+        async ({ page, dashboardPage, settingsPage, assetsSection }) => {
             const defaultUncheckedMainnet: NetworkSymbol[] = [
                 'btc',
                 'ltc',
@@ -75,6 +75,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                     await assetsSection.activateAssetsModalNetworkButton(network).click();
                 }
                 await assetsSection.activateAssetsModalSaveButton.click();
+                await page.discoveryShouldFinish();
                 await settingsPage.navigateTo('coins');
                 await settingsPage.coinsTab.temporarilySetOfficialCardanoBackend();
                 for (const network of defaultUncheckedTestnet) {
