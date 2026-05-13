@@ -43,11 +43,14 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
         await tradingPage.sendAddressInput.fill(ADDRESS_INDEX_1);
 
         // add locktime
-        await page.getByTestId('@send/header-dropdown').click();
-        await page.getByTestId('@send/header-dropdown/locktime').click();
-        await page.getByTestId('locktime-option/input').click();
-        await page.getByTestId('locktime-option/option/block').click();
-        await expect(page.getByTestId('locktime-blockheight-input')).toBeVisible();
+        await page.selectDropdownOptionWithRetry(
+            page.getByTestId('@send/header-dropdown'),
+            page.getByTestId('@send/header-dropdown/locktime'),
+        );
+        await page.selectDropdownOptionWithRetry(
+            page.getByTestId('locktime-option/input'),
+            page.getByTestId('locktime-option/option/block'),
+        );
         await page.getByTestId('locktime-blockheight-input').fill('1000');
 
         await tradingPage.sendButton.click();
