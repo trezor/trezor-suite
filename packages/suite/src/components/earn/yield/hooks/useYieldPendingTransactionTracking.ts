@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 
 import { events } from '@suite/analytics';
-import { commonQueryKeys, useQueryClient } from '@suite-common/react-query';
 import {
     type YieldFlowType,
     fetchAndUpdateAccountThunk,
@@ -41,7 +40,6 @@ export const useYieldPendingTransactionTracking = ({
     flowKey,
 }: UseYieldPendingTransactionTrackingProps) => {
     const dispatch = useDispatch();
-    const queryClient = useQueryClient();
     const analytics = useAnalytics();
     const pendingTransaction = useSelector(
         state => selectStablecoinYieldSession(state, flowType, flowKey).action.pendingTransaction,
@@ -118,8 +116,6 @@ export const useYieldPendingTransactionTracking = ({
             );
 
             if (flowType === 'claim') {
-                queryClient.refetchQueries({ queryKey: commonQueryKeys.merkleRewards() });
-
                 analytics.report({
                     type: events.yieldClaimEvent.name,
                     payload: {
@@ -140,7 +136,6 @@ export const useYieldPendingTransactionTracking = ({
         pendingTransaction,
         dispatch,
         trackedPendingTransaction,
-        queryClient,
         analytics,
         account?.symbol,
     ]);

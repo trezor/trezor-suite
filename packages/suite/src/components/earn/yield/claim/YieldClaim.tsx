@@ -95,6 +95,8 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
 
         try {
             await dispatch(claimMerkleRewardsThunk({ account, flowKey, rewards })).unwrap();
+
+            await merkleRewardsQuery.refetchBypassingCache();
         } catch {
             // cancelled or rejected — isClaiming resets via Redux (discardTransaction in finally)
         }
