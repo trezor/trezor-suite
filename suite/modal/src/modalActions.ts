@@ -8,6 +8,7 @@ import {
     MODAL_CLOSE,
     MODAL_OPEN_USER_CONTEXT,
     MODAL_PRESERVE,
+    MODAL_PRESERVE_ON_TX_TIMEOUT,
     MODAL_REMOVE_PRESERVE,
 } from './constants';
 import { type ModalRootState, selectModalConfirmationRequestId } from './modalReducer';
@@ -16,6 +17,7 @@ export type ModalAction =
     | { type: typeof MODAL_CLOSE }
     | { type: typeof MODAL_PRESERVE }
     | { type: typeof MODAL_REMOVE_PRESERVE }
+    | { type: typeof MODAL_PRESERVE_ON_TX_TIMEOUT }
     | {
           type: typeof MODAL_OPEN_USER_CONTEXT;
           payload: UserContextPayload;
@@ -34,6 +36,13 @@ export const preserveModal = createAction(MODAL_PRESERVE);
  * is only replaced by another one, and that one must no longer be preserved.
  */
 export const removePreserveModal = createAction(MODAL_REMOVE_PRESERVE);
+
+/**
+ * Keep the device-context modal open for exactly one CLOSE_UI_WINDOW event.
+ * Dispatch this before calling TrezorConnect.cancel() on Solana tx timeout so that
+ * the expired-transaction UI stays visible instead of flashing and disappearing.
+ */
+export const preserveModalOnTxTimeout = createAction(MODAL_PRESERVE_ON_TX_TIMEOUT);
 
 export const onReceiveConfirmation =
     (confirmation: boolean) => (dispatch: Dispatch, getState: () => ModalRootState) => {

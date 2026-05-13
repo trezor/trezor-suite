@@ -21,10 +21,11 @@ import {
     MODAL_CONTEXT_USER,
     MODAL_OPEN_USER_CONTEXT,
     MODAL_PRESERVE,
+    MODAL_PRESERVE_ON_TX_TIMEOUT,
     MODAL_REMOVE_PRESERVE,
 } from './constants';
 
-export type State = ModalState & { preserve?: boolean };
+export type State = ModalState & { preserve?: boolean; preserveOnTxTimeout?: boolean };
 
 export type ModalState =
     | { context: typeof MODAL_CONTEXT_NONE }
@@ -153,10 +154,16 @@ const modalReducer = (state: State = initialState, action: AnyAction): State => 
         case UI_REQUEST.CLOSE_UI_WINDOW:
             // Always close device-driven modals when the device signals CLOSE_UI_WINDOW,
             // even if preserve is set (preserve protects user-context modals, not device prompts).
+            // Exception: preserveOnTxTimeout is set when the timer cancels signing — the modal
+            // must stay open to show the expired state. The flag is cleared after one use.
             if (
                 state.context === MODAL_CONTEXT_DEVICE ||
                 state.context === MODAL_CONTEXT_DEVICE_CONFIRMATION
             ) {
+                if (state.preserveOnTxTimeout) {
+                    return { ...state, preserveOnTxTimeout: false };
+                }
+
                 return initialState;
             }
 
@@ -164,6 +171,9 @@ const modalReducer = (state: State = initialState, action: AnyAction): State => 
 
         case MODAL_PRESERVE:
             return { ...state, preserve: true };
+
+        case MODAL_PRESERVE_ON_TX_TIMEOUT:
+            return { ...state, preserveOnTxTimeout: true };
 
         case MODAL_REMOVE_PRESERVE:
             return { ...state, preserve: false };
