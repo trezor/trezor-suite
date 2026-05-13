@@ -8,6 +8,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { AccountsListItem } from '@suite-native/accounts';
+import { AccountTypeDecisionBottomSheet, useAddCoinAccount } from '@suite-native/add-coin-account';
 import { Box, Button, Card, Text, TextDivider } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -18,9 +19,6 @@ import {
     type StackProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-
-import { AccountTypeDecisionBottomSheet } from '../components/AccountTypeDecisionBottomSheet';
-import { useAddCoinAccount } from '../hooks/useAddCoinAccount';
 
 const accountsStyle = prepareNativeStyle(_ => ({ paddingHorizontal: 0, paddingTop: 0 }));
 

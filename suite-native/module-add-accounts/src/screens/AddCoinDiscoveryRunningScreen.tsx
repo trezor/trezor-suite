@@ -13,6 +13,10 @@ import {
     selectHasRunningDiscovery,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import {
+    type AddCoinAccountNavigationProps,
+    useAddCoinAccount,
+} from '@suite-native/add-coin-account';
 import { Spinner, type SpinnerLoadingState, Text, VStack } from '@suite-native/atoms';
 import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
@@ -23,8 +27,6 @@ import {
     type StackProps,
 } from '@suite-native/navigation';
 import { isPassphraseDiscoveryFailure } from '@suite-native/passphrase';
-
-import { type AddCoinAccountNavigationProps, useAddCoinAccount } from '../hooks/useAddCoinAccount';
 
 export const AddCoinDiscoveryRunningScreen = ({
     route,

@@ -43,6 +43,7 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../accounts" },
+        { "path": "../add-coin-account" },
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
@@ -62,7 +63,6 @@
         { "path": "../labeling" },
         { "path": "../link" },
         { "path": "../message-system" },
-        { "path": "../module-add-accounts" },
         {
             "path": "../module-stellar-token-management"
         },
