@@ -12,11 +12,16 @@ const rowContainerStyle = prepareNativeStyle(
         borderColor: utils.colors.borderNeutral,
         borderLeftWidth: 1,
         borderRightWidth: 1,
-        borderBottomWidth: isLastInSection ? 1 : 0,
-        borderBottomLeftRadius: isLastInSection ? utils.borders.radii.r16 : 0,
-        borderBottomRightRadius: isLastInSection ? utils.borders.radii.r16 : 0,
-        marginBottom: isLastInSection ? utils.spacings.sp24 : 0,
         overflow: 'hidden',
+        extend: {
+            condition: isLastInSection,
+            style: {
+                borderBottomWidth: 1,
+                borderBottomLeftRadius: utils.borders.radii.r16,
+                borderBottomRightRadius: utils.borders.radii.r16,
+                marginBottom: utils.spacings.sp24,
+            },
+        },
     }),
 );
 
