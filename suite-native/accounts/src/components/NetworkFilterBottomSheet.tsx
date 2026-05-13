@@ -1,9 +1,8 @@
-import { type Ref, forwardRef, useEffect, useState } from 'react';
+import { type Ref, forwardRef, useEffect, useRef, useState } from 'react';
 
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { type NetworkFilterOption } from '@suite-native/accounts';
 import {
     BottomSheetModal,
     Button,
@@ -17,27 +16,31 @@ import {
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 
+import { type NetworkFilterOption } from '../selectors';
+
 type NetworkFilterBottomSheetProps = {
     options: NetworkFilterOption[];
-    selectedSymbols: NetworkSymbol[];
+    selectedNetworks: NetworkSymbol[];
     onApply: (selected: NetworkSymbol[]) => void;
     onClear: () => void;
 };
 
 export const NetworkFilterBottomSheet = forwardRef(
     (
-        { options, selectedSymbols, onApply, onClear }: NetworkFilterBottomSheetProps,
+        { options, selectedNetworks, onApply, onClear }: NetworkFilterBottomSheetProps,
         ref: Ref<BottomSheetModalMethods>,
     ) => {
         const { translate } = useTranslate();
-        const [pendingSelection, setPendingSelection] = useState<NetworkSymbol[]>(selectedSymbols);
+        const [pendingSelection, setPendingSelection] = useState<NetworkSymbol[]>(selectedNetworks);
+        const selectedNetworksRef = useRef(selectedNetworks);
+        selectedNetworksRef.current = selectedNetworks;
 
         useEffect(() => {
-            setPendingSelection(selectedSymbols);
-        }, [selectedSymbols]);
+            setPendingSelection(selectedNetworks);
+        }, [selectedNetworks]);
 
         const handleDismiss = () => {
-            setPendingSelection(selectedSymbols);
+            setPendingSelection(selectedNetworksRef.current);
         };
 
         const handleSelectNetwork = (symbol: NetworkSymbol) => {

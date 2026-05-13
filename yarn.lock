@@ -11388,6 +11388,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/accounts@workspace:suite-native/accounts"
   dependencies:
+    "@gorhom/bottom-sheet": "npm:5.2.8"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:7.1.28"
     "@reduxjs/toolkit": "npm:2.11.2"

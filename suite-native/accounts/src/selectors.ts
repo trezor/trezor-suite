@@ -83,21 +83,18 @@ export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = createMem
     [
         selectVisibleAccountsWithLabel,
         (_state: NativeAccountsRootState, filterValue: string) => filterValue,
+        (_state: NativeAccountsRootState, _filterValue: string, isSendFlow: boolean = false) =>
+            isSendFlow,
         (
             _state: NativeAccountsRootState,
             _filterValue: string,
-            isSendFilterEnabled: boolean = false,
-        ) => isSendFilterEnabled,
-        (
-            _state: NativeAccountsRootState,
-            _filterValue: string,
-            _isSendFilterEnabled: boolean = false,
-            networkSymbols: NetworkSymbol[] = [],
+            _isSendFlow: boolean = false,
+            networkSymbols: NetworkSymbol[],
         ) => networkSymbols,
     ],
-    (accounts, filterValue, isSendFilterEnabled, networkSymbols) => {
+    (accounts, filterValue, isSendFlow, networkSymbols) => {
         const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts);
-        const sendFilteredAccounts = isSendFilterEnabled
+        const sendFilteredAccounts = isSendFlow
             ? filterSendAvailableAccounts(sortedAccounts)
             : sortedAccounts;
 
@@ -116,18 +113,25 @@ export type NetworkFilterOption = {
 };
 
 export const selectNetworkFilterOptions = createMemoizedSelector(
-    [selectVisibleAccountsWithLabel],
-    accounts => {
+    [
+        selectVisibleAccountsWithLabel,
+        (_state: NativeAccountsRootState, isSendFlow: boolean = false) => isSendFlow,
+    ],
+    (accounts, isSendFlow) => {
         const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts);
+        const filteredAccounts = isSendFlow
+            ? filterSendAvailableAccounts(sortedAccounts)
+            : sortedAccounts;
+
         const seen = new Set<NetworkSymbol>();
         const options: NetworkFilterOption[] = [];
 
-        for (const account of sortedAccounts) {
+        for (const account of filteredAccounts) {
             if (!seen.has(account.symbol)) {
                 seen.add(account.symbol);
                 options.push({
                     symbol: account.symbol,
-                    accountCount: sortedAccounts.filter(a => a.symbol === account.symbol).length,
+                    accountCount: filteredAccounts.filter(a => a.symbol === account.symbol).length,
                 });
             }
         }
