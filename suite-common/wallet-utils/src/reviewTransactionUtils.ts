@@ -1,6 +1,6 @@
 import { fromWei, toWei } from 'web3-utils';
 
-import { EVM_SPENDER_LABELS } from '@suite-common/suite-constants';
+import { EVM_SPENDER_LABELS, KNOWN_VAULTS } from '@suite-common/suite-constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { networks } from '@suite-common/wallet-config';
 import {
@@ -469,7 +469,10 @@ const constructNewFlow = ({
     if (evmApprovalTxData && networkType === 'ethereum' && isApprovalFlowSupported) {
         outputs.push({
             type: 'contract',
-            value: EVM_SPENDER_LABELS[evmApprovalTxData.spender] || evmApprovalTxData.spender,
+            value:
+                KNOWN_VAULTS[evmApprovalTxData.spender] ??
+                EVM_SPENDER_LABELS[evmApprovalTxData.spender] ??
+                evmApprovalTxData.spender,
         });
 
         if (precomposedTx.token) {
