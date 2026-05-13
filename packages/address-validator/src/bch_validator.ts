@@ -2,6 +2,7 @@
 // https://github.com/bitcoincashorg/bitcoincash.org/blob/master/spec/cashaddr.md
 import * as BTCValidator from './bitcoin_validator';
 import { addressType } from './crypto/utils';
+import type { Currency } from './currency-types';
 
 const DEFAULT_NETWORK_TYPE = 'prod';
 
@@ -90,11 +91,15 @@ function validateAddress(address: string, currency: any): boolean {
     return verifyChecksum(CASHADDR_PREFIX, normalized);
 }
 
-export const isValidAddress = (address: string, currency?: any, networkType?: string): boolean =>
+export const isValidAddress = (
+    address: string,
+    currency?: Currency,
+    networkType?: string,
+): boolean =>
     validateAddress(address, currency) ||
-    (currency.symbol !== 'bch' && BTCValidator.isValidAddress(address, currency, networkType));
+    (currency?.symbol !== 'bch' && BTCValidator.isValidAddress(address, currency, networkType));
 
-export const getAddressType = (address: string, currency?: any, networkType?: string) => {
+export const getAddressType = (address: string, currency?: Currency, networkType?: string) => {
     const network = networkType || DEFAULT_NETWORK_TYPE;
     if (isValidAddress(address, currency, network)) {
         return addressType.ADDRESS;

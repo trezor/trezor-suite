@@ -1,4 +1,5 @@
 import { addressType } from './crypto/utils';
+import type { Currency } from './currency-types';
 
 const ardorRegex = new RegExp('^ARDOR(-[A-Z0-9]{4}){3}(-[A-Z0-9]{5})$');
 
@@ -10,7 +11,7 @@ export const isValidAddress = (address: string): boolean => {
     return true;
 };
 
-export const getAddressType = (address: string, _currency?: any, _networkType?: string) => {
+export const getAddressType = (address: string, _currency?: Currency, _networkType?: string) => {
     if (isValidAddress(address)) {
         return addressType.ADDRESS;
     }

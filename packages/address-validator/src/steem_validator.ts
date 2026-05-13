@@ -1,4 +1,5 @@
 import { addressType } from './crypto/utils';
+import type { Currency } from './currency-types';
 
 const accountRegex = new RegExp('^[a-z0-9-.]{3,}$');
 const segmentRegex = new RegExp('^[a-z][a-z0-9-]+[a-z0-9]$');
@@ -25,7 +26,7 @@ export const isValidAddress = (address: string): boolean => {
     return true;
 };
 
-export const getAddressType = (address: string, _currency?: any, _networkType?: string) => {
+export const getAddressType = (address: string, _currency?: Currency, _networkType?: string) => {
     if (isValidAddress(address)) {
         return addressType.ADDRESS;
     }

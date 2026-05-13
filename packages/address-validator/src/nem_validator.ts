@@ -1,5 +1,6 @@
 import * as cryptoUtils from './crypto/utils';
 import { addressType } from './crypto/utils';
+import type { Currency } from './currency-types';
 
 export const isValidAddress = (_address: string): boolean => {
     const address = _address.toString().toUpperCase().replace(/-/g, '');
@@ -14,7 +15,7 @@ export const isValidAddress = (_address: string): boolean => {
     return stepThreeChecksum === decoded.slice(42);
 };
 
-export const getAddressType = (address: string, _currency?: any, _networkType?: string) => {
+export const getAddressType = (address: string, _currency?: Currency, _networkType?: string) => {
     if (isValidAddress(address)) {
         return addressType.ADDRESS;
     }

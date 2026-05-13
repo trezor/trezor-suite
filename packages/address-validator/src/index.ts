@@ -1,6 +1,6 @@
 import { addressType } from './crypto/utils';
 import * as currencies from './currencies';
-import type { Currency } from './currencies';
+import type { Currency } from './currency-types';
 
 type AddressType = (typeof addressType)[keyof typeof addressType];
 

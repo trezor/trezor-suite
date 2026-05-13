@@ -1,5 +1,6 @@
 import * as cryptoUtils from './crypto/utils';
 import { addressType } from './crypto/utils';
+import type { Currency } from './currency-types';
 
 function decodeBase58Address(base58Sting: unknown): number[] | false {
     if (typeof base58Sting !== 'string') {
@@ -45,7 +46,7 @@ function getEnv(currency: any, networkType?: string): number {
 
 export const isValidAddress = (
     mainAddress: string,
-    currency?: any,
+    currency?: Currency,
     networkType?: string,
 ): boolean => {
     const address = decodeBase58Address(mainAddress);
@@ -61,7 +62,7 @@ export const isValidAddress = (
     return getEnv(currency, networkType) === address[0];
 };
 
-export const getAddressType = (address: string, currency?: any, networkType?: string) => {
+export const getAddressType = (address: string, currency?: Currency, networkType?: string) => {
     if (isValidAddress(address, currency, networkType)) {
         return addressType.ADDRESS;
     }
