@@ -1,5 +1,4 @@
 import {
-    EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES,
     selectGroupedTradingExchangeQuotes,
     selectTradingExchangeBuyCryptoIds,
 } from '@suite-common/trading';
@@ -88,14 +87,9 @@ export const selectExchangeBuyTradeableAssets = createTradingWithFeatureFlagsMem
 export const selectExchangeQuotes = (state: TradingRootState) =>
     state.wallet.trading.exchange.quotes;
 
-export const selectGroupedExchangeQuotes = createTradingWithFeatureFlagsMemoizedSelector(
-    [
-        selectGroupedTradingExchangeQuotes as unknown as (
-            state: TradingRootState,
-        ) => ReturnType<typeof selectGroupedTradingExchangeQuotes>,
-    ],
-    groupedQuotes => groupedQuotes ?? EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES,
-);
+export const selectGroupedExchangeQuotes = selectGroupedTradingExchangeQuotes as unknown as (
+    state: TradingRootState,
+) => ReturnType<typeof selectGroupedTradingExchangeQuotes>;
 
 export const selectExchangeAmountLimits = (state: TradingRootState) =>
     selectTradingExchange(state).amountLimits;
