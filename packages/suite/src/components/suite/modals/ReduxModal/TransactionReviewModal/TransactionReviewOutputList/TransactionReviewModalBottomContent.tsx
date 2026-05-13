@@ -10,7 +10,11 @@ import {
     type RbfTransactionType,
     type ReviewOutput,
 } from '@suite-common/wallet-types';
-import { isRbfCancelTransaction, isRbfTransaction } from '@suite-common/wallet-utils';
+import {
+    getTxValidityTimeoutInMs,
+    isRbfCancelTransaction,
+    isRbfTransaction,
+} from '@suite-common/wallet-utils';
 import { type StakeType } from '@trezor/blockchain-link-types';
 import { Modal } from '@trezor/components';
 import { copyToClipboard, download } from '@trezor/dom-utils';
@@ -18,7 +22,7 @@ import { type Deferred } from '@trezor/utils';
 
 import { useAnalytics } from 'src/support/useAnalytics';
 
-import { type TxInfoState, getTxType } from '../utils';
+import { type TxInfoState, getTxType, hasTxValidityExpired } from '../utils';
 
 const mapRbfTypeToReporting: Record<RbfTransactionType, TransactionCreatedEventAction> = {
     'bump-fee': 'replaced',
@@ -33,8 +37,7 @@ type TransactionReviewModalBottomContentProps = {
     handleTryAgain: (close: boolean) => void;
     txInfoState: TxInfoState;
     actionTranslation: ExtendedMessageDescriptor;
-    isTxExpired: boolean;
-    hasTxExpired: boolean;
+    hasTxReviewExpired: boolean;
     stakeType?: StakeType;
     isRbfConfirmedError?: boolean;
     account: Account;
@@ -51,8 +54,7 @@ export const TransactionReviewModalBottomContent = ({
     handleTryAgain,
     txInfoState,
     actionTranslation,
-    isTxExpired,
-    hasTxExpired,
+    hasTxReviewExpired,
     stakeType,
     account,
     precomposedForm,
@@ -73,6 +75,8 @@ export const TransactionReviewModalBottomContent = ({
 
     const createdTxTimestamp = txInfoState?.precomposedTx?.createdTimestamp ?? 0;
     const shouldCheckTxTimeValidity = account?.networkType === 'solana' && createdTxTimestamp !== 0;
+    const deadline = createdTxTimestamp + getTxValidityTimeoutInMs(account.networkType);
+    const hasTxDeadlineExpired = shouldCheckTxTimeValidity && hasTxValidityExpired(deadline);
 
     const reportTransactionCreatedEvent = (action: TransactionCreatedEventAction) =>
         analytics.report({
@@ -142,7 +146,7 @@ export const TransactionReviewModalBottomContent = ({
         );
     }
 
-    if (shouldCheckTxTimeValidity && isTxExpired && !isSending) {
+    if (shouldCheckTxTimeValidity && hasTxReviewExpired && !isSending) {
         return (
             <>
                 <Modal.Button onClick={() => handleTryAgain(false)}>
@@ -163,7 +167,7 @@ export const TransactionReviewModalBottomContent = ({
         return (
             <Modal.Button
                 data-testid="@modal/send"
-                isDisabled={!serializedTx || hasTxExpired}
+                isDisabled={!serializedTx || hasTxDeadlineExpired}
                 isLoading={isSending}
                 intent={isCancelRbfAction ? 'critical' : 'brand'}
                 onClick={handleSend}

@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { events } from '@suite/analytics';
+import { preserveModalOnTxTimeout } from '@suite/modal';
 import { selectRouterUrl } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type FormState } from '@suite-common/wallet-types';
@@ -12,7 +13,7 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { type Deferred } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { redactRouterUrl } from 'src/utils/suite/analytics';
@@ -39,13 +40,25 @@ export const TransactionReviewModalBody = ({
     isRbfConfirmedError,
 }: TransactionReviewModalBodyProps) => {
     const analytics = useAnalytics();
+    const dispatch = useDispatch();
     const account = useSelector(selectAccountIncludingChosenInTrading);
     const device = useSelector(selectSelectedDevice);
     const [isSending, setIsSending] = useState(false);
-    const { precomposedTx } = txInfoState;
-    const [hasTxExpired, setHasTxExpired] = useState(false);
+    const { precomposedTx, serializedTx } = txInfoState;
+    const [hasTxReviewExpired, setHasTxReviewExpired] = useState(false);
+    const prevSerializedTxRef = useRef(serializedTx);
 
     const url = useSelector(selectRouterUrl);
+
+    // If the push fails (e.g. ExpiredTxValidity), clearSignedTransactionData clears serializedTx
+    // while isSending remains true, blocking the expired-state "Try again" button.
+    // Reset isSending so the expired UI can appear.
+    useEffect(() => {
+        if (prevSerializedTxRef.current && !serializedTx && isSending) {
+            setIsSending(false);
+        }
+        prevSerializedTxRef.current = serializedTx;
+    }, [isSending, serializedTx]);
 
     const createdTxTimestamp = txInfoState?.precomposedTx?.createdTimestamp ?? 0;
     const shouldCheckTxTimeValidity = account?.networkType === 'solana' && createdTxTimestamp !== 0;
@@ -63,7 +76,8 @@ export const TransactionReviewModalBody = ({
 
         const timeoutId = setTimeout(() => {
             if (mounted && !isSending) {
-                setHasTxExpired(true);
+                setHasTxReviewExpired(true);
+                dispatch(preserveModalOnTxTimeout());
                 TrezorConnect.cancel('tx-timeout');
             }
         }, timeLeft);
@@ -72,7 +86,7 @@ export const TransactionReviewModalBody = ({
             mounted = false;
             clearTimeout(timeoutId);
         };
-    }, [deadline, isSending, shouldCheckTxTimeValidity]);
+    }, [deadline, dispatch, isSending, shouldCheckTxTimeValidity]);
 
     const isBumpFeeRbfAction =
         precomposedTx !== undefined && isRbfBumpFeeTransaction(precomposedTx);
@@ -92,10 +106,12 @@ export const TransactionReviewModalBody = ({
 
     const handleTryAgain = useCallback(
         (cancel: boolean) => {
-            if (cancel) {
+            if (cancel && !serializedTx && !isSending) {
+                dispatch(preserveModalOnTxTimeout());
                 TrezorConnect.cancel('tx-timeout');
             }
 
+            setHasTxReviewExpired(false);
             tryAgainSignTx();
 
             analytics.report({
@@ -103,7 +119,7 @@ export const TransactionReviewModalBody = ({
                 payload: { url: redactRouterUrl(url) },
             });
         },
-        [tryAgainSignTx, url, analytics],
+        [dispatch, isSending, serializedTx, tryAgainSignTx, url, analytics],
     );
 
     if (!device) return null;
@@ -130,7 +146,7 @@ export const TransactionReviewModalBody = ({
             isSending={isSending}
             setIsSending={setIsSending}
             handleTryAgain={handleTryAgain}
-            hasTxExpired={hasTxExpired}
+            hasTxReviewExpired={hasTxReviewExpired}
             isRbfConfirmedError={isRbfConfirmedError}
         />
     );
