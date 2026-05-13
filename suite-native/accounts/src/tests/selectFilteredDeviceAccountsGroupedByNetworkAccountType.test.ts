@@ -164,7 +164,9 @@ describe('selectFilteredDeviceAccountsGroupedByNetworkAccountType', () => {
     ]);
 
     it('groups only visible accounts for the selected device and sorts them by network and account type', () => {
-        expect(selectFilteredDeviceAccountsGroupedByNetworkAccountType(state, '')).toEqual({
+        expect(
+            selectFilteredDeviceAccountsGroupedByNetworkAccountType(state, '', false, []),
+        ).toEqual({
             'Bitcoin default accounts': [withLabel(btcDefaultAccount, 'Daily spending')],
             'Bitcoin Taproot accounts': [withLabel(btcTaprootAccount, null)],
             'Ethereum default accounts': [withLabel(ethAccount, 'Long-term ETH')],
@@ -173,19 +175,69 @@ describe('selectFilteredDeviceAccountsGroupedByNetworkAccountType', () => {
     });
 
     it('filters using suite sync labels and network names', () => {
-        expect(selectFilteredDeviceAccountsGroupedByNetworkAccountType(state, 'daily')).toEqual({
+        expect(
+            selectFilteredDeviceAccountsGroupedByNetworkAccountType(state, 'daily', false, []),
+        ).toEqual({
             'Bitcoin default accounts': [withLabel(btcDefaultAccount, 'Daily spending')],
         });
 
-        expect(selectFilteredDeviceAccountsGroupedByNetworkAccountType(state, 'ETHEREUM')).toEqual({
+        expect(
+            selectFilteredDeviceAccountsGroupedByNetworkAccountType(state, 'ETHEREUM', false, []),
+        ).toEqual({
             'Ethereum default accounts': [withLabel(ethAccount, 'Long-term ETH')],
         });
     });
 
     it('keeps only send-available accounts when the send filter is enabled', () => {
-        expect(selectFilteredDeviceAccountsGroupedByNetworkAccountType(state, '', true)).toEqual({
+        expect(
+            selectFilteredDeviceAccountsGroupedByNetworkAccountType(state, '', true, []),
+        ).toEqual({
             'Bitcoin Taproot accounts': [withLabel(btcTaprootAccount, null)],
             'Ethereum default accounts': [withLabel(ethAccount, 'Long-term ETH')],
         });
+    });
+
+    it('filters by a single network symbol', () => {
+        expect(
+            selectFilteredDeviceAccountsGroupedByNetworkAccountType(state, '', false, ['btc']),
+        ).toEqual({
+            'Bitcoin default accounts': [withLabel(btcDefaultAccount, 'Daily spending')],
+            'Bitcoin Taproot accounts': [withLabel(btcTaprootAccount, null)],
+        });
+    });
+
+    it('filters by multiple network symbols', () => {
+        expect(
+            selectFilteredDeviceAccountsGroupedByNetworkAccountType(state, '', false, [
+                'eth',
+                'ada',
+            ]),
+        ).toEqual({
+            'Ethereum default accounts': [withLabel(ethAccount, 'Long-term ETH')],
+            'Cardano default accounts': [withLabel(adaAccount, null)],
+        });
+    });
+
+    it('returns all accounts when network symbols array is empty', () => {
+        expect(
+            selectFilteredDeviceAccountsGroupedByNetworkAccountType(state, '', false, []),
+        ).toEqual({
+            'Bitcoin default accounts': [withLabel(btcDefaultAccount, 'Daily spending')],
+            'Bitcoin Taproot accounts': [withLabel(btcTaprootAccount, null)],
+            'Ethereum default accounts': [withLabel(ethAccount, 'Long-term ETH')],
+            'Cardano default accounts': [withLabel(adaAccount, null)],
+        });
+    });
+
+    it('combines network symbol filter with text search', () => {
+        expect(
+            selectFilteredDeviceAccountsGroupedByNetworkAccountType(state, 'daily', false, ['btc']),
+        ).toEqual({
+            'Bitcoin default accounts': [withLabel(btcDefaultAccount, 'Daily spending')],
+        });
+
+        expect(
+            selectFilteredDeviceAccountsGroupedByNetworkAccountType(state, 'daily', false, ['eth']),
+        ).toEqual({});
     });
 });

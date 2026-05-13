@@ -1,29 +1,31 @@
-import { useState } from 'react';
-
-import { useNavigation } from '@react-navigation/native';
+import { useMemo } from 'react';
 
 import { isStakingSymbol } from '@suite-common/wallet-utils';
-import {
-    AccountsList,
-    type OnSelectAccount,
-    SearchableAccountsListHeader,
-} from '@suite-native/accounts';
-import { Box } from '@suite-native/atoms';
+import { AccountsListWithFilter, type OnSelectAccount } from '@suite-native/accounts';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import {
+    type AccountsStackParamList,
+    type AccountsStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
     Screen,
-    type StackNavigationProps,
+    type StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 import { isNetworkWithTokens } from '@suite-native/tokens';
 
-export const AccountsScreen = () => {
-    const navigation =
-        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>>();
-    const [accountsFilterValue, setAccountsFilterValue] = useState<string>('');
+type ScreenNavigationProps = StackToStackCompositeScreenProps<
+    AccountsStackParamList,
+    AccountsStackRoutes.Accounts,
+    RootStackParamList
+>;
+
+export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => {
+    const networksFilter = useMemo(
+        () => route.params?.networksFilter ?? [],
+        [route.params?.networksFilter],
+    );
 
     const handleSelectAccount: OnSelectAccount = ({ account }) => {
         const { key: accountKey, symbol } = account;
@@ -39,21 +41,16 @@ export const AccountsScreen = () => {
         });
     };
 
-    const handleFilterChange = (value: string) => {
-        setAccountsFilterValue(value);
-    };
-
     return (
         <Screen header={<DeviceManagerScreenHeader />}>
-            <SearchableAccountsListHeader
+            <AccountsListWithFilter
                 title={<Translation id="moduleAccountManagement.accountsScreen.title" />}
-                onSearchInputChange={handleFilterChange}
+                onSelectAccount={handleSelectAccount}
                 flowType="accounts"
-            />
-            <Box marginTop="sp12">
+                networksFilter={networksFilter}
+            >
                 <AccountsRediscoveryNeededWarning />
-            </Box>
-            <AccountsList onSelectAccount={handleSelectAccount} filterValue={accountsFilterValue} />
+            </AccountsListWithFilter>
         </Screen>
     );
 };

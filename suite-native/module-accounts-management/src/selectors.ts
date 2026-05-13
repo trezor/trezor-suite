@@ -1,5 +1,9 @@
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
+    type AccountsRootState,
+    type FiatRatesRootState,
+    type WalletSettingsRootState,
+    selectAccountByKey,
     selectAccountDefiTokens,
     selectAccountManuallyHiddenTokens,
     selectAccountUnrecognizedTokens,
@@ -14,7 +18,7 @@ import { type AccountAssetsTab } from '@suite-native/navigation';
 import { type TokensRootState } from '@suite-native/tokens';
 
 export const selectAssetTabOfAccountToken = (
-    state: TokensRootState,
+    state: TokensRootState & FiatRatesRootState & WalletSettingsRootState,
     accountKey: AccountKey,
     tokenContract: TokenAddress,
 ): AccountAssetsTab => {

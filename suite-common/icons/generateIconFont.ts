@@ -90,6 +90,7 @@ const usedIcons = [
     'filePdf',
     'fingerprint',
     'fingerprintSimple',
+    'funnelSimple',
     'flag',
     'flagCheckered',
     'gasPump',

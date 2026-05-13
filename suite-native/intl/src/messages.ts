@@ -1778,6 +1778,13 @@ export const messages = {
     moduleAccountManagement: {
         accountsScreen: {
             title: 'My assets',
+            networkFilter: {
+                title: 'Show assets on',
+                applyButton: 'Apply',
+                clearButton: 'Clear filter',
+                showAllButton: 'Show all assets',
+                accountCount: '{count, plural, one {# account} other {# accounts}}',
+            },
         },
         accountAssetsScreen: {
             tab: {
