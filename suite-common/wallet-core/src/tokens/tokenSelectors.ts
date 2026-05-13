@@ -3,14 +3,23 @@ import {
     type TokenDefinitionsRootState,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { type TokenInfoBranded } from '@suite-common/wallet-types';
-import { isErc4626 } from '@suite-common/wallet-utils';
+import { type TokenAddress, type TokenInfoBranded } from '@suite-common/wallet-types';
+import { getFiatRateKey, isErc4626, toFiatCurrency } from '@suite-common/wallet-utils';
 
 import { type GetTokensOutputType, getTokens } from './tokenUtils';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
+import { selectCurrentFiatRates } from '../fiat-rates/fiatRatesSelectors';
+import { type FiatRatesRootState } from '../fiat-rates/fiatRatesTypes';
+import {
+    type WalletSettingsRootState,
+    selectBaseCurrency,
+} from '../settings/walletSettingsReducer';
 
-export type TokensRootState = AccountsRootState & TokenDefinitionsRootState;
+export type TokensRootState = AccountsRootState &
+    TokenDefinitionsRootState &
+    FiatRatesRootState &
+    WalletSettingsRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<TokensRootState>();
 
@@ -82,12 +91,25 @@ export const selectAccountManuallyHiddenTokensCount = createMemoizedSelector(
 );
 
 export const selectAccountDefiTokens = createMemoizedSelector(
-    [selectAccountTokens],
-    (tokenCategories): TokenInfoBranded[] => {
-        if (!tokenCategories) return [];
+    [selectAccountTokens, selectAccountByKey, selectCurrentFiatRates, selectBaseCurrency],
+    (tokenCategories, account, fiatRates, localCurrency): TokenInfoBranded[] => {
+        if (!tokenCategories || !account) return [];
+
+        const getTokenFiatValue = (token: { contract: string; balance?: string }): number => {
+            if (!fiatRates || !localCurrency) return 0;
+            const fiatRateKey = getFiatRateKey(
+                account.symbol,
+                localCurrency,
+                token.contract as TokenAddress,
+            );
+            const rate = fiatRates[fiatRateKey]?.rate;
+            if (!rate || !token.balance) return 0;
+
+            return toFiatCurrency({ amount: token.balance, rate })?.toNumber() ?? 0;
+        };
 
         return (tokenCategories.shownWithBalance.filter(isErc4626) as TokenInfoBranded[]).sort(
-            (a, b) => (a.name ?? '').localeCompare(b.name ?? ''),
+            (a, b) => getTokenFiatValue(b) - getTokenFiatValue(a),
         );
     },
 );

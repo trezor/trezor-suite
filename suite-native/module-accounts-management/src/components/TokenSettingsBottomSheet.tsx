@@ -156,7 +156,6 @@ export const TokenSettingsBottomSheet = forwardRef(
                                     <TokenAmountFormatter
                                         value={balance}
                                         tokenSymbol={token.symbol}
-                                        decimals={token.decimals}
                                         variant="body-sm"
                                         color="contentPrimary"
                                     />
@@ -164,7 +163,6 @@ export const TokenSettingsBottomSheet = forwardRef(
                                         symbol={symbol}
                                         value={balance}
                                         contract={tokenContract}
-                                        decimals={token.decimals}
                                         variant="body-sm"
                                         color="contentSecondary"
                                     />

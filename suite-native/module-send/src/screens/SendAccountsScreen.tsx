@@ -55,7 +55,7 @@ export const SendAccountsScreen = () => {
                 onSelectAccount={handleSelectAccount}
                 closeActionType="close"
                 closeAction={navigateToInitialScreen}
-                isSendFilterEnabled
+                isSendFlow
             />
         </Screen>
     );
