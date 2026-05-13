@@ -1,3 +1,4 @@
+import { isAccountBasedNetwork } from '@suite-common/wallet-config';
 import type { ReceiveAccount } from '@suite-native/trading-types';
 
 export const isFullySelectedReceiveAccount = (
@@ -9,7 +10,7 @@ export const isFullySelectedReceiveAccount = (
 
     const { account, address } = receiveAccount;
 
-    return !account.addresses || !!address;
+    return isAccountBasedNetwork(account.symbol) || !!address;
 };
 
 export const getReceiveAccountAddressText = (receiveAccount: ReceiveAccount | undefined) => {
@@ -19,5 +20,5 @@ export const getReceiveAccountAddressText = (receiveAccount: ReceiveAccount | un
 
     const { account, address } = receiveAccount;
 
-    return account.addresses ? address?.address : account.descriptor;
+    return isAccountBasedNetwork(account.symbol) ? account.descriptor : address?.address;
 };
