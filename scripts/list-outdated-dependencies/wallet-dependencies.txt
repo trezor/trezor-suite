@@ -43,7 +43,6 @@ json-schema-to-typescript
 jws
 minimaldata
 n64
-patch-package
 raw-loader
 react-hook-form
 react-redux
