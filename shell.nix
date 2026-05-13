@@ -70,7 +70,7 @@ in
       export CURDIR="$(pwd)"
       export PATH="$PATH:$CURDIR/node_modules/.bin"
       export ELECTRON_BUILDER_CACHE="$CURDIR/.cache/electron-builder"
-     '' + lib.optionalString useAndroid androidEnv.shellHook
+     '' + lib.optionalString useAndroid (androidEnv.nixLdHook + androidEnv.shellHook)
         + lib.optionalString stdenv.isDarwin ''
       export ELECTRON_OVERRIDE_DIST_PATH="${electron}/Applications/"
     '' + lib.optionalString stdenv.isLinux ''
