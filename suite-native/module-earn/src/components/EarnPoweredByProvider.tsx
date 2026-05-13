@@ -1,19 +1,59 @@
 import React from 'react';
 
-import { Box, HStack, Text } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
+import { Box, HStack, Image, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { useNativeStyles } from '@trezor/styles-native';
 
-export const EarnPoweredByProvider = React.memo(() => (
+import { type EarnProvider } from '../types';
+
+const EVERSTAKE_LOGO_SOURCE = require('@trezor/suite-data/files/images/images/everstake-logo.svg');
+const MORPHO_LOGO_SOURCE = require('@trezor/suite-data/files/images/images/morpho-logo.svg');
+
+const providerLogoMap = {
+    everstake: {
+        source: EVERSTAKE_LOGO_SOURCE,
+        width: 114,
+        height: 20,
+    },
+    morpho: {
+        source: MORPHO_LOGO_SOURCE,
+        width: 99,
+        height: 20,
+    },
+} as const satisfies Record<EarnProvider, { source: number; width: number; height: number }>;
+
+type ProviderLogoProps = {
+    provider: EarnProvider;
+};
+
+const ProviderLogo = ({ provider }: ProviderLogoProps) => {
+    const {
+        utils: { colors },
+    } = useNativeStyles();
+    const { source, width, height } = providerLogoMap[provider];
+
+    return (
+        <Image
+            source={source}
+            width={width}
+            height={height}
+            contentFit="contain"
+            tintColor={colors.contentPrimary}
+        />
+    );
+};
+
+type EarnPoweredByProviderProps = {
+    provider: EarnProvider;
+};
+
+export const EarnPoweredByProvider = React.memo(({ provider }: EarnPoweredByProviderProps) => (
     <Box alignItems="center" marginBottom="sp24">
         <HStack alignItems="center" spacing="sp8">
             <Text color="contentSecondary">
                 <Translation id="earn.poweredBy" />
             </Text>
-            <HStack alignItems="center" spacing="sp4">
-                <Icon name="everstakeLogo" size="mediumLarge" color="contentPrimary" />
-                <Text variant="body-md-strong">everstake</Text>
-            </HStack>
+            <ProviderLogo provider={provider} />
         </HStack>
     </Box>
 ));

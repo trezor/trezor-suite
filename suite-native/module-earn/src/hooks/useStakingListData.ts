@@ -20,6 +20,7 @@ import {
 export const EVERSTAKE_PROVIDER_LIST_ITEM = {
     id: 'everstake-provider',
     type: 'provider',
+    provider: 'everstake',
 } as const satisfies EarnProviderListItem;
 
 type UseStakingListDataReturn = {
@@ -75,7 +76,11 @@ export const useStakingListData = () => {
             });
         });
 
-        const promoListData: EarnPromoListDataItem[] = ['staking', ...promoItems];
+        const promoListData: EarnPromoListDataItem[] = [
+            'staking',
+            ...promoItems,
+            EVERSTAKE_PROVIDER_LIST_ITEM,
+        ];
 
         return {
             activeItems,

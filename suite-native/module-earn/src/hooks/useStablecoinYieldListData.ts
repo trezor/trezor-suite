@@ -11,9 +11,16 @@ import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 
 import {
     type EarnPromoListDataItem,
+    type EarnProviderListItem,
     type SkeletonLoaderItem,
     type StablecoinYieldEarnItem,
 } from '../types';
+
+export const MORPHO_PROVIDER_LIST_ITEM = {
+    id: 'morpho-provider',
+    type: 'provider',
+    provider: 'morpho',
+} as const satisfies EarnProviderListItem;
 
 const STABLECOIN_SKELETON_ITEMS: SkeletonLoaderItem[] = [
     { type: 'skeleton-loader', id: 'skeleton-0' },
@@ -121,7 +128,11 @@ export const useStablecoinYieldListData = () => {
             }
         }
 
-        const promoListData: EarnPromoListDataItem[] = ['stablecoin-yield', ...promoItems];
+        const promoListData: EarnPromoListDataItem[] = [
+            'stablecoin-yield',
+            ...promoItems,
+            ...(promoItems.length > 0 ? [MORPHO_PROVIDER_LIST_ITEM] : []),
+        ];
 
         return { activeItems, promoListData, isLoading };
     }, [accounts, yieldOpportunities, isLoading]);
