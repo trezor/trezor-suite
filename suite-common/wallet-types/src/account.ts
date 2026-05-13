@@ -111,6 +111,9 @@ type AccountNetworkSpecific =
           page: undefined;
       };
 
+export type AccountWithNetworkType<NetworkType extends AccountNetworkSpecific['networkType']> =
+    Extract<Account, { networkType: NetworkType }>;
+
 // decides if account is using TrezorConnect/blockchain-link or other non-standard api
 export type AccountBackendSpecific =
     | {

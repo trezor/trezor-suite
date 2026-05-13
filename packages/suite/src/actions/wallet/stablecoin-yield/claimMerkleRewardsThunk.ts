@@ -31,7 +31,7 @@ import { getAccountIdentity, sanitizeHex } from '@suite-common/wallet-utils';
 import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
-import type { MerkleRewardWithFiat } from 'src/components/earn/dashboard/yield/hooks/useMerkleRewards';
+import type { YieldAccountsRewards } from 'src/components/earn/yield/claim/hooks';
 
 type BuildClaimReviewStateParams = {
     data: EvmHexString;
@@ -170,7 +170,7 @@ async function getEstimatedFee({
 type ClaimMerkleRewardsParams = {
     account: Account;
     flowKey: string;
-    rewards: MerkleRewardWithFiat[];
+    rewards: YieldAccountsRewards[number]['rewards'];
 };
 
 export const claimMerkleRewardsThunk = createThunk(

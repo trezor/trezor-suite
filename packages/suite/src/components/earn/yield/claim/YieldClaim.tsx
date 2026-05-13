@@ -1,12 +1,10 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { events } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { selectIsDebugModeActive } from '@suite/settings';
 import { Context } from '@suite-common/message-system';
-import { isEarnYieldClaimSupported } from '@suite-common/wallet-config';
 import {
     selectStablecoinYieldSession,
     selectStablecoinYieldTxReview,
@@ -23,7 +21,7 @@ import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 import { YieldRewardsList } from './YieldRewardsList';
-import { useMerkleRewards } from '../../dashboard/yield/hooks/useMerkleRewards';
+import { type YieldAccountRewards, useMerkleRewards } from './hooks';
 import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 import { YieldFlowCompleteClaim } from '../common/YieldFlowCompleteClaim';
 import { YieldPendingTransaction } from '../common/YieldPendingTransaction';
@@ -44,31 +42,15 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     const claimSession = useSelector(state =>
         selectStablecoinYieldSession(state, 'claim', flowKey),
     );
-    const isDebugMode = useSelector(selectIsDebugModeActive);
     const isClaimSubmitting =
         claimSession.action.isSubmitting ||
         (!!yieldTxReview.precomposedTx && yieldTxReview.accountKey === account?.key);
     const isClaiming = isClaimSubmitting || !!claimSession.action.pendingTransaction;
     const isDeviceConnected = !!device?.connected && device.available;
-    const isClaimSupported =
-        !!account && isEarnYieldClaimSupported(account.symbol, { isDebugMode });
 
-    const merkleRewardsSources = useMemo(
-        () =>
-            account && isClaimSupported
-                ? [{ networkSymbol: account.symbol, address: account.descriptor }]
-                : [],
-        [account, isClaimSupported],
-    );
-
-    const { merkleRewardsQuery } = useMerkleRewards(merkleRewardsSources);
-    const { rewards } = merkleRewardsQuery.data;
-
-    const claimableRewards = useMemo(() => {
-        if (!account || !isClaimSupported || !merkleRewardsQuery.isSuccess) return [];
-
-        return Object.values(rewards).flat();
-    }, [account, isClaimSupported, merkleRewardsQuery.isSuccess, rewards]);
+    const { merkleRewardsQuery } = useMerkleRewards(account);
+    const accountRewards: YieldAccountRewards | undefined =
+        merkleRewardsQuery.data?.accountsRewards[0];
 
     useEffect(() => {
         if (!flowKey) {
@@ -89,7 +71,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     });
 
     const handleClaim = async () => {
-        if (!account || !flowKey || claimableRewards.length === 0) return;
+        if (!flowKey || !accountRewards) return;
 
         if (!isDeviceConnected) {
             if (device?.descriptor?.apiType === 'bluetooth') {
@@ -99,6 +81,8 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
 
             return;
         }
+
+        const { account, rewards } = accountRewards;
 
         analytics.report({
             type: events.yieldClaimEvent.name,
@@ -110,9 +94,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
         });
 
         try {
-            await dispatch(
-                claimMerkleRewardsThunk({ account, flowKey, rewards: claimableRewards }),
-            ).unwrap();
+            await dispatch(claimMerkleRewardsThunk({ account, flowKey, rewards })).unwrap();
         } catch {
             // cancelled or rejected — isClaiming resets via Redux (discardTransaction in finally)
         }
@@ -136,7 +118,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
         [account, dispatch],
     );
 
-    if (!account) {
+    if (!accountRewards) {
         return null;
     }
 
@@ -144,7 +126,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
         return (
             <Column width="100%" alignItems="center">
                 <Column gap={24} width="100%" maxWidth={500}>
-                    <YieldFlowCompleteClaim rewards={claimableRewards} />
+                    <YieldFlowCompleteClaim accountRewards={accountRewards} />
                 </Column>
             </Column>
         );
@@ -170,14 +152,14 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                                 </Text>
 
                                 <YieldRewardsList
-                                    rewards={claimableRewards}
+                                    accountRewards={accountRewards}
                                     isLoading={merkleRewardsQuery.isLoading}
                                 />
                             </Column>
                         </Card>
 
                         {merkleRewardsQuery.isSuccess &&
-                            claimableRewards.length > 0 &&
+                            accountRewards.rewards.length > 0 &&
                             !claimSession.action.pendingTransaction && (
                                 <Banner
                                     intent="warning"
@@ -193,7 +175,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                             width="100%"
                             isDisabled={
                                 merkleRewardsQuery.isLoading ||
-                                claimableRewards.length === 0 ||
+                                accountRewards.rewards.length === 0 ||
                                 isClaiming
                             }
                             isLoading={isClaimSubmitting}
