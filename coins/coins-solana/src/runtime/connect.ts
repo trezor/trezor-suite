@@ -9,7 +9,6 @@ import {
     appendTransactionMessageInstruction,
     appendTransactionMessageInstructions,
     assertTransactionIsFullySigned,
-    compileTransaction,
     createNoopSigner,
     createTransactionMessage,
     decompileTransactionMessageFetchingLookupTables,
@@ -44,7 +43,7 @@ import type {
     TokenProgramName,
     TransactionMessage,
 } from '../types';
-import { createTransactionShimCommon } from './transactions';
+import { createTransactionShim } from './shim';
 
 const getTokenLib = (tokenProgramName: TokenProgramName) =>
     tokenProgramName === 'spl-token' ? splToken : splToken2022;
@@ -64,19 +63,6 @@ export const getLamportsFromSol = (amountInSol: string) =>
     BigInt(new BigNumber(amountInSol).times(10 ** 9).toString());
 
 type PriorityFees = { computeUnitPrice: string; computeUnitLimit: string };
-
-export function createTransactionShim(message: CompilableTransactionMessage) {
-    const transaction = compileTransaction(message);
-
-    return createTransactionShimCommon(transaction);
-}
-
-export function createTransactionShimFromHex(rawTx: string) {
-    const txByteArray = getBase16Encoder().encode(rawTx);
-    const transaction = getTransactionDecoder().decode(txByteArray);
-
-    return createTransactionShimCommon(transaction);
-}
 
 const addPriorityFees = <TMessage extends TransactionMessage>(
     message: TMessage,

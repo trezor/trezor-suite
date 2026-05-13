@@ -14,5 +14,19 @@ export const SOL_MICROLAMPORTS_PER_LAMPORT = 1_000_000n;
 
 export const SOLANA_EPOCH_DAYS = 2;
 
+export const STAKE_ACCOUNT_V2_SIZE = 200;
+
 export const EVERSTAKE_SOLANA_MAINNET_VALIDATOR = '9QU2QSxhb24FUX3Tu2FpczXjpK3VYrvRudywSZaM29mF';
 export const EVERSTAKE_SOLANA_DEVNET_VALIDATOR = 'GkqYQysEGmuL6V2AJoNnWZUz2ZBGWhzQXsJiXm2CLKAN';
+export const EVERSTAKE_VOTER_PUBKEYS = [
+    EVERSTAKE_SOLANA_MAINNET_VALIDATOR, // mainnet
+    EVERSTAKE_SOLANA_DEVNET_VALIDATOR, // devnet
+];
+
+export const StakeState = {
+    Inactive: 'inactive',
+    Activating: 'activating',
+    Active: 'active',
+    Deactivating: 'deactivating',
+    Deactivated: 'deactivated',
+};

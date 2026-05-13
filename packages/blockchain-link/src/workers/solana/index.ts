@@ -114,7 +114,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     const { payload } = request;
     const { details = 'basic' } = payload;
     const api = await request.connect();
-    const { address, getSolanaStakingData, encodeBase64 } = await solana();
+    const { address, getSolanaStakingData } = await solana();
 
     const publicKey = address(payload.descriptor);
 
@@ -330,7 +330,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
         if (accountInfo) {
             const [accountDataEncoded] = accountInfo.data;
-            const accountDataBytes = encodeBase64(accountDataEncoded);
+            const accountDataBytes = Buffer.from(accountDataEncoded, 'base64'); // Previously `getBase64Encoder().encode(bytes)` was used
             const accountDataLength = BigInt(accountDataBytes.byteLength);
             const rent = await api.rpc.getMinimumBalanceForRentExemption(accountDataLength).send();
 
