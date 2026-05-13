@@ -83,7 +83,7 @@ describe('ExchangePreviewView', () => {
             quote: cexdirectFloatingQuote,
         });
 
-        expect(getByText('This provider requires identity verification.')).toBeOnTheScreen();
+        expect(getByText('This provider requires KYC.')).toBeOnTheScreen();
     });
 
     it('should not render KYC provider warning for providers with "noKYC"', () => {

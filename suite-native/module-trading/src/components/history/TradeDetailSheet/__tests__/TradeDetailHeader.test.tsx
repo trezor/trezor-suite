@@ -79,7 +79,7 @@ describe('TradeDetailHeader', () => {
             const exchangeTrade = getExchangeTrade({ status: 'KYC' });
             const { getByText } = renderHeader(exchangeTrade.data.orderId!, [exchangeTrade]);
 
-            expect(getByText('Identity verification required')).toBeTruthy();
+            expect(getByText('KYC required')).toBeTruthy();
         });
 
         it('should render sending alert for exchange sending status', () => {
