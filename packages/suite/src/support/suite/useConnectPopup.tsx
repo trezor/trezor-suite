@@ -32,6 +32,7 @@ export type ConnectPopupMessage =
           version: string;
       }
     | { type: typeof CORE_CALL; id: string; payload: { method: string; [key: string]: unknown } }
+    | { type: typeof POPUP.CLOSED; payload?: { error?: string } | null }
     | { type: typeof CORE_CALL_CANCEL; payload?: { reason?: string } | null };
 
 /** Outgoing message shape. */
@@ -52,7 +53,7 @@ export interface ConnectPopupLink {
 
 /**
  * Shared hook that implements the common connect popup protocol:
- * channel handshake, POPUP.HANDSHAKE, CORE_CALL dispatch, CORE_CALL_CANCEL,
+ * channel handshake, POPUP.HANDSHAKE, CORE_CALL dispatch, POPUP.CLOSED/CORE_CALL_CANCEL,
  * sending POPUP.CORE_LOADED when suite is ready, and replying to handshake.
  *
  * Link-specific concerns (how messages arrive / are sent) are delegated
@@ -120,6 +121,8 @@ export const useConnectPopup = (
                 });
 
                 setResponseSent(true);
+            } else if (event.type === POPUP.CLOSED) {
+                dispatch(connectPopupCancelThunk({ error: event.payload?.error }));
             } else if (event.type === CORE_CALL_CANCEL) {
                 dispatch(connectPopupCancelThunk({ error: event.payload?.reason }));
             }
