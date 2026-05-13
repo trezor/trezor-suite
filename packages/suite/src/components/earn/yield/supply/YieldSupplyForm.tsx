@@ -238,7 +238,8 @@ export const YieldSupplyForm = () => {
                                             isAmountEmpty ||
                                             isAmountTooHigh ||
                                             isAmountInvalidDecimals ||
-                                            isSubmittingApprove
+                                            isSubmittingApprove ||
+                                            !!approvalPendingTransaction
                                         }
                                         isLoading={isSubmittingApprove}
                                         pendingApproveTransaction={approvalPendingTransaction}
@@ -286,7 +287,8 @@ export const YieldSupplyForm = () => {
                                                 isAmountTooHigh ||
                                                 isAmountInvalidDecimals ||
                                                 isApprovalInsufficient ||
-                                                isSubmittingAction
+                                                isSubmittingAction ||
+                                                !!supplyPendingTransaction
                                             }
                                             isPending={isSubmittingAction}
                                             pendingTransaction={supplyPendingTransaction}
