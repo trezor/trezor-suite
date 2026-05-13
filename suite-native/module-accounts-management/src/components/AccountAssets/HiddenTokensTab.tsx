@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
 import {
@@ -16,12 +15,9 @@ import { type AccountKey, type TokenInfoBranded } from '@suite-common/wallet-typ
 import { AccountsListTokenItem } from '@suite-native/accounts';
 import { Card, InlineAlertBox, PictogramTitleHeader, Text } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
-import {
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackNavigationProps,
-} from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+import { type OnSelectAsset } from './types';
 
 type SectionHeaderListItem = { type: 'section-header'; id: string; translationId: TxKeyPath };
 type WarningListItem = { type: 'warning'; id: string };
@@ -36,6 +32,7 @@ type HiddenListItem = SectionHeaderListItem | WarningListItem | TokenListItem;
 
 type HiddenTokensTabProps = {
     accountKey: AccountKey;
+    onSelect: OnSelectAsset;
 };
 
 const sectionHeaderStyle = prepareNativeStyle(utils => ({
@@ -90,9 +87,7 @@ const buildListItems = (
     return listItems;
 };
 
-export const HiddenTokensTab = ({ accountKey }: HiddenTokensTabProps) => {
-    const navigation =
-        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountAssets>>();
+export const HiddenTokensTab = ({ accountKey, onSelect }: HiddenTokensTabProps) => {
     const { applyStyle } = useNativeStyles();
 
     const account = useSelector((state: AccountsRootState) =>
@@ -139,17 +134,16 @@ export const HiddenTokensTab = ({ accountKey }: HiddenTokensTabProps) => {
                             isLast={item.isLast}
                             showFiatValue={false}
                             onSelectAccount={() =>
-                                navigation.navigate(RootStackRoutes.AccountDetail, {
-                                    accountKey,
+                                onSelect({
                                     tokenContract: item.token.contract,
-                                    closeActionType: 'back',
+                                    tokenSymbol: item.token.symbol,
                                 })
                             }
                         />
                     );
             }
         },
-        [account, accountKey, applyStyle, navigation],
+        [account, applyStyle, onSelect],
     );
 
     if (listItems.length === 0) {

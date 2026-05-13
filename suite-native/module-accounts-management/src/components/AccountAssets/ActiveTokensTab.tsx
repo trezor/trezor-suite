@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -14,16 +13,14 @@ import {
     selectActiveTokensTabSections,
 } from '@suite-native/accounts';
 import { useStakingDetailNavigation } from '@suite-native/module-earn';
-import {
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackNavigationProps,
-} from '@suite-native/navigation';
 
 import { ZeroBalanceTokensSection } from './ZeroBalanceTokensSection';
+import { type OnSelectAsset } from './types';
 
 type ActiveTokensTabProps = {
     accountKey: AccountKey;
+    onSelect: OnSelectAsset;
+    isStakingDisplayed: boolean;
 };
 
 type SectionItem = ReturnType<typeof selectActiveTokensTabSections>[number];
@@ -42,9 +39,11 @@ const getItemKey = (item: ActiveTokenListItem): string => {
     }
 };
 
-export const ActiveTokensTab = ({ accountKey }: ActiveTokensTabProps) => {
-    const navigation =
-        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountAssets>>();
+export const ActiveTokensTab = ({
+    accountKey,
+    onSelect,
+    isStakingDisplayed,
+}: ActiveTokensTabProps) => {
     const { navigateToStakingDetail } = useStakingDetailNavigation();
 
     const sections = useSelector((state: NativeAccountsRootState) =>
@@ -52,24 +51,23 @@ export const ActiveTokensTab = ({ accountKey }: ActiveTokensTabProps) => {
     );
 
     const handleSelectAccount: OnSelectAccount = useCallback(
-        ({ account, tokenAddress, isStaking }) => {
+        ({ account, tokenAddress, tokenSymbol, isStaking }) => {
             if (isStaking) {
                 navigateToStakingDetail({ accountKey: account.key, symbol: account.symbol });
 
                 return;
             }
-            navigation.navigate(RootStackRoutes.AccountDetail, {
-                accountKey: account.key,
-                tokenContract: tokenAddress,
-                closeActionType: 'back',
-            });
+            onSelect({ tokenContract: tokenAddress, tokenSymbol });
         },
-        [navigation, navigateToStakingDetail],
+        [onSelect, navigateToStakingDetail],
     );
 
     const listItems: ActiveTokenListItem[] = useMemo(
-        () => sections.map((item, index, arr) => ({ ...item, isLast: index === arr.length - 1 })),
-        [sections],
+        () =>
+            sections
+                .filter(item => item.type !== 'staking' || isStakingDisplayed)
+                .map((item, index, arr) => ({ ...item, isLast: index === arr.length - 1 })),
+        [sections, isStakingDisplayed],
     );
 
     const renderItem = useCallback(
@@ -114,10 +112,16 @@ export const ActiveTokensTab = ({ accountKey }: ActiveTokensTabProps) => {
                         />
                     );
                 case 'zeroBalance':
-                    return <ZeroBalanceTokensSection tokens={item.tokens} account={item.account} />;
+                    return (
+                        <ZeroBalanceTokensSection
+                            tokens={item.tokens}
+                            account={item.account}
+                            onSelect={onSelect}
+                        />
+                    );
             }
         },
-        [handleSelectAccount],
+        [handleSelectAccount, onSelect],
     );
 
     return (
