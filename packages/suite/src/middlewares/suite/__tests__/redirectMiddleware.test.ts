@@ -1,8 +1,13 @@
 import { locksInitialState, locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
 import { goto, routerReducer } from '@suite/router';
+import { suiteSettingsInitialState } from '@suite/settings';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
-import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import {
+    defaultDevicePersistentData,
+    mockConnectDevice,
+    mockSuiteDevice,
+} from '@suite-common/suite-types/mocks';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { DEVICE } from '@trezor/connect';
 
@@ -32,6 +37,7 @@ const getInitialState = (
     router?: Partial<RouterState>,
     modal?: Partial<ModalState>,
 ) => ({
+    suiteSettings: suiteSettingsInitialState,
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
@@ -95,7 +101,9 @@ describe('redirectMiddleware', () => {
         });
 
         it('DEVICE.CONNECT firmware=required', () => {
-            const store = initStore(getInitialState());
+            const store = initStore(
+                getInitialState(undefined, { persistentDeviceData: [defaultDevicePersistentData] }),
+            );
 
             const connectDevice = mockConnectDevice({ mode: 'normal', firmware: 'required' });
             store.dispatch({ type: DEVICE.CONNECT, payload: { device: connectDevice } });
@@ -120,6 +128,7 @@ describe('redirectMiddleware', () => {
                                 device_id: 'previous-device',
                             },
                         ),
+                        persistentDeviceData: [defaultDevicePersistentData],
                     },
                     {
                         app: 'wallet',

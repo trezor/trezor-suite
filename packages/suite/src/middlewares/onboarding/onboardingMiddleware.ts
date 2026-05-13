@@ -14,12 +14,17 @@ const onboardingMiddleware =
     (action: Action): Action => {
         const isFwInstallationDone =
             firmwareActions.setStatus.match(action) && action.payload === 'done';
+        const isOnboardingActive = api.getState().onboarding.isActive;
+        const doesDeviceNeedPairing = api.getState().firmware.status === 'thp-pairing';
 
-        if (
-            isFwInstallationDone &&
-            api.getState().onboarding.isActive &&
-            api.getState().firmware.status === 'thp-pairing'
-        ) {
+        // Firmware installation finished = it is not a device that just connected with FW already install, we can
+        // consider it known and skip the "Firmware already installed, have you used this device before?" modal.
+        if (isFwInstallationDone && isOnboardingActive) {
+            const device = api.getState().device.selectedDevice;
+            api.dispatch(deviceActions.setManualDeviceCheckSuccess({ deviceId: device?.id }));
+        }
+
+        if (isFwInstallationDone && isOnboardingActive && doesDeviceNeedPairing) {
             // After the THP pairing is finished we want to jump to the next step automatically.
             // User already drifted away from the installation flow and is not aware that THP is actually in the middle
             // of the Firmware installation.

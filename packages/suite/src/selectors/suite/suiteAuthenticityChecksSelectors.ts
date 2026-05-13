@@ -123,6 +123,15 @@ export const selectIsDeviceInvariabilityEnabledAndFailed = (state: AppState) => 
     );
 };
 
+/**
+ * Whether Device Compromised modal should be displayed based on checks that run automatically, or persisted from the past.
+ * This is only displayed for checks where the "compromised" result is considered final, as derived from current app state.
+ * This includes checks that rerun automatically, but not checks that will prompt user again (see selectShouldDisplaySecurityCheck).
+ *
+ * - FW revision and hash check: they always rerun when a device is connected, so a persisted result from the past will be updated.
+ * - Entropy check: once a result is persisted, it can never be changed
+ * - Id check and invariability check: not even a procedure, they're only derived from app state
+ */
 export const selectShouldDisplayDeviceCompromised = (state: AppState): boolean => {
     // Entropy check won't be performed if disabled but we must also check it here to avoid showing the UI when the failed state is stored in database.
     const isEntropyCheckEnabledAndFailed = selectIsEntropyCheckEnabledAndFailed(state);

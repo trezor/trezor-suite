@@ -22,7 +22,7 @@ export class OnboardingPage {
     readonly tutorial: TutorialSection;
 
     readonly welcomeBody: Locator;
-    readonly completeOnboardingButton: Locator;
+    readonly confirmManualDeviceCheckButton: Locator;
     readonly connectDevicePrompt: Locator;
     readonly authenticityStartButton: Locator;
     readonly authenticityContinueButton: Locator;
@@ -56,7 +56,9 @@ export class OnboardingPage {
         this.pin = new PinSection(page);
 
         this.welcomeBody = this.page.getByTestId('@welcome-layout/body');
-        this.completeOnboardingButton = this.page.getByTestId('@onboarding/complete-onboarding');
+        this.confirmManualDeviceCheckButton = this.page.getByTestId(
+            '@onboarding/confirm-manual-device-check',
+        );
         this.connectDevicePrompt = this.page.getByTestId('@connect-device-prompt');
         this.authenticityStartButton = this.page.getByTestId('@authenticity-check/start-button');
         this.authenticityContinueButton = this.page.getByTestId(
@@ -113,7 +115,6 @@ export class OnboardingPage {
         if (this.device.hasTHP) {
             await this.devicePrompt.allowConnectToTrezor();
             await this.enterTHPPairingCode();
-            await this.enableAutoconnect();
         }
     }
 
@@ -125,8 +126,9 @@ export class OnboardingPage {
         await this.analyticsSection.continueButton.click();
 
         await this.pairTHP();
+        await this.confirmManualDeviceCheckButton.click();
+        await this.enableAutoconnect();
 
-        await this.completeOnboardingButton.click();
         if (this.device.hasSecureElement && this.device.model !== Model.T3W1) {
             await this.passThroughAuthenticityCheck();
         }
@@ -140,10 +142,12 @@ export class OnboardingPage {
 
     @step()
     async enableAutoconnect() {
-        await this.settingsPage.navigateTo('device');
-        await this.settingsPage.deviceTab.autoconnectSwitch.click();
-        await this.devicePrompt.allowConnectToTrezor();
-        await this.settingsPage.closeSettings();
+        if (this.device.hasTHP) {
+            await this.settingsPage.navigateTo('device');
+            await this.settingsPage.deviceTab.autoconnectSwitch.click();
+            await this.devicePrompt.allowConnectToTrezor();
+            await this.settingsPage.closeSettings();
+        }
     }
 
     @step()

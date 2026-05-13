@@ -12,6 +12,8 @@ import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-commo
 
 import { type Action, type AppState, type Dispatch, type TrezorDevice } from 'src/types/suite';
 
+import { selectShouldDisplaySecurityCheck } from '../../selectors/suite/securityCheckSelectors';
+
 const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: TrezorDevice) => {
     // no device, no redirect
     if (!device || !device.features) {
@@ -26,16 +28,16 @@ const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: Trez
         return;
     }
 
-    // device is not initialized, redirect to onboarding
-    if (device.mode === 'initialize') {
-        dispatch(goto({ routeName: 'suite-start' }));
-    }
+    const shouldDisplaySecurityCheck = selectShouldDisplaySecurityCheck(state, device);
+    const isDeviceInitializing = device.mode === 'initialize';
+
     // firmware none (T2T1) or unknown (T1B1) indicates freshly unpacked device
-    if (
+    const isFreshDevice =
         device.mode === 'bootloader' &&
         device.features &&
-        device.features.firmware_present === false
-    ) {
+        device.features.firmware_present === false;
+
+    if (shouldDisplaySecurityCheck || isDeviceInitializing || isFreshDevice) {
         dispatch(goto({ routeName: 'suite-start' }));
     }
     // device firmware update required, redirect to "firmware update"

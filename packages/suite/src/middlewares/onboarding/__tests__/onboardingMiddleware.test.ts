@@ -1,5 +1,6 @@
 import { modalReducer } from '@suite/modal';
 import { routerAppChanged, routerReducer } from '@suite/router';
+import { firmwareInitialState } from '@suite-common/firmware';
 
 import onboardingMiddlewares from 'src/middlewares/onboarding';
 import onboardingReducer from 'src/reducers/onboarding/index';
@@ -24,6 +25,7 @@ const getInitialState = (
     suite?: Partial<SuiteState>,
     onboarding?: Partial<OnboardingState>,
 ) => ({
+    firmware: firmwareInitialState,
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
