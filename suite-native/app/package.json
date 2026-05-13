@@ -129,7 +129,7 @@
         "expo-splash-screen": "~55.0.10",
         "expo-status-bar": "~55.0.4",
         "expo-system-ui": "~55.0.9",
-        "expo-updates": "~55.0.12",
+        "expo-updates": "patch:expo-updates@npm%3A55.0.12#~/.yarn/patches/expo-updates-npm-55.0.12-252495eb1f.patch",
         "expo-video": "~55.0.10",
         "expo-web-browser": "~55.0.9",
         "https-browserify": "^1.0.0",
