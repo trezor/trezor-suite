@@ -20,7 +20,7 @@
     },
     "scripts": {
         "_______ Hooks _______": "Yarn hooks.",
-        "postinstall": "yarn run patch-package && husky",
+        "postinstall": "husky",
         "_______ Library Scripts #####": "Some libraries have their own build scripts.",
         "build:libs": "yarn nx run-many --skip-nx-cache --target=build:lib",
         "build:essential": "yarn message-system-sign-config & yarn workspace @trezor/suite-data build:lib & yarn workspace @trezor/transport-bridge build:lib",
@@ -152,7 +152,6 @@
         "jest-expo": "~55.0.9",
         "node-gyp": "12.2.0",
         "nx": "^22.7.0",
-        "patch-package": "8.0.1",
         "prettier": "^3.8.3",
         "rimraf": "^6.1.2",
         "ts-node": "^10.9.2",
