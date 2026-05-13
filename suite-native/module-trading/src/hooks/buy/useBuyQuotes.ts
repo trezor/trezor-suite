@@ -24,6 +24,7 @@ import { type AbortablePromise, type BuyFormType } from '@suite-native/trading-t
 import { useDebounce } from '@trezor/react-utils';
 
 import { tradingBuyFormToTradingBuyFormProps } from '../../utils/buy/quotesUtils';
+import { getReceiveAccountAddressText } from '../../utils/general/receiveAccountUtils';
 import { useQuotesInvalidator } from '../general/useQuotesInvalidator';
 
 type ShouldFetchBuyQuotesRef = {
@@ -33,7 +34,7 @@ type ShouldFetchBuyQuotesRef = {
     amountInCrypto: boolean | undefined;
     country: string | undefined;
     countrySubdivision: string | undefined;
-    accountDescriptor: string | undefined;
+    receiveAccountAddress: string | undefined;
 };
 
 type ShouldFetchBuyQuotes = {
@@ -49,7 +50,7 @@ const useShouldFetchBuyQuotes = (form: BuyFormType): ShouldFetchBuyQuotes => {
         amountInCrypto: false,
         country: undefined,
         countrySubdivision: undefined,
-        accountDescriptor: undefined,
+        receiveAccountAddress: undefined,
     });
 
     const [
@@ -74,6 +75,7 @@ const useShouldFetchBuyQuotes = (form: BuyFormType): ShouldFetchBuyQuotes => {
 
     const amount = amountInCrypto ? cryptoValue : fiatValue;
     const isFetchAllowed = !!(asset && fiatCurrency && amount && parseFloat(amount) > 0);
+    const receiveAccountAddress = getReceiveAccountAddressText(receiveAccount);
 
     if (
         asset?.cryptoId === prevState.current.cryptoId &&
@@ -82,7 +84,7 @@ const useShouldFetchBuyQuotes = (form: BuyFormType): ShouldFetchBuyQuotes => {
         amountInCrypto === prevState.current.amountInCrypto &&
         country?.value === prevState.current.country &&
         countrySubdivision?.value === prevState.current.countrySubdivision &&
-        receiveAccount?.account?.descriptor === prevState.current.accountDescriptor
+        receiveAccountAddress === prevState.current.receiveAccountAddress
     ) {
         return {
             isFetchAllowed,
@@ -97,7 +99,7 @@ const useShouldFetchBuyQuotes = (form: BuyFormType): ShouldFetchBuyQuotes => {
         amountInCrypto,
         country: country?.value,
         countrySubdivision: countrySubdivision?.value,
-        accountDescriptor: receiveAccount?.account?.descriptor,
+        receiveAccountAddress,
     };
 
     return {

@@ -69,6 +69,7 @@ const getQuoteRequestData = ({
         country: countrySelect?.value ?? quotesRequest?.country,
         fiatStringAmount: fiatInput ?? quotesRequest?.fiatStringAmount,
         cryptoStringAmount: cryptoStringAmount ?? quotesRequest?.cryptoStringAmount,
+        receiveAddress: formValues.receiveAddress,
     };
 
     // no need to fetch quotes if amount is not set

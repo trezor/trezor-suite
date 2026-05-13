@@ -10,7 +10,9 @@ import {
     getCurrencyLabel,
 } from '@suite-common/trading';
 import { coinInfoToTradeableAsset } from '@suite-native/trading-atoms';
-import { type BuyFormType } from '@suite-native/trading-types';
+import type { BuyFormType } from '@suite-native/trading-types';
+
+import { getReceiveAccountAddressText } from '../general/receiveAccountUtils';
 
 export type GetAnalyticsTradingBuyPayloadProps = {
     quote: BuyTrade | undefined;
@@ -45,6 +47,7 @@ export const tradingBuyFormToTradingBuyFormProps = (
         amountInCrypto,
         country,
         countrySubdivision,
+        receiveAccount,
     ] = form.getValues([
         'asset',
         'fiatCurrency',
@@ -53,12 +56,15 @@ export const tradingBuyFormToTradingBuyFormProps = (
         'amountInCrypto',
         'country',
         'countrySubdivision',
+        'receiveAccount',
     ]);
     const currencyName = getCurrencyLabel(fiatCurrency);
 
     invariant(currencyName, 'Currency is required');
     invariant(asset, 'Asset is required');
     invariant(coinInfo, 'CoinInfo is required');
+
+    const receiveAddress = getReceiveAccountAddressText(receiveAccount);
 
     return {
         fiatInput: fiatValue,
@@ -72,6 +78,7 @@ export const tradingBuyFormToTradingBuyFormProps = (
         countrySubdivisionSelect: countrySubdivision,
         paymentMethod: getPaymentMethodFromBuyForm(form),
         amountInCrypto,
+        receiveAddress,
     };
 };
 
