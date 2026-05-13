@@ -9,9 +9,11 @@ import { CryptoIcon } from '@suite-native/icons';
 import { AccountLabel } from '@suite-native/labeling';
 import { ScreenHeader } from '@suite-native/navigation';
 
-type Props = { accountKey: AccountKey };
+import { type AccountAssetsFlow } from './types';
 
-const AccountAssetsScreenHeaderContent = ({ accountKey }: Props) => {
+type Props = { accountKey: AccountKey; flowType?: AccountAssetsFlow };
+
+const AccountAssetsScreenHeaderContent = ({ accountKey }: Omit<Props, 'flowType'>) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -39,9 +41,9 @@ const AccountAssetsScreenHeaderContent = ({ accountKey }: Props) => {
     );
 };
 
-export const AccountAssetsScreenHeader = ({ accountKey }: Props) => (
+export const AccountAssetsScreenHeader = ({ accountKey, flowType }: Props) => (
     <ScreenHeader
         customContent={<AccountAssetsScreenHeaderContent accountKey={accountKey} />}
-        closeActionType="close"
+        closeActionType={flowType === 'send' ? 'back' : 'close'}
     />
 );

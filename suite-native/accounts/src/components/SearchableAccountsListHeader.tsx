@@ -20,8 +20,9 @@ type SearchableAccountsListHeaderProps = {
     title: ReactNode;
     onSearchInputChange: (value: string) => void;
     searchValue?: string;
-    flowType: AddCoinFlowType;
+    flowType?: AddCoinFlowType;
     closeActionType?: CloseActionType;
+    closeAction?: () => void;
     onFilterPress?: () => void;
     activeFilterCount?: number;
 };
@@ -40,6 +41,7 @@ export const SearchableAccountsListHeader = ({
     searchValue,
     flowType,
     closeActionType,
+    closeAction,
     onFilterPress,
     activeFilterCount = 0,
 }: SearchableAccountsListHeaderProps) => {
@@ -95,7 +97,12 @@ export const SearchableAccountsListHeader = ({
                 >
                     <HStack alignItems="center">
                         <HStack flex={1} alignItems="center" spacing="sp8">
-                            {closeActionType && <GoBackIcon closeActionType={closeActionType} />}
+                            {closeActionType && (
+                                <GoBackIcon
+                                    closeActionType={closeActionType}
+                                    closeAction={closeAction}
+                                />
+                            )}
                             <IconButton
                                 iconName="magnifyingGlass"
                                 onPress={() => setIsSearchActive(true)}
@@ -126,10 +133,12 @@ export const SearchableAccountsListHeader = ({
                                     )}
                                 </View>
                             )}
-                            <AddAccountButton
-                                flowType={flowType}
-                                testID="@myAssets/addAccountButton"
-                            />
+                            {flowType && (
+                                <AddAccountButton
+                                    flowType={flowType}
+                                    testID="@myAssets/addAccountButton"
+                                />
+                            )}
                         </HStack>
                     </HStack>
                 </Animated.View>
