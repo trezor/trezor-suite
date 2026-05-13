@@ -124,7 +124,8 @@
         "@types/react": "19.2.14",
         "expo-modules-core": "~55.0.13",
         "react-dom": "19.2.4",
-        "react-test-renderer": "19.2.4"
+        "react-test-renderer": "19.2.4",
+        "expo-modules-core@npm:55.0.13": "patch:expo-modules-core@npm%3A55.0.13#~/.yarn/patches/expo-modules-core-npm-55.0.13-8534d47103.patch"
     },
     "devDependencies": {
         "@arethetypeswrong/cli": "^0.18.2",

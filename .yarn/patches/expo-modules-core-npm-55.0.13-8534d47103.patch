@@ -1,0 +1,17 @@
+diff --git a/src/Platform.ts b/src/Platform.ts
+index a6d6c376512ba54ef86abf949ad998c554e4c8f6..f3be1ff84f73634ad132d26ba7b2d4acf742fea7 100644
+--- a/src/Platform.ts
++++ b/src/Platform.ts
+@@ -11,12 +11,6 @@ export type PlatformSelectOSType = PlatformOSType | 'native' | 'electron' | 'def
+ 
+ export type PlatformSelect = <T>(specifics: { [platform in PlatformSelectOSType]?: T }) => T;
+ 
+-if (__DEV__ && typeof process.env.EXPO_OS === 'undefined') {
+-  console.warn(
+-    `The global process.env.EXPO_OS is not defined. This should be inlined by babel-preset-expo during transformation.`
+-  );
+-}
+-
+ const nativeSelect =
+   typeof window !== 'undefined'
+     ? ReactNativePlatform.select
