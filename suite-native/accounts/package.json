@@ -12,6 +12,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@gorhom/bottom-sheet": "5.2.8",
         "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/native": "7.1.28",
         "@reduxjs/toolkit": "2.11.2",

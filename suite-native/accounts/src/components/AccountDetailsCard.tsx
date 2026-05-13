@@ -83,7 +83,6 @@ export const AccountDetailsCard = ({
                 ) : (
                     <AccountsListItem
                         account={account}
-                        isNativeCoinOnly
                         isCryptoBalancePrimary={isStakeVariant}
                         titleLabel={titleLabel}
                         cryptoAmount={cryptoAmount}

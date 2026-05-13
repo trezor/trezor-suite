@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { Badge, Box } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -14,9 +14,9 @@ const badgeWrapperStyle = prepareNativeStyle(() => ({
 }));
 
 const badgeBackgroundStyle = prepareNativeStyle(utils => ({
-
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.colors.surfaceFillPage,
+    ...StyleSheet.absoluteFillObject,
 }));
 
 export const FilterCountBadge = ({ count }: FilterCountBadgeProps) => {

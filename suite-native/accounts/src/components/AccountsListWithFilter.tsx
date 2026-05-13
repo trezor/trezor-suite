@@ -24,7 +24,7 @@ type AccountsListWithFilterProps = {
     closeActionType?: CloseActionType;
     closeAction?: () => void;
     hideTokensIntoModal?: boolean;
-    isSendFilterEnabled?: boolean;
+    isSendFlow?: boolean;
     children?: ReactNode;
 };
 
@@ -36,7 +36,7 @@ export const AccountsListWithFilter = ({
     closeActionType,
     closeAction,
     hideTokensIntoModal,
-    isSendFilterEnabled,
+    isSendFlow,
     children,
 }: AccountsListWithFilterProps) => {
     const [searchValue, setSearchValue] = useState('');
@@ -44,7 +44,7 @@ export const AccountsListWithFilter = ({
     const filterBottomSheetRef = useRef<BottomSheetModalMethods>(null);
 
     const networkFilterOptions = useSelector((state: NativeAccountsRootState) =>
-        selectNetworkFilterOptions(state),
+        selectNetworkFilterOptions(state, isSendFlow),
     );
 
     useEffect(() => {
@@ -83,7 +83,7 @@ export const AccountsListWithFilter = ({
                     searchValue={searchValue}
                     networkFilter={filteredNetworks}
                     hideTokensIntoModal={hideTokensIntoModal}
-                    isSendFilterEnabled={isSendFilterEnabled}
+                    isSendFlow={isSendFlow}
                 />
                 {(filteredNetworks.length > 0 || searchValue.length > 0) && (
                     <Box alignItems="center">
@@ -101,7 +101,7 @@ export const AccountsListWithFilter = ({
             <NetworkFilterBottomSheet
                 ref={filterBottomSheetRef}
                 options={networkFilterOptions}
-                selectedSymbols={filteredNetworks}
+                selectedNetworks={filteredNetworks}
                 onApply={handleApplyFilter}
                 onClear={handleClearFilters}
             />

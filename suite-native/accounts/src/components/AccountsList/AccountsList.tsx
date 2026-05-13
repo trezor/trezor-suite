@@ -18,12 +18,14 @@ import { type OnSelectAccount } from '../../types';
 import { TokenSelectBottomSheet } from '../TokenSelectBottomSheet';
 import { AccountsListItem } from './AccountsListItem';
 
+const DEFAULT_NETWORK_FILTER: NetworkSymbol[] = [];
+
 type AccountsListProps = {
     onSelectAccount: OnSelectAccount;
     searchValue?: string;
     hideTokensIntoModal?: boolean;
     isStakingPressable?: boolean;
-    isSendFilterEnabled?: boolean;
+    isSendFlow?: boolean;
     networkFilter?: NetworkSymbol[];
 };
 
@@ -32,14 +34,14 @@ export const AccountsList = ({
     searchValue = '',
     hideTokensIntoModal = false,
     isStakingPressable = false,
-    isSendFilterEnabled = false,
-    networkFilter = [],
+    isSendFlow = false,
+    networkFilter = DEFAULT_NETWORK_FILTER,
 }: AccountsListProps) => {
     const groupedAccounts = useSelector((state: NativeAccountsRootState) =>
         selectFilteredDeviceAccountsGroupedByNetworkAccountType(
             state,
             searchValue,
-            isSendFilterEnabled,
+            isSendFlow,
             networkFilter,
         ),
     );
