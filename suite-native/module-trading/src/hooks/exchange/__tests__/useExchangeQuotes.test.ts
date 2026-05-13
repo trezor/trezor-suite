@@ -240,6 +240,20 @@ describe('useExchangeQuotes', () => {
                 'btc-account-2' as AccountKey, // Todo: create properly via `createAccountKey()`
             ),
         ],
+        [
+            'receiveAccount',
+            {
+                account: getBtcAccount(),
+                address: {
+                    address: 'btc-receive-address',
+                    path: "m/44'/0'/0'/0/0",
+                    transfers: 0,
+                    balance: '0',
+                    sent: '0',
+                    received: '0',
+                },
+            } satisfies ReceiveAccount,
+        ],
     ])('should refetch quotes on %s value change', async (field, value) => {
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
@@ -260,6 +274,34 @@ describe('useExchangeQuotes', () => {
         });
 
         expect(dispatchSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: 'handleRequestThunkMock',
+            }),
+        );
+    });
+
+    it('should not re-fetch quotes for BTC when address is not selected', async () => {
+        const store = getInitializedStore();
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const { result } = renderUseExchangeQuotes(store);
+        const { form } = result.current;
+
+        await act(async () => {
+            form.setValue('sendAsset', btcAsset);
+            form.setValue('receiveAsset', ethAsset);
+            form.setValue('sendCryptoAmount', '1');
+            await Promise.resolve();
+        });
+
+        dispatchSpy.mockClear();
+
+        act(() => {
+            form.setValue('receiveAccount', {
+                account: getBtcAccount(),
+            });
+        });
+
+        expect(dispatchSpy).not.toHaveBeenCalledWith(
             expect.objectContaining({
                 type: 'handleRequestThunkMock',
             }),
