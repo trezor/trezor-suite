@@ -34,6 +34,9 @@ export const useDayCoinPriceChange = (
         selectIsElectrumBackendSelected(state, symbol ?? 'btc'),
     );
 
+    // Block book does not have historical data for tokens of other networks than ETH.
+    const isCoingeckoForce = tokenContract && symbol !== 'eth';
+
     useEffect(() => {
         const getPrices = async () => {
             if (!symbol) return;
@@ -45,13 +48,13 @@ export const useDayCoinPriceChange = (
                 [weekAgoTimestamp, currentTimestamp],
                 fiatCurrencyCode,
                 isElectrumBackend,
+                isCoingeckoForce,
             );
 
             if (!timestampedFiatRates) return;
 
             const [weekAgo, today] = timestampedFiatRates.tickers;
             setWeekAgoValue(weekAgo.rates[fiatCurrencyCode] ?? null);
-
             const currentRate = today.rates[fiatCurrencyCode];
             setCurrentValue(
                 currentRate !== undefined ? asBaseCurrencyAmount(new BigNumber(currentRate)) : null,
@@ -62,7 +65,7 @@ export const useDayCoinPriceChange = (
         const refreshInterval = setInterval(getPrices, REFRESH_INTERVAL);
 
         return () => clearInterval(refreshInterval);
-    }, [symbol, tokenContract, fiatCurrencyCode, isElectrumBackend]);
+    }, [symbol, tokenContract, fiatCurrencyCode, isElectrumBackend, isCoingeckoForce]);
 
     useEffect(() => {
         if (isNotNullOrUndefined(currentValue) && isNotNullOrUndefined(weekAgoValue)) {

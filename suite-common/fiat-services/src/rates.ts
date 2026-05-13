@@ -213,6 +213,7 @@ export const getFiatRatesForTimestamps = (
     timestamps: number[],
     baseCurrencyCode: BaseCurrencyCode,
     isElectrumBackend: boolean,
+    isCoingeckoForced: boolean = false,
 ): Promise<HistoricRates | null> =>
     parallelRequestsCache.cache(
         [
@@ -223,7 +224,7 @@ export const getFiatRatesForTimestamps = (
             ...timestamps,
         ],
         async () => {
-            if (isBlockbookBasedNetwork(ticker.symbol)) {
+            if (isBlockbookBasedNetwork(ticker.symbol) && !isCoingeckoForced) {
                 if (!isElectrumBackend) {
                     const result = await getConnectFiatRatesForTimestamp(
                         ticker,

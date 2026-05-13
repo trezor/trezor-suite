@@ -30,7 +30,13 @@ import {
     selectPendingAccountAddresses,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { type Account, type AccountKey, type TokenInfoBranded } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type AccountKey,
+    type RatesByKey,
+    type TokenAddress,
+    type TokenInfoBranded,
+} from '@suite-common/wallet-types';
 import {
     BASE_CURRENCY_ZERO,
     getAccountFiatBalance,
@@ -150,6 +156,8 @@ export const getAccountListSections = (
     groupZeroBalance = false,
     hiddenContracts: string[] = [],
     shownContracts: string[] = [],
+    fiatRates?: RatesByKey,
+    localCurrency?: ReturnType<typeof selectBaseCurrency>,
 ) => {
     const sections: AccountSelectBottomSheetSection[] = [];
     const isNetworkSupportingTokens = isNetworkWithTokens(account.symbol);
@@ -211,7 +219,22 @@ export const getAccountListSections = (
     }
 
     if (hasAnyKnownTokens) {
-        const tokensToShow = tokensWithBalance.filter(token => !isErc4626(token));
+        const getTokenFiatValue = (token: { contract: string; balance?: string }): number => {
+            if (!fiatRates || !localCurrency) return 0;
+            const fiatRateKey = getFiatRateKey(
+                account.symbol,
+                localCurrency,
+                token.contract as TokenAddress,
+            );
+            const rate = fiatRates[fiatRateKey]?.rate;
+            if (!rate || !token.balance) return 0;
+
+            return toFiatCurrency({ amount: token.balance, rate })?.toNumber() ?? 0;
+        };
+
+        const tokensToShow = tokensWithBalance
+            .filter(token => !isErc4626(token))
+            .sort((a, b) => getTokenFiatValue(b) - getTokenFiatValue(a));
         tokensToShow.forEach((token, index) => {
             sections.push({
                 type: 'token',
@@ -225,7 +248,9 @@ export const getAccountListSections = (
             sections.push({
                 type: 'zeroBalance',
                 account,
-                tokens: zeroBalanceTokens,
+                tokens: [...zeroBalanceTokens].sort((a, b) =>
+                    (a.name ?? '').localeCompare(b.name ?? ''),
+                ),
             });
         }
     }
@@ -236,8 +261,8 @@ export const getAccountListSections = (
 const EMPTY_ARRAY: AccountSelectBottomSheetSection[] = [];
 
 export const selectAccountListSections = createMemoizedSelector(
-    [selectAccountByKey, selectTokenDefinitions],
-    (account, tokenDefinitions) => {
+    [selectAccountByKey, selectTokenDefinitions, selectCurrentFiatRates, selectBaseCurrency],
+    (account, tokenDefinitions, fiatRates, localCurrency) => {
         if (!account) return EMPTY_ARRAY;
 
         const networkTokenDefinitions = getSimpleCoinDefinitionsByNetwork(
@@ -252,13 +277,15 @@ export const selectAccountListSections = createMemoizedSelector(
             false,
             coinDefs?.hide ?? [],
             coinDefs?.show ?? [],
+            fiatRates,
+            localCurrency,
         );
     },
 );
 
 export const selectAccountListSectionsWithZeroBalanceGroup = createMemoizedSelector(
-    [selectAccountByKey, selectTokenDefinitions],
-    (account, tokenDefinitions) => {
+    [selectAccountByKey, selectTokenDefinitions, selectCurrentFiatRates, selectBaseCurrency],
+    (account, tokenDefinitions, fiatRates, localCurrency) => {
         if (!account) return EMPTY_ARRAY;
 
         const networkTokenDefinitions = getSimpleCoinDefinitionsByNetwork(
@@ -273,6 +300,8 @@ export const selectAccountListSectionsWithZeroBalanceGroup = createMemoizedSelec
             true,
             coinDefs?.hide ?? [],
             coinDefs?.show ?? [],
+            fiatRates,
+            localCurrency,
         );
     },
 );

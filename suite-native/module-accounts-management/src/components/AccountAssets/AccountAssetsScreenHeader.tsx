@@ -5,7 +5,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { type NativeAccountsRootState, selectAccountFiatBalance } from '@suite-native/accounts';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
-import { CryptoIconWithNetwork } from '@suite-native/icons';
+import { CryptoIcon } from '@suite-native/icons';
 import { AccountLabel } from '@suite-native/labeling';
 import { ScreenHeader } from '@suite-native/navigation';
 
@@ -15,6 +15,7 @@ const AccountAssetsScreenHeaderContent = ({ accountKey }: Props) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+
     const fiatBalance = useSelector((state: NativeAccountsRootState) =>
         selectAccountFiatBalance(state, accountKey),
     );
@@ -23,7 +24,7 @@ const AccountAssetsScreenHeaderContent = ({ accountKey }: Props) => {
 
     return (
         <HStack alignItems="center" spacing="sp8">
-            <CryptoIconWithNetwork symbol={account.symbol} size="small" />
+            <CryptoIcon symbol={account.symbol} size="small" />
             <VStack spacing={0} alignItems="flex-start">
                 <Text variant="body-md-strong" adjustsFontSizeToFit numberOfLines={1}>
                     <AccountLabel account={account} />

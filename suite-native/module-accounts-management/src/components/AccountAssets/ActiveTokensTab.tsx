@@ -81,7 +81,6 @@ export const ActiveTokensTab = ({ accountKey }: ActiveTokensTabProps) => {
                             {...item}
                             hasBackground
                             showDivider
-                            isNativeCoinOnly
                             onPress={handleSelectAccount}
                         />
                     );
