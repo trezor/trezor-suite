@@ -4,7 +4,8 @@ import { events } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { CardList, Column, IconCircle, Modal, Paragraph, Row } from '@trezor/components';
+import { CardList, Column, IconCircle, Link, Modal, Paragraph, Row } from '@trezor/components';
+import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
 import { useModal } from 'src/components/suite/asset-picker/hooks/useModal';
 import { AddAccountModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal';
@@ -13,10 +14,10 @@ import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFil
 import { useAnalytics } from 'src/support/useAnalytics';
 import { type Account, type AccountItemType } from 'src/types/wallet';
 
-import { AssetSearchWithNetworkFilter } from '../AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter';
 import { GlobalReceiveAccountListItem } from './components/GlobalReceiveAccountListItem';
 import { useAccountsOptions } from './hooks/useAccountsOptions';
 import { useFilterAccounts } from './hooks/useFilterAccounts';
+import { AssetSearchWithNetworkFilter } from '../AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter';
 
 type GlobalReceiveModalProps = {
     onCancel: (filledSearch: boolean) => void;
@@ -40,7 +41,16 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
         <>
             <Modal
                 heading={<Translation id="TR_RECEIVE" />}
-                description={<Translation id="TR_RECEIVE_DESCRIPTION" />}
+                description={
+                    <Translation
+                        id="TR_RECEIVE_DESCRIPTION"
+                        values={{
+                            a: (...chunks) => (
+                                <Link href={HOW_TO_CHOOSE_RIGHT_NETWORK_URL}>{chunks}</Link>
+                            ),
+                        }}
+                    />
+                }
                 onCancel={() => onCancel(filledSearch)}
                 width={480}
                 maxHeight={640}

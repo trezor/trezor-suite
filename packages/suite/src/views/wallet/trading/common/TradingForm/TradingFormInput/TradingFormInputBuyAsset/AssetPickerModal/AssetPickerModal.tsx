@@ -2,9 +2,8 @@ import { memo, useCallback, useState } from 'react';
 
 import { type TranslationKey } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Box, Divider, Link } from '@trezor/components';
+import { Box, Divider } from '@trezor/components';
 import { TopAssets } from '@trezor/product-components';
-import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
 import {
     AssetGroupLabel,
@@ -17,12 +16,12 @@ import { ASSET_ROW_HEIGHT } from 'src/components/suite/asset-picker/constants';
 import { useSearchFilter } from 'src/components/suite/asset-picker/hooks';
 
 import { AssetListWrapper } from './AssetListWrapper';
-import { AssetSearchWithNetworkFilter } from '../../TradingFormInputAssetPicker';
 import {
     type TradingAssetListItem,
     useBuildTradingAssetOptions,
 } from './hooks/useBuildTradingAssetOptions';
 import { type UseUpdateFormInputProps, useUpdateFormInput } from './hooks/useUpdateFormInput';
+import { AssetSearchWithNetworkFilter } from '../../TradingFormInputAssetPicker';
 
 export type AssetPickerModalProps = {
     closeModal: () => void;
@@ -101,16 +100,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
     );
 
     return (
-        <AssetsModal
-            onClose={closeModal}
-            heading={{ id: heading }}
-            description={{
-                id: 'TR_SWAP_TO_NETWORK_DESCRIPTION',
-                values: {
-                    a: (...chunks) => <Link href={HOW_TO_CHOOSE_RIGHT_NETWORK_URL}>{chunks}</Link>,
-                },
-            }}
-        >
+        <AssetsModal onClose={closeModal} heading={{ id: heading }}>
             <AssetSearchWithNetworkFilter
                 placeholder="TR_ASSET_PICKER_SEARCH_PLACEHOLDER"
                 search={search}
