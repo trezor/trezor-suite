@@ -19,7 +19,7 @@ import { EarnPromoListRow } from '../components/EarnPromoListRow';
 import { EarnScreenListHeader } from '../components/EarnScreenListHeader';
 import { EnableNetworkForStakingBottomSheet } from '../components/EnableNetworkForStakingBottomSheet';
 import { useStablecoinYieldListData } from '../hooks/useStablecoinYieldListData';
-import { EVERSTAKE_PROVIDER_LIST_ITEM, useStakingListData } from '../hooks/useStakingListData';
+import { useStakingListData } from '../hooks/useStakingListData';
 import { useStakingPromoNavigation } from '../hooks/useStakingPromoNavigation';
 import { type EarnPromoItem, type EarnPromoListDataItem } from '../types';
 
@@ -63,11 +63,7 @@ const EarnScreenContent = () => {
     } = useStakingPromoNavigation();
 
     const earnListData = useMemo(
-        (): EarnPromoListDataItem[] => [
-            ...stakingPromoItems,
-            ...(stakingPromoItems.length > 0 ? [EVERSTAKE_PROVIDER_LIST_ITEM] : []),
-            ...stablecoinYieldPromoItems,
-        ],
+        (): EarnPromoListDataItem[] => [...stakingPromoItems, ...stablecoinYieldPromoItems],
         [stablecoinYieldPromoItems, stakingPromoItems],
     );
 
@@ -105,7 +101,7 @@ const EarnScreenContent = () => {
             }
 
             if (item.type === 'provider') {
-                return <EarnPoweredByProvider />;
+                return <EarnPoweredByProvider provider={item.provider} />;
             }
 
             const nextItem = earnListData[index + 1];

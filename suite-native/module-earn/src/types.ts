@@ -43,9 +43,12 @@ export type SkeletonLoaderItem = {
     id: string;
 };
 
+export type EarnProvider = 'everstake' | 'morpho';
+
 export type EarnProviderListItem = {
     type: 'provider';
     id: string;
+    provider: EarnProvider;
 };
 
 export type EarnPromoListDataItem =
