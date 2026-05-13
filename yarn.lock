@@ -12972,7 +12972,6 @@ __metadata:
     "@trezor/react-utils": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/styles-native": "workspace:*"
-    "@trezor/suite-data": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"

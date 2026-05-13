@@ -70,7 +70,6 @@
         {
             "path": "../../packages/styles-native"
         },
-        { "path": "../../packages/suite-data" },
         { "path": "../../packages/theme" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
