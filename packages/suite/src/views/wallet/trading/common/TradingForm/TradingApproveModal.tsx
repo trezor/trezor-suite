@@ -8,6 +8,7 @@ import { useCurrentRef } from '@trezor/react-utils';
 
 import { ApproveModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/ApproveModal';
 import { useAllowanceContext } from 'src/hooks/wallet/allowance';
+import { useModalLastValidParams } from 'src/hooks/wallet/trading/form/useModalLastValidParams';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -84,9 +85,7 @@ export const TradingApproveModal = ({ amount, cryptoId }: TradingApproveModalPro
 
     const approveParams = useMemo(() => {
         const ctx = contextRef.current;
-        if (!isTradingExchangeContext(ctx)) {
-            return null;
-        }
+        if (!isTradingExchangeContext(ctx)) return null;
 
         const providersInfo = getProvidersInfoProps(ctx);
         const exchange = selectedQuote?.exchange;
@@ -95,13 +94,11 @@ export const TradingApproveModal = ({ amount, cryptoId }: TradingApproveModalPro
         const approvalData = getEvmApprovalTxData(selectedQuote?.dexTx?.data);
         const spender = approvalData?.spender ?? null;
 
-        return {
-            provider,
-            spender,
-        };
+        return provider && spender ? { provider, spender } : null;
     }, [selectedQuote, contextRef]);
 
-    const { provider, spender } = approveParams ?? {};
+    const { provider, spender } =
+        useModalLastValidParams(approveParams, state.isApproveModalOpen) ?? {};
 
     if (!state.isApproveModalOpen || !provider || !spender) return null;
 
