@@ -100,6 +100,7 @@ describe('handleBuyRequestThunk', () => {
                 label: 'Credit Card',
             },
             amountInCrypto: false,
+            receiveAddress: 'RECEIVE_ADDRESS',
         };
         const input: HandleBuyRequestThunkProps = {
             formValues,
@@ -131,6 +132,7 @@ describe('handleBuyRequestThunk', () => {
             fiatCurrency: 'USD',
             fiatStringAmount: '1000',
             receiveCurrency: 'bitcoin',
+            receiveAddress: 'RECEIVE_ADDRESS',
             wantCrypto: false,
         });
         expect(state.info.paymentMethods.length).toEqual(1);
@@ -233,6 +235,7 @@ describe('handleBuyRequestThunk', () => {
             fiatCurrency: 'USD',
             fiatStringAmount: '1000',
             receiveCurrency: 'bitcoin',
+            receiveAddress: 'RECEIVE_ADDRESS',
             wantCrypto: false,
         });
         expect(quotesResponse).toEqual([
@@ -257,6 +260,7 @@ describe('handleBuyRequestThunk', () => {
             fiatCurrency: 'USD',
             fiatStringAmount: '1000',
             receiveCurrency: 'bitcoin',
+            receiveAddress: 'RECEIVE_ADDRESS',
             wantCrypto: false,
         });
         expect(state.isLoading).toBe(false);

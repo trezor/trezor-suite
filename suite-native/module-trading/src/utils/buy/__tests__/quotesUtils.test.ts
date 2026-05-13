@@ -3,6 +3,7 @@ import type { BuyTrade, CryptoId } from 'invity-api';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
+    btc1NormalAccount,
     btcAsset,
     coins,
     getInitializedTradingState,
@@ -116,7 +117,25 @@ describe('quotesUtils', () => {
                         label: 'Apple Pay',
                     },
                     amountInCrypto: false,
+                    receiveAddress: undefined,
                 });
+            });
+
+            it('should set receiveAddress from address', () => {
+                act(() => {
+                    form.setValue('receiveAccount', {
+                        account: btc1NormalAccount,
+                        address: btc1NormalAccount.addresses!.unused[0],
+                    });
+                });
+
+                const props = tradingBuyFormToTradingBuyFormProps(form, coins.bitcoin, undefined);
+
+                expect(props).toEqual(
+                    expect.objectContaining({
+                        receiveAddress: 'UNUSED1',
+                    }),
+                );
             });
 
             it('should set paymentMethod to undefined when provided quote is not complete', () => {

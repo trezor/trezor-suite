@@ -6,6 +6,7 @@ import {
 import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     bnbAsset,
+    btc1NormalAccount,
     buyQuotes,
     eth1NormalAccount,
     getInitializedTradingState,
@@ -167,6 +168,13 @@ describe('useBuyQuotes', () => {
                 account: eth1NormalAccount,
             },
         ],
+        [
+            'receiveAccount',
+            {
+                account: btc1NormalAccount,
+                address: btc1NormalAccount.addresses!.unused[0],
+            },
+        ],
     ] as [keyof BuyFormValues, BuyFormValues[keyof BuyFormValues]][])(
         'should re-fetch quotes on %s value change',
         (field, value) => {
@@ -193,6 +201,32 @@ describe('useBuyQuotes', () => {
             );
         },
     );
+
+    it('should not re-fetch quotes when no address is selected on btc account', () => {
+        const store = getInitializedStore();
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const { result } = renderUseBuyQuotes(store);
+        act(() => {
+            result.current.setValue('asset', usdcAsset);
+            result.current.setValue('fiatCurrency', 'usd');
+        });
+        act(() => {
+            result.current.setValue('fiatValue', '100');
+        });
+
+        dispatchSpy.mockClear();
+        act(() => {
+            result.current.setValue('receiveAccount', {
+                account: btc1NormalAccount,
+            });
+        });
+
+        expect(dispatchSpy).not.toHaveBeenLastCalledWith(
+            expect.objectContaining({
+                type: 'handleRequestThunkMock',
+            }),
+        );
+    });
 
     it('should re-fetch quotes when re-fetch time elapsed', () => {
         jest.useFakeTimers();
