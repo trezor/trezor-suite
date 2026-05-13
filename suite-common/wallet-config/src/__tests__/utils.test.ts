@@ -1,5 +1,6 @@
 import { networks } from '../networksConfig';
-import { getMainnets, getTestnets, isAccountOfNetwork } from '../utils';
+import { type NetworkSymbol } from '../types';
+import { getMainnets, getTestnets, isAccountBasedNetwork, isAccountOfNetwork } from '../utils';
 
 const { btc: bitcoin, eth: ethereum, test: testnet, regtest } = networks;
 
@@ -56,5 +57,19 @@ describe(isAccountOfNetwork.name, () => {
 
     it('returns false for non-existing accountType in ethereum', () => {
         expect(isAccountOfNetwork(ethereum, 'segwit')).toBe(false);
+    });
+});
+
+describe('isAccountBasedNetwork', () => {
+    it.each<NetworkSymbol>(['btc', 'ada'])('returns false for %s', symbol => {
+        expect(isAccountBasedNetwork(symbol)).toBe(false);
+    });
+
+    it.each<NetworkSymbol>(['eth', 'sol'])('returns true for %s', symbol => {
+        expect(isAccountBasedNetwork(symbol)).toBe(true);
+    });
+
+    it('returns throw for unknown network type', () => {
+        expect(() => isAccountBasedNetwork('unknown' as NetworkSymbol)).toThrow();
     });
 });
