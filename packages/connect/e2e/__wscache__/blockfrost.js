@@ -1,7 +1,10 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const blockfrostFixtures = {
+const fixturesDir = path.dirname(fileURLToPath(import.meta.url));
+
+export const blockfrostFixtures = {
     GET_SERVER_INFO: params => ({
         data: {
             name: 'Blockfrost',
@@ -15,7 +18,10 @@ const blockfrostFixtures = {
         },
     }),
     GET_ACCOUNT_INFO: (params, message) => {
-        const file = path.resolve(__dirname, `./getAccountInfo/${message.params.descriptor}.json`);
+        const file = path.resolve(
+            fixturesDir,
+            `./getAccountInfo/${message.params.descriptor}.json`,
+        );
         const rawJson = fs.readFileSync(file);
         const data = JSON.parse(rawJson);
 
@@ -23,8 +29,4 @@ const blockfrostFixtures = {
             data,
         };
     },
-};
-
-module.exports = {
-    blockfrostFixtures,
 };

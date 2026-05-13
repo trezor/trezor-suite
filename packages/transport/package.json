@@ -1,6 +1,7 @@
 {
     "name": "@trezor/transport",
     "version": "10.0.0-alpha.1",
+    "type": "module",
     "description": "Low level library facilitating protocol buffers based communication with Trezor devices",
     "license": "MIT",
     "repository": {

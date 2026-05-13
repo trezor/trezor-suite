@@ -1,7 +1,7 @@
 // Vitest global setup — runs once before all tests in Node.js context (not in browser).
 // Starts the WebSocket cache server before all tests (if TESTS_USE_WS_CACHE is enabled).
 
-import { createServer } from './__wscache__';
+import { createServer } from './__wscache__/index.js';
 
 let server: { close: () => void } | undefined;
 

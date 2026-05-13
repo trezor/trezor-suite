@@ -1,6 +1,7 @@
 {
     "name": "@trezor/device-authenticity",
     "version": "10.0.0-alpha.1",
+    "type": "module",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/device-authenticity",
     "description": "Utils for authenticity verification of trezor device secure element response.",

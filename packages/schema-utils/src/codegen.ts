@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import * as Codegen from '@sinclair/typebox-codegen/typescript';
 import fs from 'fs';
+import { pathToFileURL } from 'url';
 
 const preprocessCode = (code: string) => {
     // Make some replacements to make the code processable by the generator
@@ -88,9 +89,10 @@ export function generateForFile(fileName: string) {
     return generate(code);
 }
 
-// If ran directly, output code for file passed as argument
+// ESM equivalent of CommonJS `require.main === module`: only run when this file
+// is executed directly from the CLI, not when it is imported as a module.
 /* istanbul ignore next */
-if (require.main === module) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
     const fileName = process.argv[2];
     if (!fileName || !fs.existsSync(fileName)) {
         throw new Error('File not found');

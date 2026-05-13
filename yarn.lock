@@ -15835,7 +15835,7 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     ts-mixer: "npm:^6.0.4"
-    ts-node: "npm:^10.9.2"
+    tsx: "npm:^4.21.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -15907,7 +15907,6 @@ __metadata:
     "@suite-common/suite-config": "workspace:*"
     "@suite/router-config": "workspace:*"
     "@trezor/bundler-security": "workspace:*"
-    "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@types/webpack-bundle-analyzer": "npm:^4.7.0"
     "@types/webpack-plugin-serve": "npm:^1.4.7"
@@ -16432,7 +16431,7 @@ __metadata:
     http-server: "npm:^14.1.1"
     jest: "npm:29.7.0"
     jest-extended: "npm:^4.0.2"
-    ts-node: "npm:^10.9.2"
+    tsx: "npm:^4.21.0"
     usb: "npm:^2.17.0"
   languageName: unknown
   linkType: soft

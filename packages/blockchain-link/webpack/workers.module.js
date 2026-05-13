@@ -1,6 +1,6 @@
-const { SRC, BUILD } = require('./constants');
+import { BUILD, SRC } from './constants.js';
 
-module.exports = {
+export default {
     target: 'node',
     mode: 'production',
     entry: {
@@ -44,6 +44,6 @@ module.exports = {
     optimization: {
         minimize: false,
     },
-    // ignore optional modules, dependencies of "ws" lib
+    // Ignore optional modules, dependencies of "ws" lib.
     externals: ['utf-8-validate', 'bufferutil'],
 };

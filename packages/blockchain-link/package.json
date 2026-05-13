@@ -1,6 +1,7 @@
 {
     "name": "@trezor/blockchain-link",
     "version": "10.0.0-alpha.1",
+    "type": "module",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/blockchain-link",
     "description": "High-level javascript interface for blockchain communication",
@@ -58,8 +59,8 @@
         "build:workers": "yarn g:rimraf build && yarn build:workers-web && yarn build:workers-module",
         "build:workers-web": "webpack --config ./webpack/workers.web.js",
         "build:workers-module": "webpack --config ./webpack/workers.module.js",
-        "test:unit": "yarn g:jest -c jest.config.unit.js",
-        "test:integration": "yarn g:jest -c jest.config.integration.js",
+        "test:unit": "yarn g:jest -c jest.config.unit.cjs",
+        "test:integration": "yarn g:jest -c jest.config.integration.cjs",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"

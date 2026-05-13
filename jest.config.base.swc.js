@@ -32,6 +32,6 @@ module.exports = {
         '^reselect$': path.resolve(__dirname, 'suite-native/test-utils/src/mocks/reselectMock.ts'),
         '^bcrypto/lib/(.*)$': 'bcrypto/lib/$1-browser',
         '^uint8array-tools$': require.resolve('uint8array-tools'),
-        '^usb$': '<rootDir>../../packages/transport/mocks/usb.js',
+        '^usb$': '<rootDir>../../packages/transport/mocks/usb.cjs',
     },
 };

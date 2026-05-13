@@ -2,8 +2,9 @@
 
 import child_process from 'child_process';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-const REPO_ROOT = path.join(__dirname, '..', '..', '..');
+const REPO_ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 
 const args = process.argv.slice(2);
 

@@ -1,12 +1,26 @@
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-import type { EmuStartOptsType, Firmwares } from '@trezor/trezor-user-env-link';
-import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import type {
+    EmuStartOptsType,
+    Model as FirmwareModel,
+    Firmwares,
+} from '@trezor/trezor-user-env-link';
+import * as trezorUserEnvLink from '@trezor/trezor-user-env-link';
 import { typedObjectKeys } from '@trezor/utils';
+
+const trezorUserEnvLinkModule =
+    // Trezor-user-env-link is still exposed as a CommonJS-shaped module in this runner.
+    // Keep the default fallback so ESM execution does not lose its runtime exports.
+    'default' in trezorUserEnvLink
+        ? (trezorUserEnvLink as { default: typeof trezorUserEnvLink }).default
+        : trezorUserEnvLink;
+const { Model, TrezorUserEnvLink } = trezorUserEnvLinkModule;
+const e2eDir = path.dirname(fileURLToPath(import.meta.url));
 
 const firmwareArg = process.env.TESTS_FIRMWARE;
 const firmwareUrl = process.env.TESTS_FIRMWARE_URL;
-const firmwareModel = process.env.TESTS_FIRMWARE_MODEL as Model;
+const firmwareModel = process.env.TESTS_FIRMWARE_MODEL as FirmwareModel;
 const firmwareBranch = process.env.TESTS_FIRMWARE_BRANCH;
 const firmwareBtcOnly = process.env.TESTS_FIRMWARE_BTC_ONLY === 'true';
 
@@ -112,7 +126,7 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
     const { startVitest } = await import('vitest/node');
 
     const vitest = await startVitest('test', [], {
-        config: path.resolve(__dirname, './vitest.config.ts'),
+        config: path.resolve(e2eDir, './vitest.config.ts'),
         watch: false,
         sequence: {
             shuffle: process.env.TESTS_RANDOM === 'true',

@@ -1,6 +1,6 @@
-const { SRC, BUILD } = require('./constants');
+import { BUILD, SRC } from './constants.js';
 
-module.exports = {
+export default {
     target: 'webworker',
     mode: 'production',
     entry: {

@@ -1,7 +1,10 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const blockbookFixtures = {
+const fixturesDir = path.dirname(fileURLToPath(import.meta.url));
+
+export const blockbookFixtures = {
     getInfo: params => ({
         data: {
             name: 'Blockbook',
@@ -16,7 +19,10 @@ const blockbookFixtures = {
         },
     }),
     getAccountInfo: (params, message) => {
-        const file = path.resolve(__dirname, `./getAccountInfo/${message.params.descriptor}.json`);
+        const file = path.resolve(
+            fixturesDir,
+            `./getAccountInfo/${message.params.descriptor}.json`,
+        );
         const rawJson = fs.readFileSync(file);
         const data = JSON.parse(rawJson);
 
@@ -28,5 +34,3 @@ const blockbookFixtures = {
         data: message.params.blocks.map(() => ({ feePerUnit: '1000' })),
     }),
 };
-
-module.exports = { blockbookFixtures };

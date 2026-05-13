@@ -1,6 +1,7 @@
 {
     "name": "@trezor/protocol",
     "version": "10.0.0-alpha.1",
+    "type": "module",
     "license": "MIT",
     "repository": {
         "type": "git",

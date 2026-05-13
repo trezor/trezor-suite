@@ -1,5 +1,6 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 // collect all json files
 // { [key: txhash] => json }
@@ -33,12 +34,12 @@ const cacheFiles = (dir, cache = {}) => {
 };
 
 // read cache directory
-const CACHE = cacheFiles(path.resolve(__dirname));
+export const CACHE = cacheFiles(path.dirname(fileURLToPath(import.meta.url)));
 
 // txs: string[]; collection of requested tx shortened hashes
 // force: boolean; force cache usage for coins without public/default backends (like zcash testnet)
 
-const TX_CACHE = (txs, force = false) => {
+export const TX_CACHE = (txs, force = false) => {
     if (process.env.TESTS_USE_TX_CACHE === 'false' && !force) return [];
 
     return txs.map(hash => {
@@ -48,9 +49,4 @@ const TX_CACHE = (txs, force = false) => {
 
         return CACHE[hash];
     });
-};
-
-module.exports = {
-    CACHE,
-    TX_CACHE,
 };
