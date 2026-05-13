@@ -164,6 +164,10 @@ export const messages = defineMessages({
         defaultMessage: 'Standard wallet',
         id: 'TR_ADD_WALLET',
     },
+    TR_PASSPHRASE_WALLET_NEEDS_ENABLED_NETWORK: {
+        defaultMessage: 'Activate at least one coin before adding a passphrase wallet.',
+        id: 'TR_PASSPHRASE_WALLET_NEEDS_ENABLED_NETWORK',
+    },
     TR_RECIPIENT_ADDRESS: {
         defaultMessage: 'Recipient address',
         description: 'Used as label for send address input',
