@@ -84,7 +84,8 @@ export const TransactionReviewOutputList = ({
     const { getNamedAddressSupport } = useServices(selectGetNamedAddressSupportDep);
     const { networkType, symbol } = account;
     const namedAddress = getNamedAddressSupport(symbol);
-    const isMultirecipient = outputs.filter(({ type }) => type === 'address').length > 1;
+    const isMultirecipient =
+        outputs.filter(({ type }) => ['address', 'opreturn'].includes(type)).length > 1;
     const isFirstOutputAddress = outputs[0]?.type === 'address';
 
     const lastButtonRequestCode = useSelector((state: DeviceRootState) =>
@@ -188,7 +189,7 @@ export const TransactionReviewOutputList = ({
                 const isHeadingShown =
                     isMultirecipient && (output.type === 'address' || index === summaryIndex);
                 const recipientIndex = outputs
-                    .filter(({ type }) => type === 'address')
+                    .filter(({ type }) => ['address', 'opreturn'].includes(type))
                     .indexOf(output);
 
                 return (
