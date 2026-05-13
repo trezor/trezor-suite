@@ -19,10 +19,12 @@ const EMPTY_NETWORKS_FILTER: NetworkSymbol[] = [];
 type AccountsListWithFilterProps = {
     onSelectAccount: OnSelectAccount;
     title: ReactNode;
-    flowType: AddCoinFlowType;
+    flowType?: AddCoinFlowType;
     networksFilter?: NetworkSymbol[];
     closeActionType?: CloseActionType;
+    closeAction?: () => void;
     hideTokensIntoModal?: boolean;
+    isSendFilterEnabled?: boolean;
     children?: ReactNode;
 };
 
@@ -32,7 +34,9 @@ export const AccountsListWithFilter = ({
     flowType,
     networksFilter = EMPTY_NETWORKS_FILTER,
     closeActionType,
+    closeAction,
     hideTokensIntoModal,
+    isSendFilterEnabled,
     children,
 }: AccountsListWithFilterProps) => {
     const [searchValue, setSearchValue] = useState('');
@@ -68,6 +72,7 @@ export const AccountsListWithFilter = ({
                 searchValue={searchValue}
                 flowType={flowType}
                 closeActionType={closeActionType}
+                closeAction={closeAction}
                 onFilterPress={handleFilterPress}
                 activeFilterCount={filteredNetworks.length}
             />
@@ -78,6 +83,7 @@ export const AccountsListWithFilter = ({
                     searchValue={searchValue}
                     networkFilter={filteredNetworks}
                     hideTokensIntoModal={hideTokensIntoModal}
+                    isSendFilterEnabled={isSendFilterEnabled}
                 />
                 {(filteredNetworks.length > 0 || searchValue.length > 0) && (
                     <Box alignItems="center">

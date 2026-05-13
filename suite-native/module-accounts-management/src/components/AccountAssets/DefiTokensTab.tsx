@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
 import {
@@ -12,11 +11,8 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenInfoBranded } from '@suite-common/wallet-types';
 import { AccountsListTokenItem } from '@suite-native/accounts';
-import {
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackNavigationProps,
-} from '@suite-native/navigation';
+
+import { type OnSelectAsset } from './types';
 
 type DefiTokenListItem = {
     type: 'token';
@@ -28,12 +24,10 @@ type DefiTokenListItem = {
 
 type DefiTokensTabProps = {
     accountKey: AccountKey;
+    onSelect: OnSelectAsset;
 };
 
-export const DefiTokensTab = ({ accountKey }: DefiTokensTabProps) => {
-    const navigation =
-        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountAssets>>();
-
+export const DefiTokensTab = ({ accountKey, onSelect }: DefiTokensTabProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -62,15 +56,11 @@ export const DefiTokensTab = ({ accountKey }: DefiTokensTabProps) => {
                 isFirst={item.isFirst}
                 isLast={item.isLast}
                 onSelectAccount={() =>
-                    navigation.navigate(RootStackRoutes.AccountDetail, {
-                        accountKey,
-                        tokenContract: item.token.contract,
-                        closeActionType: 'back',
-                    })
+                    onSelect({ tokenContract: item.token.contract, tokenSymbol: item.token.symbol })
                 }
             />
         ),
-        [account, accountKey, navigation],
+        [account, onSelect],
     );
 
     if (!account) return null;
