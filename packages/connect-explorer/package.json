@@ -32,7 +32,7 @@
         "json5": "^2.2.3",
         "next": "15.5.15",
         "next-themes": "^0.4.6",
-        "nextra": "^2.13.4",
+        "nextra": "patch:nextra@npm%3A2.13.4#~/.yarn/patches/nextra-npm-2.13.4-f23661e7e1.patch",
         "nextra-theme-docs": "^2.13.4",
         "react": "19.2.4",
         "react-dom": "19.2.4",

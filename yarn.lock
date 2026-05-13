@@ -15305,7 +15305,7 @@ __metadata:
     next: "npm:15.5.15"
     next-seo: "npm:^6.6.0"
     next-themes: "npm:^0.4.6"
-    nextra: "npm:^2.13.4"
+    nextra: "patch:nextra@npm%3A2.13.4#~/.yarn/patches/nextra-npm-2.13.4-f23661e7e1.patch"
     postcss: "npm:^8.5.9"
     postcss-cli: "npm:^10.1.0"
     postcss-import: "npm:^16.1.1"
@@ -15357,7 +15357,7 @@ __metadata:
     json5: "npm:^2.2.3"
     next: "npm:15.5.15"
     next-themes: "npm:^0.4.6"
-    nextra: "npm:^2.13.4"
+    nextra: "patch:nextra@npm%3A2.13.4#~/.yarn/patches/nextra-npm-2.13.4-f23661e7e1.patch"
     nextra-theme-docs: "npm:^2.13.4"
     react: "npm:19.2.4"
     react-dom: "npm:19.2.4"
@@ -36138,7 +36138,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nextra@npm:^2.13.4":
+"nextra@npm:2.13.4":
   version: 2.13.4
   resolution: "nextra@npm:2.13.4"
   dependencies:
@@ -36173,6 +36173,44 @@ __metadata:
     react: ">=16.13.1"
     react-dom: ">=16.13.1"
   checksum: 10/0d71c7e7ef164a4793e4ff6ddd235a967cebdfb91e5fdb9b01273da31754f490e522544d5453c6c5db6bf2302df7430a9ef91efa9ffda3c1b85751f7ebec2c40
+  languageName: node
+  linkType: hard
+
+"nextra@patch:nextra@npm%3A2.13.4#~/.yarn/patches/nextra-npm-2.13.4-f23661e7e1.patch":
+  version: 2.13.4
+  resolution: "nextra@patch:nextra@npm%3A2.13.4#~/.yarn/patches/nextra-npm-2.13.4-f23661e7e1.patch::version=2.13.4&hash=d0610d"
+  dependencies:
+    "@headlessui/react": "npm:^1.7.17"
+    "@mdx-js/mdx": "npm:^2.3.0"
+    "@mdx-js/react": "npm:^2.3.0"
+    "@napi-rs/simple-git": "npm:^0.1.9"
+    "@theguild/remark-mermaid": "npm:^0.0.5"
+    "@theguild/remark-npm2yarn": "npm:^0.2.0"
+    clsx: "npm:^2.0.0"
+    github-slugger: "npm:^2.0.0"
+    graceful-fs: "npm:^4.2.11"
+    gray-matter: "npm:^4.0.3"
+    katex: "npm:^0.16.9"
+    lodash.get: "npm:^4.4.2"
+    next-mdx-remote: "npm:^4.2.1"
+    p-limit: "npm:^3.1.0"
+    rehype-katex: "npm:^7.0.0"
+    rehype-pretty-code: "npm:0.9.11"
+    rehype-raw: "npm:^7.0.0"
+    remark-gfm: "npm:^3.0.1"
+    remark-math: "npm:^5.1.1"
+    remark-reading-time: "npm:^2.0.1"
+    shiki: "npm:^0.14.3"
+    slash: "npm:^3.0.0"
+    title: "npm:^3.5.3"
+    unist-util-remove: "npm:^4.0.0"
+    unist-util-visit: "npm:^5.0.0"
+    zod: "npm:^3.22.3"
+  peerDependencies:
+    next: ">=9.5.3"
+    react: ">=16.13.1"
+    react-dom: ">=16.13.1"
+  checksum: 10/c891e15e37b283ab10e556231ed41827c418b42519b771929e468337ad52e408cc73c61a0c52232e0b2006e47dd73a1a794b8fc98e1f659d579a8938ad0fcbb5
   languageName: node
   linkType: hard
 
