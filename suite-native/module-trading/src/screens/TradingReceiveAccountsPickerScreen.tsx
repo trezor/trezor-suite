@@ -3,11 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
+import { AccountTypeDecisionBottomSheet, useAddCoinAccount } from '@suite-native/add-coin-account';
 import { Translation } from '@suite-native/intl';
-import {
-    AccountTypeDecisionBottomSheet,
-    useAddCoinAccount,
-} from '@suite-native/module-add-accounts';
 import {
     type AddCoinFlowType,
     type RootStackParamList,

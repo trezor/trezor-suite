@@ -5,6 +5,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { type AccountType } from '@suite-common/wallet-config';
 import {
+    type AddCoinEnabledAccountType,
+    accountTypeTranslationKeys,
+    useAddCoinAccount,
+} from '@suite-native/add-coin-account';
+import {
     Box,
     BulletListItem,
     Button,
@@ -24,12 +29,6 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { TREZOR_SUPPORT_MULTIPLE_ACCOUNTS } from '@trezor/urls';
-
-import {
-    type AddCoinEnabledAccountType,
-    accountTypeTranslationKeys,
-    useAddCoinAccount,
-} from '../hooks/useAddCoinAccount';
 
 const GRADIENT_HEIGHT = 48;
 
