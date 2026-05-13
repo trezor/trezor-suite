@@ -75,7 +75,13 @@ describe('LimitPicker', () => {
 
         expect(mockOnApprovalTypeChange).toHaveBeenCalledTimes(1);
         expect(mockOnApprovalTypeChange).toHaveBeenCalledWith('INFINITE');
-        expect(within(picker).getByText('Unlimited')).toBeOnTheScreen();
+        expect(
+            within(picker).getByText(
+                new RegExp(
+                    `${getTranslation('moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel')}\\s*USDC`,
+                ),
+            ),
+        ).toBeOnTheScreen();
         expect(
             within(picker).getByText(
                 getTranslation('moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.info'),
