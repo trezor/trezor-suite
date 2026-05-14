@@ -73,6 +73,20 @@ describe('TxWeightCalculator', () => {
         expect(c.getTotal()).toEqual(4 * 341);
     });
 
+    it('legacy 1-of-2 multisig with .nodes uses nodes.length for n and exercises the OP push <76 size arm', () => {
+        const c = new TxWeightCalculator();
+        c.addInput({
+            script_type: 'SPENDMULTISIG',
+            multisig: {
+                nodes: [{}, {}],
+                pubkeys: [{}],
+                m: 1,
+            },
+        });
+        c.addOutputByKey('p2pkh');
+        expect(c.getTotal()).toEqual(924);
+    });
+
     // eslint-disable-next-line jest/no-commented-out-tests
     // it('segwit multisig', () => {
     //     const c = new TxWeightCalculator();
