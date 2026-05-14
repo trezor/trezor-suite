@@ -8,5 +8,9 @@
     "background": {
         "service_worker": "service-worker.js"
     },
-    "host_permissions": ["http://*/*", "https://*/*"]
+    "host_permissions": ["http://*/*", "https://*/*"],
+    "externally_connectable": {
+        "ids": [],
+        "matches": ["https://*.trezor.io/*", "http://localhost/*", "https://*.suite.sldev.cz/*"]
+    }
 }
