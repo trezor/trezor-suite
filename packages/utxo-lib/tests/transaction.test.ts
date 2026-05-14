@@ -165,6 +165,14 @@ describe('Transaction', () => {
             expect(prebuf.subarray(0, 7).toString('hex')).toEqual('bbbbbbbbbbbbbb');
             expect(prebuf.subarray(7, 7 + txLen).toString('hex')).toEqual(validHex);
         });
+
+        it('Dash: throws on Transaction has unexpected data when hex has trailing bytes', () => {
+            const validHex = fixturesDash.valid[0].hex;
+            const badHex = `${validHex}ff`;
+            expect(() => Transaction.fromHex(badHex, { network: NETWORKS.dashTest })).toThrow(
+                'Transaction has unexpected data',
+            );
+        });
     });
 
     describe('toBuffer/toHex', () => {
