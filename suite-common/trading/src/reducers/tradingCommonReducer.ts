@@ -34,6 +34,7 @@ export type TradingComposedTransactionInfo = {
 export type TradingInfo = {
     platforms?: Platforms;
     coins?: Coins;
+    config?: InfoResponse['config'];
 };
 
 export type TradingPrefilledFromAccount = {
@@ -108,6 +109,7 @@ const tradingCommonSlice = createSlice({
         saveInfo(state: TradingState, action: PayloadAction<InfoResponse>) {
             state.info.coins = action.payload.coins;
             state.info.platforms = action.payload.platforms;
+            state.info.config = action.payload.config;
         },
         saveComposedTransactionInfo(
             state: TradingState,

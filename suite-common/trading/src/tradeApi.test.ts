@@ -108,7 +108,7 @@ describe('TradeApi', () => {
             const mockInfo: InfoResponse = {
                 coins,
                 platforms,
-                config: {},
+                config: { btcSwapComposeTemplate: { extraOutputs: [] } },
             };
             (global.fetch as jest.Mock).mockResolvedValueOnce({
                 ok: true,

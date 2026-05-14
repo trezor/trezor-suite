@@ -208,6 +208,9 @@ export const selectTradingBuyLoadingTimestampAndStatus = createMemoizedSelector(
 
 export const selectTradingInfo = (state: TradingRootState) => state.wallet?.trading?.info;
 
+export const selectTradingBtcSwapComposeTemplate = (state: TradingRootState) =>
+    state.wallet?.trading?.info?.config?.btcSwapComposeTemplate;
+
 export const selectTradingCoins = (state: TradingRootState): Coins | undefined =>
     state.wallet.trading.info.coins;
 

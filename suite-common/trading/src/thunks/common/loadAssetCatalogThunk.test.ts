@@ -29,7 +29,7 @@ const info: InfoResponse = {
         },
     },
     platforms: {},
-    config: {},
+    config: { btcSwapComposeTemplate: { extraOutputs: [] } },
 };
 
 const bitcoinCryptoId = 'bitcoin' as CryptoId;

@@ -42,6 +42,7 @@ export const TRADING_FORM_OUTPUT_ADDRESS = 'outputs.0.address';
 export const TRADING_FORM_OUTPUT_FIAT = 'outputs.0.fiat';
 export const TRADING_FORM_OUTPUT_CURRENCY = 'outputs.0.currency';
 export const TRADING_FORM_OUTPUT_MAX = 'setMaxOutputId';
+export const TRADING_FORM_FEE_PER_UNIT = 'feePerUnit';
 
 export const TRADING_FORM_FIAT_INPUT = 'fiatInput';
 export const TRADING_FORM_FIAT_CURRENCY_SELECT = 'currencySelect';

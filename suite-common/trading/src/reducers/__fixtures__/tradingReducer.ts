@@ -76,7 +76,7 @@ const symbolsInfo: InfoResponse = {
             },
         },
     },
-    config: {},
+    config: { btcSwapComposeTemplate: { extraOutputs: [] } },
 };
 
 const composedTransactionInfo: TradingComposedTransactionInfo = {
@@ -229,6 +229,7 @@ export const tradingFixtures = [
             info: {
                 platforms: symbolsInfo.platforms,
                 coins: symbolsInfo.coins,
+                config: symbolsInfo.config,
             },
         },
     },
