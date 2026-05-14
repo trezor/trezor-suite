@@ -38,8 +38,6 @@ import type { TypedCallProvider } from './DeviceCurrentSession';
 import { DeviceCurrentSession } from './DeviceCurrentSession';
 import { checkFirmwareRevision } from './checkFirmwareRevision';
 import { abortThpWorkflow, getThpChannel } from './thp';
-import { changeLanguage } from './workflow/changeLanguage';
-import { checkFirmwareHashWithRetries } from './workflow/checkFirmwareHashWithRetries';
 import { getAllNetworks } from '../data/coinInfo';
 import {
     getFirmwareReleaseConfigInfo,
@@ -47,7 +45,6 @@ import {
     getReleaseByVersion,
 } from '../data/firmwareInfo';
 import type { DeviceEvents, DeviceLifecycleEvents, IDevice, RunOptions } from '../types/idevice';
-import { handshakeCancel } from './workflow/handshake';
 import { getReleaseAsset } from '../utils/assetUtils';
 import {
     ensureInternalModelFeature,
@@ -56,6 +53,9 @@ import {
     parseRevision,
 } from '../utils/deviceFeaturesUtils';
 import { getFirmwareMode, getFirmwareType } from '../utils/firmwareUtils';
+import { changeLanguage } from './workflow/changeLanguage';
+import { checkFirmwareHashWithRetries } from './workflow/checkFirmwareHashWithRetries';
+import { handshakeCancel } from './workflow/handshake';
 
 // custom log
 const _log = initLog('Device');
@@ -502,6 +502,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
                 if (this.protocol.name === 'v2') {
                     const withInteraction = !!fn;
                     this.busy = await getThpChannel(this, withInteraction);
+                    this.updateNameAndColor();
                     if (!this.busy) {
                         await this.getFeatures();
                     }
@@ -785,23 +786,9 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
         this._firmwareType = getFirmwareType(feat);
 
-        const deviceInfo = models[feat.internal_model] ?? {
-            name: `Unknown ${feat.internal_model}`,
-            colors: {},
-        };
-
-        this.name = deviceInfo.name;
+        this.updateNameAndColor();
 
         this.busy = undefined;
-
-        // todo: move to 553
-        if (feat?.unit_color) {
-            const deviceUnitColor = feat.unit_color.toString();
-
-            if (deviceUnitColor in deviceInfo.colors) {
-                this.color = (deviceInfo.colors as Record<string, string>)[deviceUnitColor];
-            }
-        }
     }
 
     // Ensure that FW version is invariable except for firmware update
@@ -832,6 +819,26 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
                 newVersion,
                 device: this.toMessageObject(),
             });
+        }
+    }
+
+    private updateNameAndColor() {
+        const { internal_model, model_variant } = this.thp?.properties ?? {};
+        const internalModel = this._features?.internal_model ?? internal_model;
+        const unitColor = this._features?.unit_color ?? (model_variant ?? 0) % 256;
+
+        const deviceInfo = models[internalModel] ?? {
+            name: `Unknown ${internalModel}`,
+            colors: {},
+        };
+
+        this.name = deviceInfo.name;
+
+        if (unitColor) {
+            const deviceUnitColor = unitColor.toString();
+            if (deviceUnitColor in deviceInfo.colors) {
+                this.color = (deviceInfo.colors as Record<string, string>)[deviceUnitColor];
+            }
         }
     }
 
