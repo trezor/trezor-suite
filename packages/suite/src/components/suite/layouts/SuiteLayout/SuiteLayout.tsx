@@ -6,6 +6,8 @@ import { ScrollContext } from '@suite/router';
 import { ElevationContext, ElevationDown, ElevationUp, Modal, variables } from '@trezor/components';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';
+import { CommandPalette } from 'src/components/suite/CommandPalette/CommandPalette';
+import { CommandPaletteProvider } from 'src/components/suite/CommandPalette/CommandPaletteProvider';
 import { Metadata } from 'src/components/suite/Metadata';
 import { SuiteBanners } from 'src/components/suite/banners';
 import { DiscoveryProgress } from 'src/components/wallet';
@@ -116,47 +118,50 @@ export const SuiteLayout = ({ children, 'data-testid': dataTest }: SuiteLayoutPr
                 <Wrapper ref={wrapperRef} data-testid="@suite-layout">
                     <PageWrapper>
                         <Modal.Provider>
-                            <Metadata title={title} />
+                            <CommandPaletteProvider>
+                                <Metadata title={title} />
 
-                            <ModalSwitcher />
-                            <PassphraseFlow />
+                                <ModalSwitcher />
+                                <PassphraseFlow />
+                                <CommandPalette />
 
-                            <AppShortcuts />
-                            <PowerMonitorManager />
+                                <AppShortcuts />
+                                <PowerMonitorManager />
 
-                            {isBelowTablet && <CoinjoinBars />}
+                                {isBelowTablet && <CoinjoinBars />}
 
-                            <DiscoveryProgress />
+                                <DiscoveryProgress />
 
-                            <LayoutContext.Provider value={setLayoutPayload}>
-                                <Body data-testid="@suite-layout/body">
-                                    <Columns>
-                                        <ElevationDown>
-                                            <Sidebar />
-                                        </ElevationDown>
-                                        <MainContent>
-                                            {!isBelowTablet && <CoinjoinBars />}
-                                            <SuiteBanners />
-                                            <AppWrapper data-testid="@app" ref={scrollRef}>
-                                                <ElevationUp>
-                                                    {layoutHeader}
+                                <LayoutContext.Provider value={setLayoutPayload}>
+                                    <Body data-testid="@suite-layout/body">
+                                        <Columns>
+                                            <ElevationDown>
+                                                <Sidebar />
+                                            </ElevationDown>
+                                            <MainContent>
+                                                {!isBelowTablet && <CoinjoinBars />}
+                                                <SuiteBanners />
+                                                <AppWrapper data-testid="@app" ref={scrollRef}>
+                                                    <ElevationUp>
+                                                        {layoutHeader}
 
-                                                    <ContentContainer
-                                                        data-testid={
-                                                            dataTest
-                                                                ? `${dataTest}/content`
-                                                                : '@app/content'
-                                                        }
-                                                    >
-                                                        {children}
-                                                    </ContentContainer>
-                                                </ElevationUp>
-                                            </AppWrapper>
-                                        </MainContent>
-                                    </Columns>
-                                </Body>
-                            </LayoutContext.Provider>
-                            {!isBelowTablet && <GuideButton />}
+                                                        <ContentContainer
+                                                            data-testid={
+                                                                dataTest
+                                                                    ? `${dataTest}/content`
+                                                                    : '@app/content'
+                                                            }
+                                                        >
+                                                            {children}
+                                                        </ContentContainer>
+                                                    </ElevationUp>
+                                                </AppWrapper>
+                                            </MainContent>
+                                        </Columns>
+                                    </Body>
+                                </LayoutContext.Provider>
+                                {!isBelowTablet && <GuideButton />}
+                            </CommandPaletteProvider>
                         </Modal.Provider>
                     </PageWrapper>
 

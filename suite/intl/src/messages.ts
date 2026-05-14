@@ -7581,6 +7581,74 @@ export const messages = defineMessages({
         id: 'TR_GUIDE_SUPPORT_AND_FEEDBACK',
         defaultMessage: 'Support & Feedback',
     },
+    TR_GUIDE_KEYBOARD_SHORTCUTS: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS',
+        defaultMessage: 'Keyboard shortcuts',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_GENERAL: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_GENERAL',
+        defaultMessage: 'General',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_FIND: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_FIND',
+        defaultMessage: 'Find in page',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_OPEN_GUIDE: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_OPEN_GUIDE',
+        defaultMessage: 'Open/close guide',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_PASSPHRASE: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_PASSPHRASE',
+        defaultMessage: 'Open passphrase wallet',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_SWITCH_DEVICE: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SWITCH_DEVICE',
+        defaultMessage: 'Open wallet switcher',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_SETTINGS: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SETTINGS',
+        defaultMessage: 'Open settings',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_LOCK_APP: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_LOCK_APP',
+        defaultMessage: 'Lock app',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_SWITCH_ACCOUNT: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SWITCH_ACCOUNT',
+        defaultMessage: 'Switch to account 1–9',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_SEND: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SEND',
+        defaultMessage: 'New transaction',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_TOGGLE_THEME: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_TOGGLE_THEME',
+        defaultMessage: 'Toggle dark/light theme',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_SEARCH_ACCOUNTS: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SEARCH_ACCOUNTS',
+        defaultMessage: 'Search accounts',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_DESKTOP: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_DESKTOP',
+        defaultMessage: 'Desktop',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_DEBUG: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_DEBUG',
+        defaultMessage: 'Debug',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_LANGUAGE_NEXT: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_LANGUAGE_NEXT',
+        defaultMessage: 'Next language',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_LANGUAGE_PREV: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_LANGUAGE_PREV',
+        defaultMessage: 'Previous language',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_LANGUAGE_KEYS_SWITCH: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_LANGUAGE_KEYS_SWITCH',
+        defaultMessage: 'Switch language keys/values',
+    },
     TR_GUIDE_ARTICLES: {
         id: 'TR_GUIDE_ARTICLES',
         defaultMessage: 'Articles',
@@ -11718,5 +11786,57 @@ export const messages = defineMessages({
     MEMO_SWITCH: {
         id: 'MEMO_SWITCH',
         defaultMessage: 'Add memo',
+    },
+    TR_COMMAND_PALETTE_PLACEHOLDER: {
+        id: 'TR_COMMAND_PALETTE_PLACEHOLDER',
+        defaultMessage: 'Search commands...',
+    },
+    TR_COMMAND_PALETTE_NO_RESULTS: {
+        id: 'TR_COMMAND_PALETTE_NO_RESULTS',
+        defaultMessage: 'No commands found',
+    },
+    TR_COMMAND_PALETTE_NAVIGATE: {
+        id: 'TR_COMMAND_PALETTE_NAVIGATE',
+        defaultMessage: 'navigate',
+    },
+    TR_COMMAND_PALETTE_SELECT: {
+        id: 'TR_COMMAND_PALETTE_SELECT',
+        defaultMessage: 'select',
+    },
+    TR_COMMAND_PALETTE_CLOSE: {
+        id: 'TR_COMMAND_PALETTE_CLOSE',
+        defaultMessage: 'close',
+    },
+    TR_COMMAND_PALETTE_CATEGORY_NAVIGATION: {
+        id: 'TR_COMMAND_PALETTE_CATEGORY_NAVIGATION',
+        defaultMessage: 'Navigation',
+    },
+    TR_COMMAND_PALETTE_CATEGORY_ACTIONS: {
+        id: 'TR_COMMAND_PALETTE_CATEGORY_ACTIONS',
+        defaultMessage: 'Actions',
+    },
+    TR_COMMAND_PALETTE_CATEGORY_SETTINGS: {
+        id: 'TR_COMMAND_PALETTE_CATEGORY_SETTINGS',
+        defaultMessage: 'Settings',
+    },
+    TR_COMMAND_PALETTE_CATEGORY_ACCOUNTS: {
+        id: 'TR_COMMAND_PALETTE_CATEGORY_ACCOUNTS',
+        defaultMessage: 'Accounts',
+    },
+    TR_COMMAND_PALETTE_SWITCH_DEVICE: {
+        id: 'TR_COMMAND_PALETTE_SWITCH_DEVICE',
+        defaultMessage: 'Switch device',
+    },
+    TR_COMMAND_PALETTE_DEVICE_SETTINGS: {
+        id: 'TR_COMMAND_PALETTE_DEVICE_SETTINGS',
+        defaultMessage: 'Device settings',
+    },
+    TR_COMMAND_PALETTE_TOGGLE_THEME: {
+        id: 'TR_COMMAND_PALETTE_TOGGLE_THEME',
+        defaultMessage: 'Toggle theme',
+    },
+    TR_COMMAND_PALETTE_BIOMETRIC_LOCK: {
+        id: 'TR_COMMAND_PALETTE_BIOMETRIC_LOCK',
+        defaultMessage: 'Biometric lock',
     },
 } as const);

@@ -10,6 +10,7 @@ import { GuideMarkdown } from './GuideMarkdown';
 import { GuideNode } from './GuideNode';
 import { GuideRouter } from './GuideRouter';
 import { GuideSearch } from './GuideSearch';
+import { GuideShortcuts } from './GuideShortcuts';
 import { ContentScrolledContext, GuideViewWrapper } from './GuideViewWrapper';
 import { HeaderBreadcrumb } from './HeaderBreadcrumb';
 import { OpenGuideFromTooltip } from './OpenGuideFromTooltip';
@@ -19,6 +20,7 @@ export {
     GuideContent,
     GuideButton,
     GuideRouter,
+    GuideShortcuts,
     GuideHeader,
     HeaderBreadcrumb,
     GuideNode,

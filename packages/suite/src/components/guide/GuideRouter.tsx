@@ -13,6 +13,7 @@ import {
     Guide,
     GuideArticle,
     GuideCategory,
+    GuideShortcuts,
     SupportFeedbackSelection,
 } from 'src/components/guide';
 import { GUIDE_ANIMATION_DURATION_MS, useGuide } from 'src/hooks/guide';
@@ -32,6 +33,8 @@ const getGuideContent = (activeView: ActiveView) => {
             return <Feedback type="SUGGESTION" />;
         case 'GUIDE_DEFAULT':
             return <Guide />;
+        case 'KEYBOARD_SHORTCUTS':
+            return <GuideShortcuts />;
         default:
             exhaustive(activeView);
     }
