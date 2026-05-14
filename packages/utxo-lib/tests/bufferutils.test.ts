@@ -185,5 +185,11 @@ describe('bufferutils', () => {
                 bufferutils.verifuint(0.5, 0x001fffffffffffff);
             }).toThrow('value has a fractional component');
         });
+
+        it('throws "cannot write a non-number as a number" when value is not typeof number', () => {
+            expect(() => {
+                bufferutils.verifuint('1' as unknown as number, 0x001fffffffffffff);
+            }).toThrow('cannot write a non-number as a number');
+        });
     });
 });
