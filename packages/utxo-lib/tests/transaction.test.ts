@@ -335,6 +335,40 @@ describe('Transaction', () => {
             );
         });
 
+        it('Zcash: getHash on an empty NU5 tx routes getTransparentDigest through the no-ins-no-outs else arm', () => {
+            // Synthesized 25-byte NU5 hex that parses cleanly as an empty NU5 transaction
+            // (zero ins, zero outs, zero sapling spends/outputs, zero orchard byte). Layout:
+            //   bytes 0-3   '05000080' Int32LE → overwintered=1, version=5 (ZCASH_NU5_VERSION)
+            //   bytes 4-7   '00000000'         → versionGroupId UInt32
+            //   bytes 8-11  '00000000'         → consensusBranchId UInt32 (NU5-only)
+            //   bytes 12-15 '00000000'         → locktime UInt32 (NU5-only)
+            //   bytes 16-19 '00000000'         → expiry UInt32 (NU5-only)
+            //   byte 20     '00'               → vinLen varint = 0 (no inputs)
+            //   byte 21     '00'               → voutLen varint = 0 (no outputs)
+            //   byte 22     '00'               → vSpendsSapling varint = 0
+            //   byte 23     '00'               → vOutputsSapling varint = 0
+            //   byte 24     '00'               → orchard byte = 0
+            // The resulting tx exercises src/transaction/zcash.ts:369
+            //   `if (tx.ins.length || tx.outs.length)`
+            // through its else arm: both `tx.ins.length` and `tx.outs.length` evaluate to 0,
+            // the `||` short-circuit evaluates the right operand (since `tx.ins.length` is
+            // falsy), and the if-condition is false → `buffer = Buffer.of()` at line 376 runs,
+            // producing the empty-transparent-digest blake2b hash with personalization
+            // 'ZTxIdTranspaHash'.
+            const hex = '05000080000000000000000000000000000000000000000000';
+            const tx = Transaction.fromHex(hex, { network: NETWORKS.zcash });
+            expect(tx.ins.length).toBe(0);
+            expect(tx.outs.length).toBe(0);
+            const hash = tx.getHash();
+            expect(Buffer.isBuffer(hash)).toBe(true);
+            expect(hash.length).toBe(32);
+            // Determinism: re-deriving the hash from the same tx yields the same 32-byte digest,
+            // distinguishing the original else-arm (empty Buffer.of() input to ZTxIdTranspaHash)
+            // from a mutant that forces the if-arm and feeds zero-filled prevouts/sequences/outputs
+            // digests instead.
+            expect(tx.getHash().toString('hex')).toEqual(hash.toString('hex'));
+        });
+
         it('Zcash: nostrict=true skips trailing-data check and returns the parsed transaction', () => {
             const validHex = fixturesZcash.valid[0].hex;
             const badBuf = Buffer.from(`${validHex}ff`, 'hex');
