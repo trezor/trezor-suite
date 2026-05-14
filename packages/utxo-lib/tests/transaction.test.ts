@@ -229,6 +229,15 @@ describe('Transaction', () => {
             expect(witnessHash).toEqual(Buffer.alloc(32, 0));
         });
 
+        it('Bitcoin: getHash(forWitness=true) on a coinbase transaction returns 32 zero bytes', () => {
+            const coinbaseFixture = fixturesBitcoin.valid[3];
+            expect(coinbaseFixture.coinbase).toBe(true);
+            const tx = Transaction.fromHex(coinbaseFixture.hex);
+            expect(tx.isCoinbase()).toBe(true);
+            const witnessHash = tx.getHash(true);
+            expect(witnessHash).toEqual(Buffer.alloc(32, 0));
+        });
+
         it('Zcash: throws on Transaction has unexpected data when hex has trailing bytes', () => {
             const validHex = fixturesZcash.valid[0].hex;
             const badHex = `${validHex}ff`;
