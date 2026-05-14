@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { CommonActions, useNavigation } from '@react-navigation/native';
@@ -108,10 +108,6 @@ export const useYieldApprovalReview = ({
         shouldConfirmCancellation: shouldConfirmApprovalCancellation,
     });
 
-    useEffect(() => {
-        dispatch(stablecoinYieldActions.initSession({ flowType: 'deposit', flowKey }));
-    }, [dispatch, flowKey]);
-
     const handleSubmitApprovalReview = useCallback(async () => {
         if (!reviewTransaction || isSigningApproval) {
             return;
@@ -212,6 +208,7 @@ export const useYieldApprovalReview = ({
             description: 'Supply is not available in this mobile preview yet.',
             primaryButtonTitle: 'Go to Earn',
             onPressPrimaryButton: () => {
+                dispatch(stablecoinYieldActions.disposeSession({ flowType: 'deposit', flowKey }));
                 navigation.dispatch(navigateToEarnScreenAction());
             },
         });

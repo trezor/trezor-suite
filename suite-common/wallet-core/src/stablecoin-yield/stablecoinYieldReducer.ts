@@ -245,6 +245,9 @@ export const stablecoinYieldSlice = createSlice({
         startSubmittingApproval(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
             withSession(state, action.payload, session => {
                 session.approval.isSubmitting = true;
+                session.approval.modalState = null;
+                session.approval.revokeTransactions = null;
+                session.approval.isRevokeRequired = false;
                 session.error = null;
             });
         },
@@ -313,6 +316,8 @@ export const stablecoinYieldSlice = createSlice({
         ) {
             withSession(state, action.payload, session => {
                 session.approval.isModifyMode = false;
+                session.approval.modalState = null;
+                session.approval.isRevokeRequired = false;
                 session.action.amount = action.payload.amount;
                 session.approval.isPending = false;
                 session.action.pendingTransaction = null;
