@@ -9,6 +9,7 @@ import {
     useAllowanceTxTracking,
 } from '@suite-common/trading';
 import { sendFormActions } from '@suite-common/wallet-core';
+import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -95,6 +96,21 @@ export const TradingConfirmingScreen = ({
     useNavigationRemoveInterceptor({
         shouldPrevent: !isFailed,
         onRemoveConfirmed: handleRemoveConfirmed,
+        alertOptions: {
+            description: (
+                <Translation
+                    id="moduleTrading.tradingConfirmationScreen.stayOnScreenDescription"
+                    values={{
+                        name:
+                            flowType === 'revoke' ? (
+                                <Translation id="moduleTrading.tradingConfirmationScreen.revocation" />
+                            ) : (
+                                <Translation id="moduleTrading.tradingConfirmationScreen.approval" />
+                            ),
+                    }}
+                />
+            ),
+        },
     });
 
     useFocusEffect(
