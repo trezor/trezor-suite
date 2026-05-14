@@ -30,7 +30,6 @@ export { default as evoluSignRegistrationRequest } from './evoluSignRegistration
 export { default as evoluGetDelegatedIdentityKey } from './evoluGetDelegatedIdentityKey';
 export { default as composeTransaction } from './composeTransaction';
 export { default as discoverAccounts } from './discoverAccounts';
-export { default as getAccountDescriptor } from './getAccountDescriptor';
 export { default as getAccountInfo } from './getAccountInfo';
 export { default as getAddress } from './getAddress';
 export { default as getCoinInfo } from './getCoinInfo';

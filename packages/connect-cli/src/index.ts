@@ -119,14 +119,6 @@ const runTestCase = async (device: Device) => {
                 ...params,
             });
             break;
-        case 'get-account-descriptor':
-            result = await TrezorConnect.getAccountDescriptor({
-                device,
-                coin: 'btc',
-                path: "m/84'/0'/0'",
-                ...params,
-            });
-            break;
         case 'get-features':
             result = await TrezorConnect.getFeatures({ device, ...params });
             break;

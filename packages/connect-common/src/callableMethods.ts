@@ -87,7 +87,6 @@ const connectCallableMethodGroups = {
         'getAddress',
         'getPublicKey',
         'getAccountInfo',
-        'getAccountDescriptor',
         'discoverAccounts',
         'signMessage',
         'verifyMessage',

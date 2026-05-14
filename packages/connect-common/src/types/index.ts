@@ -57,10 +57,6 @@ export {
     type DiscoverAccountsProgress,
     CARDANO_DERIVATIONS,
 } from './api/discoverAccounts';
-export {
-    type GetAccountDescriptorResponse,
-    GetAccountDescriptorParams,
-} from './api/getAccountDescriptor';
 export { type FirmwareUpdateResponse } from './api/firmwareUpdate';
 export { type UpdateConnectSettings } from './api/updateConnectSettings';
 export { GetOwnershipId } from './api/getOwnershipId';

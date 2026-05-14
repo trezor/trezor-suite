@@ -33,7 +33,6 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --method=fw-update
                                                 --method=get-credentials
                                                 --method=get-account-info
-                                                --method=get-account-descriptor
                                                 --method=get-features
                                                 --method=apply-settings
     --params=<json>                           Extra params passed to the method (JSON object)

@@ -47,7 +47,6 @@ import type { evoluGetDelegatedIdentityKey } from './evoluGetDelegatedIdentityKe
 import type { evoluGetNode } from './evoluGetNode';
 import type { evoluSignRegistrationRequest } from './evoluSignRegistrationRequest';
 import type { firmwareUpdate } from './firmwareUpdate';
-import type { getAccountDescriptor } from './getAccountDescriptor';
 import type { getAccountInfo } from './getAccountInfo';
 import type { getAddress } from './getAddress';
 import type { getCoinInfo } from './getCoinInfo';
@@ -276,9 +275,6 @@ export const TrezorConnectAccount = Type.Object({
 
     // https://connect.trezor.io/9/methods/bitcoin/getAccountInfo/
     getAccountInfo: Type.Unsafe<typeof getAccountInfo>(),
-
-    // https://connect.trezor.io/9/methods/other/getAccountDescriptor/
-    getAccountDescriptor: Type.Unsafe<typeof getAccountDescriptor>(),
 
     // todo: link docs
     discoverAccounts: Type.Unsafe<typeof discoverAccounts>(),
