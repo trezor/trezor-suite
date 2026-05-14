@@ -24,14 +24,14 @@ export const useShowStayOnScreenAlert = () => {
                     <Translation id="transactionManagement.stayOnScreenAlert.removeButton" />
                 ),
                 primaryButtonColorProps = {
-                    intent: 'critical',
+                    intent: 'warning',
                     priority: 'primary',
                 },
                 secondaryButtonTitle = (
                     <Translation id="transactionManagement.stayOnScreenAlert.stayButton" />
                 ),
                 secondaryButtonColorProps = {
-                    intent: 'critical',
+                    intent: 'warning',
                     priority: 'secondary',
                 },
                 ...restAlertOptions
