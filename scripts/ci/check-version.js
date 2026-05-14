@@ -19,7 +19,11 @@ if (!['latest', 'beta', 'alpha'].includes(distTag)) {
 }
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
-const PACKAGE_PATH = path.join(ROOT, 'packages', packageName);
+const PACKAGE_PATH = path.join(
+    ROOT,
+    packageName.startsWith('coins-') ? 'coins' : 'packages',
+    packageName,
+);
 
 // read package version
 const packageJSONRaw = fs.readFileSync(path.join(PACKAGE_PATH, 'package.json'), {
@@ -35,7 +39,7 @@ const npmInfoRaw = child_process.spawnSync('npm', ['view', '--json'], {
 }).stdout;
 
 const npmInfo = JSON.parse(npmInfoRaw);
-if (npmInfo && npmInfo.error && npmInfo.error.code === 'E404') {
+if (npmInfo?.error?.[packageJSON.name]?.code === 'E404') {
     // exit 0, its ok, we probably did not publish it yet
     process.exit(0);
 }

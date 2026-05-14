@@ -8,6 +8,7 @@ import {
     exec,
     commit,
     comment,
+    getTrezorPackageDir,
 } from './helpers';
 
 const readFile = promisify(fs.readFile);
@@ -151,7 +152,7 @@ const bumpConnect = async () => {
         console.log('allUniquePackagesToUpdate', allUniquePackagesToUpdate);
 
         for (const packageName of allUniquePackagesToUpdate) {
-            const PACKAGE_PATH = path.join(ROOT, 'packages', packageName);
+            const PACKAGE_PATH = getTrezorPackageDir(packageName);
             const PACKAGE_JSON_PATH = path.join(PACKAGE_PATH, 'package.json');
 
             // This uses dependency version-bump-prompt.
@@ -197,7 +198,7 @@ const bumpConnect = async () => {
             });
         }
 
-        const CONNECT_PACKAGE_PATH = path.join(ROOT, 'packages', 'connect');
+        const CONNECT_PACKAGE_PATH = getTrezorPackageDir('connect');
         const CONNECT_PACKAGE_JSON_PATH = path.join(CONNECT_PACKAGE_PATH, 'package.json');
         const CONNECT_CHANGELOG_PATH = path.join(CONNECT_PACKAGE_PATH, 'CHANGELOG.md');
 
