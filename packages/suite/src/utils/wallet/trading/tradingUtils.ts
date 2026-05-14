@@ -4,6 +4,7 @@ import { type Network, type NetworkSymbol, getNetworkType } from '@suite-common/
 import { type PrecomposedLevels, type PrecomposedLevelsCardano } from '@suite-common/wallet-types';
 import { asAmountSubunit, substituteBip43Path, subunitsToUnits } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel, type TokenInfo } from '@trezor/connect';
+import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { type Route, type TrezorDevice } from 'src/types/suite';
@@ -96,8 +97,10 @@ export const getComposeAddressPlaceholder = async (
         case 'solana':
         case 'ripple':
         case 'stellar':
+        case 'tron':
             return account.descriptor;
-        // no default
+        default:
+            return exhaustive(networkType);
     }
 };
 
