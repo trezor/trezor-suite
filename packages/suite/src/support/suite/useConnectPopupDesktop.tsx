@@ -18,6 +18,7 @@ import TrezorConnect, {
     type CallMethodPayload,
     UI_REQUEST,
 } from '@trezor/connect';
+import { isMacOs } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -218,7 +219,11 @@ export const useConnectPopupDesktop = () => {
             // Only hide if we actually focused during this call, otherwise
             // we'd hide a window the user was using before the call started.
             if (currentlyOngoing && !wasVisible) {
-                desktopApi.appHide();
+                desktopApi.appIsFullScreen().then(isFullScreen => {
+                    if (isMacOs() && isFullScreen) return;
+
+                    desktopApi.appHide();
+                });
             }
             setCurrentlyOngoing(false);
         }

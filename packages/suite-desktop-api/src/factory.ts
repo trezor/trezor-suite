@@ -54,6 +54,7 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
         appAutoStartPopupResponse: response =>
             ipcRenderer.invoke('app/auto-start/popup-response', response),
         appIsVisible: () => ipcRenderer.invoke('app/is-visible'),
+        appIsFullScreen: () => ipcRenderer.invoke('app/is-fullscreen'),
 
         // Auto-updater
         checkForUpdates: ({ isManual }) => {

@@ -134,6 +134,7 @@ export interface InvokeChannels {
         response: 'background-always' | 'background-now' | 'quit-always' | 'quit-now',
     ) => void;
     'app/is-visible': () => boolean;
+    'app/is-fullscreen': () => boolean;
     'tray/change-settings': (payload: TraySettings) => InvokeResult;
     'tray/get-settings': () => InvokeResult<TraySettings>;
     'connect-popup/enabled': () => boolean;
@@ -191,6 +192,7 @@ export type DesktopApi = {
     appAutoStartPopupAck: DesktopApiInvoke<'app/auto-start/popup-ack'>;
     appAutoStartPopupResponse: DesktopApiInvoke<'app/auto-start/popup-response'>;
     appIsVisible: DesktopApiInvoke<'app/is-visible'>;
+    appIsFullScreen: DesktopApiInvoke<'app/is-fullscreen'>;
     // Auto-updater
     checkForUpdates: DesktopApiSend<'update/check'>;
     downloadUpdate: DesktopApiSend<'update/download'>;
