@@ -86,4 +86,18 @@ describe('bcashutils', () => {
             expect(() => isCashAddress(unknownVersionAddr)).toThrow('Invalid Bitcoin Cash address');
         });
     });
+
+    describe('decodeBase58Address invalid payload length', () => {
+        it('throws on a base58check address whose decoded payload is not 21 bytes', () => {
+            // Construct a base58check-encoded 20-byte payload (one byte short).
+            // bs58check.decode succeeds (valid checksum), but the explicit length guard at
+            // bchUtils.ts:44 (`if (payload.length !== 21) throw`) fires before the version
+            // switch. The error is caught by decodeAddress's try/catch, decodeCashAddress
+            // also fails, and the public-API throw surfaces as 'Invalid Bitcoin Cash address'.
+            const bs58check = createBase58check(sha256);
+            const shortPayload = new Uint8Array(20);
+            const shortAddr = bs58check.encode(shortPayload);
+            expect(() => isCashAddress(shortAddr)).toThrow('Invalid Bitcoin Cash address');
+        });
+    });
 });
