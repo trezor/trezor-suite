@@ -2,8 +2,9 @@ import { getRandomInt } from '@trezor/utils';
 
 import { verifyTxBytes } from './compose.utils';
 import { composeTx } from '../src/compose';
-import * as NETWORKS from '../src/networks';
 import { composeTxFixture } from './__fixtures__/compose';
+import { getErrorResult } from '../src/compose/result';
+import * as NETWORKS from '../src/networks';
 import { fixturesCrossCheck } from './__fixtures__/compose.crosscheck';
 
 jest.mock('@trezor/utils', () => ({
@@ -68,6 +69,23 @@ describe('composeTx request validation errors', () => {
         });
 
         expect(tx).toEqual({ type: 'error', error: 'INCORRECT-FEE-RATE' });
+    });
+});
+
+describe('getErrorResult', () => {
+    it('maps a thrown Error whose message matches a COMPOSE_ERROR_TYPES entry to the typed error object (no message field)', () => {
+        // getErrorResult is reached only via composeTx's try/catch when something
+        // inside coinselect throws. Test it directly: an Error('NOT-ENOUGH-FUNDS')
+        // should be classified as a known error (via the COMPOSE_ERROR_TYPES.find
+        // lookup) and returned as { type: 'error', error: 'NOT-ENOUGH-FUNDS' } —
+        // notably WITHOUT the `message` field that the unknown-error branch adds.
+        // Any mutation that flips `if (known)` to false would route this Error to
+        // the COINSELECT branch and produce a `message` field, which exact-equal
+        // detects.
+        expect(getErrorResult(new Error('NOT-ENOUGH-FUNDS'))).toEqual({
+            type: 'error',
+            error: 'NOT-ENOUGH-FUNDS',
+        });
     });
 });
 
