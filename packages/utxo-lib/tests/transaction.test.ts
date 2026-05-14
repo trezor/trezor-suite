@@ -128,6 +128,19 @@ describe('Transaction', () => {
                 'Transaction has unexpected data',
             );
         });
+
+        it('Peercoin: nostrict=true skips trailing-data check and returns the parsed transaction', () => {
+            const validHex = fixturesPeercoin.valid[0].hex;
+            const badBuf = Buffer.from(`${validHex}ff`, 'hex');
+            const tx = Transaction.fromBuffer(badBuf, {
+                network: NETWORKS.peercoin,
+                nostrict: true,
+            });
+            expect(tx.version).toEqual(fixturesPeercoin.valid[0].raw.version);
+            expect(tx.locktime).toEqual(fixturesPeercoin.valid[0].raw.locktime);
+            expect(tx.ins.length).toEqual(fixturesPeercoin.valid[0].raw.ins.length);
+            expect(tx.outs.length).toEqual(fixturesPeercoin.valid[0].raw.outs.length);
+        });
     });
 
     describe('toBuffer/toHex', () => {
