@@ -70,4 +70,19 @@ describe('vsize', () => {
         );
         expect(vbytes).toBe(167);
     });
+
+    // Exercises the false branch of isKnownInputAddress in toVin: getAddressType
+    // returns 'unknown' for any string that fails decodeAddress, so the type-guard
+    // returns false and toVin throws "Unknown input address '<addr>'". This is the
+    // only branch in toVin that surfaces to consumers — wallet code relies on it
+    // to fail loudly rather than silently producing a zero-weight input.
+    it('throws Unknown input address when the input cannot be classified', () => {
+        expect(() =>
+            getTransactionVbytesFromAddresses(
+                ['not_an_address'],
+                ['1BitcoinEaterAddressDontSendf59kuE'],
+                NETWORKS.bitcoin,
+            ),
+        ).toThrow("Unknown input address 'not_an_address'");
+    });
 });
