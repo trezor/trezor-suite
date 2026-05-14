@@ -98,7 +98,8 @@ export type YieldSupplyApprovalReviewParams = YieldFlowParams & {
 export type YieldStackParamList = {
     [YieldStackRoutes.HowYieldWorks]: YieldFlowParams;
     [YieldStackRoutes.YieldConsents]: YieldFlowParams;
-    [YieldStackRoutes.YieldSupplyFlow]: YieldFlowParams;
+    [YieldStackRoutes.YieldSupplyApproval]: YieldFlowParams;
+    [YieldStackRoutes.YieldSupply]: YieldFlowParams;
     [YieldStackRoutes.YieldSupplyApprovalReview]: YieldSupplyApprovalReviewParams;
     [YieldStackRoutes.YieldSupplyReview]: YieldFlowParams;
 };

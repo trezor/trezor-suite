@@ -6,7 +6,7 @@ import { Box, VStack } from '@suite-native/atoms';
 import { YieldSupplyAmountInputCard } from './YieldSupplyAmountInputCard';
 import { YieldSupplyStepCard } from './YieldSupplyStepCard';
 
-type ApproveSupplyScreenProps = {
+type ApproveSupplyFormProps = {
     approvalLimitTitle: ReactNode;
     balance: string;
     feeSelector: ReactNode;
@@ -17,7 +17,7 @@ type ApproveSupplyScreenProps = {
     tokenSymbol: TokenSymbol;
 };
 
-export const ApproveSupplyScreen = ({
+export const ApproveSupplyForm = ({
     approvalLimitTitle,
     balance,
     feeSelector,
@@ -26,9 +26,9 @@ export const ApproveSupplyScreen = ({
     onApprovalLimitPress,
     onMaxChange,
     tokenSymbol,
-}: ApproveSupplyScreenProps) => (
+}: ApproveSupplyFormProps) => (
     <VStack spacing="sp16">
-        <YieldSupplyStepCard />
+        <YieldSupplyStepCard currentStepIndex={0} />
 
         <Box paddingHorizontal="sp16">
             <YieldSupplyAmountInputCard

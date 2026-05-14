@@ -1,11 +1,16 @@
-import { type RouteProp, useRoute } from '@react-navigation/native';
+import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { useBottomSheetModal } from '@suite-native/atoms';
+import { Box, Button, useBottomSheetModal } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
-import { Screen, type YieldStackParamList, type YieldStackRoutes } from '@suite-native/navigation';
+import {
+    Screen,
+    type StackNavigationProps,
+    type YieldStackParamList,
+    YieldStackRoutes,
+} from '@suite-native/navigation';
 import { FeeSelector } from '@suite-native/transaction-management';
 
-import { ApproveSupplyScreen } from '../components/ApproveSupplyScreen';
+import { ApproveSupplyForm } from '../components/ApproveSupplyForm';
 import { YieldSupplyApprovalLimitBottomSheet } from '../components/YieldSupplyApprovalLimitBottomSheet';
 import { YieldSupplyFlowFooter } from '../components/YieldSupplyFlowFooter';
 import { YieldSupplyFlowScreenHeader } from '../components/YieldSupplyFlowScreenHeader';
@@ -16,10 +21,15 @@ import { useYieldApprovalLimit } from '../hooks/useYieldApprovalLimit';
 import { useYieldSupplyApprovalSubmit } from '../hooks/useYieldSupplyApprovalSubmit';
 import { useYieldSupplyForm } from '../hooks/useYieldSupplyForm';
 
-type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldSupplyFlow>;
+type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldSupplyApproval>;
+type NavigationProps = StackNavigationProps<
+    YieldStackParamList,
+    YieldStackRoutes.YieldSupplyApproval
+>;
 
-export const YieldSupplyFlowScreen = () => {
+export const YieldSupplyApprovalScreen = () => {
     const route = useRoute<RouteProps>();
+    const navigation = useNavigation<NavigationProps>();
     const { approvalLimitTitle, approvalLimitType, setApprovalLimitType } = useYieldApprovalLimit();
     const {
         bottomSheetRef: infoBottomSheetRef,
@@ -79,6 +89,13 @@ export const YieldSupplyFlowScreen = () => {
         await handleSubmitApproval(amount);
     });
 
+    const handleOpenSupplyShell = () => {
+        if (__DEV__) {
+            console.warn('[YieldSupply] Opening temporary supply shell for route validation.');
+            navigation.navigate(YieldStackRoutes.YieldSupply, route.params);
+        }
+    };
+
     if (resolutionStatus !== 'resolved') {
         return null;
     }
@@ -112,7 +129,7 @@ export const YieldSupplyFlowScreen = () => {
             }
         >
             <Form form={form}>
-                <ApproveSupplyScreen
+                <ApproveSupplyForm
                     approvalLimitTitle={approvalLimitTitle}
                     balance={token.balance}
                     feeSelector={
@@ -132,6 +149,18 @@ export const YieldSupplyFlowScreen = () => {
                     onMaxChange={handleMaxChange}
                     tokenSymbol={tokenSymbol}
                 />
+                {__DEV__ && (
+                    <Box paddingHorizontal="sp16" marginTop="sp16">
+                        <Button
+                            accessibilityRole="button"
+                            intent="neutral"
+                            priority="secondary"
+                            onPress={handleOpenSupplyShell}
+                        >
+                            Open supply shell
+                        </Button>
+                    </Box>
+                )}
             </Form>
             <YieldSupplyInfoBottomSheet
                 ref={infoBottomSheetRef}

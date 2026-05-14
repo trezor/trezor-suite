@@ -2688,6 +2688,7 @@ export const messages = {
             amountToSupply: 'Amount to supply',
             supplyMax: 'Supply max',
             balance: 'Balance:',
+            approvedAmount: 'Approved amount',
             approvalLimit: 'Approval limit',
             perSupply: 'Per supply',
             estimatedRewardsLabel: 'Estimated yearly rewards',

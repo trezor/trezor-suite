@@ -8,8 +8,9 @@ import {
 
 import { HowYieldWorksScreen } from '../screens/HowYieldWorksScreen';
 import { YieldConsentsScreen } from '../screens/YieldConsentsScreen';
+import { YieldSupplyApprovalScreen } from '../screens/YieldSupplyApprovalScreen';
 import { YieldSupplyApprovalTransactionDataReviewScreen } from '../screens/YieldSupplyApprovalTransactionDataReviewScreen';
-import { YieldSupplyFlowScreen } from '../screens/YieldSupplyFlowScreen';
+import { YieldSupplyScreen } from '../screens/YieldSupplyScreen';
 
 const YieldStack = createNativeStackNavigator<YieldStackParamList>();
 
@@ -29,9 +30,14 @@ export const YieldStackNavigator = () => (
             component={YieldConsentsScreen}
         />
         <YieldStack.Screen
-            options={{ title: YieldStackRoutes.YieldSupplyFlow }}
-            name={YieldStackRoutes.YieldSupplyFlow}
-            component={YieldSupplyFlowScreen}
+            options={{ title: YieldStackRoutes.YieldSupplyApproval }}
+            name={YieldStackRoutes.YieldSupplyApproval}
+            component={YieldSupplyApprovalScreen}
+        />
+        <YieldStack.Screen
+            options={{ title: YieldStackRoutes.YieldSupply }}
+            name={YieldStackRoutes.YieldSupply}
+            component={YieldSupplyScreen}
         />
         <YieldStack.Screen
             options={{ title: YieldStackRoutes.YieldSupplyApprovalReview }}
