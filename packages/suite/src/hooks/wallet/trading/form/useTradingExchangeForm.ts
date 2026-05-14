@@ -43,7 +43,7 @@ import {
     tradingExchangeActions,
     tradingThunks,
 } from '@suite-common/trading';
-import { getNetwork, getNetworkType } from '@suite-common/wallet-config';
+import { getNetwork, isAccountBasedNetwork } from '@suite-common/wallet-config';
 import {
     ETHEREUM_ADJUST_GAS_LIMIT,
     fetchAndUpdateAccountThunk,
@@ -584,17 +584,9 @@ export const useTradingExchangeForm = ({
 
     const setValueRef = useCurrentRef(setValue);
     useEffect(() => {
-        const networkType = getNetworkType(account.symbol);
+        const fromAddress = isAccountBasedNetwork(account.symbol) ? account.descriptor : undefined;
 
-        switch (networkType) {
-            case 'ethereum':
-            case 'solana':
-            case 'ripple':
-            case 'stellar':
-                return setValueRef.current('fromAddress', account.descriptor);
-            default:
-                return setValueRef.current('fromAddress', undefined);
-        }
+        setValueRef.current('fromAddress', fromAddress);
     }, [account.symbol, account.descriptor, setValueRef]);
 
     // set transactionData from DEX quote for correct fees fetching

@@ -1,5 +1,10 @@
+import { type Network, networks } from '@suite-common/wallet-config';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
+
+import { type Account } from 'src/types/wallet';
 import { FIXTURE_ACCOUNT_OPTIONS } from 'src/utils/wallet/trading/__fixtures__/tradingUtils';
 import {
+    getComposeAddressPlaceholder,
     getCountryLabelParts,
     getTradeTypeByRoute,
     resolveAddressAndToken,
@@ -104,5 +109,69 @@ describe('trading utils', () => {
         expect(getTradeTypeByRoute('wallet-trading-exchange-confirm')).toEqual('exchange');
 
         expect(getTradeTypeByRoute('wallet-index')).toEqual(undefined);
+    });
+
+    describe('getComposeAddressPlaceholder', () => {
+        describe('bitcoin', () => {
+            it('returns change address as fallback when no device is provided', async () => {
+                const account = {
+                    networkType: 'bitcoin',
+                    symbol: 'btc',
+                    addresses: {
+                        change: [{ address: 'bc1qChangeAddress' }],
+                    },
+                } as unknown as Account;
+
+                const network = networks.btc;
+
+                const result = await getComposeAddressPlaceholder(account, network);
+
+                expect(result).toBe('bc1qChangeAddress');
+            });
+        });
+
+        describe('ethereum', () => {
+            it('returns empty string', async () => {
+                const ethereumAccount = {
+                    networkType: 'ethereum',
+                    descriptor: asAccountDescriptor('0xEthAddress'),
+                } as unknown as Account;
+
+                const result = await getComposeAddressPlaceholder(ethereumAccount, {} as Network);
+
+                expect(result).toBe('');
+            });
+        });
+
+        describe('cardano', () => {
+            it('returns empty string', async () => {
+                const cardanoAccount = {
+                    networkType: 'cardano',
+                    descriptor: asAccountDescriptor('addr1CardanoAddress'),
+                } as unknown as Account;
+
+                const result = await getComposeAddressPlaceholder(cardanoAccount, {} as Network);
+
+                expect(result).toBe('');
+            });
+        });
+
+        describe.each([
+            { networkType: 'solana', descriptor: 'SolanaAddress123' },
+            { networkType: 'ripple', descriptor: 'rRippleAddress123' },
+            { networkType: 'stellar', descriptor: 'GStellarAddress123' },
+            { networkType: 'tron', descriptor: 'TTronAddress123' },
+        ] as const)('$networkType', ({ networkType, descriptor }) => {
+            it('returns account descriptor', async () => {
+                const account = {
+                    networkType,
+                    descriptor: asAccountDescriptor(descriptor),
+                } as unknown as Account;
+
+                const result = await getComposeAddressPlaceholder(account, {} as Network);
+
+                expect(result).toBe(descriptor);
+            });
+        });
     });
 });
