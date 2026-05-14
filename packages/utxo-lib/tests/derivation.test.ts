@@ -1,5 +1,5 @@
 import fixtures from './__fixtures__/derivation';
-import { deriveAddresses } from '../src/derivation';
+import { deriveAddresses, getXpubOrDescriptorInfo } from '../src/derivation';
 import { litecoin, regtest, testnet } from '../src/networks';
 
 const getNetwork = (symbol?: string) => {
@@ -14,6 +14,14 @@ const getNetwork = (symbol?: string) => {
             break;
     }
 };
+
+describe('getXpubOrDescriptorInfo descriptor parse errors', () => {
+    it('throws when a pkh(...) descriptor body does not match the structural regex', () => {
+        expect(() => getXpubOrDescriptorInfo('pkh(invalid)')).toThrow(
+            /Descriptor cannot be parsed: pkh\(invalid\)/,
+        );
+    });
+});
 
 describe('Testing address derivation from xpubs', () => {
     fixtures.derivation.forEach(f => {
