@@ -239,6 +239,21 @@ describe('Transaction', () => {
             expect(witnessHash).toEqual(Buffer.alloc(32, 0));
         });
 
+        it('Decred: throws on unsupported script version when output version byte is non-zero', () => {
+            // Synthesized 15-byte hex driving decred.fromBuffer to the version!==DECRED_SCRIPT_VERSION
+            // throw at decred.ts:149. Layout:
+            //   bytes 0-3  '01000000' Int32LE → version=1, type=0 (DECRED_TX_SERIALIZE_FULL)
+            //   byte 4     '00'                → vinLen varint = 0 (no inputs)
+            //   byte 5     '01'                → voutLen varint = 1 (one output)
+            //   bytes 6-13 '0000000000000000'  → output value uint64 LE = 0
+            //   bytes 14-15'0100'              → output script version uint16 LE = 1
+            // version=1 !== DECRED_SCRIPT_VERSION=0, so the throw fires before reading the script.
+            const hex = '01000000000100000000000000000100';
+            expect(() => Transaction.fromHex(hex, { network: NETWORKS.decred })).toThrow(
+                'Unsupported Decred script version',
+            );
+        });
+
         it('Bitcoin: getHash(forWitness=true) on a coinbase transaction returns 32 zero bytes', () => {
             const coinbaseFixture = fixturesBitcoin.valid[3];
             expect(coinbaseFixture.coinbase).toBe(true);
