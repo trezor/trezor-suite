@@ -258,6 +258,16 @@ export const fixtures = {
             },
         },
         {
+            description:
+                'Pubkeys mismatch when a.pubkeys length differs from decoded output pubkeys',
+            exception: 'Pubkeys mismatch',
+            options: {},
+            arguments: {
+                pubkeys: ['030000000000000000000000000000000000000000000000000000000000000001'],
+                output: 'OP_2 030000000000000000000000000000000000000000000000000000000000000001 030000000000000000000000000000000000000000000000000000000000000002 OP_2 OP_CHECKMULTISIG',
+            },
+        },
+        {
             exception: 'Pubkey count mismatch',
             arguments: {
                 m: 2,
