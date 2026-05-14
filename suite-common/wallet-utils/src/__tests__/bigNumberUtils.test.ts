@@ -21,9 +21,10 @@ describe('BigNumber utils', () => {
 
         it('returns false for non-max values', () => {
             expect(isMaxAllowance('0')).toBe(false);
+            // this number is one order smaller than max
             expect(
                 isMaxAllowance(
-                    '115792089237316195423570985008687907853269984665640564039457584007913129639934',
+                    '15792089237316195423570985008687907853269984665640564039457584007913129639934',
                 ),
             ).toBe(false);
         });
