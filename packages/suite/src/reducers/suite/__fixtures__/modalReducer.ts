@@ -199,18 +199,19 @@ export default [
         result: initialState,
     },
     {
-        description: 'UI_REQUEST.CLOSE_UI_WINDOW with preserve=true closes device context modal',
+        description:
+            'UI_REQUEST.CLOSE_UI_WINDOW with preserve=true keeps device context modal open (preserve cleared)',
         initialState: { ...deviceContextState, preserve: true },
         actions: [
             {
                 type: UI_REQUEST.CLOSE_UI_WINDOW,
             },
         ],
-        result: initialState,
+        result: { ...deviceContextState, preserve: false },
     },
     {
         description:
-            'UI_REQUEST.CLOSE_UI_WINDOW with preserve=true closes device confirmation context modal',
+            'UI_REQUEST.CLOSE_UI_WINDOW with preserve=true keeps device confirmation context modal open (preserve cleared)',
         initialState: {
             context: MODAL_CONTEXT_DEVICE_CONFIRMATION,
             windowType: 'no-backup' as const,
@@ -221,7 +222,11 @@ export default [
                 type: UI_REQUEST.CLOSE_UI_WINDOW,
             },
         ],
-        result: initialState,
+        result: {
+            context: MODAL_CONTEXT_DEVICE_CONFIRMATION,
+            windowType: 'no-backup',
+            preserve: false,
+        },
     },
     {
         description: 'UI_REQUEST.CLOSE_UI_WINDOW with preserve=true keeps user context modal open',
