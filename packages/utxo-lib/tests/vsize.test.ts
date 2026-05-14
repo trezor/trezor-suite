@@ -36,4 +36,21 @@ describe('vsize', () => {
         );
         expect(vbytes).toBe(173);
     });
+
+    // Exercises the OP_RETURN ascii branch in toVout: BitcoinJsAddress.toOutputScript
+    // throws, the catch block captures msg = "(hello)", and the parens-anchored
+    // regex /^\(.*\)$/ matches, so scriptLen = msg.length = 7 (the parens cancel
+    // out the 2-byte OP_RETURN+push overhead — that's the per-package convention).
+    //
+    // Weight: TX_BASE(32) + varInt(1)*4 + inputWeight(160 + 4*108=592) +
+    //         varInt(1)*4 + outputWeight(4*(8+1+7)=64) = 696
+    // vbytes = ceil(696 / 4) = 174
+    it('computes vbytes for an OP_RETURN (ascii) output (ascii branch in toVout)', () => {
+        const vbytes = getTransactionVbytesFromAddresses(
+            ['1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT'],
+            ['OP_RETURN (hello)'],
+            NETWORKS.bitcoin,
+        );
+        expect(vbytes).toBe(174);
+    });
 });
