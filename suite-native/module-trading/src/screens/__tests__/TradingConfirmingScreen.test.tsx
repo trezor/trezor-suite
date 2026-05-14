@@ -9,7 +9,10 @@ import { type RootStackParamList, RootStackRoutes } from '@suite-native/navigati
 import { type TestStore, act, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { mockTransaction } from '@suite-native/tokens';
 import { exchangeQuotes } from '@suite-native/trading-fixtures';
-import { useTransactionDetails } from '@suite-native/transaction-management';
+import {
+    useNavigationRemoveInterceptor,
+    useTransactionDetails,
+} from '@suite-native/transaction-management';
 
 import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
 import { TradingConfirmingScreen } from '../TradingConfirmingScreen';
@@ -18,6 +21,7 @@ const mockOpenInBlockchain = jest.fn();
 
 jest.mock('@suite-native/transaction-management', () => ({
     ...jest.requireActual('@suite-native/transaction-management'),
+    useNavigationRemoveInterceptor: jest.fn(),
     useTransactionDetails: jest.fn(),
 }));
 
@@ -35,6 +39,7 @@ jest.mock('../../hooks/exchange/Approval/useApprovalFlow', () => ({
 }));
 
 const mockUseTransactionDetails = useTransactionDetails as jest.Mock;
+const mockUseNavigationRemoveInterceptor = jest.mocked(useNavigationRemoveInterceptor);
 
 const testQuote = exchangeQuotes[0];
 
@@ -55,6 +60,8 @@ const mockNavigation = {
     push: jest.fn(),
     setOptions: jest.fn(),
     addListener: mockAddListener,
+    canGoBack: jest.fn(() => true),
+    getState: jest.fn(() => ({ routes: [{ key: 'root' }, { key: 'confirming' }] })),
 } as any;
 
 let routeParams: RootStackParamList[RootStackRoutes.TradingConfirming] = {
@@ -287,25 +294,36 @@ describe('TradingConfirmingScreen', () => {
     it('should clear selected quote on back navigation', () => {
         renderScreen();
 
-        const [, listener] =
-            mockAddListener.mock.calls.find(([event]) => event === 'beforeRemove') ?? [];
+        const interceptorOptions = mockUseNavigationRemoveInterceptor.mock.calls.at(-1)?.[0];
+
+        if (!interceptorOptions) {
+            throw new Error('Expected useNavigationRemoveInterceptor to be called');
+        }
+        const { onRemoveConfirmed } = interceptorOptions;
+
         act(() => {
-            listener?.({ data: { action: { type: 'GO_BACK' } } });
+            onRemoveConfirmed();
         });
 
         expect(selectTradingExchangeSelectedQuote(store.getState())).toBeUndefined();
+        expect(mockNavigation.popToTop).toHaveBeenCalled();
+        expect(mockNavigation.goBack).toHaveBeenCalled();
     });
 
-    it('should not clear selected quote on programmatic popToTop (POP with count > 1)', () => {
-        renderScreen();
-
-        const [, listener] =
-            mockAddListener.mock.calls.find(([event]) => event === 'beforeRemove') ?? [];
-        act(() => {
-            listener?.({ data: { action: { type: 'POP', payload: { count: 3 } } } });
+    it('should allow leaving without confirmation when approval transaction fails', () => {
+        mockUseAllowanceTxTracking.mockReturnValue({
+            status: { isConfirmed: false, isFailed: true, isPending: false } as TransactionStatus,
+            approvalTxid: 'some-txid',
+            setApprovalTxid: jest.fn(),
         });
 
-        expect(selectTradingExchangeSelectedQuote(store.getState())).toEqual(testQuote);
+        renderScreen();
+
+        expect(mockUseNavigationRemoveInterceptor).toHaveBeenCalledWith(
+            expect.objectContaining({
+                shouldPrevent: false,
+            }),
+        );
     });
 
     describe('analytics', () => {
@@ -320,12 +338,16 @@ describe('TradingConfirmingScreen', () => {
             store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
             renderScreen();
 
-            // Simulate the beforeRemove event with a GO_BACK action (back button / swipe back).
-            const [, listener] =
-                mockAddListener.mock.calls.find(([event]) => event === 'beforeRemove') ?? [];
+            const interceptorOptions = mockUseNavigationRemoveInterceptor.mock.calls.at(-1)?.[0];
+
+            if (!interceptorOptions) {
+                throw new Error('Expected useNavigationRemoveInterceptor to be called');
+            }
+
+            const { onRemoveConfirmed } = interceptorOptions;
 
             act(() => {
-                listener?.({ data: { action: { type: 'GO_BACK' } } });
+                onRemoveConfirmed();
             });
 
             expect(mockAnalyticsReport).toHaveBeenCalledWith('approval-confirming', 'cancel');

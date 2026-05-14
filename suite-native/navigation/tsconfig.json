@@ -32,6 +32,7 @@
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/theme" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../test-utils" }
     ]
 }
