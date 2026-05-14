@@ -362,8 +362,8 @@ export const addFakePendingEvmTxThunk = createThunk(
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
         const rawFeeInfo = selectRawNetworkFeeInfo(getState(), account.symbol);
 
-        const FAKE_TX_TTL_MS = 15 * 60 * 1000; // keep fake tx for 15 minutes
-        const deadline = FAKE_TX_TTL_MS / rawFeeInfo!.blockTime;
+        const FAKE_TX_TTL_SECONDS = 15 * 60; // keep fake tx for 15 minutes
+        const deadline = FAKE_TX_TTL_SECONDS / rawFeeInfo!.blockTime;
 
         const fakeTx = buildFakePendingEvmTx({
             precomposedTransaction,
