@@ -6,7 +6,6 @@ import { useNavigation } from '@react-navigation/native';
 import { selectDeviceStaticSessionId, selectIsDeviceConnected } from '@suite-common/device';
 import { AnimatedFullAlertBox } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useSuiteSyncErrorHandler } from '@suite-native/labeling';
 import {
     type AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
@@ -15,6 +14,7 @@ import {
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { useNativeServices } from '@suite-native/services';
+import { useSuiteSyncErrorHandler } from '@suite-native/suite-sync';
 
 import { selectShouldDisplaySuiteSyncAlert } from '../homescreenSelectors';
 

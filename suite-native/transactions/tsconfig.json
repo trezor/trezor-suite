@@ -46,6 +46,7 @@
         { "path": "../navigation" },
         { "path": "../scrollview" },
         { "path": "../services" },
+        { "path": "../suite-sync" },
         { "path": "../tokens" },
         {
             "path": "../../packages/blockchain-link-types"

@@ -8,9 +8,9 @@ import { useAlert } from '@suite-native/alerts';
 import { events as nativeEvents } from '@suite-native/analytics';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useSuiteSyncErrorHandler } from '@suite-native/labeling';
 import { useAnalytics, useNativeServices } from '@suite-native/services';
 import { StorageContext } from '@suite-native/storage';
+import { useSuiteSyncErrorHandler } from '@suite-native/suite-sync';
 
 export const ToggleSuiteSyncCard = () => {
     const analytics = useAnalytics();

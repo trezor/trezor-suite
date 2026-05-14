@@ -21,7 +21,7 @@ import { useNativeServices } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 import { exhaustive } from '@trezor/type-utils';
 
-import { suiteSyncErrorMessageMap } from '../suiteSyncErrorMessages';
+import { suiteSyncErrorMessageMap } from './suiteSyncErrorMessages';
 
 export const useTurnOnSuiteSyncGuard = () => {
     const { showAlert } = useAlert();

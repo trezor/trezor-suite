@@ -54,6 +54,7 @@
         { "path": "../navigation" },
         { "path": "../qr-code" },
         { "path": "../services" },
+        { "path": "../suite-sync" },
         { "path": "../toasts" },
         { "path": "../tokens" },
         { "path": "../transactions" },

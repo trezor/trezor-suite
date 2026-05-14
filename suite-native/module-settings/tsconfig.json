@@ -56,6 +56,7 @@
         { "path": "../services" },
         { "path": "../settings" },
         { "path": "../storage" },
+        { "path": "../suite-sync" },
         { "path": "../theme" },
         { "path": "../toasts" },
         { "path": "../trading-residence" },

@@ -4,5 +4,3 @@ export { EditableLabelLayout } from './components/EditableLabelLayout';
 export { LabelEditForm } from './components/LabelEditForm';
 export type { CombinedLabelingState } from './selectors';
 export { selectIsLabellingAllowed } from './selectors';
-export { useTurnOnSuiteSyncGuard } from './hooks/useTurnOnSuiteSyncGuard';
-export { useSuiteSyncErrorHandler } from './hooks/useSuiteSyncLabelErrorHandler';
