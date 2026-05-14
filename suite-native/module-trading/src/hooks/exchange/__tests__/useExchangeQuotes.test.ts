@@ -6,15 +6,14 @@ import {
     tradingActions,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
 import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
+    btc1NormalAccount,
     btcAsset,
+    eth1NormalAccount,
     ethAsset,
     exchangeQuotes,
-    getBtcAccount,
-    getEthAccount,
     getInitializedTradingState,
     usdtAsset,
 } from '@suite-native/trading-fixtures';
@@ -64,7 +63,7 @@ describe('useExchangeQuotes', () => {
             overrides: {
                 wallet: {
                     trading: getInitializedTradingState(),
-                    accounts: [getBtcAccount(), getEthAccount()],
+                    accounts: [btc1NormalAccount, eth1NormalAccount],
                     settings: {
                         bitcoinAmountUnit,
                     },
@@ -234,24 +233,12 @@ describe('useExchangeQuotes', () => {
     it.each<[keyof ExchangeFormValues, ExchangeFormValues[keyof ExchangeFormValues]]>([
         ['receiveAsset', usdtAsset],
         ['sendCryptoAmount', '0.2'],
-        [
-            'sendAccount',
-            getBtcAccount(
-                'btc-account-2' as AccountKey, // Todo: create properly via `createAccountKey()`
-            ),
-        ],
+        ['sendAccount', btc1NormalAccount],
         [
             'receiveAccount',
             {
-                account: getBtcAccount(),
-                address: {
-                    address: 'btc-receive-address',
-                    path: "m/44'/0'/0'/0/0",
-                    transfers: 0,
-                    balance: '0',
-                    sent: '0',
-                    received: '0',
-                },
+                account: btc1NormalAccount,
+                address: btc1NormalAccount.addresses!.unused[0],
             } satisfies ReceiveAccount,
         ],
     ])('should refetch quotes on %s value change', async (field, value) => {
@@ -297,7 +284,7 @@ describe('useExchangeQuotes', () => {
 
         act(() => {
             form.setValue('receiveAccount', {
-                account: getBtcAccount(),
+                account: btc1NormalAccount,
             });
         });
 
@@ -404,8 +391,8 @@ describe('useExchangeQuotes', () => {
     });
 
     it('should fill send and receive account when querying quotes if available', async () => {
-        const ethAccount = getEthAccount();
-        const btcAccount = getBtcAccount();
+        const ethAccount = eth1NormalAccount;
+        const btcAccount = btc1NormalAccount;
         const store = getInitializedStore();
 
         const dispatchSpy = jest.spyOn(store, 'dispatch');
