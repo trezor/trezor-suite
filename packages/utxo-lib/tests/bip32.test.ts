@@ -225,3 +225,13 @@ it('ecdsa', () => {
     expect(node.verify(hash, signatureLowR)).toEqual(true);
     expect(node.verify(seed, signatureLowR)).toEqual(false);
 });
+
+it('sign throws on a neutered (public-only) BIP32', () => {
+    const seed = Buffer.alloc(32, 1);
+    const hash = Buffer.alloc(32, 2);
+    const neuteredNode = BIP32.fromSeed(seed).neutered();
+
+    expect(neuteredNode.isNeutered()).toEqual(true);
+    expect(neuteredNode.privateKey).toEqual(undefined);
+    expect(() => neuteredNode.sign(hash)).toThrow(/Missing private key/);
+});
