@@ -153,6 +153,18 @@ describe('Transaction', () => {
             expect(prebuf.subarray(0, 5).toString('hex')).toEqual('aaaaaaaaaa');
             expect(prebuf.subarray(5, 5 + txLen).toString('hex')).toEqual(validHex);
         });
+
+        it('Dash: toBuffer with explicit non-zero initialOffset returns a subarray starting at that offset', () => {
+            const validHex = fixturesDash.valid[0].hex;
+            const tx = Transaction.fromHex(validHex, { network: NETWORKS.dashTest });
+            const txLen = Buffer.from(validHex, 'hex').length;
+            const prebuf = Buffer.alloc(txLen + 7, 0xbb);
+            const result = tx.toBuffer(prebuf, 7);
+            expect(result.length).toEqual(txLen);
+            expect(result.toString('hex')).toEqual(validHex);
+            expect(prebuf.subarray(0, 7).toString('hex')).toEqual('bbbbbbbbbbbbbb');
+            expect(prebuf.subarray(7, 7 + txLen).toString('hex')).toEqual(validHex);
+        });
     });
 
     describe('toBuffer/toHex', () => {
