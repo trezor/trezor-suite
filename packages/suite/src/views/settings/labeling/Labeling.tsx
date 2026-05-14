@@ -5,7 +5,7 @@ import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
 import { metadataLabelingActions, metadataThunks } from '@suite/metadata';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { SuiteSyncServers } from '@suite/suite-sync';
+import { SuiteSyncServers, suiteSyncErrorHandler } from '@suite/suite-sync';
 import { events } from '@suite-common/analytics';
 import {
     selectIsSuiteSyncEnabled,
@@ -19,7 +19,6 @@ import { HELP_CENTER_LABELING } from '@trezor/urls';
 
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { LabelingSwitchToLegacyModal } from 'src/components/suite/labeling/LabelingSwitchToLegacyModal';
-import { suiteSyncErrorHandler } from 'src/components/suite/labeling/suiteSyncErrorHandler';
 import {
     LABELING_LEGACY_OPTION_LABEL,
     LABELING_SELECT_OPTIONS,

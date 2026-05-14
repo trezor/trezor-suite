@@ -4,6 +4,7 @@ import { Address } from '@suite/address';
 import { events } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
+import { Labeling } from '@suite/labeling';
 import {
     selectIsLegacyLabelingVisible,
     selectIsMetadataEnabled,
@@ -41,9 +42,9 @@ import { spacings } from '@trezor/theme';
 
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { QrCode } from 'src/components/suite/QrCode';
-import { Labeling } from 'src/components/suite/labeling';
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { type ThunkAction } from 'src/types/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
@@ -81,6 +82,7 @@ export const ConfirmValueModal = ({
     const { openNodeById } = useGuideOpenNode();
     const { translationString } = useTranslation();
     const analytics = useAnalytics();
+    const { suiteSync } = useSuiteServices();
 
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
@@ -205,6 +207,7 @@ export const ConfirmValueModal = ({
                                 {isAddress && !account && label}
                                 {isAddress && !!account && shouldShowAddressLabelAction && (
                                     <Labeling
+                                        suiteSync={suiteSync}
                                         deviceStaticSessionId={account.deviceState}
                                         displayValue={
                                             <Text typographyStyle="body-md-strong">

@@ -2,6 +2,7 @@ import { type ReactElement } from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectIsMetadataEnabled } from '@suite/metadata';
+import { suiteSyncErrorHandler } from '@suite/suite-sync';
 import { shouldDisplayExportBip329Labels } from '@suite-common/bip329';
 import { type Bip329Label, bip329LabelSchema } from '@suite-common/bip329-types';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
@@ -24,7 +25,6 @@ import { HELP_CENTER_BIP329_URL } from '@trezor/urls';
 
 import { exportMetadataToBip329File } from 'src/actions/labels/exportMetadataToBip329File';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
-import { suiteSyncErrorHandler } from 'src/components/suite/labeling/suiteSyncErrorHandler';
 import { useDefaultAccountLabel, useDispatch, useSelector } from 'src/hooks/suite';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';

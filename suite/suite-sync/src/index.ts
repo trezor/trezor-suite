@@ -1,6 +1,7 @@
 export { createSuiteSyncDesktopCompositionRoot } from './createSuiteSyncDesktopCompositionRoot';
 export { SelectSuiteSyncServer } from './SelectSuiteSyncServer';
 export { SuiteSyncInteractionsTooltip } from './SuiteSyncInteractionsTooltip';
+export { suiteSyncErrorHandler } from './suiteSyncErrorHandler';
 export { SuiteSyncTurnOnModal } from './SuiteSyncTurnOnModal';
 export { SuiteSyncTurnOnUnsupportedModal } from './SuiteSyncTurnOnUnsupportedModal';
 export { SuiteSyncServers } from './SuiteSyncServers';

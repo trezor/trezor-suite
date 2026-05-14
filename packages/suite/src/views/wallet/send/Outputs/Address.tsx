@@ -5,6 +5,7 @@ import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 import { events } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
+import { Labeling } from '@suite/labeling';
 import { selectIsMetadataEnabled } from '@suite/metadata';
 import { openDeferredModal } from '@suite/modal';
 import { selectIsDebugModeActive } from '@suite/settings';
@@ -37,11 +38,12 @@ import {
 } from '@trezor/urls';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
-import { AddressLabeling, Labeling } from 'src/components/suite';
+import { AddressLabeling } from 'src/components/suite';
 import { InputError } from 'src/components/wallet';
 import { type InputErrorProps } from 'src/components/wallet/InputError';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
+import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { getProtocolInfo } from 'src/utils/suite/protocol';
 import { captureSentryMessage } from 'src/utils/suite/sentry';
@@ -78,6 +80,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const { translationString } = useTranslation();
     const analytics = useAnalytics();
     const { descriptor, networkType, symbol } = account;
+    const { suiteSync } = useSuiteServices();
     const inputName = `outputs.${outputId}.address` as const;
     // NOTE: compose errors are always associated with the amount.
     // If address is not valid then compose process will never be triggered,
@@ -511,6 +514,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     {shouldShowLabelAction && broadcastEnabled && (
                         <Text typographyStyle="body-sm" as="div">
                             <Labeling
+                                suiteSync={suiteSync}
                                 deviceStaticSessionId={device.state.staticSessionId}
                                 displayValue={
                                     <Text typographyStyle="body-sm-strong">

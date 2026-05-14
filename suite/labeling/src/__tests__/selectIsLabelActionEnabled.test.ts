@@ -1,5 +1,3 @@
-import { mocked } from 'jest-mock';
-
 import {
     type MetadataRootState,
     initialMetadataState,
@@ -7,25 +5,29 @@ import {
     selectIsLabelingInitPossible,
 } from '@suite/metadata';
 import { type SuiteSettingsRootState, suiteSettingsInitialState } from '@suite/settings';
-import { type DesktopSuiteSyncRootState, initialSuiteSyncDesktopState } from '@suite/suite-sync';
+import { type DesktopSuiteSyncRootState } from '@suite/suite-sync';
 import { deviceReducerInitialState } from '@suite-common/device';
 import {
     type MessageSystemRootState,
     messageSystemInitialState,
 } from '@suite-common/message-system';
 import { Feature } from '@suite-common/message-system';
-import { type SuiteSyncState, type WithSuiteSyncAndDeviceState } from '@suite-common/suite-sync';
+import {
+    type SuiteSyncState,
+    type WithSuiteSyncAndDeviceState,
+    initialSuiteSyncState,
+    selectIsSuiteSyncFeatureAvailable,
+    selectSuiteSyncInteraction,
+} from '@suite-common/suite-sync';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type StaticSessionId, type UnavailableCapabilities } from '@trezor/connect';
 
-import { type SuiteRootState, suiteInitialState } from 'src/reducers/suite/suiteReducer';
-
-import { selectIsLabelActionEnabled } from './selectIsLabelActionEnabled';
+import { selectIsLabelActionEnabled } from '../selectIsLabelActionEnabled';
 
 /**
  * It was really hard to mock the state for metadata. So I statically mocked
  * selectors. It's not nice, but as we plan to sunset legacy labeling
- * I don't want to spend time with testng the implementation details of it.
+ * I don't want to spend time with testing the implementation details of it.
  */
 jest.mock('@suite/metadata', () => ({
     selectIsLabelingAvailableForEntity: jest.fn(),
@@ -33,9 +35,36 @@ jest.mock('@suite/metadata', () => ({
     selectIsMetadataEnabled: jest.fn().mockReturnValue(false),
 }));
 
+jest.mock('@suite/suite-sync', () => ({
+    selectDesktopSuiteSyncInteraction: (
+        state: WithSuiteSyncAndDeviceState & MessageSystemRootState,
+        deviceStaticSessionId: StaticSessionId | null,
+        isMetadataEnabled: boolean,
+    ) => {
+        const isSuiteSyncFeatureEnabled = selectIsSuiteSyncFeatureAvailable(state);
+
+        if (!isSuiteSyncFeatureEnabled) {
+            return null;
+        }
+
+        const interaction = selectSuiteSyncInteraction(state, deviceStaticSessionId);
+
+        if (interaction === 'suite-sync-off' && isMetadataEnabled) {
+            return null;
+        }
+
+        return interaction;
+    },
+}));
+
 const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';
 
 const SUITE_SYNC_FEATURE_TOGGLE_MESSAGE_ID = 'test-toggle-suite-sync';
+
+const initialSuiteSyncDesktopState = {
+    ...initialSuiteSyncState,
+    showEnableSuiteSyncModal: null,
+};
 
 const createMessageSystemState = (isSuiteSyncFeatureAvailable: boolean) => {
     if (isSuiteSyncFeatureAvailable) {
@@ -99,7 +128,6 @@ const createMockState = (
         suiteSettings: {
             ...suiteSettingsInitialState,
         },
-        suite: suiteInitialState,
         wallet: {
             accounts: [] as any[],
         },
@@ -111,7 +139,6 @@ const createMockState = (
         // and I do not want to refactor Legacy Labeling
     }) as WithSuiteSyncAndDeviceState &
         MetadataRootState &
-        SuiteRootState &
         SuiteSettingsRootState &
         DesktopSuiteSyncRootState &
         MessageSystemRootState;
@@ -197,8 +224,8 @@ describe(selectIsLabelActionEnabled.name, () => {
     });
 
     it('disables labeling as Suite Sync is not available and legacy labeling is not possible', () => {
-        mocked(selectIsLabelingAvailableForEntity).mockReturnValue(false);
-        mocked(selectIsLabelingInitPossible).mockReturnValue(false);
+        jest.mocked(selectIsLabelingAvailableForEntity).mockReturnValue(false);
+        jest.mocked(selectIsLabelingInitPossible).mockReturnValue(false);
 
         const result = testLabelActionEnabled({
             unavailableCapabilities: {},
@@ -209,8 +236,8 @@ describe(selectIsLabelActionEnabled.name, () => {
     });
 
     it('allows labeling when legacy labeling is enabled (Suite Sync not available)', () => {
-        mocked(selectIsLabelingAvailableForEntity).mockReturnValue(true);
-        mocked(selectIsLabelingInitPossible).mockReturnValue(false);
+        jest.mocked(selectIsLabelingAvailableForEntity).mockReturnValue(true);
+        jest.mocked(selectIsLabelingInitPossible).mockReturnValue(false);
 
         const result = testLabelActionEnabled({
             unavailableCapabilities: {},
@@ -221,8 +248,8 @@ describe(selectIsLabelActionEnabled.name, () => {
     });
 
     it('allows labeling when legacy labeling init is possible (Suite Sync not available)', () => {
-        mocked(selectIsLabelingAvailableForEntity).mockReturnValue(true);
-        mocked(selectIsLabelingInitPossible).mockReturnValue(true);
+        jest.mocked(selectIsLabelingAvailableForEntity).mockReturnValue(true);
+        jest.mocked(selectIsLabelingInitPossible).mockReturnValue(true);
 
         const result = testLabelActionEnabled({
             unavailableCapabilities: {},
@@ -233,8 +260,8 @@ describe(selectIsLabelActionEnabled.name, () => {
     });
 
     it('falls back to legacy labeling when Suite Sync feature is available but disabled', () => {
-        mocked(selectIsLabelingAvailableForEntity).mockReturnValue(true);
-        mocked(selectIsLabelingInitPossible).mockReturnValue(false);
+        jest.mocked(selectIsLabelingAvailableForEntity).mockReturnValue(true);
+        jest.mocked(selectIsLabelingInitPossible).mockReturnValue(false);
 
         const result = testLabelActionEnabled({
             unavailableCapabilities: {},
@@ -245,8 +272,8 @@ describe(selectIsLabelActionEnabled.name, () => {
     });
 
     it('allows labeling when Suite Sync feature is available, disabled, and can be initialized', () => {
-        mocked(selectIsLabelingAvailableForEntity).mockReturnValue(false);
-        mocked(selectIsLabelingInitPossible).mockReturnValue(false);
+        jest.mocked(selectIsLabelingAvailableForEntity).mockReturnValue(false);
+        jest.mocked(selectIsLabelingInitPossible).mockReturnValue(false);
 
         const result = testLabelActionEnabled({
             unavailableCapabilities: {},
