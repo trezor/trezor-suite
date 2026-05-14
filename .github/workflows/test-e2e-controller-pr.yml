@@ -59,6 +59,9 @@ jobs:
     if: github.repository == 'trezor/trezor-suite' && needs.check-pr-size.outputs.is_small_pr == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
 
     steps:
       # SECURITY: check out the trusted develop branch so that only reviewed code
@@ -69,6 +72,13 @@ jobs:
         with:
           ref: develop
           fetch-depth: 0
+
+      - name: Configure AWS credentials
+        if: github.event.pull_request.head.repo.full_name == github.repository
+        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6
+        with:
+          role-to-assume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
+          aws-region: "eu-central-1"
 
       - name: Fetch PR head for diff
         run: git fetch origin pull/${{ github.event.pull_request.number }}/head:pr-head
@@ -92,10 +102,26 @@ jobs:
       - name: Run LLM test selector
         env:
           CLAUDE_API_KEY: ${{ secrets.E2E_CLAUDE_API_KEY }}
+          GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           yarn workspace @trezor/e2e-utils select-tests-llm --head-ref pr-head > llm-selection.json
           echo "LLM test selector output:"
           cat llm-selection.json
+
+      - name: Store token usage record to S3
+        if: always() && github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          if [ -f /tmp/llm-token-usage.json ]; then
+            aws s3api put-object \
+              --bucket dev.suite.sldev.cz \
+              --key "coverage/e2e/llm-usage/runs/${{ github.run_id }}_llmTestSelector.json" \
+              --body /tmp/llm-token-usage.json \
+              --content-type application/json \
+              --cache-control "no-cache, max-age=0"
+            echo "Token usage record stored."
+          else
+            echo "No token usage file found, skipping."
+          fi
 
       - name: Generate GitHub App token
         id: trezor-bot-token
