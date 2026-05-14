@@ -339,29 +339,6 @@ export const getAccountListSections = (
 
 const EMPTY_ARRAY: AccountSelectBottomSheetSection[] = [];
 
-export const selectAccountListSections = createMemoizedSelector(
-    [selectAccountByKey, selectTokenDefinitions, selectCurrentFiatRates, selectBaseCurrency],
-    (account, tokenDefinitions, fiatRates, localCurrency) => {
-        if (!account) return EMPTY_ARRAY;
-
-        const networkTokenDefinitions = getSimpleCoinDefinitionsByNetwork(
-            tokenDefinitions,
-            account.symbol,
-        );
-        const coinDefs = tokenDefinitions[account.symbol]?.coin;
-
-        return getAccountListSections(
-            account,
-            networkTokenDefinitions,
-            false,
-            coinDefs?.hide ?? [],
-            coinDefs?.show ?? [],
-            fiatRates,
-            localCurrency,
-        );
-    },
-);
-
 export const selectAccountListSectionsWithZeroBalanceGroup = createMemoizedSelector(
     [selectAccountByKey, selectTokenDefinitions, selectCurrentFiatRates, selectBaseCurrency],
     (account, tokenDefinitions, fiatRates, localCurrency) => {
