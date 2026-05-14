@@ -235,3 +235,24 @@ it('sign throws on a neutered (public-only) BIP32', () => {
     expect(neuteredNode.privateKey).toEqual(undefined);
     expect(() => neuteredNode.sign(hash)).toThrow(/Missing private key/);
 });
+
+it('identifier on a Decred-typed BIP32 uses hash160blake256 not hash160', () => {
+    // Decred's real network has wif=0x22de which exceeds the BIP32 NETWORK_TYPE
+    // wif:UInt8 schema, so we construct a synthetic network that still matches
+    // isNetworkType('decred', ...) via its bip32 public/private fields but has a
+    // BIP32-compatible wif. Only the identifier branch at bip32.ts:153 is being
+    // exercised — the wif value is never read by .identifier.
+    const seed = Buffer.alloc(32, 1);
+    const decredCompat = { ...NETWORKS.decred, wif: 0xde };
+    const decredNode = BIP32.fromSeed(seed, decredCompat);
+    const bitcoinNode = BIP32.fromSeed(seed);
+
+    expect(NETWORKS.isNetworkType('decred', decredCompat)).toEqual(true);
+    expect(decredNode.publicKey.toString('hex')).toEqual(bitcoinNode.publicKey.toString('hex'));
+    expect(decredNode.identifier.toString('hex')).toEqual(
+        '906ed54603b5f682e4a556740c401b7765764095',
+    );
+    expect(decredNode.identifier.toString('hex')).not.toEqual(
+        bitcoinNode.identifier.toString('hex'),
+    );
+});
