@@ -53,4 +53,21 @@ describe('vsize', () => {
         );
         expect(vbytes).toBe(174);
     });
+
+    // Exercises the "unknown output address" fallthrough in toVout: the address
+    // fails BitcoinJsAddress.toOutputScript (throws "has no matching Script"),
+    // and the OP_RETURN regex /^OP_RETURN (.*)$/ does not match either (no
+    // "OP_RETURN " prefix), so the else branch sets length = 0.
+    //
+    // Weight: TX_BASE(32) + varInt(1)*4 + inputWeight(160 + 4*108=592) +
+    //         varInt(1)*4 + outputWeight(4*(8+1+0)=36) = 668
+    // vbytes = ceil(668 / 4) = 167
+    it('treats an unrecognised output as zero-length (unknown branch in toVout)', () => {
+        const vbytes = getTransactionVbytesFromAddresses(
+            ['1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT'],
+            ['not_an_address'],
+            NETWORKS.bitcoin,
+        );
+        expect(vbytes).toBe(167);
+    });
 });
