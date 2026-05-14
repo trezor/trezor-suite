@@ -4,7 +4,8 @@ import { type SuiteSyncDataRootState, selectSuiteSyncOutputLabel } from '@suite-
 import { AddressLabel } from '@suite-native/address';
 import { HStack, Text, type TextProps } from '@suite-native/atoms';
 import { AddressFormatter } from '@suite-native/formatters';
-import { TransactionOutputLabel, selectIsLabellingAllowed } from '@suite-native/labeling';
+import { selectIsLabellingAllowed } from '@suite-native/labeling';
+import { TransactionOutputLabel } from '@suite-native/transactions';
 import type { StaticSessionId } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
