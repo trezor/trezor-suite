@@ -50,9 +50,10 @@ export const isMaxAllowance = (value: string | undefined): boolean => {
     }
 
     const allowance = new BigNumber(value);
+    const maxAllowance = new BigNumber(UINT256_MAX).dividedBy(2).integerValue();
 
     // Some callers pass the raw allowance value in base units.
-    if (allowance.eq(UINT256_MAX)) {
+    if (allowance.gte(maxAllowance)) {
         return true;
     }
 
@@ -63,5 +64,5 @@ export const isMaxAllowance = (value: string | undefined): boolean => {
     }
 
     // Some DEX quote fields pass the same value formatted with token decimals.
-    return allowance.shiftedBy(fractionalPart.length).eq(UINT256_MAX);
+    return allowance.shiftedBy(fractionalPart.length).gte(maxAllowance);
 };
