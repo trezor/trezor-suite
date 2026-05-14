@@ -186,6 +186,14 @@ describe('Transaction', () => {
             expect(tx.ins.length).toEqual(fixturesDash.valid[0].raw.ins.length);
             expect(tx.outs.length).toEqual(fixturesDash.valid[0].raw.outs.length);
         });
+
+        it('Decred: throws on Transaction has unexpected data when hex has trailing bytes', () => {
+            const validHex = fixturesDecred.valid[0].hex;
+            const badHex = `${validHex}ff`;
+            expect(() => Transaction.fromHex(badHex, { network: NETWORKS.decred })).toThrow(
+                'Transaction has unexpected data',
+            );
+        });
     });
 
     describe('toBuffer/toHex', () => {
