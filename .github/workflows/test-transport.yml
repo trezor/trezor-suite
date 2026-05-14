@@ -40,10 +40,14 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
+      - name: Install Socket Firewall
+        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        with:
+          mode: firewall-free
       - name: Install dependencies
         run: |
           echo -e "\nenableScripts: false" >> .yarnrc.yml
-          yarn workspaces focus @trezor/transport-test
+          sfw --silent yarn workspaces focus @trezor/transport-test
 
       - name: Setup containers
         run: |
@@ -81,11 +85,15 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
+      - name: Install Socket Firewall
+        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        with:
+          mode: firewall-free
       - name: Install dependencies
         shell: bash
         run: |
           echo -e "\nenableScripts: false" >> .yarnrc.yml
-          yarn workspaces focus @trezor/transport -A
+          sfw --silent yarn workspaces focus @trezor/transport -A
 
       - name: Build transport tester
         run: |

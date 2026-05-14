@@ -144,10 +144,14 @@ jobs:
           rm -rf ${{ github.workspace }}/packages/connect-explorer/build-webextension
           mv ${{ github.workspace }}/artifact-download ${{ github.workspace }}/packages/connect-explorer/build-webextension
 
+      - name: Install Socket Firewall
+        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        with:
+          mode: firewall-free
       - name: Install PW Dependencies
         shell: bash
         run: |
-          yarn workspaces focus @trezor/suite-e2e ${{ inputs.workspace-dependencies }}
+          sfw --silent yarn workspaces focus @trezor/suite-e2e ${{ inputs.workspace-dependencies }}
 
       - name: Install Playwright Browsers
         if: inputs.target == 'web' && steps.playwright-cache.outputs.cache-hit != 'true'

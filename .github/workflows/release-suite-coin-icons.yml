@@ -27,9 +27,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
+      - name: Install Socket Firewall
+        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        with:
+          mode: firewall-free
       - name: Download crypto icons
         run: |
-          yarn install
+          sfw --silent yarn install
           cd suite-common/icons
           yarn download-crypto-icons
 

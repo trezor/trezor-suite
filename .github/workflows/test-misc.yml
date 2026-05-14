@@ -26,7 +26,11 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
-      - run: yarn install --immutable
+      - name: Install Socket Firewall
+        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        with:
+          mode: firewall-free
+      - run: sfw --silent yarn install --immutable
       - run: yarn workspace @suite/intl translations:list-unused
 
   media-duplicates:
@@ -54,7 +58,11 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
-      - run: yarn install --immutable
+      - name: Install Socket Firewall
+        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        with:
+          mode: firewall-free
+      - run: sfw --silent yarn install --immutable
       - run: ./scripts/circular-dependencies/check-circular-dependencies.sh
 
   test-unit:
@@ -71,7 +79,11 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
-      - run: yarn install --immutable
+      - name: Install Socket Firewall
+        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        with:
+          mode: firewall-free
+      - run: sfw --silent yarn install --immutable
       - run: yarn message-system-sign-config
       - name: Unit Tests - Suite, Connect, Common
         run: yarn test:unit:all --exclude='@suite-native/*' -- --silent
@@ -90,6 +102,7 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
+      # sfw not working on windows runners
       - run: yarn install --immutable
       - run: yarn workspace @trezor/node-utils test:unit
 
@@ -105,7 +118,11 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
-      - run: yarn install --immutable
+      - name: Install Socket Firewall
+        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        with:
+          mode: firewall-free
+      - run: sfw --silent yarn install --immutable
       - run: yarn generate-package @trezor/meow-package
       - run: rm -rf packages/meow-package
 
@@ -120,5 +137,9 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
-      - run: yarn install --immutable
+      - name: Install Socket Firewall
+        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        with:
+          mode: firewall-free
+      - run: sfw --silent yarn install --immutable
       - run: yarn tsx ./packages/components/scripts/test-img-paths-exist.ts

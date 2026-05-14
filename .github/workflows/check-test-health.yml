@@ -47,9 +47,13 @@ jobs:
           key: node_modules-${{ hashFiles('yarn.lock') }}
           restore-keys: node_modules-
 
+      - name: Install Socket Firewall
+        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        with:
+          mode: firewall-free
       - name: Install dependencies
         shell: bash
-        run: yarn workspaces focus @trezor/e2e-utils
+        run: sfw --silent yarn workspaces focus @trezor/e2e-utils
 
       - name: Check test health and manage quarantine
         env:

@@ -32,11 +32,15 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           cache: yarn
+      - name: Install Socket Firewall
+        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        with:
+          mode: firewall-free
       - name: Install dependencies
         run: |
           echo -e "\nenableScripts: false" >> .yarnrc.yml
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          yarn workspaces focus @trezor/trezor-user-env-link
+          sfw --silent yarn workspaces focus @trezor/trezor-user-env-link
 
       - name: Run e2e tests
         run: |

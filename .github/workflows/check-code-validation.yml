@@ -24,6 +24,10 @@ jobs:
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version-file: ".nvmrc"
+      - name: Install Socket Firewall
+        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        with:
+          mode: firewall-free
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
@@ -37,7 +41,7 @@ jobs:
       # We can skip the build for all dependencies, even for those whitelisted, because this process is used only to validate the yarn.lock file and populate the cache.
       - name: Install deps
         run: |
-          yarn --immutable --mode=skip-build
+          sfw --silent yarn --immutable --mode=skip-build
 
   type-check:
     name: Type Checking
@@ -165,8 +169,12 @@ jobs:
         run: yarn verify-project-references
       - name: Detect unused dependencies
         run: yarn depcheck
+      - name: Install Socket Firewall
+        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        with:
+          mode: firewall-free
       - name: Yarn Dedupe check
-        run: yarn dedupe --check
+        run: sfw --silent yarn dedupe --check
       - name: Check dependency domain lists
         run: ./scripts/ci/list-missing-dependencies.sh
       - name: Verify Workspace Resolutions
