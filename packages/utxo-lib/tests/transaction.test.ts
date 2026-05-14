@@ -187,6 +187,16 @@ describe('Transaction', () => {
             expect(tx.outs.length).toEqual(fixturesDash.valid[0].raw.outs.length);
         });
 
+        it('Dash: throws on unsupported transaction type for version 3 (type > DASH_QUORUM_COMMITMENT)', () => {
+            // Synthesized 4-byte hex: Int32LE 0x00070003 encodes version=3 (lower 16 bits)
+            // and type=7 (upper 16 bits). Type 7 exceeds DASH_QUORUM_COMMITMENT=6, so dash.fromBuffer
+            // throws before reading ins/outs/locktime — no further padding needed.
+            const hex = '03000700';
+            expect(() => Transaction.fromHex(hex, { network: NETWORKS.dashTest })).toThrow(
+                'Unsupported Dash transaction type',
+            );
+        });
+
         it('Decred: throws on Transaction has unexpected data when hex has trailing bytes', () => {
             const validHex = fixturesDecred.valid[0].hex;
             const badHex = `${validHex}ff`;
