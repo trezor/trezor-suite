@@ -1,5 +1,6 @@
 import styled, { type DefaultTheme } from 'styled-components';
 
+import { Address } from '@suite/address';
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
@@ -15,7 +16,6 @@ import { Banner, Button, Column } from '@trezor/components';
 import { PendingTransactionInfo } from '@trezor/product-components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
-import { Address } from 'src/components/suite/Address';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAllowanceContext } from 'src/hooks/wallet/allowance';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';

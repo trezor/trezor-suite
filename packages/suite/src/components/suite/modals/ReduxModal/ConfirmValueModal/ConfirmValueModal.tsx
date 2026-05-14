@@ -1,5 +1,6 @@
 import { type ReactNode, useEffect, useState } from 'react';
 
+import { Address } from '@suite/address';
 import { events } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
@@ -38,7 +39,6 @@ import { spacings } from '@trezor/theme';
 
 import { selectDesktopSuiteSyncInteraction } from 'src/actions/suiteSync/suiteSyncSlice';
 import { AccountLabel } from 'src/components/suite/AccountLabel';
-import { Address } from 'src/components/suite/Address';
 import { QrCode } from 'src/components/suite/QrCode';
 import { Labeling } from 'src/components/suite/labeling';
 import { useGuideOpenNode } from 'src/hooks/guide';

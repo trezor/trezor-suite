@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { Address } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
 import {
     selectIsLegacyLabelingVisible,
@@ -17,7 +18,7 @@ import { type AccountAddress } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
-import { Address, FormattedCryptoAmount, Labeling } from 'src/components/suite';
+import { FormattedCryptoAmount, Labeling } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
 import { type AppState } from 'src/types/suite';

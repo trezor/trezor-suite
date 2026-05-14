@@ -1,3 +1,4 @@
+import { Address } from '@suite/address';
 import { useFormatters } from '@suite-common/formatters';
 import { getUnusedAddressFromAccount } from '@suite-common/trading';
 import { selectBaseCurrency, selectHasRunningDiscovery } from '@suite-common/wallet-core';
@@ -6,7 +7,7 @@ import { BASE_CURRENCY_ZERO, isUtxoBased } from '@suite-common/wallet-utils';
 import { Column, Icon, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 
-import { AccountLabeling, Address, CoinBalance, HiddenPlaceholder } from 'src/components/suite';
+import { AccountLabeling, CoinBalance, HiddenPlaceholder } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { TradingReceiveOptionRow } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveOptionRow';

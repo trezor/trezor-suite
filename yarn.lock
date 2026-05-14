@@ -14202,6 +14202,30 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/address@workspace:*, @suite/address@workspace:suite/address":
+  version: 0.0.0-use.local
+  resolution: "@suite/address@workspace:suite/address"
+  dependencies:
+    "@suite-common/device": "workspace:*"
+    "@suite-common/formatters": "workspace:*"
+    "@suite-common/suite-constants": "workspace:*"
+    "@suite-common/toast-notifications": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite/modal": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
+    "@trezor/dom-utils": "workspace:*"
+    "@trezor/theme": "workspace:*"
+    "@types/react": "npm:19.2.14"
+    react: "npm:19.2.4"
+    react-redux: "npm:9.2.0"
+    redux: "npm:^5.0.1"
+    redux-thunk: "npm:^3.1.0"
+    styled-components: "npm:^6.3.9"
+  languageName: unknown
+  linkType: soft
+
 "@suite/analytics@workspace:*, @suite/analytics@workspace:suite/analytics":
   version: 0.0.0-use.local
   resolution: "@suite/analytics@workspace:suite/analytics"
@@ -16204,6 +16228,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-common/walletconnect": "workspace:*"
+    "@suite/address": "workspace:*"
     "@suite/analytics": "workspace:*"
     "@suite/backup": "workspace:*"
     "@suite/desktop-update": "workspace:*"

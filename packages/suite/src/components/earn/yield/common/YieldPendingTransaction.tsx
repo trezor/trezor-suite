@@ -1,9 +1,8 @@
+import { Address } from '@suite/address';
 import type { TranslationKey } from '@suite/intl';
 import { Translation } from '@suite/intl';
 import type { YieldPendingTransactionState } from '@suite-common/wallet-core';
 import { PendingTransactionInfo } from '@trezor/product-components';
-
-import { Address } from 'src/components/suite/Address';
 
 type YieldPendingTransactionProps = {
     pendingTransaction: YieldPendingTransactionState;

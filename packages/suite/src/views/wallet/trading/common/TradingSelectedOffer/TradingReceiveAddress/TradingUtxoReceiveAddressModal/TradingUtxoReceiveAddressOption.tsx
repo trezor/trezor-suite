@@ -1,3 +1,4 @@
+import { Address } from '@suite/address';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
@@ -8,7 +9,7 @@ import { Column, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
-import { Address, CoinBalance } from 'src/components/suite';
+import { CoinBalance } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { TradingReceiveOptionRow } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveOptionRow';

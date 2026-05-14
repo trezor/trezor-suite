@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
@@ -33,8 +34,7 @@ import {
 } from '@trezor/components';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
-import { Address, HiddenPlaceholder } from 'src/components/suite';
+import { HiddenPlaceholder } from 'src/components/suite';
 import { RedactNumericalValue } from 'src/components/suite/RedactNumericalValue';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';

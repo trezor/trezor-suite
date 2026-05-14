@@ -1,17 +1,23 @@
+import { useDispatch, useSelector } from 'react-redux';
+
+import { type AnyAction } from 'redux';
+import { type ThunkDispatch } from 'redux-thunk';
 import styled, { type RuleSet, css } from 'styled-components';
 
-import { selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { AddressFormatter } from '@suite-common/formatters';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
-import { selectAddressDisplayType } from '@suite-common/wallet-core';
+import { type WalletSettingsRootState, selectAddressDisplayType } from '@suite-common/wallet-core';
 import { IconButton, Row, Text, type TextProps, Tooltip } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { type TypographyStyle } from '@trezor/theme';
 
-import { copyAddressToClipboard } from 'src/actions/suite/copyAddressActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { copyAddressToClipboard } from './copyAddressActions';
 
 const REGEXP_ADDRESS_CHUNKS = /((?:\S+\s){3}\S+)\s/g;
+
+type AddressRootState = DeviceRootState & WalletSettingsRootState;
+type AddressDispatch = ThunkDispatch<AddressRootState, any, AnyAction>;
 
 const mapDeviceModelToFontStyle = (deviceModelInternal: DeviceModelInternal): RuleSet<object> => {
     switch (deviceModelInternal) {
@@ -81,7 +87,7 @@ export const Address = ({
     isCopyAllowed = false,
     onCopy,
 }: AddressProps) => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AddressDispatch>();
     const selectedDevice = useSelector(selectSelectedDevice);
     const deviceModelInternal = selectedDevice?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
     const isChunkedSettings = useSelector(selectAddressDisplayType);
