@@ -41,9 +41,6 @@ export const Card: StoryObj<typeof meta> = {
                 type: 'radio',
             },
         },
-        label: {
-            control: 'text',
-        },
         header: {
             control: 'text',
         },

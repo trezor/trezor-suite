@@ -2,15 +2,10 @@ import { type HTMLAttributes, type ReactNode } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
-import { type Elevation, borders, spacingsPx } from '@trezor/theme';
+import { type Elevation, borders } from '@trezor/theme';
 
 import { type CardVariant, type FillType, type PaddingType } from './types';
-import {
-    mapFillTypeToCSS,
-    mapPaddingTypeToLabelPadding,
-    mapPaddingTypeToPadding,
-    mapVariantToColor,
-} from './utils';
+import { mapFillTypeToCSS, mapPaddingTypeToPadding, mapVariantToColor } from './utils';
 import { type AccessibilityProps, withAccessibilityProps } from '../../utils/accessibilityProps';
 import {
     type FrameProps,
@@ -33,50 +28,27 @@ export const allowedCardFrameProps = [
     'minHeight',
     'maxHeight',
     'overflow',
-    'position',
     'flex',
     'zIndex',
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedCardFrameProps)[number]>;
 
-type ContainerProps = {
-    $fillType: FillType;
-    $hasLabel: boolean;
-};
-
 type TransientAllowedFrameProps = TransientProps<AllowedFrameProps>;
 
-const Container = styled.section<ContainerProps & TransientAllowedFrameProps>`
-    width: 100%;
-    border-radius: ${borders.radii.md};
-
-    ${({ $hasLabel, $fillType }) =>
-        $hasLabel &&
-        css`
-            background: ${({ theme }) =>
-                $fillType !== 'flat' && theme.legacyBackgroundTertiaryDefaultOnElevation0};
-            padding: ${spacingsPx.xxxs};
-        `}
-
-    ${withFrameProps}
-`;
-
-type CardContainerProps = {
+type ContainerProps = {
     $elevation: Elevation;
     $fillType: FillType;
     $isClickable: boolean;
     $variant?: CardVariant;
-    $overflow: TransientAllowedFrameProps['$overflow'];
 };
 
-const CardContainer = styled.div<CardContainerProps>`
+const Container = styled.section<ContainerProps & TransientAllowedFrameProps>`
     position: relative;
     display: flex;
     flex-direction: column;
+    width: 100%;
     border-radius: ${borders.radii.md};
     cursor: ${({ $isClickable }) => ($isClickable ? 'pointer' : 'default')};
-    overflow: ${({ $overflow }) => ($overflow ? $overflow : 'hidden')};
-    height: 100%;
     transition:
         background 0.5s,
         border 0.5s,
@@ -96,13 +68,13 @@ const CardContainer = styled.div<CardContainerProps>`
         `}
 
     ${mapFillTypeToCSS}
+    ${withFrameProps}
 `;
 
 export type CardProps = AccessibilityProps &
     AllowedFrameProps & {
         header?: ReactNode;
         footer?: ReactNode;
-        label?: ReactNode;
         paddingType?: PaddingType;
         fillType?: FillType;
         onMouseEnter?: HTMLAttributes<HTMLDivElement>['onMouseEnter'];
@@ -119,11 +91,9 @@ export const Card = ({
     fillType = 'default',
     header,
     footer,
-    label,
     onClick,
     onMouseEnter,
     onMouseLeave,
-    className,
     tabIndex,
     children,
     variant,
@@ -171,35 +141,25 @@ export const Card = ({
     );
 
     return (
-        <Container $fillType={fillType} $hasLabel={!!label} {...frameProps}>
-            {label && (
-                <Box padding={mapPaddingTypeToLabelPadding({ paddingType })}>
-                    <Text as="div" intent="neutral" priority="secondary">
-                        {label}
-                    </Text>
-                </Box>
+        <Container
+            $elevation={elevation}
+            $fillType={fillType}
+            $isClickable={Boolean(onClick)}
+            $variant={variant}
+            onClick={onClick}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            data-testid={dataTest}
+            {...frameProps}
+            {...withAccessibilityProps({ tabIndex })}
+        >
+            {fillType === 'flat' ? (
+                <ElevationContext baseElevation={theme.variant === 'dark' ? 0 : -1}>
+                    {content}
+                </ElevationContext>
+            ) : (
+                <ElevationUp>{content}</ElevationUp>
             )}
-            <CardContainer
-                $elevation={elevation}
-                $fillType={fillType}
-                $isClickable={Boolean(onClick)}
-                $variant={variant}
-                onClick={onClick}
-                onMouseEnter={onMouseEnter}
-                className={className}
-                onMouseLeave={onMouseLeave}
-                data-testid={dataTest}
-                $overflow={frameProps.$overflow}
-                {...withAccessibilityProps({ tabIndex })}
-            >
-                {fillType === 'flat' ? (
-                    <ElevationContext baseElevation={theme.variant === 'dark' ? 0 : -1}>
-                        {content}
-                    </ElevationContext>
-                ) : (
-                    <ElevationUp>{content}</ElevationUp>
-                )}
-            </CardContainer>
         </Container>
     );
 };

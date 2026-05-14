@@ -8,7 +8,6 @@ type DataAnalyticsProps = {
     onConfirm: (trackingEnabled: boolean) => void;
     analyticsLink?: (chunks: ReactNode[]) => JSX.Element;
     tosLink?: (chunks: ReactNode[]) => JSX.Element;
-    className?: string;
     isInitialTrackingEnabled?: boolean;
 };
 
@@ -16,18 +15,12 @@ export const DataAnalytics = ({
     onConfirm,
     analyticsLink,
     tosLink,
-    className,
     isInitialTrackingEnabled = true,
 }: DataAnalyticsProps) => {
     const [trackingEnabled, setTrackingEnabled] = useState<boolean>(isInitialTrackingEnabled);
 
     return (
-        <Card
-            data-testid="@analytics/consent"
-            className={className}
-            paddingType="large"
-            maxWidth={550}
-        >
+        <Card data-testid="@analytics/consent" paddingType="large" maxWidth={550}>
             <Column gap={spacings.md}>
                 <Column gap={spacings.md}>
                     <Text typographyStyle="body-sm-strong" data-testid="@analytics/consent/heading">

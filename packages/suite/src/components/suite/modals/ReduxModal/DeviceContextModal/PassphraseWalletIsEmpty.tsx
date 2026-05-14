@@ -6,7 +6,6 @@ import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Button, Card, Column, H3, Paragraph, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
-import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -26,7 +25,6 @@ type PassphraseWalletIsEmptyContentProps = {
     onNext: () => void;
     onRetry: () => void;
     onCancel: () => void;
-    'data-testid'?: string;
     accountFailed?: boolean;
 };
 
@@ -34,7 +32,6 @@ const PassphraseWalletIsEmptyContent = ({
     onNext,
     onRetry,
     onCancel,
-    'data-testid': dataTest,
     accountFailed,
 }: PassphraseWalletIsEmptyContentProps) => {
     const { supportedMainnets } = useNetworkSupport();
@@ -56,25 +53,7 @@ const PassphraseWalletIsEmptyContent = ({
                     }
                 />
             </H3>
-            <Card
-                paddingType="small"
-                label={
-                    <Row
-                        justifyContent="space-between"
-                        margin={{ top: spacings.xxxs, bottom: spacings.xxs }}
-                    >
-                        <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT" />
-                        <Button
-                            size="small"
-                            intent="info"
-                            data-testid={dataTest}
-                            href={HELP_CENTER_PASSPHRASE_URL}
-                        >
-                            <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT_LINK" />
-                        </Button>
-                    </Row>
-                }
-            >
+            <Card paddingType="small">
                 <Column gap={spacings.sm} alignItems="center">
                     <Paragraph typographyStyle="body-md-strong">
                         <Translation
