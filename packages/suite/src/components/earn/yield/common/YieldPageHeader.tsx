@@ -1,7 +1,10 @@
+import { useMemo } from 'react';
+
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type EarnParams, goto } from '@suite/router';
+import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import {
     type EarnAnalyticsStep,
     EarnFlow,
@@ -16,8 +19,6 @@ import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useDispatch } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
-import { useAllYieldOpportunities } from '../../dashboard/yield/hooks/useAllYieldOpportunities';
-
 interface YieldPageHeaderProps {
     analyticsStep: Extract<EarnAnalyticsStep, 'yield-supply' | 'yield-withdraw'>;
     account?: Account;
@@ -27,10 +28,14 @@ interface YieldPageHeaderProps {
 export const YieldPageHeader = ({ analyticsStep, account, routeParams }: YieldPageHeaderProps) => {
     const dispatch = useDispatch();
     const analytics = useAnalytics();
-    const { yieldOpportunities } = useAllYieldOpportunities();
-    const vault = routeParams
-        ? yieldOpportunities.find(opportunity => opportunity.id === routeParams.yieldId)
-        : undefined;
+    const { data: yieldOpportunities, isSuccess } = useAllYieldOpportunities();
+    const vault = useMemo(
+        () =>
+            routeParams?.yieldId && isSuccess
+                ? yieldOpportunities.find(opportunity => opportunity.id === routeParams.yieldId)
+                : undefined,
+        [routeParams?.yieldId, isSuccess, yieldOpportunities],
+    );
     const vaultName = vault?.outputToken?.name;
     const networkSymbol = account?.symbol;
 

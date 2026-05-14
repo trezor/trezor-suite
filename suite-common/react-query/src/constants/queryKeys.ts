@@ -12,6 +12,7 @@ export const commonQueryKeys = {
     ],
     solanaRewards: (...args: any[]) => ['solana-rewards', ...args],
     solanaRewardsTotal: (address: string) => ['solana-rewards-total', address],
+    yieldOpportunities: (...args: any[]) => ['yield-opportunities', ...args],
     merkleRewards: (...args: any[]) => ['merkle-rewards', ...args],
     missingRateTickers: (...args: any[]) => ['missing-rate-tickers', ...args],
 } as const satisfies Record<string, AllowedQueryKey>;
@@ -21,7 +22,6 @@ export const desktopQueryKeys = {
     proxyImage: (src?: string) => ['proxy-image', src],
     inactiveTokens: (symbol: string, accountKey?: string) =>
         accountKey ? ['inactive-tokens', symbol, accountKey] : ['inactive-tokens', symbol],
-    yieldOpportunities: (pagination: any) => ['yield-opportunities', pagination],
 } as const satisfies Record<string, AllowedQueryKey>;
 
 export const mobileQueryKeys = {} as const satisfies Record<string, AllowedQueryKey>;

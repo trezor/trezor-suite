@@ -29,7 +29,7 @@ const getPollIntervalMs = (blockTime: number | undefined): number => {
 };
 
 type UseYieldPendingTransactionTrackingProps = {
-    account?: Account;
+    account: Account;
     flowType: YieldFlowType;
     flowKey: string;
 };
@@ -45,17 +45,14 @@ export const useYieldPendingTransactionTracking = ({
         state => selectStablecoinYieldSession(state, flowType, flowKey).action.pendingTransaction,
     );
     const trackedPendingTransaction = useSelector(state =>
-        account && pendingTransaction
+        pendingTransaction
             ? selectTransactionByAccountKeyAndTxid(state, account.key, pendingTransaction.txid)
             : null,
     );
-    const feeInfo = useSelector(state =>
-        account ? selectConvertedNetworkFeeInfo(state, account.symbol) : null,
-    );
+    const feeInfo = useSelector(state => selectConvertedNetworkFeeInfo(state, account.symbol));
     const pollIntervalMs = getPollIntervalMs(feeInfo?.blockTime);
 
     const isCurrentlyPending =
-        !!account &&
         !!pendingTransaction &&
         (!trackedPendingTransaction || isPending(trackedPendingTransaction));
 
@@ -121,7 +118,7 @@ export const useYieldPendingTransactionTracking = ({
                     payload: {
                         action: 'continue',
                         type: 'success',
-                        networkSymbol: account?.symbol,
+                        networkSymbol: account.symbol,
                     },
                 });
             }
@@ -137,6 +134,6 @@ export const useYieldPendingTransactionTracking = ({
         dispatch,
         trackedPendingTransaction,
         analytics,
-        account?.symbol,
+        account.symbol,
     ]);
 };

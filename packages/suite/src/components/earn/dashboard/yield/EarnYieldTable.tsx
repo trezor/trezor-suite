@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { EarnAnchor, goto, useAnchor } from '@suite/router';
+import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
 import { NORMAL_ACCOUNT_TYPE } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
@@ -15,7 +16,6 @@ import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 import { EarnYieldClaimRewardsBanner } from './EarnYieldClaimRewardsBanner';
 import { EarnYieldClaimSelectAccountModal } from './EarnYieldClaimSelectAccountModal';
 import { EarnYieldTableBody } from './EarnYieldTableBody';
-import { useAllYieldOpportunities } from './hooks/useAllYieldOpportunities';
 import { useYieldAccountsVisibility } from './hooks/useYieldAccountsVisibility';
 import { useYieldTableData } from './hooks/useYieldTableData';
 import { type YieldAccountRewards, useMerkleRewards } from '../../yield/claim/hooks';
@@ -38,7 +38,7 @@ export const EarnYieldTable = () => {
         return new Set(normalAccounts.map(account => account.symbol));
     }, [visibleAccounts]);
 
-    const { yieldOpportunities: availableVaults, isYieldOpportunitiesLoading } =
+    const { data: availableVaults, isLoading: isYieldOpportunitiesLoading } =
         useAllYieldOpportunities();
 
     const {

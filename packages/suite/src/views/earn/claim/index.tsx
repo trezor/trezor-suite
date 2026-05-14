@@ -7,5 +7,5 @@ export const EarnClaim = () => {
 
     useLayout('Earn', <YieldClaimPageHeader account={account} />);
 
-    return <YieldClaim account={account} />;
+    return account ? <YieldClaim account={account} /> : null;
 };

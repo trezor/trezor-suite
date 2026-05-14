@@ -100,7 +100,7 @@ const getYieldOpportunityData = ({
 };
 
 type UseYieldTableDataProps = {
-    availableVaults: YieldDto[];
+    availableVaults?: YieldDto[];
     visibleAccounts: Account[];
     visibleAccountSymbols: Set<NetworkSymbol>;
 };
@@ -110,8 +110,9 @@ export const useYieldTableData = ({
     visibleAccounts,
     visibleAccountSymbols,
 }: UseYieldTableDataProps) => {
+    const resolvedAvailableVaults = useMemo(() => availableVaults ?? [], [availableVaults]);
     const yieldAccountOpportunities = useMemo<YieldAccountOpportunity[]>(() => {
-        const allOpportunities = availableVaults.flatMap(vault => {
+        const allOpportunities = resolvedAvailableVaults.flatMap(vault => {
             const network = getNetworkByYieldXyzId(vault.network);
 
             if (!network || !visibleAccountSymbols.has(network.symbol)) {
@@ -168,11 +169,11 @@ export const useYieldTableData = ({
                 .toSorted(compareYieldRowsByTokenNetworkOrder),
             ...noBalanceOpportunities.toSorted(compareYieldRowsByTokenNetworkOrder),
         ];
-    }, [availableVaults, visibleAccounts, visibleAccountSymbols]);
+    }, [resolvedAvailableVaults, visibleAccounts, visibleAccountSymbols]);
 
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
     const yieldInactiveVaultOpportunities = useMemo<YieldInactiveVaultOpportunity[]>(() => {
-        const opportunities = availableVaults.flatMap(vault => {
+        const opportunities = resolvedAvailableVaults.flatMap(vault => {
             const network = getNetworkByYieldXyzId(vault.network);
 
             if (!network) {
@@ -197,7 +198,7 @@ export const useYieldTableData = ({
         });
 
         return opportunities;
-    }, [availableVaults, deviceSupportedNetworkSymbols, visibleAccountSymbols]);
+    }, [resolvedAvailableVaults, deviceSupportedNetworkSymbols, visibleAccountSymbols]);
 
     const isYieldActive = useMemo(
         () => yieldAccountOpportunities.some(opportunity => opportunity.hasVaultPosition),

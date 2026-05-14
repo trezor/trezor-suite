@@ -9,14 +9,14 @@ import { type YieldAccountRewards } from './hooks/useMerkleRewards';
 import { YieldRewardItem } from '../common/YieldRewardItem';
 
 type YieldRewardsListProps = {
-    accountRewards: YieldAccountRewards;
+    accountRewards?: YieldAccountRewards;
     isLoading: boolean;
 };
 
 export const YieldRewardsList = ({ accountRewards, isLoading }: YieldRewardsListProps) => {
     const { BaseCurrencyAmountFormatter, CryptoAmountFormatter } = useFormatters();
 
-    if (isLoading) {
+    if (isLoading || !accountRewards) {
         return (
             <Row justifyContent="center">
                 <Spinner size={24} />
