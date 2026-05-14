@@ -1,31 +1,32 @@
+import { useDispatch, useSelector } from 'react-redux';
+
 import { Translation, useTranslation } from '@suite/intl';
-import { selectDeviceByStaticSessionId } from '@suite-common/device';
+import { type DeviceRootState, selectDeviceByStaticSessionId } from '@suite-common/device';
+import { type SuiteSync } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Card, Column, Icon, List, Modal, Paragraph } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useSuiteServices } from 'src/support/SuiteServicesProvider';
+import { suiteSyncErrorTranslationKeyMap } from './suiteSyncErrorTranslationKeyMap';
 
-import { suiteSyncErrorTranslationKeyMap } from '../suiteSyncErrorTranslationKeyMap';
-
-type SuiteSyncTurnOnAndFwUpgradeModalProps = {
+type SuiteSyncTurnOnModalProps = {
     deviceStaticSessionId: StaticSessionId;
     onClose: () => void;
     onSuccess?: () => void;
+    suiteSync: SuiteSync;
 };
 
 export const SuiteSyncTurnOnModal = ({
     deviceStaticSessionId,
     onClose,
     onSuccess,
-}: SuiteSyncTurnOnAndFwUpgradeModalProps) => {
+    suiteSync,
+}: SuiteSyncTurnOnModalProps) => {
     const dispatch = useDispatch();
-    const { suiteSync } = useSuiteServices();
     const { translationString } = useTranslation();
 
-    const device = useSelector(state =>
+    const device = useSelector((state: DeviceRootState) =>
         selectDeviceByStaticSessionId(state, deviceStaticSessionId),
     );
 
@@ -40,15 +41,12 @@ export const SuiteSyncTurnOnModal = ({
 
         if (!result.success) {
             const { type } = result.error;
+
             switch (type) {
                 case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
-                    // Do nothing, Firmware Upgrade Modal will be shown declaratively
-                    // because `selectIsTurnOnSuiteSyncInteractionNeeded` will return it
-
                     return;
 
                 case 'WriteModeRequiredForAllocation':
-                    // Do nothing, this is expected control flow error when we want allocate on-demand.
                     onSuccess?.();
 
                     return;
@@ -65,6 +63,7 @@ export const SuiteSyncTurnOnModal = ({
                     );
 
                     return;
+
                 default:
                     return exhaustive(type);
             }

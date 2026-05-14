@@ -1,3 +1,5 @@
+import { TurnOnSuiteSyncModals } from '@suite/suite-sync';
+
 import {
     selectShowEnableSuiteSyncModal,
     updateShowEnableSuiteSyncModal,
@@ -6,10 +8,10 @@ import { ConnectionGlobalModalManager } from 'src/components/connection/Connecti
 import { ThpGlobalModalManager } from 'src/components/connection/thp/ThpGlobalModalManager';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { usePreferredModal } from 'src/hooks/suite/usePreferredModal';
+import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
 import { ForegroundAppModal } from './ForegroundAppModal';
 import { WipedBleDeviceNeedsManualOsRemovalModalManager } from '../../bluetooth/WipedBleDeviceNeedsManualOsRemovalModalManager';
-import { TurnOnSuiteSyncModals } from '../../labeling/TurnOnSuiteSync/TurnOnSuiteSyncModals';
 import { ReduxModal } from '../ReduxModal/ReduxModal';
 
 type ModalParams = ReturnType<typeof usePreferredModal>;
@@ -27,6 +29,7 @@ const Inner = ({ modal }: { modal: ModalParams }) => {
 export const ModalSwitcher = () => {
     const modal = usePreferredModal();
     const dispatch = useDispatch();
+    const { suiteSync } = useSuiteServices();
     const deviceStaticSessionId = useSelector(selectShowEnableSuiteSyncModal);
 
     // For foreground apps, we have to NOT render the other modals.
@@ -42,6 +45,7 @@ export const ModalSwitcher = () => {
             <ThpGlobalModalManager />
             <TurnOnSuiteSyncModals
                 deviceStaticSessionId={deviceStaticSessionId}
+                suiteSync={suiteSync}
                 onClose={() => {
                     dispatch(updateShowEnableSuiteSyncModal({ deviceStaticSessionId: null }));
                 }}

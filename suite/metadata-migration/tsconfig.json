@@ -7,6 +7,9 @@
         },
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/message-system"
+        },
+        {
             "path": "../../suite-common/metadata-types"
         },
         {
@@ -39,6 +42,7 @@
         { "path": "../intl" },
         { "path": "../metadata" },
         { "path": "../router" },
+        { "path": "../suite-sync" },
         { "path": "../../packages/components" },
         { "path": "../../packages/connect" },
         {
