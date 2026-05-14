@@ -4,7 +4,11 @@ import { useForm } from 'react-hook-form';
 import { numberToHex, toWei } from 'web3-utils';
 
 import { type TxSimulationEVMResult } from '@suite-common/tx-simulation';
-import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    type NetworkType,
+    getNetworkDisplaySymbol,
+} from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { type EvmSelectedFee } from '@suite-common/wallet-types';
@@ -16,12 +20,14 @@ import { useComposedLevelsPlaceholder } from 'src/hooks/wallet/form/useComposedL
 import { type FeesFormValues, useFees } from 'src/hooks/wallet/form/useFees';
 
 interface UseTxFeesFormProps {
+    accountBalance: string;
     networkType?: NetworkType;
     networkSymbol?: NetworkSymbol;
     defaultGasLimit?: string;
 }
 
 export function useEvmTxSimulationFeesForm({
+    accountBalance,
     networkType = 'ethereum',
     networkSymbol = 'eth',
     defaultGasLimit = ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
@@ -67,6 +73,18 @@ export function useEvmTxSimulationFeesForm({
         feePerUnit,
         maxFeePerGas,
     });
+
+    const composedLevelsError = useMemo(() => {
+        const selectedLevel = composedLevels[selectedFee || 'normal'];
+        const fee = selectedLevel?.type === 'final' ? selectedLevel.fee : undefined;
+
+        if (!fee || new BigNumber(fee).lte(accountBalance)) return undefined;
+
+        return {
+            id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+            values: { networkDisplaySymbol: getNetworkDisplaySymbol(networkSymbol) },
+        } as const;
+    }, [accountBalance, composedLevels, networkSymbol, selectedFee]);
 
     function handleTxSimulationResult({ simulation, gas_estimation }: TxSimulationEVMResult) {
         const newFeeLimit =
@@ -127,6 +145,7 @@ export function useEvmTxSimulationFeesForm({
         changeFeeLevel,
         feeInfo,
         composedLevels,
+        composedLevelsError,
         handleTxSimulationResult,
         getSelectedFee,
     };

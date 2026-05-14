@@ -24,7 +24,6 @@ export const YieldWithdrawForm = () => {
         completedAmount,
         errorMessage,
         pendingTransaction,
-        actionNetworkFeeWarning,
         isAmountEmpty,
         isAmountTooHigh,
         isAmountInvalidDecimals,
@@ -125,13 +124,6 @@ export const YieldWithdrawForm = () => {
                             warning={
                                 !isAmountInvalidDecimals && isAmountTooHigh ? (
                                     <YieldActionStepWarning isInsufficientFunds={isAmountTooHigh} />
-                                ) : undefined
-                            }
-                            networkFeeWarning={
-                                actionNetworkFeeWarning ? (
-                                    <YieldActionStepWarning
-                                        networkFeeWarning={actionNetworkFeeWarning}
-                                    />
                                 ) : undefined
                             }
                             isDisabled={

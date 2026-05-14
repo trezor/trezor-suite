@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FormProvider } from 'react-hook-form';
 
+import { Translation } from '@suite/intl';
 import { type UserContextModalType } from '@suite/modal';
 import {
     TxSimulationError,
@@ -17,7 +18,7 @@ import {
     useTxSimulation,
 } from '@suite-common/tx-simulation';
 import { type Account, type TxSimulationAction } from '@suite-common/wallet-types';
-import { Column, Modal } from '@trezor/components';
+import { Banner, Column, Modal } from '@trezor/components';
 
 import { Fees } from 'src/components/wallet/Fees/Fees';
 
@@ -45,6 +46,7 @@ export function EarnYieldTxSimulationModalInner({
         changeFeeLevel,
         feeInfo,
         composedLevels,
+        composedLevelsError,
         handleTxSimulationResult,
         getSelectedFee,
     } = useEvmTxSimulationFeesForm({
@@ -53,6 +55,7 @@ export function EarnYieldTxSimulationModalInner({
         defaultGasLimit: areTxSimulationMethods(TX_METHODS_WITH_FEES, action)
             ? action.payload.transaction.gasLimit
             : undefined,
+        accountBalance: account.availableBalance,
     });
 
     const simulation = useTxSimulation(action, {
@@ -96,7 +99,8 @@ export function EarnYieldTxSimulationModalInner({
 
     const isConfirmDisabled = Boolean(
         txSimulationQuery.isLoading ||
-        (txSimulationQuery.data?.payload?.needsDisclaimer && !disclaimerAccepted),
+        (txSimulationQuery.data?.payload?.needsDisclaimer && !disclaimerAccepted) ||
+        composedLevelsError,
     );
 
     return (
@@ -149,6 +153,19 @@ export function EarnYieldTxSimulationModalInner({
                                     }
                                 />
                             </FormProvider>
+                        )}
+
+                        {composedLevelsError && (
+                            <Banner
+                                intent="critical"
+                                icon="warning"
+                                description={
+                                    <Translation
+                                        id={composedLevelsError.id}
+                                        values={composedLevelsError.values}
+                                    />
+                                }
+                            />
                         )}
                     </Column>
                 </Column>
