@@ -1,3 +1,6 @@
+import { sha256 } from '@noble/hashes/sha2.js';
+import { base58check as createBase58check } from '@scure/base';
+
 import { isCashAddress, toCashAddress, toLegacyAddress } from '../src/bchUtils';
 
 describe('bcashutils', () => {
@@ -66,6 +69,21 @@ describe('bcashutils', () => {
             const cashAddr = toCashAddress(testnetLegacyP2SH);
             expect(cashAddr).toMatch(/^bchtest:p/);
             expect(toLegacyAddress(cashAddr)).toBe(testnetLegacyP2SH);
+        });
+    });
+
+    describe('decodeBase58Address unknown version byte', () => {
+        it('throws on a base58check address whose version byte is none of 0x00/0x05/0x6f/0xc4', () => {
+            // Construct a base58check-encoded 21-byte payload with version byte 0x01.
+            // bs58check.decode succeeds (valid checksum, length 21), but the switch in
+            // decodeBase58Address has no case for 0x01 and falls into the default-arm
+            // 'Unknown version byte' throw — which propagates as 'Invalid Bitcoin Cash address'
+            // because decodeCashAddress also fails for the same string.
+            const bs58check = createBase58check(sha256);
+            const payload = new Uint8Array(21);
+            payload[0] = 0x01;
+            const unknownVersionAddr = bs58check.encode(payload);
+            expect(() => isCashAddress(unknownVersionAddr)).toThrow('Invalid Bitcoin Cash address');
         });
     });
 });
