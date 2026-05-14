@@ -173,6 +173,17 @@ describe('bufferutils', () => {
         });
     });
 
+    describe('writeUInt64LEasString', () => {
+        it('encodes a number value as 8-byte little-endian by delegating to writeUInt64LE', () => {
+            const buffer = Buffer.alloc(8, 0);
+
+            const result = bufferutils.writeUInt64LEasString(buffer, 0x12345678, 0);
+
+            expect(buffer.toString('hex')).toEqual('7856341200000000');
+            expect(result).toEqual(8);
+        });
+    });
+
     describe('verifuint', () => {
         it('throws "specified a negative value for writing an unsigned value" when value is negative', () => {
             expect(() => {
