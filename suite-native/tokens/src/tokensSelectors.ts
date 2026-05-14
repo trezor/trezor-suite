@@ -6,7 +6,6 @@ import {
     type TokenDefinitionsRootState,
     getSimpleCoinDefinitionsByNetwork,
     isTokenDefinitionKnown,
-    selectIsSpecificCoinDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -103,42 +102,6 @@ export const selectAccountTokenDecimals = createMemoizedSelector(
     },
 );
 
-const selectAllAccountTokens = (
-    state: AccountsRootState,
-    accountKey: AccountKey,
-): TokenInfoBranded[] => {
-    const account = selectAccountByKey(state, accountKey);
-
-    return returnStableArrayIfEmpty(account?.tokens) as TokenInfoBranded[];
-};
-
-export const selectAnyOfTokensIsKnown = (
-    state: TokenDefinitionsRootState & AccountsRootState,
-    accountKey: AccountKey,
-): boolean => {
-    // It may be temping to reuse selectAccountsKnownTokens.length but this is faster
-    const tokens = selectAllAccountTokens(state, accountKey);
-    const account = selectAccountByKey(state, accountKey);
-
-    if (!account?.symbol) {
-        return false;
-    }
-
-    // For Stellar, all tokens are considered "known" since trustlines require explicit user action.
-    // See comment in selectAccountsKnownTokens for details.
-    if (account.networkType === 'stellar') {
-        return tokens.length > 0;
-    }
-
-    const result = A.any(tokens, token => {
-        const isKnown = selectIsSpecificCoinDefinitionKnown(state, account.symbol, token.contract);
-
-        return isKnown;
-    });
-
-    return result;
-};
-
 export const selectAccountTransactionsWithTokenTransfers = createMemoizedSelector(
     [selectAccountTransactions],
     (transactions): WalletAccountTransaction[] =>
@@ -225,19 +188,6 @@ export const selectNumberOfAccountKnownTokensWithBalance = createMemoizedSelecto
     tokens => tokens.length,
 );
 
-export const selectHasDeviceAnyTokensForNetwork = (
-    state: TokensRootState,
-    symbol: NetworkSymbol,
-) => {
-    if (!isNetworkWithTokens(symbol)) {
-        return false;
-    }
-
-    const accounts = selectVisibleDeviceAccountsByNetworkSymbol(state, symbol);
-
-    return A.any(accounts, account => selectAnyOfTokensIsKnown(state, account.key));
-};
-
 export const selectHasDeviceAnyTokensWithBalanceForNetwork = (
     state: TokensRootState,
     symbol: NetworkSymbol,
@@ -253,18 +203,6 @@ export const selectHasDeviceAnyTokensWithBalanceForNetwork = (
 
         return count > 0;
     });
-};
-
-export const selectAccountHasAnyKnownToken = (state: TokensRootState, accountKey: AccountKey) => {
-    const account = selectAccountByKey(state, accountKey);
-
-    if (!account || !isNetworkWithTokens(account.symbol)) {
-        return false;
-    }
-
-    const anyOfTokensIsKnown = selectAnyOfTokensIsKnown(state, accountKey);
-
-    return anyOfTokensIsKnown;
 };
 
 export const selectNetworkSymbolsOfAccountsWithTokensAllowed = createMemoizedSelector(

@@ -46,7 +46,7 @@ export const ActiveTokensTab = ({
 }: ActiveTokensTabProps) => {
     const { navigateToStakingDetail } = useStakingDetailNavigation();
 
-    const sections = useSelector((state: NativeAccountsRootState) =>
+    const activeTokensSections = useSelector((state: NativeAccountsRootState) =>
         selectActiveTokensTabSections(state, accountKey),
     );
 
@@ -64,10 +64,10 @@ export const ActiveTokensTab = ({
 
     const listItems: ActiveTokenListItem[] = useMemo(
         () =>
-            sections
+            activeTokensSections
                 .filter(item => item.type !== 'staking' || isStakingDisplayed)
                 .map((item, index, arr) => ({ ...item, isLast: index === arr.length - 1 })),
-        [sections, isStakingDisplayed],
+        [activeTokensSections, isStakingDisplayed],
     );
 
     const renderItem = useCallback(

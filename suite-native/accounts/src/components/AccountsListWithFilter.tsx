@@ -23,7 +23,6 @@ type AccountsListWithFilterProps = {
     networksFilter?: NetworkSymbol[];
     closeActionType?: CloseActionType;
     closeAction?: () => void;
-    hideTokensIntoModal?: boolean;
     isSendFlow?: boolean;
     children?: ReactNode;
 };
@@ -35,7 +34,6 @@ export const AccountsListWithFilter = ({
     networksFilter = EMPTY_NETWORKS_FILTER,
     closeActionType,
     closeAction,
-    hideTokensIntoModal,
     isSendFlow,
     children,
 }: AccountsListWithFilterProps) => {
@@ -82,7 +80,6 @@ export const AccountsListWithFilter = ({
                     onSelectAccount={onSelectAccount}
                     searchValue={searchValue}
                     networkFilter={filteredNetworks}
-                    hideTokensIntoModal={hideTokensIntoModal}
                     isSendFlow={isSendFlow}
                 />
                 {(filteredNetworks.length > 0 || searchValue.length > 0) && (
