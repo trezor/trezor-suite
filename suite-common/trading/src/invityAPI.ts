@@ -246,12 +246,17 @@ class InvityAPI {
         }
     };
 
-    doExchangeTrade = async (tradeRequest: ConfirmExchangeTradeRequest): Promise<ExchangeTrade> => {
+    doExchangeTrade = async (
+        tradeRequest: ConfirmExchangeTradeRequest,
+        signal?: SignalType,
+    ): Promise<ExchangeTrade> => {
         try {
             const response: ExchangeTrade = await this.request(
                 this.EXCHANGE_DO_TRADE,
                 tradeRequest,
                 'POST',
+                undefined,
+                signal,
             );
 
             return response;
