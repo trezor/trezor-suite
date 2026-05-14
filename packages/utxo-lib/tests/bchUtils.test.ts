@@ -100,4 +100,92 @@ describe('bcashutils', () => {
             expect(() => isCashAddress(shortAddr)).toThrow('Invalid Bitcoin Cash address');
         });
     });
+
+    describe('decodeCashAddressWithPrefix unknown cashaddr prefix', () => {
+        it('throws on a cashaddr-encoded address whose prefix is not bitcoincash/bchtest/bchreg', () => {
+            // Construct a cashaddr-encoded address with a non-standard prefix 'simpleledger'.
+            // cashaddrjs.encode rejects any prefix outside {bitcoincash, bchtest, bchreg},
+            // but cashaddrjs.decode accepts any prefix as long as the checksum is valid for
+            // that prefix string (the prefix is used as polymod salt). We replicate the
+            // cashaddr encoding algorithm with native BigInt for the polymod to produce a
+            // checksum that is valid under the custom prefix, which makes
+            // decodeCashAddressWithPrefix's internal cashaddr.decode call succeed and fall
+            // into the switch's default-arm at src/bchUtils.ts:73-74 ('Unknown cashaddr
+            // prefix' throw). The error is caught by decodeAddress's try/catch and surfaces
+            // as 'Invalid Bitcoin Cash address' at the public API.
+            const customPrefix = 'simpleledger';
+            const hash = new Uint8Array(20); // 20-byte zero hash, P2PKH 160-bit
+            const versionByte = 0;
+
+            const to5Bit = (data: Uint8Array): Uint8Array => {
+                const result: number[] = [];
+                let acc = 0;
+                let bits = 0;
+                for (const value of data) {
+                    acc = (acc << 8) | value;
+                    bits += 8;
+                    while (bits >= 5) {
+                        bits -= 5;
+                        result.push((acc >> bits) & 31);
+                    }
+                }
+                if (bits > 0) {
+                    result.push((acc << (5 - bits)) & 31);
+                }
+
+                return new Uint8Array(result);
+            };
+
+            const prefixData = new Uint8Array(customPrefix.length + 1);
+            for (let i = 0; i < customPrefix.length; i++) {
+                prefixData[i] = customPrefix.charCodeAt(i) & 31;
+            }
+            const verHash = new Uint8Array(1 + hash.length);
+            verHash[0] = versionByte;
+            verHash.set(hash, 1);
+            const payloadData = to5Bit(verHash);
+            const checksumData = new Uint8Array(prefixData.length + payloadData.length + 8);
+            checksumData.set(prefixData, 0);
+            checksumData.set(payloadData, prefixData.length);
+
+            const GENERATOR = [
+                0x98f2bc8e61n,
+                0x79b76d99e2n,
+                0xf33e5fb3c4n,
+                0xae2eabe2a8n,
+                0x1e4f43e470n,
+            ];
+            let checksum = 1n;
+            for (let i = 0; i < checksumData.length; i++) {
+                const value = BigInt(checksumData[i]);
+                const topBits = checksum >> 35n;
+                checksum = ((checksum & 0x07ffffffffn) << 5n) ^ value;
+                for (let j = 0; j < GENERATOR.length; j++) {
+                    if (((topBits >> BigInt(j)) & 1n) === 1n) {
+                        checksum = checksum ^ GENERATOR[j];
+                    }
+                }
+            }
+            checksum = checksum ^ 1n;
+
+            const checksumBytes = new Uint8Array(8);
+            for (let i = 0; i < 8; i++) {
+                checksumBytes[7 - i] = Number(checksum & 31n);
+                checksum = checksum >> 5n;
+            }
+
+            const payload = new Uint8Array(payloadData.length + 8);
+            payload.set(payloadData, 0);
+            payload.set(checksumBytes, payloadData.length);
+
+            const CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
+            let base32Str = '';
+            for (const v of payload) {
+                base32Str += CHARSET[v];
+            }
+
+            const customPrefixAddr = customPrefix + ':' + base32Str;
+            expect(() => isCashAddress(customPrefixAddr)).toThrow('Invalid Bitcoin Cash address');
+        });
+    });
 });
