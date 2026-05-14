@@ -8,13 +8,13 @@ import {
     Button,
     ButtonGroup,
     Card,
+    Column,
     IconButton,
     Menu,
     Popover,
     type PopoverRef,
     Row,
     Text,
-    Tooltip,
 } from '@trezor/components';
 import { spacings, zIndices } from '@trezor/theme';
 
@@ -81,16 +81,21 @@ export const MessageSystemManagerToolbar = ({
                 </Popover>
             </Row>
             <Row gap={spacings.xs}>
-                <Tooltip
+                <Popover
                     content={
-                        <div>
-                            {Object.values(CONTEXT_PATTERNS)
-                                .sort((a, b) => a.pattern.localeCompare(b.pattern))
-                                .map(pattern => (
-                                    <div key={pattern.pattern}>{pattern.pattern}</div>
-                                ))}
-                        </div>
+                        <Card>
+                            <ScrollContainer>
+                                <Column gap={4}>
+                                    {Object.values(CONTEXT_PATTERNS)
+                                        .sort((a, b) => a.pattern.localeCompare(b.pattern))
+                                        .map(pattern => (
+                                            <div key={pattern.pattern}>{pattern.pattern}</div>
+                                        ))}
+                                </Column>
+                            </ScrollContainer>
+                        </Card>
                     }
+                    zIndex={zIndices.tooltip}
                 >
                     <Button
                         size="small"
@@ -100,21 +105,26 @@ export const MessageSystemManagerToolbar = ({
                     >
                         Context patterns
                     </Button>
-                </Tooltip>
+                </Popover>
 
-                <Tooltip
+                <Popover
                     content={
-                        <div>
-                            {FEATURE_LIST.map(feature => (
-                                <div key={feature}>{feature}</div>
-                            ))}
-                        </div>
+                        <Card>
+                            <ScrollContainer>
+                                <Column gap={4}>
+                                    {FEATURE_LIST.map(feature => (
+                                        <div key={feature}>{feature}</div>
+                                    ))}
+                                </Column>
+                            </ScrollContainer>
+                        </Card>
                     }
+                    zIndex={zIndices.tooltip}
                 >
                     <Button size="small" iconLeft="checkFat" intent="neutral" priority="secondary">
                         Feature list
                     </Button>
-                </Tooltip>
+                </Popover>
 
                 <Popover
                     content={
