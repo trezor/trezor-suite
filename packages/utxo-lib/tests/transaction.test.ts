@@ -282,6 +282,16 @@ describe('Transaction', () => {
             expect(prebuf.subarray(0, 13).toString('hex')).toEqual('eeeeeeeeeeeeeeeeeeeeeeeeee');
             expect(prebuf.subarray(13, 13 + txLen).toString('hex')).toEqual(validHex);
         });
+
+        it('Bitcoin: nostrict=true skips trailing-data check and returns the parsed transaction', () => {
+            const validHex = fixturesBitcoin.valid[0].hex;
+            const badBuf = Buffer.from(`${validHex}ff`, 'hex');
+            const tx = Transaction.fromBuffer(badBuf, { nostrict: true });
+            expect(tx.version).toEqual(fixturesBitcoin.valid[0].raw.version);
+            expect(tx.locktime).toEqual(fixturesBitcoin.valid[0].raw.locktime);
+            expect(tx.ins.length).toEqual(fixturesBitcoin.valid[0].raw.ins.length);
+            expect(tx.outs.length).toEqual(fixturesBitcoin.valid[0].raw.outs.length);
+        });
     });
 
     describe('toBuffer/toHex', () => {
