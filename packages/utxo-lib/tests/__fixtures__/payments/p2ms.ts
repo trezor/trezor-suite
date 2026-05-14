@@ -352,6 +352,15 @@ export const fixtures = {
                 signatures: ['ffff'],
             },
         },
+        {
+            description: 'a.m differs from a.signatures.length when a.input is present',
+            exception: 'Signature count mismatch',
+            arguments: {
+                m: 3,
+                signatures: ['300602010002010001', '300602010002010001'],
+                input: 'OP_0 300602010002010001 300602010002010001',
+            },
+        },
     ],
     dynamic: {
         depends: {
