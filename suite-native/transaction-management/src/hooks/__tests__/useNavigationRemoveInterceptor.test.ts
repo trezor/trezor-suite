@@ -46,7 +46,7 @@ describe('useNavigationRemoveInterceptor', () => {
         jest.clearAllMocks();
     });
 
-    it('should show stay on screen alert onBack action', () => {
+    it('should show stay on screen alert on prevented remove action', () => {
         const onRemoveConfirmed = jest.fn();
         const onStayConfirmed = jest.fn();
         const alertOptions = {
@@ -59,7 +59,7 @@ describe('useNavigationRemoveInterceptor', () => {
             alertOptions,
         });
 
-        getPreventNavigationRemoveProps().onNavigateBack?.();
+        getPreventNavigationRemoveProps().onPreventedRemove?.({ type: 'GO_BACK' });
 
         expect(mockShowStayOnScreenAlert).toHaveBeenCalledTimes(1);
         expect(mockShowStayOnScreenAlert).toHaveBeenCalledWith({
@@ -69,10 +69,10 @@ describe('useNavigationRemoveInterceptor', () => {
         });
     });
 
-    it('should hide stay on screen alert on successful remove', () => {
+    it('should hide stay on screen alert on allowed remove action', () => {
         renderUseNavigationRemoveInterceptor();
 
-        getPreventNavigationRemoveProps().onSuccessfulRemove?.();
+        getPreventNavigationRemoveProps().onAllowedRemove?.({ type: 'PUSH' });
 
         expect(mockHideStayOnScreenAlert).toHaveBeenCalledTimes(1);
     });

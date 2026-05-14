@@ -5,8 +5,8 @@ type ActionType = 'GO_BACK' | 'POP';
 type PreventNavigationRemoveProps = {
     shouldPrevent?: boolean;
     actionTypes?: ActionType[];
-    onNavigateBack?: (action?: NavigationAction) => void;
-    onSuccessfulRemove?: () => void;
+    onPreventedRemove?: (action: NavigationAction) => void;
+    onAllowedRemove?: (action: NavigationAction) => void;
 };
 
 /**
@@ -16,24 +16,25 @@ type PreventNavigationRemoveProps = {
  * @param actionTypes Navigation action types to intercept.
  * `GO_BACK` handles standard back navigation.
  * `POP` handles iOS swipe-back gestures.
- * @param onNavigateBack Called with the intercepted navigation action.
+ * @param onPreventedRemove Called with the intercepted navigation action.
+ * @param onAllowedRemove Called before dispatching a non-intercepted navigation action.
  */
 export const usePreventNavigationRemove = ({
     shouldPrevent = true,
     actionTypes = ['GO_BACK', 'POP'],
-    onNavigateBack,
-    onSuccessfulRemove,
+    onPreventedRemove,
+    onAllowedRemove,
 }: PreventNavigationRemoveProps) => {
     const navigation = useNavigation();
 
     usePreventRemove(shouldPrevent, ({ data }) => {
         if (actionTypes.includes(data.action.type as ActionType)) {
-            onNavigateBack?.(data.action);
+            onPreventedRemove?.(data.action);
 
             return;
         }
 
-        onSuccessfulRemove?.();
+        onAllowedRemove?.(data.action);
         navigation.dispatch(data.action);
     });
 };

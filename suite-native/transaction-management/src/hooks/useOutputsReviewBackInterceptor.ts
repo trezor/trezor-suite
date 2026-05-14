@@ -7,7 +7,7 @@ import { useShowReviewCancellationAlert } from './useShowReviewCancellationAlert
 export const useOutputsReviewBackInterceptor = (onReviewCanceled: () => void) => {
     const showReviewCancellationAlert = useShowReviewCancellationAlert();
 
-    const onNavigateBack = useCallback(async () => {
+    const onPreventedRemove = useCallback(async () => {
         const { wasReviewCanceled } = await showReviewCancellationAlert();
 
         if (wasReviewCanceled) {
@@ -15,5 +15,5 @@ export const useOutputsReviewBackInterceptor = (onReviewCanceled: () => void) =>
         }
     }, [onReviewCanceled, showReviewCancellationAlert]);
 
-    usePreventNavigationRemove({ onNavigateBack });
+    usePreventNavigationRemove({ onPreventedRemove });
 };

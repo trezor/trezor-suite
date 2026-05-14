@@ -111,9 +111,7 @@ const TradingExchangeApprovalScreenContent = ({
     }, [quote, isReady, isRevoked, dispatch, confirmApproval, reportToAnalytics]);
 
     usePreventNavigationRemove({
-        onNavigateBack: action => {
-            if (!action) return;
-
+        onPreventedRemove: action => {
             dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
             reportToAnalytics('cancel');
             navigation.dispatch(action);
