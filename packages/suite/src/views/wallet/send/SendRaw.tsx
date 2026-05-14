@@ -13,6 +13,7 @@ import { Button, Card, H3, IconButton, Row, Textarea, Tooltip } from '@trezor/co
 import { spacings } from '@trezor/theme';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
+import { GUIDE_ARTICLE_IDS } from 'src/constants/suite/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { type Account } from 'src/types/wallet';
@@ -82,9 +83,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
             <Row justifyContent="space-between" margin={{ bottom: spacings.md }}>
                 <H3>
                     <Tooltip
-                        addon={
-                            <OpenGuideFromTooltip id="/3_send-and-receive/transactions-in-depth/send-raw.md" />
-                        }
+                        addon={<OpenGuideFromTooltip id={GUIDE_ARTICLE_IDS.sendRaw} />}
                         content={<Translation id="SEND_RAW_TRANSACTION_TOOLTIP" />}
                         hasIcon
                     >

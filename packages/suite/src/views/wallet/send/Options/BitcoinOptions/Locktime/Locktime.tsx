@@ -6,6 +6,7 @@ import { datetimeToLocktime } from '@suite-common/wallet-utils';
 import { Card, Column, IconButton, Row, Select, Tooltip } from '@trezor/components';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
+import { GUIDE_ARTICLE_IDS } from 'src/constants/suite/guide';
 import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
@@ -100,9 +101,7 @@ export const Locktime = ({ close }: LocktimeProps) => {
             <Column gap={16}>
                 <Row justifyContent="space-between" alignItems="start">
                     <Tooltip
-                        addon={
-                            <OpenGuideFromTooltip id="/3_send-and-receive/transactions-in-depth/locktime.md" />
-                        }
+                        addon={<OpenGuideFromTooltip id={GUIDE_ARTICLE_IDS.locktime} />}
                         content={<Translation id="LOCKTIME_ADD_TOOLTIP" />}
                         hasIcon
                     >

@@ -4,6 +4,7 @@ import { Translation } from '@suite/intl';
 import { Button, Column, Row, Tooltip } from '@trezor/components';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
+import { GUIDE_ARTICLE_IDS } from 'src/constants/suite/guide';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 import { OnOffSwitcher } from '../OnOffSwitcher';
@@ -48,9 +49,7 @@ export const BitcoinOptions = () => {
             <Row justifyContent="space-between">
                 {!utxoSelectionEnabled && (
                     <Tooltip
-                        addon={
-                            <OpenGuideFromTooltip id="/3_send-and-receive/transactions-in-depth/coin-control.md" />
-                        }
+                        addon={<OpenGuideFromTooltip id={GUIDE_ARTICLE_IDS.coinControl} />}
                         content={<Translation id="TR_COIN_CONTROL_TOOLTIP" />}
                         cursor="pointer"
                     >

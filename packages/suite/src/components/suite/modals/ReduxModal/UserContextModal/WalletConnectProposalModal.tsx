@@ -33,6 +33,8 @@ import { spacings, spacingsPx } from '@trezor/theme';
 
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
+import { GUIDE_ARTICLE_IDS } from 'src/constants/suite/guide';
+import { useGuideOpenNode } from 'src/hooks/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const NetworkItemWrapper = styled.div<{ $isDisabled: boolean }>`
@@ -49,6 +51,7 @@ interface WalletConnectProposalModalProps {
 
 export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalModalProps) => {
     const dispatch = useDispatch();
+    const { openNodeById } = useGuideOpenNode();
     const pendingProposal = useSelector(selectPendingProposal);
     const accounts = useSelector(selectAllAccountsToList);
     const selectableAccounts = useMemo<Account[]>(
@@ -83,6 +86,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
         await dispatch(closeModal());
         dispatch(goto({ routeName: 'settings-coins' }));
     };
+    const handleOpenActivateAssetsGuide = () => openNodeById(GUIDE_ARTICLE_IDS.activateAssets);
 
     const getTooltipContent = (network: PendingConnectionProposalNetwork) => {
         if (network.status !== 'active')
@@ -253,9 +257,17 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                     <Banner
                         intent="warning"
                         rightContent={
-                            <Banner.Button onClick={() => handleGoToCoinSettings()}>
-                                <Translation id="TR_COIN_SETTINGS" />
-                            </Banner.Button>
+                            <>
+                                <Banner.Button onClick={() => handleGoToCoinSettings()}>
+                                    <Translation id="TR_COIN_SETTINGS" />
+                                </Banner.Button>
+                                <Banner.Button
+                                    priority="secondary"
+                                    onClick={handleOpenActivateAssetsGuide}
+                                >
+                                    <Translation id="TR_LEARN_MORE" />
+                                </Banner.Button>
+                            </>
                         }
                         description={
                             <Translation
