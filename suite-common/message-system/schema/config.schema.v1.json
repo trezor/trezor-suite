@@ -45,7 +45,8 @@
                         ],
                         "properties": {
                             "id": {
-                                "type": "string"
+                                "type": "string",
+                                "minLength": 1
                             },
                             "priority": {
                                 "type": "integer",
@@ -225,7 +226,8 @@
                         "required": ["id", "groups"],
                         "properties": {
                             "id": {
-                                "type": "string"
+                                "type": "string",
+                                "minLength": 1
                             },
                             "groups": {
                                 "type": "array",
