@@ -312,6 +312,12 @@ describe('Transaction', () => {
             // falling through to bitcoin.fromConstructor.
             expect(tx.specific?.type).toBe('zcash');
         });
+
+        it('Transaction.isCoinbaseHash returns true for a 32-byte all-zero buffer', () => {
+            // The static Transaction.isCoinbaseHash delegates to base isCoinbaseHash; an
+            // all-zero 32-byte prevout hash is the canonical coinbase marker.
+            expect(Transaction.isCoinbaseHash(Buffer.alloc(32, 0))).toBe(true);
+        });
     });
 
     describe('toBuffer/toHex', () => {
