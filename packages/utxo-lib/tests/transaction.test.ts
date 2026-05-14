@@ -219,6 +219,14 @@ describe('Transaction', () => {
             expect(prebuf.subarray(0, 9).toString('hex')).toEqual('cccccccccccccccccc');
             expect(prebuf.subarray(9, 9 + txLen).toString('hex')).toEqual(validHex);
         });
+
+        it('Zcash: throws on Transaction has unexpected data when hex has trailing bytes', () => {
+            const validHex = fixturesZcash.valid[0].hex;
+            const badHex = `${validHex}ff`;
+            expect(() => Transaction.fromHex(badHex, { network: NETWORKS.zcash })).toThrow(
+                'Transaction has unexpected data',
+            );
+        });
     });
 
     describe('toBuffer/toHex', () => {
