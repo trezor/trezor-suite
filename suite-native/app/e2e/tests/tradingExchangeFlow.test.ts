@@ -62,7 +62,7 @@ describe('Trade Exchange [@androidOnly]', () => {
 
         it('should request trezor connect before preview', async () => {
             await tradingExchangeActions.selectSendAsset('USDC');
-            await tradingExchangeActions.selectReceiveAsset('USDT', 'Ethereum');
+            await tradingExchangeActions.selectReceiveAsset('USDT', 'Ethereum', 'Tether');
             await tradingExchangeActions.selectReceiveAccount('Ethereum #1');
             await tradingExchangeActions.setSendCryptoAmount('10');
 
