@@ -280,3 +280,23 @@ it('identifier on a Decred-typed BIP32 uses hash160blake256 not hash160', () => 
         bitcoinNode.identifier.toString('hex'),
     );
 });
+
+it('fromBase58 round-trips a Decred-typed extended key via decodeBlake256Key', () => {
+    // Drives the previously-uncovered truthy arm of the cond-expr at bip32.ts:358 —
+    // isNetworkType('decred', network) ? bs58check.decodeBlake256Key(...) : bs58check.decode(...).
+    // toBase58 routes through encodeBlake256 (blake256 double-hash checksum) when the
+    // node's network is Decred-typed, and fromBase58 must use decodeBlake256Key to
+    // round-trip — the bitcoin bs58check.decode (sha256-double-hash checksum) would
+    // throw 'Invalid checksum' on the blake-encoded string. Same synthetic
+    // decredCompat workaround as the prior identifier test (wif:0xde so BIP32's
+    // NETWORK_TYPE schema accepts it).
+    const seed = Buffer.alloc(32, 1);
+    const decredCompat = { ...NETWORKS.decred, wif: 0xde };
+    const original = BIP32.fromSeed(seed, decredCompat);
+    const encoded = original.toBase58();
+    const decoded = BIP32.fromBase58(encoded, decredCompat);
+
+    expect(decoded.identifier.toString('hex')).toEqual(original.identifier.toString('hex'));
+    expect(decoded.privateKey?.toString('hex')).toEqual(original.privateKey?.toString('hex'));
+    expect(decoded.chainCode.toString('hex')).toEqual(original.chainCode.toString('hex'));
+});
