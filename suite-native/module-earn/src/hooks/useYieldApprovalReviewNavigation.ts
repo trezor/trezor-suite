@@ -47,6 +47,7 @@ export const useYieldApprovalReviewNavigation = ({
             }
 
             if (event.data.action.type === 'GO_BACK') {
+                cleanupApprovalReview();
                 dispatch(sendFormActions.discardTransaction());
 
                 return;

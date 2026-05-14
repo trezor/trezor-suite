@@ -18,6 +18,7 @@ import { YieldSupplyInfoBottomSheet } from '../components/YieldSupplyInfoBottomS
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useYieldApprovalFees } from '../hooks/useYieldApprovalFees';
 import { useYieldApprovalLimit } from '../hooks/useYieldApprovalLimit';
+import { useYieldSession } from '../hooks/useYieldSession';
 import { useYieldSupplyApprovalSubmit } from '../hooks/useYieldSupplyApprovalSubmit';
 import { useYieldSupplyForm } from '../hooks/useYieldSupplyForm';
 
@@ -52,6 +53,12 @@ export const YieldSupplyApprovalScreen = () => {
         vaultTokenName,
         resolutionStatus,
     } = useResolvedYieldFlowData(route.params);
+    const session = useYieldSession({
+        flowKey,
+        flowType: 'deposit',
+        shouldDisposeOnGoBack: true,
+    });
+    const sessionStep = session?.step;
 
     const supplyForm = useYieldSupplyForm({ token, tokenSymbol });
     const { amountValue, form, handleAmountChange, handleMaxChange, isMaxSelected } = supplyForm;
@@ -80,9 +87,17 @@ export const YieldSupplyApprovalScreen = () => {
         routeParams: route.params,
     });
     const isApprovalFeeReady = approvalFeeFormDraft !== undefined;
+    const isApprovalSessionReady = sessionStep === 'approve';
+    const isApprovalSubmitDisabled =
+        !isValid ||
+        !isApprovalFeeReady ||
+        isComposingApprovalFee ||
+        isCheckingApproval ||
+        isFeeUnavailable ||
+        !isApprovalSessionReady;
 
     const handleSubmit = form.handleSubmit(async ({ amount }) => {
-        if (!isApprovalFeeReady || isComposingApprovalFee) {
+        if (!isApprovalFeeReady || isComposingApprovalFee || !isApprovalSessionReady) {
             return;
         }
 
@@ -115,13 +130,7 @@ export const YieldSupplyApprovalScreen = () => {
                 <YieldSupplyFlowFooter
                     amountValue={amountValue}
                     apy={apy}
-                    isDisabled={
-                        !isValid ||
-                        !isApprovalFeeReady ||
-                        isComposingApprovalFee ||
-                        isCheckingApproval ||
-                        isFeeUnavailable
-                    }
+                    isDisabled={isApprovalSubmitDisabled}
                     isLoading={isCheckingApproval}
                     onPress={handleSubmit}
                     tokenSymbol={tokenSymbol}
