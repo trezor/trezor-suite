@@ -343,6 +343,15 @@ export const fixtures = {
                 input: 'OP_0 ffffffffffffffff',
             },
         },
+        {
+            description: 'a.signatures contains non-canonical bytes',
+            exception: 'Input has invalid signature(s)',
+            arguments: {
+                m: 1,
+                pubkeys: ['030000000000000000000000000000000000000000000000000000000000000001'],
+                signatures: ['ffff'],
+            },
+        },
     ],
     dynamic: {
         depends: {
