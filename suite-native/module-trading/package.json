@@ -90,6 +90,7 @@
         "react-redux": "9.2.0"
     },
     "devDependencies": {
+        "@suite-common/suite-constants": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@suite-native/bluetooth": "workspace:*",
         "@suite-native/settings": "workspace:*",

@@ -1,4 +1,5 @@
 import { getApprovalStatus } from '@suite-common/trading';
+import { isMaxAllowance } from '@suite-common/wallet-utils';
 import { HStack, Text } from '@suite-native/atoms';
 import { DebugModeView } from '@suite-native/trading-debug';
 
@@ -8,6 +9,13 @@ export const ExchangeFormQuoteDebugView = () => {
     const { watch } = useExchangeFormContext();
     const quote = watch('quote');
     const approvalStatus = getApprovalStatus(quote);
+
+    let preapproved = 'not defined';
+    if (quote?.preapprovedStringAmount) {
+        preapproved = isMaxAllowance(quote.preapprovedStringAmount)
+            ? 'unlimited'
+            : quote.preapprovedStringAmount;
+    }
 
     return (
         <DebugModeView>
@@ -20,7 +28,7 @@ export const ExchangeFormQuoteDebugView = () => {
             <HStack>
                 <Text variant="body-xs">Pre-approved</Text>
                 <Text variant="body-xs" color="contentSecondary">
-                    {quote?.preapprovedStringAmount ?? 'not defined'}
+                    {preapproved}
                 </Text>
             </HStack>
         </DebugModeView>
