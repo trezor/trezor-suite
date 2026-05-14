@@ -90,7 +90,7 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
             });
 
         const composeOutputs = getBitcoinComposeOutputs(formState, account.symbol, isSatoshis);
-        if (composeOutputs.length < 1)
+        if (composeOutputs.length < 1 && !formState.transactionData)
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',
                 message: 'Unable to compose output.',
@@ -141,73 +141,109 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
             coin: asCoinSymbol(account.symbol),
         };
 
-        const response = await TrezorConnect.composeTransaction(params);
-
-        if (!response.success) {
-            if (response.error.code !== 'Method_InvalidParameter') {
-                dispatch(
-                    notificationsActions.addToast({
-                        type: 'sign-tx-error',
-                        error: response.error.message,
-                    }),
-                );
-            }
-
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: response.error.message,
-            });
-        }
-
-        // wrap response into PrecomposedLevels object where key is a FeeLevel label
         const resultLevels: PrecomposedLevels = {};
-        response.payload.forEach((tx, index) => {
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
-            const feeLabel = predefinedLevel.label;
-            resultLevels[feeLabel] = tx as PrecomposedTransaction;
-        });
 
-        const hasAtLeastOneValid = response.payload.find(r => r.type !== 'error');
-        // there is no valid tx in predefinedLevels and there is no custom level
-        if (!hasAtLeastOneValid && !resultLevels.custom) {
-            const { minFee } = feeInfo;
-            const lastIndex = predefinedLevels.length - 1;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const lastLevel: (typeof predefinedLevels)[number] = predefinedLevels[lastIndex];
-            const lastKnownFee = lastLevel.feePerUnit;
-            // define coefficient for maxFee
-            // NOTE: DOGE has very large values of FeeLevels, up to several thousands sat/B, rangeGap should be greater in this case otherwise calculation takes too long
-            // TODO: calculate rangeGap more precisely (percentage of range?)
-            const range = new BigNumber(lastKnownFee).minus(minFee);
-            const rangeGap = range.gt(1000) ? 1000 : 1;
-            let maxFee = new BigNumber(lastKnownFee).minus(rangeGap);
-            // generate custom levels in range from lastKnownFee minus customGap to feeInfo.minFee (coinInfo in @trezor/connect)
-            const customLevels: FeeLevel[] = [];
-            while (maxFee.gte(minFee)) {
-                customLevels.push({
-                    feePerUnit: maxFee.toString(),
-                    label: 'custom',
-                    blocks: -1,
+        if (formState.transactionData) {
+            const psbtResponse = await TrezorConnect.composePsbt({
+                account: {
+                    path: account.path,
+                    addresses: {
+                        ...account.addresses,
+                        change: changeAddresses,
+                    },
+                    utxo: utxo ?? [],
+                },
+                coin: asCoinSymbol(account.symbol),
+                psbtData: formState.transactionData,
+            });
+
+            if (!psbtResponse.success) {
+                if (psbtResponse.error.code !== 'Method_InvalidParameter') {
+                    dispatch(
+                        notificationsActions.addToast({
+                            type: 'sign-tx-error',
+                            error: psbtResponse.error.message,
+                        }),
+                    );
+                }
+
+                return rejectWithValue({
+                    error: 'fee-levels-compose-failed',
+                    message: psbtResponse.error.message,
                 });
-                maxFee = maxFee.minus(rangeGap);
             }
 
-            // check if any custom level is possible
-            const customLevelsResponse =
-                customLevels.length > 0
-                    ? await TrezorConnect.composeTransaction({
-                          ...params,
-                          feeLevels: customLevels,
-                      })
-                    : ({ success: false } as const);
+            const feeLabel = formState.selectedFee || 'normal';
+            resultLevels[feeLabel] = psbtResponse.payload as PrecomposedTransaction;
+        } else {
+            const response = await TrezorConnect.composeTransaction(params);
 
-            if (customLevelsResponse.success) {
-                const customValid = customLevelsResponse.payload.findIndex(r => r.type !== 'error');
-                if (customValid >= 0) {
-                    resultLevels.custom = customLevelsResponse.payload[
-                        customValid
-                    ] as PrecomposedTransaction;
+            if (!response.success) {
+                if (response.error.code !== 'Method_InvalidParameter') {
+                    dispatch(
+                        notificationsActions.addToast({
+                            type: 'sign-tx-error',
+                            error: response.error.message,
+                        }),
+                    );
+                }
+
+                return rejectWithValue({
+                    error: 'fee-levels-compose-failed',
+                    message: response.error.message,
+                });
+            }
+
+            response.payload.forEach((tx, index) => {
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
+                const feeLabel = predefinedLevel.label;
+                resultLevels[feeLabel] = tx as PrecomposedTransaction;
+            });
+
+            const hasAtLeastOneValid = response.payload.find(r => r.type !== 'error');
+            // there is no valid tx in predefinedLevels and there is no custom level
+            if (!hasAtLeastOneValid && !resultLevels.custom) {
+                const { minFee } = feeInfo;
+                const lastIndex = predefinedLevels.length - 1;
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const lastLevel: (typeof predefinedLevels)[number] = predefinedLevels[lastIndex];
+                const lastKnownFee = lastLevel.feePerUnit;
+                // define coefficient for maxFee
+                // NOTE: DOGE has very large values of FeeLevels, up to several thousands sat/B, rangeGap should be greater in this case otherwise calculation takes too long
+                // TODO: calculate rangeGap more precisely (percentage of range?)
+                const range = new BigNumber(lastKnownFee).minus(minFee);
+                const rangeGap = range.gt(1000) ? 1000 : 1;
+                let maxFee = new BigNumber(lastKnownFee).minus(rangeGap);
+                // generate custom levels in range from lastKnownFee minus customGap to feeInfo.minFee (coinInfo in @trezor/connect)
+                const customLevels: FeeLevel[] = [];
+                while (maxFee.gte(minFee)) {
+                    customLevels.push({
+                        feePerUnit: maxFee.toString(),
+                        label: 'custom',
+                        blocks: -1,
+                    });
+                    maxFee = maxFee.minus(rangeGap);
+                }
+
+                // check if any custom level is possible
+                const customLevelsResponse =
+                    customLevels.length > 0
+                        ? await TrezorConnect.composeTransaction({
+                              ...params,
+                              feeLevels: customLevels,
+                          })
+                        : ({ success: false } as const);
+
+                if (customLevelsResponse.success) {
+                    const customValid = customLevelsResponse.payload.findIndex(
+                        r => r.type !== 'error',
+                    );
+                    if (customValid >= 0) {
+                        resultLevels.custom = customLevelsResponse.payload[
+                            customValid
+                        ] as PrecomposedTransaction;
+                    }
                 }
             }
         }
