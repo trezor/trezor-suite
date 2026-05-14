@@ -7,6 +7,7 @@ import {
     selectIsLabelingInitPossible,
 } from '@suite/metadata';
 import { type SuiteSettingsRootState, suiteSettingsInitialState } from '@suite/settings';
+import { type DesktopSuiteSyncRootState, initialSuiteSyncDesktopState } from '@suite/suite-sync';
 import { deviceReducerInitialState } from '@suite-common/device';
 import {
     type MessageSystemRootState,
@@ -17,10 +18,6 @@ import { type SuiteSyncState, type WithSuiteSyncAndDeviceState } from '@suite-co
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type StaticSessionId, type UnavailableCapabilities } from '@trezor/connect';
 
-import {
-    type DesktopSuiteSyncRootState,
-    initialSuiteSyncDesktopState,
-} from 'src/actions/suiteSync/suiteSyncSlice';
 import { type SuiteRootState, suiteInitialState } from 'src/reducers/suite/suiteReducer';
 
 import { selectIsLabelActionEnabled } from './selectIsLabelActionEnabled';

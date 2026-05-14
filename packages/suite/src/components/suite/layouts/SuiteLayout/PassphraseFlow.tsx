@@ -1,13 +1,13 @@
 import { MODAL_CONTEXT_DEVICE, type MODAL_CONTEXT_NONE } from '@suite/modal';
 import { closeModalApp } from '@suite/router';
-import { TurnOnSuiteSyncModals } from '@suite/suite-sync';
+import {
+    TurnOnSuiteSyncModals,
+    selectShowEnableSuiteSyncModal,
+    updateShowEnableSuiteSyncModal,
+} from '@suite/suite-sync';
 import { selectSelectedDevice } from '@suite-common/device';
 import { UI_REQUEST } from '@trezor/connect';
 
-import {
-    selectShowEnableSuiteSyncModal,
-    updateShowEnableSuiteSyncModal,
-} from 'src/actions/suiteSync/suiteSyncSlice';
 import { ThpGlobalModalManager } from 'src/components/connection/thp/ThpGlobalModalManager';
 import { useDispatch, usePreferredModal, useSelector } from 'src/hooks/suite';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';

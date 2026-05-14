@@ -4,6 +4,7 @@ import type { DBSchema } from 'idb';
 
 import type { FlagsState } from '@suite/flags';
 import type { SuiteSettingsState } from '@suite/settings';
+import { type DesktopSuiteSyncState } from '@suite/suite-sync';
 import { type AnalyticsState } from '@suite-common/analytics-redux';
 import { type AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { type FeatureFeedbackState } from '@suite-common/feedback';
@@ -38,7 +39,6 @@ import type { Account, WalletAccountTransaction } from 'src/types/wallet';
 import { type CoinjoinAccount, type CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
 
 import { type DesktopBluetoothDevice } from '../actions/bluetooth/DesktopBluetoothDevice';
-import { type DesktopSuiteSyncState } from '../actions/suiteSync/suiteSyncSlice';
 import { type GraphData } from '../types/wallet/graph';
 
 export interface DBWalletAccountTransaction {

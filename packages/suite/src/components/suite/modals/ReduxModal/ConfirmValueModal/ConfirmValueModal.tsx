@@ -6,9 +6,11 @@ import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
 import {
     selectIsLegacyLabelingVisible,
+    selectIsMetadataEnabled,
     selectLabelingDataForSelectedAccount,
 } from '@suite/metadata';
 import { MODAL_CONTEXT_USER } from '@suite/modal';
+import { selectDesktopSuiteSyncInteraction } from '@suite/suite-sync';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
@@ -37,7 +39,6 @@ import { copyToClipboard } from '@trezor/dom-utils';
 import { CoinLogo, ConfirmOnDevicePill } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { selectDesktopSuiteSyncInteraction } from 'src/actions/suiteSync/suiteSyncSlice';
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { QrCode } from 'src/components/suite/QrCode';
 import { Labeling } from 'src/components/suite/labeling';
@@ -75,6 +76,7 @@ export const ConfirmValueModal = ({
     const modalContext = useSelector(state => state.modal.context);
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
+    const isMetadataEnabled = useSelector(selectIsMetadataEnabled);
     const dispatch = useDispatch();
     const { openNodeById } = useGuideOpenNode();
     const { translationString } = useTranslation();
@@ -89,7 +91,9 @@ export const ConfirmValueModal = ({
             : undefined,
     );
     const suiteSyncInteraction = useSelector(state =>
-        account ? selectDesktopSuiteSyncInteraction(state, account.deviceState) : null,
+        account
+            ? selectDesktopSuiteSyncInteraction(state, account.deviceState, isMetadataEnabled)
+            : null,
     );
 
     const canConfirmOnDevice = !!(device?.connected && device?.available);

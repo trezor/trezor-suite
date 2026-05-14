@@ -5,6 +5,7 @@ import { flagsInitialState } from '@suite/flags';
 import { locksInitialState } from '@suite/locks';
 import { type RouterState } from '@suite/router';
 import { suiteSettingsInitialState } from '@suite/settings';
+import { initialSuiteSyncDesktopState } from '@suite/suite-sync';
 import { type FirmwareUpdateState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type MetadataState } from '@suite-common/metadata-types';
@@ -13,7 +14,6 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { initialDesktopBluetoothState } from 'src/actions/bluetooth/desktopBluetoothReducer';
 import { initialState } from 'src/actions/device/deviceSlice';
-import { initialSuiteSyncDesktopState } from 'src/actions/suiteSync/suiteSyncSlice';
 import { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
 import { type AppState } from 'src/reducers/store';
 import { type ProtocolState } from 'src/reducers/suite/protocolReducer';

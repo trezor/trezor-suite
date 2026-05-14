@@ -2,7 +2,12 @@ import {
     type MetadataRootState,
     selectIsLabelingAvailableForEntity,
     selectIsLabelingInitPossible,
+    selectIsMetadataEnabled,
 } from '@suite/metadata';
+import {
+    type DesktopSuiteSyncRootState,
+    selectDesktopSuiteSyncInteraction,
+} from '@suite/suite-sync';
 import { selectDeviceByStaticSessionId } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
@@ -13,16 +18,9 @@ import {
 } from '@suite-common/suite-sync';
 import { type StaticSessionId } from '@trezor/connect';
 
-import {
-    type DesktopSuiteSyncRootState,
-    selectDesktopSuiteSyncInteraction,
-} from 'src/actions/suiteSync/suiteSyncSlice';
-import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
-
 export const selectIsLabelActionEnabled = (
     state: WithSuiteSyncAndDeviceState &
         MetadataRootState &
-        SuiteRootState &
         DesktopSuiteSyncRootState &
         MessageSystemRootState,
     deviceStaticSessionId: StaticSessionId,
@@ -35,6 +33,7 @@ export const selectIsLabelActionEnabled = (
         const suiteSyncInteraction = selectDesktopSuiteSyncInteraction(
             state,
             deviceStaticSessionId,
+            selectIsMetadataEnabled(state),
         );
 
         if (suiteSyncInteraction === 'keys-needed' && device?.connected === false) {
