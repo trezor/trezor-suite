@@ -22,7 +22,11 @@ export const useNavigationRemoveInterceptor = ({
 }: UseNavigationRemoveInterceptorProps) => {
     const { showStayOnScreenAlert, hideStayOnScreenAlert } = useShowStayOnScreenAlert();
 
-    const onNavigateBack = useCallback(() => {
+    const onAllowedRemove = useCallback(() => {
+        hideStayOnScreenAlert();
+    }, [hideStayOnScreenAlert]);
+
+    const onPreventedRemove = useCallback(() => {
         showStayOnScreenAlert({
             onRemoveConfirmed,
             onStayConfirmed,
@@ -32,7 +36,7 @@ export const useNavigationRemoveInterceptor = ({
 
     usePreventNavigationRemove({
         shouldPrevent,
-        onNavigateBack,
-        onSuccessfulRemove: hideStayOnScreenAlert,
+        onPreventedRemove,
+        onAllowedRemove,
     });
 };

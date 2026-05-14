@@ -27,29 +27,35 @@ describe('usePreventNavigationRemove', () => {
         jest.clearAllMocks();
     });
 
-    it('calls onNavigateBack when action type is included in actionTypes', () => {
-        const onNavigateBack = jest.fn();
+    it('calls onPreventedRemove when action type is included in actionTypes', () => {
+        const onPreventedRemove = jest.fn();
         const action: NavigationAction = { type: 'GO_BACK' };
 
         renderHookWithBasicProvider(() =>
-            usePreventNavigationRemove({ actionTypes: ['GO_BACK'], onNavigateBack }),
+            usePreventNavigationRemove({ actionTypes: ['GO_BACK'], onPreventedRemove }),
         );
         triggerPreventRemoveAction(action);
 
-        expect(onNavigateBack).toHaveBeenCalledWith(action);
+        expect(onPreventedRemove).toHaveBeenCalledWith(action);
         expect(mockDispatch).not.toHaveBeenCalled();
     });
 
-    it('does not call onNavigateBack when action type is not included in actionTypes', () => {
-        const onNavigateBack = jest.fn();
+    it('does not call onPreventedRemove when action type is not included in actionTypes', () => {
+        const onPreventedRemove = jest.fn();
+        const onAllowedRemove = jest.fn();
         const action: NavigationAction = { type: 'POP' };
 
         renderHookWithBasicProvider(() =>
-            usePreventNavigationRemove({ actionTypes: ['GO_BACK'], onNavigateBack }),
+            usePreventNavigationRemove({
+                actionTypes: ['GO_BACK'],
+                onPreventedRemove,
+                onAllowedRemove,
+            }),
         );
         triggerPreventRemoveAction(action);
 
-        expect(onNavigateBack).not.toHaveBeenCalled();
+        expect(onPreventedRemove).not.toHaveBeenCalled();
+        expect(onAllowedRemove).toHaveBeenCalledWith(action);
         expect(mockDispatch).toHaveBeenCalledWith(action);
     });
 });

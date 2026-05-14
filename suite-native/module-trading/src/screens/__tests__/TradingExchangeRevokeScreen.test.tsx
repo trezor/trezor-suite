@@ -31,7 +31,7 @@ const mockedUsePreventNavigationRemove = jest.mocked(usePreventNavigationRemove)
 const triggerPreventNavigationRemove = (action: NavigationAction = { type: 'GO_BACK' }) => {
     const params = mockedUsePreventNavigationRemove.mock.calls.at(-1)?.[0];
 
-    params?.onNavigateBack?.(action);
+    params?.onPreventedRemove?.(action);
 };
 
 jest.mock('../../hooks/exchange/Approval/useApprovalFlow', () => ({
