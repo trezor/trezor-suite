@@ -87,6 +87,23 @@ describe('getErrorResult', () => {
             error: 'NOT-ENOUGH-FUNDS',
         });
     });
+
+    it('stringifies a non-Error thrown value and routes unknown messages to the COINSELECT branch with a message field', () => {
+        // Drives the two remaining branches in getErrorResult that the Error
+        // happy-path test does not reach:
+        //   - the ternary's non-Error arm: `error instanceof Error ? ... : \`${error}\``
+        //     produces 'unexpected failure' for the bare string input
+        //   - the `if (known)` false arm: 'unexpected failure' is NOT in
+        //     COMPOSE_ERROR_TYPES, so the function falls through to the
+        //     COINSELECT return statement that attaches the stringified message
+        // A mutator that flips `if (known)` to true (or the ternary's condition)
+        // would change the returned object shape — exact toEqual detects it.
+        expect(getErrorResult('unexpected failure')).toEqual({
+            type: 'error',
+            error: 'COINSELECT',
+            message: 'unexpected failure',
+        });
+    });
 });
 
 describe('composeTx addresses cross-check', () => {
