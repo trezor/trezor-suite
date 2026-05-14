@@ -19,6 +19,7 @@ Applies to any package with `publishConfig`.
 6. **Explicit (non-wildcard) exports** — not shape-checked (intentional overrides), but must still have a counterpart. Typically used to route a directory import to its `index.js`, e.g. `"./lib/protocol-thp": { "types": "./lib/protocol-thp/index.d.ts", "default": "./lib/protocol-thp/index.js" }` — without this, the wildcard would resolve to `protocol-thp.js` instead of `protocol-thp/index.js`.
 7. **lib/libESM counterpart** — every `./lib/...` entry needs a matching `./libESM/...` pair and vice versa.
 8. **Key order** — `"types"` must come before `"default"` in every condition object (recursive). TypeScript evaluates conditions in declaration order.
+9. **ESM-only packages** — must declare top-level `"type": "module"`. Do not duplicate it under `publishConfig.type` — `publishConfig` would only shadow the top level with the same value at publish time, so we keep a single source of truth.
 
 ## Example
 
@@ -26,6 +27,7 @@ Applies to any package with `publishConfig`.
 {
     "name": "@trezor/example",
     "main": "./src/index.ts", // Rule 1
+    "type": "module", // Rule 9 — ESM-only packages only
     "files": ["lib/", "libESM/", "CHANGELOG.md"], // Rule 2
     "publishConfig": {
         "main": "./lib/index.js", // Rule 3

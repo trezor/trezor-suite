@@ -28,10 +28,10 @@ const validPublicPackageJson = {
 const validEsmOnlyPackageJson = {
     name: '@trezor/example-esm',
     main: 'src/index.ts',
+    type: 'module',
     publishConfig: {
         main: './libESM/index.mjs',
         types: './libESM/index.d.mts',
-        type: 'module',
         exports: {
             '.': { types: './libESM/index.d.mts', default: './libESM/index.mjs' },
             './libESM/*': './libESM/*',
@@ -211,27 +211,34 @@ describe(requirePublishConfig.name, () => {
             expect(errors).toContain('@trezor/example: Invalid publishConfig.exports["."]');
         });
 
-        it('reports missing publishConfig.type for ESM-only package', async () => {
-            const pkg = {
-                ...validEsmOnlyPackageJson,
-                publishConfig: {
-                    ...validEsmOnlyPackageJson.publishConfig,
-                    type: undefined,
-                },
-            };
+        it('reports missing top-level "type" for ESM-only package', async () => {
+            const { type: _, ...withoutType } = validEsmOnlyPackageJson;
+            writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(withoutType));
+
+            const errors = await requirePublishConfig.verify(context);
+
+            expect(errors).toContain(
+                '@trezor/example: ESM-only package must declare top-level "type": "module" (got undefined)',
+            );
+        });
+
+        it('reports invalid top-level "type" for ESM-only package', async () => {
+            const pkg = { ...validEsmOnlyPackageJson, type: 'commonjs' };
             writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(pkg));
 
             const errors = await requirePublishConfig.verify(context);
 
-            expect(errors).toContain('@trezor/example: Missing "publishConfig.type" field');
+            expect(errors).toContain(
+                '@trezor/example: ESM-only package must declare top-level "type": "module" (got "commonjs")',
+            );
         });
 
-        it('reports invalid publishConfig.type for ESM-only package', async () => {
+        it('rejects redundant publishConfig.type', async () => {
             const pkg = {
                 ...validEsmOnlyPackageJson,
                 publishConfig: {
                     ...validEsmOnlyPackageJson.publishConfig,
-                    type: 'commonjs',
+                    type: 'module',
                 },
             };
             writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(pkg));
@@ -239,7 +246,7 @@ describe(requirePublishConfig.name, () => {
             const errors = await requirePublishConfig.verify(context);
 
             expect(errors).toContain(
-                '@trezor/example: Invalid "publishConfig.type": expected "module", got "commonjs"',
+                '@trezor/example: Redundant "publishConfig.type" field — declare "type" at the top level instead',
             );
         });
 

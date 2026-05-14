@@ -17,6 +17,7 @@ interface ExportValueMap {
 type PackageJson = {
     readonly name?: string;
     readonly main?: string;
+    readonly type?: string;
     readonly files?: ReadonlyArray<string>;
     readonly publishConfig?: {
         readonly main?: string;
@@ -97,13 +98,19 @@ const validatePublicPackage = (
         );
     }
     if (isEsmOnly) {
-        if (!publishConfig?.type) {
-            errors.push('Missing "publishConfig.type" field');
-        } else if (publishConfig.type !== 'module') {
+        if (packageJson.type !== 'module') {
             errors.push(
-                `Invalid "publishConfig.type": expected "module", got ${JSON.stringify(publishConfig.type)}`,
+                `ESM-only package must declare top-level "type": "module" (got ${JSON.stringify(packageJson.type)})`,
             );
         }
+    }
+
+    // publishConfig.type would just shadow the top-level "type" with the same value at publish time.
+    // Keep the source of truth at the top level so local tooling and the published package agree.
+    if (publishConfig?.type !== undefined) {
+        errors.push(
+            'Redundant "publishConfig.type" field — declare "type" at the top level instead',
+        );
     }
 
     return { errors, isEsmOnly };
