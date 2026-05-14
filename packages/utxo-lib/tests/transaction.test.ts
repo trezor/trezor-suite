@@ -220,6 +220,15 @@ describe('Transaction', () => {
             expect(prebuf.subarray(9, 9 + txLen).toString('hex')).toEqual(validHex);
         });
 
+        it('Decred: getHash(forWitness=true) on a coinbase transaction returns 32 zero bytes', () => {
+            const coinbaseFixture = fixturesDecred.valid[4];
+            expect(coinbaseFixture.coinbase).toBe(true);
+            const tx = Transaction.fromHex(coinbaseFixture.hex, { network: NETWORKS.decred });
+            expect(tx.isCoinbase()).toBe(true);
+            const witnessHash = tx.getHash(true);
+            expect(witnessHash).toEqual(Buffer.alloc(32, 0));
+        });
+
         it('Zcash: throws on Transaction has unexpected data when hex has trailing bytes', () => {
             const validHex = fixturesZcash.valid[0].hex;
             const badHex = `${validHex}ff`;
