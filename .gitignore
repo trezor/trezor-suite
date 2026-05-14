@@ -159,3 +159,6 @@ packages/suite-data/files/translations/master.json
 
 # coverage map and test analysis files
 coverage-map/
+
+# stryker mutation testing
+.stryker-tmp

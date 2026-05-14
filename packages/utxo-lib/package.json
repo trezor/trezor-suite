@@ -43,6 +43,8 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "test:unit": "yarn g:jest",
+        "test:mutation": "node ../../node_modules/.bin/stryker run",
+        "list-targets": "node list-targets.cjs",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
@@ -63,6 +65,8 @@
         "wif": "^5.0.0"
     },
     "devDependencies": {
+        "@stryker-mutator/core": "^9.6.1",
+        "@stryker-mutator/jest-runner": "^9.6.1",
         "@trezor/eslint": "workspace:*",
         "@types/bn.js": "^5.2.0",
         "minimaldata": "^1.0.2"
