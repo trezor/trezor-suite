@@ -42,7 +42,7 @@ import { SecurityCheckLayout } from 'src/components/suite/SecurityCheck/Security
 import { ContactSupport } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
 import { useDispatch, useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
-import { ContentFlex } from 'src/support/suite/ContentFlex';
+import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 import { SecurityChecklist } from './SecurityChecklist';
@@ -116,6 +116,7 @@ const SecurityCheckContent = ({
     const { isBelowTablet } = useLayoutSize();
     const recoveryStatus = useSelector(selectRecoveryStatus);
     const device = useSelector(selectSelectedDevice);
+    const isVerticalLayout = useIsContentBelowBreakpoint(breakpoints.tablet);
     const deviceId = device?.id;
     const deviceModel = device?.features?.internal_model || DeviceModelInternal.UNKNOWN;
     const isOnboardingActive = useSelector(selectIsOnboardingActive);
@@ -261,7 +262,8 @@ const SecurityCheckContent = ({
                                 <Translation id="TR_TAKES_N_MINUTES" />
                             </Note>
                         }
-                        width="100%"
+                        placement="bottom"
+                        width={isVerticalLayout ? '100%' : undefined}
                     >
                         <SecurityCheckButton
                             onClick={handleSetupButtonClick}
