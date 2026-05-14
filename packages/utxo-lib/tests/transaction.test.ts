@@ -306,6 +306,27 @@ describe('Transaction', () => {
             );
         });
 
+        it('Zcash: throws on Unexpected orchard byte for an NU5 tx with non-zero orchard byte', () => {
+            // Synthesized 25-byte NU5 hex driving zcash.fromBuffer to the
+            // `if (bufferReader.readUInt8() !== 0x00) throw 'Unexpected orchard byte'`
+            // branch at src/transaction/zcash.ts:614. Layout:
+            //   bytes 0-3   '05000080' Int32LE → overwintered=1, version=5 (ZCASH_NU5_VERSION)
+            //   bytes 4-7   '00000000'         → versionGroupId UInt32
+            //   bytes 8-11  '00000000'         → consensusBranchId UInt32 (NU5-only)
+            //   bytes 12-15 '00000000'         → locktime UInt32 (NU5-only)
+            //   bytes 16-19 '00000000'         → expiry UInt32 (NU5-only)
+            //   byte 20     '00'               → vinLen varint = 0 (no inputs)
+            //   byte 21     '00'               → voutLen varint = 0 (no outputs)
+            //   byte 22     '00'               → vSpendsSapling varint = 0 (passes first check)
+            //   byte 23     '00'               → vOutputsSapling varint = 0 (passes second check)
+            //   byte 24     '01'               → orchard byte = 1 (non-zero → throws)
+            // The throw fires immediately after readUInt8 on the orchard byte.
+            const hex = '05000080000000000000000000000000000000000000000001';
+            expect(() => Transaction.fromHex(hex, { network: NETWORKS.zcash })).toThrow(
+                'Unexpected orchard byte',
+            );
+        });
+
         it('Zcash: throws on Transaction has unexpected data when hex has trailing bytes', () => {
             const validHex = fixturesZcash.valid[0].hex;
             const badHex = `${validHex}ff`;
