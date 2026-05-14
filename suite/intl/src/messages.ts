@@ -417,11 +417,11 @@ export const messages = defineMessages({
     },
     TR_EXCHANGE_DETAIL_KYC_TEXT: {
         defaultMessage:
-            'The provider has marked this transaction as "suspicious" and you may be required to complete their KYC process to finish the trade. Contact the provider\'s support to proceed.',
+            "The provider has marked this transaction as suspicious and you may be required to complete their KYC process to finish the trade. Contact the provider's support to proceed.",
         id: 'TR_EXCHANGE_DETAIL_KYC_TEXT',
     },
     TR_EXCHANGE_DETAIL_KYC_SUPPORT: {
-        defaultMessage: "Go to provider's support",
+        defaultMessage: 'Go to provider support',
         id: 'TR_EXCHANGE_DETAIL_KYC_SUPPORT',
     },
     TR_EXCHANGE_DETAIL_SENDING_TRANSACTION: {
@@ -1112,7 +1112,7 @@ export const messages = defineMessages({
         id: 'TR_HOW_TRADING_PRIVACY_KYC',
     },
     TR_HOW_TRADING_PRIVACY_KYC_SUBTEXT: {
-        defaultMessage: 'You share it only with the provider if you complete the trade.',
+        defaultMessage: 'It’s shared only with the provider if you complete your trade.',
         id: 'TR_HOW_TRADING_PRIVACY_KYC_SUBTEXT',
     },
     TR_HOW_TRADING_TERMS_OF_USE: {
@@ -1216,12 +1216,11 @@ export const messages = defineMessages({
         id: 'TR_TRADING_KYC_REQUIRED',
     },
     TR_TRADING_KYC_NO_REFUND: {
-        defaultMessage:
-            "KYC is only required in exceptional cases. However, it's required for refunds.",
+        defaultMessage: 'KYC is only required in exceptional cases. It may be needed for refunds.',
         id: 'TR_TRADING_KYC_NO_REFUND',
     },
     TR_TRADING_KYC_YES_REFUND: {
-        defaultMessage: "KYC is only required in exceptional cases. It's not required for refunds.",
+        defaultMessage: "KYC is only required in exceptional cases. It's not needed for refunds.",
         id: 'TR_TRADING_KYC_YES_REFUND',
     },
     TR_TRADING_KYC_NO_KYC: {
@@ -2353,7 +2352,7 @@ export const messages = defineMessages({
     },
     TR_7D_CHANGE: {
         id: 'TR_7D_CHANGE',
-        defaultMessage: '7d change',
+        defaultMessage: '7D change',
     },
     TR_FAILED_BACKUP: {
         defaultMessage: 'Wallet backup failed. Wipe your Trezor and start the setup again.',
@@ -2368,7 +2367,7 @@ export const messages = defineMessages({
         id: 'TR_FIAT_RATES_NOT_AVAILABLE',
     },
     TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP: {
-        defaultMessage: 'The 7d change rate is currently not available.',
+        defaultMessage: 'The 7D change rate is currently not available.',
         id: 'TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP',
     },
     TR_FIRMWARE: {
@@ -2634,7 +2633,7 @@ export const messages = defineMessages({
     },
     TR_AUTO_EJECT_DESCRIPTION: {
         defaultMessage:
-            'Automatically eject all wallets when you disconnect your Trezor.\nYour balances are hidden in Trezor Suite until you reconnect your device.',
+            'Automatically eject all wallets when you disconnect your Trezor. Your balances are hidden in Trezor Suite until you reconnect your device.',
         id: 'TR_AUTO_EJECT_DESCRIPTION',
     },
     TR_AUTO_EJECT_CONFIRMATION_DESCRIPTION: {
@@ -3006,7 +3005,7 @@ export const messages = defineMessages({
         id: 'TR_RECEIVE',
     },
     TR_RECEIVE_DESCRIPTION: {
-        defaultMessage: 'Learn how to <a>choose the right network</a> to receive your tokens',
+        defaultMessage: 'Learn how to <a>select the right network</a> to receive your tokens',
         id: 'TR_RECEIVE_DESCRIPTION',
     },
     TR_RECEIVE_SEARCH: {
@@ -4022,7 +4021,7 @@ export const messages = defineMessages({
     },
     TOAST_AUTO_EJECT_SETTINGS: {
         id: 'TOAST_AUTO_EJECT_SETTINGS',
-        defaultMessage: 'Wallet balances stay visible',
+        defaultMessage: 'Wallet balances remain visible',
     },
     TOAST_AUTO_UPDATER_ERROR: {
         id: 'TOAST_AUTO_UPDATER_ERROR',
@@ -5489,7 +5488,7 @@ export const messages = defineMessages({
     },
     TR_TRON_TX_VOTE_WITNESS: {
         id: 'TR_TRON_TX_VOTE_WITNESS',
-        defaultMessage: 'Vote witnesss',
+        defaultMessage: 'Vote witness',
     },
     TR_TRON_TX_FREEZE_BALANCE: {
         id: 'TR_TRON_TX_FREEZE_BALANCE',
@@ -7713,7 +7712,7 @@ export const messages = defineMessages({
     },
     TR_ONBOARDING_FINAL_HEADING: {
         id: 'TR_ONBOARDING_FINAL_HEADING',
-        defaultMessage: 'You’re all set!',
+        defaultMessage: "You're all set",
     },
     TR_ONBOARDING_FINAL_DESCRIPTION: {
         id: 'TR_ONBOARDING_FINAL_DESCRIPTION',
@@ -9215,7 +9214,7 @@ export const messages = defineMessages({
     },
     TR_COINJOIN_STEP_1_DESCRIPTION: {
         id: 'TR_COINJOIN_STEP_1_DESCRIPTION',
-        defaultMessage: 'Send yourself some bitcoin to make private',
+        defaultMessage: 'Send yourself bitcoin to make private',
     },
     TR_START_COINJOIN: {
         id: 'TR_START_COINJOIN',
@@ -11293,8 +11292,7 @@ export const messages = defineMessages({
     },
     TR_WALLETCONNECT_REQUIRED_NETWORKS_NOT_ACTIVATED: {
         id: 'TR_WALLETCONNECT_REQUIRED_NETWORKS_NOT_ACTIVATED',
-        defaultMessage:
-            'Some required networks are inactive. Activate them to use all app features.',
+        defaultMessage: 'Some required assets are inactive. Activate them to use all app features.',
     },
     TR_WALLETCONNECT_NO_NETWORKS_ACTIVATED: {
         id: 'TR_WALLETCONNECT_NO_NETWORKS_ACTIVATED',
