@@ -1,9 +1,9 @@
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { type Account } from '@suite-common/wallet-types';
+import { AccountLabel } from '@suite-native/accounts';
 import { HStack, IconButton, Text } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
-import { AccountLabel } from '@suite-native/labeling';
 import {
     type AccountsStackParamList,
     type RootStackParamList,

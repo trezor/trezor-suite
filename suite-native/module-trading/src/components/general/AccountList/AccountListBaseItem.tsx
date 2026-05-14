@@ -3,12 +3,13 @@ import { Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
+import { selectAccountLabel } from '@suite-native/accounts';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { useCoinLabel } from '@suite-native/device';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { CryptoIcon, Icon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
-import { type CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
+import { type CombinedLabelingState } from '@suite-native/labeling';
 import { type ReceiveAccount } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 

@@ -7,6 +7,9 @@
             "path": "../../suite-common/formatters"
         },
         {
+            "path": "../../suite-common/message-system"
+        },
+        {
             "path": "../../suite-common/redux-utils"
         },
         {
@@ -48,11 +51,13 @@
         { "path": "../staking" },
         { "path": "../toasts" },
         { "path": "../tokens" },
+        { "path": "../../packages/connect" },
         {
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/theme" },
         { "path": "../../packages/utils" },
-        { "path": "../test-utils" }
+        { "path": "../test-utils" },
+        { "path": "../test-utils-store" }
     ]
 }

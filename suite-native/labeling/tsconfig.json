@@ -40,7 +40,6 @@
         { "path": "../settings" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/type-utils" },
-        { "path": "../test-utils-store" }
+        { "path": "../../packages/type-utils" }
     ]
 }

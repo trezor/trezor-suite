@@ -5,10 +5,11 @@ import { useNavigation } from '@react-navigation/native';
 
 import { type TradingType } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectAccountLabel } from '@suite-native/accounts';
 import { Text, VStack } from '@suite-native/atoms';
 import { AddressFormatter } from '@suite-native/formatters';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { type CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
+import { type CombinedLabelingState } from '@suite-native/labeling';
 import {
     type RootStackParamList,
     RootStackRoutes,

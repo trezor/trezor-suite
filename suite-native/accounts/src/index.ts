@@ -1,5 +1,6 @@
 export * from './components/AddAccountsButton';
 export * from './components/AccountSelectBottomSheet';
+export * from './components/AccountLabel';
 export * from './components/AccountsList/AccountsList';
 export * from './components/AccountsList/AccountsListItem';
 export * from './components/AccountsList/AccountsListItemBase';

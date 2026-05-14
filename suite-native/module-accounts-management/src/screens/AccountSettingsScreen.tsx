@@ -11,10 +11,10 @@ import {
     selectFormattedAccountType,
     selectIsAccountUtxoBased,
 } from '@suite-common/wallet-core';
+import { AccountLabel } from '@suite-native/accounts';
 import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { AccountLabel } from '@suite-native/labeling';
 import {
     type RootStackParamList,
     type RootStackRoutes,

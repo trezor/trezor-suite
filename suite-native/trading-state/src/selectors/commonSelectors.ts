@@ -50,13 +50,13 @@ import {
     parseAccountKey,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts';
+import { selectAccountLabel, sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts';
 import {
     FeatureFlag,
     type FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
-import { type CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
+import { type CombinedLabelingState } from '@suite-native/labeling';
 import { type TokensRootState } from '@suite-native/tokens';
 import {
     type SectionListData,

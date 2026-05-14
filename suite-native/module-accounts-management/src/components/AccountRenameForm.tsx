@@ -11,6 +11,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import {
     type AccountFormValues,
     MAX_ACCOUNT_LABEL_LENGTH,
+    selectAccountLabel,
     useAccountLabelForm,
 } from '@suite-native/accounts';
 import { Box, Button, type InputType, VStack } from '@suite-native/atoms';
@@ -19,7 +20,6 @@ import { Form, TextInputField } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     type CombinedLabelingState,
-    selectAccountLabel,
     selectIsLabellingAllowed,
     useSuiteSyncErrorHandler,
 } from '@suite-native/labeling';

@@ -9,9 +9,10 @@ import { type AllLabelsForAccount, selectAllLabelsForAccount } from '@suite-comm
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountDescriptor } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
+import { selectAccountLabel } from '@suite-native/accounts';
 import { Button, CardWithIconLayout, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { type CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
+import { type CombinedLabelingState } from '@suite-native/labeling';
 import { useToast } from '@suite-native/toasts';
 import { type StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';

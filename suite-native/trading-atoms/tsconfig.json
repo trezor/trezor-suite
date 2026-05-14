@@ -12,10 +12,10 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../accounts" },
         { "path": "../atoms" },
         { "path": "../icons" },
         { "path": "../intl" },
-        { "path": "../labeling" },
         {
             "path": "../../packages/styles-native"
         },
