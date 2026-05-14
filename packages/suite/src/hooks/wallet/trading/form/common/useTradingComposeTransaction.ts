@@ -5,10 +5,13 @@ import { isTranslationKey, useTranslation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
+    TRADING_EXCHANGE_FROM_ADDRESS,
     TRADING_FORM_OUTPUT_ADDRESS,
     TRADING_FORM_OUTPUT_AMOUNT,
     type TradingExchangeFormProps,
     type TradingSellFormProps,
+    deriveBitcoinSwapFromAddresses,
+    selectTradingInfo,
     tradingActions,
 } from '@suite-common/trading';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
@@ -19,7 +22,10 @@ import {
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
-import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
+import {
+    convertAmountSubunitsToUnits,
+    getConvertedOrDefaultFeeInfo,
+} from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -32,6 +38,8 @@ import {
     type TradingUseComposeTransactionStateProps,
 } from 'src/types/trading/tradingForm';
 import { getComposeAddressPlaceholder } from 'src/utils/wallet/trading/tradingUtils';
+
+import { useBitcoinAmountUnit } from '../../../useBitcoinAmountUnit';
 
 // shareable sub-hook used in useTradingSellForm & useTradingExchangeForm
 export const useTradingComposeTransaction = <T extends TradingSellExchangeFormProps>({
@@ -46,7 +54,10 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     const accounts = useSelector(selectAccounts);
     const device = useSelector(selectSelectedDevice);
     const addressDisplayType = useSelector(selectAddressDisplayType);
+    const tradingInfo = useSelector(selectTradingInfo);
+    const btcSwapDummyData = tradingInfo?.config?.btcSwapDummyData;
     const { translationString } = useTranslation();
+    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
     const { getValues, setValue, setError, clearErrors, control } =
         methods as unknown as UseFormReturn<TradingSellFormProps | TradingExchangeFormProps>;
@@ -64,6 +75,9 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     );
     const initState = useMemo(() => ({ account, network, feeInfo }), [account, network, feeInfo]);
     const outputAddress = useWatch({ control, name: TRADING_FORM_OUTPUT_ADDRESS });
+    const outputAmount = useWatch({ control, name: TRADING_FORM_OUTPUT_AMOUNT });
+    const setMaxOutputId = useWatch({ control, name: 'setMaxOutputId' });
+    const customFeePerUnit = useWatch({ control, name: 'feePerUnit' });
     const [state, setState] = useState<TradingUseComposeTransactionStateProps>(initState);
     const replaceablePlaceholderRef = useRef<{ accountKey?: string; address?: string }>({});
 
@@ -251,7 +265,11 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         if (composed.type === 'final' || composed.type === 'nonfinal') {
             const currentOutputAmount = values.outputs?.[0]?.amount;
 
-            if (typeof setMaxOutputId === 'number' && composed.max) {
+            // For BTC exchange swaps, the max amount is handled by the eager derivation effect below,
+            // which accounts for swap-specific overhead (OP_RETURN + fee outputs)
+            const isBtcExchangeSwap = type === 'exchange' && account.networkType === 'bitcoin';
+
+            if (typeof setMaxOutputId === 'number' && composed.max && !isBtcExchangeSwap) {
                 const currentBN = new BigNumber(currentOutputAmount || '0');
                 const composedMaxBN = new BigNumber(composed.max);
 
@@ -286,6 +304,86 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         setValue,
         translationString,
         shouldSuppressComposeErrors,
+    ]);
+
+    // Eagerly derive fromAddress and swap amount for Bitcoin exchange swaps.
+    // This runs when the output amount changes, completing before the 500ms debounce
+    // in useTradingFormActions fires handleChange, so the first quote request
+    // already includes the correct fromAddress and swap-adjusted amount.
+    const currentFeeLevel = selectedFee || 'normal';
+    const feePerUnit =
+        currentFeeLevel === 'custom'
+            ? customFeePerUnit
+            : feeInfo.levels.find(l => l.label === currentFeeLevel)?.feePerUnit;
+    const prevFromAddressInputs = useRef<string | undefined>(undefined);
+
+    useEffect(() => {
+        if (type !== 'exchange' || !account || !network || account.networkType !== 'bitcoin') {
+            return;
+        }
+        if (!outputAmount && typeof setMaxOutputId !== 'number') {
+            return;
+        }
+
+        const inputKey = `${outputAmount ?? ''}_${setMaxOutputId ?? ''}_${account.availableBalance}_${feePerUnit ?? ''}`;
+        if (prevFromAddressInputs.current === inputKey) return;
+        prevFromAddressInputs.current = inputKey;
+
+        let cancelled = false;
+
+        deriveBitcoinSwapFromAddresses({
+            account,
+            network,
+            sendStringAmount: outputAmount ?? '',
+            decimals: network.decimals,
+            setMaxOutputId,
+            feePerUnit,
+            btcSwapDummyData,
+        }).then(result => {
+            if (cancelled) return;
+
+            if (result?.addresses) {
+                const fromAddress = result.addresses.join(';');
+                if (fromAddress) {
+                    setValue(TRADING_EXCHANGE_FROM_ADDRESS, fromAddress, { shouldDirty: true });
+                }
+            }
+
+            // For max amount swaps, update the amount to reflect the true maximum
+            // after accounting for swap-specific outputs (OP_RETURN + fee outputs).
+            if (typeof setMaxOutputId === 'number' && result?.amount) {
+                const swapAmount = shouldSendInSats
+                    ? result.amount
+                    : convertAmountSubunitsToUnits(result.amount, network.decimals);
+
+                // Pre-update the ref to the inputKey that will result from the new amount,
+                // preventing the effect from re-running when setValue triggers a values change.
+                prevFromAddressInputs.current = `${swapAmount}_${setMaxOutputId ?? ''}_${account.availableBalance}_${feePerUnit ?? ''}`;
+
+                setValue(TRADING_FORM_OUTPUT_AMOUNT, swapAmount, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                });
+                clearErrors(TRADING_FORM_OUTPUT_AMOUNT);
+            }
+        });
+
+        return () => {
+            cancelled = true;
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [
+        type,
+        account?.networkType,
+        account?.availableBalance,
+        network,
+        outputAmount,
+        setMaxOutputId,
+        shouldSendInSats,
+        setValue,
+        clearErrors,
+        feePerUnit,
+        btcSwapDummyData,
     ]);
 
     return {
