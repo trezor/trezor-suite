@@ -6,7 +6,10 @@ import {
     jitoOnSolanaAsset,
     jupOnSolanaAsset,
     rethOnBaseAsset,
+    tronTetherAsset,
+    unknownAsset,
     usdcAsset,
+    usdtAsset,
     usdtOnArbAsset,
     usdtOnBscAsset,
 } from '@suite-native/trading-fixtures';
@@ -114,6 +117,106 @@ describe('useTradeableAssetsFilteredData', () => {
             result.current.setFilterValue('NonExistentAsset');
         });
         expect(result.current.filteredData).toHaveLength(0);
+    });
+
+    describe('sort order', () => {
+        it('should rank exact name match before name-startsWith', () => {
+            // tronTetherAsset.name = 'Tether' (exact match), usdtAsset.name = 'Tether USDT' (startsWith)
+            const assets = [usdtAsset, tronTetherAsset];
+            const { result } = renderHook(() => useTradeableAssetsFilteredData({ assets }));
+
+            act(() => {
+                result.current.setFilterValue('tether');
+            });
+
+            expect(result.current.filteredData[0]).toBe(tronTetherAsset);
+            expect(result.current.filteredData[1]).toBe(usdtAsset);
+        });
+
+        it('should rank exact symbol match before symbol-startsWith', () => {
+            // Inline asset with symbol starting with 'usd' but not exact; usdcAsset.symbol = 'USDC' also startsWith.
+            // We create an asset with symbol exactly 'USD' to compare against 'USDC'.
+            const usdExactAsset: TradeableAsset = {
+                ...unknownAsset,
+                symbol: 'USD' as any,
+                name: 'US Dollar',
+            };
+            const assets = [usdcAsset, usdExactAsset];
+            const { result } = renderHook(() => useTradeableAssetsFilteredData({ assets }));
+
+            act(() => {
+                result.current.setFilterValue('usd');
+            });
+
+            // usdExactAsset: symbol === 'usd' → weight 1
+            // usdcAsset: symbol startsWith 'usd' → weight 3
+            expect(result.current.filteredData[0]).toBe(usdExactAsset);
+            expect(result.current.filteredData[1]).toBe(usdcAsset);
+        });
+
+        it('should rank name-startsWith before name-contains', () => {
+            // ethAsset.name = 'Ethereum' → startsWith 'et' → weight 2
+            // rethOnBaseAsset.name = 'Rocket Pool ETH' → contains 'et' but not startsWith → weight 4
+            // Also: ethAsset.symbol = 'ETH' → 'eth' !== 'et', so no symbol exact match; name check wins at weight 2
+            const assets = [rethOnBaseAsset, ethAsset];
+            const { result } = renderHook(() => useTradeableAssetsFilteredData({ assets }));
+
+            act(() => {
+                result.current.setFilterValue('et');
+            });
+
+            expect(result.current.filteredData[0]).toBe(ethAsset);
+            expect(result.current.filteredData[1]).toBe(rethOnBaseAsset);
+        });
+
+        it('should rank asset name/symbol matches before network name matches', () => {
+            // ethAsset.name = 'Ethereum' → exact name match → weight 0
+            // usdcAsset.networkId = 'ethereum' → network name 'Ethereum' exact match → weight 6
+            const assets = [usdcAsset, ethAsset];
+            const { result } = renderHook(() => useTradeableAssetsFilteredData({ assets }));
+
+            act(() => {
+                result.current.setFilterValue('ethereum');
+            });
+
+            expect(result.current.filteredData[0]).toBe(ethAsset);
+            expect(result.current.filteredData[1]).toBe(usdcAsset);
+        });
+
+        it('should rank contract address matches after name/symbol matches', () => {
+            // Inline asset with '0xa0b' in its name → name startsWith → weight 2
+            // usdcAsset.contractAddress starts with '0xa0b' → weight 12
+            const contractNameAsset: TradeableAsset = { ...unknownAsset, name: '0xa0b Token' };
+            const assets = [usdcAsset, contractNameAsset];
+            const { result } = renderHook(() => useTradeableAssetsFilteredData({ assets }));
+
+            act(() => {
+                result.current.setFilterValue('0xa0b');
+            });
+
+            expect(result.current.filteredData[0]).toBe(contractNameAsset);
+            expect(result.current.filteredData[1]).toBe(usdcAsset);
+        });
+
+        it('should not change order when filter is empty', () => {
+            const assets = [btcAsset, ethAsset, usdcAsset];
+            const { result } = renderHook(() => useTradeableAssetsFilteredData({ assets }));
+
+            // No filter set — original order should be preserved
+            expect(result.current.filteredData).toEqual(assets);
+        });
+
+        it('should order match on token address as last', () => {
+            const assets = [btcAsset, ethAsset, usdcAsset, tronTetherAsset] as TradeableAsset[];
+
+            const { result } = renderHook(() => useTradeableAssetsFilteredData({ assets }));
+
+            act(() => {
+                result.current.setFilterValue('tc');
+            });
+
+            expect(result.current.filteredData).toEqual([btcAsset, tronTetherAsset]);
+        });
     });
 
     describe('filterValue', () => {
