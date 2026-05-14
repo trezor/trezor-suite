@@ -179,5 +179,11 @@ describe('bufferutils', () => {
                 bufferutils.verifuint(-1, 0x001fffffffffffff);
             }).toThrow('specified a negative value for writing an unsigned value');
         });
+
+        it('throws "value has a fractional component" when value is not an integer', () => {
+            expect(() => {
+                bufferutils.verifuint(0.5, 0x001fffffffffffff);
+            }).toThrow('value has a fractional component');
+        });
     });
 });
