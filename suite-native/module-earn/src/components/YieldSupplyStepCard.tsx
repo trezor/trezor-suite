@@ -44,9 +44,16 @@ const steps = [
     },
 ];
 
-export const YieldSupplyStepCard = () => {
+type YieldSupplyStepIndex = 0 | 1 | 2;
+
+type YieldSupplyStepCardProps = {
+    currentStepIndex: YieldSupplyStepIndex;
+};
+
+export const YieldSupplyStepCard = ({ currentStepIndex }: YieldSupplyStepCardProps) => {
     const { applyStyle } = useNativeStyles();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+    const currentStep = steps[currentStepIndex];
 
     return (
         <>
@@ -56,12 +63,13 @@ export const YieldSupplyStepCard = () => {
                         <Text variant="body-sm">
                             <Translation
                                 id="earn.yieldSupplyFlowScreen.step"
-                                values={{ stepNumber: 1, stepCount: steps.length }}
+                                values={{
+                                    stepNumber: currentStepIndex + 1,
+                                    stepCount: steps.length,
+                                }}
                             />
                         </Text>
-                        <Text variant="body-md-strong">
-                            <Translation id="earn.yieldSupplyFlowScreen.approvalStepTitle" />
-                        </Text>
+                        <Text variant="body-md-strong">{currentStep.label}</Text>
                     </VStack>
                     <Icon name="caretUpDown" size="large" color="contentPrimary" />
                 </HStack>
@@ -79,8 +87,7 @@ export const YieldSupplyStepCard = () => {
                 }
                 onClose={closeModal}
             >
-                {/* TODO: Derive current step from the full supply flow once it is implemented. */}
-                <EarnModalStepIndicator currentStepIndex={0} steps={steps} />
+                <EarnModalStepIndicator currentStepIndex={currentStepIndex} steps={steps} />
             </BottomSheetModal>
         </>
     );

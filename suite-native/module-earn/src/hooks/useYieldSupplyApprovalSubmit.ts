@@ -22,7 +22,10 @@ import { useWorkInProgressAlert } from './useWorkInProgressAlert';
 import { type YieldApprovalLimitType } from '../types';
 import { prepareYieldApprovalReviewTransactionThunk } from '../yieldApprovalThunks';
 
-type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldSupplyFlow>;
+type NavigationProps = StackNavigationProps<
+    YieldStackParamList,
+    YieldStackRoutes.YieldSupplyApproval
+>;
 
 type UseYieldSupplyApprovalSubmitParams = Pick<ResolvedYieldFlowData, 'flowData' | 'flowKey'> & {
     approvalLimitType: YieldApprovalLimitType;
