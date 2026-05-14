@@ -84,45 +84,40 @@ type NetworkSpecificDefault =
 // Keys stay plain literals: a branded symbol cannot type an object literal's keys. A symbol with
 // no entry is caught by the lookup below rather than by the type.
 const networkTypeMap: Record<string, NetworkSpecificDefault> = {
-    // Bitcoin-like
     btc: networkSpecificDefaultBitcoin,
     regtest: networkSpecificDefaultBitcoin,
     test: networkSpecificDefaultBitcoin,
     ltc: networkSpecificDefaultBitcoin,
     bch: networkSpecificDefaultBitcoin,
     doge: networkSpecificDefaultBitcoin,
+    zec: networkSpecificDefaultBitcoin,
 
-    // Eth
     eth: networkSpecificDefaultEthereum,
     etc: networkSpecificDefaultEthereum,
     hype: networkSpecificDefaultEthereum,
-
-    // Testnet Eth
+    pol: networkSpecificDefaultEthereum,
+    bsc: networkSpecificDefaultEthereum,
+    arb: networkSpecificDefaultEthereum,
+    base: networkSpecificDefaultEthereum,
+    op: networkSpecificDefaultEthereum,
+    rhc: networkSpecificDefaultEthereum,
+    avax: networkSpecificDefaultEthereum,
     tsep: networkSpecificDefaultEthereum,
     thod: networkSpecificDefaultEthereum,
 
-    // Solana
     sol: networkSpecificDefaultSolana,
     dsol: networkSpecificDefaultSolana,
 
-    // Stellar
-    xlm: networkSpecificDefaultBitcoin,
+    xlm: networkSpecificDefaultStellar,
+    txlm: networkSpecificDefaultStellar,
 
-    // Todo: fix map for remaining networks
-    xrp: networkSpecificDefaultBitcoin,
-    zec: networkSpecificDefaultBitcoin,
-    ada: networkSpecificDefaultBitcoin,
-    pol: networkSpecificDefaultBitcoin,
-    bsc: networkSpecificDefaultBitcoin,
-    arb: networkSpecificDefaultBitcoin,
-    base: networkSpecificDefaultBitcoin,
-    op: networkSpecificDefaultBitcoin,
-    rhc: networkSpecificDefaultEthereum,
-    avax: networkSpecificDefaultBitcoin,
+    xrp: networkSpecificDefaultRipple,
+    txrp: networkSpecificDefaultRipple,
+
+    ada: networkSpecificDefaultCardano,
+
     trx: networkSpecificDefaultTron,
     ttrx: networkSpecificDefaultTron,
-    txrp: networkSpecificDefaultBitcoin,
-    txlm: networkSpecificDefaultBitcoin,
 };
 
 type MandatoryAccountData = {

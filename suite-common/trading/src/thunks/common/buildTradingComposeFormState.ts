@@ -53,15 +53,18 @@ export const buildTradingComposeFormState = ({
 
     return {
         ...DEFAULT_VALUES,
-        outputs: [
-            {
-                ...DEFAULT_PAYMENT,
-                address,
-                amount,
-                currency: DEFAULT_PAYMENT.currency,
-                token: shouldIncludeToken ? (composed.token?.contract ?? null) : null,
-            },
-        ],
+        outputs:
+            account.networkType === 'bitcoin' && transactionData
+                ? []
+                : [
+                      {
+                          ...DEFAULT_PAYMENT,
+                          address,
+                          amount,
+                          currency: DEFAULT_PAYMENT.currency,
+                          token: shouldIncludeToken ? (composed.token?.contract ?? null) : null,
+                      },
+                  ],
         setMaxOutputId: !composed.token?.contract ? setMaxOutputId : undefined,
         selectedFee,
         feePerUnit: composed.feePerByte,
