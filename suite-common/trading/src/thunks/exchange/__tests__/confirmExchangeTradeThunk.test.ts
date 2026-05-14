@@ -269,6 +269,49 @@ describe('confirmExchangeTradeThunk', () => {
         expect(!!response).toBeFalsy();
     });
 
+    it('should return undefined when request is aborted', async () => {
+        const {
+            store,
+            returnUrl,
+            receiveAddress,
+            account,
+            trade,
+            mockProcessResponseData,
+            mockNextStep,
+            mockTriggerAnalyticsTradeConfirmation,
+        } = getMocks();
+
+        invityAPI.doExchangeTrade = () =>
+            new Promise<ExchangeTrade>(resolve => {
+                resolve(undefined as unknown as ExchangeTrade);
+            });
+
+        const promise = store.dispatch(
+            exchangeThunks.confirmTradeThunk({
+                returnUrl,
+                receiveAddress,
+                account,
+                trade,
+                nextStep: mockNextStep,
+                triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
+                processResponseData: mockProcessResponseData,
+            }),
+        );
+
+        promise.abort();
+
+        const action = await promise;
+
+        expect(exchangeThunks.confirmTradeThunk.rejected.match(action)).toBe(true);
+
+        if (!exchangeThunks.confirmTradeThunk.rejected.match(action)) {
+            throw new Error('Expected confirmTradeThunk to be rejected');
+        }
+
+        expect(action.meta.aborted).toBe(true);
+        expect(action.payload).toBeUndefined();
+    });
+
     describe('should return false from confirmation', () => {
         it.each([
             [

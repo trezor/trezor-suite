@@ -58,7 +58,8 @@ const TradingExchangePreviewScreenContent = ({
 
     useSubscribeForSolanaBlockUpdates(fromAccount ?? null);
 
-    const { txnErrorString, confirmTrade, fetchFeesAndCompose } = useExchangeFlow();
+    const { txnErrorString, confirmTrade, abortConfirmTrade, fetchFeesAndCompose } =
+        useExchangeFlow();
 
     const [isConfirmationErrorRequested, setIsConfirmationErrorRequested] =
         useState<boolean>(false);
@@ -111,9 +112,10 @@ const TradingExchangePreviewScreenContent = ({
     // clear trading state on unmount
     useEffect(
         () => () => {
+            abortConfirmTrade();
             dispatch(clearTradingStateThunk());
         },
-        [dispatch],
+        [abortConfirmTrade, dispatch],
     );
 
     useEffect(() => {

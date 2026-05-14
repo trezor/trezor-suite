@@ -63,10 +63,12 @@ const mockConfirmTrade = jest.fn().mockResolvedValue(Promise.resolve());
 const mockFetchFeesAndCompose = jest.fn();
 const mockSignAndSendTransaction = jest.fn();
 const mockResolveConsent = jest.fn();
+const mockAbortConfirmTrade = jest.fn();
 let mockTxnErrorString: string | null = null;
 
 jest.mock('../../hooks/exchange/useExchangeFlow', () => ({
     useExchangeFlow: () => ({
+        abortConfirmTrade: mockAbortConfirmTrade,
         confirmTrade: mockConfirmTrade,
         fetchFeesAndCompose: mockFetchFeesAndCompose,
         signAndSendTransaction: mockSignAndSendTransaction,
@@ -306,6 +308,29 @@ describe('TradingExchangePreviewScreen', () => {
                 action: 'visit',
             }),
         });
+    });
+
+    it('should abort confirm trade on unmount', () => {
+        const { result } = renderTradingExchangePreviewScreen();
+
+        expect(mockAbortConfirmTrade).not.toHaveBeenCalled();
+
+        result.unmount();
+        unmount = undefined;
+
+        expect(mockAbortConfirmTrade).toHaveBeenCalledTimes(1);
+    });
+
+    it('should clear trading state on unmount', () => {
+        const { result } = renderTradingExchangePreviewScreen();
+
+        expect(store.getState().wallet.trading.exchange.selectedQuote).toBeDefined();
+
+        result.unmount();
+        unmount = undefined;
+
+        expect(store.getState().wallet.trading.exchange.selectedQuote).toBeUndefined();
+        expect(store.getState().wallet.trading.sell.selectedQuote).toBeUndefined();
     });
 
     it('should report to analytics on Continue press', async () => {

@@ -56,6 +56,12 @@ const tradingSlice = createSliceWithExtraDeps({
             .addCase(exchangeThunks.handleRequestThunk.fulfilled, state => {
                 state.exchange.isLoading = false;
             })
+            .addCase(exchangeThunks.handleRequestThunk.rejected, state => {
+                state.exchange.isLoading = false;
+                state.exchange.amountLimits = undefined;
+                state.exchange.quotes = [];
+                state.exchange.quotesRequest = undefined;
+            })
             .addCase(sellThunks.handleRequestThunk.pending, state => {
                 state.sell.isLoading = true;
                 state.info.paymentMethods = [];
@@ -80,6 +86,9 @@ const tradingSlice = createSliceWithExtraDeps({
                 state.exchange.isLoading = true;
             })
             .addCase(exchangeThunks.confirmTradeThunk.fulfilled, state => {
+                state.exchange.isLoading = false;
+            })
+            .addCase(exchangeThunks.confirmTradeThunk.rejected, state => {
                 state.exchange.isLoading = false;
             })
             .addMatcher(
