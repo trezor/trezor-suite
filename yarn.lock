@@ -10476,7 +10476,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/fiat-services@workspace:suite-common/fiat-services"
   dependencies:
-    "@stellar/stellar-sdk": "npm:14.5.0"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
@@ -11276,7 +11275,6 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.11.2"
     "@reown/walletkit": "npm:^1.5.5"
     "@scure/base": "npm:^2.0.0"
-    "@stellar/stellar-sdk": "npm:14.5.0"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/connect-popup": "workspace:*"
     "@suite-common/device": "workspace:*"
@@ -11292,7 +11290,6 @@ __metadata:
     "@trezor/coins-stellar": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
-    "@trezor/connect-plugin-stellar": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/type-utils": "workspace:^"
     "@trezor/utils": "workspace:*"
@@ -15424,7 +15421,6 @@ __metadata:
   resolution: "@trezor/blockchain-link-utils@workspace:packages/blockchain-link-utils"
   dependencies:
     "@noble/hashes": "npm:^2.0.1"
-    "@stellar/stellar-sdk": "npm:14.5.0"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/coins-solana": "workspace:*"
     "@trezor/coins-stellar": "workspace:*"
@@ -15442,7 +15438,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
-    "@stellar/stellar-sdk": "npm:14.5.0"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/coins-solana": "workspace:*"
@@ -15736,16 +15731,10 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-plugin-stellar@workspace:*, @trezor/connect-plugin-stellar@workspace:packages/connect-plugin-stellar":
+"@trezor/connect-plugin-stellar@workspace:packages/connect-plugin-stellar":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-plugin-stellar@workspace:packages/connect-plugin-stellar"
-  dependencies:
-    "@stellar/stellar-sdk": "npm:14.5.0"
-    "@trezor/eslint": "workspace:*"
-    "@trezor/utils": "workspace:*"
   peerDependencies:
-    "@stellar/stellar-sdk": ^13.3.0
-    "@trezor/connect": 9.x.x
     tslib: ^2.6.2
   languageName: unknown
   linkType: soft
