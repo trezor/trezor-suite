@@ -5,6 +5,7 @@
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "./src/index.ts",
+    "type": "module",
     "exports": {
         "./constants": "./src/constants/index.ts",
         "./runtime": "./src/runtime/index.ts",
@@ -14,7 +15,6 @@
     "publishConfig": {
         "main": "./libESM/index.mjs",
         "types": "./libESM/index.d.mts",
-        "type": "module",
         "exports": {
             "./constants": {
                 "types": "./libESM/constants/index.d.mts",
