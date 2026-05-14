@@ -24,7 +24,6 @@
     "publishConfig": {
         "main": "./libESM/index.mjs",
         "types": "./libESM/index.d.mts",
-        "type": "module",
         "exports": {
             ".": {
                 "types": "./libESM/index.d.mts",
