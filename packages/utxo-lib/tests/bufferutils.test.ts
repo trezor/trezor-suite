@@ -184,6 +184,16 @@ describe('bufferutils', () => {
         });
     });
 
+    describe('BufferWriter', () => {
+        it('writeSlice throws "Cannot write slice out of bounds" when slice exceeds buffer capacity', () => {
+            const writer = new bufferutils.BufferWriter(Buffer.alloc(1));
+
+            expect(() => {
+                writer.writeSlice(Buffer.alloc(10));
+            }).toThrow('Cannot write slice out of bounds');
+        });
+    });
+
     describe('verifuint', () => {
         it('throws "specified a negative value for writing an unsigned value" when value is negative', () => {
             expect(() => {
