@@ -142,15 +142,18 @@ export const recomposeAndSignTxThunk = createThunk<
         // WORKAROUND: sendFormEthereumActions and sendFormRippleActions use form outputs instead of composed transaction data
         const formState: FormState = {
             ...DEFAULT_VALUES,
-            outputs: [
-                {
-                    ...DEFAULT_PAYMENT,
-                    address,
-                    amount,
-                    currency: DEFAULT_PAYMENT.currency,
-                    token: shouldIncludeToken ? (composed.token?.contract ?? null) : null,
-                },
-            ],
+            outputs:
+                account.networkType === 'bitcoin' && transactionData
+                    ? []
+                    : [
+                          {
+                              ...DEFAULT_PAYMENT,
+                              address,
+                              amount,
+                              currency: DEFAULT_PAYMENT.currency,
+                              token: shouldIncludeToken ? (composed.token?.contract ?? null) : null,
+                          },
+                      ],
             setMaxOutputId: !composed.token?.contract ? setMaxOutputId : undefined,
             selectedFee,
             feePerUnit: composed.feePerByte,
@@ -267,12 +270,17 @@ export const recomposeAndSignTxThunk = createThunk<
             ensure that the payment requests are created with the correct amount.
         */
         const { outputs: precomposedOutputs } = precomposedToSign;
-        const isTradedWholeBalance = precomposedOutputs.length === 1; // sending whole balance
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const firstPrecomposedOutput: (typeof precomposedOutputs)[number] = precomposedOutputs[0];
-        const sendAmount = isTradedWholeBalance
-            ? firstPrecomposedOutput.amount.toString()
-            : undefined;
+        const paymentOutput =
+            precomposedOutputs.find(output => 'address' in output && output.address === address) ??
+            precomposedOutputs.find(output => 'address' in output);
+        // Send-max is `setMaxOutputId`; `length === 1` still covers SLIP-24 CEX with no change.
+        // Amount must come from the trade payment output, not OP_RETURN or change.
+        const isTradedWholeBalance =
+            typeof setMaxOutputId === 'number' || precomposedOutputs.length === 1;
+        const sendAmount =
+            isTradedWholeBalance && paymentOutput?.amount !== undefined
+                ? paymentOutput.amount.toString()
+                : undefined;
         const formattedMaxAmount = sendAmount
             ? subunitsToUnits({
                   value: asAmountSubunit(new BigNumber(sendAmount)),
