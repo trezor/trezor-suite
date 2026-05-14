@@ -236,6 +236,30 @@ it('sign throws on a neutered (public-only) BIP32', () => {
     expect(() => neuteredNode.sign(hash)).toThrow(/Missing private key/);
 });
 
+it('fromPublicKey defaults network to bitcoin when omitted (BIP32 test-vector-1 master pubKey)', () => {
+    // BIP32 test vector 1 master pubKey + chainCode (from tests/__fixtures__/bip32.ts valid[0]).
+    // Calling BIP32.fromPublicKey without a third arg drives:
+    //  (a) the `network = network || BITCOIN` right-arm at src/bip32.ts:83 (binary-expr branch 4),
+    //  (b) the previously-uncovered `fromPublicKey` exported function at src/bip32.ts:416 (fn 25).
+    const pubKey = Buffer.from(
+        '0339a36013301597daef41fbe593a02cc513d0b55527ec2df1050e2e8ff49c85c2',
+        'hex',
+    );
+    const chainCode = Buffer.from(
+        '873dff81c02f525623fd1fe5167eac3a55a049de3d314bb42ee227ffed37d508',
+        'hex',
+    );
+    const hd = BIP32.fromPublicKey(pubKey, chainCode);
+
+    expect(hd.network).toEqual(NETWORKS.bitcoin);
+    expect(hd.publicKey.toString('hex')).toEqual(
+        '0339a36013301597daef41fbe593a02cc513d0b55527ec2df1050e2e8ff49c85c2',
+    );
+    // hash160 of the pubKey — proves the bitcoin (not decred) identifier path ran.
+    expect(hd.identifier.toString('hex')).toEqual('3442193e1bb70916e914552172cd4e2dbc9df811');
+    expect(hd.isNeutered()).toEqual(true);
+});
+
 it('identifier on a Decred-typed BIP32 uses hash160blake256 not hash160', () => {
     // Decred's real network has wif=0x22de which exceeds the BIP32 NETWORK_TYPE
     // wif:UInt8 schema, so we construct a synthetic network that still matches
