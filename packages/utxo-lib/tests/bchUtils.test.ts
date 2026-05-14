@@ -44,4 +44,16 @@ describe('bcashutils', () => {
             expect(() => toCashAddress(invalidAddr)).toThrow();
         });
     });
+
+    describe('P2SH mainnet conversion', () => {
+        // P2SH mainnet legacy address (version byte 0x05) — encodes hash160 76a04053bda0a88bda5177b86a15c3b29f559873.
+        // The cashaddr type byte for P2SH 160-bit hash is 0x08 (vs 0x00 for P2PKH), so its base32 prefix is 'p' (not 'q').
+        const mainnetLegacyP2SH = '3CWFddi6m4ndiGyKqzYvsFYagqDLPVMTzC';
+
+        it('round-trips a P2SH mainnet legacy address through cashaddr form', () => {
+            const cashAddr = toCashAddress(mainnetLegacyP2SH);
+            expect(cashAddr).toMatch(/^bitcoincash:p/);
+            expect(toLegacyAddress(cashAddr)).toBe(mainnetLegacyP2SH);
+        });
+    });
 });
