@@ -73,6 +73,11 @@ describe('noble compatibility', () => {
         expect(ecc.verify(messageHash, publicKey!, Buffer.alloc(64, 0))).toEqual(false);
     });
 
+    it('pointAddScalar throws "Expected Tweak" for non-32-byte tweak (exercises isValidScalar length guard via assertTweak)', () => {
+        const pointOne = ecc.pointFromScalar(privateOne)!;
+        expect(() => ecc.pointAddScalar(pointOne, Buffer.alloc(31, 1))).toThrow('Expected Tweak');
+    });
+
     it('signWithEntropy is deterministic for fixed entropy', () => {
         const messageHash = Buffer.alloc(32, 7);
         const extraEntropy = Buffer.alloc(32, 9);
