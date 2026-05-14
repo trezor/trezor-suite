@@ -133,7 +133,7 @@ export abstract class TradingFormActions extends TradingActions {
         await waitForVisible(providersPicker);
     }
 
-    async selectReceiveAsset(asset: string, network?: string) {
+    async selectReceiveAsset(asset: string, network?: string, searchString?: string) {
         const receiveAssetButton = this.getElementById('asset-receive-button');
         await waitForVisible(receiveAssetButton, { timeout: this.SHORT_TIMEOUT });
         await receiveAssetButton.tap();
@@ -143,7 +143,8 @@ export abstract class TradingFormActions extends TradingActions {
         const searchReceiveCryptoInput = this.getSearchReceiveCryptoElement();
         await searchReceiveCryptoInput.tap();
         await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
-        await searchReceiveCryptoInput.replaceText(asset.slice(0, -1));
+        const searchForStr = searchString ?? asset;
+        await searchReceiveCryptoInput.replaceText(searchForStr.slice(0, -1));
 
         if (network) {
             const networkFilterTab = element(
