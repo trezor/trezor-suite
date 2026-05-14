@@ -1,10 +1,12 @@
 import {
+    bnbAsset,
     btcAsset,
     rippleAsset,
     tronAsset,
     tronTetherAsset,
     unknownAsset,
     usdtAsset,
+    usdtOnBscAsset,
 } from '@suite-native/trading-fixtures';
 
 import { getAssetByEnabledNetworksFilter, getFormDraftKeyByTradeType } from '../utils';
@@ -14,6 +16,28 @@ jest.mock('@suite-common/wallet-config', () => {
 
     return {
         ...actual,
+        getNetworkByTradeCryptoId: (tradeCryptoId: string) => {
+            const network = actual.getNetworkByTradeCryptoId(tradeCryptoId);
+
+            switch (network?.symbol) {
+                case 'trx':
+                    // mock Tron as debug-only network
+                    return {
+                        ...network,
+                        isDebugOnlyNetwork: true,
+                        isExperimentalOnlyNetwork: false,
+                    };
+                case 'xrp':
+                    // mock Ripple as experimental-only network
+                    return {
+                        ...network,
+                        isExperimentalOnlyNetwork: true,
+                        isDebugOnlyNetwork: false,
+                    };
+                default:
+                    return network;
+            }
+        },
         getNetworkByCoingeckoId: (coingeckoId: string) => {
             const network = actual.getNetworkByCoingeckoId(coingeckoId);
 
@@ -53,7 +77,7 @@ describe('utils', () => {
     });
 
     describe('getAssetByEnabledNetworksFilter', () => {
-        it.each([btcAsset, usdtAsset, tronTetherAsset, tronAsset])(
+        it.each([btcAsset, usdtAsset, tronTetherAsset, tronAsset, bnbAsset, usdtOnBscAsset])(
             `should return true for asset [$symbol] if areDebugOnlyNetworksEnabled FF is enabled`,
             asset => {
                 const assetByEnabledNetworksFilter = getAssetByEnabledNetworksFilter(true, false);
