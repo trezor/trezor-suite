@@ -46,7 +46,7 @@ export const getPackageDependencies = async (
     console.info('-------------------------------------------------------------------------');
     console.info(`Getting @trezor dependencies of package ${packageNameWithoutTrezorPrefix}`);
 
-    const trezorDependencies = await getTrezorDependencies(ROOT, packageNameWithoutTrezorPrefix);
+    const trezorDependencies = await getTrezorDependencies(packageNameWithoutTrezorPrefix);
     console.info(`Trezor dependencies: ${trezorDependencies.join(', ')}`);
 
     // eslint-disable-next-line no-restricted-syntax
@@ -125,7 +125,7 @@ export const comment = async ({ prNumber, body }: { prNumber: string; body: stri
 };
 
 export const getLocalVersion = (packageName: string) => {
-    const packageJsonPath = path.join(ROOT, 'packages', packageName, 'package.json');
+    const packageJsonPath = path.join(getTrezorPackageDir(packageName), 'package.json');
     if (!fs.existsSync(packageJsonPath)) {
         throw new Error(`package.json not found for package: ${packageName}`);
     }
@@ -133,17 +133,12 @@ export const getLocalVersion = (packageName: string) => {
     return packageJson.version;
 };
 
-export const getTrezorPackagesDir = (pkg: string) =>
-    pkg.startsWith('coins-') ? 'coins' : 'packages';
+export const getTrezorPackageDir = (packageName: string) =>
+    path.join(ROOT, packageName.startsWith('coins-') ? 'coins' : 'packages', packageName);
 
-export const getTrezorDependencies = async (
-    rootDir: string,
-    packageNameWithoutTrezorPrefix: string,
-) => {
+export const getTrezorDependencies = async (packageNameWithoutTrezorPrefix: string) => {
     const packageJsonPath = path.join(
-        rootDir,
-        getTrezorPackagesDir(packageNameWithoutTrezorPrefix),
-        packageNameWithoutTrezorPrefix,
+        getTrezorPackageDir(packageNameWithoutTrezorPrefix),
         'package.json',
     );
     const packageJsonContent = await fs.promises.readFile(packageJsonPath, 'utf-8');

@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import util from 'node:util';
 
-import { exec, getPackageDependencies, getTrezorPackagesDir } from './helpers';
+import { exec, getPackageDependencies, getTrezorPackageDir } from './helpers';
 
 const mkdir = util.promisify(fs.mkdir);
 const existsDirectory = util.promisify(fs.exists);
@@ -53,7 +53,7 @@ const collectPublishTargets = (value: unknown): string[] => {
 };
 
 const validatePackagePublishTargets = async (pkg: string) => {
-    const packageDir = path.join(ROOT_DIR, getTrezorPackagesDir(pkg), pkg);
+    const packageDir = getTrezorPackageDir(pkg);
     const packageJsonPath = path.join(packageDir, 'package.json');
     const rawPackageJson = await fs.promises.readFile(packageJsonPath, 'utf8');
     const packageJson = JSON.parse(rawPackageJson);
@@ -140,7 +140,7 @@ const buildAllPackages = async () => {
     } = { success: [], failed: [] };
 
     for (const pkg of PACKAGES) {
-        const pkgDir = path.join(ROOT_DIR, getTrezorPackagesDir(pkg), pkg);
+        const pkgDir = getTrezorPackageDir(pkg);
 
         if (!(await existsDirectory(pkgDir))) {
             console.error(`Package not found: ${pkg}`);

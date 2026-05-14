@@ -6,17 +6,15 @@ import util from 'node:util';
 import path from 'node:path';
 import semver from 'semver';
 
-import { getNpmRemoteGreatestVersion } from './helpers';
+import { getNpmRemoteGreatestVersion, getTrezorPackageDir } from './helpers';
 
 const readFile = util.promisify(fs.readFile);
-
-const ROOT = path.join(import.meta.dirname, '..', '..');
 
 const nonReleaseDependencies: string[] = [];
 
 const checkNonReleasedDependencies = async (packageName: string) => {
     const rawPackageJSON = await readFile(
-        path.join(ROOT, 'packages', packageName, 'package.json'),
+        path.join(getTrezorPackageDir(packageName), 'package.json'),
         'utf-8',
     );
 
