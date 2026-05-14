@@ -37,6 +37,7 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../accounts" },
+        { "path": "../address" },
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },

@@ -6,11 +6,11 @@ import { Button, HStack, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { AddressFormatter } from '@suite-native/formatters';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { AddressLabelEditable } from '@suite-native/labeling';
+import { QRCode } from '@suite-native/qr-code';
 import type { StaticSessionId } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { QRCode } from './QRCode';
+import { AddressLabelEditable } from './AddressLabelEditable';
 
 type AddressQRCodeProps = {
     address: string;
@@ -24,6 +24,7 @@ const addressContainer = prepareNativeStyle(() => ({
     justifyContent: 'center',
     alignItems: 'center',
 }));
+
 export const AddressQRCode = ({
     address,
     deviceStaticSessionId,

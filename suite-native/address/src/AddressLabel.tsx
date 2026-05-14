@@ -3,9 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { type SuiteSyncDataRootState, selectSuiteSyncAddressLabel } from '@suite-common/suite-sync';
 import { Text, type TextProps } from '@suite-native/atoms';
+import { selectIsLabellingAllowed } from '@suite-native/labeling';
 import type { StaticSessionId } from '@trezor/connect';
-
-import { selectIsLabellingAllowed } from '../selectors';
 
 type AddressLabelProps = TextProps & {
     address: string;

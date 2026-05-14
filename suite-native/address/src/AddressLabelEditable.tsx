@@ -4,13 +4,14 @@ import { type SuiteSyncDataRootState, selectSuiteSyncAddressLabel } from '@suite
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountDescriptor } from '@suite-common/wallet-types';
 import { featureUsed } from '@suite-native/feature-feedback';
+import {
+    EditableLabelLayout,
+    LabelEditForm,
+    selectIsLabellingAllowed,
+    useSuiteSyncErrorHandler,
+} from '@suite-native/labeling';
 import { useNativeServices } from '@suite-native/services';
 import type { StaticSessionId } from '@trezor/connect';
-
-import { EditableLabelLayout } from './EditableLabelLayout';
-import { LabelEditForm } from './LabelEditForm';
-import { useSuiteSyncErrorHandler } from '../hooks/useSuiteSyncLabelErrorHandler';
-import { selectIsLabellingAllowed } from '../selectors';
 
 type AddressLabelEditableProps = {
     address: string;
