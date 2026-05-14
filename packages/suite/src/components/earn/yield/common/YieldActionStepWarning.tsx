@@ -4,14 +4,29 @@ import { Banner, Button, Column, Text } from '@trezor/components';
 type YieldActionStepWarningProps = {
     isInsufficientFunds?: boolean;
     isApprovalInsufficient?: boolean;
+    isApproveOverBalance?: boolean;
     onModifyApproval?: () => void;
 };
 
 export const YieldActionStepWarning = ({
     isInsufficientFunds = false,
     isApprovalInsufficient = false,
+    isApproveOverBalance = false,
     onModifyApproval,
 }: YieldActionStepWarningProps) => {
+    if (isApproveOverBalance) {
+        return (
+            <Banner
+                intent="info"
+                description={
+                    <Text>
+                        <Translation id="TR_APPROVE_OVER_BALANCE" />
+                    </Text>
+                }
+            />
+        );
+    }
+
     if (isApprovalInsufficient) {
         return (
             <Banner
