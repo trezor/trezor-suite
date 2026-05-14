@@ -43,6 +43,34 @@ describe(composeTx.name, () => {
     });
 });
 
+describe('composeTx request validation errors', () => {
+    it('returns the validateAndParseRequest error result directly (does not enter coinselect)', () => {
+        // feeRate=0 is rejected by validateAndParseFeeRate (request.ts), so
+        // validateAndParseRequest returns { type: 'error', error: 'INCORRECT-FEE-RATE' }.
+        // composeTx must short-circuit and return that exact object — if the
+        // 'error' in coinselectRequest branch is skipped, the error object would
+        // instead be passed into coinselect() and surface as a COINSELECT-typed error.
+        const tx = composeTx({
+            utxos: [
+                {
+                    coinbase: false,
+                    own: true,
+                    confirmations: 100,
+                    amount: '50000',
+                },
+            ],
+            outputs: [{ type: 'send-max-noaddress' }],
+            feeRate: 0,
+            network: NETWORKS.bitcoin,
+            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            dustThreshold: 546,
+            sortingStrategy: 'bip69',
+        });
+
+        expect(tx).toEqual({ type: 'error', error: 'INCORRECT-FEE-RATE' });
+    });
+});
+
 describe('composeTx addresses cross-check', () => {
     const txTypes = ['p2pkh', 'p2sh', 'p2tr', 'p2wpkh'] as const;
     const addrTypes = {
