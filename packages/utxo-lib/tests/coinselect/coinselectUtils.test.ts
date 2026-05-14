@@ -1,6 +1,11 @@
 import BN from 'bn.js';
 
-import { bignumberOrNaN, getDustAmount, getFee } from '../../src/coinselect/coinselectUtils';
+import {
+    bignumberOrNaN,
+    getDustAmount,
+    getFee,
+    getVarIntSize,
+} from '../../src/coinselect/coinselectUtils';
 
 describe('coinselectUtils', () => {
     it('bignumberOrNaN', () => {
@@ -26,6 +31,19 @@ describe('coinselectUtils', () => {
         expect(bignumberOrNaN(-1)).toBeUndefined();
         // @ts-expect-error invalid arg
         expect(bignumberOrNaN({})).toBeUndefined();
+    });
+
+    // Bitcoin varint encoding sizes per Bitcoin protocol:
+    // < 0xfd (253) -> 1 byte; < 0x10000 (65536) -> 3 bytes (0xfd + uint16);
+    // < 0x100000000 -> 5 bytes (0xfe + uint32); else -> 9 bytes (0xff + uint64).
+    it('getVarIntSize returns Bitcoin varint encoded length in bytes for boundary inputs', () => {
+        expect(getVarIntSize(0)).toEqual(1);
+        expect(getVarIntSize(252)).toEqual(1);
+        expect(getVarIntSize(253)).toEqual(3);
+        expect(getVarIntSize(65535)).toEqual(3);
+        expect(getVarIntSize(65536)).toEqual(5);
+        expect(getVarIntSize(4294967295)).toEqual(5);
+        expect(getVarIntSize(4294967296)).toEqual(9);
     });
 
     it('getBaseFee', () => {
