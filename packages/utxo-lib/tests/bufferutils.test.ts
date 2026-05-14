@@ -172,4 +172,12 @@ describe('bufferutils', () => {
             });
         });
     });
+
+    describe('verifuint', () => {
+        it('throws "specified a negative value for writing an unsigned value" when value is negative', () => {
+            expect(() => {
+                bufferutils.verifuint(-1, 0x001fffffffffffff);
+            }).toThrow('specified a negative value for writing an unsigned value');
+        });
+    });
 });
