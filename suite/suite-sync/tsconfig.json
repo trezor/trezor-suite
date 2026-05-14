@@ -8,6 +8,9 @@
         },
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/message-system"
+        },
+        {
             "path": "../../suite-common/platform-encryption"
         },
         {
@@ -35,6 +38,7 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../analytics" },
+        { "path": "../firmware-upgrade" },
         { "path": "../intl" },
         { "path": "../../packages/components" },
         { "path": "../../packages/connect" },

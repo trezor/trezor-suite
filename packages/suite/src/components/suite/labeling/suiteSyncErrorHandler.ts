@@ -1,4 +1,5 @@
 import { messages } from '@suite/intl';
+import { suiteSyncErrorTranslationKeyMap } from '@suite/suite-sync';
 import { type SuiteSyncAsyncError } from '@suite-common/suite-sync';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
@@ -8,8 +9,6 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { updateShowEnableSuiteSyncModal } from 'src/actions/suiteSync/suiteSyncSlice';
 import { type Dispatch } from 'src/types/suite';
-
-import { suiteSyncErrorTranslationKeyMap } from './suiteSyncErrorTranslationKeyMap';
 
 type SuiteSyncErrorHandler = {
     error: SuiteSyncAsyncError | EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError;

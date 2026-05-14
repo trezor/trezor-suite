@@ -1,26 +1,35 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { selectIsLegacyLabelingVisible } from '@suite/metadata';
+import { TurnOnSuiteSyncModals } from '@suite/suite-sync';
 import { selectDeviceStaticSessionId, selectSelectedDevice } from '@suite-common/device';
-import { selectSuiteSyncInteraction } from '@suite-common/suite-sync';
+import { type MessageSystemRootState } from '@suite-common/message-system';
+import {
+    type WithSuiteSyncAndDeviceState,
+    selectSuiteSyncInteraction,
+} from '@suite-common/suite-sync';
+import { type SuiteSync } from '@suite-common/suite-sync-types';
 import { SidebarBanner } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite';
+type SuiteSyncPromoBannerProps = {
+    suiteSync: SuiteSync;
+};
 
-import { TurnOnSuiteSyncModals } from './TurnOnSuiteSync/TurnOnSuiteSyncModals';
+type SuiteSyncPromoBannerState = WithSuiteSyncAndDeviceState & MessageSystemRootState;
 
-export const SuiteSyncPromoBanner = () => {
+export const SuiteSyncPromoBanner = ({ suiteSync }: SuiteSyncPromoBannerProps) => {
     const [isTurnOnSuiteSyncModalVisible, setIsTurnOnSuiteSyncModalVisible] = useState(false);
     const [isDismissed, setIsDismissed] = useState(false);
 
     const selectedDevice = useSelector(selectSelectedDevice);
     const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
-
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
-    const suiteSyncInteraction = useSelector(state =>
+    const suiteSyncInteraction = useSelector((state: SuiteSyncPromoBannerState) =>
         selectSuiteSyncInteraction(state, deviceStaticSessionId),
     );
+
     const shouldDisplayBanner =
         !isDismissed &&
         isLegacyLabelingVisible &&
@@ -40,6 +49,7 @@ export const SuiteSyncPromoBanner = () => {
             {isTurnOnSuiteSyncModalVisible && (
                 <TurnOnSuiteSyncModals
                     deviceStaticSessionId={deviceStaticSessionId}
+                    suiteSync={suiteSync}
                     onClose={() => setIsTurnOnSuiteSyncModalVisible(false)}
                     onSuccess={() => setIsTurnOnSuiteSyncModalVisible(false)}
                 />

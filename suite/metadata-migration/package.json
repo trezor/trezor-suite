@@ -14,6 +14,7 @@
     "dependencies": {
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
+        "@suite-common/message-system": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
@@ -27,6 +28,7 @@
         "@suite/intl": "workspace:*",
         "@suite/metadata": "workspace:*",
         "@suite/router": "workspace:*",
+        "@suite/suite-sync": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/product-components": "workspace:*",

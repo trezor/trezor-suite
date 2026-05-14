@@ -20,9 +20,7 @@
         },
         { "path": "../modal" },
         { "path": "../../packages/components" },
-        {
-            "path": "../../packages/device-utils"
-        },
+        { "path": "../../packages/device-utils" },
         { "path": "../../packages/dom-utils" },
         { "path": "../../packages/theme" }
     ]

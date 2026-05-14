@@ -1,13 +1,13 @@
 import { Translation } from '@suite/intl';
 import { Card, Modal, Paragraph } from '@trezor/components';
 
-type SuiteSyncTurnOnAndFwUpgradeModalProps = {
+type SuiteSyncTurnOnUnsupportedModalProps = {
     onClose: () => void;
 };
 
 export const SuiteSyncTurnOnUnsupportedModal = ({
     onClose,
-}: SuiteSyncTurnOnAndFwUpgradeModalProps) => (
+}: SuiteSyncTurnOnUnsupportedModalProps) => (
     <Modal
         heading={<Translation id="TR_UNSUPPORTED_DEVICE_SUITE_SYNC_HEADING" />}
         onCancel={onClose}
