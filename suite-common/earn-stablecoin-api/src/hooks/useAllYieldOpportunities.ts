@@ -1,12 +1,15 @@
-import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
+import { commonQueryKeys, useQuery } from '@suite-common/react-query';
 
 import { YIELD_OPPORTUNITIES_DEFAULT_LIMIT, queriesStaleTime } from '../config';
 import { useGetYieldOpportunities } from './useGetYieldOpportunities';
+import { type YieldDto } from '../api/types';
 
 type UseAllYieldOpportunitiesProps = {
     limit?: number;
     enabled?: boolean;
 };
+
+const stableEmptyArray: YieldDto[] = [];
 
 export const useAllYieldOpportunities = ({
     limit = YIELD_OPPORTUNITIES_DEFAULT_LIMIT,
@@ -15,7 +18,7 @@ export const useAllYieldOpportunities = ({
     const { mutateAsync } = useGetYieldOpportunities({});
 
     const queryResult = useQuery({
-        queryKey: desktopQueryKeys.yieldOpportunities({ limit }),
+        queryKey: commonQueryKeys.yieldOpportunities({ limit }),
         queryFn: async () => {
             const response = await mutateAsync({ offset: 0, limit });
 
@@ -27,6 +30,6 @@ export const useAllYieldOpportunities = ({
 
     return {
         ...queryResult,
-        yieldOpportunities: queryResult.data || [],
+        yieldOpportunities: queryResult.data ?? stableEmptyArray,
     };
 };
