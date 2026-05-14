@@ -120,6 +120,14 @@ describe('Transaction', () => {
                 );
             });
         });
+
+        it('Peercoin: throws on Transaction has unexpected data when hex has trailing bytes', () => {
+            const validHex = fixturesPeercoin.valid[0].hex;
+            const badHex = `${validHex}ff`;
+            expect(() => Transaction.fromHex(badHex, { network: NETWORKS.peercoin })).toThrow(
+                'Transaction has unexpected data',
+            );
+        });
     });
 
     describe('toBuffer/toHex', () => {
