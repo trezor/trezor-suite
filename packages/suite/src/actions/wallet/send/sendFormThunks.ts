@@ -2,6 +2,7 @@ import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { processLegacyMetadataIntoSuiteSyncThunk } from '@suite/labeling';
 import { metadataLabelingActions, selectMetadata } from '@suite/metadata';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -42,7 +43,6 @@ import {
     asStateBeforePush,
     moveLabelsForRbfThunk,
 } from '../../labels/moveLabelsForRbfThunk';
-import { processLegacyMetadataIntoSuiteSyncThunk } from '../processLegacyMetadataIntoSuiteSyncThunk';
 
 export const saveSendFormDraftThunk = createThunk(
     `${MODULE_PREFIX}/saveSendFormDraftThunk`,

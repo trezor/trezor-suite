@@ -1,6 +1,6 @@
 import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { SuiteSyncSettings } from '@suite/suite-sync';
+import { SuiteSyncSettings, suiteSyncErrorHandler } from '@suite/suite-sync';
 import { Context } from '@suite-common/message-system';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
@@ -9,7 +9,6 @@ import { isDesktop } from '@trezor/env-utils';
 import { SettingsSection } from '@trezor/product-components';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
-import { suiteSyncErrorHandler } from 'src/components/suite/labeling/suiteSyncErrorHandler';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';

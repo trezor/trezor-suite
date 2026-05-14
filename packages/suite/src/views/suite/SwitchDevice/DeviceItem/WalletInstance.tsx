@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
+import { Labeling } from '@suite/labeling';
 import { selectIsLegacyLabelingVisible, selectLabelingDataForWallet } from '@suite/metadata';
 import { SuiteSyncWalletDebug } from '@suite/suite-sync';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncWalletLabel } from '@suite-common/suite-sync';
@@ -30,12 +31,12 @@ import { spacings } from '@trezor/theme';
 
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
 import { WalletLabeling } from 'src/components/suite';
-import { Labeling } from 'src/components/suite/labeling/Labeling/Labeling';
 import { useWalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useStore } from 'src/hooks/suite/useStore';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
+import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 import { type AcquiredDevice, type AppState, type ForegroundAppProps } from 'src/types/suite';
 
 import { EjectConfirmation } from './EjectConfirmation';
@@ -90,6 +91,7 @@ export const WalletInstance = ({
     const dispatch = useDispatch();
     const store = useStore();
     const { translationString } = useTranslation();
+    const { suiteSync } = useSuiteServices();
 
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
     const { defaultAccountLabelString } = useWalletLabeling();
@@ -177,6 +179,7 @@ export const WalletInstance = ({
                                 {instance.state?.staticSessionId ? (
                                     <Column>
                                         <Labeling
+                                            suiteSync={suiteSync}
                                             placeholder={translationString(
                                                 'TR_LABELING_WALLET_LABEL',
                                             )}

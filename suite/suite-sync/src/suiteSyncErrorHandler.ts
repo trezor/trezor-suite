@@ -1,5 +1,6 @@
+import { type Dispatch } from '@reduxjs/toolkit';
+
 import { messages } from '@suite/intl';
-import { suiteSyncErrorTranslationKeyMap, updateShowEnableSuiteSyncModal } from '@suite/suite-sync';
 import { type SuiteSyncAsyncError } from '@suite-common/suite-sync';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
@@ -7,7 +8,8 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { type StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
-import { type Dispatch } from 'src/types/suite';
+import { suiteSyncErrorTranslationKeyMap } from './suiteSyncErrorTranslationKeyMap';
+import { updateShowEnableSuiteSyncModal } from './suiteSyncSlice';
 
 type SuiteSyncErrorHandler = {
     error: SuiteSyncAsyncError | EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError;

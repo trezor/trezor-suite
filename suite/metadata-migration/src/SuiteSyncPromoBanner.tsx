@@ -17,8 +17,6 @@ type SuiteSyncPromoBannerProps = {
     suiteSync: SuiteSync;
 };
 
-type SuiteSyncPromoBannerState = WithSuiteSyncAndDeviceState & MessageSystemRootState;
-
 export const SuiteSyncPromoBanner = ({ suiteSync }: SuiteSyncPromoBannerProps) => {
     const [isTurnOnSuiteSyncModalVisible, setIsTurnOnSuiteSyncModalVisible] = useState(false);
     const [isDismissed, setIsDismissed] = useState(false);
@@ -26,8 +24,9 @@ export const SuiteSyncPromoBanner = ({ suiteSync }: SuiteSyncPromoBannerProps) =
     const selectedDevice = useSelector(selectSelectedDevice);
     const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
-    const suiteSyncInteraction = useSelector((state: SuiteSyncPromoBannerState) =>
-        selectSuiteSyncInteraction(state, deviceStaticSessionId),
+    const suiteSyncInteraction = useSelector(
+        (state: WithSuiteSyncAndDeviceState & MessageSystemRootState) =>
+            selectSuiteSyncInteraction(state, deviceStaticSessionId),
     );
 
     const shouldDisplayBanner =

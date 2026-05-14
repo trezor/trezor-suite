@@ -4,6 +4,7 @@ import { motion, useAnimation } from 'framer-motion';
 import styled from 'styled-components';
 
 import { useTranslation } from '@suite/intl';
+import { Labeling } from '@suite/labeling';
 import { selectIsLegacyLabelingVisible, selectLabelingDataForAccount } from '@suite/metadata';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
@@ -16,8 +17,8 @@ import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 import { AmountUnitSwitchWrapper } from 'src/components/suite/AmountUnitSwitchWrapper';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { Labeling } from 'src/components/suite/labeling';
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
+import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 const DetailsContainer = styled(motion.div)`
@@ -33,6 +34,7 @@ type AccountDetailsProps = {
 export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetailsProps) => {
     const hasMountedRef = useRef(false);
     const controls = useAnimation();
+    const { suiteSync } = useSuiteServices();
 
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
@@ -79,6 +81,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
     const accountNameElement = useMemo(
         () => (
             <Labeling
+                suiteSync={suiteSync}
                 key={`account-label-${key}`}
                 payload={{
                     type: 'accountLabel',
@@ -106,6 +109,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
             key,
             path,
             label,
+            suiteSync,
             deviceState,
             defaultLabel,
             accountType,

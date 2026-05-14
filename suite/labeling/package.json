@@ -1,0 +1,38 @@
+{
+    "name": "@suite/labeling",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "2.11.2",
+        "@suite-common/device": "workspace:*",
+        "@suite-common/message-system": "workspace:*",
+        "@suite-common/metadata-types": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/suite-sync": "workspace:*",
+        "@suite-common/suite-sync-storage": "workspace:*",
+        "@suite-common/suite-sync-types": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite/feature-feedback": "workspace:*",
+        "@suite/metadata": "workspace:*",
+        "@suite/settings": "workspace:*",
+        "@suite/suite-sync": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/product-components": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
+        "react": "19.2.4",
+        "react-redux": "9.2.0",
+        "redux": "^5.0.1"
+    }
+}

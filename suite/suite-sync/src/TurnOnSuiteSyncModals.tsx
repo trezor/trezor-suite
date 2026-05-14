@@ -21,8 +21,6 @@ type TurnOnSuiteSyncModalsProps = {
     suiteSync: SuiteSync;
 };
 
-type TurnOnSuiteSyncModalsState = WithSuiteSyncAndDeviceState & MessageSystemRootState;
-
 export const TurnOnSuiteSyncModals = ({
     onClose,
     onSuccess,
@@ -30,8 +28,9 @@ export const TurnOnSuiteSyncModals = ({
     suiteSync,
 }: TurnOnSuiteSyncModalsProps) => {
     const { translationString } = useTranslation();
-    const suiteSyncInteraction = useSelector((state: TurnOnSuiteSyncModalsState) =>
-        selectSuiteSyncInteraction(state, deviceStaticSessionId),
+    const suiteSyncInteraction = useSelector(
+        (state: WithSuiteSyncAndDeviceState & MessageSystemRootState) =>
+            selectSuiteSyncInteraction(state, deviceStaticSessionId),
     );
 
     if (deviceStaticSessionId === null || suiteSyncInteraction === null) {

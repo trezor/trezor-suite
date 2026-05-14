@@ -19,13 +19,7 @@ import { HiddenPlaceholder } from './HiddenPlaceholder';
 import { QuestionTooltip } from './QuestionTooltip';
 import { TrendTicker } from './Ticker/TrendTicker';
 import { PriceTicker } from './Ticker/PriceTicker';
-import {
-    AccountLabeling,
-    AddressLabeling,
-    Labeling,
-    WalletLabeling,
-    useGetWalletLabel,
-} from './labeling';
+import { AccountLabeling, AddressLabeling, WalletLabeling, useGetWalletLabel } from './labeling';
 import { FormattedCryptoAmount } from './FormattedCryptoAmount';
 import { FormattedNftAmount } from './FormattedNftAmount';
 import { Sign } from './Sign';
@@ -69,7 +63,6 @@ export {
     WebUsbButton,
     HiddenPlaceholder,
     AccountLabeling,
-    Labeling,
     AddressLabeling,
     WalletLabeling,
     useGetWalletLabel,

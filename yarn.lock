@@ -14206,6 +14206,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/address@workspace:suite/address"
   dependencies:
+    "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/device": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
@@ -14221,7 +14222,6 @@ __metadata:
     react: "npm:19.2.4"
     react-redux: "npm:9.2.0"
     redux: "npm:^5.0.1"
-    redux-thunk: "npm:^3.1.0"
     styled-components: "npm:^6.3.9"
   languageName: unknown
   linkType: soft
@@ -14396,6 +14396,35 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/labeling@workspace:*, @suite/labeling@workspace:suite/labeling":
+  version: 0.0.0-use.local
+  resolution: "@suite/labeling@workspace:suite/labeling"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.11.2"
+    "@suite-common/device": "workspace:*"
+    "@suite-common/message-system": "workspace:*"
+    "@suite-common/metadata-types": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-sync": "workspace:*"
+    "@suite-common/suite-sync-storage": "workspace:*"
+    "@suite-common/suite-sync-types": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite/feature-feedback": "workspace:*"
+    "@suite/metadata": "workspace:*"
+    "@suite/settings": "workspace:*"
+    "@suite/suite-sync": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/product-components": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    react: "npm:19.2.4"
+    react-redux: "npm:9.2.0"
+    redux: "npm:^5.0.1"
+  languageName: unknown
+  linkType: soft
+
 "@suite/locks@workspace:*, @suite/locks@workspace:suite/locks":
   version: 0.0.0-use.local
   resolution: "@suite/locks@workspace:suite/locks"
@@ -14465,6 +14494,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/requirements": "workspace:*"
     "@trezor/suite-desktop-api": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -14620,6 +14650,7 @@ __metadata:
     "@suite-common/device": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-evolu": "workspace:*"
     "@suite-common/suite-sync-quota-manager": "workspace:*"
@@ -14634,8 +14665,10 @@ __metadata:
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/product-components": "workspace:*"
+    "@trezor/requirements": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
     react-hook-form: "npm:^7.71.2"
     react-redux: "npm:9.2.0"
@@ -16244,6 +16277,7 @@ __metadata:
     "@suite/github": "workspace:*"
     "@suite/idb-migration-utils": "workspace:*"
     "@suite/intl": "workspace:*"
+    "@suite/labeling": "workspace:*"
     "@suite/locks": "workspace:*"
     "@suite/metadata": "workspace:*"
     "@suite/metadata-migration": "workspace:*"
@@ -16306,7 +16340,6 @@ __metadata:
     idb: "npm:^8.0.3"
     immer: "npm:11.0.0"
     jest-canvas-mock: "npm:^2.5.2"
-    jest-mock: "npm:^29.7.0"
     jest-watch-typeahead: "npm:3.0.1"
     pako: "npm:^2.1.0"
     pdfmake: "npm:^0.3.7"

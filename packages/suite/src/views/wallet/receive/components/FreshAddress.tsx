@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { Address } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
+import { Labeling } from '@suite/labeling';
 import {
     selectIsLegacyLabelingVisible,
     selectLabelingDataForSelectedAccount,
@@ -24,9 +25,10 @@ import {
 import { spacings } from '@trezor/theme';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
-import { Labeling, ReadMoreLink } from 'src/components/suite';
+import { ReadMoreLink } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
 import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
+import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 import { type AppState } from 'src/types/suite';
 
 const TooltipLabel = ({
@@ -106,6 +108,7 @@ export const FreshAddress = ({
     const { isReceiveDisabled, receiveDisabledTooltipContent } = useReceiveDisabled();
     const { translationString } = useTranslation();
     const dispatch = useDispatch();
+    const { suiteSync } = useSuiteServices();
 
     const firstFreshAddress = useMemo(() => {
         if (account) {
@@ -171,6 +174,7 @@ export const FreshAddress = ({
                     <Text typographyStyle="headline-md">
                         {firstFreshAddress?.address ? (
                             <Labeling
+                                suiteSync={suiteSync}
                                 payload={{
                                     type: 'addressLabel',
                                     entityKey: account.key,

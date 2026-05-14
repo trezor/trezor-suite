@@ -25,8 +25,6 @@ export type DesktopSuiteSyncRootState = {
     suiteSync: DesktopSuiteSyncState;
 };
 
-const storageLoadActionType = '@storage/load'; // hack: to prevent dependency
-
 export const suiteSyncSlice = createSliceWithExtraDeps({
     name: 'suiteSync',
     initialState: initialSuiteSyncDesktopState,
@@ -37,11 +35,11 @@ export const suiteSyncSlice = createSliceWithExtraDeps({
     },
     extraReducers: builder => {
         builder
-            .addCase(storageLoadActionType, (state, action) => {
+            .addCase('@storage/load', (state, action) => {
                 const actionWithPayload = action as AnyAction;
 
                 if (
-                    actionWithPayload.type === storageLoadActionType &&
+                    actionWithPayload.type === '@storage/load' && // hack: to prevent dependency
                     (actionWithPayload.payload.suiteSyncSettings ||
                         actionWithPayload.payload.suiteSyncOwners)
                 ) {
@@ -53,6 +51,7 @@ export const suiteSyncSlice = createSliceWithExtraDeps({
                         },
                         suiteSyncOwners: {
                             ...state.suiteSyncOwners,
+                            // We need to transform array of { key, value } from storage to the Record
                             ...typedObjectFromEntries(
                                 (
                                     actionWithPayload.payload.suiteSyncOwners as {
@@ -88,6 +87,8 @@ export const selectDesktopSuiteSyncInteraction = (
 
     const interaction = selectSuiteSyncInteraction(state, deviceStaticSessionId);
 
+    // When legacy labeling is enabled (user explicitly chose it in settings)
+    // and suite sync is off, don't expose suite sync interactions — respect the user's choice.
     if (interaction === 'suite-sync-off' && isMetadataEnabled) {
         return null;
     }

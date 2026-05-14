@@ -44,9 +44,12 @@ export const SuiteSyncTurnOnModal = ({
 
             switch (type) {
                 case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
+                    // Do nothing, Firmware Upgrade Modal will be shown declaratively
+                    // because `selectIsTurnOnSuiteSyncInteractionNeeded` will return it.
                     return;
 
                 case 'WriteModeRequiredForAllocation':
+                    // Do nothing, this is expected control flow error when we want allocate on-demand.
                     onSuccess?.();
 
                     return;

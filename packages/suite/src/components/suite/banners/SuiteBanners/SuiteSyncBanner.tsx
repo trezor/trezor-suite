@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { Translation, type TranslationKey } from '@suite/intl';
 import { goto } from '@suite/router';
+import { suiteSyncErrorHandler } from '@suite/suite-sync';
 import { selectIsDeviceConnected } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
@@ -14,8 +15,6 @@ import { type StaticSessionId } from '@trezor/connect';
 
 import { useDispatch } from 'src/hooks/suite';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
-
-import { suiteSyncErrorHandler } from '../../labeling/suiteSyncErrorHandler';
 
 type BannerConfig = {
     testId: string;

@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { useTranslation } from '@suite/intl';
+import { Labeling } from '@suite/labeling';
 import {
     selectIsLegacyLabelingVisible,
     selectLabelingDataForAccount,
@@ -31,10 +32,10 @@ import {
     AddressLabeling,
     BaseCurrencyValue,
     FormattedCryptoAmount,
-    Labeling,
     Sign,
 } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
+import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { TargetAddressLabel } from './TargetAddressLabel';
@@ -60,6 +61,7 @@ export const TransactionTarget = ({
     ...baseLayoutProps
 }: TransactionTargetProps) => {
     const { translationString } = useTranslation();
+    const { suiteSync } = useSuiteServices();
 
     const accountMetadata = useSelector(state => selectLabelingDataForAccount(state, accountKey));
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
@@ -207,6 +209,7 @@ export const TransactionTarget = ({
             isPhishingTransaction={isPhishingTransaction}
             addressLabel={
                 <Labeling
+                    suiteSync={suiteSync}
                     deviceStaticSessionId={transaction.deviceState}
                     isDisabled={isActionDisabled}
                     displayValue={label}

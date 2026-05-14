@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { Address } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
+import { Labeling } from '@suite/labeling';
 import {
     selectIsLegacyLabelingVisible,
     selectLabelingDataForSelectedAccount,
@@ -18,9 +19,10 @@ import { type AccountAddress } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
-import { FormattedCryptoAmount, Labeling } from 'src/components/suite';
+import { FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
+import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 import { type AppState } from 'src/types/suite';
 
 const DEFAULT_LIMIT = 10;
@@ -38,6 +40,7 @@ type ItemProps = {
 const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }: ItemProps) => {
     const { isReceiveDisabled, ReceiveDisabledWrapper } = useReceiveDisabled();
     const { translationString } = useTranslation();
+    const { suiteSync } = useSuiteServices();
 
     const amount = formatNetworkAmount(addr.received || '0', symbol);
     const fresh = !addr.transfers;
@@ -51,6 +54,7 @@ const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }
                     data-testid={`@wallet/receive/used-address/${index}`}
                 >
                     <Labeling
+                        suiteSync={suiteSync}
                         payload={{
                             ...metadataPayload,
                         }}
