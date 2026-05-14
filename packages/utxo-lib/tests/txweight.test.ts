@@ -43,20 +43,18 @@ describe('TxWeightCalculator', () => {
         expect(() => c.addInput({ script_type: 'INVALID' })).toThrow('unknown input script_type');
     });
 
-    // multisig is not implemented
-    // eslint-disable-next-line jest/no-commented-out-tests
-    // it('legacy multisig', () => {
-    //     const c = new TxWeightCalculator();
-    //     c.addInput({
-    //         script_type: 'SPENDMULTISIG',
-    //         multisig: {
-    //             pubkeys: [{}, {}, {}],
-    //             m: 2,
-    //         },
-    //     });
-    //     c.addOutputByKey('p2pkh');
-    //     expect(c.getTotal()).toEqual(4 * 341);
-    // });
+    it('legacy 2-of-3 multisig (SPENDMULTISIG) matches upstream fixture 4*341', () => {
+        const c = new TxWeightCalculator();
+        c.addInput({
+            script_type: 'SPENDMULTISIG',
+            multisig: {
+                pubkeys: [{}, {}, {}],
+                m: 2,
+            },
+        });
+        c.addOutputByKey('p2pkh');
+        expect(c.getTotal()).toEqual(4 * 341);
+    });
 
     // eslint-disable-next-line jest/no-commented-out-tests
     // it('segwit multisig', () => {
