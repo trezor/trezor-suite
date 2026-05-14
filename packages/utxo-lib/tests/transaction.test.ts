@@ -227,6 +227,19 @@ describe('Transaction', () => {
                 'Transaction has unexpected data',
             );
         });
+
+        it('Zcash: nostrict=true skips trailing-data check and returns the parsed transaction', () => {
+            const validHex = fixturesZcash.valid[0].hex;
+            const badBuf = Buffer.from(`${validHex}ff`, 'hex');
+            const tx = Transaction.fromBuffer(badBuf, {
+                network: NETWORKS.zcash,
+                nostrict: true,
+            });
+            expect(tx.version).toEqual(fixturesZcash.valid[0].raw.version);
+            expect(tx.locktime).toEqual(fixturesZcash.valid[0].raw.locktime);
+            expect(tx.ins.length).toEqual(fixturesZcash.valid[0].raw.ins.length);
+            expect(tx.outs.length).toEqual(fixturesZcash.valid[0].raw.outs.length);
+        });
     });
 
     describe('toBuffer/toHex', () => {
