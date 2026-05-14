@@ -7,6 +7,7 @@ import {
     selectIsLabelingAvailableForEntity,
     selectMetadata,
 } from '@suite/metadata';
+import { SuiteSyncInteractionsTooltip } from '@suite/suite-sync';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { type StaticSessionId } from '@trezor/connect';
@@ -17,7 +18,6 @@ import { processLegacyMetadataIntoSuiteSyncThunk } from 'src/actions/wallet/proc
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
-import { SuiteSyncInteractionsTooltip } from './SuiteSyncInteractionsTooltip';
 import { selectIsLabelActionEnabled } from './selectIsLabelActionEnabled';
 import { TurnOnSuiteSyncModals } from '../TurnOnSuiteSync/TurnOnSuiteSyncModals';
 import { suiteSyncErrorHandler } from '../suiteSyncErrorHandler';
