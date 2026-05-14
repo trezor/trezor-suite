@@ -78,6 +78,10 @@ describe('noble compatibility', () => {
         expect(() => ecc.pointAddScalar(pointOne, Buffer.alloc(31, 1))).toThrow('Expected Tweak');
     });
 
+    it('sign throws "Expected Hash" for non-32-byte hash (exercises assertHash length guard)', () => {
+        expect(() => ecc.sign(Buffer.alloc(31, 1), privateOne)).toThrow('Expected Hash');
+    });
+
     it('signWithEntropy is deterministic for fixed entropy', () => {
         const messageHash = Buffer.alloc(32, 7);
         const extraEntropy = Buffer.alloc(32, 9);
