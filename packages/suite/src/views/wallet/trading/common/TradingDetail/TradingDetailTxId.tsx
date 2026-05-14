@@ -1,9 +1,9 @@
 import { useDispatch } from 'react-redux';
 
+import { Address } from '@suite/address';
 import { openModal } from '@suite/modal';
 import { Link, type TextProps } from '@trezor/components';
 
-import { Address } from 'src/components/suite';
 import { type Account } from 'src/types/wallet';
 
 type TradingDetailTxIdProps = {

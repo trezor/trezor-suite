@@ -77,6 +77,7 @@
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@suite-common/walletconnect": "workspace:*",
+        "@suite/address": "workspace:*",
         "@suite/analytics": "workspace:*",
         "@suite/backup": "workspace:*",
         "@suite/desktop-update": "workspace:*",

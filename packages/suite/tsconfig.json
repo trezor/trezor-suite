@@ -153,6 +153,7 @@
         {
             "path": "../../suite-common/walletconnect"
         },
+        { "path": "../../suite/address" },
         { "path": "../../suite/analytics" },
         { "path": "../../suite/backup" },
         { "path": "../../suite/desktop-update" },

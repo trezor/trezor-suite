@@ -1,8 +1,9 @@
+import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { type ArrayElement } from '@trezor/type-utils';
 
-import { Address, AddressLabeling } from 'src/components/suite';
+import { AddressLabeling } from 'src/components/suite';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
 interface TokenTransferAddressLabelProps {

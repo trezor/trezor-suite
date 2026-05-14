@@ -1,5 +1,6 @@
 import { type CryptoId } from 'invity-api';
 
+import { Address } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
 import {
     type TradingType,
@@ -12,7 +13,7 @@ import { Box, Column, Row, SkeletonRectangle, Text } from '@trezor/components';
 import { AssetLogo, CoinLogo } from '@trezor/product-components';
 import { borders } from '@trezor/theme';
 
-import { AccountLabel, Address, BaseCurrencyValue } from 'src/components/suite';
+import { AccountLabel, BaseCurrencyValue } from 'src/components/suite';
 import { type TradingPayGetLabelType } from 'src/types/trading/trading';
 import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
 

@@ -2,6 +2,7 @@ import { type ReactNode, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
+import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
@@ -23,7 +24,6 @@ import { type TokenInfo } from '@trezor/connect';
 import { type Elevation, mapElevationToBackground, spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
-import { Address } from 'src/components/suite/Address';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { TransactionReviewOutputStatus } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';

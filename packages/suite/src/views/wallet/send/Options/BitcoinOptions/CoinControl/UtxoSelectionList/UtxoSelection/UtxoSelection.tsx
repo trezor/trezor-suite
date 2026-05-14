@@ -1,5 +1,6 @@
 import { type MouseEventHandler, type ReactNode } from 'react';
 
+import { Address } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
 import {
     selectIsLegacyLabelingVisible,
@@ -29,7 +30,7 @@ import {
 } from '@trezor/components';
 import { type AccountUtxo } from '@trezor/connect';
 
-import { Address, BaseCurrencyValue, FormattedCryptoAmount, Labeling } from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount, Labeling } from 'src/components/suite';
 import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';

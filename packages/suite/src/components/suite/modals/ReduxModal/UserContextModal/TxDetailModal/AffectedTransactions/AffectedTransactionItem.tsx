@@ -1,9 +1,9 @@
+import { Address } from '@suite/address';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { type Transaction } from '@trezor/blockchain-link-types';
 import { Icon, InfoSegments, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Address } from 'src/components/suite/Address';
 import { FormattedDate } from 'src/components/suite/FormattedDate';
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 

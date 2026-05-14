@@ -1,10 +1,10 @@
+import { Address } from '@suite/address';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { findAccountsByAddress } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
 import { AccountLabeling } from './AccountLabeling';
-import { Address } from '../Address';
 
 type AddressLabelingProps = {
     symbol: NetworkSymbol;

@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 
+import { Address } from '@suite/address';
 import { type NetworkSymbolExtended, isNetworkSymbol } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { selectExplorer } from '@suite-common/wallet-core';
@@ -7,7 +8,6 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { type AnonymitySet } from '@trezor/blockchain-link-types';
 import { Column, Link, Row, Text } from '@trezor/components';
 
-import { Address } from 'src/components/suite/Address';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { UtxoAnonymity } from 'src/components/wallet';
 import { useExternalLink } from 'src/hooks/suite';

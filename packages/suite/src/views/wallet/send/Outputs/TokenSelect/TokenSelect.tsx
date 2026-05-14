@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
@@ -21,14 +22,8 @@ import { Banner, Card, Column, IconButton, Link, Row, Text } from '@trezor/compo
 import { AssetLogo, CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
-import {
-    Address,
-    BaseCurrencyValue,
-    FormattedCryptoAmount,
-    HiddenPlaceholder,
-} from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';

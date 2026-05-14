@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 
+import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
 import { events } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { selectIsCopyAddressModalShown, selectIsUnhideTokenModalShown } from '@suite/flags';
@@ -44,11 +45,9 @@ import {
 } from '@trezor/components';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';
-import { Address } from 'src/components/suite';
 import { useDispatch, useExternalLink, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { selectIsDeviceCompromised } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
