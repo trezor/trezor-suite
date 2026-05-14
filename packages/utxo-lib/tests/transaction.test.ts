@@ -292,6 +292,16 @@ describe('Transaction', () => {
             expect(tx.ins.length).toEqual(fixturesBitcoin.valid[0].raw.ins.length);
             expect(tx.outs.length).toEqual(fixturesBitcoin.valid[0].raw.outs.length);
         });
+
+        it('constructor with network=decred routes to decred.fromConstructor and overrides byteLength', () => {
+            const tx = new Transaction({ network: NETWORKS.decred });
+            expect(tx.network).toBe(NETWORKS.decred);
+            // empty decred tx byteLength = 4 (version+type) + 1 (ins varint) + 1 (outs varint)
+            // + 4 (block height) + 4 (block index) = 14.
+            // base/bitcoin byteLength for an empty tx = 8 (version+locktime) + 1 + 1 = 10,
+            // so a byteLength of 14 proves the decred-branch in the constructor ran.
+            expect(tx.byteLength()).toBe(14);
+        });
     });
 
     describe('toBuffer/toHex', () => {
