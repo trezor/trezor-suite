@@ -1,9 +1,9 @@
-export { AddressLabel } from './components/AddressLabel';
-export { AddressLabelEditable } from './components/AddressLabelEditable';
 export { SendFormLabelEditable } from './components/SendFormLabelEditable';
 export { TransactionOutputLabel } from './components/TransactionOutputLabel';
 export { TransactionOutputLabelEditable } from './components/TransactionOutputLabelEditable';
 export { WalletLabel } from './components/WalletLabel';
+export { EditableLabelLayout } from './components/EditableLabelLayout';
+export { LabelEditForm } from './components/LabelEditForm';
 export type { CombinedLabelingState } from './selectors';
 export { selectIsLabellingAllowed } from './selectors';
 export { useTurnOnSuiteSyncGuard } from './hooks/useTurnOnSuiteSyncGuard';

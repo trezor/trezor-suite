@@ -19,6 +19,7 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../accounts" },
+        { "path": "../address" },
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
@@ -32,7 +33,6 @@
         { "path": "../link" },
         { "path": "../module-device-onboarding" },
         { "path": "../navigation" },
-        { "path": "../qr-code" },
         { "path": "../services" },
         { "path": "../toasts" },
         { "path": "../tokens" },

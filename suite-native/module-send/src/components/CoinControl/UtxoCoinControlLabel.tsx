@@ -1,13 +1,10 @@
 import { useSelector } from 'react-redux';
 
 import { type SuiteSyncDataRootState, selectSuiteSyncOutputLabel } from '@suite-common/suite-sync';
+import { AddressLabel } from '@suite-native/address';
 import { HStack, Text, type TextProps } from '@suite-native/atoms';
 import { AddressFormatter } from '@suite-native/formatters';
-import {
-    AddressLabel,
-    TransactionOutputLabel,
-    selectIsLabellingAllowed,
-} from '@suite-native/labeling';
+import { TransactionOutputLabel, selectIsLabellingAllowed } from '@suite-native/labeling';
 import type { StaticSessionId } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
