@@ -1,5 +1,6 @@
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
+import { UINT256_MAX } from '@suite-common/suite-constants';
 import { renderWithBasicProvider, screen } from '@suite-native/test-utils';
 
 import { ExchangeFormQuoteDebugView } from '../ExchangeFormQuoteDebugView';
@@ -91,5 +92,38 @@ describe('ExchangeFormQuoteDebugView', () => {
         renderDebugView();
 
         expect(screen.getByText('needs_approval')).toBeOnTheScreen();
+    });
+
+    it('should display "unlimited" for pre-approved amount when preapprovedStringAmount is max uint256', () => {
+        mockDebugMode = true;
+        mockQuote = {
+            send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
+            receive: 'bitcoin' as CryptoId,
+            exchange: 'invity',
+            isDex: true,
+            preapprovedStringAmount: UINT256_MAX,
+        };
+
+        renderDebugView();
+
+        expect(screen.getByText('Pre-approved')).toBeOnTheScreen();
+        expect(screen.getByText('unlimited')).toBeOnTheScreen();
+    });
+
+    it('should display the specific amount for pre-approved amount when preapprovedStringAmount is not max uint256', () => {
+        mockDebugMode = true;
+        const specificAmount = '1000000000000000000';
+        mockQuote = {
+            send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
+            receive: 'bitcoin' as CryptoId,
+            exchange: 'invity',
+            isDex: true,
+            preapprovedStringAmount: specificAmount,
+        };
+
+        renderDebugView();
+
+        expect(screen.getByText('Pre-approved')).toBeOnTheScreen();
+        expect(screen.getByText(specificAmount)).toBeOnTheScreen();
     });
 });

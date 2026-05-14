@@ -94,6 +94,9 @@
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
         {
+            "path": "../../suite-common/suite-constants"
+        },
+        {
             "path": "../../suite-common/test-utils"
         },
         { "path": "../bluetooth" },
