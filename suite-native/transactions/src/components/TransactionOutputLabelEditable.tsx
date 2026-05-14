@@ -5,13 +5,14 @@ import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { isTokenTargetId } from '@suite-common/wallet-core';
 import { type AccountDescriptor, type TxTargetId } from '@suite-common/wallet-types';
 import { featureUsed } from '@suite-native/feature-feedback';
+import {
+    EditableLabelLayout,
+    LabelEditForm,
+    selectIsLabellingAllowed,
+    useSuiteSyncErrorHandler,
+} from '@suite-native/labeling';
 import { useNativeServices } from '@suite-native/services';
 import type { StaticSessionId } from '@trezor/connect';
-
-import { EditableLabelLayout } from './EditableLabelLayout';
-import { LabelEditForm } from './LabelEditForm';
-import { useSuiteSyncErrorHandler } from '../hooks/useSuiteSyncLabelErrorHandler';
-import { selectIsLabellingAllowed } from '../selectors';
 
 type TransactionOutputLabelEditableProps = {
     txId: string;

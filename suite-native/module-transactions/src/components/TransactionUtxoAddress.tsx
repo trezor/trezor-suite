@@ -6,7 +6,8 @@ import { AddressLabel } from '@suite-native/address';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { isDebugEnv } from '@suite-native/config';
 import { AddressFormatter } from '@suite-native/formatters';
-import { TransactionOutputLabelEditable, selectIsLabellingAllowed } from '@suite-native/labeling';
+import { selectIsLabellingAllowed } from '@suite-native/labeling';
+import { TransactionOutputLabelEditable } from '@suite-native/transactions';
 import type { StaticSessionId } from '@trezor/connect';
 
 type TransactionUtxoAddressProps = {
