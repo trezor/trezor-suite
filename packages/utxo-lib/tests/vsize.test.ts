@@ -18,4 +18,22 @@ describe('vsize', () => {
         );
         expect(vbytes).toBe(192);
     });
+
+    // Exercises the OP_RETURN <hex> branch in toVout: BitcoinJsAddress.toOutputScript
+    // throws for the non-address string, the catch block matches /^OP_RETURN (.*)$/,
+    // and since the captured group "deadbeef" has no surrounding parens the hex
+    // branch fires: scriptLen = 2 + msg.length / 2 = 2 + 8/2 = 6
+    // (1 byte OP_RETURN + 1 byte push opcode + 4 bytes data).
+    //
+    // Weight: TX_BASE(32) + varInt(1)*4 + inputWeight(160 + 4*108=592) +
+    //         varInt(1)*4 + outputWeight(4*(8+1+6)=60) = 692
+    // vbytes = ceil(692 / 4) = 173
+    it('computes vbytes for an OP_RETURN <hex> output (hex branch in toVout)', () => {
+        const vbytes = getTransactionVbytesFromAddresses(
+            ['1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT'],
+            ['OP_RETURN deadbeef'],
+            NETWORKS.bitcoin,
+        );
+        expect(vbytes).toBe(173);
+    });
 });
