@@ -27,7 +27,7 @@ import {
     selectInvityServerEnvironment,
     selectLanguage,
 } from '@suite/settings';
-import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
+import { createSuiteSyncDesktopCompositionRoot, suiteSyncErrorHandler } from '@suite/suite-sync';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { toGetter } from '@suite-common/dependency-injection';
@@ -71,7 +71,6 @@ import { reportSecurityCheck } from 'src/utils/suite/sentry';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
 import { forgetBluetoothDeviceThunk } from '../actions/bluetooth/bluetoothEraseBondsThunk';
-import { suiteSyncErrorHandler } from '../components/suite/labeling/suiteSyncErrorHandler';
 import type { BioAuthState } from '../reducers/bioAuth';
 import { type AppState, type TrezorDevice } from '../types/suite';
 

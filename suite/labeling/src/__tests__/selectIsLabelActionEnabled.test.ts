@@ -16,8 +16,6 @@ import {
     type SuiteSyncState,
     type WithSuiteSyncAndDeviceState,
     initialSuiteSyncState,
-    selectIsSuiteSyncFeatureAvailable,
-    selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type StaticSessionId, type UnavailableCapabilities } from '@trezor/connect';
@@ -33,28 +31,6 @@ jest.mock('@suite/metadata', () => ({
     selectIsLabelingAvailableForEntity: jest.fn(),
     selectIsLabelingInitPossible: jest.fn(),
     selectIsMetadataEnabled: jest.fn().mockReturnValue(false),
-}));
-
-jest.mock('@suite/suite-sync', () => ({
-    selectDesktopSuiteSyncInteraction: (
-        state: WithSuiteSyncAndDeviceState & MessageSystemRootState,
-        deviceStaticSessionId: StaticSessionId | null,
-        isMetadataEnabled: boolean,
-    ) => {
-        const isSuiteSyncFeatureEnabled = selectIsSuiteSyncFeatureAvailable(state);
-
-        if (!isSuiteSyncFeatureEnabled) {
-            return null;
-        }
-
-        const interaction = selectSuiteSyncInteraction(state, deviceStaticSessionId);
-
-        if (interaction === 'suite-sync-off' && isMetadataEnabled) {
-            return null;
-        }
-
-        return interaction;
-    },
 }));
 
 const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';

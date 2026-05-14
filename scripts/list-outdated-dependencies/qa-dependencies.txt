@@ -25,7 +25,6 @@ jest-diff
 jest-environment-node
 jest-extended
 jest-junit
-jest-mock
 jest-watch-typeahead
 minimist
 react-intl
