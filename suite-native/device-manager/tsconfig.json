@@ -33,6 +33,7 @@
         { "path": "../labeling" },
         { "path": "../navigation" },
         { "path": "../services" },
+        { "path": "../wallet" },
         { "path": "../../packages/device-utils" },
         {
             "path": "../../packages/styles-native"

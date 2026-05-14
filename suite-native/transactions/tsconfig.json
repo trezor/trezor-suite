@@ -8,10 +8,10 @@
         {
             "path": "../../suite-common/redux-utils"
         },
+        { "path": "../../suite-common/staking" },
         {
             "path": "../../suite-common/suite-sync"
         },
-        { "path": "../../suite-common/staking" },
         {
             "path": "../../suite-common/suite-types"
         },
@@ -51,9 +51,7 @@
         {
             "path": "../../packages/blockchain-link-types"
         },
-        {
-            "path": "../../packages/connect"
-        },
+        { "path": "../../packages/connect" },
         {
             "path": "../../packages/styles-native"
         },

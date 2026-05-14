@@ -8,8 +8,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "yarn g:jest:native"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@gorhom/bottom-sheet": "5.2.8",
@@ -19,13 +18,11 @@
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
-        "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/forms": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/suite-sync": "workspace:*",
-        "@trezor/connect": "workspace:*",
         "react": "19.2.4",
         "react-native": "0.83.2",
         "react-redux": "9.2.0"

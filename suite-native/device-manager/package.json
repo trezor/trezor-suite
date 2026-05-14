@@ -31,6 +31,7 @@
         "@suite-native/labeling": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/services": "workspace:*",
+        "@suite-native/wallet": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",

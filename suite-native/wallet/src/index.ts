@@ -1,0 +1,1 @@
+export { WalletLabel } from './WalletLabel';

@@ -3,9 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { type SuiteSyncDataRootState, selectSuiteSyncWalletLabel } from '@suite-common/suite-sync';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
+import { selectIsLabellingAllowed } from '@suite-native/labeling';
 import type { StaticSessionId } from '@trezor/connect';
-
-import { selectIsLabellingAllowed } from '../selectors';
 
 type WalletLabelProps = {
     deviceStaticSessionId: StaticSessionId | undefined;

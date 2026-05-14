@@ -1,0 +1,14 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/suite-sync"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        { "path": "../labeling" },
+        { "path": "../../packages/connect" }
+    ]
+}

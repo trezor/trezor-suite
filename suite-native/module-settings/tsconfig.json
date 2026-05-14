@@ -49,7 +49,6 @@
         { "path": "../helpers" },
         { "path": "../icons" },
         { "path": "../intl" },
-        { "path": "../labeling" },
         { "path": "../link" },
         { "path": "../module-connect-popup" },
         { "path": "../navigation" },
@@ -61,6 +60,7 @@
         { "path": "../toasts" },
         { "path": "../trading-residence" },
         { "path": "../trading-state" },
+        { "path": "../wallet" },
         {
             "path": "../../packages/blockchain-link-types"
         },

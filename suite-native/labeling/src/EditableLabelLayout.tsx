@@ -8,7 +8,7 @@ import { BottomSheetModal, TextButton, useBottomSheetModal } from '@suite-native
 import { Translation } from '@suite-native/intl';
 import { useTurnOnSuiteSyncGuard } from '@suite-native/suite-sync';
 
-import { selectIsLabellingAllowed } from '../selectors';
+import { selectIsLabellingAllowed } from './selectors';
 
 type EditableLabelLayoutParams = {
     children: (params: { onClose: () => void; ref: Ref<BottomSheetModalMethods> }) => ReactNode;
