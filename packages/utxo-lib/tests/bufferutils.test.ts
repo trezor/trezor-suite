@@ -202,6 +202,14 @@ describe('bufferutils', () => {
                 reader.readSlice(1);
             }).toThrow('Cannot read slice out of bounds');
         });
+
+        it('readVarInt throws "value out of range" when varuint value exceeds MAX_SAFE_INTEGER', () => {
+            const reader = new bufferutils.BufferReader(Buffer.from('ff0000000000000020', 'hex'));
+
+            expect(() => {
+                reader.readVarInt();
+            }).toThrow('value out of range');
+        });
     });
 
     describe('verifuint', () => {
