@@ -38,6 +38,11 @@ describe('TxWeightCalculator', () => {
         expect(c.getTotal()).toEqual(4 * 94 + 68);
     });
 
+    it('throws "unknown input script_type" for unrecognized script_type', () => {
+        const c = new TxWeightCalculator();
+        expect(() => c.addInput({ script_type: 'INVALID' })).toThrow('unknown input script_type');
+    });
+
     // multisig is not implemented
     // eslint-disable-next-line jest/no-commented-out-tests
     // it('legacy multisig', () => {
