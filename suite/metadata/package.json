@@ -48,5 +48,8 @@
         "redux-thunk": "^3.1.0",
         "styled-components": "^6.3.9",
         "zod": "4.3.6"
+    },
+    "devDependencies": {
+        "@trezor/requirements": "workspace:*"
     }
 }

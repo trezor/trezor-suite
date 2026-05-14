@@ -5,8 +5,10 @@ import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 import { events } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
+import { selectIsMetadataEnabled } from '@suite/metadata';
 import { openDeferredModal } from '@suite/modal';
 import { selectIsDebugModeActive } from '@suite/settings';
+import { selectDesktopSuiteSyncInteraction } from '@suite/suite-sync';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { formInputsMaxLength } from '@suite-common/validators';
@@ -35,7 +37,6 @@ import {
 } from '@trezor/urls';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
-import { selectDesktopSuiteSyncInteraction } from 'src/actions/suiteSync/suiteSyncSlice';
 import { AddressLabeling, Labeling } from 'src/components/suite';
 import { InputError } from 'src/components/wallet';
 import { type InputErrorProps } from 'src/components/wallet/InputError';
@@ -93,8 +94,11 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const broadcastEnabled = options.includes('broadcast');
     const isOnline = useSelector(state => state.suite.online);
     const isDebug = useSelector(selectIsDebugModeActive);
+    const isMetadataEnabled = useSelector(selectIsMetadataEnabled);
     const suiteSyncInteraction = useSelector(state =>
-        account ? selectDesktopSuiteSyncInteraction(state, account.deviceState) : null,
+        account
+            ? selectDesktopSuiteSyncInteraction(state, account.deviceState, isMetadataEnabled)
+            : null,
     );
 
     const shouldShowLabelAction = suiteSyncInteraction === null || !!device?.connected;

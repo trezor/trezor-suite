@@ -5,15 +5,19 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import {
     metadataLabelingActions,
     selectIsLabelingAvailableForEntity,
+    selectIsMetadataEnabled,
     selectMetadata,
 } from '@suite/metadata';
-import { SuiteSyncInteractionsTooltip, TurnOnSuiteSyncModals } from '@suite/suite-sync';
+import {
+    SuiteSyncInteractionsTooltip,
+    TurnOnSuiteSyncModals,
+    selectDesktopSuiteSyncInteraction,
+} from '@suite/suite-sync';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { type StaticSessionId } from '@trezor/connect';
 import { EditableText, type EditableTextProps } from '@trezor/product-components';
 
-import { selectDesktopSuiteSyncInteraction } from 'src/actions/suiteSync/suiteSyncSlice';
 import { processLegacyMetadataIntoSuiteSyncThunk } from 'src/actions/wallet/processLegacyMetadataIntoSuiteSyncThunk';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
@@ -44,6 +48,7 @@ export const Labeling = ({
     const { suiteSync } = useSuiteServices();
     const legacyMetadataState = useSelector(selectMetadata);
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const isMetadataEnabled = useSelector(selectIsMetadataEnabled);
     const isLabelActionEnabled = useSelector(state =>
         selectIsLabelActionEnabled(state, deviceStaticSessionId, payload.entityKey),
     );
@@ -55,7 +60,7 @@ export const Labeling = ({
     );
 
     const suiteSyncInteraction = useSelector(state =>
-        selectDesktopSuiteSyncInteraction(state, deviceStaticSessionId),
+        selectDesktopSuiteSyncInteraction(state, deviceStaticSessionId, isMetadataEnabled),
     );
 
     const handleEdit = useCallback(async () => {

@@ -1,5 +1,5 @@
 import { messages } from '@suite/intl';
-import { suiteSyncErrorTranslationKeyMap } from '@suite/suite-sync';
+import { suiteSyncErrorTranslationKeyMap, updateShowEnableSuiteSyncModal } from '@suite/suite-sync';
 import { type SuiteSyncAsyncError } from '@suite-common/suite-sync';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
@@ -7,7 +7,6 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { type StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
-import { updateShowEnableSuiteSyncModal } from 'src/actions/suiteSync/suiteSyncSlice';
 import { type Dispatch } from 'src/types/suite';
 
 type SuiteSyncErrorHandler = {
