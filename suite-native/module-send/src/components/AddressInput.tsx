@@ -17,12 +17,12 @@ import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { isDebugEnv } from '@suite-native/config';
 import { TextInputField, useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
-import { SendFormLabelEditable } from '@suite-native/labeling';
 import { useAnalytics } from '@suite-native/services';
 import { HELP_CENTER_EVM_ADDRESS_CHECKSUM, HELP_CENTER_SOLANA_HELP_URL } from '@trezor/urls';
 
 import { AddressInfoMessage } from './AddressInfoMessage';
 import { QrCodeBottomSheetIcon } from './QrCodeBottomSheetIcon';
+import { SendFormLabelEditable } from './SendFormLabelEditable';
 import { useAddressValidationAlerts } from '../hooks/useAddressValidationAlerts/useAddressValidationAlerts';
 import { useSolAssociatedTokenAddress } from '../hooks/useAddressValidationAlerts/useSolAssociatedTokenAddress';
 import { type SendOutputsFormValues } from '../sendOutputsFormSchema';
