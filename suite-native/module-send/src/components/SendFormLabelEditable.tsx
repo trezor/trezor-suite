@@ -1,10 +1,11 @@
 import { useSelector } from 'react-redux';
 
 import { Box } from '@suite-native/atoms';
-
-import { EditableLabelLayout } from './EditableLabelLayout';
-import { LabelEditForm } from './LabelEditForm';
-import { selectIsLabellingAllowed } from '../selectors';
+import {
+    EditableLabelLayout,
+    LabelEditForm,
+    selectIsLabellingAllowed,
+} from '@suite-native/labeling';
 
 type SendFormLabelEditableProps = {
     label: string | null;
