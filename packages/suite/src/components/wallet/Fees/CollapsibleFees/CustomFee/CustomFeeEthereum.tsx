@@ -17,8 +17,8 @@ import { type CustomFeeBasicProps } from './CustomFeeBasicProps';
 import { FEE_LIMIT, FEE_PER_UNIT } from './constants';
 import { useFeesContext } from '../../context/FeesContext';
 
-const MAX_FEE_PER_GAS = 'maxFeePerGas';
-const MAX_PRIORITY_FEE_PER_GAS = 'maxPriorityFeePerGas';
+const MAX_FEE_PER_GAS = 'maxFeePerGas' satisfies keyof FormState;
+const MAX_PRIORITY_FEE_PER_GAS = 'maxPriorityFeePerGas' satisfies keyof FormState;
 
 export const CustomFeeEthereum = ({
     translationString,
@@ -28,14 +28,14 @@ export const CustomFeeEthereum = ({
     const { feeInfo, networkType } = useFeesContext();
     const locale = useSelector(selectLanguage);
 
-    const { control, getValues, setValue, trigger } = useFormContext<FormState>();
+    const { control, getValues, setValue, trigger, watch } = useFormContext<FormState>();
     const { errors } = useFormState<FormState>();
 
     const { maxFee, minFee, levels, minPriorityFee } = feeInfo;
 
-    const estimatedFeeLimit = getValues('estimatedFeeLimit');
-    const customMaxFeePerGas = getValues('maxFeePerGas');
-    const customMaxPriorityFeePerGas = getValues('maxPriorityFeePerGas');
+    // Use `watch` (not `getValues`) so the cross-field `trigger` effects re-run and validate closures see fresh values.
+    const customMaxFeePerGas = watch(MAX_FEE_PER_GAS);
+    const customMaxPriorityFeePerGas = watch(MAX_PRIORITY_FEE_PER_GAS);
 
     useEffect(() => {
         if (trigger) {
@@ -56,6 +56,7 @@ export const CustomFeeEthereum = ({
         validate: {
             ...sharedRules.validate,
             feeLimit: (value: string) => {
+                const estimatedFeeLimit = getValues('estimatedFeeLimit');
                 const feeBig = new BigNumber(value);
                 if (estimatedFeeLimit && feeBig.lt(estimatedFeeLimit)) {
                     return translationString('CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED');
@@ -65,11 +66,13 @@ export const CustomFeeEthereum = ({
     };
 
     const gasLimitValidationProps = {
-        onClick: () =>
-            estimatedFeeLimit &&
-            setValue(FEE_LIMIT, estimatedFeeLimit, {
-                shouldValidate: true,
-            }),
+        onClick: () => {
+            const estimatedFeeLimit = getValues('estimatedFeeLimit');
+
+            if (!estimatedFeeLimit) return;
+
+            setValue(FEE_LIMIT, estimatedFeeLimit, { shouldValidate: true });
+        },
         text: translationString('CUSTOM_FEE_USE_RECOMMENDED'),
     };
 
