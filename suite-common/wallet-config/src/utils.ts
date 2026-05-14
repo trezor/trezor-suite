@@ -150,8 +150,8 @@ export const isAccountOfNetwork = (
 export const getNetworkByCoingeckoId = (coingeckoId: string) =>
     networksCollection.find(n => n.coingeckoId === coingeckoId);
 
-export const getNetworkByTradeCryptoId = (coingeckoId: string) =>
-    networksCollection.find(n => n.tradeCryptoId === coingeckoId);
+export const getNetworkByTradeCryptoId = (tradeCryptoId: string) =>
+    networksCollection.find(n => n.tradeCryptoId === tradeCryptoId);
 
 export const getNetworkByEvmChainId = (chainId: number) =>
     networksCollection.find(n => n.chainId === chainId);
