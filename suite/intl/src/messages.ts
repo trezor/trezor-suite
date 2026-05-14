@@ -9633,15 +9633,6 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_APPROVED_AMOUNT',
         defaultMessage: 'Approved amount',
     },
-    TR_EARN_YIELD_NETWORK_FEE_WARNING_TITLE: {
-        id: 'TR_EARN_YIELD_NETWORK_FEE_WARNING_TITLE',
-        defaultMessage: 'You only have {amount} {networkDisplaySymbol} available.',
-    },
-    TR_EARN_YIELD_NETWORK_FEE_WARNING_DESCRIPTION: {
-        id: 'TR_EARN_YIELD_NETWORK_FEE_WARNING_DESCRIPTION',
-        defaultMessage:
-            'This balance may not cover network fees. Add more {networkDisplaySymbol} before continuing.',
-    },
     TR_EARN_YIELD_SUPPLY_COMPLETE: {
         id: 'TR_EARN_YIELD_SUPPLY_COMPLETE',
         defaultMessage: 'Deposit complete',
