@@ -1,6 +1,7 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
     entry: {
@@ -47,6 +48,11 @@ module.exports = {
         }),
         new CopyWebpackPlugin({
             patterns: [{ from: 'src/manifest.json', to: 'manifest.json' }],
+        }),
+        new webpack.DefinePlugin({
+            // Override the Suite web URL hosting connect-popup.
+            // Example: SUITE_WEB_URL=http://localhost:8000 yarn build
+            __SUITE_WEB_URL__: JSON.stringify(process.env.SUITE_WEB_URL || ''),
         }),
     ],
     mode: process.env.NODE_ENV || 'development',
