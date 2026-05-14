@@ -67,7 +67,6 @@ export const MessageSystemManager = ({ actions, onCloseModal }: MessageSystemMan
             onCancel={onCloseModal}
             heading={`Messages (${allValidMessages.length} active of ${actions.length})`}
             bottomContent={<MessageSystemFormMessage />}
-            isBackdropCancelable={false}
         >
             <Column gap={spacings.sm}>
                 <MessageSystemManagerFilters
