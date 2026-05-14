@@ -152,16 +152,21 @@ const modalReducer = (state: State = initialState, action: AnyAction): State => 
             return initialState;
 
         case UI_REQUEST.CLOSE_UI_WINDOW:
-            // Always close device-driven modals when the device signals CLOSE_UI_WINDOW,
-            // even if preserve is set (preserve protects user-context modals, not device prompts).
-            // Exception: preserveOnTxTimeout is set when the timer cancels signing — the modal
-            // must stay open to show the expired state. The flag is cleared after one use.
             if (
                 state.context === MODAL_CONTEXT_DEVICE ||
                 state.context === MODAL_CONTEXT_DEVICE_CONFIRMATION
             ) {
+                // preserveOnTxTimeout: timer cancelled signing — keep modal open to show expired state.
                 if (state.preserveOnTxTimeout) {
                     return { ...state, preserveOnTxTimeout: false };
+                }
+
+                // preserve: signing flow is about to replace this device modal with a user-context
+                // modal (openDeferredModal). On desktop, CLOSE_UI_WINDOW arrives via IPC in a
+                // separate event loop turn, so closing here causes a visible flash. Keep the modal
+                // open but clear preserve so the next action can take over cleanly.
+                if (state.preserve) {
+                    return { ...state, preserve: false };
                 }
 
                 return initialState;
