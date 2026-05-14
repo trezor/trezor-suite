@@ -207,6 +207,18 @@ describe('Transaction', () => {
             expect(tx.ins.length).toEqual(fixturesDecred.valid[0].raw.ins.length);
             expect(tx.outs.length).toEqual(fixturesDecred.valid[0].raw.outs.length);
         });
+
+        it('Decred: toBuffer with explicit non-zero initialOffset returns a subarray starting at that offset', () => {
+            const validHex = fixturesDecred.valid[0].hex;
+            const tx = Transaction.fromHex(validHex, { network: NETWORKS.decred });
+            const txLen = Buffer.from(validHex, 'hex').length;
+            const prebuf = Buffer.alloc(txLen + 9, 0xcc);
+            const result = tx.toBuffer(prebuf, 9);
+            expect(result.length).toEqual(txLen);
+            expect(result.toString('hex')).toEqual(validHex);
+            expect(prebuf.subarray(0, 9).toString('hex')).toEqual('cccccccccccccccccc');
+            expect(prebuf.subarray(9, 9 + txLen).toString('hex')).toEqual(validHex);
+        });
     });
 
     describe('toBuffer/toHex', () => {
