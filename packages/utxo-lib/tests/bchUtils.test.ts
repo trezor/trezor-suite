@@ -56,4 +56,16 @@ describe('bcashutils', () => {
             expect(toLegacyAddress(cashAddr)).toBe(mainnetLegacyP2SH);
         });
     });
+
+    describe('P2SH testnet conversion', () => {
+        // P2SH testnet legacy address (version byte 0xc4) — encodes hash160 76a04053bda0a88bda5177b86a15c3b29f559873.
+        // Testnet P2SH base58 addresses begin with '2' (version 0xc4); the testnet cashaddr prefix is 'bchtest'.
+        const testnetLegacyP2SH = '2N44ThNe8NXHyv4bsX8AoVCXquBRW94Ls7W';
+
+        it('round-trips a P2SH testnet legacy address through cashaddr form', () => {
+            const cashAddr = toCashAddress(testnetLegacyP2SH);
+            expect(cashAddr).toMatch(/^bchtest:p/);
+            expect(toLegacyAddress(cashAddr)).toBe(testnetLegacyP2SH);
+        });
+    });
 });
