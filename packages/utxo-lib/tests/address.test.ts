@@ -72,6 +72,13 @@ describe('address', () => {
                 }).toThrow(new RegExp(f.exception));
             });
         });
+
+        it('throws when a witness-v2 script has a push-length byte that disagrees with the trailing data length', () => {
+            // OP_2 (0x52) + push-length 0x14 (declaring 20 bytes) + only 18 bytes of data;
+            // exercises toFutureSegwitAddress's `if (output[1] !== data.length) throw` branch.
+            const malformed = Buffer.from('5214000102030405060708090a0b0c0d0e0f1011', 'hex');
+            expect(() => baddress.fromOutputScript(malformed)).toThrow('has no matching Address');
+        });
     });
 
     describe('toBech32', () => {
