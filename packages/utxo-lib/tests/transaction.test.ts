@@ -194,6 +194,19 @@ describe('Transaction', () => {
                 'Transaction has unexpected data',
             );
         });
+
+        it('Decred: nostrict=true skips trailing-data check and returns the parsed transaction', () => {
+            const validHex = fixturesDecred.valid[0].hex;
+            const badBuf = Buffer.from(`${validHex}ff`, 'hex');
+            const tx = Transaction.fromBuffer(badBuf, {
+                network: NETWORKS.decred,
+                nostrict: true,
+            });
+            expect(tx.version).toEqual(fixturesDecred.valid[0].raw.version);
+            expect(tx.locktime).toEqual(fixturesDecred.valid[0].raw.locktime);
+            expect(tx.ins.length).toEqual(fixturesDecred.valid[0].raw.ins.length);
+            expect(tx.outs.length).toEqual(fixturesDecred.valid[0].raw.outs.length);
+        });
     });
 
     describe('toBuffer/toHex', () => {
