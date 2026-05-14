@@ -29,6 +29,7 @@ export const CustomFeeEthereum = ({
     const locale = useSelector(selectLanguage);
 
     const { control, getValues, setValue, trigger, watch } = useFormContext<FormState>();
+
     const { errors } = useFormState<FormState>();
 
     const { maxFee, minFee, levels, minPriorityFee } = feeInfo;
@@ -38,18 +39,9 @@ export const CustomFeeEthereum = ({
     const customMaxPriorityFeePerGas = watch(MAX_PRIORITY_FEE_PER_GAS);
 
     useEffect(() => {
-        if (trigger) {
-            trigger(MAX_PRIORITY_FEE_PER_GAS);
-        }
-    }, [customMaxFeePerGas, trigger]);
-
-    useEffect(() => {
-        if (trigger) {
-            trigger(MAX_FEE_PER_GAS);
-        }
-    }, [customMaxPriorityFeePerGas, trigger]);
-
-    const recommendedMaxFeePerGas = levels.find(level => level.label === 'normal')?.maxFeePerGas;
+        trigger(MAX_FEE_PER_GAS);
+        trigger(MAX_PRIORITY_FEE_PER_GAS);
+    }, [customMaxPriorityFeePerGas, customMaxFeePerGas, trigger]);
 
     const gasLimitRules = {
         required: translationString('GAS_LIMIT_IS_NOT_SET'),
@@ -131,12 +123,13 @@ export const CustomFeeEthereum = ({
         },
     };
 
+    const recommendedMaxFeePerGas = levels.find(level => level.label === 'normal')?.maxFeePerGas;
     const maxFeePerGasValidationProps = {
-        onClick: () =>
-            recommendedMaxFeePerGas &&
-            setValue(MAX_FEE_PER_GAS, recommendedMaxFeePerGas, {
-                shouldValidate: true,
-            }),
+        onClick: () => {
+            if (!recommendedMaxFeePerGas) return;
+
+            setValue(MAX_FEE_PER_GAS, recommendedMaxFeePerGas, { shouldValidate: true });
+        },
         text: translationString('CUSTOM_FEE_USE_RECOMMENDED'),
     };
 
