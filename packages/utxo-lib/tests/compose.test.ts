@@ -1,11 +1,14 @@
+import BN from 'bn.js';
+
 import { getRandomInt } from '@trezor/utils';
 
 import { verifyTxBytes } from './compose.utils';
 import { composeTx } from '../src/compose';
 import { composeTxFixture } from './__fixtures__/compose';
-import { getErrorResult } from '../src/compose/result';
-import * as NETWORKS from '../src/networks';
 import { fixturesCrossCheck } from './__fixtures__/compose.crosscheck';
+import { getErrorResult } from '../src/compose/result';
+import { bip69SortingStrategy } from '../src/compose/sorting/bip69SortingStrategy';
+import * as NETWORKS from '../src/networks';
 
 jest.mock('@trezor/utils', () => ({
     ...jest.requireActual('@trezor/utils'),
@@ -103,6 +106,44 @@ describe('getErrorResult', () => {
             error: 'COINSELECT',
             message: 'unexpected failure',
         });
+    });
+});
+
+describe('bip69SortingStrategy', () => {
+    it('falls back to script.length comparison when at least one output script is not a Buffer', () => {
+        // outputComparator at src/compose/sorting/bip69SortingStrategy.ts:9 is:
+        //   `a.value.cmp(b.value) || (Buffer.isBuffer(a.script) && Buffer.isBuffer(b.script)
+        //     ? a.script.compare(b.script) : a.script.length - b.script.length)`.
+        // Every existing fixture that reaches createTransaction has payment/send-max/opreturn
+        // outputs whose script is built by toOutputScript / p2data — always a Buffer — so
+        // the else (length-based) arm is never exercised. A change output that coinselect
+        // appends DOES have a non-Buffer `{ length: N }` script, but no fixture happens to
+        // produce two outputs with equal BN values to make the sort actually invoke the
+        // ternary's right side. Drive it directly: equal values force the `||` to fall
+        // through, and a non-Buffer script in one slot forces the else arm; the shorter
+        // script must permute to position 0.
+        const value = new BN(1000);
+        const result = {
+            inputs: [],
+            outputs: [
+                { value, script: Buffer.alloc(34, 0xff) }, // idx 0 — Buffer, length 34
+                { value, script: { length: 22 } }, // idx 1 — non-Buffer, length 22 (shorter)
+            ],
+            fee: 0,
+        };
+        const request = {
+            outputs: [{ type: 'payment', address: 'addr-a', amount: '1000' }],
+            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+        };
+
+        const composed = bip69SortingStrategy({
+            result: result as any,
+            request: request as any,
+            convertedInputs: [],
+        });
+
+        // idx 1 (non-Buffer, length 22) sorts before idx 0 (Buffer, length 34) by length.
+        expect(composed.outputsPermutation).toEqual([1, 0]);
     });
 });
 
