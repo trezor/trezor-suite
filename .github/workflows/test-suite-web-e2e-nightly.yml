@@ -108,8 +108,12 @@ jobs:
           node-version-file: ".nvmrc"
           cache: yarn
 
+      - name: Install Socket Firewall
+        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        with:
+          mode: firewall-free
       - name: Install dependencies
-        run: yarn workspaces focus @trezor/e2e-utils
+        run: sfw --silent yarn workspaces focus @trezor/e2e-utils
 
       - name: Download per-test coverage map artifacts
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8

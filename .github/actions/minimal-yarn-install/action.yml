@@ -34,6 +34,11 @@ runs:
       run: |
         echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
 
+    - name: Install Socket Firewall
+      uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+      with:
+        mode: firewall-free
+
     - name: Install dependencies using Yarn
       shell: bash
-      run: yarn --immutable
+      run: sfw --silent yarn --immutable

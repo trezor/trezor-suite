@@ -63,12 +63,16 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           cache: yarn
-      - run: yarn workspaces focus @trezor/connect
+      - name: Install Socket Firewall
+        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        with:
+          mode: firewall-free
+      - run: sfw --silent yarn workspaces focus @trezor/connect
       - if: ${{ inputs.testEnv == 'web' }}
         run: |
           echo -e "\nenableScripts: false" >> .yarnrc.yml
-          yarn workspaces focus @trezor/connect-web
-          yarn && yarn build:libs
+          sfw --silent yarn workspaces focus @trezor/connect-web
+          sfw --silent yarn && yarn build:libs
       - name: Install Playwright chromium
         if: ${{ inputs.testEnv == 'web' }}
         run: yarn workspace @trezor/connect-web exec playwright install --with-deps chromium

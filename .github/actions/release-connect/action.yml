@@ -63,11 +63,16 @@ runs:
         node-version-file: ".nvmrc"
         cache: yarn
 
+    - name: Install Socket Firewall
+      uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+      with:
+        mode: firewall-free
+
     - name: Install dependencies
       shell: bash
       run: |
         echo -e "\nenableScripts: false" >> .yarnrc.yml
-        yarn install --immutable # focus install is not used here to make sure that all global patches are applied for the release.
+        sfw --silent yarn install --immutable # focus install is not used here to make sure that all global patches are applied for the release.
 
     - name: Build connect-explorer-theme
       shell: bash

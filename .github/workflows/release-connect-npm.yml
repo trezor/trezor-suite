@@ -56,8 +56,12 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
+      - name: Install Socket Firewall
+        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        with:
+          mode: firewall-free
       - name: Install dependencies
-        run: yarn install
+        run: sfw --silent yarn install
 
       - name: Get packages that need release
         id: set-packages-need-release

@@ -37,8 +37,12 @@ jobs:
       - name: Set current timestamp as env variable
         run: echo "NOW=$(date +'%s')" >> $GITHUB_ENV
 
+      - name: Install Socket Firewall
+        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        with:
+          mode: firewall-free
       - name: Install dependencies
-        run: yarn install
+        run: sfw --silent yarn install
 
       - name: Set source branch
         run: echo "SOURCE_BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
