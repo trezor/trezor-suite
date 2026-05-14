@@ -7,7 +7,7 @@ import { useTranslate } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 import { exhaustive } from '@trezor/type-utils';
 
-import { suiteSyncErrorMessageMap } from '../suiteSyncErrorMessages';
+import { suiteSyncErrorMessageMap } from './suiteSyncErrorMessages';
 
 export const useSuiteSyncErrorHandler = () => {
     const { showToast } = useToast();

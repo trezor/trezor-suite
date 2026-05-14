@@ -9,9 +9,9 @@ import {
     EditableLabelLayout,
     LabelEditForm,
     selectIsLabellingAllowed,
-    useSuiteSyncErrorHandler,
 } from '@suite-native/labeling';
 import { useNativeServices } from '@suite-native/services';
+import { useSuiteSyncErrorHandler } from '@suite-native/suite-sync';
 import type { StaticSessionId } from '@trezor/connect';
 
 type TransactionOutputLabelEditableProps = {

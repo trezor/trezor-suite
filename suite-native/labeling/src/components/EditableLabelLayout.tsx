@@ -6,8 +6,8 @@ import type { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescrip
 
 import { BottomSheetModal, TextButton, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { useTurnOnSuiteSyncGuard } from '@suite-native/suite-sync';
 
-import { useTurnOnSuiteSyncGuard } from '../hooks/useTurnOnSuiteSyncGuard';
 import { selectIsLabellingAllowed } from '../selectors';
 
 type EditableLabelLayoutParams = {

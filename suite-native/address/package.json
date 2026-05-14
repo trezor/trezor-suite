@@ -23,6 +23,7 @@
         "@suite-native/labeling": "workspace:*",
         "@suite-native/qr-code": "workspace:*",
         "@suite-native/services": "workspace:*",
+        "@suite-native/suite-sync": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "react": "19.2.4",

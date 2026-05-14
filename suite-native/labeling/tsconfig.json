@@ -14,12 +14,6 @@
             "path": "../../suite-common/suite-sync"
         },
         {
-            "path": "../../suite-common/suite-sync-storage"
-        },
-        {
-            "path": "../../suite-common/suite-sync-types"
-        },
-        {
             "path": "../../suite-common/validators"
         },
         {
@@ -27,9 +21,6 @@
         },
         {
             "path": "../../suite-common/wallet-utils"
-        },
-        {
-            "path": "../alerts"
         },
         {
             "path": "../atoms"
@@ -41,22 +32,13 @@
             "path": "../intl"
         },
         {
-            "path": "../navigation"
-        },
-        {
-            "path": "../services"
-        },
-        {
             "path": "../settings"
         },
         {
-            "path": "../toasts"
+            "path": "../suite-sync"
         },
         {
             "path": "../../packages/connect"
-        },
-        {
-            "path": "../../packages/type-utils"
         }
     ]
 }

@@ -14,16 +14,28 @@
     "dependencies": {
         "@evolu/common": "8.0.0-next.5",
         "@evolu/react-native": "15.0.0-next.2",
+        "@react-navigation/native": "7.1.28",
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/delegated-identity-key-types": "workspace:*",
+        "@suite-common/device": "workspace:*",
+        "@suite-common/message-system": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-sync-evolu": "workspace:*",
         "@suite-common/suite-sync-quota-manager": "workspace:*",
+        "@suite-common/suite-sync-storage": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
+        "@suite-native/alerts": "workspace:*",
+        "@suite-native/intl": "workspace:*",
+        "@suite-native/navigation": "workspace:*",
+        "@suite-native/services": "workspace:*",
+        "@suite-native/toasts": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
         "expo": "~55.0.3",
         "expo-sqlite": "~55.0.11",
+        "react": "19.2.4",
+        "react-native": "0.83.2",
         "react-redux": "9.2.0"
     }
 }

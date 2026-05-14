@@ -1,6 +1,8 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": { "outDir": "libDev" },
+    "compilerOptions": {
+        "outDir": "libDev"
+    },
     "references": [
         {
             "path": "../../suite-common/suite-sync"
@@ -11,15 +13,38 @@
         {
             "path": "../../suite-common/wallet-types"
         },
-        { "path": "../atoms" },
-        { "path": "../clipboard" },
-        { "path": "../feature-feedback" },
-        { "path": "../formatters" },
-        { "path": "../intl" },
-        { "path": "../labeling" },
-        { "path": "../qr-code" },
-        { "path": "../services" },
-        { "path": "../../packages/connect" },
-        { "path": "../../packages/styles-native" }
+        {
+            "path": "../atoms"
+        },
+        {
+            "path": "../clipboard"
+        },
+        {
+            "path": "../feature-feedback"
+        },
+        {
+            "path": "../formatters"
+        },
+        {
+            "path": "../intl"
+        },
+        {
+            "path": "../labeling"
+        },
+        {
+            "path": "../qr-code"
+        },
+        {
+            "path": "../services"
+        },
+        {
+            "path": "../suite-sync"
+        },
+        {
+            "path": "../../packages/connect"
+        },
+        {
+            "path": "../../packages/styles-native"
+        }
     ]
 }

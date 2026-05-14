@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { BottomSheetModal, Box, IconButton, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { selectIsLabellingAllowed, useTurnOnSuiteSyncGuard } from '@suite-native/labeling';
+import { selectIsLabellingAllowed } from '@suite-native/labeling';
+import { useTurnOnSuiteSyncGuard } from '@suite-native/suite-sync';
 
 import { AccountRenameForm } from './AccountRenameForm';
 
