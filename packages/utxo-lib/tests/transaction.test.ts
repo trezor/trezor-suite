@@ -302,6 +302,16 @@ describe('Transaction', () => {
             // so a byteLength of 14 proves the decred-branch in the constructor ran.
             expect(tx.byteLength()).toBe(14);
         });
+
+        it('constructor with network=zcash routes to zcash.fromConstructor and initializes zcash specific data', () => {
+            const tx = new Transaction({ network: NETWORKS.zcash });
+            expect(tx.network).toBe(NETWORKS.zcash);
+            // zcash.fromConstructor initializes tx.specific to { type: 'zcash', ... }.
+            // bitcoin.fromConstructor leaves tx.specific undefined, so asserting type==='zcash'
+            // proves the zcash if-branch in the Transaction constructor ran instead of
+            // falling through to bitcoin.fromConstructor.
+            expect(tx.specific?.type).toBe('zcash');
+        });
     });
 
     describe('toBuffer/toHex', () => {
