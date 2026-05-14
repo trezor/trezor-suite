@@ -5,29 +5,49 @@ import { cryptoIdToSymbol, useListDataFilter } from '@suite-common/trading';
 import { type NetworkSymbol, getNetworkByCoingeckoId } from '@suite-common/wallet-config';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
-const doesContractAddressIncludeValue = (asset: TradeableAsset, value: string) =>
-    asset.contractAddress?.toLowerCase().includes(value.toLowerCase()) ?? false;
+const doesContractAddressIncludeValue = (asset: TradeableAsset, value: string) => {
+    if (!asset.contractAddress) {
+        return false;
+    }
+
+    return normalizeForSearch(asset.contractAddress).includes(value);
+};
 
 const doesSymbolIncludeValue = (asset: TradeableAsset, value: string) =>
-    asset.symbol.toLowerCase().includes(value.toLowerCase());
+    normalizeForSearch(asset.symbol).includes(value);
 
 const doesNameIncludeValue = (asset: TradeableAsset, value: string) =>
-    asset.name.toLowerCase().includes(value.toLowerCase());
+    normalizeForSearch(asset.name).includes(value);
 
-const doesNetworkNameIncludeValue = (asset: TradeableAsset, value: string) =>
-    getNetworkByCoingeckoId(asset.networkId)?.name.toLowerCase().includes(value.toLowerCase()) ??
-    false;
+const doesNetworkNameIncludeValue = (asset: TradeableAsset, value: string) => {
+    const network = getNetworkByCoingeckoId(asset.networkId);
+    if (!network) {
+        return false;
+    }
 
-const doesNetworkSymbolIncludeValue = (asset: TradeableAsset, value: string) =>
-    getNetworkByCoingeckoId(asset.networkId)?.symbol.toLowerCase().includes(value.toLowerCase()) ??
-    false;
+    return normalizeForSearch(network.name).includes(value);
+};
 
-const filterCallback = (asset: TradeableAsset, filterValue: string): boolean =>
-    doesNameIncludeValue(asset, filterValue) ||
-    doesSymbolIncludeValue(asset, filterValue) ||
-    doesNetworkNameIncludeValue(asset, filterValue) ||
-    doesNetworkSymbolIncludeValue(asset, filterValue) ||
-    doesContractAddressIncludeValue(asset, filterValue);
+const doesNetworkSymbolIncludeValue = (asset: TradeableAsset, value: string) => {
+    const network = getNetworkByCoingeckoId(asset.networkId);
+    if (!network) {
+        return false;
+    }
+
+    return normalizeForSearch(network.symbol).includes(value);
+};
+
+const filterCallback = (asset: TradeableAsset, filterValue: string): boolean => {
+    const normalizedFilterValue = normalizeForSearch(filterValue);
+
+    return (
+        doesNameIncludeValue(asset, normalizedFilterValue) ||
+        doesSymbolIncludeValue(asset, normalizedFilterValue) ||
+        doesNetworkNameIncludeValue(asset, normalizedFilterValue) ||
+        doesNetworkSymbolIncludeValue(asset, normalizedFilterValue) ||
+        doesContractAddressIncludeValue(asset, normalizedFilterValue)
+    );
+};
 
 const sortCallback = (a: TradeableAsset, b: TradeableAsset, filterValue: string): number => {
     const query = normalizeForSearch(filterValue);
