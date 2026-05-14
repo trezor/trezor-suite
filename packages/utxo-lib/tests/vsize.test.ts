@@ -1,5 +1,5 @@
 import * as NETWORKS from '../src/networks';
-import { getTransactionVbytesFromAddresses } from '../src/vsize';
+import { getTransactionVbytes, getTransactionVbytesFromAddresses } from '../src/vsize';
 
 describe('vsize', () => {
     // Spec: a legacy (non-segwit) transaction with 1 P2PKH input and 1 P2PKH output
@@ -84,5 +84,18 @@ describe('vsize', () => {
                 NETWORKS.bitcoin,
             ),
         ).toThrow("Unknown input address 'not_an_address'");
+    });
+
+    // Exercises the Blockbook-style wrapper getTransactionVbytes: when a vin/vout
+    // entry has no `addresses` key the destructuring default `= []` kicks in, and
+    // when the array is empty `addresses[0]` is undefined so `?? ''` falls back
+    // to the empty string. With ins=[''] the inner toVin then throws
+    // "Unknown input address ''" — proving both the default-arg and the
+    // nullish-coalescing fallback fired on both vin AND vout maps before the
+    // throw bubbled out of getTransactionVbytesFromAddresses.
+    it('defaults missing addresses to empty array and empty string in getTransactionVbytes wrapper', () => {
+        expect(() => getTransactionVbytes({ vin: [{}], vout: [{}] }, NETWORKS.bitcoin)).toThrow(
+            "Unknown input address ''",
+        );
     });
 });
