@@ -100,15 +100,16 @@ export function useEvmTxSimulationFeesForm({
 
     function getSelectedFee(): EvmSelectedFee | null {
         const values = form.getValues();
-        const selectedFeeInfo = feeInfo.levels.find(
-            level => level.label === (values.selectedFee ?? 'normal'),
-        );
+        // The synthetic 'custom' level has no fee values; read network-derived values from 'normal' instead.
+        const referenceLevelLabel =
+            values.selectedFee === 'custom' ? 'normal' : (values.selectedFee ?? 'normal');
+        const selectedFeeInfo = feeInfo.levels.find(level => level.label === referenceLevelLabel);
 
         const eip1559payload = {
             maxFeePerGas: values.maxFeePerGas ?? selectedFeeInfo?.maxFeePerGas,
             maxPriorityFeePerGas:
                 values.maxPriorityFeePerGas ?? selectedFeeInfo?.maxPriorityFeePerGas,
-            baseFeePerGas: values.baseFeePerGas ?? selectedFeeInfo?.baseFeePerGas,
+            baseFeePerGas: selectedFeeInfo?.baseFeePerGas,
         };
 
         if (
