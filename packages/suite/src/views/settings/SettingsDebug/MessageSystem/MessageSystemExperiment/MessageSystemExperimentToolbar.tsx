@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { Fragment, useRef } from 'react';
 
 import styled from 'styled-components';
 
@@ -7,6 +7,7 @@ import { type Condition } from '@suite-common/suite-types';
 import {
     Button,
     Card,
+    Grid,
     IconButton,
     Menu,
     Popover,
@@ -14,27 +15,13 @@ import {
     Row,
     Text,
 } from '@trezor/components';
-import { spacings, spacingsPx, zIndices } from '@trezor/theme';
+import { spacings, zIndices } from '@trezor/theme';
 
 import { MessageSystemManual } from '../MessageSystemManual';
 
 const ScrollContainer = styled.div`
     overflow-y: auto;
     max-height: 90vh;
-`;
-
-const StyledList = styled.div`
-    display: grid;
-    grid-template-columns: repeat(2, max-content);
-    gap: ${spacingsPx.xxxs} ${spacingsPx.md};
-
-    font-variant-numeric: tabular-nums;
-`;
-
-const StyledItem = styled.div`
-    display: grid;
-    grid-column: 1 / -1;
-    grid-template-columns: subgrid;
 `;
 
 type MessageSystemExperimentToolbarProps = {
@@ -95,15 +82,16 @@ export const MessageSystemExperimentToolbar = ({
                 <Popover
                     content={
                         <Card>
-                            <StyledList>
+                            <Grid columns="repeat(2, max-content)" rowGap={4} columnGap={16}>
                                 {Object.entries(EXPERIMENT_MAP)
                                     .sort((a, b) => a[0].localeCompare(b[0]))
                                     .map(([key, name]) => (
-                                        <StyledItem key={key}>
-                                            <strong>{name}</strong> {key}
-                                        </StyledItem>
+                                        <Fragment key={key}>
+                                            <strong>{name}</strong>
+                                            <span>{key}</span>
+                                        </Fragment>
                                     ))}
-                            </StyledList>
+                            </Grid>
                         </Card>
                     }
                     zIndex={zIndices.tooltip}
