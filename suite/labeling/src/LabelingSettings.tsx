@@ -1,11 +1,17 @@
 import { type ReactNode, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { type OptionProps } from 'react-select';
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
-import { Translation, useTranslation } from '@suite/intl';
-import { metadataLabelingActions, metadataThunks } from '@suite/metadata';
+import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import {
+    metadataLabelingActions,
+    metadataThunks,
+    selectMetadata,
+    useLabelingDeviceState,
+} from '@suite/metadata';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { SuiteSyncServers, suiteSyncErrorHandler } from '@suite/suite-sync';
 import { events } from '@suite-common/analytics';
@@ -16,21 +22,32 @@ import {
 } from '@suite-common/suite-sync';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { Box, LoadingContent, Tooltip } from '@trezor/components';
+// eslint-disable-next-line local-rules/no-package-deep-imports
 import { Option as SelectOption } from '@trezor/components/src/components/form/Select/customComponents';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_LABELING } from '@trezor/urls';
+import { typedObjectValues } from '@trezor/utils';
 
-import { LabelingSwitchToLegacyModal } from 'src/components/suite/labeling/LabelingSwitchToLegacyModal';
-import {
-    LABELING_LEGACY_OPTION_LABEL,
-    LABELING_SELECT_OPTIONS,
-    type LabelingOption,
-    type LabelingOptionTranslated,
-    type LabelingSelectValue,
-} from 'src/constants/suite/labeling';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useLabelingDeviceState } from 'src/hooks/suite/useLabelingDeviceState';
+import { LabelingSwitchToLegacyModal } from './LabelingSwitchToLegacyModal';
+
+export type LabelingSelectValue = 'off' | 'suite-sync' | 'legacy';
+
+export type LabelingOption<T> = { label: T; value: LabelingSelectValue };
+export type LabelingOptionTranslated = LabelingOption<TranslationKey>;
+
+export const LABELING_SELECT_OPTIONS_MAP: Record<
+    LabelingSelectValue,
+    LabelingOption<TranslationKey>
+> = {
+    off: { label: 'TR_LABELING_OFF', value: 'off' },
+    'suite-sync': { label: 'TR_LABELING_SECURE_SYNC', value: 'suite-sync' },
+    legacy: { label: 'TR_LABELING_LEGACY', value: 'legacy' },
+};
+
+export const LABELING_LEGACY_OPTION_LABEL = 'TR_LABELING_ON';
+
+export const LABELING_SELECT_OPTIONS = typedObjectValues(LABELING_SELECT_OPTIONS_MAP);
 
 type LabelingTranslatedOption = LabelingOption<string> & {
     tooltipContent?: ReactNode;
@@ -61,7 +78,7 @@ const LabelingOption = ({
     </SelectOption>
 );
 
-export const Labeling = () => {
+export const LabelingSettings = () => {
     const { translationString } = useTranslation();
     const { suiteSync, analytics } = useServices<SuiteSyncDep & DesktopAnalyticsDep>();
     const dispatch = useDispatch();
@@ -73,7 +90,7 @@ export const Labeling = () => {
     const showSuiteSync = useSelector(selectIsSuiteSyncFeatureAvailable);
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
 
-    const legacyMetadataState = useSelector(state => state.metadata);
+    const legacyMetadataState = useSelector(selectMetadata);
 
     const translatedOptions: LabelingTranslatedOption[] = LABELING_SELECT_OPTIONS.map(option => ({
         ...option,

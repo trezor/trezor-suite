@@ -1,5 +1,6 @@
 import { selectIsSettingsDesktopAppPromoBannerShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { LabelingSettings } from '@suite/labeling';
 import { selectIsLegacyLabelingVisible, selectSelectedProviderForLabels } from '@suite/metadata';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { selectTorState } from '@suite/tor';
@@ -46,7 +47,6 @@ import { Tor } from './Tor';
 import { TorExternal } from './TorExternal';
 import { TorOnionLinks } from './TorOnionLinks';
 import { VersionWithUpdate } from './VersionWithUpdate';
-import { Labeling } from '../labeling/Labeling';
 
 export const SettingsGeneral = () => {
     const shouldShowSettingsDesktopAppPromoBanner = useSelector(
@@ -124,7 +124,7 @@ export const SettingsGeneral = () => {
                 title={<Translation id="TR_LABELING" />}
                 icon="tag"
             >
-                <Labeling />
+                <LabelingSettings />
                 {isLegacyLabelingVisible &&
                     (isProviderConnected ? (
                         <DisconnectLabelingProvider />

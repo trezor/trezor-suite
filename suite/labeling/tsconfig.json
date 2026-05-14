@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/analytics"
+        },
+        {
             "path": "../../suite-common/dependency-injection"
         },
         { "path": "../../suite-common/device" },
@@ -36,14 +39,22 @@
         {
             "path": "../../suite-common/wallet-types"
         },
+        { "path": "../analytics" },
+        { "path": "../device" },
+        { "path": "../external-links" },
         { "path": "../feature-feedback" },
+        { "path": "../intl" },
         { "path": "../metadata" },
+        { "path": "../router" },
         { "path": "../settings" },
         { "path": "../suite-sync" },
+        { "path": "../../packages/components" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/product-components"
         },
-        { "path": "../../packages/type-utils" }
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/utils" }
     ]
 }

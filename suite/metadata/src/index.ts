@@ -10,6 +10,7 @@ export { moveLabelsForRbfOldMetadataThunk } from './moveLabelsForRbfOldMetadataT
 export { MetadataProviderModal } from './MetadataProviderModal';
 export { MetadataProviderSelectionModal } from './MetadataProviderSelectionModal';
 export { metadataMiddleware } from './metadataMiddleware';
+export { useLabelingDeviceState } from './useLabelingDeviceState';
 export * from './fromLegacyMetadataToSearchLabels';
 export * from './selectIsLegacyLabelingVisible';
 

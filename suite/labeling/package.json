@@ -13,6 +13,7 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.11.2",
+        "@suite-common/analytics": "workspace:*",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/message-system": "workspace:*",
@@ -25,15 +26,24 @@
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
+        "@suite/analytics": "workspace:*",
+        "@suite/device": "workspace:*",
+        "@suite/external-links": "workspace:*",
         "@suite/feature-feedback": "workspace:*",
+        "@suite/intl": "workspace:*",
         "@suite/metadata": "workspace:*",
+        "@suite/router": "workspace:*",
         "@suite/settings": "workspace:*",
         "@suite/suite-sync": "workspace:*",
+        "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/product-components": "workspace:*",
         "@trezor/type-utils": "workspace:*",
+        "@trezor/urls": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "react": "19.2.4",
         "react-redux": "9.2.0",
+        "react-select": "^5.10.2",
         "redux": "^5.0.1"
     }
 }
