@@ -8,6 +8,7 @@ import {
     Card,
     Column,
     Grid,
+    H4,
     IconButton,
     Input,
     KEYBOARD_CODE,
@@ -128,7 +129,15 @@ export const PinMatrix = ({
                     }
                 />
             )}
-            <Card label={showLabel ? <Translation id="TR_ENTER_PIN" /> : undefined}>
+            <Card
+                header={
+                    showLabel ? (
+                        <H4>
+                            <Translation id="TR_ENTER_PIN" />
+                        </H4>
+                    ) : undefined
+                }
+            >
                 <Column gap={40} padding={16} data-testid="@pin" alignItems="center">
                     <Grid columns={3} gap={20}>
                         {

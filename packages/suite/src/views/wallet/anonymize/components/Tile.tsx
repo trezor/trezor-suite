@@ -3,7 +3,7 @@ import { type ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
 import { Card, IconCircle, type IconName, variables } from '@trezor/components';
-import { typography } from '@trezor/theme';
+import { spacingsPx, typography } from '@trezor/theme';
 
 const containerGridStyle = css`
     display: grid;
@@ -11,11 +11,9 @@ const containerGridStyle = css`
     gap: 0 14px;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Container = styled(Card)`
+const Container = styled.div`
+    padding: ${spacingsPx.md};
     background: ${({ theme }) => theme.legacyBackgroundNeutralBoldInverted};
-    box-shadow: none;
-    display: block;
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         ${containerGridStyle}
@@ -108,11 +106,13 @@ export interface TileProps {
 }
 
 export const Tile = ({ description, iconName, title }: TileProps) => (
-    <Container>
-        <Image>
-            <IconCircle name={iconName} size={96} />
-        </Image>
-        <Title>{title}</Title>
-        <Description>{description}</Description>
-    </Container>
+    <Card paddingType="none">
+        <Container>
+            <Image>
+                <IconCircle name={iconName} size={96} />
+            </Image>
+            <Title>{title}</Title>
+            <Description>{description}</Description>
+        </Container>
+    </Card>
 );

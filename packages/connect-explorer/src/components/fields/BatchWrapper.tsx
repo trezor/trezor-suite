@@ -9,22 +9,13 @@ interface BatchWrapperProps {
     onRemove: () => void;
 }
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Wrapper = styled(Card)`
-    display: flex;
-    flex-direction: row;
-    margin: 4px 0 8px;
-    padding: 8px;
-    gap: 8px;
-`;
-
 const Fields = styled.div`
     flex: 1;
 `;
 
 export const BatchWrapper = ({ children, onRemove }: BatchWrapperProps) => (
-    <Wrapper paddingType="small">
+    <Card paddingType="small">
         <Icon name="x" onClick={() => onRemove()} size={20} />
         <Fields>{children}</Fields>
-    </Wrapper>
+    </Card>
 );

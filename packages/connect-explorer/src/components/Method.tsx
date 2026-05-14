@@ -114,7 +114,7 @@ export const getField = (field: Field<any> | FieldWithBundle<any>, props: Props)
                 <Card
                     key={field.name}
                     paddingType="small"
-                    label={field.name}
+                    header={field.name}
                     margin={{ bottom: 8 }}
                 >
                     <CodeEditor

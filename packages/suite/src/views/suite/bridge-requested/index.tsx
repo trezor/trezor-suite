@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
-import { Card, Column, H3, Modal, Paragraph, Text } from '@trezor/components';
+import { Card, Column, H3, H4, Modal, Paragraph } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
@@ -114,10 +114,10 @@ export const BridgeRequested = () => {
                 </Paragraph>
             </Column>
             <Card
-                label={
-                    <Text typographyStyle="body-xs">
+                header={
+                    <H4>
                         <Translation id="TR_BRIDGE_TIP_AUTOSTART" />
-                    </Text>
+                    </H4>
                 }
                 margin={{ top: spacings.xxl }}
             >

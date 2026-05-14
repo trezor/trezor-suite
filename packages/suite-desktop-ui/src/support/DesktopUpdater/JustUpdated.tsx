@@ -2,8 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { getReleaseUrl } from '@suite/github';
 import { Translation } from '@suite/intl';
-import { Card, Modal, Row, TextButton } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Card, H4, Modal, Row, TextButton } from '@trezor/components';
 
 import { MarkdownWithComponents } from 'src/components/suite';
 
@@ -43,10 +42,11 @@ export const JustUpdated = ({ onCancel }: AvailableProps) => {
             }
         >
             <Card
-                overflow="auto"
-                label={
-                    <Row justifyContent="space-between" gap={spacings.xs}>
-                        <Translation id="TR_UPDATE_MODAL_WHATS_NEW" />
+                header={
+                    <Row justifyContent="space-between" gap={8}>
+                        <H4>
+                            <Translation id="TR_UPDATE_MODAL_WHATS_NEW" />
+                        </H4>
                         <TextButton
                             href={getReleaseUrl(suiteCurrentVersion)}
                             size="small"
