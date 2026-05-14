@@ -38,6 +38,13 @@ describe('TxWeightCalculator', () => {
         expect(c.getTotal()).toEqual(4 * 94 + 68);
     });
 
+    it('EXTERNAL input without ownership_proof contributes 4*1 weight units (empty script_sig varint, zero witness) per upstream tx_weight_calculator', () => {
+        const c = new TxWeightCalculator();
+        c.addInput({ script_type: 'EXTERNAL' });
+        c.addOutputByKey('p2pkh');
+        expect(c.getTotal()).toEqual(340);
+    });
+
     it('throws "unknown input script_type" for unrecognized script_type', () => {
         const c = new TxWeightCalculator();
         expect(() => c.addInput({ script_type: 'INVALID' })).toThrow('unknown input script_type');
