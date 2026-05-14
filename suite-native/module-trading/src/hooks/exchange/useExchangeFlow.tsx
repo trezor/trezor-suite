@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -127,6 +127,10 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
         triggerAnalyticsTradeConfirmation: baseCommonFunctions?.triggerAnalyticsTradeConfirmation,
     });
 
+    const inFlightConfirmTradePromiseRef = useRef<{ abort: (reason?: string) => void } | null>(
+        null,
+    );
+
     // changing trade state and initial confirmation
     const confirmTrade = useCallback(
         async ({
@@ -149,7 +153,7 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
             const { returnUrl, triggerAnalyticsTradeConfirmation, processResponseData } =
                 commonFunctions;
 
-            return !!(await dispatch(
+            const promiseAction = dispatch(
                 exchangeThunks.confirmTradeThunk({
                     returnUrl,
                     receiveAddress,
@@ -161,14 +165,23 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
                     processResponseData,
                     nextStep,
                 }),
-            ).unwrap());
+            );
+            inFlightConfirmTradePromiseRef.current = promiseAction;
+
+            return !!(await promiseAction.unwrap());
         },
         [getCommonFunctions, sendAccount, dispatch],
     );
 
+    const abortConfirmTrade = useCallback(() => {
+        inFlightConfirmTradePromiseRef.current?.abort();
+        inFlightConfirmTradePromiseRef.current = null;
+    }, []);
+
     return {
         txnErrorString,
         confirmTrade,
+        abortConfirmTrade,
         composeRequest,
         fetchFeesAndCompose,
         signAndSendTransaction,

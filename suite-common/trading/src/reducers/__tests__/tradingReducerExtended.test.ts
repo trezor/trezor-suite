@@ -6,6 +6,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 
 import { selectTradingMaxSlippagePercentage } from '../../selectors/settingsSelectors';
 import { buyThunks } from '../../thunks/buy';
+import { exchangeThunks } from '../../thunks/exchange';
 import { sellThunks } from '../../thunks/sell';
 import { getProviderMetadataFixture } from '../__fixtures__/providerMetadata';
 import { tradingFixtures } from '../__fixtures__/tradingReducer';
@@ -112,6 +113,46 @@ describe('Testing trading reducer', () => {
         );
         expect(store.getState().wallet.trading.info).toEqual(
             expect.objectContaining({ paymentMethods: [] }),
+        );
+    });
+
+    it('exchangeThunks.handleRequestThunk.rejected should clear quotes, amountLimits and set isLoading to false', () => {
+        const store = configureMockStore({
+            extra: {},
+            reducer: combineReducers({
+                wallet: combineReducers({
+                    trading: tradingReducer,
+                }),
+            }),
+            preloadedState: {
+                wallet: {
+                    trading: {
+                        ...initialState,
+                        exchange: {
+                            ...exchangeInitialState,
+                            isLoading: true,
+                            quotes: [{ orderId: '1' }],
+                            amountLimits: { min: 0, max: 100 },
+                            quotesRequest: {
+                                send: 'bitcoin',
+                                receive: 'ethereum',
+                                sendStringAmount: '1',
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        store.dispatch({ type: exchangeThunks.handleRequestThunk.rejected.type });
+
+        expect(store.getState().wallet.trading.exchange).toEqual(
+            expect.objectContaining({
+                isLoading: false,
+                quotesRequest: undefined,
+                quotes: [],
+                amountLimits: undefined,
+            }),
         );
     });
 

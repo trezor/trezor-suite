@@ -42,7 +42,7 @@ export const confirmExchangeTradeThunk = createThunk(
             processResponseData,
             nextStep,
         }: ConfirmExchangeTradeThunkProps,
-        { dispatch, getState },
+        { dispatch, getState, signal },
     ) => {
         triggerAnalyticsTradeConfirmation();
 
@@ -67,14 +67,21 @@ export const confirmExchangeTradeThunk = createThunk(
             }
         }
 
-        const response = await invityAPI.doExchangeTrade({
-            trade,
-            receiveAddress,
-            refundAddress,
-            extraField,
-            returnUrl,
-            approvalFlow,
-        });
+        const response = await invityAPI.doExchangeTrade(
+            {
+                trade,
+                receiveAddress,
+                refundAddress,
+                extraField,
+                returnUrl,
+                approvalFlow,
+            },
+            signal,
+        );
+
+        if (signal.aborted) {
+            return undefined;
+        }
 
         if (!response) {
             dispatch(
