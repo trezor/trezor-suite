@@ -52,6 +52,7 @@
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../analytics" },
+        { "path": "../device" },
         { "path": "../intl" },
         { "path": "../settings" },
         { "path": "../../packages/components" },
