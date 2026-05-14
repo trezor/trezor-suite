@@ -153,9 +153,7 @@ function extendMerkleRewardsWithFiat(
                             },
                         };
                     })
-                    .filter((reward): reward is NonNullable<typeof reward> =>
-                        Boolean(reward?.claimable.gt(0)),
-                    );
+                    .filter((reward): reward is NonNullable<typeof reward> => Boolean(reward));
 
                 return [key, rewardsWithFiat] as const;
             })

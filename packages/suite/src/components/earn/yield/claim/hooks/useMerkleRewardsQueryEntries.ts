@@ -45,13 +45,8 @@ function getMerkleRewardsQueryEntries(sources: MerkleRewardsSource[]) {
 export function useMerkleRewardsQueryEntries(accounts: Account[]) {
     const isDebugMode = useSelector(selectIsDebugModeActive);
 
-    const resolvedAccounts = useMemo(
-        () => (Array.isArray(accounts) ? accounts : [accounts]),
-        [accounts],
-    );
-
     return useMemo(() => {
-        const accountsRewardSources = resolvedAccounts
+        const accountsRewardSources = accounts
             .filter(
                 (account): account is AccountWithNetworkType<'ethereum'> =>
                     account?.networkType === 'ethereum' &&
@@ -64,5 +59,5 @@ export function useMerkleRewardsQueryEntries(accounts: Account[]) {
             }));
 
         return getMerkleRewardsQueryEntries(accountsRewardSources);
-    }, [resolvedAccounts, isDebugMode]);
+    }, [accounts, isDebugMode]);
 }

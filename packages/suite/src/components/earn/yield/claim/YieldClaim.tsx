@@ -5,6 +5,7 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { Context } from '@suite-common/message-system';
+import { commonQueryKeys, useQueryClient } from '@suite-common/react-query';
 import {
     selectStablecoinYieldSession,
     selectStablecoinYieldTxReview,
@@ -28,14 +29,14 @@ import { YieldPendingTransaction } from '../common/YieldPendingTransaction';
 import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTransactionTracking';
 
 type YieldClaimProps = {
-    account?: Account;
+    account: Account;
 };
 
 export const YieldClaim = ({ account }: YieldClaimProps) => {
     const analytics = useAnalytics();
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const flowKey = account?.key ?? '';
+    const flowKey = account.key;
     const { isDisabled, content, variant } = useMessageSystemYield('claim');
 
     const yieldTxReview = useSelector(selectStablecoinYieldTxReview);
@@ -44,7 +45,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     );
     const isClaimSubmitting =
         claimSession.action.isSubmitting ||
-        (!!yieldTxReview.precomposedTx && yieldTxReview.accountKey === account?.key);
+        (!!yieldTxReview.precomposedTx && yieldTxReview.accountKey === account.key);
     const isClaiming = isClaimSubmitting || !!claimSession.action.pendingTransaction;
     const isDeviceConnected = !!device?.connected && device.available;
 
@@ -53,10 +54,6 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
         merkleRewardsQuery.data?.accountsRewards[0];
 
     useEffect(() => {
-        if (!flowKey) {
-            return;
-        }
-
         dispatch(stablecoinYieldActions.initSession({ flowType: 'claim', flowKey }));
 
         return () => {
@@ -70,8 +67,10 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
         flowKey,
     });
 
+    const queryClient = useQueryClient();
+
     const handleClaim = async () => {
-        if (!flowKey || !accountRewards) return;
+        if (!accountRewards) return;
 
         if (!isDeviceConnected) {
             if (device?.descriptor?.apiType === 'bluetooth') {
@@ -97,6 +96,10 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
             await dispatch(claimMerkleRewardsThunk({ account, flowKey, rewards })).unwrap();
 
             await merkleRewardsQuery.refetchBypassingCache();
+            await queryClient.invalidateQueries({
+                queryKey: commonQueryKeys.yieldOpportunities(),
+                exact: false,
+            });
         } catch {
             // cancelled or rejected — isClaiming resets via Redux (discardTransaction in finally)
         }
@@ -104,8 +107,6 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
 
     const handleTxClick = useCallback(
         (txid: string) => {
-            if (!account) return;
-
             dispatch(
                 openModal({
                     type: 'transaction-detail',
@@ -120,11 +121,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
         [account, dispatch],
     );
 
-    if (!accountRewards) {
-        return null;
-    }
-
-    if (claimSession.step === 'complete') {
+    if (claimSession.step === 'complete' && accountRewards) {
         return (
             <Column width="100%" alignItems="center">
                 <Column gap={24} width="100%" maxWidth={500}>
@@ -161,7 +158,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                         </Card>
 
                         {merkleRewardsQuery.isSuccess &&
-                            accountRewards.rewards.length > 0 &&
+                            accountRewards?.rewards.length > 0 &&
                             !claimSession.action.pendingTransaction && (
                                 <Banner
                                     intent="warning"
@@ -177,7 +174,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                             width="100%"
                             isDisabled={
                                 merkleRewardsQuery.isLoading ||
-                                accountRewards.rewards.length === 0 ||
+                                !accountRewards?.rewards.length ||
                                 isClaiming
                             }
                             isLoading={isClaimSubmitting}
