@@ -12,10 +12,10 @@ import {
 } from '@suite-native/formatters';
 import { CryptoIcon, CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { AccountLabel } from '@suite-native/labeling';
 import { type NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
 import { isNetworkWithTokens } from '@suite-native/tokens';
 
+import { AccountLabel } from '../AccountLabel';
 import { AccountsListItemBase } from './AccountsListItemBase';
 import { StakingBadge } from './StakingBadge';
 import {

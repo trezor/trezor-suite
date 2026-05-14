@@ -1,10 +1,10 @@
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { parseAccountKey } from '@suite-common/wallet-utils';
+import { AccountLabel } from '@suite-native/accounts';
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { AccountLabel } from '@suite-native/labeling';
 import {
     type RootStackParamList,
     type RootStackRoutes,

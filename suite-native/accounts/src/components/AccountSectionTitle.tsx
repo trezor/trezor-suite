@@ -6,11 +6,12 @@ import { type Account } from '@suite-common/wallet-types';
 import { getAccountFiatBalance, isStakingSymbol } from '@suite-common/wallet-utils';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
-import { AccountLabel } from '@suite-native/labeling';
 import {
     type NativeStakingRootState,
     selectAccountCryptoBalanceWithStaking,
 } from '@suite-native/staking';
+
+import { AccountLabel } from './AccountLabel';
 
 type AccountSectionTitleProps = {
     account: Account;

@@ -33,7 +33,6 @@
         "@suite-native/icons": "workspace:*",
         "@suite-native/in-app-rating": "workspace:*",
         "@suite-native/intl": "workspace:*",
-        "@suite-native/labeling": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@suite-native/module-device-onboarding": "workspace:*",
         "@suite-native/navigation": "workspace:*",

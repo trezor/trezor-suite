@@ -56,7 +56,6 @@
         { "path": "../helpers" },
         { "path": "../icons" },
         { "path": "../intl" },
-        { "path": "../labeling" },
         { "path": "../link" },
         { "path": "../message-system" },
         { "path": "../navigation" },

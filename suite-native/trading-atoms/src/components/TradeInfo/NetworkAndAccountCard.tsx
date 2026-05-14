@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
 
 import type { Account } from '@suite-common/wallet-types';
+import { AccountLabel } from '@suite-native/accounts';
 import { Card, HStack } from '@suite-native/atoms';
 import { NetworkIcon } from '@suite-native/icons';
-import { AccountLabel } from '@suite-native/labeling';
 
 import { TradeInfoHeader } from './TradeInfoHeader';
 

@@ -3,9 +3,10 @@ import { useSelector } from 'react-redux';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountDescriptor } from '@suite-common/wallet-types';
 import { Text, type TextProps } from '@suite-native/atoms';
+import { type CombinedLabelingState } from '@suite-native/labeling';
 import { type StaticSessionId } from '@trezor/connect';
 
-import { type CombinedLabelingState, selectAccountLabel } from '../selectors';
+import { selectAccountLabel } from '../selectors';
 
 type AccountLabelProps = {
     deviceStaticSessionId: StaticSessionId;

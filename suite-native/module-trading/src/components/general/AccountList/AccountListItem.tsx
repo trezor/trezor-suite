@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 
 import { type AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
+import { AccountLabel } from '@suite-native/accounts';
 import { Badge } from '@suite-native/atoms';
-import { AccountLabel } from '@suite-native/labeling';
 import { type ReceiveAccount } from '@suite-native/trading-types';
 
 import { AccountListBaseItem } from './AccountListBaseItem';

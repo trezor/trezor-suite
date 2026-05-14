@@ -3,11 +3,10 @@ import { useSelector } from 'react-redux';
 
 import { type AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { AccountsListItemBase } from '@suite-native/accounts';
+import { AccountLabel, AccountsListItemBase } from '@suite-native/accounts';
 import { Badge } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { CryptoIcon } from '@suite-native/icons';
-import { AccountLabel } from '@suite-native/labeling';
 
 import { CRYPTO_BALANCE_DECIMALS } from '../constants';
 

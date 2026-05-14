@@ -18,6 +18,7 @@
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/device": "workspace:*",
         "@suite-common/formatters": "workspace:*",
+        "@suite-common/message-system": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-sync-storage": "workspace:*",
@@ -40,6 +41,7 @@
         "@suite-native/staking": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@suite-native/tokens": "workspace:*",
+        "@trezor/connect": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:^",
         "@trezor/utils": "workspace:*",
@@ -51,6 +53,7 @@
         "react-redux": "9.2.0"
     },
     "devDependencies": {
-        "@suite-native/test-utils": "workspace:*"
+        "@suite-native/test-utils": "workspace:*",
+        "@suite-native/test-utils-store": "workspace:*"
     }
 }

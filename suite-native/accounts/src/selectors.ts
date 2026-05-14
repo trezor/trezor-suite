@@ -9,6 +9,7 @@ import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type SuiteSyncDataRootState,
     selectAccountsWithSuiteSyncLabel,
+    selectSuiteSyncAccountLabel,
 } from '@suite-common/suite-sync';
 import {
     type SimpleTokenStructure,
@@ -33,10 +34,12 @@ import {
 } from '@suite-common/wallet-core';
 import {
     type Account,
+    type AccountDescriptor,
     type AccountKey,
     type RatesByKey,
     type TokenAddress,
     type TokenInfoBranded,
+    createAccountKey,
 } from '@suite-common/wallet-types';
 import {
     BASE_CURRENCY_ZERO,
@@ -47,9 +50,12 @@ import {
     isCardanoStakingActive,
     isErc4626,
     isStakingSymbol,
+    parseDeviceStaticSessionId,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
+import { type CombinedLabelingState, selectIsLabellingAllowed } from '@suite-native/labeling';
 import { isNetworkWithTokens, selectAccountTokenInfo } from '@suite-native/tokens';
+import { type StaticSessionId } from '@trezor/connect';
 
 import { type AccountSelectBottomSheetSection, type GroupedByTypeAccounts } from './types';
 import {
@@ -69,6 +75,38 @@ export type NativeAccountsRootState = AccountsRootState &
     TransactionsRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeAccountsRootState>();
+
+export const selectAccountLabel = (
+    state: CombinedLabelingState,
+    deviceStaticSessionId: StaticSessionId,
+    accountDescriptor: AccountDescriptor,
+    networkSymbol: NetworkSymbol,
+) => {
+    const isLabellingAllowed = selectIsLabellingAllowed(state);
+
+    const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+
+    const syncedLabel = selectSuiteSyncAccountLabel(
+        state,
+        walletDescriptor,
+        accountDescriptor,
+        networkSymbol,
+    );
+
+    if (isLabellingAllowed && syncedLabel) {
+        return syncedLabel;
+    }
+
+    const accountKey = createAccountKey({
+        accountDescriptor,
+        networkSymbol,
+        deviceStaticSessionId,
+    });
+
+    const account = selectAccountByKey(state, accountKey);
+
+    return account?.accountLabel ?? null;
+};
 
 export const selectVisibleAccountsWithLabel = (state: NativeAccountsRootState) =>
     selectAccountsWithSuiteSyncLabel(
