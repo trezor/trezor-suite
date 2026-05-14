@@ -220,13 +220,12 @@ export const YieldSupplyForm = () => {
                                         warning={
                                             !isAmountInvalidDecimals && isAmountTooHigh ? (
                                                 <YieldActionStepWarning
-                                                    isInsufficientFunds={isAmountTooHigh}
+                                                    isApproveOverBalance={isAmountTooHigh}
                                                 />
                                             ) : undefined
                                         }
                                         isDisabled={
                                             isAmountEmpty ||
-                                            isAmountTooHigh ||
                                             isAmountInvalidDecimals ||
                                             isSubmittingApprove ||
                                             !!approvalPendingTransaction
