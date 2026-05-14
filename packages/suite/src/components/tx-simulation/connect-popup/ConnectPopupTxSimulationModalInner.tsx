@@ -49,6 +49,7 @@ export function ConnectPopupTxSimulationModalInner({
         handleTxSimulationResult,
         getSelectedFee,
     } = useEvmTxSimulationFeesForm({
+        accountBalance: account.balance,
         networkType: account.networkType,
         networkSymbol: account.symbol,
         defaultGasLimit: areTxSimulationMethods(TX_METHODS_WITH_FEES, action)

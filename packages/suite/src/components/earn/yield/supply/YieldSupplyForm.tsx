@@ -35,8 +35,6 @@ export const YieldSupplyForm = () => {
         allowanceStatus,
         approvalAction,
         canRevokeAllowance,
-        approvalNetworkFeeWarning,
-        actionNetworkFeeWarning,
         isAmountEmpty,
         isAmountTooHigh,
         isAmountInvalidDecimals,
@@ -226,14 +224,6 @@ export const YieldSupplyForm = () => {
                                                 />
                                             ) : undefined
                                         }
-                                        networkFeeWarning={
-                                            approveStepState === 'active' &&
-                                            approvalNetworkFeeWarning ? (
-                                                <YieldActionStepWarning
-                                                    networkFeeWarning={approvalNetworkFeeWarning}
-                                                />
-                                            ) : undefined
-                                        }
                                         isDisabled={
                                             isAmountEmpty ||
                                             isAmountTooHigh ||
@@ -272,13 +262,6 @@ export const YieldSupplyForm = () => {
                                                             isApprovalInsufficient
                                                         }
                                                         onModifyApproval={enterModifyApproval}
-                                                    />
-                                                ) : undefined
-                                            }
-                                            networkFeeWarning={
-                                                actionNetworkFeeWarning ? (
-                                                    <YieldActionStepWarning
-                                                        networkFeeWarning={actionNetworkFeeWarning}
                                                     />
                                                 ) : undefined
                                             }
