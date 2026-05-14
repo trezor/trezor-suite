@@ -241,8 +241,15 @@ export const useYieldFlow = ({
 
         if (prevStep !== null && prevStep !== nextStep) {
             if (prevStep === 'approve' && nextStep === 'action') {
+                const actionAmount = session.action.amount ?? '';
+                const cappedAmount = isAmountGreaterThan({
+                    amount: actionAmount,
+                    threshold: maxAmount,
+                })
+                    ? maxAmount
+                    : actionAmount;
                 methodsRef.current.reset({
-                    amountInput: session.action.amount ?? '',
+                    amountInput: cappedAmount,
                     withdrawInputUnit: methodsRef.current.getValues('withdrawInputUnit'),
                 });
             }

@@ -9705,6 +9705,11 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_APPROVAL_TOO_LOW',
         defaultMessage: 'Approval is too low. Change approval or lower amount.',
     },
+    TR_APPROVE_OVER_BALANCE: {
+        id: 'TR_APPROVE_OVER_BALANCE',
+        defaultMessage:
+            'You can approve more than your current balance, reuse it later, and revoke it anytime.',
+    },
     TR_EARN_YIELD_MODIFY_APPROVAL: {
         id: 'TR_EARN_YIELD_MODIFY_APPROVAL',
         defaultMessage: 'Change approval',
