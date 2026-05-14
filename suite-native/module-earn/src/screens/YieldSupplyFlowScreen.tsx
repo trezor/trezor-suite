@@ -1,16 +1,15 @@
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { Box, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { useBottomSheetModal } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Screen, type YieldStackParamList, type YieldStackRoutes } from '@suite-native/navigation';
 import { FeeSelector } from '@suite-native/transaction-management';
 
-import { YieldSupplyAmountInputCard } from '../components/YieldSupplyAmountInputCard';
+import { ApproveSupplyScreen } from '../components/ApproveSupplyScreen';
 import { YieldSupplyApprovalLimitBottomSheet } from '../components/YieldSupplyApprovalLimitBottomSheet';
 import { YieldSupplyFlowFooter } from '../components/YieldSupplyFlowFooter';
 import { YieldSupplyFlowScreenHeader } from '../components/YieldSupplyFlowScreenHeader';
 import { YieldSupplyInfoBottomSheet } from '../components/YieldSupplyInfoBottomSheet';
-import { YieldSupplyStepCard } from '../components/YieldSupplyStepCard';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useYieldApprovalFees } from '../hooks/useYieldApprovalFees';
 import { useYieldApprovalLimit } from '../hooks/useYieldApprovalLimit';
@@ -113,21 +112,10 @@ export const YieldSupplyFlowScreen = () => {
             }
         >
             <Form form={form}>
-                <VStack spacing="sp16">
-                    <YieldSupplyStepCard />
-
-                    <Box paddingHorizontal="sp16">
-                        <YieldSupplyAmountInputCard
-                            approvalLimitTitle={approvalLimitTitle}
-                            balance={token.balance}
-                            isMaxSelected={isMaxSelected}
-                            onAmountChange={handleAmountChange}
-                            onApprovalLimitPress={openApprovalLimitBottomSheet}
-                            onMaxChange={handleMaxChange}
-                            tokenSymbol={tokenSymbol}
-                        />
-                    </Box>
-                    <Box paddingHorizontal="sp16">
+                <ApproveSupplyScreen
+                    approvalLimitTitle={approvalLimitTitle}
+                    balance={token.balance}
+                    feeSelector={
                         <FeeSelector
                             accountKey={account.key}
                             tokenContract={route.params.tokenContract}
@@ -137,8 +125,13 @@ export const YieldSupplyFlowScreen = () => {
                             formDraft={approvalFeeFormDraft}
                             formDraftKey={approvalFeeFormDraftKey}
                         />
-                    </Box>
-                </VStack>
+                    }
+                    isMaxSelected={isMaxSelected}
+                    onAmountChange={handleAmountChange}
+                    onApprovalLimitPress={openApprovalLimitBottomSheet}
+                    onMaxChange={handleMaxChange}
+                    tokenSymbol={tokenSymbol}
+                />
             </Form>
             <YieldSupplyInfoBottomSheet
                 ref={infoBottomSheetRef}
