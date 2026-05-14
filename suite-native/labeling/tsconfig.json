@@ -4,7 +4,16 @@
     "references": [
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/message-system"
+        },
+        {
             "path": "../../suite-common/suite-sync"
+        },
+        {
+            "path": "../../suite-common/suite-sync-storage"
+        },
+        {
+            "path": "../../suite-common/suite-sync-types"
         },
         {
             "path": "../../suite-common/validators"
@@ -23,6 +32,7 @@
         },
         { "path": "../alerts" },
         { "path": "../atoms" },
+        { "path": "../feature-feedback" },
         { "path": "../forms" },
         { "path": "../intl" },
         { "path": "../navigation" },
@@ -30,6 +40,7 @@
         { "path": "../settings" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/type-utils" }
+        { "path": "../../packages/type-utils" },
+        { "path": "../test-utils-store" }
     ]
 }

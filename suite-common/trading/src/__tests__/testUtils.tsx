@@ -1,17 +1,21 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import {
-    RenderHookOptions,
+    type RenderHookOptions,
     configureMockStore,
     renderHookWithStoreProvider,
 } from '@suite-common/test-utils';
 import {
-    FiatRatesState,
-    WalletSettingsState,
+    type FiatRatesState,
+    type WalletSettingsState,
     initialWalletSettingsState,
 } from '@suite-common/wallet-core';
 
-import { TradingState, initialState, tradingCommonReducer } from '../reducers/tradingCommonReducer';
+import {
+    type TradingState,
+    initialState,
+    tradingCommonReducer,
+} from '../reducers/tradingCommonReducer';
 import { regional } from '../regional';
 
 /**

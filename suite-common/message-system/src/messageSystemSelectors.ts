@@ -2,16 +2,17 @@ import { createSelector } from '@reduxjs/toolkit';
 
 import { selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { Category, Message } from '@suite-common/suite-types';
+import { type Category, type Message } from '@suite-common/suite-types';
 
 import { getActiveExperimentGroup } from './experimentUtils';
+import { isYieldFeatureApplicableForVault } from './featureFlagUtils';
 import { EXPERIMENT_MAP } from './messageSystemConstants';
 import {
-    ContextDomain,
-    ExperimentId,
-    ExperimentsItemType,
-    FeatureDomain,
-    MessageSystemRootState,
+    type ContextDomain,
+    type ExperimentId,
+    type ExperimentsItemType,
+    type FeatureDomain,
+    type MessageSystemRootState,
 } from './messageSystemTypes';
 import { resolveMessageContent } from './messageSystemUtils';
 
@@ -123,6 +124,56 @@ export const selectFeatureConfig = createMemoizedSelector(
     [selectFeatureMessage, (_state, domain: FeatureDomain) => domain],
     (featureMessages, domain) =>
         featureMessages?.feature?.find(feature => feature.domain === domain),
+);
+
+export const selectYieldFeatureMessage = createMemoizedSelector(
+    [
+        selectActiveFeatureMessages,
+        (_state, domain: FeatureDomain) => domain,
+        (_state, _domain, vaultContractAddress?: string | null) => vaultContractAddress,
+    ],
+    (activeFeatureMessages, domain, vaultContractAddress) =>
+        activeFeatureMessages.find(message =>
+            message.feature?.some(
+                feature =>
+                    feature.domain === domain &&
+                    isYieldFeatureApplicableForVault({ feature, vaultContractAddress }),
+            ),
+        ),
+);
+
+export const selectYieldFeatureConfig = createMemoizedSelector(
+    [
+        selectYieldFeatureMessage,
+        (_state, domain: FeatureDomain) => domain,
+        (_state, _domain, vaultContractAddress?: string | null) => vaultContractAddress,
+    ],
+    (featureMessages, domain, vaultContractAddress) =>
+        featureMessages?.feature?.find(
+            feature =>
+                feature.domain === domain &&
+                isYieldFeatureApplicableForVault({ feature, vaultContractAddress }),
+        ),
+);
+
+export const selectYieldFeatureMessageContent = createMemoizedSelector(
+    [
+        selectYieldFeatureMessage,
+        (_state, domain: FeatureDomain) => domain,
+        (_state, _domain, vaultContractAddress: string | null | undefined) => vaultContractAddress,
+        (_state, _domain, _vaultContractAddress, language: string) => language,
+    ],
+    (featureMessages, _domain, _vaultContractAddress, language) =>
+        featureMessages ? resolveMessageContent(featureMessages.content, language) : undefined,
+);
+
+export const selectIsYieldFeatureDisabled = createMemoizedSelector(
+    [selectYieldFeatureConfig],
+    featureConfig => {
+        const featureFlag = featureConfig?.flag;
+
+        return featureFlag !== undefined ? !featureFlag : false;
+    },
 );
 
 export const selectFeaturesConfig = createMemoizedSelector(

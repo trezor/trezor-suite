@@ -9,8 +9,8 @@
  * - we can say we trust the caller but not really thats why we implement auto-unlock
  */
 
-import { TimerId } from '@trezor/type-utils';
-import { Deferred, TypedEmitter, createDeferred, typedObjectKeys } from '@trezor/utils';
+import { type TimerId } from '@trezor/type-utils';
+import { type Deferred, TypedEmitter, createDeferred, typedObjectKeys } from '@trezor/utils';
 
 import type {
     AcquireDoneRequest,
@@ -24,8 +24,9 @@ import type {
     SessionsBackgroundInterface,
 } from './types';
 import * as ERRORS from '../errors';
-import type { Descriptor, PathInternal, Success } from '../types';
+import type { Descriptor, PathInternal } from '../types';
 import { PathPublic, Session } from '../types';
+import { error, success } from '../utils/result';
 
 type DescriptorsDict = Record<PathInternal, Descriptor>;
 
@@ -108,7 +109,7 @@ export class SessionsBackground
             // catch unexpected errors and notify client.
             // background should never stay in "hanged" state
             return {
-                ...this.error(ERRORS.UNEXPECTED_ERROR),
+                ...error({ code: ERRORS.UNEXPECTED_ERROR }),
                 id: message.type,
             } as HandleMessageResponse<M>;
         } finally {
@@ -126,7 +127,7 @@ export class SessionsBackground
     }
 
     private handshake() {
-        return this.success(undefined);
+        return success(undefined);
     }
 
     /**
@@ -157,7 +158,7 @@ export class SessionsBackground
             }
         });
 
-        return Promise.resolve(this.success({ descriptors: Object.values(this.descriptors) }));
+        return Promise.resolve(success({ descriptors: Object.values(this.descriptors) }));
     }
 
     /**
@@ -167,17 +168,17 @@ export class SessionsBackground
         const pathInternal = this.getInternal(payload.path);
 
         if (!pathInternal) {
-            return this.error(ERRORS.DEVICE_NOT_FOUND);
+            return error({ code: ERRORS.DEVICE_NOT_FOUND });
         }
 
         const previous = this.descriptors[pathInternal];
 
         if (!previous) {
-            return this.error(ERRORS.DEVICE_NOT_FOUND);
+            return error({ code: ERRORS.DEVICE_NOT_FOUND });
         }
 
         if (payload.previous !== previous.session) {
-            return this.error(ERRORS.SESSION_WRONG_PREVIOUS);
+            return error({ code: ERRORS.SESSION_WRONG_PREVIOUS });
         }
 
         await this.waitInQueue();
@@ -186,7 +187,7 @@ export class SessionsBackground
         if (previous.session !== this.descriptors[pathInternal]?.session) {
             this.clearLock();
 
-            return this.error(ERRORS.SESSION_WRONG_PREVIOUS);
+            return error({ code: ERRORS.SESSION_WRONG_PREVIOUS });
         }
 
         this.lastSessionId++;
@@ -194,7 +195,7 @@ export class SessionsBackground
         const releaseRequest =
             previous.session !== null ? this.descriptors[pathInternal] : undefined;
 
-        return this.success({ session, path: pathInternal, releaseRequest });
+        return success({ session, path: pathInternal, releaseRequest });
     }
 
     /**
@@ -206,12 +207,12 @@ export class SessionsBackground
         const pathInternal = this.getInternal(payload.path);
 
         if (!pathInternal || !this.descriptors[pathInternal]) {
-            return this.error(ERRORS.DEVICE_NOT_FOUND);
+            return error({ code: ERRORS.DEVICE_NOT_FOUND });
         }
         this.descriptors[pathInternal].session = Session(`${this.lastSessionId}`);
         this.descriptors[pathInternal].sessionOwner = payload.sessionOwner;
 
-        return Promise.resolve(this.success({ descriptors: Object.values(this.descriptors) }));
+        return Promise.resolve(success({ descriptors: Object.values(this.descriptors) }));
     }
 
     private async releaseIntent(payload: ReleaseIntentRequest) {
@@ -224,7 +225,7 @@ export class SessionsBackground
 
         await this.waitInQueue();
 
-        return this.success({ path });
+        return success({ path });
     }
 
     private releaseDone(payload: ReleaseDoneRequest) {
@@ -233,11 +234,11 @@ export class SessionsBackground
 
         this.clearLock();
 
-        return Promise.resolve(this.success({ descriptors: Object.values(this.descriptors) }));
+        return Promise.resolve(success({ descriptors: Object.values(this.descriptors) }));
     }
 
     private getSessions() {
-        return Promise.resolve(this.success({ descriptors: Object.values(this.descriptors) }));
+        return Promise.resolve(success({ descriptors: Object.values(this.descriptors) }));
     }
 
     private getPathBySession({ session }: GetPathBySessionRequest) {
@@ -246,10 +247,10 @@ export class SessionsBackground
         );
 
         if (!path) {
-            return this.error(ERRORS.SESSION_NOT_FOUND);
+            return error({ code: ERRORS.SESSION_NOT_FOUND });
         }
 
-        return this.success({ path });
+        return success({ path });
     }
 
     private startLock() {
@@ -292,20 +293,6 @@ export class SessionsBackground
     private async waitInQueue() {
         const myIndex = this.startLock();
         await this.waitForUnlocked(myIndex);
-    }
-
-    private success<T>(payload: T): Success<T> {
-        return {
-            success: true as const,
-            payload,
-        };
-    }
-
-    private error<E>(error: E) {
-        return {
-            success: false as const,
-            error,
-        };
     }
 
     private getInternal(pathPublic: PathPublic): PathInternal | undefined {

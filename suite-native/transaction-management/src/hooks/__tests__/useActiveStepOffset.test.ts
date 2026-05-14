@@ -1,4 +1,4 @@
-import { LayoutChangeEvent } from 'react-native';
+import { type LayoutChangeEvent } from 'react-native';
 
 import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
 

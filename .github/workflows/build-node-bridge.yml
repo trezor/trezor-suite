@@ -21,13 +21,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           lfs: true
           submodules: true
 
       - name: Install node and yarn
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version-file: ".nvmrc"
 
@@ -40,7 +40,7 @@ jobs:
           yarn workspace @trezor/transport-bridge build:js
 
       - name: Upload node-bridge artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: node_bridge_bin_js
           path: |
@@ -48,7 +48,7 @@ jobs:
           retention-days: 3
 
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
           aws-region: eu-central-1

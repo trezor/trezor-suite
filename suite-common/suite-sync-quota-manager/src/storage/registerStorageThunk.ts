@@ -1,4 +1,4 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { err, ok } from '@trezor/type-utils';

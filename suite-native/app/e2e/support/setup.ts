@@ -32,7 +32,15 @@ const INITIAL_LAUNCH_ARGS: LaunchArguments = {
     isTradingResidenceCheckEnabled: false,
 };
 
-const TREZOR_E2E_DEVICE_LABEL = 'Trezor T - Tester';
+const MODEL_NAMES: Record<Model, string> = {
+    [Model.T1B1]: 'Model One',
+    [Model.T2T1]: 'Model T',
+    [Model.T3B1]: 'Safe 3',
+    [Model.T3T1]: 'Safe 5',
+    [Model.T3W1]: 'Safe 7',
+};
+
+const getTrezorE2eDeviceLabel = (model: Model) => `${MODEL_NAMES[model]} - Tester`;
 
 const getExpoDeepLinkUrl = () => {
     const expoLauncherUrl = encodeURIComponent(
@@ -77,6 +85,33 @@ const isDebugTestBuild = async () => {
     return isDebugBuild;
 };
 
+const waitForBridgeReady = async ({ retries = 20, intervalMs = 500 } = {}) => {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const response = await fetch('http://127.0.0.1:21325/', { method: 'POST' });
+            if (response.ok) return;
+        } catch {
+            // bridge not ready yet
+        }
+        await new Promise(resolve => setTimeout(resolve, intervalMs));
+    }
+    throw new Error('Trezor bridge did not become ready in time');
+};
+
+const waitForDeviceEnumerated = async ({ retries = 60, intervalMs = 1000 } = {}) => {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const response = await fetch('http://127.0.0.1:21325/enumerate', { method: 'POST' });
+            const devices = await response.json();
+            if (Array.isArray(devices) && devices.length > 0) return;
+        } catch {
+            // bridge not ready yet
+        }
+        await new Promise(resolve => setTimeout(resolve, intervalMs));
+    }
+    throw new Error('No device visible to Trezor bridge after enumerate polling');
+};
+
 const wipeAppData = async () => {
     await device.uninstallApp();
     await device.installApp();
@@ -109,6 +144,11 @@ export const openApp = async ({
         });
     }
 
+    if (getModelFromEnv() === Model.T3W1) {
+        await onDevicePrompt.allowConnectToTrezor();
+        await onDeviceOnboarding.enterTHPPairingCode();
+    }
+
     if (launchArgs.preloadedState) {
         // wait for preloaded state to be applied
         await appIsFullyLoaded();
@@ -116,16 +156,13 @@ export const openApp = async ({
 };
 
 const getFwVersion = (model: Model, version: string | undefined) => {
-    if (model === Model.T3W1) {
-        return '2-main'; // At this time only this firmware works with T3W1
-    } else {
-        const modelSupportedFirmwares = TrezorUserEnvLink?.firmwares?.[model] || [];
+    const modelSupportedFirmwares = TrezorUserEnvLink?.firmwares?.[model] || [];
+    const defaultLatestVersion = model === Model.T1B1 ? '1-latest' : '2-latest';
 
-        return (
-            (version && modelSupportedFirmwares.find(v => v.replace('-arm', '') === version)) ||
-            '2-latest'
-        );
-    }
+    return (
+        (version && modelSupportedFirmwares.find(v => v.replace('-arm', '') === version)) ||
+        defaultLatestVersion
+    );
 };
 
 export const prepareTrezorEmulator = async ({
@@ -133,8 +170,7 @@ export const prepareTrezorEmulator = async ({
     seed = MNEMONICS.mnemonic_immune,
     passphrase_protection = false,
     model = getModelFromEnv(),
-    args,
-}: PrepareTrezorEmulatorProps & { args?: LaunchArguments } = {}) => {
+}: PrepareTrezorEmulatorProps = {}) => {
     if (platform === 'android') {
         const { currentTestName, testPath } = jestExpect.getState();
         await TrezorUserEnvLink.logTestDetails(
@@ -147,20 +183,14 @@ export const prepareTrezorEmulator = async ({
 
         if (seed) {
             await TrezorUserEnvLink.setupEmu({
-                label: TREZOR_E2E_DEVICE_LABEL,
+                label: getTrezorE2eDeviceLabel(model),
                 mnemonic: seed,
                 passphrase_protection,
             });
         }
         await TrezorUserEnvLink.startBridge('node-bridge');
-    }
-    // ATM we need to terminate app, start without new instance in order for the emulator to connect to the app
-    await device.terminateApp();
-    await openApp({ newInstance: false, wipeData: false, args });
-
-    if (getModelFromEnv() === Model.T3W1) {
-        await onDevicePrompt.allowConnectToTrezor();
-        await onDeviceOnboarding.enterTHPPairingCode();
+        await waitForBridgeReady();
+        await waitForDeviceEnumerated();
     }
 };
 
@@ -170,7 +200,9 @@ export const prepareTrezorEmulator = async ({
  */
 export const preparePreloadedReduxState = (...stateFragments: PreloadedState[]): string => {
     const initialStateAndFragments = [mockInitialAppState(), ...stateFragments];
-    const definedFragments = initialStateAndFragments.filter(fragment => fragment !== undefined);
+    const definedFragments = initialStateAndFragments.filter(
+        (fragment): fragment is NonNullable<typeof fragment> => fragment != null,
+    );
     const mergedState = mergeDeepObject(...definedFragments);
 
     return JSON.stringify(mergedState);

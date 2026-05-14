@@ -48,4 +48,14 @@ describe('tradingBuyReducer', () => {
             expect(state.lastErrorMessage).toBe('Some error');
         });
     });
+    describe('clearQuotesAndParams', () => {
+        it('should clear quotes, quotesRequest, selectedQuote, and amountLimits', () => {
+            const state = tradingBuyReducer(undefined, tradingBuyActions.clearQuotesAndParams());
+
+            expect(state.quotes).toEqual([]);
+            expect(state.quotesRequest).toBeUndefined();
+            expect(state.selectedQuote).toBeUndefined();
+            expect(state.amountLimits).toBeUndefined();
+        });
+    });
 });

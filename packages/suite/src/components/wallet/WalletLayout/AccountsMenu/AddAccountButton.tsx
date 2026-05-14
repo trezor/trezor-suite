@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import { Button, Icon, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { useDiscovery, useDispatch } from 'src/hooks/suite';
-import { TrezorDevice } from 'src/types/suite';
+import { type TrezorDevice } from 'src/types/suite';
 
 const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunning: boolean) => {
     if (device && !device.connected) {
@@ -74,6 +74,7 @@ export const AddAccountButton = ({ device, isIconOnly }: AddAccountButtonProps) 
             placement="bottom"
             cursor="not-allowed"
             delayShow={TOOLTIP_DELAY_NORMAL}
+            width={isIconOnly ? undefined : '100%'}
         >
             {ButtonComponent}
         </Tooltip>

@@ -1,4 +1,4 @@
-import { Issue, IssueCode } from './validation';
+import { type Issue, type IssueCode } from './validation';
 
 export type Severity = 'error' | 'warning' | 'ignore';
 

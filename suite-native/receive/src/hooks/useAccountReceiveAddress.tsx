@@ -5,13 +5,13 @@ import { useNavigation } from '@react-navigation/native';
 
 import { selectIsDeviceInViewOnlyMode, selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import {
-    AccountsRootState,
-    TransactionsRootState,
+    type AccountsRootState,
+    type TransactionsRootState,
     confirmAddressOnDeviceThunk,
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
-import { NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { type NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
 import { useAlert } from '@suite-native/alerts';
 import { events } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
@@ -65,11 +65,11 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
 
             if (
                 !response.payload.success &&
-                response.payload.payload.code === 'Failure_ActionCancelled'
+                response.payload.error.code === 'Failure_ActionCancelled'
             ) {
                 showToast({
                     icon: 'warningCircle',
-                    variant: 'default',
+                    intent: 'neutral',
                     message: <Translation id="moduleReceive.deviceCancelError" />,
                 });
                 if (navigation.canGoBack()) {
@@ -81,14 +81,14 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
 
             if (
                 !response.payload.success &&
-                response.payload.payload.error === 'Passphrase is incorrect'
+                response.payload.error.message === 'Passphrase is incorrect'
             ) {
                 showAlert({
                     title: <Translation id="modulePassphrase.featureAuthorizationError" />,
                     pictogramVariant: 'critical',
                     primaryButtonTitle: <Translation id="generic.buttons.close" />,
                     onPressPrimaryButton: handleCancel,
-                    primaryButtonVariant: 'redBold',
+                    primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 });
 
                 return false;
@@ -102,11 +102,11 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                     'Failure_PinInvalid',
                     'Method_Cancel',
                     'Failure_PinCancelled',
-                ].includes(response.payload.payload.code ?? '')
+                ].includes(response.payload.error.code ?? '')
             ) {
                 showAlert({
-                    title: response.payload.payload.code,
-                    description: response.payload.payload.error,
+                    title: response.payload.error.code,
+                    description: response.payload.error.message,
                     pictogramVariant: 'critical',
                     primaryButtonTitle: <Translation id="generic.buttons.cancel" />,
                     onPressPrimaryButton: () => {

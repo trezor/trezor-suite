@@ -1,6 +1,6 @@
 import * as ERRORS from '../errors';
 import { HEADER_SIZE, MESSAGE_LEN_SIZE, THP_CONTROL_BYTE } from './constants';
-import { TransportProtocol } from '../types';
+import { type TransportProtocol } from '../types';
 
 const getChunkHeader = (data: Buffer) => {
     // data should have at least 1 control_byte + 2 bytes channel

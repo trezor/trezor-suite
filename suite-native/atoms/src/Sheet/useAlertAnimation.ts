@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import {
     Easing,
+    cancelAnimation,
     interpolateColor,
     runOnJS,
     useAnimatedStyle,
@@ -9,7 +10,7 @@ import {
 } from 'react-native-reanimated';
 
 import { getScreenHeight } from '@trezor/env-utils';
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 const ANIMATION_DURATION = 300;
 const SCREEN_HEIGHT = getScreenHeight();
@@ -17,7 +18,7 @@ const SCREEN_HEIGHT = getScreenHeight();
 export const useAlertAnimation = ({ onClose }: { onClose?: () => void }) => {
     const { utils } = useNativeStyles();
     const transparency = 1;
-    const colorOverlay = utils.transparentize(0.3, utils.colors.backgroundNeutralBold);
+    const colorOverlay = utils.transparentize(0.3, utils.colors.legacyBackgroundNeutralBold);
     const translatePanY = useSharedValue(SCREEN_HEIGHT);
     const animatedTransparency = useSharedValue(transparency);
 
@@ -26,7 +27,9 @@ export const useAlertAnimation = ({ onClose }: { onClose?: () => void }) => {
             duration: ANIMATION_DURATION,
             easing: Easing.out(Easing.cubic),
         });
-    });
+    }, [animatedTransparency, transparency]);
+
+    useEffect(() => () => cancelAnimation(animatedTransparency), [animatedTransparency]);
 
     const animatedSheetWithOverlayStyle = useAnimatedStyle(() => ({
         backgroundColor: interpolateColor(

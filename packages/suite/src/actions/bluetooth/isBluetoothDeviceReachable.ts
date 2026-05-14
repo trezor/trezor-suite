@@ -1,4 +1,4 @@
-import { DesktopBluetoothDevice } from './DesktopBluetoothDevice';
+import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 
 /**
  * Desktop bluetooth device in any of these connection status types means that it is present, visible and at least some contact has been made, even if not yet "connected" in the full sense.

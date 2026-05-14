@@ -13,7 +13,7 @@ import {
     selectIsAnalyticsEnabled,
     selectLoggerEnabled,
 } from '@suite-common/analytics-redux';
-import { ExtraDependencies } from '@suite-common/redux-utils';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { type InitOptions, getTrackingRandomId } from '@trezor/analytics-uploader';
 import { getCommitHash, getEnvironment, isCodesignBuild } from '@trezor/env-utils';
 

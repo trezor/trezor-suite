@@ -1,6 +1,6 @@
 import { Callout } from 'nextra/components';
 
-import { AuthenticateDeviceParams } from '@trezor/connect/src/types/api/authenticateDevice';
+import { AuthenticateDeviceParams } from '@trezor/connect-common/src/types/api/authenticateDevice';
 
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
@@ -17,7 +17,7 @@ import { ParamsTable } from '../../../components/ParamsTable';
 />
 
 export const paramDescriptions = {
-    config: '](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/authenticateDevice.ts)',
+    config: '](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/authenticateDevice.ts)',
 };
 
 ## authenticateDevice
@@ -30,7 +30,7 @@ export const paramDescriptions = {
 <Callout type="info">**Not supported on T1B1 and T2T1**</Callout>
 
 Request a signature and validate certificate issued by the Trezor company.
-Returns [DeviceAuthenticityResult type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/authenticateDevice.ts)
+Returns [DeviceAuthenticityResult type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/authenticateDevice.ts)
 
 ### Params
 

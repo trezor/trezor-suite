@@ -12,14 +12,13 @@ node --version
 mkdir connect-implementation
 cd connect-implementation
 npm init -y
+npm pkg set type=module
 npm install tslib --save # peer dependency
 npm install @trezor/connect@"$1" --save
 npm install @trezor/connect-web@"$1" --save
 
 cat package.json
 
-printf "const TrezorConnect = require('@trezor/connect');\nconst { cloneObject } = require('@trezor/utils');" >./index.cjs
-printf "import TrezorConnect from '@trezor/connect';\nimport { cloneObject } from '@trezor/utils';" >./index.mjs
-printf "\nconsole.log('typeof TrezorConnect: '+typeof TrezorConnect);\nconsole.log('typeof cloneObject: '+typeof cloneObject);" | tee -a index.cjs index.mjs >/dev/null
-node index.cjs
+# ESM smoke: @trezor/connect and its entire closure are ESM-only since v10, must work via import.
+printf "import TrezorConnect from '@trezor/connect';\nimport TrezorConnectWeb from '@trezor/connect-web';\nimport { cloneObject } from '@trezor/utils';\nconsole.log('typeof TrezorConnect: '+typeof TrezorConnect);\nconsole.log('typeof TrezorConnectWeb: '+typeof TrezorConnectWeb);\nconsole.log('typeof cloneObject: '+typeof cloneObject);" >./index.mjs
 node index.mjs

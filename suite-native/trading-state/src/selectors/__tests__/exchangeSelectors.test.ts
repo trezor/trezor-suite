@@ -1,11 +1,15 @@
 import type { CryptoId } from 'invity-api';
 
-import { AccountsRootState } from '@suite-common/wallet-core';
-import { Account, AccountKey } from '@suite-common/wallet-types';
-import { FeatureFlag, FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { type AccountsRootState } from '@suite-common/wallet-core';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import {
+    FeatureFlag,
+    type FeatureFlagsRootState,
+    featureFlagsInitialState,
+} from '@suite-native/feature-flags';
 import { exchangeQuotes, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
 
-import { TradingRootState } from '../../reducers';
+import { type TradingRootState } from '../../reducers';
 import {
     selectExchangeAmountLimits,
     selectExchangeBuyTradeableAssets,
@@ -23,7 +27,7 @@ describe('exchangeSelectors', () => {
         state = {
             wallet: getWalletState({ tradeType: 'exchange' }),
             featureFlags: {
-                [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
+                ...featureFlagsInitialState,
                 [FeatureFlag.AreDebugOnlyNetworksEnabled]: false,
                 [FeatureFlag.AreExperimentalOnlyNetworksEnabled]: false,
             } as FeatureFlagsRootState['featureFlags'],
@@ -173,52 +177,8 @@ describe('exchangeSelectors', () => {
             );
         });
 
-        describe('debug-only networks', () => {
-            beforeEach(() => {
-                // Add Tron which is a debug-only network
-                state.wallet.trading.exchange.exchangeInfo!.buyCryptoIds = [
-                    'ethereum',
-                    'bitcoin',
-                    'tron',
-                ] as CryptoId[];
-                state.wallet.trading.info.coins = {
-                    ...state.wallet.trading.info.coins,
-                    tron: {
-                        symbol: 'trx',
-                        name: 'Tron',
-                        coingeckoId: 'tron',
-                        services: {
-                            buy: true,
-                            sell: true,
-                            exchange: true,
-                        },
-                    },
-                };
-            });
-
-            it('should filter out debug-only networks when flag is disabled', () => {
-                state.featureFlags[FeatureFlag.AreDebugOnlyNetworksEnabled] = false;
-
-                const result = selectExchangeBuyTradeableAssets(state);
-
-                expect(result).toEqual([
-                    expect.objectContaining({ cryptoId: 'ethereum' }),
-                    expect.objectContaining({ cryptoId: 'bitcoin' }),
-                ]);
-                expect(result).not.toContainEqual(expect.objectContaining({ cryptoId: 'tron' }));
-            });
-
-            it('should include debug-only networks when flag is enabled', () => {
-                state.featureFlags[FeatureFlag.AreDebugOnlyNetworksEnabled] = true;
-
-                const result = selectExchangeBuyTradeableAssets(state);
-
-                expect(result).toEqual([
-                    expect.objectContaining({ cryptoId: 'ethereum' }),
-                    expect.objectContaining({ cryptoId: 'bitcoin' }),
-                    expect.objectContaining({ cryptoId: 'tron', symbol: 'TRX' }),
-                ]);
-            });
+        describe.skip('debug-only networks', () => {
+            // There are currently no debug only networks. Skipping
         });
     });
 
@@ -239,7 +199,7 @@ describe('exchangeSelectors', () => {
             });
         });
 
-        it('should group quotes by fixed/float/dex when DEX feature flag is enabled', () => {
+        it('should group quotes by fixed/float/dex', () => {
             state.wallet.trading.exchange.quotes = exchangeQuotes;
 
             const groupedQuotes = selectGroupedExchangeQuotes(state);
@@ -270,15 +230,6 @@ describe('exchangeSelectors', () => {
                     }),
                 ],
             });
-        });
-
-        it('should exclude DEX quotes when DEX feature flag is disabled', () => {
-            state.wallet.trading.exchange.quotes = exchangeQuotes;
-            state.featureFlags[FeatureFlag.AreTradingExchangeDexesEnabled] = false;
-
-            const groupedQuotes = selectGroupedExchangeQuotes(state);
-
-            expect(groupedQuotes.dex).toEqual([]);
         });
 
         it('should be stable', () => {

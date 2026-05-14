@@ -1,7 +1,7 @@
 {
     "name": "@trezor/protobuf",
     "version": "10.0.0-alpha.1",
-    "license": "See LICENSE.md in repo root",
+    "license": "MIT",
     "repository": {
         "type": "git",
         "url": "git://github.com/trezor/trezor-suite.git"
@@ -12,47 +12,43 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "publishConfig": {
-        "main": "./lib/index.js",
-        "types": "./lib/index.d.ts",
+        "main": "./libESM/index.mjs",
+        "types": "./libESM/index.d.mts",
+        "type": "module",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
+                "types": "./libESM/index.d.mts",
+                "default": "./libESM/index.mjs"
             },
-            "./lib/*": "./lib/*.js",
-            "./libESM/*.js": "./libESM/*.js",
-            "./messages.json": "./messages.json"
+            "./libESM/*": "./libESM/*",
+            "./libESM/definitions": {
+                "types": "./libESM/definitions/index.d.mts",
+                "default": "./libESM/definitions/index.mjs"
+            },
+            "./libESM/definitions/*": "./libESM/definitions/*"
         }
     },
-    "npmPublishAccess": "public",
     "files": [
-        "lib/",
         "libESM/",
-        "CHANGELOG.md",
-        "scripts/protobuf-build.sh",
-        "scripts/protobuf-patches",
-        "scripts/protobuf-types.js",
-        "messages.json"
+        "CHANGELOG.md"
     ],
     "scripts": {
-        "test:unit": "yarn g:jest -c ../../jest.config.base.js",
+        "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
-        "update:schema": "yarn workspace @trezor/schema-utils codegen $(pwd)/src/messages.ts > src/messages-schema.ts && yarn g:eslint --fix src/messages-schema.ts && yarn g:prettier --write src/messages-schema.ts",
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "update:protobuf": "./scripts/protobuf-build.sh",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@trezor/schema-utils": "workspace:*",
-        "long": "5.2.5",
-        "protobufjs": "7.4.0"
+        "@bufbuild/protobuf": "^2.11.0",
+        "@trezor/schema-utils": "workspace:*"
     },
     "devDependencies": {
-        "protobufjs-cli": "^1.1.3",
+        "@bufbuild/buf": "^1.67.0",
+        "@bufbuild/protoc-gen-es": "2.11.0",
+        "@bufbuild/protoplugin": "2.11.0",
+        "@trezor/eslint": "workspace:*",
         "tsx": "^4.21.0"
     },
     "peerDependencies": {

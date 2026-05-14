@@ -1,3 +1,5 @@
+const path = require('path');
+
 const babelConfig = {
     presets: [
         ['@babel/preset-env', { targets: { node: 'current' }, modules: 'commonjs' }],
@@ -45,8 +47,10 @@ module.exports = {
     // to be considered 'visible' to the module loader
     modulePathIgnorePatterns: ['libDev'],
     moduleNameMapper: {
+        '^reselect$': path.resolve(__dirname, 'suite-native/test-utils/src/mocks/reselectMock.ts'),
         // Enforce usage of JS version of bcrypto in tests because on CI we don't build native modules because it's slowing yarn install
         '^bcrypto/lib/(.*)$': 'bcrypto/lib/$1-browser',
         '^uint8array-tools$': require.resolve('uint8array-tools'), // same case as with uuid
+        '^usb$': '<rootDir>../../packages/transport/mocks/usb.js', // "usb" package causes memory leaks
     },
 };

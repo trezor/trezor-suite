@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
 
-import { HStack, Loader, Text, VStack, buttonSizeToDimensionsMap } from '@suite-native/atoms';
+import { HStack, Loader, Text, VStack } from '@suite-native/atoms';
 import { selectBluetoothAdapterStatus } from '@suite-native/bluetooth';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TurnOnDeviceAnimation } from './TurnOnDeviceAnimation';
 
@@ -12,8 +12,10 @@ type TurnOnAndUnlockDeviceScreenContentProps = {
     isStatusVisible?: boolean;
 };
 
+const STATUS_HEIGHT = 48;
+
 const statusStyle = prepareNativeStyle((_, { isStatusVisible }: { isStatusVisible: boolean }) => ({
-    height: buttonSizeToDimensionsMap.medium.minHeight,
+    height: STATUS_HEIGHT,
     alignItems: 'center',
     opacity: isStatusVisible ? 1 : 0, // use opacity to prevent layout shifts
 }));
@@ -34,16 +36,16 @@ export const TurnOnAndUnlockDeviceScreenContent = ({
                 <HStack style={applyStyle(statusStyle, { isStatusVisible })}>
                     {bluetoothAdapterStatus === 'disabled' && (
                         <>
-                            <Icon name="bluetoothSlash" color="iconAlertBlue" />
-                            <Text variant="body-md" color="textAlertBlue">
+                            <Icon name="bluetoothSlash" color="contentInfo" />
+                            <Text variant="body-md" color="contentInfo">
                                 <Translation id="moduleConnectDevice.turnOnAndUnlockScreen.status.adapterDisabled" />
                             </Text>
                         </>
                     )}
                     {bluetoothAdapterStatus === 'enabled' && (
                         <>
-                            <Loader color="iconPrimaryDefault" />
-                            <Text variant="body-md" color="textPrimaryDefault">
+                            <Loader color="contentBrand" />
+                            <Text variant="body-md" color="contentBrand">
                                 <Translation id="moduleConnectDevice.turnOnAndUnlockScreen.status.scanning" />
                             </Text>
                         </>

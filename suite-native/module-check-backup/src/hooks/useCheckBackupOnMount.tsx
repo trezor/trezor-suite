@@ -5,12 +5,12 @@ import { useNavigation } from '@react-navigation/native';
 
 import { events } from '@suite-native/analytics';
 import {
-    DeviceCheckBackupStackParamList,
+    type DeviceCheckBackupStackParamList,
     DeviceCheckBackupStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { type ERRORS } from '@trezor/connect-common/src/constants';
 
 import { checkBackupThunk } from '../checkBackupThunks';
 
@@ -44,7 +44,7 @@ export const useCheckBackupOnMount = () => {
             if (
                 // The backup do no match.
                 response.success === false &&
-                response.payload.code === 'Failure_ProcessError'
+                response.error.code === 'Failure_ProcessError'
             ) {
                 analytics.report({
                     type: events.deviceSettingsCheckBackupFinishedEvent.name,
@@ -56,7 +56,7 @@ export const useCheckBackupOnMount = () => {
 
                 return;
             }
-            if (response.payload.code && DEFINITIVE_ERRORS.includes(response.payload.code)) return;
+            if (response.error.code && DEFINITIVE_ERRORS.includes(response.error.code)) return;
 
             startCheckBackup(); // In case any other error occurs, retry the check.
         };

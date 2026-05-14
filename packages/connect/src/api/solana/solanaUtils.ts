@@ -1,4 +1,3 @@
-import { A, F, pipe } from '@mobily/ts-belt';
 import {
     type Blockhash,
     type CompilableTransactionMessage,
@@ -6,13 +5,14 @@ import {
     type Transaction,
     type TransactionMessage,
 } from '@solana/kit';
+import { getAddMemoInstruction } from '@solana-program/memo';
 
 import type { TokenAccount } from '@trezor/blockchain-link-types';
 import { solanaUtils as SolanaBlockchainLinkUtils } from '@trezor/blockchain-link-utils';
 import type { TokenProgramName } from '@trezor/blockchain-link-utils/src/solana';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { Blockchain } from '../../backend/Blockchain';
+import type { Blockchain } from '../../backend/Blockchain';
 
 const { SYSTEM_PROGRAM_PUBLIC_KEY, tokenProgramsInfo } = SolanaBlockchainLinkUtils;
 
@@ -41,6 +41,17 @@ const loadSolanaTokenProgramLib = async (tokenProgramName: TokenProgramName) => 
 };
 
 export const SOLANA_BASE_FEE = 5000; // lamports
+
+const SOLANA_MEMO_MAX_BYTES = 566; // https://www.solana-program.com/docs/memo
+
+const validateMemo = (memo: string) => {
+    const byteLength = Buffer.from(memo, 'utf8').length;
+    if (byteLength > SOLANA_MEMO_MAX_BYTES) {
+        throw new Error(
+            `Memo exceeds maximum length of ${SOLANA_MEMO_MAX_BYTES} bytes (got ${byteLength})`,
+        );
+    }
+};
 
 export const getLamportsFromSol = (amountInSol: string) =>
     BigInt(new BigNumber(amountInSol).times(10 ** 9).toString());
@@ -73,7 +84,7 @@ async function createTransactionShimCommon(transaction: Transaction) {
             return getBase16Codec().decode(transaction.messageBytes);
         },
         serialize() {
-            return pipe(transaction, getTransactionEncoder().encode, getBase16Codec().decode);
+            return getBase16Codec().decode(getTransactionEncoder().encode(transaction));
         },
     };
 }
@@ -106,18 +117,16 @@ const addPriorityFees = async <TMessage extends TransactionMessage>(
         { getSetComputeUnitLimitInstruction, getSetComputeUnitPriceInstruction },
     ] = await Promise.all([loadSolanaLib(), loadSolanaComputeBudgetProgramLib()]);
 
-    return pipe(message, m =>
-        prependTransactionMessageInstructions(
-            [
-                getSetComputeUnitLimitInstruction({
-                    units: parseInt(priorityFees.computeUnitLimit, 10),
-                }),
-                getSetComputeUnitPriceInstruction({
-                    microLamports: parseInt(priorityFees.computeUnitPrice, 10),
-                }),
-            ],
-            m,
-        ),
+    return prependTransactionMessageInstructions(
+        [
+            getSetComputeUnitLimitInstruction({
+                units: parseInt(priorityFees.computeUnitLimit, 10),
+            }),
+            getSetComputeUnitPriceInstruction({
+                microLamports: parseInt(priorityFees.computeUnitPrice, 10),
+            }),
+        ],
+        message,
     );
 };
 
@@ -128,6 +137,7 @@ export const buildTransferTransaction = async (
     blockhash: string,
     lastValidBlockHeight: number,
     priorityFees: PriorityFees,
+    memo?: string,
 ) => {
     const [
         // @solana/kit
@@ -143,33 +153,41 @@ export const buildTransferTransaction = async (
         // @solana-program/system
         { getTransferSolInstruction },
     ] = await Promise.all([loadSolanaLib(), loadSolanaSystemProgramLib()]);
-    const message = await pipe(
+    const message = setTransactionMessageFeePayer(
+        address(fromAddress),
         createTransactionMessage({ version: 'legacy' }),
-        m => setTransactionMessageFeePayer(address(fromAddress), m),
-        m =>
-            setTransactionMessageLifetimeUsingBlockhash(
-                {
-                    blockhash: blockhash as Blockhash,
-                    lastValidBlockHeight: BigInt(
-                        // FIXME: In tests, `lastValidBlockHeight` is sometimes `undefined`.
-                        lastValidBlockHeight ?? '0xFFFFFFFFFFFFFFFF',
-                    ),
-                },
-                m,
-            ),
-        m =>
-            appendTransactionMessageInstruction(
-                getTransferSolInstruction({
-                    amount: lamports(getLamportsFromSol(amountInSol)),
-                    destination: address(toAddress),
-                    source: createNoopSigner(address(fromAddress)),
-                }),
-                m,
-            ),
-        m => addPriorityFees(m, priorityFees),
     );
+    const messageWithLifetime = setTransactionMessageLifetimeUsingBlockhash(
+        {
+            blockhash: blockhash as Blockhash,
+            lastValidBlockHeight: BigInt(
+                // FIXME: In tests, `lastValidBlockHeight` is sometimes `undefined`.
+                lastValidBlockHeight ?? '0xFFFFFFFFFFFFFFFF',
+            ),
+        },
+        message,
+    );
+    const messageWithTransfer = appendTransactionMessageInstruction(
+        getTransferSolInstruction({
+            amount: lamports(getLamportsFromSol(amountInSol)),
+            destination: address(toAddress),
+            source: createNoopSigner(address(fromAddress)),
+        }),
+        messageWithLifetime,
+    );
+    let messageWithFees: CompilableTransactionMessage = await addPriorityFees(
+        messageWithTransfer,
+        priorityFees,
+    );
+    if (memo) {
+        validateMemo(memo);
+        messageWithFees = appendTransactionMessageInstruction(
+            getAddMemoInstruction({ memo }),
+            messageWithFees,
+        );
+    }
 
-    return await createTransactionShim(message);
+    return await createTransactionShim(messageWithFees);
 };
 
 // Construct the transfer instruction for a token transfer
@@ -275,18 +293,15 @@ export const getMinimumRequiredTokenAccountsForTransfer = (
 ) => {
     // sort the tokenAccounts from highest to lowest balance
     let accumulatedBalance = new BigNumber('0');
-    const requiredAccounts = F.toMutable(
-        pipe(
-            tokenAccounts,
-            A.sort((a, b) => new BigNumber(b.balance).comparedTo(new BigNumber(a.balance)) ?? 0),
-            A.takeWhile(tokenAccount => {
-                const needMoreAccounts = accumulatedBalance.lt(requiredAmount);
-                accumulatedBalance = accumulatedBalance.plus(tokenAccount.balance);
-
-                return needMoreAccounts;
-            }),
-        ),
+    const sorted = [...tokenAccounts].sort(
+        (a, b) => new BigNumber(b.balance).comparedTo(new BigNumber(a.balance)) ?? 0,
     );
+    const requiredAccounts: TokenAccount[] = [];
+    for (const tokenAccount of sorted) {
+        if (accumulatedBalance.gte(requiredAmount)) break;
+        accumulatedBalance = accumulatedBalance.plus(tokenAccount.balance);
+        requiredAccounts.push(tokenAccount);
+    }
 
     return requiredAccounts;
 };
@@ -304,6 +319,7 @@ export const buildTokenTransferTransaction = async (
     lastValidBlockHeight: number,
     priorityFees: PriorityFees,
     tokenProgramName: TokenProgramName,
+    memo?: string,
 ): Promise<TokenTransferTxWithDestinationAddress> => {
     const {
         address,
@@ -314,21 +330,23 @@ export const buildTokenTransferTransaction = async (
         setTransactionMessageLifetimeUsingBlockhash,
     } = await loadSolanaLib();
 
-    let message: CompilableTransactionMessage = await pipe(
+    const messageBase = setTransactionMessageFeePayer(
+        address(fromAddress),
         createTransactionMessage({ version: 'legacy' }),
-        m => setTransactionMessageFeePayer(address(fromAddress), m),
-        m =>
-            setTransactionMessageLifetimeUsingBlockhash(
-                {
-                    blockhash: blockhash as Blockhash,
-                    lastValidBlockHeight: BigInt(
-                        // FIXME: In tests, `lastValidBlockHeight` is sometimes `undefined`.
-                        lastValidBlockHeight ?? '0xFFFFFFFFFFFFFFFF',
-                    ),
-                },
-                m,
+    );
+    const messageWithLifetime = setTransactionMessageLifetimeUsingBlockhash(
+        {
+            blockhash: blockhash as Blockhash,
+            lastValidBlockHeight: BigInt(
+                // FIXME: In tests, `lastValidBlockHeight` is sometimes `undefined`.
+                lastValidBlockHeight ?? '0xFFFFFFFFFFFFFFFF',
             ),
-        m => addPriorityFees(m, priorityFees),
+        },
+        messageBase,
+    );
+    let message: CompilableTransactionMessage = await addPriorityFees(
+        messageWithLifetime,
+        priorityFees,
     );
 
     // Token transaction building logic
@@ -389,7 +407,13 @@ export const buildTokenTransferTransaction = async (
     // Step 6: Add the token transfer instruction(s) to the transaction
     message = appendTransactionMessageInstructions(await Promise.all(instructionPromises), message);
 
-    // Step 7: Return the transaction
+    // Step 7: Append memo instruction if provided
+    if (memo) {
+        validateMemo(memo);
+        message = appendTransactionMessageInstruction(getAddMemoInstruction({ memo }), message);
+    }
+
+    // Step 8: Return the transaction
     return {
         transaction: await createTransactionShim(message),
         destinationAddress: finalReceiverAddress,

@@ -1,11 +1,11 @@
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { isSelectedDevice } from '@suite-common/suite-utils';
 import { findAccountDevice } from '@suite-common/wallet-utils';
-import { BadgeProps, FlexProps } from '@trezor/components';
+import { type BadgeProps, type FlexProps } from '@trezor/components';
 
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { useSelector } from 'src/hooks/suite';
-import { Account as WalletAccount } from 'src/types/wallet';
+import { type Account as WalletAccount } from 'src/types/wallet';
 
 import { WalletLabeling } from './WalletLabeling';
 

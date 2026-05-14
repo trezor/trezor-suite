@@ -2,24 +2,25 @@ import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import {
-    ComposeCancelTransactionPartialAccount,
+    type ComposeCancelTransactionPartialAccount,
     composeCancelTransactionThunk,
     selectTransactionConfirmations,
 } from '@suite-common/wallet-core';
 import {
-    Account,
-    ChainedTransactions,
-    PrecomposedTransactionFinalCancelRbf,
-    SelectedAccountLoaded,
-    WalletAccountTransactionWithRequiredRbfParams,
+    type Account,
+    type ChainedTransactions,
+    type PrecomposedTransactionFinalCancelRbf,
+    type SelectedAccountLoaded,
+    type WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
 import { Banner, Column, Modal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { CancelTxContext } from 'src/hooks/wallet/useCancelTxContext';
+
 import { CancelTransaction } from './CancelTransaction';
 import { CancelTransactionButton } from './CancelTransactionButton';
-import { useDispatch, useSelector } from '../../../../../../../hooks/suite';
-import { CancelTxContext } from '../../../../../../../hooks/wallet/useCancelTxContext';
 import { AffectedTransactions } from '../AffectedTransactions/AffectedTransactions';
 import { ReplaceByFeeFailedOriginalTxConfirmed } from '../ReplaceByFeeFailedOriginalTxConfirmed';
 import { TxDetailModalBase } from '../TxDetailModalBase';

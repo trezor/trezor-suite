@@ -1,10 +1,10 @@
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import { cryptoIdToSymbol, parseCryptoId, useTradingUtils } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { IconCircle, Row } from '@trezor/components';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { TradingReceiveOptionRow } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveOptionRow';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
@@ -54,13 +54,7 @@ export const TradingReceiveAccountAddSuiteOption = () => {
             onClick={onOptionClick}
         >
             <Row gap={12}>
-                <IconCircle
-                    name="plus"
-                    size={24}
-                    variant="tertiary"
-                    paddingType="small"
-                    hasBorder={false}
-                />
+                <IconCircle name="plus" size={24} intent="neutral" />
                 <Translation
                     id="TR_EXCHANGE_CREATE_SUITE_ACCOUNT"
                     values={{ symbol: networkName }}

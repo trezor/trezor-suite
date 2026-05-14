@@ -2,8 +2,8 @@ import styled, { css } from 'styled-components';
 
 import { borders } from '@trezor/theme';
 
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import { type FrameProps, type FramePropsKeys, withFrameProps } from '../../utils/frameProps';
+import { type TransientProps } from '../../utils/transientProps';
 
 export const allowedAnimationPrimitivesFrameProps = [
     'margin',

@@ -1,14 +1,15 @@
 import {
-    CreateTradeSignatureRequestExchange,
-    CreateTradeSignatureRequestSell,
-    ExchangeTradeSigned,
-    SellFiatTradeSigned,
+    type CreateTradeSignatureRequestExchange,
+    type CreateTradeSignatureRequestSell,
+    type ExchangeTradeSigned,
+    type SellFiatTradeSigned,
 } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { selectAccountByKey } from '@suite-common/wallet-core';
-import { Account, GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
-import { PROTO } from '@trezor/connect';
+import { type Account, type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
+import { type PROTO } from '@trezor/connect';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: extract pathUtils to a shared location and remove this exception (see #27376 deferred work)
 import { getSlip44ByPath, validatePath } from '@trezor/connect/src/utils/pathUtils';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -28,7 +29,7 @@ import {
     selectTradingSellProviders,
     selectTradingSellSelectedQuote,
 } from '../../selectors/tradingSelectors';
-import { TradingSendRejectedProps, TradingTradeSellExchangeType } from '../../types';
+import { type TradingSendRejectedProps, type TradingTradeSellExchangeType } from '../../types';
 import { cryptoIdToNetwork } from '../../utils';
 import {
     tradingExchangeCreatePaymentRequest,

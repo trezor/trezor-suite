@@ -1,9 +1,9 @@
-import { Address, CallMethodKeys, SolanaPublicKey } from '@trezor/connect';
-import { HDNodeResponse } from '@trezor/connect/src/types/api/getPublicKey';
+import { type Address, type CallMethodKeys, type SolanaPublicKey } from '@trezor/connect';
+import { type HDNodeResponse } from '@trezor/connect-common/src/types/api/getPublicKey';
 
 import { connectPopupActions } from '../connectPopupActions';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
-import { PostCallHookParams, PreCallHookParams } from './types';
+import { type PostCallHookParams, type PreCallHookParams } from './types';
 
 const methodsAddress = [
     'getAddress',
@@ -13,7 +13,6 @@ const methodsAddress = [
     'solanaGetAddress',
     'tezosGetAddress',
     'tronGetAddress',
-    'eosGetAddress',
     'stellarGetAddress',
     'moneroGetAddress',
 ];
@@ -23,7 +22,6 @@ const methodsPublicKey = [
     'cardanoGetPublicKey',
     'solanaGetPublicKey',
     'tezosGetPublicKey',
-    'eosGetPublicKey',
 ];
 const methods = [...methodsAddress, ...methodsPublicKey];
 

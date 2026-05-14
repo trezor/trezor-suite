@@ -7,7 +7,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { DeviceAnimation } from '@trezor/product-components';
 import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
 
-import { TroubleshootingTipsItem } from 'src/components/suite/troubleshooting/TroubleshootingTips';
+import { type TroubleshootingTipsItem } from 'src/components/suite/troubleshooting/TroubleshootingTipsItem';
 import { TroubleshootingTipsList } from 'src/components/suite/troubleshooting/TroubleshootingTipsList';
 import {
     TROUBLESHOOTING_TIP_CABLE,
@@ -46,8 +46,8 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
 
     // when this modal is displayed, scanning should start again in case it stopped due to timeout, so that user can act on the additional instructions
     useEffect(() => {
-        onReScanClick();
-    }, [onReScanClick]);
+        if (isBluetoothMode) onReScanClick();
+    }, [isBluetoothMode, onReScanClick]);
 
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
 
@@ -142,7 +142,7 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
             }
             heading={<Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />}
             onCancel={toggleShowHints}
-            variant="info"
+            intent="info"
         >
             <TroubleshootingTipsList items={cableItem} />
         </Modal>

@@ -1,24 +1,29 @@
-import { Translation } from '@suite/intl';
+import { Translation, useTranslation } from '@suite/intl';
 import { selectDeviceByStaticSessionId } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Card, Column, Icon, List, Modal, Paragraph } from '@trezor/components';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useDispatch, useSelector } from '../../../../hooks/suite';
-import { useSuiteServices } from '../../../../support/SuiteServicesProvider';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSuiteServices } from 'src/support/SuiteServicesProvider';
+
+import { suiteSyncErrorTranslationKeyMap } from '../suiteSyncErrorTranslationKeyMap';
 
 type SuiteSyncTurnOnAndFwUpgradeModalProps = {
     deviceStaticSessionId: StaticSessionId;
     onClose: () => void;
+    onSuccess?: () => void;
 };
 
 export const SuiteSyncTurnOnModal = ({
     deviceStaticSessionId,
     onClose,
+    onSuccess,
 }: SuiteSyncTurnOnAndFwUpgradeModalProps) => {
     const dispatch = useDispatch();
     const { suiteSync } = useSuiteServices();
+    const { translationString } = useTranslation();
 
     const device = useSelector(state =>
         selectDeviceByStaticSessionId(state, deviceStaticSessionId),
@@ -44,18 +49,27 @@ export const SuiteSyncTurnOnModal = ({
 
                 case 'WriteModeRequiredForAllocation':
                     // Do nothing, this is expected control flow error when we want allocate on-demand.
+                    onSuccess?.();
+
                     return;
 
                 case 'SuiteSyncUnavailableOnDeviceError':
                 case 'DeviceCancelled':
                 case 'DeviceError':
-                    dispatch(notificationsActions.addToast({ type: 'error', error: type }));
+                    dispatch(
+                        notificationsActions.addToast({
+                            type: 'error',
+                            error: translationString(suiteSyncErrorTranslationKeyMap[type]),
+                        }),
+                    );
 
                     return;
                 default:
                     return exhaustive(type);
             }
         }
+
+        onSuccess?.();
     };
 
     return (

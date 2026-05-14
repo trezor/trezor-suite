@@ -1,10 +1,10 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import {
-    SuiteSyncAccount,
-    SuiteSyncAddress,
-    SuiteSyncOutput,
-    SuiteSyncWallet,
+    type SuiteSyncAccount,
+    type SuiteSyncAddress,
+    type SuiteSyncOutput,
+    type SuiteSyncWallet,
 } from '@suite-common/suite-sync-storage';
 import type { WalletDescriptor } from '@suite-common/wallet-types';
 
@@ -101,6 +101,10 @@ export const suiteSyncDataSlice = createSlice({
             });
         },
 
+        clearDataForWallet: (state, action: PayloadAction<WalletDescriptor>) => {
+            delete state.wallets[action.payload];
+        },
+
         clearAll: () => initialSuiteSyncDataState,
     },
 });
@@ -110,6 +114,7 @@ export const {
     upsertManyAccounts,
     upsertManyAddresses,
     upsertManyOutputs,
+    clearDataForWallet,
     clearAll,
 } = suiteSyncDataSlice.actions;
 

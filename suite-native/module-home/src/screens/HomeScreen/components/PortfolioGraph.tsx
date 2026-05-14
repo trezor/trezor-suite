@@ -36,7 +36,7 @@ const IgnoredNetworksBanner = () => {
 
     return (
         <Box paddingHorizontal="sp16">
-            <Text textAlign="center" variant="body-sm" color="textSubdued">
+            <Text textAlign="center" variant="body-sm" color="contentSecondary">
                 <Translation id="moduleHome.graphIgnoredNetworks" values={{ networksString }} />
             </Text>
         </Box>

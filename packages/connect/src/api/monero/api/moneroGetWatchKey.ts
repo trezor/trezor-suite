@@ -1,28 +1,20 @@
 // Monero GetWatchKey implementation
+import type { MethodPermission, MoneroWatchKey } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import { PROTO } from '../../../constants';
+import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import type { MoneroWatchKey } from '../../../types/api/monero';
 import { HD_HARDENED, validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
 
-type Params = PROTO.MoneroGetWatchKey & {
-    address?: string;
+type Params = {
+    proto: PROTO.MoneroGetWatchKey;
 };
 
 export default class MoneroGetWatchKeyMethod extends AbstractMethod<'moneroGetWatchKey', Params> {
-    init() {
-        this.requiredPermissions = ['read'];
-        this.requiredDeviceCapabilities = ['Capability_Monero'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Monero'),
-            this.firmwareRange,
-        );
-
-        const { payload } = this;
+    constructor(message: MethodMessage<'moneroGetWatchKey'>) {
+        const { payload } = message;
         const path = validatePath(payload.path, 3);
 
         // require all path components to be hardened
@@ -34,10 +26,20 @@ export default class MoneroGetWatchKeyMethod extends AbstractMethod<'moneroGetWa
             );
         }
 
-        this.params = {
+        const proto = {
             address_n: path,
             network_type: payload.networkType || PROTO.MoneroNetworkType.MAINNET,
         };
+        const params = { proto };
+
+        super(message, params);
+
+        this.requiredDeviceCapabilities = ['Capability_Monero'];
+        this.requiredFirmwareCoins = [getMiscNetwork('Monero')];
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
     }
 
     get info() {
@@ -45,11 +47,12 @@ export default class MoneroGetWatchKeyMethod extends AbstractMethod<'moneroGetWa
     }
 
     async run(): Promise<MoneroWatchKey> {
-        const cmd = this.device.getCommands();
-        const response = await cmd.typedCall('MoneroGetWatchKey', 'MoneroWatchKey', {
-            address_n: this.params.address_n,
-            network_type: this.params.network_type,
-        });
+        const cmd = this.getDevice().getCommands();
+        const response = await cmd.typedCall(
+            'MoneroGetWatchKey',
+            'MoneroWatchKey',
+            this.params.proto,
+        );
 
         // The device returns address as hex-encoded bytes, decode it to string
         const addressHex = response.message.address;

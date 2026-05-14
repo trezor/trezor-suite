@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { getCalendars } from 'expo-localization';
 
-import { FormatterProviderConfig } from '@suite-common/formatters';
+import { type FormatterProviderConfig } from '@suite-common/formatters';
 import { selectBaseCurrency, selectBitcoinAmountUnit } from '@suite-common/wallet-core';
 import { selectLocale } from '@suite-native/intl';
 

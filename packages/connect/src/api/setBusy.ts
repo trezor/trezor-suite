@@ -1,37 +1,35 @@
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
-import { Assert } from '@trezor/schema-utils';
+import { DEVICE, type MethodPermission, createDeviceMessage } from '@trezor/connect-common';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 
+import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { DEVICE, createDeviceMessage } from '../events';
-import { getFirmwareRange } from './common/paramsValidator';
 
 export default class SetBusy extends AbstractMethod<'setBusy', PROTO.SetBusy> {
-    init() {
+    constructor(message: MethodMessage<'setBusy'>) {
+        const { payload } = message;
+
+        const params = { expiry_ms: payload.expiry_ms };
+
+        super(message, params);
         this.useDeviceState = false;
-        this.requiredPermissions = ['management'];
         this.skipFinalReload = false;
-        this.overridePreviousCall = true; // currently used only in cj and should always override
-
-        const { payload } = this;
-
-        Assert(PROTO.SetBusy, payload);
-
-        this.firmwareRange = getFirmwareRange(this.name, undefined, this.firmwareRange);
-
-        this.params = {
-            expiry_ms: payload.expiry_ms,
-        };
+        this.overridePreviousCall = true;
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['management'];
     }
 
-    async run() {
-        const cmd = this.device.getCommands();
+    async run({ sendCoreMessage }: MethodContext) {
+        const cmd = this.getDevice().getCommands();
         const { message } = await cmd.typedCall('SetBusy', 'Success', this.params);
         if (this.keepSession && !!this.params.expiry_ms) {
             // NOTE: DEVICE.CHANGED will not be emitted because session is not released
             // change device features and trigger event manually
             // followup: https://github.com/trezor/trezor-suite/issues/6446
-            this.device.features.busy = true;
-            this.postMessage(createDeviceMessage(DEVICE.CHANGED, this.device.toMessageObject()));
+            this.getDevice().features.busy = true;
+            sendCoreMessage(
+                createDeviceMessage(DEVICE.CHANGED, this.getDevice().toMessageObject()),
+            );
         }
 
         return message;

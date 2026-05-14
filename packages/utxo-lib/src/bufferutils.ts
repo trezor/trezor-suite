@@ -12,7 +12,7 @@ import * as varuint from 'varuint-bitcoin';
 
 import { bufferUtils } from '@trezor/utils';
 
-import * as types from './types';
+import { BufferSchema, Type, UInt32, assertType } from './types/validation';
 
 const OUT_OF_RANGE_ERROR = 'value out of range';
 
@@ -109,9 +109,6 @@ export function cloneBuffer(buffer: Buffer): Buffer {
     return clone;
 }
 
-// These types need to be defined here, otherwise
-// importing @trezor/utxo-lib/lib from blockchain-link fails
-// because of missing pushdata-bitcoin types
 type PushDataSize = (len: number) => number;
 type ReadPushDataInt = (
     buffer: Buffer,
@@ -138,7 +135,7 @@ export class BufferWriter {
         public buffer: Buffer,
         public offset: number = 0,
     ) {
-        types.typeforce(types.tuple(types.Buffer, types.UInt32), [buffer, offset]);
+        assertType(Type.Tuple([BufferSchema, UInt32]), [buffer, offset]);
     }
 
     writeUInt8(i: number): void {
@@ -199,7 +196,7 @@ export class BufferReader {
         public buffer: Buffer,
         public offset: number = 0,
     ) {
-        types.typeforce(types.tuple(types.Buffer, types.UInt32), [buffer, offset]);
+        assertType(Type.Tuple([BufferSchema, UInt32]), [buffer, offset]);
     }
 
     readUInt8(): number {

@@ -1,6 +1,10 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey, BaseCurrencyAmount, TokenAddress } from '@suite-common/wallet-types';
-import { BigNumber } from '@trezor/utils';
+import {
+    type AccountKey,
+    type BaseCurrencyAmount,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
+import { type BigNumber } from '@trezor/utils';
 
 export type FiatGraphPoint = {
     date: Date;
@@ -85,3 +89,10 @@ export type AccountWithBalanceHistory = {
     descriptor: string;
     contractId?: TokenAddress;
 } & { balanceHistory: AccountHistoryBalancePoint[] };
+
+export type FiatRatesItem = {
+    time: number;
+    rates: {
+        [key: string]: number | undefined;
+    };
+};

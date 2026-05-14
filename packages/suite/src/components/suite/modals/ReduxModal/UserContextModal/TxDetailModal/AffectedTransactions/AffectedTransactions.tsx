@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { ChainedTransactions } from '@suite-common/wallet-types';
+import { type ChainedTransactions } from '@suite-common/wallet-types';
 import { Banner, Card, Column, Row, Table, Text, TextButton } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

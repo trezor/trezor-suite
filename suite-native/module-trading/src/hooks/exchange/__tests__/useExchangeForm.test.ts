@@ -1,31 +1,47 @@
 import type { ExchangeTrade } from 'invity-api';
 
-import { selectTradingProviderMetadata, tradingExchangeActions } from '@suite-common/trading';
-import { AccountKey } from '@suite-common/wallet-types';
-import { events } from '@suite-native/analytics';
-import { FeatureFlag, FeatureFlagsRootState } from '@suite-native/feature-flags';
 import {
-    PreloadedState,
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+    exchangeThunks,
+    selectTradingProviderMetadata,
+    tradingExchangeActions,
+} from '@suite-common/trading';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { events } from '@suite-native/analytics';
+import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     btcAsset,
+    cexdirectFloatingQuote,
     exchangeCexdirect,
     exchangeQuotes,
     getBtcAccount,
-    getWalletState,
+    invityDexQuote,
+    mercuryoFixedBestQuote,
+    mercuryoFixedWorstQuote,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
 import { exchangeActions } from '@suite-native/trading-state';
-import { ExchangeFormType } from '@suite-native/trading-types';
+import { type ExchangeFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { clearExchangeFormQuoteData, useExchangeForm } from '../useExchangeForm';
 
 const mockReport = jest.fn();
+type PrefetchDexQuoteApprovalThunk = typeof exchangeThunks.prefetchDexQuoteApprovalThunk;
+
+const createPrefetchDexQuoteApprovalThunkMock = (
+    arg: Parameters<PrefetchDexQuoteApprovalThunk>[0],
+): ReturnType<PrefetchDexQuoteApprovalThunk> => {
+    const result = Promise.resolve(undefined) as unknown as ReturnType<
+        ReturnType<PrefetchDexQuoteApprovalThunk>
+    >;
+    result.abort = jest.fn();
+    result.requestId = 'mock-request-id';
+    result.arg = arg;
+    result.unwrap = () => Promise.resolve(undefined);
+
+    return () => result;
+};
 
 jest.mock('@suite-native/services', () => {
     const original = jest.requireActual('@suite-native/services');
@@ -46,23 +62,26 @@ describe('useExchangeForm', () => {
     const renderUseExchangeForm = () =>
         renderHookWithStoreProvider(() => useExchangeForm(), { store });
 
-    const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) => {
-        const preloadedState: PreloadedState = {
-            wallet: getWalletState({
-                tradeType: 'exchange',
-                bitcoinAmountUnit,
-            }),
-            featureFlags: {
-                [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
-            } as FeatureFlagsRootState['featureFlags'],
-        };
-
-        return initStore(preloadedState).store;
-    };
+    const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) =>
+        createTradingLightStore({
+            tradeType: 'exchange',
+            overrides: {
+                wallet: {
+                    settings: {
+                        bitcoinAmountUnit,
+                    },
+                },
+            },
+        });
 
     beforeEach(() => {
+        jest.restoreAllMocks();
         jest.clearAllMocks();
         store = getInitializedStore();
+
+        jest.spyOn(exchangeThunks, 'prefetchDexQuoteApprovalThunk').mockImplementation(
+            createPrefetchDexQuoteApprovalThunkMock,
+        );
     });
 
     describe('on quotes change', () => {
@@ -71,9 +90,9 @@ describe('useExchangeForm', () => {
             act(() => {
                 store.dispatch(
                     tradingExchangeActions.saveQuotes([
-                        exchangeQuotes[0],
-                        exchangeQuotes[1],
-                        { ...exchangeQuotes[2], rate: 0.000008 },
+                        mercuryoFixedWorstQuote,
+                        mercuryoFixedBestQuote,
+                        { ...cexdirectFloatingQuote, rate: 0.000008 },
                     ]),
                 );
             });
@@ -102,7 +121,10 @@ describe('useExchangeForm', () => {
             const { result } = renderUseExchangeForm();
             act(() => {
                 store.dispatch(
-                    tradingExchangeActions.saveQuotes([exchangeQuotes[0], exchangeQuotes[1]]),
+                    tradingExchangeActions.saveQuotes([
+                        mercuryoFixedWorstQuote,
+                        mercuryoFixedBestQuote,
+                    ]),
                 );
             });
 
@@ -117,7 +139,7 @@ describe('useExchangeForm', () => {
             const { result } = renderUseExchangeForm();
             act(() => {
                 store.dispatch(
-                    tradingExchangeActions.saveQuotes([exchangeQuotes[2], exchangeQuotes[3]]),
+                    tradingExchangeActions.saveQuotes([cexdirectFloatingQuote, invityDexQuote]),
                 );
             });
 
@@ -131,7 +153,7 @@ describe('useExchangeForm', () => {
         it('should select dex quote when no other quotes are available', () => {
             const { result } = renderUseExchangeForm();
             act(() => {
-                store.dispatch(tradingExchangeActions.saveQuotes([exchangeQuotes[3]]));
+                store.dispatch(tradingExchangeActions.saveQuotes([invityDexQuote]));
             });
 
             expect(result.current.getValues('quote')).toEqual(
@@ -197,7 +219,7 @@ describe('useExchangeForm', () => {
             it('should select quote with same Rate and Provider', () => {
                 act(() => {
                     form.setValue('quote', {
-                        ...exchangeQuotes[3],
+                        ...invityDexQuote,
                         quoteId: 'invity-dex-outdated',
                     });
                 });
@@ -216,7 +238,7 @@ describe('useExchangeForm', () => {
             it('should select quote with same Rate when same provider is not available', () => {
                 act(() => {
                     form.setValue('quote', {
-                        ...exchangeQuotes[3],
+                        ...invityDexQuote,
                         quoteId: 'invity-dex-outdated',
                     });
                 });
@@ -237,7 +259,7 @@ describe('useExchangeForm', () => {
             it('should select floating quote when floating quote was previously selected', () => {
                 act(() => {
                     form.setValue('quote', {
-                        ...exchangeQuotes[2],
+                        ...cexdirectFloatingQuote,
                         quoteId: 'cexdirect-floating-outdated',
                     });
                 });
@@ -252,6 +274,69 @@ describe('useExchangeForm', () => {
                     }),
                 );
             });
+        });
+    });
+
+    describe('dex quote approval prefetch', () => {
+        const dexQuoteWithDexTx = {
+            ...invityDexQuote,
+            dexTx: {
+                from: '0x0000000000000000000000000000000000000000',
+                to: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
+                data: '0x095ea7b3000000000000000000000000def171fe48cf0115b1d80b88dc8eab59176fee570000000000000000000000000000000000000000000000000000000005f5e100',
+                value: '0x0',
+            },
+        } as ExchangeTrade;
+
+        it('should confirm dex quote once selected in form', async () => {
+            renderUseExchangeForm();
+
+            await act(async () => {
+                store.dispatch(
+                    tradingExchangeActions.setTradingAccountKey(
+                        'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    ),
+                );
+                store.dispatch(
+                    tradingExchangeActions.setReceiveAccountKey(
+                        'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    ),
+                );
+                store.dispatch(tradingExchangeActions.saveQuotes([dexQuoteWithDexTx]));
+                await Promise.resolve();
+            });
+
+            expect(exchangeThunks.prefetchDexQuoteApprovalThunk).toHaveBeenCalledTimes(1);
+            expect(exchangeThunks.prefetchDexQuoteApprovalThunk).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    trade: expect.objectContaining({ quoteId: dexQuoteWithDexTx.quoteId }),
+                }),
+            );
+        });
+
+        it('should not confirm the same dex quote repeatedly', async () => {
+            renderUseExchangeForm();
+
+            await act(async () => {
+                store.dispatch(
+                    tradingExchangeActions.setTradingAccountKey(
+                        'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    ),
+                );
+                store.dispatch(
+                    tradingExchangeActions.setReceiveAccountKey(
+                        'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    ),
+                );
+                store.dispatch(tradingExchangeActions.saveQuotes([dexQuoteWithDexTx]));
+                await Promise.resolve();
+                store.dispatch(
+                    tradingExchangeActions.saveQuotes([{ ...dexQuoteWithDexTx, rate: 0.0000089 }]),
+                );
+                await Promise.resolve();
+            });
+
+            expect(exchangeThunks.prefetchDexQuoteApprovalThunk).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -607,7 +692,7 @@ describe('useExchangeForm', () => {
             const { result } = renderUseExchangeForm();
 
             act(() => {
-                result.current.setValue('quote', exchangeQuotes[0] as ExchangeTrade);
+                result.current.setValue('quote', mercuryoFixedWorstQuote as ExchangeTrade);
                 result.current.setValue('sendCryptoAmount', '10');
                 result.current.setValue('receiveCryptoAmount', '10');
                 result.current.setValue('generalAlert', 'test');

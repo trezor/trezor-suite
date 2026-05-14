@@ -36,9 +36,9 @@ test.describe(
                     const suiteReadyEvent = analytics.findAnalyticsEventByType<
                         ExtractByEventType<(typeof events.suiteReadyEvent)['name']>
                     >(events.suiteReadyEvent.name);
-                    expect(suiteReadyEvent).toContainSubObject({
+                    expect(suiteReadyEvent).toMatchObject({
                         language: 'en-US',
-                        enabledNetworks: 'btc',
+                        enabledNetworks: '',
                         customBackends: '',
                         localCurrency: 'usd',
                         bitcoinUnit: 'BTC',
@@ -63,7 +63,7 @@ test.describe(
                     const deviceConnectEvent = analytics.findAnalyticsEventByType<
                         ExtractByEventType<(typeof events.deviceConnectEvent)['name']>
                     >(events.deviceConnectEvent.name);
-                    expect(deviceConnectEvent).toContainSubObject({
+                    expect(deviceConnectEvent).toMatchObject({
                         mode: 'normal',
                         firmware: firmwareVersion,
                         bootloaderHash: '',
@@ -139,6 +139,8 @@ test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
         });
 
         await test.step('Change settings before enabling analytics', async () => {
+            await settingsPage.navigateTo('coins');
+            await settingsPage.coinsTab.enableNetwork('btc');
             await settingsPage.navigateTo('application');
             await settingsPage.changeLanguage(Language.Czech);
             await settingsPage.changeLanguage(Language.English);
@@ -188,7 +190,7 @@ test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
             const suiteReadyEvent = analytics.findAnalyticsEventByType<
                 ExtractByEventType<(typeof events.suiteReadyEvent)['name']>
             >(events.suiteReadyEvent.name);
-            expect(suiteReadyEvent).toContainSubObject({
+            expect(suiteReadyEvent).toMatchObject({
                 language: 'en-US',
                 enabledNetworks: 'eth,thod',
                 customBackends: 'eth',

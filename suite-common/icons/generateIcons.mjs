@@ -6,10 +6,14 @@ import fs from 'fs';
 import path from 'path';
 import prettier from 'prettier';
 import { optimize } from 'svgo';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const iconsFilePath = './src/icons.ts';
 const cryptoIconsPath = './src/cryptoIcons.ts';
 const networkIconsPath = './src/networkIcons.ts';
+const paymentMethodLogosPath = './src/paymentMethodLogos.ts';
 
 const assetTypesConfig = [
     {
@@ -24,6 +28,14 @@ const cryptoAssetsTypesConfig = [
         name: 'cryptoIcons',
         dirname: 'cryptoAssets/cryptoIcons',
         typeName: 'CryptoIconName',
+    },
+];
+
+const paymentMethodLogosAssetsTypesConfig = [
+    {
+        name: 'paymentMethodLogos',
+        dirname: 'paymentMethods',
+        typeName: 'PaymentMethodLogoName',
     },
 ];
 
@@ -59,7 +71,7 @@ const svgoConfig = {
 };
 
 const optimizeSvgAssets = assetsDirname => {
-    const assetsDir = path.join(import.meta.dirname, assetsDirname);
+    const assetsDir = path.join(__dirname, assetsDirname);
     const assetFileNames = fs.readdirSync(assetsDir);
 
     return assetFileNames
@@ -139,4 +151,7 @@ const generateFileForAssetTypes = async (assetTypesArray, outputFilePath) => {
     console.log('Generating network icons TS file...');
     await generateFileForAssetTypes(networkAssetsTypesConfig, networkIconsPath);
     console.log(chalk.green('Network icons TS file generated successfully'));
+    console.log('Generating payment method logos TS file...');
+    await generateFileForAssetTypes(paymentMethodLogosAssetsTypesConfig, paymentMethodLogosPath);
+    console.log(chalk.green('Payment method logos TS file generated successfully'));
 })();

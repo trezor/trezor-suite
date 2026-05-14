@@ -8,13 +8,14 @@ import {
     getStakingContractAddress,
     simulateUnstake,
 } from '@suite-common/staking';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectRawNetworkFeeInfo,
     useFormDraft,
 } from '@suite-common/wallet-core';
-import { PrecomposedTransactionFinal, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { type Account, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import {
     fromBaseCurrencyToCryptoUnit,
     getConvertedOrDefaultFeeInfo,
@@ -30,8 +31,8 @@ import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/earn/earnForm
 import type { AmountLimitProps } from 'src/utils/suite/validation';
 
 import {
-    WithdrawalContextValues as WithdrawalContextValuesBase,
-    WithdrawalFormState,
+    type WithdrawalContextValues as WithdrawalContextValuesBase,
+    type WithdrawalFormState,
 } from '../../components/earn/forms/SupplyFormContext';
 import { useFees } from '../wallet/form/useFees';
 import { useStakeCompose } from '../wallet/form/useStakeCompose';
@@ -48,18 +49,16 @@ export const WithdrawalFormContext = createContext<WithdrawalContextValues | nul
 WithdrawalFormContext.displayName = 'WithdrawalFormContext';
 
 type UseWithdrawalFormProps = {
-    selectedAccount: SelectedAccountLoaded;
+    account: Account;
 };
 
-export const useWithdrawalForm = ({
-    selectedAccount,
-}: UseWithdrawalFormProps): WithdrawalContextValues => {
+export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): WithdrawalContextValues => {
     const dispatch = useDispatch();
     const [approximatedInstantEthAmount, setApproximatedInstantEthAmount] = useState<string | null>(
         null,
     );
 
-    const { account, network } = selectedAccount;
+    const network = getNetwork(account.symbol);
     const { symbol } = account;
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);

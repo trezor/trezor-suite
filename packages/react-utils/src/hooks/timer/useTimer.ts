@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { Timer } from './Timer';
+import { type Timer } from './Timer';
 
 const ZeroTimeSpent = { seconds: 0 } as const;
 

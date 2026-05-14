@@ -10,7 +10,6 @@ import { onTabBar } from '../pageObjects/tabBarActions';
 import { exchangePreviewActions } from '../pageObjects/trading/exchangePreviewActions';
 import { exchangeOutputsReviewActions } from '../pageObjects/trading/outputsReviewActions';
 import { tradingExchangeActions } from '../pageObjects/trading/tradingExchangeActions';
-import { tradingFeeActions } from '../pageObjects/trading/tradingFeeActions';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
 import { waitForVisible } from '../support/utils';
 
@@ -49,11 +48,11 @@ describe('Trade Exchange [@androidOnly]', () => {
         });
 
         beforeEach(async () => {
-            await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
             await prepareTrezorEmulator({
                 seed: MNEMONICS.mnemonic_academic,
                 passphrase_protection: true,
             });
+            await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
             await waitForVisible(by.text('Connected'));
             await onPassphrase.openPassphraseWallet(passphrase);
             await onHome.waitForScreen();
@@ -67,7 +66,7 @@ describe('Trade Exchange [@androidOnly]', () => {
             await tradingExchangeActions.selectReceiveAccount('Ethereum #1');
             await tradingExchangeActions.setSendCryptoAmount('10');
 
-            await tradingExchangeActions.scrollToLearnMoreLink();
+            await tradingExchangeActions.viewHowTradingWorks();
             await tradingExchangeActions.expectValidExchangeForm();
 
             await tradingExchangeActions.confirmTradingForm();
@@ -89,11 +88,11 @@ describe('Trade Exchange [@androidOnly]', () => {
         });
 
         beforeEach(async () => {
-            await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
             await prepareTrezorEmulator({
                 seed: MNEMONICS.mnemonic_academic,
                 passphrase_protection: true,
             });
+            await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
             await waitForVisible(by.text('Connected'));
             await onPassphrase.openPassphraseWallet(passphrase);
             await tradingExchangeActions.openForm();
@@ -105,7 +104,7 @@ describe('Trade Exchange [@androidOnly]', () => {
             await tradingExchangeActions.selectReceiveAccount('Ethereum #1');
             await tradingExchangeActions.setSendCryptoAmount('10');
 
-            await tradingExchangeActions.scrollToLearnMoreLink();
+            await tradingExchangeActions.viewHowTradingWorks();
             await tradingExchangeActions.viewProviders();
             await tradingExchangeActions.expectValidExchangeForm();
 
@@ -115,11 +114,6 @@ describe('Trade Exchange [@androidOnly]', () => {
 
             await exchangePreviewActions.waitForFeesToLoad();
             await exchangePreviewActions.scrollScreenToBottom();
-            await exchangePreviewActions.goToFees();
-
-            await tradingFeeActions.expectFeesScreenToBeVisible();
-            await tradingFeeActions.goBack();
-
             await exchangePreviewActions.goToTransactionSigning();
 
             await exchangeOutputsReviewActions.expectOutputsReviewScreenToBeVisible();

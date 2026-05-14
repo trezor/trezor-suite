@@ -1,4 +1,4 @@
-import { KeysOfUnion, NarrowObjectWithKey } from '@trezor/type-utils';
+import { type KeysOfUnion, type NarrowObjectWithKey } from '@trezor/type-utils';
 
 export const typedObjectEntries = <T extends Record<string, unknown>>(
     obj: T,
@@ -8,6 +8,14 @@ export const typedObjectFromEntries = <T extends readonly (readonly [string, unk
     entries: T,
 ): { [K in T[number] as K[0]]: K[1] } =>
     Object.fromEntries(entries) as { [K in T[number] as K[0]]: K[1] };
+
+export const typedObjectTransformValues = <T extends Record<string, unknown>, U>(
+    obj: T,
+    transform: (value: T[keyof T], key: keyof T) => U,
+): { [K in keyof T]: U } =>
+    Object.fromEntries(
+        Object.entries(obj).map(([key, value]) => [key, transform(value as T[keyof T], key)]),
+    ) as { [K in keyof T]: U };
 
 export const typedObjectKeys = <T extends Record<string, unknown>>(obj: T): Array<keyof T> =>
     Object.keys(obj) as Array<keyof T>;

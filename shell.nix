@@ -38,7 +38,6 @@ in
       git-lfs
       gnupg
       mdbook
-      xorg.xhost     # for e2e tests running on localhost
       docker         # for e2e tests running on localhost
       docker-compose # for e2e tests running on localhost
       nodejs
@@ -67,7 +66,7 @@ in
     NIX_CC="${gcc}";
 
     shellHook = ''
-      export NODE_OPTIONS=--max_old_space_size=4096
+      export NODE_OPTIONS=--max_old_space_size=8192
       export CURDIR="$(pwd)"
       export PATH="$PATH:$CURDIR/node_modules/.bin"
       export ELECTRON_BUILDER_CACHE="$CURDIR/.cache/electron-builder"

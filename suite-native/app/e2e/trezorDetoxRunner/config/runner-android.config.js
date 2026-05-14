@@ -8,14 +8,13 @@ const target = 'android.emu.debug';
 /** @type {import('../types').RunnerConfig} */
 module.exports = {
     projects: [
-        // T3W1 is currently broken and we are waiting for a fix on the Connect side
-        // {
-        //     projectName: 'T3W1',
-        //     target: target,
-        //     model: 'T3W1',
-        //     firmwareVersion: '2-latest',
-        //     grep: '(?=.*@T3W1)'
-        // },
+        {
+            projectName: 'T3W1',
+            target,
+            model: 'T3W1',
+            firmwareVersion: '2-latest',
+            grep: '^(?=.*@T3W1)(?!.*@iosOnly)',
+        },
         {
             projectName: 'T3T1',
             target,

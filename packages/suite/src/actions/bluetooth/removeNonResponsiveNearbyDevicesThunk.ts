@@ -1,7 +1,7 @@
 import { BLUETOOTH_PREFIX, bluetoothActions, selectNearbyDevices } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
 
-import { DesktopBluetoothDevice } from './DesktopBluetoothDevice';
+import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import { filterOutNonResponsiveDevices } from './filterOutNonResponsiveDevices';
 
 export const removeNonResponsiveNearbyDevicesThunk = createThunk<void, void>(

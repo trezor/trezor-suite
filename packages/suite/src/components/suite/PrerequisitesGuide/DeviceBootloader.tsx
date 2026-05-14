@@ -1,10 +1,10 @@
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
-import { useDevice } from 'src/hooks/suite/useDevice';
 import { getHowToGetFromBootloaderInstructionsMap } from 'src/utils/device/bootloader';
 
-import { TroubleshootingTipsItem } from '../troubleshooting/TroubleshootingTips';
+import { type TroubleshootingTipsItem } from '../troubleshooting/TroubleshootingTipsItem';
 import { UpdateGoToSettingsDescription } from '../troubleshooting/tips/UpdateGoToSettingsDescription';
 
 /* User connected the device in bootloader mode, but in order to continue it needs to be in normal mode */
@@ -33,7 +33,6 @@ export const DeviceBootloader = () => {
         <TroubleshootingTips
             label={<Translation id="TR_DEVICE_IN_BOOTLOADER" />}
             items={tips}
-            initiallyIsOpen
             intent="warning"
         />
     );

@@ -1,8 +1,11 @@
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Text as MockText } from '@suite-native/atoms';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { ReviewOutputSummaryItem, ReviewOutputSummaryItemProps } from '../ReviewOutputSummaryItem';
+import {
+    ReviewOutputSummaryItem,
+    type ReviewOutputSummaryItemProps,
+} from '../ReviewOutputSummaryItem';
 
 jest.mock('../ReviewOutputItemValues', () => ({
     ReviewOutputItemValues: ({
@@ -79,6 +82,33 @@ describe('ReviewOutputSummaryItem', () => {
                 'ReviewOutputItemValues: [transactionManagement.review.outputs.summary.amount]-[990]',
             ),
         ).toBeTruthy();
+        expect(
+            getByText(
+                'ReviewOutputItemValues: [transactionManagement.review.outputs.summary.maxFee]-[10]',
+            ),
+        ).toBeTruthy();
+    });
+
+    it.each<'approve' | 'revoke' | 'revoke-and-approve'>([
+        'approve',
+        'revoke',
+        'revoke-and-approve',
+    ])('should not render "amount" for flowType "%s"', flowType => {
+        const { getByText, queryByText } = renderReviewOutputSummaryItem({
+            summaryOutput: {
+                totalSpent: '1000',
+                fee: '10',
+                state: 'active',
+            },
+            symbol: 'eth',
+            flowType,
+        });
+
+        expect(
+            queryByText(
+                /ReviewOutputItemValues: \[transactionManagement\.review\.outputs\.summary\.amount\]/,
+            ),
+        ).toBeNull();
         expect(
             getByText(
                 'ReviewOutputItemValues: [transactionManagement.review.outputs.summary.maxFee]-[10]',

@@ -1,22 +1,23 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import {
-    Explorer,
-    getCoingeckoId,
+    type Explorer,
     getNetwork,
     getNetworkDisplaySymbolName,
 } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import {
     getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,
     hasNetworkFeatures,
+    isErc4626,
     isNftToken,
 } from '@suite-common/wallet-utils';
-import { Card, Column, IconButton, Link, Row, Text } from '@trezor/components';
+import { Banner, Card, Column, IconButton, Link, Row, Text } from '@trezor/components';
 import { AssetLogo, CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -30,7 +31,6 @@ import {
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
-import { selectIsCopyAddressModalShown } from 'src/selectors/suite/suiteSelectors';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 import { SelectTokenAssetModal } from './SelectTokenAssetModal/SelectTokenAssetModal';
@@ -104,6 +104,8 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     const networkTokenContractAddress =
         selectedToken && getContractAddressForNetworkSymbol(account.symbol, selectedToken.contract);
 
+    const isDeFiToken = !!selectedToken && isErc4626(selectedToken);
+
     return (
         <>
             {isTokensModalActive && (
@@ -119,7 +121,6 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                     <Row justifyContent="flex-start" gap={spacings.sm}>
                         {selectedToken ? (
                             <AssetLogo
-                                coingeckoId={getCoingeckoId(account.symbol)!}
                                 symbol={account.symbol}
                                 contractAddress={selectedToken?.contract}
                                 size={24}
@@ -213,6 +214,23 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                         <IconButton icon="caretDown" intent="neutral" priority="secondary" />
                     )}
                 </Row>
+
+                {isDeFiToken && (
+                    <Banner
+                        icon
+                        intent="info"
+                        title={
+                            <Translation
+                                id="TR_DEFI_YIELD_TOKEN_BANNER_TITLE"
+                                values={{
+                                    token: selectedToken?.symbol ?? account.symbol,
+                                }}
+                            />
+                        }
+                        description={<Translation id="TR_DEFI_YIELD_TOKEN_BANNER_DESCRIPTION" />}
+                        margin={{ top: 16 }}
+                    />
+                )}
             </Card>
         </>
     );

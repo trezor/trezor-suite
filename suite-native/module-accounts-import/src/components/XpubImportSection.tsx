@@ -1,7 +1,7 @@
 import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import { Box, Button } from '@suite-native/atoms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { QrWithLaser } from './QRWithLaser';
 
@@ -39,7 +39,7 @@ export const XpubImportSection = ({ onRequestCamera, symbol }: XpubImportSection
             <Box justifyContent="center" alignItems="center" style={applyStyle(iconWrapperStyle)}>
                 <QrWithLaser />
             </Box>
-            <Button size="large" onPress={onRequestCamera}>
+            <Button onPress={onRequestCamera}>
                 <Translation id={buttonTitleTxKey} />
             </Button>
         </Box>

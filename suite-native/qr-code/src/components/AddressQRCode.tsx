@@ -1,13 +1,14 @@
 import { Alert, Pressable, Share } from 'react-native';
 
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountDescriptor } from '@suite-common/wallet-types';
-import { Button, HStack, Text, VStack } from '@suite-native/atoms';
+import { type AccountDescriptor } from '@suite-common/wallet-types';
+import { Button, HStack, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
+import { AddressFormatter } from '@suite-native/formatters';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { AddressLabelEditable } from '@suite-native/labeling';
 import type { StaticSessionId } from '@trezor/connect';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { QRCode } from './QRCode';
 
@@ -16,6 +17,7 @@ type AddressQRCodeProps = {
     deviceStaticSessionId: StaticSessionId;
     accountDescriptor: AccountDescriptor;
     networkSymbol: NetworkSymbol;
+    showLabelEdit?: boolean;
 };
 
 const addressContainer = prepareNativeStyle(() => ({
@@ -27,6 +29,7 @@ export const AddressQRCode = ({
     deviceStaticSessionId,
     accountDescriptor,
     networkSymbol,
+    showLabelEdit = true,
 }: AddressQRCodeProps) => {
     const copyToClipboard = useCopyToClipboard();
     const { translate } = useTranslate();
@@ -50,34 +53,38 @@ export const AddressQRCode = ({
         <VStack spacing="sp24">
             <QRCode data={address} />
             <Pressable onLongPress={handleCopyAddress} style={applyStyle(addressContainer)}>
-                <Text
+                <AddressFormatter
+                    value={address}
+                    format="full"
                     variant="headline-sm"
                     textAlign="center"
                     testID="@receive/confirmed-receive-address"
-                >
-                    {address}
-                </Text>
+                />
             </Pressable>
-            <AddressLabelEditable
-                accountDescriptor={accountDescriptor}
-                address={address}
-                deviceStaticSessionId={deviceStaticSessionId}
-                networkSymbol={networkSymbol}
-                testID="@receive/address-label"
-            />
+            {showLabelEdit && (
+                <AddressLabelEditable
+                    accountDescriptor={accountDescriptor}
+                    address={address}
+                    deviceStaticSessionId={deviceStaticSessionId}
+                    networkSymbol={networkSymbol}
+                    testID="@receive/address-label"
+                />
+            )}
             <HStack spacing="sp8" justifyContent="center">
                 <Button
-                    size="small"
-                    viewLeft="copy"
+                    size="medium"
+                    iconLeft="copy"
                     onPress={handleCopyAddress}
-                    colorScheme="tertiaryElevation1"
+                    intent="neutral"
+                    priority="secondary"
                 >
                     <Translation id="qrCode.copyButton" />
                 </Button>
                 <Button
-                    size="small"
-                    viewLeft="shareNetwork"
-                    colorScheme="tertiaryElevation1"
+                    size="medium"
+                    iconLeft="shareNetwork"
+                    intent="neutral"
+                    priority="secondary"
                     onPress={handleShareData}
                 >
                     <Translation id="qrCode.shareButton" />

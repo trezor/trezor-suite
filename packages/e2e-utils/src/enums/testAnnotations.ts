@@ -41,6 +41,8 @@ export enum TestCategory {
     Buy = 'Buy',
     Sell = 'Sell',
     Swap = 'Swap',
+    TrezorConnect = 'Trezor Connect',
+    WalletConnect = 'WalletConnect',
     NotCategorized = 'Not Categorized',
 }
 
@@ -68,6 +70,7 @@ export enum TestStream {
     Engagement = 'Engagement', // do not use for new tests
     Growth = 'Growth',
     Firmware = 'Firmware',
+    Connect = 'Connect',
     NotDefined = 'Not Defined',
 }
 

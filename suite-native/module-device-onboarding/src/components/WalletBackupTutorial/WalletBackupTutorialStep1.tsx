@@ -1,4 +1,4 @@
-import { SharedValue } from 'react-native-reanimated';
+import { type SharedValue } from 'react-native-reanimated';
 
 import { Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

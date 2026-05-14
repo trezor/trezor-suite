@@ -1,16 +1,15 @@
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import {
-    PreloadedState,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
     userEvent,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 
 import { getWalletState } from '../../../../__fixtures__/walletState';
-import { FeesFormType } from '../../../../feesFormSchema';
+import { type FeesFormType } from '../../../../feesFormSchema';
 import { useFeesForm } from '../../../../hooks';
-import { CustomFeeCard, CustomFeeCardProps } from '../CustomFeeCard';
+import { CustomFeeCard, type CustomFeeCardProps } from '../CustomFeeCard';
 
 describe('CustomFeeCard', () => {
     const defaultProps = {
@@ -25,17 +24,15 @@ describe('CustomFeeCard', () => {
 
     const renderUseFeesForm = (
         accountKey: AccountKey = 'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`,
-        preloadedState?: PreloadedState,
-        defaultFeePerUnit?: string,
     ) => {
         const { result } = renderHookWithStoreProvider(
             () =>
                 useFeesForm({
                     accountKey,
-                    defaultFeePerUnit: defaultFeePerUnit || '1',
+                    defaultFeePerUnit: '1',
                 }),
             {
-                preloadedState: preloadedState || defaultState,
+                preloadedState: defaultState,
             },
         );
 
@@ -44,17 +41,15 @@ describe('CustomFeeCard', () => {
 
     const renderCustomFeeCard = ({
         form,
-        preloadedState,
         props,
     }: {
         form: FeesFormType;
-        preloadedState?: PreloadedState;
         props?: Partial<CustomFeeCardProps>;
     }) => {
         const finalProps = { ...defaultProps, ...props };
 
         return renderWithStoreProvider(<CustomFeeCard {...finalProps} />, {
-            preloadedState: preloadedState || defaultState,
+            preloadedState: defaultState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
     };

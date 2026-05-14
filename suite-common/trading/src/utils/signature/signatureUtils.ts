@@ -1,15 +1,16 @@
 import {
-    ExchangeProviderInfo,
-    ExchangeTradeSigned,
-    SellFiatTradeSigned,
-    SellProviderInfo,
+    type ExchangeProviderInfo,
+    type ExchangeTradeSigned,
+    type SellFiatTradeSigned,
+    type SellProviderInfo,
 } from 'invity-api';
 
 import type { Network } from '@suite-common/wallet-config';
-import { asAmountUnit, formatBigUintToLE, unitsToSubunits } from '@suite-common/wallet-utils';
-import { PROTO } from '@trezor/connect';
+import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
+import { type PROTO } from '@trezor/connect';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: extract pathUtils to a shared location and remove this exception (see #27376 deferred work)
 import { validatePath } from '@trezor/connect/src/utils/pathUtils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, formatBigUintToLE } from '@trezor/utils';
 
 import { cryptoIdToNetworkAndContractAddress } from '../../utils';
 
@@ -74,14 +75,12 @@ export const tradingExchangeCreatePaymentRequest = ({
         return undefined;
     }
 
-    const sendAmount = formatSlip24SendAmountByNetwork({
-        value: unitsToSubunits({
-            value: asAmountUnit(new BigNumber(sendStringAmount)),
-            symbol: sendNetworkSymbol,
-            ...(sendTokenDecimals !== undefined ? { decimals: sendTokenDecimals } : undefined),
-        }).toString(),
-        network: sendNetworkData.network,
-    });
+    // Decimal subunits (satoshis, wei, ...). `@trezor/connect` encodes to SLIP-24 bytes.
+    const sendAmount = unitsToSubunits({
+        value: asAmountUnit(new BigNumber(sendStringAmount)),
+        symbol: sendNetworkSymbol,
+        ...(sendTokenDecimals !== undefined ? { decimals: sendTokenDecimals } : undefined),
+    }).toString();
 
     const receiveAmount = `${trade.receiveStringAmount} ${receiveDisplaySymbol}`;
 
@@ -151,14 +150,12 @@ export const tradingSellCreatePaymentRequest = ({
         return undefined;
     }
 
-    const sendAmount = formatSlip24SendAmountByNetwork({
-        value: unitsToSubunits({
-            value: asAmountUnit(new BigNumber(sendStringAmount)),
-            symbol: sendNetworkSymbol,
-            ...(sendTokenDecimals !== undefined ? { decimals: sendTokenDecimals } : undefined),
-        }).toString(),
-        network: sendNetworkData.network,
-    });
+    // Decimal subunits (satoshis, wei, ...). `@trezor/connect` encodes to SLIP-24 bytes.
+    const sendAmount = unitsToSubunits({
+        value: asAmountUnit(new BigNumber(sendStringAmount)),
+        symbol: sendNetworkSymbol,
+        ...(sendTokenDecimals !== undefined ? { decimals: sendTokenDecimals } : undefined),
+    }).toString();
 
     const memos: PROTO.PaymentRequestMemo[] = [
         {

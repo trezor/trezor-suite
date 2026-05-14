@@ -20,7 +20,6 @@ export const reactConfig = [
             'react/react-in-jsx-scope': 'off', // We are not importing React in every file
             'react/prop-types': 'off', // This rule is not needed when using TypeScript
             'react/display-name': 'off', // This is annoying for stuff like `forwardRef`. Todo: reconsider
-            'no-prototype-builtins': 'off', // Todo: just temporary, reconsider to remove it
         },
     },
 

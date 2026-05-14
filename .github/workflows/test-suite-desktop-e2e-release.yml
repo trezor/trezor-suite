@@ -35,10 +35,23 @@ jobs:
     if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/build-suite-desktop-e2e.yml
 
+  extract-branch:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    outputs:
+      release_build: ${{ steps.extract_branch.outputs.release_build }}
+    steps:
+      - name: Extract branch name
+        id: extract_branch
+        run: |
+          BRANCH_NAME="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+          echo "release_build=${BRANCH_NAME}-${GITHUB_SHA:0:7}" >> $GITHUB_OUTPUT
+
   run-e2e-suite-desktop-tests:
     if: github.repository == 'trezor/trezor-suite'
     needs:
       - build-app
+      - extract-branch
     strategy:
       fail-fast: false
       matrix:
@@ -52,7 +65,7 @@ jobs:
       fail-fast: "false"
       currents-project-id: "4ytF0E"
       download-artifact-name: "desktop-app-build-e2e"
-      release-build: ${{ github.head_ref || github.ref_name }}-${{ github.sha }} 
+      release-build: ${{ needs.extract-branch.outputs.release_build }}
       run-reporter: ${{ inputs.publish_results_to_github == true }}
     secrets:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}

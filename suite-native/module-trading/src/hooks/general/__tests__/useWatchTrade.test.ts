@@ -1,14 +1,14 @@
 import React from 'react';
 
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { useAnalytics } from '@suite-native/services';
-import {
-    PreloadedState,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
-import { getBuyTrade, getInitializedTradingState } from '@suite-native/trading-fixtures';
+import { type TestStore } from '@suite-native/test-utils-store';
+import { getBuyTrade } from '@suite-native/trading-fixtures';
 
+import {
+    createTradingLightStore,
+    renderHookWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useWatchTrade } from '../useWatchTrade';
 
 jest.mock('../useReloadTimer', () => ({
@@ -67,53 +67,45 @@ describe('useWatchTrade', () => {
     const getInitializedStore = ({
         trades = [],
         accounts = [],
-    }: { trades?: any[]; accounts?: any[] } = {}) => {
-        const preloadedState: PreloadedState = {
-            wallet: {
-                trading: {
-                    ...getInitializedTradingState(),
-                    trades,
+    }: { trades?: any[]; accounts?: any[] } = {}) =>
+        createTradingLightStore({
+            overrides: {
+                wallet: {
+                    trading: { trades },
+                    accounts:
+                        accounts.length > 0
+                            ? accounts
+                            : [
+                                  {
+                                      key: 'btc1',
+                                      symbol: 'btc',
+                                      deviceState: 'device1@test:123',
+                                      descriptor: 'btc-descriptor',
+                                      addresses: { unused: [{ address: 'btc-address' }] },
+                                      visible: true,
+                                  },
+                              ],
                 },
-                accounts:
-                    accounts.length > 0
-                        ? accounts
-                        : [
-                              {
-                                  key: 'btc1',
-                                  symbol: 'btc',
-                                  deviceState: 'device1@test:123',
-                                  descriptor: 'btc-descriptor',
-                                  addresses: { unused: [{ address: 'btc-address' }] },
-                                  visible: true,
-                              },
-                          ],
-            },
-            device: {
-                selectedDevice: {
-                    state: { staticSessionId: 'device1@test:123' },
+                device: {
+                    selectedDevice: {
+                        state: { staticSessionId: 'device1@test:123' },
+                    },
                 },
             },
-        };
+        });
 
-        return initStore(preloadedState).store;
-    };
-
-    const renderUseWatchTrade = async (
-        store: any,
+    const renderUseWatchTrade = (
+        store: TestStore,
         props: { accountKey?: AccountKey; orderId?: string; isInProgress?: boolean },
-    ) => {
-        const hook = await renderHookWithStoreProviderAsync(
-            () => useWatchTradeWithReportSpy(props),
-            { store },
-        );
-
-        return hook;
-    };
+    ) =>
+        renderHookWithTradingProvider(() => useWatchTradeWithReportSpy(props), {
+            store,
+        });
 
     describe('Trade Watching Behavior', () => {
-        it('should not dispatch watch trade thunk when no trade is found', async () => {
-            const store = await getInitializedStore();
-            await renderUseWatchTrade(store, {
+        it('should not dispatch watch trade thunk when no trade is found', () => {
+            const store = getInitializedStore();
+            renderUseWatchTrade(store, {
                 accountKey: btc1AccountKey,
                 orderId: 'non-existent-order',
             });
@@ -121,13 +113,13 @@ describe('useWatchTrade', () => {
             expect(mockWatchTradeThunk).not.toHaveBeenCalled();
         });
 
-        it('should not dispatch watch trade thunk when no account is found', async () => {
+        it('should not dispatch watch trade thunk when no account is found', () => {
             const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
-            const store = await getInitializedStore({
+            const store = getInitializedStore({
                 trades: [buyTrade],
             });
 
-            await renderUseWatchTrade(store, {
+            renderUseWatchTrade(store, {
                 accountKey: 'non-existent-account' as AccountKey, // Todo: create properly via `createAccountKey()`
                 orderId: buyTrade.data.orderId,
             });
@@ -135,13 +127,13 @@ describe('useWatchTrade', () => {
             expect(mockWatchTradeThunk).not.toHaveBeenCalled();
         });
 
-        it('should dispatch watch trade thunk when trade and account are found', async () => {
+        it('should dispatch watch trade thunk when trade and account are found', () => {
             const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
-            const store = await getInitializedStore({
+            const store = getInitializedStore({
                 trades: [buyTrade],
             });
 
-            await renderUseWatchTrade(store, {
+            renderUseWatchTrade(store, {
                 accountKey: btc1AccountKey as AccountKey, // Todo: create properly via `createAccountKey()`
                 orderId: buyTrade.data.orderId,
             });
@@ -153,9 +145,9 @@ describe('useWatchTrade', () => {
             });
         });
 
-        it('should dispatch watch trade thunk when shouldReload is true', async () => {
+        it('should dispatch watch trade thunk when shouldReload is true', () => {
             const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
-            const store = await getInitializedStore({
+            const store = getInitializedStore({
                 trades: [buyTrade],
             });
 
@@ -167,7 +159,7 @@ describe('useWatchTrade', () => {
                 resetCount: 1,
             });
 
-            await renderUseWatchTrade(store, {
+            renderUseWatchTrade(store, {
                 accountKey: btc1AccountKey,
                 orderId: buyTrade.data.orderId,
             });
@@ -179,13 +171,13 @@ describe('useWatchTrade', () => {
             });
         });
 
-        it('should not dispatch watch trade thunk when trade is in final status', async () => {
+        it('should not dispatch watch trade thunk when trade is in final status', () => {
             const buyTrade = getBuyTrade({ status: 'SUCCESS' });
-            const store = await getInitializedStore({
+            const store = getInitializedStore({
                 trades: [buyTrade],
             });
 
-            await renderUseWatchTrade(store, {
+            renderUseWatchTrade(store, {
                 accountKey: btc1AccountKey,
                 orderId: buyTrade.data.orderId,
             });
@@ -195,13 +187,13 @@ describe('useWatchTrade', () => {
     });
 
     describe('Timer Management', () => {
-        it('should use faster refresh rate when trade is in progress', async () => {
+        it('should use faster refresh rate when trade is in progress', () => {
             const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
-            const store = await getInitializedStore({
+            const store = getInitializedStore({
                 trades: [buyTrade],
             });
 
-            await renderUseWatchTrade(store, {
+            renderUseWatchTrade(store, {
                 accountKey: btc1AccountKey,
                 orderId: buyTrade.data.orderId,
                 isInProgress: true,
@@ -213,13 +205,13 @@ describe('useWatchTrade', () => {
             });
         });
 
-        it('should use slower refresh rate when trade is not in progress', async () => {
+        it('should use slower refresh rate when trade is not in progress', () => {
             const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
-            const store = await getInitializedStore({
+            const store = getInitializedStore({
                 trades: [buyTrade],
             });
 
-            await renderUseWatchTrade(store, {
+            renderUseWatchTrade(store, {
                 accountKey: btc1AccountKey,
                 orderId: buyTrade.data.orderId,
                 isInProgress: false,
@@ -231,13 +223,13 @@ describe('useWatchTrade', () => {
             });
         });
 
-        it('should disable timer when trade is in final status', async () => {
+        it('should disable timer when trade is in final status', () => {
             const buyTrade = getBuyTrade({ status: 'SUCCESS' });
-            const store = await getInitializedStore({
+            const store = getInitializedStore({
                 trades: [buyTrade],
             });
 
-            await renderUseWatchTrade(store, {
+            renderUseWatchTrade(store, {
                 accountKey: btc1AccountKey,
                 orderId: buyTrade.data.orderId,
             });

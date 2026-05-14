@@ -1,18 +1,20 @@
-import { AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import { type MetadataRootState, selectIsMetadataEnabled } from '@suite/metadata';
+import { type MessageSystemRootState } from '@suite-common/message-system';
+import { type AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
-    SuiteSyncInteraction,
-    SuiteSyncState,
-    WithSuiteSyncAndDeviceState,
+    type SuiteSyncInteraction,
+    type SuiteSyncState,
+    type WithSuiteSyncAndDeviceState,
     initialSuiteSyncState as commonInitialState,
+    selectIsSuiteSyncFeatureAvailable,
     selectSuiteSyncInteraction,
     suiteSyncReducer,
 } from '@suite-common/suite-sync';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 import { typedObjectFromEntries } from '@trezor/utils';
 
-import { SuiteRootState } from 'src/reducers/suite/suiteReducer';
-import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
-import { Action } from 'src/types/suite';
+import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
+import { type Action } from 'src/types/suite';
 
 import { STORAGE } from '../suite/constants';
 
@@ -78,13 +80,25 @@ export const selectShowEnableSuiteSyncModal = (
 ): StaticSessionId | null => state.suiteSync.showEnableSuiteSyncModal;
 
 export const selectDesktopSuiteSyncInteraction = (
-    state: DesktopSuiteSyncRootState & WithSuiteSyncAndDeviceState & SuiteRootState,
+    state: DesktopSuiteSyncRootState &
+        WithSuiteSyncAndDeviceState &
+        SuiteRootState &
+        MetadataRootState &
+        MessageSystemRootState,
     deviceStaticSessionId: StaticSessionId | null,
 ): SuiteSyncInteraction | null => {
-    const isSuiteSyncFeatureEnabled = selectHasExperimentalFeature('suite-sync')(state);
+    const isSuiteSyncFeatureEnabled = selectIsSuiteSyncFeatureAvailable(state);
     if (!isSuiteSyncFeatureEnabled) return null;
 
-    return selectSuiteSyncInteraction(state, deviceStaticSessionId);
+    const interaction = selectSuiteSyncInteraction(state, deviceStaticSessionId);
+
+    // When legacy labeling is enabled (user explicitly chose it in settings)
+    // and suite sync is off, don't expose suite sync interactions — respect the user's choice.
+    if (interaction === 'suite-sync-off' && selectIsMetadataEnabled(state)) {
+        return null;
+    }
+
+    return interaction;
 };
 
 export const { updateShowEnableSuiteSyncModal } = suiteSyncSlice.actions;

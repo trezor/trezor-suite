@@ -1,9 +1,9 @@
-import { EnsureDelegatedIdentityKey } from '@suite-common/delegated-identity-key-types';
+import { type EnsureDelegatedIdentityKey } from '@suite-common/delegated-identity-key-types';
 import { ok } from '@trezor/type-utils';
 
-import { LoadDelegatedIdentityKeyFromStateDep } from './loadDelegatedIdentityKeyFromState';
-import { RetrieveDelegatedIdentityKeyFromDeviceDep } from './retrieveDelegatedIdentityKeyFromDevice';
-import { SaveDelegatedIdentityKeyDep } from './saveDelegatedIdentityKey';
+import { type LoadDelegatedIdentityKeyFromStateDep } from './loadDelegatedIdentityKeyFromState';
+import { type RetrieveDelegatedIdentityKeyFromDeviceDep } from './retrieveDelegatedIdentityKeyFromDevice';
+import { type SaveDelegatedIdentityKeyDep } from './saveDelegatedIdentityKey';
 
 export type EnsureDelegatedIdentityKeyDeps = SaveDelegatedIdentityKeyDep &
     LoadDelegatedIdentityKeyFromStateDep &

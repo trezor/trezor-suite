@@ -1,14 +1,12 @@
-import type { ExchangeTrade } from 'invity-api';
-
 import {
+    selectGroupedTradingExchangeQuotes,
     selectTradingExchangeBuyCryptoIds,
-    selectTradingExchangeProviders,
 } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     FeatureFlag,
-    FeatureFlagsRootState,
+    type FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
 import {
@@ -17,7 +15,7 @@ import {
 } from '@suite-native/trading-atoms';
 
 import {
-    TradingRootState,
+    type TradingRootState,
     createMemoizedSelectorWithAccounts,
     createTradingWithFeatureFlagsMemoizedSelector,
 } from '../reducers';
@@ -89,41 +87,9 @@ export const selectExchangeBuyTradeableAssets = createTradingWithFeatureFlagsMem
 export const selectExchangeQuotes = (state: TradingRootState) =>
     state.wallet.trading.exchange.quotes;
 
-export const selectGroupedExchangeQuotes = createTradingWithFeatureFlagsMemoizedSelector(
-    [
-        selectExchangeQuotes,
-        selectTradingExchangeProviders as unknown as (
-            state: TradingRootState,
-        ) => ReturnType<typeof selectTradingExchangeProviders>,
-        (state: TradingWithFeatureFlagsRootState) =>
-            selectIsFeatureFlagEnabled(state, FeatureFlag.AreTradingExchangeDexesEnabled),
-    ],
-    (quotes, providers = {}, areTradingExchangeDexesEnabled) => {
-        const groups = {
-            fixed: [] as ExchangeTrade[],
-            float: [] as ExchangeTrade[],
-            dex: [] as ExchangeTrade[],
-        };
-
-        quotes.forEach(quote => {
-            const { exchange = '', isDex } = quote;
-            const { isFixedRate } = providers[exchange] || {};
-
-            if (isDex) {
-                if (!areTradingExchangeDexesEnabled) {
-                    return;
-                }
-                groups.dex.push(quote);
-            } else if (isFixedRate) {
-                groups.fixed.push(quote);
-            } else {
-                groups.float.push(quote);
-            }
-        });
-
-        return groups;
-    },
-);
+export const selectGroupedExchangeQuotes = selectGroupedTradingExchangeQuotes as unknown as (
+    state: TradingRootState,
+) => ReturnType<typeof selectGroupedTradingExchangeQuotes>;
 
 export const selectExchangeAmountLimits = (state: TradingRootState) =>
     selectTradingExchange(state).amountLimits;

@@ -1,47 +1,91 @@
-import { FiatCurrencyCode } from 'invity-api';
+import { type FiatCurrencyCode } from 'invity-api';
 
-type MirrorRecord<T extends FiatCurrencyCode> = { [K in T]: K };
+import { type TradingFiatCurrencyOption } from './types';
 
-// This is a solution to handle difference between BaseCurrency and Invity FiatCurrency,
-// and this forces the values to be the same as type. With this trick, we can extract a runtime values
-// from API type
-export const enabledTradingCurrencies: MirrorRecord<FiatCurrencyCode> = {
-    aed: 'aed',
-    usd: 'usd',
-    eur: 'eur',
-    gbp: 'gbp',
-    ars: 'ars',
-    aud: 'aud',
-    bdt: 'bdt',
-    brl: 'brl',
-    cad: 'cad',
-    chf: 'chf',
-    clp: 'clp',
-    cny: 'cny',
-    czk: 'czk',
-    dkk: 'dkk',
-    hkd: 'hkd',
-    huf: 'huf',
-    idr: 'idr',
-    ils: 'ils',
-    inr: 'inr',
-    jpy: 'jpy',
-    krw: 'krw',
-    kwd: 'kwd',
-    lkr: 'lkr',
-    mxn: 'mxn',
-    myr: 'myr',
-    nok: 'nok',
-    nzd: 'nzd',
-    php: 'php',
-    pln: 'pln',
-    rub: 'rub',
-    sar: 'sar',
-    sek: 'sek',
-    sgd: 'sgd',
-    thb: 'thb',
-    try: 'try',
-    twd: 'twd',
-    vnd: 'vnd',
-    zar: 'zar',
+export const supportedFiatCurrenciesMap: Record<FiatCurrencyCode, string> = {
+    aed: 'United Arab Emirates Dirham',
+    ars: 'Argentine Peso',
+    aud: 'Australian Dollar',
+    bdt: 'Bangladeshi Taka',
+    brl: 'Brazilian Real',
+    cad: 'Canadian Dollar',
+    chf: 'Swiss Franc',
+    clp: 'Chilean Peso',
+    cny: 'Chinese Yuan',
+    czk: 'Czech Koruna',
+    dkk: 'Danish Krone',
+    eur: 'Euro',
+    gbp: 'British Pound Sterling',
+    hkd: 'Hong Kong Dollar',
+    huf: 'Hungarian Forint',
+    idr: 'Indonesian Rupiah',
+    ils: 'Israeli Shekel',
+    inr: 'Indian Rupee',
+    jpy: 'Japanese Yen',
+    krw: 'South Korean Won',
+    kwd: 'Kuwaiti Dinar',
+    lkr: 'Sri Lankan Rupee',
+    mxn: 'Mexican Peso',
+    myr: 'Malaysian Ringgit',
+    nok: 'Norwegian Krone',
+    nzd: 'New Zealand Dollar',
+    php: 'Philippine Peso',
+    pln: 'Polish Złoty',
+    rub: 'Russian Ruble',
+    sar: 'Saudi Riyal',
+    sek: 'Swedish Krona',
+    sgd: 'Singapore Dollar',
+    thb: 'Thai Baht',
+    try: 'Turkish Lira',
+    twd: 'New Taiwan Dollar',
+    usd: 'United States Dollar',
+    vnd: 'Vietnamese Đồng',
+    zar: 'South African Rand',
+    amd: 'Armenian Dram',
+    azn: 'Azerbaijan Manat',
+    bgn: 'Bulgarian Lev',
+    bhd: 'Bahraini Dinar',
+    cop: 'Colombian Peso',
+    crc: 'Costa Rican Colón',
+    dop: 'Dominican Peso',
+    dzd: 'Algerian Dinar',
+    egp: 'Egyptian Pound',
+    gel: 'Georgian Lari',
+    ghs: 'Ghanaian Cedi',
+    isk: 'Icelandic Króna',
+    jod: 'Jordanian Dinar',
+    kes: 'Kenyan Shilling',
+    kzt: 'Kazakhstani Tenge',
+    mad: 'Moroccan Dirham',
+    ngn: 'Nigerian Naira',
+    omr: 'Omani Rial',
+    pen: 'Peruvian Sol',
+    qar: 'Qatari Riyal',
+    ron: 'Romanian Leu',
+    tnd: 'Tunisian Dinar',
+    tzs: 'Tanzanian Shilling',
+    uah: 'Ukrainian Hryvnia',
+    ugx: 'Ugandan Shilling',
+    uyu: 'Uruguayan Peso',
+    xaf: 'Central African CFA Franc',
+    xof: 'West African CFA Franc',
+} as const;
+
+export const isSupportedFiatCurrency = (currency: string): currency is FiatCurrencyCode =>
+    currency in supportedFiatCurrenciesMap;
+
+export const isTradingFiatCurrencyOption = (
+    currency: unknown,
+): currency is TradingFiatCurrencyOption => {
+    if (typeof currency !== 'object' || currency === null) return false;
+
+    const maybe = currency as { value?: unknown; label?: unknown };
+
+    return (
+        typeof maybe.value === 'string' &&
+        typeof maybe.label === 'string' &&
+        isSupportedFiatCurrency(maybe.value)
+    );
 };
+
+export const DEFAULT_FIAT_CURRENCY_FALLBACK = 'usd' as const;

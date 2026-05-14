@@ -1,6 +1,6 @@
 import {
     PROTOCOL_MALFORMED,
-    ThpState,
+    type ThpState,
     thp as protocolThp,
     v2 as protocolV2,
 } from '@trezor/protocol';
@@ -8,7 +8,7 @@ import { THP_CONTROL_BYTE } from '@trezor/protocol/src/protocol-v2/constants';
 import { SCHEDULE_ACTION_TIMEOUT_ERROR_MESSAGE, scheduleAction } from '@trezor/utils';
 
 import type { AbstractApi } from '../api/abstract';
-import { Logger } from '../types';
+import { type Logger } from '../types';
 import { receive } from '../utils/receive';
 import { error } from '../utils/result';
 
@@ -68,18 +68,18 @@ export const receiveExpectedMessage = async (
         },
     ).catch(e =>
         error({
-            error: e.message as ScheduleActionError,
+            code: e.message as ScheduleActionError,
         }),
     );
 
     if (!receiveResult.success) {
         // apiRead received gibberish for example continuation packet or empty data
-        if (receiveResult.error === PROTOCOL_MALFORMED) {
-            return error({ error: 'UnexpectedChunk' });
+        if (receiveResult.error.code === PROTOCOL_MALFORMED) {
+            return error({ code: 'UnexpectedChunk' });
         }
 
-        if (receiveResult.error === SCHEDULE_ACTION_TIMEOUT_ERROR_MESSAGE) {
-            return error({ error: 'Timeout' });
+        if (receiveResult.error.code === SCHEDULE_ACTION_TIMEOUT_ERROR_MESSAGE) {
+            return error({ code: 'Timeout' });
         }
 
         return receiveResult as ReceiveError;
@@ -90,13 +90,13 @@ export const receiveExpectedMessage = async (
 
     const isExpectedChannel = thpHeader.channel.compare(thpState.channel) === 0;
     if (!isExpectedChannel) {
-        return error({ error: 'UnexpectedChannel' });
+        return error({ code: 'UnexpectedChannel' });
     }
 
     try {
         protocolThp.validateCrc(encodedMessage);
     } catch {
-        return error({ error: 'UnexpectedCRC' });
+        return error({ code: 'UnexpectedCRC' });
     }
 
     if (encodedMessage.messageType === THP_CONTROL_BYTE.ERROR) {
@@ -113,18 +113,18 @@ export const receiveExpectedMessage = async (
 
     if (!isExpectedCtrlByte) {
         if (isRecentMessage(receiveResult, thpState)) {
-            return error({ error: 'UnexpectedRecentMessage' });
+            return error({ code: 'UnexpectedRecentMessage' });
         }
 
-        return error({ error: 'UnexpectedMessage' });
+        return error({ code: 'UnexpectedMessage' });
     }
 
     if (thpHeader.sequenceBit !== thpState.recvBit) {
         if (isRecentMessage(receiveResult, thpState)) {
-            return error({ error: 'UnexpectedRecentMessage' });
+            return error({ code: 'UnexpectedRecentMessage' });
         }
 
-        return error({ error: 'UnexpectedRecvBit' });
+        return error({ code: 'UnexpectedRecvBit' });
     }
 
     return receiveResult;

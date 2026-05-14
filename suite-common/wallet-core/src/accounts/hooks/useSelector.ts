@@ -1,6 +1,10 @@
-import { TypedUseSelectorHook, shallowEqual, useSelector as useReduxSelector } from 'react-redux';
+import {
+    type TypedUseSelectorHook,
+    shallowEqual,
+    useSelector as useReduxSelector,
+} from 'react-redux';
 
-import { AccountsRootState } from '../accountsReducer';
+import { type AccountsRootState } from '../accountsReducer';
 
 /**
  * Properly typed useSelector hook, use this one instead of directly importing it from react-redux.

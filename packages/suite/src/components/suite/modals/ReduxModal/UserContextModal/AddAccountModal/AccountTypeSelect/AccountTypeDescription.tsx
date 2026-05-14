@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
 import {
-    AccountType,
-    Bip43PathTemplate,
-    NetworkSymbol,
-    NetworkType,
+    type AccountType,
+    type Bip43PathTemplate,
+    type NetworkSymbol,
+    type NetworkType,
     getNetwork,
 } from '@suite-common/wallet-config';
 import { getAccountTypeDesc, getAccountTypeUrl } from '@suite-common/wallet-utils';

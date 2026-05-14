@@ -1,8 +1,21 @@
 import { createContext, useContext } from 'react';
 
-import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
-import { FeeInfo, PrecomposedLevels, PrecomposedLevelsCardano } from '@suite-common/wallet-types';
-import { FeeLevel } from '@trezor/connect';
+import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
+import {
+    type FeeInfo,
+    type PrecomposedLevels,
+    type PrecomposedLevelsCardano,
+} from '@suite-common/wallet-types';
+import { type FeeLevel } from '@trezor/connect';
+
+export type TronResources = {
+    availableFreeBandwidth: number;
+    totalFreeBandwidth: number;
+    availableStakedBandwidth: number;
+    totalStakedBandwidth: number;
+    availableEnergy: number;
+    totalEnergy: number;
+};
 
 export type FeesContextType = {
     networkSymbol: NetworkSymbol;
@@ -11,6 +24,7 @@ export type FeesContextType = {
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano | null;
     feeInfo: FeeInfo;
     changeFeeLevel: (level: FeeLevel['label']) => void;
+    tronResources?: TronResources;
 };
 
 export const FeesContext = createContext<FeesContextType | null>(null);

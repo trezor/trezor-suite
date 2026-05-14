@@ -1,7 +1,7 @@
-import { IconName } from '@suite-native/icons';
-import { Color } from '@trezor/theme';
+import { type IconName } from '@suite-native/icons';
+import { type Color } from '@trezor/theme';
 
-import { ButtonColorScheme } from '../Button/Button';
+import { type ButtonColorProps } from '../Button/Button';
 
 export const INLINE_ALERT_BOX_VARIANTS = [
     'info',
@@ -15,34 +15,34 @@ export type InlineAlertBoxVariant = (typeof INLINE_ALERT_BOX_VARIANTS)[number];
 export type InlineAlertBoxStyles = {
     backgroundColor: Color;
     borderColor: Color;
-    buttonColorScheme: ButtonColorScheme;
+    buttonColorProps: ButtonColorProps;
 };
 
 export const variantToColorMap = {
     info: {
-        backgroundColor: 'backgroundAlertBlueSubtleOnElevation1',
-        borderColor: 'backgroundAlertBlueSubtleOnElevationNegative',
-        buttonColorScheme: 'blueBold',
+        backgroundColor: 'legacyBackgroundAlertBlueSubtleOnElevation1',
+        borderColor: 'legacyBackgroundAlertBlueSubtleOnElevationNegative',
+        buttonColorProps: { intent: 'info', priority: 'secondary' },
     },
     success: {
-        backgroundColor: 'backgroundPrimarySubtleOnElevation1',
-        borderColor: 'backgroundPrimarySubtleOnElevationNegative',
-        buttonColorScheme: 'primary',
+        backgroundColor: 'legacyBackgroundPrimarySubtleOnElevation1',
+        borderColor: 'legacyBackgroundPrimarySubtleOnElevationNegative',
+        buttonColorProps: { intent: 'brand', priority: 'secondary' },
     },
     warning: {
-        backgroundColor: 'backgroundAlertYellowSubtleOnElevation1',
-        borderColor: 'backgroundAlertYellowSubtleOnElevationNegative',
-        buttonColorScheme: 'yellowBold',
+        backgroundColor: 'legacyBackgroundAlertYellowSubtleOnElevation1',
+        borderColor: 'legacyBackgroundAlertYellowSubtleOnElevationNegative',
+        buttonColorProps: { intent: 'warning', priority: 'secondary' },
     },
     neutral: {
-        backgroundColor: 'backgroundTertiaryDefaultOnElevation1',
-        borderColor: 'backgroundTertiaryDefaultOnElevation0',
-        buttonColorScheme: 'primary',
+        backgroundColor: 'legacyBackgroundTertiaryDefaultOnElevation1',
+        borderColor: 'legacyBackgroundTertiaryDefaultOnElevation0',
+        buttonColorProps: { intent: 'neutral', priority: 'secondary' },
     },
     critical: {
-        backgroundColor: 'backgroundAlertRedSubtleOnElevation1',
-        borderColor: 'backgroundAlertRedSubtleOnElevationNegative',
-        buttonColorScheme: 'redBold',
+        backgroundColor: 'legacyBackgroundAlertRedSubtleOnElevation1',
+        borderColor: 'legacyBackgroundAlertRedSubtleOnElevationNegative',
+        buttonColorProps: { intent: 'critical', priority: 'secondary' },
     },
 } as const satisfies Record<InlineAlertBoxVariant, InlineAlertBoxStyles>;
 

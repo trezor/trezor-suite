@@ -2,11 +2,12 @@ import { A, pipe } from '@mobily/ts-belt';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
-    BackupType,
+    type BackupType,
+    type FirmwareRevision,
     LANGUAGES,
-    Locale,
-    TrezorDevice,
-    TrezorDeviceWithState,
+    type Locale,
+    type TrezorDevice,
+    type TrezorDeviceWithState,
 } from '@suite-common/suite-types';
 import {
     getDeviceInstances,
@@ -15,15 +16,24 @@ import {
     getFwUpdateVersion,
     getIsDeviceConnectedAndAuthorized,
     getIsDeviceConnectedViaBluetooth,
+    getIsDeviceDescriptorApiTypeBluetooth,
     getIsDeviceInitialized,
+    getIsDeviceRemembered,
     getIsThpDevice,
     getSortedDevicesWithoutInstances,
     getStatus,
-    isDeviceAcquired,
 } from '@suite-common/suite-utils';
-import { Device, DeviceState, StaticSessionId } from '@trezor/connect';
+import {
+    type Device,
+    type DeviceState,
+    type StaticSessionId,
+    asBluetoothDeviceId,
+} from '@trezor/connect';
 import {
     DeviceModelInternal,
+    type FirmwareVersionString,
+    getFirmwareRevision,
+    getFirmwareVersion,
     getFirmwareVersionArray,
     hasBitcoinOnlyFirmware,
 } from '@trezor/device-utils';
@@ -34,13 +44,12 @@ import {
     DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD,
     PORTFOLIO_TRACKER_DEVICE_ID,
 } from './deviceConstants';
-import { DeviceRootState } from './deviceReducer';
+import { type DeviceRootState } from './deviceReducer';
 import { isTrezorDeviceWithState } from './deviceUtils';
 import {
     deviceInvariabilityCheck,
     rawDataToDeviceInvariabilityCheckDTO,
 } from './services/deviceInvariabilityCheck';
-import { getIsDeviceIdValid } from './services/getIsDeviceIdValid';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 
@@ -59,6 +68,11 @@ export const selectPersistentDeviceDataById = createMemoizedSelector(
         persistentDeviceData.find(data => data.device_id === deviceId),
 );
 
+export const selectEntropyCheckResultByDeviceId = createMemoizedSelector(
+    [selectPersistentDeviceDataById],
+    persistentDeviceData => persistentDeviceData?.lastEntropyCheckResult,
+);
+
 // Use in tests only! See deviceReducer for the property definition.
 export const selectSimulatedEntropyCheckFail = (state: DeviceRootState) =>
     state.device.simulatedEntropyCheckFail;
@@ -67,11 +81,6 @@ export const selectSimulatedEntropyCheckFail = (state: DeviceRootState) =>
 export const selectIsPendingTransportEvent = createMemoizedSelector(
     [selectDevices],
     devices => devices.length < 1,
-);
-
-export const selectDeviceAutoconnectCredentials = createMemoizedSelector(
-    [selectSelectedDevice],
-    device => device?.thp?.credentials.filter(cred => cred.autoconnect) ?? [],
 );
 
 export const selectIsDeviceUnlocked = createMemoizedSelector(
@@ -107,6 +116,11 @@ export const selectIsDeviceLanguageConfigurable = createMemoizedSelector(
 export const selectIsBluetoothSupportedByDevice = createMemoizedSelector(
     [selectDeviceCapabilities],
     capabilities => !!capabilities?.includes('Capability_BLE'),
+);
+
+export const selectIsDeviceApiTypeBluetooth = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => !!device && getIsDeviceDescriptorApiTypeBluetooth(device),
 );
 
 export const selectIsDeviceProtectedByPin = createMemoizedSelector(
@@ -249,9 +263,10 @@ export const selectIsDeviceConnectedViaBluetoothLowOnBattery = createMemoizedSel
     },
 );
 
-export const selectDeviceBluetoothId = createMemoizedSelector(
-    [selectSelectedDevice],
-    device => device?.bluetoothProps?.id,
+export const selectDeviceBluetoothId = createMemoizedSelector([selectSelectedDevice], device =>
+    device?.descriptor?.apiType === 'bluetooth' && device.descriptor.id
+        ? asBluetoothDeviceId(device.descriptor.id)
+        : undefined,
 );
 
 export const selectIsConnectedDeviceUninitialized = createMemoizedSelector(
@@ -323,25 +338,27 @@ export const selectDeviceById = createMemoizedSelector(
     (devices, deviceId) => devices.find(device => device.id === deviceId),
 );
 
-export const selectSelectedPersistentDeviceData = createMemoizedSelector(
-    [selectSelectedDevice, selectPersistentDeviceData],
-    (device, persistentDeviceData) => persistentDeviceData.find(d => d.device_id === device?.id),
-);
+export const selectDeviceAuthenticity = (state: DeviceRootState) =>
+    state.device.persistentDeviceData;
 
-export const selectDeviceAuthenticity = (state: DeviceRootState) => state.device.deviceAuthenticity;
-
-export const selectSelectedDeviceAuthenticity = createMemoizedSelector(
-    [selectSelectedDevice, selectDeviceAuthenticity],
-    (device, deviceAuthenticity) => (device?.id ? deviceAuthenticity?.[device.id] : undefined),
+export const selectDeviceAuthenticityByDeviceId = createMemoizedSelector(
+    [(_state: DeviceRootState, deviceId: TrezorDevice['id']) => deviceId, selectDeviceAuthenticity],
+    (deviceId, persistentDeviceData) =>
+        deviceId
+            ? persistentDeviceData.find(data => data.device_id === deviceId)?.authenticityResult
+            : undefined,
 );
 
 export const selectIsFirmwareAuthenticityCheckDismissed = createMemoizedSelector(
-    [selectSelectedDevice, state => state.device.dismissedSecurityChecks?.firmwareAuthenticity],
-    (device, dismissedChecks) => !!(device?.id && dismissedChecks?.includes(device.id)),
+    [
+        (_state, deviceId: TrezorDevice['id']) => deviceId,
+        state => state.device.dismissedSecurityChecks?.firmwareAuthenticity,
+    ],
+    (deviceId, dismissedChecks) => !!(deviceId && dismissedChecks?.includes(deviceId)),
 );
 
 export const selectIsEntropyCheckFailed = createMemoizedSelector(
-    [selectSelectedPersistentDeviceData],
+    [selectPersistentDeviceDataById],
     persistentDeviceData => persistentDeviceData?.lastEntropyCheckResult?.success === false,
 );
 
@@ -355,20 +372,12 @@ export const selectWasFwHashCheckOtherErrorLastTime = createMemoizedSelector(
     },
 );
 
-export const selectIsDeviceIdCheckSuccess = createMemoizedSelector(
-    [selectSelectedDevice],
-    device => getIsDeviceIdValid(device) === true,
-);
-
 export const selectIsDeviceInvariabilityCheckSuccess = createMemoizedSelector(
-    [selectSelectedDevice, selectSelectedPersistentDeviceData],
+    [
+        (_state, device) => device,
+        (state, device) => selectPersistentDeviceDataById(state, device?.id),
+    ],
     (device, previousData) => {
-        // just a failsafe in case memoization returned wrong results
-        if (device && previousData && device.id !== previousData.device_id) {
-            console.error('Device invariability check ID mismatch');
-
-            return true;
-        }
         const dto = rawDataToDeviceInvariabilityCheckDTO({ device, previousData });
 
         return deviceInvariabilityCheck(dto).success;
@@ -432,6 +441,10 @@ export const selectIsFirmwareUpgradable = createMemoizedSelector(
     deviceReleaseInfo => deviceReleaseInfo?.isNewer ?? false,
 );
 
+export const selectDeviceFirmwareVersion = createMemoizedSelector([selectSelectedDevice], device =>
+    getFirmwareVersion(device),
+);
+
 export const selectDeviceFirmwareVersionArray = createMemoizedSelector(
     [selectSelectedDevice],
     device => getFirmwareVersionArray(device),
@@ -468,7 +481,7 @@ export const selectHasDeviceFirmwareInstalled = createMemoizedSelector(
 
 export const selectIsDeviceRemembered = createMemoizedSelector(
     [selectSelectedDevice],
-    device => !!device?.remember,
+    getIsDeviceRemembered,
 );
 
 export const selectRememberedStandardWallets = createMemoizedSelector(
@@ -577,11 +590,6 @@ export const selectDeviceUpdateFirmwareVersion = (state: DeviceRootState) => {
 
 export const selectFirmwareChangelog = (state: DeviceRootState) => {
     const device = selectSelectedDevice(state);
-    const isBitcoinOnlyFirmware = selectHasBitcoinOnlyFirmware(state);
-
-    if (isBitcoinOnlyFirmware) {
-        return device?.firmwareReleaseConfigInfo?.release.changelog;
-    }
 
     return device?.firmwareReleaseConfigInfo?.release.changelog;
 };
@@ -618,33 +626,9 @@ export const selectIsSameOrNewDevice = createMemoizedSelector(
     (selectedDevice, device) => selectedDevice === undefined || device?.id === selectedDevice.id,
 );
 
-/**
- * Get firmware revision check error, or null if check was successful / skipped.
- */
-export const selectFirmwareRevisionCheckError = (state: DeviceRootState) => {
-    const device = selectSelectedDevice(state);
-    if (!isDeviceAcquired(device) || !device.authenticityChecks) return null;
-    const checkResult = device.authenticityChecks.firmwareRevision;
-
-    // null means not performed, then don't consider it failed
-    if (!checkResult || checkResult.success) return null;
-
-    return checkResult.error;
-};
-
-/**
- * Get firmware hash check error, or null if check was successful / skipped.
- */
-export const selectFirmwareHashCheckError = (state: DeviceRootState) => {
-    const device = selectSelectedDevice(state);
-    if (!isDeviceAcquired(device) || !device.authenticityChecks) return null;
-    const checkResult = device.authenticityChecks.firmwareHash;
-
-    // null means not performed, then don't consider it failed
-    if (!checkResult || checkResult.success) return null;
-
-    return checkResult.error;
-};
+export const selectDeviceFirmwareRevision = createMemoizedSelector([selectSelectedDevice], device =>
+    getFirmwareRevision(device),
+);
 
 export const selectIsDevicePinLocked = createMemoizedSelector(
     [selectSelectedDevice],
@@ -665,4 +649,55 @@ export const selectDeviceDelegatedIdentityKey = createMemoizedSelector(
     [selectPersistentDeviceData, (_state, deviceId: string) => deviceId],
     (persistentDeviceData, deviceId) =>
         persistentDeviceData.find(d => d.device_id === deviceId)?.delegatedIdentityKey ?? null,
+);
+
+type DeviceUtmParams = {
+    utm_model?: DeviceModelInternal;
+    utm_fw?: FirmwareVersionString;
+    utm_rev?: FirmwareRevision;
+    utm_passphrase?: 'true' | 'false';
+};
+
+export const selectSupportChatDeviceUtmParams = createMemoizedSelector(
+    [
+        selectDeviceInternalModel,
+        selectDeviceFirmwareVersion,
+        selectDeviceFirmwareRevision,
+        selectIsDeviceUsingPassphrase,
+        selectIsPortfolioTrackerDevice,
+    ],
+    (
+        deviceModel,
+        firmwareVersion,
+        firmwareRevision,
+        isDeviceUsingPassphrase,
+        isPortfolioTrackerDevice,
+    ) => {
+        const result: DeviceUtmParams = {};
+
+        if (isPortfolioTrackerDevice) {
+            return result;
+        }
+
+        if (deviceModel) {
+            result.utm_model = deviceModel;
+        }
+
+        if (firmwareVersion) {
+            result.utm_fw = firmwareVersion;
+        }
+
+        if (firmwareRevision) {
+            result.utm_rev = firmwareRevision;
+        }
+
+        result.utm_passphrase = isDeviceUsingPassphrase ? 'true' : 'false';
+
+        return result;
+    },
+);
+
+export const selectIsReconnectRequested = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => !!device?.reconnectRequested,
 );

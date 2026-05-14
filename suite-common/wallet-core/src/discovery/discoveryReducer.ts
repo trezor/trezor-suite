@@ -1,6 +1,6 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { Discovery, DiscoveryStatus, Timestamp } from '@suite-common/wallet-types';
-import { DeviceUniquePath } from '@trezor/connect';
+import { type Discovery, type DiscoveryStatus, type Timestamp } from '@suite-common/wallet-types';
+import { type DeviceUniquePath } from '@trezor/connect';
 
 import { discoveryActions } from './discoveryActions';
 

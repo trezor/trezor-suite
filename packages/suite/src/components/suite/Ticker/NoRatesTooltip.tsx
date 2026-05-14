@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { Tooltip } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
@@ -8,7 +8,7 @@ const NoRatesMessage = styled.div`
     ${typography['body-xs']};
     display: flex;
     align-items: center;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     text-transform: none;
 `;
 

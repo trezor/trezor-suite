@@ -1,16 +1,24 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/CoinInfo.js
+import type {
+    BitcoinNetworkInfo,
+    EthereumNetworkInfo,
+    MiscNetworkInfo,
+} from '@trezor/connect-common/src/types/coinInfo';
+import type { DerivationPath } from '@trezor/connect-common/src/types/params';
+import coinsEth from '@trezor/connect-data/files/coins-eth.json';
+import coins from '@trezor/connect-data/files/coins.json';
 import { cloneObject } from '@trezor/utils';
 
 import { getBitcoinFeeLevels, getEthereumFeeLevels, getMiscFeeLevels } from './defaultFeeLevels';
-import type { BitcoinNetworkInfo, EthereumNetworkInfo, MiscNetworkInfo } from '../types/coinInfo';
-import type { DerivationPath } from '../types/params';
 import { fromHardened, toHardened } from '../utils/pathUtils';
 
 const bitcoinNetworks: BitcoinNetworkInfo[] = [];
 const ethereumNetworks: EthereumNetworkInfo[] = [];
 const miscNetworks: MiscNetworkInfo[] = [];
 
-export const getBitcoinNetwork = (pathOrName: DerivationPath) => {
+export const getBitcoinNetwork = (
+    pathOrName: DerivationPath,
+): Readonly<BitcoinNetworkInfo> | undefined => {
     if (typeof pathOrName === 'string') {
         const name = pathOrName.toLowerCase();
 
@@ -19,38 +27,40 @@ export const getBitcoinNetwork = (pathOrName: DerivationPath) => {
                 n.name.toLowerCase() === name ||
                 n.shortcut.toLowerCase() === name ||
                 n.label.toLowerCase() === name,
-        ) as Readonly<BitcoinNetworkInfo>;
+        );
     }
     const slip44 = fromHardened(pathOrName[1]);
 
-    return bitcoinNetworks.find(n => n.slip44 === slip44) as Readonly<BitcoinNetworkInfo>;
+    return bitcoinNetworks.find(n => n.slip44 === slip44);
 };
 
-export const getEthereumNetwork = (pathOrNetworkSymbol: DerivationPath) => {
+export const getEthereumNetwork = (
+    pathOrNetworkSymbol: DerivationPath,
+): Readonly<EthereumNetworkInfo> | undefined => {
     if (typeof pathOrNetworkSymbol === 'string') {
         const networkSymbol = pathOrNetworkSymbol.toLowerCase();
 
-        return ethereumNetworks.find(
-            network => network.shortcut.toLowerCase() === networkSymbol,
-        ) as Readonly<EthereumNetworkInfo>;
+        return ethereumNetworks.find(network => network.shortcut.toLowerCase() === networkSymbol);
     }
 
     const slip44 = fromHardened(pathOrNetworkSymbol[1]);
 
-    return ethereumNetworks.find(n => n.slip44 === slip44) as Readonly<EthereumNetworkInfo>;
+    return ethereumNetworks.find(n => n.slip44 === slip44);
 };
 
-export const getMiscNetwork = (pathOrName: DerivationPath) => {
+export const getMiscNetwork = (
+    pathOrName: DerivationPath,
+): Readonly<MiscNetworkInfo> | undefined => {
     if (typeof pathOrName === 'string') {
         const name = pathOrName.toLowerCase();
 
         return miscNetworks.find(
             n => n.name.toLowerCase() === name || n.shortcut.toLowerCase() === name,
-        ) as Readonly<MiscNetworkInfo>;
+        );
     }
     const slip44 = fromHardened(pathOrName[1]);
 
-    return miscNetworks.find(n => n.slip44 === slip44) as Readonly<MiscNetworkInfo>;
+    return miscNetworks.find(n => n.slip44 === slip44);
 };
 
 /*
@@ -229,7 +239,7 @@ const parseMiscNetworksJSON = (json: any) => {
     });
 };
 
-export const parseCoinsJson = (json: any) => {
+const parseCoinsJson = (json: any) => {
     Object.keys(json).forEach(key => {
         switch (key) {
             case 'bitcoin':
@@ -251,3 +261,6 @@ export const getUniqueNetworks = <T extends { shortcut: string }>(networks: (T |
     }, []);
 
 export const getAllNetworks = () => [...bitcoinNetworks, ...ethereumNetworks, ...miscNetworks];
+
+// Populate the network registries from the bundled coin definitions on module load.
+parseCoinsJson({ ...coins, ...coinsEth });

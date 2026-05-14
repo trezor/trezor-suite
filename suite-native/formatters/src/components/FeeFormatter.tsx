@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { fromWei } from 'web3-utils';
 
 import { networks } from '@suite-common/wallet-config';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getFeeRate, getFeeUnits } from '@suite-common/wallet-utils';
 import { Text } from '@suite-native/atoms';
 

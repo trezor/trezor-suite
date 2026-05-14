@@ -1,16 +1,16 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import {
-    AccountKey,
-    FormState,
-    GeneralPrecomposedTransactionFinal,
-    SendFormDraftKey,
+    type AccountKey,
+    type FormState,
+    type GeneralPrecomposedTransactionFinal,
+    type SendFormDraftKey,
 } from '@suite-common/wallet-types';
 import { getSendFormDraftKey } from '@suite-common/wallet-utils';
-import { BlockbookTransaction } from '@trezor/blockchain-link-types';
+import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
 import { cloneObject } from '@trezor/utils';
 
 import { sendFormActions } from './sendFormActions';
-import { SerializedTx } from './sendFormTypes';
+import { type SerializedTx } from './sendFormTypes';
 import { accountsActions } from '../accounts/accountsActions';
 
 export type SendState = {
@@ -87,6 +87,10 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(initialState, (
             delete state.serializedTx;
             delete state.signedTx;
             delete state.accountKey;
+        })
+        .addCase(sendFormActions.clearSignedTransactionData, state => {
+            delete state.serializedTx;
+            delete state.signedTx;
         })
         .addCase(sendFormActions.sendRaw, (state, { payload: sendRaw }) => {
             state.sendRaw = sendRaw;

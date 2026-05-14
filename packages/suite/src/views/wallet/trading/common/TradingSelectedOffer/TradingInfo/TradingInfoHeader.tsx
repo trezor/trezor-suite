@@ -1,4 +1,4 @@
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { parseCryptoId, useTradingUtils } from '@suite-common/trading';

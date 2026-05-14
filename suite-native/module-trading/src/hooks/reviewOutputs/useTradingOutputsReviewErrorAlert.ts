@@ -2,8 +2,8 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import type { DeviceRootState } from '@suite-common/device';
-import { AccountsRootState, selectAccountNetworkType } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountNetworkType } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { useTranslate } from '@suite-native/intl';
 
@@ -28,10 +28,10 @@ export const useTradingOutputsReviewErrorAlert = (accountKey: AccountKey) => {
                     ? translate('moduleSend.review.outputs.errorAlert.solana.description')
                     : translate('moduleSend.review.outputs.errorAlert.generic.description'),
                 primaryButtonTitle: translate('generic.buttons.tryAgain'),
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 onPressPrimaryButton: onRetry,
                 secondaryButtonTitle: translate('generic.buttons.cancel'),
-                secondaryButtonVariant: 'redElevation0',
+                secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
                 onPressSecondaryButton: onCancel,
             });
         },

@@ -1,10 +1,10 @@
 import { A, S, pipe } from '@mobily/ts-belt';
-import { RequireAllOrNone } from 'type-fest';
+import { type RequireAllOrNone } from 'type-fest';
 
-import { splitAddressToChunks } from '@suite-native/helpers';
+import { AddressFormatter } from '@suite-common/formatters';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { DevicePaginationActivePage } from './types';
+import { type DevicePaginationActivePage } from './types';
 
 const T1B1_SCREEN_LINE_LENGTH = 21;
 const LEGACY_SEGWIT_ADDRESS_LENGTH = 34;
@@ -19,6 +19,13 @@ const filterAddressChunksByPagination = (
     }
 
     return [paginationEmptyChunk, ...A.sliceToEnd(addressChunks, 15)];
+};
+
+const padFirstAddressChunk = (addressChunks: readonly string[]): readonly string[] => {
+    const firstChunk = addressChunks[0];
+    if (!firstChunk || firstChunk.length >= 4) return addressChunks;
+
+    return [firstChunk.padStart(4, ' '), ...addressChunks.slice(1)];
 };
 
 export const parseAddressToDeviceLines = ({
@@ -48,13 +55,10 @@ export const parseAddressToDeviceLines = ({
     }
 
     return pipe(
-        address,
-        splitAddressToChunks,
-        addressChunks => {
-            if (!isPaginationEnabled) return addressChunks;
-
-            return filterAddressChunksByPagination(addressChunks, activePage);
-        },
+        AddressFormatter.format(address, { format: 'full', isChunked: true }).split(' '),
+        padFirstAddressChunk,
+        chunks =>
+            isPaginationEnabled ? filterAddressChunksByPagination(chunks, activePage) : chunks,
         A.splitEvery(4),
         A.map(A.join(' ')),
     );

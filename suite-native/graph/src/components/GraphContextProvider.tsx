@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { analytics } from '@suite-native/analytics';
-import { NativeServices, NativeServicesProvider } from '@suite-native/services';
+import { type NativeServices, NativeServicesProvider } from '@suite-native/services';
 import { useActiveColorScheme } from '@suite-native/theme';
-import { StylesProvider, createRenderer } from '@trezor/styles';
+import { StylesProvider, createRenderer } from '@trezor/styles-native';
 import { prepareNativeTheme } from '@trezor/theme';
 
 type ProviderProps = {

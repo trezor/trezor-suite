@@ -1,7 +1,7 @@
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { StakeState, stakeInitialState } from '@suite-common/wallet-core';
-import { Account, AccountKey, Timestamp } from '@suite-common/wallet-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type StakeState, stakeInitialState } from '@suite-common/wallet-core';
+import { type Account, type AccountKey, type Timestamp } from '@suite-common/wallet-types';
 
 import {
     selectExpectedRewardsForEpoch,
@@ -14,9 +14,7 @@ import {
     selectSolanaTotalStakePendingByAccountKey,
     selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol,
 } from '../solanaStakingSelectors';
-import { NativeStakingRootState } from '../types';
-
-type SolStakeData = NonNullable<StakeState['data']['sol']>;
+import { type NativeStakingRootState } from '../types';
 
 const staticStateString = 'device@state:1';
 
@@ -101,15 +99,36 @@ const etcAccount: Account = {
     networkType: 'ethereum',
 } as unknown as Account;
 
-const solStakeData: SolStakeData = {
-    stakingInfo: {
-        error: false,
-        isLoading: true,
-        lastSuccessfulFetchTimestamp: 0 as Timestamp,
-        data: {
-            apy: 6.21,
+const solStakeData: StakeState['data'] = {
+    error: null,
+    isLoading: true,
+    lastSuccessAt: 0 as Timestamp,
+    data: {
+        sol: {
+            stats: {
+                apy: 6.21,
+            },
         },
+        eth: undefined,
+        ada: undefined,
     },
+};
+
+const messageSystemState = {
+    config: null,
+    currentSequence: 0,
+    timestamp: 0,
+    validMessages: {
+        banner: [],
+        context: [],
+        modal: [],
+        feature: [],
+    },
+    dismissedMessages: {},
+    validExperiments: [],
+    configSource: 'remote' as const,
+    manuallyAddedMessageIds: {},
+    manuallyAddedExperimentIds: {},
 };
 
 const getTestState = ({
@@ -121,11 +140,26 @@ const getTestState = ({
 }): NativeStakingRootState => ({
     wallet: {
         accounts,
-        stake: { ...stakeInitialState, data: { sol: withSolStakeData ? solStakeData : {} } },
-        transactions: { transactions: {}, fetchStatusDetail: {} },
+        stake: {
+            ...stakeInitialState,
+            data: withSolStakeData
+                ? solStakeData
+                : {
+                      error: null,
+                      isLoading: false,
+                      lastSuccessAt: null,
+                      data: {
+                          sol: undefined,
+                          eth: undefined,
+                          ada: undefined,
+                      },
+                  },
+        },
+        transactions: { transactions: {}, phishing: {}, fetchStatusDetail: {} },
     },
     suiteSync: initialSuiteSyncState,
     suiteSyncData: initialSuiteSyncDataState,
+    messageSystem: messageSystemState,
     device: {
         devices: [
             {
@@ -148,9 +182,11 @@ const getTestState = ({
         isDeviceAuthenticityCheckEnabled: false,
         isFirmwareRevisionCheckEnabled: false,
         isFirmwareHashCheckEnabled: false,
+        areDeviceMetaChecksEnabled: false,
         areTestnetsEnabled: false,
         shouldShowAutoEjectAlert: false,
         hasAutoEjectAlertBeenDisplayed: false,
+        isTronEnabled: false,
     },
 });
 

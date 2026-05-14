@@ -24,11 +24,11 @@ export const ConnectAndUnlockDeviceScreen = () => {
                 title: <Translation id="moduleConnectDevice.helpModal.connect.title" />,
                 textAlign: 'left',
                 primaryButtonTitle: <Translation id="generic.buttons.gotIt" />,
-                primaryButtonVariant: 'blueBold',
+                primaryButtonColorProps: { intent: 'info', priority: 'primary' },
                 secondaryButtonTitle: (
                     <Translation id="moduleConnectDevice.helpModal.connect.contactSupportButton" />
                 ),
-                secondaryButtonVariant: 'blueElevation0',
+                secondaryButtonColorProps: { intent: 'info', priority: 'secondary' },
                 onPressSecondaryButton: () => openLink(`${TREZOR_SUPPORT_DEVICE_URL}#open-chat`),
                 appendix: (
                     <VStack spacing="sp12">

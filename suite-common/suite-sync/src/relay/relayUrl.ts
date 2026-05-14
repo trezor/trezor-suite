@@ -1,7 +1,15 @@
-import { isDevEnv } from '@suite-common/suite-utils';
+import { isCodesignBuild } from '@trezor/env-utils';
+
+export const DEFAULT_SUITE_SYNC_RELAY_URL_DEV = 'https://suite-sync-dev.suite.sldev.cz/evolu/';
+export const DEFAULT_SUITE_SYNC_RELAY_URL_PROD = 'https://suite-sync.trezor.io/evolu/';
+
+export const SUITE_SYNC_RELAY_SERVERS = [
+    DEFAULT_SUITE_SYNC_RELAY_URL_DEV,
+    DEFAULT_SUITE_SYNC_RELAY_URL_PROD,
+];
 
 // The `https://suite-sync.trezor.io/` MUST have the last `/` in the URL.
 
-export const DEFAULT_SUITE_SYNC_RELAY_URL = isDevEnv
-    ? 'https://suite-sync.suite.sldev.cz/evolu/'
-    : 'https://suite-sync.trezor.io/evolu/';
+export const DEFAULT_SUITE_SYNC_RELAY_URL = isCodesignBuild()
+    ? DEFAULT_SUITE_SYNC_RELAY_URL_PROD
+    : DEFAULT_SUITE_SYNC_RELAY_URL_DEV;

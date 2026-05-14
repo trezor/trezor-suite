@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useContext, useState } from 'react';
+import { type ReactNode, createContext, useContext, useState } from 'react';
 
 import {
     prepareSelectAllDevices,
@@ -7,7 +7,7 @@ import {
 } from '@suite-common/bluetooth';
 import { isDesktop } from '@trezor/env-utils';
 
-import { DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
+import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
 import { NEARBY_DEVICES_LAST_UPDATED_LIMIT } from 'src/actions/bluetooth/filterOutNonResponsiveDevices';
 import { isBluetoothDeviceReachable } from 'src/actions/bluetooth/isBluetoothDeviceReachable';
 import { selectDeviceDefaultConnectionMode } from 'src/actions/device/deviceSelectors';
@@ -15,10 +15,13 @@ import { setConnectionMode } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import {
-    UseBluetoothConnectionReturn,
+    type UseBluetoothConnectionReturn,
     useBluetoothConnection,
 } from '../hook/useBluetoothConnection';
-import { UseBluetoothScanningReturn, useBluetoothScanning } from '../hook/useBluetoothScanning';
+import {
+    type UseBluetoothScanningReturn,
+    useBluetoothScanning,
+} from '../hook/useBluetoothScanning';
 
 export type ConnectionGlobalModalContextProps = UseBluetoothScanningReturn &
     UseBluetoothConnectionReturn & {

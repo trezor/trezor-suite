@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { Card, IconCircle, IconName, variables } from '@trezor/components';
+import { Card, IconCircle, type IconName, variables } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
 const containerGridStyle = css`
@@ -13,7 +13,7 @@ const containerGridStyle = css`
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const Container = styled(Card)`
-    background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
+    background: ${({ theme }) => theme.legacyBackgroundNeutralBoldInverted};
     box-shadow: none;
     display: block;
 
@@ -83,7 +83,7 @@ const descriptionGridStyle = css`
 `;
 
 const Description = styled.p`
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     ${typography['body-sm']}
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
@@ -110,7 +110,7 @@ export interface TileProps {
 export const Tile = ({ description, iconName, title }: TileProps) => (
     <Container>
         <Image>
-            <IconCircle name={iconName} size={72} />
+            <IconCircle name={iconName} size={96} />
         </Image>
         <Title>{title}</Title>
         <Description>{description}</Description>

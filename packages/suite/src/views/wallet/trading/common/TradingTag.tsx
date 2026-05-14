@@ -9,7 +9,7 @@ const TagRow = styled.div`
 const Tag = styled.div`
     padding: 3px 8px 0;
     border-radius: ${borders.radii.xs};
-    background: ${({ theme }) => theme.textAlertYellow};
+    background: ${({ theme }) => theme.contentWarning};
     color: ${paletteV2.globalWhiteAlpha1000};
     ${typography['body-xs']}
     text-transform: capitalize;

@@ -1,32 +1,30 @@
-import { EnhancedStore } from '@reduxjs/toolkit';
-
 import { Form } from '@suite-native/forms';
-import {
-    fireEvent,
-    initStore,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
-    screen,
-} from '@suite-native/test-utils';
-import { getInitializedTradingState } from '@suite-native/trading-fixtures';
-import { BuyFormType } from '@suite-native/trading-types';
+import { type TestStore, fireEvent, screen } from '@suite-native/test-utils-store';
+import { type BuyFormType } from '@suite-native/trading-types';
 import { FirmwareType } from '@trezor/connect';
 
+import {
+    createTradingLightStore,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyTradeableAssetPicker } from '../BuyTradeableAssetPicker';
 
 describe('BuyTradeableAssetPicker', () => {
-    let store: EnhancedStore;
+    let store: TestStore;
     let form: BuyFormType;
 
     const initPreloadedStore = (firmwareType: FirmwareType) =>
-        initStore({
-            device: { selectedDevice: { firmwareType } },
-            wallet: { trading: getInitializedTradingState() },
+        createTradingLightStore({
+            tradeType: 'buy',
+            overrides: {
+                device: { selectedDevice: { firmwareType } },
+            },
         });
 
-    const renderFormHook = async () => {
-        const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm(), {
+    const renderFormHook = () => {
+        const { result } = renderHookWithTradingProvider(() => useBuyForm(), {
             store,
         });
 
@@ -34,7 +32,7 @@ describe('BuyTradeableAssetPicker', () => {
     };
 
     const renderTradeableAssetPicker = () =>
-        renderWithStoreProviderAsync(
+        renderWithTradingProvider(
             <Form form={form}>
                 <BuyTradeableAssetPicker />
             </Form>,
@@ -46,19 +44,19 @@ describe('BuyTradeableAssetPicker', () => {
     });
 
     describe('with regular firmware', () => {
-        beforeEach(async () => {
-            store = (await initPreloadedStore(FirmwareType.Universal)).store;
-            form = await renderFormHook();
+        beforeEach(() => {
+            store = initPreloadedStore(FirmwareType.Universal);
+            form = renderFormHook();
         });
 
-        it('should render "Select asset" button with caret', async () => {
-            const { getByLabelText } = await renderTradeableAssetPicker();
+        it('should render "Select asset" button with caret', () => {
+            const { getByLabelText } = renderTradeableAssetPicker();
 
             expect(getByLabelText('Select asset')).toHaveTextContent(/^Select asset.$/);
         });
 
-        it('should render bottom sheet with all assets', async () => {
-            const { getByLabelText } = await renderTradeableAssetPicker();
+        it('should render bottom sheet with all assets', () => {
+            const { getByLabelText } = renderTradeableAssetPicker();
 
             expect(getByLabelText('Bitcoin')).toBeTruthy();
             expect(getByLabelText('USDC')).toBeTruthy();
@@ -66,25 +64,25 @@ describe('BuyTradeableAssetPicker', () => {
     });
 
     describe('with BTC-only firmware', () => {
-        beforeEach(async () => {
-            store = (await initPreloadedStore(FirmwareType.BitcoinOnly)).store;
-            form = await renderFormHook();
+        beforeEach(() => {
+            store = initPreloadedStore(FirmwareType.BitcoinOnly);
+            form = renderFormHook();
         });
 
-        it('should preselect BTC and do not render caret', async () => {
-            const { getByLabelText } = await renderTradeableAssetPicker();
+        it('should preselect BTC and do not render caret', () => {
+            const { getByLabelText } = renderTradeableAssetPicker();
 
             expect(getByLabelText('Select asset')).toHaveTextContent('BTC');
         });
 
-        it('should not render bottom sheet at all', async () => {
-            const { queryByLabelText } = await renderTradeableAssetPicker();
+        it('should not render bottom sheet at all', () => {
+            const { queryByLabelText } = renderTradeableAssetPicker();
 
             expect(queryByLabelText('Bitcoin')).toBeNull();
         });
 
-        it('should do nothing on button or input press', async () => {
-            const { getByLabelText } = await renderTradeableAssetPicker();
+        it('should do nothing on button or input press', () => {
+            const { getByLabelText } = renderTradeableAssetPicker();
 
             // no need to act as there should be no action
             fireEvent.press(getByLabelText('Select asset'));

@@ -14,8 +14,45 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/rebase') && github.repository == 'trezor/trezor-suite'
     steps:
+      - name: Check authorization
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+            const commenter = context.payload.comment.user.login;
+            const prAuthor = pr.user.login;
+
+            if (commenter === prAuthor) {
+              console.log(`Commenter ${commenter} is the PR author. Authorized.`);
+              return;
+            }
+
+            const { data: permissionLevel } = await github.rest.repos.getCollaboratorPermissionLevel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              username: commenter
+            });
+            const permission = permissionLevel.permission;
+
+            if (permission === 'admin' || permission === 'write') {
+              console.log(`Commenter ${commenter} has ${permission} permission. Authorized.`);
+              return;
+            }
+
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Only the PR author or maintainers can trigger a rebase.`
+            });
+            core.setFailed(`User ${commenter} is not authorized to trigger a rebase.`);
+
       - name: Respond in pull request
-        uses: actions/github-script@v6
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
             github.rest.issues.createComment({
@@ -26,25 +63,25 @@ jobs:
             })
       - name: Generate GitHub App token
         id: trezor-bot-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3
         with:
-          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
           token: ${{ steps.trezor-bot-token.outputs.token }}
       - name: Auto rebase pull request
-        uses: cirrus-actions/rebase@1.8
-        with:
-          autosquash: true
         env:
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+          INPUT_AUTOSQUASH: true
+        run: |
+          bash scripts/ci/bot-rebase.sh
       - name: Report failure
         if: ${{ failure() }}
-        uses: actions/github-script@v6
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
             github.rest.issues.createComment({

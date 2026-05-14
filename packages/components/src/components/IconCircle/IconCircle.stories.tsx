@@ -1,17 +1,17 @@
 import React from 'react';
 
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
 // TODO: suite-common imports in non-suite packages should not be allowed
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { IconName, icons } from '@suite-common/icons/src/icons';
+import { type IconName, icons } from '@suite-common/icons/src/icons';
 
 import {
     IconCircle as IconCircleComponent,
-    IconCircleProps,
+    type IconCircleProps,
     allowedIconCircleFrameProps,
 } from './IconCircle';
-import { iconCirclePaddingTypes, iconCircleVariants } from './types';
+import { iconCircleIntents, iconCircleSizes } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const meta: Meta<typeof IconCircleComponent> = {
@@ -22,35 +22,23 @@ export default meta;
 export const IconCircle: StoryObj<typeof meta> = {
     render: props => <IconCircleComponent {...(props as IconCircleProps)} />,
     args: {
-        variant: 'primary',
+        intent: 'brand',
         name: 'butterfly',
-        paddingType: 'large',
-        size: 60,
-        hasBorder: true,
+        size: 40,
         ...getFramePropsStory(allowedIconCircleFrameProps).args,
     },
     argTypes: {
-        variant: {
+        intent: {
             control: {
                 type: 'select',
             },
-            options: iconCircleVariants,
+            options: iconCircleIntents,
         },
         size: {
             control: {
-                type: 'number',
-            },
-        },
-        paddingType: {
-            control: {
                 type: 'select',
             },
-            options: iconCirclePaddingTypes,
-        },
-        hasBorder: {
-            control: {
-                type: 'boolean',
-            },
+            options: iconCircleSizes,
         },
         name: {
             control: {

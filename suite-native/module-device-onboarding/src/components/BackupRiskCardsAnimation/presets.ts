@@ -1,6 +1,6 @@
-import { IconName } from '@suite-native/icons';
-import { TxKeyPath } from '@suite-native/intl';
-import { Color } from '@trezor/theme';
+import { type IconName } from '@suite-native/icons';
+import { type TxKeyPath } from '@suite-native/intl';
+import { type Color } from '@trezor/theme';
 
 export type TileVariant = 'lost' | 'damaged' | 'stolen';
 
@@ -12,19 +12,19 @@ export type TileStyles = {
 
 export const variantToColorMap = {
     damaged: {
-        backgroundColor: 'baseFillElementWarningSofter',
-        borderColor: 'baseBorderElementWarningSofter',
-        text: 'baseContentWarning',
+        backgroundColor: 'elementFillWarningSofter',
+        borderColor: 'elementBorderWarningSofter',
+        text: 'contentWarning',
     },
     lost: {
-        backgroundColor: 'baseFillElementInfoSofter',
-        borderColor: 'baseBorderElementInfoSofter',
-        text: 'baseContentInfo',
+        backgroundColor: 'elementFillInfoSofter',
+        borderColor: 'elementBorderInfoSofter',
+        text: 'contentInfo',
     },
     stolen: {
-        backgroundColor: 'baseFillElementNegativeSofter',
-        borderColor: 'baseBorderElementNegativeSofter',
-        text: 'baseContentNegative',
+        backgroundColor: 'elementFillCriticalSofter',
+        borderColor: 'elementBorderCriticalSofter',
+        text: 'contentCritical',
     },
 } as const satisfies Record<TileVariant, TileStyles>;
 

@@ -1,9 +1,9 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
-import { Icon, IconName } from '@suite-native/icons';
-import { Translation, TxKeyPath } from '@suite-native/intl';
-import { Color } from '@trezor/theme';
+import { Icon, type IconName } from '@suite-native/icons';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
+import { type Color } from '@trezor/theme';
 
 import { CRYPTO_BALANCE_DECIMALS } from '../constants';
 
@@ -24,8 +24,8 @@ const iconByType: Record<EarnDetailType, IconName> = {
     pending: 'spinner',
 };
 const colorByType: Record<EarnDetailType, Color> = {
-    rewards: 'textPrimaryDefault',
-    pending: 'textAlertYellow',
+    rewards: 'contentBrand',
+    pending: 'contentWarning',
 };
 
 export const EarnItemRewardInfo = ({ value, symbol, type }: EarnItemRewardInfoProps) => {
@@ -50,11 +50,11 @@ export const EarnItemRewardInfo = ({ value, symbol, type }: EarnItemRewardInfoPr
                     color={color}
                 />
                 <HStack spacing="sp2" alignItems="center" justifyContent="flex-end">
-                    <Text color="textSubdued">≈</Text>
+                    <Text color="contentSecondary">≈</Text>
                     <CryptoToFiatAmountFormatter
                         value={value}
                         symbol={symbol}
-                        color="textSubdued"
+                        color="contentSecondary"
                         isBalance
                         variant="body-sm"
                     />

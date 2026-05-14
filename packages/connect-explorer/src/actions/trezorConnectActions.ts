@@ -9,15 +9,7 @@ import {
     ON_CHANGE_CONNECT_OPTIONS,
     ON_HANDSHAKE_CONFIRMED,
     ON_INIT_ERROR,
-    ON_SELECT_DEVICE,
 } from '../types/actions';
-
-export function onSelectDevice(path: string) {
-    return {
-        type: ON_SELECT_DEVICE,
-        path,
-    };
-}
 
 export const onConnectOptionChange = (option: Field<any>, value: any) => ({
     type: ON_CHANGE_CONNECT_OPTION,
@@ -36,7 +28,7 @@ export const init =
         // that is replacing @trezor/connect-web when connect-explorer is run in connect-explorer-webextension
         // so Typescript cannot recognize it.
         // @ts-expect-error
-        TrezorConnect.on(WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM, event => {
+        TrezorConnect.on(WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM, (event: { type: string }) => {
             if (event.type === WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM) {
                 dispatch({ type: ON_HANDSHAKE_CONFIRMED });
             }
@@ -57,7 +49,6 @@ export const init =
             coreMode,
             transportReconnect: true,
             debug: true,
-            lazyLoad: true,
             manifest: {
                 email: 'info@trezor.io',
                 appUrl: '@trezor/connect-explorer',

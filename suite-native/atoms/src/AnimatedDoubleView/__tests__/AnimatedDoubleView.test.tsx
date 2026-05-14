@@ -1,7 +1,7 @@
-import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
+import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { Box } from '../../Box';
-import { AnimatedDoubleView, AnimatedDoubleViewProps } from '../AnimatedDoubleView';
+import { AnimatedDoubleView, type AnimatedDoubleViewProps } from '../AnimatedDoubleView';
 
 describe('AnimatedDoubleView', () => {
     const renderAnimatedDoubleView = (props: Partial<AnimatedDoubleViewProps>) =>
@@ -21,13 +21,13 @@ describe('AnimatedDoubleView', () => {
         expect(getByLabelText('Switch')).toBeOnTheScreen();
     });
 
-    it('should call onViewSwitch when Switch button is pressed', async () => {
+    it('should call onViewSwitch when Switch button is pressed', () => {
         const onViewSwitch = jest.fn();
         const { getByLabelText } = renderAnimatedDoubleView({ onViewSwitch });
 
         const switchButton = getByLabelText('Switch');
-        await userEvent.press(switchButton);
-        await userEvent.press(switchButton);
+        fireEvent.press(switchButton);
+        fireEvent.press(switchButton);
 
         expect(onViewSwitch).toHaveBeenCalledTimes(2);
         expect(onViewSwitch).toHaveBeenNthCalledWith(1, 'secondary');
@@ -42,25 +42,25 @@ describe('AnimatedDoubleView', () => {
         expect(getByLabelText(switchLabel)).toBeOnTheScreen();
     });
 
-    it('should switch active view on second view press', async () => {
+    it('should switch active view on second view press', () => {
         const onViewSwitch = jest.fn();
         const { getByLabelText } = renderAnimatedDoubleView({ onViewSwitch });
 
-        await userEvent.press(getByLabelText('SECONDARY_VIEW'));
-        await userEvent.press(getByLabelText('PRIMARY_VIEW'));
+        fireEvent.press(getByLabelText('SECONDARY_VIEW'));
+        fireEvent.press(getByLabelText('PRIMARY_VIEW'));
 
         expect(onViewSwitch).toHaveBeenCalledTimes(2);
         expect(onViewSwitch).toHaveBeenNthCalledWith(1, 'secondary');
         expect(onViewSwitch).toHaveBeenNthCalledWith(2, 'primary');
     });
 
-    it('should do nothing when pressing active view', async () => {
+    it('should do nothing when pressing active view', () => {
         const onViewSwitch = jest.fn();
         const { getByLabelText } = renderAnimatedDoubleView({ onViewSwitch });
 
-        await userEvent.press(getByLabelText('PRIMARY_VIEW'));
-        await userEvent.press(getByLabelText('Switch'));
-        await userEvent.press(getByLabelText('SECONDARY_VIEW'));
+        fireEvent.press(getByLabelText('PRIMARY_VIEW'));
+        fireEvent.press(getByLabelText('Switch'));
+        fireEvent.press(getByLabelText('SECONDARY_VIEW'));
 
         expect(onViewSwitch).toHaveBeenCalledTimes(1);
         expect(onViewSwitch).toHaveBeenNthCalledWith(1, 'secondary');

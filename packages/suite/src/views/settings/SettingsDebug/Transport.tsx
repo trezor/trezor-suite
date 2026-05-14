@@ -1,14 +1,17 @@
 import { useMemo } from 'react';
 
+import {
+    type DebugModeOptions,
+    selectDebugTransports,
+    suiteSettingsActions,
+} from '@suite/settings';
 import { Checkbox } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
-import { ArrayElement } from '@trezor/type-utils';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { type ArrayElement } from '@trezor/type-utils';
 
-import { setDebugMode } from 'src/actions/suite/suiteActions';
-import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { DebugModeOptions } from 'src/reducers/suite/suiteReducer';
 import { selectActiveTransports } from 'src/selectors/suite/suiteSelectors';
 
 type Transport = ArrayElement<NonNullable<DebugModeOptions['transports']>>;
@@ -33,7 +36,7 @@ const TRANSPORT_DESCRIPTIONS: Record<Transport, string> = {
 
 const useTransportItems = (transports: readonly Transport[]): TransportMenuItem[] => {
     const activeTransports = useSelector(selectActiveTransports);
-    const debugTransports = useSelector(state => state.suite.settings.debug.transports);
+    const debugTransports = useSelector(selectDebugTransports);
 
     return useMemo(
         () =>
@@ -73,11 +76,15 @@ export const Transport = () => {
                     <ActionColumn>
                         <Checkbox
                             isChecked={transport.checked}
-                            onClick={() => {
+                            onChange={() => {
                                 const nextTransports = items
                                     .filter(t => (t.name === transport.name) !== t.checked)
                                     .map(t => t.name);
-                                dispatch(setDebugMode({ transports: nextTransports }));
+                                dispatch(
+                                    suiteSettingsActions.setDebugMode({
+                                        transports: nextTransports,
+                                    }),
+                                );
                                 TrezorConnect.updateConnectSettings({ transports: nextTransports });
                             }}
                         />

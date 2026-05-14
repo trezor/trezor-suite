@@ -1,4 +1,4 @@
-import { FeedbackCategory } from '@suite-common/feedback';
+import type { FeedbackCategory } from '@suite-common/feedback';
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';

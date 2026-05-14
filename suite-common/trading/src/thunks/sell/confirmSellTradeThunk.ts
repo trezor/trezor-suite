@@ -1,8 +1,8 @@
-import { BankAccount } from 'invity-api';
+import { type BankAccount } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 
-import { HandleSellTradeThunkProps, handleSellTradeThunk } from './handleSellTradeThunk';
+import { type HandleSellTradeThunkProps, handleSellTradeThunk } from './handleSellTradeThunk';
 import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
 import { tradingSellActions } from '../../reducers/sellReducer';
 import { selectTradingSellSelectedQuote } from '../../selectors/tradingSelectors';

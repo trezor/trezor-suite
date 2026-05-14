@@ -1,4 +1,4 @@
-import { PasswordManagerState } from '@suite-common/metadata-types';
+import { type PasswordManagerState } from '@suite-common/metadata-types';
 
 export const FILENAME_MESS = '5f91add3fa1c3c76e90c90a3bd0999e2bd7833d06a483fe884ee60397aca277a';
 export const HD_HARDENED = 0x80000000;

@@ -1,10 +1,10 @@
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
+import type { Log } from '@trezor/connect-common/src/utils/debug';
 import { PROTOCOL_MALFORMED } from '@trezor/protocol/src/errors';
 import { TRANSPORT_ERROR } from '@trezor/transport';
 import { resolveAfter, versionUtils } from '@trezor/utils';
 
-import { WorkflowContext } from '../../types/workflow';
-import { Log } from '../../utils/debug';
+import type { WorkflowContext } from '../../types/workflow';
 
 const CANCEL_TIMEOUT = 1_000;
 const ATTEMPTS_LIMIT = 10;
@@ -52,7 +52,9 @@ export const handshakeCancel = async ({ device, logger, signal }: Context) => {
     for (let attempt = 0; attempt < ATTEMPTS_LIMIT; ++attempt) {
         logger?.debug(`handshake Cancel read attempt ${attempt}`);
 
-        const result = await device.getCurrentSession().receive({ signal, timeout });
+        const result = await device
+            .getCurrentSession()
+            .receive({ signal, timeout: CANCEL_TIMEOUT });
 
         // Older T1 don't respond to Cancel message which seems to be recoverable only by reacquiring
         if (!result.success && result.error.message === TRANSPORT_ERROR.ABORTED_BY_TIMEOUT) {
@@ -81,7 +83,7 @@ export const handshakeCancel = async ({ device, logger, signal }: Context) => {
                 result.payload.message.code === 'Failure_InvalidProtocol'
             ) {
                 logger?.debug(`handshake Cancel protocol v2 detected`);
-                await device.setupThp();
+                device.setupThp();
             }
 
             if (

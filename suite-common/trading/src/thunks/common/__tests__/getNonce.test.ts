@@ -145,7 +145,7 @@ describe('getNonce thunk', () => {
             (selectSelectedDevice as jest.Mock).mockReturnValue(mockDevice);
             (TrezorConnect.getNonce as jest.Mock).mockResolvedValue({
                 success: false,
-                payload: { error: 'Device communication failed' },
+                error: { message: 'Device communication failed' },
             });
 
             const store = createMockStore();

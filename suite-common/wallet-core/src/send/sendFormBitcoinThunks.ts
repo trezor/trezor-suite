@@ -1,14 +1,14 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { BITCOIN_ONLY_SYMBOLS, BitcoinOnlySymbolsItemType } from '@suite-common/suite-constants';
+import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { BTC_LOCKTIME_SEQUENCE, BTC_RBF_SEQUENCE } from '@suite-common/wallet-constants';
 import {
-    Account,
+    type Account,
     AddressDisplayOptions,
-    FormState,
-    PrecomposedLevels,
-    PrecomposedTransaction,
+    type FormState,
+    type PrecomposedLevels,
+    type PrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
     datetimeToLocktime,
@@ -21,21 +21,22 @@ import {
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     DEFAULT_SORTING_STRATEGY,
-    FeeLevel,
-    Params,
-    SignTransaction,
-    SignedTransaction,
+    type FeeLevel,
+    type Params,
+    type SignTransaction,
+    type SignedTransaction,
 } from '@trezor/connect';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, isArrayMember } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
-    ComposeFeeLevelsError,
-    ComposeTransactionThunkArguments,
-    SignTransactionError,
-    SignTransactionThunkArguments,
+    type ComposeFeeLevelsError,
+    type ComposeTransactionThunkArguments,
+    type SignTransactionError,
+    type SignTransactionThunkArguments,
 } from './sendFormTypes';
 import {
+    selectAddressDisplayType,
     selectAreSatsAmountUnit,
     selectBitcoinAmountUnit,
 } from '../settings/walletSettingsReducer';
@@ -137,13 +138,13 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',
-                    error: response.payload.error,
+                    error: response.error.message,
                 }),
             );
 
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',
-                message: response.payload.error,
+                message: response.error.message,
             });
         }
 
@@ -248,12 +249,8 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
     `${SEND_MODULE_PREFIX}/signBitcoinSendFormTransactionThunk`,
     async (
         { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
-        { getState, extra, rejectWithValue },
+        { getState, rejectWithValue },
     ) => {
-        const {
-            selectors: { selectAddressDisplayType },
-        } = extra;
-
         const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
         const transactions = selectTransactions(getState());
         const addressDisplayType = selectAddressDisplayType(getState());
@@ -325,7 +322,7 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
             signEnhancement.unlockPath = selectedAccount.unlockPath;
         }
 
-        if (BITCOIN_ONLY_SYMBOLS.includes(selectedAccount.symbol as BitcoinOnlySymbolsItemType)) {
+        if (isArrayMember(selectedAccount.symbol, BITCOIN_ONLY_SYMBOLS)) {
             // nVersion, use 2 as it enables BIP68 + seems to be the most commonly used (= harder to fingerprint the Trezor)
             signEnhancement.version = 2;
         }
@@ -353,8 +350,8 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
         if (!response.success) {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
-                errorCode: response.payload.code,
-                message: response.payload.error,
+                errorCode: response.error.code,
+                message: response.error.message,
             });
         }
 

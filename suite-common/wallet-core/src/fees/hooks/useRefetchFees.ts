@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { FEES_UPDATE_INTERVAL_MILLISECONDS, FEE_UPDATE_DELAY_MILLISECONDS } from '../feesConstants';
 import { updateFeeInfoThunk } from '../feesThunks';
@@ -12,7 +12,7 @@ export const useFetchFeesOnce = ({ networkSymbol, isDisabled }: UseRefetchFeesPr
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (isDisabled === true || networkSymbol === undefined) return;
+        if (isDisabled || networkSymbol === undefined) return;
         dispatch(updateFeeInfoThunk({ networkSymbol }));
     }, [dispatch, networkSymbol, isDisabled]);
 };
@@ -22,7 +22,7 @@ export const useRefetchFees = ({ networkSymbol, isDisabled }: UseRefetchFeesProp
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (isDisabled === true || !networkSymbol) return;
+        if (isDisabled || !networkSymbol) return;
 
         const intervalId = setInterval(() => {
             dispatch(

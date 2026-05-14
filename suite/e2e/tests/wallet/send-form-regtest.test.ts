@@ -5,7 +5,6 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     test.use({
         deviceSetup: {
-            needs_backup: true,
             mnemonic: 'mnemonic_all',
         },
     });
@@ -16,7 +15,6 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
             await settingsPage.toggleTestnetNetworks();
             await settingsPage.navigateTo('coins');
             await settingsPage.coinsTab.enableNetwork('regtest');
-
             await trezorUserEnv.sendToAddressAndMineBlock({
                 address: ADDRESS_INDEX_1,
                 btc_amount: 1,
@@ -45,10 +43,14 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
         await tradingPage.sendAddressInput.fill(ADDRESS_INDEX_1);
 
         // add locktime
-        await page.getByTestId('@send/header-dropdown').click();
-        await page.getByTestId('@send/header-dropdown/locktime').click();
-        await page.getByTestId('locktime-option/input').click();
-        await page.getByTestId('locktime-option/option/block').click();
+        await page.selectDropdownOptionWithRetry(
+            page.getByTestId('@send/header-dropdown'),
+            page.getByTestId('@send/header-dropdown/locktime'),
+        );
+        await page.selectDropdownOptionWithRetry(
+            page.getByTestId('locktime-option/input'),
+            page.getByTestId('locktime-option/option/block'),
+        );
         await page.getByTestId('locktime-blockheight-input').fill('1000');
 
         await tradingPage.sendButton.click();
@@ -61,8 +63,10 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     test('switch display units to satoshis, fill a form in satoshis and send', async ({
         page,
+        walletPage,
         tradingPage,
     }) => {
+        await expect(walletPage.sendFormHeader).toBeVisible();
         await page.getByTestId('amount-unit-switch/regtest').click();
 
         await tradingPage.sendAmountInput.fill('300');

@@ -1,5 +1,5 @@
-import { factory } from '@trezor/connect/src/factory';
-import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
+import { factory } from '@trezor/connect-common/src/factory';
+import { TrezorConnectDynamic } from '@trezor/connect-common/src/impl/dynamic';
 
 import { CoreInSuiteDesktop } from './impl/core-in-suite-desktop';
 import { CoreInSuiteWeb } from './impl/core-in-suite-web';
@@ -22,4 +22,6 @@ const TrezorConnect = factory({
 });
 
 export default TrezorConnect;
-export * from '@trezor/connect/src/exports';
+export * from '@trezor/connect-common/src/constants';
+export * from '@trezor/connect-common/src/events';
+export * from '@trezor/connect-common/src/types';

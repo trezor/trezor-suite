@@ -1,70 +1,55 @@
-import { ERRORS } from '@trezor/connect-common/src/constants';
-import { Capability } from '@trezor/protobuf/src/messages';
-import { versionUtils } from '@trezor/utils';
-
-import type { Device } from '../device/Device';
-import {
+import { ERRORS, UI_REQUEST } from '@trezor/connect-common';
+import type {
     CallMethodPayload,
     CallMethodResponse,
+    CoinInfo,
     CoreEventMessage,
-    UI,
-    UiPromiseCreator,
+    DeviceState,
+    FirmwareCapability,
+    MethodInfo,
+    MethodPermission,
+    PrecomposeResultFinal,
+    StaticSessionId,
     UiRequestButtonData,
     UiRequestConfirmation,
-} from '../events';
-import type { PrecomposeResultFinal } from '../types/api/composeTransaction';
-import type { DeviceState, StaticSessionId } from '../types/device';
-import type { FirmwareRange } from '../types/firmware';
+} from '@trezor/connect-common';
+import { isStaticSessionId } from '@trezor/device-utils';
+import type { Capability } from '@trezor/protobuf/src/definitions';
+import { isNotUndefined, versionUtils } from '@trezor/utils';
+
+import { DEFAULT_FIRMWARE_RANGE, getFirmwareRange } from '../api/common/paramsValidator';
+import type { Device } from '../device/Device';
+import type { UiPromiseCreator } from '../events/ui-promise';
+
+export { DEFAULT_FIRMWARE_RANGE };
 
 export type Payload<M> = Extract<CallMethodPayload, { method: M }> & { override?: boolean };
 export type MethodReturnType<M extends CallMethodPayload['method']> = CallMethodResponse<M>;
 
-export type MethodPermission = 'read' | 'write' | 'management' | 'push_tx';
-export type DeviceMode = typeof UI.SEEDLESS | typeof UI.BOOTLOADER | typeof UI.INITIALIZE;
+export type DeviceMode =
+    | typeof UI_REQUEST.SEEDLESS
+    | typeof UI_REQUEST.BOOTLOADER
+    | typeof UI_REQUEST.INITIALIZE;
 
-export type MethodInfo = {
-    // static fields
-    useUi: boolean;
-    useDevice: boolean;
-    useDeviceState: boolean;
-    name: string;
-    requiredPermissions: MethodPermission[];
-    // available after init
-    info: string;
-    precomposed?: PrecomposeResultFinal;
-    confirmation?: UiRequestConfirmation['payload'];
+export type MethodContext = {
+    sendCoreMessage: (message: CoreEventMessage) => void;
+    createUiPromise: UiPromiseCreator;
 };
 
-export const DEFAULT_FIRMWARE_RANGE: FirmwareRange = {
-    UNKNOWN: { min: '1.0.0', max: '0' },
-    T1B1: { min: '1.0.0', max: '0' },
-    T2T1: { min: '2.0.0', max: '0' },
-    T2B1: { min: '2.6.1', max: '0' },
-    T3B1: { min: '2.8.1', max: '0' },
-    T3T1: { min: '2.7.1', max: '0' },
-    T3W1: { min: '2.7.1', max: '0' }, // TODO T3W1
+export type MethodMessage<Name extends CallMethodPayload['method']> = {
+    id?: string;
+    payload: Payload<Name>;
 };
 
 function validateStaticSessionId(input: unknown): StaticSessionId {
-    if (typeof input !== 'string')
+    if (!isStaticSessionId(input)) {
         throw ERRORS.TypedError(
             'Method_InvalidParameter',
             'DeviceState: invalid staticSessionId: ' + input,
         );
-    const [firstTestnetAddress, rest] = input.split('@');
-    const [deviceId, instance] = rest.split(':');
-    if (
-        typeof firstTestnetAddress === 'string' &&
-        typeof deviceId === 'string' &&
-        typeof instance === 'string' &&
-        Number.parseInt(instance) >= 0
-    ) {
-        return input as StaticSessionId;
     }
-    throw ERRORS.TypedError(
-        'Method_InvalidParameter',
-        'DeviceState: invalid staticSessionId: ' + input,
-    );
+
+    return input;
 }
 
 // validate expected state from method parameter.
@@ -96,11 +81,10 @@ function validateDeviceState(device: CallMethodPayload['device']): DeviceState |
 }
 
 export abstract class AbstractMethod<Name extends CallMethodPayload['method'], Params = undefined> {
-    public responseID: number;
+    public responseID: string;
 
-    // @ts-expect-error: strictPropertyInitialization
-    public device: Device;
-    // @ts-expect-error: strictPropertyInitialization
+    public device: Device | undefined;
+
     protected params: Params;
 
     public deviceState?: DeviceState;
@@ -113,9 +97,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public overridden: boolean;
 
-    public name: Name; // method name
-
-    public payload: Payload<Name>; // method payload
+    public readonly name: Name; // method name
 
     protected get info() {
         return '';
@@ -135,13 +117,13 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public useEmptyPassphrase: boolean;
 
-    protected firmwareRange: FirmwareRange;
+    abstract get requiredPermissions(): MethodPermission[];
 
-    protected requiredPermissions: MethodPermission[];
-
-    public allowDeviceMode: DeviceMode[]; // used in device management (like ResetDevice allow !UI.INITIALIZED)
+    public allowDeviceMode: DeviceMode[]; // used in device management (like ResetDevice allow !UI_REQUEST.INITIALIZED)
 
     protected requiredDeviceCapabilities: Capability[] = [];
+    protected requiredFirmwareCapabilities: FirmwareCapability[] = [];
+    protected requiredFirmwareCoins: (CoinInfo | undefined)[] = [];
 
     public useCardanoDerivation: boolean;
 
@@ -149,19 +131,13 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public getButtonRequestData?(code: string, name?: string): UiRequestButtonData | undefined;
 
-    // callbacks
-    // @ts-expect-error: strictPropertyInitialization
-    public postMessage: (message: CoreEventMessage) => void;
-    // @ts-expect-error: strictPropertyInitialization
-    public createUiPromise: UiPromiseCreator;
-
     public initAsync?(): Promise<void>;
 
-    constructor(message: { id?: number; payload: Payload<Name> }) {
+    constructor(message: MethodMessage<Name>, params: Params) {
         const { payload } = message;
         this.name = payload.method;
-        this.payload = payload;
-        this.responseID = message.id || 0;
+        this.params = params;
+        this.responseID = message.id ?? '';
         this.deviceState = validateDeviceState(payload.device);
         this.keepSession = typeof payload.keepSession === 'boolean' ? payload.keepSession : false;
         this.skipFinalReload = true;
@@ -171,11 +147,9 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             typeof payload.device?.useEmptyPassphrase === 'boolean'
                 ? payload.device.useEmptyPassphrase
                 : false;
-        this.allowDeviceMode = [UI.SEEDLESS]; // Allow seedless by default
+        this.allowDeviceMode = [UI_REQUEST.SEEDLESS]; // Allow seedless by default
 
         // default values for all methods
-        this.firmwareRange = DEFAULT_FIRMWARE_RANGE;
-        this.requiredPermissions = [];
         this.useDevice = true;
         this.useDeviceState = true;
         this.useUi = true;
@@ -188,22 +162,33 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     }
 
     // Used in *getAddress methods
-    protected getUseUi(params: { address?: string; show_display?: boolean }[]) {
-        const useEventListener =
-            this.payload.useEventListener &&
+    protected getUseUi(
+        params: { address?: string; proto: { show_display?: boolean } }[],
+        useEventListener: boolean | undefined,
+    ) {
+        const notUseUi =
+            useEventListener &&
             params.length === 1 &&
             typeof params[0].address === 'string' &&
-            params[0].show_display;
+            params[0].proto.show_display;
 
-        return !useEventListener;
+        return !notUseUi;
     }
 
     public setDevice(device: Device) {
         this.device = device;
     }
 
+    public getDevice() {
+        if (!this.device) {
+            throw ERRORS.TypedError('Device_NotFound');
+        }
+
+        return this.device;
+    }
+
     public checkFirmwareRange() {
-        const { device } = this;
+        const device = this.getDevice();
 
         // do not do fw range check for devices in BL mode as fw version of T1B1 in BL mode is not defined
         if (!device.features || device.isBootloader()) return;
@@ -211,17 +196,21 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         // seedless devices do not offer firmware update - it is not desirable to update something that does not have seed
         if (device.isSeedless()) return;
 
-        const range = this.firmwareRange[device.features.internal_model];
+        const firmwareRange = getFirmwareRange(
+            [this.name, ...this.requiredFirmwareCapabilities],
+            this.requiredFirmwareCoins.filter(isNotUndefined),
+        );
+        const range = firmwareRange[device.features.internal_model];
 
         if (device.firmwareStatus === 'none') {
-            return UI.FIRMWARE_NOT_INSTALLED;
+            return UI_REQUEST.FIRMWARE_NOT_INSTALLED;
         }
         if (!range) {
             // range not known only for custom (unknown) models
             return;
         }
         if (range.min === '0') {
-            return UI.FIRMWARE_NOT_SUPPORTED;
+            return UI_REQUEST.FIRMWARE_NOT_SUPPORTED;
         }
 
         const version = device.getVersion();
@@ -233,15 +222,13 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             (device.firmwareStatus === 'required' ||
                 !versionUtils.isNewerOrEqual(version, range.min))
         ) {
-            return UI.FIRMWARE_OLD;
+            return UI_REQUEST.FIRMWARE_OLD;
         }
 
         if (range.max !== '0' && versionUtils.isNewer(version, range.max)) {
-            return UI.FIRMWARE_NOT_COMPATIBLE;
+            return UI_REQUEST.FIRMWARE_NOT_COMPATIBLE;
         }
     }
-
-    public abstract init(): void;
 
     public getMethodInfo(): MethodInfo {
         return {
@@ -256,17 +243,17 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         };
     }
 
-    public payloadToPrecomposed(): Promise<PrecomposeResultFinal | undefined> {
+    public payloadToPrecomposed(): PrecomposeResultFinal | undefined {
         // Suite uses precomposed result for transaction review modals
-        return Promise.resolve(undefined);
+        return undefined;
     }
 
     public checkDeviceCapability() {
         const deviceHasAllRequiredCapabilities = (this.requiredDeviceCapabilities || []).every(
-            capability => this.device.features.capabilities.includes(capability),
+            capability => this.getDevice().features.capabilities.includes(capability),
         );
         if (!deviceHasAllRequiredCapabilities) {
-            if (this.device.firmwareType === 'bitcoin-only') {
+            if (this.getDevice().firmwareType === 'bitcoin-only') {
                 throw ERRORS.TypedError(
                     'Device_MissingCapabilityBtcOnly',
                     `Trezor has Bitcoin-only firmware installed, which does not support this operation. Please install Universal firmware through Trezor Suite.`,
@@ -279,7 +266,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         }
     }
 
-    public abstract run(): Promise<MethodReturnType<Name>>;
+    public abstract run(context: MethodContext): Promise<MethodReturnType<Name>>;
 
     public dispose() {}
 }

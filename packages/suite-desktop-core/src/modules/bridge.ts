@@ -2,8 +2,8 @@
  * Bridge runner
  */
 import { validateIpcMessage } from '@trezor/ipc-proxy';
-import { InvokeResult } from '@trezor/suite-desktop-api';
-import { TrezordNode } from '@trezor/transport-bridge';
+import { type InvokeResult } from '@trezor/suite-desktop-api';
+import { type TrezordNode } from '@trezor/transport-bridge';
 import { scheduleAction } from '@trezor/utils';
 
 import { hasSwitch } from '../libs/process-switches';

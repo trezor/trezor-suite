@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { IconCircle } from '@trezor/components';
-import { SpacingValues, spacings } from '@trezor/theme';
+import { type SpacingValues, spacings } from '@trezor/theme';
 
 import { useProxyImage } from 'src/hooks/suite/useProxyImage';
 
@@ -9,7 +9,7 @@ const AppIconImage = styled.img<{ size: SpacingValues }>`
     width: ${({ size }) => size}px;
     height: ${({ size }) => size}px;
     border-radius: ${({ size }) => size / 2}px;
-    background: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation1};
+    background: ${({ theme }) => theme.legacyBackgroundNeutralSubtleOnElevation1};
 `;
 
 export const ConnectAppIcon = ({
@@ -24,13 +24,20 @@ export const ConnectAppIcon = ({
     const proxyImageQuery = useProxyImage(src);
 
     if (!proxyImageQuery.isSuccess) {
+        let iconCircleSize: 24 | 32 | 40;
+        if (size <= 22) {
+            iconCircleSize = 24;
+        } else if (size <= 36) {
+            iconCircleSize = 32;
+        } else {
+            iconCircleSize = 40;
+        }
+
         return (
             <IconCircle
                 name={type === 'walletConnect' ? 'walletConnect' : 'plugs'}
-                size={size}
-                paddingType={size > spacings.xxl ? 'large' : 'small'}
-                variant="tertiary"
-                hasBorder={false}
+                size={iconCircleSize}
+                intent="neutral"
             />
         );
     }

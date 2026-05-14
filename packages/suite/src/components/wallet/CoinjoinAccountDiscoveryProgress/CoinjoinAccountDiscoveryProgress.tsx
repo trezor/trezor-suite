@@ -3,20 +3,20 @@ import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { selectLanguage } from '@suite/settings';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Card, Column, H3, Icon, LottieAnimation, ProgressBar } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
 
 import { useCoinjoinAccountLoadingProgress } from 'src/hooks/coinjoin';
 import { useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 import { RotatingFacts } from './RotatingFacts';
 
 const Subheader = styled.div`
     display: flex;
     align-items: center;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     ${typography['body-sm']}
     text-align: center;
     margin-top: 8px;
@@ -39,7 +39,7 @@ const DiscoveryProgress = styled(ProgressBar)`
 const FactHeading = styled.div`
     display: flex;
     align-items: center;
-    color: ${({ theme }) => theme.textAlertYellow};
+    color: ${({ theme }) => theme.contentWarning};
     ${typography['body-xs']}
     text-transform: uppercase;
 `;
@@ -49,8 +49,8 @@ const StyledLottieAnimation = styled(LottieAnimation)`
     margin: -32px -8px -32px -20px;
 
     path {
-        stroke: ${({ theme }) => theme.iconSubdued};
-        fill: ${({ theme }) => theme.iconDefaultInverted};
+        stroke: ${({ theme }) => theme.contentSecondary};
+        fill: ${({ theme }) => theme.contentPrimaryInverse};
     }
 `;
 

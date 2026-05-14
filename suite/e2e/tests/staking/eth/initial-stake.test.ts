@@ -39,7 +39,6 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                 ],
             });
 
-            await settingsPage.coinsTab.disableNetwork('btc');
             await settingsPage.coinsTab.enableNetwork('eth');
             await settingsPage.coinsTab.openNetworkAdvanceSettings('eth');
             await settingsPage.coinsTab.changeBackend('blockbook', blockbookMock.url);
@@ -95,7 +94,7 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Stake' },
                         body: [['Stake ETH on', '\n', 'Everstake?']],
-                        actions: { right_button: 'Continue' },
+                        actions: { right_button: 'Confirm' },
                     },
                 });
                 await devicePrompt.waitForPromptAndClick();

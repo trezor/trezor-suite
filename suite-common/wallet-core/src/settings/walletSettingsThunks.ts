@@ -1,7 +1,7 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { PROTO } from '@trezor/connect';
 
 import { changeNetworks, setBitcoinAmountUnits } from './walletSettingsActions';
@@ -19,7 +19,7 @@ export const changeCoinVisibility = createThunk<
     void
 >(WALLET_SETTINGS.CHANGE_COIN_VISIBILITY, ({ symbol, shouldBeVisible }, { dispatch, getState }) => {
     let enabledNetworks = selectEnabledNetworks(getState());
-    const isAlreadyHidden = enabledNetworks.find(enabledSymbol => enabledSymbol === symbol);
+    const isAlreadyHidden = enabledNetworks.includes(symbol);
     if (!shouldBeVisible) {
         enabledNetworks = enabledNetworks.filter(enabledSymbol => enabledSymbol !== symbol);
     } else if (!isAlreadyHidden) {

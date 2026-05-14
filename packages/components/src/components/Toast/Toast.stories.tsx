@@ -1,6 +1,6 @@
-import { ArgTypes, Meta, StoryObj } from '@storybook/react';
+import { type ArgTypes, type Meta, type StoryObj } from '@storybook/react';
 
-import { Toast as ToastComponent, ToastProps } from './Toast';
+import { Toast as ToastComponent, type ToastProps } from './Toast';
 import { variables } from '../../config';
 
 const meta: Meta<typeof ToastComponent> = {

@@ -6,6 +6,9 @@
             "path": "../../suite-common/analytics-redux"
         },
         {
+            "path": "../../suite-common/bip329-types"
+        },
+        {
             "path": "../../suite-common/connect-popup"
         },
         {
@@ -35,9 +38,6 @@
         {
             "path": "../../suite-common/suite-sync-quota-manager"
         },
-        {
-            "path": "../../suite-common/suite-types"
-        },
         { "path": "../../suite-common/thp" },
         {
             "path": "../../suite-common/toast-notifications"
@@ -47,9 +47,6 @@
         },
         {
             "path": "../../suite-common/wallet-core"
-        },
-        {
-            "path": "../../suite-common/wallet-types"
         },
         {
             "path": "../../suite-common/walletconnect"
@@ -63,6 +60,7 @@
         { "path": "../device-authorization" },
         { "path": "../device-onboarding" },
         { "path": "../discovery" },
+        { "path": "../feature-feedback" },
         { "path": "../feature-flags" },
         { "path": "../firmware" },
         { "path": "../graph" },
@@ -77,7 +75,6 @@
         { "path": "../trading-state" },
         { "path": "../transaction-management" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/protobuf" },
         { "path": "../../packages/transport" },
         {
             "path": "../../packages/transport-native-bluetooth"

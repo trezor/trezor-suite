@@ -4,7 +4,7 @@ import {
     // blockbookWorkerFactory,
     blockbookModuleFactory,
 } from './worker';
-import BlockchainLink from '../../src';
+import { BlockchainLink } from '../../src';
 
 const backends = [
     // TODO: nodejs tests are failing, fix it.

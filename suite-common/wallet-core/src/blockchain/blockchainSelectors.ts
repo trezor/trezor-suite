@@ -1,6 +1,6 @@
-import { BackendType, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type BackendType, type NetworkSymbol } from '@suite-common/wallet-config';
 
-import { BlockchainRootState } from './blockchainReducer';
+import { type BlockchainRootState } from './blockchainReducer';
 
 export const selectIsElectrumBackendSelected = (
     state: BlockchainRootState,

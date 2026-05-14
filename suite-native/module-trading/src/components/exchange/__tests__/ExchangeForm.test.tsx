@@ -1,17 +1,21 @@
 import { Form } from '@suite-native/forms';
 import {
     act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
     screen,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import {
     btcAsset,
-    exchangeQuotes,
     getInitializedTradingState,
+    mercuryoFixedWorstQuote,
 } from '@suite-native/trading-fixtures';
-import { ExchangeFormType } from '@suite-native/trading-types';
+import { type ExchangeFormType } from '@suite-native/trading-types';
 
+import {
+    createTradingFeatureFlags,
+    createTradingPreloadedState,
+} from '../../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import { ExchangeForm } from '../ExchangeForm';
 
@@ -21,19 +25,32 @@ jest.mock('../../../hooks/general/useFocusedValueWatch', () =>
 
 describe('ExchangeForm', () => {
     let form: ExchangeFormType;
+    const defaultPreloadedState = createTradingPreloadedState({
+        tradeType: 'exchange',
+        overrides: {
+            featureFlags: createTradingFeatureFlags(),
+        },
+    });
 
-    const renderForm = () => renderHookWithStoreProviderAsync(() => useExchangeForm(), {});
+    const renderForm = () =>
+        renderHookWithStoreProvider(() => useExchangeForm(), {
+            preloadedState: defaultPreloadedState,
+        });
 
     const renderExchangeForm = () =>
-        renderWithStoreProviderAsync(<ExchangeForm />, {
+        renderWithStoreProvider(<ExchangeForm />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
             preloadedState: {
-                wallet: { trading: getInitializedTradingState() },
+                ...defaultPreloadedState,
+                wallet: {
+                    ...defaultPreloadedState.wallet,
+                    trading: getInitializedTradingState(),
+                },
             },
         });
 
-    beforeEach(async () => {
-        const { result } = await renderForm();
+    beforeEach(() => {
+        const { result } = renderForm();
         form = result.current;
     });
 
@@ -41,8 +58,8 @@ describe('ExchangeForm', () => {
         screen.unmount();
     });
 
-    it('should render form', async () => {
-        const { getByText, queryByText } = await renderExchangeForm();
+    it('should render form', () => {
+        const { getByText, queryByText } = renderExchangeForm();
 
         expect(getByText('You get')).toBeOnTheScreen();
         expect(queryByText('Done')).toBeNull();
@@ -56,19 +73,19 @@ describe('ExchangeForm', () => {
             });
         });
 
-        it('should display Receive account picker', async () => {
-            const { getByText, queryByText } = await renderExchangeForm();
+        it('should display Receive account picker', () => {
+            const { getByText, queryByText } = renderExchangeForm();
 
             expect(getByText('You get')).toBeOnTheScreen();
             expect(queryByText('Done')).toBeNull();
             expect(getByText('Receive account')).toBeOnTheScreen();
         });
 
-        it('should display Done button when any input is active', async () => {
+        it('should display Done button when any input is active', () => {
             act(() => {
                 form.setValue('focusedValue', 'sendCryptoAmount');
             });
-            const { getByText, queryByText } = await renderExchangeForm();
+            const { getByText, queryByText } = renderExchangeForm();
 
             expect(getByText('You get')).toBeOnTheScreen();
             expect(getByText('Done')).toBeOnTheScreen();
@@ -78,12 +95,12 @@ describe('ExchangeForm', () => {
         describe('with quote selected', () => {
             beforeEach(() => {
                 act(() => {
-                    form.setValue('quote', exchangeQuotes[0]);
+                    form.setValue('quote', mercuryoFixedWorstQuote);
                 });
             });
 
-            it('should display provider', async () => {
-                const { getByText } = await renderExchangeForm();
+            it('should display provider', () => {
+                const { getByText } = renderExchangeForm();
 
                 expect(getByText('Provider')).toBeOnTheScreen();
             });

@@ -1,6 +1,6 @@
 import Svg, { Path } from 'react-native-svg';
 
-import { PictogramIconSvgProps } from './types';
+import { type PictogramIconSvgProps } from './types';
 
 export const CriticalIconSvg = ({ color }: PictogramIconSvgProps) => (
     <Svg width={40} height={40} fill="none">

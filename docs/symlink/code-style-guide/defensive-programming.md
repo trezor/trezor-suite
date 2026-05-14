@@ -1,1 +1,1 @@
-../../../skills/defensive-programming.md
+../../../skills/defensive-programming/SKILL.md

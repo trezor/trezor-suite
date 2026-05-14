@@ -2,46 +2,48 @@ import { address } from '@solana/kit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
-import { ExtraDependencies } from '@suite-common/redux-utils';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
 import {
     calculate,
     composeStakingTransaction,
 } from '@suite-common/staking/src/actions/stakeFormActions';
 import {
-    SolanaTxMeta,
     prepareClaimSolTx,
     prepareStakeSolTx,
     prepareUnstakeSolTx,
 } from '@suite-common/staking-solana';
+import {
+    type EstimatedFee,
+    type PrepareStakeSolTxResponse,
+    type SolanaTxMeta,
+} from '@suite-common/staking-solana-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     MIN_SOL_AMOUNT_FOR_STAKING,
     MIN_SOL_BALANCE_FOR_STAKING,
     MIN_SOL_FOR_WITHDRAWALS,
     SOL_STAKING_OPERATION_FEE,
 } from '@suite-common/wallet-constants';
+import { selectAddressDisplayType } from '@suite-common/wallet-core';
 import {
-    Account,
+    type Account,
     AddressDisplayOptions,
-    BlockchainNetworks,
-    ComposeActionContext,
-    EstimatedFee,
-    ExternalOutput,
-    PrecomposedLevels,
-    PrecomposedTransaction,
-    PrecomposedTransactionFinal,
-    PrepareStakeSolTxResponse,
-    SelectedAccountStatus,
-    StakeFormState,
+    type BlockchainNetworks,
+    type ComposeActionContext,
+    type ExternalOutput,
+    type PrecomposedLevels,
+    type PrecomposedTransaction,
+    type PrecomposedTransactionFinal,
+    type SelectedAccountStatus,
+    type StakeFormState,
 } from '@suite-common/wallet-types';
 import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
-import { Fee } from '@trezor/blockchain-link-types/src/blockbook';
-import TrezorConnect, { FeeLevel } from '@trezor/connect';
+import { type BlockbookFee as Fee } from '@trezor/blockchain-link-types';
+import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
-import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
-import { Dispatch, GetState } from 'src/types/suite';
+import { type Dispatch, type GetState } from 'src/types/suite';
 
 const calculateTransaction = (
     availableBalance: string,
@@ -316,15 +318,15 @@ export const signTransaction =
             });
 
             // catch manual error from TransactionReviewModal
-            if (signedTx.payload.error === 'tx-cancelled') {
+            if (signedTx.error.message === 'tx-cancelled') {
                 return;
             }
 
-            if (signedTx.payload.error !== 'tx-timeout') {
+            if (signedTx.error.message !== 'tx-timeout') {
                 dispatch(
                     notificationsActions.addToast({
                         type: 'sign-tx-error',
-                        error: signedTx.payload.error,
+                        error: signedTx.error.message,
                     }),
                 );
             }

@@ -1,13 +1,18 @@
 import { Platform } from 'react-native';
 
-import type { BuyTrade, CryptoId } from 'invity-api';
+import type { BuyTrade } from 'invity-api';
 
-import { AccountsRootState } from '@suite-common/wallet-core';
-import { Account, AccountKey } from '@suite-common/wallet-types';
-import { FeatureFlag, FeatureFlagsRootState } from '@suite-native/feature-flags';
-import { buyQuotes, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
+import { type AccountsRootState } from '@suite-common/wallet-core';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { FeatureFlag, type FeatureFlagsRootState } from '@suite-native/feature-flags';
+import {
+    buyQuotes,
+    getBtcAccount,
+    getWalletState,
+    mercuryoApplePayBuyQuote,
+} from '@suite-native/trading-fixtures';
 
-import { TradingRootState } from '../../reducers';
+import { type TradingRootState } from '../../reducers';
 import {
     selectBuyAmountLimits,
     selectBuyBestQuotesForAvailablePaymentMethods,
@@ -106,52 +111,8 @@ describe('buySelectors', () => {
             expect(selectBuyTradeableAssets(state)).toEqual([]);
         });
 
-        describe('debug-only networks', () => {
-            beforeEach(() => {
-                // Add Tron which is a debug-only network
-                state.wallet.trading.buy.buyInfo!.supportedCryptoCurrencies = [
-                    'ethereum',
-                    'bitcoin',
-                    'tron',
-                ] as CryptoId[];
-                state.wallet.trading.info.coins = {
-                    ...state.wallet.trading.info.coins,
-                    tron: {
-                        symbol: 'trx',
-                        name: 'Tron',
-                        coingeckoId: 'tron',
-                        services: {
-                            buy: true,
-                            sell: true,
-                            exchange: true,
-                        },
-                    },
-                };
-            });
-
-            it('should filter out debug-only networks when flag is disabled', () => {
-                state.featureFlags[FeatureFlag.AreDebugOnlyNetworksEnabled] = false;
-
-                const result = selectBuyTradeableAssets(state);
-
-                expect(result).toEqual([
-                    expect.objectContaining({ cryptoId: 'ethereum' }),
-                    expect.objectContaining({ cryptoId: 'bitcoin' }),
-                ]);
-                expect(result).not.toContainEqual(expect.objectContaining({ cryptoId: 'tron' }));
-            });
-
-            it('should include debug-only networks when flag is enabled', () => {
-                state.featureFlags[FeatureFlag.AreDebugOnlyNetworksEnabled] = true;
-
-                const result = selectBuyTradeableAssets(state);
-
-                expect(result).toEqual([
-                    expect.objectContaining({ cryptoId: 'ethereum' }),
-                    expect.objectContaining({ cryptoId: 'bitcoin' }),
-                    expect.objectContaining({ cryptoId: 'tron', symbol: 'TRX' }),
-                ]);
-            });
+        describe.skip('debug-only networks', () => {
+            // There are currently no debug only networks. Skipping
         });
     });
 
@@ -216,6 +177,28 @@ describe('buySelectors', () => {
                     }),
                 }),
             );
+        });
+
+        it('should restore persisted subdivision when valid for the selected country', () => {
+            state.wallet.trading.residence.country = 'US';
+            state.wallet.trading.residence.countrySubdivision = 'CA';
+
+            expect(selectBuyFormDefaultValues(state)).toEqual(
+                expect.objectContaining({
+                    country: expect.objectContaining({ value: 'US' }),
+                    countrySubdivision: expect.objectContaining({
+                        value: 'CA',
+                        name: 'California',
+                    }),
+                }),
+            );
+        });
+
+        it('should ignore stale persisted subdivision when country does not require one', () => {
+            state.wallet.trading.residence.country = 'DE';
+            state.wallet.trading.residence.countrySubdivision = 'CA';
+
+            expect(selectBuyFormDefaultValues(state).countrySubdivision).toBeUndefined();
         });
     });
 
@@ -291,7 +274,7 @@ describe('buySelectors', () => {
         beforeEach(() => {
             state.wallet.trading.buy.quotes = [
                 ...buyQuotes,
-                { ...buyQuotes[0], exchange: 'simplex', orderId: 'order_id_4' },
+                { ...mercuryoApplePayBuyQuote, exchange: 'simplex', orderId: 'order_id_4' },
             ] as BuyTrade[];
         });
 
@@ -334,16 +317,16 @@ describe('buySelectors', () => {
         it('should return only first quote for each payment method', () => {
             expect(selectBuyBestQuotesForAvailablePaymentMethods(state)).toEqual([
                 expect.objectContaining({
+                    paymentMethod: 'googlePay',
+                    rate: 9991.316675433,
+                }),
+                expect.objectContaining({
                     paymentMethod: 'applePay',
                     rate: 9998.316675433,
                 }),
                 expect.objectContaining({
                     paymentMethod: 'creditCard',
                     rate: 20000,
-                }),
-                expect.objectContaining({
-                    paymentMethod: 'googlePay',
-                    rate: 9991.316675433,
                 }),
             ]);
         });
@@ -356,7 +339,7 @@ describe('buySelectors', () => {
 
         it('should ignore quotes without payment method', () => {
             const quote = {
-                ...buyQuotes[0],
+                ...mercuryoApplePayBuyQuote,
                 paymentMethod: undefined,
             } as unknown as BuyTrade;
 
@@ -367,7 +350,7 @@ describe('buySelectors', () => {
 
         it('should ignore quotes without payment method name', () => {
             const quote = {
-                ...buyQuotes[0],
+                ...mercuryoApplePayBuyQuote,
                 paymentMethodName: undefined,
             } as unknown as BuyTrade;
 
@@ -375,13 +358,30 @@ describe('buySelectors', () => {
 
             expect(selectBuyBestQuotesForAvailablePaymentMethods(state)).toEqual([]);
         });
+
+        it('should sort quotes by rate', () => {
+            const quote1 = {
+                ...mercuryoApplePayBuyQuote,
+                paymentMethod: 'creditCard',
+                rate: 20000,
+            } as BuyTrade;
+            const quote2 = {
+                ...mercuryoApplePayBuyQuote,
+                paymentMethod: 'applePay',
+                rate: 10000,
+            } as BuyTrade;
+
+            state.wallet.trading.buy.quotes = [quote1, quote2];
+
+            expect(selectBuyBestQuotesForAvailablePaymentMethods(state)).toEqual([quote2, quote1]);
+        });
     });
 
     describe('selectMobileBuyQuotesByPaymentMethod', () => {
         beforeEach(() => {
             state.wallet.trading.buy.quotes = [
                 ...buyQuotes,
-                { ...buyQuotes[0], exchange: 'simplex', orderId: 'order_id_4' },
+                { ...mercuryoApplePayBuyQuote, exchange: 'simplex', orderId: 'order_id_4' },
             ] as BuyTrade[];
         });
 

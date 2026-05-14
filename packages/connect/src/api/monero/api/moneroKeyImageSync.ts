@@ -1,14 +1,18 @@
 import { keccak_256 } from '@noble/hashes/sha3.js';
 import { hexToBytes } from '@noble/hashes/utils.js';
 
+import type {
+    MethodPermission,
+    MoneroExportedKeyImage,
+    MoneroKeyImageSyncResult,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import { PROTO } from '../../../constants';
+import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import type { MoneroExportedKeyImage, MoneroKeyImageSyncResult } from '../../../types/api/monero';
 import { HD_HARDENED, validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
 
 // Encode unsigned integer as varint (LEB128 format)
 function encodeVarint(n: number): Uint8Array {
@@ -30,16 +34,8 @@ type Params = {
 };
 
 export default class MoneroKeyImageSyncMethod extends AbstractMethod<'moneroKeyImageSync', Params> {
-    init() {
-        this.requiredPermissions = ['read'];
-        this.requiredDeviceCapabilities = ['Capability_Monero'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Monero'),
-            this.firmwareRange,
-        );
-
-        const { payload } = this;
+    constructor(message: MethodMessage<'moneroKeyImageSync'>) {
+        const { payload } = message;
         const path = validatePath(payload.path, 3);
 
         // require all path components to be hardened
@@ -108,12 +104,21 @@ export default class MoneroKeyImageSyncMethod extends AbstractMethod<'moneroKeyI
             };
         });
 
-        this.params = {
+        const params = {
             address_n: path,
             network_type: payload.networkType || PROTO.MoneroNetworkType.MAINNET,
             subs: payload.subs || [],
             tdis,
         };
+
+        super(message, params);
+
+        this.requiredDeviceCapabilities = ['Capability_Monero'];
+        this.requiredFirmwareCoins = [getMiscNetwork('Monero')];
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
     }
 
     get info() {
@@ -121,7 +126,7 @@ export default class MoneroKeyImageSyncMethod extends AbstractMethod<'moneroKeyI
     }
 
     async run(): Promise<MoneroKeyImageSyncResult> {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
 
         // Compute hash of all tdis for verification
         const tdHashes: Uint8Array[] = [];

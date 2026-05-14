@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { Account } from '@suite-common/wallet-types';
-import { Address } from '@trezor/blockchain-link-types';
+import { type Account } from '@suite-common/wallet-types';
+import { type Address } from '@trezor/blockchain-link-types';
 import { CardList, Column, Text } from '@trezor/components';
 
 import { TradingUtxoReceiveAddressOption } from './TradingUtxoReceiveAddressOption';

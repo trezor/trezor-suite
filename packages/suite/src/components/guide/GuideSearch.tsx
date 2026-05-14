@@ -22,11 +22,11 @@ const PreviewContent = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     ${typography['body-md']}
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
 
     & > em {
         font-style: inherit;
-        color: ${({ theme }) => theme.textDefault};
+        color: ${({ theme }) => theme.contentPrimary};
     }
 `;
 
@@ -56,9 +56,7 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
     const { searchResult, loading } = useGuideSearch(query, pageRoot);
 
     useEffect(() => {
-        if (setSearchActive) {
-            setSearchActive(!!searchResult.length || !!query);
-        }
+        setSearchActive?.(!!searchResult.length || !!query);
     }, [query, searchResult, setSearchActive, loading]);
 
     return (

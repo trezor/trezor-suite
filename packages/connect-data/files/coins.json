@@ -2657,23 +2657,6 @@
         {
             "blockchain_link": null,
             "curve": "secp256k1",
-            "decimals": 4,
-            "is_testnet": false,
-            "name": "EOS",
-            "shortcut": "EOS",
-            "slip44": 194,
-            "support": {
-                "T1B1": false,
-                "T2B1": false,
-                "T2T1": "2.1.1",
-                "T3B1": false,
-                "T3T1": false,
-                "T3W1": false
-            }
-        },
-        {
-            "blockchain_link": null,
-            "curve": "secp256k1",
             "decimals": 8,
             "is_testnet": false,
             "name": "MaidSafeCoin",
@@ -2708,12 +2691,7 @@
         {
             "blockchain_link": {
                 "type": "solana",
-                "url": [
-                    "https://sol1.trezor.io",
-                    "https://sol2.trezor.io",
-                    "https://sol3.trezor.io",
-                    "https://sol4.trezor.io"
-                ]
+                "url": ["https://sol.trezor.io"]
             },
             "curve": "ed25519",
             "decimals": 9,
@@ -2814,11 +2792,31 @@
             "slip44": 195,
             "support": {
                 "T1B1": false,
-                "T2B1": "2.10.1",
-                "T2T1": "2.10.1",
-                "T3B1": "2.10.1",
-                "T3T1": "2.10.1",
-                "T3W1": "2.10.1"
+                "T2B1": "2.11.0",
+                "T2T1": "2.11.0",
+                "T3B1": "2.11.0",
+                "T3T1": "2.11.0",
+                "T3W1": "2.11.0"
+            }
+        },
+        {
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": ["https://tron-nile.trezor.io"]
+            },
+            "curve": "secp256k1",
+            "decimals": 6,
+            "is_testnet": false,
+            "name": "Tron Nile",
+            "shortcut": "tTRX",
+            "slip44": 195,
+            "support": {
+                "T1B1": false,
+                "T2B1": "2.11.0",
+                "T2T1": "2.11.0",
+                "T3B1": "2.11.0",
+                "T3T1": "2.11.0",
+                "T3W1": "2.11.0"
             }
         },
         {

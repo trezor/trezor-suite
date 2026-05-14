@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
 
-import { OnboardingAnalytics } from '@suite/analytics';
-import { BackupType } from '@suite-common/suite-types';
-import { UI } from '@trezor/connect';
+import { type OnboardingAnalytics } from '@suite/analytics';
+import { type BackupType } from '@suite-common/suite-types';
+import { UI_REQUEST } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
-import * as recoveryActions from 'src/actions/recovery/recoveryActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { AnyPath, AnyStepId } from 'src/types/onboarding';
+import { type BackupMedium } from 'src/reducers/onboarding/onboardingReducer';
+import { type AnyPath, type AnyStepId } from 'src/types/onboarding';
 
 import { parseStepId } from '../../utils/onboarding/steps';
 
@@ -18,7 +18,7 @@ export const useOnboarding = () => {
     const modal = useSelector(state => state.modal);
 
     const showPinMatrix =
-        modal.context === '@modal/context-device' && modal.windowType === UI.REQUEST_PIN;
+        modal.context === '@modal/context-device' && modal.windowType === UI_REQUEST.REQUEST_PIN;
 
     const actions = useMemo(
         () => ({
@@ -28,12 +28,14 @@ export const useOnboarding = () => {
             resetOnboarding: () => dispatch(onboardingActions.resetOnboarding()),
             enableOnboardingReducer: (enabled: boolean) =>
                 dispatch(onboardingActions.enableOnboardingReducer(enabled)),
-            rerun: () => dispatch(recoveryActions.rerun()),
+            rerun: () => dispatch(onboardingActions.recoveryRerun()),
             updateAnalytics: (payload: Partial<OnboardingAnalytics>) =>
                 dispatch(onboardingActions.updateAnalytics(payload)),
             addPath: (payload: AnyPath) => dispatch(onboardingActions.addPath(payload)),
             updateBackupType: (payload: BackupType) =>
                 dispatch(onboardingActions.updateBackupType(payload)),
+            updateBackupMedium: (payload: BackupMedium) =>
+                dispatch(onboardingActions.updateBackupMedium(payload)),
             goToSuite: () => dispatch(onboardingActions.goToSuite()),
             resolveNextAfterSkipped: (requestedStepId: AnyStepId) =>
                 dispatch(onboardingActions.resolveNextAfterSkipped(requestedStepId)),

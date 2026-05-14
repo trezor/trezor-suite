@@ -10,7 +10,7 @@ import { Translation, useTranslate } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
 import { OverviewRow, OverviewValueSkeleton } from '@suite-native/trading-atoms';
 import { selectSellBestQuotesForAvailablePaymentMethods } from '@suite-native/trading-state';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useSheetControls } from '../../../hooks/general/useSheetControls';
 import { useSellFormContext } from '../../../hooks/sell/useSellFormContext';
@@ -25,7 +25,7 @@ type SellReceiveMethodPickerRightProps = {
 
 const pickerStyle = prepareNativeStyle(({ borders, colors }) => ({
     borderTopWidth: borders.widths.small,
-    borderTopColor: colors.backgroundSurfaceElevation0,
+    borderTopColor: colors.surfaceFillPage,
 }));
 
 const SellReceiveMethodPickerRight = ({
@@ -41,8 +41,8 @@ const SellReceiveMethodPickerRight = ({
     if (selectedValue) {
         return (
             <Text
-                color="textSubdued"
-                variant="body-md"
+                color="contentSecondary"
+                variant="body-sm"
                 accessibilityLabel={translate('moduleTrading.tradingScreen.selectedReceiveMethod')}
                 testID={RECEIVE_METHOD_PICKER_TEST_ID + '/value'}
             >
@@ -53,8 +53,8 @@ const SellReceiveMethodPickerRight = ({
 
     return (
         <Text
-            color="textSubdued"
-            variant="body-md"
+            color="contentSecondary"
+            variant="body-sm"
             accessibilityLabel={translate('moduleTrading.tradingScreen.noReceiveMethod')}
             testID={RECEIVE_METHOD_PICKER_TEST_ID + '/value'}
         >

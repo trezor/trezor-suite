@@ -5,19 +5,19 @@ import { events } from '@suite-common/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { useAlert } from '@suite-native/alerts';
+import { events as nativeEvents } from '@suite-native/analytics';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { useSuiteSyncErrorHandler } from '@suite-native/labeling';
 import { useAnalytics, useNativeServices } from '@suite-native/services';
 import { StorageContext } from '@suite-native/storage';
-import { useToast } from '@suite-native/toasts';
-import { exhaustive } from '@trezor/type-utils';
 
 export const ToggleSuiteSyncCard = () => {
     const analytics = useAnalytics();
     const persistor = useContext(StorageContext);
     const { showAlert } = useAlert();
-    const { showToast } = useToast();
     const { suiteSync } = useNativeServices();
+    const { handleSuiteSyncError } = useSuiteSyncErrorHandler();
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
     const selectedDevice = useSelector(selectSelectedDevice);
 
@@ -30,6 +30,7 @@ export const ToggleSuiteSyncCard = () => {
                 suiteSync.turnOffSuiteSync({
                     ensureSettingsPersisted: () => persistor?.flush(),
                 });
+
                 analytics.report({
                     type: events.settingsGeneralLabelingEvent.name,
                     payload: {
@@ -41,7 +42,7 @@ export const ToggleSuiteSyncCard = () => {
         });
     };
 
-    const toggleSuiteSync = async () => {
+    const toggleSuiteSync = async (value: boolean) => {
         if (isSuiteSyncEnabled) {
             showSuiteSyncDisableConfirmationAlert();
         } else {
@@ -57,24 +58,14 @@ export const ToggleSuiteSyncCard = () => {
             });
 
             if (!result.success) {
-                const { type } = result.error;
-                switch (type) {
-                    case 'SuiteSyncUnavailableOnDeviceError':
-                    case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
-                    case 'DeviceCancelled':
-                    case 'DeviceError':
-                        showToast({ variant: 'error', icon: 'warning', message: type });
-
-                        return;
-
-                    case 'WriteModeRequiredForAllocation':
-                        // Do nothing, this is expected control flow error when we want allocate on-demand.
-                        return;
-                    default:
-                        return exhaustive(type);
-                }
+                handleSuiteSyncError(result.error);
             }
         }
+
+        analytics.report({
+            type: nativeEvents.settingsToggleExperimentalFeatureEvent.name,
+            payload: { feature: 'suite-sync', value },
+        });
     };
 
     return (

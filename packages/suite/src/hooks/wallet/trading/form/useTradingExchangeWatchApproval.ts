@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { ExchangeTrade } from 'invity-api';
+import { type ExchangeTrade } from 'invity-api';
 
-import { TradingExchangeFormContextProps } from 'src/types/trading/tradingForm';
+import { type TimerId } from '@trezor/type-utils';
+
+import { type TradingExchangeFormContextProps } from 'src/types/trading/tradingForm';
 
 interface TradingExchangeWatchApprovalProps {
     selectedQuote?: ExchangeTrade;
@@ -15,7 +17,7 @@ export const useTradingExchangeWatchApproval = ({
 }: TradingExchangeWatchApprovalProps) => {
     const POLLING_TIME = 5000;
 
-    const timeoutRef = useRef<number | undefined>(undefined);
+    const timeoutRef = useRef<TimerId | undefined>(undefined);
     const [isScheduled, setIsScheduled] = useState<boolean>(false);
     const [refreshCount, setRefreshCount] = useState(1);
 

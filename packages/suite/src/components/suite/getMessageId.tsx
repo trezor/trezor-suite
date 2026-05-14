@@ -1,5 +1,5 @@
-import { TranslationKey } from '@suite/intl';
-import { DeviceStatus as ConnectedDeviceStatus } from '@suite-common/suite-utils';
+import { type TranslationKey } from '@suite/intl';
+import { type DeviceStatus as ConnectedDeviceStatus } from '@suite-common/suite-utils';
 import { isDesktop } from '@trezor/env-utils';
 
 import type { PrerequisiteType } from 'src/types/suite';

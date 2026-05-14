@@ -2,23 +2,21 @@ import type {
     AccountAddresses,
     AccountInfo,
     Address,
+    BlockbookAccountInfo,
+    BlockbookAccountUtxo,
+    BlockbookTransaction,
     InternalTransfer,
+    BlockbookServerInfo as ServerInfo,
     TokenInfo,
     TokenTransfer,
     Transaction,
     Utxo,
-} from '@trezor/blockchain-link-types';
-import type {
-    AccountInfo as BlockbookAccountInfo,
-    AccountUtxo as BlockbookAccountUtxo,
-    Transaction as BlockbookTransaction,
-    ServerInfo,
     VinVout,
-} from '@trezor/blockchain-link-types/src/blockbook';
+} from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {
-    Addresses,
+    type Addresses,
     enhanceVinVout,
     filterShadowedPendingTxsByNonce,
     filterTargets,
@@ -62,16 +60,16 @@ export const filterTokenTransfers = (
         .filter(transfer => {
             if (transfer && typeof transfer === 'object') {
                 return (
-                    (transfer.from && all.indexOf(transfer.from) >= 0) ||
-                    (transfer.to && all.indexOf(transfer.to) >= 0)
+                    (transfer.from && all.includes(transfer.from)) ||
+                    (transfer.to && all.includes(transfer.to))
                 );
             }
 
             return false;
         })
         .map(transfer => {
-            const isIncoming = transfer.from && all.indexOf(transfer.from) >= 0;
-            const isOutgoing = transfer.to && all.indexOf(transfer.to) >= 0;
+            const isIncoming = transfer.from && all.includes(transfer.from);
+            const isOutgoing = transfer.to && all.includes(transfer.to);
 
             let type: TokenTransfer['type'];
             if (isIncoming && isOutgoing) {
@@ -167,6 +165,21 @@ type TransformAddresses = {
 export const isTxFailed = (tx: BlockbookTransaction) =>
     !(!tx.blockHeight || tx.blockHeight < 0) && tx.ethereumSpecific?.status === 0;
 
+const getTransactionFee = (tx: BlockbookTransaction): string => {
+    if (tx.chainExtraData?.payloadType === 'tron') {
+        return tx.chainExtraData.payload?.totalFee || tx.fees;
+    }
+    if (tx.ethereumSpecific && !tx.ethereumSpecific.gasUsed) {
+        return new BigNumber(
+            tx.ethereumSpecific.maxFeePerGas ?? tx.ethereumSpecific.gasPrice ?? '0',
+        )
+            .times(tx.ethereumSpecific.gasLimit)
+            .toString();
+    }
+
+    return tx.fees;
+};
+
 export const transformTransaction = (
     tx: BlockbookTransaction,
     addressesOrDescriptor?: TransformAddresses | string,
@@ -195,7 +208,7 @@ export const transformTransaction = (
     const myInternalTransfers = filterEthereumInternalTransfers(descriptor, tx.ethereumSpecific);
 
     const isNonChangeOutput = (o: VinVout) =>
-        addresses ? filterTargets(addresses.change, tx.vout).indexOf(o) < 0 : true;
+        addresses ? !filterTargets(addresses.change, tx.vout).includes(o) : true;
 
     const isNonZero = (o: VinVout) => o.value && o.value !== '0';
 
@@ -268,14 +281,7 @@ export const transformTransaction = (
             ? true
             : undefined;
 
-    const fee =
-        tx.ethereumSpecific && !tx.ethereumSpecific.gasUsed
-            ? new BigNumber(
-                  tx.ethereumSpecific?.maxFeePerGas ?? tx.ethereumSpecific?.gasPrice ?? '0',
-              )
-                  .times(tx.ethereumSpecific.gasLimit)
-                  .toString()
-            : tx.fees;
+    const fee = getTransactionFee(tx);
 
     // some instances of bb don't send vsize yet
     const feeRate = tx.vsize
@@ -307,6 +313,8 @@ export const transformTransaction = (
             ...tx.ethereumSpecific,
             gasPrice: tx.ethereumSpecific.gasPrice ?? '0', // even if it shouldn't, `null` sometimes came from Erigon
         },
+        tronSpecific:
+            tx.chainExtraData?.payloadType === 'tron' ? tx.chainExtraData.payload : undefined,
         details: {
             vin: inputs.map(enhanceVinVout(myAddresses)),
             vout: outputs.map(enhanceVinVout(myAddresses)),
@@ -357,7 +365,7 @@ export const transformAddresses = (
 
     if (addresses.length < 1) return undefined;
     const internal = addresses.filter(a => a.path.split('/')[4] === '1');
-    const external = addresses.filter(a => internal.indexOf(a) < 0);
+    const external = addresses.filter(a => !internal.includes(a));
 
     return {
         change: internal,
@@ -379,7 +387,12 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
     // However, the nonce is specific to Ethereum, so we can determine the network type based on its availability.
     const isEVM = typeof payload.nonce === 'string';
     let misc: AccountInfo['misc'];
-    if (isEVM) {
+    if (payload.chainExtraData?.payloadType === 'tron') {
+        misc = {
+            tronResources: payload.chainExtraData.payload,
+            contractInfo: payload.contractInfo,
+        };
+    } else if (isEVM) {
         misc = {
             nonce: payload.nonce,
             contractInfo: payload.contractInfo,

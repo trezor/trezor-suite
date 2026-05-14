@@ -12,6 +12,7 @@
 @electron/notarize
 @eslint/js
 @evolu/common
+@evolu/nodejs
 @evolu/react-native
 @evolu/web
 @noble/curves
@@ -49,6 +50,8 @@ eslint-plugin-mdx
 eslint-plugin-react
 eslint-plugin-react-hooks
 expo-sqlite
+expo-file-system
+expo-sharing
 express
 fake-indexeddb
 file-saver
@@ -60,9 +63,9 @@ minimatch
 nx
 openpgp
 prettier
+react-freeze
 react-native-ble-plx
 react-native-mmkv
-react-freeze
 react-native-nitro-modules
 set.prototype.difference
 set.prototype.intersection

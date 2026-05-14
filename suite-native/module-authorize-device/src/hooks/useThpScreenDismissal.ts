@@ -5,8 +5,8 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { selectIsDeviceThpLocked } from '@suite-common/device';
 import { selectThpAutoconnectStep, selectThpStep } from '@suite-common/thp';
+import { useOnThpPairingCanceled } from '@suite-native/device-authorization';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
-import TrezorConnect, { DEVICE, DeviceThpPairingStatus } from '@trezor/connect';
 
 export const useThpScreenDismissal = () => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
@@ -15,24 +15,7 @@ export const useThpScreenDismissal = () => {
     const thpAutoconnectStep = useSelector(selectThpAutoconnectStep);
     const isDeviceThpLocked = useSelector(selectIsDeviceThpLocked);
 
-    const onThpPairingStatusChange = useCallback(
-        (e: DeviceThpPairingStatus) => {
-            if (e.status === 'canceled') {
-                navigateToInitialScreen();
-            }
-        },
-        [navigateToInitialScreen],
-    );
-
-    useFocusEffect(
-        useCallback(() => {
-            TrezorConnect.on(DEVICE.THP_PAIRING_STATUS_CHANGED, onThpPairingStatusChange);
-
-            return () => {
-                TrezorConnect.off(DEVICE.THP_PAIRING_STATUS_CHANGED, onThpPairingStatusChange);
-            };
-        }, [onThpPairingStatusChange]),
-    );
+    useOnThpPairingCanceled(navigateToInitialScreen);
 
     useFocusEffect(
         useCallback(() => {

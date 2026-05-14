@@ -1,24 +1,30 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ChangeLanguage.js
 
+import {
+    ChangeLanguage as ChangeLanguageSchema,
+    type MethodPermission,
+    UI_REQUEST,
+} from '@trezor/connect-common';
 import { Assert } from '@trezor/schema-utils';
 
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { UI } from '../events';
-import { ChangeLanguage as ChangeLanguageSchema } from '../types/api/changeLanguage';
+import { changeLanguage } from '../device/workflow/changeLanguage';
 
 export default class ChangeLanguage extends AbstractMethod<'changeLanguage', ChangeLanguageSchema> {
-    init() {
-        this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
-        this.useEmptyPassphrase = true;
-        this.requiredPermissions = ['management'];
-        this.skipFinalReload = false;
-        this.useDeviceState = false;
-
-        const { payload } = this;
+    constructor(message: MethodMessage<'changeLanguage'>) {
+        const { payload } = message;
 
         Assert(ChangeLanguageSchema, payload);
 
-        this.params = payload;
+        super(message, payload);
+        this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];
+        this.useEmptyPassphrase = true;
+        this.skipFinalReload = false;
+        this.useDeviceState = false;
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['management'];
     }
 
     get confirmation() {
@@ -36,9 +42,9 @@ export default class ChangeLanguage extends AbstractMethod<'changeLanguage', Cha
         const { language, binary } = this.params;
 
         if (binary) {
-            return this.device.changeLanguage({ binary });
+            return changeLanguage({ device: this.getDevice(), binary });
         } else {
-            return this.device.changeLanguage({ language });
+            return changeLanguage({ device: this.getDevice(), language });
         }
     }
 }

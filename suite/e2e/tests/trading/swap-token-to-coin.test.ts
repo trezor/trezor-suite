@@ -33,14 +33,15 @@ test.describe('Trading - Swap token to coin', { tag: ['@webOnly', '@T3W1', '@T3T
                 await tradingMock.routeSolanaSendRequests();
             });
             await onboardingPage.completeOnboarding();
-            await settingsPage.changeNetworks({ enableNetworks: ['sol'] });
+            await settingsPage.changeNetworks({ enableNetworks: ['sol', 'btc'] });
+            await dashboardPage.navigateTo();
             await dashboardPage.openDeviceSwitcher();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
             await walletPage.openSwapTrading({ symbol: 'sol' });
         },
     );
 
-    test('Swap Solana Tether token to Bitcoin', async ({ tradingPage, page, devicePrompt }) => {
+    test('Swap Solana Tether token to Bitcoin', async ({ tradingPage, devicePrompt }) => {
         await test.step('Fill in a Swap form', async () => {
             await tradingPage.fillSwapForm({
                 amount: sendAmount,
@@ -77,18 +78,10 @@ test.describe('Trading - Swap token to coin', { tag: ['@webOnly', '@T3W1', '@T3T
         // Thanks to our mocked responses, the crypto is actually not send.
         await test.step('Send crypto to provider', async () => {
             await devicePrompt.sendButton.click();
-            await expect(page.getByTestId('@toast/tx-exchange/send-account')).toContainText(
-                'Solana #1',
-            );
-            await expect(page.getByTestId('@toast/tx-exchange/receive-account')).toContainText(
-                'Bitcoin #1',
-            );
-            await expect(page.getByTestId('@toast/tx-exchange/send-amount')).toContainText(
-                sendAmount,
-            );
-            await expect(page.getByTestId('@toast/tx-exchange/receive-amount')).toContainText(
-                receiveAmount,
-            );
+            await expect(tradingPage.swapToastSendAccount).toContainText('Solana #1');
+            await expect(tradingPage.swapToastReceiveAccount).toContainText('Bitcoin #1');
+            await expect(tradingPage.swapToastSendAmount).toContainText(sendAmount);
+            await expect(tradingPage.swapToastReceiveAmount).toContainText(receiveAmount);
             await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
                 'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
             );

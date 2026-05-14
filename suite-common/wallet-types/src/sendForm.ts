@@ -1,10 +1,10 @@
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountUtxo, FeeLevel } from '@trezor/connect';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import type { AccountUtxo, FeeLevel } from '@trezor/connect';
 
-import { AccountKey } from './account';
-import { Output, RbfTransactionParams } from './transaction';
+import { type AccountKey } from './account';
+import { type Output, type RbfTransactionParams } from './transaction';
 
 export type FormOptions =
     | 'broadcast'
@@ -63,8 +63,8 @@ export interface FormState {
     maxPriorityFeePerGas?: string; // ethereum eip1559 only
     maxFeePerGas?: string; // ethereum eip1559 only
     baseFeePerGas?: string; // ethereum eip1559 only
-    feeLimit: string; // ethereum only (gasLimit)
-    estimatedFeeLimit?: string; // ethereum only (gasLimit)
+    feeLimit: string; // ethereum: gas limit; tron: fee_limit cap in SUN for TRC-20 transfers
+    estimatedFeeLimit?: string; // ethereum: estimated gas limit; tron: estimated fee_limit cap in SUN for TRC-20 transfers
 
     /**
      * Fee that was paid by chained transactions. To perform RBF transaction (bump fee or cancel)
@@ -81,8 +81,9 @@ export interface FormState {
     ethereumNonce?: string; // TODO: ethereum RBF
     ethereumDataAscii?: string;
     ethereumAdjustGasLimit?: string; // if used, final gas limit = estimated limit * ethereumAdjustGasLimit
-    transactionData?: string; // used for solana serialized txn from trading api or ethereum txn hex data
-    destinationTag?: string; // For Ripple and Stellar
+    tronDataAscii?: string;
+    transactionData?: string; // used for solana serialized txn from trading api, ethereum or tron txn hex data
+    destinationTag?: string; // For Ripple, Stellar, and Solana
     rbfParams?: RbfTransactionParams;
     isCoinControlEnabled: boolean;
     hasCoinControlBeenOpened: boolean;
@@ -90,4 +91,10 @@ export interface FormState {
     selectedUtxos: AccountUtxo[];
     utxoSorting?: UtxoSorting;
     trading?: FormStateTrading;
+    yieldMetadata?: YieldFormMetadata;
 }
+
+export type YieldFormMetadata = {
+    type: 'deposit' | 'withdraw' | 'redeem';
+    vaultName: string;
+};

@@ -6,12 +6,13 @@ import { useNavigation } from '@react-navigation/native';
 import { selectDeviceStaticSessionId, selectIsDeviceConnected } from '@suite-common/device';
 import { AnimatedFullAlertBox } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { useSuiteSyncErrorHandler } from '@suite-native/labeling';
 import {
-    AuthorizeDeviceStackParamList,
+    type AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { useNativeServices } from '@suite-native/services';
 
@@ -29,6 +30,7 @@ export const SuiteSyncKeysAlert = () => {
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const shouldDisplaySuiteSyncAlert = useSelector(selectShouldDisplaySuiteSyncAlert);
     const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
+    const { handleSuiteSyncError } = useSuiteSyncErrorHandler();
 
     const navigation = useNavigation<NavigationProp>();
 
@@ -40,12 +42,16 @@ export const SuiteSyncKeysAlert = () => {
                 screen: AuthorizeDeviceStackRoutes.DeviceConnectionGuard,
             });
         } else {
-            await suiteSync.ensureWalletSuiteSyncOn({
+            const result = await suiteSync.ensureWalletSuiteSyncOn({
                 deviceStaticSessionId,
                 isWriteMode: false,
             });
+
+            if (!result.success) {
+                handleSuiteSyncError(result.error);
+            }
         }
-    }, [deviceStaticSessionId, isDeviceConnected, navigation, suiteSync]);
+    }, [deviceStaticSessionId, handleSuiteSyncError, isDeviceConnected, navigation, suiteSync]);
 
     if (!shouldDisplaySuiteSyncAlert) return null;
 
@@ -53,8 +59,24 @@ export const SuiteSyncKeysAlert = () => {
         <AnimatedFullAlertBox
             variant="info"
             title={<Translation id="moduleHome.suiteSyncAlert.title" />}
-            description={<Translation id="moduleHome.suiteSyncAlert.description" />}
-            primaryButtonLabel={<Translation id="moduleHome.suiteSyncAlert.button" />}
+            description={
+                <Translation
+                    id={
+                        isDeviceConnected
+                            ? 'moduleHome.suiteSyncAlert.description'
+                            : 'moduleHome.suiteSyncAlert.connectDescription'
+                    }
+                />
+            }
+            primaryButtonLabel={
+                <Translation
+                    id={
+                        isDeviceConnected
+                            ? 'moduleHome.suiteSyncAlert.button'
+                            : 'moduleHome.suiteSyncAlert.connectButton'
+                    }
+                />
+            }
             onPressPrimaryButton={allowSuiteSyncForWallet}
             marginHorizontal="sp16"
         />

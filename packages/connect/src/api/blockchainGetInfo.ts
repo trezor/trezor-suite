@@ -1,10 +1,11 @@
+import type { CoinInfo, MethodPermission } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
+import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { getCoinInfo } from '../data/coinInfo';
-import type { CoinInfo } from '../types';
 
 type Params = {
     coinInfo: CoinInfo;
@@ -12,11 +13,8 @@ type Params = {
 };
 
 export default class BlockchainGetInfo extends AbstractMethod<'blockchainGetInfo', Params> {
-    init() {
-        this.useDevice = false;
-        this.useUi = false;
-
-        const { payload } = this;
+    constructor(message: MethodMessage<'blockchainGetInfo'>) {
+        const { payload } = message;
 
         // validate incoming parameters
         validateParams(payload, [
@@ -31,16 +29,24 @@ export default class BlockchainGetInfo extends AbstractMethod<'blockchainGetInfo
         // validate backend
         isBackendSupported(coinInfo);
 
-        this.params = {
+        const params = {
             coinInfo,
             identity: payload.identity,
         };
+
+        super(message, params);
+        this.useDevice = false;
+        this.useUi = false;
     }
 
-    async run() {
+    get requiredPermissions(): MethodPermission[] {
+        return [];
+    }
+
+    async run({ sendCoreMessage }: MethodContext) {
         const backend = await initBlockchain(
             this.params.coinInfo,
-            this.postMessage,
+            sendCoreMessage,
             this.params.identity,
         );
 

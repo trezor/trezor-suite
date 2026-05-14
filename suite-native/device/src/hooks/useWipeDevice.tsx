@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -9,9 +10,9 @@ import { wipeDeviceThunk } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import {
-    DeviceSettingsStackParamList,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
     WipeDeviceStackRoutes,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
@@ -27,6 +28,10 @@ export const useWipeDevice = () => {
     const navigation = useNavigation<NavigationProps>();
 
     const device = useSelector(selectSelectedDevice);
+
+    const navigateToWipeDeviceStack = useCallback(() => {
+        navigation.navigate(DeviceSettingsStackRoutes.WipeDeviceStack);
+    }, [navigation]);
 
     const wipeDevice = async () => {
         if (!device) return;
@@ -55,5 +60,5 @@ export const useWipeDevice = () => {
         }
     };
 
-    return { wipeDevice };
+    return { navigateToWipeDeviceStack, wipeDevice };
 };

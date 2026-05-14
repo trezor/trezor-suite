@@ -1,9 +1,9 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
 import {
     TruncateWithTooltip as TruncateWithTooltipComponent,
-    TruncateWithTooltipProps,
+    type TruncateWithTooltipProps,
 } from './TruncateWithTooltip';
 
 const Container = styled.div`

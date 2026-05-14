@@ -1,4 +1,4 @@
-import { IntervalId } from '@trezor/type-utils';
+import { type IntervalId } from '@trezor/type-utils';
 
 type PollingCallback = () => Promise<void> | void;
 

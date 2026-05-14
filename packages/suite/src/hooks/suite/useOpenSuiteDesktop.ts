@@ -1,5 +1,6 @@
 import TrezorConnect from '@trezor/connect';
-import type TrezorConnectBrowser from '@trezor/connect/src/index-browser';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: expose the browser-specific TrezorConnect type via the @trezor/connect barrel and remove this exception (see #27376)
+import type TrezorConnectBrowser from '@trezor/connect/src/index.browser';
 import { useWindowFocus } from '@trezor/react-utils';
 import { SUITE_BRIDGE_DEEPLINK, SUITE_URL } from '@trezor/urls';
 
@@ -11,10 +12,9 @@ export const useOpenSuiteDesktop = () => {
     const windowFocused = useWindowFocus();
     const handleOpenSuite = () => {
         const iframe = document.createElement('iframe');
+        iframe.src = SUITE_BRIDGE_DEEPLINK;
         iframe.style.display = 'none';
         document.body.appendChild(iframe);
-
-        iframe.src = SUITE_BRIDGE_DEEPLINK;
 
         // fallback in case deeplink does not work
         window.setTimeout(() => {

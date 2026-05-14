@@ -1,12 +1,12 @@
-import { CryptoId } from 'invity-api';
+import { type CryptoId, type ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import {
-    TradingTradeMapProps,
+    type TradingTradeType,
     cryptoIdToNetworkSymbolAndContractAddress,
 } from '@suite-common/trading';
-import { TokenAddress, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type TokenAddress, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Column, Paragraph, Row, Text, Tooltip } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
@@ -14,7 +14,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingCryptoAmountProps } from 'src/types/trading/trading';
+import { type TradingCryptoAmountProps } from 'src/types/trading/trading';
 import {
     isTradingExchangeContext,
     isTradingSellContext,
@@ -27,7 +27,7 @@ import { TradingUtilsKyc } from './TradingUtilsKyc';
 
 const PriceValue = styled.div`
     ${typography['headline-sm']}
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
     margin-top: ${spacingsPx.xxs};
     margin-right: ${spacingsPx.sm};
 
@@ -37,7 +37,7 @@ const PriceValue = styled.div`
 `;
 
 interface TradingUtilsPriceProps extends TradingCryptoAmountProps {
-    quote: TradingTradeMapProps[keyof TradingTradeMapProps];
+    quote: TradingTradeType;
 }
 export const TradingUtilsPrice = ({
     amountInCrypto,
@@ -57,6 +57,13 @@ export const TradingUtilsPrice = ({
         !new BigNumber(receiveAmount).isEqualTo(
             new BigNumber(context.quotesRequest?.cryptoStringAmount),
         );
+    const exchangeComparatorProps = isTradingExchangeContext(context)
+        ? {
+              exchange: (quote as ExchangeTrade).exchange,
+              isDex: (quote as ExchangeTrade).isDex,
+              providers: context.exchangeInfo?.providerInfos,
+          }
+        : undefined;
 
     const { symbol, contractAddress } = receiveCurrency
         ? cryptoIdToNetworkSymbolAndContractAddress(receiveCurrency)
@@ -148,12 +155,13 @@ export const TradingUtilsPrice = ({
                                 </Column>
                             )}
                         </PriceValue>
-                        {isTradingExchangeContext(context) && (
+                        {exchangeComparatorProps && (
                             <Row margin={{ top: spacings.xs }}>
                                 <TradingUtilsKyc
-                                    exchange={quote.exchange}
-                                    providers={context.exchangeInfo?.providerInfos}
+                                    exchange={exchangeComparatorProps.exchange}
+                                    providers={exchangeComparatorProps.providers}
                                     isForComparator
+                                    isDex={exchangeComparatorProps.isDex}
                                 />
                             </Row>
                         )}

@@ -1,10 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/ethereumSignTypedData.js
 
+import type { EthereumSignTypedDataTypes } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { PROTO } from '../../constants';
-import type { EthereumSignTypedDataTypes } from '../../types/api/ethereum';
 import { messageToHex } from '../../utils/formatUtils';
 
 // Copied from https://github.com/ethers-io/ethers.js/blob/v5.5.2/packages/abi/src.ts/fragments.ts#L249

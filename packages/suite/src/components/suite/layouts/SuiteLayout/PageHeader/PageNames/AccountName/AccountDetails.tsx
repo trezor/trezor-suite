@@ -4,10 +4,10 @@ import { motion, useAnimation } from 'framer-motion';
 import styled from 'styled-components';
 
 import { useTranslation } from '@suite/intl';
-import { selectLabelingDataForAccount } from '@suite/metadata';
-import { selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
+import { selectIsLegacyLabelingVisible, selectLabelingDataForAccount } from '@suite/metadata';
+import { selectIsSuiteSyncEnabled, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Column, H2, Row, Text, motionEasing } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
@@ -33,10 +33,15 @@ type AccountDetailsProps = {
 export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetailsProps) => {
     const hasMountedRef = useRef(false);
     const controls = useAnimation();
-    const selectedAccountLabels = useSelector(state =>
+
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
+
+    const selectedAccountLegacyLabels = useSelector(state =>
         selectLabelingDataForAccount(state, selectedAccount.key),
     );
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
+
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
     const { translationString } = useTranslation();
     const { walletDescriptor } = parseDeviceStaticSessionId(selectedAccount.deviceState);
@@ -53,12 +58,13 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
     const { symbol, key, path, index, accountType, formattedBalance, deviceState, networkType } =
         selectedAccount;
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
-    const label = suiteSyncAccountLabel ?? selectedAccountLabels.accountLabel;
-    const defaultLabel = getDefaultAccountLabel({
-        accountType,
-        symbol,
-        index,
-    });
+
+    const defaultLabel = getDefaultAccountLabel({ accountType, symbol, index });
+
+    const label =
+        (isSuiteSyncEnabled ? suiteSyncAccountLabel : null) ||
+        (isLegacyLabelingVisible ? selectedAccountLegacyLabels.accountLabel : null) ||
+        defaultLabel;
 
     const getTypographyStyle = () => {
         if (isBalanceShown) {
@@ -93,7 +99,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                 gap={8}
                 placeholder={translationString('TR_LABELING_ACCOUNT_LABEL')}
             >
-                {label || defaultLabel}
+                {label}
             </Labeling>
         ),
         [
@@ -143,16 +149,19 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                             <Row gap={4}>
                                 <AmountUnitSwitchWrapper symbol={symbol}>
                                     <FormattedCryptoAmount
+                                        data-testid="@wallet/account/crypto-balance"
                                         value={formattedBalance}
                                         symbol={symbol}
                                     />
                                 </AmountUnitSwitchWrapper>
                                 {shallDisplayBaseCurrency && (
-                                    <BaseCurrencyValue
-                                        amount={formattedBalance}
-                                        symbol={symbol}
-                                        showApproximationIndicator
-                                    />
+                                    <span data-testid="@wallet/account/fiat-amount">
+                                        <BaseCurrencyValue
+                                            amount={formattedBalance}
+                                            symbol={symbol}
+                                            showApproximationIndicator
+                                        />
+                                    </span>
                                 )}
                             </Row>
                         </Text>

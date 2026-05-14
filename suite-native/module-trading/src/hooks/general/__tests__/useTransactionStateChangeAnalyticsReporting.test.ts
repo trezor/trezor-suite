@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { TradingTransaction } from '@suite-common/trading';
+import { type TradingTransaction } from '@suite-common/trading';
 import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import { renderHook, renderHookWithBasicProvider } from '@suite-native/test-utils';

@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
 
 import {
-    TransactionsRootState,
+    type TransactionsRootState,
     selectAreAllAccountTransactionsLoaded,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Button, Loader } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
@@ -33,7 +33,8 @@ export const TransactionsListFooter = ({
         return (
             <Box paddingTop="sp32" paddingHorizontal="sp16">
                 <Button
-                    colorScheme="tertiaryElevation0"
+                    intent="neutral"
+                    priority="secondary"
                     onPress={onButtonPress}
                     testID="@transactions/list/more-button"
                 >

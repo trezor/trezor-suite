@@ -1,14 +1,9 @@
 import { tradingSellActions, tradingThunks } from '@suite-common/trading';
-import { AccountKey } from '@suite-common/wallet-types';
-import {
-    PreloadedState,
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { getBtcAccount, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useSellData } from '../useSellData';
 
 jest.mock('../../../utils/general/utils', () => ({
@@ -22,32 +17,48 @@ const btc3AccountKey = 'btc-account-3' as AccountKey; // Todo: create properly v
 
 describe('useSellData', () => {
     const getInitializedStore = (tradingAccountKey: AccountKey | undefined) => {
-        const preloadedState: PreloadedState = {
-            wallet: {
-                trading: getInitializedTradingState('sell'),
-                accounts: [
-                    getBtcAccount(btc1AccountKey),
-                    getBtcAccount(btc2AccountKey),
-                    { ...getBtcAccount(btc3AccountKey), descriptor: '' },
-                ],
-            },
-        };
-        preloadedState.wallet!.trading!.sell!.tradingAccountKey = tradingAccountKey;
+        const tradingState = getInitializedTradingState('sell');
+        tradingState.sell!.tradingAccountKey = tradingAccountKey;
 
-        return initStore(preloadedState).store;
+        return createTradingLightStore({
+            tradeType: 'sell',
+            overrides: {
+                wallet: {
+                    trading: tradingState,
+                    accounts: [
+                        getBtcAccount(btc1AccountKey),
+                        getBtcAccount(btc2AccountKey),
+                        {
+                            ...getBtcAccount(btc3AccountKey),
+                            descriptor: asAccountDescriptor(''),
+                        },
+                    ],
+                },
+            },
+        });
     };
 
-    const renderUseSellData = (reloadRequestOrdinalInitialValue: number = 0, store?: TestStore) =>
-        renderHookWithStoreProviderAsync(
+    const getDefaultStore = () => createTradingLightStore({ tradeType: 'sell' });
+
+    const renderUseSellData = async (
+        reloadRequestOrdinalInitialValue: number = 0,
+        store?: TestStore,
+    ) => {
+        const ret = renderHookWithStoreProvider(
             ({ reloadRequestOrdinal }) => useSellData(reloadRequestOrdinal),
             {
                 initialProps: { reloadRequestOrdinal: reloadRequestOrdinalInitialValue },
-                store,
+                store: store ?? getDefaultStore(),
             },
         );
 
+        await act(() => Promise.resolve()); // Wait for all effects to run
+
+        return ret;
+    };
+
     beforeEach(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
         global.fetch = jest.fn().mockImplementation(() =>
             Promise.resolve({
                 json: () => Promise.resolve({}),
@@ -113,7 +124,7 @@ describe('useSellData', () => {
         });
 
         it('should dispatch loadInitialDataThunk when account is changed with descriptor', async () => {
-            const store = await getInitializedStore(undefined);
+            const store = getInitializedStore(undefined);
             await renderUseSellData(0, store);
 
             // Clear the initial call
@@ -135,7 +146,7 @@ describe('useSellData', () => {
         });
 
         it('should not dispatch loadInitialDataThunk when descriptor is not changed', async () => {
-            const store = await getInitializedStore(btc2AccountKey);
+            const store = getInitializedStore(btc2AccountKey);
             await renderUseSellData(0, store);
 
             // Clear the initial call
@@ -154,7 +165,7 @@ describe('useSellData', () => {
         });
 
         it('should dispatch loadInitialDataThunk with random string when descriptor is empty string', async () => {
-            const store = await getInitializedStore(btc1AccountKey);
+            const store = getInitializedStore(btc1AccountKey);
             await renderUseSellData(0, store);
 
             // Clear the initial call
@@ -177,7 +188,7 @@ describe('useSellData', () => {
         });
 
         it('should dispatch loadInitialDataThunk with random string when descriptor is undefined', async () => {
-            const store = await getInitializedStore(btc1AccountKey);
+            const store = getInitializedStore(btc1AccountKey);
             await renderUseSellData(0, store);
 
             // Clear the initial call

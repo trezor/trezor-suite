@@ -3,8 +3,17 @@ import { useRef } from 'react';
 import styled from 'styled-components';
 
 import { EXPERIMENT_MAP } from '@suite-common/message-system';
-import { Condition } from '@suite-common/suite-types';
-import { Button, Card, IconButton, Menu, Popover, PopoverRef, Row, Text } from '@trezor/components';
+import { type Condition } from '@suite-common/suite-types';
+import {
+    Button,
+    Card,
+    IconButton,
+    Menu,
+    Popover,
+    type PopoverRef,
+    Row,
+    Text,
+} from '@trezor/components';
 import { spacings, spacingsPx, zIndices } from '@trezor/theme';
 
 import { MessageSystemManual } from '../MessageSystemManual';

@@ -1,18 +1,18 @@
-import { CryptoId, FiatCurrencyCode } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
-import { Rate, Timestamp } from '@suite-common/wallet-types';
+import { type Rate, type Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 
 import {
-    TradingTestStateWithWalletSettings,
+    type TradingTestStateWithWalletSettings,
     createTestStateWithWalletSettings,
     renderHookWithTradingStore,
 } from '../../__tests__/testUtils';
 import {
-    TradingFiatRatesProps,
-    TradingFiatRatesReturn,
+    type TradingFiatRatesProps,
+    type TradingFiatRatesReturn,
     useTradingFiatValues,
 } from '../useTradingFiatValues';
 
@@ -56,7 +56,7 @@ describe('useTradingFiatValues', () => {
         it('should return null when cryptoId is undefined', () => {
             const { result } = renderUseTradingFiatValues({
                 cryptoId: undefined,
-                fiatCurrency: 'usd' as FiatCurrencyCode,
+                fiatCurrency: 'usd',
                 amount: '100',
             });
 
@@ -76,7 +76,7 @@ describe('useTradingFiatValues', () => {
         it('should return null when amount is undefined', () => {
             const { result } = renderUseTradingFiatValues({
                 cryptoId: BITCOIN_CRYPTO_ID,
-                fiatCurrency: 'usd' as FiatCurrencyCode,
+                fiatCurrency: 'usd',
                 amount: undefined,
             });
 
@@ -97,7 +97,7 @@ describe('useTradingFiatValues', () => {
             const { result } = renderUseTradingFiatValues(
                 {
                     cryptoId: BITCOIN_CRYPTO_ID,
-                    fiatCurrency: 'usd' as FiatCurrencyCode,
+                    fiatCurrency: 'usd',
                     amount: '1',
                 },
                 preloadedState,
@@ -131,7 +131,7 @@ describe('useTradingFiatValues', () => {
             const { result } = renderUseTradingFiatValues(
                 {
                     cryptoId: ETHEREUM_CRYPTO_ID,
-                    fiatCurrency: 'eur' as FiatCurrencyCode,
+                    fiatCurrency: 'eur',
                     amount: '2.5',
                 },
                 preloadedState,
@@ -149,7 +149,7 @@ describe('useTradingFiatValues', () => {
             const { result } = renderUseTradingFiatValues(
                 {
                     cryptoId: BITCOIN_CRYPTO_ID,
-                    fiatCurrency: 'usd' as FiatCurrencyCode,
+                    fiatCurrency: 'usd',
                     amount: '1',
                 },
                 preloadedState,
@@ -172,7 +172,7 @@ describe('useTradingFiatValues', () => {
             const { result } = renderUseTradingFiatValues(
                 {
                     cryptoId: BITCOIN_CRYPTO_ID,
-                    fiatCurrency: 'usd' as FiatCurrencyCode,
+                    fiatCurrency: 'usd',
                     amount: '1',
                 },
                 preloadedState,
@@ -191,7 +191,7 @@ describe('useTradingFiatValues', () => {
             const { result } = renderUseTradingFiatValues(
                 {
                     cryptoId: BITCOIN_CRYPTO_ID,
-                    fiatCurrency: 'usd' as FiatCurrencyCode,
+                    fiatCurrency: 'usd',
                     amount: '1',
                     shouldSendInSats: true,
                 },
@@ -210,7 +210,7 @@ describe('useTradingFiatValues', () => {
             const { result } = renderUseTradingFiatValues(
                 {
                     cryptoId: BITCOIN_CRYPTO_ID,
-                    fiatCurrency: 'usd' as FiatCurrencyCode,
+                    fiatCurrency: 'usd',
                     amount: '1',
                     shouldSendInSats: false,
                 },
@@ -230,7 +230,7 @@ describe('useTradingFiatValues', () => {
             const { result } = renderUseTradingFiatValues(
                 {
                     cryptoId: BITCOIN_CRYPTO_ID,
-                    fiatCurrency: 'usd' as FiatCurrencyCode,
+                    fiatCurrency: 'usd',
                     amount: '1',
                 },
                 preloadedState,
@@ -246,7 +246,7 @@ describe('useTradingFiatValues', () => {
             const { result } = renderUseTradingFiatValues(
                 {
                     cryptoId: BITCOIN_CRYPTO_ID,
-                    fiatCurrency: 'usd' as FiatCurrencyCode,
+                    fiatCurrency: 'usd',
                     amount: '1',
                 },
                 preloadedState,
@@ -264,7 +264,7 @@ describe('useTradingFiatValues', () => {
             const { result } = renderUseTradingFiatValues(
                 {
                     cryptoId: BITCOIN_CRYPTO_ID,
-                    fiatCurrency: 'usd' as FiatCurrencyCode,
+                    fiatCurrency: 'usd',
                     amount: '1',
                 },
                 preloadedState,

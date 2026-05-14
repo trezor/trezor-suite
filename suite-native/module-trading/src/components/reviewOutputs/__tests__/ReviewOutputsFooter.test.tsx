@@ -1,37 +1,42 @@
-import { PreloadedState, renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
+import { userEvent } from '@suite-native/test-utils-store';
 
-import { ReviewOutputsFooter, ReviewOutputsFooterProps } from '../ReviewOutputsFooter';
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
+import { ReviewOutputsFooter, type ReviewOutputsFooterProps } from '../ReviewOutputsFooter';
 
 describe('ReviewOutputsFooter', () => {
     const renderReviewOutputsFooter = (
         props: Partial<ReviewOutputsFooterProps>,
-        preloadedState: PreloadedState = {},
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderWithStoreProviderAsync(
+        renderWithTradingProvider(
             <ReviewOutputsFooter
                 resolveConsent={jest.fn()}
                 isConsentRequested={true}
                 testID="TEST_ID"
                 {...props}
             />,
-            { preloadedState },
+            { overrides },
         );
 
-    it('should display "Send transaction" button', async () => {
-        const { getByTestId } = await renderReviewOutputsFooter({});
+    it('should display "Send transaction" button', () => {
+        const { getByTestId } = renderReviewOutputsFooter({});
 
         expect(getByTestId('TEST_ID/submit-button')).toHaveTextContent('Send transaction');
         expect(getByTestId('TEST_ID/submit-button')).toBeEnabled();
     });
 
-    it('should be disabled when isConsentRequested is false', async () => {
-        const { getByText } = await renderReviewOutputsFooter({ isConsentRequested: false });
+    it('should be disabled when isConsentRequested is false', () => {
+        const { getByText } = renderReviewOutputsFooter({ isConsentRequested: false });
 
         expect(getByText('Send transaction')).toBeDisabled();
     });
 
-    it('should display "all set" info when transaction is signed', async () => {
-        const { getByText } = await renderReviewOutputsFooter(
+    it('should display "all set" info when transaction is signed', () => {
+        const { getByText } = renderReviewOutputsFooter(
             { isConsentRequested: true },
             {
                 wallet: {
@@ -52,17 +57,17 @@ describe('ReviewOutputsFooter', () => {
 
     it('should resolveConsent on press', async () => {
         const resolveConsent = jest.fn();
-        const { getByTestId } = await renderReviewOutputsFooter({ resolveConsent });
+        const { getByTestId } = renderReviewOutputsFooter({ resolveConsent });
 
         await userEvent.press(getByTestId('TEST_ID/submit-button'));
 
         expect(resolveConsent).toHaveBeenCalledWith(true);
-        expect(getByTestId('TEST_ID/submit-button')).not.toHaveTextContent('Send transaction');
+        expect(getByTestId('TEST_ID/submit-button/loading')).toBeOnTheScreen();
     });
 
     it('should resolveConsent only once', async () => {
         const resolveConsent = jest.fn();
-        const { getByTestId } = await renderReviewOutputsFooter({ resolveConsent });
+        const { getByTestId } = renderReviewOutputsFooter({ resolveConsent });
 
         await userEvent.press(getByTestId('TEST_ID/submit-button'));
         await userEvent.press(getByTestId('TEST_ID/submit-button'));

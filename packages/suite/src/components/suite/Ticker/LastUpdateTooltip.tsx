@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { FormattedRelativeTime } from 'react-intl';
 
 import { differenceInMinutes } from 'date-fns';

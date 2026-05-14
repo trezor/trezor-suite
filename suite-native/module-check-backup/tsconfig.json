@@ -22,7 +22,10 @@
             "path": "../../packages/connect-common"
         },
         { "path": "../../packages/device-utils" },
-        { "path": "../../packages/styles" },
-        { "path": "../../packages/urls" }
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/requirements" }
     ]
 }

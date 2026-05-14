@@ -1,14 +1,15 @@
 import { fromWei, toWei } from 'web3-utils';
 
-import { PrecomposedTransaction } from '@suite-common/wallet-types';
+import { type PrecomposedTransaction } from '@suite-common/wallet-types';
 import { calculateTotalGasCost } from '@suite-common/wallet-utils';
-import { FeeLevel, TokenInfo } from '@trezor/connect';
+import { type FeeLevel, type TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 export const buildAllowanceTransaction = (
     balance: string,
     contract: string,
     feeLevel: FeeLevel,
+    networkDisplaySymbol: string,
     token?: TokenInfo,
     estimatedFeeLimit?: string,
 ): PrecomposedTransaction => {
@@ -24,6 +25,7 @@ export const buildAllowanceTransaction = (
                 id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
                 values: {
                     feeAmount: fromWei(fee, 'ether'),
+                    networkDisplaySymbol,
                 },
             },
         };

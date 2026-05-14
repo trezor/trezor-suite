@@ -1,6 +1,6 @@
+import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 
-import * as MODAL from 'src/actions/suite/constants/modalConstants';
 import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
 
 export const DEVICE = mockSuiteDevice({
@@ -50,7 +50,7 @@ export const onCoinjoinRoundChanged = [
             failed: [],
         },
         result: {
-            actions: [COINJOIN.SESSION_ROUND_CHANGED, MODAL.OPEN_USER_CONTEXT],
+            actions: [COINJOIN.SESSION_ROUND_CHANGED, MODAL_OPEN_USER_CONTEXT],
             trezorConnectCalledTimes: 0,
         },
     },
@@ -88,7 +88,7 @@ export const onCoinjoinRoundChanged = [
         result: {
             actions: [
                 COINJOIN.SESSION_ROUND_CHANGED,
-                MODAL.OPEN_USER_CONTEXT,
+                MODAL_OPEN_USER_CONTEXT,
                 COINJOIN.SESSION_ROUND_CHANGED,
             ],
             trezorConnectCalledTimes: 1,
@@ -129,7 +129,7 @@ export const onCoinjoinRoundChanged = [
             actions: [
                 COINJOIN.SESSION_ROUND_CHANGED,
                 COINJOIN.SESSION_ROUND_CHANGED,
-                MODAL.OPEN_USER_CONTEXT,
+                MODAL_OPEN_USER_CONTEXT,
             ],
             trezorConnectCalledTimes: 2,
             trezorConnectCallsWith: { expiry_ms: expect.any(Number) }, // ~1000
@@ -165,7 +165,7 @@ export const onCoinjoinRoundChanged = [
             actions: [
                 COINJOIN.SESSION_ROUND_CHANGED,
                 COINJOIN.SESSION_TX_BROADCASTED,
-                MODAL.OPEN_USER_CONTEXT,
+                MODAL_OPEN_USER_CONTEXT,
                 COINJOIN.SESSION_COMPLETED,
             ],
             trezorConnectCalledTimes: 1,
@@ -201,7 +201,7 @@ export const onCoinjoinRoundChanged = [
             actions: [
                 COINJOIN.SESSION_ROUND_CHANGED,
                 COINJOIN.SESSION_TX_FAILED,
-                MODAL.OPEN_USER_CONTEXT,
+                MODAL_OPEN_USER_CONTEXT,
                 COINJOIN.SESSION_COMPLETED,
             ],
             trezorConnectCalledTimes: 0,
@@ -308,13 +308,13 @@ export const onCoinjoinRoundChanged = [
             actions: [
                 COINJOIN.SESSION_ROUND_CHANGED,
                 COINJOIN.SESSION_ROUND_CHANGED,
-                MODAL.OPEN_USER_CONTEXT,
+                MODAL_OPEN_USER_CONTEXT,
                 COINJOIN.SESSION_ROUND_CHANGED,
                 COINJOIN.SESSION_ROUND_CHANGED,
                 COINJOIN.SESSION_ROUND_CHANGED,
-                MODAL.CLOSE,
+                MODAL_CLOSE,
                 COINJOIN.SESSION_TX_BROADCASTED,
-                MODAL.OPEN_USER_CONTEXT,
+                MODAL_OPEN_USER_CONTEXT,
                 COINJOIN.SESSION_COMPLETED,
             ],
             trezorConnectCalledTimes: 2,
@@ -408,8 +408,8 @@ export const getOwnershipProof = [
         connect: [
             {
                 success: false,
-                payload: {
-                    error: 'Firmware error',
+                error: {
+                    message: 'Firmware error',
                 },
             },
             {
@@ -465,9 +465,7 @@ export const getOwnershipProof = [
         description: 'getOwnershipProof unsuccessful with multiple unresolved inputs',
         connect: [],
         state: {
-            suite: {
-                locks: { device: 1 },
-            },
+            locks: { device: 1 },
             devices: [
                 DEVICE,
                 { ...DEVICE, state: { staticSessionId: 'device-state-2' } },
@@ -761,8 +759,8 @@ export const signCoinjoinTx = [
         connect: [
             {
                 success: false,
-                payload: {
-                    error: 'Firmware error',
+                error: {
+                    message: 'Firmware error',
                 },
             },
         ],

@@ -1,10 +1,10 @@
 import { type PropsWithChildren } from 'react';
-import { GestureDetector, GestureType } from 'react-native-gesture-handler';
+import { GestureDetector, type GestureType } from 'react-native-gesture-handler';
 import {
     FadeIn,
     FadeOut,
     LinearTransition,
-    SharedValue,
+    type SharedValue,
     interpolate,
     useAnimatedStyle,
 } from 'react-native-reanimated';
@@ -15,10 +15,10 @@ import { AnimatedBox, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
 import { Screen, type ScreenHeaderProps } from '@suite-native/navigation';
 import { useActiveColorScheme } from '@suite-native/theme';
 import { getScreenWidth, getWindowWidth } from '@trezor/env-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { ThemeColorVariant } from '@trezor/theme';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { type ThemeColorVariant } from '@trezor/theme';
 
-import { BottomSheetControlProps } from '../hooks/useConfirmOnTrezorSheet';
+import { type BottomSheetControlProps } from '../hooks/useConfirmOnTrezorSheet';
 
 const SCREEN_WIDTH = getScreenWidth();
 const WINDOW_WIDTH = getWindowWidth();
@@ -36,10 +36,10 @@ const gradientStyle = prepareNativeStyle(() => ({
 const contentContainerStyle = prepareNativeStyle<{ colorVariant: ThemeColorVariant }>(
     (utils, { colorVariant }) => ({
         flex: 1,
-        backgroundColor: utils.colors.backgroundSurfaceElevation0,
+        backgroundColor: utils.colors.surfaceFillPage,
         borderWidth: utils.borders.widths.small,
         width: SCREEN_WIDTH + utils.borders.widths.small * 2,
-        borderColor: colorVariant === 'dark' ? utils.colors.borderOnElevation1 : 'transparent',
+        borderColor: colorVariant === 'dark' ? utils.colors.borderNeutral : 'transparent',
         position: 'absolute',
         top: 0,
         bottom: 0,
@@ -90,7 +90,7 @@ export const ConfirmOnTrezorContent = ({
 
     const insets = useBannerAwareSafeAreaInsets();
 
-    const gradientColor = utils.colors.backgroundSurfaceElevation0;
+    const gradientColor = utils.colors.surfaceFillPage;
 
     const animatedSheetStyle = useAnimatedStyle(() => {
         const paddingTop = interpolate(

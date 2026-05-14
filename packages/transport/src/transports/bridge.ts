@@ -1,23 +1,25 @@
 import {
     PROTOCOL_MALFORMED,
-    ThpState,
-    TransportProtocol,
+    type ThpState,
+    type TransportProtocol,
     bridge as protocolBridge,
     v1 as protocolV1,
 } from '@trezor/protocol';
+import { versionUtils } from '@trezor/utils';
 
 import {
     AbstractTransport,
-    AbstractTransportMethodParams,
-    AbstractTransportParams,
+    type AbstractTransportMethodParams,
+    type AbstractTransportParams,
 } from './abstract';
 import { TRANSPORT } from '../constants';
 import * as ERRORS from '../errors';
 import { ping } from '../pinger/ping';
 import { parseThpMessage } from '../thp/receive';
-import {
+import type {
     AnyError,
     AsyncResultWithTypedError,
+    BridgeCommonErrors,
     BridgeProtocolMessage,
     Descriptor,
     Session,
@@ -26,6 +28,7 @@ import { bridgeApiCall } from '../utils/bridgeApiCall';
 import * as bridgeApiResult from '../utils/bridgeApiResult';
 import { createProtocolMessage } from '../utils/bridgeProtocolMessage';
 import { receiveAndParse } from '../utils/receive';
+import { error, success } from '../utils/result';
 import { buildMessage } from '../utils/send';
 
 const DEFAULT_URL = 'http://127.0.0.1';
@@ -36,15 +39,11 @@ type BridgeEndpoint =
     | '/listen'
     | '/acquire'
     | '/post'
+    | '/abort'
     | '/call'
     | '/enumerate'
     | '/release'
     | '/read';
-
-export type BridgeCommonErrors =
-    | typeof ERRORS.HTTP_ERROR
-    | typeof ERRORS.WRONG_RESULT_TYPE
-    | typeof ERRORS.UNEXPECTED_ERROR;
 
 type R = Extract<
     ReturnType<
@@ -68,6 +67,7 @@ type BridgeConstructorParameters = AbstractTransportParams & { port?: number };
 
 export class BridgeTransport extends AbstractTransport {
     private useProtocolMessages: boolean = false;
+    private useAbortEndpoint: boolean = false;
     /**
      * url of trezord server.
      */
@@ -102,10 +102,11 @@ export class BridgeTransport extends AbstractTransport {
                     this.isOutdated = true;
                 }
                 this.useProtocolMessages = !!response.payload.protocolMessages;
+                this.useAbortEndpoint = versionUtils.isNewerOrEqual(this.version, '3.2.1');
 
                 this.stopped = false;
 
-                return this.success(undefined);
+                return success(undefined);
             },
             { signal },
         );
@@ -114,13 +115,13 @@ export class BridgeTransport extends AbstractTransport {
     // https://github.com/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L373
     public listen() {
         if (this.listening) {
-            return this.error({ error: ERRORS.ALREADY_LISTENING });
+            return error({ code: ERRORS.ALREADY_LISTENING });
         }
 
         this.listening = true;
         this.listenLoop();
 
-        return this.success(undefined);
+        return success(undefined);
     }
 
     private async listenLoop() {
@@ -131,7 +132,7 @@ export class BridgeTransport extends AbstractTransport {
             });
 
             if (!response.success) {
-                this.emit(TRANSPORT.ERROR, response.error);
+                this.emit(TRANSPORT.ERROR, response.error.code);
             } else {
                 this.handleDescriptorsChange(response.payload);
             }
@@ -171,7 +172,7 @@ export class BridgeTransport extends AbstractTransport {
                     signal,
                 });
 
-                return response.success ? this.success(null) : response;
+                return response.success ? success(null) : response;
             },
             { signal },
         );
@@ -186,7 +187,7 @@ export class BridgeTransport extends AbstractTransport {
     }
 
     public releaseDevice() {
-        return Promise.resolve(this.success(undefined));
+        return Promise.resolve(success(undefined));
     }
 
     private getProtocol(customProtocol?: TransportProtocol) {
@@ -206,6 +207,26 @@ export class BridgeTransport extends AbstractTransport {
         );
     }
 
+    // in some setups abort signal is resolved on the client-side but never resolves on the server-size (like android OkHttp request)
+    // abort signal is also meant to resolve immediately but it could take a while to process it on the server
+    // try to abort pending process through the server and fallback to local signal only if that fails
+    private createAbortSignal = (session: Session, signal?: AbortSignal) => {
+        if (!this.useAbortEndpoint) {
+            return signal;
+        }
+
+        const abortController = new AbortController();
+        signal?.addEventListener('abort', async () => {
+            const result = await this.post('/abort', { params: session });
+            if (!result.success) {
+                this.logger?.warn(`/abort/${session} error: ${result.error}`);
+                abortController.abort();
+            }
+        });
+
+        return abortController.signal;
+    };
+
     // https://github.com/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L534
     public call({
         session,
@@ -220,7 +241,6 @@ export class BridgeTransport extends AbstractTransport {
             async signal => {
                 const protocol = this.getProtocol(customProtocol);
                 const bytes = buildMessage({
-                    messages: this.messages,
                     name,
                     data,
                     protocol,
@@ -231,7 +251,7 @@ export class BridgeTransport extends AbstractTransport {
                 const response = await this.post(`/call`, {
                     params: session,
                     body: this.getRequestBody(bytes, protocol, thpState),
-                    signal,
+                    signal: this.createAbortSignal(session, signal),
                 });
 
                 if (!response.success) {
@@ -247,7 +267,6 @@ export class BridgeTransport extends AbstractTransport {
                     }
                     const message = parseThpMessage({
                         decoded: protocol.decode(respBytes),
-                        messages: this.messages,
                         thpState,
                     });
                     thpState?.sync('recv', message.type);
@@ -258,14 +277,10 @@ export class BridgeTransport extends AbstractTransport {
                         );
                     }
 
-                    return this.success(message);
+                    return success(message);
                 }
 
-                return receiveAndParse(
-                    this.messages,
-                    () => Promise.resolve(this.success(respBytes)),
-                    protocol,
-                );
+                return receiveAndParse(() => Promise.resolve(success(respBytes)), protocol);
             },
             { signal, timeout },
         );
@@ -284,7 +299,6 @@ export class BridgeTransport extends AbstractTransport {
             async signal => {
                 const protocol = this.getProtocol(customProtocol);
                 const bytes = buildMessage({
-                    messages: this.messages,
                     name,
                     data,
                     protocol,
@@ -294,16 +308,19 @@ export class BridgeTransport extends AbstractTransport {
                 const response = await this.post('/post', {
                     params: session,
                     body: this.getRequestBody(bytes, protocol, thpState),
-                    signal,
+                    signal: this.createAbortSignal(session, signal),
                 });
                 if (!response.success) {
                     return response;
                 }
-                if (protocol.name === 'v2') {
-                    thpState?.sync('send', name);
+                if (thpState) {
+                    if (thpState.isPiggybackAckEnabled) {
+                        thpState.enablePiggybackAck(false);
+                    }
+                    thpState.sync('send', name);
                 }
 
-                return this.success(undefined);
+                return success(undefined);
             },
             { signal, timeout },
         );
@@ -322,7 +339,7 @@ export class BridgeTransport extends AbstractTransport {
                 const response = await this.post('/read', {
                     params: session,
                     body: this.getRequestBody(Buffer.alloc(0), protocol, thpState),
-                    signal,
+                    signal: this.createAbortSignal(session, signal),
                 });
 
                 if (!response.success) {
@@ -334,19 +351,14 @@ export class BridgeTransport extends AbstractTransport {
                     // see readThpMessage in @trezor/transport-bridge
                     const message = parseThpMessage({
                         decoded: protocol.decode(respBytes),
-                        messages: this.messages,
                         thpState,
                     });
                     thpState?.sync('recv', message.type);
 
-                    return this.success(message);
+                    return success(message);
                 }
 
-                return receiveAndParse(
-                    this.messages,
-                    () => Promise.resolve(this.success(respBytes)),
-                    protocol,
-                );
+                return receiveAndParse(() => Promise.resolve(success(respBytes)), protocol);
             },
             { signal, timeout },
         );
@@ -388,6 +400,10 @@ export class BridgeTransport extends AbstractTransport {
         options: IncompleteRequestOptions,
     ): AsyncResultWithTypedError<undefined, BridgeCommonErrors | typeof ERRORS.SESSION_NOT_FOUND>;
     private async post(
+        endpoint: '/abort',
+        options: IncompleteRequestOptions,
+    ): AsyncResultWithTypedError<undefined, BridgeCommonErrors | typeof ERRORS.SESSION_NOT_FOUND>;
+    private async post(
         endpoint: '/listen',
         options?: IncompleteRequestOptions,
     ): AsyncResultWithTypedError<Descriptor[], BridgeCommonErrors>;
@@ -407,18 +423,18 @@ export class BridgeTransport extends AbstractTransport {
         });
 
         if (!response.success) {
-            if (response.error === ERRORS.UNEXPECTED_ERROR) {
-                return this.unknownError(response.error);
+            if (response.error.code === ERRORS.UNEXPECTED_ERROR) {
+                return this.unknownError(response.error.code);
             }
-            if (response.error === ERRORS.HTTP_ERROR) {
-                return this.error({ error: response.error });
+            if (response.error.code === ERRORS.HTTP_ERROR) {
+                return error({ code: response.error.code });
             }
 
             switch (endpoint) {
                 case '/':
-                    return this.unknownError(response.error);
+                    return this.unknownError(response.error.code);
                 case '/acquire':
-                    return this.unknownError(response.error, [
+                    return this.unknownError(response.error.code, [
                         ERRORS.SESSION_WRONG_PREVIOUS,
                         ERRORS.DEVICE_NOT_FOUND,
                         ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
@@ -428,24 +444,26 @@ export class BridgeTransport extends AbstractTransport {
                 case '/call':
                 case '/read':
                 case '/post':
-                    return this.unknownError(response.error, [
+                    return this.unknownError(response.error.code, [
                         ERRORS.SESSION_NOT_FOUND,
                         ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
                         ERRORS.OTHER_CALL_IN_PROGRESS,
                         ERRORS.INTERFACE_DATA_TRANSFER,
                         PROTOCOL_MALFORMED,
                     ]);
+                case '/abort':
+                    return this.unknownError(response.error.code, [ERRORS.SESSION_NOT_FOUND]);
                 case '/enumerate':
                 case '/listen':
-                    return this.unknownError(response.error);
+                    return this.unknownError(response.error.code);
                 case '/release':
-                    return this.unknownError(response.error, [
+                    return this.unknownError(response.error.code, [
                         ERRORS.SESSION_NOT_FOUND,
                         ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
                     ]);
                 default:
-                    return this.error({
-                        error: ERRORS.WRONG_RESULT_TYPE,
+                    return error({
+                        code: ERRORS.WRONG_RESULT_TYPE,
                         message: 'just for type safety, should never happen',
                     });
                 // should never get here
@@ -467,9 +485,11 @@ export class BridgeTransport extends AbstractTransport {
                 return bridgeApiResult.devices(response.payload);
             case '/release':
                 return bridgeApiResult.empty(response.payload);
+            case '/abort':
+                return bridgeApiResult.empty(response.payload);
             default:
-                return this.error({
-                    error: ERRORS.WRONG_RESULT_TYPE,
+                return error({
+                    code: ERRORS.WRONG_RESULT_TYPE,
                     message: 'just for type safety, should never happen',
                 });
             // should never get here

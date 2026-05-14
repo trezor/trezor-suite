@@ -1,7 +1,7 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
 
 import { EventType } from '../constants';
-import { TradingExchangeAction, TradingExchangeStep } from '../definitions';
+import { type TradingExchangeAction, type TradingExchangeStep } from '../definitions';
 
 type Attributes = {
     action: AttributeDef<TradingExchangeAction>;

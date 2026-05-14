@@ -1,20 +1,15 @@
 import {
     Hint,
     JavaScriptTypeBuilder,
-    SchemaOptions,
-    TEnum,
-    TEnumKey,
-    TEnumValue,
-    TLiteral,
-    TUnion,
+    type SchemaOptions,
+    type TEnum,
+    type TEnumKey,
+    type TEnumValue,
+    type TLiteral,
+    type TUnion,
 } from '@sinclair/typebox';
 
-// UnionToIntersection<A | B> = A & B
-type UnionToIntersection<U> = (U extends unknown ? (arg: U) => 0 : never) extends (
-    arg: infer I,
-) => 0
-    ? I
-    : never;
+import { type UnionToIntersection } from '@trezor/type-utils';
 
 // LastInUnion<A | B> = B
 type LastInUnion<U> =

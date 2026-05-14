@@ -9,16 +9,17 @@ import {
     CARDANO_EPOCH_DAYS,
     SOLANA_EPOCH_DAYS,
 } from '@suite-common/wallet-constants';
-import { selectPoolStatsApyData, selectValidatorsQueueData } from '@suite-common/wallet-core';
+import { selectEthValidatorsQueue, selectPoolStatsApy } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { BulletList } from '@trezor/components';
 
+import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useSelector } from 'src/hooks/suite';
-import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
-import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
 import { EarnInfoRow } from './EarnInfoRow';
 
 interface EarnSupplyingInfoProps {
+    account: Account;
     isExpanded?: boolean;
     flow: EarnFlow;
 }
@@ -177,14 +178,10 @@ const CardanoSupplyingRows = ({ flow, isExpanded, apy }: EarnSupplyingRowsProps)
     </>
 );
 
-export const EarnSupplyingInfo = ({ isExpanded, flow }: EarnSupplyingInfoProps) => {
-    const { account } = useSelector((state: CoinjoinRootState) => state.wallet.selectedAccount);
+export const EarnSupplyingInfo = ({ account, isExpanded, flow }: EarnSupplyingInfoProps) => {
+    const validatorsQueue = useSelector(selectEthValidatorsQueue);
 
-    const validatorsQueue = useSelector(state => selectValidatorsQueueData(state, account?.symbol));
-
-    const apy = useSelector(state => selectPoolStatsApyData(state, account));
-
-    if (!account) return null;
+    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
 
     const daysToAddToPoolInitial = getDaysToAddToPoolInitial(validatorsQueue);
     const displaySymbol = getNetworkDisplaySymbol(account.symbol);

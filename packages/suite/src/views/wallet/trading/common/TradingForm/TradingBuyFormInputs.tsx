@@ -1,15 +1,17 @@
 import { useCallback } from 'react';
 
 import {
+    TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_CRYPTO_INPUT,
     TRADING_FORM_FIAT_INPUT,
-    TradingBuyType,
+    type TradingBuyType,
+    isCountrySubdivisionRequired,
     selectTradingBuySupportedCryptoIds,
     selectTradingLoadingAndTimestamp,
     tradingActions,
 } from '@suite-common/trading';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils/src/firmwareUtils';
 import { useCurrentRef } from '@trezor/react-utils';
@@ -23,15 +25,17 @@ import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/T
 
 import { TradingFormCard } from './TradingFormCard';
 import { TradingFormSection } from './TradingFormSection';
+import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 import {
     TradingFormInputBuyAsset,
-    TradingFormInputBuyAssetProps,
+    type TradingFormInputBuyAssetProps,
 } from './TradingFormInput/TradingFormInputBuyAsset/TradingFormInputBuyAsset';
-import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
+import { TradingFormInputCountrySubdivision } from './TradingFormInput/TradingFormInputCountry/TradingFormInputCountrySubdivision';
 
 export const TradingBuyFormInputs = () => {
     const context = useTradingFormContext<TradingBuyType>();
+    const { defaultCountry } = context;
 
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
 
@@ -39,6 +43,7 @@ export const TradingBuyFormInputs = () => {
     const {
         [TRADING_FORM_CRYPTO_CURRENCY_SELECT]: cryptoSelect,
         [TRADING_FORM_CRYPTO_INPUT]: cryptoInput,
+        [TRADING_FORM_COUNTRY_SELECT]: countrySelect,
         amountInCrypto,
         currencySelect,
     } = getValues();
@@ -51,6 +56,8 @@ export const TradingBuyFormInputs = () => {
 
     const handleCryptoSelect = useCallback<TradingFormInputBuyAssetProps['onAssetSelect']>(
         asset => {
+            setValueRef.current(TRADING_FORM_CRYPTO_INPUT, '', { shouldDirty: true });
+            setValueRef.current(TRADING_FORM_FIAT_INPUT, '', { shouldDirty: true });
             setValueRef.current(TRADING_FORM_CRYPTO_CURRENCY_SELECT, asset, { shouldDirty: true });
             setAmountLimitsRef.current(undefined);
             dispatch(tradingActions.setModalCryptoCurrency(asset.id));
@@ -59,6 +66,9 @@ export const TradingBuyFormInputs = () => {
     );
 
     const buySupportedCryptoIds = useSelector(selectTradingBuySupportedCryptoIds);
+
+    const selectedCountry = countrySelect ?? defaultCountry;
+    const countryRequiresSubdivision = isCountrySubdivisionRequired(selectedCountry?.value);
 
     return (
         <Column gap={20}>
@@ -69,7 +79,7 @@ export const TradingBuyFormInputs = () => {
                             cryptoInputName={TRADING_FORM_CRYPTO_INPUT}
                             fiatInputName={TRADING_FORM_FIAT_INPUT}
                             cryptoSelectName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
-                            currencySelectLabel={currencySelect.label}
+                            currencySelectLabel={currencySelect.value.toUpperCase()}
                             cryptoCurrencyLabel={cryptoSelect.id}
                         />
 
@@ -105,6 +115,13 @@ export const TradingBuyFormInputs = () => {
                     <TradingFormInputPaymentMethod label="TR_TRADING_PAYMENT_METHOD" />
                 )}
                 <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
+
+                {selectedCountry && countryRequiresSubdivision && (
+                    <TradingFormInputCountrySubdivision
+                        label="TR_TRADING_COUNTRY_SUBDIVISION"
+                        country={selectedCountry}
+                    />
+                )}
                 <TradingSelectedOfferProvider />
             </TradingFormCard>
         </Column>

@@ -3,7 +3,7 @@ import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanim
 
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useDebounce } from '@trezor/react-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TextButton } from '../Button/TextButton';
 import { HStack } from '../Stack';

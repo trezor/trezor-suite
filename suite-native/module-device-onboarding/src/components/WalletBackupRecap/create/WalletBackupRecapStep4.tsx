@@ -2,7 +2,7 @@ import { HoldToConfirmButton } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { SwipeableWalkthroughStep } from '@suite-native/swipeable-walkthrough';
 
-import { WalletBackupTutorialNumberedStepProps } from './WalletBackupRecapStep1';
+import { type WalletBackupTutorialNumberedStepProps } from './WalletBackupRecapStep1';
 import { WalletRecapStepContent } from '../WalletRecapStepContent';
 import { WALLET_BACKUP_RECAP_STEPS } from './presets';
 import { useOnWalletRecapFinishedNavigation } from '../../../hooks/useOnWalletRecapFinishedNavigation';

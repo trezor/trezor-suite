@@ -1,15 +1,15 @@
 import { useState } from 'react';
 
-import { Translation, TranslationKey } from '@suite/intl';
-import { selectSelectedDevice, selectSelectedDeviceAuthenticity } from '@suite-common/device';
+import { Translation, type TranslationKey } from '@suite/intl';
+import { OnboardingCard } from '@suite/onboarding-components';
+import { selectIsDebugModeActive } from '@suite/settings';
+import { selectDeviceAuthenticityByDeviceId, selectSelectedDevice } from '@suite-common/device';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
-import { Card, Column, Grid, Icon, IconName, Paragraph } from '@trezor/components';
+import { Card, Column, Grid, Icon, type IconName, Paragraph } from '@trezor/components';
 
-import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { AuthenticateDeviceSupportButton } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 const items: { icon: IconName; text: TranslationKey }[] = [
     { icon: 'shieldCheck', text: 'TR_DEVICE_AUTHENTICITY_ITEM_1' },
@@ -23,7 +23,9 @@ type DeviceAuthenticityProps = {
 
 export const DeviceAuthenticityStep = ({ goToNext }: DeviceAuthenticityProps) => {
     const device = useSelector(selectSelectedDevice);
-    const selectedDeviceAuthenticity = useSelector(selectSelectedDeviceAuthenticity);
+    const selectedDeviceAuthenticity = useSelector(state =>
+        selectDeviceAuthenticityByDeviceId(state, device?.id),
+    );
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);

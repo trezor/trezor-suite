@@ -1,11 +1,10 @@
 import { events } from '@suite/analytics';
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import TrezorConnect from '@trezor/connect';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
-
-import { useDevice } from '../../../hooks/suite';
 
 interface DeviceLabelProps {
     isDeviceLocked: boolean;

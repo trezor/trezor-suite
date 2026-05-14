@@ -9,6 +9,6 @@
         { "path": "../intl" },
         { "path": "../services" },
         { "path": "../storage" },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles-native" }
     ]
 }

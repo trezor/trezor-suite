@@ -1,41 +1,77 @@
-import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
-import { btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
+import { combineReducers } from '@reduxjs/toolkit';
 
-import { TradeableAssetListItem, TradeableAssetListItemProps } from '../TradeableAssetListItem';
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import {
+    createLightStore,
+    createStaticReducer,
+    fireEvent,
+    renderWithStoreProvider,
+} from '@suite-native/test-utils-store';
+import { btcAsset, getWalletState, usdcAsset } from '@suite-native/trading-fixtures';
+import { tradingSlice } from '@suite-native/trading-state';
+import { typedObjectTransformValues } from '@trezor/utils';
+
+import { createTradingPreloadedState } from '../../../../__tests__/tradingTestUtils';
+import {
+    TradeableAssetListItem,
+    type TradeableAssetListItemProps,
+} from '../TradeableAssetListItem';
+
+const reducer = {
+    ...typedObjectTransformValues(createTradingPreloadedState(), createStaticReducer),
+    wallet: combineReducers({
+        settings: createStaticReducer(initialWalletSettingsState),
+        accounts: createStaticReducer(getWalletState({ tradeType: 'buy' }).accounts),
+        trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+    }),
+};
 
 describe('TradeableAssetListItem', () => {
     const renderComponent = ({
         onPress = jest.fn(),
         asset = btcAsset,
-    }: Partial<TradeableAssetListItemProps>) =>
-        renderWithStoreProviderAsync(<TradeableAssetListItem asset={asset} onPress={onPress} />);
+    }: Partial<TradeableAssetListItemProps>) => {
+        const store = createLightStore({
+            reducer,
+            preloadedState: {
+                wallet: {
+                    trading: getWalletState({ tradeType: 'buy' }).trading,
+                },
+            },
+        });
 
-    it('should render with correct labels', async () => {
-        const { getAllByText } = await renderComponent({ asset: usdcAsset });
+        return renderWithStoreProvider(<TradeableAssetListItem asset={asset} onPress={onPress} />, {
+            store,
+        });
+    };
+
+    it('should render with correct labels', () => {
+        const { getAllByText } = renderComponent({ asset: usdcAsset });
 
         expect(getAllByText('USDC').length).toBeGreaterThan(0);
         expect(getAllByText('Ethereum').length).toBeGreaterThan(0);
     });
 
-    it('should call onPress callback when clicked', async () => {
+    it('should call onPress callback when clicked', () => {
         const onPress = jest.fn();
-        const { getByText } = await renderComponent({ asset: btcAsset, onPress });
+        const { getByText } = renderComponent({ asset: btcAsset, onPress });
 
         fireEvent.press(getByText('BTC'));
 
         expect(onPress).toHaveBeenCalledWith();
     });
 
-    it('should add asset to favourites on star click', async () => {
-        const { getByAccessibilityHint } = await renderComponent({ asset: btcAsset });
+    it('should add asset to favourites on star click', () => {
+        const { getByAccessibilityHint } = renderComponent({ asset: btcAsset });
 
         fireEvent.press(getByAccessibilityHint('Add to favourites'));
 
         expect(getByAccessibilityHint('Remove from favourites')).toBeTruthy();
     });
 
-    it('should remove asset from favourites on star click', async () => {
-        const { getByAccessibilityHint } = await renderComponent({ asset: btcAsset });
+    it('should remove asset from favourites on star click', () => {
+        const { getByAccessibilityHint } = renderComponent({ asset: btcAsset });
 
         fireEvent.press(getByAccessibilityHint('Add to favourites'));
         fireEvent.press(getByAccessibilityHint('Remove from favourites'));

@@ -2,7 +2,7 @@ import { Dropbox, DropboxAuth } from 'dropbox';
 import type { users } from 'dropbox';
 
 import { AbstractMetadataProvider } from '@suite-common/metadata-types';
-import { getWeakRandomId } from '@trezor/utils';
+import { bufferUtils, getWeakRandomId } from '@trezor/utils';
 
 import { extractCredentialsFromAuthorizationFlow, getOauthReceiverUrl } from '../oauth';
 
@@ -69,9 +69,7 @@ export class DropboxProvider extends AbstractMetadataProvider {
 
         try {
             // dropbox supports authorization code flow for both web and desktop
-            // @ts-expect-error dropbox lib types url as String object, but it is primite string
-            const { code } = await extractCredentialsFromAuthorizationFlow(url);
-
+            const { code } = await extractCredentialsFromAuthorizationFlow(new URL(url.toString()));
             if (!code)
                 return this.error('AUTH_ERROR', 'Failed to extract code from authorization flow');
 
@@ -163,7 +161,10 @@ export class DropboxProvider extends AbstractMetadataProvider {
 
     private async _setFileContent(file: string, content: Buffer) {
         try {
-            const blob = new Blob([content], { type: 'text/plain;charset=UTF-8' });
+            const blobableContent = bufferUtils.toNonSharedBuffer(content);
+            const blob = new Blob([blobableContent], {
+                type: 'text/plain;charset=UTF-8',
+            });
             await this.client.filesUpload({
                 path: `/${file}`,
                 contents: blob,

@@ -1,5 +1,6 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
+import { selectBackup, selectBackupStatus } from '@suite/backup';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
@@ -14,7 +15,6 @@ import { BackupStep1Initial } from './BackupStep1Initial';
 import { BackupStep2InProgress } from './BackupStep2InProgress';
 import { BackupStep3Finished } from './BackupStep3Finished';
 import { BackupStepError } from './BackupStepError';
-import { selectBackup, selectBackupStatus } from '../../reducers/backup/backupReducer';
 
 const getEdgeCaseModalHeading = (unfinishedBackup: boolean) => {
     if (unfinishedBackup) {
@@ -63,7 +63,7 @@ export const Backup = ({
                 onCancel={onCancel}
                 heading={getEdgeCaseModalHeading(device.features.unfinished_backup)}
                 iconName={device.features.unfinished_backup ? 'warning' : 'check'}
-                variant={device.features.unfinished_backup ? 'warning' : 'primary'}
+                intent={device.features.unfinished_backup ? 'warning' : 'brand'}
                 bottomContent={
                     <Modal.Button onClick={() => onCancel()} data-testid="@backup/close-button">
                         <Translation id="TR_CLOSE" />

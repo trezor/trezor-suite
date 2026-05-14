@@ -1,5 +1,5 @@
 import { MINIMAL_COINBASE_CONFIRMATIONS, filterCoinbase } from './coinselectUtils';
-import { CoinSelectAlgorithm, CoinSelectInput, CoinSelectOptions } from '../types';
+import { type CoinSelectAlgorithm, type CoinSelectInput, type CoinSelectOptions } from '../types';
 
 function filterUtxos(utxos: CoinSelectInput[], minConfOwn: number, minConfOther: number) {
     const usable: CoinSelectInput[] = [];

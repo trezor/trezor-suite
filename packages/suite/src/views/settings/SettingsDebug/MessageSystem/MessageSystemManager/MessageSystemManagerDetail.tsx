@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { toCommaSeparated } from '@suite-common/message-system';
-import { Action } from '@suite-common/suite-types';
+import { type Action } from '@suite-common/suite-types';
 import { InfoItem } from '@trezor/components';
 
 import { MessageSystemManagerTranslations } from './MessageSystemManagerTranslations';

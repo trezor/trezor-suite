@@ -1,17 +1,25 @@
+import type {
+    CoinInfo,
+    DerivationPath,
+    GetAccountDescriptorResponse,
+    MethodPermission,
+} from '@trezor/connect-common';
+import {
+    Bundle,
+    GetAccountDescriptorParams,
+    UI_REQUEST,
+    createUiMessage,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import { getFirmwareRange } from './common/paramsValidator';
-import { AbstractMethod, DEFAULT_FIRMWARE_RANGE, MethodReturnType } from '../core/AbstractMethod';
+import { bundlify } from './common/paramsValidator';
+import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
-import { UI, createUiMessage } from '../events';
-import { Bundle, type CoinInfo, type DerivationPath } from '../types';
-import {
-    GetAccountDescriptorParams,
-    GetAccountDescriptorResponse,
-} from '../types/api/getAccountDescriptor';
 import { getAccountLabel } from '../utils/accountUtils';
-import { getSerializedPath, validatePath } from '../utils/pathUtils';
+import { buildOutputDescriptor } from '../utils/buildOutputDescriptor';
+import { fromHardened, getScriptType, getSerializedPath, validatePath } from '../utils/pathUtils';
 
 type Request = GetAccountDescriptorParams & { address_n: number[]; coinInfo: CoinInfo };
 
@@ -22,21 +30,13 @@ export default class GetAccountDescriptor extends AbstractMethod<
     disposed = false;
     hasBundle?: boolean;
 
-    init() {
-        this.requiredPermissions = ['read'];
-        this.useDevice = true;
-        this.useUi = true;
-
-        // create a bundle with only one batch if bundle doesn't exists
-        this.hasBundle = !!this.payload.bundle;
-        const payload = !this.payload.bundle
-            ? { ...this.payload, bundle: [this.payload] }
-            : this.payload;
+    constructor(message: MethodMessage<'getAccountDescriptor'>) {
+        const { hasBundle, payload } = bundlify(message.payload);
 
         // validate bundle type
         Assert(Bundle(GetAccountDescriptorParams), payload);
 
-        this.params = payload.bundle.map(batch => {
+        const params = payload.bundle.map(batch => {
             // validate coin info
             const coinInfo = getCoinInfo(batch.coin);
             if (!coinInfo) {
@@ -45,9 +45,6 @@ export default class GetAccountDescriptor extends AbstractMethod<
             // validate path
             const address_n = validatePath(batch.path, 3);
 
-            // set firmware range
-            this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
-
             return {
                 ...batch,
                 address_n,
@@ -55,7 +52,17 @@ export default class GetAccountDescriptor extends AbstractMethod<
             };
         });
 
+        super(message, params);
+
+        this.requiredFirmwareCoins = params.map(({ coinInfo }) => coinInfo);
+        this.hasBundle = hasBundle;
         this.confirmMissingBackup = !this.params.every(batch => batch.suppressBackupWarning);
+        this.useDevice = true;
+        this.useUi = true;
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
     }
 
     get info() {
@@ -97,38 +104,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
         };
     }
 
-    // override AbstractMethod function
-    // this is a special case where we want to check firmwareRange in bundle
-    // and return error with bundle indexes
-    checkFirmwareRange() {
-        // check each batch and return error with invalid bundle indexes
-        // find invalid ranges
-        const invalid = [];
-        for (let i = 0; i < this.params.length; i++) {
-            // set FW range for current batch
-            this.firmwareRange = getFirmwareRange(
-                this.name,
-                this.params[i].coinInfo,
-                DEFAULT_FIRMWARE_RANGE,
-            );
-            const exception = super.checkFirmwareRange();
-            if (exception) {
-                invalid.push({
-                    index: i,
-                    exception,
-                    coin: this.params[i].coin,
-                });
-            }
-        }
-        // return invalid ranges in custom error
-        if (invalid.length > 0) {
-            throw ERRORS.TypedError('Method_Discovery_BundleException', JSON.stringify(invalid));
-        }
-
-        return undefined;
-    }
-
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const responses: MethodReturnType<typeof this.name> = [];
 
         const sendProgress = (
@@ -138,8 +114,8 @@ export default class GetAccountDescriptor extends AbstractMethod<
         ) => {
             if (!this.hasBundle || this.disposed) return;
             // send progress to UI
-            this.postMessage(
-                createUiMessage(UI.BUNDLE_PROGRESS, {
+            sendCoreMessage(
+                createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                     total: this.params.length,
                     progress,
                     response,
@@ -154,17 +130,38 @@ export default class GetAccountDescriptor extends AbstractMethod<
             if (this.disposed) break;
 
             try {
-                const { descriptor, address_n, legacyXpub } = await this.device
+                const {
+                    descriptor,
+                    address_n,
+                    legacyXpub,
+                    outputDescriptorBip380,
+                    rootFingerprint,
+                } = await this.getDevice()
                     .getCommands()
                     .getAccountDescriptor(
                         request.coinInfo,
                         request.address_n,
                         request.derivationType,
                     );
-                const response = {
+
+                const response: GetAccountDescriptorResponse = {
                     descriptor,
                     path: getSerializedPath(address_n),
                     legacyXpub,
+                    // outputDescriptorBip380 is provided by firmware >= 2.6.5.
+                    // For older firmware, build it from the available data (bitcoin only).
+                    outputDescriptorBip380:
+                        outputDescriptorBip380 ??
+                        (request.coinInfo.type === 'bitcoin' && legacyXpub
+                            ? buildOutputDescriptor({
+                                  coin: request.coinInfo.name,
+                                  account: fromHardened(address_n[2]),
+                                  purpose: fromHardened(address_n[0]),
+                                  scriptType: getScriptType(address_n),
+                                  xpub: legacyXpub,
+                                  rootFingerprint,
+                              })
+                            : undefined),
                 };
                 sendProgress(i, response);
                 responses.push(response);

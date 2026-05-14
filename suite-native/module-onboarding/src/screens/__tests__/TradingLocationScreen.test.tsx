@@ -1,9 +1,9 @@
-import { RouteProp } from '@react-navigation/native';
+import { type RouteProp } from '@react-navigation/native';
 
 import { events } from '@suite-native/analytics';
-import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
+import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
-import { renderWithStoreProviderAsync, screen, userEvent } from '@suite-native/test-utils';
+import { renderWithStoreProvider, screen, userEvent } from '@suite-native/test-utils-store';
 
 import { TradingLocationScreen } from '../TradingLocationScreen';
 
@@ -25,16 +25,31 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () =>
         ({
             params: undefined,
-        }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingHistory>,
+        }) as RouteProp<RootStackParamList, RootStackRoutes.TradingHistory>,
 }));
 
 jest.mock('../../hooks/useExitOnboardingFlow', () => ({
     useExitOnboardingFlow: () => mockExitOnboardingFlow,
 }));
 
+const defaultMessageSystem = {
+    config: { actions: [] },
+    validMessages: { banner: [], context: [], modal: [], feature: [] },
+    dismissedMessages: [],
+};
+
 describe('TradingLocationOnboardingScreen', () => {
     const renderTradingLocationScreen = () =>
-        renderWithStoreProviderAsync(<TradingLocationScreen />);
+        renderWithStoreProvider(<TradingLocationScreen />, {
+            preloadedState: {
+                messageSystem: defaultMessageSystem,
+                wallet: {
+                    trading: { residence: { country: null, wasOnboardingVisited: false } },
+                },
+                device: { selectedDevice: undefined, devices: [] },
+                featureFlags: {},
+            },
+        });
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -48,8 +63,8 @@ describe('TradingLocationOnboardingScreen', () => {
         screen.unmount();
     });
 
-    it('should render all components', async () => {
-        const { getByText, getByLabelText } = await renderTradingLocationScreen();
+    it('should render all components', () => {
+        const { getByText, getByLabelText } = renderTradingLocationScreen();
 
         expect(getByText('Trading is now available')).toBeOnTheScreen();
         expect(getByText('Confirm location')).toBeOnTheScreen();
@@ -59,7 +74,7 @@ describe('TradingLocationOnboardingScreen', () => {
     });
 
     it('should log analytics event on country change', async () => {
-        const { getByText } = await renderTradingLocationScreen();
+        const { getByText } = renderTradingLocationScreen();
 
         await userEvent.press(getByText('Country of residence'));
         await userEvent.press(getByText('Argentina'));
@@ -75,7 +90,7 @@ describe('TradingLocationOnboardingScreen', () => {
     });
 
     it('should use exitOnboardingFlow on button press', async () => {
-        const { getByText } = await renderTradingLocationScreen();
+        const { getByText } = renderTradingLocationScreen();
         await userEvent.press(getByText('Not now'));
 
         expect(mockExitOnboardingFlow).toHaveBeenCalledTimes(1);

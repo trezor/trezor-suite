@@ -1,7 +1,7 @@
 import { Keyboard } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { BlockchainRootState, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
+import { type BlockchainRootState, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import {
     BottomSheetModal,
     IconButton,
@@ -9,7 +9,7 @@ import {
     VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 
 type InfoLineProps = {
     title: TxKeyPath;
@@ -18,7 +18,7 @@ type InfoLineProps = {
 
 const InfoLine = ({ title, value }: InfoLineProps) => (
     <VStack spacing="sp2">
-        <Text color="textSubdued">
+        <Text color="contentSecondary">
             <Translation id={title} />
         </Text>
         <Text>{value}</Text>
@@ -40,8 +40,8 @@ export const ConnectionInfoButton = () => {
     return (
         <>
             <IconButton
-                colorScheme="tertiaryElevation0"
-                size="medium"
+                intent="neutral"
+                priority="secondary"
                 iconName="info"
                 onPress={openBottomSheet}
             />

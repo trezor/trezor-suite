@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { Banner } from '@trezor/components';
 
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 interface CardanoLegacyBannerProps {
     account?: Account;

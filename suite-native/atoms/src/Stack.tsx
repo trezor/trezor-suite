@@ -1,11 +1,11 @@
-import React, { ReactNode } from 'react';
-import { View } from 'react-native';
-import Animated, { AnimatedProps } from 'react-native-reanimated';
+import React, { type ReactNode } from 'react';
+import { type View } from 'react-native';
+import Animated from 'react-native-reanimated';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { NativeSpacing } from '@trezor/theme';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { type NativeSpacing } from '@trezor/theme';
 
-import { Box, BoxProps } from './Box';
+import { Box, type BoxProps } from './Box';
 
 type StackOrientation = 'horizontal' | 'vertical';
 interface StackProps extends BoxProps {
@@ -54,9 +54,10 @@ export const Stack = React.forwardRef<View, StackProps>(
 export const VStack = Stack;
 export const HStack = (props: StackProps) => <Stack {...props} orientation="horizontal" />;
 
-const AnimatedStack = Animated.createAnimatedComponent(Stack);
-AnimatedStack.displayName = 'AnimatedStack';
-export const AnimatedVStack = AnimatedStack;
-export const AnimatedHStack = (props: AnimatedProps<StackProps>) => (
-    <AnimatedStack {...props} orientation="horizontal" />
-);
+Stack.displayName = 'Stack';
+VStack.displayName = 'VStack';
+HStack.displayName = 'HStack';
+
+export const AnimatedStack = Animated.createAnimatedComponent(Stack);
+export const AnimatedVStack = Animated.createAnimatedComponent(VStack);
+export const AnimatedHStack = Animated.createAnimatedComponent(HStack);

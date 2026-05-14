@@ -1,11 +1,11 @@
-import { UseFormSetValue } from 'react-hook-form';
+import { type UseFormSetValue } from 'react-hook-form';
 
 import { toChecksumAddress } from 'web3-utils';
 
 import { getTestnetSymbols } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
-import addressValidator from '@trezor/address-validator';
-import { AccountInfo } from '@trezor/blockchain-link-types';
+import { type Account } from '@suite-common/wallet-types';
+import { getAddressType, validate } from '@trezor/address-validator';
+import { type AccountInfo } from '@trezor/blockchain-link-types';
 
 const getNetworkType = (symbol: Account['symbol'], address: string) => {
     if (symbol === 'regtest') return symbol;
@@ -39,7 +39,7 @@ export const isAddressValid = (address: string, symbol: Account['symbol']) => {
     const networkType = getNetworkType(symbol, address);
     const updatedSymbol = getCoinFromTestnet(symbol);
 
-    return addressValidator.validate(address, updatedSymbol.toUpperCase(), networkType);
+    return validate(address, updatedSymbol.toUpperCase(), networkType);
 };
 
 export const isAddressDeprecated = (address: string, symbol: Account['symbol']) => {
@@ -58,10 +58,7 @@ export const isTaprootAddress = (address: string, symbol: Account['symbol']) => 
     const networkType = getNetworkType(symbol, address);
     const updatedSymbol = getCoinFromTestnet(symbol);
 
-    return (
-        addressValidator.getAddressType(address, updatedSymbol.toUpperCase(), networkType) ===
-        'p2tr'
-    );
+    return getAddressType(address, updatedSymbol.toUpperCase(), networkType) === 'p2tr';
 };
 
 export const hasBitcoinCashAddressPrefix = (address: string) =>

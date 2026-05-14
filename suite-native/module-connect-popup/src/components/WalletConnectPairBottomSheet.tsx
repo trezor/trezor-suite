@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import * as Clipboard from 'expo-clipboard';
 
 import { walletConnectPairThunk } from '@suite-common/walletconnect';
-import { BottomSheetModalRef, Button, Loader, TextDivider } from '@suite-native/atoms';
+import { type BottomSheetModalRef, Button, Loader, TextDivider } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { ScanQRBottomSheet } from '@suite-native/qr-code';
 import { useToast } from '@suite-native/toasts';
@@ -29,7 +29,7 @@ export const WalletConnectPairBottomSheet = ({
             .unwrap()
             .catch(error => {
                 showToast({
-                    variant: 'warning',
+                    intent: 'warning',
                     message: error.message,
                 });
             })
@@ -59,7 +59,12 @@ export const WalletConnectPairBottomSheet = ({
             {isPairing ? (
                 <Loader />
             ) : (
-                <Button colorScheme="tertiaryElevation0" onPress={handlePaste} viewLeft="clipboard">
+                <Button
+                    intent="neutral"
+                    priority="secondary"
+                    onPress={handlePaste}
+                    iconLeft="clipboard"
+                >
                     <Translation id="moduleConnectPopup.walletConnect.pasteFromClipboard" />
                 </Button>
             )}

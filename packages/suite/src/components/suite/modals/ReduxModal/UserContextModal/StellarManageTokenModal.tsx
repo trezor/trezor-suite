@@ -9,14 +9,14 @@ import {
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     activateStellarTokenThunk,
     deactivateStellarTokenThunk,
     fetchAndUpdateAccountThunk,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
-import { FormState, PrecomposedLevels } from '@suite-common/wallet-types';
+import { type Account, type FormState } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { BASE_INFO } from '@trezor/blockchain-link-utils/src/stellar';
 import { Banner, Button, Column, Modal, Row, Text } from '@trezor/components';
@@ -25,6 +25,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useComposedLevelsPlaceholder } from 'src/hooks/wallet/form/useComposedLevelsPlaceholder';
 import { useFees } from 'src/hooks/wallet/form/useFees';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -34,12 +35,14 @@ type StellarManageTokenModalProps =
           mode: 'activate';
           symbol: NetworkSymbol;
           contractAddress: string;
+          account?: Account;
           onCancel: () => void;
       }
     | {
           mode: 'deactivate';
           symbol: NetworkSymbol;
           contractAddress: string;
+          account?: Account;
           tokenBalance: string;
           onCancel: () => void;
       };
@@ -49,7 +52,8 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
     const { mode, symbol, contractAddress, onCancel } = props;
     const tokenBalance = mode === 'deactivate' ? props.tokenBalance : undefined;
     const dispatch = useDispatch();
-    const account = useSelector(selectSelectedAccount);
+    const selectedAccount = useSelector(selectSelectedAccount);
+    const account = props.account ?? selectedAccount;
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, symbol));
     const { translationString } = useTranslation();
     const [isProcessing, setIsProcessing] = useState(false);
@@ -79,34 +83,14 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
     });
 
     const { watch, handleSubmit } = methods;
-
     const selectedFee = watch('selectedFee');
     const feePerUnit = watch('feePerUnit');
 
-    const composedLevels = useMemo(() => {
-        const levels: PrecomposedLevels = {};
-
-        const createComposedTx = (feeValue: string) => ({
-            type: 'final' as const,
-            totalSpent: '0',
-            fee: feeValue,
-            feePerByte: feeValue,
-            bytes: 0,
-            inputs: [],
-            outputs: [],
-            outputsPermutation: [],
-        });
-
-        feeInfo.levels.forEach(level => {
-            levels[level.label] = createComposedTx(level.feePerUnit);
-        });
-
-        if (selectedFee === 'custom' && feePerUnit) {
-            levels.custom = createComposedTx(feePerUnit);
-        }
-
-        return levels;
-    }, [feeInfo.levels, feePerUnit, selectedFee]);
+    const composedLevels = useComposedLevelsPlaceholder({
+        feeInfo,
+        selectedFee,
+        feePerUnit,
+    });
 
     const composedTx = composedLevels[selectedFee || 'normal'];
     const currentFee = composedTx?.type === 'final' ? composedTx.fee : '0';
@@ -250,7 +234,8 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
     return (
         <Modal
             width={600}
-            onCancel={onCancel}
+            onCancel={!isProcessing ? onCancel : undefined}
+            isBackdropCancelable={!isProcessing}
             heading={<Translation id={headingId} values={{ token: tokenCode }} />}
             bottomContent={
                 <Row gap={spacings.xs}>
@@ -312,6 +297,22 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                                         required: insufficientBalanceInfo.required,
                                         available: insufficientBalanceInfo.available,
                                     }}
+                                />
+                            }
+                        />
+                    )}
+
+                    {isProcessing && (
+                        <Banner
+                            intent="info"
+                            icon="spinner"
+                            description={
+                                <Translation
+                                    id={
+                                        mode === 'activate'
+                                            ? 'TR_ACTIVATION_IN_PROGRESS_BANNER'
+                                            : 'TR_DEACTIVATION_IN_PROGRESS_BANNER'
+                                    }
                                 />
                             }
                         />

@@ -1,4 +1,4 @@
-import { Branded } from '@trezor/type-utils';
+import { type Branded } from '@trezor/type-utils';
 
 /**
  * First testnet address => 44/1/0/0/0

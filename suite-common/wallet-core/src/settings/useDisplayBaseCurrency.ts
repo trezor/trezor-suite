@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { isNotNullOrUndefined } from '@trezor/utils';
 

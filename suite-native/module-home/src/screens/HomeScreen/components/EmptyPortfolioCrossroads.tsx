@@ -5,24 +5,24 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
     Feature,
-    MessageSystemRootState,
+    type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
 import { events } from '@suite-native/analytics';
 import { Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-native/atoms';
 import { useConnectDeviceHandler } from '@suite-native/device';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import {
     AccountsImportStackRoutes,
     DemoAccountQuestionnaireStackRoutes,
-    HomeStackParamList,
-    HomeStackRoutes,
-    RootStackParamList,
+    type HomeStackParamList,
+    type HomeStackRoutes,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ConnectTrezorSvg } from '../../../assets/ConnectTrezorSvg';
 
@@ -133,14 +133,15 @@ export const EmptyPortfolioCrossroads = () => {
                         <Text variant="headline-sm" textAlign="center">
                             <Translation id={secondaryCardConfig.titleTranslationId} />
                         </Text>
-                        <Text color="textSubdued" textAlign="center">
+                        <Text color="contentSecondary" textAlign="center">
                             <Translation id={secondaryCardConfig.descriptionTranslationId} />
                         </Text>
                     </VStack>
                     <View style={applyStyle(buttonWrapperStyle)}>
                         <Button
                             onPress={secondaryCardConfig.onPress}
-                            colorScheme="tertiaryElevation1"
+                            intent="neutral"
+                            priority="secondary"
                             testID={secondaryCardConfig.testID}
                         >
                             <Translation id={secondaryCardConfig.buttonTranslationId} />

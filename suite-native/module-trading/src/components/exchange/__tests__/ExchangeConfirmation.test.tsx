@@ -1,4 +1,8 @@
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import type { CryptoId, ExchangeTrade } from 'invity-api';
+
+import { Button } from '@suite-native/atoms';
+import { getTranslation } from '@suite-native/intl';
+import { renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
 import { getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixtures';
 
 import { ExchangeConfirmation } from '../ExchangeConfirmation';
@@ -7,13 +11,7 @@ jest.mock('../../../hooks/exchange/useExchangeSelectQuote', () => ({
     useExchangeSelectQuote: jest.fn(),
 }));
 
-const mockQuote = {
-    send: 'BTC',
-    receive: 'ETH',
-    exchange: 'test-provider',
-    isDex: false,
-    preapprovedStringAmount: undefined,
-};
+let mockQuote: ExchangeTrade;
 
 jest.mock('../../../hooks/exchange/useExchangeFormContext', () => ({
     useExchangeFormContext: () => ({
@@ -21,92 +19,166 @@ jest.mock('../../../hooks/exchange/useExchangeFormContext', () => ({
     }),
 }));
 
+jest.mock('../../../hooks/general/useTradingStellarActivateToken', () => ({
+    useTradingStellarActivateToken: jest.fn(),
+}));
+
 describe('ExchangeConfirmation', () => {
     const mockUseExchangeSelectQuote =
         require('../../../hooks/exchange/useExchangeSelectQuote').useExchangeSelectQuote;
+    const mockUseTradingStellarActivateToken =
+        require('../../../hooks/general/useTradingStellarActivateToken').useTradingStellarActivateToken;
+
+    const mockSelectQuote = (canProceed = true) =>
+        mockUseExchangeSelectQuote.mockReturnValue({
+            canProceed,
+            selectQuote: jest.fn(),
+            selecteQuoteForRevoke: jest.fn(),
+            isConsentRequested: false,
+            giveConsent: jest.fn(),
+            cancelConsent: jest.fn(),
+        });
 
     const renderConfirmation = () =>
-        renderWithStoreProviderAsync(<ExchangeConfirmation />, {
+        renderWithStoreProvider(<ExchangeConfirmation />, {
             preloadedState: { wallet: { trading: getInitializedTradingStateWithQuotes() } },
         });
 
+    const queryContinueButton = () =>
+        screen.queryByText(getTranslation('moduleTrading.tradingScreen.buttons.continue'));
+
+    const queryRevokeButton = () =>
+        screen.queryByText(getTranslation('moduleTrading.tradingScreen.buttons.revoke'));
+
     beforeEach(() => {
-        mockQuote.isDex = false;
-        mockQuote.preapprovedStringAmount = undefined;
-    });
+        mockQuote = {
+            send: 'ethereum--0x6b175474e89094c44da98b954eedeac495271d0f' as CryptoId,
+            receive: 'ethereum' as CryptoId,
+            exchange: 'test-provider',
+            isDex: false,
+        };
 
-    it('should render "Swap" button when canProceed is true and approval not needed', async () => {
-        mockUseExchangeSelectQuote.mockReturnValue({
-            canProceed: true,
-            selectQuote: jest.fn(),
-            isConsentRequested: false,
-            giveConsent: jest.fn(),
-            cancelConsent: jest.fn(),
+        mockUseTradingStellarActivateToken.mockReturnValue({
+            isReceivingInactiveStellarToken: false,
+            activateButtonElement: null,
         });
-
-        const { getByText } = await renderConfirmation();
-        expect(getByText('Swap')).toBeTruthy();
     });
 
-    it('should render "Approve and swap" button when canProceed is true and approval needed', async () => {
+    it('should render "Continue" button when canProceed is true', () => {
+        mockSelectQuote();
+
+        renderConfirmation();
+
+        expect(queryContinueButton()).toBeOnTheScreen();
+    });
+
+    it('should not render "Continue" button when canProceed is false', () => {
+        mockQuote.isDex = false;
+        mockSelectQuote(false);
+
+        renderConfirmation();
+
+        expect(queryContinueButton()).not.toBeOnTheScreen();
+    });
+
+    it('should not render "Revoke" button when approval is not needed', () => {
+        mockSelectQuote();
+
+        renderConfirmation();
+
+        expect(queryRevokeButton()).not.toBeOnTheScreen();
+    });
+
+    it('should not render "Revoke" button when approval is needed', () => {
         mockQuote.isDex = true;
+        mockSelectQuote();
 
-        mockUseExchangeSelectQuote.mockReturnValue({
-            canProceed: true,
-            selectQuote: jest.fn(),
-            isConsentRequested: false,
-            giveConsent: jest.fn(),
-            cancelConsent: jest.fn(),
-        });
+        renderConfirmation();
 
-        const { getByText } = await renderConfirmation();
-        expect(getByText('Approve and swap')).toBeTruthy();
+        expect(queryRevokeButton()).not.toBeOnTheScreen();
     });
 
-    it('should render "Swap" button when canProceed is true and approval status is approved', async () => {
-        mockQuote.isDex = false;
+    it('should render "Revoke" button when approval status is approved', () => {
+        mockQuote.isDex = true;
+        mockQuote.preapprovedStringAmount = '100';
+        mockSelectQuote();
 
-        mockUseExchangeSelectQuote.mockReturnValue({
-            canProceed: true,
-            selectQuote: jest.fn(),
-            isConsentRequested: false,
-            giveConsent: jest.fn(),
-            cancelConsent: jest.fn(),
-        });
+        renderConfirmation();
 
-        const { getByText } = await renderConfirmation();
-        expect(getByText('Swap')).toBeTruthy();
+        expect(queryRevokeButton()).toBeOnTheScreen();
     });
 
-    it('should render "Swap" button when canProceed is true and approval status is null', async () => {
-        mockQuote.isDex = false;
+    it('should render "Revoke" button when approval status is needs_increase', () => {
+        mockQuote.isDex = true;
+        mockQuote.preapprovedStringAmount = '100';
+        mockQuote.status = 'APPROVAL_REQ';
 
-        mockUseExchangeSelectQuote.mockReturnValue({
-            canProceed: true,
-            selectQuote: jest.fn(),
-            isConsentRequested: false,
-            giveConsent: jest.fn(),
-            cancelConsent: jest.fn(),
-        });
+        mockSelectQuote();
 
-        const { getByText } = await renderConfirmation();
-        expect(getByText('Swap')).toBeTruthy();
+        renderConfirmation();
+
+        expect(queryRevokeButton()).toBeOnTheScreen();
     });
 
-    it('should not render button when canProceed is false', async () => {
+    it('should not render "Revoke" button when approval status is null', () => {
         mockQuote.isDex = false;
 
-        mockUseExchangeSelectQuote.mockReturnValue({
-            canProceed: false,
-            selectQuote: jest.fn(),
-            isConsentRequested: false,
-            giveConsent: jest.fn(),
-            cancelConsent: jest.fn(),
+        mockSelectQuote();
+
+        renderConfirmation();
+
+        expect(queryRevokeButton()).not.toBeOnTheScreen();
+    });
+
+    it('should render "Revoke" button when approval status is needs_revoke', () => {
+        mockQuote.isDex = true;
+        mockQuote.preapprovedStringAmount = '100';
+        mockQuote.status = 'APPROVAL_REQ';
+        mockQuote.send = 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId;
+
+        mockSelectQuote();
+
+        renderConfirmation();
+
+        expect(queryRevokeButton()).toBeOnTheScreen();
+    });
+
+    it('should render activate button when trading inactive Stellar token', () => {
+        mockSelectQuote();
+
+        mockUseTradingStellarActivateToken.mockReturnValue({
+            isReceivingInactiveStellarToken: true,
+            activateButtonElement: <Button>Activate</Button>,
         });
 
-        const { queryByText } = await renderConfirmation();
+        const { queryByText } = renderConfirmation();
+        expect(queryByText('Activate')).toBeTruthy();
+        expect(queryByText('Continue')).toBeNull();
+    });
 
-        expect(queryByText('Swap')).toBeNull();
-        expect(queryByText('Approve and swap')).toBeNull();
+    it('should not render activate button when not trading inactive Stellar token', () => {
+        mockSelectQuote();
+
+        mockUseTradingStellarActivateToken.mockReturnValue({
+            isReceivingInactiveStellarToken: false,
+            activateButtonElement: <Button>Activate</Button>,
+        });
+
+        const { queryByText } = renderConfirmation();
+        expect(queryByText('Activate')).toBeNull();
+        expect(queryByText('Continue')).toBeTruthy();
+    });
+
+    it('should not render Revoke button, when canProceed is false', () => {
+        mockQuote.isDex = true;
+        mockQuote.preapprovedStringAmount = '100';
+        mockQuote.status = 'APPROVAL_REQ';
+        mockQuote.send = 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId;
+
+        mockSelectQuote(false);
+
+        renderConfirmation();
+
+        expect(queryRevokeButton()).toBeNull();
     });
 });

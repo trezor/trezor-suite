@@ -10,6 +10,6 @@ export const AccountNotExists = () => (
     <AccountExceptionLayout
         title={<Translation id="TR_ACCOUNT_EXCEPTION_NOT_EXIST" />}
         iconName="cloud"
-        iconVariant="tertiary"
+        iconVariant="neutral"
     />
 );

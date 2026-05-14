@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 
-import { FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
+import { type FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
 import { percentageDiff } from '@suite-native/graph';
 
 export const selectedPointAtom = atom<FiatGraphPointWithCryptoBalance | null>(null);

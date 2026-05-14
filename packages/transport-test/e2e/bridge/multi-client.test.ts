@@ -1,5 +1,4 @@
-import * as messages from '@trezor/protobuf/messages.json';
-import { BridgeTransport, Descriptor } from '@trezor/transport';
+import { BridgeTransport, type Descriptor } from '@trezor/transport';
 import { Session } from '@trezor/transport/src/types';
 import { Model } from '@trezor/trezor-user-env-link';
 
@@ -67,8 +66,8 @@ describe('bridge', () => {
         await TrezorUserEnvLink.startEmu(emulatorStartOpts);
         await TrezorUserEnvLink.startBridge();
 
-        bridge1 = new BridgeTransport({ messages, id: 'app A' });
-        bridge2 = new BridgeTransport({ messages, id: 'app B' });
+        bridge1 = new BridgeTransport({ id: 'app A' });
+        bridge2 = new BridgeTransport({ id: 'app B' });
 
         await bridge1.init();
         await bridge2.init();
@@ -205,7 +204,7 @@ describe('bridge', () => {
             await expect(receive1res).resolves.toMatchObject({
                 success: false,
                 // todo: this error is expected, fix errors. also emu error is weird
-                error: errorCase1,
+                error: { code: errorCase1 },
             });
 
             if (!session2.success) {

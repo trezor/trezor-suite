@@ -1,4 +1,4 @@
-import { MultisigPubkeysOrder } from '@trezor/protobuf/src/messages';
+import { MultisigPubkeysOrder } from '@trezor/protobuf/src/definitions';
 
 const { TX_CACHE } = global.TestUtils;
 

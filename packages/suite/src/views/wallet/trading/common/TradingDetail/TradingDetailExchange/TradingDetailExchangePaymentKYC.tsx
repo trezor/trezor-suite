@@ -1,9 +1,9 @@
-import { ExchangeProviderInfo, ExchangeTrade } from 'invity-api';
+import { type ExchangeProviderInfo, type ExchangeTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/components';
 
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
 
@@ -21,7 +21,7 @@ export const TradingDetailExchangePaymentKYC = ({
     supportUrl,
 }: TradingDetailExchangePaymentKYCProps) => (
     <Column gap={24} padding={{ top: 12, bottom: 4 }}>
-        <IconCircle name="warning" variant="warning" size={100} />
+        <IconCircle name="warning" intent="warning" size={96} />
         <Column>
             <H3 data-testid="@trading/transaction/detail/status">
                 <Translation id="TR_EXCHANGE_DETAIL_KYC_TITLE" />

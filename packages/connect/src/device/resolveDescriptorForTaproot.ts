@@ -1,7 +1,6 @@
-import { MessagesSchema as Messages } from '@trezor/protobuf';
+import type { HDNodeResponse } from '@trezor/connect-common/src/types/api/getPublicKey';
+import type { MessagesSchema as Messages } from '@trezor/protobuf';
 import { convertTaprootXpub } from '@trezor/utils';
-
-import { HDNodeResponse } from '../types/api/getPublicKey';
 
 interface ResolveDescriptorForTaprootParams {
     response: HDNodeResponse;

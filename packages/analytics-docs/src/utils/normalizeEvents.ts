@@ -27,6 +27,17 @@ const toEventDoc = (event: NormalizableEvent): [string, EventDoc] => {
         ),
     );
 
+    const eventChangelogEntries = event.changelog ?? [];
+    const attributeChangelogEntries = Object.values(attributes).flatMap(
+        attr => attr.changelog.entries || [],
+    );
+
+    const eventChangelog = normalizeChangelog(eventChangelogEntries);
+    const combinedChangelog = normalizeChangelog([
+        ...eventChangelogEntries,
+        ...attributeChangelogEntries,
+    ]);
+
     return [
         event.name,
         {
@@ -34,7 +45,11 @@ const toEventDoc = (event: NormalizableEvent): [string, EventDoc] => {
             description: event.description,
             descriptionTrigger: event.descriptionTrigger,
             possibleImprovements: event.possibleImprovements,
-            changelog: normalizeChangelog(event.changelog),
+            changelog: {
+                entries: eventChangelog.entries,
+                addedInVersion: eventChangelog.addedInVersion,
+                lastUpdatedInVersion: combinedChangelog.lastUpdatedInVersion,
+            },
             attributes,
             platform: event.platform ?? '',
         },

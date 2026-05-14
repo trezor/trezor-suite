@@ -1,12 +1,12 @@
 // receive with ThpAck
 
-import { decodeMessage } from '@trezor/protobuf';
+import { protobufManager } from '@trezor/protobuf';
 import { thp as protocolThp } from '@trezor/protocol';
 
 import { THP_STATE_ERROR } from '../errors';
 import { thpLoop } from './loop';
 import type { CommonProps } from './receiveExpectedMessage';
-import { receive } from '../utils/receive';
+import { type receive } from '../utils/receive';
 import { error } from '../utils/result';
 
 export const receiveThpMessage = async ({
@@ -18,7 +18,7 @@ export const receiveThpMessage = async ({
     skipAck,
 }: Omit<CommonProps, 'chunks'>) => {
     if (!thpState) {
-        return error({ error: THP_STATE_ERROR, message: 'ThpStateMissing' });
+        return error({ code: THP_STATE_ERROR, message: 'ThpStateMissing' });
     }
 
     const result = await thpLoop({
@@ -33,19 +33,18 @@ export const receiveThpMessage = async ({
     });
 
     // NOTE: result should never be empty
-    return result ?? error({ error: THP_STATE_ERROR, message: 'MissingResponse' });
+    return result ?? error({ code: THP_STATE_ERROR, message: 'MissingResponse' });
 };
 
 export type ParseThpMessageProps = {
-    messages: Parameters<typeof decodeMessage>[0];
     decoded: Extract<Awaited<ReturnType<typeof receive>>, { success: true }>['payload'];
     thpState?: protocolThp.ThpState;
 };
 
-export const parseThpMessage = ({ decoded, messages, thpState }: ParseThpMessageProps) => {
+export const parseThpMessage = ({ decoded, thpState }: ParseThpMessageProps) => {
     const message = protocolThp.decode(
         decoded,
-        (messageType, data) => decodeMessage(messages, messageType, data),
+        (messageType, data) => protobufManager.decode(messageType, data),
         thpState,
     );
 

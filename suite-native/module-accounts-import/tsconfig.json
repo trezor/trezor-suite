@@ -44,11 +44,13 @@
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/utils" },
         { "path": "../../packages/utxo-lib" },
-        { "path": "../state" },
-        { "path": "../test-utils" }
+        { "path": "../test-utils-store" },
+        { "path": "../../packages/requirements" }
     ],
     "include": [".", "**/*.json"]
 }

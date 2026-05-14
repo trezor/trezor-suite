@@ -1,25 +1,36 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ApplySettings.js
 
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import {
+    ApplySettings as ApplySettingsSchema,
+    type MethodPermission,
+} from '@trezor/connect-common';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { ApplySettings as ApplySettingsSchema } from '../types/api/applySettings';
 
 export default class ApplySettings extends AbstractMethod<'applySettings', PROTO.ApplySettings> {
-    init() {
-        this.requiredPermissions = ['management'];
-        this.useDeviceState = false;
-        this.skipFinalReload = false;
-        const { payload } = this;
+    constructor(message: MethodMessage<'applySettings'>) {
+        const { payload } = message;
 
         Assert(ApplySettingsSchema, payload);
 
-        this.params = {
+        const params = {
             ...payload,
             _passphrase_source: payload.passphrase_source,
         };
+
+        super(message, params);
+        this.useDeviceState = false;
+        this.skipFinalReload = false;
     }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['management'];
+    }
+
+    init() {}
 
     get confirmation() {
         return {
@@ -33,17 +44,22 @@ export default class ApplySettings extends AbstractMethod<'applySettings', PROTO
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const device = this.getDevice();
+        const cmd = device.getCommands();
 
         // https://github.com/trezor/trezor-firmware/pull/5015
         // homescreen bytes are streamed in smaller data chunks
         const homescreenBytes = this.params.homescreen
             ? Buffer.from(this.params.homescreen, 'hex')
             : undefined;
-        if (this.device.atLeast('2.9.0') && homescreenBytes) {
+        if (device.atLeast('2.9.0') && homescreenBytes) {
             // cannot use both. Failure: Mutually exclusive settings
             this.params.homescreen = undefined;
             this.params.homescreen_length = homescreenBytes.length;
+        }
+
+        if (homescreenBytes !== undefined) {
+            device.startPiggybackAck();
         }
 
         let response = await cmd.typedCall(
@@ -61,6 +77,8 @@ export default class ApplySettings extends AbstractMethod<'applySettings', PROTO
                 data_chunk,
             });
         }
+
+        await device.stopPiggybackAck();
 
         return response.message;
     }

@@ -1,9 +1,7 @@
 import { type PublicClient, createPublicClient } from 'viem';
 
-import type { Response } from '@trezor/blockchain-link-types';
-import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
+import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
+import type { MessageTypes, Response } from '@trezor/blockchain-link-types';
 
 import { BaseWorker, CONTEXT } from '../baseWorker';
 import { estimateFee } from './handlers/estimateFee';

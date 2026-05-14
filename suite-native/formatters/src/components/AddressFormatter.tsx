@@ -1,33 +1,24 @@
-import { Platform } from 'react-native';
+import { useSelector } from 'react-redux';
 
-import { Text, TextProps } from '@suite-native/atoms';
-import { mergeNativeStyleObjects, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import {
+    type AddressFormat,
+    AddressFormatter as CommonAddressFormatter,
+} from '@suite-common/formatters';
+import { selectAddressDisplayType } from '@suite-common/wallet-core';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
+import { Text, type TextProps } from '@suite-native/atoms';
 
-import { FormatterProps } from '../types';
+import { type FormatterProps } from '../types';
 
-type AddressFormatterProps = FormatterProps<string> & TextProps;
+type AddressFormatterProps = FormatterProps<string> & TextProps & { format: AddressFormat };
 
-const addressStyle = prepareNativeStyle(_ => ({
-    // ellipsizeMode="middle" is not working on Android with negative letterSpacing defined in @trezor/theme typography.
-    extend: {
-        condition: Platform.OS === 'android',
-        style: {
-            letterSpacing: 0,
-        },
-    },
-}));
-
-export const AddressFormatter = ({ value, style, ...rest }: AddressFormatterProps) => {
-    const { applyStyle } = useNativeStyles();
-
-    const baseAddressStyle = applyStyle(addressStyle);
-    const mergedAddressStyle = style
-        ? mergeNativeStyleObjects([style, baseAddressStyle])
-        : baseAddressStyle;
+export const AddressFormatter = ({ value, format, ...textProps }: AddressFormatterProps) => {
+    const addressDisplayType = useSelector(selectAddressDisplayType);
+    const isChunked = addressDisplayType === AddressDisplayOptions.CHUNKED;
 
     return (
-        <Text numberOfLines={1} ellipsizeMode="middle" style={mergedAddressStyle} {...rest}>
-            {value}
+        <Text {...textProps}>
+            <CommonAddressFormatter value={value} format={format} isChunked={isChunked} />
         </Text>
     );
 };

@@ -8,32 +8,39 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest"
+        "test:unit": "yarn g:jest:native",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@react-navigation/native": "7.1.26",
+        "@react-navigation/native": "7.1.28",
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/device": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/alerts": "workspace:*",
+        "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/bluetooth": "workspace:*",
         "@suite-native/device": "workspace:*",
+        "@suite-native/device-mutex": "workspace:*",
         "@suite-native/forms": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",
-        "@suite-native/passphrase": "workspace:*",
+        "@suite-native/services": "workspace:*",
+        "@suite-native/toasts": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
-        "@trezor/styles": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react": "19.1.0",
-        "react-native": "0.81.5",
-        "react-native-reanimated": "~4.1.5",
+        "react": "19.2.4",
+        "react-native": "0.83.2",
+        "react-native-reanimated": "~4.2.1",
         "react-redux": "9.2.0"
+    },
+    "devDependencies": {
+        "@suite-native/test-utils": "workspace:*"
     }
 }

@@ -1,4 +1,4 @@
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type AccountType,
     type Bip43Path,
@@ -14,32 +14,32 @@ import {
     networks,
 } from '@suite-common/wallet-config';
 import {
-    Account,
-    AccountDescriptor,
-    AccountKey,
-    BaseCurrencyAmount,
-    FailedAccount,
-    GeneralPrecomposedTransactionFinal,
-    PrecomposedTransactionFinal,
-    RatesByKey,
-    ReceiveInfo,
-    SuccessfulAccount,
-    TokenAddress,
+    type Account,
+    type AccountDescriptor,
+    type AccountKey,
+    type BaseCurrencyAmount,
+    type FailedAccount,
+    type GeneralPrecomposedTransactionFinal,
+    type PrecomposedTransactionFinal,
+    type RatesByKey,
+    type ReceiveInfo,
+    type SuccessfulAccount,
+    type TokenAddress,
     asBaseCurrencyAmount,
     createAccountKey,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
 import TrezorConnect, {
-    AccountAddress,
-    AccountAddresses,
-    AccountInfo,
-    AccountTransaction,
-    AccountUtxo,
-    DeviceState,
-    PrecomposedTransactionFinalCardano,
-    StaticSessionId,
-    TokenInfo,
+    type AccountAddress,
+    type AccountAddresses,
+    type AccountInfo,
+    type AccountTransaction,
+    type AccountUtxo,
+    type DeviceState,
+    type PrecomposedTransactionFinalCardano,
+    type StaticSessionId,
+    type TokenInfo,
 } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_ADDRESSES_URL, HELP_CENTER_TAPROOT_URL } from '@trezor/urls';
@@ -65,11 +65,14 @@ export const isAccountFailed = (account: Account): account is FailedAccount => !
 export const isAccountDiscoverable = ({ accountType }: Account) =>
     accountType !== 'imported' && accountType !== 'placeholder' && accountType !== 'coinjoin';
 
-export const isEvmLedger = (networkType: NetworkType, accountType: AccountType) =>
-    networkType === 'ethereum' && accountType === 'ledger';
+export const shouldSkipFirstAccountIndex = (networkType: NetworkType, accountType: AccountType) =>
+    (networkType === 'ethereum' || networkType === 'tron') && accountType === 'ledger';
+
+export const isEvmNetwork = (networkSymbol: NetworkSymbol): boolean =>
+    getNetwork(networkSymbol).networkType === 'ethereum';
 
 const getAccountIndexOffset = (networkType: NetworkType, accountType: AccountType): number =>
-    isEvmLedger(networkType, accountType) ? 1 : 0;
+    shouldSkipFirstAccountIndex(networkType, accountType) ? 1 : 0;
 
 export const getFirstFreshAddress = (
     account: Account,
@@ -89,8 +92,7 @@ export const getFirstFreshAddress = (
 
     const unrevealed = unused.filter(
         a =>
-            !receiveAddresses.find(r => r.path === a.path) &&
-            !pendingAddresses.find(p => p === a.address),
+            !receiveAddresses.find(r => r.path === a.path) && !pendingAddresses.includes(a.address),
     );
 
     // const addressLabel = utxoBasedAccount ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS';
@@ -304,7 +306,7 @@ export const getAccountTypeUrl = (path: string) => {
  * - primary: by network `symbol`
  * - secondary: by `accountType`
  */
-export const sortByCoin = (accounts: Account[]) =>
+export const sortByCoin = <T extends Account>(accounts: T[]) =>
     accounts.sort((a, b) => {
         // primary sorting: by order of network keys
         const aSymbolIndex = networkSymbolCollection.indexOf(a.symbol);
@@ -323,7 +325,7 @@ export const sortByCoin = (accounts: Account[]) =>
         return a.index - b.index;
     });
 
-export const findAccountsByNetwork = (symbol: NetworkSymbol, accounts: Account[]) =>
+export const findAccountsByNetwork = <T extends Account>(symbol: NetworkSymbol, accounts: T[]) =>
     accounts.filter(a => a.symbol === symbol);
 
 export const findAccountsByDescriptor = (descriptor: string, accounts: Account[]) =>
@@ -702,6 +704,12 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
                 // compare token count (detect added/removed tokens)
                 freshInfo.tokens?.length !== account.tokens?.length
             );
+        case 'tron':
+            return (
+                freshInfo.balance !== account.balance ||
+                JSON.stringify(freshInfo.misc?.tronResources) !==
+                    JSON.stringify(account.misc?.tronResources)
+            );
         default:
             return false;
     }
@@ -760,6 +768,7 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
             misc: {
                 rent: misc?.rent,
                 solStakingAccounts: misc?.solStakingAccounts,
+                solExternalStakingAccounts: misc?.solExternalStakingAccounts,
                 solEpoch: misc?.solEpoch,
                 owner: misc?.owner,
             },
@@ -809,17 +818,18 @@ export const getAccountIdentifier = (account: Account) => ({
 
 export type AccountSearchParams = {
     coinsFilter?: NetworkSymbol[] | NetworkSymbol;
-    metadataAccountLabel?: string;
-    /**
-     * Return true if the account has token that match the search string
-     */
+
+    /** Needs to be mandatory, so it is no forgotten. */
+    accountLabel: string;
+
+    /** Return true if the account has token that match the search string */
     tokensMatch?: boolean;
 };
 
 export const accountSearchFn = (
     account: Account,
     rawSearchString: string | undefined,
-    { coinsFilter, metadataAccountLabel, tokensMatch = true }: AccountSearchParams = {},
+    { coinsFilter, accountLabel, tokensMatch = true }: AccountSearchParams,
 ) => {
     let coinsFilterArray: NetworkSymbol[] = [];
 
@@ -861,16 +871,14 @@ export const accountSearchFn = (
     const matchXRPAlternativeName =
         network?.networkType === 'ripple' && 'ripple'.includes(searchString);
 
-    const metadataMatch = !!metadataAccountLabel?.toLowerCase().includes(searchString);
-    const accountLabelMatch = !!account.accountLabel?.toLowerCase().includes(searchString);
+    const accountLabelMatch = accountLabel.toLowerCase().includes(searchString);
 
     const filterTokens = (token: TokenInfo) =>
         token.name?.toLowerCase().includes(searchString) ||
         token.symbol?.toLowerCase().includes(searchString) ||
         token.contract.toLowerCase().includes(searchString);
 
-    const tokenMatch =
-        tokensMatch && !!account.tokens && !!account.tokens.filter(filterTokens).length;
+    const tokenMatch = tokensMatch && !!account.tokens?.some(filterTokens);
 
     return (
         accountNumberMatch ||
@@ -880,7 +888,6 @@ export const accountSearchFn = (
         descriptorMatch ||
         addressMatch ||
         matchXRPAlternativeName ||
-        metadataMatch ||
         accountLabelMatch ||
         tokenMatch
     );
@@ -1173,9 +1180,10 @@ export const prepareNewAccountPayload = async ({
             useEmptyPassphrase: device.useEmptyPassphrase,
         },
         details: 'txs',
+        protocols: network.networkType === 'ethereum' ? ['erc4626'] : undefined,
     });
 
-    if (!res.success) return new Error(res.payload.error);
+    if (!res.success) return new Error(res.error.message);
 
     return {
         accountInfo: res.payload,
@@ -1234,10 +1242,10 @@ export function accountsFiatBalanceInDescOrderComparator({
 export const isProgramDerivedAccount = (data: AccountInfo) =>
     !(data?.misc?.owner === SYSTEM_PROGRAM_PUBLIC_KEY || data?.misc?.owner === undefined);
 
-export function filterAccountsByNetworkSymbol(
-    accounts: Account[],
+export function filterAccountsByNetworkSymbol<T extends Account>(
+    accounts: T[],
     networkSymbol: NetworkSymbol | undefined,
-): Account[] {
+): T[] {
     return networkSymbol ? findAccountsByNetwork(networkSymbol, accounts) : accounts;
 }
 
@@ -1253,4 +1261,31 @@ export const accumulateAccountCountBySymbolAndType = (
     acc[id] = (acc[id] || 0) + 1;
 
     return acc;
+};
+
+export const getAvailableAccountTypes = (
+    networkSymbol: NetworkSymbol,
+    options: {
+        isCoinjoinVisible?: boolean;
+        isDebug?: boolean;
+    } = { isCoinjoinVisible: false, isDebug: false },
+): NetworkAccount[] => {
+    const { isCoinjoinVisible, isDebug } = options;
+    const network = getNetwork(networkSymbol);
+
+    const defaultAccount: NetworkAccount = {
+        bip43Path: network.bip43Path,
+        accountType: 'normal',
+    };
+    const otherAccounts = Object.values(network.accountTypes)
+        /**
+         * Filter out coinjoin account type if it is not visible.
+         * Visibility of coinjoin account type depends on coinjoin feature config in message system.
+         * By default it is visible publicly, but it can be remotely hidden under debug menu.
+         */
+        .filter(({ backendType }) => backendType !== 'coinjoin' || isCoinjoinVisible)
+        .filter(({ isDebugOnlyAccountType }) => !isDebugOnlyAccountType || isDebug);
+
+    // the default account is expected to be the first one
+    return [defaultAccount, ...otherAccounts];
 };

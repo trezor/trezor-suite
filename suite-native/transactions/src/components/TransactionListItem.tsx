@@ -1,24 +1,26 @@
 import { useSelector } from 'react-redux';
 
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
-    AccountsRootState,
-    FiatRatesRootState,
-    TransactionsRootState,
-    WalletSettingsRootState,
+    type AccountsRootState,
+    type FiatRatesRootState,
+    type PhishingRootState,
+    type TransactionsRootState,
+    type WalletSettingsRootState,
     selectIsPhishingTransaction,
     selectIsTestnetAccount,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
-import { Box } from '@suite-native/atoms';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { getTxStakeType } from '@suite-common/wallet-utils';
+import { Box, VStack } from '@suite-native/atoms';
 import {
     CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
     EmptyAmountText,
     SignValueFormatter,
 } from '@suite-native/formatters';
-import { WalletAccountTransaction } from '@suite-native/tokens';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type WalletAccountTransaction } from '@suite-native/tokens';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { selectTransactionFiatRate } from '../selectors';
 import { getTransactionValueSign } from '../utils';
@@ -41,20 +43,26 @@ const failedTxStyle = prepareNativeStyle<{ isFailedTx: boolean }>((_, { isFailed
     },
 }));
 
+type TransactionListItemValuesProps = {
+    accountKey: AccountKey;
+    transaction: WalletAccountTransaction;
+};
+
 export const TransactionListItemValues = ({
     accountKey,
     transaction,
-}: {
-    accountKey: AccountKey;
-    transaction: WalletAccountTransaction;
-}) => {
+}: TransactionListItemValuesProps) => {
     const isTestnetAccount = useSelector((state: AccountsRootState) =>
         selectIsTestnetAccount(state, accountKey),
     );
 
-    const isPhishingTransaction = useSelector(
-        (state: TokenDefinitionsRootState & TransactionsRootState) =>
-            selectIsPhishingTransaction(state, transaction.txid, accountKey),
+    const { isPhishing: isPhishingTransaction } = useSelector(
+        (
+            state: TokenDefinitionsRootState &
+                TransactionsRootState &
+                FiatRatesRootState &
+                PhishingRootState,
+        ) => selectIsPhishingTransaction(state, transaction.txid, accountKey),
     );
 
     const { applyStyle } = useNativeStyles();
@@ -63,16 +71,15 @@ export const TransactionListItemValues = ({
         selectTransactionFiatRate(state, transaction),
     );
     const isFailedTx = transaction.type === 'failed';
+    const sign = getTransactionValueSign(transaction.type);
 
     return (
-        <>
+        <VStack spacing="sp4" alignItems="flex-end">
             {isTestnetAccount ? (
                 <EmptyAmountText />
             ) : (
                 <Box flexDirection="row">
-                    {!isFailedTx && (
-                        <SignValueFormatter value={getTransactionValueSign(transaction.type)} />
-                    )}
+                    {!isFailedTx && !isPhishingTransaction && <SignValueFormatter value={sign} />}
                     <CryptoToFiatAmountFormatter
                         value={transaction.amount}
                         symbol={transaction.symbol}
@@ -92,9 +99,9 @@ export const TransactionListItemValues = ({
                 adjustsFontSizeToFit
                 isForcedDiscreetMode={isPhishingTransaction}
                 variant="body-sm"
-                color="textSubdued"
+                color="contentSecondary"
             />
-        </>
+        </VStack>
     );
 };
 
@@ -113,7 +120,6 @@ export const TransactionListItem = ({
             <TokenTransferListItem
                 transaction={transaction}
                 accountKey={accountKey}
-                txid={transaction.txid}
                 tokenTransfer={transaction.tokens[0]}
                 includedCoinsCount={transaction.tokens.length - 1}
                 isFirst={isFirst}
@@ -121,11 +127,13 @@ export const TransactionListItem = ({
             />
         );
 
+    const stakeOperationType = getTxStakeType(transaction);
+
     return (
         <TransactionListItemContainer
-            symbol={transaction.symbol}
-            txid={transaction.txid}
+            transaction={transaction}
             transactionType={transaction.type}
+            stakeOperationType={stakeOperationType}
             accountKey={accountKey}
             includedCoinsCount={includedCoinsCount}
             isFirst={isFirst}

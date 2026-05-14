@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import type { BuyTrade, CryptoId, ExchangeTrade, SellFiatTrade } from 'invity-api';
 
@@ -6,21 +6,26 @@ import { Translation } from '@suite/intl';
 import {
     TRADING_EXCHANGE_FORM_DEX,
     type TradingType,
-    isSendingEvmNativeToken,
+    isCountrySubdivisionEmpty,
+    requiresTokenApproval,
+    selectTradingComposedTransactionInfo,
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Paragraph } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
+import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingStellarActivateToken } from 'src/hooks/wallet/trading/useTradingStellarActivateToken';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
-import { TradingFormContextValues } from 'src/types/trading/tradingForm';
+import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+import { type TradingFormContextValues } from 'src/types/trading/tradingForm';
 import {
     getCryptoQuoteAmountProps,
     getSelectQuoteTyped,
@@ -41,9 +46,11 @@ import { TradingFormOfferOTC } from 'src/views/wallet/trading/common/TradingForm
 
 import { TradingApproveModal } from './TradingApproveModal';
 import { TradingRevokeModal } from './TradingRevokeModal';
-import { useIsContentBelowBreakpoint } from '../../../../../support/suite/ContentFlex';
 import { useReceiveAddressModalControls } from '../TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 import { TradingUtilsTorWarning } from '../TradingUtils/TradingUtilsTorWarning';
+
+const isFeeRequiredButMissing = (fee: string | undefined, type: TradingType) =>
+    (type === 'sell' || type === 'exchange') && (fee === undefined || fee === '');
 
 const getQuotesFilteredByPaymentMethod = (
     quotes: BuyTrade[] | SellFiatTrade[],
@@ -95,7 +102,6 @@ export const TradingFormOffer = () => {
         type,
         quotes,
         isAmountEmpty,
-
         getValues,
         form: { state },
     } = context;
@@ -107,14 +113,19 @@ export const TradingFormOffer = () => {
             ? context.tradingReceiveAddress
             : undefined;
 
+    const isReceiveAddressSelected = !!tradingReceiveAddress?.receiveAddress;
+
     const isLoadingQuote = isTradingExchangeContext(context) && context.isLoadingQuote;
 
     const bestScoredQuote = quotes?.[0];
-    const { preselectedQuote } = context;
-    const quote = preselectedQuote ?? getSelectedQuote(context);
+    const quote = getSelectedQuote(context);
     const bestScoredQuoteAmounts = getCryptoQuoteAmountProps(quote, context);
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, account.symbol));
+    const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
+
+    const fee = composedTransactionInfo?.composed?.fee;
+    const isFeeRequiredButMissingValue = isFeeRequiredButMissing(fee, type);
 
     const selectedCryptoId = getSelectedCryptoId(context);
     const receiveCurrency = bestScoredQuoteAmounts?.receiveCurrency;
@@ -130,24 +141,29 @@ export const TradingFormOffer = () => {
 
     const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
-    const requiresTokenApproval =
-        isTradingExchangeContext(context) &&
-        quote &&
-        (quote as ExchangeTrade)?.isDex &&
-        context.getValues('sendCryptoSelect') &&
-        account.networkType === 'ethereum' &&
-        !isSendingEvmNativeToken(context.getValues('sendCryptoSelect')?.id);
+    const shouldShowApprovalStep =
+        isTradingExchangeContext(context) && quote && requiresTokenApproval(quote as ExchangeTrade);
 
     const isQuoteOutdated =
         isTradingExchangeContext(context) &&
         (quote as ExchangeTrade)?.send !== context.getValues('sendCryptoSelect')?.id;
+
+    const isSubdivisionMissing = useMemo(() => {
+        if (isTradingSellContext(context) || isTradingBuyContext(context)) {
+            const { countrySelect, countrySubdivisionSelect } = context.getValues();
+
+            return isCountrySubdivisionEmpty(countrySelect?.value, countrySubdivisionSelect?.value);
+        }
+
+        return false;
+    }, [context]);
 
     useEffect(() => {
         // confirm the quote once it loads
         const initConfirmTrade = async () => {
             if (
                 isTradingExchangeContext(context) &&
-                requiresTokenApproval &&
+                shouldShowApprovalStep &&
                 tradingReceiveAddress?.receiveAddress
             ) {
                 dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
@@ -162,7 +178,7 @@ export const TradingFormOffer = () => {
 
         initConfirmTrade();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [quote, requiresTokenApproval, tradingReceiveAddress?.receiveAddress]);
+    }, [quote, shouldShowApprovalStep, tradingReceiveAddress?.receiveAddress]);
 
     const onSelectQuote = async () => {
         if (!quote) {
@@ -231,9 +247,11 @@ export const TradingFormOffer = () => {
         tradingDeviceDisconnected ||
         state.isLoadingOrInvalid ||
         !quote ||
-        amountTooHigh;
+        amountTooHigh ||
+        areFeesLoading ||
+        isFeeRequiredButMissingValue;
 
-    const isLoading = requiresTokenApproval
+    const isLoading = shouldShowApprovalStep
         ? state.isFormLoading || isLoadingQuote || isQuoteOutdated
         : state.isFormLoading || isLoadingQuote;
 
@@ -242,13 +260,27 @@ export const TradingFormOffer = () => {
             ? receiveCurrency
             : (selectedCryptoId ?? undefined);
 
-    const isReceiveAddressSelected =
-        (isTradingExchangeContext(context) || isTradingBuyContext(context)) &&
-        !!context.tradingReceiveAddress.receiveAddress;
+    const { inactiveToken: stellarInactiveToken, modal: stellarActivateTokenModal } =
+        useTradingStellarActivateToken({
+            account: tradingReceiveAddress?.selectedAccount ?? undefined,
+            receiveCryptoId: selectedAssetCryptoId,
+        });
+
+    const isStellarActivateTokenModalOpen =
+        stellarActivateTokenModal.isOpen && !!stellarInactiveToken;
 
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint(breakpoints.tablet);
 
     const noOffersWithTor = isTorEnabled && !quote && !isLoading;
+
+    const isConfirmButtonLoading =
+        areFeesLoading ||
+        (state.isFormLoading && !isAmountEmpty && (type === 'sell' || isReceiveAddressSelected));
+
+    const confirmButtonTranslationId =
+        state.isFormLoading && !isAmountEmpty && (type === 'sell' || isReceiveAddressSelected)
+            ? 'TR_TRADING_OFFER_LOOKING'
+            : tradingGetSectionActionLabel(type);
 
     return (
         <Column gap={20}>
@@ -271,7 +303,7 @@ export const TradingFormOffer = () => {
                 )}
             </Column>
 
-            {!quote && !state.isFormLoading && !state.isFormInvalid && (
+            {!isSubdivisionMissing && !quote && !state.isFormLoading && !state.isFormInvalid && (
                 <Card>
                     <Paragraph
                         typographyStyle="body-sm"
@@ -292,6 +324,21 @@ export const TradingFormOffer = () => {
                 </Card>
             )}
 
+            {isSubdivisionMissing && (
+                <Card>
+                    <Paragraph
+                        typographyStyle="body-sm"
+                        intent="neutral"
+                        priority="secondary"
+                        align="center"
+                        margin={{ vertical: 8 }}
+                        data-testid="trading-offer-subdivision-required"
+                    >
+                        <Translation id="TR_TRADING_SUBDIVISION_REQUIRED_FOR_OFFERS" />
+                    </Paragraph>
+                </Card>
+            )}
+
             {noOffersWithTor && (
                 <TradingUtilsTorWarning tradingType={context.type} noOffer={!quote} />
             )}
@@ -304,7 +351,7 @@ export const TradingFormOffer = () => {
                         top: 16,
                     }}
                     isDisabled={isButtonDisabled || isLoading}
-                    isLoading={areFeesLoading || (preselectedQuote && state.isFormLoading)}
+                    isLoading={areFeesLoading || state.isFormLoading}
                     size="large"
                     minWidth={160}
                     width="100%"
@@ -314,52 +361,72 @@ export const TradingFormOffer = () => {
             ) : (
                 <>
                     {isTradingExchangeContext(context) &&
-                    requiresTokenApproval &&
+                    shouldShowApprovalStep &&
                     bestScoredQuote &&
                     !isLoading ? (
                         <TradingFormApproval />
                     ) : (
-                        <Button
-                            onClick={onSelectQuote}
-                            intent="brand"
-                            margin={{
-                                top: 16,
-                            }}
-                            size="large"
-                            isDisabled={isButtonDisabled || isLoading}
-                            isLoading={
-                                areFeesLoading ||
-                                (preselectedQuote && state.isFormLoading) ||
-                                (state.isFormLoading &&
-                                    !isAmountEmpty &&
-                                    (type === 'sell' || isReceiveAddressSelected))
-                            }
-                            data-testid={`@trading/form/${type}-button`}
-                            minWidth={160}
-                            width={isContentBelowBreakpoint ? undefined : '100%'}
-                        >
-                            <Translation
-                                id={
-                                    state.isFormLoading &&
-                                    !isAmountEmpty &&
-                                    (type === 'sell' || isReceiveAddressSelected)
-                                        ? 'TR_TRADING_OFFER_LOOKING'
-                                        : tradingGetSectionActionLabel(type)
-                                }
-                            />
-                        </Button>
+                        <>
+                            {stellarInactiveToken ? (
+                                <Button
+                                    intent="brand"
+                                    margin={{
+                                        top: 16,
+                                    }}
+                                    size="large"
+                                    minWidth={160}
+                                    width={isContentBelowBreakpoint ? undefined : '100%'}
+                                    onClick={stellarActivateTokenModal.onOpen}
+                                    isDisabled={!tradingReceiveAddress?.selectedAccount?.symbol}
+                                >
+                                    <Translation
+                                        id="TR_ACTIVATE_TOKEN"
+                                        values={{ token: stellarInactiveToken.symbol }}
+                                    />
+                                </Button>
+                            ) : (
+                                <Button
+                                    onClick={onSelectQuote}
+                                    intent="brand"
+                                    margin={{
+                                        top: 16,
+                                    }}
+                                    size="large"
+                                    isDisabled={isButtonDisabled || isLoading}
+                                    isLoading={isConfirmButtonLoading}
+                                    data-testid={`@trading/form/${type}-button`}
+                                    minWidth={160}
+                                    width={isContentBelowBreakpoint ? undefined : '100%'}
+                                >
+                                    <Translation id={confirmButtonTranslationId} />
+                                </Button>
+                            )}
+                        </>
                     )}
                 </>
             )}
+
             {(type === 'buy' || type === 'sell') && <TradingFormOfferOTC />}
+
             {isTradingExchangeContext(context) && bestScoredQuoteAmounts?.sendCurrency && (
                 <TradingApproveModal
                     amount={amount}
                     cryptoId={bestScoredQuoteAmounts.sendCurrency as CryptoId}
                 />
             )}
+
             {isTradingExchangeContext(context) && bestScoredQuoteAmounts?.sendCurrency && (
                 <TradingRevokeModal cryptoId={bestScoredQuoteAmounts.sendCurrency as CryptoId} />
+            )}
+
+            {isStellarActivateTokenModalOpen && !!tradingReceiveAddress?.selectedAccount && (
+                <StellarManageTokenModal
+                    mode="activate"
+                    account={tradingReceiveAddress.selectedAccount}
+                    symbol={tradingReceiveAddress.selectedAccount.symbol}
+                    contractAddress={stellarInactiveToken.contract}
+                    onCancel={stellarActivateTokenModal.onClose}
+                />
             )}
         </Column>
     );

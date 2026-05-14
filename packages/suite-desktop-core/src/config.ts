@@ -31,18 +31,14 @@ export const allowedDomains = [
     'oauth2.googleapis.com',
     'googleapis.com',
     onionDomain,
-    'eth-api-b2c-stage.everstake.one', // staking endpoint for Hoodi testnet, works only with VPN
-    'eth-api-b2c.everstake.one', // staking endpoint for Ethereum mainnet
-    'dashboard-api.everstake.one', // staking endpoint for Solana
-    'stake-sync-api.everstake.one', // staking rewards endpoint for Solana
-    'stats.everstake.one', // staking endpoint for Cardano
+    'earn.trezor.io',
     'verify.walletconnect.org', // WalletConnect
     'horizon.stellar.org', // Stellar Horizon, hosted by SDF
     'horizon-testnet.stellar.org', // Stellar Horizon (testnet), hosted by SDF
     'xrplcluster.com', // XRP Ledger cluster, hosted by XRP Ledger Foundation
     'xrpl.ws', // XRP Ledger cluster, hosted by XRP Ledger Foundation
     's2.ripple.com', // XRP Ledger cluster, hosted by Ripple
-    ...(isDevEnv === true ? allowedDomainsDev : []),
+    ...(isDevEnv ? allowedDomainsDev : []),
 ];
 
 export const silentlyBlockedDomains = [

@@ -24,9 +24,11 @@ const verifyHiddenAndRevealedValue = async ({
 };
 
 test.describe('Discreet Mode', { tag: ['@T3W1', '@T3T1'] }, () => {
-    test.beforeEach(async ({ analytics, onboardingPage }) => {
+    test.beforeEach(async ({ analytics, onboardingPage, settingsPage, dashboardPage }) => {
         await analytics.interceptAnalytics();
         await onboardingPage.completeOnboarding();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await dashboardPage.navigateTo();
     });
 
     test(

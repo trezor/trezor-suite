@@ -1,12 +1,13 @@
 import { useState } from 'react';
 
-import { DexApprovalType, ExchangeTrade } from 'invity-api';
+import { type DexApprovalType, type ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { selectIsDebugModeActive } from '@suite/settings';
 import {
-    TradingExchangeType,
+    type TradingExchangeType,
     invityAPI,
     tradingExchangeActions,
     useTradingUtils,
@@ -31,9 +32,8 @@ import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { TradingExchangeApprovalType } from 'src/types/trading/tradingForm';
+import { type TradingExchangeApprovalType } from 'src/types/trading/tradingForm';
 import { getProvidersInfoProps } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 
@@ -71,7 +71,6 @@ export const ApproveModal = ({
         exchangeInfo,
         confirmApproval,
         sendTransaction,
-        preselectedQuote,
         feeInfo,
         composedLevels,
         setValue,
@@ -96,7 +95,7 @@ export const ApproveModal = ({
     const { exchange, dexTx } = selectedQuote;
     if (!exchange || !dexTx) return null;
 
-    const quoteExchange = preselectedQuote?.exchange ?? exchange;
+    const quoteExchange = exchange;
 
     const providerName = exchangeInfo?.providerInfos[quoteExchange]?.companyName || quoteExchange;
 
@@ -218,7 +217,7 @@ export const ApproveModal = ({
     return (
         <Modal
             onCancel={() => onClose()}
-            variant="primary"
+            intent="brand"
             width={600}
             heading={
                 <Translation

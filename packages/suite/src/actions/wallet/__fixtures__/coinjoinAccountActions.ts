@@ -1,9 +1,10 @@
+import { goto } from '@suite/router';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { accountsActions } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 
 import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 const ACCOUNT: Partial<Account> = {
     accountType: 'coinjoin',
@@ -38,8 +39,8 @@ export const createCoinjoinAccount = [
         description: 'path not unlocked',
         connect: {
             success: false,
-            payload: {
-                error: 'Canceled',
+            error: {
+                message: 'Canceled',
             },
         },
         params: {
@@ -70,8 +71,8 @@ export const createCoinjoinAccount = [
             },
             {
                 success: false, // getPublicKey
-                payload: {
-                    error: 'Forbidden key path',
+                error: {
+                    message: 'Forbidden key path',
                 },
             },
         ],
@@ -135,8 +136,10 @@ export const createCoinjoinAccount = [
                 accountsActions.createAccount.type,
                 COINJOIN.ACCOUNT_DISCOVERY_RESET,
                 COINJOIN.ACCOUNT_PRELOADING,
+                goto.pending.type,
                 accountsActions.startCoinjoinAccountSync.type,
                 COINJOIN.ACCOUNT_DISCOVERY_PROGRESS,
+                goto.fulfilled.type,
                 COINJOIN.ACCOUNT_SET_LIQUIDITY_CLUE,
                 accountsActions.updateAccount.type,
                 accountsActions.endCoinjoinAccountSync.type,
@@ -160,8 +163,8 @@ export const startCoinjoinSession = [
         description: 'authorizeCoinjoin cancelled',
         connect: {
             success: false,
-            payload: {
-                error: 'Canceled',
+            error: {
+                message: 'Canceled',
             },
         },
         state: {
@@ -203,6 +206,7 @@ export const startCoinjoinSession = [
                 COINJOIN.SESSION_STARTING,
                 COINJOIN.ACCOUNT_AUTHORIZE,
                 COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS,
+                goto.pending.type,
                 COINJOIN.SESSION_STARTING,
             ],
         },

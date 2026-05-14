@@ -1,15 +1,15 @@
-import { NotificationEntry } from '@suite-common/toast-notifications';
+import { type TranslationKey } from '@suite/intl';
+import { type NotificationEntry } from '@suite-common/toast-notifications';
 import { intermediaryTheme } from '@trezor/components';
 
 import type { NotificationViewProps } from 'src/components/suite';
-import { AppState, ToastNotificationVariant } from 'src/types/suite';
+import { type AppState, type ToastNotificationVariant } from 'src/types/suite';
 
 export const getNotificationIcon = (variant: ToastNotificationVariant) => {
     switch (variant) {
         case 'info':
             return 'info';
         case 'warning':
-            return 'warning';
         case 'error':
             return 'warning';
         case 'success':
@@ -21,13 +21,13 @@ export const getNotificationIcon = (variant: ToastNotificationVariant) => {
 export const getVariantColor = (variant: NotificationViewProps['variant']) => {
     switch (variant) {
         case 'info':
-            return intermediaryTheme.light.textAlertBlue;
+            return intermediaryTheme.light.contentInfo;
         case 'warning':
-            return intermediaryTheme.light.textAlertYellow;
+            return intermediaryTheme.light.contentWarning;
         case 'error':
-            return intermediaryTheme.light.textAlertRed;
+            return intermediaryTheme.light.contentCritical;
         case 'success':
-            return intermediaryTheme.light.textPrimaryDefault;
+            return intermediaryTheme.light.contentBrand;
         case 'transparent':
         default:
             return 'transparent';
@@ -39,8 +39,8 @@ export const filterNonActivityNotifications = (notifications: AppState['notifica
     notifications.filter(notification => notification.type !== 'coin-scheme-protocol');
 
 export const getSeenAndUnseenNotifications = (notifications: AppState['notifications']) => {
-    const seen: Array<NotificationEntry> = [];
-    const unseen: Array<NotificationEntry> = [];
+    const seen: Array<NotificationEntry<TranslationKey>> = [];
+    const unseen: Array<NotificationEntry<TranslationKey>> = [];
 
     // loop over all notifications and check which of them there were seen or not
     filterNonActivityNotifications(notifications).forEach(notification => {

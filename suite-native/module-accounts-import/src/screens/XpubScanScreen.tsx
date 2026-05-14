@@ -5,26 +5,26 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import { useFocusEffect } from '@react-navigation/native';
 
 import {
-    XpubFormContext,
-    XpubFormValues,
+    type XpubFormContext,
+    type XpubFormValues,
     xpubFormValidationSchema,
 } from '@suite-common/validators';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { isAddressBasedNetwork, isAddressValid } from '@suite-common/wallet-utils';
 import { SelectableNetworkItem } from '@suite-native/accounts';
-import { Alert, useAlert } from '@suite-native/alerts';
+import { type Alert, useAlert } from '@suite-native/alerts';
 import { Button, Card, TextDivider, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
-    AccountsImportStackParamList,
+    type AccountsImportStackParamList,
     AccountsImportStackRoutes,
     Screen,
-    StackProps,
+    type StackProps,
 } from '@suite-native/navigation';
 import { ScanQRBottomSheet } from '@suite-native/qr-code';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountImportScreenHeader } from '../components/AccountImportScreenHeader';
 import { DevXpub } from '../components/DevXpub';
@@ -185,8 +185,8 @@ export const XpubScanScreen = ({
 
                 <TextDivider
                     title="generic.orSeparator"
-                    lineColor="borderElevation0"
-                    textColor="textSubdued"
+                    lineColor="borderNeutral"
+                    textColor="contentSecondary"
                 />
                 <Form form={form}>
                     <VStack spacing="sp16">
@@ -202,7 +202,6 @@ export const XpubScanScreen = ({
                                 <Button
                                     testID="@accounts-import/sync-coins/xpub-submit"
                                     onPress={onXpubFormSubmit}
-                                    size="large"
                                 >
                                     <Translation id="generic.buttons.confirm" />
                                 </Button>

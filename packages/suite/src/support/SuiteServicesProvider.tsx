@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { SuiteServices } from './extraDependencies';
+import { type SuiteServices } from './extraDependencies';
 
 const SuiteServicesContext = React.createContext<SuiteServices | null>(null);
 

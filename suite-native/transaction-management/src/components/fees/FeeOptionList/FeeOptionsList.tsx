@@ -1,19 +1,17 @@
-import Animated, { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
-
 import { D, pipe } from '@mobily/ts-belt';
 
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { GeneralPrecomposedLevels } from '@suite-common/wallet-types';
+import { type GeneralPrecomposedLevels } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 
 import { FeeOption } from './FeeOption';
-import { NativeSupportedPredefinedFeeLevel } from '../../../types';
+import { type NativeSupportedPredefinedFeeLevel } from '../../../types';
 
 export type FeeOptionsListProps = {
     feeLevels: GeneralPrecomposedLevels;
     symbol: NetworkSymbol;
     isLoading?: boolean;
-    onSelectedFeeLevel: (feeKey: NativeSupportedPredefinedFeeLevel) => void;
+    onSelectedFeeLevel?: (feeKey: NativeSupportedPredefinedFeeLevel) => void;
 };
 
 // User is not able to enter the fees screen if there is not normal fee or at least the economy fee (in final state) present.
@@ -47,21 +45,19 @@ export const FeeOptionsList = ({
     const isMultipleOptionsDisplayed = Object.keys(predefinedFeeLevels).length > 1;
 
     return (
-        <Animated.View entering={FadeInLeft.delay(300)} exiting={FadeOutLeft}>
-            <VStack spacing="sp12">
-                {Object.entries(predefinedFeeLevels).map(([feeKey, feeLevel]) => (
-                    <FeeOption
-                        key={feeKey}
-                        feeKey={feeKey as NativeSupportedPredefinedFeeLevel}
-                        feeLevel={feeLevel}
-                        symbol={symbol}
-                        transactionBytes={transactionBytes}
-                        isInteractive={isMultipleOptionsDisplayed}
-                        isLoading={isLoading}
-                        onSelectedFeeLevel={onSelectedFeeLevel}
-                    />
-                ))}
-            </VStack>
-        </Animated.View>
+        <VStack spacing="sp12">
+            {Object.entries(predefinedFeeLevels).map(([feeKey, feeLevel]) => (
+                <FeeOption
+                    key={feeKey}
+                    feeKey={feeKey as NativeSupportedPredefinedFeeLevel}
+                    feeLevel={feeLevel}
+                    symbol={symbol}
+                    transactionBytes={transactionBytes}
+                    isInteractive={isMultipleOptionsDisplayed}
+                    isLoading={isLoading}
+                    onSelectedFeeLevel={onSelectedFeeLevel}
+                />
+            ))}
+        </VStack>
     );
 };

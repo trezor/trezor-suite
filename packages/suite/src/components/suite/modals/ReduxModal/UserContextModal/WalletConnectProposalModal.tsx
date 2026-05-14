@@ -3,16 +3,18 @@ import { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { TxSimulationBanner } from '@suite/tx-simulation';
+import { closeModal } from '@suite/modal';
+import { goto } from '@suite/router';
+import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
 import { useDappScan } from '@suite-common/tx-simulation';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     selectPendingProposal,
     sessionProposalApproveThunk,
     sessionProposalRejectThunk,
 } from '@suite-common/walletconnect';
-import { PendingConnectionProposalNetwork } from '@suite-common/walletconnect/src/walletConnectTypes';
+import { type PendingConnectionProposalNetwork } from '@suite-common/walletconnect/src/walletConnectTypes';
 import {
     Badge,
     Banner,
@@ -20,7 +22,7 @@ import {
     Column,
     ElevationUp,
     Modal,
-    Option,
+    type Option,
     Row,
     Select,
     Text,
@@ -29,8 +31,6 @@ import {
 import { CoinLogo } from '@trezor/product-components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-import { onCancel } from 'src/actions/suite/modalActions';
-import { goto } from 'src/actions/suite/routerActions';
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -73,15 +73,15 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                 selectedDefaultAccount,
             }),
         );
-        dispatch(onCancel());
+        dispatch(closeModal());
     };
     const handleReject = () => {
         dispatch(sessionProposalRejectThunk({ eventId }));
-        dispatch(onCancel());
+        dispatch(closeModal());
     };
     const handleGoToCoinSettings = async () => {
-        await dispatch(onCancel());
-        dispatch(goto('settings-coins'));
+        await dispatch(closeModal());
+        dispatch(goto({ routeName: 'settings-coins' }));
     };
 
     const getTooltipContent = (network: PendingConnectionProposalNetwork) => {
@@ -120,6 +120,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                                 !ignoreWarning)
                         }
                         isLoading={dappScanQuery.isLoading}
+                        data-testid="@walletconnect-proposal/confirm-button"
                     >
                         <Translation id="TR_CONFIRM" />
                     </Modal.Button>
@@ -240,6 +241,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                                     </Row>
                                 )}
                                 onChange={(option: Option) => setSelectedDefaultAccount(option)}
+                                closeMenuOnScroll={false}
                             />
                         </ElevationUp>
                     </Card>
@@ -272,8 +274,8 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                         type="error"
                         title="TR_WALLETCONNECT_IS_SCAM"
                         description={<></>}
-                        disclaimerAccepted={ignoreWarning}
-                        setDisclaimerAccepted={setIgnoreWarning}
+                        isAccepted={ignoreWarning}
+                        onChange={setIgnoreWarning}
                     />
                 )}
                 {pendingProposal.validation === 'INVALID' && (

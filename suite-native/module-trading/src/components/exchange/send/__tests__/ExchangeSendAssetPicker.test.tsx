@@ -1,21 +1,34 @@
+import { combineReducers } from '@reduxjs/toolkit';
 import type { CryptoId } from 'invity-api';
 
+import { deviceInitialState } from '@suite-common/device';
+import { messageSystemInitialState } from '@suite-common/message-system';
+import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
+import { localeReducer } from '@suite-native/intl';
 import {
-    TestStore,
-    initStore,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
+    type TestStore,
+    createLightStore,
+    createStaticReducer,
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
     userEvent,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import {
     getBtcAccount,
     getEthAccount,
     getInitializedTradingState,
+    getWalletState,
 } from '@suite-native/trading-fixtures';
-import { selectAccountsWithTokensToSellSectionCondensedListByTradingType } from '@suite-native/trading-state';
-import { ExchangeFormType, MyAssetTradeable } from '@suite-native/trading-types';
+import {
+    selectAccountsWithTokensToSellSectionCondensedListByTradingType,
+    tradingSlice,
+} from '@suite-native/trading-state';
+import { type ExchangeFormType, type MyAssetTradeable } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
@@ -61,6 +74,13 @@ describe('ExchangeSendAssetPicker', () => {
     ];
 
     const getPreloadedState = () => ({
+        device: deviceInitialState,
+        featureFlags: {
+            ...featureFlagsInitialState,
+        },
+        messageSystem: messageSystemInitialState,
+        suiteSync: initialSuiteSyncState,
+        suiteSyncData: initialSuiteSyncDataState,
         wallet: {
             trading: getInitializedTradingState(),
             accounts: [btcAccount, ethAccount],
@@ -68,17 +88,35 @@ describe('ExchangeSendAssetPicker', () => {
     });
 
     const renderExchangeForm = () =>
-        renderHookWithStoreProviderAsync(() => useExchangeForm(), { store });
+        renderHookWithStoreProvider(() => useExchangeForm(), { store });
 
     const renderExchangeSendAssetPicker = () =>
-        renderWithStoreProviderAsync(<ExchangeSendAssetPicker />, {
+        renderWithStoreProvider(<ExchangeSendAssetPicker />, {
             store,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(async () => {
-        store = initStore(getPreloadedState()).store;
-        const { result } = await renderExchangeForm();
+    beforeEach(() => {
+        const walletState = getWalletState({ tradeType: 'exchange' });
+        store = createLightStore({
+            reducer: {
+                locale: localeReducer,
+                device: createStaticReducer(deviceInitialState),
+                featureFlags: createStaticReducer(featureFlagsInitialState),
+                messageSystem: createStaticReducer(messageSystemInitialState),
+                suiteSync: createStaticReducer(initialSuiteSyncState),
+                suiteSyncData: createStaticReducer(initialSuiteSyncDataState),
+                wallet: combineReducers({
+                    settings: createStaticReducer(initialWalletSettingsState),
+                    accounts: createStaticReducer(walletState.accounts),
+                    fiat: createStaticReducer(walletState.fiat),
+                    send: createStaticReducer(walletState.send),
+                    trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+                }),
+            },
+            preloadedState: getPreloadedState(),
+        });
+        const { result } = renderExchangeForm();
         form = result.current;
 
         mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue(
@@ -87,7 +125,7 @@ describe('ExchangeSendAssetPicker', () => {
     });
 
     it('should select asset on item press', async () => {
-        const { getByText } = await renderExchangeSendAssetPicker();
+        const { getByText } = renderExchangeSendAssetPicker();
 
         await userEvent.press(getByText('BTC'));
 
@@ -101,7 +139,7 @@ describe('ExchangeSendAssetPicker', () => {
     });
 
     it('should select account on item press', async () => {
-        const { getByText } = await renderExchangeSendAssetPicker();
+        const { getByText } = renderExchangeSendAssetPicker();
 
         await userEvent.press(getByText('BTC'));
 

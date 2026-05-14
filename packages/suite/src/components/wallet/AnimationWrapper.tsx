@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { AnimatePresence, Transition, motion } from 'framer-motion';
+import { AnimatePresence, type Transition, motion } from 'framer-motion';
 
 interface AnimationWrapperProps {
     opened: boolean;

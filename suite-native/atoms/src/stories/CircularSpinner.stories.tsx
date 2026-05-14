@@ -4,7 +4,7 @@ import { COLOR_TOKENS } from '@trezor/theme';
 
 import {
     CircularSpinner as CircularSpinnerComponent,
-    CircularSpinnerProps,
+    type CircularSpinnerProps,
 } from '../CircularSpinner';
 
 type CircularSpinnerStory = StoryObj<CircularSpinnerProps>;
@@ -20,7 +20,7 @@ export const CircularSpinner: CircularSpinnerStory = {
     name: 'CircularSpinner',
     args: {
         size: 50,
-        color: 'textDefault',
+        color: 'contentPrimary',
         width: 5,
     },
     argTypes: {

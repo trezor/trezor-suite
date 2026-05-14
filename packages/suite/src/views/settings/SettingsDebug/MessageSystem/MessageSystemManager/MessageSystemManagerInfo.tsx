@@ -1,5 +1,5 @@
 import { toCommaSeparated } from '@suite-common/message-system';
-import { Message } from '@suite-common/suite-types';
+import { type Message } from '@suite-common/suite-types';
 import { Column, Icon, InfoItem } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

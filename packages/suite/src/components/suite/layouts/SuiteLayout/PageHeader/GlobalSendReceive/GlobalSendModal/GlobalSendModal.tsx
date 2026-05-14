@@ -1,7 +1,9 @@
 import { useCallback, useRef } from 'react';
 
-import { Account } from '@suite-common/wallet-types';
-import { TokenInfo } from '@trezor/blockchain-link-types';
+import { selectSelectedDevice } from '@suite-common/device';
+import { sendFormActions } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
+import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { Box, Divider } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
 
@@ -17,7 +19,7 @@ import {
     ExpandableAssetRowTokens,
 } from 'src/components/suite/asset-picker/components';
 import {
-    AssetPickerListItem,
+    type AssetPickerListItem,
     useExpandableAccountGroups,
     useFilterAccountsWithTokens,
     useInsertGroupLabelsAndSpaces,
@@ -42,11 +44,14 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
     const searchFilter = useSelector(globalSendReceiveFilters.selectors.selectSearch);
     const { expandedAccountTokensGroups, updateExpandableAccountGroups } =
         useExpandableAccountGroups();
+    const device = useSelector(selectSelectedDevice);
 
     const accountsWithTokens = useAccountWithTokensOptions({
         networkSymbolFilter,
         expandedHiddenTokensGroups: expandedAccountTokensGroups,
+        staticSessionId: device?.state?.staticSessionId ?? null,
     });
+
     const filteredAccountsWithTokens = useFilterAccountsWithTokens(
         accountsWithTokens,
         searchFilter,
@@ -59,14 +64,16 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
 
     const handleAccountClick = useCallback(
         (account: Account) => {
+            dispatch(sendFormActions.removeDraft({ accountKey: account.key }));
             submitRef.current?.(account, filledSearch);
         },
-        [submitRef, filledSearch],
+        [submitRef, filledSearch, dispatch],
     );
     const handleTokenClick = useCallback(
         (token: TokenInfo, account: Account) => {
-            submitRef.current?.(account, filledSearch);
+            dispatch(sendFormActions.removeDraft({ accountKey: account.key }));
             dispatch(setSendFormPrefill({ contractAddress: token.contract }));
+            submitRef.current?.(account, filledSearch);
         },
         [submitRef, filledSearch, dispatch],
     );

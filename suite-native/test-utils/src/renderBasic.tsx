@@ -1,8 +1,8 @@
 import { type ReactElement } from 'react';
 
 import {
-    RenderHookOptions,
-    RenderOptions,
+    type RenderHookOptions,
+    type RenderOptions,
     render,
     renderHook,
 } from '@testing-library/react-native';

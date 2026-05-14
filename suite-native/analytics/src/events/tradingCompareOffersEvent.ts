@@ -1,5 +1,5 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
-import { TradingType } from '@suite-common/trading';
+import { type TradingType } from '@suite-common/trading';
 
 import { EventType } from '../constants';
 

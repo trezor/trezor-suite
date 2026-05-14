@@ -1,6 +1,6 @@
 import { css, keyframes } from 'styled-components';
 
-import { Elevation, mapElevationToBackground } from '@trezor/theme';
+import { type Elevation, mapElevationToBackground } from '@trezor/theme';
 
 import { mapElevationToSkeletonForeground } from './colors';
 

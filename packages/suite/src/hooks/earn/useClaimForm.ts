@@ -2,13 +2,14 @@ import { createContext, useCallback, useContext, useEffect, useMemo } from 'reac
 import { useForm } from 'react-hook-form';
 
 import { getStakeFormsDefaultValues, getStakingContractAddress } from '@suite-common/staking';
+import { getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
-import { PrecomposedTransactionFinal, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { type Account, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { ClaimContextValues, ClaimFormState } from 'src/types/earn/claimForm';
+import { type ClaimContextValues, type ClaimFormState } from 'src/types/earn/claimForm';
 import { CRYPTO_INPUT, OUTPUT_AMOUNT } from 'src/types/earn/earnFormFields';
 
 import { useCardanoStaking } from './useCardanoStaking';
@@ -19,15 +20,15 @@ export const ClaimFormContext = createContext<ClaimContextValues | null>(null);
 ClaimFormContext.displayName = 'ClaimFormContext';
 
 type UseClaimFormsProps = {
-    selectedAccount: SelectedAccountLoaded;
+    account: Account;
 };
 
-export const useClaimForm = ({ selectedAccount }: UseClaimFormsProps): ClaimContextValues => {
+export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValues => {
     const dispatch = useDispatch();
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
 
-    const { account, network } = selectedAccount;
+    const network = getNetwork(account.symbol);
     const networkFees = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
 
     const defaultValues = useMemo(() => {

@@ -68,5 +68,15 @@
             "sell": false,
             "exchange": true
         }
+    },
+    "ethereum--0x98c23e9d8f34fefb1b7bd6a91b7ff122f4e16f5c": {
+        "symbol": "ausdc",
+        "name": "aEthUSDC",
+        "coingeckoId": "aave-v3-usdc",
+        "services": {
+            "buy": false,
+            "sell": false,
+            "exchange": true
+        }
     }
 }

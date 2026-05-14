@@ -4,8 +4,7 @@
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-webextension",
     "description": "High-level javascript interface for Trezor hardware wallet in webextension serviceworker environment.",
-    "npmPublishAccess": "public",
-    "license": "SEE LICENSE IN LICENSE.md",
+    "license": "MIT",
     "repository": {
         "type": "git",
         "url": "git://github.com/trezor/trezor-suite.git"
@@ -22,42 +21,40 @@
     ],
     "main": "src/index.ts",
     "publishConfig": {
-        "main": "./lib/index.js",
-        "types": "./lib/index.d.ts",
+        "main": "./libESM/index.mjs",
+        "types": "./libESM/index.d.mts",
+        "type": "module",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
+                "types": "./libESM/index.d.mts",
+                "default": "./libESM/index.mjs"
             }
         }
     },
     "files": [
-        "lib/",
         "libESM/",
         "CHANGELOG.md",
-        "!lib/proxy"
+        "!libESM/proxy"
     ],
     "types": "src/index.ts",
     "scripts": {
-        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm && DTS_OUT_DIR=libESM yarn build:dts:inline",
+        "build:dts:inline": "node ../../scripts/inline-devdep-types.mjs",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/connect-web": "workspace:*"
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.28.5",
         "@trezor/eslint": "workspace:*",
-        "@types/chrome": "^0.0.299",
-        "@types/w3c-web-usb": "^1.0.10",
-        "babel-loader": "^10.0.0",
-        "rimraf": "^6.0.1",
+        "@types/chrome": "^0.1.40",
+        "@types/w3c-web-usb": "^1.0.14",
+        "babel-loader": "^10.1.1",
+        "rimraf": "^6.1.2",
         "worker-loader": "^3.0.8"
     },
     "peerDependencies": {

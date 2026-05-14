@@ -1,15 +1,15 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/stellarSignTx.js
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { Assert } from '@trezor/schema-utils';
-
-import { PROTO } from '../../constants';
-import type { TypedCall } from '../../device/DeviceCommands';
-import {
-    StellarOperation,
+import type {
     StellarOperationMessage,
     StellarTransaction,
-} from '../../types/api/stellar';
+} from '@trezor/connect-common/src/types/api/stellar';
+import { StellarOperation } from '@trezor/connect-common/src/types/api/stellar';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import { Assert } from '@trezor/schema-utils';
+
+import type { TypedCall } from '../../device/DeviceCommands';
 
 const processTxRequest = async (
     typedCall: TypedCall,
@@ -220,10 +220,12 @@ export const stellarSignTx = async (
     address_n: number[],
     networkPassphrase: string,
     tx: StellarTransaction,
+    payment_req?: PROTO.PaymentRequest,
 ) => {
     const message = transformSignMessage(tx);
     message.address_n = address_n;
     message.network_passphrase = networkPassphrase;
+    message.payment_req = payment_req;
 
     const operations: StellarOperationMessage[] = [];
     tx.operations.forEach(op => {

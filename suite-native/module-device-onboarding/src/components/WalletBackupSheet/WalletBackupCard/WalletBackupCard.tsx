@@ -1,11 +1,17 @@
 import { memo } from 'react';
 import { Pressable } from 'react-native';
 
-import { BackupType } from '@suite-common/suite-types';
-import { Card, CardDivider, FullAlertBox, FullAlertBoxProps, VStack } from '@suite-native/atoms';
+import { type BackupType } from '@suite-common/suite-types';
+import {
+    Card,
+    CardDivider,
+    FullAlertBox,
+    type FullAlertBoxProps,
+    VStack,
+} from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 
 import { CardContent } from './CardContent';
@@ -20,7 +26,7 @@ interface WalletTypeCardProps {
 }
 
 const containerStyle = prepareNativeStyle<{ isSelected: boolean }>((utils, { isSelected }) => ({
-    borderColor: isSelected ? utils.colors.borderSecondary : utils.colors.borderOnElevation1,
+    borderColor: isSelected ? utils.colors.borderBrand : utils.colors.borderNeutral,
     borderWidth: utils.borders.widths.large,
 }));
 
@@ -69,7 +75,7 @@ export const WalletBackupCard = memo(
                                     : undefined
                             }
                             primaryButtonProps={{
-                                viewLeft: 'arrowSquareOut',
+                                iconLeft: 'arrowSquareOut',
                             }}
                         />
                     </VStack>

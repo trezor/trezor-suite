@@ -1,9 +1,9 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { Account } from '@suite-common/wallet-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect, {
-    EthereumSignTypedDataMessage,
-    EthereumSignTypedDataTypes,
+    type EthereumSignTypedDataMessage,
+    type EthereumSignTypedDataTypes,
 } from '@trezor/connect';
 import { transformTypedData } from '@trezor/connect-plugin-ethereum';
 
@@ -105,7 +105,7 @@ export const signDataAndConfirmThunk = createThunk(
         if (!result.success) {
             dispatch(
                 logErrorThunk({
-                    errorMessage: result.payload.error,
+                    errorMessage: result.error.message,
                     tradingType: 'exchange',
                     toastType: 'sign-message-error',
                 }),

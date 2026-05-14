@@ -1,6 +1,6 @@
 import { IntlProvider } from 'react-intl';
 
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 import { action } from 'storybook/actions';
 
 import { Badge, Box, Button, Column, Icon, Text, getFramePropsStory } from '@trezor/components';
@@ -8,7 +8,7 @@ import { spacingsNew } from '@trezor/theme';
 
 import {
     EditableText as EditableTextComponent,
-    EditableTextProps,
+    type EditableTextProps,
     allowedEditableTextFrameProps,
 } from './EditableText';
 
@@ -29,7 +29,7 @@ const StoryWrapper = ({ children }: { children: React.ReactNode }) => (
     <Box
         width="100%"
         maxWidth={400}
-        backgroundColor="baseFillElementNeutralSoftest"
+        backgroundColor="elementFillField"
         padding={12}
         borderRadius={8}
     >

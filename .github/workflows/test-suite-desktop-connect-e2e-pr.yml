@@ -1,0 +1,57 @@
+name: "[Test] PR Suite Desktop Connect e2e tests"
+# Runs trezor-connect e2e tests on PRs that change connect packages
+# or the connect e2e tests themselves
+
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+  pull-requests: write # for posting comments
+
+on:
+  pull_request:
+    branches:
+      - develop
+    paths:
+      - "packages/connect/**"
+      - "packages/connect-common/**"
+      - "packages/connect-web/**"
+      - "packages/connect-webextension/**"
+      - "packages/connect-plugin-ethereum/**"
+      - "packages/connect-plugin-stellar/**"
+      - "packages/connect-data/**"
+      - "packages/connect-mobile/**"
+      - "suite-common/connect-popup/**"
+      - "suite-common/connect-init/**"
+      - "suite/e2e/tests/trezor-connect/**"
+      - "suite/e2e/playwright-config/playwright-desktop-connect-pr.config.ts"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  build-app:
+    if: github.repository == 'trezor/trezor-suite'
+    uses: ./.github/workflows/build-suite-desktop-e2e.yml
+
+  run-e2e-connect-tests:
+    if: github.repository == 'trezor/trezor-suite'
+    needs:
+      - build-app
+    strategy:
+      fail-fast: false
+      matrix:
+        TEST_GROUP: [1]
+    uses: ./.github/workflows/template-suite-run-e2e.yml
+    with:
+      target: "desktop"
+      pw-config: "./playwright-config/playwright-desktop-connect-pr.config.ts"
+      workspace-dependencies: "@trezor/suite-desktop"
+      test-group: ${{ matrix.TEST_GROUP }}
+      fail-fast: "false"
+      currents-project-id: "4ytF0E"
+      download-artifact-name: "desktop-app-build-e2e"
+    secrets:
+      currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
+      e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}

@@ -1,19 +1,27 @@
-import { accountSeed, ownerSecret } from '../../fixtures/metadata/suite-sync-data';
+import { mnemonic12Fixtures } from '@suite-common/e2e-evolu-client';
+
 import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataMock';
 
+const { accountSeed, ownerSecret, ownerId } = mnemonic12Fixtures;
+
 test.describe('Labeling migration', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({ wipeEvoluRelay: true });
 
-    test.beforeEach(async ({ metadataMock, evoluClient, onboardingPage }) => {
-        await metadataMock.start(MetadataProvider.DROPBOX);
-        await test.step('Seed Evolu relay server', async () => {
-            await evoluClient.init({ ownerSecret });
-            evoluClient.writeTo('account', accountSeed);
-        });
-        await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
-    });
+    test.beforeEach(
+        async ({ metadataMock, metadataPage, evoluClient, onboardingPage, settingsPage }) => {
+            await metadataMock.start(MetadataProvider.DROPBOX);
+            await test.step('Seed Evolu relay server', async () => {
+                await evoluClient.init({ ownerSecret });
+                evoluClient.writeTo('account', accountSeed);
+                evoluClient.seedQuotaManagerData({ ownerId });
+            });
+            await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+            await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+            await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
+        },
+    );
 
     test('Migration from Dropbox', async ({ page, walletPage, metadataPage }) => {
         await test.step('Set up Dropbox labeling', async () => {
@@ -25,7 +33,6 @@ test.describe('Labeling migration', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
             // wait until account page is fully loaded
             await expect(walletPage.fiatAmount).toBeVisible();
             await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
-            await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
         });
 
         await test.step('Add legacy account label', async () => {

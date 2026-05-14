@@ -17,29 +17,37 @@ import {
     networks,
 } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
+    type AccountsRootState,
     accountsActions,
+    reportWalletBalanceThunk,
     selectDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
+import {
+    getAvailableAccountTypes,
+    isEvmNetwork,
+    prepareNewAccountPayload,
+} from '@suite-common/wallet-utils';
 import { useAccountAlerts } from '@suite-native/accounts';
 import { useBottomSheetModal } from '@suite-native/atoms';
 import {
     selectDeviceEnabledDiscoveryNetworkSymbols,
     selectDiscoveryNetworkSymbols,
 } from '@suite-native/discovery';
-import { TxKeyPath, useTranslate } from '@suite-native/intl';
+import { type TxKeyPath, useTranslate } from '@suite-native/intl';
+import { navigateByAccountState } from '@suite-native/module-earn';
 import {
-    AddCoinAccountStackParamList,
+    type AddCoinAccountStackParamList,
     AddCoinAccountStackRoutes,
-    AddCoinFlowType,
+    type AddCoinFlowType,
     AppTabsRoutes,
     ReceiveStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { exhaustive } from '@trezor/type-utils';
+import { resolveAfter, typedObjectKeys } from '@trezor/utils';
 
 import { useAddCoinAccountAlerts } from './useAddCoinAccountAlerts';
 
@@ -80,7 +88,7 @@ export const accountTypeTranslationKeys: Record<
     },
 };
 
-const LIMIT = 10; // or maybe find another place to put it if needed
+const LIMIT = 10; // Maximum number of manually added accounts per non-EVM network type.
 
 export const useAddCoinAccount = () => {
     const dispatch = useDispatch();
@@ -116,9 +124,9 @@ export const useAddCoinAccount = () => {
 
         networkSymbolCollection.forEach(symbol => {
             // for Cardano and Ethereum only allow latest account type and coinjoin and ledger are not supported
-            const types = Object.keys(networks[symbol].accountTypes).filter(
+            const types = typedObjectKeys(networks[symbol].accountTypes).filter(
                 t => !['coinjoin', 'imported', 'ledger'].includes(t),
-            ) as AccountType[];
+            );
 
             availableTypes.set(symbol, [
                 NORMAL_ACCOUNT_TYPE,
@@ -152,6 +160,34 @@ export const useAddCoinAccount = () => {
         }
     };
 
+    const navigateToEarnAfterDiscovery = (symbol: NetworkSymbol, accountIndex: number) => {
+        const account = deviceAccounts.find(
+            acc =>
+                acc.symbol === symbol &&
+                acc.accountType === NORMAL_ACCOUNT_TYPE &&
+                acc.index === accountIndex,
+        );
+
+        if (!account) {
+            showGeneralErrorAlert();
+            navigation.dispatch(
+                CommonActions.reset({
+                    index: 0,
+                    routes: [
+                        {
+                            name: RootStackRoutes.AppTabs,
+                            params: { screen: AppTabsRoutes.EarnStack },
+                        },
+                    ],
+                }),
+            );
+
+            return;
+        }
+
+        navigateByAccountState(account, navigation.navigate);
+    };
+
     const navigateToSuccessorScreen = ({
         flowType,
         symbol,
@@ -164,6 +200,9 @@ export const useAddCoinAccount = () => {
         accountIndex: number;
     }) => {
         switch (flowType) {
+            case 'earn':
+                navigateToEarnAfterDiscovery(symbol, accountIndex);
+                break;
             case 'home':
                 navigation.replace(RootStackRoutes.ReceiveStack, {
                     screen: ReceiveStackRoutes.ReceiveAccount,
@@ -227,6 +266,9 @@ export const useAddCoinAccount = () => {
             case 'trade':
                 screen = AppTabsRoutes.TradeStack;
                 break;
+            case 'earn':
+                screen = AppTabsRoutes.EarnStack;
+                break;
 
             default:
                 return exhaustive(flowType);
@@ -257,21 +299,25 @@ export const useAddCoinAccount = () => {
         closeModal();
     };
 
-    const checkCanAddAccount = (accounts: Account[]) => {
+    const checkCanAddAccount = (accounts: Account[], networkSymbol: NetworkSymbol) => {
         if (isDeviceInViewOnlyMode) {
             showViewOnlyAddAccountAlert();
 
             return false;
         }
 
-        // Do not allow adding more than 10 accounts of the same type
+        // EVM networks have no manual-add limit. Users can add accounts beyond
+        if (isEvmNetwork(networkSymbol)) {
+            return true;
+        }
+
+        // Do not allow adding more than 10 accounts of the same type.
         if (accounts.filter(account => account.visible).length >= LIMIT) {
             showTooManyAccountsAlert();
 
             return false;
         }
 
-        // Do not allow showing another empty account if there is already one
         const hasVisibleEmptyAccount = accounts.some(account => account.empty && account.visible);
 
         if (hasVisibleEmptyAccount) {
@@ -281,6 +327,64 @@ export const useAddCoinAccount = () => {
         }
 
         return true;
+    };
+
+    const createNewEvmAccount = async ({
+        symbol,
+        accountType,
+        accounts,
+        flowType,
+    }: {
+        symbol: NetworkSymbol;
+        accountType: AccountType;
+        accounts: Account[];
+        flowType: AddCoinFlowType;
+    }) => {
+        if (!device) {
+            showGeneralErrorAlert();
+
+            return;
+        }
+
+        const lastVisibleAccount = pipe(
+            accounts,
+            A.filter(account => account.visible),
+            A.sortBy(account => account.index),
+            A.last,
+        );
+
+        const nextIndex = lastVisibleAccount ? lastVisibleAccount.index + 1 : 0;
+        const network = networks[symbol];
+        const networkAccount = network.accountTypes[accountType];
+        const allAccountTypes = getAvailableAccountTypes(symbol);
+
+        const newAccountPayload = await prepareNewAccountPayload({
+            accountType,
+            networkSymbol: symbol,
+            index: nextIndex,
+            backendType:
+                lastVisibleAccount?.backendType !== 'coinjoin'
+                    ? lastVisibleAccount?.backendType
+                    : undefined,
+            selectedAccount: networkAccount,
+            accountTypes: allAccountTypes,
+            device,
+        });
+
+        if (newAccountPayload instanceof Error) {
+            showGeneralErrorAlert();
+
+            return;
+        }
+
+        dispatch(accountsActions.createAccount(newAccountPayload));
+        dispatch(reportWalletBalanceThunk());
+        navigateToSuccessorScreen({
+            flowType,
+            symbol,
+            accountType,
+            accountIndex: nextIndex,
+        });
     };
 
     const handleAccountTypeSelection = (flowType: AddCoinFlowType) => {
@@ -297,7 +401,7 @@ export const useAddCoinAccount = () => {
         }
     };
 
-    const addCoinAccount = ({
+    const addCoinAccount = async ({
         symbol,
         flowType,
         accountType = NORMAL_ACCOUNT_TYPE,
@@ -306,46 +410,59 @@ export const useAddCoinAccount = () => {
         flowType: AddCoinFlowType;
         accountType?: AccountType;
     }) => {
-        clearNetworkWithTypeToBeAdded();
-        if (!device?.state) {
+        try {
+            clearNetworkWithTypeToBeAdded();
+
+            if (!device?.state) {
+                showGeneralErrorAlert();
+
+                return;
+            }
+
+            const accounts = deviceAccounts.filter(
+                account => account.symbol === symbol && account.accountType === accountType,
+            );
+
+            const canAddAccount = checkCanAddAccount(accounts, symbol);
+
+            if (!canAddAccount) {
+                return;
+            }
+
+            const firstHiddenEmptyAccount = pipe(
+                accounts,
+                A.filter(account => account.empty && !account.visible),
+                A.sortBy(account => account.index),
+                A.head,
+            );
+
+            // the account should already exist, but be invisible, so make it visible
+            if (firstHiddenEmptyAccount && !firstHiddenEmptyAccount.failed) {
+                dispatch(accountsActions.changeAccountVisibility(firstHiddenEmptyAccount));
+                dispatch(reportWalletBalanceThunk());
+                navigateToSuccessorScreen({
+                    flowType,
+                    symbol,
+                    accountType,
+                    accountIndex: firstHiddenEmptyAccount.index ?? accounts.length,
+                });
+
+                return;
+            }
+
+            // For EVM networks: allow adding next account even if previous is empty
+            if (isEvmNetwork(symbol)) {
+                await createNewEvmAccount({ symbol, accountType, accounts, flowType });
+
+                return;
+            }
+
+            // or the account discovery might have failed
+            if (firstHiddenEmptyAccount?.failed) {
+                navigateToFailureScreen({ flowType, errorString: firstHiddenEmptyAccount.error });
+            }
+        } catch {
             showGeneralErrorAlert();
-
-            return;
-        }
-
-        const accounts = deviceAccounts.filter(
-            account => account.symbol === symbol && account.accountType === accountType,
-        );
-
-        const firstHiddenEmptyAccount = pipe(
-            accounts,
-            A.filter(account => account.empty && !account.visible),
-            A.sortBy(account => account.index),
-            A.head,
-        );
-
-        const canAddAccount = checkCanAddAccount(accounts);
-
-        if (!canAddAccount) {
-            return;
-        }
-
-        // the account should already exist, but be invisible, so make it visible
-        if (firstHiddenEmptyAccount && !firstHiddenEmptyAccount.failed) {
-            dispatch(accountsActions.changeAccountVisibility(firstHiddenEmptyAccount));
-            navigateToSuccessorScreen({
-                flowType,
-                symbol,
-                accountType,
-                accountIndex: firstHiddenEmptyAccount.index ?? accounts.length,
-            });
-
-            return;
-        }
-
-        // or the account discovery might have failed
-        if (firstHiddenEmptyAccount?.failed) {
-            navigateToFailureScreen({ flowType, errorString: firstHiddenEmptyAccount.error });
         }
     };
 
@@ -396,8 +513,8 @@ export const useAddCoinAccount = () => {
         if (networkSymbolWithTypeToBeAdded) {
             clearNetworkWithTypeToBeAdded();
             // TODO why timeout?
-            await new Promise(resolve => setTimeout(resolve, 100));
-            addCoinAccount({
+            await resolveAfter(100);
+            await addCoinAccount({
                 symbol: networkSymbolWithTypeToBeAdded[0],
                 accountType: networkSymbolWithTypeToBeAdded[1],
                 flowType,

@@ -1,11 +1,18 @@
-import { MouseEventHandler, ReactNode } from 'react';
+import { type MouseEventHandler, type ReactNode } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
 import {
+    selectIsLegacyLabelingVisible,
+    selectLabelingDataForSelectedAccount,
+} from '@suite/metadata';
+import { openModal } from '@suite/modal';
+import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import {
+    selectIsSuiteSyncEnabled,
     selectSuiteSyncAddressLabels,
     selectSuiteSyncOutputLabels,
 } from '@suite-common/suite-sync';
+import { type SuiteSyncAddress, type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
 import {
@@ -20,15 +27,14 @@ import {
     TextButton,
     Tooltip,
 } from '@trezor/components';
-import { AccountUtxo } from '@trezor/connect';
+import { type AccountUtxo } from '@trezor/connect';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { Address, BaseCurrencyValue, FormattedCryptoAmount, Labeling } from 'src/components/suite';
 import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useCoinjoinUnavailableUtxos } from 'src/hooks/wallet/form/useCoinjoinUnavailableUtxos';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import { type WalletAccountTransaction } from 'src/types/wallet';
 
 type ResolveUtxoSpendableProps = {
     utxo: AccountUtxo;
@@ -77,14 +83,23 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
             isCoinControlEnabled,
         },
     } = useSendFormContext();
+
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
+
     // selecting metadata from store rather than send form context which does not update on metadata change
     const { addressLabels, outputLabels } = useSelector(selectLabelingDataForSelectedAccount);
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
     const suiteSyncAddressLabels = useSelector(state =>
-        selectSuiteSyncAddressLabels(state, account.deviceState),
+        isSuiteSyncEnabled
+            ? selectSuiteSyncAddressLabels(state, account.deviceState)
+            : returnStableArrayIfEmpty<SuiteSyncAddress>(),
     );
+
     const suiteSyncOutputLabels = useSelector(state =>
-        selectSuiteSyncOutputLabels(state, account.deviceState),
+        isSuiteSyncEnabled
+            ? selectSuiteSyncOutputLabels(state, account.deviceState)
+            : returnStableArrayIfEmpty<SuiteSyncOutput>(),
     );
     const { translationString } = useTranslation();
 
@@ -122,26 +137,22 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
 
     const addressLabel =
         suiteSyncAddressLabels.find(it => it.address === utxo.address)?.label ??
-        addressLabels[utxo.address];
+        (isLegacyLabelingVisible ? addressLabels[utxo.address] : undefined);
 
     const outputLabel =
         suiteSyncOutputLabels.find(it => it.txId === utxo.txid && it.txTargetId === `${utxo.vout}`)
-            ?.label ?? outputLabels?.[utxo.txid]?.[utxo.vout];
+            ?.label ??
+        (isLegacyLabelingVisible ? outputLabels?.[utxo.txid]?.[utxo.vout] : undefined);
 
     return (
-        <GhostContainer
-            onClick={handleCheckbox}
-            isActive={isChecked}
-            padding={12}
-            margin={{ horizontal: -12 }}
-            as="div"
-        >
+        <GhostContainer onClick={handleCheckbox} padding={12} margin={{ horizontal: -12 }} as="div">
             <Row gap={24} width="100%">
                 <Tooltip content={unspendableTooltip}>
                     <Checkbox
                         isChecked={isChecked}
                         isDisabled={isDisabled}
-                        onClick={handleCheckbox}
+                        onChange={handleCheckbox}
+                        onClick={e => e.stopPropagation()}
                     />
                 </Tooltip>
                 <Column flex="1" gap={0}>

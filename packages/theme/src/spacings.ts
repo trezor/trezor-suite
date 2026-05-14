@@ -70,6 +70,8 @@ type NativeSpacingValue =
     | 32
     | 36
     | 40
+    | 48
+    | 44
     | 52
     | 56
     | 64;
@@ -89,6 +91,8 @@ export const nativeSpacings = {
     sp32: 32,
     sp36: 36,
     sp40: 40,
+    sp48: 48,
+    sp44: 44,
     sp52: 52,
     sp56: 56,
     sp64: 64,

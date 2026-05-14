@@ -13,7 +13,7 @@ export const sendThpMessage = async ({
     skipAck,
 }: CommonProps) => {
     if (!thpState) {
-        return error({ error: THP_STATE_ERROR, message: 'ThpStateMissing' });
+        return error({ code: THP_STATE_ERROR, message: 'ThpStateMissing' });
     }
 
     const result = await thpLoop({

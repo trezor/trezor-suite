@@ -1,10 +1,10 @@
-import { JSX, useContext } from 'react';
+import { type JSX, useContext } from 'react';
 
 import styled, { css } from 'styled-components';
 
 import { events } from '@suite/analytics';
 import { IconButton, useElevation } from '@trezor/components';
-import { Elevation, mapElevationToBorder, typography, zIndices } from '@trezor/theme';
+import { type Elevation, mapElevationToBorder, typography, zIndices } from '@trezor/theme';
 
 import { close } from 'src/actions/suite/guideActions';
 import { ContentScrolledContext, HeaderBreadcrumb } from 'src/components/guide';
@@ -50,7 +50,7 @@ const MainLabel = styled.div`
 const Label = styled.div`
     ${typography['body-sm-strong']}
     text-align: center;
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
     padding: 0 15px;
     width: 100%;
 `;
@@ -106,7 +106,7 @@ export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) =>
             {useBreadcrumb && <HeaderBreadcrumb />}
 
             <IconButton
-                icon="arrowLineRight"
+                icon="x"
                 intent="neutral"
                 priority="secondary"
                 onClick={handleClose}

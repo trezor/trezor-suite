@@ -1,6 +1,6 @@
-import { ModalAlignment } from './types';
-import { UIAlignment } from '../../config/types';
-import { FlexAlignItems, FlexJustifyContent } from '../Flex/FlexProp';
+import { type ModalAlignment } from './types';
+import { type UIAlignment } from '../../config/types';
+import { type FlexAlignItems, type FlexJustifyContent } from '../Flex/FlexProp';
 
 export const mapAlignmentToJustifyContent = (alignment: ModalAlignment): FlexJustifyContent => {
     const alignmentMap: Record<UIAlignment, FlexJustifyContent> = {

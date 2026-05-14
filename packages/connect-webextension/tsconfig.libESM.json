@@ -7,9 +7,6 @@
     },
     "references": [
         {
-            "path": "../connect"
-        },
-        {
             "path": "../connect-common"
         },
         {

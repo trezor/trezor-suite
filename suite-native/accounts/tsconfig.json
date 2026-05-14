@@ -13,6 +13,12 @@
             "path": "../../suite-common/suite-sync"
         },
         {
+            "path": "../../suite-common/suite-sync-storage"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
             "path": "../../suite-common/token-definitions"
         },
         {
@@ -42,7 +48,9 @@
         { "path": "../staking" },
         { "path": "../toasts" },
         { "path": "../tokens" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
         { "path": "../../packages/utils" },
         { "path": "../test-utils" }

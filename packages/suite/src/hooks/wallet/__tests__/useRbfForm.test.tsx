@@ -3,12 +3,13 @@ import '@suite-common/test-utils/src/globalOverrides';
 import { screen } from '@testing-library/react';
 
 import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { ServerInfo } from '@trezor/blockchain-link-types';
+import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { type ServerInfo } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
 
 import { ChangeFee } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ChangeFee';
 import { ReplaceTxButton } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ReplaceTxButton';
+import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import {
     actionSequence,
     findByTestId,
@@ -16,7 +17,6 @@ import {
     waitForLoader,
 } from 'src/support/tests/hooksHelper';
 
-import { extraDependenciesDesktopMock } from '../../../support/tests/extraDependenciesDesktop.mock';
 import * as fixtures from '../__fixtures__/useRbfForm';
 import { RbfContext, useRbf, useRbfContext } from '../useRbfForm';
 
@@ -29,7 +29,8 @@ global.ResizeObserver = class MockedResizeObserver {
 // do not mock
 jest.unmock('@trezor/connect');
 
-jest.mock('src/actions/suite/routerActions', () => ({
+jest.mock('@suite/router', () => ({
+    ...jest.requireActual('@suite/router'),
     goto: () => ({ type: 'mock-redirect' }),
 }));
 
@@ -52,9 +53,8 @@ jest.mock('@suite-common/tx-simulation', () => ({}));
 
 // TrezorConnect.composeTransaction is trying to connect to blockchain, to get current block height.
 // Mock whole module to avoid internet connection.
-jest.mock('@trezor/blockchain-link', () => ({
-    __esModule: true,
-    default: class BlockchainLink {
+jest.mock('@trezor/blockchain-link', () => {
+    class BlockchainLink {
         name = 'jest-mocked-module';
         listeners: Record<string, () => void> = {};
 
@@ -99,8 +99,13 @@ jest.mock('@trezor/blockchain-link', () => ({
         estimateFee(params: { blocks: number[] }) {
             return params.blocks.map(() => ({ feePerUnit: '-1' }));
         }
-    },
-}));
+    }
+
+    return {
+        __esModule: true,
+        BlockchainLink,
+    };
+});
 
 type RootReducerState = ReturnType<ReturnType<typeof fixtures.getRootReducer>>;
 
@@ -197,7 +202,7 @@ describe('useRbfForm hook', () => {
                 .mockImplementation(() =>
                     Promise.resolve({
                         success: false,
-                        payload: { error: 'error' },
+                        error: { message: 'error', code: 'Failure_UnknownCode' },
                     }),
                 );
 

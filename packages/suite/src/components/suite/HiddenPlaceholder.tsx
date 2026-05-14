@@ -1,4 +1,4 @@
-import { MouseEventHandler, ReactNode, useLayoutEffect, useRef, useState } from 'react';
+import { type MouseEventHandler, type ReactNode, useLayoutEffect, useRef, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 

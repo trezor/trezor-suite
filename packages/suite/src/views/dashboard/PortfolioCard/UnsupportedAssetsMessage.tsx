@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { NetworkSymbol, getNetwork, getNetworkFeatures } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type NetworkSymbol, getNetwork, getNetworkFeatures } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
-import { union } from '@trezor/utils';
+import { unique } from '@trezor/utils';
 
 import { isNetworkWithGraphFeature } from 'src/utils/wallet/graph';
 
@@ -14,12 +14,10 @@ export const useUnsupportedNetworkMessage = ({
     showGraphControls,
     device,
     accounts,
-    isGraphHidden,
 }: {
     showGraphControls: boolean;
     device?: TrezorDevice;
     accounts: Account[];
-    isGraphHidden: boolean;
 }) => {
     const affectedAccounts =
         showGraphControls && !hasBitcoinOnlyFirmware(device)
@@ -32,10 +30,9 @@ export const useUnsupportedNetworkMessage = ({
                   .map(({ symbol }) => symbol)
             : [];
 
-    const affectedNetworks = union(affectedAccounts);
+    const affectedNetworks = unique(affectedAccounts);
     const hasTokens = hasAnyAccountWithTokens(accounts);
-    const showMissingDataTooltip =
-        !isGraphHidden && (affectedNetworks.length > 0 || hasAnyAccountWithTokens(accounts));
+    const showMissingDataTooltip = showGraphControls && (affectedNetworks.length > 0 || hasTokens);
 
     return { affectedNetworks, showMissingDataTooltip, hasTokens };
 };

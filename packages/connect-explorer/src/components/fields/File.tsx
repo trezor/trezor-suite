@@ -1,4 +1,4 @@
-import { ChangeEventHandler } from 'react';
+import { type ChangeEventHandler } from 'react';
 
 import { Button } from '@trezor/components';
 

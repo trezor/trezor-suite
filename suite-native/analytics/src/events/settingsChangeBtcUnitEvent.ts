@@ -1,5 +1,5 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
-import { UNIT_ABBREVIATION } from '@suite-common/suite-constants';
+import { type UNIT_ABBREVIATION } from '@suite-common/suite-constants';
 
 import { EventType } from '../constants';
 

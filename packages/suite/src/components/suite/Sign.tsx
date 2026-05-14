@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 
 import { isSignValuePositive } from '@suite-common/formatters';
-import { SignValue } from '@suite-common/suite-types';
+import { type SignValue } from '@suite-common/suite-types';
 
 const StyledSign = styled.span<{ $color: string }>`
     color: ${({ $color }) => $color};
@@ -38,13 +38,11 @@ export const Sign = ({
     }
 
     if (isValuePositive) {
-        return (
-            <StyledSign $color={grayscale ? defaultColor : theme.textPrimaryDefault}>+</StyledSign>
-        );
+        return <StyledSign $color={grayscale ? defaultColor : theme.contentBrand}>+</StyledSign>;
     }
 
     if (!isValuePositive && showMinusSign) {
-        return <StyledSign $color={grayscale ? defaultColor : theme.textAlertRed}>–</StyledSign>;
+        return <StyledSign $color={grayscale ? defaultColor : theme.contentCritical}>–</StyledSign>;
     }
 
     return null;

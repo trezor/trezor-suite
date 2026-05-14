@@ -1,27 +1,30 @@
+import { type MethodPermission, UI_REQUEST } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 import { TRANSPORT_ERROR } from '@trezor/transport';
 
-import { PROTO } from '../constants';
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { UI } from '../events';
 
 export default class BleUnpair extends AbstractMethod<'bleUnpair', PROTO.BleUnpair> {
-    init() {
-        this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
-        this.requiredPermissions = ['management'];
-        this.useDeviceState = false;
-
-        const { payload } = this;
-        this.params = {
-            all: payload.all,
-        };
+    constructor(message: MethodMessage<'bleUnpair'>) {
+        const { payload } = message;
 
         Assert(PROTO.BleUnpair, payload);
+
+        const params = { all: payload.all };
+
+        super(message, params);
+        this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];
+        this.useDeviceState = false;
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['management'];
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         // unpair current bluetooth connection session or all known sessions
         try {
             const response = await cmd.typedCall('BleUnpair', 'Success', this.params);
@@ -33,7 +36,7 @@ export default class BleUnpair extends AbstractMethod<'bleUnpair', PROTO.BleUnpa
             // or fails here with transport read/write error
             // in both cases Device_Disconnected error should be handled as "expected success"
             if (
-                this.device.descriptor.apiType === 'bluetooth' &&
+                this.getDevice().descriptor.apiType === 'bluetooth' &&
                 error.message === TRANSPORT_ERROR.INTERFACE_DATA_TRANSFER
             ) {
                 // typed error is considered as "method failed successfully"

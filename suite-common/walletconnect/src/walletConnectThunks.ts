@@ -1,5 +1,4 @@
-import { WalletKit, WalletKitTypes } from '@reown/walletkit';
-import type { WalletKit as WalletKitClient } from '@reown/walletkit/dist/types/client';
+import { type IWalletKit, WalletKit, type WalletKitTypes } from '@reown/walletkit';
 import { Core } from '@walletconnect/core';
 import {
     buildApprovedNamespaces,
@@ -15,16 +14,21 @@ import { isDevEnv } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectAllSuccessfulAccountsToList } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
-import { CallMethodResponse } from '@trezor/connect';
+import { type Account } from '@suite-common/wallet-types';
+import { type CallMethodResponse } from '@trezor/connect';
 
-import { getAdapterByMethod, getNamespaces, processNamespaces } from './adapters';
+import {
+    getAdapterByMethod,
+    getAdapterByNetwork,
+    getNamespaces,
+    processNamespaces,
+} from './adapters';
 import { walletConnectActions } from './walletConnectActions';
 import { PROJECT_ID, WALLETCONNECT_METADATA, WALLETCONNECT_MODULE } from './walletConnectConstants';
 import { selectPendingProposal } from './walletConnectReducer';
-import { PendingConnectionProposalNetwork } from './walletConnectTypes';
+import { type PendingConnectionProposalNetwork } from './walletConnectTypes';
 
-let walletKit: WalletKitClient;
+let walletKit: IWalletKit;
 
 export const sessionAuthenticateThunk = createThunk<
     void,
@@ -219,14 +223,18 @@ export const switchSelectedAccountThunk = createThunk<
             topic: sessionTopic,
             namespaces: approvedNamespaces,
         });
-        const namespace = account.networkType === 'solana' ? 'solana' : 'eip155';
-        const { chains } = session.namespaces[namespace];
+        const adapter = getAdapterByNetwork(account.networkType);
+        if (!adapter) {
+            return console.warn(`No adapter found for network type ${account.networkType}`);
+        }
+        const { chains } = session.namespaces[adapter.namespaceId];
         if (!chains) {
-            return console.warn(`No chains found for namespace ${namespace}`);
+            return console.warn(`No chains found for namespace ${adapter.namespaceId}`);
         }
 
+        const approvedEvents = session.namespaces[adapter.namespaceId]?.events ?? [];
         for (const chainId of chains) {
-            if (network.chainId) {
+            if (network.chainId && approvedEvents.includes('chainChanged')) {
                 await walletKit.emitSessionEvent({
                     topic: sessionTopic,
                     event: {
@@ -236,14 +244,16 @@ export const switchSelectedAccountThunk = createThunk<
                     chainId,
                 });
             }
-            await walletKit.emitSessionEvent({
-                topic: sessionTopic,
-                event: {
-                    name: 'accountsChanged',
-                    data: [...updatedNamespaces[namespace].accounts],
-                },
-                chainId,
-            });
+            if (approvedEvents.includes('accountsChanged')) {
+                await walletKit.emitSessionEvent({
+                    topic: sessionTopic,
+                    event: {
+                        name: 'accountsChanged',
+                        data: [...updatedNamespaces[adapter.namespaceId].accounts],
+                    },
+                    chainId,
+                });
+            }
         }
     },
 );

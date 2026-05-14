@@ -1,4 +1,4 @@
-import { ReactNode, useId } from 'react';
+import { type ReactNode, useId } from 'react';
 
 import styled, { css } from 'styled-components';
 
@@ -6,7 +6,7 @@ import { borders, spacings } from '@trezor/theme';
 
 import { type SwitchLabelPosition, type SwitchSize } from './types';
 import { mapSizeToHandleSize, mapSizeToLabelContainerGap, mapSizeToLabelTypography } from './utils';
-import { FrameProps, FramePropsKeys } from '../../../utils/frameProps';
+import { type FrameProps, type FramePropsKeys } from '../../../utils/frameProps';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
 import { Box } from '../../Box/Box';
 import { Row } from '../../Flex/Flex';
@@ -41,19 +41,19 @@ const Container = styled.div<{
         $isDisabled
             ? css`
                   background: ${$isChecked
-                      ? theme.stateFillElementBrandBoldActiveDisabled
-                      : theme.stateFillElementBoldDisabled};
+                      ? theme.elementFillFieldSelectedDisabled
+                      : theme.elementFillBoldDisabled};
               `
             : css`
                   background: ${$isChecked
-                      ? theme.stateFillElementBrandBoldActive
-                      : theme.baseFillElementNeutralBold};
+                      ? theme.elementFillFieldSelected
+                      : theme.elementFillNeutralBold};
 
                   :focus-within:has(:focus-visible),
                   &:hover {
                       background: ${$isChecked
-                          ? theme.stateFillElementBrandBoldActiveHovered
-                          : theme.stateFillElementNeutralBoldHovered};
+                          ? theme.elementFillFieldSelectedHovered
+                          : theme.elementFillNeutralBoldHovered};
                   }
 
                   ${getFocusShadowStyle(':focus-within:has(:focus-visible)')}
@@ -66,7 +66,7 @@ const Handle = styled.button<{ $isChecked: boolean }>`
     aspect-ratio: 1;
     border: none;
     border-radius: ${borders.radii.full};
-    background: ${({ theme }) => theme.baseContentReversePrimary};
+    background: ${({ theme }) => theme.contentPrimaryInverse};
     transform: ${({ $isChecked }) => $isChecked && `translateX(100%)`};
     transition: transform 0.25s ease 0s;
     pointer-events: none;
@@ -75,7 +75,7 @@ const Handle = styled.button<{ $isChecked: boolean }>`
 
 const CheckboxInput = styled.input`
     border: 0;
-    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
     height: 1px;
     margin: -1px;
     overflow: hidden;

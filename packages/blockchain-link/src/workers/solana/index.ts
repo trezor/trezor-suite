@@ -1,22 +1,22 @@
 import {
-    AccountInfoBase,
-    Address,
-    ClusterUrl,
-    RpcMainnet,
-    RpcSubscriptionsMainnet,
-    RpcTransportMainnet,
+    type AccountInfoBase,
+    type Address,
+    type ClusterUrl,
+    type RpcMainnet,
+    type RpcSubscriptionsMainnet,
+    type RpcTransportMainnet,
     SOLANA_ERROR__BLOCK_HEIGHT_EXCEEDED,
     SOLANA_ERROR__JSON_RPC__SERVER_ERROR_SEND_TRANSACTION_PREFLIGHT_FAILURE,
     SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_CONNECTION_CLOSED,
     SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_FAILED_TO_CONNECT,
     SOLANA_ERROR__RPC__TRANSPORT_HTTP_ERROR,
     SOLANA_ERROR__TRANSACTION_ERROR__BLOCKHASH_NOT_FOUND,
-    Signature,
-    Slot,
-    SolanaRpcApiMainnet,
-    SolanaRpcResponse,
-    SolanaRpcSubscriptionsApi,
-    TransactionWithBlockhashLifetime,
+    type Signature,
+    type Slot,
+    type SolanaRpcApiMainnet,
+    type SolanaRpcResponse,
+    type SolanaRpcSubscriptionsApi,
+    type TransactionWithBlockhashLifetime,
     address,
     assertTransactionIsFullySigned,
     createDefaultRpcTransport,
@@ -37,18 +37,17 @@ import {
 import { getTokenSize as _getTokenSize } from '@solana-program/token';
 import { getTokenSize as _getToken2022Size } from '@solana-program/token-2022';
 
+import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
 import type {
     AccountInfo,
+    MessageTypes,
     Response,
+    SolanaTokenAccountInfo,
     SubscriptionAccountInfo,
     TokenDetailByMint,
     TokenInfo,
     Transaction,
 } from '@trezor/blockchain-link-types';
-import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
-import type { SolanaTokenAccountInfo } from '@trezor/blockchain-link-types/src/solana';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
 import {
     type TokenProgramName,
@@ -60,12 +59,15 @@ import type {
     SolanaValidParsedTxWithMeta,
 } from '@trezor/blockchain-link-utils/src/solana-types';
 import { getSuiteVersion } from '@trezor/env-utils';
-import { IntervalId } from '@trezor/type-utils';
+import { type IntervalId } from '@trezor/type-utils';
 import { BigNumber, createDeferred, createLazy } from '@trezor/utils';
 
-import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
+import { BaseWorker, CONTEXT, type ContextType } from '../baseWorker';
 import { getBaseFee, getPriorityFee } from './utils/fee';
-import { ThrottledTransportOptions, getThrottledTransport } from './utils/getThrottledTransport';
+import {
+    type ThrottledTransportOptions,
+    getThrottledTransport,
+} from './utils/getThrottledTransport';
 import { STAKE_ACCOUNT_V2_SIZE, getSolanaStakingData } from './utils/stakingAccounts';
 
 const THROTTLE_OPTIONS: ThrottledTransportOptions = {
@@ -436,10 +438,14 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     // Not necessary for basic and tokens details
     if (!['basic', 'tokens'].includes(details)) {
         const solEpoch = await getEpoch();
-        const solStakingAccounts = await getSolanaStakingData(api?.rpc, publicKey, solEpoch);
+        const [solStakingAccounts, solExternalStakingAccounts] = await Promise.all([
+            getSolanaStakingData(api?.rpc, publicKey, solEpoch, 'everstake'),
+            getSolanaStakingData(api?.rpc, publicKey, solEpoch, 'non-everstake'),
+        ]);
 
         misc = {
             solStakingAccounts,
+            solExternalStakingAccounts,
             solEpoch,
         };
 

@@ -1,8 +1,8 @@
-import { ReactElement, ReactNode, useMemo } from 'react';
+import { type ReactElement, type ReactNode, useMemo } from 'react';
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { AnimatedBox, Text } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { exhaustive } from '@trezor/type-utils';
 
 export type ItemRenderConfig<U> = {
@@ -75,7 +75,7 @@ type RenderInternalItemProps<T, U> = {
 
 const defaultItemStyle = prepareNativeStyle<ItemRenderConfig<unknown>>(
     ({ colors, spacings, borders }, { isFirst, isLast, isEnabled }) => ({
-        backgroundColor: colors.backgroundSurfaceElevation1,
+        backgroundColor: colors.surfaceFillRaised,
         paddingHorizontal: spacings.sp12,
         extend: [
             {
@@ -95,7 +95,7 @@ const defaultItemStyle = prepareNativeStyle<ItemRenderConfig<unknown>>(
             {
                 condition: !isEnabled,
                 style: {
-                    backgroundColor: colors.baseFillSurfacePage,
+                    backgroundColor: colors.surfaceFillPage,
                 },
             },
         ],
@@ -195,7 +195,7 @@ const renderInternalItem = <T, U>({
                     {renderSectionHeader ? (
                         renderSectionHeader(title, { sectionData, key })
                     ) : (
-                        <Text variant="body-sm" color="textSubdued">
+                        <Text variant="body-sm" color="contentSecondary">
                             {item.title}
                         </Text>
                     )}

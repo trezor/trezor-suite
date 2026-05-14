@@ -1,14 +1,14 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { CryptoId, ExchangeTrade } from 'invity-api';
+import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 
 import { exchangeThunks } from '../';
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
 import { accountBtc } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
-import { TradingExchangeState } from '../../../reducers/exchangeReducer';
+import { type TradingExchangeState } from '../../../reducers/exchangeReducer';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { getUnusedAddressFromAccount } from '../../../utils';
@@ -263,7 +263,7 @@ describe('confirmExchangeTradeThunk', () => {
         });
 
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-        expect(store.getActions().length).toEqual(4);
+        expect(store.getActions().length).toEqual(3);
         expect(exchange.transactionId).toBeUndefined();
         expect(exchange.isLoading).toBeFalsy();
         expect(!!response).toBeFalsy();
@@ -338,7 +338,7 @@ describe('confirmExchangeTradeThunk', () => {
             });
 
             expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-            expect(store.getActions().length).toEqual(5);
+            expect(store.getActions().length).toEqual(4);
             expect(exchange.transactionId).toBeUndefined();
 
             expect(exchange.isLoading).toBeFalsy();
@@ -390,7 +390,7 @@ describe('confirmExchangeTradeThunk', () => {
             const { exchange } = store.getState().wallet.trading;
 
             expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-            expect(store.getActions().length).toEqual(5);
+            expect(store.getActions().length).toEqual(4);
             expect(exchange.transactionId).toBeUndefined();
 
             expect(exchange.isLoading).toBeFalsy();
@@ -438,7 +438,7 @@ describe('confirmExchangeTradeThunk', () => {
         const { exchange } = store.getState().wallet.trading;
 
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-        expect(store.getActions().length).toEqual(5);
+        expect(store.getActions().length).toEqual(4);
         expect(exchange.transactionId).toBeUndefined();
         expect(exchange.isLoading).toBeFalsy();
         expect(exchange.selectedQuote).toEqual(tradeResponse);
@@ -486,7 +486,7 @@ describe('confirmExchangeTradeThunk', () => {
             const { exchange } = store.getState().wallet.trading;
 
             expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-            expect(store.getActions().length).toEqual(5);
+            expect(store.getActions().length).toEqual(4);
             expect(exchange.transactionId).toBeUndefined();
             expect(exchange.isLoading).toBeFalsy();
             expect(exchange.selectedQuote).toEqual(tradeResponse);
@@ -534,7 +534,7 @@ describe('confirmExchangeTradeThunk', () => {
         const { exchange } = store.getState().wallet.trading;
 
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-        expect(store.getActions().length).toEqual(5);
+        expect(store.getActions().length).toEqual(4);
         expect(exchange.transactionId).toBeUndefined();
         expect(exchange.isLoading).toBeFalsy();
         expect(exchange.selectedQuote).toEqual(tradeResponse);
@@ -587,7 +587,7 @@ describe('confirmExchangeTradeThunk', () => {
         expect(store.getActions().length).toEqual(5);
         expect(exchange.transactionId).toBe(mockResponse.orderId);
         expect(exchange.isLoading).toBeFalsy();
-        expect(exchange.selectedQuote).toEqual(exchange.selectedQuote);
+        expect(exchange.selectedQuote).toEqual(tradeResponse);
         expect(mockNextStep).toHaveBeenCalledTimes(1);
         expect(trading.trades[0]).toEqual({
             tradeType: 'exchange',

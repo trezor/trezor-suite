@@ -1,4 +1,4 @@
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import * as URLS from '@trezor/urls';
@@ -71,6 +71,30 @@ const getStatus: Array<{ device: TrezorDevice; status: string }> = [
             status: 'thp-locked',
         }),
         status: 'device-thp-locked',
+    },
+];
+
+const getIsDeviceDescriptorApiTypeBluetooth = [
+    {
+        description: 'device descriptor is missing',
+        device: mockSuiteDevice({
+            descriptor: undefined,
+        }),
+        result: false,
+    },
+    {
+        description: 'device api type is usb',
+        device: mockSuiteDevice({
+            descriptor: { apiType: 'usb' },
+        }),
+        result: false,
+    },
+    {
+        description: 'device api type is bluetooth',
+        device: mockSuiteDevice({
+            descriptor: { apiType: 'bluetooth' },
+        }),
+        result: true,
     },
 ];
 
@@ -597,6 +621,7 @@ const getFirmwareDowngradeUrl = [
 
 export default {
     getStatus,
+    getIsDeviceDescriptorApiTypeBluetooth,
     getIsDeviceConnectedViaBluetooth,
     isSelectedDevice,
     isSelectedInstance,

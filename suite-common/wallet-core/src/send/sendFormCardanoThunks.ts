@@ -1,8 +1,8 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    PrecomposedLevelsCardano,
-    PrecomposedTransactionCardano,
+    type PrecomposedLevelsCardano,
+    type PrecomposedTransactionCardano,
 } from '@suite-common/wallet-types';
 import {
     formatMaxOutputAmount,
@@ -14,14 +14,14 @@ import {
     isTestnet,
     transformUserOutputs,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { PROTO, PrecomposedTransactionFinalCardano } from '@trezor/connect';
+import TrezorConnect, { PROTO, type PrecomposedTransactionFinalCardano } from '@trezor/connect';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
-    ComposeFeeLevelsError,
-    ComposeTransactionThunkArguments,
-    SignTransactionError,
-    SignTransactionThunkArguments,
+    type ComposeFeeLevelsError,
+    type ComposeTransactionThunkArguments,
+    type SignTransactionError,
+    type SignTransactionThunkArguments,
 } from './sendFormTypes';
 
 export const composeCardanoTransactionFeeLevelsThunk = createThunk<
@@ -73,13 +73,13 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',
-                    error: response.payload.error,
+                    error: response.error.message,
                 }),
             );
 
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',
-                message: response.payload.error,
+                message: response.error.message,
             });
         }
 
@@ -145,7 +145,10 @@ export const signCardanoSendFormTransactionThunk = createThunk<
     { rejectValue: SignTransactionError }
 >(
     `${SEND_MODULE_PREFIX}/signCardanoSendFormTransactionThunk`,
-    async ({ precomposedTransaction, selectedAccount, device }, { rejectWithValue }) => {
+    async (
+        { precomposedTransaction, selectedAccount, device, paymentRequests },
+        { rejectWithValue },
+    ) => {
         const { symbol, accountType } = selectedAccount;
 
         if (selectedAccount.networkType !== 'cardano')
@@ -153,6 +156,8 @@ export const signCardanoSendFormTransactionThunk = createThunk<
                 error: 'sign-transaction-failed',
                 message: 'Account network type is not Cardano.',
             });
+
+        const payment_req = paymentRequests?.[0];
 
         // todo: add chunkify once we allow it for Cardano
         const response = await TrezorConnect.cardanoSignTransaction({
@@ -173,13 +178,14 @@ export const signCardanoSendFormTransactionThunk = createThunk<
             fee: precomposedTransaction.fee,
             ttl: precomposedTransaction.ttl?.toString(),
             derivationType: getDerivationType(accountType),
+            payment_req,
         });
 
         if (!response.success) {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
-                errorCode: response.payload.code,
-                message: response.payload.error,
+                errorCode: response.error.code,
+                message: response.error.message,
             });
         }
 

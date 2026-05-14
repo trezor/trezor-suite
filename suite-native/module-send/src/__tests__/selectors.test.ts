@@ -1,5 +1,5 @@
-import { AccountKey, FormState, TokenAddress } from '@suite-common/wallet-types';
-import { NativeSendRootState } from '@suite-native/transaction-management';
+import { type AccountKey, type FormState, type TokenAddress } from '@suite-common/wallet-types';
+import { type NativeSendRootState } from '@suite-native/transaction-management';
 
 import { selectDestinationTagFromDraft } from '../selectors';
 

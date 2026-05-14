@@ -14,49 +14,42 @@
     "bugs": {
         "url": "https://github.com/trezor/trezor-suite/issues"
     },
-    "npmPublishAccess": "public",
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "Data used by trezor-connect library.",
     "main": "./src/index.ts",
     "files": [
-        "lib/",
         "libESM/",
         "files/**/*.json",
         "files/**/*.txt",
         "CHANGELOG.md"
     ],
     "publishConfig": {
-        "main": "./lib/index.js",
-        "types": "./lib/index.d.ts",
+        "main": "./libESM/index.mjs",
+        "types": "./libESM/index.d.mts",
+        "type": "module",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
+                "types": "./libESM/index.d.mts",
+                "default": "./libESM/index.mjs"
             },
-            "./lib/*": "./lib/*.js",
-            "./files/*": "./files/*",
-            "./libESM/*.js": "./libESM/*.js"
+            "./libESM/*": "./libESM/*",
+            "./files/*": "./files/*"
         }
     },
     "scripts": {
-        "test:unit": "yarn g:jest --passWithNoTests",
-        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js",
-        "prepublish": "yarn tsx ../../scripts/publish/prepublish.js",
         "validate-releases.json": "./scripts/check-all-firmware-revisions.sh",
-        "depcheck": "yarn g:depcheck"
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "peerDependencies": {
+        "@trezor/device-utils": "workspace:*",
         "tslib": "^2.6.2"
     },
     "devDependencies": {
-        "@types/chrome": "^0.0.299",
+        "@types/chrome": "^0.1.40",
         "@types/jest": "29.5.12",
-        "@types/node": "22.13.10",
-        "tsx": "^4.21.0"
+        "@types/node": "22.13.10"
     }
 }

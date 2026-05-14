@@ -6,12 +6,14 @@ export type LaunchArguments = {
     isTradingBuyEnabled?: boolean;
     isTradingExchangeEnabled?: boolean;
     isTradingSellEnabled?: boolean;
+    isTradingConciergeEnabled?: boolean;
     areDebugOnlyNetworksEnabled?: boolean;
     areExperimentalOnlyNetworksEnabled?: boolean;
     preloadedState?: string; // stringified object
     isFirmwareUpdateEnabled?: boolean;
-    areTradingExchangeDexesEnabled?: boolean;
     isTradingResidenceCheckEnabled?: boolean;
     isTradingDebugEnabled?: boolean;
-    isEarnEnabled?: boolean;
+    isN4w1BackupEnabled?: boolean;
+    isStablecoinYieldEnabled?: boolean;
+    isN4W1BackupEnabled?: boolean;
 };

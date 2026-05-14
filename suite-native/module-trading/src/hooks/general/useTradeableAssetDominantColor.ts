@@ -1,6 +1,6 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TokenAddress } from '@suite-common/wallet-types';
-import { useNativeStyles } from '@trezor/styles';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type TokenAddress } from '@suite-common/wallet-types';
+import { useNativeStyles } from '@trezor/styles-native';
 
 export const useTradeableAssetDominantColor = (
     symbol: NetworkSymbol,
@@ -10,7 +10,7 @@ export const useTradeableAssetDominantColor = (
         utils: { colors, coinsColors },
     } = useNativeStyles();
 
-    const defaultColor = colors.backgroundNeutralBold;
+    const defaultColor = colors.legacyBackgroundNeutralBold;
     const networkColor = coinsColors[symbol];
 
     return networkColor ?? defaultColor;

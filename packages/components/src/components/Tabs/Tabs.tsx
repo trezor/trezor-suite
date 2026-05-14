@@ -1,20 +1,20 @@
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Elevation, borders, mapElevationToBorder, spacings } from '@trezor/theme';
+import { type Elevation, borders, mapElevationToBorder, spacings } from '@trezor/theme';
 
 import { TabsContext } from './TabsContext';
 import { TabsItem } from './TabsItem';
-import { TabsSize } from './types';
+import { type TabsSize } from './types';
 import { TRANSFORM_OPTIONS, mapSizeToContainerPaddingBottom } from './utils';
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import { type TransientProps } from '../../utils/transientProps';
 import { useElevation } from '../ElevationContext/ElevationContext';
 import { Row } from '../Flex/Flex';
 
@@ -44,7 +44,7 @@ const Container = styled.div<ContainerProps>`
         left: 0;
         width: 1px;
         height: ${borders.widths.large};
-        background: ${({ theme }) => theme.iconDefault};
+        background: ${({ theme }) => theme.contentPrimary};
         transform: ${({ $indicatorWidth, $indicatorPosition }) =>
             `translateX(${$indicatorPosition}px) scaleX(${$indicatorWidth})`};
         transform-origin: left;

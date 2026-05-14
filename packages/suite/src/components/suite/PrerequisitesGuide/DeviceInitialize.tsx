@@ -1,19 +1,26 @@
-import { MouseEvent } from 'react';
+import { type MouseEvent } from 'react';
 
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
+import { selectSelectedDevice } from '@suite-common/device';
 import { Banner } from '@trezor/components';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import {
     enableOnboardingReducer,
     resetOnboarding,
     updateAnalytics,
 } from 'src/actions/onboarding/onboardingActions';
-import { goto } from 'src/actions/suite/routerActions';
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
 import { useDispatch } from 'src/hooks/suite';
+import { useStore } from 'src/hooks/suite/useStore';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 export const DeviceInitialize = () => {
     const dispatch = useDispatch();
+    const analytics = useAnalytics();
+    const { getState } = useStore();
 
     const handleCtaClick = (e: MouseEvent) => {
         e.stopPropagation();
@@ -24,7 +31,15 @@ export const DeviceInitialize = () => {
 
         dispatch(updateAnalytics({ startTime: Date.now() }));
 
-        dispatch(goto('onboarding-index'));
+        const device = selectSelectedDevice(getState());
+
+        analytics.report({
+            type: events.deviceSetupStartedEvent.name,
+            payload: {
+                deviceModel: device?.features?.internal_model || DeviceModelInternal.UNKNOWN,
+            },
+        });
+        dispatch(goto({ routeName: 'onboarding-index' }));
     };
 
     return (

@@ -1,6 +1,6 @@
 import { NETWORK_TO_PROTOCOLS } from '@suite-common/suite-constants';
 
-import protocolReducer, { ProtocolState } from 'src/reducers/suite/protocolReducer';
+import protocolReducer, { type ProtocolState } from 'src/reducers/suite/protocolReducer';
 import { configureStore } from 'src/support/tests/configureStore';
 
 import * as protocolConstants from '../constants/protocolConstants';

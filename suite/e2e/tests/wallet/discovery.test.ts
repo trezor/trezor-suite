@@ -1,4 +1,4 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { getRandomInt } from '@trezor/utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -6,16 +6,18 @@ import { expect, test } from '../../support/fixtures';
 // discovery should end within this time frame
 const DISCOVERY_LIMIT = 1000 * 60 * 2;
 
-const coinsToActivate = [
-    'ltc',
+const coinsToActivate: NetworkSymbol[] = [
+    'btc',
     'eth',
+    'ltc',
     'etc',
     'bch',
     'doge',
-    'ada',
+    //'ada', skipped because Cardano backends are sometimes unreachable.
+    // We want this important test to be trustworthy and stable.
     'xrp',
     'zec',
-] as NetworkSymbol[];
+];
 
 test.describe('Discovery', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
     test.beforeEach(async ({ onboardingPage }) => {
@@ -30,8 +32,11 @@ test.describe('Discovery', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
     }) => {
         await test.step('Activate coins', async () => {
             await settingsPage.navigateTo('coins');
-            for (const symbol of coinsToActivate) {
-                await settingsPage.coinsTab.enableNetwork(symbol);
+            for (const coin of coinsToActivate) {
+                await settingsPage.coinsTab.enableNetwork(coin);
+                if (coin === 'ada') {
+                    await settingsPage.coinsTab.temporarilySetOfficialCardanoBackend();
+                }
             }
         });
 
@@ -57,8 +62,7 @@ test.describe('Discovery', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
             await page.expectReduxSubtreeToContain('wallet.discovery', 'status', 'complete', {
                 timeout: DISCOVERY_LIMIT,
             });
-            const expectedAccounts = ['btc', ...coinsToActivate] as NetworkSymbol[];
-            for (const symbol of expectedAccounts) {
+            for (const symbol of coinsToActivate) {
                 await expect
                     .soft(
                         walletPage.balanceOfAccount({ symbol, atIndex: 0 }),

@@ -1,0 +1,45 @@
+name: "[Test] Nightly Canary Suite Desktop e2e tests"
+# Scheduled Fridays at 06:00 on develop branch — starts after the regular nightly (00:00 Mon-Fri) finishes
+# Builds the desktop app
+# Runs only the canary FW e2e suite (against firmware built nightly from main branch)
+
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+
+on:
+  schedule:
+    - cron: "0 6 * * 5"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  build-app:
+    if: github.repository == 'trezor/trezor-suite'
+    uses: ./.github/workflows/build-suite-desktop-e2e.yml
+
+  run-e2e-suite-desktop-canary-tests:
+    if: github.repository == 'trezor/trezor-suite'
+    needs:
+      - build-app
+    strategy:
+      fail-fast: false
+      matrix:
+        TEST_GROUP: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    uses: ./.github/workflows/template-suite-run-e2e.yml
+    with:
+      target: "desktop"
+      pw-config: "./playwright-config/playwright-desktop-nightly-canary.config.ts"
+      workspace-dependencies: "@trezor/suite-desktop"
+      test-group: ${{ matrix.TEST_GROUP }}
+      fail-fast: "false"
+      currents-project-id: "4ytF0E"
+      currents-ci-build-id: "nightly-canary-run-${{ github.run_id }}-${{ github.run_attempt }}"
+      download-artifact-name: "desktop-app-build-e2e"
+    secrets:
+      currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
+      e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
+      e2e-passphrase-live: ${{ secrets.E2E_TEST_PASSPHRASE_LIVE }}

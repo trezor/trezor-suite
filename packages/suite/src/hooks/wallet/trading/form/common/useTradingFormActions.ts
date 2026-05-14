@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { UseFormReturn, useWatch } from 'react-hook-form';
+import { type UseFormReturn, useWatch } from 'react-hook-form';
 import { useDebounce } from 'react-use';
 
-import { FiatCurrencyCode } from 'invity-api';
+import { type FiatCurrencyCode } from 'invity-api';
 
 import {
     TRADING_FORM_CRYPTO_TOKEN,
@@ -11,9 +11,11 @@ import {
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_OUTPUT_MAX,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    TradingAssetSellOption,
+    type TradingAssetSellOption,
     type TradingExchangeFormProps,
     type TradingSellFormProps,
+    isCountrySubdivisionEmpty,
+    mapFiatCurrencyCodeToBaseCurrencyCode,
     tradingExchangeActions,
 } from '@suite-common/trading';
 import {
@@ -21,12 +23,14 @@ import {
     selectIsNetworkReserveEnabled,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
     fromBaseCurrencyToCryptoUnit,
     getCryptoAmountWithReserve,
+    getDecimalsForBaseCurrency,
+    isErc4626,
     isZero,
 } from '@suite-common/wallet-utils';
 import { BigNumber, isChanged } from '@trezor/utils';
@@ -35,9 +39,9 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import {
-    TradingSellExchangeFormProps,
-    TradingUseFormActionsProps,
-    TradingUseFormActionsReturnProps,
+    type TradingSellExchangeFormProps,
+    type TradingUseFormActionsProps,
+    type TradingUseFormActionsReturnProps,
 } from 'src/types/trading/tradingForm';
 import { getFeeInUnits, resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
 
@@ -66,7 +70,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
 }: TradingUseFormActionsProps<T>): TradingUseFormActionsReturnProps => {
     const dispatch = useDispatch();
     const { symbol } = account;
-    const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
+    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
     const accounts = useSelector(selectVisibleDeviceAccounts);
     const isNotFormPage = pageType !== 'form';
@@ -77,19 +81,21 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     const { outputs, sendCryptoSelect } = getValues();
     const values = useWatch<TradingSellExchangeFormProps>({ control });
     const previousValues = useRef<typeof values | null>(isNotFormPage ? draftUpdated : null);
-    const tokenAddress = outputs?.[0]?.token;
-    const tokenData = account.tokens?.find(t => t.contract === tokenAddress);
-    const isBalanceZero = tokenData
-        ? isZero(tokenData.balance || '0')
-        : isZero(account.formattedBalance);
-
     const sendCryptoAccount = useSelector(state =>
         selectAccountByKey(state, sendCryptoSelect?.accountKey),
     );
+    const tokenAddress = outputs?.[0]?.token;
+    const tokenData = (sendCryptoAccount ?? account).tokens?.find(
+        t => t.contract.toLowerCase() === tokenAddress?.toLowerCase(),
+    );
+    const isBalanceZero = tokenData
+        ? isZero(tokenData.balance || '0')
+        : isZero(account.formattedBalance);
     const tradingFiatValues = useTradingFiatValues({
         cryptoId: sendCryptoSelect?.id,
         amount: sendCryptoAccount?.balance,
-        fiatCurrency: getValues().outputs?.[0]?.currency?.value as FiatCurrencyCode,
+        fiatCurrency: getValues().outputs?.[0]?.currency?.value || undefined,
+        isErc4626: !!tokenData && isErc4626(tokenData),
     });
 
     const { getAssetDecimals } = useTradingAssetDecimals();
@@ -122,7 +128,10 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
 
         if (!tradingFiatValues) return;
 
-        const rate = await tradingFiatValues.fiatRatesUpdater(value);
+        const mappedBaseCurrencyCode = mapFiatCurrencyCodeToBaseCurrencyCode(value);
+        if (!mappedBaseCurrencyCode) return;
+
+        const rate = await tradingFiatValues.fiatRatesUpdater(mappedBaseCurrencyCode);
         const amount = getValues(TRADING_FORM_OUTPUT_AMOUNT);
         const formattedAmount = new BigNumber(
             shouldSendInSats ? convertAmountSubunitsToUnits(amount, networkDecimals) : amount,
@@ -135,8 +144,12 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
             formattedAmount.gt(0) // formatAmount() returns '-1' on error
         ) {
             const fiatValueBigNumber = formattedAmount.multipliedBy(rate.rate);
+            const fiatDecimals = getDecimalsForBaseCurrency({
+                code: mappedBaseCurrencyCode,
+                isInSats: false,
+            });
 
-            setValue(TRADING_FORM_OUTPUT_FIAT, fiatValueBigNumber.toFixed(2), {
+            setValue(TRADING_FORM_OUTPUT_FIAT, fiatValueBigNumber.toFixed(fiatDecimals), {
                 shouldValidate: true,
             });
         }
@@ -190,11 +203,33 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         setAccountOnChange(account);
         changeFeeLevel('normal'); // reset fee level
 
-        await tradingFiatValues?.fiatRatesUpdater(
-            getValues(TRADING_FORM_OUTPUT_CURRENCY)?.value as FiatCurrencyCode,
-            selected.contractAddress as TokenAddress,
+        const mappedBaseCurrencyCode = mapFiatCurrencyCodeToBaseCurrencyCode(
+            getValues(TRADING_FORM_OUTPUT_CURRENCY)?.value,
         );
+
+        if (mappedBaseCurrencyCode) {
+            await tradingFiatValues?.fiatRatesUpdater(
+                mappedBaseCurrencyCode,
+                selected.contractAddress as TokenAddress,
+            );
+        }
     };
+
+    useEffect(() => {
+        const selectedAccountKey = sendCryptoSelect?.accountKey;
+
+        if (!selectedAccountKey || selectedAccountKey === account.key) {
+            return;
+        }
+
+        const selectedAccount = accounts.find(item => item.key === selectedAccountKey);
+
+        if (!selectedAccount) {
+            return;
+        }
+
+        setAccountOnChange(selectedAccount);
+    }, [account.key, accounts, sendCryptoSelect?.accountKey, setAccountOnChange]);
 
     const setRatioAmount = (divisor: number) => {
         const amount = tokenData
@@ -214,7 +249,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         const cryptoAmountWithReserve = isNetworkReserveEnabled
             ? getCryptoAmountWithReserve({
                   symbol: account.symbol,
-                  contractAddress: tokenAddress,
+                  contractAddress: tokenAddress ?? tokenData?.contract,
                   balance: account.formattedBalance,
                   amount: cryptoInputValue,
                   fee: feeInUnits?.toString(),
@@ -239,27 +274,20 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
                 : maxAmount;
 
             setValue(TRADING_FORM_OUTPUT_AMOUNT, cryptoInputValue, { shouldDirty: true });
-        } else {
-            setValue(TRADING_FORM_OUTPUT_AMOUNT, '', { shouldDirty: true });
         }
 
         setValue(TRADING_FORM_OUTPUT_MAX, 0, { shouldDirty: true });
-        setValue(TRADING_FORM_OUTPUT_FIAT, '', { shouldDirty: true });
         clearErrors([TRADING_FORM_OUTPUT_FIAT, TRADING_FORM_OUTPUT_AMOUNT]);
 
         setFractionButton(1);
-        composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
-    };
 
-    // reset preselectedQuote when opening swap form
-    useEffect(() => {
-        const cryptoValue = values?.outputs?.[0]?.amount;
-        const previousCryptoValue = previousValues.current?.outputs?.[0].amount;
-
-        if (cryptoValue === '' && previousCryptoValue === undefined) {
-            dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
+        if (type === 'exchange') {
+            dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
         }
-    }, [values, previousValues, dispatch]);
+
+        composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
+        setValue(TRADING_FORM_OUTPUT_FIAT, '', { shouldDirty: true });
+    };
 
     // call change handler on every change of text inputs with debounce
     useDebounce(
@@ -298,10 +326,26 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     useEffect(() => {
         if (type !== 'sell' || pageType === 'confirm' || pageType === 'retry') return;
 
+        const sellValues = values as TradingSellFormProps;
+
+        // do not dispatch form requests until subdivision is set when country has subdivisions
+        if (
+            isCountrySubdivisionEmpty(
+                sellValues.countrySelect?.value,
+                sellValues.countrySubdivisionSelect?.value,
+            )
+        ) {
+            return;
+        }
+
         if (
             isChanged(
                 (previousValues.current as TradingSellFormProps | null)?.countrySelect,
-                (values as TradingSellFormProps).countrySelect,
+                sellValues.countrySelect,
+            ) ||
+            isChanged(
+                (previousValues.current as TradingSellFormProps | null)?.countrySubdivisionSelect,
+                sellValues.countrySubdivisionSelect,
             ) ||
             isChanged(
                 previousValues.current?.outputs?.[0]?.currency?.value,

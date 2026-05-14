@@ -4,7 +4,6 @@
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect",
     "description": "High-level javascript interface for Trezor hardware wallet.",
-    "npmPublishAccess": "public",
     "license": "SEE LICENSE IN LICENSE.md",
     "repository": {
         "type": "git",
@@ -21,10 +20,10 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "browser": {
-        "./src/index": "./src/index-browser.ts",
-        "./src/index.ts": "./src/index-browser.ts",
-        "./src/utils/assets": "./src/utils/assets-browser.ts",
-        "./src/workers/workers": "./src/workers/workers-browser.ts"
+        "./src/index": "./src/index.browser.ts",
+        "./src/index.ts": "./src/index.browser.ts",
+        "./src/utils/assets": "./src/utils/assets.browser.ts",
+        "./src/workers/workers": "./src/workers/workers.browser.ts"
     },
     "react-native": {
         "./src/index": "./src/index.ts",
@@ -33,49 +32,36 @@
         "./src/workers/workers": "./src/workers/workers.native.ts"
     },
     "publishConfig": {
-        "main": "./lib/index.js",
-        "types": "./lib/index.d.ts",
+        "main": "./libESM/index.mjs",
+        "types": "./libESM/index.d.mts",
+        "type": "module",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
+                "types": "./libESM/index.d.mts",
+                "default": "./libESM/index.mjs"
             },
-            "./lib/constants/*": "./lib/constants/*.js",
-            "./lib/data/*": "./lib/data/*.js",
-            "./lib/events": "./lib/events/index.js",
-            "./lib/exports": "./lib/exports.js",
-            "./lib/factory": "./lib/factory.js",
-            "./lib/impl/*": "./lib/impl/*.js",
-            "./lib/utils/*": "./lib/utils/*.js",
-            "./libESM/constants/*": "./libESM/constants/*.js",
-            "./libESM/data/*": "./libESM/data/*.js",
-            "./libESM/events": "./libESM/events/index.js",
-            "./libESM/exports": "./libESM/exports.js",
-            "./libESM/factory": "./libESM/factory.js",
-            "./libESM/impl/*": "./libESM/impl/*.js"
+            "./libESM/*": "./libESM/*"
         },
         "browser": {
-            "./lib/index.js": "./lib/index-browser.js",
-            "./lib/index": "./lib/index-browser.js",
-            "./lib/utils/assets": "./lib/utils/assets-browser.js",
-            "./lib/workers/workers": "./lib/workers/workers-browser.js",
-            "./libESM/index.js": "./libESM/index-browser.js",
-            "./libESM/utils/assets.js": "./libESM/utils/assets-browser.js",
-            "./libESM/workers/workers.js": "./libESM/workers/workers-browser.js"
+            "./libESM/index.mjs": "./libESM/index.browser.mjs",
+            "./libESM/utils/assets.mjs": "./libESM/utils/assets.browser.mjs",
+            "./libESM/workers/workers.mjs": "./libESM/workers/workers.browser.mjs",
+            "./libESM/data/*": "./libESM/data/*",
+            "./libESM/exports.mjs": "./libESM/exports.mjs",
+            "./libESM/impl/*": "./libESM/impl/*",
+            "./libESM/utils/*": "./libESM/utils/*"
         },
         "react-native": {
-            "./lib/index": "./lib/index.js",
-            "./lib/index.ts": "./lib/index.js",
-            "./lib/utils/assets": "./lib/utils/assets.native.js",
-            "./lib/workers/workers": "./lib/workers/workers.native.js",
-            "./libESM/index.js": "./libESM/index.js",
-            "./libESM/utils/assets.js": "./libESM/utils/assets.native.js",
-            "./libESM/workers/workers.js": "./libESM/workers/workers.native.js"
+            "./libESM/index.mjs": "./libESM/index.mjs",
+            "./libESM/utils/assets.mjs": "./libESM/utils/assets.native.mjs",
+            "./libESM/workers/workers.mjs": "./libESM/workers/workers.native.mjs",
+            "./libESM/data/*": "./libESM/data/*",
+            "./libESM/exports.mjs": "./libESM/exports.mjs",
+            "./libESM/impl/*": "./libESM/impl/*",
+            "./libESM/utils/*": "./libESM/utils/*"
         }
     },
     "files": [
-        "lib/",
         "libESM/",
         "CHANGELOG.md"
     ],
@@ -83,27 +69,27 @@
         "test:unit": "jest --version && jest",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "version:prerelease": "yarn g:tsx scripts/bump-version.ts prerelease",
         "version:patch": "yarn g:tsx scripts/bump-version.ts patch",
         "version:prepatch": "yarn g:tsx scripts/bump-version.ts prepatch",
         "version:minor": "yarn g:tsx scripts/bump-version.ts minor",
         "version:preminor": "yarn g:tsx scripts/bump-version.ts preminor",
         "version:major": "yarn g:tsx scripts/bump-version.ts major",
-        "test:e2e:web": "ts-node -O '{\"module\": \"commonjs\", \"moduleResolution\": \"node\"}' ./e2e/run.ts web",
-        "test:e2e:node": "ts-node -O '{\"module\": \"commonjs\", \"moduleResolution\": \"node\"}' ./e2e/run.ts node",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
+        "test:e2e:web": "yarn g:tsx ./e2e/run.ts web",
+        "test:e2e:node": "yarn g:tsx ./e2e/run.ts node",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@bufbuild/protobuf": "^2.11.0",
         "@ethereumjs/common": "^10.1.1",
         "@ethereumjs/tx": "^10.1.1",
         "@fivebinaries/coin-selection": "3.0.0",
-        "@mobily/ts-belt": "^3.13.1",
         "@noble/hashes": "^2.0.1",
+        "@scure/base": "^2.0.0",
         "@scure/bip39": "^1.5.1",
         "@solana-program/compute-budget": "^0.8.0",
+        "@solana-program/memo": "^0.7.0",
         "@solana-program/system": "^0.7.0",
         "@solana-program/token": "^0.5.1",
         "@solana-program/token-2022": "^0.4.2",
@@ -123,10 +109,7 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
-        "blakejs": "^1.2.1",
-        "bs58": "^6.0.0",
-        "bs58check": "^4.0.0",
-        "cbor": "^10.0.10",
+        "cbor": "^10.0.12",
         "cross-fetch": "^4.1.0",
         "jws": "^4.0.1"
     },
@@ -135,29 +118,21 @@
         "@trezor/eslint": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/jws": "^3.2.11",
-        "@types/karma": "^6.3.9",
         "@types/node": "22.13.10",
-        "@types/node-fetch": "^2.6.12",
-        "@types/w3c-web-usb": "^1.0.10",
-        "babel-loader": "^10.0.0",
-        "crypto-browserify": "3.12.0",
+        "@types/w3c-web-usb": "^1.0.14",
+        "@vitest/browser-playwright": "^4.1.4",
+        "crypto-browserify": "3.12.1",
         "jest": "29.7.0",
-        "karma": "^6.4.4",
-        "karma-babel-preprocessor": "^8.0.2",
-        "karma-chrome-launcher": "^3.2.0",
-        "karma-jasmine": "^5.1.0",
-        "karma-jasmine-async": "^0.0.1",
-        "karma-sourcemap-loader": "^0.4.0",
-        "karma-webpack": "^5.0.1",
-        "node-fetch": "^2.6.4",
+        "node-fetch": "^3.3.2",
         "process": "^0.11.10",
         "stream-browserify": "^3.0.0",
-        "ts-node": "^10.9.2",
         "tsx": "^4.21.0",
+        "vite-plugin-node-polyfills": "^0.26.0",
+        "vite-plugin-wasm": "^3.6.0",
+        "vitest": "^4.1.4",
         "vm-browserify": "^1.1.2",
-        "web3-utils": "^4.3.2",
-        "webpack": "5.104.1",
-        "ws": "^8.18.0"
+        "web3-utils": "^4.3.3",
+        "ws": "^8.20.0"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

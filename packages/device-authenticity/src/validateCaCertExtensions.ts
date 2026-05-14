@@ -1,4 +1,4 @@
-import { parseCertificate } from './x509certificate';
+import { type parseCertificate } from './x509certificate';
 
 // Check that this certificate is a valid Trezor CA.
 // KeyUsage must be present and allow certificate signing.

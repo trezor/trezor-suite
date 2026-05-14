@@ -4,7 +4,7 @@ import { useController } from 'react-hook-form';
 import { G } from '@mobily/ts-belt';
 
 import { FormContext } from '../Form';
-import { FieldName } from '../types';
+import { type FieldName } from '../types';
 
 interface UseFieldArgs {
     name: FieldName;

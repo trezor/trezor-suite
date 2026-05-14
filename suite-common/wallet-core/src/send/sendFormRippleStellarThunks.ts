@@ -3,9 +3,9 @@ import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { XRP_FLAG } from '@suite-common/wallet-constants';
 import {
     AddressDisplayOptions,
-    ExternalOutput,
-    PrecomposedLevels,
-    PrecomposedTransaction,
+    type ExternalOutput,
+    type PrecomposedLevels,
+    type PrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
     asAmountUnit,
@@ -19,21 +19,22 @@ import {
 } from '@suite-common/wallet-utils';
 import { buildSendTransaction, toStroops } from '@trezor/blockchain-link-utils/src/stellar';
 import TrezorConnect, {
-    FeeLevel,
-    RipplePayment,
-    StellarOperation,
-    TokenInfo,
+    type FeeLevel,
+    type RipplePayment,
+    type StellarOperation,
+    type TokenInfo,
 } from '@trezor/connect';
-import { StellarAssetType } from '@trezor/protobuf/src/messages';
+import { StellarAssetType } from '@trezor/protobuf/src/definitions';
 import { BigNumber } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
-    ComposeFeeLevelsError,
-    ComposeTransactionThunkArguments,
-    SignTransactionError,
-    SignTransactionThunkArguments,
+    type ComposeFeeLevelsError,
+    type ComposeTransactionThunkArguments,
+    type SignTransactionError,
+    type SignTransactionThunkArguments,
 } from './sendFormTypes';
+import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
 
 const calculate = (
     availableBalance: string,
@@ -230,13 +231,9 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/signRippleStellarSendFormTransactionThunk`,
     async (
-        { formState, precomposedTransaction, selectedAccount, device },
-        { getState, extra, rejectWithValue },
+        { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
+        { getState, rejectWithValue },
     ) => {
-        const {
-            selectors: { selectAddressDisplayType },
-        } = extra;
-
         const addressDisplayType = selectAddressDisplayType(getState());
 
         let response;
@@ -268,6 +265,7 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                     sequence: selectedAccount.misc.sequence,
                     payment,
                 },
+                payment_req: paymentRequests?.[0],
                 chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
             });
             if (response.success) {
@@ -347,6 +345,7 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                     },
                     operations: [operation],
                 },
+                payment_req: paymentRequests?.[0],
                 chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
             };
             response = await TrezorConnect.stellarSignTransaction(transformedTransaction);
@@ -367,8 +366,8 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
         // catch manual error from TransactionReviewModal
         return rejectWithValue({
             error: 'sign-transaction-failed',
-            errorCode: response.payload.code,
-            message: response.payload.error,
+            errorCode: response.error.code,
+            message: response.error.message,
         });
     },
 );

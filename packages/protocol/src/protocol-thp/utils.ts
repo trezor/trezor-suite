@@ -1,4 +1,4 @@
-import { ThpMessageSyncBit, ThpPairingMethod } from './messages';
+import { type ThpMessageSyncBit, ThpPairingMethod } from './messages';
 import { THP_CONTROL_BYTE } from '../protocol-v2/constants';
 
 export const addAckBit = (magic: number, ackBit: number) => {
@@ -66,13 +66,13 @@ export const getExpectedResponses = (bytes: Buffer) => {
         return [THP_CONTROL_BYTE.CHANNEL_ALLOCATION_RES];
     }
     if (magic === THP_CONTROL_BYTE.HANDSHAKE_INIT_REQ) {
-        return [THP_CONTROL_BYTE.HANDSHAKE_INIT_RES, THP_CONTROL_BYTE.CONTINUATION_PACKET];
+        return [THP_CONTROL_BYTE.HANDSHAKE_INIT_RES];
     }
     if (magic === THP_CONTROL_BYTE.HANDSHAKE_COMP_REQ) {
-        return [THP_CONTROL_BYTE.HANDSHAKE_COMP_RES, THP_CONTROL_BYTE.CONTINUATION_PACKET];
+        return [THP_CONTROL_BYTE.HANDSHAKE_COMP_RES];
     }
     if (magic === THP_CONTROL_BYTE.ENCRYPTED) {
-        return [THP_CONTROL_BYTE.ENCRYPTED, THP_CONTROL_BYTE.CONTINUATION_PACKET];
+        return [THP_CONTROL_BYTE.ENCRYPTED];
     }
 
     return [];
@@ -83,7 +83,7 @@ export const isThpMessageName = (name: string) =>
         'ThpCreateChannelRequest',
         'ThpHandshakeInitRequest',
         'ThpHandshakeCompletionRequest',
-        'ThpReadAck',
+        'ThpAck',
     ].includes(name);
 
 export const getThpPairingMethod = (dm: ThpPairingMethod | keyof typeof ThpPairingMethod) =>

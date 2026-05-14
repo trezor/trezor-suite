@@ -2,9 +2,9 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Translation } from '@suite-native/intl';
 import {
-    DeviceSettingsStackParamList,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 import { DeviceSettingsItemCard } from './DeviceSettingsItemCard';

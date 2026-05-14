@@ -1,10 +1,10 @@
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     cancelDiscoveryThunk,
     runDiscoveryThunk,
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
-import { DiscoveryStatus } from '@suite-common/wallet-types';
+import { type DiscoveryStatus } from '@suite-common/wallet-types';
 
 import { useDispatch } from 'src/hooks/suite';
 

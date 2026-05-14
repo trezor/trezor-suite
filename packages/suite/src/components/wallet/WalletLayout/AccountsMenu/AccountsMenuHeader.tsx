@@ -1,25 +1,26 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { selectIsCoinsFilterVisible, suiteSettingsActions } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectAllAccountsToList } from '@suite-common/wallet-core';
+import { selectAllAccountsToList, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Box, Column, Divider, Icon, Row, SkeletonRectangle, Tooltip } from '@trezor/components';
+
+import { CollapsedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
+import { ExpandedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
+import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
 
 import { AccountSearchBox } from './AccountSearchBox';
 import { AddAccountButton } from './AddAccountButton';
 import { CoinsFilter } from './CoinsFilter';
 import { useAvailableNetworkSymbols } from './useAvailableNetworkSymbols';
-import { setIsCoinsFilterVisible } from '../../../../actions/suite/suiteActions';
-import { useAccountSearch, useDiscovery, useDispatch, useSelector } from '../../../../hooks/suite';
-import { CollapsedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
-import { ExpandedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
 
 const Indicator = styled.div`
     width: 11px;
     height: 11px;
     border-radius: 50%;
-    border: 3px solid ${({ theme }) => theme.borderElevation2};
-    background-color: ${({ theme }) => theme.iconPrimaryDefault};
+    border: 3px solid ${({ theme }) => theme.legacyBorderElevation2};
+    background-color: ${({ theme }) => theme.contentBrand};
     position: absolute;
     top: 0;
     right: 0;
@@ -35,21 +36,16 @@ export const AccountsMenuHeader = () => {
 
     const device = useSelector(selectSelectedDevice);
     const accounts = useSelector(selectAllAccountsToList);
-    const { discovery } = useDiscovery();
 
     const isEmpty = accounts.length === 0;
 
-    const isDiscoveryRunning = discovery?.status === 'progress';
-    const isCoinsFilterVisible = useSelector(state => state.suite.settings.isCoinsFilterVisible);
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
+    const isCoinsFilterVisible = useSelector(selectIsCoinsFilterVisible);
     const dispatch = useDispatch();
     const availableNetworksSymbols = useAvailableNetworkSymbols();
 
     const toggleCoinsFilter = () =>
-        dispatch(
-            setIsCoinsFilterVisible({
-                isCoinsFilterVisible: !isCoinsFilterVisible,
-            }),
-        );
+        dispatch(suiteSettingsActions.setIsCoinsFilterVisible(!isCoinsFilterVisible));
     const showCoinFilter = availableNetworksSymbols.length > 1;
 
     return (

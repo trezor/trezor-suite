@@ -1,4 +1,4 @@
-import { MouseEvent, ReactNode } from 'react';
+import { type MouseEvent, type ReactNode } from 'react';
 
 import styled from 'styled-components';
 

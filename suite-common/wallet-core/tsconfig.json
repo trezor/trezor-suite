@@ -4,7 +4,10 @@
     "references": [
         { "path": "../analytics" },
         { "path": "../bluetooth" },
+        { "path": "../calldata" },
         { "path": "../device" },
+        { "path": "../earn-stablecoin-api" },
+        { "path": "../earn-staking-api" },
         { "path": "../fiat-services" },
         { "path": "../firmware" },
         { "path": "../redux-utils" },
@@ -20,6 +23,12 @@
         { "path": "../wallet-constants" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
+        {
+            "path": "../../packages/analytics-uploader"
+        },
+        {
+            "path": "../../packages/blockchain-link"
+        },
         {
             "path": "../../packages/blockchain-link-types"
         },

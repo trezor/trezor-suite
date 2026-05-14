@@ -1,10 +1,10 @@
 import BN from 'bn.js';
 
 import {
-    CoinSelectInput,
-    CoinSelectOptions,
-    CoinSelectOutput,
-    CoinSelectResult,
+    type CoinSelectInput,
+    type CoinSelectOptions,
+    type CoinSelectOutput,
+    type CoinSelectResult,
 } from '../../types';
 import {
     MINIMAL_COINBASE_CONFIRMATIONS,

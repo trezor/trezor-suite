@@ -1,6 +1,7 @@
 import { events } from '@suite/analytics';
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { Route } from '@suite-common/suite-types';
+import { type Route, goto } from '@suite/router';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
@@ -11,12 +12,11 @@ import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { PriceTicker, TrendTicker } from 'src/components/suite';
-import { useDevice, useDispatch, useLayoutSize } from 'src/hooks/suite';
+import { useDispatch, useLayoutSize } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 type TradeBoxProps = {
     account: Account;
@@ -44,6 +44,18 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
     }) => {
         const gotoRouteName: Route['name'] =
             type === 'stake' ? 'wallet-staking' : `wallet-trading-${type}`;
+        const gotoProps =
+            type === 'stake'
+                ? {
+                      routeName: gotoRouteName,
+                      preserveParams: true,
+                      params: {
+                          symbol: account.symbol,
+                          accountIndex: account.index,
+                          accountType: account.accountType,
+                      },
+                  }
+                : { routeName: gotoRouteName };
         const dataTestId = type === 'stake' ? undefined : `@trading/menu/wallet-trading-${type}`;
 
         const handleOnClick = () => {
@@ -53,7 +65,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                 ),
             );
 
-            dispatch(goto(gotoRouteName, { preserveParams: type !== 'exchange' }));
+            dispatch(goto(gotoProps));
 
             switch (type) {
                 case 'buy':
@@ -103,7 +115,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
     };
 
     return (
-        <DashboardSection heading={<Translation id="TR_NAV_TRADE" />}>
+        <DashboardSection>
             <Card>
                 <Flex
                     direction={isBelowTablet ? 'column' : 'row'}

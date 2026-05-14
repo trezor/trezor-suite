@@ -1,19 +1,18 @@
-import {
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { type TestStore, act } from '@suite-native/test-utils-store';
 
+import {
+    createTradingTestStore,
+    renderHookWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useMaxSlippageForm } from '../useMaxSlippageForm';
 
 describe('useMaxSlippageForm', () => {
     const renderUseMaxSlippageForm = (store: TestStore) =>
-        renderHookWithStoreProviderAsync(() => useMaxSlippageForm(), { store });
+        renderHookWithTradingProvider(() => useMaxSlippageForm(), { store });
 
-    it('should have default value from store', async () => {
-        const { store } = initStore();
-        const { result } = await renderUseMaxSlippageForm(store);
+    it('should have default value from store', () => {
+        const store = createTradingTestStore();
+        const { result } = renderUseMaxSlippageForm(store);
 
         expect(result.current.getValues()).toEqual({
             maxSlippage: '1',
@@ -23,8 +22,8 @@ describe('useMaxSlippageForm', () => {
     it.each<string>(['-1', '0', '0.009', '50.1', '55', '', 'invalid_number'])(
         'should error validation for value %s',
         async slippage => {
-            const { store } = initStore();
-            const { result } = await renderUseMaxSlippageForm(store);
+            const store = createTradingTestStore();
+            const { result } = renderUseMaxSlippageForm(store);
 
             await act(async () => {
                 result.current.setValue('maxSlippage', slippage, { shouldValidate: true });
@@ -38,9 +37,9 @@ describe('useMaxSlippageForm', () => {
         },
     );
 
-    it.each(['0.01', '1', '12.34', '50'])('should pass validation for value %s', async slippage => {
-        const { store } = initStore();
-        const { result } = await renderUseMaxSlippageForm(store);
+    it.each(['0.01', '1', '12.34', '50'])('should pass validation for value %s', slippage => {
+        const store = createTradingTestStore();
+        const { result } = renderUseMaxSlippageForm(store);
 
         act(() => {
             result.current.setValue('maxSlippage', slippage, { shouldValidate: true });

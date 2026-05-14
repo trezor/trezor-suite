@@ -1,4 +1,4 @@
-import { BezierDefinition, MotionProps } from 'framer-motion';
+import { type BezierDefinition, type MotionProps } from 'framer-motion';
 
 export const motionAnimation: Record<string, MotionProps> = {
     expand: {

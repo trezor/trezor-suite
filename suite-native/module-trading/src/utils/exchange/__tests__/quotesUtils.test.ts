@@ -2,9 +2,8 @@ import { act } from 'react';
 
 import type { CryptoId } from 'invity-api';
 
-import { MinimalExchangeFormProps } from '@suite-common/trading';
+import { type MinimalExchangeFormProps } from '@suite-common/trading';
 import type { TokenAddress } from '@suite-common/wallet-types';
-import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import {
     btcAsset,
     ethAsset,
@@ -13,21 +12,22 @@ import {
     jupOnSolanaAsset,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
-import { ExchangeFormType } from '@suite-native/trading-types';
+import { type ExchangeFormType } from '@suite-native/trading-types';
 
+import { renderHookWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
-import { tradingExchangeFormToTradingExchangeFormProps } from '../quotesUtils';
+import { hasPreapprovedLimit, tradingExchangeFormToTradingExchangeFormProps } from '../quotesUtils';
 
 describe('quotesUtils', () => {
     let form: ExchangeFormType;
 
     const renderUseTradingBuyForm = () =>
-        renderHookWithStoreProviderAsync(() => useExchangeForm(), {
-            preloadedState: { wallet: { trading: getInitializedTradingState() } },
+        renderHookWithTradingProvider(() => useExchangeForm(), {
+            overrides: { wallet: { trading: getInitializedTradingState() } },
         });
 
-    beforeEach(async () => {
-        const { result } = await renderUseTradingBuyForm();
+    beforeEach(() => {
+        const { result } = renderUseTradingBuyForm();
         form = result.current;
     });
 
@@ -113,6 +113,21 @@ describe('quotesUtils', () => {
                 },
                 outputs: [{ amount: '1' }],
             } satisfies MinimalExchangeFormProps);
+        });
+    });
+
+    describe('hasPreapprovedLimit', () => {
+        it.each([
+            ['quote is undefined', undefined],
+            ['quote.preapprovedStringAmount is undefined', {}],
+            ['quote.preapprovedStringAmount is empty string', { preapprovedStringAmount: '' }],
+            ['quote.preapprovedStringAmount is "0"', { preapprovedStringAmount: '0' }],
+        ])('should be false when %s', (_, quote) => {
+            expect(hasPreapprovedLimit(quote)).toBe(false);
+        });
+
+        it('should be true when preapprovedStringAmount is 11', () => {
+            expect(hasPreapprovedLimit({ preapprovedStringAmount: '11' })).toBe(true);
         });
     });
 });

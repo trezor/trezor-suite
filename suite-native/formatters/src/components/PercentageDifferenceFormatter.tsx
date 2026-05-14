@@ -1,5 +1,5 @@
 import { useFormatters } from '@suite-common/formatters';
-import { Text, TextProps } from '@suite-native/atoms';
+import { Text, type TextProps } from '@suite-native/atoms';
 
 type NumberValues = number;
 type PercentageDifferenceFormatterProps = {
@@ -20,7 +20,7 @@ export const PercentageDifferenceFormatter = ({
     const hasPriceIncreased = oldValue < newValue;
 
     return (
-        <Text color={hasPriceIncreased ? 'textSecondaryHighlight' : 'textAlertRed'} {...rest}>
+        <Text color={hasPriceIncreased ? 'contentBrand' : 'contentCritical'} {...rest}>
             <SignValueFormatter value={hasPriceIncreased ? 'positive' : 'negative'} />
             {calculatePercentageDifference(oldValue, newValue)}%
         </Text>

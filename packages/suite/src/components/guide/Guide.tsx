@@ -4,8 +4,8 @@ import styled from 'styled-components';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { Column, Divider, Icon } from '@trezor/components';
-import { spacingsPx, transitions, typography, zIndices } from '@trezor/theme';
+import { Button, Column, Divider } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
 
 import { setView } from 'src/actions/suite/guideActions';
 import {
@@ -20,44 +20,6 @@ import { useAnalytics } from 'src/support/useAnalytics';
 
 const FeedbackLinkWrapper = styled.div`
     padding: ${spacingsPx.md};
-`;
-
-const FeedbackButton = styled.button`
-    display: flex;
-    align-items: center;
-    width: 100%;
-    border: 0;
-    border-radius: 4px;
-    cursor: pointer;
-    text-align: left;
-    padding: 11px;
-    background: none;
-    transition: background ${transitions.speed.normal} ${transitions.type};
-
-    /* speficy position and z-index so that GuideButton does not interfere */
-    position: relative;
-    z-index: ${zIndices.guide};
-
-    &:hover,
-    &:focus {
-        background: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation1};
-    }
-
-    &:last-child {
-        left: auto;
-    }
-`;
-
-const FeedbackButtonLabel = styled.div`
-    padding: 0 9px;
-    ${typography['body-md']}
-    width: 100%;
-    white-space: nowrap;
-`;
-
-const FeedbackIconWrapper = styled.div`
-    position: relative;
-    top: -1px;
 `;
 
 export const Guide = () => {
@@ -85,18 +47,16 @@ export const Guide = () => {
                 <div>
                     <Divider margin={{ bottom: 0, top: 0 }} />
                     <FeedbackLinkWrapper>
-                        <FeedbackButton
+                        <Button
                             data-testid="@guide/button-feedback"
                             onClick={handleFeedbackButtonClick}
+                            iconLeft="lifebuoy"
+                            intent="neutral"
+                            priority="secondary"
+                            width="100%"
                         >
-                            <Icon name="users" size={24} color="iconOnTertiary" />
-                            <FeedbackButtonLabel>
-                                <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
-                            </FeedbackButtonLabel>
-                            <FeedbackIconWrapper>
-                                <Icon name="caretCircleRight" size={24} intent="brand" />
-                            </FeedbackIconWrapper>
-                        </FeedbackButton>
+                            <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
+                        </Button>
                     </FeedbackLinkWrapper>
                 </div>
             </Column>

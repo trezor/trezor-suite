@@ -1,7 +1,7 @@
 import Animated, { FadeInUp, FadeOutDown } from 'react-native-reanimated';
 
 import { Box, Text } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type FirmwareInstallationProgressTitlesProps = {
     title: string;
@@ -33,7 +33,7 @@ export const FirmwareInstallationProgressTitles = ({
                 </Text>
             </Box>
             <Box marginTop="sp8" alignItems="center">
-                <Text variant="body-md" color="textSubdued" textAlign="center">
+                <Text variant="body-md" color="contentSecondary" textAlign="center">
                     {subtitle}
                 </Text>
             </Box>

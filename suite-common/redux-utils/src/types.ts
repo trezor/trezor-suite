@@ -1,5 +1,4 @@
-import { Action, AsyncThunk, ThunkAction } from '@reduxjs/toolkit';
-
+import { type Action, type AsyncThunk, type Reducer, type ThunkAction } from '@reduxjs/toolkit';
 export interface AnyAction extends Action {
     [extraProps: string]: any;
 }
@@ -15,7 +14,7 @@ export type OriginalReduxThunk<TPayload, TReturn = void> = (
 // for both redux-toolkit and legacy redux stuff like it is in externalDependencies.
 // Primary you should use types like ActionCreatorWithPayload from redux-toolkit!
 export type SuiteCompatibleThunk<TPayload, TReturn = void> =
-    | AsyncThunk<TReturn, TPayload, {}>
+    | AsyncThunk<TReturn, TPayload, Record<never, never>>
     | OriginalReduxThunk<TPayload, TReturn>;
 
 export type SuiteCompatibleSelector<TReturn> = (state: any) => TReturn;
@@ -46,3 +45,6 @@ export type ActionsFromAsyncThunk<T extends AnyAsyncThunk> =
     | ActionFromMatcher<T['pending']>
     | ActionFromMatcher<T['fulfilled']>
     | ActionFromMatcher<T['rejected']>;
+
+export type ReducerState<TReducer extends Reducer<any, any>> =
+    TReducer extends Reducer<infer TState, any> ? TState : never;

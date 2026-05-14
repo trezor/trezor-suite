@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import TrezorConnect from '@trezor/connect';
-import { DeviceAuthenticityConfig, deviceAuthenticityConfig } from '@trezor/device-authenticity';
+import type { DeviceAuthenticityConfig } from '@trezor/device-authenticity';
+import { deviceAuthenticityConfig } from '@trezor/device-authenticity';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { conditionalTest, getController, initTrezorConnect, setup } from '../../common.setup';
@@ -51,6 +52,7 @@ describe('TrezorConnect.authenticateDevice', () => {
                 optigaResult: { valid: true },
                 // trezor-user-env T3W1 has no tropic debug keys provisioned, but it is now required.
                 // TODO change to true when it's fixed in trezor-user-env (this E2E will start failing)
+                // once this is reenabled, note that the serialNumbers must match BETWEEN all results, else it will be failure
                 tropicResult: { valid: false },
             },
         });

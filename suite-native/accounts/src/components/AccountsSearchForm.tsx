@@ -3,7 +3,7 @@ import Animated, { FadeIn, FadeOut, SlideInLeft, SlideOutLeft } from 'react-nati
 
 import { Box, HStack, SearchInput, TextButton } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type AccountsSearchFormProps = {
     onPressCancel: () => void;

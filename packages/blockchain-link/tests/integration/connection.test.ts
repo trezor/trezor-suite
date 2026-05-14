@@ -8,7 +8,7 @@ import {
     // rippleWorkerFactory,
     rippleModuleFactory,
 } from './worker';
-import BlockchainLink from '../../src';
+import { BlockchainLink } from '../../src';
 
 // Testing each build using same scenarios (connection + events)
 

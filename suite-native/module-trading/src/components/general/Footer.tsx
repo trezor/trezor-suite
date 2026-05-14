@@ -4,11 +4,12 @@ import { useSelector } from 'react-redux';
 import type { ProviderMetadata } from 'invity-api';
 
 import { selectTradingProviderMetadata } from '@suite-common/trading';
-import { AnimatedBox, Divider, HStack, Text, VStack } from '@suite-native/atoms';
+import { AnimatedBox, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { selectIsAmountInputActive } from '@suite-native/trading-state';
-import { TREZOR_SUITE_TOS_URL, TREZOR_TRADING_LEARN_MORE_URL } from '@trezor/urls';
+
+import { HowTradingWorksSheet } from './HowTradingWorksSheet';
 
 export type FooterProps = {
     isFormMountedRecently?: boolean;
@@ -21,8 +22,8 @@ interface FooterProviderContentProps {
 const FooterProviderContent = ({ provider }: FooterProviderContentProps) => {
     if (!provider || !provider.termsUrl) {
         return (
-            <Text variant="body-sm" color="textSubdued" textAlign="center">
-                <Translation id="moduleTrading.tradingScreen.footer.termsAndConditionsGeneral" />
+            <Text variant="body-sm" color="contentSecondary" textAlign="center">
+                <Translation id="moduleTrading.tradingScreen.footer.termsAndConditionsGeneric" />
             </Text>
         );
     }
@@ -30,16 +31,16 @@ const FooterProviderContent = ({ provider }: FooterProviderContentProps) => {
     const { companyName, termsUrl } = provider;
 
     return (
-        <Text variant="body-sm" color="textSubdued" textAlign="center">
+        <Text variant="body-sm" color="contentSecondary" textAlign="center">
             <Translation
-                id="moduleTrading.tradingScreen.footer.termsAndConditionsProvider"
+                id="moduleTrading.tradingScreen.footer.termsOfProvider"
                 values={{
                     companyName,
                     link: parts => (
                         <Link
                             textVariant="body-sm"
-                            textColor="textSubdued"
-                            textPressedColor="textDisabled"
+                            textColor="contentSecondary"
+                            textPressedColor="contentDisabled"
                             href={termsUrl}
                             label={parts}
                             isUnderlined
@@ -53,6 +54,8 @@ const FooterProviderContent = ({ provider }: FooterProviderContentProps) => {
 };
 
 export const Footer = ({ isFormMountedRecently }: FooterProps) => {
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+
     const shouldHideFooter = useSelector(selectIsAmountInputActive);
     const providerInfo = useSelector(selectTradingProviderMetadata);
 
@@ -61,40 +64,28 @@ export const Footer = ({ isFormMountedRecently }: FooterProps) => {
     }
 
     return (
-        <AnimatedBox
-            entering={isFormMountedRecently ? undefined : FadeInDown}
-            exiting={FadeOutDown}
-            layout={isFormMountedRecently ? undefined : LinearTransition}
-        >
-            <Divider marginTop="sp16" marginBottom="sp16" />
-
-            <VStack alignItems="center">
-                <FooterProviderContent provider={providerInfo} />
-
-                <HStack alignItems="center" spacing="sp4">
-                    <Link
-                        textVariant="body-sm"
-                        textColor="textSubdued"
-                        textPressedColor="textDisabled"
-                        href={TREZOR_SUITE_TOS_URL}
-                        label={<Translation id="moduleTrading.tradingScreen.footer.termsOfUse" />}
-                    />
-
-                    <Text variant="body-sm" color="textSubdued">
-                        |
-                    </Text>
+        <>
+            <AnimatedBox
+                entering={isFormMountedRecently ? undefined : FadeInDown}
+                exiting={FadeOutDown}
+                layout={isFormMountedRecently ? undefined : LinearTransition}
+            >
+                <VStack alignItems="center">
+                    <FooterProviderContent provider={providerInfo} />
 
                     <Link
+                        label={
+                            <Translation id="moduleTrading.tradingScreen.footer.howTradingWorksSheet.title" />
+                        }
+                        onPress={openModal}
                         textVariant="body-sm"
-                        textColor="textSubdued"
-                        textPressedColor="textDisabled"
-                        href={TREZOR_TRADING_LEARN_MORE_URL}
-                        label={<Translation id="moduleTrading.tradingScreen.footer.learnMore" />}
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
+                        textColor="contentSecondary"
+                        textPressedColor="contentDisabled"
+                        isUnderlined
                     />
-                </HStack>
-            </VStack>
-        </AnimatedBox>
+                </VStack>
+            </AnimatedBox>
+            <HowTradingWorksSheet ref={bottomSheetRef} closeModal={closeModal} />
+        </>
     );
 };

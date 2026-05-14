@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
@@ -9,11 +9,11 @@ import { TableCell } from './TableCell';
 import { TableContext } from './TableContext';
 import { TableHeader } from './TableHeader';
 import { TableRow } from './TableRow';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
-import { TransientProps, makePropsTransient } from '../../utils/transientProps';
+import { type FrameProps, type FramePropsKeys, withFrameProps } from '../../utils/frameProps';
+import { type TransientProps, makePropsTransient } from '../../utils/transientProps';
 import { useScrollShadow } from '../../utils/useScrollShadow';
 import { useElevation } from '../ElevationContext/ElevationContext';
-import { TextProps, TextPropsKeys } from '../typography/utils';
+import { type TextProps, type TextPropsKeys } from '../typography/utils';
 
 export const allowedTableFrameProps = [
     'margin',

@@ -6,12 +6,12 @@ import { useSetAtom } from 'jotai';
 import { selectHasDeviceFirmwareInstalled } from '@suite-common/device';
 import { useDeviceLowBatteryAlert } from '@suite-native/device';
 import { FirmwareInfoScreenContent, FirmwareInfoScreenFooter } from '@suite-native/firmware';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import {
-    DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    RootStackParamList,
-    StackToStackCompositeNavigationProps,
+    type RootStackParamList,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
 import { updateOnboardingAnalyticsAtom } from '../../atoms';

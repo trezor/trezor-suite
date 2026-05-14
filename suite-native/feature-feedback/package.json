@@ -1,0 +1,25 @@
+{
+    "name": "@suite-native/feature-feedback",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@react-navigation/native": "7.1.28",
+        "@suite-common/feedback": "workspace:*",
+        "@suite-native/atoms": "workspace:*",
+        "@suite-native/intl": "workspace:*",
+        "@suite-native/navigation": "workspace:*",
+        "@suite-native/settings": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
+        "react": "19.2.4",
+        "react-native": "0.83.2",
+        "react-redux": "9.2.0"
+    }
+}

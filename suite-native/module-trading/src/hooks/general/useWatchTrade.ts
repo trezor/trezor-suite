@@ -2,19 +2,19 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-    TradingTransaction,
-    TradingTransactionBuy,
-    TradingTransactionExchange,
-    TradingTransactionSell,
+    type TradingTransaction,
+    type TradingTransactionBuy,
+    type TradingTransactionExchange,
+    type TradingTransactionSell,
     selectTradingTradeByOrderId,
     tradeFinalStatuses,
     tradingThunks,
 } from '@suite-common/trading';
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
-import { TradingRootState } from '@suite-native/trading-state';
+import { type TradingRootState } from '@suite-native/trading-state';
 
 import { useReloadTimer } from './useReloadTimer';
 import { getTradeStatusStep } from '../../utils/general/utils';

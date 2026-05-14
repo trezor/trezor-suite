@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { Gesture, PanGesture } from 'react-native-gesture-handler';
-import { SharedValue, useSharedValue } from 'react-native-reanimated';
+import { Gesture, type PanGesture } from 'react-native-gesture-handler';
+import { type SharedValue, useSharedValue } from 'react-native-reanimated';
 
 interface Config {
     enabled: boolean;
@@ -25,14 +25,14 @@ export function usePanGesture({ enabled, holdDuration = 300 }: Config): Result {
                 .enabled(enabled)
                 .activateAfterLongPress(holdDuration)
                 .onChange(e => {
-                    x.value = e.x;
-                    y.value = e.y;
+                    x.set(e.x);
+                    y.set(e.y);
                 })
                 .onStart(() => {
-                    isPanGestureActive.value = true;
+                    isPanGestureActive.set(true);
                 })
                 .onEnd(() => {
-                    isPanGestureActive.value = false;
+                    isPanGestureActive.set(false);
                 }),
         [enabled, holdDuration, isPanGestureActive, x, y],
     );

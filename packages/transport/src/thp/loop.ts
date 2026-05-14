@@ -3,7 +3,7 @@ import { THP_CONTROL_BYTE } from '@trezor/protocol/src/protocol-v2/constants';
 
 import {
     ATTEMPTS_LIMIT,
-    CommonProps,
+    type CommonProps,
     THP_ACK_DEADLINE,
     THP_ACK_TIMEOUT,
     receiveExpectedMessage,
@@ -48,7 +48,7 @@ export const thpLoop = async ({
     let readAttempt = 0;
     const deadline = Date.now() + THP_ACK_DEADLINE;
     const isDeadlineReached = () => Date.now() >= deadline;
-    const thpStateError = (message: string) => error({ error: THP_STATE_ERROR, message });
+    const thpStateError = (message: string) => error({ code: THP_STATE_ERROR, message });
     let result;
 
     while (phase !== ThpLoopState.DONE) {
@@ -101,11 +101,11 @@ export const thpLoop = async ({
                     THP_ACK_TIMEOUT,
                 );
                 if (!ackResult.success) {
-                    switch (ackResult.error) {
+                    switch (ackResult.error.code) {
                         case 'UnexpectedChunk':
                             break; // keep reading
                         case 'UnexpectedCRC':
-                            return thpStateError(ackResult.error);
+                            return thpStateError(ackResult.error.code);
                         case 'UnexpectedChannel':
                             break; // keep reading. TODO: try to close unknown channel
                         case 'UnexpectedRecentMessage':
@@ -129,9 +129,9 @@ export const thpLoop = async ({
                     break;
                 }
 
+                const { ackBit } = protocolThp.readThpHeader(ackResult.payload.header);
                 switch (ackResult.payload.messageType) {
                     case THP_CONTROL_BYTE.ACK_MESSAGE: {
-                        const { ackBit } = protocolThp.readThpHeader(ackResult.payload.header);
                         if (ackBit === thpState.sendAckBit) {
                             phase = ThpLoopState.READ_RESPONSE;
                         } else {
@@ -145,6 +145,16 @@ export const thpLoop = async ({
                         phase = ThpLoopState.DONE;
                         break;
                     default:
+                        if (
+                            thpState.isPiggybackAckAvailable &&
+                            ackResult.payload.messageType === THP_CONTROL_BYTE.ENCRYPTED &&
+                            ackBit !== thpState.sendAckBit
+                        ) {
+                            debug(`READ_ACK received response with unexpected ThpAck bit`);
+                            phase = ThpLoopState.WRITE_REQUEST;
+                            break;
+                        }
+
                         debug(`READ_ACK received response`);
                         result = ackResult;
                         phase = ThpLoopState.SEND_ACK;
@@ -163,11 +173,11 @@ export const thpLoop = async ({
 
                 const receiveResult = await receiveExpectedMessage(apiRead, thpState, signal);
                 if (!receiveResult.success) {
-                    switch (receiveResult.error) {
+                    switch (receiveResult.error.code) {
                         case 'UnexpectedChunk':
                             break; // keep reading
                         case 'UnexpectedCRC':
-                            return thpStateError(receiveResult.error);
+                            return thpStateError(receiveResult.error.code);
                         case 'UnexpectedChannel':
                             break; // keep reading. TODO: try to close unknown channel
                         case 'UnexpectedRecentMessage':
@@ -175,12 +185,12 @@ export const thpLoop = async ({
                                 phase = ThpLoopState.SEND_RECENT_ACK;
                                 break;
                             } else {
-                                return thpStateError(receiveResult.error);
+                                return thpStateError(receiveResult.error.code);
                             }
                         case 'Timeout': // NOTE: timeout should never happen here as receiveExpectedMessage doesn't use it
                         case 'UnexpectedMessage':
                         case 'UnexpectedRecvBit':
-                            return thpStateError(receiveResult.error);
+                            return thpStateError(receiveResult.error.code);
                         default:
                             return receiveResult;
                     }
@@ -198,6 +208,7 @@ export const thpLoop = async ({
                     default:
                         result = receiveResult;
                         phase = ThpLoopState.SEND_ACK;
+
                         break;
                 }
 
@@ -207,11 +218,7 @@ export const thpLoop = async ({
             case ThpLoopState.SEND_RECENT_ACK: {
                 debug('SEND_RECENT_ACK');
 
-                const prevState = new protocolThp.ThpState();
-                prevState.deserialize({ ...thpState.serialize() });
-                prevState.updateAckBit('recv'); // downgrade ackBit
-
-                const chunk = protocolThp.encodeAck(prevState);
+                const chunk = protocolThp.encodePreviousAck(thpState);
                 const ackResult = await apiWrite(chunk, signal);
                 if (!ackResult.success) {
                     return ackResult;
@@ -227,9 +234,9 @@ export const thpLoop = async ({
 
             case ThpLoopState.SEND_ACK: {
                 const isAckExpected = protocolThp.isAckExpected(thpState.expectedResponses || []);
-                debug(`SEND_ACK ${isAckExpected}`);
+                debug(`SEND_ACK ${isAckExpected} with piggyback ${thpState.isPiggybackAckEnabled}`);
 
-                if (!skipAck && isAckExpected) {
+                if (!skipAck && isAckExpected && !thpState.isPiggybackAckEnabled) {
                     const ack = await apiWrite(protocolThp.encodeAck(thpState), signal);
                     if (!ack.success) {
                         return ack;

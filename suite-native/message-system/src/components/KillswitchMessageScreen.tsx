@@ -6,7 +6,7 @@ import { messageSystemActions } from '@suite-common/message-system';
 import { Box, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { selectActiveKillswitchMessage } from '../messageSystemSelectors';
 
@@ -22,7 +22,7 @@ const screenStyle = prepareNativeStyle(utils => ({
     top: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
 }));
 
 const contentStyle = prepareNativeStyle(_ => ({
@@ -100,12 +100,12 @@ export const KillswitchMessageScreen = () => {
             </Box>
             <VStack spacing="sp16" style={applyStyle(buttonsWrapperStyle)}>
                 {isCtaVisible && (
-                    <Button size="large" colorScheme="primary" onPress={handleCtaPress}>
+                    <Button intent="brand" priority="primary" onPress={handleCtaPress}>
                         {ctaLabel}
                     </Button>
                 )}
                 {isDismissible && (
-                    <Button size="large" colorScheme="tertiaryElevation0" onPress={handleDismiss}>
+                    <Button intent="neutral" priority="secondary" onPress={handleDismiss}>
                         <Translation id="generic.buttons.dismiss" />
                     </Button>
                 )}

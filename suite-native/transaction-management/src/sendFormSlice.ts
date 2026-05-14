@@ -1,16 +1,16 @@
-import { PayloadAction, isAnyOf } from '@reduxjs/toolkit';
+import { type PayloadAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
-    SendState as CommonSendState,
-    SendFormError,
+    type SendState as CommonSendState,
+    type SendFormError,
     initialState as commonInitialState,
     composeSendFormTransactionFeeLevelsThunk,
     prepareSendFormReducer as prepareCommonSendFormReducer,
     pushSendFormTransactionThunk,
     signTransactionThunk,
 } from '@suite-common/wallet-core';
-import { GeneralPrecomposedLevels } from '@suite-common/wallet-types';
+import { type GeneralPrecomposedLevels } from '@suite-common/wallet-types';
 
 type NativeSendState = CommonSendState & {
     error: null | SendFormError;

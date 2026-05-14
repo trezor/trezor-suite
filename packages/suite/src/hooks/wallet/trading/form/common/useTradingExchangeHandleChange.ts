@@ -1,9 +1,14 @@
 import { useCallback, useEffect, useRef } from 'react';
 
 import { events } from '@suite/analytics';
-import { TradingExchangeFormProps, exchangeThunks } from '@suite-common/trading';
-import { Network } from '@suite-common/wallet-config';
-import { Timer } from '@trezor/react-utils';
+import {
+    type TradingExchangeFormProps,
+    exchangeThunks,
+    tradingActions,
+    useTradingRefetchScheduler,
+} from '@suite-common/trading';
+import { type Network } from '@suite-common/wallet-config';
+import { noop } from '@trezor/utils';
 
 import { useDispatch } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -11,11 +16,9 @@ import { useAnalytics } from 'src/support/useAnalytics';
 type TradingExchangeUseHandleChangeProps = {
     formValues: TradingExchangeFormProps;
     network: Network;
-    timer: Timer;
     shouldSendInSats: boolean | undefined;
 
     composeRequestCallback: () => void;
-    setApprovalInitiated?: (value: boolean) => void;
     setIsScheduledQuotesRefresh?: (value: boolean) => void;
 };
 
@@ -30,11 +33,9 @@ type PromiseType = {
 export const useTradingExchangeHandleChange = ({
     formValues,
     network,
-    timer,
     shouldSendInSats,
     composeRequestCallback,
-    setApprovalInitiated,
-    setIsScheduledQuotesRefresh,
+    setIsScheduledQuotesRefresh = noop,
 }: TradingExchangeUseHandleChangeProps) => {
     const dispatch = useDispatch();
     const analytics = useAnalytics();
@@ -45,13 +46,10 @@ export const useTradingExchangeHandleChange = ({
             previousPromise.current.abort('Request was replaced by another one.');
         }
 
-        setApprovalInitiated?.(false);
-
         const promise = dispatch(
             exchangeThunks.handleRequestThunk({
                 formValues,
                 network,
-                timer,
                 shouldSendInSats,
                 composeRequestCallback,
             }),
@@ -73,18 +71,22 @@ export const useTradingExchangeHandleChange = ({
             console.warn('Request was aborted:', error.message);
         }
 
-        setIsScheduledQuotesRefresh?.(false);
+        setIsScheduledQuotesRefresh(false);
     }, [
-        setApprovalInitiated,
         dispatch,
         formValues,
         network,
-        timer,
         shouldSendInSats,
         composeRequestCallback,
         setIsScheduledQuotesRefresh,
         analytics,
     ]);
+
+    const onBeforeRefetch = useCallback(() => {
+        setIsScheduledQuotesRefresh(true);
+    }, [setIsScheduledQuotesRefresh]);
+
+    useTradingRefetchScheduler({ onRefetch: handleChange, onBeforeRefetch });
 
     // cleanup signal
     useEffect(
@@ -92,8 +94,9 @@ export const useTradingExchangeHandleChange = ({
             if (previousPromise.current) {
                 previousPromise.current.abort('Request is canceled - page is unmounted.');
             }
+            dispatch(tradingActions.stopRefetchQuotes());
         },
-        [],
+        [dispatch],
     );
 
     return { handleChange };

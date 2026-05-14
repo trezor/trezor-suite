@@ -9,9 +9,9 @@ import { AnimatedFullAlertBox } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     DeviceSettingsStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 type CloseStateItem = {

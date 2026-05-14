@@ -1,7 +1,7 @@
-import { IconName } from '@suite-native/icons';
-import { Color } from '@trezor/theme';
+import { type IconName } from '@suite-native/icons';
+import { type Color } from '@trezor/theme';
 
-import { ButtonColorScheme } from '../Button/Button';
+import { type ButtonColorProps } from '../Button/Button';
 
 export const FULL_ALERT_BOX_VARIANTS = [
     'info',
@@ -15,40 +15,40 @@ export type AlertVariant = (typeof FULL_ALERT_BOX_VARIANTS)[number];
 export type FullAlertStyles = {
     backgroundColor: Color;
     borderColor: Color;
-    primaryButtonColorScheme: ButtonColorScheme;
-    secondaryButtonColorScheme: ButtonColorScheme;
+    primaryButtonColorProps: ButtonColorProps;
+    secondaryButtonColorProps: ButtonColorProps;
 };
 
 export const variantToColorMap = {
     info: {
-        backgroundColor: 'backgroundAlertBlueSubtleOnElevation1',
-        borderColor: 'backgroundAlertBlueSubtleOnElevationNegative',
-        primaryButtonColorScheme: 'blueBold',
-        secondaryButtonColorScheme: 'blueElevation0',
+        backgroundColor: 'legacyBackgroundAlertBlueSubtleOnElevation1',
+        borderColor: 'legacyBackgroundAlertBlueSubtleOnElevationNegative',
+        primaryButtonColorProps: { intent: 'info', priority: 'primary' },
+        secondaryButtonColorProps: { intent: 'info', priority: 'secondary' },
     },
     success: {
-        backgroundColor: 'backgroundPrimarySubtleOnElevation1',
-        borderColor: 'backgroundPrimarySubtleOnElevationNegative',
-        primaryButtonColorScheme: 'primary',
-        secondaryButtonColorScheme: 'primaryElevation0',
+        backgroundColor: 'legacyBackgroundPrimarySubtleOnElevation1',
+        borderColor: 'legacyBackgroundPrimarySubtleOnElevationNegative',
+        primaryButtonColorProps: { intent: 'brand', priority: 'primary' },
+        secondaryButtonColorProps: { intent: 'brand', priority: 'secondary' },
     },
     warning: {
-        backgroundColor: 'backgroundAlertYellowSubtleOnElevation1',
-        borderColor: 'backgroundAlertYellowSubtleOnElevationNegative',
-        primaryButtonColorScheme: 'yellowBold',
-        secondaryButtonColorScheme: 'yellowElevation0',
+        backgroundColor: 'legacyBackgroundAlertYellowSubtleOnElevation1',
+        borderColor: 'legacyBackgroundAlertYellowSubtleOnElevationNegative',
+        primaryButtonColorProps: { intent: 'warning', priority: 'primary' },
+        secondaryButtonColorProps: { intent: 'warning', priority: 'secondary' },
     },
     neutral: {
-        backgroundColor: 'backgroundTertiaryDefaultOnElevation1',
-        borderColor: 'backgroundTertiaryDefaultOnElevation0',
-        primaryButtonColorScheme: 'primary',
-        secondaryButtonColorScheme: 'tertiaryElevation0',
+        backgroundColor: 'legacyBackgroundTertiaryDefaultOnElevation1',
+        borderColor: 'legacyBackgroundTertiaryDefaultOnElevation0',
+        primaryButtonColorProps: { intent: 'brand', priority: 'primary' },
+        secondaryButtonColorProps: { intent: 'neutral', priority: 'secondary' },
     },
     critical: {
-        backgroundColor: 'backgroundAlertRedSubtleOnElevation1',
-        borderColor: 'backgroundAlertRedSubtleOnElevationNegative',
-        primaryButtonColorScheme: 'redBold',
-        secondaryButtonColorScheme: 'redElevation0',
+        backgroundColor: 'legacyBackgroundAlertRedSubtleOnElevation1',
+        borderColor: 'legacyBackgroundAlertRedSubtleOnElevationNegative',
+        primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
+        secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
     },
 } as const satisfies Record<AlertVariant, FullAlertStyles>;
 

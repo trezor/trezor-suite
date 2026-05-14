@@ -1,15 +1,15 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { SuiteSyncDataRootState, selectSuiteSyncAddressLabel } from '@suite-common/suite-sync';
+import { type SuiteSyncDataRootState, selectSuiteSyncAddressLabel } from '@suite-common/suite-sync';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountDescriptor } from '@suite-common/wallet-types';
+import { type AccountDescriptor } from '@suite-common/wallet-types';
+import { featureUsed } from '@suite-native/feature-feedback';
 import { useNativeServices } from '@suite-native/services';
-import { useToast } from '@suite-native/toasts';
 import type { StaticSessionId } from '@trezor/connect';
-import { exhaustive } from '@trezor/type-utils';
 
 import { EditableLabelLayout } from './EditableLabelLayout';
 import { LabelEditForm } from './LabelEditForm';
+import { useSuiteSyncErrorHandler } from '../hooks/useSuiteSyncLabelErrorHandler';
 import { selectIsLabellingAllowed } from '../selectors';
 
 type AddressLabelEditableProps = {
@@ -27,9 +27,10 @@ export const AddressLabelEditable = ({
     networkSymbol,
     testID,
 }: AddressLabelEditableProps) => {
+    const dispatch = useDispatch();
     const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
     const { suiteSync } = useNativeServices();
-    const { showToast } = useToast();
+    const { handleSuiteSyncError } = useSuiteSyncErrorHandler();
 
     const label = useSelector((state: SuiteSyncDataRootState) =>
         selectSuiteSyncAddressLabel(state, deviceStaticSessionId, address),
@@ -45,23 +46,12 @@ export const AddressLabelEditable = ({
         });
 
         if (!result.success) {
-            const { type } = result.error;
-            switch (type) {
-                case 'SuiteSyncUnavailableOnDeviceError':
-                case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
-                case 'DeviceCancelled':
-                case 'DeviceError':
-                case 'SuiteSyncUpdateError':
-                    showToast({ variant: 'error', icon: 'warning', message: type });
+            handleSuiteSyncError(result.error);
 
-                    return;
-                case 'WriteModeRequiredForAllocation':
-                    // Do nothing, this is expected control flow error when we want allocate on-demand.
-                    return;
-                default:
-                    return exhaustive(type);
-            }
+            return;
         }
+
+        dispatch(featureUsed('suite-sync'));
     };
 
     if (!isLabellingAllowed) return null;

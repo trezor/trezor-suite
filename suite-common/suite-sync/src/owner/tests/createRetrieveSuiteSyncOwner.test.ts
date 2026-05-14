@@ -1,6 +1,6 @@
 import { DELEGATED_IDENTITY_KEY } from '@suite-common/delegated-identity-key-types/mocks';
 import {
-    SuiteSyncOwner,
+    type SuiteSyncOwner,
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,
 } from '@suite-common/suite-sync-storage';
@@ -9,8 +9,8 @@ import { asDeviceUniquePath } from '@trezor/connect';
 import { ok } from '@trezor/type-utils';
 
 import {
-    RetrieveSuiteSyncOwnerDeps,
-    RetrieveSuiteSyncOwnerParams,
+    type RetrieveSuiteSyncOwnerDeps,
+    type RetrieveSuiteSyncOwnerParams,
     createRetrieveSuiteSyncOwner,
 } from '../createRetrieveSuiteSyncOwner';
 

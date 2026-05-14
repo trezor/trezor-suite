@@ -1,62 +1,80 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import { type PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 
-import { DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
-import { metadataActions, metadataLabelingActions } from '@suite/metadata';
+import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
+import type { FlagsState } from '@suite/flags';
+import { lockDevice } from '@suite/locks';
+import {
+    metadataActions,
+    metadataLabelingActions,
+    selectLabelingDataForAccount,
+    selectLabelingDataForWallet,
+} from '@suite/metadata';
+import {
+    type MetadataMigrationDep,
+    createMetadataMigrationCompositionRoot,
+} from '@suite/metadata-migration';
+import { closeModal, openModal } from '@suite/modal';
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
 import {
-    DisableLegacyMetadataIfNeededDep,
-    createSuiteSyncDesktopCompositionRoot,
-} from '@suite/suite-sync';
+    type HistoryDep,
+    type SuiteRouterHistoryDep,
+    asSuiteRouterHistoryService,
+    createSuiteRouterHistory,
+} from '@suite/router';
+import {
+    type SuiteSettingsState,
+    selectDebugSettings,
+    selectInvityServerEnvironment,
+    selectLanguage,
+} from '@suite/settings';
+import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
+import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
-import type { DeviceReducerState } from '@suite-common/device';
+import { toGetter } from '@suite-common/dependency-injection';
+import { type DeviceReducerState } from '@suite-common/device';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import {
-    CommonServices,
-    ConnectInitSettings,
-    ExtraDependenciesStatic,
+    type CommonServices,
+    type ConnectInitSettings,
+    type ExtraDependenciesStatic,
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
-import { SuiteSyncAppReloaderDep } from '@suite-common/suite-sync-types';
 import {
-    TokenDefinitionsState,
+    selectAllLabelsForAccount,
+    selectIsSuiteSyncEnabled,
+    selectSuiteSyncWalletLabel,
+} from '@suite-common/suite-sync';
+import {
+    type TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
 } from '@suite-common/token-definitions';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import {
-    BlockchainState,
-    ExplorerConfig,
-    FiatRatesState,
-    SendState,
-    TransactionsState,
-    WalletSettingsState,
+    type BlockchainState,
+    type ExplorerConfig,
+    type FiatRatesState,
+    type PhishingState,
+    type SendState,
+    type TransactionsState,
+    type WalletSettingsState,
+    selectAccountsByDeviceState,
 } from '@suite-common/wallet-core';
 import { createAccountKey } from '@suite-common/wallet-types';
 import { buildHistoricRatesFromStorage } from '@suite-common/wallet-utils';
-import TrezorConnect, { StaticSessionId } from '@trezor/connect';
+import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import * as modalActions from 'src/actions/suite/modalActions';
-import { StorageLoadAction } from 'src/actions/suite/storageActions';
-import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
+import { type StorageLoadAction } from 'src/actions/suite/storageActions';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
-import { ensureRouterPath, getPrefixedURL, stripPrefixedURL } from 'src/utils/suite/router';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
-import {
-    HistoryDep,
-    SuiteRouterHistory,
-    SuiteRouterHistoryDep,
-    SuiteRouterHistoryDeps,
-} from './suite/suiteRouterHistory';
 import { forgetBluetoothDeviceThunk } from '../actions/bluetooth/bluetoothEraseBondsThunk';
-import * as suiteActions from '../actions/suite/suiteActions';
-import { createDisableLegacyMetadataIfNeeded } from '../actions/suiteSync/disableLegacyMetadateIfNeeded';
 import type { BioAuthState } from '../reducers/bioAuth';
-import { AppState, TrezorDevice } from '../types/suite';
+import { type AppState, type TrezorDevice } from '../types/suite';
 
 const connectInitSettings: ConnectInitSettings = {
     transportReconnect: true,
@@ -71,35 +89,16 @@ const connectInitSettings: ConnectInitSettings = {
     firmwareHashCheckTimeouts: FW_HASH_CHECK_DEFAULT_TIMEOUTS,
 };
 
-export const createSuiteRouterHistory = ({
-    history,
-}: SuiteRouterHistoryDeps): SuiteRouterHistory => ({
-    getLocation: () => {
-        const { location } = history;
-
-        return ensureRouterPath({ ...location, pathname: stripPrefixedURL(location.pathname) });
-    },
-    navigate: (to, state) =>
-        history.push(
-            { ...to, pathname: to.pathname ? getPrefixedURL(to.pathname) : undefined },
-            state,
-        ),
-    listen: listener =>
-        history.listen(({ location, action }) =>
-            listener({ location: ensureRouterPath(location), action }),
-        ),
-});
-
 export type StoreAPIDep = {
     getState: () => any;
     dispatch: (_: any) => any;
 };
 
-export type SuiteAppDeps = StoreAPIDep & HistoryDep & SuiteSyncAppReloaderDep;
+export type SuiteAppDeps = StoreAPIDep & HistoryDep;
 
 export type SuiteServices = CommonServices &
     DesktopAnalyticsDep &
-    DisableLegacyMetadataIfNeededDep &
+    MetadataMigrationDep &
     SuiteRouterHistoryDep;
 
 export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteServices => {
@@ -114,36 +113,49 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         trezorConnect: TrezorConnect,
     });
 
-    /** @deprecated Compatibility for Legacy Labeling */
-    const disableLegacyMetadataIfNeeded = createDisableLegacyMetadataIfNeeded({
-        dispatch: deps.dispatch,
-        getState: deps.getState,
-    });
-
     const analytics = createAnalytics();
 
     const suiteSync = createSuiteSyncDesktopCompositionRoot({
         dispatch: deps.dispatch,
         getState: deps.getState,
-        reloadApp: deps.reloadApp,
         platformEncryption,
         trezorConnect: TrezorConnect,
         ensureDelegatedIdentityKey,
-        disableLegacyMetadataIfNeeded,
         analytics,
+    });
+
+    const { bip329 } = createBip329CompositionRoot({
+        getIsSuiteSyncEnabled: toGetter(deps.getState, selectIsSuiteSyncEnabled),
+        getLegacyAccountLabels: toGetter(deps.getState, selectLabelingDataForAccount),
+        getAllLabelsForAccount: toGetter(deps.getState, selectAllLabelsForAccount),
+        updateAddressLabel: suiteSync.labeling.updateAddressLabel,
+        updateOutputLabel: suiteSync.labeling.updateOutputLabel,
+    });
+
+    const { migrateLegacyLabelsToSuiteSync } = createMetadataMigrationCompositionRoot({
+        getAccountsByDeviceState: toGetter(deps.getState, selectAccountsByDeviceState),
+        getLegacyWalletLabels: toGetter(deps.getState, selectLabelingDataForWallet),
+        getLegacyAccountLabels: toGetter(deps.getState, selectLabelingDataForAccount),
+        getCurrentWalletLabel: toGetter(deps.getState, selectSuiteSyncWalletLabel),
+        getCurrentAccountLabels: toGetter(deps.getState, selectAllLabelsForAccount),
+        updateWalletLabel: suiteSync.labeling.updateWalletLabel,
+        updateAccountLabel: suiteSync.labeling.updateAccountLabel,
+        updateAddressLabel: suiteSync.labeling.updateAddressLabel,
+        updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
 
     return {
         suiteSync,
+        bip329,
+        migrateLegacyLabelsToSuiteSync,
         ensureDelegatedIdentityKey,
         platformEncryption,
         analytics,
-        disableLegacyMetadataIfNeeded,
         suiteRouterHistory: createSuiteRouterHistory({
             history: deps.history,
         }),
         reportSecurityCheck,
-        saveAs: (data, fileName) => saveAs(data, fileName),
+        saveAs: (data: Blob, fileName: string) => saveAs(data, fileName),
         connectInitSettings,
         migrateSuiteSyncLabelsForRbfTransaction:
             createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
@@ -156,7 +168,6 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
 
 export const extraDependencies: ExtraDependenciesStatic = {
     thunks: {
-        cardanoValidatePendingTxOnBlock: cardanoStakingActions.validatePendingTxOnBlock,
         initMetadata: metadataLabelingActions.init,
         fetchAndSaveMetadata: metadataLabelingActions.fetchAndSaveMetadata,
         addAccountMetadata: metadataLabelingActions.addAccountMetadata,
@@ -165,22 +176,15 @@ export const extraDependencies: ExtraDependenciesStatic = {
     selectors: {
         selectTokenDefinitionsEnabledNetworks: (state: AppState) =>
             state.wallet.settings.enabledNetworks,
-        selectDebugSettings: (state: AppState) => state.suite.settings.debug,
+        selectDebugSettings,
         // FW binaries on desktop are stored in "*/static/connect/data/firmware/*/*.bin" (see "connect-common" package)
         selectDesktopBinDir: (state: AppState) => state.desktop?.paths?.binDir,
-        selectDevice: (state: AppState) => state.device.selectedDevice,
-        selectLanguage: (state: AppState) => state.suite.settings.language,
-        selectMetadata: (state: AppState) => state.metadata,
-        selectRouterApp: (state: AppState) => state.router.app,
-        selectRoute: (state: AppState) => state.router.route,
-        selectAddressDisplayType: (state: AppState) => state.suite.settings.addressDisplayType,
+        selectLanguage,
         selectSelectedAccount: (state: AppState) => state.wallet.selectedAccount,
         selectSelectedAccountStatus: (state: AppState) => state.wallet.selectedAccount.status,
         selectIsWindowVisible,
-        selectTradingEnvironment: (state: AppState) =>
-            state.suite.settings.debug.invityServerEnvironment,
+        selectTradingEnvironment: selectInvityServerEnvironment,
         selectIsViewOnlyByDefaultEnabled: (_: AppState) => true,
-        selectIsSuiteSyncEnabled: (state: AppState) => state.suiteSync.settings.isSuiteSyncEnabled,
         selectThpSettings: (state: AppState) => ({
             appName: 'Trezor Suite', // NOTE: this is displayed on Trezor. not the same as manifest.appName
             pairingMethods: ['CodeEntry'],
@@ -190,9 +194,9 @@ export const extraDependencies: ExtraDependenciesStatic = {
     },
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,
-        lockDevice: suiteActions.lockDevice,
-        onModalCancel: modalActions.onCancel,
-        openModal: modalActions.openModal,
+        lockDevice,
+        onModalCancel: closeModal,
+        openModal,
     },
     actionTypes: {
         storageLoad: '@storage/load',
@@ -217,7 +221,8 @@ export const extraDependencies: ExtraDependenciesStatic = {
             });
         },
         storageLoadTransactions: (state: TransactionsState, { payload }: StorageLoadAction) => {
-            const { txs } = payload;
+            const { txs, phishing } = payload;
+
             txs.forEach(item => {
                 const k = createAccountKey({
                     accountDescriptor: item.tx.descriptor,
@@ -229,6 +234,17 @@ export const extraDependencies: ExtraDependenciesStatic = {
                 }
                 state.transactions[k][item.order] = item.tx;
             });
+
+            phishing.forEach(({ key, value }) => {
+                state.phishing[key] = value;
+            });
+        },
+        storageLoadPhishingMetadata: (state: PhishingState, { payload }: StorageLoadAction) => {
+            if (payload.phishingMetadata) {
+                return { ...state, ...payload.phishingMetadata };
+            }
+
+            return state;
         },
         storageLoadHistoricRates: (state: FiatRatesState, { payload }: StorageLoadAction) => {
             if (payload.historicRates) {
@@ -294,7 +310,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
                 if (persistentDeviceData) {
                     return {
                         ...device,
-                        bluetoothProps: persistentDeviceData.bluetoothProps,
                         thp: persistentDeviceData.thp,
                     };
                 } else {
@@ -311,7 +326,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
         },
         storageLoadWalletSettings: (state: WalletSettingsState, { payload }: StorageLoadAction) =>
             payload.walletSettings ? { ...state, ...payload.walletSettings } : state,
-
         // this is deprecated, bioAuth settings is now stored in electron store
         storageLoadBioAuth: (state: BioAuthState, { payload }: StorageLoadAction) => {
             if (!payload?.bioAuth) return state;
@@ -326,6 +340,20 @@ export const extraDependencies: ExtraDependenciesStatic = {
 
             return state;
         },
+        storageLoadFlags: (state: FlagsState, { payload }: StorageLoadAction) =>
+            payload.suiteSettings?.flags ? { ...state, ...payload.suiteSettings.flags } : state,
+        storageLoadSuiteSettings: (state: SuiteSettingsState, { payload }: StorageLoadAction) => {
+            if (!payload.suiteSettings?.settings) return state;
+
+            return {
+                ...state,
+                ...payload.suiteSettings.settings,
+                enabledSecurityChecks: {
+                    ...state.enabledSecurityChecks,
+                    ...payload.suiteSettings.settings.enabledSecurityChecks,
+                },
+            };
+        },
     },
 };
 
@@ -333,4 +361,4 @@ export const extraDependencies: ExtraDependenciesStatic = {
 // extra.services do contain all the needed services, but in order to make the typing work properly,
 // we'd need to define dispatch() for each platform separately
 export const asSuiteServices = (services: CommonServices): SuiteServices =>
-    services as SuiteServices;
+    asSuiteRouterHistoryService(services) as SuiteServices;

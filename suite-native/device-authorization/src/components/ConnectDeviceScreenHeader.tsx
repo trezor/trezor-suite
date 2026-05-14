@@ -3,20 +3,22 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import {
+    selectHasRunningDiscovery,
+    selectIsCreatingNewPassphraseWallet,
+} from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
-    CloseActionType,
-    NavigateParameters,
-    RootStackParamList,
-    StackToStackCompositeNavigationProps,
+    type AuthorizeDeviceStackParamList,
+    type AuthorizeDeviceStackRoutes,
+    type CloseActionType,
+    type NavigateParameters,
+    type RootStackParamList,
+    type StackToStackCompositeNavigationProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
-import { selectIsCreatingNewPassphraseWallet } from '@suite-native/passphrase';
 import TrezorConnect from '@trezor/connect';
 
 import { selectDeviceRequestedPin } from '../deviceAuthorizationSlice';
@@ -106,8 +108,8 @@ export const ConnectDeviceScreenHeader = ({
             {shouldDisplayCancelButton && (
                 <IconButton
                     iconName={closeActionType === 'back' ? 'caretLeft' : 'x'}
-                    size="medium"
-                    colorScheme="tertiaryElevation0"
+                    intent="neutral"
+                    priority="secondary"
                     accessibilityRole="button"
                     accessibilityLabel="close"
                     onPress={handleCancel}

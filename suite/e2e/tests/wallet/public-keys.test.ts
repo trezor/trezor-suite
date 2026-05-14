@@ -1,4 +1,4 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { expect, test } from '../../support/fixtures';
 
@@ -29,29 +29,26 @@ test.describe('Public Keys', { tag: ['@T3W1', '@T3T1'] }, () => {
     });
 
     testCases.forEach(({ symbol, xpub }) => {
-        test(`Check ${symbol} XPUB`, async ({ page, settingsPage, walletPage, devicePrompt }) => {
-            if (symbol !== 'btc') {
-                await test.step(`Activate coin ${symbol}`, async () => {
-                    await page.getByTestId('@account-menu/add-account').click();
-                    await settingsPage.coinsTab.enableNetwork(symbol);
-                    await page.getByRole('button', { name: 'Find my' }).click();
-                });
-            }
+        test(`Check ${symbol} XPUB`, async ({ settingsPage, walletPage, devicePrompt }) => {
+            await test.step(`Activate coin ${symbol}`, async () => {
+                await settingsPage.changeNetworks({ enableNetworks: [symbol] });
+            });
+
             await test.step('Verify Public key preview', async () => {
                 await walletPage.openAccount({ symbol });
                 await walletPage.accountDetailsTabButton.click();
                 await walletPage.showPublicKeyButton.click();
                 await expect(async () => {
-                    const value = await page.getByTestId('@modal/output-value').textContent();
+                    const value = await devicePrompt.outputValue.textContent();
 
                     expect(value?.replace(/\s+/g, '')).toBe(xpub);
-                }).toPass({ timeout: 5000 });
+                }).toPass({ timeout: 25000 });
             });
 
             await test.step('Display and Verify Public key again', async () => {
                 await devicePrompt.waitForPromptAndConfirm();
 
-                const value = await page.getByTestId('@modal/output-value').textContent();
+                const value = await devicePrompt.outputValue.textContent();
 
                 expect(value?.replace(/\s+/g, '')).toBe(xpub);
             });

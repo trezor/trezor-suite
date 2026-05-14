@@ -8,6 +8,7 @@ import {
 } from '@suite-common/connect-popup';
 import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { Button, Card, HStack, IconButton, Text, TitleHeader, VStack } from '@suite-native/atoms';
+import { AddressFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 
 export const AddressConfirmation = () => {
@@ -72,14 +73,16 @@ export const AddressConfirmation = () => {
                             justifyContent="space-between"
                             padding="sp8"
                         >
-                            <Text variant="body-sm" style={{ flex: 1 }}>
-                                {item.address}
-                            </Text>
+                            <AddressFormatter
+                                value={item.address}
+                                format="full"
+                                variant="body-sm"
+                                style={{ flex: 1 }}
+                            />
                             <IconButton
-                                size="small"
-                                colorScheme={
-                                    item.validated === 'valid' ? 'primary' : 'tertiaryElevation0'
-                                }
+                                size="medium"
+                                intent={item.validated === 'valid' ? 'brand' : 'neutral'}
+                                priority={item.validated === 'valid' ? 'primary' : 'secondary'}
                                 iconName={
                                     item.validated === 'valid' ? 'checkCircle' : 'trezorDevices'
                                 }

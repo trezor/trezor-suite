@@ -1,9 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    DeviceSettingsStackParamList,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 type NavigationProp = StackNavigationProps<

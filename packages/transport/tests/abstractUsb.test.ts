@@ -1,9 +1,14 @@
-import * as messages from '@trezor/protobuf/messages.json';
+import { protobufManager } from '@trezor/protobuf';
+import * as bitcoinProto from '@trezor/protobuf/src/definitions/messages-bitcoin_pb';
+import * as commonProto from '@trezor/protobuf/src/definitions/messages-common_pb';
+import * as messagesProto from '@trezor/protobuf/src/definitions/messages_pb';
 import { v1 as v1Protocol } from '@trezor/protocol';
 
 import { UsbApi } from '../src/api/usb';
 import { AbstractApiTransport } from '../src/transports/abstractApi';
 import { PathPublic, Session } from '../src/types';
+
+protobufManager.load([commonProto, messagesProto, bitcoinProto]);
 
 // create devices otherwise returned from navigator.usb.getDevices
 const createMockedDevice = (optional = {}) => ({
@@ -51,7 +56,6 @@ const initTest = async () => {
     });
     const transport = new TestUsbTransport({
         api: testUsbApi,
-        messages,
         id: 'test',
     });
 
@@ -87,7 +91,6 @@ describe('Usb', () => {
             const transport = new TestUsbTransport({
                 api: testUsbApi,
                 id: 'test',
-                messages: {},
             });
 
             await transport.init();
@@ -95,8 +98,7 @@ describe('Usb', () => {
 
             expect(res).toEqual({
                 success: false,
-                error: 'unexpected error',
-                message: 'crazy error nobody expects',
+                error: { code: 'unexpected error', message: 'crazy error nobody expects' },
             });
         });
     });
@@ -187,7 +189,10 @@ describe('Usb', () => {
                 session: Session('1'),
                 protocol: v1Protocol,
             });
-            expect(res).toEqual({ success: false, error: 'device disconnected during action' });
+            expect(res).toEqual({
+                success: false,
+                error: { code: 'device disconnected during action' },
+            });
         });
 
         it('call - with valid and invalid message.', async () => {
@@ -200,8 +205,6 @@ describe('Usb', () => {
             if (!acquireRes.success) return;
 
             expect(acquireRes.payload).toEqual('1');
-
-            expect(transport.getMessage('GetAddress')).toEqual(true);
 
             // doesn't really matter what what message we send
             const res1 = await transport.call({
@@ -228,8 +231,7 @@ describe('Usb', () => {
             });
             expect(res2).toEqual({
                 success: false,
-                error: 'unexpected error',
-                message: 'no such type: Foo-bar message',
+                error: { code: 'unexpected error', message: 'Schema Foo-bar message not found' },
             });
         });
 
@@ -351,7 +353,7 @@ describe('Usb', () => {
 
             await expect(promise).resolves.toMatchObject({
                 success: false,
-                error: 'Aborted by signal',
+                error: { code: 'Aborted by signal' },
             });
 
             const promise2 = transport.call({

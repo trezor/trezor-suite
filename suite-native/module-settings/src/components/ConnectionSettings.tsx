@@ -19,9 +19,9 @@ import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { WalletConnectPairBottomSheet } from '@suite-native/module-connect-popup';
 import {
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 import { AppSettingsCardWithIconLayout } from './AppSettingsCardWithIconLayout';
@@ -59,17 +59,12 @@ export const ConnectionSettings = () => {
                     <PressableOpacity onPress={openModal} testID="@settings/wallet-connect-add">
                         <HStack justifyContent="space-between" alignItems="center">
                             <HStack spacing="sp16" alignItems="center">
-                                <RoundedIcon
-                                    name="qrCode"
-                                    color="iconPrimaryDefault"
-                                    backgroundColor="backgroundPrimarySubtleOnElevation0"
-                                    iconSize="mediumLarge"
-                                />
-                                <Text color="textPrimaryDefault">
+                                <RoundedIcon name="qrCode" intent="brand" />
+                                <Text color="contentBrand">
                                     <Translation id="moduleSettings.items.connections.walletConnect.add" />
                                 </Text>
                             </HStack>
-                            <Icon name="plus" color="textSecondaryHighlight" />
+                            <Icon name="plus" color="contentBrand" />
                         </HStack>
                     </PressableOpacity>
                 </Box>

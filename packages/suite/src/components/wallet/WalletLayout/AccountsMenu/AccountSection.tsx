@@ -1,10 +1,10 @@
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { AccountItemType } from 'src/types/wallet';
+import { type AccountItemType } from 'src/types/wallet';
 import { getTokens } from 'src/utils/wallet/tokenUtils';
 
 import { AccountItem } from './AccountItem/AccountItem';

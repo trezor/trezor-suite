@@ -1,31 +1,35 @@
+import { DEVICE, type MethodPermission, UI_REQUEST } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { DataManager } from '../data/DataManager';
+import * as settingsStore from '../data/settingsStore';
 import { getThpCredentials } from '../device/thp';
-import { DEVICE, UI } from '../events';
 
 export default class ThpGetCredentials extends AbstractMethod<'thpGetCredentials'> {
-    init() {
-        this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
-        this.requiredPermissions = ['management'];
+    constructor(message: MethodMessage<'thpGetCredentials'>) {
+        super(message, undefined);
+        this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];
         this.useDeviceState = false;
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['management'];
     }
 
     async run() {
-        const thpState = this.device.getThpState();
+        const thpState = this.getDevice().getThpState();
         if (!thpState?.handshakeCredentials) {
             throw ERRORS.TypedError('Device_ThpStateMissing');
         }
 
-        const credentials = await getThpCredentials(this.device, true);
+        const credentials = await getThpCredentials(this.getDevice(), true);
         thpState.setPairingCredentials([credentials]);
 
-        // update values in DataManager
-        DataManager.getSettings('thp')?.knownCredentials?.push(credentials);
+        // update cached settings
+        settingsStore.get('thp')?.knownCredentials?.push(credentials);
 
-        // emit change event to host, store new credentials in DataManager
-        this.device.emit(DEVICE.THP_CREDENTIALS_CHANGED, {
+        // emit change event to host, store new credentials
+        this.getDevice().emit(DEVICE.THP_CREDENTIALS_CHANGED, {
             credentials,
         });
 

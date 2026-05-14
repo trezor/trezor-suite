@@ -1,15 +1,18 @@
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { getWalletState } from '../../../__fixtures__/walletState';
-import { ReviewOutputItemValues, ReviewOutputItemValuesProps } from '../ReviewOutputItemValues';
+import {
+    ReviewOutputItemValues,
+    type ReviewOutputItemValuesProps,
+} from '../ReviewOutputItemValues';
 
 const oneUsdc = '1000000'; // 1 USDC in smallest unit
 
 describe('ReviewOutputItemValues', () => {
     const renderReviewOutputItemValues = (
         props: Partial<ReviewOutputItemValuesProps> = {},
-        preloadedState: PreloadedState = {},
+        preloadedState = {},
     ) =>
         renderWithStoreProvider(
             <ReviewOutputItemValues

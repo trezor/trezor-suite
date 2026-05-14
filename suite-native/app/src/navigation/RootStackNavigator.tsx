@@ -6,6 +6,7 @@ import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { BootloaderModeScreen } from '@suite-native/device-bootloader-mode';
 import { AccountsImportStackNavigator } from '@suite-native/module-accounts-import';
 import {
+    AccountAssetsScreen,
     AccountDetailScreen,
     AccountSettingsScreen,
 } from '@suite-native/module-accounts-management';
@@ -20,21 +21,46 @@ import {
     WalletConnectSwitchAccountScreen,
 } from '@suite-native/module-connect-popup';
 import { DemoAccountQuestionnaireStackNavigator } from '@suite-native/module-demo-account-questionnaire';
-import { DevUtilsStackNavigator } from '@suite-native/module-dev-utils';
+import { DevUtilsScreen } from '@suite-native/module-dev-utils';
 import {
     BackupFailedModalScreen,
     DeviceOnboardingStackNavigator,
 } from '@suite-native/module-device-onboarding';
 import { DeviceSettingsStackNavigator } from '@suite-native/module-device-settings';
-import { StakingDetailScreen } from '@suite-native/module-earn';
+import {
+    ClaimReviewScreen,
+    ClaimTransactionDataReviewScreen,
+    EarnConsentsScreen,
+    EarnFormScreen,
+    EarnTransactionDataReviewScreen,
+    HowStakeWorksScreen,
+    StakingDetailScreen,
+    StakingInsufficientBalanceScreen,
+    StakingManagementScreen,
+    UnstakeFlowScreen,
+    UnstakeTransactionDataReviewScreen,
+    YieldStackNavigator,
+} from '@suite-native/module-earn';
+import { FeatureFeedbackModalScreen } from '@suite-native/module-home';
 import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
 import { PassphraseStackNavigator } from '@suite-native/module-passphrase';
 import { SendStackNavigator } from '@suite-native/module-send';
 import { SettingsStackNavigator } from '@suite-native/module-settings';
 import { StellarManageTokenStackNavigator } from '@suite-native/module-stellar-token-management';
+import {
+    TradingConfirmingScreen,
+    TradingExchangeApprovalScreen,
+    TradingExchangeOutputsReviewScreen,
+    TradingExchangePreviewScreen,
+    TradingExchangeRevokeScreen,
+    TradingHistoryScreen,
+    TradingReceiveAccountsPickerScreen,
+    TradingSellOutputsReviewScreen,
+    TradingSellPreviewScreen,
+} from '@suite-native/module-trading';
 import { TransactionDetailStackNavigator } from '@suite-native/module-transactions';
 import {
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
@@ -88,6 +114,11 @@ export const RootStackNavigator = () => {
                 component={TransactionDetailStackNavigator}
             />
             <RootStack.Screen
+                options={{ title: RootStackRoutes.AccountAssets }}
+                name={RootStackRoutes.AccountAssets}
+                component={AccountAssetsScreen}
+            />
+            <RootStack.Screen
                 options={{ title: RootStackRoutes.AccountDetail }}
                 name={RootStackRoutes.AccountDetail}
                 component={AccountDetailScreen}
@@ -98,9 +129,109 @@ export const RootStackNavigator = () => {
                 component={StakingDetailScreen}
             />
             <RootStack.Screen
-                name={RootStackRoutes.DevUtilsStack}
-                component={DevUtilsStackNavigator}
+                options={{ title: RootStackRoutes.StakingManagement }}
+                name={RootStackRoutes.StakingManagement}
+                component={StakingManagementScreen}
             />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.StakingInsufficientBalance }}
+                name={RootStackRoutes.StakingInsufficientBalance}
+                component={StakingInsufficientBalanceScreen}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.UnstakeFlow }}
+                name={RootStackRoutes.UnstakeFlow}
+                component={UnstakeFlowScreen}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.HowStakeWorksScreen }}
+                name={RootStackRoutes.HowStakeWorksScreen}
+                component={HowStakeWorksScreen}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.YieldNavigator }}
+                name={RootStackRoutes.YieldNavigator}
+                component={YieldStackNavigator}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.EarnForm }}
+                name={RootStackRoutes.EarnForm}
+                component={EarnFormScreen}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.EarnConsents }}
+                name={RootStackRoutes.EarnConsents}
+                component={EarnConsentsScreen}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.EarnTransactionDataReview }}
+                name={RootStackRoutes.EarnTransactionDataReview}
+                component={EarnTransactionDataReviewScreen}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.UnstakeTransactionDataReview }}
+                name={RootStackRoutes.UnstakeTransactionDataReview}
+                component={UnstakeTransactionDataReviewScreen}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.ClaimReview }}
+                name={RootStackRoutes.ClaimReview}
+                component={ClaimReviewScreen}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.ClaimTransactionDataReview }}
+                name={RootStackRoutes.ClaimTransactionDataReview}
+                component={ClaimTransactionDataReviewScreen}
+            />
+            {/* Trading screens */}
+            <RootStack.Group>
+                <RootStack.Screen
+                    options={{ title: RootStackRoutes.TradingExchangePreview }}
+                    name={RootStackRoutes.TradingExchangePreview}
+                    component={TradingExchangePreviewScreen}
+                />
+                <RootStack.Screen
+                    options={{ title: RootStackRoutes.TradingExchangeApproval }}
+                    name={RootStackRoutes.TradingExchangeApproval}
+                    component={TradingExchangeApprovalScreen}
+                />
+                <RootStack.Screen
+                    options={{ title: RootStackRoutes.TradingExchangeRevoke }}
+                    name={RootStackRoutes.TradingExchangeRevoke}
+                    component={TradingExchangeRevokeScreen}
+                />
+                <RootStack.Screen
+                    options={{ title: RootStackRoutes.TradingSellPreview }}
+                    name={RootStackRoutes.TradingSellPreview}
+                    component={TradingSellPreviewScreen}
+                />
+                <RootStack.Screen
+                    options={{ title: RootStackRoutes.TradingConfirming }}
+                    name={RootStackRoutes.TradingConfirming}
+                    component={TradingConfirmingScreen}
+                />
+                <RootStack.Screen
+                    options={{ title: RootStackRoutes.TradingSellOutputsReview }}
+                    name={RootStackRoutes.TradingSellOutputsReview}
+                    component={TradingSellOutputsReviewScreen}
+                />
+                <RootStack.Screen
+                    options={{ title: RootStackRoutes.TradingExchangeOutputsReview }}
+                    name={RootStackRoutes.TradingExchangeOutputsReview}
+                    component={TradingExchangeOutputsReviewScreen}
+                />
+                <RootStack.Screen
+                    options={{ title: RootStackRoutes.ReceiveAccounts }}
+                    name={RootStackRoutes.ReceiveAccounts}
+                    component={TradingReceiveAccountsPickerScreen}
+                />
+                <RootStack.Screen
+                    options={{ title: RootStackRoutes.TradingHistory }}
+                    name={RootStackRoutes.TradingHistory}
+                    component={TradingHistoryScreen}
+                />
+            </RootStack.Group>
+            <RootStack.Screen name={RootStackRoutes.DevUtils} component={DevUtilsScreen} />
             <RootStack.Screen name={RootStackRoutes.ConnectPopup} component={ConnectPopupScreen} />
             <RootStack.Screen
                 name={RootStackRoutes.WalletConnectSessionPopup}
@@ -182,6 +313,10 @@ export const RootStackNavigator = () => {
                 <RootStack.Screen
                     name={RootStackRoutes.StellarManageTokenStack}
                     component={StellarManageTokenStackNavigator}
+                />
+                <RootStack.Screen
+                    name={RootStackRoutes.FeatureFeedbackModal}
+                    component={FeatureFeedbackModalScreen}
                 />
 
                 {isDevelopOrDebugEnv() && (

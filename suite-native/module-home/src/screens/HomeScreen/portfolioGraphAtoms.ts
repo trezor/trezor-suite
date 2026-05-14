@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 
-import { FiatGraphPoint } from '@suite-common/graph';
+import { type FiatGraphPoint } from '@suite-common/graph';
 import { percentageDiff } from '@suite-native/graph';
 
 // use atomic jotai structure for absolute minimum re-renders and maximum performance

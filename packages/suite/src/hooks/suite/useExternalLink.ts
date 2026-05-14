@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
 
+import { selectTorOnionLinks } from '@suite/settings';
+
 import { useSelector } from 'src/hooks/suite';
-import { selectTorOnionLinks, selectTorState } from 'src/selectors/suite/suiteSelectors';
+import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { getTorUrlIfAvailable } from 'src/utils/suite/tor';
 
 /**

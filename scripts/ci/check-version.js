@@ -9,13 +9,13 @@ const args = process.argv.slice(2);
 
 if (args.length < 2)
     throw new Error(
-        'Version check script requires 2 parameters: package name and dist tag (beta | latest)',
+        'Version check script requires 2 parameters: package name and dist tag (alpha | beta | latest)',
     );
 
 const [packageName, distTag] = args;
 
-if (!['latest', 'beta'].includes(distTag)) {
-    throw new Error('distTag (3rd parameter) must be either "beta" or "latest"');
+if (!['latest', 'beta', 'alpha'].includes(distTag)) {
+    throw new Error('distTag (3rd parameter) must be "alpha", "beta", or "latest"');
 }
 
 const ROOT = path.join(import.meta.dirname, '..', '..');

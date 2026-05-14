@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import TrezorConnect, { BundleProgress, UI } from '@trezor/connect';
-import type { DiscoverAccountsProgress } from '@trezor/connect/src/types/api/discoverAccounts';
+import TrezorConnect, { type BundleProgress } from '@trezor/connect';
+import { UI_REQUEST } from '@trezor/connect-common';
+import type { DiscoverAccountsProgress } from '@trezor/connect-common/src/types/api/discoverAccounts';
 
 import { getController, initTrezorConnect, setup } from '../../common.setup';
 
@@ -37,8 +38,8 @@ describe(`TrezorConnect.discoverAccounts`, () => {
     });
 
     it('TEST', async () => {
-        // print current test case, `jest` default reporter doesn't log this. see https://github.com/facebook/jest/issues/4471
-        if (typeof jest !== 'undefined' && process.stderr) {
+        // print current test case for better debugging visibility
+        if (typeof process !== 'undefined' && process.stderr) {
             process.stderr.write(`\n${'TrezorConnect.discoverAccounts'}: ${'test'}\n`);
         }
 
@@ -67,7 +68,7 @@ describe(`TrezorConnect.discoverAccounts`, () => {
             */
         };
 
-        TrezorConnect.on<DiscoverAccountsProgress>(UI.BUNDLE_PROGRESS, onBundleProgress);
+        TrezorConnect.on(UI_REQUEST.BUNDLE_PROGRESS, onBundleProgress);
         /*
         new Promise(resolve => setTimeout(resolve, 600)).then(() =>
             TrezorConnect.cancel('CANCELLED'),
@@ -86,7 +87,7 @@ describe(`TrezorConnect.discoverAccounts`, () => {
             useCardanoDerivation: true,
         });
 
-        TrezorConnect.off(UI.BUNDLE_PROGRESS, onBundleProgress);
+        TrezorConnect.off(UI_REQUEST.BUNDLE_PROGRESS, onBundleProgress);
 
         expect(result).toMatchObject({});
     }, 180000);

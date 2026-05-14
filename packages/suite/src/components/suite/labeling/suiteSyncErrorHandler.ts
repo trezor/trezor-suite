@@ -1,11 +1,14 @@
-import { SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
-import { EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
+import { messages } from '@suite/intl';
+import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
+import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
-import { updateShowEnableSuiteSyncModal } from '../../../actions/suiteSync/suiteSyncSlice';
-import { Dispatch } from '../../../types/suite';
+import { updateShowEnableSuiteSyncModal } from 'src/actions/suiteSync/suiteSyncSlice';
+import { type Dispatch } from 'src/types/suite';
+
+import { suiteSyncErrorTranslationKeyMap } from './suiteSyncErrorTranslationKeyMap';
 
 type SuiteSyncErrorHandler = {
     error: EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError;
@@ -30,7 +33,12 @@ export const suiteSyncErrorHandler = ({
         case 'DeviceCancelled':
         case 'DeviceError':
         case 'SuiteSyncUpdateError':
-            dispatch(notificationsActions.addToast({ type: 'error', error: type }));
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: messages[suiteSyncErrorTranslationKeyMap[type]].defaultMessage,
+                }),
+            );
 
             return;
 

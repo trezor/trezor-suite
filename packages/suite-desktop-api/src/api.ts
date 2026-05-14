@@ -1,29 +1,29 @@
-import { DecryptionError, EncryptionError } from '@suite-common/platform-encryption';
-import { Result } from '@trezor/type-utils';
+import { type DecryptionError, type EncryptionError } from '@suite-common/platform-encryption';
+import { type Result } from '@trezor/type-utils';
 
 import {
-    BioAuthSettings,
-    BootstrapTorEvent,
-    BridgeSettings,
-    ConnectPopupCall,
-    ConnectPopupCancel,
-    ConnectPopupResponse,
-    HandshakeClient,
-    HandshakeElectron,
-    HandshakeEvent,
-    HandshakeInit,
-    HandshakeTorModule,
-    InvokeResult,
-    LoggerConfig,
-    Status,
-    SuiteThemeVariant,
-    TorSettings,
-    TorStatusEvent,
-    TraySettings,
-    UpdateInfo,
-    UpdateProgress,
+    type BioAuthSettings,
+    type BootstrapTorEvent,
+    type BridgeSettings,
+    type ConnectPopupCall,
+    type ConnectPopupCancel,
+    type ConnectPopupResponse,
+    type HandshakeClient,
+    type HandshakeElectron,
+    type HandshakeEvent,
+    type HandshakeInit,
+    type HandshakeTorModule,
+    type InvokeResult,
+    type LoggerConfig,
+    type Status,
+    type SuiteThemeVariant,
+    type TorSettings,
+    type TorStatusEvent,
+    type TraySettings,
+    type UpdateInfo,
+    type UpdateProgress,
 } from './messages';
-import { InvokeMethod, ListenerMethod, SendMethod } from './methods';
+import { type InvokeMethod, type ListenerMethod, type SendMethod } from './methods';
 
 // Event messages from renderer to main process
 // Sent by DesktopApi.[method] via ipcRenderer.send (see ./main)
@@ -51,7 +51,15 @@ export interface MainChannels {
 // Handled by DesktopApi.on/once (see ./main)
 export interface RendererChannels {
     // oauth
-    'oauth/response': { [key: string]: string };
+    'oauth/response':
+        | {
+              key: 'trezor-oauth';
+              search: string;
+          }
+        | {
+              key: 'trezor-oauth';
+              hash: string;
+          };
 
     // Update events
     'update/checking': void;
@@ -79,6 +87,9 @@ export interface RendererChannels {
     'tray/settings': TraySettings;
 
     'handshake/event': HandshakeEvent;
+
+    // theme
+    'theme/system-change': 'dark' | 'light';
 
     // connect
     'connect-popup/call': ConnectPopupCall;
@@ -144,6 +155,17 @@ export interface InvokeChannels {
     'bio-auth/get-validation-status': () => boolean;
     'safe-storage/decrypt': (params: { value: string }) => Result<string, DecryptionError>;
     'safe-storage/encrypt': (params: { value: string }) => Result<string, EncryptionError>;
+
+    // MCP server
+    'mcp/get-settings': () => {
+        enabled: boolean;
+        port: number;
+        running: boolean;
+        url: string | null;
+        token: string | null;
+    };
+    'mcp/set-enabled': (enabled: boolean) => void;
+    'mcp/regenerate-token': () => { token: string };
 
     // Browser Window
     'browser-window/reload': () => void;
@@ -226,6 +248,11 @@ export type DesktopApi = {
     // safeStorage
     safeStoreEncrypt: DesktopApiInvoke<'safe-storage/encrypt'>;
     safeStoreDecrypt: DesktopApiInvoke<'safe-storage/decrypt'>;
+
+    // MCP server
+    mcpGetSettings: DesktopApiInvoke<'mcp/get-settings'>;
+    mcpSetEnabled: DesktopApiInvoke<'mcp/set-enabled'>;
+    mcpRegenerateToken: DesktopApiInvoke<'mcp/regenerate-token'>;
 
     // Browser Window
     reloadBrowserWindow: DesktopApiInvoke<'browser-window/reload'>;

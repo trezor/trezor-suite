@@ -1,15 +1,15 @@
+import { type RouterState, routerLocationChange } from '@suite/router';
 import { accountsActions } from '@suite-common/wallet-core';
-import { AccountKey, SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { AnonymitySet } from '@trezor/blockchain-link';
-import { DEVICE, StaticSessionId } from '@trezor/connect';
+import { type AccountKey, type SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { type AnonymitySet } from '@trezor/blockchain-link';
+import { DEVICE, type StaticSessionId } from '@trezor/connect';
 
-import { ROUTER, SUITE } from 'src/actions/suite/constants';
+import { SUITE } from 'src/actions/suite/constants';
 import { COINJOIN } from 'src/actions/wallet/constants';
-import { RouterState } from 'src/reducers/suite/routerReducer';
-import { SuiteState } from 'src/reducers/suite/suiteReducer';
-import { CoinjoinState } from 'src/reducers/wallet/coinjoinReducer';
-import { Account } from 'src/types/wallet';
-import { CoinjoinAccount, CoinjoinSession } from 'src/types/wallet/coinjoin';
+import { type SuiteState } from 'src/reducers/suite/suiteReducer';
+import { type CoinjoinState } from 'src/reducers/wallet/coinjoinReducer';
+import { type Account } from 'src/types/wallet';
+import { type CoinjoinAccount, type CoinjoinSession } from 'src/types/wallet/coinjoin';
 
 const DEVICE_A = {
     available: true,
@@ -185,7 +185,7 @@ export const fixtures = [
         description: 'interrupt current coinjoin session when user enters send form',
         state: DEFAULT_STATE,
         action: {
-            type: ROUTER.LOCATION_CHANGE,
+            type: routerLocationChange.type,
             payload: {
                 route: {
                     name: 'wallet-send',
@@ -211,7 +211,7 @@ export const fixtures = [
             },
         ],
         action: {
-            type: ROUTER.LOCATION_CHANGE,
+            type: routerLocationChange.type,
             payload: {
                 route: {
                     name: 'settings-index',

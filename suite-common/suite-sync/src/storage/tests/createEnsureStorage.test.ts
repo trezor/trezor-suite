@@ -1,6 +1,6 @@
 import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import {
-    SuiteSyncOwner,
+    type SuiteSyncOwner,
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,
 } from '@suite-common/suite-sync-storage';
@@ -10,7 +10,7 @@ import type { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import { createSuiteSyncStorageMock } from '../../../tests/createSuiteSyncStorageMock.mock';
-import { SuiteSyncUnavailableOnDeviceError } from '../../createRefreshSuiteSyncKeys';
+import { SuiteSyncUnavailableOnDeviceError } from '../../createEnsureSuiteSyncKeys';
 import type { EnsureStorageDeps } from '../createEnsureStorage';
 import { createEnsureStorage } from '../createEnsureStorage';
 
@@ -24,18 +24,19 @@ const DELEGATED_KEY = asDelegatedIdentityKey('delegated-key-abcd');
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 
 describe(createEnsureStorage.name, () => {
-    it('returns existing storage when it is already in repository', async () => {
+    it('returns existing storage when the cached storage is allowed', async () => {
         const existingStorage = createSuiteSyncStorageMock();
 
         const deps = createMockDeps<EnsureStorageDeps>({
             getRelayUrl: () => 'wss://default-relay.example.com',
+            getOwnerHasAllowance: () => true,
             suiteSyncStorageRepository: {
                 get: () => existingStorage,
                 set: null,
                 delete: null,
             },
             createSuiteStorage: null,
-            refreshSuiteSyncKeys: null,
+            ensureSuiteSyncKeys: null,
             ensureQuota: null,
             getDeviceForStaticSessionId: null,
         });
@@ -48,20 +49,54 @@ describe(createEnsureStorage.name, () => {
         expect(result).toEqual(ok(existingStorage));
         expect(deps.suiteSyncStorageRepository.get).toHaveBeenCalled();
         expect(deps.createSuiteStorage).not.toHaveBeenCalled();
-        expect(deps.refreshSuiteSyncKeys).not.toHaveBeenCalled();
+        expect(deps.ensureSuiteSyncKeys).not.toHaveBeenCalled();
         expect(deps.getDeviceForStaticSessionId).not.toHaveBeenCalled();
+    });
+
+    it('returns existing storage when it is already in repository and when write mode is on', async () => {
+        const existingStorage = createSuiteSyncStorageMock({
+            updateRelayUrl: mock(() => Promise.resolve()),
+        });
+        const device = mockSuiteDevice();
+
+        const deps = createMockDeps<EnsureStorageDeps>({
+            getRelayUrl: () => 'wss://default-relay.example.com',
+            getOwnerHasAllowance: () => false,
+            suiteSyncStorageRepository: {
+                get: () => existingStorage,
+                set: null,
+                delete: null,
+            },
+            createSuiteStorage: null,
+            ensureSuiteSyncKeys: () =>
+                Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
+            ensureQuota: () => Promise.resolve(ok(undefined)),
+            getDeviceForStaticSessionId: () => device,
+        });
+
+        const result = await createEnsureStorage(deps)({
+            deviceStaticSessionId,
+            isWriteMode: true,
+        });
+
+        expect(result).toEqual(ok(existingStorage));
+        expect(deps.suiteSyncStorageRepository.get).toHaveBeenCalled();
+        expect(deps.createSuiteStorage).not.toHaveBeenCalled();
+        expect(deps.ensureSuiteSyncKeys).toHaveBeenCalled();
+        expect(deps.getDeviceForStaticSessionId).toHaveBeenCalled();
     });
 
     it('returns error when device is not found', async () => {
         const deps = createMockDeps<EnsureStorageDeps>({
             getRelayUrl: () => 'wss://default-relay.example.com',
+            getOwnerHasAllowance: null,
             suiteSyncStorageRepository: {
                 get: () => null,
                 set: null,
                 delete: null,
             },
             createSuiteStorage: null,
-            refreshSuiteSyncKeys: null,
+            ensureSuiteSyncKeys: null,
             ensureQuota: null,
             getDeviceForStaticSessionId: () => null,
         });
@@ -74,23 +109,24 @@ describe(createEnsureStorage.name, () => {
         expect(result.success).toBe(false);
         expect(!result.success && result.error.type).toBe('SuiteSyncUnavailableOnDeviceError');
         expect(deps.getDeviceForStaticSessionId).toHaveBeenCalledWith(deviceStaticSessionId);
-        expect(deps.refreshSuiteSyncKeys).not.toHaveBeenCalled();
+        expect(deps.ensureSuiteSyncKeys).not.toHaveBeenCalled();
         expect(deps.createSuiteStorage).not.toHaveBeenCalled();
     });
 
-    it('returns error when refreshSuiteSyncKeys fails', async () => {
+    it('returns error when ensureSuiteSyncKeys fails', async () => {
         const device = mockSuiteDevice();
         const refreshError = err(SuiteSyncUnavailableOnDeviceError());
 
         const deps = createMockDeps<EnsureStorageDeps>({
             getRelayUrl: () => 'wss://default-relay.example.com',
+            getOwnerHasAllowance: null,
             suiteSyncStorageRepository: {
                 get: () => null,
                 set: null,
                 delete: null,
             },
             createSuiteStorage: null,
-            refreshSuiteSyncKeys: () => Promise.resolve(refreshError),
+            ensureSuiteSyncKeys: () => Promise.resolve(refreshError),
             ensureQuota: null,
             getDeviceForStaticSessionId: () => device,
         });
@@ -102,11 +138,11 @@ describe(createEnsureStorage.name, () => {
 
         expect(result).toBe(refreshError);
         expect(deps.getDeviceForStaticSessionId).toHaveBeenCalledWith(deviceStaticSessionId);
-        expect(deps.refreshSuiteSyncKeys).toHaveBeenCalledWith({ device });
+        expect(deps.ensureSuiteSyncKeys).toHaveBeenCalledWith({ device });
         expect(deps.createSuiteStorage).not.toHaveBeenCalled();
     });
 
-    it('calls ensureQuota with correct params after refreshSuiteSyncKeys succeeds', async () => {
+    it('calls ensureQuota with correct params after ensureSuiteSyncKeys succeeds', async () => {
         const device = mockSuiteDevice();
         const newStorage = createSuiteSyncStorageMock({
             updateRelayUrl: mock(() => Promise.resolve()),
@@ -114,13 +150,14 @@ describe(createEnsureStorage.name, () => {
 
         const deps = createMockDeps<EnsureStorageDeps>({
             getRelayUrl: () => 'wss://default-relay.example.com',
+            getOwnerHasAllowance: null,
             suiteSyncStorageRepository: {
                 get: () => null,
                 set: mock(() => {}),
                 delete: null,
             },
-            createSuiteStorage: () => newStorage,
-            refreshSuiteSyncKeys: () =>
+            createSuiteStorage: () => Promise.resolve(newStorage),
+            ensureSuiteSyncKeys: () =>
                 Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
             ensureQuota: () => Promise.resolve(ok(undefined)),
             getDeviceForStaticSessionId: () => device,
@@ -139,36 +176,6 @@ describe(createEnsureStorage.name, () => {
         });
     });
 
-    it('does not update relay URL when ensureQuota fails', async () => {
-        const device = mockSuiteDevice();
-        const updateRelayUrl = mock(() => Promise.resolve());
-        const newStorage = createSuiteSyncStorageMock({ updateRelayUrl });
-
-        const deps = createMockDeps<EnsureStorageDeps>({
-            getRelayUrl: () => 'wss://default-relay.example.com',
-            suiteSyncStorageRepository: {
-                get: () => null,
-                set: mock(() => {}),
-                delete: null,
-            },
-            createSuiteStorage: () => newStorage,
-            refreshSuiteSyncKeys: () =>
-                Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
-            ensureQuota: () =>
-                Promise.resolve(err({ type: 'WriteModeRequiredForAllocation' as const })),
-            getDeviceForStaticSessionId: () => device,
-        });
-
-        const result = await createEnsureStorage(deps)({
-            deviceStaticSessionId,
-            isWriteMode: true,
-        });
-
-        expect(result).toEqual(ok(newStorage));
-        expect(deps.createSuiteStorage).toHaveBeenCalled();
-        expect(updateRelayUrl).not.toHaveBeenCalled();
-    });
-
     it('creates and stores new storage when all dependencies succeed', async () => {
         const device = mockSuiteDevice();
         const newStorage = createSuiteSyncStorageMock({
@@ -177,13 +184,14 @@ describe(createEnsureStorage.name, () => {
 
         const deps = createMockDeps<EnsureStorageDeps>({
             getRelayUrl: () => 'wss://default-relay.example.com',
+            getOwnerHasAllowance: null,
             suiteSyncStorageRepository: {
                 get: () => null,
                 set: mock(() => {}),
                 delete: null,
             },
-            createSuiteStorage: () => newStorage,
-            refreshSuiteSyncKeys: () =>
+            createSuiteStorage: () => Promise.resolve(newStorage),
+            ensureSuiteSyncKeys: () =>
                 Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
             ensureQuota: () => Promise.resolve(ok(undefined)),
             getDeviceForStaticSessionId: () => device,
@@ -196,7 +204,7 @@ describe(createEnsureStorage.name, () => {
 
         expect(result).toEqual(ok(newStorage));
         expect(deps.getDeviceForStaticSessionId).toHaveBeenCalledWith(deviceStaticSessionId);
-        expect(deps.refreshSuiteSyncKeys).toHaveBeenCalledWith({ device });
+        expect(deps.ensureSuiteSyncKeys).toHaveBeenCalledWith({ device });
         expect(deps.createSuiteStorage).toHaveBeenCalledWith({
             suiteSyncOwner: OWNER_ABCD,
         });
@@ -213,13 +221,14 @@ describe(createEnsureStorage.name, () => {
 
         const deps = createMockDeps<EnsureStorageDeps>({
             getRelayUrl: () => 'wss://custom-relay.example.com',
+            getOwnerHasAllowance: null,
             suiteSyncStorageRepository: {
                 get: () => null,
                 set: mock(() => {}),
                 delete: null,
             },
-            createSuiteStorage: () => newStorage,
-            refreshSuiteSyncKeys: () =>
+            createSuiteStorage: () => Promise.resolve(newStorage),
+            ensureSuiteSyncKeys: () =>
                 Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
             ensureQuota: () => Promise.resolve(ok(undefined)),
             getDeviceForStaticSessionId: () => device,

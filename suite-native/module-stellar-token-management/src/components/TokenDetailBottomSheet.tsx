@@ -1,8 +1,8 @@
-import { RefObject } from 'react';
+import { type RefObject } from 'react';
 
-import { BottomSheetModal as GorhomBottomSheetModal } from '@gorhom/bottom-sheet';
+import { type BottomSheetModal as GorhomBottomSheetModal } from '@gorhom/bottom-sheet';
 
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { BottomSheetModal, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -32,7 +32,7 @@ export const TokenDetailBottomSheet = ({
                 <CryptoIcon symbol="xlm" contractAddress={iconContractAddress} size="large" />
                 <VStack>
                     <Text variant="body-md">{tokenName}</Text>
-                    <Text variant="body-sm" color="textSubdued">
+                    <Text variant="body-sm" color="contentSecondary">
                         {assetCode}
                     </Text>
                 </VStack>
@@ -54,7 +54,7 @@ export const TokenDetailBottomSheet = ({
                 </VStack>
             </VStack>
 
-            <Button colorScheme="primary" onPress={onClose}>
+            <Button intent="brand" priority="primary" onPress={onClose}>
                 <Translation id="generic.buttons.goBack" />
             </Button>
         </VStack>

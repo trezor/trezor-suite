@@ -1,4 +1,6 @@
 export * from './accountUtils';
+export * from './allowanceUtils';
+export * from './apyUtils';
 export * from './backendUtils';
 export * from './balanceUtils';
 export * from './bitcoinUtils';
@@ -31,3 +33,5 @@ export * from './cardanoStakingUtils';
 export * from './amountUtils';
 export * from './bigNumberUtils';
 export * from './feeUnitUtils';
+export * from './stellarTokens';
+export * from './tronUtils';

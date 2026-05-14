@@ -1,0 +1,24 @@
+{
+    "name": "@suite-common/e2e-evolu-client",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "ws": "^8.20.0"
+    },
+    "devDependencies": {
+        "@evolu/common": "8.0.0-next.5",
+        "@evolu/nodejs": "3.0.0-next.3",
+        "@suite-common/suite-sync-evolu": "workspace:*",
+        "@suite-common/suite-sync-storage": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*"
+    }
+}

@@ -1,14 +1,20 @@
 import { useMemo } from 'react';
 
+import { selectAccountLabelsLegacy } from '@suite/metadata';
 import { accountSearchFn, isTokenMatchesSearch } from '@suite-common/wallet-utils';
 
-import { AccountWithTokensOption } from '../types';
+import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
+
+import { type AccountWithTokensOption } from '../types';
 import { calculateExpandableTokensHeight } from '../utils';
 
 export function useFilterAccountsWithTokens(
     accountsWithTokens: AccountWithTokensOption[],
     search: string,
 ) {
+    const { getDefaultAccountLabel } = useDefaultAccountLabel();
+    const accountLegacyLabels = useSelector(selectAccountLabelsLegacy);
+
     return useMemo(
         () =>
             accountsWithTokens
@@ -18,10 +24,21 @@ export function useFilterAccountsWithTokens(
                     }
 
                     switch (item.type) {
-                        case 'account':
+                        case 'account': {
+                            const { accountType, symbol, index, key } = item.account;
+
+                            const accountLabel =
+                                item.account.label ??
+                                (Object.prototype.hasOwnProperty.call(accountLegacyLabels, key)
+                                    ? accountLegacyLabels[key]
+                                    : getDefaultAccountLabel({ accountType, symbol, index })) ??
+                                '';
+
                             return accountSearchFn(item.account, search, {
                                 tokensMatch: false,
+                                accountLabel,
                             });
+                        }
 
                         case 'token':
                             return isTokenMatchesSearch(item.token, search);
@@ -50,6 +67,6 @@ export function useFilterAccountsWithTokens(
 
                     return item;
                 }),
-        [accountsWithTokens, search],
+        [accountLegacyLabels, accountsWithTokens, getDefaultAccountLabel, search],
     );
 }

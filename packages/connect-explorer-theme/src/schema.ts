@@ -5,6 +5,8 @@ import type { NextSeoProps } from 'next-seo';
 import type { Item, MenuItem, PageItem } from 'nextra/normalize-pages';
 import { z } from 'zod';
 
+import type { DeepPartial } from '@trezor/type-utils';
+
 import type { TOCProps } from './types';
 
 export const themeOptionsSchema = z.strictObject({
@@ -47,7 +49,7 @@ export const themeSchema = z.strictObject({
         icon: z.custom<ReactNode | FC>(...reactNode),
         link: z.string().startsWith('https://').optional(),
     }),
-    components: z.record(z.custom<FC>(...fc)).optional(),
+    components: z.record(z.string(), z.custom<FC>(...fc)).optional(),
     darkMode: z.boolean(),
     direction: z.enum(['ltr', 'rtl']),
     docsRepositoryBase: z.string().startsWith('https://'),
@@ -67,7 +69,7 @@ export const themeSchema = z.strictObject({
     feedback: z.strictObject({
         content: z.custom<ReactNode | FC>(...reactNode),
         labels: z.string(),
-        useLink: z.function().returns(z.string()),
+        useLink: z.function().output(z.string()),
     }),
     footer: z.strictObject({
         component: z.custom<ReactNode | FC<{ menu: boolean }>>(...reactNode),
@@ -125,10 +127,10 @@ export const themeSchema = z.strictObject({
             ...reactNode,
         ),
         emptyResult: z.custom<ReactNode | FC>(...reactNode),
-        error: z.string().or(z.function().returns(z.string())),
+        error: z.string().or(z.function().output(z.string())),
         loading: z.custom<ReactNode | FC>(...reactNode),
         // Can't be React component
-        placeholder: z.string().or(z.function().returns(z.string())),
+        placeholder: z.string().or(z.function().output(z.string())),
     }),
     serverSideError: z.strictObject({
         content: z.custom<ReactNode | FC>(...reactNode),
@@ -144,7 +146,7 @@ export const themeSchema = z.strictObject({
     }),
     themeSwitch: z.strictObject({
         component: z.custom<ReactNode | FC<{ lite?: boolean; className?: string }>>(...reactNode),
-        useOptions: themeOptionsSchema.or(z.function().returns(themeOptionsSchema)),
+        useOptions: themeOptionsSchema.or(z.function().output(themeOptionsSchema)),
     }),
     toc: z.strictObject({
         backToTop: z.boolean(),
@@ -157,11 +159,9 @@ export const themeSchema = z.strictObject({
     useNextSeoProps: z.custom<() => NextSeoProps | void>(isFunction),
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const publicThemeSchema = themeSchema.deepPartial().extend({
-    // to have `locale` and `text` as required properties
-    i18n: i18nSchema.optional(),
-});
-
 export type DocsThemeConfig = z.infer<typeof themeSchema>;
-export type PartialDocsThemeConfig = z.infer<typeof publicThemeSchema>;
+// deepPartial was removed in zod v4, so PartialDocsThemeConfig is computed via TypeScript utility
+// i18n override: if provided, `locale` and `text` remain required within each element
+export type PartialDocsThemeConfig = Omit<DeepPartial<DocsThemeConfig>, 'i18n'> & {
+    i18n?: z.infer<typeof i18nSchema>;
+};

@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { FeeInfo, FeesState, FeesStatus } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type FeeInfo, type FeesState, type FeesStatus } from '@suite-common/wallet-types';
 
 export const FEES_MODULE_PREFIX = '@common/wallet-core/fees';
 

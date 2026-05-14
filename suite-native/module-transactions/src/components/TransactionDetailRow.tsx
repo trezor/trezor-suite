@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { G } from '@mobily/ts-belt';
 
 import { Box, Text } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type TransactionDetailRowProps = {
     title: string;
@@ -14,6 +14,7 @@ const rowStyle = prepareNativeStyle(() => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    gap: 16,
 }));
 
 const valueContainerStyle = prepareNativeStyle(_ => ({
@@ -25,7 +26,7 @@ export const TransactionDetailRow = ({ title, children }: TransactionDetailRowPr
 
     return (
         <Box style={applyStyle(rowStyle)}>
-            <Text variant="body-sm" color="textSubdued">
+            <Text variant="body-sm" color="contentSecondary">
                 {title}
             </Text>
             <Box

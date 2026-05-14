@@ -1,8 +1,13 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { Action, Category, Experiments, MessageSystem } from '@suite-common/suite-types';
+import {
+    type Action,
+    type Category,
+    type Experiments,
+    type MessageSystem,
+} from '@suite-common/suite-types';
 
-import { MessageSystemConfigSource } from './messageSystemTypes';
+import { type MessageSystemConfigSource } from './messageSystemTypes';
 
 export type ValidMessagesPayload = {
     [key in Category]: string[];

@@ -1,5 +1,5 @@
 import { Status } from '../../src/client/Status';
-import * as http from '../../src/client/coordinatorRequest';
+import { coordinatorRequest } from '../../src/client/coordinatorRequest';
 import { STATUS_TIMEOUT } from '../../src/constants';
 import {
     AFFILIATE_INFO,
@@ -8,6 +8,13 @@ import {
     createCoinjoinRound,
 } from '../fixtures/round.fixture';
 import { createServer } from '../mocks/server';
+
+jest.mock('../../src/client/coordinatorRequest', () => ({
+    ...jest.requireActual('../../src/client/coordinatorRequest'),
+    coordinatorRequest: jest.fn(
+        jest.requireActual('../../src/client/coordinatorRequest').coordinatorRequest,
+    ),
+}));
 
 // using fakeTimers and async callbacks
 const fastForward = (time: number) => jest.advanceTimersByTimeAsync(time);
@@ -44,6 +51,9 @@ describe('Status', () => {
 
     afterEach(() => {
         jest.restoreAllMocks();
+        (coordinatorRequest as jest.Mock).mockImplementation(
+            jest.requireActual('../../src/client/coordinatorRequest').coordinatorRequest,
+        );
         jest.useRealTimers();
 
         status?.stop();
@@ -61,7 +71,7 @@ describe('Status', () => {
 
         const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
         const coordinatorRequestSpy = jest.fn();
-        jest.spyOn(http, 'coordinatorRequest').mockImplementation(url => {
+        (coordinatorRequest as jest.Mock).mockImplementation(url => {
             if (url === 'status') {
                 coordinatorRequestSpy();
             }
@@ -119,7 +129,7 @@ describe('Status', () => {
 
         const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
         const coordinatorRequestSpy = jest.fn();
-        jest.spyOn(http, 'coordinatorRequest').mockImplementation(url => {
+        (coordinatorRequest as jest.Mock).mockImplementation(url => {
             if (url === 'status') {
                 coordinatorRequestSpy();
             }
@@ -160,7 +170,7 @@ describe('Status', () => {
 
     it('Status identities', async () => {
         const identities: string[] = [];
-        jest.spyOn(http, 'coordinatorRequest').mockImplementation((url, _b, options) => {
+        (coordinatorRequest as jest.Mock).mockImplementation((url, _b, options) => {
             if (url === 'status') {
                 const id = options?.identity;
                 if (id && !identities.includes(id)) {
@@ -173,6 +183,13 @@ describe('Status', () => {
                 RoundStates: [{ ...DEFAULT_ROUND }],
             });
         });
+
+        // deterministic rotation through identities — avoids flakiness from Math.random
+        const randomSequence = [0, 0.25, 0.5, 0.75];
+        let randomIdx = 0;
+        jest.spyOn(Math, 'random').mockImplementation(
+            () => randomSequence[randomIdx++ % randomSequence.length],
+        );
 
         jest.useFakeTimers();
 
@@ -190,8 +207,8 @@ describe('Status', () => {
         await fastForward(STATUS_TIMEOUT.registered);
         await fastForward(STATUS_TIMEOUT.registered);
 
-        // at least two identities used. probably all defined above were used but it's not deterministic
-        expect(identities.length).toBeGreaterThanOrEqual(2);
+        // all four identities (default + A, B, C) should be used
+        expect(identities.length).toEqual(4);
 
         // clear identities
         status.removeIdentity('A');
@@ -283,7 +300,7 @@ describe('Status', () => {
         const affiliateDataBase64 = Buffer.from('{}', 'utf-8').toString('base64');
 
         const coordinatorRequestSpy = jest.fn();
-        jest.spyOn(http, 'coordinatorRequest').mockImplementation(url => {
+        (coordinatorRequest as jest.Mock).mockImplementation(url => {
             if (url === 'status') {
                 coordinatorRequestSpy();
             }

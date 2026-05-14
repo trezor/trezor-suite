@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { Banner } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { type DeviceModelInternal } from '@trezor/device-utils';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 

@@ -7,17 +7,16 @@ import {
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { tradingInitialState } from '@suite-native/trading-consts';
 import {
-    adaAsset,
-    btcAsset,
+    banxaCreditCardSellQuote,
     buyQuotes,
     exchangeQuotes,
+    mercuryoApplePayBuyQuote,
     sellQuotes,
-    usdcAsset,
 } from '@suite-native/trading-fixtures';
-import { ProviderConfirmationStatus, TradingState } from '@suite-native/trading-types';
+import { type ProviderConfirmationStatus, type TradingState } from '@suite-native/trading-types';
 
 import { buyActions } from '../buySlice';
 import { exchangeActions } from '../exchangeSlice';
@@ -33,7 +32,7 @@ describe('tradingSlice', () => {
     });
 
     afterEach(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
 
     describe('initial state', () => {
@@ -51,54 +50,6 @@ describe('tradingSlice', () => {
                     providerConfirmationStatus: 'inactive',
                 }),
             );
-        });
-    });
-
-    describe('favouriteAssets', () => {
-        it('addTradeableAssetToFavourites should add asset to favourites', () => {
-            const actions = [
-                tradingActions.addTradeableAssetToFavourites(btcAsset.cryptoId),
-                tradingActions.addTradeableAssetToFavourites(usdcAsset.cryptoId),
-                tradingActions.addTradeableAssetToFavourites(adaAsset.cryptoId),
-            ];
-            const state = actions.reduce(tradingReducer, undefined) as TradingState;
-
-            expect(state.favouriteAssets).toEqual({
-                bitcoin: true,
-                cardano: true,
-                'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': true,
-            });
-        });
-
-        describe('given state with one favourite asset', () => {
-            let prevState: TradingState;
-
-            beforeEach(() => {
-                prevState = tradingReducer(
-                    undefined,
-                    tradingActions.addTradeableAssetToFavourites(btcAsset.cryptoId),
-                );
-            });
-
-            it('addTradeableAssetToFavourites should not add same asset twice', () => {
-                const state = tradingReducer(
-                    prevState,
-                    tradingActions.addTradeableAssetToFavourites(btcAsset.cryptoId),
-                );
-
-                expect(state.favouriteAssets).toEqual({
-                    bitcoin: true,
-                });
-            });
-
-            it('removeTradeableAssetFromFavourites should remove asset from favourites', () => {
-                const state = tradingReducer(
-                    prevState,
-                    tradingActions.removeTradeableAssetFromFavourites(btcAsset.cryptoId),
-                );
-
-                expect(state.favouriteAssets).toEqual({});
-            });
         });
     });
 
@@ -134,7 +85,7 @@ describe('tradingSlice', () => {
                         country: 'CZ',
                     },
                     quotes: buyQuotes,
-                    selectedQuote: buyQuotes[0],
+                    selectedQuote: mercuryoApplePayBuyQuote,
                     amountLimits: {
                         currency: 'CZK',
                         minFiat: '100',
@@ -168,7 +119,7 @@ describe('tradingSlice', () => {
                         currency: 'CZK',
                         minFiat: '100',
                     },
-                    selectedQuote: sellQuotes[0],
+                    selectedQuote: banxaCreditCardSellQuote,
                 },
             };
 
@@ -344,16 +295,18 @@ describe('tradingSlice', () => {
             expect(state.exchange.receiveAddress).toBeUndefined();
         });
 
-        it('should clear buy.tradingAccountKey', () => {
+        it('should clear buy.tradingAccountKey and buy.receiveAccountKey', () => {
             const actions = [
                 tradingBuyActions.setTradingAccountKey(
                     'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
                 ),
+                tradingBuyActions.setReceiveAccountKey('account-key' as AccountKey),
                 tradingActions.clearSelectedAccounts(),
             ];
 
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
             expect(state.buy.tradingAccountKey).toBeUndefined();
+            expect(state.buy.receiveAccountKey).toBeUndefined();
         });
 
         it('should clear exchange.receiveAccountKey and exchange.tradingAccountKey', () => {
@@ -422,7 +375,10 @@ describe('tradingSlice', () => {
     describe('residence slice', () => {
         it('should handle residence actions', () => {
             const actions = [
-                residenceActions.setResidenceCountry('PL'),
+                residenceActions.setResidenceCountry({
+                    country: 'US',
+                    countrySubdivision: 'CA',
+                }),
                 residenceActions.setOnboardingVisited(),
             ];
 
@@ -431,7 +387,8 @@ describe('tradingSlice', () => {
             expect(state).toEqual(
                 expect.objectContaining({
                     residence: {
-                        country: 'PL',
+                        country: 'US',
+                        countrySubdivision: 'CA',
                         wasOnboardingVisited: true,
                     },
                 }),

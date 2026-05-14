@@ -5,7 +5,7 @@ import {
     T2T1FeaturesBL,
 } from '../__fixtures__/deviceFeatures';
 import { getBootloaderVersion, getBootloaderVersionArray } from '../bootloaderUtils';
-import { PartialDevice } from '../types';
+import { type PartialDevice } from '../types';
 
 describe('bootloaderUtils', () => {
     describe(getBootloaderVersionArray.name, () => {

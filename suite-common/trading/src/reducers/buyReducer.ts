@@ -1,17 +1,17 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { FiatCurrencyCode } from 'invity-api';
-import type {
-    BuyListResponse,
-    BuyProviderInfo,
-    BuyTrade,
-    BuyTradeQuoteRequest,
-    CryptoId,
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
+import {
+    type BuyListResponse,
+    type BuyProviderInfo,
+    type BuyTrade,
+    type BuyTradeQuoteRequest,
+    type CryptoId,
+    type FiatCurrencyCode,
 } from 'invity-api';
 
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 
 import { TRADING_BUY_PREFIX } from '../constants';
-import { TradingAmountLimitProps } from '../types';
+import { type TradingAmountLimitProps } from '../types';
 
 export interface BuyInfo {
     buyInfo: BuyListResponse;
@@ -26,8 +26,8 @@ export interface TradingBuyState {
     quotesRequest?: BuyTradeQuoteRequest;
     quotes: BuyTrade[];
     selectedQuote: BuyTrade | undefined;
-    preselectedQuote: BuyTrade | undefined;
     tradingAccountKey?: AccountKey;
+    receiveAccountKey?: AccountKey;
     receiveAddress?: string;
     isLoading: boolean;
     amountLimits: TradingAmountLimitProps | undefined;
@@ -41,9 +41,9 @@ export const buyInitialState: TradingBuyState = {
     buyInfo: undefined,
     quotesRequest: undefined,
     selectedQuote: undefined,
-    preselectedQuote: undefined,
     quotes: [],
     tradingAccountKey: undefined,
+    receiveAccountKey: undefined,
     receiveAddress: undefined,
     isLoading: false,
     amountLimits: undefined,
@@ -68,9 +68,6 @@ const tradingBuySlice = createSlice({
         saveQuotes(state, action: PayloadAction<BuyTrade[]>) {
             state.quotes = action.payload;
         },
-        savePreselectedQuote(state, action: PayloadAction<BuyTrade | undefined>) {
-            state.preselectedQuote = action.payload;
-        },
         saveSelectedQuote(state, action: PayloadAction<BuyTrade | undefined>) {
             state.selectedQuote = action.payload;
         },
@@ -86,11 +83,20 @@ const tradingBuySlice = createSlice({
         setTradingAccountKey(state, action: PayloadAction<AccountKey | undefined>) {
             state.tradingAccountKey = action.payload;
         },
+        setReceiveAccountKey(state, action: PayloadAction<AccountKey | undefined>) {
+            state.receiveAccountKey = action.payload;
+        },
         setReceiveAddress(state, action: PayloadAction<string | undefined>) {
             state.receiveAddress = action.payload;
         },
         setLastErrorMessage(state, action: PayloadAction<string | undefined>) {
             state.lastErrorMessage = action.payload;
+        },
+        clearQuotesAndParams(state) {
+            state.quotes = [];
+            state.quotesRequest = undefined;
+            state.selectedQuote = undefined;
+            state.amountLimits = undefined;
         },
     },
 });

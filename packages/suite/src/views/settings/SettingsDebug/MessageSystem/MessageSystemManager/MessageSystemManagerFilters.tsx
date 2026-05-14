@@ -24,7 +24,7 @@ export const MessageSystemManagerFilters = ({
             size="small"
             onChange={onCategoryChange}
         />
-        <Checkbox onClick={onToggleActive} isChecked={showActive}>
+        <Checkbox onChange={onToggleActive} isChecked={showActive}>
             Show only active
         </Checkbox>
     </Row>

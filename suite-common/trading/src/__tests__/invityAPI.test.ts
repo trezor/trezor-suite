@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import { InfoResponse } from 'invity-api';
+import { type InfoResponse } from 'invity-api';
 
 import coins from '../__fixtures__/coins.json';
 import { invityAPIFixtures } from '../__fixtures__/invityAPI';
@@ -27,7 +27,7 @@ describe('InvityAPI', () => {
     });
 
     afterEach(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
 
     it('should create an API key', () => {
@@ -42,6 +42,22 @@ describe('InvityAPI', () => {
         const descriptor = invityAPI.getCurrentAccountDescriptor();
 
         expect(descriptor).toEqual('test-account');
+    });
+
+    describe('resetCurrentAccount', () => {
+        it('should clear the account descriptor', () => {
+            invityAPI.resetCurrentAccount();
+
+            expect(invityAPI.getCurrentAccountDescriptor()).toBeUndefined();
+        });
+
+        it('should recreate the descriptor and api key after createInvityAPIKey is called', () => {
+            invityAPI.resetCurrentAccount();
+            invityAPI.createInvityAPIKey(accountDescriptor);
+
+            expect(invityAPI.getCurrentAccountDescriptor()).toEqual(accountDescriptor);
+            expect(typeof invityAPI.getCurrentApiKey()).toBe('string');
+        });
     });
 
     describe('getInvityAPIKey', () => {

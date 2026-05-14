@@ -1,37 +1,37 @@
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import {
+    Bundle,
+    GetOwnershipId as GetOwnershipIdSchema,
+    type MethodPermission,
+    UI_REQUEST,
+    createUiMessage,
+} from '@trezor/connect-common';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { getFirmwareRange } from './common/paramsValidator';
-import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
+import { bundlify } from './common/paramsValidator';
+import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
-import { UI, createUiMessage } from '../events';
-import { Bundle } from '../types';
-import { GetOwnershipId as GetOwnershipIdSchema } from '../types/api/getOwnershipId';
 import { getScriptType, getSerializedPath, validatePath } from '../utils/pathUtils';
 
 export default class GetOwnershipId extends AbstractMethod<
     'getOwnershipId',
     PROTO.GetOwnershipId[]
 > {
-    hasBundle?: boolean;
-
-    init() {
-        this.requiredPermissions = ['read'];
-
-        // create a bundle with only one batch if bundle doesn't exists
-        this.hasBundle = !!this.payload.bundle;
-        const payload = !this.payload.bundle
-            ? { ...this.payload, bundle: [this.payload] }
-            : this.payload;
+    constructor(message: MethodMessage<'getOwnershipId'>) {
+        const { hasBundle, payload } = bundlify(message.payload);
 
         // validate bundle type
         Assert(Bundle(GetOwnershipIdSchema), payload);
 
-        this.params = payload.bundle.map(batch => {
+        const preprocessed = payload.bundle.map(batch => {
             const address_n = validatePath(batch.path, 1);
-            const coinInfo = getBitcoinNetwork(batch.coin || address_n);
+
+            return { batch, address_n, coinInfo: getBitcoinNetwork(batch.coin || address_n) };
+        });
+
+        const params = preprocessed.map(({ batch, address_n, coinInfo }) => {
             const script_type = batch.scriptType || getScriptType(address_n);
-            this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
 
             return {
                 address_n,
@@ -40,6 +40,16 @@ export default class GetOwnershipId extends AbstractMethod<
                 script_type,
             };
         });
+
+        super(message, params);
+
+        this.requiredFirmwareCoins = preprocessed.map(({ coinInfo }) => coinInfo);
+        this.hasBundle = hasBundle;
+    }
+    hasBundle?: boolean;
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
     }
 
     get info() {
@@ -53,9 +63,9 @@ export default class GetOwnershipId extends AbstractMethod<
         };
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const responses: MethodReturnType<typeof this.name> = [];
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         for (let i = 0; i < this.params.length; i++) {
             const batch = this.params[i];
             const { message } = await cmd.typedCall('GetOwnershipId', 'OwnershipId', batch);
@@ -67,8 +77,8 @@ export default class GetOwnershipId extends AbstractMethod<
 
             if (this.hasBundle) {
                 // send progress
-                this.postMessage(
-                    createUiMessage(UI.BUNDLE_PROGRESS, {
+                sendCoreMessage(
+                    createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,
                         response: message,

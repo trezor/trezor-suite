@@ -1,6 +1,6 @@
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 
-import { ComposeCancelTransactionPartialAccount } from './cancelTransactionTypes';
+import { type ComposeCancelTransactionPartialAccount } from './cancelTransactionTypes';
 
 type ResolveCancelAddress = {
     account: ComposeCancelTransactionPartialAccount;

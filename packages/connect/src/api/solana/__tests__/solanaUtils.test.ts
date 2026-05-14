@@ -3,6 +3,7 @@ import {
     buildCreateAssociatedTokenAccountInstruction,
     buildTokenTransferInstruction,
     buildTokenTransferTransaction,
+    buildTransferTransaction,
     getLamportsFromSol,
     getMinimumRequiredTokenAccountsForTransfer,
 } from '../solanaUtils';
@@ -46,12 +47,13 @@ describe('solana utils', () => {
         fixtures.buildCreateAssociatedTokenAccountInstruction.forEach(
             ({ description, input, expectedOutput }) => {
                 it(description, async () => {
-                    const [txix, pubkey] = await buildCreateAssociatedTokenAccountInstruction(
+                    const result = await buildCreateAssociatedTokenAccountInstruction(
                         input.funderAddress,
                         input.newOwnerAddress,
                         input.tokenMintAddress,
                         input.tokenProgramName,
                     );
+                    const [txix, pubkey] = result;
 
                     expect(pubkey).toEqual(expectedOutput.pubkey);
                     expect(txix.accounts).toEqual(expectedOutput.accounts);
@@ -77,8 +79,28 @@ describe('solana utils', () => {
                     input.lastValidBlockHeight,
                     input.priorityFees,
                     input.tokenProgramName,
+                    input.memo,
                 );
                 const message = tx.transaction.serializeMessage();
+
+                expect(message).toEqual(expectedOutput);
+            });
+        });
+    });
+
+    describe('buildTransferTransaction', () => {
+        fixtures.buildTransferTransaction.forEach(({ description, input, expectedOutput }) => {
+            it(description, async () => {
+                const tx = await buildTransferTransaction(
+                    input.fromAddress,
+                    input.toAddress,
+                    input.amountInSol,
+                    input.blockhash,
+                    input.lastValidBlockHeight,
+                    input.priorityFees,
+                    input.memo,
+                );
+                const message = tx.serializeMessage();
 
                 expect(message).toEqual(expectedOutput);
             });

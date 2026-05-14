@@ -1,18 +1,20 @@
 import { useCallback } from 'react';
-import { UseFormSetValue } from 'react-hook-form';
+import { type UseFormSetValue } from 'react-hook-form';
 
 import { Translation, type TranslationKey } from '@suite/intl';
+import { PaymentMethodIcon } from '@suite/trading';
 import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
     TRADING_FORM_PROVIDER_SELECT,
-    TradingPaymentMethodListProps,
+    type TradingPaymentMethodListProps,
 } from '@suite-common/trading';
-import { Modal } from '@trezor/components';
+import { Modal, Row, Text } from '@trezor/components';
 import { CardList } from '@trezor/product-components';
 
+import { FormattedCryptoAmount } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingTradeBuySellType } from 'src/types/trading/trading';
-import { TradingBuySellFormProps } from 'src/types/trading/tradingForm';
+import { type TradingTradeBuySellType } from 'src/types/trading/trading';
+import { type TradingBuySellFormProps } from 'src/types/trading/tradingForm';
 
 interface PaymentMethodModalProps {
     onClose: () => void;
@@ -35,7 +37,7 @@ export const PaymentMethodModal = ({ onClose, heading }: PaymentMethodModalProps
 
     return (
         <Modal
-            width={400}
+            width={480}
             onCancel={onClose}
             heading={heading ? <Translation id={heading} /> : undefined}
         >
@@ -46,7 +48,21 @@ export const PaymentMethodModal = ({ onClose, heading }: PaymentMethodModalProps
                         onClick={() => selectPaymentMethod(item)}
                         data-testid={`@trading/form/payment-method-select/option/${item.value}`}
                     >
-                        {item.label}
+                        <Row gap={12} alignItems="center">
+                            <PaymentMethodIcon paymentMethod={item.value} />
+                            {item.label}
+                        </Row>
+                        {item.receiveAmount && item.symbol && (
+                            <Row>
+                                <Text typographyStyle="body-sm">
+                                    {'≈ '}
+                                    <FormattedCryptoAmount
+                                        value={item.receiveAmount}
+                                        symbol={item.symbol}
+                                    />
+                                </Text>
+                            </Row>
+                        )}
                     </CardList.Item>
                 ))}
             </CardList>

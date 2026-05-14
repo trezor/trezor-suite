@@ -1,20 +1,24 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import { type TransactionCreatedEventAction, events } from '@suite/analytics';
-import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
+import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { SendState, StakeState } from '@suite-common/wallet-core';
-import { Account, FormState, RbfTransactionType, ReviewOutput } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type FormState,
+    type RbfTransactionType,
+    type ReviewOutput,
+} from '@suite-common/wallet-types';
 import { isRbfCancelTransaction, isRbfTransaction } from '@suite-common/wallet-utils';
-import { StakeType } from '@trezor/blockchain-link-types';
+import { type StakeType } from '@trezor/blockchain-link-types';
 import { Modal } from '@trezor/components';
 import { copyToClipboard, download } from '@trezor/dom-utils';
-import { Deferred } from '@trezor/utils';
+import { type Deferred } from '@trezor/utils';
 
 import { useAnalytics } from 'src/support/useAnalytics';
 
-import { getTxType } from '../utils';
+import { type TxInfoState, getTxType } from '../utils';
 
 const mapRbfTypeToReporting: Record<RbfTransactionType, TransactionCreatedEventAction> = {
     'bump-fee': 'replaced',
@@ -27,7 +31,7 @@ type TransactionReviewModalBottomContentProps = {
     onSend: (send: boolean) => void;
     onCancel: () => void;
     handleTryAgain: (close: boolean) => void;
-    txInfoState: SendState | StakeState;
+    txInfoState: TxInfoState;
     actionTranslation: ExtendedMessageDescriptor;
     isTxExpired: boolean;
     hasTxExpired: boolean;

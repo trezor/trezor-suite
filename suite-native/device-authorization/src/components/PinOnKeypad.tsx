@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useWindowDimensions } from 'react-native';
 
-import { PinFormValues, pinFormSchema } from '@suite-common/validators';
+import { type PinFormValues, pinFormSchema } from '@suite-common/validators';
 import { Box, Card, HStack, Loader, Text, VStack } from '@suite-native/atoms';
 import { Form, useForm } from '@suite-native/forms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { DevicePinImage } from './DevicePinImage';
 import { PinFormControlButtons } from './PinFormControlButtons';
@@ -66,7 +66,7 @@ const loaderWrapperStyle = prepareNativeStyle(utils => ({
     paddingBottom: utils.spacings.sp32,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    backgroundColor: utils.colors.surfaceFillRaised,
 }));
 
 export const PinOnKeypad = ({ variant, onSuccess }: PinOnKeypadProps) => {
@@ -103,7 +103,7 @@ export const PinOnKeypad = ({ variant, onSuccess }: PinOnKeypadProps) => {
             )}
             <Form form={form}>
                 <VStack spacing="sp8" alignItems="center">
-                    <Text color="textSubdued" textAlign="center">
+                    <Text color="contentSecondary" textAlign="center">
                         <Translation id="moduleConnectDevice.pinScreen.form.keypadInfo" />
                     </Text>
                     <Box style={applyStyle(pinProgressWrapperStyle)}>

@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import express, { Express } from 'express';
+import express, { type Express } from 'express';
 
 const port = 30002;
 

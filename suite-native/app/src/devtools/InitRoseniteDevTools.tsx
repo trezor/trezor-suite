@@ -1,5 +1,5 @@
 import { memo, useEffect, useState } from 'react';
-import { MMKV } from 'react-native-mmkv';
+import { type MMKV } from 'react-native-mmkv';
 
 import { useNativeServices } from '@suite-native/services';
 

@@ -4,20 +4,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { isZero } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import { Box, Button } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { composeStellarTrustlineFeesThunk } from '@suite-native/module-stellar-token-management';
 import {
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
-import { TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
+import { type TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
 
 type StellarTokenActionsProps = {
     accountKey: AccountKey;
@@ -41,20 +41,9 @@ export const StellarTokenActions = ({ accountKey, tokenContract }: StellarTokenA
         selectAccountTokenBalance(state, accountKey, tokenContract),
     );
 
-    if (!account || account.networkType !== 'stellar') {
+    if (!account || account.networkType !== 'stellar' || !tokenContract) {
         return null;
     }
-
-    const isTokenDetail = !!tokenContract;
-
-    const handleActivateToken = () => {
-        navigation.navigate(RootStackRoutes.StellarManageTokenStack, {
-            screen: StellarManageTokenStackRoutes.TokenSelection,
-            params: {
-                accountKey,
-            },
-        });
-    };
 
     const handleDeactivateToken = async () => {
         // Check if token has balance > 0
@@ -77,7 +66,7 @@ export const StellarTokenActions = ({ accountKey, tokenContract }: StellarTokenA
             const result = await dispatch(
                 composeStellarTrustlineFeesThunk({
                     accountKey,
-                    tokenContract: tokenContract!,
+                    tokenContract,
                 }),
             );
 
@@ -86,7 +75,7 @@ export const StellarTokenActions = ({ accountKey, tokenContract }: StellarTokenA
                     screen: StellarManageTokenStackRoutes.DeactivationFee,
                     params: {
                         accountKey,
-                        tokenContract: tokenContract!,
+                        tokenContract,
                     },
                 });
             } else {
@@ -104,31 +93,17 @@ export const StellarTokenActions = ({ accountKey, tokenContract }: StellarTokenA
         }
     };
 
-    if (isTokenDetail) {
-        return (
-            <Box paddingHorizontal="sp16">
-                <Button
-                    colorScheme="tertiaryElevation0"
-                    onPress={handleDeactivateToken}
-                    isLoading={isComposingFees}
-                    isDisabled={isComposingFees}
-                    testID="@account-detail/deactivate-token-button"
-                >
-                    <Translation id="moduleStellarToken.accountDetail.deactivateToken" />
-                </Button>
-            </Box>
-        );
-    }
-
     return (
         <Box paddingHorizontal="sp16">
             <Button
-                colorScheme="tertiaryElevation0"
-                viewLeft="plus"
-                onPress={handleActivateToken}
-                testID="@account-detail/activate-token-button"
+                intent="neutral"
+                priority="secondary"
+                onPress={handleDeactivateToken}
+                isLoading={isComposingFees}
+                isDisabled={isComposingFees}
+                testID="@account-detail/deactivate-token-button"
             >
-                <Translation id="moduleStellarToken.accountDetail.activateToken" />
+                <Translation id="moduleStellarToken.accountDetail.deactivateToken" />
             </Button>
         </Box>
     );

@@ -1,7 +1,6 @@
 import { messages } from '@suite/intl';
 import { TR_ONBOARDING_DATA_COLLECTION_HEADING as SPANISH_TR_ONBOARDING_DATA_COLLECTION_HEADING } from '@trezor/suite-data/files/translations/es-ES.json';
 import { colorVariants } from '@trezor/theme';
-import { hexToRgba } from '@trezor/utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
@@ -11,27 +10,43 @@ enum ColorScheme {
     Dark = 'dark',
 }
 
+const hexToSerializedCssColor = (hex: string) => {
+    const normalizedHex = hex.replace('#', '');
+    const fullHex = normalizedHex.length === 6 ? normalizedHex + 'FF' : normalizedHex;
+
+    const r = parseInt(fullHex.slice(0, 2), 16);
+    const g = parseInt(fullHex.slice(2, 4), 16);
+    const b = parseInt(fullHex.slice(4, 6), 16);
+    const alpha = parseInt(fullHex.slice(6, 8), 16) / 255;
+
+    if (alpha < 1) {
+        return `rgba(${r}, ${g}, ${b}, ${Number(alpha.toFixed(2))})`;
+    }
+
+    return `rgb(${r}, ${g}, ${b})`;
+};
+
 const testCases = [
     {
         testName: 'Light English',
         userPreferences: { colorScheme: ColorScheme.Light },
         text: messages['TR_ONBOARDING_DATA_COLLECTION_HEADING'].defaultMessage,
-        textColor: colorVariants.standard.textDefault,
-        bodyBackgroundColor: colorVariants.standard.backgroundSurfaceElevation0,
+        textColor: colorVariants.standard.contentPrimary,
+        bodyBackgroundColor: colorVariants.standard.surfaceFillPage,
     },
     {
         testName: 'Dark English',
         userPreferences: { colorScheme: ColorScheme.Dark },
         text: messages['TR_ONBOARDING_DATA_COLLECTION_HEADING'].defaultMessage,
-        textColor: colorVariants.dark.textDefault,
-        bodyBackgroundColor: colorVariants.dark.backgroundSurfaceElevation0,
+        textColor: colorVariants.dark.contentPrimary,
+        bodyBackgroundColor: colorVariants.dark.surfaceFillPage,
     },
     {
         testName: 'Dark Spanish',
         userPreferences: { locale: 'es-ES', colorScheme: ColorScheme.Dark },
         text: SPANISH_TR_ONBOARDING_DATA_COLLECTION_HEADING,
-        textColor: colorVariants.dark.textDefault,
-        bodyBackgroundColor: colorVariants.dark.backgroundSurfaceElevation0,
+        textColor: colorVariants.dark.contentPrimary,
+        bodyBackgroundColor: colorVariants.dark.surfaceFillPage,
     },
 ];
 
@@ -49,10 +64,13 @@ testCases.forEach(({ testName, userPreferences, text, textColor, bodyBackgroundC
             async ({ onboardingPage, analyticsSection }) => {
                 await onboardingPage.optionallyDismissFwHashCheckError();
                 await expect(analyticsSection.heading).toHaveText(text);
-                await expect(analyticsSection.heading).toHaveCSS('color', hexToRgba(textColor));
+                await expect(analyticsSection.heading).toHaveCSS(
+                    'color',
+                    hexToSerializedCssColor(textColor),
+                );
                 await expect(onboardingPage.page.locator('body')).toHaveCSS(
                     'background-color',
-                    hexToRgba(bodyBackgroundColor),
+                    hexToSerializedCssColor(bodyBackgroundColor),
                 );
             },
         );

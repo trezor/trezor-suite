@@ -1,4 +1,9 @@
+import { selectFlags, setFlag } from '@suite/flags';
 import { metadataLabelingActions } from '@suite/metadata';
+import { openModal, preserveModal } from '@suite/modal';
+import { recoveryActions, selectRecoveryStatus } from '@suite/recovery';
+import { initialRedirection, routerInit } from '@suite/router';
+import { suiteSettingsActions } from '@suite/settings';
 import * as trezorConnectActions from '@suite-common/connect-init';
 import { initMessageSystemThunk, prepareCachedEnvData } from '@suite-common/message-system';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
@@ -10,32 +15,29 @@ import {
     updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import * as walletConnectActions from '@suite-common/walletconnect';
-import { DEVICE, UI } from '@trezor/connect';
+import { DEVICE, UI_REQUEST } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { bluetoothOnDeviceConnectedThunk } from 'src/actions/bluetooth/bluetoothOnDeviceConnectedThunk';
-import * as languageActions from 'src/actions/settings/languageActions';
 import * as bioAuthThunks from 'src/actions/suite/bioAuthThunks';
-import * as modalActions from 'src/actions/suite/modalActions';
-import * as routerActions from 'src/actions/suite/routerActions';
 import { markDeviceAsRecentlyConnectedThunk } from 'src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
 import type { Dispatch, GetState } from 'src/types/suite';
 
 import { SUITE } from './constants';
-import { onSuiteReady, setFlag } from './suiteActions';
+import { onSuiteReady } from './suiteActions';
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const {
         suite: {
-            settings: { language },
             lifecycle: { status },
-            flags: { enableAutoupdateOnNextRun },
         },
+        suiteSettings: { language },
         wallet: {
             settings: { localCurrency },
         },
     } = getState();
+    const { enableAutoupdateOnNextRun } = selectFlags(getState());
 
     if (status !== 'initial') return;
 
@@ -54,7 +56,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
      */
 
     // 2. fetching locales
-    dispatch(languageActions.setLanguage(language));
+    dispatch(suiteSettingsActions.setLanguage(language));
 
     // 3. fetch message system config
     await prepareCachedEnvData();
@@ -62,12 +64,12 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 
     // 4. turn on auto updates if needed
     if (isDesktop() && enableAutoupdateOnNextRun) {
-        dispatch(setFlag('enableAutoupdateOnNextRun', false));
+        dispatch(setFlag({ key: 'enableAutoupdateOnNextRun', value: false }));
         desktopApi.setAutomaticUpdateEnabled(true);
     }
 
     // 5. redirecting user into welcome screen (if needed)
-    dispatch(routerActions.initialRedirection());
+    dispatch(initialRedirection({ isInitialRun: selectFlags(getState()).initialRun }));
 
     // 6. init connect (could throw an error,
     // then the error is caught in <ErrorBoundary /> in Main.tsx
@@ -83,9 +85,15 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
                 [DEVICE.CONNECT_UNACQUIRED]: device => {
                     dispatch(markDeviceAsRecentlyConnectedThunk(device));
                 },
-                [UI.INVALID_PIN_ATTEMPTS_DEPLETED]: () => {
-                    dispatch(modalActions.openModal({ type: UI.INVALID_PIN_ATTEMPTS_DEPLETED }));
-                    dispatch(modalActions.preserve());
+                [UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED]: () => {
+                    dispatch(openModal({ type: UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED }));
+                    dispatch(preserveModal());
+                },
+                [UI_REQUEST.REQUEST_WORD]: () => {
+                    if (selectRecoveryStatus(getState()) === 'waiting-for-confirmation') {
+                        // Since the device asked for a first word, we can safely assume we've received confirmation from the user
+                        dispatch(recoveryActions.setStatus('in-progress'));
+                    }
                 },
             }),
         ).unwrap();
@@ -121,7 +129,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     await dispatch(updateMissingTxFiatRatesThunk({ localCurrency }));
 
     // 11. dispatch initial location change
-    dispatch(routerActions.init());
+    dispatch(routerInit());
 
     // 12. fetch metadata. metadata is not saved together with other data in storage.
     // historically it was saved in indexedDB together with devices and accounts and we did not need to load them

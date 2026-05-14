@@ -1,4 +1,4 @@
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     BottomSheetModal,
     Box,
@@ -9,8 +9,8 @@ import {
     useBottomSheetModal,
 } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
-import { useNativeStyles } from '@trezor/styles';
+import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
+import { useNativeStyles } from '@trezor/styles-native';
 
 import { TransactionDetailListItem } from './TransactionDetailListItem';
 import { cardStyle } from './TransactionOverview';
@@ -36,7 +36,7 @@ const IncludedCoinsSheetTrigger = ({ title, onPress }: { title: string; onPress:
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Card borderColor="borderElevation1" style={applyStyle(cardStyle)}>
+        <Card borderColor="borderNeutral" style={applyStyle(cardStyle)}>
             <PressableOpacity onPress={onPress}>
                 <Box flexDirection="row" alignItems="center" justifyContent="space-between">
                     <Box flexDirection="row" alignItems="center">
@@ -45,7 +45,7 @@ const IncludedCoinsSheetTrigger = ({ title, onPress }: { title: string; onPress:
                         </Box>
                         <Text>{title}</Text>
                     </Box>
-                    <Icon name="caretCircleRight" color="iconPrimaryDefault" />
+                    <Icon name="caretCircleRight" color="contentBrand" />
                 </Box>
             </PressableOpacity>
         </Card>

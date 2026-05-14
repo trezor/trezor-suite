@@ -3,7 +3,7 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
-    FormDraftRootState,
+    type FormDraftRootState,
     composeSendFormTransactionFeeLevelsThunk,
     formDraftActions,
     selectAccountByKey,
@@ -11,14 +11,14 @@ import {
     selectDeepCopyOfFormDraft,
 } from '@suite-common/wallet-core';
 import {
-    AccountKey,
-    FormState,
-    PrecomposedTransactionFinal,
-    TokenAddress,
+    type AccountKey,
+    type FormState,
+    type PrecomposedTransactionFinal,
+    type TokenAddress,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
-    UpdateSelectedFeeLevelThunkParams,
+    type UpdateSelectedFeeLevelThunkParams,
     transactionManagementActions,
 } from '@suite-native/transaction-management';
 

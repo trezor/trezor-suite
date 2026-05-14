@@ -1,6 +1,6 @@
 const legacyResults = [
     {
-        rules: ['<2.10.1', '1'],
+        rules: ['<2.11.0', '1'],
         success: false,
     },
 ];

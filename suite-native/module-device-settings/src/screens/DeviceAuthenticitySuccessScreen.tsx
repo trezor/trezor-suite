@@ -22,7 +22,8 @@ export const DeviceAuthenticitySuccessScreen = () => {
                 </Box>
 
                 <Button
-                    colorScheme="primary"
+                    intent="brand"
+                    priority="primary"
                     onPress={navigateToInitialScreen}
                     testID="@device-authenticity/close-button"
                 >

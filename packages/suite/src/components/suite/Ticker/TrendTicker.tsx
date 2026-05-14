@@ -1,15 +1,15 @@
 import styled from 'styled-components';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { selectLanguage } from '@suite/settings';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, localizePercentage } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 import { NoRatesTooltip } from './NoRatesTooltip';
 
@@ -19,12 +19,12 @@ const PercentageWrapper = styled.div<{ $isRateGoingUp: boolean }>`
     display: flex;
     align-items: center;
     color: ${({ theme, $isRateGoingUp }) =>
-        $isRateGoingUp ? theme.textPrimaryDefault : theme.textAlertRed};
+        $isRateGoingUp ? theme.contentBrand : theme.contentCritical};
 `;
 
 const Empty = styled.div`
     ${typography['body-sm-strong']}
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
 `;
 
 const calculatePercentageDifference = (a: number, b: number) => (a - b) / b;
@@ -68,7 +68,7 @@ export const TrendTicker = ({
                     <PercentageWrapper $isRateGoingUp={isRateGoingUp}>
                         <Icon
                             name={isRateGoingUp ? 'trendUp' : 'trendDown'}
-                            color={isRateGoingUp ? 'iconPrimaryDefault' : 'iconAlertRed'}
+                            color={isRateGoingUp ? 'contentBrand' : 'contentCritical'}
                             size={16}
                         />
                         {localizePercentage({ valueInFraction: percentageChange, locale })}

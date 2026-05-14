@@ -1,5 +1,5 @@
-import { RbfLabelsToBeUpdated } from '@suite-common/suite-rbf-labels-migrations-types';
-import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type RbfLabelsToBeUpdated } from '@suite-common/suite-rbf-labels-migrations-types';
+import { type AccountKey, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { findChainedTransactions, findTransactions } from '@suite-common/wallet-utils';
 
 type FindLabelsToBeMovedOrDeletedThunkParams = {

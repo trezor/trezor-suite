@@ -1,35 +1,42 @@
 import { FormProvider } from 'react-hook-form';
 
-import { CryptoId, ProviderMetadata } from 'invity-api';
+import { type CryptoId, type ProviderMetadata } from 'invity-api';
 
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
-import { Box, Column, Icon, Modal, Row, Text } from '@trezor/components';
+import { type Account } from '@suite-common/wallet-types';
+import { isAllowanceUnlimited } from '@suite-common/wallet-utils';
+import { Banner, Box, Column, Icon, Modal, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
+import { useAsyncClickHandler } from '@trezor/react-utils';
 import { borders } from '@trezor/theme';
 
 import { AccountLabeling } from 'src/components/suite/labeling';
 import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useDevice } from 'src/hooks/suite';
 import { useAllowanceModal } from 'src/hooks/wallet/allowance';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 
-import { AllowanceModalProviderInfo } from './AllowanceModalProviderInfo';
+import {
+    AllowanceModalProviderInfo,
+    type ProviderLogoSourceType,
+} from './AllowanceModalProviderInfo';
 
 interface RevokeModalProps {
     cryptoId: CryptoId;
     account: Account;
     provider: ProviderMetadata;
     spender: string;
+    logoSourceType?: ProviderLogoSourceType;
     preapprovedAmount?: string;
     onConfirm?: () => void;
     onCancel?: () => void;
 }
 
 export const RevokeModal = (props: RevokeModalProps) => {
-    const { account, provider, spender, cryptoId, preapprovedAmount } = props;
+    const { account, provider, spender, cryptoId, logoSourceType, preapprovedAmount } = props;
     const { device } = useDevice();
+    const { handleClick, disabled: isConfirmInProgress } = useAsyncClickHandler();
 
     const context = useAllowanceModal({
         ...props,
@@ -42,6 +49,8 @@ export const RevokeModal = (props: RevokeModalProps) => {
         token,
         isLoading,
         composedLevels,
+        composedLevelsError,
+        canSubmit,
         methods,
         handleClose,
         handleFeeChange,
@@ -51,12 +60,14 @@ export const RevokeModal = (props: RevokeModalProps) => {
     if (!token?.symbol) return null;
 
     const displaySymbol = getDisplaySymbol(token.symbol, token.contract);
+    const isPreapprovedAmountUnlimited =
+        !!preapprovedAmount && isAllowanceUnlimited(preapprovedAmount, token.decimals);
 
     return (
         <FormProvider {...methods}>
             <Modal
                 onCancel={handleClose}
-                variant="primary"
+                intent="brand"
                 width={600}
                 heading={
                     <Translation
@@ -67,9 +78,9 @@ export const RevokeModal = (props: RevokeModalProps) => {
                 bottomContent={
                     <>
                         <Modal.Button
-                            isLoading={isLoading}
-                            isDisabled={!device?.connected}
-                            onClick={confirmAndSend}
+                            isLoading={isLoading || isConfirmInProgress}
+                            isDisabled={!device?.connected || !canSubmit || isConfirmInProgress}
+                            onClick={() => handleClick(confirmAndSend)}
                         >
                             <Translation id="TR_CONTINUE" />
                         </Modal.Button>
@@ -92,7 +103,11 @@ export const RevokeModal = (props: RevokeModalProps) => {
                 shadowBottom={false}
             >
                 <Column gap={12}>
-                    <AllowanceModalProviderInfo spender={spender} provider={provider} />
+                    <AllowanceModalProviderInfo
+                        spender={spender}
+                        provider={provider}
+                        logoSourceType={logoSourceType}
+                    />
 
                     <Box
                         borderWidth={borders.widths.large}
@@ -108,7 +123,11 @@ export const RevokeModal = (props: RevokeModalProps) => {
                                     <Row gap={12}>
                                         <TradingCoinLogo cryptoId={cryptoId} size={24} />
                                         <Text>
-                                            {preapprovedAmount ?? '∞'} {displaySymbol}
+                                            {isPreapprovedAmountUnlimited ? (
+                                                <Translation id="TR_APPROVE_AMOUNT_UNLIMITED" />
+                                            ) : (
+                                                `${preapprovedAmount ?? '∞'} ${displaySymbol}`
+                                            )}
                                         </Text>
                                     </Row>
                                 </Column>
@@ -143,6 +162,19 @@ export const RevokeModal = (props: RevokeModalProps) => {
                             changeFeeLevel={handleFeeChange}
                         />
                     </Box>
+
+                    {composedLevelsError && (
+                        <Banner
+                            intent="critical"
+                            icon="warning"
+                            description={
+                                <Translation
+                                    id={composedLevelsError.id}
+                                    values={composedLevelsError.values}
+                                />
+                            }
+                        />
+                    )}
                 </Column>
             </Modal>
         </FormProvider>

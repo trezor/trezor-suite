@@ -2,7 +2,11 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/bip329" },
         { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/earn-stablecoin-api"
+        },
         {
             "path": "../../suite-common/fiat-services"
         },
@@ -33,6 +37,7 @@
         { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../discovery" },
+        { "path": "../feature-feedback" },
         { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../forms" },
@@ -52,8 +57,13 @@
         { "path": "../toasts" },
         { "path": "../tokens" },
         { "path": "../transactions" },
-        { "path": "../../packages/styles" },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/type-utils" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../test-utils-store" },
+        { "path": "../../packages/requirements" }
     ]
 }

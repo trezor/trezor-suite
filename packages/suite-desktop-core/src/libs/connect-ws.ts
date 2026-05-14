@@ -1,23 +1,22 @@
-import { ipcMain, nativeImage } from 'electron';
 import { WebSocketServer } from 'ws';
 
 import {
     CORE_CALL,
-    CoreCallMessage,
-    Manifest,
+    type CoreCallMessage,
+    type Manifest,
     POPUP,
-    PopupClosedMessage,
-    PopupHandshake,
+    type PopupClosedMessage,
+    type PopupHandshake,
 } from '@trezor/connect';
-import { parseManifest, parseVersion } from '@trezor/connect/src/data/connectSettings';
-import { isLinux, isMacOs, isWindows } from '@trezor/env-utils';
-import { ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-utils';
-import { ConnectPopupResponse } from '@trezor/suite-desktop-api/src/messages';
-import { Deferred, createDeferred, resolveAfter } from '@trezor/utils';
+import { parseManifest, parseVersion } from '@trezor/connect-common/src/data/connectSettings';
+import { isLinux } from '@trezor/env-utils';
+import { type ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-utils';
+import { createDeferred, resolveAfter } from '@trezor/utils';
 
-import { createHttpReceiver } from './http-receiver';
-import { Dependencies } from '../modules';
-import { app } from '../typed-electron';
+import { addMessage, deleteMessage, setAppInit } from './connect-popup-messages';
+import { type createHttpReceiver } from './http-receiver';
+import { getProcessIcon } from './process-icon';
+import { type Dependencies } from '../modules';
 
 const LOG_PREFIX = 'connect-ws';
 
@@ -60,32 +59,6 @@ const validateIncomingMessage = (message: any): message is IncomingMessage => {
     return false;
 };
 
-export const getProcessIcon = async (path: string) => {
-    try {
-        const iconDim = { width: 48, height: 48 };
-        if (isWindows()) {
-            const icon = await app.getFileIcon(path, {
-                size: 'normal',
-            });
-
-            if (icon.isEmpty()) {
-                return undefined;
-            }
-
-            return icon.resize(iconDim).toDataURL();
-        } else if (isMacOs()) {
-            const icon = await nativeImage.createThumbnailFromPath(path, iconDim);
-            if (icon.isEmpty()) {
-                return undefined;
-            }
-
-            return icon.toDataURL();
-        }
-    } catch (error) {
-        logger.warn(LOG_PREFIX, 'Failed to get icon of process - ' + error);
-    }
-};
-
 export const exposeConnectWs = ({
     mainThreadEmitter,
     mainWindowProxy,
@@ -98,8 +71,6 @@ export const exposeConnectWs = ({
     store: Dependencies['store'];
 }) => {
     const { logger } = global;
-    const messages: Record<string, Deferred<any, number>> = {};
-    let appInit: Deferred<void> | undefined;
 
     const wss = new WebSocketServer({
         noServer: true,
@@ -199,7 +170,7 @@ export const exposeConnectWs = ({
 
                 const { method, ...rest } = message.payload;
 
-                messages[message.id] = createDeferred();
+                const deferred = addMessage(message.id);
                 connectionPendingMessages.add(message.id);
 
                 try {
@@ -207,15 +178,37 @@ export const exposeConnectWs = ({
                     if (!mainWindowProxy.getInstance()) {
                         mainThreadEmitter.emit('app/show');
                         logger.info(LOG_PREFIX, 'waiting for window to start');
-                        appInit = createDeferred();
+                        const appInitDeferred = createDeferred<void>();
+                        setAppInit(appInitDeferred);
                         // todo: do we actually need to clean this timeout?
                         const appInitTimeout = resolveAfter(10000);
-                        await Promise.race([appInit.promise, appInitTimeout]);
-                        appInit = undefined;
+                        await Promise.race([appInitDeferred.promise, appInitTimeout]);
+                        setAppInit(undefined);
+                    }
+
+                    const mainWindow = mainWindowProxy.getInstance();
+                    if (!mainWindow) {
+                        logger.error(
+                            LOG_PREFIX,
+                            'Main window not available after initialization timeout',
+                        );
+                        deleteMessage(message.id);
+                        connectionPendingMessages.delete(message.id);
+                        ws.send(
+                            JSON.stringify({
+                                id: message.id,
+                                success: false,
+                                payload: {
+                                    error: 'Main window not available',
+                                },
+                            }),
+                        );
+
+                        return;
                     }
 
                     // send call to renderer
-                    mainWindowProxy.getInstance()?.webContents.send('connect-popup/call', {
+                    mainWindow.webContents.send('connect-popup/call', {
                         id: message.id,
                         method,
                         payload: rest,
@@ -238,7 +231,7 @@ export const exposeConnectWs = ({
                     });
 
                     // wait for response
-                    const response = await messages[message.id].promise;
+                    const response = await deferred.promise;
 
                     ws.send(
                         JSON.stringify({
@@ -260,6 +253,11 @@ export const exposeConnectWs = ({
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
                     error: 'Connection closed',
                 });
+
+                for (const id of connectionPendingMessages) {
+                    deleteMessage(id);
+                }
+                connectionPendingMessages.clear();
             }
         });
     });
@@ -275,25 +273,5 @@ export const exposeConnectWs = ({
                 wss.emit('connection', ws, request);
             });
         }
-    });
-
-    ipcMain.handle('connect-popup/response', (_, response: ConnectPopupResponse) => {
-        logger.info(LOG_PREFIX, 'received response from popup ' + JSON.stringify(response));
-        if (!response || typeof response.id !== 'string') {
-            logger.error(LOG_PREFIX, 'invalid response from popup');
-
-            return;
-        }
-
-        if (!messages[response.id]) {
-            logger.error(LOG_PREFIX, 'no deferred message found');
-
-            return;
-        }
-
-        messages[response.id].resolve(response);
-    });
-    ipcMain.handle('connect-popup/ready', () => {
-        appInit?.resolve();
     });
 };

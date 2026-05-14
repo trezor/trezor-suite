@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { selectSelectedDevice } from '@suite-common/device';
-import { PasswordEntry as PasswordEntryType } from '@suite-common/metadata-types';
+import { type PasswordEntry as PasswordEntryType } from '@suite-common/metadata-types';
 import { Row, Text } from '@trezor/components';
 
 import { AddEntryButton } from './AddEntryButton';

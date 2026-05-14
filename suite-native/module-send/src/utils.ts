@@ -1,8 +1,8 @@
-import { FormState, TokenAddress } from '@suite-common/wallet-types';
-import { Utxo } from '@trezor/blockchain-link-types';
-import { FeeLevel } from '@trezor/connect';
+import { type FormState, type TokenAddress } from '@suite-common/wallet-types';
+import { type Utxo } from '@trezor/blockchain-link-types';
+import { type FeeLevel } from '@trezor/connect';
 
-import { SendOutputFieldName, SendOutputsFormValues } from './sendOutputsFormSchema';
+import { type SendOutputFieldName, type SendOutputsFormValues } from './sendOutputsFormSchema';
 
 export const getOutputFieldName = <TField extends SendOutputFieldName>(
     index: number,
@@ -10,7 +10,7 @@ export const getOutputFieldName = <TField extends SendOutputFieldName>(
 ): `outputs.${number}.${TField}` => `outputs.${index}.${field}`;
 
 export const constructFormDraft = ({
-    formValues: { outputs, ...restFormValues },
+    formValues: { outputs, transactionData, tronDataAscii, ...restFormValues },
     tokenContract,
     feeLevel = { label: 'normal', feePerUnit: '' },
     selectedUtxos = [],
@@ -36,6 +36,8 @@ export const constructFormDraft = ({
     selectedFee: feeLevel.label,
     feePerUnit: feeLevel.feePerUnit,
     feeLimit: feeLevel.feeLimit ?? '',
+    transactionData: transactionData || undefined,
+    tronDataAscii: tronDataAscii || undefined,
     ...restFormValues,
 });
 

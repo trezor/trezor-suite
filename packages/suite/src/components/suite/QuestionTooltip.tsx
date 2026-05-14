@@ -1,8 +1,8 @@
-import { JSX } from 'react';
+import { type JSX } from 'react';
 
 import styled from 'styled-components';
 
-import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
+import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { H3, Tooltip } from '@trezor/components';
 
 const Wrapper = styled.div`

@@ -2,20 +2,21 @@ import type { CryptoId } from 'invity-api';
 
 import {
     Feature,
-    MessageSystemRootState,
+    type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
-    TokenDefinitionsRootState,
+    type TokenDefinitionsRootState,
     filterKnownTokens,
     getSimpleCoinDefinitionsByNetwork,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import {
-    TradingRootStateWithDeviceAndAccounts,
-    TradingTransaction,
-    TradingType,
+    type TradingRootStateWithDeviceAndAccounts,
+    type TradingTransaction,
+    type TradingType,
+    type TradingTypeWithConcierge,
     cryptoIdToSymbol,
     isFinalStatus,
     selectDeviceTradingTrades,
@@ -28,16 +29,21 @@ import {
     getNetworkType,
 } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
-    FiatRatesRootState,
-    WalletSettingsRootState,
+    type AccountsRootState,
+    type FiatRatesRootState,
+    type WalletSettingsRootState,
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectVisibleDeviceAccounts,
     selectVisibleDeviceAccountsByNetworkSymbol,
     selectVisibleDeviceAccountsMap,
 } from '@suite-common/wallet-core';
-import { Account, AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type AccountKey,
+    type TokenAddress,
+    type TokenSymbol,
+} from '@suite-common/wallet-types';
 import {
     getAccountFiatBalance,
     getFiatRateKey,
@@ -47,20 +53,20 @@ import {
 import { sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts';
 import {
     FeatureFlag,
-    FeatureFlagsRootState,
+    type FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
-import { CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
-import { TokensRootState } from '@suite-native/tokens';
+import { type CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
+import { type TokensRootState } from '@suite-native/tokens';
 import {
-    SectionListData,
+    type SectionListData,
     getSymbolFromTradeableAsset,
     toCaseAwareCryptoId,
 } from '@suite-native/trading-atoms';
-import { MyAsset, MyAssetRow, TradeableAsset } from '@suite-native/trading-types';
+import { type MyAsset, type MyAssetRow, type TradeableAsset } from '@suite-native/trading-types';
 
 import { selectIsTradingEnabledForCountry } from './residenceSelectors';
-import { TradingRootState } from '../reducers';
+import { type TradingRootState } from '../reducers';
 
 export type CombinedSelectorsRootState = TradingRootStateWithDeviceAndAccounts &
     TokenDefinitionsRootState &
@@ -100,6 +106,12 @@ export const selectIsTradingSellEnabled = (state: MessageSystemRootState & Featu
     selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingSellEnabled) ||
     selectIsFeatureEnabled(state, Feature.trading.sell, true);
 
+export const selectIsTradingConciergeEnabled = (
+    state: MessageSystemRootState & FeatureFlagsRootState,
+) =>
+    selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingConciergeEnabled) ||
+    selectIsFeatureEnabled(state, Feature.trading.concierge, true);
+
 export const selectIsTradingEnabled = (
     state: MessageSystemRootState & FeatureFlagsRootState & TradingRootState,
 ) => {
@@ -110,14 +122,25 @@ export const selectIsTradingEnabled = (
     return (
         selectIsTradingBuyEnabled(state) ||
         selectIsTradingExchangeEnabled(state) ||
-        selectIsTradingSellEnabled(state)
+        selectIsTradingSellEnabled(state) ||
+        selectIsTradingConciergeEnabled(state)
     );
 };
 
 export const selectEnabledTradingTypes = createFeatureFlagsMemoizedSelector(
-    [selectIsTradingBuyEnabled, selectIsTradingExchangeEnabled, selectIsTradingSellEnabled],
-    (isTradingBuyEnabled, isTradingExchangeEnabled, isTradingSellEnabled) => {
-        const enabledTypes: TradingType[] = [];
+    [
+        selectIsTradingBuyEnabled,
+        selectIsTradingExchangeEnabled,
+        selectIsTradingSellEnabled,
+        selectIsTradingConciergeEnabled,
+    ],
+    (
+        isTradingBuyEnabled,
+        isTradingExchangeEnabled,
+        isTradingSellEnabled,
+        isTradingConciergeEnabled,
+    ) => {
+        const enabledTypes: TradingTypeWithConcierge[] = [];
 
         if (isTradingBuyEnabled) {
             enabledTypes.push('buy');
@@ -127,6 +150,9 @@ export const selectEnabledTradingTypes = createFeatureFlagsMemoizedSelector(
         }
         if (isTradingSellEnabled) {
             enabledTypes.push('sell');
+        }
+        if (isTradingConciergeEnabled) {
+            enabledTypes.push('concierge');
         }
 
         return enabledTypes;

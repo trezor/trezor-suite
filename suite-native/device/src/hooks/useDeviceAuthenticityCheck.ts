@@ -7,18 +7,18 @@ import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { isDeviceAuthenticityValid } from '@suite-common/device-authenticity';
 import {
     Feature,
-    MessageSystemRootState,
+    type MessageSystemRootState,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
-import { StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
-import { DeviceAuthenticityCheckResult, events } from '@suite-native/analytics';
+import { type StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
+import { type DeviceAuthenticityCheckResult, events } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { useTranslate } from '@suite-native/intl';
 import { captureSentryException, withSentryScope } from '@suite-native/sentry';
 import { useAnalytics } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
-import TrezorConnect, { AuthenticateDeviceResult, Response } from '@trezor/connect';
+import TrezorConnect, { type AuthenticateDeviceResult, type Response } from '@trezor/connect';
 import { isArrayMember } from '@trezor/utils';
 
 type RawResult = Awaited<Response<AuthenticateDeviceResult>>;
@@ -39,6 +39,9 @@ export const useDeviceAuthenticityCheck = () => {
     );
     const isTropicRemotelyDisabled = useSelector((state: MessageSystemRootState) =>
         selectIsFeatureDisabled(state, Feature.deviceAuthenticityCheckTropic),
+    );
+    const isMCURemotelyDisabled = useSelector((state: MessageSystemRootState) =>
+        selectIsFeatureDisabled(state, Feature.deviceAuthenticityCheckMCU),
     );
     const analytics = useAnalytics();
     const device = useSelector(selectSelectedDevice);
@@ -79,7 +82,7 @@ export const useDeviceAuthenticityCheck = () => {
             // Otherwise it may be cancel on device (must not be considered device compromised), or a transport error, etc.
             if (!result.success) {
                 return isDeviceBootloaderUnlocked
-                    ? { valid: false, error: result.payload.error }
+                    ? { valid: false, error: result.error.message }
                     : undefined;
             }
 
@@ -87,17 +90,23 @@ export const useDeviceAuthenticityCheck = () => {
                 result: result.payload,
                 isOptigaRemotelyDisabled,
                 isTropicRemotelyDisabled,
+                isMCURemotelyDisabled,
             });
 
             return { valid: isOverallValid, ...result.payload };
         },
-        [isDeviceBootloaderUnlocked, isOptigaRemotelyDisabled, isTropicRemotelyDisabled],
+        [
+            isDeviceBootloaderUnlocked,
+            isOptigaRemotelyDisabled,
+            isTropicRemotelyDisabled,
+            isMCURemotelyDisabled,
+        ],
     );
 
     const handleDeviceAccessError = useCallback(
         (error: string) => {
             showToast({
-                variant: 'error',
+                intent: 'critical',
                 message: translate('moduleDeviceSettings.authenticity.toast.failed', { error }),
             });
             reportCheckResult('failed', error);
@@ -111,7 +120,7 @@ export const useDeviceAuthenticityCheck = () => {
                 // Error code is Failure_ProcessError, but  Not all Failure_ProcessError codes mean the bootloader is unlocked,
                 // so this custom condition prevents false positives for that case.
                 showToast({
-                    variant: 'error',
+                    intent: 'critical',
                     message: translate('moduleDeviceSettings.authenticity.toast.error', {
                         error,
                     }),
@@ -126,7 +135,7 @@ export const useDeviceAuthenticityCheck = () => {
                 case 'Failure_PinCancelled': // PIN entry cancelled on T3T1
                     navigation.goBack();
                     showToast({
-                        variant: 'info',
+                        intent: 'info',
                         message: translate('moduleDeviceSettings.authenticity.toast.canceled'),
                     });
                     reportCheckResult('cancelled');
@@ -134,7 +143,7 @@ export const useDeviceAuthenticityCheck = () => {
                 default:
                     navigation.goBack();
                     showToast({
-                        variant: 'error',
+                        intent: 'critical',
                         message: translate('moduleDeviceSettings.authenticity.toast.error', {
                             error,
                         }),
@@ -154,7 +163,12 @@ export const useDeviceAuthenticityCheck = () => {
             }
 
             // Clear previous result
-            dispatch(deviceActions.setDeviceAuthenticityResult({ device, result: undefined }));
+            dispatch(
+                deviceActions.setDeviceAuthenticityResult({
+                    deviceId: device.id,
+                    result: undefined,
+                }),
+            );
 
             const deviceAccessResponse = await requestPrioritizedDeviceAccess(() =>
                 TrezorConnect.authenticateDevice({
@@ -174,13 +188,18 @@ export const useDeviceAuthenticityCheck = () => {
             const result = deviceAccessResponse.payload;
 
             if (!result.success) {
-                const { error, code } = result.payload;
-                handleError(error, code);
+                const { message, code } = result.error;
+                handleError(message, code);
             }
 
             const storedResult: StoredAuthenticateDeviceResult = createStoredResult(result);
 
-            dispatch(deviceActions.setDeviceAuthenticityResult({ device, result: storedResult }));
+            dispatch(
+                deviceActions.setDeviceAuthenticityResult({
+                    deviceId: device.id,
+                    result: storedResult,
+                }),
+            );
 
             if (storedResult?.valid === false) {
                 handleFailure();
@@ -189,6 +208,9 @@ export const useDeviceAuthenticityCheck = () => {
                 }
                 if ('tropicResult' in storedResult && storedResult.tropicResult?.error) {
                     reportCheckResult('compromised', storedResult.tropicResult.error, storedResult);
+                }
+                if ('mcuResult' in storedResult && storedResult.mcuResult?.error) {
+                    reportCheckResult('compromised', storedResult.mcuResult.error, storedResult);
                 }
             } else if (result.success) {
                 handleSuccess();

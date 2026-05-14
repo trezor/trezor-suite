@@ -1,12 +1,12 @@
-import { PayloadAction, isAnyOf } from '@reduxjs/toolkit';
+import { type PayloadAction, isAnyOf } from '@reduxjs/toolkit';
 
 import {
-    DeviceReducerState,
+    type DeviceReducerState,
     deviceInitialState as commonInitialState,
     deviceActions,
     prepareDeviceReducer,
 } from '@suite-common/device';
-import { AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import { type AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
 
 type ConnectionMode = 'cable' | 'bluetooth';
 

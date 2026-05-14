@@ -1,8 +1,8 @@
 import { type DeviceRootState, selectDeviceId } from '@suite-common/device';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
-import { WalletDescriptor } from '@suite-common/wallet-types';
+import { type WalletDescriptor } from '@suite-common/wallet-types';
 
-import { SuiteSyncQuotaManagerState } from './quotaManagerReducer';
+import { type SuiteSyncQuotaManagerState } from './quotaManagerReducer';
 
 export type WithSuiteSyncQuotaManagerState = {
     suiteSyncQuotaManager: SuiteSyncQuotaManagerState;
@@ -43,6 +43,9 @@ export const selectDeviceDismissedNoQuotaLeftWarning = (
 ) =>
     state.suiteSyncQuotaManager.registeredDevices.find(d => d.deviceId === deviceId)
         ?.dismissedNoQuotaLeftWarning;
+
+export const selectEnforceQuotaManager = (state: WithSuiteSyncQuotaManagerState) =>
+    state.suiteSyncQuotaManager.enforceQuotaManager;
 
 export const selectHasDeviceAllowance = (
     state: WithSuiteSyncQuotaManagerState,

@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react';
 
 import { DEFAULT_INTENT } from './consts';
-import { BannerIntent } from './types';
+import { type BannerIntent } from './types';
 
 export const BannerContext = createContext<{
     intent?: BannerIntent;

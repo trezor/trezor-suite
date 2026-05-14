@@ -1,7 +1,7 @@
-import { TypographyStyle, spacingsPx } from '@trezor/theme';
+import { type TypographyStyle, spacingsPx } from '@trezor/theme';
 
-import { HeadingSize, PaddingType } from './types';
-import { IconSize } from '../Icon/Icon';
+import { type HeadingSize, type PaddingType } from './types';
+import { type IconSize } from '../Icon/Icon';
 
 type PaddingMapArgs = {
     $paddingType: PaddingType;

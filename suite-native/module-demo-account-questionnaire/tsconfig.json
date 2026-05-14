@@ -9,7 +9,10 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../services" },
-        { "path": "../../packages/styles" },
-        { "path": "../../packages/urls" }
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/requirements" }
     ]
 }

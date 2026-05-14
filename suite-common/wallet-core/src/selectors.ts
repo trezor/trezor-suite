@@ -1,22 +1,23 @@
 import {
-    DeviceRootState,
+    type DeviceRootState,
     selectHasOnlyPortfolioDevice,
     selectSelectedDevice,
 } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { NetworkSymbol, networks, networksCollection } from '@suite-common/wallet-config';
-import { Account, ReviewOutput } from '@suite-common/wallet-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type NetworkSymbol, networks, networksCollection } from '@suite-common/wallet-config';
+import { type Account, type ReviewOutput } from '@suite-common/wallet-types';
 import {
     findAccountsByAddress,
     isAccountDiscoverable,
     sortByCoin,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import { StaticSessionId, type TrezorConnect } from '@trezor/connect';
+import { type ContractInfoProtocol } from '@trezor/blockchain-link-types/src/blockbook';
+import { type StaticSessionId, type TrezorConnect } from '@trezor/connect';
 import { arrayToDictionary } from '@trezor/utils';
 
-import { AccountsRootState } from './accounts/accountsReducer';
+import { type AccountsRootState } from './accounts/accountsReducer';
 import {
     selectAccounts,
     selectAccountsByDeviceState,
@@ -24,10 +25,14 @@ import {
     selectIsDeviceAccountless,
     selectVisibleDeviceAccounts,
 } from './accounts/accountsSelectors';
+import { type BlockchainRootState, selectGapLimit } from './blockchain/blockchainReducer';
 import { selectSupportedNetworkByDevice } from './device/deviceSelectors';
-import { DiscoveryRootState } from './discovery/discoveryReducer';
+import { type DiscoveryRootState } from './discovery/discoveryReducer';
 import { selectHasRunningDiscovery } from './discovery/discoverySelectors';
-import { WalletSettingsRootState, selectEnabledNetworks } from './settings/walletSettingsReducer';
+import {
+    type WalletSettingsRootState,
+    selectEnabledNetworks,
+} from './settings/walletSettingsReducer';
 
 /*
 This file is for selectors that reach into more than one wallet-core reduce
@@ -37,7 +42,8 @@ to prevent circular dependencies between reducers
 export type WalletCoreCompoundRootState = AccountsRootState &
     DeviceRootState &
     DiscoveryRootState &
-    WalletSettingsRootState;
+    WalletSettingsRootState &
+    BlockchainRootState;
 const createMemoizedSelector = createWeakMapSelector.withTypes<WalletCoreCompoundRootState>();
 
 const selectEnabledSupportedNetworks = createMemoizedSelector(
@@ -109,9 +115,19 @@ export const selectDiscoveryAccountsParam = (
     getDeviceAccountsPerEnabledNetwork(state, deviceState).map(({ symbol, accounts }) => {
         const { networkType } = networks[symbol];
         const identity = tryGetAccountIdentity({ networkType, deviceState });
+        const bitcoinGap = networkType === 'bitcoin' ? selectGapLimit(state, symbol) : undefined;
+
+        const protocols: ContractInfoProtocol[] | undefined =
+            networkType === 'ethereum' ? ['erc4626'] : undefined;
 
         // undiscovered network; discover as a whole
-        if (!accounts) return { symbol, identity };
+        if (!accounts)
+            return {
+                symbol,
+                identity,
+                protocols,
+                gap: bitcoinGap,
+            } as DiscoveryAccountsParam[number];
 
         const known = getLastAccountsPerAccountType(accounts).map(({ type, lastAccount }) => {
             // last account is a failed one; try to discover it again
@@ -122,7 +138,14 @@ export const selectDiscoveryAccountsParam = (
             else return { type };
         });
 
-        return { symbol, identity, known, knownOnly } as DiscoveryAccountsParam[number];
+        return {
+            symbol,
+            identity,
+            protocols,
+            known,
+            knownOnly,
+            gap: bitcoinGap,
+        } as DiscoveryAccountsParam[number];
     });
 
 export const selectShowRediscoverButton = (

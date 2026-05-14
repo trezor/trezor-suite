@@ -3,12 +3,12 @@ import { Translation } from '@suite/intl';
 import { bluetoothActions, selectAdapterStatus } from '@suite-common/bluetooth';
 import { selectDevices } from '@suite-common/device';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { Box, Button, Column } from '@trezor/components';
+import { Button, Column } from '@trezor/components';
 
 import { setConnectionMode, toggleConnectionModal } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { ForegroundAppProps } from 'src/types/suite';
+import { type ForegroundAppProps } from 'src/types/suite';
 
 import { DeviceItem } from './DeviceItem/DeviceItem';
 import { SwitchDeviceModal } from './SwitchDeviceModal';
@@ -53,18 +53,17 @@ export const SwitchDeviceContent = ({ cancelable, onCancel }: ForegroundAppProps
                     onCancel={cancelable ? onCancel : undefined}
                 />
             ))}
-            <Box backgroundColor="backgroundSurfaceElevation1" borderRadius={12}>
-                <Button
-                    intent="neutral"
-                    priority="secondary"
-                    iconLeft="trezorDevices"
-                    width="100%"
-                    size="large"
-                    onClick={openDeviceConnectionModal}
-                >
-                    <Translation id="TR_CONNECT_DEVICE" />
-                </Button>
-            </Box>
+            <Button
+                intent="neutral"
+                priority="secondary"
+                iconLeft="trezorDevices"
+                isFloating
+                width="100%"
+                size="large"
+                onClick={openDeviceConnectionModal}
+            >
+                <Translation id="TR_CONNECT_DEVICE" />
+            </Button>
         </Column>
     );
 };

@@ -51,7 +51,8 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@firmware-ready', '@T
             // Finalize recovery, skip pin, and verify success
             await onboardingPage.continueRecoveryButton.click();
             await onboardingPage.pin.skip();
-            await expect(onboardingPage.completeOnboardingButton).toBeVisible();
+            await onboardingPage.finalButton.click();
+            await expect(onboardingPage.suiteLoadedIndicator).toBeVisible({ timeout: 30_000 });
         },
     );
 });

@@ -1,22 +1,28 @@
-import { MouseEvent } from 'react';
+import { type MouseEvent } from 'react';
 import { ReactSVG } from 'react-svg';
 
 import styled, { css } from 'styled-components';
 
 // TODO: suite-common imports in non-suite packages should not be allowed
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { IconName, icons } from '@suite-common/icons/src/icons';
-import { Color } from '@trezor/theme';
+import { type IconName, icons } from '@suite-common/icons/src/icons';
+import { type Color } from '@trezor/theme';
 
-import { IconIntent, IconPriority, IconSize, iconIntents, iconPriorities } from './types';
+import {
+    type IconIntent,
+    type IconPriority,
+    type IconSize,
+    iconIntents,
+    iconPriorities,
+} from './types';
 import { mapIntentToCSS } from './utils';
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import { type TransientProps } from '../../utils/transientProps';
 
 export { iconIntents, iconPriorities };
 export type { IconIntent, IconPriority, IconSize };

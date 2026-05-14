@@ -1,6 +1,6 @@
-import { WalletDescriptor } from '@suite-common/wallet-types';
+import { type WalletDescriptor } from '@suite-common/wallet-types';
 
-import { SuiteSyncTable } from '../SuiteSyncTable';
+import { type SuiteSyncTable } from '../SuiteSyncTable';
 
 export type SuiteSyncWallet = {
     walletDescriptor: WalletDescriptor; // This is primary ID

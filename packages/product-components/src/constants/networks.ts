@@ -1,4 +1,4 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 // These coins are not supported in Suite, but exist in Trezor Connect
 export type LegacyNetworkSymbol =
@@ -34,6 +34,7 @@ export const NETWORK_ICONS = {
     test: require('../images/networks/btc_test.svg'),
     thod: require('../images/networks/thod.svg'),
     trx: require('../images/networks/trx.svg'),
+    ttrx: require('../images/networks/ttrx.svg'),
     tsep: require('../images/networks/tsep.svg'),
     txlm: require('../images/networks/txlm.svg'),
     txrp: require('../images/networks/txrp.svg'),

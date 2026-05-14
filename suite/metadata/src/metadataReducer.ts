@@ -1,26 +1,26 @@
 import { produce } from 'immer';
 
+import { type SuiteSettingsRootState } from '@suite/settings';
 import {
-    DeviceReducerState,
-    DeviceRootState,
+    type DeviceReducerState,
+    type DeviceRootState,
     deviceActions,
     selectDeviceByState,
     selectDeviceByStaticSessionId,
     selectSelectedDevice,
 } from '@suite-common/device';
 import {
-    AccountLabels,
-    DataType,
-    MetadataState,
-    OAuthServerEnvironment,
-    PasswordManagerState,
-    WalletLabels,
+    type AccountLabels,
+    type DataType,
+    type MetadataState,
+    type PasswordManagerState,
+    type WalletLabels,
 } from '@suite-common/metadata-types';
-import { AnyAction } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { Account, AccountKey } from '@suite-common/wallet-types';
-import { DeviceState, StaticSessionId } from '@trezor/connect';
+import { type AnyAction } from '@suite-common/redux-utils';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { type DeviceState, type StaticSessionId } from '@trezor/connect';
 
 import * as METADATA from './metadataConstants';
 import { DEFAULT_ACCOUNT_METADATA, DEFAULT_WALLET_METADATA } from './metadataLabelingConstants';
@@ -44,14 +44,14 @@ export const initialMetadataState: MetadataState = {
 
 export type SuiteRootStateSliceForMetadata = {
     online: boolean;
-    settings: { debug: { oauthServerEnvironment?: OAuthServerEnvironment } };
 };
 
 /** @deprecated Legacy labeling */
 export type MetadataRootState = {
     metadata: MetadataState;
 } & AccountsRootState &
-    DeviceRootState & { suite: SuiteRootStateSliceForMetadata };
+    DeviceRootState &
+    SuiteSettingsRootState & { suite: SuiteRootStateSliceForMetadata };
 
 /**
  * @deprecated Legacy Labeling
@@ -198,7 +198,7 @@ export const selectLabelingDataForAccount = (
  * @deprecated Legacy Labeling
  * Returns dict <account-key: account-label>
  */
-export const selectAccountLabels = (state: {
+export const selectAccountLabelsLegacy = (state: {
     metadata: MetadataState;
     wallet: { accounts: Account[] };
 }) => {

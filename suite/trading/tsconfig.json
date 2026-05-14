@@ -1,0 +1,31 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "libDev",
+        "plugins": [
+            { "name": "typescript-styled-plugin" }
+        ]
+    },
+    "include": ["src/**/*", "styled.d.ts"],
+    "references": [
+        { "path": "../../suite-common/flags" },
+        {
+            "path": "../../suite-common/geolocation"
+        },
+        { "path": "../../suite-common/icons" },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        { "path": "../../suite-common/trading" },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        { "path": "../intl" },
+        { "path": "../router" },
+        { "path": "../../packages/components" },
+        {
+            "path": "../../packages/product-components"
+        },
+        { "path": "../../packages/theme" }
+    ]
+}

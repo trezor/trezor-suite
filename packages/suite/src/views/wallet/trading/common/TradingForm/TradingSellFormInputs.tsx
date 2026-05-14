@@ -7,10 +7,11 @@ import {
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingSellFormProps,
-    TradingSellType,
+    type TradingSellType,
+    isCountrySubdivisionRequired,
     selectTradingSellSupportedCryptoIds,
 } from '@suite-common/trading';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, FractionButton, Row } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
@@ -28,9 +29,10 @@ import { TradingFormCard } from './TradingFormCard';
 import { TradingFormFees } from './TradingFormFees';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker';
+import { TradingFormInputCountrySubdivision } from './TradingFormInput/TradingFormInputCountry/TradingFormInputCountrySubdivision';
 import {
     TradingFormInputSellAsset,
-    TradingFormInputSellAssetProps,
+    type TradingFormInputSellAssetProps,
 } from './TradingFormInput/TradingFormInputSellAsset/TradingFormInputSellAsset';
 import { TradingFormSection } from './TradingFormSection';
 import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
@@ -49,9 +51,10 @@ export const TradingSellFormInputs = () => {
         changeFeeLevel,
         showReserveBanner,
         quotes,
+        defaultCountry,
     } = context;
     const { getValues } = useFormContext<TradingSellFormProps>();
-    const { outputs, sendCryptoSelect, amountInCrypto } = getValues();
+    const { outputs, sendCryptoSelect, amountInCrypto, countrySelect } = getValues();
     const output = outputs[0];
     const currencySelect = output.currency;
     const tokenAddress = (output.token ?? undefined) as TokenAddress | undefined;
@@ -81,6 +84,9 @@ export const TradingSellFormInputs = () => {
 
     const sellSupportedCryptoIds = useSelector(selectTradingSellSupportedCryptoIds);
 
+    const selectedCountry = countrySelect ?? defaultCountry;
+    const countryRequiresSubdivision = isCountrySubdivisionRequired(selectedCountry?.value);
+
     return (
         <Column gap={20}>
             <TradingFormCard>
@@ -101,7 +107,7 @@ export const TradingSellFormInputs = () => {
                             cryptoInputName={TRADING_FORM_OUTPUT_AMOUNT}
                             fiatInputName={TRADING_FORM_OUTPUT_FIAT}
                             cryptoSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
-                            currencySelectLabel={currencySelect.label}
+                            currencySelectLabel={currencySelect.value.toUpperCase()}
                             cryptoCurrencyLabel={sendCryptoSelect?.id}
                         />
                         {amountInCrypto && (
@@ -159,9 +165,14 @@ export const TradingSellFormInputs = () => {
                 {!!quotes.length && (
                     <TradingFormInputPaymentMethod label="TR_TRADING_RECEIVE_METHOD" />
                 )}
-                <TradingFormSection>
-                    <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
-                </TradingFormSection>
+
+                <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
+                {countryRequiresSubdivision && (
+                    <TradingFormInputCountrySubdivision
+                        label="TR_TRADING_COUNTRY_SUBDIVISION"
+                        country={selectedCountry}
+                    />
+                )}
                 <TradingSelectedOfferProvider />
             </TradingFormCard>
         </Column>

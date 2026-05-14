@@ -7,7 +7,7 @@ import { BackupStepDescription } from './BackupStepDescription';
 export const BackupStep2InProgress = ({ onCancel }: { onCancel: () => void }) => (
     <Modal
         onCancel={onCancel}
-        variant="primary"
+        intent="brand"
         data-testid="@backup"
         heading={null}
         description={<BackupStepDescription />}

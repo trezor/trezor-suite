@@ -1,15 +1,17 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { UseFormSetValue } from 'react-hook-form';
+import { type UseFormSetValue } from 'react-hook-form';
 
 import { events } from '@suite/analytics';
 import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
-    TradingSellFormProps,
+    type TradingSellFormProps,
     getTradingPaymentMethods,
+    isCountrySubdivisionEmpty,
     sellThunks,
+    tradingActions,
+    useTradingRefetchScheduler,
 } from '@suite-common/trading';
-import { Network } from '@suite-common/wallet-config';
-import { Timer } from '@trezor/react-utils';
+import { type Network } from '@suite-common/wallet-config';
 
 import { useDispatch } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -17,7 +19,6 @@ import { useAnalytics } from 'src/support/useAnalytics';
 type TradingSellUseHandleChangeProps = {
     formValues: TradingSellFormProps;
     network: Network;
-    timer: Timer;
     shouldSendInSats: boolean | undefined;
 
     setValue: UseFormSetValue<TradingSellFormProps>;
@@ -35,7 +36,6 @@ type PromiseType = {
 export const useTradingSellHandleChange = ({
     formValues,
     network,
-    timer,
     shouldSendInSats,
     setValue,
     composeRequestCallback,
@@ -44,6 +44,15 @@ export const useTradingSellHandleChange = ({
     const previousPromise = useRef<PromiseType>(null);
     const analytics = useAnalytics();
     const handleChange = useCallback(async () => {
+        if (
+            isCountrySubdivisionEmpty(
+                formValues.countrySelect?.value,
+                formValues.countrySubdivisionSelect?.value,
+            )
+        ) {
+            return;
+        }
+
         if (previousPromise.current) {
             previousPromise.current.abort('Request was replaced by another one.');
         }
@@ -52,7 +61,6 @@ export const useTradingSellHandleChange = ({
             sellThunks.handleRequestThunk({
                 formValues,
                 network,
-                timer,
                 shouldSendInSats,
                 composeRequestCallback,
             }),
@@ -95,12 +103,13 @@ export const useTradingSellHandleChange = ({
         dispatch,
         formValues,
         network,
-        timer,
         shouldSendInSats,
         composeRequestCallback,
         analytics,
         setValue,
     ]);
+
+    useTradingRefetchScheduler({ onRefetch: handleChange });
 
     // cleanup signal
     useEffect(
@@ -108,8 +117,9 @@ export const useTradingSellHandleChange = ({
             if (previousPromise.current) {
                 previousPromise.current.abort('Request is canceled - page is unmounted.');
             }
+            dispatch(tradingActions.stopRefetchQuotes());
         },
-        [],
+        [dispatch],
     );
 
     return { handleChange };

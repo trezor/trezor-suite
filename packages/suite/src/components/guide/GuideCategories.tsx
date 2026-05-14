@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { GuideCategory } from '@suite-common/suite-types';
+import { type GuideCategory } from '@suite-common/suite-types';
 import { typography } from '@trezor/theme';
 
 import { GuideNode } from 'src/components/guide';
@@ -13,7 +13,7 @@ const Section = styled.section`
 
 const SectionHeading = styled.h3`
     ${typography['body-sm-strong']}
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     padding: 0 0 18px;
 `;
 

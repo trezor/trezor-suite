@@ -1,5 +1,5 @@
 import { HEADER_SIZE } from './constants';
-import { TransportProtocol } from '../types';
+import { type TransportProtocol } from '../types';
 
 // just for type compatibility, bridge doesn't send headers
 export const getHeaders: TransportProtocol['getHeaders'] = () => [Buffer.alloc(0), Buffer.alloc(0)];

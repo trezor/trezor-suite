@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
 import {
-    ExperimentsItemType,
+    type ExperimentsItemType,
     getActiveExperimentGroup,
     getExperimentGroupByInclusion,
     messageSystemActions,
@@ -12,7 +12,7 @@ import {
     selectAllManuallyAddedExperimentIds,
     selectAllValidExperiments,
 } from '@suite-common/message-system';
-import { Experiments } from '@suite-common/suite-types';
+import { type Experiments } from '@suite-common/suite-types';
 import { Banner, Button, Column, Divider, Modal } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
@@ -31,8 +31,8 @@ const MessageContainer = styled.div<{ $active: boolean }>`
     border-radius: ${borders.radii.sm};
     background-color: ${({ theme, $active }) =>
         $active
-            ? theme.backgroundPrimarySubtleOnElevation0
-            : theme.backgroundNeutralSubtleOnElevation0};
+            ? theme.legacyBackgroundPrimarySubtleOnElevation0
+            : theme.legacyBackgroundNeutralSubtleOnElevation0};
     padding: ${spacingsPx.sm};
 `;
 
@@ -106,7 +106,7 @@ export const MessageSystemExperiments = ({
                                     activeGroup={assignedGroup}
                                 />
 
-                                <Divider color="backgroundNeutralBold" />
+                                <Divider color="legacyBackgroundNeutralBold" />
                                 <MessageSystemConditionGroup conditions={conditions} />
                             </Column>
                             <Column gap={spacings.xs}>

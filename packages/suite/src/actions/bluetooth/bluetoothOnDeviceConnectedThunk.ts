@@ -1,7 +1,7 @@
 import { BLUETOOTH_PREFIX } from '@suite-common/bluetooth';
 import { selectKnownDeviceByDeviceId } from '@suite-common/bluetooth/src/bluetoothSelectors';
 import { createThunk } from '@suite-common/redux-utils';
-import { Device } from '@trezor/connect';
+import { type Device } from '@trezor/connect';
 
 import { bluetoothDisconnectDeviceThunk } from './bluetoothDisconnectDeviceThunk';
 
@@ -14,7 +14,7 @@ export const bluetoothOnDeviceConnectedThunk = createThunk<void, Device, void>(
         // device is re-connected over USB, but the same device is already connected over BT
         // -> disconnect the BT connection
         if (
-            !device.bluetoothProps &&
+            device.descriptor.apiType !== 'bluetooth' &&
             (knownDevice?.connectionStatus.type === 'connected' ||
                 knownDevice?.connectionStatus.type === 'connecting')
         ) {

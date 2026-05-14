@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { AnimatePresence, MotionProps, motion } from 'framer-motion';
+import { AnimatePresence, type MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
@@ -28,7 +28,7 @@ const Label = styled.span`
 
 const RedText = styled.span`
     margin-right: 2px;
-    color: ${({ theme }) => theme.textAlertRed};
+    color: ${({ theme }) => theme.contentCritical};
 `;
 
 const expandAnimation: Partial<MotionProps> = {

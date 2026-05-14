@@ -1,8 +1,8 @@
+import { DEVICE } from '@trezor/connect-common';
 import { TrezorPushNotificationMode, TrezorPushNotificationType, tpn } from '@trezor/protocol';
 import { resolveAfter } from '@trezor/utils';
 
-import { DEVICE } from '../../events/device';
-import { TpnWorkflowContext } from '../../types/workflow';
+import type { TpnWorkflowContext } from '../../types/workflow';
 import { getThpChannel } from '../thp';
 
 const setupDeviceMode = async (
@@ -21,7 +21,7 @@ const setupDeviceMode = async (
         (!device.features || !device.getThpState())
     ) {
         device.setBusy('rebooting');
-        await device.setupThp();
+        device.setupThp();
         await device.acquire();
 
         // wait. THP may not be ready yet

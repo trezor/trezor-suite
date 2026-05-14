@@ -1,7 +1,7 @@
 import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
 
 import { Input } from '../../Input/Input';
-import { AnimatedDoubleInput, AnimatedDoubleInputProps } from '../AnimatedDoubleInput';
+import { AnimatedDoubleInput, type AnimatedDoubleInputProps } from '../AnimatedDoubleInput';
 
 describe('AnimatedDoubleInput', () => {
     const renderAnimatedDoubleInput = (props: Partial<AnimatedDoubleInputProps>) =>

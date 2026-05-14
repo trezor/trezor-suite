@@ -1,15 +1,20 @@
 import {
-    FieldError,
-    FieldErrors,
-    FieldErrorsImpl,
-    FieldPath,
-    FieldValues,
-    Merge,
+    type FieldError,
+    type FieldErrors,
+    type FieldErrorsImpl,
+    type FieldPath,
+    type FieldValues,
+    type Merge,
 } from 'react-hook-form';
 
 import { fromWei, numberToHex, padLeft, toWei } from 'web3-utils';
 
-import { Network, NetworkSymbol, NetworkType, getNetwork } from '@suite-common/wallet-config';
+import {
+    type Network,
+    type NetworkSymbol,
+    type NetworkType,
+    getNetwork,
+} from '@suite-common/wallet-config';
 import {
     COMPOSE_ERROR_TYPES,
     DEFAULT_PAYMENT,
@@ -32,14 +37,18 @@ import type {
     SendFormDraftKey,
     TokenAddress,
 } from '@suite-common/wallet-types';
-import { BaseCurrencyCode, baseCurrencies } from '@trezor/blockchain-link-types';
 import {
-    ComposeOutput,
-    EthereumTransaction,
-    EthereumTransactionEIP1559,
-    FeeLevel,
-    PROTO,
-    TokenInfo,
+    type BaseCurrencyCode,
+    baseCurrencies,
+    isBaseCurrencyCode,
+} from '@trezor/blockchain-link-types';
+import {
+    type ComposeOutput,
+    type EthereumTransaction,
+    type EthereumTransactionEIP1559,
+    type FeeLevel,
+    type PROTO,
+    type TokenInfo,
 } from '@trezor/connect';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
@@ -187,14 +196,14 @@ export const prepareEthereumTransaction = (
             gasPrice: undefined,
             maxFeePerGas: numberToHex(toWei(txInfo.maxFeePerGas, 'gwei')),
             maxPriorityFeePerGas: numberToHex(toWei(txInfo.maxPriorityFeePerGas || '0', 'gwei')),
-        } as EthereumTransactionEIP1559;
+        } satisfies EthereumTransactionEIP1559;
     } else if (txInfo.gasPrice) {
         result = {
             ...commonTxData,
             gasPrice: numberToHex(toWei(txInfo.gasPrice, 'gwei')),
             maxFeePerGas: undefined,
             maxPriorityFeePerGas: undefined,
-        } as EthereumTransaction;
+        } satisfies EthereumTransaction;
     } else {
         throw new Error('No gas price or maxFeePerGas and maxPriorityFeePerGas provided');
     }
@@ -280,7 +289,7 @@ export const isLowAnonymityWarning = (error?: Merge<FieldError, FieldErrorsImpl<
     error?.amount?.type === COMPOSE_ERROR_TYPES.ANONYMITY;
 
 export const getFee = (networkType: NetworkType, tx: GeneralPrecomposedTransactionFinal) => {
-    if (networkType === 'solana') {
+    if (networkType === 'solana' || networkType === 'tron') {
         return tx.fee;
     }
 
@@ -519,15 +528,18 @@ export const restoreOrigOutputsOrder = (
         });
 };
 
-export const getDefaultValues = (currency: Output['currency']): FormState => ({
+export const getDefaultValues = (
+    currency: Output['currency'],
+    networkType?: NetworkType,
+): FormState => ({
     ...DEFAULT_VALUES,
-    options: ['broadcast', 'destinationTag'],
+    options: networkType === 'solana' ? ['broadcast'] : ['broadcast', 'destinationTag'],
     outputs: [{ ...DEFAULT_PAYMENT, currency }],
     selectedUtxos: [],
 });
 
 type BuildCurrencyOptionParams = {
-    currency: BaseCurrencyCode | '';
+    currency: BaseCurrencyCode | '' | undefined;
     areSatsDisplayed: boolean;
 };
 
@@ -535,7 +547,7 @@ export const buildCurrencyShortOption = ({
     currency,
     areSatsDisplayed,
 }: BuildCurrencyOptionParams): BaseCurrencyOption => {
-    if (currency === '') return { value: '', label: '' };
+    if (!currency || !isBaseCurrencyCode(currency)) return { value: '', label: '' };
 
     return {
         value: currency,
@@ -550,7 +562,7 @@ export const buildCurrencyLongOption = ({
 }: BuildCurrencyOptionParams): BaseCurrencyOption => {
     const shortOption = buildCurrencyShortOption({ currency, areSatsDisplayed });
 
-    if (currency === '') return shortOption;
+    if (!currency || !isBaseCurrencyCode(currency)) return shortOption;
     else {
         return {
             value: shortOption.value,
@@ -752,4 +764,29 @@ export const getCryptoMaxAmountWithReserve = ({
     }
 
     return amount;
+};
+
+interface IsAmountWithinNetworkReserveProps {
+    reserve?: string;
+    balance?: string;
+    fee?: string;
+    amount: string;
+}
+
+/**
+ * Returns true if the amount does not violate the network reserve constraint,
+ * i.e. balance - amount - fee >= reserve.
+ */
+export const isAmountWithinNetworkReserve = ({
+    reserve,
+    balance,
+    fee = '0',
+    amount,
+}: IsAmountWithinNetworkReserveProps): boolean => {
+    if (!reserve || !balance || !amount) return true;
+
+    const sendAmount = new BigNumber(amount);
+    const accountBalance = new BigNumber(balance);
+
+    return sendAmount.lte(accountBalance.minus(reserve).minus(fee));
 };

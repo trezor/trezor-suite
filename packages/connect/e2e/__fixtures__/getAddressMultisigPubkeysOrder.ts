@@ -1,4 +1,4 @@
-import { MultisigPubkeysOrder } from '@trezor/protobuf/src/messages';
+import { MultisigPubkeysOrder } from '@trezor/protobuf/src/definitions';
 
 // https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/bitcoin/test_getaddress.py
 

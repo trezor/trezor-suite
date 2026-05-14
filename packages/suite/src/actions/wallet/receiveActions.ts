@@ -1,15 +1,14 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { closeModal, openModal, preserveModal, removePreserveModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
-import { ExtraDependencies } from '@suite-common/redux-utils';
-import { UserContextPayload } from '@suite-common/suite-types';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
+import { type UserContextPayload } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
+import { confirmAddressOnDeviceThunk, selectAddressDisplayType } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
-import * as modalActions from 'src/actions/suite/modalActions';
 import { RECEIVE } from 'src/actions/wallet/constants';
-import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
-import { Dispatch, GetState } from 'src/types/suite';
+import { type Dispatch, type GetState } from 'src/types/suite';
 
 export type ReceiveAction =
     | { type: typeof RECEIVE.DISPOSE }
@@ -29,7 +28,7 @@ export const openAddressModal =
     ) =>
     (dispatch: Dispatch) => {
         dispatch(
-            modalActions.openModal({
+            openModal({
                 type: 'address',
                 ...params,
             }),
@@ -60,7 +59,7 @@ export const showAddress =
         // Show warning when device is not connected
         if (!device.connected || !device.available) {
             dispatch(
-                modalActions.openModal({
+                openModal({
                     type: 'unverified-address',
                     ...modalPayload,
                 }),
@@ -77,7 +76,7 @@ export const showAddress =
             return;
         }
 
-        dispatch(modalActions.preserve());
+        dispatch(preserveModal());
 
         asTypedDesktopAnalytics(extra.services.analytics).report({
             type: events.createReceiveAddressShowAddressEvent.name,
@@ -92,7 +91,7 @@ export const showAddress =
         ).unwrap();
 
         // After confirming address on the modal, it does not have to be persistent anymore
-        dispatch(modalActions.removePreserve());
+        dispatch(removePreserveModal());
 
         if (response.success) {
             // show second part of the "confirm address" modal
@@ -103,14 +102,14 @@ export const showAddress =
                 payload: { assetSymbol: account.symbol },
             });
         } else {
-            dispatch(modalActions.onCancel());
+            dispatch(closeModal());
             // special case: device no-backup permissions not granted
-            if (response.payload.code === 'Method_PermissionsNotGranted') return;
+            if (response.error.code === 'Method_PermissionsNotGranted') return;
 
             dispatch(
                 notificationsActions.addToast({
                     type: 'verify-address-error',
-                    error: response.payload.error,
+                    error: response.error.message,
                 }),
             );
         }

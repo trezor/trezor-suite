@@ -1,4 +1,4 @@
-import { JSX } from 'react';
+import { type JSX } from 'react';
 
 import { Card, Column, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -9,17 +9,19 @@ interface TradingTransactionContainerProps {
     TradeDetail: JSX.Element;
     TradeProviders: JSX.Element;
     TradeButton: JSX.Element;
+    'data-testid'?: string;
 }
 
 export const TradingTransactionContainer = ({
     TradeDetail,
     TradeProviders,
     TradeButton,
+    'data-testid': dataTestId,
 }: TradingTransactionContainerProps) => {
     const { isBelowDesktop, isBelowMobile } = useLayoutSize();
 
     return (
-        <Card fillType="flat" margin={{ bottom: spacings.lg }}>
+        <Card fillType="flat" margin={{ bottom: spacings.lg }} data-testid={dataTestId}>
             <Row flexWrap={isBelowDesktop ? 'wrap' : undefined}>
                 <Column flex="auto" width={isBelowDesktop ? 'calc(100% - 180px)' : '100%'}>
                     {TradeDetail}

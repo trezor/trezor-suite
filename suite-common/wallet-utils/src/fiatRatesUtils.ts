@@ -1,13 +1,13 @@
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import {
-    CryptoBaseCurrencyPair,
-    RatesByTimestamps,
-    TickerId,
-    TickerResult,
-    Timestamp,
-    TokenAddress,
-    WalletAccountTransaction,
+    type CryptoBaseCurrencyPair,
+    type RatesByTimestamps,
+    type TickerId,
+    type TickerResult,
+    type Timestamp,
+    type TokenAddress,
+    type WalletAccountTransaction,
     asCryptoBaseCurrencyCode,
     asTimestamp,
 } from '@suite-common/wallet-types';
@@ -36,6 +36,21 @@ export const getFiatRateKeyFromTicker = (
 
     return getFiatRateKey(symbol, fiatCurrency, tokenAddress);
 };
+
+export function getTickerFromFiatRateKey(fiatRateKey: CryptoBaseCurrencyPair): TickerId | null {
+    const [symbol, tokenAddress] = fiatRateKey.split('-');
+
+    if (!isNetworkSymbol(symbol)) {
+        console.error(`Failed to get ticker from fiat rate key: ${fiatRateKey}`);
+
+        return null;
+    }
+
+    return {
+        symbol: symbol as NetworkSymbol,
+        tokenAddress: tokenAddress as TokenAddress,
+    };
+}
 
 export const roundTimestampToNearestPastHour = (timestamp: Timestamp): Timestamp =>
     asTimestamp(Math.floor(timestamp / ONE_HOUR_IN_SECONDS) * ONE_HOUR_IN_SECONDS);

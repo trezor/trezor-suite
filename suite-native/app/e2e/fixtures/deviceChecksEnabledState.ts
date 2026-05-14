@@ -8,5 +8,6 @@ export const deviceChecksEnabledState: PreloadedState = {
         isDeviceAuthenticityCheckEnabled: true,
         isFirmwareRevisionCheckEnabled: true,
         isFirmwareHashCheckEnabled: true,
+        areDeviceMetaChecksEnabled: true,
     },
 };

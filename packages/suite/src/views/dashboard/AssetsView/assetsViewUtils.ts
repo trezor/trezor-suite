@@ -1,9 +1,9 @@
-import { TokenDefinition } from '@suite-common/token-definitions';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account, RatesByKey } from '@suite-common/wallet-types';
+import { type TokenDefinition } from '@suite-common/token-definitions';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Account, type RatesByKey } from '@suite-common/wallet-types';
 import { getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { TokenInfo } from '@trezor/connect';
+import { type TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import {

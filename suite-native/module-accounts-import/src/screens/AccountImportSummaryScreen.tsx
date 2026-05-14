@@ -2,17 +2,17 @@ import { useSelector } from 'react-redux';
 
 import type { DeviceRootState } from '@suite-common/device';
 import {
-    AccountsRootState,
+    type AccountsRootState,
     selectDeviceAccountByDescriptorAndNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { ErrorMessage } from '@suite-native/atoms';
 import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import {
-    AccountsImportStackParamList,
-    AccountsImportStackRoutes,
-    RootStackParamList,
-    StackToTabCompositeScreenProps,
+    type AccountsImportStackParamList,
+    type AccountsImportStackRoutes,
+    type RootStackParamList,
+    type StackToTabCompositeScreenProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 

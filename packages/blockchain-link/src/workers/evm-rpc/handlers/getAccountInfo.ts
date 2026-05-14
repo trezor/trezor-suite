@@ -1,6 +1,8 @@
-import type { TokenInfo } from '@trezor/blockchain-link-types';
-import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
-import type * as Responses from '@trezor/blockchain-link-types/src/responses';
+import type {
+    MessageTypes,
+    ResponseTypes as Responses,
+    TokenInfo,
+} from '@trezor/blockchain-link-types';
 
 import { mapGetAccountInfoResponse } from '../mappers/accountInfo';
 import { getStakingPoolData } from '../staking/poolData';

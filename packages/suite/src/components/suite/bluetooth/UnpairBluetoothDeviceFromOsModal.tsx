@@ -5,18 +5,19 @@ import { bluetoothActions } from '@suite-common/bluetooth';
 import { Banner, Column, H3, Modal, Paragraph, Spinner } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { selectIsUnpairingDevice } from 'src/actions/bluetooth/desktopBluetoothSelectors';
 import { openSystemSettingsThunk } from 'src/actions/bluetooth/openSystemSettingsThunk';
 import { toggleConnectionModal } from 'src/actions/device/deviceSlice';
-
-import { selectIsUnpairingDevice } from '../../../actions/bluetooth/desktopBluetoothSelectors';
-import { useDispatch, useSelector } from '../../../hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 type UnpairBluetoothDeviceFromOsModalProps = {
     onFinish?: () => void;
+    skipToggleModalConnection?: boolean;
 };
 
 export const UnpairBluetoothDeviceFromOsModal = ({
     onFinish,
+    skipToggleModalConnection = false,
 }: UnpairBluetoothDeviceFromOsModalProps) => {
     const dispatch = useDispatch();
     const isUnpairingDevice = useSelector(selectIsUnpairingDevice);
@@ -33,7 +34,11 @@ export const UnpairBluetoothDeviceFromOsModal = ({
 
     const onCancel = () => {
         dispatch(bluetoothActions.setIsDeviceOsUnpairingRequired(false));
-        dispatch(toggleConnectionModal());
+        // NOTE: skipToggleModalConnection=true is when user forgets the device from settings,
+        // then we only dispalys this unpair modal and we don't want to continue to the "connect device again"
+        if (!skipToggleModalConnection) {
+            dispatch(toggleConnectionModal());
+        }
         onFinish?.();
     };
 
@@ -53,7 +58,7 @@ export const UnpairBluetoothDeviceFromOsModal = ({
     return (
         <Modal
             onCancel={onCancel}
-            variant="primary"
+            intent="brand"
             bottomContent={
                 <>
                     <Modal.Button

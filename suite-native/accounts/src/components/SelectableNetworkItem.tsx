@@ -1,10 +1,10 @@
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Badge, Box, HStack, PressableOpacity, RoundedIcon, Text } from '@suite-native/atoms';
-import { Icon, IconName } from '@suite-native/icons';
+import { Icon, type IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { isNetworkWithTokens } from '@suite-native/tokens';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type SelectableAssetItemProps = {
     symbol: NetworkSymbol;
@@ -49,7 +49,7 @@ export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: Selectable
                     <Box flex={1} justifyContent="space-between" alignItems="flex-start">
                         <Text variant="body-md">{networkName}</Text>
                         <HStack alignItems="center" justifyContent="center">
-                            <Text variant="body-sm" color="textSubdued">
+                            <Text variant="body-sm" color="contentSecondary">
                                 <DisplaySymbolFormatter
                                     value={symbol}
                                     areAmountUnitsEnabled={false}
@@ -59,7 +59,7 @@ export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: Selectable
                                 <Box style={applyStyle(tokensBadgeStyle)}>
                                     <Badge
                                         label={<Translation id="generic.tokens" />}
-                                        variant="neutral"
+                                        intent="neutral"
                                         size="small"
                                     />
                                 </Box>
@@ -67,7 +67,7 @@ export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: Selectable
                         </HStack>
                     </Box>
                 </Box>
-                {rightIcon && <Icon name={rightIcon} color="iconDisabled" size="large" />}
+                {rightIcon && <Icon name={rightIcon} color="contentDisabled" size="large" />}
             </Box>
         </PressableOpacity>
     );

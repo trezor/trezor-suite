@@ -4,7 +4,7 @@ import {
     networkSpecificDefaultRipple,
     networkSpecificDefaultStellar,
 } from '@suite-common/wallet-types/mocks';
-import { FeeLevel } from '@trezor/connect';
+import { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import * as fixtures from '../__fixtures__/sendFormUtils';
@@ -19,6 +19,7 @@ import {
     getCryptoMaxAmountWithReserve,
     getExternalComposeOutput,
     getLowestFeeFromLevels,
+    isAmountWithinNetworkReserve,
     prepareEthereumTransaction,
     restoreOrigOutputsOrder,
 } from '../sendFormUtils';
@@ -760,5 +761,29 @@ describe('sendForm utils', () => {
                 );
             },
         );
+    });
+
+    describe('isAmountWithinNetworkReserve', () => {
+        it('should treat empty amount as zero', () => {
+            expect(
+                isAmountWithinNetworkReserve({
+                    reserve: '1',
+                    balance: '10',
+                    fee: '2',
+                    amount: '',
+                }),
+            ).toBe(true);
+        });
+
+        it('should return false when amount exceeds maximum spendable amount', () => {
+            expect(
+                isAmountWithinNetworkReserve({
+                    reserve: '1',
+                    balance: '10',
+                    fee: '2',
+                    amount: '8.00000001',
+                }),
+            ).toBe(false);
+        });
     });
 });

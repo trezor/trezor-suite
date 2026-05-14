@@ -1,22 +1,25 @@
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import {
+    CancelCoinjoinAuthorization as CancelCoinjoinAuthorizationSchema,
+    type MethodPermission,
+} from '@trezor/connect-common';
 import { Assert } from '@trezor/schema-utils';
 
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
-import { CancelCoinjoinAuthorization as CancelCoinjoinAuthorizationSchema } from '../types/api/cancelCoinjoinAuthorization';
 
-export default class CancelCoinjoinAuthorization extends AbstractMethod<
-    'cancelCoinjoinAuthorization',
-    PROTO.CancelAuthorization
-> {
-    init() {
-        const { payload } = this;
+export default class CancelCoinjoinAuthorization extends AbstractMethod<'cancelCoinjoinAuthorization'> {
+    constructor(message: MethodMessage<'cancelCoinjoinAuthorization'>) {
+        const { payload } = message;
 
         Assert(CancelCoinjoinAuthorizationSchema, payload);
 
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
+        super(message, undefined);
         this.preauthorized =
             typeof payload.preauthorized === 'boolean' ? payload.preauthorized : true;
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['management'];
     }
 
     get info() {
@@ -24,7 +27,7 @@ export default class CancelCoinjoinAuthorization extends AbstractMethod<
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
 
         if (!this.preauthorized) {
             if (!(await cmd.preauthorize(false))) {

@@ -1,4 +1,3 @@
-export { useDevice } from './useDevice';
 export { useDiscovery } from './useDiscovery';
 export { useLayout } from './useLayout';
 export { useLayoutSize } from './useLayoutSize';
@@ -7,7 +6,6 @@ export { useAccountSearch } from './useAccountSearch';
 export { useSelector } from './useSelector';
 export { useLoadingSkeleton } from './useLoadingSkeleton';
 export { useOnboarding } from './useOnboarding';
-export { useRecovery } from './useRecovery';
 export { useExternalLink } from './useExternalLink';
 export { useFilteredModal } from './useFilteredModal';
 export { usePreferredModal } from './usePreferredModal';
@@ -18,7 +16,6 @@ export { useDispatch } from './useDispatch';
 export { useDebugLanguageShortcut } from './useDebugLanguageShortcut';
 export { useDisplayMode } from './useDisplayMode';
 export { useDefaultAccountLabel } from './useDefaultAccountLabel';
-export { useFirmwareInstallationProgressCheck } from './useFirmwareInstallationProgressCheck';
 
 // replaced in suite-native
 export { useLocales } from 'src/hooks/suite/useLocales';

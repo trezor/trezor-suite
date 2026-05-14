@@ -3,7 +3,7 @@ import { captureException } from '@sentry/react-native';
 import { getRandomBytes } from 'expo-crypto';
 import * as SecureStore from 'expo-secure-store';
 
-import { Branded } from '@trezor/type-utils';
+import { type Branded } from '@trezor/type-utils';
 
 export type StorageEncryptionKey = string & Branded<'StorageEncryptionKey'>;
 

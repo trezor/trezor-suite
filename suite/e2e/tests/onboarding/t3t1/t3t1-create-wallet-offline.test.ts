@@ -23,7 +23,15 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1', '@s
                 priority: TestPriority.Critical,
             }),
         },
-        async ({ page, onboardingPage, devicePrompt, analyticsSection, device }) => {
+        async ({
+            page,
+            onboardingPage,
+            devicePrompt,
+            analyticsSection,
+            device,
+            settingsPage,
+            dashboardPage,
+        }) => {
             await expect(page.getByTestId('@suite/no-connection-banner')).toHaveTranslation(
                 'TR_YOU_WERE_DISCONNECTED_DOT',
             );
@@ -41,26 +49,18 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1', '@s
                 await onboardingPage.tutorial.skip();
             });
 
-            await test.step('Create wallet with Shamir backup', async () => {
+            await test.step('Select backup type and create wallet with backup', async () => {
+                // Select backup type (no device interaction, just navigates to SecurityStep)
                 await onboardingPage.createWalletButton.click();
                 await onboardingPage.selectSeedType('shamir-advanced');
-            });
 
-            await test.step('Accept ToS and confirm wallet creation', async () => {
-                // Accept ToS
-                await devicePrompt.confirmOnDevicePromptIsShown();
-                await device.pressYes();
-
-                // Confirm wallet created
-                await devicePrompt.confirmOnDevicePromptIsShown();
-                await device.pressYes();
-                await onboardingPage.createBackupButton.click();
-            });
-
-            await test.step('Create backup with Shamir shares and threshold', async () => {
+                // SecurityStep: check backup seed cards, create wallet + backup on device, continue
+                // In the new atomic flow, wallet creation and backup happen together
                 const shares = 3;
                 const threshold = 2;
-                await onboardingPage.backup.passThroughShamirBackup(shares, threshold);
+                await onboardingPage.backup.passThroughShamirBackup(shares, threshold, {
+                    deviceConfirmations: 3,
+                });
             });
 
             await test.step('Set PIN', async () => {
@@ -72,10 +72,17 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1', '@s
 
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await device.pressYes();
+                await onboardingPage.finalButton.click();
             });
 
-            await test.step('Complete onboarding and verify offline state', async () => {
-                await onboardingPage.completeOnboardingButton.click();
+            await test.step('Enable Bitcoin so discovery can be attempted', async () => {
+                await settingsPage.navigateTo('coins');
+                await settingsPage.coinsTab.enableNetwork('btc');
+                await settingsPage.coinsTab.activateCoinsButton.click();
+                await dashboardPage.navigateTo();
+            });
+
+            await test.step('Verify offline state after onboarding completes', async () => {
                 await expect(page.getByTestId('@suite/no-connection-banner')).toHaveTranslation(
                     'TR_YOU_WERE_DISCONNECTED_DOT',
                 );

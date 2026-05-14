@@ -13,7 +13,7 @@ export const BACKUP_FAILED_SUPPORT_URL = `${HELP_CENTER_RECOVERY_ISSUES_URL}#ope
 export const BackupFailedModalScreen = () => {
     const openLink = useOpenLink();
     const { showAlert } = useAlert();
-    const { wipeDevice } = useWipeDevice();
+    const { navigateToWipeDeviceStack } = useWipeDevice();
 
     const handleSecondaryButtonPress = () => openLink(BACKUP_FAILED_SUPPORT_URL);
 
@@ -29,15 +29,15 @@ export const BackupFailedModalScreen = () => {
                 primaryButtonTitle: (
                     <Translation id="moduleDeviceOnboarding.backupFailedModalScreen.alert.primaryButton" />
                 ),
-                primaryButtonVariant: 'redBold',
-                onPressPrimaryButton: wipeDevice,
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
+                onPressPrimaryButton: navigateToWipeDeviceStack,
                 secondaryButtonTitle: (
                     <Translation id="moduleDeviceOnboarding.backupFailedModalScreen.alert.secondaryButton" />
                 ),
-                secondaryButtonVariant: 'redElevation1',
+                secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
                 onPressSecondaryButton: () => openLink(BACKUP_FAILED_SUPPORT_URL),
             }),
-        [showAlert, openLink, wipeDevice],
+        [showAlert, openLink, navigateToWipeDeviceStack],
     );
 
     return (
@@ -74,10 +74,10 @@ export const BackupFailedModalScreen = () => {
                 </VStack>
             </VStack>
             <VStack spacing="sp12">
-                <Button colorScheme="redBold" onPress={showWipeDeviceAlert}>
+                <Button intent="critical" priority="primary" onPress={showWipeDeviceAlert}>
                     <Translation id="moduleDeviceOnboarding.backupFailedModalScreen.primaryButton" />
                 </Button>
-                <Button colorScheme="redElevation1" onPress={handleSecondaryButtonPress}>
+                <Button intent="critical" priority="secondary" onPress={handleSecondaryButtonPress}>
                     <Translation id="moduleDeviceOnboarding.backupFailedModalScreen.secondaryButton" />
                 </Button>
             </VStack>

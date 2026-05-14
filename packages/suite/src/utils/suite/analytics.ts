@@ -1,4 +1,13 @@
-import type { AppUpdateEvent, SuiteReadyPayload } from '@suite/analytics';
+import type { SuiteReadyPayload } from '@suite/analytics';
+import { selectIsLegacyLabelingVisible } from '@suite/metadata';
+import { AccountTransactionBaseAnchor } from '@suite/router';
+import {
+    selectAutodetectLanguage,
+    selectAutodetectTheme,
+    selectExperimentalFeatures,
+    selectLanguage,
+    selectTheme,
+} from '@suite/settings';
 import {
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
@@ -7,7 +16,7 @@ import {
     formatExperimentVariantsForAnalytics,
     selectActiveExperimentsWithVariants,
 } from '@suite-common/message-system';
-import { MetadataProviderType } from '@suite-common/metadata-types';
+import { type MetadataProviderType } from '@suite-common/metadata-types';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import {
     getBrowserName,
@@ -24,17 +33,15 @@ import {
     getWindowHeight,
     getWindowWidth,
 } from '@trezor/env-utils';
-import { UpdateInfo } from '@trezor/suite-desktop-api';
 
-import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
-import { AppState } from 'src/types/suite';
+import { type AppState } from 'src/types/suite';
 
 import { getIsTorEnabled } from './tor';
 
 const resolveLabelingType = (
     state: AppState,
 ): MetadataProviderType | 'missing-provider' | 'suite-sync' | 'off' => {
-    if (state.metadata.enabled) {
+    if (selectIsLegacyLabelingVisible(state)) {
         return (
             state.metadata.providers.find(
                 p => p.clientId === state.metadata.selectedProvider.labels,
@@ -62,7 +69,7 @@ export const getSuiteReadyPayload = async (state: AppState): Promise<SuiteReadyP
     const [osVersion, osCpuArch] = await Promise.all([getOsVersion(), getCpuArch()]);
 
     return {
-        language: state.suite.settings.language,
+        language: selectLanguage(state),
         enabledNetworks: state.wallet.settings.enabledNetworks,
         customBackends: getCustomBackends(state.wallet.blockchain)
             .map(({ symbol }) => symbol)
@@ -77,10 +84,10 @@ export const getSuiteReadyPayload = async (state: AppState): Promise<SuiteReadyP
         labeling: resolveLabelingType(state),
         rememberedStandardWallets: selectRememberedStandardWalletsCount(state),
         rememberedHiddenWallets: selectRememberedHiddenWalletsCount(state),
-        theme: state.suite.settings.theme.variant,
+        theme: selectTheme(state),
         suiteVersion: process.env.VERSION || '',
         earlyAccessProgram: state.desktopUpdate.allowPrerelease,
-        experimentalFeatures: state.suite.settings.experimental,
+        experimentalFeatures: selectExperimentalFeatures(state),
         browserName: getBrowserName(),
         browserVersion: getBrowserVersion(),
         osName: getOsName(),
@@ -89,8 +96,8 @@ export const getSuiteReadyPayload = async (state: AppState): Promise<SuiteReadyP
 
         windowWidth: getWindowWidth(),
         windowHeight: getWindowHeight(),
-        autodetectLanguage: state.suite.settings.autodetect.language,
-        autodetectTheme: state.suite.settings.autodetect.theme,
+        autodetectLanguage: selectAutodetectLanguage(state),
+        autodetectTheme: selectAutodetectTheme(state),
 
         isAutomaticUpdateEnabled: state.desktopUpdate.isAutomaticUpdateEnabled,
 
@@ -100,22 +107,3 @@ export const getSuiteReadyPayload = async (state: AppState): Promise<SuiteReadyP
         networkReserve: state.wallet.settings.networkReserve,
     };
 };
-
-export const getAppUpdatePayload = ({
-    status,
-    earlyAccessProgram,
-    updateInfo,
-    isAutoUpdated,
-}: {
-    status: AppUpdateEvent['status'];
-    earlyAccessProgram: boolean;
-    updateInfo?: UpdateInfo;
-    isAutoUpdated?: boolean;
-}): AppUpdateEvent => ({
-    fromVersion: process.env.VERSION || '',
-    toVersion: updateInfo?.version,
-    status,
-    earlyAccessProgram,
-    isPrerelease: updateInfo?.prerelease,
-    isAutoUpdated,
-});

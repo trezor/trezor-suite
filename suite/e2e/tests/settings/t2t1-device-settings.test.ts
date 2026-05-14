@@ -31,7 +31,7 @@ test.describe('T2T1 - Device settings', { tag: ['@T2T1'] }, () => {
             });
 
             await test.step('Change display rotation', async () => {
-                await page.getByTestId('select-bar/East').click();
+                await page.getByTestId('@settings/device/rotation-button/East').click();
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await device.pressYes();
                 await devicePrompt.confirmOnDevicePromptIsHidden();
@@ -61,14 +61,6 @@ test.describe('T2T1 - Device settings', { tag: ['@T2T1'] }, () => {
             await settingsPage.changeDeviceBackground('original_t2t1');
         },
     );
-
-    test.describe('T2T1 - older firmware < 2.5.4', { tag: ['@specificFirmware', '@T2T1'] }, () => {
-        test.use({ firmwareVersion: '2.5.3' });
-        test('Cannot change homescreen in firmware < 2.5.4', async ({ page }) => {
-            await expect(page.getByTestId('@settings/device/homescreen-gallery')).toBeDisabled();
-            await expect(page.getByTestId('@settings/device/homescreen-upload')).toBeDisabled();
-        });
-    });
 
     // TODO: upload custom image
     // TODO: set auto-lock (needs pin)

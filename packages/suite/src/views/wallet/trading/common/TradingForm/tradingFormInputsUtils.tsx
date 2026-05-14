@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
-import { FractionButtonProps } from '@trezor/components';
+import { type FractionButtonProps } from '@trezor/components';
 
-import { TradingUseFormActionsReturnProps } from 'src/types/trading/tradingForm';
+import { type TradingUseFormActionsReturnProps } from 'src/types/trading/tradingForm';
 
 export type FormPercentButtonValue = '10%' | '25%' | '50%' | 'max';
 

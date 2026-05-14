@@ -1,20 +1,20 @@
-import { IntlShape } from 'react-intl';
+import { type IntlShape } from 'react-intl';
 
-import { FormatNumberOptions } from '@formatjs/intl';
+import { type FormatNumberOptions } from '@formatjs/intl';
 
-import { BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import {
     asAmountUnit,
     isBaseCurrencyWithSats,
     redactNumericalSubstring,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
-import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { PROTO } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { makeFormatter } from '../makeFormatter';
-import { FormatterConfig } from '../types';
+import { type FormatterConfig } from '../types';
 
 export type BaseCurrencyAmountFormatterDataContext<T> = {
     [K in keyof T]: T[K];

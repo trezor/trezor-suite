@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { ReportSecurityCheckParams } from '@suite-common/suite-types';
+import { type ReportSecurityCheckParams } from '@suite-common/suite-types';
 
 export const FIRMWARE_AUTHENTICITY_MODULE_PREFIX = '@common/firmware-authenticity';
 

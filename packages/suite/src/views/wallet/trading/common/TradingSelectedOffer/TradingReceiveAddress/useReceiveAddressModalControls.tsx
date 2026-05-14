@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useContext, useState } from 'react';
+import { type ReactNode, createContext, useContext, useState } from 'react';
 
 import { TradingExtraFieldModal } from './TradingExtraFieldModal';
 import { TradingReceiveAccountModal } from './TradingReceiveAccountModal/TradingReceiveAccountModal';

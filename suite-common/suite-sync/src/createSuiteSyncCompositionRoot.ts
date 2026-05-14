@@ -1,38 +1,44 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
-import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
+import { type AnalyticsSharedEvents } from '@suite-common/analytics';
+import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { toGetter } from '@suite-common/dependency-injection';
 import { selectAllDeviceStaticIds, selectDeviceByStaticSessionId } from '@suite-common/device';
-import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
-import { selectHasDeviceAllowance } from '@suite-common/suite-sync-quota-manager';
-import { CreateSuiteStorage, CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
+import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
+import { createSuiteSyncQuotaManagerCompositionRoot } from '@suite-common/suite-sync-quota-manager';
 import {
-    SuiteSync,
-    SuiteSyncAppReloaderDep,
-    SuiteSyncErrorHandler,
-} from '@suite-common/suite-sync-types';
+    type CreateSuiteStorageDep,
+    type CreateSuiteSyncOwnerDep,
+} from '@suite-common/suite-sync-storage';
+import { type SuiteSync } from '@suite-common/suite-sync-types';
+import { selectAccounts } from '@suite-common/wallet-core';
+import { type Analytics } from '@trezor/analytics-uploader';
 
-import { createRefreshSuiteSync } from './createRefreshSuiteSyncKeys';
-import { createSuiteSyncErrorHandler } from './createSuiteSyncErrorHandler';
+import { createEnsureSuiteSyncKeys } from './createEnsureSuiteSyncKeys';
 import { createTurnOffSuiteSync } from './createTurnOffSuiteSync';
 import { createTurnOnSuiteSync } from './createTurnOnSuiteSync';
-import { createEnsureSubscribeSuiteSyncData } from './data/createEnsureSubscribeSuiteSyncData';
+import { selectSuiteSyncAccountLabel } from './data/account/selectSuiteSyncAccountLabel';
+import { selectSuiteSyncAddressLabel } from './data/address/suiteSyncAddressSelectors';
+import { createEnsureSubscribedStorage } from './data/createEnsureSubscribedStorage';
 import { createSuiteSyncListener } from './data/createSuiteSyncListener';
+import { createDangerouslyWipeAllLabelsFromWallet } from './data/labeling/createDangerouslyWipeAllLabelsFromWallet';
 import { createUpdateAccountLabel } from './data/labeling/createUpdateAccountLabel';
 import { createUpdateAddressLabel } from './data/labeling/createUpdateAddressLabel';
 import { createUpdateOutputLabel } from './data/labeling/createUpdateOutputLabel';
 import { createUpdateWalletLabel } from './data/labeling/createUpdateWalletLabel';
-import { GetDeviceForStaticSessionId } from './getDeviceForStaticSessionId';
+import { selectAllLabelsForAccount } from './data/labeling/selectAllLabelsForAccount';
+import { selectSuiteSyncOutputLabel } from './data/output/suiteSyncOutputSelectors';
+import { selectSuiteSyncWalletLabel } from './data/wallet/suiteSyncWalletSelectors';
+import { type GetDeviceForStaticSessionId } from './getDeviceForStaticSessionId';
 import { createEnsureSuiteSyncOwner } from './owner/createEnsureSuiteSyncOwner';
 import { createLoadSuiteSyncOwnerFromState } from './owner/createLoadSuiteSyncOwnerFromState';
 import {
-    RetrieveSuiteSyncOwnerDeps,
+    type RetrieveSuiteSyncOwnerDeps,
     createRetrieveSuiteSyncOwner,
 } from './owner/createRetrieveSuiteSyncOwner';
 import { createSaveSuiteSyncOwner } from './owner/createSaveSuiteSyncOwner';
 import { createChangeRelayUrl } from './relay/createChangeRelayUrl';
-import { DEFAULT_SUITE_SYNC_RELAY_URL } from './relay/relayUrl';
-import { createEnsureQuota } from './storage/createEnsureQuota';
+import { isUsingTrezorServer } from './relay/isUsingTrezorServer';
 import { createEnsureStorage } from './storage/createEnsureStorage';
 import { createEnsureWalletSuiteSyncOn } from './storage/createEnsureWalletSuiteSyncOn';
 import { createEnsureWalletSuiteSyncOnWithErrorHandler } from './storage/createEnsureWalletSuiteSyncOnWithErrorHandler';
@@ -45,23 +51,21 @@ import {
     selectSuiteSyncRelayUrl,
 } from './suiteSyncSelectors';
 
-type CreateSuiteStorageFactory = (deps: {
-    suiteSyncErrorHandler: SuiteSyncErrorHandler;
-}) => CreateSuiteStorage;
+export type SuiteSyncAnalytics = Pick<Analytics<AnalyticsSharedEvents>, 'report'>;
 
-type CreateSuiteStorageFactoryDep = {
-    createSuiteStorageFactory: CreateSuiteStorageFactory;
+export type SuiteSyncAnalyticsDep = {
+    analytics?: SuiteSyncAnalytics;
 };
 
 type CreateSuiteSyncCompositionRootDeps = {
     getState: () => any;
     dispatch: Dispatch;
     trezorConnect: RetrieveSuiteSyncOwnerDeps['trezorConnect'];
-} & EnsureDelegatedIdentityKeyDep &
-    CreateSuiteStorageFactoryDep &
+} & SuiteSyncAnalyticsDep &
+    EnsureDelegatedIdentityKeyDep &
+    CreateSuiteStorageDep &
     CreateSuiteSyncOwnerDep &
-    PlatformEncryptionDep &
-    SuiteSyncAppReloaderDep;
+    PlatformEncryptionDep;
 
 export const createSuiteSyncCompositionRoot = (
     deps: CreateSuiteSyncCompositionRootDeps,
@@ -91,42 +95,35 @@ export const createSuiteSyncCompositionRoot = (
     const getDeviceForStaticSessionId: GetDeviceForStaticSessionId = deviceStaticId =>
         selectDeviceByStaticSessionId(deps.getState(), deviceStaticId) ?? null;
 
-    const refreshSuiteSyncKeys = createRefreshSuiteSync({
+    const ensureSuiteSyncKeys = createEnsureSuiteSyncKeys({
         dispatch: deps.dispatch,
         ensureDelegatedIdentityKey: deps.ensureDelegatedIdentityKey,
         ensureSuiteSyncOwner,
         getDeviceForStaticSessionId,
     });
 
-    const ensureQuota = createEnsureQuota({
+    const { ensureQuota, getOwnerHasAllowance } = createSuiteSyncQuotaManagerCompositionRoot({
         dispatch: deps.dispatch,
+        getState: deps.getState,
         getDeviceForStaticSessionId,
-        hasAllowance: ({ walletDescriptor, deviceId }) =>
-            selectHasDeviceAllowance(deps.getState(), deviceId ?? null, walletDescriptor),
-        defaultRelayUrl: DEFAULT_SUITE_SYNC_RELAY_URL,
-        getRelayUrl: toGetter(deps.getState, selectSuiteSyncRelayUrl),
+        getIsUsingTrezorRelay: () => isUsingTrezorServer(selectSuiteSyncRelayUrl(deps.getState())),
     });
-
-    const suiteSyncErrorHandler: SuiteSyncErrorHandler = createSuiteSyncErrorHandler({
-        dispatch: deps.dispatch,
-    });
-
-    const createSuiteStorage = deps.createSuiteStorageFactory({ suiteSyncErrorHandler });
 
     const ensureStorage = createEnsureStorage({
-        refreshSuiteSyncKeys,
+        ensureSuiteSyncKeys,
         ensureQuota,
         suiteSyncStorageRepository,
-        createSuiteStorage,
+        createSuiteStorage: deps.createSuiteStorage,
         getRelayUrl: toGetter(deps.getState, selectSuiteSyncRelayUrl),
         getDeviceForStaticSessionId,
+        getOwnerHasAllowance,
     });
 
     const suiteSyncListener = createSuiteSyncListener({
         dispatch: deps.dispatch,
     });
 
-    const subscribeSuiteSyncData = createEnsureSubscribeSuiteSyncData({
+    const ensureSubscribedStorage = createEnsureSubscribedStorage({
         subscriptionStorage,
         ensureStorage,
         suiteSyncListener,
@@ -136,8 +133,8 @@ export const createSuiteSyncCompositionRoot = (
         dispatch: deps.dispatch,
         ensureWalletSuiteSyncOn: createEnsureWalletSuiteSyncOn({
             getState: deps.getState,
-            refreshSuiteSyncKeys,
-            ensureSuiteSyncData: subscribeSuiteSyncData,
+            ensureSuiteSyncKeys,
+            ensureSubscribedStorage,
             subscriptionStorage,
         }),
     });
@@ -145,10 +142,26 @@ export const createSuiteSyncCompositionRoot = (
     const turnOffSuiteSyncForWallet = createTurnOffSuiteSyncForWallet({
         suiteSyncStorageRepository,
         subscriptionStorage,
+        dispatch: deps.dispatch,
     });
 
     const getIsSuiteSyncEnabled = toGetter(deps.getState, selectIsSuiteSyncEnabled);
     const getAllDeviceSessionIds = toGetter(deps.getState, selectAllDeviceStaticIds);
+    const getAccounts = toGetter(deps.getState, selectAccounts);
+
+    const labelingDeps = {
+        ensureWalletSuiteSyncOn,
+        analytics: deps.analytics,
+        getWalletLabel: toGetter(deps.getState, selectSuiteSyncWalletLabel),
+        getAccountLabel: toGetter(deps.getState, selectSuiteSyncAccountLabel),
+        getAddressLabel: toGetter(deps.getState, selectSuiteSyncAddressLabel),
+        getOutputLabel: toGetter(deps.getState, selectSuiteSyncOutputLabel),
+    };
+
+    const updateWalletLabel = createUpdateWalletLabel(labelingDeps);
+    const updateAccountLabel = createUpdateAccountLabel(labelingDeps);
+    const updateOutputLabel = createUpdateOutputLabel(labelingDeps);
+    const updateAddressLabel = createUpdateAddressLabel(labelingDeps);
 
     return {
         changeRelayUrl: createChangeRelayUrl({
@@ -163,18 +176,27 @@ export const createSuiteSyncCompositionRoot = (
             getAllDeviceSessionIds,
             dispatch: deps.dispatch,
             turnOffSuiteSyncForWallet,
-            reloadApp: deps.reloadApp,
         }),
         turnOnSuiteSync: createTurnOnSuiteSync({
             getIsSuiteSyncEnabled,
             dispatch: deps.dispatch,
             ensureWalletSuiteSyncOn,
+            getDeviceForStaticSessionId,
+        }),
+        dangerouslyWipeAllLabelsFromWallet: createDangerouslyWipeAllLabelsFromWallet({
+            getWalletLabel: labelingDeps.getWalletLabel,
+            getAccounts,
+            getAllLabelsForAccount: toGetter(deps.getState, selectAllLabelsForAccount),
+            updateWalletLabel,
+            updateAccountLabel,
+            updateOutputLabel,
+            updateAddressLabel,
         }),
         labeling: {
-            updateWalletLabel: createUpdateWalletLabel({ ensureWalletSuiteSyncOn }),
-            updateAccountLabel: createUpdateAccountLabel({ ensureWalletSuiteSyncOn }),
-            updateOutputLabel: createUpdateOutputLabel({ ensureWalletSuiteSyncOn }),
-            updateAddressLabel: createUpdateAddressLabel({ ensureWalletSuiteSyncOn }),
+            updateWalletLabel,
+            updateAccountLabel,
+            updateOutputLabel,
+            updateAddressLabel,
         },
     };
 };

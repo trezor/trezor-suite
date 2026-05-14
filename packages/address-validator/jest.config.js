@@ -1,9 +1,6 @@
-const baseConfig = require('../../jest.config.base');
+const baseConfig = require('../../jest.config.base.swc');
 
 module.exports = {
     ...baseConfig,
-    transformIgnorePatterns: [
-        ...(baseConfig.transformIgnorePatterns ?? []),
-        '/node_modules/(?!chai/)',
-    ],
+    transformIgnorePatterns: ['/node_modules/(?!@scure/base/)'],
 };

@@ -11,6 +11,10 @@ const sendAddress = '0xdcaB74E62b9D08a9f8Fa4A3Ccb5c46AE039C9d7C';
 const formattedSendAddress = formatAddressWithNewlines(sendAddress);
 const sendAmount = '0.000008';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
+const feeWrapFormat = {
+    wrapByWords: true,
+    lengthOverride: 16,
+};
 
 // This test is vulnerable to being run twice simultaneously
 // in such case nonce will collide and second transaction will fail
@@ -27,10 +31,7 @@ test.describe(
             async ({ page, onboardingPage, dashboardPage, walletPage, settingsPage }) => {
                 await page.clock.install();
                 await onboardingPage.completeOnboarding();
-                await settingsPage.changeNetworks({
-                    enableNetworks: ['base'], //add more EVMs
-                    disableNetworks: ['btc'],
-                });
+                await settingsPage.changeNetworks({ enableNetworks: ['base'] }); //add more EVMs
                 await dashboardPage.deviceSwitchingOpenButton.click();
                 await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
                 await walletPage.openAccount({ symbol: 'base', type: 'normal', atIndex: 0 });
@@ -86,10 +87,6 @@ test.describe(
                         body: [transformAddress(sendAddress)],
                         actions: { right_button: 'Continue' },
                     },
-                    T3T1: {
-                        header: { title: 'Address', subtitle: 'Recipient' },
-                        body: [transformAddress(sendAddress)],
-                    },
                 });
             });
 
@@ -119,9 +116,6 @@ test.describe(
                         ],
                         actions: { right_button: 'Hold to sign' },
                     },
-                    T3T1: {
-                        header: { title: 'Summary' },
-                    },
                 });
             });
 
@@ -134,22 +128,10 @@ test.describe(
                             ['Gas limit'],
                             [`${gasLimit} units`],
                             ['Max fee per gas'],
-                            [maxFeePerGas, '\n', 'Gwei'],
+                            device.wrapText(`${maxFeePerGas} Gwei`, feeWrapFormat),
                             ['Max priority fee'],
-                            [maxPriorityFeePerGas, '\n', 'Gwei'],
+                            device.wrapText(`${maxPriorityFeePerGas} Gwei`, feeWrapFormat),
                         ],
-                    },
-                    T3T1: {
-                        header: { title: 'Fee info' },
-                        body: [
-                            ['Gas limit'],
-                            [`${gasLimit} units`],
-                            ['Max fee per gas'],
-                            [`${maxFeePerGas} Gwei`],
-                            ['Max priority fee'],
-                            [`${maxPriorityFeePerGas} Gwei`],
-                        ],
-                        footer: undefined,
                     },
                 });
             });
@@ -196,10 +178,6 @@ test.describe(
                         body: [transformAddress(sendAddress)],
                         actions: { right_button: 'Continue' },
                     },
-                    T3T1: {
-                        header: { title: 'Address', subtitle: 'Recipient' },
-                        body: [transformAddress(sendAddress)],
-                    },
                 });
             });
 
@@ -227,9 +205,6 @@ test.describe(
                         body: [['Amount'], [formattedSendAmount], ['Maximum fee'], maxFeeWrapped],
                         actions: { right_button: 'Hold to sign' },
                     },
-                    T3T1: {
-                        header: { title: 'Summary' },
-                    },
                 });
             });
 
@@ -242,16 +217,14 @@ test.describe(
                             ['Gas limit'],
                             [`${gasLimit} units`],
                             ['Max fee per gas'],
-                            device.wrapText(`${maxFeePerGas} Gwei`, { wrapByWords: true }),
+                            device.wrapText(`${maxFeePerGas} Gwei`, feeWrapFormat),
                             ['Max priority fee'],
-                            device.wrapText(`${maxPriorityFeePerGas} Gwei`, {
-                                wrapByWords: true,
-                            }),
+                            device.wrapText(`${maxPriorityFeePerGas} Gwei`, feeWrapFormat),
                         ],
                     },
-                    T3T1: { footer: undefined },
                 });
             });
+
             await test.step('Confirm transaction', async () => {
                 await devicePrompt.waitForPromptAndConfirm();
                 // wait for transaction to be prepared

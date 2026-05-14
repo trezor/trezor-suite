@@ -1,5 +1,7 @@
-import { FC, PropsWithChildren, useEffect } from 'react';
+import { type FC, type PropsWithChildren, useEffect } from 'react';
 
+import { selectDesktopUpdateAllowPrerelease } from '@suite/desktop-update';
+import { useDevice } from '@suite/device';
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
 import { useReportDeviceCompromised } from '@suite-common/firmware-authenticity';
 import { Card } from '@trezor/components';
@@ -7,15 +9,15 @@ import { Card } from '@trezor/components';
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import { init } from 'src/actions/suite/initAction';
 import { useGuideKeyboard } from 'src/hooks/guide';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useWindowVisibility } from 'src/hooks/suite/useWindowVisibility';
-import { selectDesktopUpdateAllowPrerelease } from 'src/reducers/suite/desktopUpdateReducer';
 import {
     selectIsTransportInitialized,
     selectPrerequisite,
 } from 'src/selectors/suite/suiteSelectors';
 import type { AppState } from 'src/types/suite';
 import { Onboarding } from 'src/views/onboarding';
+import { AnalyticsConsentScreen } from 'src/views/start/AnalyticsConsentScreen';
 import { SuiteStart } from 'src/views/start/SuiteStart';
 import { ErrorPage } from 'src/views/suite/ErrorPage';
 
@@ -23,7 +25,6 @@ import { DatabaseCorruptedModal } from './DatabaseCorruptedModal';
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
 import { InitialLoading } from './InitialLoading';
 import { selectShouldDisplayDeviceCompromisedOnRoute } from './selectShouldDisplayDeviceCompromisedOnRoute';
-import { AnalyticsConsentScreen } from '../../../views/start/AnalyticsConsentScreen';
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
 import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
 import { useDeviceCompromisedNotification } from '../SecurityCheck/useDeviceCompromisedNotification';

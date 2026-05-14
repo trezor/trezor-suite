@@ -1,10 +1,10 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import {
-    AppRememberedPermission,
-    ConnectPopupCall,
-    ConnectPopupCallWithState,
-    ConnectSerializedError,
+    type AppRememberedPermission,
+    type ConnectPopupCall,
+    type ConnectPopupCallWithState,
+    type ConnectSerializedError,
 } from './connectPopupTypes';
 
 export const ACTION_PREFIX = '@suite-common/connect-popup';
@@ -30,6 +30,8 @@ const rejectPermissions = createAction(`${ACTION_PREFIX}/rejectPermissions`, (pa
 }));
 
 const finishCall = createAction(`${ACTION_PREFIX}/finishCall`);
+
+const clearCall = createAction(`${ACTION_PREFIX}/clearCall`);
 
 const confirmAddresses = createAction(
     `${ACTION_PREFIX}/confirmAddresses`,
@@ -75,6 +77,13 @@ const forgetAppPermissions = createAction(
     }),
 );
 
+const setAppSilentMode = createAction(
+    `${ACTION_PREFIX}/setAppSilentMode`,
+    (payload: { origin: string; silentMode: boolean }) => ({
+        payload,
+    }),
+);
+
 const txSimulation = createAction(
     `${ACTION_PREFIX}/txSimulation`,
     (payload: Pick<ConnectPopupCallWithState<'tx-simulation'>, 'fromAddress'>) => ({
@@ -103,7 +112,9 @@ export const connectPopupActions = {
     setError,
     rememberAppPermissions,
     forgetAppPermissions,
+    setAppSilentMode,
     txSimulation,
     setSelectedFee,
     switchDevice,
+    clearCall,
 } as const;

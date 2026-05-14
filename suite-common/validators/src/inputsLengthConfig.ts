@@ -13,9 +13,11 @@ export const formInputsMaxLength = {
      * - For UTF-16 encoding: 16384 B / 2 = 8192 B
      */
     ethData: 8192,
+    tronNote: 512,
 
     btcLocktime: 10, // max: 4294967294
     xrpDestinationTag: 10, // max: 4294967295
 
     stellarTextMemo: 28, // https://developers.stellar.org/docs/learn/encyclopedia/transactions-specialized/memos
+    solanaMemo: 566, // https://www.solana-program.com/docs/memo
 } as const;

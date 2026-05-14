@@ -27,12 +27,13 @@
         { "path": "../feature-flags" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../passphrase" },
         { "path": "../settings" },
         { "path": "../tokens" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
-        { "path": "../test-utils" }
+        { "path": "../test-utils-store" }
     ]
 }

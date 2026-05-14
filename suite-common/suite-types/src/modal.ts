@@ -1,11 +1,18 @@
-import { RequestEnableTorResponse } from '@suite-common/suite-config';
+import { type RequestEnableTorResponse } from '@suite-common/suite-config';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Account, AddressType } from '@suite-common/wallet-types';
-import { UI } from '@trezor/connect';
-import { Deferred } from '@trezor/utils';
+import { type Account, type AddressType, type EvmSelectedFee } from '@suite-common/wallet-types';
+import { type UI_REQUEST } from '@trezor/connect';
+import { type Deferred } from '@trezor/utils';
 
-import { TrezorDevice } from './device';
-import { EarnAccountRef, EarnFlow, EarnProvider } from './staking';
+import { type TrezorDevice } from './device';
+import {
+    type EarnAnalyticsStep,
+    type EarnFlow,
+    type EarnModalAction,
+    type EarnProvider,
+    type EarnYieldContext,
+    type StakeModalFlow,
+} from './staking';
 
 export type UserContextPayload =
     | {
@@ -74,7 +81,7 @@ export type UserContextPayload =
           type: 'pin-mismatch';
       }
     | {
-          type: typeof UI.INVALID_PIN_ATTEMPTS_DEPLETED;
+          type: typeof UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED;
       }
     | {
           type: 'device-authenticity-check-opt-out';
@@ -89,6 +96,9 @@ export type UserContextPayload =
     | {
           type: 'advanced-coin-settings';
           symbol: NetworkSymbol;
+      }
+    | {
+          type: 'activate-assets';
       }
     | {
           type: 'add-token';
@@ -131,45 +141,44 @@ export type UserContextPayload =
       }
     | {
           type: 'earn-in-a-nutshell';
-          flow: EarnFlow;
+          flow: EarnFlow.Stake | EarnFlow.UpdateProvider;
           provider: EarnProvider;
-          account?: EarnAccountRef;
-          yieldId?: string;
-          tokenContractAddress?: string;
+          account: Account;
+          analyticsStep: Extract<EarnAnalyticsStep, 'staking-dashboard'>;
+          actionType?: EarnModalAction;
+          yieldContext?: EarnYieldContext;
       }
     | {
-          type: 'supply';
-          flow: EarnFlow;
-          account?: EarnAccountRef;
-          yieldId?: string;
-          tokenContractAddress?: string;
+          type: 'earn-in-a-nutshell';
+          flow: EarnFlow.Yield;
+          provider: EarnProvider;
+          account: Account;
+          analyticsStep: Extract<
+              EarnAnalyticsStep,
+              'earn-dashboard' | 'yield-supply' | 'yield-withdraw'
+          >;
+          actionType?: EarnModalAction;
+          yieldContext?: EarnYieldContext;
       }
     | {
           type: 'stake';
-          flow: EarnFlow;
-          account?: EarnAccountRef;
-          yieldId?: string;
-          tokenContractAddress?: string;
-      }
-    | {
-          type: 'withdraw';
-          account?: EarnAccountRef;
+          flow: StakeModalFlow;
+          account: Account;
       }
     | {
           type: 'unstake';
-          account?: EarnAccountRef;
+          account: Account;
       }
     | {
           type: 'claim';
-          account?: EarnAccountRef;
+          account: Account;
       }
     | {
           type: 'earn-provider-consent';
           flow: EarnFlow;
           provider: EarnProvider;
-          account?: EarnAccountRef;
-          yieldId?: string;
-          tokenContractAddress?: string;
+          account: Account;
+          yieldContext?: EarnYieldContext;
       }
     | {
           type: 'change-delegate';
@@ -207,7 +216,20 @@ export type UserContextPayload =
           type: 'auto-start-before-quit';
       }
     | {
-          type: 'tx-simulation';
+          type: 'connect-popup-tx-simulation';
+      }
+    | {
+          type: 'earn-yield-tx-simulation';
+          data: unknown;
+          decision: Deferred<
+              | {
+                    value: true;
+                    selectedFee: EvmSelectedFee | null;
+                }
+              | {
+                    value: false;
+                }
+          >;
       }
     | {
           type: 'wipe-device-success';

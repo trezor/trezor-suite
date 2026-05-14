@@ -1,37 +1,30 @@
 import { useSelector } from 'react-redux';
 
-import type { BuyTrade } from 'invity-api';
-
 import {
-    TradingRootState,
-    TradingTransaction,
-    TradingTransactionBuy,
-    TradingTransactionSell,
-    TradingType,
-    selectTradingProviderByNameAndTradeType,
+    type TradingRootState,
+    type TradingTransaction,
+    type TradingTransactionBuy,
+    type TradingTransactionSell,
     selectTradingTradeByOrderId,
 } from '@suite-common/trading';
 import { FullAlertBox } from '@suite-native/atoms';
-import { IconName } from '@suite-native/icons';
-import { TxKeyPath, useTranslate } from '@suite-native/intl';
-import { useOpenLink } from '@suite-native/link';
+import { type IconName } from '@suite-native/icons';
+import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
 import { exhaustive } from '@trezor/type-utils';
 
-import { TradeStatusStep } from '../../../utils/general/utils';
+import { type TradeStatusStep } from '../../../utils/general/utils';
 
 type AlertConfig = {
     iconName: IconName;
     variant: 'critical' | 'neutral' | 'success';
     titleKey: TxKeyPath;
     descriptionKey: TxKeyPath;
-    buttonKey: TxKeyPath;
+    buttonKey?: TxKeyPath;
 };
 
 type TradeDetailAlertProps = {
     alertType: TradeStatusStep;
-    provider?: string;
-    tradeType: TradingType;
     orderId?: string;
     onOpenedBrowser?: () => void;
 };
@@ -49,7 +42,6 @@ const getAlertConfig = (alertType: TradeStatusStep): AlertConfig | undefined => 
                 variant: 'critical',
                 titleKey: 'moduleTrading.tradeHistory.detail.errorAlert.title',
                 descriptionKey: 'moduleTrading.tradeHistory.detail.errorAlert.description',
-                buttonKey: 'moduleTrading.tradeHistory.detail.errorAlert.button',
             };
         case 'waiting':
             return {
@@ -65,7 +57,6 @@ const getAlertConfig = (alertType: TradeStatusStep): AlertConfig | undefined => 
                 variant: 'neutral',
                 titleKey: 'moduleTrading.tradeHistory.detail.convertingAlert.title',
                 descriptionKey: 'moduleTrading.tradeHistory.detail.convertingAlert.description',
-                buttonKey: 'moduleTrading.tradeHistory.detail.convertingAlert.button',
             };
         case 'kyc':
             return {
@@ -81,7 +72,6 @@ const getAlertConfig = (alertType: TradeStatusStep): AlertConfig | undefined => 
                 variant: 'neutral',
                 titleKey: 'moduleTrading.tradeHistory.detail.sendingAlert.title',
                 descriptionKey: 'moduleTrading.tradeHistory.detail.sendingAlert.description',
-                buttonKey: 'moduleTrading.tradeHistory.detail.sendingAlert.button',
             };
         // Success, pending, processing will be handled outside of this component
         case 'success':
@@ -97,71 +87,41 @@ const getAlertConfig = (alertType: TradeStatusStep): AlertConfig | undefined => 
 
 export const TradeDetailAlert = ({
     alertType,
-    provider,
-    tradeType,
     orderId,
     onOpenedBrowser,
 }: TradeDetailAlertProps) => {
-    const openLink = useOpenLink();
+    const { translate } = useTranslate();
 
-    const providerInfo = useSelector((state: TradingRootState) =>
-        selectTradingProviderByNameAndTradeType(state, provider, tradeType),
-    );
     const trade = useSelector((state: TradingRootState) =>
         orderId ? selectTradingTradeByOrderId(state, orderId) : undefined,
     );
-    const { translate } = useTranslate();
 
     const alertConfig = getAlertConfig(alertType);
 
-    const { openBrowser } = useBrowserAuth(
-        trade?.tradeType === 'buy'
-            ? { tradingType: trade.tradeType, orderId: trade.data.orderId }
-            : { tradingType: trade?.tradeType },
-    );
+    const { openBrowser } = useBrowserAuth(trade?.tradeType);
 
-    // If no config found for this alert type, return null
-    if (!alertConfig) {
+    if (!alertConfig || !trade) {
         return null;
     }
 
     const { iconName, variant, titleKey, descriptionKey, buttonKey } = alertConfig;
+    const { tradeType } = trade;
 
-    const supportUrlTemplate = providerInfo?.statusUrl || providerInfo?.supportUrl;
-    let supportUrl: string | undefined;
-    if (tradeType === 'buy') {
-        supportUrl = supportUrlTemplate?.replace(
-            '{{originalPaymentId}}',
-            (trade?.data as BuyTrade)?.paymentId || '',
-        );
-    } else {
-        supportUrl = supportUrlTemplate?.replace('{{orderId}}', trade?.data?.orderId || '');
-    }
+    const hasPartnerData = isBuyOrSell(trade) && trade.data.partnerData;
+    const shouldShowPaymentButton = alertType === 'waiting' && orderId && hasPartnerData;
+    const buttonLabel = shouldShowPaymentButton && buttonKey ? translate(buttonKey) : undefined;
 
-    const navigateToBrowser = () => {
-        if (trade && isBuyOrSell(trade) && trade.data.partnerData) {
+    const handleButtonPress = () => {
+        if (shouldShowPaymentButton && trade.data.partnerData) {
             const callbackUrl = buildTradingUrl({
                 actionType: 'trade',
-                tradeType: trade.tradeType,
+                tradeType,
                 orderId,
             });
             onOpenedBrowser?.();
-            openBrowser(trade.data.partnerData, callbackUrl);
+            openBrowser(trade.data.partnerData, callbackUrl, orderId);
         }
     };
-
-    // Special handling for different alert types
-    let handleButtonPress: (() => void) | undefined;
-
-    if ((['waiting', 'kyc'] as TradeStatusStep[]).includes(alertType) && orderId) {
-        handleButtonPress = () => navigateToBrowser();
-    }
-
-    if (supportUrl) {
-        handleButtonPress = () => openLink(supportUrl);
-    }
-
-    const buttonLabel = handleButtonPress ? translate(buttonKey) : undefined;
 
     return (
         <FullAlertBox
@@ -169,7 +129,7 @@ export const TradeDetailAlert = ({
             description={translate(descriptionKey)}
             iconName={iconName}
             primaryButtonLabel={buttonLabel}
-            primaryButtonProps={{ viewLeft: 'arrowSquareOut' }}
+            primaryButtonProps={{ iconLeft: 'arrowSquareOut' }}
             onPressPrimaryButton={handleButtonPress}
             variant={variant}
         />

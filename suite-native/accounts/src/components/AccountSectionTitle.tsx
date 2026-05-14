@@ -2,14 +2,13 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
-import { getAccountFiatBalance } from '@suite-common/wallet-utils';
+import { type Account } from '@suite-common/wallet-types';
+import { getAccountFiatBalance, isStakingSymbol } from '@suite-common/wallet-utils';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
 import { AccountLabel } from '@suite-native/labeling';
 import {
-    NativeStakingRootState,
-    doesCoinSupportStaking,
+    type NativeStakingRootState,
     selectAccountCryptoBalanceWithStaking,
 } from '@suite-native/staking';
 
@@ -28,7 +27,7 @@ export const AccountSectionTitle: React.FC<AccountSectionTitleProps> = ({
     const cryptoBalanceWithStaking = useSelector((state: NativeStakingRootState) =>
         selectAccountCryptoBalanceWithStaking(state, account.key),
     );
-    const shouldIncludeStaking = doesCoinSupportStaking(account.symbol);
+    const shouldIncludeStaking = isStakingSymbol(account.symbol);
 
     const baseCurrencyBalance = useMemo(
         () => getAccountFiatBalance({ account, baseCurrencyCode, rates, shouldIncludeStaking }),

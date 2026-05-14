@@ -19,6 +19,13 @@ export { Button, type ButtonProps, type ButtonIntent } from './components/button
 export { IconButton, type IconButtonProps } from './components/buttons/IconButton/IconButton';
 export * from './components/Icon/Icon';
 export {
+    Illustration,
+    allowedIllustrationFrameProps,
+    type IllustrationProps,
+    type IllustrationName,
+} from './components/Illustration/Illustration';
+export { illustrationIntents, type IllustrationIntent } from './components/Illustration/types';
+export {
     ComponentWithSubIcon,
     type ComponentWithSubIconProps,
 } from './components/ComponentWithSubIcon/ComponentWithSubIcon';
@@ -84,7 +91,7 @@ export { DotIndicator, type DotIndicatorProps } from './components/DotIndicator/
 export {
     IconCircle,
     type IconCircleProps,
-    type IconCircleVariant,
+    type IconCircleIntent,
 } from './components/IconCircle/IconCircle';
 export { InfoSegments, type InfoSegmentsProps } from './components/InfoSegments/InfoSegments';
 export { InfoItem, type InfoItemProps } from './components/InfoItem/InfoItem';
@@ -100,12 +107,12 @@ export * from './components/Note/Note';
 export * from './components/Popover/Popover';
 export * from './components/Popover/utils';
 export * from './components/ResizableBox/ResizableBox';
+export * from './components/Timerange/Timerange';
 export * from './components/skeletons/SkeletonCircle';
 export * from './components/skeletons/SkeletonRectangle';
 export * from './components/skeletons/SkeletonSpread';
 export * from './components/skeletons/SkeletonStack';
-export * from './components/skeletons/types';
-export * from './components/Timerange/Timerange';
+export type * from './components/skeletons/types';
 export * from './components/Toast/Toast';
 export * from './components/Toast/types';
 export * from './components/Tooltip/Tooltip';
@@ -155,4 +162,4 @@ export type { SuiteThemeColors } from './config/colors';
 export { RadioCard } from './components/RadioCard/RadioCard';
 export { PinInput } from './components/PinInput/PinInput';
 
-export { type UIIntent } from './config/types';
+export { type UIIntent, type UIVariant } from './config/types';

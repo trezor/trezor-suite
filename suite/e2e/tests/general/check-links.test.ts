@@ -1,7 +1,7 @@
 import { Page, TestInfo } from '@playwright/test';
 
+import { routes } from '@suite/router-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
-import routes from '@trezor/suite/src//constants/suite/routes';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
@@ -79,8 +79,9 @@ async function fetchWithRetry(page: Page, url: string, maxRetries = 3) {
 }
 
 test.describe('Check Links', { tag: ['@webOnly', '@nightlyOnly', '@T3T1'] }, () => {
-    test.beforeEach(async ({ onboardingPage }) => {
+    test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
     });
 
     test(

@@ -1,6 +1,6 @@
 import { TypedEmitter, getSynchronize } from '@trezor/utils';
 
-import { TRANSPORT } from '../constants';
+import { type TRANSPORT } from '../constants';
 import * as ERRORS from '../errors';
 import type {
     AnyError,
@@ -9,7 +9,6 @@ import type {
     DescriptorApiLevel,
     Logger,
     PathInternal,
-    Success,
 } from '../types';
 import { error, success, unknownError } from '../utils/result';
 
@@ -146,14 +145,6 @@ export abstract class AbstractApi extends TypedEmitter<{
      */
     public nativeWriteChunking: boolean = false;
 
-    protected success<T>(payload: T): Success<T> {
-        return success(payload);
-    }
-
-    protected error<E extends AnyError>(payload: { error: E; message?: string }) {
-        return error(payload);
-    }
-
     protected unknownError<E extends AnyError = never>(err: Error, expectedErrors: E[] = []) {
         this.logger?.error('transport: abstract api: unknown error', err);
 
@@ -171,7 +162,7 @@ export abstract class AbstractApi extends TypedEmitter<{
         }
         // check already existing lock
         if ((this.lock[path].read && lock.read) || (this.lock[path].write && lock.write)) {
-            return this.error({ error: ERRORS.OTHER_CALL_IN_PROGRESS });
+            return error({ code: ERRORS.OTHER_CALL_IN_PROGRESS });
         }
         // add to the current lock
         this.lock[path] = {
@@ -179,7 +170,7 @@ export abstract class AbstractApi extends TypedEmitter<{
             write: this.lock[path].write || lock.write,
         };
 
-        return this.success(undefined);
+        return success(undefined);
     }
 
     /**

@@ -1,4 +1,4 @@
-import { AcquiredDevice } from '@suite-common/suite-types';
+import { type AcquiredDevice } from '@suite-common/suite-types';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import fixtures from '../__fixtures__/device';
@@ -10,12 +10,13 @@ import {
     getFirmwareDowngradeUrl,
     getFirstDeviceInstance,
     getIsDeviceConnectedViaBluetooth,
+    getIsDeviceDescriptorApiTypeBluetooth,
+    getIsDeviceRemembered,
     getNewInstanceNumber,
     getNewWalletNumber,
     getPackagingUrl,
     getSelectedDevice,
     getStatus,
-    isDeviceRemembered,
     isDeviceWithButtonOnlyNoTouchscreen,
     isSelectedDevice,
     isSelectedInstance,
@@ -27,6 +28,14 @@ describe(getStatus.name, () => {
         it(f.status, () => {
             const status = getStatus(f.device);
             expect(status).toEqual(f.status);
+        });
+    });
+});
+
+describe(getIsDeviceDescriptorApiTypeBluetooth.name, () => {
+    fixtures.getIsDeviceDescriptorApiTypeBluetooth.forEach(f => {
+        it(f.description, () => {
+            expect(getIsDeviceDescriptorApiTypeBluetooth(f.device)).toEqual(f.result);
         });
     });
 });
@@ -118,10 +127,10 @@ describe(getDeviceInstances.name, () => {
     });
 });
 
-describe(isDeviceRemembered.name, () => {
+describe(getIsDeviceRemembered.name, () => {
     fixtures.isDeviceRemembered.forEach(f => {
         it(f.description, () => {
-            expect(isDeviceRemembered(f.device)).toEqual(f.result);
+            expect(getIsDeviceRemembered(f.device)).toEqual(f.result);
         });
     });
 });

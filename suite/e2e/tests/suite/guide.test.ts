@@ -69,6 +69,7 @@ test.describe('Guide with device', { tag: ['@T3W1', '@T3T1'] }, () => {
             await onboardingPage.disableNecessaryFirmwareChecks();
             await onboardingPage.optionallyDismissFwHashCheckError();
             await analyticsSection.continueButton.click();
+            await onboardingPage.pairTHP();
 
             await guidePanel.openPanel();
             await expect(page.getByTestId('@guide/panel')).toBeVisible();

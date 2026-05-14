@@ -1,16 +1,16 @@
-import { ReactNode, useEffect, useRef } from 'react';
+import { type ReactNode, useEffect, useRef } from 'react';
 import {
-    ControlProps,
-    DropdownIndicatorProps,
-    GroupHeadingProps,
-    GroupProps,
-    IndicatorsContainerProps,
-    MenuListProps,
-    MenuProps,
-    OptionProps,
-    PlaceholderProps,
-    SingleValueProps,
-    ValueContainerProps,
+    type ControlProps,
+    type DropdownIndicatorProps,
+    type GroupHeadingProps,
+    type GroupProps,
+    type IndicatorsContainerProps,
+    type MenuListProps,
+    type MenuProps,
+    type OptionProps,
+    type PlaceholderProps,
+    type SingleValueProps,
+    type ValueContainerProps,
     components,
 } from 'react-select';
 
@@ -24,7 +24,7 @@ import { Spinner } from '../../loaders/Spinner/Spinner';
 import { Text } from '../../typography/Text/Text';
 import { FloatingLabel } from '../FloatingLabel';
 import { InputWrapper } from '../InputWrapper';
-import { InputSize } from '../types';
+import { type InputSize } from '../types';
 import {
     INPUT_PADDING,
     mapSizeToHeight,
@@ -100,8 +100,8 @@ export const Menu = ({ children, ...props }: MenuProps<OptionType, boolean>) => 
                 flex="1"
                 minWidth={140}
                 borderRadius={16}
-                backgroundColor="baseFillSurfaceModeless"
-                borderColor="baseBorderSurfaceModeless"
+                backgroundColor="surfaceFillModeless"
+                borderColor="surfaceBorderModeless"
                 borderWidth={1}
                 shadow={theme.boxShadowElevated}
                 overflow="auto"
@@ -168,7 +168,7 @@ export const Option = ({
 
     useEffect(() => {
         if (props.isSelected) {
-            ref.current?.scrollIntoView();
+            ref.current?.scrollIntoView({ block: 'nearest' });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -193,9 +193,7 @@ export const Option = ({
             <Box
                 borderRadius={8}
                 backgroundColor={
-                    props.isFocused && !props.isDisabled
-                        ? 'stateFillElementGhostHovered'
-                        : undefined
+                    props.isFocused && !props.isDisabled ? 'elementFillGhostHovered' : undefined
                 }
                 cursor={props.isDisabled ? 'default' : 'pointer'}
                 padding={{ vertical: 6, horizontal: 8 }}

@@ -1,14 +1,15 @@
 import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import type { AccountTable } from '@suite-common/suite-sync-storage';
 import { asAccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import { createSuiteSyncStorageMock } from '../../../../tests/createSuiteSyncStorageMock.mock';
-import { SuiteSyncUnavailableOnDeviceError } from '../../../createRefreshSuiteSyncKeys';
-import { UpdateAccountLabelDeps, createUpdateAccountLabel } from '../createUpdateAccountLabel';
+import { SuiteSyncUnavailableOnDeviceError } from '../../../createEnsureSuiteSyncKeys';
+import { type UpdateAccountLabelDeps, createUpdateAccountLabel } from '../createUpdateAccountLabel';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
+const getAccountLabel = () => null;
 
 describe(createUpdateAccountLabel.name, () => {
     it('updates account label and propagates update result', async () => {
@@ -20,6 +21,7 @@ describe(createUpdateAccountLabel.name, () => {
 
         const deps = createMockDeps<UpdateAccountLabelDeps>({
             ensureWalletSuiteSyncOn: () => Promise.resolve(ok(storage)),
+            getAccountLabel,
         });
 
         const updateAccountLabel = createUpdateAccountLabel(deps);
@@ -52,6 +54,7 @@ describe(createUpdateAccountLabel.name, () => {
 
         const deps = createMockDeps<UpdateAccountLabelDeps>({
             ensureWalletSuiteSyncOn: () => Promise.resolve(ensureWalletSuiteSyncOnResult),
+            getAccountLabel,
         });
 
         const updateAccountLabel = createUpdateAccountLabel(deps);

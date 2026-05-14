@@ -1,25 +1,26 @@
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import {
-    TradingExchangeType,
+    type TradingExchangeType,
     selectTradingExchangeFormStep,
     selectTradingExchangeReceiveAccountKey,
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
-import { Button, Column } from '@trezor/components';
+import { Button, Column, H2 } from '@trezor/components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
-import { TradingOfferExchangeProps } from 'src/types/trading/tradingForm';
+import { type TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
+import { type TradingOfferExchangeProps } from 'src/types/trading/tradingForm';
 import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
 
 import { TradingOfferExchangeDetails } from './TradingOfferExchangeDetails';
+import { TradingFiatDeviationWarning } from '../../TradingFiatDeviationWarning';
 import { TradingInfoItem } from '../TradingInfo/TradingInfoItem';
 
 export const TradingOfferExchange = ({
@@ -76,6 +77,9 @@ export const TradingOfferExchange = ({
 
     return (
         <Column gap={spacings.lg}>
+            <H2 typographyStyle="headline-sm">
+                <Translation id="TR_SELL_CONFIRM_SEND_STEP" />
+            </H2>
             <TradingInfoItem
                 key={amountLabels.sendLabel}
                 account={sendAccount}
@@ -95,7 +99,7 @@ export const TradingOfferExchange = ({
                 receiveAddress={selectedQuote.receiveAddress}
                 isReceive
             />
-
+            <TradingFiatDeviationWarning selectedQuote={selectedQuote} />
             <TradingOfferExchangeDetails
                 exchangeQuote={selectedQuote}
                 providers={providers as TradingExchangeProvidersInfoProps}
@@ -107,6 +111,8 @@ export const TradingOfferExchange = ({
                 isLoading={isFormLoading || disabled}
                 isDisabled={!device?.connected || disabled}
                 onClick={() => handleClick(() => onConfirmAndSendClick())}
+                size="large"
+                width="100%"
             >
                 <Translation id="TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND" />
             </Button>

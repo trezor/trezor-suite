@@ -47,12 +47,9 @@ type DontSeeTrezorPillProps = {
 };
 
 const DontSeeTrezorPill = ({ onClick }: DontSeeTrezorPillProps) => (
-    // A little hack so we can use the subtle variant of the button instead of creating a brand new variant for a single use case
-    <Box backgroundColor="backgroundSurfaceElevation1" borderRadius={10}>
-        <Button onClick={onClick} iconLeft="question" intent="info" priority="secondary">
-            <Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />
-        </Button>
-    </Box>
+    <Button onClick={onClick} iconLeft="question" intent="info" priority="secondary" isFloating>
+        <Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />
+    </Button>
 );
 
 type ConnectModalContentProps = {
@@ -121,13 +118,7 @@ const ViaBluetoothCard = ({ onClick }: ConnectionModeCardProps) => (
                         <Text>
                             <Translation id="TR_VIA_BLUETOOTH" />
                         </Text>
-                        <IconCircle
-                            variant="tertiary"
-                            hasBorder={false}
-                            name="bluetooth"
-                            size={28}
-                            paddingType="small"
-                        />
+                        <IconCircle intent="neutral" name="bluetooth" size={32} />
                     </Row>
                 </Column>
             </H3>
@@ -202,13 +193,7 @@ const ViaCableCard = ({ onClick }: ConnectionModeCardProps) => (
                         <Text>
                             <Translation id="TR_VIA_CABLE" />
                         </Text>
-                        <IconCircle
-                            variant="tertiary"
-                            hasBorder={false}
-                            name="cableUsbC"
-                            size={28}
-                            paddingType="small"
-                        />
+                        <IconCircle intent="neutral" name="cableUsbC" size={32} />
                     </Row>
                 </Column>
             </H3>
@@ -241,7 +226,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
 
     const bluetoothAdapterStatus = useSelector(selectAdapterStatus);
 
-    if (wasBluetoothDeviceWiped || isUnpairingDevice) return null;
+    if (wasBluetoothDeviceWiped?.isRequired || isUnpairingDevice) return null;
 
     if (isBluetoothMode && isManualPairingRequired) {
         return <BluetoothManualPairingModal onCancel={onCancel} />;

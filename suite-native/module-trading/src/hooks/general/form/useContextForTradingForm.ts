@@ -1,9 +1,17 @@
 import { useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
-import { TradingAmountLimitProps } from '@suite-common/trading';
+import { type TradingAmountLimitProps } from '@suite-common/trading';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type WalletSettingsRootState,
+    selectIsNetworkReserveEnabled,
+} from '@suite-common/wallet-core';
+import { type TokenAddress } from '@suite-common/wallet-types';
+import { getNetworkReserve } from '@suite-common/wallet-utils';
 import { useTranslate } from '@suite-native/intl';
-import { TradingFormContext } from '@suite-native/trading-types';
+import { type TradingFormContext } from '@suite-native/trading-types';
 
 import { useConvertFormValueToBaseUnit } from '../useConvertFormValueToBaseUnit';
 
@@ -12,8 +20,21 @@ export const useContextForTradingForm = (limits: TradingAmountLimitProps | undef
     const { BaseCurrencyAmountFormatter, CryptoAmountFormatter } = useFormatters();
     const { convertNumberToBaseUnit } = useConvertFormValueToBaseUnit();
 
+    const isNetworkReserveEnabled = useSelector((state: WalletSettingsRootState) =>
+        selectIsNetworkReserveEnabled(state),
+    );
+
     const [balance, setBalance] = useState<string | undefined>(undefined);
     const [sendSymbol, setSendSymbol] = useState<string | undefined>(undefined);
+    const [contractAddress, setContractAddress] = useState<TokenAddress | undefined>(undefined);
+
+    const networkReserve = sendSymbol
+        ? getNetworkReserve({
+              symbol: sendSymbol.toLowerCase() as NetworkSymbol,
+              contractAddress,
+              isEnabled: isNetworkReserveEnabled,
+          })
+        : undefined;
 
     const context = useMemo<TradingFormContext>(
         () => ({
@@ -24,6 +45,7 @@ export const useContextForTradingForm = (limits: TradingAmountLimitProps | undef
             FiatAmountFormatter: BaseCurrencyAmountFormatter,
             CryptoAmountFormatter,
             convertNumberToBaseUnit,
+            networkReserve,
         }),
         [
             limits,
@@ -33,6 +55,7 @@ export const useContextForTradingForm = (limits: TradingAmountLimitProps | undef
             BaseCurrencyAmountFormatter,
             CryptoAmountFormatter,
             convertNumberToBaseUnit,
+            networkReserve,
         ],
     );
 
@@ -40,5 +63,6 @@ export const useContextForTradingForm = (limits: TradingAmountLimitProps | undef
         context,
         setBalance,
         setSendSymbol,
+        setContractAddress,
     };
 };

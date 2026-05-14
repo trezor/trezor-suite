@@ -1,7 +1,7 @@
 import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 
 import workers from './worker';
-import BlockchainLink from '../../src';
+import { BlockchainLink } from '../../src';
 import fixturesBlockbook from './fixtures/notifications-blockbook';
 import fixturesBlockfrost from './fixtures/notifications-blockfrost';
 import fixturesRipple from './fixtures/notifications-ripple';

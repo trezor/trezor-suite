@@ -1,5 +1,5 @@
 import { selectCardanoPoolsInfo } from '@suite-common/wallet-core';
-import { Account, BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { isCardanoStakedWithEverstake } from '@suite-common/wallet-utils';
 import { Icon, Text } from '@trezor/components';
 

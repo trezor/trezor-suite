@@ -3,8 +3,8 @@ import React from 'react';
 import { VideoView, useVideoPlayer } from 'expo-video';
 
 import { useActiveColorScheme } from '@suite-native/theme';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { ThemeColorVariant } from '@trezor/theme';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { type ThemeColorVariant } from '@trezor/theme';
 
 const bluetoothPairingAnimations = {
     debug: require('../../assets/bluetooth-pairing-standard.mp4'),

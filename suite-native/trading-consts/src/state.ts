@@ -3,13 +3,13 @@ import type { TradingResidenceState, TradingState } from '@suite-native/trading-
 
 export const residenceInitialState: TradingResidenceState = {
     country: undefined,
+    countrySubdivision: undefined,
     wasOnboardingVisited: false,
 };
 
 export const tradingInitialState: TradingState = {
     ...commonInitialState,
     residence: residenceInitialState,
-    favouriteAssets: {},
     tradingEnvironment: 'production',
     tradeOrderIdToBeOpened: undefined,
     isAmountInputActive: false,

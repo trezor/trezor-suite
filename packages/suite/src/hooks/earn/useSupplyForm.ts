@@ -5,6 +5,7 @@ import useDebounce from 'react-use/lib/useDebounce';
 import { fromWei } from 'web3-utils';
 
 import { getStakeFormsDefaultValues, getStakingContractAddress } from '@suite-common/staking';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
@@ -12,9 +13,9 @@ import {
     useFormDraft,
 } from '@suite-common/wallet-core';
 import {
-    PrecomposedTransactionFinal,
-    SelectedAccountLoaded,
-    StakeFormState,
+    type Account,
+    type PrecomposedTransactionFinal,
+    type StakeFormState,
 } from '@suite-common/wallet-types';
 import {
     fromBaseCurrencyToCryptoUnit,
@@ -32,7 +33,7 @@ import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/earn/earnForm
 import type { AmountLimitProps } from 'src/utils/suite/validation';
 
 import { useCardanoStaking } from './useCardanoStaking';
-import { SupplyContextValues } from '../../components/earn/forms/SupplyFormContext';
+import { type SupplyContextValues } from '../../components/earn/forms/SupplyFormContext';
 import { useFees } from '../wallet/form/useFees';
 import { useStakeCompose } from '../wallet/form/useStakeCompose';
 
@@ -40,13 +41,12 @@ export const SupplyFormContext = createContext<SupplyContextValues | null>(null)
 SupplyFormContext.displayName = 'SupplyFormContext';
 
 type UseSupplyFormProps = {
-    selectedAccount: SelectedAccountLoaded;
+    account: Account;
 };
 
-export const useSupplyForm = ({ selectedAccount }: UseSupplyFormProps): SupplyContextValues => {
+export const useSupplyForm = ({ account }: UseSupplyFormProps): SupplyContextValues => {
     const dispatch = useDispatch();
-
-    const { account, network } = selectedAccount;
+    const network = getNetwork(account.symbol);
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const networkFees = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));

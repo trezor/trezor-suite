@@ -1,18 +1,23 @@
-import { Account, AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
-import {
-    PreloadedState,
-    act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
-    userEvent,
-} from '@suite-native/test-utils';
+import { act, userEvent } from '@suite-native/test-utils-store';
 import { btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
-import { ExchangeFormType } from '@suite-native/trading-types';
+import { type ExchangeFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
+import { mergeDeepObject } from '@trezor/utils';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
-import { ExchangeSendAmountInput, ExchangeSendAmountInputProps } from '../ExchangeSendAmountInput';
+import {
+    ExchangeSendAmountInput,
+    type ExchangeSendAmountInputProps,
+} from '../ExchangeSendAmountInput';
 
 const mockUseAmountInputDecimals = jest.fn(
     (_account?: Account, _contractAddress?: TokenAddress) => 8,
@@ -25,21 +30,33 @@ jest.mock('../../../../hooks/general/useAmountInputDecimals', () => ({
 }));
 
 describe('ExchangeSendAmountInput', () => {
+    const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
+        featureFlags: {
+            ...featureFlagsInitialState,
+        },
+    };
+
     const renderCryptoAmountInput = (
         props: Partial<ExchangeSendAmountInputProps>,
         form: ExchangeFormType,
-        preloadedState: PreloadedState = {},
+        extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderWithStoreProviderAsync(
+        renderWithTradingProvider(
             <Form form={form}>
                 <ExchangeSendAmountInput showAssetsSheet={jest.fn()} {...props} />
             </Form>,
-            { preloadedState },
+            {
+                tradeType: 'exchange',
+                overrides: mergeDeepObject(baseOverrides, extraOverrides),
+            },
         );
 
-    const renderUseTradingExchangeForm = async (preloadedState: PreloadedState = {}) => {
-        const { result } = await renderHookWithStoreProviderAsync(() => useExchangeForm(), {
-            preloadedState,
+    const renderUseTradingExchangeForm = (
+        extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
+    ) => {
+        const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
+            tradeType: 'exchange',
+            overrides: mergeDeepObject(baseOverrides, extraOverrides),
         });
 
         return result.current;
@@ -50,28 +67,28 @@ describe('ExchangeSendAmountInput', () => {
     });
 
     it('should set send value in form', async () => {
-        const form = await renderUseTradingExchangeForm();
+        const form = renderUseTradingExchangeForm();
         act(() => {
             form.setValue('sendAsset', btcAsset);
         });
-        const { getByLabelText } = await renderCryptoAmountInput({}, form);
+        const { getByLabelText } = renderCryptoAmountInput({}, form);
 
         await userEvent.type(getByLabelText('You pay'), '100');
 
         expect(form.getValues('sendCryptoAmount')).toEqual('100');
     });
 
-    it('should be disabled when asset is not selected', async () => {
-        const form = await renderUseTradingExchangeForm();
-        const { getByLabelText } = await renderCryptoAmountInput({}, form);
+    it('should be disabled when asset is not selected', () => {
+        const form = renderUseTradingExchangeForm();
+        const { getByLabelText } = renderCryptoAmountInput({}, form);
 
         expect(getByLabelText('You pay')).toBeDisabled();
     });
 
     it('should call showAssetsSheet when disabled and pressed', async () => {
         const showAssetsSheet = jest.fn();
-        const form = await renderUseTradingExchangeForm();
-        const { getByLabelText } = await renderCryptoAmountInput({ showAssetsSheet }, form);
+        const form = renderUseTradingExchangeForm();
+        const { getByLabelText } = renderCryptoAmountInput({ showAssetsSheet }, form);
 
         await userEvent.press(getByLabelText('You pay'));
 
@@ -80,11 +97,11 @@ describe('ExchangeSendAmountInput', () => {
 
     it('should not call showAssetsSheet when enabled and pressed', async () => {
         const showAssetsSheet = jest.fn();
-        const form = await renderUseTradingExchangeForm();
+        const form = renderUseTradingExchangeForm();
         act(() => {
             form.setValue('sendAsset', btcAsset);
         });
-        const { getByLabelText } = await renderCryptoAmountInput({ showAssetsSheet }, form);
+        const { getByLabelText } = renderCryptoAmountInput({ showAssetsSheet }, form);
 
         await userEvent.press(getByLabelText('You pay'));
 
@@ -92,11 +109,11 @@ describe('ExchangeSendAmountInput', () => {
     });
 
     it('should format input value to be decimal by default', async () => {
-        const form = await renderUseTradingExchangeForm();
+        const form = renderUseTradingExchangeForm();
         act(() => {
             form.setValue('sendAsset', btcAsset);
         });
-        const { getByLabelText } = await renderCryptoAmountInput({}, form);
+        const { getByLabelText } = renderCryptoAmountInput({}, form);
 
         await userEvent.type(getByLabelText('You pay'), 'asd1.123');
 
@@ -105,14 +122,14 @@ describe('ExchangeSendAmountInput', () => {
     });
 
     it('should format input value to be integer when BTC asset is selected and value should be displayed in sats', async () => {
-        const preloadedState = {
+        const satoshiOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
             wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
         };
-        const form = await renderUseTradingExchangeForm(preloadedState);
+        const form = renderUseTradingExchangeForm(satoshiOverrides);
         act(() => {
             form.setValue('sendAsset', btcAsset);
         });
-        const { getByLabelText } = await renderCryptoAmountInput({}, form, preloadedState);
+        const { getByLabelText } = renderCryptoAmountInput({}, form, satoshiOverrides);
 
         await userEvent.type(getByLabelText('You pay'), 'asd1.123');
 
@@ -121,14 +138,14 @@ describe('ExchangeSendAmountInput', () => {
     });
 
     it('should always escape non-numeric characters', async () => {
-        const preloadedState = {
+        const satoshiOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
             wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
         };
-        const form = await renderUseTradingExchangeForm(preloadedState);
+        const form = renderUseTradingExchangeForm(satoshiOverrides);
         act(() => {
             form.setValue('sendAsset', btcAsset);
         });
-        const { getByLabelText } = await renderCryptoAmountInput({}, form, preloadedState);
+        const { getByLabelText } = renderCryptoAmountInput({}, form, satoshiOverrides);
 
         await userEvent.type(getByLabelText('You pay'), 'asd');
 
@@ -137,7 +154,7 @@ describe('ExchangeSendAmountInput', () => {
     });
 
     it('should limit value to decimals based on useAmountInputDecimals return value', async () => {
-        const form = await renderUseTradingExchangeForm();
+        const form = renderUseTradingExchangeForm();
         act(() => {
             form.setValue('sendAsset', usdcAsset);
             form.setValue('sendAccount', {
@@ -145,7 +162,7 @@ describe('ExchangeSendAmountInput', () => {
                 symbol: 'eth',
             } as Account);
         });
-        const { getByLabelText } = await renderCryptoAmountInput({}, form);
+        const { getByLabelText } = renderCryptoAmountInput({}, form);
 
         await userEvent.type(getByLabelText('You pay'), '1.0123456789');
 

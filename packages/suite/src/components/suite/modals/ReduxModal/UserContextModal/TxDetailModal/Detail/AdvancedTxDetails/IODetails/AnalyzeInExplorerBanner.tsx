@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
+import { type Explorer, type NetworkSymbol } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { selectExplorer } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';

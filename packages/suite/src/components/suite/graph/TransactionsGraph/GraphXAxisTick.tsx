@@ -3,7 +3,7 @@ import { FormattedDate } from 'react-intl';
 import { differenceInMonths } from 'date-fns';
 import { useTheme } from 'styled-components';
 
-import { GraphRange } from 'src/types/wallet/graph';
+import { type GraphRange } from 'src/types/wallet/graph';
 
 const getFormattedDate = (range: GraphRange, date: Date) => {
     switch (range.label) {
@@ -44,7 +44,7 @@ export const GraphXAxisTick = ({ x, y, payload, selectedRange }: GraphXAxisProps
                 y={0}
                 dy={16}
                 textAnchor="middle"
-                fill={theme.textSubdued}
+                fill={theme.contentSecondary}
                 style={{ fontVariantNumeric: 'tabular-nums' }}
             >
                 {date && getFormattedDate(selectedRange, date)}

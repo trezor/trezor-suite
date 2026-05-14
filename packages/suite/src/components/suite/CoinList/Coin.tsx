@@ -1,13 +1,13 @@
-import { MouseEvent } from 'react';
+import { type MouseEvent } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { Translation, TranslationKey } from '@suite/intl';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { Translation, type TranslationKey } from '@suite/intl';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Icon, Paragraph, useElevation } from '@trezor/components';
 import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 import { CoinLogo } from '@trezor/product-components';
-import { Elevation, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
+import { type Elevation, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
 const SettingsWrapper = styled.div<{
     $toggled: boolean;
@@ -27,7 +27,7 @@ const SettingsWrapper = styled.div<{
         onClick &&
         css`
             &:hover {
-                background-color: ${theme.backgroundTertiaryPressedOnElevation1};
+                background-color: ${theme.legacyBackgroundTertiaryPressedOnElevation1};
             }
         `}
 
@@ -77,7 +77,7 @@ export const CoinWrapper = styled.button<{
     border-radius: 9999px;
     height: 47px;
     font-weight: bold;
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
     cursor: pointer;
     transition:
         0.2s ease-in-out,
@@ -87,22 +87,22 @@ export const CoinWrapper = styled.button<{
     &:disabled {
         cursor: not-allowed;
         opacity: 0.5;
-        background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
+        background: ${({ theme }) => theme.legacyBackgroundNeutralBoldInverted};
     }
 
     ${getFocusShadowStyle()}
 
     &:hover {
-        background: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation0};
+        background: ${({ theme }) => theme.legacyBackgroundTertiaryPressedOnElevation0};
         border-color: ${({ theme, $toggled }) =>
-            $toggled ? theme.backgroundPrimaryPressed : theme.borderInputFocus};
+            $toggled ? theme.legacyBackgroundPrimaryPressed : theme.elementBorderFieldFocused};
     }
 
     ${({ disabled, $forceHover, $hasSettings, theme, $toggled }) =>
         !disabled &&
         $toggled &&
         css`
-            border-color: ${theme.backgroundPrimaryDefault};
+            border-color: ${theme.legacyBackgroundPrimaryDefault};
             ${$forceHover && ShiftToSettings}
             ${$hasSettings &&
             css`
@@ -127,7 +127,7 @@ const Check = styled.div<{ $visible: boolean }>`
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: ${({ theme }) => theme.backgroundPrimaryDefault};
+    background: ${({ theme }) => theme.legacyBackgroundPrimaryDefault};
     width: 12px;
     height: 12px;
     position: absolute;
@@ -182,7 +182,7 @@ export const Coin = ({
             <ImageWrapper>
                 <CoinLogo size={24} symbol={symbol} type="token" />
                 <Check $visible={toggled}>
-                    <Icon size={8} color="baseContentReversePrimary" name="check" />
+                    <Icon size={8} color="contentPrimaryInverse" name="check" />
                 </Check>
             </ImageWrapper>
             {label ? (

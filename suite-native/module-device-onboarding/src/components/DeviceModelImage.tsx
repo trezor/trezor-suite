@@ -1,8 +1,8 @@
 import { Image } from '@suite-native/atoms';
-import { SetupSupportingDeviceModel } from '@suite-native/device';
+import { type SetupSupportingDeviceModel } from '@suite-native/device';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { getScreenHeight } from '@trezor/env-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type DeviceImageSize = 'normal' | 'small';
 

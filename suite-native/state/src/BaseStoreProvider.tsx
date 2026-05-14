@@ -1,14 +1,14 @@
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { AppState } from 'react-native';
 import { Provider } from 'react-redux';
 
-import { Persistor, persistStore } from 'redux-persist';
+import { type Persistor, persistStore } from 'redux-persist';
 
 import { captureSentryException } from '@suite-native/sentry';
 import { NativeServicesProvider } from '@suite-native/services';
 import { StorageProvider } from '@suite-native/storage';
 
-import { PreloadedState, StoreWithExtra, initStore } from './store';
+import { type PreloadedState, type StoreWithExtra, initStore } from './store';
 
 export type BaseStoreProviderProps = {
     children: ReactNode;

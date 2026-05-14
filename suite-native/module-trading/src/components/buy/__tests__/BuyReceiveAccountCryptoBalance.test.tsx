@@ -1,11 +1,11 @@
 import { Form } from '@suite-native/forms';
 import {
     act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
-import { btcAsset, getBtcAccount } from '@suite-native/trading-fixtures';
-import { BuyFormType } from '@suite-native/trading-types';
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
+} from '@suite-native/test-utils-store';
+import { btcAsset, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
+import { type BuyFormType } from '@suite-native/trading-types';
 
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import {
@@ -15,32 +15,36 @@ import {
 
 describe('BuyReceiveAccountCryptoBalance', () => {
     let buyForm: BuyFormType;
+    const preloadedState = { wallet: getWalletState({ tradeType: 'buy' }) };
 
-    const renderBuyForm = async () => {
-        const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm());
+    const renderBuyForm = () => {
+        const { result } = renderHookWithStoreProvider(() => useBuyForm(), {
+            preloadedState,
+        });
 
         return result.current;
     };
 
     const renderComponent = () =>
-        renderWithStoreProviderAsync(<BuyReceiveAccountCryptoBalance />, {
+        renderWithStoreProvider(<BuyReceiveAccountCryptoBalance />, {
+            preloadedState,
             wrapper: ({ children }) => <Form form={buyForm}>{children}</Form>,
         });
 
-    beforeEach(async () => {
-        buyForm = await renderBuyForm();
+    beforeEach(() => {
+        buyForm = renderBuyForm();
     });
 
-    it('should use asset form field as default symbol', async () => {
+    it('should use asset form field as default symbol', () => {
         act(() => {
             buyForm.setValue('asset', btcAsset);
         });
-        const { getByTestId } = await renderComponent();
+        const { getByTestId } = renderComponent();
 
         expect(getByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toHaveTextContent('Balance:- BTC');
     });
 
-    it('should use receiveAccount form field to obtain account', async () => {
+    it('should use receiveAccount form field to obtain account', () => {
         act(() => {
             buyForm.setValue('asset', btcAsset);
         });
@@ -49,7 +53,7 @@ describe('BuyReceiveAccountCryptoBalance', () => {
                 account: getBtcAccount(),
             });
         });
-        const { getByTestId } = await renderComponent();
+        const { getByTestId } = renderComponent();
 
         expect(getByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toHaveTextContent('Balance:0.01 BTC');
     });

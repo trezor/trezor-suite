@@ -1,29 +1,26 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ResetDevice.js
+import { type MethodPermission, UI_REQUEST } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { TransportError } from '@trezor/connect-common/src/constants/errors';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 import { getRandomInt } from '@trezor/utils';
 
 import { generateEntropy, verifyEntropy } from '../api/firmware/verifyEntropy';
-import { PROTO } from '../constants';
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { UI } from '../events';
-import { getFirmwareRange } from './common/paramsValidator';
 import { validatePath } from '../utils/pathUtils';
+import { calculateXPubHashes } from './firmware/calculateXPubHash';
+
+type XPubsPerBip43Path = Record<string, string>; // used only internally, not exported
 
 export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.ResetDevice> {
-    init() {
-        this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
-        this.useDeviceState = false;
-        this.requiredPermissions = ['management'];
-        this.skipFinalReload = false;
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
-
-        const { payload } = this;
+    constructor(message: MethodMessage<'resetDevice'>) {
+        const { payload } = message;
         // validate bundle type
         Assert(PROTO.ResetDevice, payload);
 
-        this.params = {
+        const params = {
             strength: payload.strength || 256,
             passphrase_protection: payload.passphrase_protection,
             pin_protection: payload.pin_protection,
@@ -33,9 +30,18 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
             skip_backup: payload.skip_backup,
             no_backup: payload.no_backup,
             backup_type: payload.backup_type,
+            backup_method: payload.backup_method,
             entropy_check:
                 typeof payload.entropy_check === 'boolean' ? payload.entropy_check : true,
         };
+
+        super(message, params);
+        this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];
+        this.useDeviceState = false;
+        this.skipFinalReload = false;
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['management'];
     }
 
     get info() {
@@ -51,7 +57,7 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
 
     // https://github.com/trezor/trezor-firmware/blob/57868ad48f4c462bb1f4fa57572067e89a039a60/docs/common/message-workflows.md#simple-resetdevice-workflow
     private async resetDeviceWorkflow() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const entropy = generateEntropy(32).toString('hex');
 
         // ResetDevice > EntropyRequest > EntropyAck > Success (old fw)
@@ -60,15 +66,26 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
     }
 
     // https://github.com/trezor/trezor-firmware/blob/57868ad48f4c462bb1f4fa57572067e89a039a60/docs/common/message-workflows.md#entropy-check-workflow
-    private async entropyCheckWorkflow() {
-        const cmd = this.device.getCommands();
+    private async entropyCheckWorkflow(): Promise<XPubsPerBip43Path> {
+        const cmd = this.getDevice().getCommands();
         const paths = ["m/84'/0'/0'", "m/44'/60'/0'"] as const;
+        const parsedPaths = paths.map(path => ({ path, address_n: validatePath(path) }));
 
         // error.message should be one of ERRORS_WITHOUT_DEVICE_INTERACTION, otherwise it could be a fake device's attempt to bypass the entropy check.
         const handleErr = (error: any) => {
             throw error instanceof TransportError
                 ? error
                 : ERRORS.TypedError('Failure_EntropyCheck', error.message);
+        };
+
+        const getXPubs = async () => {
+            const xpubs: XPubsPerBip43Path = {};
+            for (const { path, address_n } of parsedPaths) {
+                const pubKey = await cmd.getPublicKey({ address_n }).catch(handleErr);
+                xpubs[path] = pubKey.xpub;
+            }
+
+            return xpubs;
         };
 
         // steps: 1 - 4
@@ -86,13 +103,7 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
             // steps: 5 - 6
             // GetPublicKey > PublicKey > EntropyCheckContinue > EntropyRequest > EntropyAck > EntropyCheckReady
 
-            const xpubs: Record<string, string> = {}; // <path, xpub>
-            for (const path of paths) {
-                const pubKey = await cmd
-                    .getPublicKey({ address_n: validatePath(path) })
-                    .catch(handleErr);
-                xpubs[path] = pubKey.xpub;
-            }
+            const xpubs = await getXPubs();
 
             const { prev_entropy, entropy_commitment } = await cmd
                 .typedCall('EntropyCheckContinue', 'EntropyRequest', {})
@@ -109,7 +120,7 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
             });
 
             if (res.error) {
-                await this.device.getCurrentSession().cancelCall();
+                await this.getDevice().getCurrentSession().cancelCall();
                 throw ERRORS.TypedError('Failure_EntropyCheck', res.error);
             }
 
@@ -118,23 +129,30 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
 
             await cmd.typedCall('EntropyAck', 'EntropyCheckReady', { entropy }).catch(handleErr);
         }
+        const finalXPubs = await getXPubs();
 
         // step 7 EntropyCheckContinue > Success
         // wallet backup flow may follow after successful entropy check, so don't consider errors thrown there as entropy check failure
         await cmd.typedCall('EntropyCheckContinue', 'Success', { finish: true });
+
+        // Entropy check success, so the xpubs are considered genuine
+        return finalXPubs;
     }
 
     async run() {
-        if (this.params.entropy_check && this.device.unavailableCapabilities['entropyCheck']) {
+        if (this.params.entropy_check && this.getDevice().unavailableCapabilities['entropyCheck']) {
             // entropy check requested but not supported by the firmware
             this.params.entropy_check = false;
         }
 
         if (this.params.entropy_check) {
-            await this.entropyCheckWorkflow();
-        } else {
-            await this.resetDeviceWorkflow();
+            const xpubs = await this.entropyCheckWorkflow();
+            const xpubHashes = calculateXPubHashes(xpubs);
+
+            return { message: 'Success', xpubHashes };
         }
+
+        await this.resetDeviceWorkflow();
 
         return { message: 'Success' };
     }

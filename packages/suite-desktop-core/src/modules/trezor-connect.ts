@@ -1,12 +1,18 @@
 import { ipcMain } from 'electron';
 
-import TrezorConnect, { ConnectSettings, LocalFirmwares, UI, UI_EVENT } from '@trezor/connect';
-import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
+import TrezorConnect, {
+    type ConnectSettings,
+    type LocalFirmwares,
+    UI_EVENT,
+    UI_REQUEST,
+    UI_RESPONSE,
+} from '@trezor/connect';
+import { type IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { parseElectrumUrl } from '@trezor/utils';
 
 import { bluetoothModuleState } from './bluetooth';
 import { getStoredFirmwares } from './firmware';
-import { MainThreadEmitter, ModuleInit, ModuleInitBackground } from './module';
+import { type MainThreadEmitter, type ModuleInit, type ModuleInitBackground } from './module';
 import { APP_NAME } from '../libs/constants';
 import { getComputerName } from '../libs/info';
 import { PowerSaveBlocker } from '../libs/power-save-blocker';
@@ -64,9 +70,9 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
 
     const setProxy = () => {
         const { running, host, port, externalPort, useExternalTor } = store.getTorSettings();
-        const payload = running
-            ? { proxy: `socks://${host}:${useExternalTor ? externalPort : port}` }
-            : { proxy: '' };
+        const proxyUri = running ? `socks://${host}:${useExternalTor ? externalPort : port}` : '';
+        const payload = { proxy: { uri: proxyUri } };
+
         logger.info(SERVICE_NAME, `${running ? 'Enable' : 'Disable'} proxy ${payload.proxy}`);
 
         return TrezorConnect.updateConnectSettings(payload);
@@ -145,7 +151,7 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
 export const init: ModuleInit = ({ mainThreadEmitter }) => {
     mainThreadEmitter.on('module/firmware/list', (event: LocalFirmwares) => {
         TrezorConnect.uiResponse({
-            type: UI.RECEIVE_FIRMWARE,
+            type: UI_RESPONSE.RECEIVE_FIRMWARE,
             payload: event,
         });
     });
@@ -163,7 +169,7 @@ export const init: ModuleInit = ({ mainThreadEmitter }) => {
 
         TrezorConnect.on(UI_EVENT, event => {
             const { type } = event;
-            if (type === UI.FIRMWARE_DOWNLOADED) {
+            if (type === UI_REQUEST.FIRMWARE_DOWNLOADED) {
                 mainThreadEmitter.emit('module/trezor-connect/firmware-store', event.payload);
             }
         });

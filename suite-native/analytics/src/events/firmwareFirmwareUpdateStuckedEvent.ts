@@ -1,6 +1,6 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
-import { FirmwareType } from '@trezor/connect';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { type FirmwareType } from '@trezor/connect';
+import { type DeviceModelInternal } from '@trezor/device-utils';
 
 import { EventType } from '../constants';
 import type { FirmwareUpdateStuckedState } from '../definitions';

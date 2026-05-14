@@ -1,7 +1,7 @@
 import type { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 
 import type { TradingTransaction, TradingType } from '@suite-common/trading';
-import { FormDraftKeyPrefix } from '@suite-common/wallet-types';
+import { type FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import { useTranslate } from '@suite-native/intl';
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/trading-fixtures';
@@ -152,14 +152,13 @@ describe('utils', () => {
             [
                 '[error]: message',
                 {
-                    error: { message: 'Error message' },
-                    payload: { error: 'error', message: 'message' },
+                    error: { error: 'error', message: 'message' },
                 },
             ],
             ['Error message', { error: { message: 'Error message' } }],
             ['Error message', new Error('Error message')],
             ['Just a string error', 'Just a string error'],
-            ['[Unknown error]: No description', { payload: {} }],
+            ['Unknown error', { error: {} }],
             ['Unknown error', 42],
         ])('should return %s when called with %o', (expected, input) => {
             expect(getErrorStrFromThunkRejectedValue(input)).toBe(expected);

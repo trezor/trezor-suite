@@ -2,14 +2,14 @@ import { FormattedList } from 'react-intl';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { Anchor, SettingsAnchor } from '@suite/router';
 import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled, setNetworkReserve } from '@suite-common/wallet-core';
 import { Switch } from '@trezor/components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { NETWORK_RESERVE_URL } from '@trezor/urls';
 
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
@@ -34,24 +34,35 @@ export const NetworkReserve = () => {
     };
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.NetworkReserve}>
-            <TextColumn
-                title={<Translation id="TR_NETWORK_RESERVE" />}
-                description={
-                    <Translation
-                        id="TR_NETWORK_RESERVE_DESCRIPTION"
-                        values={{
-                            supportedNetworks: (
-                                <FormattedList type="conjunction" value={supportedNetworks} />
-                            ),
-                        }}
+        <Anchor anchorId={SettingsAnchor.NetworkReserve}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
+                >
+                    <TextColumn
+                        title={<Translation id="TR_NETWORK_RESERVE" />}
+                        description={
+                            <Translation
+                                id="TR_NETWORK_RESERVE_DESCRIPTION"
+                                values={{
+                                    supportedNetworks: (
+                                        <FormattedList
+                                            type="conjunction"
+                                            value={supportedNetworks}
+                                        />
+                                    ),
+                                }}
+                            />
+                        }
+                        bottomContent={<LearnMoreButton url={NETWORK_RESERVE_URL} />}
                     />
-                }
-                buttonLink={NETWORK_RESERVE_URL}
-            />
-            <ActionColumn>
-                <Switch isChecked={isNetworkReserveEnabled} onChange={handleSwitchChange} />
-            </ActionColumn>
-        </SettingsSectionItem>
+                    <ActionColumn>
+                        <Switch isChecked={isNetworkReserveEnabled} onChange={handleSwitchChange} />
+                    </ActionColumn>
+                </SectionItem>
+            )}
+        </Anchor>
     );
 };

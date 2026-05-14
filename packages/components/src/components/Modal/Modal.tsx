@@ -1,10 +1,10 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useEvent } from 'react-use';
 
 import styled from 'styled-components';
 
 import {
-    Elevation,
+    type Elevation,
     borders,
     mapElevationToBackground,
     negativeSpacings,
@@ -16,14 +16,14 @@ import { ModalBackdrop } from './ModalBackdrop';
 import { ModalButton } from './ModalButton';
 import { ModalContext } from './ModalContext';
 import { ModalProvider } from './ModalProvider';
-import { ModalAlignment, ModalVariant, ModalWidth } from './types';
-import { FrameProps, FramePropsKeys, Padding } from '../../utils/frameProps';
+import { type ModalAlignment, type ModalIntent, type ModalWidth } from './types';
+import { type FrameProps, type FramePropsKeys, type Padding } from '../../utils/frameProps';
 import { useScrollShadow } from '../../utils/useScrollShadow';
 import { Box } from '../Box/Box';
 import { Divider } from '../Divider/Divider';
 import { ElevationContext, ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
 import { Column, Row } from '../Flex/Flex';
-import { IconName } from '../Icon/Icon';
+import { type IconName } from '../Icon/Icon';
 import { IconCircle } from '../IconCircle/IconCircle';
 import { IconButton } from '../buttons/IconButton/IconButton';
 import { H3 } from '../typography/Heading/Heading';
@@ -50,7 +50,7 @@ const ScrollContainer = styled.div`
 `;
 
 type ModalProps = AllowedFrameProps & {
-    variant?: ModalVariant;
+    intent?: ModalIntent;
     children?: ReactNode;
     heading?: ReactNode;
     description?: ReactNode;
@@ -68,7 +68,7 @@ type ModalProps = AllowedFrameProps & {
 
 const InnerModalBase = ({
     children,
-    variant,
+    intent = 'brand',
     width = 680,
     heading,
     description,
@@ -151,7 +151,7 @@ const InnerModalBase = ({
                     <Box position={{ type: 'relative' }} overflow="hidden" flex="1">
                         <ShadowTop />
                         <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
-                            <Column padding={padding ? padding : spacings.md}>
+                            <Column padding={padding ? padding : spacings.md} height="100%">
                                 {iconName && (
                                     <Box
                                         margin={{
@@ -159,7 +159,7 @@ const InnerModalBase = ({
                                             top: isIconPushedTop ? negativeSpacings.md : 0,
                                         }}
                                     >
-                                        <IconCircle name={iconName} size={110} variant={variant} />
+                                        <IconCircle name={iconName} size={112} intent={intent} />
                                     </Box>
                                 )}
                                 <ElevationUp>{children}</ElevationUp>
@@ -187,7 +187,7 @@ const InnerModalBase = ({
 };
 const ModalBase = (props: ModalProps) => (
     <ElevationContext baseElevation={prevElevation[MODAL_ELEVATION]}>
-        <ModalContext.Provider value={{ variant: props.variant }}>
+        <ModalContext.Provider value={{ intent: props.intent }}>
             <InnerModalBase {...props} />
         </ModalContext.Provider>
     </ElevationContext>

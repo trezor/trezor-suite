@@ -2,12 +2,11 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectIsDeviceBackupRequired, selectSelectedDevice } from '@suite-common/device';
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
-import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Button, useBottomSheetModal } from '@suite-native/atoms';
-import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
+import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import { WalletBackupNotSetWarningBottomSheet } from '@suite-native/module-device-onboarding';
@@ -34,7 +33,7 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: Acco
     } = useBottomSheetModal();
 
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
-        selectHasFirmwareAuthenticityCheckHardFailed,
+        selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
     );
 
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
@@ -57,10 +56,10 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: Acco
                 description: translate('generic.banners.deviceDanger.compromised.subtitle'),
                 icon: 'warning',
                 primaryButtonTitle: translate('generic.banners.deviceDanger.compromised.cta'),
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 onPressPrimaryButton: () => openLink(SUITE_MOBILE_SUPPORT_URL),
                 secondaryButtonTitle: translate('generic.buttons.cancel'),
-                secondaryButtonVariant: 'redElevation0',
+                secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
             }),
         [openLink, showAlert, translate],
     );
@@ -71,18 +70,6 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: Acco
     const accountXpub =
         convertTaprootXpub({ xpub: account.descriptor, direction: 'apostrophe-to-h' }) ??
         account.descriptor;
-
-    const isAddressBased = isAddressBasedNetwork(account.networkType);
-
-    const buttonTitle = (
-        <Translation
-            id={
-                isAddressBased
-                    ? 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.address.showButton'
-                    : 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.showButton'
-            }
-        />
-    );
 
     return (
         <>
@@ -97,20 +84,19 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: Acco
                 />
             )}
             <Button
-                size="large"
                 onPress={
                     hasFirmwareAuthenticityCheckHardFailed
                         ? showFirmwareAuthenticityCheckAlert
                         : showXpub
                 }
-                colorScheme="tertiaryElevation0"
+                intent="neutral"
+                priority="secondary"
             >
-                {buttonTitle}
+                <Translation id="moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.showButton" />
             </Button>
             <XpubQRCodeBottomSheet
                 ref={xpubQRSheetRef}
                 onClose={closeXpubQRSheet}
-                symbol={account.symbol}
                 qrCodeData={accountXpub}
                 accountKey={accountKey}
             />

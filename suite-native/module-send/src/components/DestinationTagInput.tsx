@@ -1,12 +1,12 @@
 import { useRef, useState } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { NetworkSymbol, getNetwork, getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork, getNetworkType } from '@suite-common/wallet-config';
 import {
     AnimatedVStack,
     HStack,
     InlineAlertBox,
-    InputType,
+    type InputType,
     Switch,
     Text,
     VStack,
@@ -17,10 +17,10 @@ import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { useDebounce } from '@trezor/react-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL } from '@trezor/urls';
 
-import { SendFieldName, SendOutputsFormValues } from '../sendOutputsFormSchema';
+import { type SendFieldName, type SendOutputsFormValues } from '../sendOutputsFormSchema';
 
 const titleTextStyle = prepareNativeStyle(utils => ({
     flex: 1,
@@ -88,8 +88,8 @@ export const DestinationTagInput = ({ networkSymbol }: DestinationTagInputProps)
                                             HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL
                                         }
                                         isUnderlined
-                                        textColor="textDefault"
-                                        textPressedColor="textSubdued"
+                                        textColor="contentPrimary"
+                                        textPressedColor="contentSecondary"
                                     />
                                 ),
                             }}
@@ -113,8 +113,8 @@ export const DestinationTagInput = ({ networkSymbol }: DestinationTagInputProps)
                         accessibilityLabel="address input"
                     />
                     <HStack paddingHorizontal="sp12" spacing="sp4">
-                        <Icon name="info" color="iconSubdued" size="medium" />
-                        <Text variant="body-xs" color="textSubdued">
+                        <Icon name="info" color="contentSecondary" size="medium" />
+                        <Text variant="body-xs" color="contentSecondary">
                             <Translation id="moduleSend.outputs.recipients.destinationTag.info" />
                         </Text>
                     </HStack>

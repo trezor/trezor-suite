@@ -1,14 +1,18 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceCommands.js
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { MessagesSchema as Messages } from '@trezor/protobuf';
+import type { HDNodeResponse } from '@trezor/connect-common/src/types/api/getPublicKey';
+import type {
+    BitcoinNetworkInfo,
+    CoinInfo,
+    Network,
+} from '@trezor/connect-common/src/types/coinInfo';
+import type { MessagesSchema as Messages } from '@trezor/protobuf';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import { PROTO } from '../constants';
 import { getBech32Network, getSegwitNetwork } from '../data/coinInfo';
-import type { TypedCallProvider } from '../device/DeviceCurrentSession';
 import { resolveDescriptorForTaproot } from '../device/resolveDescriptorForTaproot';
-import type { HDNodeResponse } from '../types/api/getPublicKey';
-import type { BitcoinNetworkInfo, CoinInfo, Network } from '../types/coinInfo';
+import type { TypedCallProvider } from '../types/typed-call-provider';
 import * as hdnodeUtils from '../utils/hdnodeUtils';
 import { getScriptType, getSerializedPath, isTaprootPath } from '../utils/pathUtils';
 
@@ -21,6 +25,9 @@ export type AccountDescriptor = {
     legacyXpub?: string;
     address_n: number[];
     descriptorChecksum?: string;
+    fingerprint?: number;
+    rootFingerprint?: number;
+    outputDescriptorBip380?: string;
 };
 
 export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
@@ -99,6 +106,7 @@ export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
             chainCode: publicKey.node.chain_code,
             publicKey: publicKey.node.public_key,
             fingerprint: publicKey.node.fingerprint,
+            rootFingerprint: publicKey.root_fingerprint,
             depth: publicKey.node.depth,
             descriptor: publicKey.descriptor,
         };
@@ -199,6 +207,9 @@ export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
                 legacyXpub: resp.xpub,
                 address_n,
                 descriptorChecksum: resp.descriptorChecksum,
+                fingerprint: resp.fingerprint,
+                rootFingerprint: resp.rootFingerprint,
+                outputDescriptorBip380: resp.descriptor,
             };
         }
         if (coinInfo.type === 'ethereum') {
@@ -255,7 +266,7 @@ export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
             };
         }
 
-        if (coinInfo.shortcut === 'TRX') {
+        if (coinInfo.shortcut === 'TRX' || coinInfo.shortcut === 'tTRX') {
             const { message } = await typedCall('TronGetAddress', 'TronAddress', {
                 address_n,
             });

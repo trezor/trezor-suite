@@ -5,22 +5,40 @@
     "sideEffects": false,
     "private": true,
     "main": "src/index",
+    "files": [
+        "libESM/",
+        "CHANGELOG.md"
+    ],
+    "publishConfig": {
+        "main": "./libESM/index.mjs",
+        "types": "./libESM/index.d.mts",
+        "type": "module",
+        "exports": {
+            ".": {
+                "types": "./libESM/index.d.mts",
+                "default": "./libESM/index.mjs"
+            }
+        }
+    },
     "scripts": {
-        "test:unit": "yarn g:jest -c ./jest.config.js",
-        "depcheck": "yarn g:depcheck"
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest",
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@scure/base": "^2.0.0",
         "base-x": "^5.0.1",
-        "bech32": "^2.0.0",
-        "browserify-bignum": "^1.3.0-2",
-        "cbor": "^10.0.10",
-        "chai": "^5.2.0",
+        "cbor": "^10.0.12",
         "crc": "^3.8.0",
         "groestl-hash-js": "1.0.0",
-        "jssha": "2.3.1",
-        "lodash": "^4.17.15"
+        "jssha": "2.3.1"
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*"
+    },
+    "peerDependencies": {
+        "tslib": "^2.6.2"
     }
 }

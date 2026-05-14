@@ -1,22 +1,25 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/VerifyMessage.js
 
+import { VerifyMessage as VerifyMessageSchema } from '@trezor/connect-common';
+import type { CoinInfo, MethodPermission, PROTO } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import { PROTO } from '../constants';
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { validateModelOneMessageSize } from '../device/validateMessageSize';
-import { VerifyMessage as VerifyMessageSchema } from '../types';
 import { messageToHex } from '../utils/formatUtils';
 import { getLabel } from '../utils/pathUtils';
 
-export default class VerifyMessage extends AbstractMethod<'verifyMessage', PROTO.VerifyMessage> {
-    init() {
-        this.requiredPermissions = ['read', 'write'];
+type Params = {
+    proto: PROTO.VerifyMessage;
+    coinInfo: CoinInfo;
+};
 
-        const { payload } = this;
+export default class VerifyMessage extends AbstractMethod<'verifyMessage', Params> {
+    constructor(message: MethodMessage<'verifyMessage'>) {
+        const { payload } = message;
 
         // validate incoming parameters for each batch
         Assert(VerifyMessageSchema, payload);
@@ -24,37 +27,39 @@ export default class VerifyMessage extends AbstractMethod<'verifyMessage', PROTO
         const coinInfo = getBitcoinNetwork(payload.coin);
         if (!coinInfo) {
             throw ERRORS.TypedError('Method_UnknownCoin');
-        } else {
-            // check required firmware with coinInfo support
-            this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
         }
         const messageHex = payload.hex
             ? messageToHex(payload.message)
             : Buffer.from(payload.message, 'utf8').toString('hex');
         const signatureHex = Buffer.from(payload.signature, 'base64').toString('hex');
 
-        this.params = {
+        const proto = {
             address: payload.address,
             signature: signatureHex,
             message: messageHex,
             coin_name: coinInfo.name,
         };
+
+        const params = { proto, coinInfo };
+
+        super(message, params);
+
+        this.requiredFirmwareCoins = [coinInfo];
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read', 'write'];
     }
 
     get info() {
-        const coinInfo = getBitcoinNetwork(this.payload.coin);
-        if (!coinInfo) {
-            return 'Verify message';
-        }
-
-        return getLabel('Verify #NETWORK message', coinInfo);
+        return getLabel('Verify #NETWORK message', this.params.coinInfo);
     }
 
     async run() {
-        validateModelOneMessageSize(this.device, this.params.message);
+        validateModelOneMessageSize(this.getDevice(), this.params.proto.message);
 
-        const cmd = this.device.getCommands();
-        const response = await cmd.typedCall('VerifyMessage', 'Success', this.params);
+        const cmd = this.getDevice().getCommands();
+        const response = await cmd.typedCall('VerifyMessage', 'Success', this.params.proto);
 
         return response.message;
     }

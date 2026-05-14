@@ -5,8 +5,10 @@ const ETHEREUM_ADDRESS_3 = '0x574BbB36871bA6b78E27f4B4dCFb76eA0091880B';
 test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
 
-    test.beforeEach(async ({ onboardingPage }) => {
+    test.beforeEach(async ({ onboardingPage, settingsPage, dashboardPage }) => {
         await onboardingPage.completeOnboarding();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await dashboardPage.navigateTo();
     });
 
     test(`Global receive`, async ({ page, devicePrompt, tradingPage, walletPage }) => {
@@ -52,7 +54,7 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
         });
     });
 
-    test(`Global send`, async ({ page, devicePrompt, tradingPage }) => {
+    test(`Global send`, async ({ page, devicePrompt, walletPage, tradingPage }) => {
         await test.step('Open send form', async () => {
             await page.getByTestId('@wallet/menu/wallet-global-send').click();
             await expect(devicePrompt.header).toHaveTranslation('TR_NAV_SEND');
@@ -71,7 +73,7 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
         });
 
         await test.step('Send form validation', async () => {
-            await expect(page.getByTestId('@wallet/send-header')).toHaveTranslation('TR_NAV_SEND');
+            await expect(walletPage.sendFormHeader).toHaveTranslation('TR_NAV_SEND');
             await expect(
                 page.getByTestId("@metadata/accountLabel/m/84'/0'/2'/hover-container"),
             ).toHaveTranslation('LABELING_ACCOUNT', {

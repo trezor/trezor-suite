@@ -12,11 +12,11 @@ export const UnverifiedAddressDeviceHint = () => {
     return (
         <Animated.View entering={FadeIn}>
             <VStack spacing="sp16">
-                <Text variant="body-sm" color="textSubdued" textAlign="center">
+                <Text variant="body-sm" color="contentSecondary" textAlign="center">
                     <Translation id="moduleReceive.receiveAddressCard.deviceHint.description" />
                 </Text>
                 <Box flexDirection="row" flexShrink={1} justifyContent="center">
-                    <Button size="small" colorScheme="tertiaryElevation1" onPress={openModal}>
+                    <Button size="medium" intent="neutral" priority="secondary" onPress={openModal}>
                         <Translation id="moduleReceive.bottomSheets.addressMismatch.title" />
                     </Button>
                 </Box>

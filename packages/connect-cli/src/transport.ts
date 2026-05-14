@@ -1,5 +1,4 @@
-import { ConnectSettingsTransport, UiRequestThpPairing } from '@trezor/connect';
-import * as protobufDefinitions from '@trezor/protobuf/messages.json';
+import { type ConnectSettingsTransport, type UiRequestThpPairing } from '@trezor/connect';
 import { NodeUsbTransport, UdpTransport } from '@trezor/transport';
 import { BluetoothTransport, TrezorBluetooth } from '@trezor/transport-bluetooth';
 
@@ -16,6 +15,8 @@ export const getCurrentTransport = () => {
     return 'usb';
 };
 
+const getLogger = () => (args.debug ? console : undefined);
+
 // if interaction is done by the user or resolved by DebugLink decision
 export const isDebugLinkInteraction = (type: string) =>
     (typeof args.debuglink === 'boolean' && args.debuglink) ||
@@ -23,8 +24,8 @@ export const isDebugLinkInteraction = (type: string) =>
 
 const debugTransport =
     getCurrentTransport() === 'udp'
-        ? new UdpTransport({ id: 'udp', messages: protobufDefinitions, debugLink: true })
-        : new NodeUsbTransport({ id: 'usb', messages: protobufDefinitions, debugLink: true });
+        ? new UdpTransport({ id: 'udp', debugLink: true, logger: getLogger() })
+        : new NodeUsbTransport({ id: 'usb', debugLink: true, logger: getLogger() });
 
 export const initDebugLink = async () => {
     if (args['interactive']) return;
@@ -34,7 +35,7 @@ export const initDebugLink = async () => {
 
     const enumerate = await debugTransport.enumerate();
     if (!enumerate.success) {
-        throw new Error(enumerate.error);
+        throw new Error(enumerate.error.code);
     }
 };
 
@@ -45,7 +46,7 @@ const waitForDebugDevice = async () => {
         const enumerate = await debugTransport.enumerate();
         console.log('DebugLink enumerate attempt', attempt);
         if (!enumerate.success) {
-            throw new Error(enumerate.error);
+            throw new Error(enumerate.error.code);
         }
         if (enumerate.payload.length > 0) {
             device = enumerate.payload[0];
@@ -64,7 +65,7 @@ export const debugLinkState = async (uiEvent: UiRequestThpPairing['payload']) =>
     const input = { ...descriptor, previous: descriptor.session };
     const acquire = await debugTransport.acquire({ input });
     if (!acquire.success) {
-        throw new Error(acquire.error);
+        throw new Error(acquire.error.code);
     }
 
     const { channel } = uiEvent.device.thp;
@@ -97,14 +98,14 @@ export const debugLinkDecision = async () => {
 
     const enumerate = await debugTransport.enumerate();
     if (!enumerate.success) {
-        throw new Error(enumerate.error);
+        throw new Error(enumerate.error.code);
     }
     const descriptor = enumerate.payload[0];
     const input = { ...descriptor, previous: descriptor.session };
 
     const acquire = await debugTransport.acquire({ input });
     if (!acquire.success) {
-        throw new Error(acquire.error);
+        throw new Error(acquire.error.code);
     }
 
     const session = acquire.payload;
@@ -121,7 +122,7 @@ export const debugLinkDecision = async () => {
 export const getTransport = async (): Promise<ConnectSettingsTransport> => {
     const transportName = getCurrentTransport();
 
-    const bluetoothApi = new TrezorBluetooth({ url: `ws://localhost:21327/` });
+    const bluetoothApi = new TrezorBluetooth({ url: `ws://localhost:21327/`, logger: getLogger() });
     if (transportName === 'bluetooth') {
         await bluetoothApi.connect();
         const enumerate = await bluetoothApi.send('start_scan');
@@ -136,8 +137,8 @@ export const getTransport = async (): Promise<ConnectSettingsTransport> => {
 
         return new BluetoothTransport({
             url: 'ws://127.0.0.1:21327',
-            messages: protobufDefinitions,
             id: 'ble',
+            logger: getLogger(),
         });
     } else if (transportName === 'bridge') {
         return 'BridgeTransport';

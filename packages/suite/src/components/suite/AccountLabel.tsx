@@ -1,8 +1,8 @@
-import { selectLabelingDataForAccount } from '@suite/metadata';
-import { selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
-import { Account } from '@suite-common/wallet-types';
+import { selectIsLegacyLabelingVisible, selectLabelingDataForAccount } from '@suite/metadata';
+import { selectIsSuiteSyncEnabled, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
+import { type Account } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
-import { BadgeSize, FlexProps, Row, Text, type TextProps } from '@trezor/components';
+import { type BadgeSize, type FlexProps, Row, Text, type TextProps } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
 
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
@@ -34,6 +34,8 @@ export const AccountLabel = ({
 }: AccountLabelProps) => {
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const { walletDescriptor } = parseDeviceStaticSessionId(account.deviceState);
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
 
     const suiteSyncAccountLabel = useSelector(state =>
         selectSuiteSyncAccountLabel(state, walletDescriptor, account.descriptor, account.symbol),
@@ -43,8 +45,8 @@ export const AccountLabel = ({
 
     const { symbol, accountType, index, path, networkType } = account;
     const accountLabel =
-        suiteSyncAccountLabel || // Suite Sync
-        accountMetadata.accountLabel || // Legacy Labeling
+        (isSuiteSyncEnabled ? suiteSyncAccountLabel : null) ||
+        (isLegacyLabelingVisible ? accountMetadata.accountLabel : null) ||
         getDefaultAccountLabel({ accountType, symbol, index });
 
     return (

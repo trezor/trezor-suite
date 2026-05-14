@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { SuiteSyncDataRootState, selectSuiteSyncWalletLabel } from '@suite-common/suite-sync';
+import { type SuiteSyncDataRootState, selectSuiteSyncWalletLabel } from '@suite-common/suite-sync';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import type { StaticSessionId } from '@trezor/connect';
 

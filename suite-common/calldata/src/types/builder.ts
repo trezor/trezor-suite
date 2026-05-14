@@ -4,31 +4,33 @@ import type { IssueWithSeverity } from './policy';
 
 export type { Encoder };
 
-export type ParamsConfig<
-    ParamNames extends string,
-    Config = Record<ParamNames, Param<any, any, any>>,
-> = {
-    [K in ParamNames]: Param<any, any, any>;
-} & (Exclude<keyof Config, ParamNames> extends never
-    ? unknown
-    : { [K in Exclude<keyof Config, ParamNames>]: never });
-
 type ExtractParamInput<T> = T extends Param<infer I, any, any> ? I : never;
+type ExtractParamOutput<T> = T extends Param<any, infer O, any> ? O : never;
 export type ExtractParamNames<E> = E extends Encoder<infer P, unknown> ? P : never;
+
+export type ExtractOutputs<
+    ParamNames extends string,
+    Config extends Record<ParamNames, Param<any, any, any>>,
+> = {
+    [K in ParamNames]: ExtractParamOutput<Config[K]>;
+};
+
+export type CrossValidator<
+    ParamNames extends string,
+    Config extends Record<ParamNames, Param<any, any, any>>,
+> = (values: ExtractOutputs<ParamNames, Config>) => IssueWithSeverity[];
 
 export type ExtractEncoderOutput<E> = E extends Encoder<string, infer O> ? O : never;
 
-export type ExtractInputs<ParamNames extends string, Config extends ParamsConfig<ParamNames>> = {
+export type ExtractInputs<
+    ParamNames extends string,
+    Config extends Record<ParamNames, Param<any, any, any>>,
+> = {
     [K in ParamNames]: ExtractParamInput<Config[K]>;
 };
 
 export type ExtractContext<Config> =
     Config extends Record<string, Param<any, any, infer C>> ? C : void;
-
-export interface BuilderConfig<E extends Encoder> {
-    params: ParamsConfig<ExtractParamNames<E>>;
-    encode: E;
-}
 
 interface BuildResultBase {
     issues: IssueWithSeverity[];

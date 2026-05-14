@@ -1,4 +1,4 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import {
@@ -7,32 +7,32 @@ import {
     selectSelectedDevice,
 } from '@suite-common/device';
 import {
-    AccountLabels,
-    MetadataAddPayload,
-    MetadataEncryptionVersion,
-    MetadataProvider,
-    Error as MetadataProviderError,
+    type AccountLabels,
+    type MetadataAddPayload,
+    type MetadataEncryptionVersion,
+    type MetadataProvider,
+    type Error as MetadataProviderError,
     ProviderErrorAction,
-    WalletLabels,
+    type WalletLabels,
 } from '@suite-common/metadata-types';
-import { ExtraDependencies } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { Account } from '@suite-common/wallet-types';
-import TrezorConnect, { StaticSessionId } from '@trezor/connect';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type Account } from '@suite-common/wallet-types';
+import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
 import { cloneObject } from '@trezor/utils';
 
 import type { MetadataAction } from './metadataActions';
 import * as metadataActions from './metadataActions';
 import * as METADATA from './metadataConstants';
+import * as metadataDataThunks from './metadataDataThunks';
 import * as METADATA_LABELING from './metadataLabelingConstants';
 import * as metadataProviderActions from './metadataProviderThunks';
 import {
-    MetadataRootState,
+    type MetadataRootState,
     selectLabelableEntities,
     selectMetadata,
     selectSelectedProviderForLabels,
 } from './metadataReducer';
-import * as metadataThunks from './metadataThunks';
 import * as metadataUtils from './metadataUtils';
 
 export const getLabelableEntities =
@@ -239,7 +239,7 @@ export const fetchAndSaveMetadata =
             const promises = labelableEntities.map(entity =>
                 dispatch(fetchMetadata({ provider, entity })).then(result => {
                     if (result) {
-                        dispatch(metadataThunks.setMetadata({ ...result, provider }));
+                        dispatch(metadataDataThunks.setMetadata({ ...result, provider }));
                     }
                 }),
             );
@@ -324,7 +324,7 @@ export const addDeviceMetadata =
         nextMetadata.walletLabel = walletLabel;
 
         dispatch(
-            metadataThunks.setMetadata({
+            metadataDataThunks.setMetadata({
                 provider,
                 fileName,
                 data: nextMetadata,
@@ -342,7 +342,7 @@ export const addDeviceMetadata =
             return Promise.resolve({ success: false as const, error: 'no provider instance' });
         }
 
-        return metadataThunks.encryptAndSaveMetadata({
+        return metadataDataThunks.encryptAndSaveMetadata({
             data: { walletLabel },
             aesKey,
             fileName,
@@ -428,7 +428,7 @@ export const addAccountMetadata =
         }
 
         dispatch(
-            metadataThunks.setMetadata({
+            metadataDataThunks.setMetadata({
                 fileName,
                 provider,
                 data: nextMetadata,
@@ -451,7 +451,7 @@ export const addAccountMetadata =
             return Promise.resolve({ success: false as const, error: 'no provider instance' });
         }
 
-        return metadataThunks.encryptAndSaveMetadata({
+        return metadataDataThunks.encryptAndSaveMetadata({
             data: {
                 accountLabel: nextMetadata.accountLabel,
                 outputLabels: nextMetadata.outputLabels,
@@ -621,7 +621,7 @@ export const init =
                 // NOTE: when the request for the device fails / is cancelled on the device
                 // disable metadata labeling for all but only when it was off before this invocation
                 if (!globalLabelingEnabledBeforeToggle) {
-                    dispatch(metadataThunks.disableMetadata());
+                    dispatch(metadataDataThunks.disableMetadata());
                 }
 
                 return false;
@@ -653,7 +653,7 @@ export const init =
                 // NOTE: when the provider is not initialized
                 // disable metadata labeling for all but only when it was off before this invocation
                 if (!globalLabelingEnabledBeforeToggle) {
-                    dispatch(metadataThunks.disableMetadata());
+                    dispatch(metadataDataThunks.disableMetadata());
                 }
 
                 return false;
@@ -695,7 +695,7 @@ export const init =
                     return;
                 }
                 dispatch(fetchAndSaveMetadata(device.state.staticSessionId));
-            }, 60_000);
+            }, METADATA_LABELING.FETCH_INTERVAL);
         }
 
         return true;

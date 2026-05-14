@@ -5,5 +5,5 @@
         "./babel-plugin-add-js-extension.js"
     ],
     "comments": true,
-    "sourceMaps": true
+    "sourceMaps": false
 }

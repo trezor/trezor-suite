@@ -3,7 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../wallet-config" },
-        { "path": "../../packages/connect" },
-        { "path": "../../packages/device-utils" }
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/protobuf" }
     ]
 }

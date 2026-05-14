@@ -1,13 +1,13 @@
 import type { Octokit } from '@octokit/rest';
 
 import {
-    CreateFieldResponse,
-    CreateProjectMutation,
-    LoggingFunctions,
-    Project,
-    ProjectField,
-    ProjectFieldsResponse,
-    ProjectQueryResponse,
+    type CreateFieldResponse,
+    type CreateProjectMutation,
+    type LoggingFunctions,
+    type Project,
+    type ProjectField,
+    type ProjectFieldsResponse,
+    type ProjectQueryResponse,
 } from './types';
 
 export async function getProjectFields(

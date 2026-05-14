@@ -1,13 +1,14 @@
 import { A, D, G } from '@mobily/ts-belt';
 
+import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import {
-    AccountType,
+    type AccountType,
     getNetwork,
     networkSymbolCollection,
     networks,
 } from '@suite-common/wallet-config';
 import { formattedAccountTypeMap } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { orderedAccountTypes, sendDisabledNetworkTypes } from '@suite-native/config';
 
 const accountTypeToSectionHeader: Readonly<Partial<Record<AccountType, string>>> = {
@@ -21,11 +22,13 @@ const accountTypeToSectionHeader: Readonly<Partial<Record<AccountType, string>>>
 /**
  * Returns true if account label, network name, account type or account included token contains filter value as a substring.
  */
-export const isFilterValueMatchingAccount = (account: Account, filterValue: string) => {
+export const isFilterValueMatchingAccount = (
+    account: AccountWithSuiteSyncLabel,
+    filterValue: string,
+) => {
     const lowerCaseFilterValue = filterValue?.trim().toLowerCase();
 
-    // Todo: this is wrong, this shall reflect SuiteSync labels. See https://github.com/trezor/trezor-suite/issues/24803
-    const isMatchingLabel = account.accountLabel?.toLowerCase().includes(lowerCaseFilterValue);
+    const isMatchingLabel = (account.label ?? '').toLowerCase().includes(lowerCaseFilterValue);
 
     if (isMatchingLabel) return true;
 
@@ -60,7 +63,7 @@ export const isFilterValueMatchingAccount = (account: Account, filterValue: stri
  * Filter accounts by labels, network names and included token names.
  */
 export const filterAccountsByLabelAndNetworkNames = (
-    accounts: readonly Account[],
+    accounts: readonly AccountWithSuiteSyncLabel[],
     filterValue: string,
 ) => {
     if (!filterValue) return accounts;
@@ -68,7 +71,7 @@ export const filterAccountsByLabelAndNetworkNames = (
     return A.filter(accounts, account => isFilterValueMatchingAccount(account, filterValue));
 };
 
-export const filterSendAvailableAccounts = (accounts: readonly Account[]) =>
+export const filterSendAvailableAccounts = <T extends Account>(accounts: readonly T[]) =>
     A.filter(
         accounts,
         account =>
@@ -91,7 +94,7 @@ export const groupAccountsByNetworkAccountType = A.groupBy((account: Account) =>
     return `${networkName} ${formattedAccountType} accounts`;
 });
 
-export const sortAccountsByNetworksAndAccountTypes = (accounts: readonly Account[]) =>
+export const sortAccountsByNetworksAndAccountTypes = <T extends Account>(accounts: readonly T[]) =>
     A.sort(accounts, (a, b) => {
         const aOrder = networkSymbolCollection.indexOf(a.symbol) ?? Number.MAX_SAFE_INTEGER;
         const bOrder = networkSymbolCollection.indexOf(b.symbol) ?? Number.MAX_SAFE_INTEGER;

@@ -1,12 +1,13 @@
-import { WalletKitTypes } from '@reown/walletkit';
+import { type WalletKitTypes } from '@reown/walletkit';
 import type { ProposalTypes } from '@walletconnect/types';
 
-import { SuiteCompatibleThunk } from '@suite-common/redux-utils';
-import { Network } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type SuiteCompatibleThunk } from '@suite-common/redux-utils';
+import { type Network } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 
 export interface WalletConnectAdapter {
     networkType: string;
+    namespaceId: string;
     methods: string[];
     requestThunk: SuiteCompatibleThunk<{
         event: WalletKitTypes.SessionRequest;

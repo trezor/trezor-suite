@@ -1,12 +1,12 @@
-import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
+import { type AcquiredDevice, type TrezorDevice } from '@suite-common/suite-types';
 import {
     DEVICE,
-    Device,
-    DeviceEvent,
-    DeviceMode,
-    KnownDevice,
-    PROTO,
-    UnavailableCapability,
+    type Device,
+    type DeviceEvent,
+    type DeviceMode,
+    type KnownDevice,
+    type PROTO,
+    type UnavailableCapability,
 } from '@trezor/connect';
 import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
@@ -163,7 +163,7 @@ export const shouldDisplayInitialWarningIcon = (deviceStatus: DeviceStatus | nul
     }
 };
 
-export const isDeviceRemembered = (device?: TrezorDevice): boolean => !!device?.remember;
+export const getIsDeviceRemembered = (device?: TrezorDevice): boolean => !!device?.remember;
 
 // Is a Suite extended device acquired (corresponds to Connect "known")
 export const isDeviceAcquired = (device?: TrezorDevice): device is AcquiredDevice =>
@@ -525,7 +525,7 @@ export const getIsDeviceConnectedAndAuthorized = ({
 }) => !!deviceState && !!deviceFeatures;
 
 export const getIsDeviceDescriptorApiTypeBluetooth = (device: Device | TrezorDevice) =>
-    device.descriptor.apiType === 'bluetooth';
+    device.descriptor?.apiType === 'bluetooth';
 
 export const getIsDeviceConnectedViaBluetooth = (device?: TrezorDevice): boolean =>
     !!device?.connected && getIsDeviceDescriptorApiTypeBluetooth(device);

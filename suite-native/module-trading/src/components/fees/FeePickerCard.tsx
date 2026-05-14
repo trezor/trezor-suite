@@ -1,69 +1,52 @@
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
-import {
-    TradingExchangeType,
-    TradingSellType,
-    selectTradingComposedTransactionInfo,
-} from '@suite-common/trading';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey } from '@suite-common/wallet-types';
-import { AnimatedCard } from '@suite-native/atoms';
+import { type TradingExchangeType, type TradingSellType } from '@suite-common/trading';
+import { type FormDraftRootState, selectDeepCopyOfFormDraft } from '@suite-common/wallet-core';
+import { type AccountKey, type FeeLevelLabel } from '@suite-common/wallet-types';
+import { AnimatedContainerCard, Divider } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    StackNavigationProps,
-    TradingStackParamList,
-    TradingStackRoutes,
-} from '@suite-native/navigation';
 import { TradeInfoHeader } from '@suite-native/trading-atoms';
+import { getFormDraftKeyByTradeType } from '@suite-native/trading-state';
+import { FeeSelector } from '@suite-native/transaction-management';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { FeePicker } from './FeePicker';
+import { updateTradingSelectedFeeLevelThunk } from '../../thunks';
 import { ProviderReceiveAddress } from '../general/ProviderReceiveAddress';
+
+const dividerStyle = prepareNativeStyle(utils => ({
+    borderBottomColor: utils.colors.borderNeutral,
+}));
 
 type FeePickerCardProps = {
     trade: ExchangeTrade | SellFiatTrade | undefined;
     accountKey: AccountKey;
-    symbol: NetworkSymbol;
     tradingType: TradingSellType | TradingExchangeType;
 };
 
-export const FeePickerCard = ({ trade, accountKey, symbol, tradingType }: FeePickerCardProps) => {
-    const navigation =
-        useNavigation<
-            StackNavigationProps<
-                TradingStackParamList,
-                TradingStackRoutes.TradingExchangePreview | TradingStackRoutes.TradingSellPreview
-            >
-        >();
-    const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
-
-    const actualFee = composedTransactionInfo?.composed?.fee;
-    const fee = actualFee ?? '0';
-
-    const handleFeesPressed = () => {
-        if (actualFee === undefined) {
-            return;
-        }
-        navigation.navigate(TradingStackRoutes.TradingFees, {
-            accountKey,
-            tradingType,
-        });
-    };
+export const FeePickerCard = ({ trade, accountKey, tradingType }: FeePickerCardProps) => {
+    const { applyStyle } = useNativeStyles();
+    const formDraftKey = getFormDraftKeyByTradeType(tradingType);
+    const formDraft = useSelector((state: FormDraftRootState) =>
+        selectDeepCopyOfFormDraft(state, formDraftKey),
+    );
 
     return (
-        <AnimatedCard noPadding>
+        <AnimatedContainerCard noPadding>
             <TradeInfoHeader
                 title={<Translation id="moduleTrading.tradingExchangePreviewScreen.details" />}
             />
             {trade && <ProviderReceiveAddress trade={trade} />}
-            <FeePicker
-                fee={fee}
-                symbol={symbol}
-                onPress={handleFeesPressed}
-                isLoading={actualFee === undefined}
+            <Divider style={applyStyle(dividerStyle)} />
+            <FeeSelector
+                accountKey={accountKey}
+                updateThunk={updateTradingSelectedFeeLevelThunk}
+                selectedFee={(formDraft?.selectedFee as FeeLevelLabel | undefined) ?? 'normal'}
+                selectedFeePerUnit={formDraft?.feePerUnit}
+                formDraft={formDraft}
+                formDraftKey={formDraftKey}
             />
-        </AnimatedCard>
+        </AnimatedContainerCard>
     );
 };

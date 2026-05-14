@@ -8,16 +8,20 @@ import { selectIsDeviceAuthorized } from '@suite-common/device';
 import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { OnSelectAccount } from '@suite-native/accounts';
-import { AnimatedCard } from '@suite-native/atoms';
+import { type OnSelectAccount } from '@suite-native/accounts';
+import { AnimatedContainerCard } from '@suite-native/atoms';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
-import { FiveBinariesHomeBanner, useHandleEarnNavigation } from '@suite-native/module-earn';
 import {
-    AppTabsParamList,
-    AppTabsRoutes,
-    RootStackParamList,
+    FiveBinariesHomeBanner,
+    useStakingDetailNavigation,
+    useStakingNavigateAnalytics,
+} from '@suite-native/module-earn';
+import {
+    type AppTabsParamList,
+    type AppTabsRoutes,
+    type RootStackParamList,
     RootStackRoutes,
-    TabToStackCompositeNavigationProp,
+    type TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
 
 import { selectDeviceNetworksWithAssets } from '../assetsSelectors';
@@ -33,8 +37,8 @@ type NavigationProp = TabToStackCompositeNavigationProp<
 
 export const Assets = () => {
     const navigation = useNavigation<NavigationProp>();
-
-    const { handleEarnNavigation } = useHandleEarnNavigation();
+    const { navigateToStakingDetail } = useStakingDetailNavigation();
+    const reportStakingNavigate = useStakingNavigateAnalytics();
     const deviceNetworks = useSelectorDeepComparison(selectDeviceNetworksWithAssets);
 
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
@@ -46,7 +50,11 @@ export const Assets = () => {
     const handleSelectAssetsAccount: OnSelectAccount = useCallback(
         ({ account, tokenAddress, isStaking }) => {
             if (isStaking) {
-                handleEarnNavigation(account.key);
+                reportStakingNavigate(account);
+                navigateToStakingDetail({
+                    accountKey: account.key,
+                    symbol: account.symbol,
+                });
             } else {
                 navigation.navigate(RootStackRoutes.AccountDetail, {
                     accountKey: account.key,
@@ -56,7 +64,7 @@ export const Assets = () => {
             }
             setSelectedAssetSymbol(null);
         },
-        [handleEarnNavigation, navigation],
+        [navigateToStakingDetail, navigation, reportStakingNavigate],
     );
 
     const handleCloseBottomSheet = useCallback(() => {
@@ -66,7 +74,7 @@ export const Assets = () => {
     return (
         <>
             <FiveBinariesHomeBanner />
-            <AnimatedCard noPadding layout={LinearTransition}>
+            <AnimatedContainerCard noPadding layout={LinearTransition}>
                 <AccountsRediscoveryNeededWarning hasPadding />
                 {deviceNetworks.map(symbol => (
                     <Animated.View
@@ -78,7 +86,7 @@ export const Assets = () => {
                     </Animated.View>
                 ))}
                 {isLoading && <DiscoveryAssetsLoader isListEmpty={deviceNetworks.length < 1} />}
-            </AnimatedCard>
+            </AnimatedContainerCard>
             <NetworkAssetsBottomSheet
                 symbol={selectedAssetSymbol}
                 onSelectAccount={handleSelectAssetsAccount}

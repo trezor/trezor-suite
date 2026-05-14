@@ -3,17 +3,17 @@ import { useFormContext, useFormState } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
-import { FormState } from '@suite-common/wallet-types';
+import { selectLanguage } from '@suite/settings';
+import { type FormState } from '@suite-common/wallet-types';
 import { isEip1559 } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { InputError } from 'src/components/wallet';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { validateDecimals } from 'src/utils/suite/validation';
 
-import { CustomFeeBasicProps } from './CustomFee';
+import { type CustomFeeBasicProps } from './CustomFeeBasicProps';
 import { FEE_LIMIT, FEE_PER_UNIT } from './constants';
 import { useFeesContext } from '../../context/FeesContext';
 
@@ -38,15 +38,11 @@ export const CustomFeeEthereum = ({
     const customMaxPriorityFeePerGas = getValues('maxPriorityFeePerGas');
 
     useEffect(() => {
-        if (trigger) {
-            trigger(MAX_PRIORITY_FEE_PER_GAS);
-        }
+        trigger?.(MAX_PRIORITY_FEE_PER_GAS);
     }, [customMaxFeePerGas, trigger]);
 
     useEffect(() => {
-        if (trigger) {
-            trigger(MAX_FEE_PER_GAS);
-        }
+        trigger?.(MAX_FEE_PER_GAS);
     }, [customMaxPriorityFeePerGas, trigger]);
 
     const recommendedMaxFeePerGas = levels.find(level => level.label === 'normal')?.maxFeePerGas;

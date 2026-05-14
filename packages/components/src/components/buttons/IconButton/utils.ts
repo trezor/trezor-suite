@@ -1,5 +1,5 @@
-import { Padding } from '../../../utils/frameProps';
-import { ButtonSize } from '../types';
+import { type Padding } from '../../../utils/frameProps';
+import { type ButtonSize } from '../types';
 
 export const mapSizeToPadding = (size: ButtonSize): Padding => {
     const paddingMap: Record<ButtonSize, Padding> = {

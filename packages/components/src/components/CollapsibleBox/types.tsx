@@ -1,4 +1,4 @@
-import { UISize } from '../../config/types';
+import { type UISize } from '../../config/types';
 
 export const paddingTypes = ['none', 'small', 'normal', 'large'] as const;
 export type PaddingType = (typeof paddingTypes)[number];

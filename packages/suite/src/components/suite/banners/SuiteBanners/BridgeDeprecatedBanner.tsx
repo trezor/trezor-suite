@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { Banner } from '@trezor/components';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 
 export const BridgeDeprecated = () => {
@@ -13,7 +13,7 @@ export const BridgeDeprecated = () => {
             intent="info"
             rightContent={
                 <Banner.Button
-                    onClick={() => dispatch(goto('suite-bridge-deprecated'))}
+                    onClick={() => dispatch(goto({ routeName: 'suite-bridge-deprecated' }))}
                     data-testid="@notification/bridge-deprecated/button"
                 >
                     <Translation id="TR_LEARN_MORE" />

@@ -1,14 +1,14 @@
 import { fromWei, hexToNumberString } from 'web3-utils';
 
-import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    Account,
-    FormState,
-    ReviewOutput,
-    StakeFormState,
-    StakeType,
-    StakingPoolExtended,
-    SupportedEthereumNetworkSymbol,
+    type Account,
+    type FormState,
+    type ReviewOutput,
+    type StakeFormState,
+    type StakeType,
+    type StakingPoolExtended,
+    type SupportedEthereumNetworkSymbol,
     supportedNetworkSymbols,
 } from '@suite-common/wallet-types';
 import { BigNumber, isArrayMember } from '@trezor/utils';
@@ -75,18 +75,6 @@ export function isSupportedEthStakingNetworkSymbol(
     return isArrayMember(symbol, supportedNetworkSymbols);
 }
 
-export const getStakingSymbols = (symbols: NetworkSymbol[]) =>
-    symbols.reduce((acc, symbol) => {
-        if (
-            isSupportedEthStakingNetworkSymbol(symbol) &&
-            getNetworkFeatures(symbol).includes('staking')
-        ) {
-            acc.push(symbol);
-        }
-
-        return acc;
-    }, [] as SupportedEthereumNetworkSymbol[]);
-
 // Define signature constants
 const STAKE_SIGNATURE = '0x3a29dbae';
 const UNSTAKE_SIGNATURE = '0x76ec871c';
@@ -146,3 +134,18 @@ export const getStakeType = (precomposedForm: FormState, outputs: ReviewOutput[]
               .filter(output => output.type === 'data')
               .map(output => getTxStakeNameByDataHex(output?.value))
               .find(type => type) || null;
+
+export const hasStakeInPendingDepositedState = (account: Account) => {
+    if (account?.networkType !== 'ethereum') return false;
+
+    const pool = getAccountEverstakeStakingPool(account);
+    if (!pool) return false;
+
+    const { pendingDepositedBalance, pendingBalance } = pool;
+
+    if (new BigNumber(pendingDepositedBalance).gt(0) && new BigNumber(pendingBalance).lte(0)) {
+        return true;
+    }
+
+    return false;
+};

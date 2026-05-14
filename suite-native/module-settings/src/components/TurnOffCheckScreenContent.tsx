@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { Pressable } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
@@ -19,9 +19,9 @@ import { Translation } from '@suite-native/intl';
 import {
     Screen,
     ScreenHeader,
-    SettingsStackParamList,
+    type SettingsStackParamList,
     SettingsStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 
@@ -34,7 +34,7 @@ const InformativeList = () => (
                 <Text variant="body-md-strong">
                     <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.item1" />
                 </Text>
-                <Text variant="body-sm" color="textSubdued">
+                <Text variant="body-sm" color="contentSecondary">
                     <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.item1Explanation" />
                 </Text>
             </VStack>
@@ -44,7 +44,7 @@ const InformativeList = () => (
                 <Text variant="body-md-strong">
                     <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.item2" />
                 </Text>
-                <Text variant="body-sm" color="textSubdued">
+                <Text variant="body-sm" color="contentSecondary">
                     <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.item2Explanation" />
                 </Text>
             </VStack>
@@ -77,7 +77,7 @@ export const TurnOffCheckScreenContent = ({ title, onConfirm }: TurnOffCheckScre
             navigation.navigate(SettingsStackRoutes.SettingsAdvanced);
         }
         showToast({
-            variant: 'default',
+            intent: 'neutral',
             message: <Translation id="moduleSettings.advanced.authenticityChecks.toastOff" />,
             icon: 'check',
         });
@@ -122,7 +122,7 @@ export const TurnOffCheckScreenContent = ({ title, onConfirm }: TurnOffCheckScre
                     entering={FadeIn.duration(CHECKBOX_ANIMATION_DURATION)}
                     exiting={FadeOut.duration(CHECKBOX_ANIMATION_DURATION)}
                 >
-                    <Button colorScheme="yellowBold" onPress={handleButtonPress}>
+                    <Button intent="warning" priority="primary" onPress={handleButtonPress}>
                         <Translation id="moduleSettings.advanced.authenticityChecks.buttonTurnOff" />
                     </Button>
                 </Animated.View>

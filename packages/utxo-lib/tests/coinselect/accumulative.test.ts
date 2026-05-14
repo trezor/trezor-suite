@@ -1,6 +1,6 @@
 import * as utils from './test.utils';
 import { accumulative } from '../../src/coinselect/inputs/accumulative';
-import { CoinSelectOptions } from '../../src/types';
+import type { CoinSelectOptions } from '../../src/types';
 import fixtures from '../__fixtures__/coinselect/accumulative';
 
 describe('coinselect: accumulative', () => {

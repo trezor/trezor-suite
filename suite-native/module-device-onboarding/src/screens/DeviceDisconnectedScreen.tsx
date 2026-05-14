@@ -10,14 +10,14 @@ import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding
 import { useTranslate } from '@suite-native/intl';
 import {
     AppTabsRoutes,
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
+    type DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackRoutes,
     HomeStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
     Screen,
     ScreenHeader,
-    StackToStackCompositeScreenProps,
+    type StackToStackCompositeScreenProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 
@@ -56,10 +56,10 @@ export const DeviceDisconnectedScreen = ({
                 'moduleDeviceOnboarding.deviceDisconnectedAlert.reconnectButton',
             ),
             pictogramVariant: 'critical',
-            primaryButtonVariant: 'redBold',
+            primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
             onPressPrimaryButton: () => setIsAlertDismissed(true),
             secondaryButtonTitle: translate('generic.buttons.cancel'),
-            secondaryButtonVariant: 'redElevation0',
+            secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
             onPressSecondaryButton: () => {
                 setWasDeviceOnboardingCancelled(true);
                 navigateToHome();

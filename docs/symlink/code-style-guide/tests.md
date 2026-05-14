@@ -1,1 +1,1 @@
-../../../skills/tests.md
+../../../skills/tests/SKILL.md

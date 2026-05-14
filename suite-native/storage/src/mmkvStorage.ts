@@ -1,13 +1,13 @@
 import { Alert } from 'react-native';
-import { MMKV, createMMKV } from 'react-native-mmkv';
+import { type MMKV, createMMKV } from 'react-native-mmkv';
 import RNRestart from 'react-native-restart';
 
 import { captureMessage } from '@sentry/react-native';
 import * as SplashScreen from 'expo-splash-screen';
-import { Storage } from 'redux-persist';
+import { type Storage } from 'redux-persist';
 
 import { unecryptedJotaiStorage } from './atomWithUnecryptedStorage';
-import { EnsureEncryptionKeyDep } from './createEnsureEncryptionKey';
+import { type EnsureEncryptionKeyDep } from './createEnsureEncryptionKey';
 
 export const ENCRYPTED_STORAGE_ID = 'trezorSuite-app-storage';
 

@@ -15,7 +15,10 @@
         { "path": "../navigation" },
         { "path": "../passphrase" },
         { "path": "../services" },
-        { "path": "../../packages/styles" },
-        { "path": "../../packages/urls" }
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/requirements" }
     ]
 }

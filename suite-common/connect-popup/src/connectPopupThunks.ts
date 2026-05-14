@@ -1,17 +1,18 @@
-import { AsyncThunkAction } from '@reduxjs/toolkit';
+import { type AsyncThunkAction } from '@reduxjs/toolkit';
 
 import { events } from '@suite-common/analytics';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
-import { CustomThunkAPI, createThunk } from '@suite-common/redux-utils';
+import { type CustomThunkAPI, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import TrezorConnect, {
-    CallMethodKeys,
-    CallMethodParams,
-    CallMethodPayload,
+    type CallMethodKeys,
+    type CallMethodParams,
+    type CallMethodPayload,
+    type MethodInfo,
+    type MethodPermission,
 } from '@trezor/connect';
-import { MethodInfo, MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
-import { connectCallableMethods } from '@trezor/connect/src/factory';
+import { connectCallableMethods } from '@trezor/connect-common';
 import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
 import { DEEPLINK_VERSION } from '@trezor/connect-common/src/data/version';
 import { resolveAfter } from '@trezor/utils';
@@ -22,7 +23,7 @@ import { selectConnectAppPermissions, selectConnectPopupCall } from './connectPo
 import {
     CALL_SOURCE_DEEPLINK,
     CALL_SOURCE_WALLETCONNECT,
-    ConnectCallSource,
+    type ConnectCallSource,
 } from './connectPopupTypes';
 import { postCallHooks, preCallHooks } from './methodHooks';
 
@@ -51,7 +52,7 @@ export const connectPopupCallThunkInner = createThunk<
                 __precomposed: true,
             } as CallMethodPayload);
             if (!methodInfo.success) {
-                throw methodInfo.payload;
+                throw methodInfo.error;
             }
             const methodInfoPayload = methodInfo.payload as MethodInfo;
             if (
@@ -89,8 +90,13 @@ export const connectPopupCallThunkInner = createThunk<
             );
 
             if (!isRemembered && source.type !== CALL_SOURCE_WALLETCONNECT) {
+                // Create the deferred BEFORE dispatching requestPermissions.
+                // Otherwise the modal can render and the user can click "confirm"
+                // (dispatching approvePermissions) before the deferred exists,
+                // causing the thunk to hang forever on a second, unresolved deferred.
+                const permissionDeferred = getPermissionDeferred(true);
                 dispatch(connectPopupActions.requestPermissions());
-                await getPermissionDeferred(true).promise;
+                await permissionDeferred.promise;
             }
 
             let device = selectSelectedDevice(getState());
@@ -145,7 +151,7 @@ export const connectPopupCallThunkInner = createThunk<
                 source,
             });
             if (!response.success) {
-                throw response.payload;
+                throw response.error;
             }
             if (!postCallOngoing) {
                 dispatch(connectPopupActions.finishCall());
@@ -210,7 +216,7 @@ export const connectPopupCallThunkInner = createThunk<
 
             getPopupCallDeferred().resolve({
                 success: false,
-                payload: serializeError(error),
+                error: serializeError(error),
             });
         } finally {
             dispatch(extra.actions.lockDevice(false));
@@ -373,6 +379,23 @@ export const connectPopupCancelThunk = createThunk<void, { error?: string }>(
         TrezorConnect.cancel(error);
         // todo: probably not needed to call explicitly anymore
         dispatch(deviceActions.removeButtonRequests({}));
-        dispatch(connectPopupActions.finishCall());
+
+        const cancelError = TypedError('Method_Interrupted');
+        // Show the cancellation error modal immediately so the user sees
+        // feedback in the Suite popup ("Request was canceled by the user").
+        dispatch(connectPopupActions.setError(serializeError(cancelError)));
+
+        // Resolve the popup-call deferred directly so the cancel response
+        // reaches the caller immediately.  Without this, the response
+        // depends on TrezorConnect.cancel() propagating through the
+        // internal core, interrupting the device, and eventually causing
+        // the catch block in connectPopupCallThunkInner to resolve the
+        // deferred — which may not happen reliably (e.g. the device
+        // interrupt doesn't complete, or the Suite popup tab closes
+        // before RESPONSE_EVENT is sent).
+        getPopupCallDeferred().resolve({
+            success: false,
+            error: serializeError(cancelError),
+        });
     },
 );

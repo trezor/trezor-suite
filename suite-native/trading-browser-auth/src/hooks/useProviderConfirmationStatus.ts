@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { selectSendPrecomposedTx } from '@suite-common/wallet-core';
 import { selectTradingProviderConfirmationStatus } from '@suite-native/trading-state';
-import { ProviderConfirmationStatus } from '@suite-native/trading-types';
+import { type ProviderConfirmationStatus } from '@suite-native/trading-types';
 
 import { useDispatchProviderConfirmationStatus } from './useDispatchProviderConfirmationStatus';
 

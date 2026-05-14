@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 
-import { ElectronIpcMainInvokeEvent } from '../types';
+import { type ElectronIpcMainInvokeEvent } from '../types';
 
 const ipcMainEvent: ElectronIpcMainInvokeEvent = {
     senderFrame: {

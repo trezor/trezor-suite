@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
@@ -6,7 +6,7 @@ import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { Badge, Column, Row, Text } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-import { AssetOptionBaseProps } from './SelectAssetModal';
+import { type AssetOptionBaseProps } from './types';
 import { isCoinSymbol } from '../../constants/coins';
 import { AssetLogo } from '../AssetLogo/AssetLogo';
 import { CoinLogo } from '../CoinLogo/CoinLogo';
@@ -17,7 +17,7 @@ const ClickableContainer = styled.div`
     border-radius: 4px;
 
     &:hover {
-        background: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation0};
+        background: ${({ theme }) => theme.legacyBackgroundTertiaryPressedOnElevation0};
     }
 `;
 
@@ -30,11 +30,11 @@ const BadgeWrapper = styled.div`
     flex: none;
 `;
 
-interface AssetItemProps extends AssetOptionBaseProps {
+type AssetItemProps = AssetOptionBaseProps & {
     handleClick: (selectedAsset: AssetOptionBaseProps) => void;
     'data-testid'?: string;
     balance?: ReactNode;
-}
+};
 
 export const AssetItem = ({
     cryptoName,
@@ -71,7 +71,6 @@ export const AssetItem = ({
                     {coingeckoId ? (
                         <AssetLogo
                             size={24}
-                            coingeckoId={coingeckoId}
                             symbol={symbol}
                             contractAddress={contractAddress}
                             placeholder={displaySymbol}

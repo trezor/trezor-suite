@@ -45,7 +45,7 @@ export const DeviceCheckBackupSupportScreen = () => {
                     />
                 </Box>
 
-                <Button onPress={handleSupportButtonPress} isFullWidth viewLeft="arrowSquareOut">
+                <Button onPress={handleSupportButtonPress} isFullWidth iconLeft="arrowSquareOut">
                     <Translation id="moduleCheckBackup.checkBackupSupportScreen.button" />
                 </Button>
             </VStack>

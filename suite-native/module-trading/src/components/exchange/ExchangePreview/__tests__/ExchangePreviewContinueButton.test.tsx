@@ -1,10 +1,16 @@
-import { AccountKey, GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import { PreloadedState, renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { userEvent } from '@suite-native/test-utils-store';
+import { createPrecomposedTxFinal, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
+import { mergeDeepObject } from '@trezor/utils';
 
 import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderWithTradingProvider,
+} from '../../../../__tests__/tradingTestUtils';
+import {
     ExchangePreviewContinueButton,
-    ExchangePreviewContinueButtonProps,
+    type ExchangePreviewContinueButtonProps,
 } from '../ExchangePreviewContinueButton';
 
 const mockNavigate = jest.fn();
@@ -17,70 +23,114 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('ExchangePreviewContinueButton', () => {
+    const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
+        wallet: {
+            trading: {
+                exchange: {
+                    tradingAccountKey: 'btc-account-1' as AccountKey,
+                    receiveAccountKey: 'eth-account-1' as AccountKey,
+                    selectedQuote: mercuryoFixedWorstQuote,
+                },
+            },
+            send: {
+                precomposedTx: createPrecomposedTxFinal({
+                    totalSpent: '1100',
+                    fee: '1000',
+                    feePerByte: '100',
+                    bytes: 1,
+                }),
+            },
+        },
+    };
+
     const renderExchangePreviewContinueButton = (
         props: Partial<ExchangePreviewContinueButtonProps> = {},
-        preloadedState: PreloadedState = {},
+        extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderWithStoreProviderAsync(
+        renderWithTradingProvider(
             <ExchangePreviewContinueButton
                 isDisabled={false}
-                quote={exchangeQuotes[0]}
                 onSignTransactionNavigation={jest.fn()}
                 {...props}
             />,
-            { preloadedState },
+            {
+                tradeType: 'exchange',
+                overrides: mergeDeepObject(baseOverrides, extraOverrides),
+            },
         );
 
     beforeEach(() => {
         jest.restoreAllMocks();
     });
 
-    const getPreloadedState = (): PreloadedState => {
-        const preloadedState = { wallet: getWalletState({ tradeType: 'exchange' }) };
-        preloadedState.wallet!.trading!.exchange!.tradingAccountKey = 'btc-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
-        preloadedState.wallet!.trading!.exchange!.receiveAccountKey = 'eth-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
-        preloadedState.wallet!.send!.precomposedTx = {
-            type: 'final',
-            totalSpent: '1100',
-            fee: '1000',
-            feePerByte: '100',
-            bytes: 1,
-        } as GeneralPrecomposedTransactionFinal;
-
-        return preloadedState;
-    };
-
-    it('should render nothing when precomposed transaction is not in final state', async () => {
-        const preloadedState = getPreloadedState();
-        preloadedState!.wallet!.send!.precomposedTx = {
-            type: 'composing',
-        } as any;
-        const { toJSON } = await renderExchangePreviewContinueButton({}, preloadedState);
-
-        expect(toJSON()).toBeNull();
-    });
-
-    it('should render continue button', async () => {
-        const { getByText } = await renderExchangePreviewContinueButton({}, getPreloadedState());
-
-        expect(getByText('Continue')).toBeOnTheScreen();
-    });
-
-    it('should render disabled button when isDisabled prop is specified', async () => {
-        const { getByText } = await renderExchangePreviewContinueButton(
-            { isDisabled: true },
-            getPreloadedState(),
+    it('should render disabled button when precomposed transaction is not in final state', () => {
+        const { getByText } = renderExchangePreviewContinueButton(
+            {},
+            { wallet: { send: { precomposedTx: { type: 'composing' } as any } } },
         );
 
         expect(getByText('Continue')).toBeDisabled();
     });
 
+    it('should render continue button', () => {
+        const { getByText } = renderExchangePreviewContinueButton();
+
+        expect(getByText('Continue')).toBeOnTheScreen();
+    });
+
+    it('should render disabled button when isDisabled prop is specified', () => {
+        const { getByText } = renderExchangePreviewContinueButton({ isDisabled: true });
+
+        expect(getByText('Continue')).toBeDisabled();
+    });
+
+    it('should keep continue button enabled when dex quote approval prefetch is loading', () => {
+        const { getByTestId, queryByTestId } = renderExchangePreviewContinueButton(
+            {},
+            {
+                wallet: {
+                    trading: {
+                        exchange: {
+                            dexQuoteApprovalPrefetchLoadingQuoteId: mercuryoFixedWorstQuote.quoteId,
+                        },
+                    },
+                },
+            },
+        );
+
+        expect(getByTestId('@trading/exchange-preview/continue-button')).not.toBeDisabled();
+        expect(queryByTestId('@trading/exchange-preview/continue-button/loading')).toBeNull();
+    });
+
+    it('should render nothing when quote is finalized', () => {
+        const { toJSON } = renderExchangePreviewContinueButton(
+            {},
+            {
+                wallet: {
+                    trading: {
+                        exchange: {
+                            selectedQuote: { ...mercuryoFixedWorstQuote, status: 'SUCCESS' },
+                        },
+                    },
+                },
+            },
+        );
+
+        expect(toJSON()).toBeNull();
+    });
+
     it('should fire console.warn and do not navigate when quote is not specified', async () => {
         const mockOnSignTransactionNavigation = jest.fn();
         const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-        const { getByText } = await renderExchangePreviewContinueButton(
-            { quote: undefined, onSignTransactionNavigation: mockOnSignTransactionNavigation },
-            getPreloadedState(),
+        const { getByText } = renderExchangePreviewContinueButton(
+            { onSignTransactionNavigation: mockOnSignTransactionNavigation },
+            {
+                wallet: {
+                    trading: {
+                        exchange: { selectedQuote: undefined },
+                    },
+                },
+            },
         );
 
         await userEvent.press(getByText('Continue'));
@@ -95,12 +145,16 @@ describe('ExchangePreviewContinueButton', () => {
 
     it('should fire console.warn and do not navigate when fromAccount is not found', async () => {
         const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-        const preloadedState = getPreloadedState();
-        preloadedState!.wallet!.trading!.exchange!.tradingAccountKey = 'non-existing-key';
         const mockOnSignTransactionNavigation = jest.fn();
-        const { getByText } = await renderExchangePreviewContinueButton(
+        const { getByText } = renderExchangePreviewContinueButton(
             { onSignTransactionNavigation: mockOnSignTransactionNavigation },
-            preloadedState,
+            {
+                wallet: {
+                    trading: {
+                        exchange: { tradingAccountKey: 'non-existing-key' as AccountKey },
+                    },
+                },
+            },
         );
 
         await userEvent.press(getByText('Continue'));
@@ -116,21 +170,18 @@ describe('ExchangePreviewContinueButton', () => {
     it('should navigate to TradingExchangeOutputsReview on continue press', async () => {
         const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
         const mockOnSignTransactionNavigation = jest.fn();
-        const { getByText } = await renderExchangePreviewContinueButton(
-            { onSignTransactionNavigation: mockOnSignTransactionNavigation },
-            getPreloadedState(),
-        );
+        const { getByText } = renderExchangePreviewContinueButton({
+            onSignTransactionNavigation: mockOnSignTransactionNavigation,
+        });
 
         await userEvent.press(getByText('Continue'));
 
         expect(consoleWarnSpy).not.toHaveBeenCalled();
-        expect(mockNavigate).toHaveBeenCalledWith({
-            name: 'TradingExchangeOutputsReview',
-            params: {
-                accountKey: 'btc-account-1',
-                orderId: exchangeQuotes[0].orderId,
-                tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            },
+        expect(mockNavigate).toHaveBeenCalledWith('TradingExchangeOutputsReview', {
+            accountKey: 'btc-account-1',
+            orderId: mercuryoFixedWorstQuote.orderId,
+            tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            flowType: 'swap',
         });
         expect(mockOnSignTransactionNavigation).toHaveBeenCalledTimes(1);
     });

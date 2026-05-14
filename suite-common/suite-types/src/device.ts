@@ -1,19 +1,19 @@
-import { DeviceMetadata } from '@suite-common/metadata-types';
-import { EncryptedHex } from '@suite-common/platform-encryption';
-import {
+import { type DeviceMetadata } from '@suite-common/metadata-types';
+import { type EncryptedHex } from '@suite-common/platform-encryption';
+import type {
     AuthenticateDeviceResult,
     DeviceButtonRequest,
     DeviceEvent,
     DeviceState,
+    EntropyCheckResult,
     Features,
     KnownDevice,
     PROTO,
     StaticSessionId,
     UnknownDevice as UnknownDeviceBase,
     UnreadableDevice as UnreadableDeviceBase,
-    Unsuccessful,
 } from '@trezor/connect';
-import { Branded, UnionSubset } from '@trezor/type-utils';
+import { type Branded, type UnionSubset } from '@trezor/type-utils';
 import type { VersionArray } from '@trezor/utils';
 
 // Extend original ButtonRequestMessage from @trezor/connect
@@ -82,7 +82,7 @@ export type AuthorizedDevice = AcquiredDevice & {
  */
 export type DeviceWithEmptyPath = Omit<AcquiredDevice, 'path'> & { path: '' };
 
-type PersistedDeviceKey = UnionSubset<keyof AcquiredDevice, 'thp' | 'bluetoothProps'>;
+type PersistedDeviceKey = UnionSubset<keyof AcquiredDevice, 'thp'>;
 
 type PersistedFeatureKey = UnionSubset<
     keyof Features,
@@ -95,13 +95,18 @@ type PersistedFeatureKey = UnionSubset<
     | 'initialized'
 >;
 
+// Only successful result is persisted, because rejection by user is treated the same as check not done yet → check will pop up.
+export type ManualCheckResult = { success: true };
+
 export type PersistentDeviceData = Pick<AcquiredDevice, PersistedDeviceKey> &
     Pick<Features, PersistedFeatureKey> & {
         firmwareVersion: VersionArray | null;
         lastConnectedVia: 'bluetooth' | 'usb' | null;
-        lastEntropyCheckResult?: { success: boolean };
+        lastEntropyCheckResult?: EntropyCheckResult;
         delegatedIdentityKey: EncryptedHex<DelegatedIdentityKey> | null;
-        // TODO move deviceAuthenticity to this object and newly introduce persistence
+        descriptor?: AcquiredDevice['descriptor'];
+        manualCheckResult?: ManualCheckResult;
+        authenticityResult?: StoredAuthenticateDeviceResult;
     };
 
 export type TrezorDeviceWithState = AcquiredDevice & {
@@ -109,7 +114,7 @@ export type TrezorDeviceWithState = AcquiredDevice & {
     state: NonNullable<AcquiredDevice['state']> & { staticSessionId: StaticSessionId };
 };
 
-type ConnectAuthenticateDeviceResultPayload = AuthenticateDeviceResult | Unsuccessful['payload'];
+type ConnectAuthenticateDeviceResultPayload = AuthenticateDeviceResult | { error: string };
 /**
  * Processed result of TrezorConnect.authenticateDevice call that we may store in the Redux state.
  * We want to:

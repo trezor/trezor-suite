@@ -108,7 +108,14 @@ const getNodeSourcePath = (node: Rule.Node): string | null => {
     return null;
 };
 
-export default {
+const normalizePathSeparators = (filePath: string) => filePath.replace(/\\/g, '/');
+
+const isSuiteCommonFile = (filename: string) => filename.includes('/suite-common/');
+
+const isSuiteOrSuiteNativeImport = (sourcePath: string) =>
+    sourcePath.startsWith('@suite/') || sourcePath.startsWith('@suite-native/');
+
+export const rules = {
     'no-override-ds-component': {
         meta: {
             type: 'problem',
@@ -248,6 +255,54 @@ export default {
             };
         },
     },
+    'no-suite-imports-in-suite-common': {
+        meta: {
+            type: 'problem',
+            docs: {
+                description:
+                    'Disallows imports from suite and suite-native packages in suite-common code.',
+                category: 'Best Practices',
+                recommended: false,
+            },
+            messages: {
+                doNotImportSuiteIntoSuiteCommon:
+                    "Importing from '{{sourcePath}}' is not allowed in suite-common. Move shared code to @suite-common or @trezor package.",
+            },
+            schema: [],
+        },
+        create(context) {
+            const filename =
+                'filename' in context && typeof context.filename === 'string'
+                    ? normalizePathSeparators(context.filename)
+                    : null;
+
+            if (filename === null || !isSuiteCommonFile(filename)) {
+                return {};
+            }
+
+            const checkNode = (node: Rule.Node) => {
+                const sourcePath = getNodeSourcePath(node);
+
+                if (sourcePath === null || !isSuiteOrSuiteNativeImport(sourcePath)) {
+                    return;
+                }
+
+                context.report({
+                    node,
+                    messageId: 'doNotImportSuiteIntoSuiteCommon',
+                    data: {
+                        sourcePath,
+                    },
+                });
+            };
+
+            return {
+                ImportDeclaration: checkNode,
+                ExportAllDeclaration: checkNode,
+                ExportNamedDeclaration: checkNode,
+            };
+        },
+    },
     'analytics-event-name': {
         meta: {
             type: 'suggestion',
@@ -283,11 +338,11 @@ export default {
                 'send',
                 'settings',
                 'staking',
+                'yield',
                 'trading',
                 'transaction',
                 'wallet-connect',
             ]);
-
             const KEBAB_CASE_SEGMENT = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
             function validateEventName(
@@ -296,15 +351,12 @@ export default {
                 if (!value.includes('/')) {
                     return { messageId: 'invalidFormat' };
                 }
-
                 const parts = value.split('/');
                 const domain = parts[0];
                 const eventSegments = parts.slice(1);
-
                 if (!ALLOWED_DOMAINS.has(domain)) {
                     return { messageId: 'invalidDomain', data: { domain } };
                 }
-
                 for (const segment of eventSegments) {
                     if (!KEBAB_CASE_SEGMENT.test(segment)) {
                         return { messageId: 'notKebabCase', data: { eventPart: value } };
@@ -327,7 +379,7 @@ export default {
                     }
 
                     for (const member of enumNode.members ?? []) {
-                        const initializer = member.initializer;
+                        const { initializer } = member;
                         if (
                             initializer?.type !== 'Literal' ||
                             typeof initializer.value !== 'string'
@@ -348,4 +400,4 @@ export default {
             };
         },
     },
-} satisfies Record<string, Rule.RuleModule>;
+} as const satisfies Record<string, Rule.RuleModule>;

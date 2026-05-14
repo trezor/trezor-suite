@@ -1,11 +1,11 @@
-import { ArgTypes, Meta, StoryObj } from '@storybook/react';
+import { type ArgTypes, type Meta, type StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
 import { spacings } from '@trezor/theme';
 
 import {
     Column as ColumnComponent,
-    FlexProps,
+    type FlexProps,
     Row as RowComponent,
     allowedFlexFrameProps,
 } from './Flex';

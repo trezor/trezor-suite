@@ -1,17 +1,17 @@
 import {
-    AcquiredDevice,
-    ExperimentsItem,
-    Localization,
-    Message,
-    MessageSystem,
+    type AcquiredDevice,
+    type ExperimentsItem,
+    type Localization,
+    type Message,
+    type MessageSystem,
 } from '@suite-common/suite-types';
 import { mockConnectDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
-import { FirmwareType, TransportInfo } from '@trezor/connect';
+import { FirmwareType, type TransportInfo } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { EnvUtils } from '@trezor/env-utils';
+import { type EnvUtils } from '@trezor/env-utils';
 
-import { Options } from '../messageSystemUtils';
+import { type Options } from '../messageSystemUtils';
 
 const { getDeviceFeatures, getMessageSystemConfig } = testMocks;
 

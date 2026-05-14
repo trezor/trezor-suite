@@ -7,9 +7,9 @@ import {
     selectBaseCurrency,
     selectCurrentFiatRates,
 } from '@suite-common/wallet-core';
-import { Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getAccountFiatBalance } from '@suite-common/wallet-utils';
-import { TokenInfo } from '@trezor/blockchain-link-types';
+import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { useCurrentRef } from '@trezor/react-utils';
 import { BigNumber, deepEqual } from '@trezor/utils';
 

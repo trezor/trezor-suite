@@ -1,6 +1,6 @@
-import { DEFAULT_VERSION, PersistedState } from 'redux-persist';
+import { DEFAULT_VERSION, type PersistedState } from 'redux-persist';
 
-import { MigrationsManifest } from './migrationTypes';
+import { type MigrationsManifest } from './migrationTypes';
 
 type MigratedState<TReducerInitialState> = Partial<TReducerInitialState> & PersistedState;
 

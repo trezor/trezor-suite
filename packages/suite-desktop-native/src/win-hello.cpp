@@ -23,13 +23,13 @@ Napi::Value isHelloAvailable(const Napi::CallbackInfo& info) {
         std::exception_ptr threadException = nullptr;
         std::string errorMessage;
         UserConsentVerifierAvailability availabilityStatus = UserConsentVerifierAvailability::DeviceNotPresent;
-        
+
         std::thread staThread([&isAvailable, &threadCompleted, &threadException, &errorMessage, &availabilityStatus]() {
             try {
                 winrt::init_apartment(winrt::apartment_type::single_threaded);
                 availabilityStatus = UserConsentVerifier::CheckAvailabilityAsync().get();
                 isAvailable = (availabilityStatus == UserConsentVerifierAvailability::Available);
-                
+
                 if (!isAvailable) {
                     switch (availabilityStatus) {
                         case UserConsentVerifierAvailability::DeviceNotPresent:
@@ -46,7 +46,7 @@ Napi::Value isHelloAvailable(const Napi::CallbackInfo& info) {
                             break;
                     }
                 }
-                
+
                 winrt::uninit_apartment();
                 threadCompleted = true;
             }
@@ -66,19 +66,19 @@ Napi::Value isHelloAvailable(const Napi::CallbackInfo& info) {
                 try { winrt::uninit_apartment(); } catch (...) {}
             }
         });
-        
+
         staThread.join();
-        
+
         if (!threadCompleted) {
             Napi::Error::New(info.Env(), "Thread did not complete successfully").ThrowAsJavaScriptException();
             return info.Env().Undefined();
         }
-        
+
         if (!isAvailable) {
             Napi::Error::New(info.Env(), errorMessage).ThrowAsJavaScriptException();
             return info.Env().Undefined();
         }
-        
+
         return Napi::Boolean::New(info.Env(), true);
     }
     catch (const winrt::hresult_error& ex) {
@@ -95,112 +95,80 @@ Napi::Value isHelloAvailable(const Napi::CallbackInfo& info) {
     }
 }
 
-// Helper function to find and elevate Windows Hello dialog
-HWND FindAndElevateHelloWindow() {
-    HWND helloWindow = FindWindowW(L"Credential Dialog Xaml Host", NULL);
-    if (helloWindow != NULL && IsWindow(helloWindow)) {
-        // Make it topmost and bring to foreground
-        SetWindowPos(helloWindow, HWND_TOPMOST, 0, 0, 0, 0, 
-                    SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
-        
-        // Force the window to be the foreground window
-        // Local helper to check if our target is already foreground
-        auto isForeground = [&]() -> bool { return GetForegroundWindow() == helloWindow; };
-
-        // If already foreground, no further action is necessary
-        if (isForeground()) {
-            return helloWindow;
-        }
-
-        // 1. Basic foreground window setting
-        SetForegroundWindow(helloWindow);
-        if (isForeground()) {
-            return helloWindow;
-        }
-
-        // 2. Thread attachment technique for input focus
-        DWORD currentThreadId = GetCurrentThreadId();
-        DWORD windowThreadId = GetWindowThreadProcessId(helloWindow, NULL);
-        if (AttachThreadInput(currentThreadId, windowThreadId, TRUE)) {
-            // Activate and focus
-            BringWindowToTop(helloWindow);
-            SetActiveWindow(helloWindow);
-            SetFocus(helloWindow);
-            AttachThreadInput(currentThreadId, windowThreadId, FALSE);
-        }
-        if (isForeground()) {
-            return helloWindow;
-        }
-
-        // 3. Simulate Alt key press which can help with focus
-        keybd_event(VK_MENU, 0, 0, 0);                // Alt press
-        SetForegroundWindow(helloWindow);             // Set foreground
-        keybd_event(VK_MENU, 0, KEYEVENTF_KEYUP, 0); // Alt release
-        if (isForeground()) {
-            return helloWindow;
-        }
-
-        // 4. Force update of window (doesn't affect foreground but may help rendering)
-        UpdateWindow(helloWindow);
-
-        // 5. Disable then re-enable the window to force focus only if still not foreground
-        if (!isForeground()) {
-            EnableWindow(helloWindow, FALSE);
-            EnableWindow(helloWindow, TRUE);
-            if (isForeground()) {
-                return helloWindow;
-            }
-
-            // 6. Flash the window to get user attention as a last resort
-            FLASHWINFO fi;
-            fi.cbSize = sizeof(FLASHWINFO);
-            fi.hwnd = helloWindow;
-            fi.dwFlags = FLASHW_ALL | FLASHW_TIMERNOFG;
-            fi.uCount = 3;
-            fi.dwTimeout = 0;
-            FlashWindowEx(&fi);
-        }
-
-        return helloWindow;
-    }
-    return NULL;
-}
-
 Napi::String requestHello(const Napi::CallbackInfo& info) {
     try {
         std::string message = "Verify your identity";
         if (info.Length() > 0 && info[0].IsString()) {
             message = info[0].As<Napi::String>();
         }
-        
+
         winrt::hstring promptMessage = winrt::to_hstring(message);
         std::string resultString = "Error";
         std::atomic<bool> threadCompleted(false);
         std::exception_ptr threadException = nullptr;
-        
-        // Always enable foreground window switching
+
+        // Grant broad permission for any other process to bring its window to the front, because the Windows Hello dialog
+        // is created by a different process and needs to be able to set itself as the foreground window to receive user input.
         AllowSetForegroundWindow(ASFW_ANY);
-        
-        // Create a flag to signal the window monitor thread to stop
-        std::atomic<bool> stopWindowMonitor(false);
-        
-        // Start a thread to continuously monitor and elevate the Windows Hello dialog
-        std::thread windowMonitorThread([&stopWindowMonitor]() {
-            // Wait a bit for the dialog to appear
-            Sleep(500);
-            
-            // Keep checking for the Windows Hello dialog and elevating it
-            while (!stopWindowMonitor) {
-                FindAndElevateHelloWindow();
-                Sleep(100); // Check every 100ms
+
+        // Bring the Windows Hello dialog to front once it appears.
+        // Because this code runs inside a child process (not the foreground
+        // process), Windows blocks ordinary SetForegroundWindow calls.
+        // The keybd_event Alt-key trick is the standard workaround: it makes
+        // Windows believe this process is handling user input, which lifts the
+        // foreground lock.
+        std::thread foregroundThread([]() {
+            HWND helloWindow = NULL;
+            // Effectively a 5-second timeout waiting for the dialog to appear, else nothing happens. The dialog is usually very fast to appear.
+            for (int i = 0; i < 50; i++) {
+                Sleep(100);
+                helloWindow = FindWindowW(L"Credential Dialog Xaml Host", NULL);
+                if (helloWindow != NULL && IsWindow(helloWindow) && IsWindowVisible(helloWindow)) {
+                    break;
+                }
             }
+            if (helloWindow == NULL) return;
+
+            // Let the dialog fully initialise its input controls
+            Sleep(300);
+
+            // Simulate Alt press/release – this is consumed by the window
+            // manager and allows the subsequent SetForegroundWindow to succeed
+            // even from a background process. It does NOT inject a character
+            // into the PIN field.
+            keybd_event(VK_MENU, 0, 0, 0);
+            keybd_event(VK_MENU, 0, KEYEVENTF_KEYUP, 0);
+
+            // Use HWND_TOPMOST to bring above Electron.
+            SetWindowPos(helloWindow, HWND_TOPMOST, 0, 0, 0, 0,
+                        SWP_NOMOVE | SWP_NOSIZE);
+            Sleep(50);
+            SetWindowPos(helloWindow, HWND_NOTOPMOST, 0, 0, 0, 0,
+                        SWP_NOMOVE | SWP_NOSIZE);
+
+            // Final SetForegroundWindow to ensure the dialog has proper
+            // foreground status and keyboard focus after Z-order change
+            if (!SetForegroundWindow(helloWindow)) {
+                return;
+            }
+
+            // Simulate a Tab key press to move focus into the PIN input
+            // field if it is present in the dialog, but only after the
+            // dialog actually becomes the foreground window.
+            Sleep(50);
+            if (GetForegroundWindow() != helloWindow) {
+                return;
+            }
+
+            keybd_event(VK_TAB, 0, 0, 0);
+            keybd_event(VK_TAB, 0, KEYEVENTF_KEYUP, 0);
         });
-        
+
         std::thread staThread([promptMessage, &resultString, &threadCompleted, &threadException]() {
             try {
                 winrt::init_apartment(winrt::apartment_type::single_threaded);
                 auto availabilityResult = UserConsentVerifier::CheckAvailabilityAsync().get();
-                
+
                 if (availabilityResult != UserConsentVerifierAvailability::Available) {
                     switch (availabilityResult) {
                         case UserConsentVerifierAvailability::DeviceNotPresent:
@@ -218,9 +186,9 @@ Napi::String requestHello(const Napi::CallbackInfo& info) {
                     }
                 }
                 else {
-                    UserConsentVerificationResult verificationResult = 
+                    UserConsentVerificationResult verificationResult =
                         UserConsentVerifier::RequestVerificationAsync(promptMessage).get();
-                    
+
                     switch (verificationResult) {
                         case UserConsentVerificationResult::Verified:
                             resultString = "Success";
@@ -248,7 +216,7 @@ Napi::String requestHello(const Napi::CallbackInfo& info) {
                             break;
                     }
                 }
-                
+
                 winrt::uninit_apartment();
                 threadCompleted = true;
             }
@@ -261,16 +229,10 @@ Napi::String requestHello(const Napi::CallbackInfo& info) {
                 threadException = std::current_exception();
             }
         });
-        
+
         staThread.join();
-        
-        // Signal the window monitor thread to stop and wait for it to finish
-        stopWindowMonitor = true;
-        windowMonitorThread.join();
-        
-        // Final attempt to elevate the Windows Hello dialog
-        FindAndElevateHelloWindow();
-        
+        foregroundThread.join();
+
         if (threadException) {
             try {
                 std::rethrow_exception(threadException);
@@ -285,11 +247,11 @@ Napi::String requestHello(const Napi::CallbackInfo& info) {
                 return Napi::String::New(info.Env(), "Unknown error");
             }
         }
-        
+
         if (!threadCompleted) {
             return Napi::String::New(info.Env(), "Thread did not complete successfully");
         }
-        
+
         return Napi::String::New(info.Env(), resultString);
     }
     catch (const std::exception& ex) {

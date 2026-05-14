@@ -1,11 +1,11 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { deviceActions } from '@suite-common/device';
-import { EncryptedHex } from '@suite-common/platform-encryption';
-import { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
-import { SuiteSyncFirmwareUpgradeNeededDeviceErrorType } from '@suite-common/suite-sync-types';
-import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/suite-types';
-import { StaticSessionId } from '@trezor/connect';
+import { type EncryptedHex } from '@suite-common/platform-encryption';
+import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
+import { type SuiteSyncFirmwareUpgradeNeededDeviceErrorType } from '@suite-common/suite-sync-types';
+import { type DeviceCancelledErrType, type DeviceErrorType } from '@suite-common/suite-types';
+import { type StaticSessionId } from '@trezor/connect';
 
 export type SuiteSyncErrorType =
     | DeviceErrorType
@@ -53,7 +53,11 @@ export const initialSuiteSyncState: SuiteSyncState = {
 
 type SetSuiteSyncErrorAction = PayloadAction<{
     deviceStaticSessionId: StaticSessionId;
-    error: SuiteSyncErrorType | null;
+    error: SuiteSyncErrorType;
+}>;
+
+type ResetSuiteSyncErrorAction = PayloadAction<{
+    deviceStaticSessionId: StaticSessionId;
 }>;
 
 type SetSuiteSyncOwnerAction = PayloadAction<{
@@ -67,6 +71,11 @@ export const suiteSyncSlice = createSlice({
     reducers: {
         updateSuiteSyncEnabled: (state, { payload }: PayloadAction<{ isEnabled: boolean }>) => {
             state.settings.isSuiteSyncEnabled = payload.isEnabled;
+
+            if (!payload.isEnabled) {
+                state.suiteSyncErrors = {};
+                state.suiteSyncOwners = {};
+            }
         },
         updateSuiteSyncDebugEnabled: (
             state,
@@ -78,11 +87,10 @@ export const suiteSyncSlice = createSlice({
             state.settings.suiteSyncRelayUrl = payload.url;
         },
         setSuiteSyncError: (state, { payload }: SetSuiteSyncErrorAction) => {
-            if (payload.error === null) {
-                delete state.suiteSyncErrors[payload.deviceStaticSessionId];
-            } else {
-                state.suiteSyncErrors[payload.deviceStaticSessionId] = payload.error;
-            }
+            state.suiteSyncErrors[payload.deviceStaticSessionId] = payload.error;
+        },
+        resetSuiteSyncError: (state, { payload }: ResetSuiteSyncErrorAction) => {
+            delete state.suiteSyncErrors[payload.deviceStaticSessionId];
         },
         setSuiteSyncOwner: (state, { payload }: SetSuiteSyncOwnerAction) => {
             if (payload.owner === null) {
@@ -109,6 +117,7 @@ export const {
     updateSuiteSyncDebugEnabled,
     setSuiteSyncRelayUrl,
     setSuiteSyncError,
+    resetSuiteSyncError,
     setSuiteSyncOwner,
 } = suiteSyncSlice.actions;
 

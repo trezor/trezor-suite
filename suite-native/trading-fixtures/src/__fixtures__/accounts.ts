@@ -1,6 +1,6 @@
-import { Account, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 
 export const MOCK_ACCOUNT_DEVICE_SESSION_ID: StaticSessionId = '1@2:3';
 

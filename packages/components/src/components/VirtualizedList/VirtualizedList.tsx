@@ -2,15 +2,15 @@ import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from '
 
 import styled from 'styled-components';
 
-import { TimerId } from '@trezor/type-utils';
+import { type TimerId } from '@trezor/type-utils';
 
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import { type TransientProps } from '../../utils/transientProps';
 
 export const allowedVirtualizedListFrameProps: FramePropsKeys[] = ['padding'];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedVirtualizedListFrameProps)[number]>;

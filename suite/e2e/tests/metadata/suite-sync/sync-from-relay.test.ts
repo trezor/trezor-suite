@@ -1,27 +1,30 @@
-import {
-    accountSeed,
-    addressSeed,
-    outputSeed,
-    ownerSecret,
-    walletSeed,
-} from '../../../fixtures/metadata/suite-sync-data';
+import { mnemonic12Fixtures } from '@suite-common/e2e-evolu-client';
+
 import { isWebProject } from '../../../support/common';
 import { expect, test } from '../../../support/fixtures';
 
-const defaultWalletIndex = 0;
+const { accountSeed, createAddressSeed, createOutputSeed, ownerSecret, walletSeed } =
+    mnemonic12Fixtures;
 
-test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
+const defaultWalletIndex = 0;
+const BTC_ADDRESS = 'bc1qkkr2uvry034tsj4p52za2pg42ug4pxg5qfxyfa';
+const addressSeed = createAddressSeed(BTC_ADDRESS);
+const outputSeed = createOutputSeed();
+
+test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ wipeEvoluRelay: true });
 
-    test.beforeEach(async ({ evoluClient, onboardingPage }) => {
+    test.beforeEach(async ({ evoluClient, onboardingPage, settingsPage }) => {
         await test.step('Seed Evolu relay server', async () => {
             await evoluClient.init({ ownerSecret });
             evoluClient.writeTo('wallet', walletSeed);
             evoluClient.writeTo('account', accountSeed);
             evoluClient.writeTo('address', addressSeed);
             evoluClient.writeTo('output', outputSeed);
+            evoluClient.seedQuotaManagerData({ ownerId: mnemonic12Fixtures.ownerId });
         });
         await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
     });
 
     test('Sync labels from server', async ({
@@ -30,6 +33,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
         dashboardPage,
         walletPage,
         metadataPage,
+        devicePrompt,
     }) => {
         await test.step('Enable Suite Sync', async () => {
             await metadataPage.setupQuotaManager();
@@ -65,7 +69,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
                     },
                 });
             }
-            await metadataPage.confirmSuiteSyncSetup();
+            await devicePrompt.confirmSuiteSyncSetup();
         });
 
         await test.step('Verify BTC account label is synced', async () => {

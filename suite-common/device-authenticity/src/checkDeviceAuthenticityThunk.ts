@@ -1,7 +1,7 @@
-import { deviceActions } from '@suite-common/device';
+import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
-import { StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
+import { type StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect from '@trezor/connect';
 
@@ -22,9 +22,9 @@ export const checkDeviceAuthenticityThunk = createThunk<
     `${ACTION_PREFIX}/checkDeviceAuthenticity`,
     async (
         { allowDebugKeys, skipSuccessToast },
-        { dispatch, getState, extra, fulfillWithValue, rejectWithValue },
+        { dispatch, getState, fulfillWithValue, rejectWithValue },
     ) => {
-        const device = extra.selectors.selectDevice(getState());
+        const device = selectSelectedDevice(getState());
         if (!device) {
             throw new Error('device is not connected');
         }
@@ -39,16 +39,21 @@ export const checkDeviceAuthenticityThunk = createThunk<
             dispatch(
                 notificationsActions.addToast({
                     type: 'error',
-                    error: `Unable to validate device: ${result.payload.error}`,
+                    error: `Unable to validate device: ${result.error.message}`,
                 }),
             );
             const isDeviceBootloaderUnlocked = device?.features?.bootloader_locked !== true;
             const storedResult = isDeviceBootloaderUnlocked
                 ? // error can be because bootloader is unlocked (definite cause of failure, should persist)
-                  { valid: false, error: result.payload.error }
+                  { valid: false, error: result.error.message }
                 : // or internal error (then skip the check by storing undefined)
                   undefined;
-            dispatch(deviceActions.setDeviceAuthenticityResult({ device, result: storedResult }));
+            dispatch(
+                deviceActions.setDeviceAuthenticityResult({
+                    deviceId: device.id,
+                    result: storedResult,
+                }),
+            );
 
             return rejectWithValue(storedResult);
         }
@@ -60,17 +65,25 @@ export const checkDeviceAuthenticityThunk = createThunk<
             getState(),
             Feature.deviceAuthenticityCheckTropic,
         );
+        const isMCURemotelyDisabled = selectIsFeatureDisabled(
+            getState(),
+            Feature.deviceAuthenticityCheckMCU,
+        );
         const isOverallValid = isDeviceAuthenticityValid({
             result: result.payload,
             isOptigaRemotelyDisabled,
             isTropicRemotelyDisabled,
+            isMCURemotelyDisabled,
         });
         const storedResult = { valid: isOverallValid, ...result.payload };
 
         // successful TrezorConnect call, but the signature authenticity validation failed
         if (!isOverallValid) {
             // to keep the notification short, display only the first error that failed
-            const error = result.payload.optigaResult.error ?? result.payload.tropicResult?.error;
+            const error =
+                result.payload.optigaResult.error ??
+                result.payload.tropicResult?.error ??
+                result.payload.mcuResult?.error;
             dispatch(
                 notificationsActions.addToast({
                     type: 'device-authenticity-error',
@@ -78,7 +91,12 @@ export const checkDeviceAuthenticityThunk = createThunk<
                 }),
             );
 
-            dispatch(deviceActions.setDeviceAuthenticityResult({ device, result: storedResult }));
+            dispatch(
+                deviceActions.setDeviceAuthenticityResult({
+                    deviceId: device.id,
+                    result: storedResult,
+                }),
+            );
 
             return rejectWithValue(storedResult);
         }
@@ -87,7 +105,12 @@ export const checkDeviceAuthenticityThunk = createThunk<
         if (!skipSuccessToast) {
             dispatch(notificationsActions.addToast({ type: 'device-authenticity-success' }));
         }
-        dispatch(deviceActions.setDeviceAuthenticityResult({ device, result: storedResult }));
+        dispatch(
+            deviceActions.setDeviceAuthenticityResult({
+                deviceId: device.id,
+                result: storedResult,
+            }),
+        );
 
         return fulfillWithValue(storedResult);
     },

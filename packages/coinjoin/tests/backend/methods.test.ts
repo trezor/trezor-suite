@@ -209,7 +209,7 @@ describe(`CoinjoinBackend methods`, () => {
     });
 
     it('scanAccount derive pending', async () => {
-        client.setFixture([{ ...FIXTURES.BLOCKS[0], txs: [] }]);
+        client.setFixture([{ ...FIXTURES.BLOCK_0, txs: [] }]);
 
         const scan1 = await scanAccount(
             { descriptor: FIXTURES.SEGWIT_XPUB, checkpoints: [EMPTY_CHECKPOINT] },
@@ -226,7 +226,7 @@ describe(`CoinjoinBackend methods`, () => {
         expect(scan1.checkpoint.receiveCount).toBe(20);
         expect(info1.addresses.unused.length).toBe(20);
 
-        client.setFixture([{ ...FIXTURES.BLOCKS[0], txs: [] }], [FIXTURES.TX_4_PENDING]);
+        client.setFixture([{ ...FIXTURES.BLOCK_0, txs: [] }], [FIXTURES.TX_4_PENDING]);
 
         const scan2 = await scanAccount(
             { descriptor: FIXTURES.SEGWIT_XPUB, checkpoints: [scan1.checkpoint] },

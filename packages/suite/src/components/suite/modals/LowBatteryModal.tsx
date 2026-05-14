@@ -1,7 +1,6 @@
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Modal } from '@trezor/components';
-
-import { useDevice } from 'src/hooks/suite';
 
 type LowBatteryModalProps = {
     children: React.ReactNode;
@@ -27,7 +26,7 @@ export const LowBatteryModal = ({ onClose, children }: LowBatteryModalProps) => 
                 />
             }
             onCancel={onClose}
-            variant="destructive"
+            intent="critical"
             bottomContent={
                 <Modal.Button onClick={onClose}>
                     <Translation id="TR_GOT_IT" />

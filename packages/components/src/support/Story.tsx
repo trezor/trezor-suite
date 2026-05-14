@@ -1,4 +1,4 @@
-import React, { ComponentProps, Fragment } from 'react';
+import React, { type ComponentProps, Fragment } from 'react';
 
 import styled, { ThemeProvider } from 'styled-components';
 
@@ -9,8 +9,8 @@ const Wrapper = styled.div`
     display: flex;
     height: 100%;
     flex-wrap: wrap;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
-    color: ${({ theme }) => theme.textDefault};
+    background: ${({ theme }) => theme.surfaceFillPage};
+    color: ${({ theme }) => theme.contentPrimary};
 `;
 
 export const StoryWrapper = (story: any) =>

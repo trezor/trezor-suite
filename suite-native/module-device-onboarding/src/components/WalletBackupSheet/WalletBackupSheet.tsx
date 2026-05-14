@@ -2,18 +2,13 @@ import { useState } from 'react';
 
 import * as Haptics from 'expo-haptics';
 
-import { BackupType } from '@suite-common/suite-types';
-import { BottomSheetModal, BottomSheetModalRef, Button, VStack } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
+import { type BackupType } from '@suite-common/suite-types';
+import { BottomSheetModal, type BottomSheetModalRef, Button, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { WalletBackupCard } from './WalletBackupCard/WalletBackupCard';
 import { WalletBackupSheetFooter } from './WalletBackupSheetFooter';
-
-const containerStyle = prepareNativeStyle(utils => ({
-    marginBottom: utils.spacings.sp32,
-}));
 
 const legacyButtonStyle = prepareNativeStyle(utils => ({
     alignSelf: 'center',
@@ -56,7 +51,6 @@ export const WalletBackupSheet = ({
             title={translate('moduleDeviceOnboarding.walletBackupSheet.title')}
             ref={ref}
             footer={<WalletBackupSheetFooter selectedType={selectedType} onSubmit={onCloseModal} />}
-            style={applyStyle(containerStyle)}
             isCloseDisplayed
         >
             <VStack spacing="sp16">
@@ -78,9 +72,10 @@ export const WalletBackupSheet = ({
             </VStack>
             {!showLegacyOptions && (
                 <Button
-                    viewLeft={<Icon name="caretDown" size="medium" />}
-                    colorScheme="tertiaryElevation0"
-                    size="small"
+                    iconLeft="caretDown"
+                    intent="neutral"
+                    priority="secondary"
+                    size="medium"
                     style={applyStyle(legacyButtonStyle)}
                     onPress={displayLegacyOptions}
                 >

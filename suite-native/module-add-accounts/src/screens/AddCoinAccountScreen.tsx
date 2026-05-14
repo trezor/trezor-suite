@@ -2,11 +2,11 @@ import { SelectableNetworkItem } from '@suite-native/accounts';
 import { Card, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import {
-    AddCoinAccountStackParamList,
-    AddCoinAccountStackRoutes,
+    type AddCoinAccountStackParamList,
+    type AddCoinAccountStackRoutes,
     Screen,
     ScreenHeader,
-    StackProps,
+    type StackProps,
 } from '@suite-native/navigation';
 import { isNotNullOrUndefined } from '@trezor/utils';
 

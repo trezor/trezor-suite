@@ -1,12 +1,12 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { SpacingValues, spacings } from '@trezor/theme';
+import { type SpacingValues, spacings } from '@trezor/theme';
 
-import { FrameProps, FramePropsKeys } from '../../utils/frameProps';
+import { type FrameProps, type FramePropsKeys } from '../../utils/frameProps';
 import { Row } from '../Flex/Flex';
-import { Icon, IconName } from '../Icon/Icon';
+import { Icon, type IconName } from '../Icon/Icon';
 import { Paragraph } from '../typography/Paragraph/Paragraph';
-import { TextIntent, TextPriority } from '../typography/Text/Text';
+import { type TextIntent, type TextPriority } from '../typography/Text/Text';
 
 export const allowedNoteFrameProps = ['margin', 'minWidth'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedNoteFrameProps)[number]>;

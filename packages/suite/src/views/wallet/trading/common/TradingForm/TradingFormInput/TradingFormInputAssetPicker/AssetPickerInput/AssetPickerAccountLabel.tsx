@@ -1,5 +1,5 @@
 import { selectAccountByKey } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 
 import { AccountLabel } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';

@@ -1,12 +1,15 @@
 import { Platform } from 'react-native';
 
-import type { BuyCryptoPaymentMethod, BuyTrade } from 'invity-api';
+import type { BuyTrade } from 'invity-api';
 
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import {
-    TradingCountryCode,
-    TradingPaymentMethodProps,
+    type TradingCountryCode,
+    type TradingPaymentMethodProps,
+    bestBuyQuotePerPaymentMethodProjection,
+    getCurrencyLabel,
+    getDefaultCountrySubdivision,
     getTradingQuotesByPaymentMethod,
     nonSanctionedRegional,
     selectTradingBuyInfo,
@@ -17,15 +20,17 @@ import { selectAccountByKey } from '@suite-common/wallet-core';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import {
     coinInfoToTradeableAsset,
-    getCurrencyLabel,
     getReceiveAccountFromAccountAndAddressString,
 } from '@suite-native/trading-atoms';
-import { BuyFormValues, FiatCurrencyItem } from '@suite-native/trading-types';
+import { type BuyFormValues, type FiatCurrencyItem } from '@suite-native/trading-types';
 
 import { getAssetByEnabledNetworksFilter } from '../utils';
-import { selectTradingResidenceCountry } from './residenceSelectors';
 import {
-    TradingRootState,
+    selectTradingResidenceCountry,
+    selectTradingResidenceCountrySubdivision,
+} from './residenceSelectors';
+import {
+    type TradingRootState,
     createMemoizedSelector,
     createMemoizedSelectorWithAccounts,
     createTradingWithFeatureFlagsMemoizedSelector,
@@ -84,8 +89,9 @@ export const selectBuyFormDefaultValues = createMemoizedSelector(
         ) => ReturnType<typeof selectTradingBuyInfo>,
         ({ wallet }) => wallet.trading.info.coins,
         selectTradingResidenceCountry,
+        selectTradingResidenceCountrySubdivision,
     ],
-    (buyInfo, coins, residenceCountry) => {
+    (buyInfo, coins, residenceCountry, residenceCountrySubdivision) => {
         if (!buyInfo || !coins) {
             return {} as Partial<BuyFormValues>;
         }
@@ -97,9 +103,15 @@ export const selectBuyFormDefaultValues = createMemoizedSelector(
         const countryDefaultValue =
             nonSanctionedRegional.getCountryOptionWithWorldwideFallback(country);
 
+        const countrySubdivisionDefaultValue = getDefaultCountrySubdivision(
+            residenceCountrySubdivision,
+            countryDefaultValue.value,
+        );
+
         return {
             fiatCurrency: fiatCurrency.toLowerCase(),
             country: countryDefaultValue,
+            countrySubdivision: countrySubdivisionDefaultValue,
             amountInCrypto: false,
         } as Partial<BuyFormValues>;
     },
@@ -137,21 +149,7 @@ export const selectValidTradingBuyQuotesNative = createMemoizedSelector(
 
 export const selectBuyBestQuotesForAvailablePaymentMethods = createMemoizedSelector(
     [selectValidTradingBuyQuotesNative],
-    quotes => {
-        const bestQuoteByPaymentMethodMap = quotes.reduce((quotesByPaymentMethodMap, quote) => {
-            const { paymentMethod, paymentMethodName } = quote;
-            const isValidPaymentMethod = paymentMethod && paymentMethodName;
-
-            // we only want one quote per payment method (and the 1st is considered the best)
-            if (isValidPaymentMethod && !quotesByPaymentMethodMap.has(paymentMethod)) {
-                quotesByPaymentMethodMap.set(paymentMethod, quote);
-            }
-
-            return quotesByPaymentMethodMap;
-        }, new Map<BuyCryptoPaymentMethod, BuyTrade>());
-
-        return [...bestQuoteByPaymentMethodMap.values()];
-    },
+    bestBuyQuotePerPaymentMethodProjection,
 );
 
 export const selectBuyQuotesByPaymentMethodNative = createMemoizedSelector(

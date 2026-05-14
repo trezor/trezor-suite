@@ -1,8 +1,9 @@
+import type { CoinInfo, MethodPermission } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import { AbstractMethod, Payload } from '../core/AbstractMethod';
-import { CoinInfo } from '../types';
+import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
 import { getCoinInfo } from '../data/coinInfo';
 
@@ -13,11 +14,8 @@ type Params = {
 };
 
 export default class BlockchainEvmRpcCall extends AbstractMethod<'blockchainEvmRpcCall', Params> {
-    init() {
-        this.useDevice = false;
-        this.useUi = false;
-
-        const { payload } = this;
+    constructor(message: MethodMessage<'blockchainEvmRpcCall'>) {
+        const { payload } = message;
 
         // validate incoming parameters
         validateParams(payload, [
@@ -36,7 +34,7 @@ export default class BlockchainEvmRpcCall extends AbstractMethod<'blockchainEvmR
         // validate backend
         isBackendSupported(coinInfo);
 
-        this.params = {
+        const params = {
             coinInfo,
             identity: payload.identity,
             request: {
@@ -45,16 +43,24 @@ export default class BlockchainEvmRpcCall extends AbstractMethod<'blockchainEvmR
                 data: payload.data,
             },
         };
+
+        super(message, params);
+        this.useDevice = false;
+        this.useUi = false;
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return [];
     }
 
     get info() {
         return 'Blockchain Evm Rpc Call';
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const backend = await initBlockchain(
             this.params.coinInfo,
-            this.postMessage,
+            sendCoreMessage,
             this.params.identity,
         );
         const response = await backend.rpcCall(this.params.request);

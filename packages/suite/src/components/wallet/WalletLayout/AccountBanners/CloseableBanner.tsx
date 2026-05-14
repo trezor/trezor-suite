@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
-import { Banner, BannerProps, Column, Margin, Text } from '@trezor/components';
+import { Banner, type BannerProps, Column, type Margin, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme/src';
 
 interface Props {

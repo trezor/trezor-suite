@@ -51,9 +51,30 @@ const fixtures = [...ethereumDefinitionFixture, ...commonFixtures.tests]
             ];
         }
 
+        // Upstream fixture has show_message_hash as a hash string,
+        // but TrezorConnect API expects show_message_hash?: boolean.
+        // Normalize: string → true, null/undefined → omit the key entirely.
+        const { show_message_hash: rawShowHash, ...restParams } =
+            parameters as typeof parameters & { show_message_hash?: string | null };
+        const params =
+            typeof rawShowHash === 'string'
+                ? { ...restParams, show_message_hash: true }
+                : restParams;
+
+        if (typeof rawShowHash === 'string') {
+            legacyResults = [
+                ...legacyResults,
+                {
+                    // show_message_hash proto field added in firmware 2.10.0
+                    rules: ['<2.10.0'],
+                    success: false,
+                },
+            ];
+        }
+
         const fixture: Fixture = {
             description: `${name}`,
-            params: parameters,
+            params,
             legacyResults,
             result: {
                 address: result.address,

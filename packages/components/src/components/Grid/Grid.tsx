@@ -1,15 +1,15 @@
 import styled from 'styled-components';
 
-import { SpacingValues, SpacingValuesNew } from '@trezor/theme';
+import { type SpacingValues, type SpacingValuesNew } from '@trezor/theme';
 
-import { GridAlignItems, GridJustifyContent } from './types';
+import { type GridAlignItems, type GridJustifyContent } from './types';
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import { type TransientProps } from '../../utils/transientProps';
 
 export const allowedGridFrameProps: FramePropsKeys[] = [
     'margin',

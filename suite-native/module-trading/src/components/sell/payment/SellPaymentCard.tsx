@@ -2,9 +2,12 @@ import { Platform } from 'react-native';
 import { FadeIn, FadeInDown, FadeOutUp, StretchInY, StretchOutY } from 'react-native-reanimated';
 
 import { AnimatedBox, Card } from '@suite-native/atoms';
+import { useBottomSheetControls } from '@suite-native/trading-atoms';
+import { CountrySubdivisionPickerControlsContext } from '@suite-native/trading-residence';
 
 import { SellProviderPicker } from './SellProviderPicker';
-import { TradingCountryOfResidencePicker } from '../../general/TradingCountryOfResidencePicker';
+import { TradingCountrySubdivisionPickerButton } from '../../general/TradingCountrySubdivisionPickerButton';
+import { TradingLocationPickers } from '../../general/TradingLocationPickers';
 
 export type SellPaymentCardProps = {
     isFormMountedRecently?: boolean;
@@ -32,15 +35,20 @@ export const SellPaymentCard = ({
     shouldAnimateEntering,
     isFormMountedRecently,
 }: SellPaymentCardProps) => {
+    const subdivisionPickerControls = useBottomSheetControls();
+
     const enteringAnimation = getEnteringAnimation(isFormMountedRecently, shouldAnimateEntering);
     const exitingAnimation = getExitingAnimation();
 
     return (
-        <AnimatedBox entering={enteringAnimation} exiting={exitingAnimation}>
-            <Card noPadding>
-                <TradingCountryOfResidencePicker testID="@trading/sell/country" context="sell" />
-                <SellProviderPicker />
-            </Card>
-        </AnimatedBox>
+        <CountrySubdivisionPickerControlsContext value={subdivisionPickerControls}>
+            <AnimatedBox entering={enteringAnimation} exiting={exitingAnimation}>
+                <Card noPadding>
+                    <TradingLocationPickers context="sell" />
+                    <SellProviderPicker />
+                </Card>
+            </AnimatedBox>
+            <TradingCountrySubdivisionPickerButton testID="@trading/sell/country-subdivision-button" />
+        </CountrySubdivisionPickerControlsContext>
     );
 };

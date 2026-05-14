@@ -1,15 +1,17 @@
-import type { Transaction as BlockbookTransaction } from '@trezor/blockchain-link-types/src/blockbook';
 import type {
+    BlockbookTransaction,
     ElectrumAPI,
-    HistoryTx,
-    TransactionVerbose,
-    TxCoinbase,
-    TxIn,
-    TxOut,
-} from '@trezor/blockchain-link-types/src/electrum';
+    ElectrumTypes,
+    ElectrumHistoryTx as HistoryTx,
+} from '@trezor/blockchain-link-types';
 import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
 
 import { btcToSat } from './transform';
+
+type TransactionVerbose = ElectrumTypes.TransactionVerbose;
+type TxCoinbase = ElectrumTypes.TxCoinbase;
+type TxIn = ElectrumTypes.TxIn;
+type TxOut = ElectrumTypes.TxOut;
 
 const transformOpReturn = (hex: string) => {
     const [, _len, data] = hex.match(/^6a(?:4c)?([0-9a-f]{2})([0-9a-f]*)$/i) ?? [];

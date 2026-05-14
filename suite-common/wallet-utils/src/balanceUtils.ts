@@ -1,4 +1,4 @@
-import { Locale } from '@suite-common/suite-types';
+import { type Locale } from '@suite-common/suite-types';
 import { BigNumber } from '@trezor/utils';
 
 import { localizeNumber } from './localizeNumberUtils';
@@ -8,6 +8,8 @@ export const isZero = (value: string) => {
 
     return valueBig.isZero();
 };
+
+export const isPositiveBalance = (value: string) => new BigNumber(value).isGreaterThan(0);
 
 export const formatCoinBalance = (value: string, locale: Locale = 'en-US') => {
     const MAX_NUMBERS = 9;

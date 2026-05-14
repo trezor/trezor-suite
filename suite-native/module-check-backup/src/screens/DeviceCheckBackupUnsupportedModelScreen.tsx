@@ -1,16 +1,16 @@
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { Box, Button, IconListTextItem, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
-    DeviceCheckBackupStackParamList,
-    DeviceCheckBackupStackRoutes,
-    DeviceSettingsStackParamList,
+    type DeviceCheckBackupStackParamList,
+    type DeviceCheckBackupStackRoutes,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
     Screen,
     ScreenHeader,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { SUITE_WEB_DEVICE_SETTINGS_URL } from '@trezor/urls';
 
@@ -80,10 +80,14 @@ export const DeviceCheckBackupUnsupportedModelScreen = () => {
                     </IconListTextItem>
                 </VStack>
                 <VStack spacing="sp12">
-                    <Button viewLeft="arrowSquareOut" onPress={redirectToWeb}>
+                    <Button iconLeft="arrowSquareOut" onPress={redirectToWeb}>
                         <Translation id="moduleCheckBackup.checkBackupUnsupportedModelScreen.redirectButton" />
                     </Button>
-                    <Button colorScheme="tertiaryElevation0" onPress={redirectToDeviceSettings}>
+                    <Button
+                        intent="neutral"
+                        priority="secondary"
+                        onPress={redirectToDeviceSettings}
+                    >
                         <Translation id="moduleCheckBackup.checkBackupUnsupportedModelScreen.laterButton" />
                     </Button>
                 </VStack>

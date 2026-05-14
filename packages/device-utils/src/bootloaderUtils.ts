@@ -1,8 +1,8 @@
-import { VersionArray } from '@trezor/utils/src/versionUtils';
+import { type VersionArray } from '@trezor/utils/src/versionUtils';
 
 import { getFirmwareOrBootloaderVersionArray } from './firmwareUtils';
 import { isDeviceInBootloaderMode } from './modeUtils';
-import { FirmwareVersionString, PartialDevice } from './types';
+import { type FirmwareVersionString, type PartialDevice } from './types';
 
 export const getBootloaderHash = (device?: PartialDevice) =>
     device?.features?.bootloader_hash || '';

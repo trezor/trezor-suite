@@ -1,5 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { AnalyticsFixture } from './analytics';
+import { checkEvoluRelayServerRunning } from '@suite-common/e2e-evolu-client';
+
+import { AnalyticsFixture, AnalyticsHelper } from './analytics';
 import { EvoluClient } from './helpers/evoluClient';
 import { IndexedDbFixture } from './indexedDb';
 import { BlockbookMock } from './mocks/blockBookMock';
@@ -23,6 +25,7 @@ import { TradingPage } from './pageObjects/trading/tradingPage';
 import { TrezorInput } from './pageObjects/trezorInput';
 import { WalletPage } from './pageObjects/walletPage';
 import { suiteBaseTest } from './testExtends/suiteBaseFixture';
+import { TradingStoreFixture } from './tradingStore';
 
 type Fixtures = {
     dashboardPage: DashboardPage;
@@ -39,7 +42,9 @@ type Fixtures = {
     metadataPage: MetadataPage;
     trezorInput: TrezorInput;
     analytics: AnalyticsFixture;
+    analyticsHelper: AnalyticsHelper;
     indexedDb: IndexedDbFixture;
+    tradingStore: TradingStoreFixture;
     metadataMock: MetadataMock;
     blockbookMock: BlockbookMock;
     solanaStakingMock: SolanaStakingMock;
@@ -93,8 +98,14 @@ const test = suiteBaseTest.extend<Fixtures>({
     analytics: async ({ page }, use) => {
         await use(new AnalyticsFixture(page));
     },
+    analyticsHelper: async ({ page }, use) => {
+        await use(new AnalyticsHelper(page));
+    },
     indexedDb: async ({ page }, use) => {
         await use(new IndexedDbFixture(page));
+    },
+    tradingStore: async ({ page }, use) => {
+        await use(new TradingStoreFixture(page));
     },
     metadataMock: async ({ page }, use) => {
         const metadataMock = new MetadataMock(page);
@@ -122,9 +133,10 @@ const test = suiteBaseTest.extend<Fixtures>({
         await use(new PaginationControl(page));
     },
     evoluClient: async ({}, use) => {
+        await checkEvoluRelayServerRunning();
         const evoluClient = new EvoluClient();
-        await evoluClient.checkServerRunning();
         await use(evoluClient);
+        await evoluClient.dispose();
     },
 });
 

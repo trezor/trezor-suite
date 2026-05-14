@@ -1,7 +1,7 @@
 import { useFormatters } from '@suite-common/formatters';
 import { getUnusedAddressFromAccount } from '@suite-common/trading';
 import { selectBaseCurrency, selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, isUtxoBased } from '@suite-common/wallet-utils';
 import { Column, Icon, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';

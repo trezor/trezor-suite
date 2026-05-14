@@ -1,8 +1,8 @@
-import { Deferred, createDeferred } from '@trezor/utils';
+import { type Deferred, createDeferred } from '@trezor/utils';
 
 import { error, success } from './result';
 import { ABORTED_BY_SIGNAL, INTERFACE_DATA_TRANSFER } from '../errors';
-import { ResultWithTypedError } from '../types';
+import { type ResultWithTypedError } from '../types';
 
 type ReadResult = ResultWithTypedError<
     Buffer,
@@ -41,7 +41,7 @@ export const readMessageBuffer = () => {
         readRequests[path] = dfd;
 
         const abortListener = () => {
-            dfd.resolve(error({ error: ABORTED_BY_SIGNAL }));
+            dfd.resolve(error({ code: ABORTED_BY_SIGNAL }));
         };
         signal?.addEventListener('abort', abortListener);
 
@@ -53,7 +53,7 @@ export const readMessageBuffer = () => {
 
     const cancelRead = (path: string) => {
         if (readRequests[path]) {
-            readRequests[path].resolve(error({ error: INTERFACE_DATA_TRANSFER }));
+            readRequests[path].resolve(error({ code: INTERFACE_DATA_TRANSFER }));
         }
         delete readRequests[path];
         delete readBuffer[path];

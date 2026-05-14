@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { UserContextPayload } from '@suite-common/suite-types';
+import { type UserContextPayload } from '@suite-common/suite-types';
 import { Banner, Column, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -26,7 +26,7 @@ export const DisableTorStopCoinjoinModal = ({
         <Modal
             onCancel={onKeepRunningTor}
             heading={<Translation id="TR_TOR_DISABLE" />}
-            variant="warning"
+            intent="warning"
             width={600}
             bottomContent={
                 <>

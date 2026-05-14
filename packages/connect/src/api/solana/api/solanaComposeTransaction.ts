@@ -1,12 +1,13 @@
 import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/blockchain-link-utils/src/solana';
+import type { CoinInfo, MethodPermission } from '@trezor/connect-common';
+import { SolanaComposeTransaction as SolanaComposeTransactionSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import { initBlockchain, isBackendSupported } from '../../../backend/BlockchainLink';
+import type { MethodContext, MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getCoinInfo } from '../../../data/coinInfo';
-import { CoinInfo } from '../../../types';
-import { SolanaComposeTransaction as SolanaComposeTransactionSchema } from '../../../types/api/solana';
 import {
     buildTokenTransferTransaction,
     buildTransferTransaction,
@@ -22,11 +23,8 @@ export default class SolanaComposeTransaction extends AbstractMethod<
     'solanaComposeTransaction',
     SolanaComposeTransactionParams
 > {
-    init() {
-        this.useDevice = false;
-        this.useUi = false;
-
-        const { payload } = this;
+    constructor(message: MethodMessage<'solanaComposeTransaction'>) {
+        const { payload } = message;
 
         // validate bundle type
         Assert(SolanaComposeTransactionSchema, payload);
@@ -38,20 +36,25 @@ export default class SolanaComposeTransaction extends AbstractMethod<
         // validate backend
         isBackendSupported(coinInfo);
 
-        this.params = {
-            coinInfo,
-            ...payload,
-        };
+        const params = { coinInfo, ...payload };
+
+        super(message, params);
+        this.useDevice = false;
+        this.useUi = false;
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return [];
     }
 
     get info() {
         return 'Compose Solana transaction';
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const backend = await initBlockchain(
             this.params.coinInfo,
-            this.postMessage,
+            sendCoreMessage,
             this.params.identity,
         );
 
@@ -91,6 +94,7 @@ export default class SolanaComposeTransaction extends AbstractMethod<
                       this.params.lastValidBlockHeight,
                       this.params.priorityFees || dummyPriorityFeesForFeeEstimation,
                       this.params.token.program,
+                      this.params.memo,
                   )
                 : undefined;
 
@@ -106,6 +110,7 @@ export default class SolanaComposeTransaction extends AbstractMethod<
                   this.params.blockHash,
                   this.params.lastValidBlockHeight,
                   this.params.priorityFees || dummyPriorityFeesForFeeEstimation,
+                  this.params.memo,
               );
 
         const isCreatingAccount =

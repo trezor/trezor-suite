@@ -1,20 +1,18 @@
 import { memo, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { FiatCurrencyCode } from 'invity-api';
-
 import {
-    TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    TradingExchangeFormProps,
-    TradingSellFormProps,
+    type TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
+    type TradingExchangeFormProps,
+    type TradingSellFormProps,
 } from '@suite-common/trading';
+import { isErc4626 } from '@suite-common/wallet-utils';
 import { Row } from '@trezor/components';
 
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
 import { useTradingFindAccountOrToken } from 'src/hooks/wallet/trading/form/common/useTradingFindAccountOrToken';
-
-import { TradingBalance } from '../../../../TradingBalance';
+import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 
 export interface AssetPickerInputBalanceProps {
     name: typeof TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT;
@@ -28,20 +26,23 @@ export const AssetPickerInputBalance = memo(function AssetPickerInputBalance({
     const { watch, getValues } = useFormContext<TradingSellFormProps | TradingExchangeFormProps>();
     const value = watch(name);
     const findAccountOrToken = useTradingFindAccountOrToken();
-    const amount = useMemo(() => {
+
+    const accountOrToken = useMemo(() => {
         if (!value) return undefined;
 
-        const accountOrToken = findAccountOrToken.current({
+        return findAccountOrToken.current({
             accountKey: value.accountKey,
             cryptoId: value.id,
         });
+    }, [findAccountOrToken, value]);
 
+    const amount = useMemo(() => {
         if (!accountOrToken) return undefined;
 
         return accountOrToken.token
             ? accountOrToken.token.balance
             : accountOrToken.account.formattedBalance;
-    }, [findAccountOrToken, value]);
+    }, [accountOrToken]);
 
     const { getAssetDecimals } = useTradingAssetDecimals();
     const assetDecimals = useMemo(() => {
@@ -53,7 +54,8 @@ export const AssetPickerInputBalance = memo(function AssetPickerInputBalance({
     const fiatValues = useTradingFiatValues({
         amount,
         cryptoId: value?.id,
-        fiatCurrency: getValues('outputs')?.[0]?.currency?.value as FiatCurrencyCode,
+        fiatCurrency: getValues('outputs')?.[0]?.currency?.value || undefined,
+        isErc4626: !!accountOrToken?.token && isErc4626(accountOrToken.token),
     });
 
     if (!fiatValues || !value) {

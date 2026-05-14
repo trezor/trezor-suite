@@ -1,17 +1,19 @@
-import { ReactNode, createContext, useRef, useState } from 'react';
+import { type ReactNode, useRef, useState } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
+import { ScrollContext } from '@suite/router';
 import { ElevationContext, ElevationDown, ElevationUp, Modal, variables } from '@trezor/components';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';
 import { Metadata } from 'src/components/suite/Metadata';
 import { SuiteBanners } from 'src/components/suite/banners';
 import { DiscoveryProgress } from 'src/components/wallet';
+import { HEADER_HEIGHT_NUMERIC, SUBPAGE_NAV_HEIGHT_NUMERIC } from 'src/constants/suite/layout';
 import { useLayoutSize } from 'src/hooks/suite';
 import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/useClearAnchorHighlightOnClick';
 import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
-import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutContext';
+import { LayoutContext, type LayoutContextPayload } from 'src/support/suite/LayoutContext';
 
 import { AppShortcuts } from './AppShortcuts';
 import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
@@ -22,10 +24,6 @@ import { Sidebar } from './Sidebar/Sidebar';
 import { ModalSwitcher } from '../../modals/ModalSwitcher/ModalSwitcher';
 import { ContentContainer } from '../ContentContainer';
 import { useResponsiveContextOnChange } from './useResponsiveContextOnChange';
-
-export const ScrollContext = createContext<React.RefObject<HTMLDivElement | null>>({
-    current: null,
-});
 
 export const Wrapper = styled.div`
     display: flex;
@@ -65,7 +63,7 @@ export const AppWrapper = styled.div`
     flex-direction: column;
     overflow: auto scroll;
     width: 100%;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
+    background: ${({ theme }) => theme.surfaceFillPage};
     align-items: center;
     position: relative;
 
@@ -85,6 +83,8 @@ export const MainContentContainer = styled.div`
 type MainContentProps = {
     children: ReactNode;
 };
+
+const ANCHOR_SCROLL_OFFSET = 30;
 
 export const MainContent = ({ children }: MainContentProps) => {
     const ref = useRef<HTMLDivElement>(null);
@@ -106,10 +106,12 @@ export const SuiteLayout = ({ children, 'data-testid': dataTest }: SuiteLayoutPr
     const { isBelowTablet } = useLayoutSize();
     const wrapperRef = useRef<HTMLDivElement>(null);
     const { scrollRef } = useResetScrollOnUrl();
+    const topOffset = HEADER_HEIGHT_NUMERIC + SUBPAGE_NAV_HEIGHT_NUMERIC + ANCHOR_SCROLL_OFFSET;
+
     useClearAnchorHighlightOnClick(wrapperRef);
 
     return (
-        <ScrollContext.Provider value={scrollRef}>
+        <ScrollContext.Provider value={{ scrollRef, topOffset }}>
             <ElevationContext baseElevation={-1}>
                 <Wrapper ref={wrapperRef} data-testid="@suite-layout">
                     <PageWrapper>

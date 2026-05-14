@@ -1,10 +1,8 @@
 import fetch from 'cross-fetch';
 
-import { MessagesSchema, decodeMessage, parseConfigure } from '@trezor/protobuf';
+import { MessagesSchema, protobufManager } from '@trezor/protobuf';
 import { trzd } from '@trezor/protocol';
 import { Assert } from '@trezor/schema-utils';
-
-import { DataManager } from '../../data/DataManager';
 
 interface GetSolanaTokenDefinition {
     mintAddress?: string;
@@ -36,12 +34,8 @@ export const getSolanaTokenDefinition = async ({ mintAddress }: GetSolanaTokenDe
 export const decodeSolanaTokenDefinition = (
     encodedDefinition: ArrayBuffer,
 ): MessagesSchema.SolanaTokenInfo => {
-    const messages = DataManager.getProtobufMessages();
-    const proto = parseConfigure(messages);
-
     const { protobufPayload } = trzd.decode(encodedDefinition);
-    const { message: decodedTokenDefinition } = decodeMessage(
-        proto,
+    const { message: decodedTokenDefinition } = protobufManager.decode(
         'SolanaTokenInfo',
         protobufPayload,
     );

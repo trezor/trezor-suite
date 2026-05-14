@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Box } from '@suite-native/atoms';
 import { SwipeableWalkthroughStepHeader } from '@suite-native/swipeable-walkthrough';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type WalletRecapStepContentProps = {
     title?: ReactNode;

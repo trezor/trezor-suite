@@ -1,22 +1,22 @@
 {
-    "ignore-patterns": ["libDev", "lib", "libESM"],
+    "ignore-patterns": ["libDev", "lib", "libESM", "build"],
     "ignores": [
         "babel*",
-        "karma*",
         "@babel/*",
+        "@swc/jest",
         "@playwright/*",
         "webpack*",
         "worker-loader",
         "process",
         "rimraf",
+        "rollup-plugin-dts",
         "tslib",
-        "protobufjs-cli",
         "buffer",
         "node-gyp",
         "version-bump-prompt",
         "uuid",
         "uint8array-tools",
         "bitcore-lib",
-        "@types/node-fetch"
+        "@arethetypeswrong/cli"
     ]
 }

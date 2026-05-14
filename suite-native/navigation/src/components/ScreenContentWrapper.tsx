@@ -1,12 +1,15 @@
-import React, { ReactNode, useRef } from 'react';
-import { ScrollView, ScrollViewProps } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import React, { type ReactNode, useRef } from 'react';
+import { type ScrollViewProps } from 'react-native';
+import {
+    KeyboardAwareScrollView,
+    type KeyboardAwareScrollViewRef,
+} from 'react-native-keyboard-controller';
 
-import { NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/ScrollView';
-import { NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
+import { type NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/ScrollView';
+import { type NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
 
 import { ScrollViewContext, useScrollDivider } from '@suite-native/scrollview';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useDynamicHeader } from './DynamicHeader/DynamicScreenHeaderContext';
 
@@ -29,7 +32,7 @@ export const ScreenContentWrapper = ({
     refreshControl,
     isDynamicHeader = false,
 }: ScreenContentProps) => {
-    const scrollViewRef = useRef<ScrollView | null>(null);
+    const scrollViewRef = useRef<KeyboardAwareScrollViewRef | null>(null);
     const { applyStyle } = useNativeStyles();
 
     const { scrollDivider, handleScroll } = useScrollDivider();

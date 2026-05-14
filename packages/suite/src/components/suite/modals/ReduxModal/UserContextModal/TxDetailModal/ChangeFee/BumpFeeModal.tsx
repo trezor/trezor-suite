@@ -1,16 +1,17 @@
 import { Translation } from '@suite/intl';
 import { selectTransactionConfirmations } from '@suite-common/wallet-core';
 import {
-    ChainedTransactions,
-    SelectedAccountLoaded,
-    WalletAccountTransactionWithRequiredRbfParams,
+    type ChainedTransactions,
+    type SelectedAccountLoaded,
+    type WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
 import { Modal } from '@trezor/components';
 
+import { useSelector } from 'src/hooks/suite';
+import { RbfContext, useRbf } from 'src/hooks/wallet/useRbfForm';
+
 import { ChangeFee } from './ChangeFee';
 import { ReplaceTxButton } from './ReplaceTxButton';
-import { useSelector } from '../../../../../../../hooks/suite';
-import { RbfContext, useRbf } from '../../../../../../../hooks/wallet/useRbfForm';
 import { ReplaceByFeeFailedOriginalTxConfirmed } from '../ReplaceByFeeFailedOriginalTxConfirmed';
 import { TxDetailModalBase } from '../TxDetailModalBase';
 

@@ -1,14 +1,14 @@
-import { UnknownAction } from '@reduxjs/toolkit';
+import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
-import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { prepareThpReducer } from '@suite-common/thp';
 import { prepareWalletSettingsReducer } from '@suite-common/wallet-core';
 import { deviceOnboardingSlice } from '@suite-native/device-onboarding';
 import { featureFlagsSlice } from '@suite-native/feature-flags';
-import { NativeFirmwareState, nativeFirmwareReducer } from '@suite-native/firmware';
+import { type NativeFirmwareState, nativeFirmwareReducer } from '@suite-native/firmware';
 import {
     AuthorizeDeviceStackRoutes,
     DeviceOnboardingStackRoutes,
@@ -17,7 +17,7 @@ import {
 } from '@suite-native/navigation';
 import type { RootStackParamList } from '@suite-native/navigation';
 import { appSettingsSlice } from '@suite-native/settings';
-import { FirmwareType, UI } from '@trezor/connect';
+import { FirmwareType, UI_REQUEST } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 const INIT_ACTION = { type: 'foo' };
@@ -71,12 +71,10 @@ type ResetNavigationTarget = {
 };
 
 type NavigationTarget = {
-    route: RootStackRoutes;
-    params?: {
-        screen: string;
-        params?: Record<string, any>;
-    };
-};
+    [K in keyof RootStackParamList]: undefined extends RootStackParamList[K]
+        ? { route: K; params?: RootStackParamList[K] }
+        : { route: K; params: RootStackParamList[K] };
+}[keyof RootStackParamList];
 
 type NavigationFixture = {
     description: string;
@@ -143,14 +141,14 @@ const buildInitialState = ({
 // THP Pairing Fixtures
 export const thpPairingBlockedFixtures: NoNavigationFixture[] = [
     {
-        description: 'blocks non-THP UI.REQUEST_BUTTON actions',
+        description: 'blocks non-THP UI_REQUEST.REQUEST_BUTTON actions',
         initialState: buildInitialState(),
-        action: { type: UI.REQUEST_BUTTON },
+        action: { type: UI_REQUEST.REQUEST_BUTTON },
     },
     {
-        description: 'blocks UI.REQUEST_BUTTON with invalid payload name',
+        description: 'blocks UI_REQUEST.REQUEST_BUTTON with invalid payload name',
         initialState: buildInitialState(),
-        action: { type: UI.REQUEST_BUTTON, payload: { name: 'non-valid-name' } },
+        action: { type: UI_REQUEST.REQUEST_BUTTON, payload: { name: 'non-valid-name' } },
     },
     {
         description: 'blocks unrelated action types',
@@ -164,7 +162,7 @@ export const thpPairingBlockedFixtures: NoNavigationFixture[] = [
                 isFirmwareInstallationRunning: true,
             },
         }),
-        action: { type: UI.REQUEST_BUTTON, payload: { name: 'thp_pairing_request' } },
+        action: { type: UI_REQUEST.REQUEST_BUTTON, payload: { name: 'thp_pairing_request' } },
     },
     {
         description: 'blocks thp_connection_request when firmware installation is running',
@@ -173,7 +171,7 @@ export const thpPairingBlockedFixtures: NoNavigationFixture[] = [
                 isFirmwareInstallationRunning: true,
             },
         }),
-        action: { type: UI.REQUEST_BUTTON, payload: { name: 'thp_connection_request' } },
+        action: { type: UI_REQUEST.REQUEST_BUTTON, payload: { name: 'thp_connection_request' } },
     },
 ];
 
@@ -181,7 +179,7 @@ export const thpPairingNavigationFixtures: NavigationFixture[] = [
     {
         description: 'navigates to ThpConfirmation on thp_pairing_request',
         initialState: buildInitialState(),
-        action: { type: UI.REQUEST_BUTTON, payload: { name: 'thp_pairing_request' } },
+        action: { type: UI_REQUEST.REQUEST_BUTTON, payload: { name: 'thp_pairing_request' } },
         expectedNavigation: {
             route: RootStackRoutes.AuthorizeDeviceStack,
             params: {
@@ -192,7 +190,7 @@ export const thpPairingNavigationFixtures: NavigationFixture[] = [
     {
         description: 'navigates to ThpConfirmation on thp_connection_request',
         initialState: buildInitialState(),
-        action: { type: UI.REQUEST_BUTTON, payload: { name: 'thp_connection_request' } },
+        action: { type: UI_REQUEST.REQUEST_BUTTON, payload: { name: 'thp_connection_request' } },
         expectedNavigation: {
             route: RootStackRoutes.AuthorizeDeviceStack,
             params: {
@@ -364,9 +362,12 @@ export const deviceConnectCompromisedFixtures: NavigationFixture[] = [
             },
             device: {
                 selectedDevice: mockSuiteDevice(),
-                deviceAuthenticity: {
-                    [mockSuiteDevice().id ?? '']: { valid: false, error: 'foo' },
-                },
+                persistentDeviceData: [
+                    {
+                        ...defaultDevicePersistentData,
+                        authenticityResult: { valid: false, error: 'ROOT_PUBKEY_NOT_FOUND' },
+                    },
+                ],
             },
         }),
         action: {
@@ -377,6 +378,9 @@ export const deviceConnectCompromisedFixtures: NavigationFixture[] = [
         },
         expectedNavigation: {
             route: RootStackRoutes.DeviceCompromisedModal,
+            params: {
+                failedCheck: 'device-authenticity',
+            },
         },
     },
 ];
@@ -452,20 +456,6 @@ export const deviceConnectAuthorizedFixtures: NavigationFixture[] = [
             route: RootStackRoutes.AuthorizeDeviceStack,
             params: {
                 screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
-            },
-        },
-    },
-    {
-        description: 'navigates to CoinEnablingInit when connected new and network is NOT enabled',
-        initialState: buildInitialState({}),
-        action: {
-            type: deviceActions.connectDevice.type,
-            payload: { device: mockSuiteDevice() },
-        },
-        expectedNavigation: {
-            route: RootStackRoutes.AuthorizeDeviceStack,
-            params: {
-                screen: AuthorizeDeviceStackRoutes.CoinEnablingInit,
             },
         },
     },

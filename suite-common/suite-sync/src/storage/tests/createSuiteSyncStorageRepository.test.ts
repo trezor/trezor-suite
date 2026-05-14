@@ -1,5 +1,5 @@
 import { mockNotExpected } from '@suite-common/dependency-injection';
-import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
+import { type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 
 import { createSuiteSyncStorageMock } from '../../../tests/createSuiteSyncStorageMock.mock';
 import { asStorageId, createSuiteSyncStorageRepository } from '../createSuiteSyncStorageRepository';

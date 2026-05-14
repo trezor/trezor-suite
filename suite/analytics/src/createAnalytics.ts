@@ -1,6 +1,6 @@
-import { Analytics, QueuedAnalytics } from '@trezor/analytics-uploader';
+import { type Analytics, QueuedAnalytics } from '@trezor/analytics-uploader';
 
-import { AnalyticsDesktopEvents } from './analyticsEvents';
+import { type AnalyticsDesktopEvents } from './analyticsEvents';
 
 export type DesktopAnalyticsDep = {
     analytics: Analytics<AnalyticsDesktopEvents>;

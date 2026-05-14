@@ -1,8 +1,8 @@
 import type { MMKV } from 'react-native-mmkv';
 
-import { ExtraDependenciesStatic } from '@suite-common/redux-utils';
+import type { ExtraDependenciesStatic } from '@suite-common/redux-utils';
 import { analyticsMock, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { NativeServices } from '@suite-native/services';
+import type { NativeServices } from '@suite-native/services';
 
 type ExtraDependenciesNativeMock = ExtraDependenciesStatic & { services: NativeServices };
 

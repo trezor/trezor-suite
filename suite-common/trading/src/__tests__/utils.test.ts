@@ -1,7 +1,13 @@
-import { CryptoId, ExchangeProviderInfo, ExchangeTrade, SellFiatTrade } from 'invity-api';
+import {
+    type CryptoId,
+    type ExchangeProviderInfo,
+    type ExchangeTrade,
+    type SellFiatTrade,
+} from 'invity-api';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import type { Account, AccountKey } from '@suite-common/wallet-types';
+import { BigNumber } from '@trezor/utils';
 
 import * as BUY_FIXTURE from '../__fixtures__/buyUtils';
 import * as EXCHANGE_FIXTURE from '../__fixtures__/exchangeUtils';
@@ -14,9 +20,8 @@ import {
     cryptoIdToNetworkAndContractAddress,
     cryptoIdToSymbol,
     filterQuotesAccordingTags,
-    getBestRatedQuote,
     getDefaultCountry,
-    getTagAndInfoNote,
+    getDefaultCountrySubdivision,
     getTradingFormState,
     getTradingPaymentMethods,
     getTradingQuotesByPaymentMethod,
@@ -62,39 +67,6 @@ describe('mapTestnetCryptoCurrency', () => {
     );
 });
 
-describe('getTagAndInfoNote', () => {
-    it('should return tag and info not from passed data', () => {
-        expect(getTagAndInfoNote({})).toStrictEqual({ infoNote: '', tag: '' });
-        expect(getTagAndInfoNote({ infoNote: '' })).toStrictEqual({ infoNote: '', tag: '' });
-        expect(getTagAndInfoNote({ infoNote: 'Foo' })).toStrictEqual({ infoNote: 'Foo', tag: '' });
-        expect(getTagAndInfoNote({ infoNote: ' #Foo' })).toStrictEqual({
-            infoNote: '',
-            tag: 'Foo',
-        });
-        expect(getTagAndInfoNote({ infoNote: 'Foo#Bar' })).toStrictEqual({
-            infoNote: 'Foo#Bar',
-            tag: '',
-        });
-        expect(getTagAndInfoNote({ infoNote: '#Foo' })).toStrictEqual({ infoNote: '', tag: 'Foo' });
-        expect(getTagAndInfoNote({ infoNote: '# Foo' })).toStrictEqual({
-            infoNote: '',
-            tag: ' Foo',
-        });
-        expect(getTagAndInfoNote({ infoNote: '##Bar' })).toStrictEqual({
-            infoNote: 'Bar',
-            tag: '',
-        });
-        expect(getTagAndInfoNote({ infoNote: '#Foo#Bar' })).toStrictEqual({
-            infoNote: 'Bar',
-            tag: 'Foo',
-        });
-        expect(getTagAndInfoNote({ infoNote: '  #Foo#Bar \t' })).toStrictEqual({
-            infoNote: 'Bar',
-            tag: 'Foo',
-        });
-    });
-});
-
 describe('filterQuotesAccordingTags', () => {
     it('should filter quotes', () => {
         const quotes = [
@@ -117,12 +89,16 @@ describe('addIdsToQuotes', () => {
 
         expect(addIdsToQuotes([], 'buy')).toStrictEqual([]);
         expect(addIdsToQuotes(undefined, 'buy')).toStrictEqual([]);
-        expect(addIdsToQuotes(quotes, 'buy').length).toStrictEqual(
-            quotes.filter(q => q.orderId && q.paymentId).length,
-        );
-        expect(addIdsToQuotes(quotesExchange, 'exchange').length).toStrictEqual(
-            quotesExchange.filter(q => q.orderId).length,
-        );
+
+        const buyResult = addIdsToQuotes(quotes, 'buy');
+        expect(buyResult.length).toStrictEqual(quotes.length);
+        expect(
+            buyResult.filter(q => q.orderId && 'paymentId' in q && q.paymentId).length,
+        ).toStrictEqual(quotes.length);
+
+        const exchangeResult = addIdsToQuotes(quotesExchange, 'exchange');
+        expect(exchangeResult.length).toStrictEqual(quotesExchange.length);
+        expect(exchangeResult.filter(q => q.orderId).length).toStrictEqual(quotesExchange.length);
     });
 });
 
@@ -169,12 +145,16 @@ describe('isCryptoIdForNativeToken', () => {
 });
 
 describe('getTradingPaymentMethods', () => {
-    it('should get payment methods from quotes', () => {
-        const paymentMethods = getTradingPaymentMethods([
-            ...BUY_FIXTURE.MIN_MAX_QUOTES_OK,
-            BUY_FIXTURE.MIN_MAX_QUOTES_OK[1], // duplicate applePay
-        ]);
+    const duplicateApplePayQuoteWithWorseAmount = {
+        ...BUY_FIXTURE.MIN_MAX_QUOTES_OK[1],
+        receiveStringAmount: '0.00000001',
+    };
+    const paymentMethods = getTradingPaymentMethods([
+        ...BUY_FIXTURE.MIN_MAX_QUOTES_OK,
+        duplicateApplePayQuoteWithWorseAmount, // duplicate applePay
+    ]);
 
+    it('should get payment methods from quotes', () => {
         const findApplePay = paymentMethods.find(
             paymentMethod =>
                 paymentMethod.value === 'applePay' && paymentMethod.label === 'Apple Pay',
@@ -182,6 +162,23 @@ describe('getTradingPaymentMethods', () => {
 
         expect(paymentMethods.length).toBe(2);
         expect(findApplePay).toBeDefined();
+    });
+
+    it('should sort payment methods by receive amount in descending order', () => {
+        const amounts = paymentMethods.map(method => new BigNumber(method.receiveAmount || '0'));
+        const sortedAmounts = [...amounts].sort((a, b) => b.minus(a).toNumber());
+
+        expect(amounts.map(amount => amount.toString())).toEqual(
+            sortedAmounts.map(amount => amount.toString()),
+        );
+    });
+
+    it('should keep first quote amount for duplicate payment method', () => {
+        const applePayMethod = paymentMethods.find(method => method.value === 'applePay');
+
+        expect(applePayMethod?.receiveAmount).toBe(
+            BUY_FIXTURE.MIN_MAX_QUOTES_OK[1].receiveStringAmount,
+        );
     });
 });
 
@@ -287,25 +284,33 @@ describe('getDefaultCountry', () => {
     });
 });
 
-describe('getBestRatedQuote', () => {
-    it('should return undefined if quotes are undefined', () => {
-        expect(getBestRatedQuote(undefined, 'buy')).toStrictEqual(undefined);
+describe('getDefaultCountrySubdivision', () => {
+    it('should return undefined when subdivision is undefined', () => {
+        expect(getDefaultCountrySubdivision(undefined)).toBeUndefined();
     });
 
-    it('should get buy best trade', () => {
-        expect(getBestRatedQuote(BUY_FIXTURE.MIN_MAX_QUOTES_OK, 'buy')).toStrictEqual(
-            BUY_FIXTURE.MIN_MAX_QUOTES_OK[1],
-        );
+    it('should return undefined when subdivision code is not in the list', () => {
+        expect(getDefaultCountrySubdivision('XX')).toBeUndefined();
     });
-    it('should get sell best trade', () => {
-        expect(getBestRatedQuote(SELL_FIXTURE.MIN_MAX_QUOTES_LOW, 'sell')).toStrictEqual(
-            SELL_FIXTURE.MIN_MAX_QUOTES_LOW[0],
-        );
+
+    it('should return correct option for a known subdivision code', () => {
+        expect(getDefaultCountrySubdivision('CA')).toEqual({
+            value: 'CA',
+            label: 'California',
+            name: 'California',
+        });
     });
-    it('should get exchange best trade', () => {
-        expect(getBestRatedQuote(EXCHANGE_FIXTURE.MIN_MAX_QUOTES_OK, 'exchange')).toStrictEqual(
-            EXCHANGE_FIXTURE.MIN_MAX_QUOTES_OK[EXCHANGE_FIXTURE.MIN_MAX_QUOTES_OK.length - 1],
-        );
+
+    it('should return correct option for a known subdivision code and country code', () => {
+        expect(getDefaultCountrySubdivision('CA', 'US')).toEqual({
+            value: 'CA',
+            label: 'California',
+            name: 'California',
+        });
+    });
+
+    it('should return undefined when country does not require subdivision', () => {
+        expect(getDefaultCountrySubdivision('CA', 'CZ')).toBeUndefined();
     });
 });
 

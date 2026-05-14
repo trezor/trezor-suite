@@ -1,17 +1,18 @@
 import { useRef } from 'react';
 
 import { events } from '@suite/analytics';
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import { CardList, Column, IconCircle, Link, Modal, Paragraph, Row } from '@trezor/components';
 import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { useModal } from 'src/components/suite/asset-picker/hooks/useModal';
 import { AddAccountModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal';
-import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { Account, AccountItemType } from 'src/types/wallet';
+import { type Account, type AccountItemType } from 'src/types/wallet';
 
 import { GlobalReceiveAccountListItem } from './components/GlobalReceiveAccountListItem';
 import { useAccountsOptions } from './hooks/useAccountsOptions';
@@ -28,7 +29,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
     const { device } = useDevice();
     const { isDiscoveryRunning } = useDiscovery();
     const isAddAccountDisabled = isDiscoveryRunning || !device || !device.connected;
-    const acccountModal = useModal(false);
+    const accountModal = useModal(false);
     const dispatch = useDispatch();
 
     const listRef = useRef<HTMLDivElement>(null);
@@ -115,12 +116,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                                         }}
                                     >
                                         <Row gap={12}>
-                                            <IconCircle
-                                                name="plus"
-                                                size={40}
-                                                variant="tertiary"
-                                                hasBorder={false}
-                                            />
+                                            <IconCircle name="plus" size={40} intent="neutral" />
                                             <Translation id="TR_ADD_ACCOUNT" />
                                         </Row>
                                     </CardList.Item>
@@ -130,11 +126,11 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                     </div>
                 </Column>
             </Modal>
-            {acccountModal.open && device && (
+            {accountModal.open && device && (
                 <AddAccountModal
                     noRedirect
                     device={device}
-                    onCancel={acccountModal.closeModal}
+                    onCancel={accountModal.closeModal}
                     onAddAccount={account => {
                         onSubmit(account, 'coin', filledSearch);
                     }}

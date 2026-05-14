@@ -1,36 +1,40 @@
+import { selectIsDeviceLocked } from '@suite/locks';
+import { closeModal, openModal } from '@suite/modal';
 import { selectDevices } from '@suite-common/device';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { getDeviceInstances } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectAccountByKey } from '@suite-common/wallet-core';
-import { Account, AccountKey, AddressDisplayOptions } from '@suite-common/wallet-types';
+import { selectAccountByKey, selectAddressDisplayType } from '@suite-common/wallet-core';
+import { type Account, type AccountKey, AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 import {
-    CoinjoinClientEvents,
-    CoinjoinClientVersion,
-    CoinjoinRequestEvent,
-    CoinjoinResponseEvent,
-    CoinjoinRoundEvent,
-    CoinjoinStatusEvent,
+    type CoinjoinClientEvents,
+    type CoinjoinClientVersion,
+    type CoinjoinRequestEvent,
+    type CoinjoinResponseEvent,
+    type CoinjoinRoundEvent,
+    type CoinjoinStatusEvent,
     RoundPhase,
-    SerializedCoinjoinRound,
+    type SerializedCoinjoinRound,
 } from '@trezor/coinjoin';
 import TrezorConnect from '@trezor/connect';
 import { getOsName } from '@trezor/env-utils';
 import { arrayDistinct, arrayToDictionary, promiseAllSequence } from '@trezor/utils';
 
-import { onCancel as closeModal, openModal } from 'src/actions/suite/modalActions';
 import {
     selectCoinjoinAccounts,
     selectRoundsDurationInHours,
     selectRoundsLeftByAccountKey,
     selectRoundsNeededByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { selectAddressDisplayType, selectIsDeviceLocked } from 'src/selectors/suite/suiteSelectors';
 import type { CoinjoinSymbol } from 'src/services/coinjoin';
 import { CoinjoinService, getCoinjoinConfig } from 'src/services/coinjoin';
-import { Dispatch, GetState } from 'src/types/suite';
-import { CoinjoinAccount, CoinjoinDebugSettings, EndRoundState } from 'src/types/wallet/coinjoin';
+import { type Dispatch, type GetState } from 'src/types/suite';
+import {
+    type CoinjoinAccount,
+    type CoinjoinDebugSettings,
+    EndRoundState,
+} from 'src/types/wallet/coinjoin';
 import {
     getEstimatedTimePerRound,
     getSessionDeadline,
@@ -343,7 +347,7 @@ export const stopCoinjoinSession =
                 dispatch(
                     notificationsActions.addToast({
                         type: 'error',
-                        error: `Cancel coinjoin authorization ${result.payload.error}`,
+                        error: `Cancel coinjoin authorization ${result.error.message}`,
                     }),
                 );
             }
@@ -533,7 +537,10 @@ const getOwnershipProof =
                     return;
                 }
                 utxos.forEach(u => {
-                    response.inputs.push({ outpoint: u.outpoint, error: proof.payload?.error });
+                    response.inputs.push({
+                        outpoint: u.outpoint,
+                        error: proof.error?.message,
+                    });
                 });
             }),
         );
@@ -678,14 +685,14 @@ const signCoinjoinTx =
                         utxos.forEach(u => {
                             response.inputs.push({
                                 outpoint: u.outpoint,
-                                error: `${fwVersion} (${getOsName()}) ${signTx.payload.error}`,
+                                error: `${fwVersion} (${getOsName()}) ${signTx.error.message}`,
                             });
                         });
 
                         dispatch(
                             notificationsActions.addToast({
                                 type: 'error',
-                                error: `Coinjoin signTransaction: ${signTx.payload.error}`,
+                                error: `Coinjoin signTransaction: ${signTx.error.message}`,
                             }),
                         );
                     },

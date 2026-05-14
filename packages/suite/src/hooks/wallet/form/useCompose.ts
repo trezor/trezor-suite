@@ -1,28 +1,27 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { FieldPath, UseFormReturn } from 'react-hook-form';
+import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { useTranslation } from '@suite/intl';
+import { isTranslationKey, useTranslation } from '@suite/intl';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 import {
-    ComposeActionContext,
-    FormState,
-    PrecomposedLevels,
-    PrecomposedLevelsCardano,
-    PrecomposedTransaction,
-    PrecomposedTransactionCardano,
+    type ComposeActionContext,
+    type FormState,
+    type PrecomposedLevels,
+    type PrecomposedLevelsCardano,
+    type PrecomposedTransaction,
+    type PrecomposedTransactionCardano,
 } from '@suite-common/wallet-types';
 import { findComposeErrors } from '@suite-common/wallet-utils';
-import { FeeLevel } from '@trezor/connect';
+import { type FeeLevel } from '@trezor/connect';
 import { useDebounce } from '@trezor/react-utils';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-
-import { SendContextValues } from '../../../types/wallet/sendForm';
+import { type SendContextValues } from 'src/types/wallet/sendForm';
 
 const DEFAULT_FIELD = 'outputs.0.amount';
 
@@ -123,7 +122,7 @@ export const useCompose = <TFieldValues extends FormState>({
             const values = getValues();
             if (composed.type === 'error') {
                 const { error, errorMessage } = composed;
-                if (!errorMessage) {
+                if (!errorMessage || !isTranslationKey(errorMessage.id)) {
                     // composed tx doesn't have an errorMessage (Translation props)
                     // this error is unexpected and should be handled in sendFormActions
                     console.warn('Compose unexpected error', error);
@@ -176,8 +175,12 @@ export const useCompose = <TFieldValues extends FormState>({
                     ...composedLevels,
                     custom: prevLevel,
                 } as
-                    | (PrecomposedLevels & { custom: PrecomposedTransaction })
-                    | (PrecomposedLevelsCardano & { custom: PrecomposedTransactionCardano });
+                    | (PrecomposedLevels & {
+                          custom: PrecomposedTransaction;
+                      })
+                    | (PrecomposedLevelsCardano & {
+                          custom: PrecomposedTransactionCardano;
+                      });
                 setComposedLevels(levels);
             } else {
                 const currentLevel = composedLevels[current || 'normal'];

@@ -1,7 +1,11 @@
-import { CryptoId, ExchangeProviderInfo, ExchangeTrade } from 'invity-api';
+import { type CryptoId, type ExchangeProviderInfo, type ExchangeTrade } from 'invity-api';
 
-import { TradingExchangeAmountLimitProps } from '../../types';
-import { ExchangeInfo, exchangeInitialState, tradingExchangeActions } from '../exchangeReducer';
+import { type TradingExchangeAmountLimitProps } from '../../types';
+import {
+    type ExchangeInfo,
+    exchangeInitialState,
+    tradingExchangeActions,
+} from '../exchangeReducer';
 
 export const exchange: ExchangeProviderInfo = {
     name: 'test',
@@ -35,31 +39,32 @@ const quotesRequest = {
     dex: 'enable',
 };
 
-const exchangeQuotes: ExchangeTrade[] = [
-    {
-        send: 'litecoin' as CryptoId,
-        sendStringAmount: '12',
-        receive: 'bitcoin' as CryptoId,
-        receiveStringAmount: '0.0609979',
-        rate: 0.005083158333333333,
-        min: 0.5688,
-        max: 'NONE',
-        fee: 'UNKNOWN',
-        exchange: 'changelly',
-    },
-    {
-        send: 'litecoin' as CryptoId,
-        sendStringAmount: '12',
-        receive: 'bitcoin' as CryptoId,
-        receiveStringAmount: '0.0605096167302',
-        rate: 0.00504246806085,
-        min: 1.68,
-        max: 130,
-        fee: 'UNKNOWN',
-        exchange: 'foxexchange',
-        quoteToken: '',
-    },
-];
+const changellyExchangeQuote: ExchangeTrade = {
+    send: 'litecoin' as CryptoId,
+    sendStringAmount: '12',
+    receive: 'bitcoin' as CryptoId,
+    receiveStringAmount: '0.0609979',
+    rate: 0.005083158333333333,
+    min: 0.5688,
+    max: 'NONE',
+    fee: 'UNKNOWN',
+    exchange: 'changelly',
+};
+
+const foxExchangeQuote: ExchangeTrade = {
+    send: 'litecoin' as CryptoId,
+    sendStringAmount: '12',
+    receive: 'bitcoin' as CryptoId,
+    receiveStringAmount: '0.0605096167302',
+    rate: 0.00504246806085,
+    min: 1.68,
+    max: 130,
+    fee: 'UNKNOWN',
+    exchange: 'foxexchange',
+    quoteToken: '',
+};
+
+const exchangeQuotes: ExchangeTrade[] = [changellyExchangeQuote, foxExchangeQuote];
 
 const amountLimits: TradingExchangeAmountLimitProps = {
     currency: 'litecoin',
@@ -174,12 +179,12 @@ export const exchangeTradingFixtures = [
         actions: [
             {
                 type: tradingExchangeActions.saveSelectedQuote.type,
-                payload: exchangeQuotes[0],
+                payload: changellyExchangeQuote,
             },
         ],
         result: {
             ...exchangeInitialState,
-            selectedQuote: exchangeQuotes[0],
+            selectedQuote: changellyExchangeQuote,
         },
     },
     {
@@ -188,12 +193,12 @@ export const exchangeTradingFixtures = [
         actions: [
             {
                 type: tradingExchangeActions.savePreselectedQuote.type,
-                payload: exchangeQuotes[0],
+                payload: changellyExchangeQuote,
             },
         ],
         result: {
             ...exchangeInitialState,
-            preselectedQuote: exchangeQuotes[0],
+            preselectedQuote: changellyExchangeQuote,
         },
     },
     {

@@ -1,16 +1,16 @@
-import { useDispatch } from 'react-redux';
+import { type useDispatch } from 'react-redux';
 
 import { A, D, F, G, O, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
+import { type AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import TrezorConnect, { AccountInfo } from '@trezor/connect';
+import TrezorConnect, { type AccountInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';
@@ -25,7 +25,7 @@ import {
     mapCryptoBalanceMovementToFixedTimeFrame,
     mergeMultipleFiatBalanceHistories,
 } from './graphUtils';
-import {
+import type {
     AccountBalanceHistoryWithTokens,
     AccountHistoryBalancePoint,
     AccountHistoryMovementItem,
@@ -33,6 +33,7 @@ import {
     AccountWithBalanceHistory,
     FiatGraphPoint,
     FiatGraphPointWithCryptoBalance,
+    FiatRatesItem,
 } from './types';
 
 export const addBalanceForAccountMovementHistory = (
@@ -89,7 +90,7 @@ const getLatestAccountInfo = async ({
     });
 
     if (!accountInfo?.success) {
-        throw new Error(`Get account balance info error: ${accountInfo.payload.error}`);
+        throw new Error(`Get account balance info error: ${accountInfo.error.message}`);
     }
 
     return accountInfo.payload;
@@ -123,6 +124,7 @@ const getBalanceFromAccountInfo = ({
             return accountInfo.balance;
         case 'stellar':
             return contractId ? findTokenBalance() : accountInfo.balance;
+        case 'tron':
         case 'ethereum':
         case 'solana':
         case 'cardano':
@@ -202,7 +204,7 @@ const getAccountBalanceHistory = async ({
 
         if (!connectBalanceHistory?.success) {
             throw new Error(
-                `Get account balance movement error: ${connectBalanceHistory.payload.error}`,
+                `Get account balance movement error: ${connectBalanceHistory.error.message}`,
             );
         }
 
@@ -282,13 +284,6 @@ const getAccountBalanceHistory = async ({
     accountBalanceHistoryCache[cacheKey] = result;
 
     return result;
-};
-
-export type FiatRatesItem = {
-    time: number;
-    rates: {
-        [key: string]: number | undefined;
-    };
 };
 
 const fiatRatesCache: Record<string, FiatRatesItem[]> = {};
@@ -503,7 +498,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
 
     const coinsFiatRates: Record<CoinKey, FiatRatesItem[]> = D.fromPairs(
         // Some coins might not have fiat rates, so we need to filter them out
-        pairs.filter(([, res]) => res?.[0].rates?.[baseCurrencyCode] !== -1),
+        pairs.filter(([, res]) => res?.[0]?.rates?.[baseCurrencyCode] !== -1),
     );
 
     if (A.length(accountsWithBalanceHistoryFlattened) === 1) {

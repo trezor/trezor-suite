@@ -1,7 +1,7 @@
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 
-import { ReviewOutputsContent, ReviewOutputsContentProps } from '../ReviewOutputsContent';
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
+import { ReviewOutputsContent, type ReviewOutputsContentProps } from '../ReviewOutputsContent';
 
 jest.mock('@suite-native/confirm-on-trezor', () => ({
     ...jest.requireActual('@suite-native/confirm-on-trezor'),
@@ -26,8 +26,10 @@ jest.mock('../../../hooks/reviewOutputs/useDelayedReviewOutputListDisplayFlag', 
 }));
 
 describe('ReviewOutputsContent', () => {
-    const renderReviewOutputsContent = (props: Partial<ReviewOutputsContentProps>) =>
-        renderWithStoreProviderAsync(
+    const renderReviewOutputsContent = (
+        props: Partial<Omit<ReviewOutputsContentProps, 'exchangeFlowType' | 'tradingType'>>,
+    ) =>
+        renderWithTradingProvider(
             <ReviewOutputsContent
                 orderId="ORDER_ID"
                 accountKey={
@@ -39,6 +41,7 @@ describe('ReviewOutputsContent', () => {
                 tokenContract={'TOKEN_CONTRACT' as TokenAddress}
                 resolveTransactionSendConsent={jest.fn()}
                 signAndSendTransaction={jest.fn()}
+                exchangeFlowType="swap"
                 {...props}
             />,
         );
@@ -52,33 +55,33 @@ describe('ReviewOutputsContent', () => {
         });
     });
 
-    it('should display loading skeleton when mockDelayedReviewOutputListDisplayFlag is falsy', async () => {
+    it('should display loading skeleton when mockDelayedReviewOutputListDisplayFlag is falsy', () => {
         mockDelayedReviewOutputListDisplayFlag = false;
-        const { getByTestId } = await renderReviewOutputsContent({});
+        const { getByTestId } = renderReviewOutputsContent({});
 
         expect(getByTestId('@trading/outputs-review/skeleton')).toBeOnTheScreen();
     });
 
-    it('should display output item list if mockDelayedReviewOutputListDisplayFlag is truthy', async () => {
-        const { getByText, queryByTestId } = await renderReviewOutputsContent({});
+    it('should display output item list if mockDelayedReviewOutputListDisplayFlag is truthy', () => {
+        const { getByText, queryByTestId } = renderReviewOutputsContent({});
 
         // invalid account id is provided, expect error
         expect(getByText(/Account not found/)).toBeOnTheScreen();
         expect(queryByTestId('@trading/outputs-review/skeleton')).not.toBeOnTheScreen();
     });
 
-    it('should not display sign button if transaction is not signed yet', async () => {
-        const { queryByTestId } = await renderReviewOutputsContent({});
+    it('should not display sign button if transaction is not signed yet', () => {
+        const { queryByTestId } = renderReviewOutputsContent({});
 
         expect(queryByTestId('@trading/outputs-review/footer')).not.toBeOnTheScreen();
     });
 
-    it('should display sign button if transaction is signed', async () => {
+    it('should display sign button if transaction is signed', () => {
         mockUseTradingOutputsReviewScreenControls.mockReturnValue({
             isTransactionAlreadySigned: true,
             confirmOnTrezorRef: { current: null },
         });
-        const { getByTestId } = await renderReviewOutputsContent({});
+        const { getByTestId } = renderReviewOutputsContent({});
 
         expect(getByTestId('@trading/outputs-review/footer')).toBeOnTheScreen();
     });

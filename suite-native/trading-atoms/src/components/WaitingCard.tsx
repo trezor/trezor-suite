@@ -1,11 +1,11 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { FadeIn, FadeOut, FadingTransition } from 'react-native-reanimated';
 
 import {
     AnimatedText,
     AnimatedVStack,
     Spinner,
-    SpinnerLoadingState,
+    type SpinnerLoadingState,
     VStack,
 } from '@suite-native/atoms';
 
@@ -36,13 +36,13 @@ export const WaitingCard = ({
         <VStack alignItems="center" spacing="sp4">
             <AnimatedText
                 variant="headline-sm"
-                color="textDefault"
+                color="contentPrimary"
                 textAlign="center"
                 layout={FadingTransition}
             >
                 {title}
             </AnimatedText>
-            <AnimatedText variant="body-sm" color="textDefault" textAlign="center">
+            <AnimatedText variant="body-sm" color="contentPrimary" textAlign="center">
                 {subtitle}
             </AnimatedText>
         </VStack>

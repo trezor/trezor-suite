@@ -4,30 +4,29 @@ import { calculateAssetsPercentage } from '@suite-common/assets';
 import type { DeviceRootState } from '@suite-common/device';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
-    TokenDefinitionsRootState,
+    type TokenDefinitionsRootState,
     getSimpleCoinDefinitionsByNetwork,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
-    FiatRatesRootState,
-    WalletSettingsRootState,
+    type AccountsRootState,
+    type FiatRatesRootState,
+    type WalletSettingsRootState,
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectDeviceAccounts,
     selectVisibleDeviceAccounts,
     selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { getAccountFiatBalance } from '@suite-common/wallet-utils';
+import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { getAccountFiatBalance, isStakingSymbol } from '@suite-common/wallet-utils';
 import {
     getAccountListSections,
     sortAccountsByNetworksAndAccountTypes,
 } from '@suite-native/accounts';
 import {
-    NativeStakingRootState,
-    doesCoinSupportStaking,
+    type NativeStakingRootState,
     getAccountCryptoBalanceWithStaking,
 } from '@suite-native/staking';
 import { BigNumber } from '@trezor/utils';
@@ -114,7 +113,7 @@ const selectDeviceAssetsWithBalances = createMemoizedSelector(
     ],
     (accounts, deviceNetworksWithAssets, baseCurrencyCode, rates) => {
         const accountsWithFiatBalance = accounts.map(account => {
-            const shouldIncludeStaking = doesCoinSupportStaking(account.symbol);
+            const shouldIncludeStaking = isStakingSymbol(account.symbol);
 
             const fiatValue = getAccountFiatBalance({
                 account,

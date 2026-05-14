@@ -1,42 +1,30 @@
-import { BuyProviderInfo, BuyTrade } from 'invity-api';
+import { type BuyProviderInfo, type BuyTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/components';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
 
 import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
 import { TradingDetailSupportBanner } from '../TradingDetailSupportBanner';
 
 type TradingDetailBuyPaymentFailedProps = {
-    account: Account;
     trade: BuyTrade;
     provider?: BuyProviderInfo;
 };
 
 export const TradingDetailBuyPaymentFailed = ({
-    account,
     trade,
     provider,
 }: TradingDetailBuyPaymentFailedProps) => {
     const dispatch = useDispatch();
 
-    const handleClick = () =>
-        dispatch(
-            goto('wallet-trading-buy', {
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
-            }),
-        );
+    const handleClick = () => dispatch(goto({ routeName: 'wallet-trading-buy' }));
 
     return (
         <Column gap={24} padding={{ top: 12, bottom: 4 }}>
-            <IconCircle name="x" variant="destructive" size={100} />
+            <IconCircle name="x" intent="critical" size={96} />
             <Column>
                 <H3 data-testid="@trading/transaction/detail/status">
                     <Translation id="TR_BUY_DETAIL_ERROR_TITLE" />
@@ -57,7 +45,7 @@ export const TradingDetailBuyPaymentFailed = ({
                             trade={trade}
                         />
                     )}
-                    <TradingDetailSupportBanner provider={provider} orderId={trade.paymentId} />
+                    <TradingDetailSupportBanner provider={provider} trade={trade} />
                 </Column>
             </Card>
         </Column>

@@ -3,7 +3,7 @@ import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type FeeOptionErrorMessageProps = {
     isVisible: boolean;
@@ -14,7 +14,7 @@ const ERROR_HEIGHT = 40;
 const errorStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp12,
     justifyContent: 'center',
-    backgroundColor: utils.colors.backgroundAlertRedSubtleOnElevation1,
+    backgroundColor: utils.colors.legacyBackgroundAlertRedSubtleOnElevation1,
     overflow: 'hidden',
 }));
 
@@ -31,7 +31,7 @@ export const FeeOptionErrorMessage = ({ isVisible }: FeeOptionErrorMessageProps)
     return (
         <Animated.View style={[applyStyle(errorStyle), animatedErrorStyle]}>
             <HStack alignItems="center" spacing="sp8">
-                <Icon name="warningCircle" size="mediumLarge" color="iconAlertRed" />
+                <Icon name="warningCircle" size="mediumLarge" color="contentCritical" />
                 <Text variant="body-sm">
                     <Translation id="moduleSend.fees.error" />
                 </Text>

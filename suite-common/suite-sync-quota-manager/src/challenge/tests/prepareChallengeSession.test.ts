@@ -1,10 +1,14 @@
 import { ok } from '@trezor/type-utils';
 
-import * as sessionUtil from '../../util/generateSessionId';
+import { generateSessionId } from '../../util/generateSessionId';
 import { prepareChallengeSession } from '../prepareChallengeSession';
 
+jest.mock('../../util/generateSessionId', () => ({
+    generateSessionId: jest.fn(),
+}));
+
 // mocking generateSessionId to return predictable session IDs
-jest.spyOn(sessionUtil, 'generateSessionId')
+(generateSessionId as jest.Mock)
     .mockReturnValueOnce('mocked-session-id')
     .mockReturnValueOnce('mocked-session-id-2');
 

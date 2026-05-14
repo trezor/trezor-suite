@@ -1,5 +1,5 @@
 import { Icon } from '@suite-native/icons';
-import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { PressableOpacity } from './Pressable';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from './Text';
@@ -18,31 +18,35 @@ type CheckBoxStyleProps = {
 };
 
 const CHECKBOX_SIZE = 24 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
-const CHECKMARK_SIZE = 12 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
+const CHECKMARK_SIZE = 16 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 
-const checkBoxStyle = prepareNativeStyle<CheckBoxStyleProps>(
-    (utils, { isChecked, isDisabled }) => ({
+const checkBoxStyle = prepareNativeStyle<CheckBoxStyleProps>((utils, { isChecked, isDisabled }) => {
+    const backgroundColor = (() => {
+        if (isChecked && isDisabled) return utils.colors.elementFillFieldSelectedDisabled;
+        if (isChecked) return utils.colors.elementFillFieldSelected;
+        if (isDisabled) return utils.colors.elementFillFieldDisabled;
+
+        return utils.colors.elementFillField;
+    })();
+
+    const borderColor = (() => {
+        if (isChecked) return 'transparent';
+        if (isDisabled) return utils.colors.elementBorderFieldDisabled;
+
+        return utils.colors.elementBorderField;
+    })();
+
+    return {
         height: CHECKBOX_SIZE,
         width: CHECKBOX_SIZE,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: utils.borders.radii.r4,
-        borderWidth: utils.borders.widths.medium,
-        borderColor: utils.colors.iconSubdued,
-        backgroundColor: isDisabled
-            ? utils.colors.backgroundNeutralDisabled
-            : utils.colors.backgroundNeutralSubtleOnElevation1,
-        extend: [
-            {
-                condition: isChecked && !isDisabled,
-                style: {
-                    borderColor: utils.colors.borderSecondary,
-                    backgroundColor: utils.colors.backgroundSecondaryDefault,
-                },
-            },
-        ],
-    }),
-);
+        borderWidth: utils.borders.widths.large,
+        borderColor,
+        backgroundColor,
+    };
+});
 
 export const CheckBox = ({
     isChecked,
@@ -62,7 +66,7 @@ export const CheckBox = ({
             accessibilityState={{ checked: isChecked, disabled: isDisabled }}
             style={[applyStyle(checkBoxStyle, { isChecked, isDisabled }), style]}
         >
-            {isChecked && <Icon name="check" color="iconOnPrimary" size={CHECKMARK_SIZE} />}
+            {isChecked && <Icon name="check" color="contentPrimaryInverse" size={CHECKMARK_SIZE} />}
         </PressableOpacity>
     );
 };

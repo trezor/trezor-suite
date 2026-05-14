@@ -1,5 +1,3 @@
-import React from 'react';
-
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
@@ -8,12 +6,12 @@ import { useScrollShadow } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 import { ReduxAccountSearchProvider } from 'src/hooks/suite/useAccountSearch';
+import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
+import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { AccountsList } from './AccountsList';
 import { AccountsMenuHeader } from './AccountsMenuHeader';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
-import { RefreshAfterDiscoveryNeeded } from './RefreshAfterDiscoveryNeeded';
-import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
 
 const ScrollContainer = styled.div`
     height: auto;
@@ -22,10 +20,16 @@ const ScrollContainer = styled.div`
 
 export const AccountsMenu = () => {
     const device = useSelector(selectSelectedDevice);
-
+    const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const { scrollElementRef, onScroll, ShadowTop, ShadowBottom, ShadowContainer } =
         useScrollShadow();
     const { isSidebarCollapsed } = useResponsiveContext();
+
+    const isDiscoveryEmpty = discoveryStatus?.type === 'discovery-empty';
+
+    if (isDiscoveryEmpty) {
+        return null;
+    }
 
     if (!device) {
         if (isSidebarCollapsed) return null;
@@ -41,13 +45,11 @@ export const AccountsMenu = () => {
         <ReduxAccountSearchProvider>
             <AccountsMenuHeader />
             <ShadowContainer>
-                <ShadowTop backgroundColor="backgroundSurfaceElevationNegative" />
+                <ShadowTop backgroundColor="surfaceFillSunken" />
                 <ScrollContainer ref={scrollElementRef} onScroll={onScroll}>
                     <AccountsList />
-
-                    <RefreshAfterDiscoveryNeeded />
                 </ScrollContainer>
-                <ShadowBottom backgroundColor="backgroundSurfaceElevationNegative" />
+                <ShadowBottom backgroundColor="surfaceFillSunken" />
             </ShadowContainer>
         </ReduxAccountSearchProvider>
     );

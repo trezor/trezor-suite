@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
-import { Text, TextProps } from 'react-native';
-import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
+import { Text, type TextProps } from 'react-native';
+import Animated, { type SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 
 import { MOBILE_ICON_FONT_NAME } from '@suite-common/icons';
 // TODO fix deep import
 // eslint-disable-next-line local-rules/no-package-deep-imports
 import codepoints from '@suite-common/icons/iconFontsMobile/TrezorSuiteIcons.json';
-import { useNativeStyles } from '@trezor/styles';
-import { CSSColor, Color, Colors } from '@trezor/theme';
+import { useNativeStyles } from '@trezor/styles-native';
+import { type CSSColor, type Color, type Colors } from '@trezor/theme';
 
 export type IconColor = Color | CSSColor;
 export type AnimatedIconColor = Color | CSSColor | SharedValue<CSSColor>;
@@ -21,6 +21,7 @@ export const MAX_FONT_SIZE_MULTIPLIER = 1.5;
  * @description If you need to add a new icon, please follow these steps:
  * 1. Add the icon name to the file `generateIconFont.ts`.
  * 2. Run `yarn generate-icons` to generate the new icon font.
+ * 3. Remove app from sim/device and create new build to see the new icons in the app.
  */
 export type IconName = keyof typeof codepoints;
 export const ICON_NAMES = Object.keys(codepoints) as IconName[];
@@ -46,7 +47,7 @@ export type IconProps = {
     color?: IconColor;
 } & Omit<TextProps, 'children'>;
 
-export const Icon = ({ name, size = 'large', color = 'iconDefault', ...props }: IconProps) => {
+export const Icon = ({ name, size = 'large', color = 'contentPrimary', ...props }: IconProps) => {
     const char = String.fromCodePoint(codepoints[name]);
     const sizeNumber = getIconSize(size);
     const {
@@ -104,7 +105,7 @@ type AnimatedIconProps = Omit<IconProps, 'color'> & {
 const AnimatedIcon = ({
     name,
     size = 'large',
-    color = 'iconDefault',
+    color = 'contentPrimary',
     ...props
 }: AnimatedIconProps) => {
     const char = String.fromCodePoint(codepoints[name]);

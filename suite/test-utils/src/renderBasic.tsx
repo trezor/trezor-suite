@@ -1,6 +1,11 @@
 import { type ReactElement } from 'react';
 
-import { RenderHookOptions, RenderOptions, render, renderHook } from '@testing-library/react';
+import {
+    type RenderHookOptions,
+    type RenderOptions,
+    render,
+    renderHook,
+} from '@testing-library/react';
 
 import { BasicProviderForTests } from './BasicProviderForTests';
 

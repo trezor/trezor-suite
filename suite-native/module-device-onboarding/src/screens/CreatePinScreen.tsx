@@ -4,9 +4,9 @@ import { useSelector } from 'react-redux';
 import { selectDeviceModel } from '@suite-common/device';
 import { useAlert } from '@suite-native/alerts';
 import { Box, TitleHeader, VStack } from '@suite-native/atoms';
-import { ConnectorImage, usePinAction } from '@suite-native/device';
-import { DevicePinImage } from '@suite-native/device-authorization';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { ConnectorImage } from '@suite-native/device';
+import { DevicePinImage, usePinAction } from '@suite-native/device-authorization';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -42,11 +42,11 @@ export const CreatePinScreen = () => {
                 primaryButtonTitle: (
                     <Translation id="moduleDeviceOnboarding.createPinScreen.cancelAlert.cancelButton" />
                 ),
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 secondaryButtonTitle: (
                     <Translation id="moduleDeviceOnboarding.createPinScreen.cancelAlert.retryButton" />
                 ),
-                secondaryButtonVariant: 'redElevation0',
+                secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
                 onPressSecondaryButton: tryAgainAction,
                 onPressPrimaryButton: () => {
                     handlePinCreated();

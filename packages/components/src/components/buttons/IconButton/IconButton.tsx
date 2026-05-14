@@ -1,16 +1,21 @@
 import styled from 'styled-components';
 
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
+import { type TransientProps } from '../../../utils/transientProps';
 import { Box } from '../../Box/Box';
-import { Icon, IconName } from '../../Icon/Icon';
+import { Icon, type IconName } from '../../Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
-import { ButtonIntent, ButtonPriority, ButtonSize, CommonButtonProps } from '../types';
+import {
+    type ButtonIntent,
+    type ButtonPriority,
+    type ButtonSize,
+    type CommonButtonProps,
+} from '../types';
 import {
     commonButtonStyles,
     mapPropsToCSS,
@@ -32,6 +37,7 @@ type ButtonContainerProps = TransientProps<AllowedIconButtonFrameProps> & {
     $priority: ButtonPriority;
     $intent: ButtonIntent;
     $isInverse: boolean;
+    $isFloating: boolean;
     disabled: boolean;
 };
 
@@ -40,8 +46,8 @@ const Container = styled.button<ButtonContainerProps>`
 
     border-radius: ${({ $size }) => mapSizeToBorderRadius($size)};
 
-    ${({ $intent, $priority, disabled, $isInverse, theme }) =>
-        mapPropsToCSS($intent, $priority, disabled, $isInverse, theme)}
+    ${({ $intent, $priority, disabled, $isInverse, $isFloating, theme }) =>
+        mapPropsToCSS($intent, $priority, disabled, $isInverse, theme, $isFloating)}
 
     ${withFrameProps}
 `;
@@ -57,6 +63,7 @@ export const IconButton = ({
     'data-testid': dataTestId,
     icon,
     size = 'medium',
+    isFloating = false,
     ...props
 }: IconButtonProps) => {
     const frameProps = pickAndPrepareFrameProps(props, allowedIconButtonFrameProps);
@@ -75,6 +82,7 @@ export const IconButton = ({
             $priority={priority}
             $intent={intent}
             $isInverse={isInverse}
+            $isFloating={isFloating}
             {...buttonProps}
             {...frameProps}
         >

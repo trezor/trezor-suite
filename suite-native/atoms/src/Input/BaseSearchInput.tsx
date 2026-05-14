@@ -1,10 +1,10 @@
 import { forwardRef } from 'react';
 import { Pressable, TextInput } from 'react-native';
 
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 import { Box } from '../Box';
-import { SurfaceElevation } from '../types';
+import { type SurfaceElevation } from '../types';
 import { SearchInputClearButton } from './SearchInputClearButton';
 import { SearchInputMagnifyingGlass } from './SearchInputMagnifyingGlass';
 import { inputStyle, inputWrapperStyle } from './searchInputStyles';
@@ -44,7 +44,7 @@ export const BaseSearchInput = forwardRef<TextInput, BaseSearchInputProps>(
                         ref={ref}
                         onChangeText={handleOnChangeText}
                         placeholder={placeholder}
-                        placeholderTextColor={utils.colors.textSubdued}
+                        placeholderTextColor={utils.colors.contentSecondary}
                         editable={!isDisabled}
                         onFocus={() => {
                             setIsFocused(true);

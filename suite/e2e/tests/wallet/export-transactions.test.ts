@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -28,9 +28,7 @@ test.describe('Export transactions', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, ()
         },
         async ({ page, settingsPage, walletPage, onboardingPage }) => {
             const symbols: NetworkSymbol[] = ['btc', 'ltc', 'eth', 'ada'];
-            await settingsPage.changeNetworks({
-                enableNetworks: symbols.filter(symbol => symbol !== 'btc'),
-            });
+            await settingsPage.changeNetworks({ enableNetworks: symbols });
 
             for (const symbol of symbols) {
                 await walletPage.openAccount({ symbol });

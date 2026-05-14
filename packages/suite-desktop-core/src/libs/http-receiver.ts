@@ -1,7 +1,6 @@
-import * as url from 'url';
-
 import { trezorLogo } from '@suite-common/suite-constants';
-import { HttpServer, allowReferers } from '@trezor/node-utils';
+import { HttpServer, allowReferers, parseRequestUrl } from '@trezor/node-utils';
+import { type RendererChannels } from '@trezor/suite-desktop-api';
 import { xssFilters } from '@trezor/utils';
 
 import { convertILoggerToLog } from '../utils/IloggerToLog';
@@ -14,7 +13,7 @@ type TemplateOptions = {
  * Events that may be emitted or listened to by HttpReceiver
  */
 interface Events {
-    'oauth/response': (response: { [key: string]: string }) => void;
+    'oauth/response': (response: RendererChannels['oauth/response']) => void;
     'oauth/error': (message: string) => void;
     'buy/redirect': (url: string) => void;
     'sell/redirect': (url: string) => void;
@@ -64,10 +63,10 @@ const applyTemplate = (content = 'You may now close this window.', options?: Tem
     return template;
 };
 
-export const createHttpReceiver = () => {
+export const createHttpReceiver = (options?: { port?: number }) => {
     const httpReceiver = new HttpServer<Events>({
         logger: convertILoggerToLog(global.logger, { serviceName: 'http-receiver' }),
-        port: 21335,
+        port: options?.port ?? 21335,
     });
 
     httpReceiver.use([
@@ -80,22 +79,16 @@ export const createHttpReceiver = () => {
     httpReceiver.get('/oauth', [
         allowReferers(['', '127.0.0.1', 'www.dropbox.com']), // No referer is sent by Google, Dropbox sends referer when using Safari
         (request, response) => {
-            const { search } = url.parse(request.url, true);
-            if (search) {
-                // send data back to main window
-                httpReceiver.emit('oauth/response', { search });
-            }
+            const { search, hash } = parseRequestUrl(request.url);
 
-            // replace # with ? so that query parameters can be read by renderer
-            const script = `
-                <script>
-                    if (window.location.href.includes('#')) {
-                        fetch(window.location.href.replace('#', '?'))
-                    }
-                </script>
-            `;
-            const template = applyTemplate(undefined, { script });
-            response.end(template);
+            // send data back to main window
+            httpReceiver.emit('oauth/response', {
+                key: 'trezor-oauth',
+                hash: hash!,
+                search: search!,
+            });
+
+            response.end(applyTemplate());
         },
     ]);
     httpReceiver.deactivateRoute('/oauth');
@@ -103,7 +96,7 @@ export const createHttpReceiver = () => {
     httpReceiver.get('/buy-redirect', [
         allowReferers(['', 'localhost:3000', '*.invity.io', 'invity.io']),
         (request, response) => {
-            const { query } = url.parse(request.url, true);
+            const { query } = parseRequestUrl(request.url);
             if (query && query.p) {
                 httpReceiver.emit('buy/redirect', query.p.toString());
             }
@@ -155,7 +148,7 @@ export const createHttpReceiver = () => {
     httpReceiver.get('/sell-redirect', [
         allowReferers(['']), // No referer
         (request, response) => {
-            const { query } = url.parse(request.url, true);
+            const { query } = parseRequestUrl(request.url);
             if (query && query.p) {
                 httpReceiver.emit('sell/redirect', query.p.toString());
             }
@@ -169,7 +162,7 @@ export const createHttpReceiver = () => {
     httpReceiver.get('/exchange-redirect', [
         allowReferers(['']), // No referer
         (request, response) => {
-            const { query } = url.parse(request.url, true);
+            const { query } = parseRequestUrl(request.url);
             if (query && query.p) {
                 httpReceiver.emit('exchange/redirect', query.p.toString());
             }

@@ -6,7 +6,7 @@ import {
     events,
 } from '@suite/analytics';
 
-import { useAnalytics } from '../../../../../../../support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 export const useGlobalSendReceiveAnalytics = () => {
     const analytics = useAnalytics();

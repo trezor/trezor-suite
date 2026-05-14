@@ -1,45 +1,59 @@
 import type { Store as ReduxStore } from 'redux';
 import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 
+import type { backupActions } from '@suite/backup';
+import type { desktopUpdateActions } from '@suite/desktop-update';
+import { type featureFeedbackSlice } from '@suite/feature-feedback';
+import type { flagsActions } from '@suite/flags';
+import type { LockAction } from '@suite/locks';
 import type { MetadataAction } from '@suite/metadata';
-import { analyticsActions } from '@suite-common/analytics-redux';
-import { bluetoothActions } from '@suite-common/bluetooth';
-import { deviceActions } from '@suite-common/device';
-import { firmwareActions } from '@suite-common/firmware';
-import { geolocationActions } from '@suite-common/geolocation';
-import { addLog } from '@suite-common/logger';
-import { messageSystemActions } from '@suite-common/message-system';
+import type { ModalAction } from '@suite/modal';
+import type { recoveryActions } from '@suite/recovery';
+import { type Route, type RouterAction } from '@suite/router';
+import { type suiteSettingsActions } from '@suite/settings';
+import { type analyticsActions } from '@suite-common/analytics-redux';
+import { type bluetoothActions } from '@suite-common/bluetooth';
+import { type deviceActions } from '@suite-common/device';
+import { type firmwareActions } from '@suite-common/firmware';
+import { type geolocationActions } from '@suite-common/geolocation';
+import { type addLog } from '@suite-common/logger';
+import { type messageSystemActions } from '@suite-common/message-system';
 import {
-    suiteSyncSlice as suiteSyncCommonSlice,
-    suiteSyncDataSlice,
+    type suiteSyncSlice as suiteSyncCommonSlice,
+    type suiteSyncDataSlice,
 } from '@suite-common/suite-sync';
-import { suiteSyncQuotaManagerActions } from '@suite-common/suite-sync-quota-manager';
-import type { Route } from '@suite-common/suite-types';
-import { thpActions } from '@suite-common/thp';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import { discoveryActions, feesActions, transactionsActions } from '@suite-common/wallet-core';
-import { BlockchainEvent, DEVICE, DeviceEvent, TransportEvent, UiEvent } from '@trezor/connect';
-import { FilterOutFromUnionByTypeProperty } from '@trezor/type-utils';
+import { type suiteSyncQuotaManagerActions } from '@suite-common/suite-sync-quota-manager';
+import { type thpActions } from '@suite-common/thp';
+import { type notificationsActions } from '@suite-common/toast-notifications';
+import {
+    type discoveryActions,
+    type feesActions,
+    type phishingActions,
+    type transactionsActions,
+} from '@suite-common/wallet-core';
+import {
+    type BlockchainEvent,
+    type DEVICE,
+    type DeviceEvent,
+    type TransportEvent,
+    type UiEvent,
+} from '@trezor/connect';
+import { type FilterOutFromUnionByTypeProperty } from '@trezor/type-utils';
 
-import type { BackupAction } from 'src/actions/backup/backupActions';
-import { deviceSlice } from 'src/actions/device/deviceSlice';
+import { type deviceSlice } from 'src/actions/device/deviceSlice';
 import type { OnboardingAction } from 'src/actions/onboarding/onboardingActions';
-import type { RecoveryAction } from 'src/actions/recovery/recoveryActions';
 import type { BioAuthAction } from 'src/actions/suite/bioAuthActions';
-import type { DesktopUpdateAction } from 'src/actions/suite/desktopUpdateActions';
 import type { GuideAction } from 'src/actions/suite/guideActions';
-import type { ModalAction } from 'src/actions/suite/modalActions';
 import type { ProtocolAction } from 'src/actions/suite/protocolActions';
-import type { RouterAction } from 'src/actions/suite/routerActions';
 import type { StorageAction } from 'src/actions/suite/storageActions';
 import type { SuiteAction } from 'src/actions/suite/suiteActions';
 import type { WindowAction } from 'src/actions/suite/windowActions';
-import { suiteSyncSlice } from 'src/actions/suiteSync/suiteSyncSlice';
+import { type suiteSyncSlice } from 'src/actions/suiteSync/suiteSyncSlice';
 import type { AppState } from 'src/reducers/store';
-import { GlobalSendReceiveAction } from 'src/slices/wallet/globalSendReceiveFilters';
+import { type GlobalSendReceiveAction } from 'src/slices/wallet/globalSendReceiveFilters';
 import type { WalletAction } from 'src/types/wallet';
 
-import { bluetoothSlice } from '../../actions/bluetooth/desktopBluetoothReducer';
+import { type bluetoothSlice } from '../../actions/bluetooth/desktopBluetoothReducer';
 
 // reexport
 export type {
@@ -67,6 +81,9 @@ type TrezorConnectEvents = TransportEvent | UiEvent | FilteredDeviceEvents | Blo
 export type TransactionAction = ReturnType<
     (typeof transactionsActions)[keyof typeof transactionsActions]
 >;
+
+export type PhishingAction = ReturnType<(typeof phishingActions)[keyof typeof phishingActions]>;
+
 export type NotificationAction = ReturnType<
     (typeof notificationsActions)[keyof typeof notificationsActions]
 >;
@@ -96,12 +113,24 @@ type SuiteSyncActionDesktop = ReturnType<
 type SuiteSyncQuotaManagerAction = ReturnType<
     (typeof suiteSyncQuotaManagerActions)[keyof typeof suiteSyncQuotaManagerActions]
 >;
+type FeatureFeedbackAction = ReturnType<
+    (typeof featureFeedbackSlice.actions)[keyof typeof featureFeedbackSlice.actions]
+>;
 type DeviceActionDesktop = ReturnType<
     (typeof deviceSlice.actions)[keyof typeof deviceSlice.actions]
 >;
 type ThpAction = ReturnType<(typeof thpActions)[keyof typeof thpActions]>;
 type GeolocationAction = ReturnType<(typeof geolocationActions)[keyof typeof geolocationActions]>;
 type FeeAction = ReturnType<(typeof feesActions)[keyof typeof feesActions]>;
+type FlagsAction = ReturnType<(typeof flagsActions)[keyof typeof flagsActions]>;
+type SuiteSettingsAction = ReturnType<
+    (typeof suiteSettingsActions)[keyof typeof suiteSettingsActions]
+>;
+type RecoveryAction = ReturnType<(typeof recoveryActions)[keyof typeof recoveryActions]>;
+type BackupAction = ReturnType<(typeof backupActions)[keyof typeof backupActions]>;
+type DesktopUpdateAction = ReturnType<
+    (typeof desktopUpdateActions)[keyof typeof desktopUpdateActions]
+>;
 
 // all actions from all apps used to properly type Dispatch.
 export type Action =
@@ -112,12 +141,15 @@ export type Action =
     | BluetoothActionDesktop
     | DesktopUpdateAction
     | DeviceAction
+    | FeatureFeedbackAction
     | DeviceActionDesktop
     | DiscoveryAction
     | FeeAction
     | FirmwareAction
+    | FlagsAction
     | GeolocationAction
     | GuideAction
+    | LockAction
     | MessageSystemAction
     | MetadataAction
     | ModalAction
@@ -129,6 +161,7 @@ export type Action =
     | RouterAction
     | StorageAction
     | SuiteAction
+    | SuiteSettingsAction
     | SuiteSyncAction
     | SuiteSyncActionCommon
     | SuiteSyncDataAction
@@ -136,6 +169,7 @@ export type Action =
     | SuiteSyncQuotaManagerAction
     | ThpAction
     | TransactionAction
+    | PhishingAction
     | TrezorConnectEvents
     | WalletAction
     | WindowAction

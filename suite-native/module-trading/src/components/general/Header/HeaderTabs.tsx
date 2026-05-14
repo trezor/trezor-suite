@@ -1,37 +1,17 @@
-import { useCallback, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
-import { useDispatch, useSelector } from 'react-redux';
 
-import { TradingType } from '@suite-common/trading';
+import { type TradingTypeWithConcierge } from '@suite-common/trading';
 import { events } from '@suite-native/analytics';
 import { HStack, IconButton, useBottomSheetModal } from '@suite-native/atoms';
-import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
-import { IconName } from '@suite-native/icons';
+import { type IconName } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
-import {
-    TradingWithFeatureFlagsRootState,
-    selectActiveTradingType,
-    tradingActions,
-} from '@suite-native/trading-state';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { HeaderTab } from './HeaderTab';
+import { useTradingTabs } from '../../../hooks/general/useTradingTabs';
 import { AdvancedSettingsSheet } from '../../settings/AdvancedSettingsSheet';
-
-const useSelectedTab = () => {
-    const dispatch = useDispatch();
-    const activeTab = useSelector(selectActiveTradingType);
-
-    const setActiveTab = useCallback(
-        (tab: TradingType) => {
-            dispatch(tradingActions.setActiveTradingType(tab));
-        },
-        [dispatch],
-    );
-
-    return { activeTab, setActiveTab };
-};
 
 const useTabsData = () => {
     const { translate } = useTranslate();
@@ -56,7 +36,13 @@ const useTabsData = () => {
                 icon: 'arrowsLeftRight',
                 testID: '@trading/exchange/header-tab',
             },
-        ] as { key: TradingType; label: string; icon: IconName; testID: string }[];
+            {
+                key: 'concierge',
+                label: translate('moduleTrading.tradingScreen.tabs.concierge'),
+                icon: 'handshake',
+                testID: '@trading/concierge/header-tab',
+            },
+        ] as { key: TradingTypeWithConcierge; label: string; icon: IconName; testID: string }[];
 
         return tabs.filter(Boolean);
     }, [translate]);
@@ -67,16 +53,32 @@ const tabsStyle = prepareNativeStyle(({ spacings }) => ({
 }));
 
 export const HeaderTabs = () => {
+    const listRef = useRef<FlatList>(null);
     const { applyStyle } = useNativeStyles();
-    const { activeTab, setActiveTab } = useSelectedTab();
+    const { activeTab, setActiveTab } = useTradingTabs();
     const data = useTabsData();
     const { translate } = useTranslate();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
-    const areTradingExchangeDexesEnabled = useSelector((state: TradingWithFeatureFlagsRootState) =>
-        selectIsFeatureFlagEnabled(state, FeatureFlag.AreTradingExchangeDexesEnabled),
-    );
     const analytics = useAnalytics();
-    const onTabPress = (tab: TradingType) => {
+
+    const activeTabIndex = useMemo(
+        () => data.findIndex(tab => tab.key === activeTab),
+        [data, activeTab],
+    );
+
+    useEffect(() => {
+        if (activeTabIndex < 0) {
+            return;
+        }
+
+        listRef.current?.scrollToIndex({
+            index: activeTabIndex,
+            animated: true,
+            viewPosition: 0.5,
+        });
+    }, [activeTabIndex]);
+
+    const onTabPress = (tab: TradingTypeWithConcierge) => {
         if (tab === activeTab) {
             return;
         }
@@ -96,6 +98,7 @@ export const HeaderTabs = () => {
         <>
             <HStack justifyContent="space-between">
                 <FlatList
+                    ref={listRef}
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     accessible={true}
@@ -112,16 +115,20 @@ export const HeaderTabs = () => {
                     )}
                     data={data}
                     extraData={activeTab}
+                    onScrollToIndexFailed={({ index, averageItemLength }) => {
+                        listRef.current?.scrollToOffset({
+                            offset: averageItemLength * index,
+                        });
+                    }}
                 />
-                {areTradingExchangeDexesEnabled && (
-                    <IconButton
-                        iconName="gear"
-                        size="small"
-                        colorScheme="tertiaryElevation0"
-                        accessibilityLabel={translate('moduleTrading.tradingScreen.tabs.settings')}
-                        onPress={openModal}
-                    />
-                )}
+                <IconButton
+                    iconName="gear"
+                    size="medium"
+                    intent="neutral"
+                    priority="secondary"
+                    accessibilityLabel={translate('moduleTrading.tradingScreen.tabs.settings')}
+                    onPress={openModal}
+                />
             </HStack>
             <AdvancedSettingsSheet ref={bottomSheetRef} closeModal={closeModal} />
         </>

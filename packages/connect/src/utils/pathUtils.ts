@@ -1,10 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/utils/pathUtils.js
 // TODO: There might be other issues with side-effects https://github.com/trezor/trezor-suite/issues/15559
+import type { PROTO } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-
-import { PROTO } from '../constants';
-import type { CoinInfo } from '../types/coinInfo';
-import type { DerivationPath, ProtoWithAddressN, ProtoWithDerivationPath } from '../types/params';
+import type { CoinInfo } from '@trezor/connect-common/src/types/coinInfo';
+import type {
+    DerivationPath,
+    ProtoWithAddressN,
+    ProtoWithDerivationPath,
+} from '@trezor/connect-common/src/types/params';
 
 export const HD_HARDENED = 0x80000000;
 export const toHardened = (n: number) => (n | HD_HARDENED) >>> 0;
@@ -47,7 +50,7 @@ export const getHDPath = (path: string): number[] => {
 export const isSegwitPath = (path: number[] | undefined) =>
     Array.isArray(path) && path[0] === toHardened(49);
 
-export const isBech32Path = (path: number[] | undefined) =>
+const isBech32Path = (path: number[] | undefined) =>
     Array.isArray(path) && path[0] === toHardened(84);
 
 export const isTaprootPath = (path: number[] | undefined) =>
@@ -152,15 +155,14 @@ export const validatePath = (path: DerivationPath, length = 0, base = false): nu
     if (typeof path === 'string') {
         valid = getHDPath(path);
     } else if (Array.isArray(path)) {
-        valid = path.map((p: any) => {
-            const n = parseInt(p, 10);
-            if (Number.isNaN(n)) {
+        valid = path.map(p => {
+            if (Number.isNaN(p)) {
                 throw PATH_NOT_VALID;
-            } else if (n < 0) {
+            } else if (p < 0) {
                 throw PATH_NEGATIVE_VALUES;
             }
 
-            return n;
+            return p;
         });
     }
     if (!valid) throw PATH_NOT_VALID;
@@ -180,23 +182,6 @@ export const getSerializedPath = (path: number[]) =>
             return s;
         })
         .join('/')}`;
-
-export const getPathFromIndex = (bip44purpose: number, bip44cointype: number, index: number) => [
-    toHardened(bip44purpose),
-    toHardened(bip44cointype),
-    toHardened(index),
-];
-
-export const getIndexFromPath = (path: number[]) => {
-    if (path.length < 3) {
-        throw ERRORS.TypedError(
-            'Method_InvalidParameter',
-            `getIndexFromPath: invalid path length ${path.toString()}`,
-        );
-    }
-
-    return fromHardened(path[2]);
-};
 
 export const fixPath = <
     T extends

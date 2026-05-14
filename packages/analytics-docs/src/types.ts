@@ -33,3 +33,19 @@ export type EventDoc = {
     attributes: Record<string, AttributeDoc>;
     platform: string;
 };
+
+/** Event received by the live log server from Suite (GET /log). */
+export type LiveLogEvent = {
+    id: string;
+    type: string;
+    timestamp: string;
+    payload: Record<string, string>;
+    meta: {
+        version?: string;
+        commit?: string;
+        instanceId?: string;
+        sessionId?: string;
+        messageId?: string;
+    };
+    receivedAt: number;
+};

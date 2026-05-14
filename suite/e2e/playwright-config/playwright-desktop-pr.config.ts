@@ -1,5 +1,6 @@
 import { defineConfig } from '@playwright/test';
 
+import { noOtherDevice } from '@trezor/e2e-utils';
 import { Model } from '@trezor/trezor-user-env-link';
 
 import { baseConfig } from './playwright-base.config';
@@ -22,7 +23,7 @@ const definition: PlaywrightProjectDefinition[] = [
         additionalGrepInvert: /@nightlyOnly/,
         currentsTags: tagsPr,
         nameSuffix: 'smoke',
-        grep: /(?=.*@T3T1)(?=.*@smoke)/,
+        grep: new RegExp(`^(?=.*@T3T1)((?=.*@smoke)|${noOtherDevice()})`),
     },
     { model: Model.T3B1, additionalGrepInvert: /@nightlyOnly/, currentsTags: tagsPr },
     { model: Model.T2T1, additionalGrepInvert: /@nightlyOnly/, currentsTags: tagsPr },
@@ -31,7 +32,7 @@ const definition: PlaywrightProjectDefinition[] = [
         name: 'no_device',
         additionalGrepInvert: /@nightlyOnly/,
         currentsTags: tagsPr,
-        grep: /(?=.*@noDevice)/,
+        grep: /^(?=.*@noDevice)/,
     },
 ];
 

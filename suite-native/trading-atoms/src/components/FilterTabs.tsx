@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
 
 import { Button } from '@suite-native/atoms';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type FilterItem<T = any> = {
     label: string;
@@ -21,21 +22,22 @@ export type FilterTabsProps<T = any> = {
     keyExtractor?: (item: FilterItem<T>) => string;
 };
 
-const FilterTab = ({ active, onPress, children }: FilterTabProps) => {
-    const colorScheme = active ? 'tertiaryElevation0' : 'backgroundSurfaceElevation0';
+const tabsStyle = prepareNativeStyle(({ spacings }) => ({
+    gap: spacings.sp12,
+}));
 
-    return (
-        <Button
-            colorScheme={colorScheme}
-            size="small"
-            onPress={onPress}
-            accessibilityRole="tab"
-            accessibilityState={{ selected: active }}
-        >
-            {children}
-        </Button>
-    );
-};
+const FilterTab = ({ active, onPress, children }: FilterTabProps) => (
+    <Button
+        intent="neutral"
+        priority={active ? 'primary' : 'secondary'}
+        size="medium"
+        onPress={onPress}
+        accessibilityRole="tab"
+        accessibilityState={{ selected: active }}
+    >
+        {children}
+    </Button>
+);
 
 export const FilterTabs = <T,>({
     items,
@@ -43,6 +45,8 @@ export const FilterTabs = <T,>({
     value,
     keyExtractor = (item: FilterItem<T>) => String(item.value),
 }: FilterTabsProps<T>) => {
+    const { applyStyle } = useNativeStyles();
+
     const defaultKeyExtractor = useMemo(
         () => (item: FilterItem<T>) => keyExtractor(item),
         [keyExtractor],
@@ -58,9 +62,10 @@ export const FilterTabs = <T,>({
         <FlatList
             horizontal
             showsHorizontalScrollIndicator={false}
+            accessible={true}
+            contentContainerStyle={applyStyle(tabsStyle)}
             data={items}
             keyExtractor={defaultKeyExtractor}
-            accessible={true}
             accessibilityRole="tablist"
             renderItem={renderFilterTab}
             keyboardShouldPersistTaps="always"

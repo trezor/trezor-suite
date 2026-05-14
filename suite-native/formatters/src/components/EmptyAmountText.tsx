@@ -1,5 +1,5 @@
 import { Text } from '@suite-native/atoms';
-import { NativeTypographyStyle } from '@trezor/theme';
+import { type NativeTypographyStyle } from '@trezor/theme';
 
 type EmptyAmountTextProps = {
     variant?: NativeTypographyStyle;

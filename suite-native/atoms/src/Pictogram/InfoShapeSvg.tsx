@@ -1,11 +1,11 @@
 import Svg, { Rect } from 'react-native-svg';
 
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 export const InfoShapeSvg = () => {
     const { utils } = useNativeStyles();
-    const borderColor = utils.colors.backgroundAlertBlueSubtleOnElevationNegative;
-    const backgroundColor = utils.colors.backgroundAlertBlueSubtleOnElevation1;
+    const borderColor = utils.colors.legacyBackgroundAlertBlueSubtleOnElevationNegative;
+    const backgroundColor = utils.colors.legacyBackgroundAlertBlueSubtleOnElevation1;
 
     return (
         <Svg width={112} height={112} fill="none">

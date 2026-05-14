@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import {
     Box,
@@ -10,7 +10,7 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
-import { FeeLevel } from '@trezor/connect';
+import { type FeeLevel } from '@trezor/connect';
 
 export const FEE_CARD_MIN_WIDTH = 170;
 

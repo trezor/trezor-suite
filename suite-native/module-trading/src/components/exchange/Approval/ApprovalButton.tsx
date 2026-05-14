@@ -1,51 +1,71 @@
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectTradingExchangePreselectedQuote } from '@suite-common/trading';
-import { AsyncButton, Box } from '@suite-native/atoms';
+import { parseCryptoId, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
+import { type TokenAddress } from '@suite-common/wallet-types';
+import { Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    StackNavigationProps,
-    TradingStackParamList,
-    TradingStackRoutes,
+    type ExchangeFlowType,
+    type RootStackParamList,
+    RootStackRoutes,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
+import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { useExchangeFlow } from '../../../hooks/exchange/useExchangeFlow';
+const footerStyle = prepareNativeStyle(utils => ({
+    paddingHorizontal: utils.spacings.sp16,
+    paddingBottom: utils.spacings.sp16,
+}));
 
-export const ApprovalButton = () => {
+export type ApprovalButtonProps = {
+    isReady: boolean;
+    isDisabled?: boolean;
+    flowType: Exclude<ExchangeFlowType, 'swap'>;
+};
+
+export const ApprovalButton = ({ isReady, isDisabled, flowType }: ApprovalButtonProps) => {
     const navigation =
         useNavigation<
-            StackNavigationProps<TradingStackParamList, TradingStackRoutes.TradingExchangeApproval>
+            StackNavigationProps<RootStackParamList, RootStackRoutes.TradingExchangeApproval>
         >();
 
-    const { confirmTrade } = useExchangeFlow();
+    const quote = useSelector(selectTradingExchangeSelectedQuote);
+    const fromAccount = useSelector(selectExchangeSelectedSendAccount);
+    const { applyStyle } = useNativeStyles();
 
-    const quote = useSelector(selectTradingExchangePreselectedQuote);
-
-    const handleContinue = async () => {
-        const success = await confirmTrade({
-            receiveAddress: quote?.receiveAddress ?? '',
-            trade: quote,
-            approvalFlow: true,
-            nextStep: () => {},
-        });
-
-        if (success) {
-            // TODO
-            navigation.navigate(TradingStackRoutes.TradingExchangePreview, { isApproved: true });
-        }
-    };
-
-    if (!quote) {
+    if (!quote || !isReady) {
         return null;
     }
 
+    const handleContinue = () => {
+        const tokenContract = quote.send
+            ? (parseCryptoId(quote.send)?.contractAddress as TokenAddress)
+            : undefined;
+        if (!fromAccount || !tokenContract) {
+            console.warn('account or tokenContract is not defined');
+
+            return;
+        }
+        navigation.navigate(RootStackRoutes.TradingExchangeOutputsReview, {
+            accountKey: fromAccount.key,
+            tokenContract,
+            orderId: quote.orderId ?? '',
+            flowType,
+        });
+    };
+
     return (
-        <Box paddingTop="sp20">
-            <AsyncButton onPress={handleContinue}>
-                <Translation id="generic.buttons.continue" />
-            </AsyncButton>
-        </Box>
+        <Animated.View entering={FadeInDown}>
+            <ScreenFooterGradient />
+            <Box style={applyStyle(footerStyle)}>
+                <Button onPress={handleContinue} isDisabled={isDisabled}>
+                    <Translation id="generic.buttons.continue" />
+                </Button>
+            </Box>
+        </Animated.View>
     );
 };

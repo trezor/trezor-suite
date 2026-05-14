@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { NativeSpacing, NativeTypographyStyle } from '@trezor/theme';
+import { type NativeSpacing, type NativeTypographyStyle } from '@trezor/theme';
 
 import { VStack } from '../Stack';
-import { Text, TextProps } from '../Text';
+import { Text, type TextProps } from '../Text';
 
 export type TitleHeaderProps = {
     title?: ReactNode;
@@ -30,7 +30,7 @@ export const TitleHeader = ({
             </Text>
         )}
         {subtitle && (
-            <Text color="textSubdued" variant={subtitleVariant} textAlign={textAlign}>
+            <Text color="contentSecondary" variant={subtitleVariant} textAlign={textAlign}>
                 {subtitle}
             </Text>
         )}

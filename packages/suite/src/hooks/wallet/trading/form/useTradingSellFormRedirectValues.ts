@@ -1,13 +1,15 @@
 import { useCallback, useMemo } from 'react';
 
-import { FiatCurrencyCode, SellFiatTradeQuoteRequest } from 'invity-api';
+import { type SellFiatTradeQuoteRequest } from 'invity-api';
 
 import {
-    TradingAssetOption,
-    TradingAssetSellOption,
-    TradingCountryCode,
+    type TradingAssetOption,
+    type TradingAssetSellOption,
+    type TradingCountryCode,
     type TradingSellFormProps,
+    buildTradingBaseCurrencyOptionFromFiat,
     getDefaultCountry,
+    getDefaultCountrySubdivision,
     selectTradingComposedTransactionInfo,
     useTradingAssets,
 } from '@suite-common/trading';
@@ -17,10 +19,7 @@ import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { useSelector } from 'src/hooks/suite';
-import {
-    buildTradingFiatOption,
-    resolveAddressAndToken,
-} from 'src/utils/wallet/trading/tradingUtils';
+import { resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
 
 export const useTradingSellFormRedirectValues = (
     isFromRedirect: boolean,
@@ -78,6 +77,7 @@ export const useTradingSellFormRedirectValues = (
               amountInCrypto: quotesRequest.amountInCrypto,
               sendCryptoSelect: sendCrypto?.asset,
               countrySelect: getDefaultCountry(quotesRequest.country as TradingCountryCode),
+              countrySubdivisionSelect: getDefaultCountrySubdivision(quotesRequest.subdivision),
               paymentMethod: quotesRequest.paymentMethod && {
                   value: quotesRequest.paymentMethod,
                   label: quotesRequest.paymentMethod,
@@ -93,9 +93,7 @@ export const useTradingSellFormRedirectValues = (
                   {
                       ...DEFAULT_PAYMENT,
                       fiat: quotesRequest.fiatStringAmount as string,
-                      currency: buildTradingFiatOption(
-                          quotesRequest.fiatCurrency as FiatCurrencyCode,
-                      ),
+                      currency: buildTradingBaseCurrencyOptionFromFiat(quotesRequest.fiatCurrency),
                       amount: quotesRequest.cryptoStringAmount as string,
                       address,
                       token,

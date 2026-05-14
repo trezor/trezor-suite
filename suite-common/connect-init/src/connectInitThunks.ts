@@ -12,25 +12,24 @@ import {
     selectFeatureConfig,
 } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { getBrowserName } from '@suite-common/suite-utils';
 import { deviceConnectThunks, selectEnabledNetworks } from '@suite-common/wallet-core';
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
     DEVICE,
     DEVICE_EVENT,
-    Device,
+    type Device,
     TRANSPORT_EVENT,
-    UI,
     UI_EVENT,
     UI_REQUEST,
 } from '@trezor/connect';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 import { DATA_URL } from '@trezor/urls';
-import { capitalizeFirstLetter, getSynchronize } from '@trezor/utils';
+import { capitalizeFirstLetter, getSynchronize, isArrayMember } from '@trezor/utils';
 
 import { blacklist } from './blacklist';
-import { ConnectKey, ConnectWebKey } from './types';
+import { type ConnectKey } from './types';
 
 const CONNECT_INIT_MODULE = '@common/connect-init';
 
@@ -43,7 +42,12 @@ type ConnectInitHooks = Partial<
         (device: Device, prevConnectedDevices: TrezorDevice[]) => void
     >
 > &
-    Partial<Record<typeof UI.INVALID_PIN_ATTEMPTS_DEPLETED, () => void>>;
+    Partial<
+        Record<
+            typeof UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED | typeof UI_REQUEST.REQUEST_WORD,
+            () => void
+        >
+    >;
 
 export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>(
     `${CONNECT_INIT_MODULE}/initThunk`,
@@ -98,8 +102,8 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
             // this switch is still one more layer of indirection to be removed. connect actions are dispatched
             // and could be handled directly in reducers
             switch (action.type) {
-                case UI.REQUEST_PIN:
-                case UI.INVALID_PIN:
+                case UI_REQUEST.REQUEST_PIN:
+                case UI_REQUEST.INVALID_PIN:
                     dispatch(
                         deviceActions.addButtonRequest({
                             // todo: note that this is not 'threadsafe', currently selected device is not necessarily the device
@@ -111,7 +115,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                         }),
                     );
                     break;
-                case UI.REQUEST_BUTTON: {
+                case UI_REQUEST.REQUEST_BUTTON: {
                     const { device: _, ...request } = action.payload;
                     dispatch(
                         deviceActions.addButtonRequest({
@@ -124,11 +128,11 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
             }
 
             if (
-                action.type === UI.INVALID_PIN_ATTEMPTS_DEPLETED &&
                 connectInitHooks &&
-                UI.INVALID_PIN_ATTEMPTS_DEPLETED in connectInitHooks
+                (action.type === UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED ||
+                    action.type === UI_REQUEST.REQUEST_WORD)
             ) {
-                connectInitHooks?.[UI.INVALID_PIN_ATTEMPTS_DEPLETED]?.();
+                connectInitHooks[action.type]?.();
             }
         });
 
@@ -145,7 +149,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
         const synchronize = getSynchronize();
 
         Object.keys(TrezorConnect)
-            .filter(k => !blacklist.includes(k as ConnectWebKey))
+            .filter(k => !isArrayMember(k, blacklist))
             .forEach(key => {
                 // typescript complains about params and return type, need to be "any"
                 const original: any = TrezorConnect[key as ConnectKey];
@@ -159,8 +163,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                         key === 'call'
                             ? params.method.startsWith('cardano')
                             : key.startsWith('cardano');
-                    const cardanoEnabled =
-                        !!enabledNetworks.find(a => a === 'ada') || isCardanoMethod;
+                    const cardanoEnabled = enabledNetworks.includes('ada') || isCardanoMethod;
 
                     const result = await synchronize(() =>
                         original({ ...params, useCardanoDerivation: cardanoEnabled }),

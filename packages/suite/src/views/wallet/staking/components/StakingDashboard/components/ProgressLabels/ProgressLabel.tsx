@@ -1,12 +1,11 @@
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 
-import styled, { DefaultTheme } from 'styled-components';
+import styled, { type DefaultTheme } from 'styled-components';
 
 import { IconCircle, Row, Text } from '@trezor/components';
-import { IconCirclePaddingType } from '@trezor/components/src/components/IconCircle/types';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 
-import { ProgressLabelState } from './types';
+import { type ProgressLabelState } from './types';
 
 const DEFAULT_LABEL_HEIGHT = 48;
 
@@ -19,28 +18,26 @@ const mapProgressStateToBackground = ({
 }) => {
     switch ($progressState) {
         case 'active':
-            return theme.backgroundAlertYellowSubtleOnElevation2;
+            return theme.legacyBackgroundAlertYellowSubtleOnElevation2;
         case 'done':
-            return theme.backgroundPrimarySubtleOnElevation1;
+            return theme.legacyBackgroundPrimarySubtleOnElevation1;
         default:
-            return theme.backgroundSurfaceElevation2;
+            return theme.legacyBackgroundSurfaceElevation2;
     }
 };
 
 const getProgressStateIcon = (progressState: ProgressLabelState) => {
     const props = {
-        paddingType: 'small' as IconCirclePaddingType,
-        size: 28,
-        hasBorder: false,
-    };
+        size: 32,
+    } as const;
 
     switch (progressState) {
         case 'active':
-            return <IconCircle {...props} name="spinner" variant="warning" />;
+            return <IconCircle {...props} name="spinner" intent="warning" />;
         case 'done':
-            return <IconCircle {...props} name="check" variant="primary" />;
+            return <IconCircle {...props} name="check" intent="brand" />;
         default:
-            return <IconCircle {...props} name="dotOutlineFilled" variant="tertiary" />;
+            return <IconCircle {...props} name="dotOutlineFilled" intent="neutral" />;
     }
 };
 
@@ -98,7 +95,7 @@ const ProgressLabelItem = styled.div<{
             position: absolute;
             top: 0;
             left: 0;
-            border-left: 12px solid ${({ theme }) => theme.backgroundSurfaceElevation1};
+            border-left: 12px solid ${({ theme }) => theme.surfaceFillRaised};
             border-top: ${({ $currentHeight = DEFAULT_LABEL_HEIGHT }) => $currentHeight / 2}px solid
                 transparent;
             border-bottom: ${({ $currentHeight = DEFAULT_LABEL_HEIGHT }) => $currentHeight / 2}px

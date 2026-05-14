@@ -1,13 +1,13 @@
-import { Borders, NativeBorders, nativeBorders } from './borders';
-import { BoxShadows, NativeBoxShadows, nativeBoxShadows } from './boxShadows';
-import { CoinsColors, coinsColors } from './coinsColors';
-import { Colors, ThemeColorVariant, colorVariants } from './colors';
-import { FontFamilies, NativeFontFamilies, nativeFontFamilies } from './fontFamilies';
-import { FontWeights, fontWeights } from './fontWeights';
-import { Sizes } from './sizes';
-import { NativeSpacings, Spacings, nativeSpacings } from './spacings';
-import { NativeTypographyStyles, TypographyStyles, nativeTypography } from './typography';
-import { ZIndices } from './zIndices';
+import { type Borders, type NativeBorders, nativeBorders } from './borders';
+import { type BoxShadows, type NativeBoxShadows, nativeBoxShadows } from './boxShadows';
+import { type CoinsColors, coinsColors } from './coinsColors';
+import { type Colors, type ThemeColorVariant, colorVariants } from './colors';
+import { type FontFamilies, type NativeFontFamilies, nativeFontFamilies } from './fontFamilies';
+import { type FontWeights, fontWeights } from './fontWeights';
+import { type Sizes } from './sizes';
+import { type NativeSpacings, type Spacings, nativeSpacings } from './spacings';
+import { type NativeTypographyStyles, type TypographyStyles, nativeTypography } from './typography';
+import { type ZIndices } from './zIndices';
 
 export interface Theme {
     borders: Borders;

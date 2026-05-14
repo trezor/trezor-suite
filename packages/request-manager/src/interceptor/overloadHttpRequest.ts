@@ -1,8 +1,8 @@
-import http from 'http';
+import type http from 'http';
 
 import { getWeakRandomId, isWhitelistedHost } from '@trezor/utils';
 
-import { InterceptorContext } from './interceptorTypes';
+import { type InterceptorContext } from './interceptorTypes';
 
 const getIdentityName = (proxyAuthorization?: http.OutgoingHttpHeader) => {
     const identity = Array.isArray(proxyAuthorization) ? proxyAuthorization[0] : proxyAuthorization;

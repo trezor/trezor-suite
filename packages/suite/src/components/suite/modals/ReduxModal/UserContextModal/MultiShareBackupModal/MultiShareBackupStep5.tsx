@@ -1,4 +1,4 @@
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import {
     Banner,
     Card,
@@ -6,7 +6,7 @@ import {
     Grid,
     H4,
     Icon,
-    IconName,
+    type IconName,
     List,
     Paragraph,
 } from '@trezor/components';

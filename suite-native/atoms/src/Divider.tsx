@@ -1,12 +1,12 @@
 import {
-    NativeStyleObject,
+    type NativeStyleObject,
     mergeNativeStyleObjects,
     prepareNativeStyle,
     useNativeStyles,
-} from '@trezor/styles';
+} from '@trezor/styles-native';
 import { isNotNullOrUndefined } from '@trezor/utils';
 
-import { Box, BoxProps } from './Box';
+import { Box, type BoxProps } from './Box';
 
 export type DividerProps = Omit<BoxProps, 'style'> & {
     style?: NativeStyleObject;
@@ -14,7 +14,7 @@ export type DividerProps = Omit<BoxProps, 'style'> & {
 
 const dividerStyle = prepareNativeStyle(utils => ({
     borderBottomWidth: utils.borders.widths.small,
-    borderBottomColor: utils.colors.borderElevation1,
+    borderBottomColor: utils.colors.borderNeutral,
     flex: 1,
 }));
 

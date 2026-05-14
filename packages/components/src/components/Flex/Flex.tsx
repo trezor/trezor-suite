@@ -1,30 +1,30 @@
-import React, { HTMLAttributes } from 'react';
+import React, { type HTMLAttributes } from 'react';
 
-import styled, { DefaultTheme, css } from 'styled-components';
+import styled, { type DefaultTheme, css } from 'styled-components';
 
 import {
-    Color,
-    Elevation,
-    SpacingValues,
-    SpacingValuesNew,
+    type Color,
+    type Elevation,
+    type SpacingValues,
+    type SpacingValuesNew,
     mapElevationToBorder,
 } from '@trezor/theme';
 
 import {
-    FlexAlignItems,
-    FlexAlignSelf,
-    FlexDirection,
-    FlexJustifyContent,
-    FlexType,
-    FlexWrap,
+    type FlexAlignItems,
+    type FlexAlignSelf,
+    type FlexDirection,
+    type FlexJustifyContent,
+    type FlexType,
+    type FlexWrap,
 } from './FlexProp';
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { TransientProps, makePropsTransient } from '../../utils/transientProps';
+import { type TransientProps, makePropsTransient } from '../../utils/transientProps';
 import { useElevation } from '../ElevationContext/ElevationContext';
 
 export const allowedFlexFrameProps = [
@@ -107,7 +107,7 @@ const Container = styled.div<ContainerProps>`
     display: flex;
 
     flex-flow: ${({ $direction, $isReversed, $flexWrap }) =>
-        `${$direction}${$isReversed === true ? '-reverse' : ''} ${$flexWrap}`};
+        `${$direction}${$isReversed ? '-reverse' : ''} ${$flexWrap}`};
     flex: ${({ $flex }) => $flex};
     gap: ${({ $rowGap, $columnGap }) => `${$rowGap}px ${$columnGap}px`};
     justify-content: ${({ $justifyContent }) => $justifyContent};
@@ -213,5 +213,12 @@ export const Flex = ({
 export const Column = (props: FlexProps) => <Flex {...props} direction="column" />;
 export const Row = (props: FlexProps) => <Flex alignItems="center" {...props} direction="row" />;
 export const Center = (props: FlexProps) => (
-    <Flex alignSelf="center" alignItems="center" justifyContent="center" {...props} />
+    <Flex
+        alignSelf="center"
+        alignItems="center"
+        justifyContent="center"
+        width="100%"
+        height="100%"
+        {...props}
+    />
 );

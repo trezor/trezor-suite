@@ -1,15 +1,27 @@
-import { OnboardingAnalytics, asTypedDesktopAnalytics, events } from '@suite/analytics';
-import { selectSelectedDevice } from '@suite-common/device';
-import { ExtraDependencies } from '@suite-common/redux-utils';
-import { BackupType } from '@suite-common/suite-types';
-import { startDiscoveryThunk } from '@suite-common/wallet-core';
+import { type OnboardingAnalytics, asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { initialRunCompleted } from '@suite/flags';
+import { closeModal } from '@suite/modal';
+import { recoveryRerunThunk } from '@suite/recovery';
+import { closeModalApp, goto } from '@suite/router';
+import {
+    selectIsDeviceAuthenticityCheckEnabled,
+    selectIsUnlockedBootloaderAllowed,
+} from '@suite/settings';
+import { selectHasBitcoinOnlyFirmware, selectSelectedDevice } from '@suite-common/device';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
+import { type BackupType } from '@suite-common/suite-types';
+import {
+    changeCoinVisibility,
+    selectEnabledNetworks,
+    startDiscoveryThunk,
+} from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import { stepCategories } from 'src/config/onboarding/steps';
 import * as STEP from 'src/constants/onboarding/steps';
-import { AnyPath, AnyStepId } from 'src/types/onboarding';
-import { Dispatch, GetState } from 'src/types/suite';
+import { type AnyPath, type AnyStepId } from 'src/types/onboarding';
+import { type Dispatch, type GetState } from 'src/types/suite';
 import {
     findNextStep,
     findPrevStep,
@@ -17,10 +29,10 @@ import {
     resolveNextAvailableStep,
 } from 'src/utils/onboarding/steps';
 
-import { selectOnboardingAnalytics } from '../../reducers/onboarding/onboardingReducer';
-import * as modalActions from '../suite/modalActions';
-import * as routerActions from '../suite/routerActions';
-import * as suiteActions from '../suite/suiteActions';
+import {
+    type BackupMedium,
+    selectOnboardingAnalytics,
+} from '../../reducers/onboarding/onboardingReducer';
 
 export type OnboardingAction =
     | {
@@ -49,6 +61,10 @@ export type OnboardingAction =
     | {
           type: typeof ONBOARDING.SELECT_BACKUP_TYPE;
           payload: BackupType;
+      }
+    | {
+          type: typeof ONBOARDING.SELECT_BACKUP_MEDIUM;
+          payload: BackupMedium;
       };
 
 const goToStep = (stepId: AnyStepId): OnboardingAction => ({
@@ -72,9 +88,8 @@ const getAllStepsInPath = (getState: GetState) => {
     const isStepUsedProps = {
         device: selectSelectedDevice(getState()),
         onboardingPath: getState().onboarding.path,
-        isDeviceAuthenticityCheckEnabled:
-            getState().suite.settings.enabledSecurityChecks.deviceAuthenticity,
-        isUnlockedBootloaderAllowed: getState().suite.settings.debug.isUnlockedBootloaderAllowed,
+        isDeviceAuthenticityCheckEnabled: selectIsDeviceAuthenticityCheckEnabled(getState()),
+        isUnlockedBootloaderAllowed: selectIsUnlockedBootloaderAllowed(getState()),
     };
 
     return allSteps.filter(step => isStepUsed(step, isStepUsedProps));
@@ -113,11 +128,20 @@ const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDep
     // After device interaction, Connect sends UI_REQUEST.CLOSE_UI_WINDOW to close any open modal. On Web this is
     // instant, so nothing blocks navigation, but on Desktop there is delay, so we must clear the modal manually to
     // ensure navigation to 'suite-index'. Particularly, setting PIN leaves ButtonRequest_Success hanging for a moment.
-    dispatch(modalActions.onCancel());
+    dispatch(closeModal());
 
-    dispatch(suiteActions.initialRunCompleted());
+    dispatch(initialRunCompleted());
     dispatch(resetOnboarding());
-    dispatch(routerActions.closeModalApp(true));
+    dispatch(closeModalApp(true));
+
+    // For Bitcoin-only firmware, pre-activate BTC so the user lands on a populated dashboard
+    // instead of the empty "activate assets" state. Only do this on initial setup, when no
+    // networks have been explicitly enabled yet, to avoid overriding user's previous choices.
+    const isBitcoinOnlyFirmware = selectHasBitcoinOnlyFirmware(getState());
+    const enabledNetworks = selectEnabledNetworks(getState());
+    if (isBitcoinOnlyFirmware && enabledNetworks.length === 0) {
+        dispatch(changeCoinVisibility({ symbol: 'btc', shouldBeVisible: true }));
+    }
 
     dispatch(startDiscoveryThunk({ device }));
 
@@ -176,6 +200,11 @@ const updateBackupType = (payload: BackupType): OnboardingAction => ({
     payload,
 });
 
+const updateBackupMedium = (payload: BackupMedium): OnboardingAction => ({
+    type: ONBOARDING.SELECT_BACKUP_MEDIUM,
+    payload,
+});
+
 const beginOnboardingTutorial = () => async (dispatch: Dispatch, getState: GetState) => {
     const device = selectSelectedDevice(getState());
     if (!device) return;
@@ -197,6 +226,27 @@ const resolveNextAfterSkipped =
         return resolvedNextStep?.id;
     };
 
+const recoveryRerun = () => async (dispatch: Dispatch, getState: GetState) => {
+    const result = await dispatch(recoveryRerunThunk());
+
+    if (!recoveryRerunThunk.fulfilled.match(result)) {
+        return;
+    }
+
+    const { initialized } = result.payload;
+    const { router } = getState();
+
+    if (initialized) {
+        dispatch(goto({ routeName: 'recovery-index' }));
+    } else {
+        if (router.app !== 'onboarding') {
+            dispatch(goto({ routeName: 'onboarding-index' }));
+        }
+        dispatch(goToStep('recovery'));
+        dispatch(addPath('recovery'));
+    }
+};
+
 export {
     enableOnboardingReducer,
     goToNextStep,
@@ -209,5 +259,7 @@ export {
     updateAnalytics,
     beginOnboardingTutorial,
     updateBackupType,
+    updateBackupMedium,
     resolveNextAfterSkipped,
+    recoveryRerun,
 };

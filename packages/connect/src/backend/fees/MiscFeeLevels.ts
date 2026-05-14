@@ -1,10 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/Fees.js
 
+import type { CoinInfo, FeeLevel } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { cloneObject } from '@trezor/utils/src/cloneObject';
 
-import type { CoinInfo, FeeLevel } from '../../types';
-import { Blockchain } from '../Blockchain';
+import type { Blockchain } from '../Blockchain';
 
 export class MiscFeeLevels {
     coinInfo: CoinInfo;

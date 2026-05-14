@@ -1,54 +1,54 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { Anchor, SettingsAnchor } from '@suite/router';
+import { selectAddressDisplayType, setAddressDisplayType } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
-import { SelectBar } from '@trezor/components';
+import { Switch } from '@trezor/components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { setAddressDisplayType } from 'src/actions/suite/suiteActions';
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
-const options = [
-    {
-        label: <Translation id="TR_ORIGINAL_ADDRESS" />,
-        value: AddressDisplayOptions.ORIGINAL,
-    },
-    {
-        label: <Translation id="TR_CHUNKED_ADDRESS" />,
-        value: AddressDisplayOptions.CHUNKED,
-    },
-];
+const getAddressDisplayType = (value: boolean) =>
+    value ? AddressDisplayOptions.CHUNKED : AddressDisplayOptions.ORIGINAL;
 
 export const AddressDisplay = () => {
-    const selectedAddressDisplay = useSelector(state => state.suite.settings.addressDisplayType);
     const dispatch = useDispatch();
     const analytics = useAnalytics();
-    const onChange = (value: AddressDisplayOptions) => {
+
+    const selectedAddressDisplay = useSelector(selectAddressDisplayType);
+
+    const onChange = (value: boolean) => {
+        const addressDisplayType = getAddressDisplayType(value);
+
         analytics.report({
             type: events.settingsGeneralAddressDisplayTypeEvent.name,
-            payload: {
-                addressDisplayType: value,
-            },
+            payload: { addressDisplayType },
         });
-        dispatch(setAddressDisplayType(value));
+
+        dispatch(setAddressDisplayType(addressDisplayType));
     };
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.AddressDisplay}>
-            <TextColumn
-                title={<Translation id="TR_ADDRESS_DISPLAY" />}
-                description={<Translation id="TR_ADDRESS_DISPLAY_DESCRIPTION" />}
-            />
-            <ActionColumn>
-                <SelectBar
-                    selectedOption={selectedAddressDisplay}
-                    options={options}
-                    onChange={onChange}
-                    size="small"
-                />
-            </ActionColumn>
-        </SettingsSectionItem>
+        <Anchor anchorId={SettingsAnchor.AddressDisplay}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
+                >
+                    <TextColumn
+                        title={<Translation id="TR_ADDRESS_DISPLAY" />}
+                        description={<Translation id="TR_ADDRESS_DISPLAY_DESCRIPTION" />}
+                    />
+                    <ActionColumn>
+                        <Switch
+                            isChecked={selectedAddressDisplay === AddressDisplayOptions.CHUNKED}
+                            onChange={onChange}
+                        />
+                    </ActionColumn>
+                </SectionItem>
+            )}
+        </Anchor>
     );
 };

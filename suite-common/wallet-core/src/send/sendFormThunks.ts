@@ -2,21 +2,20 @@ import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { selectSelectedDevice } from '@suite-common/device';
-import { ActionsFromAsyncThunk, createThunk } from '@suite-common/redux-utils';
-import { UINT256_MAX } from '@suite-common/suite-constants';
+import { type ActionsFromAsyncThunk, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
-    Account,
-    AccountKey,
-    ComposeActionContext,
-    FormState,
-    GeneralPrecomposedTransactionFinal,
-    PrecomposedLevels,
-    PrecomposedLevelsCardano,
-    PrecomposedTransactionFinal,
-    PrecomposedTransactionFinalBumpFeeRbf,
-    PrecomposedTransactionFinalCardano,
+    type Account,
+    type AccountKey,
+    type ComposeActionContext,
+    type FormState,
+    type GeneralPrecomposedTransactionFinal,
+    type PrecomposedLevels,
+    type PrecomposedLevelsCardano,
+    type PrecomposedTransactionFinal,
+    type PrecomposedTransactionFinalBumpFeeRbf,
+    type PrecomposedTransactionFinalCardano,
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
@@ -30,15 +29,17 @@ import {
     getPendingAccount,
     hasNetworkFeatures,
     isCardanoTx,
+    isEvmApprovalTx,
     isExchangeTradingForm,
+    isMaxAllowance,
     subunitsToUnits,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import { BlockbookTransaction } from '@trezor/blockchain-link-types';
-import TrezorConnect, { PROTO, Success, SuccessWithDevice, Unsuccessful } from '@trezor/connect';
+import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
+import TrezorConnect, { type PROTO } from '@trezor/connect';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: blocked on blockchain plugin modularisation; remove this exception once Solana helpers are exposed via a public API (see #27376 deferred work)
 import { getSolanaTokenDefinition } from '@trezor/connect/src/api/solana/solanaDefinitions';
-import { PushedTransaction } from '@trezor/connect/src/types/api/pushTransaction';
-import { exhaustive } from '@trezor/type-utils';
+import { type Ok, exhaustive } from '@trezor/type-utils';
 import { BigNumber, cloneObject, typedObjectEntries } from '@trezor/utils';
 
 import { sendFormActions } from './sendFormActions';
@@ -70,10 +71,14 @@ import {
     signSolanaSendFormTransactionThunk,
 } from './sendFormSolanaThunks';
 import {
-    ComposeFeeLevelsError,
-    PushTransactionError,
-    SignTransactionError,
-    SignTransactionTimeoutError,
+    composeTronTransactionFeeLevelsThunk,
+    signTronSendFormTransactionThunk,
+} from './sendFormTronThunks';
+import {
+    type ComposeFeeLevelsError,
+    type PushTransactionError,
+    type SignTransactionError,
+    type SignTransactionTimeoutError,
 } from './sendFormTypes';
 import { accountsActions } from '../accounts/accountsActions';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
@@ -92,13 +97,12 @@ import {
 export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
     `${SEND_MODULE_PREFIX}/convertSendFormDraftsBtcAmountUnitsThunk`,
     (
-        { selectedAccountKey }: { selectedAccountKey?: AccountKey },
-        { dispatch, getState, extra, rejectWithValue },
+        {
+            selectedAccountKey,
+            isOnSendPage,
+        }: { selectedAccountKey?: AccountKey; isOnSendPage?: boolean },
+        { dispatch, getState, rejectWithValue },
     ) => {
-        const {
-            selectors: { selectRoute },
-        } = extra;
-        const suiteRoute = selectRoute(getState());
         const sendFormDrafts = selectSendFormDrafts(getState());
         const areSatsAmountUnit = selectAreSatsAmountUnit(getState());
 
@@ -108,16 +112,13 @@ export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
             return rejectWithValue('Account not found.');
         }
 
-        // draft will be saved after leaving the form anyways – don't interfere with the logic
-        const isOnDesktopSendPage = suiteRoute?.name === 'wallet-send';
-
         draftEntries.forEach(([accountKey, draft]) => {
             // Todo: is this cast correct? https://github.com/trezor/trezor-suite/issues/24918
             const relatedAccount = selectAccountByKey(getState(), accountKey as AccountKey);
 
             const isSelectedAccount = selectedAccountKey === accountKey;
 
-            if ((isSelectedAccount && isOnDesktopSendPage) || !relatedAccount) {
+            if ((isSelectedAccount && isOnSendPage) || !relatedAccount) {
                 return;
             }
 
@@ -148,15 +149,12 @@ export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
     },
 );
 
-const isSuccessfullyPushedTransaction = (
-    results: SuccessWithDevice<PushedTransaction> | Unsuccessful,
-): results is SuccessWithDevice<PushedTransaction> => results.success;
-
 type CoinSpecificComposeResponse = ActionsFromAsyncThunk<
     | typeof composeBitcoinTransactionFeeLevelsThunk
     | typeof composeEthereumTransactionFeeLevelsThunk
     | typeof composeCardanoTransactionFeeLevelsThunk
     | typeof composeSolanaTransactionFeeLevelsThunk
+    | typeof composeTronTransactionFeeLevelsThunk
 >;
 
 export const composeSendFormTransactionFeeLevelsThunk = createThunk<
@@ -207,7 +205,9 @@ export const composeSendFormTransactionFeeLevelsThunk = createThunk<
                 }),
             );
         } else if (networkType === 'tron') {
-            // TODO: Tron send not yet implemented
+            response = await dispatch(
+                composeTronTransactionFeeLevelsThunk({ formState, composeContext }),
+            );
         } else {
             return exhaustive(networkType);
         }
@@ -245,7 +245,7 @@ export const cancelSignSendFormTransactionThunk = createThunk(
     },
 );
 
-const synchronizeSentTransactionThunk = createThunk(
+export const synchronizeSentTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/synchronizePendingTransactionsThunk`,
     (
         {
@@ -307,7 +307,7 @@ const synchronizeSentTransactionThunk = createThunk(
 );
 
 export const pushSendFormTransactionThunk = createThunk<
-    Success<{ txid: string }>,
+    Ok<{ txid: string }>,
     { selectedAccount: Account; isMevProtectionEnabled: boolean },
     { rejectValue: PushTransactionError }
 >(
@@ -328,7 +328,10 @@ export const pushSendFormTransactionThunk = createThunk<
         if (!serializedTx || !precomposedTransaction)
             return rejectWithValue({
                 error: 'push-transaction-failed',
-                metadata: { success: false, payload: { error: 'Transaction not found.' } },
+                metadata: {
+                    success: false,
+                    error: { message: 'Transaction not found.', code: 'Failure_UnknownCode' },
+                },
             });
 
         const txData = getMevProtectedTxData(
@@ -356,11 +359,11 @@ export const pushSendFormTransactionThunk = createThunk<
         const areSatoshisUsed = getAreSatoshisUsed(bitcoinAmountUnit, selectedAccount);
         const evmApprovalData = getEvmApprovalTxData(precomposedForm?.transactionData);
 
-        if (isSuccessfullyPushedTransaction(pushTxResponse)) {
+        if (pushTxResponse.success) {
             const { txid } = pushTxResponse.payload;
 
             if (evmApprovalData && token) {
-                const isInfiniteApproval = new BigNumber(evmApprovalData.amount).eq(UINT256_MAX);
+                const isInfiniteApproval = isMaxAllowance(evmApprovalData.amount);
                 const amount = subunitsToUnits({
                     value: asAmountSubunit(new BigNumber(evmApprovalData.amount)),
                     decimals: token.decimals,
@@ -436,17 +439,25 @@ export const pushSendFormTransactionThunk = createThunk<
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',
-                    error: pushTxResponse.payload.error,
+                    error: pushTxResponse.error.message,
                 }),
             );
         }
 
-        return isSuccessfullyPushedTransaction(pushTxResponse)
-            ? fulfillWithValue(pushTxResponse)
-            : rejectWithValue({
-                  error: 'push-transaction-failed',
-                  metadata: pushTxResponse,
-              });
+        if (pushTxResponse.success) {
+            return fulfillWithValue(pushTxResponse);
+        }
+
+        const isPendingConflict = pushTxResponse.error.message.includes(
+            'could not replace existing tx',
+        );
+
+        return rejectWithValue({
+            error: isPendingConflict
+                ? 'push-transaction-pending-conflict'
+                : 'push-transaction-failed',
+            metadata: pushTxResponse,
+        });
     },
 );
 
@@ -474,7 +485,7 @@ export const pushSendFormRawTransactionThunk = createThunk(
             identity: payload.identity,
         });
 
-        if (isSuccessfullyPushedTransaction(sentTx)) {
+        if (sentTx.success) {
             dispatch(
                 notificationsActions.addToast({
                     type: 'raw-tx-sent',
@@ -484,17 +495,18 @@ export const pushSendFormRawTransactionThunk = createThunk(
             dispatch(syncAccountsWithBlockchainThunk(payload.symbol));
 
             return fulfillWithValue(true);
+        } else {
+            console.warn(sentTx.error.message);
+
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'sign-tx-error',
+                    error: sentTx.error.message,
+                }),
+            );
+
+            return rejectWithValue(sentTx.error.message);
         }
-
-        console.warn(sentTx.payload.error);
-        dispatch(
-            notificationsActions.addToast({
-                type: 'sign-tx-error',
-                error: sentTx.payload.error,
-            }),
-        );
-
-        return rejectWithValue(sentTx.payload.error);
     },
 );
 
@@ -504,6 +516,7 @@ type CoinSpecificSignResponse = ActionsFromAsyncThunk<
     | typeof signEthereumSendFormTransactionThunk
     | typeof signRippleStellarSendFormTransactionThunk
     | typeof signSolanaSendFormTransactionThunk
+    | typeof signTronSendFormTransactionThunk
 >;
 
 type SignTransactionThunkParams = {
@@ -540,6 +553,7 @@ export const signTransactionThunk = createThunk<
                     precomposedTransaction,
                     device,
                     selectedAccount,
+                    paymentRequests,
                 }),
             );
         } else {
@@ -549,26 +563,21 @@ export const signTransactionThunk = createThunk<
                 precomposedTransaction,
                 selectedAccount,
                 device,
-            };
-            // TODO: slip24 - can be moved into thinkArguments when slip24 is enabled for all networks
-            const thunkArgumentsWithPaymentRequests = {
-                ...thunkArguments,
                 paymentRequests,
             };
+
             if (networkType === 'bitcoin') {
-                response = await dispatch(
-                    signBitcoinSendFormTransactionThunk(thunkArgumentsWithPaymentRequests),
-                );
+                response = await dispatch(signBitcoinSendFormTransactionThunk(thunkArguments));
             } else if (networkType === 'ethereum') {
-                response = await dispatch(
-                    signEthereumSendFormTransactionThunk(thunkArgumentsWithPaymentRequests),
-                );
+                response = await dispatch(signEthereumSendFormTransactionThunk(thunkArguments));
             } else if (networkType === 'solana') {
                 response = await dispatch(signSolanaSendFormTransactionThunk(thunkArguments));
             } else if (['ripple', 'stellar'].includes(networkType)) {
                 response = await dispatch(
                     signRippleStellarSendFormTransactionThunk(thunkArguments),
                 );
+            } else if (networkType === 'tron') {
+                response = await dispatch(signTronSendFormTransactionThunk(thunkArguments));
             }
         }
 
@@ -682,7 +691,19 @@ export const enhancePrecomposedTransactionThunk = createThunk<
             return precomposedTransaction;
         };
 
-        const enhancedPrecomposedTransaction = createRbfEnhancedTransaction();
+        let enhancedPrecomposedTransaction = createRbfEnhancedTransaction();
+
+        // Contract calldata (e.g. DEX swap) must not carry `token` on the precomposed object:
+        // signing uses prepareEthereumTransaction, which would replace calldata with an ERC-20
+        // transfer if `token` is set.
+        if (
+            selectedAccount.networkType === 'ethereum' &&
+            formValues.transactionData &&
+            !isEvmApprovalTx(formValues.transactionData)
+        ) {
+            enhancedPrecomposedTransaction = cloneObject(enhancedPrecomposedTransaction);
+            delete (enhancedPrecomposedTransaction as { token?: unknown }).token;
+        }
 
         let isTokenKnown;
         if (

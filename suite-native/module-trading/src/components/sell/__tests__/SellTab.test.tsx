@@ -1,6 +1,8 @@
+import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { FeatureFlag } from '@suite-native/feature-flags';
-import { PreloadedState, act, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { act } from '@suite-native/test-utils-store';
 
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 import { SellTab } from '../SellTab';
 
 let mockIsDeviceInViewOnlyMode = false;
@@ -20,9 +22,16 @@ jest.mock('../../../hooks/sell/useSellData', () => ({
     }),
 }));
 
+jest.mock('../../concierge/ConciergeAlert', () => ({
+    ConciergeAlert: () => null,
+}));
+
 describe('SellTab', () => {
-    const renderSellTab = async (preloadedState: PreloadedState = {}) => {
-        const result = await renderWithStoreProviderAsync(<SellTab />, { preloadedState });
+    const renderSellTab = async (overrides: Record<string, unknown> = {}) => {
+        const result = renderWithTradingProvider(<SellTab />, {
+            tradeType: 'sell',
+            overrides,
+        });
 
         // wait for form reactions to run
         await act(() => Promise.resolve());
@@ -40,32 +49,8 @@ describe('SellTab', () => {
             featureFlags: {
                 [FeatureFlag.IsTradingSellEnabled]: false,
             },
-            messageSystem: {
-                validMessages: {
-                    feature: ['actionId'],
-                    banner: [],
-                    context: [],
-                    modal: [],
-                },
-                dismissedMessages: [],
-                config: {
-                    actions: [
-                        {
-                            message: {
-                                id: 'actionId',
-                                category: ['feature'],
-                                feature: [
-                                    {
-                                        domain: 'trading.sell',
-                                        flag: false,
-                                    },
-                                ],
-                            },
-                        },
-                    ],
-                },
-            },
-        } as unknown as PreloadedState);
+            messageSystem: mockMessageSystemStateWithFeatureFlags({ 'trading.sell': false }),
+        });
 
         expect(getByText('Sell disabled')).toBeOnTheScreen();
     });

@@ -14,7 +14,7 @@ export const GlobalStyle = createGlobalStyle<{ theme: GlobalStyleTheme }>`
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         ${typography['body-md']}
-        color: ${({ theme }) => theme.textDefault};
+        color: ${({ theme }) => theme.contentPrimary};
         height: 100%;
 
         /* BlinkMacSystemFont, which is macOS Chrome/Electron suggested fallback font, breaks emojis (e.g. in Guide) so we omit it */

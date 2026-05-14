@@ -1,4 +1,4 @@
-import { BottomSheetSearchInputProps } from '@suite-native/atoms';
+import { type BottomSheetSearchInputProps } from '@suite-native/atoms';
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { BottomSheetSearchInputWithCancel } from '../BottomSheetSearchInputWithCancel';

@@ -2,13 +2,15 @@
 
 // allow for...of statements
 
+import { CardanoAddressParameters, CardanoAssetGroup } from '@trezor/connect-common';
+import type { PROTO } from '@trezor/connect-common';
+import type { MessagesSchema as Messages } from '@trezor/protobuf';
 import { Assert, Type } from '@trezor/schema-utils';
 
 import { addressParametersToProto, validateAddressParameters } from './cardanoAddressParameters';
-import { AssetGroupWithTokens, tokenBundleToProto } from './cardanoTokenBundle';
+import type { AssetGroupWithTokens } from './cardanoTokenBundle';
+import { tokenBundleToProto } from './cardanoTokenBundle';
 import { hexStringByteLength, sendChunkedHexString } from './cardanoUtils';
-import { PROTO } from '../../constants';
-import { CardanoAddressParameters, CardanoAssetGroup } from '../../types/api/cardano';
 
 export type OutputWithData = {
     output: PROTO.CardanoTxOutput;
@@ -65,7 +67,7 @@ export const transformOutput = (output: unknown): OutputWithData => {
     return result;
 };
 
-export const sendOutput = async (typedCall: any, outputWithData: OutputWithData) => {
+export const sendOutput = async (typedCall: Messages.TypedCall, outputWithData: OutputWithData) => {
     const MAX_CHUNK_SIZE = 1024 * 2; // 1024 hex-encoded bytes
 
     const { output, tokenBundle, inlineDatum, referenceScript } = outputWithData;

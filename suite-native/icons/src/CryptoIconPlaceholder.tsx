@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 
-import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { MAX_FONT_SIZE_MULTIPLIER } from './Icon';
 
@@ -10,14 +10,14 @@ type CryptoIconPlaceholderProps = {
 };
 
 const iconStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
     alignItems: 'center',
     justifyContent: 'center',
 }));
 
 const textStyle = prepareNativeStyle(utils => ({
     ...utils.typography['body-md'],
-    color: utils.colors.textDefault,
+    color: utils.colors.contentPrimary,
     textAlign: 'center',
 }));
 

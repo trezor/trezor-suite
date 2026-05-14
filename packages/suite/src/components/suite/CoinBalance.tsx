@@ -1,5 +1,5 @@
 import type { NetworkSymbolExtended } from '@suite-common/wallet-config';
-import { AmountUnit } from '@suite-common/wallet-utils';
+import { type AmountUnit } from '@suite-common/wallet-utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 

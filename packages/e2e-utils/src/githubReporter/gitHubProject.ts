@@ -3,8 +3,8 @@ import type { Octokit } from '@octokit/rest';
 import { scheduleAction } from '@trezor/utils';
 
 import { ProjectRequests } from './projectRequests';
-import { LoggingFunctions } from './types';
-import { BaseAnnotation, annotationsForProjectFields } from '../enums/testAnnotations';
+import { type LoggingFunctions } from './types';
+import { type BaseAnnotation, annotationsForProjectFields } from '../enums/testAnnotations';
 
 const ORGANIZATION = 'trezor';
 const ORG_ID = 'MDEyOk9yZ2FuaXphdGlvbjQxNDY0NDc=';

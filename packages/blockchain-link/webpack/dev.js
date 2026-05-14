@@ -51,10 +51,6 @@ module.exports = {
     resolve: {
         modules: [SRC, 'node_modules'],
         extensions: ['.ts', '.js'],
-        fallback: {
-            crypto: require.resolve('crypto-browserify'),
-            stream: require.resolve('stream-browserify'),
-        },
     },
     performance: {
         hints: false,
@@ -63,7 +59,7 @@ module.exports = {
         // provide fallback plugins
         new webpack.ProvidePlugin({
             Buffer: ['buffer', 'Buffer'],
-            process: 'process/browser',
+            process: 'process/browser.js',
         }),
         new HtmlWebpackPlugin({
             chunks: ['indexUI'],

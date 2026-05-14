@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { Box } from '../Box';
 import { Hint } from '../Hint';
@@ -48,7 +48,11 @@ export const InputWrapper = ({ children, label, hint, error }: InputWrapperProps
     return (
         <Box>
             {label && (
-                <Text variant="body-md-strong" color="textSubdued" style={applyStyle(labelStyle)}>
+                <Text
+                    variant="body-md-strong"
+                    color="contentSecondary"
+                    style={applyStyle(labelStyle)}
+                >
                     {label}
                 </Text>
             )}

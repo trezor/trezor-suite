@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { ValidateError } from '@suite-common/message-system';
+import { type ValidateError } from '@suite-common/message-system';
 import { Button, Column, Icon, Row, Text, Textarea } from '@trezor/components';
 import { useTextareaCursorPosition } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';

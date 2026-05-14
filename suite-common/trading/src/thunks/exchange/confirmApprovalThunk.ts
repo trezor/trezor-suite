@@ -1,7 +1,7 @@
-import { ExchangeTrade } from 'invity-api';
+import { type ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
@@ -9,7 +9,6 @@ import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingExchangeAccountKey,
-    selectTradingExchangeQuotesRequest,
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
@@ -38,7 +37,6 @@ export const confirmApprovalThunk = createThunk(
         { dispatch, getState },
     ) => {
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());
-        const quotesRequest = selectTradingExchangeQuotesRequest(getState());
         const sendAccountKey = selectTradingExchangeAccountKey(getState());
         const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
         const { address: refundAddress } = getUnusedAddressFromAccount(account);
@@ -47,7 +45,7 @@ export const confirmApprovalThunk = createThunk(
             trade = selectedQuote;
         }
 
-        if (!quotesRequest || !trade || !refundAddress || !trade.quoteId || !receiveAddress) {
+        if (!refundAddress || !trade?.quoteId || !receiveAddress) {
             return undefined;
         }
 
@@ -96,9 +94,15 @@ export const confirmApprovalThunk = createThunk(
         }
 
         if (response.status === 'APPROVAL_REQ' || response.status === 'APPROVAL_PENDING') {
-            dispatch(tradingExchangeActions.saveSelectedQuote(response));
+            // Preserve approvalType — the API response may omit it.
+            const normalizedResponse = {
+                ...response,
+                approvalType: response.approvalType ?? trade.approvalType,
+            };
 
-            return response;
+            dispatch(tradingExchangeActions.saveSelectedQuote(normalizedResponse));
+
+            return normalizedResponse;
         }
 
         if (response.status === 'SIGN_DATA') {

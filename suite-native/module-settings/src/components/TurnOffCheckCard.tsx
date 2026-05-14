@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Button, CardWithIconLayout, HStack, Text, VStack } from '@suite-native/atoms';
-import { IconName } from '@suite-native/icons';
+import { type IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { useToast } from '@suite-native/toasts';
@@ -21,21 +21,27 @@ const TurnOnButton = ({ onTurnOn }: { onTurnOn: () => void }) => {
     const handleButtonPress = () => {
         onTurnOn();
         showToast({
-            variant: 'default',
+            intent: 'neutral',
             message: <Translation id="moduleSettings.advanced.authenticityChecks.toastOn" />,
             icon: 'check',
         });
     };
 
     return (
-        <Button size="small" flex={1} onPress={handleButtonPress} colorScheme="primary">
+        <Button
+            size="medium"
+            flex={1}
+            onPress={handleButtonPress}
+            intent="brand"
+            priority="primary"
+        >
             <Translation id="moduleSettings.advanced.authenticityChecks.buttonTurnOn" />
         </Button>
     );
 };
 
 const TurnOffButton = ({ onTurnOff }: { onTurnOff: () => void }) => (
-    <Button size="small" flex={1} onPress={onTurnOff} colorScheme="yellowElevation0">
+    <Button size="medium" flex={1} onPress={onTurnOff} intent="warning" priority="secondary">
         <Translation id="moduleSettings.advanced.authenticityChecks.buttonTurnOff" />
     </Button>
 );
@@ -49,11 +55,12 @@ const LearnMoreButton = ({ learnMoreUrl }: { learnMoreUrl: string }) => {
 
     return (
         <Button
-            size="small"
+            size="medium"
             flex={1}
-            viewLeft="arrowSquareOut"
+            iconLeft="arrowSquareOut"
             onPress={handleButtonPress}
-            colorScheme="tertiaryElevation0"
+            intent="neutral"
+            priority="secondary"
         >
             <Translation id="moduleSettings.advanced.authenticityChecks.buttonLearnMore" />
         </Button>
@@ -71,7 +78,7 @@ export const TurnOffCheckCard = ({
 }: TurnOffCheckCardProps) => (
     <CardWithIconLayout icon={icon} title={title}>
         <VStack spacing="sp16">
-            <Text variant="body-sm" color="textSubdued">
+            <Text variant="body-sm" color="contentSecondary">
                 {subtitle}
             </Text>
             <HStack spacing="sp8">

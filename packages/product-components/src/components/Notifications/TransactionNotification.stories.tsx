@@ -1,6 +1,6 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { IconName, Toast, ToastProps } from '@trezor/components';
+import { type IconName, Toast, type ToastProps } from '@trezor/components';
 
 import {
     TransactionNotification,
@@ -15,23 +15,19 @@ const meta: Meta<typeof TransactionNotification> = {
 export default meta;
 
 type Story = StoryObj<typeof TransactionNotification>;
-type TransactionNotificationType = TransactionNotificationProps['notificationType'];
 
 type TransactionToastStoryArgs = {
-    notificationType: TransactionNotificationType;
+    notificationType: TransactionNotificationProps['notificationType'];
 };
 
 const transactionNotificationConfig: Record<
-    TransactionNotificationType,
+    TransactionNotificationProps['notificationType'],
     {
         toastIcon?: IconName;
         intent: ToastProps['intent'];
         message: string;
         amount: string;
-        transaction: Pick<
-            TransactionNotificationProps,
-            'notificationType' | 'symbol' | 'accountSymbol' | 'token'
-        >;
+        transaction: Pick<TransactionNotificationProps, 'notificationType' | 'symbol' | 'token'>;
     }
 > = {
     'tx-received': {
@@ -42,7 +38,6 @@ const transactionNotificationConfig: Record<
         transaction: {
             notificationType: 'tx-received',
             symbol: 'eth',
-            accountSymbol: 'eth',
         },
     },
     'tx-confirmed': {
@@ -52,7 +47,6 @@ const transactionNotificationConfig: Record<
         transaction: {
             notificationType: 'tx-confirmed',
             symbol: 'eth',
-            accountSymbol: 'eth',
         },
     },
     'tx-revoked': {
@@ -63,7 +57,6 @@ const transactionNotificationConfig: Record<
         transaction: {
             notificationType: 'tx-revoked',
             symbol: 'eth',
-            accountSymbol: 'eth',
             token: {
                 contract: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
                 name: 'LINK',
@@ -79,7 +72,6 @@ const transactionNotificationConfig: Record<
         transaction: {
             notificationType: 'tx-claimed',
             symbol: 'sol',
-            accountSymbol: 'sol',
         },
     },
     'tx-unstaked': {
@@ -90,7 +82,6 @@ const transactionNotificationConfig: Record<
         transaction: {
             notificationType: 'tx-unstaked',
             symbol: 'eth',
-            accountSymbol: 'eth',
         },
     },
     'tx-staked': {
@@ -101,7 +92,6 @@ const transactionNotificationConfig: Record<
         transaction: {
             notificationType: 'tx-staked',
             symbol: 'eth',
-            accountSymbol: 'eth',
         },
     },
     'tx-approved': {
@@ -112,7 +102,6 @@ const transactionNotificationConfig: Record<
         transaction: {
             notificationType: 'tx-approved',
             symbol: 'eth',
-            accountSymbol: 'eth',
             token: {
                 contract: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
                 name: 'LINK',
@@ -128,11 +117,55 @@ const transactionNotificationConfig: Record<
         transaction: {
             notificationType: 'tx-sent',
             symbol: 'eth',
-            accountSymbol: 'eth',
             token: {
                 contract: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
                 name: 'LINK',
                 symbol: 'LINK',
+            },
+        },
+    },
+    'tx-yield-supply': {
+        toastIcon: 'arrowUp',
+        intent: 'brand',
+        message: 'Supplied from Base #1',
+        amount: '150 USDC',
+        transaction: {
+            notificationType: 'tx-yield-supply',
+            symbol: 'base',
+            token: {
+                contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+                name: 'USD Coin',
+                symbol: 'USDC',
+            },
+        },
+    },
+    'tx-yield-withdraw': {
+        toastIcon: 'arrowUp',
+        intent: 'brand',
+        message: 'Withdrawn from Base #1',
+        amount: '150 USDC',
+        transaction: {
+            notificationType: 'tx-yield-withdraw',
+            symbol: 'base',
+            token: {
+                contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+                name: 'USD Coin',
+                symbol: 'USDC',
+            },
+        },
+    },
+    'tx-yield-claim': {
+        toastIcon: 'arrowUp',
+        intent: 'brand',
+        message: 'Claimed from Base #1',
+        amount: '150 USDC',
+        transaction: {
+            notificationType: 'tx-yield-claim',
+            symbol: 'base',
+            token: {
+                contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+                name: 'USD Coin',
+                symbol: 'USDC',
             },
         },
     },
@@ -143,7 +176,6 @@ export const Default: Story = {
         message: 'Sent from Ethereum #1',
         notificationType: 'tx-sent',
         symbol: 'eth',
-        accountSymbol: 'eth',
         token: {
             contract: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
             name: 'LINK',
@@ -162,16 +194,9 @@ export const InToast: StoryObj<TransactionToastStoryArgs> = {
             control: {
                 type: 'select',
             },
-            options: [
-                'tx-sent',
-                'tx-received',
-                'tx-revoked',
-                'tx-claimed',
-                'tx-unstaked',
-                'tx-staked',
-                'tx-approved',
-                'tx-confirmed',
-            ],
+            options: Object.keys(
+                transactionNotificationConfig,
+            ) as (keyof typeof transactionNotificationConfig)[],
         },
     },
     render: ({ notificationType }) => {

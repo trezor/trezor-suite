@@ -1,4 +1,4 @@
-import { StorageId } from '@suite-common/suite-sync-types';
+import { type StorageId } from '@suite-common/suite-sync-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import type { StaticSessionId } from '@trezor/connect';
 

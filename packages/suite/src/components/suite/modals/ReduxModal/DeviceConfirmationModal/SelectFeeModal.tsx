@@ -3,15 +3,15 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
 
 import { Translation, messages } from '@suite/intl';
+import { onReceiveFee } from '@suite/modal';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { sortLevels } from '@suite-common/wallet-core';
-import { Account, FormState } from '@suite-common/wallet-types';
+import { type Account, type FormState } from '@suite-common/wallet-types';
 import { Button, Column, Modal } from '@trezor/components';
 import type { ComposeOutput, UiRequestSelectFee } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
-import { onReceiveFee } from 'src/actions/suite/modalActions';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { Fees } from 'src/components/wallet/Fees/Fees';
@@ -156,7 +156,7 @@ export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
             <Modal.ModalBase
                 onCancel={onClose}
                 onBackClick={onChangeAccount}
-                variant="primary"
+                intent="brand"
                 heading={<Translation id="TR_SELECT_FEE" />}
                 description={
                     <>

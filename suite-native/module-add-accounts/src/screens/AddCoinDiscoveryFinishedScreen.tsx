@@ -2,19 +2,22 @@ import { useSelector } from 'react-redux';
 
 import type { DeviceRootState } from '@suite-common/device';
 import { getNetwork } from '@suite-common/wallet-config';
-import { AccountsRootState, selectDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import {
+    type AccountsRootState,
+    selectDeviceAccountsByNetworkSymbol,
+} from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { AccountsListItem } from '@suite-native/accounts';
 import { Box, Button, Card, Text, TextDivider } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    AddCoinAccountStackParamList,
-    AddCoinAccountStackRoutes,
+    type AddCoinAccountStackParamList,
+    type AddCoinAccountStackRoutes,
     Screen,
     ScreenHeader,
-    StackProps,
+    type StackProps,
 } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountTypeDecisionBottomSheet } from '../components/AccountTypeDecisionBottomSheet';
 import { useAddCoinAccount } from '../hooks/useAddCoinAccount';
@@ -85,12 +88,13 @@ export const AddCoinDiscoveryFinishedScreen = ({
                 ))}
                 <TextDivider
                     title="moduleAddAccounts.coinDiscoveryFinishedScreen.orSeparator"
-                    lineColor="borderElevation0"
-                    textColor="textSubdued"
+                    lineColor="borderNeutral"
+                    textColor="contentSecondary"
                 />
                 <Box paddingTop="sp8" paddingHorizontal="sp16">
                     <Button
-                        colorScheme="tertiaryElevation0"
+                        intent="neutral"
+                        priority="secondary"
                         onPress={handleAddAccount}
                         testID="@add-account/after-discovery/button-add-new"
                     >

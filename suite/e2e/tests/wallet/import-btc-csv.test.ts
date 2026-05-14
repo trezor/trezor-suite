@@ -4,15 +4,15 @@ import path from 'path';
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 
 import { csvToJson } from '../../support/csvToJson';
-import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataMock';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Import a BTC csv file', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
-    test.beforeEach(async ({ metadataMock, onboardingPage }) => {
+    test.beforeEach(async ({ metadataMock, onboardingPage, settingsPage }) => {
         await metadataMock.start(MetadataProvider.DROPBOX);
         await onboardingPage.completeOnboarding();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
     });
 
     test(
@@ -24,11 +24,8 @@ test.describe('Import a BTC csv file', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
                 priority: TestPriority.Low,
             }),
         },
-        async ({ page, dashboardPage, metadataPage, walletPage }) => {
+        async ({ page, dashboardPage, walletPage }) => {
             await walletPage.openAccount();
-            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
-            await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
-
             await walletPage.openSendFormButton.click();
 
             await page.getByTestId('@send/header-dropdown').click();

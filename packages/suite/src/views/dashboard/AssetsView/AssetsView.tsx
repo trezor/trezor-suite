@@ -1,9 +1,11 @@
 import styled from 'styled-components';
 
+import { events } from '@suite/analytics';
+import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { AssetFiatBalance } from '@suite-common/assets';
+import { openModal } from '@suite/modal';
+import { type AssetFiatBalance } from '@suite-common/assets';
 import {
-    type Network,
     type NetworkSymbol,
     getNetwork,
     getNetworkFeatures,
@@ -15,10 +17,9 @@ import {
     selectCurrentFiatRates,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
-import { RatesByKey } from '@suite-common/wallet-types';
+import { type RatesByKey } from '@suite-common/wallet-types';
 import {
     AMOUNT_UNIT_ZERO,
-    AmountUnit,
     BASE_CURRENCY_ZERO,
     asAmountUnit,
     getFiatRateKey,
@@ -26,47 +27,36 @@ import {
     isSupportedSolStakingNetworkSymbol,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { TokenInfo } from '@trezor/blockchain-link-types';
+import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
 import { Button, Card, Icon, IconButton, LoadingContent, Row } from '@trezor/components';
-import { spacings, spacingsPx, typography } from '@trezor/theme';
-import { PartialRecord } from '@trezor/type-utils';
+import { spacingsPx, typography } from '@trezor/theme';
+import { type PartialRecord } from '@trezor/type-utils';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
-import { goto } from 'src/actions/suite/routerActions';
-import { setFlag } from 'src/actions/suite/suiteActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDiscovery, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
+import { useAnalytics } from 'src/support/useAnalytics';
+import { type Account } from 'src/types/wallet';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { AssetCard, AssetCardSkeleton } from './AssetCard/AssetCard';
+import { type AssetData } from './AssetData';
 import { AssetTable } from './AssetTable/AssetTable';
 
 const InfoMessage = styled.div`
     padding: ${spacingsPx.md} ${spacingsPx.xl};
     align-items: center;
     display: flex;
-    color: ${({ theme }) => theme.textAlertRed};
+    color: ${({ theme }) => theme.contentCritical};
     ${typography['body-xs']}
 `;
 
 const GridWrapper = styled.div`
     display: grid;
-    grid-gap: ${spacingsPx.sm};
+    gap: ${spacingsPx.sm};
     grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
 `;
-
-export type AssetData = {
-    network: Network;
-    failed: boolean;
-    assetNativeCryptoBalance: AmountUnit;
-    stakingAccounts: Account[];
-    assetTokens: TokenInfo[];
-    isStakeNetwork?: boolean;
-    accounts: Account[];
-};
 
 const useAssetsFiatBalances = (
     assetsData: AssetData[],
@@ -90,10 +80,11 @@ const useAssetsFiatBalances = (
     }, []);
 
 export const AssetsView = () => {
-    const { dashboardAssetsGridMode } = useSelector(s => s.suite.flags);
+    const { dashboardAssetsGridMode } = useSelector(selectFlags);
     const enabledNetworks = useSelector(selectEnabledNetworks);
 
     const dispatch = useDispatch();
+    const analytics = useAnalytics();
     const { isDiscoveryRunning } = useDiscovery();
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const accounts = useSelector(selectAllAccountsToList);
@@ -173,11 +164,21 @@ export const AssetsView = () => {
     const isError =
         discoveryStatus && discoveryStatus.status === 'exception' && !assetSymbols.length;
 
-    const goToCoinsSettings = () => dispatch(goto('settings-coins'));
-    const setTable = () => dispatch(setFlag('dashboardAssetsGridMode', false));
-    const setGrid = () => dispatch(setFlag('dashboardAssetsGridMode', true));
-
+    const openActivateAssetsModal = () => {
+        analytics.report({
+            type: events.dashboardActivateAssetsModalEvent.name,
+            payload: { source: 'my-assets' },
+        });
+        dispatch(openModal({ type: 'activate-assets' }));
+    };
+    const setTable = () => dispatch(setFlag({ key: 'dashboardAssetsGridMode', value: false }));
+    const setGrid = () => dispatch(setFlag({ key: 'dashboardAssetsGridMode', value: true }));
+    const isDiscoveryEmpty = discoveryStatus && discoveryStatus.type === 'discovery-empty';
     const showCards = isBelowTablet || dashboardAssetsGridMode;
+
+    if (isDiscoveryEmpty) {
+        return null;
+    }
 
     return (
         <DashboardSection
@@ -191,13 +192,13 @@ export const AssetsView = () => {
                 isBelowTablet ? (
                     <></>
                 ) : (
-                    <Row justifyContent="space-around" gap={spacings.sm}>
+                    <Row justifyContent="space-around" gap={12}>
                         {hasMainnetNetworksToEnable && (
                             <Button
                                 intent="neutral"
                                 priority="secondary"
                                 iconLeft="plus"
-                                onClick={goToCoinsSettings}
+                                onClick={openActivateAssetsModal}
                                 data-testid="@dashboard/assets/enable-more-coins"
                             >
                                 <Translation id="TR_ENABLE_MORE_COINS" />
@@ -251,7 +252,7 @@ export const AssetsView = () => {
                                     name="warning"
                                     intent="critical"
                                     size={14}
-                                    margin={{ right: spacings.xxs }}
+                                    margin={{ right: 4 }}
                                 />
                                 <Translation id="TR_DASHBOARD_ASSETS_ERROR" />
                             </InfoMessage>
@@ -274,7 +275,7 @@ export const AssetsView = () => {
                                 name="warning"
                                 intent="critical"
                                 size={14}
-                                margin={{ right: spacings.xxs }}
+                                margin={{ right: 4 }}
                             />
                             <Translation id="TR_DASHBOARD_ASSETS_ERROR" />
                         </InfoMessage>

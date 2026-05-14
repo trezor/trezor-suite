@@ -22,18 +22,3 @@ export const getTransactionType = (
 
     return 'unknown';
 };
-
-export const getTransferAddressesFromLog = (
-    topics: string[],
-): { from: string; to: string } | null => {
-    if (topics.length < 3) {
-        return null;
-    }
-
-    // Topics are padded to 32 bytes, addresses are 20 bytes
-    // Remove '0x' and take last 40 characters (20 bytes)
-    const from = `0x${topics[1].slice(26)}`.toLowerCase();
-    const to = `0x${topics[2].slice(26)}`.toLowerCase();
-
-    return { from, to };
-};

@@ -1,33 +1,28 @@
-import { ReactNode } from 'react';
+import { type ReactNode, useRef } from 'react';
 
-import { TranslationKey, useTranslation } from '@suite/intl';
+import { type TranslationKey, useTranslation } from '@suite/intl';
 import { Column, SkeletonRectangle } from '@trezor/components';
-import { PrimitiveType, exhaustive } from '@trezor/type-utils';
+import { type PrimitiveType, exhaustive } from '@trezor/type-utils';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useLayout } from 'src/hooks/suite';
 import { AccountHeaderProvider } from 'src/support/suite/AccountHeaderProvider';
-import { AppState } from 'src/types/suite';
+import { type AppState } from 'src/types/suite';
 
 import { AccountBanners } from './AccountBanners/AccountBanners';
 import { AccountException } from './AccountException/AccountException';
-import { AccountNavigation } from './AccountTopPanel/AccountNavigation';
-import { AccountTopPanel } from './AccountTopPanel/AccountTopPanel';
+import { AccountNavigation } from './AccountNavigation';
 import { CoinjoinAccountDiscovery } from './CoinjoinAccountDiscovery/CoinjoinAccountDiscovery';
 
 type WalletPageHeaderProps = {
+    balanceSectionRef: React.RefObject<HTMLDivElement | null>;
     isSubpage?: boolean;
 };
 
-const WalletPageHeader = ({ isSubpage }: WalletPageHeaderProps) => (
-    <AccountHeaderProvider>
+const WalletPageHeader = ({ balanceSectionRef, isSubpage }: WalletPageHeaderProps) => (
+    <AccountHeaderProvider balanceSectionRef={balanceSectionRef}>
         <PageHeader />
-        {!isSubpage && (
-            <>
-                <AccountTopPanel />
-                <AccountNavigation />
-            </>
-        )}
+        {!isSubpage && <AccountNavigation />}
     </AccountHeaderProvider>
 );
 
@@ -84,13 +79,19 @@ export const WalletLayout = ({
 }: WalletLayoutProps) => {
     const { translationString } = useTranslation();
     const l10nTitle = translationString(title, titleValues);
+    const balanceSectionRef = useRef<HTMLDivElement>(null);
 
-    useLayout(l10nTitle, <WalletPageHeader isSubpage={isSubpage} />);
+    useLayout(
+        l10nTitle,
+        <WalletPageHeader balanceSectionRef={balanceSectionRef} isSubpage={isSubpage} />,
+    );
 
     return (
-        <Column gap={40}>
-            <AccountBanners account={account.account} />
-            <WalletBody account={account}>{children}</WalletBody>
-        </Column>
+        <AccountHeaderProvider balanceSectionRef={balanceSectionRef}>
+            <Column gap={40}>
+                <AccountBanners account={account.account} />
+                <WalletBody account={account}>{children}</WalletBody>
+            </Column>
+        </AccountHeaderProvider>
     );
 };

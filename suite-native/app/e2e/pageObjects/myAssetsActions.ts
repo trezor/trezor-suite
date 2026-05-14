@@ -17,6 +17,7 @@ class MyAssetsActions {
     }
 
     async openAccountDetail({ accountName }: { accountName: string }) {
+        await waitForVisible(by.text(accountName));
         await element(by.text(accountName)).tap();
         await detoxExpect(element(by.id('@screen/AccountDetail'))).toBeVisible();
     }

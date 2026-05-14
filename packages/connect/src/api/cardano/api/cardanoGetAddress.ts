@@ -1,16 +1,21 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/CardanoGetAddress.js
 
+import {
+    Bundle,
+    CardanoGetAddress as CardanoGetAddressSchema,
+    type MethodPermission,
+    UI_REQUEST,
+    createUiMessage,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { PROTO } from '../../../constants';
-import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
+import type { MethodContext, MethodMessage, MethodReturnType } from '../../../core/AbstractMethod';
+import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import { UI, createUiMessage } from '../../../events';
-import { Bundle } from '../../../types';
-import { CardanoGetAddress as CardanoGetAddressSchema } from '../../../types/api/cardano';
 import { fromHardened, getSerializedPath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
+import { bundlify } from '../../common/paramsValidator';
 import {
     addressParametersFromProto,
     addressParametersToProto,
@@ -18,7 +23,8 @@ import {
     validateAddressParameters,
 } from '../cardanoAddressParameters';
 
-type Params = PROTO.CardanoGetAddress & {
+type Params = {
+    proto: PROTO.CardanoGetAddress;
     address?: string;
 };
 
@@ -26,31 +32,17 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
     hasBundle?: boolean;
     progress = 0;
 
-    init() {
-        this.confirmMissingBackup = true;
-        this.requiredPermissions = ['read'];
-        this.requiredDeviceCapabilities = ['Capability_Cardano'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Cardano'),
-            this.firmwareRange,
-        );
-
-        // create a bundle with only one batch if bundle doesn't exists
-        this.hasBundle = !!this.payload.bundle;
-        const payload = !this.payload.bundle
-            ? { ...this.payload, bundle: [this.payload] }
-            : this.payload;
+    constructor(message: MethodMessage<'cardanoGetAddress'>) {
+        const { hasBundle, payload } = bundlify(message.payload);
 
         // validate bundle type
         Assert(Bundle(CardanoGetAddressSchema), payload);
 
-        this.params = payload.bundle.map(batch => {
+        const params = payload.bundle.map(batch => {
             validateAddressParameters(batch.addressParameters);
 
-            return {
+            const proto = {
                 address_parameters: addressParametersToProto(batch.addressParameters),
-                address: batch.address,
                 protocol_magic: batch.protocolMagic,
                 network_id: batch.networkId,
                 derivation_type:
@@ -60,15 +52,27 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
                 show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : true,
                 chunkify: typeof batch.chunkify === 'boolean' ? batch.chunkify : false,
             };
+
+            return { proto, address: batch.address };
         });
 
-        this.useUi = this.getUseUi(this.params);
+        super(message, params);
+
+        this.hasBundle = hasBundle;
+        this.useUi = this.getUseUi(this.params, payload.useEventListener);
+        this.confirmMissingBackup = true;
+        this.requiredDeviceCapabilities = ['Capability_Cardano'];
+        this.requiredFirmwareCoins = [getMiscNetwork('Cardano')];
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
     }
 
     get info() {
         if (this.params.length === 1) {
             return `Export Cardano address for account #${
-                fromHardened(this.params[0].address_parameters.address_n[2]) + 1
+                fromHardened(this.params[0].proto.address_parameters.address_n[2]) + 1
             }`;
         }
 
@@ -80,7 +84,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
             return {
                 type: 'address' as const,
                 serializedPath: getSerializedPath(
-                    this.params[this.progress].address_parameters.address_n,
+                    this.params[this.progress].proto.address_parameters.address_n,
                 ),
                 address: this.params[this.progress].address || 'not-set',
             };
@@ -96,43 +100,29 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
               };
     }
 
-    async _call({
-        address_parameters,
-        protocol_magic,
-        network_id,
-        derivation_type,
-        show_display,
-        chunkify,
-    }: Params) {
-        const cmd = this.device.getCommands();
-        const response = await cmd.typedCall('CardanoGetAddress', 'CardanoAddress', {
-            address_parameters,
-            protocol_magic,
-            network_id,
-            derivation_type,
-            show_display,
-            chunkify,
-        });
+    async _call({ proto }: Params) {
+        const cmd = this.getDevice().getCommands();
+        const response = await cmd.typedCall('CardanoGetAddress', 'CardanoAddress', proto);
 
         return response.message;
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const responses: MethodReturnType<typeof this.name> = [];
 
         for (let i = 0; i < this.params.length; i++) {
             const batch = this.params[i];
 
-            batch.address_parameters = modifyAddressParametersForBackwardsCompatibility(
-                batch.address_parameters,
+            batch.proto.address_parameters = modifyAddressParametersForBackwardsCompatibility(
+                batch.proto.address_parameters,
             );
 
             // silently get address and compare with requested address
             // or display as default inside popup
-            if (batch.show_display) {
+            if (batch.proto.show_display) {
                 const silent = await this._call({
                     ...batch,
-                    show_display: false,
+                    proto: { ...batch.proto, show_display: false },
                 });
                 if (typeof batch.address === 'string') {
                     if (batch.address !== silent.address) {
@@ -146,12 +136,12 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
             const response = await this._call(batch);
 
             responses.push({
-                addressParameters: addressParametersFromProto(batch.address_parameters),
-                protocolMagic: batch.protocol_magic,
-                networkId: batch.network_id,
-                serializedPath: getSerializedPath(batch.address_parameters.address_n),
+                addressParameters: addressParametersFromProto(batch.proto.address_parameters),
+                protocolMagic: batch.proto.protocol_magic,
+                networkId: batch.proto.network_id,
+                serializedPath: getSerializedPath(batch.proto.address_parameters.address_n),
                 serializedStakingPath: getSerializedPath(
-                    batch.address_parameters.address_n_staking,
+                    batch.proto.address_parameters.address_n_staking,
                 ),
                 address: response.address,
                 mac: response.mac,
@@ -159,8 +149,8 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
 
             if (this.hasBundle) {
                 // send progress
-                this.postMessage(
-                    createUiMessage(UI.BUNDLE_PROGRESS, {
+                sendCoreMessage(
+                    createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,
                         response,

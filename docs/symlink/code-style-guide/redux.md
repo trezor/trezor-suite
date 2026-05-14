@@ -1,1 +1,1 @@
-../../../skills/redux.md
+../../../skills/redux/SKILL.md

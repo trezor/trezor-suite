@@ -4,7 +4,7 @@ import Animated, { FadeInDown, FadeInUp, FadeOutUp } from 'react-native-reanimat
 import { Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type GraphErrorProps = {
     error: string;
@@ -15,8 +15,8 @@ const errorIconStyle = prepareNativeStyle(({ borders, colors }) => ({
     width: 48,
     height: 48,
     borderRadius: borders.radii.round,
-    backgroundColor: colors.backgroundAlertYellowSubtleOnElevation1,
-    borderColor: colors.backgroundAlertYellowSubtleOnElevation0,
+    backgroundColor: colors.legacyBackgroundAlertYellowSubtleOnElevation1,
+    borderColor: colors.legacyBackgroundAlertYellowSubtleOnElevation0,
     borderWidth: 3,
     alignItems: 'center',
     justifyContent: 'center',
@@ -31,7 +31,7 @@ const ErrorIcon = () => {
 
     return (
         <Animated.View style={applyStyle(errorIconStyle)} entering={FadeInUp} exiting={FadeInDown}>
-            <Icon name="warning" color="iconAlertYellow" />
+            <Icon name="warning" color="contentWarning" />
         </Animated.View>
     );
 };
@@ -43,14 +43,14 @@ export const GraphError = ({ error, onTryAgain }: GraphErrorProps) => {
         <VStack spacing="sp8" alignItems="center" paddingHorizontal="sp16">
             <ErrorIcon />
             <Animated.View entering={FadeInDown} exiting={FadeOutUp}>
-                <Text variant="body-sm" color="textSubdued" textAlign="center">
+                <Text variant="body-sm" color="contentSecondary" textAlign="center">
                     <Translation id="graph.errorMessage" />
                     {error}
                 </Text>
                 <Pressable onPress={onTryAgain}>
                     <Text
                         variant="body-md"
-                        color="textSecondaryHighlight"
+                        color="contentBrand"
                         style={applyStyle(tryAgainButtonStyle)}
                         textAlign="center"
                     >

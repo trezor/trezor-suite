@@ -1,11 +1,14 @@
-import { TradingCountryCode } from '@suite-common/trading';
+import { type TradingCountryCode } from '@suite-common/trading';
 import {
     FeatureFlag,
-    FeatureFlagsRootState,
+    type FeatureFlagsRootState,
     featureFlagsInitialState,
 } from '@suite-native/feature-flags';
 import { tradingInitialState } from '@suite-native/trading-consts';
-import { TradingResidenceRootState, TradingResidenceState } from '@suite-native/trading-types';
+import {
+    type TradingResidenceRootState,
+    type TradingResidenceState,
+} from '@suite-native/trading-types';
 
 import {
     selectIsTradingCountrySet,
@@ -13,12 +16,14 @@ import {
     selectIsTradingResidenceCheckEnabled,
     selectShouldDisplayTradingResidenceOnboarding,
     selectTradingResidenceCountry,
+    selectTradingResidenceCountrySubdivision,
     selectWasTradingResidenceOnboardingVisited,
 } from '../residenceSelectors';
 
 describe('residenceSelectors', () => {
     const visitedState: TradingResidenceState = {
         country: 'US',
+        countrySubdivision: 'CA',
         wasOnboardingVisited: true,
     };
 
@@ -43,11 +48,24 @@ describe('residenceSelectors', () => {
     });
 
     describe('selectTradingResidenceCountry', () => {
-        it(' should select the country', () => {
+        it('should select the country', () => {
             expect(
                 selectTradingResidenceCountry(getRootResidenceState(tradingInitialState.residence)),
             ).toBe(undefined);
             expect(selectTradingResidenceCountry(getRootResidenceState(visitedState))).toBe('US');
+        });
+    });
+
+    describe('selectTradingResidenceCountrySubdivision', () => {
+        it('should select the country subdivision', () => {
+            expect(
+                selectTradingResidenceCountrySubdivision(
+                    getRootResidenceState(tradingInitialState.residence),
+                ),
+            ).toBe(undefined);
+            expect(
+                selectTradingResidenceCountrySubdivision(getRootResidenceState(visitedState)),
+            ).toBe('CA');
         });
     });
 
@@ -84,11 +102,14 @@ describe('residenceSelectors', () => {
             },
         );
 
-        it.each<TradingCountryCode>(['US', 'CZ'])(
+        it.each<{ countryCode: TradingCountryCode; countrySubdivision?: string }>([
+            { countryCode: 'US', countrySubdivision: 'CA' },
+            { countryCode: 'CZ' },
+        ])(
             'should return true for whitelisted country [%s] and FF enabled',
-            countryCode => {
+            ({ countryCode, countrySubdivision }) => {
                 const state = {
-                    ...getRootResidenceState({ country: countryCode }),
+                    ...getRootResidenceState({ country: countryCode, countrySubdivision }),
                     ...getRootFFState(true),
                 };
 
@@ -117,9 +138,15 @@ describe('residenceSelectors', () => {
         });
 
         it('should be true when selected country is defined', () => {
-            const state = getRootResidenceState({ country: 'US' });
+            const state = getRootResidenceState({ country: 'US', countrySubdivision: 'CA' });
 
             expect(selectIsTradingCountrySet(state)).toBe(true);
+        });
+
+        it('should be false when selected country is defined but country subdivision is empty', () => {
+            const state = getRootResidenceState({ country: 'US', countrySubdivision: undefined });
+
+            expect(selectIsTradingCountrySet(state)).toBe(false);
         });
     });
 
@@ -144,7 +171,7 @@ describe('residenceSelectors', () => {
 
         it('should return false when country is already set (FF enabled)', () => {
             const state = {
-                ...getRootResidenceState({ country: 'US' }),
+                ...getRootResidenceState({ country: 'US', countrySubdivision: 'CA' }),
                 ...getRootFFState(true),
             };
 

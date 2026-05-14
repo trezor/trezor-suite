@@ -1,4 +1,4 @@
-import { BulletList, BulletListItemState, Row, Spinner, Text } from '@trezor/components';
+import { BulletList, type BulletListItemState, Row, Spinner, Text } from '@trezor/components';
 
 type TradingDetailStepProps = {
     state: BulletListItemState;

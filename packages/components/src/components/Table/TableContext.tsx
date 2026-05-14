@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-import { TypographyStyle } from '@trezor/theme';
+import { type TypographyStyle } from '@trezor/theme';
 
 interface TableContextProps {
     isRowHighlightedOnHover: boolean;

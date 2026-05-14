@@ -1,8 +1,9 @@
+import { type MethodPermission } from '@trezor/connect-common';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
 
 export default class EvoluSignRegistrationRequest extends AbstractMethod<
     'evoluSignRegistrationRequest',
@@ -10,28 +11,32 @@ export default class EvoluSignRegistrationRequest extends AbstractMethod<
 > {
     hasBundle?: boolean;
 
-    init() {
-        this.requiredPermissions = ['read'];
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
-        this.useEmptyPassphrase = true;
-
-        const { payload } = this;
+    constructor(message: MethodMessage<'evoluSignRegistrationRequest'>) {
+        const { payload } = message;
 
         Assert(PROTO.EvoluSignRegistrationRequest, payload);
 
-        this.params = {
+        const params = {
             challenge_from_server: payload.challenge_from_server,
             size_to_acquire: payload.size_to_acquire,
             proof_of_delegated_identity: payload.proof_of_delegated_identity,
         };
+
+        super(message, params);
+        this.useEmptyPassphrase = true;
     }
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
+    }
+
+    init() {}
 
     get info() {
         return 'Evolu sign registration request';
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall(
             'EvoluSignRegistrationRequest',
             'EvoluRegistrationRequest',

@@ -11,12 +11,12 @@ import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     AppTabsRoutes,
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
+    type AuthorizeDeviceStackParamList,
+    type AuthorizeDeviceStackRoutes,
     HomeStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToTabCompositeProps,
+    type StackToTabCompositeProps,
     useInterceptNativeNavigation,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
@@ -69,12 +69,12 @@ export const PassphraseScreenHeader = () => {
                 primaryButtonTitle: (
                     <Translation id="modulePassphrase.confirmOnDevice.warningSheet.primaryButton" />
                 ),
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 onPressPrimaryButton: handleClose,
                 secondaryButtonTitle: (
                     <Translation id="modulePassphrase.confirmOnDevice.warningSheet.secondaryButton" />
                 ),
-                secondaryButtonVariant: 'redElevation0',
+                secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
             });
         } else {
             TrezorConnect.cancel();
@@ -88,8 +88,8 @@ export const PassphraseScreenHeader = () => {
         <ScreenHeaderWrapper>
             <IconButton
                 iconName="x"
-                size="medium"
-                colorScheme="tertiaryElevation0"
+                intent="neutral"
+                priority="secondary"
                 accessibilityRole="button"
                 accessibilityLabel="close"
                 onPress={handleCancel}

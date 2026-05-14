@@ -9,7 +9,6 @@ const mapPositionToTop = (position: DashedLinePosition) => {
         case 'middleToBottom':
             return '50%';
         case 'topToBottom':
-            return borders.widths.large;
         case 'topToMiddle':
             return borders.widths.large;
     }
@@ -18,7 +17,6 @@ const mapPositionToTop = (position: DashedLinePosition) => {
 const mapPositionToBottom = (position: DashedLinePosition) => {
     switch (position) {
         case 'middleToBottom':
-            return '0';
         case 'topToBottom':
             return '0';
         case 'topToMiddle':
@@ -39,7 +37,7 @@ export const AssetTableExtraRowsSection = styled.div<{
                 bottom: ${mapPositionToBottom($dashedLinePosition)};
                 left: 50%;
                 transform: translateX(-50%);
-                border-left: ${borders.widths.large} dotted ${({ theme }) => theme.borderDashed};
+                border-left: ${borders.widths.large} dotted ${({ theme }) => theme.borderNeutral};
                 z-index: -1;
             }
         `}

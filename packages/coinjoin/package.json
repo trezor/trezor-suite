@@ -21,7 +21,8 @@
         "test:anonymity": "yarn g:tsx ./tests/tools/anonymity-test.ts",
         "test:benchmark": "yarn g:tsx ./tests/tools/benchmark-test.ts",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@suite-common/suite-constants": "workspace:*",
@@ -38,9 +39,8 @@
     "devDependencies": {
         "@trezor/node-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "@types/node-fetch": "^2.6.12",
-        "node-fetch": "^2.6.4",
+        "node-fetch": "^3.3.2",
         "socks-proxy-agent": "8.0.5",
-        "ws": "^8.18.0"
+        "ws": "^8.20.0"
     }
 }

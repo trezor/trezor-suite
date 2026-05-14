@@ -1,9 +1,7 @@
 import { createMemoryHistory } from 'history';
 
-import { PreloadedState, Store, initStore } from '@trezor/suite';
-// TODO fix deep import
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { createSuiteRouterHistory } from '@trezor/suite/src/support/extraDependencies';
+import { createSuiteRouterHistory } from '@suite/router';
+import { type PreloadedState, type Store, initStore } from '@trezor/suite';
 
 /**
  * Test-friendly wrapper for initStore that provides necessary dependencies like history.
@@ -16,7 +14,6 @@ export const initStoreForTests = (preloadedState: PreloadedState = {}) => {
     const { store } = initStore(
         {
             history: memoryHistory,
-            reloadApp: () => {}, // Mock for tests - noop function
         },
         undefined,
         { statePatch: preloadedState },

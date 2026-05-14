@@ -1,4 +1,5 @@
-import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
+import { OnboardingCard } from '@suite/onboarding-components';
+
 import { PrerequisitesGuide } from 'src/components/suite/PrerequisitesGuide/PrerequisitesGuide';
 
 export const DeviceDisconnectedStep = () => (

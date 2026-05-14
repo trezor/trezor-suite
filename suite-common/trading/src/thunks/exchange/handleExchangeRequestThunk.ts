@@ -1,17 +1,18 @@
-import { ExchangeTrade, ExchangeTradeQuoteRequest } from 'invity-api';
+import { type ExchangeTrade, type ExchangeTradeQuoteRequest } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { Network } from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/wallet-config';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
+import { tradingActions } from '../../reducers/tradingCommonReducer';
 import { selectTradingCoinSymbolByCryptoId } from '../../selectors/tradingSelectors';
 import {
-    HandleExchangeRequestThunkProps,
-    MinimalExchangeFormProps,
-    TradingExchangeType,
+    type HandleExchangeRequestThunkProps,
+    type MinimalExchangeFormProps,
+    type TradingExchangeType,
 } from '../../types';
 import { addIdsToQuotes, getNetworkDecimalsWithFallback } from '../../utils';
 import { exchangeUtils } from '../../utils/exchange/exchangeUtils';
@@ -78,14 +79,11 @@ export const handleExchangeRequestThunk = createThunk<
         {
             formValues,
             network,
-            timer,
             shouldSendInSats,
             composeRequestCallback,
         }: HandleExchangeRequestThunkProps,
         { dispatch, getState, fulfillWithValue, rejectWithValue, signal },
     ) => {
-        timer.loading();
-
         const requestData = getQuoteRequestData({
             formValues,
             network,
@@ -93,21 +91,30 @@ export const handleExchangeRequestThunk = createThunk<
         });
 
         if (!requestData) {
-            timer.stop();
+            dispatch(tradingActions.stopRefetchQuotes());
 
             return rejectWithValue('Invalid request data');
         }
 
-        const allQuotes = await getQuotesRequest({ requestData, signal });
+        let allQuotes: ExchangeTrade[] = [];
+        let requestSucceeded = false;
+        try {
+            allQuotes = (await getQuotesRequest({ requestData, signal })) ?? [];
+            requestSucceeded = true;
+        } finally {
+            if (!requestSucceeded) {
+                dispatch(tradingActions.stopRefetchQuotes());
+            }
+        }
 
         if (signal.aborted) {
-            timer.reset();
+            dispatch(tradingActions.stopRefetchQuotes());
 
             return rejectWithValue('Request was aborted');
         }
 
         if (!Array.isArray(allQuotes) || allQuotes.length === 0) {
-            timer.stop();
+            dispatch(tradingActions.stopRefetchQuotes());
             dispatch(tradingExchangeActions.saveQuotes([]));
 
             return fulfillWithValue([]);
@@ -136,7 +143,7 @@ export const handleExchangeRequestThunk = createThunk<
             composeRequestCallback();
         }
 
-        timer.reset();
+        dispatch(tradingActions.setRefetchQuotesTimestamp(Date.now()));
 
         return fulfillWithValue(successQuotes);
     },

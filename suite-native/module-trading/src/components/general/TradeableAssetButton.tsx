@@ -5,11 +5,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { invariant } from '@suite-common/suite-utils';
 import { cryptoIdToSymbol } from '@suite-common/trading';
-import { NetworkDisplaySymbol, getDisplaySymbol } from '@suite-common/wallet-config';
-import { Box } from '@suite-native/atoms';
+import { type NetworkDisplaySymbol, getDisplaySymbol } from '@suite-common/wallet-config';
+import { Box, buttonSizeToDimensionsMap } from '@suite-native/atoms';
 import { CryptoIcon, Icon } from '@suite-native/icons';
-import { TradeableAsset } from '@suite-native/trading-types';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type TradeableAsset } from '@suite-native/trading-types';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { hexToRgba } from '@trezor/utils';
 
 import { NetworkSymbolExtendedFormatter } from './NetworkSymbolExtendedFormatter';
@@ -26,22 +26,21 @@ export type TradeableAssetButtonProps = {
 const GRADIENT_START = { x: 0, y: 0.5 } as const;
 const GRADIENT_END = { x: 1, y: 0.5 } as const;
 
-const buttonStyle = prepareNativeStyle(({ spacings }) => ({
-    height: spacings.sp40,
-    paddingHorizontal: spacings.sp8,
-    gap: spacings.sp8,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-}));
-
-const gradientBackgroundStyle = prepareNativeStyle<{ borderColor: ReturnType<typeof hexToRgba> }>(
-    ({ borders }, { borderColor }) => ({
-        borderRadius: borders.radii.round,
+const buttonStyle = prepareNativeStyle<{ borderColor: ReturnType<typeof hexToRgba> }>(
+    ({ spacings, borders }, { borderColor }) => ({
+        ...buttonSizeToDimensionsMap.medium,
         borderWidth: borders.widths.small,
         borderColor,
+        gap: spacings.sp8,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
     }),
 );
+
+const gradientBackgroundStyle = prepareNativeStyle(() => ({
+    borderRadius: buttonSizeToDimensionsMap.medium.borderRadius,
+}));
 
 export const TradeableAssetButton = ({
     asset: { symbol, contractAddress, cryptoId },
@@ -73,30 +72,26 @@ export const TradeableAssetButton = ({
     return (
         <LinearGradient
             colors={gradientColors}
-            style={applyStyle(gradientBackgroundStyle, { borderColor })}
+            style={applyStyle(gradientBackgroundStyle)}
             start={GRADIENT_START}
             end={GRADIENT_END}
         >
             <Pressable
                 onPress={onPress}
-                style={applyStyle(buttonStyle)}
+                style={applyStyle(buttonStyle, { borderColor })}
                 accessible
                 accessibilityRole="button"
                 accessibilityLabel={accessibilityLabel}
                 testID={testID}
             >
-                <CryptoIcon
-                    symbol={adjustedSymbol}
-                    contractAddress={contractAddress}
-                    size="extraSmall"
-                />
+                <CryptoIcon symbol={adjustedSymbol} contractAddress={contractAddress} size="tiny" />
                 <NetworkSymbolExtendedFormatter
                     symbol={symbol}
                     variant="body-sm-strong"
-                    color="textDefault"
+                    color="contentPrimary"
                     testID={symbolTestID}
                 />
-                {caret ? <Icon name="caretDown" color="textDefault" size="medium" /> : <Box />}
+                {caret ? <Icon name="caretDown" color="contentPrimary" size="medium" /> : <Box />}
             </Pressable>
         </LinearGradient>
     );

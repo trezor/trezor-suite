@@ -1,7 +1,7 @@
-import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
-import { SignOperator } from '@suite-common/suite-types';
+import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
+import { type SignOperator } from '@suite-common/suite-types';
 import { selectBaseCurrency, selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
-import { Timestamp } from '@suite-common/wallet-types';
+import { type Timestamp } from '@suite-common/wallet-types';
 import {
     formatCardanoDeposit,
     formatCardanoWithdrawal,
@@ -13,7 +13,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue, FormattedCryptoAmount, Sign } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { TransactionTargetLayout } from './TransactionTargetLayout';
 

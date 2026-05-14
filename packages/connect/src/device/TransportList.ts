@@ -1,15 +1,14 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import type { ConnectSettingsTransport } from '@trezor/connect-common/src/types/settings';
+import type { Transport } from '@trezor/transport';
 import {
     BridgeTransport,
     NodeUsbTransport,
-    Transport,
     UdpTransport,
     WebUsbTransport,
     isTransportInstance,
 } from '@trezor/transport';
 import type { AbstractTransportParams } from '@trezor/transport/src/transports/abstract';
-
-import { ConnectSettingsTransport } from '../types';
 
 type Params = AbstractTransportParams & { sessionsBackgroundUrl?: string | null };
 
@@ -51,11 +50,6 @@ const getOrCreateTransport = (
         const existing = tryGetTransport(transports, transportType.name);
         if (existing) {
             return existing;
-        }
-
-        // custom Transport might be initialized without messages, update them if so
-        if (!transportType.getMessage()) {
-            transportType.updateMessages(params.messages);
         }
 
         return transportType;

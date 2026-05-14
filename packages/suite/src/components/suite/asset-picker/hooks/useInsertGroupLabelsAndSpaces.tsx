@@ -1,10 +1,10 @@
-import { ReactNode, useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 
 import { AccountLabel } from '../../AccountLabel';
 import { ASSET_ROW_GROUP_LABEL_HEIGHT, ASSET_ROW_HEIGHTS_BY_SIZE } from '../constants';
-import { AccountWithTokensOption, AssetGroupSpaceSize } from '../types';
+import { type AccountWithTokensOption, type AssetGroupSpaceSize } from '../types';
 
 export type AssetPickerListItem =
     | AccountWithTokensOption

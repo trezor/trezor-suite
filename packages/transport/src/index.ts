@@ -7,10 +7,6 @@ export { AbstractTransport as Transport, isTransportInstance } from './transport
 export { AbstractApiTransport } from './transports/abstractApi';
 export { UsbApi } from './api/usb';
 
-// messages are exported but there is no real need to use them elsewhere
-// transports have reference to this already
-export { Messages } from '@trezor/protobuf';
-
 // browser + node
 export { BridgeTransport } from './transports/bridge';
 

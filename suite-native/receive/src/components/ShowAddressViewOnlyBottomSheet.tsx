@@ -1,8 +1,14 @@
 import React from 'react';
 
-import { BottomSheetModal, BottomSheetModalRef, Button, Text, VStack } from '@suite-native/atoms';
+import {
+    BottomSheetModal,
+    type BottomSheetModalRef,
+    Button,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type ShowAddressViewOnlyBottomSheetProps = {
     onClose: () => void;
@@ -28,15 +34,15 @@ export const ShowAddressViewOnlyBottomSheet = ({
                     <Text variant="headline-sm">
                         <Translation id="moduleReceive.receiveAddressCard.viewOnlyWarning.title" />
                     </Text>
-                    <Text color="textSubdued">
+                    <Text color="contentSecondary">
                         <Translation id="moduleReceive.receiveAddressCard.viewOnlyWarning.description" />
                     </Text>
                 </VStack>
                 <VStack spacing="sp16" style={applyStyle(buttonWrapperStyle)}>
-                    <Button colorScheme="yellowBold" onPress={onShowAddress}>
+                    <Button intent="warning" priority="primary" onPress={onShowAddress}>
                         <Translation id="moduleReceive.receiveAddressCard.viewOnlyWarning.primaryButton" />
                     </Button>
-                    <Button colorScheme="yellowElevation1" onPress={onClose}>
+                    <Button intent="warning" priority="secondary" onPress={onClose}>
                         <Translation id="moduleReceive.receiveAddressCard.viewOnlyWarning.secondaryButton" />
                     </Button>
                 </VStack>

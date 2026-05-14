@@ -11,6 +11,9 @@ export {
     WriteModeRequiredForAllocation,
 } from './ensureOwnerHasAllocatedQuotaThunk';
 export { increaseOwnerQuotaThunk } from './increaseOwnerQuotaThunk';
+export type { EnsureQuotaDep } from './createEnsureQuota';
+export { createSuiteSyncQuotaManagerCompositionRoot } from './createSuiteSyncQuotaManagerCompositionRoot';
+export type { GetOwnerHasAllowanceDep } from './getOwnerHasAllowance';
 
 /**
  * Actions.
@@ -20,8 +23,9 @@ export {
     quotaManagerDeviceFetched,
     quotaManagerFetchError,
     suiteSyncQuotaManagerActions,
-    eraseFetchedData as eraseFetchedDataDebug,
+    eraseFetchedData,
     noQuotaLeftWarningDismissed,
+    enforceQuotaManagerUpdated,
 } from './quotaManagerActions';
 
 /**
@@ -37,6 +41,7 @@ export {
     selectLeftDeviceQuota,
     selectDeviceDismissedNoQuotaLeftWarning,
     selectShouldDisplayOutOfQuotaAlert,
+    selectEnforceQuotaManager,
 } from './quotaManagerSelectors';
 export type { WithSuiteSyncQuotaManagerState } from './quotaManagerSelectors';
 
@@ -52,4 +57,11 @@ export {
 /**
  * Constants.
  */
-export { DEFAULT_DEVICE_SIZE_QUOTA } from './constants';
+export {
+    DEFAULT_DEVICE_SIZE_QUOTA,
+    DEFAULT_QUOTA_MANAGER_URL,
+    DEV_QUOTA_MANAGER_URL,
+    PRODUCTION_QUOTA_MANAGER_URL,
+} from './constants';
+
+export { getAccountIncrementSizeQuota } from './util/getAccountIncrementSizeQuota';

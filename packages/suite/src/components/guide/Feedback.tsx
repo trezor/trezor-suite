@@ -1,30 +1,30 @@
-import { ChangeEvent, ReactNode, useCallback, useState } from 'react';
+import { type ChangeEvent, type ReactNode, useCallback, useState } from 'react';
 
 import styled from 'styled-components';
 
 import { events } from '@suite/analytics';
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import {
-    FeedbackCategory,
-    FeedbackType,
-    Rating,
+    type FeedbackCategory,
+    type FeedbackType,
+    type Rating,
     buildUserFeedbackData,
     sendFeedbackAction,
 } from '@suite-common/feedback';
 import { Button, CollapsibleBox, Select, Textarea } from '@trezor/components';
+import { EmojiRatingSelector } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
 
 import { setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
-
-import { EmojiRatingSelector } from '../suite/EmojiRatingSelector';
 
 const Headline = styled.div`
     ${typography['body-xs']}
     text-align: left;
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
     padding: 0 0 11px;
     width: 100%;
 `;
@@ -40,7 +40,7 @@ const AnonymousDataList = styled.ul`
 const AnonymousDataItem = styled.li`
     margin-bottom: 4px;
     ${typography['body-sm']}
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
 `;
 
 const MESSAGE_CHARACTER_LIMIT = 1000;
@@ -63,13 +63,14 @@ export const Feedback = ({ type }: FeedbackProps) => {
     const [description, setDescription] = useState('');
     const [rating, setRating] = useState<Rating | undefined>();
 
-    const feedbackCategories: { [key in FeedbackCategory]: ReactNode } = {
+    const feedbackCategories: Partial<Record<FeedbackCategory, ReactNode>> = {
         dashboard: <Translation id="TR_FEEDBACK_CATEGORY_DASHBOARD" />,
         account: <Translation id="TR_FEEDBACK_CATEGORY_ACCOUNT" />,
         settings: <Translation id="TR_FEEDBACK_CATEGORY_SETTINGS" />,
         send: <Translation id="TR_FEEDBACK_CATEGORY_SEND" />,
         receive: <Translation id="TR_FEEDBACK_CATEGORY_RECEIVE" />,
         trade: <Translation id="TR_FEEDBACK_CATEGORY_TRADE" />,
+        experimental: <Translation id="TR_FEEDBACK_CATEGORY_EXPERIMENTAL" />,
         other: <Translation id="TR_FEEDBACK_CATEGORY_OTHER" />,
     };
 

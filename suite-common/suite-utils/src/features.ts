@@ -1,4 +1,4 @@
-import { FLAGS, FLAGS_DESKTOP, FLAGS_WEB, FeatureFlags } from '@suite-common/suite-config';
+import { FLAGS, FLAGS_DESKTOP, FLAGS_WEB, type FeatureFlags } from '@suite-common/suite-config';
 
 const getFlagsForEnv = (env?: string) => {
     switch (env) {

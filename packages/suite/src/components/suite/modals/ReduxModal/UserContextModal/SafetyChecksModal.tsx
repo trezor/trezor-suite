@@ -1,12 +1,13 @@
 import { useState } from 'react';
 
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import {
     Banner,
     Card,
     Column,
     Modal,
-    ModalProps,
+    type ModalProps,
     Paragraph,
     Radio,
     Text,
@@ -14,7 +15,7 @@ import {
 import { spacings } from '@trezor/theme';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 
 /**
  * A Modal that allows user to set the `safety_checks` feature of connected Trezor.
@@ -33,7 +34,7 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
         <Modal
             onCancel={onCancel}
             heading={<Translation id="TR_SAFETY_CHECKS_MODAL_TITLE" />}
-            variant="warning"
+            intent="warning"
             width={600}
             bottomContent={
                 <>
@@ -56,7 +57,7 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
                 <Column gap={spacings.xl} alignItems="flex-start">
                     <Radio
                         isChecked={level === 'Strict'}
-                        onClick={() => setLevel('Strict')}
+                        onChange={() => setLevel('Strict')}
                         data-testid="@radio-button-strict"
                         verticalAlignment="center"
                     >
@@ -72,7 +73,7 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
                     <Radio
                         // For the purpose of this modal consider `PromptAlways` as identical to `PromptTemporarily`.
                         isChecked={level === 'PromptTemporarily' || level === 'PromptAlways'}
-                        onClick={() => setLevel('PromptTemporarily')}
+                        onChange={() => setLevel('PromptTemporarily')}
                         data-testid="@radio-button-prompt"
                         verticalAlignment="center"
                     >

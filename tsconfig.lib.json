@@ -8,7 +8,8 @@
 
         "composite": false,
         "incremental": false,
-        "declarationMap": true,
+        "declarationMap": false,
+        "sourceMap": false,
         "noEmit": false,
         "emitDeclarationOnly": false
     },
@@ -26,6 +27,7 @@
         "**/__tests__",
         "**/__fixtures__",
         "**/__mocks__/**",
-        "**/*.test.ts"
+        "**/*.test.ts",
+        "**/*.browser.*"
     ]
 }

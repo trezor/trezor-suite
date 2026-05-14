@@ -4,8 +4,7 @@
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-web",
     "description": "High-level javascript interface for Trezor hardware wallet in web environment.",
-    "npmPublishAccess": "public",
-    "license": "SEE LICENSE IN LICENSE.md",
+    "license": "MIT",
     "repository": {
         "type": "git",
         "url": "git://github.com/trezor/trezor-suite.git"
@@ -21,52 +20,43 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "publishConfig": {
-        "main": "./lib/index.js",
-        "types": "./lib/index.d.ts",
+        "main": "./libESM/index.mjs",
+        "types": "./libESM/index.d.mts",
+        "type": "module",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
-            }
+                "types": "./libESM/index.d.mts",
+                "default": "./libESM/index.mjs"
+            },
+            "./libESM/impl/*": "./libESM/impl/*"
         }
     },
     "files": [
-        "lib/",
         "libESM/",
         "CHANGELOG.md"
     ],
     "scripts": {
         "depcheck": "yarn g:depcheck",
+        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm && DTS_OUT_DIR=libESM yarn build:dts:inline",
+        "build:dts:inline": "node ../../scripts/inline-devdep-types.mjs",
         "test:e2e": "yarn playwright install && yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/websocket-client": "workspace:*"
     },
     "devDependencies": {
-        "@babel/preset-typescript": "^7.28.5",
-        "@playwright/browser-chromium": "^1.57.0",
-        "@playwright/browser-firefox": "^1.57.0",
-        "@playwright/browser-webkit": "^1.57.0",
-        "@playwright/test": "^1.57.0",
+        "@playwright/test": "1.58.2",
         "@trezor/eslint": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "@types/chrome": "^0.0.299",
+        "@types/chrome": "^0.1.40",
         "@types/jest": "29.5.12",
-        "@types/w3c-web-usb": "^1.0.10",
-        "@types/web": "^0.0.197",
-        "babel-loader": "^10.0.0",
-        "rimraf": "^6.0.1",
-        "tsx": "^4.21.0",
-        "worker-loader": "^3.0.8",
+        "@types/w3c-web-usb": "^1.0.14",
+        "@types/web": "^0.0.345",
         "xvfb-maybe": "^0.2.1"
     },
     "peerDependencies": {

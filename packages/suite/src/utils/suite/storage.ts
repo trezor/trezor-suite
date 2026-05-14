@@ -1,9 +1,9 @@
 import { connectInitThunk } from '@suite-common/connect-init';
 import { filterInconclusiveAuthenticityChecks } from '@suite-common/firmware-authenticity';
-import { DeviceWithEmptyPath } from '@suite-common/suite-types';
+import { type DeviceWithEmptyPath } from '@suite-common/suite-types';
 
-import { AcquiredDevice } from 'src/types/suite';
-import { CoinjoinAccount } from 'src/types/wallet/coinjoin';
+import { type AcquiredDevice } from 'src/types/suite';
+import { type CoinjoinAccount } from 'src/types/wallet/coinjoin';
 
 /**
  * Strip fields from Device
@@ -18,7 +18,6 @@ export const serializeDevice = (device: AcquiredDevice): DeviceWithEmptyPath => 
     authenticityChecks: filterInconclusiveAuthenticityChecks(device.authenticityChecks),
     // instead persisted on `persistentDeviceData` as part of the effort to unlink device from wallet
     thp: undefined,
-    bluetoothProps: undefined,
 });
 
 /**

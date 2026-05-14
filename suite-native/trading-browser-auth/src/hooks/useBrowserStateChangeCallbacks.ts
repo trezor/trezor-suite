@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { TradingType } from '@suite-common/trading';
+import { type TradingType } from '@suite-common/trading';
 import { useTradingAnalyticReportCallback } from '@suite-native/trading-analytics';
 import type { ProviderConfirmationStatus } from '@suite-native/trading-types';
 

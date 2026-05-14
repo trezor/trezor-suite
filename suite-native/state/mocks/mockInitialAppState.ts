@@ -8,7 +8,7 @@ import { messageSystemInitialState } from '@suite-common/message-system';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager';
 import { initialThpState } from '@suite-common/thp';
-import { notificationsInitialState } from '@suite-common/toast-notifications';
+import { createNotificationsReducer } from '@suite-common/toast-notifications';
 import { tokenDefinitionsInitialState } from '@suite-common/token-definitions';
 import {
     accountsInitialState,
@@ -18,7 +18,9 @@ import {
     feesInitialState,
     fiatRatesInitialState,
     formDraftInitialState,
+    initialStablecoinYieldState,
     initialWalletSettingsState,
+    phishingInitialState,
     stakeInitialState,
     transactionsInitialState,
 } from '@suite-common/wallet-core';
@@ -27,10 +29,12 @@ import { bannerFlagsInitialState } from '@suite-native/banner-flags';
 import { bluetoothInitialState } from '@suite-native/bluetooth';
 import { deviceAuthorizationInitialState } from '@suite-native/device-authorization';
 import { deviceOnboardingSliceInitialState } from '@suite-native/device-onboarding';
+import { pendingCoinVisibilitySlice } from '@suite-native/discovery';
+import { featureFeedbackInitialState } from '@suite-native/feature-feedback';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { nativeFirmwareInitialState } from '@suite-native/firmware';
 import { graphInitialState } from '@suite-native/graph';
-import { localeInitialState } from '@suite-native/intl';
+import { TxKeyPath, localeInitialState } from '@suite-native/intl';
 import { appSettingsInitialState } from '@suite-native/settings';
 import { tradingInitialState } from '@suite-native/trading-state';
 import { sendFormInitialState } from '@suite-native/transaction-management';
@@ -60,13 +64,15 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
     logs: logsSliceInitialState,
     messageSystem: messageSystemInitialState,
     nativeFirmware: nativeFirmwareInitialState,
-    notifications: notificationsInitialState,
+    notifications: createNotificationsReducer<TxKeyPath>().initialState,
+    pendingCoinVisibility: pendingCoinVisibilitySlice.getInitialState(),
     suiteSync: initialSuiteSyncState,
     suiteSyncData: initialSuiteSyncDataState,
     thp: initialThpState,
     tokenDefinitions: tokenDefinitionsInitialState,
     walletConnect: walletConnectInitialState,
     suiteSyncQuotaManager: quotaManagerInitialState,
+    featureFeedback: featureFeedbackInitialState,
 
     wallet: {
         accounts: accountsInitialState,
@@ -74,10 +80,12 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
         explorer: explorerInitialState,
         fiat: fiatRatesInitialState,
         transactions: transactionsInitialState,
+        phishing: phishingInitialState,
         discovery: discoveryInitialState,
         send: sendFormInitialState,
         fees: feesInitialState,
         stake: stakeInitialState,
+        stablecoinYield: initialStablecoinYieldState,
         trading: tradingInitialState,
         settings: initialWalletSettingsState,
         formDrafts: formDraftInitialState,

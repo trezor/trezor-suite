@@ -4,19 +4,19 @@ import { URL } from 'url';
 
 import {
     HttpServer,
-    ParamsValidatorHandler,
-    RequestHandler,
-    RequestWithParams,
-    Response,
+    type ParamsValidatorHandler,
+    type RequestHandler,
+    type RequestWithParams,
+    type Response,
     parseBodyJSON,
     parseBodyText,
 } from '@trezor/node-utils';
 import { checkOrigin } from '@trezor/node-utils/src/http';
-import { AbstractApi } from '@trezor/transport/src/api/abstract';
-import { UNEXPECTED_ERROR } from '@trezor/transport/src/errors';
-import { Descriptor, PathPublic, Session } from '@trezor/transport/src/types';
+import { type AbstractApi } from '@trezor/transport/src/api/abstract';
+import { SESSION_NOT_FOUND, UNEXPECTED_ERROR } from '@trezor/transport/src/errors';
+import { type Descriptor, type PathPublic, type Session } from '@trezor/transport/src/types';
 import { validateProtocolMessage } from '@trezor/transport/src/utils/bridgeProtocolMessage';
-import { Log, Throttler, arrayPartition } from '@trezor/utils';
+import { type Log, Throttler, arrayPartition } from '@trezor/utils';
 
 import { createCore } from './core';
 
@@ -83,7 +83,7 @@ const COMPATIBILITY_PORT = 21325;
 const ADDRESS = new URL('http://127.0.0.1');
 
 export class TrezordNode {
-    version = '3.2.0';
+    version = '3.2.1';
     bundledVersion?: string;
     serviceName = 'trezord-node';
     /** last known descriptors state */
@@ -94,6 +94,8 @@ export class TrezordNode {
         req: Parameters<RequestHandler<unknown, unknown>>[0];
         res: Response;
     }[];
+    /** pending /call /read and /post sessions. can be aborted via /abort endpoint */
+    private abortableSignals: { session: string; abort: () => void }[] = [];
     private readonly requestedPort: number;
     private port?: number;
     server: HttpServer<never>[] = [];
@@ -185,7 +187,7 @@ export class TrezordNode {
         this.checkAffectedSubscriptions();
     }
 
-    private createAbortSignal(res: Response) {
+    private createAbortSignal(res: Response, session?: string) {
         const abortController = new AbortController();
         const listener = () => {
             abortController.abort();
@@ -193,7 +195,18 @@ export class TrezordNode {
         };
         res.addListener('close', listener);
 
+        if (session) {
+            this.abortableSignals.push({
+                session,
+                abort: () => abortController.abort(),
+            });
+        }
+
         return abortController.signal;
+    }
+
+    private removeAbortableSignal(session: string) {
+        this.abortableSignals = this.abortableSignals.filter(s => s.session !== session);
     }
 
     private handleResponse(res: Response, data: string) {
@@ -314,7 +327,7 @@ export class TrezordNode {
 
                             return this.handleResponse(
                                 res,
-                                str({ error: result.error, message: result.message }),
+                                str({ error: result.error.code, message: result.error.message }),
                             );
                         }
                         res.statusCode = 200;
@@ -357,7 +370,10 @@ export class TrezordNode {
 
                                 return this.handleResponse(
                                     res,
-                                    str({ error: result.error, message: result.message }),
+                                    str({
+                                        error: result.error.code,
+                                        message: result.error.message,
+                                    }),
                                 );
                             }
                             res.statusCode = 200;
@@ -380,7 +396,10 @@ export class TrezordNode {
 
                                 return this.handleResponse(
                                     res,
-                                    str({ error: result.error, message: result.message }),
+                                    str({
+                                        error: result.error.code,
+                                        message: result.error.message,
+                                    }),
                                 );
                             }
                             res.statusCode = 200;
@@ -390,25 +409,52 @@ export class TrezordNode {
                 },
             ]);
 
+            app.post('/abort/:session', [
+                validateSessionParams,
+                parseBodyText,
+                (req, res) => {
+                    let statusCode = 400;
+                    this.abortableSignals.forEach(s => {
+                        if (s.session === req.params.session) {
+                            statusCode = 200;
+                            s.abort();
+                        }
+                    });
+                    this.removeAbortableSignal(req.params.session);
+
+                    res.statusCode = statusCode;
+
+                    return this.handleResponse(
+                        res,
+                        str(statusCode === 200 ? { success: true } : { error: SESSION_NOT_FOUND }),
+                    );
+                },
+            ]);
+
             app.post('/call/:session', [
                 validateSessionParams,
                 parseBodyText,
                 validateProtocolMessageBody(true, this.protocolMessages),
                 (req, res) => {
-                    const signal = this.createAbortSignal(res);
+                    const { session } = req.params;
+                    const signal = this.createAbortSignal(res, session);
                     this.core
                         .call({
                             ...req.body,
-                            session: req.params.session,
+                            session,
                             signal,
                         })
                         .then(result => {
+                            this.removeAbortableSignal(session);
                             if (!result.success) {
                                 res.statusCode = 400;
 
                                 return this.handleResponse(
                                     res,
-                                    str({ error: result.error, message: result.message }),
+                                    str({
+                                        error: result.error.code,
+                                        message: result.error.message,
+                                    }),
                                 );
                             }
                             res.statusCode = 200;
@@ -423,20 +469,25 @@ export class TrezordNode {
                 parseBodyText,
                 validateProtocolMessageBody(false, this.protocolMessages),
                 (req, res) => {
-                    const signal = this.createAbortSignal(res);
+                    const { session } = req.params;
+                    const signal = this.createAbortSignal(res, session);
                     this.core
                         .receive({
                             ...req.body,
-                            session: req.params.session,
+                            session,
                             signal,
                         })
                         .then(result => {
+                            this.removeAbortableSignal(session);
                             if (!result.success) {
                                 res.statusCode = 400;
 
                                 return this.handleResponse(
                                     res,
-                                    str({ error: result.error, message: result.message }),
+                                    str({
+                                        error: result.error.code,
+                                        message: result.error.message,
+                                    }),
                                 );
                             }
                             res.statusCode = 200;
@@ -451,20 +502,25 @@ export class TrezordNode {
                 parseBodyText,
                 validateProtocolMessageBody(true, this.protocolMessages),
                 (req, res) => {
-                    const signal = this.createAbortSignal(res);
+                    const { session } = req.params;
+                    const signal = this.createAbortSignal(res, session);
                     this.core
                         .send({
                             ...req.body,
-                            session: req.params.session,
+                            session,
                             signal,
                         })
                         .then(result => {
+                            this.removeAbortableSignal(session);
                             if (!result.success) {
                                 res.statusCode = 400;
 
                                 return this.handleResponse(
                                     res,
-                                    str({ error: result.error, message: result.message }),
+                                    str({
+                                        error: result.error.code,
+                                        message: result.error.message,
+                                    }),
                                 );
                             }
                             res.statusCode = 200;

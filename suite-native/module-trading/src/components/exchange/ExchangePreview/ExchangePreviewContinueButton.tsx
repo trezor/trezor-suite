@@ -1,46 +1,53 @@
 import { memo } from 'react';
+import Animated, { FadeInDown, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
-import type { ExchangeTrade } from 'invity-api';
 
-import { parseCryptoId } from '@suite-common/trading';
+import {
+    isFinalStatus,
+    parseCryptoId,
+    selectTradingExchangeSelectedQuote,
+} from '@suite-common/trading';
 import { selectSendPrecomposedTx } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
-import { Button } from '@suite-native/atoms';
+import { type TokenAddress } from '@suite-common/wallet-types';
+import { Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    type AppTabsParamList,
-    type StackToTabCompositeNavigationProp,
-    type TradingStackParamList,
-    TradingStackRoutes,
+    type RootStackParamList,
+    RootStackRoutes,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type ExchangePreviewContinueButtonProps = {
     isDisabled: boolean;
-    quote?: ExchangeTrade;
     onSignTransactionNavigation: () => void;
 };
 
-type NavigationProp = StackToTabCompositeNavigationProp<
-    TradingStackParamList,
-    TradingStackRoutes.TradingExchangePreview,
-    AppTabsParamList
+type NavigationProp = StackNavigationProps<
+    RootStackParamList,
+    RootStackRoutes.TradingExchangePreview
 >;
+
+const footerStyle = prepareNativeStyle(utils => ({
+    paddingHorizontal: utils.spacings.sp16,
+    paddingBottom: utils.spacings.sp16,
+}));
 
 const EXCHANGE_PREVIEW_CONTINUE_BUTTON_TEST_ID = '@trading/exchange-preview/continue-button';
 
 export const ExchangePreviewContinueButton = memo(
-    ({ isDisabled, quote, onSignTransactionNavigation }: ExchangePreviewContinueButtonProps) => {
+    ({ isDisabled, onSignTransactionNavigation }: ExchangePreviewContinueButtonProps) => {
         const navigation = useNavigation<NavigationProp>();
+        const { applyStyle } = useNativeStyles();
 
+        const quote = useSelector(selectTradingExchangeSelectedQuote);
         const precomposedTransaction = useSelector(selectSendPrecomposedTx);
         const fromAccount = useSelector(selectExchangeSelectedSendAccount);
-
-        if (precomposedTransaction?.type !== 'final') {
-            return null;
-        }
+        const isTXFinalType = precomposedTransaction?.type === 'final';
+        const isTradeFinalized = isFinalStatus('exchange', quote?.status);
 
         const handleSignTransaction = () => {
             if (!quote || !fromAccount) {
@@ -56,25 +63,37 @@ export const ExchangePreviewContinueButton = memo(
                 ? (parseCryptoId(quote.send)?.contractAddress as TokenAddress)
                 : undefined;
 
-            navigation.navigate({
-                name: TradingStackRoutes.TradingExchangeOutputsReview,
-                params: {
-                    accountKey: fromAccount.key,
-                    tokenContract,
-                    orderId: quote.orderId ?? '',
-                },
+            navigation.navigate(RootStackRoutes.TradingExchangeOutputsReview, {
+                accountKey: fromAccount.key,
+                tokenContract,
+                orderId: quote.orderId ?? '',
+                flowType: 'swap',
             });
             onSignTransactionNavigation();
         };
 
+        if (isTradeFinalized) {
+            return null;
+        }
+
+        if (isDisabled && !isTXFinalType) {
+            return null;
+        }
+
         return (
-            <Button
-                onPress={handleSignTransaction}
-                isDisabled={isDisabled}
-                testID={EXCHANGE_PREVIEW_CONTINUE_BUTTON_TEST_ID}
-            >
-                <Translation id="generic.buttons.continue" />
-            </Button>
+            <Animated.View entering={FadeInDown} exiting={FadeOut}>
+                <ScreenFooterGradient />
+                <Box style={applyStyle(footerStyle)}>
+                    <Button
+                        onPress={handleSignTransaction}
+                        isDisabled={isDisabled}
+                        isLoading={!isTXFinalType}
+                        testID={EXCHANGE_PREVIEW_CONTINUE_BUTTON_TEST_ID}
+                    >
+                        <Translation id="generic.buttons.continue" />
+                    </Button>
+                </Box>
+            </Animated.View>
         );
     },
 );

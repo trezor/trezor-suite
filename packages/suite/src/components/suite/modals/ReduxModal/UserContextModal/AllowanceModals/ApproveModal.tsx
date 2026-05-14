@@ -1,20 +1,24 @@
 import { FormProvider } from 'react-hook-form';
 
-import { CryptoId, DexApprovalType, ProviderMetadata } from 'invity-api';
+import { type CryptoId, type DexApprovalType, type ProviderMetadata } from 'invity-api';
 
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
-import { Box, Column, Modal, Row } from '@trezor/components';
+import { type Account } from '@suite-common/wallet-types';
+import { Banner, Box, Column, Modal, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
+import { useAsyncClickHandler } from '@trezor/react-utils';
 import { borders } from '@trezor/theme';
 
 import { AccountLabeling } from 'src/components/suite/labeling';
 import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useDevice } from 'src/hooks/suite';
 import { useAllowanceModal } from 'src/hooks/wallet/allowance';
 
-import { AllowanceModalProviderInfo } from './AllowanceModalProviderInfo';
+import {
+    AllowanceModalProviderInfo,
+    type ProviderLogoSourceType,
+} from './AllowanceModalProviderInfo';
 import { ApproveModalTypeSelector } from './ApproveModalTypeSelector';
 
 interface ApproveModalProps {
@@ -23,14 +27,16 @@ interface ApproveModalProps {
     account: Account;
     provider: ProviderMetadata;
     spender: string;
+    logoSourceType?: ProviderLogoSourceType;
     onSelectApprovalType?: (type: DexApprovalType) => void;
     onConfirm?: () => void;
     onCancel?: () => void;
 }
 
 export const ApproveModal = (props: ApproveModalProps) => {
-    const { account, provider, spender, cryptoId } = props;
+    const { account, provider, spender, cryptoId, logoSourceType } = props;
     const { device } = useDevice();
+    const { handleClick, disabled: isConfirmInProgress } = useAsyncClickHandler();
     const context = useAllowanceModal({ ...props, type: 'APPROVE' });
 
     const {
@@ -40,6 +46,8 @@ export const ApproveModal = (props: ApproveModalProps) => {
         approvalType,
         isLoading,
         composedLevels,
+        composedLevelsError,
+        canSubmit,
         data,
         methods,
         selectApprovalType,
@@ -54,7 +62,7 @@ export const ApproveModal = (props: ApproveModalProps) => {
         <FormProvider {...methods}>
             <Modal
                 onCancel={handleClose}
-                variant="primary"
+                intent="brand"
                 width={600}
                 heading={
                     <Translation
@@ -65,9 +73,9 @@ export const ApproveModal = (props: ApproveModalProps) => {
                 bottomContent={
                     <>
                         <Modal.Button
-                            isLoading={isLoading}
-                            isDisabled={!device?.connected}
-                            onClick={confirmAndSend}
+                            isLoading={isLoading || isConfirmInProgress}
+                            isDisabled={!device?.connected || !canSubmit || isConfirmInProgress}
+                            onClick={() => handleClick(confirmAndSend)}
                         >
                             <Translation id="TR_CONTINUE" />
                         </Modal.Button>
@@ -91,7 +99,11 @@ export const ApproveModal = (props: ApproveModalProps) => {
                 shadowBottom={false}
             >
                 <Column gap={12}>
-                    <AllowanceModalProviderInfo spender={spender} provider={provider} />
+                    <AllowanceModalProviderInfo
+                        spender={spender}
+                        provider={provider}
+                        logoSourceType={logoSourceType}
+                    />
                     <ApproveModalTypeSelector
                         approvalType={approvalType}
                         isLoading={isLoading}
@@ -116,6 +128,19 @@ export const ApproveModal = (props: ApproveModalProps) => {
                             changeFeeLevel={handleFeeChange}
                         />
                     </Box>
+
+                    {composedLevelsError && (
+                        <Banner
+                            intent="critical"
+                            icon="warning"
+                            description={
+                                <Translation
+                                    id={composedLevelsError.id}
+                                    values={composedLevelsError.values}
+                                />
+                            }
+                        />
+                    )}
                 </Column>
             </Modal>
         </FormProvider>

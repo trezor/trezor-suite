@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 
 export interface SearchAssetSelectConfig {
     networks: NetworkSymbol[];

@@ -2,7 +2,7 @@ import { G } from '@mobily/ts-belt';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     getConvertedOrDefaultFeeInfo,
     isTestnet,
@@ -13,7 +13,7 @@ import {
     buildRemoveTrustlineTransaction,
 } from '@trezor/blockchain-link-utils/src/stellar';
 import TrezorConnect from '@trezor/connect';
-import { StellarAssetType } from '@trezor/protobuf/src/messages';
+import { StellarAssetType } from '@trezor/protobuf/src/definitions';
 
 import { selectRawNetworkFeeInfo } from '../fees/feesReducer';
 
@@ -133,13 +133,13 @@ const manageTrustline = async (
         } else {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
-                message: pushResponse.payload.error,
+                message: pushResponse.error.message,
             });
         }
     } else {
         return rejectWithValue({
             error: 'sign-transaction-failed',
-            message: response.payload.error,
+            message: response.error.message,
         });
     }
 };

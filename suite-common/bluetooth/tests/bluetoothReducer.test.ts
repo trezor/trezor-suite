@@ -1,14 +1,14 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { deviceActions } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { Device, asBluetoothDeviceId } from '@trezor/connect';
+import { type Device, asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { bluetoothActions } from '../src/bluetoothActions';
 import { prepareBluetoothReducerCreator, prepareInitialState } from '../src/bluetoothReducer';
-import { BluetoothDeviceCommon, BluetoothManufacturerData } from '../src/types';
+import type { BluetoothDeviceCommon, BluetoothManufacturerData } from '../src/types';
 
 const manufacturerData: BluetoothManufacturerData = {
     deviceModel: DeviceModelInternal.T3W1,
@@ -114,8 +114,8 @@ describe('bluetoothReducer', () => {
             },
         });
 
-        const trezorDevice: Pick<TrezorDevice, 'bluetoothProps'> = {
-            bluetoothProps: { id: asBluetoothDeviceId('A') },
+        const trezorDevice: Pick<TrezorDevice, 'descriptor'> = {
+            descriptor: { apiType: 'bluetooth', id: 'A' },
         };
 
         store.dispatch(deviceActions.deviceDisconnect(trezorDevice as TrezorDevice));
@@ -136,14 +136,13 @@ describe('bluetoothReducer', () => {
             },
         });
 
-        const trezorDevice: Pick<Device, 'bluetoothProps'> = {
-            bluetoothProps: { id: asBluetoothDeviceId('A') },
+        const trezorDevice: Pick<Device, 'descriptor'> = {
+            descriptor: { apiType: 'bluetooth', id: 'A' },
         };
 
         store.dispatch(
             deviceActions.connectDevice({
                 device: trezorDevice as Device,
-                isAutoEjectEnabled: false,
             }),
         );
         expect(store.getState().bluetooth.knownDevices).toEqual([nearbyDevice]);

@@ -1,6 +1,6 @@
 import {
-    ChangeEvent,
-    KeyboardEvent,
+    type ChangeEvent,
+    type KeyboardEvent,
     forwardRef,
     useEffect,
     useImperativeHandle,
@@ -10,8 +10,8 @@ import {
 
 import styled from 'styled-components';
 
-import { Input, InputProps, useElevation } from '@trezor/components';
-import { Elevation, mapElevationToBorder, typography } from '@trezor/theme';
+import { Input, type InputProps, useElevation } from '@trezor/components';
+import { type Elevation, mapElevationToBorder, typography } from '@trezor/theme';
 
 const LevelContainer = styled.div`
     width: 64px;
@@ -24,19 +24,19 @@ const Level = styled(Input)<{ $elevation: Elevation }>`
         height: 42px;
         padding: ${({ rightContent }) => !rightContent && '1px 12px 0 12px'};
         border: 1.5px solid ${mapElevationToBorder};
-        color: ${({ theme }) => theme.textPrimaryDefault};
+        color: ${({ theme }) => theme.contentBrand};
         ${typography['headline-sm']}
         text-align: center;
 
         &:disabled {
-            color: ${({ theme }) => theme.textSubdued};
+            color: ${({ theme }) => theme.contentSecondary};
         }
     }
 `;
 
 const InnerAddon = styled.div`
     ${typography['body-sm']}
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
 `;
 
 const MAX_ALLOWED_INTEGER = 1000000;

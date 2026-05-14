@@ -1,5 +1,5 @@
-import { AccountsRootState } from '@suite-common/wallet-core';
-import { Account, AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type AccountsRootState } from '@suite-common/wallet-core';
+import { type Account, type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 
 export const accountSpendingCoins: Account = {
     deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@AC94BB9C1B08FE73BE1E3322:0',

@@ -74,7 +74,7 @@ export const UdevRules = ({ onCancel }: ForegroundAppProps) => {
     const installers: Installer[] = udev.packages.map(p => ({
         label: p.name,
         value: DATA_URL + p.url.substring(1),
-        preferred: platform ? p.platform.indexOf(platform) >= 0 : false,
+        preferred: platform ? p.platform.includes(platform) : false,
     }));
     const [selectedTarget, setSelectedTarget] = useState<Installer | null>(null);
     const preferredTarget = installers.find(i => i.preferred);

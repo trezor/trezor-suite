@@ -1,7 +1,10 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
-import { ChangeRelayUrl, SuiteSyncStorageRepositoryDep } from '@suite-common/suite-sync-types';
-import { StaticSessionId } from '@trezor/connect';
+import {
+    type ChangeRelayUrl,
+    type SuiteSyncStorageRepositoryDep,
+} from '@suite-common/suite-sync-types';
+import { type StaticSessionId } from '@trezor/connect';
 
 import { setSuiteSyncRelayUrl } from '../suiteSyncSlice';
 import { DEFAULT_SUITE_SYNC_RELAY_URL } from './relayUrl';

@@ -1,18 +1,18 @@
 import {
-    Account,
-    Address,
-    ClusterUrl,
-    CompilableTransactionMessage,
-    RpcFromTransport,
-    RpcTransportFromClusterUrl,
-    SolanaRpcApiFromTransport,
-    Transaction,
-    TransactionMessageWithBlockhashLifetime,
+    type Account,
+    type Address,
+    type ClusterUrl,
+    type CompilableTransactionMessage,
+    type RpcFromTransport,
+    type RpcTransportFromClusterUrl,
+    type SolanaRpcApiFromTransport,
+    type Transaction,
+    type TransactionMessageWithBlockhashLifetime,
 } from '@solana/kit';
-import { StakeStateAccount } from '@solana-program/stake';
+import { type StakeStateAccount } from '@solana-program/stake';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import type { SolanaSignTransaction } from '@trezor/connect';
+import { type SolanaTxMeta } from '@suite-common/staking-solana-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 export enum Network {
     Mainnet = 'mainnet-beta',
@@ -27,13 +27,6 @@ export interface RpcConfig {
 export interface SolNetworkConfig {
     network: Network;
 }
-
-export type SolanaTxMeta = {
-    deviceAmountLamports: string;
-    feeLamports: string;
-    rentLamports: string;
-    feeIncludingRentLamports: string;
-};
 
 export type StakeResponse = {
     stakeTx:
@@ -60,12 +53,6 @@ export type ClaimResponse = {
     claimTx: CompilableTransactionMessage & TransactionMessageWithBlockhashLifetime;
     totalClaimAmount: bigint;
     txMeta: SolanaTxMeta;
-};
-
-export type TransactionShim = {
-    addSignature(signerPubKey: string, signatureHex: string): void;
-    serializeMessage(): string;
-    serialize(): string;
 };
 
 export type Params<Blockhash> = {
@@ -95,7 +82,3 @@ export interface ClaimParams<T> {
     url?: string;
     params?: T;
 }
-
-export type SolanaTx = SolanaSignTransaction & {
-    txShim: TransactionShim;
-};

@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { filterAndCategorizeUtxos } from '@suite-common/transaction-search';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
@@ -29,13 +28,14 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';
+import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountLabelsForSearch';
 
 import { UtxoSearch } from './UtxoSearch';
 import { UtxoSelectionList } from './UtxoSelectionList/UtxoSelectionList';
 import { UtxoSortingSelect } from './UtxoSortingSelect';
 
 const Empty = styled.div`
-    border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
+    border-bottom: 1px solid ${({ theme }) => theme.borderNeutral};
     margin-bottom: ${spacingsPx.sm};
     padding: ${spacingsPx.sm} 0;
 `;
@@ -47,10 +47,6 @@ type CoinControlProps = {
 export const CoinControl = ({ close }: CoinControlProps) => {
     const [currentPage, setSelectedPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
-    const { outputLabels } = useSelector(selectLabelingDataForSelectedAccount);
-    const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
-    const dispatch = useDispatch();
-
     const {
         account,
         formState: { errors },
@@ -70,6 +66,9 @@ export const CoinControl = ({ close }: CoinControlProps) => {
             toggleCoinControl,
         },
     } = useSendFormContext();
+    const { outputLabels } = useSelector(state => selectAccountLabelsForSearch(state, account));
+    const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
+    const dispatch = useDispatch();
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
@@ -177,7 +176,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                     <Checkbox
                         isChecked={allUtxosSelected}
                         isDisabled={!hasEligibleUtxos}
-                        onClick={handleAllUtxosSelected}
+                        onChange={handleAllUtxosSelected}
                     >
                         <Text intent="neutral" priority="secondary">
                             <Translation id="TR_SELECTED" values={{ amount: inputs.length }} />
@@ -220,7 +219,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                             <Translation id="TR_PRIVATE_DESCRIPTION" values={{ targetAnonymity }} />
                         }
                         icon="shieldCheck"
-                        iconColor="iconPrimaryDefault"
+                        iconColor="contentBrand"
                         utxos={spendableUtxosOnPage}
                     />
                 )}
@@ -235,7 +234,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                             />
                         }
                         icon="shieldWarning"
-                        iconColor="iconAlertYellow"
+                        iconColor="contentWarning"
                         utxos={lowAnonymityUtxosOnPage}
                     />
                 )}
@@ -250,7 +249,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                         heading={<Translation id="TR_DUST" />}
                         description={<Translation id="TR_DUST_DESCRIPTION" />}
                         icon="info"
-                        iconColor="iconSubdued"
+                        iconColor="contentSecondary"
                         utxos={dustUtxosOnPage}
                     />
                 )}

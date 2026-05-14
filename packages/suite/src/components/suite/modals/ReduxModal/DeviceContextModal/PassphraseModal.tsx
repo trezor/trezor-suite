@@ -1,16 +1,17 @@
 import { useCallback } from 'react';
 
+import { selectModalRequestId } from '@suite/modal';
+import { goto } from '@suite/router';
 import { selectHasDevicePassphraseEntryCapability } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     cancelDiscoveryThunk,
     selectDiscoveryByDevicePath,
     selectIsDiscoveryStatusConfirmEmptyPassphrase,
     submitPassphrase,
 } from '@suite-common/wallet-core';
-import { UI } from '@trezor/connect';
+import { UI_REQUEST } from '@trezor/connect';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { PassphraseWalletExistsFlow } from './PassphraseWalletExistsFlow';
@@ -21,6 +22,7 @@ import { PassphraseMismatchModal } from '../UserContextModal/PassphraseMismatchM
 
 export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
     const discovery = useSelector(state => selectDiscoveryByDevicePath(state, device?.path));
+    const requestId = useSelector(selectModalRequestId);
     const dispatch = useDispatch();
 
     const onPassphraseConfirm = useCallback(
@@ -32,10 +34,11 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
                     device,
                     passphrase: value,
                     passphraseOnDevice,
+                    requestId,
                 }),
             );
         },
-        [discovery, dispatch, device],
+        [discovery, dispatch, device, requestId],
     );
 
     const confirmEmptyPassphrase = useSelector(state =>
@@ -44,13 +47,13 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
 
     const onBackToInitial = () => {
         dispatch(cancelDiscoveryThunk(device));
-        dispatch({ type: UI.CLOSE_UI_WINDOW });
-        dispatch(goto('suite-switch-device', { params: { cancelable: true } }));
+        dispatch({ type: UI_REQUEST.CLOSE_UI_WINDOW });
+        dispatch(goto({ routeName: 'suite-switch-device', params: { cancelable: true } }));
     };
 
     const onCancel = () => {
         dispatch(cancelDiscoveryThunk(device));
-        dispatch({ type: UI.CLOSE_UI_WINDOW });
+        dispatch({ type: UI_REQUEST.CLOSE_UI_WINDOW });
     };
 
     const onSubmit = useCallback(
@@ -68,10 +71,11 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
                     device,
                     passphrase: value,
                     passphraseOnDevice,
+                    requestId,
                 }),
             );
         },
-        [device, confirmEmptyPassphrase, dispatch, discovery, onPassphraseConfirm],
+        [device, confirmEmptyPassphrase, dispatch, discovery, onPassphraseConfirm, requestId],
     );
 
     const offerPassphraseOnDevice = useSelector(selectHasDevicePassphraseEntryCapability);

@@ -1,20 +1,32 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { CryptoId, ExchangeTrade } from 'invity-api';
+import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
 import { accountBtc } from '../../../__fixtures__/utils';
-import { TradingExchangeState } from '../../../reducers/exchangeReducer';
+import { type TradingExchangeState } from '../../../reducers/exchangeReducer';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
-import { TradingTransactionExchange } from '../../../types';
+import { type TradingTransactionExchange } from '../../../types';
 import { tradingThunks } from '../../common';
 import { exchangeThunks } from '../index';
-import * as sendDexTransactionThunk from '../sendDexTransactionThunk';
+import { sendDexTransactionThunk } from '../sendDexTransactionThunk';
+
+jest.mock('../sendDexTransactionThunk', () => {
+    const actual = jest.requireActual('../sendDexTransactionThunk');
+
+    return {
+        ...actual,
+        sendDexTransactionThunk: Object.assign(
+            jest.fn(actual.sendDexTransactionThunk),
+            actual.sendDexTransactionThunk,
+        ),
+    };
+});
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
@@ -112,11 +124,11 @@ describe('sendTransactionThunk', () => {
             },
         });
 
-        const sendDexTransactionThunkSpy = jest
-            .spyOn(sendDexTransactionThunk, 'sendDexTransactionThunk')
-            .mockImplementation(
-                createThunk('@trading-exchange/thunk/sendDexTransactionThunk', () => undefined),
-            );
+        const sendDexTransactionThunkSpy = (
+            sendDexTransactionThunk as unknown as jest.Mock
+        ).mockImplementation(
+            createThunk('@trading-exchange/thunk/sendDexTransactionThunk', () => undefined),
+        );
 
         const result = await store
             .dispatch(
@@ -153,14 +165,14 @@ describe('sendTransactionThunk', () => {
             error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
         };
 
-        const sendDexTransactionThunkSpy = jest
-            .spyOn(sendDexTransactionThunk, 'sendDexTransactionThunk')
-            .mockImplementation(
-                createThunk(
-                    '@trading-exchange/thunk/sendDexTransactionThunk',
-                    (_, { rejectWithValue }) => rejectWithValue(rejectValue),
-                ) as any,
-            );
+        const sendDexTransactionThunkSpy = (
+            sendDexTransactionThunk as unknown as jest.Mock
+        ).mockImplementation(
+            createThunk(
+                '@trading-exchange/thunk/sendDexTransactionThunk',
+                (_, { rejectWithValue }) => rejectWithValue(rejectValue),
+            ) as any,
+        );
 
         const result = await store.dispatch(
             exchangeThunks.sendTransactionThunk({
@@ -195,10 +207,7 @@ describe('sendTransactionThunk', () => {
             ],
         ])('%s', async (_, tradeTest) => {
             const { store, returnUrl, account } = getMocks();
-            const sendDexTransactionThunkSpy = jest.spyOn(
-                sendDexTransactionThunk,
-                'sendDexTransactionThunk',
-            );
+            const sendDexTransactionThunkSpy = sendDexTransactionThunk as unknown as jest.Mock;
 
             const result = await store.dispatch(
                 exchangeThunks.sendTransactionThunk({
@@ -237,10 +246,7 @@ describe('sendTransactionThunk', () => {
         ])('%s', async (_, recomposeAndSignPayload) => {
             const { store, returnUrl, account, trade } = getMocks();
 
-            const sendDexTransactionThunkSpy = jest.spyOn(
-                sendDexTransactionThunk,
-                'sendDexTransactionThunk',
-            );
+            const sendDexTransactionThunkSpy = sendDexTransactionThunk as unknown as jest.Mock;
             (tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock) = jest
                 .fn()
                 .mockImplementation(
@@ -291,10 +297,7 @@ describe('sendTransactionThunk', () => {
         const mockNextStep = jest.fn();
         const dateString = new Date().toISOString();
         jest.spyOn(Date.prototype, 'toISOString').mockImplementation(() => dateString);
-        const sendDexTransactionThunkSpy = jest.spyOn(
-            sendDexTransactionThunk,
-            'sendDexTransactionThunk',
-        );
+        const sendDexTransactionThunkSpy = sendDexTransactionThunk as unknown as jest.Mock;
 
         const result = await store.dispatch(
             exchangeThunks.sendTransactionThunk({

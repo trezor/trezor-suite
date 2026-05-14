@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 
 import {
     CardStepper as CardStepperComponent,
-    CardStepperProps,
+    type CardStepperProps,
 } from '../../CardStepper/CardStepper';
 
 type CardStepperStory = StoryObj<CardStepperProps>;

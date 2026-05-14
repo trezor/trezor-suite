@@ -1,6 +1,6 @@
-import { MiddlewareAPI } from 'redux';
+import { type MiddlewareAPI } from 'redux';
 
-import { ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
+import { type ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
 
 import { PROTOCOL } from 'src/actions/suite/constants';
 import type { Action, AppState, Dispatch } from 'src/types/suite';

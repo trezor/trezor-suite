@@ -1,8 +1,8 @@
+import { selectLanguage } from '@suite/settings';
 import { Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { TradingFormInputCurrency } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
 
 interface TradingFormOfferFiatAmountProps {

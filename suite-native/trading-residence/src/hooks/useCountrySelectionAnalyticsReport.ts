@@ -1,6 +1,6 @@
 import { useCallback, useContext } from 'react';
 
-import { CountryChangeAction, events } from '@suite-native/analytics';
+import { type CountryChangeAction, events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 
 import { CountryChangeContextCheckContext } from '../components/CountryChangeContextCheckContext';

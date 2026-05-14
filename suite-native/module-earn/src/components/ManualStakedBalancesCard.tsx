@@ -1,11 +1,13 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Card, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { selectStakedBalanceByAccountKey, useSelector } from '@suite-native/staking';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+import { ApyValue } from './ApyValue';
 
 const stakingItemStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
@@ -23,7 +25,7 @@ const stakingWrapperStyle = prepareNativeStyle(utils => ({
 
 const separatorStyle = prepareNativeStyle(utils => ({
     borderBottomWidth: utils.borders.widths.small,
-    borderBottomColor: utils.colors.borderElevation1,
+    borderBottomColor: utils.colors.borderNeutral,
 }));
 
 type ManualStakedBalancesCardProps = {
@@ -61,8 +63,8 @@ export const ManualStakedBalancesCard = ({
                 <Box style={applyStyle(stakingWrapperStyle)}>
                     <Box flex={1}>
                         <Box style={applyStyle(stakingItemStyle)}>
-                            <Icon name="lock" color="textSubdued" size="medium" />
-                            <Text color="textSubdued" variant="body-xs">
+                            <Icon name="lock" color="contentSecondary" size="medium" />
+                            <Text color="contentSecondary" variant="body-xs">
                                 <Translation id="earn.staked" />
                             </Text>
                         </Box>
@@ -70,23 +72,23 @@ export const ManualStakedBalancesCard = ({
                             value={stakedBalance}
                             symbol={symbol}
                             decimals={CRYPTO_BALANCE_DECIMALS}
-                            color="textDefault"
+                            color="contentPrimary"
                             variant="headline-sm"
                         />
                         <Box flexDirection="row">
-                            <Text color="textSubdued">≈</Text>
+                            <Text color="contentSecondary">≈</Text>
                             <CryptoToFiatAmountFormatter
                                 value={stakedBalance}
                                 symbol={symbol}
-                                color="textSubdued"
+                                color="contentSecondary"
                                 isBalance
                             />
                         </Box>
                     </Box>
                     <Box flex={1}>
                         <Box style={applyStyle(stakingItemStyle)}>
-                            <Icon name="plusCircle" color="textSubdued" size="medium" />
-                            <Text color="textSubdued" variant="body-xs">
+                            <Icon name="plusCircle" color="contentSecondary" size="medium" />
+                            <Text color="contentSecondary" variant="body-xs">
                                 {rewardsTitle}
                             </Text>
                         </Box>
@@ -94,15 +96,15 @@ export const ManualStakedBalancesCard = ({
                             value={rewardsBalance}
                             symbol={symbol}
                             decimals={CRYPTO_BALANCE_DECIMALS}
-                            color="textSecondaryHighlight"
+                            color="contentBrand"
                             variant="headline-sm"
                         />
                         <Box flexDirection="row">
-                            <Text color="textSubdued">≈</Text>
+                            <Text color="contentSecondary">≈</Text>
                             <CryptoToFiatAmountFormatter
                                 value={rewardsBalance}
                                 symbol={symbol}
-                                color="textSubdued"
+                                color="contentSecondary"
                                 isBalance
                             />
                         </Box>
@@ -116,10 +118,12 @@ export const ManualStakedBalancesCard = ({
                     justifyContent="space-between"
                     paddingTop="sp16"
                 >
-                    <Text color="textSubdued">
+                    <Text color="contentSecondary">
                         <Translation id="earn.apy" />
                     </Text>
-                    <Text>{apy ? `${apy}%` : <Translation id="earn.notAvailable" />}</Text>
+                    <Text>
+                        <ApyValue apy={apy} />
+                    </Text>
                 </Box>
             </Card>
         </PressableOpacity>

@@ -7,20 +7,40 @@ import {
     composeSendFormTransactionFeeLevelsThunk,
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
+    selectSendFormDraftByKey,
+    sendFormActions,
 } from '@suite-common/wallet-core';
 import {
-    AccountKey,
-    FormState,
-    GeneralPrecomposedTransactionFinal,
-    PrecomposedLevels,
-    PrecomposedLevelsCardano,
+    type AccountKey,
+    type FormState,
+    type GeneralPrecomposedTransactionFinal,
+    type PrecomposedLevels,
+    type PrecomposedLevelsCardano,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 
 import { transactionManagementActions } from './sendFormSlice';
-import { FeeLevelsMaxAmount } from './types/fees';
+import { type FeeLevelsMaxAmount, type UpdateFeeLimitThunkParams } from './types/fees';
 
 const TRANSACTION_MANAGEMENT_PREFIX = '@suite-native/transaction-management';
+
+export const updateFeeLimitThunk = createThunk(
+    `${TRANSACTION_MANAGEMENT_PREFIX}/updateFeeLimitThunk`,
+    (
+        { accountKey, tokenContract, feeLimit }: UpdateFeeLimitThunkParams,
+        { dispatch, getState },
+    ) => {
+        const draft = selectSendFormDraftByKey(getState(), accountKey, tokenContract);
+        if (!draft) throw Error('Draft not found.');
+        dispatch(
+            sendFormActions.storeDraft({
+                accountKey,
+                tokenContract,
+                formState: { ...draft, feeLimit },
+            }),
+        );
+    },
+);
 
 export const calculateFeeLevelsMaxAmountThunk = createThunk<
     FeeLevelsMaxAmount,

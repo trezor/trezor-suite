@@ -1,15 +1,15 @@
 import { TypedEmitter, getWeakRandomId } from '@trezor/utils';
 
-import { Descriptor } from '../types';
+import { type Descriptor } from '../types';
 import {
-    AcquireDoneRequest,
-    AcquireIntentRequest,
-    EnumerateDoneRequest,
-    GetPathBySessionRequest,
-    HandleMessageParams,
-    ReleaseDoneRequest,
-    ReleaseIntentRequest,
-    SessionsBackgroundInterface,
+    type AcquireDoneRequest,
+    type AcquireIntentRequest,
+    type EnumerateDoneRequest,
+    type GetPathBySessionRequest,
+    type HandleMessageParams,
+    type ReleaseDoneRequest,
+    type ReleaseIntentRequest,
+    type SessionsBackgroundInterface,
 } from './types';
 
 /**

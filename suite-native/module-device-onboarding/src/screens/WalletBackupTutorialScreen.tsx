@@ -5,13 +5,13 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectDeviceDefaultBackupType, selectIsDeviceInitialized } from '@suite-common/device';
-import { BackupType } from '@suite-common/suite-types';
+import { type BackupType } from '@suite-common/suite-types';
 import {
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
-    RootStackParamList,
+    type DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackRoutes,
+    type RootStackParamList,
     Screen,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import {
     SwipeableWalkthrough,

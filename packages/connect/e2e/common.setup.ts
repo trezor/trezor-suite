@@ -1,19 +1,18 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import TrezorConnect from '@trezor/connect';
-import { ApplySettings } from '@trezor/protobuf/src/messages-schema';
-import {
-    EmuStartOptsType,
-    MNEMONICS,
-    TrezorUserEnvLink,
-    type TrezorUserEnvLinkClass,
-} from '@trezor/trezor-user-env-link';
+import { UI_REQUEST, UI_RESPONSE } from '@trezor/connect-common';
+import type { ApplySettings } from '@trezor/protobuf/src/definitions';
+import type { EmuStartOptsType, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
+import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { versionUtils } from '@trezor/utils';
 
 // import TrezorConnect from '../src';
-import { UI } from '../src/events';
 
-const emulatorStartOpts: EmuStartOptsType =
-    (process.env.emulatorStartOpts as any) || global.emulatorStartOpts || {};
+// Read emulator start options from EMULATOR_START_OPTS env var (JSON string set by run.ts).
+// In browser mode, Vite's `define` replaces process.env.EMULATOR_START_OPTS at build time.
+const emulatorStartOpts: EmuStartOptsType = process.env.EMULATOR_START_OPTS
+    ? JSON.parse(process.env.EMULATOR_START_OPTS)
+    : {};
 
 const emuStartType = emulatorStartOpts.type;
 const firmware: string | null =
@@ -179,15 +178,15 @@ export const initTrezorConnect = async (
         console.log('Transport started: ', event.version);
     });
 
-    TrezorConnect.on(UI.REQUEST_CONFIRMATION, () => {
+    TrezorConnect.on(UI_REQUEST.REQUEST_CONFIRMATION, () => {
         TrezorConnect.uiResponse({
-            type: UI.RECEIVE_CONFIRMATION,
+            type: UI_RESPONSE.RECEIVE_CONFIRMATION,
             payload: true,
         });
     });
 
     if (autoConfirm) {
-        TrezorConnect.on(UI.REQUEST_BUTTON, e => {
+        TrezorConnect.on(UI_REQUEST.REQUEST_BUTTON, e => {
             if (e.code === 'ButtonRequest_PinEntry') return;
             setTimeout(() => TrezorUserEnvLink.send({ type: 'emulator-press-yes' }), 1);
         });
@@ -203,7 +202,7 @@ export const initTrezorConnect = async (
         debug: true,
         pendingTransportEvent: true,
         transportReconnect: false,
-        coreMode: 'core-in-module', // for connect-web
+        coreMode: 'auto', // for connect-web
         thp: {
             appName: 'TrezorConnect',
             hostName: 'tests:e2e',
@@ -294,16 +293,7 @@ export const skipTest = (rules: string[]) => {
 };
 
 export const conditionalTest = (rules: string[], ...args: any) => {
-    const skipMethod = typeof jest !== 'undefined' ? it.skip : xit;
-    const testMethod = skipTest(rules) ? skipMethod : it;
-
-    // @ts-expect-error
-    return testMethod(...args);
-};
-
-export const conditionalDescribe = (rules: string[], ...args: any) => {
-    const skipMethod = typeof jest !== 'undefined' ? describe.skip : xdescribe;
-    const testMethod = skipTest(rules) ? skipMethod : describe;
+    const testMethod = skipTest(rules) ? it.skip : it;
 
     // @ts-expect-error
     return testMethod(...args);

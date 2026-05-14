@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { Persistor } from 'redux-persist/es/types';
+import { type Persistor } from 'redux-persist/es/types';
 import { PersistGate } from 'redux-persist/integration/react';
 
 import { StorageContext } from './contexts';

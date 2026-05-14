@@ -1,4 +1,4 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { Column, SkeletonRectangle } from '@trezor/components';
 import { spacings } from '@trezor/theme';

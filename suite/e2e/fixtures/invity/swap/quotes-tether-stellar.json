@@ -1,0 +1,90 @@
+[
+    {
+        "exchange": "changeherofr",
+        "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "receive": "stellar",
+        "exp": "NtgbqCtOJS4h7K7RCcxFP5yuVhgTKZVmVlUNlKrRehk=",
+        "sendStringAmount": "9",
+        "receiveStringAmount": "54.79560126",
+        "fee": "INCLUDED",
+        "min": 287.9135997120864,
+        "max": 79975.999920024,
+        "rate": 6.0884001404,
+        "extraFieldDescription": {
+            "name": "Memo ID",
+            "description": "Memo ID is another way to identify the transaction you'll receive. It may consist of numbers and letters.",
+            "required": false,
+            "type": "text"
+        },
+        "rateIdentificator": "3476e713-bc72-4c71-a3d0-38970312939f"
+    },
+    {
+        "exchange": "changenow",
+        "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "receive": "stellar",
+        "exp": "NtgbqCtOJS4h7K7RCcxFP5yuVhgTKZVmVlUNlKrRehk=",
+        "sendStringAmount": "9",
+        "receiveStringAmount": "53.5316498",
+        "fee": "UNKNOWN",
+        "min": 1.638,
+        "max": "NONE",
+        "rate": 5.9479610888888885,
+        "extraFieldDescription": {
+            "name": "Memo ID",
+            "description": "Memo ID is another way to identify the transaction you'll receive. It may consist of numbers and letters.",
+            "required": false,
+            "type": "text"
+        }
+    },
+    {
+        "exchange": "changenowfr",
+        "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "receive": "stellar",
+        "exp": "NtgbqCtOJS4h7K7RCcxFP5yuVhgTKZVmVlUNlKrRehk=",
+        "sendStringAmount": "9",
+        "receiveStringAmount": "53.0138377",
+        "fee": "INCLUDED",
+        "min": 9.26527896,
+        "max": 33651.635786,
+        "rate": 5.890426411111111,
+        "extraFieldDescription": {
+            "name": "Memo ID",
+            "description": "Memo ID is another way to identify the transaction you'll receive. It may consist of numbers and letters.",
+            "required": false,
+            "type": "text"
+        },
+        "rateIdentificator": "lPHB+oCTOCyV/1/oLRdkLXr+2G+RpkdM0joKy5RCl8W2y6m6YR1ASUqtQRgIA1CkTzn5W2A5fAxgelFkRJ5l35FvGRbw2Y0rkMvbUhOG0DZI0DX5zbcz9pDSXxlyXtVObzJbg0lZvOkGpMpl2F/rWOOeel57qcV8XUcgqrlCYVXhOveqBT7Rjwpvv26dUnT6PlBvFrK1m0C3TJjGlgqs0g=="
+    },
+    {
+        "error": "Amount is less than minimal: 9.9969999900030011 usdtsol",
+        "exchange": "changehero"
+    },
+    {
+        "error": "No response from exchange.",
+        "exchange": "changelly",
+        "errorDetails": {
+            "origin": "internal",
+            "code": "no_response"
+        }
+    },
+    {
+        "error": "No response from exchange.",
+        "exchange": "changellyfr",
+        "errorDetails": {
+            "origin": "internal",
+            "code": "no_response"
+        }
+    },
+    {
+        "error": "Cannot trade pair solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB-stellar.",
+        "exchange": "godexexchange",
+        "errorDetails": {
+            "origin": "internal",
+            "code": "invalid_pair",
+            "pair": {
+                "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+                "receive": "stellar"
+            }
+        }
+    }
+]

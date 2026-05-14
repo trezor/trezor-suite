@@ -8,7 +8,7 @@
 // - added new methods: getExtraData, getSpecificData.
 
 import { isNetworkType } from '../networks';
-import { TransactionBase, TransactionOptions, isCoinbaseHash } from './base';
+import { TransactionBase, type TransactionOptions, isCoinbaseHash } from './base';
 import * as bitcoin from './bitcoin';
 import * as dash from './dash';
 import * as decred from './decred';
@@ -48,5 +48,5 @@ class Transaction extends TransactionBase<dash.DashSpecific | zcash.ZcashSpecifi
     }
 }
 
-export type { TransactionOptions } from './base';
+export type { TransactionOptions, TxInput, TxOutput } from './base';
 export { Transaction };

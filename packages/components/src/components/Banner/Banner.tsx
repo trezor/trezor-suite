@@ -1,15 +1,19 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { BannerButton } from './BannerButton';
 import { BannerContext } from './BannerContext';
 import { BannerIconButton } from './BannerIconButton';
 import { DEFAULT_INTENT } from './consts';
-import { BannerIntent } from './types';
+import { type BannerIntent } from './types';
 import { mapIntentToBackgroundColor, mapIntentToIcon, mapIntentToIconColor } from './utils';
-import { FrameProps, FramePropsKeys, pickAndPrepareFrameProps } from '../../utils/frameProps';
+import {
+    type FrameProps,
+    type FramePropsKeys,
+    pickAndPrepareFrameProps,
+} from '../../utils/frameProps';
 import { Box } from '../Box/Box';
 import { Column, Row } from '../Flex/Flex';
-import { Icon, IconName } from '../Icon/Icon';
+import { Icon, type IconName } from '../Icon/Icon';
 import { Spinner } from '../loaders/Spinner/Spinner';
 import { H4 } from '../typography/Heading/Heading';
 import { Paragraph } from '../typography/Paragraph/Paragraph';
@@ -41,8 +45,6 @@ export const Banner = ({
     width = '100%',
     ...rest
 }: BannerProps) => {
-    const textPriority = intent === 'neutral' ? 'secondary' : 'primary';
-
     const withIcon = icon !== undefined;
     const frameProps = pickAndPrepareFrameProps(rest, allowedBannerFrameProps, false);
 
@@ -68,7 +70,7 @@ export const Banner = ({
                 <Row flex="1" flexWrap="wrap" gap={12}>
                     <Column flex="1 1 360px" maxWidth="100%">
                         {title && (
-                            <H4 typographyStyle="body-md" intent={intent} priority={textPriority}>
+                            <H4 typographyStyle="body-md" intent={intent} priority="primary">
                                 {title}
                             </H4>
                         )}
@@ -76,7 +78,8 @@ export const Banner = ({
                             <Paragraph
                                 typographyStyle="body-sm"
                                 intent={intent}
-                                priority={textPriority}
+                                priority="primary"
+                                textWrap="pretty"
                             >
                                 {description}
                             </Paragraph>

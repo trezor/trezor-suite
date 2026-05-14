@@ -1,7 +1,7 @@
 import type { NavigationState } from '@react-navigation/routers';
 
 import { navigationContainerRef } from './components/NavigationContainerWithAnalytics';
-import { AppTabsParamList } from './navigators';
+import { type AppTabsParamList } from './navigators';
 import {
     AppTabsRoutes,
     DeviceOnboardingStackRoutes,

@@ -4,12 +4,12 @@ import { Object, type TSchema } from '@sinclair/typebox';
 import styled from 'styled-components';
 
 import { CollapsibleBox, Select, Switch, useElevation, variables } from '@trezor/components';
-import { Elevation, mapElevationToBorder, spacingsPx } from '@trezor/theme';
+import { type Elevation, mapElevationToBorder, spacingsPx } from '@trezor/theme';
 
 import { Method, MethodContent } from './Method';
 import * as methodActions from '../actions/methodActions';
 import { useActions, useSelector } from '../hooks';
-import { MethodState } from '../reducers/methodCommon';
+import { type MethodState } from '../reducers/methodCommon';
 
 const ApiPlaygroundWrapper = styled.div<{ $elevation: Elevation }>`
     display: block;
@@ -60,10 +60,10 @@ const SelectWrapper = styled.div`
     .react-select__control:read-only:not(:disabled) {
         background: transparent;
         border-style: solid;
-        border-color: ${({ theme }) => theme.borderElevation1};
+        border-color: ${({ theme }) => theme.borderNeutral};
 
         &:hover {
-            border-color: ${({ theme }) => theme.borderElevation2};
+            border-color: ${({ theme }) => theme.legacyBorderElevation2};
         }
     }
 `;
@@ -85,9 +85,7 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
     const { elevation } = useElevation();
 
     const [selectedOption, setSelectedOption] = useState(0);
-    const { method } = useSelector(state => ({
-        method: state.method,
-    }));
+    const method = useSelector(state => state.method);
     const actions = useActions({
         onSetSchema: methodActions.onSetSchema,
         onSetMethod: methodActions.onSetMethod,

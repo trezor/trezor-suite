@@ -1,14 +1,19 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 
 import { events } from '@suite/analytics';
+import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
-import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
+import {
+    selectIsLegacyLabelingVisible,
+    selectLabelingDataForSelectedAccount,
+} from '@suite/metadata';
+import { MODAL_CONTEXT_USER } from '@suite/modal';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     Banner,
     Box,
@@ -21,7 +26,7 @@ import {
     IconCircle,
     Link,
     Modal,
-    ModalProps,
+    type ModalProps,
     Paragraph,
     Row,
     Text,
@@ -31,15 +36,15 @@ import { copyToClipboard } from '@trezor/dom-utils';
 import { CoinLogo, ConfirmOnDevicePill } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { MODAL } from 'src/actions/suite/constants';
+import { selectDesktopSuiteSyncInteraction } from 'src/actions/suiteSync/suiteSyncSlice';
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { Address } from 'src/components/suite/Address';
 import { QrCode } from 'src/components/suite/QrCode';
 import { Labeling } from 'src/components/suite/labeling';
 import { useGuideOpenNode } from 'src/hooks/guide';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { ThunkAction } from 'src/types/suite';
+import { type ThunkAction } from 'src/types/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
 
 export type ConfirmValueModalProps = Pick<ModalProps, 'onCancel' | 'heading'> & {
@@ -66,8 +71,7 @@ export const ConfirmValueModal = ({
     value,
 }: ConfirmValueModalProps) => {
     const [isCopied, setIsCopied] = useState(false);
-    const { device, isLocked } = useDevice();
-    const isDeviceLocked = isLocked();
+    const { device } = useDevice();
     const modalContext = useSelector(state => state.modal.context);
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
@@ -75,20 +79,22 @@ export const ConfirmValueModal = ({
     const { openNodeById } = useGuideOpenNode();
     const { translationString } = useTranslation();
     const analytics = useAnalytics();
-    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
-    const legacyMetadataState = useSelector(state => state.metadata);
 
-    // block labeling if metadata needs to be enabled on device until receive address is confirmed (device locked)
-    const isMetadataBlockedByDeviceCall =
-        isDeviceLocked &&
-        !isSuiteSyncEnabled &&
-        (!legacyMetadataState.enabled || legacyMetadataState.providers.length === 0);
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
 
     const suiteSyncAddressLabels = useSelector(state =>
-        account ? selectSuiteSyncAddressLabels(state, account.deviceState) : undefined,
+        account && isSuiteSyncEnabled
+            ? selectSuiteSyncAddressLabels(state, account.deviceState)
+            : undefined,
+    );
+    const suiteSyncInteraction = useSelector(state =>
+        account ? selectDesktopSuiteSyncInteraction(state, account.deviceState) : null,
     );
 
     const canConfirmOnDevice = !!(device?.connected && device?.available);
+    // Do not show Add address label button if there is device interaction needed and device is not connected.
+    const shouldShowAddressLabelAction = suiteSyncInteraction === null || !!device?.connected;
 
     const copy = () => {
         const result = copyToClipboard(value);
@@ -113,13 +119,14 @@ export const ConfirmValueModal = ({
 
     // Device connected while the modal is open -> validate on device.
     useEffect(() => {
-        if (canConfirmOnDevice && modalContext === MODAL.CONTEXT_USER && !isConfirmed) {
+        if (canConfirmOnDevice && modalContext === MODAL_CONTEXT_USER && !isConfirmed) {
             dispatch(validateOnDevice());
         }
     }, [canConfirmOnDevice, dispatch, isConfirmed, modalContext, validateOnDevice]);
 
     const addressLabel =
-        suiteSyncAddressLabels?.find(it => it.address === value)?.label ?? addressLabels[value];
+        suiteSyncAddressLabels?.find(it => it.address === value)?.label ??
+        (isLegacyLabelingVisible ? addressLabels[value] : undefined);
 
     return (
         <Modal.Backdrop onClick={onCancel}>
@@ -191,42 +198,37 @@ export const ConfirmValueModal = ({
                                 <QrCode value={value} />
                             </Box>
                             <Column gap={12} alignItems="flex-start">
-                                {isAddress &&
-                                    (account ? (
-                                        <Labeling
-                                            deviceStaticSessionId={account.deviceState}
-                                            isDisabled={isMetadataBlockedByDeviceCall}
-                                            displayValue={
-                                                <Text typographyStyle="body-md-strong">
-                                                    <Translation id="TR_LABELING_ADD_ADDRESS_LABEL" />
-                                                </Text>
-                                            }
-                                            placeholder={translationString(
-                                                'TR_LABELING_ADDRESS_LABEL',
-                                            )}
-                                            leftAddon={
-                                                <Icon
-                                                    name={addressLabel ? 'tagFilled' : 'tag'}
-                                                    size={16}
-                                                    intent="neutral"
-                                                    priority="secondary"
-                                                />
-                                            }
-                                            payload={{
-                                                type: 'addressLabel',
-                                                entityKey: account.key,
-                                                defaultValue: value,
-                                                networkSymbol: account.symbol,
-                                                accountDescriptor: account.descriptor,
-                                                value: addressLabel,
-                                            }}
-                                            maxWidth={290}
-                                        >
-                                            {addressLabel}
-                                        </Labeling>
-                                    ) : (
-                                        label
-                                    ))}
+                                {isAddress && !account && label}
+                                {isAddress && !!account && shouldShowAddressLabelAction && (
+                                    <Labeling
+                                        deviceStaticSessionId={account.deviceState}
+                                        displayValue={
+                                            <Text typographyStyle="body-md-strong">
+                                                <Translation id="TR_LABELING_ADD_ADDRESS_LABEL" />
+                                            </Text>
+                                        }
+                                        placeholder={translationString('TR_LABELING_ADDRESS_LABEL')}
+                                        leftAddon={
+                                            <Icon
+                                                name={addressLabel ? 'tagFilled' : 'tag'}
+                                                size={16}
+                                                intent="neutral"
+                                                priority="secondary"
+                                            />
+                                        }
+                                        payload={{
+                                            type: 'addressLabel',
+                                            entityKey: account.key,
+                                            defaultValue: value,
+                                            networkSymbol: account.symbol,
+                                            accountDescriptor: account.descriptor,
+                                            value: addressLabel,
+                                        }}
+                                        maxWidth={290}
+                                    >
+                                        {addressLabel}
+                                    </Labeling>
+                                )}
                                 <Address
                                     value={value}
                                     data-testid="@modal/output-value"
@@ -256,12 +258,7 @@ export const ConfirmValueModal = ({
                     {isAddress && (
                         <Card>
                             <Row gap={spacings.lg}>
-                                <IconCircle
-                                    hasBorder={false}
-                                    variant="info"
-                                    size={32}
-                                    name="warningFilled"
-                                />
+                                <IconCircle intent="info" size={32} name="warningFilled" />
                                 <H3>
                                     <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_HEADING" />
                                 </H3>

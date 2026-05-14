@@ -10,7 +10,7 @@ import * as Sentry from '@sentry/react-native';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { FormatterProvider } from '@suite-common/formatters';
-import { ReactNativeQueryProvider } from '@suite-common/react-query';
+import { ReactNativeQueryProvider } from '@suite-common/react-query/src/components/ReactNativeQueryProvider';
 import { applicationInit } from '@suite-native/app-init';
 import { useIsBiometricsOverlayVisible } from '@suite-native/biometrics';
 import { configureNetInfo } from '@suite-native/connection-status';

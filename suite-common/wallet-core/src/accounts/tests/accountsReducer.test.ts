@@ -1,12 +1,12 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { ExtraDependenciesPartial } from '@suite-common/redux-utils';
+import { type ExtraDependenciesPartial } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { Bip43Path } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type Bip43Path } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 
 import { accountsActions } from '../accountsActions';
-import { AccountsRootState, prepareAccountsReducer } from '../accountsReducer';
+import { type AccountsRootState, prepareAccountsReducer } from '../accountsReducer';
 
 const accountsReducer = prepareAccountsReducer(extraDependenciesCommonMock);
 

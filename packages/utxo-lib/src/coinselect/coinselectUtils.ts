@@ -1,13 +1,13 @@
 import BN from 'bn.js';
 
-import { Network, isNetworkType } from '../networks';
+import { type Network, isNetworkType } from '../networks';
 import {
-    CoinSelectAlgorithm,
-    CoinSelectInput,
-    CoinSelectOptions,
-    CoinSelectOutput,
-    CoinSelectOutputFinal,
-    CoinSelectPaymentType,
+    type CoinSelectAlgorithm,
+    type CoinSelectInput,
+    type CoinSelectOptions,
+    type CoinSelectOutput,
+    type CoinSelectOutputFinal,
+    type CoinSelectPaymentType,
 } from '../types';
 
 export const ZERO = new BN(0);

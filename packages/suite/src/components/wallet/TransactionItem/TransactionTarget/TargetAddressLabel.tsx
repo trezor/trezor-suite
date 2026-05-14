@@ -1,14 +1,16 @@
 import { Translation } from '@suite/intl';
-import { AccountLabels } from '@suite-common/metadata-types';
-import { selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
+import { selectIsLegacyLabelingVisible } from '@suite/metadata';
+import { type AccountLabels } from '@suite-common/metadata-types';
+import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
+import { type SuiteSyncAddress } from '@suite-common/suite-sync-storage';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { StaticSessionId } from '@trezor/connect';
-import { ArrayElement } from '@trezor/type-utils';
+import { type ArrayElement } from '@trezor/type-utils';
 
 import { Address, AddressLabeling } from 'src/components/suite';
-import { WalletAccountTransaction } from 'src/types/wallet';
-
-import { useSelector } from '../../../../hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { type WalletAccountTransaction } from 'src/types/wallet';
 
 type TargetAddressLabelProps = {
     symbol: NetworkSymbol;
@@ -26,9 +28,13 @@ export const TargetAddressLabel = ({
     deviceStaticSessionId,
 }: TargetAddressLabelProps) => {
     const isLocalTarget = (type === 'sent' || type === 'self') && target.isAccountTarget;
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
 
     const suiteSyncAddressLabels = useSelector(state =>
-        selectSuiteSyncAddressLabels(state, deviceStaticSessionId),
+        isSuiteSyncEnabled
+            ? selectSuiteSyncAddressLabels(state, deviceStaticSessionId)
+            : returnStableArrayIfEmpty<SuiteSyncAddress>(),
     );
 
     if (isLocalTarget) {
@@ -40,7 +46,7 @@ export const TargetAddressLabel = ({
             {target.addresses?.map((a, i) => {
                 const addressLabel =
                     suiteSyncAddressLabels.find(it => it.address === a)?.label ??
-                    accountMetadata?.addressLabels[a];
+                    (isLegacyLabelingVisible ? accountMetadata?.addressLabels[a] : undefined);
 
                 if (a.startsWith('OP_RETURN ')) {
                     return <span key={i}>{a}</span>;

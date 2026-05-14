@@ -1,7 +1,7 @@
 import {
     AbstractMessageChannel,
-    AbstractMessageChannelConstructorParams,
-    Message,
+    type AbstractMessageChannelConstructorParams,
+    type Message,
 } from './abstract';
 
 /**

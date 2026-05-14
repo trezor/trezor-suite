@@ -1,11 +1,13 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import type { BankAccount, CryptoId, SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import { events } from '@suite/analytics';
-import { useTranslation } from '@suite/intl';
+import { type TranslationKey, useTranslation } from '@suite/intl';
+import { goto } from '@suite/router';
+import { selectHasExperimentalFeature } from '@suite/settings';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -16,31 +18,37 @@ import {
     type TradingAmountLimitProps,
     type TradingSellFormProps,
     type TradingSellType,
-    type TradingSendRejectedProps,
     type TradingSignAndPushSendFormTransactionProps,
     type TradingTransactionSell,
     getTradingQuotesByPaymentMethod,
+    isSendRejectedError,
     selectTradingComposedTransactionInfo,
     selectTradingIsSlip24Allowed,
     selectTradingPaymentMethods,
-    selectTradingSell,
+    selectTradingSellAmountLimits,
+    selectTradingSellInfo,
+    selectTradingSellIsFromRedirect,
+    selectTradingSellIsLoading,
+    selectTradingSellQuotes,
+    selectTradingSellQuotesRequest,
+    selectTradingSellSelectedQuote,
+    selectTradingSellTransactionId,
     selectTradingTrades,
     sellThunks,
     sellUtils,
+    tradingActions,
     tradingSellActions,
     tradingThunks,
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
-import { selectAccountByKey, selectBaseCurrency, useFormDraft } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { selectBaseCurrency, useFormDraft } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { isChanged } from '@trezor/utils';
 
-import * as routerActions from 'src/actions/suite/routerActions';
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
-import { useTradingAccountKey } from 'src/hooks/wallet/trading/form/common/useTradingAccountKey';
 import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
 import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common/useTradingCurrencySwitcher';
 import { useTradingFormActions } from 'src/hooks/wallet/trading/form/common/useTradingFormActions';
@@ -49,62 +57,46 @@ import { useTradingSellHandleChange } from 'src/hooks/wallet/trading/form/common
 import { useTradingSellFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingSellFormDefaultValues';
 import { useTradingSellFormRedirectValues } from 'src/hooks/wallet/trading/form/useTradingSellFormRedirectValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
-import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { UseTradingFormProps } from 'src/types/trading/trading';
-import { TradingSellFormContextProps } from 'src/types/trading/tradingForm';
+import { type UseTradingFormCommonProps } from 'src/types/trading/trading';
+import { type TradingSellFormContextProps } from 'src/types/trading/tradingForm';
 import { createQuoteLink } from 'src/utils/wallet/trading/sellUtils';
 
 import { useTradingAssetDecimals } from './common/useTradingAssetDecimals';
 import { useTradingInitializer } from './common/useTradingInitializer';
+import { useTradingFormAccount } from './useTradingFormAccount';
 
 export const useTradingSellForm = ({
-    selectedAccount,
     pageType = 'form',
-}: UseTradingFormProps): TradingSellFormContextProps => {
+}: UseTradingFormCommonProps = {}): TradingSellFormContextProps => {
     const analytics = useAnalytics();
     const type = 'sell';
-    const isNotFormPage = pageType !== 'form';
+    const isFormPage = pageType === 'form';
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const {
-        isLoading,
-        quotesRequest,
-        isFromRedirect,
-        quotes,
-        transactionId,
-        tradingAccountKey,
-        preselectedQuote,
-        selectedQuote,
-        sellInfo,
-        amountLimits,
-    } = useSelector(selectTradingSell);
+    const isLoading = useSelector(selectTradingSellIsLoading);
+    const quotesRequest = useSelector(selectTradingSellQuotesRequest);
+    const isFromRedirect = useSelector(selectTradingSellIsFromRedirect);
+    const quotes = useSelector(selectTradingSellQuotes);
+    const transactionId = useSelector(selectTradingSellTransactionId);
+    const selectedQuote = useSelector(selectTradingSellSelectedQuote);
+    const sellInfo = useSelector(selectTradingSellInfo);
+    const amountLimits = useSelector(selectTradingSellAmountLimits);
     const paymentMethods = useSelector(selectTradingPaymentMethods);
 
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
 
     const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
 
-    const [accountKey, setAccountKey] = useTradingAccountKey({
-        type,
-        tradingAccountKey,
-        selectedAccount,
-        shouldUseTradingAccountKey: isPreviousRouteFromTradeSection,
-    });
-    const accountByKey = useSelector(state => selectAccountByKey(state, accountKey));
-    const account = accountByKey ?? selectedAccount.account;
+    const { account, tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount(type);
 
-    const { timer, device, checkQuotesTimer } = useTradingInitializer({
+    const { device } = useTradingInitializer({
         pageType,
         isLoading,
     });
 
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
     const { selectedFee, composed } = composedTransactionInfo;
-
-    const { navigateToSellForm, navigateToSellOffers, navigateToSellConfirm } =
-        useTradingNavigation(account);
 
     // we consider this feature enabled unless disabled by message system
     const isSlip24FeatureEnabled = useSelector(state =>
@@ -121,7 +113,7 @@ export const useTradingSellForm = ({
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const network = networks[account.symbol];
-    const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const localCurrencyOption = { value: baseCurrencyCode, label: baseCurrencyCode.toUpperCase() };
     const trades = useSelector(selectTradingTrades);
     const trade = trades.find(
@@ -129,8 +121,18 @@ export const useTradingSellForm = ({
             trade.tradeType === 'sell' && trade.key === transactionId,
     );
 
-    const { defaultValues, defaultCountry, defaultCurrency, defaultPaymentMethod } =
-        useTradingSellFormDefaultValues(accountKey, sellInfo?.country);
+    const {
+        defaultValues,
+        defaultCountry,
+        defaultSubdivision,
+        defaultCurrency,
+        defaultPaymentMethod,
+    } = useTradingSellFormDefaultValues(
+        accountKey,
+        cryptoId,
+        sellInfo?.country,
+        sellInfo?.countrySubdivision,
+    );
     const redirectValues = useTradingSellFormRedirectValues(isFromRedirect, quotesRequest);
     const { saveDraft, draft, removeDraft } = useFormDraft<TradingSellFormProps>('trading-sell');
     const getDraftUpdated = (): TradingSellFormProps | null => {
@@ -151,12 +153,14 @@ export const useTradingSellForm = ({
             ...defaultValues,
             paymentMethod: draft.paymentMethod,
             countrySelect: draft.countrySelect,
+            countrySubdivisionSelect: draft.countrySubdivisionSelect,
             amountInCrypto: draft.amountInCrypto,
         };
     };
     const draftUpdated = getDraftUpdated();
 
     const isDraft = !!draft;
+    const shouldResetOnInitialSellInfoLoad = useRef(!sellInfo);
     const methods = useForm<TradingSellFormProps>({
         mode: 'onChange',
         defaultValues: redirectValues ?? draftUpdated ?? defaultValues,
@@ -171,9 +175,7 @@ export const useTradingSellForm = ({
     const isAmountEmpty = output?.amount === '';
     const noProviders = Object.keys(sellInfo?.providerInfos ?? {}).length === 0;
     const isInitialDataLoading = !sellInfo?.providerInfos;
-    const isFormLoading = isInitialDataLoading || formState.isSubmitting || isLoading;
-    const isFormInvalid = !(formIsValid && hasValues);
-    const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
+
     const quotesByPaymentMethod = getTradingQuotesByPaymentMethod<TradingSellType>(
         quotes,
         values?.paymentMethod?.value ?? '',
@@ -208,6 +210,11 @@ export const useTradingSellForm = ({
         setShowReserveBanner,
     });
 
+    const isFormLoading =
+        isInitialDataLoading || formState.isSubmitting || isLoading || isComposing;
+    const isFormInvalid = !(formIsValid && hasValues);
+    const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
+
     const { toggleAmountInCrypto } = useTradingCurrencySwitcher<TradingSellFormProps>({
         account,
         methods,
@@ -220,7 +227,6 @@ export const useTradingSellForm = ({
     const { handleChange } = useTradingSellHandleChange({
         formValues: values as TradingSellFormProps,
         network,
-        timer,
         shouldSendInSats,
         composeRequestCallback: () => {
             composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
@@ -241,7 +247,6 @@ export const useTradingSellForm = ({
         setComposedLevels,
         setAccountOnChange: newAccount => {
             dispatch(tradingSellActions.setTradingAccountKey(newAccount.key));
-            setAccountKey(newAccount.key);
         },
         composedLevels,
         composedTransactionInfo,
@@ -300,63 +305,30 @@ export const useTradingSellForm = ({
         );
     };
 
-    const goToOffers = async () => {
-        await handleChange();
-
-        dispatch(tradingSellActions.setTradingAccountKey(account.key)); // save account for offers page
-        navigateToSellOffers();
-
-        analytics.report({
-            type: events.tradeCompareOffersEvent.name,
-            payload: {
-                type: 'sell',
-            },
-        });
-    };
-
     const selectQuote = async (quote: SellFiatTrade) => {
         const provider = sellInfo && quote.exchange ? sellInfo.providerInfos[quote.exchange] : null;
 
         if (!quotesRequest || !provider) return;
 
-        switch (pageType) {
-            case 'form': {
-                analytics.report({
-                    type: events.tradeSellEvent.name,
-                    payload: {
-                        action: 'continue',
-                        step: 'sell-form',
-                        cryptoLabel: draftUpdated?.sendCryptoSelect?.displaySymbol,
-                        cryptoNetworkSymbol: draftUpdated?.sendCryptoSelect?.networkSymbol,
-                        cryptoContractAddress:
-                            draftUpdated?.sendCryptoSelect?.contractAddress ?? undefined,
-                        exchangeName: quote?.exchange,
-                        receiveMethod: draftUpdated?.paymentMethod?.value,
-                        countryOfResidence: draftUpdated?.countrySelect?.value,
-                        fractionButton: helpers.fractionButton
-                            ? `${(100 / helpers.fractionButton).toString()}%`
-                            : undefined,
-                    },
-                });
-                break;
-            }
-            case 'offers': {
-                analytics.report({
-                    type: events.tradeSellEvent.name,
-                    payload: {
-                        action: 'continue',
-                        step: 'offers-form',
-                        exchangeName: quote?.exchange,
-                        receiveMethod: draftUpdated?.paymentMethod?.value,
-                        countryOfResidence: draftUpdated?.countrySelect?.value,
-                    },
-                });
-                break;
-            }
-        }
+        analytics.report({
+            type: events.tradeSellEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'sell-form',
+                cryptoLabel: draftUpdated?.sendCryptoSelect?.displaySymbol,
+                cryptoNetworkSymbol: draftUpdated?.sendCryptoSelect?.networkSymbol,
+                cryptoContractAddress: draftUpdated?.sendCryptoSelect?.contractAddress ?? undefined,
+                exchangeName: quote?.exchange,
+                receiveMethod: draftUpdated?.paymentMethod?.value,
+                countryOfResidence: draftUpdated?.countrySelect?.value,
+                fractionButton: helpers.fractionButton
+                    ? `${(100 / helpers.fractionButton).toString()}%`
+                    : undefined,
+            },
+        });
 
         const nextStep = () => {
-            navigateToSellConfirm();
+            dispatch(goto({ routeName: 'wallet-trading-sell-confirm' }));
 
             // empty quoteId means the partner requests login first, requestTrade to get login screen
             if (
@@ -370,7 +342,6 @@ export const useTradingSellForm = ({
         await dispatch(
             sellThunks.selectQuoteThunk({
                 quote,
-                timer,
                 nextStep,
             }),
         );
@@ -412,15 +383,7 @@ export const useTradingSellForm = ({
 
     const sendTransaction = async () => {
         const nextStep = () => {
-            dispatch(
-                routerActions.goto('wallet-trading-sell-detail', {
-                    params: {
-                        symbol: selectedAccount.account.symbol,
-                        accountIndex: selectedAccount.account.index,
-                        accountType: selectedAccount.account.accountType,
-                    },
-                }),
-            );
+            dispatch(goto({ routeName: 'wallet-trading-sell-detail' }));
         };
 
         const signAndPushSendFormTransaction = async ({
@@ -455,13 +418,15 @@ export const useTradingSellForm = ({
 
             return true;
         } catch (e) {
-            const errorTyped = e as TradingSendRejectedProps;
+            if (!isSendRejectedError<TranslationKey>(e)) {
+                return false;
+            }
 
-            if (errorTyped.type !== 'sign-transaction-timeout') {
+            if (e.type !== 'sign-transaction-timeout') {
                 dispatch(
                     notificationsActions.addToast({
-                        type: errorTyped.type,
-                        error: translationString(errorTyped.error.id, errorTyped.error.values),
+                        type: e.type,
+                        error: translationString(e.error.id, e.error.values),
                     }),
                 );
             }
@@ -474,37 +439,31 @@ export const useTradingSellForm = ({
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));
     }, [dispatch]);
 
-    useEffect(() => {
-        if (!preselectedQuote) {
-            return;
-        }
+    const onQuoteSelected = useCallback(
+        (quote: SellFiatTrade) => {
+            const quoteProvider = quote.exchange;
+            const quotePaymentMethod = quote.paymentMethod;
 
-        const preselectedProvider = preselectedQuote.exchange;
-        const preselectedPaymentMethod = preselectedQuote.paymentMethod;
-        const shouldUpdateProvider = !!preselectedProvider && preselectedProvider !== provider;
-        const shouldUpdatePaymentMethod =
-            !!preselectedPaymentMethod && paymentMethod?.value !== preselectedPaymentMethod;
+            if (quoteProvider && quoteProvider !== provider) {
+                setValue(TRADING_FORM_PROVIDER_SELECT, quoteProvider);
+            }
 
-        dispatch(tradingSellActions.savePreselectedQuote(undefined));
+            if (quotePaymentMethod && paymentMethod?.value !== quotePaymentMethod) {
+                const matchingOption = paymentMethods.find(
+                    method => method.value === quotePaymentMethod,
+                );
 
-        if (shouldUpdateProvider) {
-            setValue(TRADING_FORM_PROVIDER_SELECT, preselectedProvider);
-        }
-
-        if (shouldUpdatePaymentMethod) {
-            const matchingOption = paymentMethods.find(
-                method => method.value === preselectedPaymentMethod,
-            );
-
-            setValue(
-                TRADING_FORM_PAYMENT_METHOD_SELECT,
-                matchingOption ?? {
-                    value: preselectedPaymentMethod,
-                    label: preselectedQuote.paymentMethodName ?? preselectedPaymentMethod,
-                },
-            );
-        }
-    }, [paymentMethod, paymentMethods, preselectedQuote, provider, setValue, dispatch]);
+                setValue(
+                    TRADING_FORM_PAYMENT_METHOD_SELECT,
+                    matchingOption ?? {
+                        value: quotePaymentMethod,
+                        label: quote.paymentMethodName ?? quotePaymentMethod,
+                    },
+                );
+            }
+        },
+        [paymentMethod, paymentMethods, provider, setValue],
+    );
 
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
@@ -527,10 +486,11 @@ export const useTradingSellForm = ({
 
     useEffect(() => {
         // when draft doesn't exist, we need to bind actual default values - that happens when we've got sellInfo from Invity API server
-        if (!isDraft && sellInfo && isInitialDataLoading) {
+        if (!isDraft && sellInfo && shouldResetOnInitialSellInfoLoad.current) {
+            shouldResetOnInitialSellInfoLoad.current = false;
             reset(defaultValues);
         }
-    }, [reset, sellInfo, defaultValues, isDraft, isNotFormPage, isInitialDataLoading]);
+    }, [reset, sellInfo, defaultValues, isDraft]);
 
     useDebounce(
         () => {
@@ -557,12 +517,13 @@ export const useTradingSellForm = ({
     );
 
     useEffect(() => {
-        if (!quotesRequest && isNotFormPage) {
-            navigateToSellForm();
+        // We need to clear quotes on offers page without redirecting to form page
+        if (!quotesRequest && !isFormPage) {
+            dispatch(goto({ routeName: 'wallet-trading-sell' }));
 
             return;
         }
-    }, [quotesRequest, isNotFormPage, navigateToSellForm]);
+    }, [quotesRequest, isFormPage, dispatch]);
 
     useEffect(() => {
         if (isFromRedirect) {
@@ -574,10 +535,6 @@ export const useTradingSellForm = ({
             dispatch(tradingSellActions.setIsFromRedirect(false));
         }
     }, [isFromRedirect, trade, transactionId, pageType, dispatch]);
-
-    useEffect(() => {
-        checkQuotesTimer(handleChange);
-    }, [checkQuotesTimer, handleChange]);
 
     // Subscribe to blocks for Solana, since they are not fetched globally
     useSolanaSubscribeBlocks(account);
@@ -598,6 +555,7 @@ export const useTradingSellForm = ({
         methods,
         account,
         defaultCountry,
+        defaultSubdivision,
         defaultCurrency,
         defaultPaymentMethod,
         paymentMethods,
@@ -612,8 +570,6 @@ export const useTradingSellForm = ({
         amountLimits,
         network,
         device,
-        timer,
-        preselectedQuote,
         selectedQuote,
         shouldSendInSats,
         trade,
@@ -623,10 +579,14 @@ export const useTradingSellForm = ({
         setAmountLimits,
         addBankAccount,
         confirmTrade,
-        goToOffers,
         selectQuote,
+        onQuoteSelected,
         sendTransaction,
         showReserveBanner,
         setShowReserveBanner,
+        clearQuotesAndParams: () => {
+            dispatch(tradingActions.savePaymentMethods([]));
+            dispatch(tradingSellActions.clearQuotesAndParams());
+        },
     };
 };

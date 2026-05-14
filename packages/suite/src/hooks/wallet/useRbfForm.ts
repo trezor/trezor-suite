@@ -9,14 +9,14 @@ import {
 } from '@suite-common/wallet-constants';
 import { DEFAULT_FEE_INFO, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import {
-    ChainedTransactions,
-    FeeInfo,
-    FormOptions,
-    FormState,
-    RbfTransactionParams,
-    RbfTransactionParamsBitcoin,
-    RbfTransactionParamsEthereum,
-    SelectedAccountLoaded,
+    type ChainedTransactions,
+    type FeeInfo,
+    type FormOptions,
+    type FormState,
+    type RbfTransactionParams,
+    type RbfTransactionParamsBitcoin,
+    type RbfTransactionParamsEthereum,
+    type SelectedAccountLoaded,
 } from '@suite-common/wallet-types';
 import {
     calculateChainedTransactionsFeeForRbf,

@@ -1,7 +1,8 @@
 import { combineReducers } from '@reduxjs/toolkit';
+import type { CryptoId } from 'invity-api';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 
 import { selectTradingMaxSlippagePercentage } from '../../selectors/settingsSelectors';
 import { buyThunks } from '../../thunks/buy';
@@ -36,7 +37,7 @@ describe('Testing trading reducer', () => {
         });
     });
 
-    it('buyThunks.handleRequestThunk.rejected should clear quotes and amountLimits', () => {
+    it('buyThunks.handleRequestThunk.rejected should clear quotes and amountLimits and set isLoading to false', () => {
         const store = configureMockStore({
             extra: {},
             reducer: combineReducers({
@@ -67,6 +68,7 @@ describe('Testing trading reducer', () => {
                 quotesRequest: undefined,
                 quotes: [],
                 amountLimits: undefined,
+                isLoading: false,
             }),
         );
         expect(store.getState().wallet.trading.info).toEqual(
@@ -113,6 +115,40 @@ describe('Testing trading reducer', () => {
         );
     });
 
+    it('sellThunks.handleRequestThunk.pending should clear payment methods and set isLoading to true', () => {
+        const store = configureMockStore({
+            extra: {},
+            reducer: combineReducers({
+                wallet: combineReducers({
+                    trading: tradingReducer,
+                }),
+            }),
+            preloadedState: {
+                wallet: {
+                    trading: {
+                        ...initialState,
+                        info: { paymentMethods: [{ value: 'creditCard', label: 'Credit Card' }] },
+                        sell: {
+                            ...sellInitialState,
+                            isLoading: false,
+                        },
+                    },
+                },
+            },
+        });
+
+        store.dispatch({ type: sellThunks.handleRequestThunk.pending.type });
+
+        expect(store.getState().wallet.trading.sell).toEqual(
+            expect.objectContaining({
+                isLoading: true,
+            }),
+        );
+        expect(store.getState().wallet.trading.info).toEqual(
+            expect.objectContaining({ paymentMethods: [] }),
+        );
+    });
+
     describe('action delegation', () => {
         let store: ReturnType<
             typeof configureMockStore<{ wallet: { trading: typeof initialState } }>
@@ -147,6 +183,30 @@ describe('Testing trading reducer', () => {
                 expect(store.getState().wallet.trading.currentProviderMetadata).toEqual(
                     providerMetadata,
                 );
+            });
+
+            it('should initialize favouriteAssets for legacy state before adding favourites', () => {
+                const legacyStore = configureMockStore({
+                    extra: {},
+                    reducer: combineReducers({
+                        wallet: combineReducers({
+                            trading: tradingReducer,
+                        }),
+                    }),
+                    preloadedState: {
+                        wallet: {
+                            trading: { ...initialState, favouriteAssets: undefined },
+                        },
+                    },
+                });
+
+                legacyStore.dispatch(
+                    tradingActions.addTradeableAssetToFavourites('bitcoin' as CryptoId),
+                );
+
+                expect(legacyStore.getState().wallet.trading.favouriteAssets).toEqual({
+                    bitcoin: true,
+                });
             });
         });
 

@@ -1,21 +1,22 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { Icon, IconName } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Icon, type IconName } from '@suite-native/icons';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { BoxProps } from '../Box';
-import { Button, ButtonProps } from '../Button/Button';
+import { type BoxProps } from '../Box';
+import { Button, type ButtonProps } from '../Button/Button';
 import { HStack } from '../Stack';
 import { Text } from '../Text';
 import {
-    InlineAlertBoxStyles,
-    InlineAlertBoxVariant,
+    type InlineAlertBoxStyles,
+    type InlineAlertBoxVariant,
     variantToColorMap,
     variantToIconName,
 } from './presets';
+import { IconButton } from '../Button/IconButton';
 
 const alertWrapperStyle = prepareNativeStyle<
-    Omit<InlineAlertBoxStyles, 'buttonColorScheme'> & { isButtonVisible: boolean }
+    Omit<InlineAlertBoxStyles, 'buttonColorProps'> & { isButtonVisible: boolean }
 >((utils, { borderColor, backgroundColor, isButtonVisible }) => ({
     alignItems: 'center',
     borderRadius: utils.borders.radii.r12,
@@ -36,6 +37,7 @@ export type InlineAlertBoxProps = Omit<BoxProps, 'style'> & {
     title: Exclude<ReactNode, null | undefined>;
     variant?: InlineAlertBoxVariant;
     buttonLabel?: ReactNode;
+    buttonIcon?: IconName;
     onButtonPress?: () => void;
     iconName?: IconName;
     viewLeft?: ReactNode;
@@ -45,6 +47,7 @@ export type InlineAlertBoxProps = Omit<BoxProps, 'style'> & {
 export const InlineAlertBox = ({
     title,
     buttonLabel,
+    buttonIcon,
     onButtonPress,
     iconName,
     buttonProps,
@@ -53,7 +56,7 @@ export const InlineAlertBox = ({
     ...props
 }: InlineAlertBoxProps) => {
     const { applyStyle } = useNativeStyles();
-    const { backgroundColor, borderColor, buttonColorScheme } = variantToColorMap[variant];
+    const { backgroundColor, borderColor, buttonColorProps } = variantToColorMap[variant];
 
     return (
         <HStack
@@ -74,13 +77,21 @@ export const InlineAlertBox = ({
             </Text>
             {buttonLabel && (
                 <Button
-                    size="small"
-                    colorScheme={buttonColorScheme}
+                    size="medium"
+                    {...buttonColorProps}
                     onPress={onButtonPress}
                     {...buttonProps}
                 >
                     {buttonLabel}
                 </Button>
+            )}
+            {buttonIcon && (
+                <IconButton
+                    iconName={buttonIcon}
+                    size="medium"
+                    {...buttonColorProps}
+                    onPress={onButtonPress}
+                />
             )}
         </HStack>
     );

@@ -1,21 +1,21 @@
-import { HTMLProps, ReactNode } from 'react';
+import { type HTMLProps, type ReactNode } from 'react';
 
-import styled, { DefaultTheme, RuleSet, css } from 'styled-components';
+import styled, { type DefaultTheme, type RuleSet, css } from 'styled-components';
 
-import { Color, borders, spacingsPx } from '@trezor/theme';
+import { type Color, borders, spacingsPx } from '@trezor/theme';
 
-import { TextIntent, TextPriority, textIntents, textPriorities } from './types';
+import { type TextIntent, type TextPriority, textIntents, textPriorities } from './types';
 import { mapIntentToCSS } from './utils';
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
+import { type TransientProps } from '../../../utils/transientProps';
 import {
-    TextProps as TextPropsCommon,
-    TextPropsKeys,
+    type TextProps as TextPropsCommon,
+    type TextPropsKeys,
     pickAndPrepareTextProps,
     withTextProps,
 } from '../utils';
@@ -127,7 +127,7 @@ const StyledText = styled.span<StyledTextProps>`
             display: inline;
             padding: 0 ${spacingsPx.xxs};
             border-radius: ${borders.radii.xxs};
-            background-color: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation0};
+            background-color: ${({ theme }) => theme.legacyBackgroundNeutralSubtleOnElevation0};
             box-decoration-break: clone;
         `}
         ${withTextProps} ${withFrameProps};

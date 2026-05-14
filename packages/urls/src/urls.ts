@@ -1,5 +1,5 @@
-import { withPlatformUtm } from './platform-utm';
-import { Url } from './types';
+import { type Url } from './types';
+import { withPlatformUtm } from './utms';
 
 // =====================
 // 🧩 TREZOR SUITE - CORE
@@ -34,6 +34,7 @@ export const DOCS_ANALYTICS_URL: Url = withPlatformUtm(
 
 export const TREZOR_SUITE_TOS_URL: Url = 'https://trezor.io/documents/suite_terms_of_use.pdf';
 export const TREZOR_TRADING_LEARN_MORE_URL: Url = 'https://trezor.io/trade-features';
+export const MORPHO_DISCLAIMER_URL: Url = 'https://morpho.org/disclaimers/';
 
 // =====================
 // 🆘 SUPPORT
@@ -184,19 +185,19 @@ export const HELP_CENTER_TOR_URL: Url = withPlatformUtm(
     'https://trezor.io/learn/security-privacy/how-trezor-keeps-you-safe/tor-in-trezor-suite',
 );
 export const HELP_CENTER_FW_DOWNGRADE_T1B1_URL: Url = withPlatformUtm(
-    'https://trezor.io/support/troubleshooting/device-issues/downgrade-firmware-model-one',
+    'https://trezor.io/support/troubleshooting/device-issues/install-custom-firmware-on-trezor-model-one',
 );
 export const HELP_CENTER_FW_DOWNGRADE_T2T1_URL: Url = withPlatformUtm(
-    'https://trezor.io/support/troubleshooting/device-issues/downgrade-firmware-model-t',
+    'https://trezor.io/support/troubleshooting/device-issues/install-custom-firmware-on-trezor-model-t',
 );
 export const HELP_CENTER_FW_DOWNGRADE_T3B1_URL: Url = withPlatformUtm(
-    'https://trezor.io/support/troubleshooting/device-issues/downgrade-firmware-trezor-safe-3',
+    'https://trezor.io/support/troubleshooting/device-issues/install-custom-firmware-on-trezor-safe-3',
 );
 export const HELP_CENTER_FW_DOWNGRADE_T3T1_URL: Url = withPlatformUtm(
-    'https://trezor.io/support/troubleshooting/device-issues/downgrade-firmware-trezor-safe-5',
+    'https://trezor.io/support/troubleshooting/device-issues/install-custom-firmware-on-trezor-safe-5',
 );
 export const HELP_CENTER_FW_DOWNGRADE_T3W1_URL: Url = withPlatformUtm(
-    'https://trezor.io/support/troubleshooting/device-issues/downgrade-firmware-trezor-safe-7',
+    'https://trezor.io/support/troubleshooting/device-issues/install-custom-firmware-on-trezor-safe-7',
 );
 export const HELP_CENTER_RECOVERY_ISSUES_URL: Url = withPlatformUtm(
     'https://trezor.io/support/troubleshooting/trezor-suite-issues/trezor-recovery-issues',
@@ -208,7 +209,7 @@ export const HELP_CENTER_XPUB_URL: Url = withPlatformUtm(
     'https://trezor.io/learn/supported-assets/bitcoin/what-is-a-public-key-xpub',
 );
 export const HELP_CENTER_BIP329_URL: Url = withPlatformUtm(
-    'https://trezor.io/learn/advanced/standards-proposals/what-is-bip329',
+    'https://trezor.io/learn/advanced/standards-proposals/what-is-bip-329',
 );
 export const HELP_CENTER_BIP32_URL: Url = withPlatformUtm(
     'https://trezor.io/learn/advanced/standards-proposals/what-is-bip32',
@@ -268,14 +269,14 @@ export const HELP_CENTER_FIRMWARE_REVISION_CHECK_MOBILE: Url = withPlatformUtm(
     'https://trezor.io/learn/security-privacy/how-trezor-keeps-you-safe/trezor-firmware-authenticity-check',
 );
 export const HELP_CENTER_ENTROPY_CHECK_URL: Url = withPlatformUtm(
-    'https://trezor.io/learn/security-privacy/how-trezor-keeps-you-safe/entropy-check',
+    'https://trezor.io/learn/security-privacy/how-trezor-keeps-you-safe/entropy-check-how-trezor-verifies-your-wallet-is-truly-random',
 );
 
 export const HELP_CENTER_REPLACE_BY_FEE_ETHEREUM: Url = withPlatformUtm(
     'https://trezor.io/learn/supported-assets/ethereum-layer-2-EVM/replace-by-fee-rbf-ethereum',
 );
 export const HELP_CENTER_REPLACE_BY_FEE_BITCOIN = withPlatformUtm(
-    'https://trezor.io/learn/supported-assets/bitcoin/replace-by-fee-rbf-bitcoin',
+    'https://trezor.io/learn/supported-assets/bitcoin/speed-up-a-stuck-bitcoin-transaction-with-replace-by-fee-rbf',
 );
 export const HELP_CENTER_CANCEL_TRANSACTION: Url = withPlatformUtm(
     'https://trezor.io/support/troubleshooting/trezor-suite-issues/can-i-cancel-or-reverse-a-transaction',
@@ -319,7 +320,6 @@ export const HOMESCREEN_EDITOR_URL: Url = 'https://trezor.github.io/homescreen-e
 // =====================
 // 💸 INVITY
 // =====================
-export const INVITY_URL: Url = 'https://invity.io/invest-crypto';
 export const LTC_ADDRESS_INFO_URL: Url = withPlatformUtm(
     'https://blog.trezor.io/litecoins-new-p2sh-segwit-addresses-843633e3e707',
 );

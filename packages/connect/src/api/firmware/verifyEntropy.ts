@@ -4,9 +4,8 @@ import { randomBytes } from '@noble/hashes/utils.js';
 import { entropyToMnemonic, mnemonicToSeed } from '@scure/bip39';
 
 import { bip39 } from '@trezor/crypto-utils';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { bip32 } from '@trezor/utxo-lib';
-
-import { PROTO } from '../../constants';
 
 export const generateEntropy = (len: number) => {
     try {
@@ -129,7 +128,7 @@ type VerifyEntropyOptions = {
     commitment?: string; // entropy_commitment received from previous EntropyRequest
     hostEntropy: string; // host_entropy used in previous EntropyAck
     trezorEntropy?: string; // prev_entropy received from current EntropyRequest, after ResetDeviceContinue
-    xpubs: Record<string, string>; // <address_n, xpub>
+    xpubs: Record<string, string>; // <Bip43 path, xpub>
 };
 
 export const verifyEntropy = async ({

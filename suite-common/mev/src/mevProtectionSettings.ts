@@ -1,11 +1,11 @@
 import {
     Feature,
-    MessageSystemRootState,
+    type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { networksCollection } from '@suite-common/wallet-config';
-import { WalletSettingsRootState, selectEnabledNetworks } from '@suite-common/wallet-core';
+import { type WalletSettingsRootState, selectEnabledNetworks } from '@suite-common/wallet-core';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
     WalletSettingsRootState & MessageSystemRootState

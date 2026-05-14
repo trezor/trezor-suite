@@ -4,7 +4,7 @@ describe('featureFlagsSlice', () => {
     afterEach(() => {
         Platform.OS = 'ios';
         jest.resetModules();
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
 
     describe('initial state', () => {
@@ -17,15 +17,16 @@ describe('featureFlagsSlice', () => {
             expect(initialState).toEqual({
                 areDebugOnlyNetworksEnabled: false,
                 areExperimentalOnlyNetworksEnabled: false,
-                areTradingExchangeDexesEnabled: false,
                 isCardanoSendEnabled: false,
                 isDebugKeysAllowed: false,
                 isTradingBuyEnabled: false,
                 isTradingExchangeEnabled: false,
                 isTradingResidenceCheckEnabled: true,
                 isTradingSellEnabled: false,
+                isTradingConciergeEnabled: false,
                 isTradingDebugEnabled: false,
-                isEarnEnabled: false,
+                isN4w1BackupEnabled: false,
+                isStablecoinYieldEnabled: false,
             });
         });
 
@@ -43,10 +44,11 @@ describe('featureFlagsSlice', () => {
                 isTradingBuyEnabled: false,
                 isTradingExchangeEnabled: false,
                 isTradingSellEnabled: false,
-                areTradingExchangeDexesEnabled: false,
                 isTradingResidenceCheckEnabled: false,
+                isTradingConciergeEnabled: false,
                 isTradingDebugEnabled: false,
-                isEarnEnabled: false,
+                isN4w1BackupEnabled: false,
+                isStablecoinYieldEnabled: false,
             });
         });
     });

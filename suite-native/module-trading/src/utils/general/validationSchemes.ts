@@ -1,7 +1,7 @@
 import { yup } from '@suite-common/validators';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { TradingFormContext } from '@suite-native/trading-types';
+import { type TradingFormContext } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
 export const getAmountLimitContext = ({
@@ -119,7 +119,7 @@ export const sendCryptoAmountValidationSchema = yup
         });
     })
     .test('send-crypto-balance', (value, testContext) => {
-        const { balance, translate, convertNumberToBaseUnit, sendSymbol } =
+        const { balance, translate, convertNumberToBaseUnit, sendSymbol, networkReserve } =
             getAmountLimitContext(testContext);
 
         if (sendSymbol === undefined) {
@@ -128,12 +128,26 @@ export const sendCryptoAmountValidationSchema = yup
 
         const convertedValue = convertNumberToBaseUnit(value, sendSymbol.toLowerCase());
 
-        if (
-            convertedValue === undefined ||
-            balance === undefined ||
-            convertedValue <= parseFloat(balance)
-        ) {
+        if (convertedValue === undefined || balance === undefined) {
             return true;
+        }
+
+        // Calculate available balance considering network reserve
+        const availableBalance = networkReserve
+            ? new BigNumber(balance).minus(networkReserve).toString()
+            : balance;
+
+        if (convertedValue <= parseFloat(availableBalance)) {
+            return true;
+        }
+
+        if (networkReserve && convertedValue <= parseFloat(balance)) {
+            return testContext.createError({
+                type: 'network-reserve',
+                message: translate('moduleTrading.validators.networkReserve', {
+                    displaySymbol: sendSymbol.toUpperCase(),
+                }),
+            });
         }
 
         return testContext.createError({

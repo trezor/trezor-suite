@@ -2,24 +2,32 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectDeviceStaticSessionId } from '@suite-common/device';
-import { WithSuiteSyncAndDeviceState, selectSuiteSyncInteraction } from '@suite-common/suite-sync';
-import { useAlert } from '@suite-native/alerts';
-import { Translation } from '@suite-native/intl';
+import { selectDeviceStaticSessionId, selectIsDeviceConnected } from '@suite-common/device';
+import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
+    type WithSuiteSyncAndDeviceState,
+    selectSuiteSyncInteraction,
+} from '@suite-common/suite-sync';
+import { useAlert } from '@suite-native/alerts';
+import { Translation, useTranslate } from '@suite-native/intl';
+import {
+    AuthorizeDeviceStackRoutes,
     DeviceSettingsStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { useNativeServices } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 import { exhaustive } from '@trezor/type-utils';
 
+import { suiteSyncErrorMessageMap } from '../suiteSyncErrorMessages';
+
 export const useTurnOnSuiteSyncGuard = () => {
     const { showAlert } = useAlert();
     const { suiteSync } = useNativeServices();
     const { showToast } = useToast();
+    const { translate } = useTranslate();
     const navigation =
         useNavigation<
             StackToStackCompositeNavigationProps<
@@ -29,9 +37,11 @@ export const useTurnOnSuiteSyncGuard = () => {
             >
         >();
     const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
 
-    const suiteSyncInteraction = useSelector((state: WithSuiteSyncAndDeviceState) =>
-        selectSuiteSyncInteraction(state, deviceStaticSessionId),
+    const suiteSyncInteraction = useSelector(
+        (state: WithSuiteSyncAndDeviceState & MessageSystemRootState) =>
+            selectSuiteSyncInteraction(state, deviceStaticSessionId),
     );
 
     const showSuiteSyncFirmwareUpgradeAlert = () => {
@@ -47,8 +57,8 @@ export const useTurnOnSuiteSyncGuard = () => {
                     params: { closeActionType: 'close' },
                 });
             },
-            primaryButtonVariant: 'blueBold',
-            secondaryButtonVariant: 'blueElevation0',
+            primaryButtonColorProps: { intent: 'info', priority: 'primary' },
+            secondaryButtonColorProps: { intent: 'info', priority: 'secondary' },
             secondaryButtonTitle: (
                 <Translation id="suiteSync.firmwareUpdateAlert.secondaryButtonTitle" />
             ),
@@ -68,7 +78,11 @@ export const useTurnOnSuiteSyncGuard = () => {
                 case 'SuiteSyncUnavailableOnDeviceError':
                 case 'DeviceCancelled':
                 case 'DeviceError':
-                    showToast({ variant: 'error', icon: 'warning', message: type });
+                    showToast({
+                        intent: 'critical',
+                        icon: 'warning',
+                        message: translate(suiteSyncErrorMessageMap[type]),
+                    });
 
                     return;
                 case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
@@ -88,13 +102,19 @@ export const useTurnOnSuiteSyncGuard = () => {
     };
 
     const showSuiteSyncEnableConfirmationAlert = (onSuccess: () => void) => {
-        showAlert({
-            title: <Translation id="suiteSync.enableAlert.title" />,
-            description: <Translation id="suiteSync.enableAlert.description" />,
-            primaryButtonTitle: <Translation id="suiteSync.enableAlert.cta" />,
-            onPressPrimaryButton: () => turnOnSuiteSync(onSuccess),
-            secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
-        });
+        if (!isDeviceConnected) {
+            navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+                screen: AuthorizeDeviceStackRoutes.DeviceConnectionGuard,
+            });
+        } else {
+            showAlert({
+                title: <Translation id="suiteSync.enableAlert.title" />,
+                description: <Translation id="suiteSync.enableAlert.description" />,
+                primaryButtonTitle: <Translation id="suiteSync.enableAlert.cta" />,
+                onPressPrimaryButton: () => turnOnSuiteSync(onSuccess),
+                secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
+            });
+        }
     };
 
     const handleAddLabel = async (onSuccess: () => void) => {

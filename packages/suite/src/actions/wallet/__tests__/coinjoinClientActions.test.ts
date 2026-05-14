@@ -1,14 +1,16 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
+import { locksReducer } from '@suite/locks';
+import { modalReducer } from '@suite/modal';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
+import { prepareWalletSettingsReducer } from '@suite-common/wallet-core';
 import '@suite-common/test-utils/src/globalOverrides';
-import { AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { promiseAllSequence } from '@trezor/utils';
 
 import { coinjoinMiddleware } from 'src/middlewares/wallet/coinjoinMiddleware';
-import modalReducer from 'src/reducers/suite/modalReducer';
 import { accountsReducer } from 'src/reducers/wallet';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
@@ -36,14 +38,11 @@ jest.mock('src/services/coinjoin/coinjoinService', () => {
 
 const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
 
+const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
+
 const rootReducer = combineReducers({
-    suite: createReducer(
-        {
-            locks: {},
-            settings: { debug: {} },
-        },
-        () => ({}),
-    ),
+    suite: createReducer({}, () => ({})),
+    locks: locksReducer,
     device: createReducer(
         { devices: [fixtures.DEVICE], selectedDevice: fixtures.DEVICE },
         () => ({}),
@@ -54,6 +53,7 @@ const rootReducer = combineReducers({
         coinjoin: coinjoinReducer,
         accounts: accountsReducer,
         selectedAccount: selectedAccountReducer,
+        settings: walletSettingsReducer,
     }),
 });
 
@@ -61,9 +61,10 @@ type State = ReturnType<typeof rootReducer>;
 type Wallet = Partial<State['wallet']> & {
     device?: State['device'];
     suite?: State['suite'];
+    locks?: Partial<State['locks']>;
 };
 
-const initStore = ({ accounts, coinjoin, device, selectedAccount, suite }: Wallet = {}) => {
+const initStore = ({ accounts, coinjoin, device, selectedAccount, suite, locks }: Wallet = {}) => {
     // State != suite AppState, therefore <any>
     const store = configureMockStore<any>({
         reducer: rootReducer,
@@ -71,6 +72,7 @@ const initStore = ({ accounts, coinjoin, device, selectedAccount, suite }: Walle
             rootReducer,
             partialState: {
                 suite,
+                locks,
                 device,
                 wallet: {
                     accounts,
@@ -411,7 +413,7 @@ describe('coinjoinClientActions', () => {
         } as any);
 
         testMocks.setTrezorConnectFixtures([
-            { success: false, payload: { error: 'Firmware error' } },
+            { success: false, error: { message: 'Firmware error' } },
         ]);
 
         await store.dispatch(initCoinjoinService('btc'));

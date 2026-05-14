@@ -1,12 +1,12 @@
-import { ReactNode, forwardRef } from 'react';
+import { type ReactNode, forwardRef } from 'react';
 
 import styled, { css } from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { BackupType } from '@suite-common/suite-types';
+import { type BackupType } from '@suite-common/suite-types';
 import { Icon, Radio, Row, Text, Tooltip, useElevation, variables } from '@trezor/components';
 import {
-    Elevation,
+    type Elevation,
     borders,
     mapElevationToBackground,
     mapElevationToBorder,
@@ -41,13 +41,13 @@ export const OptionStyled = styled.div<{ $hasHoverInteraction?: boolean; $disabl
     align-items: center;
     cursor: pointer;
 
-    color: ${({ $disabled, theme }) => ($disabled ? theme.textSubdued : undefined)};
+    color: ${({ $disabled, theme }) => ($disabled ? theme.contentSecondary : undefined)};
 
     ${({ $hasHoverInteraction }) =>
-        $hasHoverInteraction === true
+        $hasHoverInteraction
             ? css`
                   &:hover {
-                      background-color: ${({ theme }) => theme.backgroundSurfaceElevation2};
+                      background-color: ${({ theme }) => theme.legacyBackgroundSurfaceElevation2};
                       transition: background 0.2s ease;
 
                       margin-left: -10px;
@@ -112,7 +112,7 @@ const Option = ({
     >
         <Radio
             isChecked={isChecked}
-            onClick={onSelect}
+            onChange={onSelect}
             data-testid={dataTest}
             isDisabled={disabled}
         />

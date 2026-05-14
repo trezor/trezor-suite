@@ -1,18 +1,23 @@
-import { Platform } from 'react-native';
-import { FadeIn, LinearTransition } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
-import { AnimatedBox, AnimatedCard, Box, HStack, VStack } from '@suite-native/atoms';
+import { cryptoIdToSymbol } from '@suite-common/trading';
+import { type AccountsRootState, selectAccountFormattedBalance } from '@suite-common/wallet-core';
+import { Box, HStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { CardTitle, useAnimatedBorderStyle } from '@suite-native/trading-atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import {
+    NetworkReserveBanner,
+    useIsNetworkReserveBannerVisible,
+} from '@suite-native/transaction-management';
 
 import { SellFormFieldErrorBadge } from './SellFormFieldErrorBadge';
+import { useSellFormContext } from '../../hooks/sell/useSellFormContext';
+import { TradeableAssetNetworkInfo } from '../general/TradeableAssetNetworkInfo';
+import { TradingCard } from '../general/TradingCard';
+import { TradingCardSection } from '../general/TradingCardSection';
 import { SellFiatCurrencyPicker } from './fiat/SellFiatCurrencyPicker';
 import { SellReceiveMethodPicker } from './fiat/SellReceiveMethodPicker';
 import { SellSendAccountCryptoBalance } from './send/SellSendAccountCryptoBalance';
 import { SellSendAssetPicker } from './send/SellSendAssetPicker';
-import { useSellFormContext } from '../../hooks/sell/useSellFormContext';
-import { TradeableAssetNetworkInfo } from '../general/TradeableAssetNetworkInfo';
 
 type SellCardProps = {
     isAmountInputActive: boolean;
@@ -21,71 +26,64 @@ type SellCardProps = {
 
 const SELL_CARD_TEST_ID = '@trading/sellCard';
 
-const sellSectionStyle = prepareNativeStyle<{ bottomBorder: boolean }>(
-    ({ borders, colors, spacings }, { bottomBorder }) => ({
-        borderBottomWidth: bottomBorder ? borders.widths.small : 0,
-        borderBottomColor: colors.backgroundSurfaceElevation0,
-        paddingHorizontal: spacings.sp12,
-        paddingTop: spacings.sp16,
-        paddingBottom: spacings.sp12,
-        gap: spacings.sp8,
-    }),
-);
-
 export const SellCard = ({ isAmountInputActive, shouldAnimateEntering }: SellCardProps) => {
-    const { applyStyle } = useNativeStyles();
-    const animatedStyle = useAnimatedBorderStyle(isAmountInputActive);
     const { watch } = useSellFormContext();
 
     const asset = watch('sendAsset');
+    const cryptoStringAmount = watch('cryptoStringAmount');
+    const sendAccount = watch('sendAccount');
+    const symbol = asset ? cryptoIdToSymbol(asset.cryptoId) : undefined;
 
-    // on android fade animation looks ugly on view with shadows, better to skip it
-    const enteringAnimation = shouldAnimateEntering && Platform.OS === 'ios' ? FadeIn : undefined;
+    const formattedBalance = useSelector((state: AccountsRootState) =>
+        selectAccountFormattedBalance(state, sendAccount?.key),
+    );
+
+    const shouldShowBanner = useIsNetworkReserveBannerVisible({
+        symbol,
+        contractAddress: asset?.contractAddress,
+        amount: cryptoStringAmount,
+        balance: formattedBalance,
+    });
 
     return (
-        <AnimatedBox entering={enteringAnimation} layout={LinearTransition}>
-            <AnimatedCard style={animatedStyle} noPadding>
-                <VStack style={applyStyle(sellSectionStyle, { bottomBorder: true })}>
-                    <HStack
-                        justifyContent="space-between"
-                        alignItems="center"
-                        testID={SELL_CARD_TEST_ID + '/cryptoSection'}
-                    >
-                        <CardTitle>
-                            <Translation id="moduleTrading.selectCoinToSell.title" />
-                        </CardTitle>
-                        <Box alignItems="flex-end">
-                            <SellFormFieldErrorBadge fieldName="cryptoStringAmount" />
-                        </Box>
-                    </HStack>
-                    <SellSendAssetPicker />
-                    <HStack
-                        justifyContent="space-between"
-                        alignItems="center"
-                        paddingVertical="sp4"
-                        spacing="sp4"
-                    >
-                        <TradeableAssetNetworkInfo asset={asset} />
-                        <SellSendAccountCryptoBalance />
-                    </HStack>
-                </VStack>
-                <VStack style={applyStyle(sellSectionStyle, { bottomBorder: false })}>
-                    <HStack
-                        justifyContent="space-between"
-                        alignItems="center"
-                        testID={SELL_CARD_TEST_ID + '/fiatSection'}
-                    >
-                        <CardTitle>
-                            <Translation id="moduleTrading.selectFiat.sell.title" />
-                        </CardTitle>
-                        <Box alignItems="flex-end">
-                            <SellFormFieldErrorBadge fieldName="fiatStringAmount" />
-                        </Box>
-                    </HStack>
-                    <SellFiatCurrencyPicker />
-                </VStack>
-                <SellReceiveMethodPicker />
-            </AnimatedCard>
-        </AnimatedBox>
+        <TradingCard
+            isAmountInputActive={isAmountInputActive}
+            shouldAnimateEntering={shouldAnimateEntering}
+        >
+            <TradingCardSection
+                bottomBorder
+                testID={`${SELL_CARD_TEST_ID}/cryptoSection`}
+                title={<Translation id="moduleTrading.selectCoinToSell.title" />}
+                titleAction={
+                    <Box alignItems="flex-end">
+                        <SellFormFieldErrorBadge fieldName="cryptoStringAmount" />
+                    </Box>
+                }
+            >
+                <SellSendAssetPicker />
+                <HStack justifyContent="space-between" alignItems="center" spacing="sp4">
+                    <TradeableAssetNetworkInfo asset={asset} />
+                    <SellSendAccountCryptoBalance />
+                </HStack>
+                {symbol && shouldShowBanner && (
+                    <NetworkReserveBanner
+                        symbol={symbol}
+                        contractAddress={asset?.contractAddress}
+                    />
+                )}
+            </TradingCardSection>
+            <TradingCardSection
+                testID={`${SELL_CARD_TEST_ID}/fiatSection`}
+                title={<Translation id="moduleTrading.selectFiat.sell.title" />}
+                titleAction={
+                    <Box alignItems="flex-end">
+                        <SellFormFieldErrorBadge fieldName="fiatStringAmount" />
+                    </Box>
+                }
+            >
+                <SellFiatCurrencyPicker />
+            </TradingCardSection>
+            <SellReceiveMethodPicker />
+        </TradingCard>
     );
 };

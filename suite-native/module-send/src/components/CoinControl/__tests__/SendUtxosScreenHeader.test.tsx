@@ -1,4 +1,4 @@
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { useUtxoSelection } from '../../../hooks/useUtxoSelection';

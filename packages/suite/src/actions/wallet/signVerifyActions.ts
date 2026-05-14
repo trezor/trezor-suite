@@ -1,5 +1,6 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { selectAddressDisplayType } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import {
     getAddressParameters,
@@ -8,10 +9,12 @@ import {
     getProtocolMagic,
     getStakingPath,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { PROTO, Success, Unsuccessful } from '@trezor/connect';
+import TrezorConnect, { PROTO } from '@trezor/connect';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: extract pathUtils to a shared location and remove this exception (see #27376 deferred work)
 import { getSerializedPath } from '@trezor/connect/src/utils/pathUtils';
+import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type Result } from '@trezor/type-utils';
 
-import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 import type { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
 
@@ -28,10 +31,10 @@ type StateParams = {
     chunkify?: boolean;
 };
 
-const throwWhenFailed = <T>(response: Unsuccessful | Success<T>) =>
+const throwWhenFailed = <T>(response: Result<T, SerializedError>) =>
     response.success
         ? Promise.resolve(response.payload)
-        : Promise.reject(new Error(response.payload.error));
+        : Promise.reject(new Error(response.error.message));
 
 const getStateParams = (getState: GetState): Promise<StateParams> => {
     const {

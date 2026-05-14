@@ -1,7 +1,7 @@
-import { TradingExchangeType, TradingSellType } from '@suite-common/trading';
+import { type TradingExchangeType, type TradingSellType } from '@suite-common/trading';
 import { getNetworkByCoingeckoId } from '@suite-common/wallet-config';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
-import { TradeableAsset } from '@suite-native/trading-types';
+import { type TradeableAsset } from '@suite-native/trading-types';
 import { exhaustive } from '@trezor/type-utils';
 
 export const getFormDraftKeyByTradeType = (tradeType: TradingSellType | TradingExchangeType) => {

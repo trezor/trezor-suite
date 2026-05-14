@@ -1,11 +1,11 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TokenAddress } from '@suite-common/wallet-types';
-import { CryptoIcon, Icon, IconName, IconSize, icons } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type TokenAddress } from '@suite-common/wallet-types';
+import { CryptoIcon, Icon, type IconName, type IconSize, icons } from '@suite-native/icons';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { type Color } from '@trezor/theme';
 import { isNotNullOrUndefined } from '@trezor/utils';
 
-import { Box, BoxProps } from './Box';
+import { Box, type BoxProps } from './Box';
 
 export type CompoundRoundedIconProps = {
     symbol?: NetworkSymbol;
@@ -30,7 +30,7 @@ const iconContainerStyle = prepareNativeStyle<{
     alignItems: 'center',
     width: containerSizeWidth ?? DEFAULT_CONTAINER_SIZE,
     height: containerSizeHeight ?? DEFAULT_CONTAINER_SIZE,
-    backgroundColor: utils.colors.backgroundSurfaceElevation2,
+    backgroundColor: utils.colors.legacyBackgroundSurfaceElevation2,
     borderRadius: utils.borders.radii.round,
     flexDirection: 'row',
     gap: utils.spacings.sp4,

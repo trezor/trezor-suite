@@ -1,4 +1,11 @@
-import { getAccountType, getHDPath, getOutputScriptType, getScriptType } from '../pathUtils';
+import {
+    getAccountType,
+    getHDPath,
+    getOutputScriptType,
+    getScriptType,
+    toHardened,
+    validatePath,
+} from '../pathUtils';
 
 describe('utils/pathUtils', () => {
     it('getScriptType', () => {
@@ -49,5 +56,60 @@ describe('utils/pathUtils', () => {
         expect(getAccountType([])).toEqual('p2pkh');
         expect(getAccountType([0])).toEqual('p2pkh');
         expect(getAccountType(undefined)).toEqual('p2pkh');
+    });
+
+    describe('validatePath', () => {
+        it('parses string path with hardened apostrophe', () => {
+            expect(validatePath("m/44'/0'/0'")).toEqual([
+                toHardened(44),
+                toHardened(0),
+                toHardened(0),
+            ]);
+            expect(validatePath("m/44'/0'/0'/0/0")).toEqual([
+                toHardened(44),
+                toHardened(0),
+                toHardened(0),
+                0,
+                0,
+            ]);
+        });
+
+        it('passes number[] path through unchanged', () => {
+            const path = [toHardened(44), toHardened(0), toHardened(0), 0, 0];
+            expect(validatePath(path)).toEqual(path);
+        });
+
+        it('returns empty array for "m" or []', () => {
+            expect(validatePath('m')).toEqual([]);
+            expect(validatePath([])).toEqual([]);
+        });
+
+        it('throws for malformed string path', () => {
+            expect(() => validatePath('not-a-path')).toThrow(/Not a valid path/);
+            expect(() => validatePath("m/abc'")).toThrow(/Not a valid path/);
+        });
+
+        it('throws for negative values', () => {
+            expect(() => validatePath([-1, 0])).toThrow(/Path cannot contain negative values/);
+            expect(() => validatePath("m/-1'/0'")).toThrow(/Path cannot contain negative values/);
+        });
+
+        it('throws for NaN inside number[]', () => {
+            expect(() => validatePath([NaN, 0, 0])).toThrow(/Not a valid path/);
+        });
+
+        it('throws when path is shorter than required length', () => {
+            expect(() => validatePath([0, 1], 3)).toThrow(/Not a valid path/);
+            expect(() => validatePath("m/44'", 3)).toThrow(/Not a valid path/);
+        });
+
+        it('returns first 3 elements when base flag is set', () => {
+            const path = [toHardened(44), toHardened(0), toHardened(0), 0, 0];
+            expect(validatePath(path, 0, true)).toEqual([
+                toHardened(44),
+                toHardened(0),
+                toHardened(0),
+            ]);
+        });
     });
 });

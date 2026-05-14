@@ -2,17 +2,16 @@ import styled from 'styled-components';
 import { fromWei } from 'web3-utils';
 
 import { Translation } from '@suite/intl';
-import { Network } from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/wallet-config';
 import { getFeeRate, getTxIcon, isEip1559, isPending } from '@suite-common/wallet-utils';
 import {
-    Box,
     Card,
     Divider,
     Grid,
     H3,
     Icon,
     InfoItem,
-    InfoItemProps,
+    type InfoItemProps,
     InfoSegments,
     Link,
     Row,
@@ -20,13 +19,13 @@ import {
     useElevation,
 } from '@trezor/components';
 import { CoinLogo, FeeRate } from '@trezor/product-components';
-import { Elevation, borders, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
+import { type Elevation, borders, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';
 import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
 import { useExternalLink } from 'src/hooks/suite';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import { type WalletAccountTransaction } from 'src/types/wallet';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 const IconWrapper = styled.div<{ $elevation: Elevation }>`
@@ -49,16 +48,15 @@ const Item = ({ label, iconName, children }: Partial<InfoItemProps>) => (
     <InfoItem
         label={label}
         iconName={iconName}
-        labelWidth={120}
+        labelWidth={135}
         typographyStyle="body-xs"
         direction="row"
         verticalAlignment="start"
+        ellipsisLineCount={2}
     >
-        <Box padding={{ top: spacings.xxxs }}>
-            <Text as="div" typographyStyle="body-xs">
-                {children}
-            </Text>
-        </Box>
+        <Text as="div" typographyStyle="body-xs">
+            {children}
+        </Text>
     </InfoItem>
 );
 
@@ -135,7 +133,7 @@ export const BasicTxDetails = ({
 
             <Divider />
 
-            <Grid columns={2} columnGap={32} rowGap={4} forceEqualColumns>
+            <Grid columns={2} columnGap={32} rowGap={12} forceEqualColumns>
                 {/* MINED TIME */}
                 <Item
                     label={
@@ -276,6 +274,12 @@ export const BasicTxDetails = ({
                     </Item>
                 )}
 
+                {tx.solanaSpecific?.memo && (
+                    <Item label={<Translation id="MEMO" />} iconName="tag">
+                        <BlurUrls text={tx.solanaSpecific.memo} />
+                    </Item>
+                )}
+
                 {/* TX ID */}
                 <Item label={<Translation id="TR_TXID" />} iconName="fingerprint">
                     <Link
@@ -286,6 +290,24 @@ export const BasicTxDetails = ({
                         {tx.txid}
                     </Link>
                 </Item>
+
+                {tx.tronSpecific?.energyUsage && (
+                    <Item label={<Translation id="TR_TRON_ENERGY" />} iconName="gasPump">
+                        {tx.tronSpecific.energyUsage}
+                    </Item>
+                )}
+
+                {tx.tronSpecific?.bandwidthUsage && (
+                    <Item label={<Translation id="TR_TRON_BANDWIDTH" />} iconName="gasPump">
+                        {tx.tronSpecific.bandwidthUsage}
+                    </Item>
+                )}
+
+                {tx.tronSpecific?.note && (
+                    <Item label={<Translation id="TR_TRON_NOTE" />} iconName="pencil">
+                        {tx.tronSpecific.note}
+                    </Item>
+                )}
             </Grid>
         </Card>
     );

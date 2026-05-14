@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { UserContextPayload } from '@suite-common/suite-types';
+import { type UserContextPayload } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { blockchainActions } from '@suite-common/wallet-core';
 import { Banner, Button, Card, Column, H3, Modal, Paragraph, Row } from '@trezor/components';
@@ -42,7 +42,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
     ) : (
         <Modal
             onCancel={onCancel}
-            variant={onionBackends.length ? 'warning' : 'primary'}
+            intent={onionBackends.length ? 'warning' : 'brand'}
             width={600}
             iconName={onionBackends.length ? undefined : 'torBrowser'}
             heading={

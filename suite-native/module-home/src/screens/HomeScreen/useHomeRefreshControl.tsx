@@ -3,9 +3,9 @@ import { RefreshControl } from 'react-native';
 import { useDispatch } from 'react-redux';
 
 import { syncAllAccountsWithBlockchainThunk } from '@suite-native/blockchain';
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
-import { PortfolioGraphRef } from './components/PortfolioGraph';
+import { type PortfolioGraphRef } from './components/PortfolioGraph';
 
 export const useHomeRefreshControl = ({
     isDiscoveredDeviceAccountless,
@@ -40,7 +40,7 @@ export const useHomeRefreshControl = ({
             <RefreshControl
                 refreshing={isRefreshing}
                 onRefresh={handleRefresh}
-                colors={[colors.backgroundPrimaryDefault]}
+                colors={[colors.legacyBackgroundPrimaryDefault]}
             />
         );
     }, [isDiscoveredDeviceAccountless, handleRefresh, colors, isRefreshing]);

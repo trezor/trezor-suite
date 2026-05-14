@@ -1,14 +1,14 @@
 import type { BuyTrade, CryptoId } from 'invity-api';
 
-import { TradingAssetOption } from '@suite-common/trading';
-import { act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type TradingAssetOption } from '@suite-common/trading';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     btcAsset,
-    buyQuotes,
     coins,
     getInitializedTradingState,
+    mercuryoApplePayBuyQuote,
 } from '@suite-native/trading-fixtures';
-import { BuyFormType } from '@suite-native/trading-types';
+import { type BuyFormType } from '@suite-native/trading-types';
 
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { getPaymentMethodFromBuyForm, tradingBuyFormToTradingBuyFormProps } from '../quotesUtils';
@@ -17,12 +17,12 @@ describe('quotesUtils', () => {
     let form: BuyFormType;
 
     const renderUseTradingBuyForm = () =>
-        renderHookWithStoreProviderAsync(() => useBuyForm(), {
+        renderHookWithStoreProvider(() => useBuyForm(), {
             preloadedState: { wallet: { trading: getInitializedTradingState() } },
         });
 
-    beforeEach(async () => {
-        const { result } = await renderUseTradingBuyForm();
+    beforeEach(() => {
+        const { result } = renderUseTradingBuyForm();
         form = result.current;
     });
 
@@ -33,7 +33,7 @@ describe('quotesUtils', () => {
 
         it('should return TradingPaymentMethodListProps object when quote is set', () => {
             act(() => {
-                form.setValue('quote', buyQuotes[0]);
+                form.setValue('quote', mercuryoApplePayBuyQuote);
             });
 
             expect(getPaymentMethodFromBuyForm(form)).toEqual({
@@ -63,7 +63,12 @@ describe('quotesUtils', () => {
                         label: '🇺🇸 United States',
                         shortLabel: '🇺🇸 USA',
                     });
-                    form.setValue('quote', buyQuotes[0]);
+                    form.setValue('countrySubdivision', {
+                        label: 'California',
+                        value: 'CA',
+                        name: 'California',
+                    });
+                    form.setValue('quote', mercuryoApplePayBuyQuote);
                 });
             });
 
@@ -101,6 +106,11 @@ describe('quotesUtils', () => {
                         shortLabel: '🇺🇸 USA',
                         value: 'US',
                     },
+                    countrySubdivisionSelect: {
+                        label: 'California',
+                        value: 'CA',
+                        name: 'California',
+                    },
                     paymentMethod: {
                         value: 'applePay',
                         label: 'Apple Pay',
@@ -112,7 +122,7 @@ describe('quotesUtils', () => {
             it('should set paymentMethod to undefined when provided quote is not complete', () => {
                 act(() => {
                     form.setValue('quote', {
-                        ...buyQuotes[0],
+                        ...mercuryoApplePayBuyQuote,
                         paymentMethodName: undefined,
                     } as unknown as BuyTrade);
                 });

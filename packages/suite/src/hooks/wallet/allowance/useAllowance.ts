@@ -1,8 +1,8 @@
-import { Account } from '@suite-common/wallet-types';
+import { useAllowanceTxTracking } from '@suite-common/trading';
+import { type Account } from '@suite-common/wallet-types';
 
-import { AllowanceContextValue } from './useAllowanceContext';
+import { type AllowanceContextValue } from './useAllowanceContext';
 import { useAllowanceState } from './useAllowanceState';
-import { useAllowanceTxTracking } from './useAllowanceTxTracking';
 
 interface UseAllowanceParams {
     account: Account;

@@ -1,7 +1,7 @@
 /// <reference lib="webworker" />
 
 import { SessionsBackground } from './background';
-import { HandleMessageParams } from './types';
+import { type HandleMessageParams } from './types';
 
 declare let self: SharedWorkerGlobalScope;
 

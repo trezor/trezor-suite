@@ -7,15 +7,17 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@react-navigation/native": "7.1.26",
-        "@react-navigation/native-stack": "7.9.0",
+        "@react-navigation/native": "7.1.28",
+        "@react-navigation/native-stack": "7.12.0",
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/device": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
         "@suite-common/thp": "workspace:*",
         "@suite-common/validators": "workspace:*",
@@ -29,6 +31,7 @@
         "@suite-native/forms": "workspace:*",
         "@suite-native/helpers": "workspace:*",
         "@suite-native/intl": "workspace:*",
+        "@suite-native/link": "workspace:*",
         "@suite-native/module-check-backup": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/services": "workspace:*",
@@ -36,9 +39,14 @@
         "@suite-native/toasts": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
-        "@trezor/styles": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react": "19.1.0",
+        "react": "19.2.4",
+        "react-native-svg": "15.15.3",
         "react-redux": "9.2.0"
+    },
+    "devDependencies": {
+        "@trezor/requirements": "workspace:*"
     }
 }

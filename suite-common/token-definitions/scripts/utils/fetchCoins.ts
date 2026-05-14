@@ -11,35 +11,101 @@ import {
 import { COIN_LIST_URL, STELLAR_EXPERT_URL, STELLAR_HORIZON_URL } from '../constants';
 import { CoinData } from '../types';
 
-export const getContractAddress = (assetPlatformId: string, platforms: CoinData['platforms']) => {
-    const address = platforms[assetPlatformId];
-    if (address) {
-        if (assetPlatformId === 'cardano') {
-            return blockfrostUtils.parseAsset(address).policyId;
-        }
+const normalizeStellarAssetAddress = (address: string): string | undefined => {
+    // Stellar address format: CODE-ISSUER, CODE:ISSUER, or CODE-ISSUER-NUMBER
+    // CODE: 1-12 alphanumeric characters
+    // ISSUER: 56 characters starting with 'G'
+    // NUMBER: optional numeric suffix
+    const stellarMatch = address.match(/^([A-Za-z0-9]{1,12})[-:]([G][A-Z0-9]{55})(?:-\d+)?$/);
 
-        if (assetPlatformId === 'stellar') {
-            // Stellar address format: CODE-ISSUER, CODE:ISSUER, or CODE-ISSUER-NUMBER
-            // CODE: 1-12 alphanumeric characters
-            // ISSUER: 56 characters starting with 'G'
-            // NUMBER: optional numeric suffix
-            const stellarMatch = address.match(
-                /^([A-Za-z0-9]{1,12})[-:]([G][A-Z0-9]{55})(?:-\d+)?$/,
-            );
-            if (stellarMatch) {
-                const code = stellarMatch[1];
-                const issuer = stellarMatch[2];
-
-                return `${code}-${issuer}`; // Return as CODE-ISSUER format
-            } else {
-                return undefined; // Invalid Stellar address format
-            }
-        }
-
-        return address;
+    if (!stellarMatch) {
+        return undefined;
     }
 
-    return undefined;
+    const code = stellarMatch[1];
+    const issuer = stellarMatch[2];
+
+    return `${code}-${issuer}`;
+};
+
+const isSorobanContractAddress = (address: string) => /^C[A-Z0-9]{55}$/.test(address);
+
+type StellarExpertContractData = {
+    asset?: string;
+};
+
+const fetchSorobanContractAsset = async (contractAddress: string): Promise<string | undefined> => {
+    try {
+        const response = await fetch(`${STELLAR_EXPERT_URL}/contract/${contractAddress}`);
+        if (!response.ok) {
+            console.warn(
+                `StellarExpert API returned ${response.status} for contract ${contractAddress}`,
+            );
+
+            return undefined;
+        }
+
+        const data = (await response.json()) as StellarExpertContractData;
+        if (typeof data.asset !== 'string') {
+            console.warn(`StellarExpert contract ${contractAddress} does not contain an asset.`);
+
+            return undefined;
+        }
+
+        const normalizedAssetAddress = normalizeStellarAssetAddress(data.asset);
+        if (!normalizedAssetAddress) {
+            console.warn(
+                `StellarExpert contract ${contractAddress} returned invalid asset ${data.asset}`,
+            );
+
+            return undefined;
+        }
+
+        return normalizedAssetAddress;
+    } catch (error) {
+        console.warn(`Error fetching Stellar contract asset for ${contractAddress}:`, error);
+
+        return undefined;
+    }
+};
+
+/**
+ * Resolve a Stellar address to the normalized CODE-ISSUER format.
+ * Handles both classic Stellar asset addresses (CODE-ISSUER, CODE:ISSUER)
+ * and Soroban contract addresses (C...) by looking up the underlying asset
+ * via the StellarExpert API.
+ */
+const resolveStellarAddress = async (address: string): Promise<string | undefined> => {
+    const normalizedAssetAddress = normalizeStellarAssetAddress(address);
+    if (normalizedAssetAddress) {
+        return normalizedAssetAddress;
+    }
+
+    if (!isSorobanContractAddress(address)) {
+        return undefined;
+    }
+
+    return await fetchSorobanContractAsset(address);
+};
+
+export const getContractAddress = async (
+    assetPlatformId: string,
+    platforms: CoinData['platforms'],
+): Promise<string | undefined> => {
+    const address = platforms[assetPlatformId];
+    if (!address) {
+        return undefined;
+    }
+
+    if (assetPlatformId === 'cardano') {
+        return blockfrostUtils.parseAsset(address).policyId;
+    }
+
+    if (assetPlatformId === 'stellar') {
+        return await resolveStellarAddress(address);
+    }
+
+    return address;
 };
 
 interface StellarCurrency {
@@ -195,7 +261,7 @@ export const buildCoinDataForPlatform = async (
         const result: AdvancedTokenStructure = {};
 
         for (const { platforms, symbol, name } of allCoins) {
-            const contractAddress = getContractAddress(assetPlatformId, platforms);
+            const contractAddress = await getContractAddress(assetPlatformId, platforms);
             if (!contractAddress) continue;
 
             result[contractAddress] = { symbol, name };
@@ -212,11 +278,16 @@ export const buildCoinDataForPlatform = async (
         return result;
     }
 
-    return [
-        ...new Set(
-            allCoins
-                .map(item => getContractAddress(assetPlatformId, item.platforms))
-                .filter(Boolean),
-        ),
-    ] as SimpleTokenStructure;
+    const contractAddresses = new Set<string>();
+
+    for (const { platforms } of allCoins) {
+        const contractAddress = await getContractAddress(assetPlatformId, platforms);
+        if (!contractAddress) {
+            continue;
+        }
+
+        contractAddresses.add(contractAddress);
+    }
+
+    return [...contractAddresses];
 };

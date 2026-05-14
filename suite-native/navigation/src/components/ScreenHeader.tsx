@@ -1,12 +1,12 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { RequireOneOrNone } from 'type-fest';
+import { type RequireOneOrNone } from 'type-fest';
 
 import { Box } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { GoBackIcon } from './GoBackIcon';
-import { CloseActionType } from '../navigators';
+import { type CloseActionType } from '../navigators';
 import { ScreenHeaderContent, type ScreenHeaderContentProps } from './ScreenHeaderContent';
 
 export type ScreenHeaderProps = ScreenHeaderContentProps &
@@ -29,7 +29,7 @@ const headerStyle = prepareNativeStyle(utils => ({
     paddingTop: utils.spacings.sp8,
     paddingHorizontal: utils.spacings.sp16,
     paddingBottom: utils.spacings.sp16,
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
     minHeight: ICON_SIZE,
 }));
 

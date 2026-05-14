@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { type BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { events } from '@suite-native/analytics';
 import { AccountsStackNavigator } from '@suite-native/module-accounts-management';
@@ -8,7 +8,7 @@ import { EarnStackNavigator } from '@suite-native/module-earn';
 import { HomeStackNavigator } from '@suite-native/module-home';
 import { SettingsScreen } from '@suite-native/module-settings';
 import { TradingStackNavigator } from '@suite-native/module-trading';
-import { AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
+import { type AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { selectIsTradingEnabled } from '@suite-native/trading-state';
 

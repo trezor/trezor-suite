@@ -1,6 +1,6 @@
-import { BottomSheetModal, BottomSheetModalRef, Button, Text } from '@suite-native/atoms';
+import { BottomSheetModal, type BottomSheetModalRef, Button, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const bottomSheetElementStyle = prepareNativeStyle(utils => ({
     marginVertical: utils.spacings.sp8,
@@ -30,7 +30,7 @@ export const StakingUnavailableBottomSheet = ({
             paddingHorizontal="sp24"
         >
             <Text
-                color="textSubdued"
+                color="contentSecondary"
                 textAlign="center"
                 style={applyStyle(bottomSheetElementStyle)}
             >
@@ -42,9 +42,10 @@ export const StakingUnavailableBottomSheet = ({
             </Button>
 
             <Button
-                colorScheme="tertiaryElevation0"
+                intent="neutral"
+                priority="secondary"
                 onPress={handleDesktopClick}
-                viewLeft="arrowSquareOut"
+                iconLeft="arrowSquareOut"
                 style={applyStyle(bottomSheetElementStyle)}
             >
                 <Translation id="earn.trezorDesktop" />

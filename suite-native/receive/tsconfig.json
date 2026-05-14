@@ -4,6 +4,9 @@
     "references": [
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/formatters"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -23,7 +26,6 @@
         { "path": "../confirm-on-trezor" },
         { "path": "../device" },
         { "path": "../device-mutex" },
-        { "path": "../helpers" },
         { "path": "../icons" },
         { "path": "../in-app-rating" },
         { "path": "../intl" },
@@ -38,7 +40,9 @@
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
         { "path": "../../packages/urls" }
     ]

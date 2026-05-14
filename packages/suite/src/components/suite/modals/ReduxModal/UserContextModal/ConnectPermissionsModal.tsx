@@ -1,10 +1,11 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { selectIsDebugModeActive } from '@suite/settings';
 import { events } from '@suite-common/analytics';
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { CALL_SOURCE_WALLETCONNECT } from '@suite-common/connect-popup/src/connectPopupTypes';
-import { Card, Checkbox, Column, Icon, List, Modal, Row, Text } from '@trezor/components';
+import { Card, Checkbox, Column, Icon, List, Modal, Row, Text, Tooltip } from '@trezor/components';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { spacings } from '@trezor/theme';
 
@@ -18,8 +19,10 @@ import { getPermissionText } from 'src/views/settings/SettingsConnectedApps/Conn
 export const ConnectPermissionsModal = () => {
     const analytics = useAnalytics();
     const [isRemembered, setIsRemembered] = useState(false);
+    const [isSilentMode, setIsSilentMode] = useState(false);
     const dispatch = useDispatch();
     const popupCall = useSelector(selectConnectPopupCall);
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
     if (!popupCall || popupCall?.state !== 'permission-request') return null;
 
     const { method, methodInfo, source } = popupCall;
@@ -28,6 +31,7 @@ export const ConnectPermissionsModal = () => {
     const rememberPayload = {
         types: permissionTypes,
         ...source,
+        silentMode: isSilentMode,
     };
     const onConfirm = () => {
         if (isRemembered) {
@@ -148,13 +152,31 @@ export const ConnectPermissionsModal = () => {
                             </Text>
 
                             <Card>
-                                <Checkbox
-                                    data-testid="@connect-permissions-modal/remember-checkbox"
-                                    isChecked={isRemembered}
-                                    onClick={() => setIsRemembered(!isRemembered)}
-                                >
-                                    <Translation id="TR_CONNECT_MODAL_REMEMBER" />
-                                </Checkbox>
+                                <Column gap={spacings.sm}>
+                                    <Checkbox
+                                        data-testid="@connect-permissions-modal/remember-checkbox"
+                                        isChecked={isRemembered}
+                                        onChange={() => setIsRemembered(!isRemembered)}
+                                    >
+                                        <Translation id="TR_CONNECT_MODAL_REMEMBER" />
+                                    </Checkbox>
+                                    {isRemembered && isDebugModeActive && (
+                                        <Tooltip
+                                            content={
+                                                <Translation id="TR_CONNECT_APP_SILENT_MODE_DESCRIPTION" />
+                                            }
+                                            placement="bottom"
+                                        >
+                                            <Checkbox
+                                                data-testid="@connect-permissions-modal/silent-mode-checkbox"
+                                                isChecked={isSilentMode}
+                                                onChange={() => setIsSilentMode(!isSilentMode)}
+                                            >
+                                                <Translation id="TR_CONNECT_APP_SILENT_MODE" />
+                                            </Checkbox>
+                                        </Tooltip>
+                                    )}
+                                </Column>
                             </Card>
                         </>
                     )}

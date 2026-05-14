@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import styled, { useTheme } from 'styled-components';
+
 import { Box, Image, Row } from '@trezor/components';
 
 import { TrezorLink } from './TrezorLink';
@@ -11,8 +13,16 @@ type StoreBadgeProps = {
     onClick?: () => void;
 };
 
+const ImageContainer = styled.div<{ $isDarkTheme: boolean }>`
+    img {
+        ${({ $isDarkTheme }) => ($isDarkTheme ? `filter: invert(1);` : '')}
+    }
+`;
+
 export const StoreBadge = ({ url, image, isHighlighted, onClick }: StoreBadgeProps) => {
     const [isHovered, setIsHovered] = useState(false);
+    const theme = useTheme();
+    const isDarkTheme = theme.variant === 'dark';
 
     const onMouseEnter = () => {
         setIsHovered(true);
@@ -30,12 +40,14 @@ export const StoreBadge = ({ url, image, isHighlighted, onClick }: StoreBadgePro
                 padding={{ vertical: 8, horizontal: 12 }}
                 cursor="pointer"
                 borderRadius={8}
-                backgroundColor="baseFillElementNeutralSoft"
+                backgroundColor="elementFillNeutralSoft"
                 onMouseLeave={onMouseLeave}
             >
-                <Row alignItems="center">
-                    <Image image={image} height={26} maxWidth="unset" />
-                </Row>
+                <ImageContainer $isDarkTheme={isDarkTheme}>
+                    <Row alignItems="center">
+                        <Image image={image} height={26} maxWidth="unset" />
+                    </Row>
+                </ImageContainer>
             </Box>
         </TrezorLink>
     );

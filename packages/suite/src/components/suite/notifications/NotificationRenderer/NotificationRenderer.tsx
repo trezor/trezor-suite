@@ -1,7 +1,7 @@
-import { ComponentType, JSX } from 'react';
+import { type ComponentType, type JSX } from 'react';
 import { useSelector } from 'react-redux';
 
-import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
+import { type ExtendedMessageDescriptor, Translation, type TranslationKey } from '@suite/intl';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { AUTH_DEVICE, type NotificationEntry } from '@suite-common/toast-notifications';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -13,13 +13,15 @@ import { AutoEjectRenderer } from './AutoEjectRenderer';
 import { CoinProtocolRenderer } from './CoinProtocolRenderer';
 import { ExchangeInfoRenderer } from './ExchangeInfoRenderer';
 import { TransactionRenderer } from './TransactionRenderer';
-import { NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
+import { type NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
+
+type LocalizedNotificationEntry = NotificationEntry<TranslationKey>;
 
 export type NotificationRendererProps<
-    T extends NotificationEntry['type'] = NotificationEntry['type'],
+    T extends LocalizedNotificationEntry['type'] = LocalizedNotificationEntry['type'],
 > = {
     render: ComponentType<{ onCancel?: () => void } & NotificationViewProps>;
-    notification: Extract<NotificationEntry, { type: T }>;
+    notification: Extract<LocalizedNotificationEntry, { type: T }>;
 };
 
 type RenderConfig = {
@@ -136,6 +138,13 @@ export const NotificationRenderer = ({
                 variant: 'success',
                 message: 'TOAST_DEVICE_WIPED',
                 icon: 'gear',
+            });
+
+        case 'device-forgotten':
+            return renderNotificationView(render, notification, {
+                variant: 'success',
+                message: 'TR_DEVICE_HAS_BEEN_FORGOTTEN',
+                icon: 'check',
             });
 
         case 'copy-to-clipboard':
@@ -546,6 +555,48 @@ export const NotificationRenderer = ({
                 />
             );
 
+        case 'tx-yield-supply':
+            return (
+                <TransactionRenderer
+                    render={render}
+                    notification={notification}
+                    icon="arrowUp"
+                    variant="success"
+                    message="TOAST_TX_YIELD_SUPPLY"
+                    messageValues={{
+                        account: notification.descriptor,
+                    }}
+                />
+            );
+
+        case 'tx-yield-withdraw':
+            return (
+                <TransactionRenderer
+                    render={render}
+                    notification={notification}
+                    icon="arrowUp"
+                    variant="success"
+                    message="TOAST_TX_YIELD_WITHDRAW"
+                    messageValues={{
+                        account: notification.descriptor,
+                    }}
+                />
+            );
+
+        case 'tx-yield-claim':
+            return (
+                <TransactionRenderer
+                    render={render}
+                    notification={notification}
+                    icon="arrowUp"
+                    variant="success"
+                    message="TOAST_TX_YIELD_CLAIM"
+                    messageValues={{
+                        account: notification.descriptor,
+                    }}
+                />
+            );
+
         case 'successful-claim':
             return renderNotificationView(render, notification, {
                 variant: 'success',
@@ -602,6 +653,22 @@ export const NotificationRenderer = ({
                 message: 'TR_CONNECT_POPUP_SUCCESS',
                 icon: 'check',
                 values: { appName: notification.appName },
+            });
+
+        case 'bip-329-labels-imported':
+            return renderNotificationView(render, notification, {
+                variant: 'success',
+                message: 'TR_BIP_329_LABELS_IMPORTED',
+            });
+
+        case 'legacy-labeling-migration-success':
+            return renderNotificationView(render, notification, {
+                variant: 'success',
+                message: 'TR_LABELING_MIGRATION_SUCCESS',
+                values: {
+                    added: notification.added,
+                    skipped: notification.skipped,
+                },
             });
 
         default:

@@ -1,10 +1,10 @@
 import {
     DiscreetText,
     Text,
-    TextProps,
+    type TextProps,
     resetLetterSpacingOnAndroidStyle,
 } from '@suite-native/atoms';
-import { mergeNativeStyleObjects, useNativeStyles } from '@trezor/styles';
+import { mergeNativeStyleObjects, useNativeStyles } from '@trezor/styles-native';
 
 type AmountTextProps = {
     isDiscreetText?: boolean;

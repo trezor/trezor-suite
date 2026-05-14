@@ -1,10 +1,16 @@
-import { MiddlewareAPI } from 'redux';
+import { type MiddlewareAPI } from 'redux';
 
+import { selectIsRouterLocked } from '@suite/locks';
+import {
+    closeModalApp,
+    goto,
+    selectRouteName,
+    selectRouterApp,
+    selectRouterParams,
+} from '@suite/router';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
 
-import * as routerActions from 'src/actions/suite/routerActions';
-import { selectIsRouterLocked } from 'src/selectors/suite/suiteSelectors';
-import { Action, AppState, Dispatch, TrezorDevice } from 'src/types/suite';
+import { type Action, type AppState, type Dispatch, type TrezorDevice } from 'src/types/suite';
 
 const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: TrezorDevice) => {
     // no device, no redirect
@@ -22,7 +28,7 @@ const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: Trez
 
     // device is not initialized, redirect to onboarding
     if (device.mode === 'initialize') {
-        dispatch(routerActions.goto('suite-start'));
+        dispatch(goto({ routeName: 'suite-start' }));
     }
     // firmware none (T2T1) or unknown (T1B1) indicates freshly unpacked device
     if (
@@ -30,11 +36,11 @@ const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: Trez
         device.features &&
         device.features.firmware_present === false
     ) {
-        dispatch(routerActions.goto('suite-start'));
+        dispatch(goto({ routeName: 'suite-start' }));
     }
     // device firmware update required, redirect to "firmware update"
     else if (device.firmware === 'required') {
-        dispatch(routerActions.goto('firmware-index'));
+        dispatch(goto({ routeName: 'firmware-index' }));
     }
 
     const selected = selectSelectedDevice(state);
@@ -43,10 +49,13 @@ const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: Trez
     if (
         selected &&
         selected.id !== device.id &&
-        state.router.app === 'wallet' &&
-        state.router.params
+        selectRouterApp(state) === 'wallet' &&
+        selectRouterParams(state)
     ) {
-        dispatch(routerActions.goto(state.router.route.name));
+        const routeName = selectRouteName(state);
+        if (routeName) {
+            dispatch(goto({ routeName }));
+        }
     }
 };
 /**
@@ -64,9 +73,9 @@ const redirect =
             if (
                 deviceActions.selectDevice.match(action) &&
                 !action.payload &&
-                api.getState().router.app === 'switch-device'
+                selectRouterApp(api.getState()) === 'switch-device'
             ) {
-                api.dispatch(routerActions.closeModalApp());
+                api.dispatch(closeModalApp());
             }
 
             return action;

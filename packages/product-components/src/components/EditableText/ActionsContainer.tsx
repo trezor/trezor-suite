@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 
 import styled, { css } from 'styled-components';
 
-import { IconButton, IconButtonProps, Spinner, Tooltip } from '@trezor/components';
+import { IconButton, type IconButtonProps, Spinner, Tooltip } from '@trezor/components';
 
 import type { SavingStatus } from './types';
 
@@ -152,6 +152,7 @@ export const ActionsContainer = ({
                             delayShow={1000}
                         >
                             <IconButton
+                                data-testid="@metadata/delete"
                                 intent="critical"
                                 icon="trash"
                                 onClick={onDelete}

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { Translation } from '@suite/intl';
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
-import { UserContextPayload } from '@suite-common/suite-types';
+import { type UserContextPayload } from '@suite-common/suite-types';
 import { Banner, Modal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

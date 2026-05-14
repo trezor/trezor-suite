@@ -1,8 +1,8 @@
 import { increaseOwnerQuotaThunk } from '@suite-common/suite-sync-quota-manager';
 import {
-    CreateSuiteSyncErrorHandlerDep,
-    Errors,
-    SuiteSyncErrorHandler,
+    type CreateSuiteSyncErrorHandlerDep,
+    type Errors,
+    type SuiteSyncErrorHandler,
 } from '@suite-common/suite-sync-types';
 
 export const createSuiteSyncErrorHandler =

@@ -1,9 +1,9 @@
-import { Control } from 'react-hook-form';
+import { type Control } from 'react-hook-form';
 
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import {
-    AccountFormValues,
+    type AccountFormValues,
     AccountLabelFieldHint,
     MAX_ACCOUNT_LABEL_LENGTH,
 } from '@suite-native/accounts';
@@ -38,7 +38,7 @@ export const AccountImportOverview = ({ balance, symbol, formControl }: AssetsOv
 
     return (
         <AccountImportOverviewCard
-            icon={<RoundedIcon symbol={symbol} iconSize="large" />}
+            icon={<RoundedIcon symbol={symbol} />}
             coinName={getNetwork(symbol).name}
             cryptoAmount={
                 <CryptoAmountFormatter

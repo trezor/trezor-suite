@@ -13,7 +13,6 @@ test.describe('LTC send form with mocked blockbook', { tag: ['@T3W1', '@T3T1'] }
             await settingsPage.navigateTo('coins');
             await blockbookMock.start('ltc');
 
-            await settingsPage.coinsTab.disableNetwork('btc');
             await settingsPage.coinsTab.enableNetwork('ltc');
             await settingsPage.coinsTab.openNetworkAdvanceSettings('ltc');
             await settingsPage.coinsTab.changeBackend('blockbook', blockbookMock.url);

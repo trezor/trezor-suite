@@ -1,14 +1,13 @@
-import EventEmitter from 'events';
-
-// NOTE: @trezor/connect part is intentionally not imported from the index
-import { CORE_CALL, CallMethod, POPUP, createErrorMessage } from '@trezor/connect/src/exports';
-import { factory } from '@trezor/connect/src/factory';
-import { ConnectDynamicSettings } from '@trezor/connect/src/impl/dynamic';
-import type { UpdateConnectSettings } from '@trezor/connect/src/types/api/updateConnectSettings';
 import { ERRORS, WEBEXTENSION } from '@trezor/connect-common/src/constants';
+import { CORE_CALL, type CallMethod, POPUP } from '@trezor/connect-common/src/events';
+import { createErrorMessage } from '@trezor/connect-common/src/events';
+import { factory } from '@trezor/connect-common/src/factory';
+import { type ConnectDynamicSettings } from '@trezor/connect-common/src/impl/dynamic';
 import { WindowServiceWorkerChannel } from '@trezor/connect-common/src/messageChannel/window-serviceworker';
+import type { UpdateConnectSettings } from '@trezor/connect-common/src/types';
+import { ConnectEmitter } from '@trezor/connect-common/src/types/emitter';
 
-const eventEmitter = new EventEmitter();
+const eventEmitter = new ConnectEmitter();
 let _channel: any;
 
 const dispose = () => {
@@ -17,9 +16,17 @@ const dispose = () => {
     return Promise.resolve(undefined);
 };
 
-const cancel = () => {
+const cancel = (error?: string) => {
     if (_channel) {
-        _channel.clear();
+        _channel.postMessage(
+            {
+                type: POPUP.CLOSED,
+                payload: error ? { error } : {},
+            },
+            { usePromise: false },
+        );
+
+        return Promise.resolve(_channel.clear());
     }
 };
 
@@ -34,8 +41,9 @@ const init = (settings: ConnectDynamicSettings): Promise<void> => {
         });
     }
 
-    _channel.port.onMessage.addListener((message: any) => {
+    _channel.port.onMessage.addListener((message: { type: string }) => {
         if (message.type === WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM) {
+            // @ts-expect-error
             eventEmitter.emit(WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM, message);
         }
     });
@@ -105,4 +113,6 @@ const TrezorConnect = factory({
 
 // eslint-disable-next-line import/no-default-export
 export default TrezorConnect;
-export * from '@trezor/connect/src/exports';
+export * from '@trezor/connect-common/src/constants';
+export * from '@trezor/connect-common/src/events';
+export * from '@trezor/connect-common/src/types';

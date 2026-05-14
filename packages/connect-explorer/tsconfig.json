@@ -30,6 +30,7 @@
         { "path": "../protobuf" },
         { "path": "../schema-utils" },
         { "path": "../theme" },
+        { "path": "../urls" },
         { "path": "../eslint" }
     ]
 }

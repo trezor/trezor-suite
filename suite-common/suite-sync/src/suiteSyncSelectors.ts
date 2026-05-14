@@ -1,12 +1,17 @@
-import { DeviceRootState, selectDeviceByStaticSessionId } from '@suite-common/device';
-import { EncryptedHex } from '@suite-common/platform-encryption';
-import { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
-import { StaticSessionId } from '@trezor/connect';
+import { type DeviceRootState, selectDeviceByStaticSessionId } from '@suite-common/device';
+import {
+    Feature,
+    type MessageSystemRootState,
+    selectIsFeatureEnabled,
+} from '@suite-common/message-system';
+import { type EncryptedHex } from '@suite-common/platform-encryption';
+import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
+import { type StaticSessionId } from '@trezor/connect';
 import { isNotNull } from '@trezor/utils';
 
 import { DEFAULT_SUITE_SYNC_RELAY_URL } from './relay/relayUrl';
-import { SuiteSyncState } from './suiteSyncSlice';
-import { SuiteSyncInteraction } from './suiteSyncTypes';
+import { type SuiteSyncState } from './suiteSyncSlice';
+import { type SuiteSyncInteraction } from './suiteSyncTypes';
 import { isFwUpgradeNeededForSuiteSync, isSuiteSyncSupportedByDevice } from './suiteSyncUtils';
 
 export type WithSuiteSyncState = {
@@ -15,19 +20,45 @@ export type WithSuiteSyncState = {
 
 export type WithSuiteSyncAndDeviceState = WithSuiteSyncState & DeviceRootState;
 
-export const selectIsSuiteSyncEnabled = (state: WithSuiteSyncAndDeviceState): boolean =>
-    state.suiteSync.settings.isSuiteSyncEnabled;
+/** Suite Sync is enabled by default; the message system can remotely disable it via `settings.suiteSync`. */
+export const selectIsSuiteSyncFeatureAvailable = (state: MessageSystemRootState) =>
+    selectIsFeatureEnabled(state, Feature.suiteSync, true);
+
+export const selectIsSuiteSyncEnabled = (
+    state: WithSuiteSyncAndDeviceState & MessageSystemRootState,
+): boolean =>
+    state.suiteSync.settings.isSuiteSyncEnabled && selectIsSuiteSyncFeatureAvailable(state);
 
 export const selectIsSuiteSyncDebugEnabled = (state: WithSuiteSyncAndDeviceState): boolean =>
     state.suiteSync.settings.isSuiteSyncDebugEnabled;
 
-export const selectSuiteSyncRelayUrl = (state: WithSuiteSyncAndDeviceState) => {
+export const selectIsSuiteSyncInitPossible = (
+    state: WithSuiteSyncAndDeviceState,
+    deviceStaticSessionId: StaticSessionId | null,
+): boolean => {
+    if (deviceStaticSessionId === null) {
+        return false;
+    }
+
+    const device = selectDeviceByStaticSessionId(state, deviceStaticSessionId);
+
+    if (device === undefined) {
+        return false;
+    }
+
+    return device.connected && isSuiteSyncSupportedByDevice(device);
+};
+
+export const selectSuiteSyncCustomRelayUrl = (
+    state: WithSuiteSyncAndDeviceState,
+): string | null => {
     const { suiteSyncRelayUrl: storedUrl } = state.suiteSync.settings;
 
-    return isNotNull(storedUrl) && storedUrl.trim() !== ''
-        ? storedUrl
-        : DEFAULT_SUITE_SYNC_RELAY_URL;
+    return isNotNull(storedUrl) && storedUrl.trim() !== '' ? storedUrl : null;
 };
+
+export const selectSuiteSyncRelayUrl = (state: WithSuiteSyncAndDeviceState) =>
+    selectSuiteSyncCustomRelayUrl(state) ?? DEFAULT_SUITE_SYNC_RELAY_URL;
 
 export const selectSuiteSyncOwnerForDeviceStaticId = (
     state: WithSuiteSyncAndDeviceState,
@@ -38,7 +69,7 @@ export const selectSuiteSyncOwnerForDeviceStaticId = (
         : null;
 
 export const selectSuiteSyncInteraction = (
-    state: WithSuiteSyncAndDeviceState,
+    state: WithSuiteSyncAndDeviceState & MessageSystemRootState,
     deviceStaticSessionId: StaticSessionId | null,
 ): SuiteSyncInteraction | null => {
     if (deviceStaticSessionId === null) {

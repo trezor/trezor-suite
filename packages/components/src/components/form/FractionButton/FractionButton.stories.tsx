@@ -1,8 +1,11 @@
 import { IntlProvider } from 'react-intl';
 
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { FractionButton as FractionButtonComponent, FractionButtonProps } from './FractionButton';
+import {
+    FractionButton as FractionButtonComponent,
+    type FractionButtonProps,
+} from './FractionButton';
 
 const meta: Meta<typeof FractionButtonComponent> = {
     title: '✏️ Form',

@@ -1,20 +1,17 @@
+import { goto } from '@suite/router';
+import { selectLanguage, selectTorOnionLinks } from '@suite/settings';
 import { resolveMessageContent } from '@suite-common/message-system';
-import { Message } from '@suite-common/suite-types';
-import { Banner, ButtonProps } from '@trezor/components';
+import { type Message } from '@suite-common/suite-types';
+import { Banner, type ButtonProps } from '@trezor/components';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import {
-    selectLanguage,
-    selectTorOnionLinks,
-    selectTorState,
-} from 'src/selectors/suite/suiteSelectors';
+import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { getTorUrlIfAvailable } from 'src/utils/suite/tor';
 
 type MessageSystemButtonProps = {
     cta?: Message['cta'];
     id?: Message['id'];
-} & Pick<ButtonProps, 'iconLeft' | 'iconRight' | 'size'>;
+} & Pick<ButtonProps, 'iconLeft' | 'iconRight' | 'size' | 'intent'>;
 
 export const MessageSystemButton = ({ cta, id, ...props }: MessageSystemButtonProps) => {
     const { isTorEnabled } = useSelector(selectTorState);
@@ -30,7 +27,7 @@ export const MessageSystemButton = ({ cta, id, ...props }: MessageSystemButtonPr
         switch (action) {
             case 'internal-link':
                 // @ts-expect-error: impossible to add all href options to the message system config json schema
-                dispatch(goto(link as Route['name'], { anchor, preserveParams: true }));
+                dispatch(goto({ routeName: link as Route['name'], anchor, preserveParams: true }));
                 break;
             case 'external-link':
                 window.open(
@@ -46,6 +43,7 @@ export const MessageSystemButton = ({ cta, id, ...props }: MessageSystemButtonPr
     return (
         <Banner.Button
             onClick={onClick!}
+            priority="primary"
             {...(id ? { 'data-testid': `@message-system/${id}/cta` } : {})}
             {...props}
         >

@@ -1,20 +1,19 @@
 import styled from 'styled-components';
 
-import { Route } from '@suite-common/suite-types';
+import { type Route, selectRouteName } from '@suite/router';
 import { Tabs } from '@trezor/components';
 import { spacingsPx, zIndices } from '@trezor/theme';
 
 import { HEADER_HEIGHT } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 import { AppNavigationTooltip } from '../../AppNavigation/AppNavigationTooltip';
 
 const Container = styled.div`
     position: sticky;
     top: ${HEADER_HEIGHT};
-    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
-    border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
+    background: ${({ theme }) => theme.surfaceFillPage};
+    border-bottom: 1px solid ${({ theme }) => theme.borderNeutral};
     z-index: ${zIndices.stickyBar};
     width: 100%;
 `;
@@ -39,9 +38,10 @@ export type NavigationItem = {
 
 type SubpageNavigationProps = {
     items: NavigationItem[];
+    ['data-testid']: string;
 };
 
-export const SubpageNavigation = ({ items }: SubpageNavigationProps) => {
+export const SubpageNavigation = ({ 'data-testid': dataTest, items }: SubpageNavigationProps) => {
     const routeName = useSelector(selectRouteName);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
@@ -51,7 +51,7 @@ export const SubpageNavigation = ({ items }: SubpageNavigationProps) => {
     )?.id;
 
     return (
-        <Container>
+        <Container data-testid={dataTest}>
             <ScrollContainer>
                 <AppNavigationTooltip>
                     <Tabs

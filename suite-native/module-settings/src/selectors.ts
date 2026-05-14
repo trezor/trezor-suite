@@ -1,7 +1,7 @@
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
-    AccountsRootState,
-    WalletSettingsRootState,
+    type AccountsRootState,
+    type WalletSettingsRootState,
     selectAccountsSymbols,
     selectIsBitcoinEnabled,
 } from '@suite-common/wallet-core';

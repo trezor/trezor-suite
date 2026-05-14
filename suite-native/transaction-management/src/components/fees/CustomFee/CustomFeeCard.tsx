@@ -2,12 +2,12 @@ import Animated, { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { getNetworkType } from '@suite-common/wallet-config';
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { AccountKey, isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { type AccountKey, isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { Box, Button, Card, HStack, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { CustomFeeLabel } from './CustomFeeLabel';
 import { selectFeeLevels } from '../../../selectors';
@@ -51,6 +51,7 @@ export const CustomFeeCard = ({ accountKey, onEdit, onCancel }: CustomFeeCardPro
                                     value={customFeeTransaction.fee}
                                     symbol={symbol}
                                     variant="body-md"
+                                    isDiscreetText={false}
                                 />
                                 <CryptoAmountFormatter
                                     value={customFeeTransaction?.fee}
@@ -59,18 +60,19 @@ export const CustomFeeCard = ({ accountKey, onEdit, onCancel }: CustomFeeCardPro
                                     variant="body-sm"
                                     numberOfLines={1}
                                     adjustsFontSizeToFit
+                                    isDiscreetText={false}
                                 />
                             </VStack>
                         </HStack>
                     </VStack>
                     <HStack flex={1} justifyContent="space-between">
                         <Box flex={1}>
-                            <Button onPress={onCancel} colorScheme="redElevation1">
+                            <Button onPress={onCancel} intent="critical" priority="secondary">
                                 <Translation id="generic.buttons.cancel" />
                             </Button>
                         </Box>
                         <Box flex={2}>
-                            <Button onPress={onEdit} colorScheme="tertiaryElevation1">
+                            <Button onPress={onEdit} intent="neutral" priority="secondary">
                                 <Translation id="generic.buttons.edit" />
                             </Button>
                         </Box>

@@ -9,7 +9,7 @@ import styled from 'styled-components';
 
 import { useElevation } from '@trezor/components';
 import { TrezorLogo } from '@trezor/product-components';
-import { Elevation, borders, mapElevationToBackground, spacingsPx } from '@trezor/theme';
+import { type Elevation, borders, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 
 import { Anchor } from './anchor';
 import { useMenu } from '../contexts/menu';

@@ -2,7 +2,10 @@ import { useSelector } from 'react-redux';
 
 import type { ExchangeProviderInfo } from 'invity-api';
 
-import { TradingRootState, selectTradingProviderByNameAndTradeType } from '@suite-common/trading';
+import {
+    type TradingRootState,
+    selectTradingProviderByNameAndTradeType,
+} from '@suite-common/trading';
 import { HStack, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { ProviderLogo, TradeInfoRow } from '@suite-native/trading-atoms';
@@ -27,9 +30,7 @@ export const ProviderInfoRow = ({ exchange }: ProviderInfoRowProps) => {
             </Text>
             <HStack alignItems="center">
                 {!!providerInfo.logo && <ProviderLogo logo={providerInfo.logo} size="body-sm" />}
-                <Text variant="body-sm" color="textSubdued">
-                    {providerInfo.companyName}
-                </Text>
+                <Text variant="body-sm">{providerInfo.companyName}</Text>
             </HStack>
         </TradeInfoRow>
     );

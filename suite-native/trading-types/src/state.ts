@@ -1,25 +1,17 @@
-import type { CryptoId, ProviderMetadata } from 'invity-api';
+import type { ProviderMetadata } from 'invity-api';
 
 import type {
-    TradingBuyState as CommonTradingBuyState,
-    TradingExchangeState as CommonTradingExchangeState,
-    TradingSellState as CommonTradingSellState,
     TradingState as CommonTradingState,
     InvityServerEnvironment,
     TradingCountryCode,
-    TradingType,
+    TradingTypeWithConcierge,
 } from '@suite-common/trading';
 
 import type { ProviderConfirmationStatus } from './general';
 
-export interface TradingBuyState extends CommonTradingBuyState {}
-
-export interface TradingExchangeState extends CommonTradingExchangeState {}
-
-export interface TradingSellState extends CommonTradingSellState {}
-
 export type TradingResidenceState = {
     country: TradingCountryCode | undefined;
+    countrySubdivision: string | undefined;
     wasOnboardingVisited: boolean;
 };
 
@@ -32,15 +24,11 @@ export type TradingResidenceRootState = {
 };
 
 export interface TradingState extends CommonTradingState {
-    buy: TradingBuyState;
-    exchange: TradingExchangeState;
-    sell: TradingSellState;
     residence: TradingResidenceState;
-    favouriteAssets: Record<CryptoId, true>;
     tradingEnvironment: InvityServerEnvironment;
     tradeOrderIdToBeOpened: string | undefined;
     isAmountInputActive: boolean;
-    activeTradingType: TradingType | undefined;
+    activeTradingType: TradingTypeWithConcierge | undefined;
     providerConfirmationStatus: ProviderConfirmationStatus;
     currentProviderMetadata: ProviderMetadata | undefined;
 }

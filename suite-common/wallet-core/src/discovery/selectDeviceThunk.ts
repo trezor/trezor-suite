@@ -5,9 +5,9 @@ import {
     selectIsSameOrNewDevice,
 } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { getSelectedDevice, sortByTimestamp } from '@suite-common/suite-utils';
-import { Device } from '@trezor/connect';
+import { type Device } from '@trezor/connect';
 import { isNative } from '@trezor/env-utils';
 
 type SelectDeviceThunkParams = {

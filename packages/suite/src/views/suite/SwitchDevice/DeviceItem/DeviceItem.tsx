@@ -1,26 +1,34 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 
+import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { SettingsAnchor, goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { Button, Column, Icon, IconName, List, Paragraph, Row, Tooltip } from '@trezor/components';
+import {
+    Button,
+    Column,
+    Icon,
+    type IconName,
+    List,
+    Paragraph,
+    Row,
+    Tooltip,
+} from '@trezor/components';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import {
     addDeviceIdToSeenDisconnectNotification,
-    setFlag,
     setRecentlyDisconnectedDevice,
 } from 'src/actions/suite/suiteActions';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import type { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 
+import { CardWithDevice } from '../CardWithDevice';
 import { AddWalletButton } from './AddWalletButton';
 import { WalletInstance } from './WalletInstance';
-import { CardWithDevice } from '../CardWithDevice';
 
 type DeviceItemProps = {
     device: TrezorDevice;
@@ -48,9 +56,7 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
     const selectedDevice = useSelector(selectSelectedDevice);
     const deviceId = selectedDevice?.id;
     const recentlyDisconnectedDevice = useSelector(state => state.suite.recentlyDisconnectedDevice);
-    const hasSeenDisconnectTooltip = useSelector(
-        state => state.suite.flags.hasSeenDisconnectTooltip,
-    );
+    const hasSeenDisconnectTooltip = useSelector(state => state.flags.hasSeenDisconnectTooltip);
     const [showTooltip, setShowTooltip] = useState(false);
     const deviceModelInternal = device.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
     const instancesWithState = instances.filter(i => i.state);
@@ -77,7 +83,7 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
     const onTooltipClose = () => {
         setShowTooltip(false);
         dispatch(setRecentlyDisconnectedDevice(null));
-        dispatch(setFlag('hasSeenDisconnectTooltip', true));
+        dispatch(setFlag({ key: 'hasSeenDisconnectTooltip', value: true }));
 
         if (deviceId) {
             dispatch(addDeviceIdToSeenDisconnectNotification(deviceId));
@@ -119,7 +125,11 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
                                                 <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_ITEM_2" />
                                             </ListItem>
                                         </List>
-                                        <Row gap={spacings.sm} margin={{ top: spacings.xs }}>
+                                        <Row
+                                            gap={spacings.sm}
+                                            margin={{ top: spacings.xs }}
+                                            flexWrap="wrap"
+                                        >
                                             <Button
                                                 size="small"
                                                 onClick={() => {
@@ -136,7 +146,8 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
                                                 onClick={() => {
                                                     onTooltipClose();
                                                     dispatch(
-                                                        goto('settings-index', {
+                                                        goto({
+                                                            routeName: 'settings-index',
                                                             anchor: SettingsAnchor.AutoEject,
                                                         }),
                                                     );
@@ -151,7 +162,6 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
                                 isOpen={showTooltip && index === 0}
                                 width="100%"
                                 placement="right-start"
-                                hasArrow
                                 offset={30}
                             >
                                 <WalletInstance

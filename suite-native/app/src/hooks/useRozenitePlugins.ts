@@ -1,4 +1,4 @@
-import { MMKV } from 'react-native-mmkv';
+import { type MMKV } from 'react-native-mmkv';
 
 import { useMMKVDevTools } from '@rozenite/mmkv-plugin';
 import { useNetworkActivityDevTools } from '@rozenite/network-activity-plugin';

@@ -1,25 +1,15 @@
-import { RefObject, useCallback, useMemo } from 'react';
-import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
+import { type RefObject, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
-import {
-    BottomSheetModal,
-    BottomSheetModalRef,
-    Box,
-    HStack,
-    InlineAlertBox,
-    Text,
-    VStack,
-} from '@suite-native/atoms';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
-import { FormSubmitButton, useFormContext } from '@suite-native/forms';
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { BottomSheetModal, type BottomSheetModalRef, Box } from '@suite-native/atoms';
+import { Form, FormSubmitButton, useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
-import { CustomFeeInputs } from './CustomFeeInputs';
-import { FeesFormValues } from '../../../feesFormSchema';
-import { CustomFeeParams } from '../../../hooks';
+import { CustomFeeContent } from './CustomFeeContent';
+import { type FeesFormValues } from '../../../feesFormSchema';
+import { type CustomFeeParams } from '../../../hooks';
 
 type CustomFeeBottomSheetProps = {
     onClose: () => void;
@@ -48,6 +38,7 @@ export const CustomFeeBottomSheet = ({
         selectAccountNetworkSymbol(state, accountKey),
     );
 
+    const form = useFormContext<FeesFormValues>();
     const {
         setValue,
         handleSubmit,
@@ -55,7 +46,7 @@ export const CustomFeeBottomSheet = ({
         formState: { isDirty },
         watch,
         getValues,
-    } = useFormContext<FeesFormValues>();
+    } = form;
 
     const feeLevelValue = watch('feeLevel');
 
@@ -102,50 +93,23 @@ export const CustomFeeBottomSheet = ({
                 snapPoints: ['95%'],
             }}
         >
-            <VStack marginTop="sp24" spacing="sp24" justifyContent="space-between" flex={1}>
-                <CustomFeeInputs symbol={symbol} />
-                <HStack
-                    flex={1}
-                    justifyContent="space-between"
-                    alignItems="center"
-                    paddingHorizontal="sp1"
-                >
-                    <Text variant="body-md-strong">
-                        <Translation id="transactionManagement.fees.custom.bottomSheet.total" />
-                    </Text>
-                    <VStack alignItems="flex-end">
-                        <CryptoToFiatAmountFormatter
-                            value={feeValue}
-                            isLoading={isFeeLoading}
-                            symbol={symbol}
-                        />
-                        <CryptoAmountFormatter
-                            value={feeValue}
-                            symbol={symbol}
-                            variant="body-md"
-                            isLoading={isFeeLoading}
-                            isBalance={false}
-                        />
-                    </VStack>
-                </HStack>
-                {isErrorBoxVisible && (
-                    <Animated.View entering={FadeInDown} exiting={FadeOutDown}>
-                        <InlineAlertBox
-                            variant="critical"
-                            title={<Translation id="transactionManagement.fees.error" />}
-                        />
-                    </Animated.View>
-                )}
-            </VStack>
-            <Box marginTop="sp16">
-                <FormSubmitButton
-                    onPress={handleSetCustomFee}
-                    isVisible={isButtonVisible}
-                    testID="@transactionManagement/custom-fee-submit-button"
-                >
-                    <Translation id="transactionManagement.fees.custom.bottomSheet.confirmButton" />
-                </FormSubmitButton>
-            </Box>
+            <Form form={form}>
+                <CustomFeeContent
+                    symbol={symbol}
+                    feeValue={feeValue}
+                    isFeeLoading={isFeeLoading}
+                    isErrorBoxVisible={isErrorBoxVisible}
+                />
+                <Box marginTop="sp16">
+                    <FormSubmitButton
+                        onPress={handleSetCustomFee}
+                        isVisible={isButtonVisible}
+                        testID="@transactionManagement/custom-fee-submit-button"
+                    >
+                        <Translation id="transactionManagement.fees.custom.bottomSheet.confirmButton" />
+                    </FormSubmitButton>
+                </Box>
+            </Form>
         </BottomSheetModal>
     );
 };

@@ -10,8 +10,11 @@ describe('TrezorConnect.init', () => {
     });
 
     it('calling method before .init()', async () => {
-        const { payload } = await TrezorConnect.getCoinInfo({ coin: 'btc' });
-        expect(payload).toMatchObject(INIT_ERROR);
+        const result = await TrezorConnect.getCoinInfo({ coin: 'btc' });
+        expect(result.success).toBe(false);
+        if (!result.success) {
+            expect(result.error).toMatchObject(INIT_ERROR);
+        }
     });
 
     it('missing manifest in TrezorConnect.init', async () => {

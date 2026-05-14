@@ -1,18 +1,12 @@
-import styled from 'styled-components';
-
 import { GoogleClient } from '@suite/metadata';
-import { OAuthServerEnvironment } from '@suite-common/metadata-types';
+import { selectOAuthServerEnvironment, suiteSettingsActions } from '@suite/settings';
+import { type OAuthServerEnvironment } from '@suite-common/metadata-types';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { setDebugMode } from 'src/actions/suite/suiteActions';
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-const StyledActionSelect = styled(ActionSelect)`
-    min-width: 256px;
-`;
-
 export const OAuthApi = () => {
-    const debug = useSelector(state => state.suite.settings.debug);
+    const oauthServerEnvironment = useSelector(selectOAuthServerEnvironment);
     const dispatch = useDispatch();
 
     const options = Object.entries(GoogleClient.servers).map(([environment, server]) => ({
@@ -20,10 +14,10 @@ export const OAuthApi = () => {
         value: environment,
     }));
     const selectedOption =
-        options.find(option => option.value === debug.oauthServerEnvironment) || options[0];
+        options.find(option => option.value === oauthServerEnvironment) || options[0];
 
     const handleChange = (item: { value: OAuthServerEnvironment }) => {
-        dispatch(setDebugMode({ oauthServerEnvironment: item.value }));
+        dispatch(suiteSettingsActions.setDebugMode({ oauthServerEnvironment: item.value }));
         GoogleClient.setEnvironment(item.value);
     };
 
@@ -34,11 +28,7 @@ export const OAuthApi = () => {
                 description="Set the authorisation server url for labeling in Google Drive"
             />
             <ActionColumn>
-                <StyledActionSelect
-                    onChange={handleChange}
-                    value={selectedOption}
-                    options={options}
-                />
+                <ActionSelect onChange={handleChange} value={selectedOption} options={options} />
             </ActionColumn>
         </SectionItem>
     );

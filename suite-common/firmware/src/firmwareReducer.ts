@@ -1,17 +1,17 @@
-import { PayloadAction, createSelector } from '@reduxjs/toolkit';
+import { type PayloadAction, createSelector } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
+import { type FirmwareStatus, type TrezorDevice } from '@suite-common/suite-types';
 import {
     DEVICE,
-    DeviceButtonRequest,
-    FirmwareChannel,
-    FirmwareProgress,
-    FirmwareProgressUnexpectedDelay,
-    FirmwareReconnect,
-    FirmwareType,
-    UI,
-    UiRequestConfirmation,
+    type DeviceButtonRequest,
+    type FirmwareChannel,
+    type FirmwareProgress,
+    type FirmwareProgressUnexpectedDelay,
+    type FirmwareReconnect,
+    type FirmwareType,
+    UI_REQUEST,
+    type UiRequestConfirmation,
 } from '@trezor/connect';
 
 import { firmwareActions } from './firmwareActions';
@@ -104,7 +104,7 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
             state.firmwareChannel = payload;
         })
         .addMatcher<UiRequestConfirmation>(
-            action => action.type === UI.REQUEST_CONFIRMATION,
+            action => action.type === UI_REQUEST.REQUEST_CONFIRMATION,
             (state, action) => {
                 if (state.status === 'started' && action.payload.view === 'thp-pairing-start') {
                     state.status = 'thp-pairing';
@@ -113,9 +113,9 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
         )
         .addMatcher<FirmwareUpdateUiEvent>(
             (action: FirmwareUpdateUiEvent) =>
-                action.type === UI.FIRMWARE_RECONNECT ||
-                action.type === UI.FIRMWARE_PROGRESS ||
-                action.type === UI.FIRMWARE_PROGRESS_UNEXPECTED_DELAY ||
+                action.type === UI_REQUEST.FIRMWARE_RECONNECT ||
+                action.type === UI_REQUEST.FIRMWARE_PROGRESS ||
+                action.type === UI_REQUEST.FIRMWARE_PROGRESS_UNEXPECTED_DELAY ||
                 action.type === DEVICE.BUTTON,
             (state, action) => {
                 // DEVICE.BUTTON can be dispatched outside the firmware update flow and that should not change the uiEvent,

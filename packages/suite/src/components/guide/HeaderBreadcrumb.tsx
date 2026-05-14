@@ -1,11 +1,11 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { selectLanguage } from '@suite/settings';
 import type { GuideCategory } from '@suite-common/suite-types';
 import { Row, Text, TextButton } from '@trezor/components';
 
 import { openNode, setView } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { findAncestorNodes, getNodeTitle } from 'src/utils/suite/guide';
 

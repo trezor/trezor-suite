@@ -1,4 +1,4 @@
-import { Fragment, JSX } from 'react';
+import { Fragment, type JSX } from 'react';
 
 import { type TradingSellType, selectTradingSellFormStep } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
@@ -7,13 +7,13 @@ import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingOfferSellProps } from 'src/types/trading/tradingForm';
+import { type TradingOfferSellProps } from 'src/types/trading/tradingForm';
 import { TradingOfferSellBankAccount } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferSell/TradingOfferSellBankAccount';
 import { TradingSelectedOfferSellTransaction } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferSell/TradingOfferSellTransaction';
 import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
 import {
     TradingSelectedOfferStepper,
-    TradingSelectedOfferStepperItemProps,
+    type TradingSelectedOfferStepperItemProps,
 } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferStepper';
 
 export const TradingOfferSell = (props: TradingOfferSellProps) => {

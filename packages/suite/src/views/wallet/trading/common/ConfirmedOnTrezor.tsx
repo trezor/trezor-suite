@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { RotateDeviceImage } from '@trezor/product-components';
 import { borders, typography } from '@trezor/theme';
 
@@ -11,7 +11,7 @@ const Confirmed = styled.div`
     display: flex;
     height: 60px;
     ${typography['body-md-strong']}
-    background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
+    background: ${({ theme }) => theme.legacyBackgroundNeutralBoldInverted};
     align-items: center;
     justify-content: center;
     margin-top: 27px;

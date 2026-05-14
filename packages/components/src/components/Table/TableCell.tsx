@@ -1,16 +1,16 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Elevation, mapElevationToBackground, spacings } from '@trezor/theme';
+import { type Elevation, mapElevationToBackground, spacings } from '@trezor/theme';
 
 import { useTable } from './TableContext';
 import { useTableHeader } from './TableHeader';
-import { UIAlignment } from '../../config/types';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import { type UIAlignment } from '../../config/types';
+import { type FrameProps, type FramePropsKeys, withFrameProps } from '../../utils/frameProps';
+import { type TransientProps } from '../../utils/transientProps';
 import { useElevation } from '../ElevationContext/ElevationContext';
-import { FlexJustifyContent } from '../Flex/FlexProp';
+import { type FlexJustifyContent } from '../Flex/FlexProp';
 import { Text } from '../typography/Text/Text';
 
 export const allowedTableCellFrameProps = [

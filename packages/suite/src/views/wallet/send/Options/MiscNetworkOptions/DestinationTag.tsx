@@ -1,6 +1,6 @@
 import { Translation, useTranslation } from '@suite/intl';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
 import { isInteger } from '@suite-common/wallet-utils';
 import { Banner, Button, Column, Input, Note, Row, Switch } from '@trezor/components';

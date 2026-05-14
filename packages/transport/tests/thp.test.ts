@@ -1,4 +1,5 @@
-import { parseConfigure } from '@trezor/protobuf';
+import { protobufManager } from '@trezor/protobuf';
+import * as thpProto from '@trezor/protobuf/src/definitions/messages-thp_pb';
 import { thp as protocolThp, v2 } from '@trezor/protocol';
 
 import { parseThpMessage, receiveThpMessage, sendThpMessage } from '../src/thp';
@@ -7,6 +8,8 @@ import {
     THP_ACK_DEADLINE,
     THP_ACK_TIMEOUT,
 } from '../src/thp/receiveExpectedMessage';
+
+protobufManager.load([thpProto]);
 
 describe('thp', () => {
     const HANDSHAKE_COMP_RES = Buffer.from(
@@ -52,7 +55,10 @@ describe('thp', () => {
                             resolve({ success: true, payload: Buffer.alloc(32) });
                         } else {
                             signal?.addEventListener('abort', () => {
-                                resolve({ success: false, message: 'Aborted by signal in API' });
+                                resolve({
+                                    success: false,
+                                    error: { code: 'Aborted by signal in API' },
+                                });
                             });
                             abortController.abort();
                         }
@@ -69,7 +75,10 @@ describe('thp', () => {
             });
 
             expect(apiRead).toHaveBeenCalledTimes(5);
-            expect(result).toMatchObject({ success: false, message: 'Aborted by signal in API' });
+            expect(result).toMatchObject({
+                success: false,
+                error: { code: 'Aborted by signal in API' },
+            });
         });
 
         it('write ThpAck error', async () => {
@@ -80,10 +89,11 @@ describe('thp', () => {
             const result = await receiveThpMessage({
                 thpState,
                 apiRead: () => Promise.resolve({ success: true, payload: HANDSHAKE_COMP_RES }),
-                apiWrite: () => Promise.resolve({ success: false, error: 'unexpected error' }),
+                apiWrite: () =>
+                    Promise.resolve({ success: false, error: { code: 'unexpected error' } }),
             });
 
-            expect(result).toMatchObject({ success: false, error: 'unexpected error' });
+            expect(result).toMatchObject({ success: false, error: { code: 'unexpected error' } });
         });
 
         it('success', async () => {
@@ -174,7 +184,7 @@ describe('thp', () => {
             await jest.advanceTimersByTimeAsync((ATTEMPTS_LIMIT + 1) * THP_ACK_DEADLINE);
             const result = await sendPromise;
 
-            expect(result).toMatchObject({ success: false, message: 'RetriesExceeded' });
+            expect(result).toMatchObject({ success: false, error: { message: 'RetriesExceeded' } });
             expect(apiWrite).toHaveBeenCalledTimes(10);
         });
 
@@ -207,7 +217,10 @@ describe('thp', () => {
             await jest.advanceTimersByTimeAsync(THP_ACK_TIMEOUT + THP_ACK_DEADLINE); // (ATTEMPTS_LIMIT + 1) * THP_ACK_DEADLINE
             const result = await sendPromise;
 
-            expect(result).toMatchObject({ success: false, message: 'Aborted by deadline' });
+            expect(result).toMatchObject({
+                success: false,
+                error: { message: 'Aborted by deadline' },
+            });
             expect(apiWrite).toHaveBeenCalledTimes(3);
         });
 
@@ -217,7 +230,7 @@ describe('thp', () => {
             const apiRead = jest.fn(
                 () =>
                     new Promise<any>(resolve => {
-                        resolve({ success: false, message: 'API read error' });
+                        resolve({ success: false, error: { code: 'API read error' } });
                     }),
             );
 
@@ -245,7 +258,7 @@ describe('thp', () => {
             const apiWrite = jest.fn(
                 () =>
                     new Promise<any>(resolve => {
-                        resolve({ success: false, error: 'unexpected error' });
+                        resolve({ success: false, error: { code: 'unexpected error' } });
                     }),
             );
 
@@ -261,7 +274,7 @@ describe('thp', () => {
                 apiRead,
             });
 
-            expect(result).toMatchObject({ success: false, error: 'unexpected error' });
+            expect(result).toMatchObject({ success: false, error: { code: 'unexpected error' } });
             expect(apiRead).toHaveBeenCalledTimes(0);
         });
 
@@ -294,7 +307,7 @@ describe('thp', () => {
             abortController.abort();
 
             const result = await sendPromise;
-            expect(result).toMatchObject({ success: false, error: 'Aborted in api' });
+            expect(result).toMatchObject({ success: false, error: { code: 'Aborted in api' } });
         });
 
         it('success. ThpAck not required', async () => {
@@ -333,12 +346,7 @@ describe('thp', () => {
                 'hex',
             );
 
-            const protobufRoot = parseConfigure({
-                nested: protocolThp.getProtobufDefinitions(),
-            });
-
             const result = await parseThpMessage({
-                messages: protobufRoot,
                 decoded: v2.decode(readResult),
                 thpState,
             });
@@ -352,12 +360,7 @@ describe('thp', () => {
                 'hex',
             );
 
-            const protobufRoot = parseConfigure({
-                nested: protocolThp.getProtobufDefinitions(),
-            });
-
             const result = await parseThpMessage({
-                messages: protobufRoot,
                 decoded: v2.decode(readResult),
                 thpState,
             });

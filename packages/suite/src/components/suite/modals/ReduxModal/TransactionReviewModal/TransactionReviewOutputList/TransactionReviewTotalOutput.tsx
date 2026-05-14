@@ -1,12 +1,12 @@
 import { Translation } from '@suite/intl';
 import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
-import { NetworkType } from '@suite-common/wallet-config';
+import { type NetworkType } from '@suite-common/wallet-config';
 import {
-    Account,
-    FormState,
-    GeneralPrecomposedTransactionFinal,
-    StakeFormState,
-    StakeType,
+    type Account,
+    type FormState,
+    type GeneralPrecomposedTransactionFinal,
+    type StakeFormState,
+    type StakeType,
 } from '@suite-common/wallet-types';
 import {
     getIsUpdatedEthereumSendFlow,
@@ -18,12 +18,12 @@ import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { TrezorDevice } from 'src/types/suite';
+import { type TrezorDevice } from 'src/types/suite';
 
 import {
-    OutputElementLine,
+    type OutputElementLine,
     TransactionReviewOutputElement,
-    TransactionReviewOutputElementProps,
+    type TransactionReviewOutputElementProps,
 } from './TransactionReviewOutputElement';
 
 interface GetLinesParams {
@@ -98,10 +98,12 @@ const getLines = ({
             type: 'amount',
         };
 
-        return isUnknownStakingValue ||
-            (isEvmApprovalTx(precomposedForm.transactionData) && isApprovalFlowSupported(device))
-            ? [feeLine]
-            : [amountLine, feeLine];
+        const isFeeOnly =
+            isUnknownStakingValue ||
+            (isEvmApprovalTx(precomposedForm.transactionData) && isApprovalFlowSupported(device)) ||
+            !!precomposedForm.yieldMetadata;
+
+        return isFeeOnly ? [feeLine] : [amountLine, feeLine];
     }
     if (isUpdatedSendFlow) {
         const amount = showAmountWithoutFee ? amountWithoutFee : precomposedTx.totalSpent;
@@ -123,15 +125,27 @@ const getLines = ({
         ];
     }
 
-    return [
-        {
-            id: 'total',
-            label: <Translation id="TR_TOTAL" />,
-            value: precomposedTx.totalSpent,
-            token: tokenInfo,
-            type: 'amount',
-        },
-    ];
+    const totalLine: OutputElementLine = {
+        id: 'total',
+        label: <Translation id="TR_TOTAL" />,
+        value: precomposedTx.totalSpent,
+        token: tokenInfo,
+        type: 'amount',
+    };
+
+    if (precomposedForm.yieldMetadata) {
+        return [
+            totalLine,
+            {
+                id: 'fee',
+                label: <Translation id={feeLabelId} />,
+                value: precomposedTx.fee,
+                type: 'amount',
+            },
+        ];
+    }
+
+    return [totalLine];
 };
 
 export type TransactionReviewTotalOutputProps = {

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Card } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
 
@@ -23,7 +23,7 @@ const Container = styled(Card)<{ $isWide?: boolean }>`
     width: ${({ $isWide }) => ($isWide ? '240px' : '180px')};
     height: 100%;
     padding: 10px;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     ${typography['body-sm-strong']}
     text-align: center;
 

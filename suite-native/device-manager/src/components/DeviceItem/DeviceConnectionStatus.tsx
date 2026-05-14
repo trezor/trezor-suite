@@ -22,10 +22,10 @@ export const DeviceConnectionStatus = ({
 
     const getTextColor = () => {
         if (isDeviceInBootloaderMode) {
-            return 'textAlertBlue';
+            return 'contentInfo';
         }
 
-        return isConnected ? 'textSecondaryHighlight' : 'textSubdued';
+        return isConnected ? 'contentBrand' : 'contentSecondary';
     };
 
     return (

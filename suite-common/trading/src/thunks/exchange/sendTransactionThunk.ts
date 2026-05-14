@@ -1,5 +1,5 @@
 import { isRejectedWithValue } from '@reduxjs/toolkit';
-import { ExchangeTrade } from 'invity-api';
+import { type ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
@@ -18,7 +18,7 @@ import {
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
-import { TradingSendRejectedProps } from '../../types';
+import { type TradingSendRejectedProps } from '../../types';
 import { getTradingFormState } from '../../utils';
 
 export type SendTransactionThunkProps = {
@@ -128,7 +128,7 @@ export const sendTransactionThunk = createThunk<
             return rejectWithValue({
                 type: payload && 'type' in payload ? payload.type : 'sign-tx-error',
                 error:
-                    payload && 'error' in payload
+                    payload && 'error' in payload && 'id' in payload.error
                         ? payload.error
                         : { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
             });

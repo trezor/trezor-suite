@@ -10,19 +10,19 @@ export const TooltipWrap = styled.div`
 
     &:hover {
         div {
-            color: ${({ theme }) => theme.textDefault};
+            color: ${({ theme }) => theme.contentPrimary};
 
             &::after {
-                background: ${({ theme }) => theme.textDefault};
+                background: ${({ theme }) => theme.contentPrimary};
             }
         }
 
         path[fill] {
-            fill: ${({ theme }) => theme.textDefault};
+            fill: ${({ theme }) => theme.contentPrimary};
         }
 
         path[stroke] {
-            stroke: ${({ theme }) => theme.textDefault};
+            stroke: ${({ theme }) => theme.contentPrimary};
         }
     }
 `;
@@ -35,7 +35,7 @@ export const TooltipIcon = styled.div`
 export const TooltipText = styled.div<{ $isYellow?: boolean }>`
     position: relative;
     ${typography['body-sm']}
-    color: ${({ $isYellow, theme }) => ($isYellow ? theme.textAlertYellow : theme.textDefault)};
+    color: ${({ $isYellow, theme }) => ($isYellow ? theme.contentWarning : theme.contentPrimary)};
     transition: color 0.15s;
 
     &::after {
@@ -46,7 +46,7 @@ export const TooltipText = styled.div<{ $isYellow?: boolean }>`
         width: 100%;
         height: 1px;
         background: ${({ $isYellow, theme }) =>
-            $isYellow ? theme.textAlertYellow : theme.textDefault};
+            $isYellow ? theme.contentWarning : theme.contentPrimary};
         transition: background 0.15s;
     }
 `;

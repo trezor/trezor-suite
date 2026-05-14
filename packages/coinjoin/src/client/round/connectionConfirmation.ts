@@ -1,7 +1,7 @@
 import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
+import type { AliceConfirmationInterval, AliceShape } from '../../types/alice';
+import type { CoinjoinRoundOptions, CoinjoinRoundShape } from '../../types/round';
 import { readTimeSpan } from '../../utils/roundUtils';
-import type { Alice, AliceConfirmationInterval } from '../Alice';
-import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 import * as coordinator from '../coordinator';
 import * as middleware from '../middleware';
 
@@ -17,11 +17,11 @@ import * as middleware from '../middleware';
  */
 
 const confirmInput = async (
-    round: CoinjoinRound,
-    input: Alice,
+    round: CoinjoinRoundShape,
+    input: AliceShape,
     delay: number,
     options: CoinjoinRoundOptions,
-): Promise<Alice> => {
+): Promise<AliceShape> => {
     if (input.error) {
         options.logger.warn(`Trying to confirm input with error ${input.error}`);
         throw input.error;
@@ -105,8 +105,8 @@ const confirmInput = async (
 // to call `/connection-confirmation` in intervals less than connectionConfirmationTimeout * 0.5 to prevent AliceTimeout error on coordinator
 // https://github.com/trezor/WalletWasabi/blob/master/WalletWasabi/WabiSabi/Client/AliceClient.cs
 export const confirmationInterval = (
-    round: CoinjoinRound,
-    input: Alice,
+    round: CoinjoinRoundShape,
+    input: AliceShape,
     options: CoinjoinRoundOptions,
 ): AliceConfirmationInterval => {
     const intervalDelay = Math.floor(
@@ -116,7 +116,7 @@ export const confirmationInterval = (
 
     const controller = new AbortController();
 
-    const promise = new Promise<Alice>(resolve => {
+    const promise = new Promise<AliceShape>(resolve => {
         const { logger } = options;
         const done = () => {
             logger.info(`Confirmation interval for ~~${input.outpoint}~~ completed`);
@@ -184,7 +184,7 @@ export const confirmationInterval = (
 };
 
 export const connectionConfirmation = async (
-    round: CoinjoinRound,
+    round: CoinjoinRoundShape,
     options: CoinjoinRoundOptions,
 ) => {
     // try to confirm each input

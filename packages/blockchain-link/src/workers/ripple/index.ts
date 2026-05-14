@@ -1,28 +1,27 @@
 import {
     Client,
-    ClientOptions,
-    ErrorResponse,
-    LedgerStream,
-    TransactionStream,
+    type ClientOptions,
+    type ErrorResponse,
+    type LedgerStream,
+    type TransactionStream,
     XrplError,
     xrpToDrops,
 } from 'xrpl';
 
+import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
 import type {
     AccountInfo,
     AccountInfoParams,
+    MessageTypes,
     Response,
     SubscriptionAccountInfo,
 } from '@trezor/blockchain-link-types';
-import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 import * as utils from '@trezor/blockchain-link-utils/src/ripple';
 import { getSuiteVersion } from '@trezor/env-utils';
-import { TimerId } from '@trezor/type-utils';
+import { type TimerId } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
+import { BaseWorker, CONTEXT, type ContextType } from '../baseWorker';
 
 type Context = ContextType<Client>;
 type Request<T> = T & Context;
@@ -302,7 +301,7 @@ const subscribeAccounts = async (ctx: Context, accounts: SubscriptionAccountInfo
     const { state } = ctx;
     const prevAddresses = state.getAddresses();
     state.addAccounts(accounts);
-    const uniqueAddresses = state.getAddresses().filter(a => prevAddresses.indexOf(a) < 0);
+    const uniqueAddresses = state.getAddresses().filter(a => !prevAddresses.includes(a));
     if (uniqueAddresses.length > 0) {
         if (!state.getSubscription('notification')) {
             api.on('transaction', ev => onTransaction(ctx, ev));
@@ -400,7 +399,7 @@ const unsubscribeAccounts = async (ctx: Context, accounts?: SubscriptionAccountI
     const prevAddresses = state.getAddresses();
     state.removeAccounts(accounts || state.getAccounts());
     const addresses = state.getAddresses();
-    const uniqueAddresses = prevAddresses.filter(a => addresses.indexOf(a) < 0);
+    const uniqueAddresses = prevAddresses.filter(a => !addresses.includes(a));
     await unsubscribeAddresses(ctx, uniqueAddresses);
 };
 

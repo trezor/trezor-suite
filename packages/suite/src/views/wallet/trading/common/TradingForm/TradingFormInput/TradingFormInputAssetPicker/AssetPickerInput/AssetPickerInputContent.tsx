@@ -1,11 +1,11 @@
 import {
-    TRADING_FORM_CRYPTO_CURRENCY_SELECT,
-    TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
-    TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    TradingAssetOption,
-    TradingAssetSellOption,
+    type TRADING_FORM_CRYPTO_CURRENCY_SELECT,
+    type TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
+    type TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
+    type TradingAssetOption,
+    type TradingAssetSellOption,
 } from '@suite-common/trading';
-import { NetworkSymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { Column, Row, Text } from '@trezor/components';
 import { AssetLogo, CoinLogo } from '@trezor/product-components';
 
@@ -29,7 +29,6 @@ export function AssetPickerInputContent({ value }: AssetPickerInputContentProps)
         symbol,
         displaySymbol,
         name,
-        coingeckoId,
         contractAddress,
         networkName,
     } = value;
@@ -43,7 +42,6 @@ export function AssetPickerInputContent({ value }: AssetPickerInputContentProps)
             ) : (
                 <AssetLogo
                     size={32}
-                    coingeckoId={coingeckoId}
                     symbol={networkSymbol}
                     contractAddress={contractAddress}
                     placeholder={displaySymbol}

@@ -6,9 +6,7 @@
     },
     "include": ["."],
     "references": [
-        {
-            "path": "../../suite-common/suite-types"
-        },
+        { "path": "../../suite/router" },
         { "path": "../connect" },
         { "path": "../suite" },
         { "path": "../../suite/sentry" },

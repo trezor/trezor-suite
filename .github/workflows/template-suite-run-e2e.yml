@@ -52,7 +52,7 @@ on:
         required: false
         type: string
       enable-coverage:
-        description: "Enable code coverage collection with Currents"
+        description: "Enable code coverage collection with Currents and upload the coverage map. Only works for web and requires instrumentation of the code."
         required: false
         default: "false"
         type: string
@@ -87,13 +87,13 @@ jobs:
       - name: Generate GitHub App token
         if: inputs.run-reporter == 'true'
         id: trezor-bot-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3
         with:
           app-id: ${{ secrets.trezor-bot-app-id }}
           private-key: ${{ secrets.trezor-bot-private-key }}
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           submodules: true
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -106,13 +106,13 @@ jobs:
           echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
 
       - name: Cache node_modules
-        uses: actions/cache@v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: node_modules
           key: node_modules-${{ hashFiles('yarn.lock') }}
@@ -121,20 +121,28 @@ jobs:
       - name: Cache Playwright Browsers
         id: playwright-cache
         if: inputs.target == 'web'
-        uses: actions/cache@v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('**/yarn.lock') }}
 
       - name: Download build artifact
         if: inputs.download-artifact-name != ''
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: ${{ inputs.download-artifact-name }}
+          path: ${{ github.workspace }}/artifact-download
 
-      - name: Extract build artifact
-        if: inputs.download-artifact-name != ''
-        run: tar -xzf app-build.tar.gz -C ${{ github.workspace }}/packages/suite-desktop
+      - name: Extract build artifact (desktop)
+        if: inputs.download-artifact-name != '' && !contains(inputs.download-artifact-name, 'webextension')
+        run: tar -xzf ${{ github.workspace }}/artifact-download/app-build.tar.gz -C ${{ github.workspace }}/packages/suite-desktop
+
+      - name: Extract build artifact (webextension)
+        if: inputs.download-artifact-name != '' && contains(inputs.download-artifact-name, 'webextension')
+        shell: bash
+        run: |
+          rm -rf ${{ github.workspace }}/packages/connect-explorer/build-webextension
+          mv ${{ github.workspace }}/artifact-download ${{ github.workspace }}/packages/connect-explorer/build-webextension
 
       - name: Install PW Dependencies
         shell: bash
@@ -145,13 +153,13 @@ jobs:
         if: inputs.target == 'web' && steps.playwright-cache.outputs.cache-hit != 'true'
         shell: bash
         run: |
-          npx playwright install --with-deps
+          yarn workspace @trezor/suite-e2e exec playwright install --with-deps
 
       - name: Install Playwright system dependencies
         if: inputs.target == 'web' && steps.playwright-cache.outputs.cache-hit == 'true'
         shell: bash
         run: |
-          npx playwright install-deps
+          yarn workspace @trezor/suite-e2e exec playwright install-deps
 
       - name: Build Message System Config
         shell: bash
@@ -180,6 +188,8 @@ jobs:
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token || secrets.github-token }}
           RELEASE_BUILD: ${{ inputs.release-build }}
           ELECTRON_DISABLE_SANDBOX: 1
+          COLLECT_COVERAGE_MAP: ${{ inputs.enable-coverage == 'true' && 'true' || '' }}
+          COVERAGE_MAP_DIR: ${{ github.workspace }}/coverage-map
         run: |
           if [[ -z "${{ inputs.base-url }}" ]]; then
             BASE_URL="https://dev.suite.sldev.cz/suite-web/${{ env.branch }}/web/"
@@ -222,7 +232,16 @@ jobs:
         if: ${{ !cancelled() }}
         uses: ./.github/actions/upload-test-logs
         with:
+          target: ${{ inputs.target }}
           test-group: ${{ inputs.test-group }}
+
+      - name: Upload per-test coverage map
+        if: inputs.enable-coverage == 'true' && !cancelled()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: coverage-map-group-${{ inputs.test-group }}
+          path: coverage-map/
+          if-no-files-found: warn
 
       - name: Docker Compose Down
         shell: bash

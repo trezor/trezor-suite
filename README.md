@@ -36,7 +36,7 @@ It's recommended to enable `git config --global submodule.recurse true` so you d
 
 ## **Connect** @trezor/connect
 
-This repository is used for development of version 9 of @trezor/connect. For detailed documentation, please refer to this [page](./docs/packages/connect/index.md).
+This repository is used for development of version 10 of @trezor/connect. For detailed documentation, please refer to this [page](./docs/packages/connect/index.md).
 
 Historically, Trezor Connect had its [own repository](https://github.com/trezor/connect). This repository is now archived.
 
@@ -70,7 +70,7 @@ Using [Conventional Commits](COMMITS.md) is required.
 
 ## Security vulnerability disclosure
 
-Please report suspected security vulnerabilities in private to [security@satoshilabs.com](mailto:security@satoshilabs.com), also see [the disclosure section on the Trezor.io website](https://trezor.io/support/a/how-to-report-a-security-issue). Please do NOT create publicly viewable issues for suspected security vulnerabilities.
+Please report suspected security vulnerabilities in private to [security@satoshilabs.com](mailto:security@satoshilabs.com), also see [the disclosure section on the Trezor.io website](https://trezor.io/security). Please do NOT create publicly viewable issues for suspected security vulnerabilities.
 
 ## IDE specific settings
 

@@ -1,25 +1,26 @@
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { selectIsDeviceConnectedViaBluetooth } from '@suite-common/device';
+import { isRecoveryInProgress } from '@suite/recovery';
 import { Context } from '@suite-common/message-system';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
-import { isDeviceRemembered } from '@suite-common/suite-utils';
+import { getIsDeviceRemembered } from '@suite-common/suite-utils';
+import { Banner } from '@trezor/components';
 import { isBitcoinOnlyDevice } from '@trezor/device-utils';
+import { SettingsSection } from '@trezor/product-components';
 
+import { setConnectionModal } from 'src/actions/device/deviceSlice';
 import { DeviceBanner } from 'src/components/settings/DeviceBanner';
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
-import { SettingsSection } from 'src/components/settings/SettingsSection';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
-import { useDevice, useSelector } from 'src/hooks/suite';
+import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { selectHasActiveTransport } from 'src/selectors/suite/suiteSelectors';
 import type { TrezorDevice } from 'src/types/suite';
 import { getHowToGetFromBootloaderInstructionsMap } from 'src/utils/device/bootloader';
-import { isRecoveryInProgress } from 'src/utils/device/isRecoveryInProgress';
 
 import { AuthenticateDevice } from './AuthenticateDevice';
 import { AutoLock } from './AutoLock';
 import { BackupFailed } from './BackupFailed';
 import { BackupRecoverySeed } from './BackupRecoverySeed';
-import { BluetoothEraseBonds } from './BluetoothEraseBonds';
 import { Brightness } from './Brightness';
 import { ChangeLanguage } from './ChangeLanguage';
 import { ChangePin } from './ChangePin';
@@ -53,6 +54,8 @@ const deviceSettingsUnavailable = (device?: TrezorDevice) => {
 };
 
 export const SettingsDevice = () => {
+    const dispatch = useDispatch();
+    const { isBelowLaptop } = useLayoutSize();
     const { device, isLocked } = useDevice();
     const noTransportAvailable = !useSelector(selectHasActiveTransport);
     const deviceUnavailable = !device?.features;
@@ -60,8 +63,7 @@ export const SettingsDevice = () => {
     const bootloaderMode = device?.mode === 'bootloader';
     const initializeMode = device?.mode === 'initialize';
     const isNormalMode = !bootloaderMode && !initializeMode;
-    const deviceRemembered = isDeviceRemembered(device) && !device?.connected;
-    const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
+    const deviceRemembered = getIsDeviceRemembered(device) && !device?.connected;
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
 
     if (noTransportAvailable || deviceSettingsUnavailable(device)) {
@@ -81,7 +83,16 @@ export const SettingsDevice = () => {
         return (
             <SettingsLayout>
                 <DeviceBanner
+                    intent="info"
                     title={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_DISCONNECTED" />}
+                    description={
+                        <Translation id="TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_DISCONNECTED" />
+                    }
+                    rightContent={
+                        <Banner.Button onClick={() => dispatch(setConnectionModal(true))}>
+                            <Translation id="TR_CONNECT" />
+                        </Banner.Button>
+                    }
                 />
             </SettingsLayout>
         );
@@ -126,7 +137,11 @@ export const SettingsDevice = () => {
             )}
 
             {isNormalMode && (
-                <SettingsSection title={<Translation id="TR_BACKUP" />} icon="newspaper">
+                <SettingsSection
+                    isBelowLaptop={isBelowLaptop}
+                    title={<Translation id="TR_BACKUP" />}
+                    icon="newspaper"
+                >
                     {unfinishedBackup ? (
                         <BackupFailed />
                     ) : (
@@ -139,11 +154,19 @@ export const SettingsDevice = () => {
                 </SettingsSection>
             )}
 
-            <SettingsSection title={<Translation id="TR_PASSPHRASE" />} icon="password">
+            <SettingsSection
+                isBelowLaptop={isBelowLaptop}
+                title={<Translation id="TR_PASSPHRASE" />}
+                icon="password"
+            >
                 <Passphrase isDeviceLocked={isDeviceLocked} />
             </SettingsSection>
 
-            <SettingsSection title={<Translation id="TR_FIRMWARE" />} icon="puzzlePiece">
+            <SettingsSection
+                isBelowLaptop={isBelowLaptop}
+                title={<Translation id="TR_FIRMWARE" />}
+                icon="puzzlePiece"
+            >
                 <FirmwareVersion isDeviceLocked={isDeviceLocked} />
                 {(!bootloaderMode || bitcoinOnlyDevice) && (
                     <FirmwareTypeChange isDeviceLocked={isDeviceLocked} />
@@ -152,7 +175,11 @@ export const SettingsDevice = () => {
             </SettingsSection>
 
             {isSecuritySectionVisible && (
-                <SettingsSection title={<Translation id="TR_DEVICE_SECURITY" />} icon="shieldCheck">
+                <SettingsSection
+                    isBelowLaptop={isBelowLaptop}
+                    title={<Translation id="TR_DEVICE_SECURITY" />}
+                    icon="shieldCheck"
+                >
                     {isNormalMode && (
                         <>
                             <PinProtection isDeviceLocked={isDeviceLocked} />
@@ -167,7 +194,11 @@ export const SettingsDevice = () => {
             )}
 
             {isNormalMode && (
-                <SettingsSection title={<Translation id="TR_PERSONALIZATION" />} icon="palette">
+                <SettingsSection
+                    isBelowLaptop={isBelowLaptop}
+                    title={<Translation id="TR_PERSONALIZATION" />}
+                    icon="palette"
+                >
                     <DeviceLabel isDeviceLocked={isDeviceLocked} />
                     <Homescreen isDeviceLocked={isDeviceLocked} />
                     <DisplayRotation isDeviceLocked={isDeviceLocked} />
@@ -177,15 +208,20 @@ export const SettingsDevice = () => {
                 </SettingsSection>
             )}
 
-            <SettingsSection title={<Translation id="TR_DEVICE_CONNECTION" />} icon="plugs">
+            <SettingsSection
+                isBelowLaptop={isBelowLaptop}
+                title={<Translation id="TR_DEVICE_CONNECTION" />}
+                icon="plugs"
+            >
                 {isThpDevice && <ThpAutoconnect isDeviceLocked={isDeviceLocked} />}
-                {isDeviceConnectedViaBluetooth && (
-                    <BluetoothEraseBonds isDeviceLocked={isDeviceLocked} />
-                )}
                 <ForgetDevice />
             </SettingsSection>
 
-            <SettingsSection title={<Translation id="TR_ADVANCED" />} icon="ghost">
+            <SettingsSection
+                isBelowLaptop={isBelowLaptop}
+                title={<Translation id="TR_ADVANCED" />}
+                icon="ghost"
+            >
                 <WipeDevice isDeviceLocked={isDeviceLocked} />
                 {isNormalMode && <WipeCode isDeviceLocked={isDeviceLocked} />}
                 <CustomFirmware />

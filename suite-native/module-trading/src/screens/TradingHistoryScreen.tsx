@@ -5,15 +5,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FlashList } from '@shopify/flash-list';
 
 import {
-    TradingRootStateWithDeviceAndAccounts,
-    TradingTransaction,
+    type TradingRootStateWithDeviceAndAccounts,
+    type TradingTransaction,
     selectDeviceTradingTradesOrderedByDate,
 } from '@suite-common/trading';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { useBottomSheetControls } from '@suite-native/trading-atoms';
 import { selectTradeToBeOpened, tradingActions } from '@suite-native/trading-state';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TradeDetailSheet } from '../components/history/TradeDetailSheet/TradeDetailSheet';
 import { TradeHistoryListItem } from '../components/history/TradeHistoryListItem/TradeHistoryListItem';

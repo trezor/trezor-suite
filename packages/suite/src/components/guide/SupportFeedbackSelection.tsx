@@ -1,19 +1,20 @@
 import styled from 'styled-components';
 
 import { events } from '@suite/analytics';
+import { UpdateState } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { isDevEnv } from '@suite-common/suite-utils';
-import { Icon, Image, Link, Paragraph } from '@trezor/components';
+import { Icon, Image, Paragraph } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { borders, transitions, typography } from '@trezor/theme';
-import { TREZOR_FORUM_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
+import { TREZOR_FORUM_URL } from '@trezor/urls';
 
 import { setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
+import { SupportConsentPopover } from 'src/components/guide/SupportConsentPopover';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 const Section = styled.div`
@@ -24,13 +25,13 @@ const Section = styled.div`
 
 const SectionHeader = styled.h3`
     ${typography['body-sm-strong']}
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     padding: 0 0 18px;
 `;
 
 const SectionButton = styled.button<{ $hasBackground?: boolean }>`
     cursor: pointer;
-    border-radius: ${borders.radii.xs};
+    border-radius: ${borders.radii.sm};
     width: 100%;
     margin: 0 0 10px;
     display: flex;
@@ -38,20 +39,20 @@ const SectionButton = styled.button<{ $hasBackground?: boolean }>`
     align-items: center;
     padding: 13px;
     background: ${({ $hasBackground, theme }) =>
-        $hasBackground ? theme.backgroundSurfaceElevation1 : 'none'};
+        $hasBackground ? theme.surfaceFillRaised : 'none'};
     border: 0;
 
     transition: background ${transitions.speed.normal} ${transitions.type};
 
     &:hover {
-        background: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation1};
+        background: ${({ theme }) => theme.legacyBackgroundTertiaryPressedOnElevation1};
     }
 `;
 
 const Details = styled.div`
     padding: 10px 0 0;
     ${typography['body-xs']}
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     display: flex;
     justify-content: space-around;
 `;
@@ -74,7 +75,7 @@ const Label = styled.div`
 
 const LabelHeadline = styled.strong`
     ${typography['body-md']}
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -173,26 +174,8 @@ export const SupportFeedbackSelection = () => {
                         <Translation id="TR_GUIDE_VIEW_HEADLINE_NEED_HELP" />
                     </SectionHeader>
 
-                    <Link href={TREZOR_FORUM_URL}>
-                        <SectionButton data-testid="@guide/forum">
-                            <Label>
-                                <LabelHeadline>
-                                    <Translation id="TR_GUIDE_FORUM" />
-                                    <Icon size={20} name="arrowUpRight" />
-                                </LabelHeadline>
-                                <Paragraph
-                                    typographyStyle="body-sm"
-                                    intent="neutral"
-                                    priority="secondary"
-                                >
-                                    <Translation id="TR_GUIDE_FORUM_LABEL" />
-                                </Paragraph>
-                            </Label>
-                        </SectionButton>
-                    </Link>
-
-                    <Link href={TREZOR_SUPPORT_URL}>
-                        <SectionButton data-testid="@guide/support">
+                    <SupportConsentPopover>
+                        <SectionButton $hasBackground data-testid="@guide/support">
                             <Label>
                                 <LabelHeadline>
                                     <Translation id="TR_GUIDE_SUPPORT" />
@@ -200,7 +183,27 @@ export const SupportFeedbackSelection = () => {
                                 </LabelHeadline>
                             </Label>
                         </SectionButton>
-                    </Link>
+                    </SupportConsentPopover>
+
+                    <SectionButton
+                        $hasBackground
+                        data-testid="@guide/forum"
+                        onClick={() => window.open(TREZOR_FORUM_URL, '_blank')}
+                    >
+                        <Label>
+                            <LabelHeadline>
+                                <Translation id="TR_GUIDE_FORUM" />
+                                <Icon size={20} name="arrowUpRight" />
+                            </LabelHeadline>
+                            <Paragraph
+                                typographyStyle="body-sm"
+                                intent="neutral"
+                                priority="secondary"
+                            >
+                                <Translation id="TR_GUIDE_FORUM_LABEL" />
+                            </Paragraph>
+                        </Label>
+                    </SectionButton>
                 </Section>
 
                 <Details>

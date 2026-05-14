@@ -1,16 +1,18 @@
-import type { Response, SubscriptionAccountInfo } from '@trezor/blockchain-link-types';
-import type {
-    AddressNotification,
-    BlockNotification,
-    FiatRatesNotification,
-    MempoolTransactionNotification,
-} from '@trezor/blockchain-link-types/src/blockbook';
-import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
+import {
+    type BlockbookAddressNotification as AddressNotification,
+    type BlockbookBlockNotification as BlockNotification,
+    CustomError,
+    type BlockbookFiatRatesNotification as FiatRatesNotification,
+    MESSAGES,
+    type BlockbookMempoolTransactionNotification as MempoolTransactionNotification,
+    type MessageTypes,
+    RESPONSES,
+    type Response,
+    type SubscriptionAccountInfo,
+} from '@trezor/blockchain-link-types';
 import * as utils from '@trezor/blockchain-link-utils/src/blockbook';
 
-import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
+import { BaseWorker, CONTEXT, type ContextType } from '../baseWorker';
 import { BlockbookAPI } from './websocket';
 
 type Context = ContextType<BlockbookAPI>;
@@ -172,6 +174,16 @@ const rpcCall = async (request: Request<MessageTypes.RpcCall>) => {
     return {
         type: RESPONSES.RPC_CALL,
         payload: resp,
+    } as const;
+};
+
+const getContractInfo = async (request: Request<MessageTypes.GetContractInfo>) => {
+    const api = await request.connect();
+    const response = await api.getContractInfo(request.payload);
+
+    return {
+        type: RESPONSES.GET_CONTRACT_INFO,
+        payload: response,
     } as const;
 };
 
@@ -431,6 +443,8 @@ const onRequest = (request: Request<MessageTypes.Message>) => {
             return estimateFee(request);
         case MESSAGES.RPC_CALL:
             return rpcCall(request);
+        case MESSAGES.GET_CONTRACT_INFO:
+            return getContractInfo(request);
         case MESSAGES.PUSH_TRANSACTION:
             return pushTransaction(request);
         case MESSAGES.SUBSCRIBE:
@@ -464,6 +478,7 @@ class BlockbookWorker extends BaseWorker<BlockbookAPI> {
             pingTimeout,
             keepAlive,
             agent: this.proxyAgent,
+            concurrency: 42,
         });
         await api.connect();
 

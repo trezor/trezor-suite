@@ -1,12 +1,11 @@
-import {
-    PreloadedState,
-    act,
-    renderWithStoreProviderAsync,
-    screen,
-    userEvent,
-} from '@suite-native/test-utils';
+import { act, screen, userEvent } from '@suite-native/test-utils-store';
 import { selectIsTradingBuyEnabled } from '@suite-native/trading-state';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { BuyTab } from '../BuyTab';
 
 let mockUseTradingBuyData: jest.Mock;
@@ -20,6 +19,10 @@ jest.mock('@suite-native/trading-state', () => ({
     selectIsTradingBuyEnabled: jest.fn(),
 }));
 
+jest.mock('../../concierge/ConciergeAlert', () => ({
+    ConciergeAlert: () => null,
+}));
+
 describe('BuyTab', () => {
     beforeEach(() => {
         mockUseTradingBuyData = jest.fn(() => ({
@@ -30,8 +33,8 @@ describe('BuyTab', () => {
         (selectIsTradingBuyEnabled as jest.Mock).mockReturnValue(true);
     });
 
-    const renderBuyTab = (preloadedState?: PreloadedState) =>
-        renderWithStoreProviderAsync(<BuyTab />, { preloadedState });
+    const renderBuyTab = (overrides?: PreloadedStatePartial<TradingTestPreloadedState>) =>
+        renderWithTradingProvider(<BuyTab />, { overrides });
 
     const expectSkeleton = () => {
         expect(screen.getAllByTestId('BoxSkeleton').length).toBeGreaterThan(0);
@@ -45,50 +48,50 @@ describe('BuyTab', () => {
         expect(screen.getByText("It's not you, it's us.")).toBeTruthy();
     };
 
-    it('should render Buy skeleton when isLoading is true', async () => {
+    it('should render Buy skeleton when isLoading is true', () => {
         mockUseTradingBuyData.mockReturnValue({
             isLoading: true,
             lastLoadedTimestamp: 1,
             isFullyLoaded: false,
         });
 
-        await renderBuyTab();
+        renderBuyTab();
 
         expectSkeleton();
     });
 
-    it('should render Buy skeleton when lastLoadedTimestamp is 0', async () => {
+    it('should render Buy skeleton when lastLoadedTimestamp is 0', () => {
         mockUseTradingBuyData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 0,
             isFullyLoaded: false,
         });
 
-        await renderBuyTab();
+        renderBuyTab();
 
         expectSkeleton();
     });
 
-    it('should render Buy form when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded true', async () => {
+    it('should render Buy form when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded true', () => {
         mockUseTradingBuyData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 1,
             isFullyLoaded: true,
         });
 
-        await renderBuyTab();
+        renderBuyTab();
 
         expectBuyForm();
     });
 
-    it('should render server error info when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded false', async () => {
+    it('should render server error info when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded false', () => {
         mockUseTradingBuyData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 1,
             isFullyLoaded: false,
         });
 
-        await renderBuyTab();
+        renderBuyTab();
 
         expectServerOffline();
     });
@@ -106,7 +109,7 @@ describe('BuyTab', () => {
                 isFullyLoaded: true,
             });
 
-        const { getByText } = await renderBuyTab();
+        const { getByText } = renderBuyTab();
 
         const reloadButton = getByText('Try again');
 
@@ -120,9 +123,9 @@ describe('BuyTab', () => {
         expect(mockUseTradingBuyData).toHaveBeenCalledWith(1);
     });
 
-    it('should render disabled info when buy is disabled by FFs', async () => {
+    it('should render disabled info when buy is disabled by FFs', () => {
         (selectIsTradingBuyEnabled as jest.Mock).mockReturnValue(false);
-        const { getByText } = await renderBuyTab();
+        const { getByText } = renderBuyTab();
 
         expect(getByText('Buy disabled')).toBeOnTheScreen();
     });

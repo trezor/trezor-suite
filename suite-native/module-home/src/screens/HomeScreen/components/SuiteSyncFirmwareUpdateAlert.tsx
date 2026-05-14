@@ -7,9 +7,9 @@ import { AnimatedFullAlertBox } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 import { selectShouldDisplaySuiteSyncFirmwareUpdateAlert } from '../homescreenSelectors';

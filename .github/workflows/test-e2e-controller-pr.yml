@@ -1,0 +1,201 @@
+name: "[Test] E2E Controller PR"
+# Entry point for PR e2e testing.
+# For now: runs the LLM test selector and appends its findings to the PR description.
+# Restricted to small PRs on initial push to keep costs and noise low.
+# Small PR = max 7 changed files and max 500 total lines changed (additions + deletions).
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    branches:
+      - develop
+    types:
+      - opened # initial push only
+    paths-ignore:
+      - "suite-native/**"
+      - "packages/connect*/**"
+      - "packages/react-native-usb/**"
+      # ignore unrelated github workflows config files
+      - ".github/workflows/connect*"
+      - ".github/workflows/suite-native*"
+      - ".github/workflows/build-desktop*"
+      - ".github/workflows/release*"
+      - ".github/workflows/template*"
+      - "**.md"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  check-pr-size:
+    name: Check PR size
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    outputs:
+      is_small_pr: ${{ steps.check.outputs.is_small_pr }}
+    steps:
+      - name: Check PR size
+        id: check
+        env:
+          CHANGED_FILES: ${{ github.event.pull_request.changed_files }}
+          ADDITIONS: ${{ github.event.pull_request.additions }}
+          DELETIONS: ${{ github.event.pull_request.deletions }}
+        run: |
+          TOTAL_CHANGES=$(( ADDITIONS + DELETIONS ))
+          if [ "$CHANGED_FILES" -le 7 ] && [ "$TOTAL_CHANGES" -le 500 ]; then
+            echo "is_small_pr=true" >> $GITHUB_OUTPUT
+            echo "Small PR: $CHANGED_FILES changed files, $TOTAL_CHANGES lines changed"
+          else
+            echo "is_small_pr=false" >> $GITHUB_OUTPUT
+            echo "Large PR, skipping LLM test selector: $CHANGED_FILES changed files, $TOTAL_CHANGES lines changed"
+          fi
+
+  llm-test-selector:
+    name: LLM test selector
+    needs: check-pr-size
+    if: github.repository == 'trezor/trezor-suite' && needs.check-pr-size.outputs.is_small_pr == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      # SECURITY: check out the trusted develop branch so that only reviewed code
+      # runs with secrets. The PR head is fetched separately (below) purely for
+      # computing the diff; its code is never installed or executed.
+      - name: Checkout repository (trusted develop ref)
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Fetch PR head for diff
+        run: git fetch origin pull/${{ github.event.pull_request.number }}/head:pr-head
+
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Cache node_modules
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: node_modules-
+
+      - name: Install dependencies
+        run: yarn workspaces focus @trezor/e2e-utils
+
+      - name: Run LLM test selector
+        env:
+          CLAUDE_API_KEY: ${{ secrets.E2E_CLAUDE_API_KEY }}
+        run: |
+          yarn workspace @trezor/e2e-utils select-tests-llm --head-ref pr-head > llm-selection.json
+          echo "LLM test selector output:"
+          cat llm-selection.json
+
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3
+        with:
+          client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
+      - name: Update PR description with LLM test selection
+        uses: actions/github-script@v9
+        with:
+          github-token: ${{ steps.trezor-bot-token.outputs.token }}
+          script: |
+            const fs = require('fs');
+            const result = JSON.parse(fs.readFileSync('llm-selection.json', 'utf8'));
+
+            const priorityEmoji = { high: '🔴', medium: '🟡', low: '🟢' };
+            const priorityOrder = ['high', 'medium', 'low'];
+
+            const START_MARKER = '<!-- LLM-TEST-SELECTOR:START -->';
+            const END_MARKER   = '<!-- LLM-TEST-SELECTOR:END -->';
+            const HEADING_START = '<!-- LLM-TEST-SELECTOR:HEADING:START -->';
+            const HEADING_END   = '<!-- LLM-TEST-SELECTOR:HEADING:END -->';
+            const headingBlock  = `${HEADING_START}\n## 🤖 LLM Test Recommendations\n${HEADING_END}`;
+
+            const lines = [];
+
+            lines.push(`**Summary:** ${result.summary}`);
+            lines.push('');
+
+            if (result.changed_files && result.changed_files.length > 0) {
+              lines.push(`<details><summary><b>Changed files (${result.changed_files.length})</b></summary>`);
+              lines.push('');
+              result.changed_files.forEach(f => lines.push(`- \`${f}\``));
+              lines.push('');
+              lines.push('</details>');
+              lines.push('');
+            }
+
+            if (result.recommendations && result.recommendations.length > 0) {
+              lines.push(`**Recommended tests (${result.recommendations.length})**`);
+              lines.push('');
+              for (const priority of priorityOrder) {
+                const recs = result.recommendations.filter(r => r.priority === priority);
+                if (recs.length === 0) continue;
+                const label = priority.charAt(0).toUpperCase() + priority.slice(1);
+                lines.push(`<details><summary>${priorityEmoji[priority]} <b>${label} priority (${recs.length})</b></summary>`);
+                lines.push('');
+                for (const rec of recs) {
+                  lines.push(`- \`${rec.test}\` — ${rec.reasoning}`);
+                }
+                lines.push('');
+                lines.push('</details>');
+                lines.push('');
+              }
+            } else {
+              lines.push('_No test recommendations found._');
+              lines.push('');
+            }
+
+            if (result.uncovered_changes && result.uncovered_changes.length > 0) {
+              lines.push(`⚠️ **Changes with no test coverage (${result.uncovered_changes.length})**`);
+              result.uncovered_changes.forEach(f => lines.push(`- \`${f}\``));
+              lines.push('');
+            }
+
+            lines.push(`_Updated: ${new Date().toISOString()}_`);
+
+            const newSection = START_MARKER + '\n' + lines.join('\n') + '\n' + END_MARKER;
+
+            const pr = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+            });
+
+            let body = pr.data.body || '';
+
+            // Ensure the heading block exists (written only once).
+            if (!body.includes(HEADING_START)) {
+              const sep = body.endsWith('\n\n') ? '' : body.endsWith('\n') ? '\n' : '\n\n';
+              body = body + sep + headingBlock;
+            }
+
+            // Update the section in-place or insert it right after the heading block.
+            let newBody;
+            if (body.includes(START_MARKER) && body.includes(END_MARKER)) {
+              const before = body.slice(0, body.indexOf(START_MARKER));
+              const after  = body.slice(body.indexOf(END_MARKER) + END_MARKER.length);
+              newBody = before + newSection + after;
+            } else {
+              const insertAt = body.indexOf(HEADING_END) + HEADING_END.length;
+              newBody = body.slice(0, insertAt) + '\n\n' + newSection + body.slice(insertAt);
+            }
+
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              body: newBody,
+            });
+
+            console.log('PR description updated with LLM test recommendations.');

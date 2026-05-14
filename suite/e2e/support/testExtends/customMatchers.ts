@@ -5,13 +5,15 @@ import { diff } from 'jest-diff';
 import { isEqualWith } from 'lodash';
 
 import { type TranslationKey, messages } from '@suite/intl';
+import { type Account } from '@suite-common/wallet-types';
+import { isAddressValid } from '@suite-common/wallet-utils';
 import { Model } from '@trezor/trezor-user-env-link';
 
 import { formatAddress, isEqualWithOmit, normalizeWhitespace } from '../common';
 import { DeviceFixture } from '../device';
 import type { NormalizedDisplayContent } from '../helpers/displayContentNormalizedParser';
 
-type LineFormats = 'fourTetragrams' | 'evmTetragrams' | 'fullLine';
+type LineFormats = 'fourTetragrams' | 'evmTetragrams' | 'cardanoTetragrams' | 'fullLine';
 
 const DISPLAY_CHAR_LIMIT_T3T1 = 18;
 const STRING_UP_TO_T3T1_DISPLAY_LIMIT = new RegExp(`.{1,${DISPLAY_CHAR_LIMIT_T3T1}}`, 'g');
@@ -86,6 +88,14 @@ const formatEvmAddress = (address: string) => {
     return ['0x' + firstTetragram, ...rest].join(' ');
 };
 
+const formatCardanoAddress = (address: string) => {
+    const formatted = formatAddress(address);
+    const parts = formatted.split(' ');
+    const visibleParts = [...parts.slice(0, 15), '...'];
+
+    return visibleParts.join(' ');
+};
+
 export const transformAddress = (address: string, lineFormat: LineFormats = 'fourTetragrams') => {
     // Address is split to lines on Display so it can fit. There are different formats:
     // 1. Four tetragrams of address:
@@ -109,6 +119,10 @@ export const transformAddress = (address: string, lineFormat: LineFormats = 'fou
 
     if (lineFormat === 'evmTetragrams') {
         return addNewlinesToAddress(formatEvmAddress(address), fourTetragramsOfAddress, ' \n');
+    }
+
+    if (lineFormat === 'cardanoTetragrams') {
+        return addNewlinesToAddress(formatCardanoAddress(address), fourTetragramsOfAddress, ' \n');
     }
 
     if (lineFormat === 'fullLine') {
@@ -245,17 +259,9 @@ export const expect = baseExpect.extend({
         );
     },
 
-    toContainSubObject(superObject: any, subObject: any) {
-        return {
-            pass: baseExpect.objectContaining(subObject).asymmetricMatch(superObject),
-            message: () =>
-                `expected superObject to have subObject. Diff:\n${diff(subObject, superObject)}`,
-        };
-    },
-
     async toHaveTranslation(
         locator: Locator,
-        translationKey: TranslationKey,
+        translationKey: TranslationKey | TranslationKey[],
         // Use ICU values for placeholders (e.g., { amount, symbol, days })
         options?: {
             isValueElement?: boolean;
@@ -263,24 +269,46 @@ export const expect = baseExpect.extend({
             timeout?: number;
         },
     ) {
-        const template = messages[translationKey].defaultMessage;
-        const values = options?.values;
-        const expectedTranslation =
-            values && Object.keys(values).length > 0
-                ? String(
-                      intlEn.formatMessage(
-                          { id: translationKey, defaultMessage: template },
-                          options.values,
-                      ),
-                  )
+        // Helper to resolve a translation key into its formatted string
+        const translate = (key: TranslationKey) => {
+            const message = messages[key];
+            if (!message)
+                throw new Error(`[toHaveTranslation] Could not resolve translation key: ${key}`);
+
+            const template = message.defaultMessage;
+            const values = options?.values;
+
+            return values && Object.keys(values).length > 0
+                ? String(intlEn.formatMessage({ id: key, defaultMessage: template }, values))
                 : template;
+        };
+
+        /*
+         * Resolve all keys into translated strings.
+         * If an array is provided, 'expected' will be an array of strings,
+         * enabling the locator to match multiple elements simultaneously.
+         */
+        const expected = Array.isArray(translationKey)
+            ? translationKey.map(translate)
+            : translate(translationKey);
 
         if (options?.isValueElement) {
-            await baseExpect(locator).toHaveValue(expectedTranslation, {
-                timeout: options?.timeout,
-            });
+            if (Array.isArray(expected)) {
+                await baseExpect(locator).toHaveCount(expected.length, {
+                    timeout: options?.timeout,
+                });
+                for (let i = 0; i < expected.length; i++) {
+                    await baseExpect(locator.nth(i)).toHaveValue(expected[i], {
+                        timeout: options?.timeout,
+                    });
+                }
+            } else {
+                await baseExpect(locator).toHaveValue(expected, {
+                    timeout: options?.timeout,
+                });
+            }
         } else {
-            await baseExpect(locator).toHaveText(expectedTranslation, {
+            await baseExpect(locator).toHaveText(expected, {
                 timeout: options?.timeout,
             });
         }
@@ -327,6 +355,18 @@ export const expect = baseExpect.extend({
         return {
             pass: true,
             message: () => 'errors are handled in expects above',
+        };
+    },
+
+    async toHaveValidAddress(locator: Locator, symbol: Account['symbol']) {
+        await baseExpect(locator).toBeVisible();
+        const text = await locator.textContent();
+        const stripped = text?.replace(/\s/g, '') ?? '';
+
+        return {
+            pass: isAddressValid(stripped, symbol),
+            message: () =>
+                `expected locator text to be a valid '${symbol}' address, but got '${text}' (stripped: '${stripped}')`,
         };
     },
 

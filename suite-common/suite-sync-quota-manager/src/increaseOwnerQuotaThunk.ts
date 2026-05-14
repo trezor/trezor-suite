@@ -1,22 +1,23 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import {
     getProofOfDelegatedIdentity,
     getPublicIdentityKeyFromDelegatedKey,
 } from '@suite-common/delegated-identity-key';
 import { isTrezorDeviceWithState, selectSelectedDevice } from '@suite-common/device';
-import { ExtraDependencies } from '@suite-common/redux-utils';
-import { SuiteSyncOwnerId } from '@suite-common/suite-sync-storage';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
+import { type SuiteSyncOwnerId } from '@suite-common/suite-sync-storage';
 import { asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 
 import { prepareChallengeSession } from './challenge/prepareChallengeSession';
 import {
-    DEFAULT_ACCOUNT_INCREMENT_SIZE_QUOTA,
+    DEFAULT_DEVICE_SIZE_QUOTA,
     EVOLU_SIGN_ADD_SPACE_TO_OWNER_REQUEST_HEADER,
 } from './constants';
-import { selectQuotaManagerBaseUrl } from './quotaManagerSelectors';
+import { selectLeftDeviceQuota, selectQuotaManagerBaseUrl } from './quotaManagerSelectors';
 import { transferStorageThunk } from './storage/transferStorageThunk';
+import { getAccountIncrementSizeQuota } from './util/getAccountIncrementSizeQuota';
 import { prepareMessageBufferEvoluAddSpaceToOwner } from './util/prepareMessageBufferEvoluAddSpaceToOwner';
 
 type AllocateMoreOwnerQuotaParams = {
@@ -33,6 +34,15 @@ export const increaseOwnerQuotaThunk =
         }
         const { walletDescriptor } = parseDeviceStaticSessionId(device.state.staticSessionId);
         const quotaManagerBaseUrl = selectQuotaManagerBaseUrl(getState());
+
+        const leftDeviceQuota = selectLeftDeviceQuota(getState(), device.id);
+
+        const sizeToAllocate = getAccountIncrementSizeQuota({
+            unspentStorage: leftDeviceQuota ?? DEFAULT_DEVICE_SIZE_QUOTA,
+        });
+        if (sizeToAllocate === 0) {
+            return;
+        }
 
         const delegatedKey = await extra.services.ensureDelegatedIdentityKey({ device });
         if (!delegatedKey.success) {
@@ -55,7 +65,7 @@ export const increaseOwnerQuotaThunk =
             appendMessageBuffer: prepareMessageBufferEvoluAddSpaceToOwner({
                 ownerId,
                 challenge: sessionChallenge.payload.challenge,
-                size: DEFAULT_ACCOUNT_INCREMENT_SIZE_QUOTA,
+                size: sizeToAllocate,
                 publicKey: delegatedPublicKey,
             }),
         });
@@ -66,10 +76,11 @@ export const increaseOwnerQuotaThunk =
 
         dispatch(
             transferStorageThunk({
+                deviceId: device.id,
                 walletDescriptor,
                 params: {
                     ownerId,
-                    size: DEFAULT_ACCOUNT_INCREMENT_SIZE_QUOTA,
+                    size: sizeToAllocate,
                     proof: proof.payload,
                     sessionId: sessionChallenge.payload.sessionId,
                     challenge: sessionChallenge.payload.challenge,

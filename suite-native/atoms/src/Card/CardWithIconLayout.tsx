@@ -1,11 +1,11 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { Icon, IconName } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Icon, type IconName } from '@suite-native/icons';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { Box } from '../Box';
 import { Card } from '../Card/Card';
-import { InlineAlertBox, InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
+import { InlineAlertBox, type InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
 import { HStack, VStack } from '../Stack';
 import { Text } from '../Text';
 
@@ -32,7 +32,7 @@ export const CardWithIconLayout = ({
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Card borderColor="borderElevation1" noPadding testID={testID}>
+        <Card borderColor="borderNeutral" noPadding testID={testID}>
             <HStack margin="sp16" spacing="sp12">
                 <Box marginVertical="sp2">
                     <Icon name={icon} size="mediumLarge" />

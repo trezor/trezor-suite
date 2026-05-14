@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Localization } from '@suite-common/suite-types';
+import { type Localization } from '@suite-common/suite-types';
 import { Collapsible, InfoItem, TextButton } from '@trezor/components';
 
 type MessageSystemManagerTranslationsProps = {

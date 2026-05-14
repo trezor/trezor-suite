@@ -1,9 +1,9 @@
 import type { CryptoId } from 'invity-api';
 
-import { AccountKey } from '@suite-common/wallet-types';
+import { type TradingBuyState } from '@suite-common/trading';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { tradingInitialState } from '@suite-native/trading-consts';
-import { buyQuotes } from '@suite-native/trading-fixtures';
-import { TradingBuyState } from '@suite-native/trading-types';
+import { buyQuotes, mercuryoApplePayBuyQuote } from '@suite-native/trading-fixtures';
 
 import { buyActions, buyReducer } from '../buySlice';
 
@@ -21,7 +21,7 @@ describe('buySlice', () => {
                     country: 'CZ',
                 },
                 quotes: buyQuotes,
-                selectedQuote: buyQuotes[0],
+                selectedQuote: mercuryoApplePayBuyQuote,
                 amountLimits: {
                     currency: 'CZK',
                     minFiat: '100',
@@ -60,16 +60,18 @@ describe('buySlice', () => {
     });
 
     describe('assetChanged', () => {
-        it('should clear tradingAccountKey and receiveAddress', () => {
+        it('should clear tradingAccountKey, receiveAccountKey and receiveAddress', () => {
             const prevState: TradingBuyState = {
                 ...tradingInitialState.buy,
                 tradingAccountKey: 'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                receiveAccountKey: 'account-key' as AccountKey,
                 receiveAddress: 'bc1qxyz',
             };
 
             const state = buyReducer(prevState, buyActions.assetChanged());
 
             expect(state.tradingAccountKey).toBeUndefined();
+            expect(state.receiveAccountKey).toBeUndefined();
             expect(state.receiveAddress).toBeUndefined();
         });
 

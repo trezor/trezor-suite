@@ -2,13 +2,14 @@ import { mocked } from 'jest-mock';
 
 import { DELEGATED_IDENTITY_KEY } from '@suite-common/delegated-identity-key-types/mocks';
 import { asSuiteSyncOwnerId } from '@suite-common/suite-sync-storage';
-import { WalletDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
+import { type WalletDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
+import { type StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import { prepareChallengeSession } from '../challenge/prepareChallengeSession';
 import { DEFAULT_ACCOUNT_SIZE_QUOTA } from '../constants';
 import { ensureOwnerHasAllocatedQuotaThunk } from '../ensureOwnerHasAllocatedQuotaThunk';
-import { SuiteSyncQuotaManagerState, quotaManagerInitialState } from '../quotaManagerReducer';
+import { type SuiteSyncQuotaManagerState, quotaManagerInitialState } from '../quotaManagerReducer';
 import { checkStorageByOwnerId } from '../storage/checkStorage';
 import { transferStorageThunk } from '../storage/transferStorageThunk';
 
@@ -34,6 +35,8 @@ const createGetState = (statePatch?: Partial<SuiteSyncQuotaManagerState>) => () 
 
 const ownerId = asSuiteSyncOwnerId('owner-id');
 const walletDescriptor: WalletDescriptor = asWalletDescriptor('descriptor');
+const deviceId = 'device-123';
+const deviceStaticSessionId = `${walletDescriptor}@${deviceId}` as StaticSessionId;
 
 const prepareChallengeSessionMock = mocked(prepareChallengeSession);
 const checkStorageByOwnerIdMock = mocked(checkStorageByOwnerId);
@@ -49,12 +52,12 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
         const getState = createGetState();
         const dispatch = jest.fn();
 
-        checkStorageByOwnerIdMock.mockResolvedValue(ok({ totalSpace: 2048 }));
+        checkStorageByOwnerIdMock.mockResolvedValue(ok({ status: 'Allocated', totalSpace: 2048 }));
 
         await ensureOwnerHasAllocatedQuotaThunk({
             ownerId,
             delegatedKey: DELEGATED_IDENTITY_KEY,
-            walletDescriptor,
+            deviceStaticSessionId,
             isWriteMode: false,
         })(dispatch, getState);
 
@@ -75,6 +78,31 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
         expect(transferStorageThunkMock).not.toHaveBeenCalled();
     });
 
+    it("not attempt to allocate quota when none is remaining and return 'NoQuotaLeftToAllocate' error", async () => {
+        const getState = createGetState({
+            registeredDevices: [
+                {
+                    deviceId,
+                    totalStorageSize: 5000,
+                    unspentStorageSize: 0,
+                    dismissedNoQuotaLeftWarning: false,
+                },
+            ],
+        });
+        const dispatch = jest.fn();
+
+        checkStorageByOwnerIdMock.mockResolvedValue(ok({ status: 'NoQuota' }));
+        const result = await ensureOwnerHasAllocatedQuotaThunk({
+            ownerId,
+            delegatedKey: DELEGATED_IDENTITY_KEY,
+            deviceStaticSessionId,
+            isWriteMode: true,
+        })(dispatch, getState);
+
+        expect(result).toEqual(err({ type: 'NoQuotaLeftToAllocate' }));
+        expect(prepareChallengeSessionMock).not.toHaveBeenCalled();
+    });
+
     it('dispatches quota manager error for non-404 failures', async () => {
         const getState = createGetState();
         const dispatch = jest.fn();
@@ -86,7 +114,7 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
         await ensureOwnerHasAllocatedQuotaThunk({
             ownerId,
             delegatedKey: DELEGATED_IDENTITY_KEY,
-            walletDescriptor,
+            deviceStaticSessionId,
             isWriteMode: false,
         })(dispatch, getState);
 
@@ -102,9 +130,7 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
             return action;
         });
 
-        checkStorageByOwnerIdMock.mockResolvedValue(
-            err({ type: 'HttpError', code: 404, message: 'Not Found' }),
-        );
+        checkStorageByOwnerIdMock.mockResolvedValue(ok({ status: 'NoQuota' }));
         prepareChallengeSessionMock.mockResolvedValue(
             ok({ sessionId: 'session-123', challenge: 'aa55' }),
         );
@@ -115,7 +141,7 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
         await ensureOwnerHasAllocatedQuotaThunk({
             ownerId,
             delegatedKey: DELEGATED_IDENTITY_KEY,
-            walletDescriptor,
+            deviceStaticSessionId,
             isWriteMode: true,
         })(dispatch, getState);
 
@@ -133,7 +159,52 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
                 sessionId: 'session-123',
             },
             walletDescriptor,
+            deviceId,
         });
+        expect(transferThunkInner).toHaveBeenCalled();
+    });
+
+    it('allocates remaining quota when unspent storage is less than default increment', async () => {
+        const remainingQuota = 500;
+        const getState = createGetState({
+            registeredDevices: [
+                {
+                    deviceId,
+                    totalStorageSize: 5000,
+                    unspentStorageSize: remainingQuota,
+                    dismissedNoQuotaLeftWarning: false,
+                },
+            ],
+        });
+        const dispatch: ReturnType<typeof jest.fn> = jest.fn((action: unknown) => {
+            if (typeof action === 'function')
+                return (action as (...args: any[]) => any)(dispatch, getState);
+
+            return action;
+        });
+
+        checkStorageByOwnerIdMock.mockResolvedValue(ok({ status: 'NoQuota' }));
+        prepareChallengeSessionMock.mockResolvedValue(
+            ok({ sessionId: 'session-456', challenge: 'bb66' }),
+        );
+
+        const transferThunkInner = jest.fn();
+        transferStorageThunkMock.mockReturnValue(transferThunkInner);
+
+        await ensureOwnerHasAllocatedQuotaThunk({
+            ownerId,
+            delegatedKey: DELEGATED_IDENTITY_KEY,
+            deviceStaticSessionId,
+            isWriteMode: true,
+        })(dispatch, getState);
+
+        expect(transferStorageThunkMock).toHaveBeenCalledWith(
+            expect.objectContaining({
+                params: expect.objectContaining({
+                    size: remainingQuota,
+                }),
+            }),
+        );
         expect(transferThunkInner).toHaveBeenCalled();
     });
 });

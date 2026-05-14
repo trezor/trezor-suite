@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { LayoutChangeEvent, View } from 'react-native';
+import { type LayoutChangeEvent, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { useNavigation } from '@react-navigation/native';
@@ -10,11 +10,11 @@ import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
-    PassphraseStackParamList,
+    type PassphraseStackParamList,
     PassphraseStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     Screen,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import {
     PassphraseForm,
@@ -22,15 +22,15 @@ import {
     useHandleUiRequestPassphraseOnDevice,
 } from '@suite-native/passphrase';
 import { useAnalytics } from '@suite-native/services';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
 const ANIMATION_DURATION = 300;
 
 const cardStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundAlertBlueSubtleOnElevation1,
+    backgroundColor: utils.colors.legacyBackgroundAlertBlueSubtleOnElevation1,
     borderRadius: utils.borders.radii.r16,
-    borderColor: utils.colors.backgroundAlertBlueSubtleOnElevationNegative,
+    borderColor: utils.colors.legacyBackgroundAlertBlueSubtleOnElevationNegative,
     borderWidth: utils.borders.widths.small,
     padding: utils.spacings.sp16,
     flex: 1,
@@ -130,12 +130,12 @@ export const PassphraseFormScreen = () => {
                                         <View style={applyStyle(warningIconWrapperStyle)}>
                                             <Icon
                                                 name="warning"
-                                                color="textAlertBlue"
+                                                color="contentInfo"
                                                 size="medium"
                                             />
                                         </View>
                                         <Text
-                                            color="textAlertBlue"
+                                            color="contentInfo"
                                             variant="body-sm-strong"
                                             style={applyStyle(cardTextStyle)}
                                         >
@@ -146,12 +146,12 @@ export const PassphraseFormScreen = () => {
                                         <View style={applyStyle(warningIconWrapperStyle)}>
                                             <Icon
                                                 name="eyeSlash"
-                                                color="textDefault"
+                                                color="contentPrimary"
                                                 size="medium"
                                             />
                                         </View>
                                         <Text
-                                            color="textDefault"
+                                            color="contentPrimary"
                                             variant="body-sm"
                                             style={applyStyle(cardTextStyle)}
                                         >
@@ -162,12 +162,12 @@ export const PassphraseFormScreen = () => {
                                         <View style={applyStyle(warningIconWrapperStyle)}>
                                             <Icon
                                                 name="warning"
-                                                color="textDefault"
+                                                color="contentPrimary"
                                                 size="medium"
                                             />
                                         </View>
                                         <Text
-                                            color="textDefault"
+                                            color="contentPrimary"
                                             variant="body-sm"
                                             style={applyStyle(cardTextStyle)}
                                         >
@@ -176,9 +176,10 @@ export const PassphraseFormScreen = () => {
                                     </HStack>
                                 </VStack>
                                 <Button
-                                    size="small"
-                                    colorScheme="blueBold"
-                                    viewLeft="arrowLineUpRight"
+                                    size="medium"
+                                    intent="info"
+                                    priority="primary"
+                                    iconLeft="arrowLineUpRight"
                                     onPress={handleOpenLink}
                                 >
                                     <Translation id="modulePassphrase.alertCard.button" />

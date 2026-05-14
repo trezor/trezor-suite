@@ -1,12 +1,18 @@
 import {
-    AccountKey,
-    FeeLevelLabel,
-    FormDraftKeyPrefix,
-    TokenAddress,
+    type AccountKey,
+    type FeeLevelLabel,
+    type FormDraftKeyPrefix,
+    type TokenAddress,
 } from '@suite-common/wallet-types';
 
 export type NativeSupportedPredefinedFeeLevel = Exclude<FeeLevelLabel, 'custom'>;
 export type FeeLevelsMaxAmount = Record<FeeLevelLabel, string | undefined>;
+
+export type UpdateFeeLimitThunkParams = {
+    accountKey: AccountKey;
+    tokenContract?: TokenAddress;
+    feeLimit: string;
+};
 
 export type UpdateSelectedFeeLevelThunkParams = {
     accountKey: AccountKey;

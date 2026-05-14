@@ -92,13 +92,13 @@ export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
         >
             <Card paddingType="none" margin={{ top: spacings.sm }} overflow="hidden">
                 <ShadowContainer>
-                    <ShadowTop backgroundColor="backgroundSurfaceElevation1" />
+                    <ShadowTop backgroundColor="surfaceFillRaised" />
                     <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
                         <LogWrapper data-testid="@log/content">
                             <Text typographyStyle="body-xs">{applicationLogs}</Text>
                         </LogWrapper>
                     </ScrollContainer>
-                    <ShadowBottom backgroundColor="backgroundSurfaceElevation1" />
+                    <ShadowBottom backgroundColor="surfaceFillRaised" />
                 </ShadowContainer>
             </Card>
 

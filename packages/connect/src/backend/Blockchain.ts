@@ -1,13 +1,13 @@
-import BlockchainLink, {
+import type {
     BlockchainLinkParams,
     ServerInfo,
     SubscriptionAccountInfo,
 } from '@trezor/blockchain-link';
+import { BlockchainLink } from '@trezor/blockchain-link';
+import type { CoinInfo, CoreEventMessage, Proxy, PushTransaction } from '@trezor/connect-common';
+import { BLOCKCHAIN, createBlockchainMessage } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import { BLOCKCHAIN, CoreEventMessage, createBlockchainMessage } from '../events';
-import type { CoinInfo, Proxy } from '../types';
-import { PushTransaction } from '../types/api/pushTransaction';
 import {
     BlockbookWorker,
     BlockfrostWorker,
@@ -192,6 +192,10 @@ export class Blockchain {
 
     getCurrentFiatRates(params: { currencies?: string[]; token?: string }) {
         return this.link.getCurrentFiatRates(params);
+    }
+
+    getContractInfo(params: BlockchainLinkParams<'getContractInfo'>) {
+        return this.link.getContractInfo(params);
     }
 
     getFiatRatesForTimestamps(params: {

@@ -1,4 +1,4 @@
-import { JSX, useCallback, useEffect, useMemo, useState } from 'react';
+import { type JSX, useCallback, useEffect, useMemo, useState } from 'react';
 import { RefreshControl } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -6,8 +6,8 @@ import { FlashList } from '@shopify/flash-list';
 
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
-    AccountsRootState,
-    TransactionsRootState,
+    type AccountsRootState,
+    type TransactionsRootState,
     fetchAndUpdateAccountThunk,
     fetchTransactionsPageThunk,
     selectAccountByKey,
@@ -16,17 +16,18 @@ import {
     selectIsPageAlreadyFetched,
     updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { MonthKey, groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type MonthKey, groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
 import { Box } from '@suite-native/atoms';
 import { useScrollDivider } from '@suite-native/scrollview';
 import {
-    TokensRootState,
-    TypedTokenTransfer,
-    WalletAccountTransaction,
+    type TokensRootState,
+    type TypedTokenTransfer,
+    type WalletAccountTransaction,
+    selectAccountStakeTypeTransactionsWithTokenTransfers,
     selectAccountTransactionsWithTokenTransfers,
 } from '@suite-native/tokens';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { arrayPartition } from '@trezor/utils';
 
 import { TokenTransferListItem } from './TokenTransferListItem';
@@ -39,6 +40,7 @@ type AccountTransactionProps = {
     listHeaderComponent: JSX.Element;
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
+    stakingOnly?: boolean;
 };
 
 type RenderSectionHeaderParams = {
@@ -55,13 +57,12 @@ type RenderTransactionItemParams = {
     isLast: boolean;
 };
 
-type TypedTokenTransferWithTx = TypedTokenTransfer & {
-    originalTransaction: WalletAccountTransaction;
-};
-
 type RenderTokenTransferItemParams = Omit<RenderTransactionItemParams, 'item'> & {
     item: TypedTokenTransferWithTx;
-    txid: string;
+};
+
+type TypedTokenTransferWithTx = TypedTokenTransfer & {
+    originalTransaction: WalletAccountTransaction;
 };
 
 type TransactionListItem =
@@ -110,12 +111,10 @@ const renderTokenTransferItem = ({
     isLast,
     isFirst,
     accountKey,
-    txid,
 }: RenderTokenTransferItemParams) => (
     <TokenTransferListItem
         transaction={tokenTransfer.originalTransaction}
         tokenTransfer={tokenTransfer}
-        txid={txid}
         accountKey={accountKey}
         isFirst={isFirst}
         isLast={isLast}
@@ -130,6 +129,7 @@ export const TransactionList = ({
     listHeaderComponent,
     accountKey,
     tokenContract,
+    stakingOnly = false,
 }: AccountTransactionProps) => {
     const dispatch = useDispatch();
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -148,7 +148,9 @@ export const TransactionList = ({
     );
 
     const transactions = useSelector((state: TransactionsRootState & TokensRootState) =>
-        selectAccountTransactionsWithTokenTransfers(state, accountKey),
+        stakingOnly
+            ? selectAccountStakeTypeTransactionsWithTokenTransfers(state, accountKey)
+            : selectAccountTransactionsWithTokenTransfers(state, accountKey),
     );
 
     const txnsPerPage = account ? getTxsPerPage(account.networkType) : 25;
@@ -272,7 +274,6 @@ export const TransactionList = ({
                 ? renderTokenTransferItem({
                       item,
                       accountKey,
-                      txid: item.originalTransaction.txid,
                       isFirst: isFirstInSection,
                       isLast: isLastInSection,
                   })
@@ -306,7 +307,7 @@ export const TransactionList = ({
                     <RefreshControl
                         refreshing={isRefreshing}
                         onRefresh={handleOnRefresh}
-                        colors={[colors.backgroundPrimaryDefault]}
+                        colors={[colors.legacyBackgroundPrimaryDefault]}
                     />
                 }
                 refreshing={isRefreshing}

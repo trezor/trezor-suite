@@ -1,16 +1,22 @@
 import type { CryptoId } from 'invity-api';
 
-import { DeviceReducerState, deviceInitialState } from '@suite-common/device';
+import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
+import { type MessageSystemState } from '@suite-common/message-system';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
-import { Action, Feature, Message, TrezorDevice } from '@suite-common/suite-types';
 import {
-    InvityServerEnvironment,
-    TradingCountryCode,
-    TradingRootStateWithDeviceAndAccounts,
+    type Action,
+    type Feature,
+    type Message,
+    type TrezorDevice,
+} from '@suite-common/suite-types';
+import {
+    type InvityServerEnvironment,
+    type TradingCountryCode,
+    type TradingRootStateWithDeviceAndAccounts,
     selectTradingProviderMetadata,
 } from '@suite-common/trading';
-import { AccountsRootState } from '@suite-common/wallet-core';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import { type AccountsRootState } from '@suite-common/wallet-core';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { appSettingsInitialState } from '@suite-native/settings';
 import {
@@ -23,10 +29,10 @@ import {
     getInitializedTradingState,
     getWalletState,
 } from '@suite-native/trading-fixtures';
-import { TradeableAsset } from '@suite-native/trading-types';
+import { type TradeableAsset } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
-import { TradingRootState, tradingInitialState } from '../../reducers';
+import { type TradingRootState, tradingInitialState } from '../../reducers';
 import {
     selectAccountLabelWithNetworkFallback,
     selectAccountsWithTokensToSellSectionCondensedListByTradingType,
@@ -37,6 +43,7 @@ import {
     selectIsAmountInputActive,
     selectIsTradingBlacklisted,
     selectIsTradingBuyEnabled,
+    selectIsTradingConciergeEnabled,
     selectIsTradingEnabled,
     selectIsTradingExchangeEnabled,
     selectIsTradingSellEnabled,
@@ -50,10 +57,28 @@ import {
 const actionId = 'ActionId_1';
 const contentText = 'Content Text';
 
+const messageSystemState: MessageSystemState = {
+    config: null,
+    currentSequence: 0,
+    timestamp: 0,
+    validMessages: {
+        banner: [],
+        context: [],
+        modal: [],
+        feature: [],
+    },
+    dismissedMessages: {},
+    validExperiments: [],
+    configSource: 'remote',
+    manuallyAddedMessageIds: {},
+    manuallyAddedExperimentIds: {},
+};
+
 const getPreloadedState = ({
     buy,
     sell,
     exchange,
+    concierge,
     blacklist,
     residence,
     countryCode,
@@ -61,6 +86,7 @@ const getPreloadedState = ({
     buy?: boolean;
     sell?: boolean;
     exchange?: boolean;
+    concierge?: boolean;
     blacklist?: boolean;
     residence?: boolean;
     countryCode?: TradingCountryCode | undefined;
@@ -82,6 +108,12 @@ const getPreloadedState = ({
         features.push({
             domain: 'trading.exchange',
             flag: exchange,
+        });
+    }
+    if (concierge !== undefined) {
+        features.push({
+            domain: 'trading.concierge',
+            flag: concierge,
         });
     }
     if (blacklist !== undefined) {
@@ -209,6 +241,24 @@ describe('commonSelectors', () => {
         });
     });
 
+    describe('selectIsTradingConciergeEnabled', () => {
+        it('should correctly select that concierge is enabled if remote feature is enabled', () => {
+            expect(selectIsTradingConciergeEnabled(getPreloadedState({ concierge: true }))).toBe(
+                true,
+            );
+        });
+
+        it('should correctly select that concierge is disabled if remote feature is disabled', () => {
+            expect(selectIsTradingConciergeEnabled(getPreloadedState({ concierge: false }))).toBe(
+                false,
+            );
+        });
+
+        it('should correctly select that concierge is enabled if remote feature is not set', () => {
+            expect(selectIsTradingConciergeEnabled(getPreloadedState({}))).toBe(true);
+        });
+    });
+
     describe('selectIsTradingEnabled', () => {
         describe('when residence check is disabled', () => {
             it('should correctly select that trading is enabled if one of remote features is enabled', () => {
@@ -219,10 +269,15 @@ describe('commonSelectors', () => {
                 expect(selectIsTradingEnabled(getPreloadedState({}))).toBe(true);
             });
 
-            it('should correctly select that trading is not enabled when buy, exchange and sell are disabled', () => {
+            it('should correctly select that trading is not enabled when buy, exchange, sell and concierge are disabled', () => {
                 expect(
                     selectIsTradingEnabled(
-                        getPreloadedState({ buy: false, exchange: false, sell: false }),
+                        getPreloadedState({
+                            buy: false,
+                            exchange: false,
+                            sell: false,
+                            concierge: false,
+                        }),
                     ),
                 ).toBe(false);
             });
@@ -238,7 +293,7 @@ describe('commonSelectors', () => {
             it('should correctly select that trading is enabled when country is whitelisted', () => {
                 expect(
                     selectIsTradingEnabled(
-                        getPreloadedState({ residence: true, buy: true, countryCode: 'US' }),
+                        getPreloadedState({ residence: true, buy: true, countryCode: 'CZ' }),
                     ),
                 ).toBe(true);
             });
@@ -297,9 +352,15 @@ describe('commonSelectors', () => {
 
     describe('selectEnabledTradingTypes', () => {
         it.each([
-            [{ buy: true, exchange: true, sell: true }, ['buy', 'exchange', 'sell']],
-            [{ buy: false, exchange: true, sell: true }, ['exchange', 'sell']],
-            [{ buy: false, exchange: false, sell: false }, []],
+            [
+                { buy: true, exchange: true, sell: true, concierge: true },
+                ['buy', 'exchange', 'sell', 'concierge'],
+            ],
+            [
+                { buy: false, exchange: true, sell: true, concierge: true },
+                ['exchange', 'sell', 'concierge'],
+            ],
+            [{ buy: false, exchange: false, sell: false, concierge: false }, []],
         ])(
             'should return order array of allowed tradingTypes, case %#',
             (flags, expectedReturn) => {
@@ -1262,6 +1323,7 @@ describe('commonSelectors', () => {
                         suiteSync: initialSuiteSyncState,
                         device: deviceInitialState,
                         appSettings: appSettingsInitialState,
+                        messageSystem: messageSystemState,
                     },
                     'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
                     'eth' as CryptoId,
@@ -1284,6 +1346,7 @@ describe('commonSelectors', () => {
                             suiteSync: initialSuiteSyncState,
                             device: deviceInitialState,
                             appSettings: appSettingsInitialState,
+                            messageSystem: messageSystemState,
                         },
                         'eth-account-2' as AccountKey, // Todo: create properly via `createAccountKey()`
                         asset as CryptoId,
@@ -1301,6 +1364,7 @@ describe('commonSelectors', () => {
                         suiteSync: initialSuiteSyncState,
                         device: deviceInitialState,
                         appSettings: appSettingsInitialState,
+                        messageSystem: messageSystemState,
                     },
                     undefined,
                     undefined,

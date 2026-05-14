@@ -5,10 +5,16 @@ import { TestDetailsAnnotation, TestReportProviderBase, TestStatus } from '@trez
 // Class used by our GitHub Reporter to extract metadata from the test and its run
 export class TestReportProvider extends TestReportProviderBase {
     private readonly test: TestResult;
+    private readonly assertionResult: TestResult['testResults'][number];
 
-    constructor(test: TestResult, metadata: TestDetailsAnnotation[]) {
+    constructor(
+        test: TestResult,
+        assertionResult: TestResult['testResults'][number],
+        metadata: TestDetailsAnnotation[],
+    ) {
         super();
         this.test = test;
+        this.assertionResult = assertionResult;
 
         for (const annotation of metadata) {
             if (!annotation.description) {
@@ -20,11 +26,7 @@ export class TestReportProvider extends TestReportProviderBase {
 
     // Platform-specific implementations
     get testTitle(): string {
-        if (!this.test.testResults.length) {
-            throw new Error('Test results are empty');
-        }
-
-        return this.test.testResults[0]?.title;
+        return this.assertionResult.title;
     }
 
     get testProject(): string {
@@ -38,11 +40,11 @@ export class TestReportProvider extends TestReportProviderBase {
             return TestStatus.Todo;
         }
 
-        if (this.test.testResults[0]?.status === 'passed') {
+        if (this.assertionResult.status === 'passed') {
             return TestStatus.AutoPass;
         }
 
-        if (this.test.testResults[0]?.status === 'failed') {
+        if (this.assertionResult.status === 'failed') {
             return TestStatus.AutoFail;
         }
 
@@ -55,12 +57,12 @@ export class TestReportProvider extends TestReportProviderBase {
     }
 
     get isRetryAttempt(): boolean {
-        return this.test.testResults.length > 1;
+        return (this.assertionResult.invocations ?? 1) > 1;
     }
 
     get id(): string {
-        // For Jest/Native, we use testFilePath as the unique identifier
-        return this.test.testFilePath;
+        // For Jest/Native, combine file path and full test title to uniquely identify test case.
+        return `${this.test.testFilePath}::${this.assertionResult.fullName}`;
     }
 
     get filePath(): string {

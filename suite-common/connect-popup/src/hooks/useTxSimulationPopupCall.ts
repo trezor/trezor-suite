@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { TxSimulationAction, TxSimulationMethod } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type TxSimulationAction, type TxSimulationMethod } from '@suite-common/wallet-types';
 
 import {
-    ConnectPopupStateRootState,
+    type ConnectPopupStateRootState,
     selectConnectPopupCallWithState,
 } from '../connectPopupReducer';
 

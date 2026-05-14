@@ -8,9 +8,11 @@ test.describe(
     'Metadata - wallet labeling',
     { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'] },
     () => {
-        test.beforeEach(async ({ onboardingPage, metadataMock }) => {
+        test.beforeEach(async ({ onboardingPage, metadataMock, metadataPage, settingsPage }) => {
             await metadataMock.start(MetadataProvider.DROPBOX);
             await onboardingPage.completeOnboarding();
+            await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+            await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
         });
 
         test.use({
@@ -30,8 +32,6 @@ test.describe(
         }) => {
             await test.step('Setup standard wallet and enable labels', async () => {
                 await dashboardPage.openDeviceSwitcher();
-                await metadataPage.wallet.clickEditLabel(standardWalletIndex);
-                await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
             });
 
             await test.step('Add and Edit label of standard wallet', async () => {
@@ -95,8 +95,6 @@ test.describe(
         }) => {
             await test.step('Setup standard wallet with label and edit it', async () => {
                 await dashboardPage.openDeviceSwitcher();
-                await metadataPage.wallet.clickEditLabel(standardWalletIndex);
-                await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
                 await metadataPage.wallet.clickEditLabel(standardWalletIndex);
                 await metadataPage.wallet.fillLabelInput('label for standard wallet');
                 await metadataPage.wallet.successIconIsVisible(standardWalletIndex);

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 export type ProgressLabelState = 'stale' | 'active' | 'done';
 export interface ProgressLabelData {

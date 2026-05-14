@@ -1,6 +1,10 @@
-import { MiddlewareAPI } from 'redux';
+import { type MiddlewareAPI } from 'redux';
 
+import { desktopUpdateActions } from '@suite/desktop-update';
 import { METADATA } from '@suite/metadata';
+import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
+import { routerLocationChange, selectRouterUrl } from '@suite/router';
+import { suiteSettingsActions } from '@suite/settings';
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { deviceActions } from '@suite-common/device';
 import {
@@ -13,9 +17,8 @@ import {
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { getBootloaderVersion, getFirmwareVersion } from '@trezor/device-utils';
 
-import { DESKTOP_UPDATE, MODAL, PROTOCOL, ROUTER, SUITE } from 'src/actions/suite/constants';
-import { selectRouterUrl } from 'src/reducers/suite/routerReducer';
-import { Action, AppState, Dispatch } from 'src/types/suite';
+import { PROTOCOL, SUITE } from 'src/actions/suite/constants';
+import { type Action, type AppState, type Dispatch } from 'src/types/suite';
 import { getSuiteReadyPayload } from 'src/utils/suite/analytics';
 import {
     addSentryBreadcrumb,
@@ -28,22 +31,22 @@ import {
 const deviceContextName = 'trezor-device';
 
 const breadcrumbActions = new Set<Action['type']>([
-    SUITE.SET_LANGUAGE,
-    SUITE.SET_THEME,
-    SUITE.SET_ADDRESS_DISPLAY_TYPE,
-    SUITE.SET_AUTODETECT,
+    suiteSettingsActions.setLanguage.type,
+    suiteSettingsActions.setTheme.type,
+    WALLET_SETTINGS.SET_ADDRESS_DISPLAY_TYPE,
+    suiteSettingsActions.setAutodetect.type,
     setBaseCurrency.type,
     WALLET_SETTINGS.SET_HIDE_BALANCE,
     METADATA.ENABLE,
     METADATA.DISABLE,
-    SUITE.ONION_LINKS,
+    suiteSettingsActions.setOnionLinks.type,
     analyticsActions.enableAnalytics.type,
     analyticsActions.disableAnalytics.type,
-    DESKTOP_UPDATE.CHECKING,
-    DESKTOP_UPDATE.AVAILABLE,
-    DESKTOP_UPDATE.NOT_AVAILABLE,
-    DESKTOP_UPDATE.READY,
-    MODAL.CLOSE,
+    desktopUpdateActions.checking.type,
+    desktopUpdateActions.available.type,
+    desktopUpdateActions.notAvailable.type,
+    desktopUpdateActions.ready.type,
+    MODAL_CLOSE,
     DEVICE.CONNECT,
     DEVICE.DISCONNECT,
     accountsActions.createAccount.type,
@@ -56,14 +59,14 @@ const breadcrumbActions = new Set<Action['type']>([
     TRANSPORT.ERROR,
     blockchainActions.setBackend.type,
     accountsActions.updateSelectedAccount.type,
-    ROUTER.LOCATION_CHANGE,
-    DESKTOP_UPDATE.ALLOW_PRERELEASE,
+    routerLocationChange.type,
+    desktopUpdateActions.allowPrerelease.type,
     SUITE.TOR_STATUS,
     SUITE.ONLINE_STATUS,
     deviceActions.addButtonRequest.type,
     deviceActions.removeButtonRequests.type,
     PROTOCOL.SAVE_COIN_PROTOCOL,
-    MODAL.OPEN_USER_CONTEXT,
+    MODAL_OPEN_USER_CONTEXT,
 ]);
 
 const sentryMiddleware =
@@ -106,7 +109,7 @@ const sentryMiddleware =
                 });
                 break;
             }
-            case ROUTER.LOCATION_CHANGE:
+            case routerLocationChange.type:
                 setSentryTag('routerURL', selectRouterUrl(state));
                 break;
             case SUITE.TOR_STATUS:
@@ -145,6 +148,9 @@ const sentryMiddleware =
                 }
                 if ('tropicResult' in result && result.tropicResult?.error) {
                     reportToSentry(result.tropicResult.error);
+                }
+                if ('mcuResult' in result && result.mcuResult?.error) {
+                    reportToSentry(result.mcuResult.error);
                 }
                 break;
             }

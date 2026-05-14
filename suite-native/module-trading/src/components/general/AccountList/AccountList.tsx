@@ -5,21 +5,20 @@ import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
 import { selectIsDeviceInViewOnlyMode } from '@suite-common/device';
-import { TradingType, tradingBuyActions, tradingExchangeActions } from '@suite-common/trading';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type TradingType, tradingBuyActions, tradingExchangeActions } from '@suite-common/trading';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    RootStackParamList,
-    StackToStackCompositeNavigationProps,
-    TradingStackParamList,
-    TradingStackRoutes,
+    type RootStackParamList,
+    type RootStackRoutes,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useSectionList } from '@suite-native/trading-atoms';
 import {
     selectBuySelectedReceiveAccount,
     selectExchangeSelectedReceiveAccount,
 } from '@suite-native/trading-state';
-import { ReceiveAccount } from '@suite-native/trading-types';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type ReceiveAccount } from '@suite-native/trading-types';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountListAddressItem } from './AccountListAddressItem';
 import { AccountListFooter } from './AccountListFooter';
@@ -27,16 +26,12 @@ import { AccountListItem } from './AccountListItem';
 import { AddressListEmptyComponent } from './AddressListEmptyComponent';
 import { NoAccountsComponent } from './NoAccountsComponent';
 import {
-    ReceiveAccountsListMode,
+    type ReceiveAccountsListMode,
     useReceiveAccountsListData,
 } from '../../../hooks/general/useReceiveAccountsListData';
 import { isFullySelectedReceiveAccount } from '../../../utils/general/receiveAccountUtils';
 
-type NavigationProp = StackToStackCompositeNavigationProps<
-    TradingStackParamList,
-    TradingStackRoutes.ReceiveAccounts,
-    RootStackParamList
->;
+type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.ReceiveAccounts>;
 
 export type AccountsListProps = {
     symbol: NetworkSymbol;
@@ -93,6 +88,9 @@ export const AccountList = ({
                 : tradingExchangeActions.setReceiveAddress(receiveAccount.address?.address);
         dispatch(accountAction);
         dispatch(addressAction);
+        if (tradingType === 'buy') {
+            dispatch(tradingBuyActions.setReceiveAccountKey(receiveAccount.account.key));
+        }
         const hasAddresses = receiveAccount.account.addresses;
         if (receiveAccount.account && hasAddresses) {
             onSetPickerMode('address');

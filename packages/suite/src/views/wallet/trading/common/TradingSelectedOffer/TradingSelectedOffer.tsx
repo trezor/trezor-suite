@@ -1,11 +1,13 @@
 import styled from 'styled-components';
 
 import { Card, Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingOfferExchangeProps, TradingOfferSellProps } from 'src/types/trading/tradingForm';
+import {
+    type TradingOfferExchangeProps,
+    type TradingOfferSellProps,
+} from 'src/types/trading/tradingForm';
 import {
     getCryptoQuoteAmountProps,
     getPaymentMethod,
@@ -38,7 +40,7 @@ export const TradingSelectedOffer = () => {
     if (isTradingExchangeContext(context)) {
         return (
             <Column width="100%" alignItems="center">
-                <Card width="100%" maxWidth="520px" data-testid="@trading/selected-offer">
+                <Card width="100%" maxWidth="440px" data-testid="@trading/selected-offer">
                     <TradingOfferExchange
                         account={account}
                         selectedQuote={selectedTrade as TradingOfferExchangeProps['selectedQuote']}
@@ -53,7 +55,7 @@ export const TradingSelectedOffer = () => {
 
     if (isTradingSellContext(context)) {
         return (
-            <Column gap={spacings.md}>
+            <Column gap={16}>
                 {tradingDeviceDisconnected && <ConnectDeviceGenericPromo />}
 
                 <Wrapper data-testid="@trading/selected-offer">

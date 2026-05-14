@@ -1,8 +1,12 @@
-import { DeviceReducerState, deviceActions, deviceReducerInitialState } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
+import {
+    type DeviceReducerState,
+    deviceActions,
+    deviceReducerInitialState,
+} from '@suite-common/device';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { DEVICE } from '@trezor/connect';
-import { DeepPartial } from '@trezor/type-utils';
+import { type DeepPartial } from '@trezor/type-utils';
 
 // Default devices
 const CONNECT_DEVICE = mockConnectDevice();
@@ -29,7 +33,6 @@ const connect: Fixture<
                     device: mockConnectDevice({
                         path: '1',
                     }),
-                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -57,7 +60,6 @@ const connect: Fixture<
                     device: mockConnectDevice({
                         path: '1',
                     }),
-                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -91,7 +93,6 @@ const connect: Fixture<
                     device: mockConnectDevice({
                         path: '1',
                     }),
-                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -120,7 +121,6 @@ const connect: Fixture<
                     device: mockConnectDevice({
                         path: '1',
                     }),
-                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -155,7 +155,6 @@ const connect: Fixture<
                     device: mockConnectDevice({
                         path: '1',
                     }),
-                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -193,7 +192,6 @@ const connect: Fixture<
                     device: mockConnectDevice({
                         path: '1',
                     }),
-                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -216,7 +214,6 @@ const connect: Fixture<
                         type: 'unacquired',
                         path: '1',
                     }),
-                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -246,7 +243,6 @@ const connect: Fixture<
                         type: 'unacquired',
                         path: '1',
                     }),
-                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -280,7 +276,6 @@ const connect: Fixture<
                         status: 'thp-locked',
                         path: '1',
                     }),
-                    isAutoEjectEnabled: false,
                 },
             },
         ],

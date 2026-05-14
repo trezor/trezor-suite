@@ -1,10 +1,10 @@
 //  origin: https://github.com/trezor/connect/blob/develop/src/js/utils/accountUtils.js
 
+import type { BitcoinNetworkInfo, CoinInfo } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { fromHardened, toHardened } from './pathUtils';
 import { getCoinName } from '../data/coinInfo';
-import type { BitcoinNetworkInfo, CoinInfo } from '../types';
 
 type Bip44Options = {
     purpose?: number;

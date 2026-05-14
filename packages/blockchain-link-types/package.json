@@ -5,40 +5,39 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "publishConfig": {
-        "main": "./lib/index.js",
-        "types": "./lib/index.d.ts",
+        "main": "./libESM/index.mjs",
+        "types": "./libESM/index.d.mts",
+        "type": "module",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
+                "types": "./libESM/index.d.mts",
+                "default": "./libESM/index.mjs"
             },
-            "./lib/*": "./lib/*.js",
-            "./libESM/*.js": "./libESM/*.js",
-            "./lib/constants": "./lib/constants/index.js",
-            "./libESM/constants/index.js": "./libESM/constants/index.js"
+            "./libESM/*": "./libESM/*",
+            "./libESM/constants": {
+                "types": "./libESM/constants/index.d.mts",
+                "default": "./libESM/constants/index.mjs"
+            }
         }
     },
     "files": [
-        "lib/",
         "libESM/",
         "CHANGELOG.md"
     ],
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "test:unit": "yarn g:jest --coverage -c jest.config.js",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@trezor/utils": "workspace:*",
-        "@trezor/utxo-lib": "workspace:*"
+        "@trezor/utxo-lib": "workspace:*",
+        "socks-proxy-agent": "8.0.5"
     },
     "devDependencies": {
-        "@trezor/type-utils": "workspace:*",
-        "tsx": "^4.21.0"
+        "@trezor/type-utils": "workspace:*"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

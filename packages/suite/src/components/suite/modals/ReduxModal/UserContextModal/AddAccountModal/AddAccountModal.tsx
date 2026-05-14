@@ -3,37 +3,35 @@ import { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { goto, selectRouterApp } from '@suite/router';
+import { selectHasExperimentalFeature, selectIsDebugModeActive } from '@suite/settings';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    Network,
-    NetworkAccount,
-    NetworkSymbol,
+    type Network,
+    type NetworkAccount,
+    type NetworkSymbol,
     getNetwork,
     networks,
 } from '@suite-common/wallet-config';
 import {
     accountsActions,
     changeCoinVisibility,
+    reportWalletBalanceThunk,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
-import { prepareNewAccountPayload } from '@suite-common/wallet-utils';
+import { getAvailableAccountTypes, prepareNewAccountPayload } from '@suite-common/wallet-utils';
 import { CollapsibleBox, Modal, Tooltip } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { arrayPartition } from '@trezor/utils';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { CoinList } from 'src/components/suite/CoinList/CoinList';
 import { useAvailableNetworkSymbols } from 'src/components/wallet/WalletLayout/AccountsMenu/useAvailableNetworkSymbols';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsPublic } from 'src/reducers/wallet/coinjoinReducer';
-import {
-    selectHasExperimentalFeature,
-    selectIsDebugModeActive,
-} from 'src/selectors/suite/suiteSelectors';
-import { TrezorDevice } from 'src/types/suite';
-import { Account } from 'src/types/wallet';
+import { type TrezorDevice } from 'src/types/suite';
+import { type Account } from 'src/types/wallet';
 
 import { AccountTypeSelect } from './AccountTypeSelect/AccountTypeSelect';
 import { AddAccountButton } from './AddAccountButton/AddAccountButton';
@@ -67,7 +65,7 @@ export const AddAccountModal = ({
     isBackClickDisabled,
 }: AddAccountProps) => {
     const accounts = useSelector(state => state.wallet.accounts);
-    const app = useSelector(state => state.router.app);
+    const app = useSelector(selectRouterApp);
     const isDebug = useSelector(selectIsDebugModeActive);
     const isCoinjoinPublic = useSelector(selectIsPublic);
     const enabledNetworkSymbols = useSelector(selectEnabledNetworks);
@@ -145,21 +143,10 @@ export const AddAccountModal = ({
             return undefined;
         }
 
-        const defaultAccount: NetworkAccount = {
-            bip43Path: selectedNetwork.bip43Path,
-            accountType: 'normal',
-        };
-        const otherAccounts = Object.values(selectedNetwork.accountTypes)
-            /**
-             * Filter out coinjoin account type if it is not visible.
-             * Visibility of coinjoin account type depends on coinjoin feature config in message system.
-             * By default it is visible publicly, but it can be remotely hidden under debug menu.
-             */
-            .filter(({ backendType }) => backendType !== 'coinjoin' || isCoinjoinVisible)
-            .filter(({ isDebugOnlyAccountType }) => !isDebugOnlyAccountType || isDebug);
-
-        // the default account is expected to be the first one
-        return [defaultAccount, ...otherAccounts];
+        return getAvailableAccountTypes(selectedNetwork.symbol, {
+            isCoinjoinVisible,
+            isDebug,
+        });
     }, [isCoinjoinVisible, isDebug, isSelectedNetworkEnabled, selectedNetwork]);
 
     const selectedNetworks = selectedNetwork ? [selectedNetwork.symbol] : [];
@@ -190,7 +177,8 @@ export const AddAccountModal = ({
             if (app === 'wallet' && !noRedirect) {
                 // redirect to account only if added from "wallet" app
                 dispatch(
-                    goto('wallet-index', {
+                    goto({
+                        routeName: 'wallet-index',
                         params: {
                             symbol: selectedNetwork.symbol,
                             accountIndex: 0,
@@ -231,13 +219,15 @@ export const AddAccountModal = ({
             dispatch(accountsActions.changeAccountVisibility(account));
         }
 
+        dispatch(reportWalletBalanceThunk());
         onConfirm?.();
 
         onAddAccount?.(account);
         if (app === 'wallet' && !noRedirect) {
             // redirect to account only if added from "wallet" app
             dispatch(
-                goto('wallet-index', {
+                goto({
+                    routeName: 'wallet-index',
                     params: {
                         symbol: account.symbol,
                         accountIndex: account.index,
@@ -276,6 +266,7 @@ export const AddAccountModal = ({
                 }
 
                 dispatch(accountsActions.createAccount(newAccount));
+                dispatch(reportWalletBalanceThunk());
                 onConfirm?.();
             }
         }

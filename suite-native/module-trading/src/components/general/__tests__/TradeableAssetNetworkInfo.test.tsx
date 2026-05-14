@@ -3,7 +3,7 @@ import { btcAsset, ethOnBaseAsset, usdcAsset } from '@suite-native/trading-fixtu
 
 import {
     TradeableAssetNetworkInfo,
-    TradeableAssetNetworkInfoProps,
+    type TradeableAssetNetworkInfoProps,
 } from '../TradeableAssetNetworkInfo';
 
 describe('TradeableAssetNetworkInfo', () => {

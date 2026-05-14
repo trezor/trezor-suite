@@ -2,7 +2,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { typedObjectEntries } from '@trezor/utils';
 
 import { getExplorerUrls } from './getExplorerUrls';
-import { NetworkFeature, Networks } from './types';
+import { type NetworkFeature, type Networks } from './types';
 
 export const networks = {
     btc: {
@@ -63,6 +63,7 @@ export const networks = {
             'eip1559',
             'mev-protection',
             'graph',
+            'claim-rewards',
         ],
         backendTypes: ['blockbook', 'evm-rpc'],
         accountTypes: {
@@ -344,18 +345,25 @@ export const networks = {
         features: ['tokens', 'coin-definitions', 'graph', 'nfts'],
         explorer: getExplorerUrls('https://tronscan.org/#', 'tron'),
         support: {
-            [DeviceModelInternal.T2T1]: '2.10.1',
-            [DeviceModelInternal.T2B1]: '2.10.1',
-            [DeviceModelInternal.T3B1]: '2.10.1',
-            [DeviceModelInternal.T3T1]: '2.10.1',
-            [DeviceModelInternal.T3W1]: '2.10.1',
+            [DeviceModelInternal.T2T1]: '2.11.0',
+            [DeviceModelInternal.T2B1]: '2.11.0',
+            [DeviceModelInternal.T3B1]: '2.11.0',
+            [DeviceModelInternal.T3T1]: '2.11.0',
+            [DeviceModelInternal.T3W1]: '2.11.0',
         },
         backendTypes: ['blockbook'],
-        isDebugOnlyNetwork: true,
-        accountTypes: {},
+        accountTypes: {
+            ledger: {
+                // ledger (live), #1 acc is same as Trezor, so it is skipped
+                accountType: 'ledger',
+                bip43Path: "m/44'/195'/i'/0/0",
+                isDebugOnlyAccountType: true,
+            },
+        },
         coingeckoId: 'tron',
         tradeCryptoId: 'tron',
         yieldXyzId: 'tron',
+        caipId: 'tron:0x2b6653dc',
     },
     ada: {
         // icarus derivation
@@ -442,6 +450,7 @@ export const networks = {
         coingeckoId: 'stellar',
         tradeCryptoId: 'stellar',
         yieldXyzId: 'stellar',
+        caipId: 'stellar:pubnet',
     },
     ltc: {
         symbol: 'ltc',
@@ -603,7 +612,7 @@ export const networks = {
         decimals: 18,
         testnet: true,
         explorer: getExplorerUrls('https://sepolia.etherscan.io', 'ethereum'),
-        features: ['rbf', 'sign-verify', 'tokens', 'nfts', 'nft-definitions', 'eip1559', 'graph'],
+        features: ['rbf', 'sign-verify', 'tokens', 'nfts', 'eip1559', 'graph'],
         backendTypes: ['blockbook', 'evm-rpc'],
         accountTypes: {},
         coingeckoId: 'sepolia-test-ethereum', // fake, coingecko does not have testnets
@@ -620,16 +629,7 @@ export const networks = {
         decimals: 18,
         testnet: true,
         explorer: getExplorerUrls('https://hoodi.etherscan.io/', 'ethereum'),
-        features: [
-            'rbf',
-            'sign-verify',
-            'tokens',
-            'staking',
-            'nfts',
-            'nft-definitions',
-            'eip1559',
-            'graph',
-        ],
+        features: ['rbf', 'sign-verify', 'tokens', 'staking', 'nfts', 'eip1559', 'graph'],
         backendTypes: ['blockbook', 'evm-rpc'],
         accountTypes: {},
         coingeckoId: 'hoodi-test-ethereum', // fake, coingecko does not have testnets
@@ -691,6 +691,23 @@ export const networks = {
         coingeckoId: undefined,
         tradeCryptoId: undefined,
         yieldXyzId: 'stellar-testnet',
+        caipId: 'stellar:testnet',
+    },
+    ttrx: {
+        symbol: 'ttrx',
+        displaySymbol: 'tTRX',
+        name: 'Tron Nile',
+        networkType: 'tron',
+        bip43Path: "m/44'/195'/0'/0/i",
+        decimals: 6,
+        testnet: true,
+        features: ['tokens', 'graph', 'nfts'],
+        explorer: getExplorerUrls('https://nile.tronscan.org/#', 'tron'),
+        backendTypes: ['blockbook'],
+        accountTypes: {},
+        coingeckoId: undefined,
+        tradeCryptoId: 'test-tron',
+        yieldXyzId: null,
     },
 } as const satisfies Networks;
 
@@ -733,5 +750,7 @@ export const [STAKING_SYMBOLS, STAKING_TYPES, PROD_STAKING_SYMBOLS] = typedObjec
 ) as readonly [
     readonly StakingNetworkSymbol[],
     readonly StakingNetworkType[],
-    readonly StakingNetworkSymbol[],
+    readonly (StakingNetworkSymbol & NetworkConfigWithoutTestnets['symbol'])[],
 ];
+
+export type ProdStakingNetworkSymbol = (typeof PROD_STAKING_SYMBOLS)[number];

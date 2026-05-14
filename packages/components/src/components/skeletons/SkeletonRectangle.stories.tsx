@@ -1,10 +1,10 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
 import {
-    Elevation,
+    type Elevation,
     borders,
     mapElevationToBackground,
     mapElevationToBorder,
@@ -13,7 +13,7 @@ import {
 
 import {
     SkeletonRectangle as SkeletonRectangleComponent,
-    SkeletonRectangleProps,
+    type SkeletonRectangleProps,
 } from './SkeletonRectangle';
 import { ElevationContext, ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
 

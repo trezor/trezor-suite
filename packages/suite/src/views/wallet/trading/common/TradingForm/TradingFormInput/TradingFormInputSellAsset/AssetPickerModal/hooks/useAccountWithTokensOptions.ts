@@ -1,27 +1,29 @@
 import { useMemo } from 'react';
 import { useThrottle } from 'react-use';
 
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
-import { EnhancedTokenInfo, selectTokenDefinitions } from '@suite-common/token-definitions';
+import { selectSelectedDevice } from '@suite-common/device';
+import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
+import { type EnhancedTokenInfo, selectTokenDefinitions } from '@suite-common/token-definitions';
 import { getCryptoId } from '@suite-common/trading';
-import { NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
+import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     accountsFiatBalanceInDescOrderComparator,
     filterAccountsByNetworkSymbol,
     isTestnet,
 } from '@suite-common/wallet-utils';
-import { TokenInfo } from '@trezor/blockchain-link-types';
+import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { useCurrentRef } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { AccountWithTokensOption } from 'src/components/suite/asset-picker/types';
+import { type AccountWithTokensOption } from 'src/components/suite/asset-picker/types';
 import {
     createAccountOption,
     createNonTradableTokensOption,
@@ -72,7 +74,17 @@ export function useAccountWithTokensOptions({
     accountsWithTokens: AccountWithTokensOption[];
     networks: NetworkSymbol[];
 } {
-    const accounts = useSelector(selectVisibleDeviceAccounts);
+    const device = useSelector(selectSelectedDevice);
+    const baseAccounts = useSelector(selectVisibleDeviceAccounts);
+
+    const accounts = useSelector(state =>
+        selectAccountsWithSuiteSyncLabel(
+            state,
+            baseAccounts,
+            device?.state?.staticSessionId ?? null,
+        ),
+    );
+
     const fiatRates = useSelector(selectCurrentFiatRates);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const tokenDefinitions = useSelector(selectTokenDefinitions);

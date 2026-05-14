@@ -8,6 +8,16 @@ on:
     branches: [release/connect/**]
   pull_request:
     paths:
+      - "packages/connect-common/**"
+      - "packages/connect-data/**"
+      - "packages/connect-mobile/**"
+      - "packages/connect-web/**"
+      - "packages/connect-webextension/**"
+      - "packages/connect/**"
+      - "scripts/ci/helpers.ts"
+      - "scripts/ci/pack-packages.ts"
+      - "scripts/publish/**"
+      - "packages/connect/e2e/test-connect-local.sh"
       - ".github/workflows/test-connect-misc.yml"
   workflow_dispatch:
 
@@ -22,12 +32,12 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           submodules: true
 
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version-file: ".nvmrc"
 
@@ -52,12 +62,12 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           submodules: true
 
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version-file: ".nvmrc"
 
@@ -66,6 +76,14 @@ jobs:
 
       - name: Pack packages
         run: yarn tsx ./scripts/ci/pack-packages.ts
+
+      - name: Check exports
+        # `attw` is the binary for @arethetypeswrong/cli; --profile esm-only
+        # skips node10/node16-cjs resolutions for our ESM-only packages.
+        run: |
+          yarn exec attw --pack ./tmp/packed-packages/trezor-connect-web.tgz --profile esm-only
+          yarn exec attw --pack ./tmp/packed-packages/trezor-connect-mobile.tgz --profile esm-only
+          yarn exec attw --pack ./tmp/packed-packages/trezor-connect-webextension.tgz --profile esm-only
 
       - name: Test local install
         run: ./packages/connect/e2e/test-connect-local.sh
@@ -76,13 +94,12 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version-file: ".nvmrc"
 
       - run: yarn install --immutable
       - run: yarn workspace @trezor/protobuf update:protobuf
-      - run: yarn workspace @trezor/protobuf update:schema

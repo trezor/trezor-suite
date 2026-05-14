@@ -1,7 +1,7 @@
 import {
-    Account,
-    AccountKey,
-    WalletAccountTransaction,
+    type Account,
+    type AccountKey,
+    type WalletAccountTransaction,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
 

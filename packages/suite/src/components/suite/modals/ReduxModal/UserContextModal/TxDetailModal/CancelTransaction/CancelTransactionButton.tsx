@@ -1,12 +1,12 @@
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
-import { Account, FormState } from '@suite-common/wallet-types';
+import { type Account, type FormState } from '@suite-common/wallet-types';
 import { Modal } from '@trezor/components';
 
-import { useDevice, useDispatch } from 'src/hooks/suite';
-
-import { signAndPushSendFormTransactionThunk } from '../../../../../../../actions/wallet/send/sendFormThunks';
-import { useCancelTxContext } from '../../../../../../../hooks/wallet/useCancelTxContext';
+import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
+import { useDispatch } from 'src/hooks/suite';
+import { useCancelTxContext } from 'src/hooks/wallet/useCancelTxContext';
 
 type CancelTransactionButtonProps = {
     account: Account;

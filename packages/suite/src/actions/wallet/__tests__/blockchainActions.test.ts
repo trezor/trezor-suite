@@ -1,9 +1,13 @@
-import { testMocks } from '@suite-common/test-utils';
-import { notificationsActions, notificationsReducer } from '@suite-common/toast-notifications';
+import { type TranslationKey } from '@suite/intl';
+import { filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
 import {
-    AccountsState,
-    BlockchainState,
-    TransactionsState,
+    createNotificationsReducer,
+    notificationsActions,
+} from '@suite-common/toast-notifications';
+import {
+    type AccountsState,
+    type BlockchainState,
+    type TransactionsState,
     feesReducer,
     initBlockchainThunk,
     onBlockMinedThunk,
@@ -13,16 +17,18 @@ import {
     preloadFeeInfoThunk,
     setCustomBackendThunk,
 } from '@suite-common/wallet-core';
-import { FeesState } from '@suite-common/wallet-types';
+import { type FeesState } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { accountsReducer, blockchainReducer, transactionsReducer } from 'src/reducers/wallet';
-import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
 import * as fixtures from '../__fixtures__/blockchainActions';
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
+
+const { reducer: notificationsReducer } = createNotificationsReducer<TranslationKey>();
 
 interface Args {
     accounts?: AccountsState;
@@ -40,6 +46,7 @@ const getInitialState = (
         transactions: transactionsReducer(
             {
                 transactions: transactions || {},
+                phishing: {},
                 fetchStatusDetail: {},
             },
             action,

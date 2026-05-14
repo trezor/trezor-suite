@@ -1,5 +1,8 @@
-import type { AccountInfo, AccountInfoParams } from '@trezor/blockchain-link-types';
-import type { AccountInfo as BlockbookAccountInfo } from '@trezor/blockchain-link-types/src/blockbook';
+import type {
+    AccountInfo,
+    AccountInfoParams,
+    BlockbookAccountInfo,
+} from '@trezor/blockchain-link-types';
 import type { DeepPartial } from '@trezor/type-utils';
 
 const fixtures: {

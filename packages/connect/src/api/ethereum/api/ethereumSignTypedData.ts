@@ -1,23 +1,22 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumSignTypedData.js
 
+import {
+    EthereumNetworkInfo,
+    EthereumSignTypedData as EthereumSignTypedDataParams,
+    EthereumSignTypedHash as EthereumSignTypedHashParams,
+} from '@trezor/connect-common';
+import type { EthereumSignTypedDataTypes, MethodPermission, PROTO } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { MessagesSchema } from '@trezor/protobuf';
 import { Assert, Type } from '@trezor/schema-utils';
 
-import { PROTO } from '../../../constants';
+import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
-import { EthereumNetworkInfo } from '../../../types';
-import {
-    EthereumSignTypedData as EthereumSignTypedDataParams,
-    EthereumSignTypedDataTypes,
-    EthereumSignTypedHash as EthereumSignTypedHashParams,
-} from '../../../types/api/ethereum';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { messageToHex } from '../../../utils/formatUtils';
 import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getEthereumDefinitions } from '../ethereumDefinitions';
 import { encodeData, getFieldType, parseArrayType } from '../ethereumSignTypedData';
 
@@ -43,70 +42,64 @@ const Params = Type.Intersect([
 ]);
 
 export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignTypedData', Params> {
-    init() {
-        this.requiredPermissions = ['read', 'write'];
-        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
-
-        const { payload } = this;
+    constructor(message: MethodMessage<'ethereumSignTypedData'>) {
+        const { payload } = message;
 
         // validate incoming parameters
         Assert(Type.Union([EthereumSignTypedDataParams, EthereumSignTypedHashParams]), payload);
 
         const path = validatePath(payload.path, 3);
         const network = getEthereumNetwork(path);
-        this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
 
-        this.params = {
+        const paramsBase = {
             address_n: path,
             metamask_v4_compat: payload.metamask_v4_compat,
             data: payload.data,
             network,
+            // Show hashes for Safe transactions by default unless specified otherwise
+            show_message_hash: payload.show_message_hash ?? payload.data.primaryType === 'SafeTx',
         };
 
-        if (payload.domain_separator_hash) {
-            this.params = {
-                ...this.params,
-                // leading `0x` in hash-strings causes issues
-                domain_separator_hash: messageToHex(payload.domain_separator_hash),
-            };
+        const params = !payload.domain_separator_hash
+            ? paramsBase
+            : {
+                  ...paramsBase,
+                  domain_separator_hash: messageToHex(payload.domain_separator_hash),
+                  ...(payload.message_hash
+                      ? { message_hash: messageToHex(payload.message_hash) }
+                      : {}),
+              };
 
-            if (payload.message_hash) {
-                this.params = {
-                    ...this.params,
-                    // leading `0x` in hash-strings causes issues
-                    message_hash: messageToHex(payload.message_hash),
-                };
-            } else if (this.params.data.primaryType !== 'EIP712Domain') {
-                throw ERRORS.TypedError(
-                    'Method_InvalidParameter',
-                    'message_hash should only be empty when data.primaryType=EIP712Domain',
-                );
-            }
-        }
-
-        if (this.params.data.primaryType === 'EIP712Domain') {
-            // Only newer firmwares support this feature
-            // Older firmwares will give wrong results / throw errors
-            this.firmwareRange = getFirmwareRange(
-                'eip712-domain-only',
-                network,
-                this.firmwareRange,
+        if (payload.data.primaryType === 'EIP712Domain' && 'message_hash' in params) {
+            throw ERRORS.TypedError(
+                'Method_InvalidParameter',
+                'message_hash should be empty when data.primaryType=EIP712Domain',
             );
-
-            if ('message_hash' in this.params) {
-                throw ERRORS.TypedError(
-                    'Method_InvalidParameter',
-                    'message_hash should be empty when data.primaryType=EIP712Domain',
-                );
-            }
         }
 
-        if (payload.show_message_hash !== undefined) {
-            this.params.show_message_hash = payload.show_message_hash;
-        } else if (this.params.data.primaryType === 'SafeTx') {
-            // Show hashes for Safe transactions by default unless specified otherwise
-            this.params.show_message_hash = true;
+        if (
+            payload.data.primaryType !== 'EIP712Domain' &&
+            !('message_hash' in params) &&
+            'domain_separator_hash' in params
+        ) {
+            throw ERRORS.TypedError(
+                'Method_InvalidParameter',
+                'message_hash should only be empty when data.primaryType=EIP712Domain',
+            );
         }
+
+        super(message, params);
+        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
+        this.requiredFirmwareCoins = [network];
+        // Only newer firmwares support this feature
+        // Older firmwares will give wrong results / throw errors
+        if (params.data.primaryType === 'EIP712Domain') {
+            this.requiredFirmwareCapabilities = ['eip712-domain-only'];
+        }
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read', 'write'];
     }
 
     async initAsync() {
@@ -151,9 +144,9 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const { address_n, definitions } = this.params;
-        if (this.device.features.internal_model === DeviceModelInternal.T1B1) {
+        if (this.getDevice().features.internal_model === DeviceModelInternal.T1B1) {
             Assert(
                 Type.Object({
                     domain_separator_hash: Type.String(),
@@ -267,7 +260,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
                 }
                 if (memberData === null || memberData === undefined) {
                     // Cancel the request so the device isn't left hanging
-                    this.device.getCurrentSession().cancelCall();
+                    this.getDevice().getCurrentSession().cancelCall();
                     throw ERRORS.TypedError(
                         'Runtime',
                         `Value from member path ${member_path} is missing in the data object`,

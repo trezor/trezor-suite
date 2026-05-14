@@ -1,11 +1,11 @@
 import type { UnknownAction } from '@reduxjs/toolkit';
 
 import { mockNotExpected } from '@suite-common/dependency-injection';
-import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
-import { StaticSessionId } from '@trezor/connect';
+import { type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
+import { type StaticSessionId } from '@trezor/connect';
 
 import { setSuiteSyncRelayUrl } from '../../suiteSyncSlice';
-import { ChangeRelayUrlDeps, createChangeRelayUrl } from '../createChangeRelayUrl';
+import { type ChangeRelayUrlDeps, createChangeRelayUrl } from '../createChangeRelayUrl';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 

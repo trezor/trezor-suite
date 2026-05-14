@@ -3,23 +3,27 @@ import { differenceInMonths, fromUnixTime, isWithinInterval } from 'date-fns';
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { resetTime } from '@suite-common/suite-utils';
 import {
-    BackendType,
+    type BackendType,
     type NetworkSymbol,
     getNetwork,
     getNetworkFeatures,
 } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { type AppState } from 'src/reducers/store';
-import { State as GraphState } from 'src/reducers/wallet/graphReducer';
-import { CommonAggregatedHistory, GraphData, GraphRange, GraphScale } from 'src/types/wallet/graph';
+import { type State as GraphState } from 'src/reducers/wallet/graphReducer';
+import {
+    type CommonAggregatedHistory,
+    type GraphData,
+    type GraphRange,
+} from 'src/types/wallet/graph';
 
-import { ObjectType, TypeName, sumFiatValueMapInPlace } from './utilsShared';
-import { FiatValueMap } from './utilsWorker';
+import { type FiatValueMap, type GraphDataPoint, type TypeName } from './types';
+import { sumFiatValueMapInPlace } from './utilsShared';
 
 export const deviceGraphDataFilterFn = (d: GraphData, deviceState: StaticSessionId | undefined) => {
     if (!deviceState) return false;
@@ -114,11 +118,11 @@ export const enhanceBlockchainAccountHistory = (
  * Return array with 2 items, minimum non-zero value and maximum value calculated from sent, received and balance fields
  */
 export const getMinMaxValueFromData = <TType extends TypeName, TValue extends BigNumber>(
-    data: ObjectType<TType>[],
+    data: GraphDataPoint<TType>[],
     _type: TType,
-    extractSentValue: (sourceData: ObjectType<TType>) => TValue | undefined,
-    extractReceivedValue: (sourceData: ObjectType<TType>) => TValue | undefined,
-    extractBalanceValue: (sourceData: ObjectType<TType>) => TValue | undefined,
+    extractSentValue: (sourceData: GraphDataPoint<TType>) => TValue | undefined,
+    extractReceivedValue: (sourceData: GraphDataPoint<TType>) => TValue | undefined,
+    extractBalanceValue: (sourceData: GraphDataPoint<TType>) => TValue | undefined,
 ): [TValue, TValue] => {
     if (!data || data.length === 0) {
         return [new BigNumber(0) as TValue, new BigNumber(0) as TValue];
@@ -179,35 +183,13 @@ export const sumFiatValueMap = (valueMap: FiatValueMap, obj: FiatValueMap) => {
     return newMap;
 };
 
-const calcMinYDomain = (minMaxValues: [number, number]) => {
-    // Used in calculating domain interval for Y axis with log scale
-    // We could simply use minimum coin value (eg 0.00000001) as our minimum, but that would results in
-    // Y axis with values/labels 0.00000001, 0.0000001, 0.000001, 0.0001...
-    // So instead we calculate what smallest value we need to show without any value being of of the range.
-    // Maybe we could instead just calculate our own set of ticks
-    const [minDataValue] = minMaxValues;
-    const decimals = minDataValue.toString().split('.')[1]?.length;
-    const min = decimals && decimals > 0 ? 1 / 10 ** decimals : 0.00000001;
-
-    return min;
-    // return 0.00000001;
-};
-
 export const calcYDomain = (
-    type: 'fiat' | 'crypto',
-    scale: GraphScale,
     minMaxValues: [number, number],
     lastBalance?: string,
 ): [number, number] => {
     const [, maxDataValue] = minMaxValues;
-    const maxValueMultiplier = scale === 'linear' ? 1.2 : 10;
-
-    let minValue: number;
-    if (scale === 'linear') {
-        minValue = 0;
-    } else {
-        minValue = type === 'fiat' ? 0.01 : calcMinYDomain(minMaxValues);
-    }
+    const maxValueMultiplier = 1.2;
+    const minValue = 0;
 
     if (maxDataValue > 0) {
         return [minValue, maxDataValue * maxValueMultiplier];
@@ -257,7 +239,7 @@ export const calcXDomain = (
                 xPadding = 3600 * 24 * 14; // 14 days
             }
             break;
-        default: // 12 hours
+        case 'week':
             xPadding = 3600 * 12;
             break;
     }

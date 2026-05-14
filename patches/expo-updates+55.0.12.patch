@@ -1,0 +1,15 @@
+diff --git a/node_modules/expo-updates/android/src/main/java/expo/modules/updates/UpdatesPackage.kt b/node_modules/expo-updates/android/src/main/java/expo/modules/updates/UpdatesPackage.kt
+--- a/node_modules/expo-updates/android/src/main/java/expo/modules/updates/UpdatesPackage.kt
++++ b/node_modules/expo-updates/android/src/main/java/expo/modules/updates/UpdatesPackage.kt
+@@ -99,7 +99,10 @@
+       override fun onCreate(application: Application) {
+         super.onCreate(application)
+-        if (isRunningAndroidTest()) {
++        /**
++         * This fix is needed for running Detox tests with Android debug build.
++         */
++        if (isRunningAndroidTest() && !BuildConfig.USE_DEV_CLIENT) {
+           // Preload updates to prevent Detox ANR
+           UpdatesController.initialize(context)
+           UpdatesController.instance.launchAssetFile
+         }

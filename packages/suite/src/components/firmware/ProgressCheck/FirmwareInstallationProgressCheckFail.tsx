@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
-import { Button } from '@trezor/components';
 import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL } from '@trezor/urls';
 
+import { SecurityCheckButton } from '../../suite/SecurityCheck/SecurityCheckButton';
 import { SecurityCheckFail } from '../../suite/SecurityCheck/SecurityCheckFail';
 import { hardFailureChecklistItems } from '../../suite/SecurityCheck/checklistItems';
 import { ContactSupport } from '../../suite/SecurityCheck/deviceCompromisedCtas';
@@ -23,9 +23,9 @@ export const FirmwareInstallationProgressCheckFail = ({
         checklistItems={hardFailureChecklistItems}
         ctaSection={
             <>
-                <Button intent="neutral" priority="secondary" onClick={toggleView} size="large">
+                <SecurityCheckButton intent="neutral" priority="secondary" onClick={toggleView}>
                     <Translation id="TR_BACK" />
-                </Button>
+                </SecurityCheckButton>
                 <ContactSupport supportUrl={supportUrl} />
             </>
         }

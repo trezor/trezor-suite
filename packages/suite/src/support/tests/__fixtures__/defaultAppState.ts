@@ -1,24 +1,30 @@
-import { FirmwareUpdateState } from '@suite-common/firmware';
+import type { BackupState } from '@suite/backup';
+import { desktopUpdateInitialState } from '@suite/desktop-update';
+import { initialState as featureFeedbackInitialState } from '@suite/feature-feedback';
+import { flagsInitialState } from '@suite/flags';
+import { locksInitialState } from '@suite/locks';
+import { type RouterState } from '@suite/router';
+import { suiteSettingsInitialState } from '@suite/settings';
+import { type FirmwareUpdateState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
-import { MetadataState } from '@suite-common/metadata-types';
+import { type MetadataState } from '@suite-common/metadata-types';
 import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager/src/quotaManagerReducer';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
+import { initialDesktopBluetoothState } from 'src/actions/bluetooth/desktopBluetoothReducer';
 import { initialState } from 'src/actions/device/deviceSlice';
 import { initialSuiteSyncDesktopState } from 'src/actions/suiteSync/suiteSyncSlice';
-import { BackupState } from 'src/reducers/backup/backupReducer';
-import { OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
-import { AppState } from 'src/reducers/store';
-import { desktopUpdateInitialState } from 'src/reducers/suite/desktopUpdateReducer';
-import { ProtocolState } from 'src/reducers/suite/protocolReducer';
-import { RouterState } from 'src/reducers/suite/routerReducer';
+import { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
+import { type AppState } from 'src/reducers/store';
+import { type ProtocolState } from 'src/reducers/suite/protocolReducer';
 import { suiteInitialState } from 'src/reducers/suite/suiteReducer';
-import WalletReducers from 'src/reducers/wallet';
-
-import { initialDesktopBluetoothState } from '../../../actions/bluetooth/desktopBluetoothReducer';
+import type WalletReducers from 'src/reducers/wallet';
 
 export const initialAppState: AppState = {
     suite: suiteInitialState,
+    suiteSettings: suiteSettingsInitialState,
+    flags: flagsInitialState,
+    locks: locksInitialState,
     device: initialState,
     bluetooth: initialDesktopBluetoothState,
     thp: {
@@ -115,4 +121,5 @@ export const initialAppState: AppState = {
         search: '',
         networkSymbol: undefined,
     },
+    featureFeedback: featureFeedbackInitialState,
 };

@@ -8,14 +8,14 @@ export type {
 } from './storage/suiteSyncStorageRepository';
 
 export type {
-    RefreshSuiteSyncKeys,
-    RefreshSuiteSyncKeysDep,
-    RefreshSuiteSyncKeysResult,
-} from './refreshSuiteSyncKeys';
+    EnsureSuiteSyncKeys,
+    EnsureSuiteSyncKeysDep,
+    EnsureSuiteSyncKeysResult,
+} from './ensureSuiteSyncKeys';
 export type { WriteModeRequiredForAllocationErrType } from './quotaManager/quotaManagerTypes';
 export type { TurnOffSuiteSyncDep, TurnOffSuiteSync } from './turnOffSuiteSync';
 export type { TurnOnSuiteSyncDep, TurnOnSuiteSync } from './turnOnSuiteSync';
-export type { SuiteSyncUnavailableOnDeviceErrorType } from './refreshSuiteSyncKeys';
+export type { SuiteSyncUnavailableOnDeviceErrorType } from './ensureSuiteSyncKeys';
 export type { ChangeRelayUrl, ChangeRelayUrlDep } from './relay/changeRelayUrl';
 export type { ProofOfDelegatedSignFailed } from './getProofOfDelegatedIdentity';
 
@@ -31,6 +31,11 @@ export type {
     SubscriptionStorageParams,
 } from './storage/subscriptionStorage';
 export type {
+    DangerouslyWipeAllLabelsFromWallet,
+    DangerouslyWipeAllLabelsFromWalletDep,
+    DangerouslyWipeAllLabelsFromWalletParams,
+} from './data/dangerouslyWipeAllLabelsFromWallet';
+export type {
     TurnOffSuiteSyncForWallet,
     TurnOffSuiteSyncForWalletDep,
 } from './storage/turnOffSuiteSyncForWallet';
@@ -40,15 +45,16 @@ export type {
     EnsureWalletSuiteSyncOnDep,
     EnsureWalletSuiteSyncOnParams,
     SuiteSyncFirmwareUpgradeNeededDeviceErrorType,
+    SuiteSyncUserFacingErrorType,
 } from './storage/ensureWalletSuiteSyncOn';
 
 export type {
     Subscriptions,
     SuiteSyncListener,
-    SubscribeSuiteSyncData,
-    SubscribeSuiteSyncDataDep,
+    EnsureSubscribedStorage,
+    EnsureSubscribedStorageDep,
     SuiteSyncListenerDep,
-} from './data/subscribeSuiteSyncData';
+} from './data/ensureSubscribedStorage';
 
 // Labeling
 export type {
@@ -72,8 +78,6 @@ export type {
     UpdateWalletLabelParams,
 } from './data/updateWalletLabel';
 
-export type { SuiteSyncAppReloader, SuiteSyncAppReloaderDep } from './suiteSyncAppReloader';
-
 export type {
     SuiteSyncErrorHandler,
     SuiteSyncOtherError,
@@ -88,4 +92,5 @@ export type {
     ChallengeFailedErrType,
     HttpErrType,
     ProofOfDelegatedIdentityFailedErrType,
+    NoQuotaLeftToAllocateErrType,
 } from './quotaManager/ensureOwnerHasAllocatedQuotaThunk';

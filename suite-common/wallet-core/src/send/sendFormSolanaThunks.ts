@@ -2,11 +2,11 @@ import { createThunk } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOL_COMPUTE_UNIT_LIMIT } from '@suite-common/wallet-constants';
 import {
-    Account,
-    ComposeActionContext,
-    ExternalOutput,
-    PrecomposedLevels,
-    PrecomposedTransaction,
+    type Account,
+    type ComposeActionContext,
+    type ExternalOutput,
+    type PrecomposedLevels,
+    type PrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
@@ -23,15 +23,15 @@ import {
 } from '@suite-common/wallet-utils';
 import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { tokenStandardToTokenProgramName } from '@trezor/blockchain-link-utils/src/solana';
-import TrezorConnect, { FeeLevel } from '@trezor/connect';
+import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
-    ComposeFeeLevelsError,
-    ComposeTransactionThunkArguments,
-    SignTransactionError,
-    SignTransactionThunkArguments,
+    type ComposeFeeLevelsError,
+    type ComposeTransactionThunkArguments,
+    type SignTransactionError,
+    type SignTransactionThunkArguments,
 } from './sendFormTypes';
 import { selectBlockchainBlockInfoBySymbol } from '../blockchain/blockchainReducer';
 
@@ -221,6 +221,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                 : undefined,
             blockHash,
             lastValidBlockHeight,
+            memo: formState.destinationTag || undefined,
             coin: account.symbol,
             identity: getAccountIdentity(account),
             priorityFees: {
@@ -234,7 +235,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
         if (!transaction.success) {
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',
-                message: transaction.payload.error,
+                message: transaction.error.message,
             });
         }
 
@@ -259,7 +260,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             fetchedFeeLimit = feeLevel.feeLimit;
         } else {
             // Error fetching fee, fall back on default values defined in `/packages/connect/src/data/defaultFeeLevels.ts`
-            console.warn('Error fetching fee, using default values.', estimatedFee.payload.error);
+            console.warn('Error fetching fee, using default values.', estimatedFee.error.message);
         }
 
         // FeeLevels are read-only, so we create a copy if need be
@@ -320,7 +321,10 @@ export const signSolanaSendFormTransactionThunk = createThunk<
     { rejectValue: SignTransactionError }
 >(
     `${SEND_MODULE_PREFIX}/signSolanaSendFormTransactionThunk`,
-    async ({ formState, precomposedTransaction, selectedAccount, device }, { rejectWithValue }) => {
+    async (
+        { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
+        { rejectWithValue },
+    ) => {
         if (precomposedTransaction.feeLimit == null)
             return rejectWithValue({
                 error: 'sign-transaction-failed',
@@ -366,6 +370,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
                 : undefined,
             blockHash,
             lastValidBlockHeight,
+            memo: formState.destinationTag || undefined,
             priorityFees: {
                 computeUnitPrice: precomposedTransaction.feePerByte,
                 computeUnitLimit: precomposedTransaction.feeLimit,
@@ -378,9 +383,11 @@ export const signSolanaSendFormTransactionThunk = createThunk<
         if (!transaction.success) {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
-                message: transaction.payload.error,
+                message: transaction.error.message,
             });
         }
+
+        const payment_req = paymentRequests?.[0];
 
         const response = await TrezorConnect.solanaSignTransaction({
             device: {
@@ -391,6 +398,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             },
             path: selectedAccount.path,
             serializedTx: transaction.payload.serializedTx,
+            payment_req,
             serialize: true,
             additionalInfo: transaction.payload.additionalInfo.tokenAccountInfo
                 ? {
@@ -403,8 +411,8 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             // catch manual error from TransactionReviewModal
             return rejectWithValue({
                 error: 'sign-transaction-failed',
-                errorCode: response.payload.code,
-                message: response.payload.error,
+                errorCode: response.error.code,
+                message: response.error.message,
             });
         }
 

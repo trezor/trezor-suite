@@ -15,7 +15,7 @@ import { spacings } from '@trezor/theme';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 const INPUT_NAME = 'rawTx';
 

@@ -1,15 +1,16 @@
-import { Bip43Path, getNetwork } from '@suite-common/wallet-config';
+import { type Bip43Path, getNetwork } from '@suite-common/wallet-config';
 import {
     accountsActions,
     selectAccountForNetworkSymbolAndPath,
     sendFormActions,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import type { CallMethodKeys, SolanaSignTransaction } from '@trezor/connect';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: extract pathUtils to a shared location and remove this exception (see #27376 deferred work)
 import { getSerializedPath, validatePath } from '@trezor/connect/src/utils/pathUtils';
 
 import { connectPopupActions } from '../connectPopupActions';
-import { PostCallHookParams, PreCallHookParams } from './types';
+import { type PostCallHookParams, type PreCallHookParams } from './types';
 import { createPlaceholderAccount } from './utils';
 
 const temporaryAccounts: Account[] = [];

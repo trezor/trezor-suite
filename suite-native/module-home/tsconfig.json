@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/feedback" },
         { "path": "../../suite-common/graph" },
         {
             "path": "../../suite-common/message-system"
@@ -36,19 +37,25 @@
         { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../discovery" },
+        { "path": "../experimental-features" },
+        { "path": "../feature-feedback" },
         { "path": "../firmware" },
         { "path": "../graph" },
         { "path": "../intl" },
+        { "path": "../labeling" },
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../services" },
         { "path": "../settings" },
-        { "path": "../theme" },
         { "path": "../toasts" },
         { "path": "../../packages/device-utils" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
-        { "path": "../test-utils" }
+        { "path": "../test-utils-store" },
+        { "path": "../../packages/requirements" }
     ],
     "include": [".", "**/*.json"]
 }

@@ -1,8 +1,9 @@
 import { expect } from '@playwright/test';
 
-import { ApplySettings } from '@trezor/protobuf/src/messages-schema';
+import type { ApplySettings } from '@trezor/protobuf/src/definitions';
 import {
     Model,
+    ReadAndConfirmAtomicShamirMnemonicEmu,
     ReadAndConfirmShamirMnemonicEmu,
     SetupEmu,
     TrezorUserEnvLink,
@@ -97,6 +98,11 @@ export class DeviceFixture {
     @step()
     async readAndConfirmShamirMnemonic(options: ReadAndConfirmShamirMnemonicEmu) {
         await TrezorUserEnvLink.readAndConfirmShamirMnemonicEmu(options);
+    }
+
+    @step()
+    async readAndConfirmAtomicShamirMnemonic(options: ReadAndConfirmAtomicShamirMnemonicEmu) {
+        await TrezorUserEnvLink.readAndConfirmAtomicShamirMnemonicEmu(options);
     }
 
     @step()
@@ -206,20 +212,27 @@ export class DeviceFixture {
         return lines;
     };
 
-    wrapText = (text: string, options?: { isAmount?: boolean; wrapByWords?: boolean }) => {
-        const T3W1_EXACT_LINE_LENGTH = 14;
-        const T3T1_EXACT_LINE_LENGTH = 18;
-        const T3W1_LINE_LENGTH_MINUS_DASH = 13;
+    wrapText = (
+        text: string,
+        options?: { isAmount?: boolean; wrapByWords?: boolean; lengthOverride?: number },
+    ) => {
+        const T3W1_EXACT_LINE_LENGTH = options?.lengthOverride ?? 14;
+        const T3T1_EXACT_LINE_LENGTH = options?.lengthOverride ?? 18;
+        const T3W1_LINE_LENGTH_MINUS_DASH = T3W1_EXACT_LINE_LENGTH - 1;
 
         if (this.model === Model.T3W1) {
+            //1. Fits on one line without wrap
             if (text.length === T3W1_EXACT_LINE_LENGTH) {
                 return [text];
             }
 
+            //2. Needs to be wrapped by whole words
             if (options?.wrapByWords) {
                 return this.wrapTextByWords(text, T3W1_EXACT_LINE_LENGTH);
             }
 
+            //3. string is split by the size limit
+            //text string will have a dash at the end of separation
             const lineCharLimit = options?.isAmount
                 ? T3W1_LINE_LENGTH_MINUS_DASH
                 : T3W1_EXACT_LINE_LENGTH;

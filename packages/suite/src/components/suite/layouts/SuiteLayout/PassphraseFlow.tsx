@@ -1,13 +1,18 @@
+import { MODAL_CONTEXT_DEVICE, type MODAL_CONTEXT_NONE } from '@suite/modal';
+import { closeModalApp } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
-import { UI } from '@trezor/connect';
+import { UI_REQUEST } from '@trezor/connect';
 
-import { MODAL } from '../../../../actions/suite/constants';
-import { closeModalApp } from '../../../../actions/suite/routerActions';
-import { useDispatch, usePreferredModal, useSelector } from '../../../../hooks/suite';
-import type { AppState, ForegroundAppRoute } from '../../../../types/suite';
-import { SwitchDevice } from '../../../../views/suite/SwitchDevice/SwitchDevice';
-import { ThpGlobalModalManager } from '../../../connection/thp/ThpGlobalModalManager';
-import { TurnOnSuiteSyncModalManager } from '../../labeling/TurnOnSuiteSync/TurnOnSuiteSyncModalManager';
+import {
+    selectShowEnableSuiteSyncModal,
+    updateShowEnableSuiteSyncModal,
+} from 'src/actions/suiteSync/suiteSyncSlice';
+import { ThpGlobalModalManager } from 'src/components/connection/thp/ThpGlobalModalManager';
+import { useDispatch, usePreferredModal, useSelector } from 'src/hooks/suite';
+import type { AppState, ForegroundAppRoute } from 'src/types/suite';
+import { SwitchDevice } from 'src/views/suite/SwitchDevice/SwitchDevice';
+
+import { TurnOnSuiteSyncModals } from '../../labeling/TurnOnSuiteSync/TurnOnSuiteSyncModals';
 import { ConfirmPassphraseBeforeAction } from '../../modals/ReduxModal/DeviceContextModal/ConfirmPassphraseBeforeAction';
 import { PassphraseModal } from '../../modals/ReduxModal/DeviceContextModal/PassphraseModal';
 import { PassphraseOnDeviceModal } from '../../modals/ReduxModal/DeviceContextModal/PassphraseOnDeviceModal';
@@ -15,14 +20,14 @@ import { PassphraseOnDeviceModal } from '../../modals/ReduxModal/DeviceContextMo
 /** Modals requested by Device from `trezor-connect` */
 export const DeviceContextModal = ({
     windowType,
-}: ReduxModalProps<typeof MODAL.CONTEXT_DEVICE>) => {
+}: ReduxModalProps<typeof MODAL_CONTEXT_DEVICE>) => {
     const device = useSelector(selectSelectedDevice);
 
     if (!device) return null;
 
     switch (windowType) {
         // T2T1 firmware
-        case UI.REQUEST_PASSPHRASE_ON_DEVICE:
+        case UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE:
         case 'ButtonRequest_PassphraseEntry':
             return <PassphraseOnDeviceModal device={device} />;
         default:
@@ -33,14 +38,14 @@ export const DeviceContextModal = ({
 export type ReduxModalProps<
     T extends AppState['modal']['context'] = Exclude<
         AppState['modal']['context'],
-        typeof MODAL.CONTEXT_NONE
+        typeof MODAL_CONTEXT_NONE
     >,
 > = Extract<AppState['modal'], { context: T }>;
 
 /** Modals initiated by redux state.modal */
 export const ReduxModal = (modal: ReduxModalProps) => {
     switch (modal.context) {
-        case MODAL.CONTEXT_DEVICE: // Modals requested by Device from `trezor-connect`
+        case MODAL_CONTEXT_DEVICE: // Modals requested by Device from `trezor-connect`
             return <DeviceContextModal {...modal} />;
         default:
             return null;
@@ -54,6 +59,7 @@ type ForegroundAppModalProps = {
 
 const ForegroundAppModal = ({ app, cancelable }: ForegroundAppModalProps) => {
     const dispatch = useDispatch();
+    const deviceStaticSessionId = useSelector(selectShowEnableSuiteSyncModal);
 
     const onCancel = () => dispatch(closeModalApp());
 
@@ -63,7 +69,12 @@ const ForegroundAppModal = ({ app, cancelable }: ForegroundAppModalProps) => {
         return (
             <>
                 <SwitchDevice cancelable={cancelable} onCancel={onCancel} />
-                <TurnOnSuiteSyncModalManager />
+                <TurnOnSuiteSyncModals
+                    deviceStaticSessionId={deviceStaticSessionId}
+                    onClose={() => {
+                        dispatch(updateShowEnableSuiteSyncModal({ deviceStaticSessionId: null }));
+                    }}
+                />
                 {/* THP flow can be triggered by auto-connect and that will open THP modals.
                  *  However, this ForegroundApp takes precedes and prevents ALL other modals
                  *  to render. So we have to render it here as well.*/}

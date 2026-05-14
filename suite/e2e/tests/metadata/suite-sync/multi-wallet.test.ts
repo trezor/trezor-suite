@@ -1,43 +1,42 @@
-import { OwnerId } from '@evolu/common';
-
+import {
+    createAccountRowId,
+    createOwnerIdFromSecret,
+    createWalletRowId,
+    mnemonic12Fixtures,
+} from '@suite-common/e2e-evolu-client';
 import { asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
 import { asAccountDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 
-import {
-    ownerId as defaultWalletOwnerId,
-    ownerSecret as defaultWalletOwnerSecret,
-    walletDescriptor,
-} from '../../../fixtures/metadata/default-metadata-ids';
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
 
+const defaultWalletOwnerSecret = mnemonic12Fixtures.ownerSecret;
+const walletOneOwnerSecret = asSuiteSyncOwnerSecretHex(
+    'a42c516df49ec13ef4df8d2edfd33a893ddb3c5bb5423fb55e5f33a1852e2bc2d2fc70db8b35db609c730763f81c2d2bb491abf4f07505b0449386d54285b267',
+);
 const walletOne = {
     index: 1,
     passphrase: 'First passphrase',
-    ownerId: OwnerId.orThrow('nv3sJB3YFuddnYPsMy03BA'),
-    ownerSecret: asSuiteSyncOwnerSecretHex(
-        'a42c516df49ec13ef4df8d2edfd33a893ddb3c5bb5423fb55e5f33a1852e2bc2d2fc70db8b35db609c730763f81c2d2bb491abf4f07505b0449386d54285b267',
-    ),
+    ownerSecret: walletOneOwnerSecret,
+    ownerId: createOwnerIdFromSecret(walletOneOwnerSecret),
 };
 
+const walletTwoOwnerSecret = asSuiteSyncOwnerSecretHex(
+    '2b1643b805e3dec4ec2c3f57e707bce641f197ddd468070ffd4225393c4cb1a8e3935be81dd63f1e6d55145a73415d330328ba9c6eaa65fa56be8234fe512690',
+);
 const walletTwo = {
     index: 2,
     passphrase: 'Second passphrase',
-    ownerId: OwnerId.orThrow('Mvz4DxvvznAgmppCU67NPw'),
-    ownerSecret: asSuiteSyncOwnerSecretHex(
-        '2b1643b805e3dec4ec2c3f57e707bce641f197ddd468070ffd4225393c4cb1a8e3935be81dd63f1e6d55145a73415d330328ba9c6eaa65fa56be8234fe512690',
-    ),
+    ownerSecret: walletTwoOwnerSecret,
+    ownerId: createOwnerIdFromSecret(walletTwoOwnerSecret),
 };
 
-const expectedDefaultWalletLabel = {
-    updatedAt: null,
-    isDeleted: null,
-    ownerId: defaultWalletOwnerId,
-    walletDescriptor,
+const expectedDefaultWalletLabel = mnemonic12Fixtures.buildExpectedWallet({
     label: 'Evolu Default wallet',
-};
+});
 
 const expectedWalletOneLabel = {
+    id: createWalletRowId(asWalletDescriptor('mokyaSGybeX7XrG5VWGoMtQepBXXK1RNW9')),
     updatedAt: null,
     isDeleted: null,
     ownerId: walletOne.ownerId,
@@ -46,6 +45,12 @@ const expectedWalletOneLabel = {
 };
 
 const expectedAccountLabelWalletOne = {
+    id: createAccountRowId(
+        asAccountDescriptor(
+            'zpub6r4imip23CwVmWTfqudEXK2PKZaw2bn8PEC1tju3d4oxQMfLK1QME9aN2o8t7potfCfz6f8T4jNafTyBVfEnqfXVUT8y4PWZ1JSc2HR8pRB',
+        ),
+        'btc',
+    ),
     updatedAt: null,
     isDeleted: null,
     ownerId: walletOne.ownerId,
@@ -57,6 +62,7 @@ const expectedAccountLabelWalletOne = {
 };
 
 const expectedWalletTwoLabel = {
+    id: createWalletRowId(asWalletDescriptor('n4YWykLsjHxToK8LwXJ7e8gwabBbAUDTk2')),
     updatedAt: null,
     isDeleted: null,
     ownerId: walletTwo.ownerId,
@@ -64,12 +70,13 @@ const expectedWalletTwoLabel = {
     label: 'Evolu wallet #2',
 };
 
-test.describe('Suite Sync - Passphrase wallets', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
+test.describe('Suite Sync - Passphrase wallets', { tag: ['@T3W1', '@T3T1'] }, () => {
+    test.slow();
     test.use({ wipeEvoluRelay: true, deviceSetup: { passphrase_protection: true } });
 
-    test.beforeEach(async ({ onboardingPage, metadataPage }) => {
+    test.beforeEach(async ({ onboardingPage, metadataPage, settingsPage }) => {
         await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
-        await metadataPage.setupQuotaManager();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
         await metadataPage.enableSuiteSync();
     });
 
@@ -79,12 +86,14 @@ test.describe('Suite Sync - Passphrase wallets', { tag: ['@webOnly', '@T3W1', '@
         dashboardPage,
         metadataPage,
         walletPage,
+        devicePrompt,
     }) => {
         await test.step('Change default wallet label', async () => {
             await dashboardPage.openDeviceSwitcher();
             await metadataPage.wallet.changeLabel({
                 index: 0,
                 label: expectedDefaultWalletLabel.label,
+                confirmSuiteSync: true,
             });
         });
 
@@ -101,6 +110,7 @@ test.describe('Suite Sync - Passphrase wallets', { tag: ['@webOnly', '@T3W1', '@
             await metadataPage.wallet.changeLabel({
                 index: walletOne.index,
                 label: expectedWalletOneLabel.label,
+                confirmSuiteSync: true,
             });
         });
 
@@ -128,7 +138,7 @@ test.describe('Suite Sync - Passphrase wallets', { tag: ['@webOnly', '@T3W1', '@
             await dashboardPage.openDeviceSwitcher();
             await dashboardPage.openDevice(walletTwo.index);
             await metadataPage.suiteSyncBannerButton.click();
-            await metadataPage.confirmSuiteSyncSetup();
+            await devicePrompt.confirmSuiteSyncSetup();
             await expect(metadataPage.suiteSyncBanner).toBeHidden();
         });
 
@@ -138,17 +148,18 @@ test.describe('Suite Sync - Passphrase wallets', { tag: ['@webOnly', '@T3W1', '@
             await metadataPage.wallet.changeLabel({
                 index: walletTwo.index,
                 label: expectedWalletTwoLabel.label,
+                confirmSuiteSync: true,
             });
         });
 
         await test.step('Verify data are synced to Relay', async () => {
             // Default wallet data
-            evoluClient.init({ ownerSecret: defaultWalletOwnerSecret });
+            await evoluClient.init({ ownerSecret: defaultWalletOwnerSecret });
             await evoluClient.expectInTable('wallet', [expectedDefaultWalletLabel], {
                 softExpect: true,
             });
             // Passphrase #1 data
-            evoluClient.init({ ownerSecret: walletOne.ownerSecret });
+            await evoluClient.init({ ownerSecret: walletOne.ownerSecret });
             await evoluClient.expectInTable('wallet', [expectedWalletOneLabel], {
                 softExpect: true,
             });
@@ -156,7 +167,7 @@ test.describe('Suite Sync - Passphrase wallets', { tag: ['@webOnly', '@T3W1', '@
                 softExpect: true,
             });
             // Passphrase #2 data
-            evoluClient.init({ ownerSecret: walletTwo.ownerSecret });
+            await evoluClient.init({ ownerSecret: walletTwo.ownerSecret });
             await evoluClient.expectInTable('wallet', [expectedWalletTwoLabel], {
                 softExpect: true,
             });

@@ -3,14 +3,15 @@ import { Controller } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useTranslation } from '@suite/intl';
+import { selectLanguage } from '@suite/settings';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import {
-    BaseCurrencyOption,
-    FiatRatesResult,
-    Output,
-    Timestamp,
-    TokenAddress,
+    type BaseCurrencyOption,
+    type FiatRatesResult,
+    type Output,
+    type Timestamp,
+    type TokenAddress,
 } from '@suite-common/wallet-types';
 import {
     buildCurrencyLongOption,
@@ -32,7 +33,6 @@ import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { validateDecimals } from 'src/utils/suite/validation';
 
 type FiatInputProps = {
@@ -200,6 +200,7 @@ export const BaseCurrencyInput = ({
                             {
                                 symbol: account.symbol,
                                 tokenAddress: token?.contract as TokenAddress,
+                                protocols: token?.protocols,
                             },
                         ],
                         baseCurrencyCode: selected.value as BaseCurrencyCode,

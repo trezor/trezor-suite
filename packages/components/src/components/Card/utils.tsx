@@ -1,9 +1,9 @@
-import { DefaultTheme, RuleSet, css } from 'styled-components';
+import { type DefaultTheme, type RuleSet, css } from 'styled-components';
 
-import { CSSColor, Elevation, mapElevationToBackground, spacings } from '@trezor/theme';
+import { type CSSColor, type Elevation, mapElevationToBackground, spacings } from '@trezor/theme';
 
-import { CardVariant, FillType, PaddingType } from './types';
-import { Padding } from '../../utils/frameProps';
+import { type CardVariant, type FillType, type PaddingType } from './types';
+import { type Padding } from '../../utils/frameProps';
 
 type PaddingMapArgs = {
     paddingType: PaddingType;
@@ -55,7 +55,7 @@ export const mapFillTypeToCSS = ({
     const cssMap: Record<FillType, RuleSet<object>> = {
         default: css`
             background: ${mapElevationToBackground({ $elevation, theme })};
-            outline: 1px solid ${theme.baseBorderSurfaceAction};
+            outline: 1px solid ${theme.surfaceBorderAction};
 
             ${$isClickable &&
             css`
@@ -68,11 +68,11 @@ export const mapFillTypeToCSS = ({
             theme.variant === 'dark'
                 ? css`
                       background: none;
-                      outline: 1px solid ${theme.borderElevation3};
+                      outline: 1px solid ${theme.legacyBorderElevation3};
                   `
                 : css`
-                      background: ${theme.backgroundSurfaceElevationNegative};
-                      outline: 1px solid ${theme.borderElevation0};
+                      background: ${theme.surfaceFillSunken};
+                      outline: 1px solid ${theme.borderNeutral};
                   `,
     };
 
@@ -81,8 +81,8 @@ export const mapFillTypeToCSS = ({
 
 export const mapVariantToColor = ({ $variant, theme }: VariantMapArgs): CSSColor => {
     const colorMap: Record<CardVariant, CSSColor> = {
-        primary: theme.backgroundSecondaryDefault,
-        warning: theme.backgroundAlertYellowBold,
+        primary: theme.legacyBackgroundSecondaryDefault,
+        warning: theme.legacyBackgroundAlertYellowBold,
     };
 
     return colorMap[$variant];

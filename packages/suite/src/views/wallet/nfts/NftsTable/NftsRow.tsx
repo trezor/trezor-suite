@@ -1,15 +1,17 @@
 import { useState } from 'react';
 
+import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import {
     DefinitionType,
-    EnhancedTokenInfo,
+    type EnhancedTokenInfo,
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { Explorer, Network } from '@suite-common/wallet-config';
+import { type Explorer, type Network } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
-import { SelectedAccountStatus } from '@suite-common/wallet-types';
+import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 import {
     NFT_MULTITOKEN_STANDARDS,
     NFT_SINGLETOKEN_STANDARDS,
@@ -32,11 +34,9 @@ import {
 
 import { SUITE } from 'src/actions/suite/constants';
 import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
-import { goto } from 'src/actions/suite/routerActions';
 import { Address, HiddenPlaceholder } from 'src/components/suite';
 import { RedactNumericalValue } from 'src/components/suite/RedactNumericalValue';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsCopyAddressModalShown } from 'src/selectors/suite/suiteSelectors';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 import { DropdownRow } from '../../tokens/DropdownRow';
@@ -154,7 +154,8 @@ const NftsRow = ({
                                         });
                                         if (account) {
                                             dispatch(
-                                                goto('wallet-index', {
+                                                goto({
+                                                    routeName: 'wallet-index',
                                                     params: {
                                                         symbol: account.symbol,
                                                         accountIndex: account.index,
@@ -212,9 +213,8 @@ const NftsRow = ({
                                     <Row gap={8}>
                                         <IconCircle
                                             name="pictureFrame"
-                                            paddingType="large"
-                                            size={28}
-                                            variant="tertiary"
+                                            size={32}
+                                            intent="neutral"
                                         />
                                         <Link href={getNftExplorerUrl(explorer, nft, id)}>
                                             <Text textWrap="nowrap">{NftName}</Text>
@@ -244,9 +244,8 @@ const NftsRow = ({
                                     <Row gap={8}>
                                         <IconCircle
                                             name="pictureFrame"
-                                            paddingType="large"
-                                            size={28}
-                                            variant="tertiary"
+                                            size={32}
+                                            intent="neutral"
                                         />
                                         <Link
                                             href={getNftExplorerUrl(explorer, nft, value?.id || '')}

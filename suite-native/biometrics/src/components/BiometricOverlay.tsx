@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import { Box, PressableOpacity, Text } from '@suite-native/atoms';
 import { Icon, iconSizes } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { BiometricsIcon } from './BiometricsIcon';
 
@@ -11,7 +11,7 @@ const overlayWrapperStyle = prepareNativeStyle(utils => ({
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation0,
+    backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation0,
 }));
 
 const bottomWrapperStyle = prepareNativeStyle(utils => ({
@@ -37,7 +37,7 @@ export const BiometricOverlay = ({
     return (
         <>
             <Box style={applyStyle(overlayWrapperStyle)}>
-                <Icon name="trezorLogo" size="extraLarge" color="iconDefault" />
+                <Icon name="trezorLogo" size="extraLarge" color="contentPrimary" />
             </Box>
             {isBiometricsAuthButtonVisible && (
                 <PressableOpacity
@@ -45,7 +45,7 @@ export const BiometricOverlay = ({
                     style={applyStyle(bottomWrapperStyle)}
                 >
                     <BiometricsIcon iconSize={iconSizes.extraLarge} showShadow />
-                    <Text color="textPrimaryDefault">
+                    <Text color="contentBrand">
                         <Translation id="biometricsButton" />
                     </Text>
                 </PressableOpacity>

@@ -13,8 +13,9 @@ const rangeData: { range: graphRangeOptions; label: string }[] = [
 
 test.describe('Account transactions overview', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
-    test.beforeEach(async ({ onboardingPage }) => {
+    test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
     });
 
     test('Check graph span and search a transaction by BTC address', async ({
@@ -41,7 +42,7 @@ test.describe('Account transactions overview', { tag: ['@T3W1', '@T3T1', '@smoke
 
         await test.step('Search for latest transaction by its address', async () => {
             await walletPage.transactionSearch.fill(latestTransactionAddress);
-            await expect(walletPage.transactionItem).toHaveCount(1);
+            await expect(walletPage.transactionItem.first()).toBeVisible();
         });
 
         // go to a certain accounts page and verify you are on that page

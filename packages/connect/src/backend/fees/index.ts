@@ -1,9 +1,9 @@
+import type { BitcoinNetworkInfo, CoinInfo } from '@trezor/connect-common';
 import { exhaustive } from '@trezor/type-utils';
 
 import { BitcoinFeeLevels } from './BitcoinFeeLevels';
 import { EthereumFeeLevels } from './EthereumFeeLevels';
 import { MiscFeeLevels } from './MiscFeeLevels';
-import type { BitcoinNetworkInfo, CoinInfo } from '../../types';
 
 const instancesPerCoin: { [shortcut: CoinInfo['shortcut']]: MiscFeeLevels } = {};
 

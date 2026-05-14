@@ -1,3 +1,4 @@
+export * from './components/InstantStakeBanner';
 export * from './components/TransactionList';
 export * from './components/TransactionIcon';
 export * from './components/TransactionName';
@@ -5,5 +6,5 @@ export * from './components/TokenTransferListItem';
 export * from './components/TransactionListItem';
 export * from './components/TransactionListItemContainer';
 export * from './selectors';
-export * from './types';
+export type * from './types';
 export * from './utils';

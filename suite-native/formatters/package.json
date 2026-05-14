@@ -6,9 +6,10 @@
     "sideEffects": false,
     "main": "src/index",
     "scripts": {
-        "test:unit": "yarn g:jest",
+        "test:unit": "yarn g:jest:native",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
@@ -17,23 +18,23 @@
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/tokens": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/protobuf": "workspace:*",
-        "@trezor/styles": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "expo-localization": "~17.0.8",
-        "react": "19.1.0",
-        "react-native": "0.81.5",
+        "expo-localization": "~55.0.8",
+        "react": "19.2.4",
+        "react-native": "0.83.2",
         "react-redux": "9.2.0",
-        "web3-utils": "^4.3.2"
+        "web3-utils": "^4.3.3"
     },
     "devDependencies": {
-        "@suite-common/wallet-types": "workspace:*",
-        "@suite-native/test-utils": "workspace:*"
+        "@suite-native/test-utils-store": "workspace:*"
     }
 }

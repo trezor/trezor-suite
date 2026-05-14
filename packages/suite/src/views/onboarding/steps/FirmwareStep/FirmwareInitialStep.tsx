@@ -1,20 +1,25 @@
 import { useState } from 'react';
 
+import { useDevice } from '@suite/device';
+import {
+    FirmwareWarningsList,
+    FirmwareWipeWarning,
+    useFirmwareDesktopUpdate,
+} from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
+import { OnboardingCard } from '@suite/onboarding-components';
+import { selectIsDebugModeActive } from '@suite/settings';
 import { selectDevices } from '@suite-common/device';
-import { AcquiredDevice } from '@suite-common/suite-types';
-import { ButtonProps, Card, Column, Link, Note, Row, Tooltip } from '@trezor/components';
+import { type AcquiredDevice } from '@suite-common/suite-types';
+import { type ButtonProps, Card, Column, Link, Note, Row, Tooltip } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal, isBitcoinOnlyDevice } from '@trezor/device-utils';
 
-import { FirmwareOffer, FirmwareWarningsList, FirmwareWipeWarning } from 'src/components/firmware';
+import { FirmwareOffer } from 'src/components/firmware';
 import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
-import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { PrerequisitesGuide } from 'src/components/suite';
-import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
-import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
+import { useOnboarding, useSelector } from 'src/hooks/suite';
 
 const InstallButton = ({ children, ...rest }: ButtonProps) => (
     <Tooltip

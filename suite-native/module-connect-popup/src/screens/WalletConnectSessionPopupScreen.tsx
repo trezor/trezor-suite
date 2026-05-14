@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     selectPendingProposal,
     sessionProposalApproveThunk,
@@ -26,7 +26,7 @@ import {
 import { NetworkIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ConnectAppIcon } from '../components/ConnectAppIcon';
 import { TxSimulationBanner } from '../components/TxSimulation/TxSimulationBanner';
@@ -123,7 +123,7 @@ export const WalletConnectSessionPopupScreen = () => {
                                         pendingProposal?.validation === 'VALID' && (
                                             <Badge
                                                 icon="check"
-                                                variant="greenSubtle"
+                                                intent="brand"
                                                 label={
                                                     <Translation id="moduleConnectPopup.walletConnect.serviceStatus.verified" />
                                                 }
@@ -133,7 +133,7 @@ export const WalletConnectSessionPopupScreen = () => {
                                         pendingProposal?.validation === 'UNKNOWN' && (
                                             <Badge
                                                 icon="question"
-                                                variant="neutral"
+                                                intent="neutral"
                                                 label={
                                                     <Translation id="moduleConnectPopup.walletConnect.serviceStatus.unknown" />
                                                 }
@@ -143,14 +143,14 @@ export const WalletConnectSessionPopupScreen = () => {
                                         pendingProposal?.validation === 'INVALID') && (
                                         <Badge
                                             icon="warning"
-                                            variant="red"
+                                            intent="critical"
                                             label={
                                                 <Translation id="moduleConnectPopup.walletConnect.serviceStatus.dangerous" />
                                             }
                                         />
                                     )}
                                 </HStack>
-                                <Text color="textSubdued">
+                                <Text color="contentSecondary">
                                     {pendingProposal?.params.proposer.metadata.url}
                                 </Text>
                             </VStack>
@@ -184,7 +184,7 @@ export const WalletConnectSessionPopupScreen = () => {
                                         <Text>
                                             {network.name}
                                             {network.required && (
-                                                <Text color="textAlertRed">*</Text>
+                                                <Text color="contentCritical">*</Text>
                                             )}
                                         </Text>
                                     </HStack>
@@ -269,11 +269,16 @@ export const WalletConnectSessionPopupScreen = () => {
                     />
                 )}
 
-                <Button colorScheme="primary" onPress={handleAccept} isDisabled={isDisabled}>
+                <Button
+                    intent="brand"
+                    priority="primary"
+                    onPress={handleAccept}
+                    isDisabled={isDisabled}
+                >
                     <Translation id="generic.buttons.confirm" />
                 </Button>
 
-                <Button colorScheme="tertiaryElevation0" onPress={handleReject}>
+                <Button intent="neutral" priority="secondary" onPress={handleReject}>
                     <Translation id="generic.buttons.cancel" />
                 </Button>
             </VStack>

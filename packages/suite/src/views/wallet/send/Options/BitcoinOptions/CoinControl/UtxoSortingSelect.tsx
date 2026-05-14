@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
-import { UtxoSorting } from '@suite-common/wallet-types';
-import { Option, Select } from '@trezor/components';
+import { type UtxoSorting } from '@suite-common/wallet-types';
+import { type Option, Select } from '@trezor/components';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 

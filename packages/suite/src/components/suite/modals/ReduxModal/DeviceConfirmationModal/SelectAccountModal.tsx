@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { onReceiveAccount } from '@suite/modal';
 import { selectAccounts } from '@suite-common/wallet-core';
 import {
     Card,
@@ -13,11 +14,10 @@ import {
     SubTabs,
     Table,
 } from '@trezor/components';
-import { UiRequestSelectAccount } from '@trezor/connect';
+import { type UiRequestSelectAccount } from '@trezor/connect';
 import { CoinLogo, isNetworkSymbolWithIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { onReceiveAccount } from 'src/actions/suite/modalActions';
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
@@ -66,7 +66,7 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
         <ConnectModalBackdrop onClick={close} canSwitchDevice>
             <Modal.ModalBase
                 onCancel={close}
-                variant="primary"
+                intent="brand"
                 heading={
                     <Translation
                         id="TR_SELECT_ACCOUNT"
@@ -155,7 +155,7 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
                                         </Table.Row>
                                     );
                                 })}
-                                {data.type !== 'end' && (
+                                {data.type !== 'end' && data.type !== 'complete' && (
                                     <Table.Row>
                                         <Table.Cell>
                                             <SkeletonRectangle width="100px" animate />

@@ -1,9 +1,9 @@
 import { useFormatters } from '@suite-common/formatters';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
-import { Address as BlockchainLinkAddress } from '@trezor/blockchain-link-types';
+import { type Address as BlockchainLinkAddress } from '@trezor/blockchain-link-types';
 import { Column, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';

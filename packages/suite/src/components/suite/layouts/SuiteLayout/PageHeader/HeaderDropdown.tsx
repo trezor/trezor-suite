@@ -1,18 +1,19 @@
-import { JSX } from 'react';
+import { type JSX } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
-import { Dropdown, DropdownMenuItemProps, IconName } from '@trezor/components';
+import { Dropdown, type DropdownMenuItemProps, type IconName } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
+import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { useConditionalRender } from 'src/support/suite/ConditionalRender';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 import { useGoToWithAnalytics } from './useGoToWithAnalytics';
-import { useSelector } from '../../../../../hooks/suite';
-import { selectSelectedAccount } from '../../../../../reducers/wallet/selectedAccountReducer';
-import { useConditionalRender } from '../../../../../support/suite/ConditionalRender';
-import { AppNavigationTooltip } from '../../../AppNavigation/AppNavigationTooltip';
 
 type ActionItem = {
     id: string;
@@ -34,6 +35,7 @@ export const HeaderDropdown = ({
     showSignAndVerify,
 }: HeaderDropdownProps) => {
     const analytics = useAnalytics();
+    const dispatch = useDispatch();
     const goToWithAnalytics = useGoToWithAnalytics();
     const account = useSelector(selectSelectedAccount);
 
@@ -52,7 +54,10 @@ export const HeaderDropdown = ({
                   {
                       id: 'wallet-sign-verify',
                       callback: () => {
-                          goToWithAnalytics('wallet-sign-verify', { preserveParams: true });
+                          goToWithAnalytics({
+                              routeName: 'wallet-sign-verify',
+                              preserveParams: true,
+                          });
                       },
                       title: <Translation id="TR_NAV_SIGN_AND_VERIFY" />,
                       icon: 'pencilLine' as const,
@@ -63,7 +68,15 @@ export const HeaderDropdown = ({
         {
             id: 'wallet-trading-buy',
             callback: () => {
-                goToWithAnalytics('wallet-trading-buy', { preserveParams: true });
+                if (account) {
+                    dispatch(
+                        tradingActions.setTradingFromPrefilledAccount(
+                            getTradingPrefilledFromAccountData(account),
+                        ),
+                    );
+                }
+
+                goToWithAnalytics({ routeName: 'wallet-trading-buy' });
 
                 analytics.report({
                     type: events.tradeNavigateEvent.name,
@@ -82,9 +95,15 @@ export const HeaderDropdown = ({
         {
             id: 'wallet-swap',
             callback: () => {
-                goToWithAnalytics('wallet-trading-exchange', {
-                    preserveParams: false,
-                });
+                if (account) {
+                    dispatch(
+                        tradingActions.setTradingFromPrefilledAccount(
+                            getTradingPrefilledFromAccountData(account),
+                        ),
+                    );
+                }
+
+                goToWithAnalytics({ routeName: 'wallet-trading-exchange', preserveParams: false });
 
                 analytics.report({
                     type: events.tradeNavigateEvent.name,

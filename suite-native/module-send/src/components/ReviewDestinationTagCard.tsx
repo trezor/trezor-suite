@@ -1,5 +1,5 @@
 import { Card, Text } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type ReviewDestinationTagCardProps = {
     destinationTag: string;
@@ -13,8 +13,8 @@ const cardStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp24,
     paddingVertical: utils.spacings.sp16,
     borderRadius: utils.borders.radii.r12,
-    backgroundColor: utils.colors.backgroundSurfaceElevationNegative,
-    borderColor: utils.colors.borderElevation0,
+    backgroundColor: utils.colors.surfaceFillSunken,
+    borderColor: utils.colors.borderNeutral,
 }));
 
 const destinationTagStyle = prepareNativeStyle(() => ({

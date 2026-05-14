@@ -1,5 +1,5 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountKey } from '@suite-common/wallet-types';
 
 import {
     useFilterAccountsWithTokens,

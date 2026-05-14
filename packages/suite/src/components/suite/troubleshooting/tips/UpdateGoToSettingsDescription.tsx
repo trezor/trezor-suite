@@ -1,13 +1,13 @@
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useDispatch } from 'src/hooks/suite';
 
 export const UpdateGoToSettingsDescription = () => {
     const dispatch = useDispatch();
 
-    const gotToDeviceSettings = () => dispatch(goto('settings-device'));
+    const gotToDeviceSettings = () => dispatch(goto({ routeName: 'settings-device' }));
 
     return (
         <Translation

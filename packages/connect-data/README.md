@@ -1,7 +1,6 @@
 # @trezor/connect-data
 
 [![NPM](https://img.shields.io/npm/v/@trezor/connect-data.svg)](https://www.npmjs.org/package/@trezor/connect-data)
-[![Known Vulnerabilities](https://snyk.io/test/github/trezor/trezor-suite/badge.svg?targetFile=packages/connect-data/package.json)](https://snyk.io/test/github/trezor/trezor-suite/badge.svg?targetFile=packages/connect-data/package.json)
 
 Data used by @trezor/connect\* packages.
 

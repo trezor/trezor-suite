@@ -1,11 +1,11 @@
-import { useSelector } from 'react-redux';
-
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { selectIsDeviceConnected } from '@suite-common/device';
-import { DeviceConnectionGuardScreen } from '@suite-native/device-authorization';
 import {
-    FirmwareUpdateStackParamList,
+    DeviceConnectionGuardScreen,
+    useDeviceConnectionGuard,
+} from '@suite-native/device-authorization';
+import {
+    type FirmwareUpdateStackParamList,
     FirmwareUpdateStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
@@ -17,22 +17,20 @@ import { ThpConfirmationScreen } from '../screens/ThpConfirmationScreen';
 const FirmwareUpdateStack = createNativeStackNavigator<FirmwareUpdateStackParamList>();
 
 export const FirmwareUpdateStackNavigator = () => {
-    const isDeviceConnected = useSelector(selectIsDeviceConnected);
+    const { isDeviceConnectionGuardVisible } = useDeviceConnectionGuard();
 
     return (
         <FirmwareUpdateStack.Navigator screenOptions={stackNavigationOptionsConfig}>
-            {!isDeviceConnected && (
+            {isDeviceConnectionGuardVisible && (
                 <FirmwareUpdateStack.Screen
                     name={FirmwareUpdateStackRoutes.DeviceConnectionGuard}
                     component={DeviceConnectionGuardScreen}
                 />
             )}
-            {isDeviceConnected && (
-                <FirmwareUpdateStack.Screen
-                    name={FirmwareUpdateStackRoutes.ConfirmFirmwareUpdate}
-                    component={ConfirmFirmwareUpdateScreen}
-                />
-            )}
+            <FirmwareUpdateStack.Screen
+                name={FirmwareUpdateStackRoutes.ConfirmFirmwareUpdate}
+                component={ConfirmFirmwareUpdateScreen}
+            />
             <FirmwareUpdateStack.Screen
                 name={FirmwareUpdateStackRoutes.FirmwareInstallation}
                 component={FirmwareInstallationScreen}

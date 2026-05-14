@@ -1,5 +1,5 @@
 import { getSuiteVersion } from '@trezor/env-utils';
-import { Result, err, ok } from '@trezor/type-utils';
+import { type Result, err, ok } from '@trezor/type-utils';
 import { typedObjectEntries } from '@trezor/utils';
 
 import { DEFAULT_QUOTA_MANAGER_URL } from './constants';

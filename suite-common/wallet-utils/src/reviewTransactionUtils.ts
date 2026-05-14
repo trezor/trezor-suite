@@ -1,18 +1,18 @@
 import { fromWei, toWei } from 'web3-utils';
 
-import { EVM_SPENDER_LABELS } from '@suite-common/suite-constants';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { EVM_SPENDER_LABELS, KNOWN_VAULTS } from '@suite-common/suite-constants';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { networks } from '@suite-common/wallet-config';
 import {
-    Account,
-    FormState,
-    GeneralPrecomposedTransactionFinal,
-    ReviewOutput,
-    ReviewOutputState,
-    StakeFormState,
-    StakeType,
+    type Account,
+    type FormState,
+    type GeneralPrecomposedTransactionFinal,
+    type ReviewOutput,
+    type ReviewOutputState,
+    type StakeFormState,
+    type StakeType,
 } from '@suite-common/wallet-types';
-import { CardanoOutput } from '@trezor/connect';
+import type { CardanoOutput } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
@@ -228,8 +228,15 @@ const constructOldFlow = ({
             });
     }
 
-    if (precomposedForm.transactionData && !precomposedTx.token) {
-        outputs.push({ type: 'data', value: precomposedForm.transactionData });
+    if (precomposedForm.tronDataAscii) {
+        outputs.push({ type: 'note', value: precomposedForm.tronDataAscii });
+    } else {
+        if (
+            precomposedForm.transactionData &&
+            (!precomposedTx.token || precomposedForm.yieldMetadata)
+        ) {
+            outputs.push({ type: 'data', value: precomposedForm.transactionData });
+        }
     }
 
     // For bump fee we have to analyze tx data,
@@ -248,7 +255,11 @@ const constructOldFlow = ({
                 value: precomposedForm.destinationTag,
             });
         }
-    } else if ((!isBumpFeeRbf || !precomposedTx.useNativeRbf) && !stakeType) {
+    } else if (
+        (!isBumpFeeRbf || !precomposedTx.useNativeRbf) &&
+        !stakeType &&
+        !precomposedForm.yieldMetadata
+    ) {
         outputs.push({ type: 'fee', value: precomposedTx.fee });
     }
 
@@ -273,6 +284,7 @@ const constructNewFlow = ({
     const isCardano = isCardanoTx(account, precomposedTx);
     const isSolana = account.networkType === 'solana';
     const isStellar = account.networkType === 'stellar';
+    const isTron = account.networkType === 'tron';
     const evmApprovalTxData = getEvmApprovalTxData(precomposedForm.transactionData);
     const isEvmApproval = isEvmApprovalTx(precomposedForm.transactionData);
     const stakeType = getStakeType(precomposedForm, outputs);
@@ -281,6 +293,26 @@ const constructNewFlow = ({
 
     const hasDestinationTag = 'destinationTag' in precomposedForm;
     const trading = precomposedForm?.trading;
+
+    if (precomposedForm.yieldMetadata && isUpdatedEthereumSendFlow) {
+        outputs.push(
+            { type: 'data', value: '' },
+            { type: 'address', value: precomposedForm.yieldMetadata.vaultName },
+        );
+
+        precomposedTx.outputs.forEach(o => {
+            if ('address' in o && typeof o.address === 'string') {
+                outputs.push({
+                    type: 'amount',
+                    value: o.amount.toString(),
+                    value2: networks[symbol].name,
+                    token: precomposedTx.token,
+                });
+            }
+        });
+
+        return outputs;
+    }
 
     if (networkType === 'stellar') {
         if (!isUpdatedStellarSendFlow) {
@@ -306,11 +338,18 @@ const constructNewFlow = ({
         });
     }
 
-    if (
-        (precomposedForm.transactionData && !precomposedTx.token && !isEvmApproval) ||
-        (precomposedForm.transactionData && isEvmApproval && !isApprovalFlowSupported)
-    ) {
-        outputs.push({ type: 'data', value: precomposedForm.transactionData });
+    if (precomposedForm.tronDataAscii) {
+        outputs.push({ type: 'note', value: precomposedForm.tronDataAscii });
+    } else {
+        if (
+            (precomposedForm.transactionData && !precomposedTx.token && !isEvmApproval) ||
+            (precomposedForm.transactionData && isEvmApproval && !isApprovalFlowSupported) ||
+            (precomposedForm.transactionData &&
+                precomposedForm.yieldMetadata &&
+                !isUpdatedEthereumSendFlow)
+        ) {
+            outputs.push({ type: 'data', value: precomposedForm.transactionData });
+        }
     }
 
     const isRbf = isRbfBumpFeeTransaction(precomposedTx);
@@ -385,12 +424,19 @@ const constructNewFlow = ({
                 };
 
                 // this is displayed only for tokens without definitions
-                if (precomposedTx.token && !precomposedTx.isTokenKnown && !isSolana && !isStellar) {
+                if (
+                    precomposedTx.token &&
+                    !precomposedTx.isTokenKnown &&
+                    !isSolana &&
+                    !isStellar &&
+                    !isTron
+                ) {
                     outputs.push(tokenOutput);
                     outputs.push({ type: 'address', value: o.address });
                 } else if (
-                    (precomposedForm.transactionData && !isEvmApproval) ||
-                    (isEvmApproval && !isApprovalFlowSupported)
+                    !isTron &&
+                    ((precomposedForm.transactionData && !isEvmApproval) ||
+                        (isEvmApproval && !isApprovalFlowSupported))
                 ) {
                     // EVM contract call
                     outputs.push({ type: 'contract', value: o.address });
@@ -423,7 +469,10 @@ const constructNewFlow = ({
     if (evmApprovalTxData && networkType === 'ethereum' && isApprovalFlowSupported) {
         outputs.push({
             type: 'contract',
-            value: EVM_SPENDER_LABELS[evmApprovalTxData.spender] || evmApprovalTxData.spender,
+            value:
+                KNOWN_VAULTS[evmApprovalTxData.spender] ??
+                EVM_SPENDER_LABELS[evmApprovalTxData.spender] ??
+                evmApprovalTxData.spender,
         });
 
         if (precomposedTx.token) {
@@ -458,8 +507,23 @@ const constructNewFlow = ({
             });
     }
 
+    if (isTron && precomposedTx.token) {
+        const feeLimitValue =
+            'feeLimit' in precomposedForm && precomposedForm.feeLimit
+                ? precomposedForm.feeLimit
+                : (precomposedTx.estimatedFeeLimit ?? precomposedTx.fee);
+        outputs.push({ type: 'fee-limit', value: feeLimitValue });
+    }
+
     if (networkType === 'ripple' && hasDestinationTag && precomposedForm.destinationTag) {
         outputs.unshift({
+            type: 'destination-tag',
+            value: precomposedForm.destinationTag,
+        });
+    }
+
+    if (isSolana && precomposedForm.destinationTag) {
+        outputs.push({
             type: 'destination-tag',
             value: precomposedForm.destinationTag,
         });

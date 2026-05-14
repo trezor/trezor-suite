@@ -1,6 +1,7 @@
-import { NetworkDtoId } from '@suite-common/earn-api';
+import { type NetworkDtoId } from '@suite-common/earn-stablecoin-api';
+import { isArrayMember } from '@trezor/utils';
 
-import { networks } from './networksConfig';
+import { PROD_STAKING_SYMBOLS, type ProdStakingNetworkSymbol, networks } from './networksConfig';
 import {
     type AccountType,
     type Network,
@@ -24,19 +25,22 @@ export const networkSymbolCollection = networksCollection.map(n => n.symbol);
 interface GetMainnetsProps {
     debug?: boolean;
     useExperimentalNetworks?: boolean;
+    includeTron?: boolean;
     allNetworks?: Network[];
 }
 
 export const getMainnets = ({
     debug = false,
     useExperimentalNetworks = false,
+    includeTron = false,
     allNetworks = networksCollection,
 }: GetMainnetsProps = {}) =>
     allNetworks.filter(
         n =>
             !n.testnet &&
             (!n.isDebugOnlyNetwork || debug) &&
-            (!n.isExperimentalOnlyNetwork || useExperimentalNetworks),
+            (!n.isExperimentalOnlyNetwork || useExperimentalNetworks) &&
+            (n.symbol !== 'trx' || includeTron),
     );
 
 interface GetTestnetsProps {
@@ -54,7 +58,7 @@ export const getTestnets = ({
 }: GetTestnetsProps) =>
     allNetworks.filter(
         n =>
-            n.testnet === true &&
+            n.testnet &&
             useTestnetNetworks &&
             (!n.isDebugOnlyNetwork || debug) &&
             (!n.isExperimentalOnlyNetwork || useExperimentalNetworks),
@@ -135,7 +139,7 @@ export const getNetworkByEvmChainId = (chainId: number) =>
 export const getNetworkDisplaySymbol = (symbol: NetworkSymbol) => getNetwork(symbol).displaySymbol;
 
 export const getDisplaySymbol = (coinSymbol: string, contractAddress?: string | null) => {
-    const MAX_SYMBOL_LENGTH = 8;
+    const MAX_SYMBOL_LENGTH = 10;
     const isTokenSymbolLong = coinSymbol.length > MAX_SYMBOL_LENGTH;
 
     const symbol = coinSymbol.toLowerCase();
@@ -165,3 +169,7 @@ export const getNetworkDecimals = (symbol: NetworkSymbolExtended) => {
 
 export const getNetworkByYieldXyzId = (yieldXyzId: NetworkDtoId) =>
     networksCollection.find(n => n.yieldXyzId === yieldXyzId) ?? null;
+
+export const isProdStakingNetworkSymbol = (
+    symbol: NetworkSymbol,
+): symbol is ProdStakingNetworkSymbol => isArrayMember(symbol, PROD_STAKING_SYMBOLS);

@@ -1,11 +1,12 @@
 import { HomeStackRoutes, RootStackRoutes } from '@suite-native/navigation';
-import { setIsOnboardingFinished } from '@suite-native/settings';
+import { appSettingsReducer, setIsOnboardingFinished } from '@suite-native/settings';
 import {
-    TestStore,
+    type TestStore,
     act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+    createLightStore,
+    createStaticReducer,
+    renderHookWithStoreProvider,
+} from '@suite-native/test-utils-store';
 
 import { useExitOnboardingFlow } from '../useExitOnboardingFlow';
 
@@ -29,16 +30,31 @@ describe('useExitOnboardingFlow', () => {
     let store: TestStore;
 
     const renderUseExitOnboardingFlow = () =>
-        renderHookWithStoreProviderAsync(() => useExitOnboardingFlow(), { store });
+        renderHookWithStoreProvider(() => useExitOnboardingFlow(), { store });
 
     beforeEach(() => {
-        store = initStore().store;
+        store = createLightStore({
+            reducer: {
+                appSettings: appSettingsReducer,
+                locale: createStaticReducer({
+                    appLocaleCode: 'en-US',
+                    systemLocaleCode: 'en-US',
+                    isSystemLocaleUsed: true,
+                }),
+                wallet: createStaticReducer({
+                    settings: {
+                        localCurrency: 'usd',
+                        bitcoinAmountUnit: 0,
+                    },
+                }),
+            },
+        });
         jest.clearAllMocks();
     });
 
-    it('should set onboarding flag and navigate', async () => {
+    it('should set onboarding flag and navigate', () => {
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = await renderUseExitOnboardingFlow();
+        const { result } = renderUseExitOnboardingFlow();
 
         // call the returned callback
         act(() => {

@@ -78,10 +78,10 @@ export const transactionCreatedEvent: EventDef<Attributes, EventType.Transaction
             changelog: [{ version: '1.9.0', notes: 'added' }],
         },
         isCoinControlEnabled: {
-            changelog: [{ version: '2023.2.1', notes: 'added' }],
+            changelog: [{ version: '23.2.1', notes: 'added' }],
         },
         hasCoinControlBeenOpened: {
-            changelog: [{ version: '2023.2.1', notes: 'added' }],
+            changelog: [{ version: '23.2.1', notes: 'added' }],
         },
         txType: {
             description: '`stake` or `trade` whether the user is staking or trading',

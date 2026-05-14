@@ -5,11 +5,11 @@ import {
     Kind,
     Optional,
     OptionalKind,
-    Static,
-    TObject,
-    TSchema,
+    type Static,
+    type TObject,
+    type TSchema,
 } from '@sinclair/typebox';
-import { Errors, ValueError, ValueErrorType } from '@sinclair/typebox/errors';
+import { Errors, type ValueError, ValueErrorType } from '@sinclair/typebox/errors';
 import { Mixin } from 'ts-mixer';
 
 import { ArrayBufferBuilder, BufferBuilder, KeyofEnumBuilder, UintBuilder } from './custom-types';
@@ -97,25 +97,6 @@ export function Assert<T extends TSchema>(schema: T, value: unknown): asserts va
         }
         errors.shift();
         [error] = errors;
-    }
-}
-
-export function AssertWeak<T extends TSchema>(
-    schema: T,
-    value: unknown,
-): asserts value is Static<T> {
-    try {
-        Assert(schema, value);
-    } catch (e) {
-        if (e instanceof InvalidParameter) {
-            if (e.type === ValueErrorType.ObjectRequiredProperty) {
-                // We consider this error to be serious
-                throw e;
-            }
-            console.warn('Method params validation failed', e);
-        } else {
-            throw e;
-        }
     }
 }
 

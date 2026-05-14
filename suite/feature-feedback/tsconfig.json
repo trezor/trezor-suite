@@ -1,0 +1,15 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "include": ["."],
+    "references": [
+        { "path": "../../suite-common/feedback" },
+        { "path": "../experimental" },
+        { "path": "../intl" },
+        { "path": "../../packages/components" },
+        {
+            "path": "../../packages/product-components"
+        },
+        { "path": "../../packages/theme" }
+    ]
+}

@@ -1,15 +1,15 @@
-import { asAmountSubunit } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { buildRedeem } from '../../../builder/evm/redeem';
+import { asEvmAddress } from '../../../types/evm';
 
-const SENDER = '0x44Ab691a7492C3dCb88241AF8aC5371d84B61BB6';
+const SENDER = asEvmAddress('0x44Ab691a7492C3dCb88241AF8aC5371d84B61BB6');
 
 describe('buildRedeem', () => {
     it('encodes valid redeem calldata', () => {
         const result = buildRedeem(
             {
-                shares: asAmountSubunit(new BigNumber('9999586934321')),
+                shares: new BigNumber('9999586934321'),
                 receiver: SENDER,
                 owner: SENDER,
             },
@@ -27,7 +27,7 @@ describe('buildRedeem', () => {
     it('returns error for zero address receiver', () => {
         const result = buildRedeem(
             {
-                shares: asAmountSubunit(new BigNumber('9999586934321')),
+                shares: new BigNumber('9999586934321'),
                 receiver: '0x0000000000000000000000000000000000000000',
                 owner: SENDER,
             },
@@ -46,7 +46,7 @@ describe('buildRedeem', () => {
     it('returns error for zero address owner', () => {
         const result = buildRedeem(
             {
-                shares: asAmountSubunit(new BigNumber('9999586934321')),
+                shares: new BigNumber('9999586934321'),
                 receiver: SENDER,
                 owner: '0x0000000000000000000000000000000000000000',
             },
@@ -65,7 +65,7 @@ describe('buildRedeem', () => {
     it('returns error when receiver is different from sender', () => {
         const result = buildRedeem(
             {
-                shares: asAmountSubunit(new BigNumber('9999586934321')),
+                shares: new BigNumber('9999586934321'),
                 receiver: '0x1111111111111111111111111111111111111111',
                 owner: SENDER,
             },
@@ -83,7 +83,7 @@ describe('buildRedeem', () => {
     it('returns error when owner is different from sender', () => {
         const result = buildRedeem(
             {
-                shares: asAmountSubunit(new BigNumber('9999586934321')),
+                shares: new BigNumber('9999586934321'),
                 receiver: SENDER,
                 owner: '0x1111111111111111111111111111111111111111',
             },
@@ -101,7 +101,7 @@ describe('buildRedeem', () => {
     it('returns errors when owner and receiver are different from sender', () => {
         const result = buildRedeem(
             {
-                shares: asAmountSubunit(new BigNumber('9999586934321')),
+                shares: new BigNumber('9999586934321'),
                 receiver: '0x1111111111111111111111111111111111111111',
                 owner: '0x1111111111111111111111111111111111111111',
             },
@@ -120,7 +120,7 @@ describe('buildRedeem', () => {
     it('returns error for zero shares', () => {
         const result = buildRedeem(
             {
-                shares: asAmountSubunit(new BigNumber('0')),
+                shares: new BigNumber('0'),
                 receiver: SENDER,
                 owner: SENDER,
             },

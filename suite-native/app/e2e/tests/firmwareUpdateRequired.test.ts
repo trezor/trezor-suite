@@ -11,11 +11,11 @@ const preloadedStateT3T1 = preparePreloadedReduxState(
 
 describe('FW update required [@androidOnly @T3T1]', () => {
     beforeEach(async () => {
-        await openApp({ args: { preloadedState: preloadedStateT3T1 } });
-        await prepareTrezorEmulator({
-            version: '2.8.9',
-            args: { isFirmwareUpdateEnabled: true },
+        await prepareTrezorEmulator({ version: '2.8.10' });
+        await openApp({
+            args: { preloadedState: preloadedStateT3T1, isFirmwareUpdateEnabled: true },
         });
+        await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
     });
 
     test('Device Check Backup is possible from firmware update', async () => {

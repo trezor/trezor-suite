@@ -1,21 +1,50 @@
-import { selectTradingMaxSlippagePercentage } from '@suite-common/trading';
-import {
-    TestStore,
-    initStore,
-    renderWithStoreProviderAsync,
-    userEvent,
-} from '@suite-native/test-utils';
+import { combineReducers } from '@reduxjs/toolkit';
 
-import { MaxSlippageForm, MaxSlippageFormProps, SLIPPAGE_INPUT_TEST_ID } from '../MaxSlippageForm';
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { selectTradingMaxSlippagePercentage } from '@suite-common/trading';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { localeReducer } from '@suite-native/intl';
+import {
+    type TestStore,
+    act,
+    createLightStore,
+    createStaticReducer,
+    renderWithStoreProvider,
+    userEvent,
+} from '@suite-native/test-utils-store';
+import { tradingSlice } from '@suite-native/trading-state';
+
+import {
+    MaxSlippageForm,
+    type MaxSlippageFormProps,
+    SLIPPAGE_INPUT_TEST_ID,
+} from '../MaxSlippageForm';
 
 describe('MaxSlippageForm', () => {
-    const renderMaxSlippageForm = (props: Partial<MaxSlippageFormProps>, store: TestStore) =>
-        renderWithStoreProviderAsync(<MaxSlippageForm onSubmit={jest.fn()} {...props} />, {
+    const reducer = {
+        locale: localeReducer,
+        wallet: combineReducers({
+            settings: createStaticReducer(initialWalletSettingsState),
+            trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+        }),
+    } as const;
+
+    const renderMaxSlippageForm = async (
+        props: Partial<MaxSlippageFormProps>,
+        store: TestStore,
+    ) => {
+        const ret = renderWithStoreProvider(<MaxSlippageForm onSubmit={jest.fn()} {...props} />, {
             store,
         });
 
+        // wait for validators to run
+        await act(() => Promise.resolve());
+
+        return ret;
+    };
+
     it('should render value based on store', async () => {
-        const { store } = initStore();
+        const store = createLightStore({ reducer });
         const { getByTestId, getByText, queryByText } = await renderMaxSlippageForm({}, store);
 
         expect(getByTestId(SLIPPAGE_INPUT_TEST_ID)).toHaveDisplayValue('1');
@@ -24,7 +53,7 @@ describe('MaxSlippageForm', () => {
     });
 
     it('should display validation error on invalid value', async () => {
-        const { store } = initStore();
+        const store = createLightStore({ reducer });
         const { getByTestId, getByText } = await renderMaxSlippageForm({}, store);
 
         await userEvent.type(getByTestId(SLIPPAGE_INPUT_TEST_ID), '999');
@@ -34,7 +63,7 @@ describe('MaxSlippageForm', () => {
     });
 
     it('should save slippage to store and call onSubmit', async () => {
-        const { store } = initStore();
+        const store = createLightStore({ reducer });
         const onSubmit = jest.fn();
         const { getByTestId, getByText } = await renderMaxSlippageForm({ onSubmit }, store);
         const input = getByTestId(SLIPPAGE_INPUT_TEST_ID);
@@ -48,7 +77,7 @@ describe('MaxSlippageForm', () => {
     });
 
     it('should transform value to valid number', async () => {
-        const { store } = initStore();
+        const store = createLightStore({ reducer });
         const { getByTestId } = await renderMaxSlippageForm({}, store);
         const input = getByTestId(SLIPPAGE_INPUT_TEST_ID);
 

@@ -1,6 +1,6 @@
 import * as utils from './test.utils';
 import { branchAndBound } from '../../src/coinselect/inputs/branchAndBound';
-import { CoinSelectOptions } from '../../src/types';
+import type { CoinSelectOptions } from '../../src/types';
 import fixtures from '../__fixtures__/coinselect/bnb';
 
 describe('coinselect: branchAndBound (bnb)', () => {

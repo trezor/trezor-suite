@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 
-import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
+import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useNavigation } from '@react-navigation/native';
 import { useSetAtom } from 'jotai';
 
@@ -16,10 +16,10 @@ import {
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
-    DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    RootStackParamList,
-    StackToStackCompositeNavigationProps,
+    type RootStackParamList,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { RECOVERY_ISSUES_LINK } from '@trezor/urls';
 
@@ -67,13 +67,14 @@ export const RecoveryInstructionsBottomSheet = forwardRef<BottomSheetModalMethod
                         }
                     >
                         <VStack marginTop="sp2" spacing="sp16">
-                            <Text variant="body-md" color="textSubdued">
+                            <Text variant="body-md" color="contentSecondary">
                                 <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.bottomSheet.card1.paragraph1" />
                             </Text>
                             <Button
-                                colorScheme="tertiaryElevation0"
+                                intent="neutral"
+                                priority="secondary"
                                 onPress={handleLearnMorePress}
-                                viewLeft="arrowSquareOut"
+                                iconLeft="arrowSquareOut"
                             >
                                 <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.bottomSheet.card1.cta" />
                             </Button>
@@ -87,20 +88,20 @@ export const RecoveryInstructionsBottomSheet = forwardRef<BottomSheetModalMethod
                     >
                         <VStack marginTop="sp2" spacing="sp16">
                             <VStack spacing="sp16">
-                                <Text variant="body-md" color="textSubdued">
+                                <Text variant="body-md" color="contentSecondary">
                                     <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.bottomSheet.card2.paragraph1" />
                                 </Text>
                                 <Box>
-                                    <Text variant="body-md" color="textSubdued">
+                                    <Text variant="body-md" color="contentSecondary">
                                         <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.bottomSheet.card2.paragraph2" />
                                     </Text>
-                                    <BulletListItem variant="body-md" color="textSubdued">
+                                    <BulletListItem variant="body-md" color="contentSecondary">
                                         <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.bottomSheet.card2.bullets.1" />
                                     </BulletListItem>
-                                    <BulletListItem variant="body-md" color="textSubdued">
+                                    <BulletListItem variant="body-md" color="contentSecondary">
                                         <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.bottomSheet.card2.bullets.2" />
                                     </BulletListItem>
-                                    <BulletListItem variant="body-md" color="textSubdued">
+                                    <BulletListItem variant="body-md" color="contentSecondary">
                                         <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.bottomSheet.card2.bullets.3" />
                                     </BulletListItem>
                                 </Box>

@@ -1,12 +1,12 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import { type FlagsState, setFlag } from '@suite/flags';
 import { IconButton } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
 
-import { setFlag } from '../../../actions/suite/suiteActions';
-import { useDispatch } from '../../../hooks/suite';
-import { Flags } from '../../../reducers/suite/suiteReducer';
+import { useDispatch } from 'src/hooks/suite';
+
 import { bannerAnimationConfig } from '../banner-animations';
 
 const CloseButtonContainer = styled.div`
@@ -41,7 +41,7 @@ const BannerWrapper = styled(motion.div)`
 type AnimatedWrapperProps = {
     children: React.ReactNode;
     isVisible: boolean;
-    flagToHide: keyof Flags;
+    flagToHide: keyof FlagsState;
 };
 
 export const AnimatedWrapper = ({ children, isVisible, flagToHide }: AnimatedWrapperProps) => {
@@ -54,7 +54,7 @@ export const AnimatedWrapper = ({ children, isVisible, flagToHide }: AnimatedWra
                     key="container"
                     {...bannerAnimationConfig}
                     onAnimationComplete={() => {
-                        dispatch(setFlag(flagToHide, false));
+                        dispatch(setFlag({ key: flagToHide, value: false }));
                     }}
                 >
                     {children}

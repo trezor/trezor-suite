@@ -22,11 +22,12 @@ test.describe('Metadata - Output labeling', { tag: ['@webOnly', '@T3W1', '@T3T1'
                 priority: TestPriority.High,
             }),
         },
-        async ({ page, onboardingPage, metadataPage, walletPage }) => {
+        async ({ page, onboardingPage, metadataPage, settingsPage, walletPage }) => {
             await onboardingPage.completeOnboarding();
+            await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+            await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
             await walletPage.openAccount();
             await metadataPage.output.clickAddLabelButton(OutputLabelId.BitcoinDefault1, 0);
-            await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
             await metadataPage.output
                 .outputMetadataInput(OutputLabelId.BitcoinDefault1, 0)
                 .fill('mnau cool label');

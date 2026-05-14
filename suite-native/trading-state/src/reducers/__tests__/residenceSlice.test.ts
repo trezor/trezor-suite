@@ -1,4 +1,4 @@
-import { TradingCountryCode } from '@suite-common/trading';
+import { type TradingCountryCode } from '@suite-common/trading';
 
 import { residenceActions, residenceReducer } from '../residenceSlice';
 
@@ -7,6 +7,7 @@ describe('residenceSlice', () => {
         const state = residenceReducer(undefined, { type: 'unknown-action' });
         expect(state).toEqual({
             country: undefined,
+            countrySubdivision: undefined,
             wasOnboardingVisited: false,
         });
     });
@@ -17,10 +18,26 @@ describe('residenceSlice', () => {
 
             const state = residenceReducer(
                 undefined,
-                residenceActions.setResidenceCountry(country),
+                residenceActions.setResidenceCountry({ country }),
             );
 
             expect(state.country).toBe(country);
+            expect(state.countrySubdivision).toBeUndefined();
+        });
+
+        it('should set residence country and subdivision', () => {
+            const country: TradingCountryCode = 'US';
+
+            const state = residenceReducer(
+                undefined,
+                residenceActions.setResidenceCountry({
+                    country,
+                    countrySubdivision: 'CA',
+                }),
+            );
+
+            expect(state.country).toBe(country);
+            expect(state.countrySubdivision).toBe('CA');
         });
     });
 

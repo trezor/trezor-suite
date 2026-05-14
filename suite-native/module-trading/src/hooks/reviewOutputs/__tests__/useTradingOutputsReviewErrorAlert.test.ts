@@ -1,12 +1,11 @@
-import { AccountKey } from '@suite-common/wallet-types';
-import {
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
-import { getWalletState } from '@suite-native/trading-fixtures';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { getTranslation } from '@suite-native/intl';
+import { type TestStore, act } from '@suite-native/test-utils-store';
 
+import {
+    createTradingLightStore,
+    renderHookWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useTradingOutputsReviewErrorAlert } from '../useTradingOutputsReviewErrorAlert';
 
 const mockShowAlert = jest.fn();
@@ -21,19 +20,19 @@ describe('useTradingOutputsReviewErrorAlert', () => {
     let store: TestStore;
 
     const renderUseTradingOutputsReviewErrorAlert = (accountKey: AccountKey) =>
-        renderHookWithStoreProviderAsync(() => useTradingOutputsReviewErrorAlert(accountKey), {
+        renderHookWithTradingProvider(() => useTradingOutputsReviewErrorAlert(accountKey), {
             store,
         });
 
     beforeEach(() => {
         jest.clearAllMocks();
-        store = initStore({ wallet: getWalletState({ tradeType: 'exchange' }) }).store;
+        store = createTradingLightStore({ tradeType: 'exchange' });
     });
 
-    it('should show alert', async () => {
+    it('should show alert', () => {
         const mockOnRetry = jest.fn();
         const mockOnCancel = jest.fn();
-        const { result } = await renderUseTradingOutputsReviewErrorAlert(
+        const { result } = renderUseTradingOutputsReviewErrorAlert(
             'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
         );
 
@@ -44,22 +43,21 @@ describe('useTradingOutputsReviewErrorAlert', () => {
         expect(mockShowAlert).toHaveBeenCalledTimes(1);
         expect(mockShowAlert).toHaveBeenCalledWith({
             icon: 'warningCircle',
-            title: 'Transaction failed',
-            description:
-                'There has been an unexpected error, please try sending your transaction again.',
-            primaryButtonTitle: 'Try again',
-            primaryButtonVariant: 'redBold',
+            title: getTranslation('moduleSend.review.outputs.errorAlert.generic.title'),
+            description: getTranslation('moduleSend.review.outputs.errorAlert.generic.description'),
+            primaryButtonTitle: getTranslation('generic.buttons.tryAgain'),
+            primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
             onPressPrimaryButton: mockOnRetry,
-            secondaryButtonTitle: 'Cancel',
-            secondaryButtonVariant: 'redElevation0',
+            secondaryButtonTitle: getTranslation('generic.buttons.cancel'),
+            secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
             onPressSecondaryButton: mockOnCancel,
         });
     });
 
-    it('should show special text fort solana', async () => {
+    it('should show special text fort solana', () => {
         const mockOnRetry = jest.fn();
         const mockOnCancel = jest.fn();
-        const { result } = await renderUseTradingOutputsReviewErrorAlert(
+        const { result } = renderUseTradingOutputsReviewErrorAlert(
             'sol-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
         );
 
@@ -70,8 +68,10 @@ describe('useTradingOutputsReviewErrorAlert', () => {
         expect(mockShowAlert).toHaveBeenCalledTimes(1);
         expect(mockShowAlert).toHaveBeenCalledWith(
             expect.objectContaining({
-                title: 'Transaction failed due to timeout',
-                description: 'Make sure you send the transaction within 1 minute from signing.',
+                title: getTranslation('moduleSend.review.outputs.errorAlert.solana.title'),
+                description: getTranslation(
+                    'moduleSend.review.outputs.errorAlert.solana.description',
+                ),
             }),
         );
     });

@@ -1,11 +1,14 @@
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, Column, GhostContainer, Row, Text } from '@trezor/components';
 
-import { AssetLogo, AssetLogoProps } from '../AssetLogo/AssetLogo';
+import { AssetLogo } from '../AssetLogo/AssetLogo';
+import { type AssetLogoProps } from '../AssetLogo/AssetLogoWithId';
 import { CoinLogo } from '../CoinLogo/CoinLogo';
 
 export type Asset = {
     id: string;
     symbol: string;
+    networkSymbol: NetworkSymbol;
     displaySymbol: string;
     contractAddress: string | null;
     coingeckoId: string;
@@ -29,12 +32,12 @@ export function TopAssets({
         <Box
             borderRadius={12}
             borderWidth={1}
-            borderColor="baseBorderElementNeutralSoftest"
+            borderColor="elementBorderField"
             width="100%"
             overflow="hidden"
             data-testid={dataTestId}
         >
-            <Row hasDivider dividerColor="baseBorderElementNeutralSoftest" alignItems="stretch">
+            <Row hasDivider dividerColor="elementBorderField" alignItems="stretch">
                 {assets.map(asset => (
                     <GhostContainer
                         key={asset.id}
@@ -55,8 +58,7 @@ export function TopAssets({
                             ) : (
                                 <AssetLogo
                                     size={logoSize}
-                                    coingeckoId={asset.coingeckoId}
-                                    symbol={asset.symbol}
+                                    symbol={asset.networkSymbol}
                                     contractAddress={asset.contractAddress}
                                     placeholder={asset.displaySymbol}
                                 />

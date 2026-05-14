@@ -1,5 +1,4 @@
 const name = 'ethereumSignTransaction';
-const docs = 'methods/ethereumSignTransaction.md';
 
 const tx = {
     nonce: '0x0',
@@ -12,14 +11,11 @@ const tx = {
 
 export default [
     {
-        url: '/method/ethereumSignTransaction',
         name,
-        docs,
         submitButton: 'Sign transaction',
         fields: [
             {
                 name: 'path',
-                label: 'Bip44 path',
                 type: 'input',
                 value: `m/44'/60'/0'/0/0`,
             },
@@ -30,7 +26,6 @@ export default [
             },
             {
                 name: 'chunkify',
-                label: 'Display recipient address in chunks of 4 characters',
                 type: 'checkbox',
                 value: false,
             },

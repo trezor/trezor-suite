@@ -1,15 +1,21 @@
 import { useMemo } from 'react';
 
 import { useTranslation } from '@suite/intl';
-import { selectLabelingDataForAccount, selectLabelingValueBeingEdited } from '@suite/metadata';
-import { selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import {
-    Target,
+    selectIsLegacyLabelingVisible,
+    selectLabelingDataForAccount,
+    selectLabelingValueBeingEdited,
+} from '@suite/metadata';
+import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { selectIsSuiteSyncEnabled, selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
+import { type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
+import {
+    type Target,
     selectBaseCurrency,
     selectHistoricFiatRatesByTimestamp,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
-import { AccountKey, Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     formatNetworkAmount,
@@ -29,7 +35,7 @@ import {
     Sign,
 } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { TargetAddressLabel } from './TargetAddressLabel';
 import { TokenTransferAddressLabel } from './TokenTransferAddressLabel';
@@ -56,6 +62,8 @@ export const TransactionTarget = ({
     const { translationString } = useTranslation();
 
     const accountMetadata = useSelector(state => selectLabelingDataForAccount(state, accountKey));
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(
@@ -72,7 +80,9 @@ export const TransactionTarget = ({
     const labelingValueBeingEdited = useSelector(selectLabelingValueBeingEdited);
 
     const suiteSyncOutputLabels = useSelector(state =>
-        selectSuiteSyncOutputLabels(state, transaction.deviceState),
+        isSuiteSyncEnabled
+            ? selectSuiteSyncOutputLabels(state, transaction.deviceState)
+            : returnStableArrayIfEmpty<SuiteSyncOutput>(),
     );
 
     const isSolanaUnstakeTx = transaction?.solanaSpecific?.stakeOperation?.type === 'unstake';
@@ -188,7 +198,7 @@ export const TransactionTarget = ({
 
     const outputLabel =
         suiteSyncOutputLabels.find(it => it.txId === transaction.txid && it.txTargetId === targetId)
-            ?.label ?? targetMetadata;
+            ?.label ?? (isLegacyLabelingVisible ? targetMetadata : undefined);
 
     return (
         <TransactionTargetLayout

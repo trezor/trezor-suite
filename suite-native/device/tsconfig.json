@@ -55,7 +55,6 @@
         { "path": "../sentry" },
         { "path": "../services" },
         { "path": "../settings" },
-        { "path": "../staking" },
         { "path": "../theme" },
         { "path": "../toasts" },
         {
@@ -65,9 +64,14 @@
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },

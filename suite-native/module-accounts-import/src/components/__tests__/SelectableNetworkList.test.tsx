@@ -1,18 +1,19 @@
-import { PreloadedState } from '@suite-native/state';
-import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { SelectableNetworkList } from '../SelectableNetworkList';
 
-const getMockPreloadedState = (areTestnetsEnabled: boolean): PreloadedState => ({
+const getMockPreloadedState = (areTestnetsEnabled: boolean) => ({
     appSettings: {
         areTestnetsEnabled,
     },
+    device: { selectedDevice: undefined, devices: [] },
+    featureFlags: {},
 });
 
 describe('SelectableNetworkList', () => {
-    it('should render mainnet and testnet sections when testnets are enabled', async () => {
+    it('should render mainnet and testnet sections when testnets are enabled', () => {
         const onSelectItem = jest.fn();
-        const { getByText } = await renderWithStoreProviderAsync(
+        const { getByText } = renderWithStoreProvider(
             <SelectableNetworkList onSelectItem={onSelectItem} />,
             { preloadedState: getMockPreloadedState(true) },
         );
@@ -21,9 +22,9 @@ describe('SelectableNetworkList', () => {
         expect(getByText('Testnet coins (have no value – for testing purposes only)')).toBeTruthy();
     });
 
-    it('should split networks into mainnet and testnet sections correctly', async () => {
+    it('should split networks into mainnet and testnet sections correctly', () => {
         const onSelectItem = jest.fn();
-        const { getByText } = await renderWithStoreProviderAsync(
+        const { getByText } = renderWithStoreProvider(
             <SelectableNetworkList onSelectItem={onSelectItem} />,
             { preloadedState: getMockPreloadedState(true) },
         );
@@ -34,9 +35,9 @@ describe('SelectableNetworkList', () => {
         expect(getByText('Ethereum Sepolia')).toBeTruthy();
     });
 
-    it('should call onSelectItem with correct network symbol when item is pressed', async () => {
+    it('should call onSelectItem with correct network symbol when item is pressed', () => {
         const onSelectItem = jest.fn();
-        const { getByText } = await renderWithStoreProviderAsync(
+        const { getByText } = renderWithStoreProvider(
             <SelectableNetworkList onSelectItem={onSelectItem} />,
             { preloadedState: getMockPreloadedState(true) },
         );
@@ -47,9 +48,9 @@ describe('SelectableNetworkList', () => {
         expect(onSelectItem).toHaveBeenCalledWith('test');
     });
 
-    it('should not render testnet section when testnets are disabled', async () => {
+    it('should not render testnet section when testnets are disabled', () => {
         const onSelectItem = jest.fn();
-        const { getByText, queryByText } = await renderWithStoreProviderAsync(
+        const { getByText, queryByText } = renderWithStoreProvider(
             <SelectableNetworkList onSelectItem={onSelectItem} />,
             { preloadedState: getMockPreloadedState(false) },
         );

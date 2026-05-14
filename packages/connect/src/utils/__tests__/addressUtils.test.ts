@@ -1,15 +1,8 @@
-import coinsJSON from '@trezor/connect-data/files/coins.json';
-
-import { getBitcoinNetwork, parseCoinsJson } from '../../data/coinInfo';
+import { getBitcoinNetwork } from '../../data/coinInfo';
 import * as fixtures from '../__fixtures__/addressUtils';
 import * as utils from '../addressUtils';
 
 describe('utils/addressUtils', () => {
-    beforeAll(() => {
-        // load coin definitions
-        parseCoinsJson(coinsJSON);
-    });
-
     describe('isValidAddress', () => {
         fixtures.validAddresses.forEach(f => {
             it(`${f.description} ${f.address}`, () => {

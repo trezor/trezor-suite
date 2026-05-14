@@ -10,13 +10,13 @@ import {
     selectSelectedDevice,
 } from '@suite-common/device';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { InlineAlertBoxProps } from '@suite-native/atoms';
+import { type InlineAlertBoxProps } from '@suite-native/atoms';
 import { selectIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 import { Translation } from '@suite-native/intl';
 import {
-    DeviceSettingsStackParamList,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 import { getFirmwareVersion } from '@trezor/device-utils';
@@ -50,7 +50,7 @@ export const DeviceFirmwareCard = () => {
     const handleOnPress = () => {
         if (!isFirmwareUpdateEnabled) {
             showToast({
-                variant: 'warning',
+                intent: 'warning',
                 message: <Translation id="firmware.updateNotAvailable" />,
                 icon: 'warning',
             });

@@ -17,7 +17,7 @@ const Step = styled.div<{ $isActive: boolean }>`
     border-radius: ${borders.radii.full};
     transition: background-color 0.2s;
     background: ${({ theme, $isActive }) =>
-        $isActive ? theme.backgroundPrimaryDefault : theme.backgroundNeutralSubdued};
+        $isActive ? theme.legacyBackgroundPrimaryDefault : theme.elementFillNeutralBold};
 `;
 
 export interface StepperProps {

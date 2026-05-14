@@ -2,7 +2,7 @@ import { createMigration } from '@suite/idb-migration-utils';
 import { LANGUAGES } from '@suite-common/suite-types';
 import { typedObjectKeys } from '@trezor/utils';
 
-import { SuiteDBSchema } from 'src/storage/definitions';
+import { type SuiteDBSchema } from 'src/storage/definitions';
 
 import { updateAll } from '../utils';
 

@@ -7,7 +7,10 @@ import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
-import { ConfirmValueModal, ConfirmValueModalProps } from './ConfirmValueModal/ConfirmValueModal';
+import {
+    ConfirmValueModal,
+    type ConfirmValueModalProps,
+} from './ConfirmValueModal/ConfirmValueModal';
 import { ConfirmActionModal } from './DeviceContextModal/ConfirmActionModal';
 import { ConnectAddressConfirmation } from './UserContextModal/ConnectAddressConfirmation';
 

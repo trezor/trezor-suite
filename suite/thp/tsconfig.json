@@ -1,0 +1,22 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        { "path": "../../suite-common/thp" },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        { "path": "../device" },
+        { "path": "../intl" },
+        { "path": "../../packages/components" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/theme" }
+    ]
+}

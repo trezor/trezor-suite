@@ -8,7 +8,7 @@ import {
     selectPersistentDeviceDataById,
 } from '@suite-common/device';
 import { selectIsProductionFirmwareChannel } from '@suite-common/firmware';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { isDeviceKnown as getIsDeviceKnown, isDeviceAcquired } from '@suite-common/suite-utils';
 import { FIRMWARE } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';

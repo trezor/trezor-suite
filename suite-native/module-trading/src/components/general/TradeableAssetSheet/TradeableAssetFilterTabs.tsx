@@ -2,9 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectDiscoverySupportedNetworks } from '@suite-native/discovery';
-import { FilterItem, FilterTabs } from '@suite-native/trading-atoms';
+import { type FilterItem, FilterTabs } from '@suite-native/trading-atoms';
 
 type TradeableAssetsFilterTabsProps = {
     visible: boolean;

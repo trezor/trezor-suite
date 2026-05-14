@@ -6,9 +6,11 @@ import type { Sort } from '../types';
 import {
     compareVersionsDesc,
     fuzzyMatch,
+    fuzzyMatchExportName,
     getEventAddedVersion,
     getEventUpdatedVersion,
     getEventsFromJson,
+    toEventExportName,
 } from './filterUtils';
 import { getParamsFromUrl, updateUrl } from './urlParams';
 
@@ -21,6 +23,7 @@ export const useFilteredEvents = () => {
     const [debouncedQuery, setDebouncedQuery] = useState(initial.query);
     const [platform, setPlatform] = useState<string>(initial.platform);
     const [isSidebarOpen, setIsSidebarOpen] = useState(initial.sidebarOpen);
+    const [isLiveLogOpen, setIsLiveLogOpen] = useState(initial.liveLogOpen);
     const [isSidebarLoading, setIsSidebarLoading] = useState(false);
     const [isPlatformSortFiltering, setIsPlatformSortFiltering] = useState(false);
     const [analyticsData, setAnalyticsData] = useState<unknown | null>(null);
@@ -47,8 +50,8 @@ export const useFilteredEvents = () => {
     }, [query, debounce]);
 
     useEffect(() => {
-        updateUrl(debouncedQuery, platform, sort, isSidebarOpen);
-    }, [debouncedQuery, platform, sort, isSidebarOpen]);
+        updateUrl(debouncedQuery, platform, sort, isSidebarOpen, isLiveLogOpen);
+    }, [debouncedQuery, platform, sort, isSidebarOpen, isLiveLogOpen]);
 
     useEffect(() => {
         const id = setTimeout(() => setIsSidebarLoading(false), 200);
@@ -74,7 +77,12 @@ export const useFilteredEvents = () => {
     const filteredEvents = useMemo(() => {
         const byPlatformAndQuery = allEvents
             .filter(e => (platform === 'all' ? true : e.platform.includes(platform)))
-            .filter(e => (normalizedQuery ? fuzzyMatch(normalizedQuery, e.name) : true));
+            .filter(e =>
+                normalizedQuery
+                    ? fuzzyMatch(normalizedQuery, e.name) ||
+                      fuzzyMatchExportName(normalizedQuery, toEventExportName(e.name))
+                    : true,
+            );
 
         return byPlatformAndQuery.sort((a, b) => {
             const an = a.name ?? '';
@@ -129,11 +137,13 @@ export const useFilteredEvents = () => {
         normalizedQuery,
         isFiltering,
         isSidebarOpen,
+        isLiveLogOpen,
         isSidebarLoading,
         isAnalyticsDataGenerated,
         isAnalyticsDataLoading: analyticsData === null,
         generatedAt,
         setIsSidebarOpen,
+        setIsLiveLogOpen,
         setIsSidebarLoading,
     };
 };

@@ -1,13 +1,13 @@
-import { AccountType } from '@suite-common/wallet-config';
+import { type AccountType } from '@suite-common/wallet-config';
 import {
-    Account,
-    Output,
-    PoolsResponse,
-    PrecomposedTransactionFinal,
-    PrecomposedTransactionFinalCardano,
-    StakePool,
+    type Account,
+    type Output,
+    type PoolsResponse,
+    type PrecomposedTransactionFinal,
+    type PrecomposedTransactionFinalCardano,
+    type StakePool,
 } from '@suite-common/wallet-types';
-import { CARDANO, CardanoCertificate, CardanoOutput, PROTO } from '@trezor/connect';
+import { CARDANO, type CardanoCertificate, type CardanoOutput, PROTO } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import {

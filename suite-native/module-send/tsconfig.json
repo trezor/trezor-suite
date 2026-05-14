@@ -7,6 +7,12 @@
             "path": "../../suite-common/formatters"
         },
         {
+            "path": "../../suite-common/suite-sync"
+        },
+        {
+            "path": "../../suite-common/suite-utils"
+        },
+        {
             "path": "../../suite-common/token-definitions"
         },
         {
@@ -54,12 +60,16 @@
         },
         { "path": "../../packages/connect" },
         { "path": "../../packages/react-utils" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
         { "path": "../../packages/transport" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
-        { "path": "../test-utils" }
+        { "path": "../test-utils" },
+        { "path": "../test-utils-store" },
+        { "path": "../../packages/requirements" }
     ],
     "include": [".", "**/*.json"]
 }

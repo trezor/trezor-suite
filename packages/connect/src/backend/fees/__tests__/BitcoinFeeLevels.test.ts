@@ -1,9 +1,7 @@
-import BlockchainLink from '@trezor/blockchain-link';
-import coinsJSONEth from '@trezor/connect-data/files/coins-eth.json';
-import coinsJSON from '@trezor/connect-data/files/coins.json';
+import { BlockchainLink } from '@trezor/blockchain-link';
+import type { FeeLevel } from '@trezor/connect-common';
 
-import { getBitcoinNetwork, parseCoinsJson } from '../../../data/coinInfo';
-import { FeeLevel } from '../../../types';
+import { getBitcoinNetwork } from '../../../data/coinInfo';
 import { dispose, initBlockchain } from '../../BlockchainLink';
 import { BitcoinFeeLevels } from '../BitcoinFeeLevels';
 
@@ -35,12 +33,9 @@ const estimateFeeMockIncomplete: typeof BlockchainLink.prototype.estimateFee = p
     );
 
 describe('BitcoinFeeLevels', () => {
-    // load coin definitions
-    parseCoinsJson({ ...coinsJSON, ...coinsJSONEth });
-
     afterAll(() => {
         dispose();
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
 
     it('fetches Bitcoin smart FeeLevels with exact match', async () => {

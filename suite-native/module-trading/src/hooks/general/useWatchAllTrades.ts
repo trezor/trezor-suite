@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-    TradingRootStateWithDeviceAndAccounts,
+    type TradingRootStateWithDeviceAndAccounts,
     selectDeviceTradingTrades,
 } from '@suite-common/trading';
 

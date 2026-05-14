@@ -1,12 +1,13 @@
-import { TokenInfo } from '@trezor/connect';
+import type { TokenInfo } from '@trezor/connect';
 
-import { FormStateTradingCryptoCurrency, FormStateTradingFiatCurrency } from './sendForm';
+import { type FormStateTradingCryptoCurrency, type FormStateTradingFiatCurrency } from './sendForm';
 
 export type ReviewOutput =
     | {
           type:
               | 'opreturn'
               | 'data'
+              | 'note'
               | 'locktime'
               | 'fee'
               | 'destination-tag'
@@ -20,7 +21,8 @@ export type ReviewOutput =
               | 'contract'
               | 'regular_legacy'
               | 'approve_data'
-              | 'recipient_name';
+              | 'recipient_name'
+              | 'fee-limit';
           label?: string;
           value: string;
           value2?: string;

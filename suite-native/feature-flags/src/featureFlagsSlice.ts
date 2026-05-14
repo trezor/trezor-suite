@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { isIOs } from '@trezor/env-utils';
 
@@ -10,10 +10,11 @@ export const FeatureFlag = {
     IsTradingBuyEnabled: 'isTradingBuyEnabled',
     IsTradingExchangeEnabled: 'isTradingExchangeEnabled',
     IsTradingSellEnabled: 'isTradingSellEnabled',
-    AreTradingExchangeDexesEnabled: 'areTradingExchangeDexesEnabled',
+    IsTradingConciergeEnabled: 'isTradingConciergeEnabled',
     IsTradingResidenceCheckEnabled: 'isTradingResidenceCheckEnabled',
     IsTradingDebugEnabled: 'isTradingDebugEnabled',
-    IsEarnEnabled: 'isEarnEnabled',
+    IsStablecoinYieldEnabled: 'isStablecoinYieldEnabled',
+    IsN4w1BackupEnabled: 'isN4w1BackupEnabled',
 } as const;
 
 export type FeatureFlag = (typeof FeatureFlag)[keyof typeof FeatureFlag];
@@ -37,14 +38,16 @@ export const featureFlagsInitialState: FeatureFlagsState = {
         process.env.EXPO_PUBLIC_FF_IS_TRADING_SWAP_ENABLED === 'true',
     [FeatureFlag.IsTradingSellEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_TRADING_SELL_ENABLED === 'true',
-    [FeatureFlag.AreTradingExchangeDexesEnabled]:
-        process.env.EXPO_PUBLIC_FF_ARE_TRADING_EXCHANGE_DEXES_ENABLED === 'true',
+    [FeatureFlag.IsTradingConciergeEnabled]:
+        process.env.EXPO_PUBLIC_FF_IS_TRADING_CONCIERGE_ENABLED === 'true',
     [FeatureFlag.IsTradingResidenceCheckEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_TRADING_RESIDENCE_CHECK_ENABLED === 'true' ||
         (isIOs() && process.env.EXPO_PUBLIC_FF_IS_TRADING_RESIDENCE_CHECK_ENABLED !== 'false'),
     [FeatureFlag.IsTradingDebugEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_TRADING_DEBUG_ENABLED === 'true',
-    [FeatureFlag.IsEarnEnabled]: process.env.EXPO_PUBLIC_FF_IS_EARN_ENABLED === 'true',
+    [FeatureFlag.IsStablecoinYieldEnabled]:
+        process.env.EXPO_PUBLIC_FF_IS_STABLECOIN_YIELD_DEBUG_ENABLED === 'true',
+    [FeatureFlag.IsN4w1BackupEnabled]: process.env.EXPO_PUBLIC_FF_IS_N4W1_BACKUP_ENABLED === 'true',
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
@@ -54,10 +57,11 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsTradingBuyEnabled,
     FeatureFlag.IsTradingExchangeEnabled,
     FeatureFlag.IsTradingSellEnabled,
-    FeatureFlag.AreTradingExchangeDexesEnabled,
+    FeatureFlag.IsTradingConciergeEnabled,
     FeatureFlag.IsTradingResidenceCheckEnabled,
     FeatureFlag.IsTradingDebugEnabled,
-    FeatureFlag.IsEarnEnabled,
+    FeatureFlag.IsStablecoinYieldEnabled,
+    FeatureFlag.IsN4w1BackupEnabled,
 ];
 
 export const featureFlagsSlice = createSlice({

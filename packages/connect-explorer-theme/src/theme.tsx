@@ -4,7 +4,7 @@ import { isValidElement } from 'react';
 import { useRouter } from 'next/router';
 import { DiscordIcon, GitHubIcon } from 'nextra/icons';
 
-import { Icon, IconName } from '@trezor/components';
+import { Icon, type IconName } from '@trezor/components';
 
 import { Anchor } from './components/anchor';
 import { Flexsearch } from './components/flexsearch';
@@ -199,6 +199,7 @@ export const DEFAULT_THEME: DocsThemeConfig = {
     toc: {
         backToTop: false,
         component: TOC,
+        extraContent: null,
         float: true,
         title: 'On This Page',
     },

@@ -1,7 +1,12 @@
 import { asBluetoothDeviceId } from '@trezor/connect';
-import * as envUtils from '@trezor/env-utils';
+import { isLinux } from '@trezor/env-utils';
 
-import { DesktopBluetoothDevice } from './DesktopBluetoothDevice';
+jest.mock('@trezor/env-utils', () => ({
+    ...jest.requireActual('@trezor/env-utils'),
+    isLinux: jest.fn(),
+}));
+
+import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import { createMockedBluetoothDevice } from './__tests__/createMockedBluetoothDevice';
 import {
     filterOutNonResponsiveDevices,
@@ -13,7 +18,7 @@ const NOW = 8_000;
 describe(filterOutNonResponsiveDevices.name, () => {
     beforeAll(() => {
         jest.spyOn(Date, 'now').mockReturnValue(NOW);
-        jest.spyOn(envUtils, 'isLinux').mockReturnValue(false);
+        (isLinux as jest.Mock).mockReturnValue(false);
     });
 
     afterAll(() => {
@@ -133,7 +138,7 @@ describe(getLastUpdatedLimitForDevice.name, () => {
         jest.restoreAllMocks();
     });
     it('calculates limit as per rssi for platforms other than linux', () => {
-        jest.spyOn(envUtils, 'isLinux').mockReturnValue(false);
+        (isLinux as jest.Mock).mockReturnValue(false);
         expect(getLastUpdatedLimitForDevice(undefined)).toBe(3_000);
         expect(getLastUpdatedLimitForDevice(-35)).toBe(3_000);
         expect(getLastUpdatedLimitForDevice(-70)).toBe(3_000);
@@ -145,7 +150,7 @@ describe(getLastUpdatedLimitForDevice.name, () => {
     });
 
     it('calculates limit as per rssi for linux', () => {
-        jest.spyOn(envUtils, 'isLinux').mockReturnValue(true);
+        (isLinux as jest.Mock).mockReturnValue(true);
         expect(getLastUpdatedLimitForDevice(undefined)).toBe(5_000);
         expect(getLastUpdatedLimitForDevice(-35)).toBe(5_000);
         expect(getLastUpdatedLimitForDevice(-70)).toBe(5_000);

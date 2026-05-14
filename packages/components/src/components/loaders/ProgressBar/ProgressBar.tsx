@@ -1,6 +1,6 @@
 import styled, { useTheme } from 'styled-components';
 
-import { CSSColor } from '@trezor/theme';
+import { type CSSColor } from '@trezor/theme';
 
 const Wrapper = styled.div<{ $color: CSSColor }>`
     background: ${({ $color }) => $color};
@@ -46,11 +46,11 @@ export const ProgressBar = ({
 
     return (
         <Wrapper
-            $color={backgroundColor || theme.backgroundNeutralSubdued}
+            $color={backgroundColor || theme.elementFillNeutralBold}
             data-testid={dataTestId}
             className={className}
         >
-            <Value $max={max} $value={value} $color={foregroundColor || theme.iconPrimaryDefault} />
+            <Value $max={max} $value={value} $color={foregroundColor || theme.contentBrand} />
         </Wrapper>
     );
 };

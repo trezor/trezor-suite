@@ -1,5 +1,5 @@
-import { Branded } from '@trezor/type-utils';
-import { BigNumber } from '@trezor/utils';
+import { type Branded } from '@trezor/type-utils';
+import { type BigNumber } from '@trezor/utils';
 
 /**
  * Value in EUR, USD, ... but also it can be in BTC, currently the global BaseCurrency from the Settings is used.

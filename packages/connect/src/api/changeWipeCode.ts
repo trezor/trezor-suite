@@ -1,24 +1,27 @@
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import { type MethodPermission } from '@trezor/connect-common';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
 
 export default class ChangeWipeCode extends AbstractMethod<'changeWipeCode', PROTO.ChangeWipeCode> {
-    init() {
-        this.requiredPermissions = ['management'];
-        this.skipFinalReload = false;
-        this.useDeviceState = false;
-
-        const { payload } = this;
+    constructor(message: MethodMessage<'changeWipeCode'>) {
+        const { payload } = message;
         validateParams(payload, [{ name: 'remove', type: 'boolean' }]);
 
-        this.params = {
-            remove: payload.remove,
-        };
+        const params = { remove: payload.remove };
+
+        super(message, params);
+        this.skipFinalReload = false;
+        this.useDeviceState = false;
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['management'];
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('ChangeWipeCode', 'Success', this.params);
 
         return response.message;

@@ -1,12 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { events } from '@suite/analytics';
+import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { selectRecoveryStatus } from '@suite/recovery';
+import { goto } from '@suite/router';
+import {
+    selectIsDeviceAuthenticityCheckEnabled,
+    selectIsUnlockedBootloaderAllowed,
+} from '@suite/settings';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
-import { AcquiredDevice } from '@suite-common/suite-types';
+import { type AcquiredDevice } from '@suite-common/suite-types';
 import {
-    Button,
+    Box,
     Card,
     Column,
     Divider,
@@ -19,7 +26,7 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { DeviceModelInternal, models } from '@trezor/device-utils';
-import { breakpoints, spacings } from '@trezor/theme';
+import { breakpoints } from '@trezor/theme';
 import {
     TREZOR_RESELLERS_URL,
     TREZOR_SUPPORT_FW_ALREADY_INSTALLED,
@@ -27,22 +34,19 @@ import {
     TREZOR_URL,
 } from '@trezor/urls';
 
-import { goto } from 'src/actions/suite/routerActions';
-import * as routerActions from 'src/actions/suite/routerActions';
 import { Hologram } from 'src/components/onboarding/Hologram';
 import { TrezorLink } from 'src/components/suite';
+import { SecurityCheckButton } from 'src/components/suite/SecurityCheck/SecurityCheckButton';
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { SecurityCheckLayout } from 'src/components/suite/SecurityCheck/SecurityCheckLayout';
 import { ContactSupport } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
 import { useDispatch, useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
+import { ContentFlex } from 'src/support/suite/ContentFlex';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 import { SecurityChecklist } from './SecurityChecklist';
-import { SecurityChecklistItem } from './types';
-import { ContentFlex, useIsContentBelowBreakpoint } from '../../../../support/suite/ContentFlex';
-import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
+import { type SecurityChecklistItem } from './types';
 
 import { DeviceAuthenticityStep } from './index';
 
@@ -97,27 +101,6 @@ const getNoFirmwareChecklist = (isBelowTablet: boolean) =>
         },
     ] as const satisfies SecurityChecklistItem[];
 
-type ButtonFlexProps = {
-    children: React.ReactNode;
-};
-
-const ButtonFlex = ({ children }: ButtonFlexProps) => {
-    const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
-
-    return (
-        <ContentFlex
-            isReversed={isContentBelowBreakpoint}
-            alignItems={isContentBelowBreakpoint ? 'center' : 'stretch'}
-            flexWrap="wrap"
-            gap={spacings.xl}
-            width="100%"
-            margin={{ top: spacings.xxxxl }}
-        >
-            {children}
-        </ContentFlex>
-    );
-};
-
 type SecurityCheckContentProps = {
     goToDeviceAuthentication: () => void;
     goToSuiteOrNextDevice: () => void;
@@ -131,18 +114,18 @@ const SecurityCheckContent = ({
 }: SecurityCheckContentProps) => {
     const analytics = useAnalytics();
     const { isBelowTablet } = useLayoutSize();
-    const recovery = useSelector(state => state.recovery);
+    const recoveryStatus = useSelector(selectRecoveryStatus);
     const device = useSelector(selectSelectedDevice);
+    const deviceId = device?.id;
     const deviceModel = device?.features?.internal_model || DeviceModelInternal.UNKNOWN;
     const isOnboardingActive = useSelector(selectIsOnboardingActive);
-    const { contentWidth } = useResponsiveContext();
     const [isFailed, setIsFailed] = useState(false);
 
     const { goToNextStep, rerun, updateAnalytics } = useOnboarding();
     const dispatch = useDispatch();
 
     const initialized = !!device?.features?.initialized;
-    const isRecoveryInProgress = recovery.status === 'in-progress';
+    const isRecoveryInProgress = recoveryStatus === 'in-progress';
     const isFirmwareInstalled = device?.firmware !== 'none';
     const secondaryButtonText = isFirmwareInstalled ? 'TR_I_HAVE_NOT_USED_IT' : 'TR_I_HAVE_DOUBTS';
     const primaryButtonTopText = isFirmwareInstalled
@@ -159,8 +142,9 @@ const SecurityCheckContent = ({
         ? firmwareInstalledChecklist
         : getNoFirmwareChecklist(isBelowTablet);
 
-    const toggleView = () => setIsFailed(current => !current);
+    const toggleIsDeviceRejected = () => setIsFailed(current => !current);
     const handleContinueButtonClick = () => {
+        dispatch(deviceActions.setManualDeviceCheckSuccess({ deviceId }));
         if (shouldAuthenticateSelectedDevice) {
             goToDeviceAuthentication();
         } else {
@@ -169,6 +153,7 @@ const SecurityCheckContent = ({
     };
 
     const handleSetupButtonClick = () => {
+        dispatch(deviceActions.setManualDeviceCheckSuccess({ deviceId }));
         analytics.report({
             type: events.deviceSetupStartedEvent.name,
             payload: {
@@ -181,9 +166,9 @@ const SecurityCheckContent = ({
         } else if (isOnboardingActive) {
             goToNextStep('firmware');
             // ensure that we are not stuck in the 'start' FullscreenApp
-            dispatch(routerActions.goto('onboarding-index'));
+            dispatch(goto({ routeName: 'onboarding-index' }));
         } else {
-            dispatch(goto('onboarding-index'));
+            dispatch(goto({ routeName: 'onboarding-index' }));
         }
     };
 
@@ -204,30 +189,26 @@ const SecurityCheckContent = ({
         [device],
     );
 
-    const isContentBelowMobile = !!(contentWidth && contentWidth < breakpoints.mobile);
-
     return isFailed ? (
         <SecurityCheckFail
             ctaSection={
-                <ButtonFlex>
-                    <Button
+                <>
+                    <SecurityCheckButton
                         intent="neutral"
                         priority="secondary"
-                        onClick={toggleView}
-                        size={isContentBelowMobile ? 'medium' : 'large'}
-                        minWidth={100}
+                        onClick={toggleIsDeviceRejected}
                     >
                         <Translation id="TR_BACK" />
-                    </Button>
+                    </SecurityCheckButton>
                     <ContactSupport supportUrl={supportUrl} />
-                </ButtonFlex>
+                </>
             }
             heading="TR_PLAY_IT_SAFE"
             text="TR_DEVICE_COMPROMISED_TEXT_SOFT"
         />
     ) : (
         <SecurityCheckLayout imageMode="ROTATE">
-            <Column gap={spacings.sm}>
+            <Column gap={12}>
                 <Paragraph intent="neutral" priority="secondary">
                     <Translation id="TR_YOU_HAVE_CONNECTED" />
                 </Paragraph>
@@ -240,38 +221,39 @@ const SecurityCheckContent = ({
                     priority="secondary"
                     size="small"
                     isUnderlined
-                    onClick={toggleView}
+                    onClick={toggleIsDeviceRejected}
                 >
                     <Translation id="TR_CONNECTED_DIFFERENT_DEVICE" />
                 </TextButton>
             </Column>
-            <Divider margin={{ vertical: spacings.xxl }} />
-            <Column gap={spacings.md}>
+            <Divider margin={{ vertical: 32 }} />
+            <Column gap={16}>
                 <H3>
                     <Translation id={headingText} />
                 </H3>
                 <SecurityChecklist items={checklistItems} />
             </Column>
-            <ButtonFlex>
-                <Button
+            <ContentFlex
+                breakpoint={breakpoints.tablet}
+                alignItems="center"
+                gap={12}
+                margin={{ top: 48 }}
+            >
+                <SecurityCheckButton
                     intent="neutral"
                     priority="secondary"
-                    onClick={toggleView}
-                    size={isContentBelowMobile ? 'medium' : 'large'}
-                    minWidth={240}
+                    onClick={toggleIsDeviceRejected}
                 >
                     <Translation id={secondaryButtonText} />
-                </Button>
+                </SecurityCheckButton>
                 {initialized ? (
-                    <Button
+                    <SecurityCheckButton
                         data-testid="@onboarding/complete-onboarding"
                         onClick={handleContinueButtonClick}
-                        size="large"
                         intent="brand"
-                        minWidth={240}
                     >
                         <Translation id="TR_YES_CONTINUE" />
-                    </Button>
+                    </SecurityCheckButton>
                 ) : (
                     <Tooltip
                         content={
@@ -279,19 +261,18 @@ const SecurityCheckContent = ({
                                 <Translation id="TR_TAKES_N_MINUTES" />
                             </Note>
                         }
+                        width="100%"
                     >
-                        <Button
+                        <SecurityCheckButton
                             onClick={handleSetupButtonClick}
                             data-testid="@analytics/continue-button"
-                            size="large"
                             intent="brand"
-                            minWidth={240}
                         >
                             <Translation id={primaryButtonTopText} />
-                        </Button>
+                        </SecurityCheckButton>
                     </Tooltip>
                 )}
-            </ButtonFlex>
+            </ContentFlex>
         </SecurityCheckLayout>
     );
 };
@@ -299,13 +280,9 @@ const SecurityCheckContent = ({
 export const SecurityCheck = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
-    const { initialRun } = useSelector(selectSuiteFlags);
-    const isDeviceAuthenticityCheckEnabled = useSelector(
-        state => state.suite.settings.enabledSecurityChecks.deviceAuthenticity,
-    );
-    const isUnlockedBootloaderAllowed = useSelector(
-        state => state.suite.settings.debug.isUnlockedBootloaderAllowed,
-    );
+    const { initialRun } = useSelector(selectFlags);
+    const isDeviceAuthenticityCheckEnabled = useSelector(selectIsDeviceAuthenticityCheckEnabled);
+    const isUnlockedBootloaderAllowed = useSelector(selectIsUnlockedBootloaderAllowed);
     const dispatch = useDispatch();
     const { goToSuite } = useOnboarding();
     const [isAuthenticityCheckStep, setIsAuthenticityCheckStep] = useState(false);
@@ -347,9 +324,11 @@ export const SecurityCheck = () => {
 
     if (isAuthenticityCheckStep) {
         return (
-            <DeviceAuthenticityStep
-                goToNext={() => goToSuiteOrNextDevice(() => setIsAuthenticityCheckStep(false))}
-            />
+            <Box padding={{ top: 40 }} width="100%">
+                <DeviceAuthenticityStep
+                    goToNext={() => goToSuiteOrNextDevice(() => setIsAuthenticityCheckStep(false))}
+                />
+            </Box>
         );
     }
 

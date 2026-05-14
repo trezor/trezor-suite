@@ -1,4 +1,4 @@
-import { TxTargetId } from '@suite-common/wallet-types';
+import { type TxTargetId } from '@suite-common/wallet-types';
 
 export type AddressesType = 'inputs' | 'outputs';
 

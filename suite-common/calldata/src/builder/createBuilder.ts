@@ -1,22 +1,30 @@
 import { typedObjectFromEntries } from '@trezor/utils';
 
-import {
+import { createPolicy } from '../policy/createPolicy';
+import type {
     BuildResult,
     Builder,
-    BuilderConfig,
+    CrossValidator,
     Encoder,
     ExtractContext,
     ExtractEncoderOutput,
     ExtractInputs,
     ExtractParamNames,
-    ParamsConfig,
 } from '../types/builder';
+import { type Param } from '../types/param';
+const defaultPolicy = createPolicy();
 
 export const createBuilder = <
     E extends Encoder<string, unknown>,
-    Config extends ParamsConfig<ExtractParamNames<E>>,
+    Config extends Record<ExtractParamNames<E>, Param<any, any, any>>,
 >(
-    config: BuilderConfig<E> & { params: ParamsConfig<ExtractParamNames<E>, Config> },
+    config: {
+        params: Config;
+        encode: E;
+        crossValidate?: NoInfer<CrossValidator<keyof Config & string, Config>[]>;
+    } & ([Exclude<keyof Config, ExtractParamNames<E>>] extends [never]
+        ? unknown
+        : { params: Record<Exclude<keyof Config & string, ExtractParamNames<E>>, never> }),
 ): Builder<
     ExtractInputs<ExtractParamNames<E>, Config>,
     ExtractContext<Config>,
@@ -44,21 +52,35 @@ export const createBuilder = <
 
         const values = typedObjectFromEntries(results.map(r => [r.paramName, r.value] as const));
 
+        if (config.crossValidate) {
+            const crossIssues = config.crossValidate.flatMap(fn =>
+                fn(values as unknown as Parameters<typeof fn>[0]),
+            );
+            const crossErrors = crossIssues.filter(i => i.severity === 'error');
+            const crossWarnings = crossIssues.filter(i => i.severity === 'warning');
+
+            issues.push(...crossIssues);
+            errors.push(...crossErrors);
+            warnings.push(...crossWarnings);
+
+            if (crossErrors.length > 0) {
+                return { data: null, issues, errors, warnings, isValid: false };
+            }
+        }
+
         try {
             const data = config.encode(values) as ExtractEncoderOutput<E>;
 
             return { data, issues, errors, warnings, isValid };
         } catch {
-            const encodingError = {
-                code: 'ENCODING_FAILED' as const,
-                path: null,
-                severity: 'error' as const,
-            };
+            const { issues: encodingIssues, errors: encodingErrors } = defaultPolicy([
+                { code: 'ENCODING_FAILED' as const, path: null },
+            ]);
 
             return {
                 data: null,
-                issues: [...issues, encodingError],
-                errors: [...errors, encodingError],
+                issues: [...issues, ...encodingIssues],
+                errors: [...errors, ...encodingErrors],
                 warnings,
                 isValid: false,
             };

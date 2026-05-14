@@ -4,7 +4,7 @@ import type {
     DeviceErrorType,
     TrezorDeviceWithState,
 } from '@suite-common/suite-types';
-import { Result } from '@trezor/type-utils';
+import { type Result } from '@trezor/type-utils';
 
 export type EnsureDelegatedIdentityKeyParams = {
     device: Pick<

@@ -1,18 +1,30 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
 import { accountBtc } from '../../../__fixtures__/utils';
-import { TradingExchangeState } from '../../../reducers/exchangeReducer';
+import { type TradingExchangeState } from '../../../reducers/exchangeReducer';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { tradingThunks } from '../../common';
-import * as confirmExchangeTradeThunk from '../confirmExchangeTradeThunk';
+import { confirmExchangeTradeThunk } from '../confirmExchangeTradeThunk';
 import { exchangeThunks } from '../index';
+
+jest.mock('../confirmExchangeTradeThunk', () => {
+    const actual = jest.requireActual('../confirmExchangeTradeThunk');
+
+    return {
+        ...actual,
+        confirmExchangeTradeThunk: Object.assign(
+            jest.fn(actual.confirmExchangeTradeThunk),
+            actual.confirmExchangeTradeThunk,
+        ),
+    };
+});
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
@@ -160,17 +172,16 @@ describe('sendDexTransactionThunk', () => {
                 ),
             );
 
-        const confirmExchangeTradeThunkSpy = jest
-            .spyOn(confirmExchangeTradeThunk, 'confirmExchangeTradeThunk')
-            .mockImplementation(
-                createThunk('@trading-exchange/thunk/confirmTrade', () => undefined),
-            );
+        const confirmExchangeTradeThunkSpy = (
+            confirmExchangeTradeThunk as unknown as jest.Mock
+        ).mockImplementation(createThunk('@trading-exchange/thunk/confirmTrade', () => undefined));
 
+        const nextStep = jest.fn();
         const result = await store.dispatch(
             exchangeThunks.sendDexTransactionThunk({
                 account,
                 returnUrl,
-                nextStep: jest.fn(),
+                nextStep,
                 triggerAnalyticsTradeConfirmation: jest.fn(),
                 processResponseData: jest.fn(),
                 signAndPushSendFormTransaction: jest.fn(),
@@ -185,6 +196,8 @@ describe('sendDexTransactionThunk', () => {
         expect(confirmExchangeTradeThunkSpy).toHaveBeenCalledTimes(1);
         expect(confirmTradeThunkArgs.trade?.approvalSendTxHash).toEqual('txid');
         expect(confirmTradeThunkArgs.trade?.status).toEqual('APPROVAL_PENDING');
+        expect(nextStep).not.toHaveBeenCalled();
+        expect(confirmTradeThunkArgs.nextStep).toBe(nextStep);
     });
 
     it('should successfully call confirmTradeThunk for making trade', async () => {
@@ -207,17 +220,16 @@ describe('sendDexTransactionThunk', () => {
                 ),
             );
 
-        const confirmExchangeTradeThunkSpy = jest
-            .spyOn(confirmExchangeTradeThunk, 'confirmExchangeTradeThunk')
-            .mockImplementation(
-                createThunk('@trading-exchange/thunk/confirmTrade', () => undefined),
-            );
+        const confirmExchangeTradeThunkSpy = (
+            confirmExchangeTradeThunk as unknown as jest.Mock
+        ).mockImplementation(createThunk('@trading-exchange/thunk/confirmTrade', () => undefined));
 
+        const nextStep = jest.fn();
         const result = await store.dispatch(
             exchangeThunks.sendDexTransactionThunk({
                 account,
                 returnUrl,
-                nextStep: jest.fn(),
+                nextStep,
                 triggerAnalyticsTradeConfirmation: jest.fn(),
                 processResponseData: jest.fn(),
                 signAndPushSendFormTransaction: jest.fn(),
@@ -240,5 +252,8 @@ describe('sendDexTransactionThunk', () => {
         expect(confirmExchangeTradeThunkSpy).toHaveBeenCalledTimes(1);
         expect(trade?.receiveTxHash).toEqual('txid');
         expect(trade?.status).toEqual('CONFIRMING');
+        expect(store.getState().wallet.trading.exchange.transactionId).toEqual(trade?.orderId);
+        expect(nextStep).toHaveBeenCalledTimes(1);
+        expect(confirmTradeThunkArgs.nextStep).toBeUndefined();
     });
 });

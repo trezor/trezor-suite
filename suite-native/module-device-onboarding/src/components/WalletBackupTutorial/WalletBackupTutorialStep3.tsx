@@ -1,13 +1,13 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Box, Card, Divider, HStack, IconListTextItem, Text, VStack } from '@suite-native/atoms';
 import { TrezorDeviceSvg } from '@suite-native/device';
-import { Translation, TxKeyPath } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { type Color } from '@trezor/theme';
 
 import { WalletBackupTutorialStep } from './WalletBackupTutorialStep';
-import { WalletBackupTutorialNumberedStepProps } from './WalletBackupTutorialStep1';
+import { type WalletBackupTutorialNumberedStepProps } from './WalletBackupTutorialStep1';
 import { RecoveryCardSvg } from '../../assets/RecoveryCardSvg';
 
 const imageContainerStyle = prepareNativeStyle(() => ({
@@ -19,7 +19,7 @@ const imageContainerStyle = prepareNativeStyle(() => ({
 
 const cardStyle = prepareNativeStyle(utils => ({
     paddingTop: 12,
-    borderColor: utils.colors.borderOnElevation1,
+    borderColor: utils.colors.borderNeutral,
     borderWidth: utils.borders.widths.small,
     ...utils.boxShadows.none,
 }));
@@ -37,7 +37,7 @@ const dividerStyle = prepareNativeStyle(() => ({
 const SectionHeader = ({
     title,
     description,
-    descriptionColor = 'textSecondaryHighlight',
+    descriptionColor = 'contentBrand',
     image,
 }: {
     title: TxKeyPath;
@@ -87,7 +87,7 @@ export const WalletBackupTutorialStep3 = ({
                         <SectionHeader
                             title="moduleDeviceOnboarding.walletBackupTutorialScreen.step3.section1.title"
                             description="moduleDeviceOnboarding.walletBackupTutorialScreen.step3.section1.description"
-                            descriptionColor="textSecondaryHighlight"
+                            descriptionColor="contentBrand"
                             image={<TrezorDeviceSvg />}
                         />
                         <IconListTextItem
@@ -106,7 +106,7 @@ export const WalletBackupTutorialStep3 = ({
                         <SectionHeader
                             title="moduleDeviceOnboarding.walletBackupTutorialScreen.step3.section2.title"
                             description="moduleDeviceOnboarding.walletBackupTutorialScreen.step3.section2.description"
-                            descriptionColor="textAlertYellow"
+                            descriptionColor="contentWarning"
                             image={<RecoveryCardSvg width={IMAGE_WIDTH} height={IMAGE_HEIGHT} />}
                         />
                         <IconListTextItem

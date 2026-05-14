@@ -1,12 +1,12 @@
-import { HTMLProps, MouseEvent, ReactNode } from 'react';
+import { type HTMLProps, type MouseEvent, type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { TransientProps } from '../../../utils/transientProps';
+import { type TransientProps } from '../../../utils/transientProps';
 import { allowedTextTextProps } from '../Text/Text';
 import {
-    TextProps as TextPropsCommon,
-    TextPropsKeys,
+    type TextProps as TextPropsCommon,
+    type TextPropsKeys,
     pickAndPrepareTextProps,
     withTextProps,
 } from '../utils';

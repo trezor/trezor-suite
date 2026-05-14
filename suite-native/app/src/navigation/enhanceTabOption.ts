@@ -1,5 +1,5 @@
-import { IconName } from '@suite-native/icons';
-import { AppTabsParamList } from '@suite-native/navigation';
+import { type IconName } from '@suite-native/icons';
+import { type AppTabsParamList } from '@suite-native/navigation';
 
 type TabOption<ParamList extends AppTabsParamList, RouteName extends keyof ParamList> = {
     routeName: RouteName;

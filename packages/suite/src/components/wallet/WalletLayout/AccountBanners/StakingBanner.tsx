@@ -1,12 +1,14 @@
 import { useMemo } from 'react';
 
 import { events } from '@suite/analytics';
+import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
-import { NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
-import { selectAccountIsStakingActive, selectPoolStatsApyData } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
+import { selectAccountIsStakingActive, selectPoolStatsApy } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import {
     calculateRewards,
     getStakingDataForNetwork,
@@ -17,12 +19,9 @@ import { Banner } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { goto } from 'src/actions/suite/routerActions';
-import { setFlag } from 'src/actions/suite/suiteActions';
+import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
 type StakingBannerProps = {
     account: Account;
@@ -33,9 +32,9 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
     const { stakeEthBannerClosed, stakeSolBannerClosed, stakeCardanoBannerClosed } =
-        useSelector(selectSuiteFlags);
+        useSelector(selectFlags);
     const { route } = useSelector(state => state.router);
-    const apy = useSelector(state => selectPoolStatsApyData(state, account));
+    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
 
     const displaySymbol = getDisplaySymbol(account.symbol);
@@ -63,13 +62,13 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
     const closeBanner = () => {
         switch (account.networkType) {
             case 'ethereum':
-                dispatch(setFlag('stakeEthBannerClosed', true));
+                dispatch(setFlag({ key: 'stakeEthBannerClosed', value: true }));
                 break;
             case 'solana':
-                dispatch(setFlag('stakeSolBannerClosed', true));
+                dispatch(setFlag({ key: 'stakeSolBannerClosed', value: true }));
                 break;
             case 'cardano':
-                dispatch(setFlag('stakeCardanoBannerClosed', true));
+                dispatch(setFlag({ key: 'stakeCardanoBannerClosed', value: true }));
                 break;
             default:
                 if (isSupportedStakingNetworkSymbol(account.symbol)) {
@@ -91,7 +90,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
     };
 
     const goToStakingTab = () => {
-        dispatch(goto('wallet-staking', { preserveParams: true }));
+        dispatch(goto({ routeName: 'wallet-staking', preserveParams: true }));
 
         analytics.report({
             type: events.stakingNavigateEvent.name,

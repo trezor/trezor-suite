@@ -1,4 +1,5 @@
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
+import babel from '@rolldown/plugin-babel';
 import react from '@vitejs/plugin-react';
 import { execSync } from 'child_process';
 import fs, { readdirSync } from 'fs';
@@ -26,6 +27,49 @@ const staticAliasPlugin = (): Plugin => ({
         });
     },
 });
+
+// Plugin to serve flag SVGs from `@suite-common/flags` at `/static/flags/*.svg`
+// (flags moved out of `suite-data/files` so they need an explicit middleware +
+// build-time copy).
+const flagsPlugin = (): Plugin => {
+    const flagsAssetsDir = resolve(
+        require.resolve('@suite-common/flags/package.json'),
+        '../assets/flags',
+    );
+    let outDir: string | null = null;
+
+    return {
+        name: 'suite-flags',
+        enforce: 'pre',
+        configResolved(config) {
+            outDir = config.build.outDir;
+        },
+        configureServer(server: ViteDevServer) {
+            server.middlewares.use((req, res, next) => {
+                const match = req.url?.match(/^\/static\/flags\/([a-z0-9-]+\.svg)$/i);
+                if (!match) {
+                    next();
+
+                    return;
+                }
+                const filePath = resolve(flagsAssetsDir, match[1].toLowerCase());
+                if (!fs.existsSync(filePath)) {
+                    next();
+
+                    return;
+                }
+                res.setHeader('Content-Type', 'image/svg+xml');
+                fs.createReadStream(filePath).pipe(res);
+            });
+        },
+        closeBundle() {
+            if (!outDir) return;
+            const dest = resolve(outDir, 'static/flags');
+            fs.mkdirSync(dest, { recursive: true });
+            fs.cpSync(flagsAssetsDir, dest, { recursive: true });
+        },
+    };
+};
 
 const trezorLogosRequirePlugin = (): Plugin => ({
     name: 'trezor-logos-require',
@@ -60,11 +104,7 @@ const processTemplate = (template: string): string =>
         // Remove the webpack template conditional (opening + closing statements as well as the HTML in between)
         .replace(/<%\s*if\([^%]*%>[\s\S]*?<%\s*}\s*%>/g, '')
         // Add the script tag for vite-index.ts
-        .replace('</head>', '<script type="module" src="./vite-index.ts"></script></head>')
-        // Add the app div to the body, the browser detection does work in vite
-        .replace('</body>', '<div id="app"></div></body>')
-        // in case if the id="app" is added multiple times
-        .replace('<div id="app"></div><div id="app"></div>', '<div id="app"></div>');
+        .replace('</head>', '<script type="module" src="./vite-index.ts"></script></head>');
 
 // Custom plugin to use the same template as webpack
 const htmlTemplatePlugin = (): Plugin => ({
@@ -94,7 +134,14 @@ const createWorkspaceAliases = () => {
             replacement: resolve(__dirname, '../', dirent.name),
         }));
 
-    return [...suiteCommonAliases, ...trezorPackagesAliases];
+    const suiteAliases = readdirSync(resolve(__dirname, '../../suite'), { withFileTypes: true })
+        .filter(dirent => dirent.isDirectory())
+        .map(dirent => ({
+            find: `@suite/${dirent.name}`,
+            replacement: resolve(__dirname, '../../suite', dirent.name),
+        }));
+
+    return [...suiteCommonAliases, ...trezorPackagesAliases, ...suiteAliases];
 };
 
 const alias = [
@@ -162,7 +209,7 @@ const sessionsSharedWorkerPlugin = () => {
                         fileName: () => `${workerFileName}.js`,
                         name: 'TrezorSharedWorker',
                     },
-                    rollupOptions: {
+                    rolldownOptions: {
                         output: {
                             inlineDynamicImports: true,
                         },
@@ -273,12 +320,12 @@ const faviconPlugin = (): Plugin => {
                             fileName: () => faviconFileName,
                             name: 'TrezorSuiteFavicon',
                         },
-                        rollupOptions: {
+                        rolldownOptions: {
                             output: {
                                 inlineDynamicImports: true,
                             },
                         },
-                        minify: false,
+                        minify: true,
                         target: 'es2020',
                         write: true,
                     },
@@ -329,28 +376,43 @@ const faviconPlugin = (): Plugin => {
     };
 };
 
-// Plugin to handle workers similar to webpack's worker-loader
-const workerPlugin = (): Plugin => ({
-    name: 'worker-loader',
-    transform(_code, id) {
-        if (/\/workers\/[^/]+\/index\.ts$/.test(id) || /pinger\/pingWorker.ts$/.test(id)) {
-            // Return a virtual module that creates a web worker
-            console.log('[VITE] Transforming worker:', id);
+// Plugin to resolve bare module specifiers (e.g. @trezor/blockchain-link/src/workers/blockbook)
+// inside new Worker(new URL(..., import.meta.url)) calls.
+// In dev mode, Vite doesn't bundle — the browser constructs the URL at runtime and has no way to
+// resolve bare package specifiers, so we must expand them to /@fs/ paths that the dev server
+// can serve directly. In production, rolldown resolves them through the alias config at build time.
+const resolveWorkerUrlsPlugin = (): Plugin => ({
+    name: 'resolve-worker-urls',
+    enforce: 'pre',
+    apply: 'serve',
+    transform(code) {
+        if (!code.includes('new Worker') || !code.includes('import.meta.url')) return null;
 
-            return {
-                code: `
-                    const worker = () => {
-                        console.log('[VITE] Creating worker from:', '${id}');
-                        return new Worker(new URL('${id}', import.meta.url), { type: 'module' });
-                    };
-                    export default worker;
-                `,
-                // Use an empty source map to preserve the original file's mapping
-                map: { mappings: '' },
-            };
-        }
+        let changed = false;
+        const transformed = code.replace(
+            /new URL\(\s*(?:\/\*.*?\*\/)?\s*(['"])(@[^'"]+)\1,\s*import\.meta\.url,?\s*\)/gm,
+            (match, _quote, specifier) => {
+                for (const a of alias) {
+                    if (
+                        typeof a.find === 'string' &&
+                        typeof a.replacement === 'string' &&
+                        specifier.startsWith(a.find)
+                    ) {
+                        const rest = specifier.slice(a.find.length);
+                        const abs = a.replacement + rest;
+                        // Append index.ts if no file extension present
+                        const withExt = /\.[cm]?[jt]sx?$/.test(abs) ? abs : `${abs}/index.ts`;
+                        changed = true;
 
-        return null;
+                        return `new URL('/@fs${withExt}', import.meta.url)`;
+                    }
+                }
+
+                return match;
+            },
+        );
+
+        return changed ? { code: transformed, map: null } : null;
     },
 });
 
@@ -534,24 +596,24 @@ export default defineConfig({
         noopCoreJsPlugin(),
         guideMarkdownPlugin(),
         trezorLogosRequirePlugin(),
+        flagsPlugin(),
         staticAliasPlugin(),
         sessionsSharedWorkerPlugin(),
         faviconPlugin(),
         viteCommonjs(),
-        workerPlugin(),
+        resolveWorkerUrlsPlugin(),
         wasm(),
-        react({
-            babel: {
-                plugins: [
-                    [
-                        'babel-plugin-styled-components',
-                        {
-                            displayName: true,
-                            fileName: false,
-                        },
-                    ],
+        react(),
+        babel({
+            plugins: [
+                [
+                    'babel-plugin-styled-components',
+                    {
+                        displayName: true,
+                        fileName: false,
+                    },
                 ],
-            },
+            ],
         }),
     ],
     resolve: {
@@ -572,12 +634,13 @@ export default defineConfig({
         ENABLE_REDUX_LOGGER: true,
     },
     optimizeDeps: {
-        include: ['@trezor/connect', '@trezor/suite', 'buffer'],
+        include: ['@trezor/suite', 'buffer'],
         exclude: [
             // Exclude WebAssembly modules
             '@trezor/crypto-utils',
             '@trezor/utxo-lib',
-            // Exclude transport to prevent pre-bundling issues with bridge URL construction
+            // Exclude connect and transport to prevent pre-bundling issues with bridge URL construction and exports
+            '@trezor/connect',
             '@trezor/transport',
         ],
     },

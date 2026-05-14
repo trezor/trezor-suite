@@ -1,15 +1,15 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import {
     BulletList,
-    BulletListItemState,
+    type BulletListItemState,
     Card,
     Flex,
-    FlexDirection,
+    type FlexDirection,
     Grid,
     Icon,
-    IconName,
+    type IconName,
     Note,
     Paragraph,
     Row,
@@ -19,7 +19,7 @@ import { ESHOP_KEEP_METAL_MULTI_SHARE_URL, HELP_CENTER_SEED_CARD_URL } from '@tr
 
 import { TrezorLink } from 'src/components/suite/TrezorLink';
 
-import type { Steps } from './MultiShareBackupModal';
+import type { Steps } from './steps';
 
 type InstructionItemProps = {
     direction?: FlexDirection;

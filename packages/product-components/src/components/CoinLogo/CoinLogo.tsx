@@ -1,13 +1,13 @@
-import { ImgHTMLAttributes } from 'react';
+import { type ImgHTMLAttributes } from 'react';
 import { ReactSVG } from 'react-svg';
 
 import styled from 'styled-components';
 
-import { NetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
 import { borders } from '@trezor/theme';
 import { roundTo } from '@trezor/utils';
 
-import { COINS, LegacyNetworkSymbol } from '../../constants/coins';
+import { COINS, type LegacyNetworkSymbol } from '../../constants/coins';
 import { NETWORK_ICONS } from '../../constants/networks';
 import { NetworkIcon } from '../NetworkIcon/NetworkIcon';
 
@@ -49,8 +49,8 @@ const SvgWrapper = styled.div<{ $size?: number }>`
         border-radius: ${borders.radii.xxs};
         border-width: 1px;
         border-style: solid;
-        border-color: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};
-        background-color: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};
+        border-color: ${({ theme }) => theme.legacyBackgroundTertiaryDefaultOnElevation0};
+        background-color: ${({ theme }) => theme.legacyBackgroundTertiaryDefaultOnElevation0};
 
         div {
             line-height: 0;

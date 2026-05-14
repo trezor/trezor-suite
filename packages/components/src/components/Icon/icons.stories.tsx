@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
 // TODO: suite-common imports in non-suite packages should not be allowed
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { IconName, icons } from '@suite-common/icons/src/icons';
+import { type IconName, icons } from '@suite-common/icons/src/icons';
 import { typography } from '@trezor/theme';
 
-import { Icon, IconProps, allowedIconFrameProps, iconIntents, iconPriorities } from './Icon';
+import { Icon, type IconProps, allowedIconFrameProps, iconIntents, iconPriorities } from './Icon';
 import { iconSizes } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { Input } from '../form/Input/Input';
@@ -20,7 +20,7 @@ const CopiedText = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    color: ${({ theme }) => theme.textAlertBlue};
+    color: ${({ theme }) => theme.contentInfo};
     ${typography['body-sm']}
 `;
 
@@ -33,14 +33,14 @@ const FloatingWrapper = styled.div`
     width: 100%;
     top: 0;
     padding: 10px 0;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
-    box-shadow: 0 5px 10px ${({ theme }) => theme.backgroundSurfaceElevation0};
+    background: ${({ theme }) => theme.surfaceFillPage};
+    box-shadow: 0 5px 10px ${({ theme }) => theme.surfaceFillPage};
 `;
 
 const Wrapper = styled.div`
     display: grid;
     width: 100%;
-    grid-gap: 5px;
+    gap: 5px;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     margin-top: 8px;
 `;
@@ -66,7 +66,7 @@ const IconText = styled.div`
     flex-direction: column;
     align-items: center;
     ${typography['body-xs']}
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     overflow-wrap: anywhere;
     word-break: normal;
     text-align: center;

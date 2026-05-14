@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
 import { Card as CardComponent, allowedCardFrameProps } from './Card';
 import { cardVariants, fillTypes, paddingTypes } from './types';

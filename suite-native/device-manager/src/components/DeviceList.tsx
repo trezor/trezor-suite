@@ -2,9 +2,9 @@ import { FadeInUp, FadeOutUp } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { selectInstacelessUnselectedDevices } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { AnimatedBox, Box } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { DeviceItem } from './DeviceItem/DeviceItem';
 import { MANAGER_MODAL_BOTTOM_RADIUS } from './DeviceManagerModal';
@@ -21,11 +21,11 @@ const PADDING_TOP = 12;
 const PADDING_BOTTOM = 16;
 
 const listStaticStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    backgroundColor: utils.colors.surfaceFillRaised,
     borderBottomLeftRadius: MANAGER_MODAL_BOTTOM_RADIUS,
     borderBottomRightRadius: MANAGER_MODAL_BOTTOM_RADIUS,
     borderWidth: utils.borders.widths.small,
-    borderColor: utils.colors.borderElevation0,
+    borderColor: utils.colors.borderNeutral,
     marginBottom: -MANAGER_MODAL_BOTTOM_RADIUS,
     marginTop: -MANAGER_MODAL_BOTTOM_RADIUS - DEVICE_LIST_TOP_MARGIN,
     paddingTop: MANAGER_MODAL_BOTTOM_RADIUS + PADDING_TOP + DEVICE_LIST_TOP_MARGIN,

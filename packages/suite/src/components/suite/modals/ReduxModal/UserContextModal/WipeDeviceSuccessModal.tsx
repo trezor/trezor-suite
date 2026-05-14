@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
+import { closeModal } from '@suite/modal';
 import { H3, Modal } from '@trezor/components';
 
-import { onCancel as closeModal } from 'src/actions/suite/modalActions';
 import { useDispatch } from 'src/hooks/suite';
 
 export const WipeDeviceSuccessModal = () => {

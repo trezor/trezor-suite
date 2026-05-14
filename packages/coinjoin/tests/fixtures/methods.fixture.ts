@@ -21,82 +21,213 @@ export const BASE_HEIGHT = 0;
 export const BASE_HASH = 'craigwrightisafraud';
 
 // hash + filter must be always preserved for the filters to work
+export const TX0 = {
+    txid: '11111111111111111111111111111111',
+    filter: '03928f707d3166a2ea',
+    blockHeight: 1,
+    blockTime: 1337,
+    value: '1578597058',
+    fees: '28059',
+    vin: [
+        {
+            n: 0,
+            addresses: ['mkUzYq8aQ4xzgPoCw8QVsRzkn1dceiPzmi'],
+            isAddress: true,
+            value: '1578625117',
+            txid: 'foo',
+        },
+    ],
+    vout: [
+        {
+            value: '578597058',
+            n: 0,
+            spent: true,
+            addresses: ['n29Q5yZh813J4MHtY4KjteNs1rfRWVRRPJ'],
+            isAddress: true,
+        },
+        {
+            value: '1000000000',
+            n: 1,
+            spent: true,
+            addresses: ['bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v'],
+            isAddress: true,
+        },
+    ],
+};
+
+export const TX1 = {
+    txid: '22222222222222222222222222222222',
+    filter: '021944359ad6e0',
+    blockHeight: 2,
+    blockTime: 1337,
+    value: '999999890',
+    fees: '110',
+    vin: [
+        {
+            n: 0,
+            addresses: ['bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v'],
+            isAddress: true,
+            value: '1000000000',
+            txid: '11111111111111111111111111111111',
+            vout: 1,
+        },
+    ],
+    vout: [
+        {
+            value: '999999890',
+            n: 0,
+            spent: true,
+            addresses: ['bcrt1qldlynaqp0hy4zc2aag3pkenzvxy65saej0huey'],
+            isAddress: true,
+        },
+    ],
+};
+
+export const TX2 = {
+    txid: '33333333333333333333333333333333',
+    filter: '031e20cd856d4fa3f1',
+    blockHeight: 4,
+    blockTime: 1337,
+    value: '999999858',
+    fees: '142',
+    vin: [
+        {
+            n: 0,
+            addresses: ['bcrt1pswrqtykue8r89t9u4rprjs0gt4qzkdfuursfnvqaa3f2yql07zmq2fdmpx'],
+            isAddress: true,
+            value: '1000000000',
+            txid: 'bar',
+        },
+    ],
+    vout: [
+        {
+            value: '547',
+            n: 0,
+            addresses: ['bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v'],
+            isAddress: true,
+        },
+        {
+            value: '999999311',
+            n: 1,
+            spent: true,
+            addresses: ['bcrt1pn2d0yjeedavnkd8z8lhm566p0f2utm3lgvxrsdehnl94y34txmtsef5dqz'],
+            isAddress: true,
+        },
+    ],
+};
+
+export const TX3 = {
+    txid: '44444444444444444444444444444444',
+    filter: '034a680453fcd11cf180',
+    blockHeight: 6,
+    blockTime: 1337,
+    value: '999999749',
+    fees: '141',
+    vin: [
+        {
+            n: 0,
+            addresses: ['bcrt1qldlynaqp0hy4zc2aag3pkenzvxy65saej0huey'],
+            isAddress: true,
+            value: '999999890',
+            txid: '22222222222222222222222222222222',
+        },
+    ],
+    vout: [
+        {
+            value: '547',
+            n: 0,
+            spent: true,
+            addresses: ['bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v'],
+            isAddress: true,
+        },
+        {
+            value: '999999202',
+            n: 1,
+            spent: true,
+            addresses: ['bcrt1qejqxwzfld7zr6mf7ygqy5s5se5xq7vmt8ntmj0'],
+            isAddress: true,
+        },
+    ],
+};
+
+export const TX4 = {
+    txid: '55555555555555555555555555555555',
+    filter: '0262fbd3058600',
+    blockHeight: 7,
+    blockTime: 1337,
+    value: '999999571',
+    fees: '178',
+    vin: [
+        {
+            n: 0,
+            addresses: ['bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v'],
+            isAddress: true,
+            value: '547',
+            txid: '44444444444444444444444444444444',
+        },
+        {
+            n: 1,
+            addresses: ['bcrt1qejqxwzfld7zr6mf7ygqy5s5se5xq7vmt8ntmj0'],
+            isAddress: true,
+            value: '999999202',
+            txid: '44444444444444444444444444444444',
+            vout: 1,
+        },
+    ],
+    vout: [
+        {
+            value: '999999571',
+            n: 0,
+            addresses: ['bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v'],
+            isAddress: true,
+        },
+    ],
+};
+
+export const TX5 = {
+    txid: '66666666666666666666666666666666',
+    filter: '0256bf6979ccc0',
+    blockHeight: 8,
+    blockTime: 1337,
+    value: '999999212',
+    fees: '99',
+    vin: [
+        {
+            n: 0,
+            addresses: ['bcrt1pn2d0yjeedavnkd8z8lhm566p0f2utm3lgvxrsdehnl94y34txmtsef5dqz'],
+            isAddress: true,
+            value: '999999311',
+            txid: 'baz',
+        },
+    ],
+    vout: [
+        {
+            value: '999999212',
+            n: 0,
+            addresses: ['bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v'],
+            isAddress: true,
+        },
+    ],
+};
+
+export const BLOCK_TXS = [TX0, TX1, TX2, TX3, TX4, TX5];
+
+export const BLOCK_0 = {
+    height: 1,
+    hash: '09f69854a4572575e2a8af0dea70ff5efd46957e2cb60e81c0d760098ab48b44',
+    filter: '03a282604dcbe72d0e', // receive 1 out
+    previousBlockHash: BASE_HASH,
+    txs: [TX0],
+};
+
 export const BLOCKS = [
-    {
-        height: 1,
-        hash: '09f69854a4572575e2a8af0dea70ff5efd46957e2cb60e81c0d760098ab48b44',
-        filter: '03a282604dcbe72d0e', // receive 1 out
-        previousBlockHash: BASE_HASH,
-        txs: [
-            {
-                txid: '11111111111111111111111111111111',
-                filter: '03928f707d3166a2ea',
-                blockHeight: 1,
-                blockTime: 1337,
-                value: '1578597058',
-                fees: '28059',
-                vin: [
-                    {
-                        n: 0,
-                        addresses: ['mkUzYq8aQ4xzgPoCw8QVsRzkn1dceiPzmi'],
-                        isAddress: true,
-                        value: '1578625117',
-                        txid: 'foo',
-                    },
-                ],
-                vout: [
-                    {
-                        value: '578597058',
-                        n: 0,
-                        spent: true,
-                        addresses: ['n29Q5yZh813J4MHtY4KjteNs1rfRWVRRPJ'],
-                        isAddress: true,
-                    },
-                    {
-                        value: '1000000000',
-                        n: 1,
-                        spent: true,
-                        addresses: ['bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v'],
-                        isAddress: true,
-                    },
-                ],
-            },
-        ],
-    },
+    BLOCK_0,
     {
         height: 2,
         hash: '5513d63651bbb32985b54fa9e0e530553e3e9cebdd10feae7f019c04edb80f61',
         filter: '02044071f773c0', // receive 1 in, receive 2 out
         previousBlockHash: '09f69854a4572575e2a8af0dea70ff5efd46957e2cb60e81c0d760098ab48b44',
-        txs: [
-            {
-                txid: '22222222222222222222222222222222',
-                filter: '021944359ad6e0',
-                blockHeight: 2,
-                blockTime: 1337,
-                value: '999999890',
-                fees: '110',
-                vin: [
-                    {
-                        n: 0,
-                        addresses: ['bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v'],
-                        isAddress: true,
-                        value: '1000000000',
-                        txid: '11111111111111111111111111111111',
-                        vout: 1,
-                    },
-                ],
-                vout: [
-                    {
-                        value: '999999890',
-                        n: 0,
-                        spent: true,
-                        addresses: ['bcrt1qldlynaqp0hy4zc2aag3pkenzvxy65saej0huey'],
-                        isAddress: true,
-                    },
-                ],
-            },
-        ],
+        txs: [TX1],
     },
     {
         height: 3,
@@ -110,44 +241,7 @@ export const BLOCKS = [
         hash: '12de06b8ae4bbc660e3f565c876c606f5a1bd3463364c6abfc882b5ff6dd86e3',
         filter: '030361ceb3dfc1c1e600', // receive 1 out
         previousBlockHash: '295578a3c8eb87736a5e657b06a0933f7ec5f82c43f8418fdb38f74c0fc066c7',
-        txs: [
-            {
-                txid: '33333333333333333333333333333333',
-                filter: '031e20cd856d4fa3f1',
-                blockHeight: 4,
-                blockTime: 1337,
-                value: '999999858',
-                fees: '142',
-                vin: [
-                    {
-                        n: 0,
-                        addresses: [
-                            'bcrt1pswrqtykue8r89t9u4rprjs0gt4qzkdfuursfnvqaa3f2yql07zmq2fdmpx',
-                        ],
-                        isAddress: true,
-                        value: '1000000000',
-                        txid: 'bar',
-                    },
-                ],
-                vout: [
-                    {
-                        value: '547',
-                        n: 0,
-                        addresses: ['bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v'],
-                        isAddress: true,
-                    },
-                    {
-                        value: '999999311',
-                        n: 1,
-                        spent: true,
-                        addresses: [
-                            'bcrt1pn2d0yjeedavnkd8z8lhm566p0f2utm3lgvxrsdehnl94y34txmtsef5dqz',
-                        ],
-                        isAddress: true,
-                    },
-                ],
-            },
-        ],
+        txs: [TX2],
     },
     {
         height: 5,
@@ -159,124 +253,28 @@ export const BLOCKS = [
     {
         height: 6,
         hash: '5021a2185f27ad04d45f1b53c873b2231311aea99e0f1d7a6252167540b9db4c',
-        filter: '036e6e302da2ce028c', // receive 2 in, receive 1 out, change 1 out'
+        filter: '036e6e302da2ce028c', // receive 2 in, receive 1 out, change 1 out
         previousBlockHash: '2c2c65aad93eebe235955e170913fd6558453dd999a4ded6249bbdc9d54da1f7',
-        txs: [
-            {
-                txid: '44444444444444444444444444444444',
-                filter: '034a680453fcd11cf180',
-                blockHeight: 6,
-                blockTime: 1337,
-                value: '999999749',
-                fees: '141',
-                vin: [
-                    {
-                        n: 0,
-                        addresses: ['bcrt1qldlynaqp0hy4zc2aag3pkenzvxy65saej0huey'],
-                        isAddress: true,
-                        value: '999999890',
-                        txid: '22222222222222222222222222222222',
-                    },
-                ],
-                vout: [
-                    {
-                        value: '547',
-                        n: 0,
-                        spent: true,
-                        addresses: ['bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v'],
-                        isAddress: true,
-                    },
-                    {
-                        value: '999999202',
-                        n: 1,
-                        spent: true,
-                        addresses: ['bcrt1qejqxwzfld7zr6mf7ygqy5s5se5xq7vmt8ntmj0'],
-                        isAddress: true,
-                    },
-                ],
-            },
-        ],
+        txs: [TX3],
     },
     {
         height: 7,
         hash: '01d37c4490e9ddaf6b5c886eaa215b8d0b658c93ea42cfd871b226f606672c0b',
-        filter: '02020f2a9a0ac0', // receive 1 in, change 1 in, receive 1 out'
+        filter: '02020f2a9a0ac0', // receive 1 in, change 1 in, receive 1 out
         previousBlockHash: '5021a2185f27ad04d45f1b53c873b2231311aea99e0f1d7a6252167540b9db4c',
-        txs: [
-            {
-                txid: '55555555555555555555555555555555',
-                filter: '0262fbd3058600',
-                blockHeight: 7,
-                blockTime: 1337,
-                value: '999999571',
-                fees: '178',
-                vin: [
-                    {
-                        n: 0,
-                        addresses: ['bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v'],
-                        isAddress: true,
-                        value: '547',
-                        txid: '44444444444444444444444444444444',
-                    },
-                    {
-                        n: 1,
-                        addresses: ['bcrt1qejqxwzfld7zr6mf7ygqy5s5se5xq7vmt8ntmj0'],
-                        isAddress: true,
-                        value: '999999202',
-                        txid: '44444444444444444444444444444444',
-                        vout: 1,
-                    },
-                ],
-                vout: [
-                    {
-                        value: '999999571',
-                        n: 0,
-                        addresses: ['bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v'],
-                        isAddress: true,
-                    },
-                ],
-            },
-        ],
+        txs: [TX4],
     },
     {
         height: 8,
         hash: '36d01c975372c363d94f0e9e22e8a61a6a52e3408c98920ef1587b024ec487e3',
         filter: '023e09f4f752a0', // receive 1 out
         previousBlockHash: '01d37c4490e9ddaf6b5c886eaa215b8d0b658c93ea42cfd871b226f606672c0b',
-        txs: [
-            {
-                txid: '66666666666666666666666666666666',
-                filter: '0256bf6979ccc0',
-                blockHeight: 8,
-                blockTime: 1337,
-                value: '999999212',
-                fees: '99',
-                vin: [
-                    {
-                        n: 0,
-                        addresses: [
-                            'bcrt1pn2d0yjeedavnkd8z8lhm566p0f2utm3lgvxrsdehnl94y34txmtsef5dqz',
-                        ],
-                        isAddress: true,
-                        value: '999999311',
-                        txid: 'baz',
-                    },
-                ],
-                vout: [
-                    {
-                        value: '999999212',
-                        n: 0,
-                        addresses: ['bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v'],
-                        isAddress: true,
-                    },
-                ],
-            },
-        ],
+        txs: [TX5],
     },
 ];
 
 export const TX_4_PENDING = {
-    ...BLOCKS[5].txs[0],
+    ...TX3,
     blockHeight: -1,
     blockTime: undefined,
 };

@@ -6,7 +6,7 @@ import { createWinHelloManager } from '@trezor/suite-desktop-native';
 import { TypedEmitter, serializeError } from '@trezor/utils';
 
 import { ipcMain } from '../typed-electron';
-import { Dependencies } from './module';
+import { type Dependencies } from './module';
 
 const PROMPT_REASON = 'Trezor Suite: validation BIO authentication to access the Suite UI';
 const BLUR_LOCK_TIMEOUT_MS = 5 * 60 * 1000;

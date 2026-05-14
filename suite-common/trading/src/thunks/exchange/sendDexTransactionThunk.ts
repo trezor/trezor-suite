@@ -1,12 +1,13 @@
 import { isRejectedWithValue } from '@reduxjs/toolkit';
-import { ExchangeTrade } from 'invity-api';
+import { type ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { ETHEREUM_ADJUST_GAS_LIMIT } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 
 import { confirmExchangeTradeThunk } from './confirmExchangeTradeThunk';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
+import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingExchangeAccountKey,
@@ -14,10 +15,10 @@ import {
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
-import { TradingSendRejectedProps } from '../../types';
+import { type TradingSendRejectedProps } from '../../types';
 import { getTradingFormState } from '../../utils';
 import { tradingThunks } from '../common';
-import { RecomposeAndSignTxThunkProps } from '../common/recomposeAndSignTxThunk';
+import { type RecomposeAndSignTxThunkProps } from '../common/recomposeAndSignTxThunk';
 
 export type SendDexTransactionThunkProps = {
     account: Account;
@@ -62,6 +63,8 @@ export const sendDexTransactionThunk = createThunk<
             !selectedQuote.receiveAddress ||
             (selectedQuote.status !== 'APPROVAL_REQ' && selectedQuote.status !== 'CONFIRM')
         ) {
+            console.error('Failed to send dex transaction - invalid quote');
+
             return rejectWithValue({
                 type: 'error',
                 error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
@@ -104,8 +107,7 @@ export const sendDexTransactionThunk = createThunk<
                 amount: selectedQuote.dexTx.value,
                 destinationTag: selectedQuote.partnerPaymentExtraId,
                 recalculateCustomLimit: true,
-                ethereumAdjustGasLimit:
-                    selectedQuote.status === 'CONFIRM' ? ETHEREUM_ADJUST_GAS_LIMIT : undefined,
+                ethereumAdjustGasLimit: ETHEREUM_ADJUST_GAS_LIMIT,
                 setMaxOutputId,
                 signAndPushSendFormTransaction,
                 tradingFormState,
@@ -116,10 +118,12 @@ export const sendDexTransactionThunk = createThunk<
         if (isRejectedWithValue(recomposeAndSignTx) || !recomposeAndSignTx.payload?.success) {
             const { payload } = recomposeAndSignTx;
 
+            console.error('Failed to send dex transaction - sign tx error');
+
             return rejectWithValue({
                 type: payload && 'type' in payload ? payload.type : 'sign-tx-error',
                 error:
-                    payload && 'error' in payload
+                    payload && 'error' in payload && 'id' in payload.error
                         ? payload.error
                         : { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
             });
@@ -131,7 +135,10 @@ export const sendDexTransactionThunk = createThunk<
             receiveAddress: selectedQuote.receiveAddress, // just for type assurance
         };
 
-        if (selectedQuote.status === 'CONFIRM' && selectedQuote.approvalType !== 'ZERO') {
+        const isSwapTx =
+            selectedQuote.status === 'CONFIRM' && selectedQuote.approvalType !== 'ZERO';
+
+        if (isSwapTx) {
             trade.receiveTxHash = txid;
             trade.status = 'CONFIRMING';
 
@@ -145,6 +152,9 @@ export const sendDexTransactionThunk = createThunk<
                     receiveAccountKey,
                 }),
             );
+            dispatch(tradingExchangeActions.saveTransactionId(trade.orderId));
+
+            nextStep();
         } else {
             trade.approvalSendTxHash = txid;
             trade.status = 'APPROVAL_PENDING';
@@ -158,7 +168,7 @@ export const sendDexTransactionThunk = createThunk<
                 account,
                 triggerAnalyticsTradeConfirmation,
                 processResponseData,
-                nextStep,
+                nextStep: isSwapTx ? undefined : nextStep,
             }),
         );
     },

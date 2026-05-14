@@ -8,14 +8,14 @@ import {
     TRADING_FORM_PROVIDER_SELECT,
     TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    TradingExchangeFormProps,
-    TradingExchangeType,
+    type TradingExchangeFormProps,
+    type TradingExchangeType,
     selectTradingExchangeBuyCryptoIds,
     selectTradingExchangeSellCryptoIds,
     selectTradingLoadingAndTimestamp,
     tradingActions,
 } from '@suite-common/trading';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, FractionButton, Row } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
@@ -34,11 +34,11 @@ import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSel
 import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker';
 import {
     TradingFormInputBuyAsset,
-    TradingFormInputBuyAssetProps,
+    type TradingFormInputBuyAssetProps,
 } from './TradingFormInput/TradingFormInputBuyAsset/TradingFormInputBuyAsset';
 import {
     TradingFormInputSellAsset,
-    TradingFormInputSellAssetProps,
+    type TradingFormInputSellAssetProps,
 } from './TradingFormInput/TradingFormInputSellAsset/TradingFormInputSellAsset';
 import { TradingFormSection } from './TradingFormSection';
 import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
@@ -141,7 +141,7 @@ export const TradingExchangeFormInputs = () => {
                         cryptoInputName={TRADING_FORM_OUTPUT_AMOUNT}
                         fiatInputName={TRADING_FORM_OUTPUT_FIAT}
                         cryptoSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
-                        currencySelectLabel={currencySelect.label}
+                        currencySelectLabel={currencySelect.value.toUpperCase()}
                         cryptoCurrencyLabel={sendCryptoSelect?.id}
                     />
                     {amountInCrypto && (

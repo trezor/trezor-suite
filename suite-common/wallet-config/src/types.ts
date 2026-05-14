@@ -1,6 +1,6 @@
-import { NetworkDtoId } from '@suite-common/earn-api';
+import { type NetworkDtoId } from '@suite-common/earn-stablecoin-api';
 import { type DeviceModelInternal } from '@trezor/device-utils';
-import { RequiredKey } from '@trezor/type-utils';
+import { type RequiredKey } from '@trezor/type-utils';
 
 export type NetworkSymbol =
     | 'btc'
@@ -23,6 +23,7 @@ export type NetworkSymbol =
     | 'test'
     | 'regtest'
     | 'trx'
+    | 'ttrx'
     | 'tsep'
     | 'thod'
     | 'txrp'
@@ -80,7 +81,8 @@ export type NetworkFeature =
     | 'nft-definitions'
     | 'eip1559'
     | 'mev-protection'
-    | 'graph';
+    | 'graph'
+    | 'claim-rewards';
 
 type Level = `/${number}'`;
 type MaybeApostrophe = `'` | '';

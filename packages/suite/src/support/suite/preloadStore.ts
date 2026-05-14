@@ -39,6 +39,8 @@ export const preloadStore = async () => {
             analytics,
             metadata,
             txs,
+            phishing,
+            phishingMetadata,
             messageSystem,
             backendSettings,
             sendFormDrafts,
@@ -54,6 +56,7 @@ export const preloadStore = async () => {
             suiteSyncSettings,
             suiteSyncOwners,
             suiteSyncQuotaManager,
+            featureFeedback,
         ] = await Promise.all([
             db.getItemByPK('suiteSettings', 'suite'),
             db.getItemsExtended('devices'),
@@ -67,6 +70,8 @@ export const preloadStore = async () => {
             db.getItemByPK('analytics', 'suite'),
             db.getItemByPK('metadata', 'state'),
             db.getItemsExtended('txs', 'order'),
+            db.getItemsWithKeys('phishing'),
+            db.getItemByPK('phishingMetadata', 'phishingMetadata'),
             db.getItemByPK('messageSystem', 'suite'),
             db.getItemsWithKeys('backendSettings'),
             db.getItemsWithKeys('sendFormDrafts'),
@@ -82,6 +87,7 @@ export const preloadStore = async () => {
             db.getItemByPK('suiteSyncSettings', 'suiteSyncSettings'),
             db.getItemsWithKeys('suiteSyncOwners'),
             db.getItemByPK('suiteSyncQuotaManager', 'suiteSyncQuotaManager'),
+            db.getItemByPK('featureFeedback', 'featureFeedback'),
         ]);
 
         return {
@@ -94,6 +100,8 @@ export const preloadStore = async () => {
                 bluetooth,
                 accounts,
                 txs,
+                phishing,
+                phishingMetadata,
                 graph,
                 tradingTrades,
                 historicRates,
@@ -114,6 +122,7 @@ export const preloadStore = async () => {
                 suiteSyncSettings,
                 suiteSyncOwners,
                 suiteSyncQuotaManager,
+                featureFeedback,
             },
         } as const;
     } catch (error) {

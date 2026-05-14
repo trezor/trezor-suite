@@ -1,18 +1,18 @@
 import { useSelector } from 'react-redux';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 import { HStack, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { AccountLabel } from '@suite-native/labeling';
 import {
-    CloseActionType,
+    type CloseActionType,
     ScreenHeader,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
+import { type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
 
 type ReceiveScreenHeaderProps = {
     accountKey?: AccountKey;

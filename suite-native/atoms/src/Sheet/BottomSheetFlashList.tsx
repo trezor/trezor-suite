@@ -1,16 +1,16 @@
-import { ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
+import { type ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
     BottomSheetBackdrop,
     BottomSheetModal,
-    BottomSheetProps,
+    type BottomSheetProps,
     useBottomSheetScrollableCreator,
 } from '@gorhom/bottom-sheet';
-import { FlashList, FlashListProps } from '@shopify/flash-list';
+import { FlashList, type FlashListProps } from '@shopify/flash-list';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type BottomSheetFlashListProps<TItem> = {
     isVisible: boolean;
@@ -25,7 +25,7 @@ export type BottomSheetFlashListProps<TItem> = {
 const DEFAULT_INSET_BOTTOM = 25;
 
 const bottomSheetStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
 
     borderTopLeftRadius: utils.borders.radii.r20,
     borderTopRightRadius: utils.borders.radii.r20,
@@ -39,7 +39,7 @@ const sheetContentContainerStyle = prepareNativeStyle<{
 }));
 
 const handleStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.borderDashed,
+    backgroundColor: utils.colors.borderNeutral,
 }));
 
 const WindowOverlay = ({ children }: { children: ReactNode }) => (
@@ -61,8 +61,11 @@ export const BottomSheetFlashList = <TItem,>({
 
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-    const handleClose = useCallback(() => {
+    const dismissSheet = useCallback(() => {
         bottomSheetModalRef.current?.dismiss();
+    }, []);
+
+    const handleDismiss = useCallback(() => {
         onClose(false);
     }, [onClose]);
 
@@ -73,22 +76,13 @@ export const BottomSheetFlashList = <TItem,>({
     // minHeight can be higher than maxHeight because of estimatedListHeight, but it must be capped by maxHeight
     const snapPoints = useMemo(() => [Math.min(minHeight, maxHeight)], [minHeight, maxHeight]);
 
-    const handleSheetChanges = useCallback(
-        (index: number) => {
-            if (index === -1) {
-                handleClose();
-            }
-        },
-        [handleClose],
-    );
-
     useEffect(() => {
         if (isVisible) {
             bottomSheetModalRef.current?.present();
         } else {
-            bottomSheetModalRef.current?.dismiss();
+            dismissSheet();
         }
-    }, [isVisible]);
+    }, [dismissSheet, isVisible]);
 
     const BottomSheetListScrollComponent = useBottomSheetScrollableCreator();
 
@@ -98,11 +92,11 @@ export const BottomSheetFlashList = <TItem,>({
             snapPoints={snapPoints}
             maxDynamicContentSize={maxHeight}
             enableDynamicSizing={false}
-            onChange={handleSheetChanges}
+            onDismiss={handleDismiss}
             backdropComponent={props => (
                 <BottomSheetBackdrop
                     {...props}
-                    onPress={handleClose}
+                    onPress={dismissSheet}
                     appearsOnIndex={0}
                     disappearsOnIndex={-1}
                 />

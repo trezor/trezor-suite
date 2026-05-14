@@ -1,35 +1,43 @@
 import { useState } from 'react';
 
 import {
-    eraseFetchedDataDebug,
+    DEFAULT_QUOTA_MANAGER_URL,
+    DEV_QUOTA_MANAGER_URL,
+    PRODUCTION_QUOTA_MANAGER_URL,
+    enforceQuotaManagerUpdated,
+    eraseFetchedData,
+    selectEnforceQuotaManager,
     selectOwnersAllowance,
     selectQuotaManagerBaseUrl,
     selectRegisteredDevices,
     updateQuotaManagerBaseUrl,
 } from '@suite-common/suite-sync-quota-manager';
-import { Button, Column, Input } from '@trezor/components';
+import { Button, ButtonGroup, Checkbox, Code, Column, Input, Text } from '@trezor/components';
+import { ActionColumn, SectionItem, SettingsSection, TextColumn } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { SettingsSection } from 'src/components/settings/SettingsSection';
-import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+
+const LOCAL_QUOTA_MANAGER_URL = 'http://127.0.0.1:4001/quota-manager/';
 
 export const QuotaManagerSettings = () => {
     const dispatch = useDispatch();
+    const { isBelowLaptop } = useLayoutSize();
     const quotaManagerBaseUrl = useSelector(selectQuotaManagerBaseUrl);
     const registeredDevices = useSelector(selectRegisteredDevices);
     const ownersAllowance = useSelector(selectOwnersAllowance);
+    const enforceQuotaManager = useSelector(selectEnforceQuotaManager);
     const [quotaManagerUrl, setQuotaManagerUrl] = useState(quotaManagerBaseUrl ?? '');
 
     const [isUpdateUrlLoading, setIsUpdateUrlLoading] = useState(false);
 
-    const onQuotaManagerBaseUrlSave = () => {
+    const onQuotaManagerBaseUrlSave = (baseUrl = quotaManagerUrl) => {
         setIsUpdateUrlLoading(true);
-        dispatch(
-            updateQuotaManagerBaseUrl({
-                baseUrl: quotaManagerUrl,
-            }),
-        );
+
+        const normalizedUrl = baseUrl.trim() === '' ? DEFAULT_QUOTA_MANAGER_URL : baseUrl;
+
+        setQuotaManagerUrl(normalizedUrl);
+        dispatch(updateQuotaManagerBaseUrl({ baseUrl: normalizedUrl }));
 
         // fake ui loading delay
         setTimeout(() => {
@@ -37,10 +45,22 @@ export const QuotaManagerSettings = () => {
         }, 300);
     };
 
-    const onEraseFetchedData = () => dispatch(eraseFetchedDataDebug());
+    const onEraseFetchedData = () => dispatch(eraseFetchedData());
+
+    const onQuotaManagerUrlPresetClick = (baseUrl: string) => {
+        setQuotaManagerUrl(baseUrl);
+        onQuotaManagerBaseUrlSave(baseUrl);
+    };
+
+    const onToggleEnforceQuotaManager = () =>
+        dispatch(
+            enforceQuotaManagerUpdated({
+                enforce: !enforceQuotaManager,
+            }),
+        );
 
     return (
-        <SettingsSection title="Quota Manager">
+        <SettingsSection isBelowLaptop={isBelowLaptop} title="Quota Manager">
             <SectionItem>
                 <TextColumn title="Quota Manager URL" />
                 <ActionColumn>
@@ -53,7 +73,7 @@ export const QuotaManagerSettings = () => {
                             rightContent={
                                 <Button
                                     data-testid="@settings/debug/quota-manager-url-save-button"
-                                    onClick={onQuotaManagerBaseUrlSave}
+                                    onClick={() => onQuotaManagerBaseUrlSave()}
                                     size="small"
                                     isLoading={isUpdateUrlLoading}
                                 >
@@ -61,6 +81,36 @@ export const QuotaManagerSettings = () => {
                                 </Button>
                             }
                         />
+                        <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                            Default is: <Code>{DEFAULT_QUOTA_MANAGER_URL}</Code>
+                        </Text>
+                        <ButtonGroup size="small" priority="secondary">
+                            <Button
+                                intent="critical"
+                                isDisabled={isUpdateUrlLoading}
+                                onClick={() =>
+                                    onQuotaManagerUrlPresetClick(PRODUCTION_QUOTA_MANAGER_URL)
+                                }
+                            >
+                                Production
+                            </Button>
+                            <Button
+                                intent="brand"
+                                isDisabled={isUpdateUrlLoading}
+                                onClick={() => onQuotaManagerUrlPresetClick(DEV_QUOTA_MANAGER_URL)}
+                            >
+                                Dev
+                            </Button>
+                            <Button
+                                intent="info"
+                                isDisabled={isUpdateUrlLoading}
+                                onClick={() =>
+                                    onQuotaManagerUrlPresetClick(LOCAL_QUOTA_MANAGER_URL)
+                                }
+                            >
+                                Local
+                            </Button>
+                        </ButtonGroup>
                     </Column>
                 </ActionColumn>
             </SectionItem>
@@ -101,6 +151,16 @@ export const QuotaManagerSettings = () => {
                             ))
                         )}
                     </Column>
+                </ActionColumn>
+            </SectionItem>
+            <SectionItem>
+                <TextColumn title="Enforce Quota Manager for custom relay" />
+                <ActionColumn>
+                    <Checkbox
+                        data-testid="@settings/debug/quota-manager-enforce-for-custom-relay-checkbox"
+                        isChecked={enforceQuotaManager}
+                        onChange={onToggleEnforceQuotaManager}
+                    />
                 </ActionColumn>
             </SectionItem>
             <SectionItem>

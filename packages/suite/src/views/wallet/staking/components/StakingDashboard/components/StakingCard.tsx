@@ -1,15 +1,15 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { getStakingTotalRewards } from '@suite-common/staking';
-import { EarnFlow, createEarnAccountRef } from '@suite-common/suite-types/src/staking';
+import { openModal } from '@suite/modal';
+import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api/src/staking';
+import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     selectAccountIsStakingActive,
     selectAccountStakeTypeTransactions,
     selectCardanoPoolsInfo,
-    selectStakingTotalRewards,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     getStakingDataForNetwork,
     isCardanoStakedWithEverstake,
@@ -21,7 +21,7 @@ import {
     Card,
     Column,
     Grid,
-    IconName,
+    type IconName,
     InfoItem,
     Paragraph,
     Row,
@@ -30,7 +30,6 @@ import {
 } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
@@ -39,6 +38,7 @@ import { useAnalytics } from 'src/support/useAnalytics';
 import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';
 import { useProgressLabelsData } from '../hooks/useProgressLabelsData';
 import { ProgressLabels } from './ProgressLabels/ProgressLabels';
+import { getStakingTotalRewards } from './utils/stakingTotalRewards';
 
 type ItemProps = {
     label: React.ReactNode;
@@ -97,15 +97,13 @@ export const StakingCard = ({
     const analytics = useAnalytics();
     const { isBelowLaptop } = useLayoutSize();
 
-    const selectedStakingTotalRewards = useSelector(state =>
-        selectStakingTotalRewards(state, account?.symbol, account.descriptor),
-    );
     const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
 
-    const { totalRewards = '0', isTotalRewardsLoading } = getStakingTotalRewards(
+    const solanaRewardsTotalQuery = useSolanaRewardsTotal(account);
+    const { totalRewards, isTotalRewardsLoading } = getStakingTotalRewards(
         account,
-        selectedStakingTotalRewards,
+        solanaRewardsTotalQuery,
     );
 
     const {
@@ -168,9 +166,9 @@ export const StakingCard = ({
         if (!isStakingDisabled) {
             dispatch(
                 openModal({
-                    type: 'supply',
+                    type: 'stake',
                     flow: EarnFlow.Stake,
-                    account: createEarnAccountRef(account),
+                    account,
                 }),
             );
 
@@ -187,7 +185,7 @@ export const StakingCard = ({
 
     const openClaimModal = () => {
         if (canClaimRewards) {
-            dispatch(openModal({ type: 'claim', account: createEarnAccountRef(account) }));
+            dispatch(openModal({ type: 'claim', account }));
 
             analytics.report({
                 type: events.stakingClaimEvent.name,
@@ -202,7 +200,7 @@ export const StakingCard = ({
 
     const openUnstakeModal = () => {
         if (!isUnstakingDisabled) {
-            dispatch(openModal({ type: 'withdraw', account: createEarnAccountRef(account) }));
+            dispatch(openModal({ type: 'unstake', account }));
 
             analytics.report({
                 type: events.stakingUnstakeEvent.name,
@@ -399,7 +397,7 @@ export const StakingCard = ({
                             intent="brand"
                             data-testid="@account/staking/claim-rewards-button"
                         >
-                            <Translation id="TR_STAKE_CLAIM_REWARDS" />
+                            <Translation id="TR_EARN_CLAIM_REWARDS" />
                         </Button>
                     )}
                     <Tooltip content={unstakingMessageContent}>

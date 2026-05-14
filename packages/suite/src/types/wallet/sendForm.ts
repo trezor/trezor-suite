@@ -1,27 +1,27 @@
-import { Dispatch, SetStateAction } from 'react';
-import { FieldPath, UseFormReturn } from 'react-hook-form';
+import { type Dispatch, type SetStateAction } from 'react';
+import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
-import { Network } from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/wallet-config';
 import {
-    Account,
-    ExcludedUtxos,
-    FeeInfo,
-    FormOptions,
-    FormState,
-    Output,
-    PrecomposedLevels,
-    PrecomposedLevelsCardano,
-    Rate,
-    UtxoSorting,
+    type Account,
+    type ExcludedUtxos,
+    type FeeInfo,
+    type FormOptions,
+    type FormState,
+    type Output,
+    type PrecomposedLevels,
+    type PrecomposedLevelsCardano,
+    type Rate,
+    type UtxoSorting,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { AccountUtxo, FeeLevel, PROTO } from '@trezor/connect';
+import { type AccountUtxo, type FeeLevel, type PROTO } from '@trezor/connect';
 
 import {
-    HandleAmountChangeParams,
-    HandleFiatChangeParams,
+    type HandleAmountChangeParams,
+    type HandleFiatChangeParams,
 } from 'src/hooks/wallet/useSendFormChangeHandlers';
-import { GetCurrentRateParams } from 'src/hooks/wallet/useSendFormFields';
+import { type GetCurrentRateParams } from 'src/hooks/wallet/useSendFormFields';
 
 // local state of @wallet-hooks/useSendForm
 export type UseSendFormState = {

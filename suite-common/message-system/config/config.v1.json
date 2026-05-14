@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-02-10T00:00:00+00:00",
-    "sequence": 133,
+    "timestamp": "2026-05-13T12:00:00+00:00",
+    "sequence": 138,
     "actions": [
         {
             "conditions": [
@@ -723,6 +723,74 @@
         {
             "conditions": [
                 {
+                    "duration": {
+                        "from": "2026-04-20T09:00:00.000Z",
+                        "to": "2026-04-22T08:59:59.000Z"
+                    }
+                }
+            ],
+            "message": {
+                "id": "318ef3cc-fd29-4cb7-9777-d2733ad3866e",
+                "priority": 94,
+                "dismissible": true,
+                "variant": "info",
+                "category": "context",
+                "content": {
+                    "en": "Trading will be temporarily unavailable on April 22nd from 11:00 to 12:00 CEST due to scheduled maintenance.",
+                    "es": "El trading no estará disponible temporalmente el 22 de abril de 11:00 a 12:00 CEST por mantenimiento programado.",
+                    "cs": "Obchodování bude 22. dubna od 11:00 do 12:00 CEST dočasně nedostupné z důvodu plánované údržby.",
+                    "ru": "22 апреля с 11:00 до 12:00 CEST торговля будет временно недоступна в связи с плановым техническим обслуживанием.",
+                    "ja": "定期メンテナンスのため、4月22日11:00〜12:00 CSTはトレードが一時的にご利用いただけません。",
+                    "hu": "A kereskedés április 22-én 11:00 és 12:00 CEST között tervezett karbantartás miatt átmenetileg nem lesz elérhető.",
+                    "it": "Il trading non sarà temporaneamente disponibile il 22 aprile dalle 11:00 alle 12:00 CEST per manutenzione programmata.",
+                    "fr": "Le trading sera temporairement indisponible le 22 avril de 11h00 à 12h00 CEST en raison d'une maintenance planifiée.",
+                    "de": "Das Trading wird am 22. April von 11:00 bis 12:00 CEST aufgrund geplanter Wartungsarbeiten vorübergehend nicht verfügbar sein.",
+                    "tr": "22 Nisan'da 11:00 ile 12:00 CEST arasında planlı bakım nedeniyle işlem yapma geçici olarak kullanılamayacak.",
+                    "pt": "O trading estará temporariamente indisponível no dia 22 de abril das 11:00 às 12:00 CEST devido a uma manutenção programada.",
+                    "uk": "22 квітня з 11:00 до 12:00 CEST торгівля буде тимчасово недоступна у зв'язку з плановим технічним обслуговуванням."
+                },
+                "context": {
+                    "domain": ["trading.exchange", "trading.buy", "trading.sell"]
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-04-22T09:00:00.000Z",
+                        "to": "2026-04-22T10:00:00.000Z"
+                    }
+                }
+            ],
+            "message": {
+                "id": "3f1cbae7-d229-47de-a720-ab835f6ec38f",
+                "priority": 94,
+                "dismissible": false,
+                "variant": "warning",
+                "category": "context",
+                "content": {
+                    "en": "Trading is currently unavailable due to scheduled maintenance and will be restored by 12:00 CEST.",
+                    "es": "El trading no está disponible actualmente debido a un mantenimiento programado y se restablecerá a las 12:00 CEST.",
+                    "cs": "Obchodování je momentálně nedostupné z důvodu plánované údržby a bude obnoveno v 12:00 CEST.",
+                    "ru": "Торговля в настоящее время недоступна в связи с плановым техническим обслуживанием и будет восстановлена в 12:00 CEST.",
+                    "ja": "定期メンテナンスのため、現在トレードはご利用いただけません。12:00 CSTまでに復旧予定です。",
+                    "hu": "A kereskedés jelenleg nem elérhető tervezett karbantartás miatt, és 12:00 CEST-kor kerül visszaállításra.",
+                    "it": "Il trading è attualmente non disponibile a causa di una manutenzione programmata e sarà ripristinato alle 12:00 CEST.",
+                    "fr": "Le trading est actuellement indisponible en raison d'une maintenance planifiée et sera rétabli à 12h00 CEST.",
+                    "de": "Das Trading ist derzeit aufgrund geplanter Wartungsarbeiten nicht verfügbar und wird um 12:00 CEST wiederhergestellt.",
+                    "tr": "İşlem yapma, planlı bakım nedeniyle şu anda kullanılamıyor ve 12:00 CEST'te yeniden hizmete girecek.",
+                    "pt": "O trading está atualmente indisponível devido a uma manutenção programada e será restaurado às 12:00 CEST.",
+                    "uk": "Торгівля наразі недоступна у зв'язку з плановим технічним обслуговуванням і буде відновлена о 12:00 CEST."
+                },
+                "context": {
+                    "domain": ["trading.exchange", "trading.buy", "trading.sell"]
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
                     "settings": [
                         {
                             "ada": true
@@ -1420,34 +1488,78 @@
                         "flag": true,
                         "payload": {
                             "title": {
-                                "en": "Help us improve how users trade in Trezor Suite. Join a user feedback session and share your experience.",
-                                "es": "Ayúdanos a mejorar las operaciones en Trezor Suite. Únete a una sesión de feedback y comparte tu experiencia.",
-                                "cs": "Pomozte nám vylepšit obchodování v Trezor Suite. Zúčastněte se sezení pro zpětnou vazbu a podělte se o své zkušenosti.",
-                                "de": "Helfen Sie uns, das Trading in der Trezor Suite zu verbessern. Nehmen Sie an einer Feedback-Session teil und teilen Sie Ihre Erfahrungen.",
-                                "fr": "Aidez-nous à améliorer le trading dans Trezor Suite. Participez à une session de feedback et partagez votre expérience.",
-                                "pt": "Ajude-nos a melhorar as negociações no Trezor Suite. Participe de uma sessão de feedback e compartilhe sua experiência."
+                                "en": "Earn $50 for your feedback on trading",
+                                "es": "Gana $50 por tu opinión sobre el trading",
+                                "cs": "Získejte 50 $ za sdílení zpětné vazby k obchodování",
+                                "de": "Verdienen Sie 50 $ für Ihr Feedback zum Trading",
+                                "fr": "Gagnez 50 $ pour vos retours sur le trading",
+                                "pt": "Ganhe $50 pelo seu feedback sobre negociações"
                             },
                             "description": {
-                                "en": "Answer a short survey to see if you qualify for 60 min interview and get 50 USD discount on Trezor's e-shop or Amazon voucher for 30 USD.",
-                                "es": "Responde una breve encuesta para ver si calificas para una entrevista de 60 minutos y recibe un descuento de 50 USD en la tienda virtual de Trezor o un vale de Amazon de 30 USD.",
-                                "cs": "Vyplňte krátký dotazník a zjistěte, zda splňujete podmínky pro 60minutový rozhovor a získejte slevu 50 USD v Trezor e-shopu, nebo dárkový poukaz na Amazon v hodnotě 30 USD.",
-                                "de": "Beantworten Sie eine kurze Umfrage, um zu sehen, ob Sie für ein 60-minütiges Interview in Frage kommen, und erhalten Sie einen Rabatt von 50 USD im Trezor-E-Shop oder einen Amazon-Gutschein über 30 USD.",
-                                "fr": "Répondez à un court sondage pour voir si vous êtes éligible à un entretien de 60 minutes et recevez une remise de 50 USD sur l'e-shop de Trezor ou un bon d'achat Amazon de 30 USD.",
-                                "pt": "Responda a uma breve pesquisa para ver se você se qualifica para uma entrevista de 60 minutos e ganhe um desconto de 50 USD na loja virtual da Trezor ou um vale da Amazon de 30 USD."
+                                "en": "Take a short survey to qualify for a 60-minute chat about trading in Trezor Suite. Choose a $50 Trezor Shop voucher or a $30 Amazon voucher as a reward.",
+                                "es": "Completa una breve encuesta para calificar a una conversación de 60 minutos sobre trading en Trezor Suite. Elige un vale de $50 para Trezor Shop o un vale de $30 para Amazon como recompensa.",
+                                "cs": "Vyplňte krátký dotazník a získejte možnost zúčastnit se 60minutového rozhovoru o obchodování v Trezor Suite. Jako odměnu si vyberte voucher v hodnotě 50 $ do Trezor Shopu nebo voucher v hodnotě 30 $ na Amazon.",
+                                "de": "Nehmen Sie an einer kurzen Umfrage teil, um sich für ein 60-minütiges Gespräch über Trading in Trezor Suite zu qualifizieren. Wählen Sie als Belohnung einen $50-Gutschein für den Trezor Shop oder einen $30-Amazon-Gutschein.",
+                                "fr": "Répondez à un court sondage pour être éligible à un entretien de 60 minutes sur le trading dans Trezor Suite. Choisissez un bon d'achat de $50 pour le Trezor Shop ou un bon d'achat de $30 pour Amazon en guise de récompense.",
+                                "pt": "Responda a uma breve pesquisa para se qualificar para uma conversa de 60 minutos sobre trading na Trezor Suite. Escolha um voucher de $50 na Trezor Shop ou um voucher de $30 na Amazon como recompensa."
                             },
                             "cta": {
                                 "action": "external-link",
                                 "link": "https://satoshilabs.typeform.com/to/T16Qnfou",
                                 "label": {
-                                    "en": "Find out more",
-                                    "es": "Saber más",
-                                    "cs": "Zjistit více",
-                                    "de": "Mehr erfahren",
-                                    "fr": "En savoir plus",
-                                    "pt": "Saiba mais"
+                                    "en": "Take survey",
+                                    "es": "Tomar encuesta",
+                                    "cs": "Vyplnit dotazník",
+                                    "de": "Umfrage teilnehmen",
+                                    "fr": "Participer au sondage",
+                                    "pt": "Participar da pesquisa"
                                 }
                             }
                         }
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "<=26.5.1",
+                        "mobile": "!",
+                        "web": "<=26.5.1"
+                    }
+                }
+            ],
+            "message": {
+                "id": "8bb03b3f-ff8c-45a0-9bf7-02b17ceaa0fe",
+                "priority": 1,
+                "dismissible": false,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en": "New earn opportunities coming soon.",
+                    "es": "Pronto llegarán nuevas oportunidades para ganar.",
+                    "cs": "Brzy přijdou nové možnosti, jak vydělávat.",
+                    "de": "Neue Möglichkeiten zum Verdienen kommen bald.",
+                    "fr": "De nouvelles opportunités de rendement arrivent bientôt.",
+                    "pt": "Novas oportunidades para ganhar em breve."
+                },
+                "feature": [
+                    {
+                        "domain": "earn.dashboard.yield",
+                        "flag": false
+                    },
+                    {
+                        "domain": "earn.yield.deposit",
+                        "flag": false
+                    },
+                    {
+                        "domain": "earn.yield.withdraw",
+                        "flag": false
+                    },
+                    {
+                        "domain": "earn.yield.claim",
+                        "flag": false
                     }
                 ]
             }
@@ -1505,11 +1617,11 @@
                     },
                     {
                         "variant": "B",
-                        "percentage": 90
+                        "percentage": 70
                     },
                     {
                         "variant": "C",
-                        "percentage": 10
+                        "percentage": 30
                     }
                 ]
             }

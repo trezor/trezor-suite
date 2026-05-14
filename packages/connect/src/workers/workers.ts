@@ -4,32 +4,39 @@ type WorkerAsyncImporter = () => Promise<BaseWorker<unknown>>;
 
 const BlockbookWorker: WorkerAsyncImporter = () =>
     import(
-        /* webpackChunkName: "blockbook-worker" */ '@trezor/blockchain-link/src/workers/blockbook'
+        /* webpackChunkName: "workers/blockbook-worker" */
+        '@trezor/blockchain-link/src/workers/blockbook'
     ).then(w => w.default());
 const RippleWorker: WorkerAsyncImporter = () =>
     import(
-        /* webpackChunkName: "ripple-worker" */ '@trezor/blockchain-link/src/workers/ripple'
+        /* webpackChunkName: "workers/ripple-worker" */
+        '@trezor/blockchain-link/src/workers/ripple'
     ).then(w => w.default());
 const BlockfrostWorker: WorkerAsyncImporter = () =>
     import(
-        /* webpackChunkName: "blockfrost-worker" */ '@trezor/blockchain-link/src/workers/blockfrost'
+        /* webpackChunkName: "workers/blockfrost-worker" */
+        '@trezor/blockchain-link/src/workers/blockfrost'
     ).then(w => w.default());
 const ElectrumWorker: WorkerAsyncImporter = () =>
     import(
-        /* webpackChunkName: "electrum-worker" */ '@trezor/blockchain-link/src/workers/electrum'
+        /* webpackChunkName: "workers/electrum-worker" */
+        '@trezor/blockchain-link/src/workers/electrum'
     ).then(w => w.default());
 const SolanaWorker: WorkerAsyncImporter = () =>
     import(
-        /* webpackChunkName: "solana-worker" */ '@trezor/blockchain-link/src/workers/solana'
+        /* webpackChunkName: "workers/solana-worker" */
+        '@trezor/blockchain-link/src/workers/solana'
     ).then(w => w.default());
 const StellarWorker: WorkerAsyncImporter = () =>
     import(
-        /* webpackChunkName: "stellar-worker" */ '@trezor/blockchain-link/src/workers/stellar'
+        /* webpackChunkName: "workers/stellar-worker" */
+        '@trezor/blockchain-link/src/workers/stellar'
     ).then(w => w.default());
 
 const EvmRpcWorker: WorkerAsyncImporter = () =>
     import(
-        /* webpackChunkName: "evm-rpc-worker" */ '@trezor/blockchain-link/src/workers/evm-rpc'
+        /* webpackChunkName: "workers/evm-rpc-worker" */
+        '@trezor/blockchain-link/src/workers/evm-rpc'
     ).then(w => w.default());
 
 export {

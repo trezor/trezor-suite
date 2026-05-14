@@ -1,8 +1,14 @@
-import { Middleware, MiddlewareAPI, StoreEnhancer, configureStore } from '@reduxjs/toolkit';
+import {
+    type Middleware,
+    type MiddlewareAPI,
+    type StoreEnhancer,
+    configureStore,
+} from '@reduxjs/toolkit';
 
 import { logsMiddleware } from '@suite-common/logger';
 import {
-    ExtraDependencies,
+    type ExtraDependencies,
+    type ReducerState,
     castExtraStore,
     createStoreWithExtraStoreMiddleware,
 } from '@suite-common/redux-utils';
@@ -21,13 +27,14 @@ import {
     prepareTradingLastErrorSentryMiddleware,
     prepareTradingMiddleware,
 } from '@suite-native/trading-state';
-import { DeepPartial } from '@trezor/type-utils';
+import { type DeepPartial } from '@trezor/type-utils';
 
 import { createNativeCompositionRoot, extraDependencies } from './extraDependencies';
 import { prepareRootReducers } from './reducers';
 
-type RootReducerShape = Awaited<ReturnType<typeof prepareRootReducers>>;
-export type FullPersistedAppState = Parameters<RootReducerShape>[0];
+type RootReducerShape = ReturnType<typeof prepareRootReducers>;
+
+export type FullPersistedAppState = ReducerState<RootReducerShape>;
 
 type ExcludePersist<T> = Omit<T, '_persist'>;
 type ExcludeChildPersists<T> = {

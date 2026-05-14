@@ -4,6 +4,6 @@
         "outDir": "./libDev",
         "types": ["node", "chrome", "jest"]
     },
-    "include": ["."],
+    "include": [".", "./files/**/*.json"],
     "references": []
 }

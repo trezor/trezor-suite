@@ -1,0 +1,202 @@
+name: "[Bot] Set Release iteration on Close/Merge PR & Issue"
+
+on:
+  issues:
+    types: [closed]
+  pull_request_target:
+    types: [closed]
+
+env:
+  CHERRY_PICK_LABEL: "cherry-pick\U0001F352"
+  PROJECT_ID: PVT_kwDOAD9FD84AAuwj
+  PLATFORM_FIELD_ID: PVTSSF_lADOAD9FD84AAuwjzg5k-KU
+  RELEASE_FIELD_ID: PVTIF_lADOAD9FD84AAuwjzgAYje4
+  PLATFORM_DESKTOP_ID: e9bcca7d
+  PLATFORM_SUITE_ID: a0052515
+  PLATFORM_CONNECT_ID: 3586cc60
+  PLATFORM_MOBILE_ID: 3f0dd7ab
+
+jobs:
+  set-release-iteration:
+    name: Set Release iteration
+    runs-on: ubuntu-latest
+    if: github.repository == 'trezor/trezor-suite'
+    steps:
+      - name: Determine event context
+        id: context
+        run: |
+          if [ "${{ github.event_name }}" == "issues" ]; then
+            echo "content_id=${{ github.event.issue.node_id }}" >> $GITHUB_OUTPUT
+            echo "has_cherry_pick=${{ contains(github.event.issue.labels.*.name, env.CHERRY_PICK_LABEL) }}" >> $GITHUB_OUTPUT
+            echo "is_merged=false" >> $GITHUB_OUTPUT
+            echo "event_type=issue" >> $GITHUB_OUTPUT
+          else
+            echo "content_id=${{ github.event.pull_request.node_id }}" >> $GITHUB_OUTPUT
+            echo "has_cherry_pick=${{ contains(github.event.pull_request.labels.*.name, env.CHERRY_PICK_LABEL) }}" >> $GITHUB_OUTPUT
+            echo "is_merged=${{ github.event.pull_request.merged }}" >> $GITHUB_OUTPUT
+            echo "event_type=pull_request" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check if should proceed
+        id: guard
+        run: |
+          SHOULD_PROCEED=false
+
+          if [ "${{ steps.context.outputs.event_type }}" == "issue" ]; then
+            SHOULD_PROCEED=true
+          elif [ "${{ steps.context.outputs.is_merged }}" == "true" ]; then
+            SHOULD_PROCEED=true
+          else
+            echo "PR was closed without merging — skipping."
+          fi
+
+          if [ "${{ steps.context.outputs.has_cherry_pick }}" == "true" ]; then
+            echo "Item has 'cherry-pick🍒' label — skipping Release assignment."
+            SHOULD_PROCEED=false
+          fi
+
+          echo "proceed=$SHOULD_PROCEED" >> $GITHUB_OUTPUT
+
+      - name: Generate GitHub App token
+        if: steps.guard.outputs.proceed == 'true'
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
+      - name: Resolve and set Release iteration
+        if: steps.guard.outputs.proceed == 'true'
+        env:
+          GH_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+        run: |
+          # --- Util for GraphQL errors ---
+          check_graphql_errors() {
+            if echo "$1" | jq -e '.errors' > /dev/null 2>&1; then
+              echo "::error::GraphQL error: $(echo "$1" | jq -r '.errors[0].message')"
+              exit 1
+            fi
+          }
+
+          CONTENT_ID="${{ steps.context.outputs.content_id }}"
+          EVENT_TYPE="${{ steps.context.outputs.event_type }}"
+
+          # --- Get project item and field values ---
+          RESPONSE=$(gh api graphql -f query='
+            fragment ProjectFields on ProjectV2Item {
+              id
+              project { id }
+              fieldValues(first: 20) {
+                nodes {
+                  ... on ProjectV2ItemFieldSingleSelectValue {
+                    field { ... on ProjectV2SingleSelectField { id } }
+                    optionId
+                  }
+                  ... on ProjectV2ItemFieldIterationValue {
+                    field { ... on ProjectV2IterationField { id } }
+                    iterationId
+                  }
+                }
+              }
+            }
+            query($content_id: ID!) {
+              node(id: $content_id) {
+                ... on Issue { projectItems(first: 10) { nodes { ...ProjectFields } } }
+                ... on PullRequest { projectItems(first: 10) { nodes { ...ProjectFields } } }
+              }
+            }' \
+            -f content_id="$CONTENT_ID")
+          check_graphql_errors "$RESPONSE"
+
+          PROJECT_ITEM=$(echo "$RESPONSE" | jq -r \
+            ".data.node.projectItems.nodes[] | select(.project.id == \"${{ env.PROJECT_ID }}\")")
+
+          ITEM_ID=$(echo "$PROJECT_ITEM" | jq -r '.id')
+
+          if [ -z "$ITEM_ID" ] || [ "$ITEM_ID" = "null" ]; then
+            echo "Item not found in project — it may not be tracked. Skipping."
+            exit 0
+          fi
+
+          # --- Check if Release already set ---
+          RELEASE_ITERATION=$(echo "$PROJECT_ITEM" | jq -r \
+            ".fieldValues.nodes[] | select(.field?.id == \"${{ env.RELEASE_FIELD_ID }}\") | .iterationId // empty")
+
+          if [ -n "$RELEASE_ITERATION" ]; then
+            echo "⏭️ Release iteration is already set — skipping."
+            exit 0
+          fi
+
+          # --- Determine version from Platform ---
+          PLATFORM=$(echo "$PROJECT_ITEM" | jq -r \
+            ".fieldValues.nodes[] | select(.field?.id == \"${{ env.PLATFORM_FIELD_ID }}\") | .optionId // empty")
+
+          if [ "$PLATFORM" = "${{ env.PLATFORM_DESKTOP_ID }}" ] || \
+             [ "$PLATFORM" = "${{ env.PLATFORM_SUITE_ID }}" ] || \
+             [ "$PLATFORM" = "${{ env.PLATFORM_CONNECT_ID }}" ]; then
+            FILE_PATH="packages/suite/package.json"
+            VERSION_KEY="suiteVersion"
+          elif [ "$PLATFORM" = "${{ env.PLATFORM_MOBILE_ID }}" ]; then
+            FILE_PATH="suite-native/app/package.json"
+            VERSION_KEY="suiteNativeVersion"
+          else
+            echo "Platform option '$PLATFORM' is not Desktop/Suite/Connect/Mobile — skipping."
+            exit 0
+          fi
+
+          RAW_VERSION=$(gh api "repos/trezor/trezor-suite/contents/$FILE_PATH?ref=develop" \
+            --jq '.content' | base64 -d | jq -r ".$VERSION_KEY")
+
+          if [ -z "$RAW_VERSION" ] || [ "$RAW_VERSION" = "null" ]; then
+            echo "Could not read $VERSION_KEY from $FILE_PATH on develop — skipping."
+            exit 0
+          fi
+
+          RELEASE_VERSION=$(echo "$RAW_VERSION" | sed 's/\.[0-9]*$//')
+          echo "Resolved version: $RAW_VERSION → $RELEASE_VERSION"
+
+          # --- Find matching Release iteration ---
+          ITER_RESPONSE=$(gh api graphql \
+            -f query='query($fieldId: ID!) {
+              node(id: $fieldId) {
+                ... on ProjectV2IterationField {
+                  configuration {
+                    iterations { id title }
+                    completedIterations { id title }
+                  }
+                }
+              }
+            }' \
+            -f fieldId="${{ env.RELEASE_FIELD_ID }}")
+          check_graphql_errors "$ITER_RESPONSE"
+
+          ITERATION_ID=$(echo "$ITER_RESPONSE" | jq -r \
+            ".data.node.configuration | (.iterations + .completedIterations)[] | select(.title == \"$RELEASE_VERSION\") | .id")
+
+          if [ -z "$ITERATION_ID" ]; then
+            echo "No Release iteration found matching '$RELEASE_VERSION' — skipping."
+            exit 0
+          fi
+
+          echo "Found iteration: $RELEASE_VERSION → $ITERATION_ID"
+
+          # --- Set Release iteration ---
+          MUTATION_RESPONSE=$(gh api graphql -f query='
+            mutation($project: ID!, $item: ID!, $field: ID!, $iterationId: String!) {
+              updateProjectV2ItemFieldValue(input: {
+                projectId: $project
+                itemId: $item
+                fieldId: $field
+                value: { iterationId: $iterationId }
+              }) {
+                projectV2Item {
+                  id
+                }
+              }
+            }' -f project="${{ env.PROJECT_ID }}" \
+               -f item="$ITEM_ID" \
+               -f field="${{ env.RELEASE_FIELD_ID }}" \
+               -f iterationId="$ITERATION_ID")
+          check_graphql_errors "$MUTATION_RESPONSE"
+
+          echo "✅ Release set to '$RELEASE_VERSION' for $EVENT_TYPE"

@@ -15,15 +15,15 @@ export const ThpPairingInfoHelpButton = () => {
     return (
         <Box>
             <IconButton
-                colorScheme="tertiaryElevation0"
-                size="medium"
+                intent="neutral"
+                priority="secondary"
                 iconName="question"
                 onPress={openModal}
             />
             <BottomSheetModal ref={bottomSheetRef} isCloseDisplayed={false}>
                 <VStack spacing="sp24">
                     <VStack spacing="sp8">
-                        <Text variant="headline-sm" color="textDefault">
+                        <Text variant="headline-sm" color="contentPrimary">
                             <Translation id="thp.pairingInfo.help.title" />
                         </Text>
                         <Text>

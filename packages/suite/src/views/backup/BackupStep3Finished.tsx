@@ -1,12 +1,12 @@
+import { type BackupState, canContinue } from '@suite/backup';
 import { Translation } from '@suite/intl';
 import { Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { canContinue } from 'src/utils/backup';
+import { useOnboarding } from 'src/hooks/suite';
 
 import { BackupStepDescription } from './BackupStepDescription';
 import { AfterBackupCheckboxes } from '../../components/backup';
-import { BackupState } from '../../reducers/backup/backupReducer';
 
 export const BackupStep3Finished = ({
     onCancel,
@@ -15,12 +15,15 @@ export const BackupStep3Finished = ({
     onCancel: () => void;
     backup: BackupState;
 }) => {
+    const { backupMedium } = useOnboarding();
     const continueEnabled = canContinue(backup.userConfirmed);
+
+    const isUsingNfc = backupMedium === 'nfc';
 
     return (
         <Modal
             onCancel={continueEnabled ? onCancel : undefined}
-            variant="primary"
+            intent="brand"
             data-testid="@backup"
             heading={<Translation id="TR_BACKUP_CREATED" />}
             description={<BackupStepDescription />}
@@ -41,7 +44,9 @@ export const BackupStep3Finished = ({
                 data-testid="@backup/success-message"
                 margin={{ bottom: spacings.xl }}
             >
-                <Translation id="TR_BACKUP_FINISHED_TEXT" />
+                <Translation
+                    id={isUsingNfc ? 'TR_BACKUP_FINISHED_TEXT_NFC' : 'TR_BACKUP_FINISHED_TEXT'}
+                />
             </Paragraph>
             <AfterBackupCheckboxes />
         </Modal>

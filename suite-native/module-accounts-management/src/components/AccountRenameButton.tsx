@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { BottomSheetModal, Box, IconButton, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { selectIsLabellingAllowed, useTurnOnSuiteSyncGuard } from '@suite-native/labeling';
@@ -28,7 +28,8 @@ export const AccountRenameButton = ({ accountKey }: AccountRenameModalProps) => 
     return (
         <Box>
             <IconButton
-                colorScheme="tertiaryElevation0"
+                intent="neutral"
+                priority="secondary"
                 iconName="pencilSimple"
                 onPress={handleTriggerAccountRename}
                 testID="@account-detail/settings/edit-button"

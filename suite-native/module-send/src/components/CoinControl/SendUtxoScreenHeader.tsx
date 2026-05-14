@@ -1,4 +1,4 @@
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { IconButton } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
@@ -26,8 +26,8 @@ export const SendUtxoScreenHeader = ({ onDelete, accountKey }: SendUtxoScreenHea
                 setSelectedUtxos([]);
                 onDelete?.();
             },
-            primaryButtonVariant: 'redBold',
-            secondaryButtonVariant: 'redElevation0',
+            primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
+            secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
         });
     };
 
@@ -39,8 +39,8 @@ export const SendUtxoScreenHeader = ({ onDelete, accountKey }: SendUtxoScreenHea
                 selectedUtxos.length > 0 && (
                     <IconButton
                         iconName="trash"
-                        colorScheme="redElevation0"
-                        size="medium"
+                        intent="critical"
+                        priority="secondary"
                         onPress={handleDelete}
                         testID="coin-control-delete-button"
                     />

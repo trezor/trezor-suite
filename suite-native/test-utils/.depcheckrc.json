@@ -1,4 +1,0 @@
-{
-    "ignore-patterns": ["libDev", "lib"],
-    "ignores": ["// This can't be solved", "@suite-native/state"]
-}

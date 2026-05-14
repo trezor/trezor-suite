@@ -1,10 +1,12 @@
 import { ed25519 } from '@noble/curves/ed25519.js';
+import { ml_dsa44 } from '@noble/post-quantum/ml-dsa.js';
 import crypto from 'crypto';
 
 import { getSubtleCrypto } from '@trezor/crypto-utils';
+import { bufferUtils } from '@trezor/utils';
 
-import { VerifySignature } from './types';
-import { AlgorithmName, fixSignature } from './x509certificate';
+import { type VerifySignature } from './types';
+import { type AlgorithmName, fixSignature } from './x509certificate';
 
 // There is incomparability in results between Node.js and window SubtleCrypto api.
 // window.crypto.subtle.importKey (CryptoKey) cannot be used by `crypto-browserify`.Verify
@@ -19,7 +21,7 @@ export const verifySignatureP256: VerifySignature = async (rawKey, data, signatu
         // get ECDSA P-256 (secp256r1) key from RAW key
         const ecPubKey = await SubtleCrypto.importKey(
             'raw',
-            rawKey,
+            bufferUtils.toNonSharedBuffer(rawKey),
             { name: 'ECDSA', namedCurve: 'P-256' },
             true,
             ['verify'],
@@ -55,8 +57,18 @@ export const verifySignatureEd25519: VerifySignature = (rawKey, data, signature)
     }
 };
 
+export const verifySignatureMLDSA44: VerifySignature = (rawKey, data, signature) => {
+    try {
+        return ml_dsa44.verify(signature, data, rawKey);
+    } catch {
+        // same as verifySignatureEd25519
+        return false;
+    }
+};
+
 export const getVerifyFn = (algorithmName: AlgorithmName): VerifySignature => {
     if (algorithmName === 'P-256') return verifySignatureP256;
     if (algorithmName === 'Ed25519') return verifySignatureEd25519;
+    if (algorithmName === 'MLDSA44') return verifySignatureMLDSA44;
     throw new Error(`Unsupported signature algorithm.`);
 };

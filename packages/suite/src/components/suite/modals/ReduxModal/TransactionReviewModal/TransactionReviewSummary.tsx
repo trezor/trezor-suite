@@ -1,13 +1,14 @@
 import { Translation } from '@suite/intl';
+import { selectIsDebugModeActive } from '@suite/settings';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { formatDurationStrict } from '@suite-common/suite-utils';
-import { NetworkType, networks } from '@suite-common/wallet-config';
+import { type NetworkType, networks } from '@suite-common/wallet-config';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import {
-    FeeInfo,
-    GeneralPrecomposedTransactionFinal,
-    SendFormDraftKey,
-    StakeType,
+    type FeeInfo,
+    type GeneralPrecomposedTransactionFinal,
+    type SendFormDraftKey,
+    type StakeType,
 } from '@suite-common/wallet-types';
 import {
     asAmountUnit,
@@ -26,8 +27,9 @@ import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { useLocales } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
+
+import { TransactionReviewTronFeeNotes } from './TransactionReviewTronFeeNotes';
 
 const getEstimatedTime = (
     networkType: NetworkType,
@@ -130,10 +132,14 @@ export const TransactionReviewSummary = ({
                         </>
                     )}
 
-                    {!['ethereum', 'solana'].includes(networkType) && (
+                    {!['ethereum', 'solana', 'tron'].includes(networkType) && (
                         <Note iconName="receipt">
                             <FeeRate feeRate={fee} networkType={network.networkType} />
                         </Note>
+                    )}
+
+                    {networkType === 'tron' && (
+                        <TransactionReviewTronFeeNotes tx={tx} account={account} />
                     )}
 
                     {isComposedFeeRateDifferent && network.networkType === 'bitcoin' && (

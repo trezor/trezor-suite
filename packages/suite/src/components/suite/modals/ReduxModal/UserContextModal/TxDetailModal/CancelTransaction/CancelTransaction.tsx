@@ -1,5 +1,8 @@
 import { Translation } from '@suite/intl';
-import { SelectedAccountLoaded, WalletAccountTransaction } from '@suite-common/wallet-types';
+import {
+    type SelectedAccountLoaded,
+    type WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Card, Column, Divider, InfoItem, Row, Text, TextButton } from '@trezor/components';
 import { FeeRate } from '@trezor/product-components';
@@ -7,9 +10,9 @@ import { spacings } from '@trezor/theme';
 import { HELP_CENTER_CANCEL_TRANSACTION } from '@trezor/urls';
 import { BigNumber } from '@trezor/utils';
 
-import { useCancelTxContext } from '../../../../../../../hooks/wallet/useCancelTxContext';
-import { BaseCurrencyValue } from '../../../../../BaseCurrencyValue';
-import { FormattedCryptoAmount } from '../../../../../FormattedCryptoAmount';
+import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { useCancelTxContext } from 'src/hooks/wallet/useCancelTxContext';
 
 type CancelTransactionProps = {
     tx: WalletAccountTransaction;

@@ -1,26 +1,35 @@
+import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
-import {
-    act,
-    renderHookWithStoreProviderAsync,
-    renderWithBasicProvider,
-} from '@suite-native/test-utils';
-import { ExchangeFormType } from '@suite-native/trading-types';
+import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import { getWalletState } from '@suite-native/trading-fixtures';
+import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import { ExchangeAlert } from '../ExchangeAlert';
 
 describe('ExchangeAlert', () => {
     let form: ExchangeFormType;
+    const preloadedState = {
+        featureFlags: {
+            ...featureFlagsInitialState,
+            [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
+        },
+        wallet: getWalletState({ tradeType: 'exchange' }),
+    };
 
-    const renderFormHook = () => renderHookWithStoreProviderAsync(() => useExchangeForm());
+    const renderFormHook = () =>
+        renderHookWithStoreProvider(() => useExchangeForm(), {
+            preloadedState,
+        });
 
     const renderTradingAlert = () =>
         renderWithBasicProvider(<ExchangeAlert />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(async () => {
-        const { result } = await renderFormHook();
+    beforeEach(() => {
+        const { result } = renderFormHook();
         form = result.current;
     });
 

@@ -29,10 +29,10 @@ jobs:
       COINGECKO_API_KEY: ${{ secrets.COINGECKO_API_KEY }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6
         with:
           role-to-assume: ${{ github.event.inputs.environment == 'develop-definitions' && 'arn:aws:iam::538326561891:role/gh_actions_suite_develop_definitions' || 'arn:aws:iam::538326561891:role/gh_actions_suite_production_definitions' }}
           aws-region: ${{ env.AWS_REGION }}
@@ -57,7 +57,7 @@ jobs:
           cd suite-common/token-definitions
 
           yarn nfts simple ethereum polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche
-          yarn coins simple ethereum polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche cardano solana stellar tron
+          yarn coins simple ethereum ethereum-classic polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche cardano solana stellar tron
           yarn coins advanced solana stellar
 
       - name: Upload ${{ github.event.inputs.environment }} token-definitions files

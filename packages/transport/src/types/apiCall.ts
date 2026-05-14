@@ -1,29 +1,23 @@
-import { Messages } from '@trezor/protobuf';
+import type { MessagesSchema } from '@trezor/protobuf';
 import {
-    PROTOCOL_MALFORMED,
-    ThpChannelState,
-    TransportProtocol,
-    thp as protocolThp,
+    type PROTOCOL_MALFORMED,
+    type ThpChannelState,
+    type TransportProtocol,
+    type thp as protocolThp,
 } from '@trezor/protocol';
+import { type Result } from '@trezor/type-utils';
 
-import * as ERRORS from '../errors';
+import type * as ERRORS from '../errors';
 
 export type AnyError = (typeof ERRORS)[keyof typeof ERRORS] | typeof PROTOCOL_MALFORMED;
 
-export interface Success<T> {
-    success: true;
-    payload: T;
-}
-
-type ErrorGeneric<ErrorType> = {
-    success: false;
-    error: ErrorType;
-    message?: string;
+export type TransportError<E extends string = AnyError> = {
+    readonly code: E;
+    readonly message?: string;
 };
 
-// Todo: consider using Result from `@trezor/type-utils`
-export type ResultWithTypedError<T, E> = Success<T> | ErrorGeneric<E>;
-export type AsyncResultWithTypedError<T, E> = Promise<Success<T> | ErrorGeneric<E>>;
+export type ResultWithTypedError<T, E extends string> = Result<T, TransportError<E>>;
+export type AsyncResultWithTypedError<T, E extends string> = Promise<Result<T, TransportError<E>>>;
 
 export type AbortableParam = { signal?: AbortSignal; timeout?: number };
 
@@ -33,4 +27,9 @@ export type BridgeProtocolMessage = {
     thpState?: ThpChannelState;
 };
 
-export type MessageResponse = Messages.MessageResponse | protocolThp.ThpMessageResponse;
+export type BridgeCommonErrors =
+    | typeof ERRORS.HTTP_ERROR
+    | typeof ERRORS.WRONG_RESULT_TYPE
+    | typeof ERRORS.UNEXPECTED_ERROR;
+
+export type MessageResponse = MessagesSchema.MessageResponse | protocolThp.ThpMessageResponse;

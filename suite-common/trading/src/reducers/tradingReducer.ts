@@ -1,4 +1,4 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import { type PayloadAction } from '@reduxjs/toolkit';
 
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 
@@ -13,7 +13,7 @@ import {
 import { buyThunks } from '../thunks/buy';
 import { exchangeThunks } from '../thunks/exchange';
 import { sellThunks } from '../thunks/sell';
-import { TradingTransaction } from '../types';
+import { type TradingTransaction } from '../types';
 import { tradingBuyReducer } from './buyReducer';
 import { tradingExchangeReducer } from './exchangeReducer';
 import { tradingSellReducer } from './sellReducer';
@@ -44,6 +44,7 @@ const tradingSlice = createSliceWithExtraDeps({
                 state.buy.isLoading = false;
             })
             .addCase(buyThunks.handleRequestThunk.rejected, state => {
+                state.buy.isLoading = false;
                 state.buy.amountLimits = undefined;
                 state.buy.quotes = [];
                 state.buy.quotesRequest = undefined;
@@ -57,6 +58,7 @@ const tradingSlice = createSliceWithExtraDeps({
             })
             .addCase(sellThunks.handleRequestThunk.pending, state => {
                 state.sell.isLoading = true;
+                state.info.paymentMethods = [];
             })
             .addCase(sellThunks.handleRequestThunk.fulfilled, state => {
                 state.sell.isLoading = false;

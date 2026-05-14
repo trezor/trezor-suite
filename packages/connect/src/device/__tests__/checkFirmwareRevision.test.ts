@@ -1,10 +1,17 @@
 import { FetchError } from 'node-fetch';
 
-import { DeviceModelInternal, FirmwareRelease, FirmwareType } from '@trezor/device-utils';
+import type { FirmwareRevisionCheckResult } from '@trezor/connect-common/src/types/device';
+import type { FirmwareRelease } from '@trezor/device-utils';
+import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 
-import { FirmwareRevisionCheckResult } from '../../types/device';
-import * as utilsAssets from '../../utils/assets';
-import { CheckFirmwareRevisionParams, checkFirmwareRevision } from '../checkFirmwareRevision';
+import { httpRequest } from '../../utils/assets';
+import type { CheckFirmwareRevisionParams } from '../checkFirmwareRevision';
+import { checkFirmwareRevision } from '../checkFirmwareRevision';
+
+jest.mock('../../utils/assets', () => ({
+    ...jest.requireActual('../../utils/assets'),
+    httpRequest: jest.fn(jest.requireActual('../../utils/assets').httpRequest),
+}));
 
 const ONLINE_RELEASES_JSON_MOCK: FirmwareRelease = {
     required: false,
@@ -117,7 +124,7 @@ describe.each(DeviceNames)(`${checkFirmwareRevision.name} for device %s`, intern
         },
     ])(`$it`, async ({ params, expected, httpRequestMock }) => {
         if (httpRequestMock !== undefined) {
-            jest.spyOn(utilsAssets, 'httpRequest').mockImplementation(httpRequestMock);
+            (httpRequest as jest.Mock).mockImplementation(httpRequestMock);
         }
 
         const result = await checkFirmwareRevision({

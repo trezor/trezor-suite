@@ -1,5 +1,5 @@
-import { Rating } from './rating';
-import { UserData } from './userData';
+import { type Rating } from './rating';
+import { type UserData } from './userData';
 
 export type FeedbackType = 'BUG' | 'SUGGESTION';
 
@@ -10,6 +10,8 @@ export type FeedbackCategory =
     | 'send'
     | 'receive'
     | 'trade'
+    | 'experimental'
+    | 'feature'
     | 'other';
 
 type FeedbackExtras = Record<string, any>;

@@ -7,9 +7,9 @@ import {
     selectAccountIsStakingActive,
     selectCardanoPoolsInfo,
     selectHasRunningDiscovery,
-    selectPoolStatsApyData,
+    selectPoolStatsApy,
 } from '@suite-common/wallet-core';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getStakingDataForNetwork, isCardanoStakedWithEverstake } from '@suite-common/wallet-utils';
 import { Column, Flex, Grid } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -54,7 +54,7 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
 
     const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
 
-    const apy = useSelector(state => selectPoolStatsApyData(state, account));
+    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
 
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
     const hasPendingTx = useSelector(state => hasPendingStakeTypeTransaction(state, account.key));

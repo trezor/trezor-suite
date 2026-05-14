@@ -1,20 +1,21 @@
 import React from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
-import { AssetDiff, AssetExposure } from '@suite-common/tx-simulation';
-import { Network, isNetworkSymbol } from '@suite-common/wallet-config';
-import { TokenAddress, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type EvmAssetDiff, type EvmAssetExposure } from '@suite-common/tx-simulation';
+import { type Network, isNetworkSymbol } from '@suite-common/wallet-config';
+import { type TokenAddress, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { CryptoIcon, CryptoIconWithNetwork, Icon } from '@suite-native/icons';
 import { BigNumber } from '@trezor/utils';
 
+// FIXME: rename to EvmTxSimulationAsset
 export const TxSimulationAsset = ({
     assetDiff,
     assetExposure,
     network,
 }: {
-    assetDiff?: AssetDiff;
-    assetExposure?: AssetExposure;
+    assetDiff?: EvmAssetDiff;
+    assetExposure?: EvmAssetExposure;
     network: Network;
 }) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
@@ -51,10 +52,10 @@ export const TxSimulationAsset = ({
                     flex={1}
                     flexWrap="wrap"
                 >
-                    <Text color="textPrimaryDefault">{inAmount.summary}</Text>
+                    <Text color="contentBrand">{inAmount.summary}</Text>
                     <Box flex={1} />
                     {inAmount.usd_price && (
-                        <Text color="textSubdued">
+                        <Text color="contentSecondary">
                             {`+ `}
                             <BaseCurrencyAmountFormatter
                                 value={asBaseCurrencyAmount(new BigNumber(inAmount.usd_price))}
@@ -72,10 +73,10 @@ export const TxSimulationAsset = ({
                     flex={1}
                     flexWrap="wrap"
                 >
-                    <Text color="textAlertRed">{outAmount.summary}</Text>
+                    <Text color="contentCritical">{outAmount.summary}</Text>
                     <Box flex={1} />
                     {outAmount.usd_price && (
-                        <Text color="textSubdued">
+                        <Text color="contentSecondary">
                             {`- `}
                             <BaseCurrencyAmountFormatter
                                 value={asBaseCurrencyAmount(new BigNumber(outAmount.usd_price))}
@@ -88,10 +89,10 @@ export const TxSimulationAsset = ({
             {assetExposure?.spenders &&
                 Object.values(assetExposure.spenders).map((spender, index) => (
                     <HStack key={`spender-${index}`} spacing="sp12" alignItems="center" flex={1}>
-                        <Text color="textSubdued">{spender.summary}</Text>
+                        <Text color="contentSecondary">{spender.summary}</Text>
                         <Box flex={1} />
                         {spender.exposure.usd_price && (
-                            <Text color="textSubdued">
+                            <Text color="contentSecondary">
                                 <BaseCurrencyAmountFormatter
                                     value={spender.exposure.usd_price}
                                     currency="USD"

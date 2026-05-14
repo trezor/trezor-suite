@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
 import { Column, IconButton, Row, Text } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { type DeviceModelInternal } from '@trezor/device-utils';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { RotateDeviceImage } from '../RotateDeviceImage/RotateDeviceImage';
@@ -12,12 +12,12 @@ const Step = styled.div<{ $isActive: boolean }>`
     flex: 1;
     height: ${spacingsPx.xxs};
     border-radius: ${borders.radii.xxs};
-    background: ${({ theme }) => theme.backgroundNeutralSubdued};
+    background: ${({ theme }) => theme.elementFillNeutralBold};
 
     ${({ $isActive }) =>
         $isActive &&
         css`
-            background: ${({ theme }) => theme.iconPrimaryDefault};
+            background: ${({ theme }) => theme.contentBrand};
         `}
 `;
 

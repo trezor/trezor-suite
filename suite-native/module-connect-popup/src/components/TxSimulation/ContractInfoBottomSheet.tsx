@@ -1,7 +1,13 @@
 import { Pressable } from 'react-native';
 
-import { TransactionSimulation } from '@suite-common/tx-simulation';
-import { BottomSheetModal, BottomSheetModalRef, Card, Text, VStack } from '@suite-native/atoms';
+import { type TransactionSimulation } from '@suite-common/tx-simulation';
+import {
+    BottomSheetModal,
+    type BottomSheetModalRef,
+    Card,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { Translation } from '@suite-native/intl';
 

@@ -1,5 +1,5 @@
 import { isDevEnv } from '@suite-common/suite-utils';
-import { CoinjoinBackend, CoinjoinBackendSettings } from '@trezor/coinjoin';
+import { CoinjoinBackend, type CoinjoinBackendSettings } from '@trezor/coinjoin';
 import { createInterceptor } from '@trezor/request-manager';
 
 import { onionDomain } from '../config';

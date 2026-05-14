@@ -151,3 +151,4 @@ packages/suite-data/files/favicon.js
 # Symlinks committed to repo, prettier can't handle them (that's ok; it will format the orig files anyway)
 docs/symlink/**
 CLAUDE.md
+CODEOWNERS

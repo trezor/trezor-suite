@@ -1,18 +1,19 @@
 import { createMockDeps, mock } from '@suite-common/dependency-injection';
-import { OutputTable, SuiteSyncOutput } from '@suite-common/suite-sync-storage';
+import { type OutputTable, type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import { createSuiteSyncStorageMock } from '../../../../tests/createSuiteSyncStorageMock.mock';
-import { SuiteSyncUnavailableOnDeviceError } from '../../../createRefreshSuiteSyncKeys';
+import { SuiteSyncUnavailableOnDeviceError } from '../../../createEnsureSuiteSyncKeys';
 import type { UpdateOutputLabelDeps } from '../createUpdateOutputLabel';
 import { createUpdateOutputLabel } from '../createUpdateOutputLabel';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 const networkSymbol: NetworkSymbol = 'btc';
 const accountDescriptor = asAccountDescriptor('accountDescriptor');
+const getOutputLabel = () => null;
 
 describe(createUpdateOutputLabel.name, () => {
     it('updates output label', async () => {
@@ -24,6 +25,7 @@ describe(createUpdateOutputLabel.name, () => {
 
         const deps = createMockDeps<UpdateOutputLabelDeps>({
             ensureWalletSuiteSyncOn: () => Promise.resolve(ok(storage)),
+            getOutputLabel,
         });
 
         const updateOutputLabel = createUpdateOutputLabel(deps);
@@ -57,6 +59,7 @@ describe(createUpdateOutputLabel.name, () => {
 
         const deps = createMockDeps<UpdateOutputLabelDeps>({
             ensureWalletSuiteSyncOn: () => Promise.resolve(ensureWalletSuiteSyncOnResult),
+            getOutputLabel,
         });
 
         const updateOutputLabel = createUpdateOutputLabel(deps);

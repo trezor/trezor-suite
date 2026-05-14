@@ -7,12 +7,12 @@ import 'core-js/stable/structured-clone';
 
 // Ensure globalThis.setImmediate uses the native Node.js implementation.
 //
-// web3-eth (dependency of web3, pulled in via @everstake/wallet-sdk-ethereum) does
-// `import 'setimmediate'` — the `setimmediate` npm package. In jsdom (Jest), native
-// setImmediate is not on globalThis so the package installs its own polyfill. Even in
-// Node.js it picks the process.nextTick-based path, but wraps it in bookkeeping code
-// that batches all nextTick callbacks in the same microtask phase. This means microtasks
-// (Promise .then) queued by one callback do NOT run before the next callback fires.
+// Some transitive deps do `import 'setimmediate'` — the `setimmediate` npm package. In
+// jsdom (Jest), native setImmediate is not on globalThis so the package installs its own
+// polyfill. Even in Node.js it picks the process.nextTick-based path, but wraps it in
+// bookkeeping code that batches all nextTick callbacks in the same microtask phase. This
+// means microtasks (Promise .then) queued by one callback do NOT run before the next
+// callback fires.
 //
 // fake-indexeddb relies on that interleaving: after a cursor request succeeds, the
 // success event handler resolves a Promise (microtask) that lets user code call

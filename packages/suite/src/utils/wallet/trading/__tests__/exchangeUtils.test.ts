@@ -1,7 +1,7 @@
-import { CryptoId, ExchangeTradeQuoteRequest } from 'invity-api';
+import { type CryptoId, type ExchangeTradeQuoteRequest } from 'invity-api';
 
-import { TradingComposedTransactionInfo } from '@suite-common/trading';
-import { Account } from '@suite-common/wallet-types';
+import { type TradingComposedTransactionInfo } from '@suite-common/trading';
+import { type Account } from '@suite-common/wallet-types';
 
 import { createQuoteLink } from 'src/utils/wallet/trading/exchangeUtils';
 

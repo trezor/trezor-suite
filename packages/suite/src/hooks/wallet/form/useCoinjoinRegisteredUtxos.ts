@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
-import { AccountUtxo } from '@trezor/connect';
+import { type AccountUtxo } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectRegisteredUtxosByAccountKey } from 'src/reducers/wallet/coinjoinReducer';

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -53,11 +53,9 @@ export const CardWithDevice = ({
                     />
                 )}
 
-                {!needsAttention && (
+                {!isUnknown && (
                     <AnimatePresence initial={false}>
-                        {!isUnknown && (
-                            <motion.div {...motionAnimation.expand}>{children}</motion.div>
-                        )}
+                        <motion.div {...motionAnimation.expand}>{children}</motion.div>
                     </AnimatePresence>
                 )}
             </Column>

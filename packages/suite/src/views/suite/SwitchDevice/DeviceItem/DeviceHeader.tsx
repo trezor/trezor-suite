@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
@@ -6,7 +6,7 @@ import { IconButton, Row, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components
 import { spacings } from '@trezor/theme';
 
 import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
-import { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
+import { type ForegroundAppProps, type TrezorDevice } from 'src/types/suite';
 
 type DeviceHeaderProps = {
     device: TrezorDevice;

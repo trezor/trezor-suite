@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { Banner, Column, H3 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -76,6 +76,7 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
                         description={<Translation id="TR_TOKEN_UNRECOGNIZED_BY_TREZOR_TOOLTIP" />}
                     />
                     <TokensTable
+                        type="hidden"
                         account={account}
                         hideRates
                         tokenStatusType={TokenManagementAction.SHOW}

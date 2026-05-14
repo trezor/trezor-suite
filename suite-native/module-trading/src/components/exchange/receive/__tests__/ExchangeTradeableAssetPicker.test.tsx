@@ -1,31 +1,34 @@
-import { EnhancedStore } from '@reduxjs/toolkit';
-
+import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
-import {
-    initStore,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
-    screen,
-} from '@suite-native/test-utils';
-import { getInitializedTradingState } from '@suite-native/trading-fixtures';
-import { ExchangeFormType } from '@suite-native/trading-types';
+import { type TestStore, screen } from '@suite-native/test-utils-store';
+import { type ExchangeFormType } from '@suite-native/trading-types';
 import { FirmwareType } from '@trezor/connect';
 
+import {
+    createTradingLightStore,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import { ExchangeTradeableAssetPicker } from '../ExchangeTradeableAssetPicker';
 
 describe('ExchangeTradeableAssetPicker', () => {
-    let store: EnhancedStore;
+    let store: TestStore;
     let form: ExchangeFormType;
 
     const initPreloadedStore = (firmwareType: FirmwareType) =>
-        initStore({
-            device: { selectedDevice: { firmwareType } },
-            wallet: { trading: getInitializedTradingState() },
+        createTradingLightStore({
+            tradeType: 'exchange',
+            overrides: {
+                device: { selectedDevice: { firmwareType } },
+                featureFlags: {
+                    ...featureFlagsInitialState,
+                },
+            },
         });
 
-    const renderFormHook = async () => {
-        const { result } = await renderHookWithStoreProviderAsync(() => useExchangeForm(), {
+    const renderFormHook = () => {
+        const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
             store,
         });
 
@@ -33,28 +36,28 @@ describe('ExchangeTradeableAssetPicker', () => {
     };
 
     const renderTradeableAssetPicker = () =>
-        renderWithStoreProviderAsync(<ExchangeTradeableAssetPicker />, {
+        renderWithTradingProvider(<ExchangeTradeableAssetPicker />, {
             store,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(async () => {
-        store = (await initPreloadedStore(FirmwareType.Universal)).store;
-        form = await renderFormHook();
+    beforeEach(() => {
+        store = initPreloadedStore(FirmwareType.Universal);
+        form = renderFormHook();
     });
 
     afterEach(() => {
         screen.unmount();
     });
 
-    it('should render "Select asset" button with caret', async () => {
-        const { getByLabelText } = await renderTradeableAssetPicker();
+    it('should render "Select asset" button with caret', () => {
+        const { getByLabelText } = renderTradeableAssetPicker();
 
         expect(getByLabelText('Select asset')).toHaveTextContent(/^Select asset.$/);
     });
 
-    it('should render bottom sheet with all assets', async () => {
-        const { getAllByText } = await renderTradeableAssetPicker();
+    it('should render bottom sheet with all assets', () => {
+        const { getAllByText } = renderTradeableAssetPicker();
 
         expect(getAllByText('Bitcoin')).toBeTruthy();
         expect(getAllByText('USDC')).toBeTruthy();

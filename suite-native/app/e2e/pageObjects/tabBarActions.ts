@@ -27,7 +27,7 @@ class TabBarActions {
     }
 
     async tapBackButton() {
-        const backButton = element(by.id('@screen/sub-header/go-back-button'));
+        const backButton = element(by.id('@screen/sub-header/go-back-button')).atIndex(0);
         await waitForVisible(backButton);
         await backButton.tap();
     }

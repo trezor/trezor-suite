@@ -1,14 +1,11 @@
+import { selectHasExperimentalFeature, selectIsDebugModeActive } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
-import { Network, getMainnets, getTestnets } from '@suite-common/wallet-config';
+import { type Network, getMainnets, getTestnets } from '@suite-common/wallet-config';
 import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { arrayPartition } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
-import {
-    selectHasExperimentalFeature,
-    selectIsDebugModeActive,
-} from 'src/selectors/suite/suiteSelectors';
 
 export const useNetworkSupport = () => {
     const device = useSelector(selectSelectedDevice);
@@ -16,10 +13,15 @@ export const useNetworkSupport = () => {
     const useExperimentalNetworks = useSelector(
         selectHasExperimentalFeature('experimental-networks'),
     );
+    const useTronViewOnly = useSelector(selectHasExperimentalFeature('tron-view-only'));
     const useTestnetNetworks = useSelector(selectHasExperimentalFeature('testnet-networks'));
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
 
-    const mainnets = getMainnets({ debug: isDebug, useExperimentalNetworks });
+    const mainnets = getMainnets({
+        debug: isDebug,
+        useExperimentalNetworks,
+        includeTron: useTronViewOnly,
+    });
     const testnets = getTestnets({ debug: isDebug, useExperimentalNetworks, useTestnetNetworks });
 
     const isNetworkSupported = (network: Network) =>

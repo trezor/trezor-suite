@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { CryptoIconWithNetwork } from '../CryptoIconWithNetwork';

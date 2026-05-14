@@ -3,7 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../toasts" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
         { "path": "../../packages/urls" }
     ]

@@ -17,5 +17,4 @@ export const ignoreErrors = [
 
     // nodeJS deprecation errors
     /.*DEP0040.*punycode.*/, // used deep within tech stack, not much we can do about it atm
-    /.*DEP0169.*url\.parse\(\).*/, // TODO https://github.com/trezor/trezor-suite/issues/25255
 ] satisfies Options['ignoreErrors'];

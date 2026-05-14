@@ -123,6 +123,18 @@ export class DevicePrompt {
         return addressRaw[0].join('').replace(/\n/g, '');
     }
 
+    // This method confirms the Suite Sync device prompt and device provides necessary keys to suite.
+    // E2E limitation is that keys cannot be stored and because of that another prompt is called.
+    // This secondary device prompt for Suite Sync happens on first label change per wallet
+    @step()
+    async confirmSuiteSyncSetup() {
+        await this.device.expectToContainOnDisplay('Sync');
+        await this.confirmOnDevicePromptIsShown();
+        await this.device.pressYes();
+        // wait before closing the modal to prevent "Trezor Sync key retrieval failed" error
+        await this.page.waitForTimeout(2_000);
+    }
+
     @step()
     async compareAddressesOnDeviceAndSuite() {
         const addressFromSuite = await this.outputValueOf('address').innerText();

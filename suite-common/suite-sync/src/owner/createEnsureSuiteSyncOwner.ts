@@ -1,14 +1,19 @@
-import { EnsureSuiteSyncOwner } from '@suite-common/suite-sync-types';
+import { type EnsureSuiteSyncOwner } from '@suite-common/suite-sync-types';
 import { ok } from '@trezor/type-utils';
 
-import { LoadSuiteSyncOwnerFromStateDep } from './createLoadSuiteSyncOwnerFromState';
-import { RetrieveSuiteSyncOwnerKeysDep } from './createRetrieveSuiteSyncOwner';
-import { SaveSuiteSyncOwnerDep } from './createSaveSuiteSyncOwner';
+import { type LoadSuiteSyncOwnerFromStateDep } from './createLoadSuiteSyncOwnerFromState';
+import { type RetrieveSuiteSyncOwnerKeysDep } from './createRetrieveSuiteSyncOwner';
+import { type SaveSuiteSyncOwnerDep } from './createSaveSuiteSyncOwner';
 
 export type CreateEnsureSuiteSyncOwnerDeps = RetrieveSuiteSyncOwnerKeysDep &
     LoadSuiteSyncOwnerFromStateDep &
     SaveSuiteSyncOwnerDep;
 
+/**
+ * Responsibility:
+ * - Ensure the Suite Sync owner exists in encrypted state storage.
+ * - Retrieve and persist the owner only when it is not cached already.
+ */
 export const createEnsureSuiteSyncOwner =
     (deps: CreateEnsureSuiteSyncOwnerDeps): EnsureSuiteSyncOwner =>
     async ({ device, delegatedKey }) => {

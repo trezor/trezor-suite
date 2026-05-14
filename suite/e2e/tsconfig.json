@@ -11,7 +11,16 @@
         "scripts/**/*.ts"
     ],
     "references": [
+        {
+            "path": "../../suite-common/analytics"
+        },
         { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/e2e-evolu-client"
+        },
+        {
+            "path": "../../suite-common/earn-staking-api"
+        },
         { "path": "../../suite-common/feedback" },
         {
             "path": "../../suite-common/message-system"
@@ -39,8 +48,11 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../analytics" },
+        { "path": "../flags" },
         { "path": "../intl" },
         { "path": "../metadata" },
+        { "path": "../router-config" },
+        { "path": "../settings" },
         {
             "path": "../../packages/blockchain-link-types"
         },

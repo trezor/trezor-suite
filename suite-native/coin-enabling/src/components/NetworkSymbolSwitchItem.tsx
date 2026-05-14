@@ -5,7 +5,7 @@ import { Card, HStack, PressableOpacity, Switch, Text, VStack } from '@suite-nat
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { isNetworkWithTokens } from '@suite-native/tokens';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type NetworkSymbolSwitchItemProps = {
     symbol: NetworkSymbol;
@@ -19,8 +19,8 @@ const cardStyle = prepareNativeStyle<{ isEnabled: boolean }>((utils, { isEnabled
         {
             condition: !isEnabled,
             style: {
-                borderColor: utils.colors.borderElevation0,
-                backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation0,
+                borderColor: utils.colors.borderNeutral,
+                backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation0,
                 shadowColor: 'transparent',
             },
         },
@@ -67,7 +67,7 @@ export const NetworkSymbolSwitchItem = ({
                         <VStack spacing={0}>
                             <Text variant="body-sm-strong">{name}</Text>
                             {isNetworkWithTokens(symbol) && (
-                                <Text variant="body-sm" color="textSubdued">
+                                <Text variant="body-sm" color="contentSecondary">
                                     <Translation id="generic.tokens" />
                                 </Text>
                             )}

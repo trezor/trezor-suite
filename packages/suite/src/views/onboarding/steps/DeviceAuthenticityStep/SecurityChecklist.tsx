@@ -1,7 +1,7 @@
 import { List, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { SecurityChecklistItem } from './types';
+import { type SecurityChecklistItem } from './types';
 
 type SecurityChecklistProps = {
     items: readonly SecurityChecklistItem[];

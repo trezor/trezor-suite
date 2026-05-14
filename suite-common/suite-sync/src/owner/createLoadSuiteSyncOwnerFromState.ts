@@ -1,12 +1,12 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
-import { EncryptedHex, PlatformEncryptionDep } from '@suite-common/platform-encryption';
+import { type EncryptedHex, type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import {
-    SuiteSyncOwner,
-    SuiteSyncOwnerSerialized,
+    type SuiteSyncOwner,
+    type SuiteSyncOwnerSerialized,
     deserializeSuiteSyncOwner,
 } from '@suite-common/suite-sync-storage';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
 import { setSuiteSyncOwner } from '../suiteSyncSlice';

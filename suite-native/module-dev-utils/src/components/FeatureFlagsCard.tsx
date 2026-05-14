@@ -14,10 +14,11 @@ const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsTradingBuyEnabled]: '💰 Trading Buy',
     [FeatureFlagEnum.IsTradingExchangeEnabled]: '💰 Trading Swap',
     [FeatureFlagEnum.IsTradingSellEnabled]: '💰 Trading Sell',
-    [FeatureFlagEnum.AreTradingExchangeDexesEnabled]: '💰 Trading Exchange Dexes',
+    [FeatureFlagEnum.IsTradingConciergeEnabled]: '💰 Trading Concierge',
     [FeatureFlagEnum.IsTradingResidenceCheckEnabled]: '💰 Trading Residence Check',
     [FeatureFlagEnum.IsTradingDebugEnabled]: '💰 Trading Debug Mode',
-    [FeatureFlagEnum.IsEarnEnabled]: 'Earn',
+    [FeatureFlagEnum.IsStablecoinYieldEnabled]: 'Stablecoin Yield',
+    [FeatureFlagEnum.IsN4w1BackupEnabled]: 'N4W1 Backup',
 } as const satisfies Record<FeatureFlagEnum, string>;
 
 const FeatureFlag = ({ featureFlag }: { featureFlag: FeatureFlagEnum }) => {

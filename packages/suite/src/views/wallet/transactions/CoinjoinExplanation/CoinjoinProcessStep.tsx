@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { H3, IconCircle, IconName, Paragraph, variables } from '@trezor/components';
+import { H3, IconCircle, type IconName, Paragraph, variables } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
 const Image = styled.div`
@@ -19,7 +19,7 @@ const Image = styled.div`
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StepNumber = styled(Paragraph)`
     margin: 24px 0 6px;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         grid-column: 2;
@@ -104,7 +104,7 @@ export const CoinjoinProcessStep = ({
 }: CoinjoinProcessStepProps) => (
     <Container>
         <Image>
-            <IconCircle name={iconName} size={80} />
+            <IconCircle name={iconName} size={96} />
         </Image>
         <StepNumber typographyStyle="body-sm">
             <Translation id="TR_STEP" values={{ number }} />

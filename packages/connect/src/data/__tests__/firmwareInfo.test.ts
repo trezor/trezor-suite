@@ -1,12 +1,17 @@
+import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
 import { firmwareAssets } from '@trezor/connect-data';
 import { FirmwareType } from '@trezor/device-utils';
-import { DeviceModelInternal } from '@trezor/protobuf/src/messages-schema';
+import { DeviceModelInternal } from '@trezor/protobuf/src/definitions';
 import { versionUtils } from '@trezor/utils';
 
 import { getDeviceFeatures } from '../../../setupJest';
-import { DataManager } from '../DataManager';
-import { parseConnectSettings } from '../connectSettings';
-import { getFirmwareReleaseConfigInfo, getFirmwareStatus } from '../firmwareInfo';
+import {
+    getFirmwareReleaseConfigInfo,
+    getFirmwareStatus,
+    initializeFirmwareConfig,
+} from '../firmwareInfo';
+import * as firmwareReleaseStore from '../firmwareReleaseStore';
+import * as settingsStore from '../settingsStore';
 
 describe('data/firmwareInfo', () => {
     describe('getFirmwareStatus', () => {
@@ -30,7 +35,13 @@ describe('data/firmwareInfo', () => {
     });
     describe('getFirmwareReleaseConfigInfo', () => {
         beforeAll(async () => {
-            await DataManager.load(parseConnectSettings({}), true, true);
+            const settings = parseConnectSettings({});
+            settingsStore.set(settings);
+            await firmwareReleaseStore.init(
+                settings.firmwareChannel,
+                true,
+                initializeFirmwareConfig,
+            );
         });
         it('should offer latest compatible relase when latest one is not compatible', () => {
             const features = getDeviceFeatures({

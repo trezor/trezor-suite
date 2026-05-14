@@ -1,16 +1,12 @@
 import { tradingExchangeActions } from '@suite-common/trading';
-import {
-    TestStore,
-    initStore,
-    renderWithStoreProviderAsync,
-    userEvent,
-} from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { type TestStore, renderWithStoreProvider, userEvent } from '@suite-native/test-utils-store';
+import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
-import { ApprovalButton } from '../ApprovalButton';
+import { createTradingLightStore } from '../../../../__tests__/tradingTestUtils';
+import { ApprovalButton, type ApprovalButtonProps } from '../ApprovalButton';
 
 const mockNavigate = jest.fn();
-const mockConfirmTrade = jest.fn();
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -19,55 +15,74 @@ jest.mock('@react-navigation/native', () => ({
     }),
 }));
 
-jest.mock('../../../../hooks/exchange/useExchangeFlow', () => ({
-    useExchangeFlow: () => ({
-        confirmTrade: mockConfirmTrade,
-    }),
-}));
-
 describe('ApprovalButton', () => {
     let store: TestStore;
 
-    const renderApprovalButton = () => renderWithStoreProviderAsync(<ApprovalButton />, { store });
+    const renderApprovalButton = (props: Partial<ApprovalButtonProps>) =>
+        renderWithStoreProvider(<ApprovalButton flowType="approve" isReady {...props} />, {
+            store,
+        });
 
     beforeEach(() => {
         jest.clearAllMocks();
-        mockConfirmTrade.mockResolvedValue(true);
 
-        const preloadedState = {
-            wallet: getWalletState({
-                tradeType: 'exchange',
-            }),
-        };
-        preloadedState!.wallet!.trading!.exchange!.preselectedQuote = exchangeQuotes[0];
-        store = initStore(preloadedState).store;
+        store = createTradingLightStore({
+            tradeType: 'exchange',
+            overrides: {
+                wallet: {
+                    trading: {
+                        exchange: {
+                            selectedQuote: mercuryoFixedWorstQuote,
+                            tradingAccountKey: 'eth-account-1' as AccountKey,
+                        },
+                    },
+                },
+            },
+        });
     });
 
-    it('should render continue button', async () => {
-        const { getByText } = await renderApprovalButton();
+    it('should render continue button when isReady is true', () => {
+        const { getByText } = renderApprovalButton({ isReady: true });
 
         expect(getByText('Continue')).toBeOnTheScreen();
     });
 
-    it('should confirmTrade and navigate to TradingExchangePreview on press', async () => {
-        const { getByText } = await renderApprovalButton();
+    it('should render nothing when isReady is false', () => {
+        const { toJSON } = renderApprovalButton({ isReady: false });
+
+        expect(toJSON()).toBeNull();
+    });
+
+    it('should navigate to TradingExchangeOutputsReview on press', async () => {
+        const { getByText } = renderApprovalButton({ isReady: true });
 
         await userEvent.press(getByText('Continue'));
 
-        expect(mockConfirmTrade).toHaveBeenCalledWith({
-            receiveAddress: '',
-            trade: exchangeQuotes[0],
-            approvalFlow: true,
-            nextStep: expect.any(Function),
+        expect(mockNavigate).toHaveBeenCalledWith('TradingExchangeOutputsReview', {
+            accountKey: 'eth-account-1',
+            tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            orderId: 'c2de24a5-b923-42af-b70e-44bda8fa41dd',
+            flowType: 'approve',
         });
-
-        expect(mockNavigate).toHaveBeenCalledWith('TradingExchangePreview', { isApproved: true });
     });
 
-    it('should render nothing when no preselected quote is provided', async () => {
-        store.dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
+    it('should navigate to TradingExchangeOutputsReview on press for flowType revoke', async () => {
+        const { getByText } = renderApprovalButton({ isReady: true, flowType: 'revoke' });
 
-        const { toJSON } = await renderApprovalButton();
+        await userEvent.press(getByText('Continue'));
+
+        expect(mockNavigate).toHaveBeenCalledWith('TradingExchangeOutputsReview', {
+            accountKey: 'eth-account-1',
+            tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            orderId: 'c2de24a5-b923-42af-b70e-44bda8fa41dd',
+            flowType: 'revoke',
+        });
+    });
+
+    it('should render nothing when no selected quote is provided', () => {
+        store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
+
+        const { toJSON } = renderApprovalButton({ isReady: true });
 
         expect(toJSON()).toBeNull();
     });

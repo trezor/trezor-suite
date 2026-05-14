@@ -1,9 +1,9 @@
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
-import { IconName } from '@suite-native/icons';
+import { type IconName } from '@suite-native/icons';
 
 import { VStack } from '../Stack';
-import { CardStepperButtonsActionType, CardStepperItem } from './CardStepperItem';
+import { type CardStepperButtonsActionType, CardStepperItem } from './CardStepperItem';
 
 export type CardStepperMap<ContentIdType = undefined> = Record<
     number,
@@ -18,8 +18,8 @@ export type CardStepperMap<ContentIdType = undefined> = Record<
 export type CardStepperProps<ContentIdType = undefined> = {
     onFinish: () => void;
     primaryButtonText: ReactNode;
-    secondaryButtonText: ReactNode;
-    onPressSecondaryButton: (id?: ContentIdType) => void;
+    secondaryButtonText?: ReactNode;
+    onPressSecondaryButton?: (id?: ContentIdType) => void;
     buttonsActionType?: CardStepperButtonsActionType;
     stepToContentMap: CardStepperMap<ContentIdType>;
 };
@@ -44,14 +44,6 @@ export const CardStepper = <ContentIdType = undefined,>({
         onFinish();
     };
 
-    const handlePressSecondaryButton = (contentId?: ContentIdType) => {
-        if (contentId) {
-            onPressSecondaryButton(contentId);
-        } else {
-            onPressSecondaryButton();
-        }
-    };
-
     return (
         <VStack spacing="sp16">
             {Object.entries(stepToContentMap).map(([stepIndex, content]) => (
@@ -67,7 +59,7 @@ export const CardStepper = <ContentIdType = undefined,>({
                     primaryButtonText={primaryButtonText}
                     secondaryButtonText={secondaryButtonText}
                     onPressSecondaryButton={() =>
-                        handlePressSecondaryButton(content.secondaryButtonParameter)
+                        onPressSecondaryButton?.(content.secondaryButtonParameter)
                     }
                 />
             ))}

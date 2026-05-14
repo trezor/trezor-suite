@@ -1,14 +1,13 @@
-import { RouteProp } from '@react-navigation/native';
+import { type RouteProp } from '@react-navigation/native';
 
-import { TokenAddress } from '@suite-common/wallet-types';
-import type {
-    StackProps,
-    TradingStackParamList,
-    TradingStackRoutes,
-} from '@suite-native/navigation';
-import { TestStore, initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils';
-import { getWalletState } from '@suite-native/trading-fixtures';
+import { type TokenAddress } from '@suite-common/wallet-types';
+import type { RootStackParamList, RootStackRoutes, StackProps } from '@suite-native/navigation';
+import { type TestStore } from '@suite-native/test-utils-store';
 
+import {
+    createTradingLightStore,
+    renderWithTradingProvider,
+} from '../../__tests__/tradingTestUtils';
 import {
     TradingExchangeOutputsReviewScreen,
     TradingSellOutputsReviewScreen,
@@ -102,19 +101,20 @@ const createExchangeRouteParams = (tokenContract?: TokenAddress) => ({
     accountKey: TEST_ACCOUNT_KEY,
     tokenContract,
     orderId: TEST_ORDER_ID,
+    flowType: 'swap',
 });
 
 // Helper function to create route for sell
 const createSellRoute = (params: ReturnType<typeof createSellRouteParams>) =>
     ({
         params,
-    }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingSellOutputsReview>;
+    }) as RouteProp<RootStackParamList, RootStackRoutes.TradingSellOutputsReview>;
 
 // Helper function to create route for exchange
 const createExchangeRoute = (params: ReturnType<typeof createExchangeRouteParams>) =>
     ({
         params,
-    }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingExchangeOutputsReview>;
+    }) as RouteProp<RootStackParamList, RootStackRoutes.TradingExchangeOutputsReview>;
 
 describe('TradingSellOutputsReviewScreen', () => {
     let store: TestStore;
@@ -128,13 +128,13 @@ describe('TradingSellOutputsReviewScreen', () => {
     });
 
     describe('TradingSellOutputsReviewScreen', () => {
-        const renderScreen = async (
+        const renderScreen = (
             route: StackProps<
-                TradingStackParamList,
-                TradingStackRoutes.TradingSellOutputsReview
+                RootStackParamList,
+                RootStackRoutes.TradingSellOutputsReview
             >['route'],
         ) => {
-            const result = await renderWithStoreProviderAsync(
+            const result = renderWithTradingProvider(
                 <TradingSellOutputsReviewScreen route={route} navigation={mockNavigation} />,
                 { store },
             );
@@ -146,17 +146,17 @@ describe('TradingSellOutputsReviewScreen', () => {
 
         beforeEach(() => {
             jest.clearAllMocks();
-            store = initStore({ wallet: getWalletState({ tradeType: 'sell' }) }).store;
+            store = createTradingLightStore({ tradeType: 'sell' });
             mockNavigation.navigate.mockClear();
             mockNavigation.goBack.mockClear();
             mockNavigation.popToTop.mockClear();
         });
 
-        it('should render TradingSellOutputsReviewScreen', async () => {
+        it('should render TradingSellOutputsReviewScreen', () => {
             const params = createSellRouteParams();
             const route = createSellRoute(params);
 
-            const { toJSON } = await renderScreen(route);
+            const { toJSON } = renderScreen(route);
 
             expect(toJSON()).not.toBeNull();
             expect(mockUseSellFlowFn).toHaveBeenCalled();
@@ -171,13 +171,13 @@ describe('TradingSellOutputsReviewScreen', () => {
     });
 
     describe('TradingExchangeOutputsReviewScreen', () => {
-        const renderScreen = async (
+        const renderScreen = (
             route: StackProps<
-                TradingStackParamList,
-                TradingStackRoutes.TradingExchangeOutputsReview
+                RootStackParamList,
+                RootStackRoutes.TradingExchangeOutputsReview
             >['route'],
         ) => {
-            const result = await renderWithStoreProviderAsync(
+            const result = renderWithTradingProvider(
                 <TradingExchangeOutputsReviewScreen route={route} navigation={mockNavigation} />,
                 { store },
             );
@@ -189,17 +189,17 @@ describe('TradingSellOutputsReviewScreen', () => {
 
         beforeEach(() => {
             jest.clearAllMocks();
-            store = initStore({ wallet: getWalletState({ tradeType: 'exchange' }) }).store;
+            store = createTradingLightStore({ tradeType: 'exchange' });
             mockNavigation.navigate.mockClear();
             mockNavigation.goBack.mockClear();
             mockNavigation.popToTop.mockClear();
         });
 
-        it('should render TradingExchangeOutputsReviewScreen', async () => {
+        it('should render TradingExchangeOutputsReviewScreen', () => {
             const params = createExchangeRouteParams();
             const route = createExchangeRoute(params);
 
-            const { toJSON } = await renderScreen(route);
+            const { toJSON } = renderScreen(route);
 
             expect(toJSON()).not.toBeNull();
             expect(mockUseExchangeFlowFn).toHaveBeenCalled();

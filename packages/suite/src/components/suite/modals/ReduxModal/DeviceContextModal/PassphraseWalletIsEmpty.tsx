@@ -1,17 +1,17 @@
 import { Translation } from '@suite/intl';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { closeModal as closeModalAction } from '@suite/modal';
+import { goto } from '@suite/router';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Button, Card, Column, H3, Paragraph, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
-import { onCancel as onCancelModal } from '../../../../../actions/suite/modalActions';
-import { goto } from '../../../../../actions/suite/routerActions';
-import { useNetworkSupport } from '../../../../../hooks/settings/useNetworkSupport';
-import { useDispatch, useSelector } from '../../../../../hooks/suite';
-import { CardWithDevice } from '../../../../../views/suite/SwitchDevice/CardWithDevice';
-import { SwitchDeviceModal } from '../../../../../views/suite/SwitchDevice/SwitchDeviceModal';
+import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
+import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 
 type PassphraseWalletIsEmptyProps = {
     onRetry: () => void;
@@ -107,7 +107,7 @@ const PassphraseWalletIsEmptyContent = ({
                                 priority="secondary"
                                 typographyStyle="body-sm"
                             >
-                                <Translation id="TR_CHECKED_BALANCES_ON" />:
+                                <Translation id="TR_READY_ON" />:
                             </Paragraph>
                             <Row gap={spacings.xxs} flexWrap="wrap">
                                 {enabledNetworks.map(network => (
@@ -122,8 +122,8 @@ const PassphraseWalletIsEmptyContent = ({
                                     size="small"
                                     onClick={() => {
                                         onCancel();
-                                        dispatch(onCancelModal());
-                                        dispatch(goto('settings-coins'));
+                                        dispatch(closeModalAction());
+                                        dispatch(goto({ routeName: 'settings-coins' }));
                                     }}
                                 >
                                     <Translation id="TR_ADD" />

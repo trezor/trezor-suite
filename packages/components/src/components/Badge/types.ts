@@ -1,4 +1,4 @@
-import { UIIntent, UISize } from '../../config/types';
+import { type UIIntent, type UISize } from '../../config/types';
 
 export const badgeIntents = ['brand', 'neutral', 'info', 'warning', 'critical'] as const;
 export type BadgeIntent = Extract<UIIntent, (typeof badgeIntents)[number]>;

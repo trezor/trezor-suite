@@ -1,9 +1,9 @@
 import type { DeviceEvent, FirmwareStoreEvent, LocalFirmwares } from '@trezor/connect';
-import { InterceptedEvent } from '@trezor/request-manager';
+import { type InterceptedEvent } from '@trezor/request-manager';
 import type { HandshakeClient, TorStatus } from '@trezor/suite-desktop-api';
 import { TypedEmitter } from '@trezor/utils';
 
-import { MainWindowProxy } from '../libs/main-window-proxy';
+import { type MainWindowProxy } from '../libs/main-window-proxy';
 import type { Store } from '../libs/store';
 
 export type ModuleLoad = (payload: HandshakeClient) => any | Promise<any>;

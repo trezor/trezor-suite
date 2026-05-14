@@ -2,6 +2,11 @@
 
 import { WebUSB } from 'usb';
 
+import { protobufManager } from '@trezor/protobuf';
+import * as bitcoinProto from '@trezor/protobuf/src/definitions/messages-bitcoin_pb';
+import * as commonProto from '@trezor/protobuf/src/definitions/messages-common_pb';
+import * as managementProto from '@trezor/protobuf/src/definitions/messages-management_pb';
+import * as messagesProto from '@trezor/protobuf/src/definitions/messages_pb';
 import { BridgeTransport } from '@trezor/transport';
 import { TrezordNode } from '@trezor/transport-bridge/src';
 import { TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
@@ -39,6 +44,8 @@ class Controller extends TrezorUserEnvLinkClass {
         super();
 
         this.logger = console;
+
+        protobufManager.load([commonProto, messagesProto, managementProto, bitcoinProto]);
 
         this.originalApi = {
             connect: super.connect.bind(this),
@@ -120,7 +127,7 @@ class Controller extends TrezorUserEnvLinkClass {
             `${env.USE_HW && !env.USE_NODE_BRIDGE ? '[MANUAL ACTION REQUIRED] ' : ''} waiting for bridge ${expected ? 'start' : 'stop'}`,
         );
 
-        const client = new BridgeTransport({ messages: {}, id: 'test' });
+        const client = new BridgeTransport({ id: 'test' });
 
         return scheduleAction(
             () =>

@@ -2,6 +2,7 @@ import { useWatch } from 'react-hook-form';
 
 import styled from 'styled-components';
 
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { isLowAnonymityWarning } from '@suite-common/wallet-utils';
@@ -9,7 +10,7 @@ import { Banner, Button, Checkbox, Column, Paragraph, Tooltip } from '@trezor/co
 import { paletteV2, spacingsPx } from '@trezor/theme';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 const Container = styled.div`
@@ -80,11 +81,11 @@ export const ReviewButton = () => {
     const isLowAnonymity =
         Array.isArray(errors.outputs) &&
         errors.outputs.some(output => isLowAnonymityWarning(output));
-
     const possibleToSubmit =
         composedTx?.type === 'final' &&
         online &&
         !isLowAnonymity &&
+        !errors.feeLimit &&
         (isDeviceConnected ? !isLocked() : true);
 
     const confirmationRequired =
@@ -158,9 +159,8 @@ export const ReviewButton = () => {
                     intent="critical"
                     description={
                         <Checkbox
-                            variant="destructive"
                             isChecked={anonymityWarningChecked}
-                            onClick={toggleAnonymityWarning}
+                            onChange={toggleAnonymityWarning}
                         >
                             <Translation id="TR_BREAKING_ANONYMITY_CHECKBOX" />
                         </Checkbox>

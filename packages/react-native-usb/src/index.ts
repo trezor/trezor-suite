@@ -1,6 +1,6 @@
-import { EventSubscription } from 'expo-modules-core';
+import { type EventSubscription } from 'expo-modules-core';
 
-import { NativeDevice, OnConnectEvent, WebUSBDevice } from './ReactNativeUsb.types';
+import { type NativeDevice, type OnConnectEvent, type WebUSBDevice } from './ReactNativeUsb.types';
 import { ReactNativeUsbModule } from './ReactNativeUsbModule';
 
 const DEBUG_LOGS = false;
@@ -99,8 +99,6 @@ const createWebUSBDevice = (device: NativeDevice): WebUSBDevice => ({
     usbVersionMajor: 2,
     usbVersionMinor: 0,
     usbVersionSubminor: 0,
-    deviceVersionMajor: 1,
-    deviceVersionMinor: 0,
     deviceVersionSubminor: 0,
     configurations: [],
 });

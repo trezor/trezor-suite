@@ -1,9 +1,9 @@
 import { StretchInY, StretchOutY } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { AnimatedBox, BoxProps } from '@suite-native/atoms';
+import { AnimatedBox, type BoxProps } from '@suite-native/atoms';
 import { selectIsTradingResidenceCheckEnabled } from '@suite-native/trading-state';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type ResidenceCheckAwareAnimatedBoxProps = Omit<BoxProps, 'style'>;
 
@@ -14,7 +14,7 @@ const pickerStyle = prepareNativeStyle<{ hasBorder: boolean }>(
                 condition: hasBorder,
                 style: {
                     borderTopWidth: borders.widths.small,
-                    borderTopColor: colors.backgroundSurfaceElevation0,
+                    borderTopColor: colors.surfaceFillPage,
                 },
             },
         ],

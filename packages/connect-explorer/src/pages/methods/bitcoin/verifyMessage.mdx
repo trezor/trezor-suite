@@ -1,4 +1,4 @@
-import { VerifyMessage } from '@trezor/connect/src/types/api/bitcoin';
+import { VerifyMessage } from '@trezor/connect-common/src/types/api/bitcoin';
 
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
@@ -67,8 +67,8 @@ Error
 ```javascript
 {
     success: false,
-    payload: {
-        error: string // error message
+    error: {
+        message: string // error message
     }
 }
 ```

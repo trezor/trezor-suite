@@ -1,14 +1,14 @@
 import { useCallback } from 'react';
 
 import {
-    MessageSystemConfigSource,
+    type MessageSystemConfigSource,
     initMessageSystemThunk,
     messageSystemActions,
     selectMessageSystemConfigSource,
 } from '@suite-common/message-system';
 import { SelectBar } from '@trezor/components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 type ConfigSourceOption = {

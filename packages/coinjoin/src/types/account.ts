@@ -1,5 +1,5 @@
-import { AllowedScriptTypes } from './coordinator';
-import { RawLiquidityClue } from './middleware';
+import { type AllowedScriptTypes } from './coordinator';
+import { type RawLiquidityClue } from './middleware';
 
 export type RegisterAccountParams = {
     accountKey: string;

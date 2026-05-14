@@ -1,10 +1,10 @@
-import { CryptoId, ExchangeProviderInfo } from 'invity-api';
+import { type CryptoId, type ExchangeProviderInfo } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
-import { ExchangeInfo } from '../../reducers/exchangeReducer';
+import { type ExchangeInfo } from '../../reducers/exchangeReducer';
 
 export const loadExchangeInfoThunk = createThunk<ExchangeInfo>(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/loadInfo`,

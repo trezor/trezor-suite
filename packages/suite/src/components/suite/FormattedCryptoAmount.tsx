@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 
+import { selectLanguage } from '@suite/settings';
 import { isSignValuePositive } from '@suite-common/formatters';
-import { SignValue } from '@suite-common/suite-types';
+import { type SignValue } from '@suite-common/suite-types';
 import {
     type NetworkSymbolExtended,
     getDisplaySymbol,
@@ -9,7 +10,7 @@ import {
 } from '@suite-common/wallet-config';
 import { LOW_BALANCE_THRESHOLD } from '@suite-common/wallet-constants';
 import {
-    AmountUnit,
+    type AmountUnit,
     formatCoinBalance,
     localizeNumber,
     networkAmountToSmallestUnit,
@@ -21,7 +22,6 @@ import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { Sign } from 'src/components/suite/Sign';
 import { useSelector } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 import { RedactNumericalValue } from './RedactNumericalValue';

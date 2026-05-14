@@ -1,6 +1,10 @@
-import { HTMLProps } from 'react';
+import { type HTMLProps } from 'react';
 
-import { FrameProps, FramePropsKeys, pickAndPrepareFrameProps } from '../../utils/frameProps';
+import {
+    type FrameProps,
+    type FramePropsKeys,
+    pickAndPrepareFrameProps,
+} from '../../utils/frameProps';
 import { Box } from '../Box/Box';
 
 export const allowedGhostContainerFrameProps = [
@@ -51,9 +55,9 @@ export const GhostContainer = ({
     return (
         <Box
             onClick={isDisabled ? undefined : onClick}
-            backgroundColor={isActive ? 'stateFillElementGhostSelectedAlt' : 'baseFillElementGhost'}
+            backgroundColor={isActive ? 'elementFillElevated' : 'transparent'}
             backgroundColorOnInteraction={
-                isActive || isDisabled ? undefined : 'stateFillElementGhostHovered'
+                isActive || isDisabled ? undefined : 'elementFillGhostHovered'
             }
             as={as}
             data-testid={dataTestId}

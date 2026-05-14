@@ -2,7 +2,7 @@ import { selectDevices } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    NetworkSymbol,
+    type NetworkSymbol,
     externalBackendTypeNetworks,
     getNetworkOptional,
     isNetworkSymbol,
@@ -24,9 +24,9 @@ import {
     shouldUseIdentities,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
-    BlockchainBlock,
-    BlockchainError,
-    BlockchainNotification,
+    type BlockchainBlock,
+    type BlockchainError,
+    type BlockchainNotification,
 } from '@trezor/connect';
 import type { TimerId } from '@trezor/type-utils';
 import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
@@ -34,7 +34,7 @@ import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
 import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions';
 import { selectBlockchainState, selectNetworkBlockchainInfo } from './blockchainReducer';
 import { selectAccounts } from '../accounts/accountsSelectors';
-import { fetchAndUpdateAccountThunk } from '../accounts/accountsThunks';
+import { fetchAndUpdateAccountThunk, reportWalletBalanceThunk } from '../accounts/accountsThunks';
 import { preloadFeeInfoThunk } from '../fees/feesThunks';
 import { selectBitcoinAmountUnit } from '../settings/walletSettingsReducer';
 
@@ -114,6 +114,8 @@ export const initBlockchainThunk = createThunk(
 
         const promises = symbols.map(symbol => dispatch(reconnectBlockchainThunk({ symbol })));
         await Promise.all(promises);
+
+        dispatch(reportWalletBalanceThunk());
 
         // continue suite initialization
     },

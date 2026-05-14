@@ -1,4 +1,4 @@
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
 
 import type { SuiteDBSchema } from '../../definitions';

@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import {
     getSessionNetworks,
     selectSessions,
@@ -7,7 +8,6 @@ import {
 import { Badge, Card, Column, Dropdown, H3, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import * as modalActions from 'src/actions/suite/modalActions';
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -91,7 +91,7 @@ export const WalletConnectList = () => {
                                     label: <Translation id="TR_SWITCH_ACCOUNT" />,
                                     onClick: () => {
                                         dispatch(
-                                            modalActions.openModal({
+                                            openModal({
                                                 type: 'walletconnect-switch-account',
                                                 sessionTopic: session.topic,
                                             }),

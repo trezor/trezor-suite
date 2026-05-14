@@ -1,6 +1,6 @@
-import { TradingComposedTransactionInfo } from '@suite-common/trading';
+import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 import * as fixtures from 'src/utils/wallet/trading/__fixtures__/sellUtils';
 import { createQuoteLink } from 'src/utils/wallet/trading/sellUtils';
 

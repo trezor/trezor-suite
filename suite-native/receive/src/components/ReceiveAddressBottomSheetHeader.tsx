@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 
 import { Text, VStack } from '@suite-native/atoms';
 
@@ -15,7 +15,7 @@ export const ReceiveAddressBottomSheetHeader = ({
         <Text textAlign="center" variant="headline-sm">
             {title}
         </Text>
-        <Text textAlign="center" color="textSubdued">
+        <Text textAlign="center" color="contentSecondary">
             {description}
         </Text>
     </VStack>

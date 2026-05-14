@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { selectIsPhishingTransaction } from '@suite-common/wallet-core';
-import { WalletAccountTransaction, createAccountKey } from '@suite-common/wallet-types';
+import { type WalletAccountTransaction, createAccountKey } from '@suite-common/wallet-types';
 import { Column, Divider } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -10,8 +10,6 @@ import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';
 import { CollapsibleIOSection } from './CollapsibleIOSection';
 import { IOGroup } from './IOGroup';
 import { TokenSpecificBalanceDetailsRow } from './TokenSpecificBalanceDetailsRow';
-
-export type IODetails = WalletAccountTransaction['details']['vin'][number];
 
 type IODetailsProps = {
     tx: WalletAccountTransaction;
@@ -25,7 +23,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
         networkSymbol: tx.symbol,
         deviceStaticSessionId: tx.deviceState,
     });
-    const isPhishingTransaction = useSelector(state =>
+    const { isPhishing: isPhishingTransaction } = useSelector(state =>
         selectIsPhishingTransaction(state, tx.txid, accountKey),
     );
 

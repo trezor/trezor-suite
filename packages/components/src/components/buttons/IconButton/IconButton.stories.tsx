@@ -1,9 +1,9 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 import { action } from 'storybook/actions';
 
 import {
     IconButton as IconButtonComponent,
-    IconButtonProps,
+    type IconButtonProps,
     allowedIconButtonFrameProps,
 } from './IconButton';
 import { variables } from '../../../config';
@@ -27,6 +27,7 @@ export const IconButton: StoryObj<IconButtonProps> = {
         isDisabled: false,
         isLoading: false,
         isInverse: false,
+        isFloating: false,
         ...getFramePropsStory(allowedIconButtonFrameProps).args,
     },
     argTypes: {
@@ -59,6 +60,9 @@ export const IconButton: StoryObj<IconButtonProps> = {
             type: 'boolean',
         },
         isInverse: {
+            type: 'boolean',
+        },
+        isFloating: {
             type: 'boolean',
         },
         ...getFramePropsStory(allowedIconButtonFrameProps).argTypes,

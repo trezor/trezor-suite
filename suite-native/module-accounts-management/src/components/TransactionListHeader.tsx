@@ -5,27 +5,27 @@ import { useNavigation } from '@react-navigation/native';
 
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import {
-    AccountsRootState,
-    TransactionsRootState,
+    type AccountsRootState,
+    type TransactionsRootState,
     selectAccountByKey,
     selectIsTestnetAccount,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
-import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
-import { FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
+import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import {
     ReceiveStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
     SendStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
-import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { selectHasAccountAnyTransactions } from '@suite-native/transactions';
 
 import { selectIsNetworkSendFlowEnabled } from '../selectors';
@@ -34,7 +34,9 @@ import { StellarLimitedHistoryBanner } from './AccountBanners/StellarLimitedHist
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
 import { AccountDetailGraph } from './AccountDetailGraph';
 import { CoinPriceCard } from './CoinPriceCard';
+import { StablecoinYieldTokenOverview } from './StablecoinYieldTokenOverview';
 import { StellarTokenActions } from './StellarTokenActions';
+import { TronResources } from './TronResources';
 
 type TransactionListHeaderProps = {
     accountKey: AccountKey;
@@ -105,7 +107,7 @@ export const TransactionListHeader = memo(
         );
         const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
         const hasFirmwareAuthenticityCheckHardFailed = useSelector(
-            selectHasFirmwareAuthenticityCheckHardFailed,
+            selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
         );
         const token = useSelector((state: TokensRootState) =>
             selectAccountTokenInfo(state, accountKey, tokenContract),
@@ -152,8 +154,7 @@ export const TransactionListHeader = memo(
             });
         };
 
-        const isTokenDetail = !!tokenContract;
-        const isPriceCardDisplayed = shallDisplayBaseCurrency && !isTokenDetail;
+        const isPriceCardDisplayed = shallDisplayBaseCurrency;
         const isStellarAccount = account.networkType === 'stellar';
 
         const isSendButtonDisplayed = isNetworkSendFlowEnabled && !isPortfolioTrackerDevice;
@@ -167,12 +168,18 @@ export const TransactionListHeader = memo(
                         accountKey={accountKey}
                         tokenContract={tokenContract}
                     />
+                    {tokenContract && (
+                        <StablecoinYieldTokenOverview
+                            accountKey={accountKey}
+                            tokenContract={tokenContract}
+                        />
+                    )}
                     {hasAccountTransactions && (
                         <HStack paddingTop="sp8" paddingHorizontal="sp16" flex={1} spacing="sp12">
                             {isReceiveButtonDisplayed && (
                                 <Box flex={1}>
                                     <Button
-                                        viewLeft="arrowLineDown"
+                                        iconLeft="arrowLineDown"
                                         onPress={handleReceive}
                                         testID="@account-detail/receive-button"
                                     >
@@ -183,7 +190,7 @@ export const TransactionListHeader = memo(
                             {isSendButtonDisplayed && (
                                 <Box flex={1}>
                                     <Button
-                                        viewLeft="arrowLineUp"
+                                        iconLeft="arrowLineUp"
                                         onPress={handleSend}
                                         testID="@account-detail/send-button"
                                     >
@@ -193,7 +200,9 @@ export const TransactionListHeader = memo(
                             )}
                         </HStack>
                     )}
-                    {isPriceCardDisplayed && <CoinPriceCard accountKey={accountKey} />}
+                    {isPriceCardDisplayed && (
+                        <CoinPriceCard accountKey={accountKey} tokenContract={tokenContract} />
+                    )}
                     {isStellarTokenActionsDisplayed && (
                         <StellarTokenActions
                             accountKey={accountKey}
@@ -202,9 +211,12 @@ export const TransactionListHeader = memo(
                     )}
                     {isStellarAccount && <StellarLimitedHistoryBanner />}
                     {account.networkType === 'solana' && <SolanaLimitedHistoryBanner />}
+                    {account.networkType === 'tron' && !tokenContract && hasAccountTransactions && (
+                        <TronResources accountKey={accountKey} />
+                    )}
                 </VStack>
                 {hasAccountTransactions && (
-                    <Box marginTop="sp52" marginHorizontal="sp32">
+                    <Box marginTop="sp52" marginHorizontal="sp16">
                         <Text variant="headline-sm">
                             <Translation id="transactions.title" />
                         </Text>

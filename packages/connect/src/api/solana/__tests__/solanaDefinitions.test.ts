@@ -1,5 +1,6 @@
 import fetch from 'cross-fetch';
 
+import { loadProtobufModules } from '../../../data/protobufLoader';
 import { decodeSolanaTokenDefinition, getSolanaTokenDefinition } from '../solanaDefinitions';
 
 jest.mock('cross-fetch');
@@ -69,6 +70,10 @@ const mockEncodedDefinition = new Uint8Array([
 ]).buffer;
 
 describe('decodeSolanaTokenDefinition', () => {
+    beforeAll(async () => {
+        await loadProtobufModules();
+    });
+
     it('should decode the fake USD token definition', () => {
         const result = decodeSolanaTokenDefinition(mockEncodedDefinition);
 

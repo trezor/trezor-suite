@@ -1,7 +1,7 @@
 import { DemoAccountQuestionnaireStackRoutes } from '@suite-native/navigation';
 
 import {
-    DemoAccountQuestionnaireAnswerOption,
+    type DemoAccountQuestionnaireAnswerOption,
     DemoAccountQuestionnaireScreenContent,
 } from '../components/DemoAccountQuestionnaireScreenContent';
 

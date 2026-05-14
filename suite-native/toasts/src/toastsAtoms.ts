@@ -1,16 +1,16 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { A } from '@mobily/ts-belt';
 import { atom } from 'jotai';
 
-import { IconName } from '@suite-native/icons';
+import { type IconName } from '@suite-native/icons';
 
-export type ToastVariant = 'default' | 'success' | 'warning' | 'error' | 'info';
+export type ToastIntent = 'neutral' | 'brand' | 'warning' | 'critical' | 'info';
 
 export type Toast = {
     id: number;
     icon?: IconName;
-    variant: ToastVariant;
+    intent: ToastIntent;
     message: ReactNode;
 };
 

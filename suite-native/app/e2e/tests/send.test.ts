@@ -2,8 +2,6 @@ import { expect as detoxExpect } from 'detox';
 
 import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
-import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { regtestDiscoveryFinishedStateT3T1 } from '../fixtures/regtestDiscoveryFinishedStateT3T1';
 import { regtestDiscoveryFinishedStateT3W1 } from '../fixtures/regtestDiscoveryFinishedStateT3W1';
@@ -11,7 +9,6 @@ import { onAccountDetail } from '../pageObjects/accountDetailActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onSendAddressReview } from '../pageObjects/send/sendAddressReviewActions';
-import { FeeValues, onSendFees } from '../pageObjects/send/sendFeesActions';
 import { onSendOutputsForm } from '../pageObjects/send/sendOutputsFormActions';
 import { onSendOutputsReview } from '../pageObjects/send/sendOutputsReviewActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
@@ -31,30 +28,23 @@ const SEND_FORM_ERROR_MESSAGES = {
 const INITIAL_ACCOUNT_BALANCE = 3.14;
 
 const prepareTransactionForOnDeviceReview = async ({
-    feeValues,
     isFormEmpty = true,
     recipientValues = [{ address: 'bcrt1q34up3cga3fkmph47t22mpk5d0xxj3ppghph9da', amount: '0.5' }],
 }: {
     recipientValues?: { address: string; amount: string }[];
-    feeValues?: FeeValues;
     isFormEmpty?: boolean;
-}) => {
+} = {}) => {
     if (isFormEmpty) {
         await onSendOutputsForm.fillForm(recipientValues);
     }
 
     await onSendOutputsForm.submitForm();
-
-    if (feeValues) {
-        await onSendFees.selectFee(feeValues);
-    }
-
-    await onSendFees.submitFee();
 };
 
 const signTransactionAndSendIt = async () => {
     await onSendAddressReview.nextStep();
     await onSendAddressReview.nextStep();
+    await TrezorUserEnvLink.pressYes();
     await TrezorUserEnvLink.pressYes();
 
     await onSendOutputsReview.waitForScreen();
@@ -67,10 +57,9 @@ const preloadedState = preparePreloadedReduxState(
     getModelFromEnv() === Model.T3T1
         ? regtestDiscoveryFinishedStateT3T1
         : regtestDiscoveryFinishedStateT3W1,
-    getModelFromEnv() === Model.T3W1 ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
 );
 
-describe('Send transaction flow. [@androidOnly @T3T1]', () => {
+describe('Send transaction flow. [@androidOnly @smoke @T3T1 @T3W1]', () => {
     beforeAll(async () => {
         await TrezorUserEnvLink.sendToAddressAndMineBlock({
             address: 'bcrt1q34up3cga3fkmph47t22mpk5d0xxj3ppghph9da',
@@ -79,8 +68,8 @@ describe('Send transaction flow. [@androidOnly @T3T1]', () => {
     });
 
     beforeEach(async () => {
-        await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator();
+        await openApp({ args: { preloadedState } });
 
         await onHome.waitForScreen();
         await onTabBar.navigateToMyAssets();
@@ -92,18 +81,12 @@ describe('Send transaction flow. [@androidOnly @T3T1]', () => {
     });
 
     it('Compose and dispatch a regtest transaction.', async () => {
-        await prepareTransactionForOnDeviceReview({ isFormEmpty: true });
+        await prepareTransactionForOnDeviceReview();
 
         await signTransactionAndSendIt();
     });
 
-    it('Compose and dispatch a regtest transaction with a custom fee.', async () => {
-        await prepareTransactionForOnDeviceReview({
-            feeValues: { feeType: 'custom', customFeePerUnit: '100' },
-        });
-
-        await signTransactionAndSendIt();
-    });
+    // TODO: Re-add custom fee e2e test using FeeSelector bottom sheet (#25541)
 
     it('Validate send form input errors.', async () => {
         await onSendOutputsForm.fillForm([{ address: 'wrong address', amount: '200' }]);

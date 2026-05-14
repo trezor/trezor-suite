@@ -3,31 +3,32 @@ import { A, pipe } from '@mobily/ts-belt';
 import type { DeviceRootState } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
-    TokenDefinitionsRootState,
-    filterKnownTokens,
+    type TokenDefinitionsRootState,
     getSimpleCoinDefinitionsByNetwork,
+    isTokenDefinitionKnown,
     selectIsSpecificCoinDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
-    TransactionsRootState,
+    type AccountsRootState,
+    type TransactionsRootState,
     selectAccountByKey,
+    selectAccountStakeTypeTransactions,
     selectAccountTransactions,
     selectAccounts,
     selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
 import {
-    AccountKey,
-    TokenAddress,
-    TokenInfoBranded,
-    TokenSymbol,
+    type AccountKey,
+    type TokenAddress,
+    type TokenInfoBranded,
+    type TokenSymbol,
 } from '@suite-common/wallet-types';
 import { shouldUppercaseTokenSymbol } from '@suite-common/wallet-utils';
-import { TokenInfo, TokenTransfer } from '@trezor/blockchain-link';
+import { type TokenInfo, type TokenTransfer } from '@trezor/blockchain-link';
 
-import { TypedTokenTransfer, WalletAccountTransaction } from './types';
+import { type TypedTokenTransfer, type WalletAccountTransaction } from './types';
 import { isNetworkWithTokens } from './utils';
 
 export type TokensRootState = AccountsRootState &
@@ -156,6 +157,24 @@ export const selectAccountTransactionsWithTokenTransfers = createMemoizedSelecto
         ) as WalletAccountTransaction[],
 );
 
+export const selectAccountStakeTypeTransactionsWithTokenTransfers = createMemoizedSelector(
+    [selectAccountStakeTypeTransactions],
+    (transactions): WalletAccountTransaction[] =>
+        pipe(
+            transactions,
+            A.map(transaction => ({
+                ...transaction,
+                tokens: pipe(
+                    transaction?.tokens ?? [],
+                    A.map((tokenTransfer: TokenTransfer) => ({
+                        ...tokenTransfer,
+                        symbol: tokenTransfer.symbol,
+                    })),
+                ) as TypedTokenTransfer[],
+            })),
+        ) as WalletAccountTransaction[],
+);
+
 export const selectAccountKnownTokens = createMemoizedSelector(
     [selectAccountByKey, selectTokenDefinitions],
     (account, tokenDefinitions): TokenInfoBranded[] => {
@@ -177,10 +196,19 @@ export const selectAccountKnownTokens = createMemoizedSelector(
             account.symbol,
         );
 
-        const knownTokens = filterKnownTokens(
-            tokenDefinitionsForNetwork,
-            account.symbol,
-            account.tokens ?? [],
+        const coinDefs = tokenDefinitions[account.symbol]?.coin;
+        const hiddenSet = new Set((coinDefs?.hide ?? []).map(c => c.toLowerCase()));
+        const shownSet = new Set((coinDefs?.show ?? []).map(c => c.toLowerCase()));
+
+        const knownTokens = (account.tokens ?? []).filter(
+            token =>
+                (isTokenDefinitionKnown(
+                    tokenDefinitionsForNetwork,
+                    account.symbol,
+                    token.contract,
+                ) ||
+                    shownSet.has(token.contract.toLowerCase())) &&
+                !hiddenSet.has(token.contract.toLowerCase()),
         ) as TokenInfoBranded[];
 
         return returnStableArrayIfEmpty(knownTokens);
@@ -207,10 +235,23 @@ export const selectHasDeviceAnyTokensForNetwork = (
 
     const accounts = selectVisibleDeviceAccountsByNetworkSymbol(state, symbol);
 
-    return A.any(accounts, account => {
-        const result = selectAnyOfTokensIsKnown(state, account.key);
+    return A.any(accounts, account => selectAnyOfTokensIsKnown(state, account.key));
+};
 
-        return result;
+export const selectHasDeviceAnyTokensWithBalanceForNetwork = (
+    state: TokensRootState,
+    symbol: NetworkSymbol,
+) => {
+    if (!isNetworkWithTokens(symbol)) {
+        return false;
+    }
+
+    const accounts = selectVisibleDeviceAccountsByNetworkSymbol(state, symbol);
+
+    return A.any(accounts, account => {
+        const count = selectNumberOfAccountKnownTokensWithBalance(state, account.key);
+
+        return count > 0;
     });
 };
 

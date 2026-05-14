@@ -1,8 +1,11 @@
 import { type PayloadAction, isAnyOf } from '@reduxjs/toolkit';
-import type { CryptoId } from 'invity-api';
 
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
-import { InvityServerEnvironment, TradingType, prepareTradingReducer } from '@suite-common/trading';
+import {
+    type InvityServerEnvironment,
+    type TradingTypeWithConcierge,
+    prepareTradingReducer,
+} from '@suite-common/trading';
 import { tradingInitialState } from '@suite-native/trading-consts';
 import type { ProviderConfirmationStatus } from '@suite-native/trading-types';
 
@@ -43,12 +46,6 @@ export const tradingSlice = createSliceWithExtraDeps({
     name: 'trading',
     initialState: tradingInitialState,
     reducers: {
-        addTradeableAssetToFavourites: (state, { payload }: PayloadAction<CryptoId>) => {
-            state.favouriteAssets[payload] = true;
-        },
-        removeTradeableAssetFromFavourites: (state, { payload }: PayloadAction<CryptoId>) => {
-            delete state.favouriteAssets[payload];
-        },
         setTradingEnvironment: (state, { payload }: PayloadAction<InvityServerEnvironment>) => {
             state.tradingEnvironment = payload;
             state.tradeOrderIdToBeOpened = undefined;
@@ -65,7 +62,7 @@ export const tradingSlice = createSliceWithExtraDeps({
         setIsAmountInputActive: (state, { payload }: PayloadAction<boolean>) => {
             state.isAmountInputActive = payload;
         },
-        setActiveTradingType: (state, { payload }: PayloadAction<TradingType>) => {
+        setActiveTradingType: (state, { payload }: PayloadAction<TradingTypeWithConcierge>) => {
             state.activeTradingType = payload;
         },
         clearActiveTradingType: state => {
@@ -88,6 +85,7 @@ export const tradingSlice = createSliceWithExtraDeps({
         },
         clearSelectedAccounts: state => {
             state.buy.tradingAccountKey = undefined;
+            state.buy.receiveAccountKey = undefined;
             state.buy.receiveAddress = undefined;
             state.exchange.tradingAccountKey = undefined;
             state.exchange.receiveAccountKey = undefined;

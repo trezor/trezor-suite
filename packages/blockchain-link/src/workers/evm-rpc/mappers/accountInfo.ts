@@ -1,7 +1,9 @@
-import type { TokenInfo } from '@trezor/blockchain-link-types';
-import type { StakingPool } from '@trezor/blockchain-link-types/src/blockbook-api';
-import { RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import type * as Responses from '@trezor/blockchain-link-types/src/responses';
+import { RESPONSES } from '@trezor/blockchain-link-types';
+import type {
+    ResponseTypes as Responses,
+    StakingPool,
+    TokenInfo,
+} from '@trezor/blockchain-link-types';
 
 interface MapGetAccountInfoResponseParams {
     descriptor: string;

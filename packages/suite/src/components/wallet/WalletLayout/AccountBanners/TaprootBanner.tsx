@@ -1,13 +1,12 @@
 import styled from 'styled-components';
 
+import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { getBip43Type } from '@suite-common/wallet-utils';
 
-import { setFlag } from 'src/actions/suite/suiteActions';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 import { BannerPoints } from './BannerPoints';
 import { CloseableBanner } from './CloseableBanner';
@@ -17,11 +16,11 @@ interface TaprootBannerProps {
 }
 
 const Dark = styled.span`
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
 `;
 
 export const TaprootBanner = ({ account }: TaprootBannerProps) => {
-    const { taprootBannerClosed } = useSelector(selectSuiteFlags);
+    const { taprootBannerClosed } = useSelector(selectFlags);
     const dispatch = useDispatch();
 
     const isVisible =
@@ -31,7 +30,7 @@ export const TaprootBanner = ({ account }: TaprootBannerProps) => {
         return null;
     }
 
-    const closeTaprootBanner = () => dispatch(setFlag('taprootBannerClosed', true));
+    const closeTaprootBanner = () => dispatch(setFlag({ key: 'taprootBannerClosed', value: true }));
 
     return (
         <CloseableBanner

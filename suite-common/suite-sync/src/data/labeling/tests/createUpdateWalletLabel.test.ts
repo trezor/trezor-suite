@@ -1,12 +1,12 @@
 import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import type { WalletTable } from '@suite-common/suite-sync-storage';
 import { asWalletDescriptor } from '@suite-common/wallet-types';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import { createSuiteSyncStorageMock } from '../../../../tests/createSuiteSyncStorageMock.mock';
-import { SuiteSyncUnavailableOnDeviceError } from '../../../createRefreshSuiteSyncKeys';
-import { UpdateWalletLabelDeps, createUpdateWalletLabel } from '../createUpdateWalletLabel';
+import { SuiteSyncUnavailableOnDeviceError } from '../../../createEnsureSuiteSyncKeys';
+import { type UpdateWalletLabelDeps, createUpdateWalletLabel } from '../createUpdateWalletLabel';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 
@@ -20,6 +20,7 @@ describe(createUpdateWalletLabel.name, () => {
 
         const deps = createMockDeps<UpdateWalletLabelDeps>({
             ensureWalletSuiteSyncOn: () => Promise.resolve(ok(storage)),
+            getWalletLabel: () => null,
         });
 
         const updateWalletLabel = createUpdateWalletLabel(deps);
@@ -46,6 +47,7 @@ describe(createUpdateWalletLabel.name, () => {
 
         const deps = createMockDeps<UpdateWalletLabelDeps>({
             ensureWalletSuiteSyncOn: () => Promise.resolve(ensureWalletSuiteSyncOnResult),
+            getWalletLabel: () => null,
         });
 
         const updateWalletLabel = createUpdateWalletLabel(deps);

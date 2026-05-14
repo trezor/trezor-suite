@@ -1,13 +1,18 @@
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { type PreloadedStatePartial } from '@suite-native/test-utils-store';
+import { getWalletState, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
-import { ExchangeProviderPicker, ExchangeProviderPickerProps } from '../ExchangeProviderPicker';
+import { type TradingTestPreloadedState } from '../../../__tests__/tradingTestUtils';
+import {
+    ExchangeProviderPicker,
+    type ExchangeProviderPickerProps,
+} from '../ExchangeProviderPicker';
 
 describe('ExchangeProviderPicker', () => {
-    let preloadedState: PreloadedState;
+    let preloadedState: PreloadedStatePartial<TradingTestPreloadedState>;
 
     const renderExchangeProviderPicker = (props: Partial<ExchangeProviderPickerProps>) =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <ExchangeProviderPicker
                 isLoading={false}
                 selectedValue={undefined}
@@ -23,14 +28,14 @@ describe('ExchangeProviderPicker', () => {
         preloadedState = { wallet: getWalletState({ tradeType: 'exchange' }) };
     });
 
-    it('should render nothing when no quote is selected and isLoading is false', async () => {
-        const { toJSON } = await renderExchangeProviderPicker({});
+    it('should render nothing when no quote is selected and isLoading is false', () => {
+        const { toJSON } = renderExchangeProviderPicker({});
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render skeleton when quotes are being fetched', async () => {
-        const { getByText, getByLabelText } = await renderExchangeProviderPicker({
+    it('should render skeleton when quotes are being fetched', () => {
+        const { getByText, getByLabelText } = renderExchangeProviderPicker({
             isLoading: true,
         });
 
@@ -38,28 +43,12 @@ describe('ExchangeProviderPicker', () => {
         expect(getByLabelText('Fetching offers...')).toBeOnTheScreen();
     });
 
-    it('should render provider when quote is selected', async () => {
-        const { getByText } = await renderExchangeProviderPicker({
-            selectedValue: exchangeQuotes[0],
+    it('should render provider when quote is selected', () => {
+        const { getByText } = renderExchangeProviderPicker({
+            selectedValue: mercuryoFixedWorstQuote,
         });
 
         expect(getByText('Provider')).toBeOnTheScreen();
         expect(getByText('Mercuryo')).toBeOnTheScreen();
-    });
-
-    it('should render KYC warning for provider with "KYC-required"', async () => {
-        const { getByText } = await renderExchangeProviderPicker({
-            selectedValue: exchangeQuotes[2],
-        });
-
-        expect(getByText('This provider requires to verify identity.')).toBeOnTheScreen();
-    });
-
-    it('should not render KYC provider warning for providers with "noKYC"', async () => {
-        const { queryByText } = await renderExchangeProviderPicker({
-            selectedValue: exchangeQuotes[0],
-        });
-
-        expect(queryByText('This provider requires to verify identity.')).toBeNull();
     });
 });

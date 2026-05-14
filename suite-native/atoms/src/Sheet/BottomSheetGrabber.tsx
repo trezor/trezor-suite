@@ -1,4 +1,4 @@
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { Box } from '../Box';
 
@@ -6,7 +6,7 @@ const bottomSheetGrabberStyle = prepareNativeStyle(utils => ({
     width: 32,
     height: 4,
     borderRadius: utils.borders.radii.round,
-    backgroundColor: utils.colors.borderDashed,
+    backgroundColor: utils.colors.borderNeutral,
 }));
 
 export const BottomSheetGrabber = () => {

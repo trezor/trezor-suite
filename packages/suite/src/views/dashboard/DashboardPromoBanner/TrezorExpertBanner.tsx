@@ -3,11 +3,12 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { Box, Button, Column, IMAGES, IMAGES_PATH, Row, Text } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/env-utils';
-import { borders, colorVariants, spacings, spacingsPx } from '@trezor/theme';
+import { borders, spacings, spacingsPx } from '@trezor/theme';
 import { DASHBOARD_BANNER_TEX_URL } from '@trezor/urls';
 
+import { useExternalLink, useLayoutSize } from 'src/hooks/suite';
+
 import { AnimatedWrapper, CloseButton } from './CommonPromoBannerComponents';
-import { useExternalLink, useLayoutSize } from '../../../hooks/suite';
 
 const underlineImage = resolveStaticPath(
     `${IMAGES_PATH}/${IMAGES.DASHBOARD_PROMO_BANNER_UNDERLINE}`,
@@ -24,11 +25,7 @@ const StyledImage = styled.img`
     max-width: 40%;
 `;
 
-const NextGenerationTextBlock = styled.span`
-    color: ${colorVariants.standard.textOnPrimary};
-`;
-
-const UnderlinedBlock = styled(NextGenerationTextBlock)`
+const UnderlinedBlock = styled.span`
     white-space: nowrap;
     background-image: url(${underlineImage});
     display: inline-block;
@@ -44,7 +41,7 @@ const Title = () => {
     return (
         <Text
             typographyStyle={isBelowLaptop ? 'headline-sm' : 'headline-md'}
-            color="baseContentPrimaryInverse"
+            color="contentOnDarkPrimary"
             flex="1"
         >
             <Translation
@@ -64,7 +61,7 @@ const Description = () => {
     return (
         <Text
             typographyStyle={isBelowDesktop ? 'body-sm-strong' : 'headline-sm'}
-            color="baseContentBrandInverse"
+            color="contentOnDarkBrand"
         >
             <Translation id="TR_PROMO_BANNER_DASHBOARD_TEX_DESCRIPTION" />
         </Text>
@@ -101,7 +98,7 @@ export const TrezorExpertBanner = ({ onClose, onCTAClick, isVisible }: TrezorExp
             <Box
                 height={213}
                 padding={{ horizontal: 24 }}
-                backgroundColor="baseFillSurfaceBrandDark"
+                backgroundColor="surfaceFillBrandDark"
                 data-testid="@dashboard/promo-banner/trezor-expert"
             >
                 <Row

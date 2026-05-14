@@ -1,12 +1,12 @@
 import { Box, Button, Divider, TextDivider } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const footerStyle = prepareNativeStyle(utils => ({
     paddingTop: utils.spacings.sp8,
     paddingBottom: utils.spacings.sp16,
     flex: 1,
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    backgroundColor: utils.colors.surfaceFillRaised,
     borderBottomLeftRadius: utils.borders.radii.r16,
     borderBottomRightRadius: utils.borders.radii.r16,
 }));
@@ -31,7 +31,8 @@ export const AccountListFooter = ({
             )}
             <Box paddingTop="sp8" paddingHorizontal="sp16">
                 <Button
-                    colorScheme="tertiaryElevation0"
+                    intent="neutral"
+                    priority="secondary"
                     onPress={onAddAccountTap}
                     testID="@add-account/after-discovery/button-add-new"
                 >

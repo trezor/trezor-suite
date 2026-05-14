@@ -1,15 +1,12 @@
-import { Translation, TranslationKey } from '@suite/intl';
-import { Column, Icon, IconName, UIIntent } from '@trezor/components';
+import { Translation, type TranslationKey } from '@suite/intl';
+import { SettingsAnchor, goto } from '@suite/router';
+import { Column, Icon, type IconName, type UIIntent } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
+import { QuickActionButton, TooltipRow } from '@trezor/product-components';
 
-import { goto } from 'src/actions/suite/routerActions';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { TorStatus } from 'src/types/suite';
-
-import { QuickActionButton } from './QuickActionButton';
-import { TooltipRow } from './TooltipRow';
 
 const torStatusTranslationMap: Record<TorStatus, TranslationKey> = {
     [TorStatus.Enabled]: 'TR_TOR_ENABLED',
@@ -63,7 +60,9 @@ export const Tor = () => {
                         </Column>
                     ),
                 }}
-                onClick={() => dispatch(goto('settings-index', { anchor: SettingsAnchor.Tor }))}
+                onClick={() =>
+                    dispatch(goto({ routeName: 'settings-index', anchor: SettingsAnchor.Tor }))
+                }
                 iconName="torBrowser"
                 subIconIntent={torIntentMap[torStatus]}
                 subIconName={iconName}

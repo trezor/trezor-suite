@@ -7,7 +7,8 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.11.2",
@@ -18,7 +19,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react": "19.1.0",
+        "react": "19.2.4",
         "react-redux": "9.2.0"
     },
     "devDependencies": {

@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from 'react';
 import { Pressable } from 'react-native';
 import {
-    GestureEvent,
+    type GestureEvent,
     PanGestureHandler,
-    PanGestureHandlerEventPayload,
+    type PanGestureHandlerEventPayload,
 } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import { selectDeviceModel } from '@suite-common/device';
 import { Box, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { UnverifiedAddressDeviceHint } from './UnverifiedAddressDeviceHint';
 import { DEVICE_SCREEN_BACKGROUND_COLOR } from '../constants';
@@ -35,7 +35,7 @@ const deviceFrameStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.sp4,
     borderWidth: utils.borders.widths.small,
     borderRadius: utils.borders.radii.r12,
-    borderColor: utils.colors.borderElevation2,
+    borderColor: utils.colors.legacyBorderElevation2,
 }));
 
 const deviceScreenStyle = prepareNativeStyle<{ isPaginationEnabled: boolean }>(

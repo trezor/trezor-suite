@@ -40,7 +40,7 @@ export const FirmwareRevisionOptOutModal = ({ onCancel }: DeviceAuthenticityOptO
                     </Modal.Button>
                 </>
             }
-            variant="warning"
+            intent="warning"
         >
             <H3>
                 <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_TITLE" />

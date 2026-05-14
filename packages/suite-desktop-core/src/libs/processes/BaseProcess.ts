@@ -1,8 +1,8 @@
-import { ChildProcess, IOType, spawn } from 'child_process';
+import { type ChildProcess, type IOType, spawn } from 'child_process';
 import { app } from 'electron';
 import path from 'path';
 
-import { TimerId } from '@trezor/type-utils';
+import { type TimerId } from '@trezor/type-utils';
 
 import { b2t } from '../utils';
 

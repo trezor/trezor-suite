@@ -1,27 +1,31 @@
 {
     "name": "@trezor/connect-mobile",
     "version": "10.0.0-alpha.1",
-    "license": "See LICENSE.md in repo root",
+    "license": "MIT",
     "sideEffects": false,
     "main": "src/index.ts",
     "publishConfig": {
-        "main": "lib/index.js"
+        "main": "./libESM/index.mjs",
+        "types": "./libESM/index.d.mts",
+        "type": "module",
+        "exports": {
+            ".": {
+                "types": "./libESM/index.d.mts",
+                "default": "./libESM/index.mjs"
+            }
+        }
     },
-    "npmPublishAccess": "public",
     "files": [
-        "lib/"
+        "libESM/"
     ],
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
-    },
-    "devDependencies": {
-        "tsx": "^4.21.0"
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm && DTS_OUT_DIR=libESM yarn build:dts:inline",
+        "build:dts:inline": "node ../../scripts/inline-devdep-types.mjs",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@trezor/connect": "workspace:^",
         "@trezor/connect-common": "workspace:^",
         "@trezor/utils": "workspace:^"
     },

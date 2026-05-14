@@ -1,51 +1,49 @@
-import type { CryptoId } from 'invity-api';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { banxaCreditCardSellQuote, eth1NormalAccount } from '@suite-native/trading-fixtures';
 
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
-import { getWalletState } from '@suite-native/trading-fixtures';
-
+import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
 import {
     SellFromAccountTradePreviewCard,
-    SellFromAccountTradePreviewCardProps,
+    type SellFromAccountTradePreviewCardProps,
 } from '../SellFromAccountTradePreviewCard';
 
 describe('SellFromAccountTradePreviewCard', () => {
     const renderSellFromAccountTradePreviewCard = (
         props: Partial<SellFromAccountTradePreviewCardProps> = {},
-        tradingAccountKey = 'eth-account-1',
-    ) => {
-        const preloadedState: PreloadedState = {
-            wallet: getWalletState({ tradeType: 'sell' }),
-        };
-        preloadedState.wallet!.trading!.sell!.tradingAccountKey = tradingAccountKey;
+        tradingAccountKey = eth1NormalAccount.key,
+    ) =>
+        renderWithTradingProvider(<SellFromAccountTradePreviewCard {...props} />, {
+            tradeType: 'sell',
+            overrides: {
+                wallet: {
+                    trading: { sell: { tradingAccountKey } },
+                },
+            },
+        });
 
-        return renderWithStoreProviderAsync(
-            <SellFromAccountTradePreviewCard fromStringValue="0.0233" {...props} />,
-            { preloadedState },
-        );
-    };
-
-    it('should render nothing when there is no quote', async () => {
-        const { toJSON } = await renderSellFromAccountTradePreviewCard({});
+    it('should render nothing when there is no quote', () => {
+        const { toJSON } = renderSellFromAccountTradePreviewCard({});
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render nothing when account is not found', async () => {
-        const { toJSON } = await renderSellFromAccountTradePreviewCard(
-            { cryptoId: 'bitcoin' as CryptoId },
-            'unknown-account-key',
+    it('should render nothing when account is not found', () => {
+        const { toJSON } = renderSellFromAccountTradePreviewCard(
+            { quote: banxaCreditCardSellQuote },
+            'unknown-account-key' as AccountKey,
         );
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render TradeSideCard otherwise', async () => {
-        const { getByText } = await renderSellFromAccountTradePreviewCard({
-            cryptoId: 'bitcoin' as CryptoId,
+    it('should render TradeSideCard otherwise', () => {
+        const { getByText } = renderSellFromAccountTradePreviewCard({
+            quote: banxaCreditCardSellQuote,
         });
 
         expect(getByText('From')).toBeOnTheScreen();
-        expect(getByText('Ethereum #1')).toBeOnTheScreen();
-        expect(getByText('-0.0233')).toBeOnTheScreen();
+        expect(getByText('ETH Account #1')).toBeOnTheScreen();
+        expect(getByText('-0.0233 ETH')).toBeOnTheScreen();
+        expect(getByText('0.0233-ethereum')).toBeOnTheScreen();
     });
 });

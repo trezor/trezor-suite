@@ -10,13 +10,14 @@
         "type-check": "yarn g:tsc --build",
         "generate-icons": "yarn g:tsx generateIcons.mjs && yarn g:tsx generateIconFont.ts",
         "generate-icon-font": "yarn g:tsx generateIconFont.ts",
-        "download-crypto-icons": "yarn g:tsx ./scripts/downloadCryptoIcons.ts"
+        "download-crypto-icons": "yarn g:tsx ./scripts/downloadCryptoIcons.ts",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "devDependencies": {
         "chalk": "^5.6.2",
-        "fantasticon": "3.0.0",
-        "prettier": "^3.8.1",
+        "fantasticon": "4.1.0",
+        "prettier": "^3.8.3",
         "sharp": "^0.34.2",
-        "svgo": "4.0.0"
+        "svgo": "^4.0.1"
     }
 }

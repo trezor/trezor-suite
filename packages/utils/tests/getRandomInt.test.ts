@@ -12,6 +12,24 @@ describe(getRandomInt.name, () => {
         expect(() => getRandomInt(0, -1)).toThrow(EXPECTED_ERROR.message);
     });
 
+    it('raises error when Web Crypto API is not available', () => {
+        const originalCrypto = globalThis.crypto;
+
+        // @ts-expect-error: intentionally removing crypto to simulate unsupported environment
+        delete globalThis.crypto;
+
+        try {
+            expect(() => getRandomInt(0, 10)).toThrow(
+                'Web Crypto API (globalThis.crypto.getRandomValues) is not available in this environment.',
+            );
+        } finally {
+            Object.defineProperty(globalThis, 'crypto', {
+                value: originalCrypto,
+                configurable: true,
+            });
+        }
+    });
+
     it('raises error for range > 2^32', () => {
         const EXPECTED_ERROR = new RangeError(
             'This function only provide 32 bits of entropy, therefore range cannot be more then 2^32.',

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
-import { Meta } from '@storybook/react';
+import { type Meta } from '@storybook/react';
 import styled, { useTheme } from 'styled-components';
 
-import { CSSColor, colorVariants, colorsV2, typography } from '@trezor/theme';
+import { type CSSColor, colorVariants, colorsV2, typography } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
 import { Badge } from './Badge/Badge';
@@ -27,7 +27,7 @@ const Sticky = styled.div`
     position: sticky;
     width: 100%;
     top: 0;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
+    background: ${({ theme }) => theme.surfaceFillPage};
 `;
 
 type ThemeKey = Exclude<keyof typeof colorVariants, 'debug'>;
@@ -45,8 +45,8 @@ const ThemeVariantIcon = styled.div<{
     font-size: 9px;
     font-weight: 900;
     background: ${({ currentTheme }) =>
-        colorVariants[currentTheme].backgroundNeutralSubtleOnElevation0};
-    color: ${({ currentTheme }) => colorVariants[currentTheme].textDefault};
+        colorVariants[currentTheme].legacyBackgroundNeutralSubtleOnElevation0};
+    color: ${({ currentTheme }) => colorVariants[currentTheme].contentPrimary};
 `;
 
 const Color = styled.div<{ $value: string; $isColorCodeVisible: boolean }>`
@@ -59,7 +59,7 @@ const Color = styled.div<{ $value: string; $isColorCodeVisible: boolean }>`
     align-items: center;
     justify-content: center;
     ${({ theme }) => {
-        const outlineColor = hexToRgba(theme.textDefaultInverted, 0.7);
+        const outlineColor = hexToRgba(theme.contentPrimaryInverse, 0.7);
 
         return `text-shadow: 0 0 7px ${outlineColor},0 0 7px ${outlineColor},0 0 4px ${outlineColor};`;
     }}
@@ -152,13 +152,13 @@ const Header = () => {
                     />
                 </Box>
                 <Row gap={20}>
-                    <Checkbox onClick={toggleV1} isChecked={isV1Visible}>
+                    <Checkbox onChange={toggleV1} isChecked={isV1Visible}>
                         <BadgeV1 />
                     </Checkbox>
-                    <Checkbox onClick={toggleV2} isChecked={isV2Visible}>
+                    <Checkbox onChange={toggleV2} isChecked={isV2Visible}>
                         <BadgeV2 />
                     </Checkbox>
-                    <Checkbox onClick={toggleColorCode} isChecked={isColorCodeVisible}>
+                    <Checkbox onChange={toggleColorCode} isChecked={isColorCodeVisible}>
                         #
                     </Checkbox>
                 </Row>

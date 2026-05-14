@@ -1,4 +1,4 @@
-import { BaseStoreProvider, BaseStoreProviderProps } from './BaseStoreProvider';
+import { BaseStoreProvider, type BaseStoreProviderProps } from './BaseStoreProvider';
 
 type StoreProviderProps = Omit<BaseStoreProviderProps, 'preloadedState'>;
 

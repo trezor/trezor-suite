@@ -1,8 +1,8 @@
-import { SUITE } from 'src/actions/suite/constants';
+import { modalReducer } from '@suite/modal';
+import { routerAppChanged, routerReducer } from '@suite/router';
+
 import onboardingMiddlewares from 'src/middlewares/onboarding';
 import onboardingReducer from 'src/reducers/onboarding/index';
-import modalReducer from 'src/reducers/suite/modalReducer';
-import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { configureStore } from 'src/support/tests/configureStore';
 
@@ -60,7 +60,7 @@ const initStore = (state: State) => {
 };
 
 describe('onboardingMiddleware', () => {
-    describe('SUITE.APP_CHANGED', () => {
+    describe('routerAppChanged.type', () => {
         it('payload=onboarding (into onboarding)', async () => {
             const store = initStore(
                 getInitialState({
@@ -76,10 +76,10 @@ describe('onboardingMiddleware', () => {
                     },
                 }),
             );
-            await store.dispatch({ type: SUITE.APP_CHANGED, payload: 'onboarding' });
+            await store.dispatch({ type: routerAppChanged.type, payload: 'onboarding' });
             const result = store.getActions();
             expect(result).toEqual([
-                { type: SUITE.APP_CHANGED, payload: 'onboarding' },
+                { type: routerAppChanged.type, payload: 'onboarding' },
                 { type: '@onboarding/enable-onboarding-reducer', payload: true },
             ]);
         });

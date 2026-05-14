@@ -1,6 +1,7 @@
-import { ETH_NETWORK_ADDRESSES } from '@everstake/wallet-sdk-ethereum';
-
+import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
 import { DAYS_TO_ADD_TO_POOL_DEFAULT } from '@suite-common/wallet-constants';
+
+import { ETH_NETWORK_ADDRESSES } from '../constants/ethereumNetworkAddresses';
 
 export const transformTxFixtures = [
     {
@@ -125,8 +126,8 @@ export const stakeFailedFixture = [
         },
         estimatedFee: {
             success: false,
-            payload: {
-                error: 'Estimated fee error',
+            error: {
+                message: 'Estimated fee error',
             },
         },
         result: 'Estimated fee error',
@@ -184,8 +185,8 @@ export const unstakeFailedFixture = [
         },
         accountInfo: {
             success: false,
-            payload: {
-                error: 'Account info error',
+            error: {
+                message: 'Account info error',
             },
         },
         estimatedFee: {
@@ -244,8 +245,8 @@ export const unstakeFailedFixture = [
         },
         estimatedFee: {
             success: false,
-            payload: {
-                error: 'Estimated fee error',
+            error: {
+                message: 'Estimated fee error',
             },
         },
         result: 'Estimated fee error',
@@ -322,8 +323,8 @@ export const claimFailedFixture = [
         },
         accountInfo: {
             success: false,
-            payload: {
-                error: 'Account info error',
+            error: {
+                message: 'Account info error',
             },
         },
         result: 'Account info error',
@@ -350,8 +351,8 @@ export const claimFailedFixture = [
         },
         estimatedFee: {
             success: false,
-            payload: {
-                error: 'Estimated fee error',
+            error: {
+                message: 'Estimated fee error',
             },
         },
         result: 'Estimated fee error',
@@ -539,18 +540,24 @@ export const getDaysToAddToPoolFixture = [
         result: undefined,
     },
     {
-        description: 'should return 2 if blockTime is undefined',
+        description: 'should return undefined if blockTime is undefined',
         args: {
             stakeTxs: [{}], // blockTime is undefined
-            validatorsQueue: { validatorAddingDelay: 86400, validatorActivationTime: 86400 },
+            validatorsQueue: {
+                addingDelay: 86400,
+                activationTime: 86400,
+            } satisfies EthValidatorsQueue,
         },
-        result: 2,
+        result: undefined,
     },
     {
         description: 'should return the number of days to wait',
         args: {
             stakeTxs: [{ blockTime: 1721393017 }], // 2024-07-19 (2024-07-10 + 9 days)
-            validatorsQueue: { validatorAddingDelay: 86400, validatorActivationTime: 86400 }, // + 2 days
+            validatorsQueue: {
+                addingDelay: 86400,
+                activationTime: 86400,
+            } satisfies EthValidatorsQueue, // + 2 days
         },
         result: 11, // 9 + 2
     },
@@ -558,7 +565,7 @@ export const getDaysToAddToPoolFixture = [
         description: 'should return 1 if the number of days to wait is less than or equal to 0',
         args: {
             stakeTxs: [{ blockTime: 1720615417 }], // 2024-07-10
-            validatorsQueue: { validatorAddingDelay: 0, validatorActivationTime: 0 },
+            validatorsQueue: { addingDelay: 0, activationTime: 0 } satisfies EthValidatorsQueue,
         },
         result: 1,
     },
@@ -577,7 +584,7 @@ export const getDaysToUnstakeFixture = [
         description: 'should return 1 if blockTime is undefined',
         args: {
             unstakeTxs: [{}], // blockTime is undefined
-            validatorsQueue: { validatorWithdrawTime: 86400 },
+            validatorsQueue: { withdrawTime: 86400 } satisfies EthValidatorsQueue,
         },
         result: 1,
     },
@@ -585,7 +592,7 @@ export const getDaysToUnstakeFixture = [
         description: 'should return the number of days to wait',
         args: {
             unstakeTxs: [{ blockTime: 1721393017 }], // 2024-07-19 (2024-07-10 + 9 days)
-            validatorsQueue: { validatorWithdrawTime: 86400 }, // 1 day
+            validatorsQueue: { withdrawTime: 86400 } satisfies EthValidatorsQueue, // 1 day
         },
         result: 10,
     },
@@ -593,7 +600,7 @@ export const getDaysToUnstakeFixture = [
         description: 'should return 1 if the number of days to wait is less than or equal to 0',
         args: {
             unstakeTxs: [{ blockTime: 1720615417 }], // 2024-07-10
-            validatorsQueue: { validatorWithdrawTime: 0 },
+            validatorsQueue: { withdrawTime: 0 } satisfies EthValidatorsQueue,
         },
         result: 1,
     },
@@ -611,14 +618,17 @@ export const getDaysToAddToPoolInitialFixture = [
     {
         description: 'should return the number of days to wait',
         args: {
-            validatorsQueue: { validatorAddingDelay: 86400, validatorActivationTime: 86400 }, // 2 days
+            validatorsQueue: {
+                addingDelay: 86400,
+                activationTime: 86400,
+            } satisfies EthValidatorsQueue, // 2 days
         },
         result: 2, // replace with expected number of days
     },
     {
         description: 'should return 1 if the number of days to wait is less than or equal to 0',
         args: {
-            validatorsQueue: { validatorAddingDelay: 0, validatorActivationTime: 0 },
+            validatorsQueue: { addingDelay: 0, activationTime: 0 } satisfies EthValidatorsQueue,
         },
         result: 1,
     },
@@ -674,18 +684,25 @@ export const getEthNetworkForWalletSdkFixture = [
         result: 'mainnet',
     },
     {
-        description: 'should return "mainnet" for undefined',
+        description: 'should return null for undefined',
         args: {
             symbol: undefined,
         },
-        result: 'mainnet',
+        result: null,
     },
     {
-        description: 'should return "mainnet" for an unknown symbol',
+        description: 'should return null for an unknown symbol',
         args: {
             symbol: 'unknown' as const,
         },
-        result: 'mainnet',
+        result: null,
+    },
+    {
+        description: 'should return null for a non-staking network symbol',
+        args: {
+            symbol: 'btc' as const,
+        },
+        result: null,
     },
 ];
 
@@ -771,6 +788,19 @@ export const getInstantStakeTypeFixture = [
             },
             address: 'address',
             symbol: 'eth' as const,
+        },
+        result: null,
+    },
+    {
+        description:
+            'should return null for an unsupported network symbol even if addresses match mainnet contracts',
+        args: {
+            internalTransfer: {
+                from: ETH_NETWORK_ADDRESSES.mainnet.addressContractPool,
+                to: ETH_NETWORK_ADDRESSES.mainnet.addressContractWithdrawTreasury,
+            },
+            address: 'address',
+            symbol: 'pol' as const,
         },
         result: null,
     },

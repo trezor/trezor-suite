@@ -1,9 +1,8 @@
 import { events } from '@suite/analytics';
-import { Translation, TranslationKey } from '@suite/intl';
-import { Route } from '@suite-common/suite-types';
-import { IconName, SubTabs } from '@trezor/components';
+import { Translation, type TranslationKey } from '@suite/intl';
+import { type Route, goto } from '@suite/router';
+import { type IconName, SubTabs } from '@trezor/components';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
@@ -28,13 +27,23 @@ const navigationItems: NavigationItem[] = [
         icon: 'minus',
         translationId: 'TR_NAV_SELL',
     },
+    {
+        id: 'wallet-trading-exchange',
+        icon: 'arrowsLeftRight',
+        translationId: 'TR_TRADING_SWAP',
+    },
+    {
+        id: 'wallet-trading-concierge',
+        icon: 'handshake',
+        translationId: 'TR_NAV_CONCIERGE',
+    },
 ];
 
 export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps) => {
     const dispatch = useDispatch();
     const analytics = useAnalytics();
     const goToRoute = (route: Route['name']) => () => {
-        dispatch(goto(route, { preserveParams: true }));
+        dispatch(goto({ routeName: route }));
 
         switch (route) {
             case 'wallet-trading-buy':
@@ -52,6 +61,24 @@ export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps)
                     payload: {
                         action: 'navigate',
                         type: 'sell',
+                        from: 'buy/sell',
+                    },
+                });
+            case 'wallet-trading-exchange':
+                return analytics.report({
+                    type: events.tradeNavigateEvent.name,
+                    payload: {
+                        action: 'navigate',
+                        type: 'exchange',
+                        from: 'buy/sell',
+                    },
+                });
+            case 'wallet-trading-concierge':
+                return analytics.report({
+                    type: events.tradeNavigateEvent.name,
+                    payload: {
+                        action: 'navigate',
+                        type: 'concierge',
                         from: 'buy/sell',
                     },
                 });

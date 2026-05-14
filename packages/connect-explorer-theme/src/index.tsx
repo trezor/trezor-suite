@@ -12,7 +12,7 @@ import type { PageTheme } from 'nextra/normalize-pages';
 import { createGlobalStyle } from 'styled-components';
 
 import { ElevationContext } from '@trezor/components';
-import { Elevation, mapElevationToBackground } from '@trezor/theme';
+import { type Elevation, mapElevationToBackground } from '@trezor/theme';
 
 import { Banner, Breadcrumb, Head, NavLinks, Navbar, Sidebar, SkipNavContent } from './components';
 import { DEFAULT_LOCALE } from './constants';
@@ -20,7 +20,7 @@ import { ActiveAnchorProvider } from './contexts/active-anchor';
 import { ConfigProvider } from './contexts/config';
 import { useConfig } from './contexts/useConfig';
 import { getComponents } from './mdx-components';
-import { PartialDocsThemeConfig } from './schema';
+import { type PartialDocsThemeConfig } from './schema';
 import { patchedNormalizePages } from './utils/patch-normalize-pages';
 import { renderComponent } from './utils/render';
 

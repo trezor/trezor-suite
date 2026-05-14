@@ -1,26 +1,31 @@
 import '@suite-common/test-utils/src/globalOverrides';
 
 import { useEffect, useState } from 'react';
-import { DeepPartial } from 'react-hook-form';
+import { type DeepPartial } from 'react-hook-form';
 
 import { waitFor } from '@testing-library/react';
 
-import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
-import { FormState } from '@suite-common/wallet-types';
-import { PROTO } from '@trezor/connect';
-
-import { filterThunkActionTypes } from 'src/support/tests/configureStore';
+import { suiteSettingsInitialState } from '@suite/settings';
 import {
-    UserAction,
+    configureMockStore,
+    filterThunkActionTypes,
+    initPreloadedState,
+    testMocks,
+} from '@suite-common/test-utils';
+import { type FormState } from '@suite-common/wallet-types';
+import { type PROTO } from '@trezor/connect';
+
+import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
+import {
+    type UserAction,
     actionSequence,
     findByTestId,
     renderWithProviders,
     waitForLoader,
 } from 'src/support/tests/hooksHelper';
-import { SendContextValues } from 'src/types/wallet/sendForm';
+import { type SendContextValues } from 'src/types/wallet/sendForm';
 import SendIndex from 'src/views/wallet/send';
 
-import { extraDependenciesDesktopMock } from '../../../support/tests/extraDependenciesDesktop.mock';
 import * as fixtures from '../__fixtures__/useSendForm';
 import { useSendFormContext } from '../useSendForm';
 
@@ -41,7 +46,8 @@ jest.mock('cross-fetch', () => ({
     default: () => Promise.resolve({ ok: false }),
 }));
 
-jest.mock('src/actions/suite/routerActions', () => ({
+jest.mock('@suite/router', () => ({
+    ...jest.requireActual('@suite/router'),
     goto: () => ({ type: 'mock-redirect' }),
 }));
 
@@ -78,7 +84,7 @@ const initStore = ({ send, fees, selectedAccount, coinjoin, bitcoinAmountUnit }:
                 coinjoin,
                 settings: { bitcoinAmountUnit, enabledNetworks: ['thod'] },
             },
-            suite: { settings: { language: 'en' } },
+            suiteSettings: { ...suiteSettingsInitialState, language: 'en' },
             router: { route: { name: 'wallet-send' } },
         },
     });

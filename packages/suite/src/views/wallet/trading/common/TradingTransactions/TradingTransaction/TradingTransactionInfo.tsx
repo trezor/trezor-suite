@@ -25,7 +25,9 @@ export const TradingTransactionInfo = ({ trade }: TradingTransactionInfoProps) =
             margin={{ top: spacings.xs }}
         >
             {tradeType}
-            <FormattedDate value={date} date time />
+            <span data-testid="@trading/transactions/date">
+                <FormattedDate value={date} date time />
+            </span>
             <TradingTransactionStatus trade={trade} />
         </InfoSegments>
     );

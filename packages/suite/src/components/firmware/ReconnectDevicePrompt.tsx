@@ -1,23 +1,24 @@
 import * as semver from 'semver';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { useDevice } from '@suite/device';
+import { useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { BulletList, Column, H2, Modal, Paragraph, Row } from '@trezor/components';
-import { Device } from '@trezor/connect';
+import { type Device } from '@trezor/connect';
 import { DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';
 import {
     ConfirmOnDevicePill,
     DeviceAnimation,
-    DeviceAnimationProps,
+    type DeviceAnimationProps,
 } from '@trezor/product-components';
 import { usePreviousDefined } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 
 import { WebUsbButton } from 'src/components/suite';
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
-import { useDevice, useSelector } from 'src/hooks/suite';
-import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
+import { useSelector } from 'src/hooks/suite';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 const RebootDeviceGraphics = ({

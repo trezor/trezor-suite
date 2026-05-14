@@ -1,22 +1,24 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { TradingType } from '@suite-common/trading';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type TradingType } from '@suite-common/trading';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Text, VStack } from '@suite-native/atoms';
+import { AddressFormatter } from '@suite-native/formatters';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
+import { type CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
 import {
-    RootStackParamList,
-    StackToStackCompositeNavigationProps,
-    TradingStackParamList,
-    TradingStackRoutes,
+    type RootStackParamList,
+    RootStackRoutes,
+    type StackToStackCompositeNavigationProps,
+    type TradingStackParamList,
+    type TradingStackRoutes,
 } from '@suite-native/navigation';
-import { AccountAddress, OverviewRow } from '@suite-native/trading-atoms';
-import { ReceiveAccount } from '@suite-native/trading-types';
-import { Color } from '@trezor/theme';
+import { OverviewRow } from '@suite-native/trading-atoms';
+import { type ReceiveAccount } from '@suite-native/trading-types';
+import { type Color } from '@trezor/theme';
 
 import { getReceiveAccountAddressText } from '../../../utils/general/receiveAccountUtils';
 
@@ -43,11 +45,11 @@ type ReceiveAccountPickerRightProps = {
 
 export type NavigationProps = StackToStackCompositeNavigationProps<
     TradingStackParamList,
-    TradingStackRoutes.ReceiveAccounts,
+    TradingStackRoutes.Trading,
     RootStackParamList
 >;
 
-const RightText = ({ color, variant = 'body-md', testID, children }: RightTextProps) => (
+const RightText = ({ color, variant = 'body-sm', testID, children }: RightTextProps) => (
     <Text
         color={color}
         variant={variant}
@@ -67,7 +69,10 @@ const ReceiveAccountPickerRight = ({
 }: ReceiveAccountPickerRightProps) => {
     if (accountLabel == null) {
         return (
-            <RightText color="textSubdued" testID={testID ? `${testID}/not-selected` : undefined}>
+            <RightText
+                color="contentSecondary"
+                testID={testID ? `${testID}/not-selected` : undefined}
+            >
                 <Translation id="moduleTrading.notSelected" />
             </RightText>
         );
@@ -76,7 +81,7 @@ const ReceiveAccountPickerRight = ({
     if (!addressText) {
         return (
             <RightText
-                color="textSubdued"
+                color="contentSecondary"
                 testID={testID ? `${testID}/selected-account` : undefined}
             >
                 {accountLabel}
@@ -87,15 +92,15 @@ const ReceiveAccountPickerRight = ({
     return (
         <>
             <RightText
-                color="textSubdued"
+                color="contentSecondary"
                 testID={testID ? `${testID}/selected-account` : undefined}
             >
                 {accountLabel}
             </RightText>
-            <AccountAddress
-                address={addressText}
-                form="short"
-                color="textSubdued"
+            <AddressFormatter
+                value={addressText}
+                format="short"
+                color="contentSecondary"
                 variant="body-sm"
                 textAlign="right"
             />
@@ -127,7 +132,7 @@ export const ReceiveAccountPicker = ({
     }
 
     const openAccountPicker = () =>
-        navigation.navigate(TradingStackRoutes.ReceiveAccounts, { symbol, tradingType });
+        navigation.navigate(RootStackRoutes.ReceiveAccounts, { symbol, tradingType });
 
     const addressText = getReceiveAccountAddressText(receiveAccount) ?? '';
 

@@ -1,22 +1,27 @@
-import { MouseEvent } from 'react';
+import { type MouseEvent } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { ExtendedMessageDescriptor, Translation, TranslationKey } from '@suite/intl';
-import { Route } from '@suite-common/suite-types';
-import { Icon, IconName, IconSize, Paragraph, Tooltip, useElevation } from '@trezor/components';
+import { type ExtendedMessageDescriptor, Translation, type TranslationKey } from '@suite/intl';
+import { type Route, goto, selectRouteName } from '@suite/router';
+import {
+    Icon,
+    type IconName,
+    type IconSize,
+    Paragraph,
+    Tooltip,
+    useElevation,
+} from '@trezor/components';
 import { getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 import {
-    Elevation,
-    TypographyStyle,
+    type Elevation,
+    type TypographyStyle,
     borders,
     mapElevationToBackground,
     spacingsPx,
 } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 export const NavigationItemBase = styled.div.attrs(() => ({
@@ -28,7 +33,7 @@ export const NavigationItemBase = styled.div.attrs(() => ({
     align-items: center;
     padding: ${spacingsPx.xs};
     border-radius: ${borders.radii.sm};
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     transition:
         color 0.15s,
         background 0.15s;
@@ -51,18 +56,18 @@ const Container = styled(NavigationItemBase)<{
             ? css<{ $elevation: Elevation }>`
                   background-color: ${mapElevationToBackground};
                   box-shadow: ${theme.boxShadowBase};
-                  color: ${theme.textDefault};
+                  color: ${theme.contentPrimary};
 
                   path {
-                      fill: ${theme.iconDefault};
+                      fill: ${theme.contentPrimary};
                   }
               `
             : css`
                   &:hover {
-                      color: ${theme.textDefault};
+                      color: ${theme.contentPrimary};
 
                       path {
-                          fill: ${theme.iconDefault};
+                          fill: ${theme.contentPrimary};
                       }
                   }
               `}
@@ -128,7 +133,12 @@ export const NavItem = (props: NavigationItemProps) => {
         onClick?.();
 
         if (goToRoute !== undefined) {
-            dispatch(goto(goToRoute, preserveParams === true ? { preserveParams } : undefined));
+            dispatch(
+                goto({
+                    routeName: goToRoute,
+                    ...(preserveParams === true ? { preserveParams } : undefined),
+                }),
+            );
         }
     };
 
@@ -150,7 +160,6 @@ export const NavItem = (props: NavigationItemProps) => {
                 content={<Title nameId={nameId} values={values} />}
                 isActive={!expanded}
                 placement="right"
-                hasArrow
             >
                 <Icon
                     name={icon}

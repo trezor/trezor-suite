@@ -1,10 +1,10 @@
-import { TranslationKey } from '@suite/intl';
-import { NetworkSymbolExtended } from '@suite-common/wallet-config';
-import { RoundPhase, SessionPhase } from '@trezor/coinjoin';
+import { type TranslationKey } from '@suite/intl';
+import { type NetworkSymbolExtended } from '@suite-common/wallet-config';
+import { type RoundPhase, type SessionPhase } from '@trezor/coinjoin';
 
 import { ANONYMITY_GAINS_HINDSIGHT_COUNT } from 'src/services/coinjoin';
 
-import * as coinjoinUtils from '../coinjoinUtils';
+import type * as coinjoinUtils from '../coinjoinUtils';
 
 const baseUtxo = {
     txid: '1',

@@ -1,3 +1,4 @@
+import type { EthValidatorsQueue, StakingBatch } from '@suite-common/earn-staking-api';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import ETH_BASE_TX from '../../../fixtures/staking/eth-base-tx.json';
@@ -14,11 +15,48 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
     });
     test.beforeEach(
         async ({ page, dashboardPage, onboardingPage, settingsPage, blockbookMock }) => {
+            await page.context().route('**/staking/v1**', async route => {
+                await route.fulfill({
+                    status: 200,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    json: {
+                        data: [
+                            {
+                                symbol: 'eth',
+                                stats: {
+                                    apy: 1,
+                                    nextRewardPayout: 1,
+                                },
+                                validators: {
+                                    activationTime: 0,
+                                    addingDelay: 60 * 60 * 24,
+                                },
+                            },
+                        ],
+                        errors: [],
+                    } satisfies StakingBatch,
+                });
+            });
+
+            await page.context().route('**/eth/validators-queue**', async route => {
+                await route.fulfill({
+                    status: 200,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    json: {
+                        activationTime: 0,
+                        addingDelay: 60 * 60 * 24,
+                    } satisfies EthValidatorsQueue,
+                });
+            });
+
             await onboardingPage.completeOnboarding();
             await settingsPage.navigateTo('coins');
             await blockbookMock.start('eth');
 
-            await settingsPage.coinsTab.disableNetwork('btc');
             await settingsPage.coinsTab.enableNetwork('eth');
             await settingsPage.coinsTab.openNetworkAdvanceSettings('eth');
             await settingsPage.coinsTab.changeBackend('blockbook', blockbookMock.url);
@@ -88,7 +126,7 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Stake' },
                         body: [['Stake ETH on', '\n', 'Everstake?']],
-                        actions: { right_button: 'Continue' },
+                        actions: { right_button: 'Confirm' },
                     },
                 });
                 await devicePrompt.waitForPromptAndClick();

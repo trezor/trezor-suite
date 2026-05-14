@@ -1,6 +1,6 @@
 import {
     BottomSheetModal,
-    BottomSheetModalRef,
+    type BottomSheetModalRef,
     Box,
     BulletListItem,
     Button,
@@ -37,10 +37,10 @@ export const AddressMismatchBottomSheet = ({ onClose, ref }: AddressMismatchBott
                     <Text variant="body-sm-strong">
                         <Translation id="moduleReceive.bottomSheets.addressMismatch.remember" />
                     </Text>
-                    <BulletListItem color="textSubdued">
+                    <BulletListItem color="contentSecondary">
                         <Translation id="moduleReceive.bottomSheets.addressMismatch.trustDevice" />
                     </BulletListItem>
-                    <BulletListItem color="textSubdued">
+                    <BulletListItem color="contentSecondary">
                         <Translation id="moduleReceive.bottomSheets.addressMismatch.contactSupport" />
                     </BulletListItem>
                 </VStack>
@@ -48,8 +48,9 @@ export const AddressMismatchBottomSheet = ({ onClose, ref }: AddressMismatchBott
                 <Box flex={1}>
                     <VStack spacing="sp16">
                         <Button
-                            viewLeft="warning"
-                            colorScheme="tertiaryElevation0"
+                            iconLeft="warning"
+                            intent="neutral"
+                            priority="secondary"
                             onPress={handleOpenSupportLink}
                         >
                             <Translation id="moduleReceive.bottomSheets.addressMismatch.reportIssueButton" />

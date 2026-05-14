@@ -1,23 +1,17 @@
+import { type MethodPermission, UI_REQUEST } from '@trezor/connect-common';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { UI } from '../events';
-import { getFirmwareRange } from './common/paramsValidator';
 
 export default class LoadDevice extends AbstractMethod<'loadDevice', PROTO.LoadDevice> {
-    init() {
-        this.allowDeviceMode = [UI.INITIALIZE];
-        this.useDeviceState = false;
-        this.requiredPermissions = ['management'];
-        this.skipFinalReload = false;
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
-
-        const { payload } = this;
+    constructor(message: MethodMessage<'loadDevice'>) {
+        const { payload } = message;
         // validate bundle type
         Assert(PROTO.LoadDevice, payload);
 
-        this.params = {
+        const params = {
             mnemonics: payload.mnemonics,
             pin: payload.pin,
             passphrase_protection: payload.passphrase_protection,
@@ -28,6 +22,14 @@ export default class LoadDevice extends AbstractMethod<'loadDevice', PROTO.LoadD
             needs_backup: payload.needs_backup,
             no_backup: payload.no_backup,
         };
+
+        super(message, params);
+        this.allowDeviceMode = [UI_REQUEST.INITIALIZE];
+        this.useDeviceState = false;
+        this.skipFinalReload = false;
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['management'];
     }
 
     get info() {
@@ -42,7 +44,7 @@ export default class LoadDevice extends AbstractMethod<'loadDevice', PROTO.LoadD
     }
 
     async run() {
-        const cmd = this.device.getCommands();
+        const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('LoadDevice', 'Success', this.params);
 
         return response.message;

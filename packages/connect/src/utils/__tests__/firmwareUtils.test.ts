@@ -89,7 +89,7 @@ describe('firmwareUtils', () => {
                 const firstReleaseWithBootloaderCompatibleWithLatest = releasesAscendentOrder.find(
                     fw =>
                         versionUtils.isEqual(
-                            fw.bootloader_version,
+                            fw.bootloader_version!,
                             latestReleaseMinBootloaderVersion,
                         ),
                 );
@@ -97,7 +97,8 @@ describe('firmwareUtils', () => {
                     Object.values(firmwareAssets.t3t1.universal),
                     {
                         bootloaderVersion:
-                            firstReleaseWithBootloaderCompatibleWithLatest.bootloader_version,
+                            firstReleaseWithBootloaderCompatibleWithLatest!.bootloader_version ??
+                            null,
                         firmwareVersion: null,
                     },
                     'min_bootloader_version',

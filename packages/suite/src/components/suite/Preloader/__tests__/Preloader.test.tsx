@@ -2,23 +2,36 @@ import '@suite-common/test-utils/src/globalOverrides';
 
 import { fireEvent } from '@testing-library/react';
 
-import { AnalyticsState } from '@suite-common/analytics-redux';
+import { type RouterState } from '@suite/router';
+import { type AnalyticsState } from '@suite-common/analytics-redux';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { TransportInfo } from '@trezor/connect';
-import * as envUtils from '@trezor/env-utils';
-import { DeepPartial } from '@trezor/type-utils';
+import { type TransportInfo } from '@trezor/connect';
+import { isLinux } from '@trezor/env-utils';
+import { type DeepPartial } from '@trezor/type-utils';
 
-import { DesktopDeviceState } from 'src/actions/device/deviceSlice';
-import { AppState } from 'src/reducers/store';
-import { RouterState } from 'src/reducers/suite/routerReducer';
-import { SuiteState } from 'src/reducers/suite/suiteReducer';
+import { type DesktopDeviceState } from 'src/actions/device/deviceSlice';
+import { type AppState } from 'src/reducers/store';
+import { type SuiteState } from 'src/reducers/suite/suiteReducer';
 import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
 import { configureStore } from 'src/support/tests/configureStore';
+import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { findByTestId, renderWithProviders } from 'src/support/tests/hooksHelper';
 
-import { extraDependenciesDesktopMock } from '../../../../support/tests/extraDependenciesDesktop.mock';
 import { Preloader } from '../Preloader';
-import * as selectShouldDisplayDeviceCompromisedModule from '../selectShouldDisplayDeviceCompromisedOnRoute';
+import { selectShouldDisplayDeviceCompromisedOnRoute } from '../selectShouldDisplayDeviceCompromisedOnRoute';
+
+jest.mock('@trezor/env-utils', () => ({
+    ...jest.requireActual('@trezor/env-utils'),
+    isLinux: jest.fn(() => true),
+}));
+
+jest.mock('../selectShouldDisplayDeviceCompromisedOnRoute', () => ({
+    ...jest.requireActual('../selectShouldDisplayDeviceCompromisedOnRoute'),
+    selectShouldDisplayDeviceCompromisedOnRoute: jest.fn(
+        jest.requireActual('../selectShouldDisplayDeviceCompromisedOnRoute')
+            .selectShouldDisplayDeviceCompromisedOnRoute,
+    ),
+}));
 
 class ResizeObserverMock {
     observe = jest.fn();
@@ -55,11 +68,6 @@ jest.mock('@trezor/suite-desktop-api', () => ({
         on: (_event: string, _cb: any) => {},
         removeAllListeners: (_event: string) => {},
     },
-}));
-
-jest.mock('@trezor/env-utils', () => ({
-    ...jest.requireActual('@trezor/env-utils'),
-    isLinux: () => true,
 }));
 
 jest.mock('@suite-common/tx-simulation', () => ({}));
@@ -293,7 +301,7 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Unreadable device: missing udev on Linux', () => {
-        jest.spyOn(envUtils, 'isLinux').mockImplementation(() => true);
+        (isLinux as jest.Mock).mockImplementation(() => true);
 
         const store = initStore(
             getInitialState({
@@ -322,7 +330,7 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Unreadable device: missing udev on non-Linux os (should never happen)', () => {
-        jest.spyOn(envUtils, 'isLinux').mockImplementation(() => false);
+        (isLinux as jest.Mock).mockImplementation(() => false);
 
         const store = initStore(
             getInitialState({
@@ -524,12 +532,7 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('displays DeviceCompromised when shouldDisplayDeviceCompromised is true', () => {
-        const spy = jest
-            .spyOn(
-                selectShouldDisplayDeviceCompromisedModule,
-                'selectShouldDisplayDeviceCompromisedOnRoute',
-            )
-            .mockImplementation(() => true);
+        (selectShouldDisplayDeviceCompromisedOnRoute as jest.Mock).mockImplementation(() => true);
 
         const store = initStore(getInitialState());
         const { unmount } = renderWithProviders(
@@ -540,7 +543,10 @@ describe(`${Preloader.name} component`, () => {
         expect(findByTestId('@device-compromised')).not.toBeNull();
 
         unmount();
-        spy.mockRestore();
+        (selectShouldDisplayDeviceCompromisedOnRoute as jest.Mock).mockImplementation(
+            jest.requireActual('../selectShouldDisplayDeviceCompromisedOnRoute')
+                .selectShouldDisplayDeviceCompromisedOnRoute,
+        );
     });
 
     it('Required FW update device', () => {

@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 
 import { getFreePort } from '@trezor/node-utils';
-import { AbstractApi } from '@trezor/transport/src/api/abstract';
+import type { AbstractApi } from '@trezor/transport/src/api/abstract';
 import { UdpApi } from '@trezor/transport/src/api/udp';
 import { bridgeApiCall } from '@trezor/transport/src/utils/bridgeApiCall';
 import { resolveAfter } from '@trezor/utils';
@@ -136,7 +136,7 @@ describe('http', () => {
                 method: 'POST',
             });
             if (!response.success) {
-                throw new Error(response.error + ' ' + response.message);
+                throw new Error(response.error.code + ' ' + response.error.message);
             }
             expect(response.payload).toMatchObject({
                 version: trezordNode.version,
@@ -152,7 +152,7 @@ describe('http', () => {
                 method: 'POST',
             });
             if (!response.success) {
-                throw new Error(response.error + ' ' + response.message);
+                throw new Error(response.error.code + ' ' + response.error.message);
             }
             expect(response.payload).toMatchObject({
                 version: trezordNode.version,
@@ -172,7 +172,7 @@ describe('http', () => {
                 body: GET_FEATURES,
             });
             if (!res.success) {
-                throw new Error(res.error + ' ' + res.message);
+                throw new Error(res.error.code + ' ' + res.error.message);
             }
             expect(res.payload).toBe(FEATURES);
             // invalid legacy message (not a hex)
@@ -190,7 +190,7 @@ describe('http', () => {
                 body: JSON.stringify({ protocol: 'bridge', data: GET_FEATURES }),
             });
             if (!res.success) {
-                throw new Error(res.error + ' ' + res.message);
+                throw new Error(res.error.code + ' ' + res.error.message);
             }
             expect(res.payload).toEqual({
                 protocol: 'bridge',
@@ -204,7 +204,7 @@ describe('http', () => {
                 body: JSON.stringify({ protocol: 'v1', data: '3f2323' + GET_FEATURES }),
             });
             if (!res.success) {
-                throw new Error(res.error);
+                throw new Error(res.error.code);
             }
             expect(res.payload).toEqual({
                 protocol: 'v1',
@@ -261,7 +261,7 @@ describe('http', () => {
                 body: GET_FEATURES,
             });
             if (!res.success) {
-                throw new Error(res.error + ' ' + res.message);
+                throw new Error(res.error.code + ' ' + res.error.message);
             }
             expect(res.payload).toBe('');
             // invalid legacy message (not a hex)
@@ -279,7 +279,7 @@ describe('http', () => {
                 body: JSON.stringify({ protocol: 'bridge', data: GET_FEATURES }),
             });
             if (!res.success) {
-                throw new Error(res.error + ' ' + res.message);
+                throw new Error(res.error.code + ' ' + res.error.message);
             }
             expect(res.payload).toEqual({
                 protocol: 'bridge',
@@ -293,7 +293,7 @@ describe('http', () => {
                 body: JSON.stringify({ protocol: 'v1', data: '3f2323' + GET_FEATURES }),
             });
             if (!res.success) {
-                throw new Error(res.error + ' ' + res.message);
+                throw new Error(res.error.code + ' ' + res.error.message);
             }
             expect(res.payload).toEqual({
                 protocol: 'v1',
@@ -308,8 +308,10 @@ describe('http', () => {
             });
             expect(res).toMatchObject({
                 success: false,
-                error: 'unexpected error',
-                message: 'Invalid BridgeProtocolMessage protocol',
+                error: {
+                    code: 'unexpected error',
+                    message: 'Invalid BridgeProtocolMessage protocol',
+                },
             });
 
             // invalid protocol message (not a hex)
@@ -320,7 +322,7 @@ describe('http', () => {
             });
             expect(res).toMatchObject({
                 success: false,
-                message: 'Invalid BridgeProtocolMessage data',
+                error: { message: 'Invalid BridgeProtocolMessage data' },
             });
 
             // invalid protocol message (malformed json)
@@ -331,7 +333,7 @@ describe('http', () => {
             });
             expect(res).toMatchObject({
                 success: false,
-                message: 'Invalid BridgeProtocolMessage body',
+                error: { message: 'Invalid BridgeProtocolMessage body' },
             });
             res = await bridgeApiCall({
                 url: `${url}post/1`,
@@ -339,7 +341,7 @@ describe('http', () => {
             });
             expect(res).toMatchObject({
                 success: false,
-                message: 'Invalid BridgeProtocolMessage body',
+                error: { message: 'Invalid BridgeProtocolMessage body' },
             });
             res = await bridgeApiCall({
                 url: `${url}post/1`,
@@ -349,7 +351,7 @@ describe('http', () => {
             });
             expect(res).toMatchObject({
                 success: false,
-                message: 'Invalid BridgeProtocolMessage body',
+                error: { message: 'Invalid BridgeProtocolMessage body' },
             });
 
             await trezordNode.stop();
@@ -365,7 +367,7 @@ describe('http', () => {
                 method: 'POST',
             });
             if (!res.success) {
-                throw new Error(res.error + ' ' + res.message);
+                throw new Error(res.error.code + ' ' + res.error.message);
             }
             expect(res.payload).toBe(FEATURES);
 
@@ -376,7 +378,7 @@ describe('http', () => {
                 body: JSON.stringify({ protocol: 'bridge' }),
             });
             if (!res.success) {
-                throw new Error(res.error + ' ' + res.message);
+                throw new Error(res.error.code + ' ' + res.error.message);
             }
             expect(res.payload).toEqual({
                 protocol: 'bridge',
@@ -390,7 +392,7 @@ describe('http', () => {
                 body: JSON.stringify({ protocol: 'v1' }),
             });
             if (!res.success) {
-                throw new Error(res.error + ' ' + res.message);
+                throw new Error(res.error.code + ' ' + res.error.message);
             }
             expect(res.payload).toEqual({
                 protocol: 'v1',
@@ -428,7 +430,7 @@ describe('http', () => {
                     method: 'GET',
                 });
                 if (!response.success) {
-                    throw new Error(response.error);
+                    throw new Error(response.error.code);
                 }
                 expect(response.payload).toContain('<html');
 
@@ -488,7 +490,7 @@ describe('http', () => {
                 method: 'POST',
             });
             if (!response.success) {
-                throw new Error(response.error);
+                throw new Error(response.error.code);
             }
             expect(response.payload).toMatchObject({
                 version: trezordNode.version,
@@ -509,7 +511,7 @@ describe('http', () => {
                 method: 'POST',
             });
             if (!response.success) {
-                throw new Error(response.error);
+                throw new Error(response.error.code);
             }
             expect(response.payload).toEqual([{ path: '1', session: null, apiType: 'usb' }]);
             await trezordNode.stop();

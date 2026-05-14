@@ -1,8 +1,8 @@
 import { forwardRef, useCallback, useImperativeHandle, useRef, useState } from 'react';
-import { LayoutChangeEvent, Pressable, TextInput, TextInputProps } from 'react-native';
+import { type LayoutChangeEvent, Pressable, TextInput, type TextInputProps } from 'react-native';
 
 import { BoxSkeleton } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { truncateDecimals } from '../../../utils/general/amountUtils';
 
@@ -37,7 +37,7 @@ const boxStyle = prepareNativeStyle(() => ({
 const inputStyle = prepareNativeStyle<{ hasError: boolean; fontSize: number }>(
     ({ colors, typography }, { hasError, fontSize }) => ({
         ...typography['body-md'],
-        color: hasError ? colors.textAlertRed : colors.textDefault,
+        color: hasError ? colors.contentCritical : colors.contentPrimary,
         textAlign: 'right',
         fontSize,
         lineHeight: Math.floor(fontSize * FONT_TO_LINE_HEIGHT_RATIO),
@@ -159,7 +159,7 @@ export const AmountInput = forwardRef<TextInput, AmountInputProps>(
                     keyboardType="decimal-pad"
                     inputMode="decimal"
                     placeholder="0.0"
-                    placeholderTextColor={utils.colors.textDisabled}
+                    placeholderTextColor={utils.colors.contentDisabled}
                     value={value}
                     maxLength={maxLength}
                     onChangeText={handleTextChange}

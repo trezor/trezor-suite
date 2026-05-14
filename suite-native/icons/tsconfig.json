@@ -16,7 +16,9 @@
         { "path": "../theme" },
         { "path": "../../packages/asset-utils" },
         { "path": "../../packages/device-utils" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
         { "path": "../test-utils" }
     ]

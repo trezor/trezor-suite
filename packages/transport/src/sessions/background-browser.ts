@@ -1,6 +1,10 @@
 import type { Descriptor } from '../types';
-import { SessionsBackground } from './background';
-import { HandleMessageParams, HandleMessageResponse, SessionsBackgroundInterface } from './types';
+import { type SessionsBackground } from './background';
+import {
+    type HandleMessageParams,
+    type HandleMessageResponse,
+    type SessionsBackgroundInterface,
+} from './types';
 
 /**
  * creating BrowserSessionsBackground initiates sessions-background for browser based environments and provides:
@@ -17,6 +21,10 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
         this.background = new SharedWorker(sessionsBackgroundUrl, {
             name: '@trezor/connect-web transport sessions worker',
         });
+        // When using MessagePort with addEventListener(), start() may be required
+        // to begin dispatching messages. Native implementations often do this implicitly.
+        // For polyfilled SharedWorker, we need to call it explicitly.
+        this.background.port.start();
     }
 
     handleMessage<M extends HandleMessageParams>(params: M): Promise<HandleMessageResponse<M>> {

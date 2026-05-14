@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { events } from '@suite-native/analytics';
 import { VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
-import { Screen, TradingStackRoutes } from '@suite-native/navigation';
+import { RootStackRoutes, Screen } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { TradingEnvironmentWarning } from '@suite-native/trading-debug';
 import {
@@ -17,7 +17,7 @@ import {
 
 import { Footer } from '../components/general/Footer';
 import { Header } from '../components/general/Header/Header';
-import { HistoryButton, NavigationProps } from '../components/general/HistoryButton';
+import { HistoryButton, type NavigationProps } from '../components/general/HistoryButton';
 import { LegalGatewayContextMessage } from '../components/general/LegalGatewayContextMessage';
 import { TradingTabContent } from '../components/general/TradingTabContent';
 import { TradingTypeAwareContextMessage } from '../components/general/TradingTypeAwareContextMessage';
@@ -37,7 +37,7 @@ const TradingScreenContent = () => {
                 type: events.tradingSuccessEvent.name,
                 payload: { type: tradeToBeOpened.tradeType },
             });
-            navigation.navigate(TradingStackRoutes.TradingHistory);
+            navigation.navigate(RootStackRoutes.TradingHistory);
         }
     }, [tradeToBeOpened, navigation, analytics]);
 

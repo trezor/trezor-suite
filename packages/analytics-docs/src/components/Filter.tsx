@@ -1,7 +1,10 @@
 import { Icon, Input, Row, Select, useMediaQuery, variables } from '@trezor/components';
+import { zIndices } from '@trezor/theme';
 
 import { platforms, sorting } from '../constants';
 import type { Sort } from '../types';
+
+const menuPortalTarget = typeof document !== 'undefined' ? document.body : undefined;
 
 type FilterProps = {
     query: string;
@@ -44,6 +47,8 @@ export const Filter = ({ query, setQuery, setPlatform, platform, setSort, sort }
                 aria-label="Platform filter"
                 size="small"
                 options={platforms}
+                menuPortalTarget={menuPortalTarget}
+                menuPortalZIndex={zIndices.pageHeader}
             />
             <Select
                 placeholder="Sort by"
@@ -53,6 +58,8 @@ export const Filter = ({ query, setQuery, setPlatform, platform, setSort, sort }
                 }}
                 size="small"
                 options={sorting}
+                menuPortalTarget={menuPortalTarget}
+                menuPortalZIndex={zIndices.pageHeader}
             />
         </Row>
     );

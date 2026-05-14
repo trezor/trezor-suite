@@ -2,8 +2,8 @@ import { decodeParameters } from 'web3-eth-abi';
 import { sha3 } from 'web3-utils';
 
 import { UINT256_MAX } from '@suite-common/suite-constants';
-import { EvmTransactionPurpose } from '@suite-common/wallet-types';
-import { TokenInfo } from '@trezor/blockchain-link-types';
+import { type EvmTransactionPurpose } from '@suite-common/wallet-types';
+import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 

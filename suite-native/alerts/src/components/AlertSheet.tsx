@@ -14,9 +14,9 @@ import {
     useAlertAnimation,
 } from '@suite-native/atoms';
 import { getScreenHeight, getScreenWidth } from '@trezor/env-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { Alert } from '../alertsAtoms';
+import { type Alert } from '../alertsAtoms';
 import { useAlert } from '../useAlert';
 import { useShakeAnimation } from '../useShakeAnimation';
 
@@ -82,23 +82,30 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
         pictogramVariant,
         onPressPrimaryButton,
         primaryButtonTitle,
-        primaryButtonViewLeft,
+        primaryButtonIconLeft,
+        primaryButtonIconRight,
         onPressSecondaryButton,
         secondaryButtonTitle,
-        primaryButtonVariant = 'primary',
-        secondaryButtonVariant = 'tertiaryElevation1',
+        primaryButtonColorProps = {
+            intent: 'brand',
+            priority: 'primary',
+        },
+        secondaryButtonColorProps = {
+            intent: 'neutral',
+            priority: 'secondary',
+        },
         appendix,
         testID,
     } = alert;
 
     const handlePressPrimaryButton = async () => {
-        await closeSheetAnimated();
         onPressPrimaryButton?.();
+        await closeSheetAnimated();
     };
 
     const handlePressSecondaryButton = async () => {
-        await closeSheetAnimated();
         onPressSecondaryButton?.();
+        await closeSheetAnimated();
     };
 
     return (
@@ -119,29 +126,30 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                                     <Pictogram variant={pictogramVariant} icon={icon} />
                                 </Box>
                             )}
-                            {(title || description) && (
-                                <TitleHeader
-                                    title={title}
-                                    subtitle={description}
-                                    textAlign={textAlign}
-                                    titleSpacing={titleSpacing}
-                                />
-                            )}
-                            {appendix}
+                            <VStack spacing="sp20">
+                                {(title || description) && (
+                                    <TitleHeader
+                                        title={title}
+                                        subtitle={description}
+                                        textAlign={textAlign}
+                                        titleSpacing={titleSpacing}
+                                    />
+                                )}
+                                {appendix}
+                            </VStack>
                             <VStack spacing="sp12">
                                 <Button
-                                    size="medium"
-                                    colorScheme={primaryButtonVariant}
+                                    {...primaryButtonColorProps}
                                     onPress={handlePressPrimaryButton}
-                                    viewLeft={primaryButtonViewLeft}
+                                    iconLeft={primaryButtonIconLeft}
+                                    iconRight={primaryButtonIconRight}
                                     testID="@alert-sheet/primary-button"
                                 >
                                     {primaryButtonTitle}
                                 </Button>
                                 {secondaryButtonTitle && (
                                     <Button
-                                        size="medium"
-                                        colorScheme={secondaryButtonVariant}
+                                        {...secondaryButtonColorProps}
                                         onPress={handlePressSecondaryButton}
                                         testID="@alert-sheet/secondary-button"
                                     >

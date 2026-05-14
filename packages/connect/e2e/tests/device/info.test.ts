@@ -22,15 +22,14 @@ describe('__info common param', () => {
     [true, false].forEach(__info => {
         it(`when incorrect params are passed, __info: boolean makes no difference. case: ${__info}`, async () => {
             // @ts-expect-error
-
             const result = await TrezorConnect.getAddress({
                 __info,
             });
 
             expect(result).toBeDefined();
             expect(result.success).toBe(false);
-            // @ts-expect-error
-            expect(result.payload.error).toEqual(
+            if (result.success) throw new Error('Expected failure');
+            expect(result.error.message).toEqual(
                 'Invalid parameter "bundle/0/path" (= undefined): Expected required property',
             );
         });
@@ -45,6 +44,7 @@ describe('__info common param', () => {
             });
             expect(result).toBeDefined();
             expect(result.success).toBe(true);
+            if (!result.success) throw new Error(result.error.message);
 
             if (__info) {
                 expect(result.payload).toMatchObject({

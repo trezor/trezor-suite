@@ -1,4 +1,4 @@
-import { TradingTransaction, useTradingUtils } from '@suite-common/trading';
+import { type TradingTransaction, useTradingUtils } from '@suite-common/trading';
 import { Icon, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -50,12 +50,14 @@ export const TradingTransactionAmounts = ({ trade }: TradingTransactionAmountsPr
                     value={sendStringAmount}
                     symbol={sendCoinSymbol}
                     contractAddress={sendContractAddress}
+                    data-testid="@trading/transactions/send/amount"
                 />
                 <Arrow />
                 <FormattedCryptoAmount
                     value={receiveStringAmount}
                     symbol={receiveCoinSymbol}
                     contractAddress={receiveContractAddress}
+                    data-testid="@trading/transactions/receive/amount"
                 />
             </Row>
         );

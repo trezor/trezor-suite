@@ -25,7 +25,7 @@ const groups = {
     },
     management: {
         name: 'management',
-        pattern: 'methods',
+        pattern: 'methods pingDevice',
         includeFilter:
             'applySettings,applyFlags,getFeatures,getFirmwareHash,changeLanguage,loadDevice,telemetryGet',
     },

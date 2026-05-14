@@ -1,4 +1,4 @@
-import { ReactNode, useCallback } from 'react';
+import { type ReactNode, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';

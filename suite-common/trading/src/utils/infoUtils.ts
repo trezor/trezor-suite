@@ -1,4 +1,10 @@
-import { CoinInfo, Coins, CryptoId, Platforms, PlatformsInfo } from 'invity-api';
+import {
+    type CoinInfo,
+    type Coins,
+    type CryptoId,
+    type Platforms,
+    type PlatformsInfo,
+} from 'invity-api';
 
 import { parseCryptoId } from '../utils';
 

@@ -1,9 +1,9 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { Timestamp } from '@suite-common/wallet-types';
+import { type Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKeyFromTicker, isTestnet } from '@suite-common/wallet-utils';
 
 import { updateFiatRatesThunk, updateTxsFiatRatesThunk } from './fiatRatesThunks';
-import { FiatRatesState } from './fiatRatesTypes';
+import { type FiatRatesState } from './fiatRatesTypes';
 
 export const fiatRatesInitialState: FiatRatesState = {
     current: {},
@@ -85,12 +85,9 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
 
                     const currentRate = state[rateType]?.[fiatRateKey];
 
-                    // To prevent race condition someone will remove rate from state while fetching for example (during currency change etc.)
-                    if (!currentRate) {
-                        continue;
-                    }
                     state[rateType][fiatRateKey] = {
                         ...currentRate,
+                        ...rate,
                         rate: rate.rate,
                         lastTickerTimestamp: (rate.lastTickerTimestamp * 1000) as Timestamp,
                         lastSuccessfulFetchTimestamp: fetchAttemptTimestamp,

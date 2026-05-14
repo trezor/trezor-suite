@@ -40,6 +40,7 @@ expo-linear-gradient
 expo-linking
 expo-local-authentication
 expo-localization
+expo-mcp
 expo-secure-store
 expo-sharing
 expo-splash-screen

@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import { events } from '@suite/analytics';
 import { getEvmApprovalTxData } from '@suite-common/wallet-utils';

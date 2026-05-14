@@ -1,11 +1,7 @@
 import { useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
-import {
-    metadataLabelingConstants as METADATA_LABELING,
-    selectLabelingDataForWallet,
-    selectMetadata,
-} from '@suite/metadata';
+import { selectIsLegacyLabelingVisible, selectLabelingDataForWallet } from '@suite/metadata';
 import { SuiteSyncWalletDebug } from '@suite/suite-sync';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncWalletLabel } from '@suite-common/suite-sync';
 import {
@@ -28,7 +24,7 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
@@ -39,7 +35,7 @@ import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useStore } from 'src/hooks/suite/useStore';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
-import { AcquiredDevice, AppState, ForegroundAppProps } from 'src/types/suite';
+import { type AcquiredDevice, type AppState, type ForegroundAppProps } from 'src/types/suite';
 
 import { EjectConfirmation } from './EjectConfirmation';
 
@@ -51,21 +47,30 @@ type WalletInstanceProps = {
 };
 
 const selectCombinedWalletLabel =
-    (deviceStaticSessionId: StaticSessionId | null) => (state: AppState) => {
-        if (!deviceStaticSessionId) return '';
+    ({ deviceStaticSessionId }: { deviceStaticSessionId: StaticSessionId | null }) =>
+    (state: AppState): string | null => {
+        if (!deviceStaticSessionId) return null;
 
-        const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
-        const walletLabel = selectSuiteSyncWalletLabel(state, walletDescriptor);
-        if (walletLabel) {
-            return walletLabel;
+        const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(state);
+
+        if (isSuiteSyncEnabled) {
+            const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+
+            return selectSuiteSyncWalletLabel(state, walletDescriptor);
         }
 
-        const oldWalletLabel = selectLabelingDataForWallet(
-            state,
-            deviceStaticSessionId,
-        ).walletLabel;
+        const isLegacyLabelingVisible = selectIsLegacyLabelingVisible(state);
 
-        return oldWalletLabel ?? '';
+        if (isLegacyLabelingVisible) {
+            const legacyLabel = selectLabelingDataForWallet(
+                state,
+                deviceStaticSessionId,
+            ).walletLabel;
+
+            return legacyLabel === undefined || legacyLabel.trim() === '' ? null : legacyLabel;
+        }
+
+        return null;
     };
 
 export const WalletInstance = ({
@@ -84,21 +89,18 @@ export const WalletInstance = ({
     const dispatch = useDispatch();
     const store = useStore();
     const { translationString } = useTranslation();
-    const legacyMetadataState = useSelector(selectMetadata);
-    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
 
+    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
     const { defaultAccountLabelString } = useWalletLabeling();
 
     const deviceAccounts = getAllAccounts(instance.state, accounts);
 
     const walletBalance = useTotalFiatBalance(deviceAccounts, baseCurrencyCode, currentFiatRates);
 
-    const { walletLabel: oldWalletLabel } = useSelector(state =>
-        selectLabelingDataForWallet(state, instance.state),
-    );
-
     const walletLabel = useSelector(
-        selectCombinedWalletLabel(instance?.state?.staticSessionId ?? null),
+        selectCombinedWalletLabel({
+            deviceStaticSessionId: instance?.state?.staticSessionId ?? null,
+        }),
     );
 
     const dataTestBase = `@switch-device/wallet-on-index/${index}`;
@@ -145,9 +147,6 @@ export const WalletInstance = ({
         }
     };
 
-    const valueLabel =
-        walletLabel === undefined || walletLabel.trim() === '' ? defaultWalletLabel : walletLabel;
-
     const passphraseIcon = instance.useEmptyPassphrase === false && (
         <Tooltip content={<Translation id="TR_WALLET_PASSPHRASE_WALLET" />}>
             <Icon name="asterisk" size={12} />
@@ -187,24 +186,15 @@ export const WalletInstance = ({
                                                 type: 'walletLabel',
                                                 entityKey: instance.state.staticSessionId,
                                                 defaultValue: instance.state.staticSessionId,
-                                                value:
-                                                    // This is some legacy weird stuff I do not want to refacotr.
-                                                    // `payload.value` needs to be falsey for the `Labeling` component
-                                                    // to display `add` button, instead of `edit` button
-                                                    isSuiteSyncEnabled &&
-                                                    instance?.metadata[
-                                                        METADATA_LABELING.ENCRYPTION_VERSION
-                                                    ]
-                                                        ? oldWalletLabel
-                                                        : walletLabel,
+                                                value: walletLabel ?? undefined,
                                             }}
                                             leftAddon={passphraseIcon}
                                         >
-                                            {valueLabel}
+                                            {walletLabel ?? defaultWalletLabel}
                                         </Labeling>
                                         <SuiteSyncWalletDebug
                                             device={instance}
-                                            isLegacyLabelingEnabled={legacyMetadataState.enabled}
+                                            isLegacyLabelingVisible={isLegacyLabelingVisible}
                                         />
                                     </Column>
                                 ) : (

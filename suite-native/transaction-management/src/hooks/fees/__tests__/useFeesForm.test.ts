@@ -1,7 +1,7 @@
-import { AccountKey } from '@suite-common/wallet-types';
-import { act, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { UseFeesFormProps, useFeesForm } from '../useFeesForm';
+import { type UseFeesFormProps, useFeesForm } from '../useFeesForm';
 
 describe('useFeesForm', () => {
     const mockProps: UseFeesFormProps = {
@@ -14,6 +14,7 @@ describe('useFeesForm', () => {
         renderHookWithStoreProvider(() => useFeesForm(props), {
             preloadedState: {
                 wallet: {
+                    fees: {},
                     send: {
                         feeLevels: {
                             normal: {
@@ -104,6 +105,36 @@ describe('useFeesForm', () => {
         });
 
         expect(result.current.getValues('customFeeLimit')).toBe('21000');
+    });
+
+    it('should handle empty fee levels without crashing', () => {
+        const { result } = renderHookWithStoreProvider(() => useFeesForm(mockProps), {
+            preloadedState: {
+                wallet: {
+                    fees: {},
+                    send: {
+                        feeLevels: {},
+                    },
+                    accounts: [
+                        {
+                            symbol: 'eth',
+                            networkType: 'ethereum',
+                            key: 'eth-1',
+                            path: "m/44'/60'/0'/0/0",
+                            balance: '1000000000000000000',
+                            availableBalance: '1000000000000000000',
+                            formattedBalance: '1.0',
+                            tokens: [],
+                            empty: false,
+                            history: { total: 0, unconfirmed: 0 },
+                        },
+                    ],
+                },
+            },
+        });
+
+        expect(result.current.getValues('feeLevel')).toBe('normal');
+        expect(result.current.getValues('customFeeLimit')).toBeUndefined();
     });
 
     it('should initialize with custom default values', () => {

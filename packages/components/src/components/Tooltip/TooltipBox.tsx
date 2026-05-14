@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode } from 'react';
+import { type ReactElement, type ReactNode } from 'react';
 
 import { Box } from '../Box/Box';
 import { Column, Row } from '../Flex/Flex';
@@ -23,7 +23,7 @@ export const TooltipBox = ({ addon, tooltipMaxWidth, content, title }: TooltipBo
             maxWidth={tooltipMaxWidth}
             tabIndex={-1}
             borderRadius={TOOLTIP_BORDER_RADIUS}
-            backgroundColor="baseFillSurfaceModeless"
+            backgroundColor="surfaceFillModeless"
             padding={hasTitleOrAddon ? 12 : { vertical: 6, horizontal: 8 }}
         >
             <Column gap={12}>

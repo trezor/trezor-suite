@@ -1,15 +1,22 @@
-import { ReactNode } from 'react';
-import { FlexAlignType } from 'react-native';
+import { type ReactNode } from 'react';
+import { type FlexAlignType } from 'react-native';
 
-import { IconName, IconSize } from '@suite-native/icons';
-import { Color, NativeSpacing, NativeTypographyStyle } from '@trezor/theme';
+import { type IconName, type IconSize } from '@suite-native/icons';
+import { type Color, type NativeSpacing, type NativeTypographyStyle } from '@trezor/theme';
 
 import { Box } from './Box';
 import { OrderedListIcon } from './OrderedListIcon';
 import { HStack } from './Stack';
 import { Text } from './Text';
 
-export const ICON_LIST_ITEM_VARIANTS = ['default', 'blue', 'red', 'yellow', 'primary'] as const;
+export const ICON_LIST_ITEM_VARIANTS = [
+    'default',
+    'blue',
+    'red',
+    'yellow',
+    'primary',
+    'brand',
+] as const;
 
 export type IconListItemVariant = (typeof ICON_LIST_ITEM_VARIANTS)[number];
 
@@ -21,32 +28,36 @@ type IconColors = {
 
 const iconColorsMap = {
     default: {
-        iconColor: 'iconDefault',
-        iconBorderColor: 'borderElevation0',
-        iconBackgroundColor: 'backgroundTertiaryDefaultOnElevation1',
+        iconColor: 'contentPrimary',
+        iconBorderColor: 'borderNeutral',
+        iconBackgroundColor: 'legacyBackgroundTertiaryDefaultOnElevation1',
     },
     blue: {
-        iconColor: 'iconAlertBlue',
-        iconBorderColor: 'backgroundAlertBlueSubtleOnElevation0',
-        iconBackgroundColor: 'backgroundAlertBlueSubtleOnElevation1',
+        iconColor: 'contentInfo',
+        iconBorderColor: 'legacyBackgroundAlertBlueSubtleOnElevation0',
+        iconBackgroundColor: 'legacyBackgroundAlertBlueSubtleOnElevation1',
     },
     red: {
-        iconColor: 'iconAlertRed',
-        iconBorderColor: 'backgroundAlertRedSubtleOnElevation0',
-        iconBackgroundColor: 'backgroundAlertRedSubtleOnElevation1',
+        iconColor: 'contentCritical',
+        iconBorderColor: 'legacyBackgroundAlertRedSubtleOnElevation0',
+        iconBackgroundColor: 'legacyBackgroundAlertRedSubtleOnElevation1',
     },
     yellow: {
-        iconColor: 'iconAlertYellow',
-        iconBorderColor: 'backgroundAlertYellowSubtleOnElevation0',
-        iconBackgroundColor: 'backgroundAlertYellowSubtleOnElevation1',
+        iconColor: 'contentWarning',
+        iconBorderColor: 'legacyBackgroundAlertYellowSubtleOnElevation0',
+        iconBackgroundColor: 'legacyBackgroundAlertYellowSubtleOnElevation1',
     },
     primary: {
-        iconColor: 'iconDefaultInverted',
-        iconBorderColor: 'backgroundPrimaryDefault',
-        iconBackgroundColor: 'backgroundPrimaryDefault',
+        iconColor: 'contentPrimaryInverse',
+        iconBorderColor: 'legacyBackgroundPrimaryDefault',
+        iconBackgroundColor: 'legacyBackgroundPrimaryDefault',
+    },
+    brand: {
+        iconColor: 'legacyBackgroundPrimaryDefault',
+        iconBorderColor: 'legacyBackgroundPrimarySubtleOnElevationNegative',
+        iconBackgroundColor: 'legacyBackgroundPrimarySubtleOnElevation0',
     },
 } as const satisfies Record<IconListItemVariant, IconColors>;
-
 export type IconListItemProps = {
     children: ReactNode;
     icon: IconName;

@@ -3,8 +3,11 @@ import type {
     ExperimentsItem,
     MessageSystem,
     TradingType,
+    YieldFlowType,
 } from '@suite-common/suite-types';
 import type { AccountType, NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
+
+type EarnDashboardType = 'staking' | 'yield';
 
 export type MessageState = { [key in Category]: boolean };
 
@@ -73,6 +76,7 @@ export const Feature = {
 
     deviceAuthenticityCheckOptiga: 'security.deviceAuthenticityCheck.optiga',
     deviceAuthenticityCheckTropic: 'security.deviceAuthenticityCheck.tropic',
+    deviceAuthenticityCheckMCU: 'security.deviceAuthenticityCheck.mcu',
 
     idCheck: 'security.deviceMetaChecks.id',
     invariabilityCheck: 'security.deviceMetaChecks.invariability',
@@ -84,10 +88,23 @@ export const Feature = {
         restrictions: {
             blacklist: 'trading.restrictions.blacklist',
         },
+        concierge: 'trading.concierge',
         survey: 'trading.survey',
         slip24: 'trading.slip24',
     },
+    earn: {
+        dashboard: {
+            staking: 'earn.dashboard.staking',
+            yield: 'earn.dashboard.yield',
+        } as const satisfies Record<EarnDashboardType, string>,
+        yield: {
+            deposit: 'earn.yield.deposit',
+            withdraw: 'earn.yield.withdraw',
+            claim: 'earn.yield.claim',
+        } as const satisfies Record<YieldFlowType, string>,
+    },
     mevProtection: 'settings.mevProtection',
+    suiteSync: 'settings.suiteSync',
 
     // Feature flags implemented only for mobile app
     firmwareUpdate: 'device.firmware.update',
@@ -117,6 +134,10 @@ const getStakingContext = (networkSymbol: StakingNetworkSymbol) =>
 
 const getTradingContext = (type: TradingType) => `trading.${type}` as const;
 
+const getEarnDashboardContext = (type: EarnDashboardType) => `earn.dashboard.${type}` as const;
+
+const getEarnYieldContext = (type: YieldFlowType) => `earn.yield.${type}` as const;
+
 export type SettingsCategory = 'general' | 'device' | 'networks' | 'debug';
 const getSettingsContext = (category: SettingsCategory) => `settings.${category}` as const;
 
@@ -135,6 +156,9 @@ const getLegalContext = (key: LegalContextKey) => `legal.${key}` as const;
  * - `getAccounts('btc', 'legacy')` → 'accounts.btc.legacy'
  * - `getStaking('eth')` → 'accounts.eth.staking'
  * - `getTrading('buy')` → 'trading.buy'
+ * - `getEarnDashboard('yield')` → 'earn.dashboard.yield'
+ * - `getEarnYield('deposit')` → 'earn.yield.deposit'
+ * - `getEarnYield('claim')` → 'earn.yield.claim'
  * - `getSettings('device')` → 'settings.device'
 
  */
@@ -143,6 +167,8 @@ export const Context = {
     getAccount: getAccountContext,
     getStaking: getStakingContext,
     getTrading: getTradingContext,
+    getEarnDashboard: getEarnDashboardContext,
+    getEarnYield: getEarnYieldContext,
     getSettings: getSettingsContext,
     getLegal: getLegalContext,
 } as const;

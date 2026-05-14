@@ -4,10 +4,10 @@ import { selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
 import { selectSelectedDevice } from '@suite-common/device';
 import { redactDevice, selectRedactedActionsLog } from '@suite-common/logger';
 import { ALLOW_REPORT_TAG } from '@suite-common/sentry';
-import { ReportSecurityCheckParams } from '@suite-common/suite-types';
+import { type ReportSecurityCheckParams } from '@suite-common/suite-types';
 import { selectDiscoveryForSelectedDevice, selectEnabledNetworks } from '@suite-common/wallet-core';
 
-import { Dispatch, GetState } from 'src/types/suite';
+import { type Dispatch, type GetState } from 'src/types/suite';
 
 export const setSentryContext = Sentry.setContext;
 

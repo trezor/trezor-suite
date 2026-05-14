@@ -1,5 +1,5 @@
 import { isDesktop } from '@trezor/env-utils';
-import { SuiteThemeVariant, desktopApi } from '@trezor/suite-desktop-api';
+import { type SuiteThemeVariant, desktopApi } from '@trezor/suite-desktop-api';
 
 export const submitRequestForm = async (
     formMethod: 'GET' | 'POST' | 'IFRAME',

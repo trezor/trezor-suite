@@ -2,11 +2,11 @@ import { Platform } from 'react-native';
 
 import * as Device from 'expo-device';
 
+import { type Bip329 } from '@suite-common/bip329-types';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
-import { selectSelectedDevice } from '@suite-common/device';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import {
-    ExtraDependenciesStatic,
+    type ExtraDependenciesStatic,
     notImplementedAction,
     notImplementedActionType,
     notImplementedReducer,
@@ -14,27 +14,24 @@ import {
     notImplementedThunk,
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
-import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
-import { Route } from '@suite-common/suite-types';
-import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { analytics } from '@suite-native/analytics';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { selectSupportedLanguageLocale } from '@suite-native/intl';
 import { reportSecurityCheck } from '@suite-native/sentry';
-import { NativeServices } from '@suite-native/services';
+import { type NativeServices } from '@suite-native/services';
 import type { EnsureEncryptionKeyDep, MMKVStorageDep } from '@suite-native/storage';
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native/suite-sync';
 import { selectTradingEnvironment } from '@suite-native/trading-state';
 import TrezorConnect from '@trezor/connect';
-import messages from '@trezor/protobuf/messages.json';
 import { BridgeTransport } from '@trezor/transport';
 import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';
+import { ok } from '@trezor/type-utils';
 
 const deviceType = Device.isDevice ? 'device' : 'emulator';
 
-const bridgeTransport = new BridgeTransport({ messages, port: 21328, id: 'bridge' });
+const bridgeTransport = new BridgeTransport({ port: 21328, id: 'bridge' });
 
 const transportsPerDeviceType = {
     device: Platform.select({
@@ -45,6 +42,11 @@ const transportsPerDeviceType = {
 } as const;
 
 const transports = transportsPerDeviceType[deviceType];
+
+const bip329: Bip329 = {
+    export: () => ({ accountLabel: null, labelsToExport: [] }),
+    import: () => Promise.resolve(ok()),
+};
 
 type NativeAppDeps = {
     getState: () => any;
@@ -69,10 +71,12 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         platformEncryption,
         trezorConnect: TrezorConnect,
         ensureDelegatedIdentityKey,
+        analytics,
     });
 
     return {
         suiteSync,
+        bip329,
         ensureDelegatedIdentityKey,
         platformEncryption,
         analytics,
@@ -83,7 +87,6 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
                 `Save data: ${data} into file: ${fileName}. Implementation on phone not ready.`,
             ),
         connectInitSettings: {
-            lazyLoad: false,
             transportReconnect: false,
             debug: false,
             env: 'react-native',
@@ -106,7 +109,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
     selectors: {
         selectLanguage: selectSupportedLanguageLocale,
         selectTokenDefinitionsEnabledNetworks,
-        selectDevice: selectSelectedDevice,
         selectDebugSettings: () => ({
             transports,
         }),
@@ -127,19 +129,11 @@ export const extraDependencies: ExtraDependenciesStatic = {
             knownCredentials: state.thp?.credentials,
         }),
         selectAllowPrerelease: () => false,
-        selectIsSuiteSyncEnabled,
 
         // Not implemented. We assume those are NEVER called on Native
         // need for this is architectural mistake. Please DO NOT add more and try
         // to remove them.
         selectDesktopBinDir: notImplementedSelector('selectDesktopBinDir', '/bin'),
-        selectRouterApp: notImplementedSelector('selectRouterApp', ''),
-        selectRoute: notImplementedSelector('selectRoute', {} as Route),
-        selectMetadata: notImplementedSelector('selectMetadata', {}),
-        selectAddressDisplayType: notImplementedSelector(
-            'selectAddressDisplayType',
-            AddressDisplayOptions.CHUNKED,
-        ),
         selectSelectedAccountStatus: notImplementedSelector(
             'selectSelectedAccountStatus',
             'loaded',
@@ -156,7 +150,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
         // Not implemented. We assume those are NEVER called on Native
         // need for this is architectural mistake. Please DO NOT add more and try
         // to remove them.
-        cardanoValidatePendingTxOnBlock: notImplementedThunk('validatePendingTxOnBlock'),
         fetchAndSaveMetadata: notImplementedThunk('fetchAndSaveMetadata'),
         initMetadata: notImplementedThunk('initMetadata'),
         addAccountMetadata: notImplementedThunk('addAccountMetadata'),
@@ -186,6 +179,7 @@ export const extraDependencies: ExtraDependenciesStatic = {
         storageLoadExplorer: notImplementedReducer('storageLoadExplorer'),
         storageLoadAccounts: notImplementedReducer('storageLoadAccounts'),
         storageLoadTransactions: notImplementedReducer('storageLoadTransactions'),
+        storageLoadPhishingMetadata: notImplementedReducer('storageLoadPhishingMetadata'),
         storageLoadHistoricRates: notImplementedReducer('storageLoadHistoricRates'),
         setDeviceMetadataReducer: notImplementedReducer('setDeviceMetadataReducer'),
         setDeviceMetadataPasswordsReducer: notImplementedReducer(
@@ -196,5 +190,7 @@ export const extraDependencies: ExtraDependenciesStatic = {
         storageLoadTokenManagement: notImplementedReducer('storageLoadTokenManagement'),
         storageLoadWalletSettings: notImplementedReducer('storageLoadWalletSettings'),
         storageLoadBioAuth: notImplementedReducer('storageLoadBioAuth'),
+        storageLoadFlags: notImplementedReducer('storageLoadFlags'),
+        storageLoadSuiteSettings: notImplementedReducer('storageLoadSuiteSettings'),
     },
 };

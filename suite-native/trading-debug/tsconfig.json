@@ -6,8 +6,16 @@
         { "path": "../clipboard" },
         { "path": "../feature-flags" },
         { "path": "../trading-state" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../suite-common/trading" },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        { "path": "../intl" },
         { "path": "../test-utils" },
+        { "path": "../test-utils-store" },
         { "path": "../trading-consts" },
         { "path": "../trading-types" }
     ]

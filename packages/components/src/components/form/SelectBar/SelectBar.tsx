@@ -1,19 +1,19 @@
-import { KeyboardEvent, ReactNode, useCallback, useEffect, useState } from 'react';
+import { type KeyboardEvent, type ReactNode, useCallback, useEffect, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
 import {
-    Elevation,
+    type Elevation,
     borders,
     mapElevationToBackground,
     nextElevation,
     spacings,
 } from '@trezor/theme';
 
-import { SelectBarOrientation, SelectBarSize } from './types';
+import { type SelectBarOrientation, type SelectBarSize } from './types';
 import { mapSizeToPadding, mapSizeToTypographyStyle, mapStateToTextIntent } from './utils';
 import { variables } from '../../../config';
-import { FrameProps, FramePropsKeys } from '../../../utils/frameProps';
+import { type FrameProps, type FramePropsKeys } from '../../../utils/frameProps';
 import { useMediaQuery } from '../../../utils/useMediaQuery';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
 import { Box } from '../../Box/Box';
@@ -76,7 +76,7 @@ const Option = styled.div<{ $isSelected: boolean; $isDisabled: boolean }>`
 
     &:hover {
         color: ${({ theme, $isSelected, $isDisabled }) =>
-            !$isSelected && !$isDisabled && theme.textDefault};
+            !$isSelected && !$isDisabled && theme.contentPrimary};
     }
 `;
 
@@ -92,6 +92,7 @@ export type SelectBarProps<V extends ValueTypes> = {
     options: Option<V>[];
     selectedOption?: V;
     onChange?: (value: V) => void;
+    onOptionClick?: (value: V) => void;
     isDisabled?: boolean;
     isFullWidth?: boolean;
     orientation?: SelectBarOrientation;
@@ -105,6 +106,7 @@ export const SelectBar = <V extends ValueTypes>({
     options,
     selectedOption,
     onChange,
+    onOptionClick,
     isDisabled = false,
     isFullWidth,
     orientation = 'auto',
@@ -124,7 +126,13 @@ export const SelectBar = <V extends ValueTypes>({
 
     const handleOptionClick = useCallback(
         (option: Option<V>) => () => {
-            if (isDisabled || option.value === selectedOptionIn) {
+            if (isDisabled) {
+                return;
+            }
+
+            onOptionClick?.(option.value);
+
+            if (option.value === selectedOptionIn) {
                 return;
             }
 
@@ -132,7 +140,7 @@ export const SelectBar = <V extends ValueTypes>({
 
             onChange?.(option?.value);
         },
-        [isDisabled, selectedOptionIn, onChange],
+        [isDisabled, onOptionClick, selectedOptionIn, onChange],
     );
 
     const handleKeyboardNav = (e: KeyboardEvent) => {
@@ -220,7 +228,7 @@ export const SelectBar = <V extends ValueTypes>({
                                         $isDisabled={!!isDisabled}
                                         $isSelected={isSelected}
                                         data-isdisabled={!!isDisabled}
-                                        data-testid={`select-bar/${String(option.value)}`}
+                                        data-testid={`${dataTest ?? 'select-bar'}/${String(option.value)}`}
                                     >
                                         <Column
                                             padding={mapSizeToPadding(size)}

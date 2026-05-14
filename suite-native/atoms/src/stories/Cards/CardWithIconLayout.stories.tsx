@@ -5,7 +5,7 @@ import { ICON_NAMES } from '@suite-native/icons';
 import { Card as CardStory } from './Card.stories';
 import {
     CardWithIconLayout as CardWithIconLayoutComponent,
-    CardWithIconLayoutProps,
+    type CardWithIconLayoutProps,
 } from '../../Card/CardWithIconLayout';
 import { Text } from '../../Text';
 

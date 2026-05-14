@@ -1,9 +1,9 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
 import { spacingsNew } from '@trezor/theme';
 
-import { TokenIconSet as TokenIconSetComponent, TokenIconSetProps } from './TokenIconSet';
-import { allowedAssetLogoSizes } from '../AssetLogo/AssetLogo';
+import { TokenIconSet as TokenIconSetComponent, type TokenIconSetProps } from './TokenIconSet';
+import { allowedAssetLogoSizes } from '../AssetLogo/AssetLogoWithId';
 
 const getToken = (contract: string, symbol: string, decimals: number) => ({
     contract,
@@ -30,6 +30,7 @@ export const TokenIconSet: StoryObj<TokenIconSetProps> = {
         gap: 16,
         isCountVisible: false,
         isCentered: false,
+        isReversed: false,
     },
     argTypes: {
         tokens: {
@@ -62,10 +63,27 @@ export const TokenIconSet: StoryObj<TokenIconSetProps> = {
                 type: 'select',
             },
         },
+        maxVisibleIcons: {
+            options: [null, undefined, 1, 2, 3, 4],
+            control: {
+                type: 'select',
+                labels: {
+                    null: 'Unlimited (null)',
+                    undefined: 'Default (3)',
+                    1: '1',
+                    2: '2',
+                    3: '3',
+                    4: '4',
+                },
+            },
+        },
         isCountVisible: {
             control: 'boolean',
         },
         isCentered: {
+            control: 'boolean',
+        },
+        isReversed: {
             control: 'boolean',
         },
     },

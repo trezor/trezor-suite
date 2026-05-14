@@ -1,20 +1,26 @@
+import { combineReducers } from '@reduxjs/toolkit';
+
 import { useCountryFilteredData } from '@suite-common/trading';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { Form, useForm } from '@suite-native/forms';
+import { getTranslation, localeReducer } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
+import { renderHookWithBasicProvider, renderWithBasicProvider } from '@suite-native/test-utils';
 import {
-    renderHookWithBasicProvider,
+    createLightStore,
+    createStaticReducer,
     renderHookWithStoreProvider,
-    renderWithBasicProvider,
     screen,
     userEvent,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
+import { residenceReducer } from '@suite-native/trading-state';
 
 import { useLocationForm } from '../../../hooks/useLocationForm';
-import { TradingLocationFormValues } from '../../../types/tradingLocationForm';
+import { type TradingLocationFormValues } from '../../../types/tradingLocationForm';
 import { locationFormValidationSchema } from '../../../utils/locationFormValidationSchema';
 import {
     CountryOfResidencePicker,
-    CountryOfResidencePickerProps,
+    type CountryOfResidencePickerProps,
 } from '../CountryOfResidencePicker';
 
 let mockUseCountryFilteredData: jest.Mock;
@@ -36,6 +42,19 @@ jest.mock('@suite-common/trading', () => ({
 }));
 
 describe('CountryOfResidencePicker', () => {
+    const createTradingResidenceStore = () =>
+        createLightStore({
+            reducer: {
+                locale: localeReducer,
+                wallet: combineReducers({
+                    settings: createStaticReducer(initialWalletSettingsState),
+                    trading: combineReducers({
+                        residence: residenceReducer,
+                    }),
+                }),
+            },
+        });
+
     beforeEach(() => {
         jest.clearAllMocks();
 
@@ -60,7 +79,9 @@ describe('CountryOfResidencePicker', () => {
     });
 
     const renderCountryOfResidencePicker = (props: Partial<CountryOfResidencePickerProps> = {}) => {
-        const { result } = renderHookWithStoreProvider(() => useLocationForm());
+        const { result } = renderHookWithStoreProvider(() => useLocationForm(), {
+            store: createTradingResidenceStore(),
+        });
 
         return renderWithBasicProvider(
             <CountryOfResidencePicker testID="TEST_ID" context="settings" {...props} />,
@@ -73,16 +94,63 @@ describe('CountryOfResidencePicker', () => {
     it('should display value from expo-localization (Poland) when in default state', () => {
         const { getByLabelText } = renderCountryOfResidencePicker();
 
-        expect(getByLabelText('Selected country of residence')).toHaveTextContent('🇵🇱 POL');
+        expect(
+            getByLabelText(
+                getTranslation('tradingResidence.locationSettings.selectedCountryOfResidence'),
+            ),
+        ).toHaveTextContent('POL');
     });
 
     it('should allow to select country', async () => {
         const { getByText, getByLabelText } = renderCountryOfResidencePicker();
 
-        await userEvent.press(getByText('Country of residence'));
+        await userEvent.press(
+            getByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
+        );
         await userEvent.press(getByText(/Algeria/));
 
-        expect(getByLabelText('Selected country of residence')).toHaveTextContent('🇩🇿 DZA');
+        expect(
+            getByLabelText(
+                getTranslation('tradingResidence.locationSettings.selectedCountryOfResidence'),
+            ),
+        ).toHaveTextContent('DZA');
+    });
+
+    it('should clear selected subdivision when country changes', async () => {
+        const form = renderHookWithBasicProvider(() =>
+            useForm<TradingLocationFormValues>({
+                defaultValues: {
+                    country: {
+                        value: 'US',
+                        label: '🇺🇸 United States',
+                        shortLabel: '🇺🇸 USA',
+                        codeAlpha3: 'USA',
+                        flag: '🇺🇸',
+                        name: 'United States',
+                    },
+                    countrySubdivision: {
+                        value: 'CA',
+                        label: 'California',
+                        name: 'California',
+                    },
+                },
+                validation: locationFormValidationSchema,
+            }),
+        );
+
+        const { getByText } = renderWithBasicProvider(
+            <CountryOfResidencePicker testID="TEST_ID" context="settings" />,
+            {
+                wrapper: ({ children }) => <Form form={form.result.current}>{children}</Form>,
+            },
+        );
+
+        await userEvent.press(
+            getByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
+        );
+        await userEvent.press(getByText(/Algeria/));
+
+        expect(form.result.current.getValues('countrySubdivision')).toBeUndefined();
     });
 
     it('should display empty component when filtered data is empty', async () => {
@@ -93,18 +161,22 @@ describe('CountryOfResidencePicker', () => {
         }));
 
         const { getByText } = renderCountryOfResidencePicker();
-        await userEvent.press(getByText('Country of residence'));
+        await userEvent.press(
+            getByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
+        );
 
-        expect(getByText('Country not found')).toBeTruthy();
+        expect(getByText(getTranslation('tradingResidence.countrySheet.emptyTitle'))).toBeTruthy();
         expect(
-            getByText('Check the spelling or browse the list to select an option.'),
+            getByText(getTranslation('tradingResidence.countrySheet.emptyDescription')),
         ).toBeTruthy();
     });
 
     it('should report to analytics after country changed', async () => {
         const { getByText } = renderCountryOfResidencePicker();
 
-        await userEvent.press(getByText('Country of residence'));
+        await userEvent.press(
+            getByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
+        );
         await userEvent.press(getByText(/Algeria/));
 
         expect(reportMock).toHaveBeenCalled();
@@ -113,11 +185,15 @@ describe('CountryOfResidencePicker', () => {
     it('should not report to analytics when user selects already selected country', async () => {
         const { getByText } = renderCountryOfResidencePicker();
 
-        await userEvent.press(getByText('Country of residence'));
+        await userEvent.press(
+            getByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
+        );
         await userEvent.press(getByText(/Algeria/));
         reportMock.mockClear();
 
-        await userEvent.press(getByText('Country of residence'));
+        await userEvent.press(
+            getByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
+        );
         await userEvent.press(getByText(/Algeria/));
 
         expect(reportMock).not.toHaveBeenCalled();
@@ -137,17 +213,10 @@ describe('CountryOfResidencePicker', () => {
             },
         );
 
-        expect(getByLabelText('No country of residence selected')).toHaveTextContent(
-            'Not selected',
-        );
-    });
-
-    it('should render without TestID', () => {
-        const { getByText, queryByTestId } = renderCountryOfResidencePicker({
-            testID: undefined,
-        });
-
-        expect(getByText('Country of residence')).toBeOnTheScreen();
-        expect(queryByTestId('undefined/value')).toBeNull();
+        expect(
+            getByLabelText(
+                getTranslation('tradingResidence.locationSettings.noCountryOfResidence'),
+            ),
+        ).toHaveTextContent(getTranslation('tradingResidence.locationSettings.notSelected'));
     });
 });

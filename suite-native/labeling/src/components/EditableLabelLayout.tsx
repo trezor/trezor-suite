@@ -1,4 +1,5 @@
-import { ReactNode, Ref } from 'react';
+import { type ReactNode, type Ref } from 'react';
+import { Keyboard } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import type { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
@@ -27,9 +28,13 @@ export const EditableLabelLayout = ({ children, label, testID }: EditableLabelLa
     return (
         <>
             <TextButton
-                onPress={() => handleAddLabel(openModal)}
-                viewRight="pencil"
+                onPress={() => {
+                    Keyboard.dismiss();
+                    handleAddLabel(openModal);
+                }}
+                iconRight="pencil"
                 testID={testID}
+                size="small"
             >
                 {label ?? <Translation id="suiteSync.addLabel" />}
             </TextButton>

@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { FormOptions } from '@suite-common/wallet-types';
+import { type FormOptions } from '@suite-common/wallet-types';
 import { Button, Column, Row, Tooltip } from '@trezor/components';
 
 import { useSendFormContext } from 'src/hooks/wallet';

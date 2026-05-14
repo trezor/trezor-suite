@@ -1,15 +1,18 @@
 import { Horizon, Networks, Transaction as StellarTransaction } from '@stellar/stellar-sdk';
 
-import type { AccountInfo, Response, TokenDetailByMint } from '@trezor/blockchain-link-types';
-import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
+import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
+import type {
+    AccountInfo,
+    MessageTypes,
+    Response,
+    TokenDetailByMint,
+} from '@trezor/blockchain-link-types';
 import * as utils from '@trezor/blockchain-link-utils/src/stellar';
 import { getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
-import { IntervalId } from '@trezor/type-utils';
+import { type IntervalId } from '@trezor/type-utils';
 import { BigNumber, createLazy } from '@trezor/utils';
 
-import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
+import { BaseWorker, CONTEXT, type ContextType } from '../baseWorker';
 
 type Context = ContextType<Horizon.Server> & {
     getTokenMetadata: () => Promise<TokenDetailByMint>;
@@ -132,7 +135,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
                 contract,
                 balance: balance.toString(),
                 name: tokenMetadata[contract]?.name || balanceInfo.asset_code,
-                symbol: tokenMetadata[contract]?.symbol || balanceInfo.asset_code,
+                symbol: (tokenMetadata[contract]?.symbol || balanceInfo.asset_code).toUpperCase(),
                 decimals: utils.STELLAR_DECIMALS,
             };
         });
@@ -271,10 +274,16 @@ const unsubscribe = (request: Request<MessageTypes.Unsubscribe>) => {
     } as const;
 };
 
-const pushTransaction = async ({ connect, payload }: Request<MessageTypes.PushTransaction>) => {
+const pushTransaction = async (
+    { connect, payload }: Request<MessageTypes.PushTransaction>,
+    isTestnet: boolean,
+) => {
     const api = await connect();
     const base64EncodedTx = Buffer.from(payload.hex, 'hex').toString('base64');
-    const parsedTx = new StellarTransaction(base64EncodedTx, Networks.PUBLIC);
+    const parsedTx = new StellarTransaction(
+        base64EncodedTx,
+        isTestnet ? Networks.TESTNET : Networks.PUBLIC,
+    );
     try {
         const resp = await api.submitTransaction(parsedTx, { skipMemoRequiredCheck: true });
 
@@ -302,7 +311,7 @@ const onRequest = (request: Request<MessageTypes.Message>, isTestnet: boolean) =
         case MESSAGES.ESTIMATE_FEE:
             return estimateFee(request);
         case MESSAGES.PUSH_TRANSACTION:
-            return pushTransaction(request);
+            return pushTransaction(request, isTestnet);
         case MESSAGES.SUBSCRIBE:
             return subscribe(request);
         case MESSAGES.UNSUBSCRIBE:

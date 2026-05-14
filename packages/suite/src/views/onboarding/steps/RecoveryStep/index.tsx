@@ -1,33 +1,34 @@
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
+import { selectRecoveryWordRequestInputType } from '@suite/modal';
+import { OnboardingCard } from '@suite/onboarding-components';
+import {
+    isStandardRecoveryDisabled,
+    recoverDeviceThunk,
+    recoveryActions,
+    selectRecoveryError,
+    selectRecoveryStatus,
+    selectWordsCount,
+} from '@suite/recovery';
 import { selectSelectedDevice } from '@suite-common/device';
 import { isDeviceWithButtonOnlyNoTouchscreen } from '@suite-common/suite-utils';
+import { Badge, Column } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 
 import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
-import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from 'src/components/recovery';
 import { TrezorLink } from 'src/components/suite';
-import { useDispatch, useRecovery, useSelector } from 'src/hooks/suite';
-import { isStandardRecoveryDisabled } from 'src/utils/suite/recovery';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import RecoveryStepBox from './RecoveryStepBox';
 
 export const RecoveryStep = () => {
     const device = useSelector(selectSelectedDevice);
+    const status = useSelector(selectRecoveryStatus);
+    const error = useSelector(selectRecoveryError);
+    const wordsCount = useSelector(selectWordsCount);
+    const recoveryWordRequestInputType = useSelector(selectRecoveryWordRequestInputType);
     const dispatch = useDispatch();
-
-    const {
-        status,
-        error,
-        wordsCount,
-        wordRequestInputType,
-        setWordsCount,
-        setAdvancedRecovery,
-        recoverDevice,
-        setStatus,
-        resetReducer,
-    } = useRecovery();
 
     if (!device || !device.features) {
         return null;
@@ -44,12 +45,19 @@ export const RecoveryStep = () => {
         if (deviceModelInternal === DeviceModelInternal.T1B1) {
             return (
                 <RecoveryStepBox
-                    heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
+                    heading={
+                        <Column gap={8} alignItems="center" justifyContent="center">
+                            <Badge intent="neutral" size="medium">
+                                <Translation id="TR_RECOVER_WALLET" />
+                            </Badge>
+                            <Translation id="TR_RECOVER_YOUR_WALLET_FROM" />
+                        </Column>
+                    }
                     description={<Translation id="TR_RECOVER_SUBHEADING_COMPUTER" />}
                 >
                     <SelectWordCount
                         onSelect={number => {
-                            setWordsCount(number);
+                            dispatch(recoveryActions.setWordsCount(number));
                             // For T1B1 with 12 or 18 words, skip recovery type selection and use Advanced recovery
                             // For 24 words, show the recovery type selection
                             const shouldSkipSelection = isStandardRecoveryDisabled(
@@ -59,11 +67,11 @@ export const RecoveryStep = () => {
                             );
 
                             if (shouldSkipSelection) {
-                                setAdvancedRecovery(true);
+                                dispatch(recoveryActions.setAdvancedRecovery(true));
                                 dispatch(updateAnalytics({ recoveryType: 'advanced' }));
-                                recoverDevice();
+                                dispatch(recoverDeviceThunk());
                             } else {
-                                setStatus('select-recovery-type');
+                                dispatch(recoveryActions.setStatus('select-recovery-type'));
                             }
                         }}
                     />
@@ -73,12 +81,19 @@ export const RecoveryStep = () => {
 
         return (
             <RecoveryStepBox
-                heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
+                heading={
+                    <Column gap={8} alignItems="center" justifyContent="center">
+                        <Badge intent="neutral" size="medium">
+                            <Translation id="TR_RECOVER_WALLET" />
+                        </Badge>
+                        <Translation id="TR_RECOVER_YOUR_WALLET_FROM" />
+                    </Column>
+                }
                 description={<Translation id={subheadingKey} />}
                 innerActions={
                     <OnboardingCard.Button
                         data-testid="@onboarding/recovery/start-button"
-                        onClick={recoverDevice}
+                        onClick={() => dispatch(recoverDeviceThunk())}
                     >
                         <Translation id="TR_START_RECOVERY" />
                     </OnboardingCard.Button>
@@ -90,14 +105,21 @@ export const RecoveryStep = () => {
     if (status === 'select-recovery-type') {
         // 2. step: Standard recovery (user enters recovery seed word by word on host) or Advanced recovery (user types words on a device)
         const handleSelect = (type: 'standard' | 'advanced') => {
-            setAdvancedRecovery(type === 'advanced');
+            dispatch(recoveryActions.setAdvancedRecovery(type === 'advanced'));
             dispatch(updateAnalytics({ recoveryType: type }));
-            recoverDevice();
+            dispatch(recoverDeviceThunk());
         };
 
         return (
             <RecoveryStepBox
-                heading={<Translation id="TR_SELECT_RECOVERY_METHOD" />}
+                heading={
+                    <Column gap={8} alignItems="center" justifyContent="center">
+                        <Badge intent="neutral" size="medium">
+                            <Translation id="TR_RECOVER_WALLET" />
+                        </Badge>
+                        <Translation id="TR_SELECT_RECOVERY_METHOD" />
+                    </Column>
+                }
                 description={
                     deviceModelInternal === DeviceModelInternal.T1B1 && wordsCount === 24 ? (
                         <Translation
@@ -124,7 +146,14 @@ export const RecoveryStep = () => {
         // On T1B1 we show confirm bubble only while we wait for confirmation that users wants to start the process
         return (
             <RecoveryStepBox
-                heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
+                heading={
+                    <Column gap={8} alignItems="center" justifyContent="center">
+                        <Badge intent="neutral" size="medium">
+                            <Translation id="TR_RECOVER_WALLET" />
+                        </Badge>
+                        <Translation id="TR_RECOVER_YOUR_WALLET_FROM" />
+                    </Column>
+                }
                 description={
                     deviceModelInternal === DeviceModelInternal.T1B1 ? null : (
                         <Translation id={subheadingKey} />
@@ -139,7 +168,7 @@ export const RecoveryStep = () => {
 
     if (status === 'in-progress') {
         const getModel1Description = () => {
-            if (wordRequestInputType === 'plain') {
+            if (recoveryWordRequestInputType === 'plain') {
                 return (
                     <>
                         <Translation id="TR_ENTER_SEED_WORDS_INSTRUCTION" />{' '}
@@ -148,14 +177,21 @@ export const RecoveryStep = () => {
                 );
             }
 
-            if (wordRequestInputType === 6 || wordRequestInputType === 9) {
+            if (recoveryWordRequestInputType === 6 || recoveryWordRequestInputType === 9) {
                 return <Translation id="TR_ADVANCED_RECOVERY_TEXT" />;
             }
         };
 
         return (
             <RecoveryStepBox
-                heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
+                heading={
+                    <Column gap={8} alignItems="center" justifyContent="center">
+                        <Badge intent="neutral" size="medium">
+                            <Translation id="TR_RECOVER_WALLET" />
+                        </Badge>
+                        <Translation id="TR_RECOVER_YOUR_WALLET_FROM" />
+                    </Column>
+                }
                 device={device}
                 description={
                     deviceModelInternal === DeviceModelInternal.T1B1 ? (
@@ -167,7 +203,11 @@ export const RecoveryStep = () => {
                 isActionAbortable
                 isConfirmedOnDevice
             >
-                {deviceModelInternal === DeviceModelInternal.T1B1 && <SelectRecoveryWord />}
+                {deviceModelInternal === DeviceModelInternal.T1B1 && (
+                    <Column alignItems="center">
+                        <SelectRecoveryWord />
+                    </Column>
+                )}
             </RecoveryStepBox>
         );
     }
@@ -178,7 +218,14 @@ export const RecoveryStep = () => {
 
         return (
             <RecoveryStepBox
-                heading={<Translation id="TR_WALLET_RECOVERED_FROM_SEED" />}
+                heading={
+                    <Column gap={8} alignItems="center" justifyContent="center">
+                        <Badge intent="neutral" size="medium">
+                            <Translation id="TR_RECOVER_WALLET" />
+                        </Badge>
+                        <Translation id="TR_WALLET_RECOVERED_FROM_SEED" />
+                    </Column>
+                }
                 innerActions={
                     <OnboardingCard.Button
                         data-testid="@onboarding/recovery/continue-button"
@@ -193,7 +240,14 @@ export const RecoveryStep = () => {
     if (status === 'finished' && error) {
         return (
             <RecoveryStepBox
-                heading={<Translation id="TR_RECOVERY_FAILED" />}
+                heading={
+                    <Column gap={8} alignItems="center" justifyContent="center">
+                        <Badge intent="neutral" size="medium">
+                            <Translation id="TR_RECOVER_WALLET" />
+                        </Badge>
+                        <Translation id="TR_RECOVERY_FAILED" />
+                    </Column>
+                }
                 description={<Translation id="TR_RECOVERY_ERROR" values={{ error }} />}
                 variant="destructive"
                 innerActions={
@@ -201,8 +255,8 @@ export const RecoveryStep = () => {
                         data-testid="@onboarding/recovery/retry-button"
                         onClick={
                             deviceModelInternal === DeviceModelInternal.T1B1
-                                ? resetReducer
-                                : recoverDevice
+                                ? () => dispatch(recoveryActions.resetReducer())
+                                : () => dispatch(recoverDeviceThunk())
                         }
                         intent="critical"
                     >

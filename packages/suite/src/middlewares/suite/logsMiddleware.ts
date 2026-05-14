@@ -1,11 +1,16 @@
-import { MiddlewareAPI } from 'redux';
+import { type MiddlewareAPI } from 'redux';
 
+import { desktopUpdateActions } from '@suite/desktop-update';
 import { METADATA } from '@suite/metadata';
+import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
+import { routerLocationChange } from '@suite/router';
+import { suiteSettingsActions } from '@suite/settings';
 import { addLog } from '@suite-common/logger';
+import { WALLET_SETTINGS } from '@suite-common/wallet-core';
 import { redactUserPathFromString } from '@trezor/utils';
 
-import { DESKTOP_UPDATE, MODAL, PROTOCOL, ROUTER, SUITE } from 'src/actions/suite/constants';
-import { Action, AppState, Dispatch } from 'src/types/suite';
+import { PROTOCOL, SUITE } from 'src/actions/suite/constants';
+import { type Action, type AppState, type Dispatch } from 'src/types/suite';
 import { redactTransactionIdFromAnchor } from 'src/utils/suite/analytics';
 
 const log =
@@ -14,17 +19,17 @@ const log =
     (action: Action): Action => {
         // IMPORTANT: Actions that are shared between native and desktop app can be found in this file: suite-common/logger/src/logsMiddleware.ts
         switch (action.type) {
-            case SUITE.SET_LANGUAGE:
-            case SUITE.SET_THEME:
-            case SUITE.SET_ADDRESS_DISPLAY_TYPE:
-            case SUITE.SET_AUTODETECT:
+            case suiteSettingsActions.setLanguage.type:
+            case suiteSettingsActions.setTheme.type:
+            case WALLET_SETTINGS.SET_ADDRESS_DISPLAY_TYPE:
+            case suiteSettingsActions.setAutodetect.type:
             case METADATA.ENABLE:
             case METADATA.DISABLE:
-            case SUITE.ONION_LINKS:
-            case DESKTOP_UPDATE.CHECKING:
-            case DESKTOP_UPDATE.AVAILABLE:
-            case DESKTOP_UPDATE.NOT_AVAILABLE:
-            case MODAL.CLOSE:
+            case suiteSettingsActions.setOnionLinks.type:
+            case desktopUpdateActions.checking.type:
+            case desktopUpdateActions.available.type:
+            case desktopUpdateActions.notAvailable.type:
+            case MODAL_CLOSE:
                 api.dispatch(
                     addLog({
                         type: action.type,
@@ -35,7 +40,7 @@ const log =
                     }),
                 );
                 break;
-            case DESKTOP_UPDATE.READY:
+            case desktopUpdateActions.ready.type:
                 api.dispatch(
                     addLog({
                         type: action.type,
@@ -61,7 +66,7 @@ const log =
                     }),
                 );
                 break;
-            case ROUTER.LOCATION_CHANGE:
+            case routerLocationChange.type:
                 api.dispatch(
                     addLog({
                         type: action.type,
@@ -73,8 +78,8 @@ const log =
                     }),
                 );
                 break;
-            case DESKTOP_UPDATE.ALLOW_PRERELEASE:
-            case DESKTOP_UPDATE.SET_AUTOMATIC_UPDATES:
+            case desktopUpdateActions.allowPrerelease.type:
+            case desktopUpdateActions.setAutomaticUpdates.type:
             case SUITE.TOR_STATUS:
             case SUITE.ONLINE_STATUS:
                 api.dispatch(
@@ -96,7 +101,7 @@ const log =
                     }),
                 );
                 break;
-            case MODAL.OPEN_USER_CONTEXT:
+            case MODAL_OPEN_USER_CONTEXT:
                 api.dispatch(
                     addLog({
                         type: action.type,

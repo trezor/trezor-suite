@@ -1,96 +1,13 @@
-// origin: https://github.com/trezor/connect/blob/develop/src/data/config.json
-
-import { DeviceModelInternal } from '@trezor/device-utils';
+import type { FirmwareRule } from '@trezor/connect-common';
 import { TREZOR_USB_DESCRIPTORS } from '@trezor/transport/src/constants';
 
 type Config = {
     webusb: typeof TREZOR_USB_DESCRIPTORS;
-    whitelist: Array<{ origin: string; priority: number }>;
-    management: Array<{ origin: string }>;
-    onionDomains: Record<string, string>;
-    supportedBrowsers: Record<
-        string,
-        {
-            version: number;
-            download: string;
-            update: string;
-        }
-    >;
-    supportedFirmware: Array<{
-        coin?: string[]; // Todo: better type?
-        capabilities?: string[]; // Todo: better type?
-        methods?: string[]; // Todo: better type?
-        min: Partial<Record<DeviceModelInternal, string>>;
-        max?: undefined; // NOTE: max field is not used anywhere at the moment, it is here for type compatibility
-        comment?: string[];
-    }>;
+    supportedFirmware: Array<FirmwareRule>;
 };
 
 export const config: Config = {
     webusb: TREZOR_USB_DESCRIPTORS,
-    whitelist: [
-        { origin: 'chrome-extension://imloifkgjagghnncjkhggdhalmcnfklk', priority: 1 },
-        { origin: 'chrome-extension://niebkpllfhmpfbffbfifagfgoamhpflf', priority: 1 },
-        { origin: 'file://', priority: 2 },
-        { origin: 'trezor.io', priority: 0 },
-        { origin: 'sldev.cz', priority: 0 },
-        { origin: 'localhost', priority: 0 },
-        { origin: 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion', priority: 0 },
-    ],
-    management: [{ origin: 'trezor.io' }, { origin: 'sldev.cz' }, { origin: 'localhost' }],
-    onionDomains: {
-        'trezor.io': 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
-    },
-    supportedBrowsers: {
-        chrome: {
-            version: 59,
-            download: 'https://www.google.com/chrome/',
-            update: 'https://support.google.com/chrome/answer/95414',
-        },
-        mobilechrome: {
-            version: 59,
-            download: 'https://www.google.com/chrome/',
-            update: 'https://support.google.com/chrome/answer/95414',
-        },
-        chromium: {
-            version: 59,
-            download: 'https://www.chromium.org/',
-            update: 'https://www.chromium.org/',
-        },
-        electron: {
-            version: 0,
-            download: 'https://www.electronjs.org/',
-            update: 'https://www.electronjs.org/',
-        },
-        firefox: {
-            version: 54,
-            download: 'https://www.mozilla.org/en-US/firefox/new/',
-            update: 'https://support.mozilla.org/en-US/kb/update-firefox-latest-version',
-        },
-        mobilefirefox: {
-            version: 54,
-            download: 'https://www.mozilla.org/en-US/firefox/new/',
-            update: 'https://support.mozilla.org/en-US/kb/update-firefox-latest-version',
-        },
-        brave: {
-            // Chromium based
-            version: 59,
-            download: 'https://brave.com/download/',
-            update: 'https://brave.com/download/',
-        },
-        edge: {
-            // Since version 79, Edge is based on Chromium
-            version: 79,
-            download: 'https://www.microsoft.com/en-us/edge',
-            update: 'https://www.microsoft.com/en-us/edge',
-        },
-        opera: {
-            // Chromium based
-            version: 95,
-            download: 'https://www.opera.com/download',
-            update: 'https://www.opera.com/download',
-        },
-    },
     supportedFirmware: [
         {
             coin: ['xrp', 'txrp'],
@@ -233,6 +150,17 @@ export const config: Config = {
             },
         },
         {
+            capabilities: ['mcuDeviceAuthentication'],
+            min: {
+                // devices that don't support 'authenticateDevice' don't have to be listed here
+                T2B1: '0',
+                T3B1: '0',
+                T3T1: '0',
+                // TODO update this, when it is clear which version will support it https://github.com/trezor/trezor-suite/issues/27486
+                T3W1: '0',
+            },
+        },
+        {
             capabilities: ['getFirmwareHash'],
             methods: ['getFirmwareHash'],
             min: { T1B1: '1.11.1', T2T1: '2.5.1' },
@@ -294,10 +222,10 @@ export const config: Config = {
             min: {
                 T1B1: '0',
                 T2T1: '0',
-                T2B1: '2.10.0',
-                T3B1: '2.10.0',
-                T3T1: '2.10.0',
-                T3W1: '2.10.0',
+                T2B1: '2.11.0',
+                T3B1: '2.11.0',
+                T3T1: '2.11.0',
+                T3W1: '2.11.0',
             },
         },
         {
@@ -317,8 +245,8 @@ export const config: Config = {
         {
             capabilities: ['telemetry'],
             methods: ['telemetryGet'],
-            min: { T1B1: '0', T2T1: '2.10.1', T2B1: '2.10.1', T3B1: '2.10.1', T3T1: '2.10.1' },
-            comment: ['Supported since 2.10.1'],
+            min: { T1B1: '0', T2T1: '0', T2B1: '0', T3B1: '0', T3T1: '0', T3W1: '2.11.0' },
+            comment: ['Supported since 2.11.0, only on T3W1'],
         },
     ],
 };

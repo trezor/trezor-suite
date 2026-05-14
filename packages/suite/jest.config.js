@@ -1,22 +1,29 @@
 const version = require('./package.json').suiteVersion;
-const baseConfig = require('../../jest.config.base');
+const baseConfig = require('../../jest.config.base.swc');
 
 // all tests have same UTC timezone
 process.env.TZ = 'UTC';
 process.env.LANG = 'en-US';
 process.env.VERSION = version;
 
-const babelConfig = {
-    presets: [
-        ['@babel/preset-env', { targets: { node: 'current' }, modules: 'commonjs' }],
-        '@babel/preset-typescript',
-        [
-            '@babel/preset-react',
-            {
+const swcConfig = {
+    jsc: {
+        parser: {
+            syntax: 'typescript',
+            tsx: true,
+            decorators: true,
+        },
+        transform: {
+            react: {
                 runtime: 'automatic',
             },
-        ],
-    ],
+            decoratorVersion: '2022-03',
+        },
+        target: 'esnext',
+    },
+    module: {
+        type: 'commonjs',
+    },
 };
 
 /**
@@ -73,8 +80,7 @@ module.exports = {
     ],
     testMatch: ['**/*.test.(ts|tsx|js)'],
     transform: {
-        '(d3-|internmap|esm).*\\.js$': ['babel-jest', babelConfig],
-        '\\.(js|jsx|ts|tsx)$': ['babel-jest', babelConfig],
+        '\\.(js|jsx|ts|tsx)$': ['@swc/jest', swcConfig],
     },
     verbose: false,
     watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],

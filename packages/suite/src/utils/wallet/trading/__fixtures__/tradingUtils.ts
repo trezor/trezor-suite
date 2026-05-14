@@ -1,7 +1,7 @@
-import { DefinitionType, TokenDefinitions } from '@suite-common/token-definitions';
-import { Account, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type DefinitionType, type TokenDefinitions } from '@suite-common/token-definitions';
+import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 
-import { resolveAddressAndToken } from '../tradingUtils';
+import { type resolveAddressAndToken } from '../tradingUtils';
 
 export const coinDefinitions: TokenDefinitions[DefinitionType.COIN] = {
     error: false,

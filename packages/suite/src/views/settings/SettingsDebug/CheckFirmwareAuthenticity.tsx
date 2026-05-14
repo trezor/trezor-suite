@@ -1,35 +1,30 @@
-import { Switch } from '@trezor/components';
-
-import { SUITE } from 'src/actions/suite/constants';
-import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
+    selectAreDeviceMetaChecksEnabled,
     selectIsEntropyCheckEnabled,
     selectIsFirmwareHashCheckEnabled,
     selectIsFirmwareRevisionCheckEnabled,
-} from 'src/selectors/suite/suiteSelectors';
+    suiteSettingsActions,
+} from '@suite/settings';
+import { Switch } from '@trezor/components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const CheckFirmwareAuthenticity = () => {
     const dispatch = useDispatch();
     const isEntropyCheckEnabled = useSelector(selectIsEntropyCheckEnabled);
     const isFirmwareHashCheckEnabled = useSelector(selectIsFirmwareHashCheckEnabled);
     const isFirmwareRevisionCheckEnabled = useSelector(selectIsFirmwareRevisionCheckEnabled);
+    const areDeviceMetaChecksEnabled = useSelector(selectAreDeviceMetaChecksEnabled);
 
     const toggleEntropyCheck = (isChecked: boolean) =>
-        dispatch({
-            type: SUITE.TOGGLE_ENTROPY_CHECK,
-            payload: isChecked,
-        });
+        dispatch(suiteSettingsActions.toggleEntropyCheck(isChecked));
     const toggleFirmwareHashCheck = (isChecked: boolean) =>
-        dispatch({
-            type: SUITE.TOGGLE_FIRMWARE_HASH_CHECK,
-            payload: isChecked,
-        });
+        dispatch(suiteSettingsActions.toggleFirmwareHashCheck(isChecked));
     const toggleFirmwareRevisionCheck = (isChecked: boolean) =>
-        dispatch({
-            type: SUITE.TOGGLE_FIRMWARE_REVISION_CHECK,
-            payload: isChecked,
-        });
+        dispatch(suiteSettingsActions.toggleFirmwareRevisionCheck(isChecked));
+    const toggleDeviceMetaChecks = (isChecked: boolean) =>
+        dispatch(suiteSettingsActions.toggleDeviceMetaChecks(isChecked));
 
     return (
         <>
@@ -63,6 +58,18 @@ export const CheckFirmwareAuthenticity = () => {
                     <Switch
                         onChange={toggleFirmwareRevisionCheck}
                         isChecked={isFirmwareRevisionCheckEnabled}
+                    />
+                </ActionColumn>
+            </SectionItem>
+            <SectionItem>
+                <TextColumn
+                    title="Perform device meta checks regularly"
+                    description="Carry out ID check & invariabilitiy check every time you authorize Trezor device."
+                />
+                <ActionColumn>
+                    <Switch
+                        onChange={toggleDeviceMetaChecks}
+                        isChecked={areDeviceMetaChecksEnabled}
                     />
                 </ActionColumn>
             </SectionItem>

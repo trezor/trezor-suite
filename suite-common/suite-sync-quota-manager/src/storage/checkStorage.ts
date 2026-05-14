@@ -2,13 +2,23 @@ import { err, ok } from '@trezor/type-utils';
 
 import { quotaManagerFetch } from '../quotaManagerFetch';
 
-type AskForStorageResponse = {
+type NoQuotaResponse = {
+    status: 'NoQuota';
+};
+
+type QuotaOwnerResponse = {
+    status: 'Allocated';
     totalSpace: number;
 };
 
-type AskForStoragePublicKeyResponse = AskForStorageResponse & {
+type QuotaPublicKeyResponse = {
+    status: 'Allocated';
+    totalSpace: number;
     unspentSpace: number;
 };
+
+export type AskForStorageResponse = NoQuotaResponse | QuotaOwnerResponse;
+export type AskForStoragePublicKeyResponse = NoQuotaResponse | QuotaPublicKeyResponse;
 
 export type CheckStorageByPublicKeyParams = {
     baseUrl: string | null;

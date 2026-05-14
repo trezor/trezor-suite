@@ -2,19 +2,19 @@ import { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
+import { closeModal } from '@suite/modal';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     getSessionNetworks,
     selectSessions,
     switchSelectedAccountThunk,
     walletConnectActions,
 } from '@suite-common/walletconnect';
-import { Column, Modal, Option, Row, Select } from '@trezor/components';
+import { Column, Modal, type Option, Row, Select } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import * as modalActions from 'src/actions/suite/modalActions';
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 import { useSelector } from 'src/hooks/suite';
@@ -56,10 +56,10 @@ export const WalletConnectSwitchAccountModal = ({
                 }),
             );
         }
-        dispatch(modalActions.onCancel());
+        dispatch(closeModal());
     };
     const handleCancel = () => {
-        dispatch(modalActions.onCancel());
+        dispatch(closeModal());
     };
 
     return (

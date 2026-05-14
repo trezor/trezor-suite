@@ -4,15 +4,15 @@ import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
 import {
-    TradingRootState,
-    TradingTransaction,
+    type TradingRootState,
+    type TradingTransaction,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { ProviderLogo } from '@suite-native/trading-atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
 import { TradeStatusBadge } from '../TradeStatusBadge';
@@ -46,7 +46,7 @@ export const TradeHistoryListItem = memo(({ transaction, onPress }: TradeHistory
             <Card>
                 <VStack>
                     <HStack justifyContent="space-between">
-                        <Text color="textSubdued">
+                        <Text color="contentSecondary">
                             <Translation
                                 id="moduleTrading.tradeHistory.timeAt"
                                 values={{
@@ -66,7 +66,7 @@ export const TradeHistoryListItem = memo(({ transaction, onPress }: TradeHistory
                         <Icon name="caretRight" size="medium" />
                         <Text>{toStringValue}</Text>
                     </HStack>
-                    <Text variant="body-sm" color="textSubdued">
+                    <Text variant="body-sm" color="contentSecondary">
                         <Translation
                             id="moduleTrading.tradeHistory.transactionId"
                             values={{ orderId: transaction.data.orderId }}

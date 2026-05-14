@@ -8,7 +8,7 @@
         { "path": "../atoms" },
         { "path": "../intl" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles-native" }
     ],
     "include": [".", "**/*.json"]
 }

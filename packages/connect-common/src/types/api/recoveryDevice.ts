@@ -1,0 +1,21 @@
+/**
+ * Ask device to initiate recovery procedure
+ */
+
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import type { Static } from '@trezor/schema-utils';
+import { Type } from '@trezor/schema-utils';
+
+import type { Params, Response } from '../params';
+
+export type RecoveryDevice = Static<typeof RecoveryDevice>;
+export const RecoveryDevice = Type.Composite([
+    PROTO.RecoveryDevice,
+    Type.Object({
+        word_count: Type.Optional(
+            Type.Union([Type.Literal(12), Type.Literal(18), Type.Literal(24)]),
+        ),
+    }),
+]);
+
+export declare function recoveryDevice(params: Params<RecoveryDevice>): Response<PROTO.Success>;

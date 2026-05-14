@@ -47,11 +47,13 @@ export class TradingActions {
         await element(by.id('@screen/mainScrollView')).scrollTo('top');
     }
 
-    async scrollToLearnMoreLink() {
-        // Scroll to bottom of the page.
+    async viewHowTradingWorks() {
+        // Scroll to bottom of the page and view how trading works sheet.
         // `scrollScreenToBottom` is not used because it accidentally clicks on links at the bottom on iOS.
-        const learnMoreLink = element(by.text('Learn more'));
-        await scrollUntilVisible(learnMoreLink);
+        const howTradingWorksButton = element(by.text('How trading works'));
+        await scrollUntilVisible(howTradingWorksButton);
+        await howTradingWorksButton.tap();
+        await this.closeBottomSheet();
     }
 
     async expectBrowserAuthTriggered() {

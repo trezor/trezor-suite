@@ -1,4 +1,4 @@
-import { BackupType } from '@suite-common/suite-types';
+import type { BackupType } from '@suite-common/suite-types';
 import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import {
@@ -47,13 +47,23 @@ class DeviceOnboardingActions {
     async gotToNextWalletBackupTutorialStep(step: number) {
         const buttonId = `@swipeableWalkthroughStep/walletBackupTutorialStep${step}/nextButton`;
         await waitForVisible(by.id(buttonId));
+        // WalletBackupTutorialStep2 contains BackupRiskCardsAnimation which uses a Marquee
+        // component. Marquee's useFrameCallback fires every frame on the UI thread, preventing
+        // Espresso from detecting the app as idle. All steps are mounted simultaneously, so
+        // this affects taps on every step while the tutorial screen is in the navigation stack.
+        await device.disableSynchronization();
         await element(by.id(buttonId)).tap();
+        await device.enableSynchronization();
     }
 
     async goToNextWalletBackupRecapStep(step: number) {
         const buttonId = `@swipeableWalkthroughStep/walletBackupRecapStep${step}/nextButton`;
         await waitForVisible(by.id(buttonId));
+        // WalletBackupTutorialScreen stays in the navigation stack during the entire Create
+        // Wallet flow including WalletBackupRecap, so the Marquee frame callback keeps running.
+        await device.disableSynchronization();
         await element(by.id(buttonId)).tap();
+        await device.enableSynchronization();
     }
 
     async goToNextWalletRecoveryRecapStep(step: number) {
@@ -89,7 +99,9 @@ class DeviceOnboardingActions {
             ),
         );
 
-        await scrollUntilVisible(selectedTypeElement, '@bottom-sheet/scroll-view');
+        await scrollUntilVisible(selectedTypeElement, {
+            scrollViewTestId: '@bottom-sheet/scroll-view',
+        });
         await selectedTypeElement.tap();
     }
 
@@ -97,7 +109,12 @@ class DeviceOnboardingActions {
         const buttonId = '@holdToConfirmButton';
         await waitForVisible(by.id(buttonId));
         const holdToConfirmButton = element(by.id(buttonId));
+        // Disable synchronization for the same reason as gotToNextWalletBackupTutorialStep:
+        // the Marquee frame callback keeps the app from going idle while WalletBackupTutorial
+        // is in the navigation stack.
+        await device.disableSynchronization();
         await holdToConfirmButton.longPress(3000);
+        await device.enableSynchronization();
     }
 
     async waitForUninitializedDeviceLanding() {
@@ -183,11 +200,19 @@ class DeviceOnboardingActions {
         await this.pressHoldToConfirmButton();
         await this.waitForWalletCreationScreen();
 
-        await TrezorUserEnvLink.swipeEmu('up');
-        await TrezorUserEnvLink.pressYes();
-        await TrezorUserEnvLink.pressYes();
-        await TrezorUserEnvLink.pressNo();
-        // at this point, wallet creation + entropy check on device has begun
+        await TrezorUserEnvLink.swipeEmu('up'); // begins wallet creation + entropy check on device
+        // wallet creation is finished, but because resetDevice is called with skip_backup: false, the resetDevice call is still pending
+        await TrezorUserEnvLink.pressYes(); // start backup flow
+        await TrezorUserEnvLink.pressYes(); // press Continue
+        await TrezorUserEnvLink.pressNo(); // reject backup flow early, so pending resetDevice settles
+    }
+
+    async waitForCongratulationsScreen() {
+        await waitForVisible(by.id('@screen/Congratulations'));
+    }
+
+    async dismissCongratulationsScreen() {
+        await element(by.id('@deviceOnboarding/CongratulationsScreen/continueButton')).tap();
     }
 }
 

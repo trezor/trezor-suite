@@ -51,7 +51,6 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     },
                 });
 
-                await settingsPage.coinsTab.disableNetwork('btc');
                 await settingsPage.coinsTab.enableNetwork('ada');
                 await settingsPage.coinsTab.openNetworkAdvanceSettings('ada');
                 await settingsPage.coinsTab.changeBackend('blockfrost', blockbookMock.url);
@@ -109,9 +108,9 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Verify warning on too small reward claim', async () => {
                 await stakingSection.claimRewardsButton.click();
-                await expect(page.modalHeader).toHaveTranslation('TR_STAKE_CLAIM_REWARDS');
+                await expect(page.modalHeader).toHaveTranslation('TR_EARN_CLAIM_REWARDS');
                 await expect(stakingSection.claimWarningBanner).toHaveTranslation(
-                    'TR_STAKING_REWARDS_NETWORK_FEE_WARNING',
+                    'TR_EARN_REWARDS_NETWORK_FEE_WARNING',
                 );
                 await expect(stakingSection.cardanoModalRewardAmount).toHaveText(
                     tooSmallRewardAmountFormatted,
@@ -157,7 +156,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Initiate reward claim with big enough reward', async () => {
                 await stakingSection.claimRewardsButton.click();
-                await expect(page.modalHeader).toHaveTranslation('TR_STAKE_CLAIM_REWARDS');
+                await expect(page.modalHeader).toHaveTranslation('TR_EARN_CLAIM_REWARDS');
                 await expect(stakingSection.claimWarningBanner).toBeHidden();
                 await expect(stakingSection.cardanoModalRewardAmount).toHaveText(
                     bigRewardAmountFormatted,
@@ -173,7 +172,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
-                            ['Confirm withdrawal for reward', '\n', 'address:'],
+                            ['Confirm withdrawal for Reward', '\n', 'address'],
                             device.wrapText(
                                 'stake1uytalm0k75njyj7v8z580ajs09v5v4lz6yp9akh8cgty43qunjqys',
                             ),
@@ -182,7 +181,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     },
                     T3T1: {
                         body: [
-                            ['Confirm withdrawal for', '\n', 'reward address:'],
+                            ['Confirm withdrawal for', '\n', 'Reward address'],
                             device.wrapText(
                                 'stake1uytalm0k75njyj7v8z580ajs09v5v4lz6yp9akh8cgty43qunjqys',
                             ),
@@ -195,9 +194,9 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
-                            ['for account #1:'],
+                            ['For account #1'],
                             device.wrapText("m/1852'/1815'/0'/2/0"),
-                            ['Amount:'],
+                            ['Amount'],
                             [bigRewardAmountFormatted],
                         ],
                         actions: { right_button: 'Confirm' },
@@ -209,13 +208,26 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
-                            ['Transaction fee:'],
+                            ['Transaction fee'],
                             [toADA(bigRewardFee)],
-                            ['Network: Mainnet'],
-                            ['Valid since: n/a'],
-                            [/^TTL: \d{9}$/],
+                            ['Network'],
+                            ['Mainnet'],
+                            ['Valid since'],
+                            ['n/a'],
+                            ['TTL'],
+                            [/\d{9}$/],
                         ],
                         actions: { right_button: 'Hold to confirm' },
+                    },
+                    T3T1: {
+                        body: [
+                            ['Transaction fee'],
+                            [toADA(bigRewardFee)],
+                            ['Network'],
+                            ['Mainnet'],
+                            ['Valid since'],
+                            ['n/a'],
+                        ],
                     },
                 });
 

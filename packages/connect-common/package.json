@@ -14,54 +14,69 @@
     "bugs": {
         "url": "https://github.com/trezor/trezor-suite/issues"
     },
-    "npmPublishAccess": "public",
-    "license": "SEE LICENSE IN LICENSE.md",
+    "license": "MIT",
     "description": "Collection of assets and utils used by trezor-connect library.",
     "main": "./src/index.ts",
     "files": [
-        "lib/",
         "libESM/",
         "CHANGELOG.md"
     ],
     "publishConfig": {
-        "main": "./lib/index.js",
-        "types": "./lib/index.d.ts",
+        "main": "./libESM/index.mjs",
+        "types": "./libESM/index.d.mts",
+        "type": "module",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
+                "types": "./libESM/index.d.mts",
+                "default": "./libESM/index.mjs"
             },
-            "./lib/*": "./lib/*.js",
-            "./lib/data": "./lib/data/index.js",
-            "./lib/data/*": "./lib/data/*.js",
-            "./lib/constants": "./lib/constants/index.js",
-            "./lib/constants/*": "./lib/constants/*.js",
             "./libESM/*": "./libESM/*",
-            "./libESM/constants/*": "./libESM/constants/*",
-            "./libESM/data/*": "./libESM/data/*"
+            "./libESM/constants": {
+                "types": "./libESM/constants/index.d.mts",
+                "default": "./libESM/constants/index.mjs"
+            },
+            "./libESM/data": {
+                "types": "./libESM/data/index.d.mts",
+                "default": "./libESM/data/index.mjs"
+            },
+            "./libESM/events": {
+                "types": "./libESM/events/index.d.mts",
+                "default": "./libESM/events/index.mjs"
+            },
+            "./libESM/types": {
+                "types": "./libESM/types/index.d.mts",
+                "default": "./libESM/types/index.mjs"
+            }
         }
     },
     "scripts": {
-        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm && DTS_OUT_DIR=libESM yarn build:dts:inline",
+        "build:dts:inline": "node ../../scripts/inline-devdep-types.mjs",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js",
-        "depcheck": "yarn g:depcheck"
+        "test:unit": "yarn g:jest",
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@trezor/device-authenticity": "workspace:^",
+        "@trezor/device-utils": "workspace:*",
+        "@trezor/protobuf": "workspace:*",
+        "@trezor/protocol": "workspace:^",
+        "@trezor/schema-utils": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
     },
     "devDependencies": {
-        "@trezor/protobuf": "workspace:^",
-        "@trezor/protocol": "workspace:^",
-        "@types/chrome": "^0.0.299",
+        "@fivebinaries/coin-selection": "3.0.0",
+        "@trezor/blockchain-link": "workspace:^",
+        "@trezor/blockchain-link-types": "workspace:^",
+        "@trezor/transport": "workspace:*",
+        "@trezor/utxo-lib": "workspace:*",
+        "@types/chrome": "^0.1.40",
         "@types/jest": "29.5.12",
-        "@types/node": "22.13.10",
-        "tsx": "^4.21.0"
+        "@types/node": "22.13.10"
     }
 }

@@ -1,6 +1,6 @@
 import { Icon } from '@trezor/components';
 
-import { SecurityChecklistItem } from '../types';
+import { type SecurityChecklistItem } from '../types';
 
 describe('SecurityChecklistItem', () => {
     describe('type tests', () => {

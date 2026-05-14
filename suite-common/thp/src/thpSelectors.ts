@@ -1,4 +1,4 @@
-import { ThpState } from './thpReducer';
+import { type ThpState } from './thpReducer';
 
 export type ThpRootState = {
     thp: ThpState;
@@ -15,3 +15,8 @@ export const selectThpAutoconnectStep = (state: ThpRootState) => state.thp.autoc
 export const selectThpLastCode = (state: ThpRootState) => state.thp.lastThpCode;
 
 export const selectThpCredentials = (state: ThpRootState) => state.thp.credentials;
+
+export const selectThpPairingRequestId = (state: ThpRootState) => state.thp.pairingRequestId;
+
+export const selectThpConfirmationRequestId = (state: ThpRootState) =>
+    state.thp.confirmationRequestId;

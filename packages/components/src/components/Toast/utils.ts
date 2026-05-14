@@ -1,6 +1,6 @@
-import { Color } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
-import { ToastAction, ToastIconVariant, ToastIntent } from './types';
+import { type ToastAction, type ToastIconVariant, type ToastIntent } from './types';
 
 export const mapToastIntentToIcon = (intent: ToastIntent) => {
     const iconMap: Record<ToastIntent, ToastIconVariant> = {
@@ -16,11 +16,11 @@ export const mapToastIntentToIcon = (intent: ToastIntent) => {
 
 export const mapToastVariantToColor = (variant: ToastIntent): Color => {
     const colorMap: Record<ToastIntent, Color> = {
-        brand: 'textPrimaryDefault',
-        info: 'textAlertBlue',
-        warning: 'textAlertYellow',
-        critical: 'textAlertRed',
-        neutral: 'textSubdued',
+        brand: 'contentBrand',
+        info: 'contentInfo',
+        warning: 'contentWarning',
+        critical: 'contentCritical',
+        neutral: 'contentSecondary',
     };
 
     return colorMap[variant];

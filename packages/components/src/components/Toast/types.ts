@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { UIIntent } from '../../config/types';
-import { ButtonIntent, ButtonPriority } from '../buttons/types';
+import { type UIIntent } from '../../config/types';
+import { type ButtonIntent, type ButtonPriority } from '../buttons/types';
 
 export const toastIntents = ['brand', 'neutral', 'info', 'warning', 'critical'] as const;
 export type ToastIntent = Extract<UIIntent, (typeof toastIntents)[number]>;

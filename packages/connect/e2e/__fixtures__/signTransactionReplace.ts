@@ -112,10 +112,9 @@ export default {
                 ],
                 outputs: [
                     {
-                        // NOTE: address_n should be correctly used instead of address (issue #10474)
                         address: 'tb1qkvwu9g3k2pdxewfqr7syz89r3gj557l3uuf9r9',
                         amount: '100000',
-                        script_type: 'PAYTOWITNESS',
+                        script_type: 'PAYTOADDRESS',
                         orig_hash:
                             '70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e',
                         orig_index: 0,
@@ -189,10 +188,10 @@ export default {
                     },
                 ],
                 outputs: [
-                    // NOTE: script_type should not be undefined (issue #10474)
                     {
                         address: 'moE1dVYvebvtaMuNdXQKvu4UxUftLmS1Gt',
                         amount: '100000000',
+                        script_type: 'PAYTOADDRESS',
                         orig_hash:
                             'ed89acb52cfa438e3653007478e7c7feae89fdde12867943eec91293139730d1',
                         orig_index: 1,
@@ -200,6 +199,7 @@ export default {
                     {
                         address: '2MvUUSiQZDSqyeSdofKX9KrSCio1nANPDTe',
                         amount: '1000000',
+                        script_type: 'PAYTOADDRESS',
                         orig_hash:
                             '334cd7ad982b3b15d07dd1c84e939e95efb0803071648048a7f289492e7b4c8a',
                         orig_index: 0,

@@ -1,32 +1,21 @@
 import { useSelector } from 'react-redux';
 
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
-    AccountsRootState,
-    FiatRatesRootState,
-    TransactionsRootState,
-    WalletSettingsRootState,
-    selectAccountNetworkSymbol,
+    type FiatRatesRootState,
+    type PhishingRootState,
+    type TransactionsRootState,
+    type WalletSettingsRootState,
     selectIsPhishingTransaction,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
-import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { selectTransactionFiatRate } from '../selectors';
 import { getTransactionValueSign } from '../utils';
 import { TransactionListItemContainer } from './TransactionListItemContainer';
-
-type TokenTransferListItemProps = {
-    txid: string;
-    tokenTransfer: TypedTokenTransfer;
-    transaction: WalletAccountTransaction;
-    accountKey: AccountKey;
-    includedCoinsCount?: number;
-    isFirst?: boolean;
-    isLast?: boolean;
-};
 
 const failedTxStyle = prepareNativeStyle<{ isFailedTx: boolean }>((_, { isFailedTx }) => ({
     extend: {
@@ -37,22 +26,28 @@ const failedTxStyle = prepareNativeStyle<{ isFailedTx: boolean }>((_, { isFailed
     },
 }));
 
+type TokenTransferListItemValuesProps = {
+    tokenTransfer: TypedTokenTransfer;
+    transaction: WalletAccountTransaction;
+    accountKey: AccountKey;
+};
+
 export const TokenTransferListItemValues = ({
     tokenTransfer,
     transaction,
     accountKey,
-}: {
-    tokenTransfer: TypedTokenTransfer;
-    transaction: WalletAccountTransaction;
-    accountKey: AccountKey;
-}) => {
+}: TokenTransferListItemValuesProps) => {
     const historicRate = useSelector((state: WalletSettingsRootState & FiatRatesRootState) =>
         selectTransactionFiatRate(state, transaction, tokenTransfer?.contract),
     );
 
-    const isPhishingTransaction = useSelector(
-        (state: TokenDefinitionsRootState & TransactionsRootState) =>
-            selectIsPhishingTransaction(state, transaction.txid, accountKey),
+    const { isPhishing: isPhishingTransaction } = useSelector(
+        (
+            state: TokenDefinitionsRootState &
+                TransactionsRootState &
+                FiatRatesRootState &
+                PhishingRootState,
+        ) => selectIsPhishingTransaction(state, transaction.txid, accountKey),
     );
 
     const { applyStyle } = useNativeStyles();
@@ -84,14 +79,22 @@ export const TokenTransferListItemValues = ({
                 ellipsizeMode="tail"
                 isPhishingTransaction={isPhishingTransaction}
                 variant="body-sm"
-                color="textSubdued"
+                color="contentSecondary"
             />
         </>
     );
 };
 
+type TokenTransferListItemProps = {
+    tokenTransfer: TypedTokenTransfer;
+    transaction: WalletAccountTransaction;
+    accountKey: AccountKey;
+    includedCoinsCount?: number;
+    isFirst?: boolean;
+    isLast?: boolean;
+};
+
 export const TokenTransferListItem = ({
-    txid,
     accountKey,
     transaction,
     tokenTransfer,
@@ -99,17 +102,13 @@ export const TokenTransferListItem = ({
     isFirst,
     isLast,
 }: TokenTransferListItemProps) => {
-    const symbol = useSelector((state: AccountsRootState) =>
-        selectAccountNetworkSymbol(state, accountKey),
-    );
     const isFailedTxn = transaction.type === 'failed';
 
     return (
         <TransactionListItemContainer
-            symbol={symbol ?? undefined}
             tokenTransfer={tokenTransfer}
             transactionType={isFailedTxn ? 'failed' : tokenTransfer.type}
-            txid={txid}
+            transaction={transaction}
             includedCoinsCount={includedCoinsCount}
             accountKey={accountKey}
             isFirst={isFirst}

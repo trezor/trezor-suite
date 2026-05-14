@@ -1,4 +1,4 @@
-import { Branded } from '@trezor/type-utils';
+import { type Branded } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 /**

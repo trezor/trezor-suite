@@ -5,7 +5,7 @@ import { BottomSheetFlashList } from '@suite-native/atoms';
 import {
     ESTIMATED_HEADER_HEIGHT,
     SimpleSheetHeader,
-    SimpleSheetHeaderProps,
+    type SimpleSheetHeaderProps,
 } from '../SimpleSheetHeader';
 import { PAYMENT_METHOD_LIST_ITEM_HEIGHT, PaymentMethodListItem } from './PaymentMethodListItem';
 
@@ -41,12 +41,12 @@ export const PaymentMethodSheet = <T extends BuyTrade | SellFiatTrade>({
         <BottomSheetFlashList<T>
             isVisible={isVisible}
             onClose={onClose}
-            renderItem={({ item }) => (
+            renderItem={({ item, index }) => (
                 <PaymentMethodListItem
-                    orderId={item.orderId ?? ''}
-                    paymentMethodName={item.paymentMethodName ?? ''}
+                    quote={item}
                     onPress={() => onQuoteSelectCallback(item)}
-                    isSelected={item.orderId === selectedQuote?.orderId}
+                    isFirst={index === 0}
+                    isLast={index === quotes.length - 1}
                 />
             )}
             handleComponent={() => <SimpleSheetHeader onClose={onClose} title={title} />}

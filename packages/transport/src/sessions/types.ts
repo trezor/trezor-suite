@@ -1,4 +1,6 @@
-import * as ERRORS from '../errors';
+import type { Ok } from '@trezor/type-utils';
+
+import type * as ERRORS from '../errors';
 import type { AcquireInput } from '../transports/abstract';
 import type {
     Descriptor,
@@ -7,11 +9,12 @@ import type {
     PathPublic,
     ResultWithTypedError,
     Session,
-    Success,
 } from '../types';
 
-type BackgroundResponseWithError<T, E> = ResultWithTypedError<T, E> & { id: number };
-type BackgroundResponse<T> = Success<T> & { id: number };
+type BackgroundResponseWithError<T, E extends string> = ResultWithTypedError<T, E> & {
+    id: number;
+};
+type BackgroundResponse<T> = Ok<T> & { id: number };
 
 export type HandshakeRequest = Record<string, never>;
 export type HandshakeResponse = BackgroundResponse<undefined>;

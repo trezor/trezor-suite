@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CSSProperties, HTMLProps, forwardRef, useImperativeHandle } from 'react';
+import { type CSSProperties, type HTMLProps, forwardRef, useImperativeHandle } from 'react';
 
 import {
     FloatingFocusManager,
@@ -19,7 +19,7 @@ import { useTheme } from 'styled-components';
 
 import { zIndices } from '@trezor/theme';
 
-import { PopoverPlacement, convertPopoverPlacement } from './utils';
+import { type PopoverPlacement, convertPopoverPlacement } from './utils';
 import { intermediaryTheme } from '../../config/colors';
 import { ElevationContext } from '../ElevationContext/ElevationContext';
 
@@ -155,7 +155,7 @@ export const PopoverContent = forwardRef<HTMLDivElement, PopoverContentProps>((p
     const themeVariant: keyof typeof intermediaryTheme =
         theme.variant === 'standard' ? 'light' : theme.variant;
 
-    const color = intermediaryTheme[themeVariant]?.textDefault;
+    const color = intermediaryTheme[themeVariant]?.contentPrimary;
 
     if (!floatingContext.open) return null;
 

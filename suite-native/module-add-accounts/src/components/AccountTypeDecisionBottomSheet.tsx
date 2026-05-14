@@ -1,7 +1,13 @@
-import { BottomSheetModal, BottomSheetModalRef, Button, Text, VStack } from '@suite-native/atoms';
+import {
+    BottomSheetModal,
+    type BottomSheetModalRef,
+    Button,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { TREZOR_SUPPORT_MULTIPLE_ACCOUNTS } from '@trezor/urls';
 
 const descStyle = prepareNativeStyle(utils => ({
@@ -43,12 +49,16 @@ export const AccountTypeDecisionBottomSheet = ({
             isCloseDisplayed={false}
         >
             <VStack spacing="sp16">
-                <Text color="textSubdued" style={applyStyle(descStyle)}>
+                <Text color="contentSecondary" style={applyStyle(descStyle)}>
                     <Translation
                         id="moduleAddAccounts.accountTypeDecisionBottomSheet.description"
                         values={{
                             type: _ => (
-                                <Text key="type-name" color="textDefault" variant="body-md-strong">
+                                <Text
+                                    key="type-name"
+                                    color="contentPrimary"
+                                    variant="body-md-strong"
+                                >
                                     {typeName}
                                 </Text>
                             ),
@@ -58,18 +68,14 @@ export const AccountTypeDecisionBottomSheet = ({
                                     href={TREZOR_SUPPORT_MULTIPLE_ACCOUNTS}
                                     label={chunks}
                                     isUnderlined
-                                    textColor="textDefault"
-                                    textPressedColor="textDefault"
+                                    textColor="contentPrimary"
+                                    textPressedColor="contentPrimary"
                                 />
                             ),
                         }}
                     />
                 </Text>
-                <Button
-                    size="medium"
-                    onPress={onConfirmTap}
-                    testID={`@add-account/button-${typeName}`}
-                >
+                <Button onPress={onConfirmTap} testID={`@add-account/button-${typeName}`}>
                     <Translation
                         id="moduleAddAccounts.accountTypeDecisionBottomSheet.buttons.confirm"
                         values={{
@@ -78,8 +84,8 @@ export const AccountTypeDecisionBottomSheet = ({
                     />
                 </Button>
                 <Button
-                    size="medium"
-                    colorScheme="tertiaryElevation0"
+                    intent="neutral"
+                    priority="secondary"
                     onPress={onTypeSelectionTap}
                     testID="@add-account/button-select-type"
                 >

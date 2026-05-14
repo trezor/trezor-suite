@@ -1,16 +1,16 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
 import { events } from '@suite/analytics';
-import { GuideNode as GuideNodeType } from '@suite-common/suite-types';
+import { selectLanguage } from '@suite/settings';
+import { type GuideNode as GuideNodeType } from '@suite-common/suite-types';
 import { Icon } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/env-utils';
 import { borders, spacings, transitions, typography } from '@trezor/theme';
 
 import { openNode } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { getNodeTitle } from 'src/utils/suite/guide';
 
@@ -20,7 +20,7 @@ const NodeButton = styled.button`
     border-radius: ${borders.radii.xs};
     border: 0;
     width: 100%;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+    background: ${({ theme }) => theme.surfaceFillRaised};
     padding: 10px;
     cursor: pointer;
     line-height: 1.57;
@@ -28,7 +28,7 @@ const NodeButton = styled.button`
 
     &:hover,
     &:focus {
-        background: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation1};
+        background: ${({ theme }) => theme.legacyBackgroundTertiaryPressedOnElevation1};
     }
 `;
 
@@ -39,7 +39,7 @@ const PageNodeButton = styled(NodeButton)`
 const Label = styled.div<{ $isBold: boolean }>`
     width: 100%;
     ${({ $isBold }) => ($isBold ? typography['body-sm'] : typography['body-sm-strong'])};
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
     overflow: hidden;
     display: flex;
     flex-direction: column;

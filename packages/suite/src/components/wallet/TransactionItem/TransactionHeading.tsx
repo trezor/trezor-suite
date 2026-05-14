@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
 import { getTxHeaderSymbol, isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
-import { Link, Row, Tooltip } from '@trezor/components';
+import { Row, TextButton, Tooltip } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 
-import { WalletAccountTransaction } from 'src/types/wallet';
+import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { InstantStakeBadge } from './InstantStakeBadge';
 import { TransactionHeader } from './TransactionHeader';
@@ -30,7 +30,17 @@ export const TransactionHeading = ({
                 <Translation
                     id="TR_ZERO_PHISHING_TOOLTIP"
                     values={{
-                        a: chunks => <Link href={HELP_CENTER_ZERO_VALUE_ATTACKS}>{chunks}</Link>,
+                        a: chunks => (
+                            <TextButton
+                                intent="neutral"
+                                priority="secondary"
+                                size="small"
+                                href={HELP_CENTER_ZERO_VALUE_ATTACKS}
+                                margin={{ top: 12 }}
+                            >
+                                {chunks}
+                            </TextButton>
+                        ),
                     }}
                 />
             }

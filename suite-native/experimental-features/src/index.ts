@@ -1,1 +1,1 @@
-export { ExperimentalFeaturesSettingsCard } from './ExperimentalFeaturesSettingsCard';
+export { EXPERIMENTAL_FEATURES, FEEDBACK_FEATURE_CONFIGS } from './experimentalFeatures';

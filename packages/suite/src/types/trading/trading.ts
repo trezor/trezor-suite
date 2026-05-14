@@ -1,20 +1,19 @@
 import {
-    BuyProviderInfo,
-    BuyTrade,
-    CryptoId,
-    ExchangeProviderInfo,
-    FiatCurrencyCode,
-    SellFiatTrade,
-    SellProviderInfo,
+    type BuyTrade,
+    type CryptoId,
+    type ExchangeProviderInfo,
+    type FiatCurrencyCode,
+    type SellFiatTrade,
 } from 'invity-api';
 
-import { ExtendedMessageDescriptor } from '@suite/intl';
+import { type ExtendedMessageDescriptor } from '@suite/intl';
 import type {
     TradingBuyInfoSelector,
     TradingBuyType,
     TradingExchangeInfoSelector,
     TradingExchangeType,
     TradingPaymentMethodType,
+    TradingProviderInfo,
     TradingSelectAssetOptionGroupProps,
     TradingSellInfoSelector,
     TradingSellType,
@@ -25,24 +24,14 @@ import type {
     TradingTransactionSell,
     TradingType,
 } from '@suite-common/trading';
-import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { AssetLogoProps, AssetOptionBaseProps } from '@trezor/product-components';
+import { type Account } from '@suite-common/wallet-types';
+import { type AssetLogoProps, type AssetOptionBaseProps } from '@trezor/product-components';
 
-export type TradingPageType = 'form' | 'offers' | 'confirm' | 'retry';
-
-export type UseTradingProps = { selectedAccount: SelectedAccountLoaded };
+export type TradingPageType = 'form' | 'confirm' | 'retry';
 
 export type UseTradingFormCommonProps = {
-    /**
-     * Difference between form and offers is that on the offers page are used all data filled in the form
-     * but on the form page we prefill form with only some data from draft
-     *
-     * default value is 'form'
-     */
     pageType?: TradingPageType;
 };
-
-export type UseTradingFormProps = UseTradingProps & UseTradingFormCommonProps;
 
 export type TradingTradeBuySellType = Exclude<TradingType, TradingExchangeType>;
 export type TradingTradeSellExchangeType = Exclude<TradingType, TradingBuyType>;
@@ -118,7 +107,7 @@ export interface TradingGetAmountLabelsReturnProps {
 
 export type TradingGetProvidersInfoProps =
     | {
-          [name: string]: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo;
+          [name: string]: TradingProviderInfo;
       }
     | undefined;
 

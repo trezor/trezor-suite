@@ -1,1 +1,1 @@
-../../../skills/comments.md
+../../../skills/comments/SKILL.md

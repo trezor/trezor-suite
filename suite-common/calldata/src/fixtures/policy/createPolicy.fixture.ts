@@ -1,5 +1,5 @@
-import { PolicyConfig, PolicyResult } from '../../types/policy';
-import { Issue } from '../../types/validation';
+import { type PolicyConfig, type PolicyResult } from '../../types/policy';
+import { type Issue } from '../../types/validation';
 
 interface CreatePolicyTestCase {
     description: string;

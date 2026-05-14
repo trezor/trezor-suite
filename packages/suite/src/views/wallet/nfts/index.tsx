@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
+import { goto } from '@suite/router';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { Route } from 'src/components/suite/Route';
 import { WalletLayout } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -23,7 +23,7 @@ export const Nfts = () => {
             selectedAccount.status === 'loaded' &&
             !selectedAccount.network?.features.includes('nfts')
         ) {
-            dispatch(goto('wallet-index', { preserveParams: true }));
+            dispatch(goto({ routeName: 'wallet-index', preserveParams: true }));
         }
     }, [selectedAccount, dispatch]);
 

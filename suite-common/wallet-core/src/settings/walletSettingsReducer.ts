@@ -5,16 +5,16 @@ import {
     createWeakMapSelector,
     returnStableArrayIfEmpty,
 } from '@suite-common/redux-utils';
+import { NETWORKS_WITH_DUST_PHISHING_DETECTION } from '@suite-common/token-definitions';
 import {
-    NetworkSymbol,
+    type NetworkSymbol,
     getNetwork,
     getNetworkType,
     networkSymbolCollection,
 } from '@suite-common/wallet-config';
-import type { WalletSettings } from '@suite-common/wallet-types';
+import { AddressDisplayOptions, type WalletSettings } from '@suite-common/wallet-types';
 import { isBaseCurrencyWithSats } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
-import { isNative } from '@trezor/env-utils';
 
 import * as walletSettingsActions from './walletSettingsActions';
 import { WALLET_SETTINGS } from './walletSettingsConstants';
@@ -32,13 +32,13 @@ export const createMemoizedSelector = createWeakMapSelector.withTypes<WalletSett
 const initialState: WalletSettingsState = {
     localCurrency: 'usd',
     discreetMode: false,
-    // Suite Mobile did not have BTC enabled by default
-    enabledNetworks: isNative() ? [] : ['btc'],
+    enabledNetworks: [],
     hideSuspiciousTransactions: false,
     bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
     mevProtection: true,
     networkReserve: true,
     isAutoEjectEnabled: false,
+    addressDisplayType: AddressDisplayOptions.CHUNKED,
 };
 export const initialWalletSettingsState: WalletSettingsState = initialState;
 
@@ -51,6 +51,7 @@ export const walletSettingsPersistedWhitelist: Array<keyof WalletSettingsState> 
     'mevProtection',
     'networkReserve',
     'isAutoEjectEnabled',
+    'addressDisplayType',
 ];
 
 export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
@@ -104,6 +105,12 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
             WALLET_SETTINGS.SET_AUTO_EJECT,
             (state, action: ReturnType<typeof walletSettingsActions.setAutoEjectEnabled>) => {
                 state.isAutoEjectEnabled = action.payload;
+            },
+        );
+        builder.addCase(
+            WALLET_SETTINGS.SET_ADDRESS_DISPLAY_TYPE,
+            (state, action: ReturnType<typeof walletSettingsActions.setAddressDisplayType>) => {
+                state.addressDisplayType = action.payload;
             },
         );
     },
@@ -174,3 +181,14 @@ export const selectIsNetworkReserveSettingsVisible = createMemoizedSelector(
     enabledNetworks =>
         enabledNetworks.some(enabledNetwork => !!getNetwork(enabledNetwork)?.nativeTokenReserve),
 );
+
+export const selectIsDustPhishingThresholdSettingsVisible = createMemoizedSelector(
+    [selectEnabledNetworks],
+    enabledNetworks =>
+        enabledNetworks.some(enabledNetwork =>
+            NETWORKS_WITH_DUST_PHISHING_DETECTION.includes(getNetworkType(enabledNetwork)),
+        ),
+);
+
+export const selectAddressDisplayType = (state: WalletSettingsRootState) =>
+    state.wallet.settings.addressDisplayType;

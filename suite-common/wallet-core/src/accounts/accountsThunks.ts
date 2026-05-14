@@ -2,7 +2,7 @@ import { selectDevices } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
     analyzeTransactions,
     findAccountDevice,
@@ -15,12 +15,13 @@ import {
     isTrezorConnectBackendType,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { AccountInfo, TokenInfo } from '@trezor/connect';
+import TrezorConnect, { type AccountInfo, type TokenInfo } from '@trezor/connect';
 
+import { reportWalletBalanceDebounced } from './accountBalanceAnalytics';
 import { accountsActions } from './accountsActions';
 import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
 import { selectAccountByKey } from './accountsSelectors';
-import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
+import { selectBlockchainHeightBySymbol, selectGapLimit } from '../blockchain/blockchainReducer';
 import { selectBitcoinAmountUnit } from '../settings/walletSettingsReducer';
 import { transactionsActions } from '../transactions/transactionsActions';
 import { selectTransactions } from '../transactions/transactionsSelectors';
@@ -54,6 +55,7 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
             details: 'tokenBalances',
             contractFilter: t.contract,
             suppressBackupWarning: true,
+            protocols: isEvmNetwork ? ['erc4626'] : undefined,
         }),
     );
 
@@ -67,6 +69,16 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
 
     return tokens;
 };
+
+export const reportWalletBalanceThunk = createThunk(
+    `${ACCOUNTS_MODULE_PREFIX}/reportWalletBalance`,
+    (_, { getState, extra }) => {
+        reportWalletBalanceDebounced({
+            getState,
+            analytics: extra.services.analytics,
+        });
+    },
+);
 
 // Left here for clarity, but shouldn't be called anywhere but in blockchainActions.syncAccounts
 // as we usually want to update all accounts for a single coin at once
@@ -84,6 +96,10 @@ export const fetchAndUpdateAccountThunk = createThunk(
             account.networkType === 'solana'
                 ? account.tokens?.flatMap(t => t.accounts ?? []).map(a => a.publicKey)
                 : undefined;
+        const gap =
+            account.networkType === 'bitcoin'
+                ? selectGapLimit(getState(), account.symbol)
+                : undefined;
 
         const basic = await TrezorConnect.getAccountInfo({
             coin: account.symbol,
@@ -92,6 +108,8 @@ export const fetchAndUpdateAccountThunk = createThunk(
             details: account.networkType === 'solana' ? 'txids' : 'basic',
             suppressBackupWarning: true,
             tokenAccountsPubKeys,
+            protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
+            gap,
         });
 
         if (!basic.success) return;
@@ -122,6 +140,11 @@ export const fetchAndUpdateAccountThunk = createThunk(
             page: 1, // useful for every network except ripple and stellar
             pageSize,
             suppressBackupWarning: true,
+            protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
+            gap:
+                account.networkType === 'bitcoin'
+                    ? selectGapLimit(getState(), account.symbol)
+                    : undefined,
         });
 
         if (response.success) {
@@ -185,6 +208,8 @@ export const fetchAndUpdateAccountThunk = createThunk(
             } else {
                 dispatch(accountsActions.updateAccountRefreshTimestamp(account));
             }
+
+            dispatch(reportWalletBalanceThunk());
         }
     },
 );

@@ -12,9 +12,9 @@ import { setRecentlyConnectedDevicePath } from 'src/actions/suite/suiteActions';
 import { openSwitchDeviceDialog } from 'src/actions/wallet/addWalletThunk';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectRecentlyConnectedDevice } from 'src/selectors/suite/suiteSelectors';
+import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 import { SidebarDeviceStatus } from './SidebarDeviceStatus';
-import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
 import { ExpandedSidebarOnly } from '../Sidebar/ExpandedSidebarOnly';
 
 const CaretContainer = styled.div`
@@ -22,6 +22,7 @@ const CaretContainer = styled.div`
     padding: 10px;
     border-radius: 50%;
     transition: background 0.15s;
+    flex-shrink: 0;
 `;
 
 const Wrapper = styled.div<{ $isSidebarCollapsed?: boolean }>`
@@ -42,7 +43,7 @@ const Wrapper = styled.div<{ $isSidebarCollapsed?: boolean }>`
 
     &:hover {
         ${CaretContainer} {
-            background: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation0};
+            background: ${({ theme }) => theme.legacyBackgroundTertiaryPressedOnElevation0};
         }
     }
 `;
@@ -96,7 +97,6 @@ export const DeviceSelector = () => {
             isOpen={recentlyConnectedDevice !== undefined}
             content={<RecentlyConnectedDeviceTooltipContent />}
             placement="right-end"
-            hasArrow
             zIndex={zIndices.popover /* to prevent it from appearing above modals */}
         >
             <Wrapper $isSidebarCollapsed={isSidebarCollapsed}>
@@ -105,7 +105,9 @@ export const DeviceSelector = () => {
                     tabIndex={0}
                     data-testid="@menu/switch-device"
                 >
-                    <SidebarDeviceStatus />
+                    <Box flex="1" minWidth="0" overflow="hidden">
+                        <SidebarDeviceStatus />
+                    </Box>
 
                     <ExpandedSidebarOnly>
                         {selectedDevice && selectedDevice.state && (

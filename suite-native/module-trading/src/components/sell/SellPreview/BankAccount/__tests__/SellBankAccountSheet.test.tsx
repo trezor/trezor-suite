@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
-import { bankAccounts } from '@suite-native/trading-fixtures';
+import { bankAccounts, verifiedBankAccount } from '@suite-native/trading-fixtures';
 
 import { SellBankAccountSheet } from '../SellBankAccountSheet';
 
@@ -15,7 +15,7 @@ describe('SellBankAccountSheet', () => {
             <SellBankAccountSheet
                 ref={mockRef}
                 bankAccounts={bankAccounts}
-                selectedBankAccountIban={bankAccounts[0].bankAccount}
+                selectedBankAccountIban={verifiedBankAccount.bankAccount}
                 onBankAccountSelect={mockOnBankAccountSelect}
                 closeModal={mockCloseModal}
                 {...props}
@@ -42,7 +42,7 @@ describe('SellBankAccountSheet', () => {
             // User should be able to tap on a bank account to select it
             await userEvent.press(getByText('John Doe'));
 
-            expect(mockOnBankAccountSelect).toHaveBeenCalledWith(bankAccounts[0]);
+            expect(mockOnBankAccountSelect).toHaveBeenCalledWith(verifiedBankAccount);
         });
 
         it('should close the modal after user selects a bank account', async () => {

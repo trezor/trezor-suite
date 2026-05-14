@@ -1,23 +1,22 @@
+import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 
-import { setFlag } from 'src/actions/suite/suiteActions';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import { BannerPoints } from './BannerPoints';
 import { CloseableBanner } from './CloseableBanner';
 
 export const StellarLimitedHistoryBanner = () => {
     const dispatch = useDispatch();
-    const { stellarLimitedHistoryBannerClosed } = useSelector(selectSuiteFlags);
+    const { stellarLimitedHistoryBannerClosed } = useSelector(selectFlags);
 
     if (stellarLimitedHistoryBannerClosed) {
         return null;
     }
 
     const handleClose = () => {
-        dispatch(setFlag('stellarLimitedHistoryBannerClosed', true));
+        dispatch(setFlag({ key: 'stellarLimitedHistoryBannerClosed', value: true }));
     };
 
     const points = [

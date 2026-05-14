@@ -2,14 +2,14 @@ import { useMemo } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    RootStackParamList,
-    SendStackParamList,
+    type RootStackParamList,
+    type SendStackParamList,
     SendStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
 import { useUtxoSelection } from '../../hooks/useUtxoSelection';
@@ -39,22 +39,29 @@ export const SwitchCoinControlButton = ({ accountKey, amount }: SwitchCoinContro
         });
     };
 
-    const colorScheme = useMemo(() => {
+    const buttonColorProps = useMemo(() => {
         if (isCoinControlEnabled) {
-            return isMissingUtxos ? 'yellowBold' : 'primary';
+            return {
+                intent: isMissingUtxos ? 'warning' : 'brand',
+                priority: 'primary',
+            } as const;
         }
 
-        return 'tertiaryElevation0';
+        return {
+            intent: 'neutral',
+            priority: 'secondary',
+        } as const;
     }, [isCoinControlEnabled, isMissingUtxos]);
 
-    const textColor = isCoinControlEnabled && !isMissingUtxos ? 'textOnPrimary' : 'textOnTertiary';
+    const textColor =
+        isCoinControlEnabled && !isMissingUtxos ? 'contentButtonBrandPrimary' : 'contentNeutral';
 
     return (
         <Button
             testID="switch-coin-control-button"
             onPress={openCoinControlScreen}
-            colorScheme={colorScheme}
-            viewLeft="coins"
+            {...buttonColorProps}
+            iconLeft="coins"
         >
             <Text color={textColor}>
                 <Translation id="moduleSend.coinControl.cta" />

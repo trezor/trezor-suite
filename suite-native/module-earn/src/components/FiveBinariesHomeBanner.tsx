@@ -1,13 +1,11 @@
 import { useSelector } from 'react-redux';
 
 import type { DeviceRootState } from '@suite-common/device';
-import { AccountsRootState } from '@suite-common/wallet-core';
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { InlineAlertBox } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-// TODO fix deep import
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { selectFirstCardanoAccountStakedWithFiveBinaries } from '@suite-native/staking/src/cardanoStakingSelectors';
+import { selectFirstCardanoAccountStakedWithFiveBinaries } from '@suite-native/staking';
 import { HELP_CENTER_ADA_STAKING } from '@trezor/urls';
 
 export const FiveBinariesHomeBanner = () => {

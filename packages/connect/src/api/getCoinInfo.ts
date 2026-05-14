@@ -1,23 +1,21 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetCoinInfo.js
 
+import type { CoinInfo, MethodPermission } from '@trezor/connect-common';
+import { CoinObj } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
-import { CoinInfo, CoinObj } from '../types';
 
 type Params = {
     coinInfo: CoinInfo;
 };
 
 export default class GetCoinInfo extends AbstractMethod<'getCoinInfo', Params> {
-    init() {
-        this.requiredPermissions = [];
-        this.useDevice = false;
-        this.useUi = false;
-
-        const { payload } = this;
+    constructor(message: MethodMessage<'getCoinInfo'>) {
+        const { payload } = message;
 
         Assert(CoinObj, payload);
 
@@ -26,9 +24,15 @@ export default class GetCoinInfo extends AbstractMethod<'getCoinInfo', Params> {
             throw ERRORS.TypedError('Method_UnknownCoin');
         }
 
-        this.params = {
-            coinInfo,
-        };
+        const params = { coinInfo };
+
+        super(message, params);
+        this.useDevice = false;
+        this.useUi = false;
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return [];
     }
 
     run() {

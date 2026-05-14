@@ -1,19 +1,18 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/uploadFirmware.js
 
+import { DEVICE, UI_REQUEST, createUiMessage } from '@trezor/connect-common';
+import type { CoreEventMessage, FirmwareUpdateFlowType, PROTO } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
 import { TRANSPORT } from '@trezor/transport';
 import { isWithinRange } from '@trezor/utils/src/versionUtils';
 
-import { PROTO } from '../../constants';
-import type { Device } from '../../device/Device';
 import type { TypedCall } from '../../device/DeviceCommands';
-import { CoreEventMessage, DEVICE, UI, createUiMessage } from '../../events';
-import { FirmwareUpdateFlowType } from '../../types';
+import type { IDevice } from '../../types/idevice';
 
 // Each FW update flow starts with confirmation to restart into bootloader, and in some cases a confirmation for the FW
 // update itself. But device sends no ButtonRequest at that point, so create a synthethic ButtonRequest.
-const postConfirmationMessage = (device: Device, updateFlowType: FirmwareUpdateFlowType) => {
+const postConfirmationMessage = (device: IDevice, updateFlowType: FirmwareUpdateFlowType) => {
     // Device does not require confirmation if fresh install, or if the flow is 'reboot_and_upgrade'.
     const freshInstall = device.features.firmware_present === false;
     if (freshInstall || updateFlowType === 'reboot_and_upgrade') return;
@@ -22,12 +21,12 @@ const postConfirmationMessage = (device: Device, updateFlowType: FirmwareUpdateF
 };
 
 const postProgressMessage = (
-    device: Device,
+    device: IDevice,
     progress: number,
     postMessage: (message: CoreEventMessage) => void,
 ) => {
     postMessage(
-        createUiMessage(UI.FIRMWARE_PROGRESS, {
+        createUiMessage(UI_REQUEST.FIRMWARE_PROGRESS, {
             device: device.toMessageObject(),
             operation: 'flashing',
             progress,
@@ -42,7 +41,7 @@ const TIMEOUT_MAX_FW_VERSION = '1.13.0';
 type UploadFirmwareProps = {
     typedCall: TypedCall;
     postMessage: (message: CoreEventMessage) => void;
-    device: Device;
+    device: IDevice;
     firmwareUploadRequest: PROTO.FirmwareUpload;
     updateFlowType: FirmwareUpdateFlowType;
 };
@@ -64,7 +63,7 @@ export const uploadFirmware = async ({
             const version = getFirmwareVersionArray(device.toMessageObject());
             if (version === null) return;
             if (isWithinRange(version, TIMEOUT_MIN_FW_VERSION, TIMEOUT_MAX_FW_VERSION)) {
-                postMessage(createUiMessage(UI.FIRMWARE_PROGRESS_UNEXPECTED_DELAY, {}));
+                postMessage(createUiMessage(UI_REQUEST.FIRMWARE_PROGRESS_UNEXPECTED_DELAY, {}));
             }
         }, FIRMWARE_ERASE_TIMEOUT_MILLISECONDS);
         await typedCall('FirmwareErase', 'Success', {});
@@ -96,7 +95,7 @@ export const uploadFirmware = async ({
         let response = await typedCall('FirmwareErase', ['FirmwareRequest', 'Success'], { length });
         // We are starting the flashing process.
         postMessage(
-            createUiMessage(UI.FIRMWARE_PROGRESS, {
+            createUiMessage(UI_REQUEST.FIRMWARE_PROGRESS, {
                 device: device.toMessageObject(),
                 operation: 'start-flashing',
                 progress,

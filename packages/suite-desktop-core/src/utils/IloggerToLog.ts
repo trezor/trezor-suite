@@ -1,4 +1,4 @@
-import { Log, LogMessage as UtilsLogMessage } from '@trezor/utils';
+import { type Log, type LogMessage as UtilsLogMessage } from '@trezor/utils';
 
 /** take an instance of ILogger and return mimicked instance of Log while keeping more or less the same behavior  */
 export const convertILoggerToLog = (

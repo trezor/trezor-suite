@@ -1,4 +1,4 @@
-import { GestureResponderEvent, type TextProps } from 'react-native';
+import { type GestureResponderEvent, type TextProps } from 'react-native';
 import Animated, {
     interpolateColor,
     useAnimatedStyle,
@@ -8,7 +8,7 @@ import Animated, {
 
 import type { RequireAtLeastOne } from 'type-fest';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import type { Color, TypographyStyle } from '@trezor/theme';
 
 import { useOpenLink } from '../useOpenLink';
@@ -52,8 +52,8 @@ export const Link = ({
     href,
     label,
     isUnderlined = false,
-    textColor = 'textPrimaryDefault',
-    textPressedColor = 'textPrimaryPressed',
+    textColor = 'contentBrand',
+    textPressedColor = 'contentBrandPressed',
     textVariant = 'body-md',
     onPress,
     ...textProps

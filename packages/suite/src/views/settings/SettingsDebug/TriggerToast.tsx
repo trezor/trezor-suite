@@ -1,8 +1,7 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-
-import { useDispatch } from '../../../hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 
 export const TriggerToast = () => {
     const dispatch = useDispatch();

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Translation } from '@suite/intl';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 
 import { getDeviceResolveStatusCTAMessage } from '../getDeviceResolveStatusCTAMessage';

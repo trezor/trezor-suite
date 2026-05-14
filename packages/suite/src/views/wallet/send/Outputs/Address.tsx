@@ -3,13 +3,17 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 
 import { events } from '@suite/analytics';
+import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
+import { openDeferredModal } from '@suite/modal';
+import { selectIsDebugModeActive } from '@suite/settings';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { formInputsMaxLength } from '@suite-common/validators';
 import type { Output } from '@suite-common/wallet-types';
 import {
     checkIsAddressNotUsedNotChecksummed,
+    convertAmountSubunitsToUnits,
     hasBitcoinCashAddressPrefix,
     isAddressDeprecated,
     isAddressValid,
@@ -22,21 +26,21 @@ import { Icon, IconButton, Input, Link, Row, Text } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
-import { TimerId } from '@trezor/type-utils';
-import * as URLS from '@trezor/urls';
+import { type TimerId } from '@trezor/type-utils';
 import {
+    ALL_URLS,
     HELP_CENTER_EVM_ADDRESS_CHECKSUM,
     HELP_CENTER_EVM_SEND_TO_CONTRACT_URL,
+    HELP_CENTER_SOLANA_HELP_URL,
 } from '@trezor/urls';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
-import { openDeferredModal } from 'src/actions/suite/modalActions';
+import { selectDesktopSuiteSyncInteraction } from 'src/actions/suiteSync/suiteSyncSlice';
 import { AddressLabeling, Labeling } from 'src/components/suite';
 import { InputError } from 'src/components/wallet';
-import { InputErrorProps } from 'src/components/wallet/InputError';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { type InputErrorProps } from 'src/components/wallet/InputError';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { getProtocolInfo } from 'src/utils/suite/protocol';
 import { captureSentryMessage } from 'src/utils/suite/sentry';
@@ -65,7 +69,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         getDefaultValue,
         formState: { errors },
         setValue,
-        metadataEnabled,
         watch,
         setDraftSaveRequest,
         trigger,
@@ -85,18 +88,38 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const recipientId = outputId + 1;
     const label = watch(`outputs.${outputId}.label`, '');
     const address = watch(inputName);
+    const selectedToken = watch(`outputs.${outputId}.token`);
     const options = getDefaultValue('options', []);
     const broadcastEnabled = options.includes('broadcast');
     const isOnline = useSelector(state => state.suite.online);
     const isDebug = useSelector(selectIsDebugModeActive);
+    const suiteSyncInteraction = useSelector(state =>
+        account ? selectDesktopSuiteSyncInteraction(state, account.deviceState) : null,
+    );
+
+    const shouldShowLabelAction = suiteSyncInteraction === null || !!device?.connected;
 
     const [isExternalAddressCheckWarningDismissed, setIsExternalAddressCheckWarningDismissed] =
         useState(false);
-    const isExternalAddressCheckEnabled = ['eth', 'tsep', 'thod', 'sol', 'dsol'].includes(symbol);
+    const isExternalAddressCheckEnabled = [
+        'eth',
+        'tsep',
+        'thod',
+        'sol',
+        'dsol',
+        'trx',
+        'ttrx',
+    ].includes(symbol);
 
     useEffect(() => {
         setIsExternalAddressCheckWarningDismissed(false);
     }, [address]);
+
+    useEffect(() => {
+        if (networkType === 'tron' && address) {
+            trigger(inputName);
+        }
+    }, [selectedToken, networkType, inputName, trigger, address]);
 
     const handleQrClick = useCallback(async () => {
         const uri = await dispatch(openDeferredModal({ type: 'qr-reader' }));
@@ -112,7 +135,9 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 type: events.sendQrScanEvent.name,
                 payload: {
                     scheme: protocol.scheme,
-                    isAmountPresent: 'amount' in protocol && protocol.amount !== undefined,
+                    isAmountPresent:
+                        ('amount' in protocol && protocol.amount !== undefined) ||
+                        ('tokenAmount' in protocol && protocol.tokenAmount !== undefined),
                     networkSymbol: symbol,
                 },
             });
@@ -147,10 +172,29 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
             setValue(inputName, protocol.address, { shouldValidate: true });
 
+            if (protocol.token) {
+                // ERC-681: set token contract address
+                setValue(`outputs.${outputId}.token`, protocol.token, {
+                    shouldDirty: true,
+                });
+            }
+
             if (protocol.amount) {
                 setValue(amountInputName, String(protocol.amount), {
                     shouldValidate: true,
                 });
+            } else if (protocol.tokenAmount && protocol.token) {
+                // ERC-681: convert raw uint256 amount using token decimals
+                const token = account.tokens?.find(
+                    t => t.contract.toLowerCase() === protocol.token?.toLowerCase(),
+                );
+                if (token) {
+                    setValue(
+                        amountInputName,
+                        convertAmountSubunitsToUnits(protocol.tokenAmount, token.decimals),
+                        { shouldValidate: true },
+                    );
+                }
             }
 
             composeTransaction(amountInputName);
@@ -165,7 +209,17 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         } else {
             dispatch(notificationsActions.addToast({ type: 'qr-incorrect-address' }));
         }
-    }, [amountInputName, analytics, composeTransaction, dispatch, inputName, setValue, symbol]);
+    }, [
+        account.tokens,
+        amountInputName,
+        analytics,
+        composeTransaction,
+        dispatch,
+        inputName,
+        outputId,
+        setValue,
+        symbol,
+    ]);
 
     if (device?.state?.staticSessionId === undefined) {
         return;
@@ -178,10 +232,10 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         switch (addressError?.type) {
             case 'deprecated':
                 return {
-                    learnMoreUrl: addressDeprecatedUrl ? URLS[addressDeprecatedUrl] : undefined,
+                    learnMoreUrl: addressDeprecatedUrl ? ALL_URLS[addressDeprecatedUrl] : undefined,
                 };
             case 'evmChecks':
-                if (!checkAddressCheckSum(address)) {
+                if (networkType === 'ethereum' && !checkAddressCheckSum(address)) {
                     return {
                         buttonProps: {
                             onClick: () => {
@@ -223,7 +277,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                             },
                             text: translationString('TR_I_UNDERSTAND_THE_RISK'),
                         },
-                        learnMoreUrl: URLS.HELP_CENTER_SOLANA_HELP_URL,
+                        learnMoreUrl: HELP_CENTER_SOLANA_HELP_URL,
                     };
                 }
 
@@ -310,45 +364,42 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 }
             },
             evmChecks: async (address: string) => {
-                // TODO: tron?
-                if (networkType === 'ethereum') {
-                    if (!isOnline) {
-                        return translationString('TR_ADDRESS_CANT_VERIFY_HISTORY');
+                if (networkType !== 'ethereum' && networkType !== 'tron') return;
+
+                if (!isOnline) {
+                    return translationString('TR_ADDRESS_CANT_VERIFY_HISTORY');
+                }
+
+                const result = await TrezorConnect.getAccountInfo({
+                    descriptor: address,
+                    coin: symbol,
+                });
+
+                if (!result.success) {
+                    return translationString('TR_ADDRESS_CANT_VERIFY_HISTORY');
+                }
+
+                const { payload } = result;
+
+                // 1. Validate address checksum.
+                // Eth addresses are valid without checksum but Trezor displays them as checksummed.
+                if (networkType === 'ethereum' && !checkAddressCheckSum(address)) {
+                    const checksumAndUsageValidationResult = checkIsAddressNotUsedNotChecksummed(
+                        address,
+                        payload.history,
+                        inputName,
+                        setValue,
+                        setHasAddressChecksummed,
+                    );
+                    if (checksumAndUsageValidationResult) {
+                        return translationString('TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED');
                     }
-                    const params = {
-                        descriptor: address,
-                        coin: symbol,
-                    };
-                    const result = await TrezorConnect.getAccountInfo(params);
+                }
 
-                    if (!result.success) {
-                        return translationString('TR_ADDRESS_CANT_VERIFY_HISTORY');
-                    }
-
-                    const { payload } = result;
-
-                    // 1. Validate address checksum.
-                    // Eth addresses are valid without checksum but Trezor displays them as checksummed.
-                    if (!checkAddressCheckSum(address)) {
-                        const checksumAndUsageValidationResult =
-                            checkIsAddressNotUsedNotChecksummed(
-                                address,
-                                payload.history,
-                                inputName,
-                                setValue,
-                                setHasAddressChecksummed,
-                            );
-                        if (checksumAndUsageValidationResult) {
-                            return translationString('TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED');
-                        }
-                    }
-
-                    // 2. Check if address is a contract address (right now only for Eth, Hoodi and Sepolia)
-                    if (!isExternalAddressCheckWarningDismissed && isExternalAddressCheckEnabled) {
-                        const isContract = payload.misc?.contractInfo;
-                        if (isContract) {
-                            return translationString('TR_EVM_ADDRESS_IS_CONTRACT');
-                        }
+                if (!isExternalAddressCheckWarningDismissed && isExternalAddressCheckEnabled) {
+                    const isContract = payload.misc?.contractInfo;
+                    if (isContract) {
+                        return translationString('TR_EVM_ADDRESS_IS_CONTRACT');
                     }
                 }
             },
@@ -358,25 +409,28 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         return translationString('TR_ADDRESS_CANT_VERIFY_HISTORY');
                     }
 
-                    const { payload, success } = await TrezorConnect.getAccountInfo({
+                    const result = await TrezorConnect.getAccountInfo({
                         descriptor: value,
                         coin: symbol,
                         details: 'basic',
                     });
 
-                    if (!success) {
+                    if (!result.success) {
                         return translationString('TR_ADDRESS_CANT_VERIFY_HISTORY');
                     }
 
                     if (!isExternalAddressCheckWarningDismissed && isExternalAddressCheckEnabled) {
-                        if (isProgramDerivedAccount(payload)) {
+                        if (isProgramDerivedAccount(result.payload)) {
                             return translationString('TR_SOL_ADDRESS_IS_ASSOCIATED_ACCOUNT');
                         }
                     }
                 }
             },
-            rippleToSelf: (value: string) => {
-                if (networkType === 'ripple' && value === descriptor) {
+            noSelfTransfer: (value: string) => {
+                if (
+                    (networkType === 'ripple' || (networkType === 'tron' && !selectedToken)) &&
+                    value === descriptor
+                ) {
                     return translationString('RECIPIENT_CANNOT_SEND_TO_MYSELF');
                 }
             },
@@ -450,7 +504,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             labelRight={
                 <Row gap={spacings.md}>
                     {isDebug && <DevSelfAddress outputId={outputId} account={account} />}
-                    {metadataEnabled && broadcastEnabled && (
+                    {shouldShowLabelAction && broadcastEnabled && (
                         <Text typographyStyle="body-sm" as="div">
                             <Labeling
                                 deviceStaticSessionId={device.state.staticSessionId}
@@ -481,7 +535,9 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
                                     return Promise.resolve(true);
                                 }}
-                            />
+                            >
+                                {label}
+                            </Labeling>
                         </Text>
                     )}
                     {outputsCount > 1 && (

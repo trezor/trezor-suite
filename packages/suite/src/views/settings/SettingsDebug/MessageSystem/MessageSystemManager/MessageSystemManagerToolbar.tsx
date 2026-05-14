@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import styled from 'styled-components';
 
 import { CONTEXT_PATTERNS, FEATURE_LIST } from '@suite-common/message-system';
-import { Category, Condition } from '@suite-common/suite-types';
+import { type Category, type Condition } from '@suite-common/suite-types';
 import {
     Button,
     ButtonGroup,
@@ -11,7 +11,7 @@ import {
     IconButton,
     Menu,
     Popover,
-    PopoverRef,
+    type PopoverRef,
     Row,
     Text,
     Tooltip,

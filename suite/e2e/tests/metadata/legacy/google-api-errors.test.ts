@@ -1,4 +1,3 @@
-import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
 import { MetadataProvider } from '../../../support/mocks/metadataMock';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
@@ -18,7 +17,7 @@ test.describe('Google API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =
                 testCase: 'Suite labeling handles malformed token from Google',
             }),
         },
-        async ({ page, onboardingPage, metadataPage, walletPage, metadataMock }) => {
+        async ({ page, onboardingPage, settingsPage, metadataPage, metadataMock }) => {
             // Simulate API responses for retries with malformed token
             for (let i = 0; i < 4; i++) {
                 metadataMock.setNextResponse({
@@ -46,8 +45,12 @@ test.describe('Google API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =
 
             await onboardingPage.completeOnboarding();
 
-            await walletPage.openAccount();
-            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
+            await settingsPage.navigateTo('application');
+
+            await page.selectDropdownOptionWithRetry(
+                settingsPage.metadataSelectInput,
+                settingsPage.metadataSelectInputOption('legacy'),
+            );
 
             await metadataPage.passThroughInitMetadata(MetadataProvider.GOOGLE, {
                 skipVerification: true,

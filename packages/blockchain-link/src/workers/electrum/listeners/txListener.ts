@@ -1,23 +1,26 @@
-import { RESPONSES } from '@trezor/blockchain-link-types/src/constants';
+import { RESPONSES } from '@trezor/blockchain-link-types';
 import type {
     ElectrumAPI,
-    HistoryTx,
-    StatusChange,
-} from '@trezor/blockchain-link-types/src/electrum';
-import type { Subscribe, Unsubscribe } from '@trezor/blockchain-link-types/src/messages';
+    ElectrumHistoryTx,
+    ElectrumStatusChange,
+    MessageTypes,
+} from '@trezor/blockchain-link-types';
 import { transformTransaction } from '@trezor/blockchain-link-utils/src/blockbook';
 import { throwError } from '@trezor/utils';
 
 import type { BaseWorker } from '../../baseWorker';
 import { createAddressManager, getTransactions } from '../utils';
 
+type Subscribe = MessageTypes.Subscribe;
+type Unsubscribe = MessageTypes.Unsubscribe;
+
 type Payload<T extends { type: string; payload: any }> = Extract<
     T['payload'],
     { type: 'addresses' | 'accounts' }
 >;
 
-// TODO optimize if neccessary
-const mostRecent = (previous: HistoryTx | undefined, current: HistoryTx) => {
+// TODO optimize if necessary
+const mostRecent = (previous: ElectrumHistoryTx | undefined, current: ElectrumHistoryTx) => {
     if (previous === undefined) return current;
     if (previous.height === -1) return previous;
     if (current.height === -1) return current;
@@ -33,14 +36,14 @@ export const txListener = (worker: BaseWorker<ElectrumAPI>) => {
 
     const addressManager = createAddressManager(() => api().getInfo()?.network);
 
-    const onTransaction = async ([scripthash, _status]: StatusChange) => {
+    const onTransaction = async ([scripthash, _status]: ElectrumStatusChange) => {
         const { descriptor, addresses } = addressManager.getInfo(scripthash);
         if (descriptor === scripthash) {
             // scripthash was subscribed to only internally, not explicitly from Suite
             return;
         }
         const history = await api().request('blockchain.scripthash.get_history', scripthash);
-        const recent = history.reduce<HistoryTx | undefined>(mostRecent, undefined);
+        const recent = history.reduce<ElectrumHistoryTx | undefined>(mostRecent, undefined);
         if (!recent) return;
         const [tx] = await getTransactions(api(), [recent]);
         worker.post({

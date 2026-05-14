@@ -26,7 +26,9 @@ export const PrecomposeSchema = Type.Object({
     baseFee: Type.Optional(Type.Number()),
     floorBaseFee: Type.Optional(Type.Boolean()),
     sequence: Type.Optional(Type.Number()),
-    skipPermutation: Type.Optional(Type.Boolean()),
+    sortingStrategy: Type.Optional(
+        Type.Union([Type.Literal('bip69'), Type.Literal('none'), Type.Literal('random')]),
+    ),
 });
 
 export const paramDescriptions = {
@@ -42,7 +44,7 @@ export const paramDescriptions = {
         'base fee of transaction in satoshi. used in replacement transactions calculation (RBF) and DOGE',
     floorBaseFee:
         'decide whenever baseFee should be floored to the nearest baseFee unit, prevents from fee overpricing. used in DOGE',
-    skipPermutation: 'do not sort calculated inputs/outputs (usage: RBF transactions)',
+    sortingStrategy: 'strategy for sorting inputs/outputs: bip69, none, random',
 };
 
 # Compose transaction
@@ -72,7 +74,7 @@ Returned response is a signed transaction in hexadecimal format same as in [sign
 
 Skip first two steps of `payment request` (described above) by providing `account` and `feeLevels` params and perform **only** transaction calculation. [[2]](#additional-notes)
 
-The result, internally called [`PrecomposedTransaction`](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/composeTransaction.ts) is a set of params that can be used in [signTransaction method](signTransaction.md#params) afterwards.
+The result, internally called [`PrecomposedTransaction`](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/composeTransaction.ts) is a set of params that can be used in [signTransaction method](signTransaction.md#params) afterwards.
 
 This useful for the quick preparation of multiple variants for the same transaction using different fee levels or using incomplete data (like missing output addresses just to calculate fee)
 
@@ -119,7 +121,7 @@ TrezorConnect.composeTransaction({
 
 ### Payment result
 
-[SignedTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/composeTransaction.ts)
+[SignedTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/composeTransaction.ts)
 
 ```javascript
 {
@@ -137,8 +139,8 @@ Error
 ```javascript
 {
     success: false,
-    payload: {
-        error: string // error message
+    error: {
+        message: string // error message
     }
 }
 ```

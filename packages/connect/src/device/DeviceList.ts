@@ -1,9 +1,20 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceList.js
 
+import { DEVICE, asDeviceUniquePath } from '@trezor/connect-common';
+import type {
+    ConnectSettings,
+    DecodedTrezorPushNotification,
+    DeviceUniquePath,
+    StaticSessionId,
+    TransportError,
+    TransportInfo,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { TRANSPORT, Transport } from '@trezor/transport';
-import type { ApiType as TransportApiType } from '@trezor/transport/src/types';
-import { Descriptor } from '@trezor/transport/src/types';
+import { initLog } from '@trezor/connect-common/src/utils/debug';
+import { parseStaticSessionId } from '@trezor/device-utils';
+import type { Transport } from '@trezor/transport';
+import { TRANSPORT } from '@trezor/transport';
+import type { Descriptor, ApiType as TransportApiType } from '@trezor/transport/src/types';
 import {
     TypedEmitter,
     arrayDistinct,
@@ -14,12 +25,9 @@ import {
     typedObjectKeys,
 } from '@trezor/utils';
 
-import { DEVICE, DecodedTrezorPushNotification, TransportError, TransportInfo } from '../events';
 import { Device } from './Device';
-import { ConnectSettings, DeviceUniquePath, StaticSessionId, asDeviceUniquePath } from '../types';
 import { createTransportList } from './TransportList';
 import { TransportManager } from './TransportManager';
-import { initLog } from '../utils/debug';
 import { trezorPushNotificationHandler } from './workflow/trezorPushNotification';
 
 const createAuthPenaltyManager = (priority: number) => {
@@ -45,9 +53,7 @@ const createAuthPenaltyManager = (priority: number) => {
         delete penalizedDevices[deviceID];
     };
 
-    const clear = () => Object.keys(penalizedDevices).forEach(key => delete penalizedDevices[key]);
-
-    return { get, add, remove, clear };
+    return { get, add, remove };
 };
 
 const getTransportInfo = (transport: Transport) => ({
@@ -86,9 +92,7 @@ export const assertDeviceListConnected: (
     }
 };
 
-type ConstructorParams = Pick<ConnectSettings, 'priority' | 'debug' | 'manifest'> & {
-    messages: Record<string, any>;
-};
+type ConstructorParams = Pick<ConnectSettings, 'priority' | 'debug' | 'manifest'>;
 type InitParams = Pick<
     ConnectSettings,
     'transports' | 'pendingTransportEvent' | 'transportReconnect'
@@ -129,7 +133,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         return this.getConnectedTransports().map(getTransportInfo);
     }
 
-    constructor({ messages, priority, debug, manifest }: ConstructorParams) {
+    constructor({ priority, debug, manifest }: ConstructorParams) {
         super();
 
         const transportLogger = initLog('@trezor/transport', debug);
@@ -137,7 +141,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         this.handshakeLock = getSynchronize();
         this.authPenaltyManager = createAuthPenaltyManager(priority);
         this.updateTransports = createTransportList({
-            messages,
             logger: transportLogger,
             id: manifest?.appName || manifest?.appUrl || 'unknown app',
         });
@@ -277,7 +280,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         const enumerateResult = await transport.enumerate({ signal });
 
         if (!enumerateResult.success) {
-            throw new Error(enumerateResult.message || enumerateResult.error);
+            throw new Error(enumerateResult.error.message || enumerateResult.error.code);
         }
 
         const descriptors = enumerateResult.payload;
@@ -356,7 +359,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     }
 
     getDeviceByStaticState(state: StaticSessionId): Device | undefined {
-        const deviceId = state.split('@')[1].split(':')[0];
+        const { deviceId } = parseStaticSessionId(state);
 
         return this.getPrioritizedDevices().find(d => d.features?.device_id === deviceId);
     }

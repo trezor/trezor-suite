@@ -1,6 +1,6 @@
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import Animated, {
-    EntryExitAnimationFunction,
+    type EntryExitAnimationFunction,
     FadeOut,
     useSharedValue,
     withDelay,
@@ -8,8 +8,8 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { Box, HStack, IconButton, Text } from '@suite-native/atoms';
-import { AddCoinFlowType } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type AddCoinFlowType } from '@suite-native/navigation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountsSearchForm, SEARCH_INPUT_ANIMATION_DURATION } from './AccountsSearchForm';
 import { AddAccountButton } from './AddAccountsButton';
@@ -80,8 +80,8 @@ export const SearchableAccountsListHeader = ({
                         <IconButton
                             iconName="magnifyingGlass"
                             onPress={() => setIsSearchActive(true)}
-                            colorScheme="tertiaryElevation1"
-                            size="medium"
+                            intent="neutral"
+                            priority="secondary"
                         />
                         <Text variant="body-md-strong" numberOfLines={1} adjustsFontSizeToFit>
                             {title}

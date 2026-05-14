@@ -1,7 +1,7 @@
 import { Icon, Input, Row, Select, Text } from '@trezor/components';
 
 import { CoinLogo } from '../CoinLogo/CoinLogo';
-import { SearchAssetSelectConfig, useNetworkSelect } from './hooks/useNetworkSelect';
+import { type SearchAssetSelectConfig, useNetworkSelect } from './hooks/useNetworkSelect';
 
 export type SearchAssetProps = {
     searchPlaceholder: string;

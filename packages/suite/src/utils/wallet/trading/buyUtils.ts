@@ -1,9 +1,9 @@
-import { BuyTrade, BuyTradeQuoteRequest, BuyTradeStatus } from 'invity-api';
+import { type BuyTrade, type BuyTradeQuoteRequest, type BuyTradeStatus } from 'invity-api';
 
 import { getLocationOrigin, isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 export const createQuoteLink = async (request: BuyTradeQuoteRequest, account: Account) => {
     const assetPrefix = process.env.ASSET_PREFIX || '';

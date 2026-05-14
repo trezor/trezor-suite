@@ -5,7 +5,7 @@ import { ICON_NAMES } from '@suite-native/icons';
 import { FULL_ALERT_BOX_VARIANTS } from '../../FullAlertBox/presets';
 import {
     InlineAlertBox as InlineAlertBoxComponent,
-    InlineAlertBoxProps,
+    type InlineAlertBoxProps,
 } from '../../InlineAlertBox/InlineAlertBox';
 
 type InlineAlertBoxStory = StoryObj<InlineAlertBoxProps>;
@@ -22,6 +22,7 @@ export const InlineAlertBox: InlineAlertBoxStory = {
     args: {
         title: 'Something very important to communicate.',
         buttonLabel: 'Button',
+        buttonIcon: undefined,
         variant: 'info',
         iconName: undefined,
         buttonProps: undefined,
@@ -32,6 +33,10 @@ export const InlineAlertBox: InlineAlertBoxStory = {
         },
         buttonLabel: {
             control: { type: 'text' },
+        },
+        buttonIcon: {
+            control: { type: 'select' },
+            options: ICON_NAMES,
         },
         viewLeft: {
             control: false,

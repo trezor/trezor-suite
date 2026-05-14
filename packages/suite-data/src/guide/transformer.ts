@@ -2,7 +2,7 @@ import { pipe } from '@mobily/ts-belt';
 import * as fs from 'fs-extra';
 import { join } from 'path';
 
-import { GuideNode } from '@suite-common/suite-types';
+import { type GuideNode } from '@suite-common/suite-types';
 import { resolveStaticPath } from '@trezor/env-utils';
 
 /** Removes the front-matter from beginning of a string. */

@@ -1,13 +1,14 @@
+import { modalReducer } from '@suite/modal';
+import { suiteSettingsInitialState } from '@suite/settings';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { prepareDeviceReducer } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import type { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 
 import * as receiveActions from 'src/actions/wallet/receiveActions';
-import modalReducer from 'src/reducers/suite/modalReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import receiveReducer from 'src/reducers/wallet/receiveReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
@@ -63,6 +64,7 @@ type DeviceState = ReturnType<typeof deviceReducer>;
 
 interface InitialState {
     suite: Partial<SuiteState>;
+    suiteSettings: Partial<typeof suiteSettingsInitialState>;
     wallet: {
         receive: ReceiveState;
         selectedAccount: {
@@ -90,6 +92,10 @@ const getInitialState = (state: Partial<InitialState> | undefined) => ({
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...state?.suite,
+    },
+    suiteSettings: {
+        ...suiteSettingsInitialState,
+        ...state?.suiteSettings,
     },
     wallet: {
         receive: receiveReducer([], { type: 'foo' } as any),

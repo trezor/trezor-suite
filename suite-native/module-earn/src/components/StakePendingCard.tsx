@@ -1,22 +1,20 @@
 import { useMemo } from 'react';
 
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectAccountNetworkSymbol, useAccoutsSelector } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
-import { Box, Card, InlineAlertBoxProps, PressableOpacity, Text } from '@suite-native/atoms';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { Box, Card, type InlineAlertBoxProps, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
+    type NativeStakingRootState,
     selectIsStakeConfirmingByAccountKey,
     selectIsStakePendingByAccountKey,
     selectTotalStakePendingByAccountKey,
     useSelector as useNativeStakingSelector,
 } from '@suite-native/staking';
-// TODO fix deep import
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { NativeStakingRootState } from '@suite-native/staking/src/types';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type StakePendingCardProps = {
     accountKey: AccountKey;
@@ -79,7 +77,7 @@ export const StakePendingCard = ({
 }: StakePendingCardProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const symbol = useAccoutsSelector(state => selectAccountNetworkSymbol(state, accountKey));
+    const symbol = useAccountsSelector(state => selectAccountNetworkSymbol(state, accountKey));
 
     const totalStakePending = useNativeStakingSelector(state =>
         selectTotalStakePendingByAccountKey(state, accountKey),
@@ -113,15 +111,15 @@ export const StakePendingCard = ({
                             value={totalStakePending}
                             symbol={symbol}
                             decimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
-                            color="textDefault"
+                            color="contentPrimary"
                             variant="body-md-strong"
                         />
                         <Box flexDirection="row">
-                            <Text color="textSubdued">≈</Text>
+                            <Text color="contentSecondary">≈</Text>
                             <CryptoToFiatAmountFormatter
                                 value={totalStakePending}
                                 symbol={symbol}
-                                color="textSubdued"
+                                color="contentSecondary"
                                 isBalance
                             />
                         </Box>

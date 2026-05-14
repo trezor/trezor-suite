@@ -23,6 +23,6 @@
         { "path": "../services" },
         { "path": "../toasts" },
         { "path": "../tokens" },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles-native" }
     ]
 }

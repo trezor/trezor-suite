@@ -1,9 +1,9 @@
 import { yup } from '@suite-common/validators';
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { FeeInfo, FeeLevelLabel } from '@suite-common/wallet-types';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type FeeInfo, type FeeLevelLabel } from '@suite-common/wallet-types';
 import { isDecimalsValid } from '@suite-common/wallet-utils';
 import type { UseFormReturn } from '@suite-native/forms';
-import { Translate } from '@suite-native/intl';
+import { type Translate } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
 
 import { getFeeDecimals } from './utils';
@@ -13,11 +13,12 @@ export type FeesFormContext = {
     networkFeeInfo?: FeeInfo;
     minimalFeeLimit?: string;
     translate?: Translate;
+    isEip1559Fee: boolean;
 };
 
 const FeeLevelLabels: Array<FeeLevelLabel> = ['economy', 'low', 'normal', 'high', 'custom'];
 
-const validateFeeDecimalLength = (value: string | undefined, context: FeesFormContext) => {
+const validateFeeDecimalLength = (value: string | undefined, context: Partial<FeesFormContext>) => {
     if (!value) return true;
 
     const { networkFeeInfo, symbol } = context!;
@@ -40,8 +41,8 @@ export const feesFormValidationSchema = yup.object({
     customFeePerUnit: yup
         .string()
         .test('too-many-decimals', 'Too many decimals.', function (value) {
-            if (!value) return true;
-            const { translate, ...context } = this.options.context as FeesFormContext;
+            const { translate, isEip1559Fee, ...context } = this.options.context as FeesFormContext;
+            if (!value || isEip1559Fee) return true;
             if (!validateFeeDecimalLength(value, context)) {
                 return this.createError({
                     message: translate!(
@@ -53,8 +54,9 @@ export const feesFormValidationSchema = yup.object({
             return true;
         })
         .test('fee-too-low', 'Fee is too low.', function (value) {
-            if (!value) return true;
-            const { networkFeeInfo, translate } = this.options.context as FeesFormContext;
+            const { networkFeeInfo, translate, isEip1559Fee } = this.options
+                .context as FeesFormContext;
+            if (!value || isEip1559Fee) return true;
 
             if (!networkFeeInfo) return false;
             const { minFee } = networkFeeInfo;
@@ -71,8 +73,9 @@ export const feesFormValidationSchema = yup.object({
             return true;
         })
         .test('fee-too-high', 'Fee is too high.', function (value) {
-            if (!value) return true;
-            const { networkFeeInfo, translate } = this.options.context as FeesFormContext;
+            const { networkFeeInfo, translate, isEip1559Fee } = this.options
+                .context as FeesFormContext;
+            if (!value || isEip1559Fee) return true;
 
             if (!networkFeeInfo) return false;
 
@@ -102,8 +105,7 @@ export const feesFormValidationSchema = yup.object({
 
             const { networkType } = getNetwork(symbol);
 
-            // Fee limit is used only for Ethereum, pass this validation for other networks.
-            if (networkType !== 'ethereum') return true;
+            if (networkType !== 'ethereum' && networkType !== 'tron') return true;
 
             if (!value || !minimalFeeLimit) return false;
 
@@ -111,10 +113,16 @@ export const feesFormValidationSchema = yup.object({
 
             if (feeBig.isLessThan(minimalFeeLimit)) {
                 return this.createError({
-                    message: translate!(
-                        'transactionManagement.fees.custom.bottomSheet.errors.feeLimit.low',
-                        { minGasLimit: minimalFeeLimit },
-                    ),
+                    message:
+                        networkType === 'tron'
+                            ? translate!(
+                                  'transactionManagement.fees.tron.feeLimitBelowRecommended',
+                                  { minFeeLimit: minimalFeeLimit },
+                              )
+                            : translate!(
+                                  'transactionManagement.fees.custom.bottomSheet.errors.feeLimit.low',
+                                  { minGasLimit: minimalFeeLimit },
+                              ),
                 });
             }
 

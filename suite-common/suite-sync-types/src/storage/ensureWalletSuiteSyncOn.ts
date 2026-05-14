@@ -1,10 +1,10 @@
-import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
-import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/suite-types';
-import { StaticSessionId } from '@trezor/connect';
-import { Result } from '@trezor/type-utils';
+import { type SuiteSyncStorage, type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
+import { type DeviceCancelledErrType, type DeviceErrorType } from '@suite-common/suite-types';
+import { type StaticSessionId } from '@trezor/connect';
+import { type Result } from '@trezor/type-utils';
 
-import { WriteModeRequiredForAllocationErrType } from '../quotaManager/quotaManagerTypes';
-import { SuiteSyncUnavailableOnDeviceErrorType } from '../refreshSuiteSyncKeys';
+import { type SuiteSyncUnavailableOnDeviceErrorType } from '../ensureSuiteSyncKeys';
+import { type WriteModeRequiredForAllocationErrType } from '../quotaManager/quotaManagerTypes';
 
 export type SuiteSyncFirmwareUpgradeNeededDeviceErrorType = {
     type: 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType';
@@ -32,3 +32,7 @@ export type EnsureWalletSuiteSyncOn = (
 ) => Promise<Result<SuiteSyncStorage, EnsureWalletSuiteSyncOnErrors>>;
 
 export type EnsureWalletSuiteSyncOnDep = { ensureWalletSuiteSyncOn: EnsureWalletSuiteSyncOn };
+
+export type SuiteSyncUserFacingErrorType =
+    | Exclude<EnsureWalletSuiteSyncOnErrors['type'], 'WriteModeRequiredForAllocation'>
+    | SuiteSyncUpdateError['type'];

@@ -1,6 +1,6 @@
 import { TypedEmitter } from '@trezor/utils';
 
-import { StrictBrowserWindow } from '../typed-electron';
+import { type StrictBrowserWindow } from '../typed-electron';
 
 interface MainWindowProxyEvents {
     init: StrictBrowserWindow;

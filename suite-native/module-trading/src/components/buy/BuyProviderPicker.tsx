@@ -4,7 +4,7 @@ import type { BuyTrade } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
 import {
-    TradingRootState as TradingRootStateCommon,
+    type TradingRootState as TradingRootStateCommon,
     selectTradingBuyIsLoading,
     selectTradingBuyProviders,
     selectTradingProviderByNameAndTradeType,
@@ -16,7 +16,7 @@ import { useAnalytics } from '@suite-native/services';
 import { OverviewRow, OverviewValueSkeleton, ProviderLogo } from '@suite-native/trading-atoms';
 import { ResidenceCheckAwareAnimatedBox } from '@suite-native/trading-residence';
 import {
-    TradingRootState,
+    type TradingRootState,
     selectBuyQuotesByPaymentMethodNative,
 } from '@suite-native/trading-state';
 
@@ -50,8 +50,8 @@ const BuyProviderPickerRight = ({ isLoading, selectedValue }: BuyProviderPickerR
         <HStack>
             <ProviderLogo logo={logo} />
             <Text
-                color="textSubdued"
-                variant="body-md"
+                color="contentSecondary"
+                variant="body-sm"
                 accessibilityLabel={translate('moduleTrading.tradingScreen.selectedProvider')}
                 testID={PROVIDER_PICKER_TEST_ID + '/value'}
             >
@@ -115,9 +115,6 @@ export const BuyProviderPicker = () => {
                     onPress={handleProviderPress}
                     testID={PROVIDER_PICKER_TEST_ID}
                     noCaret={isLoading}
-                    warning={
-                        isLoading ? undefined : translate('moduleTrading.tradingScreen.kycWarning')
-                    }
                 >
                     <BuyProviderPickerRight isLoading={isLoading} selectedValue={selectedValue} />
                 </OverviewRow>

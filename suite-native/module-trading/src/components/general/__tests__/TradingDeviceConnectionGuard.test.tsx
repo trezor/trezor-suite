@@ -1,8 +1,9 @@
 import { Text } from 'react-native';
 
 import { getTranslation } from '@suite-native/intl';
-import { type TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
+import { type TestStore, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
+import { createTradingTestStore } from '../../../__tests__/tradingTestUtils';
 import { TradingDeviceConnectionGuard } from '../TradingDeviceConnectionGuard';
 
 const mockNavigation = {
@@ -37,7 +38,7 @@ describe('TradingDeviceConnectionGuard', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockSelectIsDeviceConnected = false;
-        ({ store } = initStore());
+        store = createTradingTestStore();
     });
 
     it('should display connect trezor info when no device is connected', () => {

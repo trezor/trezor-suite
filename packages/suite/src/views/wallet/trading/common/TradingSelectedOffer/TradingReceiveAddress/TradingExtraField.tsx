@@ -1,6 +1,6 @@
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
-import { ExchangeTrade } from 'invity-api';
+import { type ExchangeTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { Button, Column, Row, Switch } from '@trezor/components';

@@ -13,6 +13,9 @@
     "references": [
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/message-system"
+        },
+        {
             "path": "../../suite-common/metadata-types"
         },
         {
@@ -20,6 +23,9 @@
         },
         {
             "path": "../../suite-common/suite-rbf-labels-migrations-types"
+        },
+        {
+            "path": "../../suite-common/suite-sync"
         },
         {
             "path": "../../suite-common/suite-types"
@@ -34,6 +40,9 @@
             "path": "../../suite-common/toast-notifications"
         },
         {
+            "path": "../../suite-common/transaction-search"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -44,6 +53,7 @@
         },
         { "path": "../analytics" },
         { "path": "../intl" },
+        { "path": "../settings" },
         { "path": "../../packages/components" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/env-utils" },

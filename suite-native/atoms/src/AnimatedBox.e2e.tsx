@@ -1,6 +1,6 @@
 import Animated, { type AnimatedProps } from 'react-native-reanimated';
 
-import { Box, BoxProps } from './Box';
+import { Box, type BoxProps } from './Box';
 
 export const BaseAnimatedBox = Animated.createAnimatedComponent(Box);
 

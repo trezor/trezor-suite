@@ -4,7 +4,9 @@ import type {
     TrezorDevice,
     TrezorDeviceWithState,
 } from '@suite-common/suite-types';
-import { Device } from '@trezor/connect';
+import { type Device } from '@trezor/connect';
+import { DeviceModelInternal, getFirmwareVersionArray } from '@trezor/device-utils';
+import { versionUtils } from '@trezor/utils';
 
 export const DeviceCancelledErr = (): DeviceCancelledErrType => ({
     type: 'DeviceCancelled' as const,
@@ -34,6 +36,16 @@ export const shouldDeviceBeRemembered = ({
 
 export const isApprovalFlowSupported = (device: TrezorDevice | undefined) =>
     !device?.unavailableCapabilities?.['evmApproval'];
+
+export const isStablecoinYieldSupported = (device: TrezorDevice | undefined) => {
+    if (device?.features?.internal_model === DeviceModelInternal.T1B1) {
+        return true;
+    }
+
+    const firmware = getFirmwareVersionArray(device);
+
+    return firmware !== null && versionUtils.isNewerOrEqual(firmware, [2, 12, 0]);
+};
 
 export const isTrezorDeviceWithState = (
     device: TrezorDevice | undefined,

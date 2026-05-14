@@ -1,8 +1,15 @@
-import { DefaultTheme, RuleSet, css } from 'styled-components';
+import { type DefaultTheme, type RuleSet, css } from 'styled-components';
 
-import { BorderRadii, Color, TypographyStyle } from '@trezor/theme';
+import { type BorderRadii, type Color, type TypographyStyle } from '@trezor/theme';
 
-import { ButtonIntent, ButtonPriority, ButtonSize, CommonButtonProps, InverseKey } from './types';
+import {
+    type ButtonIntent,
+    type ButtonPriority,
+    type ButtonSize,
+    type CommonButtonProps,
+    type InverseKey,
+} from './types';
+import { commonFocusStyles } from '../../utils/utils';
 
 export const pickButtonProps = ({
     href,
@@ -49,8 +56,7 @@ export const commonButtonStyles = css`
     transition: 0.1s ease-in-out;
 
     &:focus-visible {
-        outline: 4px solid ${({ theme }) => theme.stateBorderElementFocused};
-        outline-offset: 2px;
+        ${commonFocusStyles}
     }
 
     &:disabled {
@@ -93,49 +99,45 @@ export const mapSizeToTypographyStyle = (size: ButtonSize): TypographyStyle => {
 };
 
 const colorMapDisabled: Record<InverseKey, Color> = {
-    normal: 'stateContentDisabled',
-    inverse: 'stateContentDisabledInverse',
+    normal: 'contentDisabled',
+    inverse: 'contentOnDarkDisabled',
 };
 
 const colorMap: Record<InverseKey, Record<ButtonPriority, Record<ButtonIntent, Color>>> = {
     normal: {
         primary: {
-            brand: 'baseContentOnActionBrandPrimary',
-            neutral: 'baseContentReversePrimary',
-            info: 'baseContentOnActionInfoPrimary',
-            warning: 'baseContentOnActionWarningPrimary',
-            critical: 'baseContentOnActionNegativePrimary',
-            accentViolet: 'baseContentOnActionAccentVioletPrimary',
-            accentOrange: 'baseContentOnActionAccentOrangePrimary',
+            brand: 'contentButtonBrandPrimary',
+            neutral: 'contentPrimaryInverse',
+            info: 'contentButtonInfoPrimary',
+            warning: 'contentButtonWarningPrimary',
+            critical: 'contentButtonCriticalPrimary',
+            accentViolet: 'contentButtonAccentVioletPrimary',
         },
         secondary: {
-            brand: 'baseContentBrandContrast',
-            neutral: 'baseContentNeutralContrast',
-            info: 'baseContentInfoContrast',
-            warning: 'baseContentWarningContrast',
-            critical: 'baseContentNegativeContrast',
-            accentViolet: 'baseContentAccentVioletContrast',
-            accentOrange: 'baseContentAccentOrangeContrast',
+            brand: 'contentBrand',
+            neutral: 'contentNeutral',
+            info: 'contentInfo',
+            warning: 'contentWarning',
+            critical: 'contentCritical',
+            accentViolet: 'contentAccentViolet',
         },
     },
     inverse: {
         primary: {
-            brand: 'baseContentOnActionBrandPrimaryInverse',
-            neutral: 'baseContentReversePrimaryInverse',
-            info: 'baseContentOnActionInfoPrimaryInverse',
-            warning: 'baseContentOnActionWarningPrimaryInverse',
-            critical: 'baseContentOnActionNegativePrimaryInverse',
-            accentViolet: 'baseContentOnActionAccentVioletPrimaryInverse',
-            accentOrange: 'baseContentOnActionAccentOrangePrimaryInverse',
+            brand: 'contentOnDarkButtonBrandPrimary',
+            neutral: 'contentOnDarkPrimaryInverse',
+            info: 'contentOnDarkButtonInfoPrimary',
+            warning: 'contentOnDarkButtonWarningPrimary',
+            critical: 'contentOnDarkButtonCriticalPrimary',
+            accentViolet: 'contentOnDarkButtonAccentVioletPrimary',
         },
         secondary: {
-            brand: 'baseContentBrandContrastInverse',
-            neutral: 'baseContentNeutralContrastInverse',
-            info: 'baseContentInfoContrastInverse',
-            warning: 'baseContentWarningContrastInverse',
-            critical: 'baseContentNegativeContrastInverse',
-            accentViolet: 'baseContentAccentVioletContrastInverse',
-            accentOrange: 'baseContentAccentOrangeContrastInverse',
+            brand: 'contentOnDarkBrand',
+            neutral: 'contentOnDarkNeutral',
+            info: 'contentOnDarkInfo',
+            warning: 'contentOnDarkWarning',
+            critical: 'contentOnDarkCritical',
+            accentViolet: 'contentOnDarkAccentViolet',
         },
     },
 };
@@ -157,54 +159,50 @@ export const mapPropsToColorToken = (
 
 const backgroundMapDisabled: Record<InverseKey, Record<ButtonPriority, Color>> = {
     normal: {
-        primary: 'stateFillElementBoldDisabled',
-        secondary: 'stateFillElementSoftDisabled',
+        primary: 'elementFillBoldDisabled',
+        secondary: 'elementFillSoftDisabled',
     },
     inverse: {
-        primary: 'stateFillElementBoldInverseDisabled',
-        secondary: 'stateFillElementSoftInverseDisabled',
+        primary: 'elementFillOnDarkBoldDisabled',
+        secondary: 'elementFillOnDarkSoftDisabled',
     },
 };
 
 const backgroundMapBase: Record<InverseKey, Record<ButtonPriority, Record<ButtonIntent, Color>>> = {
     normal: {
         primary: {
-            brand: 'baseFillElementBrandBold',
-            neutral: 'baseFillElementContrast',
-            info: 'baseFillElementInfoBold',
-            warning: 'baseFillElementWarningBold',
-            critical: 'baseFillElementNegativeBold',
-            accentViolet: 'baseFillElementAccentVioletBold',
-            accentOrange: 'baseFillElementAccentOrangeBold',
+            brand: 'elementFillBrandBold',
+            neutral: 'elementFillContrast',
+            info: 'elementFillInfoBold',
+            warning: 'elementFillWarningBold',
+            critical: 'elementFillCriticalBold',
+            accentViolet: 'elementFillAccentVioletBold',
         },
         secondary: {
-            brand: 'baseFillElementBrandSoft',
-            neutral: 'baseFillElementNeutralSoft',
-            info: 'baseFillElementInfoSoft',
-            warning: 'baseFillElementWarningSoft',
-            critical: 'baseFillElementNegativeSoft',
-            accentViolet: 'baseFillElementAccentVioletSoft',
-            accentOrange: 'baseFillElementAccentOrangeSoft',
+            brand: 'elementFillBrandSoft',
+            neutral: 'elementFillNeutralSoft',
+            info: 'elementFillInfoSoft',
+            warning: 'elementFillWarningSoft',
+            critical: 'elementFillCriticalSoft',
+            accentViolet: 'elementFillAccentVioletSoft',
         },
     },
     inverse: {
         primary: {
-            brand: 'baseFillElementBrandBoldInverse',
-            neutral: 'baseFillElementNeutralLight',
-            info: 'baseFillElementInfoBoldInverse',
-            warning: 'baseFillElementWarningBoldInverse',
-            critical: 'baseFillElementNegativeBoldInverse',
-            accentViolet: 'baseFillElementAccentVioletBoldInverse',
-            accentOrange: 'baseFillElementAccentOrangeBoldInverse',
+            brand: 'elementFillOnDarkBrandBold',
+            neutral: 'elementFillOnDarkContrast',
+            info: 'elementFillOnDarkInfoBold',
+            warning: 'elementFillOnDarkWarningBold',
+            critical: 'elementFillOnDarkCriticalBold',
+            accentViolet: 'elementFillOnDarkAccentVioletBold',
         },
         secondary: {
-            brand: 'baseFillElementBrandSoftInverse',
-            neutral: 'baseFillElementNeutralSoftInverse',
-            info: 'baseFillElementInfoSoftInverse',
-            warning: 'baseFillElementWarningSoftInverse',
-            critical: 'baseFillElementNegativeSoftInverse',
-            accentViolet: 'baseFillElementAccentVioletSoftInverse',
-            accentOrange: 'baseFillElementAccentOrangeSoftInverse',
+            brand: 'elementFillOnDarkBrandSoft',
+            neutral: 'elementFillOnDarkNeutralSoft',
+            info: 'elementFillOnDarkInfoSoft',
+            warning: 'elementFillOnDarkWarningSoft',
+            critical: 'elementFillOnDarkCriticalSoft',
+            accentViolet: 'elementFillOnDarkAccentVioletSoft',
         },
     },
 };
@@ -215,42 +213,38 @@ const backgroundMapHovered: Record<
 > = {
     normal: {
         primary: {
-            brand: 'stateFillElementBrandBoldHovered',
-            neutral: 'stateFillElementContrastHovered',
-            info: 'stateFillElementInfoBoldHovered',
-            warning: 'stateFillElementWarningBoldHovered',
-            critical: 'stateFillElementNegativeBoldHovered',
-            accentViolet: 'stateFillElementAccentVioletBoldHovered',
-            accentOrange: 'stateFillElementAccentOrangeBoldHovered',
+            brand: 'elementFillBrandBoldHovered',
+            neutral: 'elementFillContrastHovered',
+            info: 'elementFillInfoBoldHovered',
+            warning: 'elementFillWarningBoldHovered',
+            critical: 'elementFillCriticalBoldHovered',
+            accentViolet: 'elementFillAccentVioletBoldHovered',
         },
         secondary: {
-            brand: 'stateFillElementBrandSoftHovered',
-            neutral: 'stateFillElementNeutralSoftHovered',
-            info: 'stateFillElementInfoSoftHovered',
-            warning: 'stateFillElementWarningSoftHovered',
-            critical: 'stateFillElementNegativeSoftHovered',
-            accentViolet: 'stateFillElementAccentVioletSoftHovered',
-            accentOrange: 'stateFillElementAccentOrangeSoftHovered',
+            brand: 'elementFillBrandSoftHovered',
+            neutral: 'elementFillNeutralSoftHovered',
+            info: 'elementFillInfoSoftHovered',
+            warning: 'elementFillWarningSoftHovered',
+            critical: 'elementFillCriticalSoftHovered',
+            accentViolet: 'elementFillAccentVioletSoftHovered',
         },
     },
     inverse: {
         primary: {
-            brand: 'stateFillElementBrandBoldInverseHovered',
-            neutral: 'stateFillElementNeutralLightHovered',
-            info: 'stateFillElementInfoBoldInverseHovered',
-            warning: 'stateFillElementWarningBoldInverseHovered',
-            critical: 'stateFillElementNegativeBoldInverseHovered',
-            accentViolet: 'stateFillElementAccentVioletBoldInverseHovered',
-            accentOrange: 'stateFillElementAccentOrangeBoldInverseHovered',
+            brand: 'elementFillOnDarkBrandBoldHovered',
+            neutral: 'elementFillOnDarkContrastHovered',
+            info: 'elementFillOnDarkInfoBoldHovered',
+            warning: 'elementFillOnDarkWarningBoldHovered',
+            critical: 'elementFillOnDarkCriticalBoldHovered',
+            accentViolet: 'elementFillOnDarkAccentVioletBoldHovered',
         },
         secondary: {
-            brand: 'stateFillElementBrandSoftInverseHovered',
-            neutral: 'stateFillElementNeutralSoftInverseHovered',
-            info: 'stateFillElementInfoSoftInverseHovered',
-            warning: 'stateFillElementWarningSoftInverseHovered',
-            critical: 'stateFillElementNegativeSoftInverseHovered',
-            accentViolet: 'stateFillElementAccentVioletSoftInverseHovered',
-            accentOrange: 'stateFillElementAccentOrangeSoftInverseHovered',
+            brand: 'elementFillOnDarkBrandSoftHovered',
+            neutral: 'elementFillOnDarkNeutralSoftHovered',
+            info: 'elementFillOnDarkInfoSoftHovered',
+            warning: 'elementFillOnDarkWarningSoftHovered',
+            critical: 'elementFillOnDarkCriticalSoftHovered',
+            accentViolet: 'elementFillOnDarkAccentVioletSoftHovered',
         },
     },
 };
@@ -261,42 +255,38 @@ const backgroundMapPressed: Record<
 > = {
     normal: {
         primary: {
-            brand: 'stateFillElementBrandBoldPressed',
-            neutral: 'stateFillElementContrastPressed',
-            info: 'stateFillElementInfoBoldPressed',
-            warning: 'stateFillElementWarningBoldPressed',
-            critical: 'stateFillElementNegativeBoldPressed',
-            accentViolet: 'stateFillElementAccentVioletBoldPressed',
-            accentOrange: 'stateFillElementAccentOrangeBoldPressed',
+            brand: 'elementFillBrandBoldPressed',
+            neutral: 'elementFillContrastPressed',
+            info: 'elementFillInfoBoldPressed',
+            warning: 'elementFillWarningBoldPressed',
+            critical: 'elementFillCriticalBoldPressed',
+            accentViolet: 'elementFillAccentVioletBoldPressed',
         },
         secondary: {
-            brand: 'stateFillElementBrandSoftPressed',
-            neutral: 'stateFillElementNeutralSoftPressed',
-            info: 'stateFillElementInfoSoftPressed',
-            warning: 'stateFillElementWarningSoftPressed',
-            critical: 'stateFillElementNegativeSoftPressed',
-            accentViolet: 'stateFillElementAccentVioletSoftPressed',
-            accentOrange: 'stateFillElementAccentOrangeSoftPressed',
+            brand: 'elementFillBrandSoftPressed',
+            neutral: 'elementFillNeutralSoftPressed',
+            info: 'elementFillInfoSoftPressed',
+            warning: 'elementFillWarningSoftPressed',
+            critical: 'elementFillCriticalSoftPressed',
+            accentViolet: 'elementFillAccentVioletSoftPressed',
         },
     },
     inverse: {
         primary: {
-            brand: 'stateFillElementBrandBoldInversePressed',
-            neutral: 'stateFillElementNeutralLightPressed',
-            info: 'stateFillElementInfoBoldInversePressed',
-            warning: 'stateFillElementWarningBoldInversePressed',
-            critical: 'stateFillElementNegativeBoldInversePressed',
-            accentViolet: 'stateFillElementAccentVioletBoldInversePressed',
-            accentOrange: 'stateFillElementAccentOrangeBoldInversePressed',
+            brand: 'elementFillOnDarkBrandBoldPressed',
+            neutral: 'elementFillOnDarkContrastPressed',
+            info: 'elementFillOnDarkInfoBoldPressed',
+            warning: 'elementFillOnDarkWarningBoldPressed',
+            critical: 'elementFillOnDarkCriticalBoldPressed',
+            accentViolet: 'elementFillOnDarkAccentVioletBoldPressed',
         },
         secondary: {
-            brand: 'stateFillElementBrandSoftInversePressed',
-            neutral: 'stateFillElementNeutralSoftInversePressed',
-            info: 'stateFillElementInfoSoftInversePressed',
-            warning: 'stateFillElementWarningSoftInversePressed',
-            critical: 'stateFillElementNegativeSoftInversePressed',
-            accentViolet: 'stateFillElementAccentVioletSoftInversePressed',
-            accentOrange: 'stateFillElementAccentOrangeSoftInversePressed',
+            brand: 'elementFillOnDarkBrandSoftPressed',
+            neutral: 'elementFillOnDarkNeutralSoftPressed',
+            info: 'elementFillOnDarkInfoSoftPressed',
+            warning: 'elementFillOnDarkWarningSoftPressed',
+            critical: 'elementFillOnDarkCriticalSoftPressed',
+            accentViolet: 'elementFillOnDarkAccentVioletSoftPressed',
         },
     },
 };
@@ -307,24 +297,35 @@ export const mapPropsToCSS = (
     isDisabled: boolean,
     isInverse: boolean,
     theme: DefaultTheme,
+    isFloating: boolean,
 ): RuleSet<object> => {
     const inverseKey: InverseKey = isInverse ? 'inverse' : 'normal';
+    const getBackground = (backgroundColor: Color) =>
+        isFloating
+            ? css`
+                  background:
+                      linear-gradient(${theme[backgroundColor]}, ${theme[backgroundColor]}),
+                      ${theme['surfaceFillRaised']};
+              `
+            : css`
+                  background: ${theme[backgroundColor]};
+              `;
 
     if (isDisabled) {
         return css`
-            background: ${theme[backgroundMapDisabled[inverseKey][priority]]};
+            ${getBackground(backgroundMapDisabled[inverseKey][priority])}
         `;
     }
 
     return css`
-        background: ${theme[backgroundMapBase[inverseKey][priority][intent]]};
+        ${getBackground(backgroundMapBase[inverseKey][priority][intent])}
 
         &:hover {
-            background: ${theme[backgroundMapHovered[inverseKey][priority][intent]]};
+            ${getBackground(backgroundMapHovered[inverseKey][priority][intent])}
         }
 
         &:active {
-            background: ${theme[backgroundMapPressed[inverseKey][priority][intent]]};
+            ${getBackground(backgroundMapPressed[inverseKey][priority][intent])}
         }
     `;
 };

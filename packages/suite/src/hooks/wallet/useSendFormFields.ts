@@ -1,18 +1,23 @@
 import { useCallback } from 'react';
-import { FieldPath, UseFormReturn } from 'react-hook-form';
+import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { FormOptions, FormState, Output, Rate, TokenAddress } from '@suite-common/wallet-types';
+import {
+    type FormOptions,
+    type FormState,
+    type Output,
+    type Rate,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
 import {
     getFiatRateKey,
     parseBaseCurrencyToFormattedCrypto,
     parseCryptoToFormattedBaseCurrency,
 } from '@suite-common/wallet-utils';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { TokenInfo } from '@trezor/blockchain-link-types';
+import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
-import { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';
+import { type SendContextValues, type UseSendFormState } from 'src/types/wallet/sendForm';
 
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { useSelector } from '../suite';

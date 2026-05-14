@@ -1,6 +1,10 @@
-import { AccountType, NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type AccountType,
+    type NetworkSymbol,
+    type StakingNetworkSymbol,
+} from '@suite-common/wallet-config';
 
-import { Context, GeneralContextKey, SettingsCategory } from '../messageSystemTypes';
+import { Context, type GeneralContextKey, type SettingsCategory } from '../messageSystemTypes';
 
 describe('Message system types', () => {
     describe('Context', () => {
@@ -52,6 +56,25 @@ describe('Message system types', () => {
                     expect(Context.getTrading(type)).toBe(expected);
                 },
             );
+        });
+
+        describe('getEarnDashboard', () => {
+            it.each([
+                ['staking', 'earn.dashboard.staking'],
+                ['yield', 'earn.dashboard.yield'],
+            ] as const)('getEarnDashboard(%s) → %s', (type, expected) => {
+                expect(Context.getEarnDashboard(type)).toBe(expected);
+            });
+        });
+
+        describe('getEarnYield', () => {
+            it.each([
+                ['deposit', 'earn.yield.deposit'],
+                ['withdraw', 'earn.yield.withdraw'],
+                ['claim', 'earn.yield.claim'],
+            ] as const)('getEarnYield(%s) → %s', (type, expected) => {
+                expect(Context.getEarnYield(type)).toBe(expected);
+            });
         });
 
         describe('getSettings', () => {

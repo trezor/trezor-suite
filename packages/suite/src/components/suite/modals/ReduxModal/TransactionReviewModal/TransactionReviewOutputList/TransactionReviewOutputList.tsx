@@ -4,16 +4,19 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import type { DeviceRootState } from '@suite-common/device';
+import { selectSelectedDevice } from '@suite-common/device';
 import { selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
 import type {
     FormState,
     GeneralPrecomposedTransactionFinal,
+    ReviewOutput,
     StakeFormState,
+    StakeType,
 } from '@suite-common/wallet-types';
-import { ReviewOutput, StakeType } from '@suite-common/wallet-types';
 import {
     findAccountsByAddress,
     getEvmTransactionTextSignature,
+    getIsUpdatedEthereumSendFlow,
     isEvmApprovalTx,
 } from '@suite-common/wallet-utils';
 import { Column, H4 } from '@trezor/components';
@@ -78,7 +81,11 @@ export const TransactionReviewOutputList = ({
     const outputRefs = useRef<(HTMLDivElement | null)[]>([]);
     const totalOutputRef = useRef<HTMLDivElement | null>(null);
     const accounts = useSelector(state => state.wallet.accounts);
+    const device = useSelector(selectSelectedDevice);
     const { networkType, symbol } = account;
+    const isUpdatedEthereumSendFlow = device
+        ? getIsUpdatedEthereumSendFlow(device, networkType)
+        : false;
     const isMultirecipient = outputs.filter(({ type }) => type === 'address').length > 1;
     const isFirstOutputAddress = outputs[0]?.type === 'address';
 
@@ -175,9 +182,13 @@ export const TransactionReviewOutputList = ({
                                 isRbf={isRbfAction}
                                 isTrading={!!isTrading}
                                 stakeType={stakeType}
-                                evmTxType={getEvmTransactionTextSignature(
-                                    precomposedForm.transactionData,
-                                )}
+                                evmTxType={
+                                    isUpdatedEthereumSendFlow && precomposedForm.yieldMetadata
+                                        ? precomposedForm.yieldMetadata.type
+                                        : getEvmTransactionTextSignature(
+                                              precomposedForm.transactionData,
+                                          )
+                                }
                                 nativeToken={nativeToken}
                             />
                         </Column>
@@ -185,7 +196,7 @@ export const TransactionReviewOutputList = ({
                 );
             })}
 
-            {!(isRbfAction && networkType === 'bitcoin') && (
+            {!(isRbfAction && networkType === 'bitcoin') && networkType !== 'tron' && (
                 <Wrapper ref={totalOutputRef}>
                     <Column gap={spacings.sm}>
                         {isMultirecipient && summaryIndex === -1 && (

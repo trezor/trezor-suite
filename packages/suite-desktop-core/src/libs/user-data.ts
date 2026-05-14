@@ -3,7 +3,43 @@ import fs from 'fs';
 import path from 'path';
 
 import { isDevEnv } from '@suite-common/suite-utils';
-import { InvokeResult } from '@trezor/suite-desktop-api';
+import type { InvokeResult } from '@trezor/suite-desktop-api';
+import type { Result } from '@trezor/type-utils';
+
+const resolveDirectoryInUserDataDir = (directory: string): Result<{ dir: string }, string> => {
+    const userDataDir = path.resolve(app.getPath('userData'));
+    const dir = path.resolve(path.join(userDataDir, directory));
+
+    if (!dir.startsWith(userDataDir)) {
+        return {
+            success: false,
+            error: `Path traversal attempt detected, directory: "${directory}"`,
+        };
+    }
+
+    return { success: true, payload: { dir } };
+};
+
+const resolvePathInUserDataDir = (
+    directory: string,
+    filename: string,
+): Result<{ dir: string; file: string }, string> => {
+    const dirResult = resolveDirectoryInUserDataDir(directory);
+    if (!dirResult.success) {
+        return dirResult;
+    }
+    const { dir } = dirResult.payload;
+    const file = path.resolve(dir, filename);
+
+    if (!file.startsWith(dir + path.sep)) {
+        return {
+            success: false,
+            error: `Path traversal attempt detected, file: "${filename}"`,
+        };
+    }
+
+    return { success: true, payload: { dir, file } };
+};
 
 export const clearAppCache = () =>
     new Promise<void>((resolve, reject) => {
@@ -13,7 +49,7 @@ export const clearAppCache = () =>
 
 /**
  * By default, Electron uses the app name from package.json to construct the userData directory.
- * It's overriten in electron-builder-config.js for builds. And here for local development.
+ * It's overwritten in electron-builder-config.js for builds. And here for local development.
  * Default (codesigned builds): @trezor/suite-desktop,
  * Dev (non-production builds): @trezor/suite-desktop-dev
  * Local development: @trezor/suite-desktop-local
@@ -40,8 +76,11 @@ export const save: {
         encoding: 'binary',
     ): Promise<InvokeResult>;
 } = async (directory, name, content, encoding) => {
-    const dir = path.join(app.getPath('userData'), directory);
-    const file = path.join(dir, name);
+    const resolvedPathResult = resolvePathInUserDataDir(directory, name);
+    if (!resolvedPathResult.success) {
+        return { success: false, error: resolvedPathResult.error };
+    }
+    const { dir, file } = resolvedPathResult.payload;
 
     let data: string | Buffer;
     if (encoding === 'binary') {
@@ -68,8 +107,11 @@ export const save: {
 };
 
 export const read = async (directory: string, name: string): Promise<InvokeResult<string>> => {
-    const dir = path.join(app.getPath('userData'), directory);
-    const file = path.join(dir, name);
+    const resolvedPathResult = resolvePathInUserDataDir(directory, name);
+    if (!resolvedPathResult.success) {
+        return { success: false, error: resolvedPathResult.error };
+    }
+    const { file } = resolvedPathResult.payload;
 
     try {
         await fs.promises.access(file, fs.constants.R_OK);
@@ -89,7 +131,11 @@ export const read = async (directory: string, name: string): Promise<InvokeResul
 };
 
 export const readDir = async (directory: string): Promise<InvokeResult<string[]>> => {
-    const dir = path.join(app.getPath('userData'), directory);
+    const resolvedDirResult = resolveDirectoryInUserDataDir(directory);
+    if (!resolvedDirResult.success) {
+        return { success: false, error: resolvedDirResult.error };
+    }
+    const { dir } = resolvedDirResult.payload;
 
     try {
         await fs.promises.access(dir, fs.constants.R_OK);
@@ -116,10 +162,20 @@ export const rename = async (
     from: string,
     to: string,
 ): Promise<InvokeResult> => {
-    const dir = path.join(app.getPath('userData'), directory);
+    const resolvedFromResult = resolvePathInUserDataDir(directory, from);
+    if (!resolvedFromResult.success) {
+        return { success: false, error: resolvedFromResult.error };
+    }
+    const { file: fromPath } = resolvedFromResult.payload;
+
+    const resolvedToResult = resolvePathInUserDataDir(directory, to);
+    if (!resolvedToResult.success) {
+        return { success: false, error: resolvedToResult.error };
+    }
+    const { file: toPath } = resolvedToResult.payload;
 
     try {
-        await fs.promises.rename(path.join(dir, from), path.join(dir, to));
+        await fs.promises.rename(fromPath, toPath);
 
         return { success: true };
     } catch (error) {
@@ -148,7 +204,12 @@ export const getInfo = () => ({
 });
 
 export const open = async (directory: string): Promise<InvokeResult> => {
-    const dir = path.join(app.getPath('userData'), directory);
+    const resolvedDirResult = resolveDirectoryInUserDataDir(directory);
+    if (!resolvedDirResult.success) {
+        return { success: false, error: resolvedDirResult.error };
+    }
+    const { dir } = resolvedDirResult.payload;
+
     try {
         const errorMessage = await shell.openPath(dir);
         if (errorMessage) {

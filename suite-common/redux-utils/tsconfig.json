@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../analytics" },
+        { "path": "../bip329-types" },
         {
             "path": "../delegated-identity-key-types"
         },

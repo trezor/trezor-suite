@@ -1,10 +1,10 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { RequireAllOrNone } from 'type-fest';
+import { type RequireAllOrNone } from 'type-fest';
 
-import { IconName } from '@suite-native/icons';
+import { type IconName } from '@suite-native/icons';
 
-import { Card, CardProps } from './Card';
+import { Card, type CardProps } from './Card';
 import { TextButton } from '../Button/TextButton';
 import { Headered } from '../Headered';
 import { HStack } from '../Stack';
@@ -24,11 +24,11 @@ type CardHeaderProps = RequireAllOrNone<
 
 const CardHeader = ({ title, onButtonPress, buttonTitle, buttonIcon }: CardHeaderProps) => (
     <HStack justifyContent="space-between">
-        <Text color="textSubdued" variant="body-sm">
+        <Text color="contentSecondary" variant="body-sm">
             {title}
         </Text>
         {buttonTitle && (
-            <TextButton size="small" onPress={onButtonPress} viewRight={buttonIcon}>
+            <TextButton size="small" onPress={onButtonPress} iconRight={buttonIcon}>
                 {buttonTitle}
             </TextButton>
         )}

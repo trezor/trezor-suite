@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { Badge, useElevation } from '@trezor/components';
 import { useMDXComponents } from '@trezor/connect-explorer-theme';
-import { Elevation, mapElevationToBackground } from '@trezor/theme';
+import { type Elevation, mapElevationToBackground } from '@trezor/theme';
 
 interface ParamProps {
     id?: string;
@@ -50,7 +50,7 @@ const ParamType = styled.div<{
     ${({ $isLink, theme }) =>
         $isLink &&
         `
-        color: ${theme.textPrimaryDefault};
+        color: ${theme.contentBrand};
         text-decoration: underline;
     `}
 `;

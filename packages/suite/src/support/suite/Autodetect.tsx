@@ -1,24 +1,37 @@
 import { useCallback, useEffect } from 'react';
 
-import { Locale } from '@suite-common/suite-types';
+import {
+    selectAutodetectLanguage,
+    selectAutodetectTheme,
+    selectLanguage,
+    selectTheme,
+    suiteSettingsActions,
+} from '@suite/settings';
+import { type Locale } from '@suite-common/suite-types';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
-import * as languageActions from 'src/actions/settings/languageActions';
-import { setTheme as setThemeAction } from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getOsTheme, watchOsTheme } from 'src/utils/suite/env';
 import { getOsLocale, watchOsLocale } from 'src/utils/suite/l10n';
 
 const Autodetect = () => {
-    const autodetectTheme = useSelector(state => state.suite.settings.autodetect.theme);
-    const autodetectLanguage = useSelector(state => state.suite.settings.autodetect.language);
-    const currentTheme = useSelector(state => state.suite.settings.theme.variant);
-    const currentLanguage = useSelector(state => state.suite.settings.language);
+    const autodetectTheme = useSelector(selectAutodetectTheme);
+    const autodetectLanguage = useSelector(selectAutodetectLanguage);
+    const currentTheme = useSelector(selectTheme);
+    const currentLanguage = useSelector(selectLanguage);
 
     const dispatch = useDispatch();
 
     const setLanguage = useCallback(
         (language: Locale) => {
-            dispatch(languageActions.setLanguage(language));
+            dispatch(suiteSettingsActions.setLanguage(language));
+        },
+        [dispatch],
+    );
+
+    const setTheme = useCallback(
+        (theme: 'dark' | 'light') => {
+            dispatch(suiteSettingsActions.setTheme(theme));
         },
         [dispatch],
     );
@@ -27,12 +40,19 @@ const Autodetect = () => {
         if (!autodetectTheme) return;
         const osTheme = getOsTheme();
         if (osTheme !== currentTheme) {
-            dispatch(setThemeAction(osTheme));
+            dispatch(suiteSettingsActions.setTheme(osTheme));
         }
-        const unwatch = watchOsTheme(setThemeAction);
+        const unwatch = watchOsTheme(setTheme);
 
         return () => unwatch();
-    }, [autodetectTheme, currentTheme, dispatch]);
+    }, [autodetectTheme, currentTheme, dispatch, setTheme]);
+
+    useEffect(() => {
+        if (!autodetectTheme || !desktopApi.available) return;
+        desktopApi.on('theme/system-change', setTheme);
+
+        return () => desktopApi.removeAllListeners('theme/system-change');
+    }, [autodetectTheme, setTheme]);
 
     useEffect(() => {
         if (!autodetectLanguage) return;

@@ -1,11 +1,11 @@
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import { Button, ButtonGroup, Tooltip } from '@trezor/components';
-import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { type DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
-import { openModal } from 'src/actions/suite/modalActions';
-import { useDevice, useDispatch } from 'src/hooks/suite';
-
-import { getHomescreens } from '../../../../constants/suite/homescreens';
+import { getHomescreens } from 'src/constants/suite/homescreens';
+import { useDispatch } from 'src/hooks/suite';
 
 type ChangeHomescreenButtonsParams = {
     deviceModelInternal: DeviceModelInternal;

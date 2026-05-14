@@ -7,9 +7,8 @@ import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { Column, Modal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { TrafficLightOffset } from 'src/components/suite/TrafficLightOffset';
 import { useSelector } from 'src/hooks/suite/useSelector';
-
-import { TrafficLightOffset } from '../../../components/suite/TrafficLightOffset';
 
 type SwitchDeviceModalProps = {
     children?: React.ReactNode;

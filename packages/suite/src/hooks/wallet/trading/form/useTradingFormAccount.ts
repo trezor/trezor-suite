@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo } from 'react';
 
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
-import { TradingType } from '@suite-common/suite-types';
+import { type TradingType } from '@suite-common/suite-types';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import {
     CONTRACT_ADDRESS_FOR_NATIVE_TOKEN,
@@ -17,7 +17,7 @@ import {
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectAccountByKey, selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -55,6 +55,8 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
 
     const isAccountEligibleForTrade = useCallback(
         (account: Account, cryptoId?: CryptoId) => {
+            if (tradingType === 'buy') return true;
+
             const { contractAddress } = cryptoId ? parseCryptoId(cryptoId) : {};
             const isNativeToken =
                 !contractAddress || contractAddress === CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
@@ -84,7 +86,7 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
                 return id === cryptoId && new BigNumber(token.balance ?? '0').gt(0);
             });
         },
-        [tokenDefinitions],
+        [tokenDefinitions, tradingType],
     );
 
     const pickFallbackAccount = useCallback(
@@ -93,15 +95,19 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
         [isAccountEligibleForTrade],
     );
 
+    // Once prefilled.key is cleared the account is already determined; don't restrict eligibility
+    // to a token that may belong to a different network than what the user just selected.
+    const eligibilityCryptoId = prefilled.key ? prefilled.cryptoId : undefined;
+
     const account = useMemo(() => {
-        if (preferredAccount && isAccountEligibleForTrade(preferredAccount, prefilled.cryptoId)) {
+        if (preferredAccount && isAccountEligibleForTrade(preferredAccount, eligibilityCryptoId)) {
             return preferredAccount;
         }
 
         const sameSymbolAccount = visibileDeviceAccounts.find(
             acc =>
                 acc.symbol === preferredAccount?.symbol &&
-                isAccountEligibleForTrade(acc, prefilled.cryptoId),
+                isAccountEligibleForTrade(acc, eligibilityCryptoId),
         );
 
         if (sameSymbolAccount) {
@@ -114,7 +120,7 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
         isAccountEligibleForTrade,
         pickFallbackAccount,
         preferredAccount,
-        prefilled.cryptoId,
+        eligibilityCryptoId,
     ]);
 
     const cryptoId = useMemo(() => {
@@ -146,11 +152,11 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
             dispatch(
                 tradingActions.setTradingFromPrefilledAccount({
                     key: undefined,
-                    cryptoId: undefined,
+                    cryptoId: prefilled.cryptoId,
                 }),
             );
         }
-    }, [accountKey, dispatch, prefilled.key]);
+    }, [accountKey, dispatch, prefilled.key, prefilled.cryptoId]);
 
     return {
         tradingAccountKey: account.key,

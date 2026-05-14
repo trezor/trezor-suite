@@ -1,17 +1,16 @@
 import React, { useEffect, useRef } from 'react';
 import Animated, { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
 
-import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { AccountKey, FormState } from '@suite-common/wallet-types';
+import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
+import { type AccountKey, type FormState } from '@suite-common/wallet-types';
 import { Box, Button, useBottomSheetModal } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
-import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
 import { CustomFeeBottomSheet } from './CustomFeeBottomSheet';
 import { CustomFeeCard } from './CustomFeeCard';
-import { FeesFormValues } from '../../../feesFormSchema';
-import { CustomFeeParams } from '../../../hooks';
+import { type FeesFormValues } from '../../../feesFormSchema';
+import { type CustomFeeParams } from '../../../hooks';
 import { useCustomFee } from '../../../hooks/fees/useCustomFee';
 
 type CustomFeeProps = {
@@ -29,9 +28,10 @@ export const CustomFeeButton = ({ onPress }: CustomFeeButtonProps) => (
     <Animated.View entering={FadeInLeft.delay(300)} exiting={FadeOutLeft}>
         <Box alignSelf="center">
             <Button
-                colorScheme="tertiaryElevation0"
-                size="small"
-                viewLeft={<Icon name="plus" size="mediumLarge" />}
+                intent="neutral"
+                priority="secondary"
+                size="medium"
+                iconLeft="plus"
                 testID="@transactionManagement/fees-level-custom"
                 onPress={onPress}
             >
@@ -111,10 +111,11 @@ const CustomFeeContentWrapper = ({ accountKey, formDraft, onCustomFeeSet }: Cust
     );
 };
 
+const CUSTOM_FEE_UNSUPPORTED_NETWORK_TYPES: NetworkType[] = ['solana', 'tron'];
+
 export const CustomFee = ({ accountKey, symbol, formDraft, onCustomFeeSet }: CustomFeeProps) => {
-    // custom fees are not allowed for solana
-    // we return null here so we don't need to mount the hooks there
-    if (getNetworkType(symbol) === 'solana') {
+    const networkType = getNetworkType(symbol);
+    if (CUSTOM_FEE_UNSUPPORTED_NETWORK_TYPES.includes(networkType)) {
         return null;
     }
 

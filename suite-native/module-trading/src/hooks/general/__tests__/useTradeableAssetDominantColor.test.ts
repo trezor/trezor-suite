@@ -1,8 +1,8 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
-import { useNativeStyles } from '@trezor/styles';
-import { CoinsColors, Colors } from '@trezor/theme';
+import { useNativeStyles } from '@trezor/styles-native';
+import { type CoinsColors, type Colors } from '@trezor/theme';
 
 import { useTradeableAssetDominantColor } from '../useTradeableAssetDominantColor';
 
@@ -38,9 +38,9 @@ describe('useTradeableAssetDominantColor', () => {
         expect(result.current).toBe(coinsColors.btc);
     });
 
-    it('should fallback to backgroundNeutralBold for undefined networks', () => {
+    it('should fallback to legacyBackgroundNeutralBold for undefined networks', () => {
         const { result } = renderTradeableAssetDominantColorHook('und' as NetworkSymbol);
 
-        expect(result.current).toBe(colors.backgroundNeutralBold);
+        expect(result.current).toBe(colors.legacyBackgroundNeutralBold);
     });
 });

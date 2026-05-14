@@ -1,11 +1,6 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "paths": {
-            "flexsearch": [
-                "./node_modules/@types/flexsearch"
-            ]
-        },
         "outDir": "./libDev",
         "noImplicitAny": false,
         "useUnknownInCatchVariables": false
@@ -13,6 +8,7 @@
     "references": [
         { "path": "../components" },
         { "path": "../product-components" },
-        { "path": "../theme" }
+        { "path": "../theme" },
+        { "path": "../type-utils" }
     ]
 }

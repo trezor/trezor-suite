@@ -1,22 +1,25 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/StellarSignTransaction.js
 
+import { StellarSignTransaction as StellarSignTransactionSchema } from '@trezor/connect-common';
+import type { MethodPermission, PROTO, StellarTransaction } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { AssertWeak } from '@trezor/schema-utils';
+import { Assert } from '@trezor/schema-utils';
 
+import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import {
-    StellarSignTransaction as StellarSignTransactionSchema,
-    StellarTransaction,
-} from '../../../types/api/stellar';
 import { validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
+import {
+    PAYMENT_REQUEST_AMOUNT_BYTES,
+    encodePaymentRequestAmount,
+} from '../../../utils/paymentRequest';
 import * as helper from '../stellarSignTx';
 
 type Params = {
     path: number[];
     networkPassphrase: string;
     transaction: StellarTransaction;
+    payment_req?: PROTO.PaymentRequest;
 };
 
 const StellarSignTransactionFeatures = Object.freeze({
@@ -28,28 +31,34 @@ export default class StellarSignTransaction extends AbstractMethod<
     'stellarSignTransaction',
     Params
 > {
-    init() {
-        this.requiredPermissions = ['read', 'write'];
-        this.requiredDeviceCapabilities = ['Capability_Stellar'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Stellar'),
-            this.firmwareRange,
-        );
-
-        const { payload } = this;
+    constructor(message: MethodMessage<'stellarSignTransaction'>) {
+        const { payload } = message;
         // validate incoming parameters
-        // TODO: weak assert for compatibility purposes (issue #10841)
-        AssertWeak(StellarSignTransactionSchema, payload);
+        Assert(StellarSignTransactionSchema, payload);
 
         const path = validatePath(payload.path, 3);
         // incoming data should be in stellar-sdk format
         const { transaction } = payload;
-        this.params = {
+        const params = {
             path,
             networkPassphrase: payload.networkPassphrase,
             transaction,
+            payment_req: payload.payment_req
+                ? encodePaymentRequestAmount(
+                      payload.payment_req,
+                      PAYMENT_REQUEST_AMOUNT_BYTES.DEFAULT,
+                  )
+                : undefined,
         };
+
+        super(message, params);
+
+        this.requiredDeviceCapabilities = ['Capability_Stellar'];
+        this.requiredFirmwareCoins = [getMiscNetwork('Stellar')];
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read', 'write'];
     }
 
     get info() {
@@ -57,7 +66,7 @@ export default class StellarSignTransaction extends AbstractMethod<
     }
 
     _isFeatureSupported(feature: keyof typeof StellarSignTransactionFeatures) {
-        return this.device.atLeast(StellarSignTransactionFeatures[feature]);
+        return this.getDevice().atLeast(StellarSignTransactionFeatures[feature]);
     }
 
     _ensureFeatureIsSupported(feature: keyof typeof StellarSignTransactionFeatures) {
@@ -90,10 +99,11 @@ export default class StellarSignTransaction extends AbstractMethod<
         this._ensureFirmwareSupportsParams();
 
         const response = await helper.stellarSignTx(
-            this.device.getCommands().typedCall,
+            this.getDevice().getCommands().typedCall,
             this.params.path,
             this.params.networkPassphrase,
             this.params.transaction,
+            this.params.payment_req,
         );
 
         return {

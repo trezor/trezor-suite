@@ -1,11 +1,5 @@
-import {
-    Device,
-    DeviceUniquePath,
-    Features,
-    FirmwareType,
-    asDeviceUniquePath,
-} from '@trezor/connect';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import type { Device, DeviceUniquePath, Features } from '@trezor/connect';
+import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 
 import { TrezorDevice } from '../src/device';
 
@@ -114,7 +108,7 @@ export const mockConnectDevice = (
     dev?: Partial<StringPath<Device>>,
     feat?: Partial<Features>,
 ): Device => {
-    const path = asDeviceUniquePath(dev?.path ?? '1');
+    const path = (dev?.path ?? '1') as DeviceUniquePath;
 
     if (dev && typeof dev.type === 'string' && dev.type === 'unreadable') {
         return {

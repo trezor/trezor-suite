@@ -1,6 +1,6 @@
 import { createTransform } from 'redux-persist';
 
-import { Blockchain } from '@suite-common/wallet-types';
+import { type Blockchain } from '@suite-common/wallet-types';
 
 export const blockchainPersistTransform = createTransform<Blockchain, Pick<Blockchain, 'backends'>>(
     inboundState => ({ backends: inboundState.backends }),

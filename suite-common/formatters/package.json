@@ -6,12 +6,13 @@
     "sideEffects": false,
     "main": "src/index",
     "scripts": {
-        "test:unit": "yarn g:jest -c=../../jest.config.base.js",
+        "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@formatjs/intl": "3.1.6",
+        "@formatjs/intl": "4.1.2",
         "@mobily/ts-belt": "^3.13.1",
         "@suite-common/suite-constants": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
@@ -22,7 +23,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^4.1.0",
-        "react": "19.1.0",
-        "react-intl": "^8.0.6"
+        "react": "19.2.4",
+        "react-intl": "^8.1.3"
     }
 }

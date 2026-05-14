@@ -1,41 +1,29 @@
-import { BuyProviderInfo, BuyTrade } from 'invity-api';
+import { type BuyProviderInfo, type BuyTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/components';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
 
 import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
 
 type TradingDetailBuyPaymentSuccessfulProps = {
-    account: Account;
     trade: BuyTrade;
     provider?: BuyProviderInfo;
 };
 
 export const TradingDetailBuyPaymentPaymentSuccessful = ({
-    account,
     trade,
     provider,
 }: TradingDetailBuyPaymentSuccessfulProps) => {
     const dispatch = useDispatch();
 
-    const handleClick = () =>
-        dispatch(
-            goto('wallet-trading-buy', {
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
-            }),
-        );
+    const handleClick = () => dispatch(goto({ routeName: 'wallet-trading-buy' }));
 
     return (
         <Column gap={24} padding={{ top: 12, bottom: 4 }}>
-            <IconCircle name="check" size={100} />
+            <IconCircle name="check" size={96} />
             <Column>
                 <H3 data-testid="@trading/transaction/detail/status">
                     <Translation id="TR_BUY_DETAIL_SUCCESS_TITLE" />

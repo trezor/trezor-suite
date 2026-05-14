@@ -1,11 +1,11 @@
 import { useCallback, useRef, useState } from 'react';
-import { TextInput } from 'react-native';
+import { type TextInput } from 'react-native';
 import { useDispatch } from 'react-redux';
 
 import { tradingExchangeActions } from '@suite-common/trading';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { HStack } from '@suite-native/atoms';
-import { TradeableAsset } from '@suite-native/trading-types';
+import { type TradeableAsset } from '@suite-native/trading-types';
 
 import { ExchangeSendAmountInput } from './ExchangeSendAmountInput';
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
@@ -49,7 +49,7 @@ export const ExchangeSendAssetPicker = () => {
                 <SelectTradeableAssetButton
                     onPress={showSheet}
                     selectedAsset={selectedValue}
-                    colorScheme="tertiaryElevation0"
+                    buttonColorProps={{ intent: 'neutral', priority: 'secondary' }}
                     caret
                     testID={ASSET_PICKER_TEST_ID}
                 />

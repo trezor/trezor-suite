@@ -1,6 +1,6 @@
 import { expect as detoxExpect } from 'detox';
 
-import { DeviceReducerState, deviceReducerInitialState } from '@suite-common/device';
+import { type DeviceReducerState, deviceReducerInitialState } from '@suite-common/device';
 import { Model } from '@trezor/trezor-user-env-link';
 
 import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
@@ -28,7 +28,7 @@ describe('Simulated entropy check failure on T3T1 [@androidOnly @T3T1]', () => {
                 args: {
                     preloadedState: getPreloadedState({
                         success: false,
-                        payload: { code: 'Failure_EntropyCheck', error: 'SIMULATED ERROR' },
+                        error: { code: 'Failure_EntropyCheck', message: 'SIMULATED ERROR' },
                     }),
                 },
             });
@@ -49,7 +49,7 @@ describe('Simulated entropy check failure on T3T1 [@androidOnly @T3T1]', () => {
                 args: {
                     preloadedState: getPreloadedState({
                         success: false,
-                        payload: { code: 'Failure_EntropyCheck', error: mockedError },
+                        error: { code: 'Failure_EntropyCheck', message: mockedError },
                     }),
                 },
             });

@@ -3,6 +3,22 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
 
+if (!process.env.__SUITE_WEB_URL__) {
+    console.warn(`
+╔══════════════════════════════════════════════════════════════════╗
+║                                                                  ║
+║   ⚠️  __SUITE_WEB_URL__ is not set!                              ║
+║                                                                  ║
+║   The webextension build will fall back to the production        ║
+║   suite.trezor.io URL.                                           ║
+║                                                                  ║
+║   Set __SUITE_WEB_URL__ env variable to point to a custom        ║
+║   suite-web instance.                                            ║
+║                                                                  ║
+╚══════════════════════════════════════════════════════════════════╝
+`);
+}
+
 const DIST = path.resolve(__dirname, '../build-webextension');
 
 const config: webpack.Configuration = {
@@ -86,6 +102,9 @@ const config: webpack.Configuration = {
         hints: false,
     },
     plugins: [
+        new webpack.DefinePlugin({
+            __SUITE_WEB_URL__: JSON.stringify(process.env.__SUITE_WEB_URL__),
+        }),
         new HtmlWebpackPlugin({
             chunks: ['extensionPopup'],
             filename: 'extension-popup.html',

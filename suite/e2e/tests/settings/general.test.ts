@@ -12,9 +12,11 @@ export enum Currency {
 }
 
 test.describe('General settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
-    test.beforeEach(async ({ analytics, onboardingPage }) => {
+    test.beforeEach(async ({ analytics, onboardingPage, settingsPage, dashboardPage }) => {
         await onboardingPage.completeOnboarding();
         await analytics.interceptAnalytics();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await dashboardPage.navigateTo();
     });
 
     test(

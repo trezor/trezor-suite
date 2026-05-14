@@ -1,8 +1,9 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { Translation, useTranslation } from '@suite/intl';
+import { MODAL_CONTEXT_DEVICE } from '@suite/modal';
 import { formInputsMaxLength } from '@suite-common/validators';
 import {
     Box,
@@ -12,19 +13,19 @@ import {
     Icon,
     Image,
     Input,
+    Note,
     Row,
     Text,
     Tooltip,
     motionEasing,
 } from '@trezor/components';
-import { UI } from '@trezor/connect';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { UI_REQUEST } from '@trezor/connect';
+import { type DeviceModelInternal } from '@trezor/device-utils';
 import { isAndroid } from '@trezor/env-utils';
 import { PasswordStrengthIndicator } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { countBytesInString, getNonAsciiChars } from '@trezor/utils';
 
-import { CONTEXT_DEVICE } from 'src/actions/suite/constants/modalConstants';
 import { useSelector } from 'src/hooks/suite';
 
 type PassphraseInputCardProps = {
@@ -44,6 +45,14 @@ const getErrorMessage = (isPassphraseTooLong: boolean, isUsingNonAsciiCharacters
     return null;
 };
 
+const heightFadeMotionProps = {
+    initial: { height: 0, opacity: 0 },
+    animate: { height: 'auto', opacity: 1 },
+    exit: { height: 0, opacity: 0 },
+    transition: { duration: 0.2, ease: motionEasing.transition },
+    style: { overflow: 'hidden' as const },
+};
+
 export const PassphraseInputCard = ({
     deviceModel,
     isLoading,
@@ -56,12 +65,14 @@ export const PassphraseInputCard = ({
     const modal = useSelector(state => state.modal);
     const [internalValue, setInternalValue] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [isFocused, setIsFocused] = useState(false);
+    const [isCapsLockOn, setIsCapsLockOn] = useState(false);
     const { translationString } = useTranslation();
     const value = externalValue ?? internalValue;
     const setValue = setExternalValue ?? setInternalValue;
 
     const isDeviceLoading = !(
-        modal.context === CONTEXT_DEVICE && modal.windowType === UI.REQUEST_PASSPHRASE
+        modal.context === MODAL_CONTEXT_DEVICE && modal.windowType === UI_REQUEST.REQUEST_PASSPHRASE
     );
 
     const isPassphraseTooLong = countBytesInString(value) > formInputsMaxLength.passphrase;
@@ -69,6 +80,25 @@ export const PassphraseInputCard = ({
         ? false
         : getNonAsciiChars(value) !== null;
     const errorMessage = getErrorMessage(isPassphraseTooLong, isUsingNonAsciiCharacters);
+    const showCapsLockHint = isCapsLockOn && !errorMessage;
+
+    useEffect(() => {
+        if (!isFocused) {
+            setIsCapsLockOn(false);
+
+            return;
+        }
+
+        const handler = (event: KeyboardEvent) => {
+            setIsCapsLockOn(event.getModifierState('CapsLock'));
+        };
+
+        window.addEventListener('keydown', handler);
+
+        return () => {
+            window.removeEventListener('keydown', handler);
+        };
+    }, [isFocused]);
 
     const submit = useCallback(
         (value2: string, passphraseOnDevice?: boolean) => {
@@ -117,6 +147,9 @@ export const PassphraseInputCard = ({
                             data-testid="@passphrase/input"
                             placeholder={translationString('TR_ENTER_PASSPHRASE')}
                             onChange={e => setValue(e.target.value)}
+                            onFocus={() => setIsFocused(true)}
+                            onBlur={() => setIsFocused(false)}
+                            onMouseDown={e => setIsCapsLockOn(e.getModifierState('CapsLock'))}
                             // eslint-disable-next-line jsx-a11y/no-autofocus
                             autoFocus={!isAndroid()}
                             isMasked={!showPassword}
@@ -124,30 +157,35 @@ export const PassphraseInputCard = ({
                             bottomText={errorMessage}
                             hasError={!!errorMessage}
                             rightContent={
-                                <Icon
-                                    size={18}
-                                    intent="neutral"
-                                    priority="secondary"
-                                    name={showPassword ? 'eyeClosed' : 'eye'}
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    data-testid="@passphrase/show-toggle"
-                                />
+                                // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+                                <span onMouseDown={e => e.preventDefault()}>
+                                    <Icon
+                                        size={18}
+                                        intent="neutral"
+                                        priority="secondary"
+                                        name={showPassword ? 'eyeClosed' : 'eye'}
+                                        onClick={() => setShowPassword(prev => !prev)}
+                                        data-testid="@passphrase/show-toggle"
+                                    />
+                                </span>
                             }
                         />
                         <AnimatePresence initial={false}>
                             {value && !errorMessage && (
-                                <motion.div
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: 'auto', opacity: 1 }}
-                                    exit={{ height: 0, opacity: 0 }}
-                                    transition={{
-                                        duration: 0.2,
-                                        ease: motionEasing.transition,
-                                    }}
-                                    style={{ overflow: 'hidden' }}
-                                >
-                                    <Box padding={{ top: spacings.xs }}>
+                                <motion.div {...heightFadeMotionProps}>
+                                    <Box padding={{ top: 8 }}>
                                         <PasswordStrengthIndicator password={value} />
+                                    </Box>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                        <AnimatePresence initial={false}>
+                            {showCapsLockHint && (
+                                <motion.div {...heightFadeMotionProps}>
+                                    <Box padding={{ top: 8 }}>
+                                        <Note>
+                                            <Translation id="TR_PASSPHRASE_CAPS_LOCK_ON" />
+                                        </Note>
                                     </Box>
                                 </motion.div>
                             )}

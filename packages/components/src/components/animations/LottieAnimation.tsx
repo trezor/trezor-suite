@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-import Lottie, { LottieOptions } from 'lottie-react';
+import Lottie, { type LottieOptions } from 'lottie-react';
 import styled from 'styled-components';
 
 import { resolveStaticPath } from '@trezor/env-utils';
 
-import { AnimationWrapper, Shape } from './AnimationPrimitives';
+import { AnimationWrapper, type Shape } from './AnimationPrimitives';
 
 const StyledLottie = styled(Lottie)`
     width: 100%;

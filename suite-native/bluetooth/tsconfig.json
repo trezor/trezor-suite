@@ -20,7 +20,9 @@
         { "path": "../toasts" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         {
             "path": "../../packages/transport-native-bluetooth"
         }

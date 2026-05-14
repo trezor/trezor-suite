@@ -1,15 +1,16 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { SuiteSyncDataRootState, selectSuiteSyncOutputLabel } from '@suite-common/suite-sync';
+import { type SuiteSyncDataRootState, selectSuiteSyncOutputLabel } from '@suite-common/suite-sync';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountDescriptor, TxTargetId } from '@suite-common/wallet-types';
+import { isTokenTargetId } from '@suite-common/wallet-core';
+import { type AccountDescriptor, type TxTargetId } from '@suite-common/wallet-types';
+import { featureUsed } from '@suite-native/feature-feedback';
 import { useNativeServices } from '@suite-native/services';
-import { useToast } from '@suite-native/toasts';
 import type { StaticSessionId } from '@trezor/connect';
-import { exhaustive } from '@trezor/type-utils';
 
 import { EditableLabelLayout } from './EditableLabelLayout';
 import { LabelEditForm } from './LabelEditForm';
+import { useSuiteSyncErrorHandler } from '../hooks/useSuiteSyncLabelErrorHandler';
 import { selectIsLabellingAllowed } from '../selectors';
 
 type TransactionOutputLabelEditableProps = {
@@ -27,15 +28,18 @@ export const TransactionOutputLabelEditable = ({
     accountDescriptor,
     networkSymbol,
 }: TransactionOutputLabelEditableProps) => {
+    const dispatch = useDispatch();
     const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
     const { suiteSync } = useNativeServices();
-    const { showToast } = useToast();
+    const { handleSuiteSyncError } = useSuiteSyncErrorHandler();
+    const isTokenTxTargetId = isTokenTargetId(txTargetId);
 
     const label = useSelector((state: SuiteSyncDataRootState) =>
         selectSuiteSyncOutputLabel(state, txId, txTargetId, deviceStaticSessionId),
     );
 
-    if (!isLabellingAllowed) {
+    // Tokens labels wouldn't sync properly between desktop & mobile, so labeling is turned off for tokens until it's fixed.
+    if (!isLabellingAllowed || isTokenTxTargetId) {
         return null;
     }
 
@@ -50,27 +54,19 @@ export const TransactionOutputLabelEditable = ({
         });
 
         if (!result.success) {
-            const { type } = result.error;
-            switch (type) {
-                case 'SuiteSyncUnavailableOnDeviceError':
-                case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
-                case 'DeviceCancelled':
-                case 'DeviceError':
-                case 'SuiteSyncUpdateError':
-                    showToast({ variant: 'error', icon: 'warning', message: type });
+            handleSuiteSyncError(result.error);
 
-                    return;
-                case 'WriteModeRequiredForAllocation':
-                    // Do nothing, this is expected control flow error when we want allocate on-demand.
-                    return;
-                default:
-                    return exhaustive(type);
-            }
+            return;
         }
+
+        dispatch(featureUsed('suite-sync'));
     };
 
     return (
-        <EditableLabelLayout label={label}>
+        <EditableLabelLayout
+            label={label}
+            testID={`@transactions/output-label/${txId}/${txTargetId}`}
+        >
             {({ onClose }) => (
                 <LabelEditForm
                     label={label ?? ''}

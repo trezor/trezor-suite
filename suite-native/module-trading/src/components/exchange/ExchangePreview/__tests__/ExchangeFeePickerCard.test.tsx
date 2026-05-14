@@ -1,52 +1,57 @@
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { getTranslation } from '@suite-native/intl';
+import { btc1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
-import { ExchangeFeePickerCard, ExchangeFeePickerCardProps } from '../ExchangeFeePickerCard';
+import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
+import { ExchangeFeePickerCard, type ExchangeFeePickerCardProps } from '../ExchangeFeePickerCard';
+
+// Mock FeeSelector to avoid deep dependency chain
+jest.mock('@suite-native/transaction-management', () => ({
+    ...jest.requireActual('@suite-native/transaction-management'),
+    FeeSelector: jest.fn(() => null),
+}));
 
 describe('ExchangeFeePickerCard', () => {
     const renderExchangeFeePickerCard = (
         props: Partial<ExchangeFeePickerCardProps> = {},
-        tradingAccountKey = 'btc-account-1',
-    ) => {
-        const preloadedState: PreloadedState = {
-            wallet: getWalletState({ tradeType: 'exchange' }),
-        };
-        preloadedState.wallet!.trading!.composedTransactionInfo = { composed: { fee: '1000' } };
-        preloadedState.wallet!.trading!.exchange!.tradingAccountKey = tradingAccountKey;
+        tradingAccountKey: AccountKey = btc1NormalAccount.key,
+    ) =>
+        renderWithTradingProvider(<ExchangeFeePickerCard isTxnError={false} {...props} />, {
+            tradeType: 'exchange',
+            overrides: {
+                wallet: { trading: { exchange: { tradingAccountKey } } },
+            },
+        });
 
-        return renderWithStoreProviderAsync(
-            <ExchangeFeePickerCard isTxnError={false} {...props} />,
-            { preloadedState },
-        );
-    };
-
-    it('should render nothing when isTxnError', async () => {
-        const { toJSON } = await renderExchangeFeePickerCard({
-            quote: exchangeQuotes[0],
+    it('should render nothing when isTxnError', () => {
+        const { toJSON } = renderExchangeFeePickerCard({
+            quote: mercuryoFixedWorstQuote,
             isTxnError: true,
         });
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render nothing when there is no quote', async () => {
-        const { toJSON } = await renderExchangeFeePickerCard({});
+    it('should render nothing when there is no quote', () => {
+        const { toJSON } = renderExchangeFeePickerCard({});
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render nothing when account is not found', async () => {
-        const { toJSON } = await renderExchangeFeePickerCard(
-            { quote: exchangeQuotes[0] },
-            'unknown-account-key',
+    it('should render nothing when account is not found', () => {
+        const { toJSON } = renderExchangeFeePickerCard(
+            { quote: mercuryoFixedWorstQuote },
+            'unknown-account-key' as AccountKey,
         );
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render FeePickerCard otherwise', async () => {
-        const { getByText } = await renderExchangeFeePickerCard({ quote: exchangeQuotes[0] });
+    it('should render FeePickerCard otherwise', () => {
+        const { getByText } = renderExchangeFeePickerCard({ quote: mercuryoFixedWorstQuote });
 
-        expect(getByText('Fee')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.details')),
+        ).toBeOnTheScreen();
     });
 });

@@ -48,3 +48,10 @@ else
     # Linux command with -i and -E for in-place editing without backup (GNU sed syntax) and extended regex 
     find "$1" -name "*.d.ts" -type f -exec sed -i "s|@trezor/\([^/]*\)/src|@trezor/\1/${LIB_DIR}|g" {} +
 fi
+
+if [ "$2" == "esm" ]; then
+    # rename all esm js files to mjs
+    find "$1" -name "*.js" -type f -exec sh -c 'mv "$0" "${0%.js}.mjs"' {} \;
+    # rename declaration files to .d.mts so TypeScript treats them as ESM, matching the .mjs runtime files
+    find "$1" -name "*.d.ts" -type f -exec sh -c 'mv "$0" "${0%.d.ts}.d.mts"' {} \;
+fi

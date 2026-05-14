@@ -1,10 +1,9 @@
 import { Checkbox } from '@trezor/components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
+import { useBridgeDesktopApi } from 'src/hooks/suite/useBridgeDesktopApi';
 import { selectTransportOfType } from 'src/selectors/suite/suiteSelectors';
-
-import { useBridgeDesktopApi } from '../../../hooks/suite/useBridgeDesktopApi';
 
 export const TransportBackends = () => {
     const bridge = useSelector(selectTransportOfType('BridgeTransport'));
@@ -37,7 +36,7 @@ export const TransportBackends = () => {
                 <ActionColumn>
                     <Checkbox
                         isChecked={bridgeProcess.process}
-                        onClick={() => {
+                        onChange={() => {
                             toggleBridge();
                         }}
                     />
@@ -51,7 +50,7 @@ export const TransportBackends = () => {
                 <ActionColumn>
                     <Checkbox
                         isChecked={!bridgeSettings.doNotStartOnStartup}
-                        onClick={() => {
+                        onChange={() => {
                             changeBridgeSettings({
                                 ...bridgeSettings,
                                 doNotStartOnStartup: !bridgeSettings.doNotStartOnStartup,

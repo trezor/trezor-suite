@@ -10,8 +10,8 @@ export const ConnectAndUnlockDeviceScreenContent = () => (
                 <Translation id="moduleConnectDevice.connectAndUnlockScreen.title" />
             </Text>
             <HStack margin="sp12">
-                <Loader color="iconPrimaryDefault" />
-                <Text variant="body-md" color="textPrimaryDefault">
+                <Loader color="contentBrand" />
+                <Text variant="body-md" color="contentBrand">
                     <Translation id="moduleConnectDevice.connectAndUnlockScreen.status" />
                 </Text>
             </HStack>

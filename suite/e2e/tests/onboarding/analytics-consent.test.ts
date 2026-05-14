@@ -12,6 +12,7 @@ test.describe('Onboarding - analytics consent', { tag: ['@webOnly', '@T3W1', '@T
         device,
         analyticsSection,
         onboardingPage,
+        settingsPage,
         walletPage,
         devicePrompt,
         dashboardPage,
@@ -27,6 +28,7 @@ test.describe('Onboarding - analytics consent', { tag: ['@webOnly', '@T3W1', '@T
         await onboardingPage.completeOnboardingButton.click();
 
         await expect(dashboardPage.suiteLayout).toBeVisible();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
         await walletPage.openAccount();
         await expect(walletPage.openSendFormButton).toBeVisible();
     });

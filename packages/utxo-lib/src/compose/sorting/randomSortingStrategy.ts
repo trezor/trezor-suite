@@ -1,7 +1,7 @@
 import { arrayShuffle, getRandomInt } from '@trezor/utils';
 
 import { convertOutput } from './convertOutput';
-import { SortingStrategy } from './sortingStrategy';
+import { type SortingStrategy } from './sortingStrategy';
 
 export const randomSortingStrategy: SortingStrategy = ({ result, request, convertedInputs }) => {
     const nonChangeOutputPermutation: number[] = [];

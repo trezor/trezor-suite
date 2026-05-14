@@ -1,7 +1,8 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-import { BackupType } from '@suite-common/suite-types';
-import { SUITE as SuiteActions } from '@trezor/suite/src/actions/suite/constants';
+import { setFlag } from '@suite/flags';
+import { suiteSettingsActions } from '@suite/settings';
+import type { BackupType } from '@suite-common/suite-types';
 import { Model } from '@trezor/trezor-user-env-link';
 
 import { step } from '../../common';
@@ -36,6 +37,7 @@ export class OnboardingPage {
         this.page.getByTestId(`@onboarding/select-seed-type-${backupType}`);
     readonly selectSeedTypeOpenButton: Locator;
     readonly selectSeedConfirmButton: Locator;
+    readonly finalButton: Locator;
     readonly continueAtYourOwnRiskButton: Locator;
     readonly deviceCompromisedModal: Locator;
     readonly pairingInputAtIndex = (index: number) =>
@@ -75,6 +77,7 @@ export class OnboardingPage {
         this.selectSeedConfirmButton = this.page.getByTestId(
             '@onboarding/select-seed-type-confirm',
         );
+        this.finalButton = this.page.getByTestId('@onboarding/final-button');
         this.continueAtYourOwnRiskButton = this.page.getByTestId('@continue-to-suite');
         this.deviceCompromisedModal = this.page.getByTestId('@device-compromised');
     }
@@ -106,17 +109,22 @@ export class OnboardingPage {
     }
 
     @step()
+    async pairTHP() {
+        if (this.device.hasTHP) {
+            await this.devicePrompt.allowConnectToTrezor();
+            await this.enterTHPPairingCode();
+            await this.enableAutoconnect();
+        }
+    }
+
+    @step()
     async completeOnboarding(options?: { keepDebugModeEnabled?: boolean }) {
         await this.disableNecessaryFirmwareChecks();
         await this.disableDisconnectPrompt();
         await this.optionallyDismissFwHashCheckError();
         await this.analyticsSection.continueButton.click();
 
-        if (this.device.hasTHP) {
-            await this.devicePrompt.allowConnectToTrezor();
-            await this.enterTHPPairingCode();
-            await this.enableAutoconnect();
-        }
+        await this.pairTHP();
 
         await this.completeOnboardingButton.click();
         if (this.device.hasSecureElement && this.device.model !== Model.T3W1) {
@@ -170,11 +178,11 @@ export class OnboardingPage {
             actions => actions.forEach(window.store.dispatch),
             [
                 {
-                    type: SuiteActions.TOGGLE_FIRMWARE_HASH_CHECK,
+                    type: suiteSettingsActions.toggleFirmwareHashCheck.type,
                     payload: false,
                 },
                 {
-                    type: SuiteActions.SET_DEBUG_MODE,
+                    type: suiteSettingsActions.setDebugMode.type,
                     payload: { showDebugMenu: true },
                 },
             ],
@@ -185,7 +193,7 @@ export class OnboardingPage {
     async disableDebugMode() {
         await this.page.ensureStoreOnDesktop();
         await this.page.evaluate(action => window.store.dispatch(action), {
-            type: SuiteActions.SET_DEBUG_MODE,
+            type: suiteSettingsActions.setDebugMode.type,
             payload: { showDebugMenu: false },
         });
     }
@@ -194,7 +202,7 @@ export class OnboardingPage {
     async disableFirmwareRevisionCheck() {
         await this.page.ensureStoreOnDesktop();
         await this.page.evaluate(action => window.store.dispatch(action), {
-            type: SuiteActions.TOGGLE_FIRMWARE_REVISION_CHECK,
+            type: suiteSettingsActions.toggleFirmwareRevisionCheck.type,
             payload: false,
         });
     }
@@ -203,7 +211,7 @@ export class OnboardingPage {
     async disableAuthenticityCheck() {
         await this.page.ensureStoreOnDesktop();
         await this.page.evaluate(action => window.store.dispatch(action), {
-            type: SuiteActions.TOGGLE_DEVICE_AUTHENTICITY_CHECK,
+            type: suiteSettingsActions.toggleDeviceAuthenticityCheck.type,
             payload: false,
         });
     }
@@ -211,11 +219,10 @@ export class OnboardingPage {
     @step()
     async disableDisconnectPrompt() {
         await this.page.ensureStoreOnDesktop();
-        await this.page.evaluate(action => window.store.dispatch(action), {
-            type: SuiteActions.SET_FLAG,
-            key: 'hasSeenDisconnectTooltip',
-            value: true,
-        });
+        await this.page.evaluate(
+            action => window.store.dispatch(action),
+            setFlag({ key: 'hasSeenDisconnectTooltip', value: true }),
+        );
     }
 
     @step()

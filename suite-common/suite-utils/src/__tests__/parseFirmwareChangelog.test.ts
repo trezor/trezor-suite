@@ -1,8 +1,8 @@
-import { FirmwareRelease } from '@trezor/device-utils';
+import { type FirmwareRelease } from '@trezor/device-utils';
 
 import {
-    ParseFirmwareChangelogParams,
-    ParseFirmwareChangelogResult,
+    type ParseFirmwareChangelogParams,
+    type ParseFirmwareChangelogResult,
     parseFirmwareChangelog,
 } from '../parseFirmwareChangelog';
 

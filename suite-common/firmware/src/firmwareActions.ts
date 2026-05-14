@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
+import { type FirmwareStatus, type TrezorDevice } from '@suite-common/suite-types';
 import type { FirmwareChannel, FirmwareType } from '@trezor/connect';
 
 export const FIRMWARE_MODULE_PREFIX = '@common/wallet-core/firmware';

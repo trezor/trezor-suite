@@ -4,8 +4,9 @@ import styled from 'styled-components';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { selectIsDebugModeActive } from '@suite/settings';
 import {
-    TradingExchangeType,
+    type TradingExchangeType,
     invityAPI,
     tokenSupportsIncreasingAllowance,
     useTradingUtils,
@@ -31,7 +32,6 @@ import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { getProvidersInfoProps } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
@@ -146,7 +146,7 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
     return (
         <Modal
             onCancel={() => onClose()}
-            variant="primary"
+            intent="brand"
             width={600}
             heading={
                 <Translation

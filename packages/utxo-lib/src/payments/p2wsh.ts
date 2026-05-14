@@ -1,13 +1,14 @@
 // upstream: https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/ts_src/payments/p2wsh.ts
 
-import { bech32 } from 'bech32';
-import ecc from 'tiny-secp256k1';
+import { bech32 } from '@scure/base';
 
 import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
+import * as ecc from '../noble-compatibility';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { Payment, PaymentOpts, StackElement, StackFunction, typeforce } from '../types';
+import { type Payment, type PaymentOpts, type StackElement, type StackFunction } from '../types';
+import { BufferNSchema, BufferSchema, Nullable, Type, assertType } from '../types/validation';
 
 const { OPS } = bscript;
 
@@ -36,28 +37,34 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
 
     opts = Object.assign({ validate: true }, opts || {});
 
-    typeforce(
-        {
-            network: typeforce.maybe(typeforce.Object),
-
-            address: typeforce.maybe(typeforce.String),
-            hash: typeforce.maybe(typeforce.BufferN(32)),
-            output: typeforce.maybe(typeforce.BufferN(34)),
-
-            redeem: typeforce.maybe({
-                input: typeforce.maybe(typeforce.Buffer),
-                network: typeforce.maybe(typeforce.Object),
-                output: typeforce.maybe(typeforce.Buffer),
-                witness: typeforce.maybe(typeforce.arrayOf(typeforce.Buffer)),
-            }),
-            input: typeforce.maybe(typeforce.BufferN(0)),
-            witness: typeforce.maybe(typeforce.arrayOf(typeforce.Buffer)),
-        },
+    assertType(
+        Type.Object(
+            {
+                network: Type.Optional(Type.Object({}, { additionalProperties: true })),
+                address: Type.Optional(Type.String()),
+                hash: Type.Optional(BufferNSchema(32)),
+                output: Type.Optional(BufferNSchema(34)),
+                redeem: Type.Optional(
+                    Type.Object(
+                        {
+                            input: Type.Optional(BufferSchema),
+                            network: Type.Optional(Type.Object({}, { additionalProperties: true })),
+                            output: Type.Optional(BufferSchema),
+                            witness: Nullable(Type.Array(BufferSchema)),
+                        },
+                        { additionalProperties: true },
+                    ),
+                ),
+                input: Type.Optional(BufferNSchema(0)),
+                witness: Type.Optional(Type.Array(BufferSchema)),
+            },
+            { additionalProperties: true },
+        ),
         a,
     );
 
     const _address = lazy.value(() => {
-        const result = bech32.decode(a.address!);
+        const result = bech32.decode(a.address! as `${string}1${string}`);
         const version = result.words.shift();
         const data = bech32.fromWords(result.words);
 
@@ -141,7 +148,7 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
 
     // extended validation
     if (opts.validate) {
-        let hash = Buffer.from([]);
+        let hash: Buffer = Buffer.from([]);
         if (a.address) {
             const { prefix, version, data } = _address();
             if (prefix !== network.bech32)

@@ -1,17 +1,16 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey, FormState } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountKey, type FormState } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import {
-    PreloadedState,
     act,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
     userEvent,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 
 import { getWalletState } from '../../../../__fixtures__/walletState';
-import { FeesFormType } from '../../../../feesFormSchema';
-import { CustomFeeParams, useFeesForm } from '../../../../hooks';
+import { type FeesFormType } from '../../../../feesFormSchema';
+import { type CustomFeeParams, useFeesForm } from '../../../../hooks';
 import { useCustomFee } from '../../../../hooks/fees/useCustomFee';
 import { CustomFee } from '../CustomFee';
 
@@ -43,17 +42,15 @@ describe('CustomFee', () => {
 
     const renderUseFeesForm = (
         accountKey: AccountKey = 'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
-        preloadedState?: PreloadedState,
-        defaultFeePerUnit?: string,
     ) => {
         const { result } = renderHookWithStoreProvider(
             () =>
                 useFeesForm({
                     accountKey,
-                    defaultFeePerUnit: defaultFeePerUnit || '1',
+                    defaultFeePerUnit: '1',
                 }),
             {
-                preloadedState: preloadedState || defaultState,
+                preloadedState: defaultState,
             },
         );
 
@@ -62,11 +59,9 @@ describe('CustomFee', () => {
 
     const renderCustomFee = ({
         form,
-        preloadedState,
         props,
     }: {
         form: FeesFormType;
-        preloadedState?: PreloadedState;
         props?: Partial<CustomFeeProps>;
     }) => {
         // Create a mock FormState that matches the expected structure
@@ -88,7 +83,7 @@ describe('CustomFee', () => {
         };
 
         return renderWithStoreProvider(<CustomFee {...finalProps} />, {
-            preloadedState: preloadedState || defaultState,
+            preloadedState: defaultState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
     };

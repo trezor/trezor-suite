@@ -1,10 +1,10 @@
 import { useCallback, useEffect } from 'react';
-import { AppState, AppStateStatus } from 'react-native';
+import { AppState, type AppStateStatus } from 'react-native';
 import { useDispatch } from 'react-redux';
 
 import { getLocales } from 'expo-localization';
 
-import { DEFAULT_LOCALE, LocaleCode } from '../languages';
+import { DEFAULT_LOCALE, type LocaleCode } from '../languages';
 import { setSystemLocaleCode } from '../localeSlice';
 
 export const useSystemLocaleListener = () => {

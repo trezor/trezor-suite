@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { getReleaseUrl } from '@suite/github';
 import { Translation } from '@suite/intl';
 import { Card, Modal, Row, TextButton } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { MarkdownWithComponents } from 'src/components/suite';
-import { getReleaseUrl } from 'src/services/github';
 
 interface AvailableProps {
     onCancel: () => void;

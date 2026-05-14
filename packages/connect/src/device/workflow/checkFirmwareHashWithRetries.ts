@@ -1,12 +1,12 @@
+import { FIRMWARE } from '@trezor/connect-common';
+import type { Log } from '@trezor/connect-common/src/utils/debug';
 import { isArrayMember } from '@trezor/utils';
 
-import { FIRMWARE } from '../../constants';
-import { Log } from '../../utils/debug';
-import type { Device } from '../Device';
 import { checkFirmwareHash } from './checkFirmwareHash';
+import type { IDevice } from '../../types/idevice';
 
 type Context = {
-    device: Device;
+    device: IDevice;
     logger: Log;
 };
 

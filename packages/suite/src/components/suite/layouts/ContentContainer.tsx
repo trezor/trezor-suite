@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
-import { HORIZONTAL_LAYOUT_PADDINGS, MAX_CONTENT_WIDTH } from '../../../constants/suite/layout';
+import { HORIZONTAL_LAYOUT_PADDINGS, MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 
 export const ContentContainer = styled.div`
     position: relative;

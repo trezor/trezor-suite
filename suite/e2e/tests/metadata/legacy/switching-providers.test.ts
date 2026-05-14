@@ -28,6 +28,9 @@ test.describe(
             }) => {
                 await test.step('Navigate to account and verify initial state', async () => {
                     await onboardingPage.completeOnboarding();
+                    await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+                    await metadataMock.start(MetadataProvider.DROPBOX);
+                    await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
                     await walletPage.openAccount();
                     await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
                         defaultLabel,
@@ -35,10 +38,7 @@ test.describe(
                 });
 
                 await test.step('Start Dropbox provider and add a label', async () => {
-                    await metadataMock.start(MetadataProvider.DROPBOX);
-
                     await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
-                    await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
 
                     await metadataPage.account.metadataInput.fill(dropboxLabel);
                     await page.keyboard.press('Enter');

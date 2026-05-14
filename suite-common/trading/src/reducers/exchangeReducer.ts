@@ -1,15 +1,15 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import {
-    CryptoId,
-    ExchangeProviderInfo,
-    ExchangeTrade,
-    ExchangeTradeQuoteRequest,
+    type CryptoId,
+    type ExchangeProviderInfo,
+    type ExchangeTrade,
+    type ExchangeTradeQuoteRequest,
 } from 'invity-api';
 
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 
 import { TRADING_EXCHANGE_PREFIX } from '../constants';
-import { TradingExchangeAmountLimitProps, TradingExchangeStepType } from '../types';
+import { type TradingExchangeAmountLimitProps, type TradingExchangeStepType } from '../types';
 
 export interface ExchangeInfo {
     providerInfos: Record<string, ExchangeProviderInfo>;
@@ -30,6 +30,7 @@ export interface TradingExchangeState {
     preselectedQuote: ExchangeTrade | undefined;
     isFromRedirect: boolean;
     isLoading: boolean;
+    dexQuoteApprovalPrefetchLoadingQuoteId: string | undefined;
     amountLimits: TradingExchangeAmountLimitProps | undefined;
     formStep: TradingExchangeStepType;
     transactionId?: string;
@@ -49,6 +50,7 @@ export const exchangeInitialState: TradingExchangeState = {
     preselectedQuote: undefined,
     isFromRedirect: false,
     isLoading: false,
+    dexQuoteApprovalPrefetchLoadingQuoteId: undefined,
     amountLimits: undefined,
     formStep: 'RECEIVING_ADDRESS',
 };
@@ -95,6 +97,12 @@ const tradingExchangeSlice = createSlice({
         },
         setIsLoading(state, action: PayloadAction<boolean>) {
             state.isLoading = action.payload;
+        },
+        setDexQuoteApprovalPrefetchLoadingQuoteId(
+            state,
+            action: PayloadAction<string | undefined>,
+        ) {
+            state.dexQuoteApprovalPrefetchLoadingQuoteId = action.payload;
         },
         setAmountLimits(state, action: PayloadAction<TradingExchangeAmountLimitProps | undefined>) {
             state.amountLimits = action.payload;

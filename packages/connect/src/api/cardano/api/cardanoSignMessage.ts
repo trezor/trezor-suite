@@ -1,21 +1,22 @@
 import * as cbor from 'cbor';
 
+import { CARDANO, type MethodPermission } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import {
+    type CardanoMessageHeaders,
+    CardanoSignMessage as CardanoSignMessageSchema,
+    type CardanoSignedMessage,
+} from '@trezor/connect-common/src/types/api/cardano';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { CARDANO, PROTO } from '../../../constants';
+import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import {
-    CardanoMessageHeaders,
-    CardanoSignMessage as CardanoSignMessageSchema,
-    CardanoSignedMessage,
-} from '../../../types/api/cardano';
 import { hasHexPrefix, isHexString } from '../../../utils/formatUtils';
 import { validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { addressParametersToProto } from '../cardanoAddressParameters';
-import { Path } from '../cardanoInputs';
+import type { Path } from '../cardanoInputs';
 import { hexStringByteLength } from '../cardanoUtils';
 
 export type CardanoSignMessageParams = {
@@ -34,15 +35,8 @@ export default class CardanoSignMessage extends AbstractMethod<
 > {
     static readonly VERSION = 1;
 
-    init(): void {
-        this.requiredPermissions = ['read', 'write'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Cardano'),
-            this.firmwareRange,
-        );
-
-        const { payload } = this;
+    constructor(message: MethodMessage<'cardanoSignMessage'>) {
+        const { payload } = message;
 
         Assert(CardanoSignMessageSchema, payload);
 
@@ -53,7 +47,7 @@ export default class CardanoSignMessage extends AbstractMethod<
             );
         }
 
-        this.params = {
+        const params = {
             path: validatePath(payload.path, 5),
             payload: payload.payload,
             preferHexDisplay: payload.preferHexDisplay ?? false,
@@ -63,10 +57,20 @@ export default class CardanoSignMessage extends AbstractMethod<
                 payload.addressParameters && addressParametersToProto(payload.addressParameters),
             derivationType: payload.derivationType ?? PROTO.CardanoDerivationType.ICARUS_TREZOR,
         };
+
+        super(message, params);
+
+        this.requiredFirmwareCoins = [getMiscNetwork('Cardano')];
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read', 'write'];
     }
 
     async run(): Promise<CardanoSignedMessage> {
-        const typedCall = this.device.getCommands().typedCall.bind(this.device.getCommands());
+        const typedCall = this.getDevice()
+            .getCommands()
+            .typedCall.bind(this.getDevice().getCommands());
         const payloadSize = hexStringByteLength(this.params.payload);
 
         let response = await typedCall(

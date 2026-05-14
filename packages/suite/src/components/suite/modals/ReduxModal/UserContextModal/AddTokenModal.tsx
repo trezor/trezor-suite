@@ -1,16 +1,16 @@
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { type ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { isAddressValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Input, Modal } from '@trezor/components';
-import TrezorConnect, { TokenInfo } from '@trezor/connect';
+import TrezorConnect, { type TokenInfo } from '@trezor/connect';
 
 import { addToken } from 'src/actions/wallet/tokenActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 type AddTokenModalProps = {
     onCancel: () => void;
@@ -37,6 +37,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
                 details: 'tokenBalances',
                 contractFilter: contractAddress,
                 suppressBackupWarning: true,
+                protocols: acc.networkType === 'ethereum' ? ['erc4626'] : undefined,
             });
 
             if (response.success) {
@@ -53,7 +54,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
                 setTokenInfo(undefined);
                 setError(
                     translationString('TR_ADD_TOKEN_TOAST_ERROR', {
-                        error: response.payload.error,
+                        error: response.error.message,
                     }),
                 );
             }

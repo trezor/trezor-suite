@@ -1,16 +1,16 @@
-const TrezorConnect = require('@trezor/connect').default;
-const {
-    TRANSPORT_EVENT,
-    UI,
-    UI_EVENT,
+import TrezorConnect, {
+    DEVICE,
     DEVICE_EVENT,
     TRANSPORT,
-    DEVICE,
-} = require('@trezor/connect');
+    TRANSPORT_EVENT,
+    UI_EVENT,
+    UI_REQUEST,
+    UI_RESPONSE,
+} from '@trezor/connect';
 
 let inited = false;
 // SETUP trezor-connect
-exports.initTrezorConnect = sender => {
+export const initTrezorConnect = sender => {
     if (inited) return; // prevent multiple initialization
     inited = true;
 
@@ -45,24 +45,24 @@ exports.initTrezorConnect = sender => {
     TrezorConnect.on(UI_EVENT, event => {
         sender.send('trezor-connect', event);
 
-        if (event.type === UI.REQUEST_PIN) {
+        if (event.type === UI_REQUEST.REQUEST_PIN) {
             // example how to respond to pin request
-            TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload: '1234' });
+            TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_PIN, payload: '1234' });
         }
 
-        if (event.type === UI.REQUEST_PASSPHRASE) {
+        if (event.type === UI_REQUEST.REQUEST_PASSPHRASE) {
             if (event.payload.device.features.capabilities.includes('Capability_PassphraseEntry')) {
                 // device does support entering passphrase on device
                 // let user choose where to enter
                 // if he choose to do it on device respond with:
                 TrezorConnect.uiResponse({
-                    type: UI.RECEIVE_PASSPHRASE,
+                    type: UI_RESPONSE.RECEIVE_PASSPHRASE,
                     payload: { passphraseOnDevice: true, value: '' },
                 });
             } else {
                 // example how to respond to passphrase request from regular UI input (form)
                 TrezorConnect.uiResponse({
-                    type: UI.RECEIVE_PASSPHRASE,
+                    type: UI_RESPONSE.RECEIVE_PASSPHRASE,
                     payload: { value: 'type your passphrase here', save: true },
                 });
             }
@@ -71,17 +71,14 @@ exports.initTrezorConnect = sender => {
         // getAddress from device which is not backed up
         // there is a high risk of coin loss at this point
         // warn user about it
-        if (event.type === UI.REQUEST_CONFIRMATION) {
+        if (event.type === UI_REQUEST.REQUEST_CONFIRMATION) {
             // payload: true - user decides to continue anyway
-            TrezorConnect.uiResponse({ type: UI.RECEIVE_CONFIRMATION, payload: true });
+            TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_CONFIRMATION, payload: true });
         }
     });
 
     TrezorConnect.init({
         debug: false, // see what's going on inside connect
-        // lazyLoad: true, // set to "false" (default) if you want to start communication with bridge on application start (and detect connected device right away)
-        // set it to "true", then trezor-connect will not be initialized until you call some TrezorConnect.method()
-        // this is useful when you don't know if you are dealing with Trezor user
         manifest: {
             email: 'email@developer.com',
             appName: 'Trezor Connect Example',
@@ -97,7 +94,7 @@ exports.initTrezorConnect = sender => {
         });
 };
 
-exports.callTrezorConnect = (sender, message) => {
+export const callTrezorConnect = (sender, message) => {
     const { method, params } = message;
     TrezorConnect[method](params).then(response => {
         sender.send('trezor-connect', response);

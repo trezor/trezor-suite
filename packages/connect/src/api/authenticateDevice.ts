@@ -1,45 +1,51 @@
 import {
-    VerifyAuthenticityProofResult,
+    AuthenticateDeviceParams,
+    type MethodPermission,
+    UI_REQUEST,
+} from '@trezor/connect-common';
+import type { VerifyAuthenticityProofResult } from '@trezor/device-authenticity';
+import {
     deviceAuthenticityBlacklistConfig,
     deviceAuthenticityConfig,
     getRandomChallenge,
     prepareDeviceAuthenticityData,
+    validateSerialNumbers,
     verifyAuthenticityProof,
 } from '@trezor/device-authenticity';
 import { Assert } from '@trezor/schema-utils';
 
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { UI } from '../events';
-import { getFirmwareRange } from './common/paramsValidator';
-import { AuthenticateDeviceParams } from '../types/api/authenticateDevice';
 
 export default class AuthenticateDevice extends AbstractMethod<
     'authenticateDevice',
     AuthenticateDeviceParams
 > {
-    init() {
-        this.useEmptyPassphrase = true;
-        this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
-        this.requiredPermissions = ['management'];
-        this.skipFinalReload = false;
-        this.useDeviceState = false;
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
-
-        const { payload } = this;
+    constructor(message: MethodMessage<'authenticateDevice'>) {
+        const { payload } = message;
 
         Assert(AuthenticateDeviceParams, payload);
 
-        this.params = {
+        const params = {
             config: payload.config,
             blacklistConfig: payload.blacklistConfig,
             allowDebugKeys: payload.allowDebugKeys,
         };
+
+        super(message, params);
+        this.useEmptyPassphrase = true;
+        this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];
+        this.skipFinalReload = false;
+        this.useDeviceState = false;
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['management'];
     }
 
     async run() {
         const challenge = getRandomChallenge();
 
-        const { message } = await this.device
+        const { message } = await this.getDevice()
             .getCommands()
             .typedCall('AuthenticateDevice', 'AuthenticityProof', {
                 challenge: challenge.toString('hex'),
@@ -48,12 +54,12 @@ export default class AuthenticateDevice extends AbstractMethod<
         const config = this.params.config || deviceAuthenticityConfig;
         const blacklistConfig = this.params.blacklistConfig || deviceAuthenticityBlacklistConfig;
         const commonParams = {
-            data: prepareDeviceAuthenticityData({ payload: challenge }),
-            deviceModel: this.device.features.internal_model,
+            signedData: prepareDeviceAuthenticityData({ payload: challenge }),
+            deviceModel: this.getDevice().features.internal_model,
             allowDebugKeys: this.params.allowDebugKeys,
             config,
             blacklistConfig,
-        } as const;
+        };
 
         const getOptigaResult = async (): Promise<VerifyAuthenticityProofResult> => {
             const { optiga_signature: signature, optiga_certificates: certificates } = message;
@@ -66,22 +72,43 @@ export default class AuthenticateDevice extends AbstractMethod<
             return { valid: false, error: 'RESPONSE_PAYLOAD_MISSING' };
         };
 
+        const hasTropicAbility =
+            !this.getDevice().unavailableCapabilities['tropicDeviceAuthentication'];
+
         const getTropicResult = async (): Promise<VerifyAuthenticityProofResult | null> => {
             const { tropic_signature: signature, tropic_certificates: certificates } = message;
             const isAvailable = signature !== undefined && certificates.length > 0;
-            const isRequired = !this.device.unavailableCapabilities['tropicDeviceAuthentication'];
+            const isRequired = hasTropicAbility;
             if (isAvailable) {
                 return await verifyAuthenticityProof({ ...commonParams, certificates, signature });
             }
-            if (isRequired) {
-                return { valid: false, error: 'RESPONSE_PAYLOAD_MISSING' };
+
+            return isRequired ? { valid: false, error: 'RESPONSE_PAYLOAD_MISSING' } : null;
+        };
+
+        const getMCUResult = async (): Promise<VerifyAuthenticityProofResult | null> => {
+            const { mcu_signature: signature, mcu_certificates: certificates } = message;
+            const isAvailable = signature !== undefined && certificates.length > 0;
+            const isRequired = !this.getDevice().unavailableCapabilities['mcuDeviceAuthentication'];
+            if (isAvailable) {
+                return await verifyAuthenticityProof({
+                    ...commonParams,
+                    certificates,
+                    signature,
+                });
             }
 
-            return null;
+            return isRequired ? { valid: false, error: 'RESPONSE_PAYLOAD_MISSING' } : null;
         };
-        const optigaResult = await getOptigaResult();
-        const tropicResult = await getTropicResult();
 
-        return { optigaResult, tropicResult };
+        const [optigaResult, tropicResult, mcuResult] = await Promise.all([
+            getOptigaResult(),
+            getTropicResult(),
+            getMCUResult(),
+        ]);
+        const results = { optigaResult, tropicResult, mcuResult };
+
+        // Only T3W1 and later have serialNumber (i.e. devices that support Tropic authentication), this validation is skipped for all older models.
+        return hasTropicAbility ? validateSerialNumbers(results) : results;
     }
 }

@@ -24,10 +24,7 @@ test.describe('Send Eth', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
 
     test.beforeEach(async ({ onboardingPage, dashboardPage, walletPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({
-            enableNetworks: ['eth'],
-            disableNetworks: ['btc'],
-        });
+        await settingsPage.changeNetworks({ enableNetworks: ['eth'] });
         await dashboardPage.deviceSwitchingOpenButton.click();
         await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
         await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
@@ -113,21 +110,12 @@ test.describe('Send Eth', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                         ['Gas limit'],
                         [`${gasLimit} units`],
                         ['Max fee per gas'],
-                        [maxFeePerGas, '\n', 'Gwei'],
-                        ['Max priority fee'],
-                        [maxPriorityFeePerGas, '\n', 'Gwei'],
-                    ],
-                },
-                T3T1: {
-                    header: { title: 'Fee info' },
-                    body: [
-                        ['Gas limit'],
-                        [`${gasLimit} units`],
-                        ['Max fee per gas'],
                         [`${maxFeePerGas} Gwei`],
                         ['Max priority fee'],
                         [`${maxPriorityFeePerGas} Gwei`],
                     ],
+                },
+                T3T1: {
                     footer: undefined,
                 },
             });

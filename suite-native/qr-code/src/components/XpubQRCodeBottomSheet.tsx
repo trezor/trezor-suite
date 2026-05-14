@@ -2,22 +2,29 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
-import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { AccountsRootState, selectAccountByKey, showXpubOnDevice } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
-import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
-import { BottomSheetModal, BottomSheetModalRef, Box, Button, VStack } from '@suite-native/atoms';
+import {
+    type AccountsRootState,
+    selectAccountByKey,
+    showXpubOnDevice,
+} from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
+import {
+    BottomSheetModal,
+    type BottomSheetModalRef,
+    Box,
+    Button,
+    VStack,
+} from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { Translation, useTranslate } from '@suite-native/intl';
 import TrezorConnect from '@trezor/connect';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { XpubQRCodeCard } from './XpubQRCodeCard';
 
 type XpubQRCodeBottomSheetProps = {
     onClose: () => void;
     qrCodeData?: string;
-    symbol: NetworkSymbol;
     ref: BottomSheetModalRef;
     accountKey: AccountKey;
 };
@@ -29,50 +36,23 @@ const buttonStyle = prepareNativeStyle(utils => ({
 export const XpubQRCodeBottomSheet = ({
     onClose,
     qrCodeData,
-    symbol,
     ref,
     accountKey,
 }: XpubQRCodeBottomSheetProps) => {
     const [confirmationInProgress, setConfirmationInProgress] = useState(false);
     const { translate } = useTranslate();
-    const networkType = getNetworkType(symbol);
-    const isAddressBased = isAddressBasedNetwork(networkType);
     const { applyStyle } = useNativeStyles();
     const copyToClipboard = useCopyToClipboard();
-    const [isXpubShown, setIsXpubShown] = useState(isAddressBased);
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-
     const device = useSelector(selectSelectedDevice);
 
+    const isImported = account?.imported ?? false;
+    const [isXpubShown, setIsXpubShown] = useState(isImported);
+
     if (!qrCodeData) return null;
-
-    const copyMessage = translate(
-        isAddressBased
-            ? 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.address.copyMessage'
-            : 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.copyMessage',
-    );
-
-    const showButtonTitle = (
-        <Translation
-            id={
-                isAddressBased
-                    ? 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.address.showButton'
-                    : 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.showButton'
-            }
-        />
-    );
-    const sheetTitle = (
-        <Translation
-            id={
-                isAddressBased
-                    ? 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.address.title'
-                    : 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.title'
-            }
-        />
-    );
 
     const handleCancelConfirmation = () => {
         if (!confirmationInProgress) return;
@@ -97,6 +77,9 @@ export const XpubQRCodeBottomSheet = ({
     };
 
     const handleCopyXpub = async () => {
+        const copyMessage = translate(
+            'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.copyMessage',
+        );
         await copyToClipboard(qrCodeData, copyMessage);
         onClose();
     };
@@ -105,7 +88,9 @@ export const XpubQRCodeBottomSheet = ({
         <BottomSheetModal
             ref={ref}
             isCloseDisplayed
-            title={sheetTitle}
+            title={
+                <Translation id="moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.title" />
+            }
             onClose={handleCancelConfirmation}
         >
             <VStack spacing="sp24">
@@ -113,12 +98,12 @@ export const XpubQRCodeBottomSheet = ({
 
                 <Box style={applyStyle(buttonStyle)}>
                     {isXpubShown ? (
-                        <Button size="large" onPress={handleCopyXpub}>
+                        <Button onPress={handleCopyXpub}>
                             <Translation id="moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.copyButton" />
                         </Button>
                     ) : (
-                        <Button size="large" viewLeft="eye" onPress={handleShowXpub}>
-                            {showButtonTitle}
+                        <Button iconLeft="eye" onPress={handleShowXpub}>
+                            <Translation id="moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.showButton" />
                         </Button>
                     )}
                 </Box>

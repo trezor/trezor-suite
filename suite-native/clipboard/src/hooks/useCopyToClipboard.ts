@@ -14,7 +14,7 @@ export function useCopyToClipboard() {
             await Clipboard.setStringAsync(value);
 
             showToast({
-                variant: 'default',
+                intent: 'neutral',
                 message: toastMessage ?? translate('moduleClipboard.copiedToClipboard'),
                 icon: 'copy',
             });

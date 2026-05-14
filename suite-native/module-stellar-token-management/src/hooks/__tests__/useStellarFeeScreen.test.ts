@@ -1,16 +1,16 @@
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import {
     AuthorizeDeviceStackRoutes,
     RootStackRoutes,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
 import {
-    TestStore,
+    type TestStore,
     act,
-    initStore,
+    createStoreFromPreloadedState,
     renderHookWithStoreProvider,
     waitFor,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import { BASE_INFO } from '@trezor/blockchain-link-utils/src/stellar';
 import { BigNumber } from '@trezor/utils';
 
@@ -204,7 +204,7 @@ describe('useStellarFeeScreen', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         focusEffectCallback = undefined;
-        ({ store } = initStore());
+        store = createStoreFromPreloadedState();
 
         mockSelectAccountByKey.mockReturnValue(mockAccount);
         mockSelectDeviceButtonRequestsCodes.mockReturnValue([]);

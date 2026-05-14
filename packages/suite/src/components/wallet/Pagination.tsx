@@ -3,12 +3,12 @@ import { useForm } from 'react-hook-form';
 import styled, { css } from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { selectLanguage } from '@suite/settings';
 import { Button, Row } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 const Wrapper = styled.div<{ $hasPages?: boolean }>`
     display: flex;
@@ -26,9 +26,9 @@ const PageItem = styled.div<{ $isActive?: boolean }>`
     height: ${spacingsPx.xxl};
     padding: ${spacingsPx.xxs} ${spacingsPx.xs};
     background: ${({ $isActive, theme }) =>
-        $isActive ? theme.backgroundSecondaryDefault : 'transparent'};
+        $isActive ? theme.legacyBackgroundSecondaryDefault : 'transparent'};
     text-align: center;
-    color: ${({ $isActive, theme }) => $isActive && theme.textOnSecondary};
+    color: ${({ $isActive, theme }) => $isActive && theme.contentPrimaryInverse};
     border-radius: ${borders.radii.md};
     transition:
         background 0.15s ease-out,
@@ -40,8 +40,8 @@ const PageItem = styled.div<{ $isActive?: boolean }>`
         !$isActive &&
         css`
             &:hover {
-                background: ${theme.backgroundTertiaryDefaultOnElevation0};
-                color: ${theme.textOnTertiary};
+                background: ${theme.legacyBackgroundTertiaryDefaultOnElevation0};
+                color: ${theme.contentNeutral};
             }
         `};
 `;
@@ -69,6 +69,10 @@ export interface GetPagesProps {
 export type Page = number | '...';
 
 export const getPages = ({ currentPage: page, totalPages: total }: GetPagesProps): Page[] => {
+    if (total <= 0) {
+        return [];
+    }
+
     if (total <= 7) {
         return [...Array(total)].map((_, i) => i + 1);
     }

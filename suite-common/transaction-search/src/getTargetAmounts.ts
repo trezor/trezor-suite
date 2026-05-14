@@ -1,4 +1,4 @@
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getTargetAmount } from '@suite-common/wallet-utils';
 
 export const getTargetAmounts = (transaction: WalletAccountTransaction) =>

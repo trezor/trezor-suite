@@ -1,36 +1,32 @@
 import { useMemo } from 'react';
 
-import { CryptoId, FiatCurrencyCode } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import {
-    TRADING_DEFAULT_CRYPTO_CURRENCY,
     TRADING_DEFAULT_PAYMENT_METHOD,
     type TradingBuyInfoSelector,
-    TradingCountryCode,
+    type TradingCountryCode,
     type TradingPaymentMethodListProps,
-    enabledTradingCurrencies,
+    buildTradingFiatOption,
     getDefaultCountry,
+    getDefaultCountrySubdivision,
+    getSupportedFiatCurrencyWithFallback,
     regional,
-    selectTradingPrefilledFromAccount,
+    selectTradingInfo,
     useTradingAssets,
 } from '@suite-common/trading';
-import { type NetworkConfigWithoutTestnets, networks } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
-import { TradingBuyFormDefaultValuesProps } from 'src/types/trading/tradingForm';
-import { Account } from 'src/types/wallet';
-import { buildTradingFiatOption } from 'src/utils/wallet/trading/tradingUtils';
+import { type TradingBuyFormDefaultValuesProps } from 'src/types/trading/tradingForm';
 
 export const useTradingBuyFormDefaultValues = (
-    accountSymbol: Account['symbol'],
+    cryptoId: CryptoId | undefined,
     buyInfo: TradingBuyInfoSelector | undefined,
 ): TradingBuyFormDefaultValuesProps => {
     const { isTorEnabled } = useSelector(selectTorState);
-    const prefilledFromAccount = useSelector(selectTradingPrefilledFromAccount);
-    const cryptoId = prefilledFromAccount.cryptoId ?? networks[accountSymbol]?.tradeCryptoId;
+    const { coins } = useSelector(selectTradingInfo);
     const { createAssetOptionFromCryptoId } = useTradingAssets();
 
     const country = !isTorEnabled
@@ -38,16 +34,19 @@ export const useTradingBuyFormDefaultValues = (
         : regional.UNKNOWN_COUNTRY;
     const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);
 
-    // For testnet accounts, use default currency instead of casting to mainnet-only type
-    const isTestnetAccount = !!networks[accountSymbol]?.testnet;
-    const defaultNetworkSymbol: NetworkConfigWithoutTestnets['symbol'] = isTestnetAccount
-        ? TRADING_DEFAULT_CRYPTO_CURRENCY
-        : (accountSymbol as NetworkConfigWithoutTestnets['symbol']);
-
-    const defaultCrypto = useMemo(
-        () => createAssetOptionFromCryptoId(cryptoId as CryptoId | undefined, defaultNetworkSymbol),
-        [createAssetOptionFromCryptoId, cryptoId, defaultNetworkSymbol],
+    const defaultSubdivision = useMemo(
+        () => getDefaultCountrySubdivision(buyInfo?.buyInfo?.subdivision),
+        [buyInfo?.buyInfo?.subdivision],
     );
+
+    const defaultCrypto = useMemo(() => {
+        // coins is read via ref inside createAssetOptionFromCryptoId (stable callback);
+        // referencing it here keeps the linter active while ensuring recompute after API load.
+        void coins;
+
+        return createAssetOptionFromCryptoId(cryptoId);
+    }, [createAssetOptionFromCryptoId, cryptoId, coins]);
+
     const defaultPaymentMethod: TradingPaymentMethodListProps = useMemo(
         () => ({
             value: TRADING_DEFAULT_PAYMENT_METHOD,
@@ -57,16 +56,10 @@ export const useTradingBuyFormDefaultValues = (
     );
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const isEnabledTradingCurrency = isArrayMember(
-        baseCurrencyCode,
-        typedObjectValues(enabledTradingCurrencies),
-    );
-    const suggestedFiatCurrency = (
-        isEnabledTradingCurrency ? baseCurrencyCode : 'usd'
-    ) as FiatCurrencyCode;
+    const suggestedFiatCurrency = getSupportedFiatCurrencyWithFallback(baseCurrencyCode);
     const defaultCurrency = useMemo(
-        () => buildTradingFiatOption(isEnabledTradingCurrency ? baseCurrencyCode : 'usd'),
-        [isEnabledTradingCurrency, baseCurrencyCode],
+        () => buildTradingFiatOption(suggestedFiatCurrency),
+        [suggestedFiatCurrency],
     );
     const defaultValues = useMemo(
         () => ({
@@ -75,17 +68,19 @@ export const useTradingBuyFormDefaultValues = (
             currencySelect: defaultCurrency,
             cryptoSelect: defaultCrypto,
             countrySelect: defaultCountry,
+            countrySubdivisionSelect: defaultSubdivision,
             paymentMethod: defaultPaymentMethod,
             provider: undefined,
             amountInCrypto: false,
             receiveAddress: undefined,
         }),
-        [defaultCountry, defaultCrypto, defaultCurrency, defaultPaymentMethod],
+        [defaultCountry, defaultCrypto, defaultCurrency, defaultPaymentMethod, defaultSubdivision],
     );
 
     return {
         defaultValues,
         defaultCountry,
+        defaultSubdivision,
         defaultCurrency,
         defaultPaymentMethod,
         suggestedFiatCurrency,

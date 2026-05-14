@@ -7,22 +7,22 @@ import { isRejected } from '@reduxjs/toolkit';
 import { selectIsDeviceRemembered } from '@suite-common/device';
 import { sendFormActions } from '@suite-common/wallet-core';
 import {
-    AccountKey,
-    GeneralPrecomposedTransactionFinal,
-    TokenAddress,
+    type AccountKey,
+    type GeneralPrecomposedTransactionFinal,
+    type TokenAddress,
 } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import {
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    SendStackParamList,
+    type SendStackParamList,
     SendStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { signTransactionNativeThunk } from '@suite-native/send';
 import {
-    TransactionReviewOutputsState,
+    type TransactionReviewOutputsState,
     selectIsTransactionReviewInProgress,
     useShowReviewCancellationAlert,
 } from '@suite-native/transaction-management';
@@ -98,7 +98,7 @@ export const useHandleOnDeviceTransactionReview = ({
                 errorCode === 'Method_Cancel' || // User canceled the pin entry in the app UI.
                 errorCode === 'Failure_ActionCancelled' // User canceled the review on device OR device got locked before the review was finished.
             ) {
-                navigation.popTo(SendStackRoutes.SendFees, {
+                navigation.popTo(SendStackRoutes.SendOutputs, {
                     accountKey,
                     tokenContract,
                 });
@@ -114,7 +114,7 @@ export const useHandleOnDeviceTransactionReview = ({
                     title: <Translation id="modulePassphrase.featureAuthorizationError" />,
                     pictogramVariant: 'critical',
                     primaryButtonTitle: <Translation id="generic.buttons.close" />,
-                    primaryButtonVariant: 'redBold',
+                    primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 });
 
                 return;
@@ -126,16 +126,14 @@ export const useHandleOnDeviceTransactionReview = ({
                 message === TRANSPORT_ERROR.UNEXPECTED_ERROR
             ) {
                 if (isViewOnlyDevice) {
-                    navigation.popTo(SendStackRoutes.SendFees, {
+                    navigation.popTo(SendStackRoutes.SendOutputs, {
                         accountKey,
                         tokenContract,
+                        postNavigationAction: 'deviceDisconnectedAlert',
                     });
-                }
-
-                // Timeout needed so the navigation back to home screen of not remembered device is not interrupted by the alert.
-                setTimeout(() => {
+                } else {
                     showDeviceDisconnectedAlert();
-                }, 1500);
+                }
 
                 return;
             }

@@ -19,19 +19,18 @@
     ],
     "sideEffects": false,
     "publishConfig": {
-        "main": "./lib/index.js",
-        "types": "./lib/index.d.ts",
+        "main": "./libESM/index.mjs",
+        "types": "./libESM/index.d.mts",
+        "type": "module",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
+                "types": "./libESM/index.d.mts",
+                "default": "./libESM/index.mjs"
             }
         }
     },
     "main": "src/index.ts",
     "files": [
-        "lib/",
         "libESM/",
         "CHANGELOG.md"
     ],
@@ -43,11 +42,10 @@
         "@metamask/eth-sig-util": "^8.2.0"
     },
     "scripts": {
-        "test:unit": "yarn g:jest -c ../../jest.config.base.js",
+        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
-        "depcheck": "yarn g:depcheck"
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     }
 }

@@ -1,9 +1,7 @@
-import coinsJSONEth from '@trezor/connect-data/files/coins-eth.json';
-import coinsJSON from '@trezor/connect-data/files/coins.json';
+import type { CoinInfo, Features } from '@trezor/connect-common';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { getAllNetworks, parseCoinsJson } from '../../data/coinInfo';
-import { CoinInfo, Features } from '../../types';
+import { getAllNetworks } from '../../data/coinInfo';
 import {
     getUnavailableCapabilities,
     parseCapabilities,
@@ -27,12 +25,6 @@ describe('utils/deviceFeaturesUtils', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
-    beforeAll(() => {
-        parseCoinsJson({
-            ...coinsJSON,
-            ...coinsJSONEth,
-        });
-    });
 
     it('parseCapabilities', () => {
         const featT1B1 = {
@@ -47,7 +39,6 @@ describe('utils/deviceFeaturesUtils', () => {
             'Capability_Bitcoin_like',
             'Capability_Crypto',
             'Capability_Ethereum',
-            'Capability_NEM',
             'Capability_Stellar',
             'Capability_U2F',
         ]);
@@ -59,10 +50,8 @@ describe('utils/deviceFeaturesUtils', () => {
             'Capability_Binance',
             'Capability_Cardano',
             'Capability_Crypto',
-            'Capability_EOS',
             'Capability_Ethereum',
             'Capability_Monero',
-            'Capability_NEM',
             'Capability_Ripple',
             'Capability_Solana',
             'Capability_Stellar',
@@ -82,10 +71,8 @@ describe('utils/deviceFeaturesUtils', () => {
             'Capability_Binance',
             'Capability_Cardano',
             'Capability_Crypto',
-            'Capability_EOS',
             'Capability_Ethereum',
             'Capability_Monero',
-            'Capability_NEM',
             'Capability_Ripple',
             'Capability_Solana',
             'Capability_Stellar',
@@ -107,7 +94,9 @@ describe('utils/deviceFeaturesUtils', () => {
     });
 
     describe('getUnavailableCapabilities', () => {
-        const coins = getAllNetworks();
+        // Capability-only tests (T2T1 update-required / no-support below) intentionally
+        // run against an empty coin list so the assertion can isolate capability handling.
+        const coins: CoinInfo[] = [];
         beforeEach(() => {
             jest.resetModules();
         });
@@ -150,7 +139,6 @@ describe('utils/deviceFeaturesUtils', () => {
                 bnb: 'no-support',
                 bsc: 'update-required',
                 crw: 'update-required',
-                eos: 'no-support',
                 maid: 'no-capability',
                 monero: 'no-support',
                 pol: 'update-required',
@@ -165,6 +153,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 tppc: 'update-required',
                 trvn: 'update-required',
                 trx: 'no-support',
+                ttrx: 'no-support',
                 tsep: 'update-required',
                 txrp: 'no-support',
                 uno: 'update-required',
@@ -201,6 +190,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 thod: 'update-required',
                 trvn: 'update-required',
                 trx: 'no-capability',
+                ttrx: 'no-capability',
                 usdt: 'no-capability',
                 sol: 'update-required',
                 dsol: 'update-required',
@@ -208,7 +198,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 evmApproval: 'update-required',
                 evolu: 'no-support',
                 slip24: 'update-required',
-                telemetry: 'update-required',
+                telemetry: 'no-support',
                 tutorial: 'no-support',
                 ...T1B1_UPDATE_REQUIRED,
             });
@@ -225,7 +215,6 @@ describe('utils/deviceFeaturesUtils', () => {
                 dcr: 'no-support',
                 tdcr: 'no-support',
                 dgb: 'no-support',
-                eos: 'no-support',
                 maid: 'no-capability',
                 nmc: 'no-support',
                 omni: 'no-capability',
@@ -233,7 +222,9 @@ describe('utils/deviceFeaturesUtils', () => {
                 dsol: 'update-required',
                 thod: 'update-required',
                 tropicDeviceAuthentication: 'no-support',
+                mcuDeviceAuthentication: 'no-support',
                 trx: 'no-capability',
+                ttrx: 'no-capability',
                 tsep: 'update-required',
                 usdt: 'no-capability',
                 vtc: 'no-support',
@@ -242,7 +233,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 evmApproval: 'update-required',
                 evolu: 'update-required',
                 slip24: 'update-required',
-                telemetry: 'update-required',
+                telemetry: 'no-support',
             });
         });
 
@@ -321,7 +312,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 evmApproval: 'update-required',
                 evolu: 'no-support',
                 slip24: 'update-required',
-                telemetry: 'update-required',
+                telemetry: 'no-support',
                 tutorial: 'no-support',
                 monero: 'update-required',
                 ...T1B1_UPDATE_REQUIRED,

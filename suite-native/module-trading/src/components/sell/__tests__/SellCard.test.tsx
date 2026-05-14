@@ -1,36 +1,42 @@
 import { Form } from '@suite-native/forms';
 import {
     act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
     screen,
-} from '@suite-native/test-utils';
-import { getWalletState, sellQuotes, usdcAsset } from '@suite-native/trading-fixtures';
-import { SellFormType } from '@suite-native/trading-types';
+} from '@suite-native/test-utils-store';
+import { banxaCreditCardSellQuote, sellQuotes, usdcAsset } from '@suite-native/trading-fixtures';
+import { type SellFormType } from '@suite-native/trading-types';
 
+import { createTradingPreloadedState } from '../../../__tests__/tradingTestUtils';
 import { useSellForm } from '../../../hooks/sell/useSellForm';
 import { SellCard } from '../SellCard';
 
 describe('SellCard', () => {
     let form: SellFormType;
+    const preloadedState = createTradingPreloadedState({ tradeType: 'sell' });
 
-    const renderForm = () => renderHookWithStoreProviderAsync(() => useSellForm());
+    const renderForm = () =>
+        renderHookWithStoreProvider(() => useSellForm(), {
+            preloadedState,
+        });
 
     const renderSellCard = (isAmountInputActive: boolean) => {
-        const preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
-        preloadedState.wallet!.trading!.sell!.quotes = sellQuotes;
-
-        return renderWithStoreProviderAsync(
-            <SellCard isAmountInputActive={isAmountInputActive} />,
-            {
-                wrapper: ({ children }) => <Form form={form}>{children}</Form>,
-                preloadedState,
+        const cardPreloadedState = createTradingPreloadedState({
+            tradeType: 'sell',
+            overrides: {
+                wallet: { trading: { sell: { quotes: sellQuotes } } },
             },
-        );
+        });
+
+        return renderWithStoreProvider(<SellCard isAmountInputActive={isAmountInputActive} />, {
+            wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            preloadedState: cardPreloadedState,
+        });
     };
 
-    beforeEach(async () => {
-        const { result } = await renderForm();
+    beforeEach(() => {
+        const { result } = renderForm();
         form = result.current;
     });
 
@@ -38,13 +44,13 @@ describe('SellCard', () => {
         screen.unmount();
     });
 
-    it('should render all components for "you pay" part', async () => {
+    it('should render all components for "you pay" part', () => {
         act(() => {
             form.setValue('sendAsset', usdcAsset);
             form.setValue('amountInCrypto', true);
             form.setValue('cryptoStringAmount', '100');
         });
-        const { getByText, getByLabelText } = await renderSellCard(false);
+        const { getByText, getByLabelText } = renderSellCard(false);
 
         expect(getByText('You pay')).toBeOnTheScreen();
         expect(getByText('$99.00')).toBeOnTheScreen();
@@ -62,12 +68,12 @@ describe('SellCard', () => {
                 form.setValue('amountInCrypto', true);
                 form.setValue('cryptoStringAmount', '100');
 
-                form.setValue('quote', sellQuotes[0]);
+                form.setValue('quote', banxaCreditCardSellQuote);
             });
         });
 
-        it('should render receive method', async () => {
-            const { getByText } = await renderSellCard(false);
+        it('should render receive method', () => {
+            const { getByText } = renderSellCard(false);
 
             expect(getByText('Receive method')).toBeOnTheScreen();
         });

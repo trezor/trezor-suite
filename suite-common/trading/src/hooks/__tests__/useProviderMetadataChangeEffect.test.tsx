@@ -7,7 +7,7 @@ import {
 } from '../../__tests__/testUtils';
 import { getProviderMetadataFixture } from '../../reducers/__fixtures__/providerMetadata';
 import { initialState } from '../../reducers/tradingCommonReducer';
-import { TradingType } from '../../types';
+import { type TradingType } from '../../types';
 import { useProviderMetadataChangeEffect } from '../useProviderMetadataChangeEffect';
 
 const mockProviderMetadataChangeNow = getProviderMetadataFixture();

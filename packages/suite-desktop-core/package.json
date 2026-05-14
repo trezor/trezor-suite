@@ -10,17 +10,22 @@
         "depcheck": "yarn g:depcheck",
         "build:core": "yarn g:rimraf dist && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/core.webpack.config.ts",
         "type-check": "yarn g:tsc --build tsconfig.json && yarn g:tsc --build scripts/tsconfig.json",
-        "test:unit": "yarn g:jest"
+        "test:unit": "yarn g:jest",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@sentry/electron": "^7.7.1",
+        "@sentry/electron": "^7.11.0",
+        "@suite-common/connect-popup": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",
         "@suite-common/sentry": "workspace:*",
         "@suite-common/suite-constants": "workspace:^",
         "@suite-common/suite-utils": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
         "@suite/sentry": "workspace:*",
         "@trezor/coinjoin": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@trezor/ipc-proxy": "workspace:*",
@@ -36,23 +41,23 @@
         "chalk": "^5.6.2",
         "electron-localshortcut": "^3.2.1",
         "electron-store": "11.0.2",
-        "electron-updater": "6.7.3",
+        "electron-updater": "6.8.3",
         "node-loader": "^2.1.0",
         "openpgp": "^6.3.0",
-        "ws": "^8.18.0"
+        "ws": "^8.20.0"
     },
     "devDependencies": {
-        "@electron/fuses": "^2.0.0",
+        "@electron/fuses": "^2.1.1",
         "@electron/notarize": "3.1.1",
-        "@sentry/webpack-plugin": "^4.8.0",
+        "@sentry/webpack-plugin": "^5.2.0",
         "@trezor/type-utils": "workspace:*",
         "@types/electron-localshortcut": "^3.1.3",
-        "electron": "40.1.0",
+        "electron": "41.3.0",
         "electron-devtools-installer": "^4.0.0",
-        "glob": "^11.0.3",
-        "lodash": "^4.17.21",
-        "rimraf": "^6.0.1",
-        "terser-webpack-plugin": "^5.3.16",
-        "webpack": "5.104.1"
+        "glob": "^13.0.1",
+        "lodash": "^4.18.1",
+        "rimraf": "^6.1.2",
+        "terser-webpack-plugin": "^5.5.0",
+        "webpack": "5.106.2"
     }
 }

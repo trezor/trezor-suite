@@ -1,8 +1,8 @@
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 
 import { Box, HStack, Text } from '@suite-native/atoms';
-import { Icon, IconName } from '@suite-native/icons';
-import { Color } from '@trezor/theme';
+import { Icon, type IconName } from '@suite-native/icons';
+import { type Color } from '@trezor/theme';
 
 type InfoLineItemProps = {
     iconName: IconName;
@@ -21,15 +21,15 @@ export const InfoLineItem = ({
 }: InfoLineItemProps) => (
     <HStack justifyContent="space-between" alignItems="center" paddingVertical="sp2">
         <Box flex={0}>
-            <Icon name={iconName} size="medium" color={iconColor || 'iconSubdued'} />
+            <Icon name={iconName} size="medium" color={iconColor || 'contentSecondary'} />
         </Box>
         <Box flex={1}>
-            <Text variant="body-sm" color={textColor || 'textSubdued'}>
+            <Text variant="body-sm" color={textColor || 'contentSecondary'}>
                 {text}
             </Text>
         </Box>
         <Box flex={0}>
-            <Text variant="body-sm" color={textColor || 'textDefault'} textAlign="right">
+            <Text variant="body-sm" color={textColor || 'contentPrimary'} textAlign="right">
                 {textRight}
             </Text>
         </Box>

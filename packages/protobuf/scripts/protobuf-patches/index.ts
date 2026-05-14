@@ -124,8 +124,7 @@ export const RULE_PATCH = {
     'StellarAssetType.code': 'required',
     'StellarPathPaymentStrictReceiveOp.paths': 'optional', // its valid to be undefined according to implementation/tests
     'StellarPathPaymentStrictSendOp.paths': 'optional', // its valid to be undefined according to implementation/tests
-    'ThpHandshakeCompletionReqNoisePayload.host_pairing_credential': 'optional',
-    'ThpCredentialRequest.credential': 'optional',
+    'ThpDeviceProperties.model_variant': 'required', // default = 0
     'MoneroTransactionSetInputAck.vini': 'required',
     'MoneroTransactionSetInputAck.vini_hmac': 'required',
     'MoneroTransactionSetInputAck.pseudo_out': 'required',
@@ -273,10 +272,16 @@ export const TYPE_PATCH = {
     'PaymentRequest.amount': 'string',
 };
 
-export const readPatch = (file: string) =>
-    fs
-        .readFileSync(path.join(__dirname, file), 'utf8')
+export const readPatch = (file: string) => {
+    const filePath = path.join(__dirname, file);
+    if (!fs.existsSync(filePath)) {
+        throw new Error(`Patch file not found: ${filePath}`);
+    }
+
+    return fs
+        .readFileSync(filePath, 'utf8')
         .replace(/^\/\/ (@ts-nocheck|eslint-disable-next-line).*\n?/gm, '');
+};
 
 export const DEFINITION_PATCH = {
     TxInputType: () => readPatch('./TxInputType.ts'),
@@ -288,6 +293,7 @@ export const DEFINITION_PATCH = {
 // skip unnecessary types
 export const SKIP = [
     'MessageType', // connect uses custom definition
+    'ThpMessageType', // connect uses custom definition
     'TransactionType', // connect uses custom definition
     'TxInput', // declared in TxInputType patch
     'TxOutput', // declared in TxOutputType patch
@@ -307,4 +313,7 @@ export const SKIP = [
     'DebugLinkFlashErase',
     'DebugLinkEraseSdCard',
     'DebugLinkWatchLayout',
+    // currently not used, needs patching
+    'EthereumABIValueInfo',
+    'EthereumABITupleInfo',
 ];

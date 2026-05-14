@@ -1,33 +1,28 @@
 import {
-    ActionCreatorWithPayload,
-    ActionCreatorWithPreparedPayload,
-    ActionCreatorWithoutPayload,
+    type ActionCreatorWithPayload,
+    type ActionCreatorWithPreparedPayload,
+    type ActionCreatorWithoutPayload,
 } from '@reduxjs/toolkit';
 
 import type { AnalyticsSharedEvents } from '@suite-common/analytics';
-import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
-import { MetadataAddPayload } from '@suite-common/metadata-types';
-import { PlatformEncryptionDep } from '@suite-common/platform-encryption'; // also only types
-import { MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
-import { SuiteSyncDep } from '@suite-common/suite-sync-types';
+import { type Bip329Dep } from '@suite-common/bip329-types';
+import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
+import { type MetadataAddPayload } from '@suite-common/metadata-types';
+import { type PlatformEncryptionDep } from '@suite-common/platform-encryption'; // also only types
+import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
+import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
+import { type ReportSecurityCheckDep, type UserContextPayload } from '@suite-common/suite-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Account, type SelectedAccountStatus } from '@suite-common/wallet-types';
+import { type Analytics } from '@trezor/analytics-uploader';
 import {
-    ReportSecurityCheckDep,
-    Route,
-    TrezorDevice,
-    UserContextPayload,
-} from '@suite-common/suite-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account, AddressDisplayOptions, SelectedAccountStatus } from '@suite-common/wallet-types';
-import { Analytics } from '@trezor/analytics-uploader';
-import {
-    BlockchainBlock,
-    BluetoothDeviceId,
-    ConnectSettings,
-    Manifest,
-    StaticSessionId,
+    type BluetoothDeviceId,
+    type ConnectSettings,
+    type Manifest,
+    type StaticSessionId,
 } from '@trezor/connect';
 
-import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
+import { type ActionType, type SuiteCompatibleSelector, type SuiteCompatibleThunk } from './types';
 
 type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;
@@ -38,6 +33,7 @@ export type ConnectInitSettings = {
 } & Partial<ConnectSettings>;
 
 export type CommonServices = SuiteSyncDep &
+    Bip329Dep &
     EnsureDelegatedIdentityKeyDep &
     PlatformEncryptionDep & {
         analytics: Analytics<AnalyticsSharedEvents>;
@@ -49,16 +45,17 @@ export type CommonServices = SuiteSyncDep &
 export type ExtraDependenciesStatic = {
     /** @deprecated Do not add any thunks here, this is antipattern. */
     thunks: {
-        cardanoValidatePendingTxOnBlock: SuiteCompatibleThunk<{
-            block: BlockchainBlock;
-            timestamp: number;
-        }>;
         initMetadata: SuiteCompatibleThunk<boolean>;
         fetchAndSaveMetadata: SuiteCompatibleThunk<StaticSessionId>;
         addAccountMetadata: SuiteCompatibleThunk<
             Exclude<MetadataAddPayload, { type: 'walletLabel' }>
         >;
-        forgetBluetoothDevice: SuiteCompatibleThunk<{ bluetoothId: BluetoothDeviceId }>;
+        forgetBluetoothDevice: SuiteCompatibleThunk<{
+            bluetoothId: BluetoothDeviceId;
+            skipToggleModalConnection?: boolean;
+            isOsUnpairingFinished?: boolean;
+            skipDisconnect?: boolean;
+        }>;
     };
     selectors: {
         // TODO when tokens are implemented 1:1 in both apps, delete from extras
@@ -68,17 +65,10 @@ export type ExtraDependenciesStatic = {
         // but this is exactly what I need to get DebugModeOptions type instead of any
         selectDebugSettings: SuiteCompatibleSelector<any>;
         selectDesktopBinDir: SuiteCompatibleSelector<string | undefined>;
-        // a wallet-core selector that could be reused directly, but this one is used very often and would create circular deps
-        selectDevice: SuiteCompatibleSelector<TrezorDevice | undefined>;
         selectLanguage: SuiteCompatibleSelector<string>;
         selectIsWindowVisible: SuiteCompatibleSelector<boolean>;
-        selectRouterApp: SuiteCompatibleSelector<string>;
-        selectRoute: SuiteCompatibleSelector<Route | undefined>;
-        selectMetadata: SuiteCompatibleSelector<any>;
-        selectAddressDisplayType: SuiteCompatibleSelector<AddressDisplayOptions>;
         selectSelectedAccount: SuiteCompatibleSelector<SelectedAccountStatus>;
         selectSelectedAccountStatus: SuiteCompatibleSelector<SelectedAccountStatus['status']>;
-        selectIsSuiteSyncEnabled: SuiteCompatibleSelector<boolean>;
         selectTradingEnvironment: SuiteCompatibleSelector<
             'production' | 'staging' | 'dev' | 'localhost' | undefined
         >;
@@ -109,6 +99,7 @@ export type ExtraDependenciesStatic = {
         storageLoadExplorer: StorageLoadReducer;
         storageLoadAccounts: StorageLoadReducer;
         storageLoadTransactions: StorageLoadTransactionsReducer;
+        storageLoadPhishingMetadata: StorageLoadReducer;
         storageLoadHistoricRates: StorageLoadReducer;
         setDeviceMetadataReducer: BaseReducer;
         setDeviceMetadataPasswordsReducer: BaseReducer;
@@ -117,6 +108,8 @@ export type ExtraDependenciesStatic = {
         storageLoadTokenManagement: StorageLoadReducer;
         storageLoadWalletSettings: StorageLoadReducer;
         storageLoadBioAuth: StorageLoadReducer;
+        storageLoadFlags: StorageLoadReducer;
+        storageLoadSuiteSettings: StorageLoadReducer;
     };
 };
 

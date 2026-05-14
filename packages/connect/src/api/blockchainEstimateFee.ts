@@ -1,13 +1,19 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainEstimateFee.js
 
+import type { CoinInfo, MethodPermission } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import { AbstractMethod, MethodReturnType, Payload } from '../core/AbstractMethod';
+import type {
+    MethodContext,
+    MethodMessage,
+    MethodReturnType,
+    Payload,
+} from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { getOrInitFeeLevels } from '../backend/fees';
 import { getCoinInfo } from '../data/coinInfo';
-import type { CoinInfo } from '../types';
 
 type Params = {
     coinInfo: CoinInfo;
@@ -16,11 +22,8 @@ type Params = {
 };
 
 export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEstimateFee', Params> {
-    init() {
-        this.useDevice = false;
-        this.useUi = false;
-
-        const { payload } = this;
+    constructor(message: MethodMessage<'blockchainEstimateFee'>) {
+        const { payload } = message;
 
         // validate incoming parameters
         validateParams(payload, [
@@ -56,14 +59,22 @@ export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEst
         // validate backend
         isBackendSupported(coinInfo);
 
-        this.params = {
+        const params = {
             coinInfo,
             identity,
             request,
         };
+
+        super(message, params);
+        this.useDevice = false;
+        this.useUi = false;
     }
 
-    async run() {
+    get requiredPermissions(): MethodPermission[] {
+        return [];
+    }
+
+    async run({ sendCoreMessage }: MethodContext) {
         const { coinInfo, identity, request } = this.params;
         const feeInfo: MethodReturnType<typeof this.name> = {
             blockTime: coinInfo.blockTime,
@@ -80,14 +91,14 @@ export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEst
             // In Suite, request.feeLevels: 'smart' is always used to update the fee levels.
             // Only on initial load, request.feeLevels: 'preloaded' is used (see feesThunks in suite-common/wallet-core)
             if (request.feeLevels === 'smart') {
-                const backend = await initBlockchain(coinInfo, this.postMessage, identity);
+                const backend = await initBlockchain(coinInfo, sendCoreMessage, identity);
                 await feeLevelsInstance.load(backend, request);
             }
 
             // the default fee constants from json files
             feeInfo.levels = feeLevelsInstance.levels;
         } else {
-            const backend = await initBlockchain(coinInfo, this.postMessage, identity);
+            const backend = await initBlockchain(coinInfo, sendCoreMessage, identity);
             feeInfo.levels = await backend.estimateFee(request || {});
         }
 

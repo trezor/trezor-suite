@@ -21,7 +21,7 @@ import { MainWindowProxy } from './libs/main-window-proxy';
 import { hasSwitch } from './libs/process-switches';
 import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import { initSentry } from './libs/sentry';
-import { Store, WinBoundsCoords } from './libs/store';
+import { Store, type WinBoundsCoords } from './libs/store';
 import { clearAppCache, initUserData } from './libs/user-data';
 import { initBackgroundModules, initModules } from './modules';
 import { isAutoStartEnabled, promptForAutoStartBeforeQuit } from './modules/auto-start';
@@ -74,6 +74,9 @@ const createMainWindow = ({ winBounds, cspNonce, store }: CreateMainWindowParams
               }
             : {}),
         webPreferences: {
+            nodeIntegration: false,
+            contextIsolation: true,
+            sandbox: true,
             webSecurity: !isDevEnv,
             allowRunningInsecureContent: isDevEnv,
             preload: path.join(__dirname, 'preload.js'),
@@ -84,7 +87,7 @@ const createMainWindow = ({ winBounds, cspNonce, store }: CreateMainWindowParams
             ],
         },
         icon: path.join(global.resourcesPath, 'images', 'icons', '512x512.png'),
-        backgroundColor: colorVariants[darkTheme ? 'dark' : 'standard'].backgroundSurfaceElevation0,
+        backgroundColor: colorVariants[darkTheme ? 'dark' : 'standard'].surfaceFillPage,
     });
 
     // Ensure all network requests from the renderer report a custom user-agent identifying Suite and its version.
@@ -389,7 +392,7 @@ const init = async () => {
         mainWindow?.removeAllListeners();
         logger.exit();
 
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await resolveAfter(1000);
 
         readyToQuit = true;
         app.quit();

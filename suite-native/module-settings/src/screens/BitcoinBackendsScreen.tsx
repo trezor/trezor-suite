@@ -8,7 +8,7 @@ import { Translation, useTranslate } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
 import { ConnectionInfoButton } from '../components/ConnectionInfoButton';
-import { ServerType, useBackendServersForm } from '../hooks/useBackendServersForm';
+import { type ServerType, useBackendServersForm } from '../hooks/useBackendServersForm';
 
 export const BitcoinBackendsScreen = () => {
     const { showAlert } = useAlert();
@@ -40,12 +40,12 @@ export const BitcoinBackendsScreen = () => {
                 primaryButtonTitle: (
                     <Translation id="moduleSettings.advanced.bitcoinBackends.closeAction.discardButton" />
                 ),
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 onPressPrimaryButton: discardChanges,
                 secondaryButtonTitle: (
                     <Translation id="moduleSettings.advanced.bitcoinBackends.closeAction.continueEditingButton" />
                 ),
-                secondaryButtonVariant: 'redElevation0',
+                secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
             });
         } else {
             navigation.goBack();

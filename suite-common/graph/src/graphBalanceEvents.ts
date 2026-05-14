@@ -1,21 +1,21 @@
-import { useDispatch } from 'react-redux';
+import { type useDispatch } from 'react-redux';
 
 import { A, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
-import { AccountKey, Timestamp, TokenAddress } from '@suite-common/wallet-types';
-import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
+import type { AccountKey, Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
 import TrezorConnect from '@trezor/connect';
 
 import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';
 import { isIgnoredBalanceHistoryCoin, isLocalBalanceHistoryCoin } from './constants';
 import {
-    AccountHistoryMovementItem,
-    AccountItem,
-    BalanceMovementEvent,
-    GroupedBalanceMovementEvent,
+    type AccountHistoryMovementItem,
+    type AccountItem,
+    type BalanceMovementEvent,
+    type GroupedBalanceMovementEvent,
 } from './types';
 
 /**
@@ -174,7 +174,7 @@ export const getAccountMovementEvents = async ({
 
         if (!connectBalanceHistory?.success) {
             throw new Error(
-                `Get account balance movement error: ${connectBalanceHistory.payload.error}`,
+                `Get account balance movement error: ${connectBalanceHistory.error.message}`,
             );
         }
 
@@ -182,6 +182,10 @@ export const getAccountMovementEvents = async ({
     };
 
     const accountHistoryMovements = await getBalanceHistory();
+
+    if (accountHistoryMovements.length === 0) {
+        return [];
+    }
 
     /** Determines relative maximum distance of adjacent balance movements to be grouped together. */
     const GROUPING_THRESHOLD =

@@ -1,6 +1,13 @@
 import { useSelector } from 'react-redux';
 
+import {
+    type FeatureFeedbackRootState,
+    selectPendingFeedbackFeature,
+} from '@suite-common/feedback';
 import { selectShouldDisplayOutOfQuotaAlert } from '@suite-common/suite-sync-quota-manager';
+import { FEEDBACK_FEATURE_CONFIGS } from '@suite-native/experimental-features';
+import { FeatureFeedbackAlert } from '@suite-native/feature-feedback';
+import { type ExperimentalFeature } from '@suite-native/settings';
 
 import { SuiteSyncKeysAlert } from './SuiteSyncKeysAlert';
 import {
@@ -20,6 +27,11 @@ export const HomescreenAlerts = () => {
     );
     const shouldDisplayFirmwareUpdateAlert = useSelector(selectShouldDisplayUpgradeFirmwareAlert);
 
+    const pendingFeatureForFeedback = useSelector(
+        (state: FeatureFeedbackRootState<ExperimentalFeature>) =>
+            selectPendingFeedbackFeature(state),
+    );
+
     if (shouldDisplaySuiteSyncAlert) {
         return <SuiteSyncKeysAlert />;
     }
@@ -34,6 +46,17 @@ export const HomescreenAlerts = () => {
 
     if (shouldDisplayOutOfQuotaAlert) {
         return <OutOfQuotaAlert />;
+    }
+
+    if (pendingFeatureForFeedback) {
+        const { titleKey } = FEEDBACK_FEATURE_CONFIGS[pendingFeatureForFeedback];
+
+        return (
+            <FeatureFeedbackAlert
+                pendingFeature={pendingFeatureForFeedback}
+                featureTitleKey={titleKey}
+            />
+        );
     }
 
     return null;

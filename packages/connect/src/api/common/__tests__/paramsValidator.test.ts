@@ -1,5 +1,24 @@
+import { config } from '../../../data/config';
 import * as fixtures from '../__fixtures__/paramsValidator';
-import { validateParams } from '../paramsValidator';
+import { getFirmwareRange, validateParams } from '../paramsValidator';
+
+jest.mock('../../../data/config', () => {
+    const actual = jest.requireActual('../../../data/config');
+
+    return {
+        __esModule: true,
+        config: { ...actual.config },
+    };
+});
+
+const originalConfig = jest.requireActual('../../../data/config').config;
+
+const resetConfig = () => {
+    Object.keys(config).forEach(key => {
+        delete (config as Record<string, unknown>)[key];
+    });
+    Object.assign(config, originalConfig);
+};
 
 describe('helpers/paramsValidator', () => {
     describe('validateParams', () => {
@@ -20,33 +39,25 @@ describe('helpers/paramsValidator', () => {
 
     describe('getFirmwareRange', () => {
         afterEach(() => {
-            jest.clearAllMocks();
+            resetConfig();
         });
+
         fixtures.getFirmwareRange.forEach(f => {
-            it(
-                f.description,
-                () =>
-                    new Promise<void>(done => {
-                        jest.resetModules();
+            it(f.description, () => {
+                if (f.config) {
+                    resetConfig();
+                    Object.keys(config).forEach(key => {
+                        delete (config as Record<string, unknown>)[key];
+                    });
+                    Object.assign(config, f.config);
+                }
 
-                        const mock = f.config;
-                        jest.mock('../../../data/config', () => {
-                            const actualConfig = jest.requireActual('../../../data/config').config;
-
-                            return {
-                                __esModule: true,
-                                config: mock || actualConfig,
-                            };
-                        });
-
-                        import('../paramsValidator').then(({ getFirmwareRange }) => {
-                            // added new capability
-                            // @ts-expect-error
-                            expect(getFirmwareRange(...f.params)).toEqual(f.result);
-                            done();
-                        });
-                    }),
-            );
+                const [method, coinInfo, defaultRange] = f.params;
+                expect(
+                    // @ts-expect-error
+                    getFirmwareRange([method], coinInfo ? [coinInfo] : [], defaultRange),
+                ).toEqual(f.result);
+            });
         });
     });
 });

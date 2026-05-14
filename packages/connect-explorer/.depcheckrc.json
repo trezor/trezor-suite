@@ -1,6 +1,7 @@
 {
     "ignore-patterns": ["libDev", "lib"],
     "ignores": [
+        "stylelint-config-standard",
         "rimraf",
         "webpack-cli",
         "babel-plugin-styled-components",

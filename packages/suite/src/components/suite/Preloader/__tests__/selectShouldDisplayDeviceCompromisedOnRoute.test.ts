@@ -3,7 +3,7 @@ import * as deviceUtils from '@suite-common/suite-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
-import { AcquiredDevice, AppState } from 'src/types/suite';
+import { type AcquiredDevice, type AppState } from 'src/types/suite';
 
 import { selectShouldDisplayDeviceCompromisedOnRoute } from '../selectShouldDisplayDeviceCompromisedOnRoute';
 
@@ -116,14 +116,11 @@ const fixtures: Fixture[] = [
                     },
                 },
             },
-            suite: {
-                ...initialAppState.suite,
-                settings: {
-                    ...initialAppState.suite.settings,
-                    enabledSecurityChecks: {
-                        ...initialAppState.suite.settings.enabledSecurityChecks,
-                        firmwareRevision: false,
-                    },
+            suiteSettings: {
+                ...initialAppState.suiteSettings,
+                enabledSecurityChecks: {
+                    ...initialAppState.suiteSettings.enabledSecurityChecks,
+                    firmwareRevision: false,
                 },
             },
         },
@@ -166,14 +163,11 @@ const fixtures: Fixture[] = [
                     authenticityChecks: authenticityChecksSuccess,
                 },
             },
-            suite: {
-                ...initialAppState.suite,
-                settings: {
-                    ...initialAppState.suite.settings,
-                    enabledSecurityChecks: {
-                        ...initialAppState.suite.settings.enabledSecurityChecks,
-                        entropy: false,
-                    },
+            suiteSettings: {
+                ...initialAppState.suiteSettings,
+                enabledSecurityChecks: {
+                    ...initialAppState.suiteSettings.enabledSecurityChecks,
+                    entropy: false,
                 },
             },
         },

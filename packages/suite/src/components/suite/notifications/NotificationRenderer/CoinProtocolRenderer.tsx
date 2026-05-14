@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { goto, selectRouteName } from '@suite/router';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    NetworkSymbol,
+    type NetworkSymbol,
     getNetworkDisplaySymbol,
     getNetworkDisplaySymbolName,
 } from '@suite-common/wallet-config';
@@ -15,10 +16,8 @@ import { CoinLogo } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';
-import { goto } from 'src/actions/suite/routerActions';
 import type { NotificationRendererProps } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
 
 import { ConditionalActionRenderer } from './ConditionalActionRenderer';
@@ -63,7 +62,8 @@ export const CoinProtocolRenderer = ({
                 if (networkAccounts.length === 1) {
                     const account = networkAccounts[0];
                     dispatch(
-                        goto('wallet-send', {
+                        goto({
+                            routeName: 'wallet-send',
                             params: {
                                 symbol: account.symbol,
                                 accountIndex: account.index,
@@ -74,7 +74,8 @@ export const CoinProtocolRenderer = ({
                 } else {
                     dispatch(globalSendReceiveFilters.actions.setNetworkSymbol(networkSymbol));
                     dispatch(
-                        goto('suite-index', {
+                        goto({
+                            routeName: 'suite-index',
                             params: {
                                 modal: 'send',
                                 networkSymbol,

@@ -1,5 +1,5 @@
-import { getWeakRandomNumberInRange } from '@trezor/utils';
-import { Network, Transaction, bufferutils } from '@trezor/utxo-lib';
+import { clamp, getWeakRandomNumberInRange } from '@trezor/utils';
+import { type Network, Transaction, bufferutils } from '@trezor/utxo-lib';
 
 import {
     COORDINATOR_FEE_RATE_FALLBACK,
@@ -10,15 +10,15 @@ import {
     ROUND_REGISTRATION_END_OFFSET,
 } from '../constants';
 import { RoundPhase } from '../enums';
-import { CoinjoinTransactionData } from '../types';
+import { type CoinjoinTransactionData } from '../types';
 import {
-    CoinjoinRoundParameters,
-    CoinjoinState,
-    CoinjoinStateEvent,
-    CoinjoinStatus,
-    Round,
+    type CoinjoinRoundParameters,
+    type CoinjoinState,
+    type CoinjoinStateEvent,
+    type CoinjoinStatus,
+    type Round,
 } from '../types/coordinator';
-import { Credentials } from '../types/middleware';
+import { type Credentials } from '../types/middleware';
 
 export const getRoundEvents = <T extends CoinjoinStateEvent['Type']>(
     type: T,
@@ -70,9 +70,6 @@ export const readTimeSpan = (ts: string) => {
     return date.getTime() - now;
 };
 
-const clamp = (value: number, min = Number.NEGATIVE_INFINITY, max = Number.POSITIVE_INFINITY) =>
-    Math.min(Math.max(value, min), max);
-
 export const scheduleDelay = (
     deadline: number,
     minimumDelay = 0,
@@ -92,7 +89,7 @@ export const scheduleDelay = (
 };
 
 // NOTE: deadlines are not accurate. phase may change earlier
-// accept CoinjoinRound or modified coordinator Round (see estimatePhaseDeadline below)
+// accept CoinjoinRound or modified coordinator Round
 type PartialCoinjoinRound = {
     Phase: RoundPhase;
     InputRegistrationEnd: string;
@@ -151,30 +148,6 @@ export const getCoinjoinRoundDeadlines = (round: PartialCoinjoinRound) => {
                 roundDeadline: now,
             };
     }
-};
-
-export const estimatePhaseDeadline = (round: Round) => {
-    const roundParameters = getRoundParameters(round);
-    if (!roundParameters) return 0;
-
-    const { phaseDeadline } = getCoinjoinRoundDeadlines({
-        ...round,
-        RoundParameters: roundParameters,
-    });
-
-    return phaseDeadline;
-};
-
-export const findNearestDeadline = (rounds: Round[]) => {
-    const now = Date.now();
-    const deadlines = rounds.map(r => {
-        const phaseDeadline = estimatePhaseDeadline(r);
-        const timeLeft = phaseDeadline ? new Date(phaseDeadline).getTime() - now : 0;
-
-        return timeLeft > 0 ? timeLeft : now;
-    });
-
-    return Math.min(...deadlines);
 };
 
 // get relevant round data from the most recent round

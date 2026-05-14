@@ -8,13 +8,34 @@
     },
     "references": [
         {
-            "path": "../utils"
+            "path": "../device-authenticity"
+        },
+        {
+            "path": "../device-utils"
         },
         {
             "path": "../protobuf"
         },
         {
             "path": "../protocol"
+        },
+        {
+            "path": "../type-utils"
+        },
+        {
+            "path": "../utils"
+        },
+        {
+            "path": "../blockchain-link"
+        },
+        {
+            "path": "../blockchain-link-types"
+        },
+        {
+            "path": "../transport"
+        },
+        {
+            "path": "../utxo-lib"
         }
     ]
 }

@@ -1,7 +1,7 @@
-import { encodeMessage } from '@trezor/protobuf';
-import { ThpState, TransportProtocol, thp as protocolThp } from '@trezor/protocol';
+import { protobufManager } from '@trezor/protobuf';
+import { type ThpState, type TransportProtocol, thp as protocolThp } from '@trezor/protocol';
 
-import { AsyncResultWithTypedError } from '../types';
+import { type AsyncResultWithTypedError } from '../types';
 
 export const createChunks = (data: Buffer, chunkHeader: Buffer, chunkSize: number) => {
     if (!chunkSize || data.byteLength <= chunkSize) {
@@ -27,7 +27,6 @@ export const createChunks = (data: Buffer, chunkHeader: Buffer, chunkSize: numbe
 };
 
 interface BuildMessageProps {
-    messages: Parameters<typeof encodeMessage>[0];
     name: string;
     data: Record<string, unknown>;
     protocol: TransportProtocol;
@@ -35,9 +34,9 @@ interface BuildMessageProps {
 }
 
 // common protobufEncoder for protocol v1 and v2 (THP)
-export const buildMessage = ({ messages, name, data, protocol, thpState }: BuildMessageProps) => {
+export const buildMessage = ({ name, data, protocol, thpState }: BuildMessageProps) => {
     const protobufEncoder = (messageName: string, data: Record<string, unknown>) => {
-        const { messageType, message } = encodeMessage(messages, messageName, data);
+        const { messageType, message } = protobufManager.encode(messageName, data);
 
         return protocol.encode(message, { messageType });
     };
@@ -48,14 +47,14 @@ export const buildMessage = ({ messages, name, data, protocol, thpState }: Build
             messageName: name,
             data,
             thpState,
-            protobufEncoder: (messageName, data) => encodeMessage(messages, messageName, data),
+            protobufEncoder: (messageName, data) => protobufManager.encode(messageName, data),
         });
     }
 
     return protobufEncoder(name, data);
 };
 
-export const sendChunks = async <T, E>(
+export const sendChunks = async <T, E extends string>(
     chunks: Buffer[],
     apiWrite: (chunk: Buffer) => AsyncResultWithTypedError<T, E>,
 ) => {

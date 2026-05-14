@@ -1,16 +1,16 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Elevation, mapElevationToBorder } from '@trezor/theme';
+import { type Elevation, mapElevationToBorder } from '@trezor/theme';
 
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
+import { type TransientProps } from '../../../utils/transientProps';
 import { useElevation } from '../../ElevationContext/ElevationContext';
 
 export const allowedProgressPieFrameProps = ['margin'] as const satisfies FramePropsKeys[];
@@ -34,7 +34,7 @@ const Container = styled.div<
     height: ${({ $size }) => `${$size}px`};
     border-radius: 50%;
     background: ${({ theme, $valueInPercents, $color, $backgroundColor, $elevation }) =>
-        `conic-gradient(${$color || theme.backgroundPrimaryDefault} ${3.6 * $valueInPercents}deg, ${
+        `conic-gradient(${$color || theme.legacyBackgroundPrimaryDefault} ${3.6 * $valueInPercents}deg, ${
             $backgroundColor || mapElevationToBorder({ $elevation, theme })
         } 0)`};
 

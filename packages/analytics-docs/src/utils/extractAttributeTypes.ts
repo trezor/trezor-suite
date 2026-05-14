@@ -1,13 +1,13 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import {
-    Expression,
+    type Expression,
     Node,
     Project,
-    SourceFile,
-    Symbol,
-    Type,
-    VariableDeclaration,
+    type SourceFile,
+    type Symbol,
+    type Type,
+    type VariableDeclaration,
     ts,
 } from 'ts-morph';
 
@@ -220,8 +220,10 @@ const extractAttributeTypesFromType = (
 
         return out;
     }
-    // No named properties – type is e.g. Record<string, number>; show the whole type as one row.
-    out[RECORD_TYPE_ATTRIBUTE_KEY] = formatTypeAsString(attributesType, varDecl);
+    // No named properties – empty object {} has no attributes to show; Record<K,V> has one row.
+    const formatted = formatTypeAsString(attributesType, varDecl);
+    if (formatted === '{}') return out;
+    out[RECORD_TYPE_ATTRIBUTE_KEY] = formatted;
 
     return out;
 };

@@ -1,12 +1,13 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {
-    DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
 import { ConfirmFirmwareUpdateScreen } from '../screens/ConfirmFirmwareUpdateScreen';
+import { CongratulationsScreen } from '../screens/CongratulationsScreen';
 import { CreateOrRecoverCrossroadsScreen } from '../screens/CreateOrRecoverCrossroadsScreen';
 import { CreatePinScreen } from '../screens/CreatePinScreen';
 import { CreateWalletLoadingScreen } from '../screens/CreateWalletLoadingScreen';
@@ -145,6 +146,10 @@ export const DeviceOnboardingStackNavigator = () => (
         <DeviceOnboardingStack.Screen
             name={DeviceOnboardingStackRoutes.CreatePin}
             component={CreatePinScreen}
+        />
+        <DeviceOnboardingStack.Screen
+            name={DeviceOnboardingStackRoutes.Congratulations}
+            component={CongratulationsScreen}
         />
     </DeviceOnboardingStack.Navigator>
 );

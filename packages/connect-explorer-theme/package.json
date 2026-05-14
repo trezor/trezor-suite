@@ -15,46 +15,46 @@
         "dev:tailwind": "TAILWIND_MODE=watch yarn postcss css/styles.css -o style.css --watch",
         "prepublishOnly": "yarn build:all",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "postinstall": "yarn build:all"
+        "postinstall": "yarn build:all",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "peerDependencies": {
-        "next": ">=9.5.3",
+        "next": ">=15.0.0",
         "nextra": "^2.13.4",
-        "react": "19.1.0",
-        "react-dom": "19.1.0"
+        "react": "19.2.4",
+        "react-dom": "19.2.4"
     },
     "dependencies": {
-        "@headlessui/react": "^2.2.2",
+        "@headlessui/react": "^2.2.10",
         "@trezor/components": "workspace:*",
         "@trezor/product-components": "workspace:*",
         "@trezor/theme": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
         "clsx": "^2.1.1",
         "escape-string-regexp": "^5.0.0",
         "flexsearch": "^0.7.31",
         "focus-visible": "^5.2.1",
-        "git-url-parse": "^15.0.0",
+        "git-url-parse": "^16.1.0",
         "intersection-observer": "^0.12.2",
         "match-sorter": "^6.3.1",
         "next-seo": "^6.6.0",
-        "next-themes": "^0.3.0",
+        "next-themes": "^0.4.6",
         "scroll-into-view-if-needed": "^3.1.0",
-        "styled-components": "^6.1.19",
+        "styled-components": "^6.3.9",
         "tailwindcss": "^3.4.10",
-        "zod": "^3.24.2"
+        "zod": "4.3.6"
     },
     "devDependencies": {
-        "@types/flexsearch": "^0.7.3",
-        "@types/git-url-parse": "^9.0.3",
-        "@types/react": "19.1.6",
-        "concurrently": "^8.0.0",
-        "next": "^15.5.7",
+        "@types/react": "19.2.14",
+        "concurrently": "^9.2.1",
+        "next": "15.5.15",
         "nextra": "^2.13.4",
-        "postcss": "^8.4.41",
+        "postcss": "^8.5.9",
         "postcss-cli": "^10.1.0",
-        "postcss-import": "^15.1.0",
-        "postcss-lightningcss": "^1.0.1",
-        "react": "19.1.0",
-        "react-dom": "19.1.0"
+        "postcss-import": "^16.1.1",
+        "postcss-lightningcss": "^1.1.0",
+        "react": "19.2.4",
+        "react-dom": "19.2.4"
     },
     "sideEffects": [
         "./src/polyfill.ts"

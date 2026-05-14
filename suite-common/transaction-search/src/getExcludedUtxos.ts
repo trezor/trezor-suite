@@ -1,4 +1,4 @@
-import { Account, ExcludedUtxos } from '@suite-common/wallet-types';
+import { type Account, type ExcludedUtxos } from '@suite-common/wallet-types';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 

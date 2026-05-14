@@ -1,6 +1,6 @@
 import { HStack, IconButton, Text } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type CopyableTextProps = {
     text: string;
@@ -20,7 +20,7 @@ export const CopyableText = ({ text, title }: CopyableTextProps) => {
             <Text variant="body-sm">{title}</Text>
             <Text
                 variant="body-sm"
-                color="textSubdued"
+                color="contentSecondary"
                 numberOfLines={1}
                 ellipsizeMode="middle"
                 style={applyStyle(textToCopyStyle)}
@@ -29,8 +29,8 @@ export const CopyableText = ({ text, title }: CopyableTextProps) => {
             </Text>
             <IconButton
                 iconName="copy"
-                size="extraSmall"
-                colorScheme="tertiaryElevation0"
+                intent="neutral"
+                priority="secondary"
                 accessibilityLabel="Copy to clipboard"
                 onPress={() => copyToClipboard(text)}
             />

@@ -3,7 +3,7 @@ import type { EventDef } from '@suite-common/analytics';
 import { EventType } from '../constants';
 
 export const deviceSettingsCheckBackupEnteredEvent: EventDef<
-    {},
+    Record<never, never>,
     EventType.DeviceSettingsCheckBackupEntered
 > = {
     name: EventType.DeviceSettingsCheckBackupEntered,

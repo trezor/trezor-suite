@@ -1,11 +1,12 @@
-import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
-import { AccountKey, FeeLevelLabel, FormState } from '@suite-common/wallet-types';
+import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
+import { type AccountKey, type FeeLevelLabel, type FormState } from '@suite-common/wallet-types';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { CustomFee } from './CustomFee/CustomFee';
-import { FeeOptionsList, FeeOptionsListProps } from './FeeOptionList/FeeOptionsList';
-import { CustomFeeParams } from '../../hooks';
+import { FeeLabelTranslation } from './FeeLabelTranslation';
+import { FeeOptionsList, type FeeOptionsListProps } from './FeeOptionList/FeeOptionsList';
+import { type CustomFeeParams } from '../../hooks';
 
 export type FeesContentProps = {
     selectedFeeLevel: FeeLevelLabel;
@@ -17,15 +18,6 @@ export type FeesContentProps = {
     onCustomFeeSet: (customFeeParams: CustomFeeParams) => void;
     formDraft: FormState | null | undefined;
     networkType: NetworkType;
-};
-
-const getFeeLabelTranslationId = (networkType: NetworkType) => {
-    switch (networkType) {
-        case 'ethereum':
-            return 'transactionManagement.fees.description.title.ethereum';
-        default:
-            return 'transactionManagement.fees.description.title.general';
-    }
 };
 
 export const FeesContent = ({
@@ -42,7 +34,7 @@ export const FeesContent = ({
     <VStack spacing="sp16">
         <VStack spacing="sp4">
             <Text variant="headline-sm">
-                <Translation id={getFeeLabelTranslationId(networkType)} />
+                <FeeLabelTranslation networkType={networkType} />
             </Text>
             <Text>
                 <Translation id="transactionManagement.fees.description.body" />

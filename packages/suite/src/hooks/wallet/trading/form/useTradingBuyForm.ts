@@ -1,34 +1,43 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import type { BuyTrade, BuyTradeResponse, FiatCurrencyCode } from 'invity-api';
+import type { BuyTrade, BuyTradeResponse } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import { events } from '@suite/analytics';
+import { goto } from '@suite/router';
 import {
     TRADING_DEFAULT_CRYPTO_CURRENCY,
     TRADING_FORM_CRYPTO_INPUT,
     TRADING_FORM_FIAT_INPUT,
     TRADING_FORM_PAYMENT_METHOD_SELECT,
     TRADING_FORM_PROVIDER_SELECT,
-    TradingAmountLimitProps,
-    TradingBuyFormProps,
+    type TradingAmountLimitProps,
+    type TradingBuyFormProps,
     type TradingBuyType,
     buyThunks,
     getTradingQuotesByPaymentMethod,
-    selectTradingBuy,
+    isCountrySubdivisionEmpty,
+    mapFiatCurrencyCodeToBaseCurrencyCode,
+    selectTradingBuyAmountLimits,
+    selectTradingBuyInfo,
+    selectTradingBuyIsFromRedirect,
+    selectTradingBuyIsLoading,
+    selectTradingBuyQuotes,
+    selectTradingBuyQuotesRequest,
+    selectTradingBuySelectedQuote,
     selectTradingPaymentMethods,
     selectTradingVerifiedAddress,
+    tradingActions,
     tradingBuyActions,
     tradingThunks,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { useFormDraft } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { isDesktop } from '@trezor/env-utils';
 import { isChanged } from '@trezor/utils';
 
-import * as routerActions from 'src/actions/suite/routerActions';
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingBuyHandleChange } from 'src/hooks/wallet/trading/form/common/useTradingBuyHandleChange';
@@ -37,69 +46,71 @@ import { useTradingPreviousRoute } from 'src/hooks/wallet/trading/form/common/us
 import { useTradingBuyFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingBuyFormDefaultValues';
 import { useTradingBuyFormRedirectValues } from 'src/hooks/wallet/trading/form/useTradingBuyFormRedirectValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { Dispatch } from 'src/types/suite';
-import { UseTradingFormProps } from 'src/types/trading/trading';
+import { type Dispatch } from 'src/types/suite';
+import { type UseTradingFormCommonProps } from 'src/types/trading/trading';
 import {
-    TradingBuyConfirmTradeProps,
-    TradingBuyFormContextProps,
+    type TradingBuyConfirmTradeProps,
+    type TradingBuyFormContextProps,
 } from 'src/types/trading/tradingForm';
 import { createQuoteLink, createTxLink } from 'src/utils/wallet/trading/buyUtils';
 
 import { useTradingFiatValues } from './common/useTradingFiatValues';
 import { useTradingInitializer } from './common/useTradingInitializer';
+import { useTradingFormAccount } from './useTradingFormAccount';
 import { useTradingReceiveAddress } from './useTradingReceiveAddress';
 
 export const useTradingBuyForm = ({
-    selectedAccount,
     pageType = 'form',
-}: UseTradingFormProps): TradingBuyFormContextProps => {
+}: UseTradingFormCommonProps = {}): TradingBuyFormContextProps => {
     const analytics = useAnalytics();
     const type = 'buy';
-    const isNotFormPage = pageType !== 'form';
+    const isFormPage = pageType === 'form';
     const dispatch = useDispatch();
-    const {
-        buyInfo,
-        isFromRedirect,
-        quotes,
-        quotesRequest,
-        preselectedQuote,
-        selectedQuote,
-        amountLimits,
-        isLoading,
-    } = useSelector(selectTradingBuy);
+
+    const buyInfo = useSelector(selectTradingBuyInfo);
+    const isFromRedirect = useSelector(selectTradingBuyIsFromRedirect);
+    const quotes = useSelector(selectTradingBuyQuotes);
+    const quotesRequest = useSelector(selectTradingBuyQuotesRequest);
+    const selectedQuote = useSelector(selectTradingBuySelectedQuote);
+    const amountLimits = useSelector(selectTradingBuyAmountLimits);
+    const isLoading = useSelector(selectTradingBuyIsLoading);
+
     const verifiedAddress = useSelector(selectTradingVerifiedAddress);
     const paymentMethods = useSelector(selectTradingPaymentMethods);
 
-    const { timer, device, checkQuotesTimer } = useTradingInitializer({
+    const { device } = useTradingInitializer({
         pageType,
         isLoading,
     });
 
-    const { account } = selectedAccount;
+    const { account, cryptoId } = useTradingFormAccount(type);
 
-    const { navigateToBuyForm, navigateToBuyOffers, navigateToBuyConfirm } =
-        useTradingNavigation(account);
+    const shouldResetOnInitialBuyInfoLoad = useRef(!buyInfo);
 
-    const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
 
     const fiatTradingValuesParams = selectedQuote
         ? {
               cryptoId: selectedQuote.receiveCurrency,
               amount: selectedQuote.receiveAmount?.toString(),
-              fiatCurrency: selectedQuote.fiatCurrency as FiatCurrencyCode | undefined,
+              fiatCurrency: mapFiatCurrencyCodeToBaseCurrencyCode(selectedQuote.fiatCurrency),
           }
         : {
               cryptoId: quotesRequest?.receiveCurrency,
               amount: quotesRequest?.cryptoStringAmount,
-              fiatCurrency: quotesRequest?.fiatCurrency as FiatCurrencyCode | undefined,
+              fiatCurrency: mapFiatCurrencyCodeToBaseCurrencyCode(quotesRequest?.fiatCurrency),
           };
     useTradingFiatValues(fiatTradingValuesParams);
 
-    const { defaultValues, defaultCountry, defaultCurrency, defaultPaymentMethod } =
-        useTradingBuyFormDefaultValues(account.symbol, buyInfo);
+    const {
+        defaultValues,
+        defaultSubdivision,
+        defaultCountry,
+        defaultCurrency,
+        defaultPaymentMethod,
+    } = useTradingBuyFormDefaultValues(cryptoId, buyInfo);
     const redirectValues = useTradingBuyFormRedirectValues(isFromRedirect, quotesRequest);
     const { saveDraft, draft, removeDraft } = useFormDraft<TradingBuyFormProps>(
         'trading-buy',
@@ -116,7 +127,7 @@ export const useTradingBuyForm = ({
           }
         : null;
 
-    const isDraft = !!draftUpdated || isNotFormPage;
+    const isDraft = !!draftUpdated || !isFormPage;
     const methods = useForm<TradingBuyFormProps>({
         mode: 'onChange',
         defaultValues: redirectValues || (isDraft && draftUpdated ? draftUpdated : defaultValues),
@@ -125,7 +136,7 @@ export const useTradingBuyForm = ({
     const values = useWatch({ control }) as TradingBuyFormProps;
     const { paymentMethod, provider } = values;
     const previousValues = useRef<TradingBuyFormProps | null>(
-        !isFromRedirect && isNotFormPage ? draftUpdated : null,
+        !isFromRedirect && !isFormPage ? draftUpdated : null,
     );
 
     const isAmountEmpty = !values.fiatInput && !values.cryptoInput;
@@ -133,7 +144,6 @@ export const useTradingBuyForm = ({
     const tradingReceiveAddress = useTradingReceiveAddress({
         type: 'buy',
         cryptoId: values.cryptoSelect?.id,
-        isPreviousRouteFromTradeSection,
         nonSuiteAccount: !selectedQuote?.tags?.includes('noExternalAddress'),
         pageType,
     });
@@ -158,7 +168,7 @@ export const useTradingBuyForm = ({
         values.cryptoSelect?.networkSymbol ?? TRADING_DEFAULT_CRYPTO_CURRENCY,
     );
 
-    const { toggleAmountInCrypto } = useTradingCurrencySwitcher({
+    const { toggleAmountInCrypto: baseToggleAmountInCrypto } = useTradingCurrencySwitcher({
         account,
         methods,
         inputNames: {
@@ -167,26 +177,18 @@ export const useTradingBuyForm = ({
         },
     });
 
+    const toggleAmountInCrypto = () => {
+        setValue(TRADING_FORM_CRYPTO_INPUT, '');
+        setValue(TRADING_FORM_FIAT_INPUT, '');
+        baseToggleAmountInCrypto();
+    };
+
     const { handleChange } = useTradingBuyHandleChange({
         formValues: values,
         network,
-        timer,
         shouldSendInSats,
         setValue,
     });
-
-    const goToOffers = async () => {
-        await handleChange();
-
-        navigateToBuyOffers();
-
-        analytics.report({
-            type: events.tradeCompareOffersEvent.name,
-            payload: {
-                type: 'buy',
-            },
-        });
-    };
 
     const confirmTrade = async ({
         trade,
@@ -206,11 +208,7 @@ export const useTradingBuyForm = ({
                 if (response.trade.paymentId) {
                     dispatch(tradingBuyActions.saveTransactionId(response.trade.paymentId));
                 }
-                dispatch(
-                    routerActions.goto('wallet-trading-buy-detail', {
-                        params: selectedAccount.params,
-                    }),
-                );
+                dispatch(goto({ routeName: 'wallet-trading-buy-detail' }));
             }
         };
 
@@ -246,42 +244,23 @@ export const useTradingBuyForm = ({
 
         const { name, networkSymbol, contractAddress } = draftUpdated?.cryptoSelect ?? {};
 
-        switch (pageType) {
-            case 'form': {
-                analytics.report({
-                    type: events.tradeBuyEvent.name,
-                    payload: {
-                        action: 'continue',
-                        step: 'buy-form',
-                        cryptoLabel: name,
-                        cryptoNetworkSymbol: networkSymbol,
-                        cryptoContractAddress: contractAddress ?? undefined,
-                        exchangeName: quote?.exchange,
-                        paymentMethod: draftUpdated?.paymentMethod?.value,
-                        countryOfResidence: draftUpdated?.countrySelect?.value,
-                    },
-                });
-                break;
-            }
-            case 'offers': {
-                analytics.report({
-                    type: events.tradeBuyEvent.name,
-                    payload: {
-                        action: 'continue',
-                        step: 'offers-form',
-                        exchangeName: quote?.exchange,
-                        paymentMethod: draftUpdated?.paymentMethod?.value,
-                        countryOfResidence: draftUpdated?.countrySelect?.value,
-                    },
-                });
-                break;
-            }
-        }
+        analytics.report({
+            type: events.tradeBuyEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'buy-form',
+                cryptoLabel: name,
+                cryptoNetworkSymbol: networkSymbol,
+                cryptoContractAddress: contractAddress ?? undefined,
+                exchangeName: quote?.exchange,
+                paymentMethod: draftUpdated?.paymentMethod?.value,
+                countryOfResidence: draftUpdated?.countrySelect?.value,
+            },
+        });
 
         await dispatch(
             buyThunks.selectQuoteThunk({
                 quote,
-                timer,
                 returnUrl,
                 loginRequest: form => {
                     dispatch(submitRequestForm(form));
@@ -310,37 +289,31 @@ export const useTradingBuyForm = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [receiveAddress]);
 
-    useEffect(() => {
-        if (!preselectedQuote) {
-            return;
-        }
+    const onQuoteSelected = useCallback(
+        (quote: BuyTrade) => {
+            const quoteProvider = quote.exchange;
+            const quotePaymentMethod = quote.paymentMethod;
 
-        const preselectedProvider = preselectedQuote.exchange;
-        const preselectedPaymentMethod = preselectedQuote.paymentMethod;
-        const shouldUpdateProvider = !!preselectedProvider && preselectedProvider !== provider;
-        const shouldUpdatePaymentMethod =
-            !!preselectedPaymentMethod && paymentMethod?.value !== preselectedPaymentMethod;
+            if (quoteProvider && quoteProvider !== provider) {
+                setValue(TRADING_FORM_PROVIDER_SELECT, quoteProvider);
+            }
 
-        dispatch(tradingBuyActions.savePreselectedQuote(undefined));
+            if (quotePaymentMethod && paymentMethod?.value !== quotePaymentMethod) {
+                const matchingOption = paymentMethods.find(
+                    method => method.value === quotePaymentMethod,
+                );
 
-        if (shouldUpdateProvider) {
-            setValue(TRADING_FORM_PROVIDER_SELECT, preselectedProvider);
-        }
-
-        if (shouldUpdatePaymentMethod) {
-            const matchingOption = paymentMethods.find(
-                method => method.value === preselectedPaymentMethod,
-            );
-
-            setValue(
-                TRADING_FORM_PAYMENT_METHOD_SELECT,
-                matchingOption ?? {
-                    value: preselectedPaymentMethod,
-                    label: preselectedQuote.paymentMethodName ?? preselectedPaymentMethod,
-                },
-            );
-        }
-    }, [paymentMethod, paymentMethods, preselectedQuote, provider, setValue, dispatch]);
+                setValue(
+                    TRADING_FORM_PAYMENT_METHOD_SELECT,
+                    matchingOption ?? {
+                        value: quotePaymentMethod,
+                        label: quote.paymentMethodName ?? quotePaymentMethod,
+                    },
+                );
+            }
+        },
+        [paymentMethod, paymentMethods, provider, setValue],
+    );
 
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));
@@ -381,17 +354,26 @@ export const useTradingBuyForm = ({
             return;
         }
 
-        if (
-            !values.cryptoSelect ||
-            !values.countrySelect ||
-            !values.receiveAddress ||
-            !values.currencySelect
-        )
+        if (!values.cryptoSelect || !values.countrySelect || !values.currencySelect) {
             return;
+        }
+
+        if (
+            isCountrySubdivisionEmpty(
+                values.countrySelect?.value,
+                values.countrySubdivisionSelect?.value,
+            )
+        ) {
+            return;
+        }
 
         if (
             isChanged(previousValues.current?.cryptoSelect, values.cryptoSelect) ||
             isChanged(previousValues.current?.countrySelect, values.countrySelect) ||
+            isChanged(
+                previousValues.current?.countrySubdivisionSelect,
+                values.countrySubdivisionSelect,
+            ) ||
             isChanged(previousValues.current?.currencySelect, values.currencySelect) ||
             isChanged(previousValues.current?.receiveAddress, values?.receiveAddress) ||
             isChanged(previousValues.current?.cryptoSelect.id, values?.cryptoSelect.id)
@@ -402,14 +384,19 @@ export const useTradingBuyForm = ({
 
             previousValues.current = values;
         }
-    }, [previousValues, values, isNotFormPage, pageType, handleChange, handleSubmit]);
+    }, [previousValues, values, isFormPage, pageType, handleChange, handleSubmit]);
 
     useEffect(() => {
         // when draft doesn't exist, we need to bind actual default values - that happens when we've got buyInfo from Invity API server
-        if (!isDraft && buyInfo) {
-            reset(defaultValues);
+        if (!isDraft && buyInfo && shouldResetOnInitialBuyInfoLoad.current) {
+            shouldResetOnInitialBuyInfoLoad.current = false;
+            const currentReceiveAddress = values.receiveAddress;
+            reset({
+                ...defaultValues,
+                receiveAddress: currentReceiveAddress,
+            });
         }
-    }, [reset, buyInfo, defaultValues, isDraft]);
+    }, [reset, buyInfo, defaultValues, isDraft, values.receiveAddress]);
 
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
@@ -424,22 +411,19 @@ export const useTradingBuyForm = ({
     }, [defaultValues, values, removeDraft]);
 
     useEffect(() => {
-        if (!quotesRequest && isNotFormPage) {
-            navigateToBuyForm();
+        // We need to clear quotes on offers page without redirecting to form page
+        if (!quotesRequest && !isFormPage) {
+            dispatch(goto({ routeName: 'wallet-trading-buy' }));
 
             return;
         }
-    }, [quotesRequest, isNotFormPage, navigateToBuyForm]);
+    }, [quotesRequest, isFormPage, dispatch]);
 
     useEffect(() => {
         if (isFromRedirect && quotesRequest) {
-            navigateToBuyConfirm();
+            dispatch(goto({ routeName: 'wallet-trading-buy-confirm' }));
         }
-    }, [isFromRedirect, quotesRequest, navigateToBuyConfirm]);
-
-    useEffect(() => {
-        checkQuotesTimer(handleChange);
-    }, [checkQuotesTimer, handleChange]);
+    }, [isFromRedirect, quotesRequest, dispatch]);
 
     useDebounce(
         () => {
@@ -470,6 +454,7 @@ export const useTradingBuyForm = ({
         methods,
         account,
         defaultCountry,
+        defaultSubdivision,
         defaultCurrency,
         defaultPaymentMethod,
         paymentMethods,
@@ -479,20 +464,22 @@ export const useTradingBuyForm = ({
         cryptoInputValue: values.cryptoInput,
         device,
         verifiedAddress,
-        timer,
         quotes: quotesByPaymentMethod,
         quotesRequest,
-        preselectedQuote,
         selectedQuote,
         tradingReceiveAddress,
         isAmountEmpty,
         selectQuote,
+        onQuoteSelected,
         confirmTrade,
-        goToOffers,
         verifyAddress,
         removeDraft,
         setAmountLimits: (limits: TradingAmountLimitProps | undefined) => {
             dispatch(tradingBuyActions.setAmountLimits(limits));
+        },
+        clearQuotesAndParams: () => {
+            dispatch(tradingBuyActions.clearQuotesAndParams());
+            dispatch(tradingActions.savePaymentMethods([]));
         },
     };
 };

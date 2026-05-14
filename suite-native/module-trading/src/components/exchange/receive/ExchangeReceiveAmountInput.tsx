@@ -1,11 +1,12 @@
 import { forwardRef } from 'react';
-import { TextInput } from 'react-native';
+import { type TextInput } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectTradingExchangeIsLoading } from '@suite-common/trading';
 import { useAmountInputTransformers } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
+import { noop } from '@trezor/utils';
 
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
 import { AmountInput } from '../../general/Input/AmountInput';
@@ -15,8 +16,6 @@ export type ExchangeReceiveAmountInputProps = {
 };
 
 const EXCHANGE_RECEIVE_INPUT_TEST_ID = '@trading/exchange/receive-amount-input';
-
-const noop = () => {};
 
 export const ExchangeReceiveAmountInput = forwardRef<TextInput, ExchangeReceiveAmountInputProps>(
     ({ showAssetsSheet }, ref) => {

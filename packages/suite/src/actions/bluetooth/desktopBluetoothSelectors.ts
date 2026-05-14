@@ -1,4 +1,4 @@
-import { WithBluetoothRootState } from './desktopBluetoothReducer';
+import { type WithBluetoothRootState } from './desktopBluetoothReducer';
 
 export const selectConnectingDevices = (state: WithBluetoothRootState) =>
     state.bluetooth.connectingDeviceIds;

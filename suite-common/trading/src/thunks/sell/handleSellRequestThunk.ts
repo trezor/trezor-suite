@@ -1,7 +1,7 @@
-import { SellFiatTrade, SellFiatTradeQuoteRequest } from 'invity-api';
+import { type SellFiatTrade, type SellFiatTradeQuoteRequest } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { Network } from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/wallet-config';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 
 import { TRADING_DEFAULT_SELL_FLOWS, TRADING_SELL_THUNK_PREFIX } from '../../constants';
@@ -9,7 +9,11 @@ import { invityAPI } from '../../invityAPI';
 import { tradingSellActions } from '../../reducers/sellReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
 import { selectTradingCoinSymbolByCryptoId } from '../../selectors/tradingSelectors';
-import { HandleSellRequestThunkProps, MinimalSellFormProps, TradingSellType } from '../../types';
+import {
+    type HandleSellRequestThunkProps,
+    type MinimalSellFormProps,
+    type TradingSellType,
+} from '../../types';
 import {
     addIdsToQuotes,
     filterQuotesAccordingTags,
@@ -17,6 +21,7 @@ import {
     getTradingPaymentMethods,
     tradingGetSuccessQuotes,
 } from '../../utils';
+import { isCountrySubdivisionEmpty } from '../../utils/countryUtils';
 import { sellUtils } from '../../utils/sell/sellUtils';
 
 type GetQuotesRequest = {
@@ -51,7 +56,7 @@ const getQuoteRequestData = ({
 
     if (
         (!fiatStringAmount && (!cryptoStringAmount || Number(cryptoStringAmount) === 0)) ||
-        !currencySelect ||
+        !currencySelect?.value ||
         !sendCryptoSelect
     ) {
         return null;
@@ -62,10 +67,16 @@ const getQuoteRequestData = ({
         cryptoCurrency: sendCryptoSelect.id,
         fiatCurrency: currencySelect.value.toUpperCase(),
         country: countrySelect.value,
+        subdivision: formValues.countrySubdivisionSelect?.value,
         cryptoStringAmount,
         fiatStringAmount,
         flows: TRADING_DEFAULT_SELL_FLOWS,
     };
+
+    // Do not fetch quotes until subdivision is set when country has subdivisions.
+    if (isCountrySubdivisionEmpty(request.country, formValues.countrySubdivisionSelect?.value)) {
+        return null;
+    }
 
     return request;
 };
@@ -82,14 +93,11 @@ export const handleSellRequestThunk = createThunk<
         {
             formValues,
             network,
-            timer,
             shouldSendInSats,
             composeRequestCallback,
         }: HandleSellRequestThunkProps,
         { dispatch, getState, fulfillWithValue, rejectWithValue, signal },
     ) => {
-        timer.loading();
-
         const requestData = getQuoteRequestData({
             formValues,
             network,
@@ -97,21 +105,30 @@ export const handleSellRequestThunk = createThunk<
         });
 
         if (!requestData) {
-            timer.stop();
+            dispatch(tradingActions.stopRefetchQuotes());
 
             return rejectWithValue('Invalid request data');
         }
 
-        const allQuotes = await getQuotesRequest({ requestData, signal });
+        let allQuotes: SellFiatTrade[] = [];
+        let requestSucceeded = false;
+        try {
+            allQuotes = (await getQuotesRequest({ requestData, signal })) ?? [];
+            requestSucceeded = true;
+        } finally {
+            if (!requestSucceeded) {
+                dispatch(tradingActions.stopRefetchQuotes());
+            }
+        }
 
         if (signal.aborted) {
-            timer.reset();
+            dispatch(tradingActions.stopRefetchQuotes());
 
             return rejectWithValue('Request was aborted');
         }
 
         if (!Array.isArray(allQuotes) || allQuotes.length === 0) {
-            timer.stop();
+            dispatch(tradingActions.stopRefetchQuotes());
 
             const quotesSuccess: SellFiatTrade[] = [];
             dispatch(tradingSellActions.setAmountLimits(undefined));
@@ -137,7 +154,7 @@ export const handleSellRequestThunk = createThunk<
         // without errors
         const successQuotes = tradingGetSuccessQuotes<TradingSellType>(quotesDefault);
 
-        const paymentMethodsFromQuotes = getTradingPaymentMethods<TradingSellType>(successQuotes);
+        const paymentMethodsFromQuotes = getTradingPaymentMethods(successQuotes);
 
         dispatch(tradingSellActions.saveQuotes(successQuotes));
         dispatch(tradingSellActions.saveQuoteRequest(requestData));
@@ -154,7 +171,7 @@ export const handleSellRequestThunk = createThunk<
             composeRequestCallback();
         }
 
-        timer.reset();
+        dispatch(tradingActions.setRefetchQuotesTimestamp(Date.now()));
 
         return fulfillWithValue(successQuotes);
     },

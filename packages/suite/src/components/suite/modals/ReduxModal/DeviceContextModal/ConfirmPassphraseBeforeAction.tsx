@@ -2,39 +2,45 @@ import { useCallback } from 'react';
 import { useIntl } from 'react-intl';
 
 import { Translation, messages } from '@suite/intl';
+import { selectModalRequestId } from '@suite/modal';
 import {
     selectDeviceModel,
     selectHasDevicePassphraseEntryCapability,
     selectSelectedDevice,
 } from '@suite-common/device';
 import { Column, H3, Paragraph } from '@trezor/components';
-import TrezorConnect, { UI } from '@trezor/connect';
+import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
+import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
+import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 
 import { PassphraseInputCard } from './PassphraseInputCard';
-import { CardWithDevice } from '../../../../../views/suite/SwitchDevice/CardWithDevice';
-import { SwitchDeviceModal } from '../../../../../views/suite/SwitchDevice/SwitchDeviceModal';
 
 export const ConfirmPassphraseBeforeAction = () => {
     const device = useSelector(selectSelectedDevice);
     const deviceModel = useSelector(selectDeviceModel);
+    const requestId = useSelector(selectModalRequestId);
 
     const intl = useIntl();
 
     const onEnterPassphraseDialogCancel = () =>
         TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
 
-    const onSubmit = useCallback((value: string, passphraseOnDevice?: boolean) => {
-        TrezorConnect.uiResponse({
-            type: UI.RECEIVE_PASSPHRASE,
-            payload: {
-                value,
-                save: true,
-                passphraseOnDevice: !!passphraseOnDevice,
-            },
-        });
-    }, []);
+    const onSubmit = useCallback(
+        (value: string, passphraseOnDevice?: boolean) => {
+            TrezorConnect.uiResponse({
+                type: UI_RESPONSE.RECEIVE_PASSPHRASE,
+                payload: {
+                    value,
+                    save: true,
+                    passphraseOnDevice: !!passphraseOnDevice,
+                },
+                requestId,
+            });
+        },
+        [requestId],
+    );
 
     const offerPassphraseOnDevice = useSelector(selectHasDevicePassphraseEntryCapability);
 

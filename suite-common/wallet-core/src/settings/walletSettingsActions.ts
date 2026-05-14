@@ -1,8 +1,9 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AddressDisplayOptions } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { PROTO } from '@trezor/connect';
+import { type PROTO } from '@trezor/connect';
 
 import { WALLET_SETTINGS } from './walletSettingsConstants';
 
@@ -43,6 +44,11 @@ export const setAutoEjectEnabled = createAction(
     (enabled: boolean) => ({ payload: enabled }),
 );
 
+export const setAddressDisplayType = createAction(
+    WALLET_SETTINGS.SET_ADDRESS_DISPLAY_TYPE,
+    (value: AddressDisplayOptions) => ({ payload: value }),
+);
+
 export type ChangeCoinVisibilityAction = {
     type: typeof WALLET_SETTINGS.CHANGE_COIN_VISIBILITY;
     payload: {
@@ -68,16 +74,17 @@ export type WalletSettingsAction =
     | ReturnType<typeof setAutoEjectEnabled>
     | ReturnType<typeof setMevProtection>
     | ReturnType<typeof setNetworkReserve>
+    | ReturnType<typeof setAddressDisplayType>
     | ChangeCoinVisibilityAction
     | SetHideBalanceAction
     | SetBitcoinAmountUnitsAction;
 
-export const setDiscreetMode = (toggled: boolean): WalletSettingsAction => ({
+export const setDiscreetMode = (toggled: boolean): SetHideBalanceAction => ({
     type: WALLET_SETTINGS.SET_HIDE_BALANCE,
     toggled,
 });
 
-export const setBitcoinAmountUnits = (units: PROTO.AmountUnit): WalletSettingsAction => ({
+export const setBitcoinAmountUnits = (units: PROTO.AmountUnit): SetBitcoinAmountUnitsAction => ({
     type: WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS,
     payload: units,
 });

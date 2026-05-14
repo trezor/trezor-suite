@@ -1,5 +1,5 @@
 import { forwardRef, useRef } from 'react';
-import { View, ViewProps } from 'react-native';
+import { View, type ViewProps } from 'react-native';
 import Animated, {
     interpolateColor,
     useAnimatedStyle,
@@ -11,7 +11,7 @@ import Animated, {
 import { A, G } from '@mobily/ts-belt';
 import { atom, useAtom } from 'jotai';
 
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 import { Text } from './Text';
 
@@ -68,7 +68,7 @@ export const DebugView = forwardRef<View, ViewProps>(({ style, children, ...prop
         const backgroundColor = interpolateColor(
             progress.value,
             [0, 1],
-            [originalBackgroundColor, utils.colors.backgroundAlertRedBold],
+            [originalBackgroundColor, utils.colors.legacyBackgroundAlertRedBold],
         );
 
         return {

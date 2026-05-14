@@ -1,8 +1,8 @@
 // TODO: suite-common imports in non-suite packages should not be allowed
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
-import { CSSColor } from './types';
+import { type CSSColor } from './types';
 
 export type CoinsColors = Record<NetworkSymbol, CSSColor>;
 
@@ -24,6 +24,7 @@ export const coinsColors: CoinsColors = {
     regtest: '#e75f5f',
     sol: '#9945ff',
     trx: '#ec002a',
+    ttrx: '#ec002a',
     test: '#e75f5f',
     thod: '#454a75',
     tsep: '#454a75',

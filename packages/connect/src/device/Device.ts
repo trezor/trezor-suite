@@ -1,52 +1,5 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
-import { ERRORS } from '@trezor/connect-common/src/constants';
-import {
-    DeviceModelInternal,
-    FirmwareRelease,
-    getFirmwareOrBootloaderVersionArray,
-    getFirmwareVersionArray,
-    models,
-} from '@trezor/device-utils';
-import {
-    type DecodedTrezorPushNotification,
-    TransportProtocol,
-    thp as protocolThp,
-    v1 as protocolV1,
-    v2 as protocolV2,
-} from '@trezor/protocol';
-import { Session, TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
-import { type Descriptor, type Transport } from '@trezor/transport';
-import { TransportDeviceEvent } from '@trezor/transport/src/transports/abstract';
-import { Deferred, TypedEmitter, createDeferred, isArrayMember, versionUtils } from '@trezor/utils';
-import type { VersionArray } from '@trezor/utils/src/versionUtils';
-
-import { DeviceCommands } from './DeviceCommands';
-import { FIRMWARE, PROTO } from '../constants';
-import { DeviceCurrentSession, TypedCallProvider } from './DeviceCurrentSession';
-import { checkFirmwareRevision } from './checkFirmwareRevision';
-import { abortThpWorkflow, getThpChannel } from './thp';
-import { checkFirmwareHashWithRetries } from './workflow/checkFirmwareHashWithRetries';
-import { getAllNetworks } from '../data/coinInfo';
-import {
-    getFirmwareReleaseConfigInfo,
-    getFirmwareStatus,
-    getLanguage,
-    getReleaseByVersion,
-} from '../data/firmwareInfo';
-import {
-    DEVICE,
-    DeviceButtonRequestPayload,
-    DeviceThpCredentialsChangedPayload,
-    DeviceThpPairingPayload,
-    DeviceThpPairingStatus,
-    DeviceVersionChanged,
-    UI,
-    UiResponsePassphrase,
-    UiResponsePin,
-    UiResponseThpPairingTag,
-    UiResponseWord,
-} from '../events';
-import {
+import type {
     DeviceBusyStatus,
     DeviceFirmwareStatus,
     DeviceState,
@@ -59,12 +12,43 @@ import {
     FirmwareReleaseConfigInfo,
     FirmwareType,
     KnownDevice,
+    PROTO,
     UnavailableCapabilities,
-    asBluetoothDeviceId,
-} from '../types';
+} from '@trezor/connect-common';
+import { DEVICE, ERRORS, FIRMWARE, UI_REQUEST } from '@trezor/connect-common';
+import { initLog } from '@trezor/connect-common/src/utils/debug';
+import type { FirmwareRelease } from '@trezor/device-utils';
+import {
+    DeviceModelInternal,
+    getFirmwareOrBootloaderVersionArray,
+    getFirmwareVersionArray,
+    models,
+} from '@trezor/device-utils';
+import type { TransportProtocol } from '@trezor/protocol';
+import { thp as protocolThp, v1 as protocolV1, v2 as protocolV2 } from '@trezor/protocol';
+import type { Descriptor, Session, Transport } from '@trezor/transport';
+import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
+import type { TransportDeviceEvent } from '@trezor/transport/src/transports/abstract';
+import type { Deferred } from '@trezor/utils';
+import { TypedEmitter, createDeferred, isArrayMember, versionUtils } from '@trezor/utils';
+import type { VersionArray } from '@trezor/utils/src/versionUtils';
+
+import { DeviceCommands } from './DeviceCommands';
+import type { TypedCallProvider } from './DeviceCurrentSession';
+import { DeviceCurrentSession } from './DeviceCurrentSession';
+import { checkFirmwareRevision } from './checkFirmwareRevision';
+import { abortThpWorkflow, getThpChannel } from './thp';
+import { changeLanguage } from './workflow/changeLanguage';
+import { checkFirmwareHashWithRetries } from './workflow/checkFirmwareHashWithRetries';
+import { getAllNetworks } from '../data/coinInfo';
+import {
+    getFirmwareReleaseConfigInfo,
+    getFirmwareStatus,
+    getReleaseByVersion,
+} from '../data/firmwareInfo';
+import type { DeviceEvents, DeviceLifecycleEvents, IDevice, RunOptions } from '../types/idevice';
 import { handshakeCancel } from './workflow/handshake';
 import { getReleaseAsset } from '../utils/assetUtils';
-import { initLog } from '../utils/debug';
 import {
     ensureInternalModelFeature,
     getUnavailableCapabilities,
@@ -76,53 +60,7 @@ import { getFirmwareMode, getFirmwareType } from '../utils/firmwareUtils';
 // custom log
 const _log = initLog('Device');
 
-type RunOptions = {
-    // skipFinalReload - normally, after action, features are reloaded again
-    //                   because some actions modify the features
-    //                   but sometimes, you don't need that and can skip that
-    skipFinalReload?: boolean;
-    keepSession?: boolean;
-    useCardanoDerivation?: boolean;
-    skipFirmwareChecks?: boolean;
-    skipLanguageChecks?: boolean;
-};
-
-type Result<T> = { success: true; payload: T } | { success: false; error: Error };
-
-export interface DeviceEvents {
-    [DEVICE.PIN]: {
-        type: PROTO.PinMatrixRequestType | undefined;
-        callback: (response: Result<UiResponsePin['payload']>) => void;
-    };
-    [DEVICE.WORD]: {
-        type: PROTO.WordRequestType;
-        callback: (response: Result<UiResponseWord['payload']>) => void;
-    };
-    [DEVICE.PASSPHRASE]: {
-        callback: (response: Result<UiResponsePassphrase['payload']>) => void;
-    };
-    [DEVICE.PASSPHRASE_ON_DEVICE]: void;
-    [DEVICE.BUTTON]: { device: Device; payload: DeviceButtonRequestPayload };
-    [DEVICE.FIRMWARE_VERSION_CHANGED]: DeviceVersionChanged['payload'];
-    [DEVICE.TREZOR_PUSH_NOTIFICATION]: {
-        device: DeviceTyped;
-        payload: DecodedTrezorPushNotification;
-    };
-    [DEVICE.THP_PAIRING]: {
-        payload: DeviceThpPairingPayload;
-        callback: (response: Result<UiResponseThpPairingTag['payload']>) => void;
-    };
-    [DEVICE.THP_CREDENTIALS_CHANGED]: DeviceThpCredentialsChangedPayload;
-    [DEVICE.THP_PAIRING_STATUS_CHANGED]: DeviceThpPairingStatus;
-}
-
-interface DeviceLifecycleEvents {
-    [DEVICE.CONNECT]: void;
-    [DEVICE.CONNECT_UNACQUIRED]: void;
-    [DEVICE.CHANGED]: void;
-    [DEVICE.DISCONNECT]: void;
-    [DEVICE.TREZOR_PUSH_NOTIFICATION]: DecodedTrezorPushNotification;
-}
+export { type DeviceEvents } from '../types/idevice';
 
 type DeviceParams = {
     id: DeviceUniquePath;
@@ -130,7 +68,7 @@ type DeviceParams = {
     descriptor: Descriptor;
 };
 
-export class Device extends TypedEmitter<DeviceEvents> {
+export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     public readonly transport: Transport;
     private thp: protocolThp.ThpState | undefined;
     public readonly descriptor: Pick<Descriptor, 'apiType' | 'id' | 'type' | 'path' | 'model'>;
@@ -291,13 +229,13 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 if ((await sessionPromise) !== response.payload) {
                     return {
                         success: false,
-                        error: TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS,
+                        error: { code: TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS },
                     } as const;
                 }
             } catch {
                 return {
                     success: false,
-                    error: TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION,
+                    error: { code: TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION },
                 } as const;
             }
         }
@@ -324,7 +262,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
                     return result;
                 } else {
-                    throw new Error(result.error);
+                    throw new Error(result.error.code);
                 }
             })
             .finally(() => {
@@ -371,7 +309,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this.releasePromise;
     }
 
-    async setupThp() {
+    setupThp() {
         _log.info('Setup THP device');
         this._protocol = protocolV2;
 
@@ -383,7 +321,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             this.unreadableError = 'THP incompatible with bridge ' + this.transport.version;
         } else {
             try {
-                await this.transport.loadMessages('thp', protocolThp.getProtobufDefinitions);
                 this.thp = new protocolThp.ThpState();
             } catch (error) {
                 // THP messages not loaded
@@ -450,6 +387,20 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.lifecycle.emit(DEVICE.CHANGED);
     }
 
+    startPiggybackAck() {
+        _log.debug('start PiggybackAck');
+        this.thp?.enablePiggybackAck(true);
+    }
+
+    async stopPiggybackAck() {
+        if (this.currentSession && this.thp?.isPiggybackAckEnabled) {
+            _log.debug('stop PiggybackAck');
+            // send ThpAck for previously seen message
+            await this.currentSession.send('ThpAck', {});
+            this.thp?.enablePiggybackAck(false);
+        }
+    }
+
     // TODO empty fn variant can be split/removed
     run(fn?: () => Promise<void>, options: RunOptions = {}) {
         if (this.runPromise) {
@@ -471,6 +422,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             .catch(async err => {
                 this.keepTransportSession = false;
                 await this.acquirePromise;
+                await this.stopPiggybackAck();
                 await this.release();
 
                 throw err;
@@ -602,7 +554,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             _log.info('language version mismatch. silently updating...');
 
             try {
-                await this.changeLanguage({ language: this.features.language });
+                await changeLanguage({ device: this, language: this.features.language });
             } catch (err) {
                 _log.error('change language failed silently', err);
             }
@@ -629,6 +581,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             options.keepSession === false
         ) {
             this.keepTransportSession = false;
+            await this.stopPiggybackAck();
             await this.release();
         }
     }
@@ -761,86 +714,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
         };
     }
 
-    async changeLanguage({
-        language,
-        binary,
-    }: { language?: undefined; binary: ArrayBuffer } | { language: string; binary?: undefined }) {
-        if (language === 'en-US') {
-            return this._uploadTranslationData(null);
-        }
-
-        if (binary) {
-            return this._uploadTranslationData(binary);
-        }
-
-        const version = this.getVersion();
-        if (!version) {
-            throw ERRORS.TypedError('Runtime', 'changeLanguage: device version unknown');
-        }
-
-        if (!this.firmwareType) {
-            throw ERRORS.TypedError('Runtime', 'changeLanguage: firmware type unknown');
-        }
-
-        if (!this._currentRelease) {
-            throw ERRORS.TypedError('Runtime', 'changeLanguage: release not found');
-        }
-        const languageBinPath = this._currentRelease.translations[language];
-        const downloadedBinary = await getLanguage(languageBinPath);
-
-        if (!downloadedBinary) {
-            throw ERRORS.TypedError('Runtime', 'changeLanguage: translation not found');
-        }
-
-        // This is mostly to satisfy Types, since `downloadedBinary` could be ArrayBuffer or Buffer<ArrayBufferLike>
-        // but `_uploadTranslationData` takes only ArrayBuffer or null.
-        let dataToSend: ArrayBuffer;
-        if (Buffer.isBuffer(downloadedBinary)) {
-            // Creates a "copy" if given a Buffer/Uint8Array in order to guarantee dataToSend is ArrayBuffer.
-            dataToSend = new Uint8Array(downloadedBinary).buffer;
-        } else {
-            dataToSend = downloadedBinary;
-        }
-
-        return this._uploadTranslationData(dataToSend);
-    }
-
-    private async _uploadTranslationData(payload: ArrayBuffer | null) {
-        if (payload === null) {
-            const response = await this.getCurrentSession().typedCall(
-                'ChangeLanguage',
-                ['Success'],
-                { data_length: 0 }, // For en-US where we just send `ChangeLanguage(size=0)`
-            );
-
-            return response.message;
-        }
-
-        const length = payload.byteLength;
-
-        let response = await this.getCurrentSession().typedCall(
-            'ChangeLanguage',
-            ['DataChunkRequest', 'Success'],
-            { data_length: length },
-        );
-
-        while (response.type !== 'Success') {
-            const start = response.message.data_offset!;
-            const end = response.message.data_offset! + response.message.data_length!;
-            const chunk = payload.slice(start, end);
-
-            response = await this.getCurrentSession().typedCall(
-                'DataChunkAck',
-                ['DataChunkRequest', 'Success'],
-                {
-                    data_chunk: Buffer.from(chunk).toString('hex'),
-                },
-            );
-        }
-
-        return response.message;
-    }
-
     private async _updateCurrentRelease(feat: Features) {
         const firmwareVersion = getFirmwareVersionArray({ features: feat });
         const newFirmwareType = getFirmwareType(feat);
@@ -941,12 +814,15 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const newVersion = getFirmwareOrBootloaderVersionArray(feat); // guaranteed to be FW mode here
         // This should never happen, it's indicative of a transport-level bug, so log to Sentry via console.error
         if (feat.device_id !== oldId) {
-            // transport descriptors are useful debug info, but no need to await, the side-effect to log to Sentry can run async
-            this.transport.enumerate().then(res => {
-                const descriptors = res.success ? res.payload : undefined;
+            // during wipe device, the same device (same path) changes id. This also ignores rare transport-level errors of mismatched response
+            if (feat.initialized === this.features?.initialized) {
                 const oldDevice = this.toMessageObject();
-                console.error('getFeatures response mismatched', oldDevice, feat, descriptors);
-            });
+                // transport descriptors are useful debug info, but no need to await, the side-effect to log to Sentry can run async
+                this.transport.enumerate().then(res => {
+                    const descriptors = res.success ? res.payload : undefined;
+                    console.error('getFeatures device id mismatch', oldDevice, feat, descriptors);
+                });
+            }
 
             return;
         }
@@ -994,10 +870,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     isUnacquired() {
         return this.features === undefined;
-    }
-
-    isUnreadable() {
-        return !!this.unreadableError;
     }
 
     private disconnect() {
@@ -1064,22 +936,18 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this.uniquePath;
     }
 
-    isT1() {
-        return this.features ? this.features.major_version === 1 : false;
-    }
-
     hasUnexpectedMode(allow: string[]) {
         // both allow and require cases might generate single unexpected mode
         if (this.features) {
             // allow cases
-            if (this.isBootloader() && !allow.includes(UI.BOOTLOADER)) {
-                return UI.BOOTLOADER;
+            if (this.isBootloader() && !allow.includes(UI_REQUEST.BOOTLOADER)) {
+                return UI_REQUEST.BOOTLOADER;
             }
-            if (!this.isInitialized() && !allow.includes(UI.INITIALIZE)) {
-                return UI.INITIALIZE;
+            if (!this.isInitialized() && !allow.includes(UI_REQUEST.INITIALIZE)) {
+                return UI_REQUEST.INITIALIZE;
             }
-            if (this.isSeedless() && !allow.includes(UI.SEEDLESS)) {
-                return UI.SEEDLESS;
+            if (this.isSeedless() && !allow.includes(UI_REQUEST.SEEDLESS)) {
+                return UI_REQUEST.SEEDLESS;
             }
         }
 
@@ -1112,13 +980,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const { apiType, id } = descriptor;
         const base = { path, name, descriptor: { apiType, id } };
 
-        const bluetoothProps =
-            this.descriptor.id && this.descriptor.apiType === 'bluetooth'
-                ? {
-                      id: asBluetoothDeviceId(this.descriptor.id),
-                  }
-                : undefined;
-
         if (this.unreadableError) {
             return {
                 ...base,
@@ -1137,7 +998,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 label: 'Unacquired device',
                 name: this.name,
                 transportSessionOwner: this.sessionAcquired ? undefined : sessionOwner,
-                bluetoothProps,
                 thp: this.getDeviceThp(),
                 status: this.busy ? this.busy : undefined,
             };
@@ -1162,7 +1022,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             unavailableCapabilities: this.unavailableCapabilities,
             availableTranslations: this.availableTranslations,
             authenticityChecks: this.authenticityChecks,
-            bluetoothProps,
             thp: this.getDeviceThp(),
         };
     }

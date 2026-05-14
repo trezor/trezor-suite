@@ -1,13 +1,14 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { MODAL_CONTEXT_USER } from '@suite/modal';
+import { selectThemeSettings } from '@suite/settings';
 import { Box, Button, Column, Row } from '@trezor/components';
 import { isDesktop, isMacOs } from '@trezor/env-utils';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
-import { MODAL } from 'src/actions/suite/constants';
 import { GuideButton, GuideRouter } from 'src/components/guide';
 import { OnboardingProgressBar } from 'src/components/onboarding/OnboardingProgressBar';
 import { SuiteBanners } from 'src/components/suite/banners';
@@ -37,8 +38,8 @@ const OnboardingContent = ({ children }: OnboardingContentProps) => {
     const { onCancelHandler } = useOnboardingCancelButtonContext();
 
     return (
-        <Column gap={60}>
-            <Column gap={48}>
+        <Column gap={40}>
+            <Column gap={32}>
                 <Row justifyContent="space-between">
                     <SmallDeviceItem />
                     <Row gap={12}>
@@ -75,13 +76,13 @@ type OnboardingLayoutProps = {
 };
 
 export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
-    const theme = useSelector(state => state.suite.settings.theme);
+    const theme = useSelector(selectThemeSettings);
 
     const isMac = isMacOs();
     const isDesktopApp = isDesktop();
 
     const allowedModal = useFilteredModal(
-        [MODAL.CONTEXT_USER],
+        [MODAL_CONTEXT_USER],
         ['advanced-coin-settings', 'disable-tor'],
     );
 

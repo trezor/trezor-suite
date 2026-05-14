@@ -3,10 +3,10 @@ import { Translation } from '@suite-native/intl';
 
 export const UnacquiredDeviceModalAppendix = () => (
     <VStack>
-        <BulletListItem color="textSubdued">
+        <BulletListItem color="contentSecondary">
             <Translation id="moduleDevice.unacquiredDeviceModal.appendix.bullet1" />
         </BulletListItem>
-        <BulletListItem color="textSubdued">
+        <BulletListItem color="contentSecondary">
             <Translation id="moduleDevice.unacquiredDeviceModal.appendix.bullet2" />
         </BulletListItem>
     </VStack>

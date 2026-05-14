@@ -2,10 +2,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { BackupType } from '@suite-common/suite-types';
+import { type BackupType } from '@suite-common/suite-types';
 import { Box, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { hexToRgba } from '@trezor/utils';
 
 import { walletBackupSheetCopyByType } from './presets';
@@ -33,7 +33,7 @@ const containerStyle = prepareNativeStyle<{ marginBottom: number }>((_, { margin
 export const WalletBackupSheetFooter = ({ onSubmit, selectedType }: CardFooterProps) => {
     const { utils, applyStyle } = useNativeStyles();
 
-    const backgroundColor = utils.colors.backgroundSurfaceElevation0;
+    const backgroundColor = utils.colors.surfaceFillPage;
     const transparentColor = hexToRgba(backgroundColor, 0.01);
     const { bottom } = useSafeAreaInsets();
 
@@ -45,7 +45,7 @@ export const WalletBackupSheetFooter = ({ onSubmit, selectedType }: CardFooterPr
                 start={{ x: 0, y: 0 }}
                 end={{ x: 0, y: 1 }}
             />
-            <Button onPress={onSubmit} size="medium" style={applyStyle(buttonStyle)}>
+            <Button onPress={onSubmit} style={applyStyle(buttonStyle)}>
                 <Translation id={walletBackupSheetCopyByType[selectedType].submitButton} />
             </Button>
         </Box>

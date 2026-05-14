@@ -3,14 +3,14 @@ import { toWei } from 'web3-utils';
 import { createSingleInstanceThunk, createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
-    Account,
-    AccountKey,
-    FormState,
-    PrecomposedTransactionCardanoFinal,
-    PrecomposedTransactionFinal,
-    PrecomposedTransactionFinalBumpFeeRbf,
-    Timestamp,
-    WalletAccountTransaction,
+    type Account,
+    type AccountKey,
+    type FormState,
+    type PrecomposedTransactionCardanoFinal,
+    type PrecomposedTransactionFinal,
+    type PrecomposedTransactionFinalBumpFeeRbf,
+    type Timestamp,
+    type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
     enhanceTransaction,
@@ -25,9 +25,13 @@ import {
     replaceEthereumSpecific,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import { TokenInfo, TokenStandard } from '@trezor/blockchain-link-types';
+import { type TokenInfo, type TokenStandard } from '@trezor/blockchain-link-types';
 import { blockbookUtils } from '@trezor/blockchain-link-utils';
-import TrezorConnect, { AccountInfo, AccountTransaction, TokenTransfer } from '@trezor/connect';
+import TrezorConnect, {
+    type AccountInfo,
+    type AccountTransaction,
+    type TokenTransfer,
+} from '@trezor/connect';
 
 import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';
 import {
@@ -477,6 +481,7 @@ export const fetchTransactionsPageThunk = createThunk(
             // if back on first page, the marker is reset
             ...(marker && !isFirstPage ? { marker } : {}),
             suppressBackupWarning: true,
+            protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
         });
 
         // Account might have changed during async getAccountInfo call, so we fetch current state
@@ -504,7 +509,7 @@ export const fetchTransactionsPageThunk = createThunk(
 
             return result.payload;
         } else {
-            const error = result ? result.payload.error : 'unknown error';
+            const error = result ? result.error.message : 'unknown error';
 
             throw new Error(error);
         }
@@ -540,7 +545,7 @@ export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk(
         }
 
         if (!result.success) {
-            throw new Error(result.payload.error);
+            throw new Error(result.error.message);
         }
 
         dispatch(

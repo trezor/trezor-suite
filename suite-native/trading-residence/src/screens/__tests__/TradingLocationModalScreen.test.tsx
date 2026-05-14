@@ -1,17 +1,24 @@
-import { RouteProp } from '@react-navigation/native';
+import { type RouteProp } from '@react-navigation/native';
+import { combineReducers } from '@reduxjs/toolkit';
 
+import { messageSystemInitialState } from '@suite-common/message-system';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
-import {
-    RootStackRoutes,
-    TradingStackParamList,
-    TradingStackRoutes,
-} from '@suite-native/navigation';
+import { localeReducer } from '@suite-native/intl';
+import { type RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
-import { renderWithStoreProvider, screen, userEvent } from '@suite-native/test-utils';
+import {
+    createLightStore,
+    createStaticReducer,
+    renderWithStoreProvider,
+    screen,
+    userEvent,
+} from '@suite-native/test-utils-store';
+import { residenceReducer } from '@suite-native/trading-state';
 
 import {
     TradingLocationModalScreen,
-    TradingLocationModalScreenProps,
+    type TradingLocationModalScreenProps,
 } from '../TradingLocationModalScreen';
 
 const mockNavigationDispatch = jest.fn();
@@ -37,7 +44,7 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () =>
         ({
             params: undefined,
-        }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingHistory>,
+        }) as RouteProp<RootStackParamList, RootStackRoutes.TradingHistory>,
     useNavigation: () => ({
         dispatch: mockNavigationDispatch,
     }),
@@ -54,6 +61,20 @@ describe('TradingLocationModalScreen', () => {
                 }
                 route={mockRoute}
             />,
+            {
+                store: createLightStore({
+                    reducer: {
+                        locale: localeReducer,
+                        messageSystem: createStaticReducer(messageSystemInitialState),
+                        wallet: combineReducers({
+                            settings: createStaticReducer(initialWalletSettingsState),
+                            trading: combineReducers({
+                                residence: residenceReducer,
+                            }),
+                        }),
+                    },
+                }),
+            },
         );
 
     beforeEach(() => {

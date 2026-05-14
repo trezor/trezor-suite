@@ -1,8 +1,8 @@
 # @trezor/connect tests
 
-## jest test
+## Node test
 
-Testing `@trezor/connect` npm package in nodejs environment.
+Testing `@trezor/connect` npm package in Node.js environment.
 
 ```
 ./docker/docker-connect-test.sh
@@ -16,14 +16,14 @@ you may use the following params:
 -i <in case -p methods, use -i to filter one connect method, such as -i binanceGetAddress>
 ```
 
-## karma test
+## Browser test
 
-Browser console is not visible in the terminal. Use KARMA_SINGLE_RUN env variable and debug test at http://localhost:8099/debug.html in your favorite browser.
+Testing `@trezor/connect` in a browser environment using Vitest with Playwright.
 
 For local changes to take effect build connect-iframe or connect-web depending where they were made and restart test.
 
 ```
-TESTS_PATTERN="init" KARMA_SINGLE_RUN=false yarn workspace @trezor/connect test:e2e:web
+TESTS_PATTERN="init" yarn workspace @trezor/connect test:e2e:web
 ```
 
 ## Transactions cache
@@ -51,6 +51,4 @@ Similar to transaction cache. If `process.env.TESTS_USE_WS_CACHE` is set to `tru
 
 [Server](./__wscache__/server.js)
 
-[WebSocketServer in Karma plugin](./karma.plugin.js)
-
-[WsCacheServer in jest.setup](./jest.setup.js)
+[WsCacheServer in vitest.globalSetup](./vitest.globalSetup.ts)

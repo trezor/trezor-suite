@@ -1,6 +1,6 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
-import { Image as ImageComponent, ImageProps, allowedImageFrameProps } from './Image';
+import { Image as ImageComponent, type ImageProps, allowedImageFrameProps } from './Image';
 import { IMAGES } from './images';
 import { getFramePropsStory } from '../../utils/frameProps';
 

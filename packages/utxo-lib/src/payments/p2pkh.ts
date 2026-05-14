@@ -3,14 +3,14 @@
 // - using bs58check.decodeAddress instead of bs58check.decode
 // - using bs58check.encodeAddress instead of bs58check.encode
 
-import ecc from 'tiny-secp256k1';
-
 import * as bs58check from '../bs58check';
 import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
+import * as ecc from '../noble-compatibility';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { Payment, PaymentOpts, StackFunction, typeforce } from '../types';
+import { type Payment, type PaymentOpts, type StackFunction } from '../types';
+import { BufferNSchema, BufferSchema, Point, Type, assertType } from '../types/validation';
 
 const { OPS } = bscript;
 
@@ -22,19 +22,24 @@ export function p2pkh(a: Payment, opts?: PaymentOpts): Payment {
 
     opts = Object.assign({ validate: true }, opts || {});
 
-    typeforce(
-        {
-            network: typeforce.maybe(typeforce.Object),
-            address: typeforce.maybe(typeforce.String),
-            hash: typeforce.maybe(typeforce.BufferN(20)),
-            output: typeforce.maybe(typeforce.BufferN(25)),
-
-            pubkey: typeforce.maybe(ecc.isPoint),
-            signature: typeforce.maybe(bscript.isCanonicalScriptSignature),
-            input: typeforce.maybe(typeforce.Buffer),
-        },
+    assertType(
+        Type.Object(
+            {
+                network: Type.Optional(Type.Object({}, { additionalProperties: true })),
+                address: Type.Optional(Type.String()),
+                hash: Type.Optional(BufferNSchema(20)),
+                output: Type.Optional(BufferNSchema(25)),
+                pubkey: Type.Optional(Point),
+                signature: Type.Optional(BufferSchema),
+                input: Type.Optional(BufferSchema),
+            },
+            { additionalProperties: true },
+        ),
         a,
     );
+
+    if (a.signature && !bscript.isCanonicalScriptSignature(a.signature))
+        throw new TypeError('Expected canonical script signature');
 
     const _address = lazy.value(() => bs58check.decodeAddress(a.address!, a.network));
 
@@ -88,7 +93,7 @@ export function p2pkh(a: Payment, opts?: PaymentOpts): Payment {
 
     // extended validation
     if (opts.validate) {
-        let hash = Buffer.from([]);
+        let hash: Buffer = Buffer.from([]);
         if (a.address) {
             const { version, hash: aHash } = _address();
             if (version !== network.pubKeyHash)
@@ -129,7 +134,7 @@ export function p2pkh(a: Payment, opts?: PaymentOpts): Payment {
             if (chunks.length !== 2) throw new TypeError('Input is invalid');
             if (!bscript.isCanonicalScriptSignature(chunks[0] as Buffer))
                 throw new TypeError('Input has invalid signature');
-            if (!ecc.isPoint(chunks[1])) throw new TypeError('Input has invalid pubkey');
+            if (!ecc.isPoint(chunks[1] as Buffer)) throw new TypeError('Input has invalid pubkey');
 
             if (a.signature && !a.signature.equals(chunks[0] as Buffer))
                 throw new TypeError('Signature mismatch');

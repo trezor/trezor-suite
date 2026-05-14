@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
 import { networksCollection } from '@suite-common/wallet-config';
@@ -16,13 +16,13 @@ const SubHeading = styled.p``;
 
 const CoinName = styled.div`
     margin-bottom: 0.5rem;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
 `;
 
 const WrapperIcons = styled.div`
     display: grid;
     width: 100%;
-    grid-gap: 5px;
+    gap: 5px;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
 `;
 

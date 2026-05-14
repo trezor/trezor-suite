@@ -20,10 +20,10 @@ import { EmptyWalletSvg } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { EmptyWalletInfoSheet, PassphraseContentScreenWrapper } from '@suite-native/passphrase';
 import { useAnalytics } from '@suite-native/services';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const cardStyle = prepareNativeStyle(utils => ({
-    borderColor: utils.colors.borderElevation0,
+    borderColor: utils.colors.borderNeutral,
     borderWidth: utils.borders.widths.small,
     gap: utils.spacings.sp16,
 }));
@@ -71,20 +71,20 @@ export const PassphraseEmptyWalletScreen = () => {
             </Card>
             <TextDivider
                 title="generic.orSeparator"
-                lineColor="borderElevation0"
-                textColor="textSubdued"
+                lineColor="borderNeutral"
+                textColor="contentSecondary"
             />
             <VStack marginHorizontal="sp16" spacing="sp16">
                 <VStack alignItems="center" spacing="sp4">
                     <Text textAlign="center" variant="body-md-strong">
                         <Translation id="modulePassphrase.emptyPassphraseWallet.expectingPassphraseWallet.title" />
                     </Text>
-                    <Text textAlign="center" color="textSubdued">
+                    <Text textAlign="center" color="contentSecondary">
                         <Translation id="modulePassphrase.emptyPassphraseWallet.expectingPassphraseWallet.description" />
                     </Text>
                 </VStack>
                 <Box>
-                    <Button colorScheme="tertiaryElevation0" onPress={handleTryAgain}>
+                    <Button intent="neutral" priority="secondary" onPress={handleTryAgain}>
                         <Translation id="modulePassphrase.emptyPassphraseWallet.expectingPassphraseWallet.button" />
                     </Button>
                 </Box>

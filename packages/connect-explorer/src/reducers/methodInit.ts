@@ -3,7 +3,7 @@ import { Kind, OptionalKind, type TSchema } from '@sinclair/typebox';
 import type { TrezorConnect } from '@trezor/connect-web';
 
 import {
-    MethodState,
+    type MethodState,
     initialState,
     prepareBundle,
     setAffectedValues,

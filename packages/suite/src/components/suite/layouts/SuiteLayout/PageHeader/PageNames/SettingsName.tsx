@@ -1,11 +1,10 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { selectIsDebugModeActive, suiteSettingsActions } from '@suite/settings';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 import { BasicName } from './BasicName';
 
@@ -22,7 +21,7 @@ export const SettingsName = () => {
 
         if (clickCounter === 4) {
             setClickCounter(0);
-            dispatch(setDebugMode({ showDebugMenu: !isDebugModeActive }));
+            dispatch(suiteSettingsActions.setDebugMode({ showDebugMenu: !isDebugModeActive }));
 
             if (desktopApi.available) {
                 desktopApi.configLogger(

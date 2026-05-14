@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { selectIsDebugModeActive } from '@suite/settings';
 import { connectPopupActions, selectConnectAppPermissions } from '@suite-common/connect-popup';
-import { Card, Column, Dropdown, H3, Row, Text } from '@trezor/components';
+import { Card, Column, Dropdown, H3, Row, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
@@ -34,6 +35,7 @@ export const getPermissionText = (permissionType: string) => {
 export const ConnectPermissions = () => {
     const dispatch = useDispatch();
     const apps = useSelector(selectConnectAppPermissions);
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
 
     if (apps.length === 0) {
         return (
@@ -93,6 +95,36 @@ export const ConnectPermissions = () => {
                             data-testid={`@settings/connect-apps/${index}/dropdown`}
                             placement={{ position: 'bottom', alignment: 'end' }}
                             items={[
+                                ...(isDebugModeActive
+                                    ? [
+                                          {
+                                              icon: 'bellSlash' as const,
+                                              iconRight: app.silentMode
+                                                  ? ('check' as const)
+                                                  : undefined,
+                                              label: (
+                                                  <Tooltip
+                                                      content={
+                                                          <Translation id="TR_CONNECT_APP_SILENT_MODE_DESCRIPTION" />
+                                                      }
+                                                      placement="left"
+                                                      as="span"
+                                                  >
+                                                      <Translation id="TR_CONNECT_APP_SILENT_MODE" />
+                                                  </Tooltip>
+                                              ),
+                                              'data-testid': `@settings/connect-apps/${index}/silent-mode`,
+                                              onClick: () => {
+                                                  dispatch(
+                                                      connectPopupActions.setAppSilentMode({
+                                                          origin: app.origin,
+                                                          silentMode: !app.silentMode,
+                                                      }),
+                                                  );
+                                              },
+                                          },
+                                      ]
+                                    : []),
                                 {
                                     icon: 'xCircle',
                                     label: <Translation id="TR_FORGET" />,

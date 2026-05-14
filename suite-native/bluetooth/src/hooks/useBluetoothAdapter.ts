@@ -9,7 +9,7 @@ import { useAnalytics } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 import { asBluetoothDeviceId } from '@trezor/connect';
 import {
-    BluetoothDevice as TransportBluetoothDevice,
+    type BluetoothDevice as TransportBluetoothDevice,
     bluetoothManager,
 } from '@trezor/transport-native-bluetooth';
 
@@ -91,7 +91,7 @@ export const useBluetoothAdapter = () => {
                     } else if (event.connectionStatus.type === 'pairing-canceled') {
                         showToast({
                             message: translate('bluetooth.toasts.pairingCanceled'),
-                            variant: 'default',
+                            intent: 'neutral',
                         });
                     } else if (event.connectionStatus.type === 'pairing-error') {
                         showPairingFailedAlert();

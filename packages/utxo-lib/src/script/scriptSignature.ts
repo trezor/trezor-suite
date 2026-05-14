@@ -2,7 +2,7 @@
 
 import * as bip66 from 'bip66';
 
-import * as types from '../types';
+import { BufferNSchema, Type, UInt8, assertType } from '../types/validation';
 
 const ZERO = Buffer.alloc(1, 0);
 
@@ -40,11 +40,11 @@ export function decode(buffer: Buffer) {
 }
 
 export function encode(signature: Buffer, hashType: number) {
-    types.typeforce(
-        {
-            signature: types.BufferN(64),
-            hashType: types.UInt8,
-        },
+    assertType(
+        Type.Object({
+            signature: BufferNSchema(64),
+            hashType: UInt8,
+        }),
         { signature, hashType },
     );
 

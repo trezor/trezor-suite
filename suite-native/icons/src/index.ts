@@ -5,3 +5,4 @@ export * from './DeviceModelIcon';
 export * from './PizzaIcon';
 export * from './CryptoIconWithNetwork';
 export * from './NetworkIcon';
+export * from './PaymentMethodIcon';

@@ -1,6 +1,5 @@
 import { FIXTURE_ACCOUNT_OPTIONS } from 'src/utils/wallet/trading/__fixtures__/tradingUtils';
 import {
-    buildTradingFiatOption,
     getCountryLabelParts,
     getTradeTypeByRoute,
     resolveAddressAndToken,
@@ -15,10 +14,6 @@ jest.mock('src/hooks/suite/useDefaultAccountLabel', () => ({
 }));
 
 describe('trading utils', () => {
-    it('buildFiatOption', () => {
-        expect(buildTradingFiatOption('czk')).toStrictEqual({ value: 'czk', label: 'CZK' });
-    });
-
     it('getCountryLabelParts', () => {
         expect(getCountryLabelParts('🇨🇿 Czech Republic')).toStrictEqual({
             flag: '🇨🇿',
@@ -98,17 +93,14 @@ describe('trading utils', () => {
     it('getTradeTypeByRoute - testing correct returning trade section according to route', () => {
         expect(getTradeTypeByRoute('wallet-trading-buy')).toEqual('buy');
         expect(getTradeTypeByRoute('wallet-trading-buy-detail')).toEqual('buy');
-        expect(getTradeTypeByRoute('wallet-trading-buy-offers')).toEqual('buy');
         expect(getTradeTypeByRoute('wallet-trading-buy-confirm')).toEqual('buy');
 
         expect(getTradeTypeByRoute('wallet-trading-sell')).toEqual('sell');
         expect(getTradeTypeByRoute('wallet-trading-sell-detail')).toEqual('sell');
-        expect(getTradeTypeByRoute('wallet-trading-sell-offers')).toEqual('sell');
         expect(getTradeTypeByRoute('wallet-trading-sell-confirm')).toEqual('sell');
 
         expect(getTradeTypeByRoute('wallet-trading-exchange')).toEqual('exchange');
         expect(getTradeTypeByRoute('wallet-trading-exchange-detail')).toEqual('exchange');
-        expect(getTradeTypeByRoute('wallet-trading-exchange-offers')).toEqual('exchange');
         expect(getTradeTypeByRoute('wallet-trading-exchange-confirm')).toEqual('exchange');
 
         expect(getTradeTypeByRoute('wallet-index')).toEqual(undefined);

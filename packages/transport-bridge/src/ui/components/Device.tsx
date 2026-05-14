@@ -1,4 +1,4 @@
-import { Descriptor } from '@trezor/transport/src/types';
+import { type Descriptor } from '@trezor/transport/src/types';
 
 interface DeviceProps {
     device: Descriptor;

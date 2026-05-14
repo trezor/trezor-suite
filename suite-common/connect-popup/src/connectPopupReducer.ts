@@ -1,14 +1,14 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import { type PayloadAction } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { connectPopupActions } from './connectPopupActions';
 import { getPermissionDeferred } from './connectPopupPromiseManager';
 import {
-    AppRememberedPermission,
+    type AppRememberedPermission,
     CALL_SOURCE_WALLETCONNECT,
-    ConnectPopupCall,
-    ConnectPopupCallWithState,
+    type ConnectPopupCall,
+    type ConnectPopupCallWithState,
 } from './connectPopupTypes';
 
 export type ConnectPopupState = {
@@ -103,6 +103,15 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
             .addCase(connectPopupActions.finishCall, state => {
                 if (state.activeCall) state.activeCall.state = 'finished';
             })
+            .addCase(connectPopupActions.clearCall, state => {
+                if (
+                    state.activeCall?.state === 'finished' ||
+                    state.activeCall?.state === 'call-error' ||
+                    state.activeCall?.state === 'error'
+                ) {
+                    state.activeCall = undefined;
+                }
+            })
             .addCase(connectPopupActions.deeplinkCallback, (state, { payload }) => {
                 if (
                     state.activeCall?.state === 'finished' ||
@@ -134,6 +143,12 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
             })
             .addCase(connectPopupActions.forgetAppPermissions, (state, { payload }) => {
                 state.permissions = state.permissions.filter(p => p.origin !== payload.origin);
+            })
+            .addCase(connectPopupActions.setAppSilentMode, (state, { payload }) => {
+                const permission = state.permissions.find(p => p.origin === payload.origin);
+                if (permission) {
+                    permission.silentMode = payload.silentMode;
+                }
             })
             .addCase(connectPopupActions.txSimulation, (state, { payload }) => {
                 if (state.activeCall?.state === 'ongoing') {
@@ -183,6 +198,13 @@ export const selectConnectPopupCallWithState = <CallState extends ConnectPopupCa
 
 export const selectConnectAppPermissions = (state: ConnectPopupStateRootState) =>
     state.connectPopup.permissions.filter(p => p.type !== CALL_SOURCE_WALLETCONNECT);
+
+export const selectIsConnectAppSilentModeByOrigin = (
+    state: ConnectPopupStateRootState,
+    origin: string | undefined,
+) =>
+    !!origin &&
+    state.connectPopup.permissions.some(p => p.origin === origin && p.silentMode === true);
 
 export const selectWalletConnectAppPermissions = (state: ConnectPopupStateRootState) =>
     state.connectPopup.permissions.filter(p => p.type === CALL_SOURCE_WALLETCONNECT);

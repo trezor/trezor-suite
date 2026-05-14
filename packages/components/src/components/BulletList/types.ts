@@ -1,6 +1,6 @@
-import { SpacingValuesNew } from '@trezor/theme';
+import { type SpacingValuesNew } from '@trezor/theme';
 
-import { UISize } from '../../config/types';
+import { type UISize } from '../../config/types';
 
 export const bulletSizes = ['large', 'medium', 'small'] as const;
 export type BulletSize = Extract<UISize, (typeof bulletSizes)[number]>;

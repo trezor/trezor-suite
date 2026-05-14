@@ -10,13 +10,13 @@ import {
     STAKE_GAS_LIMIT_RESERVE,
 } from '@suite-common/wallet-constants';
 import {
-    Account,
+    type Account,
     AddressDisplayOptions,
-    ComposeActionContext,
-    ExternalOutput,
-    PrecomposedLevels,
-    PrecomposedTransaction,
-    RbfTransactionParams,
+    type ComposeActionContext,
+    type ExternalOutput,
+    type PrecomposedLevels,
+    type PrecomposedTransaction,
+    type RbfTransactionParams,
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
@@ -39,16 +39,17 @@ import {
     subunitsToUnits,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
+import TrezorConnect, { type FeeLevel, type TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
-    ComposeFeeLevelsError,
-    ComposeTransactionThunkArguments,
-    SignTransactionError,
-    SignTransactionThunkArguments,
+    type ComposeFeeLevelsError,
+    type ComposeTransactionThunkArguments,
+    type SignTransactionError,
+    type SignTransactionThunkArguments,
 } from './sendFormTypes';
+import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
 import { selectTransactions } from '../transactions/transactionsSelectors';
 
 export const calculate = (
@@ -377,12 +378,8 @@ export const signEthereumSendFormTransactionThunk = createThunk<
     `${SEND_MODULE_PREFIX}/signEthereumSendFormTransactionThunk`,
     async (
         { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
-        { dispatch, getState, extra, rejectWithValue },
+        { dispatch, getState, rejectWithValue },
     ) => {
-        const {
-            selectors: { selectAddressDisplayType },
-        } = extra;
-
         const network = getNetwork(selectedAccount.symbol);
 
         if (selectedAccount.networkType !== 'ethereum' || !network.chainId)
@@ -412,7 +409,7 @@ export const signEthereumSendFormTransactionThunk = createThunk<
             maxPriorityFeePerGas: precomposedTransaction.maxPriorityFeePerGas,
             gasPrice: precomposedTransaction.feePerByte,
             nonce,
-            payment_req: paymentRequests?.[0] ?? undefined,
+            payment_req: paymentRequests?.[0],
         });
 
         const response = await TrezorConnect.ethereumSignTransaction({
@@ -431,8 +428,8 @@ export const signEthereumSendFormTransactionThunk = createThunk<
             // catch manual error from TransactionReviewModal
             return rejectWithValue({
                 error: 'sign-transaction-failed',
-                errorCode: response.payload.code,
-                message: response.payload.error,
+                errorCode: response.error.code,
+                message: response.error.message,
             });
         }
 

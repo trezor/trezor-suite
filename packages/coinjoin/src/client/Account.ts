@@ -1,9 +1,9 @@
-import { Network } from '@trezor/utxo-lib';
+import { type Network } from '@trezor/utxo-lib';
 
-import { RegisterAccountParams } from '../types';
-import { AccountAddress, AccountUtxo } from '../types/account';
-import { AllowedScriptTypes, Round } from '../types/coordinator';
-import { RawLiquidityClue } from '../types/middleware';
+import { type RegisterAccountParams } from '../types';
+import { type AccountAddress, type AccountUtxo } from '../types/account';
+import { type AllowedScriptTypes, type Round } from '../types/coordinator';
+import { type RawLiquidityClue } from '../types/middleware';
 import { getScriptPubKeyFromAddress, prefixScriptPubKey } from '../utils/coordinatorUtils';
 import { compareOutpoint, getRoundEvents } from '../utils/roundUtils';
 

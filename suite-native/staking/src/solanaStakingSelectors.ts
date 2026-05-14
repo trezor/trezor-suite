@@ -1,20 +1,20 @@
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
-    StakeRootState,
+    type AccountsRootState,
+    type StakeRootState,
     selectAccountByKey,
     selectDeviceAccounts,
-    selectPoolStatsApyData,
+    selectPoolStatsApy,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     calculateSolanaStakingReward,
     getSolStakingAccountsInfo,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { NativeStakingRootState } from './types';
+import { type NativeStakingRootState } from './types';
 
 export const createMemoizedSelector = createWeakMapSelector.withTypes<NativeStakingRootState>();
 
@@ -61,7 +61,7 @@ export const selectSolanaAPYByAccountKey = (
     const account = selectAccountByKey(state, accountKey);
     if (!account) return 0;
 
-    return selectPoolStatsApyData(state, account);
+    return selectPoolStatsApy(state, { account });
 };
 
 export const selectSolanaStakedBalanceByAccountKey = (
@@ -130,4 +130,16 @@ export const selectSolanaCanClaimByAccountKey = (
     }
 
     return stakingInfo.canClaimSol;
+};
+
+export const selectSolanaUnstakingBalanceByAccountKey = (
+    state: AccountsRootState,
+    accountKey: AccountKey,
+) => {
+    const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
+    if (!stakingInfo) {
+        return '0';
+    }
+
+    return stakingInfo.solPendingUnstakeBalance;
 };

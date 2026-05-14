@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import Animated, { SlideInDown } from 'react-native-reanimated';
+import { SlideInDown } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { CommonActions, useNavigation } from '@react-navigation/native';
@@ -7,26 +7,27 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import { useAtomValue } from 'jotai';
 
 import {
-    AccountsRootState,
-    TransactionsRootState,
+    type AccountsRootState,
+    type TransactionsRootState,
     selectAccountByKey,
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
-import { Button, Card } from '@suite-native/atoms';
+import { AnimatedBox, Button, Card, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     AppTabsRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    SendStackParamList,
+    type SendStackParamList,
     SendStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
 import { cleanupSendFormThunk, sendTransactionThunk } from '@suite-native/send';
 import { SignSuccessMessage } from '@suite-native/transaction-management';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
 import { useUtxoSelection } from '../hooks/useUtxoSelection';
@@ -36,6 +37,10 @@ type NavigationProps = StackToStackCompositeNavigationProps<
     SendStackRoutes.SendOutputsReview,
     RootStackParamList
 >;
+
+const containerStyle = prepareNativeStyle<{ bottomInset: number }>((_, { bottomInset }) => ({
+    paddingBottom: bottomInset,
+}));
 
 const navigateOutOfSendFlowAction = ({
     accountKey,
@@ -99,6 +104,8 @@ export const OutputsReviewFooter = ({ accountKey, tokenContract }: OutputsReview
     const wasAppLeftDuringReview = useAtomValue(wasAppLeftDuringReviewAtom);
     const { setSelectedUtxos } = useUtxoSelection(accountKey);
     const { translate } = useTranslate();
+    const { applyStyle } = useNativeStyles();
+    const insets = useBannerAwareSafeAreaInsets();
 
     const isTransactionProcessedByBackend = !!useSelector((state: TransactionsRootState) =>
         selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
@@ -169,7 +176,7 @@ export const OutputsReviewFooter = ({ accountKey, tokenContract }: OutputsReview
                 />
             ),
             primaryButtonTitle: <Translation id="generic.buttons.tryAgain" />,
-            primaryButtonVariant: 'redBold',
+            primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
             onPressPrimaryButton: () => {
                 dispatch(
                     cleanupSendFormThunk({ accountKey, tokenContract, shouldDeleteDraft: false }),
@@ -193,13 +200,16 @@ export const OutputsReviewFooter = ({ accountKey, tokenContract }: OutputsReview
                     }),
                 );
             },
-            secondaryButtonVariant: 'redElevation1',
+            secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
         });
         setIsSendInProgress(false);
     };
 
     return (
-        <Animated.View entering={SlideInDown}>
+        <AnimatedBox
+            entering={SlideInDown}
+            style={applyStyle(containerStyle, { bottomInset: insets.bottom })}
+        >
             <Card>
                 <SignSuccessMessage />
                 <Button
@@ -212,6 +222,6 @@ export const OutputsReviewFooter = ({ accountKey, tokenContract }: OutputsReview
                     <Translation id="moduleSend.review.outputs.submitButton" />
                 </Button>
             </Card>
-        </Animated.View>
+        </AnimatedBox>
     );
 };

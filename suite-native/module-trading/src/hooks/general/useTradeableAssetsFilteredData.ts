@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 
 import { cryptoIdToSymbol, useListDataFilter } from '@suite-common/trading';
-import { NetworkSymbol, getNetworkByCoingeckoId } from '@suite-common/wallet-config';
-import { TradeableAsset } from '@suite-native/trading-types';
+import { type NetworkSymbol, getNetworkByCoingeckoId } from '@suite-common/wallet-config';
+import { type TradeableAsset } from '@suite-native/trading-types';
 
 const doesContractAddressIncludeValue = (asset: TradeableAsset, value: string) =>
     asset.contractAddress?.toLowerCase().includes(value.toLowerCase()) ?? false;

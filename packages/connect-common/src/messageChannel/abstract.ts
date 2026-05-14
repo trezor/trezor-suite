@@ -3,16 +3,15 @@
  * this file is bundled into content script so be careful what you are importing not to bloat the bundle
  */
 
-import { Deferred, TypedEmitter, createDeferred, scheduleAction } from '@trezor/utils';
+import {
+    type Deferred,
+    TypedEmitter,
+    createDeferred,
+    createDeferredManager,
+    scheduleAction,
+} from '@trezor/utils';
 
-// TODO: so logger should be probably moved to connect common, or this file should be moved to connect
-// import type { Log } from '@trezor/connect/src/utils/debug';
-type Log = {
-    log: (...args: any[]) => void;
-    error: (...args: any[]) => void;
-    warn: (...args: any[]) => void;
-    debug: (...args: any[]) => void;
-};
+import type { Log } from '../utils/debug';
 
 export interface AbstractMessageChannelConstructorParams {
     sendFn: (message: any) => void;
@@ -26,7 +25,7 @@ export interface AbstractMessageChannelConstructorParams {
 
 export type Message<IncomingMessages extends { type: string }> = IncomingMessages & {
     channel: AbstractMessageChannelConstructorParams['channel'];
-    id: number;
+    id: string;
     success: boolean;
     payload: Extract<IncomingMessages, { type: IncomingMessages['type'] }> | undefined;
 };
@@ -41,10 +40,9 @@ export abstract class AbstractMessageChannel<
 > extends TypedEmitter<{
     message: Message<IncomingMessages>;
 }> {
-    protected messagePromises: Record<number, Deferred<any>> = {};
+    protected messages = createDeferredManager({ generateId: (): string => crypto.randomUUID() });
     /** queue of messages that were scheduled before handshake */
     protected messagesQueue: any[] = [];
-    protected messageID = 0;
 
     public isConnected = false;
 
@@ -174,11 +172,9 @@ export abstract class AbstractMessageChannel<
             return;
         }
 
-        if (this.messagePromises[id]) {
-            this.messagePromises[id].resolve({ id, ...data });
-            delete this.messagePromises[id];
-        }
-        const messagePromisesLength = Object.keys(this.messagePromises).length;
+        this.messages.resolve(id, { id, ...data });
+
+        const messagePromisesLength = this.messages.length();
         if (messagePromisesLength > 5) {
             this.logger?.warn(
                 `too many message promises (${messagePromisesLength}). this feels unexpected!`,
@@ -204,9 +200,8 @@ export abstract class AbstractMessageChannel<
             return;
         }
 
-        this.messageID++;
-        message.id = this.messageID;
-        this.messagePromises[message.id] = createDeferred();
+        const { promise, promiseId } = this.messages.create();
+        message.id = promiseId;
 
         try {
             this.sendFn(message);
@@ -216,17 +211,27 @@ export abstract class AbstractMessageChannel<
             }
         }
 
-        return this.messagePromises[message.id].promise;
+        return promise;
     }
 
-    resolveMessagePromises(resolvePayload: Record<string, any>) {
+    resolveMessagePromises(payload: Record<string, any>) {
         // This is used when we know that the connection has been interrupted but there might be something waiting for it.
-        Object.keys(this.messagePromises).forEach(id =>
-            this.messagePromises[id as any].resolve({
-                id,
-                payload: resolvePayload,
-            }),
-        );
+        this.messages.resolveAll(id => ({ id, payload }));
+    }
+
+    /**
+     * Clear any pending outgoing messages so that the next send is not
+     * blocked behind queued work.  Override in subclasses that serialise
+     * outgoing messages (e.g. via a send chain) to ensure urgent messages
+     * such as cancel/close are delivered without delay.
+     */
+    clearPendingSends(): void {
+        // No-op by default.
+    }
+
+    abortHandshake(reason?: string) {
+        this.handshakeFinished?.reject(new Error(reason ?? 'Handshake aborted'));
+        this.handshakeFinished = undefined;
     }
 
     clear() {

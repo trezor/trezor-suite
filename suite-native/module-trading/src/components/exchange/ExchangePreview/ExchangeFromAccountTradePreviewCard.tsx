@@ -4,20 +4,21 @@ import type { ExchangeTrade } from 'invity-api';
 
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { AccountLabel } from '@suite-native/labeling';
 import { TradeSideCard } from '@suite-native/trading-atoms';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
+import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
+import { CryptoToFiatValueBadge } from '../../general/CryptoToFiatValueBadge';
+
 export type ExchangeFromAccountTradePreviewCardProps = {
     quote?: ExchangeTrade;
-    fromStringValue: string | undefined;
 };
 
 export const ExchangeFromAccountTradePreviewCard = ({
     quote,
-    fromStringValue,
 }: ExchangeFromAccountTradePreviewCardProps) => {
     const fromAccount = useSelector(selectExchangeSelectedSendAccount);
+    const { fromStringValue, fromValue } = useChangeStringsExtractor(quote);
 
     if (!quote?.send || !fromAccount) {
         return null;
@@ -25,14 +26,23 @@ export const ExchangeFromAccountTradePreviewCard = ({
 
     return (
         <TradeSideCard
-            accountLabel={<AccountLabel account={fromAccount} />}
+            account={fromAccount}
             cryptoId={quote.send}
             amount={
-                <Text variant="body-sm" color="textAlertRed">
+                <Text variant="body-sm" color="contentCritical">
                     -{fromStringValue}
                 </Text>
             }
             title={<Translation id="moduleTrading.tradingExchangePreviewScreen.fromAccount" />}
-        />
+        >
+            {!!fromValue && (
+                <CryptoToFiatValueBadge
+                    amount={fromValue}
+                    cryptoId={quote.send}
+                    color="contentSecondary"
+                    textAlign="right"
+                />
+            )}
+        </TradeSideCard>
     );
 };

@@ -2,17 +2,17 @@ import { useMemo, useState } from 'react';
 
 import { Image } from 'expo-image';
 
-import { CryptoIconName, cryptoIcons, genericTokenIcon } from '@suite-common/icons';
+import { type CryptoIconName, cryptoIcons, genericTokenIcon } from '@suite-common/icons';
 import {
-    NetworkDisplaySymbol,
-    NetworkSymbol,
+    type NetworkDisplaySymbol,
+    type NetworkSymbol,
     getCoingeckoId,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
 import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
 import { useTranslate } from '@suite-native/intl';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { CryptoIconPlaceholder } from './CryptoIconPlaceholder';
 
@@ -81,8 +81,12 @@ export const CryptoIcon = ({ symbol, contractAddress, size = 'small' }: CryptoIc
 
     /**
      * Retries loading the icon with the next available address in sourceUrls.
-     * This is crucial for ADA, where the logo might be stored
-     * under either the policyId or the full contract address.
+     * This is crucial for:
+     * - ADA, where the logo might be stored under either the policyId or the
+     *   full contract address.
+     * - XLM, where the logo might be stored under either the classic
+     *   CODE-ISSUER address or the Soroban contract id, depending on how far
+     *   CoinGecko has progressed with its Stellar id migration for the token.
      */
     const handleLoadError = () => {
         if (logoIndex + 1 >= sourceUrls.length) {

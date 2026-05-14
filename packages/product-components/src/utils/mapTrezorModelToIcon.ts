@@ -1,4 +1,4 @@
-import { IconName } from '@trezor/components';
+import { type IconName } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 export const mapTrezorModelToIcon: Record<DeviceModelInternal, IconName> = {

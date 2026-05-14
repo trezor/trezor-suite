@@ -1,8 +1,7 @@
 name: "[Test] Nightly Suite Desktop e2e tests"
-# Nightly scheduled check on develop branch
+# Scheduled Mon-Fri on develop branch
 # Builds the desktop app
-# Runs full e2e test suite for Suite Desktop with T3T1 and T3W1 emulators
-# Runs full e2e test suite for Suite Desktop against FW built nightly from main branch with T3T1 and T3W1 emulators
+# Runs full e2e test suite for Suite Desktop with all supported device models and latest firmware
 
 permissions:
   id-token: write # for fetching the OIDC token

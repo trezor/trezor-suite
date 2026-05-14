@@ -1,51 +1,57 @@
 import { Form } from '@suite-native/forms';
-import {
-    PreloadedState,
-    act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
-import { btcAsset, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
-import { SellFormType } from '@suite-native/trading-types';
+import { act } from '@suite-native/test-utils-store';
+import { banxaCreditCardSellQuote, btcAsset } from '@suite-native/trading-fixtures';
+import { type SellFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useSellForm } from '../../../hooks/sell/useSellForm';
-import { SellFormFieldErrorBadge, SellFormFieldErrorBadgeProps } from '../SellFormFieldErrorBadge';
+import {
+    SellFormFieldErrorBadge,
+    type SellFormFieldErrorBadgeProps,
+} from '../SellFormFieldErrorBadge';
 
 describe('SellFormFieldErrorBadge', () => {
     let tradingForm: SellFormType;
 
-    const renderUseTradingSellForm = async (preloadedState: PreloadedState = {}) => {
-        const { result } = await renderHookWithStoreProviderAsync(() => useSellForm(), {
-            preloadedState,
+    const renderUseTradingSellForm = () => {
+        const { result } = renderHookWithTradingProvider(() => useSellForm(), {
+            tradeType: 'sell',
         });
 
         return result.current;
     };
 
-    const getPreloadedState = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN): PreloadedState => ({
-        wallet: getWalletState({ tradeType: 'sell', bitcoinAmountUnit }),
+    const getOverrides = (
+        bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN,
+    ): PreloadedStatePartial<TradingTestPreloadedState> => ({
+        wallet: { settings: { bitcoinAmountUnit } },
     });
 
     const renderSellFormFieldErrorBadge = (
         props: SellFormFieldErrorBadgeProps,
         form: SellFormType,
-        preloadedState: PreloadedState = getPreloadedState(),
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = getOverrides(),
     ) =>
-        renderWithStoreProviderAsync(
+        renderWithTradingProvider(
             <Form form={form}>
                 <SellFormFieldErrorBadge {...props} />
             </Form>,
-            { preloadedState },
+            { tradeType: 'sell', overrides },
         );
 
-    beforeEach(async () => {
-        tradingForm = await renderUseTradingSellForm();
+    beforeEach(() => {
+        tradingForm = renderUseTradingSellForm();
     });
 
     describe('for fiatStringAmount', () => {
-        it('should render nothing where there is no error in form', async () => {
-            const { toJSON } = await renderSellFormFieldErrorBadge(
+        it('should render nothing where there is no error in form', () => {
+            const { toJSON } = renderSellFormFieldErrorBadge(
                 { fieldName: 'fiatStringAmount' },
                 tradingForm,
             );
@@ -53,14 +59,14 @@ describe('SellFormFieldErrorBadge', () => {
             expect(toJSON()).toBeNull();
         });
 
-        it('should render error when field has error', async () => {
+        it('should render error when field has error', () => {
             act(() => {
                 tradingForm.setError('fiatStringAmount', {
                     type: 'manual',
                     message: 'Error message',
                 });
             });
-            const { getByText } = await renderSellFormFieldErrorBadge(
+            const { getByText } = renderSellFormFieldErrorBadge(
                 { fieldName: 'fiatStringAmount' },
                 tradingForm,
             );
@@ -70,8 +76,8 @@ describe('SellFormFieldErrorBadge', () => {
     });
 
     describe('for cryptoStringAmount', () => {
-        it('should display nothing when asset is not selected', async () => {
-            const { toJSON } = await renderSellFormFieldErrorBadge(
+        it('should display nothing when asset is not selected', () => {
+            const { toJSON } = renderSellFormFieldErrorBadge(
                 { fieldName: 'cryptoStringAmount' },
                 tradingForm,
             );
@@ -86,8 +92,8 @@ describe('SellFormFieldErrorBadge', () => {
                 });
             });
 
-            it('should display nothing when amount is not set', async () => {
-                const { toJSON } = await renderSellFormFieldErrorBadge(
+            it('should display nothing when amount is not set', () => {
+                const { toJSON } = renderSellFormFieldErrorBadge(
                     { fieldName: 'cryptoStringAmount' },
                     tradingForm,
                 );
@@ -95,12 +101,12 @@ describe('SellFormFieldErrorBadge', () => {
                 expect(toJSON()).toBeNull();
             });
 
-            it('should display formatted value when amount is 0', async () => {
+            it('should display formatted value when amount is 0', () => {
                 act(() => {
                     tradingForm.setValue('cryptoStringAmount', '0');
                 });
 
-                const { getByText } = await renderSellFormFieldErrorBadge(
+                const { getByText } = renderSellFormFieldErrorBadge(
                     { fieldName: 'cryptoStringAmount' },
                     tradingForm,
                 );
@@ -108,12 +114,12 @@ describe('SellFormFieldErrorBadge', () => {
                 expect(getByText('$0.00')).toBeOnTheScreen();
             });
 
-            it('should display formatted value when amount is set', async () => {
+            it('should display formatted value when amount is set', () => {
                 act(() => {
                     tradingForm.setValue('cryptoStringAmount', '1234567');
                 });
 
-                const { getByText } = await renderSellFormFieldErrorBadge(
+                const { getByText } = renderSellFormFieldErrorBadge(
                     { fieldName: 'cryptoStringAmount' },
                     tradingForm,
                 );
@@ -121,7 +127,7 @@ describe('SellFormFieldErrorBadge', () => {
                 expect(getByText('$1,234.57')).toBeOnTheScreen();
             });
 
-            it('should display error message when field has error', async () => {
+            it('should display error message when field has error', () => {
                 act(() => {
                     tradingForm.setError('cryptoStringAmount', {
                         type: 'manual',
@@ -130,7 +136,7 @@ describe('SellFormFieldErrorBadge', () => {
                     tradingForm.setValue('cryptoStringAmount', '1000');
                 });
 
-                const { getByText, queryByText } = await renderSellFormFieldErrorBadge(
+                const { getByText, queryByText } = renderSellFormFieldErrorBadge(
                     { fieldName: 'cryptoStringAmount' },
                     tradingForm,
                 );
@@ -139,7 +145,7 @@ describe('SellFormFieldErrorBadge', () => {
                 expect(getByText('VALIDATION_ERROR')).toBeOnTheScreen();
             });
 
-            it('should display formatted fiat value when field has error, but quotes are loading', async () => {
+            it('should display formatted fiat value when field has error, but quotes are loading', () => {
                 act(() => {
                     tradingForm.setError('cryptoStringAmount', {
                         type: 'manual',
@@ -147,30 +153,29 @@ describe('SellFormFieldErrorBadge', () => {
                     });
                     tradingForm.setValue('cryptoStringAmount', '1000');
                 });
-                const preloadedState = {
-                    wallet: getWalletState({ tradeType: 'sell' }),
+                const overrides = {
+                    wallet: { trading: { sell: { isLoading: true } } },
                 };
-                preloadedState!.wallet!.trading!.sell!.isLoading = true;
 
-                const { getByText, queryByText } = await renderSellFormFieldErrorBadge(
+                const { getByText, queryByText } = renderSellFormFieldErrorBadge(
                     { fieldName: 'cryptoStringAmount' },
                     tradingForm,
-                    preloadedState,
+                    overrides,
                 );
 
                 expect(queryByText('VALIDATION_ERROR')).toBeNull();
                 expect(getByText('$1.00')).toBeOnTheScreen();
             });
 
-            it('should display correct value when using sats', async () => {
+            it('should display correct value when using sats', () => {
                 act(() => {
                     tradingForm.setValue('cryptoStringAmount', '1234567123456');
                 });
 
-                const { getByText } = await renderSellFormFieldErrorBadge(
+                const { getByText } = renderSellFormFieldErrorBadge(
                     { fieldName: 'cryptoStringAmount' },
                     tradingForm,
-                    getPreloadedState(PROTO.AmountUnit.SATOSHI),
+                    getOverrides(PROTO.AmountUnit.SATOSHI),
                 );
 
                 expect(getByText('$12.35')).toBeOnTheScreen();
@@ -182,11 +187,11 @@ describe('SellFormFieldErrorBadge', () => {
         beforeEach(() => {
             act(() => {
                 tradingForm.setValue('sendAsset', btcAsset);
-                tradingForm.setValue('quote', sellQuotes[0]);
+                tradingForm.setValue('quote', banxaCreditCardSellQuote);
             });
         });
 
-        it('should render badge when quote has different crypto value than requested', async () => {
+        it('should render badge when quote has different crypto value than requested', () => {
             act(() => {
                 tradingForm.setValue('amountInCrypto', true);
             });
@@ -194,7 +199,7 @@ describe('SellFormFieldErrorBadge', () => {
                 tradingForm.setValue('cryptoStringAmount', '0.0235');
             });
 
-            const { getByText } = await renderSellFormFieldErrorBadge(
+            const { getByText } = renderSellFormFieldErrorBadge(
                 { fieldName: 'cryptoStringAmount' },
                 tradingForm,
             );
@@ -202,7 +207,7 @@ describe('SellFormFieldErrorBadge', () => {
             expect(getByText('Provider offer: 0.0233 BTC')).toBeOnTheScreen();
         });
 
-        it('should render $ value badge when crypto amount does not differ', async () => {
+        it('should render $ value badge when crypto amount does not differ', () => {
             act(() => {
                 tradingForm.setValue('amountInCrypto', true);
             });
@@ -210,7 +215,7 @@ describe('SellFormFieldErrorBadge', () => {
                 tradingForm.setValue('cryptoStringAmount', '0.0233');
             });
 
-            const { getByText } = await renderSellFormFieldErrorBadge(
+            const { getByText } = renderSellFormFieldErrorBadge(
                 { fieldName: 'cryptoStringAmount' },
                 tradingForm,
             );
@@ -218,7 +223,7 @@ describe('SellFormFieldErrorBadge', () => {
             expect(getByText('$0.00')).toBeOnTheScreen();
         });
 
-        it('should render $ value badge when crypto amount does not differ but contains trailing zeros', async () => {
+        it('should render $ value badge when crypto amount does not differ but contains trailing zeros', () => {
             act(() => {
                 tradingForm.setValue('amountInCrypto', true);
             });
@@ -226,7 +231,7 @@ describe('SellFormFieldErrorBadge', () => {
                 tradingForm.setValue('cryptoStringAmount', '0.023300');
             });
 
-            const { getByText } = await renderSellFormFieldErrorBadge(
+            const { getByText } = renderSellFormFieldErrorBadge(
                 { fieldName: 'cryptoStringAmount' },
                 tradingForm,
             );
@@ -234,31 +239,32 @@ describe('SellFormFieldErrorBadge', () => {
             expect(getByText('$0.00')).toBeOnTheScreen();
         });
 
-        it('should render $ value badge while quotes are loading', async () => {
+        it('should render $ value badge while quotes are loading', () => {
             act(() => {
                 tradingForm.setValue('amountInCrypto', true);
             });
             act(() => {
                 tradingForm.setValue('cryptoStringAmount', '0.0006');
             });
-            const preloadedState = getPreloadedState();
-            preloadedState!.wallet!.trading!.sell!.isLoading = true;
+            const overrides = {
+                wallet: { trading: { sell: { isLoading: true } } },
+            };
 
-            const { getByText } = await renderSellFormFieldErrorBadge(
+            const { getByText } = renderSellFormFieldErrorBadge(
                 { fieldName: 'cryptoStringAmount' },
                 tradingForm,
-                preloadedState,
+                overrides,
             );
 
             expect(getByText('$0.00')).toBeOnTheScreen();
         });
 
-        it('should render badge when quote has different fiat value than requested', async () => {
+        it('should render badge when quote has different fiat value than requested', () => {
             act(() => {
                 tradingForm.setValue('fiatStringAmount', '91');
             });
 
-            const { getByText } = await renderSellFormFieldErrorBadge(
+            const { getByText } = renderSellFormFieldErrorBadge(
                 { fieldName: 'fiatStringAmount' },
                 tradingForm,
             );
@@ -266,12 +272,12 @@ describe('SellFormFieldErrorBadge', () => {
             expect(getByText('Provider offer: $90.17')).toBeOnTheScreen();
         });
 
-        it('should not render badge when fiat amount does not differ', async () => {
+        it('should not render badge when fiat amount does not differ', () => {
             act(() => {
                 tradingForm.setValue('fiatStringAmount', '90.17');
             });
 
-            const { toJSON } = await renderSellFormFieldErrorBadge(
+            const { toJSON } = renderSellFormFieldErrorBadge(
                 { fieldName: 'fiatStringAmount' },
                 tradingForm,
             );
@@ -279,7 +285,7 @@ describe('SellFormFieldErrorBadge', () => {
             expect(toJSON()).toBeNull();
         });
 
-        it('should not render badge for cryptoStringAmount when rendering different form field badge', async () => {
+        it('should not render badge for cryptoStringAmount when rendering different form field badge', () => {
             act(() => {
                 tradingForm.setValue('amountInCrypto', true);
             });
@@ -287,7 +293,7 @@ describe('SellFormFieldErrorBadge', () => {
                 tradingForm.setValue('cryptoStringAmount', '0.0006');
             });
 
-            const { toJSON } = await renderSellFormFieldErrorBadge(
+            const { toJSON } = renderSellFormFieldErrorBadge(
                 { fieldName: 'fiatStringAmount' },
                 tradingForm,
             );
@@ -295,12 +301,12 @@ describe('SellFormFieldErrorBadge', () => {
             expect(toJSON()).toBeNull();
         });
 
-        it('should not render badge for fiatStringAmount when rendering different form field badge', async () => {
+        it('should not render badge for fiatStringAmount when rendering different form field badge', () => {
             act(() => {
                 tradingForm.setValue('fiatStringAmount', '11.0');
             });
 
-            const { getByText } = await renderSellFormFieldErrorBadge(
+            const { getByText } = renderSellFormFieldErrorBadge(
                 { fieldName: 'cryptoStringAmount' },
                 tradingForm,
             );
@@ -308,12 +314,12 @@ describe('SellFormFieldErrorBadge', () => {
             expect(getByText('$0.00')).toBeOnTheScreen();
         });
 
-        it('should not render badge when fiat amount does not differ but contains trailing zeros', async () => {
+        it('should not render badge when fiat amount does not differ but contains trailing zeros', () => {
             act(() => {
                 tradingForm.setValue('fiatStringAmount', '90.170');
             });
 
-            const { toJSON } = await renderSellFormFieldErrorBadge(
+            const { toJSON } = renderSellFormFieldErrorBadge(
                 { fieldName: 'fiatStringAmount' },
                 tradingForm,
             );
@@ -321,7 +327,7 @@ describe('SellFormFieldErrorBadge', () => {
             expect(toJSON()).toBeNull();
         });
 
-        it('should correctly compare with amount in sats', async () => {
+        it('should correctly compare with amount in sats', () => {
             act(() => {
                 tradingForm.setValue('amountInCrypto', true);
             });
@@ -329,16 +335,16 @@ describe('SellFormFieldErrorBadge', () => {
                 tradingForm.setValue('cryptoStringAmount', '2330000');
             });
 
-            const { getByText } = await renderSellFormFieldErrorBadge(
+            const { getByText } = renderSellFormFieldErrorBadge(
                 { fieldName: 'cryptoStringAmount' },
                 tradingForm,
-                getPreloadedState(PROTO.AmountUnit.SATOSHI),
+                getOverrides(PROTO.AmountUnit.SATOSHI),
             );
 
             expect(getByText('$0.00')).toBeOnTheScreen();
         });
 
-        it('should correctly display amount in sats', async () => {
+        it('should correctly display amount in sats', () => {
             act(() => {
                 tradingForm.setValue('amountInCrypto', true);
             });
@@ -346,10 +352,10 @@ describe('SellFormFieldErrorBadge', () => {
                 tradingForm.setValue('cryptoStringAmount', '2330001');
             });
 
-            const { getByText } = await renderSellFormFieldErrorBadge(
+            const { getByText } = renderSellFormFieldErrorBadge(
                 { fieldName: 'cryptoStringAmount' },
                 tradingForm,
-                getPreloadedState(PROTO.AmountUnit.SATOSHI),
+                getOverrides(PROTO.AmountUnit.SATOSHI),
             );
 
             expect(getByText('Provider offer: 2,330,000 sat')).toBeOnTheScreen();
@@ -361,14 +367,14 @@ describe('SellFormFieldErrorBadge', () => {
             act(() => {
                 tradingForm.setValue('sendAsset', btcAsset);
                 tradingForm.setValue('quote', {
-                    ...sellQuotes[0],
+                    ...banxaCreditCardSellQuote,
                     cryptoStringAmount: '00.00050',
                     fiatStringAmount: '10.0000',
                 });
             });
         });
 
-        it('should not render badge when crypto amount does not differ', async () => {
+        it('should not render badge when crypto amount does not differ', () => {
             act(() => {
                 tradingForm.setValue('amountInCrypto', true);
             });
@@ -376,7 +382,7 @@ describe('SellFormFieldErrorBadge', () => {
                 tradingForm.setValue('cryptoStringAmount', '0.0005');
             });
 
-            const { getByText } = await renderSellFormFieldErrorBadge(
+            const { getByText } = renderSellFormFieldErrorBadge(
                 { fieldName: 'cryptoStringAmount' },
                 tradingForm,
             );
@@ -384,7 +390,7 @@ describe('SellFormFieldErrorBadge', () => {
             expect(getByText('$0.00')).toBeOnTheScreen();
         });
 
-        it('should not render badge when crypto amount does not differ but contains trailing zeros', async () => {
+        it('should not render badge when crypto amount does not differ but contains trailing zeros', () => {
             act(() => {
                 tradingForm.setValue('amountInCrypto', true);
             });
@@ -392,7 +398,7 @@ describe('SellFormFieldErrorBadge', () => {
                 tradingForm.setValue('cryptoStringAmount', '0.0005000');
             });
 
-            const { getByText } = await renderSellFormFieldErrorBadge(
+            const { getByText } = renderSellFormFieldErrorBadge(
                 { fieldName: 'cryptoStringAmount' },
                 tradingForm,
             );
@@ -400,12 +406,12 @@ describe('SellFormFieldErrorBadge', () => {
             expect(getByText('$0.00')).toBeOnTheScreen();
         });
 
-        it('should not render badge when fiat amount does not differ', async () => {
+        it('should not render badge when fiat amount does not differ', () => {
             act(() => {
                 tradingForm.setValue('fiatStringAmount', '10.0');
             });
 
-            const { toJSON } = await renderSellFormFieldErrorBadge(
+            const { toJSON } = renderSellFormFieldErrorBadge(
                 { fieldName: 'fiatStringAmount' },
                 tradingForm,
             );
@@ -413,12 +419,12 @@ describe('SellFormFieldErrorBadge', () => {
             expect(toJSON()).toBeNull();
         });
 
-        it('should not render badge when fiat amount does not differ but contains trailing zeros', async () => {
+        it('should not render badge when fiat amount does not differ but contains trailing zeros', () => {
             act(() => {
                 tradingForm.setValue('fiatStringAmount', '10.000');
             });
 
-            const { toJSON } = await renderSellFormFieldErrorBadge(
+            const { toJSON } = renderSellFormFieldErrorBadge(
                 { fieldName: 'fiatStringAmount' },
                 tradingForm,
             );

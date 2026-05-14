@@ -2,12 +2,12 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-    MessageSystemConfigSource,
+    type MessageSystemConfigSource,
     initMessageSystemThunk,
     messageSystemActions,
     selectMessageSystemConfigSource,
 } from '@suite-common/message-system';
-import { Select, SelectItemType } from '@suite-native/atoms';
+import { Select, type SelectItemType } from '@suite-native/atoms';
 
 const options: SelectItemType<MessageSystemConfigSource>[] = [
     { label: 'Remote', value: 'remote' },

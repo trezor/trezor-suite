@@ -1,6 +1,7 @@
 import { memo, useMemo } from 'react';
 
-import { Translation } from '@suite/intl';
+import { useDevice } from '@suite/device';
+import { selectFlags, setFlag } from '@suite/flags';
 import { networksCollection } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
@@ -9,26 +10,31 @@ import {
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import { isAccountFailed } from '@suite-common/wallet-utils';
-import { Box, Card, Column, Dropdown, Switch } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import {
+    Card,
+    Collapsible,
+    Column,
+    Divider,
+    Icon,
+    IconButton,
+    Paragraph,
+    Row,
+} from '@trezor/components';
 
-import { setFlag } from 'src/actions/suite/suiteActions';
+import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { DashboardSection } from 'src/components/dashboard';
-import { GraphScaleDropdownItem, GraphSkeleton } from 'src/components/suite';
-import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { GraphRangeSelector, GraphSkeleton } from 'src/components/suite';
+import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
 import { isNetworkWithGraphFeature } from 'src/utils/wallet/graph';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { DashboardGraph } from './DashboardGraph';
 import { EmptyWallet } from './EmptyWallet';
+import { EmptyWalletSkeleton } from './EmptyWalletSkeleton';
 import { PortfolioCardException } from './PortfolioCardException';
 import { PortfolioCardHeader } from './PortfolioCardHeader';
 import { UnsupportedAssetsMessage, useUnsupportedNetworkMessage } from './UnsupportedAssetsMessage';
-
-const MarginContainer = ({ children }: { children: React.ReactNode }) => (
-    <Box margin={{ horizontal: 24, vertical: 16 }}>{children}</Box>
-);
 
 export const PortfolioCard = memo(() => {
     const currentFiatRates = useSelector(selectCurrentFiatRates);
@@ -38,21 +44,25 @@ export const PortfolioCard = memo(() => {
     const enabledNetworks = useSelector(selectEnabledNetworks);
 
     const accounts = useSelector(selectAllAccountsToList);
-    const { dashboardGraphHidden } = useSelector(s => s.suite.flags);
+    const { dashboardGraphHidden } = useSelector(selectFlags);
     const dispatch = useDispatch();
     const { device } = useDevice();
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
     const failedAccounts = useMemo(() => accounts.filter(isAccountFailed), [accounts]);
+
+    const hasLoadedNonEmptyAccount = useMemo(
+        () => accounts.some(a => !a.empty && !isAccountFailed(a)),
+        [accounts],
+    );
     const walletBalance = useTotalFiatBalance(accounts, baseCurrencyCode, currentFiatRates);
 
-    const passphraseEntryCanceled = accounts.length === 0 && discoveryStatus === undefined;
+    const passphraseEntryCanceled =
+        accounts.length === 0 && discoveryStatus === undefined && discovery?.status === 'cancelled';
 
     const hasNetworkWithEnabledGraph = networksCollection.some(
         network =>
             isNetworkWithGraphFeature(network.symbol) && enabledNetworks.includes(network.symbol),
     );
-
-    const isGraphHidden = dashboardGraphHidden || !hasNetworkWithEnabledGraph;
 
     // TODO: DashboardGraph will get mounted twice (thus triggering data processing twice)
     // 1. DashboardGraph gets mounted
@@ -62,42 +72,38 @@ export const PortfolioCard = memo(() => {
     let body = null;
     if (discoveryStatus && discoveryStatus.status === 'exception') {
         body = (
-            <MarginContainer>
-                <PortfolioCardException
-                    exception={discoveryStatus}
-                    discovery={discovery}
-                    failed={failedAccounts}
-                />
-            </MarginContainer>
+            <PortfolioCardException
+                exception={discoveryStatus}
+                discovery={discovery}
+                failed={failedAccounts}
+            />
         );
     } else if (passphraseEntryCanceled) {
         body = (
-            <MarginContainer>
-                <PortfolioCardException
-                    exception={{
-                        status: 'exception',
-                        type: 'discovery-failed',
-                    }}
-                    discovery={discovery}
-                    failed={failedAccounts}
-                />
-            </MarginContainer>
+            <PortfolioCardException
+                exception={{
+                    status: 'exception',
+                    type: 'discovery-failed',
+                }}
+                discovery={discovery}
+                failed={failedAccounts}
+            />
         );
     } else if (discoveryStatus && discoveryStatus.status === 'loading') {
-        body = isGraphHidden ? null : (
-            <MarginContainer>
+        if (isDeviceEmpty) {
+            body = <EmptyWalletSkeleton />;
+        } else if (hasLoadedNonEmptyAccount && hasNetworkWithEnabledGraph) {
+            body = <DashboardGraph accounts={accounts} />;
+        } else if (hasNetworkWithEnabledGraph) {
+            body = (
                 <Column height={320}>
                     <GraphSkeleton data-testid="@dashboard/loading" />
                 </Column>
-            </MarginContainer>
-        );
+            );
+        }
     } else if (isDeviceEmpty) {
-        body = (
-            <MarginContainer>
-                <EmptyWallet />
-            </MarginContainer>
-        );
-    } else if (!isGraphHidden) {
+        body = <EmptyWallet />;
+    } else if (hasNetworkWithEnabledGraph) {
         body = <DashboardGraph accounts={accounts} />;
     }
 
@@ -105,81 +111,95 @@ export const PortfolioCard = memo(() => {
     const isWalletLoading = discoveryStatus?.status === 'loading';
     const isWalletError = discoveryStatus?.status === 'exception';
     const showGraphControls =
-        !isWalletEmpty && !isWalletLoading && !isWalletError && !isGraphHidden;
+        !isWalletEmpty && !isWalletLoading && !isWalletError && hasNetworkWithEnabledGraph;
+    const canToggleGraph = !isWalletEmpty && !isWalletError && hasNetworkWithEnabledGraph;
     const { affectedNetworks, hasTokens, showMissingDataTooltip } = useUnsupportedNetworkMessage({
         showGraphControls,
         device,
         accounts,
-        isGraphHidden,
     });
 
-    const heading = <Translation id="TR_MY_PORTFOLIO" />;
+    const onSelectedRange = () =>
+        dispatch(
+            updateGraphData({
+                accounts,
+            }),
+        );
+
+    const headerRightContent = canToggleGraph ? (
+        <IconButton
+            size="small"
+            intent="neutral"
+            priority="secondary"
+            icon={dashboardGraphHidden ? 'caretDown' : 'caretUp'}
+            onClick={() =>
+                dispatch(
+                    setFlag({
+                        key: 'dashboardGraphHidden',
+                        value: !dashboardGraphHidden,
+                    }),
+                )
+            }
+        />
+    ) : null;
 
     const header =
-        discovery && discoveryStatus?.status === 'exception' ? null : (
+        (discovery && discoveryStatus?.status === 'exception') ||
+        isWalletEmpty ||
+        isDeviceEmpty ? null : (
             <PortfolioCardHeader
                 discovery={discovery}
-                showGraphControls={showGraphControls}
                 fiatAmount={walletBalance}
                 localCurrency={baseCurrencyCode}
-                isWalletLoading={isWalletLoading}
-                isWalletError={isWalletError}
                 isDiscoveryRunning={isDiscoveryRunning}
-                passphraseEntryCanceled={passphraseEntryCanceled}
+                rightContent={headerRightContent}
             />
         );
 
     return (
-        <DashboardSection
-            heading={heading}
-            subheading={
-                showMissingDataTooltip ? (
-                    <UnsupportedAssetsMessage
-                        affectedNetworks={affectedNetworks}
-                        hasTokens={hasTokens}
-                    />
-                ) : undefined
-            }
-            actions={
-                !isWalletEmpty &&
-                !isWalletLoading &&
-                !isWalletError &&
-                hasNetworkWithEnabledGraph ? (
-                    <Dropdown
-                        placement={{ position: 'bottom', alignment: 'start' }}
-                        content={
-                            <Column
-                                alignItems="flex-start"
-                                gap={spacings.lg}
-                                padding={spacings.xxs}
-                            >
-                                <GraphScaleDropdownItem />
-                                <Switch
-                                    isChecked={!dashboardGraphHidden}
-                                    size="small"
-                                    onChange={() =>
-                                        dispatch(
-                                            setFlag('dashboardGraphHidden', !dashboardGraphHidden),
-                                        )
-                                    }
-                                    label={<Translation id="TR_SHOW_GRAPH" />}
-                                    labelPosition="start"
-                                />
+        <DashboardSection>
+            <Collapsible isOpen={canToggleGraph ? !dashboardGraphHidden : true}>
+                <Card paddingType="none">
+                    {header}
+                    {body && (
+                        <Collapsible.Content overflow="unset">
+                            {header && <Divider margin={{}} />}
+                            <Column gap={16} padding={24}>
+                                <Column justifyContent="center" minHeight={329}>
+                                    {body}
+                                </Column>
+                                {showGraphControls && (
+                                    <Row gap={32} justifyContent="space-between">
+                                        <GraphRangeSelector onSelectedRange={onSelectedRange} />
+                                        {showMissingDataTooltip && (
+                                            <Row gap={12} flex="1 1">
+                                                <Paragraph
+                                                    typographyStyle="body-xs"
+                                                    intent="neutral"
+                                                    priority="secondary"
+                                                    align="end"
+                                                    textWrap="balance"
+                                                >
+                                                    <UnsupportedAssetsMessage
+                                                        affectedNetworks={affectedNetworks}
+                                                        hasTokens={hasTokens}
+                                                    />
+                                                </Paragraph>
+                                                <Icon
+                                                    name="info"
+                                                    size={24}
+                                                    intent="neutral"
+                                                    priority="secondary"
+                                                />
+                                            </Row>
+                                        )}
+                                    </Row>
+                                )}
                             </Column>
-                        }
-                    />
-                ) : undefined
-            }
-        >
-            <Card header={body ? header : null} paddingType="none">
-                {body ? (
-                    <Column justifyContent="center" minHeight={329}>
-                        {body}
-                    </Column>
-                ) : (
-                    header
-                )}
-            </Card>
+                        </Collapsible.Content>
+                    )}
+                </Card>
+            </Collapsible>
         </DashboardSection>
     );
 });

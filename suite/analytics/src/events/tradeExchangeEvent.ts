@@ -6,7 +6,6 @@ type Attributes = {
     action: AttributeDef<'continue' | 'cancel'>;
     step: AttributeDef<
         | 'exchange-form'
-        | 'offers-form'
         | 'receive-address'
         | 'create-approval'
         | 'already-approved'
@@ -41,7 +40,10 @@ export const tradeExchangeEvent: EventDef<Attributes, EventType.TradeExchange> =
             changelog: [{ version: '25.5.2', notes: 'added' }],
         },
         step: {
-            changelog: [{ version: '25.5.2', notes: 'added' }],
+            changelog: [
+                { version: '25.5.2', notes: 'added' },
+                { version: '26.6.1', notes: 'removed `offers-form` value' },
+            ],
         },
         sendCryptoLabel: {
             changelog: [{ version: '25.5.2', notes: 'added' }],

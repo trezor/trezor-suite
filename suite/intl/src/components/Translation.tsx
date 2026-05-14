@@ -1,7 +1,7 @@
 import { FormattedMessage } from 'react-intl';
 
 import { messages } from '../messages';
-import { ExtendedMessageDescriptor } from '../types';
+import { type ExtendedMessageDescriptor } from '../types';
 
 export const Translation = ({ defaultMessage, id, values }: ExtendedMessageDescriptor) => {
     // prevent runtime errors

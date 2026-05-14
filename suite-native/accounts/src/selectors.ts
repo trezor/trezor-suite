@@ -1,27 +1,42 @@
 import { A, pipe } from '@mobily/ts-belt';
 
-import { DeviceRootState, selectIsPortfolioTrackerDevice } from '@suite-common/device';
+import {
+    type DeviceRootState,
+    selectDeviceStaticSessionId,
+    selectIsPortfolioTrackerDevice,
+} from '@suite-common/device';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
-    SimpleTokenStructure,
-    TokenDefinitionsRootState,
-    filterKnownTokens,
+    type SuiteSyncDataRootState,
+    selectAccountsWithSuiteSyncLabel,
+} from '@suite-common/suite-sync';
+import {
+    type SimpleTokenStructure,
+    type TokenDefinitionsRootState,
     getSimpleCoinDefinitionsByNetwork,
+    isTokenDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import {
-    AccountsRootState,
-    FiatRatesRootState,
-    TransactionsRootState,
-    WalletSettingsRootState,
+    type AccountsRootState,
+    type FiatRatesRootState,
+    type TransactionsRootState,
+    type WalletSettingsRootState,
     selectAccountByKey,
+    selectAccountDefiTokensCount,
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectIsAccountUtxoBased,
     selectPendingAccountAddresses,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { Account, AccountKey, TokenInfoBranded } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type AccountKey,
+    type RatesByKey,
+    type TokenAddress,
+    type TokenInfoBranded,
+} from '@suite-common/wallet-types';
 import {
     BASE_CURRENCY_ZERO,
     getAccountFiatBalance,
@@ -29,12 +44,13 @@ import {
     getFiatRateKey,
     getFirstFreshAddress,
     isCardanoStakingActive,
+    isErc4626,
+    isStakingSymbol,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { doesCoinSupportStaking } from '@suite-native/staking';
 import { isNetworkWithTokens, selectAccountTokenInfo } from '@suite-native/tokens';
 
-import { AccountSelectBottomSheetSection, GroupedByTypeAccounts } from './types';
+import { type AccountSelectBottomSheetSection, type GroupedByTypeAccounts } from './types';
 import {
     filterAccountsByLabelAndNetworkNames,
     filterSendAvailableAccounts,
@@ -46,16 +62,24 @@ export type NativeAccountsRootState = AccountsRootState &
     FiatRatesRootState &
     WalletSettingsRootState &
     DeviceRootState &
+    SuiteSyncDataRootState &
     TokenDefinitionsRootState &
     TransactionsRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeAccountsRootState>();
 
+export const selectVisibleAccountsWithLabel = (state: NativeAccountsRootState) =>
+    selectAccountsWithSuiteSyncLabel(
+        state,
+        selectVisibleDeviceAccounts(state),
+        selectDeviceStaticSessionId(state),
+    );
+
 // TODO: It searches for filterValue even in tokens without fiat rates.
 // These are currently hidden in UI, but they should be made accessible in some way.
 export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = createMemoizedSelector(
     [
-        selectVisibleDeviceAccounts,
+        selectVisibleAccountsWithLabel,
         (_state: NativeAccountsRootState, filterValue: string) => filterValue,
         (
             _state: NativeAccountsRootState,
@@ -63,14 +87,18 @@ export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = createMem
             isSendFilterEnabled: boolean = false,
         ) => isSendFilterEnabled,
     ],
-    (accounts, filterValue, isSendFilterEnabled) =>
-        pipe(
-            accounts,
-            sortAccountsByNetworksAndAccountTypes,
-            isSendFilterEnabled ? filterSendAvailableAccounts : accountsSorted => accountsSorted,
+    (accounts, filterValue, isSendFilterEnabled) => {
+        const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts);
+        const sendFilteredAccounts = isSendFilterEnabled
+            ? filterSendAvailableAccounts(sortedAccounts)
+            : sortedAccounts;
+
+        return pipe(
+            sendFilteredAccounts,
             accountsSorted => filterAccountsByLabelAndNetworkNames(accountsSorted, filterValue),
             groupAccountsByNetworkAccountType,
-        ) as GroupedByTypeAccounts,
+        ) as GroupedByTypeAccounts;
+    },
 );
 
 export const selectAccountFiatBalance = createMemoizedSelector(
@@ -125,25 +153,46 @@ export const selectAccountTokenFiatBalance = createMemoizedSelector(
 export const getAccountListSections = (
     account: Account,
     tokenDefinitions: SimpleTokenStructure | undefined,
+    groupZeroBalance = false,
+    hiddenContracts: string[] = [],
+    shownContracts: string[] = [],
+    fiatRates?: RatesByKey,
+    localCurrency?: ReturnType<typeof selectBaseCurrency>,
 ) => {
     const sections: AccountSelectBottomSheetSection[] = [];
     const isNetworkSupportingTokens = isNetworkWithTokens(account.symbol);
 
-    // TODO: unify with desktop when token management is ready,
-    // unhide token during activation automatically
-    // For Stellar, show all tokens without filtering.
-    // Unlike EVM chains where tokens can be airdropped as spam, Stellar tokens (trustlines)
-    // require explicit user action to activate. See tokensSelectors.ts for details.
+    const hiddenSet = new Set(hiddenContracts.map(c => c.toLowerCase()));
+    const shownSet = new Set(shownContracts.map(c => c.toLowerCase()));
     const tokens =
         account.networkType === 'stellar'
-            ? (account.tokens ?? [])
-            : filterKnownTokens(tokenDefinitions, account.symbol, account.tokens ?? []);
-    const hasAnyKnownTokens = isNetworkSupportingTokens && !!tokens.length;
+            ? (account.tokens ?? []).filter(token => !hiddenSet.has(token.contract.toLowerCase()))
+            : (account.tokens ?? [])
+                  .filter(
+                      token =>
+                          isTokenDefinitionKnown(
+                              tokenDefinitions,
+                              account.symbol,
+                              token.contract,
+                          ) || shownSet.has(token.contract.toLowerCase()),
+                  )
+                  .filter(token => !hiddenSet.has(token.contract.toLowerCase()));
+
+    const tokensWithBalance = tokens.filter(token => parseFloat(token?.balance ?? '0') > 0);
+
+    const zeroBalanceTokens: TokenInfoBranded[] = groupZeroBalance
+        ? (tokens
+              .filter(token => parseFloat(token?.balance ?? '0') === 0)
+              .filter(token => !isErc4626(token)) as TokenInfoBranded[])
+        : [];
+
+    const hasAnyKnownTokens =
+        isNetworkSupportingTokens && !!(tokensWithBalance.length + zeroBalanceTokens.length);
 
     const stakingBalance = getAccountTotalStakingBalance(account) ?? '0';
 
     const hasStakingBalance = stakingBalance !== '0' || isCardanoStakingActive(account);
-    const hasStaking = doesCoinSupportStaking(account.symbol) && hasStakingBalance;
+    const hasStaking = isStakingSymbol(account.symbol) && hasStakingBalance;
 
     if (isNetworkSupportingTokens) {
         sections.push({
@@ -170,20 +219,40 @@ export const getAccountListSections = (
     }
 
     if (hasAnyKnownTokens) {
-        // For Stellar, show all tokens (trustlines) regardless of balance since they are explicitly activated
-        // For other networks, only show tokens with balance > 0
-        const tokensToShow =
-            account.networkType === 'stellar'
-                ? tokens
-                : tokens.filter(token => parseFloat(token?.balance ?? '0') > 0);
+        const getTokenFiatValue = (token: { contract: string; balance?: string }): number => {
+            if (!fiatRates || !localCurrency) return 0;
+            const fiatRateKey = getFiatRateKey(
+                account.symbol,
+                localCurrency,
+                token.contract as TokenAddress,
+            );
+            const rate = fiatRates[fiatRateKey]?.rate;
+            if (!rate || !token.balance) return 0;
+
+            return toFiatCurrency({ amount: token.balance, rate })?.toNumber() ?? 0;
+        };
+
+        const tokensToShow = tokensWithBalance
+            .filter(token => !isErc4626(token))
+            .sort((a, b) => getTokenFiatValue(b) - getTokenFiatValue(a));
         tokensToShow.forEach((token, index) => {
             sections.push({
                 type: 'token',
                 account,
                 token: token as TokenInfoBranded,
-                isLast: index === tokensToShow.length - 1,
+                isLast: index === tokensToShow.length - 1 && zeroBalanceTokens.length === 0,
             });
         });
+
+        if (zeroBalanceTokens.length > 0) {
+            sections.push({
+                type: 'zeroBalance',
+                account,
+                tokens: [...zeroBalanceTokens].sort((a, b) =>
+                    (a.name ?? '').localeCompare(b.name ?? ''),
+                ),
+            });
+        }
     }
 
     return sections;
@@ -192,17 +261,59 @@ export const getAccountListSections = (
 const EMPTY_ARRAY: AccountSelectBottomSheetSection[] = [];
 
 export const selectAccountListSections = createMemoizedSelector(
-    [selectAccountByKey, selectTokenDefinitions],
-    (account, tokenDefinitions) => {
+    [selectAccountByKey, selectTokenDefinitions, selectCurrentFiatRates, selectBaseCurrency],
+    (account, tokenDefinitions, fiatRates, localCurrency) => {
         if (!account) return EMPTY_ARRAY;
 
         const networkTokenDefinitions = getSimpleCoinDefinitionsByNetwork(
             tokenDefinitions,
             account.symbol,
         );
+        const coinDefs = tokenDefinitions[account.symbol]?.coin;
 
-        return getAccountListSections(account, networkTokenDefinitions);
+        return getAccountListSections(
+            account,
+            networkTokenDefinitions,
+            false,
+            coinDefs?.hide ?? [],
+            coinDefs?.show ?? [],
+            fiatRates,
+            localCurrency,
+        );
     },
+);
+
+export const selectAccountListSectionsWithZeroBalanceGroup = createMemoizedSelector(
+    [selectAccountByKey, selectTokenDefinitions, selectCurrentFiatRates, selectBaseCurrency],
+    (account, tokenDefinitions, fiatRates, localCurrency) => {
+        if (!account) return EMPTY_ARRAY;
+
+        const networkTokenDefinitions = getSimpleCoinDefinitionsByNetwork(
+            tokenDefinitions,
+            account.symbol,
+        );
+        const coinDefs = tokenDefinitions[account.symbol]?.coin;
+
+        return getAccountListSections(
+            account,
+            networkTokenDefinitions,
+            true,
+            coinDefs?.hide ?? [],
+            coinDefs?.show ?? [],
+            fiatRates,
+            localCurrency,
+        );
+    },
+);
+
+export const selectActiveTokensTabSections = createMemoizedSelector(
+    [selectAccountListSectionsWithZeroBalanceGroup],
+    sections => sections.filter(item => item.type !== 'sectionTitle'),
+);
+
+export const selectActiveAndDefiTokensCount = createMemoizedSelector(
+    [selectActiveTokensTabSections, selectAccountDefiTokensCount],
+    (sections, defiCount) => sections.filter(item => item.type === 'token').length + defiCount,
 );
 
 export const selectFreshAccountAddress = createMemoizedSelector(

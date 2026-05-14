@@ -2,16 +2,14 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import type { DeviceRootState } from '@suite-common/device';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountsRootState } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountsRootState } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 import { CompoundRoundedIcon } from '@suite-native/atoms';
-import { IconName, IconSize } from '@suite-native/icons';
-// TODO fix deep import
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { selectFirstCardanoAccountStakedWithFiveBinaries } from '@suite-native/staking/src/cardanoStakingSelectors';
-import { Color } from '@trezor/theme';
+import { type IconName, type IconSize } from '@suite-native/icons';
+import { selectFirstCardanoAccountStakedWithFiveBinaries } from '@suite-native/staking';
+import { type Color } from '@trezor/theme';
 
 type CompoundIcon = {
     name: IconName;
@@ -21,13 +19,13 @@ type CompoundIcon = {
 
 const BASE_ICON: CompoundIcon = {
     name: 'piggyBank',
-    color: 'textSubdued',
+    color: 'contentSecondary',
     size: 'small',
 };
 
 const WARNING_ICON: CompoundIcon = {
     name: 'warning',
-    color: 'iconAlertYellow',
+    color: 'contentWarning',
     size: 'small',
 };
 

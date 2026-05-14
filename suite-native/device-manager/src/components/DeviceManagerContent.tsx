@@ -8,32 +8,28 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 
 import {
     PORTFOLIO_TRACKER_DEVICE_ID,
+    selectDeviceStaticSessionId,
+    selectIsDeviceConnected,
     selectIsDeviceInitialized,
     selectIsDeviceProtectedByPassphrase,
     selectIsPortfolioTrackerDevice,
-    selectSelectedDevice,
 } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectDeviceThunk, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
-import {
-    ACCESSIBILITY_FONTSIZE_MULTIPLIER,
-    AnimatedVStack,
-    Stack,
-    VStack,
-} from '@suite-native/atoms';
+import { AnimatedVStack, VStack } from '@suite-native/atoms';
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import {
-    AppTabsParamList,
+    type AppTabsParamList,
     AppTabsRoutes,
     EarnStackRoutes,
     HomeStackRoutes,
-    TabNavigationProp,
+    type TabNavigationProp,
     checkIsRouteAnyOf,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AddHiddenWalletButton } from './AddHiddenWalletButton';
 import { ConnectButton } from './ConnectButton';
@@ -55,12 +51,6 @@ const scrollViewStyle = prepareNativeStyle<{ maxHeight: number }>((utils, { maxH
     borderBottomRightRadius: MANAGER_MODAL_BOTTOM_RADIUS,
 }));
 
-const deviceButtonsStyle = prepareNativeStyle(utils => ({
-    width: '100%',
-    paddingHorizontal: utils.spacings.sp16,
-    paddingBottom: utils.spacings.sp16,
-}));
-
 type NavigationProp = TabNavigationProp<AppTabsParamList, AppTabsRoutes.HomeStack>;
 
 export const DeviceManagerContent = () => {
@@ -71,9 +61,10 @@ export const DeviceManagerContent = () => {
     const isPassphraseEnabledOnDevice = useSelector(selectIsDeviceProtectedByPassphrase);
     const shouldFactoryResetBeVisible = useSelector(selectShouldFactoryResetBeVisible);
 
-    const hasDiscovery = useSelector(selectHasRunningDiscovery);
-    const device = useSelector(selectSelectedDevice);
+    const hasRunningDiscovery = useSelector(selectHasRunningDiscovery);
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
+    const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
 
     const navigation = useNavigation<NavigationProp>();
     const currentRoute = useRoute();
@@ -109,16 +100,16 @@ export const DeviceManagerContent = () => {
         });
     };
 
-    if (!device) {
-        return null;
-    }
-
     // based on DeviceManagerModal header height and top offset
     const scrollViewTopOffset = insets.top + utils.spacings.sp24 + HEADER_HEIGHT;
     const scrollViewMaxHeight = CONTENT_MAX_HEIGHT - scrollViewTopOffset;
 
     const isAddHiddenWalletButtonVisible =
-        !hasDiscovery && device?.connected && isDeviceInitialized && isPassphraseEnabledOnDevice;
+        !hasRunningDiscovery &&
+        isDeviceConnected &&
+        isDeviceInitialized &&
+        deviceStaticSessionId &&
+        isPassphraseEnabledOnDevice;
 
     const isDeviceListVisible = isChangeDeviceRequested || isPortfolioTrackerDevice;
 
@@ -153,20 +144,13 @@ export const DeviceManagerContent = () => {
                             layout={LinearTransition}
                             marginTop={!isDeviceListVisible ? 'sp12' : undefined}
                         >
-                            <WalletList onSelectDevice={handleSelectDevice} />
-                            <Stack
-                                orientation={
-                                    ACCESSIBILITY_FONTSIZE_MULTIPLIER > 1
-                                        ? 'vertical'
-                                        : 'horizontal'
-                                }
-                                style={applyStyle(deviceButtonsStyle)}
-                            >
-                                <DeviceSettingsButton
-                                    showAsFullWidth={!isAddHiddenWalletButtonVisible}
-                                />
+                            {deviceStaticSessionId && (
+                                <WalletList onSelectDevice={handleSelectDevice} />
+                            )}
+                            <VStack paddingHorizontal="sp16" paddingBottom="sp16" spacing="sp12">
+                                <DeviceSettingsButton />
                                 {isAddHiddenWalletButtonVisible && <AddHiddenWalletButton />}
-                            </Stack>
+                            </VStack>
                         </AnimatedVStack>
                     )}
                 </VStack>

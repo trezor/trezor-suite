@@ -1,11 +1,22 @@
-import { TestStore, fireEvent, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
+import { combineReducers } from '@reduxjs/toolkit';
+
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { localeReducer } from '@suite-native/intl';
 import {
+    type TestStore,
+    createLightStore,
+    createStaticReducer,
+    fireEvent,
+    renderWithStoreProvider,
+} from '@suite-native/test-utils-store';
+import {
+    residenceReducer,
     selectTradingResidenceCountry,
     selectWasTradingResidenceOnboardingVisited,
 } from '@suite-native/trading-state';
 
 import { LocationForm } from '../LocationForm';
-import { OnboardingButtons, OnboardingButtonsProps } from '../OnboardingButtons';
+import { OnboardingButtons, type OnboardingButtonsProps } from '../OnboardingButtons';
 
 describe('OnboardingButtons', () => {
     let store: TestStore;
@@ -17,7 +28,17 @@ describe('OnboardingButtons', () => {
         });
 
     beforeEach(() => {
-        store = initStore().store;
+        store = createLightStore({
+            reducer: {
+                locale: localeReducer,
+                wallet: combineReducers({
+                    settings: createStaticReducer(initialWalletSettingsState),
+                    trading: combineReducers({
+                        residence: residenceReducer,
+                    }),
+                }),
+            },
+        });
     });
 
     it('should render correctly', () => {

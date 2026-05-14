@@ -18,6 +18,7 @@ import { Main } from 'src/support/suite/Main';
 import { preloadStore } from 'src/support/suite/preloadStore';
 import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
 import { useConnectPopupWeb } from 'src/support/suite/useConnectPopupWeb';
+import { useConnectPopupWebextension } from 'src/support/suite/useConnectPopupWebextension';
 import { useTor } from 'src/support/suite/useTor';
 
 import { createSuiteWebCompositionRoot } from './createSuiteWebCompositionRoot';
@@ -30,6 +31,7 @@ const MainWeb = () => {
     useTor();
     useDebugLanguageShortcut();
     useConnectPopupWeb();
+    useConnectPopupWebextension();
 
     return (
         <Main>

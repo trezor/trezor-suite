@@ -1,20 +1,23 @@
 import { produce } from 'immer';
 
-import { OnboardingAnalytics } from '@suite/analytics';
-import { BackupType } from '@suite-common/suite-types';
+import { type OnboardingAnalytics } from '@suite/analytics';
+import { type BackupType } from '@suite-common/suite-types';
 import { DEVICE } from '@trezor/connect';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import * as STEP from 'src/constants/onboarding/steps';
 import type { AnyPath, AnyStepId } from 'src/types/onboarding';
-import { Action } from 'src/types/suite';
+import { type Action } from 'src/types/suite';
 
 export interface OnboardingRootState {
     onboarding: OnboardingState;
 }
 
+export type BackupMedium = 'nfc' | 'wordlist';
+
 export interface OnboardingState {
     backupType: BackupType;
+    backupMedium: BackupMedium | null;
     isActive: boolean;
     prevDeviceId: string | null;
     activeStepId: AnyStepId;
@@ -34,6 +37,7 @@ const initialState: OnboardingState = {
     path: [],
     onboardingAnalytics: {},
     backupType: 'shamir-single',
+    backupMedium: null,
 };
 
 const addPath = (path: AnyPath, state: OnboardingState) => {
@@ -80,6 +84,9 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
                 break;
             case ONBOARDING.SELECT_BACKUP_TYPE:
                 draft.backupType = action.payload;
+                break;
+            case ONBOARDING.SELECT_BACKUP_MEDIUM:
+                draft.backupMedium = action.payload;
                 break;
 
             case ONBOARDING.RESET_ONBOARDING:

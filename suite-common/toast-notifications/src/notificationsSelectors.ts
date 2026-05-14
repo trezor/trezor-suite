@@ -1,10 +1,10 @@
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 
 import {
-    NotificationId,
-    NotificationsRootState,
-    ToastPayload,
-    TransactionNotification,
+    type NotificationId,
+    type NotificationsRootState,
+    type ToastPayload,
+    type TransactionNotification,
 } from './types';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NotificationsRootState>();

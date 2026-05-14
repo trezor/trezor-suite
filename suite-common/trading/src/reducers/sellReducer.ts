@@ -1,16 +1,26 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { CryptoId, SellFiatTrade, SellFiatTradeQuoteRequest, SellProviderInfo } from 'invity-api';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
+import {
+    type CryptoId,
+    type SellFiatTrade,
+    type SellFiatTradeQuoteRequest,
+    type SellProviderInfo,
+} from 'invity-api';
 
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 
 import { TRADING_SELL_PREFIX } from '../constants';
-import { TradingAmountLimitProps, TradingCountryCode, TradingSellStepType } from '../types';
+import {
+    type TradingAmountLimitProps,
+    type TradingCountryCode,
+    type TradingSellStepType,
+} from '../types';
 
 export interface SellInfo {
     providerInfos: { [name: string]: SellProviderInfo };
     supportedFiatCurrencies: string[];
     supportedCryptoCurrencies: CryptoId[];
     country: TradingCountryCode;
+    countrySubdivision?: string;
 }
 
 export type TradingSellState = {
@@ -18,7 +28,6 @@ export type TradingSellState = {
     quotesRequest?: SellFiatTradeQuoteRequest;
     quotes: SellFiatTrade[];
     selectedQuote: SellFiatTrade | undefined;
-    preselectedQuote: SellFiatTrade | undefined;
     isFromRedirect: boolean;
     // internal selected account key in trading section
     tradingAccountKey?: AccountKey;
@@ -34,7 +43,6 @@ export const sellInitialState: TradingSellState = {
     quotesRequest: undefined,
     quotes: [],
     selectedQuote: undefined,
-    preselectedQuote: undefined,
     transactionId: undefined,
     isFromRedirect: false,
     tradingAccountKey: undefined,
@@ -55,9 +63,6 @@ const tradingSellSlice = createSlice({
         },
         saveQuoteRequest(state, action: PayloadAction<SellFiatTradeQuoteRequest>) {
             state.quotesRequest = action.payload;
-        },
-        savePreselectedQuote(state, action: PayloadAction<SellFiatTrade | undefined>) {
-            state.preselectedQuote = action.payload;
         },
         saveQuotes(state, action: PayloadAction<SellFiatTrade[]>) {
             state.quotes = action.payload;
@@ -82,6 +87,12 @@ const tradingSellSlice = createSlice({
         },
         setLastErrorMessage(state, action: PayloadAction<string | undefined>) {
             state.lastErrorMessage = action.payload;
+        },
+        clearQuotesAndParams(state) {
+            state.quotes = [];
+            state.quotesRequest = undefined;
+            state.selectedQuote = undefined;
+            state.amountLimits = undefined;
         },
     },
 });

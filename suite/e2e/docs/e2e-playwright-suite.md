@@ -6,25 +6,15 @@
 
 _Note: All paths below are relative to the root of trezor-suite repository, if not specified otherwise._
 
-### Common
+### Prerequisites
 
 - [Docker](https://docs.docker.com/desktop/mac/install/)
-- macOS only: [XQuartz](https://www.xquartz.org/) (to share your screen with Docker)
 - [Trezor user env](https://github.com/trezor/trezor-user-env)
 - No other instance of `Suite` or `trezord` service is running
 
-**Full steps:**<br />
-_(in case of Linux with X11 support, skip to step 6.)_
+### Common steps
 
-1. Run XQuartz. Wait till it is launched. Leave it running in the background.
-1. In XQuartz settings go to Preferences -> Security and enable "Allow connections from network clients".
-1. Open a new terminal window (not in XQuartz) and add yourself to the X access control list:
-    - `xhost +127.0.0.1`
-    - You will probably need to logout/login after XQuartz installation to have `xhost` command available.
-1. Run Docker and go to Preferences -> Resources -> Advanced and increase RAM to at least 4GB. Otherwise, the app during tests does not even load.
-1. In the terminal window, set two environment variables:
-    - ``export HOSTNAME=`hostname` ``
-    - `export DISPLAY=:0`
+1. _macOS only:_ Run Docker and go to Preferences -> Resources -> Advanced and increase RAM to at least 4GB. Otherwise, the app during tests does not even load.
 1. In terminal window, navigate to `trezor-user-env` repo root and run `./run.sh`.
 1. In another terminal window, run `yarn workspace @trezor/suite-e2e docker:suite-sync` to have local Relay server instance
 1. In workspace `@trezor/suite-e2e` create a `.env` file according to the `.example.env`

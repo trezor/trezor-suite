@@ -1,4 +1,3 @@
-import * as messages from '@trezor/protobuf/messages.json';
 import { BridgeTransport } from '@trezor/transport';
 import { Model } from '@trezor/trezor-user-env-link';
 
@@ -24,7 +23,7 @@ describe('bridge', () => {
     // special case of listen. for happy-path listen fixtures referer to multi-client.test.ts
     test('listen - bridge already has some descriptors, client subscribes with non-matching descriptors', async () => {
         await TrezorUserEnvLink.startBridge();
-        const bridge = new BridgeTransport({ messages, id: '' });
+        const bridge = new BridgeTransport({ id: '' });
         await bridge.init();
         const enumerateResult = await bridge.enumerate();
         assertSuccess(enumerateResult);

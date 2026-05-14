@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 import { yup } from '@suite-common/validators';
-import { Button, InputType, VStack } from '@suite-native/atoms';
+import { Button, type InputType, VStack } from '@suite-native/atoms';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
@@ -44,8 +44,17 @@ export const LabelEditForm = ({ label, onSubmit }: LabelEditFormParam) => {
         <VStack spacing="sp16">
             <Form form={form}>
                 <VStack spacing="sp8">
-                    <TextInputField ref={inputRef} name="label" asBottomSheetInput />
-                    <Button onPress={onConfirm} size="large" isDisabled={!isValid}>
+                    <TextInputField
+                        ref={inputRef}
+                        name="label"
+                        asBottomSheetInput
+                        testID="@label-edit-form/input"
+                    />
+                    <Button
+                        onPress={onConfirm}
+                        isDisabled={!isValid}
+                        testID="@label-edit-form/confirm-button"
+                    >
                         <Translation id="generic.buttons.confirm" />
                     </Button>
                 </VStack>

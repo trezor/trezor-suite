@@ -1,7 +1,7 @@
 import { createTokenTargetId } from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
-import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
-import { VinVoutAddress } from '@suite-native/transactions';
+import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
+import { type VinVoutAddress } from '@suite-native/transactions';
 
 import { VerticalSeparator } from './NetworkTransactionDetailSummary';
 import { TransactionDetailAddressesSection } from './TransactionDetailAddressesSection';
@@ -42,12 +42,14 @@ export const TokenTransactionDetailSummary = ({
                 addressesType="inputs"
                 addresses={inputAddresses}
                 onShowMore={onShowMore}
+                showOutputLabels={false}
             />
             <TransactionDetailAddressesSection
                 transaction={transaction}
                 addressesType="outputs"
                 addresses={outputAddresses}
                 onShowMore={onShowMore}
+                showOutputLabels={false}
             />
             <VerticalSeparator inputsCount={inputAddresses.length} />
         </VStack>

@@ -1,21 +1,21 @@
-import { Dispatch, SetStateAction, useEffect } from 'react';
+import { type Dispatch, type SetStateAction, useEffect } from 'react';
 
 import { events } from '@suite/analytics';
-import { Translation, TranslationKey, useTranslation } from '@suite/intl';
-import { Route } from '@suite-common/suite-types';
+import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import { openModal } from '@suite/modal';
+import { type Route, goto, selectRouteName } from '@suite/router';
+import { selectIsDebugModeActive } from '@suite/settings';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
-import { NetworkType } from '@suite-common/wallet-config';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { Button, Icon, IconButton, IconName, Input, Row, SubTabs } from '@trezor/components';
+import { type NetworkType } from '@suite-common/wallet-config';
+import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { isErc4626 } from '@suite-common/wallet-utils';
+import { Button, Icon, IconButton, type IconName, Input, Row, SubTabs } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { arrayPartition } from '@trezor/utils';
 
-import { openModal } from 'src/actions/suite/modalActions';
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { GetTokensOutputType, getTokens } from 'src/utils/wallet/tokenUtils';
+import { type GetTokensOutputType, getTokens } from 'src/utils/wallet/tokenUtils';
 
 type SubTabConfig = {
     isNft: boolean;
@@ -33,14 +33,27 @@ type SubTabItem = {
 };
 
 const getSubTabConfig = ({ isNft, tokens, goToRoute, networkType }: SubTabConfig) => {
+    const [erc4626Tokens, normalTokens] = arrayPartition(tokens.shownWithBalance, isErc4626);
+
     const baseConfig: SubTabItem[] = [
         {
             id: isNft ? 'wallet-nfts' : 'wallet-tokens',
             iconName: isNft ? 'pictureFrame' : 'coins',
             onClick: goToRoute(isNft ? 'wallet-nfts' : 'wallet-tokens'),
-            count: tokens.shownWithBalance.length,
+            count: normalTokens.length,
             labelId: isNft ? 'TR_NAV_COLLECTIONS' : 'TR_NAV_TOKENS',
         },
+        ...(erc4626Tokens.length
+            ? [
+                  {
+                      id: 'wallet-tokens-defi',
+                      iconName: 'percent',
+                      onClick: goToRoute('wallet-tokens-defi'),
+                      count: erc4626Tokens.length,
+                      labelId: 'TR_DEFI',
+                  } as const,
+              ]
+            : []),
         {
             id: isNft ? 'wallet-nfts-hidden' : 'wallet-tokens-hidden',
             iconName: 'eyeSlash',
@@ -112,7 +125,7 @@ export const TokensNavigation = ({
     };
 
     const goToRoute = (route: Route['name']) => () => {
-        dispatch(goto(route, { preserveParams: true }));
+        dispatch(goto({ routeName: route, preserveParams: true }));
     };
 
     useEffect(() => {

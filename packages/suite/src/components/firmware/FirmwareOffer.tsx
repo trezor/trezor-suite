@@ -1,20 +1,19 @@
+import { getSuiteFirmwareTypeString, useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
+import { selectIsDebugModeActive } from '@suite/settings';
 import {
     getChangelogUrl,
     getFwUpdateVersion,
     parseFirmwareChangelog,
 } from '@suite-common/suite-utils';
 import { Column, H4, Icon, Row, Text, TextButton, Tooltip } from '@trezor/components';
-import { FirmwareType } from '@trezor/connect';
+import { type FirmwareType } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 
 import { MarkdownWithComponents } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
-import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
-import { selectIsDebugModeActive } from '../../selectors/suite/suiteSelectors';
 import { DebugOnlyBadge } from '../suite/DebugOnlyBadge';
 
 type FirmwareOfferProps = {
@@ -56,7 +55,6 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                     {currentVersion ? ` ${currentVersion}` : ''}
                 </Text>
             </Column>
-            <Icon name="arrowRight" size={16} />
         </>
     );
 
@@ -81,6 +79,7 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                 ) : (
                     <CurrentVersion />
                 ))}
+            {currentVersion && <Icon name="arrowRight" size={16} />}
             <Column alignItems="center" gap={spacings.xxs}>
                 <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
                     <Translation id="TR_ONBOARDING_NEW_VERSION" />

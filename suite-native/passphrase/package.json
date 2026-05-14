@@ -11,8 +11,8 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@gorhom/bottom-sheet": "5.2.6",
-        "@react-navigation/native": "7.1.26",
+        "@gorhom/bottom-sheet": "5.2.8",
+        "@react-navigation/native": "7.1.28",
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/device": "workspace:*",
         "@suite-common/validators": "workspace:*",
@@ -21,16 +21,17 @@
         "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/confirm-on-trezor": "workspace:*",
+        "@suite-native/device-authorization": "workspace:^",
         "@suite-native/forms": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/services": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "@trezor/styles": "workspace:*",
-        "react": "19.1.0",
-        "react-native": "0.81.5",
-        "react-native-reanimated": "~4.1.5",
+        "@trezor/styles-native": "workspace:*",
+        "react": "19.2.4",
+        "react-native": "0.83.2",
+        "react-native-reanimated": "~4.2.1",
         "react-redux": "9.2.0"
     }
 }

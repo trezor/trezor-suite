@@ -1,13 +1,13 @@
 import { useMemo, useState } from 'react';
 
-import { TradingTradeType } from '@suite-common/trading';
+import { type TradingTradeType } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
 import type {
     FilterItem,
     SectionListData,
     SectionListDataArray,
 } from '@suite-native/trading-atoms';
-import { QuotesByCategories, QuotesCategory } from '@suite-native/trading-types';
+import { type QuotesByCategories, type QuotesCategory } from '@suite-native/trading-types';
 import { exhaustive } from '@trezor/type-utils';
 
 export type FilterValue = 'all' | 'cex' | 'dex';
@@ -15,7 +15,6 @@ export type FilterValue = 'all' | 'cex' | 'dex';
 export const useProviderFilters = <T extends TradingTradeType>(
     quotes: QuotesByCategories<T>,
     shouldShowFilters: boolean,
-    areTradingExchangeDexesEnabled: boolean,
 ) => {
     const { translate } = useTranslate();
     const [selectedFilter, setSelectedFilter] = useState<FilterValue>('all');
@@ -30,20 +29,18 @@ export const useProviderFilters = <T extends TradingTradeType>(
     );
 
     const filteredSections: SectionListData<T, QuotesCategory> = useMemo(() => {
-        const allSections = Object.entries(quotes)
-            .filter(([category]) => areTradingExchangeDexesEnabled || category !== 'dex')
-            .map(([category, items]) => {
-                const typedCategory = category as QuotesCategory;
+        const allSections = Object.entries(quotes).map(([category, items]) => {
+            const typedCategory = category as QuotesCategory;
 
-                return {
-                    key: category,
-                    data: items as SectionListDataArray<T>,
-                    label: '',
-                    sectionData: typedCategory,
-                };
-            });
+            return {
+                key: category,
+                data: items as SectionListDataArray<T>,
+                label: '',
+                sectionData: typedCategory,
+            };
+        });
 
-        if (!areTradingExchangeDexesEnabled || !shouldShowFilters || selectedFilter === 'all') {
+        if (!shouldShowFilters || selectedFilter === 'all') {
             return allSections;
         }
 
@@ -59,7 +56,7 @@ export const useProviderFilters = <T extends TradingTradeType>(
             default:
                 return exhaustive(selectedFilter, 'Unexpected filter value');
         }
-    }, [quotes, selectedFilter, shouldShowFilters, areTradingExchangeDexesEnabled]);
+    }, [quotes, selectedFilter, shouldShowFilters]);
 
     return {
         selectedFilter,

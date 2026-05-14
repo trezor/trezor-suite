@@ -1,6 +1,6 @@
 import { InfoSegments } from '@trezor/components';
 
-import { FormattedDate, FormattedDateProps } from './FormattedDate';
+import { FormattedDate, type FormattedDateProps } from './FormattedDate';
 
 export const FormattedDateWithBullet = ({ ...props }: FormattedDateProps) => (
     <InfoSegments>

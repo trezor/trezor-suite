@@ -25,8 +25,8 @@ const Wrapper = styled.div`
     -webkit-app-region: no-drag;
     top: 10px;
     right: 16px;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-    border: 1px solid ${({ theme }) => theme.borderElevation1};
+    background: ${({ theme }) => theme.surfaceFillRaised};
+    border: 1px solid ${({ theme }) => theme.borderNeutral};
     border-radius: ${borders.radii.sm};
     box-shadow: ${({ theme }) => theme.boxShadowElevated};
     z-index: ${zIndices.windowControls};

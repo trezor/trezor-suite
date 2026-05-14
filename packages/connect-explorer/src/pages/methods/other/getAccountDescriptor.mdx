@@ -1,5 +1,5 @@
-import { Bundle } from '@trezor/connect/src/types';
-import { GetAccountDescriptorParams } from '@trezor/connect/src/types/api/getAccountDescriptor';
+import { Bundle } from '@trezor/connect-common/src/types';
+import { GetAccountDescriptorParams } from '@trezor/connect-common/src/types/api/getAccountDescriptor';
 
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
@@ -62,7 +62,7 @@ TrezorConnect.getAccountDescriptor({
 
 ### Result
 
-[AccountInfo type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/account.ts)
+[AccountInfo type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/account.ts)
 
 ```javascript
 {
@@ -72,7 +72,7 @@ TrezorConnect.getAccountDescriptor({
         path: string,                         // serialized path
         descriptor: string,                   // account public key
         legacyXpub?: string,                  // (optional) account public key in legacy format (only for segwit and segwit native accounts)
-
+        outputDescriptorBip380?: string,      // (optional) Bitcoin-only BIP380 output descriptor
     }
 }
 ```
@@ -82,8 +82,8 @@ Error
 ```javascript
 {
     success: false,
-    payload: {
-        error: string // error message
+    error: {
+        message: string // error message
     }
 }
 ```

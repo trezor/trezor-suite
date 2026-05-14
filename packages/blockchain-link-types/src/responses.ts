@@ -1,5 +1,5 @@
-import type { Block, MempoolTransactionNotification } from './blockbook';
-import { Eip1559Fees } from './blockbook-api';
+import type { Block, ContractInfoResponse, MempoolTransactionNotification } from './blockbook';
+import { type Eip1559Fees } from './blockbook-api';
 import type {
     AccountBalanceHistory,
     AccountInfo,
@@ -9,8 +9,8 @@ import type {
     Transaction,
     Utxo,
 } from './common';
-import { HANDSHAKE } from './constants/messages';
-import * as RESPONSES from './constants/responses';
+import { type HANDSHAKE } from './constants/messages';
+import type * as RESPONSES from './constants/responses';
 
 // messages sent from worker to blockchain.js
 
@@ -167,6 +167,11 @@ export interface ValidateEvmRpc {
     };
 }
 
+export interface GetContractInfo {
+    type: typeof RESPONSES.GET_CONTRACT_INFO;
+    payload: ContractInfoResponse;
+}
+
 interface WithoutPayload {
     id: number;
     type: typeof HANDSHAKE | typeof RESPONSES.CONNECTED;
@@ -196,4 +201,5 @@ export type Response =
     | ChannelMessage<Unsubscribe>
     | ChannelMessage<Notification>
     | ChannelMessage<PushTransaction>
-    | ChannelMessage<ValidateEvmRpc>;
+    | ChannelMessage<ValidateEvmRpc>
+    | ChannelMessage<GetContractInfo>;

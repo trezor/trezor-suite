@@ -14,7 +14,7 @@ import {
 import { suiteSyncDataReducer, suiteSyncReducer } from '@suite-common/suite-sync';
 import { suiteSyncQuotaManagerReducer } from '@suite-common/suite-sync-quota-manager';
 import { prepareThpReducer } from '@suite-common/thp';
-import { notificationsReducer } from '@suite-common/toast-notifications';
+import { createNotificationsReducer } from '@suite-common/toast-notifications';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 import {
     feesReducer,
@@ -24,9 +24,11 @@ import {
     prepareDiscoveryReducer,
     prepareExplorerReducer,
     prepareFiatRatesReducer,
+    preparePhishingReducer,
     prepareStakeReducer,
     prepareTransactionsReducer,
     prepareWalletSettingsReducer,
+    stablecoinYieldReducer,
     walletSettingsPersistedWhitelist,
 } from '@suite-common/wallet-core';
 // Suite Native has circular in @suite-native/test-utils -> @suite-native/state -> ... -> @suite-native/test-utils
@@ -37,14 +39,17 @@ import { bannerFlagsPersistWhitelist, bannerFlagsReducer } from '@suite-native/b
 import { bluetoothSlice } from '@suite-native/bluetooth';
 import { deviceAuthorizationReducer } from '@suite-native/device-authorization';
 import { deviceOnboardingReducer } from '@suite-native/device-onboarding';
+import { pendingCoinVisibilitySlice } from '@suite-native/discovery';
+import { featureFeedbackReducer } from '@suite-native/feature-feedback';
 import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/feature-flags';
 import { nativeFirmwareReducer } from '@suite-native/firmware';
 import { graphPersistTransform, graphReducer } from '@suite-native/graph';
-import { localePersistWhitelist, localeReducer } from '@suite-native/intl';
+import { type TxKeyPath, localePersistWhitelist, localeReducer } from '@suite-native/intl';
 import { appSettingsPersistWhitelist, appSettingsReducer } from '@suite-native/settings';
 import {
-    MMKVStorageDep,
+    type MMKVStorageDep,
     backfillDeviceAuthenticityChecks,
+    backfillManualCheckResult,
     backfillPortfolioTrackerUnavailableCapabilities,
     blockchainPersistTransform,
     bluetoothPersistTransform,
@@ -60,6 +65,7 @@ import {
     migrateTransactionsBnbToBsc,
     migrateTransactionsDeprecateNetworks,
     preparePersistReducer,
+    tokenDefinitionsPersistTransform,
     walletPersistTransform,
     walletStopPersistTransform,
 } from '@suite-native/storage';
@@ -70,6 +76,7 @@ import { appReducer } from './appSlice';
 import { extraDependencies } from './extraDependencies';
 
 const transactionsReducer = prepareTransactionsReducer(extraDependencies);
+const phishingReducer = preparePhishingReducer(extraDependencies);
 const accountsReducer = prepareAccountsReducer(extraDependencies);
 const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
 const blockchainReducer = prepareBlockchainReducer(extraDependencies);
@@ -149,16 +156,26 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
+    const phishingPersistedReducer = preparePersistReducer({
+        reducer: phishingReducer,
+        persistedKeys: ['dustPhishing'],
+        key: 'phishingMetadata',
+        version: 1,
+        storage: deps.mmkvStorage,
+    });
+
     const walletReducers = combineReducers({
         accounts: accountsReducer,
         blockchain: blockchainPersistedReducer,
         explorer: explorerReducer,
         fiat: fiatRatesReducer,
         transactions: transactionsReducer,
+        phishing: phishingPersistedReducer,
         discovery: discoveryReducer,
         send: sendFormReducer,
         fees: feesReducer,
         stake: stakeReducer,
+        stablecoinYield: stablecoinYieldReducer,
         trading: tradingPersistedReducer,
         settings: walletSettingsPersistedReducer,
         formDrafts: formDraftReducer,
@@ -216,7 +233,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         reducer: deviceReducer,
         persistedKeys: ['devices', 'persistentDeviceData'],
         key: 'devices',
-        version: 4,
+        version: 5,
         transforms: [devicePersistTransform],
         migrations: {
             2: (oldState: any /* FIXME */) => {
@@ -242,6 +259,14 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
                 return { ...oldState, devices: migratedDevices };
             },
+            5: (oldState: any /* FIXME */) => {
+                if (!oldState?.persistentDeviceData) return oldState;
+                const migratedPersistentDeviceData = backfillManualCheckResult(
+                    oldState.persistentDeviceData,
+                );
+
+                return { ...oldState, persistentDeviceData: migratedPersistentDeviceData };
+            },
         },
         storage: deps.mmkvStorage,
     });
@@ -259,6 +284,14 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         reducer: bannerFlagsReducer,
         persistedKeys: bannerFlagsPersistWhitelist,
         key: 'bannerFlags',
+        version: 1,
+        storage: deps.mmkvStorage,
+    });
+
+    const featureFeedbackPersistedReducer = preparePersistReducer({
+        reducer: featureFeedbackReducer,
+        persistedKeys: ['usageCounts', 'pendingFeedbackFeatures'],
+        key: 'featureFeedback',
         version: 1,
         storage: deps.mmkvStorage,
     });
@@ -325,7 +358,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const quotaManagerPersistedReducer = preparePersistReducer({
         reducer: suiteSyncQuotaManagerReducer,
-        persistedKeys: ['baseUrl', 'registeredDevices', 'ownersAllowance'],
+        persistedKeys: ['baseUrl', 'registeredDevices', 'ownersAllowance', 'enforceQuotaManager'],
         key: 'suiteSyncQuotaManager',
         version: 1,
         storage: deps.mmkvStorage,
@@ -338,6 +371,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             appSettings: appSettingsPersistedReducer,
             bannerFlags: bannerFlagsPersistedReducer,
             bluetooth: bluetoothPersistedReducer,
+            featureFeedback: featureFeedbackPersistedReducer,
             connectPopup: connectPopupPersistedReducer,
             device: devicePersistedReducer,
             deviceAuthorization: deviceAuthorizationReducer,
@@ -350,7 +384,8 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             logs: logsSlice.reducer,
             messageSystem: messageSystemPersistedReducer,
             nativeFirmware: nativeFirmwareReducer,
-            notifications: notificationsReducer,
+            notifications: createNotificationsReducer<TxKeyPath>().reducer,
+            pendingCoinVisibility: pendingCoinVisibilitySlice.reducer,
             suiteSync: suiteSyncPersistedReducer,
             suiteSyncData: suiteSyncDataReducer,
             thp: thpPersistedReducer,
@@ -361,11 +396,15 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         } as const),
         // 'wallet' and 'graph' need to be persisted at the top level to ensure device state
         // is accessible for transformation.
-        persistedKeys: ['wallet', 'graph'],
-        transforms: [walletPersistTransform, graphPersistTransform],
+        persistedKeys: ['wallet', 'graph', 'tokenDefinitions'],
+        transforms: [
+            walletPersistTransform,
+            graphPersistTransform,
+            tokenDefinitionsPersistTransform,
+        ],
         mergeLevel: 2,
         key: 'root',
-        version: 3,
+        version: 4,
         migrations: {
             2: (oldState: any /* FIXME */) => {
                 if (!oldState?.wallet) return oldState;
@@ -407,6 +446,26 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                         transactions: {
                             transactions: migratedTransactions,
                             fetchStatusDetail: oldStateWallet.transactions?.fetchStatusDetail,
+                        },
+                    },
+                };
+
+                return migratedState;
+            },
+            4: (oldState: any /* FIXME */) => {
+                if (!oldState?.wallet) return oldState;
+
+                const oldStateWallet = oldState.wallet;
+                const oldStateWalletTransactions = oldStateWallet.transactions;
+                const oldStateWalletTransactionsPhishing = oldStateWalletTransactions?.phishing;
+
+                const migratedState = {
+                    ...oldState,
+                    wallet: {
+                        ...oldStateWallet,
+                        transactions: {
+                            ...(oldStateWalletTransactions ?? {}),
+                            phishing: oldStateWalletTransactionsPhishing ?? {},
                         },
                     },
                 };

@@ -1,11 +1,11 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { BluetoothManufacturerData } from '@suite-common/bluetooth';
+import { type BluetoothManufacturerData } from '@suite-common/bluetooth';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { DesktopBluetoothDevice } from '../DesktopBluetoothDevice';
+import { type DesktopBluetoothDevice } from '../DesktopBluetoothDevice';
 import {
     bluetoothSlice,
     initialDesktopBluetoothState,

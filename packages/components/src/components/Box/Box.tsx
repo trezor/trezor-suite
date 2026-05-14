@@ -1,16 +1,16 @@
-import { HTMLProps } from 'react';
+import { type HTMLProps } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { BorderWidths, Color, Elevation, mapElevationToBorder } from '@trezor/theme';
+import { type BorderWidths, type Color, type Elevation, mapElevationToBorder } from '@trezor/theme';
 
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import { type TransientProps } from '../../utils/transientProps';
 import { useElevation } from '../ElevationContext/ElevationContext';
 
 const getValueWithUnit = (value: string | number) =>
@@ -54,20 +54,23 @@ const Container = styled.div<
     border: 0 solid
         ${({ $borderColor, $elevation, theme }) =>
             $borderColor ? theme[$borderColor] : mapElevationToBorder({ theme, $elevation })};
-    transition: background 0.3s ease;
+    transition: 0.2s ease;
 
-    ${({ $borderWidth }) =>
-        $borderWidth &&
-        (typeof $borderWidth === 'object'
-            ? css`
-                  border-width: ${getValueWithUnit($borderWidth.top ?? $borderWidth.vertical ?? 0)}
-                      ${getValueWithUnit($borderWidth.right ?? $borderWidth.horizontal ?? 0)}
-                      ${getValueWithUnit($borderWidth.bottom ?? $borderWidth.vertical ?? 0)}
-                      ${getValueWithUnit($borderWidth.left ?? $borderWidth.horizontal ?? 0)};
-              `
-            : css`
-                  border-width: ${getValueWithUnit($borderWidth)};
-              `)}
+    ${({ $borderWidth }) => {
+        if ($borderWidth == null || $borderWidth === 0) return null;
+        if (typeof $borderWidth === 'object') {
+            return css`
+                border-width: ${getValueWithUnit($borderWidth.top ?? $borderWidth.vertical ?? 0)}
+                    ${getValueWithUnit($borderWidth.right ?? $borderWidth.horizontal ?? 0)}
+                    ${getValueWithUnit($borderWidth.bottom ?? $borderWidth.vertical ?? 0)}
+                    ${getValueWithUnit($borderWidth.left ?? $borderWidth.horizontal ?? 0)};
+            `;
+        }
+
+        return css`
+            border-width: ${getValueWithUnit($borderWidth)};
+        `;
+    }}
 
     ${({ $backgroundColor, theme }) =>
         $backgroundColor &&
@@ -89,6 +92,11 @@ const Container = styled.div<
         css`
             box-shadow: ${$shadow};
         `}
+
+    &:focus-visible {
+        outline: 4px solid ${({ theme }) => theme.elementBorderFocusRing};
+        outline-offset: 2px;
+    }
 
     ${withFrameProps};
 `;

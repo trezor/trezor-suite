@@ -1,5 +1,16 @@
+import type {
+    BinaryInfo,
+    CommonParams,
+    CoreEventMessage,
+    DeviceUniquePath,
+    FirmwareUpdateFlowType,
+    FirmwareUpdateResponse,
+} from '@trezor/connect-common';
+import { FirmwareType, UI_REQUEST, UI_RESPONSE, createUiMessage } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import type { Log } from '@trezor/connect-common/src/utils/debug';
 import { getFirmwareOrBootloaderVersionArray } from '@trezor/device-utils';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { resolveAfter } from '@trezor/utils';
 import { isEqual, isNewer } from '@trezor/utils/src/versionUtils';
 
@@ -10,20 +21,11 @@ import {
     stripFwHeaders,
     uploadFirmware,
 } from '../api/firmware';
-import { PROTO } from '../constants';
 import { getFirmwareLocation, getReleaseByVersion } from '../data/firmwareInfo';
+import * as settingsStore from '../data/settingsStore';
 import type { Device } from '../device/Device';
-import { DeviceList } from '../device/DeviceList';
-import { CoreEventMessage, UI, UiPromiseCreator, createUiMessage } from '../events';
-import {
-    BinaryInfo,
-    CommonParams,
-    DeviceUniquePath,
-    FirmwareType,
-    FirmwareUpdateFlowType,
-} from '../types';
-import { FirmwareUpdateResponse } from '../types/api/firmwareUpdate';
-import type { Log } from '../utils/debug';
+import type { DeviceList } from '../device/DeviceList';
+import type { UiPromiseCreator } from '../events/ui-promise';
 import { isFirmwareCacheUsedForSelectedSource } from '../utils/firmwareUtils';
 
 type PostMessage = (message: CoreEventMessage) => void;
@@ -61,11 +63,15 @@ const waitForThpPairingConfirmation = async ({
 > & {
     thpPairingError: boolean;
 }) => {
-    const uiPromise = uiPromises.create(UI.RECEIVE_CONFIRMATION, device);
+    const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_CONFIRMATION, device);
     postMessage(
-        createUiMessage(UI.REQUEST_CONFIRMATION, {
-            view: thpPairingError ? 'thp-pairing-failed' : 'thp-pairing-start',
-        }),
+        createUiMessage(
+            UI_REQUEST.REQUEST_CONFIRMATION,
+            {
+                view: thpPairingError ? 'thp-pairing-failed' : 'thp-pairing-start',
+            },
+            uiPromise.requestId,
+        ),
     );
 
     const devicePath = device.getUniquePath();
@@ -113,7 +119,7 @@ const waitForReconnectedDevice = async (
         log.debug('onCallFirmwareUpdate', 'waiting for device to disconnect');
 
         postMessage(
-            createUiMessage(UI.FIRMWARE_RECONNECT, {
+            createUiMessage(UI_REQUEST.FIRMWARE_RECONNECT, {
                 device: device.toMessageObject(),
                 disconnected: false,
                 method,
@@ -136,7 +142,7 @@ const waitForReconnectedDevice = async (
     let skipWaitTime = false;
     do {
         postMessage(
-            createUiMessage(UI.FIRMWARE_RECONNECT, {
+            createUiMessage(UI_REQUEST.FIRMWARE_RECONNECT, {
                 device: device.toMessageObject(),
                 disconnected: true,
                 method,
@@ -244,7 +250,7 @@ type WaitForBluetoothRebootParams = {
 const waitForBluetoothReboot = ({ device, target, postMessage }: WaitForBluetoothRebootParams) =>
     new Promise<void>(resolve => {
         postMessage(
-            createUiMessage(UI.FIRMWARE_RECONNECT, {
+            createUiMessage(UI_REQUEST.FIRMWARE_RECONNECT, {
                 device: device.toMessageObject(),
                 disconnected: false,
                 method: 'auto',
@@ -435,7 +441,7 @@ export const onCallFirmwareUpdate = async ({
 
     // We start downloading, it could be more than 1 FW in case we need `intermediary`.
     postMessage(
-        createUiMessage(UI.FIRMWARE_PROGRESS, {
+        createUiMessage(UI_REQUEST.FIRMWARE_PROGRESS, {
             device: device.toMessageObject(),
             operation: 'downloading',
             progress: 0,
@@ -478,7 +484,7 @@ export const onCallFirmwareUpdate = async ({
     }
 
     postMessage(
-        createUiMessage(UI.FIRMWARE_PROGRESS, {
+        createUiMessage(UI_REQUEST.FIRMWARE_PROGRESS, {
             device: device.toMessageObject(),
             operation: 'downloading',
             progress: 100,
@@ -488,8 +494,11 @@ export const onCallFirmwareUpdate = async ({
     // We have completed binary download, and we should notify sending an event,
     // if desktop wants to store it. We only do this for final FW, not intermediaries.
     // We also check if `BinaryInfo.release` is present, otherwise it is custom FW, not to store.
-    if (isFirmwareCacheUsedForSelectedSource() && finalBinaryInfo.release) {
-        const message = createUiMessage(UI.FIRMWARE_DOWNLOADED, {
+    if (
+        isFirmwareCacheUsedForSelectedSource(settingsStore.get('firmwareChannel')) &&
+        finalBinaryInfo.release
+    ) {
+        const message = createUiMessage(UI_REQUEST.FIRMWARE_DOWNLOADED, {
             binary: finalBinaryInfo.binary,
             binaryVersion: finalBinaryInfo.binaryVersion,
             releaseVersion: finalBinaryInfo.release?.version,

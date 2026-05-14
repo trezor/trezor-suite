@@ -1,7 +1,7 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
 import { SkeletonCircle } from './SkeletonCircle';
-import { SkeletonStack as SkeletonStackComponent, SkeletonStackProps } from './SkeletonStack';
+import { SkeletonStack as SkeletonStackComponent, type SkeletonStackProps } from './SkeletonStack';
 import { ElevationContext } from '../ElevationContext/ElevationContext';
 
 const meta: Meta<typeof SkeletonStackComponent> = {

@@ -1,10 +1,10 @@
 import { Pressable } from 'react-native';
 
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type TokenInfoCardProps = {
     tokenName: string;
@@ -15,7 +15,7 @@ type TokenInfoCardProps = {
 
 const tokenCardStyle = prepareNativeStyle(utils => ({
     borderWidth: 1,
-    borderColor: utils.colors.borderElevation1,
+    borderColor: utils.colors.borderNeutral,
     borderRadius: utils.borders.radii.r12,
 }));
 
@@ -51,7 +51,7 @@ export const TokenInfoCard = ({
                             </HStack>
                             <Text variant="body-md">{issuerDomain}</Text>
                         </VStack>
-                        <Icon name="caretDown" color="iconSubdued" />
+                        <Icon name="caretDown" color="contentSecondary" />
                     </HStack>
                 </HStack>
             </Card>

@@ -1,13 +1,37 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
+    "include": [".", "**/*.json"],
     "references": [
         { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/earn-stablecoin-api"
+        },
+        {
+            "path": "../../suite-common/earn-staking-api"
+        },
         {
             "path": "../../suite-common/formatters"
         },
         {
+            "path": "../../suite-common/message-system"
+        },
+        { "path": "../../suite-common/mev" },
+        {
+            "path": "../../suite-common/react-query"
+        },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        { "path": "../../suite-common/staking" },
+        {
+            "path": "../../suite-common/validators"
+        },
+        {
             "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-constants"
         },
         {
             "path": "../../suite-common/wallet-core"
@@ -18,21 +42,37 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../accounts" },
+        { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../clipboard" },
+        { "path": "../confirm-on-trezor" },
         { "path": "../device-manager" },
+        { "path": "../device-mutex" },
         { "path": "../feature-flags" },
         { "path": "../formatters" },
+        { "path": "../forms" },
+        { "path": "../helpers" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../labeling" },
         { "path": "../link" },
+        { "path": "../message-system" },
         { "path": "../navigation" },
         { "path": "../services" },
+        { "path": "../settings" },
         { "path": "../staking" },
-        { "path": "../../packages/styles" },
+        { "path": "../test-utils" },
+        { "path": "../transaction-management" },
+        { "path": "../transactions" },
+        { "path": "../../packages/react-utils" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
-        { "path": "../../packages/urls" }
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/utils" },
+        { "path": "../../packages/requirements" }
     ]
 }

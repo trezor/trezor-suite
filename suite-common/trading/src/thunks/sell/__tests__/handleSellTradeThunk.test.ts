@@ -1,12 +1,12 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { CryptoId, SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
+import { type CryptoId, type SellFiatTrade, type SellFiatTradeResponse } from 'invity-api';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 
 import { accountBtc } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
-import { TradingSellState } from '../../../reducers/sellReducer';
+import { type TradingSellState } from '../../../reducers/sellReducer';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import type { LogErrorThunkProps } from '../../common/logErrorThunk';

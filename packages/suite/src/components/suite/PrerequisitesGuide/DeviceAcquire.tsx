@@ -1,5 +1,6 @@
-import { MouseEventHandler } from 'react';
+import { type MouseEventHandler } from 'react';
 
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { acquireDevice } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
@@ -9,7 +10,7 @@ import {
     TROUBLESHOOTING_TIP_CLOSE_ALL_TABS,
     TROUBLESHOOTING_TIP_RECONNECT,
 } from 'src/components/suite/troubleshooting/tips';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 
 export const DeviceAcquire = () => {
     const { isLocked } = useDevice();
@@ -37,7 +38,7 @@ export const DeviceAcquire = () => {
 
     return (
         <TroubleshootingTips
-            label={<Translation id="TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT" />}
+            label={<Translation id="TR_NEEDS_ATTENTION_CONNECT_USB_OR_BLUETOOTH" />}
             cta={ctaButton}
             items={tips}
         />

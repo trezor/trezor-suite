@@ -1,15 +1,15 @@
 import {
-    BuyTrade,
-    BuyTradeFinalStatus,
-    CryptoId,
-    ExchangeProviderInfo,
-    ExchangeTrade,
-    ExchangeTradeFinalStatus,
-    SellFiatTrade,
-    SellProviderInfo,
-    SellTradeFinalStatus,
+    type BuyProviderInfo,
+    type BuyTrade,
+    type BuyTradeFinalStatus,
+    type CryptoId,
+    type ExchangeProviderInfo,
+    type ExchangeTrade,
+    type ExchangeTradeFinalStatus,
+    type SellFiatTrade,
+    type SellProviderInfo,
+    type SellTradeFinalStatus,
 } from 'invity-api';
-import { v4 as uuidv4 } from 'uuid';
 
 import {
     type Network,
@@ -22,7 +22,7 @@ import {
 } from '@suite-common/wallet-config';
 import type { Account, AccountKey, FormStateTrading } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
-import { TokenInfo } from '@trezor/connect';
+import { type TokenInfo } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -33,25 +33,67 @@ import {
 } from './constants';
 import { regional } from './regional';
 import {
-    TradingCountryCode,
-    TradingExchangeType,
-    TradingParsedCryptoIdProps,
-    TradingPaymentMethodListProps,
-    TradingPaymentMethodProps,
-    TradingProviderInfo,
-    TradingSellType,
-    TradingTradeBuySellMapProps,
-    TradingTradeBuySellType,
-    TradingTradeMapProps,
-    TradingTradeStatusType,
-    TradingTradeType,
-    TradingType,
+    type TradingCountryCode,
+    type TradingCountrySubdivisionOption,
+    type TradingExchangeType,
+    type TradingParsedCryptoIdProps,
+    type TradingPaymentMethodListProps,
+    type TradingPaymentMethodProps,
+    type TradingProviderInfo,
+    type TradingSellType,
+    type TradingTradeBuySellMapProps,
+    type TradingTradeBuySellType,
+    type TradingTradeMapProps,
+    type TradingTradeStatusType,
+    type TradingTradeType,
+    type TradingType,
 } from './types';
+import { getCountrySubdivisionByCode } from './utils/countryUtils';
 
 type NetworkAndContractAddress = {
     network: Network | undefined;
     contractAddress: string | undefined;
 };
+
+type TradingGetFormStateSellProps = {
+    activeSection: TradingSellType;
+    trade: SellFiatTrade;
+};
+
+type TradingGetFormStateExchangeProps = {
+    activeSection: TradingExchangeType;
+    trade: ExchangeTrade;
+};
+
+type TradingGetFormStateProps = {
+    providers: Record<string, ExchangeProviderInfo | SellProviderInfo> | undefined;
+    isSlip24Active?: boolean;
+    sendAccountKey: AccountKey | undefined;
+    receiveAccountKey?: AccountKey | undefined;
+} & (TradingGetFormStateSellProps | TradingGetFormStateExchangeProps);
+
+export const tradeFinalStatuses: Record<TradingType, TradingTradeStatusType[]> = {
+    buy: ['SUCCESS', 'ERROR', 'BLOCKED'] satisfies BuyTradeFinalStatus[],
+    sell: ['SUCCESS', 'ERROR', 'BLOCKED', 'CANCELLED', 'REFUNDED'] satisfies SellTradeFinalStatus[],
+    exchange: ['SUCCESS', 'ERROR', 'KYC'] satisfies ExchangeTradeFinalStatus[],
+};
+
+export const isFinalStatus = (
+    tradingType: TradingType,
+    tradeStatus: TradingTradeStatusType | undefined,
+) => (tradeStatus ? tradeFinalStatuses[tradingType].includes(tradeStatus) : false);
+
+export const isBuyTrade = (quote: TradingTradeType): quote is BuyTrade =>
+    'fiatStringAmount' in quote && 'receiveStringAmount' in quote;
+
+export const isSellFiatTrade = (quote: TradingTradeType): quote is SellFiatTrade =>
+    'cryptoStringAmount' in quote && 'fiatStringAmount' in quote;
+
+export const isExchangeTrade = (quote: TradingTradeType): quote is ExchangeTrade =>
+    'sendStringAmount' in quote && 'receiveStringAmount' in quote;
+
+export const isExchangeProvider = (provider: TradingProviderInfo) =>
+    provider && 'kycPolicyType' in provider;
 
 export const parseCryptoId = (cryptoId: CryptoId): TradingParsedCryptoIdProps => {
     const parts = cryptoId.split(CRYPTO_PLATFORM_SEPARATOR);
@@ -176,29 +218,24 @@ export const mapTestnetSymbol = (
     return symbol;
 };
 
-export const getTagAndInfoNote = (quote: { infoNote?: string }) => {
-    let tag = '';
-    let infoNote = (quote?.infoNote || '').trim();
-    if (infoNote.startsWith('#')) {
-        const splitNote = infoNote?.split('#') || [];
-        if (splitNote.length === 3) {
-            // infoNote contains "#badge_text#info_note_text"
-            [, tag, infoNote] = splitNote;
-        } else if (splitNote.length === 2) {
-            // infoNote contains "#badge_text"
-            infoNote = '';
-            tag = splitNote.pop() || '';
-        }
-    }
-
-    return { tag, infoNote };
-};
-
 export const tradingGetSuccessQuotes = <T extends TradingType>(quotes: TradingTradeMapProps[T][]) =>
     quotes.filter(quote => quote.error === undefined);
 
 export const getDefaultCountry = (country: TradingCountryCode = regional.UNKNOWN_COUNTRY) =>
     regional.getCountryOptionWithWorldwideFallback(country);
+
+export const getDefaultCountrySubdivision = (
+    subdivision: string | undefined,
+    countryCode?: string,
+): TradingCountrySubdivisionOption | undefined => {
+    if (!subdivision) return undefined;
+
+    const found = getCountrySubdivisionByCode(subdivision, countryCode);
+
+    if (!found) return undefined;
+
+    return { value: found.code, label: found.name, name: found.name };
+};
 
 export const filterQuotesAccordingTags = <T extends TradingTradeBuySellType>(
     quotes: TradingTradeBuySellMapProps[T][],
@@ -217,14 +254,14 @@ export const addIdsToQuotes = <T extends TradingType>(
             : null;
 
         if (sellBuyQuote && !sellBuyQuote.paymentId) {
-            sellBuyQuote.paymentId = uuidv4();
+            sellBuyQuote.paymentId = crypto.randomUUID();
         }
 
         if (type === 'exchange' && !quote.quoteId) {
-            (quote as ExchangeTrade).quoteId = uuidv4();
+            (quote as ExchangeTrade).quoteId = crypto.randomUUID();
         }
 
-        quote.orderId = uuidv4();
+        quote.orderId = crypto.randomUUID();
     });
 
     return quotes;
@@ -233,29 +270,35 @@ export const addIdsToQuotes = <T extends TradingType>(
 export const getNetworkDecimalsWithFallback = (
     symbol: NetworkSymbol | undefined,
     fallback = getNetwork('btc').decimals,
-) => (symbol ? (getNetwork(symbol)?.decimals ?? fallback) : fallback);
+): number => (symbol ? (getNetwork(symbol).decimals ?? fallback) : fallback);
 
-export const getTradingPaymentMethods = <T extends TradingTradeBuySellType>(
-    quotes: TradingTradeMapProps[T][],
-) => {
-    const newPaymentMethods: TradingPaymentMethodListProps[] = [];
+export const getTradingPaymentMethods = (
+    quotes: BuyTrade[] | SellFiatTrade[],
+): TradingPaymentMethodListProps[] => {
+    const uniqueMethods = new Map<string, TradingPaymentMethodListProps>();
 
     quotes.forEach(quote => {
-        const { paymentMethod, paymentMethodName } = quote;
-
-        const shouldAddToPaymentMethods =
-            paymentMethod !== undefined &&
-            newPaymentMethods.every(item => item.value !== paymentMethod);
-
-        if (shouldAddToPaymentMethods) {
-            newPaymentMethods.push({
-                value: paymentMethod,
-                label: paymentMethodName ?? paymentMethod,
-            });
-        }
+        if (!quote.paymentMethod) return;
+        if (uniqueMethods.has(quote.paymentMethod)) return;
+        const amount = isBuyTrade(quote) ? quote.receiveStringAmount : quote.fiatStringAmount;
+        uniqueMethods.set(quote.paymentMethod, {
+            value: quote.paymentMethod,
+            label: quote.paymentMethodName ?? quote.paymentMethod,
+            receiveAmount: amount,
+            symbol: isBuyTrade(quote)
+                ? cryptoIdToSymbol(quote.receiveCurrency)
+                : (quote as SellFiatTrade).fiatCurrency,
+        });
     });
 
-    return newPaymentMethods;
+    const sortedMethods = Array.from(uniqueMethods.values()).sort((a, b) => {
+        const aAmount = new BigNumber(a.receiveAmount || '0');
+        const bAmount = new BigNumber(b.receiveAmount || '0');
+
+        return bAmount.minus(aAmount).toNumber();
+    });
+
+    return sortedMethods;
 };
 
 export const getTradingQuotesByPaymentMethod = <T extends TradingTradeBuySellType>(
@@ -265,72 +308,6 @@ export const getTradingQuotesByPaymentMethod = <T extends TradingTradeBuySellTyp
     quotes.filter(
         quote => quote.paymentMethod === currentPaymentMethod && quote.error === undefined,
     );
-
-export const getBestRatedQuote = <T extends TradingType>(
-    quotes: TradingTradeMapProps[T][] | undefined,
-    type: T,
-): TradingTradeMapProps[T] | undefined => {
-    const quotesFiltered = quotes?.filter(item => item.rate && item.rate !== 0);
-
-    if (!quotesFiltered || quotesFiltered.length === 0) {
-        return undefined;
-    }
-
-    const bestRatedQuotes = quotesFiltered.sort((a, b) => {
-        const aRate = new BigNumber(a.rate ?? 0);
-        const bRate = new BigNumber(b.rate ?? 0);
-
-        // ascending to rate for buy - lower rate more crypto client receives
-        if (type === 'buy') {
-            return aRate.minus(bRate).toNumber();
-        }
-
-        // descending to rate for sell/exchange - higher rate more crypto/fiat client receives
-        return bRate.minus(aRate).toNumber();
-    });
-
-    return bestRatedQuotes[0];
-};
-
-export const tradeFinalStatuses: Record<TradingType, TradingTradeStatusType[]> = {
-    buy: ['SUCCESS', 'ERROR', 'BLOCKED'] satisfies BuyTradeFinalStatus[],
-    sell: ['SUCCESS', 'ERROR', 'BLOCKED', 'CANCELLED', 'REFUNDED'] satisfies SellTradeFinalStatus[],
-    exchange: ['SUCCESS', 'ERROR', 'KYC'] satisfies ExchangeTradeFinalStatus[],
-};
-
-export const isFinalStatus = (
-    tradingType: TradingType,
-    tradeStatus: TradingTradeStatusType | undefined,
-) => (tradeStatus ? tradeFinalStatuses[tradingType].includes(tradeStatus) : false);
-
-export const isBuyTrade = (quote: TradingTradeType): quote is BuyTrade =>
-    'fiatStringAmount' in quote && 'receiveStringAmount' in quote;
-
-export const isSellFiatTrade = (quote: TradingTradeType): quote is SellFiatTrade =>
-    'cryptoStringAmount' in quote && 'fiatStringAmount' in quote;
-
-export const isExchangeTrade = (quote: TradingTradeType): quote is ExchangeTrade =>
-    'sendStringAmount' in quote && 'receiveStringAmount' in quote;
-
-export const isExchangeProvider = (provider: TradingProviderInfo) =>
-    provider && 'kycPolicyType' in provider;
-
-type TradingGetFormStateSellProps = {
-    activeSection: TradingSellType;
-    trade: SellFiatTrade;
-};
-
-type TradingGetFormStateExchangeProps = {
-    activeSection: TradingExchangeType;
-    trade: ExchangeTrade;
-};
-
-type TradingGetFormStateProps = {
-    providers: Record<string, ExchangeProviderInfo | SellProviderInfo> | undefined;
-    isSlip24Active?: boolean;
-    sendAccountKey: AccountKey | undefined;
-    receiveAccountKey?: AccountKey | undefined;
-} & (TradingGetFormStateSellProps | TradingGetFormStateExchangeProps);
 
 export const getTradingFormState = ({
     activeSection,
@@ -455,4 +432,17 @@ export const getTradingPrefilledFromAccountData = (
         cryptoId: cryptoId ?? defaultCryptoId,
         key,
     };
+};
+
+export const isBuyProviderInfo = (provider: TradingProviderInfo): provider is BuyProviderInfo =>
+    'brandName' in provider;
+
+export const getStatusUrl = (provider?: TradingProviderInfo, trade?: TradingTradeType) => {
+    const tradeStatusUrl = trade?.statusUrl;
+
+    if (tradeStatusUrl === null) {
+        return undefined;
+    }
+
+    return tradeStatusUrl || provider?.statusUrl;
 };

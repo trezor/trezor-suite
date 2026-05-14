@@ -1,6 +1,6 @@
 import net from 'net';
 
-import { Interceptor } from './interceptorTypes';
+import { type Interceptor } from './interceptorTypes';
 
 export const interceptNetSocketConnect: Interceptor = ({ context, validateRequest }) => {
     // To avoid disclosure that the request was sent by trezor-suite

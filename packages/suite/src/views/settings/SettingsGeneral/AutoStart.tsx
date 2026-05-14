@@ -3,12 +3,10 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { Anchor, SettingsAnchor } from '@suite/router';
 import { Switch } from '@trezor/components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
-
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const PositionedSwitch = styled.div`
     align-self: center;
@@ -35,20 +33,28 @@ export const AutoStart = () => {
     };
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.AutoStart}>
-            <TextColumn
-                title={<Translation id="TR_AUTO_START" />}
-                description={<Translation id="TR_AUTO_START_DESCRIPTION" />}
-            />
-            <ActionColumn>
-                <PositionedSwitch>
-                    <Switch
-                        data-testid="@autostart/toggle-switch"
-                        isChecked={!!autoStartEnabled}
-                        onChange={() => handleChange(!autoStartEnabled)}
+        <Anchor anchorId={SettingsAnchor.AutoStart}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
+                >
+                    <TextColumn
+                        title={<Translation id="TR_AUTO_START" />}
+                        description={<Translation id="TR_AUTO_START_DESCRIPTION" />}
                     />
-                </PositionedSwitch>
-            </ActionColumn>
-        </SettingsSectionItem>
+                    <ActionColumn>
+                        <PositionedSwitch>
+                            <Switch
+                                data-testid="@autostart/toggle-switch"
+                                isChecked={!!autoStartEnabled}
+                                onChange={() => handleChange(!autoStartEnabled)}
+                            />
+                        </PositionedSwitch>
+                    </ActionColumn>
+                </SectionItem>
+            )}
+        </Anchor>
     );
 };

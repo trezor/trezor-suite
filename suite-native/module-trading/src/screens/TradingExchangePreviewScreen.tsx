@@ -8,10 +8,10 @@ import { isFinalStatus, selectTradingExchangeSelectedQuote } from '@suite-common
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import {
+    type RootStackParamList,
+    type RootStackRoutes,
     Screen,
-    StackProps,
-    TradingStackParamList,
-    TradingStackRoutes,
+    type StackProps,
 } from '@suite-native/navigation';
 import { useExchangeAnalyticReportCallback } from '@suite-native/trading-analytics';
 import {
@@ -33,8 +33,8 @@ import { clearTradingStateThunk } from '../thunks';
 import { getReceiveAccountAddressText } from '../utils/general/receiveAccountUtils';
 
 export type TradingExchangePreviewScreenProps = StackProps<
-    TradingStackParamList,
-    TradingStackRoutes.TradingExchangePreview
+    RootStackParamList,
+    RootStackRoutes.TradingExchangePreview
 >;
 
 const TradingExchangePreviewScreenContent = ({
@@ -129,13 +129,13 @@ const TradingExchangePreviewScreenContent = ({
                 ),
                 description,
                 primaryButtonTitle: <Translation id="generic.buttons.tryAgain" />,
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 onPressPrimaryButton: () => {
                     handleConfirmTrade();
                     reportToAnalytics('transaction-preview', 'retry');
                 },
                 secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
-                secondaryButtonVariant: 'redElevation0',
+                secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
                 onPressSecondaryButton: () => {
                     navigation.popToTop();
                     reportToAnalytics('transaction-preview', 'cancel');
@@ -155,20 +155,20 @@ const TradingExchangePreviewScreenContent = ({
     const errorString = txnErrorString ?? quote?.error;
 
     return (
-        <Screen header={<ExchangePreviewScreenHeader />}>
+        <Screen
+            header={<ExchangePreviewScreenHeader />}
+            footer={
+                <ExchangePreviewContinueButton
+                    isDisabled={!!errorString}
+                    onSignTransactionNavigation={onSignTransactionNavigation}
+                />
+            }
+        >
             <ExchangePreviewView
                 quote={quote}
                 txnErrorString={errorString}
                 isApproved={isApproved}
             />
-            {!isFinalized && (
-                <ExchangePreviewContinueButton
-                    quote={quote}
-                    isDisabled={!!errorString}
-                    onSignTransactionNavigation={onSignTransactionNavigation}
-                />
-            )}
-
             <Footer />
         </Screen>
     );

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Button, H2, Paragraph, useElevation, variables } from '@trezor/components';
-import { Elevation, mapElevationToBorder, typography } from '@trezor/theme';
+import { type Elevation, mapElevationToBorder, typography } from '@trezor/theme';
 
 import { db } from 'src/storage';
 import { reloadApp } from 'src/utils/suite/reload';
@@ -46,7 +46,7 @@ const ErrorMessage = styled.span`
     max-width: 600px;
     font-family: Consolas, Menlo, Courier, monospace;
     ${typography['body-xs']}
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
 `;
 
 type ErrorProps = {

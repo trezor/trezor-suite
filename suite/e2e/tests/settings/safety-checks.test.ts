@@ -70,7 +70,7 @@ test.describe('Safety Checks Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
         });
         await test.step('Reopen the modal and verify the change', async () => {
             await settingsPage.safetyChecksButton.click();
-            await expect(page.getByTestId(targetTestId)).toHaveAttribute('data-checked', 'true');
+            await expect(page.getByTestId(targetTestId).locator('input')).toBeChecked();
         });
     });
 });

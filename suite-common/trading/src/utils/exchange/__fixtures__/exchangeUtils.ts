@@ -1,6 +1,6 @@
-import { CryptoId, ExchangeTrade } from 'invity-api';
+import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
-import { ExchangeInfo } from '../../../reducers/exchangeReducer';
+import { type ExchangeInfo } from '../../../reducers/exchangeReducer';
 
 const litecoin = 'litecoin' as CryptoId;
 const bitcoin = 'bitcoin' as CryptoId;

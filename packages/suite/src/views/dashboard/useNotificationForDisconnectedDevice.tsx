@@ -14,9 +14,7 @@ export const useNotificationForDisconnectedDevice = () => {
         state => state.suite.seenDisconnectNotificationForDeviceIds,
     );
     const recentlyDisconnectedDevice = useSelector(state => state.suite.recentlyDisconnectedDevice);
-    const hasSeenDisconnectTooltip = useSelector(
-        state => state.suite.flags.hasSeenDisconnectTooltip,
-    );
+    const hasSeenDisconnectTooltip = useSelector(state => state.flags.hasSeenDisconnectTooltip);
 
     useEffect(() => {
         const deviceId = selectedDevice?.id;

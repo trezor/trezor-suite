@@ -13,12 +13,13 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../confirm-on-trezor" },
+        { "path": "../device-authorization" },
         { "path": "../forms" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../services" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles-native" }
     ]
 }

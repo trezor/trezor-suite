@@ -9,6 +9,7 @@ const CHANGE_COIN_VISIBILITY = '@wallet-settings/change-coin-visibility';
 const SET_MEV_PROTECTION = '@wallet-settings/set-mev-protection';
 const SET_NETWORK_RESERVE = '@wallet-settings/set-network-reserve';
 const SET_AUTO_EJECT = '@wallet-settings/set-auto-eject';
+const SET_ADDRESS_DISPLAY_TYPE = '@wallet-settings/set-address-display-type';
 
 export const WALLET_SETTINGS = {
     SET_BASE_CURRENCY,
@@ -22,4 +23,5 @@ export const WALLET_SETTINGS = {
     SET_MEV_PROTECTION,
     SET_NETWORK_RESERVE,
     SET_AUTO_EJECT,
+    SET_ADDRESS_DISPLAY_TYPE,
 } as const;

@@ -1,15 +1,18 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
+import type { EarnAnalyticsStep, EarnModalAction } from '@suite-common/suite-types';
 
 import { EventType } from '../constants';
 
 type Attributes = {
-    action: AttributeDef<'continue' | 'cancel'>;
+    action: AttributeDef<EarnModalAction>;
     step: AttributeDef<
-        | 'staking-dashboard'
-        | 'stake-in-a-nutshell-modal'
-        | 'funds-maintained-modal'
-        | 'stake-form-modal'
-        | 'entry-period-stake-modal'
+        Extract<
+            EarnAnalyticsStep,
+            | 'staking-dashboard'
+            | 'stake-in-a-nutshell-modal'
+            | 'funds-maintained-modal'
+            | 'stake-form-modal'
+        >
     >;
     networkSymbol?: AttributeDef<string>;
     currency?: AttributeDef<'crypto' | 'fiat'>;
@@ -23,7 +26,13 @@ export const stakingUpdateProviderEvent: EventDef<Attributes, EventType.StakingU
 
     attributes: {
         action: {
-            changelog: [{ version: '25.12.0', notes: 'added' }],
+            changelog: [
+                { version: '25.12.0', notes: 'added' },
+                {
+                    version: '26.3.0',
+                    notes: 'action values changed to `continue` | `cancel` | `close`',
+                },
+            ],
         },
         step: {
             changelog: [{ version: '25.12.0', notes: 'added' }],

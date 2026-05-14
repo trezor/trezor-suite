@@ -5,8 +5,8 @@ import {
     withTiming,
 } from 'react-native-reanimated';
 
-import { useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { useNativeStyles } from '@trezor/styles-native';
+import { type Color } from '@trezor/theme';
 
 import { pressTimingConfig } from '../constants';
 
@@ -27,6 +27,11 @@ export const useButtonPressAnimatedStyle = (
             [0, 1],
             [utils.colors[backgroundColor], utils.colors[onPressColor]],
         ),
+        transform: [
+            {
+                scale: 1 - (1 - 0.95) * pressAnimationValue.value,
+            },
+        ],
     }));
 
     if (isDisabled) return;

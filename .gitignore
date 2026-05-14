@@ -46,6 +46,7 @@ __pycache__/
 screenshots
 test-results
 playwright-report
+packages/e2e-utils/src/fixBot/reports/
 suite-native/app/.metadata/
 suite-native/app/artifacts/
 
@@ -55,6 +56,7 @@ libDev
 libESM
 dist
 public
+!packages/analytics-docs/public/
 coverage
 tmp
 
@@ -151,3 +153,9 @@ packages/suite-data/files/translations/master.json
 
 # local config for Claude
 .claude/
+
+# AI agent plans
+/plans
+
+# coverage map and test analysis files
+coverage-map/

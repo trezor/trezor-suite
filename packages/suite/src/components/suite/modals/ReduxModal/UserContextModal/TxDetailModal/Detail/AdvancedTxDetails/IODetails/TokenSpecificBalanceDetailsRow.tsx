@@ -1,13 +1,13 @@
 import { Translation } from '@suite/intl';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits, isNftTokenTransfer } from '@suite-common/wallet-utils';
-import { TokenTransfer } from '@trezor/blockchain-link-types';
+import { type TokenTransfer } from '@trezor/blockchain-link-types';
 import { Column, H4 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
 
-import { IODetails } from './IODetails';
+import { type IODetailsType } from './IODetailsType';
 import { IOGroup } from './IOGroup';
 
 type TokensByStandard = {
@@ -51,8 +51,8 @@ export const TokenSpecificBalanceDetailsRow = ({
                         <IOGroup
                             key={index}
                             tx={tx}
-                            inputs={[{ addresses: [from], value: amount }] as IODetails[]}
-                            outputs={[{ addresses: [to] }] as IODetails[]}
+                            inputs={[{ addresses: [from], value: amount }] as IODetailsType[]}
+                            outputs={[{ addresses: [to] }] as IODetailsType[]}
                             hasHeadings={false}
                             isPhishingTransaction={isPhishingTransaction}
                         />
@@ -95,8 +95,10 @@ export const TokenSpecificBalanceDetailsRow = ({
                                     key={index}
                                     tx={{ ...tx, symbol: transfer.symbol || '' }}
                                     contractAddress={transfer.contract}
-                                    inputs={[{ addresses: [transfer.from], value }] as IODetails[]}
-                                    outputs={[{ addresses: [transfer.to] }] as IODetails[]}
+                                    inputs={
+                                        [{ addresses: [transfer.from], value }] as IODetailsType[]
+                                    }
+                                    outputs={[{ addresses: [transfer.to] }] as IODetailsType[]}
                                     hasHeadings={false}
                                     isPhishingTransaction={isPhishingTransaction}
                                 />

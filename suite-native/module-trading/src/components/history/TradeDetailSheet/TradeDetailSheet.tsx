@@ -1,14 +1,15 @@
 import { memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
+import { type TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
 import { BottomSheetModal, useBottomSheetModal } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TradeDetailFooter } from './TradeDetailFooter';
 import { TradeDetailHeader } from './TradeDetailHeader';
 import { TradeDetailInfo } from './TradeDetailInfo';
+import { TradeDetailProviderCard } from './TradeDetailProviderCard';
 import { TradeDetailTransactionInfo } from './TradeDetailTransactionInfo';
 import { getTradeTitle } from '../../../utils/general/utils';
 import { Footer } from '../../general/Footer';
@@ -58,6 +59,7 @@ export const TradeDetailSheet = memo(({ orderId, isVisible, onDismiss }: TradeDe
             isCloseDisplayed
         >
             <TradeDetailHeader orderId={orderId} onOpenedBrowser={onOpenedBrowser} />
+            <TradeDetailProviderCard orderId={orderId} />
             <TradeDetailTransactionInfo orderId={orderId} />
             <TradeDetailInfo orderId={orderId} />
             <TradeDetailFooter orderId={orderId} />

@@ -1,14 +1,14 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import {
-    DataType,
-    DeviceMetadata,
-    Labels,
-    MetadataProvider,
-    PasswordManagerState,
+    type DataType,
+    type DeviceMetadata,
+    type Labels,
+    type MetadataProvider,
+    type PasswordManagerState,
 } from '@suite-common/metadata-types';
-import { Account } from '@suite-common/wallet-types';
-import { StaticSessionId } from '@trezor/connect';
+import { type Account } from '@suite-common/wallet-types';
+import { type StaticSessionId } from '@trezor/connect';
 
 import * as METADATA from './metadataConstants';
 

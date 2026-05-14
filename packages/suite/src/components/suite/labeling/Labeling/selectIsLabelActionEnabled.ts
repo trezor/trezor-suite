@@ -1,52 +1,57 @@
 import {
-    MetadataRootState,
+    type MetadataRootState,
     selectIsLabelingAvailableForEntity,
     selectIsLabelingInitPossible,
 } from '@suite/metadata';
+import { selectDeviceByStaticSessionId } from '@suite-common/device';
+import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
-    WithSuiteSyncAndDeviceState,
+    type WithSuiteSyncAndDeviceState,
     getIsSuiteSyncLabelingActionEnabled,
     selectIsSuiteSyncEnabled,
+    selectIsSuiteSyncInitPossible,
 } from '@suite-common/suite-sync';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 
 import {
-    DesktopSuiteSyncRootState,
+    type DesktopSuiteSyncRootState,
     selectDesktopSuiteSyncInteraction,
-} from '../../../../actions/suiteSync/suiteSyncSlice';
-import { SuiteRootState } from '../../../../reducers/suite/suiteReducer';
+} from 'src/actions/suiteSync/suiteSyncSlice';
+import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
 
 export const selectIsLabelActionEnabled = (
     state: WithSuiteSyncAndDeviceState &
         MetadataRootState &
         SuiteRootState &
-        DesktopSuiteSyncRootState,
+        DesktopSuiteSyncRootState &
+        MessageSystemRootState,
     deviceStaticSessionId: StaticSessionId,
     legacyEntityKey: string,
 ): boolean => {
     const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(state);
 
-    // If Evolu is enabled, we do not want to allow for enabling Legacy Labeling just by
-    // clicking on the stuff.
-    const isLegacyLabelingInitPossible = !isSuiteSyncEnabled && selectIsLabelingInitPossible(state);
+    if (isSuiteSyncEnabled) {
+        const device = selectDeviceByStaticSessionId(state, deviceStaticSessionId);
+        const suiteSyncInteraction = selectDesktopSuiteSyncInteraction(
+            state,
+            deviceStaticSessionId,
+        );
+
+        if (suiteSyncInteraction === 'keys-needed' && device?.connected === false) {
+            return false;
+        }
+
+        return getIsSuiteSyncLabelingActionEnabled(suiteSyncInteraction);
+    }
+
+    const isSuiteSyncInitPossible = selectIsSuiteSyncInitPossible(state, deviceStaticSessionId);
+
+    const isLegacyLabelingInitPossible = selectIsLabelingInitPossible(state);
     const isLegacyLabelingEnabled = selectIsLabelingAvailableForEntity(
         state,
         legacyEntityKey,
         deviceStaticSessionId,
     );
 
-    const isSuiteSyncFeatureEnabled =
-        state.suite.settings.experimental?.includes('suite-sync') ?? false;
-
-    // Turn ON in Experimental Features
-    if (isSuiteSyncFeatureEnabled) {
-        const suiteSyncInteraction = selectDesktopSuiteSyncInteraction(
-            state,
-            deviceStaticSessionId,
-        );
-
-        return getIsSuiteSyncLabelingActionEnabled(suiteSyncInteraction);
-    }
-
-    return isLegacyLabelingEnabled || isLegacyLabelingInitPossible;
+    return isSuiteSyncInitPossible || isLegacyLabelingEnabled || isLegacyLabelingInitPossible;
 };

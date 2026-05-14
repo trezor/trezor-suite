@@ -1,11 +1,11 @@
 import { selectDeviceLabelOrNameById } from '@suite-common/device';
 import { Row, Tooltip } from '@trezor/components';
-import { DeviceModelInternal, getDeviceColorVariant } from '@trezor/device-utils';
+import { type DeviceModelInternal, getDeviceColorVariant } from '@trezor/device-utils';
 import { RotateDeviceImage } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
-import { TrezorDevice } from 'src/types/suite';
+import { type TrezorDevice } from 'src/types/suite';
 import { DeviceDetail } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceDetail';
 import { DeviceStatusText } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceStatusText';
 
@@ -49,17 +49,19 @@ export const DeviceStatus = ({
     );
 
     return (
-        <Row flex="1" gap={spacings.sm} justifyContent="center">
+        <>
             {isDeviceDetailVisible ? (
-                <>
+                <Row justifyContent="space-between" gap={spacings.sm} overflow="hidden">
                     {image}
                     {content}
-                </>
+                </Row>
             ) : (
-                <Tooltip hasArrow cursor="inherit" placement="right" content={content}>
-                    {image}
-                </Tooltip>
+                <Row justifyContent="center">
+                    <Tooltip cursor="inherit" placement="right" content={content}>
+                        {image}
+                    </Tooltip>
+                </Row>
             )}
-        </Row>
+        </>
     );
 };

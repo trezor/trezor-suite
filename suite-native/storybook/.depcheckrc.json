@@ -5,6 +5,9 @@
         "@react-native-community/datetimepicker",
         "@react-native-community/slider",
         "@storybook/addon-ondevice-controls",
-        "babel-plugin-react-native-web"
+        "babel-plugin-react-native-web",
+        "@formatjs/intl-getcanonicallocales",
+        "@formatjs/intl-locale",
+        "@formatjs/intl-listformat"
     ]
 }

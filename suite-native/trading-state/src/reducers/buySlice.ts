@@ -10,6 +10,7 @@ const buySlice = createSlice({
     reducers: {
         clearState: state => {
             state.tradingAccountKey = undefined;
+            state.receiveAccountKey = undefined;
             state.receiveAddress = undefined;
             state.quotesRequest = undefined;
             state.quotes = [];
@@ -23,6 +24,7 @@ const buySlice = createSlice({
         },
         assetChanged: state => {
             state.tradingAccountKey = undefined;
+            state.receiveAccountKey = undefined;
             state.receiveAddress = undefined;
             state.amountLimits = undefined;
             state.quotesRequest = undefined;

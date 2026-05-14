@@ -1,21 +1,26 @@
 import { useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
-import { MetadataAddPayload } from '@suite-common/metadata-types';
-import { selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import {
+    selectIsLegacyLabelingVisible,
+    selectLabelingDataForSelectedAccount,
+} from '@suite/metadata';
+import { type MetadataAddPayload } from '@suite-common/metadata-types';
+import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
+import { type SuiteSyncAddress } from '@suite-common/suite-sync-storage';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Row, Table, Text } from '@trezor/components';
-import { AccountAddress } from '@trezor/connect';
+import { type AccountAddress } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { Address, FormattedCryptoAmount, Labeling } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
-import { AppState } from 'src/types/suite';
+import { type AppState } from 'src/types/suite';
 
 const DEFAULT_LIMIT = 10;
 
@@ -103,9 +108,13 @@ export const UsedAddresses = ({
 }: UsedAddressesProps) => {
     const [limit, setLimit] = useState(DEFAULT_LIMIT);
     const dispatch = useDispatch();
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
     const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
     const suiteSyncAddressLabels = useSelector(state =>
-        selectSuiteSyncAddressLabels(state, account.deviceState),
+        isSuiteSyncEnabled
+            ? selectSuiteSyncAddressLabels(state, account.deviceState)
+            : returnStableArrayIfEmpty<SuiteSyncAddress>(),
     );
 
     if (
@@ -120,7 +129,7 @@ export const UsedAddresses = ({
     const revealed = unused.reduce(
         (result, addr) => {
             const r = addresses.find(u => u.path === addr.path);
-            const p = pendingAddresses.find(u => u === addr.address);
+            const p = pendingAddresses.includes(addr.address);
             const f = r || p;
 
             return f ? result.concat(addr) : result;
@@ -171,7 +180,10 @@ export const UsedAddresses = ({
                                     value:
                                         suiteSyncAddressLabels.find(
                                             it => it.address === addr.address,
-                                        )?.label ?? addressLabels[addr.address],
+                                        )?.label ??
+                                        (isLegacyLabelingVisible
+                                            ? addressLabels[addr.address]
+                                            : undefined),
                                 }}
                                 onClick={() => dispatch(showAddress(addr.path, addr.address))}
                             />

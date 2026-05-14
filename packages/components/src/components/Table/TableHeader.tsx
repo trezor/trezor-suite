@@ -1,8 +1,8 @@
-import { ReactNode, createContext, useContext } from 'react';
+import { type ReactNode, createContext, useContext } from 'react';
 
 import styled from 'styled-components';
 
-import { Elevation, mapElevationToBorder } from '@trezor/theme';
+import { type Elevation, mapElevationToBorder } from '@trezor/theme';
 
 import { useTable } from './TableContext';
 import { useElevation } from '../ElevationContext/ElevationContext';

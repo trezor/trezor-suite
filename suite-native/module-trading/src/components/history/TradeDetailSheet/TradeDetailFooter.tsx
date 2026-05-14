@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
+import { type TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
 import { Box, Button, Card, Text, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -30,15 +30,16 @@ export const TradeDetailFooter = ({ orderId }: TradeDetailFooterProps) => {
         <Card>
             <VStack spacing="sp12">
                 <Box>
-                    <Text color="textSubdued">
+                    <Text color="contentSecondary">
                         <Translation id="moduleTrading.tradeHistory.detail.orderId" />
                     </Text>
                     <Text>{orderId}</Text>
                 </Box>
 
                 <Button
-                    viewLeft="copy"
-                    colorScheme="tertiaryElevation0"
+                    iconLeft="copy"
+                    intent="neutral"
+                    priority="secondary"
                     onPress={handleCopyOrderIdPress}
                 >
                     <Translation id="generic.buttons.copy" />

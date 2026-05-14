@@ -1,16 +1,18 @@
 import { Locator, Page } from '@playwright/test';
 
 import { messages } from '@suite/intl';
-import { TradingCountryCode } from '@suite-common/trading';
+import type { TradingCountryCode } from '@suite-common/trading';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { TradingAssetPicker } from './assetsModal';
 import { TradingConfirmationModal } from './confirmationModal';
+import { TradingTransactionsSection } from './transactionsSection';
 import { DevicePrompt } from '../devicePrompt';
 import { FeeSection } from './feeSection';
 import { TradingFormInputs } from './formInputs';
 import { TradingQuotesSection } from './quotesSection';
 import { TradingReceiveAccount } from './receiveAccount';
+import { TransactionDetailSidebar } from './transactionDetailSidebar';
 import { invityEndpoint } from '../../../fixtures/invity';
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
@@ -23,6 +25,7 @@ export class TradingPage {
     readonly quotes: TradingQuotesSection;
     readonly confirmation: TradingConfirmationModal;
     readonly inputs: TradingFormInputs;
+    readonly transactionDetailSidebar: TransactionDetailSidebar;
 
     // Navigation and action buttons
     readonly section: Locator;
@@ -31,7 +34,6 @@ export class TradingPage {
     readonly buyBestOfferButton: Locator;
     readonly sellBestOfferButton: Locator;
     readonly swapBestOfferButton: Locator;
-    readonly buyOffersPage: Locator;
     readonly proceedToPayButton: Locator;
     readonly backToAccountButton = (type: 'Buy' | 'Sell' | 'Swap') =>
         this.page.getByRole('button', { name: `Make another ${type}` });
@@ -45,6 +47,14 @@ export class TradingPage {
 
     // Transactions
     readonly transactionDetailStatus: Locator;
+    readonly transactionDetail: Locator;
+    readonly transactions: TradingTransactionsSection;
+
+    // Swap toast notifications
+    readonly swapToastSendAccount: Locator;
+    readonly swapToastReceiveAccount: Locator;
+    readonly swapToastSendAmount: Locator;
+    readonly swapToastReceiveAmount: Locator;
 
     constructor(
         private page: Page,
@@ -56,6 +66,7 @@ export class TradingPage {
         this.quotes = new TradingQuotesSection(page);
         this.confirmation = new TradingConfirmationModal(page, devicePrompt);
         this.inputs = new TradingFormInputs(page);
+        this.transactionDetailSidebar = new TransactionDetailSidebar(page);
 
         this.section = this.page.getByTestId('@trading');
         this.buyButton = this.page.getByTestId('@trading/menu/wallet-trading-buy');
@@ -63,7 +74,6 @@ export class TradingPage {
         this.buyBestOfferButton = this.page.getByTestId('@trading/form/buy-button');
         this.sellBestOfferButton = this.page.getByTestId('@trading/form/sell-button');
         this.swapBestOfferButton = this.page.getByTestId('@trading/form/exchange-button');
-        this.buyOffersPage = this.page.getByTestId('@trading/buy-offers');
         this.proceedToPayButton = this.page.getByRole('button', { name: 'Proceed to pay' });
 
         // Swap
@@ -73,8 +83,15 @@ export class TradingPage {
         this.sendBalance = this.page.getByTestId('outputs.0.token');
         this.setMax = this.page.getByTestId('outputs.0.setMax');
 
-        // Transactions
         this.transactionDetailStatus = this.page.getByTestId('@trading/transaction/detail/status');
+        this.transactionDetail = this.page.getByTestId('@trading/transaction/detail');
+        this.transactions = new TradingTransactionsSection(page);
+
+        // Swap toast notifications
+        this.swapToastSendAccount = this.page.getByTestId('@toast/tx-exchange/send-account');
+        this.swapToastReceiveAccount = this.page.getByTestId('@toast/tx-exchange/receive-account');
+        this.swapToastSendAmount = this.page.getByTestId('@toast/tx-exchange/send-amount');
+        this.swapToastReceiveAmount = this.page.getByTestId('@toast/tx-exchange/receive-amount');
     }
 
     /**
@@ -317,8 +334,10 @@ export class TradingPage {
 
     @step()
     async waitForRedirectCompletion() {
-        await expect(this.page.getByText('Buy & sell')).toBeHidden();
-        await expect(this.page.getByText('Buy & sell')).toBeVisible({ timeout: 30_000 });
+        const tradeHeading = this.page.getByRole('heading', { name: 'Trade' });
+
+        await expect(tradeHeading).toBeHidden();
+        await expect(tradeHeading).toBeVisible({ timeout: 30_000 });
     }
 
     @step()

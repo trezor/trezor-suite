@@ -17,7 +17,10 @@ const EnablePinCard = () => (
                 <Translation id="moduleDeviceSettings.pinProtection.pictograms.enable.subtitle" />
             }
         />
-        <DevicePinActionButton type="enable" colorScheme="yellowBold">
+        <DevicePinActionButton
+            type="enable"
+            buttonColorProps={{ intent: 'warning', priority: 'primary' }}
+        >
             <Translation id="moduleDeviceSettings.pinProtection.buttons.setPin" />
         </DevicePinActionButton>
     </>
@@ -31,10 +34,16 @@ const DisableOrChangePinCard = () => (
             title={<Translation id="moduleDeviceSettings.pinProtection.pictograms.change.title" />}
         />
         <VStack spacing="sp12">
-            <DevicePinActionButton type="change" colorScheme="primary">
+            <DevicePinActionButton
+                type="change"
+                buttonColorProps={{ intent: 'brand', priority: 'primary' }}
+            >
                 <Translation id="moduleDeviceSettings.pinProtection.buttons.changePin" />
             </DevicePinActionButton>
-            <DevicePinActionButton type="disable" colorScheme="tertiaryElevation0">
+            <DevicePinActionButton
+                type="disable"
+                buttonColorProps={{ intent: 'neutral', priority: 'secondary' }}
+            >
                 <Translation id="moduleDeviceSettings.pinProtection.buttons.removePin" />
             </DevicePinActionButton>
         </VStack>

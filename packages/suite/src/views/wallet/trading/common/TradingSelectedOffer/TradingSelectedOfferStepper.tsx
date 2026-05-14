@@ -1,6 +1,6 @@
-import { Fragment, JSX } from 'react';
+import { Fragment, type JSX } from 'react';
 
-import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
+import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { Icon, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

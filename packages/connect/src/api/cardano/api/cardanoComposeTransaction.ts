@@ -1,31 +1,33 @@
 import { CoinSelectionError, trezorUtils } from '@fivebinaries/coin-selection';
 
-import { AssertWeak } from '@trezor/schema-utils';
-
-import { AbstractMethod } from '../../../core/AbstractMethod';
+import { type MethodPermission } from '@trezor/connect-common';
 import {
     type CardanoComposeTransactionParams,
     CardanoComposeTransactionParamsSchema,
     type PrecomposedTransactionCardano,
-} from '../../../types/api/cardanoComposeTransaction';
+} from '@trezor/connect-common/src/types/api/cardanoComposeTransaction';
+import { Assert } from '@trezor/schema-utils';
+
+import type { MethodMessage } from '../../../core/AbstractMethod';
+import { AbstractMethod } from '../../../core/AbstractMethod';
 import { composeTxPlan } from '../cardanoUtils';
 
 export default class CardanoComposeTransaction extends AbstractMethod<
     'cardanoComposeTransaction',
     CardanoComposeTransactionParams
 > {
-    init() {
-        const { payload } = this;
-
+    constructor(message: MethodMessage<'cardanoComposeTransaction'>) {
         // validate incoming parameters
-        // TODO: weak assert for compatibility purposes (issue #10841)
-        AssertWeak(CardanoComposeTransactionParamsSchema, payload);
+        Assert(CardanoComposeTransactionParamsSchema, message.payload);
 
+        super(message, message.payload);
         this.useDevice = false;
         this.useDeviceState = false;
         this.useUi = false;
+    }
 
-        this.params = payload;
+    get requiredPermissions(): MethodPermission[] {
+        return [];
     }
 
     get info() {

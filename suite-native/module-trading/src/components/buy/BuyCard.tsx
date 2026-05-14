@@ -1,10 +1,5 @@
-import { Platform } from 'react-native';
-import { FadeIn, LinearTransition } from 'react-native-reanimated';
-
-import { AnimatedBox, AnimatedCard, Box, HStack, VStack } from '@suite-native/atoms';
+import { Box, HStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { CardTitle, useAnimatedBorderStyle } from '@suite-native/trading-atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { BuyFiatCurrencyPicker } from './BuyFiatCurrencyPicker';
 import { BuyFormFieldErrorBadge } from './BuyFormFieldErrorBadge';
@@ -12,7 +7,10 @@ import { BuyReceiveAccountCryptoBalance } from './BuyReceiveAccountCryptoBalance
 import { BuyReceiveAccountPicker } from './BuyReceiveAccountPicker';
 import { BuyTradeableAssetPicker } from './BuyTradeableAssetPicker';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
+import { CryptoToFiatValueBadge } from '../general/CryptoToFiatValueBadge';
 import { TradeableAssetNetworkInfo } from '../general/TradeableAssetNetworkInfo';
+import { TradingCard } from '../general/TradingCard';
+import { TradingCardSection } from '../general/TradingCardSection';
 
 type BuyCardProps = {
     isAmountInputActive: boolean;
@@ -21,75 +19,45 @@ type BuyCardProps = {
 
 const BUY_CARD_TEST_ID = '@trading/buyCard';
 
-const buySectionStyle = prepareNativeStyle<{ bottomBorder: boolean }>(
-    ({ borders, colors, spacings }, { bottomBorder }) => ({
-        borderBottomWidth: 0,
-        borderBottomColor: colors.backgroundSurfaceElevation0,
-        paddingHorizontal: spacings.sp12,
-        paddingTop: spacings.sp16,
-        paddingBottom: spacings.sp12,
-        gap: spacings.sp8,
-        extend: [
-            {
-                condition: bottomBorder,
-                style: {
-                    borderBottomWidth: borders.widths.small,
-                },
-            },
-        ],
-    }),
-);
-
 export const BuyCard = ({ isAmountInputActive, shouldAnimateEntering }: BuyCardProps) => {
-    const { applyStyle } = useNativeStyles();
-    const animatedStyle = useAnimatedBorderStyle(isAmountInputActive);
     const { watch } = useBuyFormContext();
 
-    const asset = watch('asset');
-
-    // on android fade animation looks ugly on view with shadows, better to skip it
-    const enteringAnimation = shouldAnimateEntering && Platform.OS === 'ios' ? FadeIn : undefined;
+    const [cryptoValue, asset] = watch(['cryptoValue', 'asset']);
 
     return (
-        <AnimatedBox entering={enteringAnimation} layout={LinearTransition}>
-            <AnimatedCard style={animatedStyle} noPadding>
-                <VStack
-                    style={applyStyle(buySectionStyle, { bottomBorder: true })}
-                    testID={BUY_CARD_TEST_ID + '/fiatSection'}
-                >
-                    <HStack justifyContent="space-between" alignItems="center">
-                        <CardTitle>
-                            <Translation id="moduleTrading.selectFiat.buy.title" />
-                        </CardTitle>
-                        <Box alignItems="flex-end">
-                            <BuyFormFieldErrorBadge fieldName="fiatValue" />
-                        </Box>
-                    </HStack>
-                    <BuyFiatCurrencyPicker />
-                </VStack>
-                <VStack
-                    style={applyStyle(buySectionStyle, { bottomBorder: !!asset })}
-                    testID={BUY_CARD_TEST_ID + '/cryptoSection'}
-                >
-                    <HStack justifyContent="space-between" alignItems="center">
-                        <CardTitle>
-                            <Translation id="moduleTrading.selectCoin.title" />
-                        </CardTitle>
-                        <BuyFormFieldErrorBadge fieldName="cryptoValue" />
-                    </HStack>
-                    <BuyTradeableAssetPicker />
-                    <HStack
-                        justifyContent="space-between"
-                        alignItems="center"
-                        paddingVertical="sp4"
-                        spacing="sp4"
-                    >
-                        <TradeableAssetNetworkInfo asset={asset} />
-                        <BuyReceiveAccountCryptoBalance />
-                    </HStack>
-                </VStack>
-                <BuyReceiveAccountPicker />
-            </AnimatedCard>
-        </AnimatedBox>
+        <TradingCard
+            isAmountInputActive={isAmountInputActive}
+            shouldAnimateEntering={shouldAnimateEntering}
+        >
+            <TradingCardSection
+                bottomBorder
+                testID={`${BUY_CARD_TEST_ID}/fiatSection`}
+                title={<Translation id="moduleTrading.selectFiat.buy.title" />}
+                titleAction={
+                    <Box alignItems="flex-end">
+                        <BuyFormFieldErrorBadge fieldName="fiatValue" />
+                    </Box>
+                }
+            >
+                <BuyFiatCurrencyPicker />
+            </TradingCardSection>
+            <TradingCardSection
+                bottomBorder={!!asset}
+                testID={`${BUY_CARD_TEST_ID}/cryptoSection`}
+                title={<Translation id="moduleTrading.selectCoin.title" />}
+                titleAction={
+                    <BuyFormFieldErrorBadge fieldName="cryptoValue">
+                        <CryptoToFiatValueBadge amount={cryptoValue} cryptoId={asset?.cryptoId} />
+                    </BuyFormFieldErrorBadge>
+                }
+            >
+                <BuyTradeableAssetPicker />
+                <HStack justifyContent="space-between" alignItems="center" spacing="sp4">
+                    <TradeableAssetNetworkInfo asset={asset} />
+                    <BuyReceiveAccountCryptoBalance />
+                </HStack>
+            </TradingCardSection>
+            <BuyReceiveAccountPicker />
+        </TradingCard>
     );
 };

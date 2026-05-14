@@ -4,7 +4,7 @@ import { COLOR_TOKENS, nativeTypographyStyles } from '@trezor/theme';
 
 import {
     NumberedListItem as NumberedListItemComponent,
-    NumberedListItemProps,
+    type NumberedListItemProps,
 } from '../../NumberedListItem';
 
 type NumberedListItemStory = StoryObj<NumberedListItemProps>;
@@ -21,7 +21,7 @@ export const NumberedListItem: NumberedListItemStory = {
     args: {
         children: 'value',
         variant: 'body-md',
-        color: 'textDefault',
+        color: 'contentPrimary',
         number: 1,
     },
     argTypes: {

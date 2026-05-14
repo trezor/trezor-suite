@@ -19,7 +19,7 @@ import { AttributesTable } from './AttributesTable';
 import { Changelog } from './Changelog';
 import { LastUpdatedBadge } from './LastUpdatedBadge';
 import { Markdown } from './Markdown';
-import { getEventId } from '../utils/filterUtils';
+import { getEventId, toEventExportName } from '../utils/filterUtils';
 import { getPlatformIcon } from '../utils/getPlatformIcon';
 import { useChangelogButton } from '../utils/useChangelogButton';
 
@@ -34,19 +34,14 @@ const getPlatformDirectory = (platform: string) => {
     }
 };
 
-const toEventName = (input: string): string =>
-    input
-        .split(/[/_-]+/)
-        .map((part, index) =>
-            index === 0
-                ? part.toLowerCase()
-                : part.charAt(0).toUpperCase() + part.slice(1).toLowerCase(),
-        )
-        .join('') + 'Event';
-
 const COPY_FEEDBACK_MS = 2000;
 
-const Header = ({ event }: { event: EventDoc }) => {
+type HeaderProps = {
+    event: EventDoc;
+    onEdit?: (event: EventDoc) => void;
+};
+
+const Header = ({ event, onEdit }: HeaderProps) => {
     const { ChangelogButton, isChangelogOpened } = useChangelogButton();
     const isMobile = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.MD})`);
     const [copied, setCopied] = useState(false);
@@ -61,10 +56,10 @@ const Header = ({ event }: { event: EventDoc }) => {
     if (!event.name) return null;
 
     const getEventDefinitionUrl = (eventName: string) =>
-        `https://github.com/trezor/trezor-suite/blob/develop/${getPlatformDirectory(event.platform)}/src/events/${toEventName(eventName)}.ts`;
+        `https://github.com/trezor/trezor-suite/blob/develop/${getPlatformDirectory(event.platform)}/src/events/${toEventExportName(eventName)}.ts`;
 
     const getEventUsagesUrl = (eventName: string) =>
-        `https://github.com/search?q=repo%3Atrezor%2Ftrezor-suite%20${toEventName(eventName)}.name&type=code`;
+        `https://github.com/search?q=repo%3Atrezor%2Ftrezor-suite%20${toEventExportName(eventName)}.name&type=code`;
 
     const getEventAnchorLink = () =>
         `${typeof window !== 'undefined' ? window.location.origin + window.location.pathname : ''}#${getEventId(event.name)}`;
@@ -75,7 +70,34 @@ const Header = ({ event }: { event: EventDoc }) => {
         setCopied(true);
     };
 
+    const copyExportName = () => {
+        void navigator.clipboard?.writeText(toEventExportName(event.name));
+        setCopied(true);
+    };
+
+    const handleCopyExportNameClick = (e: React.MouseEvent) => {
+        if (e.detail !== 3) return;
+        copyExportName();
+    };
+
+    const handleCopyExportNameKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            copyExportName();
+        }
+    };
+
     const dropdownItems = [
+        ...(onEdit
+            ? [
+                  {
+                      key: 'edit',
+                      label: 'Edit',
+                      icon: 'pencil' as const,
+                      onClick: () => onEdit(event),
+                  },
+              ]
+            : []),
         {
             key: 'open-definition',
             label: 'Open definition on Github',
@@ -106,7 +128,16 @@ const Header = ({ event }: { event: EventDoc }) => {
                 flexWrap={isMobile ? 'wrap' : undefined}
             >
                 <Row gap={16} alignItems="center" overflow="auto" padding={{ bottom: 8 }}>
-                    <H3>{event.name} </H3>
+                    <Tooltip content={toEventExportName(event.name)}>
+                        <span
+                            role="button"
+                            tabIndex={0}
+                            onClick={handleCopyExportNameClick}
+                            onKeyDown={handleCopyExportNameKeyDown}
+                        >
+                            <H3>{event.name}</H3>
+                        </span>
+                    </Tooltip>
                     <Row gap={4} alignItems="center">
                         <ChangelogButton />
 
@@ -138,9 +169,14 @@ const Header = ({ event }: { event: EventDoc }) => {
     );
 };
 
-export const EventCard = ({ event }: { event: EventDoc }) => (
+type EventCardProps = {
+    event: EventDoc;
+    onEdit?: (event: EventDoc) => void;
+};
+
+export const EventCard = ({ event, onEdit }: EventCardProps) => (
     <Card paddingType="small">
-        <Header event={event} />
+        <Header event={event} onEdit={onEdit} />
         <InfoItem label="Trigger" typographyStyle="body-xs">
             <Markdown>{event.descriptionTrigger}</Markdown>
         </InfoItem>

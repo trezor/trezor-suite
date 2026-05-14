@@ -2,7 +2,7 @@ import { PressableOpacity, useBottomSheetModal } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { ScanQRBottomSheet } from '@suite-native/qr-code';
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 type QrCodeBottomSheetIconProps = {
     onCodeScanned: (data: string) => void;

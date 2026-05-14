@@ -1,5 +1,4 @@
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
-import * as messages from '@trezor/protobuf/src/messages';
 import { BridgeTransport } from '@trezor/transport';
 
 import { expect, test } from '../../support/fixtures';
@@ -10,7 +9,7 @@ import { enhancePage } from '../../support/testExtends/enhancePage';
 
 const stealBridgeSession = async () => {
     await test.step('Steal Bridge session', async () => {
-        const bridge = new BridgeTransport({ messages, id: 'foo-bar' });
+        const bridge = new BridgeTransport({ id: 'foo-bar' });
         await bridge.init();
         const enumerateRes = await bridge.enumerate();
         if (!enumerateRes.success) return null;
@@ -22,8 +21,7 @@ const stealBridgeSession = async () => {
 
 test.describe('Multiple sessions', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { passphrase_protection: true } });
-    // Skipped, because it started failing after PW update. Needs to be investigated.
-    test.skip(
+    test(
         'Session overtaken by another',
         {
             annotation: createTestAnnotation({
@@ -41,7 +39,7 @@ test.describe('Multiple sessions', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(dashboardPage.deviceStatusOnSwitchDevice).toHaveTranslation(
                     'TR_USE_HERE',
                 );
-                await expect(dashboardPage.walletAtIndex(0)).toBeHidden();
+                await expect(dashboardPage.walletAtIndex(0)).toBeVisible();
             });
 
             await test.step('Take Bridge session back', async () => {
@@ -54,11 +52,16 @@ test.describe('Multiple sessions', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(dashboardPage.deviceStatus).toHaveTranslation('TR_CONNECTED');
             });
 
-            await test.step('Reload inactive suite session', async () => {
-                await stealBridgeSession();
-                await expect(dashboardPage.deviceStatus).toHaveTranslation('TR_USE_HERE');
-                await page.reload();
-            });
+            // Possible change of behaviour to this instead of rest of the test.
+            // ATM discussed with Varmuza
+            // await test.step('Reload inactive suite session to take Bridge session back', async () => {
+            //     await stealBridgeSession();
+            //     await expect(dashboardPage.deviceStatus).toHaveTranslation('TR_USE_HERE');
+            //     await page.reload();
+            //     await expect(page.getByTestId('@deviceStatus-connected').first()).toBeVisible({
+            //         timeout: 30_000,
+            //     });
+            // });
 
             await test.step('After reloading inactive suite session does not take Bridge session back', async () => {
                 await expect(dashboardPage.deviceStatus).toHaveTranslation('TR_USE_HERE', {
@@ -106,7 +109,4 @@ test.describe('Multiple sessions', { tag: ['@T3W1', '@T3T1'] }, () => {
             await pageTwo.close();
         },
     );
-
-    // todo: test what happens if you steal session and navigate directly to device settings (web)
-    // todo: test the same for other routes as well (/recovery, /backup, etc..)
 });

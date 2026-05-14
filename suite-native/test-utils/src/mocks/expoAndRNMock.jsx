@@ -412,6 +412,8 @@ jest.mock('expo-video', () => ({
 
 jest.mock('react-native-nitro-modules', () => ({}));
 
+jest.mock('react-native-worklets', () => require('react-native-worklets/lib/module/mock'));
+
 jest.mock('react-native-safe-area-context', () => mockSafeAreaContext);
 
 jest.mock('react-native-permissions', () => require('react-native-permissions/mock'));

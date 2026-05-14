@@ -1,24 +1,27 @@
 import { Translation } from '@suite/intl';
-import { HELP_CENTER_FIRMWARE_REVISION_CHECK } from '@trezor/urls';
-
-import { openModal } from 'src/actions/suite/modalActions';
-import { toggleFirmwareAuthenticityChecks } from 'src/actions/suite/suiteActions';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { openModal } from '@suite/modal';
 import {
+    selectAreDeviceMetaChecksEnabled,
     selectIsFirmwareHashCheckEnabled,
     selectIsFirmwareRevisionCheckEnabled,
-} from 'src/selectors/suite/suiteSelectors';
+} from '@suite/settings';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { HELP_CENTER_FIRMWARE_REVISION_CHECK } from '@trezor/urls';
+
+import { toggleFirmwareAuthenticityChecks } from 'src/actions/suite/suiteActions';
+import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const FirmwareAuthenticityChecks = () => {
     const dispatch = useDispatch();
     const isFirmwareHashCheckEnabled = useSelector(selectIsFirmwareHashCheckEnabled);
     const isFirmwareRevisionCheckEnabled = useSelector(selectIsFirmwareRevisionCheckEnabled);
+    const areDeviceMetaChecksEnabled = useSelector(selectAreDeviceMetaChecksEnabled);
 
     // Checks can gradually be turned off in debug settings.
-    // In case either one of the check is turned off, the toggle shall be considered off, inviting the user to turn back it on.
+    // In case any one of the checks is turned off, the toggle shall be considered off, inviting the user to turn back it on.
     const areAllFirmwareChecksEnabled =
-        isFirmwareHashCheckEnabled && isFirmwareRevisionCheckEnabled;
+        isFirmwareHashCheckEnabled && isFirmwareRevisionCheckEnabled && areDeviceMetaChecksEnabled;
 
     const handleClick = () =>
         dispatch(
@@ -48,7 +51,7 @@ export const FirmwareAuthenticityChecks = () => {
                         }
                     />
                 }
-                buttonLink={HELP_CENTER_FIRMWARE_REVISION_CHECK}
+                bottomContent={<LearnMoreButton url={HELP_CENTER_FIRMWARE_REVISION_CHECK} />}
             />
             <ActionColumn>
                 <ActionButton

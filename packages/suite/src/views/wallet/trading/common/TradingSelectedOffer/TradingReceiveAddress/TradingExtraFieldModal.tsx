@@ -4,7 +4,7 @@ import { Translation, useTranslation } from '@suite/intl';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import { Input, Modal } from '@trezor/components';
 
-import { TradingVerifyFormProps } from 'src/types/trading/tradingVerify';
+import { type TradingVerifyFormProps } from 'src/types/trading/tradingVerify';
 import { TradingExtraField } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingExtraField';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 

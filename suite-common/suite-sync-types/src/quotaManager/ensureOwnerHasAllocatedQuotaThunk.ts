@@ -1,9 +1,9 @@
-import { SuiteSyncOwnerId } from '@suite-common/suite-sync-storage';
-import { DelegatedIdentityKey } from '@suite-common/suite-types';
-import { WalletDescriptor } from '@suite-common/wallet-types';
-import { Result } from '@trezor/type-utils';
+import { type SuiteSyncOwnerId } from '@suite-common/suite-sync-storage';
+import { type DelegatedIdentityKey } from '@suite-common/suite-types';
+import { type StaticSessionId } from '@trezor/connect';
+import { type Result } from '@trezor/type-utils';
 
-import { WriteModeRequiredForAllocationErrType } from './quotaManagerTypes';
+import { type WriteModeRequiredForAllocationErrType } from './quotaManagerTypes';
 
 export type HttpErrType = { type: 'HttpError' };
 
@@ -11,9 +11,11 @@ export type ChallengeFailedErrType = { type: 'ChallengeFailed' };
 
 export type ProofOfDelegatedIdentityFailedErrType = { type: 'ProofOfDelegatedIdentityFailed' };
 
+export type NoQuotaLeftToAllocateErrType = { type: 'NoQuotaLeftToAllocate' };
+
 export type EnsureOwnerHasAllocatedQuotaParams = {
     ownerId: SuiteSyncOwnerId;
-    walletDescriptor: WalletDescriptor;
+    deviceStaticSessionId: StaticSessionId;
     delegatedKey: DelegatedIdentityKey;
     isWriteMode: boolean;
 };
@@ -27,5 +29,6 @@ export type EnsureOwnerHasAllocatedQuota = (
         | HttpErrType
         | ChallengeFailedErrType
         | ProofOfDelegatedIdentityFailedErrType
+        | NoQuotaLeftToAllocateErrType
     >
 >;

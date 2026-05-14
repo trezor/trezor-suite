@@ -1,11 +1,11 @@
-import { ExchangeProviderInfo, ExchangeTrade } from 'invity-api';
+import { type ExchangeProviderInfo, type ExchangeTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/components';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
 import { TradingDetailSupportBanner } from '../TradingDetailSupportBanner';
@@ -23,11 +23,11 @@ export const TradingDetailExchangePaymentFailed = ({
 }: TradingDetailExchangePaymentFailedProps) => {
     const dispatch = useDispatch();
 
-    const handleClick = () => dispatch(goto('wallet-trading-exchange'));
+    const handleClick = () => dispatch(goto({ routeName: 'wallet-trading-exchange' }));
 
     return (
         <Column gap={24} padding={{ top: 12, bottom: 4 }}>
-            <IconCircle name="x" variant="destructive" size={100} />
+            <IconCircle name="x" intent="critical" size={96} />
             <Column>
                 <H3 data-testid="@trading/transaction/detail/status">
                     <Translation id="TR_EXCHANGE_DETAIL_ERROR_TITLE" />
@@ -50,7 +50,7 @@ export const TradingDetailExchangePaymentFailed = ({
                             txId={trade.receiveTxHash}
                         />
                     )}
-                    <TradingDetailSupportBanner provider={provider} orderId={trade.orderId} />
+                    <TradingDetailSupportBanner provider={provider} trade={trade} />
                 </Column>
             </Card>
         </Column>

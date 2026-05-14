@@ -1,12 +1,14 @@
-import { SupportedLocaleCode } from '@suite-native/intl';
+import type { SupportedLocaleCode } from '@suite-native/intl';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { PROTO } from '@trezor/connect';
+import type { PROTO } from '@trezor/connect';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onTabBar } from './tabBarActions';
 import { scrollUntilVisible, wait, waitForVisible } from '../support/utils';
 
-const DEV_EVOLU_URL = 'https://suite-sync.suite.sldev.cz/evolu/';
+// On Android emulator, the host machine is reachable at 10.0.2.2, an alias for localhost.
+const LOCAL_RELAY_URL = 'http://10.0.2.2:4000';
+const LOCAL_QUOTA_URL = 'http://10.0.2.2:4001';
 
 type SettingsOptions =
     | 'preferences'
@@ -19,7 +21,8 @@ type SettingsOptions =
     | 'trading'
     | 'wallet-connect'
     | 'connect-permissions'
-    | 'advanced';
+    | 'advanced'
+    | 'experimental';
 
 class SettingsActions {
     async openSection(option: SettingsOptions) {
@@ -47,7 +50,9 @@ class SettingsActions {
         await wait(1000); // wait for the language selector to open
 
         const languageSelectorItemElement = element(by.id(`@select/item/${localeTag}`));
-        await scrollUntilVisible(languageSelectorItemElement, '@bottom-sheet/scroll-view');
+        await scrollUntilVisible(languageSelectorItemElement, {
+            scrollViewTestId: '@bottom-sheet/scroll-view',
+        });
 
         await languageSelectorItemElement.tap();
         await wait(1000); // wait for the language selector to close
@@ -63,7 +68,9 @@ class SettingsActions {
         await wait(1000); // wait for the currency selector to open
 
         const currencySelectorItemElement = element(by.id(`@select/item/${currencyCode}`));
-        await scrollUntilVisible(currencySelectorItemElement, '@bottom-sheet/scroll-view');
+        await scrollUntilVisible(currencySelectorItemElement, {
+            scrollViewTestId: '@bottom-sheet/scroll-view',
+        });
 
         await currencySelectorItemElement.tap();
         await wait(1000); // wait for the currency selector to close
@@ -77,7 +84,9 @@ class SettingsActions {
         await currencySelectorTriggerElement.tap();
 
         const currencySelectorItemElement = element(by.id(`@select/item/${unit}/content`));
-        await scrollUntilVisible(currencySelectorItemElement, '@bottom-sheet/scroll-view');
+        await scrollUntilVisible(currencySelectorItemElement, {
+            scrollViewTestId: '@bottom-sheet/scroll-view',
+        });
         await currencySelectorItemElement.tap();
         await wait(1000); // wait for the bitcoin units selector to close
     }
@@ -94,33 +103,30 @@ class SettingsActions {
         await ejectWalletElement.tap();
     }
 
-    async enableSuiteSync(url = DEV_EVOLU_URL) {
+    async enableSuiteSync(url = LOCAL_RELAY_URL, quotaUrl = LOCAL_QUOTA_URL) {
         await this.openSection('dev-utils');
         const saveSuiteSyncUrl = element(by.id('@suiteSync/custom-relay-url-save-button'));
         await scrollUntilVisible(saveSuiteSyncUrl);
-        await element(by.id('@suiteSync/custom-relay-url-input')).typeText(url);
-        // Workaround close keyboard by clicking on section header
-        await element(by.id('@suiteSync/header')).tap();
-        await element(by.id('@suiteSync/custom-relay-url-save-button')).tap();
-        await onTabBar.tapBackButton();
+        await element(by.id('@suiteSync/custom-relay-url-input')).replaceText(url);
+        await saveSuiteSyncUrl.tap();
 
-        await this.openSection('advanced');
-        const experimentalFeaturesToggleElement = element(
-            by.id('@settings/experimental-features/toggle-switch'),
-        );
-        await scrollUntilVisible(experimentalFeaturesToggleElement);
-        await experimentalFeaturesToggleElement.tap();
+        const saveQuotaManagerUrl = element(by.id('@suiteSyncQuotaManager/save-button'));
+        const enforceQuotaManager = element(by.id('@suiteSyncQuotaManager/enforce-switch'));
+        await scrollUntilVisible(enforceQuotaManager);
+        await element(by.id('@suiteSyncQuotaManager/url-input')).replaceText(quotaUrl);
+        await saveQuotaManagerUrl.tap();
+        await enforceQuotaManager.tap();
 
-        const suiteSyncCheckboxElement = element(
-            by.id('@settings/experimental-features/suite-sync/checkbox'),
-        );
-        await scrollUntilVisible(suiteSyncCheckboxElement);
-        await suiteSyncCheckboxElement.tap();
         await onTabBar.tapBackButton();
 
         await this.openSection('suite-sync');
-        await element(by.id('settings/suite-sync-touchable-row')).tap();
+        await wait(1000);
+        const suiteSyncToggle = element(by.id('settings/suite-sync-touchable-row'));
+        await suiteSyncToggle.tap();
+        await wait(1000);
+        await waitForVisible(by.id('@continue-on-trezor'));
         await TrezorUserEnvLink.pressYes();
+        await waitForVisible(suiteSyncToggle);
     }
 }
 

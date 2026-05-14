@@ -1,15 +1,15 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import FocusLock from 'react-focus-lock';
 
 import styled, { css } from 'styled-components';
 
-import { ZIndexValues, spacings, zIndices } from '@trezor/theme';
+import { type ZIndexValues, spacings, zIndices } from '@trezor/theme';
 
 import { useModalTarget } from './ModalProvider';
-import { ModalAlignment } from './types';
+import { type ModalAlignment } from './types';
 import { mapAlignmentToAlignItems, mapAlignmentToJustifyContent } from './utils';
-import { Padding } from '../../utils/frameProps';
+import { type Padding } from '../../utils/frameProps';
 import { Box } from '../Box/Box';
 import { Column } from '../Flex/Flex';
 
@@ -27,7 +27,7 @@ const Backdrop = styled.div<{ $opaque?: boolean }>`
     ${({ $opaque, theme }) =>
         $opaque
             ? css`
-                  background: ${theme.backgroundSurfaceElevationNegative};
+                  background: ${theme.surfaceFillSunken};
               `
             : css`
                   backdrop-filter: blur(5px);

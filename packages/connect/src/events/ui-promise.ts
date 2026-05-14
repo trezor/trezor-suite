@@ -1,18 +1,18 @@
+import type { DEVICE, UiResponseEvent } from '@trezor/connect-common';
 import type { Deferred } from '@trezor/utils';
 
-import type { DEVICE } from './device';
-import type { UiResponseEvent } from './ui-response';
-import type { Device } from '../device/Device';
+import type { IDevice } from '../types/idevice';
 
 export type UiPromiseResponse =
-    | UiResponseEvent
-    | { type: typeof DEVICE.DISCONNECT; payload?: undefined };
+    | (UiResponseEvent & { requestId?: string })
+    | { type: typeof DEVICE.DISCONNECT; payload?: undefined; requestId?: string };
 
 export type UiPromise<T extends UiPromiseResponse['type']> = Deferred<
     Extract<UiPromiseResponse, { type: T }>,
     T
 > & {
-    device?: Device;
+    device?: IDevice;
+    requestId: string;
 };
 
 // map all possible UiPromises
@@ -25,5 +25,5 @@ export type AnyUiPromise = UiPromiseMap[UiPromiseResponse['type']];
 
 export type UiPromiseCreator = <T extends UiPromiseResponse['type']>(
     type: T,
-    device?: Device,
+    device?: IDevice,
 ) => UiPromise<T>;

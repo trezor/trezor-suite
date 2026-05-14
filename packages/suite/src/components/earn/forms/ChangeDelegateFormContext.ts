@@ -1,9 +1,9 @@
 import type { FormState as ReactHookFormState, UseFormReturn } from 'react-hook-form';
 
 import {
-    BaseStakeContextValues,
-    ChangeDelegateFormState,
-    StakeFormState,
+    type BaseStakeContextValues,
+    type ChangeDelegateFormState,
+    type StakeFormState,
 } from '@suite-common/wallet-types';
 
 export type ChangeDelegateContextValues = UseFormReturn<ChangeDelegateFormState> &

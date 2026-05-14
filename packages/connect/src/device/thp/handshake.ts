@@ -1,12 +1,13 @@
 import { randomBytes } from 'crypto';
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { encodeMessage } from '@trezor/protobuf';
-import { ThpPairingMethod, thp as protocolThp } from '@trezor/protocol';
+import { protobufManager } from '@trezor/protobuf';
+import type { ThpPairingMethod } from '@trezor/protocol';
+import { thp as protocolThp } from '@trezor/protocol';
 
 import { thpCall } from './thpCall';
-import { DataManager } from '../../data/DataManager';
-import type { Device } from '../Device';
+import * as settingsStore from '../../data/settingsStore';
+import type { IDevice } from '../../types/idevice';
 
 // intersection of device acceptable methods and host acceptable methods
 const getPairingMethods = (
@@ -25,7 +26,7 @@ const getPairingMethods = (
 // State HH0
 // TODO: link-to-public-docs
 // https://www.notion.so/satoshilabs/THP-Specification-2-1-203dc5260606804192aecaa58fb961ca
-export const createThpChannel = async (device: Device) => {
+export const createThpChannel = async (device: IDevice) => {
     const thpState = device.getThpState();
     if (!thpState) {
         throw ERRORS.TypedError('Device_ThpStateMissing');
@@ -46,7 +47,7 @@ export const createThpChannel = async (device: Device) => {
     }
 
     // find common pairing methods
-    const settings = DataManager.getSettings('thp');
+    const settings = settingsStore.get('thp');
     const pairingMethods = getPairingMethods(properties.pairing_methods, settings?.pairingMethods);
     if (!pairingMethods?.length) {
         throw ERRORS.TypedError('Device_ThpPairingMethodsException');
@@ -66,13 +67,13 @@ export const createThpChannel = async (device: Device) => {
 // State HH1 and HH2
 // TODO: link-to-public-docs
 // https://www.notion.so/satoshilabs/THP-Specification-2-1-203dc5260606804192aecaa58fb961ca
-export const thpHandshake = async (device: Device, unlockPin = false) => {
+export const thpHandshake = async (device: IDevice, unlockPin = false) => {
     const thpState = device.getThpState();
     if (!thpState?.handshakeCredentials) {
         throw ERRORS.TypedError('Device_ThpStateMissing');
     }
 
-    const settings = DataManager.getSettings('thp');
+    const settings = settingsStore.get('thp');
     // sort credentials by autoconnect field
     const knownCredentials = (settings?.knownCredentials || []).sort(cre =>
         cre.autoconnect ? -1 : 1,
@@ -97,7 +98,7 @@ export const thpHandshake = async (device: Device, unlockPin = false) => {
         hostEphemeralKeys,
         knownCredentials,
         tryToUnlock,
-        protobufEncoder: (name, data) => encodeMessage(device.transport.getMessages(), name, data),
+        protobufEncoder: (name, data) => protobufManager.encode(name, data),
     });
 
     // update thpState

@@ -1,39 +1,47 @@
+import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
-import {
-    PreloadedState,
-    act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
-import { btcAsset, getWalletState } from '@suite-native/trading-fixtures';
-import { ExchangeFormType } from '@suite-native/trading-types';
+import { act } from '@suite-native/test-utils-store';
+import { btcAsset } from '@suite-native/trading-fixtures';
+import { type ExchangeFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import { ExchangeSendAmountBadge } from '../ExchangeSendAmountBadge';
 
 describe('ExchangeSendAmountBadge', () => {
     let form: ExchangeFormType;
 
-    const getPreloadedState = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN): PreloadedState => ({
-        wallet: getWalletState({ tradeType: 'exchange', bitcoinAmountUnit }),
-    });
+    const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
+        featureFlags: {
+            ...featureFlagsInitialState,
+        },
+    };
 
-    const renderForm = () => renderHookWithStoreProviderAsync(() => useExchangeForm());
-
-    const renderExchangeSendAmountBadge = (preloadedState: PreloadedState = getPreloadedState()) =>
-        renderWithStoreProviderAsync(<ExchangeSendAmountBadge />, {
-            preloadedState,
+    const renderExchangeSendAmountBadge = (
+        extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
+    ) =>
+        renderWithTradingProvider(<ExchangeSendAmountBadge />, {
+            tradeType: 'exchange',
+            overrides: { ...baseOverrides, ...extraOverrides },
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(async () => {
-        const { result } = await renderForm();
+    beforeEach(() => {
+        const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
+            tradeType: 'exchange',
+            overrides: baseOverrides,
+        });
         form = result.current;
     });
 
-    it('should display nothing when asset is not selected', async () => {
-        const { toJSON } = await renderExchangeSendAmountBadge();
+    it('should display nothing when asset is not selected', () => {
+        const { toJSON } = renderExchangeSendAmountBadge();
 
         expect(toJSON()).toBeNull();
     });
@@ -45,33 +53,33 @@ describe('ExchangeSendAmountBadge', () => {
             });
         });
 
-        it('should display nothing when amount is not set', async () => {
-            const { toJSON } = await renderExchangeSendAmountBadge();
+        it('should display nothing when amount is not set', () => {
+            const { toJSON } = renderExchangeSendAmountBadge();
 
             expect(toJSON()).toBeNull();
         });
 
-        it('should display formatted value when amount is 0', async () => {
+        it('should display formatted value when amount is 0', () => {
             act(() => {
                 form.setValue('sendCryptoAmount', '0');
             });
 
-            const { getByText } = await renderExchangeSendAmountBadge();
+            const { getByText } = renderExchangeSendAmountBadge();
 
             expect(getByText('$0.00')).toBeOnTheScreen();
         });
 
-        it('should display formatted value when amount is set', async () => {
+        it('should display formatted value when amount is set', () => {
             act(() => {
                 form.setValue('sendCryptoAmount', '1234567');
             });
 
-            const { getByText } = await renderExchangeSendAmountBadge();
+            const { getByText } = renderExchangeSendAmountBadge();
 
             expect(getByText('$1,234.57')).toBeOnTheScreen();
         });
 
-        it('should display error message when field has error', async () => {
+        it('should display error message when field has error', () => {
             act(() => {
                 form.setError('sendCryptoAmount', {
                     type: 'manual',
@@ -80,13 +88,13 @@ describe('ExchangeSendAmountBadge', () => {
                 form.setValue('sendCryptoAmount', '1000');
             });
 
-            const { getByText, queryByText } = await renderExchangeSendAmountBadge();
+            const { getByText, queryByText } = renderExchangeSendAmountBadge();
 
             expect(queryByText('$1.00')).toBeNull();
             expect(getByText('VALIDATION_ERROR')).toBeOnTheScreen();
         });
 
-        it('should display formatted fiat value when field has error, but quotes are loading', async () => {
+        it('should display formatted fiat value when field has error, but quotes are loading', () => {
             act(() => {
                 form.setError('sendCryptoAmount', {
                     type: 'manual',
@@ -94,23 +102,23 @@ describe('ExchangeSendAmountBadge', () => {
                 });
                 form.setValue('sendCryptoAmount', '1000');
             });
-            const preloadedState = getPreloadedState();
-            preloadedState!.wallet!.trading!.exchange!.isLoading = true;
 
-            const { getByText, queryByText } = await renderExchangeSendAmountBadge(preloadedState);
+            const { getByText, queryByText } = renderExchangeSendAmountBadge({
+                wallet: { trading: { exchange: { isLoading: true } } },
+            });
 
             expect(queryByText('VALIDATION_ERROR')).toBeNull();
             expect(getByText('$1.00')).toBeOnTheScreen();
         });
 
-        it('should display correct value when using sats', async () => {
+        it('should display correct value when using sats', () => {
             act(() => {
                 form.setValue('sendCryptoAmount', '1234567123456');
             });
 
-            const { getByText } = await renderExchangeSendAmountBadge(
-                getPreloadedState(PROTO.AmountUnit.SATOSHI),
-            );
+            const { getByText } = renderExchangeSendAmountBadge({
+                wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
+            });
 
             expect(getByText('$12.35')).toBeOnTheScreen();
         });

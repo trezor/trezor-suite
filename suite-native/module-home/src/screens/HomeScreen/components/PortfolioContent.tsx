@@ -9,18 +9,18 @@ import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { selectHasDeviceAnySendAvailableAccount } from '@suite-native/accounts';
 import { Assets } from '@suite-native/assets';
 import { AnimatedVStack, Button, HStack, VStack } from '@suite-native/atoms';
-import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
+import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
     ReceiveStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
     SendStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 import { HomescreenAlerts } from './HomescreenAlerts';
-import { PortfolioGraph, PortfolioGraphRef } from './PortfolioGraph';
+import { PortfolioGraph, type PortfolioGraphRef } from './PortfolioGraph';
 import { ReferralButton } from './ReferralButton';
 
 export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
@@ -29,7 +29,7 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
     const hasDeviceAnySendAvailableAccount = useSelector(selectHasDeviceAnySendAvailableAccount);
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
-        selectHasFirmwareAuthenticityCheckHardFailed,
+        selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
     );
 
     const isPortfolioTracker = useSelector(selectIsPortfolioTrackerDevice);
@@ -64,7 +64,7 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
                                         flex={1}
                                         testID="@home/portfolio/receive-button"
                                         onPress={handleReceive}
-                                        viewLeft="arrowDown"
+                                        iconLeft="arrowDown"
                                     >
                                         <Translation id="moduleHome.buttons.receive" />
                                     </Button>
@@ -74,7 +74,7 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
                                         flex={1}
                                         testID="@home/portfolio/send-button"
                                         onPress={handleSend}
-                                        viewLeft="arrowUp"
+                                        iconLeft="arrowUp"
                                     >
                                         <Translation id="moduleHome.buttons.send" />
                                     </Button>

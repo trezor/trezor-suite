@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 // code shamelessly stolen from https://github.com/voodoocreation/ts-deepmerge
 
-import { Keys } from '@trezor/type-utils';
+import { type KeysOfUnion } from '@trezor/type-utils';
+
+import { isSafeObjectKey } from './isSafeObjectKey';
 
 type TIndexValue<T, K extends PropertyKey, D = never> = T extends any
     ? K extends keyof T
@@ -22,7 +24,7 @@ type TMerged<T> = [T] extends [Array<any>]
     : [T] extends [TPrimitives]
       ? T
       : [T] extends [object]
-        ? TPartialKeys<{ [K in Keys<T>]: TMerged<TIndexValue<T, K>> }, never>
+        ? TPartialKeys<{ [K in KeysOfUnion<T>]: TMerged<TIndexValue<T, K>> }, never>
         : T;
 
 // istanbul ignore next
@@ -73,7 +75,7 @@ export const mergeDeepObject = <T extends IObject[]>(...objects: T): TMerged<T[n
         }
 
         Object.keys(current).forEach(key => {
-            if (['__proto__', 'constructor', 'prototype'].includes(key)) {
+            if (!isSafeObjectKey(key)) {
                 return;
             }
 

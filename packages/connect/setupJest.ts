@@ -1,11 +1,19 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
+import type { Features } from '@trezor/connect-common';
+import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
 import { firmwareAssets } from '@trezor/connect-data';
-import { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
-import { AbstractApiTransport, UsbApi } from '@trezor/transport';
+import { DeviceModelInternal } from '@trezor/device-utils';
+import type { FirmwareRelease } from '@trezor/device-utils';
+import { AbstractApiTransport } from '@trezor/transport';
+import type { UsbApi } from '@trezor/transport';
 import { versionUtils } from '@trezor/utils';
 
-import { type Features } from './src/types';
+import * as settingsStore from './src/data/settingsStore';
+
+// Initialize settings store so tests reaching settingsStore.get() (via
+// BackendManager, firmwareInfo, etc.) don't trip the pre-set() throw.
+settingsStore.set(parseConnectSettings({}));
 
 // mock of navigator.usb
 const createTransportApi = (override = {}) =>

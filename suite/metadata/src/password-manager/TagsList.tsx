@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { PasswordTag } from '@suite-common/metadata-types';
+import { type PasswordTag } from '@suite-common/metadata-types';
 import { spacingsPx } from '@trezor/theme';
 
 import { Tag } from './Tag';

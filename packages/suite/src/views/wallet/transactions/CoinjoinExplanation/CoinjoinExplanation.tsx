@@ -4,13 +4,13 @@ import { Translation } from '@suite/intl';
 import { Card, Icon, variables } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 
-import { CoinjoinProcessStep, CoinjoinProcessStepProps } from './CoinjoinProcessStep';
+import { CoinjoinProcessStep, type CoinjoinProcessStepProps } from './CoinjoinProcessStep';
 
 const Heading = styled.div`
     display: flex;
     align-items: center;
     margin-bottom: ${spacingsPx.md};
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     ${typography['body-sm']};
 `;
 

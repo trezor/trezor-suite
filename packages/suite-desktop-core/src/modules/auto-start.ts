@@ -1,7 +1,7 @@
 /**
  * Auto start handler
  */
-import { BrowserWindow } from 'electron';
+import { type BrowserWindow } from 'electron';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
@@ -9,7 +9,7 @@ import path from 'path';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { createDeferred } from '@trezor/utils';
 
-import { Store } from '../libs/store';
+import { type Store } from '../libs/store';
 import { app, ipcMain } from '../typed-electron';
 import type { ModuleInit } from './module';
 

@@ -1,6 +1,6 @@
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { CopyableText, CopyableTextProps } from '../CopyableText';
+import { CopyableText, type CopyableTextProps } from '../CopyableText';
 
 const mockCopyToClipboard = jest.fn();
 
@@ -13,7 +13,7 @@ describe('CopyableText', () => {
         renderWithBasicProvider(<CopyableText text="TEST TEXT" {...props} />);
 
     beforeEach(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
 
     it('should render title, text and copy button', () => {

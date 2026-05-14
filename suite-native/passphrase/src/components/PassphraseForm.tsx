@@ -8,17 +8,18 @@ import {
     selectSelectedDevice,
 } from '@suite-common/device';
 import {
-    PassphraseFormValues,
+    type PassphraseFormValues,
     formInputsMaxLength,
     passphraseFormSchema,
 } from '@suite-common/validators';
 import { submitPassphrase } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
 import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
+import { selectPassphraseRequestId } from '@suite-native/device-authorization';
 import { Form, SecureTextInputField, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { EnterPassphraseOnTrezorButton } from './EnterPassphraseOnTrezorButton';
 import { NoPassphraseButton } from './NoPassphraseButton';
@@ -51,6 +52,7 @@ export const PassphraseForm = ({
     const { applyStyle } = useNativeStyles();
 
     const device = useSelector(selectSelectedDevice);
+    const requestId = useSelector(selectPassphraseRequestId);
     const hasDevicePassphraseEntryCapability = useSelector(
         selectHasDevicePassphraseEntryCapability,
     );
@@ -71,7 +73,7 @@ export const PassphraseForm = ({
 
     const handleCreateHiddenWallet = handleSubmit(({ passphrase }) => {
         if (!device) return;
-        dispatch(submitPassphrase({ device, passphrase, passphraseOnDevice: false }));
+        dispatch(submitPassphrase({ device, passphrase, passphraseOnDevice: false, requestId }));
         // Reset values so when user comes back to this screen,
         // it's clean (for example if try again is triggered later in the flow)
         reset();
@@ -97,7 +99,6 @@ export const PassphraseForm = ({
                             autoCapitalize="none"
                             onFocus={handleFocusInput}
                             onBlur={() => setIsInputFocused(false)}
-                            secureTextEntry
                             testID="@passphrase/passphraseInput"
                         />
                         {isDirty && (

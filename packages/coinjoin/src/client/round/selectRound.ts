@@ -2,27 +2,25 @@ import { arrayPartition, arrayToDictionary } from '@trezor/utils';
 
 import { ROUND_SELECTION_MAX_OUTPUTS, ROUND_SELECTION_REGISTRATION_OFFSET } from '../../constants';
 import { RoundPhase, SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
+import type { AliceGenerator, AliceShape } from '../../types/alice';
+import type { CoinjoinPrisonShape } from '../../types/prison';
+import type {
+    CoinjoinRoundGenerator,
+    CoinjoinRoundOptions,
+    CoinjoinRoundShape,
+} from '../../types/round';
 import { getInputSize, getOutputSize } from '../../utils/coordinatorUtils';
-import { Account } from '../Account';
-import { Alice } from '../Alice';
-import { CoinjoinPrison } from '../CoinjoinPrison';
-import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
-import { Round } from '../coordinator';
+import { type Account } from '../Account';
+import { type Round } from '../coordinator';
 import * as middleware from '../middleware';
-
-export type CoinjoinRoundGenerator = (
-    ...args: ConstructorParameters<typeof CoinjoinRound>
-) => CoinjoinRound;
-
-export type AliceGenerator = (...args: ConstructorParameters<typeof Alice>) => Alice;
 
 export interface SelectRoundProps {
     roundGenerator: CoinjoinRoundGenerator;
     aliceGenerator: AliceGenerator;
     accounts: Account[];
     statusRounds: Round[];
-    coinjoinRounds: CoinjoinRound[];
-    prison: CoinjoinPrison;
+    coinjoinRounds: CoinjoinRoundShape[];
+    prison: CoinjoinPrisonShape;
     options: CoinjoinRoundOptions;
     runningAffiliateServer: boolean;
 }
@@ -251,7 +249,7 @@ export const getAccountCandidates = ({
 };
 
 interface SelectInputsForRoundProps extends Pick<SelectRoundProps, 'aliceGenerator' | 'options'> {
-    roundCandidates: CoinjoinRound[];
+    roundCandidates: CoinjoinRoundShape[];
     accountCandidates: ReturnType<typeof getAccountCandidates>;
 }
 
@@ -262,7 +260,7 @@ const selectInputsForBlameRound = ({
     options: { logger },
 }: SelectInputsForRoundProps) =>
     roundCandidates.find(round => {
-        const inputs: CoinjoinRound['inputs'] = [];
+        const inputs: AliceShape[] = [];
         accountCandidates.forEach(account => {
             const utxos = account.blameOf ? account.blameOf[round.blameOf] : null;
             if (utxos && utxos.length > 0) {
@@ -451,7 +449,7 @@ export const selectRound = async ({
     prison,
     options,
     runningAffiliateServer,
-}: SelectRoundProps) => {
+}: SelectRoundProps): Promise<CoinjoinRoundShape | undefined> => {
     const { logger, setSessionPhase } = options;
 
     const unregisteredAccounts = getUnregisteredAccounts({ accounts, coinjoinRounds, options });

@@ -1,7 +1,8 @@
-import { coinSelection, types } from '@fivebinaries/coin-selection';
+import type { types } from '@fivebinaries/coin-selection';
+import { coinSelection } from '@fivebinaries/coin-selection';
 
-import { PROTO } from '../../constants';
-import { AccountUtxo, CardanoCertificate } from '../../types';
+import type { AccountUtxo, CardanoCertificate } from '@trezor/connect-common';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 const CARDANO_DEFAULT_TTL_OFFSET = 7200;
 
@@ -125,11 +126,11 @@ export const composeTxPlan = (
 export const hexStringByteLength = (s: string) => s.length / 2;
 
 export const sendChunkedHexString = async (
-    typedCall: any,
+    typedCall: PROTO.TypedCall,
     data: string,
     chunkSize: number,
-    messageType: string,
-    responseType = 'CardanoTxItemAck',
+    messageType: PROTO.MessageKey,
+    responseType: PROTO.MessageKey = 'CardanoTxItemAck',
 ) => {
     let processedSize = 0;
     while (processedSize < data.length) {

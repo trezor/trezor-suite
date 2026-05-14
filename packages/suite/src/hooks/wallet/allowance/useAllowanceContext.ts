@@ -1,7 +1,8 @@
 import { createContext, useContext } from 'react';
 
-import { useAllowanceState } from './useAllowanceState';
-import { useAllowanceTxTracking } from './useAllowanceTxTracking';
+import { type useAllowanceTxTracking } from '@suite-common/trading';
+
+import { type useAllowanceState } from './useAllowanceState';
 
 export interface AllowanceContextValue {
     tx: ReturnType<typeof useAllowanceTxTracking>;

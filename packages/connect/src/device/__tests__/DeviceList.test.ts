@@ -1,5 +1,9 @@
-import { DataManager } from '../../data/DataManager';
-import { parseConnectSettings } from '../../data/connectSettings';
+import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
+
+import { initializeFirmwareConfig } from '../../data/firmwareInfo';
+import * as firmwareReleaseStore from '../../data/firmwareReleaseStore';
+import { loadProtobufModules } from '../../data/protobufLoader';
+import * as settingsStore from '../../data/settingsStore';
 import { DeviceList } from '../DeviceList';
 
 const { createTestTransport, createTestTransportClass } = global.JestMocks;
@@ -22,13 +26,10 @@ const waitForNthEventOfType = (
 describe('DeviceList', () => {
     beforeAll(async () => {
         // todo: I don't get it. If we pass empty messages: {} (see getDeviceListParams), tests behave differently.
-        await DataManager.load(
-            {
-                ...parseConnectSettings({}),
-            },
-            true,
-            true,
-        );
+        const settings = { ...parseConnectSettings({}) };
+        settingsStore.set(settings);
+        await firmwareReleaseStore.init(settings.firmwareChannel, true, initializeFirmwareConfig);
+        await loadProtobufModules();
     });
 
     let list: DeviceList;
@@ -38,7 +39,6 @@ describe('DeviceList', () => {
         list = new DeviceList({
             ...parseConnectSettings({}),
             priority: 0,
-            messages: DataManager.getProtobufMessages(),
         });
         eventsSpy = jest.fn();
         list.on('transport-start', ({ apiType }) => eventsSpy('transport-start', apiType));
@@ -121,7 +121,8 @@ describe('DeviceList', () => {
 
     it('.init() with pendingTransportEvent (unacquired device)', async () => {
         const transport = createTestTransport({
-            openDevice: () => Promise.resolve({ success: false, error: 'wrong previous session' }),
+            openDevice: () =>
+                Promise.resolve({ success: false, error: { code: 'wrong previous session' } }),
         });
 
         list.init({ transports: [transport], pendingTransportEvent: true });
@@ -133,7 +134,8 @@ describe('DeviceList', () => {
 
     it('.init() with pendingTransportEvent (disconnected device)', async () => {
         const transport = createTestTransport({
-            openDevice: () => Promise.resolve({ success: false, error: 'device not found' }),
+            openDevice: () =>
+                Promise.resolve({ success: false, error: { code: 'device not found' } }),
         });
 
         list.init({ transports: [transport], pendingTransportEvent: true });
@@ -196,7 +198,7 @@ describe('DeviceList', () => {
             }),
             openDevice: (path: string) =>
                 path === '2'
-                    ? Promise.resolve({ success: false, error: 'device not found' })
+                    ? Promise.resolve({ success: false, error: { code: 'device not found' } })
                     : Promise.resolve({ success: true, payload: [{ path }] }),
             type: 'usb2',
         });

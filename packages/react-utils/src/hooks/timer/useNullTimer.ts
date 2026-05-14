@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Timer } from './Timer';
+import { type Timer } from './Timer';
 
 class NullTimer implements Timer {
     timeSpent = { seconds: 0 };

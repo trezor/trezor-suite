@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { Translation } from '@suite/intl';
-import { selectLabelingDataForWallet } from '@suite/metadata';
-import { selectSuiteSyncWalletLabel } from '@suite-common/suite-sync';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { selectIsLegacyLabelingVisible, selectLabelingDataForWallet } from '@suite/metadata';
+import { selectIsSuiteSyncEnabled, selectSuiteSyncWalletLabel } from '@suite-common/suite-sync';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
 
@@ -22,7 +22,9 @@ export const DeviceStatusTextVisible = ({
     forceConnectionInfo,
 }: DeviceStatusTextVisibleProps) => {
     const { connected } = device;
-    const { walletLabel: walletLabelOld } = useSelector(state =>
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
+    const { walletLabel: legacyWalletLabel } = useSelector(state =>
         selectLabelingDataForWallet(state, device.state),
     );
 
@@ -39,8 +41,12 @@ export const DeviceStatusTextVisible = ({
         return selectSuiteSyncWalletLabel(state, walletDescriptor);
     });
 
-    const walletLabel = suiteSyncWalletLabel ?? walletLabelOld;
-    const isWalletLabelEmpty = walletLabel === undefined || walletLabel.trim() === '';
+    const walletLabel =
+        (isSuiteSyncEnabled ? suiteSyncWalletLabel : null) ??
+        (isLegacyLabelingVisible ? legacyWalletLabel : null) ??
+        null;
+
+    const isWalletLabelEmpty = walletLabel === null || walletLabel.trim() === '';
     const walletText = isWalletLabelEmpty ? defaultWalletLabel : walletLabel;
 
     return (

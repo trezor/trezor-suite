@@ -1,7 +1,8 @@
+import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import {
-    Account,
-    AccountKey,
-    TokenInfoBranded,
+    type Account,
+    type AccountKey,
+    type TokenInfoBranded,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
 
@@ -21,11 +22,11 @@ jest.mock('@suite-common/wallet-utils', () => ({
 
 describe('isFilterValueMatchingAccountLabelOrNetworkName', () => {
     const account = {
-        accountLabel: 'Original account name',
+        label: 'Original account name',
         symbol: 'eth',
         accountType: 'legacy',
         tokens: [{ name: 'Tether USD' }],
-    } as Account;
+    } as AccountWithSuiteSyncLabel;
 
     test('should return false if the filter value does not match the account label nor network name.', () => {
         const filterValue = 'not match';
@@ -202,6 +203,7 @@ describe('selectFreshAccountAddress', () => {
             pendingAccountAddresses: {},
             transactions: {
                 transactions: {},
+                phishing: {},
                 fetchStatusDetail: {},
             },
         },
@@ -251,6 +253,7 @@ describe('selectFreshAccountAddress', () => {
                 pendingAccountAddresses: {},
                 transactions: {
                     transactions: {},
+                    phishing: {},
                     fetchStatusDetail: {},
                 },
             },

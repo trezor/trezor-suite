@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 
-import { ParamListBase, useNavigation } from '@react-navigation/native';
+import { type ParamListBase, useNavigation } from '@react-navigation/native';
 
-import { StackToTabCompositeProps } from '../types';
+import { type StackToTabCompositeProps } from '../types';
 
 type NavigationProp = StackToTabCompositeProps<ParamListBase, string, ParamListBase>;
 

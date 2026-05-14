@@ -1,5 +1,5 @@
 import CONFIG from './config';
-import BlockchainLink from '../index';
+import { BlockchainLink } from '../index';
 import { fillValues, getInputValue, onClear } from './utils';
 import BlockbookWorker from '../workers/blockbook/index';
 import BlockfrostWorker from '../workers/blockfrost/index';

@@ -1,8 +1,9 @@
 import { css } from 'styled-components';
 
-import { SpacingValuesNew, TypographyStyle } from '@trezor/theme';
+import { type SpacingValuesNew, type TypographyStyle, borders } from '@trezor/theme';
 
-import { InputSize } from './types';
+import { type InputSize } from './types';
+import { commonFocusStyles } from '../../utils/utils';
 
 const heightMap: Record<InputSize, number> = {
     small: 36,
@@ -43,8 +44,42 @@ export const commonInputStyles = css`
         'ss03' 1;
 
     &::placeholder {
-        color: ${({ theme }) => theme.textDisabled};
+        color: ${({ theme }) => theme.contentDisabled};
     }
 `;
 
 export const INPUT_PADDING: SpacingValuesNew = 16;
+
+export const commonCheckInputStyles = css`
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: ${borders.widths.large} solid;
+    transition: 0.1s ease-in-out;
+
+    ${({ theme }) => css`
+        border-color: ${theme.contentSecondary};
+        background-color: ${theme.surfaceFillRaised};
+
+        input:checked + & {
+            border-color: ${theme.legacyBackgroundPrimaryDefault};
+        }
+
+        input:disabled:not(:checked) + & {
+            border-color: ${theme.borderNeutral};
+            background-color: ${theme.surfaceFillSunken};
+        }
+
+        label:hover > input:not(:disabled, :checked) + & {
+            border-color: ${theme.elementBorderFieldFocused};
+            background-color: ${theme.surfaceFillPage};
+        }
+
+        input:focus-visible + & {
+            ${commonFocusStyles}
+        }
+    `}
+`;

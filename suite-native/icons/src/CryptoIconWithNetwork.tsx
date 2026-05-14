@@ -1,14 +1,14 @@
 import { View } from 'react-native';
 
 import {
-    NetworkDisplaySymbol,
-    NetworkSymbol,
+    type NetworkDisplaySymbol,
+    type NetworkSymbol,
     getNetworkDisplaySymbol,
 } from '@suite-common/wallet-config';
-import { TokenAddress } from '@suite-common/wallet-types';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type TokenAddress } from '@suite-common/wallet-types';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { CryptoIcon, CryptoIconSize, cryptoIconSizes } from './CryptoIcon';
+import { CryptoIcon, type CryptoIconSize, cryptoIconSizes } from './CryptoIcon';
 import { NetworkIcon, networkIconSizes } from './NetworkIcon';
 
 export interface CryptoIconWithNetworkProps {
@@ -22,7 +22,7 @@ const networkWrapperStyle = prepareNativeStyle<{ size: CryptoIconSize }>((utils,
     right: 0,
     bottom: 0,
     borderWidth: utils.borders.widths.small,
-    borderColor: utils.colors.borderElevation1,
+    borderColor: utils.colors.borderNeutral,
     borderRadius: networkIconSizes[size] / 3,
 }));
 

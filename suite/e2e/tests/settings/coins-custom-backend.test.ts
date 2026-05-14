@@ -1,4 +1,4 @@
-import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
+import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -51,9 +51,6 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 }),
             },
             async ({ page, settingsPage, walletPage }) => {
-                if (coin === 'btc') {
-                    await settingsPage.coinsTab.disableNetwork(coin);
-                }
                 await test.step(`Enable ${coin.toUpperCase()} asset`, async () => {
                     await expect(settingsPage.coinsTab.networkButton(coin)).toBeDisabledCoin();
                     await settingsPage.coinsTab.enableNetwork(coin);
@@ -93,9 +90,6 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 }),
             },
             async ({ page, settingsPage, walletPage }) => {
-                if (coin === 'btc') {
-                    await settingsPage.coinsTab.disableNetwork(coin);
-                }
                 await test.step(`Enable ${coin.toUpperCase()} asset`, async () => {
                     await expect(settingsPage.coinsTab.networkButton(coin)).toBeDisabledCoin();
                     await settingsPage.coinsTab.enableNetwork(coin);

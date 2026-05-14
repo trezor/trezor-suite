@@ -1,6 +1,6 @@
 import { firmwareActions, firmwareUpdate } from '@suite-common/firmware';
 import { mockGetFirmwareReleaseConfigInfo, mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { FirmwareType, UI } from '@trezor/connect';
+import { FirmwareType, UI_REQUEST } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 const bootloaderDevice = mockSuiteDevice({ mode: 'bootloader', connected: true });
@@ -176,8 +176,8 @@ export const actions = [
         mocks: {
             connect: {
                 success: false,
-                payload: {
-                    error: 'foo',
+                error: {
+                    message: 'foo',
                 },
             },
         },
@@ -213,8 +213,8 @@ export const actions = [
         mocks: {
             connect: {
                 success: false,
-                payload: {
-                    error: 'Firmware install failed',
+                error: {
+                    message: 'Firmware install failed',
                 },
             },
         },
@@ -252,10 +252,10 @@ export const actions = [
 // various cases to test reducer through actions
 export const reducerActions = [
     {
-        description: 'UI.FIRMWARE_PROGRESS',
+        description: 'UI_REQUEST.FIRMWARE_PROGRESS',
         initialState: {},
         action: {
-            type: UI.FIRMWARE_PROGRESS,
+            type: UI_REQUEST.FIRMWARE_PROGRESS,
             payload: {
                 operation: 'flashing',
                 progress: 50,

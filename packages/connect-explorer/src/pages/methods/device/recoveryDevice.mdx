@@ -1,6 +1,6 @@
 import { Callout } from 'nextra/components';
 
-import { PROTO } from '@trezor/connect/src/constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
@@ -66,8 +66,8 @@ Error
 ```javascript
 {
     success: false,
-    payload: {
-        error: string // error message
+    error: {
+        message: string // error message
     }
 }
 ```

@@ -2,7 +2,7 @@ import { Text } from 'react-native';
 
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 
-import { UseSectionListProps, useSectionList } from '../useSectionList';
+import { type UseSectionListProps, useSectionList } from '../useSectionList';
 
 const renderUseSectionListHook = <T, U = undefined>(
     initialProps: Partial<UseSectionListProps<T, U>>,

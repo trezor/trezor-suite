@@ -1,14 +1,14 @@
 import { useSelector } from 'react-redux';
 
-import { Atom, useAtomValue } from 'jotai';
+import { type Atom, useAtomValue } from 'jotai';
 
 import { useFormatters } from '@suite-common/formatters';
-import { FiatGraphPoint } from '@suite-common/graph';
+import { type FiatGraphPoint } from '@suite-common/graph';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, BoxSkeleton, DiscreetTextTrigger, HStack, Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountLargeFormatter } from '@suite-native/formatters';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
 
 import { GraphDateFormatter } from './GraphDateFormatter';
@@ -88,7 +88,7 @@ export const GraphBaseCurrencyBalance = ({
                 {showChange && (
                     <HStack alignItems="center">
                         {/*  Empty space to prevent layout shift */}
-                        <Text variant="body-sm" color="textSubdued">
+                        <Text variant="body-sm" color="contentSecondary">
                             <DateTimeFormatter value={new Date()} />
                         </Text>
                     </HStack>

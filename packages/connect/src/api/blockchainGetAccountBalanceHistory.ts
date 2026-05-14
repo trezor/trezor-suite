@@ -1,12 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainGetAccountBalanceHistory.js
 
+import type { CoinInfo, MethodPermission } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import { AbstractMethod, Payload } from '../core/AbstractMethod';
+import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { getCoinInfo } from '../data/coinInfo';
-import type { CoinInfo } from '../types';
 
 type Params = {
     coinInfo: CoinInfo;
@@ -18,11 +19,8 @@ export default class BlockchainGetAccountBalanceHistory extends AbstractMethod<
     'blockchainGetAccountBalanceHistory',
     Params
 > {
-    init() {
-        this.useDevice = false;
-        this.useUi = false;
-
-        const { payload } = this;
+    constructor(message: MethodMessage<'blockchainGetAccountBalanceHistory'>) {
+        const { payload } = message;
 
         // validate incoming parameters
         validateParams(payload, [
@@ -42,7 +40,7 @@ export default class BlockchainGetAccountBalanceHistory extends AbstractMethod<
         // validate backend
         isBackendSupported(coinInfo);
 
-        this.params = {
+        const params = {
             coinInfo,
             identity: payload.identity,
             request: {
@@ -53,12 +51,20 @@ export default class BlockchainGetAccountBalanceHistory extends AbstractMethod<
                 currencies: payload.currencies,
             },
         };
+
+        super(message, params);
+        this.useDevice = false;
+        this.useUi = false;
     }
 
-    async run() {
+    get requiredPermissions(): MethodPermission[] {
+        return [];
+    }
+
+    async run({ sendCoreMessage }: MethodContext) {
         const backend = await initBlockchain(
             this.params.coinInfo,
-            this.postMessage,
+            sendCoreMessage,
             this.params.identity,
         );
 

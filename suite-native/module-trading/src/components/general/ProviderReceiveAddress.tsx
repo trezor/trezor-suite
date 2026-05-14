@@ -4,15 +4,15 @@ import { useSelector } from 'react-redux';
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import {
-    TradingRootState,
+    type TradingRootState,
     isExchangeTrade,
     selectTradingExchangeAccountKey,
     selectTradingProviderByNameAndTradeType,
     selectTradingSellAccountKey,
 } from '@suite-common/trading';
-import { AccountsRootState, selectAccountNetworkType } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountNetworkType } from '@suite-common/wallet-core';
 import { Text, VStack } from '@suite-native/atoms';
-import { splitAddressToChunks } from '@suite-native/helpers';
+import { AddressFormatter } from '@suite-native/formatters';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { TradeInfoRow } from '@suite-native/trading-atoms';
 
@@ -45,24 +45,30 @@ export const ProviderReceiveAddress = ({ trade }: { trade: ExchangeTrade | SellF
         return null;
     }
 
-    const addressText =
-        networkType === 'solana'
-            ? receiveAddress
-            : splitAddressToChunks(receiveAddress ?? '').join(' ');
+    const addressTitle =
+        tradeType === 'exchange' && (trade as ExchangeTrade).isDex ? (
+            <Translation
+                id="moduleTrading.tradingExchangePreviewScreen.providerContractAddressLabel"
+                values={{ providerName }}
+            />
+        ) : (
+            <Translation
+                id="moduleTrading.tradingExchangePreviewScreen.providerReceiveAddressLabel"
+                values={{ providerName }}
+            />
+        );
 
     return (
         <Animated.View entering={FadeIn}>
             <TradeInfoRow>
                 <VStack spacing="sp4">
-                    <Text variant="body-sm">
-                        <Translation
-                            id="moduleTrading.tradingExchangePreviewScreen.providerReceiveAddressLabel"
-                            values={{ providerName }}
-                        />
-                    </Text>
-                    <Text variant="body-sm" color="textSubdued">
-                        {addressText}
-                    </Text>
+                    <Text variant="body-sm">{addressTitle}</Text>
+                    <AddressFormatter
+                        value={receiveAddress}
+                        format="full"
+                        variant="body-sm"
+                        color="contentSecondary"
+                    />
                 </VStack>
             </TradeInfoRow>
         </Animated.View>

@@ -1,23 +1,50 @@
-import { Coins, CryptoId, FiatCurrencyCode, Platforms } from 'invity-api';
+import {
+    type BuyCryptoPaymentMethod,
+    type BuyTrade,
+    type Coins,
+    type CryptoId,
+    type FiatCurrencyCode,
+    type Platforms,
+    type SellCryptoPaymentMethod,
+    type SellFiatTrade,
+} from 'invity-api';
 
 import { type DeviceRootState, selectDeviceUnavailableCapabilities } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { NetworkSymbolExtended, NetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbolExtended, type NetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAccounts,
     selectDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
-import addressValidator from '@trezor/address-validator';
+import { type Account, type SelectedAccountStatus } from '@suite-common/wallet-types';
+import { getCurrencies } from '@trezor/address-validator';
 import { exhaustive } from '@trezor/type-utils';
 
-import { BuyInfo, TradingBuyState } from '../reducers/buyReducer';
-import { ExchangeInfo, TradingExchangeState } from '../reducers/exchangeReducer';
-import { SellInfo, TradingSellState } from '../reducers/sellReducer';
+import {
+    EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES,
+    type GroupedTradingExchangeQuotes,
+    groupTradingExchangeQuotesProjection,
+} from './utils/groupTradingExchangeQuotesProjection';
+import { bestQuotePerPaymentMethodProjection } from './utils/quotePerPaymentMethodProjection';
+import { type BuyInfo, type TradingBuyState } from '../reducers/buyReducer';
+import { type ExchangeInfo, type TradingExchangeState } from '../reducers/exchangeReducer';
+import { type SellInfo, type TradingSellState } from '../reducers/sellReducer';
 import type { TradingRootState, TradingState } from '../reducers/tradingCommonReducer';
-import { TradingFiatCurrenciesProps, TradingTransaction, TradingType } from '../types';
-import { cryptoIdToNetwork, isBuyTrade, isExchangeProvider, testnetToProdCryptoId } from '../utils';
+import {
+    type TradingBuyPaymentMethodProps,
+    type TradingFiatCurrenciesProps,
+    type TradingSellPaymentMethodProps,
+    type TradingTransaction,
+    type TradingType,
+} from '../types';
+import {
+    cryptoIdToNetwork,
+    getTradingQuotesByPaymentMethod,
+    isBuyTrade,
+    isExchangeProvider,
+    testnetToProdCryptoId,
+} from '../utils';
 import {
     getTradingCoinInfoByCryptoId,
     getTradingCoinSymbolByCryptoId,
@@ -25,6 +52,8 @@ import {
     getTradingPlatformsInfoByCryptoId,
     getTradingSymbolAndContractAddressByCryptoId,
 } from '../utils/infoUtils';
+
+export { EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES, type GroupedTradingExchangeQuotes };
 
 type SelectedAccountRootState = {
     wallet: {
@@ -82,6 +111,18 @@ export type TradingStateSelector = Omit<TradingState, 'buy' | 'exchange' | 'sell
 const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();
 const createMemoizedSelectorWithDeviceAndAccounts =
     createWeakMapSelector.withTypes<TradingRootStateWithDeviceAndAccounts>();
+
+export const bestBuyQuotePerPaymentMethodProjection = (quotes: BuyTrade[]) =>
+    bestQuotePerPaymentMethodProjection<BuyCryptoPaymentMethod, BuyTrade>(
+        quotes,
+        (aRate, bRate) => aRate - bRate,
+    );
+
+export const bestSellQuotePerPaymentMethodProjection = (quotes: SellFiatTrade[]) =>
+    bestQuotePerPaymentMethodProjection<SellCryptoPaymentMethod, SellFiatTrade>(
+        quotes,
+        (aRate, bRate) => bRate - aRate,
+    );
 
 export const selectTradingLoadingAndTimestamp = createMemoizedSelector(
     [
@@ -277,11 +318,23 @@ export const selectTradingProviderKycPolicy = (
 export const selectTradingBuyQuotesRequest = (state: TradingRootState) =>
     state.wallet.trading.buy.quotesRequest;
 
+export const selectTradingBuyIsFromRedirect = (state: TradingRootState) =>
+    state.wallet.trading.buy.isFromRedirect;
+
 export const selectTradingExchangeQuotesRequest = (state: TradingRootState) =>
     state.wallet.trading.exchange.quotesRequest;
 
+export const selectTradingExchangeIsFromRedirect = (state: TradingRootState) =>
+    state.wallet.trading.exchange.isFromRedirect;
+
+export const selectTradingExchangeQuotes = (state: TradingRootState) =>
+    state.wallet.trading.exchange.quotes;
+
 export const selectTradingSellQuotesRequest = (state: TradingRootState) =>
     state.wallet.trading.sell.quotesRequest;
+
+export const selectTradingSellIsFromRedirect = (state: TradingRootState) =>
+    state.wallet.trading.sell.isFromRedirect;
 
 export const selectTradingBuySelectedQuote = (state: TradingRootState) =>
     state.wallet.trading.buy.selectedQuote;
@@ -291,6 +344,9 @@ export const selectTradingExchangeSelectedQuote = (state: TradingRootState) =>
 
 export const selectTradingExchangePreselectedQuote = (state: TradingRootState) =>
     state.wallet.trading.exchange.preselectedQuote;
+
+export const selectTradingExchangeActiveQuote = (state: TradingRootState) =>
+    selectTradingExchangeSelectedQuote(state) ?? selectTradingExchangePreselectedQuote(state);
 
 export const selectTradingSellSelectedQuote = (state: TradingRootState) =>
     state.wallet.trading.sell.selectedQuote;
@@ -415,9 +471,7 @@ const getFilteredCryptoIds = (
         return [];
     }
 
-    const supportedAddressValidatorSymbols = new Set(
-        addressValidator.getCurrencies().map(c => c.symbol),
-    );
+    const supportedAddressValidatorSymbols = new Set(getCurrencies().map(c => c.symbol));
 
     const uniqueSupportedCryptoIds = [...new Set(supportedCryptoIds).values()];
 
@@ -491,7 +545,21 @@ export const selectTradingSellSellCryptoIds = createMemoizedSelector(
 export const selectTradingBuyIsLoading = (state: TradingRootState) =>
     state.wallet.trading.buy.isLoading;
 
+export const selectTradingBuyAmountLimits = (state: TradingRootState) =>
+    state.wallet.trading.buy.amountLimits;
+
 export const selectTradingBuyQuotes = (state: TradingRootState) => state.wallet.trading.buy.quotes;
+
+export const selectTradingBuyQuotesByPaymentMethod = createMemoizedSelector(
+    [
+        selectTradingBuyQuotes,
+        (_: TradingRootState, paymentMethod: TradingBuyPaymentMethodProps | undefined) =>
+            paymentMethod,
+    ],
+    (quotes, paymentMethod) => ({
+        fixed: paymentMethod ? getTradingQuotesByPaymentMethod<'buy'>(quotes, paymentMethod) : [],
+    }),
+);
 
 export const selectTradingBuyQuoteByOrderId = (
     state: TradingRootState,
@@ -501,11 +569,55 @@ export const selectTradingBuyQuoteByOrderId = (
 export const selectTradingExchangeIsLoading = (state: TradingRootState) =>
     state.wallet.trading.exchange.isLoading;
 
+export const selectTradingExchangeAmountLimits = (state: TradingRootState) =>
+    state.wallet.trading.exchange.amountLimits;
+
+export const selectGroupedTradingExchangeQuotes = createMemoizedSelector(
+    [selectTradingExchangeQuotes, selectTradingExchangeProviders],
+    groupTradingExchangeQuotesProjection,
+);
+
+export const selectTradingExchangeDexQuotes = createMemoizedSelector(
+    [selectGroupedTradingExchangeQuotes],
+    groupedQuotes => groupedQuotes.dex,
+);
+
+export const selectTradingExchangeCexQuotes = createMemoizedSelector(
+    [selectTradingExchangeQuotes],
+    quotes => returnStableArrayIfEmpty(quotes.filter(quote => !quote.isDex)),
+);
+
+export const selectTradingExchangeDexQuoteApprovalPrefetchLoading = (state: TradingRootState) =>
+    !!state.wallet.trading.exchange.dexQuoteApprovalPrefetchLoadingQuoteId;
+
+export const selectTradingExchangeDexQuoteApprovalPrefetchLoadingByQuoteId = (
+    state: TradingRootState,
+    quoteId: string | undefined,
+) => !!quoteId && state.wallet.trading.exchange.dexQuoteApprovalPrefetchLoadingQuoteId === quoteId;
+
+export const selectTradingExchangeDexQuoteApprovalPrefetchLoadingQuoteId = (
+    state: TradingRootState,
+) => state.wallet.trading.exchange.dexQuoteApprovalPrefetchLoadingQuoteId;
+
 export const selectTradingSellIsLoading = (state: TradingRootState) =>
     state.wallet.trading.sell.isLoading;
 
+export const selectTradingSellAmountLimits = (state: TradingRootState) =>
+    state.wallet.trading.sell.amountLimits;
+
 export const selectTradingSellQuotes = (state: TradingRootState) =>
     state.wallet.trading.sell.quotes;
+
+export const selectTradingSellQuotesByPaymentMethod = createMemoizedSelector(
+    [
+        selectTradingSellQuotes,
+        (_: TradingRootState, paymentMethod: TradingSellPaymentMethodProps | undefined) =>
+            paymentMethod,
+    ],
+    (quotes, paymentMethod) => ({
+        fixed: paymentMethod ? getTradingQuotesByPaymentMethod<'sell'>(quotes, paymentMethod) : [],
+    }),
+);
 
 export const selectTradingExchangeFormStep = (state: TradingRootState) =>
     state.wallet.trading.exchange.formStep;
@@ -562,8 +674,10 @@ export const selectValidTradingSellQuotes = createMemoizedSelector(
     },
 );
 
-export const selectTradingBuyReceiveAccountKey = (state: TradingRootState) =>
+export const selectTradingBuyAccountKey = (state: TradingRootState) =>
     state.wallet.trading.buy.tradingAccountKey;
+export const selectTradingBuyReceiveAccountKey = (state: TradingRootState) =>
+    state.wallet.trading.buy.receiveAccountKey;
 export const selectTradingBuyReceiveAddress = (state: TradingRootState) =>
     state.wallet.trading.buy.receiveAddress;
 
@@ -582,7 +696,7 @@ export const selectTradingAccountKeyByTradeType = createMemoizedSelector(
     [
         selectTradingExchangeAccountKey,
         selectTradingSellAccountKey,
-        selectTradingBuyReceiveAccountKey,
+        selectTradingBuyAccountKey,
         (_: TradingRootState, tradeType: TradingType) => tradeType,
     ],
     (exchangeAccountKey, sellAccountKey, buyAccountKey, tradeType) => {
@@ -652,7 +766,7 @@ export const selectTradingIsSlip24Allowed = createMemoizedSelectorWithDeviceAndA
 
         const isFirmwareVersionSlip24Compatible = !unavailableCapabilities?.['slip24'];
         // TODO: slip24 - can be removed when slip24 is enabled for all networks
-        const supportedNetworks: NetworkType[] = ['bitcoin', 'ethereum'];
+        const supportedNetworks: NetworkType[] = ['bitcoin', 'ethereum', 'solana', 'stellar'];
         const isNetworkSupported = supportedNetworks.includes(account.networkType);
 
         return isSlip24Active && isFirmwareVersionSlip24Compatible && isNetworkSupported;
@@ -740,3 +854,6 @@ export const selectTradingLastErrorMessageByTradeType = (
 
 export const selectTradingProviderMetadata = (state: TradingRootState) =>
     state.wallet.trading.currentProviderMetadata;
+
+export const selectTradingQuoteRefetchingState = (state: TradingRootState) =>
+    state.wallet.trading.quoteRefetchingState;

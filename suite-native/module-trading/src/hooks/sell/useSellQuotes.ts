@@ -1,24 +1,25 @@
-import { RefObject, useEffect, useRef } from 'react';
+import { type RefObject, useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { invariant } from '@suite-common/suite-utils';
 import {
-    HandleSellRequestThunkProps,
+    type HandleSellRequestThunkProps,
     cryptoIdToNetwork,
     selectTradingSellIsLoading,
     selectValidTradingSellQuotes,
     sellThunks,
+    useTradingRefetchScheduler,
 } from '@suite-common/trading';
-import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
+import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { useFormState } from '@suite-native/forms';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { sellActions } from '@suite-native/trading-state';
-import { AbortablePromise, SellFormType } from '@suite-native/trading-types';
-import { Timer, useDebounce } from '@trezor/react-utils';
+import { type AbortablePromise, type SellFormType } from '@suite-native/trading-types';
+import { useDebounce } from '@trezor/react-utils';
+import { noop } from '@trezor/utils';
 
 import { tradingSellFormToTradingSellFormProps } from '../../utils/sell/quotesUtils';
 import { useQuotesInvalidator } from '../general/useQuotesInvalidator';
-import { useReloadTimer } from '../general/useReloadTimer';
 
 type ShouldFetchSellQuotes = {
     isFetchAllowed: boolean;
@@ -31,6 +32,7 @@ type ShouldFetchSellQuotesRef = {
     amountInCrypto: boolean | undefined;
     fiatCurrency: string | undefined;
     country: string | undefined;
+    countrySubdivision: string | undefined;
     accountDescriptor: string | undefined;
 };
 
@@ -40,10 +42,9 @@ const defaultState: ShouldFetchSellQuotesRef = {
     amountInCrypto: true,
     fiatCurrency: undefined,
     country: undefined,
+    countrySubdivision: undefined,
     accountDescriptor: undefined,
 } as const;
-
-const noop = () => {};
 
 const useShouldFetchSellQuotes = ({ watch, control }: SellFormType): ShouldFetchSellQuotes => {
     const prevState = useRef<ShouldFetchSellQuotesRef>(defaultState);
@@ -67,15 +68,23 @@ const useShouldFetchSellQuotes = ({ watch, control }: SellFormType): ShouldFetch
         }
     }
 
-    const [sendAsset, sendAccount, cryptoStringAmount, fiatStringAmount, fiatCurrency, country] =
-        watch([
-            'sendAsset',
-            'sendAccount',
-            'cryptoStringAmount',
-            'fiatStringAmount',
-            'fiatCurrency',
-            'country',
-        ]);
+    const [
+        sendAsset,
+        sendAccount,
+        cryptoStringAmount,
+        fiatStringAmount,
+        fiatCurrency,
+        country,
+        countrySubdivision,
+    ] = watch([
+        'sendAsset',
+        'sendAccount',
+        'cryptoStringAmount',
+        'fiatStringAmount',
+        'fiatCurrency',
+        'country',
+        'countrySubdivision',
+    ]);
 
     const amount = amountInCrypto ? cryptoStringAmount : fiatStringAmount;
     const isFetchAllowed = !!(sendAsset && fiatCurrency && amount && parseFloat(amount) > 0);
@@ -86,6 +95,7 @@ const useShouldFetchSellQuotes = ({ watch, control }: SellFormType): ShouldFetch
         amountInCrypto === prevState.current.amountInCrypto &&
         fiatCurrency === prevState.current.fiatCurrency &&
         country?.value === prevState.current.country &&
+        countrySubdivision?.value === prevState.current.countrySubdivision &&
         sendAccount?.descriptor === prevState.current.accountDescriptor
     ) {
         return {
@@ -100,6 +110,7 @@ const useShouldFetchSellQuotes = ({ watch, control }: SellFormType): ShouldFetch
         amountInCrypto,
         fiatCurrency,
         country: country?.value,
+        countrySubdivision: countrySubdivision?.value,
         accountDescriptor: sendAccount?.descriptor,
     };
 
@@ -130,8 +141,8 @@ const useSellQuotesInvalidator = (
 
 const useSellQuotesThunk = (
     getValues: SellFormType['getValues'],
-    timer: Timer,
-    shouldRefetchQuotes: boolean,
+    isFetchAllowed: boolean,
+    shouldFetchQuotes: boolean,
     quotesPromiseRef: RefObject<AbortablePromise | undefined>,
     debounce: ReturnType<typeof useDebounce>,
 ) => {
@@ -142,37 +153,37 @@ const useSellQuotesThunk = (
         selectIsAmountInSats(state, symbol),
     );
 
+    const fetchQuotes = useCallback(() => {
+        const selectedAsset = getValues('sendAsset');
+        invariant(selectedAsset, 'Asset is not defined');
+        const network = cryptoIdToNetwork(selectedAsset.cryptoId);
+        invariant(network, `Network not found for [${selectedAsset.cryptoId}]`);
+
+        const payload: HandleSellRequestThunkProps = {
+            network,
+            shouldSendInSats,
+            formValues: tradingSellFormToTradingSellFormProps(getValues),
+            composeRequestCallback: noop,
+        };
+        quotesPromiseRef.current = dispatch(sellThunks.handleRequestThunk(payload));
+    }, [getValues, shouldSendInSats, quotesPromiseRef, dispatch]);
+
     useEffect(() => {
-        if (shouldRefetchQuotes) {
-            if (quotesPromiseRef.current?.abort) {
-                quotesPromiseRef.current.abort('Request was replaced by another one.');
-            }
+        if (!isFetchAllowed || !shouldFetchQuotes) return;
 
-            debounce(() => {
-                const selectedAsset = getValues('sendAsset');
-                invariant(selectedAsset, 'Asset is not defined');
-                const network = cryptoIdToNetwork(selectedAsset.cryptoId);
-                invariant(network, `Network not found for [${selectedAsset.cryptoId}]`);
-
-                const payload: HandleSellRequestThunkProps = {
-                    network,
-                    shouldSendInSats,
-                    timer,
-                    formValues: tradingSellFormToTradingSellFormProps(getValues),
-                    composeRequestCallback: noop,
-                };
-                quotesPromiseRef.current = dispatch(sellThunks.handleRequestThunk(payload));
-            });
+        if (quotesPromiseRef.current?.abort) {
+            quotesPromiseRef.current.abort('Request was replaced by another one.');
         }
-    }, [
-        dispatch,
-        getValues,
-        shouldRefetchQuotes,
-        timer,
-        quotesPromiseRef,
-        debounce,
-        shouldSendInSats,
-    ]);
+
+        debounce(fetchQuotes);
+    }, [isFetchAllowed, shouldFetchQuotes, quotesPromiseRef, debounce, fetchQuotes]);
+
+    useTradingRefetchScheduler({
+        onRefetch: () => {
+            if (!isFetchAllowed) return;
+            debounce(fetchQuotes);
+        },
+    });
 };
 
 export const useSellQuotes = (form: SellFormType) => {
@@ -180,19 +191,7 @@ export const useSellQuotes = (form: SellFormType) => {
     const promiseRef = useRef<AbortablePromise | undefined>(undefined);
 
     const { isFetchAllowed, shouldFetchQuotes } = useShouldFetchSellQuotes(form);
-    const { timer, shouldReload } = useReloadTimer({ isEnabled: isFetchAllowed });
 
     useSellQuotesInvalidator(isFetchAllowed, promiseRef, debounce);
-    useSellQuotesThunk(
-        form.getValues,
-        timer,
-        isFetchAllowed && (shouldFetchQuotes || shouldReload),
-        promiseRef,
-        debounce,
-    );
-
-    return {
-        timer,
-        quotesPromiseRef: promiseRef.current,
-    };
+    useSellQuotesThunk(form.getValues, isFetchAllowed, shouldFetchQuotes, promiseRef, debounce);
 };

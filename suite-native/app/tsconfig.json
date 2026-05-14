@@ -32,6 +32,7 @@
         { "path": "../app-init" },
         { "path": "../atoms" },
         { "path": "../biometrics" },
+        { "path": "../blockchain" },
         { "path": "../bluetooth" },
         { "path": "../config" },
         { "path": "../connection-status" },
@@ -91,14 +92,22 @@
         {
             "path": "../../packages/react-native-usb"
         },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
         {
             "path": "../../packages/trezor-user-env-link"
         },
         { "path": "../../packages/utils" },
+        {
+            "path": "../../suite-common/e2e-evolu-client"
+        },
+        {
+            "path": "../../suite-common/message-system"
+        },
         { "path": "../storybook" },
-        { "path": "../test-utils" },
+        { "path": "../test-utils-store" },
         {
             "path": "../../packages/connect-mobile"
         },

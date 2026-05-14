@@ -1,8 +1,8 @@
-import { TypographyStyle, spacings } from '@trezor/theme';
+import { type TypographyStyle, spacings } from '@trezor/theme';
 
-import { SelectBarSize } from './types';
-import { Padding } from '../../../utils/frameProps';
-import { TextIntent, TextPriority } from '../../typography/Text/Text';
+import { type SelectBarSize } from './types';
+import { type Padding } from '../../../utils/frameProps';
+import { type TextIntent, type TextPriority } from '../../typography/Text/Text';
 
 export const mapSizeToTypographyStyle = (
     size: SelectBarSize,

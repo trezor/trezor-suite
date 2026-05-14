@@ -4,14 +4,24 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { invariant } from '@suite-common/suite-utils';
-import { AccountsRootState, selectAccountNetworkType } from '@suite-common/wallet-core';
-import { AccountKey, FormState, isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
+import {
+    type AccountsRootState,
+    type FeesRootState,
+    selectAccountNetworkSymbol,
+    selectAccountNetworkType,
+    selectIsEip1559Fee,
+} from '@suite-common/wallet-core';
+import {
+    type AccountKey,
+    type FormState,
+    isFinalPrecomposedTransaction,
+} from '@suite-common/wallet-types';
 import { useFormContext } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import { useDebounce } from '@trezor/react-utils';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
-import { FeesFormValues } from '../../feesFormSchema';
+import { type FeesFormValues } from '../../feesFormSchema';
 import {
     FEE_LIMIT_FIELD_NAME,
     FEE_PER_UNIT_FIELD_NAME,
@@ -19,7 +29,7 @@ import {
     MAX_PRIORITY_FEE_PER_GAS_FIELD_NAME,
 } from '../../presets';
 import { selectCustomFeeLevel, selectFeeLevelTransactionBytes } from '../../selectors';
-import { NativeSendRootState } from '../../sendFormSlice';
+import { type NativeSendRootState } from '../../sendFormSlice';
 import { calculateCustomFeeLevelThunk } from '../../thunks';
 
 type UseCustomFeeProps = {
@@ -39,6 +49,14 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
 
     const networkType = useSelector((state: AccountsRootState) =>
         selectAccountNetworkType(state, accountKey),
+    );
+
+    const symbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
+    );
+
+    const isEip1559Fee = useSelector((state: FeesRootState) =>
+        selectIsEip1559Fee(state, symbol ?? undefined),
     );
 
     const {
@@ -66,7 +84,7 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
 
         invariant(networkType !== 'solana', 'Custom fee is not supported for solana');
 
-        if (!customFeePerUnit || !formState) {
+        if ((!isEip1559Fee && !customFeePerUnit) || !formState) {
             console.warn('Cannot calculate custom fee because of missing values');
             setIsFeeLoading(false);
 
@@ -102,6 +120,7 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
     }, [
         trigger,
         networkType,
+        isEip1559Fee,
         customFeePerUnit,
         formState,
         dispatch,
@@ -141,9 +160,9 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
         ? customFeeLevel.fee
         : feeEstimate;
 
-    const hasFeePerByteError = isNotNullOrUndefined(errors[FEE_PER_UNIT_FIELD_NAME]);
+    const hasFormErrors = Object.keys(errors).length > 0;
     const isSubmittable =
-        isNotNullOrUndefined(customFeeLevel) && !hasFeePerByteError && !isErrorBoxVisible;
+        isNotNullOrUndefined(customFeeLevel) && !hasFormErrors && !isErrorBoxVisible;
 
     return { feeValue, isFeeLoading, isErrorBoxVisible, isSubmittable };
 };

@@ -2,10 +2,11 @@ import { useEffect } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
+import { selectLanguage } from '@suite/settings';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
-import { Output, TokenAddress } from '@suite-common/wallet-types';
+import { type Output, type TokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountUnitsToSubunits,
     findToken,
@@ -24,7 +25,6 @@ import { BaseCurrencyValue } from 'src/components/suite';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
 import {
     validateDecimals,
@@ -182,6 +182,10 @@ export const Amount = ({ output, outputId }: AmountProps) => {
 
         setMax(outputId, isSendMaxActive, clearInput);
         composeTransaction(amountName);
+
+        if (isSendMaxActive) {
+            setShowReserveBanner(false);
+        }
     };
 
     const sendMaxSwitch = (

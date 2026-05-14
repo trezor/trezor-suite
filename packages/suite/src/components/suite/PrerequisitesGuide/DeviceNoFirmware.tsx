@@ -1,18 +1,33 @@
-import { MouseEventHandler } from 'react';
+import { type MouseEventHandler } from 'react';
 
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
+import { selectSelectedDevice } from '@suite-common/device';
 import { Banner } from '@trezor/components';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
 import { useDispatch } from 'src/hooks/suite';
+import { useStore } from 'src/hooks/suite/useStore';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 export const DeviceNoFirmware = () => {
     const dispatch = useDispatch();
+    const analytics = useAnalytics();
+    const { getState } = useStore();
 
     const handleClick: MouseEventHandler = e => {
         e.stopPropagation();
-        dispatch(goto('onboarding-index'));
+        const device = selectSelectedDevice(getState());
+
+        analytics.report({
+            type: events.deviceSetupStartedEvent.name,
+            payload: {
+                deviceModel: device?.features?.internal_model || DeviceModelInternal.UNKNOWN,
+            },
+        });
+        dispatch(goto({ routeName: 'onboarding-index' }));
     };
 
     return (

@@ -2,16 +2,16 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useQuery } from '@suite-common/react-query';
-import TrezorConnect, { PROTO } from '@trezor/connect';
+import TrezorConnect, { type PROTO } from '@trezor/connect';
 
 import {
-    LogsApplicationInfoRootState,
-    RedactedDevice,
+    type LogsApplicationInfoRootState,
+    type RedactedDevice,
     selectRedactedActionsLog,
     selectRedactedApplicationInfo,
 } from '../logsSelectors';
-import { LogsSliceRootState } from '../logsSlice';
-import { LogsEnvironmentInfo, getEnvironmentInfo, startTime } from '../utils';
+import { type LogsSliceRootState } from '../logsSlice';
+import { type LogsEnvironmentInfo, getEnvironmentInfo, startTime } from '../utils';
 
 export const useCommonApplicationLogs = (hideSensitiveInfo: boolean) => {
     const redactedActionsLog = useSelector((state: LogsSliceRootState) =>

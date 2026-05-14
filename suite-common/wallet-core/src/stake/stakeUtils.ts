@@ -1,4 +1,4 @@
-import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     getStakingDataForNetwork,
     isCardanoStakingActive,
