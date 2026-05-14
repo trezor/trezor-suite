@@ -19,6 +19,7 @@ import TrezorConnect, {
     UI_REQUEST,
 } from '@trezor/connect';
 import { desktopApi } from '@trezor/suite-desktop-api';
+import { exhaustive } from '@trezor/type-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -177,17 +178,28 @@ export const useConnectPopupDesktop = () => {
     const [wasVisible, setWasVisible] = useState(false);
     useEffect(() => {
         const shouldFocus = (() => {
-            if (!popupCall) return false;
-            if (popupCall.state === 'permission-request') return true;
-            if (popupCall.state === 'address-confirmation') return true;
-            if (popupCall.state === 'ongoing' && popupCall.methodInfo.useUi) {
-                // Silent mode only focuses when the user has to type something
-                // into Suite (passphrase/PIN/word). Device-side confirmations
-                // and simple ongoing calls stay in the background.
-                return !isSilentMode || isUserInputModalOpen;
+            const state = popupCall?.state;
+            switch (state) {
+                case 'error':
+                case 'call-error':
+                case 'switch-device':
+                case 'permission-request':
+                case 'address-confirmation':
+                case 'tx-simulation':
+                    return true;
+                case 'ongoing': {
+                    // Silent mode only focuses when the user has to type something
+                    // into Suite (passphrase/PIN/word). Device-side confirmations
+                    // and simple ongoing calls stay in the background.
+                    return popupCall?.methodInfo?.useUi && (!isSilentMode || isUserInputModalOpen);
+                }
+                case 'finished':
+                case 'deeplink-callback':
+                case undefined:
+                    return false;
+                default:
+                    return exhaustive(state);
             }
-
-            return false;
         })();
 
         if (shouldFocus) {
