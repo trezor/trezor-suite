@@ -194,6 +194,16 @@ describe('bufferutils', () => {
         });
     });
 
+    describe('BufferReader', () => {
+        it('readSlice throws "Cannot read slice out of bounds" when request exceeds remaining buffer', () => {
+            const reader = new bufferutils.BufferReader(Buffer.alloc(0));
+
+            expect(() => {
+                reader.readSlice(1);
+            }).toThrow('Cannot read slice out of bounds');
+        });
+    });
+
     describe('verifuint', () => {
         it('throws "specified a negative value for writing an unsigned value" when value is negative', () => {
             expect(() => {
