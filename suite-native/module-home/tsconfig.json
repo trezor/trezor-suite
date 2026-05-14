@@ -1,18 +1,10 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev"
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/device"
-        },
-        {
-            "path": "../../suite-common/feedback"
-        },
-        {
-            "path": "../../suite-common/graph"
-        },
+        { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/feedback" },
+        { "path": "../../suite-common/graph" },
         {
             "path": "../../suite-common/message-system"
         },
@@ -34,90 +26,36 @@
         {
             "path": "../../suite-common/wallet-types"
         },
-        {
-            "path": "../accounts"
-        },
-        {
-            "path": "../alerts"
-        },
-        {
-            "path": "../analytics"
-        },
-        {
-            "path": "../assets"
-        },
-        {
-            "path": "../atoms"
-        },
-        {
-            "path": "../blockchain"
-        },
-        {
-            "path": "../bluetooth"
-        },
-        {
-            "path": "../confirm-on-trezor"
-        },
-        {
-            "path": "../device"
-        },
-        {
-            "path": "../device-manager"
-        },
-        {
-            "path": "../discovery"
-        },
-        {
-            "path": "../experimental-features"
-        },
-        {
-            "path": "../feature-feedback"
-        },
-        {
-            "path": "../firmware"
-        },
-        {
-            "path": "../graph"
-        },
-        {
-            "path": "../intl"
-        },
-        {
-            "path": "../link"
-        },
-        {
-            "path": "../navigation"
-        },
-        {
-            "path": "../services"
-        },
-        {
-            "path": "../settings"
-        },
-        {
-            "path": "../suite-sync"
-        },
-        {
-            "path": "../toasts"
-        },
-        {
-            "path": "../../packages/device-utils"
-        },
+        { "path": "../accounts" },
+        { "path": "../alerts" },
+        { "path": "../analytics" },
+        { "path": "../assets" },
+        { "path": "../atoms" },
+        { "path": "../blockchain" },
+        { "path": "../bluetooth" },
+        { "path": "../confirm-on-trezor" },
+        { "path": "../device" },
+        { "path": "../device-manager" },
+        { "path": "../discovery" },
+        { "path": "../experimental-features" },
+        { "path": "../feature-feedback" },
+        { "path": "../firmware" },
+        { "path": "../graph" },
+        { "path": "../intl" },
+        { "path": "../link" },
+        { "path": "../navigation" },
+        { "path": "../services" },
+        { "path": "../settings" },
+        { "path": "../suite-sync" },
+        { "path": "../toasts" },
+        { "path": "../../packages/device-utils" },
         {
             "path": "../../packages/styles-native"
         },
-        {
-            "path": "../../packages/type-utils"
-        },
-        {
-            "path": "../../packages/urls"
-        },
-        {
-            "path": "../test-utils-store"
-        },
-        {
-            "path": "../../packages/requirements"
-        }
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/urls" },
+        { "path": "../test-utils-store" },
+        { "path": "../../packages/requirements" }
     ],
     "include": [".", "**/*.json"]
 }

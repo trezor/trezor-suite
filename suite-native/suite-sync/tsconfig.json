@@ -1,15 +1,11 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev"
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/device"
-        },
         {
             "path": "../../suite-common/delegated-identity-key-types"
         },
+        { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/message-system"
         },
@@ -29,26 +25,12 @@
         {
             "path": "../../suite-common/suite-sync-types"
         },
-        {
-            "path": "../alerts"
-        },
-        {
-            "path": "../intl"
-        },
-        {
-            "path": "../navigation"
-        },
-        {
-            "path": "../services"
-        },
-        {
-            "path": "../toasts"
-        },
-        {
-            "path": "../../packages/connect"
-        },
-        {
-            "path": "../../packages/type-utils"
-        }
+        { "path": "../alerts" },
+        { "path": "../intl" },
+        { "path": "../navigation" },
+        { "path": "../services" },
+        { "path": "../toasts" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/type-utils" }
     ]
 }

@@ -11940,6 +11940,7 @@ __metadata:
     "@suite-native/labeling": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/services": "workspace:*"
+    "@suite-native/wallet": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
@@ -12336,13 +12337,11 @@ __metadata:
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/suite-sync": "workspace:*"
-    "@trezor/connect": "workspace:*"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-redux: "npm:9.2.0"
@@ -13120,7 +13119,6 @@ __metadata:
     "@suite-native/helpers": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
-    "@suite-native/labeling": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/module-connect-popup": "workspace:*"
     "@suite-native/navigation": "workspace:*"
@@ -13133,6 +13131,7 @@ __metadata:
     "@suite-native/toasts": "workspace:*"
     "@suite-native/trading-residence": "workspace:*"
     "@suite-native/trading-state": "workspace:*"
+    "@suite-native/wallet": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/env-utils": "workspace:*"
@@ -14181,6 +14180,20 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/wallet@workspace:*, @suite-native/wallet@workspace:suite-native/wallet":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/wallet@workspace:suite-native/wallet"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.11.2"
+    "@suite-common/suite-sync": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite-native/labeling": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    react: "npm:19.2.4"
+    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 

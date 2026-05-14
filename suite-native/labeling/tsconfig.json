@@ -1,12 +1,8 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev"
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/device"
-        },
+        { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/message-system"
         },
@@ -19,26 +15,10 @@
         {
             "path": "../../suite-common/wallet-core"
         },
-        {
-            "path": "../../suite-common/wallet-utils"
-        },
-        {
-            "path": "../atoms"
-        },
-        {
-            "path": "../forms"
-        },
-        {
-            "path": "../intl"
-        },
-        {
-            "path": "../settings"
-        },
-        {
-            "path": "../suite-sync"
-        },
-        {
-            "path": "../../packages/connect"
-        }
+        { "path": "../atoms" },
+        { "path": "../forms" },
+        { "path": "../intl" },
+        { "path": "../settings" },
+        { "path": "../suite-sync" }
     ]
 }

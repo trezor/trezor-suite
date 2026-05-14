@@ -5,7 +5,7 @@ import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { HStack, Loader, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { WalletLabel } from '@suite-native/labeling';
+import { WalletLabel } from '@suite-native/wallet';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { WalletRememberModeIconButton } from './WalletRememberModeIconButton';

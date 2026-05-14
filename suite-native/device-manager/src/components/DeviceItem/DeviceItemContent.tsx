@@ -13,7 +13,7 @@ import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Box, HStack } from '@suite-native/atoms';
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { WalletLabel } from '@suite-native/labeling';
+import { WalletLabel } from '@suite-native/wallet';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type NativeTypographyStyle } from '@trezor/theme';
 
