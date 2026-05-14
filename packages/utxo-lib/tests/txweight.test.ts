@@ -50,6 +50,16 @@ describe('TxWeightCalculator', () => {
         expect(() => c.addInput({ script_type: 'INVALID' })).toThrow('unknown input script_type');
     });
 
+    it('throws "Multisig not supported for Taproot yet" when SPENDTAPROOT is combined with multisig', () => {
+        const c = new TxWeightCalculator();
+        expect(() =>
+            c.addInput({
+                script_type: 'SPENDTAPROOT',
+                multisig: { pubkeys: [{}, {}], m: 1 },
+            }),
+        ).toThrow('Multisig not supported for Taproot yet');
+    });
+
     it('legacy 2-of-3 multisig (SPENDMULTISIG) matches upstream fixture 4*341', () => {
         const c = new TxWeightCalculator();
         c.addInput({
