@@ -270,6 +270,18 @@ describe('Transaction', () => {
             expect(prebuf.subarray(0, 11).toString('hex')).toEqual('dddddddddddddddddddddd');
             expect(prebuf.subarray(11, 11 + txLen).toString('hex')).toEqual(validHex);
         });
+
+        it('Bitcoin: toBuffer with explicit non-zero initialOffset returns a subarray starting at that offset', () => {
+            const validHex = fixturesBitcoin.valid[0].hex;
+            const tx = Transaction.fromHex(validHex);
+            const txLen = Buffer.from(validHex, 'hex').length;
+            const prebuf = Buffer.alloc(txLen + 13, 0xee);
+            const result = tx.toBuffer(prebuf, 13);
+            expect(result.length).toEqual(txLen);
+            expect(result.toString('hex')).toEqual(validHex);
+            expect(prebuf.subarray(0, 13).toString('hex')).toEqual('eeeeeeeeeeeeeeeeeeeeeeeeee');
+            expect(prebuf.subarray(13, 13 + txLen).toString('hex')).toEqual(validHex);
+        });
     });
 
     describe('toBuffer/toHex', () => {
