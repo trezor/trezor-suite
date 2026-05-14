@@ -25,8 +25,7 @@ describe('keepSession common param', () => {
             TrezorConnect.uiResponse({ type: 'ui-receive_passphrase', payload: { value: 'a' } });
         });
 
-        const noDerivation = await TrezorConnect.getAccountDescriptor({
-            coin: 'ada',
+        const noDerivation = await TrezorConnect.cardanoGetPublicKey({
             path: "m/1852'/1815'/0'/0/0",
             useCardanoDerivation: false,
             keepSession: true,
@@ -36,14 +35,13 @@ describe('keepSession common param', () => {
             'Cardano derivation is not enabled for this session',
         );
 
-        const enableDerivation = await TrezorConnect.getAccountDescriptor({
-            coin: 'ada',
+        const enableDerivation = await TrezorConnect.cardanoGetPublicKey({
             path: "m/1852'/1815'/0'/0/0",
             useCardanoDerivation: true,
             keepSession: true,
         });
         if (!enableDerivation.success) throw new Error(enableDerivation.error.message);
-        expect(enableDerivation.payload.descriptor).toBeDefined();
+        expect(enableDerivation.payload.publicKey).toBeDefined();
 
         const { device } = enableDerivation;
         if (!device || !device.state) throw new Error('Device not found');
@@ -56,8 +54,7 @@ describe('keepSession common param', () => {
             ':0',
             ':1',
         ) as StaticSessionId;
-        const keepCardanoDerivation = await TrezorConnect.getAccountDescriptor({
-            coin: 'ada',
+        const keepCardanoDerivation = await TrezorConnect.cardanoGetPublicKey({
             path: "m/1852'/1815'/0'/0/0",
             device: {
                 // change instance to new but use already initialized state
@@ -71,8 +68,6 @@ describe('keepSession common param', () => {
             // useCardanoDerivation: true, // NOTE: not required, its in the state
         });
         if (!keepCardanoDerivation.success) throw new Error(keepCardanoDerivation.error.message);
-        expect(keepCardanoDerivation.payload.descriptor).toEqual(
-            enableDerivation.payload.descriptor,
-        );
+        expect(keepCardanoDerivation.payload.publicKey).toEqual(enableDerivation.payload.publicKey);
     });
 });
