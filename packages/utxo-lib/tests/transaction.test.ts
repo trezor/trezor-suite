@@ -240,6 +240,18 @@ describe('Transaction', () => {
             expect(tx.ins.length).toEqual(fixturesZcash.valid[0].raw.ins.length);
             expect(tx.outs.length).toEqual(fixturesZcash.valid[0].raw.outs.length);
         });
+
+        it('Zcash: toBuffer with explicit non-zero initialOffset returns a subarray starting at that offset', () => {
+            const validHex = fixturesZcash.valid[0].hex;
+            const tx = Transaction.fromHex(validHex, { network: NETWORKS.zcash });
+            const txLen = Buffer.from(validHex, 'hex').length;
+            const prebuf = Buffer.alloc(txLen + 11, 0xdd);
+            const result = tx.toBuffer(prebuf, 11);
+            expect(result.length).toEqual(txLen);
+            expect(result.toString('hex')).toEqual(validHex);
+            expect(prebuf.subarray(0, 11).toString('hex')).toEqual('dddddddddddddddddddddd');
+            expect(prebuf.subarray(11, 11 + txLen).toString('hex')).toEqual(validHex);
+        });
     });
 
     describe('toBuffer/toHex', () => {
