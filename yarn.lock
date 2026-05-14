@@ -13464,6 +13464,7 @@ __metadata:
     "@suite-native/scrollview": "workspace:*"
     "@suite-native/sentry": "workspace:*"
     "@suite-native/settings": "workspace:*"
+    "@suite-native/test-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/styles-native": "workspace:*"

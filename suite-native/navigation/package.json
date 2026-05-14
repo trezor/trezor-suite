@@ -45,5 +45,8 @@
         "react-native-safe-area-context": "5.6.2",
         "react-redux": "9.3.0",
         "type-fest": "5.5.0"
+    },
+    "devDependencies": {
+        "@suite-native/test-utils": "workspace:*"
     }
 }
