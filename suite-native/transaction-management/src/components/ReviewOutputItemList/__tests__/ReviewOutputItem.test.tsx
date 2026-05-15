@@ -456,7 +456,7 @@ describe('ReviewOutputItem', () => {
     });
 
     describe('exchange swap flow', () => {
-        it('should render token approval label and description for type "address"', () => {
+        it('should render "Recipient address" for type "address"', () => {
             const { getByTestId } = renderReviewOutputItem({
                 reviewOutput: {
                     type: 'address',
@@ -467,10 +467,10 @@ describe('ReviewOutputItem', () => {
             });
 
             expect(getByTestId('review-output-card/title')).toHaveTextContent(
-                getTranslation('transactionManagement.review.outputs.tokenApprovalLabel'),
+                getTranslation('transactionManagement.review.outputs.addressLabel'),
             );
             expect(getByTestId('review-output-card/content')).toHaveTextContent(
-                getTranslation('transactionManagement.review.outputs.tokenApprovalDescription'),
+                '0x 1234 5678 90ab cdef 1234 5678 90ab cdef 1234 5678',
             );
         });
 
