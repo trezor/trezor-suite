@@ -69,6 +69,10 @@ const TransactionListHeaderContent = ({
             selectIsUnrecognizedToken(state, accountKey, tokenContract),
     );
 
+    const token = useSelector((state: TokensRootState) =>
+        selectAccountTokenInfo(state, accountKey, tokenContract),
+    );
+
     if (!account) return null;
 
     const isGraphDisplayed = hasAccountTransactions && !isTestnetAccount && !isUnrecognizedToken;
@@ -77,9 +81,20 @@ const TransactionListHeaderContent = ({
         return <AccountDetailGraph accountKey={accountKey} tokenContract={tokenContract} />;
     }
 
-    if (isTestnetAccount || isUnrecognizedToken) {
+    if (isTestnetAccount) {
         return (
             <AccountDetailCryptoValue value={account.formattedBalance} symbol={account.symbol} />
+        );
+    }
+    if (token && isUnrecognizedToken) {
+        const { balance = '0', symbol: tokenSymbol } = token;
+
+        return (
+            <AccountDetailCryptoValue
+                value={balance}
+                symbol={account.symbol}
+                tokenSymbol={tokenSymbol}
+            />
         );
     }
 
