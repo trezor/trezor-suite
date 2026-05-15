@@ -1,5 +1,7 @@
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     EarnFlow,
     type EarnModalAction,
@@ -17,7 +19,6 @@ import { exhaustive } from '@trezor/type-utils';
 import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 interface UseEarnProviderConsentActionsProps {
     flow: EarnFlow;
@@ -37,7 +38,7 @@ export const useEarnProviderConsentActions = ({
     yieldContext,
 }: UseEarnProviderConsentActionsProps) => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
 
     const report = (action: EarnModalAction) => {

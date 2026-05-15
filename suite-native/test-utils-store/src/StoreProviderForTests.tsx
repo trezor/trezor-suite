@@ -14,13 +14,20 @@ type ReduxProviderProps = {
     children: ReactNode;
     preloadedState?: Record<string, unknown>;
     injectedStore?: TestStore;
+    services?: Record<string, unknown>;
 };
 
-const BasicProviderWithFormattingConfig = ({ children }: { children: ReactNode }) => {
+const BasicProviderWithFormattingConfig = ({
+    children,
+    services,
+}: {
+    children: ReactNode;
+    services?: Record<string, unknown>;
+}) => {
     const formattersConfig = useFormattersConfig();
 
     return (
-        <BasicProviderForTests formattersConfig={formattersConfig}>
+        <BasicProviderForTests formattersConfig={formattersConfig} services={services}>
             {children}
         </BasicProviderForTests>
     );
@@ -35,6 +42,7 @@ export const StoreProviderForTests = ({
     children,
     injectedStore,
     preloadedState,
+    services,
 }: ReduxProviderProps) => {
     const store = useMemo(() => {
         if (injectedStore) {
@@ -46,7 +54,9 @@ export const StoreProviderForTests = ({
 
     return (
         <Provider store={store}>
-            <BasicProviderWithFormattingConfig>{children}</BasicProviderWithFormattingConfig>
+            <BasicProviderWithFormattingConfig services={services}>
+                {children}
+            </BasicProviderWithFormattingConfig>
         </Provider>
     );
 };

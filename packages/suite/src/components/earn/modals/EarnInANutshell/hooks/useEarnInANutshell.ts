@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { openModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDto, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import {
     EarnFlow,
@@ -14,7 +16,6 @@ import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
 
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 interface UseEarnInANutshellProps {
     flow: EarnFlow;
@@ -46,7 +47,7 @@ export const useEarnInANutshell = ({
     );
 
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
 
     const handleAction = () => {
         onCancel();

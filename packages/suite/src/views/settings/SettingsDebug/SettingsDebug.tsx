@@ -11,7 +11,6 @@ import { SettingsSection } from '@trezor/product-components';
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
-import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
 import { AnalyticsLogging } from './AnalyticsLogging';
 import { Backends } from './Backends';
@@ -30,7 +29,7 @@ import { Metadata } from './Metadata';
 import { N4w1Backup } from './N4w1Backup';
 import { OAuthApi } from './OAuthApi';
 import { PingDevice } from './PingDevice';
-import { PlatformEncrypton } from './PlatformEncrypton';
+import { PlatformEncryption } from './PlatformEncryption';
 import { PreField } from './PreField';
 import { QuotaManagerSettings } from './QuotaManagerSettings';
 import { ResetThpCredentials } from './ResetThpCredentials';
@@ -49,7 +48,6 @@ export const SettingsDebug = () => {
     const dispatch = useDispatch();
     const { isBelowLaptop } = useLayoutSize();
     const flags = useSelector(selectFlags);
-    const { suiteSync } = useSuiteServices();
 
     const handleWipeSuiteSyncLabelsError = ({
         error,
@@ -143,9 +141,9 @@ export const SettingsDebug = () => {
             <SettingsSection isBelowLaptop={isBelowLaptop} title="Firmware channel">
                 <FirmwareUpdateEnvironmentSelect />
             </SettingsSection>
-            <SuiteSyncSettings onError={handleWipeSuiteSyncLabelsError} suiteSync={suiteSync} />
+            <SuiteSyncSettings onError={handleWipeSuiteSyncLabelsError} />
             <QuotaManagerSettings />
-            <PlatformEncrypton />
+            <PlatformEncryption />
         </SettingsLayout>
     );
 };

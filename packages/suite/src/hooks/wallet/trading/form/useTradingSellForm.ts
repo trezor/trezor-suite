@@ -3,10 +3,11 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import type { BankAccount, CryptoId, SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type TranslationKey, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectHasExperimentalFeature } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -54,7 +55,6 @@ import { useTradingSellHandleChange } from 'src/hooks/wallet/trading/form/common
 import { useTradingSellFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingSellFormDefaultValues';
 import { useTradingSellFormRedirectValues } from 'src/hooks/wallet/trading/form/useTradingSellFormRedirectValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { useAnalytics } from 'src/support/useAnalytics';
 import { type UseTradingFormCommonProps } from 'src/types/trading/trading';
 import { type TradingSellFormContextProps } from 'src/types/trading/tradingForm';
 import { createQuoteLink } from 'src/utils/wallet/trading/sellUtils';
@@ -66,7 +66,7 @@ import { useTradingFormAccount } from './useTradingFormAccount';
 export const useTradingSellForm = ({
     pageType = 'form',
 }: UseTradingFormCommonProps = {}): TradingSellFormContextProps => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const type = 'sell';
     const isFormPage = pageType === 'form';
     const dispatch = useDispatch();

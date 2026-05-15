@@ -3,9 +3,10 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { AccountDetailsCard } from '@suite-native/accounts';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { type ActiveView, Box } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import {
@@ -14,7 +15,6 @@ import {
     Screen,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import { FeeSelector } from '@suite-native/transaction-management';
 
 import { EarnFormScreenFooter } from '../components/EarnFormScreenFooter';
@@ -33,7 +33,7 @@ export const EarnFormScreen = () => {
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const currencyRef = useRef<'crypto' | 'fiat' | undefined>(undefined);
     const handleCurrencyChange = useCallback((activeView: ActiveView) => {
         currencyRef.current = activeView === 'primary' ? 'crypto' : 'fiat';

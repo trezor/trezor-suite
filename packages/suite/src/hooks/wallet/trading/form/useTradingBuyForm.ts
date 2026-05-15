@@ -4,8 +4,9 @@ import { useForm, useWatch } from 'react-hook-form';
 import type { BuyTrade, BuyTradeResponse } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     TRADING_DEFAULT_CRYPTO_CURRENCY,
     TRADING_FORM_CRYPTO_INPUT,
@@ -44,7 +45,6 @@ import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common
 import { useTradingBuyFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingBuyFormDefaultValues';
 import { useTradingBuyFormRedirectValues } from 'src/hooks/wallet/trading/form/useTradingBuyFormRedirectValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { useAnalytics } from 'src/support/useAnalytics';
 import { type Dispatch } from 'src/types/suite';
 import { type UseTradingFormCommonProps } from 'src/types/trading/trading';
 import {
@@ -61,7 +61,7 @@ import { useTradingReceiveAddress } from './useTradingReceiveAddress';
 export const useTradingBuyForm = ({
     pageType = 'form',
 }: UseTradingFormCommonProps = {}): TradingBuyFormContextProps => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const type = 'buy';
     const isFormPage = pageType === 'form';
     const dispatch = useDispatch();

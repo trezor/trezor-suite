@@ -1,4 +1,6 @@
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
@@ -8,7 +10,6 @@ import { Grid, Modal } from '@trezor/components';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { SupplyFormContext, useSupplyForm } from 'src/hooks/earn/useSupplyForm';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { StakeButton } from './StakeForm/StakeButton';
 import { StakeForm } from './StakeForm/StakeForm';
@@ -21,7 +22,7 @@ type StakeModalProps = {
 };
 
 export const StakeModal = ({ onCancel, account, flow }: StakeModalProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const supplyContextValues = useSupplyForm({ account });
     const { isBelowTablet } = useLayoutSize();
 

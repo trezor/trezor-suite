@@ -1,6 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { type DemoAccountQuestionnaireLinkKey, events } from '@suite-native/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import {
+    type DemoAccountQuestionnaireLinkKey,
+    type NativeAnalyticsDep,
+    events,
+} from '@suite-native/analytics';
 import { Button, PictogramTitleHeader, TextDivider, VStack } from '@suite-native/atoms';
 import { type IconName } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
@@ -12,7 +17,6 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import {
     ESHOP_WHAT_IS_A_HARDWARE_WALLET_URL,
     ESHOP_WHY_TREZOR_IS_SECURE_URL,
@@ -57,7 +61,7 @@ type NavigationProp = StackNavigationProps<
 export const DemoAccountQuestionnaireSuccessScreen = () => {
     const navigation = useNavigation<NavigationProp>();
     const openLink = useOpenLink();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const handleOpenUrl = (recommendation: Recommendation) => {
         analytics.report(
             {

@@ -2,6 +2,9 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/wallet-core"
@@ -14,7 +17,6 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../passphrase" },
-        { "path": "../services" },
         {
             "path": "../../packages/styles-native"
         },

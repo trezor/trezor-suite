@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import type { TradingSellType } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Column, Spinner, Text } from '@trezor/components';
@@ -12,7 +13,6 @@ import { AccountLabeling } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 const Wrapper = styled.div`
     display: flex;
@@ -46,7 +46,7 @@ const Row = styled.div`
 const Address = styled.div``;
 
 export const TradingSelectedOfferSellTransaction = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const { handleClick, disabled } = useAsyncClickHandler();
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const {

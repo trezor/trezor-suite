@@ -11,6 +11,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",
         "@suite-common/test-utils": "workspace:*",

@@ -5,7 +5,6 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
 import { getTranslation } from '@suite-native/intl';
 import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import {
     type TestStore,
     renderWithStoreProvider,
@@ -43,15 +42,6 @@ jest.mock('@react-navigation/native', () => ({
             params: {},
         }) as RouteProp<RootStackParamList, RootStackRoutes.TradingExchangePreview>,
 }));
-
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
 
 let mockIsDeviceConnected = true;
 jest.mock('@suite-common/device', () => ({
@@ -137,17 +127,19 @@ describe('TradingExchangePreviewScreen', () => {
     ) => {
         const testStore = customStore ?? store;
         const reportMock = jest.fn();
+        const services = {
+            analytics: {
+                report: reportMock,
+            },
+        };
         jest.clearAllMocks();
-        (useAnalytics as jest.Mock).mockReturnValue({
-            report: reportMock,
-        });
 
         const result = renderWithStoreProvider(
             <TradingExchangePreviewScreen
                 navigation={createNavigationProps()}
                 route={createRouteProps(isApproved)}
             />,
-            { store: testStore },
+            { services, store: testStore },
         );
 
         ({ unmount } = result);

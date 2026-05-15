@@ -1,12 +1,18 @@
 import { useCallback } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { getCountryFlag } from '@suite-common/flags';
-import { type CountryChangeContext, events } from '@suite-native/analytics';
+import {
+    type AnalyticsNativeEvents,
+    type CountryChangeContext,
+    type NativeAnalyticsDep,
+    events,
+} from '@suite-native/analytics';
 import { Flag, HStack, Text } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { useAnalytics } from '@suite-native/services';
 import { OverviewRow, useBottomSheetControls } from '@suite-native/trading-atoms';
+import { type Analytics } from '@trezor/analytics-uploader';
 
 import { CountrySheet } from './CountrySheet';
 import { type TradingLocationFormValues } from '../../types/tradingLocationForm';
@@ -19,7 +25,7 @@ export type CountryOfResidencePickerProps = {
 
 const reportCountryChange = (
     type: CountryChangeContext,
-    analytics: ReturnType<typeof useAnalytics>,
+    analytics: Analytics<AnalyticsNativeEvents>,
 ) => {
     analytics.report({
         type: events.tradingParameterChangedEvent.name,
@@ -36,7 +42,7 @@ export const CountryOfResidencePicker = ({
     noBottomBorder = true,
 }: CountryOfResidencePickerProps) => {
     const { translate } = useTranslate();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const { isSheetVisible, hideSheet, showSheet } = useBottomSheetControls();
 
     const { watch, setValue } = useFormContext<TradingLocationFormValues>();

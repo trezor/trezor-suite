@@ -7,7 +7,6 @@ import {
     type WithSuiteSyncAndDeviceState,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
-import { type SuiteSync } from '@suite-common/suite-sync-types';
 import { type StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -18,14 +17,12 @@ type TurnOnSuiteSyncModalsProps = {
     onClose: () => void;
     onSuccess?: () => void;
     deviceStaticSessionId: StaticSessionId | null;
-    suiteSync: SuiteSync;
 };
 
 export const TurnOnSuiteSyncModals = ({
     onClose,
     onSuccess,
     deviceStaticSessionId,
-    suiteSync,
 }: TurnOnSuiteSyncModalsProps) => {
     const { translationString } = useTranslation();
     const suiteSyncInteraction = useSelector(
@@ -50,7 +47,6 @@ export const TurnOnSuiteSyncModals = ({
                     onClose={onClose}
                     onSuccess={onSuccess}
                     deviceStaticSessionId={deviceStaticSessionId}
-                    suiteSync={suiteSync}
                 />
             );
 

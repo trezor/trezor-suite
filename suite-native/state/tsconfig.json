@@ -14,6 +14,9 @@
         {
             "path": "../../suite-common/delegated-identity-key"
         },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/firmware" },
         {

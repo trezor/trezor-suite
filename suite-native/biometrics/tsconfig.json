@@ -2,12 +2,14 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../icons" },
         { "path": "../intl" },
-        { "path": "../services" },
         { "path": "../storage" },
         { "path": "../../packages/styles-native" }
     ]

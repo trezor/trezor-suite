@@ -1,6 +1,7 @@
 import { type JSX, useCallback, useEffect } from 'react';
 
 import { AppUpdateEventStatus, asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import {
     UpdateState,
     availableThunk,
@@ -11,11 +12,11 @@ import {
     readyThunk,
     selectDesktopUpdate,
 } from '@suite/desktop-update';
+import { useServices } from '@suite-common/dependency-injection';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { isArrayMember } from '@trezor/utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { Available } from './DesktopUpdater/Available';
 import { Downloading } from './DesktopUpdater/Downloading';
@@ -38,7 +39,7 @@ const alwaysOpenStates = [
 export const DesktopUpdater = () => {
     const dispatch = useDispatch();
     const desktopUpdate = useSelector(selectDesktopUpdate);
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const desktopUpdateState = desktopUpdate.state;
 
     useEffect(() => {

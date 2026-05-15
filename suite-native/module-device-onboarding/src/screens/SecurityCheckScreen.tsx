@@ -1,4 +1,9 @@
-import { type AnalyticsNativeEvents, events } from '@suite-native/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import {
+    type AnalyticsNativeEvents,
+    type NativeAnalyticsDep,
+    events,
+} from '@suite-native/analytics';
 import { CardStepper, type CardStepperMap, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
@@ -8,7 +13,6 @@ import {
     type DeviceSuspicionCause,
     type StackProps,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import { type Analytics } from '@trezor/analytics-uploader';
 import { TREZOR_RESELLERS_URL } from '@trezor/urls';
 
@@ -65,7 +69,7 @@ const cardStepperContentMap = (analytics: Analytics<AnalyticsNativeEvents>) =>
 export const SecurityCheckScreen = ({
     navigation,
 }: StackProps<DeviceOnboardingStackParamList, DeviceOnboardingStackRoutes.SecurityCheck>) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const handleFinishStepper = () => {
         navigation.navigate(DeviceOnboardingStackRoutes.FirmwareInfo);
     };

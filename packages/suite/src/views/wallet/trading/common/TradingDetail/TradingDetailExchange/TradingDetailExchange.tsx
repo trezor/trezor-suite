@@ -4,9 +4,10 @@ import { usePrevious } from 'react-use';
 import { type ExchangeTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingExchangeType,
     selectTradingComposedTransactionInfo,
@@ -17,7 +18,6 @@ import { Box, BulletList, Card, Column, H3, Paragraph } from '@trezor/components
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
-import { useAnalytics } from 'src/support/useAnalytics';
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import { AfterTradeExperiment } from 'src/views/wallet/trading/common/TradingDetail/AfterTradeExperiment';
 import { TradingDetailExchangePaymentConverting } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentConverting';
@@ -55,7 +55,7 @@ const getTradeStatusStep = (tradeStatus: ExchangeTradeStatus) => {
 };
 
 export const TradingDetailExchange = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const accounts = useSelector(selectAccounts);
     const { trade, info } = useTradingDetailContext<TradingExchangeType>();
     const dispatch = useDispatch();

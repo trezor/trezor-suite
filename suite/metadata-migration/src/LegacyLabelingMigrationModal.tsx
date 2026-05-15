@@ -11,20 +11,20 @@ import {
     metadataLabelingActions,
     selectSelectedProviderForLabels,
 } from '@suite/metadata';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type MetadataProviderType } from '@suite-common/metadata-types';
 import { type AnyAction, type ExtraDependencies } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type StaticSessionId } from '@trezor/connect';
 
+import { type MetadataMigrationDep } from './createMetadataMigrationCompositionRoot';
 import type { MigrationError } from './legacyLabelsMigration';
-import type { MigrateLegacyLabelsToSuiteSync } from './migrateLegacyLabelsToSuiteSync';
 import { isMigratableDevice } from './migrationUtils';
 
 type LegacyLabelingMigrationModalProps = {
     onCancel: () => void;
     onFinish: () => void;
-    migrateLegacyLabelsToSuiteSync: MigrateLegacyLabelsToSuiteSync;
     onSuiteSyncError: (params: {
         error: MigrationError['cause'];
         deviceStaticSessionId: StaticSessionId;
@@ -36,10 +36,10 @@ type MetadataDispatch = ThunkDispatch<MetadataRootState, ExtraDependencies, AnyA
 export const LegacyLabelingMigrationModal = ({
     onCancel,
     onFinish,
-    migrateLegacyLabelsToSuiteSync,
     onSuiteSyncError,
 }: LegacyLabelingMigrationModalProps) => {
     const dispatch = useDispatch<MetadataDispatch>();
+    const { migrateLegacyLabelsToSuiteSync } = useServices<MetadataMigrationDep>();
     const selectedProvider = useSelector(selectSelectedProviderForLabels);
     const selectedDevice = useSelector(selectSelectedDevice);
     const [providerLoading, setProviderLoading] = useState<MetadataProviderType | null>(null);

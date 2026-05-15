@@ -1,6 +1,5 @@
 import { events } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
-import { useAnalytics } from '@suite-native/services';
 import { act, screen } from '@suite-native/test-utils-store';
 import {
     banxaBankTransferSellQuote,
@@ -29,19 +28,16 @@ jest.mock('../../concierge/ConciergeAlert', () => ({
 }));
 
 const reportMock = jest.fn();
-
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
+const services = {
+    analytics: {
+        report: reportMock,
+    },
+};
 
 describe('SellForm', () => {
     const renderFormHook = (overrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
         renderHookWithTradingProvider(() => useSellForm(), {
+            services,
             tradeType: 'sell',
             overrides,
         });
@@ -51,6 +47,7 @@ describe('SellForm', () => {
         form: SellFormType,
     ) =>
         renderWithTradingProvider(<SellForm />, {
+            services,
             tradeType: 'sell',
             overrides,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
@@ -58,9 +55,6 @@ describe('SellForm', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        (useAnalytics as jest.Mock).mockReturnValue({
-            report: reportMock,
-        });
     });
 
     afterEach(() => {

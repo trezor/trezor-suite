@@ -1,9 +1,10 @@
 import styled, { type DefaultTheme } from 'styled-components';
 
 import { Address } from '@suite/address';
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingExchangeType,
     requiresTokenApproval,
@@ -20,7 +21,6 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAllowanceContext } from 'src/hooks/wallet/allowance';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 const TextButton = styled.div<{ $disabled: boolean }>`
     color: ${({ theme, $disabled }) =>
@@ -36,7 +36,7 @@ const TextButton = styled.div<{ $disabled: boolean }>`
 export const TradingFormApproval = () => {
     const context = useTradingFormContext<TradingExchangeType>();
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
 
     const { tx, state: allowanceState } = useAllowanceContext();
 

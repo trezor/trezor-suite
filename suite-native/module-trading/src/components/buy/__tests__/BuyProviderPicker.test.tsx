@@ -1,6 +1,5 @@
 import { events } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
-import { useAnalytics } from '@suite-native/services';
 import { act, fireEvent, screen } from '@suite-native/test-utils-store';
 import {
     buyCexdirect,
@@ -22,15 +21,11 @@ import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyProviderPicker } from '../BuyProviderPicker';
 
 const reportMock = jest.fn();
-
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
+const services = {
+    analytics: {
+        report: reportMock,
+    },
+};
 
 describe('BuyProviderPicker', () => {
     let form: BuyFormType;
@@ -42,7 +37,7 @@ describe('BuyProviderPicker', () => {
             <Form form={form}>
                 <BuyProviderPicker />
             </Form>,
-            { overrides },
+            { overrides, services },
         );
 
     afterEach(() => {
@@ -52,11 +47,7 @@ describe('BuyProviderPicker', () => {
     beforeEach(() => {
         jest.clearAllMocks();
 
-        (useAnalytics as jest.Mock).mockReturnValue({
-            report: reportMock,
-        });
-
-        const { result } = renderHookWithTradingProvider(() => useBuyForm(), {});
+        const { result } = renderHookWithTradingProvider(() => useBuyForm(), { services });
         form = result.current;
     });
 

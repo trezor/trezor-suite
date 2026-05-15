@@ -15,9 +15,9 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.11.2",
+        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite-native/analytics": "workspace:*",
-        "@suite-native/services": "workspace:*",
         "@suite-native/trading-atoms": "workspace:*",
         "react": "19.2.4",
         "react-redux": "9.2.0"

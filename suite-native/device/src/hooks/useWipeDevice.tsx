@@ -5,8 +5,10 @@ import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { wipeDeviceThunk } from '@suite-common/wallet-core';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import {
@@ -15,7 +17,6 @@ import {
     type StackNavigationProps,
     WipeDeviceStackRoutes,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 
 type NavigationProps = StackNavigationProps<
     DeviceSettingsStackParamList,
@@ -24,7 +25,7 @@ type NavigationProps = StackNavigationProps<
 
 export const useWipeDevice = () => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const navigation = useNavigation<NavigationProps>();
 
     const device = useSelector(selectSelectedDevice);

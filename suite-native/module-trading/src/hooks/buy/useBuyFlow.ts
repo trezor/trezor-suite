@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import type { BuyTrade, BuyTradeResponse } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { invariant } from '@suite-common/suite-utils';
 import {
     type TradingRootState,
@@ -11,7 +12,7 @@ import {
     selectTradingCoinInfoByCryptoId,
     tradingBuyActions,
 } from '@suite-common/trading';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -19,7 +20,6 @@ import {
     type TradingStackParamList,
     type TradingStackRoutes,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
 import { type BuyFormType } from '@suite-native/trading-types';
@@ -38,7 +38,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const useBuyFlow = (form: BuyFormType) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const dispatch = useDispatch();
     const isLoading = useSelector(selectTradingBuyIsLoading);
     const [asset, candidateQuote, receiveAccount] = form.watch([

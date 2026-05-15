@@ -1,13 +1,13 @@
 import { useCallback } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type Account } from '@suite-common/wallet-types';
-import { events } from '@suite-native/analytics';
-import { useAnalytics } from '@suite-native/services';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 
 import { getStakingAnalyticsNavigateFrom } from '../utils/getStakingAnalyticsNavigateFrom';
 
 export const useStakingNavigateAnalytics = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
 
     return useCallback(
         (account: Account) => {

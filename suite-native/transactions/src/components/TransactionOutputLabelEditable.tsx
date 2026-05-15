@@ -1,6 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type SuiteSyncDataRootState, selectSuiteSyncOutputLabel } from '@suite-common/suite-sync';
+import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { isTokenTargetId } from '@suite-common/wallet-core';
 import { type AccountDescriptor, type TxTargetId } from '@suite-common/wallet-types';
@@ -10,7 +12,6 @@ import {
     LabelEditForm,
     selectIsLabellingAllowed,
 } from '@suite-native/labeling';
-import { useNativeServices } from '@suite-native/services';
 import { useSuiteSyncErrorHandler } from '@suite-native/suite-sync';
 import type { StaticSessionId } from '@trezor/connect';
 
@@ -31,7 +32,7 @@ export const TransactionOutputLabelEditable = ({
 }: TransactionOutputLabelEditableProps) => {
     const dispatch = useDispatch();
     const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
-    const { suiteSync } = useNativeServices();
+    const { suiteSync } = useServices<SuiteSyncDep>();
     const { handleSuiteSyncError } = useSuiteSyncErrorHandler();
     const isTokenTxTargetId = isTokenTargetId(txTargetId);
 

@@ -1,6 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type SuiteSyncDataRootState, selectSuiteSyncAddressLabel } from '@suite-common/suite-sync';
+import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountDescriptor } from '@suite-common/wallet-types';
 import { featureUsed } from '@suite-native/feature-feedback';
@@ -9,7 +11,6 @@ import {
     LabelEditForm,
     selectIsLabellingAllowed,
 } from '@suite-native/labeling';
-import { useNativeServices } from '@suite-native/services';
 import { useSuiteSyncErrorHandler } from '@suite-native/suite-sync';
 import type { StaticSessionId } from '@trezor/connect';
 
@@ -30,7 +31,7 @@ export const AddressLabelEditable = ({
 }: AddressLabelEditableProps) => {
     const dispatch = useDispatch();
     const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
-    const { suiteSync } = useNativeServices();
+    const { suiteSync } = useServices<SuiteSyncDep>();
     const { handleSuiteSyncError } = useSuiteSyncErrorHandler();
 
     const label = useSelector((state: SuiteSyncDataRootState) =>

@@ -3,12 +3,12 @@ import { useCallback, useMemo } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
-import { events } from '@suite-native/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { ListItemSkeleton, TitleHeader, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 
 import { ChooseStakingAccountBottomSheet } from '../components/ChooseStakingAccountBottomSheet';
 import { EarnItemInfoModal } from '../components/EarnItemInfoModal';
@@ -33,7 +33,7 @@ const isSectionBoundaryItem = (item: EarnPromoListDataItem | undefined) =>
     item === undefined || typeof item === 'string' || item.type === 'provider';
 
 const EarnScreenContent = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const { bottomSheetRef: stablecoinYieldBottomSheetRef, openModal: openStablecoinYieldModal } =
         useBottomSheetModal();
 

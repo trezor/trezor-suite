@@ -1,10 +1,9 @@
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Banner, Row, SkeletonRectangle, Tooltip } from '@trezor/components';
-
-import { useAnalytics } from 'src/support/useAnalytics';
 
 type EarnYieldClaimRewardsBannerProps = {
     value: BaseCurrencyAmount;
@@ -23,7 +22,7 @@ export const EarnYieldClaimRewardsBanner = ({
     claimDisabledTooltip,
     onClaim,
 }: EarnYieldClaimRewardsBannerProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const { BaseCurrencyAmountFormatter } = useFormatters();
 
     const handleOnClaim = () => {

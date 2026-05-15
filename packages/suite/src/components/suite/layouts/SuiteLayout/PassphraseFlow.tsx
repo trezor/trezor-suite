@@ -10,7 +10,6 @@ import { UI_REQUEST } from '@trezor/connect';
 
 import { ThpGlobalModalManager } from 'src/components/connection/thp/ThpGlobalModalManager';
 import { useDispatch, usePreferredModal, useSelector } from 'src/hooks/suite';
-import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 import type { AppState, ForegroundAppRoute } from 'src/types/suite';
 import { SwitchDevice } from 'src/views/suite/SwitchDevice/SwitchDevice';
 
@@ -60,7 +59,6 @@ type ForegroundAppModalProps = {
 
 const ForegroundAppModal = ({ app, cancelable }: ForegroundAppModalProps) => {
     const dispatch = useDispatch();
-    const { suiteSync } = useSuiteServices();
     const deviceStaticSessionId = useSelector(selectShowEnableSuiteSyncModal);
 
     const onCancel = () => dispatch(closeModalApp());
@@ -73,7 +71,6 @@ const ForegroundAppModal = ({ app, cancelable }: ForegroundAppModalProps) => {
                 <SwitchDevice cancelable={cancelable} onCancel={onCancel} />
                 <TurnOnSuiteSyncModals
                     deviceStaticSessionId={deviceStaticSessionId}
-                    suiteSync={suiteSync}
                     onClose={() => {
                         dispatch(updateShowEnableSuiteSyncModal({ deviceStaticSessionId: null }));
                     }}

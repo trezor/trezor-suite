@@ -3,9 +3,10 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { Box, Button, H2, Icon, IconButton, Image, Paragraph, Row } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';
@@ -13,7 +14,6 @@ import { SUITE_URL } from '@trezor/urls';
 
 import { useExternalLink } from 'src/hooks/suite';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { bannerAnimationConfig } from '../../dashboard/banner-animations';
 
@@ -55,7 +55,7 @@ const OSIcons = styled.div`
 `;
 
 export const DesktopSuiteBanner = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const [isVisible, setIsVisible] = useState(true);
 
     const dispatch = useDispatch();

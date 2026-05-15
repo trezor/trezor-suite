@@ -11,21 +11,16 @@ import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/pro
 
 import { LegacyLabelingMigrationModal } from './LegacyLabelingMigrationModal';
 import type { MigrationError } from './legacyLabelsMigration';
-import type { MigrateLegacyLabelsToSuiteSync } from './migrateLegacyLabelsToSuiteSync';
 import { isMigratableDevice } from './migrationUtils';
 
 export type LegacyLabelingMigrationProps = {
-    migrateLegacyLabelsToSuiteSync: MigrateLegacyLabelsToSuiteSync;
     onSuiteSyncError: (params: {
         error: MigrationError['cause'];
         deviceStaticSessionId: StaticSessionId;
     }) => void;
 };
 
-export const LegacyLabelingMigration = ({
-    migrateLegacyLabelsToSuiteSync,
-    onSuiteSyncError,
-}: LegacyLabelingMigrationProps) => {
+export const LegacyLabelingMigration = ({ onSuiteSyncError }: LegacyLabelingMigrationProps) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const selectedDevice = useSelector(selectSelectedDevice);
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
@@ -42,7 +37,6 @@ export const LegacyLabelingMigration = ({
                 <LegacyLabelingMigrationModal
                     onCancel={() => setIsModalVisible(false)}
                     onFinish={() => setIsModalVisible(false)}
-                    migrateLegacyLabelsToSuiteSync={migrateLegacyLabelsToSuiteSync}
                     onSuiteSyncError={onSuiteSyncError}
                 />
             )}

@@ -1,20 +1,20 @@
 import { FormattedList } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled, setNetworkReserve } from '@suite-common/wallet-core';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-import { useAnalytics } from '@suite-native/services';
 import { NETWORK_RESERVE_URL } from '@trezor/urls';
 
 export const ToggleNetworkReserveCheckCard = () => {
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
 
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const openLink = useOpenLink();
 
     const supportedNetworks = networksCollection

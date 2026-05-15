@@ -25,17 +25,11 @@ import { useExchangeForm } from '../useExchangeForm';
 import { useExchangeQuotes } from '../useExchangeQuotes';
 
 const mockReport = jest.fn();
-
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: () => ({
-            report: mockReport,
-        }),
-    };
-});
+const services = {
+    analytics: {
+        report: mockReport,
+    },
+};
 
 jest.mock('@trezor/react-utils', () => {
     const originalModule = jest.requireActual('@trezor/react-utils');
@@ -79,7 +73,7 @@ describe('useExchangeQuotes', () => {
 
                 return { form };
             },
-            { store },
+            { services, store },
         );
 
     beforeEach(() => {

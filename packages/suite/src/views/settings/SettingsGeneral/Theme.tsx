@@ -1,4 +1,4 @@
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import {
@@ -7,12 +7,12 @@ import {
     selectThemeSettings,
     suiteSettingsActions,
 } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { type ThemeColorVariant } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 import { getOsTheme } from 'src/utils/suite/env';
 
 type ThemeColorVariantWithSystem = ThemeColorVariant | 'system';
@@ -56,7 +56,7 @@ const useThemeOptions = () => {
 };
 
 export const Theme = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const theme = useSelector(selectThemeSettings);
     const autodetectTheme = useSelector(selectAutodetectTheme);
     const dispatch = useDispatch();

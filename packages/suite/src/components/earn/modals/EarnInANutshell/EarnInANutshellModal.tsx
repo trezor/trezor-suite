@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type EarnAnalyticsStep,
     EarnFlow,
@@ -11,7 +13,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
 
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { StakingEarnInANutshellModal } from './StakingEarnInANutshellModal';
 import { UpdateEarnInANutshellModal } from './UpdateEarnInANutshellModal';
@@ -46,7 +47,7 @@ export const EarnInANutshellModal = ({
     yieldContext,
     onCancel,
 }: EarnInANutshellModalProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
 
     useEffect(() => {
         switch (flow) {

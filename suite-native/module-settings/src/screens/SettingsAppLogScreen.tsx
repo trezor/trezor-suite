@@ -1,7 +1,9 @@
 import { useState } from 'react';
 
 import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { prettifyLog, useCommonApplicationLogs as useApplicationLogs } from '@suite-common/logger';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import {
     Button,
     Card,
@@ -14,12 +16,11 @@ import {
 import { shareAsTextFile } from '@suite-native/helpers';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 
 export const SettingsAppLogScreen = () => {
     const [includeSensitiveInfo, setIncludeSensitiveInfo] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
 
     const applicationLogs = useApplicationLogs(!includeSensitiveInfo);
     const stringifiedApplicationLogs = applicationLogs ? prettifyLog(applicationLogs) : '';

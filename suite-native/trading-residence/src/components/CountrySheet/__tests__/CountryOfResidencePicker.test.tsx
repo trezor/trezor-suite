@@ -4,7 +4,6 @@ import { useCountryFilteredData } from '@suite-common/trading';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { Form, useForm } from '@suite-native/forms';
 import { getTranslation, localeReducer } from '@suite-native/intl';
-import { useAnalytics } from '@suite-native/services';
 import { renderHookWithBasicProvider, renderWithBasicProvider } from '@suite-native/test-utils';
 import {
     createLightStore,
@@ -26,15 +25,11 @@ import {
 let mockUseCountryFilteredData: jest.Mock;
 
 const reportMock = jest.fn();
-
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
+const services = {
+    analytics: {
+        report: reportMock,
+    },
+};
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
@@ -67,10 +62,6 @@ describe('CountryOfResidencePicker', () => {
         }));
 
         (useCountryFilteredData as jest.Mock).mockImplementation(mockUseCountryFilteredData);
-
-        (useAnalytics as jest.Mock).mockReturnValue({
-            report: reportMock,
-        });
     });
 
     afterEach(() => {
@@ -80,12 +71,14 @@ describe('CountryOfResidencePicker', () => {
 
     const renderCountryOfResidencePicker = (props: Partial<CountryOfResidencePickerProps> = {}) => {
         const { result } = renderHookWithStoreProvider(() => useLocationForm(), {
+            services,
             store: createTradingResidenceStore(),
         });
 
         return renderWithBasicProvider(
             <CountryOfResidencePicker testID="TEST_ID" context="settings" {...props} />,
             {
+                services,
                 wrapper: ({ children }) => <Form form={result.current}>{children}</Form>,
             },
         );
@@ -117,30 +110,33 @@ describe('CountryOfResidencePicker', () => {
     });
 
     it('should clear selected subdivision when country changes', async () => {
-        const form = renderHookWithBasicProvider(() =>
-            useForm<TradingLocationFormValues>({
-                defaultValues: {
-                    country: {
-                        value: 'US',
-                        label: '🇺🇸 United States',
-                        shortLabel: '🇺🇸 USA',
-                        codeAlpha3: 'USA',
-                        flag: '🇺🇸',
-                        name: 'United States',
+        const form = renderHookWithBasicProvider(
+            () =>
+                useForm<TradingLocationFormValues>({
+                    defaultValues: {
+                        country: {
+                            value: 'US',
+                            label: '🇺🇸 United States',
+                            shortLabel: '🇺🇸 USA',
+                            codeAlpha3: 'USA',
+                            flag: '🇺🇸',
+                            name: 'United States',
+                        },
+                        countrySubdivision: {
+                            value: 'CA',
+                            label: 'California',
+                            name: 'California',
+                        },
                     },
-                    countrySubdivision: {
-                        value: 'CA',
-                        label: 'California',
-                        name: 'California',
-                    },
-                },
-                validation: locationFormValidationSchema,
-            }),
+                    validation: locationFormValidationSchema,
+                }),
+            { services },
         );
 
         const { getByText } = renderWithBasicProvider(
             <CountryOfResidencePicker testID="TEST_ID" context="settings" />,
             {
+                services,
                 wrapper: ({ children }) => <Form form={form.result.current}>{children}</Form>,
             },
         );
@@ -200,13 +196,15 @@ describe('CountryOfResidencePicker', () => {
     });
 
     it('should render even when no value is selected', () => {
-        const formWithoutCountrySet = renderHookWithBasicProvider(() =>
-            useForm<TradingLocationFormValues>({ validation: locationFormValidationSchema }),
+        const formWithoutCountrySet = renderHookWithBasicProvider(
+            () => useForm<TradingLocationFormValues>({ validation: locationFormValidationSchema }),
+            { services },
         );
 
         const { getByLabelText } = renderWithBasicProvider(
             <CountryOfResidencePicker testID="TEST_ID" context="settings" />,
             {
+                services,
                 wrapper: ({ children }) => (
                     <Form form={formWithoutCountrySet.result.current}>{children}</Form>
                 ),

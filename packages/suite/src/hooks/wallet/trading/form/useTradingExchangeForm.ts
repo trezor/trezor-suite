@@ -3,10 +3,11 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import type { DexApprovalType, ExchangeTrade } from 'invity-api';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type TranslationKey, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectHasExperimentalFeature } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -63,7 +64,6 @@ import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTr
 import { useTradingFormActions } from 'src/hooks/wallet/trading/form/common/useTradingFormActions';
 import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingExchangeFormDefaultValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { useAnalytics } from 'src/support/useAnalytics';
 import { type Dispatch } from 'src/types/suite';
 import { type UseTradingFormCommonProps } from 'src/types/trading/trading';
 import {
@@ -80,7 +80,7 @@ import { useTradingReceiveAddress } from './useTradingReceiveAddress';
 export const useTradingExchangeForm = ({
     pageType = 'form',
 }: UseTradingFormCommonProps): TradingExchangeFormContextProps => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const type = 'exchange';
     const isFormPage = pageType === 'form';
     const dispatch = useDispatch();

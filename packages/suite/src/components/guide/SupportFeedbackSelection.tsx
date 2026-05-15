@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { UpdateState } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { Icon, Image, Paragraph } from '@trezor/components';
@@ -15,7 +16,6 @@ import { setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
 import { SupportConsentPopover } from 'src/components/guide/SupportConsentPopover';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 const Section = styled.div`
     & + & {
@@ -86,7 +86,7 @@ const LabelHeadline = styled.strong`
 `;
 
 export const SupportFeedbackSelection = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const desktopUpdate = useSelector(state => state.desktopUpdate);
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();

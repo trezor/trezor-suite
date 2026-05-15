@@ -1,13 +1,13 @@
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { Switch, Tooltip } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { useDispatch } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 interface DeviceLabelProps {
     isDeviceLocked: boolean;
@@ -16,7 +16,7 @@ interface DeviceLabelProps {
 export const HapticFeedback = ({ isDeviceLocked }: DeviceLabelProps) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const isSupportedDevice = device?.features?.capabilities?.includes('Capability_Haptic');
 
     if (!isSupportedDevice) {

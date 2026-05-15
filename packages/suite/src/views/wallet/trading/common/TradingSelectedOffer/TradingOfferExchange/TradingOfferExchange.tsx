@@ -1,7 +1,8 @@
 import { type CryptoId } from 'invity-api';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingExchangeType,
     selectTradingExchangeFormStep,
@@ -14,7 +15,6 @@ import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useAnalytics } from 'src/support/useAnalytics';
 import { type TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
 import { type TradingOfferExchangeProps } from 'src/types/trading/tradingForm';
 import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
@@ -31,7 +31,7 @@ export const TradingOfferExchange = ({
     quoteAmounts,
 }: TradingOfferExchangeProps) => {
     const { handleClick, disabled } = useAsyncClickHandler();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const formStep = useSelector(selectTradingExchangeFormStep);
     const receiveAccountKey = useSelector(selectTradingExchangeReceiveAccountKey);
     const receiveAccount = useSelector(

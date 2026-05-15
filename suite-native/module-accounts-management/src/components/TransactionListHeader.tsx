@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
@@ -13,7 +14,7 @@ import {
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
@@ -25,7 +26,6 @@ import {
     SendStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { selectHasAccountAnyTransactions } from '@suite-native/transactions';
 
@@ -88,7 +88,7 @@ const TransactionListHeaderContent = ({
 
 export const TransactionListHeader = memo(
     ({ accountKey, tokenContract }: TransactionListHeaderProps) => {
-        const analytics = useAnalytics();
+        const { analytics } = useServices<NativeAnalyticsDep>();
         const navigation = useNavigation<NavigationProp>();
 
         const account = useSelector((state: AccountsRootState) =>

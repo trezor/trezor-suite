@@ -1,7 +1,6 @@
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { events } from '@suite-native/analytics';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
-import { useAnalytics } from '@suite-native/services';
 import { type TestStore, fireEvent } from '@suite-native/test-utils-store';
 
 import {
@@ -11,15 +10,6 @@ import {
     renderWithTradingProvider,
 } from '../../../../__tests__/tradingTestUtils';
 import { Header } from '../Header';
-
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
 
 describe('Header', () => {
     const getFFOverrides = (): PreloadedStatePartial<TradingTestPreloadedState> => ({
@@ -31,20 +21,22 @@ describe('Header', () => {
 
     const setupReportMock = () => {
         const reportMock = jest.fn();
-        (useAnalytics as jest.Mock).mockReturnValue({
-            report: reportMock,
-        });
+        const services = {
+            analytics: {
+                report: reportMock,
+            },
+        };
 
-        return reportMock;
+        return { reportMock, services };
     };
 
     const renderHeader = (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = getFFOverrides(),
     ) => {
-        const reportMock = setupReportMock();
+        const { reportMock, services } = setupReportMock();
 
         return {
-            renderer: renderWithTradingProvider(<Header />, { overrides }),
+            renderer: renderWithTradingProvider(<Header />, { overrides, services }),
             reportMock,
         };
     };
@@ -52,10 +44,10 @@ describe('Header', () => {
     const createTestStore = () => createTradingLightStore({ overrides: getFFOverrides() });
 
     const renderHeaderWithStore = (store: TestStore) => {
-        const reportMock = setupReportMock();
+        const { reportMock, services } = setupReportMock();
 
         return {
-            renderer: renderWithTradingProvider(<Header />, { store }),
+            renderer: renderWithTradingProvider(<Header />, { services, store }),
             reportMock,
         };
     };

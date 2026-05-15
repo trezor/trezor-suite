@@ -90,24 +90,43 @@ export const getEventsIndexExportSnippet = (eventName: string): string => {
     return `export { ${baseName} } from './${baseName}';`;
 };
 
-const PLATFORM_USAGE_IMPORTS: Record<string, { events: string; useAnalytics: string }> = {
-    desktop: { events: '@suite/analytics', useAnalytics: 'src/support/useAnalytics' },
-    mobile: { events: '@suite-native/analytics', useAnalytics: '@suite-native/services' },
-    shared: { events: '@suite/analytics', useAnalytics: 'src/support/useAnalytics' },
+const PLATFORM_USAGE_IMPORTS: Record<
+    string,
+    { events: string; services: string; analyticsImport: string; analyticsDep: string }
+> = {
+    desktop: {
+        events: '@suite/analytics',
+        services: '@suite-common/dependency-injection',
+        analyticsImport: '@suite/analytics',
+        analyticsDep: 'DesktopAnalyticsDep',
+    },
+    mobile: {
+        events: '@suite-native/analytics',
+        services: '@suite-common/dependency-injection',
+        analyticsImport: '@suite-native/analytics',
+        analyticsDep: 'NativeAnalyticsDep',
+    },
+    shared: {
+        events: '@suite/analytics',
+        services: '@suite-common/dependency-injection',
+        analyticsImport: '@suite/analytics',
+        analyticsDep: 'DesktopAnalyticsDep',
+    },
 };
 
 /**
- * Returns example usage snippet: import, useAnalytics, and analytics.report(...).
+ * Returns example usage snippet: import, useServices, and analytics.report(...).
  */
 export const getUsageExampleSnippet = (platform: string, eventName: string): string => {
     const baseName = eventNameToFileBaseName(eventName);
     const imports = PLATFORM_USAGE_IMPORTS[platform] ?? PLATFORM_USAGE_IMPORTS.shared;
 
     return `import { events } from '${imports.events}';
-import { useAnalytics } from '${imports.useAnalytics}';
+import { useServices } from '${imports.services}';
+import { type ${imports.analyticsDep} } from '${imports.analyticsImport}';
 
 // inside component:
-const analytics = useAnalytics();
+const { analytics } = useServices<${imports.analyticsDep}>();
 analytics.report({
     type: events.${baseName}.name,
     payload: {

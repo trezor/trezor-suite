@@ -3,16 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { selectSuiteSyncCustomRelayUrl } from '@suite-common/suite-sync';
-import { type SuiteSync } from '@suite-common/suite-sync-types';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { SelectSuiteSyncServer } from './SelectSuiteSyncServer';
 
-type SuiteSyncServersProps = {
-    suiteSync: SuiteSync;
-};
-
-export const SuiteSyncServers = ({ suiteSync }: SuiteSyncServersProps) => {
+export const SuiteSyncServers = () => {
     const [isSelectServerOpen, setShowChangeServerModal] = useState(false);
     const customRelayUrl = useSelector(selectSuiteSyncCustomRelayUrl);
     const isCustomServer = !!customRelayUrl;
@@ -23,9 +18,7 @@ export const SuiteSyncServers = ({ suiteSync }: SuiteSyncServersProps) => {
 
     return (
         <>
-            {isSelectServerOpen && (
-                <SelectSuiteSyncServer suiteSync={suiteSync} onCancel={toggleSelectServer} />
-            )}
+            {isSelectServerOpen && <SelectSuiteSyncServer onCancel={toggleSelectServer} />}
             <SectionItem data-testid="@settings/labeling-servers">
                 <TextColumn
                     title={

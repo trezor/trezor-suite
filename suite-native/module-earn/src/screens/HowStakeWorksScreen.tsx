@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
@@ -11,7 +12,7 @@ import {
     selectDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { calculateRewards } from '@suite-common/wallet-utils';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { Button, InlineAlertBox, TimelineDetailsCard, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -21,7 +22,6 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import {
     type NativeStakingRootState,
     selectAccountCryptoBalanceWithStaking,
@@ -52,7 +52,7 @@ export const HowStakeWorksScreen = () => {
 
     const resolvedAccountKey = accountKey || accounts[0]?.key;
 
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const registerNavigateBackAnalytics = useNavigateBackAnalytics({
         type: events.stakingStakeEvent.name,
         payload: {

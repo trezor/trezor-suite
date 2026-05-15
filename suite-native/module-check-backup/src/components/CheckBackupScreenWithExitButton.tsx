@@ -2,8 +2,9 @@ import { useCallback } from 'react';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { useAlert } from '@suite-native/alerts';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
 import {
     type DeviceCheckBackupStackParamList,
@@ -16,7 +17,6 @@ import {
     type StackToStackCompositeNavigationProps,
     useOverrideBackNavigation,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import TrezorConnect from '@trezor/connect';
 
 type DeviceOnboardingExitButtonScreenHeaderProps = {
@@ -32,7 +32,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 export const useHandleCheckBackupExitButtonPress = () => {
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const navigation = useNavigation<NavigationProps>();
     const route = useRoute();
 

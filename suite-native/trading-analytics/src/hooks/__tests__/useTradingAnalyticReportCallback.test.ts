@@ -5,7 +5,6 @@ import {
     type TradingSellStep,
     events,
 } from '@suite-native/analytics';
-import { useAnalytics } from '@suite-native/services';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     banxaCreditCardSellQuote,
@@ -16,25 +15,17 @@ import {
 import { useTradingAnalyticReportCallback } from '../useTradingAnalyticReportCallback';
 
 const reportMock = jest.fn();
-
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
+const services = {
+    analytics: {
+        report: reportMock,
+    },
+};
 
 describe('useTradingAnalyticReportCallback', () => {
     let preloadedState: Record<string, unknown>;
 
     beforeEach(() => {
         jest.clearAllMocks();
-
-        (useAnalytics as jest.Mock).mockReturnValue({
-            report: reportMock,
-        });
     });
 
     describe('when tradingType is "sell"', () => {
@@ -56,7 +47,7 @@ describe('useTradingAnalyticReportCallback', () => {
         it('should return sell analytics callback', () => {
             const { result } = renderHookWithStoreProvider(
                 () => useTradingAnalyticReportCallback('sell'),
-                { preloadedState },
+                { preloadedState, services },
             );
 
             (result.current as (step: TradingSellStep, action: TradingSellAction) => void)(
@@ -93,7 +84,7 @@ describe('useTradingAnalyticReportCallback', () => {
         it('should return exchange analytics callback', () => {
             const { result } = renderHookWithStoreProvider(
                 () => useTradingAnalyticReportCallback('exchange'),
-                { preloadedState },
+                { preloadedState, services },
             );
 
             (result.current as (step: TradingExchangeStep, action: TradingExchangeAction) => void)(
@@ -122,7 +113,7 @@ describe('useTradingAnalyticReportCallback', () => {
         it('should return null action (no analytics)', () => {
             const { result } = renderHookWithStoreProvider(
                 () => useTradingAnalyticReportCallback(undefined),
-                { preloadedState },
+                { preloadedState, services },
             );
 
             result.current('fee-selection', 'visit');
@@ -141,7 +132,7 @@ describe('useTradingAnalyticReportCallback', () => {
         it('should return null action (no analytics)', () => {
             const { result } = renderHookWithStoreProvider(
                 () => useTradingAnalyticReportCallback('buy'),
-                { preloadedState },
+                { preloadedState, services },
             );
 
             result.current('fee-selection', 'visit');

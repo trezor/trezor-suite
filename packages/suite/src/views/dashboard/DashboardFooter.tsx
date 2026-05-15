@@ -2,8 +2,9 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
@@ -22,7 +23,6 @@ import { QrCode } from 'src/components/suite';
 import { MAX_CONTENT_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { StoreBadge } from '../../components/suite/StoreBadge';
 import { ContentFlex, useIsContentBelowBreakpoint } from '../../support/suite/ContentFlex';
@@ -68,7 +68,7 @@ const StoreBadgeWithQr = ({
 }: StoreBadgeWithQrProps) => {
     const { isBelowTablet } = useLayoutSize();
     const [isTooltipOpen, setIsTooltipOpen] = useState(false);
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
 
     return (
         <Tooltip
@@ -152,7 +152,7 @@ const MobileAppPromo = ({ hasRightMargin }: { hasRightMargin: boolean }) => {
 };
 
 const ReferralButton = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const hasAtLeastOneRememberedWallet = useSelector(
         state =>
             selectRememberedStandardWalletsCount(state) > 0 ||
@@ -179,7 +179,7 @@ const ReferralButton = () => {
 };
 
 export const DashboardFooter = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const { isBelowTablet } = useLayoutSize();
     const { contentWidth } = useResponsiveContext();
 

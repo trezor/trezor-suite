@@ -13,6 +13,7 @@
     "dependencies": {
         "@gorhom/bottom-sheet": "5.2.8",
         "@react-navigation/native": "7.1.28",
+        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/test-utils": "workspace:*",

@@ -5,6 +5,8 @@ import { Provider as ReduxProvider } from 'react-redux';
 
 import { createRoot } from 'react-dom/client';
 
+import { ServicesProvider } from '@suite-common/dependency-injection';
+
 import {
     AppRouter,
     BundleLoader,
@@ -13,7 +15,6 @@ import {
     ToasterProvider,
 } from 'src/components/suite';
 import { useDebugLanguageShortcut } from 'src/hooks/suite';
-import { SuiteServicesProvider } from 'src/support/SuiteServicesProvider';
 import { Main } from 'src/support/suite/Main';
 import { preloadStore } from 'src/support/suite/preloadStore';
 import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
@@ -60,10 +61,10 @@ export const init = async (container: HTMLElement) => {
     const { store, services } = createSuiteWebCompositionRoot(preloadAction);
 
     root.render(
-        <SuiteServicesProvider services={services}>
+        <ServicesProvider services={services}>
             <ReduxProvider store={store}>
                 <MainWeb />
             </ReduxProvider>
-        </SuiteServicesProvider>,
+        </ServicesProvider>,
     );
 };

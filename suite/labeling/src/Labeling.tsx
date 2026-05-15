@@ -17,13 +17,14 @@ import {
     selectDesktopSuiteSyncInteraction,
     suiteSyncErrorHandler,
 } from '@suite/suite-sync';
+import { useServices } from '@suite-common/dependency-injection';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import {
     type WithSuiteSyncAndDeviceState,
     selectIsSuiteSyncEnabled,
 } from '@suite-common/suite-sync';
-import { type SuiteSync } from '@suite-common/suite-sync-types';
+import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { type DiscoveryRootState, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { type StaticSessionId } from '@trezor/connect';
 import { EditableText, type EditableTextProps } from '@trezor/product-components';
@@ -34,7 +35,6 @@ import { selectIsLabelActionEnabled } from './selectIsLabelActionEnabled';
 export type LabelingProps = {
     payload: MetadataAddPayload;
     deviceStaticSessionId: StaticSessionId;
-    suiteSync: SuiteSync;
     children?: ReactNode;
     isDisabled?: boolean;
     onSubmit?: (value: string) => Promise<boolean>;
@@ -49,13 +49,13 @@ type LabelingState = WithSuiteSyncAndDeviceState &
 export const Labeling = ({
     payload,
     deviceStaticSessionId,
-    suiteSync,
     children,
     isDisabled,
     onSubmit,
     ...rest
 }: LabelingProps) => {
     const dispatch = useDispatch();
+    const { suiteSync } = useServices<SuiteSyncDep>();
     const [showEnableSuiteSyncModal, setShowEnableSuiteSyncModal] = useState(false);
     const suiteSyncTurnOnEditResolveRef = useRef<((value: boolean) => void) | null>(null);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
@@ -183,7 +183,6 @@ export const Labeling = ({
                     onClose={() => handleSuiteSyncTurnOnModalComplete(false)}
                     onSuccess={() => handleSuiteSyncTurnOnModalComplete(true)}
                     deviceStaticSessionId={deviceStaticSessionId}
-                    suiteSync={suiteSync}
                 />
             )}
             <SuiteSyncInteractionsTooltip

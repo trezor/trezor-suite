@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingExchangeFormProps,
     exchangeThunks,
@@ -11,7 +12,6 @@ import { type Network } from '@suite-common/wallet-config';
 import { noop } from '@trezor/utils';
 
 import { useDispatch } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 type TradingExchangeUseHandleChangeProps = {
     formValues: TradingExchangeFormProps;
@@ -38,7 +38,7 @@ export const useTradingExchangeHandleChange = ({
     setIsScheduledQuotesRefresh = noop,
 }: TradingExchangeUseHandleChangeProps) => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const previousPromise = useRef<PromiseType>(null);
 
     const handleChange = useCallback(async () => {

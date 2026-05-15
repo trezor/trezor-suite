@@ -5,6 +5,7 @@ import { A } from '@mobily/ts-belt';
 import { captureException } from '@sentry/react-native';
 import { type WritableAtom, useSetAtom } from 'jotai';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type AccountItem,
     type CommonUseGraphParams,
@@ -22,8 +23,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
-import { events } from '@suite-native/analytics';
-import { useAnalytics } from '@suite-native/services';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 
 import { timeSwitchItems } from './components/TimeSwitch';
 import { selectPortfolioGraphAccountItems } from './selectors';
@@ -42,7 +42,7 @@ const useWatchTimeframeChangeForAnalytics = (
     symbol?: NetworkSymbol,
 ) => {
     const isFirstRender = useRef(true);
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     useEffect(() => {
         if (isFirstRender.current) {
             // Do not report default value on first render.

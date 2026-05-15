@@ -2,11 +2,11 @@ import { useCallback } from 'react';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { events } from '@suite-native/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { Box, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-import { useAnalytics } from '@suite-native/services';
 import { TREZOR_SUPPORT_RECOVERY_ISSUES_URL } from '@trezor/urls';
 
 import { CheckBackupScreenWithExitButton } from '../components/CheckBackupScreenWithExitButton';
@@ -15,7 +15,7 @@ const SUPPORT_URL = `${TREZOR_SUPPORT_RECOVERY_ISSUES_URL}#open-chat`;
 
 export const DeviceCheckBackupSupportScreen = () => {
     const openLink = useOpenLink();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const handleSupportButtonPress = () => {
         openLink(SUPPORT_URL);
     };

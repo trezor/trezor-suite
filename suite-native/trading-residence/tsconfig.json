@@ -2,6 +2,9 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/flags" },
         { "path": "../../suite-common/trading" },
         {
@@ -13,10 +16,12 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../navigation" },
-        { "path": "../services" },
         { "path": "../trading-atoms" },
         { "path": "../trading-consts" },
         { "path": "../trading-state" },
+        {
+            "path": "../../packages/analytics-uploader"
+        },
         {
             "path": "../../packages/styles-native"
         },

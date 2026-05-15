@@ -2,14 +2,14 @@ import { useSelector } from 'react-redux';
 
 import { type BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import { events } from '@suite-native/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { AccountsStackNavigator } from '@suite-native/module-accounts-management';
 import { EarnStackNavigator } from '@suite-native/module-earn';
 import { HomeStackNavigator } from '@suite-native/module-home';
 import { SettingsScreen } from '@suite-native/module-settings';
 import { TradingStackNavigator } from '@suite-native/module-trading';
 import { type AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import { selectIsTradingEnabled } from '@suite-native/trading-state';
 
 import { rootTabsOptions } from './routes';
@@ -17,7 +17,7 @@ import { rootTabsOptions } from './routes';
 const Tab = createBottomTabNavigator<AppTabsParamList>();
 
 export const AppTabNavigator = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const isTradingEnabled = useSelector(selectIsTradingEnabled);
 
     const handleTradeTabPress = () => {

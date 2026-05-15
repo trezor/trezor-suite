@@ -2,22 +2,17 @@ import { type RouteProp } from '@react-navigation/native';
 
 import { events } from '@suite-native/analytics';
 import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import { renderWithStoreProvider, screen, userEvent } from '@suite-native/test-utils-store';
 
 import { TradingLocationScreen } from '../TradingLocationScreen';
 
 const mockExitOnboardingFlow = jest.fn();
 const reportMock = jest.fn();
-
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
+const services = {
+    analytics: {
+        report: reportMock,
+    },
+};
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -49,14 +44,11 @@ describe('TradingLocationOnboardingScreen', () => {
                 device: { selectedDevice: undefined, devices: [] },
                 featureFlags: {},
             },
+            services,
         });
 
     beforeEach(() => {
         jest.clearAllMocks();
-
-        (useAnalytics as jest.Mock).mockReturnValue({
-            report: reportMock,
-        });
     });
 
     afterEach(() => {

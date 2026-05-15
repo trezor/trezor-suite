@@ -1,9 +1,10 @@
 import { useCallback, useEffect } from 'react';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
 import { commonQueryKeys, useQueryClient } from '@suite-common/react-query';
 import {
@@ -19,7 +20,6 @@ import { claimMerkleRewardsThunk } from 'src/actions/wallet/stablecoin-yield';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { YieldRewardsList } from './YieldRewardsList';
 import { type YieldAccountRewards, useMerkleRewards } from './hooks';
@@ -33,7 +33,7 @@ type YieldClaimProps = {
 };
 
 export const YieldClaim = ({ account }: YieldClaimProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const dispatch = useDispatch();
     const { device } = useDevice();
     const flowKey = account.key;

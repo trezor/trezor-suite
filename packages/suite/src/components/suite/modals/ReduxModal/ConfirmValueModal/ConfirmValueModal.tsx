@@ -1,7 +1,7 @@
 import { type ReactNode, useEffect, useState } from 'react';
 
 import { Address } from '@suite/address';
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
@@ -12,6 +12,7 @@ import {
 } from '@suite/metadata';
 import { MODAL_CONTEXT_USER } from '@suite/modal';
 import { selectDesktopSuiteSyncInteraction } from '@suite/suite-sync';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
@@ -44,8 +45,6 @@ import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { QrCode } from 'src/components/suite/QrCode';
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useSuiteServices } from 'src/support/SuiteServicesProvider';
-import { useAnalytics } from 'src/support/useAnalytics';
 import { type ThunkAction } from 'src/types/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
 
@@ -81,8 +80,7 @@ export const ConfirmValueModal = ({
     const dispatch = useDispatch();
     const { openNodeById } = useGuideOpenNode();
     const { translationString } = useTranslation();
-    const analytics = useAnalytics();
-    const { suiteSync } = useSuiteServices();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
 
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
@@ -207,7 +205,6 @@ export const ConfirmValueModal = ({
                                 {isAddress && !account && label}
                                 {isAddress && !!account && shouldShowAddressLabelAction && (
                                     <Labeling
-                                        suiteSync={suiteSync}
                                         deviceStaticSessionId={account.deviceState}
                                         displayValue={
                                             <Text typographyStyle="body-md-strong">

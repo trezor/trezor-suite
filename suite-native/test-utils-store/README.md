@@ -31,6 +31,7 @@ const { result } = renderHookWithStoreProvider(() => useMyHook());
 Both helpers accept the standard `@testing-library/react-native` options plus:
 
 - `preloadedState?: Record<string, unknown>` — initial state merged over defaults.
+- `services?: Record<string, unknown>` — overrides injected into the shared `ServicesProvider`; useful for tests that need custom service mocks.
 - `store?: EnhancedStore` — inject a pre-built store (see `createLightStore` below); takes precedence over `preloadedState`.
 - `wrapper?: ComponentType` — additional inner wrapper (e.g. a form provider).
 

@@ -1,26 +1,26 @@
 import { useState } from 'react';
 
-import { asEncryptedHex } from '@suite-common/platform-encryption';
+import { useServices } from '@suite-common/dependency-injection';
+import { type PlatformEncryptionDep, asEncryptedHex } from '@suite-common/platform-encryption';
 import { Button, ButtonGroup, Column, Textarea } from '@trezor/components';
 import { SectionItem, SettingsSection } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { type Branded } from '@trezor/type-utils';
 
 import { useLayoutSize } from 'src/hooks/suite';
-import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
 type Value = string & Branded<'Value'>;
 const asValue = (value: string) => value as Value;
 
-export const PlatformEncrypton = () => {
+export const PlatformEncryption = () => {
     const { isBelowLaptop } = useLayoutSize();
     const [plaintext, setPlaintext] = useState(asValue(''));
     const [ciphertext, setCiphertext] = useState(asEncryptedHex<Value>(''));
 
-    const services = useSuiteServices();
+    const { platformEncryption } = useServices<PlatformEncryptionDep>();
 
     const encrypt = async () => {
-        const result = await services.platformEncryption.encrypt({ value: plaintext });
+        const result = await platformEncryption.encrypt({ value: plaintext });
 
         if (result.success) {
             setCiphertext(result.payload);
@@ -30,7 +30,7 @@ export const PlatformEncrypton = () => {
     };
 
     const decrypt = async () => {
-        const result = await services.platformEncryption.decrypt({ value: ciphertext });
+        const result = await platformEncryption.decrypt({ value: ciphertext });
 
         if (result.success) {
             setPlaintext(result.payload);

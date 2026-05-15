@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type TradingTransaction } from '@suite-common/trading';
-import { events } from '@suite-native/analytics';
-import { useAnalytics } from '@suite-native/services';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 
 import { getTradeStatusStep } from '../../utils/general/utils';
 
@@ -11,7 +11,7 @@ export const useTransactionStateChangeAnalyticsReporting = (deviceTrades: Tradin
     const previousStatuses = useRef<Map<string, ReturnType<typeof getTradeStatusStep> | undefined>>(
         new Map(),
     );
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     // Report analytics for status changes
     useEffect(() => {
         deviceTrades.forEach(trade => {

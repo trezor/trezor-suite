@@ -1,13 +1,13 @@
-import { events } from '@suite-native/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-import { useAnalytics } from '@suite-native/services';
 import { SUITE_REFERRAL } from '@trezor/urls';
 
 export const ReferralButton = () => {
     const openLink = useOpenLink();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const handleOpenLink = () => {
         analytics.report({
             type: events.referralButtonPressEvent.name,

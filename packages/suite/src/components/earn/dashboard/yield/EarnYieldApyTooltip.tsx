@@ -2,12 +2,12 @@ import { type ReactNode, useEffect, useRef } from 'react';
 
 import styled from 'styled-components';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDto } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Tooltip } from '@trezor/components';
 
-import { useAnalytics } from 'src/support/useAnalytics';
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 
 import { EarnYieldApyBreakdown } from './EarnYieldApyBreakdown';
@@ -34,7 +34,7 @@ export const EarnYieldApyTooltip = ({
     networkSymbol,
     children,
 }: EarnYieldApyTooltipProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const reportTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(

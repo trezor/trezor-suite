@@ -1,5 +1,7 @@
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { Modal } from '@trezor/components';
 
 import { selectConnectingDevices } from 'src/actions/bluetooth/desktopBluetoothSelectors';
@@ -7,7 +9,6 @@ import { BluetoothPairingPin } from 'src/components/suite/bluetooth/BluetoothPai
 import { BluetoothScanningList } from 'src/components/suite/bluetooth/BluetoothScanningList';
 import { BluetoothSelectedDevice } from 'src/components/suite/bluetooth/BluetoothSelectedDevice';
 import { useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { useConnectionGlobalModalContext } from './context/ConnectionGlobalModalContext';
 
@@ -18,7 +19,7 @@ type BluetoothConnectionModalProps = {
 const selectedDeviceConnectionTypes = ['connecting', 'pairing'];
 
 export const BluetoothConnectionModal = ({ onClose }: BluetoothConnectionModalProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const { handlePairingCancel, onReScanClick, selectedDevice } =
         useConnectionGlobalModalContext();
     const connectingDevices = useSelector(selectConnectingDevices);

@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
-import { type EnsureWalletSuiteSyncOnErrors, type SuiteSync } from '@suite-common/suite-sync-types';
+import {
+    type EnsureWalletSuiteSyncOnErrors,
+    type SuiteSyncDep,
+} from '@suite-common/suite-sync-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Button } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/connect';
@@ -21,7 +25,6 @@ export type WipeSuiteSyncLabelsOnError = (params: {
 
 type WipeSuiteSyncLabelsProps = {
     onError: WipeSuiteSyncLabelsOnError;
-    suiteSync: SuiteSync;
 };
 
 type WipeSuiteSyncLabelsStep = 'wipingLoading' | 'areYouSure' | 'confirmDeletion' | 'start';
@@ -29,9 +32,10 @@ type WipeSuiteSyncLabelsStep = 'wipingLoading' | 'areYouSure' | 'confirmDeletion
 /**
  * @deprecated Intended only for debug & testing
  */
-export const WipeSuiteSyncLabels = ({ onError, suiteSync }: WipeSuiteSyncLabelsProps) => {
+export const WipeSuiteSyncLabels = ({ onError }: WipeSuiteSyncLabelsProps) => {
     const [step, setStep] = useState<WipeSuiteSyncLabelsStep>('start');
     const [wipeConfirmationCountdown, setWipeConfirmationCountdown] = useState(0);
+    const { suiteSync } = useServices<SuiteSyncDep>();
 
     const wipeConfirmationTimeoutRef = useRef<TimerId | null>(null);
     const wipeConfirmationIntervalRef = useRef<TimerId | null>(null);

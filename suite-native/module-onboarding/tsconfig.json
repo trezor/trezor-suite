@@ -5,6 +5,9 @@
         {
             "path": "../../suite-common/analytics"
         },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../analytics" },
         { "path": "../app-init" },
         { "path": "../atoms" },
@@ -13,7 +16,6 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
-        { "path": "../services" },
         { "path": "../settings" },
         { "path": "../trading-residence" },
         { "path": "../trading-state" },

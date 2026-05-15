@@ -2,8 +2,9 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { selectLanguage } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { type GuideNode as GuideNodeType } from '@suite-common/suite-types';
 import { Icon } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/env-utils';
@@ -11,7 +12,6 @@ import { borders, spacings, transitions, typography } from '@trezor/theme';
 
 import { openNode } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 import { getNodeTitle } from 'src/utils/suite/guide';
 
 const NodeButton = styled.button`
@@ -68,7 +68,7 @@ type GuideNodeProps = {
 export const GuideNode = ({ node, description }: GuideNodeProps) => {
     const language = useSelector(selectLanguage);
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
 
     const navigateToNode = () => {
         dispatch(openNode(node));

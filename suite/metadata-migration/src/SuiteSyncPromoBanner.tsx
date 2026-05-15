@@ -10,14 +10,9 @@ import {
     type WithSuiteSyncAndDeviceState,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
-import { type SuiteSync } from '@suite-common/suite-sync-types';
 import { SidebarBanner } from '@trezor/product-components';
 
-type SuiteSyncPromoBannerProps = {
-    suiteSync: SuiteSync;
-};
-
-export const SuiteSyncPromoBanner = ({ suiteSync }: SuiteSyncPromoBannerProps) => {
+export const SuiteSyncPromoBanner = () => {
     const [isTurnOnSuiteSyncModalVisible, setIsTurnOnSuiteSyncModalVisible] = useState(false);
     const [isDismissed, setIsDismissed] = useState(false);
 
@@ -48,7 +43,6 @@ export const SuiteSyncPromoBanner = ({ suiteSync }: SuiteSyncPromoBannerProps) =
             {isTurnOnSuiteSyncModalVisible && (
                 <TurnOnSuiteSyncModals
                     deviceStaticSessionId={deviceStaticSessionId}
-                    suiteSync={suiteSync}
                     onClose={() => setIsTurnOnSuiteSyncModalVisible(false)}
                     onSuccess={() => setIsTurnOnSuiteSyncModalVisible(false)}
                 />

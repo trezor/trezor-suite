@@ -3,13 +3,13 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useAlert } from '@suite-native/alerts';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { type PinActionType } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
 
@@ -52,7 +52,7 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
     const navigation = useNavigation();
     const { showToast } = useToast();
     const { showAlert } = useAlert();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const showSuccess = useCallback(
         (messageKey: TxKeyPath) => {
             showToast({

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import type { ExchangeProviderInfo, ExchangeTrade } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingRootState,
     cryptoIdToNetwork,
@@ -11,11 +12,11 @@ import {
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
 import {
+    type NativeAnalyticsDep,
     type TradingExchangeAction,
     type TradingExchangeStep,
     events,
 } from '@suite-native/analytics';
-import { useAnalytics } from '@suite-native/services';
 import { coinInfoToTradeableAsset } from '@suite-native/trading-atoms';
 
 export type TradingExchangeAnalyticReportCallback = (
@@ -83,7 +84,7 @@ export const useExchangeAnalyticReportCallback = (
 ): TradingExchangeAnalyticReportCallback => {
     const persistedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const quote = candidateQuote || persistedQuote;
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const {
         exchangeName,
         exchangeType,
