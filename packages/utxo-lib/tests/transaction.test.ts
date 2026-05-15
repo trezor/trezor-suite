@@ -1,6 +1,7 @@
 import * as utils from './transaction.utils';
 import * as NETWORKS from '../src/networks';
 import { Transaction } from '../src/transaction';
+import { TransactionBase } from '../src/transaction/base';
 import fixturesBitcoin from './__fixtures__/transaction/bitcoin';
 import fixturesBitcoinCash from './__fixtures__/transaction/bitcoinCash';
 import fixturesDash from './__fixtures__/transaction/dash';
@@ -530,6 +531,15 @@ describe('Transaction', () => {
             // The static Transaction.isCoinbaseHash delegates to base isCoinbaseHash; an
             // all-zero 32-byte prevout hash is the canonical coinbase marker.
             expect(Transaction.isCoinbaseHash(Buffer.alloc(32, 0))).toBe(true);
+        });
+    });
+
+    describe('TransactionBase base toBuffer placeholder', () => {
+        it('returns an empty buffer when called with no args (fires _ALLOW_WITNESS=true and _ALLOW_MWEB=true defaults)', () => {
+            const tx = new TransactionBase({});
+            const result = tx.toBuffer();
+            expect(Buffer.isBuffer(result)).toBe(true);
+            expect(result.length).toBe(0);
         });
     });
 
