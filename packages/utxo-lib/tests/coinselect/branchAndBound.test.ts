@@ -40,4 +40,21 @@ describe('coinselect: branchAndBound (bnb)', () => {
 
         expect(branchAndBound(inputs, outputs, 10, options)).toEqual({ fee: 0 });
     });
+
+    it('with an unparseable utxo value treats it as ZERO effective value (filtered out)', () => {
+        // Exercises the truthy arm of `if (!value)` at
+        // src/coinselect/inputs/branchAndBound.ts:22 in calculateEffectiveValues.
+        // A utxo without a value makes bignumberOrNaN return undefined; the
+        // function assigns effectiveValue = ZERO, which is then filtered out by
+        // the `effectiveValue.gt(ZERO)` check. With no remaining effective utxos,
+        // utxosTotalEffectiveValue.lt(target) short-circuits to { fee: 0 }.
+        const inputs = utils.expand([{}], true);
+        const outputs = utils.expand(['100000'], false);
+        const options = {
+            txType: 'p2pkh',
+            dustThreshold: 546,
+        } as CoinSelectOptions;
+
+        expect(branchAndBound(inputs, outputs, 10, options)).toEqual({ fee: 0 });
+    });
 });
