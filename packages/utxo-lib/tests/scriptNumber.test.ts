@@ -25,4 +25,10 @@ describe('scriptNumber', () => {
             'Script number overflow',
         );
     });
+
+    it('decode throws Non-minimally encoded script number for single-byte 0x80 buffer', () => {
+        expect(() => scriptNumber.decode(Buffer.from('80', 'hex'))).toThrow(
+            'Non-minimally encoded script number',
+        );
+    });
 });
