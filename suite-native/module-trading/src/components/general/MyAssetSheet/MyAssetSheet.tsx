@@ -22,6 +22,7 @@ export type MyAssetSheetProps = {
     isVisible: boolean;
     onClose: (shouldHideKeyboard?: boolean) => void;
     onAssetSelect: MyAssetListItemProps['onPress'];
+    testID?: string;
 };
 
 const keyExtractor = (asset: MyAssetRow, sectionData: Account) =>
@@ -39,7 +40,7 @@ const renderItem = (
     );
 
 export const MyAssetSheet = memo(
-    ({ tradingType, isVisible, onClose, onAssetSelect }: MyAssetSheetProps) => {
+    ({ tradingType, isVisible, onClose, onAssetSelect, testID }: MyAssetSheetProps) => {
         const onAssetSelectCallback = (asset: TradeableAsset, account: Account) => {
             onAssetSelect(asset, account);
             onClose(false);
@@ -57,6 +58,8 @@ export const MyAssetSheet = memo(
             filterValue,
         } = useMyAssetsFilteredData(myAssets);
 
+        const headerTestID = testID ? `${testID}/header` : undefined;
+
         const renderHandle = useCallback(
             () => (
                 <MyAssetSheetHeader
@@ -64,9 +67,10 @@ export const MyAssetSheet = memo(
                     onFilterChange={setFilterValue}
                     onSelectedNetworkFilter={setFilterSymbol}
                     availableNetworks={availableNetworks}
+                    testID={headerTestID}
                 />
             ),
-            [onClose, setFilterValue, setFilterSymbol, availableNetworks],
+            [onClose, setFilterValue, setFilterSymbol, availableNetworks, headerTestID],
         );
 
         return (

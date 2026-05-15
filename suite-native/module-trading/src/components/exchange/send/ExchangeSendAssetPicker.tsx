@@ -14,6 +14,7 @@ import { MyAssetSheet } from '../../general/MyAssetSheet/MyAssetSheet';
 import { SelectTradeableAssetButton } from '../../general/SelectTradeableAssetButton';
 
 const ASSET_PICKER_TEST_ID = '@trading/exchange/asset-send-button';
+const ASSET_SHEET_TEST_ID = '@trading/exchange/send-asset-sheet';
 
 export const ExchangeSendAssetPicker = () => {
     const dispatch = useDispatch();
@@ -60,6 +61,7 @@ export const ExchangeSendAssetPicker = () => {
                 isVisible={isSheetVisible}
                 onClose={hideSheet}
                 onAssetSelect={onAssetSelect}
+                testID={ASSET_SHEET_TEST_ID}
             />
         </>
     );
