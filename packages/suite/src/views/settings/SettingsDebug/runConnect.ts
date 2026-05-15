@@ -1,3 +1,4 @@
+import { withCurrentCallId } from '@suite-common/connect-init';
 import TrezorConnect from '@trezor/connect';
 import { createConnect } from '@trezor/connect-flow';
 
@@ -30,36 +31,14 @@ type Process<R> = {
     toPromise(): Promise<R>;
 };
 
-// Wrap the TrezorConnect instance so every method call made through it
-// auto-stamps `callId` onto the first object arg. Built per-process because
-// `callId` is generated inside `createConnect` and only known once the
-// process exists — pickers that close over the proxy pick up the right
-// callId at invocation time, no plumbing needed at the call site.
-const proxyWithCallId = (tc: TrezorConnectLike, callId: string): TrezorConnectLike =>
-    new Proxy(tc, {
-        get(target, prop, receiver) {
-            const original = Reflect.get(target, prop, receiver);
-            if (typeof original !== 'function') return original;
-
-            return (firstArg: unknown, ...rest: unknown[]) => {
-                const stamped =
-                    firstArg && typeof firstArg === 'object'
-                        ? { ...(firstArg as object), callId }
-                        : firstArg;
-
-                return (original as (...a: unknown[]) => unknown).call(target, stamped, ...rest);
-            };
-        },
-    }) as TrezorConnectLike;
-
-// Context passed to the picker. `connect` is a per-process proxy that auto-
-// stamps `callId` onto each method call's first object arg, so simple
-// pickers stay one-liners. `callId` is also exposed as a raw string for
-// picker bodies that need to weave it into non-TrezorConnect work (logging,
-// dispatching tagged actions, coordinating with side effects).
+// Context passed to the picker. Just `connect` — the singleton
+// TrezorConnect, already wrapped at boot in `connectInitThunks`. callId is
+// not exposed here on purpose: runConnect sets a module-local stash around
+// the picker invocation, and the boot wrap reads it and stamps callId
+// onto every method call's params object. Picker bodies stay free of
+// callId plumbing entirely.
 export type RunConnectCtx = {
     connect: TrezorConnectLike;
-    callId: string;
 };
 
 /**
@@ -84,28 +63,30 @@ export type RunConnectCtx = {
  *               : connect.applySettings({ homescreen }),
  *   );
  *
- * The `connect` handed to the picker is a per-process proxy: every method
- * called through it has the current `callId` merged onto its first object
- * arg automatically. `callId` is also passed explicitly for picker bodies
- * that need it as a raw token (custom dispatches, logging, etc.). The
- * picker is invoked at call time, so the IPC-proxy override installed
- * during desktop boot is always picked up.
+ * callId injection is handled by a stash + the boot-time TrezorConnect
+ * wrap in `connectInitThunks`: `runConnect` sets the stash around the
+ * picker invocation, and any synchronous TrezorConnect.<method>(...) call
+ * inside the picker reads it and stamps callId onto its params object.
+ * Works whether the picker uses `connect` from the ctx, the imported
+ * `TrezorConnect` singleton, or any helper that ends up calling it.
+ *
+ * Caveats: the TrezorConnect call must happen synchronously inside the
+ * picker body (the stash is cleared as soon as the picker fn returns);
+ * concurrent overlapping scoped calls would clobber the stash. For async
+ * or concurrent flows, use the explicit `callId` from the ctx.
  */
 export const createRunConnect = (deps: { trezorConnect: TrezorConnectLike }) => {
     const _connect = createConnect({ trezorConnect: deps.trezorConnect });
 
     return <M extends AnyMethod>(pick: (ctx: RunConnectCtx) => M) =>
         (...args: Parameters<M>): Process<SuccessPayloadOf<M>> =>
-            _connect(({ callId }: { callId: string }) => {
-                // Pick is deferred until callId is known so the proxy can
-                // close over it. Every `connect.<method>(...)` inside the
-                // picker body goes through `proxyWithCallId` and gets the
-                // callId stamped onto the params object.
-                const proxied = proxyWithCallId(deps.trezorConnect, callId);
-                const method = pick({ connect: proxied, callId });
+            _connect(({ callId }: { callId: string }) =>
+                withCurrentCallId(callId, () => {
+                    const method = pick({ connect: deps.trezorConnect });
 
-                return method(...args);
-            })({} as never) as unknown as Process<SuccessPayloadOf<M>>;
+                    return method(...args);
+                }),
+            )({} as never) as unknown as Process<SuccessPayloadOf<M>>;
 };
 
 /**

@@ -26,6 +26,7 @@ import { DATA_URL } from '@trezor/urls';
 import { capitalizeFirstLetter, getSynchronize, isArrayMember } from '@trezor/utils';
 
 import { blacklist } from './blacklist';
+import { getCurrentCallId } from './callIdStash';
 import { handleConnectUiAction } from './handleConnectUiAction';
 import { type ConnectInitHooks, type ConnectKey } from './types';
 
@@ -114,8 +115,18 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                             : key.startsWith('cardano');
                     const cardanoEnabled = enabledNetworks.includes('ada') || isCardanoMethod;
 
+                    // Auto-stamp callId from the runConnect stash if the
+                    // caller didn't supply one. Read synchronously here so
+                    // we catch the value the stash held at call time.
+                    // Explicit `params.callId` always wins.
+                    const stashedCallId = getCurrentCallId();
+                    const paramsWithCallId =
+                        stashedCallId && params && typeof params === 'object' && !params.callId
+                            ? { ...params, callId: stashedCallId }
+                            : params;
+
                     const result = await synchronize(() =>
-                        original({ ...params, useCardanoDerivation: cardanoEnabled }),
+                        original({ ...paramsWithCallId, useCardanoDerivation: cardanoEnabled }),
                     );
 
                     dispatch(lockDevice(false));
