@@ -10,4 +10,13 @@ describe('bs58check', () => {
         const encoded = bs58check.encode(payload);
         expect(encoded).toBe('1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH');
     });
+
+    it('encodeAddress defaults to bitcoin network when no network arg is provided', () => {
+        // P2PKH single-byte version (0x00) + canonical bitcoinjs-lib hash160
+        // for address 1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH.
+        const hash = Buffer.from('751e76e8199196d454941c45d1b3a323f1433bd6', 'hex');
+
+        const address = bs58check.encodeAddress(hash, 0x00);
+        expect(address).toBe('1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH');
+    });
 });
