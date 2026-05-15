@@ -2947,6 +2947,7 @@ export const messages = {
             emptyTitle: 'Coin not found',
             emptyDescription: 'Check the spelling or browse the list to select an option.',
             searchInputPlaceholder: 'Search tokens or address',
+            allFilterTabTitle: 'All',
         },
         accountScreen: {
             accountEmpty: {
@@ -3162,6 +3163,7 @@ export const messages = {
         },
         myAssetSheet: {
             title: 'Your assets',
+            searchInputPlaceholder: 'Search assets',
             emptyTitle: 'No assets found',
             emptyDescription: 'You do not have any assets available for this operation.',
             noPair: {
