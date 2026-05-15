@@ -4,8 +4,10 @@ import {
     bignumberOrNaN,
     getDustAmount,
     getFee,
+    getFeePolicy,
     getVarIntSize,
 } from '../../src/coinselect/coinselectUtils';
+import { zcash as zcashNetwork } from '../../src/networks';
 
 describe('coinselectUtils', () => {
     it('bignumberOrNaN', () => {
@@ -56,6 +58,11 @@ describe('coinselectUtils', () => {
         expect(
             getFee([], [{ script: { length: 181 } }], 1, { baseFee: 1000, floorBaseFee: true }),
         ).toEqual(1000);
+    });
+
+    it('getFeePolicy returns "zcash" for the zcash network', () => {
+        // Exercises the truthy arm of the isNetworkType('zcash', network) branch in getFeePolicy.
+        expect(getFeePolicy(zcashNetwork)).toEqual('zcash');
     });
 
     it('getDogeFee with no dustThreshold option uses 0 default and adds no dust surcharge', () => {
