@@ -178,9 +178,6 @@
         "@playwright/browser-webkit": {
             "built": true
         },
-        "@sentry/cli": {
-            "built": false
-        },
         "@shopify/react-native-skia": {
             "built": true
         },
@@ -196,23 +193,11 @@
         "blake-hash": {
             "built": true
         },
-        "core-js": {
-            "built": false
-        },
-        "core-js-pure": {
-            "built": false
-        },
         "detox": {
             "built": true
         },
-        "dtrace-provider": {
-            "built": false
-        },
         "electron": {
             "built": true
-        },
-        "es5-ext": {
-            "built": false
         },
         "esbuild": {
             "built": true
@@ -239,5 +224,5 @@
             "built": true
         }
     },
-    "packageManager": "yarn@4.12.0"
+    "packageManager": "yarn@4.14.1"
 }
