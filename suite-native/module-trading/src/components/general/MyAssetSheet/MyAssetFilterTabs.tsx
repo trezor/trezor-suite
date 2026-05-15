@@ -12,12 +12,13 @@ type MyAssetFilterTabsProps = {
     availableNetworks: NetworkSymbol[];
 };
 
-export const MyAssetFilterTabs = ({
-    visible,
+const keyExtractor = (item: FilterItem<NetworkSymbol | undefined>) => item.value ?? 'undefined';
+
+const MyAssetFilterTabsContent = ({
     animationDuration,
     onSelectedNetworkFilter,
     availableNetworks,
-}: MyAssetFilterTabsProps) => {
+}: Omit<MyAssetFilterTabsProps, 'visible'>) => {
     const [selectedValue, setSelectedValue] = useState<NetworkSymbol | undefined>(undefined);
 
     const { translate } = useTranslate();
@@ -27,7 +28,6 @@ export const MyAssetFilterTabs = ({
         onSelectedNetworkFilter(value);
     };
 
-    // Clear network filter on unmounting filter tabs
     useEffect(() => () => onSelectedNetworkFilter(undefined), [onSelectedNetworkFilter]);
 
     const filterItems: FilterItem<NetworkSymbol | undefined>[] = useMemo(
@@ -44,12 +44,6 @@ export const MyAssetFilterTabs = ({
         [availableNetworks, translate],
     );
 
-    const keyExtractor = (item: FilterItem<NetworkSymbol | undefined>) => item.value ?? 'undefined';
-
-    if (!visible) {
-        return null;
-    }
-
     return (
         <Animated.View
             entering={FadeIn.duration(animationDuration)}
@@ -63,4 +57,12 @@ export const MyAssetFilterTabs = ({
             />
         </Animated.View>
     );
+};
+
+export const MyAssetFilterTabs = ({ visible, ...rest }: MyAssetFilterTabsProps) => {
+    if (!visible) {
+        return null;
+    }
+
+    return <MyAssetFilterTabsContent {...rest} />;
 };
