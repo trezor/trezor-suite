@@ -267,7 +267,19 @@ export const submitYieldOpportunity = async ({
 export const handleYieldApproveSuccessTxidThunk = createThunk(
     `${YIELD_THUNK_PREFIX}/handleApproveSuccessTxid`,
     (
-        { flowType, flowKey, txid }: YieldSessionPayload & { txid: string },
+        {
+            fee,
+            flowType,
+            flowKey,
+            isAmountUnlimited,
+            submittedAt,
+            txid,
+        }: YieldSessionPayload & {
+            fee?: string;
+            isAmountUnlimited?: boolean;
+            submittedAt?: number;
+            txid: string;
+        },
         { dispatch, getState },
     ) => {
         const { approval } = selectStablecoinYieldSession(getState(), flowType, flowKey);
@@ -283,6 +295,9 @@ export const handleYieldApproveSuccessTxidThunk = createThunk(
                     type: approveTxType,
                     txid,
                     amount: approval.modalState?.amount ?? '',
+                    fee,
+                    submittedAt,
+                    isAmountUnlimited,
                 },
             }),
         );

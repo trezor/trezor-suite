@@ -47,6 +47,7 @@ const ApprovalReviewContent = ({
         isSigningApproval,
         isSubmitDisabled,
     } = useYieldApprovalReview({
+        approvalLimitType: route.params.approvalLimitType,
         flowData,
         flowKey,
     });

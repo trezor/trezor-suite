@@ -52,6 +52,9 @@ export type YieldPendingTransactionState = {
     type: 'approve' | 'revoke' | 'revoke-only' | 'deposit' | 'withdraw' | 'claim';
     txid: string;
     amount: string;
+    fee?: string;
+    submittedAt?: number;
+    isAmountUnlimited?: boolean;
 };
 
 export type YieldFlowCompleteRewardItem = {
