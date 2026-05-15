@@ -5,7 +5,7 @@ import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
-import { Box, Button, Column, H3, Illustration, Paragraph, Row, Text } from '@trezor/components';
+import { Box, Button, Column, H3, Illustration, Paragraph, Row } from '@trezor/components';
 import { NetworkIconSet } from '@trezor/product-components';
 import { borders } from '@trezor/theme';
 
@@ -50,9 +50,15 @@ export const EmptyWallet = () => {
             <H3 margin={{ top: 16 }}>
                 <Translation id="TR_YOUR_WALLET_IS_READY_WHAT" />
             </H3>
-            <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
+            <Paragraph
+                intent="neutral"
+                priority="secondary"
+                typographyStyle="body-sm"
+                maxWidth={500}
+                align="center"
+            >
                 <Translation id="TR_DASHBOARD_EMPTY_WALLET_DESC" />
-            </Text>
+            </Paragraph>
             {enabledNetworks.length > 0 && !isBitcoinOnlyFirmware && (
                 <RoundedBorder>
                     <Row gap={8} flexWrap="wrap">
