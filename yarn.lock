@@ -11335,6 +11335,11 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
+    react: "npm:19.2.4"
+    react-native: "npm:0.83.2"
+    react-redux: "npm:9.2.0"
+  languageName: unknown
+  linkType: soft
 
 "@suite-native/address@workspace:*, @suite-native/address@workspace:suite-native/address":
   version: 0.0.0-use.local

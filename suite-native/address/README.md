@@ -1,7 +1,7 @@
 ### `@suite-native/address`
 
 This package is supposed to only contain address related code.
-address Labeling, components to display the address itself,
+Address labeling, components to display the address itself,
 selectors for the address, ... are all ok.
 
 But there shall be no trading, account, etc... On the contrary,

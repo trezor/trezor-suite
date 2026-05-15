@@ -97,6 +97,8 @@ export const selectAccountLabel = (
         return syncedLabel;
     }
 
+    // Fallback to legacy account.label (mobile only, portfolio tracker)
+
     const accountKey = createAccountKey({
         accountDescriptor,
         networkSymbol,
