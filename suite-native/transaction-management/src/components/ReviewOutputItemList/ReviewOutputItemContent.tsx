@@ -12,6 +12,7 @@ import { AddressFormatter, CryptoAmountFormatter } from '@suite-native/formatter
 import { Translation } from '@suite-native/intl';
 import { type ExchangeFlowType } from '@suite-native/navigation';
 import type { TokenInfo } from '@trezor/connect';
+import { exhaustive } from '@trezor/type-utils';
 
 import { ReviewOutputHexData } from './ReviewOutputHexData';
 import { ReviewOutputItemValues } from './ReviewOutputItemValues';
@@ -61,22 +62,29 @@ export const ReviewOutputItemContent = ({
 
         case 'address':
         case 'regular_legacy':
-            if (flowType === 'approve' || flowType === 'swap') {
-                return (
-                    <Text variant="body-sm">
-                        <Translation id="transactionManagement.review.outputs.tokenApprovalDescription" />
-                    </Text>
-                );
-            }
-            if (flowType === 'revoke' || flowType === 'revoke-and-approve') {
-                return (
-                    <Text variant="body-sm">
-                        <Translation id="transactionManagement.review.outputs.tokenRevocationDescription" />
-                    </Text>
-                );
-            }
+            switch (flowType) {
+                case 'approve':
+                    return (
+                        <Text variant="body-sm">
+                            <Translation id="transactionManagement.review.outputs.tokenApprovalDescription" />
+                        </Text>
+                    );
 
-            return <AddressFormatter value={value} format="full" variant="body-sm" />;
+                case 'revoke':
+                case 'revoke-and-approve':
+                    return (
+                        <Text variant="body-sm">
+                            <Translation id="transactionManagement.review.outputs.tokenRevocationDescription" />
+                        </Text>
+                    );
+
+                case 'swap':
+                case undefined:
+                    return <AddressFormatter value={value} format="full" variant="body-sm" />;
+
+                default:
+                    throw exhaustive(flowType);
+            }
 
         case 'contract':
             if (
