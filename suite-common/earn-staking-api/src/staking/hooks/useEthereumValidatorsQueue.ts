@@ -6,18 +6,25 @@ import { type EthValidatorsQueue } from '../../api/types';
 import { getEthereumValidatorsQueue } from '../services';
 
 interface UseEthereumValidatorsQueueProps {
-    account: Account;
+    account: Account | null;
     timestamp?: number;
 }
 
 export function useEthereumValidatorsQueue(
     { account, timestamp }: UseEthereumValidatorsQueueProps,
-    queryOptions?: UseQueryOptions<EthValidatorsQueue, ResponseError | ResponseValidationError>,
+    {
+        enabled = Boolean(account),
+        ...restQueryOptions
+    }: Omit<
+        UseQueryOptions<EthValidatorsQueue, ResponseError | ResponseValidationError>,
+        'queryKey'
+    > = {},
 ) {
     return useQuery({
         staleTime: 60 * 1000, // 1 minute
-        ...queryOptions,
-        queryKey: commonQueryKeys.validatorsQueue(account.key, timestamp),
+        ...restQueryOptions,
+        enabled,
+        queryKey: commonQueryKeys.validatorsQueue(account?.key, timestamp),
         queryFn: () =>
             getEthereumValidatorsQueue({
                 params: { timestamp },
