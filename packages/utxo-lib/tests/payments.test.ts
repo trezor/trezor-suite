@@ -133,3 +133,10 @@ describe('p2pkh non-canonical signature', () => {
         );
     });
 });
+
+describe('p2pkh lazy address getter', () => {
+    it('returns undefined when input alone is provided and hash cannot be derived', () => {
+        const p = PAYMENTS.p2pkh({ input: Buffer.alloc(0) }, { validate: false });
+        expect(p.address).toBeUndefined();
+    });
+});
