@@ -157,3 +157,10 @@ describe('p2wpkh non-canonical signature', () => {
         );
     });
 });
+
+describe('p2wpkh lazy address getter', () => {
+    it('returns undefined when only an empty witness is provided and hash cannot be derived', () => {
+        const p = PAYMENTS.p2wpkh({ witness: [] }, { validate: false });
+        expect(p.address).toBeUndefined();
+    });
+});
