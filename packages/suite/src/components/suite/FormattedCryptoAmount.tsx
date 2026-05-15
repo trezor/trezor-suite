@@ -4,6 +4,7 @@ import { selectLanguage } from '@suite/settings';
 import { isSignValuePositive } from '@suite-common/formatters';
 import { type SignValue } from '@suite-common/suite-types';
 import {
+    type NetworkSymbol,
     type NetworkSymbolExtended,
     getDisplaySymbol,
     getNetworkOptional,
@@ -37,6 +38,10 @@ import { RedactNumericalValue } from './RedactNumericalValue';
 export interface FormattedCryptoAmountProps {
     value?: string | number | AmountUnit; // Todo: remove `string | number`, its for Back Compatibility only
     symbol?: NetworkSymbolExtended;
+    // Override for fiat-rate lookup when `symbol` carries a token ticker (e.g. "USDC")
+    // instead of a NetworkSymbol — pass the host chain (e.g. "eth") to enable rate-based
+    // decimal formatting for tokens.
+    networkSymbol?: NetworkSymbol;
     contractAddress?: string | null;
     isBalance?: boolean;
     showApproximation?: boolean;
@@ -55,6 +60,7 @@ export interface FormattedCryptoAmountProps {
 export const FormattedCryptoAmount = ({
     value, // expects a value in full units (BTC not sats)
     symbol,
+    networkSymbol: networkSymbolOverride,
     contractAddress, // include contractAddress whenever the symbol is an token
     isBalance,
     showApproximation = false,
@@ -76,8 +82,12 @@ export const FormattedCryptoAmount = ({
     const {
         features: networkFeatures,
         testnet: isTestnet,
-        symbol: networkSymbol,
+        symbol: networkSymbolFromConfig,
     } = getNetworkOptional(lowerCaseSymbol) ?? {};
+
+    // Tokens carry a ticker in `symbol` (e.g. "USDC"); fall back to the explicit override
+    // so fiat-rate lookup still resolves the host chain.
+    const networkSymbol = networkSymbolFromConfig ?? networkSymbolOverride;
 
     const currentRate = useSelector(state => {
         if (!networkSymbol) return undefined;

@@ -8423,6 +8423,15 @@ export const messages = defineMessages({
         id: 'TR_BTC_UNITS',
         defaultMessage: 'Bitcoin units',
     },
+    TR_FIAT_BASED_CRYPTO_DECIMALS: {
+        id: 'TR_FIAT_BASED_CRYPTO_DECIMALS',
+        defaultMessage: 'Fiat-based crypto decimals',
+    },
+    TR_FIAT_BASED_CRYPTO_DECIMALS_DESCRIPTION: {
+        id: 'TR_FIAT_BASED_CRYPTO_DECIMALS_DESCRIPTION',
+        defaultMessage:
+            'Shorten crypto amounts so that the smallest displayed unit is roughly worth one unit of your selected base currency. Disable to always show full precision.',
+    },
     TR_FAILED: {
         id: 'TR_FAILED',
         defaultMessage: 'Failed',

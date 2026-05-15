@@ -49,6 +49,7 @@ export function AssetRowToken({
             {token.balance && (
                 <AssetAmount
                     symbol={token.symbol!}
+                    networkSymbol={account.symbol}
                     fiatAmount={token.fiatRate ? asBaseCurrencyAmount(token.fiatValue) : undefined}
                     contractAddress={token.contract}
                     amount={token.balance}

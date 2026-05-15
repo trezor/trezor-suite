@@ -84,6 +84,8 @@ export type WalletSettingsAction =
     | ReturnType<typeof setMevProtection>
     | ReturnType<typeof setNetworkReserve>
     | ReturnType<typeof setAddressDisplayType>
+    | ReturnType<typeof setUseFiatBasedCryptoDecimals>
+    | ReturnType<typeof toggleUseFiatBasedCryptoDecimals>
     | ChangeCoinVisibilityAction
     | SetHideBalanceAction
     | SetBitcoinAmountUnitsAction;

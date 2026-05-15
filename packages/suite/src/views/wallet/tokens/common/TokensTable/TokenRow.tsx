@@ -93,6 +93,7 @@ export const TokenRow = ({
                                 data-testid={`@token-row/${token.name}/crypto-amount`}
                                 value={token.balance}
                                 symbol={token.symbol}
+                                networkSymbol={network.symbol}
                                 contractAddress={token.contract}
                             />
                         </Text>

@@ -64,6 +64,7 @@ export const EarnAccountCellDetails = ({
                         <FormattedCryptoAmount
                             value={tokenBalance.value}
                             symbol={tokenBalance.symbol}
+                            networkSymbol={networkSymbol}
                             contractAddress={tokenBalance.contractAddress}
                             isBalance
                         />

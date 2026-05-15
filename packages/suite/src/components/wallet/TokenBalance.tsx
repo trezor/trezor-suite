@@ -1,4 +1,5 @@
 import { useFormatters } from '@suite-common/formatters';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { Column, Text } from '@trezor/components';
 import { type AssetProps } from '@trezor/product-components';
@@ -8,10 +9,11 @@ import { useSelector } from 'src/hooks/suite';
 
 export interface TokenBalanceProps {
     contractAddress: string;
+    networkSymbol?: NetworkSymbol;
     tokenBalance: NonNullable<AssetProps['tokenBalance']>;
 }
 
-export function TokenBalance({ contractAddress, tokenBalance }: TokenBalanceProps) {
+export function TokenBalance({ contractAddress, networkSymbol, tokenBalance }: TokenBalanceProps) {
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const fiatCurrency = useSelector(selectBaseCurrency);
 
@@ -20,6 +22,7 @@ export function TokenBalance({ contractAddress, tokenBalance }: TokenBalanceProp
             <FormattedCryptoAmount
                 value={tokenBalance.baseAmount}
                 symbol={tokenBalance.baseSymbol}
+                networkSymbol={networkSymbol}
                 contractAddress={contractAddress}
             />
             {tokenBalance.fiatAmount && (
