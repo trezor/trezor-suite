@@ -1,5 +1,6 @@
-import { type Horizon } from '@stellar/stellar-sdk';
-
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { identifyTransaction } from '@trezor/coins-stellar';
+import type { RawStellarTransaction } from '@trezor/coins-stellar/types';
 import { BigNumber } from '@trezor/utils';
 
 import {
@@ -17,7 +18,7 @@ describe('stellar/utils', () => {
             it(description, () => {
                 const result = transformTransaction(
                     // @ts-expect-error Fixtures don't fully implement this interface.
-                    input.tx as Horizon.ServerApi.TransactionRecord,
+                    identifyTransaction(input.tx as RawStellarTransaction),
                     input.descriptor,
                     {},
                 );

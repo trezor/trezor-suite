@@ -1,10 +1,4 @@
 import { type WalletKitTypes } from '@reown/walletkit';
-import {
-    FeeBumpTransaction,
-    Networks,
-    type Transaction,
-    TransactionBuilder,
-} from '@stellar/stellar-sdk';
 import type { ProposalTypes } from '@walletconnect/types';
 
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
@@ -13,8 +7,8 @@ import { createThunk } from '@suite-common/redux-utils';
 import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import loadStellar from '@trezor/coins-stellar/runtime';
 import TrezorConnect, { type CallMethodResponse } from '@trezor/connect';
-import { transformTransaction } from '@trezor/connect-plugin-stellar';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
 import { selectSessionByTopic } from '../walletConnectReducer';
@@ -59,7 +53,7 @@ const resolveStellarRequestContext = (event: WalletKitTypes.SessionRequest) => {
 
     return {
         symbol: network.symbol,
-        networkPassphrase: network.testnet ? Networks.TESTNET : Networks.PUBLIC,
+        testnet: network.testnet,
     };
 };
 
@@ -76,18 +70,9 @@ const stellarSignXDR = createThunk<
     async ({ session, xdrBase64, origin, event }, { dispatch, getState }) => {
         const context = resolveStellarRequestContext(event);
 
-        let parsed;
-        try {
-            parsed = TransactionBuilder.fromXDR(xdrBase64, context.networkPassphrase);
-        } catch {
-            throw new Error('Invalid XDR');
-        }
+        const { parseTransactionFromXDR, transformTransaction } = await loadStellar();
 
-        if (parsed instanceof FeeBumpTransaction) {
-            throw new Error('Unsupported envelope type');
-        }
-
-        const transaction = parsed as Transaction;
+        const transaction = parseTransactionFromXDR(xdrBase64, context.testnet);
 
         // Validate all operations are supported classic types.
         for (const op of transaction.operations) {
@@ -105,13 +90,15 @@ const stellarSignXDR = createThunk<
             throw new Error('Account not found');
         }
 
-        const transformedTransaction = transformTransaction(account.path, transaction);
+        const transformed = transformTransaction(transaction);
 
         dispatch(
             trezorConnectPopupActions.connectPopupCallThunk({
                 method: 'stellarSignTransaction',
                 payload: {
-                    ...transformedTransaction,
+                    transaction: transformed,
+                    networkPassphrase: transaction.networkPassphrase,
+                    path: account.path,
                     device,
                 },
                 source: {

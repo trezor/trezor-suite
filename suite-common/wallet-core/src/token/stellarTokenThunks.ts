@@ -8,10 +8,7 @@ import {
     isTestnet,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import {
-    buildAddTrustlineTransaction,
-    buildRemoveTrustlineTransaction,
-} from '@trezor/blockchain-link-utils/src/stellar';
+import stellar from '@trezor/coins-stellar/runtime';
 import TrezorConnect from '@trezor/connect';
 import { StellarAssetType } from '@trezor/protobuf/src/definitions';
 
@@ -72,6 +69,9 @@ const manageTrustline = async (
         issuer,
     };
 
+    const { buildAddTrustlineTransaction, buildRemoveTrustlineTransaction, transformTransaction } =
+        await stellar();
+
     // Build the appropriate trustline transaction
     const misc = account.misc as { stellarSequence: string };
     const transactionBuilder =
@@ -85,10 +85,7 @@ const manageTrustline = async (
         isTestnet: isTestnet(account.symbol),
     });
 
-    const limit =
-        operation === 'activate'
-            ? '9223372036854775807' // max int64 in stroops for activation
-            : '0'; // 0 to deactivate trustline
+    const transformed = transformTransaction(transaction);
 
     const response = await TrezorConnect.stellarSignTransaction({
         device: {
@@ -98,24 +95,8 @@ const manageTrustline = async (
             useEmptyPassphrase: device.useEmptyPassphrase,
         },
         path: account.path,
+        transaction: transformed,
         networkPassphrase: transaction.networkPassphrase,
-        transaction: {
-            source: transaction.source,
-            fee: Number.parseInt(transaction.fee, 10),
-            sequence: transaction.sequence,
-            memo: { type: 0 },
-            timebounds: {
-                minTime: 0,
-                maxTime: 0,
-            },
-            operations: [
-                {
-                    type: 'changeTrust',
-                    line: asset,
-                    limit,
-                },
-            ],
-        },
     });
 
     if (response.success) {

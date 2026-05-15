@@ -13,7 +13,7 @@ import {
     type TokenTransfer,
 } from '@trezor/blockchain-link-types';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
-import { computeSorobanAssetContractId } from '@trezor/blockchain-link-utils/src/stellar';
+import stellar from '@trezor/coins-stellar/runtime';
 
 export const getContractAddressForNetworkSymbol = (
     symbol: NetworkSymbolExtended,
@@ -34,7 +34,7 @@ export const getContractAddressForNetworkSymbol = (
     }
 };
 
-export const getAssetLogoContractAddresses = (
+export const getAssetLogoContractAddresses = async (
     symbol: NetworkSymbolExtended | undefined,
     contract: string | null | undefined,
 ) => {
@@ -52,7 +52,8 @@ export const getAssetLogoContractAddresses = (
     // filename. Fall back to the locally-derived Soroban asset contract id so
     // the icon is still reachable.
     if (symbol === 'xlm') {
-        const sorobanAssetContractId = computeSorobanAssetContractId(contract);
+        const { computeSorobanAssetContractId } = await stellar();
+        const { sorobanAssetContractId } = computeSorobanAssetContractId(contract);
 
         // Keep the classic contract first until CoinGecko finishes the Stellar
         // migration. Once Soroban ids become the primary CDN key, flip the
