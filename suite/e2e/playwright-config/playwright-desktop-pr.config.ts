@@ -1,12 +1,11 @@
 import { defineConfig } from '@playwright/test';
 
-import { noOtherDevice } from '@trezor/e2e-utils';
 import { Model } from '@trezor/trezor-user-env-link';
 
 import { baseConfig } from './playwright-base.config';
 import { PlaywrightProjectBuilder } from './playwright-project-builder';
 import type { PlaywrightProjectDefinition } from './playwright-project-builder';
-import { tagsPr } from './projectTags';
+import { tagsCanary } from './projectTags';
 import { PlaywrightTarget } from '../support/testExtends/suiteTestOptions';
 
 /*
@@ -17,22 +16,12 @@ import { PlaywrightTarget } from '../support/testExtends/suiteTestOptions';
  */
 const target = PlaywrightTarget.Desktop;
 const definition: PlaywrightProjectDefinition[] = [
-    { model: Model.T3W1, additionalGrepInvert: /@nightlyOnly/, currentsTags: tagsPr },
     {
-        model: Model.T3T1,
-        additionalGrepInvert: /@nightlyOnly/,
-        currentsTags: tagsPr,
-        nameSuffix: 'smoke',
-        grep: new RegExp(`^(?=.*@T3T1)((?=.*@smoke)|${noOtherDevice()})`),
-    },
-    { model: Model.T3B1, additionalGrepInvert: /@nightlyOnly/, currentsTags: tagsPr },
-    { model: Model.T2T1, additionalGrepInvert: /@nightlyOnly/, currentsTags: tagsPr },
-    { model: Model.T1B1, additionalGrepInvert: /@nightlyOnly/, currentsTags: tagsPr },
-    {
-        name: 'no_device',
-        additionalGrepInvert: /@nightlyOnly/,
-        currentsTags: tagsPr,
-        grep: /^(?=.*@noDevice)/,
+        model: Model.T3W1,
+        nameSuffix: 'fw_canary',
+        firmware: '2-main',
+        additionalGrepInvert: /@specificFirmware/,
+        currentsTags: tagsCanary,
     },
 ];
 
