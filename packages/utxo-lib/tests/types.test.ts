@@ -11,6 +11,12 @@ describe('types validation', () => {
         });
     });
 
+    describe('isHex', () => {
+        it('returns true for a valid even-length lowercase hex string', () => {
+            expect(types.isHex('deadbeef')).toBe(true);
+        });
+    });
+
     describe('Satoshi', () => {
         [
             { value: -1, result: false },
