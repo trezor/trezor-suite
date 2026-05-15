@@ -54,6 +54,9 @@ type CreateMainWindowParams = {
     cspNonce: string;
 };
 
+const isMainWindowUsable = (mainWindow: BrowserWindow | undefined): mainWindow is BrowserWindow =>
+    !!mainWindow && !mainWindow.isDestroyed();
+
 const createMainWindow = ({ winBounds, cspNonce, store }: CreateMainWindowParams) => {
     const darkTheme =
         store.getThemeSettings() === 'dark' ||
@@ -350,18 +353,21 @@ const init = async () => {
 
         const mainWindow = mainWindowProxy.getInstance();
         const windowExists =
-            mainWindow &&
-            !mainWindow.isDestroyed() &&
+            isMainWindowUsable(mainWindow) &&
             mainWindow.isClosable() &&
             (!isMacOs() || !app.isHidden());
         logger.info('main', `Before quit, window exists: ${windowExists}`);
 
         if (windowExists) {
             const continued = await promptForAutoStartBeforeQuit(mainWindow, store);
+
+            // Immediately hide the main window for the better closing UX.
+            // For daemon mode, it doesn't matter.
             logger.info('main', 'Hiding main window');
-            // NOTE: immediatly hide the main window for the better closing UX
-            // for daemon mode, it doesn't matter
-            mainWindow?.hide();
+            // Check again after async/await call.
+            if (isMainWindowUsable(mainWindow)) {
+                mainWindow.hide();
+            }
             if (!continued) return;
         }
 
@@ -374,7 +380,9 @@ const init = async () => {
             // Prevent quitting app when in daemon mode, unless the UI is already closed
             logger.info('main', 'Preventing app quit in daemon mode');
             app.dock?.hide();
-            mainWindow?.close();
+            if (isMainWindowUsable(mainWindow)) {
+                mainWindow.close();
+            }
 
             return;
         }
@@ -389,7 +397,9 @@ const init = async () => {
 
         // global cleanup
         logger.info('modules', 'All modules quit, exiting');
-        mainWindow?.removeAllListeners();
+        if (isMainWindowUsable(mainWindow)) {
+            mainWindow.removeAllListeners();
+        }
         logger.exit();
 
         await resolveAfter(1000);
