@@ -6,6 +6,7 @@ import {
     getFee,
     getFeePolicy,
     getVarIntSize,
+    sumOrNaN,
 } from '../../src/coinselect/coinselectUtils';
 import { zcash as zcashNetwork } from '../../src/networks';
 
@@ -63,6 +64,14 @@ describe('coinselectUtils', () => {
     it('getFeePolicy returns "zcash" for the zcash network', () => {
         // Exercises the truthy arm of the isNetworkType('zcash', network) branch in getFeePolicy.
         expect(getFeePolicy(zcashNetwork)).toEqual('zcash');
+    });
+
+    it('sumOrNaN short-circuits subsequent items once accumulator becomes undefined', () => {
+        // First item has no value: bignumberOrNaN(undefined)=undefined and forgiving=false drives
+        // the reduce accumulator to undefined. On the second iteration `a` is undefined, so the
+        // `if (!a) return a` early-return at coinselectUtils.ts:162 fires — without it the next
+        // line would call value.add(undefined) and throw / produce a non-undefined result.
+        expect(sumOrNaN([{}, { value: new BN('10') }])).toBeUndefined();
     });
 
     it('getDogeFee with no dustThreshold option uses 0 default and adds no dust surcharge', () => {
