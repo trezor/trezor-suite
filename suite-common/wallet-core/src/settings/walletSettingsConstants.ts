@@ -10,6 +10,9 @@ const SET_MEV_PROTECTION = '@wallet-settings/set-mev-protection';
 const SET_NETWORK_RESERVE = '@wallet-settings/set-network-reserve';
 const SET_AUTO_EJECT = '@wallet-settings/set-auto-eject';
 const SET_ADDRESS_DISPLAY_TYPE = '@wallet-settings/set-address-display-type';
+const SET_USE_FIAT_BASED_CRYPTO_DECIMALS = '@wallet-settings/set-use-fiat-based-crypto-decimals';
+const TOGGLE_USE_FIAT_BASED_CRYPTO_DECIMALS =
+    '@wallet-settings/toggle-use-fiat-based-crypto-decimals';
 
 export const WALLET_SETTINGS = {
     SET_BASE_CURRENCY,
@@ -24,4 +27,6 @@ export const WALLET_SETTINGS = {
     SET_NETWORK_RESERVE,
     SET_AUTO_EJECT,
     SET_ADDRESS_DISPLAY_TYPE,
+    SET_USE_FIAT_BASED_CRYPTO_DECIMALS,
+    TOGGLE_USE_FIAT_BASED_CRYPTO_DECIMALS,
 } as const;

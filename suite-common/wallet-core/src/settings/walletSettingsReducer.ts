@@ -39,6 +39,7 @@ const initialState: WalletSettingsState = {
     networkReserve: true,
     isAutoEjectEnabled: false,
     addressDisplayType: AddressDisplayOptions.CHUNKED,
+    useFiatBasedCryptoDecimals: true,
 };
 export const initialWalletSettingsState: WalletSettingsState = initialState;
 
@@ -52,6 +53,7 @@ export const walletSettingsPersistedWhitelist: Array<keyof WalletSettingsState> 
     'networkReserve',
     'isAutoEjectEnabled',
     'addressDisplayType',
+    'useFiatBasedCryptoDecimals',
 ];
 
 export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
@@ -113,6 +115,18 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
                 state.addressDisplayType = action.payload;
             },
         );
+        builder.addCase(
+            WALLET_SETTINGS.SET_USE_FIAT_BASED_CRYPTO_DECIMALS,
+            (
+                state,
+                action: ReturnType<typeof walletSettingsActions.setUseFiatBasedCryptoDecimals>,
+            ) => {
+                state.useFiatBasedCryptoDecimals = action.payload;
+            },
+        );
+        builder.addCase(WALLET_SETTINGS.TOGGLE_USE_FIAT_BASED_CRYPTO_DECIMALS, state => {
+            state.useFiatBasedCryptoDecimals = !state.useFiatBasedCryptoDecimals;
+        });
     },
 );
 
@@ -192,3 +206,6 @@ export const selectIsDustPhishingThresholdSettingsVisible = createMemoizedSelect
 
 export const selectAddressDisplayType = (state: WalletSettingsRootState) =>
     state.wallet.settings.addressDisplayType;
+
+export const selectUseFiatBasedCryptoDecimals = (state: WalletSettingsRootState) =>
+    state.wallet.settings.useFiatBasedCryptoDecimals;

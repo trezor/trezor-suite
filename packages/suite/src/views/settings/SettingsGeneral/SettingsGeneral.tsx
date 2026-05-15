@@ -34,6 +34,7 @@ import { DisconnectLabelingProvider } from './DisconnectLabelingProvider';
 import { DustPhishing } from './DustPhishing';
 import { EarlyAccess } from './EarlyAccess';
 import { Experimental } from './Experimental';
+import { FiatBasedCryptoDecimals } from './FiatBasedCryptoDecimals';
 import { Language } from './Language';
 import { LegacyLabelingMigration } from './LegacyLabelingMigration';
 import { McpServer } from './McpServer';
@@ -117,6 +118,7 @@ export const SettingsGeneral = () => {
                 <Language />
                 <BaseCurrency />
                 {hasBitcoinNetworks && <BitcoinAmountUnit />}
+                <FiatBasedCryptoDecimals />
             </SettingsSection>
 
             <SettingsSection

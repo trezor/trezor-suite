@@ -9,7 +9,11 @@ import {
     getNetworkOptional,
 } from '@suite-common/wallet-config';
 import { LOW_BALANCE_THRESHOLD } from '@suite-common/wallet-constants';
-import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import {
+    selectBaseCurrency,
+    selectFiatRatesByFiatRateKey,
+    selectUseFiatBasedCryptoDecimals,
+} from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import {
     type AmountUnit,
@@ -64,6 +68,7 @@ export const FormattedCryptoAmount = ({
 }: FormattedCryptoAmountProps) => {
     const locale = useSelector(selectLanguage);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
+    const useFiatBasedDecimals = useSelector(selectUseFiatBasedCryptoDecimals);
 
     const { areSatsDisplayed } = useBitcoinAmountUnit();
 
@@ -110,9 +115,9 @@ export const FormattedCryptoAmount = ({
         formattedSymbol = isTestnet ? `sat ${formattedSymbol}` : 'sat';
     }
 
-    // Dynamic decimals based on fiat rate — skipped in sats mode (already integer units).
-    // Falls back to the existing formatters when no rate is available.
-    const fiatRate = !isSatoshis ? currentRate?.rate : undefined;
+    // Dynamic decimals based on fiat rate — skipped in sats mode (already integer units)
+    // and when the user disabled the feature in settings.
+    const fiatRate = useFiatBasedDecimals && !isSatoshis ? currentRate?.rate : undefined;
 
     if (isAmountLow) {
         formattedValue = `< ${LOW_BALANCE_THRESHOLD}`;

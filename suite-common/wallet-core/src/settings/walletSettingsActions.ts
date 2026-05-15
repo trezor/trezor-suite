@@ -49,6 +49,15 @@ export const setAddressDisplayType = createAction(
     (value: AddressDisplayOptions) => ({ payload: value }),
 );
 
+export const setUseFiatBasedCryptoDecimals = createAction(
+    WALLET_SETTINGS.SET_USE_FIAT_BASED_CRYPTO_DECIMALS,
+    (enabled: boolean) => ({ payload: enabled }),
+);
+
+export const toggleUseFiatBasedCryptoDecimals = createAction(
+    WALLET_SETTINGS.TOGGLE_USE_FIAT_BASED_CRYPTO_DECIMALS,
+);
+
 export type ChangeCoinVisibilityAction = {
     type: typeof WALLET_SETTINGS.CHANGE_COIN_VISIBILITY;
     payload: {

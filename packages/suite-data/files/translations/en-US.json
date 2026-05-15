@@ -474,6 +474,8 @@
   "TR_BRIDGE_REQUESTED_DESCRIPTION": "Another app requested Trezor Suite to connect with your Trezor device. Keep Trezor Suite running in the background and try the action again in the other app.",
   "TR_BRIDGE_TIP_AUTOSTART": "Tip: Enable Trezor Suite to start automatically and run in the background for smoother interaction with third-party apps.",
   "TR_BTC_UNITS": "Bitcoin units",
+  "TR_FIAT_BASED_CRYPTO_DECIMALS": "Fiat-based crypto decimals",
+  "TR_FIAT_BASED_CRYPTO_DECIMALS_DESCRIPTION": "Shorten crypto amounts so that the smallest displayed unit is roughly worth one unit of your selected base currency. Disable to always show full precision.",
   "TR_BUG": "Bug",
   "TR_BUMP_FEE": "Speed up",
   "TR_BUMP_FEE_DISABLED_TOOLTIP": "To speed up your transactions, increase the fee on the oldest pending transaction in the queue (by nonce), as transactions must be confirmed in order. If you want to speed up this transaction specifically, open its detail and use the \"Speed up\" option. <a>Learn more</a>",
