@@ -37,5 +37,5 @@ jobs:
         continue-on-error: true
         with:
           version: v0.19.1
-      - run: yarn install --immutable
+      - run: yarn workspaces focus trezor-suite @trezor/request-manager
       - run: yarn workspace @trezor/request-manager ${{ env.TEST_SCRIPT }}

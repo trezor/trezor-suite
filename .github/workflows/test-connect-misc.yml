@@ -111,5 +111,5 @@ jobs:
         continue-on-error: true
         with:
           version: v0.19.1
-      - run: yarn install --immutable
+      - run: yarn workspaces focus trezor-suite @trezor/protobuf
       - run: yarn workspace @trezor/protobuf update:protobuf

@@ -72,7 +72,7 @@ runs:
     - name: Install dependencies
       shell: bash
       run: |
-        yarn install --immutable # focus install is not used here to make sure that all global patches are applied for the release.
+        yarn workspaces focus @trezor/connect-explorer @trezor/webextension-mv3-sw-ts
 
     - name: Build connect-explorer-theme
       shell: bash

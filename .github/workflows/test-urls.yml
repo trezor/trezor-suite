@@ -28,5 +28,5 @@ jobs:
         continue-on-error: true
         with:
           version: v0.19.1
-      - run: yarn install --immutable
+      - run: yarn workspaces focus trezor-suite @trezor/urls
       - run: yarn workspace @trezor/urls test:e2e

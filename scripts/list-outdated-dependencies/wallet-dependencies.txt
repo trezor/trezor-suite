@@ -47,6 +47,7 @@ redux-persist
 redux-thunk
 reselect
 toml
+uint8array-tools
 varuint-bitcoin
 wif
 worker-loader
