@@ -48,6 +48,29 @@ describe(composeTx.name, () => {
 });
 
 describe('composeTx request validation errors', () => {
+    it('returns MISSING-UTXOS when utxos array is empty', () => {
+        // validateAndParseUtxos at src/compose/request.ts:74 short-circuits with
+        // { type: 'error', error: 'MISSING-UTXOS' } when utxos.length === 0. The
+        // existing fixture set never exercises this — every compose fixture has at
+        // least one utxo. Use a positive feeRate so validateAndParseFeeRate succeeds
+        // and execution reaches validateAndParseUtxos. A mutator that flipped the
+        // empty-check (e.g., utxos.length !== 0) would route the call into the
+        // for-loop, which iterates zero times and returns [] — that path then
+        // proceeds to validateAndParseOutputs and produces a different error shape,
+        // distinguishable by exact toEqual.
+        const tx = composeTx({
+            utxos: [],
+            outputs: [{ type: 'send-max-noaddress' }],
+            feeRate: 10,
+            network: NETWORKS.bitcoin,
+            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            dustThreshold: 546,
+            sortingStrategy: 'bip69',
+        });
+
+        expect(tx).toEqual({ type: 'error', error: 'MISSING-UTXOS' });
+    });
+
     it('returns the validateAndParseRequest error result directly (does not enter coinselect)', () => {
         // feeRate=0 is rejected by validateAndParseFeeRate (request.ts), so
         // validateAndParseRequest returns { type: 'error', error: 'INCORRECT-FEE-RATE' }.
