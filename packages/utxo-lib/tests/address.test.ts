@@ -25,6 +25,12 @@ describe('address', () => {
                 }).toThrow(new RegExp(`${f.address} ${f.exception}`));
             });
         });
+
+        it('decodes a mainnet p2pkh address using the default bitcoin network argument', () => {
+            const decode = baddress.fromBase58Check('1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH');
+            expect(decode.version).toEqual(0);
+            expect(decode.hash.toString('hex')).toEqual('751e76e8199196d454941c45d1b3a323f1433bd6');
+        });
     });
 
     describe('fromBech32', () => {
