@@ -14088,6 +14088,7 @@ __metadata:
     "@trezor/react-utils": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     expo-linear-gradient: "npm:~55.0.8"
     react: "npm:19.2.4"

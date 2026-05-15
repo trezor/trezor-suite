@@ -45,6 +45,7 @@
         "@trezor/react-utils": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "expo-linear-gradient": "~55.0.8",
         "react": "19.2.4",
