@@ -215,6 +215,7 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
                 throw new TypeError('Witness and redeem.output mismatch');
             if (
                 a.witness.some(chunkHasUncompressedPubkey) ||
+                // MUTATION: equivalent — the `|| []` fallback is structurally unreachable from the public p2wsh() API. bscript.decompile (src/script/index.ts:101-144) always returns either [] or a populated Buffer[]; it never returns null/undefined/falsy, so the right-hand operand of `||` is dead code.
                 (bscript.decompile(wScript) || []).some(chunkHasUncompressedPubkey)
             )
                 throw new TypeError('Witness contains uncompressed pubkey');
