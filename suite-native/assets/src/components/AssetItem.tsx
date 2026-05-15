@@ -98,7 +98,7 @@ export const AssetItem = React.memo(({ cryptoCurrencySymbol }: AssetItemProps) =
         selectVisibleDeviceAccountsKeysByNetworkSymbol(state, cryptoCurrencySymbol),
     );
 
-    const accountsPerAsset = accountsKeysForNetworkSymbol.length;
+    const accountCount = accountsKeysForNetworkSymbol.length;
     const hasAnyTokensWithBalance = useSelector((state: TokensRootState) =>
         selectHasDeviceAnyTokensWithBalanceForNetwork(state, cryptoCurrencySymbol),
     );
@@ -107,15 +107,15 @@ export const AssetItem = React.memo(({ cryptoCurrencySymbol }: AssetItemProps) =
     );
 
     const handleAssetPress = () => {
-        if (accountsPerAsset === 1 && !hasAnyTokensWithBalance) {
-            navigation.navigate(RootStackRoutes.AccountDetail, {
-                accountKey: accountsKeysForNetworkSymbol[0],
-                closeActionType: 'back',
-            });
-        } else {
+        if (accountCount > 1 || hasAnyTokensWithBalance || hasAnyAccountsWithStaking) {
             navigation.navigate(AppTabsRoutes.AccountsStack, {
                 screen: AccountsStackRoutes.Accounts,
                 params: { networksFilter: [cryptoCurrencySymbol] },
+            });
+        } else {
+            navigation.navigate(RootStackRoutes.AccountDetail, {
+                accountKey: accountsKeysForNetworkSymbol[0],
+                closeActionType: 'back',
             });
         }
     };
@@ -131,7 +131,7 @@ export const AssetItem = React.memo(({ cryptoCurrencySymbol }: AssetItemProps) =
                         <Icon size="medium" color="contentSecondary" name="wallet" />
                     </Box>
                     <Text variant="body-sm" color="contentSecondary">
-                        {accountsPerAsset}
+                        {accountCount}
                     </Text>
                     {hasAnyAccountsWithStaking && (
                         <StakingBadge networkSymbol={cryptoCurrencySymbol} />
