@@ -135,6 +135,7 @@ const usedIcons = [
     'plugsConnected',
     'plus',
     'plusCircle',
+    'puzzlePiece',
     'power',
     'prohibit',
     'qrCode',
