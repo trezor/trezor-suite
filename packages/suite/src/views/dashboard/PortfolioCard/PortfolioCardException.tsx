@@ -14,8 +14,8 @@ import {
     IconCircle,
     type IconName,
     Illustration,
+    Paragraph,
     Row,
-    Text,
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -53,18 +53,20 @@ const Container = ({ title, description, cta, dataTestBase, image }: ContainerPr
                 <Translation id={title} />
             </H3>
             {description && (
-                <Text
+                <Paragraph
                     data-testid={`@exception/${dataTestBase}/description`}
                     intent="neutral"
                     priority="secondary"
                     typographyStyle="body-sm"
+                    maxWidth={500}
+                    align="center"
                 >
                     {typeof description === 'string' ? (
                         <Translation id={description} />
                     ) : (
                         description
                     )}
-                </Text>
+                </Paragraph>
             )}
             <Row gap={spacings.sm} margin={{ top: spacings.md }}>
                 {actions.map(a => (
