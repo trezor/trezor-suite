@@ -9516,6 +9516,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_DASHBOARD_SUPPLY_MORE',
         defaultMessage: 'Deposit more',
     },
+    TR_EARN_YIELD_MAXIMUM_DEPOSITED: {
+        id: 'TR_EARN_YIELD_MAXIMUM_DEPOSITED',
+        defaultMessage: 'Maximum deposited',
+    },
     TR_EARN_YIELD_DASHBOARD_WITHDRAW: {
         id: 'TR_EARN_YIELD_DASHBOARD_WITHDRAW',
         defaultMessage: 'Withdraw',
