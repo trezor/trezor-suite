@@ -11,9 +11,10 @@ import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 import { EarnYieldApyBreakdown } from './EarnYieldApyBreakdown';
 
 const Abbr = styled.abbr`
-    border-bottom: 1px dotted ${({ theme }) => theme.contentSecondary};
     cursor: help;
-    text-decoration: none;
+    text-decoration: underline dotted ${({ theme }) => theme.contentSecondary};
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
 `;
 
 type EarnYieldApyTooltipProps = {
@@ -28,18 +29,24 @@ export const EarnYieldApyTooltip = ({
     apyPercentage,
     networkSymbol,
     children,
-}: EarnYieldApyTooltipProps) => (
-    <Tooltip
-        content={
-            <EarnYieldApyBreakdown
-                rewards={vault.rewardRate.components}
-                networkSymbol={networkSymbol}
-                underlyingToken={vault.token}
-            />
-        }
-        maxWidth={600}
-        placement="top"
-    >
-        <Abbr>{children ?? <ApyValue apy={apyPercentage} />}</Abbr>
-    </Tooltip>
-);
+}: EarnYieldApyTooltipProps) => {
+    if (!children && !apyPercentage) {
+        return <ApyValue apy={apyPercentage} />;
+    }
+
+    return (
+        <Tooltip
+            content={
+                <EarnYieldApyBreakdown
+                    rewards={vault.rewardRate.components}
+                    networkSymbol={networkSymbol}
+                    underlyingToken={vault.token}
+                />
+            }
+            maxWidth={600}
+            placement="top"
+        >
+            <Abbr>{children ?? <ApyValue apy={apyPercentage} />}</Abbr>
+        </Tooltip>
+    );
+};
