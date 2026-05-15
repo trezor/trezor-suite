@@ -1,5 +1,3 @@
-import { Horizon, Networks, Transaction as StellarTransaction } from '@stellar/stellar-sdk';
-
 import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
 import type {
     AccountInfo,
@@ -8,18 +6,21 @@ import type {
     TokenDetailByMint,
 } from '@trezor/blockchain-link-types';
 import * as utils from '@trezor/blockchain-link-utils/src/stellar';
+import { BASE_INFO, STELLAR_DECIMALS } from '@trezor/coins-stellar/constants';
+import stellar from '@trezor/coins-stellar/runtime';
+import type { StellarAPI } from '@trezor/coins-stellar/types';
 import { getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
 import { type IntervalId } from '@trezor/type-utils';
 import { BigNumber, createLazy } from '@trezor/utils';
 
 import { BaseWorker, CONTEXT, type ContextType } from '../baseWorker';
 
-type Context = ContextType<Horizon.Server> & {
+type Context = ContextType<StellarAPI> & {
     getTokenMetadata: () => Promise<TokenDetailByMint>;
 };
 type Request<T> = T & Context;
 
-const fetchLatestLedger = async (api: Horizon.Server) => {
+const fetchLatestLedger = async (api: StellarAPI) => {
     const latestLedgerInfo = await api.ledgers().order('desc').limit(1).call();
 
     if (latestLedgerInfo.records.length === 0) {
@@ -42,8 +43,8 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet: boolea
         base_reserve_in_stroops: baseReserveInStroops,
     } = await fetchLatestLedger(api);
 
-    utils.BASE_INFO.BASE_RESERVE = new BigNumber(baseReserveInStroops);
-    utils.BASE_INFO.MINIMUM_RESERVE = utils.BASE_INFO.BASE_RESERVE.times(2);
+    BASE_INFO.BASE_RESERVE = new BigNumber(baseReserveInStroops);
+    BASE_INFO.MINIMUM_RESERVE = BASE_INFO.BASE_RESERVE.times(2);
 
     const serverInfo = {
         url: api.serverURL.toString(),
@@ -52,7 +53,7 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet: boolea
         network: isTestnet ? 'txlm' : 'xlm',
         testnet: isTestnet,
         version: horizonServerInfo.horizon_version,
-        decimals: utils.STELLAR_DECIMALS,
+        decimals: STELLAR_DECIMALS,
         blockHeight,
         blockHash,
     };
@@ -62,6 +63,9 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet: boolea
         payload: { ...serverInfo },
     } as const;
 };
+
+const toStroops = (value: string) =>
+    new BigNumber(10).pow(STELLAR_DECIMALS).times(new BigNumber(value));
 
 const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => {
     const { payload } = request;
@@ -81,7 +85,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         misc: {
             // default misc
             stellarSequence: '0',
-            reserve: utils.BASE_INFO.MINIMUM_RESERVE.toString(),
+            reserve: BASE_INFO.MINIMUM_RESERVE.toString(),
         },
     };
 
@@ -99,8 +103,8 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     // Account is not empty, we can fill the account object with the data
     // https://developers.stellar.org/docs/learn/fundamentals/lumens#minimum-balance
-    const reserve = utils.BASE_INFO.MINIMUM_RESERVE.plus(
-        utils.BASE_INFO.BASE_RESERVE.times(info.subentry_count),
+    const reserve = BASE_INFO.MINIMUM_RESERVE.plus(
+        BASE_INFO.BASE_RESERVE.times(info.subentry_count),
     );
     account.misc = {
         stellarSequence: info.sequence,
@@ -113,13 +117,13 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         // This should never happen, but just in case
         throw new CustomError('stellar_missing_native_balance');
     }
-    const sellingLiabilities = utils.toStroops(nativeTokenBalance.selling_liabilities);
-    account.balance = utils.toStroops(nativeTokenBalance.balance).toString();
+    const sellingLiabilities = toStroops(nativeTokenBalance.selling_liabilities);
+    account.balance = toStroops(nativeTokenBalance.balance).toString();
     account.availableBalance = new BigNumber(account.balance)
         .minus(reserve)
         .minus(sellingLiabilities)
-        .minus(utils.BASE_INFO.BASE_RESERVE.times(info.num_sponsoring)) // See https://developers.stellar.org/docs/learn/encyclopedia/transactions-specialized/sponsored-reserves
-        .plus(utils.BASE_INFO.BASE_RESERVE.times(info.num_sponsored))
+        .minus(BASE_INFO.BASE_RESERVE.times(info.num_sponsoring)) // See https://developers.stellar.org/docs/learn/encyclopedia/transactions-specialized/sponsored-reserves
+        .plus(BASE_INFO.BASE_RESERVE.times(info.num_sponsored))
         .toString();
 
     // Tokens balance
@@ -132,7 +136,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         )
         .map(balanceInfo => {
             const contract = `${balanceInfo.asset_code}-${balanceInfo.asset_issuer}`;
-            const balance = utils.toStroops(balanceInfo.balance);
+            const balance = toStroops(balanceInfo.balance);
 
             return {
                 standard: 'STELLAR-CLASSIC',
@@ -140,7 +144,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
                 balance: balance.toString(),
                 name: tokenMetadata[contract]?.name || balanceInfo.asset_code,
                 symbol: (tokenMetadata[contract]?.symbol || balanceInfo.asset_code).toUpperCase(),
-                decimals: utils.STELLAR_DECIMALS,
+                decimals: STELLAR_DECIMALS,
             };
         });
     account.empty = false;
@@ -162,11 +166,15 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         requestBuilder.cursor(payload.pageCursor);
     }
     const transactions = await requestBuilder.call();
+    const { identifyTransaction } = await stellar();
+
+    account.history.transactions = transactions.records
+        .map(identifyTransaction)
+        .map(identified =>
+            utils.transformTransaction(identified, payload.descriptor, tokenMetadata),
+        );
 
     const cursor = transactions.records[transactions.records.length - 1]?.paging_token;
-    account.history.transactions = transactions.records.map(record =>
-        utils.transformTransaction(record, payload.descriptor, tokenMetadata),
-    );
 
     return {
         type: RESPONSES.GET_ACCOUNT_INFO,
@@ -283,11 +291,8 @@ const pushTransaction = async (
     isTestnet: boolean,
 ) => {
     const api = await connect();
-    const base64EncodedTx = Buffer.from(payload.hex, 'hex').toString('base64');
-    const parsedTx = new StellarTransaction(
-        base64EncodedTx,
-        isTestnet ? Networks.TESTNET : Networks.PUBLIC,
-    );
+    const { parseTransactionFromHex } = await stellar();
+    const parsedTx = parseTransactionFromHex(payload.hex, isTestnet);
     try {
         const resp = await api.submitTransaction(parsedTx, { skipMemoRequiredCheck: true });
 
@@ -325,26 +330,22 @@ const onRequest = (request: Request<MessageTypes.Message>, isTestnet: boolean) =
     }
 };
 
-class StellarWorker extends BaseWorker<Horizon.Server> {
+class StellarWorker extends BaseWorker<StellarAPI> {
     private lazyTokens = createLazy(() => utils.getTokenMetadata());
     private isTestnet = false;
 
-    protected isConnected(api: Horizon.Server | undefined): api is Horizon.Server {
+    protected isConnected(api: StellarAPI | undefined): api is StellarAPI {
         return !!api;
     }
 
-    async tryConnect(url: string): Promise<Horizon.Server> {
-        const api = new Horizon.Server(url, {
-            headers: {
-                ...(isDesktop() || isNative()
-                    ? { 'User-Agent': `Trezor Suite ${getSuiteVersion()}` }
-                    : {}),
-            },
-        });
+    async tryConnect(url: string): Promise<StellarAPI> {
+        const { getStellarConnection } = await stellar();
+        const { api, isTestnet } = await getStellarConnection(
+            url,
+            isDesktop() || isNative() ? `Trezor Suite ${getSuiteVersion()}` : undefined,
+        );
 
-        if ((await api.root()).network_passphrase == Networks.TESTNET) {
-            this.isTestnet = true;
-        }
+        this.isTestnet = isTestnet;
 
         return api;
     }
