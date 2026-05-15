@@ -127,6 +127,11 @@ export class TxWeightCalculator {
         } else if (input.script_type === 'EXTERNAL') {
             const witness_size = 0;
             const script_sig_size = 0;
+            // SUSPECTED-BUG-MUTATION: EXTERNAL+ownership_proof branch body is unimplemented TODO; weight contribution of the proof's scriptSig/witness bytes is dropped, so the calculator undercounts EXTERNAL inputs that carry an ownership_proof. Both arms produce identical counter increments, leaving `if (input.ownership_proof)` mutants (truthy↔falsy) survivable on getTotal() output. Reached in production via packages/connect/src/api/bitcoin/transactionBytes.ts:36 which forwards input.ownership_proof to TxWeightCalculator.addInput for fee estimation, so undersizing here flows through to underestimated fees on CoinJoin / external-input flows.
+            // Mutator: ConditionalExpression  Original: if (input.ownership_proof) { TODO-empty } else { TODO-empty }  →  Mutant: any flip of the condition (or removal of the if) is indistinguishable from current behavior because both arms are no-ops.
+            // Spec ref: upstream trezor-firmware https://github.com/trezor/trezor-firmware/blob/1fceca73da523c5bf2bb0f398c91e00c728bdbe0/core/tests/test_apps.bitcoin.txweight.py — Python txweight implements ownership.read_scriptsig_witness(i.ownership_proof) to derive script_sig_size and witness_size from the proof; the TS port left this as a TODO.
+            // Empirical check: new TxWeightCalculator(); c.addInput({ script_type: 'EXTERNAL', ownership_proof: Buffer.alloc(64) }); c.addOutputByKey('p2pkh'); c.getTotal() === 340 (same as no ownership_proof) — a 0-byte accounting for a 64+ byte ownership proof, confirming the TODO arm contributes nothing.
+            // Needs human spec review before locking behavior with a test (a test asserting getTotal()===340 here would lock in the incomplete TODO behavior).
             if (input.ownership_proof) {
                 // TODO:
                 // script_sig, witness = ownership.read_scriptsig_witness(
