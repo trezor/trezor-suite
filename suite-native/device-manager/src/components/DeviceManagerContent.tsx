@@ -133,12 +133,7 @@ export const DeviceManagerContent = () => {
                 layout={LinearTransition}
             >
                 <VStack spacing="sp24">
-                    {isDeviceListVisible && (
-                        <DeviceList
-                            isVisible={isChangeDeviceRequested || isPortfolioTrackerDevice}
-                            onSelectDevice={handleSelectDevice}
-                        />
-                    )}
+                    {isDeviceListVisible && <DeviceList onSelectDevice={handleSelectDevice} />}
                     {!isPortfolioTrackerDevice && !shouldFactoryResetBeVisible && (
                         <AnimatedVStack
                             layout={LinearTransition}
