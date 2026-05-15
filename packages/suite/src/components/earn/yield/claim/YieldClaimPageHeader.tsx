@@ -3,6 +3,7 @@ import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { type Account } from '@suite-common/wallet-types';
 import { IconButton, Row } from '@trezor/components';
+import { CoinLogo } from '@trezor/product-components';
 
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
@@ -44,11 +45,14 @@ export const YieldClaimPageHeader = ({ account }: YieldClaimPageHeaderProps) => 
                     data-testid="@account-subpage/back"
                 />
                 {account ? (
-                    <AccountLabel
-                        account={account}
-                        typographyStyle="headline-md"
-                        rowProps={{ flex: '1', overflow: 'hidden' }}
-                    />
+                    <Row gap={12} alignItems="center" flex="1" overflow="hidden">
+                        <CoinLogo symbol={account.symbol} type="token" size={32} />
+                        <AccountLabel
+                            account={account}
+                            typographyStyle="headline-md"
+                            rowProps={{ flex: '1', overflow: 'hidden' }}
+                        />
+                    </Row>
                 ) : (
                     <BasicName>
                         <Translation id="TR_EARN" />

@@ -48,6 +48,7 @@ const Container = styled.section<ContainerProps & TransientAllowedFrameProps>`
     flex-direction: column;
     width: 100%;
     border-radius: ${borders.radii.md};
+    overflow: hidden;
     cursor: ${({ $isClickable }) => ($isClickable ? 'pointer' : 'default')};
     transition:
         background 0.5s,
