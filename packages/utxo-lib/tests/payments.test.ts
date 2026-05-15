@@ -147,3 +147,13 @@ describe('p2pkh lazy output getter', () => {
         expect(p.output).toBeUndefined();
     });
 });
+
+describe('p2wpkh non-canonical signature', () => {
+    it('throws "Expected canonical script signature" when signature fails bip66 check', () => {
+        const hash = Buffer.from('168b992bcfc44050310b3a94bd0771136d0b28d1', 'hex');
+        const signature = Buffer.from('3044', 'hex');
+        expect(() => PAYMENTS.p2wpkh({ hash, signature })).toThrow(
+            'Expected canonical script signature',
+        );
+    });
+});
