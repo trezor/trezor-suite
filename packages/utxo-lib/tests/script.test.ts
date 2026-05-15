@@ -100,6 +100,13 @@ describe('script', () => {
         });
     });
 
+    describe('compile (Buffer passthrough)', () => {
+        it('returns the same Buffer unchanged when given a Buffer input', () => {
+            const buf = Buffer.from('51', 'hex');
+            expect(bscript.compile(buf)).toBe(buf);
+        });
+    });
+
     describe('decompile', () => {
         fixtures.valid.forEach(f => {
             it(`decompiles ${f.asm}`, () => {
