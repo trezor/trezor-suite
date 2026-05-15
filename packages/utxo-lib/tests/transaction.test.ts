@@ -464,6 +464,26 @@ describe('Transaction', () => {
             expect(tx.toBuffer().subarray(0, 4).toString('hex')).toEqual('03000000');
         });
 
+        it('Zcash: getHash on a NU5 tx with overwintered=0 differs from overwintered=1 via the header digest mask bit', () => {
+            // Exercises the falsy arm of `tx.specific!.overwintered ? 1 : 0` in
+            // getHeaderDigest at src/transaction/zcash.ts:322. Per ZIP-244 the t-1
+            // header-digest hashes (version | mask<<31) as the first int32, so
+            // toggling overwintered between 1 and 0 changes the high bit of that
+            // int32, which changes the blake2b ZTxIdHeadersHash digest and therefore
+            // the txid returned by getHash(). The getHash/getId fixture loop already
+            // covers the truthy arm with overwintered=1; this test mutates the parsed
+            // NU5 fixture to overwintered=0 and asserts the resulting txid differs.
+            const f = fixturesZcash.valid[11];
+            expect(f.raw.version).toBe(5);
+            expect(f.raw.overwintered).toBe(1);
+            const tx = Transaction.fromHex(f.hex, { network: NETWORKS.zcash });
+            const hashTruthy = tx.getHash().toString('hex');
+            const zcashSpecific = tx.specific as { overwintered: number };
+            zcashSpecific.overwintered = 0;
+            const hashFalsy = tx.getHash().toString('hex');
+            expect(hashFalsy).not.toEqual(hashTruthy);
+        });
+
         it('Bitcoin: toBuffer with explicit non-zero initialOffset returns a subarray starting at that offset', () => {
             const validHex = fixturesBitcoin.valid[0].hex;
             const tx = Transaction.fromHex(validHex);
