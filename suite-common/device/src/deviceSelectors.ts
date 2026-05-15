@@ -59,6 +59,11 @@ export const selectDevicesCount = (state: DeviceRootState) => state.device?.devi
 
 export const selectSelectedDevice = (state: DeviceRootState) => state.device.selectedDevice;
 
+export const selectIsAnyDeviceSelected = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => !!device,
+);
+
 export const selectPersistentDeviceData = (state: DeviceRootState) =>
     state.device.persistentDeviceData;
 
