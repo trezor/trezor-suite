@@ -341,3 +341,11 @@ describe('sstxpkh lazy output getter with explicit hash=undefined', () => {
         expect(p.output).toBeUndefined();
     });
 });
+
+describe('p2tr lazy address getter with explicit hash=undefined', () => {
+    it('returns undefined when hash is explicitly undefined and output is provided', () => {
+        const output = Buffer.concat([Buffer.from([0x51, 0x20]), Buffer.alloc(32, 1)]);
+        const p = PAYMENTS.p2tr({ hash: undefined, output });
+        expect(p.address).toBeUndefined();
+    });
+});
