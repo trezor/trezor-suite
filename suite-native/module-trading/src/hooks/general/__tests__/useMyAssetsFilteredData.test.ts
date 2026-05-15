@@ -207,6 +207,139 @@ describe('useMyAssetsFilteredData', () => {
         expect(result.current.availableNetworks.filter(n => n === 'eth')).toHaveLength(1);
     });
 
+    describe('sort order', () => {
+        const ethNameServiceAsset: MyAssetTradeable = {
+            name: 'Ethereum Name Service',
+            symbol: 'eth' as NetworkSymbol,
+            tokenSymbol: 'ens' as TokenSymbol,
+            cryptoId: 'ethereum-name-service' as CryptoId,
+            balance: '5.0',
+            fiatBalance: asBaseCurrencyAmount(new BigNumber(50)),
+            isEnabled: true,
+        };
+
+        const mixedSection = {
+            key: 'section_mixed',
+            label: 'Mixed Account',
+            sectionData: eth1NormalAccount,
+            // Input order: ethNameServiceAsset first, then ethAsset
+            data: [ethNameServiceAsset, ethAsset] as MyAssetRow[],
+        };
+
+        const renderMixedFilter = () => renderHook(() => useMyAssetsFilteredData([mixedSection]));
+
+        it('should rank exact symbol match before name-startsWith', () => {
+            // ethAsset: tokenSymbol=undefined, symbol='eth' → exact symbol match → weight 1
+            // ethNameServiceAsset: tokenSymbol='ens', name='Ethereum Name Service' → name startsWith 'eth' → weight 2
+            const { result } = renderMixedFilter();
+
+            act(() => {
+                result.current.setFilterValue('eth');
+            });
+
+            const { data } = result.current.filteredSections[0];
+            expect(data[0]).toBe(ethAsset);
+            expect(data[1]).toBe(ethNameServiceAsset);
+        });
+
+        it('should rank exact name match before exact symbol match', () => {
+            // ethAsset: name='Ethereum' exact match → weight 0
+            // ethNameServiceAsset: tokenSymbol='ens', name='Ethereum Name Service' → name startsWith → weight 2
+            const { result } = renderMixedFilter();
+
+            act(() => {
+                result.current.setFilterValue('ethereum');
+            });
+
+            const { data } = result.current.filteredSections[0];
+            expect(data[0]).toBe(ethAsset);
+        });
+
+        it('should rank name-startsWith before name-includes', () => {
+            // ethAsset: name='Ethereum' startsWith 'ether' → weight 2
+            // ethNameServiceAsset: name='Ethereum Name Service' startsWith 'ether' → weight 2 (tie, original order kept)
+            // Using 'name' query to get name-includes case
+            const nameIncludesAsset: MyAssetTradeable = {
+                name: 'Wrapped Ether',
+                symbol: 'eth' as NetworkSymbol,
+                tokenSymbol: 'weth' as TokenSymbol,
+                cryptoId: 'weth' as CryptoId,
+                balance: '1.0',
+                fiatBalance: asBaseCurrencyAmount(new BigNumber(3000)),
+                isEnabled: true,
+            };
+
+            const { result } = renderHook(() =>
+                useMyAssetsFilteredData([
+                    {
+                        key: 'section_sort',
+                        label: 'Sort Test',
+                        sectionData: eth1NormalAccount,
+                        data: [nameIncludesAsset, ethAsset] as MyAssetRow[],
+                    },
+                ]),
+            );
+
+            act(() => {
+                result.current.setFilterValue('ether');
+            });
+
+            const { data } = result.current.filteredSections[0];
+            // ethAsset: name='Ethereum' startsWith 'ether' → weight 2
+            // nameIncludesAsset: name='Wrapped Ether' includes 'ether' → weight 4
+            expect(data[0]).toBe(ethAsset);
+            expect(data[1]).toBe(nameIncludesAsset);
+        });
+
+        it('should rank name-includes before symbol-startsWith', () => {
+            // btcAsset: name='Bitcoin' includes 'itc' → weight 4
+            // asset with tokenSymbol startsWith 'itc': weight 3 → should rank before btcAsset
+            const itcTokenAsset: MyAssetTradeable = {
+                name: 'Some Token',
+                symbol: 'eth' as NetworkSymbol,
+                tokenSymbol: 'itcx' as TokenSymbol,
+                cryptoId: 'itcx-token' as CryptoId,
+                balance: '1.0',
+                fiatBalance: asBaseCurrencyAmount(new BigNumber(10)),
+                isEnabled: true,
+            };
+
+            const { result } = renderHook(() =>
+                useMyAssetsFilteredData([
+                    {
+                        key: 'section_sort',
+                        label: 'Sort Test',
+                        sectionData: eth1NormalAccount,
+                        data: [btcAsset, itcTokenAsset] as MyAssetRow[],
+                    },
+                ]),
+            );
+
+            act(() => {
+                result.current.setFilterValue('itc');
+            });
+
+            const { data } = result.current.filteredSections[0];
+            // itcTokenAsset: tokenSymbol='itcx' startsWith 'itc' → weight 3
+            // btcAsset: name='Bitcoin' includes 'itc' → weight 4
+            expect(data[0]).toBe(itcTokenAsset);
+            expect(data[1]).toBe(btcAsset);
+        });
+
+        it('should preserve original order for items with equal weight', () => {
+            // Both assets have name startsWith 'e' → weight 2, original order kept
+            const { result } = renderMixedFilter();
+
+            act(() => {
+                result.current.setFilterValue('e');
+            });
+
+            const { data } = result.current.filteredSections[0];
+            expect(data[0]).toBe(ethNameServiceAsset);
+            expect(data[1]).toBe(ethAsset);
+        });
+    });
+
     describe('filterValue composite key', () => {
         it('should have correct value with no filter applied', () => {
             const { result } = renderFilter();

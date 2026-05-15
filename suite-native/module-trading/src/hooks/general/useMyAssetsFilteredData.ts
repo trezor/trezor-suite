@@ -23,6 +23,28 @@ const filterCallback = (item: MyAssetRow, filterValue: string): boolean => {
     );
 };
 
+const getSortWeight = (asset: MyAssetTradeable, query: string): number => {
+    const name = normalizeForSearch(asset.name);
+    const symbol = normalizeForSearch(asset.tokenSymbol ?? asset.symbol);
+
+    if (name === query) return 0;
+    if (symbol === query) return 1;
+    if (name.startsWith(query)) return 2;
+    if (symbol.startsWith(query)) return 3;
+    if (name.includes(query)) return 4;
+    if (symbol.includes(query)) return 5;
+
+    return 6;
+};
+
+const sortSectionItemsCallback = (a: MyAssetRow, b: MyAssetRow, filterValue: string): number => {
+    const query = normalizeForSearch(filterValue);
+
+    return (
+        getSortWeight(a as MyAssetTradeable, query) - getSortWeight(b as MyAssetTradeable, query)
+    );
+};
+
 export const useMyAssetsFilteredData = (sections: SectionListData<MyAssetRow, Account>) => {
     const [filterSymbol, setFilterSymbol] = useState<NetworkSymbol | undefined>(undefined);
 
@@ -43,7 +65,7 @@ export const useMyAssetsFilteredData = (sections: SectionListData<MyAssetRow, Ac
         filteredSections,
         filterValue: searchText,
         setFilterValue,
-    } = useSectionDataFilter(sectionsForTextFilter, filterCallback);
+    } = useSectionDataFilter(sectionsForTextFilter, filterCallback, sortSectionItemsCallback);
 
     const availableNetworks = useMemo(
         () =>
