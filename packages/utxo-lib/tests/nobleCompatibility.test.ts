@@ -90,6 +90,13 @@ describe('noble compatibility', () => {
         );
     });
 
+    it('signWithEntropy throws "Expected Extra Data (32 bytes)" for non-32-byte entropy (exercises assertExtraEntropy length guard)', () => {
+        const messageHash = Buffer.alloc(32, 2);
+        expect(() => ecc.signWithEntropy(messageHash, privateOne, Buffer.alloc(31, 9))).toThrow(
+            'Expected Extra Data (32 bytes)',
+        );
+    });
+
     it('signWithEntropy is deterministic for fixed entropy', () => {
         const messageHash = Buffer.alloc(32, 7);
         const extraEntropy = Buffer.alloc(32, 9);
