@@ -32,6 +32,10 @@ jest.mock('@trezor/connect', () => ({
             success: true,
             payload: { signature: 'ed25519signature' },
         }),
+        blockchainGetInfo: jest.fn().mockResolvedValue({
+            success: true,
+            payload: { url: 'http://localhost:8899' },
+        }),
         blockchainEstimateFee: jest.fn().mockResolvedValue({
             success: true,
             payload: { levels: [{ feePerUnit: '100000', feeLimit: '200000', feePerTx: '5000' }] },

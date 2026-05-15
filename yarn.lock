@@ -10441,6 +10441,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/earn-staking-api@workspace:suite-common/earn-staking-api"
   dependencies:
+    "@sentry/core": "npm:10.50.0"
     "@suite-common/http-client": "workspace:*"
     "@suite-common/react-query": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -12941,6 +12942,7 @@ __metadata:
     "@suite-native/transaction-management": "workspace:*"
     "@suite-native/transactions": "workspace:*"
     "@suite-native/tx-simulation": "workspace:*"
+    "@trezor/coins-solana": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/requirements": "workspace:*"
