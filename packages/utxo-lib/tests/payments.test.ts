@@ -258,6 +258,17 @@ describe('p2ms lazy name getter without m', () => {
     });
 });
 
+describe('p2ms lazy output getter with m and n set but no pubkeys', () => {
+    it('returns undefined when m and n are set but a.pubkeys is missing', () => {
+        const signature = Buffer.from('300602010002010001', 'hex');
+        const p = PAYMENTS.p2ms(
+            { m: 2, n: 2, signatures: [signature, signature] },
+            { validate: false },
+        );
+        expect(p.output).toBeUndefined();
+    });
+});
+
 describe('sstxcommitment lazy address getter without hash', () => {
     it('returns undefined when only amount is provided and hash is missing', () => {
         const p = PAYMENTS.sstxcommitment({ amount: '1' });
