@@ -9,6 +9,12 @@ describe('types validation', () => {
             expect(() => types.Hash160bit(buffer20byte)).not.toThrow();
             expect(() => types.Hash256bit(buffer32byte)).not.toThrow();
         });
+
+        it('formats a BufferAny mismatch with the bare "Buffer" type name', () => {
+            expect(() => types.assertType(types.BufferSchema, 'not a buffer')).toThrow(
+                /Expected Buffer, got String/,
+            );
+        });
     });
 
     describe('isHex', () => {
