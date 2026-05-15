@@ -216,3 +216,10 @@ describe('p2sh lazy address getter', () => {
         expect(p.address).toBeUndefined();
     });
 });
+
+describe('p2sh lazy output getter', () => {
+    it('returns undefined when input alone is provided and hash cannot be derived', () => {
+        const p = PAYMENTS.p2sh({ input: Buffer.alloc(0) }, { validate: false });
+        expect(p.output).toBeUndefined();
+    });
+});
