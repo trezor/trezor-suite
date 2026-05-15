@@ -71,6 +71,7 @@ export const EmptyWallet = () => {
                                 size={20}
                                 gap={16}
                                 maxVisibleIcons={null}
+                                hasTooltip
                             />
                         </Box>
                     </Row>
