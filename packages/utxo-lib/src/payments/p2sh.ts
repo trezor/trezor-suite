@@ -130,6 +130,7 @@ export function p2sh(a: Payment, opts?: PaymentOpts): Payment {
             const { version, hash: aHash } = _address();
             if (version !== network.scriptHash)
                 throw new TypeError('Invalid version or Network mismatch');
+            // MUTATION: equivalent — bs58check.decodeAddress (src/bs58check.ts:71-78) constrains payload.length to 21 or 22 and computes hash = payload.subarray(offset) where offset = 1 (21-byte) or 2 (22-byte), so aHash.length is always exactly 20. The truthy arm of `aHash.length !== 20` is structurally unreachable from the public p2sh() API; any input that would yield a non-20-byte hash throws earlier in bs58check.decodeAddress with 'too short' / 'too long'.
             if (aHash.length !== 20) throw new TypeError('Invalid address');
             hash = aHash;
         }
