@@ -30,7 +30,7 @@ import {
 
 import { ClaimTransactionDataReviewStepList } from '../components/ClaimTransactionDataReviewStepList';
 import { useHandleOnEarnTransactionReview } from '../hooks/useHandleOnEarnTransactionReview';
-import { getEarnPostSignParentRoute } from '../utils';
+import { resolveStakingTargetRoute } from '../utils/resolveStakingTargetRoute';
 
 const navigateToClaimedTransactionAction = ({
     accountKey,
@@ -48,7 +48,10 @@ const navigateToClaimedTransactionAction = ({
                 name: RootStackRoutes.AppTabs,
                 params: { screen: AppTabsRoutes.EarnStack },
             },
-            getEarnPostSignParentRoute(symbol, accountKey),
+            {
+                name: resolveStakingTargetRoute(symbol),
+                params: { accountKey },
+            },
             {
                 name: RootStackRoutes.TransactionDetailStack,
                 params: {

@@ -14,7 +14,6 @@ import { useEarnDepositsCardData } from '../hooks/useEarnDepositsCardData';
 import { type StablecoinYieldEarnItem, type StakingEarnItem } from '../types';
 import { EarnActiveItemsBottomSheet } from './EarnActiveItemsBottomSheet';
 import { EarnDepositsCardRow } from './EarnDepositsCardRow';
-import { EarnItemInfoModal } from './EarnItemInfoModal';
 
 const cardHeaderStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.sp16,
@@ -47,9 +46,6 @@ export const EarnDepositsCard = ({
         closeModal: closeStablecoinYieldSheet,
         openModal: openStablecoinYieldSheet,
     } = useBottomSheetModal();
-
-    const { bottomSheetRef: stakingInfoSheetRef, openModal: openStakingInfoModal } =
-        useBottomSheetModal();
 
     return (
         <>
@@ -92,7 +88,6 @@ export const EarnDepositsCard = ({
                 type="staking"
                 items={stakingRow?.activeItems ?? []}
                 onClose={closeStakingSheet}
-                onSolanaClaimPress={openStakingInfoModal}
             />
             <EarnActiveItemsBottomSheet
                 ref={stablecoinYieldSheetRef}
@@ -100,8 +95,6 @@ export const EarnDepositsCard = ({
                 items={stablecoinYieldRow?.activeItems ?? []}
                 onClose={closeStablecoinYieldSheet}
             />
-
-            <EarnItemInfoModal ref={stakingInfoSheetRef} type="staking" />
         </>
     );
 };
