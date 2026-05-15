@@ -13,11 +13,12 @@ type TradeableAssetsFilterTabsProps = {
     onSelectedNetworkFilter: (symbol: NetworkSymbol | undefined) => void;
 };
 
-export const TradeableAssetFilterTabs = ({
-    visible,
+const keyExtractor = (item: FilterItem<NetworkSymbol | undefined>) => item.value ?? 'undefined';
+
+const TradeableAssetFilterTabsContent = ({
     animationDuration,
     onSelectedNetworkFilter,
-}: TradeableAssetsFilterTabsProps) => {
+}: Omit<TradeableAssetsFilterTabsProps, 'visible'>) => {
     const networks = useSelector(selectDiscoverySupportedNetworks);
 
     const [selectedValue, setSelectedValue] = useState<NetworkSymbol | undefined>(undefined);
@@ -43,12 +44,6 @@ export const TradeableAssetFilterTabs = ({
         [networks, translate],
     );
 
-    const keyExtractor = (item: FilterItem<NetworkSymbol | undefined>) => item.value ?? 'undefined';
-
-    if (!visible) {
-        return null;
-    }
-
     return (
         <Animated.View
             entering={FadeIn.duration(animationDuration)}
@@ -62,4 +57,12 @@ export const TradeableAssetFilterTabs = ({
             />
         </Animated.View>
     );
+};
+
+export const TradeableAssetFilterTabs = ({ visible, ...rest }: TradeableAssetsFilterTabsProps) => {
+    if (!visible) {
+        return null;
+    }
+
+    return <TradeableAssetFilterTabsContent {...rest} />;
 };

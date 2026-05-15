@@ -70,4 +70,19 @@ describe('TradeableAssetFilterTabs', () => {
 
         expect(onSelectedNetworkFilter).toHaveBeenCalledWith('btc');
     });
+
+    it('should call onSelectedNetworkFilter with undefined when hidden', () => {
+        const onSelectedNetworkFilter = jest.fn();
+        const { rerender } = renderComponent(onSelectedNetworkFilter);
+
+        rerender(
+            <TradeableAssetFilterTabs
+                visible={false}
+                animationDuration={300}
+                onSelectedNetworkFilter={onSelectedNetworkFilter}
+            />,
+        );
+
+        expect(onSelectedNetworkFilter).toHaveBeenCalledWith(undefined);
+    });
 });
