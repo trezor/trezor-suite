@@ -120,6 +120,13 @@ describe('script', () => {
         });
     });
 
+    describe('decompile (truncated pushdata header)', () => {
+        it('returns [] when buffer contains OP_PUSHDATA1 alone (pushdata.decode returns null)', () => {
+            const truncated = Buffer.from([bscript.OPS.OP_PUSHDATA1]);
+            expect(bscript.decompile(truncated)).toEqual([]);
+        });
+    });
+
     describe('decompile', () => {
         fixtures.valid.forEach(f => {
             it(`decompiles ${f.asm}`, () => {
