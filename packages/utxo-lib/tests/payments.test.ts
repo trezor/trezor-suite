@@ -166,6 +166,14 @@ describe('p2wpkh non-canonical signature', () => {
     });
 });
 
+describe('p2wpkh lazy pubkey getter', () => {
+    it('returns undefined when only hash is provided and witness is missing', () => {
+        const hash = Buffer.from('168b992bcfc44050310b3a94bd0771136d0b28d1', 'hex');
+        const p = PAYMENTS.p2wpkh({ hash });
+        expect(p.pubkey).toBeUndefined();
+    });
+});
+
 describe('p2wpkh lazy address getter', () => {
     it('returns undefined when only an empty witness is provided and hash cannot be derived', () => {
         const p = PAYMENTS.p2wpkh({ witness: [] }, { validate: false });
