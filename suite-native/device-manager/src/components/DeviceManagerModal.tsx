@@ -2,11 +2,8 @@ import { type ReactNode } from 'react';
 import { Dimensions, type GestureResponderEvent, Modal, Pressable, StatusBar } from 'react-native';
 import Animated, { FadeIn, LinearTransition, SlideInUp } from 'react-native-reanimated';
 import { type EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useSelector } from 'react-redux';
 
-import { selectDeviceState } from '@suite-common/device';
 import { Box, HStack, ScreenHeaderWrapper } from '@suite-native/atoms';
-import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { nativeBorders } from '@trezor/theme';
 
@@ -68,8 +65,6 @@ export const DeviceManagerModal = ({
     footer,
 }: DeviceManagerModalProps) => {
     const { applyStyle } = useNativeStyles();
-    const deviceState = useSelector(selectDeviceState);
-    const shouldFactoryResetBeVisible = useSelector(selectShouldFactoryResetBeVisible);
 
     const insets = useSafeAreaInsets();
 
@@ -114,15 +109,12 @@ export const DeviceManagerModal = ({
                                         spacing="sp16"
                                         flex={1}
                                     >
-                                        {(deviceState || shouldFactoryResetBeVisible) && (
-                                            <Box flexShrink={1}>
-                                                <DeviceItemContent
-                                                    deviceState={deviceState ?? undefined}
-                                                    headerTextVariant="headline-sm"
-                                                    isCompact={false}
-                                                />
-                                            </Box>
-                                        )}
+                                        <Box flexShrink={1}>
+                                            <DeviceItemContent
+                                                headerTextVariant="headline-sm"
+                                                isCompact={false}
+                                            />
+                                        </Box>
                                         {customSwitchRightView}
                                     </HStack>
                                 </ScreenHeaderWrapper>
