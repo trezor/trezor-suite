@@ -8,6 +8,7 @@ import {
 } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
 import { type ExchangeFlowType } from '@suite-native/navigation';
+import { exhaustive } from '@trezor/type-utils';
 
 import { ReviewOutputCard } from './ReviewOutputCard';
 import { ReviewOutputItemContent } from './ReviewOutputItemContent';
@@ -31,16 +32,25 @@ const OutputLabel = ({
     switch (type) {
         case 'address':
         case 'regular_legacy':
-            if (flowType === 'approve' || flowType === 'swap') {
-                return <Translation id="transactionManagement.review.outputs.tokenApprovalLabel" />;
-            }
-            if (flowType === 'revoke' || flowType === 'revoke-and-approve') {
-                return (
-                    <Translation id="transactionManagement.review.outputs.tokenRevocationLabel" />
-                );
-            }
+            switch (flowType) {
+                case 'approve':
+                    return (
+                        <Translation id="transactionManagement.review.outputs.tokenApprovalLabel" />
+                    );
 
-            return <Translation id="transactionManagement.review.outputs.addressLabel" />;
+                case 'revoke':
+                case 'revoke-and-approve':
+                    return (
+                        <Translation id="transactionManagement.review.outputs.tokenRevocationLabel" />
+                    );
+
+                case 'swap':
+                case undefined:
+                    return <Translation id="transactionManagement.review.outputs.addressLabel" />;
+
+                default:
+                    throw exhaustive(flowType);
+            }
         case 'amount':
             return <Translation id="transactionManagement.review.outputs.amountLabel" />;
         case 'destination-tag':
