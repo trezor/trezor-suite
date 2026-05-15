@@ -249,3 +249,10 @@ describe('p2ms lazy name getter without m', () => {
         expect(p.name).toBeUndefined();
     });
 });
+
+describe('sstxcommitment lazy address getter without hash', () => {
+    it('returns undefined when only amount is provided and hash is missing', () => {
+        const p = PAYMENTS.sstxcommitment({ amount: '1' });
+        expect(p.address).toBeUndefined();
+    });
+});
