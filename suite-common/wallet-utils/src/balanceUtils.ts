@@ -44,8 +44,11 @@ export const formatCoinBalance = (value: string, locale: Locale = 'en-US') => {
     return localizeNumber(balanceBig, locale);
 };
 
+const MIN_FIAT_BASED_DECIMALS = 2;
+
 // Targets a smallest displayed unit of ≈ $1: decimals = ceil(log10(fiatRate)).
-// BTC @ $60k → 5 decimals (0.00001 BTC ≈ $0.60); DOGE @ $0.10 → 0 decimals.
+// Always shows at least 2 decimal places to match fiat formatting conventions.
+// BTC @ $60k → 5 decimals (0.00001 BTC ≈ $0.60); DOGE @ $0.10 → 2 decimals.
 export const formatCoinBalanceByFiatRate = (
     value: string,
     locale: Locale = 'en-US',
@@ -53,13 +56,14 @@ export const formatCoinBalanceByFiatRate = (
 ) => {
     const balanceBig = new BigNumber(value);
 
-    if (balanceBig.isZero() || balanceBig.isNaN()) return '0';
+    if (balanceBig.isNaN()) return '0';
+    if (balanceBig.isZero()) return localizeNumber(balanceBig, locale, MIN_FIAT_BASED_DECIMALS);
 
     if (fiatRate === undefined || !Number.isFinite(fiatRate) || fiatRate <= 0) {
         return formatCoinBalance(value, locale);
     }
 
-    const decimals = Math.max(0, Math.ceil(Math.log10(fiatRate)));
+    const decimals = Math.max(MIN_FIAT_BASED_DECIMALS, Math.ceil(Math.log10(fiatRate)));
 
     const parts = balanceBig.abs().toFixed().split('.');
     const fractionalLength = parts.length > 1 ? parts[1].length : 0;
@@ -68,12 +72,12 @@ export const formatCoinBalanceByFiatRate = (
     const fixedBalance = balanceBig.toFixed(decimals, 1); // ROUND_DOWN
     const fixedBalanceBig = new BigNumber(fixedBalance);
 
-    // Non-zero original got truncated to zero — surface a dust hint instead of "0"
+    // Non-zero original got truncated to zero — surface a dust hint instead of "0.00"
     if (fixedBalanceBig.isZero() && balanceBig.isGreaterThan(0)) {
-        return decimals > 0 ? `< 0.${'0'.repeat(decimals - 1)}1` : '< 1';
+        return `< 0.${'0'.repeat(decimals - 1)}1`;
     }
 
-    const localizedBalance = localizeNumber(fixedBalanceBig, locale);
+    const localizedBalance = localizeNumber(fixedBalanceBig, locale, MIN_FIAT_BASED_DECIMALS);
 
     return isTruncated ? `${localizedBalance}` : localizedBalance;
 };
