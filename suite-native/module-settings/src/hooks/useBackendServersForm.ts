@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { yup } from '@suite-common/validators';
 import { type BackendType } from '@suite-common/wallet-config';
 import {
@@ -12,11 +13,10 @@ import {
     reconnectBlockchainThunk,
     selectNetworkBlockchainInfo,
 } from '@suite-common/wallet-core';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { type SelectItemType } from '@suite-native/atoms';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
-import { useAnalytics } from '@suite-native/services';
 import TrezorConnect, { BLOCKCHAIN, type BlockchainError } from '@trezor/connect';
 import { parseElectrumUrl } from '@trezor/utils';
 
@@ -32,7 +32,7 @@ type FormValues = {
 export const useBackendServersForm = () => {
     const dispatch = useDispatch();
     const { translate } = useTranslate();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
 
     const {
         connected,

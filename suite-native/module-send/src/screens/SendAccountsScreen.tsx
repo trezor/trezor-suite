@@ -1,7 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { AccountsListWithFilter, type OnSelectAccount } from '@suite-native/accounts';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -12,7 +13,6 @@ import {
     type StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList,
@@ -22,7 +22,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const SendAccountsScreen = () => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const navigation = useNavigation<NavigationProps>();
 
     const handleSelectAccount: OnSelectAccount = ({ account, hasAnyKnownTokens }) => {

@@ -2,7 +2,8 @@ import { Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
-import { events } from '@suite-native/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import {
     Box,
     DiscreetCanvas,
@@ -14,7 +15,6 @@ import {
 import { useBiometricsSettings, useIsBiometricsEnabled } from '@suite-native/biometrics';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import { useNativeStyles } from '@trezor/styles-native';
 
 const DiscreetTextExample = () => {
@@ -35,7 +35,7 @@ const DiscreetTextExample = () => {
 
 const DiscreetModeSwitchRow = () => {
     const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const handleSetDiscreetMode = (value: boolean) => {
         setIsDiscreetMode(value);
         analytics.report({
@@ -63,7 +63,7 @@ const DiscreetModeSwitchRow = () => {
 };
 
 const AnalyticsSwitchRow = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
 
     const handleAnalyticsChange = (isEnabled: boolean) => {

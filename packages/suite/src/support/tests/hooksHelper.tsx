@@ -11,11 +11,11 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { ServicesProvider } from '@suite-common/dependency-injection';
 import { MockedFormatterProvider } from '@suite-common/formatters';
 
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 
-import { SuiteServicesProvider } from '../SuiteServicesProvider';
 import { type SuiteServices } from '../extraDependencies';
 import { ResponsiveContextProvider } from '../suite/ResponsiveContext';
 
@@ -27,7 +27,7 @@ export const renderWithProviders = (
 ): RenderResult =>
     render(
         <Provider store={store}>
-            <SuiteServicesProvider services={services}>
+            <ServicesProvider services={services}>
                 <ConnectedThemeProvider>
                     <ResponsiveContextProvider>
                         <IntlProvider locale="en">
@@ -35,7 +35,7 @@ export const renderWithProviders = (
                         </IntlProvider>
                     </ResponsiveContextProvider>
                 </ConnectedThemeProvider>
-            </SuiteServicesProvider>
+            </ServicesProvider>
         </Provider>,
     );
 

@@ -4,19 +4,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { ExchangeTrade } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingSendRejectedProps,
     exchangeThunks,
     selectTradingExchangeActiveQuote,
 } from '@suite-common/trading';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import {
     type ExchangeFlowType,
     type RootStackParamList,
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
@@ -49,7 +49,7 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
             >
         >();
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const quote = useSelector(selectTradingExchangeActiveQuote);
 
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);

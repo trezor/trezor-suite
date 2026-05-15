@@ -29,24 +29,19 @@ import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useSellForm } from '../useSellForm';
 
 const mockReport = jest.fn();
-
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: () => ({
-            report: mockReport,
-        }),
-    };
-});
+const services = {
+    analytics: {
+        report: mockReport,
+    },
+};
 
 const btc1account = 'btc-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
 
 describe('useSellForm', () => {
     let store: TestStore;
 
-    const renderUseSellForm = () => renderHookWithStoreProvider(() => useSellForm(), { store });
+    const renderUseSellForm = () =>
+        renderHookWithStoreProvider(() => useSellForm(), { services, store });
 
     const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) =>
         createTradingLightStore({

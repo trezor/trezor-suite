@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     cancelDiscoveryThunk,
@@ -10,7 +11,7 @@ import {
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import {
     type AuthorizeDeviceStackParamList,
@@ -20,7 +21,6 @@ import {
     type StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 
 import { selectHasPassphraseMismatchError } from '../passphraseSelectors';
 
@@ -32,7 +32,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNode }) => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const navigation = useNavigation<NavigationProp>();
     const device = useSelector(selectSelectedDevice);
     const navigateToInitialScreen = useNavigateToInitialScreen();

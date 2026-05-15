@@ -3,16 +3,16 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { changeCoinVisibility } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import {
     selectDeviceEnabledDiscoveryNetworkSymbols,
     selectDiscoveryNetworkSymbols,
 } from '@suite-native/discovery';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
-import { useAnalytics } from '@suite-native/services';
 
 import { DiscoveryCoinsFilter } from './DiscoveryCoinsFilter';
 import {
@@ -23,7 +23,7 @@ import {
 export const CoinEnablingForm = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
     const networkSymbols = useSelector(selectDiscoveryNetworkSymbols);
 

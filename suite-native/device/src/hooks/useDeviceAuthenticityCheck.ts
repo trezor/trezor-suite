@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { isDeviceAuthenticityValid } from '@suite-common/device-authenticity';
 import {
@@ -11,12 +12,15 @@ import {
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
 import { type StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
-import { type DeviceAuthenticityCheckResult, events } from '@suite-native/analytics';
+import {
+    type DeviceAuthenticityCheckResult,
+    type NativeAnalyticsDep,
+    events,
+} from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { useTranslate } from '@suite-native/intl';
 import { captureSentryException, withSentryScope } from '@suite-native/sentry';
-import { useAnalytics } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect, { type AuthenticateDeviceResult, type Response } from '@trezor/connect';
 import { isArrayMember } from '@trezor/utils';
@@ -43,7 +47,7 @@ export const useDeviceAuthenticityCheck = () => {
     const isMCURemotelyDisabled = useSelector((state: MessageSystemRootState) =>
         selectIsFeatureDisabled(state, Feature.deviceAuthenticityCheckMCU),
     );
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const device = useSelector(selectSelectedDevice);
     const isDeviceBootloaderUnlocked = !!device && !device?.features?.bootloader_locked;
     const reportCheckResult = useCallback(

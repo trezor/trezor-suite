@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceUpdateFirmwareVersion } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type FirmwareUpdatePayload,
     type FirmwareUpdateStartType,
+    type NativeAnalyticsDep,
     events,
 } from '@suite-native/analytics';
-import { useAnalytics } from '@suite-native/services';
 import { type FirmwareType } from '@trezor/connect';
 import {
     DeviceModelInternal,
@@ -26,7 +27,7 @@ export const useFirmwareAnalytics = ({
     navigationLocation?: 'settings' | 'onboarding';
 }) => {
     const toFwVersion = useSelector(selectDeviceUpdateFirmwareVersion);
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const prepareAnalyticsPayload = useCallback(
         () => ({
             model: device?.features?.internal_model ?? DeviceModelInternal.UNKNOWN,

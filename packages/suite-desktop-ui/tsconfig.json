@@ -6,6 +6,9 @@
     },
     "include": ["."],
     "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite/analytics" },
         { "path": "../../suite/desktop-update" },
         { "path": "../../suite/flags" },

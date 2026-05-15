@@ -15,15 +15,17 @@ export const renderWithBasicProvider = <Props,>(
     element: ReactElement<Props>,
     {
         formattersConfig,
+        services,
         wrapper: Wrapper,
         ...options
     }: RenderOptions & {
         formattersConfig?: FormatterProviderConfig;
+        services?: Record<string, unknown>;
     } = {},
 ) =>
     render(element, {
         wrapper: ({ children }) => (
-            <BasicProviderForTests formattersConfig={formattersConfig}>
+            <BasicProviderForTests formattersConfig={formattersConfig} services={services}>
                 {Wrapper ? <Wrapper>{children}</Wrapper> : children}
             </BasicProviderForTests>
         ),
@@ -34,15 +36,17 @@ export const renderHookWithBasicProvider = <Result, Props>(
     callback: (props: Props) => Result,
     {
         formattersConfig,
+        services,
         wrapper: Wrapper,
         ...options
     }: RenderHookOptions<Props> & {
         formattersConfig?: FormatterProviderConfig;
+        services?: Record<string, unknown>;
     } = {},
 ) =>
     renderHook(callback, {
         wrapper: ({ children }) => (
-            <BasicProviderForTests formattersConfig={formattersConfig}>
+            <BasicProviderForTests formattersConfig={formattersConfig} services={services}>
                 {Wrapper ? <Wrapper>{children}</Wrapper> : children}
             </BasicProviderForTests>
         ),

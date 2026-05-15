@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/dependency-injection"
+        },
+        {
             "path": "../../suite-common/formatters"
         },
         {
@@ -32,7 +35,6 @@
         { "path": "../labeling" },
         { "path": "../link" },
         { "path": "../navigation" },
-        { "path": "../services" },
         { "path": "../tokens" },
         { "path": "../transaction-management" },
         { "path": "../transactions" },

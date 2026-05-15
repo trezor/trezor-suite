@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     DEFAULT_SUITE_SYNC_RELAY_URL,
     DEFAULT_SUITE_SYNC_RELAY_URL_DEV,
@@ -10,7 +11,7 @@ import {
     selectSuiteSyncRelayUrl,
     updateSuiteSyncDebugEnabled,
 } from '@suite-common/suite-sync';
-import { type SuiteSync } from '@suite-common/suite-sync-types';
+import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { Button, ButtonGroup, Checkbox, Code, Column, Input, Text } from '@trezor/components';
 import { ActionColumn, SectionItem, SettingsSection, TextColumn } from '@trezor/product-components';
 import { type BreakpointFlags } from '@trezor/theme';
@@ -24,11 +25,11 @@ const LOCAL_SUITE_SYNC_RELAY_URL = 'http://127.0.0.1:4000/evolu/';
 
 type SuiteSyncSettingsProps = {
     onError: WipeSuiteSyncLabelsOnError;
-    suiteSync: SuiteSync;
 };
 
-export const SuiteSyncSettings = ({ onError, suiteSync }: SuiteSyncSettingsProps) => {
+export const SuiteSyncSettings = ({ onError }: SuiteSyncSettingsProps) => {
     const [isRelayUrlLoading, setIsRelayUrlLoading] = useState(false);
+    const { suiteSync } = useServices<SuiteSyncDep>();
 
     const dispatch = useDispatch();
     const isBelowLaptop = useSelector(selectIsBelowLaptop);
@@ -118,7 +119,7 @@ export const SuiteSyncSettings = ({ onError, suiteSync }: SuiteSyncSettingsProps
                     </Column>
                 </ActionColumn>
             </SectionItem>
-            <WipeSuiteSyncLabels onError={onError} suiteSync={suiteSync} />
+            <WipeSuiteSyncLabels onError={onError} />
             <SectionItem>
                 <TextColumn title="Suite Sync (Evolu) Debug" />
                 <ActionColumn>

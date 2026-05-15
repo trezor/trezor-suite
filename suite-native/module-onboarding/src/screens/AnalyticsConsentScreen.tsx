@@ -1,7 +1,12 @@
 import { useState } from 'react';
 
 import { type AnalyticsSharedEvents } from '@suite-common/analytics';
-import { type AnalyticsNativeEvents, events } from '@suite-native/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import {
+    type AnalyticsNativeEvents,
+    type NativeAnalyticsDep,
+    events,
+} from '@suite-native/analytics';
 import {
     Box,
     Button,
@@ -20,7 +25,6 @@ import {
     Screen,
     type StackProps,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import { type Analytics } from '@trezor/analytics-uploader';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { DATA_PRIVACY_URL } from '@trezor/urls';
@@ -55,7 +59,7 @@ const reportAnalyticsOnboardingCompleted = (
 export const AnalyticsConsentScreen = ({
     navigation,
 }: StackProps<OnboardingStackParamList, OnboardingStackRoutes.AnalyticsConsent>) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const [isEnabled, setIsEnabled] = useState(true);
 
     const { applyStyle } = useNativeStyles();

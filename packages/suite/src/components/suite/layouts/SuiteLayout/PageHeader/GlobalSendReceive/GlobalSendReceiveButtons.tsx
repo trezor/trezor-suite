@@ -1,9 +1,8 @@
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { ButtonGroup, type ButtonProps } from '@trezor/components';
-
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { HeaderActionButton } from '../HeaderActionButton';
 
@@ -17,7 +16,7 @@ export const GlobalSendReceiveButtons = ({
     intent,
     priority,
 }: GlobalSendReceiveButtonsProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
 
     return (
         <ButtonGroup intent={intent} priority={priority}>

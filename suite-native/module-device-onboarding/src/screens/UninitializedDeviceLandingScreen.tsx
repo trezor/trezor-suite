@@ -4,13 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useSetAtom } from 'jotai';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     deviceActions,
     selectHasDeviceFirmwareInstalled,
     selectSelectedDevice,
     selectShouldOfferUpdateFirmware,
 } from '@suite-common/device';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { Box, Button, Text, TextButton, VStack } from '@suite-native/atoms';
 import { type SetupSupportingDeviceModel, useCoinLabel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
@@ -20,7 +21,6 @@ import {
     type RootStackParamList,
     type StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 
 import { resetOnboardingAnalyticsAtom, updateOnboardingAnalyticsAtom } from '../../atoms';
 import { DeviceModelImage } from '../components/DeviceModelImage';
@@ -68,7 +68,7 @@ export const UninitializedDeviceLandingScreen = ({
     RootStackParamList
 >) => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const deviceModel = params.deviceModel as SetupSupportingDeviceModel;
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
     const shouldOfferUpdateFirmware = useSelector(selectShouldOfferUpdateFirmware);

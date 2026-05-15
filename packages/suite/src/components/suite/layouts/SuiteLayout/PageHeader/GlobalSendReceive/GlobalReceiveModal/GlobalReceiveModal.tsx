@@ -1,9 +1,10 @@
 import { useRef } from 'react';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
 import { CardList, Column, IconCircle, Link, Modal, Paragraph, Row } from '@trezor/components';
 import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
@@ -11,7 +12,6 @@ import { useModal } from 'src/components/suite/asset-picker/hooks/useModal';
 import { AddAccountModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
-import { useAnalytics } from 'src/support/useAnalytics';
 import { type Account, type AccountItemType } from 'src/types/wallet';
 
 import { GlobalReceiveAccountListItem } from './components/GlobalReceiveAccountListItem';
@@ -25,7 +25,7 @@ type GlobalReceiveModalProps = {
 };
 
 export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const { device } = useDevice();
     const { isDiscoveryRunning } = useDiscovery();
     const isAddAccountDisabled = isDiscoveryRunning || !device?.connected;

@@ -1,10 +1,10 @@
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { splitYieldPendingTransaction } from '@suite-common/wallet-core';
 import { Banner, BulletList, Button, Column, Row, Text } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { useYieldSupplyContext } from './useYieldSupplyContext';
 import { YieldActionStep } from '../common/YieldActionStep';
@@ -14,7 +14,7 @@ import { YieldApproveStep } from '../common/YieldApproveStep';
 import { YieldFlowCompleteSupply } from '../common/YieldFlowCompleteSupply';
 
 export const YieldSupplyForm = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
 
     const {
         account,

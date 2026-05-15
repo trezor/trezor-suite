@@ -1,11 +1,12 @@
 import { useState } from 'react';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import {
     selectIsStablecoinYieldDashboardPromoBannerShown,
     selectIsTEXDashboardPromoBannerShown,
     selectIsTS7DashboardPromoBannerShown,
 } from '@suite/flags';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Feature, selectFeaturesConfig } from '@suite-common/message-system';
 import { type Feature as MessageFeature } from '@suite-common/suite-types';
@@ -13,7 +14,6 @@ import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { StablecoinYieldBanner } from './StablecoinYieldBanner';
@@ -23,7 +23,7 @@ import { type DashboardBannerTypeWithNull, isDashboardBannerType } from './dashb
 
 export const DashboardPromoBanner = () => {
     const [isVisible, setIsVisible] = useState(true);
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const isDiscoveryEmpty = discoveryStatus?.type === 'discovery-empty';
     const shouldShowTEXDashboardPromoBanner = useSelector(selectIsTEXDashboardPromoBannerShown);

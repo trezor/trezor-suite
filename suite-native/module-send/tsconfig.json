@@ -2,6 +2,9 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/formatters"
@@ -53,7 +56,6 @@
         { "path": "../navigation" },
         { "path": "../qr-code" },
         { "path": "../send" },
-        { "path": "../services" },
         { "path": "../tokens" },
         { "path": "../transaction-management" },
         { "path": "../transactions" },

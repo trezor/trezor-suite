@@ -1,7 +1,8 @@
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { type Route, goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
@@ -15,7 +16,6 @@ import { exhaustive } from '@trezor/type-utils';
 import { DashboardSection } from 'src/components/dashboard';
 import { PriceTicker, TrendTicker } from 'src/components/suite';
 import { useDispatch, useLayoutSize } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 import { type Account } from 'src/types/wallet';
 
 type TradeBoxProps = {
@@ -28,7 +28,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
     const { isBelowTablet, isBelowMobile } = useLayoutSize();
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
 
     const isStakeNetwork = hasNetworkFeatures(account, 'staking');

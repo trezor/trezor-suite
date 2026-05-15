@@ -2,8 +2,10 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     Card,
     Column,
@@ -18,7 +20,6 @@ import {
 } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-import { useAnalytics } from 'src/support/useAnalytics';
 import { useApplicationLogs } from 'src/utils/suite/logsUtils';
 
 const ScrollContainer = styled.div`
@@ -44,7 +45,7 @@ const LogWrapper = styled.pre`
 type ApplicationLogModalProps = { onCancel: () => void };
 
 export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const [hideSensitiveInfo, setHideSensitiveInfo] = useState(false);
     const applicationLogs = useApplicationLogs({ hideSensitiveInfo });
     const { ShadowTop, ShadowBottom, ShadowContainer, onScroll, scrollElementRef } =

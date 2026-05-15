@@ -6,6 +6,9 @@
         {
             "path": "../../suite-common/delegated-identity-key-types"
         },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/message-system"

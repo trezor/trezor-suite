@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import {
     type BluetoothDevice,
     BluetoothDeviceList,
@@ -18,7 +20,6 @@ import {
     Screen,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 
 import { BluetoothDeviceScreenHeader } from '../../components/connect/BluetoothDeviceScreenHeader';
 
@@ -30,7 +31,7 @@ type NavigationProps = StackNavigationProps<
 export const ConnectBluetoothDeviceScreen = () => {
     const { connectBluetoothDevice } = useBluetoothDevice();
     const navigation = useNavigation<NavigationProps>();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
 
     // Once a device is connected, it's added to known devices and thus disappears from the list
     // before the transition to the next screen finishes. This ensures it doesn't feel glitchy.

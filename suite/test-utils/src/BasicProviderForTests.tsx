@@ -1,18 +1,15 @@
 import type { PropsWithChildren } from 'react';
 
 import { IntlProviderForTests } from '@suite/intl';
+import { ServicesProvider } from '@suite-common/dependency-injection';
 import { MockedFormatterProvider } from '@suite-common/formatters';
-import {
-    ConnectedThemeProvider,
-    ResponsiveContextProvider,
-    SuiteServicesProvider,
-} from '@trezor/suite';
+import { ConnectedThemeProvider, ResponsiveContextProvider } from '@trezor/suite';
 // TODO fix deep import
 // eslint-disable-next-line local-rules/no-package-deep-imports
 import { extraDependenciesDesktopMock } from '@trezor/suite/src/support/tests/extraDependenciesDesktop.mock';
 
 export const BasicProviderForTests = ({ children }: PropsWithChildren) => (
-    <SuiteServicesProvider services={extraDependenciesDesktopMock.services}>
+    <ServicesProvider services={extraDependenciesDesktopMock.services}>
         <ConnectedThemeProvider>
             <ResponsiveContextProvider>
                 <IntlProviderForTests>
@@ -20,5 +17,5 @@ export const BasicProviderForTests = ({ children }: PropsWithChildren) => (
                 </IntlProviderForTests>
             </ResponsiveContextProvider>
         </ConnectedThemeProvider>
-    </SuiteServicesProvider>
+    </ServicesProvider>
 );

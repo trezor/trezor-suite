@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 
-import { events } from '@suite/analytics';
+import { type AnalyticsDesktopEvents, type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type YieldFlowType,
     type YieldPendingTransactionState,
@@ -12,10 +13,10 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
+import { type Analytics } from '@trezor/analytics-uploader';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 const DEFAULT_PENDING_TX_POLL_INTERVAL_MS = 3_000;
 const MIN_PENDING_TX_POLL_INTERVAL_MS = 2_000;
@@ -73,7 +74,7 @@ const resolveReportedType = <T extends string>(
 };
 
 const reportResolution = (
-    analytics: ReturnType<typeof useAnalytics>,
+    analytics: Analytics<AnalyticsDesktopEvents>,
     resolution: ResolutionEventType,
     outcome: 'success' | 'error' | 'leftPending',
     context: ReportContext,
@@ -138,7 +139,7 @@ export const useYieldPendingTransactionTracking = ({
     vaultId,
 }: UseYieldPendingTransactionTrackingProps) => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const pendingTransaction = useSelector(
         state => selectStablecoinYieldSession(state, flowType, flowKey).action.pendingTransaction,
     );

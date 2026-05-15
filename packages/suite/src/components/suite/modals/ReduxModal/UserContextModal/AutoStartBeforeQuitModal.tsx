@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
 import { Card, Checkbox, Column, Modal, Paragraph } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
 import { useDispatch } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 export const AutoStartBeforeQuitModal = () => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const [dontAskAgain, setDontAskAgain] = useState(false);
     useEffect(() => {
         if (desktopApi.available) desktopApi.appAutoStartPopupAck();

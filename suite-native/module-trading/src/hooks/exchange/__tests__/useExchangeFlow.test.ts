@@ -1,7 +1,6 @@
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
 import { RootStackRoutes } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     getBtcAccount,
@@ -20,15 +19,6 @@ jest.mock('@react-navigation/native', () => ({
         require('react').useEffect(callback, []);
     },
 }));
-
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
 
 // Mock TrezorConnect to prevent errors during cleanup
 jest.mock('@trezor/connect', () => ({
@@ -79,15 +69,18 @@ describe('useExchangeFlow', () => {
         flowType?: UseExchangeFlowProps['flowType'];
     }) => {
         const reportMock = jest.fn();
-
-        (useAnalytics as jest.Mock).mockReturnValue({
-            report: reportMock,
-        });
+        const services = {
+            analytics: {
+                report: reportMock,
+            },
+        };
 
         return {
             reportMock,
-            result: renderHookWithStoreProvider(() => useExchangeFlow({ flowType }), { store })
-                .result,
+            result: renderHookWithStoreProvider(() => useExchangeFlow({ flowType }), {
+                services,
+                store,
+            }).result,
         };
     };
 

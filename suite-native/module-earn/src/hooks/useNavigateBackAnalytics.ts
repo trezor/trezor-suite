@@ -2,11 +2,11 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
-import { type AnalyticsNativeEvents } from '@suite-native/analytics';
-import { useAnalytics } from '@suite-native/services';
+import { useServices } from '@suite-common/dependency-injection';
+import { type AnalyticsNativeEvents, type NativeAnalyticsDep } from '@suite-native/analytics';
 
 export const useNavigateBackAnalytics = (event: AnalyticsNativeEvents) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const hasContinuedRef = useRef(false);
     const navigation = useNavigation();
     const eventRef = useRef(event);

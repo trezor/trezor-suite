@@ -3,13 +3,18 @@ import { useSelector } from 'react-redux';
 
 import type { SellFiatTrade } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingRootState,
     selectTradingCoinInfoByCryptoId,
     selectTradingSellSelectedQuote,
 } from '@suite-common/trading';
-import { type TradingSellAction, type TradingSellStep, events } from '@suite-native/analytics';
-import { useAnalytics } from '@suite-native/services';
+import {
+    type NativeAnalyticsDep,
+    type TradingSellAction,
+    type TradingSellStep,
+    events,
+} from '@suite-native/analytics';
 
 import { getAnalyticsTradingSellPayload } from '../utils/quotesUtils';
 
@@ -21,7 +26,7 @@ export type TradingSellAnalyticReportCallback = (
 export const useSellAnalyticReportCallback = (
     candidateQuote?: SellFiatTrade,
 ): TradingSellAnalyticReportCallback => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const persistedQuote = useSelector(selectTradingSellSelectedQuote);
     const quote = candidateQuote || persistedQuote;
 

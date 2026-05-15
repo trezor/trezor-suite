@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/dependency-injection"
+        },
+        {
             "path": "../../suite-common/formatters"
         },
         {
@@ -11,6 +14,9 @@
         { "path": "../../suite-common/staking" },
         {
             "path": "../../suite-common/suite-sync"
+        },
+        {
+            "path": "../../suite-common/suite-sync-types"
         },
         {
             "path": "../../suite-common/suite-types"
@@ -45,7 +51,6 @@
         { "path": "../labeling" },
         { "path": "../navigation" },
         { "path": "../scrollview" },
-        { "path": "../services" },
         { "path": "../suite-sync" },
         { "path": "../tokens" },
         {

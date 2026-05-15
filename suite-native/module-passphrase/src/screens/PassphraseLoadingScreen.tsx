@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { events } from '@suite-native/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { Spinner, type SpinnerLoadingState, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Screen, useNavigateToInitialScreen } from '@suite-native/navigation';
 import { PassphraseScreenHeader, selectPassphraseDeviceNotEmpty } from '@suite-native/passphrase';
-import { useAnalytics } from '@suite-native/services';
 
 export const PassphraseLoadingScreen = () => {
     const isDeviceNotEmpty = useSelector(selectPassphraseDeviceNotEmpty);
     const navigateToInitialScreen = useNavigateToInitialScreen();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const [loadingResult, setLoadingResult] = useState<SpinnerLoadingState>('idle');
 
     useEffect(() => {

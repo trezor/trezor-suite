@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type EarnParams, goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import {
     type EarnAnalyticsStep,
@@ -18,7 +19,6 @@ import { AccountLabel } from 'src/components/suite';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useDispatch } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 interface YieldPageHeaderProps {
     analyticsStep: Extract<EarnAnalyticsStep, 'yield-supply' | 'yield-withdraw'>;
@@ -34,7 +34,7 @@ export const YieldPageHeader = ({
     routeParams,
 }: YieldPageHeaderProps) => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();
     const { data: yieldOpportunities, isSuccess } = useAllYieldOpportunities();

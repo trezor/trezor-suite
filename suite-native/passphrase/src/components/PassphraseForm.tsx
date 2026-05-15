@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     selectHasDevicePassphraseEntryCapability,
     selectSelectedDevice,
@@ -13,12 +14,11 @@ import {
     passphraseFormSchema,
 } from '@suite-common/validators';
 import { submitPassphrase } from '@suite-common/wallet-core';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
 import { selectPassphraseRequestId } from '@suite-native/device-authorization';
 import { Form, SecureTextInputField, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
-import { useAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { EnterPassphraseOnTrezorButton } from './EnterPassphraseOnTrezorButton';
@@ -43,7 +43,7 @@ export const PassphraseForm = ({
     noPassphraseEnabled,
     onAfterSubmit,
 }: PassphraseFormProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const dispatch = useDispatch();
     const formWrapperView = useRef<View>(null);
 

@@ -2,6 +2,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 
 import { createRoot } from 'react-dom/client';
 
+import { ServicesProvider } from '@suite-common/dependency-injection';
 import TrezorConnect from '@trezor/connect';
 import { createIpcProxy } from '@trezor/ipc-proxy';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -19,7 +20,6 @@ import { BioAuthGuard } from 'src/components/suite/BioAuthGuard/BioAuthGuard';
 import { FindBar } from 'src/components/suite/FindBar/FindBar';
 import { Metadata } from 'src/components/suite/Metadata';
 import { useDebugLanguageShortcut } from 'src/hooks/suite';
-import { SuiteServicesProvider } from 'src/support/SuiteServicesProvider';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
 import { Main } from 'src/support/suite/Main';
 import { preloadStore } from 'src/support/suite/preloadStore';
@@ -96,13 +96,13 @@ export const init = async (container: HTMLElement) => {
     if (shouldRunTor) {
         await new Promise(resolve => {
             root.render(
-                <SuiteServicesProvider services={services}>
+                <ServicesProvider services={services}>
                     <ReduxProvider store={store}>
                         <ConnectedIntlProvider>
                             <TorLoadingScreen callback={resolve} />
                         </ConnectedIntlProvider>
                     </ReduxProvider>
-                </SuiteServicesProvider>,
+                </ServicesProvider>,
             );
             desktopApi.toggleTor(true);
         });
@@ -134,10 +134,10 @@ export const init = async (container: HTMLElement) => {
 
     // finally render whole app
     root.render(
-        <SuiteServicesProvider services={services}>
+        <ServicesProvider services={services}>
             <ReduxProvider store={store}>
                 <MainDesktop />
             </ReduxProvider>
-        </SuiteServicesProvider>,
+        </ServicesProvider>,
     );
 };

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { goto } from '@suite/router';
 import { suiteSyncErrorHandler } from '@suite/suite-sync';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceConnected } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
@@ -10,11 +11,11 @@ import {
     selectHasDeviceSuiteSyncError,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
+import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { Banner } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/connect';
 
 import { useDispatch } from 'src/hooks/suite';
-import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
 type BannerConfig = {
     testId: string;
@@ -88,7 +89,7 @@ const SuiteSyncBannerContent = ({
 
 export const SuiteSyncBanner = ({ deviceStaticSessionId }: SuiteSyncBannerProps) => {
     const dispatch = useDispatch();
-    const { suiteSync } = useSuiteServices();
+    const { suiteSync } = useServices<SuiteSyncDep>();
 
     const hasSuiteSyncError = useSelector((state: WithSuiteSyncAndDeviceState) =>
         selectHasDeviceSuiteSyncError(state, deviceStaticSessionId),

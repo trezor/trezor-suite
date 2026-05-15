@@ -1,19 +1,19 @@
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectTorOnionLinks, suiteSettingsActions } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 /* keep torOnionLinks value as it is but hide this section when tor is off.
    when tor is off this value has no effect anyway (handled by ExternalLink hook) */
 export const TorOnionLinks = () => {
     const torOnionLinks = useSelector(selectTorOnionLinks);
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const handleChange = () => {
         dispatch(suiteSettingsActions.setOnionLinks(!torOnionLinks));
         analytics.report({

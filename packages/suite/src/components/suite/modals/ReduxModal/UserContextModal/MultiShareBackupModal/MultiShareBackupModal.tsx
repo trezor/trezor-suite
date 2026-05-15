@@ -1,8 +1,9 @@
 import { useState } from 'react';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { isAdditionalShamirBackupInProgress } from '@suite/recovery';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Modal, type ModalProps } from '@trezor/components';
 import TrezorConnect, { PROTO } from '@trezor/connect';
@@ -15,7 +16,6 @@ import {
 
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { MultiShareBackupStep1 } from './MultiShareBackupStep1';
 import { MultiShareBackupStep2to4 } from './MultiShareBackupStep2to4';
@@ -29,7 +29,7 @@ type MultiShareBackupModalProps = {
 type StepConfig = Partial<ModalProps>;
 
 export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const device = useSelector(selectSelectedDevice);
 
     const isInBackupMode =

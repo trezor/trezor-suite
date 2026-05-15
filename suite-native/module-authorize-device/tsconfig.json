@@ -8,6 +8,9 @@
         {
             "path": "../../suite-common/bluetooth"
         },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/thp" },
         {
@@ -28,7 +31,6 @@
         { "path": "../module-connect-popup" },
         { "path": "../navigation" },
         { "path": "../passphrase" },
-        { "path": "../services" },
         { "path": "../theme" },
         { "path": "../thp" },
         { "path": "../../packages/connect" },

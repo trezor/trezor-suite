@@ -1,7 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
 import { events } from '@suite-native/analytics';
-import { useAnalytics } from '@suite-native/services';
 import {
     type PreloadedStatePartial,
     mergePreloadedState,
@@ -16,15 +15,11 @@ import {
 import { useExchangeAnalyticReportCallback } from '../useExchangeAnalyticReportCallback';
 
 const reportMock = jest.fn();
-
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
+const services = {
+    analytics: {
+        report: reportMock,
+    },
+};
 
 describe('useExchangeAnalyticReportCallback', () => {
     type ExchangeAnalyticsPreloadedState = {
@@ -45,14 +40,11 @@ describe('useExchangeAnalyticReportCallback', () => {
     } = {}) =>
         renderHookWithStoreProvider(() => useExchangeAnalyticReportCallback(candidateQuote), {
             preloadedState,
+            services,
         });
 
     beforeEach(() => {
         jest.clearAllMocks();
-
-        (useAnalytics as jest.Mock).mockReturnValue({
-            report: reportMock,
-        });
     });
 
     it('should call analytics on mount', () => {

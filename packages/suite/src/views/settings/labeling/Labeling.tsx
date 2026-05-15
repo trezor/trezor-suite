@@ -1,16 +1,19 @@
 import { type ReactNode, useState } from 'react';
 import { type OptionProps } from 'react-select';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
 import { metadataLabelingActions, metadataThunks } from '@suite/metadata';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { SuiteSyncServers, suiteSyncErrorHandler } from '@suite/suite-sync';
 import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     selectIsSuiteSyncEnabled,
     selectIsSuiteSyncFeatureAvailable,
 } from '@suite-common/suite-sync';
+import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { Box, LoadingContent, Tooltip } from '@trezor/components';
 import { Option as SelectOption } from '@trezor/components/src/components/form/Select/customComponents';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
@@ -28,8 +31,6 @@ import {
 } from 'src/constants/suite/labeling';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useLabelingDeviceState } from 'src/hooks/suite/useLabelingDeviceState';
-import { useSuiteServices } from 'src/support/SuiteServicesProvider';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 type LabelingTranslatedOption = LabelingOption<string> & {
     tooltipContent?: ReactNode;
@@ -62,9 +63,8 @@ const LabelingOption = ({
 
 export const Labeling = () => {
     const { translationString } = useTranslation();
-    const { suiteSync } = useSuiteServices();
+    const { suiteSync, analytics } = useServices<SuiteSyncDep & DesktopAnalyticsDep>();
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
     const [legacyModalWarningVisible, setLegacyModalWarningVisible] = useState(false);
     const { device } = useDevice();
     const deviceStaticSessionId = device?.state?.staticSessionId;
@@ -217,7 +217,7 @@ export const Labeling = () => {
                     </SectionItem>
                 )}
             </Anchor>
-            {isSuiteSyncEnabled && <SuiteSyncServers suiteSync={suiteSync} />}
+            {isSuiteSyncEnabled && <SuiteSyncServers />}
         </>
     );
 };

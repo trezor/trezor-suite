@@ -8,6 +8,9 @@
         {
             "path": "../../suite-common/bluetooth"
         },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/device-authenticity"
@@ -53,7 +56,6 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../sentry" },
-        { "path": "../services" },
         { "path": "../settings" },
         { "path": "../theme" },
         { "path": "../toasts" },

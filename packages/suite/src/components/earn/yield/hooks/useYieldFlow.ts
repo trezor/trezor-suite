@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { type UseFormReturn, useForm } from 'react-hook-form';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type EarnParams } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type YieldActionFlowType,
     type YieldAllowanceStatus,
@@ -34,7 +35,6 @@ import {
     submitYieldWithdrawThunk,
 } from 'src/actions/wallet/stablecoin-yield';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { useResolvedYieldFlowData } from './useResolvedYieldFlowData';
 import { useYieldPendingTransactionTracking } from './useYieldPendingTransactionTracking';
@@ -119,7 +119,7 @@ export const useYieldFlow = ({
     flowType,
 }: UseYieldFlowProps): UseYieldFlowResult => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const { device } = useDevice();
     const methods = useForm<YieldFlowFormValues>({
         mode: 'onChange',

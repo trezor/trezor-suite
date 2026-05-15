@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { FormProvider } from 'react-hook-form';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -20,7 +21,6 @@ import { useCardanoStaking } from 'src/hooks/earn/useCardanoStaking';
 import { useClaimForm } from 'src/hooks/earn/useClaimForm';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-import { useAnalytics } from 'src/support/useAnalytics';
 import { CRYPTO_INPUT } from 'src/types/earn/earnFormFields';
 
 type EarnClaimModalProps = {
@@ -31,7 +31,7 @@ type EarnClaimModalProps = {
 export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(account.symbol);
 
     const {

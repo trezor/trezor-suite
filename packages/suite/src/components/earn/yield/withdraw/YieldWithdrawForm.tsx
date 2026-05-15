@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { splitYieldPendingTransaction } from '@suite-common/wallet-core';
 import { Banner, Column, Text } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { useYieldWithdrawContext } from './useYieldWithdrawContext';
 import { YieldActionStep } from '../common/YieldActionStep';
@@ -14,7 +14,7 @@ import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
 import { YieldFlowCompleteWithdraw } from '../common/YieldFlowCompleteWithdraw';
 
 export const YieldWithdrawForm = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
 
     const {
         vault,

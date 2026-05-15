@@ -1,9 +1,9 @@
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { suiteForgetDeviceThunk } from 'src/actions/suite/suiteForgetDeviceThunk';
 import { useDispatch } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 /**
  * Hook that wraps `forgetDeviceThunk` with toast and analytics.
@@ -12,7 +12,7 @@ import { useAnalytics } from 'src/support/useAnalytics';
  */
 export const useForgetDevice = () => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
 
     const forgetDevice = async ({
         skipToggleModalConnection,

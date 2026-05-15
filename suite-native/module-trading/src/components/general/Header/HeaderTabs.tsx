@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type TradingTypeWithConcierge } from '@suite-common/trading';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { HStack, IconButton, useBottomSheetModal } from '@suite-native/atoms';
 import { type IconName } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
-import { useAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { HeaderTab } from './HeaderTab';
@@ -59,7 +59,7 @@ export const HeaderTabs = () => {
     const data = useTabsData();
     const { translate } = useTranslate();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
 
     const activeTabIndex = useMemo(
         () => data.findIndex(tab => tab.key === activeTab),

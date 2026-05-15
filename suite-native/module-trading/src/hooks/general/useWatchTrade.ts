@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingTransaction,
     type TradingTransactionBuy,
@@ -12,8 +13,7 @@ import {
 } from '@suite-common/trading';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { events } from '@suite-native/analytics';
-import { useAnalytics } from '@suite-native/services';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { type TradingRootState } from '@suite-native/trading-state';
 
 import { useReloadTimer } from './useReloadTimer';
@@ -38,7 +38,7 @@ export const shouldRefreshTrade = (trade: TradingTransaction | undefined) =>
 
 export const useWatchTrade = ({ accountKey, orderId, isInProgress }: TradingUseWatchTradeProps) => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );

@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { events } from '@suite-native/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { RootStackRoutes, Screen } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import { TradingEnvironmentWarning } from '@suite-native/trading-debug';
 import {
     selectActiveTradingType,
@@ -30,7 +30,7 @@ const TradingScreenContent = () => {
     const navigation = useNavigation<NavigationProps>();
     const isScreenMountedRecently = useMountedRecentlyFlag(activeTradingType);
     useActiveTradingTypeReaction();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     useEffect(() => {
         if (tradeToBeOpened) {
             analytics.report({

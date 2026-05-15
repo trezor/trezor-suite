@@ -1,13 +1,13 @@
 import { useCallback } from 'react';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type Network, type NetworkAccount } from '@suite-common/wallet-config';
 import { type UnavailableCapability } from '@trezor/connect';
 
 import { useAccountSearch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 import { type Account } from 'src/types/wallet';
 
 import { AddButton } from './AddButton';
@@ -71,7 +71,7 @@ const AddDefaultAccountButton = ({
 }: AddAccountButtonProps) => {
     const defaultAccount = scopedAccounts.at(-1);
     const device = useSelector(selectSelectedDevice);
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
 
     const { setCoinFilter, setSearchString, coinFilter } = useAccountSearch();
 

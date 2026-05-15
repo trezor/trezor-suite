@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
@@ -25,7 +26,6 @@ import { BaseCurrencyValue } from 'src/components/suite';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { useAnalytics } from 'src/support/useAnalytics';
 import {
     validateDecimals,
     validateInteger,
@@ -46,7 +46,7 @@ interface AmountProps {
 
 export const Amount = ({ output, outputId }: AmountProps) => {
     const { translationString } = useTranslation();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const {
         account,
         network,

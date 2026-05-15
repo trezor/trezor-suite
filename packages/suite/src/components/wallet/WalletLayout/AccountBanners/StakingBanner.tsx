@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { type NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
@@ -21,14 +22,13 @@ import { BigNumber } from '@trezor/utils';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 type StakingBannerProps = {
     account: Account;
 };
 
 export const StakingBanner = ({ account }: StakingBannerProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
     const { stakeEthBannerClosed, stakeSolBannerClosed, stakeCardanoBannerClosed } =

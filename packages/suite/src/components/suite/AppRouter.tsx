@@ -2,14 +2,15 @@ import { type ComponentType, createElement, memo } from 'react';
 
 import {
     type PageName,
+    type SuiteRouterHistoryDep,
     resolveEffectiveBackgroundRouteName,
     selectRoute,
     selectRouteName,
     suiteRoutes,
 } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
-import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
 type AppRouterProps = {
     components: Record<PageName, ComponentType>;
@@ -18,14 +19,14 @@ type AppRouterProps = {
 export const AppRouter = memo(({ components }: AppRouterProps) => {
     const routeName = useSelector(selectRouteName);
     const route = useSelector(selectRoute);
-    const { suiteRouterHistory } = useSuiteServices();
+    const { suiteRouterHistory } = useServices<SuiteRouterHistoryDep>();
 
     const resolvedRouteName =
         resolveEffectiveBackgroundRouteName(route, suiteRouterHistory.getLocation()) ?? routeName;
 
     // Resolve component by route name, with nested routes falling back to parent component
     let componentName = resolvedRouteName;
-    // NOTE: This throws a TS error becuase routeNames also contain foreground app names
+    // NOTE: This throws a TS error because routeNames also contain foreground app names
     if (resolvedRouteName && !Object.prototype.hasOwnProperty.call(components, resolvedRouteName)) {
         const current = suiteRoutes.find(r => r.name === resolvedRouteName);
         if (current?.isNestedRoute) {

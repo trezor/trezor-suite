@@ -1,6 +1,5 @@
 import { events } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
-import { useAnalytics } from '@suite-native/services';
 import {
     act,
     fireEvent,
@@ -20,15 +19,11 @@ import { useSellForm } from '../../../../hooks/sell/useSellForm';
 import { SellProviderPicker } from '../SellProviderPicker';
 
 const reportMock = jest.fn();
-
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
+const services = {
+    analytics: {
+        report: reportMock,
+    },
+};
 
 describe('SellProviderPicker', () => {
     let form: SellFormType;
@@ -38,18 +33,16 @@ describe('SellProviderPicker', () => {
     ) =>
         renderWithStoreProvider(<SellProviderPicker />, {
             preloadedState: createTradingPreloadedState({ tradeType: 'sell', overrides }),
+            services,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
     beforeEach(() => {
         jest.clearAllMocks();
 
-        (useAnalytics as jest.Mock).mockReturnValue({
-            report: reportMock,
-        });
-
         const { result } = renderHookWithStoreProvider(() => useSellForm(), {
             preloadedState: createTradingPreloadedState({ tradeType: 'sell' }),
+            services,
         });
         form = result.current;
     });

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import type { CryptoId, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingAmountLimitProps,
     selectTradingSellQuotesRequest,
@@ -11,10 +12,9 @@ import {
 import { getNetwork } from '@suite-common/wallet-config';
 import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
-import { useAnalytics } from '@suite-native/services';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '@suite-native/trading-consts';
 import {
@@ -37,7 +37,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
     const dispatch = useDispatch();
     const prevCryptoId = useRef<CryptoId | undefined>(undefined);
     const prevFiatCurrency = useRef<FiatCurrencyCode | undefined>(getValues('fiatCurrency'));
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
 
     useEffect(() => {
         const { unsubscribe } = watch(

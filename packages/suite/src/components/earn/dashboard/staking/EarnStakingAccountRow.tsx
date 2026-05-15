@@ -1,7 +1,8 @@
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
@@ -26,7 +27,6 @@ import { BigNumber } from '@trezor/utils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-import { useAnalytics } from 'src/support/useAnalytics';
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 
 import { EarnStakingActionButtons } from './EarnStakingActionButtons';
@@ -45,7 +45,7 @@ export const EarnStakingAccountRow = ({
 }) => {
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const { isBelowMobile } = useLayoutSize();
     const apy = useSelector(state => selectPoolStatsApy(state, { account }));
     const displaySymbol = getDisplaySymbol(account.symbol);

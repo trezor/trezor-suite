@@ -11,21 +11,27 @@ import { StoreProviderForTests, type TestStore } from './StoreProviderForTests';
 
 export type RenderOptionsExtended = RenderOptions & {
     preloadedState?: Record<string, unknown>;
+    services?: Record<string, unknown>;
     store?: TestStore;
 };
 
 export type RenderHookOptionsExtended<Props> = RenderHookOptions<Props> & {
     preloadedState?: Record<string, unknown>;
+    services?: Record<string, unknown>;
     store?: TestStore;
 };
 
 export const renderWithStoreProvider = (
     element: ReactElement,
-    { preloadedState, wrapper: Wrapper, store, ...options }: RenderOptionsExtended = {},
+    { preloadedState, services, wrapper: Wrapper, store, ...options }: RenderOptionsExtended = {},
 ) =>
     render(element, {
         wrapper: ({ children }) => (
-            <StoreProviderForTests preloadedState={preloadedState} injectedStore={store}>
+            <StoreProviderForTests
+                preloadedState={preloadedState}
+                injectedStore={store}
+                services={services}
+            >
                 {Wrapper ? <Wrapper>{children}</Wrapper> : children}
             </StoreProviderForTests>
         ),
@@ -34,11 +40,21 @@ export const renderWithStoreProvider = (
 
 export const renderHookWithStoreProvider = <Result = unknown, Props = unknown>(
     callback: (props: Props) => Result,
-    { preloadedState, wrapper: Wrapper, store, ...options }: RenderHookOptionsExtended<Props> = {},
+    {
+        preloadedState,
+        services,
+        wrapper: Wrapper,
+        store,
+        ...options
+    }: RenderHookOptionsExtended<Props> = {},
 ) =>
     renderHook(callback, {
         wrapper: ({ children }) => (
-            <StoreProviderForTests preloadedState={preloadedState} injectedStore={store}>
+            <StoreProviderForTests
+                preloadedState={preloadedState}
+                injectedStore={store}
+                services={services}
+            >
                 {Wrapper ? <Wrapper>{children}</Wrapper> : children}
             </StoreProviderForTests>
         ),

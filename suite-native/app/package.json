@@ -41,6 +41,7 @@
         "@shopify/flash-list": "2.3.0",
         "@shopify/react-native-skia": "2.5.1",
         "@storybook/react-native": "^10.2.1",
+        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/firmware-authenticity": "workspace:*",
         "@suite-common/formatters": "workspace:*",

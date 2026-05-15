@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { events } from '@suite-common/analytics';
 import { selectKnownDevices } from '@suite-common/bluetooth';
+import { useServices } from '@suite-common/dependency-injection';
 import { type BluetoothDeviceId } from '@trezor/connect';
 
 import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
@@ -9,7 +11,6 @@ import { bluetoothConnectDeviceThunk } from 'src/actions/bluetooth/bluetoothConn
 import { bluetoothDisconnectDeviceThunk } from 'src/actions/bluetooth/bluetoothDisconnectDeviceThunk';
 import { setConnectionModal } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 type UseBluetoothConnectionProps = {
     devices: DesktopBluetoothDevice[];
@@ -29,7 +30,7 @@ export const useBluetoothConnection = ({
     devices,
     onReScanClick,
 }: UseBluetoothConnectionProps): UseBluetoothConnectionReturn => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const dispatch = useDispatch();
     const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
 

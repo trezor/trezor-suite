@@ -2,6 +2,8 @@ import { useEffect, useRef } from 'react';
 import { useWatch } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
     type AccountsRootState,
     accountsActions,
@@ -19,7 +21,6 @@ import { featureUsed } from '@suite-native/feature-feedback';
 import { Form, TextInputField } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { type CombinedLabelingState, selectIsLabellingAllowed } from '@suite-native/labeling';
-import { useNativeServices } from '@suite-native/services';
 import { useSuiteSyncErrorHandler } from '@suite-native/suite-sync';
 
 type AccountRenameFormProps = {
@@ -30,7 +31,7 @@ type AccountRenameFormProps = {
 export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormProps) => {
     const { translate } = useTranslate();
     const dispatch = useDispatch();
-    const { suiteSync } = useNativeServices();
+    const { suiteSync } = useServices<SuiteSyncDep>();
     const { handleSuiteSyncError } = useSuiteSyncErrorHandler();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),

@@ -1,10 +1,10 @@
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { type Route, goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { type IconName, SubTabs } from '@trezor/components';
 
 import { useDispatch } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 type TradingLayoutNavigationProps = {
     route?: Route['name'];
@@ -41,7 +41,7 @@ const navigationItems: NavigationItem[] = [
 
 export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps) => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const goToRoute = (route: Route['name']) => () => {
         dispatch(goto({ routeName: route }));
 

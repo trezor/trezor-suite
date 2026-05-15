@@ -6,7 +6,6 @@ import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
 import { localeReducer } from '@suite-native/intl';
 import { type SettingsStackParamList, type SettingsStackRoutes } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import {
     createLightStore,
     createStaticReducer,
@@ -20,15 +19,11 @@ import { SettingsTradingLocationScreen } from '../SettingsTradingLocationScreen'
 
 const mockNavigationGoBack = jest.fn();
 const reportMock = jest.fn();
-
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
+const services = {
+    analytics: {
+        report: reportMock,
+    },
+};
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -45,6 +40,7 @@ jest.mock('@react-navigation/native', () => ({
 describe('TradingLocationSettingsScreen', () => {
     const renderTradingLocationSettingsScreen = () =>
         renderWithStoreProvider(<SettingsTradingLocationScreen />, {
+            services,
             store: createLightStore({
                 reducer: {
                     locale: localeReducer,
@@ -61,10 +57,6 @@ describe('TradingLocationSettingsScreen', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-
-        (useAnalytics as jest.Mock).mockReturnValue({
-            report: reportMock,
-        });
     });
 
     afterEach(() => {

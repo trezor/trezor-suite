@@ -2,6 +2,9 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/formatters"
@@ -33,7 +36,6 @@
         { "path": "../link" },
         { "path": "../module-device-onboarding" },
         { "path": "../navigation" },
-        { "path": "../services" },
         { "path": "../toasts" },
         { "path": "../tokens" },
         { "path": "../../packages/connect" },

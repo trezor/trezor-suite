@@ -27,6 +27,11 @@ import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { clearExchangeFormQuoteData, useExchangeForm } from '../useExchangeForm';
 
 const mockReport = jest.fn();
+const services = {
+    analytics: {
+        report: mockReport,
+    },
+};
 type PrefetchDexQuoteApprovalThunk = typeof exchangeThunks.prefetchDexQuoteApprovalThunk;
 
 const createPrefetchDexQuoteApprovalThunkMock = (
@@ -43,24 +48,13 @@ const createPrefetchDexQuoteApprovalThunkMock = (
     return () => result;
 };
 
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: () => ({
-            report: mockReport,
-        }),
-    };
-});
-
 const btc1AccountKey = 'btc-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
 
 describe('useExchangeForm', () => {
     let store: TestStore;
 
     const renderUseExchangeForm = () =>
-        renderHookWithStoreProvider(() => useExchangeForm(), { store });
+        renderHookWithStoreProvider(() => useExchangeForm(), { services, store });
 
     const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) =>
         createTradingLightStore({

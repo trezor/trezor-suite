@@ -11,6 +11,7 @@ import {
     selectIsDebugModeActive,
     suiteSettingsActions,
 } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { Banner, Button, Checkbox, Column, Row, Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -20,7 +21,7 @@ import { typedObjectKeys } from '@trezor/utils';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { EXPERIMENTAL_FEATURES } from 'src/constants/suite/experimental';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useSuiteServices } from 'src/support/SuiteServicesProvider';
+import { type SuiteServices } from 'src/support/extraDependencies';
 
 type FeatureLineProps = {
     feature: ExperimentalFeature;
@@ -29,7 +30,7 @@ type FeatureLineProps = {
 
 const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
     const dispatch = useDispatch();
-    const services = useSuiteServices();
+    const services = useServices<SuiteServices>();
     const checked = enabledFeatures.includes(feature);
 
     const config = EXPERIMENTAL_FEATURES[feature];
@@ -122,7 +123,7 @@ export const Experimental = () => {
     const isDebug = useSelector(selectIsDebugModeActive);
 
     const dispatch = useDispatch();
-    const services = useSuiteServices();
+    const services = useServices<SuiteServices>();
 
     const onSwitchExperimental = () => {
         enabledFeatures?.forEach(feature =>

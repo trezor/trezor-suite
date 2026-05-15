@@ -1,9 +1,10 @@
 import { type ComponentProps, type JSX } from 'react';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
 import { type DiscoveryStatus, type FailedAccount } from '@suite-common/wallet-types';
@@ -21,7 +22,6 @@ import { spacings } from '@trezor/theme';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { useDispatch } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 import { type DiscoveryStatusType } from 'src/types/wallet';
 
 interface CTA {
@@ -140,7 +140,7 @@ export const PortfolioCardException = ({
     failed,
 }: PortfolioCardExceptionProps) => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
 
     switch (exception.type) {
         case 'discovery-empty':

@@ -4,7 +4,8 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-na
 
 import { useNavigation } from '@react-navigation/native';
 
-import { events } from '@suite-native/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { Box, Button, HStack, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -21,7 +22,6 @@ import {
     PassphraseScreenHeader,
     useHandleUiRequestPassphraseOnDevice,
 } from '@suite-native/passphrase';
-import { useAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
@@ -57,7 +57,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 export const PassphraseFormScreen = () => {
     const { applyStyle } = useNativeStyles();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const { translate } = useTranslate();
 
     const navigation = useNavigation<NavigationProp>();

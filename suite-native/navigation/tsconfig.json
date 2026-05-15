@@ -2,6 +2,9 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/message-system"
@@ -22,7 +25,6 @@
         { "path": "../intl" },
         { "path": "../scrollview" },
         { "path": "../sentry" },
-        { "path": "../services" },
         { "path": "../settings" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },

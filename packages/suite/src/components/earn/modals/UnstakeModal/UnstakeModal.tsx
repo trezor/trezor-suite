@@ -1,5 +1,6 @@
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -7,7 +8,6 @@ import { CollapsibleBox, Column, Grid, H3, Modal } from '@trezor/components';
 
 import { WithdrawalFormContext, useWithdrawalForm } from 'src/hooks/earn/useWithdrawalForm';
 import { useLayoutSize } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { UnstakeButton } from './UnstakeForm/UnstakeButton';
 import { UnstakeForm } from './UnstakeForm/UnstakeForm';
@@ -19,7 +19,7 @@ type UnstakeModalProps = {
 };
 
 export const UnstakeModal = ({ onCancel, account }: UnstakeModalProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const withdrawalContextValues = useWithdrawalForm({ account });
     const { isBelowTablet } = useLayoutSize();
 

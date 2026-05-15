@@ -4,9 +4,10 @@ import { usePrevious } from 'react-use';
 import { type SellTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { type TradingSellType, selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Box, Card, Column, H3, Paragraph } from '@trezor/components';
@@ -14,7 +15,6 @@ import { Box, Card, Column, H3, Paragraph } from '@trezor/components';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
-import { useAnalytics } from 'src/support/useAnalytics';
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import { AfterTradeExperiment } from 'src/views/wallet/trading/common/TradingDetail/AfterTradeExperiment';
 import { TradingDetailSellPaymentFailed } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSell/TradingDetailSellPaymentFailed';
@@ -40,7 +40,7 @@ const getTradeStatusStep = (tradeStatus: SellTradeStatus) => {
 };
 
 export const TradingDetailSell = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const accounts = useSelector(selectAccounts);
     const { trade, info } = useTradingDetailContext<TradingSellType>();
     const dispatch = useDispatch();

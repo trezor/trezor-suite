@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { MODAL_CONTEXT_DEVICE, openModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
 import {
@@ -12,6 +13,7 @@ import {
     selectConnectPopupCall,
     selectIsConnectAppSilentModeByOrigin,
 } from '@suite-common/connect-popup';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import TrezorConnect, {
     type CallMethodKeys,
@@ -23,11 +25,10 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 export const useConnectPopupDesktop = () => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const popupCall = useSelector(selectConnectPopupCall);
     const selectedDevice = useSelector(selectSelectedDevice);
     const selectedDeviceRef = useRef(selectedDevice);

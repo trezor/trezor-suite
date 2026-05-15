@@ -1,11 +1,11 @@
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { changePin } from 'src/actions/settings/deviceSettingsActions';
 import { useDispatch } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 interface ChangePinProps {
     isDeviceLocked: boolean;
@@ -13,7 +13,7 @@ interface ChangePinProps {
 
 export const ChangePin = ({ isDeviceLocked }: ChangePinProps) => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const handleClick = () => {
         dispatch(changePin({ remove: false }));
         analytics.report({

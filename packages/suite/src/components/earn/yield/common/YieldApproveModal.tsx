@@ -2,7 +2,8 @@ import { useEffect, useRef } from 'react';
 
 import { type DexApprovalType } from 'invity-api';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { KNOWN_VAULTS } from '@suite-common/suite-constants';
 import { parseCryptoId, toTokenCryptoId } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
@@ -12,7 +13,6 @@ import { exhaustive } from '@trezor/type-utils';
 import { ApproveModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/ApproveModal';
 import { RevokeModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/RevokeModal';
 import { useAllowanceContext } from 'src/hooks/wallet/allowance';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 export type YieldApproveModalProps = {
     amount: string;
@@ -37,7 +37,7 @@ export const YieldApproveModal = ({
     onCancel,
     onSuccess,
 }: YieldApproveModalProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
 
     const {
         state: { isApproveModalOpen, isRevokeModalOpen, openApproveModal, openRevokeModal },

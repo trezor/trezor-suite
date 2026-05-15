@@ -3,7 +3,9 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import {
@@ -11,7 +13,6 @@ import {
     DeviceNameStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import TrezorConnect from '@trezor/connect';
 
 import { deviceNameFormValidationSchema } from '../deviceNameFormSchema';
@@ -27,7 +28,7 @@ export const useChangeDeviceName = () => {
     const { translate } = useTranslate();
     const navigation = useNavigation<NavigationProps>();
     const device = useSelector(selectSelectedDevice);
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const form = useForm({
         validation: deviceNameFormValidationSchema(translate),
         defaultValues: {

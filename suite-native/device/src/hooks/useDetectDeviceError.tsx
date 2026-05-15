@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     deviceActions,
     selectHasDeviceFirmwareInstalled,
@@ -16,7 +17,7 @@ import {
 } from '@suite-common/device';
 import { acquireDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import { Translation } from '@suite-native/intl';
 import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
@@ -30,7 +31,6 @@ import {
     navigationContainerRef,
 } from '@suite-native/navigation';
 import { captureSentryException } from '@suite-native/sentry';
-import { useAnalytics } from '@suite-native/services';
 import { selectIsOnboardingFinished, selectShouldShowAutoEjectAlert } from '@suite-native/settings';
 import { SUITE_WEB_URL } from '@trezor/urls';
 
@@ -52,7 +52,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const useDetectDeviceError = () => {
     const [wasDeviceEjectedByUser, setWasDeviceEjectedByUser] = useState(false);
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const dispatch = useDispatch();
     const { hideAlert, showAlert } = useAlert();
     const openLink = useOpenLink();

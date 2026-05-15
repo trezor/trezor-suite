@@ -2,6 +2,9 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/firmware" },
         { "path": "../../suite-common/icons" },
@@ -28,7 +31,6 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../sentry" },
-        { "path": "../services" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },

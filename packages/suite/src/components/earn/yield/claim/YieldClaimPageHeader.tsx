@@ -1,6 +1,7 @@
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { type Account } from '@suite-common/wallet-types';
 import { IconButton, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
@@ -9,7 +10,6 @@ import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { BasicName } from 'src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';
 import { useDispatch } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 type YieldClaimPageHeaderProps = {
     account?: Account;
@@ -17,7 +17,7 @@ type YieldClaimPageHeaderProps = {
 
 export const YieldClaimPageHeader = ({ account }: YieldClaimPageHeaderProps) => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
 
     const onBackClick = () => {
         analytics.report({

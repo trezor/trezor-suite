@@ -1,14 +1,14 @@
 import { type MouseEventHandler } from 'react';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { deviceActions } from '@suite-common/device';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { Box, Button, H4, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useDispatch } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 type EjectConfirmationProps = {
     onCancel: MouseEventHandler<HTMLButtonElement> | undefined;
@@ -17,7 +17,7 @@ type EjectConfirmationProps = {
 };
 
 export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirmationProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const dispatch = useDispatch();
 
     const handleEject = () => {

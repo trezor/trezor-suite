@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceModel } from '@suite-common/device';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import {
     BottomSheetModal,
     Box,
@@ -12,7 +13,6 @@ import {
 } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link, useOpenLink } from '@suite-native/link';
-import { useAnalytics } from '@suite-native/services';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { HELP_CENTER_PACKAGING_T3B1_URL, HELP_CENTER_PACKAGING_T3T1_URL } from '@trezor/urls';
 
@@ -20,7 +20,7 @@ import { SecuritySealImages } from './SecuritySealImages';
 
 export const SecuritySealDescription = () => {
     const openLink = useOpenLink();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const handleLinkPress = () => {

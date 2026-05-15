@@ -4,8 +4,8 @@ import { Provider } from 'react-redux';
 
 import { type Persistor, persistStore } from 'redux-persist';
 
+import { ServicesProvider } from '@suite-common/dependency-injection';
 import { captureSentryException } from '@suite-native/sentry';
-import { NativeServicesProvider } from '@suite-native/services';
 import { StorageProvider } from '@suite-native/storage';
 
 import { type PreloadedState, type StoreWithExtra, initStore } from './store';
@@ -53,10 +53,10 @@ export const BaseStoreProvider = ({ children, preloadedState }: BaseStoreProvide
     if (store === null || storePersistor === null) return null;
 
     return (
-        <NativeServicesProvider services={store.services}>
+        <ServicesProvider services={store.services}>
             <Provider store={store.store}>
                 <StorageProvider persistor={storePersistor}>{children}</StorageProvider>
             </Provider>
-        </NativeServicesProvider>
+        </ServicesProvider>
     );
 };

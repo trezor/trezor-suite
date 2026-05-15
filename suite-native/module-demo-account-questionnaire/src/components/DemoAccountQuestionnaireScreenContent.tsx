@@ -3,9 +3,11 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type DemoAccountQuestionnaireQuestion,
     type DemoAccountQuestionnaireQuestionOption,
+    type NativeAnalyticsDep,
     events,
 } from '@suite-native/analytics';
 import { Button, HStack, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
@@ -18,7 +20,6 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 
 import { DemoAccountQuestionnaireAnswer } from './DemoAccountQuestionnaireAnswer';
 
@@ -41,7 +42,7 @@ export const DemoAccountQuestionnaireScreenContent = ({
     answerOptions,
     nextRoute,
 }: DemoAccountQuestionnaireScreenContentProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const navigation =
         useNavigation<
             StackNavigationProps<

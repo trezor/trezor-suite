@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 
-import { events } from '@suite-native/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import {
     BottomSheetModal,
     Box,
@@ -11,7 +12,6 @@ import {
 } from '@suite-native/atoms';
 import { Icon, type IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { useAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type SheetControls = ReturnType<typeof useBottomSheetModal>;
@@ -71,7 +71,7 @@ export const TransactionDetailSheet = ({
     sheetName,
     sheetControls,
 }: TransactionDetailSheetProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const internal = useBottomSheetModal();
     const { bottomSheetRef, openModal, closeModal } = sheetControls ?? internal;
 

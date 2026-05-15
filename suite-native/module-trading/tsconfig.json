@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/calldata" },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/flags" },
         {
@@ -68,7 +71,6 @@
             "path": "../module-stellar-token-management"
         },
         { "path": "../navigation" },
-        { "path": "../services" },
         { "path": "../toasts" },
         { "path": "../tokens" },
         { "path": "../trading-analytics" },

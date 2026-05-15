@@ -1,7 +1,6 @@
 import { events } from '@suite-native/analytics';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
-import { useAnalytics } from '@suite-native/services';
 import { act, userEvent } from '@suite-native/test-utils-store';
 import { exchangeQuotes, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
@@ -16,15 +15,11 @@ import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import { ExchangeRateAndProviderPicker } from '../ExchangeRateAndProviderPicker';
 
 const reportMock = jest.fn();
-
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
+const services = {
+    analytics: {
+        report: reportMock,
+    },
+};
 
 describe('ExchangeRateAndProviderPicker', () => {
     let exchangeForm: ExchangeFormType;
@@ -41,6 +36,7 @@ describe('ExchangeRateAndProviderPicker', () => {
         extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) => {
         const result = renderWithTradingProvider(<ExchangeRateAndProviderPicker />, {
+            services,
             tradeType: 'exchange',
             overrides: { ...baseOverrides, ...extraOverrides },
             wrapper: ({ children }) => <Form form={exchangeForm}>{children}</Form>,
@@ -54,11 +50,8 @@ describe('ExchangeRateAndProviderPicker', () => {
     beforeEach(() => {
         jest.clearAllMocks();
 
-        (useAnalytics as jest.Mock).mockReturnValue({
-            report: reportMock,
-        });
-
         const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
+            services,
             tradeType: 'exchange',
             overrides: baseOverrides,
         });

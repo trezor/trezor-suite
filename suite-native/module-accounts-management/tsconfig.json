@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/bip329" },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/earn-stablecoin-api"
@@ -13,6 +16,9 @@
         { "path": "../../suite-common/graph" },
         {
             "path": "../../suite-common/suite-sync"
+        },
+        {
+            "path": "../../suite-common/suite-sync-types"
         },
         {
             "path": "../../suite-common/token-definitions"
@@ -53,7 +59,6 @@
         },
         { "path": "../navigation" },
         { "path": "../qr-code" },
-        { "path": "../services" },
         { "path": "../suite-sync" },
         { "path": "../toasts" },
         { "path": "../tokens" },

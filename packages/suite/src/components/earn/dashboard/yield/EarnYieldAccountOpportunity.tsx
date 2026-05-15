@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { isStablecoinYieldSupported, selectSelectedDevice } from '@suite-common/device';
 import { useFormatters } from '@suite-common/formatters';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
@@ -23,7 +24,6 @@ import { setConnectionModal, setConnectionMode } from 'src/actions/device/device
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { EarnYieldActionButtons } from './EarnYieldActionButtons';
 import { EarnYieldApyTooltip } from './EarnYieldApyTooltip';
@@ -43,7 +43,7 @@ export const EarnYieldAccountOpportunity = ({
     isCardLayout,
 }: EarnYieldAccountOpportunityProps) => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const { CryptoAmountFormatter } = useFormatters();
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();

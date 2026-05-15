@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { EarnAnchor, goto, useAnchor } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
 import { NORMAL_ACCOUNT_TYPE } from '@suite-common/wallet-config';
@@ -14,7 +15,6 @@ import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanner
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { EarnYieldClaimRewardsBanner } from './EarnYieldClaimRewardsBanner';
 import { EarnYieldClaimSelectAccountModal } from './EarnYieldClaimSelectAccountModal';
@@ -31,7 +31,7 @@ export const EarnYieldTable = () => {
     const { isBelowLaptop } = useLayoutSize();
     const isCardLayout = isBelowLaptop;
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
     const claimMessageSystem = useMessageSystemYield('claim');
 

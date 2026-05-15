@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isFulfilled } from '@reduxjs/toolkit';
 import type { ExchangeTrade } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { invariant } from '@suite-common/suite-utils';
 import {
     type HandleExchangeRequestThunkProps,
@@ -13,9 +14,12 @@ import {
     useTradingRefetchScheduler,
 } from '@suite-common/trading';
 import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
-import { type AnalyticsNativeEvents, events } from '@suite-native/analytics';
+import {
+    type AnalyticsNativeEvents,
+    type NativeAnalyticsDep,
+    events,
+} from '@suite-native/analytics';
 import { useFormState } from '@suite-native/forms';
-import { useAnalytics } from '@suite-native/services';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { exchangeActions, selectExchangeQuotes } from '@suite-native/trading-state';
 import { type AbortablePromise, type ExchangeFormType } from '@suite-native/trading-types';
@@ -125,7 +129,7 @@ const useExchangeQuotesThunk = (
     quotesPromiseRef: RefObject<AbortablePromise | undefined>,
     debounce: ReturnType<typeof useDebounce>,
 ) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const dispatch = useDispatch();
     const asset = getValues('sendAsset');
     const symbol = getSymbolFromTradeableAsset(asset);

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectDevices } from '@suite-common/device';
 import { selectIsDeviceAutoEjectEnabled } from '@suite-common/wallet-core';
 import { Modal, Switch } from '@trezor/components';
@@ -10,7 +11,6 @@ import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-component
 
 import { setAutoEjectEnabledThunk } from 'src/actions/suite/autoEjectThunks';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 const AutoEjectConfirmationModal = ({
     onCancel,
@@ -46,7 +46,7 @@ const AutoEjectConfirmationModal = ({
 };
 
 export const AutoEject = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const isAutoEjectEnabled = useSelector(selectIsDeviceAutoEjectEnabled);
     const dispatch = useDispatch();
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);

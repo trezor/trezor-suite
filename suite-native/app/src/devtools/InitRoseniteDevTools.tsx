@@ -1,7 +1,8 @@
 import { memo, useEffect, useState } from 'react';
 import { type MMKV } from 'react-native-mmkv';
 
-import { useNativeServices } from '@suite-native/services';
+import { useServices } from '@suite-common/dependency-injection';
+import { type MMKVStorageDep } from '@suite-native/services';
 
 import { useRozenitePlugins } from '../hooks/useRozenitePlugins';
 
@@ -15,7 +16,7 @@ const InitRosenitePluginInternal = memo(({ mmkvStorage }: { mmkvStorage: MMKV })
 });
 
 export const InitRosenitePlugin = memo(() => {
-    const { getMMKVStorage } = useNativeServices();
+    const { getMMKVStorage } = useServices<MMKVStorageDep>();
     const [mmkvStorage, setMMKVStorage] = useState<MMKV | null>(null);
 
     useEffect(() => {

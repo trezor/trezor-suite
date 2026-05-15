@@ -4,13 +4,13 @@ import { useSelector } from 'react-redux';
 
 import { useAtomValue } from 'jotai';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     selectDeviceModel,
     selectIsDeviceBackupRequired,
     selectIsDeviceProtectedByPin,
 } from '@suite-common/device';
-import { events } from '@suite-native/analytics';
-import { useAnalytics } from '@suite-native/services';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 
 import { onboardingAnalyticsAtom } from '../../atoms';
 
@@ -19,7 +19,7 @@ export const useReportOnboardingSuccessAnalytics = () => {
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
     const isDeviceProtectedByPin = useSelector(selectIsDeviceProtectedByPin);
     const onboardingAnalytics = useAtomValue(onboardingAnalyticsAtom);
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
 
     return useCallback(() => {
         analytics.report({

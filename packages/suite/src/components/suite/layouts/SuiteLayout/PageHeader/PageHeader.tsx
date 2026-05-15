@@ -2,7 +2,13 @@ import { type ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { isAccountTabRoute, resolveEffectiveBackgroundRouteName, selectRoute } from '@suite/router';
+import {
+    type SuiteRouterHistoryDep,
+    isAccountTabRoute,
+    resolveEffectiveBackgroundRouteName,
+    selectRoute,
+} from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Row } from '@trezor/components';
 import { spacingsPx, zIndices } from '@trezor/theme';
@@ -10,7 +16,6 @@ import { spacingsPx, zIndices } from '@trezor/theme';
 import { HEADER_HEIGHT } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccountKey } from 'src/reducers/wallet/selectedAccountReducer';
-import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
 import { GlobalSendReceive } from './GlobalSendReceive/GlobalSendReceive';
 import { HeaderActions } from './HeaderActions';
@@ -62,7 +67,7 @@ interface PageHeaderProps {
 export const PageHeader = ({ children, expandable }: PageHeaderProps) => {
     const selectedAccountKey = useSelector(selectSelectedAccountKey);
     const route = useSelector(selectRoute);
-    const { suiteRouterHistory } = useSuiteServices();
+    const { suiteRouterHistory } = useServices<SuiteRouterHistoryDep>();
     const effectiveRouteName = resolveEffectiveBackgroundRouteName(
         route,
         suiteRouterHistory.getLocation(),

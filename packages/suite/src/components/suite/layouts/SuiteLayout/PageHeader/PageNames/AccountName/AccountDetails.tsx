@@ -18,7 +18,6 @@ import { AmountUnitSwitchWrapper } from 'src/components/suite/AmountUnitSwitchWr
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
-import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 const DetailsContainer = styled(motion.div)`
@@ -34,7 +33,6 @@ type AccountDetailsProps = {
 export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetailsProps) => {
     const hasMountedRef = useRef(false);
     const controls = useAnimation();
-    const { suiteSync } = useSuiteServices();
 
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
@@ -81,7 +79,6 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
     const accountNameElement = useMemo(
         () => (
             <Labeling
-                suiteSync={suiteSync}
                 key={`account-label-${key}`}
                 payload={{
                     type: 'accountLabel',
@@ -109,7 +106,6 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
             key,
             path,
             label,
-            suiteSync,
             deviceState,
             defaultLabel,
             accountType,

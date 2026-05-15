@@ -106,12 +106,16 @@ Import and initialization depend on the platform:
 
 ```ts
 // Desktop
-import { useAnalytics } from 'src/support/useAnalytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { type DesktopAnalyticsDep } from '@suite/analytics';
+
+const { analytics } = useServices<DesktopAnalyticsDep>();
 
 // Mobile
-import { useAnalytics } from '@suite-native/services';
+import { useServices } from '@suite-common/dependency-injection';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
 
-const analytics = useAnalytics();
+const { analytics } = useServices<NativeAnalyticsDep>();
 
 analytics.init(enabled, {
     instanceId,
@@ -136,14 +140,18 @@ Anywhere in the project (after initialization):
 
 ```ts
 // Desktop
-import { useAnalytics } from 'src/support/useAnalytics';
 import { events } from '@suite/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { type DesktopAnalyticsDep } from '@suite/analytics';
+
+const { analytics } = useServices<DesktopAnalyticsDep>();
 
 // Mobile
-import { useAnalytics } from '@suite-native/services';
 import { events } from '@suite-native/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
 
-const analytics = useAnalytics();
+const { analytics } = useServices<NativeAnalyticsDep>();
 
 analytics.report({
     type: events.deviceConnectionHintModalEvent.name,

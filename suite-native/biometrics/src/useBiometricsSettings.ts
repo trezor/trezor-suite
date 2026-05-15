@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { useAlert } from '@suite-native/alerts';
-import { events } from '@suite-native/analytics';
-import { useAnalytics } from '@suite-native/services';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 
 import {
     useIsBiometricsEnabled,
@@ -19,7 +19,7 @@ export const useBiometricsSettings = () => {
     const { setIsUserAuthenticated } = useIsUserAuthenticated();
     const { isBiometricsOptionEnabled, setIsBiometricsOptionEnabled } = useIsBiometricsEnabled();
     const { setIsBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const toggleBiometricsOption = useCallback(async (): Promise<BiometricsToggleResult> => {
         const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
 

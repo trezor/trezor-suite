@@ -1,15 +1,15 @@
 import { type ReactNode } from 'react';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
 import { Button, Card, Column, Divider, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { FeedbackCard } from '@trezor/product-components';
 
 import { useDispatch } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 type YieldFlowCompleteProps = {
     type: 'deposit' | 'withdraw' | 'claim';
@@ -29,7 +29,7 @@ export const YieldFlowComplete = ({
     children,
 }: YieldFlowCompleteProps) => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();
 

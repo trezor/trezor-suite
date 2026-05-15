@@ -6,7 +6,6 @@ import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
 import { getTranslation, localeInitialState } from '@suite-native/intl';
-import { useAnalytics } from '@suite-native/services';
 import {
     type PreloadedStatePartial,
     act,
@@ -34,15 +33,11 @@ const reportMock = jest.fn();
 const creditCardPaymentMethodTranslation = getTranslation(
     'moduleTrading.paymentMethods.creditCard',
 );
-
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
+const services = {
+    analytics: {
+        report: reportMock,
+    },
+};
 
 describe('BuyPaymentMethodPicker', () => {
     let form: BuyFormType;
@@ -75,6 +70,7 @@ describe('BuyPaymentMethodPicker', () => {
 
         const { result } = renderHookWithStoreProvider(() => useBuyForm(), {
             preloadedState: mergedFormPreloadedState,
+            services,
             store,
         });
         form = result.current;
@@ -83,16 +79,12 @@ describe('BuyPaymentMethodPicker', () => {
             <Form form={form}>
                 <BuyPaymentMethodPicker />
             </Form>,
-            { preloadedState: mergedComponentPreloadedState, store },
+            { preloadedState: mergedComponentPreloadedState, services, store },
         );
     };
 
     beforeEach(() => {
         jest.clearAllMocks();
-
-        (useAnalytics as jest.Mock).mockReturnValue({
-            report: reportMock,
-        });
     });
 
     afterEach(() => {

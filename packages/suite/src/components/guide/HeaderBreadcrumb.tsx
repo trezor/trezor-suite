@@ -1,16 +1,16 @@
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import type { GuideCategory } from '@suite-common/suite-types';
 import { Row, Text, TextButton } from '@trezor/components';
 
 import { openNode, setView } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 import { findAncestorNodes, getNodeTitle } from 'src/utils/suite/guide';
 
 export const HeaderBreadcrumb = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const language = useSelector(selectLanguage);
     const indexNode = useSelector(state => state.guide.indexNode);
     const currentNode = useSelector(state => state.guide.currentNode);

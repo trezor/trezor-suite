@@ -4,8 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { changeCoinVisibility } from '@suite-common/wallet-core';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import {
     AnimatedBox,
     AnimatedInlineAlertBox,
@@ -27,7 +28,6 @@ import {
     type StackToStackCompositeNavigationProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 
 import {
     type CoinEnablingFormValues,
@@ -43,7 +43,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const CoinEnablingInitScreen = () => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const navigation = useNavigation<NavigationProps>();
     useInterceptNativeNavigation();
 

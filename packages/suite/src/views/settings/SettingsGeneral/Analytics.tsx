@@ -2,13 +2,13 @@ import { useSelector } from 'react-redux';
 
 import styled from 'styled-components';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
+import { useServices } from '@suite-common/dependency-injection';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-
-import { useAnalytics } from 'src/support/useAnalytics';
 
 const PositionedSwitch = styled.div`
     align-self: center;
@@ -16,7 +16,7 @@ const PositionedSwitch = styled.div`
 
 export const Analytics = () => {
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
 
     return (
         <Anchor anchorId={SettingsAnchor.Analytics}>

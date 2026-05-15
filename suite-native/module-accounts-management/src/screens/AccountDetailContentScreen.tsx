@@ -1,10 +1,10 @@
 import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { Screen } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { TransactionList } from '@suite-native/transactions';
 
@@ -21,7 +21,7 @@ export const AccountDetailContentScreen = ({
     account,
     tokenContract,
 }: AccountDetailContentScreenProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const token = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, account.key, tokenContract),
     );

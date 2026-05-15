@@ -6,7 +6,6 @@ import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
 import { localeReducer } from '@suite-native/intl';
 import { type RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 import {
     createLightStore,
     createStaticReducer,
@@ -23,21 +22,17 @@ import {
 
 const mockNavigationDispatch = jest.fn();
 const reportMock = jest.fn();
+const services = {
+    analytics: {
+        report: reportMock,
+    },
+};
 
 const mockRoute: TradingLocationModalScreenProps['route'] = {
     name: RootStackRoutes.TradingLocationModal,
     key: 'TradingLocationModal',
     params: undefined,
 };
-
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -74,15 +69,12 @@ describe('TradingLocationModalScreen', () => {
                         }),
                     },
                 }),
+                services,
             },
         );
 
     beforeEach(() => {
         jest.clearAllMocks();
-
-        (useAnalytics as jest.Mock).mockReturnValue({
-            report: reportMock,
-        });
     });
 
     afterEach(() => {

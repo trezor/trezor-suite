@@ -1,7 +1,8 @@
 import { type JSX } from 'react';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Dropdown, type DropdownMenuItemProps, type IconName } from '@trezor/components';
@@ -11,7 +12,6 @@ import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavi
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useConditionalRender } from 'src/support/suite/ConditionalRender';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { useGoToWithAnalytics } from './useGoToWithAnalytics';
 
@@ -34,7 +34,7 @@ export const HeaderDropdown = ({
     isTradingDisabled,
     showSignAndVerify,
 }: HeaderDropdownProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const dispatch = useDispatch();
     const goToWithAnalytics = useGoToWithAnalytics();
     const account = useSelector(selectSelectedAccount);

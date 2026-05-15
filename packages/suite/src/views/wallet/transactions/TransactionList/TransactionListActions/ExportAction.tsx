@@ -1,8 +1,9 @@
 import { useCallback, useState } from 'react';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
+import { useServices } from '@suite-common/dependency-injection';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
@@ -13,7 +14,6 @@ import { Dropdown, Note, Tooltip } from '@trezor/components';
 import { exportTransactionsThunk } from 'src/actions/wallet/exportTransactionsActions';
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { useAnalytics } from 'src/support/useAnalytics';
 import { type Account } from 'src/types/wallet';
 
 export interface ExportActionProps {
@@ -24,7 +24,7 @@ export interface ExportActionProps {
 export const ExportAction = ({ account, searchQuery }: ExportActionProps) => {
     const [isExportRunning, setIsExportRunning] = useState(false);
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const { translationString } = useTranslation();
 
     const getAccountTitle = useCallback(() => {

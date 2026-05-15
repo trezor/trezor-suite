@@ -1,14 +1,14 @@
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { Button, Column } from '@trezor/components';
 
 import { toggleConnectionModal } from 'src/actions/device/deviceSlice';
 import { useDispatch } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 export const DeviceConnect = () => {
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
 
     const handleConnect = () => {
         dispatch(toggleConnectionModal());

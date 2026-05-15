@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { type UseFormSetValue } from 'react-hook-form';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
     type TradingSellFormProps,
@@ -14,7 +15,6 @@ import {
 import { type Network } from '@suite-common/wallet-config';
 
 import { useDispatch } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 type TradingSellUseHandleChangeProps = {
     formValues: TradingSellFormProps;
@@ -42,7 +42,7 @@ export const useTradingSellHandleChange = ({
 }: TradingSellUseHandleChangeProps) => {
     const dispatch = useDispatch();
     const previousPromise = useRef<PromiseType>(null);
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const handleChange = useCallback(async () => {
         if (
             isCountrySubdivisionEmpty(

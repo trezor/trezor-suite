@@ -1,15 +1,15 @@
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 
 import { close, open } from 'src/actions/suite/guideActions';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 
-import { useAnalytics } from '../../support/useAnalytics';
 import { usePreferredModal } from '../suite';
 
 export const GUIDE_ANIMATION_DURATION_MS = 300;
 
 export const useGuide = () => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const isGuideOpen = useSelector(state => state.guide.open);
     const dispatch = useDispatch();
 

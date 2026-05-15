@@ -1,9 +1,10 @@
 import { memo } from 'react';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { type AssetFiatBalance } from '@suite-common/assets';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { type Network } from '@suite-common/wallet-config';
 import { selectAnyAccountIsStakingActive, useDisplayBaseCurrency } from '@suite-common/wallet-core';
@@ -21,7 +22,6 @@ import {
 } from 'src/components/suite';
 import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { AssetCoinLogo } from '../AssetCoinLogo';
 import { AssetCoinName } from '../AssetCoinName';
@@ -59,7 +59,7 @@ export const AssetRow = memo(
     }: AssetTableRowProps) => {
         const { symbol } = network;
         const dispatch = useDispatch();
-        const analytics = useAnalytics();
+        const { analytics } = useServices<DesktopAnalyticsDep>();
         const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
         const handleRowClick = () => {

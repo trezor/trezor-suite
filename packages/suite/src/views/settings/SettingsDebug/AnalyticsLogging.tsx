@@ -1,23 +1,24 @@
 import { useState } from 'react';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import {
     analyticsActions,
     selectCustomAnalyticsUrl,
     selectIsAnalyticsEnabled,
     selectLoggerEnabled,
 } from '@suite-common/analytics-redux';
+import { useServices } from '@suite-common/dependency-injection';
 import { Badge, Button, Column, Input, Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 export const AnalyticsLogging = () => {
     const customAnalyticsUrl = useSelector(selectCustomAnalyticsUrl);
     const loggerEnabled = useSelector(selectLoggerEnabled);
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
     const dispatch = useDispatch();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
 
     const [inputValue, setInputValue] = useState(customAnalyticsUrl ?? '');
 

@@ -5,6 +5,9 @@
         {
             "path": "../../suite-common/analytics-redux"
         },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/firmware" },
         {
@@ -15,6 +18,9 @@
         },
         {
             "path": "../../suite-common/suite-sync-quota-manager"
+        },
+        {
+            "path": "../../suite-common/suite-sync-types"
         },
         { "path": "../../suite-common/trading" },
         {

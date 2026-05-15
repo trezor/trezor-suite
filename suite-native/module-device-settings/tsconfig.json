@@ -5,6 +5,9 @@
         {
             "path": "../../suite-common/analytics"
         },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/redux-utils"
@@ -20,6 +23,7 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../alerts" },
+        { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../bluetooth" },
         { "path": "../device" },
@@ -31,7 +35,6 @@
         { "path": "../link" },
         { "path": "../module-check-backup" },
         { "path": "../navigation" },
-        { "path": "../services" },
         { "path": "../thp" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" },

@@ -11,12 +11,12 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@suite-common/dependency-injection": "workspace:*",
         "@suite-native/alerts": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
-        "@suite-native/services": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "expo-local-authentication": "~55.0.8",

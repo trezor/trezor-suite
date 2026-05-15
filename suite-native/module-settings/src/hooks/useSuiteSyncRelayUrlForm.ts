@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type ChangeServerModalFields,
     SUITE_SYNC_SERVER_TYPE_OPTIONS_MAP,
@@ -8,16 +9,16 @@ import {
     createChangeSuiteSyncServerSchema,
     selectSuiteSyncCustomRelayUrl,
 } from '@suite-common/suite-sync';
+import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { type SelectItemType } from '@suite-native/atoms';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
-import { useNativeServices } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 
 export const useSuiteSyncRelayUrlForm = () => {
     const { translate } = useTranslate();
     const customRelayUrl = useSelector(selectSuiteSyncCustomRelayUrl);
-    const { suiteSync } = useNativeServices();
+    const { suiteSync } = useServices<SuiteSyncDep>();
     const { showToast } = useToast();
 
     const serverTypes = useMemo<SelectItemType<SuiteSyncServerTypeSelectValue>[]>(

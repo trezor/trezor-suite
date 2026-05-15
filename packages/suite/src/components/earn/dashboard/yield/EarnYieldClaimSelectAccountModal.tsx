@@ -1,12 +1,12 @@
 import { Address } from '@suite/address';
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { CardList, Column, Modal, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 
 import { AccountLabel } from 'src/components/suite/AccountLabel';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { type YieldAccountRewards, type YieldAccountsRewards } from '../../yield/claim/hooks';
 
@@ -21,7 +21,7 @@ export const EarnYieldClaimSelectAccountModal = ({
     onSelect,
     onClose,
 }: EarnYieldClaimSelectAccountModalProps) => {
-    const analytics = useAnalytics();
+    const { analytics } = useServices<DesktopAnalyticsDep>();
     const { BaseCurrencyAmountFormatter } = useFormatters();
 
     const handleOnSelect = (account: YieldAccountRewards) => {

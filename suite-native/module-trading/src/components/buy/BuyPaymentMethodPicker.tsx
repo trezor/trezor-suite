@@ -2,11 +2,11 @@ import { useSelector } from 'react-redux';
 
 import type { BuyTrade } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectTradingBuyIsLoading } from '@suite-common/trading';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { useAnalytics } from '@suite-native/services';
 import { OverviewRow, OverviewValueSkeleton } from '@suite-native/trading-atoms';
 import { selectBuyBestQuotesForAvailablePaymentMethods } from '@suite-native/trading-state';
 
@@ -61,7 +61,7 @@ const BuyPaymentMethodPickerRight = ({
 
 export const BuyPaymentMethodPicker = () => {
     const { translate } = useTranslate();
-    const analytics = useAnalytics();
+    const { analytics } = useServices<NativeAnalyticsDep>();
     const form = useBuyFormContext();
     const quotes = useSelector(selectBuyBestQuotesForAvailablePaymentMethods);
     const isLoading = useSelector(selectTradingBuyIsLoading);

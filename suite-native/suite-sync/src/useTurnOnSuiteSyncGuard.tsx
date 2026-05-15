@@ -2,12 +2,14 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceStaticSessionId, selectIsDeviceConnected } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
     type WithSuiteSyncAndDeviceState,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
+import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { useAlert } from '@suite-native/alerts';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
@@ -17,7 +19,6 @@ import {
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { useNativeServices } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -25,7 +26,7 @@ import { suiteSyncErrorMessageMap } from './suiteSyncErrorMessages';
 
 export const useTurnOnSuiteSyncGuard = () => {
     const { showAlert } = useAlert();
-    const { suiteSync } = useNativeServices();
+    const { suiteSync } = useServices<SuiteSyncDep>();
     const { showToast } = useToast();
     const { translate } = useTranslate();
     const navigation =
