@@ -2690,6 +2690,7 @@ export const messages = {
             balance: 'Balance:',
             approvedAmount: 'Approved amount',
             approvalLimit: 'Approval limit',
+            increaseApprovalLimit: 'Increase approval limit',
             perSupply: 'Per supply',
             estimatedRewardsLabel: 'Estimated yearly rewards',
             approvalLimitSheet: {

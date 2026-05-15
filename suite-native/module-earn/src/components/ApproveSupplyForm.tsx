@@ -10,6 +10,7 @@ type ApproveSupplyFormProps = {
     approvalLimitTitle: ReactNode;
     balance: string;
     feeSelector: ReactNode;
+    isApprovalLimitDisabled?: boolean;
     isMaxSelected: boolean;
     onAmountChange: () => void;
     onApprovalLimitPress: () => void;
@@ -21,6 +22,7 @@ export const ApproveSupplyForm = ({
     approvalLimitTitle,
     balance,
     feeSelector,
+    isApprovalLimitDisabled = false,
     isMaxSelected,
     onAmountChange,
     onApprovalLimitPress,
@@ -34,6 +36,7 @@ export const ApproveSupplyForm = ({
             <YieldSupplyAmountInputCard
                 approvalLimitTitle={approvalLimitTitle}
                 balance={balance}
+                isApprovalLimitDisabled={isApprovalLimitDisabled}
                 isMaxSelected={isMaxSelected}
                 onAmountChange={onAmountChange}
                 onApprovalLimitPress={onApprovalLimitPress}

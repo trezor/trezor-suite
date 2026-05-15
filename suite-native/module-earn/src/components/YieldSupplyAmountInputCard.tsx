@@ -19,11 +19,12 @@ import { Translation } from '@suite-native/intl';
 import { YieldSupplyAmountInput } from './YieldSupplyAmountInput';
 
 type YieldSupplyAmountInputCardProps = {
-    approvalLimitTitle: ReactNode;
+    isApprovalLimitDisabled?: boolean;
+    approvalLimitTitle?: ReactNode;
     balance?: string;
     isMaxSelected: boolean;
     onAmountChange: () => void;
-    onApprovalLimitPress: () => void;
+    onApprovalLimitPress?: () => void;
     onMaxChange: (value: boolean) => void;
     tokenSymbol: TokenSymbol;
 };
@@ -31,6 +32,7 @@ type YieldSupplyAmountInputCardProps = {
 export const YieldSupplyAmountInputCard = ({
     approvalLimitTitle,
     balance,
+    isApprovalLimitDisabled = false,
     isMaxSelected,
     onAmountChange,
     onApprovalLimitPress,
@@ -39,6 +41,25 @@ export const YieldSupplyAmountInputCard = ({
 }: YieldSupplyAmountInputCardProps) => {
     const { errorMessage } = useField({ name: 'amount' });
     const hasBalance = balance !== undefined;
+    const shouldShowApprovalLimit = !!approvalLimitTitle && !!onApprovalLimitPress;
+    const approvalLimitRow = (
+        <HStack
+            justifyContent="space-between"
+            alignItems="center"
+            paddingHorizontal="sp16"
+            paddingVertical="sp20"
+        >
+            <Text variant="body-sm">
+                <Translation id="earn.yieldSupplyFlowScreen.approvalLimit" />
+            </Text>
+            <HStack spacing="sp8" alignItems="center">
+                <Text variant="body-sm">{approvalLimitTitle}</Text>
+                {!isApprovalLimitDisabled && (
+                    <Icon name="caretDown" size="medium" color="contentPrimary" />
+                )}
+            </HStack>
+        </HStack>
+    );
 
     return (
         <Card noPadding>
@@ -74,23 +95,18 @@ export const YieldSupplyAmountInputCard = ({
                     </HStack>
                 )}
             </VStack>
-            <Divider paddingHorizontal="sp16" />
-            <PressableOpacity onPress={onApprovalLimitPress}>
-                <HStack
-                    justifyContent="space-between"
-                    alignItems="center"
-                    paddingHorizontal="sp16"
-                    paddingVertical="sp20"
-                >
-                    <Text variant="body-sm">
-                        <Translation id="earn.yieldSupplyFlowScreen.approvalLimit" />
-                    </Text>
-                    <HStack spacing="sp8" alignItems="center">
-                        <Text variant="body-sm">{approvalLimitTitle}</Text>
-                        <Icon name="caretDown" size="medium" color="contentPrimary" />
-                    </HStack>
-                </HStack>
-            </PressableOpacity>
+            {shouldShowApprovalLimit && (
+                <>
+                    <Divider paddingHorizontal="sp16" />
+                    {isApprovalLimitDisabled ? (
+                        approvalLimitRow
+                    ) : (
+                        <PressableOpacity onPress={onApprovalLimitPress}>
+                            {approvalLimitRow}
+                        </PressableOpacity>
+                    )}
+                </>
+            )}
         </Card>
     );
 };

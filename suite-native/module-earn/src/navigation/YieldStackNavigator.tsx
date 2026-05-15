@@ -4,6 +4,7 @@ import {
     type YieldStackParamList,
     YieldStackRoutes,
     stackNavigationOptionsConfig,
+    useDisableIOSGesture,
 } from '@suite-native/navigation';
 
 import { HowYieldWorksScreen } from '../screens/HowYieldWorksScreen';
@@ -14,35 +15,39 @@ import { YieldSupplyScreen } from '../screens/YieldSupplyScreen';
 
 const YieldStack = createNativeStackNavigator<YieldStackParamList>();
 
-export const YieldStackNavigator = () => (
-    <YieldStack.Navigator
-        screenOptions={stackNavigationOptionsConfig}
-        initialRouteName={YieldStackRoutes.HowYieldWorks}
-    >
-        <YieldStack.Screen
-            options={{ title: YieldStackRoutes.HowYieldWorks }}
-            name={YieldStackRoutes.HowYieldWorks}
-            component={HowYieldWorksScreen}
-        />
-        <YieldStack.Screen
-            options={{ title: YieldStackRoutes.YieldConsents }}
-            name={YieldStackRoutes.YieldConsents}
-            component={YieldConsentsScreen}
-        />
-        <YieldStack.Screen
-            options={{ title: YieldStackRoutes.YieldSupplyApproval }}
-            name={YieldStackRoutes.YieldSupplyApproval}
-            component={YieldSupplyApprovalScreen}
-        />
-        <YieldStack.Screen
-            options={{ title: YieldStackRoutes.YieldSupply }}
-            name={YieldStackRoutes.YieldSupply}
-            component={YieldSupplyScreen}
-        />
-        <YieldStack.Screen
-            options={{ title: YieldStackRoutes.YieldSupplyApprovalReview }}
-            name={YieldStackRoutes.YieldSupplyApprovalReview}
-            component={YieldSupplyApprovalTransactionDataReviewScreen}
-        />
-    </YieldStack.Navigator>
-);
+export const YieldStackNavigator = () => {
+    useDisableIOSGesture();
+
+    return (
+        <YieldStack.Navigator
+            screenOptions={stackNavigationOptionsConfig}
+            initialRouteName={YieldStackRoutes.HowYieldWorks}
+        >
+            <YieldStack.Screen
+                options={{ title: YieldStackRoutes.HowYieldWorks }}
+                name={YieldStackRoutes.HowYieldWorks}
+                component={HowYieldWorksScreen}
+            />
+            <YieldStack.Screen
+                options={{ title: YieldStackRoutes.YieldConsents }}
+                name={YieldStackRoutes.YieldConsents}
+                component={YieldConsentsScreen}
+            />
+            <YieldStack.Screen
+                options={{ title: YieldStackRoutes.YieldSupplyApproval }}
+                name={YieldStackRoutes.YieldSupplyApproval}
+                component={YieldSupplyApprovalScreen}
+            />
+            <YieldStack.Screen
+                options={{ title: YieldStackRoutes.YieldSupply }}
+                name={YieldStackRoutes.YieldSupply}
+                component={YieldSupplyScreen}
+            />
+            <YieldStack.Screen
+                options={{ title: YieldStackRoutes.YieldSupplyApprovalReview }}
+                name={YieldStackRoutes.YieldSupplyApprovalReview}
+                component={YieldSupplyApprovalTransactionDataReviewScreen}
+            />
+        </YieldStack.Navigator>
+    );
+};

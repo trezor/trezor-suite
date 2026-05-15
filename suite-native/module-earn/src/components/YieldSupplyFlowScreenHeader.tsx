@@ -7,6 +7,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type YieldSupplyFlowScreenHeaderProps = {
     account: Account;
+    closeAction?: () => void;
     onInfoPress: () => void;
     tokenContract: TokenAddress;
     vaultName: string;
@@ -20,6 +21,7 @@ const titleContainerStyle = prepareNativeStyle(() => ({
 
 export const YieldSupplyFlowScreenHeader = ({
     account,
+    closeAction,
     onInfoPress,
     tokenContract,
     vaultName,
@@ -30,6 +32,7 @@ export const YieldSupplyFlowScreenHeader = ({
     return (
         <ScreenHeader
             closeActionType="close"
+            closeAction={closeAction}
             customContent={
                 <HStack spacing="sp8" alignItems="center">
                     <CryptoIconWithNetwork
