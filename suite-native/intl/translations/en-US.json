@@ -1267,6 +1267,7 @@
     "earn.stakingManagementScreen.instantUnstakeBanner.descriptionWithoutDays": "You've received {amount} {symbol} instantly.",
     "earn.stakingManagementScreen.outsideStakingBanner.title": "You're staking outside of Trezor Suite",
     "earn.stakingManagementScreen.outsideStakingBanner.description": "{amount} {symbol} (≈ {fiat}) is currently staked elsewhere.",
+    "earn.stakingManagementScreen.solRewardsWarning": "Your recent rewards are securely on the blockchain and may take more time to appear in Trezor Suite.",
     "earn.stakingManagementScreen.claim.readyToClaim": "{amount} unstaked and ready to claim",
     "earn.stakingManagementScreen.claim.claimButton": "Claim",
     "earn.stakingManagementScreen.unstakingItem.label": "Unstaking (~{days, plural, one {# day} other {# days}})",
