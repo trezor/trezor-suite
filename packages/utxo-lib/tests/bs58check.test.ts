@@ -1,4 +1,5 @@
 import * as bs58check from '../src/bs58check';
+import { bitcoincash } from '../src/networks';
 
 describe('bs58check', () => {
     it('encode defaults to bitcoin network when no network arg is provided', () => {
@@ -18,5 +19,16 @@ describe('bs58check', () => {
 
         const address = bs58check.encodeAddress(hash, 0x00);
         expect(address).toBe('1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH');
+    });
+
+    it('decodeAddress throws when given a legacy (non-cashaddr) address on the bitcoinCash network', () => {
+        // A canonical bitcoincash legacy P2PKH address (decodes as format=legacy, so
+        // isCashAddress returns false). Passing this with the bitcoincash network
+        // exercises the !isCashAddress truthy arm at bs58check.ts:64.
+        const legacyBchAddress = '1BpEi6DfDAUFd7GtittLSdBeYJvcoaVggu';
+
+        expect(() => bs58check.decodeAddress(legacyBchAddress, bitcoincash)).toThrow(
+            `${legacyBchAddress} is not a cash address`,
+        );
     });
 });
