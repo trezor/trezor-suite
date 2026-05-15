@@ -186,6 +186,13 @@ export const fixtures = {
             },
         },
         {
+            description: 'chunks[0] is a pushdata, not a number opcode',
+            exception: 'Output is invalid',
+            arguments: {
+                output: '030000000000000000000000000000000000000000000000000000000000000001 OP_CHECKMULTISIG',
+            },
+        },
+        {
             description: 'Non OP_INT chunk (n)',
             exception: 'Output is invalid',
             arguments: {
