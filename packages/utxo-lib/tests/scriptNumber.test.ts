@@ -19,4 +19,10 @@ describe('scriptNumber', () => {
             });
         });
     });
+
+    it('decode throws Script number overflow when buffer length exceeds default maxLength of 4', () => {
+        expect(() => scriptNumber.decode(Buffer.from('0000000000', 'hex'))).toThrow(
+            'Script number overflow',
+        );
+    });
 });
