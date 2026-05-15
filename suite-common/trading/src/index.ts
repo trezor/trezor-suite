@@ -5,6 +5,7 @@ export * from './currency';
 export * from './hooks/useTradingAssets';
 export * from './hooks/useTradingUtils';
 export * from './hooks/useListDataFilter';
+export * from './hooks/useSectionDataFilter';
 export * from './hooks/useCountryFilteredData';
 export * from './hooks/useCountrySubdivisionFilteredData';
 export * from './hooks/useProviderMetadataChangeEffect';
