@@ -87,6 +87,19 @@ describe('TxWeightCalculator', () => {
         expect(c.getTotal()).toEqual(924);
     });
 
+    it('legacy 1-of-8 SPENDMULTISIG pushes a 275-byte redeemScript and exercises getOpPushSize <65536 (return 3) arm', () => {
+        const c = new TxWeightCalculator();
+        c.addInput({
+            script_type: 'SPENDMULTISIG',
+            multisig: {
+                pubkeys: [{}, {}, {}, {}, {}, {}, {}, {}],
+                m: 1,
+            },
+        });
+        c.addOutputByKey('p2pkh');
+        expect(c.getTotal()).toEqual(1756);
+    });
+
     // eslint-disable-next-line jest/no-commented-out-tests
     // it('segwit multisig', () => {
     //     const c = new TxWeightCalculator();
