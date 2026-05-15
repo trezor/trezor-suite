@@ -116,6 +116,14 @@ describe('p2pk lazy output getter', () => {
     });
 });
 
+describe('p2pk lazy pubkey getter', () => {
+    it('returns undefined when only signature is provided and output is missing', () => {
+        const signature = Buffer.from('300602010002010001', 'hex');
+        const p = PAYMENTS.p2pk({ signature });
+        expect(p.pubkey).toBeUndefined();
+    });
+});
+
 describe('p2pkh lazy pubkey getter', () => {
     it('returns undefined when only hash is provided and input is missing', () => {
         const hash = Buffer.from('168b992bcfc44050310b3a94bd0771136d0b28d1', 'hex');
