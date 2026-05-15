@@ -6,20 +6,18 @@ import * as URLS from '../../src/urls';
  * It is run separately, see: * .github/workflows/test-urls.yml
  */
 
-// Excluded urls
-const excluded = [
-    // DATA_URL because it returns 403 on itself (forbidden listing)
-    URLS.DATA_URL,
+const skippedUrls = [
     // TODO: it works locally but CI times out, probably cant handle the redirect or something..
     URLS.DATA_TOS_URL,
+];
+
+const expectedFailingUrls = [
+    // DATA_URL because it returns 404 on itself (forbidden listing)
+    URLS.DATA_URL,
     // 503 from CI
     URLS.LTC_ADDRESS_INFO_URL,
     // captcha, returning 403 in ci
     URLS.TREZOR_FORUM_URL,
-    // TODO: BIP329 article not live yet
-    URLS.HELP_CENTER_BIP329_URL,
-    // TODO T3W1 - articles not live yet
-    URLS.HELP_CENTER_FW_DOWNGRADE_T3W1_URL,
     URLS.IMAGE_PROXY_API_URL, // returns 'unauthorized'
 ];
 
@@ -42,29 +40,50 @@ const isAcceptableHttpCode = (code: number): boolean => {
     return clientErrorCodeWhitelist.includes(code);
 };
 
-describe('Test that all external links are alive', () => {
+describe('External URLs integration', () => {
     beforeEach(() => {
         jest.setTimeout(30000);
     });
 
-    it(`internal test util ${isAcceptableHttpCode.name}`, () => {
-        expect(isAcceptableHttpCode(200)).toBe(true);
-        expect(isAcceptableHttpCode(204)).toBe(true);
-        expect(isAcceptableHttpCode(300)).toBe(true);
-        expect(isAcceptableHttpCode(301)).toBe(false);
-        expect(isAcceptableHttpCode(302)).toBe(true);
-        expect(isAcceptableHttpCode(308)).toBe(false);
-        expect(isAcceptableHttpCode(400)).toBe(false);
-        expect(isAcceptableHttpCode(429)).toBe(true);
-        expect(isAcceptableHttpCode(500)).toBe(true);
+    describe('Internal test utils', () => {
+        it(isAcceptableHttpCode.name, () => {
+            expect(isAcceptableHttpCode(200)).toBe(true);
+            expect(isAcceptableHttpCode(204)).toBe(true);
+            expect(isAcceptableHttpCode(300)).toBe(true);
+            expect(isAcceptableHttpCode(301)).toBe(false);
+            expect(isAcceptableHttpCode(302)).toBe(true);
+            expect(isAcceptableHttpCode(308)).toBe(false);
+            expect(isAcceptableHttpCode(400)).toBe(false);
+            expect(isAcceptableHttpCode(429)).toBe(true);
+            expect(isAcceptableHttpCode(500)).toBe(true);
+        });
     });
 
-    Object.values(URLS)
-        .filter(url => !excluded.includes(url))
-        .forEach(url => {
-            it(`HTTP GET request to ${url} should respond with an acceptable http code`, async () => {
-                const { status } = await fetch(url);
-                expect(isAcceptableHttpCode(status)).toBe(true);
+    describe('URLs expected to be alive', () => {
+        Object.values(URLS)
+            .filter(url => !expectedFailingUrls.includes(url) && !skippedUrls.includes(url))
+            .forEach(url => {
+                it(`HTTP GET request to ${url} should respond with an acceptable http code`, async () => {
+                    const { status } = await fetch(url);
+                    const isAcceptable = isAcceptableHttpCode(status);
+                    if (!isAcceptable) {
+                        throw `Got unacceptable http code ${status}`;
+                    }
+                });
             });
-        });
+    });
+
+    describe('URLs expected to be failing', () => {
+        Object.values(URLS)
+            .filter(url => expectedFailingUrls.includes(url) && !skippedUrls.includes(url))
+            .forEach(url => {
+                it(`HTTP GET request to ${url} should respond with an unacceptable http code`, async () => {
+                    const { status } = await fetch(url);
+                    const isAcceptable = isAcceptableHttpCode(status);
+                    if (isAcceptable) {
+                        throw `Got acceptable http code ${status}. Remove ${url} from expectedFailingUrls.`;
+                    }
+                });
+            });
+    });
 });
