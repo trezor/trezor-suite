@@ -38,8 +38,12 @@ export const EarnYieldTable = () => {
         return new Set(normalAccounts.map(account => account.symbol));
     }, [visibleAccounts]);
 
-    const { data: availableVaults, isLoading: isYieldOpportunitiesLoading } =
-        useAllYieldOpportunities();
+    const {
+        data: availableVaults,
+        isLoading: isYieldOpportunitiesLoading,
+        isError: isYieldOpportunitiesError,
+        refetch: refetchYieldOpportunities,
+    } = useAllYieldOpportunities();
 
     const {
         yieldAccountOpportunities,
@@ -131,6 +135,8 @@ export const EarnYieldTable = () => {
                                 />
                                 <EarnYieldTableBody
                                     isYieldOpportunitiesLoading={isYieldOpportunitiesLoading}
+                                    isYieldOpportunitiesError={isYieldOpportunitiesError}
+                                    onRetry={refetchYieldOpportunities}
                                     yieldAccountOpportunities={displayedYieldAccountOpportunities}
                                     yieldInactiveVaultOpportunities={
                                         yieldInactiveVaultOpportunities
