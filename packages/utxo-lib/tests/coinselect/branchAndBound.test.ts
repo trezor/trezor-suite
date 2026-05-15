@@ -23,4 +23,21 @@ describe('coinselect: branchAndBound (bnb)', () => {
             }
         });
     });
+
+    it('with options.baseFee set returns { fee: 0 } (bnb disabled for DOGE)', () => {
+        // Exercises the truthy arm of `if (options.baseFee) return { fee: 0 }` at
+        // src/coinselect/inputs/branchAndBound.ts:137. The bnb algorithm is
+        // disabled for DOGE (baseFee > 0) so even with inputs/outputs that would
+        // otherwise solve to a non-zero fee selection, the function must
+        // short-circuit to { fee: 0 } before any cost-of-change math.
+        const inputs = utils.expand(['102001'], true);
+        const outputs = utils.expand(['100000'], false);
+        const options = {
+            txType: 'p2pkh',
+            dustThreshold: 546,
+            baseFee: 100,
+        } as CoinSelectOptions;
+
+        expect(branchAndBound(inputs, outputs, 10, options)).toEqual({ fee: 0 });
+    });
 });
