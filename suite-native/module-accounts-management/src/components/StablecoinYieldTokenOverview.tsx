@@ -88,14 +88,17 @@ export const StablecoinYieldTokenOverview = ({
             return;
         }
 
+        const underlyingTokenContract = toTokenAddress(vault.token.address);
+
         navigation.navigate(RootStackRoutes.YieldNavigator, {
             screen: YieldStackRoutes.HowYieldWorks,
             params: {
                 accountKey,
-                tokenContract,
+                tokenContract: underlyingTokenContract,
+                yieldId: vault.id,
             },
         });
-    }, [accountKey, navigation, tokenContract, vault?.token.address]);
+    }, [accountKey, navigation, vault]);
 
     if (resolutionStatus !== 'resolved' || !vault?.token.address) return null;
 

@@ -26,15 +26,17 @@ export const useYieldSession = ({
     const session = useSelector((state: StablecoinYieldRootState) =>
         selectStablecoinYieldSessionByFlowKey(state, flowType, flowKey),
     );
+    const hasSession = !!session;
+    const isApprovalPending = session?.approval.isPending;
 
     useEffect(() => {
-        if (flowKey) {
+        if (flowKey && !hasSession) {
             dispatch(stablecoinYieldActions.initSession({ flowType, flowKey }));
         }
-    }, [dispatch, flowKey, flowType]);
+    }, [dispatch, flowKey, flowType, hasSession]);
 
     useEffect(() => {
-        if (!shouldDisposeOnGoBack || !flowKey) {
+        if (!shouldDisposeOnGoBack || !flowKey || isApprovalPending) {
             return;
         }
 
@@ -45,7 +47,7 @@ export const useYieldSession = ({
                 dispatch(stablecoinYieldActions.disposeSession(sessionParams));
             }
         });
-    }, [dispatch, flowKey, flowType, navigation, shouldDisposeOnGoBack]);
+    }, [dispatch, flowKey, flowType, isApprovalPending, navigation, shouldDisposeOnGoBack]);
 
     return session;
 };

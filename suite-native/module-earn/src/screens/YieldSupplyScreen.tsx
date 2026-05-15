@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import {
@@ -26,6 +24,7 @@ import { YieldSupplyFlowScreenHeader } from '../components/YieldSupplyFlowScreen
 import { YieldSupplyInfoBottomSheet } from '../components/YieldSupplyInfoBottomSheet';
 import { YieldSupplyStepCard } from '../components/YieldSupplyStepCard';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
+import { useYieldSession } from '../hooks/useYieldSession';
 
 const inputShellStyle = prepareNativeStyle(utils => ({
     borderWidth: utils.borders.widths.small,
@@ -46,18 +45,17 @@ export const YieldSupplyScreen = () => {
         closeModal: closeInfoBottomSheet,
         openModal: openInfoBottomSheet,
     } = useBottomSheetModal();
-    const { account, apy, tokenSymbol, vault, vaultTokenName, resolutionStatus } =
+    const { account, apy, flowKey, tokenSymbol, vault, vaultTokenName, resolutionStatus } =
         useResolvedYieldFlowData(route.params);
+    useYieldSession({
+        flowKey,
+        flowType: 'deposit',
+        shouldDisposeOnGoBack: true,
+    });
 
     const handleEditApproval = () => {
         navigation.goBack();
     };
-
-    useEffect(() => {
-        if (__DEV__) {
-            console.warn('[YieldSupply] Rendered temporary supply route shell.', route.params);
-        }
-    }, [route.params]);
 
     if (resolutionStatus !== 'resolved') {
         return null;

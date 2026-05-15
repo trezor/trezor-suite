@@ -84,7 +84,9 @@ export const useYieldSupplyApprovalSubmit = ({
                 }
 
                 if (!session.approval.modalState) {
-                    showSupplyWorkInProgress('Already approved');
+                    if (session.step === 'action') {
+                        navigation.navigate(YieldStackRoutes.YieldSupply, routeParams);
+                    }
 
                     return;
                 }

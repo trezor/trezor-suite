@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CommonActions, useNavigation } from '@react-navigation/native';
+import { StackActions, useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
@@ -14,18 +14,13 @@ import {
     selectIsMevProtectionEnabled,
     selectStablecoinYieldSession,
     signTransactionThunk,
-    stablecoinYieldActions,
 } from '@suite-common/wallet-core';
-import { useAlert } from '@suite-native/alerts';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
-import {
-    AppTabsRoutes,
-    EarnStackRoutes,
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackToStackCompositeNavigationProps,
-    type YieldStackParamList,
-    type YieldStackRoutes,
+import type {
+    RootStackParamList,
+    StackToStackCompositeNavigationProps,
+    YieldStackParamList,
+    YieldStackRoutes,
 } from '@suite-native/navigation';
 import { selectIsTransactionAlreadySigned } from '@suite-native/transaction-management';
 
@@ -33,10 +28,12 @@ import { useShowDeviceDisconnectedDuringEarnReviewAlert } from './useShowDeviceD
 import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
 import { useYieldApprovalReviewNavigation } from './useYieldApprovalReviewNavigation';
 import { useYieldApprovalReviewTransaction } from './useYieldApprovalReviewTransaction';
+import { type YieldApprovalLimitType } from '../types';
 import { handleEarnReviewError } from '../utils';
 import { getYieldApprovalFormDraftKey } from '../yieldApprovalThunks';
 
 type UseYieldApprovalReviewParams = {
+    approvalLimitType: YieldApprovalLimitType;
     flowData: YieldFlowResolvedData;
     flowKey: string;
 };
@@ -58,27 +55,13 @@ type NavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-const navigateToEarnScreenAction = () =>
-    CommonActions.reset({
-        index: 0,
-        routes: [
-            {
-                name: RootStackRoutes.AppTabs,
-                params: {
-                    screen: AppTabsRoutes.EarnStack,
-                    params: { screen: EarnStackRoutes.Earn },
-                },
-            },
-        ],
-    });
-
 export const useYieldApprovalReview = ({
+    approvalLimitType,
     flowData,
     flowKey,
 }: UseYieldApprovalReviewParams): UseYieldApprovalReviewResult => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
-    const { showAlert } = useAlert();
     const showDeviceDisconnectedAlert = useShowDeviceDisconnectedDuringEarnReviewAlert();
     const { showPendingTransactionConflictAlert, showPushTransactionFailedAlert } =
         useShowPushTransactionFailedDuringReviewAlert('yield-approval');
@@ -163,8 +146,8 @@ export const useYieldApprovalReview = ({
         dispatch,
         flowData.account,
         isSigningApproval,
-        reviewTransaction,
         navigation,
+        reviewTransaction,
         showDeviceDisconnectedAlert,
         showPendingTransactionConflictAlert,
         showPushTransactionFailedAlert,
@@ -199,20 +182,23 @@ export const useYieldApprovalReview = ({
 
         const { txid } = pushResponse.payload.payload;
 
-        await dispatch(handleYieldApproveSuccessTxidThunk({ flowType: 'deposit', flowKey, txid }));
+        const submittedAt = Date.now();
+
+        await dispatch(
+            handleYieldApproveSuccessTxidThunk({
+                flowType: 'deposit',
+                flowKey,
+                txid,
+                fee: reviewTransaction?.precomposedTransaction.fee,
+                submittedAt,
+                isAmountUnlimited: approvalLimitType === 'unlimited',
+            }),
+        );
         dispatch(formDraftActions.removeDraft({ key: formDraftKey }));
         setIsSendingApproval(false);
-
-        showAlert({
-            title: 'Successfully approved',
-            description: 'Supply is not available in this mobile preview yet.',
-            primaryButtonTitle: 'Go to Earn',
-            onPressPrimaryButton: () => {
-                dispatch(stablecoinYieldActions.disposeSession({ flowType: 'deposit', flowKey }));
-                navigation.dispatch(navigateToEarnScreenAction());
-            },
-        });
+        navigation.dispatch(StackActions.pop(1));
     }, [
+        approvalLimitType,
         dispatch,
         flowData.account,
         flowKey,
@@ -222,7 +208,7 @@ export const useYieldApprovalReview = ({
         isMevProtectionFeatureEnabled,
         isSendingApproval,
         navigation,
-        showAlert,
+        reviewTransaction?.precomposedTransaction.fee,
         showDeviceDisconnectedAlert,
         showPendingTransactionConflictAlert,
         showPushTransactionFailedAlert,
