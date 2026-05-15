@@ -4,7 +4,7 @@ export const commonQueryKeys = {
     networkTxSimulation: (input?: any) => ['network-tx-simulation', input],
     supplyTxSimulation: (input?: any) => ['tx-simulation-supply', input],
     dappScan: (url?: string) => ['dapp-scan', url],
-    validatorsQueue: (accountKey: string, timestamp?: number) => [
+    validatorsQueue: (accountKey: string | undefined, timestamp?: number) => [
         'everstake',
         'validatorsQueue',
         accountKey,

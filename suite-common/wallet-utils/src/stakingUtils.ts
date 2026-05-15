@@ -84,6 +84,9 @@ export const isSupportedStakingNetworkSymbol = (symbol: NetworkSymbol) =>
     isSupportedSolStakingNetworkSymbol(symbol) ||
     isSupportedAdaStakingNetworkSymbol(symbol);
 
+export const isSupportedNativeStakingManagementSymbol = (symbol: NetworkSymbol) =>
+    isSupportedEthStakingNetworkSymbol(symbol) || isSupportedSolStakingNetworkSymbol(symbol);
+
 export const getStakingLimitsByNetworkSymbol = (
     symbol: NetworkSymbol | undefined,
 ): StakingLimits | null => {
