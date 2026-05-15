@@ -233,3 +233,11 @@ describe('p2sh witness/redeem.witness length mismatch', () => {
         );
     });
 });
+
+describe('p2ms lazy output getter without m', () => {
+    it('returns undefined when only signatures are provided and m is missing', () => {
+        const signature = Buffer.from('300602010002010001', 'hex');
+        const p = PAYMENTS.p2ms({ signatures: [signature] }, { validate: false });
+        expect(p.output).toBeUndefined();
+    });
+});
