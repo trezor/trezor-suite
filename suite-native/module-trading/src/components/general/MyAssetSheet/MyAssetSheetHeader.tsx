@@ -46,6 +46,7 @@ export const MyAssetSheetHeader = ({
             style={applyStyle(wrapperStyle)}
             searchInputTestId={searchInputTestId}
             searchInputPlaceholder={translate('moduleTrading.myAssetSheet.searchInputPlaceholder')}
+            autoCorrect={false}
         >
             <Animated.View
                 layout={LinearTransition.duration(FOCUS_ANIMATION_DURATION)}
