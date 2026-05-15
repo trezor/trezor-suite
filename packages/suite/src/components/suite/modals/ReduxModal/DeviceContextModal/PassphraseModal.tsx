@@ -81,7 +81,6 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
     const offerPassphraseOnDevice = useSelector(selectHasDevicePassphraseEntryCapability);
 
     if (!device || !discovery || !discovery.isAddingHiddenWallet) return null;
-
     switch (discovery.status) {
         case 'progress':
             return <DiscoveryLoader />;
