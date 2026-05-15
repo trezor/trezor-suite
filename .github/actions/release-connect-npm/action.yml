@@ -32,6 +32,7 @@ inputs:
       - crypto-utils
       - device-utils
       - device-authenticity
+      - coins-solana
       - connect
       - connect-web
       - connect-webextension
@@ -66,6 +67,10 @@ runs:
     - name: Publish to NPM
       shell: bash
       run: |
-        cd ./packages/${{ inputs.packageName }}
+        if [[ "${{ inputs.packageName }}" == coins-* ]]; then
+          cd ./coins/${{ inputs.packageName }}
+        else
+          cd ./packages/${{ inputs.packageName }}
+        fi
         yarn build:lib
         yarn npm publish --tag ${{ inputs.deploymentType }} --access public
