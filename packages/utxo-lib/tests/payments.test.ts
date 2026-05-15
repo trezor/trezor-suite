@@ -241,3 +241,11 @@ describe('p2ms lazy output getter without m', () => {
         expect(p.output).toBeUndefined();
     });
 });
+
+describe('p2ms lazy name getter without m', () => {
+    it('returns undefined when only signatures are provided and m/n are missing', () => {
+        const signature = Buffer.from('300602010002010001', 'hex');
+        const p = PAYMENTS.p2ms({ signatures: [signature] }, { validate: false });
+        expect(p.name).toBeUndefined();
+    });
+});
