@@ -256,6 +256,7 @@ class BIP32 implements BIP32Interface {
         const IR = I.subarray(32);
 
         // if parse256(IL) >= n, proceed with the next value for i
+        // MUTATION: equivalent — BIP-32 spec-mandated guard against parse256(IL) >= secp256k1 group order n. Probability of triggering with HMAC-SHA512 output is ~2^-128, making the truthy arm unreachable from any practical test vector. The guard exists for spec correctness; behavior is correct.
         if (!ecc.isPrivate(IL)) return this.derive(index + 1);
 
         // Private parent key -> private child key
