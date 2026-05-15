@@ -209,6 +209,12 @@ describe('Transaction', () => {
             );
         });
 
+        it('Dash: byteLength() with no _ALLOW_WITNESS argument returns the serialized size', () => {
+            const f = fixturesDash.valid[0];
+            const tx = Transaction.fromHex(f.hex, { network: NETWORKS.dashTest });
+            expect(tx.byteLength()).toEqual(f.size);
+        });
+
         it('Decred: throws on Transaction has unexpected data when hex has trailing bytes', () => {
             const validHex = fixturesDecred.valid[0].hex;
             const badHex = `${validHex}ff`;
