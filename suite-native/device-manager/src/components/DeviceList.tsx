@@ -10,7 +10,6 @@ import { DeviceItem } from './DeviceItem/DeviceItem';
 import { MANAGER_MODAL_BOTTOM_RADIUS } from './DeviceManagerModal';
 
 type DeviceListProps = {
-    isVisible: boolean;
     onSelectDevice: (device: TrezorDevice) => void;
 };
 
