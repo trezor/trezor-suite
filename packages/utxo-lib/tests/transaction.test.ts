@@ -215,6 +215,17 @@ describe('Transaction', () => {
             expect(tx.byteLength()).toEqual(f.size);
         });
 
+        it('Bitcoin: byteLength() with no _ALLOW_WITNESS/_ALLOW_MWEB arguments returns the serialized size', () => {
+            // Bitcoin transactions inherit TransactionBase.prototype.byteLength (not overridden
+            // by bitcoin.fromConstructor, unlike dash/decred/zcash), so calling tx.byteLength()
+            // with no args exercises the default-arg branch at src/transaction/base.ts:118
+            // (_ALLOW_WITNESS = true, _ALLOW_MWEB = true). For a non-witness tx, the result
+            // equals the serialized byte length.
+            const f = fixturesBitcoin.valid[0];
+            const tx = Transaction.fromHex(f.hex);
+            expect(tx.byteLength()).toEqual(Buffer.from(f.hex, 'hex').length);
+        });
+
         it('Decred: throws on Transaction has unexpected data when hex has trailing bytes', () => {
             const validHex = fixturesDecred.valid[0].hex;
             const badHex = `${validHex}ff`;
