@@ -108,6 +108,48 @@ describe('composeTx request validation errors', () => {
         });
     });
 
+    it('returns INCORRECT-OUTPUT when a payment output has an unparseable amount', () => {
+        // transformOutput at src/compose/request.ts:99-113 handles output.type ===
+        // 'payment' by parsing output.amount via bignumberOrNaN. For an unparseable
+        // amount (e.g., 'not-a-number') bignumberOrNaN returns undefined and the
+        // `if (!value) throw new Error('Invalid amount')` guard at line 107 fires.
+        // The outer try/catch in validateAndParseOutputs catches it and returns
+        // { type: 'error', error: 'INCORRECT-OUTPUT', message: 'Invalid amount at index 0' }.
+        // No fixture exercises this path — every payment output in composeTxFixture
+        // has a numeric amount. A mutator that flipped `if (!value)` to `if (value)`
+        // would route the call past the throw, attempting toOutputScript with an
+        // undefined value — the returned object would lack the 'Invalid amount'
+        // message string, distinguishable by exact toEqual.
+        const tx = composeTx({
+            utxos: [
+                {
+                    coinbase: false,
+                    own: true,
+                    confirmations: 100,
+                    amount: '50000',
+                },
+            ],
+            outputs: [
+                {
+                    type: 'payment',
+                    address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+                    amount: 'not-a-number',
+                },
+            ],
+            feeRate: 10,
+            network: NETWORKS.bitcoin,
+            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            dustThreshold: 546,
+            sortingStrategy: 'bip69',
+        });
+
+        expect(tx).toEqual({
+            type: 'error',
+            error: 'INCORRECT-OUTPUT',
+            message: 'Invalid amount at index 0',
+        });
+    });
+
     it('returns the validateAndParseRequest error result directly (does not enter coinselect)', () => {
         // feeRate=0 is rejected by validateAndParseFeeRate (request.ts), so
         // validateAndParseRequest returns { type: 'error', error: 'INCORRECT-FEE-RATE' }.
