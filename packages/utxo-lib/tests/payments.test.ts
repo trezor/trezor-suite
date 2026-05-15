@@ -107,3 +107,11 @@ import type { PaymentCreator } from '../src/types';
         });
     });
 });
+
+describe('p2pk lazy output getter', () => {
+    it('returns undefined when only signature is provided and pubkey is missing', () => {
+        const signature = Buffer.from('300602010002010001', 'hex');
+        const p = PAYMENTS.p2pk({ signature });
+        expect(p.output).toBeUndefined();
+    });
+});
