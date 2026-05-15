@@ -329,3 +329,15 @@ describe('sstxpkh lazy address getter with explicit hash=undefined', () => {
         expect(p.address).toBeUndefined();
     });
 });
+
+describe('sstxpkh lazy output getter with explicit hash=undefined', () => {
+    it('returns undefined when hash is explicitly undefined and address is provided', () => {
+        const { decred } = require('../src/networks');
+        const p = PAYMENTS.sstxpkh({
+            hash: undefined,
+            address: 'DsbeB3ap3RiS4CLpgd1yXMSKLdrNMppeBE9',
+            network: decred,
+        });
+        expect(p.output).toBeUndefined();
+    });
+});
