@@ -357,3 +357,12 @@ describe('p2tr lazy output getter with explicit hash=undefined', () => {
         expect(p.output).toBeUndefined();
     });
 });
+
+describe('embed lazy output getter when a.data is cleared after construction', () => {
+    it('returns undefined when a.data is mutated to undefined post-construction', () => {
+        const a = { data: [Buffer.from('hello')] };
+        const p = PAYMENTS.embed(a);
+        a.data = undefined as unknown as Buffer[];
+        expect(p.output).toBeUndefined();
+    });
+});
