@@ -284,6 +284,16 @@ describe('sstxsh lazy address getter with explicit hash=undefined', () => {
     });
 });
 
+describe('sstxsh lazy output getter with explicit hash=undefined', () => {
+    it('returns undefined when hash is explicitly undefined and address is provided', () => {
+        const p = PAYMENTS.sstxsh({
+            hash: undefined,
+            address: 'DcqpxMjckSty7zc4fL3CCPPGz1NWdiYsBXZ',
+        });
+        expect(p.output).toBeUndefined();
+    });
+});
+
 describe('sstxchange lazy address getter with explicit hash=undefined', () => {
     it('returns undefined when hash is explicitly undefined and output is provided', () => {
         const output = Buffer.concat([
