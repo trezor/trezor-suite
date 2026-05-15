@@ -20,6 +20,7 @@ import { TransactionList } from '@suite-native/transactions';
 import { EarnPortfolioTrackerGuard } from '../components/EarnPortfolioTrackerGuard';
 import { InstantUnstakeConfirmationBanner } from '../components/InstantUnstakeConfirmationBanner';
 import { SolExternalStakingBanner } from '../components/SolExternalStakingBanner';
+import { SolStakingRewardsWarning } from '../components/SolStakingRewardsWarning';
 import { StakingManagementPendingSection } from '../components/StakingManagementPendingSection';
 import { StakingManagementScreenHeader } from '../components/StakingManagementScreenHeader';
 import { StakingManagementStakedCard } from '../components/StakingManagementStakedCard';
@@ -44,6 +45,9 @@ export const StakingManagementScreen = () => {
                     <ContextMessage context={Context.getStaking(networkSymbol)} />
                 )}
                 <StakingManagementPendingSection accountKey={accountKey} />
+                {isSupportedSolStakingNetworkSymbol(networkSymbol) && (
+                    <SolStakingRewardsWarning accountKey={accountKey} />
+                )}
                 <VStack spacing="sp16">
                     <Text variant="headline-sm">
                         <Translation id="earn.stakingManagementScreen.yourStake" />

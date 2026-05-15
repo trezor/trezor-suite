@@ -59,6 +59,7 @@
         { "path": "../link" },
         { "path": "../message-system" },
         { "path": "../navigation" },
+        { "path": "../sentry" },
         { "path": "../services" },
         { "path": "../settings" },
         { "path": "../staking" },

@@ -2405,6 +2405,8 @@ export const messages = {
                 title: "You're staking outside of Trezor Suite",
                 description: '{amount} {symbol} (≈ {fiat}) is currently staked elsewhere.',
             },
+            solRewardsWarning:
+                'Your recent rewards are securely on the blockchain and may take more time to appear in Trezor Suite.',
             claim: {
                 readyToClaim: '{amount} unstaked and ready to claim',
                 claimButton: 'Claim',
