@@ -10,6 +10,7 @@ on:
     paths:
       - ".github/workflows/test-trezor-user-env-link-e2e.yml"
       - "packages/trezor-user-env/**"
+      - "packages/trezor-user-env-link/**"
   workflow_dispatch:
 
 concurrency:
