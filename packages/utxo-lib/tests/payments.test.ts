@@ -349,3 +349,11 @@ describe('p2tr lazy address getter with explicit hash=undefined', () => {
         expect(p.address).toBeUndefined();
     });
 });
+
+describe('p2tr lazy output getter with explicit hash=undefined', () => {
+    it('returns undefined when hash is explicitly undefined and address is provided', () => {
+        const address = 'bc1p5cyxnuxmeuwuvkwfem96lqzszd02n6xdcjrs20cac6yqjjwudpxqkedrcr';
+        const p = PAYMENTS.p2tr({ hash: undefined, address });
+        expect(p.output).toBeUndefined();
+    });
+});
