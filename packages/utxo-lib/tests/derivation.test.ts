@@ -21,6 +21,12 @@ describe('getXpubOrDescriptorInfo descriptor parse errors', () => {
             /Descriptor cannot be parsed: pkh\(invalid\)/,
         );
     });
+
+    it('throws Unknown xpub version when given an xprv whose 4-byte version is not in BIP32_PAYMENT_TYPES', () => {
+        const xprv =
+            'xprv9s21ZrQH143K3QTDL4LXw2F7HEK3wJUD2nW2nRk4stbPy6cq3jPPqjiChkVvvNKmPGJxWUtg6LnF5kejMRNNU3TGtRBeJgk33yuGBxrMPHi';
+        expect(() => getXpubOrDescriptorInfo(xprv)).toThrow(`Unknown xpub version: ${xprv}`);
+    });
 });
 
 describe('Testing address derivation from xpubs', () => {
