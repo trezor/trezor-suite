@@ -10643,6 +10643,10 @@ export const messages = defineMessages({
         id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_CANCEL_BUTTON',
         defaultMessage: 'Cancel',
     },
+    TR_SWITCH_DEVICE_EJECT_TOOLTIP: {
+        id: 'TR_SWITCH_DEVICE_EJECT_TOOLTIP',
+        defaultMessage: 'Eject wallet',
+    },
     TR_DO_NOT_SHOW_AGAIN: {
         id: 'TR_DO_NOT_SHOW_AGAIN',
         defaultMessage: "Don't show again",
