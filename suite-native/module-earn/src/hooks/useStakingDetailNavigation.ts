@@ -4,12 +4,13 @@ import { useNavigation } from '@react-navigation/native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import {
     type RootStackParamList,
-    RootStackRoutes,
+    type RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+
+import { resolveStakingTargetRoute } from '../utils/resolveStakingTargetRoute';
 
 type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.StakingManagement>;
 
@@ -18,12 +19,7 @@ export const useStakingDetailNavigation = () => {
 
     const navigateToStakingDetail = useCallback(
         ({ accountKey, symbol }: { accountKey: AccountKey; symbol: NetworkSymbol }) => {
-            // Temporarily Ethereum-only until the Solana StakingManagement dashboard is merged.
-            if (isSupportedEthStakingNetworkSymbol(symbol)) {
-                navigation.navigate(RootStackRoutes.StakingManagement, { accountKey });
-            } else {
-                navigation.navigate(RootStackRoutes.StakingDetail, { accountKey });
-            }
+            navigation.navigate(resolveStakingTargetRoute(symbol), { accountKey });
         },
         [navigation],
     );

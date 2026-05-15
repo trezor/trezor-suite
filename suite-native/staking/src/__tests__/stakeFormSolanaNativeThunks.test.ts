@@ -106,6 +106,9 @@ const buildStore = ({
         sol: { url: 'http://localhost:8899' },
         dsol: { url: 'http://localhost:8899' },
     },
+}: {
+    accounts?: Account[];
+    blockchain?: Partial<Record<'sol' | 'dsol', { url: string }>>;
 } = {}) =>
     configureMockStore({
         reducer: combineReducers({
@@ -305,6 +308,27 @@ describe('signSolanaStakingTransactionNativeThunk', () => {
             solAccount.descriptor,
             'ed25519signature',
         );
+    });
+
+    it('rejects when the blockchain backend URL cannot be resolved', async () => {
+        const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        const store = buildStore({ blockchain: { dsol: { url: 'http://localhost:8899' } } });
+
+        const result = await dispatchSign(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'stake',
+            precomposedTransaction: buildSolanaPrecomposedTransaction(),
+        });
+
+        expect(result).toEqual({
+            ok: false,
+            error: {
+                error: 'sign-transaction-failed',
+                message: 'Blockchain backend URL not found for sol.',
+            },
+        });
+        expect(solanaSignTransactionMock).not.toHaveBeenCalled();
+        errorSpy.mockRestore();
     });
 
     it('rejects (without logging) when the user cancels on the device', async () => {

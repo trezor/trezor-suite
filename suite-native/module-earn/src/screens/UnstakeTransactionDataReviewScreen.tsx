@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { CommonActions } from '@react-navigation/native';
+import { CommonActions, useFocusEffect } from '@react-navigation/native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
@@ -23,6 +23,7 @@ import {
 } from '@suite-native/navigation';
 import {
     type TransactionReviewOutputsState,
+    selectIsReceiveAddressOutputConfirmed,
     selectIsTransactionAlreadySigned,
     selectIsTransactionReviewInProgress,
     sendArrowsLottie,
@@ -30,7 +31,8 @@ import {
 
 import { UnstakeTransactionDataReviewStepList } from '../components/UnstakeTransactionDataReviewStepList';
 import { useHandleOnEarnTransactionReview } from '../hooks/useHandleOnEarnTransactionReview';
-import { getEarnPostSignParentRoute } from '../utils';
+import { useStakingDetailNavigation } from '../hooks/useStakingDetailNavigation';
+import { resolveStakingTargetRoute } from '../utils/resolveStakingTargetRoute';
 
 const navigateToUnstakedTransactionAction = ({
     accountKey,
@@ -48,7 +50,10 @@ const navigateToUnstakedTransactionAction = ({
                 name: RootStackRoutes.AppTabs,
                 params: { screen: AppTabsRoutes.EarnStack },
             },
-            getEarnPostSignParentRoute(symbol, accountKey),
+            {
+                name: resolveStakingTargetRoute(symbol),
+                params: { accountKey },
+            },
             {
                 name: RootStackRoutes.TransactionDetailStack,
                 params: {
@@ -70,8 +75,13 @@ export const UnstakeTransactionDataReviewScreen = ({
     const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, closeSheet } =
         useConfirmOnTrezorController();
     const { accountKey } = route.params;
+    const { navigateToStakingDetail } = useStakingDetailNavigation();
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const [isPushing, setIsPushing] = useState(false);
+
+    const isAddressConfirmed = useSelector((state: TransactionReviewOutputsState) =>
+        selectIsReceiveAddressOutputConfirmed(state, 'unstake', accountKey),
+    );
 
     const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
         selectIsTransactionReviewInProgress(state, 'unstake', accountKey),
@@ -89,6 +99,15 @@ export const UnstakeTransactionDataReviewScreen = ({
     });
 
     const isReadyToUnstake = isTransactionAlreadySigned && !!account;
+
+    useFocusEffect(
+        useCallback(() => {
+            // Solana address outputs would redirect mid-sign, skip until the success card.
+            if (isAddressConfirmed && account && account.networkType !== 'solana') {
+                navigateToStakingDetail({ accountKey, symbol: account.symbol });
+            }
+        }, [account, accountKey, isAddressConfirmed, navigateToStakingDetail]),
+    );
 
     useEffect(() => {
         if (isTransactionReviewInProgress) {

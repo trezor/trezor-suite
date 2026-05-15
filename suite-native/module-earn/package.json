@@ -58,6 +58,7 @@
         "@suite-native/transaction-management": "workspace:*",
         "@suite-native/transactions": "workspace:*",
         "@suite-native/tx-simulation": "workspace:*",
+        "@trezor/coins-solana": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/react-utils": "workspace:*",
         "@trezor/styles-native": "workspace:*",
