@@ -5,7 +5,7 @@ import { useFormatters } from '@suite-common/formatters';
 import { type TokenSymbol } from '@suite-common/wallet-types';
 import { calculateRewards } from '@suite-common/wallet-utils';
 import { Box, Button, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation, type TxKeyPath, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const screenFooterStyle = prepareNativeStyle(utils => ({
@@ -25,6 +25,7 @@ const rewardsBoxStyle = prepareNativeStyle(utils => ({
 type YieldSupplyFlowFooterProps = {
     amountValue: string | undefined;
     apy: number | null;
+    buttonTranslationId?: TxKeyPath;
     isDisabled: boolean;
     isLoading?: boolean;
     onPress: () => void;
@@ -34,6 +35,7 @@ type YieldSupplyFlowFooterProps = {
 export const YieldSupplyFlowFooter = ({
     amountValue,
     apy,
+    buttonTranslationId = 'generic.buttons.continue',
     isDisabled,
     isLoading = false,
     onPress,
@@ -76,12 +78,12 @@ export const YieldSupplyFlowFooter = ({
                     )}
                     <Button
                         accessibilityRole="button"
-                        accessibilityLabel={translate('generic.buttons.continue')}
+                        accessibilityLabel={translate(buttonTranslationId)}
                         onPress={onPress}
                         isDisabled={isDisabled}
                         isLoading={isLoading}
                     >
-                        <Translation id="generic.buttons.continue" />
+                        <Translation id={buttonTranslationId} />
                     </Button>
                 </Box>
             </Box>

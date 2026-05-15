@@ -1,14 +1,12 @@
+import { useCallback, useEffect, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
+
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import {
-    Box,
-    Card,
-    HStack,
-    PressableOpacity,
-    Text,
-    VStack,
-    useBottomSheetModal,
-} from '@suite-native/atoms';
+import { useFormatters } from '@suite-common/formatters';
+import { initYieldAllowanceThunk, stablecoinYieldActions } from '@suite-common/wallet-core';
+import { Box, Card, HStack, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { Form } from '@suite-native/forms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
@@ -17,21 +15,18 @@ import {
     type YieldStackParamList,
     type YieldStackRoutes,
 } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { BigNumber } from '@trezor/utils';
 
+import { YieldSupplyAmountInputCard } from '../components/YieldSupplyAmountInputCard';
+import { YieldSupplyApprovedAmountCard } from '../components/YieldSupplyApprovedAmountCard';
 import { YieldSupplyFlowFooter } from '../components/YieldSupplyFlowFooter';
 import { YieldSupplyFlowScreenHeader } from '../components/YieldSupplyFlowScreenHeader';
 import { YieldSupplyInfoBottomSheet } from '../components/YieldSupplyInfoBottomSheet';
 import { YieldSupplyStepCard } from '../components/YieldSupplyStepCard';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useYieldSession } from '../hooks/useYieldSession';
-
-const inputShellStyle = prepareNativeStyle(utils => ({
-    borderWidth: utils.borders.widths.small,
-    borderColor: utils.colors.elementBorderField,
-    backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation0,
-    borderRadius: utils.borders.radii.r12,
-}));
+import { useYieldSupplyForm } from '../hooks/useYieldSupplyForm';
+import { isYieldApprovalAllowanceUnlimited } from '../yieldApprovalUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldSupply>;
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldSupply>;
@@ -39,25 +34,88 @@ type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoute
 export const YieldSupplyScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
-    const { applyStyle } = useNativeStyles();
+    const dispatch = useDispatch();
+    const { CryptoAmountFormatter } = useFormatters();
     const {
         bottomSheetRef: infoBottomSheetRef,
         closeModal: closeInfoBottomSheet,
         openModal: openInfoBottomSheet,
     } = useBottomSheetModal();
-    const { account, apy, flowKey, tokenSymbol, vault, vaultTokenName, resolutionStatus } =
-        useResolvedYieldFlowData(route.params);
-    useYieldSession({
+    const {
+        account,
+        apy,
+        flowData,
+        flowKey,
+        token,
+        tokenSymbol,
+        vault,
+        vaultTokenName,
+        resolutionStatus,
+    } = useResolvedYieldFlowData(route.params);
+    const session = useYieldSession({
         flowKey,
         flowType: 'deposit',
-        shouldDisposeOnGoBack: true,
     });
+    const allowanceAmount = session?.approval.allowanceAmount;
+    const allowanceStatus = session?.approval.allowanceStatus;
+    const isApprovedAmountUnlimited = isYieldApprovalAllowanceUnlimited({ session, token });
+    const isSupplySessionReady = session?.step === 'action' && !!allowanceAmount;
+    const shouldRefreshAllowance = resolutionStatus === 'resolved' && allowanceStatus === 'idle';
+    const supplyForm = useYieldSupplyForm({
+        defaultAmount: allowanceAmount,
+        token,
+        tokenSymbol,
+    });
+    const { amountValue, form, handleAmountChange, handleMaxChange, isMaxSelected } = supplyForm;
+    const {
+        formState: { isValid },
+    } = form;
+    const isApprovalIncreaseRequired =
+        !isApprovedAmountUnlimited &&
+        !!amountValue &&
+        !!allowanceAmount &&
+        new BigNumber(amountValue).gt(allowanceAmount);
+    const isSubmitDisabled = !isValid || !amountValue;
 
-    const handleEditApproval = () => {
+    useEffect(() => {
+        if (shouldRefreshAllowance) {
+            void dispatch(initYieldAllowanceThunk({ flowData, flowKey, flowType: 'deposit' }));
+        }
+    }, [dispatch, flowData, flowKey, shouldRefreshAllowance]);
+
+    const formattedApprovedAmount = useMemo(() => {
+        if (!allowanceAmount || !tokenSymbol || isApprovedAmountUnlimited) {
+            return null;
+        }
+
+        return CryptoAmountFormatter.format(allowanceAmount, {
+            symbol: tokenSymbol,
+            isBalance: true,
+            withSymbol: true,
+            isEllipsisAppended: false,
+            maxDisplayedDecimals: 8,
+        });
+    }, [CryptoAmountFormatter, isApprovedAmountUnlimited, allowanceAmount, tokenSymbol]);
+
+    const handleEditApproval = useCallback(() => {
+        if (!flowKey) {
+            return;
+        }
+
+        dispatch(stablecoinYieldActions.enterModifyMode({ flowType: 'deposit', flowKey }));
         navigation.goBack();
-    };
+    }, [dispatch, flowKey, navigation]);
 
-    if (resolutionStatus !== 'resolved') {
+    const handleContinue = useCallback(() => {
+        if (isApprovalIncreaseRequired) {
+            handleEditApproval();
+        }
+    }, [handleEditApproval, isApprovalIncreaseRequired]);
+    const footerTranslationId = isApprovalIncreaseRequired
+        ? 'earn.yieldSupplyFlowScreen.increaseApprovalLimit'
+        : undefined;
+
+    if (resolutionStatus !== 'resolved' || !isSupplySessionReady) {
         return null;
     }
 
@@ -67,6 +125,7 @@ export const YieldSupplyScreen = () => {
             header={
                 <YieldSupplyFlowScreenHeader
                     account={account}
+                    closeAction={handleEditApproval}
                     onInfoPress={openInfoBottomSheet}
                     tokenContract={route.params.tokenContract}
                     vaultName={vault.metadata.name}
@@ -74,10 +133,11 @@ export const YieldSupplyScreen = () => {
             }
             footer={
                 <YieldSupplyFlowFooter
-                    amountValue={undefined}
+                    amountValue={amountValue}
                     apy={apy}
-                    isDisabled
-                    onPress={() => undefined}
+                    buttonTranslationId={footerTranslationId}
+                    isDisabled={isSubmitDisabled}
+                    onPress={handleContinue}
                     tokenSymbol={tokenSymbol}
                 />
             }
@@ -86,55 +146,42 @@ export const YieldSupplyScreen = () => {
                 <YieldSupplyStepCard currentStepIndex={1} />
 
                 <Box paddingHorizontal="sp16">
-                    <Card>
-                        <HStack alignItems="center" justifyContent="space-between">
-                            <Text variant="body-sm">
-                                <Translation id="earn.yieldSupplyFlowScreen.approvedAmount" />
-                            </Text>
-                            <HStack alignItems="center" spacing="sp8">
-                                <Text variant="body-sm-strong" color="contentSecondary">
-                                    <Translation id="earn.notAvailableShort" /> {tokenSymbol}
-                                </Text>
-                                <PressableOpacity
-                                    accessibilityRole="button"
-                                    accessibilityLabel="Edit approval amount"
-                                    onPress={handleEditApproval}
-                                >
-                                    <Icon
-                                        name="pencilSimple"
-                                        size="mediumLarge"
-                                        color="contentPrimary"
-                                    />
-                                </PressableOpacity>
-                            </HStack>
-                        </HStack>
-                    </Card>
+                    <YieldSupplyApprovedAmountCard
+                        approvedAmount={formattedApprovedAmount}
+                        isApprovedAmountUnlimited={isApprovedAmountUnlimited}
+                        networkSymbol={account.symbol}
+                        onEditApprovalPress={handleEditApproval}
+                        tokenContract={route.params.tokenContract}
+                    />
+                </Box>
+
+                <Box paddingHorizontal="sp16">
+                    <Form form={form}>
+                        <YieldSupplyAmountInputCard
+                            balance={token.balance}
+                            isMaxSelected={isMaxSelected}
+                            onAmountChange={handleAmountChange}
+                            onMaxChange={handleMaxChange}
+                            tokenSymbol={tokenSymbol}
+                        />
+                    </Form>
                 </Box>
 
                 <Box paddingHorizontal="sp16">
                     <Card>
-                        <VStack spacing="sp12">
-                            <HStack alignItems="center" justifyContent="space-between">
-                                <Text variant="body-sm">
-                                    <Translation id="earn.yieldSupplyFlowScreen.amountToSupply" />
-                                </Text>
-                                <Text variant="body-sm">
-                                    <Translation id="earn.yieldSupplyFlowScreen.supplyMax" />
-                                </Text>
-                            </HStack>
-                            <Box
-                                paddingHorizontal="sp16"
-                                paddingVertical="sp12"
-                                style={applyStyle(inputShellStyle)}
-                            >
-                                <HStack alignItems="center" justifyContent="space-between">
-                                    <Text variant="body-md" color="contentSecondary">
+                        <HStack alignItems="center" justifyContent="space-between">
+                            <Text variant="body-sm">
+                                <Translation id="transactionManagement.fees.description.title.ethereum" />
+                            </Text>
+                            <HStack alignItems="center" spacing="sp12">
+                                <VStack spacing={0} alignItems="flex-end">
+                                    <Text variant="body-sm">
                                         <Translation id="earn.notAvailableShort" />
                                     </Text>
-                                    <Text variant="body-md">{tokenSymbol}</Text>
-                                </HStack>
-                            </Box>
-                        </VStack>
+                                </VStack>
+                                <Icon name="caretDown" size="medium" color="contentPrimary" />
+                            </HStack>
+                        </HStack>
                     </Card>
                 </Box>
             </VStack>

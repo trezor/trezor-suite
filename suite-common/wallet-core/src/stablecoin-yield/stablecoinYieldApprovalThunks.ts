@@ -42,6 +42,7 @@ export type YieldSessionDataAmountPayload = YieldSessionDataPayload & {
 
 type InitYieldAllowancePayload = YieldSessionDataPayload & {
     flowType: 'deposit';
+    shouldSkipApprovalStep?: boolean;
 };
 
 type SetYieldGenericErrorParams = YieldSessionPayload & {
@@ -315,7 +316,7 @@ export const handleYieldApproveCancelThunk = createThunk(
 
 export const initYieldAllowanceThunk = createThunk<void, InitYieldAllowancePayload, void>(
     `${YIELD_THUNK_PREFIX}/initAllowance`,
-    async ({ flowKey, flowType, flowData }, { dispatch }) => {
+    async ({ flowKey, flowType, flowData, shouldSkipApprovalStep = true }, { dispatch }) => {
         dispatch(stablecoinYieldActions.startInitializingAllowance({ flowType, flowKey }));
 
         try {
@@ -348,7 +349,7 @@ export const initYieldAllowanceThunk = createThunk<void, InitYieldAllowancePaylo
                 }),
             );
 
-            if (amount !== '0') {
+            if (shouldSkipApprovalStep && amount !== '0') {
                 dispatch(stablecoinYieldActions.skipApprovalStep({ flowType, flowKey }));
             }
         } catch (error) {

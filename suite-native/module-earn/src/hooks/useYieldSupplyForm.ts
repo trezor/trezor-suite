@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { type YieldFlowToken } from '@suite-common/wallet-core';
 import { type TokenSymbol } from '@suite-common/wallet-types';
@@ -11,11 +11,16 @@ import {
 } from '../yieldSupplyFormSchema';
 
 type UseYieldSupplyFormParams = {
+    defaultAmount?: string | null;
     token: YieldFlowToken | null;
     tokenSymbol: TokenSymbol | null;
 };
 
-export const useYieldSupplyForm = ({ token, tokenSymbol }: UseYieldSupplyFormParams) => {
+export const useYieldSupplyForm = ({
+    defaultAmount,
+    token,
+    tokenSymbol,
+}: UseYieldSupplyFormParams) => {
     const { translate } = useTranslate();
     const [isMaxSelected, setIsMaxSelected] = useState(false);
 
@@ -30,10 +35,16 @@ export const useYieldSupplyForm = ({ token, tokenSymbol }: UseYieldSupplyFormPar
             tokenSymbol,
             translate,
         },
-        defaultValues: { amount: '' },
+        defaultValues: { amount: defaultAmount ?? '' },
     });
 
     const amountValue = useWatch({ control: form.control, name: 'amount' });
+
+    useEffect(() => {
+        if (defaultAmount) {
+            void form.trigger('amount');
+        }
+    }, [defaultAmount, form]);
 
     const handleMaxChange = (value: boolean) => {
         setIsMaxSelected(value);

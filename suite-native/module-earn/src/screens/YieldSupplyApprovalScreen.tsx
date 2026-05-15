@@ -1,9 +1,10 @@
 import { useCallback, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
 import { getNetwork } from '@suite-common/wallet-config';
-import { splitYieldPendingTransaction } from '@suite-common/wallet-core';
+import { initYieldAllowanceThunk, splitYieldPendingTransaction } from '@suite-common/wallet-core';
 import { Box, useBottomSheetModal } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -29,6 +30,7 @@ import { useYieldApprovalPendingTransactionTracking } from '../hooks/useYieldApp
 import { useYieldSession } from '../hooks/useYieldSession';
 import { useYieldSupplyApprovalSubmit } from '../hooks/useYieldSupplyApprovalSubmit';
 import { useYieldSupplyForm } from '../hooks/useYieldSupplyForm';
+import { isYieldApprovalAllowanceUnlimited } from '../yieldApprovalUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldSupplyApproval>;
 type NavigationProps = StackNavigationProps<
@@ -39,8 +41,8 @@ type NavigationProps = StackNavigationProps<
 export const YieldSupplyApprovalScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
+    const dispatch = useDispatch();
     const isFocused = useIsFocused();
-    const { approvalLimitTitle, approvalLimitType, setApprovalLimitType } = useYieldApprovalLimit();
     const {
         bottomSheetRef: infoBottomSheetRef,
         closeModal: closeInfoBottomSheet,
@@ -72,7 +74,12 @@ export const YieldSupplyApprovalScreen = () => {
         flowType: 'deposit',
         shouldDisposeOnGoBack: true,
     });
+    const isAllowanceAmountUnlimited = isYieldApprovalAllowanceUnlimited({ session, token });
+    const defaultApprovalLimitType = isAllowanceAmountUnlimited ? 'unlimited' : 'per-supply';
+    const { approvalLimitTitle, approvalLimitType, setApprovalLimitType } =
+        useYieldApprovalLimit(defaultApprovalLimitType);
     const sessionStep = session?.step;
+    const allowanceStatus = session?.approval.allowanceStatus;
     const pendingTransaction = session?.action.pendingTransaction ?? null;
     const { approvalPendingTransaction } = splitYieldPendingTransaction(
         pendingTransaction,
@@ -81,7 +88,11 @@ export const YieldSupplyApprovalScreen = () => {
 
     const isApprovalPending = !!approvalPendingTransaction;
 
-    const supplyForm = useYieldSupplyForm({ token, tokenSymbol });
+    const supplyForm = useYieldSupplyForm({
+        defaultAmount: session?.approval.isModifyMode ? session.action.amount : undefined,
+        token,
+        tokenSymbol,
+    });
     const { amountValue, form, handleAmountChange, handleMaxChange, isMaxSelected } = supplyForm;
     const {
         formState: { isValid },
@@ -109,6 +120,7 @@ export const YieldSupplyApprovalScreen = () => {
     });
     const isApprovalFeeReady = approvalFeeFormDraft !== undefined;
     const isApprovalSessionReady = sessionStep === 'approve';
+    const shouldRefreshAllowance = resolutionStatus === 'resolved' && allowanceStatus === 'idle';
     const isSubmitDisabled =
         isApprovalPending ||
         !isValid ||
@@ -130,6 +142,20 @@ export const YieldSupplyApprovalScreen = () => {
         flowType: 'deposit',
         isEnabled: isFocused,
     });
+
+    useEffect(() => {
+        if (shouldRefreshAllowance) {
+            void dispatch(
+                initYieldAllowanceThunk({
+                    flowData,
+                    flowKey,
+                    flowType: 'deposit',
+                    // Mobile approval screen needs allowance without auto-skipping to supply.
+                    shouldSkipApprovalStep: false,
+                }),
+            );
+        }
+    }, [dispatch, flowData, flowKey, shouldRefreshAllowance]);
 
     const handleApprovalConfirmed = useCallback(() => {
         navigation.navigate(YieldStackRoutes.YieldSupply, route.params);
@@ -209,6 +235,7 @@ export const YieldSupplyApprovalScreen = () => {
         >
             <Box pointerEvents={isApprovalPending ? 'none' : 'auto'}>
                 <Form form={form}>
+                    {/* TODO: Allow changing unlimited approval once revoke is supported on mobile. */}
                     <ApproveSupplyForm
                         approvalLimitTitle={approvalLimitTitle}
                         balance={token.balance}
@@ -223,6 +250,7 @@ export const YieldSupplyApprovalScreen = () => {
                                 formDraftKey={approvalFeeFormDraftKey}
                             />
                         }
+                        isApprovalLimitDisabled={isAllowanceAmountUnlimited}
                         isMaxSelected={isMaxSelected}
                         onAmountChange={handleAmountChange}
                         onApprovalLimitPress={openApprovalLimitBottomSheet}
