@@ -114,6 +114,12 @@ describe('script', () => {
         });
     });
 
+    describe('compile (non-array, non-buffer rejection)', () => {
+        it('throws "Expected Array" when called with a non-Buffer non-Array input', () => {
+            expect(() => bscript.compile({} as unknown as Buffer)).toThrow('Expected Array');
+        });
+    });
+
     describe('decompile', () => {
         fixtures.valid.forEach(f => {
             it(`decompiles ${f.asm}`, () => {
