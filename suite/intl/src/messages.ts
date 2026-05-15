@@ -9673,6 +9673,15 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_ERROR_GENERIC',
         defaultMessage: 'Something went wrong. Try again.',
     },
+    TR_EARN_YIELD_LOAD_ERROR_TITLE: {
+        id: 'TR_EARN_YIELD_LOAD_ERROR_TITLE',
+        defaultMessage: 'Unable to load yield opportunities',
+    },
+    TR_EARN_YIELD_LOAD_ERROR_DESCRIPTION: {
+        id: 'TR_EARN_YIELD_LOAD_ERROR_DESCRIPTION',
+        defaultMessage:
+            'This may be due to a network or connectivity issue. Check your connection or try again later.',
+    },
     TR_EARN_YIELD_ERROR_TRANSACTION_FAILED: {
         id: 'TR_EARN_YIELD_ERROR_TRANSACTION_FAILED',
         defaultMessage: 'Transaction failed',
