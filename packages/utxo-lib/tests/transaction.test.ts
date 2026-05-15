@@ -215,6 +215,19 @@ describe('Transaction', () => {
             expect(tx.byteLength()).toEqual(f.size);
         });
 
+        it('Dash: byteLength() with non-empty witness adds 2-byte segwit header and vector size', () => {
+            // Exercises the hasWitnesses-truthy arms in src/transaction/dash.ts:18 (10 vs 8 header)
+            // and :25 (witness reduce vs 0). A 1-byte witness element produces vectorSize = 3:
+            // varuint.encodingLength(1) + varuint.encodingLength(1) + 1 = 1 + 1 + 1. Combined
+            // with the +2 header delta, the total expected increase over the witness-less
+            // baseline is 5 bytes for the single-input fixture.
+            const f = fixturesDash.valid[0];
+            const tx = Transaction.fromHex(f.hex, { network: NETWORKS.dashTest });
+            const baseLen = tx.byteLength();
+            tx.ins[0].witness = [Buffer.alloc(1)];
+            expect(tx.byteLength()).toEqual(baseLen + 5);
+        });
+
         it('Bitcoin: byteLength() with no _ALLOW_WITNESS/_ALLOW_MWEB arguments returns the serialized size', () => {
             // Bitcoin transactions inherit TransactionBase.prototype.byteLength (not overridden
             // by bitcoin.fromConstructor, unlike dash/decred/zcash), so calling tx.byteLength()
