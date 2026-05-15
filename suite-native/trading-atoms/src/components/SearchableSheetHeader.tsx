@@ -21,6 +21,7 @@ export type SearchableSheetHeaderProps = {
     filterValue?: string;
     searchInputPlaceholder?: string;
     searchInputTestId?: string;
+    autoCorrect?: boolean;
 };
 
 export const SEARCHABLE_SHEET_HEADER_DEFAULT_HEIGHT = 160 as const;
@@ -45,6 +46,7 @@ export const SearchableSheetHeader = ({
     filterValue,
     searchInputTestId,
     searchInputPlaceholder,
+    autoCorrect,
 }: SearchableSheetHeaderProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
@@ -88,6 +90,7 @@ export const SearchableSheetHeader = ({
                     value={filterValue}
                     placeholder={searchInputPlaceholder}
                     testId={searchInputTestId}
+                    autoCorrect={autoCorrect}
                 />
             </Animated.View>
             {children}

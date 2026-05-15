@@ -47,6 +47,7 @@ export const TradeableAssetSheetHeader = ({
             searchInputPlaceholder={translate(
                 'moduleTrading.tradeableAssetsSheet.searchInputPlaceholder',
             )}
+            autoCorrect={false}
         >
             <Animated.View
                 layout={LinearTransition.duration(FOCUS_ANIMATION_DURATION)}
