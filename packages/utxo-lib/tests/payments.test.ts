@@ -375,3 +375,20 @@ describe('embed lazy data getter when a.output is cleared after construction', (
         expect(p.data).toBeUndefined();
     });
 });
+
+describe('p2wpkh lazy pubkey getter when a.pubkey is set after construction', () => {
+    it('returns a.pubkey when a.pubkey is mutated to a truthy value post-construction', () => {
+        const pubkey = Buffer.from(
+            '0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798',
+            'hex',
+        );
+        const signature = Buffer.from(
+            '3045022100fe324541215798b2df68cbd44039615e23c506d4ec1a05572064392a98196b82022068c849fa6699206da2fc6d7848efc1d3804a5816d6293615fe34c1a7f34e1c2f01',
+            'hex',
+        );
+        const a: { witness: Buffer[]; pubkey?: Buffer } = { witness: [signature, pubkey] };
+        const p = PAYMENTS.p2wpkh(a);
+        a.pubkey = pubkey;
+        expect(p.pubkey).toEqual(pubkey);
+    });
+});
