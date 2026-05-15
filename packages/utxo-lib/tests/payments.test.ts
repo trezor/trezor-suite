@@ -123,3 +123,13 @@ describe('p2pkh lazy pubkey getter', () => {
         expect(p.pubkey).toBeUndefined();
     });
 });
+
+describe('p2pkh non-canonical signature', () => {
+    it('throws "Expected canonical script signature" when signature fails bip66 check', () => {
+        const hash = Buffer.from('168b992bcfc44050310b3a94bd0771136d0b28d1', 'hex');
+        const signature = Buffer.from('3044', 'hex');
+        expect(() => PAYMENTS.p2pkh({ hash, signature })).toThrow(
+            'Expected canonical script signature',
+        );
+    });
+});
