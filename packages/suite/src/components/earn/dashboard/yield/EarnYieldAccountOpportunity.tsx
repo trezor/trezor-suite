@@ -47,7 +47,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
 
     const hasSuppliedBalance = opportunity.hasVaultPosition;
     const hasDisplayableSuppliedAmount = new BigNumber(opportunity.suppliedAmount).gt(0);
-    const hasMatchedTokenWithBalance = new BigNumber(opportunity.additionalSupplyAmount).gt(0);
+    const hasAdditionalDepositAmount = new BigNumber(opportunity.additionalSupplyAmount).gt(0);
     const { hasRewardsData } = opportunity;
     const hasApy = opportunity.apyPercentage !== null && opportunity.apyPercentage > 0;
     const yearlyRewards = hasDisplayableSuppliedAmount
@@ -62,7 +62,8 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
               .toString()
         : '0';
     const hasPotentialRewards = new BigNumber(potentialRewards).gt(0);
-    const shouldSpanRewardsCells = !hasApy && !hasPotentialRewards;
+    const hasMaximumDeposited = hasSuppliedBalance && !hasAdditionalDepositAmount;
+    const shouldSpanRewardsCells = !hasApy && !hasPotentialRewards && !hasMaximumDeposited;
     const formattedSuppliedAmount = CryptoAmountFormatter.format(opportunity.suppliedAmount, {
         symbol: opportunity.suppliedSymbol,
         withSymbol: false,
@@ -218,6 +219,8 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
     const isDepositDisabled = depositMessageSystem.isDisabled;
     const isWithdrawDisabled = withdrawMessageSystem.isDisabled;
     const isSupplyNowDisabled = !opportunity.vault.status.enter || isDepositDisabled;
+    const isDepositMoreDisabled =
+        !opportunity.vault.status.enter || !hasAdditionalDepositAmount || isDepositDisabled;
 
     return (
         <>
@@ -294,31 +297,42 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
 
                         {!shouldSpanRewardsCells && (
                             <Table.Cell>
-                                {hasPotentialRewards && (
-                                    <Column>
-                                        <EarnRewardsAmount
-                                            symbol={opportunity.suppliedSymbol}
-                                            rewards={potentialRewards}
-                                            apy={opportunity.apyPercentage}
-                                            intent="brand"
-                                        />
+                                {hasMaximumDeposited ? (
+                                    <Paragraph
+                                        typographyStyle="body-md"
+                                        intent="neutral"
+                                        priority="secondary"
+                                    >
+                                        <Translation id="TR_EARN_YIELD_MAXIMUM_DEPOSITED" />
+                                    </Paragraph>
+                                ) : (
+                                    hasPotentialRewards && (
+                                        <Column>
+                                            <EarnRewardsAmount
+                                                symbol={opportunity.suppliedSymbol}
+                                                rewards={potentialRewards}
+                                                apy={opportunity.apyPercentage}
+                                                intent="brand"
+                                            />
 
-                                        <Paragraph
-                                            typographyStyle="body-sm"
-                                            intent="neutral"
-                                            priority="secondary"
-                                        >
-                                            <HiddenPlaceholder>
-                                                <Translation
-                                                    id="TR_EARN_STAKING_DASHBOARD_IF_YOU_ADD"
-                                                    values={{
-                                                        amount: formattedAdditionalSupplyAmount,
-                                                        displaySymbol: opportunity.suppliedSymbol,
-                                                    }}
-                                                />
-                                            </HiddenPlaceholder>
-                                        </Paragraph>
-                                    </Column>
+                                            <Paragraph
+                                                typographyStyle="body-sm"
+                                                intent="neutral"
+                                                priority="secondary"
+                                            >
+                                                <HiddenPlaceholder>
+                                                    <Translation
+                                                        id="TR_EARN_STAKING_DASHBOARD_IF_YOU_ADD"
+                                                        values={{
+                                                            amount: formattedAdditionalSupplyAmount,
+                                                            displaySymbol:
+                                                                opportunity.suppliedSymbol,
+                                                        }}
+                                                    />
+                                                </HiddenPlaceholder>
+                                            </Paragraph>
+                                        </Column>
+                                    )
                                 )}
                             </Table.Cell>
                         )}
@@ -334,7 +348,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                                 <Tooltip content={depositMessageSystem.content}>
                                     <Button
                                         size="small"
-                                        isDisabled={isDepositDisabled}
+                                        isDisabled={isDepositMoreDisabled}
                                         iconLeft={isDepositDisabled ? 'info' : undefined}
                                         onClick={navigateToYieldSupply}
                                     >
@@ -356,7 +370,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                             </>
                         )}
 
-                        {!hasSuppliedBalance && hasMatchedTokenWithBalance && (
+                        {!hasSuppliedBalance && hasAdditionalDepositAmount && (
                             <Tooltip content={depositMessageSystem.content}>
                                 <Button
                                     size="small"
@@ -369,7 +383,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                             </Tooltip>
                         )}
 
-                        {!hasSuppliedBalance && !hasMatchedTokenWithBalance && (
+                        {!hasSuppliedBalance && !hasAdditionalDepositAmount && (
                             <Button
                                 size="small"
                                 intent="neutral"
