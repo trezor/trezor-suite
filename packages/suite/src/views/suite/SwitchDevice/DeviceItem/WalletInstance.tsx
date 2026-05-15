@@ -21,6 +21,7 @@ import {
     Icon,
     IconButton,
     Row,
+    TOOLTIP_DELAY_LONG,
     Text,
     Tooltip,
 } from '@trezor/components';
@@ -205,21 +206,34 @@ export const WalletInstance = ({
                                 )}
                             </Text>
                             <Collapsible.Toggle>
-                                <IconButton
-                                    data-testid={
-                                        isEjecting
-                                            ? `@switch-device/cancelEject`
-                                            : `${dataTestBase}/eject-button`
+                                <Tooltip
+                                    delayShow={TOOLTIP_DELAY_LONG}
+                                    content={
+                                        <Translation
+                                            id={
+                                                isEjecting
+                                                    ? 'TR_CANCEL'
+                                                    : 'TR_SWITCH_DEVICE_EJECT_TOOLTIP'
+                                            }
+                                        />
                                     }
-                                    icon={isEjecting ? 'x' : 'eject'}
-                                    size="small"
-                                    intent="neutral"
-                                    priority="secondary"
-                                    onClick={e => {
-                                        e.stopPropagation();
-                                        setIsEjecting(prev => !prev);
-                                    }}
-                                />
+                                >
+                                    <IconButton
+                                        data-testid={
+                                            isEjecting
+                                                ? `@switch-device/cancelEject`
+                                                : `${dataTestBase}/eject-button`
+                                        }
+                                        icon={isEjecting ? 'x' : 'eject'}
+                                        size="small"
+                                        intent="neutral"
+                                        priority="secondary"
+                                        onClick={e => {
+                                            e.stopPropagation();
+                                            setIsEjecting(prev => !prev);
+                                        }}
+                                    />
+                                </Tooltip>
                             </Collapsible.Toggle>
                         </Row>
 
