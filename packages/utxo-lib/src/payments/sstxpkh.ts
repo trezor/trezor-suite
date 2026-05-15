@@ -62,6 +62,7 @@ export function sstxpkh(a: Payment, opts?: PaymentOpts): Payment {
             const { version, hash: aHash } = _address();
             if (version !== network.pubKeyHash)
                 throw new TypeError('Invalid version or Network mismatch');
+            // MUTATION: equivalent — bs58check.decodeAddress constrains payload.length to 21 or 22 and computes hash via payload.subarray(offset), so aHash.length is always exactly 20; the truthy arm is structurally unreachable from the public sstxpkh() API.
             if (aHash.length !== 20) throw new TypeError('Invalid address');
             hash = aHash;
         }
