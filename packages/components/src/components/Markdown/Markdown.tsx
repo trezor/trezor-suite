@@ -7,7 +7,7 @@ import { typography } from '@trezor/theme';
 const StyledMarkdown = styled.div`
     ${typography['body-sm']}
 
-    color: ${({ theme }) => theme.contentSecondary};
+    color: ${({ theme }) => theme.contentPrimary};
 
     h1,
     h2,
@@ -44,11 +44,11 @@ const StyledMarkdown = styled.div`
 
     ul,
     ol {
-        padding: 0 0 0 16px;
+        padding: 0 0 0 24px;
     }
 
     li {
-        margin: 0 0 8px;
+        margin: 0 0 10px;
     }
 
     a {
