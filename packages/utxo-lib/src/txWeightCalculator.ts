@@ -86,6 +86,11 @@ export class TxWeightCalculator {
                 ? input.multisig.nodes.length
                 : input.multisig.pubkeys.length;
             let multisig_script_size = _TXSIZE_MULTISIGSCRIPT + n * (1 + _TXSIZE_PUBKEY);
+            // SUSPECTED-BUG-MUTATION: segwit multisig branch never assigns input_script_size, so the witness signatures+redeemScript are not counted in the weight; the non-segwit branch below (line 93) sets input_script_size = 1 + m*(1+DER_SIG) + multisig_script_size, but the segwit branch only mutates multisig_script_size and drops it.
+            // Mutator: BlockStatement / ConditionalExpression  Original: missing assignment to input_script_size  →  Mutant: any modification leaves behavior unchanged because the value is never read.
+            // Spec ref: upstream trezor-firmware https://github.com/trezor/trezor-firmware/blob/1fceca73da523c5bf2bb0f398c91e00c728bdbe0/core/tests/test_apps.bitcoin.txweight.py — SPENDP2SHWITNESS 2-of-3 multisig fixture asserts weight = 4*129 + 256 = 772.
+            // Empirical check: new TxWeightCalculator(); addInput({ script_type: 'SPENDP2SHWITNESS', multisig: { pubkeys: [{},{},{}], m: 2 } }); addOutputByKey('p2wpkh'); getTotal() === 471 (current), but trezor-firmware expects 772 — a 301-weight (~75 vbyte) undercount on every segwit multisig input.
+            // Needs human spec review before locking behavior with a test.
             if (SEGWIT_INPUT_SCRIPT_TYPES.includes(input.script_type)) {
                 multisig_script_size += getVarIntSize(multisig_script_size);
             } else {
