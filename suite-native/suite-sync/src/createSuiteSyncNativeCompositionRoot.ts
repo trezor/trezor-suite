@@ -17,12 +17,12 @@ import {
     evoluCreateSuiteSyncOwner,
 } from '@suite-common/suite-sync-evolu';
 import { type SuiteSync } from '@suite-common/suite-sync-types';
-import { type TrezorConnect } from '@trezor/connect';
+import { type TrezorConnectPublic } from '@trezor/connect';
 
 type SuiteSyncNativeCompositionRootDeps = {
     getState: () => any;
     dispatch: Dispatch;
-    trezorConnect: TrezorConnect;
+    trezorConnect: TrezorConnectPublic;
 } & SuiteSyncAnalyticsDep &
     PlatformEncryptionDep &
     EnsureDelegatedIdentityKeyDep;

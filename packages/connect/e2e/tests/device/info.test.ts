@@ -78,6 +78,7 @@ describe('__info common param', () => {
                     'bleUnpair',
                     'firmwareUpdate', // todo: this should probably work with __info param as well
                     'updateConnectSettings',
+                    'experimental', // namespace object, iterated separately below
                 ].includes(method)
             ) {
                 return;
@@ -86,6 +87,15 @@ describe('__info common param', () => {
             it(`TrezorConnect.${method}({ __info: true })`, async () => {
                 // @ts-expect-error
                 const result = await TrezorConnect[method]({
+                    __info: true,
+                });
+                expect(result).toBeDefined();
+            });
+        });
+
+        Object.keys(TrezorConnect.experimental).forEach(method => {
+            it(`TrezorConnect.experimental.${method}({ __info: true })`, async () => {
+                const result = await (TrezorConnect.experimental as any)[method]({
                     __info: true,
                 });
                 expect(result).toBeDefined();

@@ -1,7 +1,12 @@
-import { connectCallableMethods } from './callableMethods';
+import { connectCallableMethods, connectExperimentalCallableMethods } from './callableMethods';
 import { UI_REQUEST } from './events';
 import type { CallMethod } from './events/call';
-import { type Manifest, type TrezorConnect } from './types';
+import {
+    type Manifest,
+    type TrezorConnect,
+    type TrezorConnectExperimental,
+    type TrezorConnectPublic,
+} from './types';
 import type { ConnectEmitter } from './types/emitter';
 
 export type InitType<SettingsType extends Record<string, any>> = (
@@ -32,7 +37,7 @@ export const factory = <
         dispose,
     }: ConnectFactoryDependencies<SettingsType>,
     extraMethods: ExtraMethodsType = {} as ExtraMethodsType,
-): TrezorConnect & {
+): TrezorConnectPublic & {
     init: InitType<SettingsType>;
     call: CallMethod;
 } & ExtraMethodsType => {
@@ -49,6 +54,17 @@ export const factory = <
                 }),
         ]),
     ) as Pick<TrezorConnect, (typeof connectCallableMethods)[number]>;
+
+    // Experimental methods are surfaced under `TrezorConnect.experimental.*`.
+    // The runtime gate that rejects calls when `experimental: true` was not passed to `init()`
+    // lives in the implementation's `call()` so this code path stays a thin namespace wrapper
+    // and also covers the `TrezorConnect.call({ method })` escape hatch.
+    const experimental = Object.fromEntries(
+        connectExperimentalCallableMethods.map(method => [
+            method,
+            (params: any) => call({ ...params, method }),
+        ]),
+    ) as TrezorConnectExperimental;
 
     return {
         init,
@@ -69,6 +85,8 @@ export const factory = <
         cancel,
 
         ...callableMethods,
+
+        experimental,
 
         ...extraMethods,
     };

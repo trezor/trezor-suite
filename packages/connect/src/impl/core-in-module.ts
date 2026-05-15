@@ -6,6 +6,7 @@ import {
     RESPONSE_EVENT,
     TRANSPORT_EVENT,
     UI_EVENT,
+    connectExperimentalCallableMethods,
     createErrorMessage,
 } from '@trezor/connect-common';
 import type {
@@ -150,6 +151,16 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
         try {
             if (!this.settings.manifest) {
                 throw ERRORS.TypedError('Init_ManifestMissing');
+            }
+
+            // Gate experimental methods behind the `experimental: true` init flag.
+            // Applies to both `TrezorConnect.experimental.*` and the
+            // `TrezorConnect.call({ method })` escape hatch.
+            if (
+                !this.settings.experimental &&
+                (connectExperimentalCallableMethods as readonly string[]).includes(params.method)
+            ) {
+                throw ERRORS.TypedError('Method_ExperimentalDisabled');
             }
 
             // If init() is in progress but hasn't completed yet, wait for it.

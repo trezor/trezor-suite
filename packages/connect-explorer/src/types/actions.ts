@@ -2,7 +2,7 @@ import type { TSchema } from '@sinclair/typebox';
 
 import type TrezorConnectMobile from '@trezor/connect-mobile';
 import type TrezorConnect from '@trezor/connect-web';
-import type { TrezorConnect as TrezorConnectType } from '@trezor/connect-web';
+import type { TrezorConnectMethod } from '@trezor/connect-web';
 
 import type { Field } from './common';
 
@@ -26,7 +26,7 @@ export const ON_INIT_ERROR = 'action__on_init_error';
 // Method action types
 export type MethodAction =
     | { type: typeof SET_METHOD; methodConfig: any }
-    | { type: typeof SET_SCHEMA; method: keyof TrezorConnectType; schema: TSchema }
+    | { type: typeof SET_SCHEMA; method: TrezorConnectMethod; schema: TSchema }
     | { type: typeof FIELD_CHANGE; field: Field<any>; value: any }
     | { type: typeof ADD_BATCH; field: Field<any>; item: any }
     | { type: typeof REMOVE_BATCH; field: Field<any>; batch: any[] }

@@ -25,6 +25,8 @@ export const ERROR_CODES = {
     Method_Override: 'override', // inner "error", it's more like a interruption
     Method_NoResponse: 'Call resolved without response', // thrown by npm index(es), call to Core resolved without response, should not happen
     Method_Unsupported: 'Unsupported method', // 3rd party called a method unknown by current version
+    Method_ExperimentalDisabled:
+        'Experimental methods are disabled. Pass `experimental: true` to TrezorConnect.init() to enable them.', // thrown when an experimental method is called without opting in at init
     Method_DataOverflowModelOne: 'Model One does not support data over 1024 bytes', // happens in SignMessage, EthereumSignMessage and respective VerifyMessage methods
 
     Backend_NotSupported: 'BlockchainLink settings not found in coins.json', // thrown by methods which using backends, blockchainLink not defined for this coin

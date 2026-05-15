@@ -16,7 +16,7 @@ import {
     evoluCreateSuiteSyncOwner,
 } from '@suite-common/suite-sync-evolu';
 import { type SuiteSync } from '@suite-common/suite-sync-types';
-import { type TrezorConnect } from '@trezor/connect';
+import { type TrezorConnectPublic } from '@trezor/connect';
 
 import { createOnSharedWorkerUnsupported } from './createOnSharedWorkerUnsupported';
 import { createTurnOnDesktopSuiteSync } from './turnOnDesktopSuiteSync';
@@ -24,7 +24,7 @@ import { createTurnOnDesktopSuiteSync } from './turnOnDesktopSuiteSync';
 type SuiteSyncDesktopCompositionRootDeps = {
     getState: () => any;
     dispatch: Dispatch;
-    trezorConnect: TrezorConnect;
+    trezorConnect: TrezorConnectPublic;
 } & PlatformEncryptionDep &
     EnsureDelegatedIdentityKeyDep &
     DesktopAnalyticsDep;

@@ -46,6 +46,7 @@ import type { ethereumVerifyMessage } from './ethereumVerifyMessage';
 import type { evoluGetDelegatedIdentityKey } from './evoluGetDelegatedIdentityKey';
 import type { evoluGetNode } from './evoluGetNode';
 import type { evoluSignRegistrationRequest } from './evoluSignRegistrationRequest';
+import type { experimentalEcho } from './experimentalEcho';
 import type { firmwareUpdate } from './firmwareUpdate';
 import type { getAccountDescriptor } from './getAccountDescriptor';
 import type { getAccountInfo } from './getAccountInfo';
@@ -445,6 +446,15 @@ export const TrezorConnectEvolu = Type.Object({
 });
 export type TrezorConnectEvolu = Static<typeof TrezorConnectEvolu>;
 
+// Experimental, opt-in methods. Exposed under `TrezorConnect.experimental.*` in the public surface,
+// gated at runtime by `init({ experimental: true })`. Methods graduate to a stable group by being
+// removed from here and added to one of the groups above (plus `connectCallableMethodGroups`).
+export const TrezorConnectExperimental = Type.Object({
+    // Echoes the input message back. Tracer-bullet example for the experimental method pipeline.
+    experimentalEcho: Type.Unsafe<typeof experimentalEcho>(),
+});
+export type TrezorConnectExperimental = Static<typeof TrezorConnectExperimental>;
+
 // Runtime schema for key access
 export const TrezorConnectSchema = Type.Composite([
     TrezorConnectManagement,
@@ -461,9 +471,14 @@ export const TrezorConnectSchema = Type.Composite([
     TrezorConnectTezos,
     TrezorConnectTron,
     TrezorConnectEvolu,
+    TrezorConnectExperimental,
 ]);
 
 // Type-level interface for precise function types.
+// Experimental methods are merged flat here so the dispatcher typing
+// (`CallApi`, `CallMethodKeys`, `CallMethodPayload` in `events/call.ts`) treats
+// them as ordinary methods. The public-facing surface lifts them into
+// `TrezorConnect.experimental.*` via `TrezorConnectPublic` below.
 export interface TrezorConnect
     extends
         TrezorConnectManagement,
@@ -479,4 +494,16 @@ export interface TrezorConnect
         TrezorConnectStellar,
         TrezorConnectTezos,
         TrezorConnectTron,
-        TrezorConnectEvolu {}
+        TrezorConnectEvolu,
+        TrezorConnectExperimental {}
+
+// Public-facing shape returned by `factory()`. Experimental methods are lifted into a
+// nested `experimental` object so consumers must opt in via `TrezorConnect.experimental.foo()`.
+export type TrezorConnectPublic = Omit<TrezorConnect, keyof TrezorConnectExperimental> & {
+    experimental: Pick<TrezorConnect, keyof TrezorConnectExperimental>;
+};
+
+// Flat method names exposed directly on `TrezorConnect`. Excludes experimental methods,
+// which live under `TrezorConnect.experimental.*` and are gated by `experimental: true` at init.
+// Use this when a consumer needs to index the public surface by method name (e.g., explorer UIs).
+export type TrezorConnectMethod = Exclude<keyof TrezorConnect, keyof TrezorConnectExperimental>;

@@ -23,6 +23,7 @@ const initialSettings: ConnectSettings = {
     timestamp: new Date().getTime(),
     sharedLogger: true,
     transportReconnect: true,
+    experimental: false,
 };
 
 export const parseManifest = (manifest?: Manifest) => {
@@ -152,6 +153,10 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
 
     if (typeof input.version === 'string') {
         settings.version = input.version;
+    }
+
+    if (typeof input.experimental === 'boolean') {
+        settings.experimental = input.experimental;
     }
 
     settings.thp = parseThpSettings(input);

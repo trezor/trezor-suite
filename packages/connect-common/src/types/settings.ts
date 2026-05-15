@@ -52,6 +52,10 @@ export interface ConnectSettingsPublic {
     enableFirmwareHashCheck?: boolean;
     firmwareHashCheckTimeouts?: FirmwareHashCheckTimeouts;
     thp?: ThpSettings;
+    // Opt-in to experimental methods exposed via `TrezorConnect.experimental.*`.
+    // Calls to experimental methods (including through `TrezorConnect.call({ method })`)
+    // are rejected at runtime when this is not set to `true`.
+    experimental?: boolean;
 }
 
 // internal part, not to be accepted from .init()

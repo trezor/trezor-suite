@@ -7,6 +7,7 @@ import type {
     TrezorConnectDevice,
     TrezorConnectEthereum,
     TrezorConnectEvolu,
+    TrezorConnectExperimental,
     TrezorConnectMonero,
     TrezorConnectRipple,
     TrezorConnectSolana,
@@ -32,6 +33,8 @@ type ConnectCallableMethodGroups = {
     tron: readonly (keyof TrezorConnectTron)[];
     evolu: readonly (keyof TrezorConnectEvolu)[];
 };
+
+type ConnectExperimentalCallableMethods = readonly (keyof TrezorConnectExperimental)[];
 
 const connectCallableMethodGroups = {
     device: [
@@ -138,11 +141,29 @@ const connectCallableMethodGroups = {
 type ConnectCallableMethod =
     (typeof connectCallableMethodGroups)[keyof typeof connectCallableMethodGroups][number];
 
-export type MissingConnectCallableMethods = Exclude<CallMethodKeys, ConnectCallableMethod>;
+// Methods that are exposed under `TrezorConnect.experimental.*` and gated by `init({ experimental: true })`.
+// Keep this list as the single source of truth: adding a name here makes the factory generate the
+// experimental wrapper and excludes the method from the "missing stable method" guard below.
+export const connectExperimentalCallableMethods = [
+    'experimentalEcho',
+] as const satisfies ConnectExperimentalCallableMethods;
+
+type ExperimentalCallableMethod = (typeof connectExperimentalCallableMethods)[number];
+
+export type MissingConnectCallableMethods = Exclude<
+    CallMethodKeys,
+    ConnectCallableMethod | ExperimentalCallableMethod
+>;
 export type ExtraConnectCallableMethods = Exclude<ConnectCallableMethod, CallMethodKeys>;
+export type ExtraConnectExperimentalCallableMethods = Exclude<
+    ExperimentalCallableMethod,
+    CallMethodKeys
+>;
 
 export type ConnectCallableMethodsMissingGuard = AssertNever<MissingConnectCallableMethods>;
 export type ConnectCallableMethodsExtraGuard = AssertNever<ExtraConnectCallableMethods>;
+export type ConnectExperimentalCallableMethodsExtraGuard =
+    AssertNever<ExtraConnectExperimentalCallableMethods>;
 
 export const connectCallableMethods = Object.values(
     connectCallableMethodGroups,
