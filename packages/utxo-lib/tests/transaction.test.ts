@@ -448,6 +448,22 @@ describe('Transaction', () => {
             expect(prebuf.subarray(11, 11 + txLen).toString('hex')).toEqual(validHex);
         });
 
+        it('Zcash: toBuffer with overwintered=0 on a v3 tx clears the high overwinter bit', () => {
+            // Exercises the falsy arm of the `txSpecific.overwintered ? 1 : 0` cond-expr
+            // at src/transaction/zcash.ts:161 (in toBuffer). Per ZIP-202 the high bit of
+            // the version int32 is the fOverwintered flag; for a parsed v3 fixture the
+            // first 4 bytes serialize as 03 00 00 80 (mask=1). Mutating specific.overwintered
+            // to 0 forces the cond-expr to evaluate the falsy arm, producing 03 00 00 00.
+            const f = fixturesZcash.valid[5];
+            expect(f.raw.version).toBe(3);
+            expect(f.raw.overwintered).toBe(1);
+            const tx = Transaction.fromHex(f.hex, { network: NETWORKS.zcash });
+            expect(tx.toBuffer().subarray(0, 4).toString('hex')).toEqual('03000080');
+            const zcashSpecific = tx.specific as { overwintered: number };
+            zcashSpecific.overwintered = 0;
+            expect(tx.toBuffer().subarray(0, 4).toString('hex')).toEqual('03000000');
+        });
+
         it('Bitcoin: toBuffer with explicit non-zero initialOffset returns a subarray starting at that offset', () => {
             const validHex = fixturesBitcoin.valid[0].hex;
             const tx = Transaction.fromHex(validHex);
