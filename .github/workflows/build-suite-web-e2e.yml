@@ -59,7 +59,7 @@ jobs:
 
       - name: Install dependencies
         shell: bash
-        run: yarn workspaces focus @trezor/suite-web @trezor/suite-data @trezor/suite-build
+        run: yarn workspaces focus @trezor/suite-web @trezor/suite-data @trezor/suite-build @suite-common/message-system
 
       - name: Build Suite Web
         shell: bash

@@ -38,7 +38,7 @@ jobs:
           version: v0.19.1
       - name: Install deps and build libs
         run: |
-          yarn install --immutable
+          yarn workspaces focus @trezor/transport-bridge
 
       - name: Build bin.js file
         run: |

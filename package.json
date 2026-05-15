@@ -163,6 +163,7 @@
         "tsx": "^4.21.0",
         "typescript": "6.0.3",
         "typescript-eslint": "^8.60.0",
+        "uint8array-tools": "^0.0.8",
         "version-bump-prompt": "^6.1.0"
     },
     "dependenciesMeta": {

@@ -43,7 +43,7 @@ jobs:
         with:
           version: v0.19.1
       - name: Install dependencies
-        run: yarn install
+        run: yarn workspaces focus trezor-suite @suite/intl @suite-native/intl
 
       - name: Set source branch
         run: echo "SOURCE_BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV

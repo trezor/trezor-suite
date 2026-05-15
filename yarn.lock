@@ -44652,6 +44652,7 @@ __metadata:
     tsx: "npm:^4.21.0"
     typescript: "npm:6.0.3"
     typescript-eslint: "npm:^8.60.0"
+    uint8array-tools: "npm:^0.0.8"
     version-bump-prompt: "npm:^6.1.0"
   dependenciesMeta:
     "@anthropic-ai/claude-code":

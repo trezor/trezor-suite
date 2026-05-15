@@ -39,8 +39,7 @@ jobs:
       - name: Install dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          yarn workspaces focus @trezor/components
-          yarn workspaces focus @trezor/product-components
+          yarn workspaces focus @trezor/components @trezor/product-components
 
       - name: Build storybook
         env:
