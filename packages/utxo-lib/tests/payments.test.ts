@@ -271,3 +271,15 @@ describe('sstxcommitment lazy output getter without amount', () => {
         expect(p.output).toBeUndefined();
     });
 });
+
+describe('sstxsh lazy address getter with explicit hash=undefined', () => {
+    it('returns undefined when hash is explicitly undefined and output is provided', () => {
+        const output = Buffer.concat([
+            Buffer.from([0xba, 0xa9, 0x14]),
+            Buffer.alloc(20, 1),
+            Buffer.from([0x87]),
+        ]);
+        const p = PAYMENTS.sstxsh({ hash: undefined, output });
+        expect(p.address).toBeUndefined();
+    });
+});
