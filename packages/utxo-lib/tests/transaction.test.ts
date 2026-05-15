@@ -93,6 +93,18 @@ describe('Transaction', () => {
             expect(tx.locktime).toEqual(0xffffffff);
         });
 
+        it('default options: new Transaction() and Transaction.fromBuffer(buffer) without options fall through to bitcoin', () => {
+            const txEmpty = new Transaction();
+            expect(txEmpty.ins).toEqual([]);
+            expect(txEmpty.outs).toEqual([]);
+            expect(txEmpty.network).toEqual(NETWORKS.bitcoin);
+
+            const txParsed = Transaction.fromBuffer(Buffer.from('ffffffff0000ffffffff', 'hex'));
+            expect(txParsed.version).toEqual(-1);
+            expect(txParsed.locktime).toEqual(0xffffffff);
+            expect(txParsed.network).toEqual(NETWORKS.bitcoin);
+        });
+
         fixturesBitcoin.hashForSignature.forEach(f => {
             it(`${f.description} (${f.hash})`, () => {
                 const tx = Transaction.fromHex(f.txHex);
