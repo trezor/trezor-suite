@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 8
+  version: 9
   cacheKey: 10
 
 "7zip-bin@npm:~5.2.0":
@@ -44192,15 +44192,45 @@ __metadata:
     typescript-eslint: "npm:^8.59.0"
     version-bump-prompt: "npm:^6.1.0"
   dependenciesMeta:
+    "@bufbuild/buf":
+      built: true
+    "@parcel/watcher":
+      built: true
+    "@playwright/browser-chromium":
+      built: true
+    "@playwright/browser-firefox":
+      built: true
+    "@playwright/browser-webkit":
+      built: true
     "@shopify/react-native-skia":
+      built: true
+    "@swc/core":
+      built: true
+    bcrypto:
       built: true
     better-sqlite3:
       built: true
-    core-js-pure:
-      built: false
+    blake-hash:
+      built: true
+    detox:
+      built: true
     electron:
       built: true
+    esbuild:
+      built: true
+    msgpackr-extract:
+      built: true
+    nx:
+      built: true
+    sharp:
+      built: true
     trezor-suite:
+      built: true
+    ttf2woff2:
+      built: true
+    unrs-resolver:
+      built: true
+    usb:
       built: true
   languageName: unknown
   linkType: soft
