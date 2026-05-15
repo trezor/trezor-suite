@@ -15,6 +15,9 @@ import type { ModuleInit } from './module';
 
 export const SERVICE_NAME = 'auto-start';
 
+const canUseWindowForAutoStartPrompt = (mainWindow: BrowserWindow) =>
+    !mainWindow.isDestroyed() && !mainWindow.webContents.isDestroyed();
+
 // Linux autostart desktop file
 const getLinuxExecutable = () => {
     if (process.env.container) {
@@ -90,7 +93,8 @@ export const promptForAutoStartBeforeQuit = async (mainWindow: BrowserWindow, st
     if (
         isAutoStartEnabled() ||
         store.getConnectSettings().autoStartDontAskAgain ||
-        !store.getConnectSettings().hasUsedConnectWs
+        !store.getConnectSettings().hasUsedConnectWs ||
+        !canUseWindowForAutoStartPrompt(mainWindow)
     ) {
         return true;
     }
@@ -110,7 +114,16 @@ export const promptForAutoStartBeforeQuit = async (mainWindow: BrowserWindow, st
         validateIpcMessage({ ipcEvent });
         deferredResponse.resolve(response);
     });
-    mainWindow.webContents.send('app/auto-start/popup-request');
+
+    mainWindow.once('closed', () => {
+        deferredResponse.resolve('quit-now');
+    });
+
+    try {
+        mainWindow.webContents.send('app/auto-start/popup-request');
+    } catch {
+        deferredResponse.resolve('quit-now');
+    }
 
     // Fallback if modal not shown at the moment
     // This can happen on some screens like onboarding, where normal modal might not be shown
