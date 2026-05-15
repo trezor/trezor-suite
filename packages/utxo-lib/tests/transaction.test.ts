@@ -228,6 +228,18 @@ describe('Transaction', () => {
             expect(tx.byteLength()).toEqual(baseLen + 5);
         });
 
+        it('Dash: byteLength() with non-zero timestamp adds 4 bytes', () => {
+            // Exercises the truthy arm of the `tx.timestamp ? 4 : 0` cond-expr at
+            // src/transaction/dash.ts:19. The TransactionBase class declares `timestamp`
+            // as Peercoin-specific, but the dash byteLength override consults it
+            // unconditionally — setting tx.timestamp to a truthy value adds 4 bytes.
+            const f = fixturesDash.valid[0];
+            const tx = Transaction.fromHex(f.hex, { network: NETWORKS.dashTest });
+            const baseLen = tx.byteLength();
+            tx.timestamp = 1;
+            expect(tx.byteLength()).toEqual(baseLen + 4);
+        });
+
         it('Bitcoin: byteLength() with no _ALLOW_WITNESS/_ALLOW_MWEB arguments returns the serialized size', () => {
             // Bitcoin transactions inherit TransactionBase.prototype.byteLength (not overridden
             // by bitcoin.fromConstructor, unlike dash/decred/zcash), so calling tx.byteLength()
