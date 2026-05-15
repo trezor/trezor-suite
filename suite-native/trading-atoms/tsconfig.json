@@ -21,6 +21,7 @@
         },
         { "path": "../../packages/theme" },
         { "path": "../../packages/type-utils" },
+        { "path": "../../packages/utils" },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/message-system"
