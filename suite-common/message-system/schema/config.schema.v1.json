@@ -787,7 +787,7 @@
         },
         "tradingType": {
             "type": "string",
-            "enum": ["buy", "sell", "exchange"]
+            "enum": ["buy", "sell", "exchange", "concierge"]
         },
         "yieldFlowType": {
             "type": "string",

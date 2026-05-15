@@ -2,10 +2,10 @@ import { useCallback, useEffect, useMemo } from 'react';
 
 import { type CryptoId } from 'invity-api';
 
-import { type TradingType } from '@suite-common/suite-types';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import {
     CONTRACT_ADDRESS_FOR_NATIVE_TOKEN,
+    type TradingType,
     parseCryptoId,
     selectTradingAccountKeyByTradeType,
     selectTradingPrefilledFromAccount,

@@ -61,7 +61,7 @@ export const CONTEXT_PATTERNS = {
     },
     getTrading: {
         pattern: 'trading.{type}',
-        regex: /^trading\.(buy|sell|exchange)$/,
+        regex: /^trading\.(buy|sell|exchange|concierge)$/,
     },
     getEarnDashboard: {
         pattern: 'earn.dashboard.{type}',

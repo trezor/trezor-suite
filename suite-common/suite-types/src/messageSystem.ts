@@ -302,7 +302,7 @@ export type CTAAction = 'internal-link' | 'external-link';
  * This interface was referenced by `MessageSystem`'s JSON-Schema
  * via the `definition` "tradingType".
  */
-export type TradingType = 'buy' | 'sell' | 'exchange';
+export type TradingType = 'buy' | 'sell' | 'exchange' | 'concierge';
 /**
  * This interface was referenced by `MessageSystem`'s JSON-Schema
  * via the `definition` "yieldFlowType".

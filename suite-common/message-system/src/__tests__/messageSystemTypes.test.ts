@@ -1,3 +1,4 @@
+import { type TradingType } from '@suite-common/suite-types';
 import {
     type AccountType,
     type NetworkSymbol,
@@ -49,8 +50,8 @@ describe('Message system types', () => {
                 ['buy', 'trading.buy'],
                 ['sell', 'trading.sell'],
                 ['exchange', 'trading.exchange'],
-                // Todo: fix TradingType see: https://github.com/trezor/trezor-suite/pull/21265
-            ] as const satisfies ['buy' | 'sell' | 'exchange', string][])(
+                ['concierge', 'trading.concierge'],
+            ] as const satisfies [TradingType, string][])(
                 'getTrading(%s) → %s',
                 (type, expected) => {
                     expect(Context.getTrading(type)).toBe(expected);
