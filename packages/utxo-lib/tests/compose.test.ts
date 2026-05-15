@@ -71,6 +71,43 @@ describe('composeTx request validation errors', () => {
         expect(tx).toEqual({ type: 'error', error: 'MISSING-UTXOS' });
     });
 
+    it('returns INCORRECT-OUTPUT when changeAddress.address is not a valid Bitcoin address', () => {
+        // validateAndParseChangeOutput at src/compose/request.ts:188-202 calls
+        // transformOutput({ type: 'send-max', ...changeAddress }, ...), whose
+        // 'send-max' branch invokes toOutputScript(address). For an unparseable
+        // address, toOutputScript throws ('<addr> has no matching Script'), and the
+        // try/catch returns { type: 'error', error: 'INCORRECT-OUTPUT', message }.
+        // validateAndParseRequest at line 228 then checks `'error' in changeOutput`
+        // and propagates that object. A mutator that flipped the truthy arm of that
+        // check (e.g., `if (!('error' in changeOutput))`) would skip the early
+        // return and place the error-shaped object into the changeOutput slot of a
+        // CoinSelectRequest — coinselect would then crash on a missing script
+        // length, yielding a COINSELECT-shaped result with a message field,
+        // distinguishable by exact toEqual.
+        const tx = composeTx({
+            utxos: [
+                {
+                    coinbase: false,
+                    own: true,
+                    confirmations: 100,
+                    amount: '50000',
+                },
+            ],
+            outputs: [{ type: 'send-max-noaddress' }],
+            feeRate: 10,
+            network: NETWORKS.bitcoin,
+            changeAddress: { address: 'not-a-valid-address' },
+            dustThreshold: 546,
+            sortingStrategy: 'bip69',
+        });
+
+        expect(tx).toEqual({
+            type: 'error',
+            error: 'INCORRECT-OUTPUT',
+            message: 'not-a-valid-address has no matching Script',
+        });
+    });
+
     it('returns the validateAndParseRequest error result directly (does not enter coinselect)', () => {
         // feeRate=0 is rejected by validateAndParseFeeRate (request.ts), so
         // validateAndParseRequest returns { type: 'error', error: 'INCORRECT-FEE-RATE' }.
