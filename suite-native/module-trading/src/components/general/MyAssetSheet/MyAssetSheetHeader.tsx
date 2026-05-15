@@ -17,6 +17,7 @@ type MyAssetSheetHeaderProps = {
     onFilterChange: (value: string) => void;
     onSelectedNetworkFilter: (symbol: NetworkSymbol | undefined) => void;
     availableNetworks: NetworkSymbol[];
+    testID?: string;
 };
 
 const wrapperStyle = prepareNativeStyle(() => ({
@@ -28,10 +29,13 @@ export const MyAssetSheetHeader = ({
     onFilterChange,
     onSelectedNetworkFilter,
     availableNetworks,
+    testID,
 }: MyAssetSheetHeaderProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
     const [isFilterActive, setIsFilterActive] = useState(false);
+
+    const searchInputTestId = testID ? `${testID}/search-input` : undefined;
 
     return (
         <SearchableSheetHeader
@@ -40,9 +44,13 @@ export const MyAssetSheetHeader = ({
             onFilterFocusChange={setIsFilterActive}
             onFilterChange={onFilterChange}
             style={applyStyle(wrapperStyle)}
+            searchInputTestId={searchInputTestId}
             searchInputPlaceholder={translate('moduleTrading.myAssetSheet.searchInputPlaceholder')}
         >
-            <Animated.View layout={LinearTransition.duration(FOCUS_ANIMATION_DURATION)}>
+            <Animated.View
+                layout={LinearTransition.duration(FOCUS_ANIMATION_DURATION)}
+                testID={testID}
+            >
                 <MyAssetFilterTabs
                     visible={isFilterActive}
                     animationDuration={FOCUS_ANIMATION_DURATION}
