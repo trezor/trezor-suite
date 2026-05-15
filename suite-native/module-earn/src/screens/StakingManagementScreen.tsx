@@ -8,6 +8,7 @@ import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import {
     isStakingSymbol,
     isSupportedEthStakingNetworkSymbol,
+    isSupportedSolStakingNetworkSymbol,
     parseAccountKey,
 } from '@suite-common/wallet-utils';
 import { Text, VStack } from '@suite-native/atoms';
@@ -18,6 +19,7 @@ import { TransactionList } from '@suite-native/transactions';
 
 import { EarnPortfolioTrackerGuard } from '../components/EarnPortfolioTrackerGuard';
 import { InstantUnstakeConfirmationBanner } from '../components/InstantUnstakeConfirmationBanner';
+import { SolExternalStakingBanner } from '../components/SolExternalStakingBanner';
 import { StakingManagementPendingSection } from '../components/StakingManagementPendingSection';
 import { StakingManagementScreenHeader } from '../components/StakingManagementScreenHeader';
 import { StakingManagementStakedCard } from '../components/StakingManagementStakedCard';
@@ -50,6 +52,12 @@ export const StakingManagementScreen = () => {
                         accountKey={accountKey}
                         networkSymbol={networkSymbol}
                     />
+                    {isSupportedSolStakingNetworkSymbol(networkSymbol) && (
+                        <SolExternalStakingBanner
+                            accountKey={accountKey}
+                            networkSymbol={networkSymbol}
+                        />
+                    )}
                 </VStack>
                 <Text variant="headline-sm">
                     <Translation id="earn.stakingManagementScreen.stakingHistory" />
