@@ -179,3 +179,10 @@ describe('p2wpkh lazy output getter', () => {
         expect(p.output).toBeUndefined();
     });
 });
+
+describe('p2wsh lazy address getter', () => {
+    it('returns undefined when only an empty witness is provided and hash cannot be derived', () => {
+        const p = PAYMENTS.p2wsh({ witness: [] }, { validate: false });
+        expect(p.address).toBeUndefined();
+    });
+});
