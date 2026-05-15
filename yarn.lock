@@ -15863,6 +15863,7 @@ __metadata:
     semver: "npm:^7.7.1"
     simple-git: "npm:^3.32.3"
     style-loader: "npm:^4.0.0"
+    ts-node: "npm:^10.9.2"
     tsx: "npm:^4.21.0"
     webpack: "npm:5.106.2"
     webpack-cli: "npm:^7.0.2"
@@ -16337,6 +16338,7 @@ __metadata:
     http-server: "npm:^14.1.1"
     jest: "npm:29.7.0"
     jest-extended: "npm:^4.0.2"
+    ts-node: "npm:^10.9.2"
     tsx: "npm:^4.21.0"
     usb: "npm:^2.17.0"
   languageName: unknown
@@ -16372,8 +16374,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@trezor/websocket-client": "workspace:*"
     cross-fetch: "npm:^4.1.0"
-    ts-node: "npm:^10.9.2"
-    typescript: "npm:5.9.3"
+    tsx: "npm:^4.21.0"
   languageName: unknown
   linkType: soft
 

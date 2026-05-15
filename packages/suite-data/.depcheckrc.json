@@ -1,4 +1,11 @@
 {
     "ignore-patterns": ["libDev", "lib"],
-    "ignores": ["babel-loader", "webpack-cli", "css-loader", "style-loader", "postcss-loader"]
+    "ignores": [
+        "babel-loader",
+        "webpack-cli",
+        "css-loader",
+        "style-loader",
+        "postcss-loader",
+        "ts-node"
+    ]
 }
