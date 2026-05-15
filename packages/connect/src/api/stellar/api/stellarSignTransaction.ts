@@ -38,16 +38,13 @@ export default class StellarSignTransaction extends AbstractMethod<
 
         const path = validatePath(payload.path, 3);
         // incoming data should be in stellar-sdk format
-        const { transaction } = payload;
+        const { transaction, networkPassphrase, payment_req } = payload;
         const params = {
             path,
-            networkPassphrase: payload.networkPassphrase,
+            networkPassphrase,
             transaction,
-            payment_req: payload.payment_req
-                ? encodePaymentRequestAmount(
-                      payload.payment_req,
-                      PAYMENT_REQUEST_AMOUNT_BYTES.DEFAULT,
-                  )
+            payment_req: payment_req
+                ? encodePaymentRequestAmount(payment_req, PAYMENT_REQUEST_AMOUNT_BYTES.DEFAULT)
                 : undefined,
         };
 

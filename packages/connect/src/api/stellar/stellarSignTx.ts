@@ -8,31 +8,15 @@ import type {
 import { StellarOperation } from '@trezor/connect-common/src/types/api/stellar';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
+import { isNotUndefined, throwError } from '@trezor/utils';
 
 import type { TypedCall } from '../../device/DeviceCommands';
 
-const processTxRequest = async (
-    typedCall: TypedCall,
-    operations: StellarOperationMessage[],
-    index: number,
-): Promise<PROTO.StellarSignedTx> => {
-    const lastOp = index + 1 >= operations.length;
-    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-    const operation: (typeof operations)[number] = operations[index];
-    const { type, ...op } = operation;
-
-    if (lastOp) {
-        const response = await typedCall(type, 'StellarSignedTx', op);
-
-        return response.message;
-    }
-    await typedCall(type, 'StellarTxOpRequest', op);
-
-    return processTxRequest(typedCall, operations, index + 1);
-};
-
 // transform incoming parameters to protobuf messages format
-const transformSignMessage = (tx: StellarTransaction) => {
+const transformSignMessage = (
+    tx: StellarTransaction,
+    base: Pick<PROTO.StellarSignTx, 'address_n' | 'network_passphrase' | 'payment_req'>,
+): PROTO.StellarSignTx => {
     if (!tx.timebounds) {
         throw ERRORS.TypedError(
             'Runtime',
@@ -40,9 +24,8 @@ const transformSignMessage = (tx: StellarTransaction) => {
         );
     }
 
-    const msg: PROTO.StellarSignTx = {
-        address_n: [], // will be overridden
-        network_passphrase: '', // will be overridden
+    return {
+        ...base,
         source_account: tx.source,
         fee: tx.fee,
         sequence_number: tx.sequence,
@@ -50,16 +33,13 @@ const transformSignMessage = (tx: StellarTransaction) => {
         timebounds_end: tx.timebounds.maxTime,
         memo_type: PROTO.StellarMemoType.NONE,
         num_operations: tx.operations.length,
+        ...(tx.memo && {
+            memo_type: tx.memo.type,
+            memo_text: tx.memo.text,
+            memo_id: tx.memo.id,
+            memo_hash: tx.memo.hash,
+        }),
     };
-
-    if (tx.memo) {
-        msg.memo_type = tx.memo.type;
-        msg.memo_text = tx.memo.text;
-        msg.memo_id = tx.memo.id;
-        msg.memo_hash = tx.memo.hash;
-    }
-
-    return msg;
 };
 
 // transform incoming parameters to protobuf messages format
@@ -220,24 +200,29 @@ const transformOperation = (op: StellarOperation): StellarOperationMessage | und
 export const stellarSignTx = async (
     typedCall: TypedCall,
     address_n: number[],
-    networkPassphrase: string,
+    network_passphrase: string,
     tx: StellarTransaction,
     payment_req?: PROTO.PaymentRequest,
 ) => {
-    const message = transformSignMessage(tx);
-    message.address_n = address_n;
-    message.network_passphrase = networkPassphrase;
-    message.payment_req = payment_req;
-
-    const operations: StellarOperationMessage[] = [];
-    tx.operations.forEach(op => {
-        const transformed = transformOperation(op);
-        if (transformed) {
-            operations.push(transformed);
-        }
-    });
+    const message = transformSignMessage(tx, { address_n, network_passphrase, payment_req });
+    const operations = tx.operations.map(transformOperation).filter(isNotUndefined);
 
     await typedCall('StellarSignTx', 'StellarTxOpRequest', message);
 
-    return processTxRequest(typedCall, operations, 0);
+    for (const { type, ...op } of operations.slice(0, -1)) {
+        await typedCall(type, 'StellarTxOpRequest', op);
+    }
+
+    const { type, ...op } =
+        operations.at(-1) ??
+        throwError(
+            ERRORS.TypedError(
+                'Method_InvalidParameter',
+                `Stellar transaction doesn't include any valid operation.`,
+            ),
+        );
+
+    const response = await typedCall(type, 'StellarSignedTx', op);
+
+    return response.message;
 };
