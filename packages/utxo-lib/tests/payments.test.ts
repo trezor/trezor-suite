@@ -209,3 +209,10 @@ describe('p2tr address with wrong data length', () => {
         expect(() => PAYMENTS.p2tr({ address })).toThrow('Invalid address data');
     });
 });
+
+describe('p2sh lazy address getter', () => {
+    it('returns undefined when input alone is provided and hash cannot be derived', () => {
+        const p = PAYMENTS.p2sh({ input: Buffer.alloc(0) }, { validate: false });
+        expect(p.address).toBeUndefined();
+    });
+});
