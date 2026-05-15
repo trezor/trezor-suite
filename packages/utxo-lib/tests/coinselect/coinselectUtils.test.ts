@@ -58,6 +58,15 @@ describe('coinselectUtils', () => {
         ).toEqual(1000);
     });
 
+    it('getDogeFee with no dustThreshold option uses 0 default and adds no dust surcharge', () => {
+        // feePolicy='doge' routes to getDogeFee, options spread without dustThreshold
+        // exercises the default-arg branch `dustThreshold = 0` in getDogeFee destructuring.
+        // Expected = getBitcoinFee result (baseFee=0 default, no floor).
+        // transactionWeight = TX_BASE(32) + 4*varInt(0)(=4) + 4*varInt(1)(=4) + 4*(8+1+37)(=184) = 224
+        // bytes = ceil(224/4) = 56, defaultFee = ceil(1.33 * 56) = 75
+        expect(getFee([], [{ script: { length: 37 } }], 1.33, { feePolicy: 'doge' })).toEqual(75);
+    });
+
     it('getDogeFee', () => {
         expect(
             getFee(
