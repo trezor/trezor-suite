@@ -1,7 +1,7 @@
-import { Horizon, Keypair } from '@stellar/stellar-sdk';
-
-import { toStroops } from '@trezor/blockchain-link-utils/src/stellar';
 import * as utils from '@trezor/blockchain-link-utils/src/stellar';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { getStellarConnection, identifyTransaction, toStroops } from '@trezor/coins-stellar';
+import type { StellarAPI } from '@trezor/coins-stellar/types';
 
 import { BlockchainLink } from '../../src';
 import StellarWorker from '../../src/workers/stellar';
@@ -10,17 +10,17 @@ const HORIZON_URL = 'https://horizon.stellar.org';
 
 describe('Stellar', () => {
     let blockchain: BlockchainLink;
-    let horizonServer: Horizon.Server;
-    const worker = StellarWorker();
+    let horizonServer: StellarAPI;
 
-    beforeAll(() => {
+    beforeAll(async () => {
         blockchain = new BlockchainLink({
             name: 'Stellar',
-            worker: () => worker,
+            worker: StellarWorker,
             server: [HORIZON_URL],
             debug: false,
         });
-        horizonServer = new Horizon.Server(HORIZON_URL);
+        const { api } = await getStellarConnection(HORIZON_URL);
+        horizonServer = api;
     });
 
     it('getInfo', async () => {
@@ -109,8 +109,7 @@ describe('Stellar', () => {
     });
 
     it('getAccountInfo (Empty Account)', async () => {
-        const descriptor = Keypair.random().publicKey();
-
+        const descriptor = 'GD22QZ5Q3X4PEDGYYN6HBPJL6DA6UE7X4WMPGPV5RNOKGK6DSYXFMOJC';
         const result = await blockchain.getAccountInfo({
             descriptor,
         });
@@ -150,9 +149,9 @@ describe('Stellar', () => {
         const lastRecord: (typeof txRawResp.records)[number] =
             txRawResp.records[txRawResp.records.length - 1];
         const expectedCursor = lastRecord.paging_token;
-        const expectedTxs = txRawResp.records.map(record =>
-            utils.transformTransaction(record, descriptor, {}),
-        );
+        const expectedTxs = txRawResp.records
+            .map(identifyTransaction)
+            .map(record => utils.transformTransaction(record, descriptor, {}));
 
         const result = await blockchain.getAccountInfo({
             descriptor,

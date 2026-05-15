@@ -107,10 +107,10 @@ export const AssetLogoWithId = ({
     'data-testid': dataTest,
     ...rest
 }: AssetLogoWithIdProps) => {
-    const contractAddressArray = useMemo(
-        () => getAssetLogoContractAddresses(symbol, contractAddress),
-        [symbol, contractAddress],
-    );
+    const [contractAddressArray, setContractAddressArray] = useState<string[] | undefined>();
+    useEffect(() => {
+        getAssetLogoContractAddresses(symbol, contractAddress).then(setContractAddressArray);
+    }, [symbol, contractAddress]);
 
     const normalizedAddresses = useMemo(
         () =>

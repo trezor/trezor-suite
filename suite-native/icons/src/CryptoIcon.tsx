@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { Image } from 'expo-image';
 
@@ -55,29 +55,42 @@ export const CryptoIcon = ({ symbol, contractAddress, size = 'small' }: CryptoIc
 
     const key = `${symbol}${contractAddress ?? ''}`;
 
-    const sourceUrls = useMemo(() => {
-        let url = [cryptoIcons[symbol.toLowerCase() as CryptoIconName]];
+    const [sourceUrls, setSourceUrls] = useState([
+        cryptoIcons[symbol.toLowerCase() as CryptoIconName],
+    ]);
 
-        if (isNetworkSymbol(symbol)) {
-            const coingeckoId = getCoingeckoId(symbol);
-            if (coingeckoId && contractAddress) {
-                const logoAddresses = getAssetLogoContractAddresses(symbol, contractAddress);
-
-                if (logoAddresses?.length) {
-                    url = logoAddresses.map(address =>
-                        getAssetLogoUrl({
-                            coingeckoId,
-                            contractAddress: address,
-                            density: 2,
-                            size: sizeNumber,
-                        }),
+    useEffect(() => {
+        const getUrls = async () => {
+            if (isNetworkSymbol(symbol)) {
+                const coingeckoId = getCoingeckoId(symbol);
+                if (coingeckoId && contractAddress) {
+                    const logoAddresses = await getAssetLogoContractAddresses(
+                        symbol,
+                        contractAddress,
                     );
+                    if (logoAddresses?.length) {
+                        return logoAddresses.map(address =>
+                            getAssetLogoUrl({
+                                coingeckoId,
+                                contractAddress: address,
+                                density: 2,
+                                size: sizeNumber,
+                            }),
+                        );
+                    }
                 }
             }
-        }
 
-        return url;
+            return [cryptoIcons[symbol.toLowerCase() as CryptoIconName]];
+        };
+
+        getUrls().then(setSourceUrls);
     }, [contractAddress, sizeNumber, symbol]);
+
+    useEffect(() => {
+        setLogoIndex(0);
+        setShowPlaceholder(false);
+    }, [sourceUrls]);
 
     /**
      * Retries loading the icon with the next available address in sourceUrls.

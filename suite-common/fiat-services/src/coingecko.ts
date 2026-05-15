@@ -1,9 +1,8 @@
-import { Asset, Networks } from '@stellar/stellar-sdk';
-
 import { getNetwork, networks } from '@suite-common/wallet-config';
 import { type HistoricRates, type TickerId } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
+import stellar from '@trezor/coins-stellar/runtime';
 
 import { fetchUrl } from './fetch';
 import { RateLimiter } from './limiter';
@@ -46,16 +45,13 @@ const fetchCoinGecko = async (url: string, skipCache?: boolean) => {
 
 /**
  * Build coinUrl using defined coin ids
- *
- * @param {TickerId} ticker
- * @returns
  */
-const buildCoinUrls = (ticker: TickerId) => {
+const buildCoinUrls = async (ticker: TickerId) => {
     const { coingeckoId, tradeCryptoId, settlementLayer, networkType } = getNetwork(ticker.symbol);
     if (!coingeckoId) {
         console.error('buildCoinUrls: cannot find coingeckoId for ', ticker);
 
-        return null;
+        return [];
     }
 
     let baseId = coingeckoId;
@@ -70,7 +66,7 @@ const buildCoinUrls = (ticker: TickerId) => {
             if (!tradeCryptoId) {
                 console.error('buildCoinUrls: cannot find tradeCryptoId for', ticker);
 
-                return null;
+                return [];
             }
             baseId = tradeCryptoId;
         }
@@ -89,18 +85,17 @@ const buildCoinUrls = (ticker: TickerId) => {
     }
 
     if (networkType === 'stellar') {
-        const parts = ticker.tokenAddress.split('-');
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const [code, issuer]: [string, string] = parts;
-        // Use the public Stellar network here because CoinGecko does not provide testnet market data.
-        const sorobanContractAddress = new Asset(code, issuer).contractId(Networks.PUBLIC);
+        const { computeSorobanAssetContractId } = await stellar();
+        const { assetCode, assetIsuer, sorobanAssetContractId } = computeSorobanAssetContractId(
+            ticker.tokenAddress,
+        );
 
         // CoinGecko is gradually migrating Stellar assets to Soroban contract ids, so try that URL first.
         return [
-            `${baseUrl}/contract/${sorobanContractAddress}`,
-            `${baseUrl}/contract/${code}-${issuer}`,
-            `${baseUrl}/contract/${code}-${issuer}-1`,
-            `${baseUrl}/contract/${code}:${issuer}`,
+            `${baseUrl}/contract/${sorobanAssetContractId}`,
+            `${baseUrl}/contract/${assetCode}-${assetIsuer}`,
+            `${baseUrl}/contract/${assetCode}-${assetIsuer}-1`,
+            `${baseUrl}/contract/${assetCode}:${assetIsuer}`,
         ];
     }
 
@@ -118,7 +113,7 @@ export const fetchCurrentFiatRates = async (
     ticker: TickerId,
     options?: FetchCurrentFiatRatesOptions,
 ) => {
-    const coinUrls = buildCoinUrls(ticker);
+    const coinUrls = await buildCoinUrls(ticker);
     if (!coinUrls || coinUrls.length === 0) return null;
 
     const urlParams =
@@ -180,7 +175,7 @@ export const getFiatRatesForTimestamps = async (
     timestamps: number[],
     fiatCurrencyCode: BaseCurrencyCode,
 ): Promise<HistoricalResponse | null> => {
-    const coinUrls = buildCoinUrls(ticker); // Assuming this now returns an array of URLs
+    const coinUrls = await buildCoinUrls(ticker); // Assuming this now returns an array of URLs
     const urlEndpoint = `market_chart/range`;
     if (!coinUrls || coinUrls.length === 0) return null;
 
@@ -233,7 +228,7 @@ export const fetchLastWeekRates = async (
 ): Promise<HistoricalResponse | null> => {
     const urlEndpoint = `market_chart`;
     const urlParams = `vs_currency=${fiatCurrencyCode}&days=7`;
-    const coinUrls = buildCoinUrls(ticker);
+    const coinUrls = await buildCoinUrls(ticker);
     if (!coinUrls || coinUrls.length === 0) return null;
 
     const { symbol } = ticker;
