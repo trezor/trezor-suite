@@ -256,3 +256,10 @@ describe('sstxcommitment lazy address getter without hash', () => {
         expect(p.address).toBeUndefined();
     });
 });
+
+describe('sstxcommitment lazy output getter without amount', () => {
+    it('returns undefined when only hash is provided and amount is missing', () => {
+        const p = PAYMENTS.sstxcommitment({ hash: Buffer.alloc(20) });
+        expect(p.output).toBeUndefined();
+    });
+});
