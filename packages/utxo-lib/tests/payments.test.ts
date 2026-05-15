@@ -223,3 +223,13 @@ describe('p2sh lazy output getter', () => {
         expect(p.output).toBeUndefined();
     });
 });
+
+describe('p2sh witness/redeem.witness length mismatch', () => {
+    it('throws "Witness and redeem.witness mismatch" when stacks have different lengths', () => {
+        const witness = [Buffer.from('aa', 'hex')];
+        const redeem = { witness: [Buffer.from('aa', 'hex'), Buffer.from('bb', 'hex')] };
+        expect(() => PAYMENTS.p2sh({ witness, redeem })).toThrow(
+            'Witness and redeem.witness mismatch',
+        );
+    });
+});
