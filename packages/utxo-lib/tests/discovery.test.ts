@@ -42,6 +42,31 @@ describe('discovery', () => {
         expect(result.slice(5).every(r => r.empty)).toBe(true);
     });
 
+    // Default lookout: when `discovery` is called WITHOUT the third argument,
+    // the default-arg branch at src/discovery.ts:58 binds DISCOVERY_LOOKOUT (=20).
+    // A provider that yields only empty addresses lets us verify the default
+    // gap-limit by counting how many addresses are derived before scanning stops.
+    it('uses the BIP44 default gap-limit of 20 when `lookout` is omitted', async () => {
+        const provider: AddressProvider = {
+            getAllDerived: () => [],
+            getAddresses: (from, count) =>
+                Array.from({ length: count }, (_, i) => ({
+                    address: `addr-${from + i}`,
+                    path: `m/0/0/${from + i}`,
+                })),
+        };
+
+        const discover = (a: { address: string; path: string }) =>
+            Promise.resolve({ ...a, empty: true });
+
+        const result = await discovery(discover, provider);
+
+        expect(result).toHaveLength(20);
+        expect(result[0].address).toBe('addr-0');
+        expect(result[19].address).toBe('addr-19');
+        expect(result.every(r => r.empty)).toBe(true);
+    });
+
     // createAddressCache memoizes deriveAddresses output keyed by xpub+type:
     // the first getAddresses() call derives addresses on demand; subsequent
     // calls covering the same range short-circuit via the cached array, and
