@@ -688,10 +688,6 @@ export const messages = defineMessages({
         id: 'TR_SELL_MODAL_SECURITY_HEADER',
         dynamic: true,
     },
-    TR_SELL_REGISTER: {
-        id: 'TR_SELL_REGISTER',
-        defaultMessage: 'Register',
-    },
     TR_SELL_BANK_ACCOUNT_STEP: {
         defaultMessage: 'Bank account',
         id: 'TR_SELL_BANK_ACCOUNT_STEP',
@@ -837,10 +833,6 @@ export const messages = defineMessages({
     TR_BUY_STATUS_SUCCESS: {
         defaultMessage: 'Approved',
         id: 'TR_BUY_STATUS_SUCCESS',
-    },
-    TR_LOGIN_PROCEED: {
-        id: 'TR_LOGIN_PROCEED',
-        defaultMessage: 'Proceed',
     },
     TR_BUY_BUY: {
         defaultMessage: 'Buy',
