@@ -2401,6 +2401,10 @@ export const messages = {
                     "You've received {amount} {symbol} instantly. The remaining is paid out within {days, plural, one {# day} other {# days}}.",
                 descriptionWithoutDays: "You've received {amount} {symbol} instantly.",
             },
+            outsideStakingBanner: {
+                title: "You're staking outside of Trezor Suite",
+                description: '{amount} {symbol} (≈ {fiat}) is currently staked elsewhere.',
+            },
             claim: {
                 readyToClaim: '{amount} unstaked and ready to claim',
                 claimButton: 'Claim',
