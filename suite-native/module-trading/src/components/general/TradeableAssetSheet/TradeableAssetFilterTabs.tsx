@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectDiscoverySupportedNetworks } from '@suite-native/discovery';
+import { useTranslate } from '@suite-native/intl';
 import { type FilterItem, FilterTabs } from '@suite-native/trading-atoms';
 
 type TradeableAssetsFilterTabsProps = {
@@ -21,6 +22,8 @@ export const TradeableAssetFilterTabs = ({
 
     const [selectedValue, setSelectedValue] = useState<NetworkSymbol | undefined>(undefined);
 
+    const { translate } = useTranslate();
+
     const onFilterChange = (value: NetworkSymbol | undefined) => {
         setSelectedValue(value);
         onSelectedNetworkFilter(value);
@@ -31,10 +34,13 @@ export const TradeableAssetFilterTabs = ({
 
     const filterItems: FilterItem<NetworkSymbol | undefined>[] = useMemo(
         () => [
-            { label: 'All', value: undefined },
+            {
+                label: translate('moduleTrading.tradeableAssetsSheet.allFilterTabTitle'),
+                value: undefined,
+            },
             ...networks.map(n => ({ label: n.name, value: n.symbol })),
         ],
-        [networks],
+        [networks, translate],
     );
 
     const keyExtractor = (item: FilterItem<NetworkSymbol | undefined>) => item.value ?? 'undefined';

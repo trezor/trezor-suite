@@ -1,9 +1,13 @@
+import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithStoreProvider, within } from '@suite-native/test-utils-store';
 import { type FilterItem, FilterTabs } from '@suite-native/trading-atoms';
 
 describe('FilterTabs', () => {
     const items: FilterItem<string>[] = [
-        { label: 'All', value: 'all' },
+        {
+            label: getTranslation('moduleTrading.tradeableAssetsSheet.allFilterTabTitle'),
+            value: 'all',
+        },
         { label: 'Bitcoin', value: 'btc' },
         { label: 'Ethereum', value: 'eth' },
     ];
@@ -25,7 +29,9 @@ describe('FilterTabs', () => {
     it('should render all filter tabs', () => {
         const { getByText } = renderComponent();
 
-        expect(getByText('All')).toBeTruthy();
+        expect(
+            getByText(getTranslation('moduleTrading.tradeableAssetsSheet.allFilterTabTitle')),
+        ).toBeTruthy();
         expect(getByText('Bitcoin')).toBeTruthy();
         expect(getByText('Ethereum')).toBeTruthy();
     });
@@ -47,8 +53,15 @@ describe('FilterTabs', () => {
         const activeTab = getByRole('tab', { selected: true });
         expect(within(activeTab).getByText('Bitcoin')).toBeTruthy();
 
-        const inactiveTab = getByRole('tab', { selected: false, name: 'All' });
-        expect(within(inactiveTab).getByText('All')).toBeTruthy();
+        const inactiveTab = getByRole('tab', {
+            selected: false,
+            name: getTranslation('moduleTrading.tradeableAssetsSheet.allFilterTabTitle'),
+        });
+        expect(
+            within(inactiveTab).getByText(
+                getTranslation('moduleTrading.tradeableAssetsSheet.allFilterTabTitle'),
+            ),
+        ).toBeTruthy();
     });
 
     it('should use custom keyExtractor if provided', () => {
