@@ -200,3 +200,12 @@ describe('p2wsh lazy witness getter without redeem.output', () => {
         expect(p.witness).toBeUndefined();
     });
 });
+
+describe('p2tr address with wrong data length', () => {
+    it('throws Invalid address data when bech32m address decodes to a non-32-byte payload', () => {
+        const { bech32m } = require('@scure/base');
+        const data = new Uint8Array(33);
+        const address = bech32m.encode('bc', [0x01, ...bech32m.toWords(data)]);
+        expect(() => PAYMENTS.p2tr({ address })).toThrow('Invalid address data');
+    });
+});
