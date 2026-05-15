@@ -28,7 +28,17 @@ import {
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
-import { Button, Card, Icon, IconButton, LoadingContent, Row } from '@trezor/components';
+import {
+    Button,
+    ButtonGroup,
+    Card,
+    Icon,
+    IconButton,
+    LoadingContent,
+    Row,
+    TOOLTIP_DELAY_LONG,
+    Tooltip,
+} from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { type PartialRecord } from '@trezor/type-utils';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
@@ -204,22 +214,25 @@ export const AssetsView = () => {
                                 <Translation id="TR_ENABLE_MORE_COINS" />
                             </Button>
                         )}
-                        <Row gap={4}>
-                            <IconButton
-                                icon="rowsFilled"
-                                data-testid="@dashboard/assets/table-icon"
-                                onClick={setTable}
-                                intent={dashboardAssetsGridMode ? 'neutral' : 'brand'}
-                                priority="secondary"
-                            />
-                            <IconButton
-                                icon="gridNineFilled"
-                                data-testid="@dashboard/assets/grid-icon"
-                                onClick={setGrid}
-                                intent={dashboardAssetsGridMode ? 'brand' : 'neutral'}
-                                priority="secondary"
-                            />
-                        </Row>
+                        <Tooltip
+                            content={<Translation id="TR_MY_ASSETS_CHANGE_VIEW" />}
+                            delayShow={TOOLTIP_DELAY_LONG}
+                        >
+                            <ButtonGroup intent="neutral" priority="secondary">
+                                <IconButton
+                                    icon="rowsFilled"
+                                    data-testid="@dashboard/assets/table-icon"
+                                    onClick={setTable}
+                                    intent={dashboardAssetsGridMode ? 'neutral' : 'brand'}
+                                />
+                                <IconButton
+                                    icon="gridNineFilled"
+                                    data-testid="@dashboard/assets/grid-icon"
+                                    onClick={setGrid}
+                                    intent={dashboardAssetsGridMode ? 'brand' : 'neutral'}
+                                />
+                            </ButtonGroup>
+                        </Tooltip>
                     </Row>
                 )
             }
