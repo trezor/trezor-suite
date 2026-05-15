@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectEthNextRewardPayout } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { events } from '@suite-native/analytics';
 import { Badge, Button, Card, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
@@ -19,6 +20,7 @@ import {
     selectStakedBalanceByAccountKey,
     useSelector,
 } from '@suite-native/staking';
+import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
 
@@ -53,7 +55,11 @@ export const StakingManagementStakedCard = ({
     const navigation = useNavigation<NavigationProp>();
     const analytics = useAnalytics();
 
+    const isSolanaStaking = isSupportedSolStakingNetworkSymbol(networkSymbol);
+
     const handleStake = () => {
+        if (isSolanaStaking) return;
+
         if (isPortfolioTrackerDevice) {
             openPortfolioTrackerSheet();
 
@@ -75,6 +81,8 @@ export const StakingManagementStakedCard = ({
     };
 
     const handleUnstake = () => {
+        if (isSolanaStaking) return;
+
         if (isPortfolioTrackerDevice) {
             openPortfolioTrackerSheet();
 
@@ -98,7 +106,8 @@ export const StakingManagementStakedCard = ({
         selectRewardsBalanceByAccountKey(state, accountKey),
     );
     const apy = useSelector(state => selectApy(state, { accountKey, networkSymbol }));
-    const nextRewardPayout = useSelector(state => selectEthNextRewardPayout(state));
+    const ethNextRewardPayout = useSelector(selectEthNextRewardPayout);
+    const nextRewardPayout = isSolanaStaking ? SOLANA_EPOCH_DAYS : ethNextRewardPayout;
 
     const {
         isStakingDisabled,

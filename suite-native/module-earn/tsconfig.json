@@ -65,6 +65,7 @@
         { "path": "../test-utils" },
         { "path": "../transaction-management" },
         { "path": "../transactions" },
+        { "path": "../../coins/coins-solana" },
         { "path": "../../packages/react-utils" },
         {
             "path": "../../packages/styles-native"

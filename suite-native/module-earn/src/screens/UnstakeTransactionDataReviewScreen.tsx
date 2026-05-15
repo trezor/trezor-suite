@@ -11,7 +11,6 @@ import {
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { Button, Card, LottieAnimation, Text, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
@@ -37,6 +36,7 @@ import {
 
 import { UnstakeTransactionDataReviewStepList } from '../components/UnstakeTransactionDataReviewStepList';
 import { useStakingDetailNavigation } from '../hooks/useStakingDetailNavigation';
+import { resolveStakingTargetRoute } from '../utils/resolveStakingTargetRoute';
 
 const navigateToUnstakedTransactionAction = ({
     accountKey,
@@ -55,9 +55,7 @@ const navigateToUnstakedTransactionAction = ({
                 params: { screen: AppTabsRoutes.EarnStack },
             },
             {
-                name: isSupportedEthStakingNetworkSymbol(symbol)
-                    ? RootStackRoutes.StakingManagement
-                    : RootStackRoutes.StakingDetail,
+                name: resolveStakingTargetRoute(symbol),
                 params: { accountKey },
             },
             {

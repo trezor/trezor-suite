@@ -11,6 +11,8 @@ import {
 } from '@suite-native/navigation';
 import { BigNumber } from '@trezor/utils';
 
+import { resolveStakingTargetRoute } from './resolveStakingTargetRoute';
+
 type StakingNavigateFn = StackNavigationProps<
     RootStackParamList,
     RootStackRoutes.StakingManagement
@@ -20,7 +22,7 @@ export const navigateByAccountState = (account: Account, navigate: StakingNaviga
     const stakedBalance = getAccountTotalStakingBalance(account);
 
     if (stakedBalance && stakedBalance !== '0') {
-        navigate(RootStackRoutes.StakingManagement, {
+        navigate(resolveStakingTargetRoute(account.symbol), {
             accountKey: account.key,
         });
 

@@ -7,7 +7,7 @@ import { selectIsDeviceInViewOnlyMode } from '@suite-common/device';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
+import { isSupportedNativeStakingManagementSymbol } from '@suite-common/wallet-utils';
 import { useAccountAlerts } from '@suite-native/accounts';
 import { events } from '@suite-native/analytics';
 import { useBottomSheetModal } from '@suite-native/atoms';
@@ -132,7 +132,7 @@ export const useStakingPromoNavigation = () => {
 
     const handleStakingPromoPress = useCallback(
         (item: StakingEarnItem) => {
-            if (!isSupportedEthStakingNetworkSymbol(item.symbol)) {
+            if (!isSupportedNativeStakingManagementSymbol(item.symbol)) {
                 openInfoModal();
 
                 return;
