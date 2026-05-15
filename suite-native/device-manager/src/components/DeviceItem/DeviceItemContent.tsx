@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 
 import {
     type DeviceRootState,
@@ -10,7 +9,7 @@ import {
 } from '@suite-common/device';
 import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { selectHasOnlyEmptyPortfolioTracker } from '@suite-common/wallet-core';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Box, HStack } from '@suite-native/atoms';
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -72,6 +71,7 @@ export const DeviceItemContent = React.memo(
             return {
                 id: d.id,
                 name: d.name,
+                model: getDeviceInternalModel(d),
                 isConnected: d.connected,
                 label: selectDeviceLabelOrNameById(state, d.id),
                 walletNumber: d.walletNumber,
@@ -79,7 +79,6 @@ export const DeviceItemContent = React.memo(
                 useEmptyPassphrase: d.useEmptyPassphrase,
             };
         });
-        const hasOnlyEmptyPortfolioTracker = useSelector(selectHasOnlyEmptyPortfolioTracker);
 
         const isPortfolioTrackerDevice = device?.id === PORTFOLIO_TRACKER_DEVICE_ID;
 
@@ -109,7 +108,7 @@ export const DeviceItemContent = React.memo(
                         : DEVICE_SWITCHER_ITEM_CONTENT_HEIGHT_LARGE,
                 })}
             >
-                <DeviceItemIcon deviceId={hasOnlyEmptyPortfolioTracker ? undefined : device.id} />
+                <DeviceItemIcon deviceId={device.id} deviceModel={device.model} />
                 <Box style={applyStyle(itemStyle, { isCompact })}>
                     {variant === 'simple' ? (
                         <SimpleDeviceItemContent
