@@ -56,19 +56,27 @@ const OutputLabel = ({
         case 'destination-tag':
             return <Translation id="transactionManagement.review.outputs.destinationTagLabel" />;
         case 'contract':
-            if (flowType === 'approve') {
-                return <Translation id="transactionManagement.review.outputs.approveToLabel" />;
-            }
-            if (flowType === 'revoke' || flowType === 'revoke-and-approve') {
-                return (
-                    <Translation id="transactionManagement.review.outputs.revokeApprovalFromLabel" />
-                );
-            }
-            if (flowType === 'swap') {
-                return <Translation id="transactionManagement.review.outputs.swapContractLabel" />;
-            }
+            switch (flowType) {
+                case 'approve':
+                    return <Translation id="transactionManagement.review.outputs.approveToLabel" />;
 
-            return <Translation id="transactionManagement.review.outputs.contractLabel" />;
+                case 'revoke':
+                case 'revoke-and-approve':
+                    return (
+                        <Translation id="transactionManagement.review.outputs.revokeApprovalFromLabel" />
+                    );
+
+                case 'swap':
+                    return (
+                        <Translation id="transactionManagement.review.outputs.swapContractLabel" />
+                    );
+
+                case undefined:
+                    return <Translation id="transactionManagement.review.outputs.contractLabel" />;
+
+                default:
+                    throw exhaustive(flowType);
+            }
         case 'data':
             return <Translation id="transactionManagement.review.outputs.transactionDataLabel" />;
         case 'recipient_name':
