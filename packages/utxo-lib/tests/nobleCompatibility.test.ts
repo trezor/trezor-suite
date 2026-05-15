@@ -82,6 +82,14 @@ describe('noble compatibility', () => {
         expect(() => ecc.sign(Buffer.alloc(31, 1), privateOne)).toThrow('Expected Hash');
     });
 
+    it('verify throws "Expected Signature" for non-64-byte signature (exercises assertSignature length guard)', () => {
+        const messageHash = Buffer.alloc(32, 2);
+        const publicKey = ecc.pointFromScalar(privateOne)!;
+        expect(() => ecc.verify(messageHash, publicKey, Buffer.alloc(63, 0))).toThrow(
+            'Expected Signature',
+        );
+    });
+
     it('signWithEntropy is deterministic for fixed entropy', () => {
         const messageHash = Buffer.alloc(32, 7);
         const extraEntropy = Buffer.alloc(32, 9);
