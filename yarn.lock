@@ -13871,6 +13871,7 @@ __metadata:
     "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@types/invity-api": "npm:^1.1.15"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"

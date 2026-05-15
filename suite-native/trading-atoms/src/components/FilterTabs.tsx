@@ -1,8 +1,9 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
 
 import { Button } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { noop } from '@trezor/utils';
 
 export type FilterItem<T = any> = {
     label: string;
@@ -45,12 +46,30 @@ export const FilterTabs = <T,>({
     value,
     keyExtractor = (item: FilterItem<T>) => String(item.value),
 }: FilterTabsProps<T>) => {
+    const listRef = useRef<FlatList>(null);
     const { applyStyle } = useNativeStyles();
 
     const defaultKeyExtractor = useMemo(
         () => (item: FilterItem<T>) => keyExtractor(item),
         [keyExtractor],
     );
+
+    const activeTabIndex = useMemo(
+        () => items.findIndex(item => item.value === value),
+        [items, value],
+    );
+
+    useEffect(() => {
+        if (activeTabIndex < 0) {
+            return;
+        }
+
+        listRef.current?.scrollToIndex({
+            index: activeTabIndex,
+            animated: true,
+            viewPosition: 0.5,
+        });
+    }, [activeTabIndex]);
 
     const renderFilterTab = ({ item }: { item: FilterItem<T> }) => (
         <FilterTab active={value === item.value} onPress={() => onChange(item.value)}>
@@ -60,6 +79,7 @@ export const FilterTabs = <T,>({
 
     return (
         <FlatList
+            ref={listRef}
             horizontal
             showsHorizontalScrollIndicator={false}
             accessible={true}
@@ -69,6 +89,7 @@ export const FilterTabs = <T,>({
             accessibilityRole="tablist"
             renderItem={renderFilterTab}
             keyboardShouldPersistTaps="always"
+            onScrollToIndexFailed={noop}
         />
     );
 };
