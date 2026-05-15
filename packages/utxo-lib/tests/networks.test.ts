@@ -52,6 +52,20 @@ describe('isNetworkType', () => {
         });
     });
 
+    it('bitcoinCash list with truthy mismatching forkId in input network returns false', () => {
+        expect(
+            isNetworkType('bitcoinCash', {
+                messagePrefix: 'x',
+                bech32: '',
+                bip32: { public: 0x0488b21e, private: 0x0488ade4 },
+                pubKeyHash: 0x00,
+                scriptHash: 0x05,
+                wif: 0x80,
+                forkId: 0x42,
+            }),
+        ).toBe(false);
+    });
+
     it('invalid params', () => {
         // @ts-expect-error invalid type param
         expect(isNetworkType('invalid-type', {})).toBe(false);
