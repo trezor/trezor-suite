@@ -193,3 +193,10 @@ describe('p2wsh lazy output getter', () => {
         expect(p.output).toBeUndefined();
     });
 });
+
+describe('p2wsh lazy witness getter without redeem.output', () => {
+    it('returns undefined when redeem is provided without an output', () => {
+        const p = PAYMENTS.p2wsh({ redeem: {} });
+        expect(p.witness).toBeUndefined();
+    });
+});
