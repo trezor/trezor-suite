@@ -136,5 +136,9 @@ describe('address', () => {
                 expect(baddress.getAddressType(address, getNetwork(network))).toBe(type);
             });
         });
+
+        it('classifies a mainnet p2pkh address using the default bitcoin network argument', () => {
+            expect(baddress.getAddressType('1NSAR5mUUL3qZP29BfFj5jBPR5yWiiZZWi')).toBe('p2pkh');
+        });
     });
 });
