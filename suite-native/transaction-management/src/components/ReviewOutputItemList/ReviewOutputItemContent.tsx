@@ -87,15 +87,17 @@ export const ReviewOutputItemContent = ({
             }
 
         case 'contract':
-            if (
-                flowType === 'approve' ||
-                flowType === 'revoke' ||
-                flowType === 'revoke-and-approve'
-            ) {
-                return <Text variant="body-sm">{value}</Text>;
+            switch (flowType) {
+                case 'approve':
+                case 'revoke':
+                case 'revoke-and-approve':
+                    return <Text variant="body-sm">{value}</Text>;
+                case 'swap':
+                case undefined:
+                    return <AddressFormatter value={value} format="full" variant="body-sm" />;
+                default:
+                    throw exhaustive(flowType);
             }
-
-            return <AddressFormatter value={value} format="full" variant="body-sm" />;
 
         case 'signing-with':
             return <AddressFormatter value={value} format="full" variant="body-sm" />;
