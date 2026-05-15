@@ -5793,6 +5793,10 @@ export const messages = defineMessages({
         id: 'TR_MY_ASSETS',
         defaultMessage: 'My assets',
     },
+    TR_MY_ASSETS_CHANGE_VIEW: {
+        defaultMessage: 'Change view',
+        id: 'TR_MY_ASSETS_CHANGE_VIEW',
+    },
     TR_ON: {
         id: 'TR_ON',
         defaultMessage: 'on',
