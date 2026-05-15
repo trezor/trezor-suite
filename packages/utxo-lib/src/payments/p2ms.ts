@@ -24,6 +24,21 @@ export function p2ms(a: Payment, opts?: PaymentOpts): Payment {
         throw new TypeError('Not enough data');
     opts = Object.assign({ validate: true }, opts || {});
 
+    // SUSPECTED-BUG-MUTATION: stray `!== undefined` on the second clause neutralises the OP_0 check.
+    // The expression evaluates as `(opts.allowIncomplete && (x === OP_0)) !== undefined`. The inner
+    // `&&` returns a boolean (or `undefined` if allowIncomplete is the default `undefined`); the outer
+    // `!== undefined` then returns `true` for ANY boolean — so whenever opts.allowIncomplete is set
+    // (true OR false), isAcceptableSignature(x) returns true regardless of x. The intended upstream
+    // bitcoinjs-lib expression is plainly `isCanonicalScriptSignature(x) || (allowIncomplete && x === OP_0)`
+    // — i.e. the trailing `!== undefined` should not be there.
+    // Mutator: EqualityOperator  Original: !== undefined  →  Mutant: === undefined (or remove)
+    // Spec ref: upstream bitcoinjs-lib payments/p2ms (ts_src) — accepts OP_0 placeholder only
+    // Empirical check: p2ms({ m:2, pubkeys:[pubA,pubB], signatures:[Buffer.from('ffff','hex'),Buffer.from('ffff','hex')] }, { allowIncomplete: true })
+    //   returns a fully-constructed p2ms(2 of 2) with no throw, even though both signatures are
+    //   non-canonical and not OP_0; passing `{}` (no allowIncomplete) instead throws 'Input has
+    //   invalid signature(s)' for the same signatures, proving the guard is bypassed when the flag is set.
+    // Needs human spec review before locking behavior with a test — accepting non-canonical sigs in
+    // a multisig validate path is security-critical (could mark forged inputs as valid in signed-tx flows).
     function isAcceptableSignature(x: Buffer | number): boolean {
         return (
             bscript.isCanonicalScriptSignature(x as Buffer) ||
