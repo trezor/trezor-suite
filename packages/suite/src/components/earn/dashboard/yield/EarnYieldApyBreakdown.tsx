@@ -35,6 +35,7 @@ export const EarnYieldApyBreakdown = ({
     <Column gap={16} padding={{ vertical: 10, horizontal: 8 }}>
         {sortRewardsByUnderlyingToken(rewards, underlyingToken).map((reward, index) => {
             const ratePercent = getApyPercent(reward.rate);
+            const hasRatePercent = ratePercent !== null && ratePercent > 0;
             const translationId = getYieldSourceTranslationId(reward.yieldSource);
             const description = translationId ? (
                 <Translation id={translationId} />
@@ -60,11 +61,20 @@ export const EarnYieldApyBreakdown = ({
                             </Text>
                         )}
                     </Column>
-                    {ratePercent !== null && ratePercent > 0 && (
-                        <Text typographyStyle="body-sm" intent="brand">
-                            +{ratePercent}%
-                        </Text>
-                    )}
+                    <Text
+                        typographyStyle="body-sm"
+                        intent={hasRatePercent ? 'brand' : 'neutral'}
+                        priority={hasRatePercent ? 'primary' : 'secondary'}
+                    >
+                        {hasRatePercent ? (
+                            <>+{ratePercent}%</>
+                        ) : (
+                            <>
+                                <Translation id="TR_EARN_APY_N_A" />{' '}
+                                <Translation id="TR_STAKE_APY_ABBR" />
+                            </>
+                        )}
+                    </Text>
                 </Row>
             );
         })}

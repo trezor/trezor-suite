@@ -49,7 +49,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
     const hasDisplayableSuppliedAmount = new BigNumber(opportunity.suppliedAmount).gt(0);
     const hasMatchedTokenWithBalance = new BigNumber(opportunity.additionalSupplyAmount).gt(0);
     const { hasRewardsData } = opportunity;
-    const hasApy = opportunity.apyPercentage !== null;
+    const hasApy = opportunity.apyPercentage !== null && opportunity.apyPercentage > 0;
     const yearlyRewards = hasDisplayableSuppliedAmount
         ? new BigNumber(opportunity.suppliedAmount)
               .times(opportunity.vault.rewardRate.total)
@@ -62,6 +62,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
               .toString()
         : '0';
     const hasPotentialRewards = new BigNumber(potentialRewards).gt(0);
+    const shouldSpanRewardsCells = !hasApy && !hasPotentialRewards;
     const formattedSuppliedAmount = CryptoAmountFormatter.format(opportunity.suppliedAmount, {
         symbol: opportunity.suppliedSymbol,
         withSymbol: false,
@@ -252,7 +253,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
 
                 {hasRewardsData ? (
                     <>
-                        <Table.Cell>
+                        <Table.Cell colSpan={shouldSpanRewardsCells ? 2 : undefined}>
                             <Row width="100%" alignItems="center" justifyContent="space-between">
                                 <Column>
                                     <EarnRewardsAmount
@@ -291,34 +292,36 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                             </Row>
                         </Table.Cell>
 
-                        <Table.Cell>
-                            {hasPotentialRewards && (
-                                <Column>
-                                    <EarnRewardsAmount
-                                        symbol={opportunity.suppliedSymbol}
-                                        rewards={potentialRewards}
-                                        apy={opportunity.apyPercentage}
-                                        intent="brand"
-                                    />
+                        {!shouldSpanRewardsCells && (
+                            <Table.Cell>
+                                {hasPotentialRewards && (
+                                    <Column>
+                                        <EarnRewardsAmount
+                                            symbol={opportunity.suppliedSymbol}
+                                            rewards={potentialRewards}
+                                            apy={opportunity.apyPercentage}
+                                            intent="brand"
+                                        />
 
-                                    <Paragraph
-                                        typographyStyle="body-sm"
-                                        intent="neutral"
-                                        priority="secondary"
-                                    >
-                                        <HiddenPlaceholder>
-                                            <Translation
-                                                id="TR_EARN_STAKING_DASHBOARD_IF_YOU_ADD"
-                                                values={{
-                                                    amount: formattedAdditionalSupplyAmount,
-                                                    displaySymbol: opportunity.suppliedSymbol,
-                                                }}
-                                            />
-                                        </HiddenPlaceholder>
-                                    </Paragraph>
-                                </Column>
-                            )}
-                        </Table.Cell>
+                                        <Paragraph
+                                            typographyStyle="body-sm"
+                                            intent="neutral"
+                                            priority="secondary"
+                                        >
+                                            <HiddenPlaceholder>
+                                                <Translation
+                                                    id="TR_EARN_STAKING_DASHBOARD_IF_YOU_ADD"
+                                                    values={{
+                                                        amount: formattedAdditionalSupplyAmount,
+                                                        displaySymbol: opportunity.suppliedSymbol,
+                                                    }}
+                                                />
+                                            </HiddenPlaceholder>
+                                        </Paragraph>
+                                    </Column>
+                                )}
+                            </Table.Cell>
+                        )}
                     </>
                 ) : (
                     <Table.Cell colSpan={2} />
