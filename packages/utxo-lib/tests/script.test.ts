@@ -107,6 +107,13 @@ describe('script', () => {
         });
     });
 
+    describe('toStack (non-push-only rejection)', () => {
+        it('throws "Expected push-only script" for a script containing OP_CHECKSIG', () => {
+            const script = Buffer.from([bscript.OPS.OP_CHECKSIG]);
+            expect(() => bscript.toStack(script)).toThrow('Expected push-only script');
+        });
+    });
+
     describe('decompile', () => {
         fixtures.valid.forEach(f => {
             it(`decompiles ${f.asm}`, () => {
