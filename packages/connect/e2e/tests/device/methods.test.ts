@@ -4,11 +4,16 @@ import TrezorConnect from '@trezor/connect';
 import * as fixtures from '../../__fixtures__';
 import {
     conditionalTest,
+    getCapturedScreens,
     getController,
     initTrezorConnect,
+    resetCapturedScreens,
+    setScreenCaptureEnabled,
     setup,
     skipTest,
 } from '../../common.setup';
+
+const normalizeScreen = (s: string) => s.replace(/\s+/g, '');
 
 let controller: ReturnType<typeof getController> | undefined;
 
@@ -91,16 +96,17 @@ describe(`TrezorConnect methods`, () => {
                 TrezorConnect.cancel();
             });
 
+            beforeEach(() => {
+                resetCapturedScreens();
+            });
+
             testCase.tests.forEach(t => {
                 // check if test should be skipped on current configuration
                 conditionalTest(
                     t.skip,
                     t.description,
                     async () => {
-                        // print current test case for better debugging visibility
-                        if (typeof process !== 'undefined' && process.stderr) {
-                            process.stderr.write(`\n${testCase.method}: ${t.description}\n`);
-                        }
+                        setScreenCaptureEnabled(t.deviceScreen !== undefined);
 
                         if (!controller) {
                             throw new Error('Controller not found');
@@ -135,6 +141,25 @@ describe(`TrezorConnect methods`, () => {
                         }
 
                         expect(result).toMatchObject(expected);
+
+                        const { deviceScreen } = t;
+                        // Skip the screen assertion when the matrix expects failure
+                        // (no ButtonRequest emitted), or when the fixture flags this
+                        // matrix as skip via deviceScreenSkip (T1B1 returns a
+                        // placeholder, old FW renders differently). Smaller screens
+                        // truncate the visible portion, so the substring/regex match
+                        // runs against the concatenation of all captures.
+                        const skipScreen = t.deviceScreenSkip && skipTest(t.deviceScreenSkip);
+                        if (deviceScreen !== undefined && expected.success && !skipScreen) {
+                            const screens = getCapturedScreens();
+                            expect(screens.length).toBeGreaterThan(0);
+                            const joined = screens.map(normalizeScreen).join('');
+                            if (typeof deviceScreen === 'string') {
+                                expect(joined).toContain(normalizeScreen(deviceScreen));
+                            } else {
+                                expect(deviceScreen.test(joined)).toBe(true);
+                            }
+                        }
                     },
                     t.customTimeout || 40000,
                 );
