@@ -48,5 +48,19 @@ export default {
             },
             result: false,
         },
+        {
+            description: "m/44'/1729'/0' (showOnTrezor)",
+            params: {
+                path: "m/44'/1729'/0'",
+                showOnTrezor: true,
+            },
+            result: {
+                publicKey: 'edpkuxZ5W8c2jmcaGuCFZxRDSWxS7hp98zcwj2YpUZkJWs5F7UMuF6',
+            },
+            // FW shows the edpk… form (same value as `publicKey`). Assert a stable
+            // prefix that fits inside the smallest-screen capture.
+            deviceScreen: 'edpkuxZ5W8c2jmcaGuCFZxRDSWxS7hp98zcwj2Y',
+            deviceScreenSkip: ['1', '<2.7.0'],
+        },
     ].map(fixture => ({ ...fixture, legacyResults })),
 } satisfies TestCase;
