@@ -15,7 +15,6 @@ import {
     type YieldStackParamList,
     type YieldStackRoutes,
 } from '@suite-native/navigation';
-import { BigNumber } from '@trezor/utils';
 
 import { YieldSupplyAmountInputCard } from '../components/YieldSupplyAmountInputCard';
 import { YieldSupplyApprovedAmountCard } from '../components/YieldSupplyApprovedAmountCard';
@@ -26,7 +25,10 @@ import { YieldSupplyStepCard } from '../components/YieldSupplyStepCard';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useYieldSession } from '../hooks/useYieldSession';
 import { useYieldSupplyForm } from '../hooks/useYieldSupplyForm';
-import { isYieldApprovalAllowanceUnlimited } from '../yieldApprovalUtils';
+import {
+    isYieldApprovalAllowanceEnough,
+    isYieldApprovalAllowanceUnlimited,
+} from '../yieldApprovalUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldSupply>;
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldSupply>;
@@ -56,13 +58,14 @@ export const YieldSupplyScreen = () => {
         flowKey,
         flowType: 'deposit',
     });
+    const supplyAmount = session?.action.amount;
     const allowanceAmount = session?.approval.allowanceAmount;
     const allowanceStatus = session?.approval.allowanceStatus;
     const isApprovedAmountUnlimited = isYieldApprovalAllowanceUnlimited({ session, token });
-    const isSupplySessionReady = session?.step === 'action' && !!allowanceAmount;
+    const isSupplySessionReady = session?.step === 'action' && !!supplyAmount && !!allowanceAmount;
     const shouldRefreshAllowance = resolutionStatus === 'resolved' && allowanceStatus === 'idle';
     const supplyForm = useYieldSupplyForm({
-        defaultAmount: allowanceAmount,
+        defaultAmount: supplyAmount,
         token,
         tokenSymbol,
     });
@@ -70,11 +73,11 @@ export const YieldSupplyScreen = () => {
     const {
         formState: { isValid },
     } = form;
-    const isApprovalIncreaseRequired =
-        !isApprovedAmountUnlimited &&
-        !!amountValue &&
-        !!allowanceAmount &&
-        new BigNumber(amountValue).gt(allowanceAmount);
+    const isApprovalIncreaseRequired = !isYieldApprovalAllowanceEnough({
+        amount: amountValue,
+        session,
+        token,
+    });
     const isSubmitDisabled = !isValid || !amountValue;
 
     useEffect(() => {

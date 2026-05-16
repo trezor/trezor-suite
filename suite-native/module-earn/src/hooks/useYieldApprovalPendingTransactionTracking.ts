@@ -5,7 +5,6 @@ import {
     type AccountsRootState,
     type FeesRootState,
     type TransactionsRootState,
-    type YieldFlowStepId,
     type YieldPendingTransactionState,
     fetchAndUpdateAccountThunk,
     selectConvertedNetworkFeeInfo,
@@ -27,10 +26,8 @@ type UseYieldApprovalPendingTransactionTrackingParams = {
     account: Account | null;
     approvalPendingTransaction: YieldPendingTransactionState | undefined;
     flowKey: string | null;
-    isApprovalPending: boolean;
     isScreenFocused: boolean;
     onApprovalConfirmed: () => void;
-    sessionStep: YieldFlowStepId | undefined;
 };
 
 const getPollIntervalMs = (blockTime: number | undefined): number => {
@@ -46,10 +43,8 @@ export const useYieldApprovalPendingTransactionTracking = ({
     account,
     approvalPendingTransaction,
     flowKey,
-    isApprovalPending,
     isScreenFocused,
     onApprovalConfirmed,
-    sessionStep,
 }: UseYieldApprovalPendingTransactionTrackingParams) => {
     const dispatch = useDispatch();
     const accountKey = account?.key;
@@ -122,13 +117,16 @@ export const useYieldApprovalPendingTransactionTracking = ({
             }),
         );
         dispatch(stablecoinYieldActions.invalidateAllowance(sessionParams));
-    }, [approvalPendingTransaction, dispatch, flowKey, trackedPendingTransaction]);
 
-    useEffect(() => {
-        if (!flowKey || !isScreenFocused || isApprovalPending || sessionStep !== 'action') {
-            return;
+        if (isScreenFocused) {
+            onApprovalConfirmed();
         }
-
-        onApprovalConfirmed();
-    }, [flowKey, isApprovalPending, isScreenFocused, onApprovalConfirmed, sessionStep]);
+    }, [
+        approvalPendingTransaction,
+        dispatch,
+        flowKey,
+        isScreenFocused,
+        onApprovalConfirmed,
+        trackedPendingTransaction,
+    ]);
 };

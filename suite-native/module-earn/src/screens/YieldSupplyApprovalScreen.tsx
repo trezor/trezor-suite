@@ -165,10 +165,8 @@ export const YieldSupplyApprovalScreen = () => {
         account,
         approvalPendingTransaction,
         flowKey,
-        isApprovalPending,
         isScreenFocused: isFocused,
         onApprovalConfirmed: handleApprovalConfirmed,
-        sessionStep,
     });
 
     const handleCloseInfoBottomSheet = useCallback(() => {

@@ -6,6 +6,7 @@ import { isFulfilled } from '@reduxjs/toolkit';
 
 import {
     type StablecoinYieldRootState,
+    initYieldAllowanceThunk,
     selectStablecoinYieldSession,
     stablecoinYieldActions,
     submitYieldApproveThunk,
@@ -21,6 +22,7 @@ import { type ResolvedYieldFlowData } from './useResolvedYieldFlowData';
 import { useWorkInProgressAlert } from './useWorkInProgressAlert';
 import { type YieldApprovalLimitType } from '../types';
 import { prepareYieldApprovalReviewTransactionThunk } from '../yieldApprovalThunks';
+import { isYieldApprovalAllowanceEnough } from '../yieldApprovalUtils';
 
 type NavigationProps = StackNavigationProps<
     YieldStackParamList,
@@ -30,6 +32,18 @@ type NavigationProps = StackNavigationProps<
 type UseYieldSupplyApprovalSubmitParams = Pick<ResolvedYieldFlowData, 'flowData' | 'flowKey'> & {
     approvalLimitType: YieldApprovalLimitType;
     routeParams: YieldFlowParams;
+};
+
+type YieldDepositSessionParams = {
+    flowType: 'deposit';
+    flowKey: string;
+};
+
+type CheckIsAllowanceEnoughParams = {
+    amount: string;
+    resolvedFlowData: NonNullable<ResolvedYieldFlowData['flowData']>;
+    resolvedFlowKey: string;
+    sessionParams: YieldDepositSessionParams;
 };
 
 export const useYieldSupplyApprovalSubmit = ({
@@ -43,6 +57,44 @@ export const useYieldSupplyApprovalSubmit = ({
     const store = useStore<StablecoinYieldRootState>();
     const showWorkInProgressAlert = useWorkInProgressAlert();
     const [isCheckingApproval, setIsCheckingApproval] = useState(false);
+
+    const checkIsAllowanceEnough = useCallback(
+        async ({
+            amount,
+            resolvedFlowData,
+            resolvedFlowKey,
+            sessionParams,
+        }: CheckIsAllowanceEnoughParams) => {
+            let sessionWithAllowance = selectStablecoinYieldSession(
+                store.getState(),
+                'deposit',
+                resolvedFlowKey,
+            );
+
+            if (sessionWithAllowance.approval.allowanceStatus !== 'loaded') {
+                await dispatch(
+                    initYieldAllowanceThunk({
+                        ...sessionParams,
+                        flowData: resolvedFlowData,
+                        shouldSkipApprovalStep: false,
+                    }),
+                );
+
+                sessionWithAllowance = selectStablecoinYieldSession(
+                    store.getState(),
+                    'deposit',
+                    resolvedFlowKey,
+                );
+            }
+
+            return isYieldApprovalAllowanceEnough({
+                amount,
+                session: sessionWithAllowance,
+                token: resolvedFlowData.token,
+            });
+        },
+        [dispatch, store],
+    );
 
     const handleSubmitApproval = useCallback(
         async (amount: string) => {
@@ -60,6 +112,21 @@ export const useYieldSupplyApprovalSubmit = ({
             setIsCheckingApproval(true);
 
             try {
+                const isAllowanceEnough = await checkIsAllowanceEnough({
+                    amount,
+                    resolvedFlowData: flowData,
+                    resolvedFlowKey: flowKey,
+                    sessionParams,
+                });
+
+                if (isAllowanceEnough) {
+                    dispatch(stablecoinYieldActions.clearError(sessionParams));
+                    dispatch(stablecoinYieldActions.completeApproval({ ...sessionParams, amount }));
+                    navigation.navigate(YieldStackRoutes.YieldSupply, routeParams);
+
+                    return;
+                }
+
                 const response = await dispatch(
                     submitYieldApproveThunk({
                         ...sessionParams,
@@ -119,6 +186,7 @@ export const useYieldSupplyApprovalSubmit = ({
         },
         [
             approvalLimitType,
+            checkIsAllowanceEnough,
             dispatch,
             flowData,
             flowKey,
