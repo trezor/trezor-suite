@@ -52,6 +52,22 @@ export const getController = () => {
     return TrezorUserEnvLink;
 };
 
+// Captures device screen content at every ButtonRequest the autoConfirm handler
+// processes — but only when explicitly enabled per-test via
+// setScreenCaptureEnabled(true). getScreenContent() is a round-trip to
+// trezor-user-env (~500ms) so we don't pay it for tests that don't assert on
+// it. Stored as JSON strings so structural fields (e.g. {lines, title})
+// survive substring assertions. Reset per-test by methods.test.ts.
+const capturedScreens: string[] = [];
+let screenCaptureEnabled = false;
+export const resetCapturedScreens = () => {
+    capturedScreens.length = 0;
+};
+export const getCapturedScreens = () => [...capturedScreens];
+export const setScreenCaptureEnabled = (enabled: boolean) => {
+    screenCaptureEnabled = enabled;
+};
+
 type Options = {
     mnemonic: string;
     passphrase_protection?: boolean;
@@ -186,9 +202,20 @@ export const initTrezorConnect = async (
     });
 
     if (autoConfirm) {
-        TrezorConnect.on(UI_REQUEST.REQUEST_BUTTON, e => {
+        TrezorConnect.on(UI_REQUEST.REQUEST_BUTTON, async e => {
             if (e.code === 'ButtonRequest_PinEntry') return;
-            setTimeout(() => TrezorUserEnvLink.send({ type: 'emulator-press-yes' }), 1);
+            if (screenCaptureEnabled) {
+                try {
+                    const screen = await TrezorUserEnvLink.getScreenContent();
+                    capturedScreens.push(
+                        typeof screen === 'string' ? screen : JSON.stringify(screen),
+                    );
+                } catch (err) {
+                    // capture failure shouldn't block the press-yes path
+                    capturedScreens.push(`<getScreenContent error: ${(err as Error).message}>`);
+                }
+            }
+            TrezorUserEnvLink.send({ type: 'emulator-press-yes' });
         });
     }
 
