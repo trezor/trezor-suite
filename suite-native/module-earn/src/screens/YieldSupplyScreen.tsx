@@ -25,6 +25,7 @@ import { YieldSupplyStepCard } from '../components/YieldSupplyStepCard';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useYieldSession } from '../hooks/useYieldSession';
 import { useYieldSupplyForm } from '../hooks/useYieldSupplyForm';
+import { useYieldSupplySubmit } from '../hooks/useYieldSupplySubmit';
 import {
     isYieldApprovalAllowanceEnough,
     isYieldApprovalAllowanceUnlimited,
@@ -61,8 +62,10 @@ export const YieldSupplyScreen = () => {
     const supplyAmount = session?.action.amount;
     const allowanceAmount = session?.approval.allowanceAmount;
     const allowanceStatus = session?.approval.allowanceStatus;
+    const isActionSubmitting = session?.action.isSubmitting ?? false;
     const isApprovedAmountUnlimited = isYieldApprovalAllowanceUnlimited({ session, token });
-    const isSupplySessionReady = session?.step === 'action' && !!supplyAmount && !!allowanceAmount;
+    const isAllowanceLoaded = allowanceStatus === 'loaded';
+    const isSupplySessionReady = session?.step === 'action' && !!supplyAmount && isAllowanceLoaded;
     const shouldRefreshAllowance = resolutionStatus === 'resolved' && allowanceStatus === 'idle';
     const supplyForm = useYieldSupplyForm({
         defaultAmount: supplyAmount,
@@ -73,16 +76,27 @@ export const YieldSupplyScreen = () => {
     const {
         formState: { isValid },
     } = form;
-    const isApprovalIncreaseRequired = !isYieldApprovalAllowanceEnough({
-        amount: amountValue,
-        session,
-        token,
-    });
-    const isSubmitDisabled = !isValid || !amountValue;
+    const isApprovalIncreaseRequired =
+        isAllowanceLoaded &&
+        !isYieldApprovalAllowanceEnough({
+            amount: amountValue,
+            session,
+            token,
+        });
+    const isSubmitDisabled =
+        !isSupplySessionReady || !isValid || !amountValue || isActionSubmitting;
 
     useEffect(() => {
         if (shouldRefreshAllowance) {
-            void dispatch(initYieldAllowanceThunk({ flowData, flowKey, flowType: 'deposit' }));
+            void dispatch(
+                initYieldAllowanceThunk({
+                    flowData,
+                    flowKey,
+                    flowType: 'deposit',
+                    // Mobile supply screen only refreshes display/guards here.
+                    shouldSkipApprovalStep: false,
+                }),
+            );
         }
     }, [dispatch, flowData, flowKey, shouldRefreshAllowance]);
 
@@ -108,12 +122,22 @@ export const YieldSupplyScreen = () => {
         dispatch(stablecoinYieldActions.enterModifyMode({ flowType: 'deposit', flowKey }));
         navigation.goBack();
     }, [dispatch, flowKey, navigation]);
+    const { handleSubmitSupply } = useYieldSupplySubmit({
+        amount: amountValue,
+        flowData,
+        flowKey,
+        onApprovalRequired: handleEditApproval,
+    });
 
     const handleContinue = useCallback(() => {
         if (isApprovalIncreaseRequired) {
             handleEditApproval();
+
+            return;
         }
-    }, [handleEditApproval, isApprovalIncreaseRequired]);
+
+        void handleSubmitSupply();
+    }, [handleEditApproval, handleSubmitSupply, isApprovalIncreaseRequired]);
     const footerTranslationId = isApprovalIncreaseRequired
         ? 'earn.yieldSupplyFlowScreen.increaseApprovalLimit'
         : undefined;
@@ -140,6 +164,7 @@ export const YieldSupplyScreen = () => {
                     apy={apy}
                     buttonTranslationId={footerTranslationId}
                     isDisabled={isSubmitDisabled}
+                    isLoading={isActionSubmitting}
                     onPress={handleContinue}
                     tokenSymbol={tokenSymbol}
                 />
