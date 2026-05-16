@@ -69,5 +69,21 @@ export default {
                     '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1f123474e140a2c360b01f0fa66f2f22e2e965a5b07a80358cf75f77abbd66088',
             },
         },
+        {
+            description: "m/1852'/1815'/0' (showOnTrezor)",
+            params: {
+                path: "m/1852'/1815'/0'",
+                showOnTrezor: true,
+            },
+            result: {
+                publicKey:
+                    'd507c8f866691bd96e131334c355188b1a1d0b2fa0ab11545075aab332d77d9eb19657ad13ee581b56b0f8d744d66ca356b93d42fe176b3de007d53e9c4c4e7a',
+            },
+            // FW body shows the 128-hex extended public key (currently the
+            // `publicKey` field; in v10 this same value is exposed as `xpub`).
+            // Assert a stable prefix that fits inside the smallest-screen capture.
+            deviceScreen: 'd507c8f866691bd96e131334c355188b1a1d0b2f',
+            deviceScreenSkip: ['1', '<2.7.0'],
+        },
     ].map(t => ({ ...t, legacyResults: [legacyResults.minConnectVersion] })),
 } satisfies TestCase;

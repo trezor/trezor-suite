@@ -43,5 +43,20 @@ export default {
             },
             legacyResults,
         },
+        {
+            description: "m/44'/501'/0' (showOnTrezor)",
+            params: {
+                path: "m/44'/501'/0'",
+                showOnTrezor: true,
+            },
+            result: {
+                publicKey: '3398f0abc4f8ec2f62435a78d8f4f3219b47b04f268798d2ed2260da0b4de45f',
+            },
+            // FW shows the base58 form (in v10 exposed as `publicKeyBase58`).
+            // Assert a stable prefix that fits inside the smallest-screen capture.
+            deviceScreen: '4UR47Kp4FxGJiJZZGSPAzXqRgMmZ27oVfG',
+            deviceScreenSkip: ['1', '<2.7.0'],
+            legacyResults,
+        },
     ],
 } satisfies TestCase;

@@ -97,6 +97,77 @@ export default {
             },
         },
         {
+            description: 'Bitcoin p2tr first account (showOnTrezor)',
+            params: {
+                path: "m/86'/0'/0'",
+                coin: 'bitcoin',
+                showOnTrezor: true,
+            },
+            result: {
+                xpub: 'xpub6D1saVFSZYgqXCXDfc5m2KdPXUsBXC12E3WntXXzWGJB8dEBr3CGR62emtC8sxJRVRSmBKbtJubuaaGEvZeeCEWaPaYvD9iJwp2Ky7sZws7',
+                xpubSegwit: `tr([95d8f670/86'/0'/0']xpub6D1saVFSZYgqXCXDfc5m2KdPXUsBXC12E3WntXXzWGJB8dEBr3CGR62emtC8sxJRVRSmBKbtJubuaaGEvZeeCEWaPaYvD9iJwp2Ky7sZws7/<0;1>/*)`,
+                descriptor: `tr([95d8f670/86h/0h/0h]xpub6D1saVFSZYgqXCXDfc5m2KdPXUsBXC12E3WntXXzWGJB8dEBr3CGR62emtC8sxJRVRSmBKbtJubuaaGEvZeeCEWaPaYvD9iJwp2Ky7sZws7/<0;1>/*)#htg5lhe3`,
+            },
+            // FW screen body shows the descriptor in `h`-notation, bare (no /<0;1>/*).
+            // Match a stable prefix that fits inside the smallest-screen capture.
+            deviceScreen: /tr\(\[95d8f670\/86h\/0h\/0h\]xpub6D1saVFSZYg/,
+            // T1B1 emulator's getScreenContent returns a placeholder; older T2T1 FW
+            // doesn't render descriptors.
+            deviceScreenSkip: ['1', '<2.7.0'],
+            legacyResults: [
+                {
+                    rules: ['<1.10.4', '<2.4.3'],
+                    success: false,
+                },
+            ],
+        },
+        {
+            description: 'Bitcoin bech32 first account (showOnTrezor)',
+            params: {
+                path: "m/84'/0'/0'",
+                coin: 'btc',
+                showOnTrezor: true,
+            },
+            result: {
+                xpub: 'xpub6Bmuozp73G1Ng4FtB1dzVJ9WGg6BcMn5xgUd7rQ8NybSHytQjkyfqMZfJ635zoHMYZoMuS4uCEz86SPLpvfFQxQe1acY5U7FzX9yL5DyRAe',
+                xpubSegwit:
+                    'zpub6qSSRL9wLd6LNee7qjDEuULWccP5Vbm5nuX4geBu8zMCQBWsF5Jo5UswLVxFzcbCMr2yQPG27ZhDs1cUGKVH1RmqkG1PFHkEXyHG7EV3ogY',
+                descriptor:
+                    'wpkh([95d8f670/84h/0h/0h]xpub6Bmuozp73G1Ng4FtB1dzVJ9WGg6BcMn5xgUd7rQ8NybSHytQjkyfqMZfJ635zoHMYZoMuS4uCEz86SPLpvfFQxQe1acY5U7FzX9yL5DyRAe/<0;1>/*)#78czyhf0',
+            },
+            // FW body shows the full zpub; assert a stable prefix that fits inside
+            // the smallest-screen capture window.
+            deviceScreen: 'zpub6qSSRL9wLd6LNee7qjDEuULWccP5Vbm5n',
+            deviceScreenSkip: ['1', '<2.7.0'],
+            get legacyResults() {
+                const { descriptor, ...payload } = this.result;
+
+                return [{ rules: ['<2.7.0'], payload }];
+            },
+        },
+        {
+            description: 'Bitcoin p2pkh first account (showOnTrezor)',
+            params: {
+                path: "m/44'/0'/0'",
+                coin: 'bitcoin',
+                showOnTrezor: true,
+            },
+            result: {
+                xpub: 'xpub6D1weXBcFAo8CqBbpP4TbH5sxQH8ZkqC5pDEvJ95rNNBZC9zrKmZP2fXMuve7ZRBe18pWQQsGg68jkq24mZchHwYENd8cCiSb71u3KD4AFH',
+                descriptor:
+                    'pkh([95d8f670/44h/0h/0h]xpub6D1weXBcFAo8CqBbpP4TbH5sxQH8ZkqC5pDEvJ95rNNBZC9zrKmZP2fXMuve7ZRBe18pWQQsGg68jkq24mZchHwYENd8cCiSb71u3KD4AFH/<0;1>/*)#k60fe5pm',
+            },
+            // FW body shows the full xpub; assert a stable prefix that fits inside
+            // the smallest-screen capture window.
+            deviceScreen: 'xpub6D1weXBcFAo8CqBbpP4TbH5sxQH8ZkqC5',
+            deviceScreenSkip: ['1', '<2.7.0'],
+            get legacyResults() {
+                const { descriptor, ...payload } = this.result;
+
+                return [{ rules: ['<2.7.0'], payload }];
+            },
+        },
+        {
             description: 'Invalid path',
             params: {
                 path: [-1],
