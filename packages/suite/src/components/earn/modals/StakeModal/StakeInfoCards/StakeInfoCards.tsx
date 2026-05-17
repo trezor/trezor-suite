@@ -20,7 +20,7 @@ export const StakeInfoCards = ({ account, flow }: StakeInfoCardsProps) => {
     const cards = [
         {
             heading: <Translation id="TR_STAKING_ONCE_YOU_CONFIRM" />,
-            content: <EarnSupplyingInfo account={account} isExpanded flow={flow} />,
+            content: <EarnSupplyingInfo account={account} flow={flow} />,
             defaultIsOpen: true,
             isVisible: true,
         },

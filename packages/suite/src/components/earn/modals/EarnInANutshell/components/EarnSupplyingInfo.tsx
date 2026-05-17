@@ -17,22 +17,17 @@ import { EarnInfoRow } from './EarnInfoRow';
 
 interface EarnSupplyingInfoProps {
     account: Account;
-    isExpanded?: boolean;
     flow: EarnFlow;
 }
 
 interface EarnSupplyingRowsProps {
     flow: EarnFlow;
     displaySymbol: string;
-    isExpanded?: boolean;
     apy: number | null;
     daysToAddToPool?: number;
 }
 
-const SupplyingSignRow = ({
-    flow,
-    isExpanded,
-}: Pick<EarnSupplyingRowsProps, 'flow' | 'isExpanded'>) => (
+const SupplyingSignRow = ({ flow }: Pick<EarnSupplyingRowsProps, 'flow'>) => (
     <EarnInfoRow
         heading={
             <Translation
@@ -44,19 +39,17 @@ const SupplyingSignRow = ({
             />
         }
         content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}
-        isExpanded={isExpanded}
     />
 );
 
 const EthereumSupplyingRows = ({
     flow,
     displaySymbol,
-    isExpanded,
     apy,
     daysToAddToPool,
 }: EarnSupplyingRowsProps) => (
     <>
-        <SupplyingSignRow flow={flow} isExpanded={isExpanded} />
+        <SupplyingSignRow flow={flow} />
         <EarnInfoRow
             heading={<Translation id="TR_EARN_ENTER_THE_STAKING_POOL" />}
             subheading={
@@ -73,7 +66,6 @@ const EthereumSupplyingRows = ({
                     />
                 ),
             }}
-            isExpanded={isExpanded}
         />
         <EarnInfoRow
             heading={<Translation id="TR_EARN_REWARDS_WEEKLY" />}
@@ -86,14 +78,13 @@ const EthereumSupplyingRows = ({
                     />
                 ),
             }}
-            isExpanded={isExpanded}
         />
     </>
 );
 
-const SolanaSupplyingRows = ({ flow, displaySymbol, isExpanded, apy }: EarnSupplyingRowsProps) => (
+const SolanaSupplyingRows = ({ flow, displaySymbol, apy }: EarnSupplyingRowsProps) => (
     <>
-        <SupplyingSignRow flow={flow} isExpanded={isExpanded} />
+        <SupplyingSignRow flow={flow} />
         <EarnInfoRow
             heading={<Translation id="TR_EARN_WARM_UP_PERIOD" />}
             subheading={
@@ -105,7 +96,6 @@ const SolanaSupplyingRows = ({ flow, displaySymbol, isExpanded, apy }: EarnSuppl
             content={{
                 text: <Translation id="TR_UP_TO_DAYS" values={{ count: SOLANA_EPOCH_DAYS }} />,
             }}
-            isExpanded={isExpanded}
         />
         <EarnInfoRow
             heading={
@@ -120,14 +110,13 @@ const SolanaSupplyingRows = ({ flow, displaySymbol, isExpanded, apy }: EarnSuppl
                     />
                 ),
             }}
-            isExpanded={isExpanded}
         />
     </>
 );
 
-const CardanoSupplyingRows = ({ flow, isExpanded, apy }: EarnSupplyingRowsProps) => (
+const CardanoSupplyingRows = ({ flow, apy }: EarnSupplyingRowsProps) => (
     <>
-        <SupplyingSignRow flow={flow} isExpanded={isExpanded} />
+        <SupplyingSignRow flow={flow} />
         <EarnInfoRow
             heading={
                 <Translation
@@ -148,7 +137,6 @@ const CardanoSupplyingRows = ({ flow, isExpanded, apy }: EarnSupplyingRowsProps)
                     />
                 ),
             }}
-            isExpanded={isExpanded}
         />
         <EarnInfoRow
             heading={
@@ -170,12 +158,11 @@ const CardanoSupplyingRows = ({ flow, isExpanded, apy }: EarnSupplyingRowsProps)
                     />
                 ),
             }}
-            isExpanded={isExpanded}
         />
     </>
 );
 
-export const EarnSupplyingInfo = ({ account, isExpanded, flow }: EarnSupplyingInfoProps) => {
+export const EarnSupplyingInfo = ({ account, flow }: EarnSupplyingInfoProps) => {
     const validatorsQueue = useSelector(selectEthValidatorsQueue);
 
     const apy = useSelector(state => selectPoolStatsApy(state, { account }));
@@ -190,29 +177,14 @@ export const EarnSupplyingInfo = ({ account, isExpanded, flow }: EarnSupplyingIn
                     <EthereumSupplyingRows
                         flow={flow}
                         displaySymbol={displaySymbol}
-                        isExpanded={isExpanded}
                         apy={apy}
                         daysToAddToPool={daysToAddToPoolInitial}
                     />
                 );
             case 'solana':
-                return (
-                    <SolanaSupplyingRows
-                        flow={flow}
-                        displaySymbol={displaySymbol}
-                        isExpanded={isExpanded}
-                        apy={apy}
-                    />
-                );
+                return <SolanaSupplyingRows flow={flow} displaySymbol={displaySymbol} apy={apy} />;
             case 'cardano':
-                return (
-                    <CardanoSupplyingRows
-                        flow={flow}
-                        displaySymbol={displaySymbol}
-                        isExpanded={isExpanded}
-                        apy={apy}
-                    />
-                );
+                return <CardanoSupplyingRows flow={flow} displaySymbol={displaySymbol} apy={apy} />;
             default:
                 return null;
         }

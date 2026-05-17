@@ -3421,6 +3421,10 @@ export const messages = defineMessages({
         defaultMessage: 'Fee',
         id: 'TR_TX_FEE',
     },
+    TR_TX_FEE_COUNT: {
+        defaultMessage: '{count, plural, =0 {Fee} =1 {Fee} other {{count}x Fee}}',
+        id: 'TR_TX_FEE_COUNT',
+    },
     TR_TX_FEE_INCLUDING_RENT: {
         defaultMessage: 'Network fee (including rent)',
         id: 'TR_TX_FEE_INCLUDING_RENT',
@@ -10069,36 +10073,60 @@ export const messages = defineMessages({
     TR_EARN_YIELD_NUTSHELL_VAULT_TOKENS: {
         id: 'TR_EARN_YIELD_NUTSHELL_VAULT_TOKENS',
         defaultMessage:
-            'Deposit {supplySymbol} to receive {vaultSymbol} tokens. These tokens represent your vault position.',
+            'When you deposit {supplySymbol}, you receive {vaultSymbol} representing your vault position.',
     },
     TR_EARN_YIELD_NUTSHELL_CLAIM_REWARDS: {
         id: 'TR_EARN_YIELD_NUTSHELL_CLAIM_REWARDS',
         defaultMessage:
-            "You'll earn {rewardsSymbol} tokens as rewards. These could be temporary & must be claimed separately.",
+            'You’ll earn {rewardsSymbol} as rewards. They may only be offered for a limited time, but once earned, you can claim them in the Earn tab.',
     },
     TR_EARN_YIELD_APPROVE_SPENDING_TRANSACTION: {
         id: 'TR_EARN_YIELD_APPROVE_SPENDING_TRANSACTION',
-        defaultMessage: 'Approve spending transaction',
+        defaultMessage: 'Set {supplySymbol} spending limit',
     },
     TR_EARN_SIGN_SUPPLYING_TRANSACTION: {
         id: 'TR_EARN_SIGN_SUPPLYING_TRANSACTION',
         defaultMessage: 'Sign deposit transaction',
     },
+    TR_EARN_YIELD_DEPOSIT_INTO_VAULT_SUB: {
+        id: 'TR_EARN_YIELD_DEPOSIT_INTO_VAULT_SUB',
+        defaultMessage: 'Deposits your {supplySymbol} into the vault',
+    },
+    TR_EARN_YIELD_RECEIVE_VAULT_TOKENS: {
+        id: 'TR_EARN_YIELD_RECEIVE_VAULT_TOKENS',
+        defaultMessage: 'Receive {vaultSymbol}',
+    },
+    TR_EARN_YIELD_WITHDRAW_USES_VAULT_TOKENS_SUB: {
+        id: 'TR_EARN_YIELD_WITHDRAW_USES_VAULT_TOKENS_SUB',
+        defaultMessage: 'Redeems your vault shares for {supplySymbol}',
+    },
+    TR_EARN_YIELD_CLAIM_AVAILABLE_IN_EARN_SUB: {
+        id: 'TR_EARN_YIELD_CLAIM_AVAILABLE_IN_EARN_SUB',
+        defaultMessage: 'Available in Earn tab',
+    },
+    TR_EARN_YIELD_RECEIVE_REWARDS_IN_ACCOUNT: {
+        id: 'TR_EARN_YIELD_RECEIVE_REWARDS_IN_ACCOUNT',
+        defaultMessage: 'Receive {rewardsSymbols} in your account',
+    },
     TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK: {
         id: 'TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK',
-        defaultMessage: 'Earn rewards with each mined block',
+        defaultMessage: 'Earns rewards with each confirmed block',
     },
     TR_EARN_YIELD_RECEIVE_IN_ACCOUNT: {
         id: 'TR_EARN_YIELD_RECEIVE_IN_ACCOUNT',
-        defaultMessage: 'Receive {supplySymbol} in account',
+        defaultMessage: 'Receive {supplySymbol} in your account',
     },
     TR_EARN_STAKING_PROCESS: {
         id: 'TR_EARN_STAKING_PROCESS',
-        defaultMessage: 'Staking process',
+        defaultMessage: 'Stake',
     },
     TR_EARN_SUPPLYING_PROCESS: {
         id: 'TR_EARN_SUPPLYING_PROCESS',
-        defaultMessage: 'Deposit process',
+        defaultMessage: 'Deposit',
+    },
+    TR_EARN_CLAIMING_PROCESS: {
+        id: 'TR_EARN_CLAIMING_PROCESS',
+        defaultMessage: 'Claim rewards',
     },
     TR_EARN_SUPPLY_TOKEN: {
         id: 'TR_EARN_SUPPLY_TOKEN',
@@ -10130,11 +10158,11 @@ export const messages = defineMessages({
     },
     TR_EARN_UNSTAKING_PROCESS: {
         id: 'TR_EARN_UNSTAKING_PROCESS',
-        defaultMessage: 'Unstaking process',
+        defaultMessage: 'Unstake',
     },
     TR_EARN_WITHDRAWING_PROCESS: {
         id: 'TR_EARN_WITHDRAWING_PROCESS',
-        defaultMessage: 'Withdrawing process',
+        defaultMessage: 'Withdraw',
     },
     TR_EARN_SIGN_STAKING_TRANSACTION: {
         id: 'TR_EARN_SIGN_STAKING_TRANSACTION',
@@ -10179,6 +10207,10 @@ export const messages = defineMessages({
     TR_EARN_SIGN_WITHDRAWAL_TRANSACTION: {
         id: 'TR_EARN_SIGN_WITHDRAWAL_TRANSACTION',
         defaultMessage: 'Sign withdrawal transaction',
+    },
+    TR_EARN_SIGN_CLAIM_REWARDS_TRANSACTION: {
+        id: 'TR_EARN_SIGN_CLAIM_REWARDS_TRANSACTION',
+        defaultMessage: 'Sign claim transaction',
     },
     TR_EARN_LEAVE_STAKING_POOL: {
         id: 'TR_EARN_LEAVE_STAKING_POOL',
