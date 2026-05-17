@@ -56,7 +56,7 @@ export const StakingEarnInANutshellModal = ({
     const processes: EarnInANutshellProcess[] = [
         {
             heading: <Translation id="TR_EARN_STAKING_PROCESS" />,
-            badge: <Translation id="TR_TX_FEE" />,
+            badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 1 }} />,
             content: <EarnSupplyingInfo account={account} flow={EarnFlow.Stake} />,
         },
         {

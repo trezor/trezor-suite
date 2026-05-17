@@ -18,6 +18,7 @@ import {
     type EarnInANutshellProcess,
     EarnInANutshellProcesses,
 } from './components/EarnInANutshellProcesses';
+import { YieldClaimingInfo } from './components/YieldClaimingInfo';
 import { YieldEarnInANutshellHighlights } from './components/YieldEarnInANutshellHighlights';
 import { YieldSupplyingInfo } from './components/YieldSupplyingInfo';
 import { YieldWithdrawingInfo } from './components/YieldWithdrawingInfo';
@@ -62,16 +63,31 @@ export const YieldEarnInANutshellModal = ({
     const processes: EarnInANutshellProcess[] = [
         {
             heading: <Translation id="TR_EARN_SUPPLYING_PROCESS" />,
-            badge: <Translation id="TR_TX_FEE" />,
+            badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 2 }} />,
             content: (
-                <YieldSupplyingInfo apy={yieldApy} vault={vault} networkSymbol={account.symbol} />
+                <YieldSupplyingInfo
+                    apy={yieldApy}
+                    vault={vault}
+                    networkSymbol={account.symbol}
+                    supplySymbol={supplySymbol}
+                    vaultSymbol={vaultSymbol}
+                />
             ),
         },
         {
             heading: <Translation id="TR_EARN_WITHDRAWING_PROCESS" />,
-            badge: <Translation id="TR_TX_FEE" />,
+            badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 1 }} />,
             content: <YieldWithdrawingInfo supplySymbol={supplySymbol} />,
         },
+        ...(rewardsSymbols !== undefined && rewardsSymbols.length > 0
+            ? [
+                  {
+                      heading: <Translation id="TR_EARN_CLAIMING_PROCESS" />,
+                      badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 1 }} />,
+                      content: <YieldClaimingInfo rewardsSymbols={rewardsSymbols} />,
+                  },
+              ]
+            : []),
     ];
 
     const handleOnAction = () => {
