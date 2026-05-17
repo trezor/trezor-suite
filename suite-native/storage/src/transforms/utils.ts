@@ -8,7 +8,7 @@ import type { DeviceRootState } from '@suite-common/device';
  */
 export const selectDeviceStatesNotRemembered = (state: DeviceRootState) =>
     A.filterMap(state.device.devices, device =>
-        device.remember || !device.state || !device.state.staticSessionId
+        device.remember || !device.state?.staticSessionId
             ? O.None
             : O.Some(
                   typeof device.state === 'string'

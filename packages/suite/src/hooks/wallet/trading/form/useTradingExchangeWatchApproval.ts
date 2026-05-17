@@ -22,7 +22,7 @@ export const useTradingExchangeWatchApproval = ({
     const [refreshCount, setRefreshCount] = useState(1);
 
     useEffect(() => {
-        if (selectedQuote && selectedQuote.status === 'APPROVAL_PENDING' && !isScheduled) {
+        if (selectedQuote?.status === 'APPROVAL_PENDING' && !isScheduled) {
             const poll = async () => {
                 await watchApproval({ refreshCount });
                 setRefreshCount(prev => prev + 1);

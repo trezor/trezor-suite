@@ -70,7 +70,7 @@ export const PortfolioCard = memo(() => {
     // 3. Discovery stops (no accounts added), Loading unmounted, new instance of DashboardGraph gets mounted
 
     let body = null;
-    if (discoveryStatus && discoveryStatus.status === 'exception') {
+    if (discoveryStatus?.status === 'exception') {
         body = (
             <PortfolioCardException
                 exception={discoveryStatus}
@@ -89,7 +89,7 @@ export const PortfolioCard = memo(() => {
                 failed={failedAccounts}
             />
         );
-    } else if (discoveryStatus && discoveryStatus.status === 'loading') {
+    } else if (discoveryStatus?.status === 'loading') {
         if (isDeviceEmpty) {
             body = <EmptyWalletSkeleton />;
         } else if (hasLoadedNonEmptyAccount && hasNetworkWithEnabledGraph) {

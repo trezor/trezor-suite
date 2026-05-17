@@ -59,7 +59,7 @@ export const confirmBuyTradeThunk = createThunk(
             returnUrl,
         });
 
-        if (!response || !response.trade || !response.trade.paymentId) {
+        if (!response?.trade?.paymentId) {
             dispatch(
                 logErrorThunk({
                     errorMessage: 'No response from the server',

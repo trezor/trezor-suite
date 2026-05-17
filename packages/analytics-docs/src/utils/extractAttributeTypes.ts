@@ -195,7 +195,7 @@ const getEventDefTypeArgs = (
     }
     const t = varDecl.getType();
     const alias = t.getAliasSymbol();
-    if (!alias || alias.getName() !== 'EventDef') return undefined;
+    if (alias?.getName() !== 'EventDef') return undefined;
     const args = t.getAliasTypeArguments();
     if (args.length < 1) return undefined;
 

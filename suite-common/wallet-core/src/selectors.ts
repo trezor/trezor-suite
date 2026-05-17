@@ -224,7 +224,7 @@ export const selectIsTxOutputInternal = createMemoizedSelector(
         }),
     ],
     (accounts, { symbol, output }) => {
-        if (!symbol || !output || output.type !== 'address') return false;
+        if (!symbol || output?.type !== 'address') return false;
         const matchingAccounts = findAccountsByAddress(symbol, output.value, accounts);
 
         return matchingAccounts.length > 0;

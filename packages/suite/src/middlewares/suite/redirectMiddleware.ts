@@ -31,11 +31,7 @@ const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: Trez
         dispatch(goto({ routeName: 'suite-start' }));
     }
     // firmware none (T2T1) or unknown (T1B1) indicates freshly unpacked device
-    if (
-        device.mode === 'bootloader' &&
-        device.features &&
-        device.features.firmware_present === false
-    ) {
+    if (device.mode === 'bootloader' && device.features?.firmware_present === false) {
         dispatch(goto({ routeName: 'suite-start' }));
     }
     // device firmware update required, redirect to "firmware update"

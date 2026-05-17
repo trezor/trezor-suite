@@ -34,7 +34,7 @@ const REFRESH_SECONDS_BASE = 30;
 const REFRESH_SECONDS_IN_PROGRESS = 10;
 
 export const shouldRefreshTrade = (trade: TradingTransaction | undefined) =>
-    trade && trade.data.status && !tradeFinalStatuses[trade.tradeType].includes(trade.data.status);
+    trade?.data.status && !tradeFinalStatuses[trade.tradeType].includes(trade.data.status);
 
 export const useWatchTrade = ({ accountKey, orderId, isInProgress }: TradingUseWatchTradeProps) => {
     const dispatch = useDispatch();

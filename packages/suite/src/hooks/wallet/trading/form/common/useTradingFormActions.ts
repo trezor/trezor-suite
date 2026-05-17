@@ -182,8 +182,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     const onCryptoCurrencyChange = async (selected: TradingAssetSellOption) => {
         const cryptoSelectedCurrent = getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT);
         const isSameCryptoSelected =
-            cryptoSelectedCurrent &&
-            cryptoSelectedCurrent.accountKey === selected.accountKey &&
+            cryptoSelectedCurrent?.accountKey === selected.accountKey &&
             cryptoSelectedCurrent.id === selected.id;
         const account = accounts.find(item => item.key === selected.accountKey);
 

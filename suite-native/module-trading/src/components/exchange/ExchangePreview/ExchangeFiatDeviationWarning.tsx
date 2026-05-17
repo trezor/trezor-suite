@@ -32,7 +32,7 @@ export const ExchangeFiatDeviationWarning = ({ quote }: ExchangeFiatDeviationWar
         [locale],
     );
 
-    if (!quote || !exchangeDeviation || !exchangeDeviation.exceedsThreshold) {
+    if (!quote || !exchangeDeviation?.exceedsThreshold) {
         return null;
     }
 

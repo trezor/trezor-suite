@@ -205,8 +205,9 @@ export const TradingFormInputFiat = ({
                                   selectedCurrencyCode || 'usd',
                                   tokenAddress,
                               );
-                              const rate =
-                                  rates && rates[fiatRateKey] ? rates[fiatRateKey].rate : undefined;
+                              const rate = rates?.[fiatRateKey]
+                                  ? rates[fiatRateKey].rate
+                                  : undefined;
                               const minFiat = toFiatCurrency({
                                   amount: context.amountLimits.minCrypto,
                                   rate,

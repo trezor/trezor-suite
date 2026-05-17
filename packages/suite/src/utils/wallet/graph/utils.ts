@@ -197,7 +197,7 @@ export const calcYDomain = (
 
     // no txs, but there could be non zero balance we still need to show
     const lastBalanceBn = lastBalance ? new BigNumber(lastBalance) : null;
-    if (lastBalanceBn && lastBalanceBn.gt(0)) {
+    if (lastBalanceBn?.gt(0)) {
         return [minValue, lastBalanceBn.toNumber() * 1.2];
     }
 

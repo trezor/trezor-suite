@@ -224,7 +224,7 @@ interface GetTradeProviderProps {
 }
 
 export const getTradeProvider = ({ trade, providerInfo }: GetTradeProviderProps) => {
-    if (!trade || !trade.exchange) return undefined;
+    if (!trade?.exchange) return undefined;
 
     return providerInfo?.[trade.exchange];
 };

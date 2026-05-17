@@ -14,7 +14,7 @@ const setTrezorConnectFixtures = (fixture: any) => {
     let buttonRequest: ((e?: any) => any) | undefined;
 
     const getPublicKey = (_params: any) => {
-        if (fixture && fixture.getPublicKey) {
+        if (fixture?.getPublicKey) {
             if (fixture.getPublicKey.success && buttonRequest) {
                 buttonRequest({ code: 'ButtonRequest_PublicKey' });
             }
@@ -107,7 +107,7 @@ describe('PublicKeyActions', () => {
             await store.dispatch(connectInitThunk());
             await store.dispatch(f.action() as any);
 
-            if (f.result && f.result.actions) {
+            if (f.result?.actions) {
                 expect(store.getActions()).toMatchObject(f.result.actions);
             }
         });

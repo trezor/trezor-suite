@@ -157,7 +157,7 @@ export const selectIsAmountInSats = (
     }
 
     const network = getNetwork(symbol);
-    const isAmountUnitSupported = network && network.features.includes('amount-unit');
+    const isAmountUnitSupported = network?.features.includes('amount-unit');
 
     return isAmountUnitSupported && selectAreSatsAmountUnit(state);
 };

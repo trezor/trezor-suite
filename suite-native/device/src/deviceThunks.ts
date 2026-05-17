@@ -54,7 +54,7 @@ export const createAndBackupWalletThunk = createThunk<
         // Used only in tests! See deviceReducer for the property definition.
         const simulatedFailResult = selectSimulatedEntropyCheckFail(getState());
 
-        if (!device || !device.features || !devicePath) {
+        if (!device?.features || !devicePath) {
             return rejectWithValue('Device not found');
         }
 

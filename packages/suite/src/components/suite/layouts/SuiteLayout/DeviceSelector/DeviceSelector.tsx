@@ -110,7 +110,7 @@ export const DeviceSelector = () => {
                     </Box>
 
                     <ExpandedSidebarOnly>
-                        {selectedDevice && selectedDevice.state && (
+                        {selectedDevice?.state && (
                             <CaretContainer>
                                 <Icon size={20} name="caretCircleDown" />
                             </CaretContainer>

@@ -157,7 +157,7 @@ export const useCardanoStaking = (): CardanoStaking => {
     );
 
     // TODO: improve this hook for non-cardano accounts
-    if (!account || account.networkType !== 'cardano') {
+    if (account?.networkType !== 'cardano') {
         return {
             isStakingDisabled: true,
             deposit: undefined,

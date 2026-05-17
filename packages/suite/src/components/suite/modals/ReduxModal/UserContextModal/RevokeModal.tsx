@@ -139,9 +139,7 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
 
     const providers = getProvidersInfoProps(context);
     const provider =
-        selectedQuote && selectedQuote.exchange && providers
-            ? providers[selectedQuote.exchange]
-            : undefined;
+        selectedQuote?.exchange && providers ? providers[selectedQuote.exchange] : undefined;
 
     return (
         <Modal

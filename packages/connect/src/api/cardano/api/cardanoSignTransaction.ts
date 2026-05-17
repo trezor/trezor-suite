@@ -93,7 +93,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
         }
 
         // @ts-expect-error payload.auxiliaryData.blob is a legacy param
-        if (payload.auxiliaryData && payload.auxiliaryData.blob) {
+        if (payload.auxiliaryData?.blob) {
             throw ERRORS.TypedError(
                 'Method_InvalidParameter',
                 'Auxiliary data can now only be sent as a hash.',
@@ -104,7 +104,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
         // payload.auxiliaryData.governanceRegistrationParameters
         // are legacy params kept for backward compatibility (for now)
         // @ts-expect-error
-        if (payload.auxiliaryData && payload.auxiliaryData.catalystRegistrationParameters) {
+        if (payload.auxiliaryData?.catalystRegistrationParameters) {
             console.warn(
                 'Please use cVoteRegistrationParameters instead of catalystRegistrationParameters.',
             );
@@ -113,7 +113,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
                 payload.auxiliaryData.catalystRegistrationParameters;
         }
         // @ts-expect-error
-        if (payload.auxiliaryData && payload.auxiliaryData.governanceRegistrationParameters) {
+        if (payload.auxiliaryData?.governanceRegistrationParameters) {
             console.warn(
                 'Please use cVoteRegistrationParameters instead of governanceRegistrationParameters.',
             );

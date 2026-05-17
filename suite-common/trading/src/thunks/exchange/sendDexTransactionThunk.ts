@@ -58,8 +58,7 @@ export const sendDexTransactionThunk = createThunk<
         const providers = selectTradingExchangeProviders(getState());
 
         if (
-            !selectedQuote ||
-            !selectedQuote.dexTx ||
+            !selectedQuote?.dexTx ||
             !selectedQuote.receiveAddress ||
             (selectedQuote.status !== 'APPROVAL_REQ' && selectedQuote.status !== 'CONFIRM')
         ) {

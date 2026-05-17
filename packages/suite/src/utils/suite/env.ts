@@ -49,7 +49,7 @@ export const submitRequestForm = async (
 const getDarkThemeQuery = (): MediaQueryList | undefined => {
     const matchMedia = window?.matchMedia;
 
-    return matchMedia && matchMedia('(prefers-color-scheme: dark)');
+    return matchMedia?.('(prefers-color-scheme: dark)');
 };
 
 export const getOsTheme = () => (getDarkThemeQuery()?.matches ? 'dark' : 'light');

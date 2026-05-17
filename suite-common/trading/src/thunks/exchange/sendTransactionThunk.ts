@@ -83,12 +83,7 @@ export const sendTransactionThunk = createThunk<
             }
         }
 
-        if (
-            !selectedTrade ||
-            !selectedTrade.orderId ||
-            !selectedTrade.sendStringAmount ||
-            !sendAddress
-        ) {
+        if (!selectedTrade?.orderId || !selectedTrade.sendStringAmount || !sendAddress) {
             return rejectWithValue({
                 type: 'error',
                 error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },

@@ -160,12 +160,7 @@ export const recomposeAndSignTxThunk = createThunk<
                 }),
             ).unwrap();
 
-            if (
-                !normalLevels ||
-                !normalLevels.normal ||
-                normalLevels.normal.type !== 'final' ||
-                !normalLevels.normal.feeLimit
-            ) {
+            if (normalLevels?.normal?.type !== 'final' || !normalLevels.normal.feeLimit) {
                 const error: TradingSendRejectedProps['error'] =
                     normalLevels?.normal?.type === 'error' && normalLevels?.normal?.errorMessage
                         ? {
@@ -204,7 +199,7 @@ export const recomposeAndSignTxThunk = createThunk<
 
         const precomposedToSign = composedLevels.payload[selectedFee];
 
-        if (!precomposedToSign || precomposedToSign.type !== 'final') {
+        if (precomposedToSign?.type !== 'final') {
             const error: TradingSendRejectedProps['error'] =
                 precomposedToSign?.type === 'error' && precomposedToSign.errorMessage
                     ? {

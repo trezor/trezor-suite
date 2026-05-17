@@ -18,7 +18,7 @@ const BLOCKS_FOR_FEE_LEVEL: Record<string, Record<string, number>> = {
 const DEFAULT_BLOCK_FOR_FEE_LEVEL = 1;
 
 const getDefaultBlocksForFeeLevel = (shortcut: string, label: string) =>
-    BLOCKS_FOR_FEE_LEVEL[shortcut] && BLOCKS_FOR_FEE_LEVEL[shortcut][label]
+    BLOCKS_FOR_FEE_LEVEL[shortcut]?.[label]
         ? BLOCKS_FOR_FEE_LEVEL[shortcut][label]
         : DEFAULT_BLOCK_FOR_FEE_LEVEL;
 

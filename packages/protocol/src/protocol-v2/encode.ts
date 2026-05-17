@@ -22,7 +22,7 @@ export const getHeaders: TransportProtocol['getHeaders'] = data => {
 
 // encode `protocol-thp` message
 export const encode: TransportProtocol['encode'] = (data, options) => {
-    if (!options.header || options.header.byteLength !== HEADER_SIZE) {
+    if (options.header?.byteLength !== HEADER_SIZE) {
         throw new Error(ERRORS.PROTOCOL_MALFORMED);
     }
 

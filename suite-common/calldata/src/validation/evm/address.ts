@@ -15,7 +15,7 @@ export const findZeroAddressIssue: InspectFn<EvmAddress> = value =>
 type SenderContext = ContextWith<{ sender?: EvmAddress }>;
 
 export const findSelfAddressIssue: InspectFn<EvmAddress, SenderContext> = (value, context) =>
-    context?.sender && value.toLowerCase() === context.sender.toLowerCase() ? 'SELF_ADDRESS' : null;
+    value.toLowerCase() === context?.sender?.toLowerCase() ? 'SELF_ADDRESS' : null;
 
 export const findSenderMismatchIssue: InspectFn<EvmAddress, SenderContext> = (value, context) =>
     context?.sender && value.toLowerCase() !== context.sender.toLowerCase()

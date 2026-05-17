@@ -114,8 +114,8 @@ const TokenRowBasicActions = ({
                 getContractAddressForNetworkSymbol(account.symbol, token.contract),
     );
 
-    const isSupplyButtonDisabled = !availableVault || !availableVault.status.enter;
-    const isWithdrawButtonDisabled = !availableVault || !availableVault.status.exit;
+    const isSupplyButtonDisabled = !availableVault?.status.enter;
+    const isWithdrawButtonDisabled = !availableVault?.status.exit;
 
     if (!unusedAddress || !device) return null;
 

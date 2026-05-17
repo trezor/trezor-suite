@@ -36,9 +36,7 @@ export const BluetoothConnectionModal = ({ onClose }: BluetoothConnectionModalPr
     };
 
     if (
-        selectedDevice !== undefined &&
-        selectedDevice !== null &&
-        selectedDevice.connectionStatus.type === 'pairing' &&
+        selectedDevice?.connectionStatus.type === 'pairing' &&
         (selectedDevice.connectionStatus?.pin?.length ?? 0) > 0
     ) {
         return (

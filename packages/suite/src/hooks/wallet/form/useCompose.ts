@@ -258,7 +258,7 @@ export const useCompose = <TFieldValues extends FormState>({
         const precomposedTransaction = composedLevels
             ? composedLevels[formState.selectedFee || 'normal']
             : undefined;
-        if (precomposedTransaction && precomposedTransaction.type === 'final') {
+        if (precomposedTransaction?.type === 'final') {
             // sign workflow in Actions:
             // signSendFormTransactionThunk > sign[COIN]TransactionThunk > sendFormActions.storeSignedTransaction (modal with promise decision)
             const result = await dispatch(

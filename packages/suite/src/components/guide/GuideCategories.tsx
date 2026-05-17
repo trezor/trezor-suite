@@ -29,7 +29,7 @@ type GuideCategoriesProps = {
 };
 
 export const GuideCategories = ({ node, label }: GuideCategoriesProps) => {
-    if (!node || node.type !== 'category') {
+    if (node?.type !== 'category') {
         return null;
     }
 

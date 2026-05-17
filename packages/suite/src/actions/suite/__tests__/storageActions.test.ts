@@ -135,35 +135,35 @@ const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
     ),
     wallet: {
         accounts: accountsReducer(
-            prevState && prevState.wallet ? prevState.wallet.accounts : undefined,
+            prevState?.wallet ? prevState.wallet.accounts : undefined,
             action || ({ type: 'foo' } as any),
         ),
         coinjoin: coinjoinReducer(
-            prevState && prevState.wallet ? prevState.wallet.coinjoin : undefined,
+            prevState?.wallet ? prevState.wallet.coinjoin : undefined,
             action || ({ type: 'foo' } as any),
         ),
         settings: walletSettingsReducer(
-            prevState && prevState.wallet ? prevState.wallet.settings : undefined,
+            prevState?.wallet ? prevState.wallet.settings : undefined,
             action || ({ type: 'foo' } as any),
         ),
         discovery: discoveryReducer(
-            prevState && prevState.wallet ? prevState.wallet.discovery : undefined,
+            prevState?.wallet ? prevState.wallet.discovery : undefined,
             action || ({ type: 'foo' } as any),
         ),
         send: sendFormReducer(
-            prevState && prevState.wallet ? prevState.wallet.send : undefined,
+            prevState?.wallet ? prevState.wallet.send : undefined,
             action || ({ type: 'foo' } as any),
         ),
         transactions: transactionsReducer(
-            prevState && prevState.wallet ? prevState.wallet.transactions : undefined,
+            prevState?.wallet ? prevState.wallet.transactions : undefined,
             action || ({ type: 'foo' } as any),
         ),
         fiat: fiatRatesReducer(
-            prevState && prevState.wallet ? prevState.wallet.fiat : undefined,
+            prevState?.wallet ? prevState.wallet.fiat : undefined,
             action || ({ type: 'foo' } as any),
         ),
         graph: graphReducer(
-            prevState && prevState.wallet ? prevState.wallet.graph : undefined,
+            prevState?.wallet ? prevState.wallet.graph : undefined,
             action || ({ type: 'foo' } as any),
         ),
         formDrafts: {},

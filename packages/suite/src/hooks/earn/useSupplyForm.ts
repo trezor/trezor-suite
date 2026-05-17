@@ -355,7 +355,7 @@ export const useSupplyForm = ({ account }: UseSupplyFormProps): SupplyContextVal
     const signTx = useCallback(async () => {
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
-        if (composedTx && composedTx.type === 'final') {
+        if (composedTx?.type === 'final') {
             setIsLoading(true);
             const result = await dispatch(
                 signTransaction(values, composedTx as PrecomposedTransactionFinal),

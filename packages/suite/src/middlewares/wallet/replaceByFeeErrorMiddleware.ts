@@ -30,7 +30,7 @@ export const replaceByFeeErrorMiddleware =
 
         const addedTransaction = transactions.find(tx => tx.txid === precomposedTx.prevTxid);
 
-        if (addedTransaction !== undefined && addedTransaction.blockHeight !== undefined) {
+        if (addedTransaction?.blockHeight !== undefined) {
             api.dispatch(replaceByFeeErrorThunk());
         }
 

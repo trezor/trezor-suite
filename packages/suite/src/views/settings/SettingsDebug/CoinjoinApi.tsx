@@ -124,10 +124,7 @@ export const CoinjoinApi = () => {
                         symbol={symbol}
                         version={clients[symbol]?.version}
                         environments={environments}
-                        value={
-                            debug?.coinjoinServerEnvironment &&
-                            debug?.coinjoinServerEnvironment[symbol]
-                        }
+                        value={debug?.coinjoinServerEnvironment?.[symbol]}
                         onChange={handleServerChange}
                     />
                 );

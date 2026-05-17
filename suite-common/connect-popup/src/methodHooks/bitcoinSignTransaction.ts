@@ -30,7 +30,7 @@ const preCallHook = async <M extends CallMethodKeys>({
                 throw new Error(`Network not supported`);
             }
             const accountPath = txSigningPrecomposed.inputs.find(i => i.address_n);
-            if (!accountPath || !accountPath.address_n) {
+            if (!accountPath?.address_n) {
                 throw new Error('Account not found in inputs');
             }
             const path = getSerializedPath(accountPath.address_n.slice(0, 3)) as Bip43Path;

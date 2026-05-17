@@ -628,7 +628,6 @@ export const getDaysToAddToPool = (
     validatorsQueue?: EthValidatorsQueue | null,
 ) => {
     if (
-        !validatorsQueue ||
         validatorsQueue?.addingDelay === undefined ||
         validatorsQueue?.activationTime === undefined
     ) {
@@ -670,7 +669,6 @@ export const getDaysToUnstake = (
 
 export const getDaysToAddToPoolInitial = (validatorsQueue?: EthValidatorsQueue | null) => {
     if (
-        !validatorsQueue ||
         validatorsQueue?.addingDelay === undefined ||
         validatorsQueue?.activationTime === undefined
     ) {

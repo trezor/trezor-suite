@@ -38,13 +38,8 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         let becomesConnected = false;
         if (deviceActions.updateSelectedDevice.match(action)) {
             const prevDevice = prevState.device.selectedDevice;
-            becomesAcquired = !!(prevDevice && !prevDevice.features && device && device.features);
-            becomesConnected = !!(
-                prevDevice &&
-                !prevDevice.connected &&
-                device &&
-                device.connected
-            );
+            becomesAcquired = !!(prevDevice && !prevDevice.features && device?.features);
+            becomesConnected = !!(prevDevice && !prevDevice.connected && device?.connected);
         }
 
         // device becomesAcquired (device-change event) and is locked at the same time.

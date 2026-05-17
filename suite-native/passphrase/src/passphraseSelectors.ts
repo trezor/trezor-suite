@@ -44,7 +44,7 @@ export { selectIsCreatingNewPassphraseWallet };
 export const selectPassphraseDeviceNotEmpty = (state: DiscoveryRootState & DeviceRootState) => {
     const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
 
-    if (!discovery || !discovery.isAddingHiddenWallet) {
+    if (!discovery?.isAddingHiddenWallet) {
         return null;
     }
 
@@ -61,7 +61,7 @@ export const selectPassphraseDeviceNotEmpty = (state: DiscoveryRootState & Devic
 export const selectPassphraseDiscoveryCompleted = (state: DiscoveryRootState & DeviceRootState) => {
     const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
 
-    if (!discovery || !discovery.isAddingHiddenWallet) {
+    if (!discovery?.isAddingHiddenWallet) {
         return null;
     }
 

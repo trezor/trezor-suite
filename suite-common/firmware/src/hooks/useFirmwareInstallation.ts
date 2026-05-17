@@ -204,7 +204,7 @@ export const useFirmwareInstallation = () => {
             return {
                 operation: 'restarting',
                 // NOTE: when restarting to bootloader, set the progress to 0 (can't be finished yet)
-                progress: reconnectEvent && reconnectEvent.target === 'bootloader' ? 0 : 100,
+                progress: reconnectEvent?.target === 'bootloader' ? 0 : 100,
             };
         }
 

@@ -15,7 +15,7 @@ export type AppNavigationState = NavigationState<AppTabsParamList>;
  * Recursively get the most specific active route name from the hierarchy of navigation states.
  */
 export const getActiveRouteName = (state: AppNavigationState): string | undefined => {
-    if (!state || !state.routes || state.index == null) return undefined;
+    if (!state?.routes || state.index == null) return undefined;
 
     const route = state.routes[state.index];
 

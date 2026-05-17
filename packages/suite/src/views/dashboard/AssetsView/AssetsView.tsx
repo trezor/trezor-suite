@@ -170,9 +170,8 @@ export const AssetsView = () => {
         currentFiatRates,
     );
 
-    const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
-    const isError =
-        discoveryStatus && discoveryStatus.status === 'exception' && !assetSymbols.length;
+    const discoveryInProgress = discoveryStatus?.status === 'loading';
+    const isError = discoveryStatus?.status === 'exception' && !assetSymbols.length;
 
     const openActivateAssetsModal = () => {
         analytics.report({
@@ -183,7 +182,7 @@ export const AssetsView = () => {
     };
     const setTable = () => dispatch(setFlag({ key: 'dashboardAssetsGridMode', value: false }));
     const setGrid = () => dispatch(setFlag({ key: 'dashboardAssetsGridMode', value: true }));
-    const isDiscoveryEmpty = discoveryStatus && discoveryStatus.type === 'discovery-empty';
+    const isDiscoveryEmpty = discoveryStatus?.type === 'discovery-empty';
     const showCards = isBelowTablet || dashboardAssetsGridMode;
 
     if (isDiscoveryEmpty) {

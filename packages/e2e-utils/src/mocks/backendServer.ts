@@ -139,7 +139,7 @@ export class BackendWebsocketServerMock extends WebSocketServer {
 
         if (Array.isArray(fixtures)) {
             // find nearest fixture with requested method
-            const fixtureIndex = fixtures.findIndex(f => f && f.method === method);
+            const fixtureIndex = fixtures.findIndex(f => f?.method === method);
             if (fixtureIndex >= 0) {
                 const fixture = fixtures[fixtureIndex];
                 if (typeof fixture.response === 'function') {

@@ -135,7 +135,7 @@ export class TransactionComposer {
         const { levels } = this.feeLevels;
         levels.forEach(level => {
             const tx = this.composed[level.label];
-            if (tx && tx.type === 'final') {
+            if (tx?.type === 'final') {
                 list.push({
                     name: level.label,
                     fee: tx.fee,

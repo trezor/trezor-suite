@@ -263,7 +263,7 @@ const prepareContent = (
                 });
             }
 
-            if (t.cardanoSpecific && t.cardanoSpecific.subtype) {
+            if (t.cardanoSpecific?.subtype) {
                 const { subtype, withdrawal = '0', deposit = '0' } = t.cardanoSpecific;
 
                 const amount = (() => {

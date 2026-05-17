@@ -117,7 +117,7 @@ export const sortByBIP44AddressIndex = <T extends { path: string }>(
 export const parseBIP44Path = (path: string) => {
     const regEx = /m\/(\d+'?)\/(\d+'?)\/(\d+'?)\/([0,1])\/(\d+)/;
     const tokens = path.match(regEx);
-    if (!tokens || tokens.length !== 6) {
+    if (tokens?.length !== 6) {
         return null;
     }
 
@@ -720,8 +720,8 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
         return {
             networkType,
             misc: {
-                sequence: misc && misc.sequence ? misc.sequence : 0,
-                reserve: misc && misc.reserve ? misc.reserve : '0',
+                sequence: misc?.sequence ? misc.sequence : 0,
+                reserve: misc?.reserve ? misc.reserve : '0',
             },
             marker: accountInfo.marker,
             stellarCursor: undefined,
@@ -734,7 +734,7 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
             networkType,
             misc: {
                 ...misc,
-                nonce: misc && misc.nonce ? misc.nonce : '0',
+                nonce: misc?.nonce ? misc.nonce : '0',
             },
             marker: undefined,
             stellarCursor: undefined,
@@ -747,11 +747,11 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
             networkType,
             misc: {
                 staking: {
-                    rewards: misc && misc.staking ? misc.staking.rewards : '0',
-                    isActive: misc && misc.staking ? misc.staking.isActive : false,
-                    address: misc && misc.staking ? misc.staking.address : '',
-                    poolId: misc && misc.staking ? misc.staking.poolId : null,
-                    drep: misc && misc.staking ? misc.staking.drep : null,
+                    rewards: misc?.staking ? misc.staking.rewards : '0',
+                    isActive: misc?.staking ? misc.staking.isActive : false,
+                    address: misc?.staking ? misc.staking.address : '',
+                    poolId: misc?.staking ? misc.staking.poolId : null,
+                    drep: misc?.staking ? misc.staking.drep : null,
                 },
             },
             marker: undefined,

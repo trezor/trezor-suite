@@ -77,7 +77,7 @@ describe('filterQuotesAccordingTags', () => {
 
         expect(filterQuotesAccordingTags([])).toStrictEqual([]);
         expect(filterQuotesAccordingTags(quotes).length).toStrictEqual(
-            quotes.filter(q => !q.tags || !q.tags.includes('alternativeCurrency')).length,
+            quotes.filter(q => !q.tags?.includes('alternativeCurrency')).length,
         );
     });
 });

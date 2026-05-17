@@ -26,7 +26,7 @@ export const TronResources = ({ accountKey }: TronResourcesProps) => {
         selectAccountByKey(state, accountKey),
     );
 
-    if (!account || account.networkType !== 'tron') return null;
+    if (account?.networkType !== 'tron') return null;
 
     const { tronResources } = account.misc;
 

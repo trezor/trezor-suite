@@ -11,8 +11,7 @@ import { useDiscovery, useDispatch } from 'src/hooks/suite';
 export const DiscoveryFailed = () => {
     const dispatch = useDispatch();
     const { discovery } = useDiscovery();
-    const description =
-        discovery !== undefined && discovery.status === 'failed' ? discovery.error : undefined;
+    const description = discovery?.status === 'failed' ? discovery.error : undefined;
 
     const handleClick = () => dispatch(startOrRestartDiscoveryThunk());
 

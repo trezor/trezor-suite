@@ -13,8 +13,7 @@ export const ReplaceTxButton = () => {
 
     const values = getValues();
     const composedTx = composedLevels ? composedLevels[values.selectedFee || 'normal'] : undefined;
-    const isDisabled =
-        !composedTx || composedTx.type !== 'final' || isLocked() || (device && !device.available);
+    const isDisabled = composedTx?.type !== 'final' || isLocked() || (device && !device.available);
 
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, account.symbol));
 

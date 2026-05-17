@@ -765,9 +765,7 @@ export class Core extends EventEmitter {
 
     private sendCoreMessage(message: CoreEventMessage) {
         if (message.event === RESPONSE_EVENT) {
-            const index = this.callMethods.findIndex(
-                call => call && call.responseID === message.id,
-            );
+            const index = this.callMethods.findIndex(call => call?.responseID === message.id);
             if (index >= 0) {
                 this.callMethods.splice(index, 1);
                 if (this.callMethods.length === 0) {

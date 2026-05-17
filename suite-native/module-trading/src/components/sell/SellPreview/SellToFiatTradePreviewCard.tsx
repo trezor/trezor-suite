@@ -13,7 +13,7 @@ export type SellToFiatTradePreviewCardProps = {
 export const SellToFiatTradePreviewCard = ({ quote }: SellToFiatTradePreviewCardProps) => {
     const { toStringValue } = useChangeStringsExtractor(quote);
 
-    if (!quote || !quote.paymentMethod || !quote.fiatCurrency || !toStringValue) {
+    if (!quote?.paymentMethod || !quote.fiatCurrency || !toStringValue) {
         return null;
     }
 

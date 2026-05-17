@@ -30,7 +30,7 @@ export const EarnYieldInactiveVaultOpportunity = ({
     const isDiscoveringThisNetwork = isDiscoveryRunning && isNetworkEnabled;
     const { name } = getNetwork(opportunity.networkSymbol);
 
-    const isDeviceDisconnected = !device || !device.connected;
+    const isDeviceDisconnected = !device?.connected;
     const isButtonDisabled = isDeviceDisconnected || isDiscoveryRunning;
     const tooltipMessage = isDeviceDisconnected ? (
         <Translation id="TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT" />

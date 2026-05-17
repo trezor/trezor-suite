@@ -25,7 +25,7 @@ export const tradeFinalStatuses: Record<TradingType, TradingTradeStatusType[]> =
 };
 
 const shouldRefreshTrade = (trade: TradingTransaction | undefined) =>
-    trade && trade.data.status && !tradeFinalStatuses[trade.tradeType].includes(trade.data.status);
+    trade?.data.status && !tradeFinalStatuses[trade.tradeType].includes(trade.data.status);
 
 export const useTradingWatchTrade = <T extends TradingType>({
     account,

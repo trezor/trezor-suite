@@ -16,9 +16,9 @@ const getPairingMethods = (
 ) =>
     deviceMethods?.flatMap(dm => {
         const value = protocolThp.getThpPairingMethod(dm);
-        const isRequested =
-            settingsMethods &&
-            settingsMethods.find(sm => value === protocolThp.getThpPairingMethod(sm));
+        const isRequested = settingsMethods?.find(
+            sm => value === protocolThp.getThpPairingMethod(sm),
+        );
 
         return isRequested ? value : [];
     });

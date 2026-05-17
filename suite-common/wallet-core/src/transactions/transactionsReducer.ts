@@ -39,7 +39,7 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
             .addCase(transactionsActions.replaceTransaction, (state, { payload }) => {
                 const { key, txid, tx } = payload;
                 const accountTxs = initializeAccount(state, key);
-                const index = accountTxs.findIndex(t => t && t.txid === txid);
+                const index = accountTxs.findIndex(t => t?.txid === txid);
                 if (accountTxs[index]) accountTxs[index] = tx;
             })
             .addCase(transactionsActions.removeTransaction, (state, { payload }) => {
@@ -82,7 +82,7 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                     } else {
                         // update the transaction if conditions are met
                         const existingTxIndex = accountTxs.findIndex(
-                            t => t && t.txid === existingTx.txid,
+                            t => t?.txid === existingTx.txid,
                         );
                         const existingBlockHeight = existingTx.blockHeight ?? 0;
                         const incomingBlockHeight = transaction.blockHeight ?? 0;

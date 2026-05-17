@@ -113,7 +113,7 @@ export class SessionsBackground
                 id: message.type,
             } as HandleMessageResponse<M>;
         } finally {
-            if (result && result.success && result.payload) {
+            if (result?.success && result.payload) {
                 if ('descriptors' in result.payload) {
                     const { descriptors } = result.payload;
                     this.emit('descriptors', descriptors);

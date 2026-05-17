@@ -24,7 +24,7 @@ const setTrezorConnectFixtures = (fixture?: any) => {
     let buttonRequest: ((e?: any) => any) | undefined;
 
     const getAddress = (_params: any) => {
-        if (fixture && fixture.getAddress) {
+        if (fixture?.getAddress) {
             if (fixture.getAddress.success && buttonRequest) {
                 buttonRequest({ code: 'ButtonRequest_Address' });
             }
@@ -149,7 +149,7 @@ describe('ReceiveActions', () => {
             await store.dispatch(connectInitThunk());
             await store.dispatch(f.action());
 
-            if (f.result && f.result.actions) {
+            if (f.result?.actions) {
                 expect(store.getActions()).toMatchObject(f.result.actions);
             }
         });
