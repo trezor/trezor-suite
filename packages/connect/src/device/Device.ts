@@ -697,7 +697,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
             return; // This happens when device has no features (not yet connected)
         }
 
-        if (this.features && this.features.bootloader_mode === true) {
+        if (this.features?.bootloader_mode === true) {
             return;
         }
 
@@ -746,7 +746,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         const capabilities = parseCapabilities(feat);
         feat.capabilities = capabilities;
         // GetFeatures doesn't return 'session_id'
-        if (this.features && this.features.session_id && !feat.session_id) {
+        if (this.features?.session_id && !feat.session_id) {
             feat.session_id = this.features.session_id;
         }
         feat.unlocked = feat.unlocked ?? true;

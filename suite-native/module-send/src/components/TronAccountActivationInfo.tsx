@@ -30,7 +30,7 @@ export const TronAccountActivationInfo = ({ accountKey }: TronAccountActivationI
     );
     const feeLevels = useSelector((state: NativeSendRootState) => selectFeeLevels(state));
 
-    if (!account || account.networkType !== 'tron') return null;
+    if (account?.networkType !== 'tron') return null;
 
     const normalLevel = feeLevels.normal;
 

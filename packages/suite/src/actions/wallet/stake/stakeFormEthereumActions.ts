@@ -115,12 +115,7 @@ export const signTransaction =
     async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
         const { selectedAccount } = getState().wallet;
         const device = selectSelectedDevice(getState());
-        if (
-            selectedAccount.status !== 'loaded' ||
-            !device ||
-            !transactionInfo ||
-            transactionInfo.type !== 'final'
-        )
+        if (selectedAccount.status !== 'loaded' || !device || transactionInfo?.type !== 'final')
             return;
 
         const { account, network } = selectedAccount;

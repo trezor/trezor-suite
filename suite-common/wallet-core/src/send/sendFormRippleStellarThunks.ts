@@ -74,7 +74,7 @@ const calculate = (
         } as const;
     }
 
-    if (requiredAmount && requiredAmount.gt(amount)) {
+    if (requiredAmount?.gt(amount)) {
         return {
             type: 'error',
             error: 'AMOUNT_IS_LESS_THAN_RESERVE',

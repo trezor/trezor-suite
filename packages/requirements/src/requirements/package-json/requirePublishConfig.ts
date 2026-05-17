@@ -156,7 +156,7 @@ const validateExports = (
 
         // ESM-only packages do not ship lib/, so any ./lib/... export key would
         // resolve to a non-existent file once published.
-        if (isEsmOnly && match && match[1] === 'lib') {
+        if (isEsmOnly && match?.[1] === 'lib') {
             errors.push(
                 `Disallowed CJS export key ${JSON.stringify(exportKey)} in ESM-only package`,
             );

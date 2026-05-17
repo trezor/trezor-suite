@@ -71,7 +71,7 @@ export const TradingFormOfferOTC = () => {
 
     const fiatAmount = amountInCrypto ? fiatAmountConverted : fiatInput;
 
-    if (!otcData || !otcData.minFiatLimits || !otcData.links || !fiatAmount) {
+    if (!otcData?.minFiatLimits || !otcData.links || !fiatAmount) {
         return null;
     }
 
@@ -86,7 +86,7 @@ export const TradingFormOfferOTC = () => {
         return null;
     }
 
-    if (otcProviders && otcProviders.length === 0) {
+    if (otcProviders?.length === 0) {
         return null;
     }
 

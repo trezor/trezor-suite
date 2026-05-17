@@ -40,7 +40,7 @@ export const TronFeeSummaryCard = ({
     );
     const { translate } = useTranslate();
 
-    if (!account || account.networkType !== 'tron') return null;
+    if (account?.networkType !== 'tron') return null;
 
     const breakdown = calculateTronFeeBreakdown(
         feeLevels.normal,

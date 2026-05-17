@@ -23,7 +23,7 @@ export const AddAccountButton = ({ device, isIconOnly }: AddAccountButtonProps) 
     const dispatch = useDispatch();
 
     // TODO: add more cases when adding account is not possible
-    const addAccountDisabled = isDiscoveryRunning || !device || !device.connected;
+    const addAccountDisabled = isDiscoveryRunning || !device?.connected;
     const tooltipMessage = getExplanationMessage(device, isDiscoveryRunning);
     const dataTestId = '@account-menu/add-account';
 

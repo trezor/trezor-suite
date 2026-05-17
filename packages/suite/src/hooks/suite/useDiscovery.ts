@@ -10,11 +10,11 @@ export const useDiscovery = () => {
     const discovery = useSelector(state => selectDiscoveryByDevicePath(state, device?.path));
 
     const calculateProgress = useCallback(() => {
-        if (discovery && discovery.status === 'starting') {
+        if (discovery?.status === 'starting') {
             return 1;
         }
 
-        if (discovery && discovery.status === 'progress') {
+        if (discovery?.status === 'progress') {
             return discovery.progress;
         }
 

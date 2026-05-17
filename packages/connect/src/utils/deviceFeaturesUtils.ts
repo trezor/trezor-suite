@@ -32,7 +32,7 @@ const DEFAULT_CAPABILITIES_TT: PROTO.Capability[] = [
 export const parseCapabilities = (features?: Features): PROTO.Capability[] => {
     if (!features || features.firmware_present === false) return []; // no features or no firmware - no capabilities
     // fallback for older firmware that does not report capabilities
-    if (!features.capabilities || !features.capabilities.length) {
+    if (!features.capabilities?.length) {
         return features.major_version === 1 ? DEFAULT_CAPABILITIES_T1 : DEFAULT_CAPABILITIES_TT;
     }
 

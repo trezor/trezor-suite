@@ -28,7 +28,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
     const analytics = useAnalytics();
     const { device } = useDevice();
     const { isDiscoveryRunning } = useDiscovery();
-    const isAddAccountDisabled = isDiscoveryRunning || !device || !device.connected;
+    const isAddAccountDisabled = isDiscoveryRunning || !device?.connected;
     const accountModal = useModal(false);
     const dispatch = useDispatch();
 

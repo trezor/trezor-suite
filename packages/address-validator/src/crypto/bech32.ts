@@ -49,7 +49,7 @@ export function decode(hrp: string, addr: string, m = false): Bech32Decoded | nu
     } catch {
         return null;
     }
-    if (dec === null || dec.prefix !== hrp || dec.words.length < 1 || dec.words[0] > 16) {
+    if (dec?.prefix !== hrp || dec.words.length < 1 || dec.words[0] > 16) {
         return null;
     }
     const res = convertbits(dec.words.slice(1), 5, 8, false);

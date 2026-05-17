@@ -70,11 +70,7 @@ const confirmInput = async (
     );
 
     // stop here if it's confirmationInterval at phase 0
-    if (
-        !confirmationData ||
-        !confirmationData.RealAmountCredentials ||
-        !confirmationData.RealVsizeCredentials
-    ) {
+    if (!confirmationData?.RealAmountCredentials || !confirmationData.RealVsizeCredentials) {
         logger.info(`Confirmed in phase ${round.phase} ~~${input.outpoint}~~ in ~~${round.id}~~`);
 
         return input;

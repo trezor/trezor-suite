@@ -986,8 +986,7 @@ export const selectCurrentCoinjoinWheelStates = (state: CoinjoinRootState & Devi
         coinjoinClient?.version?.legalDocumentsVersion ?? ZKSNACKS_LEGAL_DOCUMENTS_VERSION;
 
     const isLegalDocumentConfirmed =
-        agreedToLegalDocumentVersions &&
-        agreedToLegalDocumentVersions.zkSNACKs === latestZkSNACKsLegalDocumentVersion &&
+        agreedToLegalDocumentVersions?.zkSNACKs === latestZkSNACKsLegalDocumentVersion &&
         agreedToLegalDocumentVersions.trezor === latestTezorLegalDocumentVersion;
 
     // error state

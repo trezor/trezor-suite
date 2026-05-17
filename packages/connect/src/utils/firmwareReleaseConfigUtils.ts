@@ -129,7 +129,7 @@ const fetchRemoteJws = async (firmwareChannel?: FirmwareChannel): Promise<JwsInf
 const verifyAndDecodeJws = (jws: string, publicKey: string): FirmwareReleaseConfig => {
     const decoded = decode(jws);
 
-    if (!decoded || !decoded.payload || !decoded.header) {
+    if (!decoded?.payload || !decoded.header) {
         throw new Error('Invalid JWS structure.');
     }
 

@@ -20,7 +20,7 @@ export const OutOfQuotaBanner = () => {
     if (shouldDisplay === false) return null;
 
     const handleDismiss = () => {
-        if (!device || !device.id) return false;
+        if (!device?.id) return false;
 
         dispatch(noQuotaLeftWarningDismissed({ deviceId: device.id }));
     };

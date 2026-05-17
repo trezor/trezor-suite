@@ -41,7 +41,7 @@ export const StellarTokenActions = ({ accountKey, tokenContract }: StellarTokenA
         selectAccountTokenBalance(state, accountKey, tokenContract),
     );
 
-    if (!account || account.networkType !== 'stellar' || !tokenContract) {
+    if (account?.networkType !== 'stellar' || !tokenContract) {
         return null;
     }
 

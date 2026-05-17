@@ -50,7 +50,7 @@ export const exportTransactionsThunk = createThunk(
         );
         const metadataKeys = account?.metadata[1];
         let labels = {};
-        if (!metadataKeys || !metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
+        if (!metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
             labels = { outputLabels: {} };
         } else {
             labels = provider.data[metadataKeys.fileName];

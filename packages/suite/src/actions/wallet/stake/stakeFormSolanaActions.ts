@@ -256,12 +256,7 @@ export const signTransaction =
         const { selectedAccount, blockchain } = getState().wallet;
 
         const device = selectSelectedDevice(getState());
-        if (
-            selectedAccount.status !== 'loaded' ||
-            !device ||
-            !transactionInfo ||
-            transactionInfo.type !== 'final'
-        ) {
+        if (selectedAccount.status !== 'loaded' || !device || transactionInfo?.type !== 'final') {
             return;
         }
 

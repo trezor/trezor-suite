@@ -93,8 +93,9 @@ const needToRegisterOrVerifyBankAccount = ({
 
     // for BANK_ACCOUNT flow a message is shown if bank account is not verified
     if (provider?.flow === 'BANK_ACCOUNT') {
-        const isSomeBankAccountVerified =
-            quote.bankAccounts && quote.bankAccounts.some(bankAccount => bankAccount.verified);
+        const isSomeBankAccountVerified = quote.bankAccounts?.some(
+            bankAccount => bankAccount.verified,
+        );
 
         return !!quote.quoteId && !isSomeBankAccountVerified;
     }

@@ -202,7 +202,7 @@ export const isDeviceCompatible = (deviceConditions: Device[], device?: TrezorDe
     if (!deviceConditions.length) {
         return !device;
     }
-    if (!device || !device.features) {
+    if (!device?.features) {
         return false;
     }
 

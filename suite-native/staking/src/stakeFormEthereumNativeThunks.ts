@@ -101,7 +101,7 @@ const prepareEthereumStakingContext = (
     const { accountKey, stakeType, precomposedTransaction } = args;
 
     const account = selectAccountByKey(state, accountKey);
-    if (!account || account.networkType !== 'ethereum') {
+    if (account?.networkType !== 'ethereum') {
         return failed(
             'Ethereum account not found.',
             `Ethereum account not found for key ${accountKey}`,

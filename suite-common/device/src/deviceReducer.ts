@@ -395,7 +395,7 @@ const disconnectDevice = (draft: DeviceReducerState, device: TrezorDevice) => {
  */
 const updateTimestamp = (draft: DeviceReducerState, device?: TrezorDevice) => {
     // only acquired devices
-    if (!device || !device.features) return;
+    if (!device?.features) return;
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
     if (!draft.devices[index]) return;
     // update timestamp
@@ -414,7 +414,7 @@ const updateTimestamp = (draft: DeviceReducerState, device?: TrezorDevice) => {
 // TODO: this now can only be used for imported device!
 const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
     // only acquired devices
-    if (!device || !device.features) return;
+    if (!device?.features) return;
 
     const isPortfolioTrackerDevice = device.id === PORTFOLIO_TRACKER_DEVICE_ID;
 
@@ -444,7 +444,7 @@ const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
  */
 const remember = (draft: DeviceReducerState, device: TrezorDevice, shouldRemember: boolean) => {
     // only acquired devices
-    if (!device || !device.features) return;
+    if (!device?.features) return;
     draft.devices.forEach(d => {
         if (deviceUtils.isSelectedInstance(device, d)) {
             d.remember = shouldRemember;
@@ -463,7 +463,7 @@ const setTemporaryRememberedDevice = (
     device: TrezorDevice,
     temporaryRemember: boolean,
 ) => {
-    if (!device || !device.features) return;
+    if (!device?.features) return;
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
     const selectedInstance = draft.devices[index];
     if (!selectedInstance) return;
@@ -486,7 +486,7 @@ const setTemporaryRememberedDevice = (
  */
 const forget = (draft: DeviceReducerState, device: TrezorDevice) => {
     // only acquired devices
-    if (!device || !device.features) return;
+    if (!device?.features) return;
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
     if (!draft.devices[index]) return;
     const others = deviceUtils.getDeviceInstances(device, draft.devices, true);
@@ -513,7 +513,7 @@ const addButtonRequest = (
     buttonRequest: ButtonRequest,
 ) => {
     // only acquired devices
-    if (!device || !device.features) return;
+    if (!device?.features) return;
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
     if (!draft.devices[index]) return;
     // update state
@@ -527,7 +527,7 @@ const removeButtonRequests = (
     buttonRequestCode?: ButtonRequest['code'],
 ) => {
     // only acquired devices
-    if (!device || !device.features) return;
+    if (!device?.features) return;
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
     if (!draft.devices[index]) return;
     // update state

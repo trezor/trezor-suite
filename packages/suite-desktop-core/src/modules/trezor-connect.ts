@@ -30,7 +30,7 @@ const emitOnSetCustomBackendToMainThreadToAllowDomains = ({
 }: EmitOnSetCustomBackendToMainThreadToAllowDomainsParams) => {
     const param = params[0];
 
-    if (param !== undefined && param.blockchainLink !== undefined) {
+    if (param?.blockchainLink !== undefined) {
         const domains = (param.blockchainLink.url ?? []).map(url => {
             const electrumUrlResult = parseElectrumUrl(url);
             if (electrumUrlResult !== undefined) {

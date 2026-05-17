@@ -57,12 +57,7 @@ export const sendSellTransactionThunk = createThunk(
 
         dispatch(tradingActions.setModalAccountKey(account.key));
 
-        if (
-            !selectedTrade ||
-            !selectedTrade.orderId ||
-            !destinationAddress ||
-            !selectedTrade.cryptoStringAmount
-        ) {
+        if (!selectedTrade?.orderId || !destinationAddress || !selectedTrade.cryptoStringAmount) {
             return rejectWithValue({
                 type: 'error',
                 error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },

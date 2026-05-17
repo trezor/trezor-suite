@@ -55,8 +55,7 @@ const Accounts = ({
         <>
             {accounts.map(account => {
                 const isSelected = (account: Account) =>
-                    params &&
-                    account.symbol === params.symbol &&
+                    account.symbol === params?.symbol &&
                     account.accountType === params.accountType &&
                     account.index === params.accountIndex;
 
@@ -102,7 +101,7 @@ export const AccountsList = ({
     const { isSidebarCollapsed } = useResponsiveContext();
     const { coinFilter, searchString } = useAccountSearch();
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
-    const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
+    const discoveryInProgress = discoveryStatus?.status === 'loading';
 
     if (!device) {
         return null;

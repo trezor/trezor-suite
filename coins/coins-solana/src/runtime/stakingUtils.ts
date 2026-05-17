@@ -344,7 +344,7 @@ export function isCompilableTransactionMessage(
 }
 
 export const getStakingParams = (estimatedFee?: Fee) =>
-    !estimatedFee || !estimatedFee.feePerUnit || !estimatedFee.feeLimit
+    !estimatedFee?.feePerUnit || !estimatedFee.feeLimit
         ? {
               computeUnitPrice: BigInt(SOL_COMPUTE_UNIT_PRICE),
               computeUnitLimit: SOL_COMPUTE_UNIT_LIMIT,

@@ -284,7 +284,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         const { coinInfo } = this.params;
         const dfd = context.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, this.getDevice());
 
-        if (this.discovery && this.discovery.completed) {
+        if (this.discovery?.completed) {
             const { discovery } = this;
             context.sendCoreMessage(
                 createUiMessage(

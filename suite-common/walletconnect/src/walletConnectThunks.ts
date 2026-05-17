@@ -269,11 +269,7 @@ export const sessionProposalApproveThunk = createThunk<
     async ({ eventId, selectedDefaultAccount }, { dispatch, getState, extra }) => {
         try {
             const pendingProposal = selectPendingProposal(getState());
-            if (
-                !pendingProposal ||
-                pendingProposal.eventId !== eventId ||
-                pendingProposal.expired
-            ) {
+            if (pendingProposal?.eventId !== eventId || pendingProposal.expired) {
                 throw new Error('Proposal not found');
             }
 

@@ -105,7 +105,7 @@ export const connectPopupCallThunkInner = createThunk<
             // todo: be smarter about the timeout based on actual connection events
             const maxAttempts = source.type === CALL_SOURCE_DEEPLINK ? 10 : 5;
             // retry loop to wait for device to reconnect
-            while (!device || !device.connected) {
+            while (!device?.connected) {
                 await resolveAfter(1000);
                 device = selectSelectedDevice(getState());
                 attempt++;
@@ -247,7 +247,7 @@ export const connectPopupDeeplinkThunk = createThunk<void, { url: string }>(
         const queryParams = Object.fromEntries(parsedUrl.searchParams.entries());
 
         // Validate params
-        const version = path && path.split('/').slice(-2, -1)[0];
+        const version = path?.split('/').slice(-2, -1)[0];
         if (
             !queryParams?.method ||
             !queryParams?.params ||
@@ -319,7 +319,7 @@ export const connectPopupVerifyAddressThunk = createThunk<void, { index: number 
 
         const device = selectSelectedDevice(getState());
         const call = selectConnectPopupCall(getState());
-        if (!device || !call || call.state !== 'address-confirmation') return;
+        if (!device || call?.state !== 'address-confirmation') return;
 
         // Update loading state of addresses
         dispatch(

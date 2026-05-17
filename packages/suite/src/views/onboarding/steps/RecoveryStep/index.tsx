@@ -212,7 +212,7 @@ export const RecoveryStep = () => {
         );
     }
 
-    if (device && device.mode === 'normal') {
+    if (device?.mode === 'normal') {
         // Ready to continue to the next step
         const handleClick = () => dispatch(goToNextStep('set-pin'));
 

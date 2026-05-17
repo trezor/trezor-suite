@@ -188,7 +188,7 @@ describe('signatureUtils', () => {
             const result = tradingExchangeCreatePaymentRequest(propsWithTestnet);
 
             expect(result).toBeDefined();
-            if (result && result.memos && result.memos[0]) {
+            if (result?.memos?.[0]) {
                 expect(result.memos[0].coin_purchase_memo?.coin_type).toBe(1); // ALL_TESTNETS - HARDENED_OFFSET
             }
         });
@@ -208,7 +208,7 @@ describe('signatureUtils', () => {
             const result = tradingExchangeCreatePaymentRequest(propsWithBch);
 
             expect(result).toBeDefined();
-            if (result && result.memos && result.memos[0]) {
+            if (result?.memos?.[0]) {
                 expect(result.memos[0].coin_purchase_memo?.coin_type).toBe(145); // BCH coin type
             }
         });
@@ -228,7 +228,7 @@ describe('signatureUtils', () => {
             const result = tradingExchangeCreatePaymentRequest(propsWithLtc);
 
             expect(result).toBeDefined();
-            if (result && result.memos && result.memos[0]) {
+            if (result?.memos?.[0]) {
                 expect(result.memos[0].coin_purchase_memo?.coin_type).toBe(2); // LTC coin type
             }
         });
@@ -375,7 +375,7 @@ describe('signatureUtils', () => {
             const result = tradingSellCreatePaymentRequest(propsWithEmptyMemo);
 
             expect(result).toBeDefined();
-            if (result && result.memos && result.memos[0]) {
+            if (result?.memos?.[0]) {
                 expect(result.memos[0].text_memo?.text).toBe('');
             }
         });
@@ -389,7 +389,7 @@ describe('signatureUtils', () => {
             const result = tradingSellCreatePaymentRequest(propsWithSpecialMemo);
 
             expect(result).toBeDefined();
-            if (result && result.memos && result.memos[0]) {
+            if (result?.memos?.[0]) {
                 expect(result.memos[0].text_memo?.text).toBe('Special chars: àáâãäåæçèéêë');
             }
         });
@@ -438,7 +438,7 @@ describe('signatureUtils', () => {
             });
 
             expect(result).toBeDefined();
-            if (result && result.memos && result.memos[0]) {
+            if (result?.memos?.[0]) {
                 expect(result.amount).toBe('99999999999999'); // subunits (satoshis)
                 expect(result.memos[0].coin_purchase_memo?.amount).toBe('1000000.12345678 ETH');
             }
@@ -486,7 +486,7 @@ describe('signatureUtils', () => {
             });
 
             expect(result).toBeDefined();
-            if (result && result.memos && result.memos[0]) {
+            if (result?.memos?.[0]) {
                 expect(result.amount).toBe('1'); // subunits (satoshis)
                 expect(result.memos[0].coin_purchase_memo?.amount).toBe('0.00000001 ETH');
             }

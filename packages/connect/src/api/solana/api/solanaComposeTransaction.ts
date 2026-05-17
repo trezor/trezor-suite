@@ -94,24 +94,23 @@ export default class SolanaComposeTransaction extends AbstractMethod<
               )
             : [undefined, undefined];
 
-        const tokenTransferTxAndDestinationAddress =
-            this.params.token && this.params.token.accounts
-                ? await buildTokenTransferTransaction(
-                      this.params.fromAddress,
-                      this.params.toAddress,
-                      recipientAccountOwner || SYSTEM_PROGRAM_PUBLIC_KEY, // toAddressOwner
-                      this.params.token.mint,
-                      this.params.amount || '0',
-                      this.params.token.decimals,
-                      this.params.token.accounts,
-                      recipientTokenAccounts,
-                      this.params.blockHash,
-                      this.params.lastValidBlockHeight,
-                      this.params.priorityFees,
-                      this.params.token.program,
-                      this.params.memo,
-                  )
-                : undefined;
+        const tokenTransferTxAndDestinationAddress = this.params.token?.accounts
+            ? await buildTokenTransferTransaction(
+                  this.params.fromAddress,
+                  this.params.toAddress,
+                  recipientAccountOwner || SYSTEM_PROGRAM_PUBLIC_KEY, // toAddressOwner
+                  this.params.token.mint,
+                  this.params.amount || '0',
+                  this.params.token.decimals,
+                  this.params.token.accounts,
+                  recipientTokenAccounts,
+                  this.params.blockHash,
+                  this.params.lastValidBlockHeight,
+                  this.params.priorityFees,
+                  this.params.token.program,
+                  this.params.memo,
+              )
+            : undefined;
 
         if (this.params.token && !tokenTransferTxAndDestinationAddress)
             throw ERRORS.TypedError('Method_InvalidParameter', 'Token accounts not found');

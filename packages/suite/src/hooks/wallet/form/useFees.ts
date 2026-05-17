@@ -140,7 +140,7 @@ export const useFees = <TFieldValues extends FeesFormValues>({
             )!;
             // set custom values from a previously selected composed transaction
             // or from previously selected FeeLevel
-            const transactionInfo = composedLevels && composedLevels[currentLevel.label];
+            const transactionInfo = composedLevels?.[currentLevel.label];
 
             const hasNoError = !baseFee && transactionInfo && transactionInfo.type !== 'error';
 

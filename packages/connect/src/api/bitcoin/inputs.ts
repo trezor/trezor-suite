@@ -68,7 +68,7 @@ export const enhanceTrezorInputs = (
         if (!input.amount) {
             console.warn('TrezorConnect.signTransaction deprecation: missing input amount.');
             const refTx = rawTxs.find(t => t.getId() === input.prev_hash);
-            if (refTx && refTx.outs[input.prev_index]) {
+            if (refTx?.outs[input.prev_index]) {
                 input.amount = refTx.outs[input.prev_index].value;
             }
         }

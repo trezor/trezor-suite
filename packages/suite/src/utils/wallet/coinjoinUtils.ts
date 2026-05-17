@@ -85,7 +85,7 @@ export const calculateAnonymityProgress = ({
     anonymitySet: AnonymitySet | undefined;
     utxos: Account['utxo'];
 }): number => {
-    if (!anonymitySet || targetAnonymity === undefined || !utxos || !utxos.length) {
+    if (!anonymitySet || targetAnonymity === undefined || !utxos?.length) {
         return 0;
     }
 

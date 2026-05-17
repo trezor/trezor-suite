@@ -67,8 +67,7 @@ export const TradingDetailExchange = () => {
     const composedTransaction = useSelector(selectTradingComposedTransactionInfo);
 
     const exchange = trade?.data?.exchange;
-    const provider =
-        info && info.providerInfos && exchange ? info.providerInfos[exchange] : undefined;
+    const provider = info?.providerInfos && exchange ? info.providerInfos[exchange] : undefined;
 
     const quoteAmounts: TradingGetCryptoQuoteAmountProps = {
         sendAmount: trade?.data?.sendStringAmount ?? '',

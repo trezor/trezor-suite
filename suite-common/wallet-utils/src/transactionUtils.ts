@@ -337,7 +337,7 @@ export const sumTransactionsFiat = (
 };
 
 export const findTransaction = (txid: string, transactions: WalletAccountTransaction[]) =>
-    transactions.find(t => t && t.txid === txid);
+    transactions.find(t => t?.txid === txid);
 
 export const findTransactions = (
     txid: string,

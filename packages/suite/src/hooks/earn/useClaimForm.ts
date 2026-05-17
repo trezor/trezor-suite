@@ -123,7 +123,7 @@ export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValue
     const signTx = useCallback(async () => {
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
-        if (composedTx && composedTx.type === 'final') {
+        if (composedTx?.type === 'final') {
             const result = await dispatch(
                 signTransaction(values, composedTx as PrecomposedTransactionFinal),
             );

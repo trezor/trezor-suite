@@ -73,7 +73,6 @@ export const TradingOfferExchangeSlippageModal = ({
             if (slippage !== CUSTOM_SLIPPAGE) return;
 
             if (
-                selectedQuote &&
                 selectedQuote?.dexTx &&
                 selectedQuote.receiveAddress &&
                 !customSlippageError &&

@@ -171,7 +171,7 @@ export const selectLabelingDataForSelectedAccount = (state: {
     const { selectedAccount } = state.wallet;
 
     const metadataKeys = selectedAccount?.account?.metadata[METADATA_LABELING.ENCRYPTION_VERSION];
-    if (!metadataKeys || !metadataKeys.fileName || !provider?.data[metadataKeys.fileName]) {
+    if (!metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
         return DEFAULT_ACCOUNT_METADATA;
     }
 
@@ -190,7 +190,7 @@ export const selectLabelingDataForAccount = (
     const account = selectAccountByKey(state, accountKey);
     const metadataKeys = account?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION];
 
-    if (!metadataKeys || !metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
+    if (!metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
         return DEFAULT_ACCOUNT_METADATA;
     }
 
@@ -210,11 +210,7 @@ export const selectAccountLabelsLegacy = (state: {
     return state.wallet.accounts.reduce(
         (dict, account) => {
             const metadataKeys = account?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION];
-            if (
-                !metadataKeys ||
-                !metadataKeys?.fileName ||
-                !provider?.data[metadataKeys.fileName]
-            ) {
+            if (!metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
                 return dict;
             }
             const data = provider.data[metadataKeys.fileName];
@@ -249,7 +245,7 @@ export const selectLabelingDataForWallet = (
     }
     const metadataKeys = device?.metadata[METADATA_LABELING.ENCRYPTION_VERSION];
 
-    if (metadataKeys && metadataKeys.fileName && provider?.data[metadataKeys.fileName]) {
+    if (metadataKeys?.fileName && provider?.data[metadataKeys.fileName]) {
         return provider.data[metadataKeys.fileName] as WalletLabels;
     }
 
@@ -352,7 +348,6 @@ export const selectIsLabelingAvailableForEntity = (
 
     return Boolean(
         selectIsLabelingAvailable(state) &&
-        entity &&
         entity?.[METADATA_LABELING.ENCRYPTION_VERSION]?.fileName,
     );
 };
@@ -368,7 +363,7 @@ export const selectPasswordManagerState = (
 ) => {
     const provider = selectSelectedProviderForPasswords(state);
 
-    if (!fileName || !provider || !provider?.data?.[fileName]) {
+    if (!fileName || !provider?.data?.[fileName]) {
         return METADATA_PASSWORDS.DEFAULT_PASSWORD_MANAGER_STATE;
     }
 

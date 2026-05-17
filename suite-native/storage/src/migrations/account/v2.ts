@@ -15,7 +15,7 @@ type MigratedAccount = {
 
 export const migrateAccountLabel = (oldAccounts: OldAccount[]): MigratedAccount[] =>
     oldAccounts.map(oldAccount => {
-        if (!oldAccount.metadata || !oldAccount.metadata.accountLabel) {
+        if (!oldAccount.metadata?.accountLabel) {
             return oldAccount;
         }
 

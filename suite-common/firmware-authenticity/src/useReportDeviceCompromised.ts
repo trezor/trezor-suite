@@ -107,7 +107,7 @@ const useReportHashCheck = ({ device, selectAllowPrerelease }: CommonProps) => {
     }, [dispatch, commonData, errorType, errorPayload, attemptCount, shouldReport]);
 
     // success bears warning if it needed retries, so we report the previous error payload, see Device.ts in connect
-    const isHashCheckSuccess = hashCheck && hashCheck.success;
+    const isHashCheckSuccess = hashCheck?.success;
     const warningPayload = isHashCheckSuccess ? hashCheck.warningPayload : null;
     useEffect(() => {
         if (warningPayload) {

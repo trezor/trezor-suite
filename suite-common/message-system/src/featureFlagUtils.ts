@@ -6,7 +6,7 @@ import { Feature as FeatureDefinitions } from './messageSystemTypes';
 export const parseTimeoutThresholdsPerModel = (
     feature: Feature | undefined,
 ): Partial<FirmwareHashCheckTimeouts> => {
-    if (feature === undefined || feature.domain !== FeatureDefinitions.firmwareHashCheckTimeout) {
+    if (feature?.domain !== FeatureDefinitions.firmwareHashCheckTimeout) {
         return {};
     }
 

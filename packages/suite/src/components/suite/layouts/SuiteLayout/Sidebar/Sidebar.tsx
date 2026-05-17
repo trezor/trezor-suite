@@ -133,10 +133,7 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
     }, [setAutoCollapseSuppressed]);
 
     const showAccountsAndIsDeviceReady =
-        !shouldDisplayDeviceCompromised &&
-        selectedDevice !== undefined &&
-        selectedDevice.mode === 'normal' &&
-        showAccounts;
+        !shouldDisplayDeviceCompromised && selectedDevice?.mode === 'normal' && showAccounts;
 
     useEffect(() => {
         if (contentWidth == null) return;

@@ -395,7 +395,7 @@ export const getBitcoinComposeOutputs = (
     // one Output is valid and "final" but other has only address
     // to prevent composing "final" transaction switch it to not-final (noaddress)
     const hasIncompleteOutput = values.outputs.find(
-        (o, i) => setMaxOutputId !== i && o && o.address && !o.amount,
+        (o, i) => setMaxOutputId !== i && o?.address && !o.amount,
     );
     if (hasIncompleteOutput) {
         const finalOutput = result.find(o => o.type === 'send-max' || o.type === 'payment');

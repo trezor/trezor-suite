@@ -103,7 +103,7 @@ const discoveryFailedMessage = (
     discovery: DiscoveryStatus | undefined,
     failed: FailedAccount[],
 ) => {
-    if (!discovery || discovery.status !== 'failed') return '';
+    if (discovery?.status !== 'failed') return '';
     if (discovery.error) return <div>{discovery.error}</div>;
 
     // Group all failed networks into array of errors.

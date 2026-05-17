@@ -13,8 +13,7 @@ export const AppShortcuts = () => {
     const dispatch = useDispatch();
 
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
-    const discoveryInProgress =
-        discoveryStatus !== undefined && discoveryStatus.status === 'loading';
+    const discoveryInProgress = discoveryStatus?.status === 'loading';
 
     useEvent('keydown', e => {
         const { altKey, metaKey } = e;
