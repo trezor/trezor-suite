@@ -11,6 +11,12 @@ export const YieldWithdrawingInfo = ({ supplySymbol }: YieldWithdrawingInfoProps
     <BulletList bulletGap={12} gap={16} bulletSize="small" titleGap={2}>
         <EarnInfoRow
             heading={<Translation id="TR_EARN_SIGN_WITHDRAWAL_TRANSACTION" />}
+            subheading={
+                <Translation
+                    id="TR_EARN_YIELD_WITHDRAW_USES_VAULT_TOKENS_SUB"
+                    values={{ supplySymbol }}
+                />
+            }
             content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}
         />
         <EarnInfoRow

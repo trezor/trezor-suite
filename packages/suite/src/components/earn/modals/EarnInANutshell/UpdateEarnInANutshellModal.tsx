@@ -49,7 +49,7 @@ export const UpdateEarnInANutshellModal = ({
     const processes: EarnInANutshellProcess[] = [
         {
             heading: <Translation id="TR_EARN_PROVIDER_UPDATE" />,
-            badge: <Translation id="TR_TX_FEE" />,
+            badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 1 }} />,
             content: <EarnSupplyingInfo account={account} flow={EarnFlow.UpdateProvider} />,
         },
         {

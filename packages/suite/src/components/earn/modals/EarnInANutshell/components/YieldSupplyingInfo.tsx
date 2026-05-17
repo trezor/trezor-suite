@@ -12,43 +12,59 @@ type YieldSupplyingInfoProps = {
     apy: number | null;
     vault: YieldDto | undefined;
     networkSymbol: NetworkSymbol;
+    supplySymbol: string;
+    vaultSymbol: string | undefined;
 };
 
-export const YieldSupplyingInfo = ({ apy, vault, networkSymbol }: YieldSupplyingInfoProps) => (
+export const YieldSupplyingInfo = ({
+    apy,
+    vault,
+    networkSymbol,
+    supplySymbol,
+    vaultSymbol,
+}: YieldSupplyingInfoProps) => (
     <BulletList bulletGap={12} gap={16} bulletSize="small" titleGap={2}>
         <EarnInfoRow
-            heading={<Translation id="TR_EARN_YIELD_APPROVE_SPENDING_TRANSACTION" />}
+            heading={
+                <Translation
+                    id="TR_EARN_YIELD_APPROVE_SPENDING_TRANSACTION"
+                    values={{ supplySymbol }}
+                />
+            }
             content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}
         />
         <EarnInfoRow
             heading={<Translation id="TR_EARN_SIGN_SUPPLYING_TRANSACTION" />}
+            subheading={
+                <Translation id="TR_EARN_YIELD_DEPOSIT_INTO_VAULT_SUB" values={{ supplySymbol }} />
+            }
             content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}
         />
-        {vault && (
+        {vault && vaultSymbol && (
             <EarnInfoRow
-                heading={<Translation id="TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK" />}
+                heading={
+                    <Translation id="TR_EARN_YIELD_RECEIVE_VAULT_TOKENS" values={{ vaultSymbol }} />
+                }
+                subheading={<Translation id="TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK" />}
                 content={{
-                    text: (
-                        <>
-                            {apy !== null && apy > 0 ? (
-                                <EarnYieldApyTooltip
-                                    vault={vault}
-                                    apyPercentage={apy}
-                                    networkSymbol={networkSymbol}
-                                >
-                                    <Translation
-                                        id="TR_EARN_APY_APPROX"
-                                        values={{ apyPercent: formatApyValue(apy) }}
-                                    />
-                                </EarnYieldApyTooltip>
-                            ) : (
-                                <>
-                                    <Translation id="TR_EARN_APY_N_A" />{' '}
-                                    <Translation id="TR_STAKE_APY_ABBR" />
-                                </>
-                            )}
-                        </>
-                    ),
+                    text:
+                        apy !== null && apy > 0 ? (
+                            <EarnYieldApyTooltip
+                                vault={vault}
+                                apyPercentage={apy}
+                                networkSymbol={networkSymbol}
+                            >
+                                <Translation
+                                    id="TR_EARN_APY_APPROX"
+                                    values={{ apyPercent: formatApyValue(apy) }}
+                                />
+                            </EarnYieldApyTooltip>
+                        ) : (
+                            <>
+                                <Translation id="TR_EARN_APY_N_A" />{' '}
+                                <Translation id="TR_STAKE_APY_ABBR" />
+                            </>
+                        ),
                 }}
             />
         )}

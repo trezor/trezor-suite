@@ -11,15 +11,10 @@ export const EarnInANutshellWithdrawalBadge = ({
 }: EarnInANutshellWithdrawalBadgeProps) => {
     switch (networkType) {
         case 'cardano':
-            return <Translation id="TR_TX_FEE" />;
+            return <Translation id="TR_TX_FEE_COUNT" values={{ count: 1 }} />;
         case 'ethereum':
         case 'solana':
-            return (
-                <>
-                    <Translation id="TR_TX_CONFIRMATIONS" values={{ confirmationsCount: 2 }} />{' '}
-                    <Translation id="TR_TX_FEE" />
-                </>
-            );
+            return <Translation id="TR_TX_FEE_COUNT" values={{ count: 2 }} />;
         default:
             return exhaustive(networkType);
     }
