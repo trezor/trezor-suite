@@ -7,15 +7,9 @@ interface EarnInfoRowProps {
         text: React.ReactNode;
         isBadge?: boolean;
     };
-    isExpanded?: boolean;
 }
 
-export const EarnInfoRow = ({
-    heading,
-    subheading,
-    content,
-    isExpanded = false,
-}: EarnInfoRowProps) => (
+export const EarnInfoRow = ({ heading, subheading, content }: EarnInfoRowProps) => (
     <BulletList.Item
         title={
             <Row justifyContent="space-between" gap={16}>
@@ -36,7 +30,7 @@ export const EarnInfoRow = ({
             </Row>
         }
     >
-        {subheading && isExpanded && (
+        {subheading && (
             <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                 {subheading}
             </Paragraph>

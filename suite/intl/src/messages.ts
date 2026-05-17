@@ -3488,6 +3488,10 @@ export const messages = defineMessages({
         defaultMessage: 'Fee',
         id: 'TR_TX_FEE',
     },
+    TR_TX_FEE_COUNT: {
+        defaultMessage: '{count, plural, =0 {Fee} =1 {Fee} other {{count}x Fee}}',
+        id: 'TR_TX_FEE_COUNT',
+    },
     TR_TX_FEE_INCLUDING_RENT: {
         defaultMessage: 'Network fee (including rent)',
         id: 'TR_TX_FEE_INCLUDING_RENT',
@@ -10163,11 +10167,31 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_APPROVE_SPENDING_TRANSACTION: {
         id: 'TR_EARN_YIELD_APPROVE_SPENDING_TRANSACTION',
-        defaultMessage: 'Approve spending transaction',
+        defaultMessage: 'Set {supplySymbol} spending limit',
     },
     TR_EARN_SIGN_SUPPLYING_TRANSACTION: {
         id: 'TR_EARN_SIGN_SUPPLYING_TRANSACTION',
         defaultMessage: 'Sign deposit transaction',
+    },
+    TR_EARN_YIELD_DEPOSIT_INTO_VAULT_SUB: {
+        id: 'TR_EARN_YIELD_DEPOSIT_INTO_VAULT_SUB',
+        defaultMessage: 'Deposits your {supplySymbol} into the vault',
+    },
+    TR_EARN_YIELD_RECEIVE_VAULT_TOKENS: {
+        id: 'TR_EARN_YIELD_RECEIVE_VAULT_TOKENS',
+        defaultMessage: 'Receive {vaultSymbol}',
+    },
+    TR_EARN_YIELD_WITHDRAW_USES_VAULT_TOKENS_SUB: {
+        id: 'TR_EARN_YIELD_WITHDRAW_USES_VAULT_TOKENS_SUB',
+        defaultMessage: 'Redeems your vault shares for {supplySymbol}',
+    },
+    TR_EARN_YIELD_CLAIM_AVAILABLE_IN_EARN_SUB: {
+        id: 'TR_EARN_YIELD_CLAIM_AVAILABLE_IN_EARN_SUB',
+        defaultMessage: 'Available in Earn tab',
+    },
+    TR_EARN_YIELD_RECEIVE_REWARDS_IN_ACCOUNT: {
+        id: 'TR_EARN_YIELD_RECEIVE_REWARDS_IN_ACCOUNT',
+        defaultMessage: 'Receive {rewardsSymbols} in your account',
     },
     TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK: {
         id: 'TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK',
@@ -10264,6 +10288,10 @@ export const messages = defineMessages({
     TR_EARN_SIGN_WITHDRAWAL_TRANSACTION: {
         id: 'TR_EARN_SIGN_WITHDRAWAL_TRANSACTION',
         defaultMessage: 'Sign withdrawal transaction',
+    },
+    TR_EARN_SIGN_CLAIM_REWARDS_TRANSACTION: {
+        id: 'TR_EARN_SIGN_CLAIM_REWARDS_TRANSACTION',
+        defaultMessage: 'Sign claim transaction',
     },
     TR_EARN_LEAVE_STAKING_POOL: {
         id: 'TR_EARN_LEAVE_STAKING_POOL',

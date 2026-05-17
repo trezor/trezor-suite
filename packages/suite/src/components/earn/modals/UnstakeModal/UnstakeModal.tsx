@@ -68,11 +68,7 @@ export const UnstakeModal = ({ onCancel, account }: UnstakeModalProps) => {
                             hasDivider={false}
                             defaultIsOpen
                         >
-                            <EarnWithdrawingInfo
-                                account={account}
-                                flow={EarnFlow.Stake}
-                                isExpanded
-                            />
+                            <EarnWithdrawingInfo account={account} flow={EarnFlow.Stake} />
                         </CollapsibleBox>
                     </Column>
                 </Grid>
