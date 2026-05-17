@@ -142,6 +142,7 @@ export const typescriptConfig = [
                     fixMixedExportsWithInlineTypeSpecifier: true,
                 },
             ],
+            '@typescript-eslint/prefer-optional-chain': ['error'],
         },
     },
 ];
