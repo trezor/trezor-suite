@@ -7,6 +7,10 @@ import {
     createErrorMessage,
 } from '@trezor/connect-common/src/events';
 import type { ConnectImpl, ConnectImplSettings } from '@trezor/connect-common/src/impl/dynamic';
+import {
+    type CancelParams,
+    normalizeCancelParams,
+} from '@trezor/connect-common/src/utils/cancelParams';
 import { type Log, initLog } from '@trezor/connect-common/src/utils/debug';
 
 import { getEnv } from '../connectSettings';
@@ -32,8 +36,9 @@ export class CoreInSuiteWeb implements ConnectImpl {
         return Promise.resolve(undefined);
     }
 
-    public cancel(reason?: string) {
-        this.logger.debug('cancel', reason);
+    public cancel(params?: CancelParams) {
+        const { reason, callId } = normalizeCancelParams(params);
+        this.logger.debug('cancel', reason, callId);
 
         // Flush any pending outgoing messages so that the cancel is not
         // delayed behind queued sends (relevant for the webextension
@@ -42,7 +47,7 @@ export class CoreInSuiteWeb implements ConnectImpl {
         this._popupManager?.channel?.postMessage(
             {
                 type: CORE_CALL_CANCEL,
-                payload: reason ? { reason } : null,
+                payload: reason || callId ? { reason, callId } : null,
             },
             { usePromise: false },
         );
