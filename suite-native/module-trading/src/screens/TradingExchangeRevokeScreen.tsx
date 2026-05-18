@@ -6,7 +6,7 @@ import type { ExchangeTrade } from 'invity-api';
 import {
     type TradingRootState,
     selectTradingCoinSymbolByCryptoId,
-    selectTradingExchangeActiveQuote,
+    selectTradingExchangeSelectedQuote,
     tradingExchangeActions,
 } from '@suite-common/trading';
 import { InlineAlertBox, VStack } from '@suite-native/atoms';
@@ -38,7 +38,7 @@ export const TradingExchangeRevokeScreen = ({
     const { shouldIncreaseLimit } = params;
     const dispatch = useDispatch();
 
-    const quote = useSelector(selectTradingExchangeActiveQuote);
+    const quote = useSelector(selectTradingExchangeSelectedQuote);
 
     const { isReady, isConfirming, error: confirmError, confirmApproval } = useApprovalFlow();
 

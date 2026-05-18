@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import {
     cryptoIdToNetworkAndContractAddress,
-    selectTradingExchangeActiveQuote,
+    selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import { HStack, Text } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
@@ -13,7 +13,7 @@ import { hasPreapprovedLimit } from '../../../utils/exchange/quotesUtils';
 import { TradingCoinAmountFormatter } from '../../general/TradingCoinAmountFormatter';
 
 export const OriginalLimit = () => {
-    const quote = useSelector(selectTradingExchangeActiveQuote);
+    const quote = useSelector(selectTradingExchangeSelectedQuote);
 
     if (!quote?.send || !hasPreapprovedLimit(quote)) {
         return null;

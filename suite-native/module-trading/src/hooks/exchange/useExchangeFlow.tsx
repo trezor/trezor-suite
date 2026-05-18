@@ -8,7 +8,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingSendRejectedProps,
     exchangeThunks,
-    selectTradingExchangeActiveQuote,
+    selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import {
@@ -50,7 +50,7 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
         >();
     const dispatch = useDispatch();
     const { analytics } = useServices<NativeAnalyticsDep>();
-    const quote = useSelector(selectTradingExchangeActiveQuote);
+    const quote = useSelector(selectTradingExchangeSelectedQuote);
 
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
 

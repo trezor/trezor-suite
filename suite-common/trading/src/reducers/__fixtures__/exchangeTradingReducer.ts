@@ -188,20 +188,6 @@ export const exchangeTradingFixtures = [
         },
     },
     {
-        description: 'should save preselected quote',
-        initialState: exchangeInitialState,
-        actions: [
-            {
-                type: tradingExchangeActions.savePreselectedQuote.type,
-                payload: changellyExchangeQuote,
-            },
-        ],
-        result: {
-            ...exchangeInitialState,
-            preselectedQuote: changellyExchangeQuote,
-        },
-    },
-    {
         description: 'should set status whether is from redirect',
         initialState: exchangeInitialState,
         actions: [

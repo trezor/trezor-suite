@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import {
     cryptoIdToNetworkAndContractAddress,
-    selectTradingExchangeActiveQuote,
+    selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon, Icon } from '@suite-native/icons';
@@ -21,7 +21,7 @@ type LimitInfoRowProps = PropsWithChildren<{
 }>;
 
 export const LimitInfoRow = ({ onPress, testID, withCaret, children }: LimitInfoRowProps) => {
-    const quote = useSelector(selectTradingExchangeActiveQuote);
+    const quote = useSelector(selectTradingExchangeSelectedQuote);
 
     if (!quote?.send) {
         return null;

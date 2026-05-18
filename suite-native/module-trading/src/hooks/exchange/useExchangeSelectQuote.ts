@@ -103,13 +103,16 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
 
     const selectQuote = () =>
         dispatchSelectQuote('continue', approvalStatus => {
-            if (approvalStatus === 'approved' || approvalStatus === 'not_needed') {
-                return navigation.navigate(RootStackRoutes.TradingExchangePreview, {});
-            }
-
-            dispatch(tradingExchangeActions.savePreselectedQuote(candidateQuote));
+            // selectExchangeQuoteThunk skips saveSelectedQuote for DEX ERC-20 quotes in pre-CONFIRM
+            // status to preserve desktop behavior. The approval/revoke screens read selectedQuote,
+            // so persist it explicitly here.
+            dispatch(tradingExchangeActions.saveSelectedQuote(candidateQuote));
 
             switch (approvalStatus) {
+                case 'approved':
+                case 'not_needed':
+                    return navigation.navigate(RootStackRoutes.TradingExchangePreview, {});
+
                 case 'needs_increase':
                     return navigation.navigate(RootStackRoutes.TradingExchangeApproval, {
                         shouldIncreaseLimit: true,
@@ -143,7 +146,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
                 case 'needs_increase':
                 case 'needs_revoke':
                 case 'approved':
-                    dispatch(tradingExchangeActions.savePreselectedQuote(candidateQuote));
+                    dispatch(tradingExchangeActions.saveSelectedQuote(candidateQuote));
 
                     return navigation.navigate(RootStackRoutes.TradingExchangeRevoke, {
                         shouldIncreaseLimit: false,

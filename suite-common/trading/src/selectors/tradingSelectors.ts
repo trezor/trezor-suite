@@ -343,12 +343,6 @@ export const selectTradingBuySelectedQuote = (state: TradingRootState) =>
 export const selectTradingExchangeSelectedQuote = (state: TradingRootState) =>
     state.wallet.trading.exchange.selectedQuote;
 
-export const selectTradingExchangePreselectedQuote = (state: TradingRootState) =>
-    state.wallet.trading.exchange.preselectedQuote;
-
-export const selectTradingExchangeActiveQuote = (state: TradingRootState) =>
-    selectTradingExchangeSelectedQuote(state) ?? selectTradingExchangePreselectedQuote(state);
-
 export const selectTradingSellSelectedQuote = (state: TradingRootState) =>
     state.wallet.trading.sell.selectedQuote;
 

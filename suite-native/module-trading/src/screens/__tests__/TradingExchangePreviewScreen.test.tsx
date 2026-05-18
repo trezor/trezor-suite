@@ -4,7 +4,7 @@ import type { ExchangeTrade } from 'invity-api';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
 import { getTranslation } from '@suite-native/intl';
-import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
+import { type RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
 import {
     type TestStore,
     renderWithStoreProvider,
@@ -338,6 +338,23 @@ describe('TradingExchangePreviewScreen', () => {
                 step: 'transaction-preview',
                 action: 'continue',
             }),
+        });
+    });
+
+    describe('Approval Required Redirect', () => {
+        it('redirects to TradingExchangeApproval when selectedQuote.status is APPROVAL_REQ', async () => {
+            const approvalReqQuote: ExchangeTrade = {
+                ...mercuryoFixedWorstQuote,
+                status: 'APPROVAL_REQ',
+            };
+            const testStore = createStore(approvalReqQuote);
+
+            renderTradingExchangePreviewScreen(false, testStore);
+
+            await waitFor(() => {
+                expect(mockNavigate).toHaveBeenCalledTimes(1);
+            });
+            expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.TradingExchangeApproval, {});
         });
     });
 

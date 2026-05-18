@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import {
     cryptoIdToNetworkAndContractAddress,
-    selectTradingExchangeActiveQuote,
+    selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import { isMaxAllowance } from '@suite-common/wallet-utils';
 import { HStack, Text } from '@suite-native/atoms';
@@ -14,7 +14,7 @@ import { UnlimitedAllowanceLabel } from './UnlimitedAllowanceLabel';
 import { TradingCoinAmountFormatter } from '../../general/TradingCoinAmountFormatter';
 
 export const RevokeLimitInfoRow = () => {
-    const quote = useSelector(selectTradingExchangeActiveQuote);
+    const quote = useSelector(selectTradingExchangeSelectedQuote);
 
     if (!quote?.send) {
         return null;

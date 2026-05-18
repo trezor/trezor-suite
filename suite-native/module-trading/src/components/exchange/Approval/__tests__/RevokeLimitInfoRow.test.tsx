@@ -20,7 +20,7 @@ describe('RevokeLimitInfoRow', () => {
         wallet: {
             trading: {
                 exchange: {
-                    preselectedQuote: {
+                    selectedQuote: {
                         ...mercuryoFixedWorstQuote,
                         preapprovedStringAmount: '100',
                     },

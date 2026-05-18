@@ -1,4 +1,4 @@
-import { selectTradingExchangeActiveQuote, tradingExchangeActions } from '@suite-common/trading';
+import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import {
     type TestStore,
@@ -20,7 +20,7 @@ describe('LimitPicker', () => {
             <LimitPicker
                 onApprovalTypeChange={approvalType => {
                     mockOnApprovalTypeChange(approvalType);
-                    const quote = selectTradingExchangeActiveQuote(store.getState());
+                    const quote = selectTradingExchangeSelectedQuote(store.getState());
                     if (!quote) {
                         return;
                     }
@@ -43,7 +43,7 @@ describe('LimitPicker', () => {
                 wallet: {
                     trading: {
                         exchange: {
-                            preselectedQuote: quote,
+                            selectedQuote: quote,
                         },
                     },
                 },
@@ -94,7 +94,7 @@ describe('LimitPicker', () => {
                 }),
             ),
         ).toBeOnTheScreen();
-        expect(selectTradingExchangeActiveQuote(store.getState())).toEqual(
+        expect(selectTradingExchangeSelectedQuote(store.getState())).toEqual(
             expect.objectContaining({ approvalType: 'INFINITE' }),
         );
     });
@@ -115,13 +115,12 @@ describe('LimitPicker', () => {
                 getTranslation('moduleTrading.exchangeApprovalLimitSheet.limitedCard.info'),
             ),
         ).toBeOnTheScreen();
-        expect(selectTradingExchangeActiveQuote(store.getState())).toEqual(
+        expect(selectTradingExchangeSelectedQuote(store.getState())).toEqual(
             expect.objectContaining({ approvalType: 'MINIMAL' }),
         );
     });
 
     it('should render nothing without quote', () => {
-        store.dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
         store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
 
         const { toJSON } = renderLimitPicker();

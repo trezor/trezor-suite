@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import type { DexApprovalType } from 'invity-api';
 
-import { selectTradingExchangeActiveQuote } from '@suite-common/trading';
+import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useBottomSheetControls } from '@suite-native/trading-atoms';
@@ -17,7 +17,7 @@ type LimitPickerProps = {
 };
 
 export const LimitPicker = ({ onApprovalTypeChange }: LimitPickerProps) => {
-    const quote = useSelector(selectTradingExchangeActiveQuote);
+    const quote = useSelector(selectTradingExchangeSelectedQuote);
     const { isSheetVisible, showSheet, hideSheet } = useBottomSheetControls();
 
     const handleApprovalTypeChange = useCallback(

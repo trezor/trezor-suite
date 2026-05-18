@@ -27,7 +27,6 @@ export interface TradingExchangeState {
     receiveAddress?: string;
     extraField?: string;
     selectedQuote: ExchangeTrade | undefined;
-    preselectedQuote: ExchangeTrade | undefined;
     isFromRedirect: boolean;
     isLoading: boolean;
     dexQuoteApprovalPrefetchLoadingQuoteId: string | undefined;
@@ -47,7 +46,6 @@ export const exchangeInitialState: TradingExchangeState = {
     receiveAddress: undefined,
     extraField: undefined,
     selectedQuote: undefined,
-    preselectedQuote: undefined,
     isFromRedirect: false,
     isLoading: false,
     dexQuoteApprovalPrefetchLoadingQuoteId: undefined,
@@ -88,9 +86,6 @@ const tradingExchangeSlice = createSlice({
         },
         saveSelectedQuote(state, action: PayloadAction<ExchangeTrade | undefined>) {
             state.selectedQuote = action.payload;
-        },
-        savePreselectedQuote(state, action: PayloadAction<ExchangeTrade | undefined>) {
-            state.preselectedQuote = action.payload;
         },
         setIsFromRedirect(state, action: PayloadAction<boolean>) {
             state.isFromRedirect = action.payload;

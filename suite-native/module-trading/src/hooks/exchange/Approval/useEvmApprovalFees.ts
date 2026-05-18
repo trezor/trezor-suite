@@ -5,7 +5,7 @@ import { type DexApprovalType } from 'invity-api';
 
 import {
     selectTradingComposedTransactionInfo,
-    selectTradingExchangeActiveQuote,
+    selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import {
     type AccountsRootState,
@@ -30,7 +30,7 @@ export const useEvmApprovalFees = ({ approvalTypeOverride }: UseEvmApprovalFeesP
     const [isComposing, setIsComposing] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const quote = useSelector(selectTradingExchangeActiveQuote);
+    const quote = useSelector(selectTradingExchangeSelectedQuote);
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, sendAccount?.key),
