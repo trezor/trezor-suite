@@ -3068,8 +3068,8 @@ export const messages = {
             providerContractAddressLabel: "{providerName}'s contract address",
             confirmationAlertTitle: 'Failed to confirm offer.',
             approvalSuccessAlert: 'Spending approval confirmed.',
-            fusionPlusInfo: {
-                title: 'You are swapping with 1Inch Fusion+',
+            eip712Info: {
+                title: 'You are swapping with {providerName}',
                 bullet1: 'Simply sign the order - no need to send transactions manually',
                 bullet2: 'No gas fees - the smart contract handles everything for you',
                 bullet3: 'Your swap might be partially filled based on the market conditions',
@@ -3123,6 +3123,12 @@ export const messages = {
         tradingReviewOutputs: {
             title: 'Confirm on Trezor',
             submitButton: 'Send transaction',
+            signData: {
+                heading: 'Sign EIP-712 typed data',
+                address: 'Address',
+                domain: 'Domain',
+                message: 'Message',
+            },
         },
         tradingConfirmationScreen: {
             approveHeaderTitle: 'Approve {symbol} spending',

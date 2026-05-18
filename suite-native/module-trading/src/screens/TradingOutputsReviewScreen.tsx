@@ -18,10 +18,13 @@ export const TradingExchangeOutputsReviewScreen = ({
     const { accountKey, tokenContract, orderId, flowType } = route.params;
     const {
         signAndSendTransaction,
+        signDataAndConfirm,
         isTransactionSendConsentRequested,
         resolveTransactionSendConsent,
     } = useExchangeFlow({ flowType });
     const analyticsReportCallback = useExchangeAnalyticReportCallback();
+
+    const actionFn = flowType === 'sign-data' ? signDataAndConfirm : signAndSendTransaction;
 
     return (
         <ReviewOutputsContent
@@ -29,7 +32,7 @@ export const TradingExchangeOutputsReviewScreen = ({
             tokenContract={tokenContract}
             orderId={orderId}
             tradingType="exchange"
-            signAndSendTransaction={signAndSendTransaction}
+            signAndSendTransaction={actionFn}
             isTransactionSendConsentRequested={isTransactionSendConsentRequested}
             resolveTransactionSendConsent={resolveTransactionSendConsent}
             reportToAnalytics={analyticsReportCallback}

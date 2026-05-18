@@ -5,12 +5,14 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { ExchangeTrade } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { selectSelectedDevice } from '@suite-common/device';
 import {
     type TradingSendRejectedProps,
     exchangeThunks,
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { type TxKeyPath } from '@suite-native/intl';
 import {
     type ExchangeFlowType,
     type RootStackParamList,
@@ -20,7 +22,10 @@ import {
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
-import { useTradingTransaction } from '../general/useTradingTransaction';
+import {
+    type TradingTransactionSignAndSendProps,
+    useTradingTransaction,
+} from '../general/useTradingTransaction';
 
 export type TradingExchangeConfirmTradeProps = {
     receiveAddress: string;
@@ -51,7 +56,7 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
     const dispatch = useDispatch();
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const quote = useSelector(selectTradingExchangeSelectedQuote);
-
+    const device = useSelector(selectSelectedDevice);
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
 
     const { openBrowserForFormData } = useBrowserAuth('exchange');
@@ -178,10 +183,49 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
         inFlightConfirmTradePromiseRef.current = null;
     }, []);
 
+    // Signs EIP-712 typed data on the Trezor device (used by 1inch Fusion+ orders)
+    // and submits the signature to the exchange API via confirmExchangeTradeThunk.
+    // No on-chain transaction is composed or sent.
+    const signDataAndConfirm = useCallback(
+        async ({ nextStep, onError }: TradingTransactionSignAndSendProps) => {
+            const commonFunctions = getCommonFunctions();
+
+            if (!sendAccount || !device || !commonFunctions) {
+                console.warn('signDataAndConfirm: missing account, device, or common functions');
+
+                return false;
+            }
+
+            const { returnUrl, triggerAnalyticsTradeConfirmation, processResponseData } =
+                commonFunctions;
+
+            try {
+                await dispatch(
+                    exchangeThunks.signDataAndConfirmThunk({
+                        account: sendAccount,
+                        device,
+                        returnUrl,
+                        triggerAnalyticsTradeConfirmation,
+                        processResponseData,
+                        nextStep,
+                    }),
+                ).unwrap();
+
+                return true;
+            } catch (e) {
+                onError(e as TradingSendRejectedProps<TxKeyPath>);
+
+                return false;
+            }
+        },
+        [getCommonFunctions, sendAccount, device, dispatch],
+    );
+
     return {
         txnErrorString,
         confirmTrade,
         abortConfirmTrade,
+        signDataAndConfirm,
         composeRequest,
         fetchFeesAndCompose,
         signAndSendTransaction,

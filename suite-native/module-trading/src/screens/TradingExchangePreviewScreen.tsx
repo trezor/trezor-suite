@@ -1,10 +1,16 @@
 import { useCallback, useEffect, useEffectEvent, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 
 import { useNetInfo } from '@react-native-community/netinfo';
 import { useFocusEffect } from '@react-navigation/native';
 
-import { isFinalStatus, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
+import {
+    type TradingRootState,
+    hasEip712SignData,
+    isFinalStatus,
+    selectTradingExchangeFormStep,
+    selectTradingExchangeSelectedQuote,
+} from '@suite-common/trading';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import {
@@ -63,6 +69,7 @@ const TradingExchangePreviewScreenContent = ({
 
     const { txnErrorString, confirmTrade, abortConfirmTrade, fetchFeesAndCompose } =
         useExchangeFlow();
+    const store = useStore<TradingRootState>();
 
     const [isConfirmationErrorRequested, setIsConfirmationErrorRequested] =
         useState<boolean>(false);
@@ -86,7 +93,10 @@ const TradingExchangePreviewScreenContent = ({
             });
 
             if (success) {
-                await fetchFeesAndCompose();
+                const currentFormStep = selectTradingExchangeFormStep(store.getState());
+                if (currentFormStep !== 'SIGN_DATA') {
+                    await fetchFeesAndCompose();
+                }
             }
         } catch (e) {
             debounce(() => {
@@ -95,7 +105,7 @@ const TradingExchangePreviewScreenContent = ({
 
             console.error('Failed to confirm trade', e);
         }
-    }, [confirmTrade, debounce, fetchFeesAndCompose, quote, toAccount]);
+    }, [confirmTrade, debounce, fetchFeesAndCompose, store, quote, toAccount]);
 
     const onSignTransactionNavigation = useCallback(() => {
         hasRequestedTradeConfirmation.current = false;
@@ -163,7 +173,9 @@ const TradingExchangePreviewScreenContent = ({
         reportToAnalytics,
     ]);
 
-    const errorString = txnErrorString ?? quote?.error;
+    // EIP-712 signing has no on-chain transaction, so fee composition errors
+    // (e.g. insufficient gas) are irrelevant.
+    const errorString = hasEip712SignData(quote) ? null : (txnErrorString ?? quote?.error);
 
     return (
         <Screen

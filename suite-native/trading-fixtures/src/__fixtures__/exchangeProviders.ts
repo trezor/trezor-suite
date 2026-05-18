@@ -47,3 +47,35 @@ export const exchangeCexdirect: ExchangeProviderInfo = {
     kycPolicyType: 'KYC-required',
     addressFormats: {},
 };
+
+export const exchangeOneInchFusion: ExchangeProviderInfo = {
+    name: '1inchfusion',
+    companyName: '1inch Fusion',
+    logo: '1inch.svg',
+    isActive: true,
+    buyTickers: [],
+    sellTickers: [],
+    statusUrl: '',
+    supportUrl: '',
+    termsUrl: '',
+    isDex: true,
+    isFixedRate: false,
+    kycPolicyType: 'DEX',
+    addressFormats: {},
+};
+
+export const exchangeOneInchFusionPlus: ExchangeProviderInfo = {
+    name: '1inchfusionplus',
+    companyName: '1inch Fusion+',
+    logo: '1inch.svg',
+    isActive: true,
+    buyTickers: [],
+    sellTickers: [],
+    statusUrl: '',
+    supportUrl: '',
+    termsUrl: '',
+    isDex: true,
+    isFixedRate: false,
+    kycPolicyType: 'DEX',
+    addressFormats: {},
+};

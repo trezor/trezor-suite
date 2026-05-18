@@ -512,7 +512,7 @@ export type TransactionDetailStackParamList = {
 };
 
 export type ConfirmingScreenFlowType = 'approve' | 'revoke' | 'revoke-and-approve';
-export type ExchangeFlowType = 'swap' | ConfirmingScreenFlowType;
+export type ExchangeFlowType = 'swap' | 'sign-data' | ConfirmingScreenFlowType;
 
 export type TradingStackParamList = {
     [TradingStackRoutes.Trading]: { tradingType?: TradingType };

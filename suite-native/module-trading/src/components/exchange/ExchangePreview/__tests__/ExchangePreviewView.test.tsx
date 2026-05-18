@@ -4,7 +4,8 @@ import {
     cexdirectFloatingQuote,
     eth1NormalAccount,
     mercuryoFixedWorstQuote,
-    oneInchFusionPlusQuote,
+    oneInchFusionPlusWithEip712SignDataQuote,
+    oneInchFusionPlusWithoutEip712SignDataQuote,
 } from '@suite-native/trading-fixtures';
 
 import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
@@ -62,20 +63,28 @@ describe('ExchangePreviewView', () => {
         expect(queryByText('Transaction fee')).toBeNull();
     });
 
-    it('should render 1Inch Fusion+ info when exchange is 1inchfusionplus', () => {
+    it('should render EIP-712 info with provider name when quote has EIP-712 sign data', () => {
         const { getByText } = renderExchangePreviewView({
-            quote: oneInchFusionPlusQuote,
+            quote: oneInchFusionPlusWithEip712SignDataQuote,
         });
 
-        expect(getByText('You are swapping with 1Inch Fusion+')).toBeOnTheScreen();
+        expect(getByText(/^You are swapping with 1inch Fusion\+$/)).toBeOnTheScreen();
     });
 
-    it('should not render 1Inch Fusion+ info when exchange is not 1inchfusionplus', () => {
+    it('should not render transaction fee for quotes with EIP-712 sign data', () => {
         const { queryByText } = renderExchangePreviewView({
-            quote: mercuryoFixedWorstQuote,
+            quote: oneInchFusionPlusWithEip712SignDataQuote,
         });
 
-        expect(queryByText('You are swapping with 1Inch Fusion+')).toBeNull();
+        expect(queryByText('Transaction fee')).toBeNull();
+    });
+
+    it('should not render EIP-712 info when quote has no EIP-712 sign data', () => {
+        const { queryByText } = renderExchangePreviewView({
+            quote: oneInchFusionPlusWithoutEip712SignDataQuote,
+        });
+
+        expect(queryByText(/^You are swapping with /)).toBeNull();
     });
 
     it('should render KYC warning for provider with "KYC-required"', () => {

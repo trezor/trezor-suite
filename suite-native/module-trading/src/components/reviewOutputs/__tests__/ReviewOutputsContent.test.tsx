@@ -1,4 +1,5 @@
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { oneInchFusionPlusWithEip712SignDataQuote } from '@suite-native/trading-fixtures';
 
 import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 import { ReviewOutputsContent, type ReviewOutputsContentProps } from '../ReviewOutputsContent';
@@ -74,6 +75,39 @@ describe('ReviewOutputsContent', () => {
         const { queryByTestId } = renderReviewOutputsContent({});
 
         expect(queryByTestId('@trading/outputs-review/footer')).not.toBeOnTheScreen();
+    });
+
+    it('should render SignDataMessageReview when exchangeFlowType is sign-data', () => {
+        const { getByTestId, getByText, queryByText } = renderWithTradingProvider(
+            <ReviewOutputsContent
+                orderId="ORDER_ID"
+                accountKey={'ACCOUNT_KEY' as AccountKey}
+                reportToAnalytics={jest.fn()}
+                tradingType="exchange"
+                isTransactionSendConsentRequested={true}
+                tokenContract={'TOKEN_CONTRACT' as TokenAddress}
+                resolveTransactionSendConsent={jest.fn()}
+                signAndSendTransaction={jest.fn()}
+                exchangeFlowType="sign-data"
+            />,
+            {
+                tradeType: 'exchange',
+                overrides: {
+                    wallet: {
+                        trading: {
+                            exchange: {
+                                selectedQuote: oneInchFusionPlusWithEip712SignDataQuote,
+                            },
+                        },
+                    },
+                },
+            },
+        );
+
+        expect(getByTestId('@trading/outputs-review')).toBeOnTheScreen();
+        expect(getByText('Sign EIP-712 typed data')).toBeOnTheScreen();
+        // ReviewOutputItemList renders "Account not found" for invalid keys; sign-data skips it
+        expect(queryByText(/Account not found/)).toBeNull();
     });
 
     it('should display sign button if transaction is signed', () => {

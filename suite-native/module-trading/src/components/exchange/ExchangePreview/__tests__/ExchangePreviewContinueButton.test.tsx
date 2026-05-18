@@ -185,4 +185,30 @@ describe('ExchangePreviewContinueButton', () => {
         });
         expect(mockOnSignTransactionNavigation).toHaveBeenCalledTimes(1);
     });
+
+    it('should navigate with flowType sign-data when formStep is SIGN_DATA', async () => {
+        const mockOnSignTransactionNavigation = jest.fn();
+        const { getByText } = renderExchangePreviewContinueButton(
+            { onSignTransactionNavigation: mockOnSignTransactionNavigation },
+            {
+                wallet: {
+                    trading: {
+                        exchange: {
+                            formStep: 'SIGN_DATA',
+                        },
+                    },
+                },
+            },
+        );
+
+        await userEvent.press(getByText('Continue'));
+
+        expect(mockNavigate).toHaveBeenCalledWith('TradingExchangeOutputsReview', {
+            accountKey: 'btc-account-1',
+            orderId: mercuryoFixedWorstQuote.orderId,
+            tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            flowType: 'sign-data',
+        });
+        expect(mockOnSignTransactionNavigation).toHaveBeenCalledTimes(1);
+    });
 });
