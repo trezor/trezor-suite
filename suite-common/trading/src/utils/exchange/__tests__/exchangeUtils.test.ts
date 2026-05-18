@@ -50,6 +50,47 @@ describe('requiresTokenApproval', () => {
         const result = requiresTokenApproval(quote);
         expect(result).toBe(true);
     });
+
+    it('should return true for DEX quotes with ERC-20 tokens when EIP-712 sign data is missing', () => {
+        const quote = {
+            orderId: 'test-order',
+            isDex: true,
+            send: 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId,
+            status: 'SIGN_DATA' as const,
+        };
+        const result = requiresTokenApproval(quote);
+        expect(result).toBe(true);
+    });
+
+    it('should return true for DEX quotes with ERC-20 tokens when sign data is not EIP-712', () => {
+        const quote = {
+            orderId: 'test-order',
+            isDex: true,
+            send: 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId,
+            status: 'SIGN_DATA' as const,
+            signData: {
+                type: 'slip24',
+                data: {},
+            } as any,
+        };
+        const result = requiresTokenApproval(quote);
+        expect(result).toBe(true);
+    });
+
+    it('should return false for DEX quotes with ERC-20 tokens when status is SIGN_DATA with EIP-712 data', () => {
+        const quote = {
+            orderId: 'test-order',
+            isDex: true,
+            send: 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId,
+            status: 'SIGN_DATA' as const,
+            signData: {
+                type: 'eip712-typed-data' as const,
+                data: {},
+            },
+        };
+        const result = requiresTokenApproval(quote);
+        expect(result).toBe(false);
+    });
 });
 
 describe('getApprovalStatus', () => {
@@ -137,6 +178,50 @@ describe('getApprovalStatus', () => {
         };
         const result = getApprovalStatus(quote);
         expect(result).toBe('not_needed');
+    });
+
+    it('should return "not_needed" for quote with SIGN_DATA status and EIP-712 data', () => {
+        const quote = {
+            orderId: 'test-order',
+            isDex: true,
+            send: dexTokenSend,
+            status: 'SIGN_DATA' as const,
+            signData: {
+                type: 'eip712-typed-data' as const,
+                data: {},
+            },
+        };
+        const result = getApprovalStatus(quote);
+        expect(result).toBe('not_needed');
+    });
+
+    it('should return "needs_approval" for quote with SIGN_DATA status and non-EIP-712 data', () => {
+        const quote = {
+            orderId: 'test-order',
+            isDex: true,
+            send: dexTokenSend,
+            status: 'SIGN_DATA' as const,
+            signData: {
+                type: 'slip24',
+                data: {},
+            } as any,
+        };
+        const result = getApprovalStatus(quote);
+        expect(result).toBe('needs_approval');
+    });
+
+    it('should return "needs_approval" for quote with EIP-712 data without SIGN_DATA status', () => {
+        const quote = {
+            orderId: 'test-order',
+            isDex: true,
+            send: dexTokenSend,
+            signData: {
+                type: 'eip712-typed-data' as const,
+                data: {},
+            },
+        };
+        const result = getApprovalStatus(quote);
+        expect(result).toBe('needs_approval');
     });
 });
 

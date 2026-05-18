@@ -119,8 +119,15 @@ export type ApprovalStatus =
     | 'not_needed'
     | null;
 
+export const hasEip712SignData = (quote?: ExchangeTrade) =>
+    quote?.status === 'SIGN_DATA' && quote?.signData?.type === 'eip712-typed-data';
+
 export const requiresTokenApproval = (quote?: ExchangeTrade): boolean =>
-    !!quote && !!quote.isDex && !!quote.send && !isSendingEvmNativeToken(quote.send);
+    !!quote &&
+    !!quote.isDex &&
+    !!quote.send &&
+    !isSendingEvmNativeToken(quote.send) &&
+    !hasEip712SignData(quote);
 
 export const getApprovalStatus = (candidateQuote?: ExchangeTrade): ApprovalStatus => {
     if (!candidateQuote) {
@@ -158,6 +165,7 @@ export const exchangeUtils = {
     getSuccessQuotesOrdered,
     getStatusMessage,
     tokenSupportsIncreasingAllowance,
+    hasEip712SignData,
     requiresTokenApproval,
     getApprovalStatus,
 };
