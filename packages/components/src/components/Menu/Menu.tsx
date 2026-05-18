@@ -38,7 +38,7 @@ const MenuList = styled.ul`
 
 export type DropdownMenuItemProps = {
     label: React.ReactNode;
-    onClick?: () => any | Promise<any>;
+    onClick?: () => unknown | Promise<unknown>;
     icon?: IconName;
     iconRight?: IconName;
     isDisabled?: boolean;
