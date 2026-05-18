@@ -32,7 +32,8 @@ export const PassphraseOnDeviceModal = ({ device }: PassphraseOnDeviceModalProps
     const confirmEmptyPassphrase = useSelector(selectIsDiscoveryStatusConfirmEmptyPassphrase);
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
 
-    const onCancel = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
+    const onCancel = () =>
+        TrezorConnect.cancel({ reason: intl.formatMessage(messages.TR_CANCELLED) });
 
     return (
         <Modal.Backdrop onClick={onCancel}>

@@ -9,7 +9,7 @@ export const RBF_ERROR_ALREADY_MINED = 'replace-by-fee-error-transaction-already
 export const replaceByFeeErrorThunk = createThunk(
     `${MODULE_PREFIX}/replaceByFeeErrorThunk`,
     (_, { dispatch }) => {
-        TrezorConnect.cancel(RBF_ERROR_ALREADY_MINED);
+        TrezorConnect.cancel({ reason: RBF_ERROR_ALREADY_MINED });
 
         dispatch(
             openModal({

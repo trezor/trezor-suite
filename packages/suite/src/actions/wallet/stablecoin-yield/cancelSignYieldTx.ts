@@ -9,7 +9,7 @@ export const cancelSignYieldTx = createThunk(
         const { serializedTx } = selectStablecoinYieldTxReview(getState());
 
         if (!serializedTx) {
-            TrezorConnect.cancel('tx-cancelled');
+            TrezorConnect.cancel({ reason: 'tx-cancelled' });
         }
 
         dispatch(closeModal());

@@ -25,7 +25,7 @@ export const ConfirmPassphraseBeforeAction = () => {
     const intl = useIntl();
 
     const onEnterPassphraseDialogCancel = () =>
-        TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
+        TrezorConnect.cancel({ reason: intl.formatMessage(messages.TR_CANCELLED) });
 
     const onSubmit = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {

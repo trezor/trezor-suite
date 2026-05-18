@@ -28,7 +28,7 @@ export const DeviceContextModal = ({
     const selectedAccount = useSelector(selectSelectedAccount);
 
     if (!device) return null;
-    const abort = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
+    const abort = () => TrezorConnect.cancel({ reason: intl.formatMessage(messages.TR_CANCELLED) });
 
     switch (windowType) {
         // T1B1 firmware

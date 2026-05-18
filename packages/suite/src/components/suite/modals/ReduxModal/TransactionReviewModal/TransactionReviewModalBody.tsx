@@ -78,7 +78,7 @@ export const TransactionReviewModalBody = ({
             if (mounted && !isSending) {
                 setHasTxReviewExpired(true);
                 dispatch(preserveModalOnTxTimeout());
-                TrezorConnect.cancel('tx-timeout');
+                TrezorConnect.cancel({ reason: 'tx-timeout' });
             }
         }, timeLeft);
 
@@ -108,7 +108,7 @@ export const TransactionReviewModalBody = ({
         (cancel: boolean) => {
             if (cancel && !serializedTx && !isSending) {
                 dispatch(preserveModalOnTxTimeout());
-                TrezorConnect.cancel('tx-timeout');
+                TrezorConnect.cancel({ reason: 'tx-timeout' });
             }
 
             setHasTxReviewExpired(false);

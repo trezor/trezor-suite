@@ -32,7 +32,7 @@ export const ConfirmActionModal = ({
         if (!cancelable) {
             return;
         }
-        TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
+        TrezorConnect.cancel({ reason: intl.formatMessage(messages.TR_CANCELLED) });
         onCancel?.();
     };
 

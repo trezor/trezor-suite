@@ -21,8 +21,8 @@ export const usePin = (buttonRequests: ButtonRequest[], requestId?: string) => {
 
     const cancel = () =>
         isSettingNewWipeCode
-            ? TrezorConnect.cancel('wipe-cancelled')
-            : TrezorConnect.cancel('pin-cancelled');
+            ? TrezorConnect.cancel({ reason: 'wipe-cancelled' })
+            : TrezorConnect.cancel({ reason: 'pin-cancelled' });
 
     const handlePinSubmit = () => {
         setSubmitted(true);
