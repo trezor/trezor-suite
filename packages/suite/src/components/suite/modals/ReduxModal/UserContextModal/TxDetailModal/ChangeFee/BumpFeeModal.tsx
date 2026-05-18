@@ -1,8 +1,8 @@
 import { Translation } from '@suite/intl';
 import { selectTransactionConfirmations } from '@suite-common/wallet-core';
 import {
+    type Account,
     type ChainedTransactions,
-    type SelectedAccountLoaded,
     type WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
 import { Modal } from '@trezor/components';
@@ -21,7 +21,7 @@ type BumpFeeModalProps = {
     onBackClick: () => void;
     onShowChained: () => void;
     chainedTxs?: ChainedTransactions;
-    selectedAccount: SelectedAccountLoaded;
+    account: Account;
 };
 
 export const BumpFeeModal = ({
@@ -30,10 +30,9 @@ export const BumpFeeModal = ({
     onBackClick,
     onShowChained,
     chainedTxs,
-    selectedAccount,
+    account,
 }: BumpFeeModalProps) => {
-    const { account } = selectedAccount;
-    const contextValues = useRbf({ rbfParams: tx.rbfParams, chainedTxs, selectedAccount });
+    const contextValues = useRbf({ rbfParams: tx.rbfParams, chainedTxs, account });
 
     const confirmations = useSelector(state =>
         selectTransactionConfirmations(state, tx.txid, account.key),
@@ -64,7 +63,7 @@ export const BumpFeeModal = ({
                         networkType={account.networkType}
                     />
                 ) : (
-                    <ChangeFee tx={tx} chainedTxs={chainedTxs} showChained={onShowChained} />
+                    <ChangeFee tx={tx} showChained={onShowChained} />
                 )}
             </TxDetailModalBase>
         </RbfContext.Provider>

@@ -58,12 +58,7 @@ import {
     networkAmountToSmallestUnit,
 } from './amountUtils';
 import { isBaseCurrencyWithSats } from './baseCurrency';
-import {
-    getEvmTransactionTextSignature,
-    isEip1559,
-    isEvmApprovalTxByTextSignature,
-    sanitizeHex,
-} from './ethUtils';
+import { isEip1559, isEvmApprovalTx, sanitizeHex } from './ethUtils';
 
 export const calculateTotal = (amount: string, fee: string): string => {
     try {
@@ -212,18 +207,17 @@ export const prepareEthereumTransaction = (
         result.data = sanitizeHex(txInfo.data);
     }
 
-    // Build erc20 'transfer' method or use provided data in case of approve/revoke transaction
     if (txInfo.token) {
-        // join data
-        const evmTxTextSignature = getEvmTransactionTextSignature(txInfo.data);
+        const isApprovalTx = isEvmApprovalTx(txInfo.data);
 
-        result.data = isEvmApprovalTxByTextSignature(evmTxTextSignature)
-            ? txInfo.data
-            : getSerializedErc20Transfer(txInfo.token, txInfo.to, txInfo.amount);
-
-        // replace tx recipient to smart contract address
-        result.to = txInfo.token.contract;
-        // replace tx value
+        if (txInfo.data && txInfo.data !== '0x' && !isApprovalTx) {
+            result.data = sanitizeHex(txInfo.data);
+        } else {
+            result.data = isApprovalTx
+                ? txInfo.data
+                : getSerializedErc20Transfer(txInfo.token, txInfo.to, txInfo.amount);
+            result.to = txInfo.token.contract;
+        }
         result.value = '0x00';
     }
 

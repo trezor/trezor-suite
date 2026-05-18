@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     DEFAULT_OPRETURN,
     DEFAULT_PAYMENT,
@@ -9,6 +10,7 @@ import {
 } from '@suite-common/wallet-constants';
 import { DEFAULT_FEE_INFO, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import {
+    type Account,
     type ChainedTransactions,
     type FeeInfo,
     type FormOptions,
@@ -16,7 +18,6 @@ import {
     type RbfTransactionParams,
     type RbfTransactionParamsBitcoin,
     type RbfTransactionParamsEthereum,
-    type SelectedAccountLoaded,
 } from '@suite-common/wallet-types';
 import {
     calculateChainedTransactionsFeeForRbf,
@@ -36,7 +37,7 @@ import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 const MIN_FEE_RATE_PER_VB = 1; // minimum fee rate in sat/vB, introduced because nodes lowered min relay tx fee, but not incremental fee
 
 export type UseRbfProps = {
-    selectedAccount: SelectedAccountLoaded;
+    account: Account;
     rbfParams: RbfTransactionParams;
     chainedTxs?: ChainedTransactions;
 };
@@ -125,14 +126,13 @@ const getRbfFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParams) => {
     return info;
 };
 
-const useRbfState = ({ selectedAccount, rbfParams, chainedTxs }: UseRbfProps) => {
-    const { account, network } = selectedAccount;
-
+const useRbfState = ({ account, rbfParams, chainedTxs }: UseRbfProps) => {
     const networkFees = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
     const coinjoinRegisteredUtxos = useCoinjoinRegisteredUtxos({ account });
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const network = getNetwork(account.symbol);
 
     return useMemo(() => {
         const rbfFeeInfo = networkFees ? getRbfFeeInfo(networkFees, rbfParams) : DEFAULT_FEE_INFO;

@@ -19,8 +19,7 @@ import { type FeeLevel } from '@trezor/connect';
 import { useDebounce } from '@trezor/react-utils';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { useDispatch } from 'src/hooks/suite';
 import { type SendContextValues } from 'src/types/wallet/sendForm';
 
 const DEFAULT_FIELD = 'outputs.0.amount';
@@ -48,7 +47,6 @@ export const useCompose = <TFieldValues extends FormState>({
         useState<SendContextValues['composedLevels']>(undefined);
     const [composeField, setComposeField] = useState<string | undefined>(undefined);
     const { translationString } = useTranslation();
-    const selectedAccount = useSelector(selectSelectedAccount);
 
     const dispatch = useDispatch();
 
@@ -267,7 +265,7 @@ export const useCompose = <TFieldValues extends FormState>({
                 signAndPushSendFormTransactionThunk({
                     formState,
                     precomposedTransaction,
-                    selectedAccount,
+                    selectedAccount: state.account,
                 }),
             ).unwrap();
 

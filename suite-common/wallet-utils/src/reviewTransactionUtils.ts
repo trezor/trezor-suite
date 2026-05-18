@@ -20,7 +20,11 @@ import { versionUtils } from '@trezor/utils';
 import { datetimeToLocktime } from './bitcoinUtils';
 import { getShortFingerprint, isCardanoTx } from './cardanoUtils';
 import { isApprovalFlowSupported as isApprovalSupported } from './deviceUtils';
-import { isEvmApprovalTx } from './ethUtils';
+import {
+    getEvmTransactionTextSignature,
+    isEvmApprovalTx,
+    isEvmYieldTxByTextSignature,
+} from './ethUtils';
 import { getStakeType } from './ethereumStakingUtils';
 import { isExchangeTradingForm } from './sendFormUtils';
 import { isRbfBumpFeeTransaction } from './transactionUtils';
@@ -295,11 +299,20 @@ const constructNewFlow = ({
     const hasDestinationTag = 'destinationTag' in precomposedForm;
     const trading = precomposedForm?.trading;
 
-    if (precomposedForm.yieldMetadata && isUpdatedEthereumSendFlow) {
-        outputs.push(
-            { type: 'data', value: '' },
-            { type: 'address', value: precomposedForm.yieldMetadata.vaultName },
-        );
+    const evmTxType = getEvmTransactionTextSignature(precomposedForm.transactionData);
+    const isYieldOp = !!precomposedForm.yieldMetadata || isEvmYieldTxByTextSignature(evmTxType);
+
+    if (isYieldOp && isUpdatedEthereumSendFlow) {
+        const fallbackAddress = precomposedTx.outputs.find(
+            o => 'address' in o && typeof o.address === 'string',
+        )?.address;
+        const vaultName =
+            precomposedForm.yieldMetadata?.vaultName ??
+            (typeof fallbackAddress === 'string'
+                ? (KNOWN_VAULTS[fallbackAddress.toLowerCase()] ?? fallbackAddress)
+                : '');
+
+        outputs.push({ type: 'data', value: '' }, { type: 'address', value: vaultName });
 
         precomposedTx.outputs.forEach(o => {
             if ('address' in o && typeof o.address === 'string') {
