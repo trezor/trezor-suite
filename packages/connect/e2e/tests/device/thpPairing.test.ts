@@ -178,7 +178,7 @@ describe('THP pairing', () => {
     const cancelOnHost = async () => {
         // events are emitted before ButtonAck is sent to device
         await new Promise(resolve => setTimeout(resolve, 10));
-        TrezorConnect.cancel(CANCEL_ERR);
+        TrezorConnect.cancel({ reason: CANCEL_ERR });
     };
     const buttonRequestHandler =
         (cancelOnButtonRequestName?: string) => (br: { name?: string }) => {

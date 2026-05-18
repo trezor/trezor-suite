@@ -23,6 +23,10 @@ import type {
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
 import { ConnectEmitter } from '@trezor/connect-common/src/types/emitter';
+import {
+    type CancelParams,
+    normalizeCancelParams,
+} from '@trezor/connect-common/src/utils/cancelParams';
 import { initLog } from '@trezor/connect-common/src/utils/debug';
 import { TRANSPORT } from '@trezor/transport-common';
 import { cloneObject, createDeferredManager } from '@trezor/utils';
@@ -177,8 +181,12 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
         this.handleCoreMessage(response);
     }
 
-    public cancel(reason?: string) {
-        this.handleCoreMessage({ type: CORE_CALL_CANCEL, payload: reason ? { reason } : null });
+    public cancel(params?: CancelParams) {
+        const { reason, callId } = normalizeCancelParams(params);
+        this.handleCoreMessage({
+            type: CORE_CALL_CANCEL,
+            payload: reason || callId ? { reason, callId } : null,
+        });
     }
 
     public dispose() {

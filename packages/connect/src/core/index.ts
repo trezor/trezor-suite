@@ -667,12 +667,34 @@ const registerDeviceEvents =
         device.on(DEVICE.THP_PAIRING_STATUS_CHANGED, onThpPhaseChangedHandler(device, context));
     };
 
-// Shared cancel/interrupt routine. The caller decides which TrezorError to use,
-// which determines whether the consumer sees Method_Interrupted (popup closed)
-// or Method_Cancel (explicit cancel() call).
-const abortRunningCall = (context: CoreContext, error: TrezorError) => {
+// When `callId` is provided, the abort is scoped to the single method whose
+// AbstractMethod.callId matches. Other in-flight methods, devices and UI
+// promises remain untouched. When `callId` is undefined, all in-flight work
+// is aborted (legacy behavior).
+const abortRunningCall = (context: CoreContext, error: TrezorError, callId?: string) => {
     const { uiPromises, deviceList, callMethods, resetWaitForFirstMethod, sendCoreMessage } =
         context;
+
+    if (callId) {
+        const method = callMethods.find(m => m.callId === callId);
+        if (!method) {
+            return;
+        }
+
+        if (method.device?.isUsedHere()) {
+            // Aborting the device session causes device.run to reject which
+            // propagates through the onCallDevice try/catch block and emits
+            // the response for this method only.
+            method.device.interrupt(error);
+        } else {
+            // Method has not acquired a device yet. Respond directly and
+            // let sendCoreMessage's RESPONSE_EVENT handler prune callMethods.
+            sendCoreMessage(createResponseMessage(method.responseID, false, { error }));
+        }
+
+        return;
+    }
+
     // Device was already acquired. Try to interrupt running action which will throw error from onCall try/catch block
     if (deviceList.isConnected() && deviceList.getDeviceCount() > 0) {
         deviceList.getAllDevices().forEach(d => {
@@ -702,8 +724,8 @@ const onPopupClosed = (context: CoreContext) => {
 };
 
 // Handle an explicit cancel() call (always produces Method_Cancel)
-const onCallCancel = (context: CoreContext, reason?: string) => {
-    abortRunningCall(context, ERRORS.TypedError('Method_Cancel', reason));
+const onCallCancel = (context: CoreContext, reason?: string, callId?: string) => {
+    abortRunningCall(context, ERRORS.TypedError('Method_Cancel', reason), callId);
 };
 
 const initDeviceList = (context: CoreContext) => {
@@ -802,7 +824,11 @@ export class Core extends EventEmitter {
                 break;
 
             case CORE_CALL_CANCEL:
-                onCallCancel(this.getCoreContext(), message.payload?.reason);
+                onCallCancel(
+                    this.getCoreContext(),
+                    message.payload?.reason,
+                    message.payload?.callId,
+                );
                 break;
 
             case TRANSPORT.DISABLE_WEBUSB: {

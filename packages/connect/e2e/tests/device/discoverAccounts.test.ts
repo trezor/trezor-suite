@@ -71,7 +71,7 @@ describe(`TrezorConnect.discoverAccounts`, () => {
         TrezorConnect.on(UI_REQUEST.BUNDLE_PROGRESS, onBundleProgress);
         /*
         new Promise(resolve => setTimeout(resolve, 600)).then(() =>
-            TrezorConnect.cancel('CANCELLED'),
+            TrezorConnect.cancel({ reason: 'CANCELLED' }),
         );
         */
 
