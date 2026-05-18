@@ -8,6 +8,10 @@ import {
 } from '@trezor/connect-common/src/events';
 import type { ConnectImpl, ConnectImplSettings } from '@trezor/connect-common/src/impl/dynamic';
 import type { Manifest } from '@trezor/connect-common/src/types/settings';
+import {
+    type CancelParams,
+    normalizeCancelParams,
+} from '@trezor/connect-common/src/utils/cancelParams';
 import { WebsocketClient, WebsocketError } from '@trezor/websocket-client';
 
 /**
@@ -31,10 +35,11 @@ export class CoreInSuiteDesktop implements ConnectImpl {
         return Promise.resolve(undefined);
     }
 
-    public cancel(reason?: string) {
+    public cancel(params?: CancelParams) {
+        const { reason, callId } = normalizeCancelParams(params);
         this.ws.sendMessage({
             type: CORE_CALL_CANCEL,
-            payload: reason ? { reason } : null,
+            payload: reason || callId ? { reason, callId } : null,
         });
     }
 
