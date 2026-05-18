@@ -41,7 +41,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        TEST_GROUP: [0, 1, 2, 3]
+        TEST_GROUP: [0, 1, 2, 3, 4]
 
     steps:
       - name: Checkout project
@@ -139,16 +139,19 @@ jobs:
           CURRENTS_TAG: ${{ inputs.currents_tags }}
           COMMIT_INFO_BRANCH: ${{ github.head_ref }}
         with:
-          api-level: 31
-          profile: pixel_3a
+          api-level: 34
+          profile: pixel_6
           arch: x86_64
           working-directory: suite-native/app
           ram-size: 4096M
           force-avd-creation: true
           avd-name: ${{ steps.device.outputs.AVD_NAME }}
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -grpc 8554
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot-load -no-snapshot-save -noaudio -no-boot-anim -grpc 8554 -memory 4096
+          disable-animations: true
+          cores: 4
+          heap-size: 512M
           script: |
-            yarn test:e2e --config=${{ inputs.runner_config }} --shard=${{ matrix.TEST_GROUP }} --totalShards=4 --headless --quarantine
+            yarn test:e2e --config=${{ inputs.runner_config }} --shard=${{ matrix.TEST_GROUP }} --totalShards=5 --headless --quarantine
 
       - name: Post Currents link
         if: ${{ !cancelled() && github.event_name == 'pull_request' }}

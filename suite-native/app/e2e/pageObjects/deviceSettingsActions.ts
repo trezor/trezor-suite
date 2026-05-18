@@ -145,7 +145,7 @@ class DeviceSettingsActions {
 
     async goToNextDeviceCheckBackupTutorialStep(step: number) {
         const buttonId = `@swipeableWalkthroughStep/checkBackupTutorialStep${step}/nextButton`;
-        await waitForVisible(by.id(buttonId));
+        await waitForVisible(by.id(buttonId), { visibilityThreshold: 55 });
         await element(by.id(buttonId)).tap();
     }
 
