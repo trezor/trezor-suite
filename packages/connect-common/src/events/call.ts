@@ -64,7 +64,7 @@ export interface CoreCallMessage {
 
 export interface CoreCallCancelMessage {
     type: typeof CORE_CALL_CANCEL;
-    payload: { reason?: string } | null;
+    payload: { reason?: string; callId?: string } | null;
 }
 
 export const RESPONSE_EVENT = 'RESPONSE_EVENT';

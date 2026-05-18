@@ -7,6 +7,7 @@ import type { ConnectFactoryDependencies } from '../factory';
 import type { ConnectSettings } from '../types';
 import type { UpdateConnectSettings } from '../types/api/updateConnectSettings';
 import { ConnectEmitter } from '../types/emitter';
+import { type CancelParams } from '../utils/cancelParams';
 
 export type ConnectImplSettings = {
     manifest: NonNullable<ConnectSettings['manifest']>;
@@ -152,8 +153,8 @@ export class TrezorConnectDynamic implements ConnectFactoryDependencies<Record<n
         }
     }
 
-    public cancel(error?: string) {
-        return this.getTarget().cancel(error);
+    public cancel(params?: CancelParams) {
+        return this.getTarget().cancel(params);
     }
 
     public dispose() {

@@ -38,7 +38,7 @@ export interface PopupHandshake {
 
 export interface PopupClosedMessage {
     type: typeof POPUP.CLOSED;
-    payload: { error: any } | null;
+    payload: { error?: any; callId?: string } | null;
 }
 
 export type PopupEvent =
