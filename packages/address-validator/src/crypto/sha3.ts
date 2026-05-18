@@ -432,6 +432,9 @@ Keccak.prototype.arrayBuffer = function () {
         for (i = 0; i < blockCount && j < outputBlocks; ++i, ++j) {
             array[j] = s[i];
         }
+        // SUSPECTED-BUG-MUTATION: Missing `i = 0;` reset after f(s) — toString/hex resets it (see L398) but arrayBuffer/array/digest do not. When outputBlocks is a multiple of blockCount AND extraBytes > 0, the trailing partial-lane read at L440/L475 below reads s[blockCount] (capacity lane) instead of s[0] (rate lane after permutation), producing output that diverges from toString and from Node's reference SHAKE256. Verified: sha3.shake256.arrayBuffer('hello', 2200) returns 275 bytes whose last 3 differ from sha3.shake256('hello', 2200).slice(-6) and from crypto.createHash('shake256',{outputLength:275}).update('hello').digest('hex').slice(-6) ('957d9e' expected, 'b561ee' actual).
+        // Mutator: Manual / cross-method divergence  Original (digest/array/arrayBuffer): missing i=0 after f(s)  →  toString equivalent: f(s); i = 0;
+        // Needs human spec review before locking behavior with a test.
         if (j % blockCount === 0) {
             f(s);
         }
@@ -466,6 +469,9 @@ Keccak.prototype.digest = Keccak.prototype.array = function () {
             array[offset + 2] = (block >> 16) & 0xff;
             array[offset + 3] = (block >> 24) & 0xff;
         }
+        // SUSPECTED-BUG-MUTATION: Same bug as arrayBuffer above — missing `i = 0;` reset after f(s) that toString/hex performs (L398). When outputBlocks is a multiple of blockCount AND extraBytes > 0, the trailing partial-lane read at L475 below reads s[blockCount] (capacity lane) instead of s[0] (rate lane after permutation).
+        // Mutator: Manual / cross-method divergence  Original (digest/array): missing i=0 after f(s)  →  toString equivalent: f(s); i = 0;
+        // Needs human spec review before locking behavior with a test.
         if (j % blockCount === 0) {
             f(s);
         }

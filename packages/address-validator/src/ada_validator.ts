@@ -20,6 +20,9 @@ function getDecoded(address: string): any {
 
 function isValidLegacyAddress(address: string): boolean {
     const decoded = getDecoded(address);
+    // SUSPECTED-BUG-MUTATION: The guard `!Array.isArray(decoded) && decoded.length !== 2` is contradictory — it only rejects non-array objects whose `.length` is not exactly 2, so a 3-element array (or any array with length !== 2) falls through to `decoded[0]` / `decoded[1]` below despite the immediately-following code requiring decoded to be a 2-element array. Author likely intended `Array.isArray(decoded) && decoded.length !== 2` (reject if it IS an array but has wrong length) or `!Array.isArray(decoded) || decoded.length !== 2` (reject anything that is not a 2-element array).
+    // Mutator: LogicalOperator  Original: `!Array.isArray(decoded) && decoded.length !== 2`  →  Mutant: `!Array.isArray(decoded) || decoded.length !== 2`
+    // Needs human spec review before locking behavior with a test.
     if (!decoded || (!Array.isArray(decoded) && decoded.length !== 2)) {
         return false;
     }

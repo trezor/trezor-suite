@@ -39,6 +39,9 @@ function decodeBase58Address(base58Sting: unknown): number[] | false {
 function getEnv(currency: any, networkType?: string): number {
     let evn = networkType || 'prod';
 
+    // SUSPECTED-BUG-MUTATION: Silently coerces any non-'prod'/'testnet' networkType (including 'both') to 'prod', diverging from monero/loki/bitcoin where 'both' means "match prod OR testnet". With this fallback, valid(testnetAddr, 'trx', 'both') returns false because evn becomes 'prod', so callers expecting prod-OR-testnet semantics under 'both' silently get a wrong-network rejection instead of an OR-match.
+    // Mutator: ConditionalExpression  Original: `if (evn !== 'prod' && evn !== 'testnet') evn = 'prod';`  →  Mutant: `if (false) evn = 'prod';` (would crash on networkType='both' because addressTypes['both'] is undefined; the fact that the test suite asserts valid() for 'both' relies on the coercion to mask the missing case)
+    // Needs human spec review before locking behavior with a test.
     if (evn !== 'prod' && evn !== 'testnet') evn = 'prod';
 
     return currency.addressTypes[evn][0];

@@ -184,6 +184,36 @@ describe('WAValidator.validate()', function () {
             );
         });
 
+        it('should classify a bech32m bitcoin address with witness version 1 and a 20-byte program as WITNESS_UNKNOWN', function () {
+            isValidAddressType(
+                'bc1pqyqszqgpqyqszqgpqyqszqgpqyqszqgp6tcjpc',
+                'bitcoin',
+                'prod',
+                addressType.WITNESS_UNKNOWN,
+            );
+        });
+
+        it('should default to bitcoin currency when getAddressType is called without a currency', function () {
+            expect(WAValidator.getAddressType('1NSAR5mUUL3qZP29BfFj5jBPR5yWiiZZWi')).toEqual(
+                addressType.P2PKH,
+            );
+        });
+
+        it('should throw from getAddressType when the currency is unknown', function () {
+            expect(() =>
+                WAValidator.getAddressType(
+                    '1NSAR5mUUL3qZP29BfFj5jBPR5yWiiZZWi',
+                    'nonexistent-coin',
+                ),
+            ).toThrow('getAddressType: No validator for currency: nonexistent-coin');
+        });
+
+        it('should throw from validate when the currency is unknown', function () {
+            expect(() =>
+                WAValidator.validate('1NSAR5mUUL3qZP29BfFj5jBPR5yWiiZZWi', 'nonexistent-coin'),
+            ).toThrow('Missing validator for currency: nonexistent-coin');
+        });
+
         it('should return true for correct bitcoincash addresses', function () {
             valid('bitcoincash:qq4v32mtagxac29my6gwj6fd4tmqg8rysu23dax807', 'bch');
             valid('bitcoincash:qp3wjpa3tjlj042z2wv7hahsldgwhwy0rq9sywjpyy', 'bch');
@@ -217,6 +247,17 @@ describe('WAValidator.validate()', function () {
                 'prod',
                 undefined,
             ); // BTC address
+        });
+
+        it('should match the expected BCH address type when network type is omitted', function () {
+            // Exercises the DEFAULT_NETWORK_TYPE fallback in bch_validator.getAddressType
+            // (the `networkType || DEFAULT_NETWORK_TYPE` short-circuit on the right-hand side).
+            isValidAddressType(
+                'bitcoincash:qq4v32mtagxac29my6gwj6fd4tmqg8rysu23dax807',
+                'bch',
+                undefined,
+                addressType.ADDRESS,
+            );
         });
 
         it('should return true for correct litecoin addresses', function () {
@@ -313,6 +354,10 @@ describe('WAValidator.validate()', function () {
             );
         });
 
+        it('should return undefined as the Ethereum address type for a string that fails the eip55 hex regex', function () {
+            isValidAddressType('notanethereumaddress', 'ethereum', 'prod', undefined);
+        });
+
         it('should return true for correct Ripple addresses', function () {
             valid('rG1QQv2nh2gr7RCZ1P8YYcBUKCCN633jCn', 'ripple');
             valid('rG1QQv2nh2gr7RCZ1P8YYcBUKCCN633jCn', 'XRP');
@@ -367,6 +412,30 @@ describe('WAValidator.validate()', function () {
             );
         });
 
+        it('should return true for a correct cardano stake address when network type is stake', function () {
+            valid(
+                'stake1uya87zwnmax0v6nnn8ptqkl6ydx4522kpsc3l3wmf3yswygwx45el',
+                'cardano',
+                'stake',
+            );
+        });
+
+        it('should return false for a mainnet bech32 cardano address when network type is testnet', function () {
+            invalid(
+                'addr1qxnv5u3vrx2t37h3u27qd5ukgcjmrl4f8mu9f5sza3h20cxsfjh80un9kvlggfcdw8fp5kqp9tztqnee9msd0qsafhdsyqclvk',
+                'cardano',
+                'testnet',
+            );
+        });
+
+        it('should return false for a bech32 cardano address when network type is unrecognized', function () {
+            invalid(
+                'addr1qxnv5u3vrx2t37h3u27qd5ukgcjmrl4f8mu9f5sza3h20cxsfjh80un9kvlggfcdw8fp5kqp9tztqnee9msd0qsafhdsyqclvk',
+                'cardano',
+                'unknown',
+            );
+        });
+
         it('should match the expected Cardano address type - mainnet', function () {
             isValidAddressType(
                 'Ae2tdPwUPEYxYNJw1He1esdZYvjmr4NtPzUsGTiqL9zd8ohjZYQcwu6kom7',
@@ -393,6 +462,10 @@ describe('WAValidator.validate()', function () {
         it('should return true for correct trx addresses', function () {
             valid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg3r', 'trx');
             valid('27bLJCYjbH6MT8DBF9xcrK6yZnm43vx7MNQ', 'trx', 'testnet');
+        });
+
+        it('should return true for a correct tron address when network type is unrecognized', function () {
+            valid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg3r', 'trx', 'both');
         });
 
         it('should return true for correct stellar addresses', function () {
@@ -557,6 +630,18 @@ describe('WAValidator.validate()', function () {
             );
         });
 
+        it('should return false for a cardano address that decodes to a CBOR non-array primitive', function () {
+            invalid('2', 'cardano');
+        });
+
+        it('should return false for a cardano address whose CBOR-decoded second element is not a number', function () {
+            invalid('kkVd', 'cardano');
+        });
+
+        it('should return undefined as the cardano address type for a string that fails both legacy and bech32 decoding', function () {
+            isValidAddressType('notacardanoaddress', 'cardano', 'prod', undefined);
+        });
+
         it('should return true for correct tron addresses', function () {
             valid('TNXoiAJ3dct8Fjg4M9fkLFh9S2v9TXc32G', 'trx');
         });
@@ -565,6 +650,14 @@ describe('WAValidator.validate()', function () {
             commonTests('trx');
             invalid('xrb_1111111112111111111111111111111111111111111111111111hifc8npp', 'trx');
             invalid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg31', 'trx');
+        });
+
+        it('should return false for a non-string trx address', function () {
+            invalid(null as any, 'trx');
+        });
+
+        it('should return false for a short base58 input with a valid sha256d checksum but fewer than 21 bytes', function () {
+            invalid('3TsEbXHvP5', 'trx');
         });
 
         it('should match the expected tron address type', function () {
@@ -614,6 +707,19 @@ describe('WAValidator.validate()', function () {
                 'CN2JT7qJ84aVUMtSGuNSte5ytP5eMeeHgTVzyBiHDxMrH22WwH3qSAbZ6fH1n9PzGso3vBwQUz7gmK827ijLTgJW',
                 'sol',
             );
+        });
+
+        it('should match the expected solana address type', function () {
+            isValidAddressType(
+                '64duFXLEMcVaZpm4SRmtqEdSQ5LFht22hK1SLu2ayU9b',
+                'sol',
+                'prod',
+                addressType.ADDRESS,
+            );
+        });
+
+        it('should return undefined as the solana address type for a string that fails base58 decoding', function () {
+            isValidAddressType('sol_123456', 'sol', 'prod', undefined);
         });
     });
 });

@@ -9,6 +9,14 @@ const DEFAULT_NETWORK_TYPE = 'prod';
 // Base32 charset used for the cashaddr payload (see "Base32" in the spec).
 const CASHADDR_CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
 
+// SUSPECTED-BUG-MUTATION: CASHADDR_PREFIX is hardcoded to mainnet 'bitcoincash' and validateAddress ignores
+// the networkType parameter, so every 'bchtest:'/'bchreg:' prefixed address is rejected at L77 regardless
+// of cashaddr-spec validity, while 'bitcoincash:' and prefix-less cashaddr inputs validate true for BOTH
+// networkType='prod' AND networkType='testnet' (no network gating). currencies.ts defines BCH testnet
+// addressTypes=['6f','c4'] suggesting testnet was intended; the existing tests at
+// wallet_address_validator.test.ts:1330-1332 lock in this incomplete behavior by asserting bchtest:/bchreg:
+// inputs are invalid — a half-finished testnet implementation parallel to the iter 188/202 loki findings.
+// Needs human spec review before locking behavior with a test.
 // Mainnet human-readable prefix; testnet/regtest use 'bchtest'/'bchreg'.
 const CASHADDR_PREFIX = 'bitcoincash';
 
