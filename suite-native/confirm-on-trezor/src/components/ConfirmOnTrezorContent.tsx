@@ -147,15 +147,12 @@ export const ConfirmOnTrezorContent = ({
                     locations={[0, 1]}
                 />
             </AnimatedBox>
-            <GestureDetector gesture={panGesture}>
-                <AnimatedBox
-                    flex={1}
-                    style={[
-                        applyStyle(contentContainerStyle, { colorVariant }),
-                        animatedSheetStyle,
-                    ]}
-                    layout={LinearTransition}
-                >
+            <AnimatedBox
+                flex={1}
+                style={[applyStyle(contentContainerStyle, { colorVariant }), animatedSheetStyle]}
+                layout={LinearTransition}
+            >
+                <GestureDetector gesture={panGesture}>
                     <AnimatedBox style={animatedHandleStyle}>
                         <AnimatedBox
                             style={[
@@ -164,19 +161,19 @@ export const ConfirmOnTrezorContent = ({
                             ]}
                         />
                     </AnimatedBox>
-                    {isFullscreen && (
-                        <AnimatedBox exiting={FadeOut} entering={FadeIn}>
-                            {defaultHeader}
-                        </AnimatedBox>
-                    )}
-                    <Screen
-                        systemThemeStyle={!isFullscreen ? 'light' : undefined}
-                        containerStyle={applyStyle(innerContainerStyle)}
-                    >
-                        {children}
-                    </Screen>
-                </AnimatedBox>
-            </GestureDetector>
+                </GestureDetector>
+                {isFullscreen && (
+                    <AnimatedBox exiting={FadeOut} entering={FadeIn}>
+                        {defaultHeader}
+                    </AnimatedBox>
+                )}
+                <Screen
+                    systemThemeStyle={!isFullscreen ? 'light' : undefined}
+                    containerStyle={applyStyle(innerContainerStyle)}
+                >
+                    {children}
+                </Screen>
+            </AnimatedBox>
         </>
     );
 };
