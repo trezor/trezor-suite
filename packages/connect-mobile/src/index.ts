@@ -9,6 +9,10 @@ import { createErrorMessage } from '@trezor/connect-common/src/events';
 import { type ConnectFactoryDependencies, factory } from '@trezor/connect-common/src/factory';
 import { type Manifest, type UpdateConnectSettings } from '@trezor/connect-common/src/types';
 import { ConnectEmitter } from '@trezor/connect-common/src/types/emitter';
+import {
+    type CancelParams,
+    normalizeCancelParams,
+} from '@trezor/connect-common/src/utils/cancelParams';
 import { createDeferredManager, removeTrailingSlashes } from '@trezor/utils';
 
 type BuildUrlParams = {
@@ -111,8 +115,9 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
         throw ERRORS.TypedError('Method_InvalidPackage');
     }
 
-    public cancel(params?: { reason?: string; callId?: string }) {
-        this.resolveMessagePromises({ success: false, error: params?.reason });
+    public cancel(params?: CancelParams) {
+        const { reason } = normalizeCancelParams(params);
+        this.resolveMessagePromises({ success: false, error: reason });
     }
 
     public dispose() {
