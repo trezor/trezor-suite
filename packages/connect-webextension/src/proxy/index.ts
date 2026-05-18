@@ -27,11 +27,11 @@ const dispose = () => {
 
 const cancel = (params?: CancelParams) => {
     if (_channel) {
-        const { reason } = normalizeCancelParams(params);
+        const { reason, callId } = normalizeCancelParams(params);
         _channel.postMessage(
             {
                 type: CORE_CALL_CANCEL,
-                payload: reason ? { reason } : null,
+                payload: reason || callId ? { reason, callId } : null,
             },
             { usePromise: false },
         );
