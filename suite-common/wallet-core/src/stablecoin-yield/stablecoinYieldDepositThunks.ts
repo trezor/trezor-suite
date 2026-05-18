@@ -46,6 +46,11 @@ type PrepareYieldDepositPayload = {
     amount: string;
 };
 
+type PrepareYieldDepositActionParams = {
+    amount: string;
+    flowData: YieldFlowResolvedData;
+};
+
 export const getYieldDepositPreparationResult = ({
     amount,
     flowData,
@@ -91,6 +96,38 @@ export const getYieldDepositPreparationResult = ({
     };
 };
 
+export const prepareYieldDepositAction = async ({
+    amount,
+    flowData,
+}: PrepareYieldDepositActionParams): Promise<PrepareYieldDepositResult> => {
+    const errorResult = { type: 'error' } as const;
+    const requestAmount = getApprovalRequestAmount({
+        flowType: 'deposit',
+        amount,
+        flowData,
+    });
+
+    if (!requestAmount) {
+        return errorResult;
+    }
+
+    const { response, verification } = await submitYieldOpportunity({
+        flowType: 'deposit',
+        flowData,
+        amount: requestAmount,
+    });
+
+    if (verification === 'failure') {
+        return errorResult;
+    }
+
+    return getYieldDepositPreparationResult({
+        amount,
+        flowData,
+        transactions: response.transactions,
+    });
+};
+
 export const prepareYieldDepositThunk = createThunk<
     PrepareYieldDepositResult,
     PrepareYieldDepositPayload,
@@ -104,34 +141,9 @@ export const prepareYieldDepositThunk = createThunk<
         dispatch(stablecoinYieldActions.startSubmittingAction({ flowType, flowKey, amount }));
 
         try {
-            const requestAmount = getApprovalRequestAmount({
-                flowType,
+            const result = await prepareYieldDepositAction({
                 amount,
                 flowData,
-            });
-
-            if (!requestAmount) {
-                setYieldGenericError({ dispatch, flowType, flowKey });
-
-                return errorResult;
-            }
-
-            const { response, verification } = await submitYieldOpportunity({
-                flowType,
-                flowData,
-                amount: requestAmount,
-            });
-
-            if (verification === 'failure') {
-                setYieldGenericError({ dispatch, flowType, flowKey });
-
-                return errorResult;
-            }
-
-            const result = getYieldDepositPreparationResult({
-                amount,
-                flowData,
-                transactions: response.transactions,
             });
 
             if (result.type === 'error') {

@@ -4,17 +4,17 @@ import { useDispatch } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { useFormatters } from '@suite-common/formatters';
+import { getNetworkType } from '@suite-common/wallet-config';
 import { initYieldAllowanceThunk, stablecoinYieldActions } from '@suite-common/wallet-core';
-import { Box, Card, HStack, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { Box, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
-import { Icon } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
 import {
     Screen,
     type StackNavigationProps,
     type YieldStackParamList,
     type YieldStackRoutes,
 } from '@suite-native/navigation';
+import { FeeSummaryCard } from '@suite-native/transaction-management';
 
 import { YieldSupplyAmountInputCard } from '../components/YieldSupplyAmountInputCard';
 import { YieldSupplyApprovedAmountCard } from '../components/YieldSupplyApprovedAmountCard';
@@ -24,6 +24,7 @@ import { YieldSupplyInfoBottomSheet } from '../components/YieldSupplyInfoBottomS
 import { YieldSupplyStepCard } from '../components/YieldSupplyStepCard';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useYieldSession } from '../hooks/useYieldSession';
+import { useYieldSupplyFees } from '../hooks/useYieldSupplyFees';
 import { useYieldSupplyForm } from '../hooks/useYieldSupplyForm';
 import { useYieldSupplySubmit } from '../hooks/useYieldSupplySubmit';
 import {
@@ -85,6 +86,12 @@ export const YieldSupplyScreen = () => {
         });
     const isSubmitDisabled =
         !isSupplySessionReady || !isValid || !amountValue || isActionSubmitting;
+    const supplyFee = useYieldSupplyFees({
+        amount: amountValue,
+        flowData,
+        flowKey,
+        isEnabled: isSupplySessionReady && isValid && !isApprovalIncreaseRequired,
+    });
 
     useEffect(() => {
         if (shouldRefreshAllowance) {
@@ -127,6 +134,7 @@ export const YieldSupplyScreen = () => {
         flowData,
         flowKey,
         onApprovalRequired: handleEditApproval,
+        preparedAction: supplyFee.preparedAction,
     });
 
     const handleContinue = useCallback(() => {
@@ -145,6 +153,8 @@ export const YieldSupplyScreen = () => {
     if (resolutionStatus !== 'resolved' || !isSupplySessionReady) {
         return null;
     }
+
+    const networkType = getNetworkType(account.symbol);
 
     return (
         <Screen
@@ -195,23 +205,17 @@ export const YieldSupplyScreen = () => {
                     </Form>
                 </Box>
 
-                <Box paddingHorizontal="sp16">
-                    <Card>
-                        <HStack alignItems="center" justifyContent="space-between">
-                            <Text variant="body-sm">
-                                <Translation id="transactionManagement.fees.description.title.ethereum" />
-                            </Text>
-                            <HStack alignItems="center" spacing="sp12">
-                                <VStack spacing={0} alignItems="flex-end">
-                                    <Text variant="body-sm">
-                                        <Translation id="earn.notAvailableShort" />
-                                    </Text>
-                                </VStack>
-                                <Icon name="caretDown" size="medium" color="contentPrimary" />
-                            </HStack>
-                        </HStack>
-                    </Card>
-                </Box>
+                {!isApprovalIncreaseRequired && (
+                    <Box paddingHorizontal="sp16">
+                        <FeeSummaryCard
+                            fee={supplyFee.feePreview?.fee ?? null}
+                            symbol={account.symbol}
+                            networkType={networkType}
+                            areFeesLoading={supplyFee.isPreparingSupplyFee}
+                            testID="@earn/yield-supply-fee-preview-card"
+                        />
+                    </Box>
+                )}
             </VStack>
 
             <YieldSupplyInfoBottomSheet
