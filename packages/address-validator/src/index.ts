@@ -1,6 +1,6 @@
 import { addressType } from './crypto/utils';
 import * as currencies from './currencies';
-import type { Currency } from './currency-types';
+import type { Currency, NetworkEnvironment } from './currency-types';
 
 type AddressType = (typeof addressType)[keyof typeof addressType];
 
@@ -9,12 +9,12 @@ const DEFAULT_CURRENCY_NAME = 'bitcoin';
 export function validate(
     address: string,
     currencyNameOrSymbol?: string,
-    networkType?: string,
+    network?: NetworkEnvironment,
 ): boolean {
     const currency = currencies.getByNameOrSymbol(currencyNameOrSymbol || DEFAULT_CURRENCY_NAME);
 
     if (currency?.validator) {
-        return currency.validator.isValidAddress(address, currency, networkType);
+        return currency.validator.isValidAddress(address, currency, network);
     }
 
     throw new Error('Missing validator for currency: ' + currencyNameOrSymbol);
@@ -23,14 +23,14 @@ export function validate(
 export function getAddressType(
     address: string,
     currencyNameOrSymbol?: string,
-    networkType?: string,
+    network?: NetworkEnvironment,
 ): AddressType | undefined {
     const currency = currencies.getByNameOrSymbol(currencyNameOrSymbol || DEFAULT_CURRENCY_NAME);
     if (!currency?.validator) {
         throw new Error('getAddressType: No validator for currency: ' + currencyNameOrSymbol);
     }
     if (currency.validator.getAddressType) {
-        return currency.validator.getAddressType(address, currency, networkType);
+        return currency.validator.getAddressType(address, currency, network);
     }
     throw new Error('getAddressType not defined for currency: ' + currencyNameOrSymbol);
 }
@@ -44,4 +44,4 @@ export function findCurrency(symbol: string): Currency | null {
 }
 
 export { addressType };
-export type { Currency, AddressType };
+export type { Currency, AddressType, NetworkEnvironment };

@@ -1,6 +1,6 @@
 import * as cryptoUtils from './crypto/utils';
 import { addressType } from './crypto/utils';
-import type { Currency } from './currency-types';
+import type { Currency, NetworkEnvironment } from './currency-types';
 
 function decodeBase58Address(base58Sting: unknown): number[] | false {
     if (typeof base58Sting !== 'string') {
@@ -36,8 +36,8 @@ function decodeBase58Address(base58Sting: unknown): number[] | false {
     return false;
 }
 
-function getEnv(currency: any, networkType?: string): number {
-    let evn = networkType || 'prod';
+function getEnv(currency: any, network?: NetworkEnvironment): number {
+    let evn: NetworkEnvironment = network || 'prod';
 
     if (evn !== 'prod' && evn !== 'testnet') evn = 'prod';
 
@@ -47,7 +47,7 @@ function getEnv(currency: any, networkType?: string): number {
 export const isValidAddress = (
     mainAddress: string,
     currency?: Currency,
-    networkType?: string,
+    network?: NetworkEnvironment,
 ): boolean => {
     const address = decodeBase58Address(mainAddress);
 
@@ -59,11 +59,15 @@ export const isValidAddress = (
         return false;
     }
 
-    return getEnv(currency, networkType) === address[0];
+    return getEnv(currency, network) === address[0];
 };
 
-export const getAddressType = (address: string, currency?: Currency, networkType?: string) => {
-    if (isValidAddress(address, currency, networkType)) {
+export const getAddressType = (
+    address: string,
+    currency?: Currency,
+    network?: NetworkEnvironment,
+) => {
+    if (isValidAddress(address, currency, network)) {
         return addressType.ADDRESS;
     }
 
