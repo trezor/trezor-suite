@@ -41,13 +41,13 @@ export type Descriptor = Omit<DescriptorApiLevel, 'path'> & {
 };
 
 export interface Logger {
-    info(...args: any): void;
+    info(...args: unknown[]): void;
 
-    debug(...args: any): void;
+    debug(...args: unknown[]): void;
 
-    log(...args: any): void;
+    log(...args: unknown[]): void;
 
-    warn(...args: any): void;
+    warn(...args: unknown[]): void;
 
-    error(...args: any): void;
+    error(...args: unknown[]): void;
 }

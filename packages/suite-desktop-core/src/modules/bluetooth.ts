@@ -30,12 +30,14 @@ export const bluetoothModuleState: BluetoothModuleState = {
 export const init: ModuleInit = () => {
     const { logger } = global;
 
+    // BluetoothTransport's Logger types args as unknown[]; Suite's global logger
+    // expects string[]. In practice BluetoothTransport only ever passes strings.
     const desktopLogger: ConstructorParameters<typeof BluetoothTransport>[0]['logger'] = {
-        info: (...args) => logger.info(SERVICE_NAME, args),
-        debug: (...args) => logger.debug(SERVICE_NAME, args),
-        log: (...args) => logger.debug(SERVICE_NAME, args),
-        warn: (...args) => logger.warn(SERVICE_NAME, args),
-        error: (...args) => logger.error(SERVICE_NAME, args),
+        info: (...args) => logger.info(SERVICE_NAME, args as string[]),
+        debug: (...args) => logger.debug(SERVICE_NAME, args as string[]),
+        log: (...args) => logger.debug(SERVICE_NAME, args as string[]),
+        warn: (...args) => logger.warn(SERVICE_NAME, args as string[]),
+        error: (...args) => logger.error(SERVICE_NAME, args as string[]),
     };
 
     const lazyBluetooth = createLazy(
