@@ -25,11 +25,13 @@ import {
     formatNetworkAmount,
     getAccountDecimals,
     getAreSatoshisUsed,
+    getEvmTransactionTextSignature,
     getMevProtectedTxData,
     getPendingAccount,
     hasNetworkFeatures,
     isCardanoTx,
-    isEvmApprovalTx,
+    isEvmApprovalTxByTextSignature,
+    isEvmYieldTxByTextSignature,
     isExchangeTradingForm,
     isMaxAllowance,
     subunitsToUnits,
@@ -697,10 +699,12 @@ export const enhancePrecomposedTransactionThunk = createThunk<
         // Contract calldata (e.g. DEX swap) must not carry `token` on the precomposed object:
         // signing uses prepareEthereumTransaction, which would replace calldata with an ERC-20
         // transfer if `token` is set.
+        const sig = getEvmTransactionTextSignature(formValues.transactionData);
         if (
             selectedAccount.networkType === 'ethereum' &&
             formValues.transactionData &&
-            !isEvmApprovalTx(formValues.transactionData)
+            !isEvmApprovalTxByTextSignature(sig) &&
+            !isEvmYieldTxByTextSignature(sig)
         ) {
             enhancedPrecomposedTransaction = cloneObject(enhancedPrecomposedTransaction);
             delete (enhancedPrecomposedTransaction as { token?: unknown }).token;

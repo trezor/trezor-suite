@@ -11,15 +11,14 @@ import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { useSelector } from 'src/hooks/suite';
-import { type UseRbfProps, useRbfContext } from 'src/hooks/wallet/useRbfForm';
+import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
 
 import { RbfFees } from './RbfFees';
 import { AffectedTransactions } from '../AffectedTransactions/AffectedTransactions';
 import { DecreasedOutputs } from '../AffectedTransactions/DecreasedOutputs';
 
 /* children are only for test purposes, this prop is not available in regular build */
-interface ChangeFeeProps extends UseRbfProps {
+interface ChangeFeeProps {
     tx: WalletAccountTransaction;
     children?: ReactNode;
     showChained: () => void;
@@ -113,17 +112,10 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
     );
 };
 
-export const ChangeFee = (props: Omit<ChangeFeeProps, 'selectedAccount' | 'rbfParams'>) => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    if (selectedAccount.status !== 'loaded' || !props.tx.rbfParams) {
+export const ChangeFee = (props: ChangeFeeProps) => {
+    if (!props.tx.rbfParams) {
         return null;
     }
 
-    return (
-        <ChangeFeeLoaded
-            selectedAccount={selectedAccount}
-            rbfParams={props.tx.rbfParams}
-            {...props}
-        />
-    );
+    return <ChangeFeeLoaded {...props} />;
 };

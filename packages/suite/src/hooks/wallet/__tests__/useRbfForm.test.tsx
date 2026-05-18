@@ -171,15 +171,16 @@ describe('useRbfForm hook', () => {
             const callback: TestCallback = {};
 
             const TestComponent = () => {
+                const selectedAccount = f.store.selectedAccount as SelectedAccountLoaded;
                 const contextValues = useRbf({
                     rbfParams: f.tx.rbfParams,
                     chainedTxs: f.chainedTxs,
-                    selectedAccount: f.store.selectedAccount as SelectedAccountLoaded,
+                    account: selectedAccount.account,
                 });
 
                 return (
                     <RbfContext.Provider value={contextValues}>
-                        <ChangeFee tx={f.tx} chainedTxs={f.chainedTxs} showChained={() => {}}>
+                        <ChangeFee tx={f.tx} showChained={() => {}}>
                             <Component callback={callback} />
                             <ReplaceTxButton />
                         </ChangeFee>

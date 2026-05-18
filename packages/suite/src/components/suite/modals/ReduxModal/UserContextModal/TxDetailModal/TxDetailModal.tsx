@@ -76,9 +76,7 @@ export const TxDetailModal = ({
         };
     }, [originalTx, filteredInternalTransfers]);
 
-    const account = useSelector(state => selectAccountByKey(state, accountKey)) as Account;
-    const network = getNetwork(account.symbol);
-    const networkFeatures = network.accountTypes[account.accountType]?.features ?? network.features;
+    const account = useSelector(state => selectAccountByKey(state, accountKey));
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     const transactions = useSelector(selectAllPendingTransactions);
@@ -112,7 +110,7 @@ export const TxDetailModal = ({
         setTab(undefined);
     };
 
-    if (tx === null) {
+    if (tx === null || !account) {
         return (
             <Modal onCancel={onCancel} heading={<Translation id="TR_TRANSACTION_DETAILS" />}>
                 <Translation id="TR_TRANSACTION_NOT_FOUND" />
@@ -120,12 +118,11 @@ export const TxDetailModal = ({
         );
     }
 
+    const network = getNetwork(account.symbol);
+    const networkFeatures = network.accountTypes[account.accountType]?.features ?? network.features;
+
     const canReplaceTransaction =
-        hasRbfParams(tx) &&
-        networkFeatures?.includes('rbf') &&
-        !tx.deadline &&
-        tx.type !== 'joint' &&
-        selectedAccount.status === 'loaded';
+        hasRbfParams(tx) && networkFeatures?.includes('rbf') && !tx.deadline && tx.type !== 'joint';
 
     const canCancelTransaction = network.networkType === 'bitcoin' && tx.type !== 'joint';
 
@@ -137,12 +134,16 @@ export const TxDetailModal = ({
                 onBackClick={onBackClick}
                 onShowChained={onShowChained}
                 chainedTxs={chainedTxs}
-                selectedAccount={selectedAccount}
+                account={account}
             />
         );
     }
 
-    if (section === 'cancel-transaction' && canReplaceTransaction) {
+    if (
+        section === 'cancel-transaction' &&
+        canReplaceTransaction &&
+        selectedAccount.status === 'loaded'
+    ) {
         return (
             <CancelTransactionModal
                 tx={tx}

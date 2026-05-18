@@ -740,12 +740,27 @@ const getEthereumRbfParams = (
             };
             break;
         }
-        default:
-            output = {
-                address: toAddress,
-                amount: vout[0].value!,
-                formattedAmount: formatNetworkAmount(vout[0].value!, account.symbol),
-            };
+        default: {
+            // Token-moving contract calls report value=0 in vout; pull the amount from tokens[0].
+            const tokenTransfer = tx.tokens?.[0];
+            if (tokenTransfer) {
+                output = {
+                    address: toAddress,
+                    token: tokenTransfer.contract,
+                    amount: tokenTransfer.amount,
+                    formattedAmount: convertAmountSubunitsToUnits(
+                        tokenTransfer.amount,
+                        tokenTransfer.decimals,
+                    ),
+                };
+            } else {
+                output = {
+                    address: toAddress,
+                    amount: vout[0].value!,
+                    formattedAmount: formatNetworkAmount(vout[0].value!, account.symbol),
+                };
+            }
+        }
     }
 
     return {
