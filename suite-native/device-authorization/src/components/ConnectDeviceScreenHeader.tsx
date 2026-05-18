@@ -70,7 +70,7 @@ export const ConnectDeviceScreenHeader = ({
             }
         } else {
             if (hasDeviceRequestedPin || isAddingHiddenWallet) {
-                TrezorConnect.cancel('pin-cancelled');
+                TrezorConnect.cancel({ reason: 'pin-cancelled' });
             }
 
             if (onCancel) {
