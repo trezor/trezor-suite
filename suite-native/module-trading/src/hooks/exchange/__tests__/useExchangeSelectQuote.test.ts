@@ -19,8 +19,6 @@ import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../useExchangeForm';
 import { useExchangeSelectQuote } from '../useExchangeSelectQuote';
 
-const mockGetApprovalStatus = jest.fn();
-
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
     exchangeThunks: {
@@ -32,7 +30,6 @@ jest.mock('@suite-common/trading', () => ({
             unwrap: () => Promise.resolve(undefined),
         }),
     },
-    getApprovalStatus: (quote?: any) => mockGetApprovalStatus(quote),
 }));
 
 const mockNavigation = {
@@ -333,8 +330,6 @@ describe('useExchangeSelectQuote', () => {
         });
 
         it('should navigate to TradingExchangePreview when nextStep callback is executed', () => {
-            mockGetApprovalStatus.mockReturnValue('approved');
-
             const dispatchSpy = jest.spyOn(store, 'dispatch');
 
             const { result } = renderUseExchangeSelectQuote();
@@ -426,11 +421,11 @@ describe('useExchangeSelectQuote', () => {
             exchangeForm = result.current;
         });
 
-        it('should navigate to TradingExchangePreview when approval status is "approved"', () => {
-            mockGetApprovalStatus.mockReturnValue('approved');
+        it('should navigate to TradingExchangePreview when quote status is CONFIRM', () => {
+            const quote = { ...mercuryoFixedBestQuote, status: 'CONFIRM' as const };
 
             act(() => {
-                exchangeForm.setValue('quote', mercuryoFixedBestQuote);
+                exchangeForm.setValue('quote', quote);
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
@@ -454,17 +449,17 @@ describe('useExchangeSelectQuote', () => {
             expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangePreview', {});
             expect(dispatchSpy).toHaveBeenCalledWith({
                 type: '@trading-exchange/saveSelectedQuote',
-                payload: mercuryoFixedBestQuote,
+                payload: quote,
             });
             const dispatchedTypes = dispatchSpy.mock.calls.map(([action]) => (action as any)?.type);
             expect(dispatchedTypes).not.toContain('@trading-exchange/savePreselectedQuote');
         });
 
-        it('should navigate to TradingExchangePreview when approval status is "not_needed"', () => {
-            mockGetApprovalStatus.mockReturnValue('not_needed');
+        it('should navigate to TradingExchangePreview when quote status is SIGN_DATA', () => {
+            const quote = { ...mercuryoFixedBestQuote, status: 'SIGN_DATA' as const };
 
             act(() => {
-                exchangeForm.setValue('quote', mercuryoFixedBestQuote);
+                exchangeForm.setValue('quote', quote);
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
@@ -488,15 +483,15 @@ describe('useExchangeSelectQuote', () => {
             expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangePreview', {});
             expect(dispatchSpy).toHaveBeenCalledWith({
                 type: '@trading-exchange/saveSelectedQuote',
-                payload: mercuryoFixedBestQuote,
+                payload: quote,
             });
         });
 
-        it('should navigate to TradingExchangeApproval when approval status is "needs_approval"', () => {
-            mockGetApprovalStatus.mockReturnValue('needs_approval');
+        it('should navigate to TradingExchangeApproval when quote status is APPROVAL_REQ with no preapproval', () => {
+            const quote = { ...invityDexQuote, status: 'APPROVAL_REQ' as const };
 
             act(() => {
-                exchangeForm.setValue('quote', mercuryoFixedBestQuote);
+                exchangeForm.setValue('quote', quote);
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
@@ -521,17 +516,21 @@ describe('useExchangeSelectQuote', () => {
             // The hook persists candidateQuote to selectedQuote before navigating to the approval screen.
             expect(dispatchSpy).toHaveBeenCalledWith({
                 type: '@trading-exchange/saveSelectedQuote',
-                payload: mercuryoFixedBestQuote,
+                payload: quote,
             });
             const dispatchedTypes = dispatchSpy.mock.calls.map(([action]) => (action as any)?.type);
             expect(dispatchedTypes).not.toContain('@trading-exchange/savePreselectedQuote');
         });
 
-        it('should navigate to TradingExchangeApproval with shouldIncreaseLimit when approval status is "needs_increase" and token supports increasing allowance', () => {
-            mockGetApprovalStatus.mockReturnValue('needs_increase');
+        it('should navigate to TradingExchangeApproval with shouldIncreaseLimit when status is APPROVAL_REQ, preapproved, token supports increase', () => {
+            const quote = {
+                ...invityDexQuote,
+                status: 'APPROVAL_REQ' as const,
+                preapprovedStringAmount: '10',
+            };
 
             act(() => {
-                exchangeForm.setValue('quote', mercuryoFixedBestQuote);
+                exchangeForm.setValue('quote', quote);
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
@@ -557,17 +556,23 @@ describe('useExchangeSelectQuote', () => {
             });
             expect(dispatchSpy).toHaveBeenCalledWith({
                 type: '@trading-exchange/saveSelectedQuote',
-                payload: mercuryoFixedBestQuote,
+                payload: quote,
             });
             const dispatchedTypes = dispatchSpy.mock.calls.map(([action]) => (action as any)?.type);
             expect(dispatchedTypes).not.toContain('@trading-exchange/savePreselectedQuote');
         });
 
-        it('should navigate to TradingExchangeRevoke when approval status is "needs_increase" and token does not support increasing allowance', () => {
-            mockGetApprovalStatus.mockReturnValue('needs_revoke');
+        it('should navigate to TradingExchangeRevoke with shouldIncreaseLimit when status is APPROVAL_REQ, preapproved, token does not support increase (USDT)', () => {
+            const quote = {
+                ...invityDexQuote,
+                status: 'APPROVAL_REQ' as const,
+                preapprovedStringAmount: '10',
+                // USDT contract does not support increasing allowance
+                send: 'ethereum--0xdAC17F958D2ee523a2206206994597C13D831ec7' as any,
+            };
 
             act(() => {
-                exchangeForm.setValue('quote', mercuryoFixedBestQuote);
+                exchangeForm.setValue('quote', quote);
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
@@ -593,80 +598,73 @@ describe('useExchangeSelectQuote', () => {
             });
             expect(dispatchSpy).toHaveBeenCalledWith({
                 type: '@trading-exchange/saveSelectedQuote',
-                payload: mercuryoFixedBestQuote,
+                payload: quote,
             });
         });
 
-        it.each(['needs_increase', 'needs_revoke', 'approved'])(
-            'selectQuoteForRevoke should navigate to TradingExchangeRevoke with shouldIncreaseLimit: false when approval status is [%s]',
-            approvalStatus => {
-                mockGetApprovalStatus.mockReturnValue(approvalStatus);
+        it('selectQuoteForRevoke should navigate to TradingExchangeRevoke with shouldIncreaseLimit: false when quote has preapproval', () => {
+            const quote = {
+                ...invityDexQuote,
+                preapprovedStringAmount: '10',
+            };
 
-                act(() => {
-                    exchangeForm.setValue('quote', mercuryoFixedBestQuote);
-                });
+            act(() => {
+                exchangeForm.setValue('quote', quote);
+            });
 
-                const dispatchSpy = jest.spyOn(store, 'dispatch');
-                const { result } = renderUseExchangeSelectQuote();
-                dispatchSpy.mockClear();
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const { result } = renderUseExchangeSelectQuote();
+            dispatchSpy.mockClear();
 
-                act(() => {
-                    result.current.selectQuoteForRevoke();
-                });
+            act(() => {
+                result.current.selectQuoteForRevoke();
+            });
 
-                const { calls } = dispatchSpy.mock;
-                // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                const firstCall: (typeof calls)[number] = calls[0];
-                const [dispatchCall] = firstCall;
-                const { nextStep } = (dispatchCall as any).payload;
+            const { calls } = dispatchSpy.mock;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const firstCall: (typeof calls)[number] = calls[0];
+            const [dispatchCall] = firstCall;
+            const { nextStep } = (dispatchCall as any).payload;
 
-                act(() => {
-                    nextStep();
-                });
+            act(() => {
+                nextStep();
+            });
 
-                expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangeRevoke', {
-                    shouldIncreaseLimit: false,
-                });
-                expect(dispatchSpy).toHaveBeenCalledWith({
-                    type: '@trading-exchange/saveSelectedQuote',
-                    payload: mercuryoFixedBestQuote,
-                });
-                const dispatchedTypes = dispatchSpy.mock.calls.map(
-                    ([action]) => (action as any)?.type,
-                );
-                expect(dispatchedTypes).not.toContain('@trading-exchange/savePreselectedQuote');
-            },
-        );
+            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangeRevoke', {
+                shouldIncreaseLimit: false,
+            });
+            expect(dispatchSpy).toHaveBeenCalledWith({
+                type: '@trading-exchange/saveSelectedQuote',
+                payload: quote,
+            });
+            const dispatchedTypes = dispatchSpy.mock.calls.map(([action]) => (action as any)?.type);
+            expect(dispatchedTypes).not.toContain('@trading-exchange/savePreselectedQuote');
+        });
 
-        it.each(['not_needed', 'needs_approval'])(
-            'selectQuoteForRevoke should not navigate when approval status is [%s]',
-            approvalStatus => {
-                mockGetApprovalStatus.mockReturnValue(approvalStatus);
+        it('selectQuoteForRevoke should not navigate when quote has no preapproval', () => {
+            act(() => {
+                exchangeForm.setValue('quote', invityDexQuote);
+            });
 
-                act(() => {
-                    exchangeForm.setValue('quote', mercuryoFixedBestQuote);
-                });
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const { result } = renderUseExchangeSelectQuote();
+            dispatchSpy.mockClear();
 
-                const dispatchSpy = jest.spyOn(store, 'dispatch');
-                const { result } = renderUseExchangeSelectQuote();
-                dispatchSpy.mockClear();
+            act(() => {
+                result.current.selectQuoteForRevoke();
+            });
 
-                act(() => {
-                    result.current.selectQuoteForRevoke();
-                });
+            const { calls } = dispatchSpy.mock;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const firstCall: (typeof calls)[number] = calls[0];
+            const [dispatchCall] = firstCall;
+            const { nextStep } = (dispatchCall as any).payload;
 
-                const { calls } = dispatchSpy.mock;
-                // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                const firstCall: (typeof calls)[number] = calls[0];
-                const [dispatchCall] = firstCall;
-                const { nextStep } = (dispatchCall as any).payload;
+            act(() => {
+                nextStep();
+            });
 
-                act(() => {
-                    nextStep();
-                });
-
-                expect(mockNavigation.navigate).not.toHaveBeenCalled();
-            },
-        );
+            expect(mockNavigation.navigate).not.toHaveBeenCalled();
+        });
     });
 });

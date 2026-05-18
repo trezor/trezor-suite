@@ -10,6 +10,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ReviewOutputsFooter } from './ReviewOutputsFooter';
 import { ReviewOutputsSkeleton } from './ReviewOutputsSkeleton';
+import { SignDataMessageReview } from './SignDataMessageReview';
 import type { UseTradingTransactionReturnProps } from '../../hooks/general/useTradingTransaction';
 import { useDelayedReviewOutputListDisplayFlag } from '../../hooks/reviewOutputs/useDelayedReviewOutputListDisplayFlag';
 import {
@@ -64,6 +65,24 @@ export const ReviewOutputsContent = memo(
         const shouldDisplayReviewList = useDelayedReviewOutputListDisplayFlag();
 
         const prefix = getFormDraftKeyPrefixFromTradingType(tradingType);
+        const renderReviewContent = () => {
+            if (exchangeFlowType === 'sign-data') {
+                return <SignDataMessageReview />;
+            }
+
+            if (shouldDisplayReviewList) {
+                return (
+                    <ReviewOutputItemList
+                        prefix={prefix}
+                        accountKey={accountKey}
+                        tokenContract={tokenContract}
+                        flowType={exchangeFlowType}
+                    />
+                );
+            }
+
+            return <ReviewOutputsSkeleton />;
+        };
 
         return (
             <ConfirmOnTrezorWrapper
@@ -82,16 +101,7 @@ export const ReviewOutputsContent = memo(
                     justifyContent="space-between"
                     testID="@trading/outputs-review"
                 >
-                    {shouldDisplayReviewList ? (
-                        <ReviewOutputItemList
-                            prefix={prefix}
-                            accountKey={accountKey}
-                            tokenContract={tokenContract}
-                            flowType={exchangeFlowType}
-                        />
-                    ) : (
-                        <ReviewOutputsSkeleton />
-                    )}
+                    {renderReviewContent()}
                     {isTransactionAlreadySigned ? (
                         <ReviewOutputsFooter
                             isConsentRequested={isTransactionSendConsentRequested}

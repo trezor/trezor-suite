@@ -13,7 +13,13 @@ import { type TradingState } from '@suite-native/trading-types';
 import { buyCexdirect, buyInvity, buyMercuryo } from './buyProviders';
 import { buyQuotes } from './buyQuotes';
 import { coins } from './coins';
-import { exchangeCexdirect, exchangeInvity, exchangeMercuryo } from './exchangeProviders';
+import {
+    exchangeCexdirect,
+    exchangeInvity,
+    exchangeMercuryo,
+    exchangeOneInchFusion,
+    exchangeOneInchFusionPlus,
+} from './exchangeProviders';
 import { exchangeQuotes } from './exchangeQuotes';
 import { platforms } from './platforms';
 import { sellBanxa, sellCexdirect, sellInvity, sellMercuryo, sellMoonpay } from './sellProviders';
@@ -67,6 +73,8 @@ export const getInitializedExchangeState = () =>
                 ['invity']: exchangeInvity,
                 ['mercuryo']: exchangeMercuryo,
                 ['cexdirect']: exchangeCexdirect,
+                ['1inchfusion']: exchangeOneInchFusion,
+                ['1inchfusionplus']: exchangeOneInchFusionPlus,
             },
             buyCryptoIds: [
                 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',

@@ -45,6 +45,7 @@ const OutputLabel = ({
                     );
 
                 case 'swap':
+                case 'sign-data':
                 case undefined:
                     return <Translation id="transactionManagement.review.outputs.addressLabel" />;
 
@@ -67,6 +68,7 @@ const OutputLabel = ({
                     );
 
                 case 'swap':
+                case 'sign-data':
                     return (
                         <Translation id="transactionManagement.review.outputs.swapContractLabel" />
                     );

@@ -4,14 +4,18 @@ import { useSelector } from 'react-redux';
 
 import type { ExchangeTrade } from 'invity-api';
 
-import { type TradingRootState, selectTradingProviderKycPolicy } from '@suite-common/trading';
+import {
+    type TradingRootState,
+    hasEip712SignData,
+    selectTradingProviderKycPolicy,
+} from '@suite-common/trading';
 import { AnimatedVStack, InlineAlertBox, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 
+import { ExchangeEIP712Info } from './ExchangeEIP712Info';
 import { ExchangeFeePickerCard } from './ExchangeFeePickerCard';
 import { ExchangeFiatDeviationWarning } from './ExchangeFiatDeviationWarning';
 import { ExchangeFromAccountTradePreviewCard } from './ExchangeFromAccountTradePreviewCard';
-import { ExchangeFusionPlusInfo } from './ExchangeFusionPlusInfo';
 import { ExchangeToAccountTradePreviewCard } from './ExchangeToAccountTradePreviewCard';
 import { getKycPolicyWarningTranslation } from '../../../utils/general/kycUtils';
 import { LastErrorMessage } from '../../general/Error/LastErrorMessage';
@@ -31,7 +35,7 @@ export const ExchangePreviewView = memo(
         );
 
         const isTxnError = !!txnErrorString;
-        const isFusionPlus = quote?.exchange === '1inchfusionplus';
+        const hasEIP712SignData = hasEip712SignData(quote);
 
         const kycWarning = getKycPolicyWarningTranslation(kycPolicy);
 
@@ -55,8 +59,11 @@ export const ExchangePreviewView = memo(
                     <ExchangeFromAccountTradePreviewCard quote={quote} />
                     <ExchangeToAccountTradePreviewCard quote={quote} />
                     <ExchangeFiatDeviationWarning quote={quote} />
-                    <ExchangeFeePickerCard quote={quote} isTxnError={isTxnError} />
-                    {isFusionPlus && <ExchangeFusionPlusInfo />}
+                    {hasEIP712SignData ? (
+                        <ExchangeEIP712Info exchange={quote?.exchange} />
+                    ) : (
+                        <ExchangeFeePickerCard quote={quote} isTxnError={isTxnError} />
+                    )}
                     {kycWarning && (
                         <InlineAlertBox
                             iconName="identificationCard"

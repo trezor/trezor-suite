@@ -79,7 +79,7 @@ export const mercuryoDexQuote: ExchangeTrade = {
     swapSlippage: '1',
 };
 
-export const oneInchFusionPlusQuote: ExchangeTrade = {
+export const oneInchFusionPlusWithoutEip712SignDataQuote: ExchangeTrade = {
     exchange: '1inchfusionplus',
     fee: 'UNKNOWN',
     max: 'NONE',
@@ -97,11 +97,23 @@ export const oneInchFusionPlusQuote: ExchangeTrade = {
     swapSlippage: '1',
 };
 
+export const oneInchFusionPlusWithEip712SignDataQuote: ExchangeTrade = {
+    ...oneInchFusionPlusWithoutEip712SignDataQuote,
+    status: 'SIGN_DATA',
+    signData: {
+        type: 'eip712-typed-data',
+        data: {
+            domain: { name: '1inch' },
+            message: { maker: '0xabc' },
+        },
+    },
+};
+
 export const exchangeQuotes = [
     mercuryoFixedWorstQuote,
     mercuryoFixedBestQuote,
     cexdirectFloatingQuote,
     invityDexQuote,
     mercuryoDexQuote,
-    oneInchFusionPlusQuote,
+    oneInchFusionPlusWithoutEip712SignDataQuote,
 ];

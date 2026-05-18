@@ -79,6 +79,7 @@ export const ReviewOutputItemContent = ({
                     );
 
                 case 'swap':
+                case 'sign-data':
                 case undefined:
                     return <AddressFormatter value={value} format="full" variant="body-sm" />;
 
@@ -93,6 +94,7 @@ export const ReviewOutputItemContent = ({
                 case 'revoke-and-approve':
                     return <Text variant="body-sm">{value}</Text>;
                 case 'swap':
+                case 'sign-data':
                 case undefined:
                     return <AddressFormatter value={value} format="full" variant="body-sm" />;
                 default:

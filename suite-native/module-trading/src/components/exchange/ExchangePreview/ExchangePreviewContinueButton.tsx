@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import {
     isFinalStatus,
     parseCryptoId,
+    selectTradingExchangeFormStep,
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import { selectSendPrecomposedTx } from '@suite-common/wallet-core';
@@ -46,6 +47,8 @@ export const ExchangePreviewContinueButton = memo(
         const quote = useSelector(selectTradingExchangeSelectedQuote);
         const precomposedTransaction = useSelector(selectSendPrecomposedTx);
         const fromAccount = useSelector(selectExchangeSelectedSendAccount);
+        const formStep = useSelector(selectTradingExchangeFormStep);
+        const isSignDataFlow = formStep === 'SIGN_DATA';
         const isTXFinalType = precomposedTransaction?.type === 'final';
         const isTradeFinalized = isFinalStatus('exchange', quote?.status);
 
@@ -67,7 +70,7 @@ export const ExchangePreviewContinueButton = memo(
                 accountKey: fromAccount.key,
                 tokenContract,
                 orderId: quote.orderId ?? '',
-                flowType: 'swap',
+                flowType: isSignDataFlow ? 'sign-data' : 'swap',
             });
             onSignTransactionNavigation();
         };
@@ -76,7 +79,7 @@ export const ExchangePreviewContinueButton = memo(
             return null;
         }
 
-        if (isDisabled && !isTXFinalType) {
+        if (!isSignDataFlow && isDisabled && !isTXFinalType) {
             return null;
         }
 
@@ -87,7 +90,7 @@ export const ExchangePreviewContinueButton = memo(
                     <Button
                         onPress={handleSignTransaction}
                         isDisabled={isDisabled}
-                        isLoading={!isTXFinalType}
+                        isLoading={!isSignDataFlow && !isTXFinalType}
                         testID={EXCHANGE_PREVIEW_CONTINUE_BUTTON_TEST_ID}
                     >
                         <Translation id="generic.buttons.continue" />
