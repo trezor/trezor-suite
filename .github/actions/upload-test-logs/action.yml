@@ -16,6 +16,7 @@ runs:
       run: |
         docker cp docker-trezor-user-env-unix-1:/trezor-user-env/logs/debugging.log trezor-user-env-debugging.log || true
         docker cp docker-trezor-user-env-unix-1:/trezor-user-env/logs/emulator_bridge.log tenv-emulator-bridge-debugging.log || true
+        docker cp trezor-user-env.unix:/trezor-user-env/logs/tropic_model.log "$LOG_DIR/trezor-user-env-tropic_model.log" || true
         docker cp docker-trezor-user-env-unix-1:/trezor-user-env/docker/version.txt trezor-user-env-version.txt || true
         docker logs docker-electrum-regtest-1 > electrum-regtest.txt 2>&1 || true
         docker logs docker-quota-db-1 > quota-db.log 2>&1 || true
@@ -28,6 +29,7 @@ runs:
         path: |
           trezor-user-env-debugging.log
           tenv-emulator-bridge-debugging.log
+          trezor-user-env-tropic_model.log
           trezor-user-env-version.txt
           electrum-regtest.txt
           quota-db.log

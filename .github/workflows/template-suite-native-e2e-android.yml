@@ -162,8 +162,11 @@ jobs:
           LOG_DIR="suite-native/app/artifacts"
           docker cp trezor-user-env.unix:/trezor-user-env/logs/debugging.log "$LOG_DIR/trezor-user-env-debugging.log" || true
           docker cp trezor-user-env.unix:/trezor-user-env/logs/emulator_bridge.log "$LOG_DIR/tenv-emulator-bridge-debugging.log" || true
+          docker cp trezor-user-env.unix:/trezor-user-env/logs/tropic_model.log "$LOG_DIR/trezor-user-env-tropic_model.log" || true
           docker cp trezor-user-env.unix:/trezor-user-env/docker/version.txt "$LOG_DIR/trezor-user-env-version.txt" || true
           docker logs trezor-user-env-regtest > "$LOG_DIR/electrum-regtest.txt" || true
+          docker logs docker-quota-db-1 > quota-db.log 2>&1 || true
+          docker logs docker-suite-sync-1 > suite-sync.log 2>&1 || true
 
       - name: "Store test artifacts"
         if: ${{ !cancelled() }}
