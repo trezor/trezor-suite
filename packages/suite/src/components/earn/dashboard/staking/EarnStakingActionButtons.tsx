@@ -9,27 +9,53 @@ type EarnStakingActionButtonsProps = {
     stakingStatus: StakingAccountStatus;
     isStakingDisabled: boolean | undefined;
     stakingMessageContent: ReactNode;
+    canClaim: boolean;
+    isClaimButtonDisabled: boolean | undefined;
+    claimingMessageContent: ReactNode;
     onBuy: (event: MouseEvent<HTMLButtonElement>) => void;
     onStake: (event: MouseEvent<HTMLButtonElement>) => void;
+    onStakeNow: (event: MouseEvent<HTMLButtonElement>) => void;
+    onUpdateProvider: (event: MouseEvent<HTMLButtonElement>) => void;
+    onClaim: (event: MouseEvent<HTMLButtonElement>) => void;
 };
 
 export const EarnStakingActionButtons = ({
     stakingStatus,
     isStakingDisabled,
     stakingMessageContent,
+    canClaim,
+    isClaimButtonDisabled,
+    claimingMessageContent,
     onBuy,
     onStake,
+    onStakeNow,
+    onUpdateProvider,
+    onClaim,
 }: EarnStakingActionButtonsProps) => (
     <>
         {(stakingStatus === 'insufficient-funds' ||
             stakingStatus === 'staking-max' ||
-            stakingStatus === 'staked-but-insufficient-funds') && (
-            <Button intent="neutral" priority="secondary" size="small" onClick={onBuy}>
-                <Translation id="TR_BUY" />
-            </Button>
-        )}
+            stakingStatus === 'staked-but-insufficient-funds') &&
+            (canClaim ? (
+                <Tooltip content={claimingMessageContent}>
+                    <Button
+                        intent="brand"
+                        size="small"
+                        isDisabled={isClaimButtonDisabled}
+                        iconLeft={isClaimButtonDisabled ? 'info' : undefined}
+                        onClick={onClaim}
+                        data-testid="@account/staking/claim-button"
+                    >
+                        <Translation id="TR_STAKE_CLAIM" />
+                    </Button>
+                </Tooltip>
+            ) : (
+                <Button intent="neutral" priority="secondary" size="small" onClick={onBuy}>
+                    <Translation id="TR_BUY" />
+                </Button>
+            ))}
 
-        {(stakingStatus === 'staking-active' || stakingStatus === 'staking-inactive') && (
+        {stakingStatus === 'staking-active' && (
             <Tooltip content={stakingMessageContent}>
                 <Button
                     intent="brand"
@@ -38,13 +64,21 @@ export const EarnStakingActionButtons = ({
                     iconLeft={isStakingDisabled ? 'info' : undefined}
                     onClick={onStake}
                 >
-                    <Translation
-                        id={
-                            stakingStatus === 'staking-active'
-                                ? 'TR_EARN_STAKING_DASHBOARD_STAKE_MORE'
-                                : 'TR_EARN_STAKING_DASHBOARD_STAKE_NOW'
-                        }
-                    />
+                    <Translation id="TR_EARN_STAKING_DASHBOARD_STAKE_MORE" />
+                </Button>
+            </Tooltip>
+        )}
+
+        {stakingStatus === 'staking-inactive' && (
+            <Tooltip content={stakingMessageContent}>
+                <Button
+                    intent="brand"
+                    size="small"
+                    isDisabled={isStakingDisabled}
+                    iconLeft={isStakingDisabled ? 'info' : undefined}
+                    onClick={onStakeNow}
+                >
+                    <Translation id="TR_EARN_STAKING_DASHBOARD_STAKE_NOW" />
                 </Button>
             </Tooltip>
         )}
@@ -56,7 +90,7 @@ export const EarnStakingActionButtons = ({
                     size="small"
                     isDisabled={isStakingDisabled}
                     iconLeft={isStakingDisabled ? 'info' : undefined}
-                    onClick={onStake}
+                    onClick={onUpdateProvider}
                 >
                     <Translation id="TR_EARN_UPDATE_PROVIDER" />
                 </Button>

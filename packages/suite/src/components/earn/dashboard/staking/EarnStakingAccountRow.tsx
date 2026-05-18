@@ -1,16 +1,24 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
+import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { selectAccountIsStakingActive, selectPoolStatsApy } from '@suite-common/wallet-core';
+import {
+    selectAccountClaimTransactions,
+    selectAccountIsStakingActive,
+    selectPoolStatsApy,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
     calculateRewards,
     getAccountTotalStakingBalance,
+    getStakingDataForNetwork,
     getStakingLimitsByNetworkSymbol,
+    isPending,
 } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, Paragraph, Row, Table } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
@@ -43,7 +51,14 @@ export const EarnStakingAccountRow = ({
     const displaySymbol = getDisplaySymbol(account.symbol);
     const isCardanoNetworkType = account.networkType === 'cardano';
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
-    const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account.symbol);
+    const isClaimPending = useSelector(state =>
+        selectAccountClaimTransactions(state, account.key).some(tx => isPending(tx)),
+    );
+    const { isStakingDisabled, stakingMessageContent, isClaimingDisabled, claimingMessageContent } =
+        useMessageSystemStaking(account.symbol);
+
+    const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
+    const isClaimButtonDisabled = isClaimingDisabled || isClaimPending;
 
     const minStakingAmount = getStakingLimitsByNetworkSymbol(
         account.symbol,
@@ -94,6 +109,64 @@ export const EarnStakingAccountRow = ({
             payload: {
                 action: 'navigate',
                 from: `dashboard/staking-dashboard/${stakingStatus}`,
+                networkSymbol: account.symbol,
+            },
+        });
+    };
+
+    const openStakeModal = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
+
+        if (isStakingDisabled) {
+            return;
+        }
+
+        dispatch(
+            goto({
+                routeName: 'wallet-staking',
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
+            }),
+        );
+        dispatch(openModal({ type: 'stake', flow: EarnFlow.Stake, account }));
+
+        analytics.report({
+            type: events.stakingStakeEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'staking-dashboard',
+                networkSymbol: account.symbol,
+            },
+        });
+    };
+
+    const openClaimModal = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
+
+        if (isClaimButtonDisabled) {
+            return;
+        }
+
+        dispatch(
+            goto({
+                routeName: 'wallet-staking',
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
+            }),
+        );
+        dispatch(openModal({ type: 'claim', account }));
+
+        analytics.report({
+            type: events.stakingClaimEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'staking-dashboard',
                 networkSymbol: account.symbol,
             },
         });
@@ -154,8 +227,14 @@ export const EarnStakingAccountRow = ({
         stakingStatus,
         isStakingDisabled,
         stakingMessageContent,
+        canClaim,
+        isClaimButtonDisabled,
+        claimingMessageContent,
         onBuy: navigateToTradingBuy,
-        onStake: navigateToStaking,
+        onStake: openStakeModal,
+        onStakeNow: navigateToStaking,
+        onUpdateProvider: navigateToStaking,
+        onClaim: openClaimModal,
     } as const;
 
     if (isCardLayout) {
