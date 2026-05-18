@@ -6,12 +6,12 @@ import { getWalletState } from '@suite-native/trading-fixtures';
 
 import { OriginalLimit } from '../OriginalLimit';
 
-const mockSelectTradingExchangeActiveQuote = jest.fn();
+const mockSelectTradingExchangeSelectedQuote = jest.fn();
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
-    selectTradingExchangeActiveQuote: (...args: unknown[]) =>
-        mockSelectTradingExchangeActiveQuote(...args),
+    selectTradingExchangeSelectedQuote: (...args: unknown[]) =>
+        mockSelectTradingExchangeSelectedQuote(...args),
 }));
 
 describe('OriginalLimit', () => {
@@ -38,7 +38,7 @@ describe('OriginalLimit', () => {
         ],
         ['quote.preapprovedStringAmount is "0"', { send: 'bitcoin', preapprovedStringAmount: '0' }],
     ] as const)('should render nothing when %s', (_description, quote) => {
-        mockSelectTradingExchangeActiveQuote.mockReturnValue(quote);
+        mockSelectTradingExchangeSelectedQuote.mockReturnValue(quote);
 
         const { toJSON } = renderOriginalLimit();
 
@@ -46,7 +46,7 @@ describe('OriginalLimit', () => {
     });
 
     it('should render limit label and amount when quote has valid data', () => {
-        mockSelectTradingExchangeActiveQuote.mockReturnValue({
+        mockSelectTradingExchangeSelectedQuote.mockReturnValue({
             send: 'bitcoin',
             preapprovedStringAmount: '100',
         } as Partial<ExchangeTrade>);

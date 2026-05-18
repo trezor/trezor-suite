@@ -6,7 +6,7 @@ import type { ExchangeFee } from 'invity-api';
 import { useFormatters } from '@suite-common/formatters';
 import {
     cryptoIdToNetworkAndContractAddress,
-    selectTradingExchangeActiveQuote,
+    selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import { AnimatedVStack, Card, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -42,7 +42,7 @@ export const ExchangeConfirmationInfo = ({
     const { DateFormatter, TimeFormatter } = useFormatters();
 
     const date = transaction?.blockTime ? new Date(transaction.blockTime * 1000) : null;
-    const quote = useSelector(selectTradingExchangeActiveQuote);
+    const quote = useSelector(selectTradingExchangeSelectedQuote);
 
     if (!quote?.send) {
         return null;

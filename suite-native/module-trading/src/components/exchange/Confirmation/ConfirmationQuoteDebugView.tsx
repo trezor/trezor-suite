@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { type TransactionStatus, selectTradingExchangeActiveQuote } from '@suite-common/trading';
+import { type TransactionStatus, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import { Button, HStack, Text } from '@suite-native/atoms';
 import { DebugModeView, type TransactionStatusWithOverride } from '@suite-native/trading-debug';
 
@@ -15,7 +15,7 @@ export const ConfirmationQuoteDebugView = ({
     forceStatus,
     transactionStatus,
 }: ConfirmationQuoteDebugViewProps) => {
-    const quote = useSelector(selectTradingExchangeActiveQuote);
+    const quote = useSelector(selectTradingExchangeSelectedQuote);
 
     return (
         <DebugModeView>

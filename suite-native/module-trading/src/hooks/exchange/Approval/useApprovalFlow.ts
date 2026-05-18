@@ -5,7 +5,7 @@ import type { DexApprovalType, ExchangeTrade } from 'invity-api';
 
 import {
     exchangeThunks,
-    selectTradingExchangeActiveQuote,
+    selectTradingExchangeSelectedQuote,
     tradingExchangeActions,
 } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
@@ -20,7 +20,7 @@ export const useApprovalFlow = () => {
     const dispatch = useDispatch();
     const { translate } = useTranslate();
 
-    const quote = useSelector(selectTradingExchangeActiveQuote);
+    const quote = useSelector(selectTradingExchangeSelectedQuote);
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
     const toAccount = useSelector(selectExchangeSelectedReceiveAccount);
     const receiveAddress = getReceiveAccountAddressText(toAccount);

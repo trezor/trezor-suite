@@ -446,10 +446,12 @@ describe('useExchangeSelectQuote', () => {
             });
 
             expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangePreview', {});
-            expect(dispatchSpy).not.toHaveBeenCalledWith({
-                type: '@trading-exchange/savePreselectedQuote',
-                payload: expect.anything(),
+            expect(dispatchSpy).toHaveBeenCalledWith({
+                type: '@trading-exchange/saveSelectedQuote',
+                payload: mercuryoFixedBestQuote,
             });
+            const dispatchedTypes = dispatchSpy.mock.calls.map(([action]) => (action as any)?.type);
+            expect(dispatchedTypes).not.toContain('@trading-exchange/savePreselectedQuote');
         });
 
         it('should navigate to TradingExchangePreview when approval status is "not_needed"', () => {
@@ -475,6 +477,10 @@ describe('useExchangeSelectQuote', () => {
             });
 
             expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangePreview', {});
+            expect(dispatchSpy).toHaveBeenCalledWith({
+                type: '@trading-exchange/saveSelectedQuote',
+                payload: mercuryoFixedBestQuote,
+            });
         });
 
         it('should navigate to TradingExchangeApproval when approval status is "needs_approval"', () => {
@@ -500,11 +506,13 @@ describe('useExchangeSelectQuote', () => {
             });
 
             expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangeApproval', {});
-
+            // The hook persists candidateQuote to selectedQuote before navigating to the approval screen.
             expect(dispatchSpy).toHaveBeenCalledWith({
-                type: '@trading-exchange/savePreselectedQuote',
+                type: '@trading-exchange/saveSelectedQuote',
                 payload: mercuryoFixedBestQuote,
             });
+            const dispatchedTypes = dispatchSpy.mock.calls.map(([action]) => (action as any)?.type);
+            expect(dispatchedTypes).not.toContain('@trading-exchange/savePreselectedQuote');
         });
 
         it('should navigate to TradingExchangeApproval with shouldIncreaseLimit when approval status is "needs_increase" and token supports increasing allowance', () => {
@@ -533,9 +541,11 @@ describe('useExchangeSelectQuote', () => {
                 shouldIncreaseLimit: true,
             });
             expect(dispatchSpy).toHaveBeenCalledWith({
-                type: '@trading-exchange/savePreselectedQuote',
+                type: '@trading-exchange/saveSelectedQuote',
                 payload: mercuryoFixedBestQuote,
             });
+            const dispatchedTypes = dispatchSpy.mock.calls.map(([action]) => (action as any)?.type);
+            expect(dispatchedTypes).not.toContain('@trading-exchange/savePreselectedQuote');
         });
 
         it('should navigate to TradingExchangeRevoke when approval status is "needs_increase" and token does not support increasing allowance', () => {
@@ -562,6 +572,10 @@ describe('useExchangeSelectQuote', () => {
 
             expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangeRevoke', {
                 shouldIncreaseLimit: true,
+            });
+            expect(dispatchSpy).toHaveBeenCalledWith({
+                type: '@trading-exchange/saveSelectedQuote',
+                payload: mercuryoFixedBestQuote,
             });
         });
 
@@ -593,9 +607,13 @@ describe('useExchangeSelectQuote', () => {
                     shouldIncreaseLimit: false,
                 });
                 expect(dispatchSpy).toHaveBeenCalledWith({
-                    type: '@trading-exchange/savePreselectedQuote',
+                    type: '@trading-exchange/saveSelectedQuote',
                     payload: mercuryoFixedBestQuote,
                 });
+                const dispatchedTypes = dispatchSpy.mock.calls.map(
+                    ([action]) => (action as any)?.type,
+                );
+                expect(dispatchedTypes).not.toContain('@trading-exchange/savePreselectedQuote');
             },
         );
 

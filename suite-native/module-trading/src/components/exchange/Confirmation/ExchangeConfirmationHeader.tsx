@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import {
     type TradingRootState,
     selectTradingCoinSymbolByCryptoId,
-    selectTradingExchangeActiveQuote,
+    selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import { Translation } from '@suite-native/intl';
 import {
@@ -26,7 +26,7 @@ type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.T
 export const ExchangeConfirmationHeader = ({ flowType }: ExchangeConfirmationHeaderProps) => {
     const navigation = useNavigation<NavigationProp>();
 
-    const quote = useSelector(selectTradingExchangeActiveQuote);
+    const quote = useSelector(selectTradingExchangeSelectedQuote);
 
     const symbol = useSelector((state: TradingRootState) =>
         selectTradingCoinSymbolByCryptoId(state, quote?.send),

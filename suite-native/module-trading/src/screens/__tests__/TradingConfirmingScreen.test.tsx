@@ -1,6 +1,5 @@
 import type { TransactionStatus } from '@suite-common/trading';
 import {
-    selectTradingExchangePreselectedQuote,
     selectTradingExchangeSelectedQuote,
     tradingExchangeActions,
     useAllowanceTxTracking,
@@ -204,8 +203,19 @@ describe('TradingConfirmingScreen', () => {
         expect(mockNavigation.push).not.toHaveBeenCalled();
     });
 
-    it('revoke-and-approve: navigates to TradingExchangeApproval and clears selectedQuote', () => {
+    it('revoke-and-approve: navigates to TradingExchangeApproval and strips revoke-tx artifacts from selectedQuote', () => {
+        // Seed selectedQuote with revoke artifacts that the post-revoke confirmExchangeTradeThunk would have written.
+        store.dispatch(
+            tradingExchangeActions.saveSelectedQuote({
+                ...testQuote,
+                approvalType: 'ZERO',
+                approvalSendTxHash: 'revoke-txid',
+                status: 'APPROVAL_PENDING',
+            }),
+        );
         mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
+
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
 
         renderScreen({ flowType: 'revoke-and-approve' });
 
@@ -213,11 +223,23 @@ describe('TradingConfirmingScreen', () => {
         expect(mockNavigation.push).toHaveBeenCalledWith(RootStackRoutes.TradingExchangeApproval, {
             isRevoked: true,
         });
-        expect(selectTradingExchangeSelectedQuote(store.getState())).toBeUndefined();
+        const dispatchedActions = dispatchSpy.mock.calls.map(([action]) => action);
+        // savePreselectedQuote action no longer exists; assert against the action-type string.
+        expect(
+            dispatchedActions.find(
+                (action: any) => action?.type === '@trading-exchange/savePreselectedQuote',
+            ),
+        ).toBeUndefined();
+        const persisted = selectTradingExchangeSelectedQuote(store.getState());
+        expect(persisted).toBeDefined();
+        expect(persisted?.approvalSendTxHash).toBeUndefined();
+        expect(persisted?.approvalType).toBeUndefined();
+        expect(persisted?.status).toBe('APPROVAL_REQ');
+
+        dispatchSpy.mockRestore();
     });
 
-    it('revoke: pops to top and clears selectedQuote and preselectedQuote', () => {
-        store.dispatch(tradingExchangeActions.savePreselectedQuote(testQuote));
+    it('revoke: pops to top and clears selectedQuote', () => {
         mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
 
         renderScreen({ flowType: 'revoke' });
@@ -225,7 +247,6 @@ describe('TradingConfirmingScreen', () => {
         expect(mockNavigation.popToTop).toHaveBeenCalled();
         expect(mockNavigation.push).not.toHaveBeenCalled();
         expect(selectTradingExchangeSelectedQuote(store.getState())).toBeUndefined();
-        expect(selectTradingExchangePreselectedQuote(store.getState())).toBeUndefined();
     });
 
     it('should render the explore in blockchain button', () => {

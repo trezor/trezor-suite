@@ -50,7 +50,6 @@ import {
     selectTradingCoinSymbolByCryptoId,
     selectTradingComposedTransactionInfo,
     selectTradingExchange,
-    selectTradingExchangeActiveQuote,
     selectTradingExchangeAmountLimits,
     selectTradingExchangeBuyCryptoIds,
     selectTradingExchangeCexQuotes,
@@ -656,33 +655,6 @@ describe('tradingSelectors', () => {
         expect(selectTradingExchangeSelectedQuote(state)).toBe(
             state.wallet.trading.exchange.selectedQuote,
         );
-    });
-
-    describe('selectTradingExchangeActiveQuote', () => {
-        it('should return selectedQuote when it is defined', () => {
-            state.wallet.trading.exchange.selectedQuote = invityAPIFixtures.exchangeTrade;
-            state.wallet.trading.exchange.preselectedQuote = {
-                ...invityAPIFixtures.exchangeTrade,
-                exchange: 'preselected-exchange',
-            };
-
-            expect(selectTradingExchangeActiveQuote(state)).toBe(
-                state.wallet.trading.exchange.selectedQuote,
-            );
-        });
-
-        it('should fall back to preselectedQuote when selectedQuote is undefined', () => {
-            state.wallet.trading.exchange.selectedQuote = undefined;
-            state.wallet.trading.exchange.preselectedQuote = invityAPIFixtures.exchangeTrade;
-
-            expect(selectTradingExchangeActiveQuote(state)).toBe(
-                state.wallet.trading.exchange.preselectedQuote,
-            );
-        });
-
-        it('should return undefined when both quotes are undefined', () => {
-            expect(selectTradingExchangeActiveQuote(state)).toBeUndefined();
-        });
     });
 
     it('selectTradingSellSelectedQuote should return correct data', () => {

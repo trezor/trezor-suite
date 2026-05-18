@@ -17,7 +17,7 @@ describe('ExchangeRevokeDetails', () => {
             trading: {
                 exchange: {
                     tradingAccountKey: eth1NormalAccount.key,
-                    preselectedQuote: mercuryoFixedWorstQuote,
+                    selectedQuote: mercuryoFixedWorstQuote,
                 },
             },
         },
@@ -57,7 +57,7 @@ describe('ExchangeRevokeDetails', () => {
                 trading: {
                     exchange: {
                         tradingAccountKey: 'unknown-account-key' as AccountKey,
-                        preselectedQuote: mercuryoFixedWorstQuote,
+                        selectedQuote: mercuryoFixedWorstQuote,
                     },
                 },
             },

@@ -24,7 +24,7 @@ describe('ExchangeApprovalDetails', () => {
             trading: {
                 exchange: {
                     tradingAccountKey: eth1NormalAccount.key,
-                    preselectedQuote: mercuryoFixedWorstQuote,
+                    selectedQuote: mercuryoFixedWorstQuote,
                 },
             },
         },
@@ -67,7 +67,7 @@ describe('ExchangeApprovalDetails', () => {
                 trading: {
                     exchange: {
                         tradingAccountKey: 'unknown-account-key' as AccountKey,
-                        preselectedQuote: mercuryoFixedWorstQuote,
+                        selectedQuote: mercuryoFixedWorstQuote,
                     },
                 },
             },

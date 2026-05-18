@@ -9,7 +9,7 @@ import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
-    type RootStackRoutes,
+    RootStackRoutes,
     Screen,
     type StackProps,
 } from '@suite-native/navigation';
@@ -108,6 +108,12 @@ const TradingExchangePreviewScreenContent = ({
             }
         }, [handleConfirmTrade, isFinalized]),
     );
+
+    useEffect(() => {
+        if (quote?.status === 'APPROVAL_REQ') {
+            navigation.navigate(RootStackRoutes.TradingExchangeApproval, {});
+        }
+    }, [navigation, quote?.status]);
 
     // clear trading state on unmount
     useEffect(

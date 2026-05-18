@@ -102,7 +102,7 @@ describe('TradingExchangeApprovalScreen', () => {
         mockIsDeviceConnected = true;
 
         store = createTradingLightStore({ tradeType: 'exchange' });
-        store.dispatch(tradingExchangeActions.savePreselectedQuote(testQuote));
+        store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
         store.dispatch(tradingExchangeActions.setTradingAccountKey(eth1NormalAccount.key));
     });
 
@@ -152,7 +152,6 @@ describe('TradingExchangeApprovalScreen', () => {
     });
 
     it('should render alert when no quote is provided', () => {
-        store.dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
         store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
 
         const { getByText, queryByText } = renderScreen();
