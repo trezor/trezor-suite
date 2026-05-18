@@ -7,10 +7,12 @@ import { prepareYieldDepositThunk } from '@suite-common/wallet-core';
 
 import { type ResolvedYieldFlowData } from './useResolvedYieldFlowData';
 import { useWorkInProgressAlert } from './useWorkInProgressAlert';
+import { type PreparedYieldSupplyAction } from './useYieldSupplyFees';
 
 type UseYieldSupplySubmitParams = Pick<ResolvedYieldFlowData, 'flowData' | 'flowKey'> & {
     amount: string | undefined;
     onApprovalRequired: () => void;
+    preparedAction: PreparedYieldSupplyAction | null;
 };
 
 export const useYieldSupplySubmit = ({
@@ -18,12 +20,19 @@ export const useYieldSupplySubmit = ({
     flowData,
     flowKey,
     onApprovalRequired,
+    preparedAction,
 }: UseYieldSupplySubmitParams) => {
     const dispatch = useDispatch();
     const showWorkInProgressAlert = useWorkInProgressAlert();
 
     const handleSubmitSupply = useCallback(async () => {
         if (!amount || !flowData || !flowKey) {
+            return;
+        }
+
+        if (preparedAction?.amount === amount) {
+            showWorkInProgressAlert('Supply transaction ready');
+
             return;
         }
 
@@ -48,14 +57,22 @@ export const useYieldSupplySubmit = ({
         }
 
         if (response.payload.type === 'revoke-required') {
-            //TODO: better handling, revoke is not supported on mobile
+            // TODO: Better handling, revoke is not supported on mobile.
             showWorkInProgressAlert('Approval reset not supported');
 
             return;
         }
 
         onApprovalRequired();
-    }, [amount, dispatch, flowData, flowKey, onApprovalRequired, showWorkInProgressAlert]);
+    }, [
+        amount,
+        dispatch,
+        flowData,
+        flowKey,
+        onApprovalRequired,
+        preparedAction,
+        showWorkInProgressAlert,
+    ]);
 
     return { handleSubmitSupply };
 };
