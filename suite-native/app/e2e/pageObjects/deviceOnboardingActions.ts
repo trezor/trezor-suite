@@ -46,29 +46,29 @@ class DeviceOnboardingActions {
 
     async gotToNextWalletBackupTutorialStep(step: number) {
         const buttonId = `@swipeableWalkthroughStep/walletBackupTutorialStep${step}/nextButton`;
-        await waitForVisible(by.id(buttonId));
         // WalletBackupTutorialStep2 contains BackupRiskCardsAnimation which uses a Marquee
         // component. Marquee's useFrameCallback fires every frame on the UI thread, preventing
         // Espresso from detecting the app as idle. All steps are mounted simultaneously, so
         // this affects taps on every step while the tutorial screen is in the navigation stack.
         await device.disableSynchronization();
+        await waitForVisible(by.id(buttonId), { visibilityThreshold: 55 });
         await element(by.id(buttonId)).tap();
         await device.enableSynchronization();
     }
 
     async goToNextWalletBackupRecapStep(step: number) {
         const buttonId = `@swipeableWalkthroughStep/walletBackupRecapStep${step}/nextButton`;
-        await waitForVisible(by.id(buttonId));
         // WalletBackupTutorialScreen stays in the navigation stack during the entire Create
         // Wallet flow including WalletBackupRecap, so the Marquee frame callback keeps running.
         await device.disableSynchronization();
+        await waitForVisible(by.id(buttonId), { visibilityThreshold: 55 });
         await element(by.id(buttonId)).tap();
         await device.enableSynchronization();
     }
 
     async goToNextWalletRecoveryRecapStep(step: number) {
         const buttonId = `@swipeableWalkthroughStep/walletRecoveryRecapStep${step}/nextButton`;
-        await waitForVisible(by.id(buttonId));
+        await waitForVisible(by.id(buttonId), { visibilityThreshold: 55 });
         await element(by.id(buttonId)).tap();
     }
 

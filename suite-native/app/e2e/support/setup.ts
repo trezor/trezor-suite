@@ -53,9 +53,11 @@ const getExpoDeepLinkUrl = () => {
 const openExpoDevClientApp = async ({
     newInstance,
     launchArgs,
+    delete: deleteData,
 }: {
     newInstance: boolean;
     launchArgs: LaunchArguments;
+    delete?: boolean;
 }) => {
     const deepLinkUrl = getExpoDeepLinkUrl();
 
@@ -73,6 +75,7 @@ const openExpoDevClientApp = async ({
             newInstance,
             url: deepLinkUrl,
             launchArgs,
+            delete: deleteData,
         });
     }
 };
@@ -112,11 +115,6 @@ const waitForDeviceEnumerated = async ({ retries = 60, intervalMs = 1000 } = {})
     throw new Error('No device visible to Trezor bridge after enumerate polling');
 };
 
-const wipeAppData = async () => {
-    await device.uninstallApp();
-    await device.installApp();
-};
-
 export const openApp = async ({
     newInstance = true,
     wipeData = true,
@@ -131,16 +129,21 @@ export const openApp = async ({
         ...args,
     };
 
-    if (wipeData) {
-        await wipeAppData();
+    // On iOS wipe via uninstall+reinstall; on Android pass delete:true directly into the
+    // launchApp call so the Expo URL is provided in the same launch that clears data,
+    // avoiding the slow/unstable uninstall+reinstall cycle on API 34.
+    if (wipeData && platform !== 'android') {
+        await device.uninstallApp();
+        await device.installApp();
     }
 
     if (await isDebugTestBuild()) {
-        await openExpoDevClientApp({ newInstance, launchArgs });
+        await openExpoDevClientApp({ newInstance, launchArgs, delete: wipeData });
     } else {
         await device.launchApp({
             newInstance,
             launchArgs,
+            delete: wipeData && platform === 'android',
         });
     }
 

@@ -46,8 +46,9 @@ module.exports = {
         emulator: {
             type: 'android.emulator',
             device: {
-                avdName: 'Pixel_3a_API_31',
+                avdName: 'Pixel_6_API_34',
             },
+            bootArgs: '-no-metrics',
         },
     },
     configurations: {

@@ -62,6 +62,7 @@ describe('Deeplink connect popup. [@androidOnly @T3T1]', () => {
     });
 
     afterAll(async () => {
+        await device.unreverseTcpPort(deepLinkServer.port);
         await deepLinkServer.stop();
     });
 

@@ -62,12 +62,15 @@ function getTarget(elementOrMatcher: ElementOrMatcher) {
 
 export const waitForVisible = async (
     elementOrMatcher: ElementOrMatcher,
-    { timeout = 30_000 }: { timeout?: number } = {},
+    {
+        timeout = 30_000,
+        visibilityThreshold,
+    }: { timeout?: number; visibilityThreshold?: number } = {},
 ) => {
     const target = getTarget(elementOrMatcher);
     const invocationStack = new Error().stack || '';
     try {
-        await waitFor(target).toBeVisible().withTimeout(timeout);
+        await waitFor(target).toBeVisible(visibilityThreshold).withTimeout(timeout);
     } catch (error) {
         const details = `waitForVisible(): target not visible after ${timeout}ms`;
         const appStackError = new Error(details, { cause: error as Error });

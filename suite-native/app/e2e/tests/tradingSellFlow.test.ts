@@ -66,7 +66,6 @@ describe('Trade Sell [@androidOnly]', () => {
             await tradingSellActions.selectSendAsset('USDC');
             await tradingSellActions.setSendCryptoAmount('55');
 
-            await tradingSellActions.viewHowTradingWorks();
             await tradingSellActions.expectValidSellForm();
 
             await tradingSellActions.confirmTradingForm();
@@ -104,7 +103,6 @@ describe('Trade Sell [@androidOnly]', () => {
             await tradingSellActions.selectSendAsset('USDC');
             await tradingSellActions.setSendCryptoAmount('55');
 
-            await tradingSellActions.viewHowTradingWorks();
             await tradingSellActions.expectValidSellForm();
 
             await tradingSellActions.viewReceiveMethods();

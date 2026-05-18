@@ -67,13 +67,13 @@ nix develop .#android
 # list available AVDs with:
 avdmanager list avd
 emulator -avd <avd-name>
-emulator -avd Pixel_3a_API_31
+emulator -avd Pixel_6_API_34
 ```
 
 If you have troubles with your GPU acceleration you can disable it when running emulator like:
 
 ```bash
-emulator -avd Pixel_3a_API_31 -gpu swiftshader_indirect
+emulator -avd Pixel_6_API_34 -gpu swiftshader_indirect
 ```
 
 ### Running tests

@@ -31,6 +31,7 @@ export class TradingActions {
     }
 
     async closeBottomSheet() {
+        await waitForVisible(by.id('@bottom-sheet/header/close-button'));
         await element(by.id('@bottom-sheet/header/close-button')).tap();
         await this.waitForBottomSheetAnimation();
     }
