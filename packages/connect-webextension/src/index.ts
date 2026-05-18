@@ -37,6 +37,7 @@ const initProxyChannel = () => {
         reason?: string;
         // We need `error` field for backward compatibility, for connect10 with older clients.
         error?: string;
+        callId?: string;
     }>({
         name: 'trezor-connect-proxy',
         channel: {
@@ -56,12 +57,12 @@ const initProxyChannel = () => {
         // Handle cancel before the payload guard — cancel messages may
         // carry no meaningful payload.
         if (type === POPUP.CLOSED) {
-            TrezorConnect.cancel(payload?.error);
+            TrezorConnect.cancel({ reason: payload?.error, callId: payload?.callId });
 
             return;
         }
         if (type === CORE_CALL_CANCEL) {
-            TrezorConnect.cancel(payload?.reason);
+            TrezorConnect.cancel({ reason: payload?.reason, callId: payload?.callId });
 
             return;
         }
