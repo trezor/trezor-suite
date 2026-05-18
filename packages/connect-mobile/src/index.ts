@@ -111,8 +111,8 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
         throw ERRORS.TypedError('Method_InvalidPackage');
     }
 
-    public cancel(error?: string) {
-        this.resolveMessagePromises({ success: false, error });
+    public cancel(params?: { reason?: string; callId?: string }) {
+        this.resolveMessagePromises({ success: false, error: params?.reason });
     }
 
     public dispose() {
