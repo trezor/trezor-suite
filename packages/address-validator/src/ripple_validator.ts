@@ -2,7 +2,7 @@ import { base58xrp } from '@scure/base';
 
 import * as cryptoUtils from './crypto/utils';
 import { addressType } from './crypto/utils';
-import type { Currency } from './currency-types';
+import type { Currency, NetworkEnvironment } from './currency-types';
 
 const ALLOWED_CHARS = 'rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz';
 
@@ -24,7 +24,11 @@ export const isValidAddress = (address: string): boolean => {
     return false;
 };
 
-export const getAddressType = (address: string, _currency?: Currency, _networkType?: string) => {
+export const getAddressType = (
+    address: string,
+    _currency?: Currency,
+    _network?: NetworkEnvironment,
+) => {
     if (isValidAddress(address)) {
         return addressType.ADDRESS;
     }

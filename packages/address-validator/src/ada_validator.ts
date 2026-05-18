@@ -4,9 +4,9 @@ import CRC from 'crc';
 
 import * as base58 from './crypto/base58';
 import { addressType } from './crypto/utils';
-import type { Currency } from './currency-types';
+import type { Currency, NetworkEnvironment } from './currency-types';
 
-const DEFAULT_NETWORK_TYPE = 'prod';
+const DEFAULT_NETWORK: NetworkEnvironment = 'prod';
 
 function getDecoded(address: string): any {
     try {
@@ -34,18 +34,22 @@ function isValidLegacyAddress(address: string): boolean {
     return crc === validCrc;
 }
 
-function isValidBech32Address(address: string, currency: any, networkType: string): boolean {
+function isValidBech32Address(
+    address: string,
+    currency: any,
+    network: NetworkEnvironment,
+): boolean {
     if (!currency.segwitHrp) {
         return false;
     }
-    const hrp = currency.segwitHrp[networkType];
+    const hrp = currency.segwitHrp[network];
     if (!hrp) {
         return false;
     }
 
     let dec;
     try {
-        dec = bech32.decode(address as `${string}1${string}`, networkType === 'prod' ? 103 : 108);
+        dec = bech32.decode(address as `${string}1${string}`, network === 'prod' ? 103 : 108);
     } catch {
         return false;
     }
@@ -54,7 +58,7 @@ function isValidBech32Address(address: string, currency: any, networkType: strin
         dec === null ||
         dec.prefix !== hrp ||
         dec.words.length < 1 ||
-        (dec.words[0] > 16 && networkType !== 'stake')
+        (dec.words[0] > 16 && network !== 'stake')
     ) {
         return false;
     }
@@ -65,15 +69,21 @@ function isValidBech32Address(address: string, currency: any, networkType: strin
 export const isValidAddress = (
     address: string,
     currency?: Currency,
-    networkType?: string,
+    network?: NetworkEnvironment,
 ): boolean => {
-    const network = networkType || DEFAULT_NETWORK_TYPE;
+    const resolvedNetwork = network || DEFAULT_NETWORK;
 
-    return isValidLegacyAddress(address) || isValidBech32Address(address, currency, network);
+    return (
+        isValidLegacyAddress(address) || isValidBech32Address(address, currency, resolvedNetwork)
+    );
 };
 
-export const getAddressType = (address: string, currency?: Currency, networkType?: string) => {
-    if (isValidAddress(address, currency, networkType)) {
+export const getAddressType = (
+    address: string,
+    currency?: Currency,
+    network?: NetworkEnvironment,
+) => {
+    if (isValidAddress(address, currency, network)) {
         return addressType.ADDRESS;
     }
 

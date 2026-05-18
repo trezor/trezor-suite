@@ -4,10 +4,10 @@ import { toChecksumAddress } from 'web3-utils';
 
 import { getTestnetSymbols } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { getAddressType, validate } from '@trezor/address-validator';
+import { type NetworkEnvironment, getAddressType, validate } from '@trezor/address-validator';
 import { type AccountInfo } from '@trezor/blockchain-link-types';
 
-const getNetworkType = (symbol: Account['symbol'], address: string) => {
+const getNetworkEnvironment = (symbol: Account['symbol'], address: string): NetworkEnvironment => {
     if (symbol === 'regtest') return symbol;
     const testnets = getTestnetSymbols();
 
@@ -36,10 +36,10 @@ const getCoinFromTestnet = (symbol: Account['symbol']) => {
 };
 
 export const isAddressValid = (address: string, symbol: Account['symbol']) => {
-    const networkType = getNetworkType(symbol, address);
+    const network = getNetworkEnvironment(symbol, address);
     const updatedSymbol = getCoinFromTestnet(symbol);
 
-    return validate(address, updatedSymbol.toUpperCase(), networkType);
+    return validate(address, updatedSymbol.toUpperCase(), network);
 };
 
 export const isAddressDeprecated = (address: string, symbol: Account['symbol']) => {
@@ -55,10 +55,10 @@ export const isAddressDeprecated = (address: string, symbol: Account['symbol']) 
 };
 
 export const isTaprootAddress = (address: string, symbol: Account['symbol']) => {
-    const networkType = getNetworkType(symbol, address);
+    const network = getNetworkEnvironment(symbol, address);
     const updatedSymbol = getCoinFromTestnet(symbol);
 
-    return getAddressType(address, updatedSymbol.toUpperCase(), networkType) === 'p2tr';
+    return getAddressType(address, updatedSymbol.toUpperCase(), network) === 'p2tr';
 };
 
 export const hasBitcoinCashAddressPrefix = (address: string) =>

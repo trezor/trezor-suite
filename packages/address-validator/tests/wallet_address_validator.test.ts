@@ -1,24 +1,25 @@
 import * as WAValidator from '../src';
+import type { NetworkEnvironment } from '../src';
 
 const { addressType } = WAValidator;
 
 function isValidAddressType(
     address: string,
     currency: string,
-    networkType: string | undefined,
+    network: NetworkEnvironment | undefined,
     expectedType: string | undefined,
 ) {
-    const type = WAValidator.getAddressType(address, currency, networkType);
+    const type = WAValidator.getAddressType(address, currency, network);
     expect({ address, addressType: type }).toEqual({ address, addressType: expectedType });
 }
 
-function valid(address: string, currency?: string, networkType?: string) {
-    const isValid = WAValidator.validate(address, currency, networkType);
+function valid(address: string, currency?: string, network?: NetworkEnvironment) {
+    const isValid = WAValidator.validate(address, currency, network);
     expect({ address, currency, valid: isValid }).toEqual({ address, currency, valid: true });
 }
 
-function invalid(address: string, currency?: string, networkType?: string) {
-    const isValid = WAValidator.validate(address, currency, networkType);
+function invalid(address: string, currency?: string, network?: NetworkEnvironment) {
+    const isValid = WAValidator.validate(address, currency, network);
     expect({ address, currency, valid: isValid }).toEqual({ address, currency, valid: false });
 }
 
