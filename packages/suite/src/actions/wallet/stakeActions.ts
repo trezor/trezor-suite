@@ -65,7 +65,7 @@ export const cancelSignTx =
         dispatch(stakeActions.requestPushTransaction());
         // if transaction is not signed yet interrupt signing in TrezorConnect
         if (!serializedTx) {
-            TrezorConnect.cancel('tx-cancelled');
+            TrezorConnect.cancel({ reason: 'tx-cancelled' });
 
             return;
         }

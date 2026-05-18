@@ -341,7 +341,7 @@ export const cancelDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/cancel`,
     (device: TrezorDevice, { dispatch }) => {
         // cancel with a custom error code so we can distinguish it from device cancellation
-        TrezorConnect.cancel(USER_UI_CANCEL_CODE);
+        TrezorConnect.cancel({ reason: USER_UI_CANCEL_CODE });
 
         dispatch(discoveryActions.updateDiscovery({ status: 'cancelled' }, device.path));
     },

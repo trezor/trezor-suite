@@ -59,7 +59,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
     };
 
     const closeWithCancelOnDevice = () => {
-        TrezorConnect.cancel('cancel');
+        TrezorConnect.cancel({ reason: 'cancel' });
         handleCancel();
     };
 

@@ -376,7 +376,7 @@ export const connectPopupCancelThunk = createThunk<void, { error?: string }>(
     `${CONNECT_POPUP_MODULE}/cancelThunk`,
     ({ error }, { dispatch }) => {
         getPermissionDeferred().reject(TypedError('Method_Cancel'));
-        TrezorConnect.cancel(error);
+        TrezorConnect.cancel({ reason: error });
         // todo: probably not needed to call explicitly anymore
         dispatch(deviceActions.removeButtonRequests({}));
 

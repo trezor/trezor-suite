@@ -10,7 +10,7 @@ export const ThpPairingPinEntryModal = () => {
     const intl = useIntl();
 
     const onCancel = () => {
-        TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
+        TrezorConnect.cancel({ reason: intl.formatMessage(messages.TR_CANCELLED) });
     };
 
     return (

@@ -113,7 +113,7 @@ export const useConnectPopupModals = () => {
             }
             case 'switch-device': {
                 if (modalContext !== MODAL_CONTEXT_NONE && !isInDiscoveryFlow) {
-                    TrezorConnect.cancel('switching-device');
+                    TrezorConnect.cancel({ reason: 'switching-device' });
                     dispatch(removePreserveModal());
                     dispatch(cancelModal());
                     dispatch(

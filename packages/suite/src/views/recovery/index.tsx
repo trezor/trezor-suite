@@ -61,7 +61,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
 
     const handleClose = () => {
         if (['in-progress', 'waiting-for-confirmation'].includes(recovery.status)) {
-            TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
+            TrezorConnect.cancel({ reason: intl.formatMessage(messages.TR_CANCELLED) });
         } else {
             onCancel();
         }

@@ -97,9 +97,9 @@ export const OnboardingCard = ({
                             onCancel={
                                 isActionAbortable
                                     ? () =>
-                                          TrezorConnect.cancel(
-                                              intl.formatMessage(messages.TR_CANCELLED),
-                                          )
+                                          TrezorConnect.cancel({
+                                              reason: intl.formatMessage(messages.TR_CANCELLED),
+                                          })
                                     : undefined
                             }
                         />

@@ -12,7 +12,7 @@ export const ThpCodeEntryStep = () => {
     const intl = useIntl();
 
     const abort = useCallback(
-        () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED)),
+        () => TrezorConnect.cancel({ reason: intl.formatMessage(messages.TR_CANCELLED) }),
         [intl],
     );
 

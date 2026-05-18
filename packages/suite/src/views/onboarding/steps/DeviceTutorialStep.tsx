@@ -21,7 +21,8 @@ export const DeviceTutorialStep = () => {
         dispatch(beginOnboardingTutorial());
     }, [dispatch]);
 
-    const handleSkipClick = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
+    const handleSkipClick = () =>
+        TrezorConnect.cancel({ reason: intl.formatMessage(messages.TR_CANCELLED) });
 
     return (
         <OnboardingCard
