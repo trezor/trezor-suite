@@ -81,7 +81,7 @@ describe('TrezorConnect.cancel', () => {
             });
         });
 
-        TrezorConnect.cancel('Cancel reason');
+        TrezorConnect.cancel({ reason: 'Cancel reason' });
 
         const response = await getAddressCall;
 
@@ -118,7 +118,7 @@ describe('TrezorConnect.cancel', () => {
         // TODO: model T is happy with 1ms, model one needs more (1000 worked)
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        TrezorConnect.cancel('Cancel reason');
+        TrezorConnect.cancel({ reason: 'Cancel reason' });
 
         const response = await getAddressCall;
 
@@ -152,6 +152,34 @@ describe('TrezorConnect.cancel', () => {
 
         expect(response.success).toEqual(false);
 
+        await assertGetAddressWorks();
+    });
+
+    it('Passphrase request - Cancel by callId', async () => {
+        await setup(controller, {
+            mnemonic: 'mnemonic_all',
+            passphrase_protection: true,
+        });
+        await initTrezorConnect(controller);
+
+        const callId = crypto.randomUUID();
+        const callA = TrezorConnect.getAddress({
+            path: "m/84'/1'/0'/0/0",
+            coin: 'regtest',
+            showOnTrezor: false,
+            callId,
+        });
+
+        // Wait for passphrase prompt then cancel only this call by its callId
+        await new Promise<void>(resolve => {
+            TrezorConnect.on('ui-request_passphrase', () => resolve());
+        });
+        TrezorConnect.cancel({ callId });
+
+        const responseA = await callA;
+        expect(responseA.success).toEqual(false);
+
+        // After a targeted cancel the device should still be usable
         await assertGetAddressWorks();
     });
 
