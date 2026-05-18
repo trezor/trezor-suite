@@ -22,6 +22,7 @@ import {
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { useDidUpdate } from '@trezor/react-utils';
+import { throwError } from '@trezor/utils';
 
 import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';
 import {
@@ -465,9 +466,5 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
 // Used across send form components
 // Provide combined context of `react-hook-form` with custom values as SendContextValues
-export const useSendFormContext = () => {
-    const ctx = useContext(SendContext);
-    if (ctx === null) throw Error('useSendFormContext used without Context');
-
-    return ctx;
-};
+export const useSendFormContext = () =>
+    useContext(SendContext) ?? throwError('useSendFormContext used without Context');

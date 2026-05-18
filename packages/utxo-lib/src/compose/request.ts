@@ -1,3 +1,5 @@
+import { throwError } from '@trezor/utils';
+
 import { toOutputScript } from '../address';
 import {
     INPUT_SCRIPT_LENGTH,
@@ -103,20 +105,14 @@ function transformOutput(
 ): CoinSelectOutput {
     const script = { length: OUTPUT_SCRIPT_LENGTH[txType] };
     if (output.type === 'payment') {
-        const value = bignumberOrNaN(output.amount);
-        if (!value) throw new Error('Invalid amount');
-
         return {
-            value,
+            value: bignumberOrNaN(output.amount) || throwError('Invalid amount'),
             script: toOutputScript(output.address, network),
         };
     }
     if (output.type === 'payment-noaddress') {
-        const value = bignumberOrNaN(output.amount);
-        if (!value) throw new Error('Invalid amount');
-
         return {
-            value,
+            value: bignumberOrNaN(output.amount) || throwError('Invalid amount'),
             script,
         };
     }

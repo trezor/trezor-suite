@@ -18,7 +18,7 @@ import TrezorConnect, {
     type CallMethodResponse,
     type EthereumSignTypedData,
 } from '@trezor/connect';
-import { isAscii, isHex } from '@trezor/utils';
+import { isAscii, isHex, throwError } from '@trezor/utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
 import { selectSessionByTopic } from '../walletConnectReducer';
@@ -45,19 +45,14 @@ const ethereumRequestThunk = createThunk<
     const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
     const isMevProtectionFeatureEnabled = selectIsMevProtectionFeatureEnabled(getState());
 
-    const getAccount = (address: string, chainId?: number) => {
-        const account = selectAccounts(getState()).find(
+    const getAccount = (address: string, chainId?: number) =>
+        selectAccounts(getState()).find(
             a =>
                 a.descriptor.toLowerCase() === address.toLowerCase() &&
                 a.networkType === 'ethereum' &&
                 (!chainId || getNetwork(a.symbol).chainId === chainId),
-        );
-        if (!account) {
-            throw new Error('Account not found');
-        }
+        ) || throwError('Account not found');
 
-        return account;
-    };
     const session = selectSessionByTopic(getState(), event.topic);
     if (!session) {
         throw new Error('WalletConnect Session not found');

@@ -24,7 +24,7 @@ import {
     getStakingLimitsByNetworkSymbol,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { isChanged } from '@trezor/utils';
+import { isChanged, throwError } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
@@ -424,9 +424,5 @@ export const useSupplyForm = ({ account }: UseSupplyFormProps): SupplyContextVal
     };
 };
 
-export const useSupplyFormContext = () => {
-    const ctx = useContext(SupplyFormContext);
-    if (ctx === null) throw Error('useSupplyFormContext used without Context');
-
-    return ctx;
-};
+export const useSupplyFormContext = () =>
+    useContext(SupplyFormContext) ?? throwError('useSupplyFormContext used without Context');

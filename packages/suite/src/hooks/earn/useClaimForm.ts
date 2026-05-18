@@ -6,6 +6,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { type Account, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
+import { throwError } from '@trezor/utils';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -161,9 +162,5 @@ export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValue
     };
 };
 
-export const useClaimFormContext = () => {
-    const ctx = useContext(ClaimFormContext);
-    if (ctx === null) throw Error('useClaimFormContext used without Context');
-
-    return ctx;
-};
+export const useClaimFormContext = () =>
+    useContext(ClaimFormContext) ?? throwError('useClaimFormContext used without Context');

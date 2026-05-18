@@ -1,5 +1,7 @@
 import { createContext, useContext } from 'react';
 
+import { throwError } from '@trezor/utils';
+
 import { type TabsSize } from './types';
 
 export const TabsContext = createContext<{
@@ -9,12 +11,5 @@ export const TabsContext = createContext<{
     activeItemId?: string;
 }>({ size: 'medium', isDisabled: false });
 
-export const useTabsContext = () => {
-    const context = useContext(TabsContext);
-
-    if (!context) {
-        throw new Error('useTabsContext must be used within a TabsContext');
-    }
-
-    return context;
-};
+export const useTabsContext = () =>
+    useContext(TabsContext) ?? throwError('useTabsContext must be used within a TabsContext');

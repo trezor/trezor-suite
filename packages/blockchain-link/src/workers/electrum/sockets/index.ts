@@ -1,5 +1,5 @@
 import { CustomError } from '@trezor/blockchain-link-types';
-import { parseElectrumUrl } from '@trezor/utils';
+import { parseElectrumUrl, throwError } from '@trezor/utils';
 
 import type { SocketBase, SocketOptions } from './base';
 import { TcpSocket } from './tcp';
@@ -7,9 +7,8 @@ import { TlsSocket } from './tls';
 import { TorSocket } from './tor';
 
 export const createSocket = (url: string, options?: SocketOptions): SocketBase => {
-    const parsed = parseElectrumUrl(url);
-    if (!parsed) throw new CustomError('Invalid electrum url');
-    const { host, port, protocol } = parsed;
+    const { host, port, protocol } =
+        parseElectrumUrl(url) ?? throwError(new CustomError('Invalid electrum url'));
     const { timeout, keepAlive, proxyAgent } = options || {};
     // Onion address is TCP over Tor
     if (proxyAgent /* host.endsWith('.onion') */) {

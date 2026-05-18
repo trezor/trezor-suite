@@ -18,6 +18,7 @@ import {
 import { useTheme } from 'styled-components';
 
 import { zIndices } from '@trezor/theme';
+import { throwError } from '@trezor/utils';
 
 import { type PopoverPlacement, convertPopoverPlacement } from './utils';
 import { intermediaryTheme } from '../../config/colors';
@@ -108,15 +109,9 @@ type ContextType =
 
 const PopoverContext = React.createContext<ContextType>(null);
 
-export const usePopoverContext = () => {
-    const context = React.useContext(PopoverContext);
-
-    if (context == null) {
-        throw new Error('Popover components must be wrapped in <Popover />');
-    }
-
-    return context;
-};
+export const usePopoverContext = () =>
+    React.useContext(PopoverContext) ??
+    throwError('Popover components must be wrapped in <Popover />');
 
 type PopoverTriggerProps = {
     children: React.ReactNode;

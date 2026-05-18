@@ -31,7 +31,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { type BlockchainEstimatedFee } from '@trezor/connect-common/src/types/api/blockchainEstimateFee';
 import { type Ok, type PartialRecord } from '@trezor/type-utils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, throwError } from '@trezor/utils';
 
 import {
     ETH_NETWORK_ADDRESSES,
@@ -173,11 +173,9 @@ export const stake = async ({
     }
 
     try {
-        const ethAddresses = getEthNetworkAddresses(symbol);
-        if (!ethAddresses) {
-            throw new Error(`Unsupported staking network symbol: ${symbol}`);
-        }
-        const { addressContractPool } = ethAddresses;
+        const { addressContractPool } =
+            getEthNetworkAddresses(symbol) ??
+            throwError(`Unsupported staking network symbol: ${symbol}`);
         const data = buildStakeData();
 
         // gasLimit calculation based on address, amount and data size
@@ -249,11 +247,9 @@ export const unstake = async ({
         }
 
         const amountWei = toWei(amount, 'ether');
-        const ethAddresses = getEthNetworkAddresses(symbol);
-        if (!ethAddresses) {
-            throw new Error(`Unsupported staking network symbol: ${symbol}`);
-        }
-        const { addressContractPool } = ethAddresses;
+        const { addressContractPool } =
+            getEthNetworkAddresses(symbol) ??
+            throwError(`Unsupported staking network symbol: ${symbol}`);
         const data = buildUnstakeData(amountWei, interchanges);
 
         // gasLimit calculation based on address, amount and data size
@@ -316,11 +312,9 @@ export const claimWithdrawRequest = async ({
         }
         if (!readyForClaim.eq(requested)) throw new Error('Unstake request not filled yet');
 
-        const ethAddresses = getEthNetworkAddresses(symbol);
-        if (!ethAddresses) {
-            throw new Error(`Unsupported staking network symbol: ${symbol}`);
-        }
-        const { addressContractAccounting } = ethAddresses;
+        const { addressContractAccounting } =
+            getEthNetworkAddresses(symbol) ??
+            throwError(`Unsupported staking network symbol: ${symbol}`);
         const data = buildClaimWithdrawRequestData();
 
         // gasLimit calculation based on address, amount and data size

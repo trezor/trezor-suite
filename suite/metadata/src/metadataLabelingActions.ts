@@ -19,7 +19,7 @@ import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
-import { cloneObject } from '@trezor/utils';
+import { cloneObject, throwError } from '@trezor/utils';
 
 import type { MetadataAction } from './metadataActions';
 import * as metadataActions from './metadataActions';
@@ -65,12 +65,8 @@ const fetchMetadata =
             throw new Error('no provider instance');
         }
 
-        const entityMetadata = entity[encryptionVersion];
-        if (!entityMetadata) {
-            throw new Error('trying to fetch entity without metadata');
-        }
-
-        const { fileName, aesKey } = entityMetadata;
+        const { fileName, aesKey } =
+            entity[encryptionVersion] ?? throwError('trying to fetch entity without metadata');
 
         const response = await providerInstance.getFileContent(fileName);
 

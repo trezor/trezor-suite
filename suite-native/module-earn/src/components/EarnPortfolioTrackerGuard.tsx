@@ -5,6 +5,7 @@ import { useBottomSheetModal as useBottomSheetModalContext } from '@gorhom/botto
 
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { useBottomSheetModal } from '@suite-native/atoms';
+import { throwError } from '@trezor/utils';
 
 import { PortfolioTrackerEarnBottomSheet } from './PortfolioTrackerEarnBottomSheet';
 
@@ -55,14 +56,6 @@ export const EarnPortfolioTrackerGuard = ({ children }: EarnPortfolioTrackerGuar
     );
 };
 
-export const useEarnPortfolioTrackerGuard = (): EarnPortfolioTrackerGuardContextValue => {
-    const context = useContext(EarnPortfolioTrackerGuardContext);
-
-    if (context === null) {
-        throw new Error(
-            'useEarnPortfolioTrackerGuard must be used within EarnPortfolioTrackerGuard',
-        );
-    }
-
-    return context;
-};
+export const useEarnPortfolioTrackerGuard = (): EarnPortfolioTrackerGuardContextValue =>
+    useContext(EarnPortfolioTrackerGuardContext) ??
+    throwError('useEarnPortfolioTrackerGuard must be used within EarnPortfolioTrackerGuard');

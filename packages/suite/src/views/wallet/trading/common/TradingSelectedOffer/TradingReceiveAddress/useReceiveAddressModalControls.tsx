@@ -1,5 +1,7 @@
 import { type ReactNode, createContext, useContext, useState } from 'react';
 
+import { throwError } from '@trezor/utils';
+
 import { TradingExtraFieldModal } from './TradingExtraFieldModal';
 import { TradingReceiveAccountModal } from './TradingReceiveAccountModal/TradingReceiveAccountModal';
 import { TradingReceiveAddressModal } from './TradingReceiveAddressModal';
@@ -49,14 +51,8 @@ export const ReceiveAddressModalControlsProvider = ({ children }: { children: Re
     );
 };
 
-export const useReceiveAddressModalControls = () => {
-    const context = useContext(ReceiveAddressModalControlsContext);
-
-    if (!context) {
-        throw new Error(
-            'useReceiveAddressModalControls must be used within a ReceiveAddressModalControlsProvider',
-        );
-    }
-
-    return context;
-};
+export const useReceiveAddressModalControls = () =>
+    useContext(ReceiveAddressModalControlsContext) ??
+    throwError(
+        'useReceiveAddressModalControls must be used within a ReceiveAddressModalControlsProvider',
+    );

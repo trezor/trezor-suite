@@ -17,7 +17,7 @@ import {
 import { getTokenSize as _getTokenSize } from '@solana-program/token';
 import { getTokenSize as _getToken2022Size } from '@solana-program/token-2022';
 
-import { BigNumber, safeBigIntStringify } from '@trezor/utils';
+import { BigNumber, safeBigIntStringify, throwError } from '@trezor/utils';
 
 import { COMPUTE_BUDGET_PROGRAM_ID, STAKE_ACCOUNT_V2_SIZE } from '../constants';
 import type {
@@ -78,13 +78,10 @@ const getBaseFee = async (api: Rpc<GetFeeForMessageApi>, message: CompiledTransa
         getBase64Decoder().decode,
     ) as TransactionMessageBytesBase64;
     const result = await api.getFeeForMessage(messageWithoutComputeBudget).send();
+
     // The result can be null, for example if the transaction blockhash is invalid.
     // In this case, we should fall back to the default fee.
-    if (result.value == null) {
-        throw new Error('Could not estimate fee for transaction.');
-    }
-
-    return result.value;
+    return result.value ?? throwError('Could not estimate fee for transaction.');
 };
 
 // More about Solana priority fees here:

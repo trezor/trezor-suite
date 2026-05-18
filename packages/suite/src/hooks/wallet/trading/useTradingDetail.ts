@@ -6,6 +6,7 @@ import {
     type TradingUseDetailPropsWithoutAccount,
     useTradingDetail as useTradingDetailCommon,
 } from '@suite-common/trading';
+import { throwError } from '@trezor/utils';
 
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
@@ -37,9 +38,6 @@ export const useTradingDetail = <T extends TradingType>(
 export const TradingDetailContext = createContext<TradingDetailContextValues<any> | null>(null);
 TradingDetailContext.displayName = 'TradingDetailContext';
 
-export const useTradingDetailContext = <T extends TradingType>() => {
-    const context = useContext<TradingDetailContextValues<T> | null>(TradingDetailContext);
-    if (context === null) throw Error('TradingDetailContext used without Context');
-
-    return context;
-};
+export const useTradingDetailContext = <T extends TradingType>() =>
+    useContext<TradingDetailContextValues<T> | null>(TradingDetailContext) ??
+    throwError('TradingDetailContext used without Context');

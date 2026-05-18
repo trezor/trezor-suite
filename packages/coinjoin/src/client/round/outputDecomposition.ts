@@ -1,4 +1,4 @@
-import { arrayToDictionary, getWeakRandomId } from '@trezor/utils';
+import { arrayToDictionary, getWeakRandomId, throwError } from '@trezor/utils';
 
 import type { CoinjoinRoundOptions, CoinjoinRoundShape } from '../../types/round';
 import { getExternalOutputSize } from '../../utils/coordinatorUtils';
@@ -470,13 +470,9 @@ export const outputDecomposition = async (
     );
 
     // combine everything into DecomposedOutputs objects and return the result to outputRegistration
-    return Object.keys(groupInputsByAccount).map((accountKey, index) => {
-        if (!joinedCredentials[index])
-            throw new Error(`Missing joined credentials at index ${index}`);
-
-        return {
-            accountKey,
-            outputs: joinedCredentials[index],
-        };
-    });
+    return Object.keys(groupInputsByAccount).map((accountKey, index) => ({
+        accountKey,
+        outputs:
+            joinedCredentials[index] || throwError(`Missing joined credentials at index ${index}`),
+    }));
 };

@@ -4,7 +4,7 @@ import { type Meta } from '@storybook/react';
 import styled, { useTheme } from 'styled-components';
 
 import { type CSSColor, colorVariants, colorsV2, typography } from '@trezor/theme';
-import { hexToRgba } from '@trezor/utils';
+import { hexToRgba, throwError } from '@trezor/utils';
 
 import { Badge } from './Badge/Badge';
 import { Box } from './Box/Box';
@@ -107,14 +107,9 @@ type ColorFiltersContextValue = {
 
 const ColorFiltersContext = React.createContext<ColorFiltersContextValue | undefined>(undefined);
 
-const useColorFilters = () => {
-    const ctx = React.useContext(ColorFiltersContext);
-    if (!ctx) {
-        throw new Error('useColorFilters must be used within ColorFiltersContext');
-    }
-
-    return ctx;
-};
+const useColorFilters = () =>
+    React.useContext(ColorFiltersContext) ??
+    throwError('useColorFilters must be used within ColorFiltersContext');
 
 const Header = () => {
     const {

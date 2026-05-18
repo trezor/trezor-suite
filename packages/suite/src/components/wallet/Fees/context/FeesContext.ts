@@ -7,6 +7,7 @@ import {
     type PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
 import { type FeeLevel } from '@trezor/connect';
+import { throwError } from '@trezor/utils';
 
 export type TronResources = {
     availableFreeBandwidth: number;
@@ -29,12 +30,5 @@ export type FeesContextType = {
 
 export const FeesContext = createContext<FeesContextType | null>(null);
 
-export const useFeesContext = () => {
-    const context = useContext(FeesContext);
-
-    if (!context) {
-        throw new Error('useFeesContext must be used within a FeesContext');
-    }
-
-    return context;
-};
+export const useFeesContext = () =>
+    useContext(FeesContext) ?? throwError('useFeesContext must be used within a FeesContext');
