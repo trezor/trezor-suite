@@ -4,7 +4,7 @@
     "type": "module",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-plugin-stellar",
-    "description": "@trezor/connect plugin for Stellar",
+    "description": "DEPRECATED — See README for migration.",
     "license": "SEE LICENSE IN LICENSE.md",
     "repository": {
         "type": "git",
@@ -38,7 +38,6 @@
         "tslib": "^2.6.2"
     },
     "scripts": {
-        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
         "depcheck": "yarn g:depcheck",

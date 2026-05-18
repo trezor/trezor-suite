@@ -126,6 +126,7 @@ const bumpConnect = async () => {
         // inlined into @trezor/connect). The 10.x release is a stub and the
         // package source is frozen — no need to auto-bump it on every connect
         // release. Keep it removed from this list unless the stub itself changes.
+        // TODO The same applies to connect-plugin-stellar.
         const mainPackages = [
             'connect-plugin-stellar',
             'connect-webextension',
