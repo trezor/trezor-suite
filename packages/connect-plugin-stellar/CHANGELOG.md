@@ -1,3 +1,7 @@
+# 10.0.0-alpha.1 — DEPRECATED
+
+- This package is deprecated. The 10.x release is a stub.
+
 # 9.2.3
 
 - fix: add depcheck scripts for all the package.json-s (a4f8b09e38)
