@@ -1,16 +1,11 @@
 import { createContext, useContext } from 'react';
 
+import { throwError } from '@trezor/utils';
+
 import { type YieldFlowContextValues } from '../hooks/useYieldFlow';
 
 export const YieldWithdrawContext = createContext<YieldFlowContextValues | null>(null);
 YieldWithdrawContext.displayName = 'YieldWithdrawContext';
 
-export const useYieldWithdrawContext = () => {
-    const context = useContext(YieldWithdrawContext);
-
-    if (context === null) {
-        throw Error('YieldWithdrawContext used without Context');
-    }
-
-    return context;
-};
+export const useYieldWithdrawContext = () =>
+    useContext(YieldWithdrawContext) ?? throwError('YieldWithdrawContext used without Context');

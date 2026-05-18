@@ -8,6 +8,8 @@ import {
     useState,
 } from 'react';
 
+import { throwError } from '@trezor/utils';
+
 const STORAGE_KEY = 'analytics-docs-theme';
 
 export type ThemePreference = 'system' | 'light' | 'dark';
@@ -34,12 +36,8 @@ type ThemeContextValue = {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-export const useTheme = () => {
-    const ctx = useContext(ThemeContext);
-    if (!ctx) throw new Error('useTheme must be used within ThemeProvider');
-
-    return ctx;
-};
+export const useTheme = () =>
+    useContext(ThemeContext) ?? throwError('useTheme must be used within ThemeProvider');
 
 export const ThemeContextProvider = ({ children }: { children: ReactNode }) => {
     const [preference, setPreferenceState] = useState<ThemePreference>(getStoredPreference);

@@ -23,7 +23,7 @@ import {
     getStakingDataForNetwork,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { BigNumber, isChanged } from '@trezor/utils';
+import { BigNumber, isChanged, throwError } from '@trezor/utils';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -310,9 +310,6 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
     };
 };
 
-export const useWithdrawalFormContext = () => {
-    const ctx = useContext(WithdrawalFormContext);
-    if (ctx === null) throw Error('useWithdrawalFormContext used without Context');
-
-    return ctx;
-};
+export const useWithdrawalFormContext = () =>
+    useContext(WithdrawalFormContext) ??
+    throwError('useWithdrawalFormContext used without Context');

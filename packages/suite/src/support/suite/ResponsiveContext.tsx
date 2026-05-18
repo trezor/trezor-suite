@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useMemo, useState } from 'react';
 
 import { selectSidebarWidth } from '@suite/settings';
+import { throwError } from '@trezor/utils';
 
 import {
     SIDEBAR_COLLAPSED_WIDTH,
@@ -75,10 +76,6 @@ export const ResponsiveContextProvider = ({ children }: { children: React.ReactN
     return <ResponsiveContext.Provider value={value}>{children}</ResponsiveContext.Provider>;
 };
 
-export const useResponsiveContext = () => {
-    const ctx = useContext(ResponsiveContext);
-    if (!ctx)
-        throw new Error('useResponsiveContext must be used within a ResponsiveContextProvider');
-
-    return ctx;
-};
+export const useResponsiveContext = () =>
+    useContext(ResponsiveContext) ??
+    throwError('useResponsiveContext must be used within a ResponsiveContextProvider');

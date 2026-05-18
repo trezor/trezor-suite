@@ -23,7 +23,7 @@ import {
     getConvertedOrDefaultFeeInfo,
     isEip1559,
 } from '@suite-common/wallet-utils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, throwError } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useCoinjoinRegisteredUtxos } from 'src/hooks/wallet/form/useCoinjoinRegisteredUtxos';
@@ -334,9 +334,5 @@ RbfContext.displayName = 'RbfContext';
 
 // Used across rbf form components
 // Provide combined context of `react-hook-form` with custom values as RbfContextValues
-export const useRbfContext = () => {
-    const ctx = useContext(RbfContext);
-    if (ctx === null) throw Error('useRbfContext used without Context');
-
-    return ctx;
-};
+export const useRbfContext = () =>
+    useContext(RbfContext) ?? throwError('useRbfContext used without Context');
