@@ -56,7 +56,7 @@ export const Link = ({
             target={target ?? '_blank'}
             rel="noreferrer noopener"
             data-testid={dataTest}
-            onClick={(e: MouseEvent<any>) => {
+            onClick={(e: MouseEvent<HTMLAnchorElement>) => {
                 if (onClick !== undefined) {
                     e.stopPropagation();
                     onClick(e);
