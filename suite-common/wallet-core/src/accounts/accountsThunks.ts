@@ -159,9 +159,24 @@ export const fetchAndUpdateAccountThunk = createThunk(
                 dispatch(transactionsActions.removeTransaction({ account, txs: analyze.remove }));
             }
             if (analyze.add.length > 0) {
+                // Blockbook returns empty tokens for pending contract calls. Copy them
+                // from our fake tx (identified by `deadline`) so RBF on this pending tx still
+                // has token + amount.
+                const enrichedAdd = analyze.add.map(freshTx => {
+                    if ((freshTx.tokens?.length ?? 0) > 0) return freshTx;
+                    const fakeMatch = accountTxs.find(
+                        t =>
+                            t.txid === freshTx.txid &&
+                            'deadline' in t &&
+                            (t.tokens?.length ?? 0) > 0,
+                    );
+
+                    return fakeMatch ? { ...freshTx, tokens: fakeMatch.tokens } : freshTx;
+                });
+
                 dispatch(
                     transactionsActions.addTransaction({
-                        transactions: analyze.add.reverse(),
+                        transactions: enrichedAdd.reverse(),
                         account,
                     }),
                 );

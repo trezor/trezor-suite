@@ -15,6 +15,7 @@ import type {
     YieldFlowType,
     YieldPendingTransactionState,
 } from './stablecoinYieldTypes';
+import { transactionsActions } from '../transactions/transactionsActions';
 
 type StablecoinYieldTranslationKey = string;
 
@@ -439,6 +440,19 @@ export const stablecoinYieldSlice = createSlice({
             state.txReview.serializedTx = undefined;
             state.txReview.accountKey = undefined;
         },
+    },
+    extraReducers: builder => {
+        builder.addCase(transactionsActions.replaceTransaction, (state, { payload }) => {
+            const { txid: prevTxid, tx } = payload;
+            (['deposit', 'withdraw', 'claim'] as const).forEach(flowType => {
+                const bucket = state[flowType];
+                Object.values(bucket).forEach(session => {
+                    if (session.action.pendingTransaction?.txid === prevTxid) {
+                        session.action.pendingTransaction.txid = tx.txid;
+                    }
+                });
+            });
+        });
     },
 });
 

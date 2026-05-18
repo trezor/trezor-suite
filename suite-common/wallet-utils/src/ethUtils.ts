@@ -41,6 +41,10 @@ export const getEvmTransactionTextSignature = (data?: string): EvmTransactionPur
     const approve = Calldata.evm.erc20.approve.decode(data);
     if (approve) return approve.amount === 0n ? 'revoke' : 'approve';
 
+    if (Calldata.evm.erc4626.deposit.decode(data)) return 'deposit';
+    if (Calldata.evm.erc4626.withdraw.decode(data)) return 'withdraw';
+    if (Calldata.evm.erc4626.redeem.decode(data)) return 'redeem';
+
     return 'unknown';
 };
 
@@ -52,6 +56,9 @@ export type EvmApprovalPurpose = Extract<EvmTransactionPurpose, 'approve' | 'rev
 export const isEvmApprovalTxByTextSignature = (
     textSignature?: EvmTransactionPurpose,
 ): textSignature is EvmApprovalPurpose => textSignature === 'approve' || textSignature === 'revoke';
+
+export const isEvmYieldTxByTextSignature = (textSignature?: EvmTransactionPurpose) =>
+    textSignature === 'deposit' || textSignature === 'withdraw' || textSignature === 'redeem';
 
 export const ensureHexPrefix = (hex?: string): string => {
     if (!hex) return '';
