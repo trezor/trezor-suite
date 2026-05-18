@@ -44,13 +44,24 @@ describe('Stellar', () => {
     });
 
     it('pushTransaction', async () => {
-        const latestTx = (
-            await horizonServer.transactions().order('desc').limit(200).includeFailed(false).call()
-        ).records.find(tx => !tx.fee_bump_transaction);
+        // Stellar mainnet traffic is sometimes dominated by fee-bump transactions; paginate
+        // until a non-fee-bump tx is found so the test doesn't flake when the first page is
+        // all fee-bumps.
+        const maxPages = 5;
+        let page = await horizonServer
+            .transactions()
+            .order('desc')
+            .limit(200)
+            .includeFailed(false)
+            .call();
+        let latestTx = page.records.find(tx => !tx.fee_bump_transaction);
+        for (let i = 1; !latestTx && i < maxPages; i++) {
+            page = await page.next();
+            if (!page.records.length) break;
+            latestTx = page.records.find(tx => !tx.fee_bump_transaction);
+        }
         if (!latestTx) {
-            // This error may be thrown with a small probability and can be resolved by retrying.
-            // For simplicity, no extensive design is implemented here.
-            throw new Error('No transactions found');
+            throw new Error(`No non-fee-bump transactions found in the last ${maxPages} pages`);
         }
         const xdr = Buffer.from(latestTx.envelope_xdr, 'base64').toString('hex');
         const result = await blockchain.pushTransaction({ hex: xdr });
