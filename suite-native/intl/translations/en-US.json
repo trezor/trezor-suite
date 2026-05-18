@@ -943,7 +943,7 @@
     "moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.footer": "APY may change over time.",
     "moduleAccounts.emptyState.title": "No assets",
     "moduleAccounts.emptyState.subtitle": "Connect your Trezor or sync coins to view and track assets.",
-    "moduleAccounts.emptyState.addSubtitle": "Start adding coins you want to use.",
+    "moduleAccounts.emptyState.addSubtitle": "Add the coins you want to use.",
     "moduleAccounts.emptyState.receiveSubtitle": "Connect your Trezor or sync coins to view and receive assets.",
     "moduleAccounts.emptyState.searchAgain": "Search again",
     "moduleAccounts.viewOnlyAddAccountAlert.title": "Connect & unlock your Trezor to add new assets",
