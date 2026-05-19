@@ -15,6 +15,11 @@ const buildArtifactPatterns = {
         'Import from the package root instead. Deep paths into "lib/", "libDev/" or "libESM/" target build artifacts that may not exist or may diverge from the workspace source.',
 };
 
+const coinsPackagePatterns = {
+    regex: '^@trezor/coins-[a-z]+$',
+    message: 'Import from /constants, /runtime or /types subpath.',
+};
+
 // Deep-path imports that bypass the public barrels of the connect-tier packages.
 // Tracked in https://github.com/trezor/trezor-suite/issues/27376.
 // External consumers must import from the package root (e.g. `@trezor/connect`).
@@ -65,7 +70,11 @@ export const typescriptConfig = [
                 'error',
                 {
                     paths: [{ name: '.' }, { name: '..' }, { name: '../..' }],
-                    patterns: [buildArtifactPatterns, ...connectDeepImportPatterns],
+                    patterns: [
+                        buildArtifactPatterns,
+                        coinsPackagePatterns,
+                        ...connectDeepImportPatterns,
+                    ],
                 },
             ],
 
@@ -104,6 +113,7 @@ export const typescriptConfig = [
                     patterns: [
                         buildArtifactPatterns,
                         suiteInternalPatterns,
+                        coinsPackagePatterns,
                         ...connectDeepImportPatterns,
                     ],
                 },
