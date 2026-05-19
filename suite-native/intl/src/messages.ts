@@ -2715,37 +2715,59 @@ export const messages = {
         yieldSupplyApprovalReviewScreen: {
             title: 'Review with Trezor',
             successMessage: "You're all set.",
-            approvalCard: {
-                title: 'Approve',
-            },
-            detailsCard: {
-                title: 'Approval details',
-                amount: 'Amount',
-                approvalLimit: 'Approval limit',
-            },
-            pushTransactionFailedAlert: {
-                title: 'Approval was not submitted',
-                description:
-                    'The approval transaction was signed but could not be submitted to the network.',
-                primaryButton: 'Go to homepage',
-            },
-            pendingTransactionConflictAlert: {
-                title: 'Approval was not submitted',
-                description:
-                    'There is already a pending transaction for this account. Wait for it to finish before trying again.',
-                primaryButton: 'Go to homepage',
-            },
         },
         yieldSupplyReviewScreen: {
             title: 'Review with Trezor',
+            successMessage: "You're all set.",
+            submitButton: 'Supply now',
+        },
+        yieldReview: {
+            approvalCard: {
+                title: 'Approve',
+            },
             supplyCard: {
                 title: 'Supply',
             },
             receiveCard: {
                 title: 'Receive',
             },
-            detailsCard: {
+            approvalDetailsCard: {
+                title: 'Approval details',
+                approvalLimit: 'Approval limit',
+            },
+            transactionDetailsCard: {
                 title: 'Transaction details',
+            },
+            alerts: {
+                primaryButton: 'Go to homepage',
+                approval: {
+                    pushTransactionFailed: {
+                        title: 'Approval was not submitted',
+                        description:
+                            'The approval transaction was signed but could not be submitted to the network.',
+                    },
+                    pendingTransactionConflict: {
+                        title: 'Approval was not submitted',
+                        description:
+                            'There is already a pending transaction for this account. Wait for it to finish before trying again.',
+                    },
+                },
+                supply: {
+                    signTransactionFailed: {
+                        title: 'Transaction was not signed',
+                        description: 'Review the transaction and sign it again.',
+                    },
+                    pushTransactionFailed: {
+                        title: 'Supply was not submitted',
+                        description:
+                            'The supply transaction was signed but could not be submitted to the network.',
+                    },
+                    pendingTransactionConflict: {
+                        title: 'Supply was not submitted',
+                        description:
+                            'There is already a pending transaction for this account. Wait for it to finish before trying again.',
+                    },
+                },
             },
         },
         staked: 'Staked',

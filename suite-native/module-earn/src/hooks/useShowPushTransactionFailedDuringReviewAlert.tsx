@@ -13,7 +13,7 @@ import {
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
-type ReviewFormType = 'stake' | 'unstake' | 'claim' | 'yield-approval';
+type ReviewFormType = 'stake' | 'unstake' | 'claim' | 'yield-approval' | 'yield-supply';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     AppTabsParamList,
@@ -30,6 +30,7 @@ type AlertKeys = {
 type AlertTranslationKeys = {
     pushFailed: AlertKeys;
     pendingConflict: AlertKeys;
+    signFailed?: AlertKeys;
 };
 
 const translationKeys = {
@@ -83,18 +84,31 @@ const translationKeys = {
     },
     'yield-approval': {
         pushFailed: {
-            title: 'earn.yieldSupplyApprovalReviewScreen.pushTransactionFailedAlert.title',
-            description:
-                'earn.yieldSupplyApprovalReviewScreen.pushTransactionFailedAlert.description',
-            primaryButton:
-                'earn.yieldSupplyApprovalReviewScreen.pushTransactionFailedAlert.primaryButton',
+            title: 'earn.yieldReview.alerts.approval.pushTransactionFailed.title',
+            description: 'earn.yieldReview.alerts.approval.pushTransactionFailed.description',
+            primaryButton: 'earn.yieldReview.alerts.primaryButton',
         },
         pendingConflict: {
-            title: 'earn.yieldSupplyApprovalReviewScreen.pendingTransactionConflictAlert.title',
-            description:
-                'earn.yieldSupplyApprovalReviewScreen.pendingTransactionConflictAlert.description',
-            primaryButton:
-                'earn.yieldSupplyApprovalReviewScreen.pendingTransactionConflictAlert.primaryButton',
+            title: 'earn.yieldReview.alerts.approval.pendingTransactionConflict.title',
+            description: 'earn.yieldReview.alerts.approval.pendingTransactionConflict.description',
+            primaryButton: 'earn.yieldReview.alerts.primaryButton',
+        },
+    },
+    'yield-supply': {
+        signFailed: {
+            title: 'earn.yieldReview.alerts.supply.signTransactionFailed.title',
+            description: 'earn.yieldReview.alerts.supply.signTransactionFailed.description',
+            primaryButton: 'earn.yieldReview.alerts.primaryButton',
+        },
+        pushFailed: {
+            title: 'earn.yieldReview.alerts.supply.pushTransactionFailed.title',
+            description: 'earn.yieldReview.alerts.supply.pushTransactionFailed.description',
+            primaryButton: 'earn.yieldReview.alerts.primaryButton',
+        },
+        pendingConflict: {
+            title: 'earn.yieldReview.alerts.supply.pendingTransactionConflict.title',
+            description: 'earn.yieldReview.alerts.supply.pendingTransactionConflict.description',
+            primaryButton: 'earn.yieldReview.alerts.primaryButton',
         },
     },
 } as const satisfies Record<ReviewFormType, AlertTranslationKeys>;
@@ -102,7 +116,7 @@ const translationKeys = {
 export const useShowPushTransactionFailedDuringReviewAlert = (formType: ReviewFormType) => {
     const { showAlert } = useAlert();
     const navigation = useNavigation<NavigationProps>();
-    const keys = translationKeys[formType];
+    const keys: AlertTranslationKeys = translationKeys[formType];
 
     const handleGoHome = useCallback(() => {
         navigation.popTo(RootStackRoutes.AppTabs, {
@@ -135,5 +149,23 @@ export const useShowPushTransactionFailedDuringReviewAlert = (formType: ReviewFo
         [handleGoHome, keys, showAlert],
     );
 
-    return { showPushTransactionFailedAlert, showPendingTransactionConflictAlert };
+    const showSignTransactionFailedAlert = useCallback(() => {
+        if (!keys.signFailed) {
+            return;
+        }
+
+        showAlert({
+            title: <Translation id={keys.signFailed.title} />,
+            description: <Translation id={keys.signFailed.description} />,
+            primaryButtonTitle: <Translation id={keys.signFailed.primaryButton} />,
+            primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
+            onPressPrimaryButton: handleGoHome,
+        });
+    }, [handleGoHome, keys, showAlert]);
+
+    return {
+        showPendingTransactionConflictAlert,
+        showPushTransactionFailedAlert,
+        showSignTransactionFailedAlert,
+    };
 };

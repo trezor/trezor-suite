@@ -6,8 +6,12 @@
         { "path": "../schemas" },
         { "path": "../wallet-config" },
         { "path": "../wallet-types" },
+        { "path": "../wallet-utils" },
         {
             "path": "../../packages/connect-common"
+        },
+        {
+            "path": "../../packages/utils"
         }
     ]
 }
