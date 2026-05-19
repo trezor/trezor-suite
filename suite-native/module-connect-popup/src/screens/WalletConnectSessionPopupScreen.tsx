@@ -26,10 +26,10 @@ import {
 import { NetworkIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
+import { TxSimulationRiskBanner } from '@suite-native/tx-simulation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ConnectAppIcon } from '../components/ConnectAppIcon';
-import { TxSimulationBanner } from '../components/TxSimulation/TxSimulationBanner';
 
 const networkStyle = prepareNativeStyle<{ isDisabled: boolean }>((_, { isDisabled }) => ({
     opacity: 1,
@@ -243,8 +243,8 @@ export const WalletConnectSessionPopupScreen = () => {
                 )}
 
                 {pendingProposal?.isScam && (
-                    <TxSimulationBanner
-                        type="error"
+                    <TxSimulationRiskBanner
+                        type="critical"
                         title={<Translation id="moduleConnectPopup.walletConnect.errors.isScam" />}
                         disclaimerAccepted={ignoreWarning}
                         setDisclaimerAccepted={setIgnoreWarning}

@@ -95,7 +95,10 @@ function composeUnsignedEvmTx(
     }
 }
 
-export function composeStablecoinYieldTxSimulationAction(unknownParams: unknown) {
+export function composeStablecoinYieldTxSimulationAction(
+    unknownParams: unknown,
+    sourceOrigin: string,
+) {
     try {
         const parsedParams = stablecoinYieldTxSimulationParams.parse(unknownParams);
         const unsignedTx = composeUnsignedEvmTx(parsedParams);
@@ -109,7 +112,7 @@ export function composeStablecoinYieldTxSimulationAction(unknownParams: unknown)
                     action: {
                         method: 'ethereumSignTransaction',
                         fromAddress: account.descriptor,
-                        sourceOrigin: globalThis.location.origin,
+                        sourceOrigin,
                         payload: {
                             path: account.path,
                             transaction: unsignedTx,

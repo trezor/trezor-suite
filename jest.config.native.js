@@ -46,6 +46,7 @@ module.exports = {
         '<rootDir>/../../suite-native/test-utils/src/mocks/expoAndRNMock.jsx',
         '<rootDir>/../../suite-native/test-utils/src/mocks/everstakeJestSetup.js',
         '<rootDir>/../../suite-native/test-utils/src/mocks/TextEncoderMock.js',
+        '<rootDir>/../../suite-common/tx-simulation/src/jestSetup.ts',
         '<rootDir>/../../node_modules/@shopify/react-native-skia/jestSetup.js',
         '<rootDir>/../../node_modules/@shopify/flash-list/jestSetup.js',
         '<rootDir>/../../node_modules/react-native-gesture-handler/jestSetup.js',
