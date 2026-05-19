@@ -1,6 +1,7 @@
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { type DexApprovalType, type ExchangeTrade } from 'invity-api';
 
+import { Calldata } from '@suite-common/calldata';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import {
@@ -41,7 +42,6 @@ import {
 import {
     buildApprovalTransactionData,
     getAllowanceAmount,
-    getEvmApprovalTxData,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
@@ -288,8 +288,9 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk(
                 return rejectWithValue('DEX quote with dexTx data is required');
             }
 
-            const approvalData = getEvmApprovalTxData(dexTx.data);
-            if (!approvalData?.spender) {
+            const approvalData = Calldata.evm.erc20.approve.decode(dexTx.data);
+            const spender = approvalData?.spender;
+            if (!spender) {
                 return rejectWithValue('Could not extract spender from dexTx data');
             }
 
@@ -322,7 +323,7 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk(
 
             const data = buildApprovalTransactionData({
                 amount: allowanceAmount,
-                spender: approvalData.spender,
+                spender,
             });
 
             const response = await dispatch(

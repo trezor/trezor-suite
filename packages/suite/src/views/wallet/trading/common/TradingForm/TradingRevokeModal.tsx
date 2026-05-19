@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react';
 import { type CryptoId } from 'invity-api';
 
 import { events } from '@suite/analytics';
-import { getEvmApprovalTxData } from '@suite-common/wallet-utils';
+import { Calldata } from '@suite-common/calldata';
 
 import { RevokeModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/RevokeModal';
 import { useAllowanceContext } from 'src/hooks/wallet/allowance';
@@ -66,7 +66,7 @@ export const TradingRevokeModal = ({ cryptoId }: TradingRevokeModalProps) => {
         const provider = exchange ? providersInfo?.[exchange] : null;
 
         const dexTxData = context.selectedQuote?.dexTx?.data;
-        const approvalData = getEvmApprovalTxData(dexTxData);
+        const approvalData = Calldata.evm.erc20.approve.decode(dexTxData);
         const spender = approvalData?.spender ?? null;
 
         const preapprovedAmount = context.selectedQuote?.preapprovedStringAmount;

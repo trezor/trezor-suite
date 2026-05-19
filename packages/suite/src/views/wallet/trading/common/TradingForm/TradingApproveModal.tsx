@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react';
 import { type CryptoId, type DexApprovalType } from 'invity-api';
 
 import { events } from '@suite/analytics';
-import { getEvmApprovalTxData } from '@suite-common/wallet-utils';
+import { Calldata } from '@suite-common/calldata';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { ApproveModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/ApproveModal';
@@ -92,7 +92,7 @@ export const TradingApproveModal = ({ amount, cryptoId }: TradingApproveModalPro
         const exchange = selectedQuote?.exchange;
         const provider = exchange ? providersInfo?.[exchange] : null;
 
-        const approvalData = getEvmApprovalTxData(selectedQuote?.dexTx?.data);
+        const approvalData = Calldata.evm.erc20.approve.decode(selectedQuote?.dexTx?.data);
         const spender = approvalData?.spender ?? null;
 
         return {

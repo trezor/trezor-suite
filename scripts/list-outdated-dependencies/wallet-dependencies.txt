@@ -63,7 +63,6 @@ reselect
 toml
 varuint-bitcoin
 wif
-web3-eth-abi
 web3-utils
 worker-loader
 xrpl

@@ -1,9 +1,9 @@
 import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
+import { Calldata } from '@suite-common/calldata';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type ActionsFromAsyncThunk, createThunk } from '@suite-common/redux-utils';
-import { UINT256_MAX } from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -25,7 +25,6 @@ import {
     formatNetworkAmount,
     getAccountDecimals,
     getAreSatoshisUsed,
-    getEvmApprovalTxData,
     getMevProtectedTxData,
     getPendingAccount,
     hasNetworkFeatures,
@@ -355,21 +354,22 @@ export const pushSendFormTransactionThunk = createThunk<
             : '0';
 
         const areSatoshisUsed = getAreSatoshisUsed(bitcoinAmountUnit, selectedAccount);
-        const evmApprovalData = getEvmApprovalTxData(precomposedForm?.transactionData);
+        const evmApprovalData = Calldata.evm.erc20.approve.decode(precomposedForm?.transactionData);
 
         if (pushTxResponse.success) {
             const { txid } = pushTxResponse.payload;
 
             if (evmApprovalData && token) {
-                const isInfiniteApproval = new BigNumber(evmApprovalData.amount).eq(UINT256_MAX);
+                const amountString = evmApprovalData.amount.toString();
+                const isInfiniteApproval = isMaxAllowance(amountString);
                 const amount = subunitsToUnits({
-                    value: asAmountSubunit(new BigNumber(evmApprovalData.amount)),
+                    value: asAmountSubunit(new BigNumber(amountString)),
                     decimals: token.decimals,
                 }).toString();
 
                 dispatch(
                     notificationsActions.addToast({
-                        type: evmApprovalData.type === 'approve' ? 'tx-approved' : 'tx-revoked',
+                        type: evmApprovalData.amount === 0n ? 'tx-revoked' : 'tx-approved',
                         isInfiniteApproval,
                         formattedAmount: amount,
                         token,

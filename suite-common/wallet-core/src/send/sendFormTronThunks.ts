@@ -43,7 +43,7 @@ export const getTronEstimateFeeParams = (
     token?: TokenInfo,
 ) => {
     if (token) {
-        const result = Calldata.tron.trc20.transfer({
+        const result = Calldata.tron.trc20.transfer.encode({
             to,
             amount: new BigNumber(amountInSubunits),
         });
@@ -405,7 +405,7 @@ export const signTronSendFormTransactionThunk = createThunk<
 
         let tokenData: string | undefined;
         if (token) {
-            const calldataResult = Calldata.tron.trc20.transfer({
+            const calldataResult = Calldata.tron.trc20.transfer.encode({
                 to: output.address,
                 amount: new BigNumber(amountInSubunits),
             });
