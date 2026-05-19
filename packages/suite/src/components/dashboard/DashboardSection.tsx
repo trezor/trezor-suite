@@ -50,7 +50,12 @@ export const DashboardSection = forwardRef(
                     <Column data-testid={dataTestId} gap={16}>
                         {renderHeader && (
                             <Column width="100%" gap={2}>
-                                <Row as="header" justifyContent="space-between">
+                                <Row
+                                    as="header"
+                                    justifyContent="space-between"
+                                    flexWrap="wrap"
+                                    gap={8}
+                                >
                                     {heading && (
                                         <H3>
                                             <Row as="span">{heading}</Row>

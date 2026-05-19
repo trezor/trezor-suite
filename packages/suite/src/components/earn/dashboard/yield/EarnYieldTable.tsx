@@ -12,6 +12,7 @@ import { OutlineHighlight } from '@trezor/product-components';
 
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 import { useAnalytics } from 'src/support/useAnalytics';
 
@@ -27,6 +28,8 @@ import { getEarnDashboardBadgeState } from '../utils/earnDashboardBadgeUtils';
 
 export const EarnYieldTable = () => {
     const { anchorRef, shouldHighlight } = useAnchor(EarnAnchor.Yield);
+    const { isBelowLaptop } = useLayoutSize();
+    const isCardLayout = isBelowLaptop;
     const dispatch = useDispatch();
     const analytics = useAnalytics();
     const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
@@ -172,12 +175,9 @@ export const EarnYieldTable = () => {
                                 )}
                             </>
                         )}
-                        <Card paddingType="none">
-                            <Table isRowHighlightedOnHover margin={{ top: 8 }}>
-                                <EarnDashboardTableHeader
-                                    accountColumnTranslationId="TR_EARN_DASHBOARD_TABLE_ACCOUNT_VAULT"
-                                    showRewardsColumns={hasAnyRewardsData}
-                                />
+
+                        {isCardLayout ? (
+                            <Column gap={8} width="100%">
                                 <EarnYieldTableBody
                                     isYieldOpportunitiesLoading={isYieldOpportunitiesLoading}
                                     isYieldOpportunitiesError={isYieldOpportunitiesError}
@@ -186,9 +186,31 @@ export const EarnYieldTable = () => {
                                     yieldInactiveVaultOpportunities={
                                         yieldInactiveVaultOpportunities
                                     }
+                                    isCardLayout={isCardLayout}
                                 />
-                            </Table>
-                        </Card>
+                            </Column>
+                        ) : (
+                            <Card paddingType="none">
+                                <Table isRowHighlightedOnHover margin={{ top: 8 }}>
+                                    <EarnDashboardTableHeader
+                                        accountColumnTranslationId="TR_EARN_DASHBOARD_TABLE_ACCOUNT_VAULT"
+                                        showRewardsColumns={hasAnyRewardsData}
+                                    />
+                                    <EarnYieldTableBody
+                                        isYieldOpportunitiesLoading={isYieldOpportunitiesLoading}
+                                        isYieldOpportunitiesError={isYieldOpportunitiesError}
+                                        onRetry={refetchYieldOpportunities}
+                                        yieldAccountOpportunities={
+                                            displayedYieldAccountOpportunities
+                                        }
+                                        yieldInactiveVaultOpportunities={
+                                            yieldInactiveVaultOpportunities
+                                        }
+                                        isCardLayout={isCardLayout}
+                                    />
+                                </Table>
+                            </Card>
+                        )}
 
                         {hasHiddenYieldAccountOpportunities && (
                             <Button
