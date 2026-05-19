@@ -2722,6 +2722,18 @@ export const messages = {
             successMessage: "You're all set.",
             submitButton: 'Supply now',
         },
+        yieldSupplyCompleteScreen: {
+            title: 'Supply complete',
+            subtitle: 'Your deposit is now earning yield in the vault.',
+        },
+        yieldCompleteScreen: {
+            status: 'Status',
+            completed: 'Completed',
+            apy: 'APY',
+            received: 'Received',
+            sent: 'Sent',
+            backToOverview: 'Back to overview',
+        },
         yieldReview: {
             approvalCard: {
                 title: 'Approve',

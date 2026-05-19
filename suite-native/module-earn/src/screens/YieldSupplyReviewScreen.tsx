@@ -135,6 +135,12 @@ export const YieldSupplyReviewScreen = () => {
             return;
         }
 
+        if (session?.step === 'complete') {
+            navigation.replace(YieldStackRoutes.YieldSupplyComplete, route.params);
+
+            return;
+        }
+
         if (!review || session?.step !== 'action') {
             navigation.navigate(YieldStackRoutes.YieldSupply, route.params);
         }
