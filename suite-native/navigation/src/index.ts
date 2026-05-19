@@ -17,4 +17,4 @@ export * from './components/NavigationContainerWithAnalytics';
 export * from './components/GoBackIcon';
 export * from './hooks/useNavigationRouteMatch';
 export * from './hooks/useDisableIOSGesture';
-export * from './hooks/usePreventNavigationRemove';
+export * from './hooks/useNavigationRemoveActionInterceptor';

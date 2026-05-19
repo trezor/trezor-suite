@@ -2,7 +2,7 @@ export * from './useActiveStepOffset';
 export * from './useSubscribeForSolanaBlockUpdates';
 export * from './useShowReviewCancellationAlert';
 export * from './useShowStayOnScreenAlert';
-export * from './useNavigationRemoveInterceptor';
+export * from './useNavigationRemoveInterceptorAlert';
 export * from './useOutputsReviewBackInterceptor';
 export * from './useTransactionDetails';
 export * from './useWaitForButtonRequest';

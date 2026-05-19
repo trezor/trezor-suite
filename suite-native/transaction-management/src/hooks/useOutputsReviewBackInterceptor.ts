@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { usePreventNavigationRemove } from '@suite-native/navigation';
+import { useNavigationRemoveActionInterceptor } from '@suite-native/navigation';
 
 import { useShowReviewCancellationAlert } from './useShowReviewCancellationAlert';
 
@@ -15,5 +15,5 @@ export const useOutputsReviewBackInterceptor = (onReviewCanceled: () => void) =>
         }
     }, [onReviewCanceled, showReviewCancellationAlert]);
 
-    usePreventNavigationRemove({ onPreventedRemove });
+    useNavigationRemoveActionInterceptor({ onInterceptedAction: onPreventedRemove });
 };

@@ -4,7 +4,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import { useDisableIOSGesture } from './useDisableIOSGesture';
 
-/** @deprecated Use `usePreventNavigationRemove` instead. */
+/** @deprecated Use `useNavigationRemoveActionInterceptor` instead. */
 export const useOverrideBackNavigation = ({
     onNavigateBack,
 }: { onNavigateBack?: () => void; gestureEnabled?: boolean } = {}) => {
