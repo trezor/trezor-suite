@@ -1,6 +1,8 @@
 /**
  * Local web server for handling requests to app
  */
+import { captureMessage } from '@sentry/electron/main';
+
 import { isMacOs, isWindows } from '@trezor/env-utils';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { isArrayMember } from '@trezor/utils';
@@ -117,6 +119,10 @@ export const initBackground: ModuleInitBackground = ({
             logger.error(
                 SERVICE_NAME,
                 `Failed to start server:  ${startResult.error}, error details: ${startResult.message}`,
+            );
+            captureMessage(
+                `http-receiver failed to start: ${startResult.error} (${startResult.message})`,
+                'warning',
             );
 
             return { url: null };
