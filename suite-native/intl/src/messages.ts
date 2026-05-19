@@ -2685,6 +2685,7 @@ export const messages = {
             modalTitle: 'Supply',
             supplyTransactionStepTitle: 'Supply transaction',
             supplyCompleteStepTitle: 'Supply complete',
+            supplyPendingTitle: 'Confirming supply',
             amountToSupply: 'Amount to supply',
             supplyMax: 'Supply max',
             balance: 'Balance:',

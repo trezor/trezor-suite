@@ -1,7 +1,9 @@
-export const YIELD_PENDING_TRANSACTION_MODAL_COLLAPSED_INDEX = 0;
-export const YIELD_PENDING_TRANSACTION_MODAL_EXPANDED_INDEX = 1;
-export const YIELD_PENDING_TRANSACTION_MODAL_COLLAPSED_HEIGHT = 148;
-export const YIELD_PENDING_TRANSACTION_MODAL_EXPANDED_HEIGHT = 592;
-export const YIELD_PENDING_TRANSACTION_MODAL_SNAP_INDEX_MIDPOINT = 0.5;
-export const YIELD_PENDING_TRANSACTION_MODAL_COLLAPSED_BACKDROP_OPACITY = 0.5;
-export const YIELD_PENDING_TRANSACTION_MODAL_EXPANDED_BACKDROP_OPACITY = 0;
+export const modalSnap = {
+    collapsedIndex: 0,
+    expandedIndex: 1,
+    collapsedHeight: 148,
+    expandedHeight: 592,
+    indexMidpoint: 0.5,
+    collapsedBackdropOpacity: 0,
+    expandedBackdropOpacity: 0.5,
+} as const;

@@ -4,12 +4,7 @@ import { type BottomSheetBackdropProps } from '@gorhom/bottom-sheet';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import {
-    YIELD_PENDING_TRANSACTION_MODAL_COLLAPSED_BACKDROP_OPACITY,
-    YIELD_PENDING_TRANSACTION_MODAL_COLLAPSED_INDEX,
-    YIELD_PENDING_TRANSACTION_MODAL_EXPANDED_BACKDROP_OPACITY,
-    YIELD_PENDING_TRANSACTION_MODAL_EXPANDED_INDEX,
-} from './YieldPendingTransactionModalConstants';
+import { modalSnap } from './YieldPendingTransactionModalConstants';
 
 const backdropStyle = prepareNativeStyle(() => ({
     backgroundColor: '#000000',
@@ -24,16 +19,8 @@ export const YieldPendingTransactionModalBackdrop = ({
     const animatedBackdropStyle = useAnimatedStyle(() => ({
         opacity: interpolate(
             animatedIndex.value,
-            [
-                -1,
-                YIELD_PENDING_TRANSACTION_MODAL_COLLAPSED_INDEX,
-                YIELD_PENDING_TRANSACTION_MODAL_EXPANDED_INDEX,
-            ],
-            [
-                0,
-                YIELD_PENDING_TRANSACTION_MODAL_COLLAPSED_BACKDROP_OPACITY,
-                YIELD_PENDING_TRANSACTION_MODAL_EXPANDED_BACKDROP_OPACITY,
-            ],
+            [-1, modalSnap.collapsedIndex, modalSnap.expandedIndex],
+            [0, modalSnap.collapsedBackdropOpacity, modalSnap.expandedBackdropOpacity],
             Extrapolation.CLAMP,
         ),
     }));
