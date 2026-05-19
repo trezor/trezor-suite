@@ -68,7 +68,10 @@ const verifyCalldata = (label: string, result: { isValid: boolean; issues: Verif
 };
 
 export const buildStakeData = () => {
-    const data = encodeCalldata('stake', Calldata.evm.everstake.stake({ source: STAKE_SOURCE }));
+    const data = encodeCalldata(
+        'stake',
+        Calldata.evm.everstake.stake.encode({ source: STAKE_SOURCE }),
+    );
     verifyCalldata('stake', Verifier.evm.everstake.stake(data, { source: STAKE_SOURCE_BIGINT }));
 
     return data;
@@ -77,7 +80,7 @@ export const buildStakeData = () => {
 export const buildUnstakeData = (amountWei: string, interchanges: number) => {
     const data = encodeCalldata(
         'unstake',
-        Calldata.evm.everstake.unstake({
+        Calldata.evm.everstake.unstake.encode({
             value: new BigNumber(amountWei),
             allowedInterchangeNum: new BigNumber(interchanges),
             source: STAKE_SOURCE,
@@ -98,7 +101,7 @@ export const buildUnstakeData = (amountWei: string, interchanges: number) => {
 export const buildClaimWithdrawRequestData = () => {
     const data = encodeCalldata(
         'claimWithdrawRequest',
-        Calldata.evm.everstake.claimWithdrawRequest({}),
+        Calldata.evm.everstake.claimWithdrawRequest.encode({}),
     );
     verifyCalldata('claimWithdrawRequest', Verifier.evm.everstake.claimWithdrawRequest(data, {}));
 

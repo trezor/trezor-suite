@@ -209,7 +209,7 @@ export const claimMerkleRewardsThunk = createThunk(
 
         try {
             const sender = asEvmAddress(account.descriptor);
-            const claimResult = Calldata.evm.distributor.claim(
+            const claimResult = Calldata.evm.distributor.claim.encode(
                 {
                     users: rewards.map(() => sender),
                     tokens: rewards.map(reward => asEvmAddress(reward.token.address)),

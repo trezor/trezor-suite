@@ -69,7 +69,7 @@ export const composeYieldWithdrawTransaction = async ({
     });
 
     const builderResult = isSharesInput
-        ? Calldata.evm.erc4626.redeem(
+        ? Calldata.evm.erc4626.redeem.encode(
               {
                   shares: amountSubunits,
                   receiver: account.descriptor,
@@ -77,7 +77,7 @@ export const composeYieldWithdrawTransaction = async ({
               },
               { sender: ownerAddress },
           )
-        : Calldata.evm.erc4626.withdraw(
+        : Calldata.evm.erc4626.withdraw.encode(
               {
                   assets: amountSubunits,
                   receiver: account.descriptor,

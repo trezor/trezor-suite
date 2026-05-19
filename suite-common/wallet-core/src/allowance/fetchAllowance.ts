@@ -17,7 +17,7 @@ export const fetchAllowance = async ({
     tokenContractAddress,
     coin,
 }: FetchAllowanceParams) => {
-    const allowanceCalldata = Calldata.evm.erc20.allowance({ owner, spender });
+    const allowanceCalldata = Calldata.evm.erc20.allowance.encode({ owner, spender });
 
     if (!allowanceCalldata.data) {
         throw new Error('Allowance calldata could not be built.');
