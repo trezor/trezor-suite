@@ -18,9 +18,16 @@ export type ContactSupportAlertAppendixRef = {
     getSupportChatUrl: () => string;
 };
 
-export const ContactSupportAlertAppendix = forwardRef<ContactSupportAlertAppendixRef>((_, ref) => {
+type ContactSupportAlertAppendixProps = {
+    initialShareSystemInfo?: boolean;
+};
+
+export const ContactSupportAlertAppendix = forwardRef<
+    ContactSupportAlertAppendixRef,
+    ContactSupportAlertAppendixProps
+>(({ initialShareSystemInfo }, ref) => {
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
-    const [isChecked, setIsChecked] = useState(isAnalyticsEnabled);
+    const [isChecked, setIsChecked] = useState(initialShareSystemInfo ?? isAnalyticsEnabled);
     const supportChatUrl = useSelector((state: DeviceRootState) =>
         selectSupportChatUrl(state, isChecked),
     );

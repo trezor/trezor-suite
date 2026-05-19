@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -10,6 +10,7 @@ import { isDevelopOrDebugEnv } from '@suite-native/config';
 import {
     type RootStackParamList,
     RootStackRoutes,
+    SettingsStackRoutes,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
@@ -33,6 +34,10 @@ const isConnectPopupUrl = (url: string): boolean => {
 const isWalletConnectUrl = (url: string): boolean =>
     url.startsWith('trezorsuite://walletconnect') ||
     /^https:\/\/connect\.trezor\.io\/\d+\/deeplink\/wc/.test(url);
+
+const GUIDE_SUPPORT_URL_PREFIX = 'trezorsuite://guide-support';
+
+const isGuideSupportUrl = (url: string): boolean => url.startsWith(GUIDE_SUPPORT_URL_PREFIX);
 
 // TODO: will be necessary to handle if device is not connected/unlocked so we probably want to wait until user unlock device
 // we already have some modals like biometrics or coin enabled which are waiting for device to be connected
@@ -59,6 +64,45 @@ export const useConnectPopupNavigation = () => {
             dispatch(connectPopupDeeplinkThunk({ url }));
         }
     }, [url, dispatch]);
+
+    // Guide-support deeplinks are handled via a direct Linking.addEventListener rather than the
+    // Linking.useURL() state hook. This ensures every deeplink invocation triggers navigation,
+    // including repeated calls with the same URL while the app is running in the background
+    // (Linking.useURL() would not update its state in that case, so the effect would not re-fire).
+    const handleGuideSupportUrl = useCallback(
+        (rawUrl: string) => {
+            try {
+                const parsedUrl = new URL(rawUrl);
+                const shareSystemInfo = parsedUrl.searchParams.get('shareSystemInfo') === '1';
+                navigation.navigate(RootStackRoutes.SettingsScreenStack, {
+                    screen: SettingsStackRoutes.SettingsSupport,
+                    params: { autoOpenContactSupport: true, shareSystemInfo },
+                });
+            } catch {
+                // Malformed url, ignore
+            }
+        },
+        [navigation],
+    );
+
+    useEffect(() => {
+        // Cold-start: check whether the app was opened with a guide-support URL.
+        Linking.getInitialURL().then(initialUrl => {
+            if (initialUrl && isGuideSupportUrl(initialUrl)) {
+                handleGuideSupportUrl(initialUrl);
+            }
+        });
+
+        // Background: subscribe to URL events so every invocation navigates,
+        // even when the same URL is re-used and Linking.useURL() would not re-fire.
+        const subscription = Linking.addEventListener('url', ({ url: eventUrl }) => {
+            if (isGuideSupportUrl(eventUrl)) {
+                handleGuideSupportUrl(eventUrl);
+            }
+        });
+
+        return () => subscription.remove();
+    }, [handleGuideSupportUrl]);
 
     useEffect(() => {
         if (connectPopupCall?.state === 'deeplink-callback') {
