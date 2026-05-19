@@ -39,7 +39,7 @@ type UseYieldApprovalReviewParams = {
 };
 
 type UseYieldApprovalReviewResult = {
-    fee: string | undefined;
+    fee: string;
     handleApprovalSubmitted: () => Promise<void>;
     handleSubmitApprovalReview: () => Promise<void>;
     isApprovalSigned: boolean;
@@ -215,7 +215,7 @@ export const useYieldApprovalReview = ({
     ]);
 
     return {
-        fee: reviewTransaction?.precomposedTransaction.fee,
+        fee: reviewTransaction?.precomposedTransaction.fee ?? '0',
         handleApprovalSubmitted,
         handleSubmitApprovalReview,
         isApprovalSigned,

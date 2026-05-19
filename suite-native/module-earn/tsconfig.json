@@ -74,6 +74,7 @@
         { "path": "../transaction-management" },
         { "path": "../transactions" },
         { "path": "../tx-simulation" },
+        { "path": "../../packages/connect" },
         { "path": "../../packages/react-utils" },
         {
             "path": "../../packages/styles-native"

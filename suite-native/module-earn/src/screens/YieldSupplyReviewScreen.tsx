@@ -1,29 +1,31 @@
 import { useEffect, useMemo } from 'react';
-import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import {
     type StablecoinYieldRootState,
+    type YieldFlowResolvedData,
     selectStablecoinYieldSessionByFlowKey,
 } from '@suite-common/wallet-core';
+import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { Text, VStack } from '@suite-native/atoms';
-import { Translation, useTranslate } from '@suite-native/intl';
 import {
-    Screen,
+    ConfirmOnTrezorWrapper,
+    useConfirmOnTrezorController,
+} from '@suite-native/confirm-on-trezor';
+import { Translation } from '@suite-native/intl';
+import {
     ScreenHeader,
     type StackNavigationProps,
     type YieldStackParamList,
     YieldStackRoutes,
 } from '@suite-native/navigation';
-import {
-    LIST_VERTICAL_SPACING,
-    ReviewOutputCard,
-    ReviewOutputItemValues,
-} from '@suite-native/transaction-management';
 
+import { EarnReviewSubmittedCard } from '../components/EarnReviewSubmittedCard';
+import { YieldReviewList } from '../components/YieldReviewList';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
+import { useYieldSupplyReview } from '../hooks/useYieldSupplyReview';
 import { buildYieldSupplyFeePreview } from '../yieldSupplyFeeUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldSupplyReview>;
@@ -32,10 +34,90 @@ type NavigationProps = StackNavigationProps<
     YieldStackRoutes.YieldSupplyReview
 >;
 
+type SupplyReviewContentProps = {
+    feePreview: PrecomposedTransactionFinal;
+    flowData: YieldFlowResolvedData;
+    flowKey: string;
+    review: {
+        amount: string;
+        receiptAmount: string;
+    };
+    tokenSymbol: string;
+};
+
+const SupplyReviewContent = ({
+    feePreview,
+    flowData,
+    flowKey,
+    review,
+    tokenSymbol,
+}: SupplyReviewContentProps) => {
+    const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, closeSheet } =
+        useConfirmOnTrezorController();
+    const { supplyStatus, handleSubmitSupplyReview, handleSupplySubmitted } =
+        useYieldSupplyReview({
+            flowData,
+            flowKey,
+        });
+    const isSigningSupply = supplyStatus === 'signing';
+    const isSupplySigned = supplyStatus === 'signed' || supplyStatus === 'sending';
+    const isSendingSupply = supplyStatus === 'sending';
+    const isSubmitDisabled = supplyStatus !== 'idle';
+
+    useEffect(() => {
+        if (isSigningSupply) {
+            revealConfirmOnTrezorSheet();
+        } else {
+            closeSheet();
+        }
+    }, [closeSheet, isSigningSupply, revealConfirmOnTrezorSheet]);
+
+    return (
+        <ConfirmOnTrezorWrapper
+            isManualControlEnabled
+            controlRef={confirmOnTrezorRef}
+            closeActionType="back"
+            defaultHeader={
+                <ScreenHeader
+                    closeActionType="back"
+                    customContent={
+                        <Text variant="body-md-strong">
+                            <Translation id="earn.yieldSupplyReviewScreen.title" />
+                        </Text>
+                    }
+                />
+            }
+        >
+            <VStack flex={1} justifyContent="space-between">
+                <YieldReviewList
+                    accountKey={flowData.account.key}
+                    amount={review.amount}
+                    fee={feePreview.fee}
+                    isFooterVisible={!isSigningSupply && !isSupplySigned}
+                    isSubmitDisabled={isSubmitDisabled}
+                    isSubmitLoading={isSigningSupply}
+                    onSubmit={handleSubmitSupplyReview}
+                    receiveAmount={review.receiptAmount}
+                    receiveTokenSymbol={flowData.receiptToken.symbol}
+                    tokenSymbol={tokenSymbol}
+                    variant="supply"
+                />
+                {isSupplySigned && (
+                    <EarnReviewSubmittedCard
+                        buttonTranslationId="earn.yieldSupplyReviewScreen.submitButton"
+                        isButtonLoading={isSendingSupply}
+                        messageTranslationId="earn.yieldSupplyReviewScreen.successMessage"
+                        onButtonPress={handleSupplySubmitted}
+                    />
+                )}
+            </VStack>
+        </ConfirmOnTrezorWrapper>
+    );
+};
+
 export const YieldSupplyReviewScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
-    const { translate } = useTranslate();
     const { flowData, flowKey, tokenSymbol, resolutionStatus } = useResolvedYieldFlowData(
         route.params,
     );
@@ -58,53 +140,17 @@ export const YieldSupplyReviewScreen = () => {
         }
     }, [navigation, resolutionStatus, review, route.params, session?.step]);
 
-    if (resolutionStatus !== 'resolved' || !review) {
+    if (resolutionStatus !== 'resolved' || !review || !feePreview) {
         return null;
     }
 
     return (
-        <Screen
-            header={
-                <ScreenHeader
-                    closeActionType="back"
-                    customContent={
-                        <Text variant="body-md-strong">
-                            <Translation id="earn.yieldSupplyReviewScreen.title" />
-                        </Text>
-                    }
-                />
-            }
-        >
-            <View>
-                <VStack spacing={LIST_VERTICAL_SPACING}>
-                    <ReviewOutputCard
-                        title={translate('earn.yieldSupplyReviewScreen.supplyCard.title')}
-                        outputState="success"
-                    >
-                        <Text variant="body-sm" color="contentSecondary">
-                            {review.amount} {tokenSymbol}
-                        </Text>
-                    </ReviewOutputCard>
-                    <ReviewOutputCard
-                        title={translate('earn.yieldSupplyReviewScreen.receiveCard.title')}
-                        outputState="active"
-                    >
-                        <Text variant="body-sm" color="contentSecondary">
-                            {review.receiptAmount} {flowData.receiptToken.symbol}
-                        </Text>
-                    </ReviewOutputCard>
-                    <ReviewOutputCard
-                        title={translate('earn.yieldSupplyReviewScreen.detailsCard.title')}
-                        outputState="active"
-                    >
-                        <ReviewOutputItemValues
-                            accountKey={route.params.accountKey}
-                            value={feePreview?.fee ?? '0'}
-                            translationKey="transactionManagement.review.outputs.summary.maxFee"
-                        />
-                    </ReviewOutputCard>
-                </VStack>
-            </View>
-        </Screen>
+        <SupplyReviewContent
+            feePreview={feePreview}
+            flowData={flowData}
+            flowKey={flowKey}
+            review={review}
+            tokenSymbol={tokenSymbol}
+        />
     );
 };

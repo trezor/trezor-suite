@@ -8,7 +8,7 @@ import {
     ConfirmOnTrezorWrapper,
     useConfirmOnTrezorController,
 } from '@suite-native/confirm-on-trezor';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import {
     ScreenHeader,
     type YieldStackParamList,
@@ -16,7 +16,7 @@ import {
 } from '@suite-native/navigation';
 
 import { EarnReviewSubmittedCard } from '../components/EarnReviewSubmittedCard';
-import { YieldSupplyApprovalReviewStepList } from '../components/YieldSupplyApprovalReviewStepList';
+import { YieldReviewList } from '../components/YieldReviewList';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useYieldApprovalReview } from '../hooks/useYieldApprovalReview';
 
@@ -37,6 +37,7 @@ const ApprovalReviewContent = ({
 }: ApprovalReviewContentProps) => {
     const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, closeSheet } =
         useConfirmOnTrezorController();
+    const { translate } = useTranslate();
     const {
         fee,
         handleApprovalSubmitted,
@@ -60,6 +61,11 @@ const ApprovalReviewContent = ({
         }
     }, [closeSheet, isSigningApproval, revealConfirmOnTrezorSheet]);
 
+    const approvalLimitTranslationId =
+        route.params.approvalLimitType === 'per-supply'
+            ? 'earn.yieldSupplyFlowScreen.perSupply'
+            : 'earn.yieldSupplyFlowScreen.approvalLimitSheet.unlimited.title';
+
     return (
         <ConfirmOnTrezorWrapper
             isManualControlEnabled
@@ -77,16 +83,17 @@ const ApprovalReviewContent = ({
             }
         >
             <VStack flex={1} justifyContent="space-between">
-                <YieldSupplyApprovalReviewStepList
+                <YieldReviewList
                     accountKey={flowData.account.key}
                     amount={route.params.amount}
-                    approvalLimitType={route.params.approvalLimitType}
+                    approvalLimit={translate(approvalLimitTranslationId)}
                     fee={fee}
                     isFooterVisible={!isSigningApproval && !isApprovalSigned}
                     isSubmitDisabled={isSubmitDisabled}
                     isSubmitLoading={isPreparingApproval || isSigningApproval}
                     onSubmit={handleSubmitApprovalReview}
                     tokenSymbol={tokenSymbol}
+                    variant="approval"
                 />
                 {isApprovalSigned && (
                     <EarnReviewSubmittedCard
