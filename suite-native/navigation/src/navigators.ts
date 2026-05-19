@@ -103,6 +103,7 @@ export type YieldStackParamList = {
     [YieldStackRoutes.YieldSupply]: YieldFlowParams;
     [YieldStackRoutes.YieldSupplyApprovalReview]: YieldSupplyApprovalReviewParams;
     [YieldStackRoutes.YieldSupplyReview]: YieldFlowParams;
+    [YieldStackRoutes.YieldSupplyComplete]: YieldFlowParams;
 };
 
 export type HomeStackParamList = {

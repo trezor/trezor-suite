@@ -5,6 +5,7 @@ import {
     type AccountsRootState,
     type FeesRootState,
     type TransactionsRootState,
+    type YieldFlowType,
     type YieldPendingTransactionState,
     fetchAndUpdateAccountThunk,
     selectConvertedNetworkFeeInfo,
@@ -18,16 +19,15 @@ const DEFAULT_PENDING_TX_POLL_INTERVAL_MS = 3_000;
 const MIN_PENDING_TX_POLL_INTERVAL_MS = 2_000;
 const BLOCK_TIME_TO_POLL_INTERVAL_RATIO = 2;
 
-type YieldApprovalPendingTrackingRootState = TransactionsRootState &
-    AccountsRootState &
-    FeesRootState;
+type YieldPendingTrackingRootState = TransactionsRootState & AccountsRootState & FeesRootState;
 
-type UseYieldApprovalPendingTransactionTrackingParams = {
+type UseYieldPendingTransactionTrackingParams = {
     account: Account | null;
-    approvalPendingTransaction: YieldPendingTransactionState | undefined;
     flowKey: string | null;
-    isScreenFocused: boolean;
-    onApprovalConfirmed: () => void;
+    flowType: YieldFlowType;
+    isScreenFocused?: boolean;
+    onApprovalConfirmed?: () => void;
+    pendingTransaction: YieldPendingTransactionState | undefined;
 };
 
 const getPollIntervalMs = (blockTime: number | undefined): number => {
@@ -39,36 +39,31 @@ const getPollIntervalMs = (blockTime: number | undefined): number => {
     );
 };
 
-export const useYieldApprovalPendingTransactionTracking = ({
+export const useYieldPendingTransactionTracking = ({
     account,
-    approvalPendingTransaction,
     flowKey,
-    isScreenFocused,
     onApprovalConfirmed,
-}: UseYieldApprovalPendingTransactionTrackingParams) => {
+    flowType,
+    isScreenFocused,
+    pendingTransaction,
+}: UseYieldPendingTransactionTrackingParams) => {
     const dispatch = useDispatch();
     const accountKey = account?.key;
     const accountSymbol = account?.symbol;
-    const trackedPendingTransaction = useSelector(
-        (state: YieldApprovalPendingTrackingRootState) => {
-            if (!accountKey || !approvalPendingTransaction) {
-                return null;
-            }
+    const trackedPendingTransaction = useSelector((state: YieldPendingTrackingRootState) => {
+        if (!accountKey || !pendingTransaction) {
+            return null;
+        }
 
-            return selectTransactionByAccountKeyAndTxid(
-                state,
-                accountKey,
-                approvalPendingTransaction.txid,
-            );
-        },
-    );
+        return selectTransactionByAccountKeyAndTxid(state, accountKey, pendingTransaction.txid);
+    });
     const feeInfo = useSelector((state: FeesRootState) =>
         accountSymbol ? selectConvertedNetworkFeeInfo(state, accountSymbol) : null,
     );
     const pollIntervalMs = getPollIntervalMs(feeInfo?.blockTime);
     const shouldPollPendingTransaction =
         !!flowKey &&
-        !!approvalPendingTransaction &&
+        !!pendingTransaction &&
         (!trackedPendingTransaction || isPending(trackedPendingTransaction));
 
     useEffect(() => {
@@ -84,7 +79,7 @@ export const useYieldApprovalPendingTransactionTracking = ({
     }, [accountKey, dispatch, pollIntervalMs, shouldPollPendingTransaction]);
 
     useEffect(() => {
-        if (!flowKey || !approvalPendingTransaction || !trackedPendingTransaction) {
+        if (!flowKey || !pendingTransaction || !trackedPendingTransaction) {
             return;
         }
 
@@ -92,7 +87,7 @@ export const useYieldApprovalPendingTransactionTracking = ({
             return;
         }
 
-        const sessionParams = { flowType: 'deposit' as const, flowKey };
+        const sessionParams = { flowType, flowKey };
 
         if (trackedPendingTransaction.type === 'failed') {
             dispatch(stablecoinYieldActions.transactionFailed(sessionParams));
@@ -100,12 +95,24 @@ export const useYieldApprovalPendingTransactionTracking = ({
             return;
         }
 
-        if (
-            approvalPendingTransaction.type === 'revoke' ||
-            approvalPendingTransaction.type === 'revoke-only'
-        ) {
+        if (pendingTransaction.type === 'revoke' || pendingTransaction.type === 'revoke-only') {
             dispatch(stablecoinYieldActions.revokeSuccess(sessionParams));
             dispatch(stablecoinYieldActions.invalidateAllowance(sessionParams));
+
+            return;
+        }
+
+        if (pendingTransaction.type !== 'approve') {
+            dispatch(
+                stablecoinYieldActions.completeAction({
+                    ...sessionParams,
+                    amount: pendingTransaction.amount,
+                }),
+            );
+
+            if (pendingTransaction.type === 'deposit') {
+                dispatch(stablecoinYieldActions.invalidateAllowance(sessionParams));
+            }
 
             return;
         }
@@ -113,20 +120,21 @@ export const useYieldApprovalPendingTransactionTracking = ({
         dispatch(
             stablecoinYieldActions.completeApproval({
                 ...sessionParams,
-                amount: approvalPendingTransaction.amount,
+                amount: pendingTransaction.amount,
             }),
         );
         dispatch(stablecoinYieldActions.invalidateAllowance(sessionParams));
 
-        if (isScreenFocused) {
+        if (isScreenFocused && onApprovalConfirmed) {
             onApprovalConfirmed();
         }
     }, [
-        approvalPendingTransaction,
         dispatch,
         flowKey,
+        flowType,
         isScreenFocused,
         onApprovalConfirmed,
+        pendingTransaction,
         trackedPendingTransaction,
     ]);
 };

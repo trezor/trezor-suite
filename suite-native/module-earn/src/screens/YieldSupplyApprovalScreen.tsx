@@ -26,7 +26,7 @@ import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransactionFailureAlert';
 import { useYieldApprovalFees } from '../hooks/useYieldApprovalFees';
 import { useYieldApprovalLimit } from '../hooks/useYieldApprovalLimit';
-import { useYieldApprovalPendingTransactionTracking } from '../hooks/useYieldApprovalPendingTransactionTracking';
+import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTransactionTracking';
 import { useYieldSession } from '../hooks/useYieldSession';
 import { useYieldSupplyApprovalSubmit } from '../hooks/useYieldSupplyApprovalSubmit';
 import { useYieldSupplyForm } from '../hooks/useYieldSupplyForm';
@@ -161,12 +161,13 @@ export const YieldSupplyApprovalScreen = () => {
         navigation.navigate(YieldStackRoutes.YieldSupply, route.params);
     }, [navigation, route.params]);
 
-    useYieldApprovalPendingTransactionTracking({
+    useYieldPendingTransactionTracking({
         account,
-        approvalPendingTransaction,
         flowKey,
+        flowType: 'deposit',
         isScreenFocused: isFocused,
         onApprovalConfirmed: handleApprovalConfirmed,
+        pendingTransaction: approvalPendingTransaction,
     });
 
     const handleCloseInfoBottomSheet = useCallback(() => {

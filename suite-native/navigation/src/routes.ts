@@ -245,6 +245,7 @@ export enum YieldStackRoutes {
     YieldSupply = 'YieldSupply',
     YieldSupplyApprovalReview = 'YieldSupplyApprovalReview',
     YieldSupplyReview = 'YieldSupplyReview',
+    YieldSupplyComplete = 'YieldSupplyComplete',
 }
 
 export enum ReceiveStackRoutes {

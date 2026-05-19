@@ -30,6 +30,8 @@ import { YieldSupplyInfoBottomSheet } from '../components/YieldSupplyInfoBottomS
 import { YieldSupplyStepCard } from '../components/YieldSupplyStepCard';
 import { YieldSupplyTxSimulationBottomSheet } from '../components/YieldSupplyTxSimulationBottomSheet';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
+import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransactionFailureAlert';
+import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTransactionTracking';
 import { useYieldSession } from '../hooks/useYieldSession';
 import { type PreparedYieldSupplyAction, useYieldSupplyFees } from '../hooks/useYieldSupplyFees';
 import { useYieldSupplyForm } from '../hooks/useYieldSupplyForm';
@@ -48,23 +50,28 @@ export const YieldSupplyScreen = () => {
     const dispatch = useDispatch();
     const isFocused = useIsFocused();
     const { CryptoAmountFormatter } = useFormatters();
+
     const {
         bottomSheetRef: infoBottomSheetRef,
         closeModal: closeInfoBottomSheet,
         openModal: openInfoBottomSheet,
     } = useBottomSheetModal();
+
     const {
         bottomSheetRef: simulationBottomSheetRef,
         closeModal: closeSimulationBottomSheet,
         openModal: openSimulationBottomSheet,
     } = useBottomSheetModal();
+
     const {
         bottomSheetRef: pendingBottomSheetRef,
         closeModal: closePendingBottomSheet,
         openModal: openPendingBottomSheet,
     } = useBottomSheetModal();
+
     const [simulationPreparedAction, setSimulationPreparedAction] =
         useState<PreparedYieldSupplyAction | null>(null);
+
     const {
         account,
         apy,
@@ -76,6 +83,7 @@ export const YieldSupplyScreen = () => {
         vaultTokenName,
         resolutionStatus,
     } = useResolvedYieldFlowData(route.params);
+
     const session = useYieldSession({
         flowKey,
         flowType: 'deposit',
@@ -92,7 +100,7 @@ export const YieldSupplyScreen = () => {
     const isActionSubmitting = session?.action.isSubmitting ?? false;
     const isApprovedAmountUnlimited = isYieldApprovalAllowanceUnlimited({ session, token });
     const isAllowanceLoaded = allowanceStatus === 'loaded';
-    const isSupplySessionReady = session?.step === 'action' && !!supplyAmount && isAllowanceLoaded;
+    const isSupplySessionReady = session?.step === 'action' && !!supplyAmount;
     const shouldRefreshAllowance = resolutionStatus === 'resolved' && allowanceStatus === 'idle';
     const supplyForm = useYieldSupplyForm({
         defaultAmount: supplyAmount,
@@ -103,6 +111,7 @@ export const YieldSupplyScreen = () => {
     const {
         formState: { isValid },
     } = form;
+
     const isApprovalIncreaseRequired =
         isAllowanceLoaded &&
         !isYieldApprovalAllowanceEnough({
@@ -110,18 +119,43 @@ export const YieldSupplyScreen = () => {
             session,
             token,
         });
+
     const isSubmitDisabled =
-        isSupplyPending || !isSupplySessionReady || !isValid || !amountValue || isActionSubmitting;
+        isSupplyPending ||
+        !isSupplySessionReady ||
+        !isAllowanceLoaded ||
+        !isValid ||
+        !amountValue ||
+        isActionSubmitting;
+
     const supplyFee = useYieldSupplyFees({
         amount: amountValue,
         flowData,
         flowKey,
         isEnabled:
-            isSupplySessionReady && isValid && !isApprovalIncreaseRequired && !isSupplyPending,
+            isSupplySessionReady &&
+            isAllowanceLoaded &&
+            isValid &&
+            !isApprovalIncreaseRequired &&
+            !isSupplyPending,
     });
     const { explorerUrl, openInBlockchain } = useTransactionDetails({
         accountKey: account?.key ?? null,
         txid: actionPendingTransaction?.txid ?? null,
+    });
+
+    useShowYieldTransactionFailureAlert({
+        error: session?.error,
+        flowKey,
+        flowType: 'deposit',
+        isEnabled: isFocused,
+    });
+
+    useYieldPendingTransactionTracking({
+        account,
+        flowKey,
+        flowType: 'deposit',
+        pendingTransaction: actionPendingTransaction,
     });
 
     useEffect(() => {
@@ -137,6 +171,12 @@ export const YieldSupplyScreen = () => {
             );
         }
     }, [dispatch, flowData, flowKey, shouldRefreshAllowance]);
+
+    useEffect(() => {
+        if (session?.step === 'complete') {
+            navigation.replace(YieldStackRoutes.YieldSupplyComplete, route.params);
+        }
+    }, [navigation, route.params, session?.step]);
 
     const formattedApprovedAmount = useMemo(() => {
         if (!allowanceAmount || !tokenSymbol || isApprovedAmountUnlimited) {
