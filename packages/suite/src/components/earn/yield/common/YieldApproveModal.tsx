@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 
 import { events } from '@suite/analytics';
-import { toTokenCryptoId } from '@suite-common/trading';
+import { KNOWN_VAULTS } from '@suite-common/suite-constants';
+import { parseCryptoId, toTokenCryptoId } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import { exhaustive } from '@trezor/type-utils';
@@ -10,8 +11,6 @@ import { ApproveModal } from 'src/components/suite/modals/ReduxModal/UserContext
 import { RevokeModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/RevokeModal';
 import { useAllowanceContext } from 'src/hooks/wallet/allowance';
 import { useAnalytics } from 'src/support/useAnalytics';
-
-import { EARN_PROVIDER_METADATA } from '../../providers/providerMetadata';
 
 export type YieldApproveModalProps = {
     amount: string;
@@ -42,11 +41,17 @@ export const YieldApproveModal = ({
     } = useAllowanceContext();
     const handledTxidRef = useRef<string | null>(null);
     const cryptoId = toTokenCryptoId(account.symbol, contractAddress);
+    const { networkId, contractAddress: parsedContract } = parseCryptoId(cryptoId);
+    const vaultName = KNOWN_VAULTS[spender.toLowerCase()];
 
     const provider = {
-        name: EARN_PROVIDER_METADATA.morpho.name,
-        companyName: EARN_PROVIDER_METADATA.morpho.companyName,
-        logo: getAssetLogoUrl({ ...EARN_PROVIDER_METADATA.morpho.tokenLogo, size: 80 }),
+        name: vaultName,
+        companyName: vaultName,
+        logo: getAssetLogoUrl({
+            coingeckoId: networkId,
+            contractAddress: parsedContract,
+            size: 80,
+        }),
         isActive: true,
     };
 
