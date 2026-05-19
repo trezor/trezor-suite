@@ -30,6 +30,13 @@ interface SelectionResult {
     summary: string;
 }
 
+interface PromptParts {
+    /** Large semi-stable blob — the filtered LLM analysis. Cached in API mode. */
+    analysisPart: string;
+    /** Small dynamic blob — changed files, coverage mapping, instructions. */
+    taskPart: string;
+}
+
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
@@ -215,18 +222,74 @@ const selectTestsByChangedFiles = (
 };
 
 // ---------------------------------------------------------------------------
+// Analysis filtering
+// ---------------------------------------------------------------------------
+
+/**
+ * Extracts lowercase keywords from a list of file paths for source_hint matching.
+ * Splits on path separators, hyphens, and underscores; drops short segments.
+ */
+const extractKeywords = (filePaths: string[]): Set<string> => {
+    const keywords = new Set<string>();
+    for (const filePath of filePaths) {
+        for (const segment of filePath.split(/[/\-_]/)) {
+            const base = segment.replace(/\.[^.]+$/, '');
+            if (base.length > 3) keywords.add(base.toLowerCase());
+        }
+    }
+
+    return keywords;
+};
+
+/**
+ * Reduces the full llmAnalysis to only the entries relevant to this PR:
+ * - Tests matched by static coverage (always included).
+ * - Tests whose source_hints contain a keyword from uncovered changed files
+ *   (best-effort inference for files with no static coverage data).
+ */
+const filterLlmAnalysis = (
+    llmAnalysis: Record<string, unknown>,
+    matchedTests: Set<string>,
+    uncoveredFiles: string[],
+): Record<string, unknown> => {
+    const filtered: Record<string, unknown> = {};
+
+    for (const testPath of matchedTests) {
+        if (llmAnalysis[testPath] !== undefined) {
+            filtered[testPath] = llmAnalysis[testPath];
+        }
+    }
+
+    if (uncoveredFiles.length > 0) {
+        const keywords = extractKeywords(uncoveredFiles);
+        const keywordList = [...keywords];
+        for (const [testPath, analysis] of Object.entries(llmAnalysis)) {
+            if (filtered[testPath] !== undefined) continue;
+            const rawHints = (analysis as Record<string, unknown>)?.source_hints;
+            const hints = Array.isArray(rawHints) ? (rawHints as string[]) : [];
+            const hintText = hints.join(' ').toLowerCase();
+            if (keywordList.some(kw => hintText.includes(kw))) {
+                filtered[testPath] = analysis;
+            }
+        }
+    }
+
+    return filtered;
+};
+
+// ---------------------------------------------------------------------------
 // Prompt
 // ---------------------------------------------------------------------------
 
 /** Maximum number of test names shown per changed file before truncating. */
 const MAX_TESTS_SHOWN_PER_FILE = 20;
 
-const buildPrompt = (
+const buildPromptParts = (
     changedFiles: string[],
     matchedByFile: TestMatchByFile[],
     uncoveredFiles: string[],
-    llmAnalysis: Record<string, unknown>,
-): string => {
+    filteredAnalysis: Record<string, unknown>,
+): PromptParts => {
     const coverageMappingSection =
         matchedByFile.length === 0
             ? '(none — no static mapping available for these changes)'
@@ -244,7 +307,15 @@ const buildPrompt = (
                   })
                   .join('\n\n');
 
-    return `You are helping a CI/CD system identify which Playwright E2E tests to run based on code changes in a pull request.
+    const analysisCount = Object.keys(filteredAnalysis).length;
+    const analysisPart = `### LLM analysis of ${analysisCount} candidate test${analysisCount === 1 ? '' : 's'}
+Each entry describes what a test does: its user-facing \`behaviors\`, \`entry_points\`, \`key_assertions\`, and \`source_hints\` (which parts of the app it touches).
+
+\`\`\`json
+${JSON.stringify(filteredAnalysis, null, 2)}
+\`\`\``;
+
+    const taskPart = `You are helping a CI/CD system identify which Playwright E2E tests to run based on code changes in a pull request.
 
 ## Your goal
 Recommend the **minimal set of tests** that provides maximum confidence that the changed code works correctly, ranked by how critical each test is to run given these specific changes. Prefer a short, targeted list over broad coverage — running fewer, well-chosen tests is better than running everything.
@@ -263,19 +334,12 @@ ${changedFiles.map(f => `- ${f}`).join('\n')}
 
 Each changed file is listed with the tests that statically reference it, along with the total count.
 **A file that maps to many tests is very likely a broad global utility or shared component.**
-For such files, apply extra scrutiny: only recommend a test if you have specific evidence (from the LLM analysis below) that the change plausibly affects that test's own code path. Do not include a test just because it transitively imports the changed file.
+For such files, apply extra scrutiny: only recommend a test if you have specific evidence (from the LLM analysis above) that the change plausibly affects that test's own code path. Do not include a test just because it transitively imports the changed file.
 
 ${coverageMappingSection}
 
 ### Source files with no static coverage data (${uncoveredFiles.length})
 ${uncoveredFiles.length > 0 ? uncoveredFiles.map(f => `- ${f}`).join('\n') : '(none)'}
-
-### LLM analysis of known tests
-Each entry describes what a test does: its user-facing \`behaviors\`, \`entry_points\`, \`key_assertions\`, and \`source_hints\` (which parts of the app it touches).
-
-\`\`\`json
-${JSON.stringify(llmAnalysis, null, 2)}
-\`\`\`
 
 ## Instructions
 1. For every test you consider including, assign a **priority** and write a concise **reasoning** (1–3 sentences) that explains *why* this test matters given the specific changed files. Reasoning must be concrete — avoid generic justifications like "shares a utility with the changed file".
@@ -303,13 +367,18 @@ Return a single JSON object — no prose outside the JSON. The schema is:
 \`\`\`
 
 Sort recommendations by priority (high → medium → low), then alphabetically within each tier.`;
+
+    return { analysisPart, taskPart };
 };
 
 // ---------------------------------------------------------------------------
 // Claude invocation — CLI
 // ---------------------------------------------------------------------------
 
-const selectTestsViaCli = (prompt: string): Promise<Omit<SelectionResult, 'changed_files'>> =>
+const selectTestsViaCli = ({
+    analysisPart,
+    taskPart,
+}: PromptParts): Promise<Omit<SelectionResult, 'changed_files'>> =>
     new Promise((resolve, reject) => {
         const proc = spawn(
             'claude',
@@ -380,7 +449,7 @@ const selectTestsViaCli = (prompt: string): Promise<Omit<SelectionResult, 'chang
             resolve(envelope.structured_output);
         });
 
-        proc.stdin.end(prompt);
+        proc.stdin.end(`${analysisPart}\n\n${taskPart}`);
     });
 
 // ---------------------------------------------------------------------------
@@ -388,7 +457,7 @@ const selectTestsViaCli = (prompt: string): Promise<Omit<SelectionResult, 'chang
 // ---------------------------------------------------------------------------
 
 const selectTestsViaApi = async (
-    prompt: string,
+    { analysisPart, taskPart }: PromptParts,
     apiKey: string,
 ): Promise<Omit<SelectionResult, 'changed_files'>> => {
     const client = new Anthropic({ apiKey });
@@ -451,7 +520,22 @@ const selectTestsViaApi = async (
             },
         ],
         tool_choice: { type: 'tool', name: 'recommend_tests' },
-        messages: [{ role: 'user', content: prompt }],
+        messages: [
+            {
+                role: 'user',
+                content: [
+                    {
+                        type: 'text' as const,
+                        text: analysisPart,
+                        cache_control: { type: 'ephemeral' as const },
+                    },
+                    {
+                        type: 'text' as const,
+                        text: taskPart,
+                    },
+                ],
+            },
+        ],
     });
 
     accumulateApiUsage(response);
@@ -623,16 +707,26 @@ const main = async () => {
         `Coverage mapping: ${uniqueMatchedTests.size} unique test(s) matched across ${matchedByFile.length} of ${changedFiles.length} changed file(s) with coverage data, ${uncoveredFiles.length} file(s) with no coverage data.`,
     );
 
-    // 5. Build prompt and call Claude
-    const prompt = buildPrompt(changedFiles, matchedByFile, uncoveredFiles, llmAnalysis);
+    // 5. Filter analysis to relevant tests, build prompt parts, call Claude
+    const filteredAnalysis = filterLlmAnalysis(llmAnalysis, uniqueMatchedTests, uncoveredFiles);
+    log(
+        `LLM analysis filtered: ${Object.keys(filteredAnalysis).length} of ${Object.keys(llmAnalysis).length} test entries included in prompt.`,
+    );
+
+    const promptParts = buildPromptParts(
+        changedFiles,
+        matchedByFile,
+        uncoveredFiles,
+        filteredAnalysis,
+    );
 
     log(apiKey ? 'Calling Anthropic API...' : 'Calling local Claude Code CLI...');
 
     let claudeResult: Omit<SelectionResult, 'changed_files'>;
     try {
         claudeResult = apiKey
-            ? await selectTestsViaApi(prompt, apiKey)
-            : await selectTestsViaCli(prompt);
+            ? await selectTestsViaApi(promptParts, apiKey)
+            : await selectTestsViaCli(promptParts);
     } catch (err) {
         error(`Claude invocation failed: ${err instanceof Error ? err.message : err}`);
         process.exit(1);
