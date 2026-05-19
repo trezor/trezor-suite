@@ -2736,6 +2736,18 @@ export const messages = {
                 primaryButton: 'Go to homepage',
             },
         },
+        yieldSupplyReviewScreen: {
+            title: 'Review with Trezor',
+            supplyCard: {
+                title: 'Supply',
+            },
+            receiveCard: {
+                title: 'Receive',
+            },
+            detailsCard: {
+                title: 'Transaction details',
+            },
+        },
         staked: 'Staked',
         stakedAutomatically: 'Staked automatically',
         fullBalance: 'Full balance',

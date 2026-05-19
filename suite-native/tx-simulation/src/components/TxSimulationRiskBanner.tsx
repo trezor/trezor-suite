@@ -1,27 +1,25 @@
-import React from 'react';
+import { type ReactNode } from 'react';
 
 import { CheckBox, FullAlertBox, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-export const TxSimulationBanner = ({
-    title,
-    description,
-    type = 'error',
-    disclaimerAccepted,
-    setDisclaimerAccepted,
-}: {
-    title: React.ReactNode;
-    description?: React.ReactNode;
-    type: 'error' | 'warning';
+type TxSimulationRiskBannerProps = {
+    description?: ReactNode;
     disclaimerAccepted: boolean;
     setDisclaimerAccepted: (value: boolean) => void;
-}) => (
+    title: ReactNode;
+    type: 'critical' | 'warning';
+};
+
+export const TxSimulationRiskBanner = ({
+    description,
+    disclaimerAccepted,
+    setDisclaimerAccepted,
+    title,
+    type,
+}: TxSimulationRiskBannerProps) => (
     <>
-        <FullAlertBox
-            variant={type === 'warning' ? 'warning' : 'critical'}
-            title={title}
-            description={description}
-        />
+        <FullAlertBox variant={type} title={title} description={description} />
         <PressableOpacity onPress={() => setDisclaimerAccepted(!disclaimerAccepted)}>
             <HStack spacing="sp16" padding="sp8" alignItems="center">
                 <CheckBox

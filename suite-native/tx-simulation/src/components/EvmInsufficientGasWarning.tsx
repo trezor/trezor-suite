@@ -4,20 +4,20 @@ import { type TxSimulationMethod } from '@suite-common/wallet-types';
 import { FullAlertBox } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-interface EvmInsufficientGasWarningProps {
+export type EvmInsufficientGasWarningProps = {
+    accountBalance: string;
+    gasLimit: string;
+    networkSymbol: NetworkSymbol;
     transaction:
         | TxSimulationMethod<'ethereumSignTransaction'>['payload']['transaction']
         | undefined;
-    gasLimit: string;
-    accountBalance: string;
-    networkSymbol: NetworkSymbol;
-}
+};
 
 export function EvmInsufficientGasWarning({
-    transaction,
-    gasLimit,
     accountBalance,
+    gasLimit,
     networkSymbol,
+    transaction,
 }: EvmInsufficientGasWarningProps) {
     const gasPriceInWei = transaction?.maxFeePerGas ?? transaction?.gasPrice;
     const hasSufficientFunds = useHasSufficientFundsForGas(
@@ -25,7 +25,9 @@ export function EvmInsufficientGasWarning({
         accountBalance,
     );
 
-    if (hasSufficientFunds) return null;
+    if (hasSufficientFunds) {
+        return null;
+    }
 
     return (
         <FullAlertBox

@@ -8,9 +8,11 @@ import { prepareYieldDepositThunk } from '@suite-common/wallet-core';
 import { type ResolvedYieldFlowData } from './useResolvedYieldFlowData';
 import { useWorkInProgressAlert } from './useWorkInProgressAlert';
 import { type PreparedYieldSupplyAction } from './useYieldSupplyFees';
+import { buildYieldSupplyFeePreview } from '../yieldSupplyFeeUtils';
 
 type UseYieldSupplySubmitParams = Pick<ResolvedYieldFlowData, 'flowData' | 'flowKey'> & {
     amount: string | undefined;
+    onActionReady: (preparedAction: PreparedYieldSupplyAction) => void;
     onApprovalRequired: () => void;
     preparedAction: PreparedYieldSupplyAction | null;
 };
@@ -19,6 +21,7 @@ export const useYieldSupplySubmit = ({
     amount,
     flowData,
     flowKey,
+    onActionReady,
     onApprovalRequired,
     preparedAction,
 }: UseYieldSupplySubmitParams) => {
@@ -31,7 +34,7 @@ export const useYieldSupplySubmit = ({
         }
 
         if (preparedAction?.amount === amount) {
-            showWorkInProgressAlert('Supply transaction ready');
+            onActionReady(preparedAction);
 
             return;
         }
@@ -51,7 +54,20 @@ export const useYieldSupplySubmit = ({
         }
 
         if (response.payload.type === 'action-ready') {
-            showWorkInProgressAlert('Supply transaction ready');
+            const feePreview = buildYieldSupplyFeePreview(response.payload.unsignedTransaction);
+
+            if (!feePreview) {
+                showWorkInProgressAlert('Supply unavailable');
+
+                return;
+            }
+
+            onActionReady({
+                amount,
+                feePreview,
+                receiptAmount: response.payload.receiptAmount,
+                unsignedTransaction: response.payload.unsignedTransaction,
+            });
 
             return;
         }
@@ -69,6 +85,7 @@ export const useYieldSupplySubmit = ({
         dispatch,
         flowData,
         flowKey,
+        onActionReady,
         onApprovalRequired,
         preparedAction,
         showWorkInProgressAlert,

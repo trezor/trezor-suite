@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
@@ -12,7 +12,7 @@ import {
     Screen,
     type StackNavigationProps,
     type YieldStackParamList,
-    type YieldStackRoutes,
+    YieldStackRoutes,
 } from '@suite-native/navigation';
 import { FeeSummaryCard } from '@suite-native/transaction-management';
 
@@ -22,9 +22,10 @@ import { YieldSupplyFlowFooter } from '../components/YieldSupplyFlowFooter';
 import { YieldSupplyFlowScreenHeader } from '../components/YieldSupplyFlowScreenHeader';
 import { YieldSupplyInfoBottomSheet } from '../components/YieldSupplyInfoBottomSheet';
 import { YieldSupplyStepCard } from '../components/YieldSupplyStepCard';
+import { YieldSupplyTxSimulationBottomSheet } from '../components/YieldSupplyTxSimulationBottomSheet';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useYieldSession } from '../hooks/useYieldSession';
-import { useYieldSupplyFees } from '../hooks/useYieldSupplyFees';
+import { type PreparedYieldSupplyAction, useYieldSupplyFees } from '../hooks/useYieldSupplyFees';
 import { useYieldSupplyForm } from '../hooks/useYieldSupplyForm';
 import { useYieldSupplySubmit } from '../hooks/useYieldSupplySubmit';
 import {
@@ -45,6 +46,13 @@ export const YieldSupplyScreen = () => {
         closeModal: closeInfoBottomSheet,
         openModal: openInfoBottomSheet,
     } = useBottomSheetModal();
+    const {
+        bottomSheetRef: simulationBottomSheetRef,
+        closeModal: closeSimulationBottomSheet,
+        openModal: openSimulationBottomSheet,
+    } = useBottomSheetModal();
+    const [simulationPreparedAction, setSimulationPreparedAction] =
+        useState<PreparedYieldSupplyAction | null>(null);
     const {
         account,
         apy,
@@ -129,10 +137,42 @@ export const YieldSupplyScreen = () => {
         dispatch(stablecoinYieldActions.enterModifyMode({ flowType: 'deposit', flowKey }));
         navigation.goBack();
     }, [dispatch, flowKey, navigation]);
+    const handleActionReady = useCallback(
+        (preparedAction: PreparedYieldSupplyAction) => {
+            setSimulationPreparedAction(preparedAction);
+            requestAnimationFrame(openSimulationBottomSheet);
+        },
+        [openSimulationBottomSheet],
+    );
+    const handleConfirmSimulation = useCallback(() => {
+        if (!flowKey || !simulationPreparedAction) {
+            return;
+        }
+
+        dispatch(
+            stablecoinYieldActions.storeActionReviewData({
+                amount: simulationPreparedAction.amount,
+                flowKey,
+                flowType: 'deposit',
+                receiptAmount: simulationPreparedAction.receiptAmount,
+                unsignedTransaction: simulationPreparedAction.unsignedTransaction,
+            }),
+        );
+        closeSimulationBottomSheet();
+        navigation.navigate(YieldStackRoutes.YieldSupplyReview, route.params);
+    }, [
+        closeSimulationBottomSheet,
+        dispatch,
+        flowKey,
+        navigation,
+        route.params,
+        simulationPreparedAction,
+    ]);
     const { handleSubmitSupply } = useYieldSupplySubmit({
         amount: amountValue,
         flowData,
         flowKey,
+        onActionReady: handleActionReady,
         onApprovalRequired: handleEditApproval,
         preparedAction: supplyFee.preparedAction,
     });
@@ -225,6 +265,15 @@ export const YieldSupplyScreen = () => {
                 tokenSymbol={tokenSymbol}
                 vaultTokenName={vaultTokenName}
             />
+            {simulationPreparedAction && (
+                <YieldSupplyTxSimulationBottomSheet
+                    ref={simulationBottomSheetRef}
+                    account={account}
+                    onCancel={closeSimulationBottomSheet}
+                    onConfirm={handleConfirmSimulation}
+                    preparedAction={simulationPreparedAction}
+                />
+            )}
         </Screen>
     );
 };

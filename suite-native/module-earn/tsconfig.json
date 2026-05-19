@@ -8,6 +8,9 @@
         },
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/earn-stablecoin"
+        },
+        {
             "path": "../../suite-common/earn-stablecoin-api"
         },
         {
@@ -27,6 +30,9 @@
             "path": "../../suite-common/redux-utils"
         },
         { "path": "../../suite-common/staking" },
+        {
+            "path": "../../suite-common/tx-simulation"
+        },
         {
             "path": "../../suite-common/validators"
         },
@@ -67,6 +73,7 @@
         { "path": "../test-utils" },
         { "path": "../transaction-management" },
         { "path": "../transactions" },
+        { "path": "../tx-simulation" },
         { "path": "../../packages/react-utils" },
         {
             "path": "../../packages/styles-native"

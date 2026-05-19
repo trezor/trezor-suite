@@ -1,4 +1,5 @@
 export const EARN_MODULE_PREFIX = '@suite-native/module-earn';
+export const STABLECOIN_YIELD_NATIVE_SOURCE_ORIGIN = 'trezor-suite-native://stablecoin-yield';
 
 export const CRYPTO_BALANCE_DECIMALS = 5;
 export const NETWORK_FEE_WARNING_MULTIPLIER = 4;
