@@ -25,6 +25,7 @@ import { BigNumber } from '@trezor/utils';
 import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';
 import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
 import { useExternalLink } from 'src/hooks/suite';
+import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
@@ -76,6 +77,7 @@ export const BasicTxDetails = ({
     explorerUrlQueryString,
 }: BasicTxDetailsProps) => {
     const { elevation } = useElevation();
+    const { isBelowTablet } = useLayoutSize();
     const explorerLink = useExternalLink(`${explorerUrl}${tx.txid}${explorerUrlQueryString ?? ''}`);
     // all solana txs which are fetched are already confirmed
     const isConfirmed = confirmations > 0 || tx.solanaSpecific?.status === 'confirmed';
@@ -133,7 +135,7 @@ export const BasicTxDetails = ({
 
             <Divider />
 
-            <Grid columns={2} columnGap={32} rowGap={12} forceEqualColumns>
+            <Grid columns={isBelowTablet ? 1 : 2} columnGap={32} rowGap={12} forceEqualColumns>
                 {/* MINED TIME */}
                 <Item
                     label={
