@@ -8,7 +8,13 @@ import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking
 
 import { EarnInactiveNetworkOpportunity } from '../common/EarnInactiveNetworkOpportunity';
 
-export const EarnStakingActivateRow = ({ symbol }: { symbol: NetworkSymbol }) => {
+export const EarnStakingActivateRow = ({
+    symbol,
+    isCardLayout,
+}: {
+    symbol: NetworkSymbol;
+    isCardLayout: boolean;
+}) => {
     const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: symbol }));
     const { isStakingDisabled } = useMessageSystemStaking(symbol);
 
@@ -22,6 +28,7 @@ export const EarnStakingActivateRow = ({ symbol }: { symbol: NetworkSymbol }) =>
         <EarnInactiveNetworkOpportunity
             symbol={symbol}
             apy={apy}
+            isCardLayout={isCardLayout}
             note={
                 <Translation
                     id="TR_EARN_STAKING_DASHBOARD_MINIMUM_STAKE"
