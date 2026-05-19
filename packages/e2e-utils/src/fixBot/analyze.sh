@@ -22,17 +22,26 @@ fi
 CLAUDE_BIN="$ROOT/node_modules/.bin/claude"
 
 REPORT_DIR="$ROOT/packages/e2e-utils/src/fixBot/reports"
+
+# shellcheck disable=SC1091
+source "$ROOT/packages/e2e-utils/src/fixBot/utils.sh"
 mkdir -p "$REPORT_DIR"
+
+USAGE_FILE=$(mktemp)
+trap 'rm -f "$USAGE_FILE"' EXIT
 
 echo "Starting nightly test failure analysis..."
 unset MCP_CONNECTION_NONBLOCKING
-"$CLAUDE_BIN" --verbose --print \
+"$CLAUDE_BIN" --verbose --print --output-format json \
     --settings packages/e2e-utils/src/fixBot/settings.json \
     --mcp-config packages/e2e-utils/src/fixBot/mcp.json \
     --strict-mcp-config \
-    < packages/e2e-utils/src/fixBot/ANALYSIS_AGENT.md
+    < packages/e2e-utils/src/fixBot/ANALYSIS_AGENT.md > "$USAGE_FILE"
 
 DATE="$(date +%Y-%m-%d)"
 echo ""
 echo "Report saved to $REPORT_DIR/$DATE.md"
 echo "Fix tasks saved to $REPORT_DIR/$DATE.json"
+echo ""
+
+report_usage "$USAGE_FILE" "$REPORT_DIR/token_usage.txt" "analysis"

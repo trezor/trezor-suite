@@ -166,11 +166,11 @@ For each fix task assign:
   platform/group/spec combinations. Every group where the failure was observed must be
   included — the fix agent will verify the fix on each one.
 
-  **Before adding a validation entry, check the test file's `describe` block tags:**
-  - If the test carries `@desktopOnly`, do **not** add a `platform: "web"` entry — the web
-    playwright config excludes it via `grepInvert` and playwright will report "No tests found".
-  - If the test carries `@webOnly`, do **not** add a `platform: "desktop"` entry for the same reason.
-  - Only include a platform in `validations` if that platform actually ran the test.
+    **Before adding a validation entry, check the test file's `describe` block tags:**
+    - If the test carries `@desktopOnly`, do **not** add a `platform: "web"` entry — the web
+      playwright config excludes it via `grepInvert` and playwright will report "No tests found".
+    - If the test carries `@webOnly`, do **not** add a `platform: "desktop"` entry for the same reason.
+    - Only include a platform in `validations` if that platform actually ran the test.
 
 Tasks with `fix_scope` of `PRODUCT_BUG` or `INFRA` go into `skipped` instead of `fix_tasks`.
 
