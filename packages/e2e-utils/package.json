@@ -14,8 +14,9 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "analyze-tests": "tsx ./src/llmTestAnalyzer/index.ts",
         "select-tests-llm": "tsx ./src/llmTestSelector/index.ts",
-        "fix-bot": "bash src/fixBot/run.sh",
-        "generate-usage-dashboard": "tsx ./src/llmUsageDashboard/index.ts"
+        "generate-usage-dashboard": "tsx ./src/llmUsageDashboard/index.ts",
+        "fix-bot:analyze": "tsx src/fixBot/analyze.ts",
+        "fix-bot:fix": "bash src/fixBot/fix.sh --report packages/e2e-utils/src/fixBot/reports/2026-05-19.json"
     },
     "dependencies": {
         "@anthropic-ai/sdk": "^0.39.0",
