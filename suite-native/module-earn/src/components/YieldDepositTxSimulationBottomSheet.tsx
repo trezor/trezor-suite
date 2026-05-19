@@ -12,24 +12,24 @@ import { Translation } from '@suite-native/intl';
 import { EvmTxSimulationReviewContent } from '@suite-native/tx-simulation';
 
 import { STABLECOIN_YIELD_NATIVE_SOURCE_ORIGIN } from '../constants';
-import { YieldSupplyTxSimulationHeader } from './YieldSupplyTxSimulationHeader';
-import { type PreparedYieldSupplyAction } from '../hooks/useYieldSupplyFees';
+import { YieldDepositTxSimulationHeader } from './YieldDepositTxSimulationHeader';
+import { type PreparedYieldDepositAction } from '../hooks/useYieldDepositFees';
 
-type YieldSupplyTxSimulationBottomSheetProps = {
+type YieldDepositTxSimulationBottomSheetProps = {
     account: Account;
     onCancel: () => void;
     onConfirm: () => void;
-    preparedAction: PreparedYieldSupplyAction;
+    preparedAction: PreparedYieldDepositAction;
     ref: BottomSheetModalRef;
 };
 
-export const YieldSupplyTxSimulationBottomSheet = ({
+export const YieldDepositTxSimulationBottomSheet = ({
     account,
     onCancel,
     onConfirm,
     preparedAction,
     ref,
-}: YieldSupplyTxSimulationBottomSheetProps) => {
+}: YieldDepositTxSimulationBottomSheetProps) => {
     const parsedData = useMemo(
         () =>
             composeStablecoinYieldTxSimulationAction(
@@ -59,7 +59,7 @@ export const YieldSupplyTxSimulationBottomSheet = ({
                         </Button>
                     }
                     headerContent={
-                        <YieldSupplyTxSimulationHeader
+                        <YieldDepositTxSimulationHeader
                             accountLabel={account.accountLabel}
                             networkSymbol={account.symbol}
                         />

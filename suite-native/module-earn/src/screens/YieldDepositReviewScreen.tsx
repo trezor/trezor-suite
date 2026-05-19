@@ -25,16 +25,16 @@ import {
 import { EarnReviewSubmittedCard } from '../components/EarnReviewSubmittedCard';
 import { YieldReviewList } from '../components/YieldReviewList';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
-import { useYieldSupplyReview } from '../hooks/useYieldSupplyReview';
-import { buildYieldSupplyFeePreview } from '../yieldSupplyFeeUtils';
+import { useYieldDepositReview } from '../hooks/useYieldDepositReview';
+import { buildYieldDepositFeePreview } from '../yieldDepositFeeUtils';
 
-type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldSupplyReview>;
+type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositReview>;
 type NavigationProps = StackNavigationProps<
     YieldStackParamList,
-    YieldStackRoutes.YieldSupplyReview
+    YieldStackRoutes.YieldDepositReview
 >;
 
-type SupplyReviewContentProps = {
+type DepositReviewContentProps = {
     feePreview: PrecomposedTransactionFinal;
     flowData: YieldFlowResolvedData;
     flowKey: string;
@@ -45,32 +45,32 @@ type SupplyReviewContentProps = {
     tokenSymbol: string;
 };
 
-const SupplyReviewContent = ({
+const DepositReviewContent = ({
     feePreview,
     flowData,
     flowKey,
     review,
     tokenSymbol,
-}: SupplyReviewContentProps) => {
+}: DepositReviewContentProps) => {
     const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, closeSheet } =
         useConfirmOnTrezorController();
-    const { supplyStatus, handleSubmitSupplyReview, handleSupplySubmitted } =
-        useYieldSupplyReview({
+    const { depositStatus, handleSubmitDepositReview, handleDepositSubmitted } =
+        useYieldDepositReview({
             flowData,
             flowKey,
         });
-    const isSigningSupply = supplyStatus === 'signing';
-    const isSupplySigned = supplyStatus === 'signed' || supplyStatus === 'sending';
-    const isSendingSupply = supplyStatus === 'sending';
-    const isSubmitDisabled = supplyStatus !== 'idle';
+    const isSigningDeposit = depositStatus === 'signing';
+    const isDepositSigned = depositStatus === 'signed' || depositStatus === 'sending';
+    const isSendingDeposit = depositStatus === 'sending';
+    const isSubmitDisabled = depositStatus !== 'idle';
 
     useEffect(() => {
-        if (isSigningSupply) {
+        if (isSigningDeposit) {
             revealConfirmOnTrezorSheet();
         } else {
             closeSheet();
         }
-    }, [closeSheet, isSigningSupply, revealConfirmOnTrezorSheet]);
+    }, [closeSheet, isSigningDeposit, revealConfirmOnTrezorSheet]);
 
     return (
         <ConfirmOnTrezorWrapper
@@ -82,7 +82,7 @@ const SupplyReviewContent = ({
                     closeActionType="back"
                     customContent={
                         <Text variant="body-md-strong">
-                            <Translation id="earn.yieldSupplyReviewScreen.title" />
+                            <Translation id="earn.yieldDepositReviewScreen.title" />
                         </Text>
                     }
                 />
@@ -93,21 +93,21 @@ const SupplyReviewContent = ({
                     accountKey={flowData.account.key}
                     amount={review.amount}
                     fee={feePreview.fee}
-                    isFooterVisible={!isSigningSupply && !isSupplySigned}
+                    isFooterVisible={!isSigningDeposit && !isDepositSigned}
                     isSubmitDisabled={isSubmitDisabled}
-                    isSubmitLoading={isSigningSupply}
-                    onSubmit={handleSubmitSupplyReview}
+                    isSubmitLoading={isSigningDeposit}
+                    onSubmit={handleSubmitDepositReview}
                     receiveAmount={review.receiptAmount}
                     receiveTokenSymbol={flowData.receiptToken.symbol}
                     tokenSymbol={tokenSymbol}
-                    variant="supply"
+                    variant="deposit"
                 />
-                {isSupplySigned && (
+                {isDepositSigned && (
                     <EarnReviewSubmittedCard
-                        buttonTranslationId="earn.yieldSupplyReviewScreen.submitButton"
-                        isButtonLoading={isSendingSupply}
-                        messageTranslationId="earn.yieldSupplyReviewScreen.successMessage"
-                        onButtonPress={handleSupplySubmitted}
+                        buttonTranslationId="earn.yieldDepositReviewScreen.submitButton"
+                        isButtonLoading={isSendingDeposit}
+                        messageTranslationId="earn.yieldDepositReviewScreen.successMessage"
+                        onButtonPress={handleDepositSubmitted}
                     />
                 )}
             </VStack>
@@ -115,7 +115,7 @@ const SupplyReviewContent = ({
     );
 };
 
-export const YieldSupplyReviewScreen = () => {
+export const YieldDepositReviewScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const { flowData, flowKey, tokenSymbol, resolutionStatus } = useResolvedYieldFlowData(
@@ -126,7 +126,7 @@ export const YieldSupplyReviewScreen = () => {
     );
     const review = session?.action.review;
     const feePreview = useMemo(
-        () => (review ? buildYieldSupplyFeePreview(review.unsignedTransaction) : null),
+        () => (review ? buildYieldDepositFeePreview(review.unsignedTransaction) : null),
         [review],
     );
 
@@ -136,13 +136,13 @@ export const YieldSupplyReviewScreen = () => {
         }
 
         if (session?.step === 'complete') {
-            navigation.replace(YieldStackRoutes.YieldSupplyComplete, route.params);
+            navigation.replace(YieldStackRoutes.YieldDepositComplete, route.params);
 
             return;
         }
 
         if (!review || session?.step !== 'action') {
-            navigation.navigate(YieldStackRoutes.YieldSupply, route.params);
+            navigation.navigate(YieldStackRoutes.YieldDeposit, route.params);
         }
     }, [navigation, resolutionStatus, review, route.params, session?.step]);
 
@@ -151,7 +151,7 @@ export const YieldSupplyReviewScreen = () => {
     }
 
     return (
-        <SupplyReviewContent
+        <DepositReviewContent
             feePreview={feePreview}
             flowData={flowData}
             flowKey={flowKey}

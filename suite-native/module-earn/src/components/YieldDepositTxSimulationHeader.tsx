@@ -3,15 +3,15 @@ import { Card, HStack, Text } from '@suite-native/atoms';
 import { NetworkIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
-type YieldSupplyTxSimulationHeaderProps = {
+type YieldDepositTxSimulationHeaderProps = {
     accountLabel?: string;
     networkSymbol: NetworkSymbol;
 };
 
-export const YieldSupplyTxSimulationHeader = ({
+export const YieldDepositTxSimulationHeader = ({
     accountLabel,
     networkSymbol,
-}: YieldSupplyTxSimulationHeaderProps) => (
+}: YieldDepositTxSimulationHeaderProps) => (
     <>
         <Text variant="body-sm" color="contentSecondary" textAlign="center">
             <Translation

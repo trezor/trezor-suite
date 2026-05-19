@@ -1,4 +1,4 @@
-import { buildYieldSupplyFeePreview } from '../yieldSupplyFeeUtils';
+import { buildYieldDepositFeePreview } from '../yieldDepositFeeUtils';
 
 const baseUnsignedTransaction = {
     from: '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3',
@@ -10,9 +10,9 @@ const baseUnsignedTransaction = {
     value: '0x0',
 };
 
-describe('buildYieldSupplyFeePreview', () => {
+describe('buildYieldDepositFeePreview', () => {
     it('builds an EIP-1559 maximum fee preview from backend transaction', () => {
-        const result = buildYieldSupplyFeePreview(
+        const result = buildYieldDepositFeePreview(
             JSON.stringify({
                 ...baseUnsignedTransaction,
                 type: 2,
@@ -32,7 +32,7 @@ describe('buildYieldSupplyFeePreview', () => {
     });
 
     it('builds a legacy gas price fee preview from backend transaction', () => {
-        const result = buildYieldSupplyFeePreview(
+        const result = buildYieldDepositFeePreview(
             JSON.stringify({
                 ...baseUnsignedTransaction,
                 gasPrice: '0x59682f00',
@@ -48,10 +48,10 @@ describe('buildYieldSupplyFeePreview', () => {
     });
 
     it('returns null for unsupported unsigned transaction payload', () => {
-        expect(buildYieldSupplyFeePreview('not-json')).toBeNull();
+        expect(buildYieldDepositFeePreview('not-json')).toBeNull();
     });
 
     it('returns null when the backend transaction has no fee fields', () => {
-        expect(buildYieldSupplyFeePreview(JSON.stringify(baseUnsignedTransaction))).toBeNull();
+        expect(buildYieldDepositFeePreview(JSON.stringify(baseUnsignedTransaction))).toBeNull();
     });
 });

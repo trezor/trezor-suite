@@ -9,11 +9,11 @@ import {
 
 import { HowYieldWorksScreen } from '../screens/HowYieldWorksScreen';
 import { YieldConsentsScreen } from '../screens/YieldConsentsScreen';
-import { YieldSupplyApprovalScreen } from '../screens/YieldSupplyApprovalScreen';
-import { YieldSupplyApprovalTransactionDataReviewScreen } from '../screens/YieldSupplyApprovalTransactionDataReviewScreen';
-import { YieldSupplyCompleteScreen } from '../screens/YieldSupplyCompleteScreen';
-import { YieldSupplyReviewScreen } from '../screens/YieldSupplyReviewScreen';
-import { YieldSupplyScreen } from '../screens/YieldSupplyScreen';
+import { YieldDepositApprovalScreen } from '../screens/YieldDepositApprovalScreen';
+import { YieldDepositApprovalTransactionDataReviewScreen } from '../screens/YieldDepositApprovalTransactionDataReviewScreen';
+import { YieldDepositCompleteScreen } from '../screens/YieldDepositCompleteScreen';
+import { YieldDepositReviewScreen } from '../screens/YieldDepositReviewScreen';
+import { YieldDepositScreen } from '../screens/YieldDepositScreen';
 
 const YieldStack = createNativeStackNavigator<YieldStackParamList>();
 
@@ -36,29 +36,29 @@ export const YieldStackNavigator = () => {
                 component={YieldConsentsScreen}
             />
             <YieldStack.Screen
-                options={{ title: YieldStackRoutes.YieldSupplyApproval }}
-                name={YieldStackRoutes.YieldSupplyApproval}
-                component={YieldSupplyApprovalScreen}
+                options={{ title: YieldStackRoutes.YieldDepositApproval }}
+                name={YieldStackRoutes.YieldDepositApproval}
+                component={YieldDepositApprovalScreen}
             />
             <YieldStack.Screen
-                options={{ title: YieldStackRoutes.YieldSupply }}
-                name={YieldStackRoutes.YieldSupply}
-                component={YieldSupplyScreen}
+                options={{ title: YieldStackRoutes.YieldDeposit }}
+                name={YieldStackRoutes.YieldDeposit}
+                component={YieldDepositScreen}
             />
             <YieldStack.Screen
-                options={{ title: YieldStackRoutes.YieldSupplyApprovalReview }}
-                name={YieldStackRoutes.YieldSupplyApprovalReview}
-                component={YieldSupplyApprovalTransactionDataReviewScreen}
+                options={{ title: YieldStackRoutes.YieldDepositApprovalReview }}
+                name={YieldStackRoutes.YieldDepositApprovalReview}
+                component={YieldDepositApprovalTransactionDataReviewScreen}
             />
             <YieldStack.Screen
-                options={{ title: YieldStackRoutes.YieldSupplyReview }}
-                name={YieldStackRoutes.YieldSupplyReview}
-                component={YieldSupplyReviewScreen}
+                options={{ title: YieldStackRoutes.YieldDepositReview }}
+                name={YieldStackRoutes.YieldDepositReview}
+                component={YieldDepositReviewScreen}
             />
             <YieldStack.Screen
-                options={{ title: YieldStackRoutes.YieldSupplyComplete }}
-                name={YieldStackRoutes.YieldSupplyComplete}
-                component={YieldSupplyCompleteScreen}
+                options={{ title: YieldStackRoutes.YieldDepositComplete }}
+                name={YieldStackRoutes.YieldDepositComplete}
+                component={YieldDepositCompleteScreen}
             />
         </YieldStack.Navigator>
     );

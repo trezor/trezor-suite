@@ -5,7 +5,7 @@ import { Translation } from '@suite-native/intl';
 import { type YieldApprovalLimitType } from '../types';
 
 export const useYieldApprovalLimit = (
-    defaultApprovalLimitType: YieldApprovalLimitType = 'per-supply',
+    defaultApprovalLimitType: YieldApprovalLimitType = 'per-deposit',
 ) => {
     const [approvalLimitType, setApprovalLimitType] =
         useState<YieldApprovalLimitType>(defaultApprovalLimitType);
@@ -15,9 +15,9 @@ export const useYieldApprovalLimit = (
     }, [defaultApprovalLimitType]);
 
     const approvalLimitTitleId =
-        approvalLimitType === 'per-supply'
-            ? 'earn.yieldSupplyFlowScreen.perSupply'
-            : 'earn.yieldSupplyFlowScreen.approvalLimitSheet.unlimited.title';
+        approvalLimitType === 'per-deposit'
+            ? 'earn.yieldDepositFlowScreen.perDeposit'
+            : 'earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.title';
 
     return {
         approvalLimitTitle: <Translation id={approvalLimitTitleId} />,

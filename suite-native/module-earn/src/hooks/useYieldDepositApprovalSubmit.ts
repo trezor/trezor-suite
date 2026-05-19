@@ -26,10 +26,10 @@ import { isYieldApprovalAllowanceEnough } from '../yieldApprovalUtils';
 
 type NavigationProps = StackNavigationProps<
     YieldStackParamList,
-    YieldStackRoutes.YieldSupplyApproval
+    YieldStackRoutes.YieldDepositApproval
 >;
 
-type UseYieldSupplyApprovalSubmitParams = Pick<ResolvedYieldFlowData, 'flowData' | 'flowKey'> & {
+type UseYieldDepositApprovalSubmitParams = Pick<ResolvedYieldFlowData, 'flowData' | 'flowKey'> & {
     approvalLimitType: YieldApprovalLimitType;
     routeParams: YieldFlowParams;
 };
@@ -46,12 +46,12 @@ type CheckIsAllowanceEnoughParams = {
     sessionParams: YieldDepositSessionParams;
 };
 
-export const useYieldSupplyApprovalSubmit = ({
+export const useYieldDepositApprovalSubmit = ({
     approvalLimitType,
     flowData,
     flowKey,
     routeParams,
-}: UseYieldSupplyApprovalSubmitParams) => {
+}: UseYieldDepositApprovalSubmitParams) => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
     const store = useStore<StablecoinYieldRootState>();
@@ -103,7 +103,7 @@ export const useYieldSupplyApprovalSubmit = ({
             }
 
             const sessionParams = { flowType: 'deposit' as const, flowKey };
-            const showSupplyWorkInProgress = (title?: string) => {
+            const showDepositWorkInProgress = (title?: string) => {
                 // TODO: Replace with correct handling flow once deposit is implemented.
                 showWorkInProgressAlert(title);
                 dispatch(stablecoinYieldActions.resetSession(sessionParams));
@@ -122,7 +122,7 @@ export const useYieldSupplyApprovalSubmit = ({
                 if (isAllowanceEnough) {
                     dispatch(stablecoinYieldActions.clearError(sessionParams));
                     dispatch(stablecoinYieldActions.completeApproval({ ...sessionParams, amount }));
-                    navigation.navigate(YieldStackRoutes.YieldSupply, routeParams);
+                    navigation.navigate(YieldStackRoutes.YieldDeposit, routeParams);
 
                     return;
                 }
@@ -136,7 +136,7 @@ export const useYieldSupplyApprovalSubmit = ({
                 );
 
                 if (!isFulfilled(response)) {
-                    showSupplyWorkInProgress();
+                    showDepositWorkInProgress();
 
                     return;
                 }
@@ -145,14 +145,14 @@ export const useYieldSupplyApprovalSubmit = ({
 
                 if (session.error) {
                     // TODO: Show a dedicated approval error
-                    showSupplyWorkInProgress();
+                    showDepositWorkInProgress();
 
                     return;
                 }
 
                 if (!session.approval.modalState) {
                     if (session.step === 'action') {
-                        navigation.navigate(YieldStackRoutes.YieldSupply, routeParams);
+                        navigation.navigate(YieldStackRoutes.YieldDeposit, routeParams);
                     }
 
                     return;
@@ -170,12 +170,12 @@ export const useYieldSupplyApprovalSubmit = ({
 
                 if (!isFulfilled(reviewTransactionResponse)) {
                     // TODO: Show a dedicated error
-                    showSupplyWorkInProgress();
+                    showDepositWorkInProgress();
 
                     return;
                 }
 
-                navigation.navigate(YieldStackRoutes.YieldSupplyApprovalReview, {
+                navigation.navigate(YieldStackRoutes.YieldDepositApprovalReview, {
                     ...routeParams,
                     amount,
                     approvalLimitType,

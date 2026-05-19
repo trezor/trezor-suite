@@ -32,25 +32,25 @@ const bottomSheetFooterStyle = prepareNativeStyle(utils => ({
 const steps = [
     {
         id: 'approval',
-        label: <Translation id="earn.yieldSupplyFlowScreen.approvalStepTitle" />,
+        label: <Translation id="earn.yieldDepositFlowScreen.approvalStepTitle" />,
     },
     {
-        id: 'supply',
-        label: <Translation id="earn.yieldSupplyFlowScreen.supplyTransactionStepTitle" />,
+        id: 'deposit',
+        label: <Translation id="earn.yieldDepositFlowScreen.depositTransactionStepTitle" />,
     },
     {
         id: 'complete',
-        label: <Translation id="earn.yieldSupplyFlowScreen.supplyCompleteStepTitle" />,
+        label: <Translation id="earn.yieldDepositFlowScreen.depositCompleteStepTitle" />,
     },
 ];
 
-type YieldSupplyStepIndex = 0 | 1 | 2;
+type YieldDepositStepIndex = 0 | 1 | 2;
 
-type YieldSupplyStepCardProps = {
-    currentStepIndex: YieldSupplyStepIndex;
+type YieldDepositStepCardProps = {
+    currentStepIndex: YieldDepositStepIndex;
 };
 
-export const YieldSupplyStepCard = ({ currentStepIndex }: YieldSupplyStepCardProps) => {
+export const YieldDepositStepCard = ({ currentStepIndex }: YieldDepositStepCardProps) => {
     const { applyStyle } = useNativeStyles();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
     const currentStep = steps[currentStepIndex];
@@ -62,7 +62,7 @@ export const YieldSupplyStepCard = ({ currentStepIndex }: YieldSupplyStepCardPro
                     <VStack flex={1} spacing="sp2">
                         <Text variant="body-sm">
                             <Translation
-                                id="earn.yieldSupplyFlowScreen.step"
+                                id="earn.yieldDepositFlowScreen.step"
                                 values={{
                                     stepNumber: currentStepIndex + 1,
                                     stepCount: steps.length,
@@ -77,7 +77,7 @@ export const YieldSupplyStepCard = ({ currentStepIndex }: YieldSupplyStepCardPro
 
             <BottomSheetModal
                 ref={bottomSheetRef}
-                title={<Translation id="earn.yieldSupplyFlowScreen.modalTitle" />}
+                title={<Translation id="earn.yieldDepositFlowScreen.modalTitle" />}
                 footer={
                     <Box style={applyStyle(bottomSheetFooterStyle)}>
                         <Button onPress={closeModal}>

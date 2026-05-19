@@ -20,55 +20,55 @@ import { USER_CANCELLED_ERROR_CODES } from '../constants';
 import { pushYieldActionReviewThunk, signYieldActionReviewThunk } from '../yieldTransactionThunks';
 import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
 
-type UseYieldSupplyReviewParams = {
+type UseYieldDepositReviewParams = {
     flowData: YieldFlowResolvedData;
     flowKey: string;
 };
 
-type YieldSupplyReviewActionStatus = 'idle' | 'signing' | 'sending';
-type YieldSupplyReviewStatus = YieldSupplyReviewActionStatus | 'signed';
+type YieldDepositReviewActionStatus = 'idle' | 'signing' | 'sending';
+type YieldDepositReviewStatus = YieldDepositReviewActionStatus | 'signed';
 
-type UseYieldSupplyReviewResult = {
-    supplyStatus: YieldSupplyReviewStatus;
-    handleSubmitSupplyReview: () => Promise<void>;
-    handleSupplySubmitted: () => Promise<void>;
+type UseYieldDepositReviewResult = {
+    depositStatus: YieldDepositReviewStatus;
+    handleSubmitDepositReview: () => Promise<void>;
+    handleDepositSubmitted: () => Promise<void>;
 };
 
 type NavigationProps = StackNavigationProps<
     YieldStackParamList,
-    YieldStackRoutes.YieldSupplyReview
+    YieldStackRoutes.YieldDepositReview
 >;
 
 const isUserCancelledSignError = (payload: { errorCode?: string; message?: string } | undefined) =>
     payload?.message === 'tx-cancelled' ||
     (!!payload?.errorCode && USER_CANCELLED_ERROR_CODES.some(code => code === payload.errorCode));
 
-export const useYieldSupplyReview = ({
+export const useYieldDepositReview = ({
     flowData,
     flowKey,
-}: UseYieldSupplyReviewParams): UseYieldSupplyReviewResult => {
+}: UseYieldDepositReviewParams): UseYieldDepositReviewResult => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
     const {
         showPendingTransactionConflictAlert,
         showPushTransactionFailedAlert,
         showSignTransactionFailedAlert,
-    } = useShowPushTransactionFailedDuringReviewAlert('yield-supply');
-    const [supplyActionStatus, setSupplyActionStatus] =
-        useState<YieldSupplyReviewActionStatus>('idle');
+    } = useShowPushTransactionFailedDuringReviewAlert('yield-deposit');
+    const [depositActionStatus, setDepositActionStatus] =
+        useState<YieldDepositReviewActionStatus>('idle');
     const txReview = useSelector((state: StablecoinYieldRootState) =>
         selectStablecoinYieldTxReview(state),
     );
-    const isSupplySigned = txReview.accountKey === flowData.account.key && !!txReview.serializedTx;
-    const supplyStatus: YieldSupplyReviewStatus =
-        supplyActionStatus === 'idle' && isSupplySigned ? 'signed' : supplyActionStatus;
+    const isDepositSigned = txReview.accountKey === flowData.account.key && !!txReview.serializedTx;
+    const depositStatus: YieldDepositReviewStatus =
+        depositActionStatus === 'idle' && isDepositSigned ? 'signed' : depositActionStatus;
 
-    const handleSubmitSupplyReview = useCallback(async () => {
-        if (supplyStatus !== 'idle') {
+    const handleSubmitDepositReview = useCallback(async () => {
+        if (depositStatus !== 'idle') {
             return;
         }
 
-        setSupplyActionStatus('signing');
+        setDepositActionStatus('signing');
 
         const deviceAccessResponse = await requestPrioritizedDeviceAccess(() =>
             dispatch(
@@ -80,7 +80,7 @@ export const useYieldSupplyReview = ({
             ),
         );
 
-        setSupplyActionStatus('idle');
+        setDepositActionStatus('idle');
 
         if (!deviceAccessResponse.success) {
             showSignTransactionFailedAlert();
@@ -94,14 +94,14 @@ export const useYieldSupplyReview = ({
         if (isSignRejected && !isUserCancelledSignError(signResponse.payload)) {
             showSignTransactionFailedAlert();
         }
-    }, [dispatch, flowData, flowKey, showSignTransactionFailedAlert, supplyStatus]);
+    }, [depositStatus, dispatch, flowData, flowKey, showSignTransactionFailedAlert]);
 
-    const handleSupplySubmitted = useCallback(async () => {
-        if (supplyStatus !== 'signed') {
+    const handleDepositSubmitted = useCallback(async () => {
+        if (depositStatus !== 'signed') {
             return;
         }
 
-        setSupplyActionStatus('sending');
+        setDepositActionStatus('sending');
 
         const pushResponse = await dispatch(
             pushYieldActionReviewThunk({
@@ -111,7 +111,7 @@ export const useYieldSupplyReview = ({
             }),
         );
 
-        setSupplyActionStatus('idle');
+        setDepositActionStatus('idle');
         const isPushRejected = isRejected(pushResponse);
 
         if (isPushRejected) {
@@ -128,18 +128,18 @@ export const useYieldSupplyReview = ({
 
         navigation.goBack();
     }, [
+        depositStatus,
         dispatch,
         flowData,
         flowKey,
         navigation,
         showPendingTransactionConflictAlert,
         showPushTransactionFailedAlert,
-        supplyStatus,
     ]);
 
     return {
-        supplyStatus,
-        handleSubmitSupplyReview,
-        handleSupplySubmitted,
+        depositStatus,
+        handleSubmitDepositReview,
+        handleDepositSubmitted,
     };
 };

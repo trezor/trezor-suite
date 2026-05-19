@@ -22,7 +22,7 @@ const rewardsBoxStyle = prepareNativeStyle(utils => ({
     borderBottomRightRadius: utils.borders.radii.r24,
 }));
 
-type YieldSupplyFlowFooterProps = {
+type YieldDepositFlowFooterProps = {
     amountValue: string | undefined;
     apy: number | null;
     buttonTranslationId?: TxKeyPath;
@@ -32,7 +32,7 @@ type YieldSupplyFlowFooterProps = {
     tokenSymbol: TokenSymbol;
 };
 
-export const YieldSupplyFlowFooter = ({
+export const YieldDepositFlowFooter = ({
     amountValue,
     apy,
     buttonTranslationId = 'generic.buttons.continue',
@@ -40,7 +40,7 @@ export const YieldSupplyFlowFooter = ({
     isLoading = false,
     onPress,
     tokenSymbol,
-}: YieldSupplyFlowFooterProps) => {
+}: YieldDepositFlowFooterProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
     const { CryptoAmountFormatter } = useFormatters();
@@ -69,7 +69,7 @@ export const YieldSupplyFlowFooter = ({
                     {isEstimatedRewardsVisible && (
                         <VStack spacing="sp4" paddingVertical="sp12" alignItems="center">
                             <Text variant="body-sm" color="contentPrimary">
-                                <Translation id="earn.yieldSupplyFlowScreen.estimatedRewardsLabel" />
+                                <Translation id="earn.yieldDepositFlowScreen.estimatedRewardsLabel" />
                             </Text>
                             <Text variant="headline-sm" color="contentBrand">
                                 {estimatedRewards}

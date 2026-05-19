@@ -13,7 +13,7 @@ import {
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
-type ReviewFormType = 'stake' | 'unstake' | 'claim' | 'yield-approval' | 'yield-supply';
+type ReviewFormType = 'stake' | 'unstake' | 'claim' | 'yield-approval' | 'yield-deposit';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     AppTabsParamList,
@@ -94,20 +94,20 @@ const translationKeys = {
             primaryButton: 'earn.yieldReview.alerts.primaryButton',
         },
     },
-    'yield-supply': {
+    'yield-deposit': {
         signFailed: {
-            title: 'earn.yieldReview.alerts.supply.signTransactionFailed.title',
-            description: 'earn.yieldReview.alerts.supply.signTransactionFailed.description',
+            title: 'earn.yieldReview.alerts.deposit.signTransactionFailed.title',
+            description: 'earn.yieldReview.alerts.deposit.signTransactionFailed.description',
             primaryButton: 'earn.yieldReview.alerts.primaryButton',
         },
         pushFailed: {
-            title: 'earn.yieldReview.alerts.supply.pushTransactionFailed.title',
-            description: 'earn.yieldReview.alerts.supply.pushTransactionFailed.description',
+            title: 'earn.yieldReview.alerts.deposit.pushTransactionFailed.title',
+            description: 'earn.yieldReview.alerts.deposit.pushTransactionFailed.description',
             primaryButton: 'earn.yieldReview.alerts.primaryButton',
         },
         pendingConflict: {
-            title: 'earn.yieldReview.alerts.supply.pendingTransactionConflict.title',
-            description: 'earn.yieldReview.alerts.supply.pendingTransactionConflict.description',
+            title: 'earn.yieldReview.alerts.deposit.pendingTransactionConflict.title',
+            description: 'earn.yieldReview.alerts.deposit.pendingTransactionConflict.description',
             primaryButton: 'earn.yieldReview.alerts.primaryButton',
         },
     },

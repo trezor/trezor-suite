@@ -5,37 +5,37 @@ import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { useDebounce } from '@trezor/react-utils';
 
 import { type ResolvedYieldFlowData } from './useResolvedYieldFlowData';
-import { buildYieldSupplyFeePreview } from '../yieldSupplyFeeUtils';
+import { buildYieldDepositFeePreview } from '../yieldDepositFeeUtils';
 
-export type PreparedYieldSupplyAction = {
+export type PreparedYieldDepositAction = {
     amount: string;
     feePreview: PrecomposedTransactionFinal;
     receiptAmount: string;
     unsignedTransaction: string;
 };
 
-type UseYieldSupplyFeesParams = Pick<ResolvedYieldFlowData, 'flowData' | 'flowKey'> & {
+type UseYieldDepositFeesParams = Pick<ResolvedYieldFlowData, 'flowData' | 'flowKey'> & {
     amount: string | undefined;
     isEnabled: boolean;
 };
 
-export const useYieldSupplyFees = ({
+export const useYieldDepositFees = ({
     amount,
     flowData,
     flowKey,
     isEnabled,
-}: UseYieldSupplyFeesParams) => {
+}: UseYieldDepositFeesParams) => {
     const debounce = useDebounce();
     const requestIdRef = useRef(0);
-    const [preparedAction, setPreparedAction] = useState<PreparedYieldSupplyAction | null>(null);
-    const [isPreparingSupplyFee, setIsPreparingSupplyFee] = useState(false);
+    const [preparedAction, setPreparedAction] = useState<PreparedYieldDepositAction | null>(null);
+    const [isPreparingDepositFee, setIsPreparingDepositFee] = useState(false);
 
-    const clearSupplyFeeState = useCallback(() => {
+    const clearDepositFeeState = useCallback(() => {
         setPreparedAction(null);
-        setIsPreparingSupplyFee(false);
+        setIsPreparingDepositFee(false);
     }, []);
 
-    const prepareSupplyFeeParams = useMemo(() => {
+    const prepareDepositFeeParams = useMemo(() => {
         if (!isEnabled || !amount || !flowData || !flowKey) {
             return null;
         }
@@ -43,12 +43,12 @@ export const useYieldSupplyFees = ({
         return { amount, flowData };
     }, [amount, flowData, flowKey, isEnabled]);
 
-    const prepareSupplyFee = useCallback(
+    const prepareDepositFee = useCallback(
         async (
             {
                 amount: preparedAmount,
                 flowData: preparedFlowData,
-            }: NonNullable<typeof prepareSupplyFeeParams>,
+            }: NonNullable<typeof prepareDepositFeeParams>,
             requestId: number,
         ) => {
             try {
@@ -62,15 +62,15 @@ export const useYieldSupplyFees = ({
                 }
 
                 if (result.type !== 'action-ready') {
-                    clearSupplyFeeState();
+                    clearDepositFeeState();
 
                     return;
                 }
 
-                const feePreview = buildYieldSupplyFeePreview(result.unsignedTransaction);
+                const feePreview = buildYieldDepositFeePreview(result.unsignedTransaction);
 
                 if (!feePreview) {
-                    clearSupplyFeeState();
+                    clearDepositFeeState();
 
                     return;
                 }
@@ -81,34 +81,34 @@ export const useYieldSupplyFees = ({
                     receiptAmount: result.receiptAmount,
                     unsignedTransaction: result.unsignedTransaction,
                 });
-                setIsPreparingSupplyFee(false);
+                setIsPreparingDepositFee(false);
             } catch {
                 if (requestId === requestIdRef.current) {
-                    clearSupplyFeeState();
+                    clearDepositFeeState();
                 }
             }
         },
-        [clearSupplyFeeState],
+        [clearDepositFeeState],
     );
 
     useEffect(() => {
         const requestId = requestIdRef.current + 1;
         requestIdRef.current = requestId;
 
-        if (!prepareSupplyFeeParams) {
-            clearSupplyFeeState();
+        if (!prepareDepositFeeParams) {
+            clearDepositFeeState();
 
             return;
         }
 
         setPreparedAction(null);
-        setIsPreparingSupplyFee(true);
-        void debounce(() => void prepareSupplyFee(prepareSupplyFeeParams, requestId));
-    }, [clearSupplyFeeState, debounce, prepareSupplyFee, prepareSupplyFeeParams]);
+        setIsPreparingDepositFee(true);
+        void debounce(() => void prepareDepositFee(prepareDepositFeeParams, requestId));
+    }, [clearDepositFeeState, debounce, prepareDepositFee, prepareDepositFeeParams]);
 
     return {
         feePreview: preparedAction?.feePreview ?? null,
-        isPreparingSupplyFee: !!prepareSupplyFeeParams && isPreparingSupplyFee,
+        isPreparingDepositFee: !!prepareDepositFeeParams && isPreparingDepositFee,
         preparedAction,
     };
 };

@@ -13,7 +13,7 @@ import { HowEarnWorksBenefitsSection } from './HowEarnWorks/HowEarnWorksBenefits
 import { HowEarnWorksTimelineCard } from './HowEarnWorks/HowEarnWorksTimelineCard';
 import { createHowYieldWorksPreset } from '../presets/HowEarnWorks/yieldPresets';
 
-type YieldSupplyInfoBottomSheetProps = {
+type YieldDepositInfoBottomSheetProps = {
     apy: number | null;
     onClose: () => void;
     ref: BottomSheetModalRef;
@@ -21,13 +21,13 @@ type YieldSupplyInfoBottomSheetProps = {
     vaultTokenName: string;
 };
 
-export const YieldSupplyInfoBottomSheet = ({
+export const YieldDepositInfoBottomSheet = ({
     apy,
     onClose,
     ref,
     tokenSymbol,
     vaultTokenName,
-}: YieldSupplyInfoBottomSheetProps) => {
+}: YieldDepositInfoBottomSheetProps) => {
     const { benefitItems, timelineSections } = createHowYieldWorksPreset({
         apy,
         tokenSymbol,
