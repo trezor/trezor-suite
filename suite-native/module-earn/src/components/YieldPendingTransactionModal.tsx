@@ -31,13 +31,7 @@ import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { YieldPendingTransactionModalBackdrop } from './YieldPendingTransactionModalBackdrop';
-import {
-    YIELD_PENDING_TRANSACTION_MODAL_COLLAPSED_HEIGHT,
-    YIELD_PENDING_TRANSACTION_MODAL_COLLAPSED_INDEX,
-    YIELD_PENDING_TRANSACTION_MODAL_EXPANDED_HEIGHT,
-    YIELD_PENDING_TRANSACTION_MODAL_EXPANDED_INDEX,
-    YIELD_PENDING_TRANSACTION_MODAL_SNAP_INDEX_MIDPOINT,
-} from './YieldPendingTransactionModalConstants';
+import { modalSnap } from './YieldPendingTransactionModalConstants';
 import { YieldPendingTransactionModalHeader } from './YieldPendingTransactionModalHeader';
 import { YieldPendingTransactionModalRow } from './YieldPendingTransactionModalRow';
 
@@ -115,21 +109,12 @@ export const YieldPendingTransactionModal = ({
 }: YieldPendingTransactionModalProps) => {
     const { applyStyle } = useNativeStyles();
     const { DateFormatter, TimeFormatter } = useFormatters();
-    const animatedIndex = useSharedValue(YIELD_PENDING_TRANSACTION_MODAL_EXPANDED_INDEX);
-    const snapPoints = useMemo(
-        () => [
-            YIELD_PENDING_TRANSACTION_MODAL_COLLAPSED_HEIGHT,
-            YIELD_PENDING_TRANSACTION_MODAL_EXPANDED_HEIGHT,
-        ],
-        [],
-    );
+    const animatedIndex = useSharedValue<number>(modalSnap.expandedIndex);
+    const snapPoints = useMemo(() => [modalSnap.collapsedHeight, modalSnap.expandedHeight], []);
     const caretAnimatedStyle = useAnimatedStyle(() => {
         const rotation = interpolate(
             animatedIndex.value,
-            [
-                YIELD_PENDING_TRANSACTION_MODAL_COLLAPSED_INDEX,
-                YIELD_PENDING_TRANSACTION_MODAL_EXPANDED_INDEX,
-            ],
+            [modalSnap.collapsedIndex, modalSnap.expandedIndex],
             [180, 0],
             Extrapolation.CLAMP,
         );
@@ -140,8 +125,7 @@ export const YieldPendingTransactionModal = ({
     });
 
     const handleToggleSheet = useCallback(() => {
-        const isExpanded =
-            animatedIndex.value >= YIELD_PENDING_TRANSACTION_MODAL_SNAP_INDEX_MIDPOINT;
+        const isExpanded = animatedIndex.value >= modalSnap.indexMidpoint;
         const bottomSheet = getBottomSheet(ref);
 
         if (isExpanded) {
@@ -170,7 +154,7 @@ export const YieldPendingTransactionModal = ({
                         title={title}
                     />
                 ),
-                index: YIELD_PENDING_TRANSACTION_MODAL_EXPANDED_INDEX,
+                index: modalSnap.expandedIndex,
                 animatedIndex,
                 containerComponent: YieldPendingTransactionModalContainer,
                 snapPoints,
@@ -289,6 +273,7 @@ export const YieldPendingTransactionModal = ({
                                     value={fee}
                                     symbol={accountSymbol}
                                     color="contentPrimary"
+                                    isBalance={false}
                                     isDiscreetText={false}
                                 />
                                 <CryptoToFiatAmountFormatter

@@ -1,21 +1,27 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
 import { useFormatters } from '@suite-common/formatters';
-import { getNetworkType } from '@suite-common/wallet-config';
-import { initYieldAllowanceThunk, stablecoinYieldActions } from '@suite-common/wallet-core';
+import { getNetwork, getNetworkType } from '@suite-common/wallet-config';
+import {
+    initYieldAllowanceThunk,
+    splitYieldPendingTransaction,
+    stablecoinYieldActions,
+} from '@suite-common/wallet-core';
 import { Box, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
+import { Translation } from '@suite-native/intl';
 import {
     Screen,
     type StackNavigationProps,
     type YieldStackParamList,
     YieldStackRoutes,
 } from '@suite-native/navigation';
-import { FeeSummaryCard } from '@suite-native/transaction-management';
+import { FeeSummaryCard, useTransactionDetails } from '@suite-native/transaction-management';
 
+import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { YieldSupplyAmountInputCard } from '../components/YieldSupplyAmountInputCard';
 import { YieldSupplyApprovedAmountCard } from '../components/YieldSupplyApprovedAmountCard';
 import { YieldSupplyFlowFooter } from '../components/YieldSupplyFlowFooter';
@@ -40,6 +46,7 @@ export const YieldSupplyScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const dispatch = useDispatch();
+    const isFocused = useIsFocused();
     const { CryptoAmountFormatter } = useFormatters();
     const {
         bottomSheetRef: infoBottomSheetRef,
@@ -50,6 +57,11 @@ export const YieldSupplyScreen = () => {
         bottomSheetRef: simulationBottomSheetRef,
         closeModal: closeSimulationBottomSheet,
         openModal: openSimulationBottomSheet,
+    } = useBottomSheetModal();
+    const {
+        bottomSheetRef: pendingBottomSheetRef,
+        closeModal: closePendingBottomSheet,
+        openModal: openPendingBottomSheet,
     } = useBottomSheetModal();
     const [simulationPreparedAction, setSimulationPreparedAction] =
         useState<PreparedYieldSupplyAction | null>(null);
@@ -71,6 +83,12 @@ export const YieldSupplyScreen = () => {
     const supplyAmount = session?.action.amount;
     const allowanceAmount = session?.approval.allowanceAmount;
     const allowanceStatus = session?.approval.allowanceStatus;
+    const pendingTransaction = session?.action.pendingTransaction ?? null;
+    const { actionPendingTransaction } = splitYieldPendingTransaction(
+        pendingTransaction,
+        'deposit',
+    );
+    const isSupplyPending = !!actionPendingTransaction;
     const isActionSubmitting = session?.action.isSubmitting ?? false;
     const isApprovedAmountUnlimited = isYieldApprovalAllowanceUnlimited({ session, token });
     const isAllowanceLoaded = allowanceStatus === 'loaded';
@@ -93,12 +111,17 @@ export const YieldSupplyScreen = () => {
             token,
         });
     const isSubmitDisabled =
-        !isSupplySessionReady || !isValid || !amountValue || isActionSubmitting;
+        isSupplyPending || !isSupplySessionReady || !isValid || !amountValue || isActionSubmitting;
     const supplyFee = useYieldSupplyFees({
         amount: amountValue,
         flowData,
         flowKey,
-        isEnabled: isSupplySessionReady && isValid && !isApprovalIncreaseRequired,
+        isEnabled:
+            isSupplySessionReady && isValid && !isApprovalIncreaseRequired && !isSupplyPending,
+    });
+    const { explorerUrl, openInBlockchain } = useTransactionDetails({
+        accountKey: account?.key ?? null,
+        txid: actionPendingTransaction?.txid ?? null,
     });
 
     useEffect(() => {
@@ -130,13 +153,13 @@ export const YieldSupplyScreen = () => {
     }, [CryptoAmountFormatter, isApprovedAmountUnlimited, allowanceAmount, tokenSymbol]);
 
     const handleEditApproval = useCallback(() => {
-        if (!flowKey) {
+        if (!flowKey || isSupplyPending) {
             return;
         }
 
         dispatch(stablecoinYieldActions.enterModifyMode({ flowType: 'deposit', flowKey }));
         navigation.goBack();
-    }, [dispatch, flowKey, navigation]);
+    }, [dispatch, flowKey, isSupplyPending, navigation]);
     const handleActionReady = useCallback(
         (preparedAction: PreparedYieldSupplyAction) => {
             setSimulationPreparedAction(preparedAction);
@@ -178,6 +201,10 @@ export const YieldSupplyScreen = () => {
     });
 
     const handleContinue = useCallback(() => {
+        if (isSupplyPending) {
+            return;
+        }
+
         if (isApprovalIncreaseRequired) {
             handleEditApproval();
 
@@ -185,16 +212,35 @@ export const YieldSupplyScreen = () => {
         }
 
         void handleSubmitSupply();
-    }, [handleEditApproval, handleSubmitSupply, isApprovalIncreaseRequired]);
+    }, [handleEditApproval, handleSubmitSupply, isApprovalIncreaseRequired, isSupplyPending]);
     const footerTranslationId = isApprovalIncreaseRequired
         ? 'earn.yieldSupplyFlowScreen.increaseApprovalLimit'
         : undefined;
+
+    const handleCloseInfoBottomSheet = useCallback(() => {
+        closeInfoBottomSheet();
+
+        if (isSupplyPending) {
+            requestAnimationFrame(openPendingBottomSheet);
+        }
+    }, [closeInfoBottomSheet, isSupplyPending, openPendingBottomSheet]);
+
+    useEffect(() => {
+        if (!isFocused || !isSupplyPending) {
+            closePendingBottomSheet();
+
+            return;
+        }
+
+        openPendingBottomSheet();
+    }, [closePendingBottomSheet, isFocused, isSupplyPending, openPendingBottomSheet]);
 
     if (resolutionStatus !== 'resolved' || !isSupplySessionReady) {
         return null;
     }
 
     const networkType = getNetworkType(account.symbol);
+    const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
 
     return (
         <Screen
@@ -220,48 +266,69 @@ export const YieldSupplyScreen = () => {
                 />
             }
         >
-            <VStack spacing="sp16">
-                <YieldSupplyStepCard currentStepIndex={1} />
+            <Box pointerEvents={isSupplyPending ? 'none' : 'auto'}>
+                <VStack spacing="sp16">
+                    <YieldSupplyStepCard currentStepIndex={1} />
 
-                <Box paddingHorizontal="sp16">
-                    <YieldSupplyApprovedAmountCard
-                        approvedAmount={formattedApprovedAmount}
-                        isApprovedAmountUnlimited={isApprovedAmountUnlimited}
-                        networkSymbol={account.symbol}
-                        onEditApprovalPress={handleEditApproval}
-                        tokenContract={route.params.tokenContract}
-                    />
-                </Box>
-
-                <Box paddingHorizontal="sp16">
-                    <Form form={form}>
-                        <YieldSupplyAmountInputCard
-                            balance={token.balance}
-                            isMaxSelected={isMaxSelected}
-                            onAmountChange={handleAmountChange}
-                            onMaxChange={handleMaxChange}
-                            tokenSymbol={tokenSymbol}
-                        />
-                    </Form>
-                </Box>
-
-                {!isApprovalIncreaseRequired && (
                     <Box paddingHorizontal="sp16">
-                        <FeeSummaryCard
-                            fee={supplyFee.feePreview?.fee ?? null}
-                            symbol={account.symbol}
-                            networkType={networkType}
-                            areFeesLoading={supplyFee.isPreparingSupplyFee}
-                            testID="@earn/yield-supply-fee-preview-card"
+                        <YieldSupplyApprovedAmountCard
+                            approvedAmount={formattedApprovedAmount}
+                            isApprovedAmountUnlimited={isApprovedAmountUnlimited}
+                            networkSymbol={account.symbol}
+                            onEditApprovalPress={handleEditApproval}
+                            tokenContract={route.params.tokenContract}
                         />
                     </Box>
-                )}
-            </VStack>
+
+                    <Box paddingHorizontal="sp16">
+                        <Form form={form}>
+                            <YieldSupplyAmountInputCard
+                                balance={token.balance}
+                                isMaxSelected={isMaxSelected}
+                                onAmountChange={handleAmountChange}
+                                onMaxChange={handleMaxChange}
+                                tokenSymbol={tokenSymbol}
+                            />
+                        </Form>
+                    </Box>
+
+                    {!isApprovalIncreaseRequired && (
+                        <Box paddingHorizontal="sp16">
+                            <FeeSummaryCard
+                                fee={supplyFee.feePreview?.fee ?? null}
+                                symbol={account.symbol}
+                                networkType={networkType}
+                                areFeesLoading={supplyFee.isPreparingSupplyFee}
+                                testID="@earn/yield-supply-fee-preview-card"
+                            />
+                        </Box>
+                    )}
+                </VStack>
+            </Box>
+
+            {actionPendingTransaction && (
+                <YieldPendingTransactionModal
+                    ref={pendingBottomSheetRef}
+                    accountLabel={accountLabel}
+                    accountSymbol={account.symbol}
+                    amount={actionPendingTransaction.amount}
+                    amountLabel={<Translation id="earn.yieldSupplyFlowScreen.amountToSupply" />}
+                    amountTokenContract={route.params.tokenContract}
+                    amountTokenSymbol={tokenSymbol}
+                    fee={actionPendingTransaction.fee}
+                    isExploreDisabled={!explorerUrl}
+                    onExplorePress={openInBlockchain}
+                    submittedAt={new Date(actionPendingTransaction.submittedAt ?? 0)}
+                    title={<Translation id="earn.yieldSupplyFlowScreen.supplyPendingTitle" />}
+                    vaultName={vault.metadata.name}
+                    vaultTokenContract={route.params.tokenContract}
+                />
+            )}
 
             <YieldSupplyInfoBottomSheet
                 ref={infoBottomSheetRef}
                 apy={apy}
-                onClose={closeInfoBottomSheet}
+                onClose={handleCloseInfoBottomSheet}
                 tokenSymbol={tokenSymbol}
                 vaultTokenName={vaultTokenName}
             />
