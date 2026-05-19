@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": [".", "**/*.json"],
     "references": [
+        { "path": "../calldata" },
         { "path": "../earn-staking-api" },
         { "path": "../fiat-services" },
         { "path": "../suite-constants" },

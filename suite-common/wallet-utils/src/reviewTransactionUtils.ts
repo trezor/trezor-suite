@@ -1,5 +1,6 @@
 import { fromWei, toWei } from 'web3-utils';
 
+import { Calldata } from '@suite-common/calldata';
 import { EVM_SPENDER_LABELS, KNOWN_VAULTS } from '@suite-common/suite-constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { networks } from '@suite-common/wallet-config';
@@ -19,7 +20,7 @@ import { versionUtils } from '@trezor/utils';
 import { datetimeToLocktime } from './bitcoinUtils';
 import { getShortFingerprint, isCardanoTx } from './cardanoUtils';
 import { isApprovalFlowSupported as isApprovalSupported } from './deviceUtils';
-import { getEvmApprovalTxData, isEvmApprovalTx } from './ethUtils';
+import { isEvmApprovalTx } from './ethUtils';
 import { getStakeType } from './ethereumStakingUtils';
 import { isExchangeTradingForm } from './sendFormUtils';
 import { isRbfBumpFeeTransaction } from './transactionUtils';
@@ -285,7 +286,7 @@ const constructNewFlow = ({
     const isSolana = account.networkType === 'solana';
     const isStellar = account.networkType === 'stellar';
     const isTron = account.networkType === 'tron';
-    const evmApprovalTxData = getEvmApprovalTxData(precomposedForm.transactionData);
+    const evmApprovalTxData = Calldata.evm.erc20.approve.decode(precomposedForm.transactionData);
     const isEvmApproval = isEvmApprovalTx(precomposedForm.transactionData);
     const stakeType = getStakeType(precomposedForm, outputs);
 
@@ -467,18 +468,16 @@ const constructNewFlow = ({
     }
 
     if (evmApprovalTxData && networkType === 'ethereum' && isApprovalFlowSupported) {
+        const { spender } = evmApprovalTxData;
         outputs.push({
             type: 'contract',
-            value:
-                KNOWN_VAULTS[evmApprovalTxData.spender] ??
-                EVM_SPENDER_LABELS[evmApprovalTxData.spender] ??
-                evmApprovalTxData.spender,
+            value: KNOWN_VAULTS[spender] ?? EVM_SPENDER_LABELS[spender] ?? spender,
         });
 
         if (precomposedTx.token) {
             outputs.push({
                 type: 'approve_data',
-                value: evmApprovalTxData.amount,
+                value: evmApprovalTxData.amount.toString(),
                 value2: networks[symbol].name,
                 token: precomposedTx.token,
             });

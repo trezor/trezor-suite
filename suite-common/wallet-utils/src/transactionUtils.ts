@@ -1,6 +1,7 @@
 import { addDays, startOfMonth } from 'date-fns';
 import { fromWei, toWei } from 'web3-utils';
 
+import { Calldata } from '@suite-common/calldata';
 import { type SignOperator } from '@suite-common/suite-types';
 import { type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import {
@@ -32,7 +33,7 @@ import { BigNumber, arrayPartition, typedObjectKeys } from '@trezor/utils';
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
 import { isCardanoStakingTx } from './cardanoStakingUtils';
-import { getEvmApprovalTxData, getEvmTransactionTextSignature } from './ethUtils';
+import { getEvmTransactionTextSignature } from './ethUtils';
 import { isStakeTypeTx } from './ethereumStakingUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey, roundTimestampToNearestPastHour } from './fiatRatesUtils';
@@ -726,18 +727,16 @@ const getEthereumRbfParams = (
         }
         case 'approve':
         case 'revoke': {
-            const approvalData = getEvmApprovalTxData(data);
+            const approvalData = Calldata.evm.erc20.approve.decode(data);
+            const amount = approvalData?.amount.toString() ?? '0';
 
             const token = account.tokens?.find(t => t.contract === toAddress);
 
             output = {
                 address: toAddress,
                 token: toAddress, // approval is send to token address
-                amount: approvalData?.amount || '0',
-                formattedAmount: convertAmountSubunitsToUnits(
-                    approvalData?.amount || '0',
-                    token?.decimals || 0,
-                ),
+                amount,
+                formattedAmount: convertAmountSubunitsToUnits(amount, token?.decimals || 0),
             };
             break;
         }

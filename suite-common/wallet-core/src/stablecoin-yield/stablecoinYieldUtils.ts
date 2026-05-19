@@ -1,3 +1,4 @@
+import { Calldata } from '@suite-common/calldata';
 import {
     type TransactionDto,
     TransactionDtoStatus,
@@ -7,10 +8,7 @@ import {
 } from '@suite-common/earn-stablecoin-api';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    getContractAddressForNetworkSymbol,
-    getEvmApprovalTxData,
-} from '@suite-common/wallet-utils';
+import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import type {
@@ -201,9 +199,10 @@ const isTransactionReadyForSigning = (transaction: TransactionDto) =>
 
 const getApprovalTxDataType = (transaction: TransactionDto) => {
     const parsed = parseUnsignedEvmTransaction(transaction.unsignedTransaction);
-    const approvalData = getEvmApprovalTxData(parsed?.data);
+    const approvalData = Calldata.evm.erc20.approve.decode(parsed?.data);
+    if (!approvalData) return null;
 
-    return approvalData?.type ?? null;
+    return approvalData.amount === 0n ? 'revoke' : 'approve';
 };
 
 export const getYieldRevokeTransaction = (transactions: TransactionDto[]) =>
@@ -245,7 +244,7 @@ export const getYieldWithdrawTransaction = (transactions: TransactionDto[]) =>
 
 export const getYieldApprovalSpender = (transaction?: TransactionDto | null): string | null => {
     const parsedTransaction = parseUnsignedEvmTransaction(transaction?.unsignedTransaction);
-    const approvalData = getEvmApprovalTxData(parsedTransaction?.data);
+    const approvalData = Calldata.evm.erc20.approve.decode(parsedTransaction?.data);
 
     return approvalData?.spender ?? null;
 };
