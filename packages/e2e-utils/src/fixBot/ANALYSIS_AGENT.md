@@ -36,18 +36,21 @@ Use `currents-get-runs` with `projectId`, `branches=["develop"]`, `tags=["nightl
 Note the `runId` and `completionState` for each platform. If no run is found, note it in
 the report and continue with the other platform.
 
-## Step 2 — Identify failed specs
+## Step 2 — Identify failed and pending specs
 
 For each run, use `currents-get-run-details` with the `runId`. Collect all spec instances
-with at least one failure. Note each `instanceId` and spec file path.
+with at least one failure **or at least one pending test**. Note each `instanceId` and spec
+file path.
 
-> `currents-get-run-details` returns instance-level pass/fail counts — enough to identify
-> which instances failed. It does **not** contain per-test error messages or artifact URLs.
-> Those only come from `currents-get-spec-instance` in Step 3, which is always required.
+> Currents labels failed quarantined tests as pending. Pending tests are executed fully and carry the same error messages and artifacts as a failed test. Treat them identically to failed tests.
+
+> `currents-get-run-details` returns instance-level pass/fail/skip counts — enough to identify
+> which instances need investigation. It does **not** contain per-test error messages or artifact
+> URLs. Those only come from `currents-get-spec-instance` in Step 3, which is always required.
 
 ## Step 3 — Get full debugging data per instance
 
-For each failed `instanceId`, use `currents-get-spec-instance` and extract:
+For each failed or pending `instanceId`, use `currents-get-spec-instance` and extract:
 
 - Per-test error messages and stack traces
 - Screenshot URLs
@@ -97,11 +100,9 @@ instance. Read the full file and any page objects, fixtures, or helpers it uses.
 
 ## Step 6 — Produce the diagnosis report
 
-Write a structured report (see format below).
+Write the report to `packages/e2e-utils/src/fixBot/reports/<YYYY-MM-DD>.md`.
 
----
-
-## Output format
+Open with:
 
 ```
 # Nightly Test Failure Report — <date>
@@ -110,7 +111,7 @@ Web run: <runId> — <N> failures
 Desktop run: <runId> — <N> failures
 ```
 
-For each failing test:
+For each failing or pending test:
 
 ```
 ### <test title>
@@ -138,6 +139,79 @@ After all test entries, append a **Prompt gaps** section:
 ```
 
 If nothing was unclear, write `## Prompt gaps\n\n_None._`
+
+## Step 7 — Cluster failures into fix tasks
+
+Group the diagnosed failures by shared root cause. Failures that require the same code change
+belong in one fix task, regardless of which platform, device group, or spec file they appear in.
+
+Use your judgment: errors may differ in wording across platforms or tests and still point to the
+same fix. Only split into separate tasks when the required changes are genuinely independent.
+
+For each fix task assign:
+
+- **`id`** — sequential string: `"fix-001"`, `"fix-002"`, …
+- **`branch`** — `"fix/nightly-<YYYY-MM-DD>-<slug>"` where `<slug>` is a short kebab-case
+  summary of the root cause (e.g. `send-button-locator`, `receive-address-timeout`).
+  Use today's date. Keep the slug under 40 characters.
+- **`root_cause`** — one sentence describing the underlying problem
+- **`fix_scope`** — one of: `TEST_CODE`, `LOCATOR_ADD`, `PRODUCT_BUG`, `INFRA`
+- **`confidence`** — `HIGH`, `MEDIUM`, or `LOW`
+- **`fix_description`** — concrete description of what needs to change and where
+- **`diagnosis`** — the full MD prose from Step 6 for every test that belongs to this fix
+  task: error messages, stack traces, visual evidence descriptions, and root cause reasoning.
+  Copy it verbatim from the diagnosis report. This is the only context the fix agent
+  receives from the analysis — do not summarize or shorten it.
+- **`validations`** — list of `{ platform, group, spec }` entries covering **all** affected
+  platform/group/spec combinations. Every group where the failure was observed must be
+  included — the fix agent will verify the fix on each one.
+
+    **Before adding a validation entry, check the test file's `describe` block tags:**
+    - If the test carries `@desktopOnly`, do **not** add a `platform: "web"` entry — the web
+      playwright config excludes it via `grepInvert` and playwright will report "No tests found".
+    - If the test carries `@webOnly`, do **not** add a `platform: "desktop"` entry for the same reason.
+    - Only include a platform in `validations` if that platform actually ran the test.
+
+Tasks with `fix_scope` of `PRODUCT_BUG` or `INFRA` go into `skipped` instead of `fix_tasks`.
+
+## Step 8 — Write report.json
+
+Write the following JSON structure to the reports directory alongside `report.md`.
+The file must be named `<YYYY-MM-DD>.json` using today's date (same date as the `.md` file).
+
+The reports directory path is: `packages/e2e-utils/src/fixBot/reports/`
+
+```json
+{
+    "run_date": "<YYYY-MM-DD>",
+    "web_run_id": "<runId or null>",
+    "desktop_run_id": "<runId or null>",
+    "fix_tasks": [
+        {
+            "id": "fix-001",
+            "branch": "fix/nightly-<YYYY-MM-DD>-<slug>",
+            "root_cause": "<one sentence>",
+            "fix_scope": "TEST_CODE | LOCATOR_ADD",
+            "confidence": "HIGH | MEDIUM | LOW",
+            "fix_description": "<what to change and where>",
+            "validations": [
+                {
+                    "platform": "web | desktop",
+                    "group": "T3W1 | T3T1 | ...",
+                    "spec": "suite/e2e/tests/..."
+                }
+            ]
+        }
+    ],
+    "skipped": [
+        {
+            "root_cause": "<one sentence>",
+            "reason": "<fix_scope> — <brief explanation>",
+            "affected_tests": ["suite/e2e/tests/..."]
+        }
+    ]
+}
+```
 
 ---
 
