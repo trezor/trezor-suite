@@ -3351,10 +3351,10 @@ export const messages = {
             error: 'Failed to confirm transaction. Try again.',
             date: 'Date',
             exploreInBlockchain: 'Explore in blockchain',
-            stayOnScreenDescription:
-                'Your {name} is still processing. When confirmed, you’ll be able to use this approval with the same provider.',
-            revocation: 'revocation',
-            approval: 'approval',
+            approvalPendingAlert:
+                'Your approval is still processing. When confirmed, you’ll be able to use this approval with the same provider.',
+            revocationPendingAlert:
+                'Your revocation is still processing. When confirmed, the provider will no longer be able to spend your tokens.',
         },
         exchangeApprovalLimitSheet: {
             title: 'Set limit',

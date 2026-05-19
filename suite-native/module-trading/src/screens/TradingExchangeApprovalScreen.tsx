@@ -18,7 +18,7 @@ import {
     Screen,
     ScreenHeader,
     type StackProps,
-    usePreventNavigationRemove,
+    useNavigationRemoveActionInterceptor,
 } from '@suite-native/navigation';
 import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
 
@@ -110,8 +110,8 @@ const TradingExchangeApprovalScreenContent = ({
         };
     }, [quote, isReady, isRevoked, dispatch, confirmApproval, reportToAnalytics]);
 
-    usePreventNavigationRemove({
-        onPreventedRemove: action => {
+    useNavigationRemoveActionInterceptor({
+        onInterceptedAction: action => {
             dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
             reportToAnalytics('cancel');
             navigation.dispatch(action);

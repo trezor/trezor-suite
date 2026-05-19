@@ -5,7 +5,7 @@ import { getTranslation } from '@suite-native/intl';
 import {
     type RootStackParamList,
     RootStackRoutes,
-    usePreventNavigationRemove,
+    useNavigationRemoveActionInterceptor,
 } from '@suite-native/navigation';
 import { type TestStore } from '@suite-native/test-utils-store';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
@@ -23,15 +23,17 @@ const mockNavigationDispatch = jest.fn();
 
 jest.mock('@suite-native/navigation', () => ({
     ...jest.requireActual('@suite-native/navigation'),
-    usePreventNavigationRemove: jest.fn(),
+    useNavigationRemoveActionInterceptor: jest.fn(),
 }));
 
-const mockedUsePreventNavigationRemove = jest.mocked(usePreventNavigationRemove);
+const mockedUseNavigationRemoveActionInterceptor = jest.mocked(
+    useNavigationRemoveActionInterceptor,
+);
 
 const triggerPreventNavigationRemove = (action: NavigationAction = { type: 'GO_BACK' }) => {
-    const params = mockedUsePreventNavigationRemove.mock.calls.at(-1)?.[0];
+    const params = mockedUseNavigationRemoveActionInterceptor.mock.calls.at(-1)?.[0];
 
-    params?.onPreventedRemove?.(action);
+    params?.onInterceptedAction?.(action);
 };
 
 jest.mock('../../hooks/exchange/Approval/useApprovalFlow', () => ({

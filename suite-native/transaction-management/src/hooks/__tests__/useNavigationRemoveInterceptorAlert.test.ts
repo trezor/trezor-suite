@@ -1,14 +1,14 @@
-import { usePreventNavigationRemove } from '@suite-native/navigation';
+import { useNavigationRemoveActionInterceptor } from '@suite-native/navigation';
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 
-import { useNavigationRemoveInterceptor } from '../useNavigationRemoveInterceptor';
+import { useNavigationRemoveInterceptorAlert } from '../useNavigationRemoveInterceptorAlert';
 
 const mockShowStayOnScreenAlert = jest.fn();
 const mockHideStayOnScreenAlert = jest.fn();
 
 jest.mock('@suite-native/navigation', () => ({
     ...jest.requireActual('@suite-native/navigation'),
-    usePreventNavigationRemove: jest.fn(),
+    useNavigationRemoveActionInterceptor: jest.fn(),
 }));
 
 jest.mock('../useShowStayOnScreenAlert', () => ({
@@ -18,20 +18,22 @@ jest.mock('../useShowStayOnScreenAlert', () => ({
     }),
 }));
 
-type RenderUseNavigationRemoveInterceptorOptions = Partial<
-    Parameters<typeof useNavigationRemoveInterceptor>[0]
+type RenderUseNavigationRemoveInterceptorAlertOptions = Partial<
+    Parameters<typeof useNavigationRemoveInterceptorAlert>[0]
 >;
 
-const mockedUsePreventNavigationRemove = jest.mocked(usePreventNavigationRemove);
+const mockedUseNavigationRemoveActionInterceptor = jest.mocked(
+    useNavigationRemoveActionInterceptor,
+);
 
-const renderUseNavigationRemoveInterceptor = ({
+const renderUseNavigationRemoveInterceptorAlert = ({
     onRemoveConfirmed = jest.fn(),
     onStayConfirmed,
     shouldPrevent,
     alertOptions,
-}: RenderUseNavigationRemoveInterceptorOptions = {}) =>
+}: RenderUseNavigationRemoveInterceptorAlertOptions = {}) =>
     renderHookWithBasicProvider(() =>
-        useNavigationRemoveInterceptor({
+        useNavigationRemoveInterceptorAlert({
             onRemoveConfirmed,
             onStayConfirmed,
             shouldPrevent,
@@ -39,9 +41,10 @@ const renderUseNavigationRemoveInterceptor = ({
         }),
     );
 
-const getPreventNavigationRemoveProps = () => mockedUsePreventNavigationRemove.mock.calls[0][0];
+const getPreventNavigationRemoveProps = () =>
+    mockedUseNavigationRemoveActionInterceptor.mock.calls[0][0];
 
-describe('useNavigationRemoveInterceptor', () => {
+describe('useNavigationRemoveInterceptorAlert', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
@@ -53,13 +56,13 @@ describe('useNavigationRemoveInterceptor', () => {
             title: 'Leave this screen?',
         };
 
-        renderUseNavigationRemoveInterceptor({
+        renderUseNavigationRemoveInterceptorAlert({
             onRemoveConfirmed,
             onStayConfirmed,
             alertOptions,
         });
 
-        getPreventNavigationRemoveProps().onPreventedRemove?.({ type: 'GO_BACK' });
+        getPreventNavigationRemoveProps().onInterceptedAction?.({ type: 'GO_BACK' });
 
         expect(mockShowStayOnScreenAlert).toHaveBeenCalledTimes(1);
         expect(mockShowStayOnScreenAlert).toHaveBeenCalledWith({
@@ -70,19 +73,19 @@ describe('useNavigationRemoveInterceptor', () => {
     });
 
     it('should hide stay on screen alert on allowed remove action', () => {
-        renderUseNavigationRemoveInterceptor();
+        renderUseNavigationRemoveInterceptorAlert();
 
-        getPreventNavigationRemoveProps().onAllowedRemove?.({ type: 'PUSH' });
+        getPreventNavigationRemoveProps().onAllowedAction?.({ type: 'PUSH' });
 
         expect(mockHideStayOnScreenAlert).toHaveBeenCalledTimes(1);
     });
 
-    it('should pass shouldPrevent to usePreventNavigationRemove', () => {
-        renderUseNavigationRemoveInterceptor({ shouldPrevent: false });
+    it('should pass shouldPrevent to useNavigationRemoveActionInterceptor', () => {
+        renderUseNavigationRemoveInterceptorAlert({ shouldPrevent: false });
 
-        expect(mockedUsePreventNavigationRemove).toHaveBeenCalledWith(
+        expect(mockedUseNavigationRemoveActionInterceptor).toHaveBeenCalledWith(
             expect.objectContaining({
-                shouldPrevent: false,
+                isEnabled: false,
             }),
         );
     });

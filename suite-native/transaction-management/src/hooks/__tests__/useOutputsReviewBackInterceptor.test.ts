@@ -6,8 +6,11 @@ const mockShowReviewCancellationAlert = jest.fn();
 
 jest.mock('@suite-native/navigation', () => ({
     ...jest.requireActual('@suite-native/navigation'),
-    usePreventNavigationRemove: ({ onPreventedRemove }: { onPreventedRemove: () => void }) =>
-        onPreventedRemove(),
+    useNavigationRemoveActionInterceptor: ({
+        onInterceptedAction,
+    }: {
+        onInterceptedAction: () => void;
+    }) => onInterceptedAction(),
 }));
 
 jest.mock('../useShowReviewCancellationAlert', () => ({

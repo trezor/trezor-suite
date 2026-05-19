@@ -21,7 +21,7 @@ import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics'
 import { useTransactionStatusOverride } from '@suite-native/trading-debug';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 import {
-    useNavigationRemoveInterceptor,
+    useNavigationRemoveInterceptorAlert,
     useTransactionDetails,
 } from '@suite-native/transaction-management';
 import { exhaustive } from '@trezor/type-utils';
@@ -93,23 +93,16 @@ export const TradingConfirmingScreen = ({
         navigateToInitialScreen();
     }, [dispatch, navigateToInitialScreen, reportToAnalytics]);
 
-    useNavigationRemoveInterceptor({
+    useNavigationRemoveInterceptorAlert({
         shouldPrevent: !isFailed,
         onRemoveConfirmed: handleRemoveConfirmed,
         alertOptions: {
-            description: (
-                <Translation
-                    id="moduleTrading.tradingConfirmationScreen.stayOnScreenDescription"
-                    values={{
-                        name:
-                            flowType === 'approve' ? (
-                                <Translation id="moduleTrading.tradingConfirmationScreen.approval" />
-                            ) : (
-                                <Translation id="moduleTrading.tradingConfirmationScreen.revocation" />
-                            ),
-                    }}
-                />
-            ),
+            description:
+                flowType === 'approve' ? (
+                    <Translation id="moduleTrading.tradingConfirmationScreen.approvalPendingAlert" />
+                ) : (
+                    <Translation id="moduleTrading.tradingConfirmationScreen.revocationPendingAlert" />
+                ),
         },
     });
 
