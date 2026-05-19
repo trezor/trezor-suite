@@ -72,9 +72,6 @@ const config = {
                 '@evolu/common/local-first': `${rootNodeModulesPath}/@evolu/common/dist/src/local-first/index.js`,
                 '@evolu/common/polyfills': `${rootNodeModulesPath}/@evolu/common/dist/src/Polyfills.js`,
                 '@evolu/react-native/polyfills': `${rootNodeModulesPath}/@evolu/react-native/dist/src/Polyfills.js`,
-                '@trezor/coins-solana/constants': `${rootNodeModulesPath}/@trezor/coins-solana/src/constants/index.ts`,
-                '@trezor/coins-solana/runtime': `${rootNodeModulesPath}/@trezor/coins-solana/src/runtime/index.ts`,
-                '@trezor/coins-solana/types': `${rootNodeModulesPath}/@trezor/coins-solana/src/types/index.ts`,
                 uuid: `${rootNodeModulesPath}/uuid/dist/index.js`,
 
                 // tiny-secp256k1 used by @trezor/utxo-lib is terribly slow because WASM is not supported.
@@ -88,6 +85,14 @@ const config = {
 
             if (overrides[moduleName]) {
                 return getSourceFile(overrides[moduleName]);
+            }
+
+            // @trezor/coins-* packages have exports paths defined in package.json
+            const coinsModuleMatch = moduleName.match(/^@trezor\/coins-([^/]+)\/([^/]+)$/);
+            if (coinsModuleMatch) {
+                const source = `${rootNodeModulesPath}/@trezor/coins-${coinsModuleMatch[1]}/src/${coinsModuleMatch[2]}/index.ts`;
+
+                return getSourceFile(source);
             }
 
             if (moduleName.startsWith('@emurgo/cardano')) {
