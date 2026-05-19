@@ -2,7 +2,7 @@
 
 ## Overview
 
-Type-safe calldata builder and verifier for blockchain transactions. The builder validates inputs, normalizes values, and encodes transaction data. The verifier decodes externally-provided calldata and checks it against expected params. Built with a chain-agnostic core — currently implements EVM using viem.
+Type-safe calldata for blockchain transactions: encoding, decoding, and verification. Chain-agnostic core — currently implements EVM using viem.
 
 ---
 
@@ -14,7 +14,7 @@ Type-safe calldata builder and verifier for blockchain transactions. The builder
 import { Calldata } from '@suite-common/calldata';
 import { BigNumber } from '@trezor/utils';
 
-const result = Calldata.evm.erc20.approve(
+const result = Calldata.evm.erc20.approve.encode(
     {
         spender: '0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE',
         amount: new BigNumber('1000000'),
@@ -177,6 +177,40 @@ export const Calldata = {
     evm: {
         myContract: {
             myMethod: buildMyMethod,
+        },
+    },
+};
+```
+
+---
+
+## Decoder
+
+Decodes calldata to a typed Record of named parameters. Returns `null` for unrecognized selectors or malformed data.
+
+### Usage
+
+```typescript
+import { Calldata } from '@suite-common/calldata';
+
+const decoded = Calldata.evm.erc20.approve.decode(calldata);
+// decoded: { spender: `0x${string}`, amount: bigint } | null
+```
+
+### Adding New Decoders
+
+Add `decode` next to `encode` in the `Calldata` object:
+
+```typescript
+import { createEvmDecoder } from './decoder/evm';
+
+export const Calldata = {
+    evm: {
+        erc20: {
+            approve: {
+                encode: buildApprove,
+                decode: createEvmDecoder(EVM_ABI.erc20.approve),
+            },
         },
     },
 };
