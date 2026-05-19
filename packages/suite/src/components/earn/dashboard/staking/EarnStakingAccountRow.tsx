@@ -1,47 +1,48 @@
-import { useMemo } from 'react';
-
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useFormatters } from '@suite-common/formatters';
-import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import {
-    selectAccountIsStakingActive,
-    selectCardanoPoolsInfo,
-    selectPoolStatsApy,
-} from '@suite-common/wallet-core';
+import { selectAccountIsStakingActive, selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
     calculateRewards,
     getAccountTotalStakingBalance,
     getStakingLimitsByNetworkSymbol,
-    isCardanoStakedOutsideEverstake,
 } from '@suite-common/wallet-utils';
-import { Button, Column, Icon, Paragraph, Row, Table, Tooltip } from '@trezor/components';
+import { Card, Column, Icon, Paragraph, Row, Table } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
-import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 
+import { EarnStakingActionButtons } from './EarnStakingActionButtons';
+import { EarnStakingCurrentRewards } from './EarnStakingCurrentRewards';
+import { EarnStakingOutdatedProvider } from './EarnStakingOutdatedProvider';
+import { EarnStakingPotentialRewards } from './EarnStakingPotentialRewards';
+import { useStakingAccountStatus } from './hooks/useStakingAccountStatus';
 import { EarnAccountCell } from '../common/EarnAccountCell';
-import { EarnRewardsAmount } from '../common/EarnRewardsAmount';
 
-export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
+export const EarnStakingAccountRow = ({
+    account,
+    isCardLayout,
+}: {
+    account: Account;
+    isCardLayout: boolean;
+}) => {
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
     const analytics = useAnalytics();
+    const { isBelowMobile } = useLayoutSize();
     const apy = useSelector(state => selectPoolStatsApy(state, { account }));
     const displaySymbol = getDisplaySymbol(account.symbol);
     const isCardanoNetworkType = account.networkType === 'cardano';
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
-    const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account.symbol);
 
     const minStakingAmount = getStakingLimitsByNetworkSymbol(
@@ -51,53 +52,9 @@ export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
     const accountBalance = account.formattedBalance;
     const stakingBalance = getAccountTotalStakingBalance(account) ?? '0';
 
-    const isNewProviderBannerEnabled = useSelector(state =>
-        selectIsFeatureEnabled(state, Feature.banners.staking.ada.newProvider, true),
-    );
+    const stakingStatus = useStakingAccountStatus(account);
 
-    const state = useMemo(() => {
-        if (
-            isCardanoStakedOutsideEverstake(account, cardanoStakingPools) &&
-            isNewProviderBannerEnabled
-        ) {
-            return 'staking-outdated-provider';
-        }
-
-        if (
-            (accountBalance === '0' && stakingBalance !== '0') ||
-            (isCardanoNetworkType && isStakingActive)
-        ) {
-            return 'staking-max';
-        }
-
-        const hasEnoughBalanceForStaking =
-            minStakingAmount && new BigNumber(accountBalance).gte(minStakingAmount);
-
-        if (stakingBalance !== '0') {
-            if (!hasEnoughBalanceForStaking) {
-                return 'staked-but-insufficient-funds';
-            }
-
-            return 'staking-active';
-        }
-
-        if (!hasEnoughBalanceForStaking) {
-            return 'insufficient-funds';
-        }
-
-        return 'staking-inactive';
-    }, [
-        account,
-        accountBalance,
-        stakingBalance,
-        minStakingAmount,
-        isCardanoNetworkType,
-        isStakingActive,
-        cardanoStakingPools,
-        isNewProviderBannerEnabled,
-    ]);
-
-    const navigateToTradingBuy = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const navigateToTradingBuy = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.stopPropagation();
 
         dispatch(
@@ -134,7 +91,7 @@ export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
             type: events.stakingNavigateEvent.name,
             payload: {
                 action: 'navigate',
-                from: `dashboard/staking-dashboard/${state}`,
+                from: `dashboard/staking-dashboard/${stakingStatus}`,
                 networkSymbol: account.symbol,
             },
         });
@@ -149,82 +106,145 @@ export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
             maxDisplayedDecimals: 8,
         });
 
-    const CurrentRewardsCell = () => {
-        const currentRewards = calculateRewards(stakingBalance, apy);
+    const currentRewards = calculateRewards(stakingBalance, apy);
+    const totalBalance = new BigNumber(stakingBalance).plus(accountBalance).toString();
+    const potentialRewards = calculateRewards(
+        getNetworkAdjustedStakingBalance(totalBalance, account),
+        apy,
+    );
+    const formattedStakingBalance = formatCryptoAmount(stakingBalance);
+    const formattedAccountBalance = formatCryptoAmount(accountBalance);
 
+    const currentRewardsProps = {
+        symbol: account.symbol,
+        rewards: currentRewards,
+        apy,
+        isStakingActive,
+        formattedStakingBalance,
+        displaySymbol,
+    } as const;
+
+    const potentialRewardsProps = {
+        symbol: account.symbol,
+        rewards: potentialRewards,
+        apy,
+        isCardanoNetworkType,
+        formattedAccountBalance,
+        displaySymbol,
+    } as const;
+
+    const minStakeParagraph = (
+        <Paragraph typographyStyle="body-md" intent="neutral" priority="secondary">
+            <Translation
+                id="TR_EARN_STAKING_DASHBOARD_MINIMUM_STAKE"
+                values={{ amount: minStakingAmount?.toString(), displaySymbol }}
+            />
+        </Paragraph>
+    );
+
+    const maxStakeParagraph = (
+        <Paragraph typographyStyle="body-md" intent="neutral" priority="secondary">
+            <Translation id="TR_EARN_STAKING_DASHBOARD_MAXIMUM_STAKE" />
+        </Paragraph>
+    );
+
+    const actionButtonsProps = {
+        stakingStatus,
+        isStakingDisabled,
+        stakingMessageContent,
+        onBuy: navigateToTradingBuy,
+        onStake: navigateToStaking,
+    } as const;
+
+    if (isCardLayout) {
         return (
-            <Table.Cell>
-                <Row width="100%" alignItems="center" justifyContent="space-between">
-                    <Column alignItems="flex-start">
-                        <EarnRewardsAmount
-                            symbol={account.symbol}
-                            rewards={isStakingActive ? currentRewards : '0'}
-                            apy={apy}
+            <Card paddingType="small" onClick={navigateToStaking}>
+                <Column gap={12} width="100%">
+                    <Row justifyContent="space-between" alignItems="flex-start">
+                        <EarnAccountCell account={account} />
+                        <ApyValue
+                            apy={stakingStatus === 'staking-outdated-provider' ? null : apy}
                         />
+                    </Row>
 
-                        {isStakingActive && (
-                            <Paragraph
-                                typographyStyle="body-sm"
-                                intent="neutral"
-                                priority="secondary"
-                            >
-                                <HiddenPlaceholder>
-                                    <Translation
-                                        id="TR_EARN_STAKING_DASHBOARD_STAKED"
-                                        values={{
-                                            amount: formatCryptoAmount(stakingBalance),
-                                            displaySymbol,
-                                        }}
+                    {stakingStatus === 'insufficient-funds' && minStakeParagraph}
+
+                    {stakingStatus === 'staking-outdated-provider' && (
+                        <EarnStakingOutdatedProvider apy={apy} />
+                    )}
+
+                    {(stakingStatus === 'staking-active' || stakingStatus === 'staking-inactive') &&
+                        (isBelowMobile ? (
+                            <Column gap={4}>
+                                <EarnStakingCurrentRewards {...currentRewardsProps} />
+                                {apy && (
+                                    <Icon
+                                        name="arrowDown"
+                                        intent="neutral"
+                                        priority="secondary"
+                                        size={20}
                                     />
-                                </HiddenPlaceholder>
-                            </Paragraph>
-                        )}
-                    </Column>
+                                )}
+                                <EarnStakingPotentialRewards {...potentialRewardsProps} />
+                            </Column>
+                        ) : (
+                            <Row alignItems="center">
+                                <Column flex="2">
+                                    <EarnStakingCurrentRewards {...currentRewardsProps} />
+                                </Column>
+                                {apy && (
+                                    <Column flex="1" alignItems="center">
+                                        <Icon
+                                            name="arrowRight"
+                                            intent="neutral"
+                                            priority="secondary"
+                                            size={20}
+                                        />
+                                    </Column>
+                                )}
+                                <Column flex="2">
+                                    <EarnStakingPotentialRewards {...potentialRewardsProps} />
+                                </Column>
+                            </Row>
+                        ))}
 
-                    {apy && (
-                        <Icon name="arrowRight" intent="neutral" priority="secondary" size={20} />
-                    )}
-                </Row>
-            </Table.Cell>
-        );
-    };
+                    {stakingStatus === 'staking-max' &&
+                        (isBelowMobile ? (
+                            <Column gap={4}>
+                                <EarnStakingCurrentRewards {...currentRewardsProps} />
+                                {maxStakeParagraph}
+                            </Column>
+                        ) : (
+                            <Row gap={16} alignItems="center">
+                                <Column flex="1">
+                                    <EarnStakingCurrentRewards {...currentRewardsProps} />
+                                </Column>
+                                <Column flex="1">{maxStakeParagraph}</Column>
+                            </Row>
+                        ))}
 
-    const PotentialRewardsCell = () => {
-        const totalBalance = new BigNumber(stakingBalance).plus(accountBalance).toString();
-        const potentialRewards = calculateRewards(
-            getNetworkAdjustedStakingBalance(totalBalance, account),
-            apy,
-        );
+                    {stakingStatus === 'staked-but-insufficient-funds' &&
+                        (isBelowMobile ? (
+                            <Column gap={4}>
+                                <EarnStakingCurrentRewards {...currentRewardsProps} />
+                                {minStakeParagraph}
+                            </Column>
+                        ) : (
+                            <Row gap={16} alignItems="center">
+                                <Column flex="1">
+                                    <EarnStakingCurrentRewards {...currentRewardsProps} />
+                                </Column>
+                                <Column flex="1">{minStakeParagraph}</Column>
+                            </Row>
+                        ))}
 
-        return (
-            <Table.Cell>
-                <Column>
-                    {apy && (
-                        <EarnRewardsAmount
-                            symbol={account.symbol}
-                            rewards={potentialRewards}
-                            apy={apy}
-                            intent="brand"
-                        />
-                    )}
-
-                    {!isCardanoNetworkType && apy && (
-                        <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
-                            <HiddenPlaceholder>
-                                <Translation
-                                    id="TR_EARN_STAKING_DASHBOARD_IF_YOU_ADD"
-                                    values={{
-                                        amount: formatCryptoAmount(accountBalance),
-                                        displaySymbol,
-                                    }}
-                                />
-                            </HiddenPlaceholder>
-                        </Paragraph>
-                    )}
+                    <Row gap={8}>
+                        <EarnStakingActionButtons {...actionButtonsProps} />
+                    </Row>
                 </Column>
-            </Table.Cell>
+            </Card>
         );
-    };
+    }
 
     return (
         <Table.Row onClick={navigateToStaking}>
@@ -233,145 +253,81 @@ export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
             </Table.Cell>
 
             <Table.Cell>
-                {state === 'staking-outdated-provider' ? (
+                {stakingStatus === 'staking-outdated-provider' ? (
                     <Translation id="TR_EARN_NOT_AVAILABLE" />
                 ) : (
                     <ApyValue apy={apy} />
                 )}
             </Table.Cell>
 
-            {state === 'insufficient-funds' && (
+            {stakingStatus === 'insufficient-funds' && (
                 <>
-                    <Table.Cell colSpan={2}>
-                        <Paragraph typographyStyle="body-md" intent="neutral" priority="secondary">
-                            <Translation
-                                id="TR_EARN_STAKING_DASHBOARD_MINIMUM_STAKE"
-                                values={{
-                                    amount: minStakingAmount?.toString(),
-                                    displaySymbol,
-                                }}
-                            />
-                        </Paragraph>
-                    </Table.Cell>
-
+                    <Table.Cell colSpan={2}>{minStakeParagraph}</Table.Cell>
                     <Table.Cell align="end">
-                        <Button
-                            intent="neutral"
-                            priority="secondary"
-                            size="small"
-                            onClick={navigateToTradingBuy}
-                        >
-                            <Translation id="TR_BUY" />
-                        </Button>
+                        <EarnStakingActionButtons {...actionButtonsProps} />
                     </Table.Cell>
                 </>
             )}
 
-            {(state === 'staking-active' || state === 'staking-inactive') && (
+            {(stakingStatus === 'staking-active' || stakingStatus === 'staking-inactive') && (
                 <>
-                    <CurrentRewardsCell />
-                    <PotentialRewardsCell />
-
-                    <Table.Cell align="end">
-                        <Tooltip content={stakingMessageContent}>
-                            <Button
-                                intent="brand"
-                                size="small"
-                                isDisabled={isStakingDisabled}
-                                iconLeft={isStakingDisabled ? 'info' : undefined}
-                                onClick={navigateToStaking}
-                            >
-                                <Translation
-                                    id={
-                                        state === 'staking-active'
-                                            ? 'TR_EARN_STAKING_DASHBOARD_STAKE_MORE'
-                                            : 'TR_EARN_STAKING_DASHBOARD_STAKE_NOW'
-                                    }
-                                />
-                            </Button>
-                        </Tooltip>
-                    </Table.Cell>
-                </>
-            )}
-
-            {state === 'staking-max' && (
-                <>
-                    <CurrentRewardsCell />
-
                     <Table.Cell>
-                        <Paragraph typographyStyle="body-md" intent="neutral" priority="secondary">
-                            <Translation id="TR_EARN_STAKING_DASHBOARD_MAXIMUM_STAKE" />
-                        </Paragraph>
-                    </Table.Cell>
-
-                    <Table.Cell align="end">
-                        <Button
-                            intent="neutral"
-                            priority="secondary"
-                            size="small"
-                            onClick={navigateToTradingBuy}
-                        >
-                            <Translation id="TR_BUY" />
-                        </Button>
-                    </Table.Cell>
-                </>
-            )}
-
-            {state === 'staked-but-insufficient-funds' && (
-                <>
-                    <CurrentRewardsCell />
-
-                    <Table.Cell>
-                        <Paragraph typographyStyle="body-md" intent="neutral" priority="secondary">
-                            <Translation
-                                id="TR_EARN_STAKING_DASHBOARD_MINIMUM_STAKE"
-                                values={{
-                                    amount: minStakingAmount?.toString(),
-                                    displaySymbol,
-                                }}
-                            />
-                        </Paragraph>
-                    </Table.Cell>
-
-                    <Table.Cell align="end">
-                        <Button
-                            intent="neutral"
-                            priority="secondary"
-                            size="small"
-                            onClick={navigateToTradingBuy}
-                        >
-                            <Translation id="TR_BUY" />
-                        </Button>
-                    </Table.Cell>
-                </>
-            )}
-
-            {state === 'staking-outdated-provider' && (
-                <>
-                    <Table.Cell colSpan={2}>
-                        <Row gap={4}>
-                            <Icon name="warning" size={24} intent="warning" />
-                            <Paragraph typographyStyle="body-md" intent="warning">
-                                <Translation
-                                    id="TR_EARN_STAKING_DASHBOARD_OUTDATED_PROVIDER"
-                                    values={{ apy: formatApyValue(apy) }}
+                        <Row width="100%" alignItems="center" justifyContent="space-between">
+                            <EarnStakingCurrentRewards {...currentRewardsProps} />
+                            {apy && (
+                                <Icon
+                                    name="arrowRight"
+                                    intent="neutral"
+                                    priority="secondary"
+                                    size={20}
                                 />
-                            </Paragraph>
+                            )}
                         </Row>
                     </Table.Cell>
-
+                    <Table.Cell>
+                        <EarnStakingPotentialRewards {...potentialRewardsProps} />
+                    </Table.Cell>
                     <Table.Cell align="end">
-                        <Tooltip content={stakingMessageContent}>
-                            <Button
-                                intent="brand"
-                                size="small"
-                                isDisabled={isStakingDisabled}
-                                iconLeft={isStakingDisabled ? 'info' : undefined}
-                                onClick={navigateToStaking}
-                            >
-                                <Translation id="TR_EARN_UPDATE_PROVIDER" />
-                            </Button>
-                        </Tooltip>
+                        <EarnStakingActionButtons {...actionButtonsProps} />
+                    </Table.Cell>
+                </>
+            )}
+
+            {stakingStatus === 'staking-max' && (
+                <>
+                    <Table.Cell>
+                        <Row width="100%" alignItems="center" justifyContent="space-between">
+                            <EarnStakingCurrentRewards {...currentRewardsProps} />
+                        </Row>
+                    </Table.Cell>
+                    <Table.Cell>{maxStakeParagraph}</Table.Cell>
+                    <Table.Cell align="end">
+                        <EarnStakingActionButtons {...actionButtonsProps} />
+                    </Table.Cell>
+                </>
+            )}
+
+            {stakingStatus === 'staked-but-insufficient-funds' && (
+                <>
+                    <Table.Cell>
+                        <Row width="100%" alignItems="center" justifyContent="space-between">
+                            <EarnStakingCurrentRewards {...currentRewardsProps} />
+                        </Row>
+                    </Table.Cell>
+                    <Table.Cell>{minStakeParagraph}</Table.Cell>
+                    <Table.Cell align="end">
+                        <EarnStakingActionButtons {...actionButtonsProps} />
+                    </Table.Cell>
+                </>
+            )}
+
+            {stakingStatus === 'staking-outdated-provider' && (
+                <>
+                    <Table.Cell colSpan={2}>
+                        <EarnStakingOutdatedProvider apy={apy} />
+                    </Table.Cell>
+                    <Table.Cell align="end">
+                        <EarnStakingActionButtons {...actionButtonsProps} />
                     </Table.Cell>
                 </>
             )}

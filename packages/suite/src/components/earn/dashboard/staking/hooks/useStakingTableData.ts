@@ -1,0 +1,94 @@
+import { useMemo } from 'react';
+
+import { type StakingNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    selectAccountIsStakingActive,
+    selectDeviceSupportedNetworks,
+    selectVisibleDeviceAccounts,
+} from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
+import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
+
+import { useSelector } from 'src/hooks/suite';
+
+import { useCryptoCurrentRate } from './useCryptoCurrencyRate';
+import { useStakingAccountsVisibility } from './useStakingAccountsVisibility';
+
+type UseStakingTableDataResult = {
+    displayedAccounts: Account[];
+    ethNotActivated: boolean;
+    adaNotActivated: boolean;
+    solNotActivated: boolean;
+    isExpandable: boolean;
+    isExpanded: boolean;
+    toggleExpanded: () => void;
+    hasAnyRewardsData: boolean;
+    isStakingActive: boolean;
+    isSectionOutdated: boolean;
+};
+
+export const useStakingTableData = (): UseStakingTableDataResult => {
+    const ethCurrentRate = useCryptoCurrentRate('eth');
+    const solCurrentRate = useCryptoCurrentRate('sol');
+    const adaCurrentRate = useCryptoCurrentRate('ada');
+
+    const currentRates: Record<StakingNetworkSymbol, number | undefined> = useMemo(
+        () => ({
+            eth: ethCurrentRate,
+            sol: solCurrentRate,
+            ada: adaCurrentRate,
+            thod: ethCurrentRate,
+            dsol: solCurrentRate,
+        }),
+        [ethCurrentRate, solCurrentRate, adaCurrentRate],
+    );
+
+    const accounts = useSelector(selectVisibleDeviceAccounts);
+
+    const stakingAccounts = accounts.filter(
+        account => account.symbol === 'eth' || account.symbol === 'sol' || account.symbol === 'ada',
+    );
+
+    const isStakingActive = useSelector(state =>
+        stakingAccounts.some(account => selectAccountIsStakingActive(state, account.key)),
+    );
+    const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
+
+    const ethNotActivated =
+        deviceSupportedNetworkSymbols.includes('eth') &&
+        !stakingAccounts.some(account => account.symbol === 'eth');
+
+    const solNotActivated =
+        deviceSupportedNetworkSymbols.includes('sol') &&
+        !stakingAccounts.some(account => account.symbol === 'sol');
+
+    const adaNotActivated =
+        deviceSupportedNetworkSymbols.includes('ada') &&
+        !stakingAccounts.some(account => account.symbol === 'ada');
+
+    const { displayedAccounts, isExpandable, isExpanded, toggleExpanded, hasAnyRewardsData } =
+        useStakingAccountsVisibility({
+            stakingAccounts,
+            currentRates,
+            ethNotActivated,
+            solNotActivated,
+            adaNotActivated,
+        });
+
+    const isSectionOutdated = stakingAccounts.some(account =>
+        isCardanoStakedWithFiveBinaries(account),
+    );
+
+    return {
+        displayedAccounts,
+        ethNotActivated,
+        adaNotActivated,
+        solNotActivated,
+        isExpandable,
+        isExpanded,
+        toggleExpanded,
+        hasAnyRewardsData,
+        isStakingActive,
+        isSectionOutdated,
+    };
+};

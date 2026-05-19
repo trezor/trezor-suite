@@ -1,68 +1,50 @@
 import { type ReactNode } from 'react';
 
-import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
-import { openModal } from '@suite/modal';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import {
-    selectEnabledNetworks,
-    selectHasRunningDiscovery,
-    startOrRestartDiscoveryThunk,
-} from '@suite-common/wallet-core';
-import { Button, Paragraph, TOOLTIP_DELAY_NORMAL, Table, Tooltip } from '@trezor/components';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { Card, Column, Paragraph, Row, Table } from '@trezor/components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 
 import { EarnAccountCell } from './EarnAccountCell';
+import { EarnActivateButton } from './EarnActivateButton';
 
 type EarnInactiveNetworkOpportunityProps = {
     symbol: NetworkSymbol;
     apy: number | null;
     note?: ReactNode;
+    isCardLayout: boolean;
 };
 
 export const EarnInactiveNetworkOpportunity = ({
     symbol,
     apy,
     note,
+    isCardLayout,
 }: EarnInactiveNetworkOpportunityProps) => {
-    const dispatch = useDispatch();
-    const { device } = useDevice();
-    const enabledNetworks = useSelector(selectEnabledNetworks);
-    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-    const isNetworkEnabled = enabledNetworks.includes(symbol);
-    const isDiscoveringThisNetwork = isDiscoveryRunning && isNetworkEnabled;
-    const { name } = getNetwork(symbol);
+    const noteParagraph = note && (
+        <Paragraph typographyStyle="body-md" intent="neutral">
+            {note}
+        </Paragraph>
+    );
 
-    const isDeviceDisconnected = !device?.connected;
-    const isButtonDisabled = isDeviceDisconnected || isDiscoveryRunning;
-    const tooltipMessage = isDeviceDisconnected ? (
-        <Translation id="TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT" />
-    ) : undefined;
+    if (isCardLayout) {
+        return (
+            <Card paddingType="small">
+                <Column gap={12} width="100%">
+                    <Row justifyContent="space-between" alignItems="flex-start">
+                        <EarnAccountCell symbol={symbol} />
+                        <ApyValue apy={apy} />
+                    </Row>
 
-    const handleActivate = () => {
-        if (!device) {
-            return;
-        }
+                    {noteParagraph}
 
-        if (isNetworkEnabled) {
-            dispatch(startOrRestartDiscoveryThunk());
-
-            return;
-        }
-
-        dispatch(
-            openModal({
-                type: 'add-account',
-                device,
-                symbol,
-                noRedirect: true,
-                isCoinjoinDisabled: true,
-                isBackClickDisabled: true,
-            }),
+                    <Row>
+                        <EarnActivateButton symbol={symbol} />
+                    </Row>
+                </Column>
+            </Card>
         );
-    };
+    }
 
     return (
         <Table.Row>
@@ -74,35 +56,10 @@ export const EarnInactiveNetworkOpportunity = ({
                 <ApyValue apy={apy} />
             </Table.Cell>
 
-            <Table.Cell colSpan={2}>
-                {note && (
-                    <Paragraph typographyStyle="body-md" intent="neutral">
-                        {note}
-                    </Paragraph>
-                )}
-            </Table.Cell>
+            <Table.Cell colSpan={2}>{noteParagraph}</Table.Cell>
 
             <Table.Cell align="end">
-                <Tooltip
-                    isActive={!!tooltipMessage}
-                    tooltipMaxWidth={200}
-                    content={tooltipMessage}
-                    placement="top"
-                    cursor="not-allowed"
-                    delayShow={TOOLTIP_DELAY_NORMAL}
-                >
-                    <Button
-                        size="small"
-                        onClick={handleActivate}
-                        isDisabled={isButtonDisabled}
-                        isLoading={isDiscoveringThisNetwork}
-                    >
-                        <Translation
-                            id="TR_EARN_STAKING_DASHBOARD_ACTIVATE"
-                            values={{ networkName: name }}
-                        />
-                    </Button>
-                </Tooltip>
+                <EarnActivateButton symbol={symbol} />
             </Table.Cell>
         </Table.Row>
     );
