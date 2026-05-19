@@ -57,7 +57,12 @@ export const AllowanceModalProviderInfo = ({
                     {providerLogoSource && <ProviderLogo src={providerLogoSource} alt="" />}
                     <Column>
                         {providerName && <Text>{providerName}</Text>}
-                        <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                        <Text
+                            typographyStyle="body-sm"
+                            intent="neutral"
+                            priority="secondary"
+                            wordBreak="break-all"
+                        >
                             {spender}
                         </Text>
                     </Column>
