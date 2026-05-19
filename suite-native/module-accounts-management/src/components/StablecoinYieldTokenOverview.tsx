@@ -83,7 +83,7 @@ export const StablecoinYieldTokenOverview = ({
         });
     }, [account, apyValueText, showAlert, translate, vault]);
 
-    const handleSupplyMorePress = useCallback(() => {
+    const handleDepositMorePress = useCallback(() => {
         if (!vault?.token.address) {
             return;
         }
@@ -104,7 +104,7 @@ export const StablecoinYieldTokenOverview = ({
 
     const apyColor = apyValueText === null ? 'contentSecondary' : 'contentPrimary';
     const apyValue = apyValueText ?? <Translation id="earn.notAvailable" />;
-    const suppliedPosition =
+    const depositedPosition =
         account && token?.balance !== undefined
             ? {
                   balance: getConvertedOutputTokenBalanceToInputTokenAmount({
@@ -159,35 +159,35 @@ export const StablecoinYieldTokenOverview = ({
                     <CardDivider />
                     <HStack justifyContent="space-between" alignItems="center">
                         <Text variant="body-sm" color="contentSecondary">
-                            <Translation id="moduleAccounts.accountDetail.stablecoinYield.supplied" />
+                            <Translation id="moduleAccounts.accountDetail.stablecoinYield.deposited" />
                         </Text>
-                        {suppliedPosition && (
+                        {depositedPosition && (
                             <HStack alignItems="center" spacing="sp8">
                                 <CryptoIconWithNetwork
-                                    symbol={suppliedPosition.symbol}
-                                    contractAddress={suppliedPosition.contractAddress}
+                                    symbol={depositedPosition.symbol}
+                                    contractAddress={depositedPosition.contractAddress}
                                     size="extraSmall"
                                 />
                                 <TokenAmountFormatter
-                                    value={suppliedPosition.balance}
-                                    tokenSymbol={suppliedPosition.tokenSymbol}
+                                    value={depositedPosition.balance}
+                                    tokenSymbol={depositedPosition.tokenSymbol}
                                     color="contentPrimary"
                                     variant="body-sm"
                                 />
                             </HStack>
                         )}
                     </HStack>
-                    {isEnabled && suppliedPosition && (
+                    {isEnabled && depositedPosition && (
                         <HStack spacing="sp12">
                             <Box flex={1}>
                                 <Button
-                                    onPress={handleSupplyMorePress}
+                                    onPress={handleDepositMorePress}
                                     intent="brand"
                                     priority="secondary"
                                     size="medium"
                                     testID="@account-detail/stablecoin-yield/deposit-more-button"
                                 >
-                                    <Translation id="moduleAccounts.accountDetail.stablecoinYield.supplyMore" />
+                                    <Translation id="moduleAccounts.accountDetail.stablecoinYield.depositMore" />
                                 </Button>
                             </Box>
                             <Box flex={1}>

@@ -5,7 +5,7 @@ import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { ScreenHeader } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-type YieldSupplyFlowScreenHeaderProps = {
+type YieldDepositFlowScreenHeaderProps = {
     account: Account;
     closeAction?: () => void;
     onInfoPress: () => void;
@@ -19,13 +19,13 @@ const titleContainerStyle = prepareNativeStyle(() => ({
     maxWidth: HEADER_TITLE_MAX_WIDTH,
 }));
 
-export const YieldSupplyFlowScreenHeader = ({
+export const YieldDepositFlowScreenHeader = ({
     account,
     closeAction,
     onInfoPress,
     tokenContract,
     vaultName,
-}: YieldSupplyFlowScreenHeaderProps) => {
+}: YieldDepositFlowScreenHeaderProps) => {
     const { applyStyle } = useNativeStyles();
     const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
 

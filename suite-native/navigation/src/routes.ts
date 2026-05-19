@@ -241,11 +241,11 @@ export enum EarnStackRoutes {
 export enum YieldStackRoutes {
     HowYieldWorks = 'HowYieldWorks',
     YieldConsents = 'YieldConsents',
-    YieldSupplyApproval = 'YieldSupplyApproval',
-    YieldSupply = 'YieldSupply',
-    YieldSupplyApprovalReview = 'YieldSupplyApprovalReview',
-    YieldSupplyReview = 'YieldSupplyReview',
-    YieldSupplyComplete = 'YieldSupplyComplete',
+    YieldDepositApproval = 'YieldDepositApproval',
+    YieldDeposit = 'YieldDeposit',
+    YieldDepositApprovalReview = 'YieldDepositApprovalReview',
+    YieldDepositReview = 'YieldDepositReview',
+    YieldDepositComplete = 'YieldDepositComplete',
 }
 
 export enum ReceiveStackRoutes {

@@ -3,10 +3,10 @@ import { type ReactNode } from 'react';
 import { type TokenSymbol } from '@suite-common/wallet-types';
 import { Box, VStack } from '@suite-native/atoms';
 
-import { YieldSupplyAmountInputCard } from './YieldSupplyAmountInputCard';
-import { YieldSupplyStepCard } from './YieldSupplyStepCard';
+import { YieldDepositAmountInputCard } from './YieldDepositAmountInputCard';
+import { YieldDepositStepCard } from './YieldDepositStepCard';
 
-type ApproveSupplyFormProps = {
+type ApproveDepositFormProps = {
     approvalLimitTitle: ReactNode;
     balance: string;
     feeSelector: ReactNode;
@@ -18,7 +18,7 @@ type ApproveSupplyFormProps = {
     tokenSymbol: TokenSymbol;
 };
 
-export const ApproveSupplyForm = ({
+export const ApproveDepositForm = ({
     approvalLimitTitle,
     balance,
     feeSelector,
@@ -28,12 +28,12 @@ export const ApproveSupplyForm = ({
     onApprovalLimitPress,
     onMaxChange,
     tokenSymbol,
-}: ApproveSupplyFormProps) => (
+}: ApproveDepositFormProps) => (
     <VStack spacing="sp16">
-        <YieldSupplyStepCard currentStepIndex={0} />
+        <YieldDepositStepCard currentStepIndex={0} />
 
         <Box paddingHorizontal="sp16">
-            <YieldSupplyAmountInputCard
+            <YieldDepositAmountInputCard
                 approvalLimitTitle={approvalLimitTitle}
                 balance={balance}
                 isApprovalLimitDisabled={isApprovalLimitDisabled}

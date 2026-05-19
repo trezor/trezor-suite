@@ -16,29 +16,29 @@ import {
 } from '@suite-native/navigation';
 import { FeeSelector, useTransactionDetails } from '@suite-native/transaction-management';
 
-import { ApproveSupplyForm } from '../components/ApproveSupplyForm';
+import { ApproveDepositForm } from '../components/ApproveDepositForm';
+import { YieldDepositApprovalLimitBottomSheet } from '../components/YieldDepositApprovalLimitBottomSheet';
+import { YieldDepositFlowFooter } from '../components/YieldDepositFlowFooter';
+import { YieldDepositFlowScreenHeader } from '../components/YieldDepositFlowScreenHeader';
+import { YieldDepositInfoBottomSheet } from '../components/YieldDepositInfoBottomSheet';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
-import { YieldSupplyApprovalLimitBottomSheet } from '../components/YieldSupplyApprovalLimitBottomSheet';
-import { YieldSupplyFlowFooter } from '../components/YieldSupplyFlowFooter';
-import { YieldSupplyFlowScreenHeader } from '../components/YieldSupplyFlowScreenHeader';
-import { YieldSupplyInfoBottomSheet } from '../components/YieldSupplyInfoBottomSheet';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransactionFailureAlert';
 import { useYieldApprovalFees } from '../hooks/useYieldApprovalFees';
 import { useYieldApprovalLimit } from '../hooks/useYieldApprovalLimit';
+import { useYieldDepositApprovalSubmit } from '../hooks/useYieldDepositApprovalSubmit';
+import { useYieldDepositForm } from '../hooks/useYieldDepositForm';
 import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTransactionTracking';
 import { useYieldSession } from '../hooks/useYieldSession';
-import { useYieldSupplyApprovalSubmit } from '../hooks/useYieldSupplyApprovalSubmit';
-import { useYieldSupplyForm } from '../hooks/useYieldSupplyForm';
 import { isYieldApprovalAllowanceUnlimited } from '../yieldApprovalUtils';
 
-type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldSupplyApproval>;
+type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositApproval>;
 type NavigationProps = StackNavigationProps<
     YieldStackParamList,
-    YieldStackRoutes.YieldSupplyApproval
+    YieldStackRoutes.YieldDepositApproval
 >;
 
-export const YieldSupplyApprovalScreen = () => {
+export const YieldDepositApprovalScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const dispatch = useDispatch();
@@ -75,7 +75,7 @@ export const YieldSupplyApprovalScreen = () => {
         shouldDisposeOnGoBack: true,
     });
     const isAllowanceAmountUnlimited = isYieldApprovalAllowanceUnlimited({ session, token });
-    const defaultApprovalLimitType = isAllowanceAmountUnlimited ? 'unlimited' : 'per-supply';
+    const defaultApprovalLimitType = isAllowanceAmountUnlimited ? 'unlimited' : 'per-deposit';
     const { approvalLimitTitle, approvalLimitType, setApprovalLimitType } =
         useYieldApprovalLimit(defaultApprovalLimitType);
     const sessionStep = session?.step;
@@ -88,12 +88,12 @@ export const YieldSupplyApprovalScreen = () => {
 
     const isApprovalPending = !!approvalPendingTransaction;
 
-    const supplyForm = useYieldSupplyForm({
+    const depositForm = useYieldDepositForm({
         defaultAmount: session?.approval.isModifyMode ? session.action.amount : undefined,
         token,
         tokenSymbol,
     });
-    const { amountValue, form, handleAmountChange, handleMaxChange, isMaxSelected } = supplyForm;
+    const { amountValue, form, handleAmountChange, handleMaxChange, isMaxSelected } = depositForm;
     const {
         formState: { isValid },
     } = form;
@@ -112,7 +112,7 @@ export const YieldSupplyApprovalScreen = () => {
         flowData,
         tokenContract: route.params.tokenContract,
     });
-    const { handleSubmitApproval, isCheckingApproval } = useYieldSupplyApprovalSubmit({
+    const { handleSubmitApproval, isCheckingApproval } = useYieldDepositApprovalSubmit({
         approvalLimitType,
         flowData,
         flowKey,
@@ -150,7 +150,7 @@ export const YieldSupplyApprovalScreen = () => {
                     flowData,
                     flowKey,
                     flowType: 'deposit',
-                    // Mobile approval screen needs allowance without auto-skipping to supply.
+                    // Mobile approval screen needs allowance without auto-skipping to deposit.
                     shouldSkipApprovalStep: false,
                 }),
             );
@@ -158,7 +158,7 @@ export const YieldSupplyApprovalScreen = () => {
     }, [dispatch, flowData, flowKey, shouldRefreshAllowance]);
 
     const handleApprovalConfirmed = useCallback(() => {
-        navigation.navigate(YieldStackRoutes.YieldSupply, route.params);
+        navigation.navigate(YieldStackRoutes.YieldDeposit, route.params);
     }, [navigation, route.params]);
 
     useYieldPendingTransactionTracking({
@@ -202,7 +202,7 @@ export const YieldSupplyApprovalScreen = () => {
 
     const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
     const pendingModalAmount = pendingModalData?.isAmountUnlimited ? (
-        <Translation id="earn.yieldSupplyFlowScreen.approvalLimitSheet.unlimited.title" />
+        <Translation id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.title" />
     ) : (
         pendingModalData?.amount
     );
@@ -214,7 +214,7 @@ export const YieldSupplyApprovalScreen = () => {
         <Screen
             noHorizontalPadding
             header={
-                <YieldSupplyFlowScreenHeader
+                <YieldDepositFlowScreenHeader
                     account={account}
                     onInfoPress={openInfoBottomSheet}
                     tokenContract={route.params.tokenContract}
@@ -222,7 +222,7 @@ export const YieldSupplyApprovalScreen = () => {
                 />
             }
             footer={
-                <YieldSupplyFlowFooter
+                <YieldDepositFlowFooter
                     amountValue={amountValue}
                     apy={apy}
                     isDisabled={isSubmitDisabled}
@@ -235,7 +235,7 @@ export const YieldSupplyApprovalScreen = () => {
             <Box pointerEvents={isApprovalPending ? 'none' : 'auto'}>
                 <Form form={form}>
                     {/* TODO: Allow changing unlimited approval once revoke is supported on mobile. */}
-                    <ApproveSupplyForm
+                    <ApproveDepositForm
                         approvalLimitTitle={approvalLimitTitle}
                         balance={token.balance}
                         feeSelector={
@@ -264,7 +264,7 @@ export const YieldSupplyApprovalScreen = () => {
                     accountLabel={accountLabel}
                     accountSymbol={account.symbol}
                     amount={pendingModalAmount}
-                    amountLabel={<Translation id="earn.yieldSupplyFlowScreen.approvalLimit" />}
+                    amountLabel={<Translation id="earn.yieldDepositFlowScreen.approvalLimit" />}
                     amountTokenContract={route.params.tokenContract}
                     amountTokenSymbol={pendingModalAmountTokenSymbol}
                     fee={pendingModalData.fee}
@@ -278,14 +278,14 @@ export const YieldSupplyApprovalScreen = () => {
                     vaultTokenContract={route.params.tokenContract}
                 />
             )}
-            <YieldSupplyInfoBottomSheet
+            <YieldDepositInfoBottomSheet
                 ref={infoBottomSheetRef}
                 apy={apy}
                 onClose={handleCloseInfoBottomSheet}
                 tokenSymbol={tokenSymbol}
                 vaultTokenName={vaultTokenName}
             />
-            <YieldSupplyApprovalLimitBottomSheet
+            <YieldDepositApprovalLimitBottomSheet
                 ref={approvalLimitBottomSheetRef}
                 accountSymbol={account.symbol}
                 onApprovalLimitSelect={setApprovalLimitType}

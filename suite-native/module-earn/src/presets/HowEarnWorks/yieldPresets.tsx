@@ -50,33 +50,37 @@ export const createHowYieldWorksPreset = ({
     ],
     timelineSections: [
         {
-            id: 'supply',
-            title: <Translation id="earn.howYieldWorksScreen.supplyTimelineTitle" />,
+            id: 'deposit',
+            title: <Translation id="earn.howYieldWorksScreen.depositTimelineTitle" />,
             iconName: 'arrowUpRight',
             items: [
                 {
-                    id: 'supply.first',
-                    title: <Translation id="earn.howYieldWorksScreen.supplyTimeline.first.title" />,
-                    description: (
-                        <Translation id="earn.howYieldWorksScreen.supplyTimeline.first.description" />
-                    ),
-                },
-                {
-                    id: 'supply.second',
+                    id: 'deposit.first',
                     title: (
-                        <Translation id="earn.howYieldWorksScreen.supplyTimeline.second.title" />
+                        <Translation id="earn.howYieldWorksScreen.depositTimeline.first.title" />
                     ),
                     description: (
-                        <Translation id="earn.howYieldWorksScreen.supplyTimeline.second.description" />
+                        <Translation id="earn.howYieldWorksScreen.depositTimeline.first.description" />
                     ),
                 },
                 {
-                    id: 'supply.third',
-                    title: <Translation id="earn.howYieldWorksScreen.supplyTimeline.third.title" />,
+                    id: 'deposit.second',
+                    title: (
+                        <Translation id="earn.howYieldWorksScreen.depositTimeline.second.title" />
+                    ),
+                    description: (
+                        <Translation id="earn.howYieldWorksScreen.depositTimeline.second.description" />
+                    ),
+                },
+                {
+                    id: 'deposit.third',
+                    title: (
+                        <Translation id="earn.howYieldWorksScreen.depositTimeline.third.title" />
+                    ),
                     description:
                         apy !== null ? (
                             <Translation
-                                id="earn.howYieldWorksScreen.supplyTimeline.third.description"
+                                id="earn.howYieldWorksScreen.depositTimeline.third.description"
                                 values={{ apy }}
                             />
                         ) : (

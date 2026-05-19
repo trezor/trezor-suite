@@ -9,10 +9,10 @@ import {
 } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-import { YieldSupplyApprovalLimitCard } from './YieldSupplyApprovalLimitCard';
+import { YieldDepositApprovalLimitCard } from './YieldDepositApprovalLimitCard';
 import { type YieldApprovalLimitType } from '../types';
 
-type YieldSupplyApprovalLimitBottomSheetProps = {
+type YieldDepositApprovalLimitBottomSheetProps = {
     accountSymbol: NetworkSymbol;
     onApprovalLimitSelect: (approvalLimitType: YieldApprovalLimitType) => void;
     onClose: () => void;
@@ -22,7 +22,7 @@ type YieldSupplyApprovalLimitBottomSheetProps = {
     tokenSymbol: string;
 };
 
-export const YieldSupplyApprovalLimitBottomSheet = ({
+export const YieldDepositApprovalLimitBottomSheet = ({
     accountSymbol,
     onApprovalLimitSelect,
     onClose,
@@ -30,7 +30,7 @@ export const YieldSupplyApprovalLimitBottomSheet = ({
     selectedApprovalLimitType,
     tokenContract,
     tokenSymbol,
-}: YieldSupplyApprovalLimitBottomSheetProps) => {
+}: YieldDepositApprovalLimitBottomSheetProps) => {
     const handleSelect = (approvalLimitType: YieldApprovalLimitType) => {
         onApprovalLimitSelect(approvalLimitType);
         onClose();
@@ -39,33 +39,33 @@ export const YieldSupplyApprovalLimitBottomSheet = ({
     return (
         <BottomSheetModal
             ref={ref}
-            title={<Translation id="earn.yieldSupplyFlowScreen.approvalLimitSheet.title" />}
+            title={<Translation id="earn.yieldDepositFlowScreen.approvalLimitSheet.title" />}
             isCloseDisplayed
             onClose={onClose}
         >
             <VStack spacing="sp12" paddingBottom="sp12">
-                <YieldSupplyApprovalLimitCard
+                <YieldDepositApprovalLimitCard
                     title={
                         <Text variant="body-sm-strong" color="contentPrimary">
-                            <Translation id="earn.yieldSupplyFlowScreen.perSupply" />
+                            <Translation id="earn.yieldDepositFlowScreen.perDeposit" />
                         </Text>
                     }
                     description={
-                        <Translation id="earn.yieldSupplyFlowScreen.approvalLimitSheet.perSupply.description" />
+                        <Translation id="earn.yieldDepositFlowScreen.approvalLimitSheet.perDeposit.description" />
                     }
                     symbol={accountSymbol}
                     contractAddress={tokenContract}
-                    isChecked={selectedApprovalLimitType === 'per-supply'}
-                    onChange={() => handleSelect('per-supply')}
+                    isChecked={selectedApprovalLimitType === 'per-deposit'}
+                    onChange={() => handleSelect('per-deposit')}
                 />
-                <YieldSupplyApprovalLimitCard
+                <YieldDepositApprovalLimitCard
                     title={
                         <Text variant="body-sm-strong" color="contentPrimary">
-                            <Translation id="earn.yieldSupplyFlowScreen.approvalLimitSheet.unlimited.title" />
+                            <Translation id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.title" />
                         </Text>
                     }
                     description={
-                        <Translation id="earn.yieldSupplyFlowScreen.approvalLimitSheet.unlimited.description" />
+                        <Translation id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.description" />
                     }
                     symbol={accountSymbol}
                     contractAddress={tokenContract}
@@ -75,13 +75,13 @@ export const YieldSupplyApprovalLimitBottomSheet = ({
                     <InlineAlertBox
                         title={
                             <Translation
-                                id="earn.yieldSupplyFlowScreen.approvalLimitSheet.unlimited.alert"
+                                id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.alert"
                                 values={{ tokenSymbol }}
                             />
                         }
                         variant="warning"
                     />
-                </YieldSupplyApprovalLimitCard>
+                </YieldDepositApprovalLimitCard>
             </VStack>
         </BottomSheetModal>
     );

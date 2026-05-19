@@ -7,28 +7,28 @@ import { prepareYieldDepositThunk } from '@suite-common/wallet-core';
 
 import { type ResolvedYieldFlowData } from './useResolvedYieldFlowData';
 import { useWorkInProgressAlert } from './useWorkInProgressAlert';
-import { type PreparedYieldSupplyAction } from './useYieldSupplyFees';
-import { buildYieldSupplyFeePreview } from '../yieldSupplyFeeUtils';
+import { type PreparedYieldDepositAction } from './useYieldDepositFees';
+import { buildYieldDepositFeePreview } from '../yieldDepositFeeUtils';
 
-type UseYieldSupplySubmitParams = Pick<ResolvedYieldFlowData, 'flowData' | 'flowKey'> & {
+type UseYieldDepositSubmitParams = Pick<ResolvedYieldFlowData, 'flowData' | 'flowKey'> & {
     amount: string | undefined;
-    onActionReady: (preparedAction: PreparedYieldSupplyAction) => void;
+    onActionReady: (preparedAction: PreparedYieldDepositAction) => void;
     onApprovalRequired: () => void;
-    preparedAction: PreparedYieldSupplyAction | null;
+    preparedAction: PreparedYieldDepositAction | null;
 };
 
-export const useYieldSupplySubmit = ({
+export const useYieldDepositSubmit = ({
     amount,
     flowData,
     flowKey,
     onActionReady,
     onApprovalRequired,
     preparedAction,
-}: UseYieldSupplySubmitParams) => {
+}: UseYieldDepositSubmitParams) => {
     const dispatch = useDispatch();
     const showWorkInProgressAlert = useWorkInProgressAlert();
 
-    const handleSubmitSupply = useCallback(async () => {
+    const handleSubmitDeposit = useCallback(async () => {
         if (!amount || !flowData || !flowKey) {
             return;
         }
@@ -48,16 +48,16 @@ export const useYieldSupplySubmit = ({
         );
 
         if (!isFulfilled(response) || response.payload.type === 'error') {
-            showWorkInProgressAlert('Supply unavailable');
+            showWorkInProgressAlert('Deposit unavailable');
 
             return;
         }
 
         if (response.payload.type === 'action-ready') {
-            const feePreview = buildYieldSupplyFeePreview(response.payload.unsignedTransaction);
+            const feePreview = buildYieldDepositFeePreview(response.payload.unsignedTransaction);
 
             if (!feePreview) {
-                showWorkInProgressAlert('Supply unavailable');
+                showWorkInProgressAlert('Deposit unavailable');
 
                 return;
             }
@@ -91,5 +91,5 @@ export const useYieldSupplySubmit = ({
         showWorkInProgressAlert,
     ]);
 
-    return { handleSubmitSupply };
+    return { handleSubmitDeposit };
 };

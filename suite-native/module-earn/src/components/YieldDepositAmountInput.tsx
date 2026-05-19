@@ -5,22 +5,22 @@ import { useField, useFormContext } from '@suite-native/forms';
 import { decimalTransformer } from '@suite-native/helpers';
 import { useDebounce } from '@trezor/react-utils';
 
-import { type YieldSupplyFormValues } from '../yieldSupplyFormSchema';
+import { type YieldDepositFormValues } from '../yieldDepositFormSchema';
 
-type YieldSupplyAmountInputProps = {
+type YieldDepositAmountInputProps = {
     isDisabled?: boolean;
     onAmountChange: () => void;
     onPress?: TextInputProps['onPress'];
     tokenSymbol: string;
 };
 
-export const YieldSupplyAmountInput = ({
+export const YieldDepositAmountInput = ({
     isDisabled = false,
     onAmountChange,
     onPress,
     tokenSymbol,
-}: YieldSupplyAmountInputProps) => {
-    const { trigger } = useFormContext<YieldSupplyFormValues>();
+}: YieldDepositAmountInputProps) => {
+    const { trigger } = useFormContext<YieldDepositFormValues>();
     const debounce = useDebounce();
     const { hasError, onBlur, onChange, value } = useField({
         name: 'amount',
@@ -40,7 +40,7 @@ export const YieldSupplyAmountInput = ({
             value={value}
             placeholder="0"
             keyboardType="numeric"
-            accessibilityLabel="amount to supply input"
+            accessibilityLabel="amount to deposit input"
             editable={!isDisabled}
             onChangeText={handleChangeValue}
             onBlur={() => {

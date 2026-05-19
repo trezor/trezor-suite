@@ -20,7 +20,7 @@ import { YieldReviewList } from '../components/YieldReviewList';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useYieldApprovalReview } from '../hooks/useYieldApprovalReview';
 
-type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldSupplyApprovalReview>;
+type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositApprovalReview>;
 
 type ApprovalReviewContentProps = {
     flowData: YieldFlowResolvedData;
@@ -62,9 +62,9 @@ const ApprovalReviewContent = ({
     }, [closeSheet, isSigningApproval, revealConfirmOnTrezorSheet]);
 
     const approvalLimitTranslationId =
-        route.params.approvalLimitType === 'per-supply'
-            ? 'earn.yieldSupplyFlowScreen.perSupply'
-            : 'earn.yieldSupplyFlowScreen.approvalLimitSheet.unlimited.title';
+        route.params.approvalLimitType === 'per-deposit'
+            ? 'earn.yieldDepositFlowScreen.perDeposit'
+            : 'earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.title';
 
     return (
         <ConfirmOnTrezorWrapper
@@ -76,7 +76,7 @@ const ApprovalReviewContent = ({
                     closeActionType="back"
                     customContent={
                         <Text variant="body-md-strong">
-                            <Translation id="earn.yieldSupplyApprovalReviewScreen.title" />
+                            <Translation id="earn.yieldDepositApprovalReviewScreen.title" />
                         </Text>
                     }
                 />
@@ -99,7 +99,7 @@ const ApprovalReviewContent = ({
                     <EarnReviewSubmittedCard
                         buttonTranslationId="transactions.send"
                         isButtonLoading={isSendingApproval}
-                        messageTranslationId="earn.yieldSupplyApprovalReviewScreen.successMessage"
+                        messageTranslationId="earn.yieldDepositApprovalReviewScreen.successMessage"
                         onButtonPress={handleApprovalSubmitted}
                     />
                 )}
@@ -108,7 +108,7 @@ const ApprovalReviewContent = ({
     );
 };
 
-export const YieldSupplyApprovalTransactionDataReviewScreen = () => {
+export const YieldDepositApprovalTransactionDataReviewScreen = () => {
     const route = useRoute<RouteProps>();
     const { flowData, flowKey, tokenSymbol, resolutionStatus } = useResolvedYieldFlowData(
         route.params,

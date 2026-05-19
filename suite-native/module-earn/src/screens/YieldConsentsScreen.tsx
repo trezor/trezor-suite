@@ -27,8 +27,8 @@ export const YieldConsentsScreen = () => {
     const route = useRoute<RouteProps>();
     const { providerName, tokenSymbol, resolutionStatus } = useResolvedYieldFlowData(route.params);
 
-    const handleNavigateToYieldSupplyApproval = () => {
-        navigation.navigate(YieldStackRoutes.YieldSupplyApproval, route.params);
+    const handleNavigateToYieldDepositApproval = () => {
+        navigation.navigate(YieldStackRoutes.YieldDepositApproval, route.params);
     };
 
     if (resolutionStatus !== 'resolved') {
@@ -44,7 +44,7 @@ export const YieldConsentsScreen = () => {
                 <YieldConsentsProviderCard
                     providerName={providerName}
                     tokenSymbol={tokenSymbol}
-                    onConfirm={handleNavigateToYieldSupplyApproval}
+                    onConfirm={handleNavigateToYieldDepositApproval}
                 />
             </VStack>
         </Screen>

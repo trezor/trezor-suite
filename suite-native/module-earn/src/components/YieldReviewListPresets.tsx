@@ -6,7 +6,7 @@ import { CryptoAmountFormatter } from '@suite-native/formatters';
 import { type TxKeyPath } from '@suite-native/intl';
 import { ReviewOutputItemValues } from '@suite-native/transaction-management';
 
-export type YieldReviewListVariant = 'approval' | 'supply';
+export type YieldReviewListVariant = 'approval' | 'deposit';
 
 type YieldReviewListCommonProps = {
     accountKey: AccountKey;
@@ -20,13 +20,13 @@ type YieldApprovalReviewListProps = YieldReviewListCommonProps & {
     variant: 'approval';
 };
 
-type YieldSupplyReviewListProps = YieldReviewListCommonProps & {
+type YieldDepositReviewListProps = YieldReviewListCommonProps & {
     receiveAmount?: string;
     receiveTokenSymbol?: string;
-    variant: 'supply';
+    variant: 'deposit';
 };
 
-export type YieldReviewListProps = (YieldApprovalReviewListProps | YieldSupplyReviewListProps) & {
+export type YieldReviewListProps = (YieldApprovalReviewListProps | YieldDepositReviewListProps) & {
     isFooterVisible?: boolean;
     isSubmitDisabled?: boolean;
     isSubmitLoading?: boolean;
@@ -44,18 +44,18 @@ type DetailRowProps = {
     value: ReactNode;
 };
 
-type CreateYieldReviewCardsParams = YieldApprovalReviewListProps | YieldSupplyReviewListProps;
+type CreateYieldReviewCardsParams = YieldApprovalReviewListProps | YieldDepositReviewListProps;
 
 type Translate = (id: TxKeyPath) => string;
 
 const cardTitleTranslationIds = {
     approval: 'earn.yieldReview.approvalCard.title',
-    supply: 'earn.yieldReview.supplyCard.title',
+    deposit: 'earn.yieldReview.depositCard.title',
 } satisfies Record<YieldReviewListVariant, TxKeyPath>;
 
 const detailsTitleTranslationIds = {
     approval: 'earn.yieldReview.approvalDetailsCard.title',
-    supply: 'earn.yieldReview.transactionDetailsCard.title',
+    deposit: 'earn.yieldReview.transactionDetailsCard.title',
 } satisfies Record<YieldReviewListVariant, TxKeyPath>;
 
 const DetailRow = ({ label, value }: DetailRowProps) => (
@@ -80,7 +80,7 @@ export const getYieldReviewCards = (
         key: 'amount',
         title: translate(cardTitleTranslationIds[variantProps.variant]),
     },
-    ...(variantProps.variant === 'supply' &&
+    ...(variantProps.variant === 'deposit' &&
     variantProps.receiveAmount &&
     variantProps.receiveTokenSymbol
         ? [

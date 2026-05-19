@@ -20,16 +20,16 @@ import {
 } from '@suite-native/navigation';
 
 import { YieldCompleteScreenContent } from '../components/YieldCompleteScreenContent';
-import { getYieldSupplyCompleteRows } from '../components/YieldCompleteScreenPresets';
+import { getYieldDepositCompleteRows } from '../components/YieldCompleteScreenPresets';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 
-type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldSupplyComplete>;
+type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositComplete>;
 type NavigationProps = StackNavigationProps<
     YieldStackParamList,
-    YieldStackRoutes.YieldSupplyComplete
+    YieldStackRoutes.YieldDepositComplete
 >;
 
-export const YieldSupplyCompleteScreen = () => {
+export const YieldDepositCompleteScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const dispatch = useDispatch();
@@ -63,7 +63,7 @@ export const YieldSupplyCompleteScreen = () => {
         }
 
         if (session.step !== 'complete') {
-            navigation.replace(YieldStackRoutes.YieldSupply, route.params);
+            navigation.replace(YieldStackRoutes.YieldDeposit, route.params);
         }
     }, [navigation, navigateToInitialScreen, resolutionStatus, route.params, session]);
 
@@ -89,7 +89,7 @@ export const YieldSupplyCompleteScreen = () => {
         const apyValue =
             apy === null ? <Translation id="earn.notAvailableShort" /> : `${apy.toFixed(2)}%`;
 
-        return getYieldSupplyCompleteRows({
+        return getYieldDepositCompleteRows({
             accountSymbol: account.symbol,
             apyValue,
             receivedAmount,
@@ -108,8 +108,8 @@ export const YieldSupplyCompleteScreen = () => {
             buttonTranslationId="earn.yieldCompleteScreen.backToOverview"
             onButtonPress={handleExit}
             rows={rows}
-            title={<Translation id="earn.yieldSupplyCompleteScreen.title" />}
-            subtitle={<Translation id="earn.yieldSupplyCompleteScreen.subtitle" />}
+            title={<Translation id="earn.yieldDepositCompleteScreen.title" />}
+            subtitle={<Translation id="earn.yieldDepositCompleteScreen.subtitle" />}
         />
     );
 };

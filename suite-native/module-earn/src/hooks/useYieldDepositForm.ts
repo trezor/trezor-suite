@@ -6,28 +6,28 @@ import { useForm, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 
 import {
-    type YieldSupplyFormValues,
-    yieldSupplyFormValidationSchema,
-} from '../yieldSupplyFormSchema';
+    type YieldDepositFormValues,
+    yieldDepositFormValidationSchema,
+} from '../yieldDepositFormSchema';
 
-type UseYieldSupplyFormParams = {
+type UseYieldDepositFormParams = {
     defaultAmount?: string | null;
     token: YieldFlowToken | null;
     tokenSymbol: TokenSymbol | null;
 };
 
-export const useYieldSupplyForm = ({
+export const useYieldDepositForm = ({
     defaultAmount,
     token,
     tokenSymbol,
-}: UseYieldSupplyFormParams) => {
+}: UseYieldDepositFormParams) => {
     const { translate } = useTranslate();
     const [isMaxSelected, setIsMaxSelected] = useState(false);
 
     const availableBalance = token?.balance ?? '0';
 
-    const form = useForm<YieldSupplyFormValues>({
-        validation: yieldSupplyFormValidationSchema,
+    const form = useForm<YieldDepositFormValues>({
+        validation: yieldDepositFormValidationSchema,
         mode: 'onChange',
         context: {
             availableBalance,

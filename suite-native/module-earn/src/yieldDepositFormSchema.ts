@@ -3,14 +3,14 @@ import { isDecimalsValid } from '@suite-common/wallet-utils';
 import { type Translate } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
 
-export type YieldSupplyFormContext = {
+export type YieldDepositFormContext = {
     availableBalance?: string;
     decimals?: number;
     tokenSymbol: string;
     translate: Translate;
 };
 
-export const yieldSupplyFormValidationSchema = yup.object({
+export const yieldDepositFormValidationSchema = yup.object({
     amount: yup
         .string()
         .required('Amount is required.')
@@ -18,11 +18,11 @@ export const yieldSupplyFormValidationSchema = yup.object({
         .test('is-zero', 'Amount must be greater than 0.', function (value) {
             if (!value) return true;
 
-            const { translate } = this.options.context as YieldSupplyFormContext;
+            const { translate } = this.options.context as YieldDepositFormContext;
 
             if (new BigNumber(value).isZero()) {
                 return this.createError({
-                    message: translate('earn.yieldSupplyFlowScreen.validation.amountIsZero'),
+                    message: translate('earn.yieldDepositFlowScreen.validation.amountIsZero'),
                 });
             }
 
@@ -30,14 +30,14 @@ export const yieldSupplyFormValidationSchema = yup.object({
         })
         .test('is-higher-than-balance', 'Amount exceeds balance.', function (value) {
             const { availableBalance, tokenSymbol, translate } = this.options
-                .context as YieldSupplyFormContext;
+                .context as YieldDepositFormContext;
 
             if (!value || !availableBalance) return true;
 
             if (new BigNumber(value).gt(availableBalance)) {
                 return this.createError({
                     message: translate(
-                        'earn.yieldSupplyFlowScreen.validation.insufficientBalance',
+                        'earn.yieldDepositFlowScreen.validation.insufficientBalance',
                         {
                             tokenSymbol,
                         },
@@ -48,13 +48,13 @@ export const yieldSupplyFormValidationSchema = yup.object({
             return true;
         })
         .test('too-many-decimals', 'Too many decimals.', function (value) {
-            const { decimals = 0, translate } = this.options.context as YieldSupplyFormContext;
+            const { decimals = 0, translate } = this.options.context as YieldDepositFormContext;
 
             if (!value) return true;
 
             if (!isDecimalsValid(value, decimals)) {
                 return this.createError({
-                    message: translate('earn.yieldSupplyFlowScreen.validation.tooManyDecimals'),
+                    message: translate('earn.yieldDepositFlowScreen.validation.tooManyDecimals'),
                 });
             }
 
@@ -62,4 +62,4 @@ export const yieldSupplyFormValidationSchema = yup.object({
         }),
 });
 
-export type YieldSupplyFormValues = yup.InferType<typeof yieldSupplyFormValidationSchema>;
+export type YieldDepositFormValues = yup.InferType<typeof yieldDepositFormValidationSchema>;

@@ -3,7 +3,7 @@ import { Card, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoIcon, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
-type YieldSupplyApprovedAmountCardProps = {
+type YieldDepositApprovedAmountCardProps = {
     approvedAmount: string | null;
     isApprovedAmountUnlimited: boolean;
     networkSymbol: NetworkSymbol;
@@ -11,23 +11,23 @@ type YieldSupplyApprovedAmountCardProps = {
     tokenContract: string;
 };
 
-export const YieldSupplyApprovedAmountCard = ({
+export const YieldDepositApprovedAmountCard = ({
     approvedAmount,
     isApprovedAmountUnlimited,
     networkSymbol,
     onEditApprovalPress,
     tokenContract,
-}: YieldSupplyApprovedAmountCardProps) => (
+}: YieldDepositApprovedAmountCardProps) => (
     <Card>
         <HStack alignItems="center" justifyContent="space-between">
             <Text variant="body-sm">
-                <Translation id="earn.yieldSupplyFlowScreen.approvedAmount" />
+                <Translation id="earn.yieldDepositFlowScreen.approvedAmount" />
             </Text>
             <HStack alignItems="center" spacing="sp8">
                 <CryptoIcon symbol={networkSymbol} contractAddress={tokenContract} size={20} />
                 <Text variant="body-sm-strong" numberOfLines={1}>
                     {isApprovedAmountUnlimited ? (
-                        <Translation id="earn.yieldSupplyFlowScreen.approvalLimitSheet.unlimited.title" />
+                        <Translation id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.title" />
                     ) : (
                         approvedAmount
                     )}

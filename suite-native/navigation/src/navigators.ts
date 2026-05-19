@@ -91,19 +91,19 @@ export type YieldFlowParams = {
     yieldId?: string;
 };
 
-export type YieldSupplyApprovalReviewParams = YieldFlowParams & {
+export type YieldDepositApprovalReviewParams = YieldFlowParams & {
     amount: string;
-    approvalLimitType: 'per-supply' | 'unlimited';
+    approvalLimitType: 'per-deposit' | 'unlimited';
 };
 
 export type YieldStackParamList = {
     [YieldStackRoutes.HowYieldWorks]: YieldFlowParams;
     [YieldStackRoutes.YieldConsents]: YieldFlowParams;
-    [YieldStackRoutes.YieldSupplyApproval]: YieldFlowParams;
-    [YieldStackRoutes.YieldSupply]: YieldFlowParams;
-    [YieldStackRoutes.YieldSupplyApprovalReview]: YieldSupplyApprovalReviewParams;
-    [YieldStackRoutes.YieldSupplyReview]: YieldFlowParams;
-    [YieldStackRoutes.YieldSupplyComplete]: YieldFlowParams;
+    [YieldStackRoutes.YieldDepositApproval]: YieldFlowParams;
+    [YieldStackRoutes.YieldDeposit]: YieldFlowParams;
+    [YieldStackRoutes.YieldDepositApprovalReview]: YieldDepositApprovalReviewParams;
+    [YieldStackRoutes.YieldDepositReview]: YieldFlowParams;
+    [YieldStackRoutes.YieldDepositComplete]: YieldFlowParams;
 };
 
 export type HomeStackParamList = {

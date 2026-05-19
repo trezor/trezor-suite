@@ -5,7 +5,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Card, HStack, Radio, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 
-type YieldSupplyApprovalLimitCardProps = {
+type YieldDepositApprovalLimitCardProps = {
     contractAddress?: string;
     description: ReactNode;
     isChecked: boolean;
@@ -14,7 +14,7 @@ type YieldSupplyApprovalLimitCardProps = {
     title: ReactNode;
 } & PropsWithChildren;
 
-export const YieldSupplyApprovalLimitCard = ({
+export const YieldDepositApprovalLimitCard = ({
     children,
     contractAddress,
     description,
@@ -22,7 +22,7 @@ export const YieldSupplyApprovalLimitCard = ({
     onChange,
     symbol,
     title,
-}: YieldSupplyApprovalLimitCardProps) => (
+}: YieldDepositApprovalLimitCardProps) => (
     <Pressable onPress={onChange}>
         <Card>
             <VStack>

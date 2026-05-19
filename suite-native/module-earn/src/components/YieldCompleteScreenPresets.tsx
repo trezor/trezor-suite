@@ -7,7 +7,7 @@ import { Translation } from '@suite-native/intl';
 
 import { type YieldCompleteSummaryRow } from './YieldCompleteScreenContent';
 
-type GetYieldSupplyCompleteRowsParams = {
+type GetYieldDepositCompleteRowsParams = {
     accountSymbol: NetworkSymbol;
     apyValue: ReactNode;
     receivedAmount: string;
@@ -16,14 +16,14 @@ type GetYieldSupplyCompleteRowsParams = {
     sentTokenContract?: string;
 };
 
-export const getYieldSupplyCompleteRows = ({
+export const getYieldDepositCompleteRows = ({
     accountSymbol,
     apyValue,
     receivedAmount,
     receivedTokenContract,
     sentAmount,
     sentTokenContract,
-}: GetYieldSupplyCompleteRowsParams): YieldCompleteSummaryRow[] => [
+}: GetYieldDepositCompleteRowsParams): YieldCompleteSummaryRow[] => [
     {
         key: 'status',
         label: <Translation id="earn.yieldCompleteScreen.status" />,

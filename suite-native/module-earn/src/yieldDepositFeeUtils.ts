@@ -47,7 +47,7 @@ const buildPrecomposedTransaction = (
     };
 };
 
-export const buildYieldSupplyFeePreview = (
+export const buildYieldDepositFeePreview = (
     unsignedTransaction: string,
 ): PrecomposedTransactionFinal | null => {
     const tx = parseUnsignedEvmTransactionForSigning(unsignedTransaction);

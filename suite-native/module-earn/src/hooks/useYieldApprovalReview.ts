@@ -51,7 +51,7 @@ type UseYieldApprovalReviewResult = {
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     YieldStackParamList,
-    YieldStackRoutes.YieldSupplyApprovalReview,
+    YieldStackRoutes.YieldDepositApprovalReview,
     RootStackParamList
 >;
 
