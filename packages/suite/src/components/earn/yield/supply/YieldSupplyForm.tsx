@@ -114,6 +114,19 @@ export const YieldSupplyForm = () => {
         submitAction();
     };
 
+    const handleMaxClick = () => {
+        analytics.report({
+            type: events.yieldInteractionEvent.name,
+            payload: {
+                element: 'deposit-max',
+                networkSymbol: token.networkSymbol,
+                vaultId: vault.id,
+            },
+        });
+
+        setAmountInput(maxAmount);
+    };
+
     return (
         <>
             <Column width="100%" alignItems="center">
@@ -198,7 +211,7 @@ export const YieldSupplyForm = () => {
                                         }
                                         isLoading={isSubmittingApprove}
                                         pendingApproveTransaction={approvalPendingTransaction}
-                                        onMaxClick={() => setAmountInput(maxAmount)}
+                                        onMaxClick={handleMaxClick}
                                         onApprovalSubmit={handleOnApprovalSubmit}
                                         onRevoke={handleOnRevoke}
                                         onPendingTxClick={openPendingTransaction}
@@ -240,7 +253,7 @@ export const YieldSupplyForm = () => {
                                             }
                                             isPending={isSubmittingAction}
                                             pendingTransaction={supplyPendingTransaction}
-                                            onMaxClick={() => setAmountInput(maxAmount)}
+                                            onMaxClick={handleMaxClick}
                                             onSubmit={handleOnSupply}
                                             onPendingTxClick={openPendingTransaction}
                                         />
