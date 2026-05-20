@@ -99,6 +99,17 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
             );
         }
 
+        analytics.report({
+            type: events.tradeNavigateEvent.name,
+            payload: {
+                action: 'navigate',
+                type: 'buy',
+                from: 'earn-dashboard',
+                networkSymbol,
+                contractAddress: tokenAddress ?? undefined,
+            },
+        });
+
         dispatch(
             goto({
                 routeName: 'wallet-trading-buy',
