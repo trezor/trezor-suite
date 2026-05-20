@@ -163,19 +163,79 @@
         "version-bump-prompt": "^6.1.0"
     },
     "dependenciesMeta": {
+        "@bufbuild/buf": {
+            "built": true
+        },
+        "@parcel/watcher": {
+            "built": true
+        },
+        "@playwright/browser-chromium": {
+            "built": true
+        },
+        "@playwright/browser-firefox": {
+            "built": true
+        },
+        "@playwright/browser-webkit": {
+            "built": true
+        },
+        "@sentry/cli": {
+            "built": false
+        },
         "@shopify/react-native-skia": {
+            "built": true
+        },
+        "@swc/core": {
+            "built": true
+        },
+        "bcrypto": {
             "built": true
         },
         "better-sqlite3": {
             "built": true
         },
+        "blake-hash": {
+            "built": true
+        },
+        "core-js": {
+            "built": false
+        },
         "core-js-pure": {
+            "built": false
+        },
+        "detox": {
+            "built": true
+        },
+        "dtrace-provider": {
             "built": false
         },
         "electron": {
             "built": true
         },
+        "es5-ext": {
+            "built": false
+        },
+        "esbuild": {
+            "built": true
+        },
+        "msgpackr-extract": {
+            "built": true
+        },
+        "nx": {
+            "built": true
+        },
+        "sharp": {
+            "built": true
+        },
         "trezor-suite": {
+            "built": true
+        },
+        "ttf2woff2": {
+            "built": true
+        },
+        "unrs-resolver": {
+            "built": true
+        },
+        "usb": {
             "built": true
         }
     },

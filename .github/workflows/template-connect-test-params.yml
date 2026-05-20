@@ -71,7 +71,6 @@ jobs:
       - run: sfw --silent yarn workspaces focus @trezor/connect
       - if: ${{ inputs.testEnv == 'web' }}
         run: |
-          echo -e "\nenableScripts: false" >> .yarnrc.yml
           sfw --silent yarn workspaces focus @trezor/connect-web
           sfw --silent yarn && yarn build:libs
       - name: Install Playwright chromium

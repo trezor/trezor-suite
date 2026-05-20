@@ -38,7 +38,6 @@ jobs:
           job-summary: errors
       - name: Install dependencies
         run: |
-          echo -e "\nenableScripts: false" >> .yarnrc.yml
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
           sfw --silent yarn workspaces focus @trezor/components
           sfw --silent yarn workspaces focus @trezor/product-components
