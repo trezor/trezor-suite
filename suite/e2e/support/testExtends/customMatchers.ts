@@ -5,8 +5,8 @@ import { diff } from 'jest-diff';
 import { isEqualWith } from 'lodash';
 
 import { type TranslationKey, messages } from '@suite/intl';
+import { isAddressValid } from '@suite-common/address';
 import { type Account } from '@suite-common/wallet-types';
-import { isAddressValid } from '@suite-common/wallet-utils';
 import { Model } from '@trezor/trezor-user-env-link';
 import { getIndexOrThrow } from '@trezor/utils';
 

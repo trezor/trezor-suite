@@ -4,9 +4,9 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useRoute } from '@react-navigation/native';
 import { checkAddressCheckSum } from 'web3-utils';
 
+import { isAddressValid } from '@suite-common/address';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { isAddressValid } from '@suite-common/wallet-utils';
 import { useFormContext } from '@suite-native/forms';
 import { type SendStackParamList, type SendStackRoutes } from '@suite-native/navigation';
 

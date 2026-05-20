@@ -10181,7 +10181,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/address@workspace:suite-common/address"
   dependencies:
+    "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@trezor/address-validator": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -11123,6 +11125,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/validators@workspace:suite-common/validators"
   dependencies:
+    "@suite-common/address": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -11219,6 +11222,7 @@ __metadata:
   resolution: "@suite-common/wallet-utils@workspace:suite-common/wallet-utils"
   dependencies:
     "@scure/base": "npm:^2.0.0"
+    "@suite-common/address": "workspace:*"
     "@suite-common/calldata": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
@@ -11229,7 +11233,6 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@trezor/address-validator": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/coins-solana": "workspace:*"
@@ -12423,6 +12426,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.11.2"
     "@shopify/flash-list": "npm:2.3.0"
     "@shopify/react-native-skia": "npm:2.5.1"
+    "@suite-common/address": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -13053,6 +13057,7 @@ __metadata:
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@shopify/flash-list": "npm:2.3.0"
+    "@suite-common/address": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/formatters": "workspace:*"
@@ -16263,6 +16268,7 @@ __metadata:
     "@playwright/browser-firefox": "npm:1.58.2"
     "@playwright/browser-webkit": "npm:1.58.2"
     "@playwright/test": "npm:1.58.2"
+    "@suite-common/address": "workspace:*"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/e2e-evolu-client": "workspace:*"
