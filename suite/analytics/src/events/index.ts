@@ -86,7 +86,7 @@ export { stakingStakeEvent } from './stakingStakeEvent';
 export { stakingUnstakeEvent } from './stakingUnstakeEvent';
 export { stakingUpdateProviderEvent } from './stakingUpdateProviderEvent';
 export { yieldNavigateEvent } from './yieldNavigateEvent';
-export { yieldSupplyEvent } from './yieldSupplyEvent';
+export { yieldDepositEvent } from './yieldDepositEvent';
 export { yieldWithdrawEvent } from './yieldWithdrawEvent';
 export { yieldClaimEvent } from './yieldClaimEvent';
 export { suiteReadyEvent } from './suiteReadyEvent';
