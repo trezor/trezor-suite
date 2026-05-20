@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 26.6.0
+
+- purge desktop trading form draft keys (`trading-buy/*`, `trading-sell/`, `trading-exchange/`) from `formDrafts`
+
 ## 26.5.0
 
 - reset Ethereum account nonces to `-1` in order to force account refresh for DeFi tokens
