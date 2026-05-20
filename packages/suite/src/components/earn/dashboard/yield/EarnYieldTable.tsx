@@ -77,6 +77,48 @@ export const EarnYieldTable = () => {
         notActiveLabelId: 'TR_EARN_DASHBOARD_NOT_ACTIVE',
     });
 
+    const hasFiredReadyEventRef = useRef(false);
+    const hasClaimBanner = accountsRewards.length > 0;
+    const availableVaultCount = availableVaults?.length ?? 0;
+    const isReadyToReport =
+        !isYieldOpportunitiesLoading && !isYieldOpportunitiesError && merkleRewardsQuery.isSuccess;
+
+    useEffect(() => {
+        if (!isReadyToReport || hasFiredReadyEventRef.current) {
+            return;
+        }
+        hasFiredReadyEventRef.current = true;
+
+        analytics.report({
+            type: events.yieldEarnDashboardReadyEvent.name,
+            payload: {
+                hasClaimBanner,
+                hasActivePosition: isYieldActive,
+                availableVaultCount,
+                hasShowMore: hasHiddenYieldAccountOpportunities,
+            },
+        });
+    }, [
+        analytics,
+        isReadyToReport,
+        hasClaimBanner,
+        isYieldActive,
+        availableVaultCount,
+        hasHiddenYieldAccountOpportunities,
+    ]);
+
+    const handleToggleShowMore = () => {
+        analytics.report({
+            type: events.yieldInteractionEvent.name,
+            payload: {
+                element: 'show-more-accounts',
+                value: isExpanded ? 'collapse' : 'expand',
+            },
+        });
+
+        toggleIsExpanded();
+    };
+
     const handleClaimableAccountSelect = ({ account }: YieldAccountRewards) => {
         dispatch(
             goto({
@@ -149,7 +191,7 @@ export const EarnYieldTable = () => {
                             <Button
                                 intent="neutral"
                                 priority="secondary"
-                                onClick={toggleIsExpanded}
+                                onClick={handleToggleShowMore}
                             >
                                 <Translation id={isExpanded ? 'TR_SHOW_LESS' : 'TR_SHOW_MORE'} />
                             </Button>

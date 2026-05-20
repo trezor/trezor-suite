@@ -46,6 +46,15 @@ export const YieldFlowComplete = ({
     };
 
     const handleFeedbackSubmit = (rating: Rating, description: string) => {
+        analytics.report({
+            type: events.yieldInteractionEvent.name,
+            payload: {
+                element: 'feedback-submit',
+                value: rating,
+                vaultId,
+            },
+        });
+
         dispatch(
             sendFeedbackAction({
                 type: 'SUGGESTION',

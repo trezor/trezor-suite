@@ -72,6 +72,16 @@ export const YieldPageHeader = ({
             return;
         }
 
+        analytics.report({
+            type: events.yieldInteractionEvent.name,
+            payload: {
+                element: 'how-it-works',
+                value: analyticsStep,
+                networkSymbol: account.symbol,
+                vaultId: routeParams.yieldId,
+            },
+        });
+
         dispatch(
             openModal({
                 type: 'earn-in-a-nutshell',
