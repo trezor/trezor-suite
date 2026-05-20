@@ -1,7 +1,5 @@
-import { useEffect } from 'react';
-
 import { events } from '@suite/analytics';
-import { Translation, useTranslation } from '@suite/intl';
+import { Translation } from '@suite/intl';
 import { splitYieldPendingTransaction } from '@suite-common/wallet-core';
 import { Banner, BulletList, Button, Column, Row, Text } from '@trezor/components';
 
@@ -17,7 +15,6 @@ import { YieldFlowCompleteSupply } from '../common/YieldFlowCompleteSupply';
 
 export const YieldSupplyForm = () => {
     const analytics = useAnalytics();
-    const { translationString } = useTranslation();
 
     const {
         account,
@@ -60,46 +57,6 @@ export const YieldSupplyForm = () => {
 
     const { approvalPendingTransaction, actionPendingTransaction: supplyPendingTransaction } =
         splitYieldPendingTransaction(pendingTransaction, 'deposit');
-
-    // trigger success analytics event
-    useEffect(() => {
-        if (flow.currentStep === 'complete') {
-            analytics.report({
-                type: events.yieldDepositEvent.name,
-                payload: {
-                    type: 'success',
-                    action: 'continue',
-                    networkSymbol: token.networkSymbol,
-                    contractAddress: token.contractAddress ?? undefined,
-                    vaultId: vault.id,
-                },
-            });
-        }
-    }, [flow.currentStep, analytics, token.networkSymbol, token.contractAddress, vault.id]);
-
-    // trigger error analytics event
-    useEffect(() => {
-        if (errorMessage) {
-            analytics.report({
-                type: events.yieldDepositEvent.name,
-                payload: {
-                    type: 'error',
-                    action: 'continue',
-                    networkSymbol: token.networkSymbol,
-                    contractAddress: token.contractAddress ?? undefined,
-                    vaultId: vault.id,
-                    errorMessage: translationString(errorMessage),
-                },
-            });
-        }
-    }, [
-        analytics,
-        errorMessage,
-        token.networkSymbol,
-        token.contractAddress,
-        vault.id,
-        translationString,
-    ]);
 
     const handleOnApprovalSubmit = () => {
         analytics.report({

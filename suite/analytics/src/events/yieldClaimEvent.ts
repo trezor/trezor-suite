@@ -5,8 +5,10 @@ import { EventType } from '../constants';
 
 type Attributes = {
     action: AttributeDef<EarnModalAction>;
-    type: AttributeDef<'claim' | 'success' | 'error'>;
+    type: AttributeDef<'claim' | 'success' | 'error' | 'leftPending'>;
     networkSymbol?: AttributeDef<string>;
+    durationMs?: AttributeDef<number>;
+    rewardCount?: AttributeDef<number>;
     errorMessage?: AttributeDef<string>;
 };
 
@@ -20,10 +22,22 @@ export const yieldClaimEvent: EventDef<Attributes, EventType.YieldClaim> = {
             changelog: [{ version: '26.5.0', notes: 'added' }],
         },
         type: {
-            changelog: [{ version: '26.5.0', notes: 'added' }],
+            changelog: [
+                { version: '26.5.0', notes: 'added' },
+                { version: '26.5.2', notes: 'added `leftPending` value' },
+            ],
         },
         networkSymbol: {
             changelog: [{ version: '26.5.0', notes: 'added' }],
+        },
+        durationMs: {
+            description:
+                'Milliseconds between submission (pending tx appearing in state) and resolution (success / error / leftPending)',
+            changelog: [{ version: '26.5.2', notes: 'added' }],
+        },
+        rewardCount: {
+            description: 'Number of reward items included in the claim',
+            changelog: [{ version: '26.5.2', notes: 'added' }],
         },
         errorMessage: {
             changelog: [{ version: '26.5.0', notes: 'added' }],
