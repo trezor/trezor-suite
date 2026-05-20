@@ -41,7 +41,6 @@ electron-localshortcut
 electron-store
 electron-updater
 eslint
-eslint-plugin-chai-friendly
 eslint-plugin-import
 eslint-plugin-jest
 eslint-plugin-jsx-a11y

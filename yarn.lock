@@ -15723,7 +15723,6 @@ __metadata:
   dependencies:
     "@eslint/js": "npm:^9.39.4"
     eslint: "npm:^9.39.4"
-    eslint-plugin-chai-friendly: "npm:^1.2.0"
     eslint-plugin-import: "npm:^2.32.0"
     eslint-plugin-jest: "npm:^29.15.2"
     eslint-plugin-jsx-a11y: "npm:^6.10.2"
@@ -25625,15 +25624,6 @@ __metadata:
     eslint:
       optional: true
   checksum: 10/bd25d6610ec3abaa50e8f1beb0119541562bbb8dd02c035c7e887976fe1e0c5dd8175f4607ca8d86d1146df24d52a071bd3d1dd329f6902bd58df805a8ca16d3
-  languageName: node
-  linkType: hard
-
-"eslint-plugin-chai-friendly@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "eslint-plugin-chai-friendly@npm:1.2.0"
-  peerDependencies:
-    eslint: ">=3.0.0"
-  checksum: 10/e65539aa61ddb576aab60e756b134fffb8bce0d881d57dbc5608509380f37bd55f67153fd69bb95acabc03615b183215f894b1e1d4a4852462c6bf6a7f1f2a03
   languageName: node
   linkType: hard
 
