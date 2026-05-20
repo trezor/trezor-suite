@@ -11,6 +11,8 @@ interface ClaudeUsage {
 
 interface ClaudeResult {
     type?: string;
+    subtype?: string;
+    result?: string;
     num_turns?: number;
     usage?: ClaudeUsage;
     total_cost_usd?: number;
@@ -38,6 +40,26 @@ function formatTimestamp(date: Date): string {
     const minutes = String(date.getUTCMinutes()).padStart(2, '0');
 
     return `${year}-${month}-${day} ${hours}:${minutes}Z`;
+}
+
+export function logAgentResult(rawOutput: string, agentName: string): void {
+    let entry: ClaudeResult = {};
+    try {
+        entry = parseClaudeOutput(rawOutput);
+    } catch {
+        process.stderr.write(
+            `[${agentName}] agent output unparsable (${rawOutput.length} bytes)\n`,
+        );
+
+        return;
+    }
+
+    const subtype = entry.subtype ?? '?';
+    const text = entry.result ?? '';
+    const preview = text.length > 800 ? `${text.slice(0, 800)}…` : text;
+
+    process.stderr.write(`[${agentName}] subtype=${subtype}\n`);
+    if (preview) process.stderr.write(`${preview}\n`);
 }
 
 export function reportTokenUsage(rawOutput: string, logFilePath: string, agentName: string): void {
