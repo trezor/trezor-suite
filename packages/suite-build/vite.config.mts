@@ -177,7 +177,7 @@ const sessionsSharedWorkerPlugin = () => {
     const workerOutDir = resolve(__dirname, '../suite-web/dist/workers');
     const workerEntryPath = resolve(
         __dirname,
-        '../transport/src/sessions/background-sharedworker.ts',
+        '../transport-web/src/sessions/background-sharedworker.ts',
     );
     const workerFileName = 'sessions-background-sharedworker';
     const workerOutputPath = resolve(workerOutDir, `${workerFileName}.js`);

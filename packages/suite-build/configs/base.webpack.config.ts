@@ -55,6 +55,7 @@ const config: webpack.Configuration = {
             events: require.resolve('events'),
             // Not required
             child_process: false,
+            dgram: false, // TODO: remove once UdpTransport is wired via dependency injection (follow-up PR) and the static import from TransportList is gone
             fs: false, // ignore "fs" import in fastxpub (hd-wallet)
             net: false,
             tls: false,

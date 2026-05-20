@@ -1,6 +1,10 @@
 import type { ThpChannelState, TransportProtocol } from '@trezor/protocol';
 
-import type { BridgeProtocolMessage } from '../types';
+export type BridgeProtocolMessage = {
+    data: string;
+    protocol?: TransportProtocol['name'];
+    thpState?: ThpChannelState;
+};
 
 // validate expected body:
 // - string with hex (legacy bridge /call and /read results)

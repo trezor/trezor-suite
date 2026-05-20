@@ -3,7 +3,7 @@ import {
     AbstractApiTransport,
     type Transport as AbstractTransport,
     UsbApi,
-} from '@trezor/transport';
+} from '@trezor/transport-common';
 
 export class NativeUsbTransport extends AbstractApiTransport {
     public name = 'NativeUsbTransport' as const;

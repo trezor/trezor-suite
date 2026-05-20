@@ -5,8 +5,7 @@ import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSet
 import { firmwareAssets } from '@trezor/connect-data';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import type { FirmwareRelease } from '@trezor/device-utils';
-import { AbstractApiTransport } from '@trezor/transport';
-import type { UsbApi } from '@trezor/transport';
+import { AbstractApiTransport, type UsbApi } from '@trezor/transport-common';
 import { versionUtils } from '@trezor/utils';
 
 import * as settingsStore from './src/data/settingsStore';

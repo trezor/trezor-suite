@@ -34,5 +34,8 @@
         "ts-node": "^10.9.2",
         "tsx": "^4.21.0",
         "usb": "^2.17.0"
+    },
+    "dependencies": {
+        "@trezor/transport-common": "workspace:*"
     }
 }

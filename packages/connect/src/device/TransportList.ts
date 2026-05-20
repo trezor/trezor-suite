@@ -1,14 +1,15 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { ConnectSettingsTransport } from '@trezor/connect-common/src/types/settings';
-import type { Transport } from '@trezor/transport';
+// Static node-only imports are masked for browser/react-native by the
+// `.browser` and `.native` redirects in `@trezor/transport`. Switching this
+// resolver to dependency injection removes the need for those redirects.
+import { BridgeTransport, NodeUsbTransport, UdpTransport } from '@trezor/transport';
 import {
-    BridgeTransport,
-    NodeUsbTransport,
-    UdpTransport,
-    WebUsbTransport,
+    type AbstractTransportParams,
+    type Transport,
     isTransportInstance,
-} from '@trezor/transport';
-import type { AbstractTransportParams } from '@trezor/transport/src/transports/abstract';
+} from '@trezor/transport-common';
+import { WebUsbTransport } from '@trezor/transport-web';
 
 type Params = AbstractTransportParams & { sessionsBackgroundUrl?: string | null };
 

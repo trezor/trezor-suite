@@ -1,7 +1,6 @@
 /// <reference lib="webworker" />
 
-import { SessionsBackground } from './background';
-import { type HandleMessageParams } from './types';
+import { type HandleMessageParams, SessionsBackground } from '@trezor/transport-common';
 
 declare let self: SharedWorkerGlobalScope;
 

@@ -1,17 +1,18 @@
 import UDP from 'dgram';
 
-import { arrayPartition, isNotUndefined, resolveAfter } from '@trezor/utils';
-
 import {
     AbstractApi,
     type AbstractApiAwaitedResult,
     type AbstractApiConstructorParams,
-} from './abstract';
-import { DEVICE_TYPE } from '../constants';
-import * as ERRORS from '../errors';
-import { type DescriptorApiLevel, PathInternal } from '../types';
-import { readMessageBuffer } from '../utils/readMessageBuffer';
-import { error, success } from '../utils/result';
+    DEVICE_TYPE,
+    type DescriptorApiLevel,
+    TRANSPORT_ERROR as ERRORS,
+    PathInternal,
+    error,
+    readMessageBuffer,
+    success,
+} from '@trezor/transport-common';
+import { arrayPartition, isNotUndefined, resolveAfter } from '@trezor/utils';
 
 const PING = Buffer.from('PINGPING');
 const PONG = Buffer.from('PONGPONG');

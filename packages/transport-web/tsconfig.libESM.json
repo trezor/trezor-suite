@@ -1,0 +1,10 @@
+{
+    "extends": "../../tsconfig.libESM.json",
+    "include": ["./src"],
+    "compilerOptions": {
+        "outDir": "./libESM",
+        "lib": ["DOM", "ES2023"],
+        "types": []
+    },
+    "references": [{ "path": "../transport-common" }, { "path": "../eslint" }]
+}

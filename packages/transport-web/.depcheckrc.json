@@ -1,0 +1,5 @@
+{
+    "_comment": "@types/sharedworker is consumed only as an ambient type (SharedWorkerGlobalScope) inside background-sharedworker.ts. depcheck cannot detect ambient-only usage, so the package must be listed here.",
+    "ignore-patterns": ["libDev", "lib"],
+    "ignores": ["@types/sharedworker"]
+}

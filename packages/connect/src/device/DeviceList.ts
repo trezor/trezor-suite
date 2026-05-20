@@ -12,9 +12,12 @@ import type {
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { initLog } from '@trezor/connect-common/src/utils/debug';
 import { parseStaticSessionId } from '@trezor/device-utils';
-import type { Transport } from '@trezor/transport';
-import { TRANSPORT } from '@trezor/transport';
-import type { Descriptor, ApiType as TransportApiType } from '@trezor/transport/src/types';
+import {
+    type Descriptor,
+    TRANSPORT,
+    type Transport,
+    type ApiType as TransportApiType,
+} from '@trezor/transport-common';
 import {
     TypedEmitter,
     arrayDistinct,

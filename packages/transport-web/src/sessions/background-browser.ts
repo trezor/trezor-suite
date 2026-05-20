@@ -1,10 +1,10 @@
-import type { Descriptor } from '../types';
-import { type SessionsBackground } from './background';
 import {
+    type Descriptor,
     type HandleMessageParams,
     type HandleMessageResponse,
+    type SessionsBackground,
     type SessionsBackgroundInterface,
-} from './types';
+} from '@trezor/transport-common';
 
 /**
  * creating BrowserSessionsBackground initiates sessions-background for browser based environments and provides:

@@ -33,7 +33,7 @@ import {
     initLog,
     setLogWriter,
 } from '@trezor/connect-common/src/utils/debug';
-import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
+import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport-common';
 import { createDeferred, createLazy, getSynchronize, throwError } from '@trezor/utils';
 
 import type { AbstractMethod } from './AbstractMethod';

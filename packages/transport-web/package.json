@@ -1,0 +1,52 @@
+{
+    "name": "@trezor/transport-web",
+    "version": "1.0.0-alpha.1",
+    "description": "Browser-only transports for @trezor/connect: WebUSB and SharedWorker-backed sessions backend.",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "keywords": [
+        "Trezor",
+        "transport",
+        "webusb"
+    ],
+    "main": "./src/index.ts",
+    "sideEffects": false,
+    "type": "module",
+    "publishConfig": {
+        "main": "./libESM/index.mjs",
+        "types": "./libESM/index.d.mts",
+        "exports": {
+            ".": {
+                "types": "./libESM/index.d.mts",
+                "default": "./libESM/index.mjs"
+            },
+            "./libESM/*": "./libESM/*"
+        }
+    },
+    "files": [
+        "libESM/",
+        "CHANGELOG.md"
+    ],
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build tsconfig.json",
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "devDependencies": {
+        "@trezor/eslint": "workspace:*",
+        "@types/sharedworker": "^0.0.223"
+    },
+    "dependencies": {
+        "@trezor/transport-common": "workspace:*"
+    },
+    "peerDependencies": {
+        "tslib": "^2.6.2"
+    }
+}

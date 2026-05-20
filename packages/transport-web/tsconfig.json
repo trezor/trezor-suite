@@ -1,0 +1,12 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "./libDev",
+        "lib": ["DOM", "ES2023"],
+        "types": []
+    },
+    "references": [
+        { "path": "../transport-common" },
+        { "path": "../eslint" }
+    ]
+}
