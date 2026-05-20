@@ -49,9 +49,10 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     const isClaiming = isClaimSubmitting || !!claimSession.action.pendingTransaction;
     const isDeviceConnected = !!device?.connected && device.available;
 
-    const { merkleRewardsQuery } = useMerkleRewards(account);
+    const { merkleRewardsQuery, missingRateTickersQuery } = useMerkleRewards(account);
     const accountRewards: YieldAccountRewards | undefined =
         merkleRewardsQuery.data?.accountsRewards[0];
+    const isRewardsLoading = merkleRewardsQuery.isLoading || missingRateTickersQuery.isFetching;
 
     useEffect(() => {
         dispatch(stablecoinYieldActions.initSession({ flowType: 'claim', flowKey }));
@@ -153,7 +154,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
 
                                 <YieldRewardsList
                                     accountRewards={accountRewards}
-                                    isLoading={merkleRewardsQuery.isLoading}
+                                    isLoading={isRewardsLoading}
                                 />
                             </Column>
                         </Card>
@@ -174,9 +175,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                             size="large"
                             width="100%"
                             isDisabled={
-                                merkleRewardsQuery.isLoading ||
-                                !accountRewards?.rewards.length ||
-                                isClaiming
+                                isRewardsLoading || !accountRewards?.rewards.length || isClaiming
                             }
                             isLoading={isClaimSubmitting}
                             onClick={handleClaim}
