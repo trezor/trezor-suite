@@ -27,4 +27,5 @@ export interface WalletSettings {
     networkReserve: boolean;
     isAutoEjectEnabled: boolean;
     addressDisplayType: AddressDisplayOptions;
+    useFiatBasedCryptoDecimals: boolean;
 }

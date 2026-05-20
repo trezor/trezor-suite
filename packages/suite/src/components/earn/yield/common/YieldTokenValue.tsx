@@ -30,7 +30,12 @@ export const YieldTokenValue = ({ token, amount }: YieldTokenValueProps) => {
                 isBordered={false}
             />
             <Text typographyStyle="body-md-strong">
-                <FormattedCryptoAmount value={roundedAmount} symbol={token.symbol} />
+                <FormattedCryptoAmount
+                    value={roundedAmount}
+                    symbol={token.symbol}
+                    networkSymbol={token.networkSymbol}
+                    contractAddress={token.contractAddress}
+                />
             </Text>
         </Row>
     );

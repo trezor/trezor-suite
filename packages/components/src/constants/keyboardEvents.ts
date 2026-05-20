@@ -6,6 +6,7 @@ export enum KEYBOARD_CODE {
     ARROW_RIGHT = 'ArrowRight',
     TAB = 'Tab',
     COMMA = 'Comma',
+    KEY_A = 'KeyA',
     KEY_P = 'KeyP',
     KEY_D = 'KeyD',
 

@@ -17,6 +17,7 @@ export const SettingsAnchor = {
     Language: '@general-settings/language',
     Fiat: '@general-settings/fiat',
     BitcoinAmountUnit: '@general-settings/btc-amount-unit',
+    FiatBasedCryptoDecimals: '@general-settings/fiat-based-crypto-decimals',
     Labeling: '@general-settings/labeling',
     LabelingServers: '@general-settings/labeling-servers',
     LabelingDisconnect: '@general-settings/labeling-disconnect',

@@ -4,14 +4,23 @@ import { selectLanguage } from '@suite/settings';
 import { isSignValuePositive } from '@suite-common/formatters';
 import { type SignValue } from '@suite-common/suite-types';
 import {
+    type NetworkSymbol,
     type NetworkSymbolExtended,
     getDisplaySymbol,
     getNetworkOptional,
 } from '@suite-common/wallet-config';
 import { LOW_BALANCE_THRESHOLD } from '@suite-common/wallet-constants';
 import {
+    selectBaseCurrency,
+    selectFiatRatesByFiatRateKey,
+    selectUseFiatBasedCryptoDecimals,
+} from '@suite-common/wallet-core';
+import { type TokenAddress } from '@suite-common/wallet-types';
+import {
     type AmountUnit,
     formatCoinBalance,
+    formatCoinBalanceByFiatRate,
+    getFiatRateKey,
     localizeNumber,
     networkAmountToSmallestUnit,
 } from '@suite-common/wallet-utils';
@@ -29,6 +38,10 @@ import { RedactNumericalValue } from './RedactNumericalValue';
 export interface FormattedCryptoAmountProps {
     value?: string | number | AmountUnit; // Todo: remove `string | number`, its for Back Compatibility only
     symbol?: NetworkSymbolExtended;
+    // Override for fiat-rate lookup when `symbol` carries a token ticker (e.g. "USDC")
+    // instead of a NetworkSymbol — pass the host chain (e.g. "eth") to enable rate-based
+    // decimal formatting for tokens.
+    networkSymbol?: NetworkSymbol;
     contractAddress?: string | null;
     isBalance?: boolean;
     showApproximation?: boolean;
@@ -47,6 +60,7 @@ export interface FormattedCryptoAmountProps {
 export const FormattedCryptoAmount = ({
     value, // expects a value in full units (BTC not sats)
     symbol,
+    networkSymbol: networkSymbolOverride,
     contractAddress, // include contractAddress whenever the symbol is an token
     isBalance,
     showApproximation = false,
@@ -59,8 +73,32 @@ export const FormattedCryptoAmount = ({
     'data-testid': dataTest,
 }: FormattedCryptoAmountProps) => {
     const locale = useSelector(selectLanguage);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
+    const useFiatBasedDecimals = useSelector(selectUseFiatBasedCryptoDecimals);
 
     const { areSatsDisplayed } = useBitcoinAmountUnit();
+
+    const lowerCaseSymbol = symbol?.toLowerCase();
+    const {
+        features: networkFeatures,
+        testnet: isTestnet,
+        symbol: networkSymbolFromConfig,
+    } = getNetworkOptional(lowerCaseSymbol) ?? {};
+
+    // Tokens carry a ticker in `symbol` (e.g. "USDC"); fall back to the explicit override
+    // so fiat-rate lookup still resolves the host chain.
+    const networkSymbol = networkSymbolFromConfig ?? networkSymbolOverride;
+
+    const currentRate = useSelector(state => {
+        if (!networkSymbol) return undefined;
+        const key = getFiatRateKey(
+            networkSymbol,
+            baseCurrencyCode,
+            (contractAddress ?? undefined) as TokenAddress | undefined,
+        );
+
+        return selectFiatRatesByFiatRateKey(state, key);
+    });
 
     const isAmountLow = useMemo(() => {
         if (!value || !showApproximation) return false;
@@ -72,13 +110,6 @@ export const FormattedCryptoAmount = ({
     if (!value) {
         return null;
     }
-
-    const lowerCaseSymbol = symbol?.toLowerCase();
-    const {
-        features: networkFeatures,
-        testnet: isTestnet,
-        symbol: networkSymbol,
-    } = getNetworkOptional(lowerCaseSymbol) ?? {};
 
     const areSatsSupported = !!networkFeatures?.includes('amount-unit');
 
@@ -94,15 +125,19 @@ export const FormattedCryptoAmount = ({
         formattedSymbol = isTestnet ? `sat ${formattedSymbol}` : 'sat';
     }
 
-    // format truncation + locale (used for balances) or just locale
-    if (isBalance && !isAmountLow) {
+    // Dynamic decimals based on fiat rate — skipped in sats mode (already integer units)
+    // and when the user disabled the feature in settings.
+    const fiatRate = useFiatBasedDecimals && !isSatoshis ? currentRate?.rate : undefined;
+
+    if (isAmountLow) {
+        formattedValue = `< ${LOW_BALANCE_THRESHOLD}`;
+    } else if (fiatRate !== undefined) {
+        formattedValue = formatCoinBalanceByFiatRate(String(formattedValue), locale, fiatRate);
+    } else if (isBalance) {
         formattedValue = formatCoinBalance(String(formattedValue), locale);
     } else {
         formattedValue = localizeNumber(formattedValue, locale);
     }
-
-    // prefix balance with < if it's below threshold
-    formattedValue = isAmountLow ? `< ${LOW_BALANCE_THRESHOLD}` : formattedValue;
 
     // output as a string, mostly for compatibility with graphs
     if (isRawString) {

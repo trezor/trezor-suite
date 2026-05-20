@@ -2,7 +2,7 @@ import { useEvent } from 'react-use';
 
 import { closeModalApp, goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
-import { startDiscoveryThunk } from '@suite-common/wallet-core';
+import { startDiscoveryThunk, toggleUseFiatBasedCryptoDecimals } from '@suite-common/wallet-core';
 import { KEYBOARD_CODE } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -17,8 +17,14 @@ export const AppShortcuts = () => {
         discoveryStatus !== undefined && discoveryStatus.status === 'loading';
 
     useEvent('keydown', e => {
-        const { altKey, metaKey } = e;
+        const { altKey, metaKey, shiftKey } = e;
         const isDeviceSelected = selectedDevice !== undefined;
+
+        // press Shift + Alt/Option + A to toggle fiat-based crypto decimals
+        if (shiftKey && altKey && e.code === KEYBOARD_CODE.KEY_A) {
+            dispatch(toggleUseFiatBasedCryptoDecimals());
+            e.preventDefault();
+        }
         // press ALT + P to show PassphraseModal
         if (
             selectedDevice?.connected &&

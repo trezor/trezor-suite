@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Column, Text } from '@trezor/components';
@@ -9,6 +10,7 @@ import { useSelector } from 'src/hooks/suite';
 
 export type AssetAmountProps = {
     symbol: string;
+    networkSymbol?: NetworkSymbol;
     amount: string;
     contractAddress: string;
     fiatAmount?: BaseCurrencyAmount;
@@ -18,6 +20,7 @@ export type AssetAmountProps = {
 export function AssetAmount({
     amount,
     symbol,
+    networkSymbol,
     fiatAmount,
     contractAddress,
     fiatFallackText = false,
@@ -31,6 +34,7 @@ export function AssetAmount({
                 <FormattedCryptoAmount
                     value={amount}
                     symbol={symbol}
+                    networkSymbol={networkSymbol}
                     contractAddress={contractAddress}
                     isBalance
                 />

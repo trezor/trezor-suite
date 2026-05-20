@@ -206,6 +206,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                     <Text intent="neutral">
                                         <AmountComponent
                                             transfer={transfer}
+                                            networkSymbol={selectedAccount.account?.symbol}
                                             withLink={true}
                                             withSign={true}
                                             alignMultitoken="flex-start"

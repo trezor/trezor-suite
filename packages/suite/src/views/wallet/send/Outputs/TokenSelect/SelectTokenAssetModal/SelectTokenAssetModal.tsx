@@ -146,6 +146,7 @@ export function SelectTokenAssetModal({
                 option.tokenBalance && option.contractAddress ? (
                     <TokenBalance
                         contractAddress={option.contractAddress}
+                        networkSymbol={account.symbol}
                         tokenBalance={option.tokenBalance}
                     />
                 ) : null
