@@ -105,6 +105,7 @@ export const preloadStore = async () => {
                 graph,
                 tradingTrades,
                 historicRates,
+                graphFiatRates: undefined,
                 sendFormDrafts,
                 formDrafts,
                 analytics,

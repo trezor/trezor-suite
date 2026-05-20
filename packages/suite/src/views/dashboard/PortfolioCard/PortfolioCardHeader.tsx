@@ -1,8 +1,9 @@
 import { type ReactNode } from 'react';
 
-import { Row, SkeletonRectangle } from '@trezor/components';
+import { SkeletonRectangle } from '@trezor/components';
 
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
+import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 import { type Discovery } from 'src/types/wallet';
 
 export type PortfolioCardHeaderProps = {
@@ -20,14 +21,16 @@ export const PortfolioCardHeader = ({
     isDiscoveryRunning,
     rightContent,
 }: PortfolioCardHeaderProps) => {
+    const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
+
     const valueLoading = isDiscoveryRunning || (!discovery && isNaN(Number(fiatAmount)));
 
     return (
-        <Row
+        <ContentFlex
             justifyContent="space-between"
-            alignItems="center"
+            alignItems={isContentBelowBreakpoint ? 'flex-start' : 'center'}
             gap={8}
-            padding={{ vertical: 16, horizontal: 24 }}
+            margin={{ top: 16, horizontal: 24, bottom: 16 }}
         >
             {valueLoading ? (
                 <SkeletonRectangle width={140} height={53} />
@@ -40,6 +43,6 @@ export const PortfolioCardHeader = ({
                 />
             )}
             {rightContent}
-        </Row>
+        </ContentFlex>
     );
 };

@@ -142,6 +142,15 @@ export interface NotificationEvent {
     };
 }
 
+export interface AccountBalanceHistoryProgressEvent {
+    type: 'accountBalanceHistoryProgress';
+    payload: {
+        data: AccountBalanceHistory[];
+        descriptor: string;
+        requestId?: string;
+    };
+}
+
 export interface FiatRatesEvent {
     type: 'fiatRates';
     payload: {
@@ -151,7 +160,12 @@ export interface FiatRatesEvent {
 
 export interface Notification {
     type: typeof RESPONSES.NOTIFICATION;
-    payload: BlockEvent | NotificationEvent | FiatRatesEvent | MempoolEvent;
+    payload:
+        | AccountBalanceHistoryProgressEvent
+        | BlockEvent
+        | NotificationEvent
+        | FiatRatesEvent
+        | MempoolEvent;
 }
 
 export interface PushTransaction {

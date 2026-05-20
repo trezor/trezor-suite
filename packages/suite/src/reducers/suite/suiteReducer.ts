@@ -43,6 +43,7 @@ export interface SuiteState {
     torStatus: TorStatus;
     torBootstrap: TorBootstrap | null;
     lifecycle: SuiteLifecycle;
+    hasCompletedInitialDashboardGraphDefer: boolean;
     transport?: TransportState;
     evmSettings: EvmSettings;
     countryCode: CountryCode | null;
@@ -57,6 +58,7 @@ const initialState: SuiteState = {
     torStatus: TorStatus.Disabled,
     torBootstrap: null,
     lifecycle: { status: 'initial' },
+    hasCompletedInitialDashboardGraphDefer: false,
     evmSettings: {
         confirmExplanationModalClosed: {},
         explanationBannerClosed: {},
@@ -97,6 +99,9 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 break;
             case SUITE.READY:
                 draft.lifecycle = { status: 'ready' };
+                break;
+            case SUITE.MARK_INITIAL_DASHBOARD_GRAPH_DEFER_COMPLETED:
+                draft.hasCompletedInitialDashboardGraphDefer = true;
                 break;
 
             case SUITE.ERROR:

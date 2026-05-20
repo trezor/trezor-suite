@@ -33,7 +33,7 @@ const updateError = (draft: State) => {
 };
 
 const update = (draft: State, payload: GraphData) => {
-    const { account, data, error, isLoading } = payload;
+    const { account, data, rawData, error, fetchedRange, isLoading } = payload;
     const dataIndex = draft.data.findIndex(
         d =>
             d.account.deviceState === account.deviceState &&
@@ -41,7 +41,16 @@ const update = (draft: State, payload: GraphData) => {
             d.account.symbol === account.symbol,
     );
     if (dataIndex !== -1) {
-        draft.data[dataIndex].data = data;
+        const shouldPreserveExistingData =
+            isLoading && !error && data.length === 0 && draft.data[dataIndex].data.length > 0;
+
+        draft.data[dataIndex].data = shouldPreserveExistingData ? draft.data[dataIndex].data : data;
+        draft.data[dataIndex].rawData = shouldPreserveExistingData
+            ? draft.data[dataIndex].rawData
+            : rawData;
+        draft.data[dataIndex].fetchedRange = shouldPreserveExistingData
+            ? draft.data[dataIndex].fetchedRange
+            : fetchedRange;
         draft.data[dataIndex].error = error;
         draft.data[dataIndex].isLoading = isLoading;
     } else {
@@ -50,6 +59,8 @@ const update = (draft: State, payload: GraphData) => {
             isLoading,
             error,
             data,
+            rawData,
+            fetchedRange,
         });
     }
 
@@ -57,7 +68,11 @@ const update = (draft: State, payload: GraphData) => {
 };
 
 const loadFromStorage = (draft: State, payload: GraphData[] = []) => {
-    draft.data = payload;
+    draft.data = payload.map(entry => ({
+        ...entry,
+        rawData: entry.rawData ?? [],
+        fetchedRange: entry.fetchedRange ?? { from: null, to: null },
+    }));
     updateError(draft);
 };
 
@@ -89,6 +104,9 @@ const graphReducer = (state: State = initialState, action: WalletAction | SuiteA
             case GRAPH.ACCOUNT_GRAPH_SUCCESS:
                 update(draft, action.payload);
                 break;
+            case GRAPH.ACCOUNT_GRAPH_BATCH_SUCCESS:
+                action.payload.forEach(payload => update(draft, payload));
+                break;
             case GRAPH.ACCOUNT_GRAPH_FAIL:
                 update(draft, action.payload);
                 break;
@@ -96,6 +114,9 @@ const graphReducer = (state: State = initialState, action: WalletAction | SuiteA
                 draft.isLoading = true;
                 break;
             case GRAPH.AGGREGATED_GRAPH_SUCCESS:
+                draft.isLoading = false;
+                break;
+            case GRAPH.AGGREGATED_GRAPH_FAIL:
                 draft.isLoading = false;
                 break;
             case GRAPH.SET_SELECTED_RANGE:

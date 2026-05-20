@@ -4,6 +4,7 @@ export interface AccountBalanceHistoryParams {
     to?: number;
     currencies?: string[];
     groupBy?: number;
+    requestId?: string;
 }
 
 export interface GetCurrentFiatRatesParams {

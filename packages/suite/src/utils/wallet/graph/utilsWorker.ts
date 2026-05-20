@@ -4,7 +4,7 @@ import { BASE_CURRENCY_ZERO, toFiatCurrency } from '@suite-common/wallet-utils';
 import type { FiatRatesBySymbol, StaticSessionId } from '@trezor/connect';
 import { BigNumber, typedObjectFromEntries, typedObjectKeys } from '@trezor/utils';
 
-import type { State as GraphState } from 'src/reducers/wallet/graphReducer';
+import { type State as GraphState } from 'src/reducers/wallet/graphReducer';
 import {
     type AggregatedAccountHistory,
     type AggregatedDashboardHistory,
@@ -127,10 +127,6 @@ type PrepareGraphDataAsyncProps = {
     deviceState: StaticSessionId | undefined;
 };
 
-/**
- * Poor man's substitute for web worker, but it does the job perfectly - does expensive calculations async without
- * lagging the renderer thread.
- */
 export const prepareGraphDataAsync = ({
     graph,
     deviceState,
@@ -138,9 +134,11 @@ export const prepareGraphDataAsync = ({
     new Promise(resolve => {
         window.setTimeout(() => {
             const history = getGraphDataForInterval({ deviceState, graph });
-            const { groupBy } = graph.selectedRange;
-            const type = 'dashboard';
-            const aggregatedData = aggregateBalanceHistory(history, groupBy, type);
+            const aggregatedData = aggregateBalanceHistory(
+                history,
+                graph.selectedRange.groupBy,
+                'dashboard',
+            );
             resolve(aggregatedData);
         }, 0);
     });

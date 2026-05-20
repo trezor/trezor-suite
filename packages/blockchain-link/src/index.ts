@@ -371,6 +371,7 @@ export { sumAddressValues } from './workers/electrum/methods/getAccountInfo';
 export type { Message } from '@trezor/blockchain-link-types';
 export type {
     Response,
+    AccountBalanceHistoryProgressEvent,
     BlockEvent,
     NotificationEvent,
     FiatRatesEvent,

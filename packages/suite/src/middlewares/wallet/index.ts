@@ -14,6 +14,7 @@ import { prepareWalletConnectMiddleware } from '@suite-common/walletconnect';
 
 import { coinjoinMiddleware } from './coinjoinMiddleware';
 import { prepareDiscoveryMiddleware } from './discoveryMiddleware';
+import { graphFiatMiddleware } from './graphFiatMiddleware';
 import graphMiddleware from './graphMiddleware';
 import { replaceByFeeErrorMiddleware } from './replaceByFeeErrorMiddleware';
 import storageMiddleware from './storageMiddleware';
@@ -30,6 +31,7 @@ export const getWalletMiddlewares = (
     prepareFiatRatesMiddleware(getExtra),
     prepareTokenDefinitionsMiddleware(getExtra),
     prepareStakeMiddleware(getExtra),
+    graphFiatMiddleware,
     storageMiddleware,
     graphMiddleware,
     tradingMiddleware,

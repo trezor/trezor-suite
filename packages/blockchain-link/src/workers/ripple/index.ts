@@ -10,6 +10,7 @@ import {
 
 import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
 import type {
+    AccountBalanceHistory,
     AccountInfo,
     AccountInfoParams,
     MessageTypes,
@@ -191,6 +192,99 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
             ...account,
             marker: response.result.marker as AccountInfoParams['marker'],
         },
+    } as const;
+};
+
+const getAccountBalanceHistory = async (
+    request: Request<MessageTypes.GetAccountBalanceHistory>,
+) => {
+    const { payload } = request;
+    const client = await request.connect();
+    const groupBy = payload.groupBy ?? 3600 * 24;
+    const history = new Map<number, AccountBalanceHistory>();
+    const pageLimit = 200;
+
+    let marker: unknown;
+    let reachedFromBoundary = false;
+
+    while (!reachedFromBoundary) {
+        const response = await client.request({
+            command: 'account_tx',
+            account: payload.descriptor,
+            limit: pageLimit,
+            marker,
+            api_version: 2,
+        });
+
+        const { marker: nextMarker, transactions } = response.result;
+
+        if (transactions.length === 0) {
+            break;
+        }
+
+        for (const rawTx of transactions) {
+            if (rawTx.tx_json == null) {
+                continue;
+            }
+
+            const tx = utils.transformTransaction(
+                rawTx.hash,
+                rawTx.tx_json,
+                rawTx.meta,
+                payload.descriptor,
+            );
+
+            if (!tx.blockTime) {
+                continue;
+            }
+
+            if (payload.to && tx.blockTime > payload.to) {
+                continue;
+            }
+
+            if (payload.from && tx.blockTime < payload.from) {
+                reachedFromBoundary = true;
+                break;
+            }
+
+            const balanceDiff = utils.extractAccountBalanceDiff(rawTx.meta, payload.descriptor);
+
+            if (!balanceDiff) {
+                continue;
+            }
+
+            const bucketTime = Math.floor(tx.blockTime / groupBy) * groupBy;
+            const bucket = history.get(bucketTime) ?? {
+                time: bucketTime,
+                txs: 0,
+                received: '0',
+                sent: '0',
+                sentToSelf: '0',
+                rates: {},
+            };
+            const netChange = balanceDiff.postBalance.minus(balanceDiff.preBalance);
+
+            bucket.txs += 1;
+
+            if (netChange.isGreaterThan(0)) {
+                bucket.received = new BigNumber(bucket.received).plus(netChange).toFixed(0);
+            } else if (netChange.isLessThan(0)) {
+                bucket.sent = new BigNumber(bucket.sent).plus(netChange.abs()).toFixed(0);
+            }
+
+            history.set(bucketTime, bucket);
+        }
+
+        marker = nextMarker;
+
+        if (!marker) {
+            break;
+        }
+    }
+
+    return {
+        type: RESPONSES.GET_ACCOUNT_BALANCE_HISTORY,
+        payload: Array.from(history.values()).sort((a, b) => a.time - b.time),
     } as const;
 };
 
@@ -433,6 +527,8 @@ const onRequest = (request: Request<MessageTypes.Message>) => {
             return getInfo(request);
         case MESSAGES.GET_ACCOUNT_INFO:
             return getAccountInfo(request);
+        case MESSAGES.GET_ACCOUNT_BALANCE_HISTORY:
+            return getAccountBalanceHistory(request);
         case MESSAGES.GET_TRANSACTION:
             return getTransaction(request);
         case MESSAGES.ESTIMATE_FEE:

@@ -17,6 +17,7 @@ import type {
     AccountKey,
     FormDraftKeyPrefix,
     FormState,
+    GraphFiatCoinEntry,
     RatesByTimestamps,
     SuccessfulAccount,
 } from '@suite-common/wallet-types';
@@ -25,12 +26,14 @@ import {
     isAccountSuccessful,
     selectHistoricRatesByTransactions,
 } from '@suite-common/wallet-utils';
+import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/connect';
 import { cloneObject, typedObjectKeys } from '@trezor/utils';
 
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
 import { db } from 'src/storage';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
+import { getGraphFiatEntryKey } from 'src/support/wallet/graphFiatUtils';
 import type { AppState, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
 import { type GraphData } from 'src/types/wallet/graph';
@@ -42,6 +45,15 @@ import { type DesktopBluetoothDevice } from '../bluetooth/DesktopBluetoothDevice
 
 export type StorageAction = NonNullable<PreloadStoreAction>;
 export type StorageLoadAction = Extract<StorageAction, { type: typeof STORAGE.LOAD }>;
+
+const isEmptyGraphFiatResolutionEntry = (
+    resolutionEntry: GraphFiatCoinEntry['resolutions']['day'],
+) =>
+    resolutionEntry.points.length === 0 &&
+    resolutionEntry.fetchedAt === null &&
+    resolutionEntry.lastPointTimestamp === null &&
+    resolutionEntry.isLoading === false &&
+    resolutionEntry.error === null;
 
 export const saveExplorer = ({
     symbol,
@@ -301,6 +313,44 @@ export const saveAccountHistoricRates =
 
         return db.addItem('historicRates', accHistoricRates, accountKey, true);
     };
+
+export const saveGraphFiatRates = ({
+    baseCurrencyCode,
+    coinId,
+    graphFiatEntry,
+}: {
+    baseCurrencyCode: BaseCurrencyCode;
+    coinId: string;
+    graphFiatEntry: GraphFiatCoinEntry;
+}) => {
+    if (!db.isAccessible()) return;
+
+    const key = getGraphFiatEntryKey({ baseCurrencyCode, coinId });
+
+    return db.getItemByPK('graphFiatRates', key).then(storedGraphFiatEntry =>
+        db.addItem(
+            'graphFiatRates',
+            storedGraphFiatEntry
+                ? {
+                      ...storedGraphFiatEntry,
+                      resolutions: {
+                          day: isEmptyGraphFiatResolutionEntry(graphFiatEntry.resolutions.day)
+                              ? storedGraphFiatEntry.resolutions.day
+                              : graphFiatEntry.resolutions.day,
+                          month: isEmptyGraphFiatResolutionEntry(graphFiatEntry.resolutions.month)
+                              ? storedGraphFiatEntry.resolutions.month
+                              : graphFiatEntry.resolutions.month,
+                          max: isEmptyGraphFiatResolutionEntry(graphFiatEntry.resolutions.max)
+                              ? storedGraphFiatEntry.resolutions.max
+                              : graphFiatEntry.resolutions.max,
+                      },
+                  }
+                : graphFiatEntry,
+            key,
+            true,
+        ),
+    );
+};
 
 export const saveAccountTransactions =
     (account: Account) => (_dispatch: Dispatch, getState: GetState) => {

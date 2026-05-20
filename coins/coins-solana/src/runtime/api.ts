@@ -8,6 +8,7 @@ import {
 import type { TimerId } from '@trezor/type-utils';
 
 import type { ClusterUrl, RpcTransportFromClusterUrl, RpcTransportMainnet } from '../types';
+import { getBatchingTransport } from './getBatchingTransport';
 
 const DEFAULT_MAX_RPS = 4; // Default maximum requests per second
 const DEFAULT_INTERVAL = 1000; // Default interval in milliseconds (1 second)
@@ -142,7 +143,8 @@ export const getApi = (url: string, userAgent: string) => {
         transport,
         THROTTLE_OPTIONS,
     ) as RpcTransportMainnet;
-    const throttledRpc = createSolanaRpcFromTransport(throttledTransport);
+    const batchedTransport = getBatchingTransport(throttledTransport, clusterUrl);
+    const throttledRpc = createSolanaRpcFromTransport(batchedTransport as RpcTransportMainnet);
 
     const api = {
         clusterUrl,

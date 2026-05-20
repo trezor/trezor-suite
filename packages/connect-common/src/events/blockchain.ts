@@ -1,4 +1,5 @@
 import type {
+    AccountBalanceHistoryProgressEvent,
     BlockEvent,
     FiatRatesBySymbol,
     NotificationEvent,
@@ -10,6 +11,7 @@ import type { MessageFactoryFn } from '../types/utils';
 
 export const BLOCKCHAIN_EVENT = 'BLOCKCHAIN_EVENT';
 export const BLOCKCHAIN = {
+    ACCOUNT_GRAPH_PROGRESS: 'blockchain-account-balance-history-progress',
     CONNECT: 'blockchain-connect',
     RECONNECTING: 'blockchain-reconnecting',
     ERROR: 'blockchain-error',
@@ -48,12 +50,22 @@ export interface BlockchainNotification {
     notification: NotificationEvent['payload'];
 }
 
+export interface BlockchainAccountGraphProgress {
+    coin: CoinInfo;
+    identity?: string;
+    progress: AccountBalanceHistoryProgressEvent['payload'];
+}
+
 export interface BlockchainFiatRatesUpdate {
     coin: CoinInfo;
     rates: FiatRatesBySymbol;
 }
 
 export type BlockchainEvent =
+    | {
+          type: typeof BLOCKCHAIN.ACCOUNT_GRAPH_PROGRESS;
+          payload: BlockchainAccountGraphProgress;
+      }
     | {
           type: typeof BLOCKCHAIN.CONNECT;
           payload: BlockchainInfo;

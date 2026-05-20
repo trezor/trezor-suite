@@ -6,6 +6,7 @@ export class RateLimiter {
     private readonly timeoutMs: number;
 
     private queue = Promise.resolve();
+    private abortController = new AbortController();
 
     constructor(delayMs: number, timeoutMs: number) {
         this.delayMs = delayMs;
@@ -13,8 +14,13 @@ export class RateLimiter {
     }
 
     limit<T>(fn: (signal?: AbortSignal) => Promise<T>): Promise<T> {
+        const limiterSignal = this.abortController.signal;
         const resultPromise = this.queue.then(
-            async () => await scheduleAction(signal => fn(signal), { timeout: this.timeoutMs }),
+            async () =>
+                await scheduleAction(signal => fn(signal), {
+                    signal: limiterSignal,
+                    timeout: this.timeoutMs,
+                }),
         );
 
         this.queue = resultPromise
@@ -22,5 +28,11 @@ export class RateLimiter {
             .then(() => resolveAfter(this.delayMs));
 
         return resultPromise;
+    }
+
+    cancelPending() {
+        this.abortController.abort();
+        this.abortController = new AbortController();
+        this.queue = Promise.resolve();
     }
 }

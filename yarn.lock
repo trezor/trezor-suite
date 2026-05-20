@@ -8442,6 +8442,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@seibei-iguchi/liveline@npm:0.10.0":
+  version: 0.10.0
+  resolution: "@seibei-iguchi/liveline@npm:0.10.0"
+  peerDependencies:
+    react: ">=18"
+  checksum: 10/7dbd41494ae49e5185f646ae70d29c8d44643a6ed0482ddc5614bc58b10f64c984ecf18492ef5916f38e35ffa405603131e2f55bb8773a92e1be7bd0a32fabc0
+  languageName: node
+  linkType: hard
+
 "@sentry-internal/browser-utils@npm:10.50.0":
   version: 10.50.0
   resolution: "@sentry-internal/browser-utils@npm:10.50.0"
@@ -9501,7 +9510,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/rpc-spec-types@npm:2.3.0":
+"@solana/rpc-spec-types@npm:2.3.0, @solana/rpc-spec-types@npm:^2.3.0":
   version: 2.3.0
   resolution: "@solana/rpc-spec-types@npm:2.3.0"
   peerDependencies:
@@ -15187,6 +15196,7 @@ __metadata:
     "@solana-program/token-2022": "npm:^0.4.2"
     "@solana/kit": "npm:^2.3.0"
     "@solana/rpc-api": "npm:^2.3.0"
+    "@solana/rpc-spec-types": "npm:^2.3.0"
     "@solana/rpc-types": "npm:^2.3.0"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -16089,6 +16099,7 @@ __metadata:
     "@hookform/resolvers": "npm:^5.2.2"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.11.2"
+    "@seibei-iguchi/liveline": "npm:0.10.0"
     "@sentry/core": "npm:10.50.0"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/analytics-redux": "workspace:*"

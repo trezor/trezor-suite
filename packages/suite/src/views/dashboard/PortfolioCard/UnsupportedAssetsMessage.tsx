@@ -1,11 +1,16 @@
 import { Translation } from '@suite/intl';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { type NetworkSymbol, getNetwork, getNetworkFeatures } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    getCoingeckoId,
+    getNetwork,
+    getNetworkFeatures,
+} from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { unique } from '@trezor/utils';
 
-import { isNetworkWithGraphFeature } from 'src/utils/wallet/graph';
+import { isNetworkWithGraphFeature, isNetworkWithLegacyGraphFeature } from 'src/utils/wallet/graph';
 
 const hasAnyAccountWithTokens = (accounts: Account[]): boolean =>
     accounts.some(account => getNetworkFeatures(account.symbol).includes('tokens'));
@@ -14,18 +19,24 @@ export const useUnsupportedNetworkMessage = ({
     showGraphControls,
     device,
     accounts,
+    isNewBalanceGraphEnabled,
 }: {
     showGraphControls: boolean;
     device?: TrezorDevice;
     accounts: Account[];
+    isNewBalanceGraphEnabled: boolean;
 }) => {
+    const isGraphSupported = isNewBalanceGraphEnabled
+        ? isNetworkWithGraphFeature
+        : isNetworkWithLegacyGraphFeature;
     const affectedAccounts =
         showGraphControls && !hasBitcoinOnlyFirmware(device)
             ? accounts
                   .filter(
                       account =>
                           account.history &&
-                          !isNetworkWithGraphFeature(account.symbol, account.backendType),
+                          (!getCoingeckoId(account.symbol) ||
+                              !isGraphSupported(account.symbol, account.backendType)),
                   )
                   .map(({ symbol }) => symbol)
             : [];

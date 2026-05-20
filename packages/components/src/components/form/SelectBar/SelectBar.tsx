@@ -93,6 +93,8 @@ export type SelectBarProps<V extends ValueTypes> = {
     selectedOption?: V;
     onChange?: (value: V) => void;
     onOptionClick?: (value: V) => void;
+    onMouseEnter?: (value: V) => void;
+    onMouseLeave?: (value: V) => void;
     isDisabled?: boolean;
     isFullWidth?: boolean;
     orientation?: SelectBarOrientation;
@@ -107,6 +109,8 @@ export const SelectBar = <V extends ValueTypes>({
     selectedOption,
     onChange,
     onOptionClick,
+    onMouseEnter,
+    onMouseLeave,
     isDisabled = false,
     isFullWidth,
     orientation = 'auto',
@@ -225,6 +229,8 @@ export const SelectBar = <V extends ValueTypes>({
                                 >
                                     <Option
                                         onClick={handleOptionClick(option)}
+                                        onMouseEnter={() => onMouseEnter?.(option.value)}
+                                        onMouseLeave={() => onMouseLeave?.(option.value)}
                                         $isDisabled={!!isDisabled}
                                         $isSelected={isSelected}
                                         data-isdisabled={!!isDisabled}

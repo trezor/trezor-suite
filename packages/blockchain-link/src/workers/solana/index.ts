@@ -1,4 +1,5 @@
 import type {
+    AccountBalanceHistory,
     AccountInfo,
     MessageTypes,
     Response,
@@ -37,6 +38,7 @@ type Request<T> = T & Context;
 type SignatureWithSlot = {
     signature: Signature;
     slot: Slot;
+    blockTime?: number;
 };
 
 function nonNullable<T>(value: T): value is NonNullable<T> {
@@ -47,6 +49,7 @@ const getAllSignatures = async (
     api: SolanaAPI,
     descriptor: MessageTypes.GetAccountInfo['payload']['descriptor'],
     fullHistory = false,
+    from?: number,
 ) => {
     const { address } = await solana();
     let lastSignature: SignatureWithSlot | undefined;
@@ -65,9 +68,14 @@ const getAllSignatures = async (
         const signatures = signaturesInfos.map(info => ({
             signature: info.signature,
             slot: info.slot,
+            blockTime: info.blockTime ? Number(info.blockTime) : undefined,
         }));
         lastSignature = signatures[signatures.length - 1];
-        keepFetching = signatures.length === defaultValueLimit && fullHistory;
+        const oldestBlockTime = signatures[signatures.length - 1]?.blockTime;
+        keepFetching =
+            signatures.length === defaultValueLimit &&
+            fullHistory &&
+            (from === undefined || oldestBlockTime === undefined || oldestBlockTime >= from);
         allSignatures = [...allSignatures, ...signatures];
     }
 
@@ -678,12 +686,218 @@ const unsubscribe = (request: Request<MessageTypes.Unsubscribe>) => {
     } as const;
 };
 
+const getAccountBalanceHistory = async (
+    request: Request<MessageTypes.GetAccountBalanceHistory>,
+) => {
+    const { payload } = request;
+    const api = await request.connect();
+    const { address } = await solana();
+    const { descriptor } = payload;
+    const groupBy = payload.groupBy ?? 3600 * 24;
+    type BalanceHistoryBucket = {
+        oldest: SignatureWithSlot;
+        time: number;
+        txs: number;
+        newest: SignatureWithSlot;
+    };
+    const progressBatchSize = 10;
+
+    const buildHistoryChunk = async (buckets: BalanceHistoryBucket[]) => {
+        const historyChunk: AccountBalanceHistory[] = [];
+        // Carries forward the most recent successfully-resolved postBalance
+        // so a transient `getTransaction` failure for one bucket emits a
+        // flat segment (matching the previous balance) rather than dropping
+        // the bucket from the response — which would force the transformer
+        // out of absolute mode and back into walk-back, producing a wrong
+        // flat-line-at-currentBalance for the entire response.
+        let lastKnownBalance: string | undefined;
+
+        for (let i = 0; i < buckets.length; i += progressBatchSize) {
+            const bucketBatch = buckets.slice(i, i + progressBatchSize);
+            // Solana txs carry the absolute account balance after each tx
+            // (`meta.postBalances[]`), so one fetch per bucket — the newest
+            // signature — is enough to anchor the bucket's end-of-period
+            // balance. The shared graph transformer
+            // (`enhanceBlockchainAccountHistoryFromCurrentBalance`) detects
+            // the populated `balance` field and skips the BTC/ETH-style
+            // `currentBalance + walk-back` reconstruction; received/sent are
+            // derived from successive bucket-balance deltas there. This
+            // halves `getTransaction` calls vs. fetching first+newest.
+            const sigsToFetch = new Set<Signature>();
+            for (const bucket of bucketBatch) {
+                sigsToFetch.add(bucket.newest.signature);
+            }
+
+            const sigArray = Array.from(sigsToFetch);
+            const results = await Promise.all(
+                sigArray.map(sig =>
+                    api.rpc
+                        .getTransaction(sig, {
+                            encoding: 'jsonParsed',
+                            maxSupportedTransactionVersion: 0,
+                            commitment: 'confirmed',
+                        })
+                        .send(),
+                ),
+            );
+
+            const txMap = new Map<string, ParsedTransactionWithMeta>();
+            for (let j = 0; j < sigArray.length; j++) {
+                const tx = results[j];
+                if (tx) {
+                    txMap.set(String(sigArray[j]), tx);
+                }
+            }
+
+            const batchHistoryChunk: AccountBalanceHistory[] = bucketBatch.map(bucket => {
+                const lastTx = txMap.get(String(bucket.newest.signature));
+                const lastDiff = lastTx
+                    ? solanaUtils.extractAccountBalanceDiff(lastTx, descriptor)
+                    : null;
+                const balance = lastDiff
+                    ? lastDiff.postBalance.toFixed(0)
+                    : (lastKnownBalance ?? '0');
+                lastKnownBalance = balance;
+
+                return {
+                    time: bucket.time,
+                    txs: bucket.txs,
+                    // received/sent are derived client-side from successive
+                    // `balance` deltas in the graph transformer; emit '0'/'0'
+                    // here so the leftmost bucket (which has no predecessor
+                    // to diff against) doesn't surface stale aggregate data.
+                    received: '0',
+                    sent: '0',
+                    sentToSelf: '0',
+                    rates: {},
+                    balance,
+                };
+            });
+
+            historyChunk.push(...batchHistoryChunk);
+
+            if (payload.requestId) {
+                request.post({
+                    id: -1,
+                    type: RESPONSES.NOTIFICATION,
+                    payload: {
+                        type: 'accountBalanceHistoryProgress',
+                        payload: {
+                            descriptor,
+                            requestId: payload.requestId,
+                            data: batchHistoryChunk,
+                        },
+                    },
+                });
+            }
+        }
+
+        return historyChunk;
+    };
+
+    let currentBucket: BalanceHistoryBucket | undefined;
+    let keepFetching = true;
+    let lastSignature: SignatureWithSlot | undefined;
+    const history: AccountBalanceHistory[] = [];
+    const defaultValueLimit = 100;
+
+    while (keepFetching) {
+        const signaturesInfos = await api.rpc
+            .getSignaturesForAddress(address(descriptor), {
+                before: lastSignature?.signature,
+                limit: defaultValueLimit,
+            })
+            .send();
+
+        const signatures = signaturesInfos.map(info => ({
+            signature: info.signature,
+            slot: info.slot,
+            blockTime: info.blockTime ? Number(info.blockTime) : undefined,
+        }));
+
+        if (signatures.length === 0) {
+            break;
+        }
+
+        lastSignature = signatures[signatures.length - 1];
+
+        const completedBuckets: BalanceHistoryBucket[] = [];
+        let reachedFromBoundary = false;
+
+        for (const sig of signatures) {
+            if (!sig.blockTime) {
+                continue;
+            }
+            if (payload.to && sig.blockTime > payload.to) {
+                continue;
+            }
+            if (payload.from && sig.blockTime < payload.from) {
+                reachedFromBoundary = true;
+                break;
+            }
+
+            const bucketTime = Math.floor(sig.blockTime / groupBy) * groupBy;
+
+            if (!currentBucket) {
+                currentBucket = {
+                    time: bucketTime,
+                    txs: 1,
+                    newest: sig,
+                    oldest: sig,
+                };
+
+                continue;
+            }
+
+            if (bucketTime === currentBucket.time) {
+                currentBucket.txs += 1;
+                currentBucket.oldest = sig;
+
+                continue;
+            }
+
+            completedBuckets.push(currentBucket);
+            currentBucket = {
+                time: bucketTime,
+                txs: 1,
+                newest: sig,
+                oldest: sig,
+            };
+        }
+
+        if (completedBuckets.length > 0) {
+            history.push(...(await buildHistoryChunk(completedBuckets)));
+        }
+
+        const oldestBlockTime = signatures[signatures.length - 1]?.blockTime;
+        keepFetching =
+            signatures.length === defaultValueLimit &&
+            !reachedFromBoundary &&
+            (payload.from === undefined ||
+                oldestBlockTime === undefined ||
+                oldestBlockTime >= payload.from);
+    }
+
+    if (currentBucket) {
+        history.push(...(await buildHistoryChunk([currentBucket])));
+    }
+
+    history.sort((a, b) => a.time - b.time);
+
+    return {
+        type: RESPONSES.GET_ACCOUNT_BALANCE_HISTORY,
+        payload: history,
+    } as const;
+};
+
 const onRequest = (request: Request<MessageTypes.Message>, isTestnet: boolean) => {
     switch (request.type) {
         case MESSAGES.GET_ACCOUNT_INFO:
             return getAccountInfo(request);
         case MESSAGES.GET_INFO:
             return getInfo(request, isTestnet);
+        case MESSAGES.GET_ACCOUNT_BALANCE_HISTORY:
+            return getAccountBalanceHistory(request);
         case MESSAGES.PUSH_TRANSACTION:
             return pushTransaction(request);
         case MESSAGES.ESTIMATE_FEE:

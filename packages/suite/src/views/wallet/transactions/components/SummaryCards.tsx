@@ -20,10 +20,10 @@ import { InfoCard } from './InfoCard';
 
 const getFormattedLabelLong = (rangeLabel: GraphRange['label']) => {
     switch (rangeLabel) {
-        case 'range':
-            return <Translation id="TR_RANGE" />;
         case 'all':
             return <Translation id="TR_ALL" />;
+        case 'range':
+            return <Translation id="TR_RANGE" />;
         case 'year':
             return <Translation id="TR_DATE_YEAR_LONG" />;
         case 'month':
@@ -32,6 +32,8 @@ const getFormattedLabelLong = (rangeLabel: GraphRange['label']) => {
             return <Translation id="TR_DATE_WEEK_LONG" />;
         case 'day':
             return <Translation id="TR_DATE_DAY_LONG" />;
+        case 'hour':
+            return <Translation id="TR_DATE_HOUR_LONG" />;
         default:
             return exhaustive(rangeLabel);
     }
@@ -71,13 +73,12 @@ export const SummaryCards = ({
 
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
 
-    // aggregate values from shown graph data
-    const numOfTransactions = data.reduce((acc, d) => (acc += d.txs), 0) || account.history.total;
-
-    // on some networks it is not easy to get total number of txs (e.g. Ripple & Stellar)
-    if (numOfTransactions === -1) {
-        return null;
-    }
+    const aggregatedTransactionCount = data.reduce((acc, d) => (acc += d.txs), 0);
+    const hasStableAccountHistoryTotal = account.history.total !== -1;
+    const numOfTransactions =
+        selectedRange.label === 'all' && hasStableAccountHistoryTotal
+            ? Math.max(account.history.total, aggregatedTransactionCount)
+            : aggregatedTransactionCount;
 
     const totalSentAmount = asBaseCurrencyAmount(
         data.reduce((acc, d) => acc.plus(d.sent), new BigNumber(0)),
@@ -93,6 +94,28 @@ export const SummaryCards = ({
         (acc, d) => sumFiatValueMap(acc, d.receivedFiat),
         {},
     );
+    let secondaryDateValue = null;
+
+    if (fromTimestamp && toTimestamp) {
+        if (selectedRange.label === 'day') {
+            secondaryDateValue = (
+                <DateWrapper>
+                    <FormattedDate value={fromTimestamp * 1000} date />
+                </DateWrapper>
+            );
+        } else {
+            secondaryDateValue = (
+                <>
+                    <DateWrapper>
+                        <FormattedDate value={fromTimestamp * 1000} date /> -
+                    </DateWrapper>{' '}
+                    <DateWrapper>
+                        <FormattedDate value={toTimestamp * 1000} date />
+                    </DateWrapper>
+                </>
+            );
+        }
+    }
 
     return (
         <Grid columns={isBelowDesktop ? 1 : 3} gap={20}>
@@ -104,18 +127,7 @@ export const SummaryCards = ({
                         <NumberOfTransactions value={numOfTransactions} />
                     </HiddenPlaceholder>
                 }
-                secondaryValue={
-                    fromTimestamp && toTimestamp ? (
-                        <>
-                            <DateWrapper>
-                                <FormattedDate value={fromTimestamp * 1000} date /> -
-                            </DateWrapper>{' '}
-                            <DateWrapper>
-                                <FormattedDate value={toTimestamp * 1000} date />
-                            </DateWrapper>
-                        </>
-                    ) : null
-                }
+                secondaryValue={secondaryDateValue}
             />
             <InfoCard
                 title={<Translation id="TR_INCOMING" />}
