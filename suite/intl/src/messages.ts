@@ -10696,14 +10696,6 @@ export const messages = defineMessages({
         id: 'TR_URL_IN_TOKEN',
         defaultMessage: "Never visit URLs in token names or symbols; they're usually scams.",
     },
-    TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT: {
-        id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT',
-        defaultMessage: 'Learn how a passphrase works',
-    },
-    TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT_LINK: {
-        id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT_LINK',
-        defaultMessage: 'Go',
-    },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE',
         defaultMessage: 'This Passphrase wallet is empty',
