@@ -218,7 +218,7 @@ export default defineConfig(
                         // "usb" package sets event listeners on the top level causing memory leaks.
                         // See: https://github.com/trezor/trezor-suite/pull/25952
                         find: /^usb$/,
-                        replacement: nodeRequire.resolve('../../transport/mocks/usb.cjs'),
+                        replacement: nodeRequire.resolve('../../transport/mocks/usb.js'),
                     },
                 ],
             },
