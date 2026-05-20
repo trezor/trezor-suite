@@ -14,7 +14,6 @@ import {
     type TradingType,
     tradingThunks,
 } from '@suite-common/trading';
-import { useFormDraft } from '@suite-common/wallet-core';
 
 import { type TradingUseWatchTradeProps } from 'src/types/trading/trading';
 
@@ -45,10 +44,6 @@ export const useTradingWatchTrade = <T extends TradingType>({
         cancelRefresh();
     });
 
-    const prefix = `trading-${trade?.tradeType ?? 'buy'}` as const;
-    const key = trade?.tradeType === 'buy' ? account?.key : undefined;
-    const { removeDraft } = useFormDraft(prefix, key);
-
     const watchTrade = useCallback(async () => {
         if (!trade || !account) return;
 
@@ -63,18 +58,9 @@ export const useTradingWatchTrade = <T extends TradingType>({
                 }),
             );
 
-            if (
-                trade.data.status &&
-                tradeFinalStatuses[trade.tradeType].includes(trade.data.status)
-            ) {
-                removeDraft();
-            }
-
             resetRefresh();
-        } else {
-            removeDraft();
         }
-    }, [account, refreshCount, trade, cancelRefresh, dispatch, removeDraft, resetRefresh]);
+    }, [account, refreshCount, trade, cancelRefresh, dispatch, resetRefresh]);
 
     useEffect(() => {
         watchTrade();

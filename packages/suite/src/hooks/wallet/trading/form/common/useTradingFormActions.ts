@@ -56,7 +56,6 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     account,
     methods,
     pageType,
-    draftUpdated,
     type,
     handleChange,
     setAmountLimits,
@@ -80,7 +79,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         methods as unknown as UseFormReturn<TradingSellExchangeFormProps>;
     const { outputs, sendCryptoSelect } = getValues();
     const values = useWatch<TradingSellExchangeFormProps>({ control });
-    const previousValues = useRef<typeof values | null>(isNotFormPage ? draftUpdated : null);
+    const previousValues = useRef<typeof values | null>(null);
     const sendCryptoAccount = useSelector(state =>
         selectAccountByKey(state, sendCryptoSelect?.accountKey),
     );

@@ -310,7 +310,9 @@ export const useTradingReceiveAddress = ({
     }, [extraFieldValue, methods.formState.errors.extraField]);
 
     useEffect(() => {
-        if (pageType === 'retry') return;
+        if (pageType === 'retry' || pageType === 'confirm') {
+            return;
+        }
 
         if (type === 'exchange') {
             dispatch(tradingExchangeActions.setReceiveAddress(receiveAddress));
@@ -322,7 +324,9 @@ export const useTradingReceiveAddress = ({
     }, [receiveAddress, pageType, type, dispatch]);
 
     useEffect(() => {
-        if (pageType === 'retry') return;
+        if (pageType === 'retry' || pageType === 'confirm') {
+            return;
+        }
 
         if (type === 'exchange') {
             dispatch(tradingExchangeActions.setExtraField(extraField));
@@ -330,7 +334,9 @@ export const useTradingReceiveAddress = ({
     }, [extraField, pageType, type, dispatch]);
 
     useEffect(() => {
-        if (pageType === 'retry') return;
+        if (pageType === 'retry' || pageType === 'confirm') {
+            return;
+        }
 
         if (type === 'exchange') {
             dispatch(tradingExchangeActions.setReceiveAccountKey(receiveAccount?.key));

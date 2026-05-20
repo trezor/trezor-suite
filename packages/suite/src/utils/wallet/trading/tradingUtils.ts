@@ -12,7 +12,7 @@ import TrezorConnect, { type FeeLevel, type TokenInfo } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { type Route, type TrezorDevice } from 'src/types/suite';
+import { type TrezorDevice } from 'src/types/suite';
 import {
     type TradingGetAmountLabelsProps,
     type TradingGetAmountLabelsReturnProps,
@@ -200,22 +200,6 @@ export const resolveAddressAndToken = <A extends Pick<Account, 'symbol' | 'descr
     }
 
     return { address: '', token: tokenContractAddress ?? null };
-};
-
-export const getTradeTypeByRoute = (
-    routeName: Route['name'] | undefined,
-): TradingType | undefined => {
-    if (routeName?.startsWith('wallet-trading-buy')) {
-        return 'buy';
-    }
-
-    if (routeName?.startsWith('wallet-trading-sell')) {
-        return 'sell';
-    }
-
-    if (routeName?.startsWith('wallet-trading-exchange')) {
-        return 'exchange';
-    }
 };
 
 interface GetTradeProviderProps {

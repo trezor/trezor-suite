@@ -33,7 +33,6 @@ import {
     tradingThunks,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
-import { useFormDraft } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { isDesktop } from '@trezor/env-utils';
 import { isChanged } from '@trezor/utils';
@@ -42,7 +41,6 @@ import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActio
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingBuyHandleChange } from 'src/hooks/wallet/trading/form/common/useTradingBuyHandleChange';
 import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common/useTradingCurrencySwitcher';
-import { useTradingPreviousRoute } from 'src/hooks/wallet/trading/form/common/useTradingPreviousRoute';
 import { useTradingBuyFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingBuyFormDefaultValues';
 import { useTradingBuyFormRedirectValues } from 'src/hooks/wallet/trading/form/useTradingBuyFormRedirectValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
@@ -89,7 +87,6 @@ export const useTradingBuyForm = ({
     const shouldResetOnInitialBuyInfoLoad = useRef(!buyInfo);
 
     const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
-    const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
 
     const fiatTradingValuesParams = selectedQuote
         ? {
@@ -112,32 +109,15 @@ export const useTradingBuyForm = ({
         defaultPaymentMethod,
     } = useTradingBuyFormDefaultValues(cryptoId, buyInfo);
     const redirectValues = useTradingBuyFormRedirectValues(isFromRedirect, quotesRequest);
-    const { saveDraft, draft, removeDraft } = useFormDraft<TradingBuyFormProps>(
-        'trading-buy',
-        account.key,
-    );
-    const draftUpdated: TradingBuyFormProps | null = draft
-        ? {
-              ...draft,
-              fiatInput: draft.fiatInput && draft.fiatInput !== '' ? draft.fiatInput : undefined,
-              // remember only for offers page
-              cryptoSelect: isPreviousRouteFromTradeSection
-                  ? draft.cryptoSelect
-                  : defaultValues.cryptoSelect,
-          }
-        : null;
-
-    const isDraft = !!draftUpdated || !isFormPage;
+    const shouldSkipInitialReset = !isFormPage;
     const methods = useForm<TradingBuyFormProps>({
         mode: 'onChange',
-        defaultValues: redirectValues || (isDraft && draftUpdated ? draftUpdated : defaultValues),
+        defaultValues: redirectValues || defaultValues,
     });
     const { formState, reset, setValue, handleSubmit, control } = methods;
     const values = useWatch({ control }) as TradingBuyFormProps;
     const { paymentMethod, provider } = values;
-    const previousValues = useRef<TradingBuyFormProps | null>(
-        !isFromRedirect && !isFormPage ? draftUpdated : null,
-    );
+    const previousValues = useRef<TradingBuyFormProps | null>(null);
 
     const isAmountEmpty = !values.fiatInput && !values.cryptoInput;
 
@@ -242,19 +222,17 @@ export const useTradingBuyForm = ({
             account,
         );
 
-        const { name, networkSymbol, contractAddress } = draftUpdated?.cryptoSelect ?? {};
-
         analytics.report({
             type: events.tradeBuyEvent.name,
             payload: {
                 action: 'continue',
                 step: 'buy-form',
-                cryptoLabel: name,
-                cryptoNetworkSymbol: networkSymbol,
-                cryptoContractAddress: contractAddress ?? undefined,
+                cryptoLabel: values.cryptoSelect?.name,
+                cryptoNetworkSymbol: values.cryptoSelect?.networkSymbol,
+                cryptoContractAddress: values.cryptoSelect?.contractAddress ?? undefined,
                 exchangeName: quote?.exchange,
-                paymentMethod: draftUpdated?.paymentMethod?.value,
-                countryOfResidence: draftUpdated?.countrySelect?.value,
+                paymentMethod: values.paymentMethod?.value,
+                countryOfResidence: values.countrySelect?.value,
             },
         });
 
@@ -387,8 +365,8 @@ export const useTradingBuyForm = ({
     }, [previousValues, values, isFormPage, pageType, handleChange, handleSubmit]);
 
     useEffect(() => {
-        // when draft doesn't exist, we need to bind actual default values - that happens when we've got buyInfo from Invity API server
-        if (!isDraft && buyInfo && shouldResetOnInitialBuyInfoLoad.current) {
+        // bind actual default values when we've got buyInfo from Invity API server
+        if (!shouldSkipInitialReset && buyInfo && shouldResetOnInitialBuyInfoLoad.current) {
             shouldResetOnInitialBuyInfoLoad.current = false;
             const currentReceiveAddress = values.receiveAddress;
             reset({
@@ -396,19 +374,7 @@ export const useTradingBuyForm = ({
                 receiveAddress: currentReceiveAddress,
             });
         }
-    }, [reset, buyInfo, defaultValues, isDraft, values.receiveAddress]);
-
-    useEffect(() => {
-        if (!isChanged(defaultValues, values)) {
-            removeDraft();
-
-            return;
-        }
-
-        if (values.cryptoSelect && !values.cryptoSelect?.id) {
-            removeDraft();
-        }
-    }, [defaultValues, values, removeDraft]);
+    }, [reset, buyInfo, defaultValues, shouldSkipInitialReset, values.receiveAddress]);
 
     useEffect(() => {
         // We need to clear quotes on offers page without redirecting to form page
@@ -424,20 +390,6 @@ export const useTradingBuyForm = ({
             dispatch(goto({ routeName: 'wallet-trading-buy-confirm' }));
         }
     }, [isFromRedirect, quotesRequest, dispatch]);
-
-    useDebounce(
-        () => {
-            // saving draft after validation & buyInfo is available
-            if (!formState.isValidating && Object.keys(formState.errors).length === 0 && buyInfo) {
-                saveDraft({
-                    ...values,
-                    fiatInput: values.fiatInput ?? '',
-                } as TradingBuyFormProps);
-            }
-        },
-        200,
-        [formState.errors, formState.isValidating, saveDraft, values, shouldSendInSats, buyInfo],
-    );
 
     return {
         type,
@@ -473,7 +425,6 @@ export const useTradingBuyForm = ({
         onQuoteSelected,
         confirmTrade,
         verifyAddress,
-        removeDraft,
         setAmountLimits: (limits: TradingAmountLimitProps | undefined) => {
             dispatch(tradingBuyActions.setAmountLimits(limits));
         },
