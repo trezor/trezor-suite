@@ -85,13 +85,17 @@ self.onconnect = event => {
     port.start();
 };
 
-setInterval(() => {
-    const now = Date.now();
-    for (const [, entries] of channels) {
-        for (const entry of [...entries]) {
-            if (now - entry.lastHeartbeat > HEARTBEAT_TIMEOUT) {
-                removePort(entry.port, true);
+const startHeartbeatCheck = () => {
+    setInterval(() => {
+        const now = Date.now();
+        for (const [, entries] of channels) {
+            for (const entry of [...entries]) {
+                if (now - entry.lastHeartbeat > HEARTBEAT_TIMEOUT) {
+                    removePort(entry.port, true);
+                }
             }
         }
-    }
-}, HEARTBEAT_CHECK_INTERVAL);
+    }, HEARTBEAT_CHECK_INTERVAL);
+};
+
+startHeartbeatCheck();

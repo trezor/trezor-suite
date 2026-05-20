@@ -3,7 +3,7 @@
     "include": ["./src"],
     "compilerOptions": {
         "outDir": "./libESM",
-        "types": ["chrome", "w3c-web-usb"]
+        "types": ["chrome", "w3c-web-usb", "webworker"]
     },
     "references": [
         { "path": "../connect-common" },

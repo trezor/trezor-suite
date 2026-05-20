@@ -8,6 +8,7 @@
             "chrome",
             "web",
             "w3c-web-usb",
+            "webworker",
             "jest"
         ],
         "rootDir": ".."
