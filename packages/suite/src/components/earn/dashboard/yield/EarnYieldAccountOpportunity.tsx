@@ -129,7 +129,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                 from: 'earn-dashboard',
                 to: 'deposit-in-a-nutshell-modal',
                 networkSymbol: opportunity.account.symbol,
-                contractAddress: opportunity.vault.token.address,
+                vaultId: opportunity.vault.id,
             },
         });
 
@@ -166,7 +166,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                 from: 'earn-dashboard',
                 to: 'deposit-form',
                 networkSymbol: opportunity.account.symbol,
-                contractAddress: opportunity.vault.token.address,
+                vaultId: opportunity.vault.id,
             },
         });
 
@@ -200,7 +200,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                 from: 'earn-dashboard',
                 to: 'withdraw-form',
                 networkSymbol: opportunity.account.symbol,
-                contractAddress: opportunity.vault.token.address,
+                vaultId: opportunity.vault.id,
             },
         });
 

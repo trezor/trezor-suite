@@ -25,7 +25,7 @@ type Attributes = {
         | 'claim-select-account-modal'
     >;
     networkSymbol?: AttributeDef<string>;
-    contractAddress?: AttributeDef<string>;
+    vaultId?: AttributeDef<string>;
 };
 
 export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> = {
@@ -46,8 +46,9 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
         networkSymbol: {
             changelog: [{ version: '26.5.0', notes: 'added' }],
         },
-        contractAddress: {
-            changelog: [{ version: '26.5.0', notes: 'added' }],
+        vaultId: {
+            description: 'Internal vault identifier (vault.id), unique per Morpho vault',
+            changelog: [{ version: '26.5.2', notes: 'added' }],
         },
     },
 };

@@ -142,7 +142,7 @@ const TokenRowBasicActions = ({
                 from: 'account-defi-tokens',
                 to: 'deposit-form',
                 networkSymbol: account.symbol,
-                contractAddress,
+                vaultId: yieldId,
             },
         });
 
@@ -171,7 +171,7 @@ const TokenRowBasicActions = ({
                 from: 'account-defi-tokens',
                 to: 'withdraw-form',
                 networkSymbol: account.symbol,
-                contractAddress,
+                vaultId: yieldId,
             },
         });
 

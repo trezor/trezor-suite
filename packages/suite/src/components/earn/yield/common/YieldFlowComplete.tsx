@@ -15,6 +15,7 @@ type YieldFlowCompleteProps = {
     heading: ReactNode;
     description: ReactNode;
     showFeedback?: boolean;
+    vaultId?: string;
     children: ReactNode;
 };
 
@@ -23,6 +24,7 @@ export const YieldFlowComplete = ({
     heading,
     description,
     showFeedback,
+    vaultId,
     children,
 }: YieldFlowCompleteProps) => {
     const dispatch = useDispatch();
@@ -36,6 +38,7 @@ export const YieldFlowComplete = ({
                 action: 'continue',
                 from: `${type}-form`,
                 to: 'earn-dashboard',
+                vaultId,
             },
         });
 
