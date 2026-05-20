@@ -1,4 +1,4 @@
-// origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/ethereumSignTx.js
+/* eslint-disable @typescript-eslint/no-use-before-define */
 
 import type { Common } from '@ethereumjs/common';
 import { Hardfork, Mainnet, createCustomCommon } from '@ethereumjs/common';
@@ -14,6 +14,7 @@ import type {
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { MessagesSchema } from '@trezor/protobuf';
 
+import { getEthereumDefinitions } from './ethereumDefinitions';
 import type { TypedCall } from '../../device/DeviceCommands';
 import { addHexPrefix, deepTransform } from '../../utils/formatUtils';
 
@@ -27,16 +28,18 @@ const splitString = (str?: string, len?: number) => {
     return [first, second];
 };
 
-const processTxRequest = async (
+type TxSignature = { v: `0x${string}`; r: `0x${string}`; s: `0x${string}` };
+
+type TxFlowResponse =
+    | { type: 'EthereumTxRequest'; message: PROTO.EthereumTxRequest }
+    | { type: 'EthereumDefinitionRequest'; message: PROTO.EthereumDefinitionRequest };
+
+async function processTxRequest(
     typedCall: TypedCall,
     request: PROTO.EthereumTxRequest,
     data?: string,
     chain_id?: number,
-): Promise<{
-    v: `0x${string}`;
-    r: `0x${string}`;
-    s: `0x${string}`;
-}> => {
+): Promise<TxSignature> {
     if (!request.data_length) {
         let v = request.signature_v;
         const r = request.signature_r;
@@ -59,10 +62,47 @@ const processTxRequest = async (
     }
 
     const [first, rest] = splitString(data, request.data_length * 2);
-    const response = await typedCall('EthereumTxAck', 'EthereumTxRequest', { data_chunk: first });
+    const nextResponse = await typedCall(
+        'EthereumTxAck',
+        ['EthereumTxRequest', 'EthereumDefinitionRequest'],
+        { data_chunk: first },
+    );
 
-    return processTxRequest(typedCall, response.message, rest, chain_id);
-};
+    return handleTxFlowResponse(typedCall, nextResponse, rest, chain_id);
+}
+
+async function processDefinitionRequest(
+    typedCall: TypedCall,
+    request: PROTO.EthereumDefinitionRequest,
+    data?: string,
+    chain_id?: number,
+): Promise<TxSignature> {
+    const definitions = await getEthereumDefinitions({
+        chainId: request.chain_id,
+        contractAddress: request.token_address.toLowerCase(),
+    });
+
+    const nextResponse = await typedCall(
+        'EthereumDefinitionAck',
+        ['EthereumTxRequest', 'EthereumDefinitionRequest'],
+        { definitions },
+    );
+
+    return handleTxFlowResponse(typedCall, nextResponse, data, chain_id);
+}
+
+function handleTxFlowResponse(
+    typedCall: TypedCall,
+    response: TxFlowResponse,
+    data?: string,
+    chain_id?: number,
+): Promise<TxSignature> {
+    if (response.type === 'EthereumDefinitionRequest') {
+        return processDefinitionRequest(typedCall, response.message, data, chain_id);
+    }
+
+    return processTxRequest(typedCall, response.message, data, chain_id);
+}
 
 const deepHexPrefix = deepTransform(addHexPrefix);
 
@@ -154,6 +194,7 @@ export const ethereumSignTx = async (
         definitions,
         chunkify,
         payment_req,
+        supports_definition_request: true,
     };
 
     if (length !== 0) {
@@ -171,9 +212,13 @@ export const ethereumSignTx = async (
         };
     }
 
-    const response = await typedCall('EthereumSignTx', 'EthereumTxRequest', message);
+    const response = await typedCall(
+        'EthereumSignTx',
+        ['EthereumTxRequest', 'EthereumDefinitionRequest'],
+        message,
+    );
 
-    return processTxRequest(typedCall, response.message, rest, chain_id);
+    return handleTxFlowResponse(typedCall, response, rest, chain_id);
 };
 
 export const ethereumSignTxEIP1559 = async (
@@ -215,9 +260,14 @@ export const ethereumSignTxEIP1559 = async (
         definitions,
         chunkify,
         payment_req,
+        supports_definition_request: true,
     };
 
-    const response = await typedCall('EthereumSignTxEIP1559', 'EthereumTxRequest', message);
+    const response = await typedCall(
+        'EthereumSignTxEIP1559',
+        ['EthereumTxRequest', 'EthereumDefinitionRequest'],
+        message,
+    );
 
-    return processTxRequest(typedCall, response.message, rest);
+    return handleTxFlowResponse(typedCall, response, rest);
 };
