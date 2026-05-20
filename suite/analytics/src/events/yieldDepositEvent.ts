@@ -20,6 +20,7 @@ type Attributes = {
     >;
     networkSymbol?: AttributeDef<string>;
     vaultId?: AttributeDef<string>;
+    approvalType?: AttributeDef<'INFINITE' | 'MINIMAL'>;
     durationMs?: AttributeDef<number>;
     errorMessage?: AttributeDef<string>;
 };
@@ -50,6 +51,11 @@ export const yieldDepositEvent: EventDef<Attributes, EventType.YieldDeposit> = {
         },
         vaultId: {
             description: 'Internal vault identifier (vault.id), unique per Morpho vault',
+            changelog: [{ version: '26.5.2', notes: 'added' }],
+        },
+        approvalType: {
+            description:
+                "Type of approve selected by the user in the device-confirmation modal: 'MINIMAL' = exact amount, 'INFINITE' = unlimited allowance",
             changelog: [{ version: '26.5.2', notes: 'added' }],
         },
         durationMs: {

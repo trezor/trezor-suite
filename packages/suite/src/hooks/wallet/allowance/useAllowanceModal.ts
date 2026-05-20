@@ -20,7 +20,7 @@ interface UseAllowanceModalProps {
     account: Account;
     spender: string;
     onSelectApprovalType?: (type: DexApprovalType) => void;
-    onConfirm?: () => void;
+    onConfirm?: (approvalType: DexApprovalType) => void;
     onCancel?: () => void;
 }
 
@@ -109,7 +109,7 @@ export const useAllowanceModal = ({
     const confirmAndSend = useCallback(async () => {
         if (!composedTransaction) return;
 
-        onConfirmRef.current?.();
+        onConfirmRef.current?.(approvalType);
         closeModal();
         state.setIsWaitingForDevice(true);
 
@@ -131,7 +131,7 @@ export const useAllowanceModal = ({
                 openModal();
             }
         }
-    }, [composedTransaction, send, state, tx, closeModal, openModal, onConfirmRef]);
+    }, [composedTransaction, send, state, tx, closeModal, openModal, onConfirmRef, approvalType]);
 
     const handleClose = useCallback(() => {
         closeModal();
