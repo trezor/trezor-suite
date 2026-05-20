@@ -120,7 +120,7 @@ export type PrimitiveType = string | number | boolean | Date | null | undefined;
  *  const p: PartialRecord<'a' | 'b' | 'c', string>; = { b: 'value' };
  *  ```
  */
-export type PartialRecord<K extends keyof any, T> = { [P in K]?: T };
+export type PartialRecord<K extends PropertyKey, T> = { [P in K]?: T };
 
 /**
  * This infers the union literal type from ReturnType but exclude undefined
