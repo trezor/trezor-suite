@@ -29,7 +29,7 @@ export type VerifyAuthenticityProofResult =
           valid: true;
           caPubKey?: string;
           rootPubKey: string;
-          error?: typeof undefined;
+          error?: never;
           serialNumber?: string;
       }
     | {

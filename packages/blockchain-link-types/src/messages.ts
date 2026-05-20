@@ -151,7 +151,7 @@ export interface GetContractInfo {
 }
 
 export type Message =
-    | ChannelMessage<{ type: typeof MESSAGES.TERMINATE; payload?: typeof undefined }>
+    | ChannelMessage<{ type: typeof MESSAGES.TERMINATE; payload?: never }>
     | ChannelMessage<{ type: typeof MESSAGES.HANDSHAKE; settings: BlockchainSettings }>
     | ChannelMessage<Connect>
     | ChannelMessage<Disconnect>

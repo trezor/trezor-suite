@@ -51,7 +51,7 @@ export interface PopupCloseWindow {
 export type PopupEvent =
     | {
           type: typeof POPUP.CORE_LOADED;
-          payload?: typeof undefined;
+          payload?: never;
       }
     | PopupInit
     | PopupHandshake
