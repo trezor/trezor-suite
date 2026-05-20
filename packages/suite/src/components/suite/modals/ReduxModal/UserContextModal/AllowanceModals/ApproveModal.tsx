@@ -28,7 +28,7 @@ interface ApproveModalProps {
     spender: string;
     logoSourceType?: ProviderLogoSourceType;
     onSelectApprovalType?: (type: DexApprovalType) => void;
-    onConfirm?: () => void;
+    onConfirm?: (approvalType: DexApprovalType) => void;
     onCancel?: () => void;
 }
 
