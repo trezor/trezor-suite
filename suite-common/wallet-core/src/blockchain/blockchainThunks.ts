@@ -311,7 +311,7 @@ export const onBlockMinedThunk = createThunk(
 
 export const onBlockchainNotificationThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/onNotificationThunk`,
-    (payload: BlockchainNotification, { dispatch, getState }) => {
+    (payload: BlockchainNotification, { dispatch, getState, extra }) => {
         const { descriptor, tx } = payload.notification;
         const symbol = payload.coin.shortcut.toLowerCase();
         if (!isNetworkSymbol(symbol)) {
@@ -359,9 +359,19 @@ export const onBlockchainNotificationThunk = createThunk(
         // it's pointless to fetch ripple accounts
         // TODO: investigate more how to keep ripple pending tx until they are confirmed/rejected
         // xrpl.js doesn't send "pending" txs in history
-        if (account.networkType !== 'ripple') {
-            dispatch(syncAccountsWithBlockchainThunk(symbol));
-        }
+        if (account.networkType === 'ripple') return;
+
+        // Refetch only descriptor-matched accounts instead of every account on this symbol.
+        // The previous symbol-wide sync caused N getAccountInfo calls per notification for users
+        // with N accounts on the same network, hammering blockbook at ~10k connections.
+        // Periodic background sync still runs on its own timer chain (seeded by
+        // onBlockchainConnectThunk), so unrelated accounts stay up to date.
+        const { selectIsWindowVisible } = extra.selectors;
+        if (!selectIsWindowVisible(getState())) return;
+
+        accounts.forEach(matchedAccount =>
+            dispatch(fetchAndUpdateAccountThunk({ accountKey: matchedAccount.key })),
+        );
     },
 );
 
