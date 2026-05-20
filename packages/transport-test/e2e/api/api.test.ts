@@ -1,4 +1,8 @@
-import { UsbApi } from '@trezor/transport/src/api/usb';
+// Deep imports bypass the `@trezor/transport-common` barrel so esbuild does
+// not pull THP code (and its transitive `@trezor/protocol/protocol-thp/crypto`
+// node-only `crypto` import) into the browser bundle.
+import { UsbApi } from '@trezor/transport-common/src/api/usb';
+import type { UsbInterfaceApi } from '@trezor/transport-common/src/types/usbInterface';
 
 import { debug, error, info, sharedTest, success } from './shared';
 import { assertEquals, assertFailure, assertMessage, assertSuccess, buildMessage } from './utils';
@@ -11,7 +15,10 @@ const setupApisUnderTest = async () => {
 
     if (typeof window !== 'undefined' && 'usb' in window.navigator) {
         window.Buffer = (await import('buffer')).Buffer;
-        usbInterface = window.navigator.usb;
+        // TS does not narrow `Navigator` to our structural `UsbInterfaceApi`,
+        // and we intentionally avoid the `@types/w3c-web-usb` ambient `USB`
+        // type so `transport-common` consumers stay free of DOM lib refs.
+        usbInterface = (window.navigator as unknown as { usb: UsbInterfaceApi }).usb;
     } else {
         usbInterface = await import('usb').then(lib => new lib.WebUSB({ allowAllDevices: true }));
     }

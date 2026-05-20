@@ -1,21 +1,27 @@
 import { createDeferred } from '@trezor/utils';
 
 import { UsbApi } from '../src/api/usb';
+import type {
+    UsbDeviceLike,
+    UsbInTransferResultLike,
+    UsbInterfaceApi,
+    UsbOutTransferResultLike,
+} from '../src/types/usbInterface';
 
 const createTransferInResult = (size = 64) =>
     ({
         status: 'ok',
         data: new DataView(new Uint8Array(size).buffer),
-    }) as USBInTransferResult;
+    }) as UsbInTransferResultLike;
 
 const createTransferOutResult = (bytesWritten = 64) =>
     ({
         status: 'ok',
         bytesWritten,
-    }) as USBOutTransferResult;
+    }) as UsbOutTransferResultLike;
 
 // create devices otherwise returned from navigator.usb.getDevices
-const createMockedDevice = (optional: Partial<USBDevice> & Record<string, unknown> = {}) =>
+const createMockedDevice = (optional: Partial<UsbDeviceLike> & Record<string, unknown> = {}) =>
     ({
         vendorId: 0x1209,
         productId: 0x53c1,
@@ -31,10 +37,10 @@ const createMockedDevice = (optional: Partial<USBDevice> & Record<string, unknow
         releaseInterface: () => Promise.resolve(),
         close: () => Promise.resolve(),
         ...optional,
-    }) as USBDevice;
+    }) as UsbDeviceLike;
 
 // mock of navigator.usb
-const createUsbMock = (optional: Partial<USB> = {}) =>
+const createUsbMock = (optional: Partial<UsbInterfaceApi> = {}) =>
     ({
         getDevices: () => Promise.resolve([createMockedDevice()]),
         onconnect: null,
@@ -171,7 +177,6 @@ describe('api/usb', () => {
             device: {
                 ...createMockedDevice(),
                 serialNumber: null,
-                // @ts-expect-error
                 device: {
                     deviceDescriptor: {
                         iSerialNumber: 'foo',
@@ -227,7 +232,7 @@ describe('api/usb', () => {
 
     it.each(['5e81a7', undefined, ''])('disconnect with serialNumber: %p', async serialNumber => {
         let enumerateCounter = 0;
-        const enumerateDfd = createDeferred<USBDevice[]>();
+        const enumerateDfd = createDeferred<UsbDeviceLike[]>();
         const usbInterface = createUsbMock({
             getDevices: () => {
                 if (enumerateCounter > 0) {

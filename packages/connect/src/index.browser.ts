@@ -1,5 +1,5 @@
 import { ERRORS, type UpdateConnectSettings, factory } from '@trezor/connect-common';
-import { TRANSPORT } from '@trezor/transport';
+import { TRANSPORT } from '@trezor/transport-common';
 
 import { config } from './data/config';
 import { CoreInModule } from './impl/core-in-module';

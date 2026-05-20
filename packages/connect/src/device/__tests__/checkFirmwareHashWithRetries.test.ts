@@ -1,5 +1,5 @@
 import type { DeviceUniquePath } from '@trezor/connect-common';
-import type { Descriptor } from '@trezor/transport';
+import type { Descriptor } from '@trezor/transport-common';
 import { Log } from '@trezor/utils';
 
 import { Device } from '../Device';

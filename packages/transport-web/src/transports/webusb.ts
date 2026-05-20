@@ -1,15 +1,26 @@
-import { type AbstractTransportMethodParams, type AbstractTransportParams } from './abstract';
-import { AbstractApiTransport } from './abstractApi';
-import { UsbApi } from '../api/usb';
+import {
+    AbstractApiTransport,
+    type AbstractTransportMethodParams,
+    type AbstractTransportParams,
+    UsbApi,
+    type UsbInterfaceApi,
+} from '@trezor/transport-common';
+
 import { BrowserSessionsBackground } from '../sessions/background-browser';
 
-const defaultSessionsBackgroundUrl =
+// `process.env.ASSET_PREFIX` is substituted at build time by the bundler
+// (webpack DefinePlugin); the package itself does not depend on Node.
+declare const process: { env: { ASSET_PREFIX?: string } };
+
+const getDefaultSessionsBackgroundUrl = () =>
     window.location.origin +
     `${process.env.ASSET_PREFIX || ''}/js/workers/sessions-background-sharedworker.js`
         // just in case so that whoever defines ASSET_PREFIX does not need to worry about trailing slashes
         .replace(/\/+/g, '/');
 
-type WebUsbTransportParams = AbstractTransportParams & { sessionsBackgroundUrl?: string };
+type WebUsbTransportParams = AbstractTransportParams & {
+    sessionsBackgroundUrl?: string | null;
+};
 
 /**
  * WebUsbTransport
@@ -23,11 +34,17 @@ export class WebUsbTransport extends AbstractApiTransport {
 
     constructor({ logger, sessionsBackgroundUrl, ...rest }: WebUsbTransportParams) {
         super({
-            api: new UsbApi({ usbInterface: navigator.usb, logger }),
+            api: new UsbApi({
+                // navigator.usb is the standard WebUSB API; cast to our
+                // structural shape so we don't need @types/w3c-web-usb in
+                // the package's published types.
+                usbInterface: (navigator as unknown as { usb: UsbInterfaceApi }).usb,
+                logger,
+            }),
             logger,
             ...rest,
         });
-        this.sessionsBackgroundUrl = sessionsBackgroundUrl ?? defaultSessionsBackgroundUrl;
+        this.sessionsBackgroundUrl = sessionsBackgroundUrl ?? getDefaultSessionsBackgroundUrl();
     }
 
     private async trySetSessionsBackground() {

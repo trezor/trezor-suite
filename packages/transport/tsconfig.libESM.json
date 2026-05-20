@@ -3,11 +3,11 @@
     "include": ["./src"],
     "compilerOptions": {
         "outDir": "./libESM",
-        "types": ["w3c-web-usb", "node"]
+        "types": ["node"]
     },
     "references": [
-        { "path": "../protobuf" },
         { "path": "../protocol" },
+        { "path": "../transport-common" },
         { "path": "../type-utils" },
         { "path": "../utils" },
         { "path": "../eslint" }

@@ -2,11 +2,11 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "./libDev",
-        "types": ["w3c-web-usb", "jest", "node"]
+        "types": ["jest", "node"]
     },
     "references": [
-        { "path": "../protobuf" },
         { "path": "../protocol" },
+        { "path": "../transport-common" },
         { "path": "../type-utils" },
         { "path": "../utils" },
         { "path": "../eslint" }

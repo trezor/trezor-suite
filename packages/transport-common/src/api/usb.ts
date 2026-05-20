@@ -15,11 +15,16 @@ import {
 } from '../constants';
 import * as ERRORS from '../errors';
 import { type DescriptorApiLevel, PathInternal } from '../types';
+import type {
+    UsbDeviceLike,
+    UsbInTransferResultLike,
+    UsbInterfaceApi,
+} from '../types/usbInterface';
 import { getUSBDescriptorModel } from '../utils/descriptor';
 import { error, success } from '../utils/result';
 
 interface ConstructorParams extends Omit<AbstractApiConstructorParams, 'type'> {
-    usbInterface: USB;
+    usbInterface: UsbInterfaceApi;
     forceReadSerialOnConnect?: boolean;
     debugLink?: boolean;
 }
@@ -27,7 +32,7 @@ interface ConstructorParams extends Omit<AbstractApiConstructorParams, 'type'> {
 interface TransportInterfaceDevice {
     session?: null | string;
     path: string;
-    device: USBDevice;
+    device: UsbDeviceLike;
 }
 
 export class UsbApi extends AbstractApi {
@@ -45,7 +50,7 @@ export class UsbApi extends AbstractApi {
      */
     private synchronizeResetDevice = getSynchronize();
     private deviceResetMap: Record<string, boolean> = {};
-    private devicePendingTransferIn = new Map<USBDevice, Promise<USBInTransferResult>>();
+    private devicePendingTransferIn = new Map<UsbDeviceLike, Promise<UsbInTransferResultLike>>();
 
     constructor({ usbInterface, logger, forceReadSerialOnConnect, debugLink }: ConstructorParams) {
         super({ logger, type: 'usb' });
@@ -100,7 +105,7 @@ export class UsbApi extends AbstractApi {
         };
     }
 
-    private formatDeviceForLog(device: USBDevice) {
+    private formatDeviceForLog(device: UsbDeviceLike) {
         return JSON.stringify({
             productName: device.productName,
             manufacturerName: device.manufacturerName,
@@ -113,7 +118,7 @@ export class UsbApi extends AbstractApi {
         });
     }
 
-    private matchDeviceType(device: USBDevice) {
+    private matchDeviceType(device: UsbDeviceLike) {
         const isBootloader = device.productId === WEBUSB_BOOTLOADER_PRODUCT;
         if (device.deviceVersionMajor === 2) {
             if (isBootloader) {
@@ -207,7 +212,7 @@ export class UsbApi extends AbstractApi {
         }
     }
 
-    private getTransferIn(device: USBDevice) {
+    private getTransferIn(device: UsbDeviceLike) {
         let pending = this.devicePendingTransferIn.get(device);
         if (!pending) {
             pending = device
@@ -450,11 +455,11 @@ export class UsbApi extends AbstractApi {
         return device.device;
     }
 
-    private createDevices(devices: USBDevice[], signal?: AbortSignal) {
+    private createDevices(devices: UsbDeviceLike[], signal?: AbortSignal) {
         return this.synchronizeCreateDevices(async () => {
             let bootloaderId = 0;
 
-            const getPathFromUsbDevice = (device: USBDevice) => {
+            const getPathFromUsbDevice = (device: UsbDeviceLike) => {
                 // path is just serial number
                 // more bootloaders => number them, hope for the best
                 const { serialNumber } = device;
@@ -505,7 +510,7 @@ export class UsbApi extends AbstractApi {
      * depending on OS (and specific usb drivers), it might be required to open device in order to read serial number.
      * https://github.com/node-usb/node-usb/issues/546
      */
-    private async loadSerialNumber(device: USBDevice, signal?: AbortSignal) {
+    private async loadSerialNumber(device: UsbDeviceLike, signal?: AbortSignal) {
         try {
             this.logger?.debug(`usb: loadSerialNumber`);
 
@@ -554,7 +559,7 @@ export class UsbApi extends AbstractApi {
         }
     }
 
-    private filterDevices(devices: USBDevice[]) {
+    private filterDevices(devices: UsbDeviceLike[]) {
         const trezorDevices = devices.filter(dev =>
             TREZOR_USB_DESCRIPTORS.some(
                 desc => dev.vendorId === desc.vendorId && dev.productId === desc.productId,
@@ -568,7 +573,7 @@ export class UsbApi extends AbstractApi {
         return [hidDevices, nonHidDevices];
     }
 
-    private isInterfaceClaimed(device: USBDevice, interfaceId: number) {
+    private isInterfaceClaimed(device: UsbDeviceLike, interfaceId: number) {
         return device.configuration?.interfaces.find(i => i.interfaceNumber === interfaceId)
             ?.claimed;
     }

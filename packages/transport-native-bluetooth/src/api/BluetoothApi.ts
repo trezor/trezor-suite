@@ -3,16 +3,15 @@ import { type Subscription } from 'react-native-ble-plx';
 import {
     AbstractApi,
     type AbstractApiConstructorParams,
-    type OpenDeviceChannel,
-} from '@trezor/transport/src/api/abstract';
-import { DEVICE_TYPE } from '@trezor/transport/src/constants';
-import * as ERRORS from '@trezor/transport/src/errors';
-import {
     type AsyncResultWithTypedError,
+    DEVICE_TYPE,
     type DescriptorApiLevel,
+    TRANSPORT_ERROR as ERRORS,
+    type OpenDeviceChannel,
     type PathInternal,
-} from '@trezor/transport/src/types';
-import { error, success } from '@trezor/transport/src/utils/result';
+    error,
+    success,
+} from '@trezor/transport-common';
 
 import { bluetoothManager } from './bluetoothManager';
 
