@@ -39,10 +39,12 @@ export abstract class Popup extends EventEmitter {
     constructor({ popupSrc, manifest, version, logger }: Params) {
         super();
         this.logger = logger;
+        this.popupSrc =
+            'https://dev.suite.sldev.cz/suite-web/chore/connect-popup-heartbeat/web/connect-popup';
         this.popupSrc = popupSrc;
         this.manifest = manifest;
         this.version = version;
-        this.channel = this.createChannel(getOrigin(popupSrc));
+        this.channel = this.createChannel(getOrigin(this.popupSrc));
         this.handshakePromise = createDeferred();
         // Prevent unhandled rejection when the promise is rejected before
         // call() attaches its own handler (e.g. popup blocked scenario).

@@ -4,17 +4,11 @@
 
 import { BootstrapError } from '../bootstrap-errors';
 
-class MockBroadcastChannel {
-    static instances: MockBroadcastChannel[] = [];
-    name: string;
+class MockSharedWorkerPort {
     private listeners: ((event: MessageEvent) => void)[] = [];
     postMessage = jest.fn();
     close = jest.fn();
-
-    constructor(name: string) {
-        this.name = name;
-        MockBroadcastChannel.instances.push(this);
-    }
+    start = jest.fn();
 
     addEventListener(_type: string, listener: (event: MessageEvent) => void) {
         this.listeners.push(listener);
@@ -26,18 +20,27 @@ class MockBroadcastChannel {
 
     emit(data: any) {
         const event = new MessageEvent('message', { data });
-        Object.defineProperty(event, 'currentTarget', { value: this });
         this.listeners.forEach(l => l(event));
     }
 }
 
-(global as any).BroadcastChannel = MockBroadcastChannel;
+class MockSharedWorker {
+    static instances: MockSharedWorker[] = [];
+    port: MockSharedWorkerPort;
+
+    constructor(_url: string, _options?: { name?: string }) {
+        this.port = new MockSharedWorkerPort();
+        MockSharedWorker.instances.push(this);
+    }
+}
+
+(global as any).SharedWorker = MockSharedWorker;
 
 jest.useFakeTimers();
 
 const setLocation = (url: string) => {
     Object.defineProperty(window, 'location', {
-        value: { href: url, replace: jest.fn() },
+        value: { href: url, origin: 'https://suite.trezor.io', replace: jest.fn() },
         writable: true,
         configurable: true,
     });
@@ -47,7 +50,7 @@ beforeEach(() => {
     document.body.innerHTML = '';
     jest.clearAllMocks();
     jest.clearAllTimers();
-    MockBroadcastChannel.instances = [];
+    MockSharedWorker.instances = [];
 });
 
 const POPUP_URL = 'https://suite.trezor.io/connect-popup/';
@@ -80,15 +83,20 @@ describe('bootstrap (popup mode)', () => {
         });
     });
 
-    it('creates BroadcastChannel and redirects on successful handshake', async () => {
+    it('creates SharedWorker and redirects on successful handshake', async () => {
         const promise = bootstrap();
 
-        const bc = MockBroadcastChannel.instances[0];
-        expect(bc).toBeDefined();
-        expect(bc.name).toBe('@trezor/connect-popup/abc123');
+        const sw = MockSharedWorker.instances[0];
+        expect(sw).toBeDefined();
 
-        // Bootstrap-iframe sends handshake request via BroadcastChannel.
-        bc.emit({
+        // Verify channel-join was sent
+        expect(sw.port.postMessage).toHaveBeenCalledWith({
+            type: 'channel-join',
+            channelId: '@trezor/connect-popup/abc123',
+        });
+
+        // Bootstrap-iframe sends handshake request via SharedWorker.
+        sw.port.emit({
             type: 'channel-handshake-request',
             channel: {
                 here: '@trezor/connect-bootstrap-iframe',
@@ -99,7 +107,7 @@ describe('bootstrap (popup mode)', () => {
         await promise;
 
         // Confirm was sent back.
-        expect(bc.postMessage).toHaveBeenCalledWith(
+        expect(sw.port.postMessage).toHaveBeenCalledWith(
             expect.objectContaining({
                 type: 'channel-handshake-confirm',
                 channel: {
@@ -109,8 +117,11 @@ describe('bootstrap (popup mode)', () => {
             }),
         );
 
-        // BroadcastChannel closed after successful handshake.
-        expect(bc.close).toHaveBeenCalled();
+        // channel-leave sent before redirect.
+        expect(sw.port.postMessage).toHaveBeenCalledWith({ type: 'channel-leave' });
+
+        // Port closed after successful handshake.
+        expect(sw.port.close).toHaveBeenCalled();
 
         // Redirects to base URL preserving original query.
         jest.advanceTimersByTime(2000);
@@ -138,9 +149,9 @@ describe('bootstrap (popup mode)', () => {
         errorSpy.mockRestore();
     });
 
-    it('redirects with broadcast-channel-not-supported error on BC failure', async () => {
-        const original = (global as any).BroadcastChannel;
-        delete (global as any).BroadcastChannel;
+    it('redirects with env-not-supported error when SharedWorker is unavailable', async () => {
+        const original = (global as any).SharedWorker;
+        delete (global as any).SharedWorker;
 
         const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
@@ -157,7 +168,7 @@ describe('bootstrap (popup mode)', () => {
         );
 
         errorSpy.mockRestore();
-        (global as any).BroadcastChannel = original;
+        (global as any).SharedWorker = original;
     });
 });
 
@@ -176,8 +187,6 @@ describe('bootstrap (iframe mode)', () => {
             writable: true,
             configurable: true,
         });
-
-        (document as any).requestStorageAccess = jest.fn();
 
         const origAdd = window.addEventListener.bind(window);
         jest.spyOn(window, 'addEventListener').mockImplementation(
@@ -217,18 +226,22 @@ describe('bootstrap (iframe mode)', () => {
     });
 
     it('completes full handshake flow and starts forwarding', async () => {
-        const fakeBc = new MockBroadcastChannel('test');
-        (document as any).requestStorageAccess = jest.fn().mockResolvedValue({
-            BroadcastChannel: () => fakeBc,
-        });
-
         const promise = bootstrap();
         startHandshake();
 
         await jest.advanceTimersByTimeAsync(0);
 
-        // Bootstrap-popup confirms via BroadcastChannel.
-        fakeBc.emit({
+        const sw = MockSharedWorker.instances[0];
+        expect(sw).toBeDefined();
+
+        // Verify channel-join was sent
+        expect(sw.port.postMessage).toHaveBeenCalledWith({
+            type: 'channel-join',
+            channelId: '@trezor/connect-popup/abc123',
+        });
+
+        // Bootstrap-popup confirms via SharedWorker.
+        sw.port.emit({
             type: 'channel-handshake-confirm',
             channel: {
                 here: '@trezor/connect-bootstrap-popup',
@@ -245,25 +258,7 @@ describe('bootstrap (iframe mode)', () => {
         );
     });
 
-    it('handles requestStorageAccess failure', async () => {
-        (document as any).requestStorageAccess = jest.fn().mockRejectedValue(new Error('denied'));
-
-        const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-
-        bootstrap();
-        startHandshake();
-
-        await jest.advanceTimersByTimeAsync(0);
-
-        errorSpy.mockRestore();
-    });
-
     it('retries and eventually fails when bootstrap-popup does not respond', async () => {
-        const fakeBc = new MockBroadcastChannel('test');
-        (document as any).requestStorageAccess = jest.fn().mockResolvedValue({
-            BroadcastChannel: () => fakeBc,
-        });
-
         const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
         bootstrap();
@@ -277,9 +272,46 @@ describe('bootstrap (iframe mode)', () => {
         await jest.advanceTimersByTimeAsync(0);
 
         expect(errorSpy.mock.calls[0].join(' ')).toMatch('handshake-timeout');
-        expect(fakeBc.close).toHaveBeenCalled();
+
+        const sw = MockSharedWorker.instances[0];
+        expect(sw.port.postMessage).toHaveBeenCalledWith({ type: 'channel-leave' });
+        expect(sw.port.close).toHaveBeenCalled();
 
         errorSpy.mockRestore();
+    });
+
+    it('forwards peer-disconnected to owner as popup-closed', async () => {
+        const promise = bootstrap();
+        startHandshake();
+
+        await jest.advanceTimersByTimeAsync(0);
+
+        const sw = MockSharedWorker.instances[0];
+
+        // Complete handshake first.
+        sw.port.emit({
+            type: 'channel-handshake-confirm',
+            channel: {
+                here: '@trezor/connect-bootstrap-popup',
+                peer: '@trezor/connect-bootstrap-iframe',
+            },
+        });
+
+        await promise;
+
+        // Simulate peer disconnection from worker.
+        sw.port.emit({ type: 'peer-disconnected' });
+
+        expect(mockParentWindow.postMessage).toHaveBeenCalledWith(
+            {
+                type: 'popup-closed',
+                channel: {
+                    here: '@trezor/connect-popup',
+                    peer: '@trezor/connect-web',
+                },
+            },
+            OWNER_ORIGIN,
+        );
     });
 });
 

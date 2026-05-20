@@ -283,6 +283,116 @@ const sessionsSharedWorkerPlugin = () => {
     };
 };
 
+const connectPopupSharedWorkerPlugin = () => {
+    const workerOutDir = resolve(__dirname, '../suite-web/dist/workers');
+    const workerEntryPath = resolve(
+        __dirname,
+        '../connect-web/src/bootstrap/connect-popup-shared-worker.ts',
+    );
+    const workerFileName = 'connect-popup-shared-worker';
+    const workerOutputPath = resolve(workerOutDir, `${workerFileName}.js`);
+
+    let workerPath: string | null = null;
+
+    const buildWorker = async () => {
+        if (workerPath) {
+            return workerPath;
+        }
+        if (!fs.existsSync(workerOutDir)) {
+            fs.mkdirSync(workerOutDir, { recursive: true });
+        }
+
+        console.log(`Building connect-popup shared worker from ${workerEntryPath}...`);
+
+        try {
+            await build({
+                configFile: false,
+                resolve: {
+                    alias,
+                },
+                build: {
+                    outDir: workerOutDir,
+                    emptyOutDir: false,
+                    lib: {
+                        entry: workerEntryPath,
+                        formats: ['iife'],
+                        fileName: () => `${workerFileName}.js`,
+                        name: 'TrezorConnectPopupSharedWorker',
+                    },
+                    rolldownOptions: {
+                        output: {
+                            inlineDynamicImports: true,
+                        },
+                    },
+                    minify: false,
+                    target: 'es2020',
+                    write: true,
+                },
+                define: {
+                    'process.env.NODE_ENV': JSON.stringify('development'),
+                },
+            });
+
+            console.log(`Connect-popup SharedWorker built successfully at ${workerOutputPath}`);
+            workerPath = workerOutputPath;
+
+            return workerPath;
+        } catch (error) {
+            console.error('Failed to build connect-popup shared worker:', error);
+
+            return null;
+        }
+    };
+
+    return {
+        name: 'connect-popup-shared-worker',
+        async configureServer(server: ViteDevServer) {
+            await buildWorker();
+
+            server.watcher.add(workerEntryPath);
+            server.watcher.on('change', async (changedPath: string) => {
+                if (changedPath === workerEntryPath) {
+                    console.log('Connect-popup shared worker source changed, rebuilding...');
+                    workerPath = null;
+                    await buildWorker();
+                }
+            });
+
+            server.middlewares.use(async (req, res, next) => {
+                if (req.url && /workers\/connect-popup-shared-worker\.js/.test(req.url)) {
+                    console.log('Serving connect-popup shared worker from middleware');
+                    const actualPath = await buildWorker();
+
+                    try {
+                        if (!actualPath) {
+                            throw new Error('Failed to build connect-popup shared worker!!');
+                        }
+
+                        if (fs.existsSync(actualPath)) {
+                            const workerCode = fs.readFileSync(actualPath, 'utf-8');
+                            res.setHeader('Content-Type', 'application/javascript');
+                            res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+                            res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+                            res.end(workerCode);
+
+                            return;
+                        } else {
+                            throw new Error(`Worker file not found at ${actualPath}`);
+                        }
+                    } catch (error) {
+                        console.error('Error serving connect-popup shared worker:', error);
+                        res.statusCode = 500;
+                        res.end(`Error serving connect-popup shared worker: ${error.message}`);
+
+                        return;
+                    }
+                }
+                next();
+            });
+        },
+    };
+};
+
 // Plugin to build favicon.js from suite-data for /static/favicon.js usage
 const faviconPlugin = (): Plugin => {
     const faviconOutDir = resolve(__dirname, '../suite-data/files');
@@ -599,6 +709,7 @@ export default defineConfig({
         flagsPlugin(),
         staticAliasPlugin(),
         sessionsSharedWorkerPlugin(),
+        // connectPopupSharedWorkerPlugin(),
         faviconPlugin(),
         viteCommonjs(),
         resolveWorkerUrlsPlugin(),

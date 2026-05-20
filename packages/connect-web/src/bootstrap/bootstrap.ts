@@ -28,10 +28,12 @@ const PEERS = {
     POPUP: '@trezor/connect-popup',
 };
 
-const HANDSHAKE_TIMEOUT = 500;
+const HANDSHAKE_TIMEOUT = 5000;
 const HANDSHAKE_REQ = 'channel-handshake-request';
 const HANDSHAKE_ERR = 'channel-handshake-error';
 const HANDSHAKE_CONF = 'channel-handshake-confirm';
+
+const HEARTBEAT_INTERVAL = 2000;
 
 const getParams = () => {
     if (typeof URLSearchParams === 'undefined') {
@@ -56,39 +58,75 @@ const getParams = () => {
     }
 };
 
+const getWorkerUrl = () =>
+    window.location.origin +
+    `${process.env.ASSET_PREFIX || ''}/js/workers/connect-popup-shared-worker.js`.replace(
+        /\/+/g,
+        '/',
+    );
+
 // Required in iframes embedded in 3rd party pages. BroadcastChannel is partitioned there.
 // ✅ Chrome 125+ / Opera 111+
 // ❌ Firefox / Safari / many WebViews / some Chromium forks
-const getUnpartitionedBroadcastChannel = async (channelName: string): Promise<BroadcastChannel> => {
-    let handle: { BroadcastChannel?: (name: string) => BroadcastChannel } | null = null;
+const getUnpartitionedSharedWorker = async (channelName: string): Promise<SharedWorker> => {
+    let handle: { SharedWorker?: (name: string, options?: any) => SharedWorker } | null = null;
     try {
         // @ts-expect-error - requestStorageAccess params not yet lib.dom.d.ts
-        handle = await document.requestStorageAccess({ BroadcastChannel: true });
+        handle = await document.requestStorageAccess({ SharedWorker: true });
     } catch {
-        throw BootstrapError.STORAGE_ACCESS_DENIED;
+        // throw BootstrapError.STORAGE_ACCESS_DENIED;
+        throw BootstrapError.ENV_NOT_SUPPORTED;
     }
 
-    if (!handle || typeof handle.BroadcastChannel !== 'function') {
+    if (!handle || typeof handle.SharedWorker !== 'function') {
         throw BootstrapError.ENV_NOT_SUPPORTED;
     }
 
     try {
-        return handle.BroadcastChannel(channelName);
+        return handle.SharedWorker(getWorkerUrl(), { name: channelName });
     } catch {
         throw BootstrapError.ENV_NOT_SUPPORTED;
     }
 };
 
-const getBroadcastChannel = (channelName: string) => {
-    if (typeof BroadcastChannel === 'undefined') {
+const getSharedWorker = (channelName: string) => {
+    if (typeof SharedWorker === 'undefined') {
         throw BootstrapError.ENV_NOT_SUPPORTED;
     }
 
     try {
-        return new BroadcastChannel(channelName);
+        return new SharedWorker(getWorkerUrl(), { name: channelName });
     } catch {
         throw BootstrapError.ENV_NOT_SUPPORTED;
     }
+};
+
+interface PopupChannel {
+    port: MessagePort;
+    close: () => void;
+}
+
+const connectToChannel = (worker: SharedWorker, channelName: string): PopupChannel => {
+    // if (typeof SharedWorker === 'undefined') {
+    //     throw BootstrapError.ENV_NOT_SUPPORTED;
+    // }
+
+    // const worker = new SharedWorker(getWorkerUrl(), { name: '@trezor/connect-popup' });
+    worker.port.start();
+    worker.port.postMessage({ type: 'channel-join', channelId: channelName });
+
+    const heartbeatInterval = setInterval(() => {
+        worker.port.postMessage({ type: 'heartbeat' });
+    }, HEARTBEAT_INTERVAL);
+
+    return {
+        port: worker.port,
+        close: () => {
+            clearInterval(heartbeatInterval);
+            worker.port.postMessage({ type: 'channel-leave' });
+            worker.port.close();
+        },
+    };
 };
 
 const getConfirmHandshake = (eventData: { channel: { here: string } }) => ({
@@ -112,15 +150,15 @@ const redirectToSuite = (errorCode?: string): void => {
         nextUrl.search = currentUrl.search;
     }
 
-    window.location.href = nextUrl.toString();
+    // window.location.href = nextUrl.toString();
+    const div = document.createElement('div');
+    div.innerHTML = `<a href="${nextUrl.toString()}">Redirecting...</a>`;
+    document.body.appendChild(div);
 };
 
 // @popup-only
 // Step 2. Listen for handshake from the iframe.
-const handleBootstrapHandshake = (
-    broadcast: BroadcastChannel,
-    timeout: number = 5000,
-): Promise<void> =>
+const handleBootstrapHandshake = (port: MessagePort, timeout: number = 5000): Promise<void> =>
     new Promise((resolve, reject) => {
         const onHandshakeRequest = (event: MessageEvent): void => {
             const channel = event.data?.channel;
@@ -133,16 +171,16 @@ const handleBootstrapHandshake = (
             ) {
                 // eslint-disable-next-line @typescript-eslint/no-use-before-define
                 clearTimeout(timer);
-                broadcast.removeEventListener('message', onHandshakeRequest);
-                broadcast.postMessage(getConfirmHandshake(event.data));
+                port.removeEventListener('message', onHandshakeRequest);
+                port.postMessage(getConfirmHandshake(event.data));
                 resolve();
             }
         };
 
-        broadcast.addEventListener('message', onHandshakeRequest);
+        port.addEventListener('message', onHandshakeRequest);
 
         const timer = setTimeout(() => {
-            broadcast.removeEventListener('message', onHandshakeRequest);
+            port.removeEventListener('message', onHandshakeRequest);
             reject(BootstrapError.HANDSHAKE_TIMEOUT);
         }, timeout);
     });
@@ -177,23 +215,39 @@ const bootstrapPopup = async (): Promise<void> => {
         }
     });
 
+    let channel: PopupChannel | undefined;
     try {
-        const broadcast = getBroadcastChannel(channelName);
-        await handleBootstrapHandshake(broadcast);
-        broadcast.close();
+        const worker = getSharedWorker(channelName);
+        channel = connectToChannel(worker, channelName);
+        await handleBootstrapHandshake(channel.port);
+        channel.close();
 
         redirectToSuite();
     } catch (error) {
+        channel?.close();
         redirectToSuite(typeof error === 'string' ? error : BootstrapError.UNKNOWN);
     }
 };
 
 // @iframe-only
 // Step 3. Forward messages between suite-web and 3rd party window.
-const startForwarding = (broadcast: BroadcastChannel, owner: Window, ownerOrigin: string) => {
+const startForwarding = (port: MessagePort, owner: Window, ownerOrigin: string) => {
     logger.log(PEERS.HERE, 'start forwarding');
 
-    const onBroadcastMessage = (event: MessageEvent): void => {
+    const onPortMessage = (event: MessageEvent): void => {
+        if (event.data?.type === 'peer-disconnected') {
+            logger.log(PEERS.HERE, 'peer disconnected');
+            owner.postMessage(
+                {
+                    type: 'popup-closed',
+                    channel: { here: PEERS.POPUP, peer: PEERS.WEB },
+                },
+                ownerOrigin,
+            );
+
+            return;
+        }
+
         const channel = event.data?.channel;
         if (!channel || channel.here !== PEERS.POPUP || channel.peer !== PEERS.WEB) {
             return;
@@ -216,11 +270,11 @@ const startForwarding = (broadcast: BroadcastChannel, owner: Window, ownerOrigin
 
         logger.log(PEERS.WEB, '→', PEERS.POPUP, event.data.type);
         // Pass through the origin of the owner window, so that it can be used for security checks in the popup.
-        broadcast.postMessage({ ...event.data, origin: event.origin });
+        port.postMessage({ ...event.data, origin: event.origin });
     };
 
     // Messages from connect-popup (suite-web) addressed to connect-web (3rd party window).
-    broadcast.addEventListener('message', onBroadcastMessage);
+    port.addEventListener('message', onPortMessage);
 
     // Messages from connect-web (3rd party window) addressed to connect-popup (suite-web).
     window.addEventListener('message', onOwnerMessage);
@@ -228,7 +282,7 @@ const startForwarding = (broadcast: BroadcastChannel, owner: Window, ownerOrigin
     // Return cleanup function to stop forwarding.
     return () => {
         logger.log(PEERS.HERE, 'stop forwarding');
-        broadcast.removeEventListener('message', onBroadcastMessage);
+        port.removeEventListener('message', onPortMessage);
         window.removeEventListener('message', onOwnerMessage);
     };
 };
@@ -236,7 +290,7 @@ const startForwarding = (broadcast: BroadcastChannel, owner: Window, ownerOrigin
 // @iframe-only
 // Step 2. Handshake iframe -> popup using iterative retry. (handled by handleBootstrapHandshake)
 const startBootstrapHandshake = (
-    broadcast: BroadcastChannel,
+    port: MessagePort,
     maxAttempts: number = 5,
 ): { abort: () => void; promise: Promise<void> } => {
     const abortController = new AbortController();
@@ -267,7 +321,7 @@ const startBootstrapHandshake = (
 
             const cleanup = () => {
                 clearTimeout(timer);
-                broadcast.removeEventListener('message', onHandshakeConfirm);
+                port.removeEventListener('message', onHandshakeConfirm);
             };
 
             abortController.signal.addEventListener('abort', () => {
@@ -275,15 +329,15 @@ const startBootstrapHandshake = (
                 reject(BootstrapError.HANDSHAKE_TIMEOUT);
             });
 
-            broadcast.addEventListener('message', onHandshakeConfirm);
+            port.addEventListener('message', onHandshakeConfirm);
 
-            broadcast.postMessage({
+            port.postMessage({
                 type: HANDSHAKE_REQ,
                 channel: { here: PEERS.HERE, peer: PEERS.BOOTSTRAP },
             });
 
             timer = setTimeout(() => {
-                broadcast.removeEventListener('message', onHandshakeConfirm);
+                port.removeEventListener('message', onHandshakeConfirm);
                 if (attempt < maxAttempts) {
                     tryOnce();
                 } else {
@@ -337,9 +391,6 @@ const bootstrapIframe = (): Promise<void> => {
 
                 const ownerOrigin = event.origin && event.origin !== 'null' ? event.origin : null;
                 if (!ownerOrigin) {
-                    // This is the only place where we don't know the origin, we need to use '*' to reach the parent window.
-                    // origin "null" or empty could mean that the iframe is embedded in a non-secure context (e.g. file://) or sandboxed.
-                    // We can't securely communicate with the parent window, so we treat it as an error.
                     sendHandshakeError(BootstrapError.ORIGIN_MISSING, '*');
 
                     return;
@@ -363,30 +414,31 @@ const bootstrapIframe = (): Promise<void> => {
                     return;
                 }
 
-                let broadcast: BroadcastChannel;
+                let channel: PopupChannel;
                 try {
-                    broadcast = await getUnpartitionedBroadcastChannel(channelName);
+                    const worker = await getUnpartitionedSharedWorker(channelName);
+                    channel = connectToChannel(worker, channelName);
                 } catch (error) {
                     sendHandshakeError(error, ownerOrigin);
 
                     return;
                 }
 
-                const bootstrapHandshake = startBootstrapHandshake(broadcast);
+                const bootstrapHandshake = startBootstrapHandshake(channel.port);
                 try {
                     await bootstrapHandshake.promise;
 
                     // Restart forwarding messages between suite-web and 3rd party window (in case it was already started by a previous handshake attempt).
-                    // This ensures that we are forwarding messages through the correct BroadcastChannel instance.
+                    // This ensures that we are forwarding messages through the correct SharedWorker port.
                     stopForwarding?.();
-                    stopForwarding = startForwarding(broadcast, window.parent, ownerOrigin);
+                    stopForwarding = startForwarding(channel.port, window.parent, ownerOrigin);
 
                     window.parent.postMessage(getConfirmHandshake(event.data), ownerOrigin);
                 } catch (error) {
                     logger.error(PEERS.BOOTSTRAP, error);
 
                     bootstrapHandshake.abort();
-                    broadcast.close();
+                    channel.close();
 
                     sendHandshakeError(error, ownerOrigin);
                 }

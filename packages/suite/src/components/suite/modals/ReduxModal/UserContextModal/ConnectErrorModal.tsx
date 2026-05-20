@@ -134,8 +134,6 @@ export const ConnectErrorModal = () => {
                 return <Translation id="TR_CONNECT_ERROR_IFRAME_BLOCKED" />;
             if (popupCall.error.message === 'env-not-supported')
                 return <Translation id="TR_CONNECT_ERROR_ENV_NOT_SUPPORTED" />;
-            if (popupCall.error.message === 'storage-access-denied')
-                return <Translation id="TR_CONNECT_ERROR_STORAGE_ACCESS_DENIED" />;
 
             return <Translation id="TR_CONNECT_ERROR_GENERIC_DESCRIPTION" />;
         }

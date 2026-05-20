@@ -17,6 +17,20 @@ const webChannel = {
     peer: '@trezor/connect-web',
 };
 
+const HEARTBEAT_INTERVAL = 2000;
+
+const getWorkerUrl = () =>
+    window.location.origin +
+    `${process.env.ASSET_PREFIX || ''}/js/workers/connect-popup-shared-worker.js`.replace(
+        /\/+/g,
+        '/',
+    );
+
+interface PopupChannel {
+    port: MessagePort;
+    close: () => void;
+}
+
 export const useConnectPopupWeb = () => {
     const dispatch = useDispatch();
     const [incomingMessages, setIncomingMessages] = useState<ConnectPopupMessage[]>([]);
@@ -29,30 +43,21 @@ export const useConnectPopupWeb = () => {
     // scoped to that origin.
     const originRef = useRef<string>('*');
     const initialUrl = useRef<string>(window.location.href.split('?')[1] ?? '');
-    const [broadcast, setBroadcast] = useState<BroadcastChannel | null>(null);
-
-    /**
-     * Send a message back to the caller (opener window or same window).
-     *
-     * Uses `originRef.current` as the target origin so that responses are only
-     * delivered to the window that initiated the connect call. This prevents a
-     * malicious opener from a different origin from intercepting sensitive data
-     * such as addresses or signatures.
-     */
+    const [channel, setChannel] = useState<PopupChannel | null>(null);
 
     const popupLink = useMemo<ConnectPopupLink | null>(() => {
-        if (!broadcast) return null;
+        if (!channel) return null;
 
         return {
             sendMessage: (message: ConnectPopupOutgoingMessage) => {
                 message.channel = webChannel;
-                broadcast.postMessage(message);
+                channel.port.postMessage(message);
             },
             get origin() {
                 return originRef.current;
             },
         };
-    }, [broadcast]);
+    }, [channel]);
 
     const consumeMessages = useCallback(() => {
         setIncomingMessages(prev => prev.slice(1));
@@ -60,7 +65,7 @@ export const useConnectPopupWeb = () => {
 
     useConnectPopup(popupLink, incomingMessages, consumeMessages);
 
-    // Listen for incoming window messages and normalize them.
+    // Listen for incoming messages via SharedWorker and normalize them.
     useEffect(() => {
         const urlParams = new URLSearchParams(initialUrl.current);
         const requestId = urlParams.get('connect-popup-req');
@@ -82,15 +87,36 @@ export const useConnectPopupWeb = () => {
             return;
         }
 
-        let broadcastChannel: BroadcastChannel | undefined;
+        console.log('Attempting to connect to popup channel with id:', requestId, getWorkerUrl());
+        const channelName = `@trezor/connect-popup/${requestId}`;
+        let popupChannel: PopupChannel | undefined;
         try {
-            broadcastChannel = new BroadcastChannel(`@trezor/connect-popup/${requestId}`);
-            setBroadcast(broadcastChannel);
+            if (typeof SharedWorker === 'undefined') {
+                throw new Error('SharedWorker is not supported');
+            }
+
+            const worker = new SharedWorker(getWorkerUrl(), { name: channelName });
+            worker.port.start();
+            worker.port.postMessage({ type: 'channel-join', channelId: channelName });
+
+            const heartbeatInterval = setInterval(() => {
+                worker.port.postMessage({ type: 'heartbeat' });
+            }, HEARTBEAT_INTERVAL);
+
+            popupChannel = {
+                port: worker.port,
+                close: () => {
+                    clearInterval(heartbeatInterval);
+                    worker.port.postMessage({ type: 'channel-leave' });
+                    worker.port.close();
+                },
+            };
+            setChannel(popupChannel);
         } catch {
             dispatch(
                 connectPopupActions.setError({
                     code: 'Popup_ConnectionMissing',
-                    message: 'BroadcastChannel is not supported in this browser',
+                    message: 'SharedWorker is not supported in this browser',
                 }),
             );
 
@@ -99,9 +125,9 @@ export const useConnectPopupWeb = () => {
 
         const handshakeTimeout = setTimeout(() => {
             // eslint-disable-next-line @typescript-eslint/no-use-before-define
-            broadcastChannel.removeEventListener('message', onMessage);
-            broadcastChannel.close();
-            setBroadcast(null);
+            popupChannel!.port.removeEventListener('message', onMessage);
+            popupChannel!.close();
+            setChannel(null);
             dispatch(
                 connectPopupActions.setError({
                     code: 'Handshake_Error',
@@ -113,6 +139,12 @@ export const useConnectPopupWeb = () => {
         const onMessage = (event: MessageEvent) => {
             const { data } = event;
             if (!data?.type) return;
+
+            if (data.type === 'peer-disconnected') {
+                setIncomingMessages(prev => [...prev, { type: POPUP.CLOSED }]);
+
+                return;
+            }
 
             if (data.type === 'channel-handshake-request') {
                 // another popup with the same channel peer is trying to handshake.
@@ -150,21 +182,20 @@ export const useConnectPopupWeb = () => {
             }
         };
 
-        broadcastChannel.addEventListener('message', onMessage);
+        popupChannel.port.addEventListener('message', onMessage);
 
-        // TODO: replace this with broadcastChannel ping-pong
         const onBeforeUnload = () => {
-            broadcastChannel.postMessage({
+            popupChannel!.port.postMessage({
                 type: POPUP.CLOSED,
                 channel: webChannel,
             });
         };
-        window.addEventListener('beforeunload', onBeforeUnload);
+        // window.addEventListener('beforeunload', onBeforeUnload);
 
         return () => {
             clearTimeout(handshakeTimeout);
-            broadcastChannel.removeEventListener('message', onMessage);
-            broadcastChannel.close();
+            popupChannel!.port.removeEventListener('message', onMessage);
+            popupChannel!.close();
             window.removeEventListener('beforeunload', onBeforeUnload);
         };
     }, [dispatch]);

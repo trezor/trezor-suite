@@ -25,6 +25,14 @@ const config: webpack.Configuration = {
             // Use importScripts-based chunk loading so vendor/runtime chunks load in a worker context
             chunkLoading: 'import-scripts',
         },
+        'connect-popup-shared-worker': {
+            filename: 'js/workers/[name].js',
+            import: path.resolve(
+                __dirname,
+                '../../connect-web/src/bootstrap/connect-popup-shared-worker.ts',
+            ),
+            chunkLoading: 'import-scripts',
+        },
         'connect-popup-bootstrap': {
             filename: 'connect-popup/bootstrap.[hash].js',
             import: path.resolve(__dirname, '../../connect-web/src/bootstrap/index.ts'),
