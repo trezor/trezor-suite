@@ -62,6 +62,11 @@ export const javascriptConfig = [
                     selector:
                         "BinaryExpression[left.type='CallExpression'][left.callee.type='MemberExpression'][left.callee.property.name='indexOf']:matches([operator='>='][right.value=0], [operator='<'][right.value=0], [operator='>'][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1], [operator='==='][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1], [operator='!=='][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1], [operator='=='][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1], [operator='!='][right.type='UnaryExpression'][right.operator='-'][right.argument.value=1])",
                 },
+                {
+                    selector: "TSTypeQuery > Identifier[name='undefined']",
+                    message:
+                        'Use `undefined` (or `never` in discriminated unions) instead of `typeof undefined` in type position.',
+                },
             ],
             'object-shorthand': [
                 'error',
