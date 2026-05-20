@@ -202,7 +202,7 @@ function getDogeFee(
 
     // find all outputs below dust limit
     const limit = new BN(dustThreshold);
-    const dustOutputsCount = outputs.filter(({ value }) => value && value.lt(limit)).length;
+    const dustOutputsCount = outputs.filter(({ value }) => value?.lt(limit)).length;
 
     // increase for every output below dustThreshold
     return fee + dustOutputsCount * dustThreshold;

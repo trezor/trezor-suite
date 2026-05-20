@@ -62,7 +62,7 @@ export function p2sh(a: Payment, opts?: PaymentOpts): Payment {
 
     let { network } = a;
     if (!network) {
-        network = (a.redeem && a.redeem.network) || BITCOIN_NETWORK;
+        network = a.redeem?.network || BITCOIN_NETWORK;
     }
 
     const o: Payment = { name: 'p2sh', network };
@@ -92,7 +92,7 @@ export function p2sh(a: Payment, opts?: PaymentOpts): Payment {
         // in order of least effort
         if (a.output) return a.output.subarray(2, 22);
         if (a.address) return _address().hash;
-        if (o.redeem && o.redeem.output) return bcrypto.hash160(o.redeem.output);
+        if (o.redeem?.output) return bcrypto.hash160(o.redeem.output);
     });
     lazy.prop(o, 'output', () => {
         if (!o.hash) return;
@@ -107,19 +107,19 @@ export function p2sh(a: Payment, opts?: PaymentOpts): Payment {
         return _redeem();
     });
     lazy.prop(o, 'input', () => {
-        if (!a.redeem || !a.redeem.input || !a.redeem.output) return;
+        if (!a.redeem?.input || !a.redeem.output) return;
 
         return bscript.compile(
             ([] as Stack).concat(bscript.decompile(a.redeem.input) as Stack, a.redeem.output),
         );
     });
     lazy.prop(o, 'witness', () => {
-        if (o.redeem && o.redeem.witness) return o.redeem.witness;
+        if (o.redeem?.witness) return o.redeem.witness;
         if (o.input) return [];
     });
     lazy.prop(o, 'name', () => {
         const nameParts = ['p2sh'];
-        if (o.redeem !== undefined && o.redeem.name !== undefined) nameParts.push(o.redeem.name!);
+        if (o.redeem?.name !== undefined) nameParts.push(o.redeem.name!);
 
         return nameParts.join('-');
     });
@@ -203,7 +203,7 @@ export function p2sh(a: Payment, opts?: PaymentOpts): Payment {
         }
 
         if (a.witness) {
-            if (a.redeem && a.redeem.witness && !stacksEqual(a.redeem.witness, a.witness))
+            if (a.redeem?.witness && !stacksEqual(a.redeem.witness, a.witness))
                 throw new TypeError('Witness and redeem.witness mismatch');
         }
     }

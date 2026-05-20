@@ -79,7 +79,7 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
 
     let { network } = a;
     if (!network) {
-        network = (a.redeem && a.redeem.network) || BITCOIN_NETWORK;
+        network = a.redeem?.network || BITCOIN_NETWORK;
     }
 
     const o: Payment = { name: 'p2wsh', network };
@@ -94,7 +94,7 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
     lazy.prop(o, 'hash', () => {
         if (a.output) return a.output.subarray(2);
         if (a.address) return _address().data;
-        if (o.redeem && o.redeem.output) return bcrypto.sha256(o.redeem.output);
+        if (o.redeem?.output) return bcrypto.sha256(o.redeem.output);
     });
     lazy.prop(o, 'output', () => {
         if (!o.hash) return;
@@ -118,8 +118,7 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
     lazy.prop(o, 'witness', () => {
         // transform redeem input to witness stack?
         if (
-            a.redeem &&
-            a.redeem.input &&
+            a.redeem?.input &&
             a.redeem.input.length > 0 &&
             a.redeem.output &&
             a.redeem.output.length > 0
@@ -141,7 +140,7 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
     });
     lazy.prop(o, 'name', () => {
         const nameParts = ['p2wsh'];
-        if (o.redeem !== undefined && o.redeem.name !== undefined) nameParts.push(o.redeem.name!);
+        if (o.redeem?.name !== undefined) nameParts.push(o.redeem.name!);
 
         return nameParts.join('-');
     });
@@ -210,7 +209,7 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
 
         if (a.witness && a.witness.length > 0) {
             const wScript = a.witness[a.witness.length - 1];
-            if (a.redeem && a.redeem.output && !a.redeem.output.equals(wScript))
+            if (a.redeem?.output && !a.redeem.output.equals(wScript))
                 throw new TypeError('Witness and redeem.output mismatch');
             if (
                 a.witness.some(chunkHasUncompressedPubkey) ||
