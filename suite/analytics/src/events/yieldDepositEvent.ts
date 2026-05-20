@@ -16,7 +16,7 @@ type Attributes = {
         | 'error'
     >;
     networkSymbol?: AttributeDef<string>;
-    contractAddress?: AttributeDef<string>;
+    vaultId?: AttributeDef<string>;
     errorMessage?: AttributeDef<string>;
 };
 
@@ -38,8 +38,9 @@ export const yieldDepositEvent: EventDef<Attributes, EventType.YieldDeposit> = {
         networkSymbol: {
             changelog: [{ version: '26.5.0', notes: 'added' }],
         },
-        contractAddress: {
-            changelog: [{ version: '26.5.0', notes: 'added' }],
+        vaultId: {
+            description: 'Internal vault identifier (vault.id), unique per Morpho vault',
+            changelog: [{ version: '26.5.2', notes: 'added' }],
         },
         errorMessage: {
             changelog: [{ version: '26.5.0', notes: 'added' }],

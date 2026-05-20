@@ -75,7 +75,7 @@ export const YieldEarnProviderConsentModal = ({
                 from: 'deposit-morpho-modal',
                 to: 'deposit-form',
                 networkSymbol: account.symbol,
-                contractAddress: yieldContext?.tokenContractAddress,
+                vaultId: yieldContext?.id,
             },
         });
 
@@ -90,7 +90,7 @@ export const YieldEarnProviderConsentModal = ({
                 from: 'deposit-morpho-modal',
                 to: 'deposit-morpho-modal',
                 networkSymbol: account.symbol,
-                contractAddress: yieldContext?.tokenContractAddress,
+                vaultId: yieldContext?.id,
             },
         });
 

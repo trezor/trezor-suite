@@ -54,6 +54,7 @@ export const YieldPageHeader = ({ analyticsStep, account, routeParams }: YieldPa
                 })(),
                 to: 'earn-dashboard',
                 networkSymbol: account?.symbol,
+                vaultId: routeParams?.yieldId,
             },
         });
 

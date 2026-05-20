@@ -71,10 +71,11 @@ export const YieldSupplyForm = () => {
                     action: 'continue',
                     networkSymbol: token.networkSymbol,
                     contractAddress: token.contractAddress ?? undefined,
+                    vaultId: vault.id,
                 },
             });
         }
-    }, [flow.currentStep, analytics, token.networkSymbol, token.contractAddress]);
+    }, [flow.currentStep, analytics, token.networkSymbol, token.contractAddress, vault.id]);
 
     // trigger error analytics event
     useEffect(() => {
@@ -86,11 +87,19 @@ export const YieldSupplyForm = () => {
                     action: 'continue',
                     networkSymbol: token.networkSymbol,
                     contractAddress: token.contractAddress ?? undefined,
+                    vaultId: vault.id,
                     errorMessage: translationString(errorMessage),
                 },
             });
         }
-    }, [analytics, errorMessage, token.networkSymbol, token.contractAddress, translationString]);
+    }, [
+        analytics,
+        errorMessage,
+        token.networkSymbol,
+        token.contractAddress,
+        vault.id,
+        translationString,
+    ]);
 
     const handleOnApprovalSubmit = () => {
         analytics.report({
@@ -99,7 +108,7 @@ export const YieldSupplyForm = () => {
                 type: approvalAction === 'revoke' ? 'revoke' : 'approve',
                 action: 'continue',
                 networkSymbol: token.networkSymbol,
-                contractAddress: token.contractAddress ?? undefined,
+                vaultId: vault.id,
             },
         });
 
@@ -113,7 +122,7 @@ export const YieldSupplyForm = () => {
                 type: 'revoke',
                 action: 'continue',
                 networkSymbol: token.networkSymbol,
-                contractAddress: token.contractAddress ?? undefined,
+                vaultId: vault.id,
             },
         });
 
@@ -127,7 +136,7 @@ export const YieldSupplyForm = () => {
                 type: 'modify-allowance',
                 action: 'continue',
                 networkSymbol: token.networkSymbol,
-                contractAddress: token.contractAddress ?? undefined,
+                vaultId: vault.id,
             },
         });
 
@@ -141,7 +150,7 @@ export const YieldSupplyForm = () => {
                 type: 'deposit',
                 action: 'continue',
                 networkSymbol: token.networkSymbol,
-                contractAddress: token.contractAddress ?? undefined,
+                vaultId: vault.id,
             },
         });
 
@@ -295,6 +304,7 @@ export const YieldSupplyForm = () => {
                 <YieldApproveModal
                     {...approveModalState}
                     account={account}
+                    vaultId={vault.id}
                     onCancel={handleApproveModalCancel}
                     onSuccess={handleApproveSuccessTxid}
                 />

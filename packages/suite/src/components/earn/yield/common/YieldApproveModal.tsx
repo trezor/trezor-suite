@@ -16,6 +16,7 @@ export type YieldApproveModalProps = {
     amount: string;
     contractAddress: string;
     account: Account;
+    vaultId: string;
     spender: string;
     preapprovedAmount?: string;
     txType: 'approve' | 'revoke' | 'revoke-only';
@@ -27,6 +28,7 @@ export const YieldApproveModal = ({
     amount,
     contractAddress,
     account,
+    vaultId,
     spender,
     preapprovedAmount,
     txType,
@@ -89,7 +91,7 @@ export const YieldApproveModal = ({
                 type: 'approve-modal',
                 action: 'continue',
                 networkSymbol: account.symbol,
-                contractAddress,
+                vaultId,
             },
         });
     };
@@ -101,7 +103,7 @@ export const YieldApproveModal = ({
                 type: 'approve-modal',
                 action: 'cancel',
                 networkSymbol: account.symbol,
-                contractAddress,
+                vaultId,
             },
         });
 
@@ -115,7 +117,7 @@ export const YieldApproveModal = ({
                 type: 'revoke-modal',
                 action: 'continue',
                 networkSymbol: account.symbol,
-                contractAddress,
+                vaultId,
             },
         });
     };
@@ -127,7 +129,7 @@ export const YieldApproveModal = ({
                 type: 'revoke-modal',
                 action: 'cancel',
                 networkSymbol: account.symbol,
-                contractAddress,
+                vaultId,
             },
         });
 

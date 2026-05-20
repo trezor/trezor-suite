@@ -82,7 +82,7 @@ export const YieldEarnInANutshellModal = ({
                 from: 'deposit-in-a-nutshell-modal',
                 to: 'deposit-morpho-modal',
                 networkSymbol: account.symbol,
-                contractAddress: vault?.token.address,
+                vaultId: vault?.id,
             },
         });
 
@@ -97,7 +97,7 @@ export const YieldEarnInANutshellModal = ({
                 from: 'deposit-in-a-nutshell-modal',
                 to: 'deposit-in-a-nutshell-modal',
                 networkSymbol: account.symbol,
-                contractAddress: vault?.token.address,
+                vaultId: vault?.id,
             },
         });
 

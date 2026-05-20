@@ -7,9 +7,10 @@ import { YieldTokenValue } from './YieldTokenValue';
 
 type YieldFlowCompleteWithdrawProps = {
     value: YieldFlowCompleteValue;
+    vaultId: string;
 };
 
-export const YieldFlowCompleteWithdraw = ({ value }: YieldFlowCompleteWithdrawProps) => (
+export const YieldFlowCompleteWithdraw = ({ value, vaultId }: YieldFlowCompleteWithdrawProps) => (
     <YieldFlowComplete
         type="withdraw"
         heading={<Translation id="TR_EARN_YIELD_WITHDRAW_COMPLETE" />}
@@ -19,6 +20,7 @@ export const YieldFlowCompleteWithdraw = ({ value }: YieldFlowCompleteWithdrawPr
                 values={{ displaySymbol: value.token.symbol }}
             />
         }
+        vaultId={vaultId}
         showFeedback
     >
         <Row
