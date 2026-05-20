@@ -57,10 +57,12 @@ export type IconButtonProps = CommonButtonProps &
         size?: ButtonSize;
         icon: IconName;
         'data-testid'?: string;
+        'aria-label'?: string;
     };
 
 export const IconButton = ({
     'data-testid': dataTestId,
+    'aria-label': ariaLabel,
     icon,
     size = 'medium',
     isFloating = false,
@@ -78,6 +80,7 @@ export const IconButton = ({
     return (
         <Container
             data-testid={dataTestId}
+            aria-label={ariaLabel}
             $size={size}
             $priority={priority}
             $intent={intent}

@@ -75,7 +75,9 @@ export const EarnStakingAccountRow = ({
         });
     };
 
-    const navigateToStaking = () => {
+    const navigateToStaking = (event?: React.MouseEvent) => {
+        event?.stopPropagation();
+
         dispatch(
             goto({
                 routeName: 'wallet-staking',
