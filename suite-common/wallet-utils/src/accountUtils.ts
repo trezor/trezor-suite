@@ -353,7 +353,7 @@ export const findAccountDevice = (account: Account, devices: TrezorDevice[]) =>
     devices.find(d => d.state?.staticSessionId === account.deviceState);
 
 export const getAllAccounts = (
-    deviceState: DeviceState | StaticSessionId | typeof undefined,
+    deviceState: DeviceState | StaticSessionId | undefined,
     accounts: Account[],
 ) => {
     if (!deviceState) return [];

@@ -26,7 +26,7 @@ export const selectDeviceThunk = createThunk<
 >(
     `${DEVICE_MODULE_PREFIX}/selectDevice`,
     ({ device }, { dispatch, getState, fulfillWithValue }) => {
-        let trezorDevice: TrezorDevice | typeof undefined;
+        let trezorDevice: TrezorDevice | undefined;
         const devices = selectDevices(getState());
         if (device) {
             // "ts" is one of the field which distinguish Device from TrezorDevice

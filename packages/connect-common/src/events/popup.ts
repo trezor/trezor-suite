@@ -45,7 +45,10 @@ export interface PopupClosedMessage {
 
 export interface PopupCloseWindow {
     type: typeof POPUP.CLOSE_WINDOW;
-    payload: typeof undefined;
+    // TODO: This field could be dropped entirely (no construction sites read it),
+    // but the same applies to other payload-less events in this file, so it's
+    // out of scope for this PR.
+    payload?: never;
 }
 
 export type PopupEvent =
