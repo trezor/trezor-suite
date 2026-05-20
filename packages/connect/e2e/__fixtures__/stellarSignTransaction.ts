@@ -44,7 +44,7 @@ const transformOperation = (op: any) => {
                 trustor: op.trusted_account,
                 assetType: transformAsset({ type: op.asset_type }).type,
                 assetCode: op.asset_code,
-                authorize: op.is_authorized,
+                authorize: op.is_authorized ? 1 : 0,
             };
         case 'StellarChangeTrustOp':
             return {
@@ -191,30 +191,49 @@ export default {
     tests: [
         ...commonFixtures.tests
             .filter((test: any) => !test.experimental)
-            .map(({ name, parameters, result }: any) => ({
-                description: name,
-                params: {
-                    path: parameters.address_n,
-                    networkPassphrase: parameters.network_passphrase,
-                    transaction: {
-                        source: parameters.tx.source_account,
-                        fee: parameters.tx.fee,
-                        sequence: parameters.tx.sequence_number,
-                        timebounds: {
-                            minTime: parameters.tx.timebounds_start,
-                            maxTime: parameters.tx.timebounds_end,
+            .flatMap(({ name, result, parameters }: any) => [
+                {
+                    name,
+                    description: name,
+                    result,
+                    params: {
+                        path: parameters.address_n,
+                        networkPassphrase: parameters.network_passphrase,
+                        transaction: {
+                            source: parameters.tx.source_account,
+                            fee: parameters.tx.fee,
+                            sequence: parameters.tx.sequence_number,
+                            timebounds: {
+                                minTime: parameters.tx.timebounds_start,
+                                maxTime: parameters.tx.timebounds_end,
+                            },
+                            memo: {
+                                type: Messages.StellarMemoType[
+                                    parameters.tx.memo_type as keyof typeof Messages.StellarMemoType
+                                ],
+                                text: parameters.tx.memo_text,
+                                id: parameters.tx.memo_id,
+                                hash: parameters.tx.memo_hash,
+                            },
+                            operations: parameters.operations.flatMap(transformOperation),
                         },
-                        memo: {
-                            type: Messages.StellarMemoType[
-                                parameters.tx.memo_type as keyof typeof Messages.StellarMemoType
-                            ],
-                            text: parameters.tx.memo_text,
-                            id: parameters.tx.memo_id,
-                            hash: parameters.tx.memo_hash,
-                        },
-                        operations: parameters.operations.flatMap(transformOperation),
                     },
                 },
+                {
+                    name,
+                    description: `${name} (XDR)`,
+                    result,
+                    params: {
+                        path: parameters.address_n,
+                        xdrBase64: parameters.xdr,
+                        testnet:
+                            parameters.network_passphrase === 'Test SDF Network ; September 2015',
+                    },
+                },
+            ])
+            .map(({ name, description, params, result }: any) => ({
+                description,
+                params,
                 result: {
                     publicKey: result.public_key,
                     signature: Buffer.from(result.signature, 'base64').toString('hex'),

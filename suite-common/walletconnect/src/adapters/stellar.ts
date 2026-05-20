@@ -68,11 +68,11 @@ const stellarSignXDR = createThunk<
 >(
     `${WALLETCONNECT_MODULE}/stellarSignXDR`,
     async ({ session, xdrBase64, origin, event }, { dispatch, getState }) => {
-        const context = resolveStellarRequestContext(event);
+        const { testnet } = resolveStellarRequestContext(event);
 
-        const { parseTransactionFromXDR, transformTransaction } = await loadStellar();
+        const { parseTransactionFromXDR } = await loadStellar();
 
-        const transaction = parseTransactionFromXDR(xdrBase64, context.testnet);
+        const transaction = parseTransactionFromXDR(xdrBase64, testnet);
 
         // Validate all operations are supported classic types.
         for (const op of transaction.operations) {
@@ -90,14 +90,12 @@ const stellarSignXDR = createThunk<
             throw new Error('Account not found');
         }
 
-        const transformed = transformTransaction(transaction);
-
         dispatch(
             trezorConnectPopupActions.connectPopupCallThunk({
                 method: 'stellarSignTransaction',
                 payload: {
-                    transaction: transformed,
-                    networkPassphrase: transaction.networkPassphrase,
+                    xdrBase64,
+                    testnet,
                     path: account.path,
                     device,
                 },

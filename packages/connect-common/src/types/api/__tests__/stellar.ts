@@ -321,7 +321,7 @@ export const stellarSignTransaction = async (api: TrezorConnect) => {
                     trustor: 'GAUYJFQCYIHFQNS7CI6BFWD2DSSFKDIQZUQ3BLQODDKE4PSW7VVBKENC',
                     assetType: 1,
                     assetCode: 'XLM',
-                    authorize: true,
+                    authorize: 1,
                 },
                 {
                     type: 'claimClaimableBalance',
