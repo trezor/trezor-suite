@@ -2,8 +2,8 @@ import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
+import { backupDeviceThunk } from '../backupDeviceThunk';
 import { backupActions } from '../backupReducer';
-import { backupDeviceThunk } from '../backupThunks';
 
 const defaultDeviceState = {
     selectedDevice: {
