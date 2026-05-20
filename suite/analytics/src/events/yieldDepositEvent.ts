@@ -10,8 +10,8 @@ type Attributes = {
         | 'approve-modal'
         | 'revoke'
         | 'revoke-modal'
-        | 'modify'
-        | 'supply'
+        | 'modify-allowance'
+        | 'deposit'
         | 'success'
         | 'error'
     >;
@@ -20,10 +20,13 @@ type Attributes = {
     errorMessage?: AttributeDef<string>;
 };
 
-export const yieldSupplyEvent: EventDef<Attributes, EventType.YieldSupply> = {
-    name: EventType.YieldSupply,
-    descriptionTrigger: 'fired on stablecoin yield supply actions',
-    changelog: [{ version: '26.5.0', notes: 'added' }],
+export const yieldDepositEvent: EventDef<Attributes, EventType.YieldDeposit> = {
+    name: EventType.YieldDeposit,
+    descriptionTrigger: 'fired on stablecoin yield deposit actions',
+    changelog: [
+        { version: '26.5.0', notes: 'added (as yield/supply)' },
+        { version: '26.5.2', notes: 'renamed from yield/supply to yield/deposit' },
+    ],
 
     attributes: {
         action: {
