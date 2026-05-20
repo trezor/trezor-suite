@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import type { BankAccount, CryptoId, SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
-import useDebounce from 'react-use/lib/useDebounce';
 
 import { events } from '@suite/analytics';
 import { type TranslationKey, useTranslation } from '@suite/intl';
@@ -41,9 +40,8 @@ import {
     tradingThunks,
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
-import { selectBaseCurrency, useFormDraft } from '@suite-common/wallet-core';
+import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { isChanged } from '@trezor/utils';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
@@ -52,7 +50,6 @@ import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscri
 import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
 import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common/useTradingCurrencySwitcher';
 import { useTradingFormActions } from 'src/hooks/wallet/trading/form/common/useTradingFormActions';
-import { useTradingPreviousRoute } from 'src/hooks/wallet/trading/form/common/useTradingPreviousRoute';
 import { useTradingSellHandleChange } from 'src/hooks/wallet/trading/form/common/useTradingSellHandleChange';
 import { useTradingSellFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingSellFormDefaultValues';
 import { useTradingSellFormRedirectValues } from 'src/hooks/wallet/trading/form/useTradingSellFormRedirectValues';
@@ -83,8 +80,6 @@ export const useTradingSellForm = ({
     const sellInfo = useSelector(selectTradingSellInfo);
     const amountLimits = useSelector(selectTradingSellAmountLimits);
     const paymentMethods = useSelector(selectTradingPaymentMethods);
-
-    const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
 
     const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
 
@@ -134,36 +129,11 @@ export const useTradingSellForm = ({
         sellInfo?.countrySubdivision,
     );
     const redirectValues = useTradingSellFormRedirectValues(isFromRedirect, quotesRequest);
-    const { saveDraft, draft, removeDraft } = useFormDraft<TradingSellFormProps>('trading-sell');
-    const getDraftUpdated = (): TradingSellFormProps | null => {
-        if (!draft) return null;
-        if (isPreviousRouteFromTradeSection) {
-            const outputs = draft.outputs?.map(output => ({
-                ...output,
-                fiat: output.fiat ?? '',
-            }));
-
-            return {
-                ...draft,
-                outputs,
-            };
-        }
-
-        return {
-            ...defaultValues,
-            paymentMethod: draft.paymentMethod,
-            countrySelect: draft.countrySelect,
-            countrySubdivisionSelect: draft.countrySubdivisionSelect,
-            amountInCrypto: draft.amountInCrypto,
-        };
-    };
-    const draftUpdated = getDraftUpdated();
-
-    const isDraft = !!draft;
+    const shouldSkipInitialReset = !isFormPage;
     const shouldResetOnInitialSellInfoLoad = useRef(!sellInfo);
     const methods = useForm<TradingSellFormProps>({
         mode: 'onChange',
-        defaultValues: redirectValues ?? draftUpdated ?? defaultValues,
+        defaultValues: redirectValues ?? defaultValues,
     });
     const { register, setValue, reset, control, formState } = methods;
     const values = useWatch<TradingSellFormProps>({ control });
@@ -238,7 +208,6 @@ export const useTradingSellForm = ({
         account,
         methods,
         pageType,
-        draftUpdated,
         type,
         handleChange,
         setAmountLimits,
@@ -315,12 +284,12 @@ export const useTradingSellForm = ({
             payload: {
                 action: 'continue',
                 step: 'sell-form',
-                cryptoLabel: draftUpdated?.sendCryptoSelect?.displaySymbol,
-                cryptoNetworkSymbol: draftUpdated?.sendCryptoSelect?.networkSymbol,
-                cryptoContractAddress: draftUpdated?.sendCryptoSelect?.contractAddress ?? undefined,
+                cryptoLabel: values.sendCryptoSelect?.displaySymbol,
+                cryptoNetworkSymbol: values.sendCryptoSelect?.networkSymbol,
+                cryptoContractAddress: values.sendCryptoSelect?.contractAddress ?? undefined,
                 exchangeName: quote?.exchange,
-                receiveMethod: draftUpdated?.paymentMethod?.value,
-                countryOfResidence: draftUpdated?.countrySelect?.value,
+                receiveMethod: values.paymentMethod?.value,
+                countryOfResidence: values.countrySelect?.value,
                 fractionButton: helpers.fractionButton
                     ? `${(100 / helpers.fractionButton).toString()}%`
                     : undefined,
@@ -465,18 +434,6 @@ export const useTradingSellForm = ({
         [paymentMethod, paymentMethods, provider, setValue],
     );
 
-    useEffect(() => {
-        if (!isChanged(defaultValues, values)) {
-            removeDraft();
-
-            return;
-        }
-
-        if (!values.outputs?.[0]?.currency?.value) {
-            removeDraft();
-        }
-    }, [defaultValues, values, removeDraft]);
-
     // react-hook-form auto register custom form fields (without HTMLElement)
     useEffect(() => {
         register('options');
@@ -485,36 +442,12 @@ export const useTradingSellForm = ({
     }, [register]);
 
     useEffect(() => {
-        // when draft doesn't exist, we need to bind actual default values - that happens when we've got sellInfo from Invity API server
-        if (!isDraft && sellInfo && shouldResetOnInitialSellInfoLoad.current) {
+        // bind actual default values when we've got sellInfo from Invity API server
+        if (!shouldSkipInitialReset && sellInfo && shouldResetOnInitialSellInfoLoad.current) {
             shouldResetOnInitialSellInfoLoad.current = false;
             reset(defaultValues);
         }
-    }, [reset, sellInfo, defaultValues, isDraft]);
-
-    useDebounce(
-        () => {
-            // saving draft after validation & transaction composing & when sellInfo is available
-            if (
-                formState.isDirty &&
-                !formState.isValidating &&
-                Object.keys(formState.errors).length === 0 &&
-                !isComposing &&
-                sellInfo
-            ) {
-                saveDraft(values as TradingSellFormProps);
-            }
-        },
-        200,
-        [
-            saveDraft,
-            values,
-            formState.errors,
-            formState.isDirty,
-            formState.isValidating,
-            isComposing,
-        ],
-    );
+    }, [reset, sellInfo, defaultValues, shouldSkipInitialReset]);
 
     useEffect(() => {
         // We need to clear quotes on offers page without redirecting to form page

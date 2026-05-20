@@ -155,7 +155,6 @@ export interface TradingBuyFormContextProps
         receiveAddress,
     }: TradingBuyConfirmTradeProps) => Promise<BuyTrade | undefined>;
     verifyAddress: TradingVerifyAccountProps;
-    removeDraft: (key: string) => void;
     setAmountLimits: (limits?: AmountLimitProps) => void;
     methods: UseFormReturn<TradingBuyFormProps>;
     clearQuotesAndParams: () => void;
@@ -331,7 +330,6 @@ export interface TradingUseFormActionsProps<T extends TradingSellExchangeFormPro
     account: Account;
     methods: UseFormReturn<T>;
     pageType: TradingPageType;
-    draftUpdated?: TradingSellExchangeFormProps | null;
     type: TradingTradeSellExchangeType;
     handleChange: (offLoading?: boolean) => Promise<void>;
     setAmountLimits: (limits?: AmountLimitProps) => void;
