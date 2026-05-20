@@ -124,7 +124,7 @@ export class CoreInSuiteWeb implements ConnectImpl {
             if (!response?.payload) {
                 throw ERRORS.TypedError('Method_NoResponse');
             }
-            if (response.payload.error && response.payload.error.code) {
+            if (response.payload.error?.code) {
                 throw response.payload.error;
             }
 
