@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import TrezorConnect from '@trezor/connect';
+import type { TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 import { Model } from '@trezor/trezor-user-env-link';
 
 import { conditionalTest, getController, initTrezorConnect, setup } from '../../common.setup';
@@ -39,6 +40,51 @@ const assertGetAddressWorks = async () => {
         success: true,
         payload: { address: 'tb1qkvwu9g3k2pdxewfqr7syz89r3gj557l3uuf9r9' },
     });
+};
+
+const runCancelScenario = async (
+    controller: TrezorUserEnvLinkClass,
+    buildCancelParams: (callIdA: string) => { reason?: string; callId?: string } | undefined,
+    expectCallBSuccess: boolean,
+) => {
+    await setup(controller, {
+        mnemonic: 'mnemonic_all',
+        passphrase_protection: true,
+    });
+    await initTrezorConnect(controller);
+
+    // Let call A run to completion so its callId is no longer in callMethods
+    const callIdA = crypto.randomUUID();
+    TrezorConnect.on('ui-request_passphrase', passphraseHandler(''));
+    const responseA = await TrezorConnect.getAddress({
+        path: "m/84'/1'/0'/0/0",
+        coin: 'regtest',
+        showOnTrezor: true,
+        callId: callIdA,
+    });
+
+    expect(responseA.success).toBeTruthy();
+
+    const callB = TrezorConnect.getAddress({
+        path: "m/84'/1'/0'/0/0",
+        coin: 'regtest',
+        showOnTrezor: true,
+    });
+
+    await new Promise<void>(resolve => {
+        const handler = (event: any) => {
+            if (event.code === 'ButtonRequest_Address') {
+                TrezorConnect.off('button', handler);
+                resolve();
+            }
+        };
+        TrezorConnect.on('button', handler);
+    });
+
+    TrezorConnect.cancel(buildCancelParams(callIdA));
+
+    const responseB = await callB;
+    expect(responseB.success).toEqual(expectCallBSuccess);
 };
 
 describe('TrezorConnect.cancel', () => {
@@ -181,6 +227,14 @@ describe('TrezorConnect.cancel', () => {
 
         // After a targeted cancel the device should still be usable
         await assertGetAddressWorks();
+    });
+
+    it('Cancel without callId aborts the current call even after a prior callId', async () => {
+        await runCancelScenario(controller, () => undefined, false);
+    });
+
+    it('Stale callId cancel does not cancel other methods', async () => {
+        await runCancelScenario(controller, callIdA => ({ callId: callIdA }), true);
     });
 
     conditionalTest(['2'], 'Pin request - Cancel', async () => {
