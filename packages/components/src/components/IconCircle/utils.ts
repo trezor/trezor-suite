@@ -22,6 +22,7 @@ export const mapSizeToBorderWidth = (size: IconCircleSize): BorderWidths => {
         24: 0,
         32: 0,
         40: 0,
+        64: 6,
         96: 10,
         112: 12,
     };
@@ -57,6 +58,7 @@ export const mapSizeToIconSize = (size: IconCircleSize): IconSize => {
         24: 12,
         32: 16,
         40: 20,
+        64: 32,
         96: 40,
         112: 48,
     };
