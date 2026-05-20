@@ -59,15 +59,15 @@ export const UI_REQUEST = {
 export type UiRequestWithoutPayload =
     | {
           type: typeof UI_REQUEST.TRANSPORT;
-          payload?: typeof undefined;
+          payload?: never;
       }
     | {
           type: typeof UI_REQUEST.INSUFFICIENT_FUNDS;
-          payload?: typeof undefined;
+          payload?: never;
       }
     | {
           type: typeof UI_REQUEST.CLOSE_UI_WINDOW;
-          payload?: typeof undefined;
+          payload?: never;
       };
 
 export type UiRequestDeviceAction =
@@ -89,28 +89,28 @@ export type UiRequestDeviceAction =
           type: typeof UI_REQUEST.INVALID_PIN;
           payload: {
               device: Device;
-              type?: typeof undefined;
+              type?: never;
           };
       }
     | {
           type: typeof UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED;
           payload: {
               device: Device;
-              type?: typeof undefined;
+              type?: never;
           };
       }
     | {
           type: typeof UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE;
           payload: {
               device: Device;
-              type?: typeof undefined;
+              type?: never;
           };
       }
     | {
           type: typeof UI_REQUEST.REQUEST_PASSPHRASE;
           payload: {
               device: Device;
-              type?: typeof undefined;
+              type?: never;
           };
       };
 

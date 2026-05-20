@@ -9,7 +9,7 @@ export type ChangeOutputScriptType = Exclude<OutputScriptType, 'PAYTOOPRETURN'>;
 export type TxOutputType =
     | {
           address: string;
-          address_n?: typeof undefined;
+          address_n?: never;
           script_type?: 'PAYTOADDRESS';
           amount: UintType;
           multisig?: MultisigRedeemScriptType;
@@ -18,7 +18,7 @@ export type TxOutputType =
           payment_req_index?: number;
       }
     | {
-          address?: typeof undefined;
+          address?: never;
           address_n: number[];
           script_type?: ChangeOutputScriptType;
           amount: UintType;
@@ -28,8 +28,8 @@ export type TxOutputType =
           payment_req_index?: number;
       }
     | {
-          address?: typeof undefined;
-          address_n?: typeof undefined;
+          address?: never;
+          address_n?: never;
           amount: '0' | 0;
           op_return_data: string;
           script_type: 'PAYTOOPRETURN';

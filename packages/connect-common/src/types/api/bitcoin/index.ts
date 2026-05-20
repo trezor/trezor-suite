@@ -28,7 +28,7 @@ export type RefTransaction =
           version: number;
           inputs: PROTO.PrevInput[];
           bin_outputs: PROTO.TxOutputBinType[];
-          outputs?: typeof undefined;
+          outputs?: never;
           lock_time: number;
           extra_data?: string;
           expiry?: number;
@@ -41,7 +41,7 @@ export type RefTransaction =
           hash: string;
           version: number;
           inputs: PROTO.TxInput[];
-          bin_outputs?: typeof undefined;
+          bin_outputs?: never;
           outputs: PROTO.TxOutputType[];
           lock_time: number;
           extra_data?: string;

@@ -149,7 +149,7 @@ export type KnownDevice = BaseDevice & {
 
     /** @deprecated, use features.label instead */
     label: string;
-    error?: typeof undefined;
+    error?: never;
     firmware: DeviceFirmwareStatus;
     firmwareReleaseConfigInfo?: FirmwareReleaseConfigInfo | null;
     firmwareType?: FirmwareType;
@@ -176,19 +176,19 @@ export type UnknownDevice = BaseDevice & {
     type: 'unacquired';
     /** @deprecated, use features.label instead */
     label: 'Unacquired device';
-    id?: typeof undefined;
-    error?: typeof undefined;
-    features?: typeof undefined;
+    id?: never;
+    error?: never;
+    features?: never;
     thp?: DeviceThpState;
-    firmware?: typeof undefined;
-    firmwareReleaseConfigInfo?: typeof undefined;
-    firmwareType?: typeof undefined;
-    color?: typeof undefined;
+    firmware?: never;
+    firmwareReleaseConfigInfo?: never;
+    firmwareType?: never;
+    color?: never;
     status?: DeviceStatus;
-    mode?: typeof undefined;
-    state?: typeof undefined;
-    unavailableCapabilities?: typeof undefined;
-    availableTranslations?: typeof undefined;
+    mode?: never;
+    state?: never;
+    unavailableCapabilities?: never;
+    availableTranslations?: never;
     transportSessionOwner?: string;
     hid?: undefined;
 };
@@ -198,18 +198,18 @@ export type UnreadableDevice = BaseDevice & {
     /** @deprecated, use features.label instead */
     label: 'Unreadable device';
     error: string;
-    id?: typeof undefined;
-    features?: typeof undefined;
-    thp?: typeof undefined;
-    firmware?: typeof undefined;
-    firmwareReleaseConfigInfo?: typeof undefined;
-    firmwareType?: typeof undefined;
-    color?: typeof undefined;
-    status?: typeof undefined;
-    mode?: typeof undefined;
-    state?: typeof undefined;
-    unavailableCapabilities?: typeof undefined;
-    availableTranslations?: typeof undefined;
+    id?: never;
+    features?: never;
+    thp?: never;
+    firmware?: never;
+    firmwareReleaseConfigInfo?: never;
+    firmwareType?: never;
+    color?: never;
+    status?: never;
+    mode?: never;
+    state?: never;
+    unavailableCapabilities?: never;
+    availableTranslations?: never;
     transportSessionOwner?: undefined;
     hid: boolean;
 };

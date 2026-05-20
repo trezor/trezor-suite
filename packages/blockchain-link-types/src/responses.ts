@@ -175,7 +175,7 @@ export interface GetContractInfo {
 interface WithoutPayload {
     id: number;
     type: typeof HANDSHAKE | typeof RESPONSES.CONNECTED;
-    payload?: typeof undefined;
+    payload?: never;
 }
 
 // extended

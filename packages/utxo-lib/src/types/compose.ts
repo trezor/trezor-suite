@@ -37,14 +37,14 @@ export interface ComposeOutputSendMax {
 
 export interface ComposeOutputSendMaxNoAddress {
     type: 'send-max-noaddress';
-    amount?: typeof undefined;
+    amount?: never;
 }
 
 export interface ComposeOutputOpreturn {
     type: 'opreturn'; // it doesn't need to have address
     dataHex: string;
-    amount?: typeof undefined;
-    address?: typeof undefined;
+    amount?: never;
+    address?: never;
 }
 
 // NOTE: this interface **is not** accepted by ComposeRequest['utxos']
