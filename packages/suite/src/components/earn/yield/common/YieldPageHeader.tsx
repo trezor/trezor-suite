@@ -112,6 +112,8 @@ export const YieldPageHeader = ({ analyticsStep, account, routeParams }: YieldPa
                             {account && (
                                 <AccountLabel
                                     account={account}
+                                    showAccountTypeBadge
+                                    accountTypeBadgeSize="small"
                                     intent="neutral"
                                     priority="secondary"
                                     typographyStyle="body-sm"

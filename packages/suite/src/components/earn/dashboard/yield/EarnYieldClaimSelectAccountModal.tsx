@@ -72,6 +72,8 @@ export const EarnYieldClaimSelectAccountModal = ({
                             <Column flex="1" overflow="hidden" gap={2} alignItems="flex-start">
                                 <AccountLabel
                                     account={accountRewards.account}
+                                    showAccountTypeBadge
+                                    accountTypeBadgeSize="small"
                                     typographyStyle="body-md-strong"
                                 />
                                 <Address
