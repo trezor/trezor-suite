@@ -392,6 +392,16 @@ export const claimMerkleRewardsThunk = createThunk(
             }
         } catch (error) {
             console.error(error);
+            asTypedDesktopAnalytics(extra.services.analytics).report({
+                type: events.yieldClaimEvent.name,
+                payload: {
+                    type: 'error',
+                    action: 'continue',
+                    networkSymbol: account.symbol,
+                    rewardCount: rewards.length,
+                    errorMessage: 'submit-failed',
+                },
+            });
         } finally {
             dispatch(stablecoinYieldActions.finishSubmittingAction({ flowType: 'claim', flowKey }));
         }
