@@ -54,7 +54,7 @@ export const TradeableAssetSheetHeader = ({
                 testID={testID}
             >
                 <TradeableAssetFilterTabs
-                    visible={isFilterActive}
+                    isVisible={isFilterActive}
                     animationDuration={FOCUS_ANIMATION_DURATION}
                     onSelectedNetworkFilter={onSelectedNetworkFilter}
                 />

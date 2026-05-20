@@ -6,7 +6,7 @@ import { useTranslate } from '@suite-native/intl';
 import { type FilterItem, FilterTabs } from '@suite-native/trading-atoms';
 
 type MyAssetFilterTabsProps = {
-    visible: boolean;
+    isVisible: boolean;
     animationDuration: number;
     onSelectedNetworkFilter: (symbol: NetworkSymbol | undefined) => void;
     availableNetworks: NetworkSymbol[];
@@ -18,7 +18,7 @@ const MyAssetFilterTabsContent = ({
     animationDuration,
     onSelectedNetworkFilter,
     availableNetworks,
-}: Omit<MyAssetFilterTabsProps, 'visible'>) => {
+}: Omit<MyAssetFilterTabsProps, 'isVisible'>) => {
     const [selectedValue, setSelectedValue] = useState<NetworkSymbol | undefined>(undefined);
 
     const { translate } = useTranslate();
@@ -59,8 +59,8 @@ const MyAssetFilterTabsContent = ({
     );
 };
 
-export const MyAssetFilterTabs = ({ visible, ...rest }: MyAssetFilterTabsProps) => {
-    if (!visible) {
+export const MyAssetFilterTabs = ({ isVisible, ...rest }: MyAssetFilterTabsProps) => {
+    if (!isVisible) {
         return null;
     }
 
