@@ -876,6 +876,48 @@ describe('commonSelectors', () => {
             expect(result[0].sectionData.symbol).toBe('btc');
         });
 
+        it('should filter out accounts whose network has no tradeCryptoId', () => {
+            const testDeviceState = 'test-device';
+            const regtestAccount = {
+                ...getBtcAccount(),
+                key: 'regtest-account-1' as AccountKey,
+                symbol: 'regtest' as Account['symbol'],
+                accountLabel: 'Regtest Account #1',
+                balance: '1000000',
+                formattedBalance: '0.01',
+                networkType: 'bitcoin' as Account['networkType'],
+                visible: true,
+                deviceState: testDeviceState,
+            };
+            const btcAccount = {
+                ...getBtcAccount(),
+                visible: true,
+                deviceState: testDeviceState,
+            };
+            const cleanState = getInitializedTradingState('exchange');
+
+            const stateWithDevice = {
+                wallet: {
+                    trading: cleanState,
+                    accounts: [regtestAccount, btcAccount],
+                    settings: { localCurrency: 'usd', enabledNetworks: ['regtest', 'btc'] },
+                    transactions: { transactions: {} },
+                },
+                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                tokenDefinitions: {},
+                fiat: { rates: {}, current: 'usd' },
+                featureFlags: featureFlagsInitialState,
+            } as any;
+
+            const result = selectAccountsWithTokensToSellSectionListByTradingType(
+                stateWithDevice,
+                'exchange',
+            );
+
+            expect(result.length).toBe(1);
+            expect(result[0].sectionData.symbol).toBe('btc');
+        });
+
         it('should include Cardano accounts when IsCardanoSendEnabled feature flag is enabled', () => {
             const testDeviceState = 'test-device';
             const cardanoAccount = {
