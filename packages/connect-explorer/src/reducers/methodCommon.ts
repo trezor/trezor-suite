@@ -166,7 +166,7 @@ export const setAffectedValues = (state: MethodState, field: Field<unknown>) => 
     if (!field.affect) return field;
 
     const data = field.data?.find(d => d.value === field.value);
-    if (data && data.affectedValue) {
+    if (data?.affectedValue) {
         const affectedFieldNames = !Array.isArray(field.affect) ? [field.affect] : field.affect;
         const values = !Array.isArray(data.affectedValue)
             ? [data.affectedValue]
