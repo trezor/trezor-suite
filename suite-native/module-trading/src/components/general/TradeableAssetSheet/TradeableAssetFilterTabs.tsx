@@ -8,7 +8,7 @@ import { useTranslate } from '@suite-native/intl';
 import { type FilterItem, FilterTabs } from '@suite-native/trading-atoms';
 
 type TradeableAssetsFilterTabsProps = {
-    visible: boolean;
+    isVisible: boolean;
     animationDuration: number;
     onSelectedNetworkFilter: (symbol: NetworkSymbol | undefined) => void;
 };
@@ -18,7 +18,7 @@ const keyExtractor = (item: FilterItem<NetworkSymbol | undefined>) => item.value
 const TradeableAssetFilterTabsContent = ({
     animationDuration,
     onSelectedNetworkFilter,
-}: Omit<TradeableAssetsFilterTabsProps, 'visible'>) => {
+}: Omit<TradeableAssetsFilterTabsProps, 'isVisible'>) => {
     const networks = useSelector(selectDiscoverySupportedNetworks);
 
     const [selectedValue, setSelectedValue] = useState<NetworkSymbol | undefined>(undefined);
@@ -59,8 +59,11 @@ const TradeableAssetFilterTabsContent = ({
     );
 };
 
-export const TradeableAssetFilterTabs = ({ visible, ...rest }: TradeableAssetsFilterTabsProps) => {
-    if (!visible) {
+export const TradeableAssetFilterTabs = ({
+    isVisible,
+    ...rest
+}: TradeableAssetsFilterTabsProps) => {
+    if (!isVisible) {
         return null;
     }
 

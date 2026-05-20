@@ -9,7 +9,7 @@ describe('MyAssetFilterTabs', () => {
     const renderComponent = (onSelectedNetworkFilter = jest.fn()) =>
         renderWithStoreProvider(
             <MyAssetFilterTabs
-                visible={true}
+                isVisible={true}
                 animationDuration={300}
                 onSelectedNetworkFilter={onSelectedNetworkFilter}
                 availableNetworks={availableNetworks}
@@ -27,7 +27,7 @@ describe('MyAssetFilterTabs', () => {
     it('should not render anything when visible is false', () => {
         const { queryByText } = renderWithStoreProvider(
             <MyAssetFilterTabs
-                visible={false}
+                isVisible={false}
                 animationDuration={300}
                 onSelectedNetworkFilter={jest.fn()}
                 availableNetworks={availableNetworks}
@@ -72,7 +72,7 @@ describe('MyAssetFilterTabs', () => {
 
         rerender(
             <MyAssetFilterTabs
-                visible={false}
+                isVisible={false}
                 animationDuration={300}
                 onSelectedNetworkFilter={onSelectedNetworkFilter}
                 availableNetworks={availableNetworks}

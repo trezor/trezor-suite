@@ -25,7 +25,7 @@ describe('TradeableAssetFilterTabs', () => {
     const renderComponent = (onSelectedNetworkFilter = jest.fn()) =>
         renderWithStoreProvider(
             <TradeableAssetFilterTabs
-                visible={true}
+                isVisible={true}
                 animationDuration={300}
                 onSelectedNetworkFilter={onSelectedNetworkFilter}
             />,
@@ -42,7 +42,7 @@ describe('TradeableAssetFilterTabs', () => {
     it('should not render anything when visible is false', () => {
         const { queryByText } = renderWithStoreProvider(
             <TradeableAssetFilterTabs
-                visible={false}
+                isVisible={false}
                 animationDuration={300}
                 onSelectedNetworkFilter={jest.fn()}
             />,
@@ -77,7 +77,7 @@ describe('TradeableAssetFilterTabs', () => {
 
         rerender(
             <TradeableAssetFilterTabs
-                visible={false}
+                isVisible={false}
                 animationDuration={300}
                 onSelectedNetworkFilter={onSelectedNetworkFilter}
             />,

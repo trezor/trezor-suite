@@ -53,7 +53,7 @@ export const MyAssetSheetHeader = ({
                 testID={testID}
             >
                 <MyAssetFilterTabs
-                    visible={isFilterActive}
+                    isVisible={isFilterActive}
                     animationDuration={FOCUS_ANIMATION_DURATION}
                     onSelectedNetworkFilter={onSelectedNetworkFilter}
                     availableNetworks={availableNetworks}
