@@ -195,7 +195,7 @@ const startForwarding = (broadcast: BroadcastChannel, owner: Window, ownerOrigin
 
     const onBroadcastMessage = (event: MessageEvent): void => {
         const channel = event.data?.channel;
-        if (!channel || channel.here !== PEERS.POPUP || channel.peer !== PEERS.WEB) {
+        if (channel?.here !== PEERS.POPUP || channel.peer !== PEERS.WEB) {
             return;
         }
 
@@ -210,7 +210,7 @@ const startForwarding = (broadcast: BroadcastChannel, owner: Window, ownerOrigin
         }
 
         const channel = event.data?.channel;
-        if (!channel || channel.here !== PEERS.WEB || channel.peer !== PEERS.POPUP) {
+        if (channel?.here !== PEERS.WEB || channel.peer !== PEERS.POPUP) {
             return;
         }
 
