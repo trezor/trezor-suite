@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { openDeferredModal, selectModalType } from '@suite/modal';
 import { Anchor, SettingsAnchor } from '@suite/router';
@@ -8,7 +9,6 @@ import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-component
 import { HELP_CENTER_TOR_URL } from '@trezor/urls';
 
 import { toggleTor } from 'src/actions/suite/suiteActions';
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectCoinjoinAccounts } from 'src/reducers/wallet/coinjoinReducer';
 import { TorStatus } from 'src/types/suite';

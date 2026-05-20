@@ -1,14 +1,13 @@
 import { memo } from 'react';
 import { useWatch } from 'react-hook-form';
 
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { type FormState } from '@suite-common/wallet-types';
 import { getLowestFeeFromLevels } from '@suite-common/wallet-utils';
 import { Banner, Collapsible } from '@trezor/components';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
 import { BigNumber } from '@trezor/utils';
-
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 
 import { FEE_PER_UNIT } from './constants';
 import { useFeesContext } from '../../context/FeesContext';

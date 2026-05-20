@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 
+import { TrezorLink } from '@suite/external-links';
 import { Translation, type TranslationKey } from '@suite/intl';
 import {
     BulletList,
@@ -16,8 +17,6 @@ import {
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { ESHOP_KEEP_METAL_MULTI_SHARE_URL, HELP_CENTER_SEED_CARD_URL } from '@trezor/urls';
-
-import { TrezorLink } from 'src/components/suite/TrezorLink';
 
 import type { Steps } from './steps';
 

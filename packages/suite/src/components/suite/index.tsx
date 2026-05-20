@@ -23,8 +23,7 @@ import { AccountLabeling, AddressLabeling, WalletLabeling, useGetWalletLabel } f
 import { FormattedCryptoAmount } from './FormattedCryptoAmount';
 import { FormattedNftAmount } from './FormattedNftAmount';
 import { Sign } from './Sign';
-import { TrezorLink } from './TrezorLink';
-import { ReadMoreLink } from './ReadMoreLink';
+import { ReadMoreLink, TrezorLink } from '@suite/external-links';
 import { RedactNumericalValue } from './RedactNumericalValue';
 import { FormattedDate } from './FormattedDate';
 import { FormattedDateWithBullet } from './FormattedDateWithBullet';

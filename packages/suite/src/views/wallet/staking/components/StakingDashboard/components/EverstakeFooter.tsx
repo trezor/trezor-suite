@@ -2,10 +2,10 @@ import { useMemo } from 'react';
 
 import styled from 'styled-components';
 
+import { LearnMoreButton } from '@suite/external-links';
 import { spacingsPx } from '@trezor/theme';
 
 import { PoweredByBadge, getStakingHelpCenterLink } from 'src/components/earn';
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 

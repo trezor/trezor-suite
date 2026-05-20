@@ -1,10 +1,10 @@
+import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { Banner, Button, Column, H3, Icon, List, Paragraph, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
-import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 

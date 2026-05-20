@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react';
 
+import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { formInputsMaxLength } from '@suite-common/validators';
 import {
@@ -16,8 +17,6 @@ import {
     Row,
 } from '@trezor/components';
 import { HELP_CENTER_PIN_URL } from '@trezor/urls';
-
-import { useExternalLink } from 'src/hooks/suite';
 
 type PinMatrixProps = {
     pin: string;

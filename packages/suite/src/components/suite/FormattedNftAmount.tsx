@@ -1,3 +1,4 @@
+import { TrezorLink } from '@suite/external-links';
 import { Translation, useTranslation } from '@suite/intl';
 import { type SignValue } from '@suite-common/suite-types';
 import { getExplorerUrl } from '@suite-common/wallet-config';
@@ -8,8 +9,6 @@ import { type TokenTransfer } from '@trezor/connect';
 import { type TypographyStyle, spacings } from '@trezor/theme';
 
 import { HiddenPlaceholder, Sign } from 'src/components/suite';
-// importing directly, otherwise unit tests fail, seems to be a styled-components issue
-import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 

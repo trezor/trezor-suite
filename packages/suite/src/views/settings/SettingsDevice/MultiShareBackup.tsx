@@ -1,4 +1,5 @@
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
@@ -7,7 +8,6 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const doesSupportMultiShare = (device: TrezorDevice | undefined): boolean => {

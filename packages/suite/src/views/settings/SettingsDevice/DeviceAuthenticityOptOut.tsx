@@ -1,3 +1,4 @@
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { selectIsDeviceAuthenticityCheckEnabled } from '@suite/settings';
@@ -5,7 +6,6 @@ import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/pro
 import { HELP_CENTER_DEVICE_AUTHENTICATION } from '@trezor/urls';
 
 import { toggleDeviceAuthenticityCheck } from 'src/actions/suite/suiteActions';
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const DeviceAuthenticityOptOut = () => {

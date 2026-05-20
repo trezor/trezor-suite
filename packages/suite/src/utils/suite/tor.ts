@@ -1,12 +1,6 @@
-import { TOR_URLS } from '@trezor/urls';
-import { parseHostname, urlToOnion } from '@trezor/utils';
+import { parseHostname } from '@trezor/utils';
 
 import { TorStatus } from 'src/types/suite';
-
-/**
- * returns tor url if tor url is request and tor url is available for given domain
- */
-export const getTorUrlIfAvailable = (url: string) => urlToOnion(url, TOR_URLS);
 
 export const getIsTorDomain = (domain: string) => domain.endsWith('.onion');
 

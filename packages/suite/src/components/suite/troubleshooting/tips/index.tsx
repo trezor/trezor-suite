@@ -1,8 +1,7 @@
+import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { isDesktop, isLinux, isWeb } from '@trezor/env-utils';
 import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
-
-import { TrezorLink } from 'src/components/suite/TrezorLink';
 
 import { SuiteDesktopTip } from './BridgeTip';
 import { UdevDescription } from './UdevDescription';

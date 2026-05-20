@@ -1,10 +1,10 @@
 import { useDevice } from '@suite/device';
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor, goto } from '@suite/router';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_RECOVERY_SEED_URL } from '@trezor/urls';
 
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useDispatch } from 'src/hooks/suite';
 
 interface BackupRecoverySeedProps {

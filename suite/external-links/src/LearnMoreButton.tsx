@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { Button, type ButtonProps } from '@trezor/components';
 import { type Url } from '@trezor/urls';
 
-import { useExternalLink } from '../../hooks/suite';
+import { useExternalLink } from './useExternalLink';
 
 interface LearnMoreButtonProps extends Omit<ButtonProps, 'children'> {
     url: Url;

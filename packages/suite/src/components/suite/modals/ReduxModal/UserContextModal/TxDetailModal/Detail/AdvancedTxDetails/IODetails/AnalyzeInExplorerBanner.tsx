@@ -1,10 +1,11 @@
+import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { type Explorer, type NetworkSymbol } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { selectExplorer } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 
-import { useExternalLink, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type AnalyzeInExplorerBannerProps = {
     txid: string;

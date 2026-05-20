@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation, useTranslation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectAutodetectLanguage, selectLanguage, suiteSettingsActions } from '@suite/settings';
@@ -11,7 +12,6 @@ import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/pro
 import { CROWDIN_URL } from '@trezor/urls';
 import { typedObjectEntries } from '@trezor/utils';
 
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getOsLocale } from 'src/utils/suite/l10n';
 

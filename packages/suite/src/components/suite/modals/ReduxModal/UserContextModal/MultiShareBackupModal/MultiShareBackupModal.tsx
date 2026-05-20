@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { isAdditionalShamirBackupInProgress } from '@suite/recovery';
 import { useServices } from '@suite-common/dependency-injection';
@@ -14,7 +15,6 @@ import {
     TREZOR_SUPPORT_RECOVERY_ISSUES_URL,
 } from '@trezor/urls';
 
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useSelector } from 'src/hooks/suite';
 
 import { MultiShareBackupStep1 } from './MultiShareBackupStep1';

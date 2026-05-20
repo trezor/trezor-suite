@@ -3,6 +3,7 @@ import { type OptionProps } from 'react-select';
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation, useTranslation } from '@suite/intl';
 import { metadataLabelingActions, metadataThunks } from '@suite/metadata';
 import { Anchor, SettingsAnchor } from '@suite/router';
@@ -20,7 +21,6 @@ import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/pro
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_LABELING } from '@trezor/urls';
 
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { LabelingSwitchToLegacyModal } from 'src/components/suite/labeling/LabelingSwitchToLegacyModal';
 import {
     LABELING_LEGACY_OPTION_LABEL,

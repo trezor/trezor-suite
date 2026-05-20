@@ -159,6 +159,7 @@
         { "path": "../../suite/desktop-update" },
         { "path": "../../suite/device" },
         { "path": "../../suite/experimental" },
+        { "path": "../../suite/external-links" },
         {
             "path": "../../suite/feature-feedback"
         },
