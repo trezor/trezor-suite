@@ -93,7 +93,7 @@ const fetchTransactionPage = async (
     ).filter(nonNullable);
 
 const isValidTransaction = (tx: ParsedTransactionWithMeta): tx is SolanaValidParsedTxWithMeta =>
-    !!(tx && tx.meta && tx.transaction && tx.blockTime);
+    !!(tx?.meta && tx.transaction && tx.blockTime);
 
 const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) => {
     const rawTx = request.payload.hex.startsWith('0x')

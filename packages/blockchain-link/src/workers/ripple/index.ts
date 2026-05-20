@@ -546,7 +546,7 @@ class RippleWorker extends BaseWorker<Client> {
     }
 
     async onPing() {
-        if (!this.api || !this.api.isConnected()) return;
+        if (!this.api?.isConnected()) return;
 
         if (this.state.hasSubscriptions() || this.settings.keepAlive) {
             try {
