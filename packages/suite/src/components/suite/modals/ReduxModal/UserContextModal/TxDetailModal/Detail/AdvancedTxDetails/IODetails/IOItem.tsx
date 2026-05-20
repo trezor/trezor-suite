@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { Address } from '@suite/address';
+import { useExternalLink } from '@suite/external-links';
 import { type NetworkSymbolExtended, isNetworkSymbol } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { selectExplorer } from '@suite-common/wallet-core';
@@ -10,7 +11,6 @@ import { Column, Link, Row, Text } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { UtxoAnonymity } from 'src/components/wallet';
-import { useExternalLink } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectFullSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 

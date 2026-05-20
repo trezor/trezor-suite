@@ -1,7 +1,8 @@
+import { getTorUrlIfAvailable } from '@suite/external-links';
 import { TOR_URLS } from '@trezor/urls';
 import { withPlatformUtm } from '@trezor/urls/src/utms';
 
-import { getIsTorDomain, getTorUrlIfAvailable, isOnionUrl } from 'src/utils/suite/tor';
+import { getIsTorDomain, isOnionUrl } from 'src/utils/suite/tor';
 
 describe('tor', () => {
     beforeAll(() => {

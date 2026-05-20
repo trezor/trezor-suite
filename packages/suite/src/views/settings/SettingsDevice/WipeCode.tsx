@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
@@ -9,7 +10,6 @@ import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/pro
 import { HELP_CENTER_WIPE_CODE_URL } from '@trezor/urls';
 
 import { changeWipeCode } from 'src/actions/settings/deviceSettingsActions';
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useDispatch } from 'src/hooks/suite';
 
 interface Props {

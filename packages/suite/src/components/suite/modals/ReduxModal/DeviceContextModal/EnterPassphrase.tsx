@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { selectDeviceModel } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -8,7 +9,6 @@ import { spacings } from '@trezor/theme';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 import { getNonAsciiChars } from '@trezor/utils';
 
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useSelector } from 'src/hooks/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';

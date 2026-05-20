@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { getTorUrlIfAvailable } from '@suite/external-links';
 import { goto } from '@suite/router';
 import { selectLanguage, selectTorOnionLinks } from '@suite/settings';
 import {
@@ -11,7 +12,6 @@ import { Banner } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
-import { getTorUrlIfAvailable } from 'src/utils/suite/tor';
 
 type ContextMessageProps = {
     context: ContextDomain;

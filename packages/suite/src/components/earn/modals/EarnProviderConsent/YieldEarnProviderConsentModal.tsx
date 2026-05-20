@@ -1,4 +1,5 @@
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import {
@@ -12,7 +13,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { MORPHO_DISCLAIMER_URL, TREZOR_SUITE_TOS_URL } from '@trezor/urls';
 
-import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useSelector } from 'src/hooks/suite';
 
 import { EarnProviderConsentModalLayout } from './components/EarnProviderConsentModalLayout';

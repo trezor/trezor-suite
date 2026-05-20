@@ -1,10 +1,10 @@
 import { useDevice } from '@suite/device';
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor, goto } from '@suite/router';
 import { getFirmwareDowngradeUrl } from '@suite-common/suite-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useDispatch } from 'src/hooks/suite';
 
 export const CustomFirmware = () => {

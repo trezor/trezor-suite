@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Button, Column, Modal, SelectBar } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
@@ -9,8 +10,6 @@ import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-component
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 import { GITHUB_MCP_DOCS_URL } from '@trezor/urls';
-
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 
 const ConfigBox = styled.div`
     display: flex;

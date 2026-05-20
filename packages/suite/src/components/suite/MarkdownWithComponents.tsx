@@ -1,6 +1,5 @@
+import { TrezorLink } from '@suite/external-links';
 import { Markdown } from '@trezor/components';
-
-import { TrezorLink } from './TrezorLink';
 
 type MarkdownWithComponentsProps = {
     children: string;

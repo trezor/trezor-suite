@@ -1,10 +1,9 @@
 import { useState } from 'react';
 
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_DEVICE_AUTHENTICATION } from '@trezor/urls';
-
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 
 import { AuthenticateDeviceModal } from './AuthenticateDevice/AuthenticateDeviceModal';
 

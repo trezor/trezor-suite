@@ -1,0 +1,14 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../intl" },
+        { "path": "../settings" },
+        { "path": "../../packages/components" },
+        {
+            "path": "../../packages/suite-desktop-api"
+        },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/utils" }
+    ]
+}

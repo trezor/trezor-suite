@@ -1,3 +1,4 @@
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import {
     type AccountType,
@@ -9,8 +10,6 @@ import {
 import { getAccountTypeDesc, getAccountTypeUrl } from '@suite-common/wallet-utils';
 import { Column, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 
 interface AccountTypeDescriptionProps {
     bip43Path: Bip43PathTemplate;

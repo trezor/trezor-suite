@@ -3,12 +3,11 @@ import { useZxing } from 'react-zxing';
 
 import styled from 'styled-components';
 
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Card, Column, Icon, Paragraph, Row } from '@trezor/components';
 import { borders, spacings } from '@trezor/theme';
 import { HELP_CENTER_QR_CODE_URL } from '@trezor/urls';
-
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 
 const ContentWrapper = styled.div`
     height: 380px;

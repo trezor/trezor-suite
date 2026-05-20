@@ -2,9 +2,8 @@ import { useState } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
+import { TrezorLink } from '@suite/external-links';
 import { Box, Image, Row } from '@trezor/components';
-
-import { TrezorLink } from './TrezorLink';
 
 type StoreBadgeProps = {
     url: string;

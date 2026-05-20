@@ -1,9 +1,8 @@
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
-
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 
 export const BackupFailed = () => (
     <Anchor anchorId={SettingsAnchor.BackupFailed}>

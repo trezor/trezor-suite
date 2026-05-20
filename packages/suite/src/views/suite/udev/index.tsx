@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
+import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { getOsFamily, getUserAgent } from '@suite-common/suite-utils';
 import { Column, Modal, Paragraph, Select, Spinner } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { DATA_URL, HELP_CENTER_UDEV_URL } from '@trezor/urls';
 
-import { useExternalLink } from 'src/hooks/suite';
 import type { ForegroundAppProps } from 'src/types/suite';
 
 type Installer = {

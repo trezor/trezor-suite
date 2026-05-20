@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react';
 
+import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { selectModalRequestId } from '@suite/modal';
 import {
@@ -16,7 +17,7 @@ import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 import { resolveAfter } from '@trezor/utils';
 
-import { useExternalLink, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type WordInputAdvancedProps = {
     count: 6 | 9;

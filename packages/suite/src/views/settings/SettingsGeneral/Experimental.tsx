@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import type { ExperimentalFeature } from '@suite/experimental';
+import { LearnMoreButton } from '@suite/external-links';
 import { feedbackRequested } from '@suite/feature-feedback';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
@@ -18,7 +19,6 @@ import { spacings } from '@trezor/theme';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
 import { typedObjectKeys } from '@trezor/utils';
 
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { EXPERIMENTAL_FEATURES } from 'src/constants/suite/experimental';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { type SuiteServices } from 'src/support/extraDependencies';

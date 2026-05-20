@@ -1,3 +1,4 @@
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import {
@@ -9,7 +10,6 @@ import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/pro
 import { HELP_CENTER_FIRMWARE_REVISION_CHECK } from '@trezor/urls';
 
 import { toggleFirmwareAuthenticityChecks } from 'src/actions/suite/suiteActions';
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const FirmwareAuthenticityChecks = () => {

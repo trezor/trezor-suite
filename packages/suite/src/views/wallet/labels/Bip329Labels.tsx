@@ -1,5 +1,6 @@
 import { type ReactElement } from 'react';
 
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { selectIsMetadataEnabled } from '@suite/metadata';
 import { suiteSyncErrorHandler } from '@suite/suite-sync';
@@ -25,7 +26,6 @@ import {
 import { HELP_CENTER_BIP329_URL } from '@trezor/urls';
 
 import { exportMetadataToBip329File } from 'src/actions/labels/exportMetadataToBip329File';
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useDefaultAccountLabel, useDispatch, useSelector } from 'src/hooks/suite';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 

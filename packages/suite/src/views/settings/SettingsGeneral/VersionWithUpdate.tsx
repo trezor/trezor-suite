@@ -4,6 +4,7 @@ import {
     desktopUpdateActions,
     installUpdateThunk,
 } from '@suite/desktop-update';
+import { useExternalLink } from '@suite/external-links';
 import { getReleaseUrl } from '@suite/github';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
@@ -13,7 +14,7 @@ import { isDesktop } from '@trezor/env-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { useDispatch, useExternalLink, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const getUpdateStateMessage = (state: UpdateState) => {
     switch (state) {

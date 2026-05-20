@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
+import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { type AccountType, type Network } from '@suite-common/wallet-config';
 import { type ChainedTransactions, createAccountKey } from '@suite-common/wallet-types';
 import { typography } from '@trezor/theme';
 
-import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { TransactionItem } from 'src/components/wallet/TransactionItem/TransactionItem';
 
 import { AffectedTransactionItem } from './AffectedTransactions/AffectedTransactionItem';

@@ -2,6 +2,7 @@ import { type CSSProperties, forwardRef, useRef } from 'react';
 
 import styled from 'styled-components';
 
+import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { type BackupType } from '@suite-common/suite-types';
 import {
@@ -22,8 +23,6 @@ import {
     zIndices,
 } from '@trezor/theme';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
-
-import { TrezorLink } from 'src/components/suite/TrezorLink';
 
 import { LegacyOptions } from './LegacyOptions';
 import { ShamirOptions } from './ShamirOptions';

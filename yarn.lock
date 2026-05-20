@@ -14326,6 +14326,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/external-links@workspace:*, @suite/external-links@workspace:suite/external-links":
+  version: 0.0.0-use.local
+  resolution: "@suite/external-links@workspace:suite/external-links"
+  dependencies:
+    "@suite/intl": "workspace:*"
+    "@suite/settings": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/suite-desktop-api": "workspace:*"
+    "@trezor/urls": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    react: "npm:19.2.4"
+    react-redux: "npm:9.2.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite/feature-feedback@workspace:*, @suite/feature-feedback@workspace:suite/feature-feedback":
   version: 0.0.0-use.local
   resolution: "@suite/feature-feedback@workspace:suite/feature-feedback"
@@ -16289,6 +16304,7 @@ __metadata:
     "@suite/desktop-update": "workspace:*"
     "@suite/device": "workspace:*"
     "@suite/experimental": "workspace:*"
+    "@suite/external-links": "workspace:*"
     "@suite/feature-feedback": "workspace:*"
     "@suite/firmware-upgrade": "workspace:*"
     "@suite/flags": "workspace:*"

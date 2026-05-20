@@ -1,3 +1,4 @@
+import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { Column, H3, Link, Modal, Paragraph } from '@trezor/components';
@@ -5,7 +6,7 @@ import { spacings } from '@trezor/theme';
 import { UNINSTALL_BRIDGE_URL } from '@trezor/urls';
 
 import { Metadata } from 'src/components/suite';
-import { useDispatch, useExternalLink, useLayout } from 'src/hooks/suite';
+import { useDispatch, useLayout } from 'src/hooks/suite';
 
 /**
  * modal that should show users basic information how to uninstall old standalone bridge

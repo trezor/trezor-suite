@@ -1,4 +1,5 @@
 import { useDevice } from '@suite/device';
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { getCheckBackupUrl } from '@suite-common/suite-utils';
 import { BulletList, Card, Paragraph } from '@trezor/components';
@@ -6,7 +7,6 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 
 import { CheckItem } from 'src/components/suite';
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 
 const enterSeedInstructionsMap: Record<DeviceModelInternal, TranslationKey> = {
     [DeviceModelInternal.T1B1]: 'TR_SEED_WORDS_ENTER_COMPUTER',

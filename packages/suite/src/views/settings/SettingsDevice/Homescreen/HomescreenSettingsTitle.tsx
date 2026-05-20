@@ -1,9 +1,9 @@
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation, useTranslation } from '@suite/intl';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 import { TextColumn } from '@trezor/product-components';
 import { HOMESCREEN_EDITOR_URL } from '@trezor/urls';
 
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { HAS_MONOCHROME_SCREEN } from 'src/constants/suite/device';
 import { deviceModelInformation } from 'src/utils/suite/homescreen';
 

@@ -1,10 +1,9 @@
 import { type MouseEventHandler } from 'react';
 
+import { LearnMoreButton } from '@suite/external-links';
 import { Button, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { type Url } from '@trezor/urls';
-
-import { LearnMoreButton } from '../suite/LearnMoreButton';
 
 type ButtonProps = { onClick: MouseEventHandler<HTMLButtonElement>; text: string };
 
