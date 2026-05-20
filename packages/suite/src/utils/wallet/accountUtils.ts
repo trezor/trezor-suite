@@ -4,7 +4,7 @@ import { type StaticSessionId } from '@trezor/connect';
 import { type WalletParams } from 'src/types/wallet';
 
 export const getSelectedAccount = (
-    deviceState: StaticSessionId | typeof undefined,
+    deviceState: StaticSessionId | undefined,
     accounts: Account[],
     routerParams: WalletParams | undefined,
 ) => {

@@ -45,7 +45,7 @@ export interface PopupClosedMessage {
 
 export interface PopupCloseWindow {
     type: typeof POPUP.CLOSE_WINDOW;
-    payload: typeof undefined;
+    payload?: never;
 }
 
 export type PopupEvent =

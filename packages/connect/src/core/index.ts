@@ -80,7 +80,7 @@ const createSendCoreMessageWithCallId =
 const selectDevice = ({ deviceList }: CoreContext, methodCallDevice?: DeviceIdentity) => {
     assertDeviceListConnected(deviceList);
 
-    let device: Device | typeof undefined;
+    let device: Device | undefined;
 
     if (methodCallDevice?.state?.staticSessionId) {
         device = deviceList.getDeviceByStaticState(methodCallDevice.state.staticSessionId);
