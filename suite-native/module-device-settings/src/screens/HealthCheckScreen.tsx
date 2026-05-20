@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { Platform } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
@@ -10,7 +11,7 @@ import {
     DynamicScreenHeader,
     Screen,
 } from '@suite-native/navigation';
-import { type NdefRecord } from '@trezor/react-native-nfc';
+import { type NdefRecord, addNfcIntentListener, startScanSession } from '@trezor/react-native-nfc';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { selectNfcTagLabel, setNfcTagLabel } from '../nfcTagsSlice';
@@ -114,13 +115,35 @@ export const HealthCheckScreen = () => {
 
     const handleHealthCheck = useCallback(() => {
         setIsChecking(true);
-        setTimeout(() => {
-            setLastCheckResult({
-                flippedBits: Math.floor(Math.random() * 10),
-                timestamp: Math.floor(Date.now() / 1000),
+
+        if (Platform.OS === 'ios') {
+            // On iOS we must listen for the event before starting the scan session,
+            // because records arrive via the onNfcIntent event.
+            const unsubscribe = addNfcIntentListener(event => {
+                unsubscribe();
+                const data = parseHealthCheckData(event.records);
+                if (data) {
+                    setLastCheckResult({
+                        flippedBits: data.flippedBits,
+                        timestamp: data.lastTimestamp,
+                    });
+                }
+                setIsChecking(false);
             });
-            setIsChecking(false);
-        }, HEALTH_CHECK_DURATION);
+
+            startScanSession().catch(() => {
+                unsubscribe();
+                setIsChecking(false);
+            });
+        } else {
+            setTimeout(() => {
+                setLastCheckResult({
+                    flippedBits: Math.floor(Math.random() * 10),
+                    timestamp: Math.floor(Date.now() / 1000),
+                });
+                setIsChecking(false);
+            }, HEALTH_CHECK_DURATION);
+        }
     }, []);
 
     const footer = (
