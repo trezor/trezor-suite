@@ -95,7 +95,7 @@ export const useConnectPopupWeb = () => {
                 throw new Error('SharedWorker is not supported');
             }
 
-            const worker = new SharedWorker(getWorkerUrl(), { name: channelName });
+            const worker = new SharedWorker(getWorkerUrl());
             worker.port.start();
             worker.port.postMessage({ type: 'channel-join', channelId: channelName });
 

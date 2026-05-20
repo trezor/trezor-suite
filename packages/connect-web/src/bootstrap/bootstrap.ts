@@ -68,13 +68,12 @@ const getWorkerUrl = () =>
 // Required in iframes embedded in 3rd party pages. BroadcastChannel is partitioned there.
 // ✅ Chrome 125+ / Opera 111+
 // ❌ Firefox / Safari / many WebViews / some Chromium forks
-const getUnpartitionedSharedWorker = async (channelName: string): Promise<SharedWorker> => {
-    let handle: { SharedWorker?: (name: string, options?: any) => SharedWorker } | null = null;
+const getUnpartitionedSharedWorker = async (): Promise<SharedWorker> => {
+    let handle: { SharedWorker?: (url: string | URL) => SharedWorker } | null = null;
     try {
         // @ts-expect-error - requestStorageAccess params not yet lib.dom.d.ts
         handle = await document.requestStorageAccess({ SharedWorker: true });
     } catch {
-        // throw BootstrapError.STORAGE_ACCESS_DENIED;
         throw BootstrapError.ENV_NOT_SUPPORTED;
     }
 
@@ -83,19 +82,19 @@ const getUnpartitionedSharedWorker = async (channelName: string): Promise<Shared
     }
 
     try {
-        return handle.SharedWorker(getWorkerUrl(), { name: channelName });
+        return handle.SharedWorker(getWorkerUrl());
     } catch {
         throw BootstrapError.ENV_NOT_SUPPORTED;
     }
 };
 
-const getSharedWorker = (channelName: string) => {
+const getSharedWorker = () => {
     if (typeof SharedWorker === 'undefined') {
         throw BootstrapError.ENV_NOT_SUPPORTED;
     }
 
     try {
-        return new SharedWorker(getWorkerUrl(), { name: channelName });
+        return new SharedWorker(getWorkerUrl());
     } catch {
         throw BootstrapError.ENV_NOT_SUPPORTED;
     }
@@ -217,7 +216,7 @@ const bootstrapPopup = async (): Promise<void> => {
 
     let channel: PopupChannel | undefined;
     try {
-        const worker = getSharedWorker(channelName);
+        const worker = getSharedWorker();
         channel = connectToChannel(worker, channelName);
         await handleBootstrapHandshake(channel.port);
         channel.close();
@@ -416,7 +415,7 @@ const bootstrapIframe = (): Promise<void> => {
 
                 let channel: PopupChannel;
                 try {
-                    const worker = await getUnpartitionedSharedWorker(channelName);
+                    const worker = await getUnpartitionedSharedWorker();
                     channel = connectToChannel(worker, channelName);
                 } catch (error) {
                     sendHandshakeError(error, ownerOrigin);
