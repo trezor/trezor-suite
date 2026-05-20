@@ -1,8 +1,10 @@
 import { type ReactNode } from 'react';
 
+import { type YieldFlowType } from '@suite-common/wallet-core';
 import { Badge, CollapsibleBox, Column, Row, Text } from '@trezor/components';
 
 export type EarnInANutshellProcess = {
+    processType?: YieldFlowType;
     heading: ReactNode;
     badge?: ReactNode;
     content: ReactNode;
@@ -10,11 +12,15 @@ export type EarnInANutshellProcess = {
 
 interface EarnInANutshellProcessesProps {
     items: EarnInANutshellProcess[];
+    onItemToggle?: (processType: YieldFlowType, isOpen: boolean) => void;
 }
 
-export const EarnInANutshellProcesses = ({ items }: EarnInANutshellProcessesProps) => (
+export const EarnInANutshellProcesses = ({
+    items,
+    onItemToggle,
+}: EarnInANutshellProcessesProps) => (
     <Column gap={20}>
-        {items.map(({ heading, badge, content }, index) => (
+        {items.map(({ processType, heading, badge, content }, index) => (
             <CollapsibleBox
                 key={index}
                 heading={
@@ -28,6 +34,11 @@ export const EarnInANutshellProcesses = ({ items }: EarnInANutshellProcessesProp
                 fillType="none"
                 paddingType="none"
                 hasDivider={false}
+                onAnimationComplete={
+                    processType && onItemToggle
+                        ? isOpen => onItemToggle(processType, isOpen)
+                        : undefined
+                }
             >
                 {content}
             </CollapsibleBox>

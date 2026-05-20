@@ -105,6 +105,7 @@ export enum EventType {
     StakingStake = 'staking/stake',
     StakingUnstake = 'staking/unstake',
     StakingUpdateProvider = 'staking/update-provider',
+    YieldInteraction = 'yield/interaction',
     YieldNavigate = 'yield/navigate',
     YieldDeposit = 'yield/deposit',
     YieldWithdraw = 'yield/withdraw',

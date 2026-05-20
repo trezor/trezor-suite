@@ -1,14 +1,18 @@
-import { type ReactNode } from 'react';
+import { type ReactNode, useEffect, useRef } from 'react';
 
 import styled from 'styled-components';
 
+import { events } from '@suite/analytics';
 import { type YieldDto } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Tooltip } from '@trezor/components';
 
+import { useAnalytics } from 'src/support/useAnalytics';
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 
 import { EarnYieldApyBreakdown } from './EarnYieldApyBreakdown';
+
+const APY_TOOLTIP_REPORT_DELAY_MS = 1000;
 
 const Abbr = styled.abbr`
     cursor: help;
@@ -30,9 +34,45 @@ export const EarnYieldApyTooltip = ({
     networkSymbol,
     children,
 }: EarnYieldApyTooltipProps) => {
+    const analytics = useAnalytics();
+    const reportTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    useEffect(
+        () => () => {
+            if (reportTimerRef.current !== null) {
+                clearTimeout(reportTimerRef.current);
+            }
+        },
+        [],
+    );
+
     if (!children && !apyPercentage) {
         return <ApyValue apy={apyPercentage} />;
     }
+
+    const handleMouseEnter = () => {
+        if (reportTimerRef.current !== null) {
+            clearTimeout(reportTimerRef.current);
+        }
+        reportTimerRef.current = setTimeout(() => {
+            analytics.report({
+                type: events.yieldInteractionEvent.name,
+                payload: {
+                    element: 'apy-tooltip',
+                    networkSymbol,
+                    vaultId: vault.id,
+                },
+            });
+            reportTimerRef.current = null;
+        }, APY_TOOLTIP_REPORT_DELAY_MS);
+    };
+
+    const handleMouseLeave = () => {
+        if (reportTimerRef.current !== null) {
+            clearTimeout(reportTimerRef.current);
+            reportTimerRef.current = null;
+        }
+    };
 
     return (
         <Tooltip
@@ -46,7 +86,9 @@ export const EarnYieldApyTooltip = ({
             maxWidth={600}
             placement="top"
         >
-            <Abbr>{children ?? <ApyValue apy={apyPercentage} />}</Abbr>
+            <Abbr onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+                {children ?? <ApyValue apy={apyPercentage} />}
+            </Abbr>
         </Tooltip>
     );
 };

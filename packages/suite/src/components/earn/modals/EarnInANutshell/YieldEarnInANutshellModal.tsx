@@ -7,6 +7,7 @@ import {
     type EarnProvider,
     type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
+import { type YieldFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent, isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Divider } from '@trezor/components';
@@ -62,6 +63,7 @@ export const YieldEarnInANutshellModal = ({
 
     const processes: EarnInANutshellProcess[] = [
         {
+            processType: 'deposit',
             heading: <Translation id="TR_EARN_SUPPLYING_PROCESS" />,
             badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 2 }} />,
             content: (
@@ -75,6 +77,7 @@ export const YieldEarnInANutshellModal = ({
             ),
         },
         {
+            processType: 'withdraw',
             heading: <Translation id="TR_EARN_WITHDRAWING_PROCESS" />,
             badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 1 }} />,
             content: <YieldWithdrawingInfo supplySymbol={supplySymbol} />,
@@ -82,6 +85,7 @@ export const YieldEarnInANutshellModal = ({
         ...(rewardsSymbols !== undefined && rewardsSymbols.length > 0
             ? [
                   {
+                      processType: 'claim' as const,
                       heading: <Translation id="TR_EARN_CLAIMING_PROCESS" />,
                       badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 1 }} />,
                       content: <YieldClaimingInfo rewardsSymbols={rewardsSymbols} />,
@@ -89,6 +93,20 @@ export const YieldEarnInANutshellModal = ({
               ]
             : []),
     ];
+
+    const handleProcessToggle = (processType: YieldFlowType, isOpen: boolean) => {
+        if (!isOpen) return;
+
+        analytics.report({
+            type: events.yieldInteractionEvent.name,
+            payload: {
+                element: 'in-a-nutshell-process-tab',
+                value: processType,
+                networkSymbol: account.symbol,
+                vaultId: vault?.id,
+            },
+        });
+    };
 
     const handleOnAction = () => {
         analytics.report({
@@ -133,7 +151,7 @@ export const YieldEarnInANutshellModal = ({
                 rewardsSymbols={rewardsSymbols}
             />
             <Divider margin={{ top: 24, bottom: 16 }} />
-            <EarnInANutshellProcesses items={processes} />
+            <EarnInANutshellProcesses items={processes} onItemToggle={handleProcessToggle} />
         </EarnInANutshellModalLayout>
     );
 };

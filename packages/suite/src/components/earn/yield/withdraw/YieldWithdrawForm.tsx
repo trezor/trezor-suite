@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
@@ -99,6 +99,57 @@ export const YieldWithdrawForm = () => {
         submitAction();
     };
 
+    const handleToggleWithdrawInputUnit = () => {
+        const nextUnit = withdrawInputUnit === 'shares' ? 'asset' : 'shares';
+
+        analytics.report({
+            type: events.yieldInteractionEvent.name,
+            payload: {
+                element: 'withdraw-unit-toggle',
+                value: nextUnit,
+                networkSymbol: token.networkSymbol,
+                vaultId: vault.id,
+            },
+        });
+
+        toggleWithdrawInputUnit();
+    };
+
+    // Fire once per form mount when the user first hits the insufficient-funds banner
+    // (no actionable button on this banner, so impression is the only signal available).
+    const hasFiredInsufficientFundsRef = useRef(false);
+    const showsInsufficientFunds = !isAmountInvalidDecimals && isAmountTooHigh;
+
+    useEffect(() => {
+        if (!showsInsufficientFunds || hasFiredInsufficientFundsRef.current) {
+            return;
+        }
+        hasFiredInsufficientFundsRef.current = true;
+
+        analytics.report({
+            type: events.yieldInteractionEvent.name,
+            payload: {
+                element: 'insufficient-funds-banner',
+                networkSymbol: token.networkSymbol,
+                vaultId: vault.id,
+            },
+        });
+    }, [showsInsufficientFunds, analytics, token.networkSymbol, vault.id]);
+
+    const handleMaxClick = () => {
+        analytics.report({
+            type: events.yieldInteractionEvent.name,
+            payload: {
+                element: 'withdraw-max',
+                value: withdrawInputUnit,
+                networkSymbol: token.networkSymbol,
+                vaultId: vault.id,
+            },
+        });
+
+        setAmountInput(maxAmount);
+    };
+
     return (
         <Column width="100%" alignItems="center">
             <Column gap={24} width="100%" maxWidth={500}>
@@ -150,7 +201,7 @@ export const YieldWithdrawForm = () => {
                                 canToggleWithdrawUnit
                                     ? {
                                           otherTokenSymbol: otherUnitTokenSymbol,
-                                          onClick: toggleWithdrawInputUnit,
+                                          onClick: handleToggleWithdrawInputUnit,
                                       }
                                     : undefined
                             }
