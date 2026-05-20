@@ -1,4 +1,6 @@
 {
+    "model": "claude-sonnet-4-6",
+    "viewMode": "verbose",
     "permissions": {
         "defaultMode": "auto"
     }

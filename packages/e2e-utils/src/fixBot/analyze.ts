@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import { error, log } from '../logger';
-import { reportTokenUsage } from './reportTokenUsage';
+import { logAgentResult, reportTokenUsage } from './reportTokenUsage';
 
 function main(): void {
     const root = execFileSync('git', ['rev-parse', '--show-toplevel'], {
@@ -38,7 +38,6 @@ function main(): void {
     const result = spawnSync(
         join(root, 'node_modules/.bin/claude'),
         [
-            '--verbose',
             '--print',
             '--output-format',
             'json',
@@ -70,6 +69,7 @@ function main(): void {
     const reportJson = join(reportDir, `${date}.json`);
 
     reportTokenUsage(claudeOutput, join(reportDir, 'token_usage.txt'), 'analysis');
+    logAgentResult(claudeOutput, 'analysis');
 
     const missing = [reportMd, reportJson].filter(f => !existsSync(f));
 
