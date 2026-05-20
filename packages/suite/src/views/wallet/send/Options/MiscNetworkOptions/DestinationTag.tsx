@@ -7,11 +7,11 @@ import { Banner, Button, Column, Input, Note, Row, Switch } from '@trezor/compon
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
+import { GUIDE_ARTICLE_IDS } from 'src/constants/suite/guide';
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { useSendFormContext } from 'src/hooks/wallet';
 
-export const DESTINATION_TAG_GUIDE_PATH =
-    '/3_send-and-receive/transactions-in-depth/destination-tags.md';
+export const DESTINATION_TAG_GUIDE_PATH = GUIDE_ARTICLE_IDS.destinationTags;
 
 interface DestinationTagProps {
     networkSymbol: NetworkSymbol;

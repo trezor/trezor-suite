@@ -6,6 +6,7 @@ import { isHexValid } from '@suite-common/wallet-utils';
 import { Column, Flex, IconButton, Row, Text, Textarea, Tooltip } from '@trezor/components';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
+import { GUIDE_ARTICLE_IDS } from 'src/constants/suite/guide';
 import { useLayoutSize } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
@@ -60,9 +61,7 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
         <Column gap={16}>
             <Row justifyContent="space-between">
                 <Tooltip
-                    addon={
-                        <OpenGuideFromTooltip id="/3_send-and-receive/transactions-in-depth/op_return.md" />
-                    }
+                    addon={<OpenGuideFromTooltip id={GUIDE_ARTICLE_IDS.opReturn} />}
                     content={<Translation id="OP_RETURN_TOOLTIP" />}
                     hasIcon
                 >

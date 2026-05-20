@@ -12,6 +12,8 @@ import {
 import { WalletType } from '@suite-common/wallet-types';
 import { Button, Card, Column, IconButton, Row, Text, Tooltip } from '@trezor/components';
 
+import { GUIDE_ARTICLE_IDS } from 'src/constants/suite/guide';
+import { useGuideOpenNode } from 'src/hooks/guide';
 import { useSelector } from 'src/hooks/suite';
 import { type AcquiredDevice, type ForegroundAppProps, type TrezorDevice } from 'src/types/suite';
 
@@ -29,6 +31,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
     const isAnyNetworkEnabled = useSelector(selectIsAnyNetworkEnabled);
     const isPassphraseProtectionEnabled = Boolean(device?.features?.passphrase_protection);
     const dispatch = useDispatch();
+    const { openNodeById } = useGuideOpenNode();
     const isLocked = !device || !device.connected || isDeviceOrUiLocked;
     const isPassphraseAddDisabled = isLocked || !isAnyNetworkEnabled;
     const showNoNetworksTooltip = !isLocked && !isAnyNetworkEnabled;
@@ -80,13 +83,26 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
         dispatch(goto({ routeName: 'suite-index' }));
     };
 
+    const openPassphraseGuide = () => openNodeById(GUIDE_ARTICLE_IDS.passphrase);
+
     const ExpandedPassphraseContainer = () => (
         <Card paddingType="none" fillType="flat">
             <Column gap={12} padding={12}>
                 <Row alignItems="center" justifyContent="space-between">
-                    <Text>
-                        <Translation id="TR_ADD_HIDDEN_WALLET" />
-                    </Text>
+                    <Row alignItems="center" gap={8}>
+                        <Text>
+                            <Translation id="TR_ADD_HIDDEN_WALLET" />
+                        </Text>
+                        <Button
+                            intent="neutral"
+                            priority="secondary"
+                            size="small"
+                            iconLeft="lightbulb"
+                            onClick={openPassphraseGuide}
+                        >
+                            <Translation id="TR_LEARN_MORE" />
+                        </Button>
+                    </Row>
                     <IconButton
                         intent="neutral"
                         priority="secondary"
