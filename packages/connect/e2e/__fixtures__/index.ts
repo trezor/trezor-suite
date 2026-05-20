@@ -14,6 +14,7 @@ export { default as ethereumSignMessage } from './ethereumSignMessage';
 export { default as ethereumSignTransaction } from './ethereumSignTransaction';
 export { default as ethereumSignTransactionEip155 } from './ethereumSignTransactionEip155';
 export { default as ethereumSignTransactionEip1559 } from './ethereumSignTransactionEip1559';
+export { default as ethereumSignTransactionDefinitions } from './ethereumSignTransactionDefinitions';
 export { default as ethereumSignTypedData } from './ethereumSignTypedData';
 export { default as ethereumVerifyMessage } from './ethereumVerifyMessage';
 export { default as getAccountInfo } from './getAccountInfo';
