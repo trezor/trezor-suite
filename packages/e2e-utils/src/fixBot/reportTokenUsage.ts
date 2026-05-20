@@ -2,30 +2,14 @@
 // when implementation gets to GHA stage
 import { appendFileSync } from 'node:fs';
 
-interface ClaudeUsage {
-    input_tokens?: number;
-    output_tokens?: number;
-    cache_creation_input_tokens?: number;
-    cache_read_input_tokens?: number;
-}
-
-interface ClaudeResult {
-    type?: string;
-    subtype?: string;
-    result?: string;
-    num_turns?: number;
-    usage?: ClaudeUsage;
-    total_cost_usd?: number;
-    duration_ms?: number;
-}
+import { type ClaudeResult, ClaudeResultSchema } from './schemas';
 
 function parseClaudeOutput(raw: string): ClaudeResult {
     const parsed: unknown = JSON.parse(raw.trim());
-    if (Array.isArray(parsed)) {
-        return (parsed as ClaudeResult[]).find(entry => entry.type === 'result') ?? {};
-    }
+    const entries = Array.isArray(parsed) ? parsed : [parsed];
+    const entry = entries.find(e => ClaudeResultSchema.safeParse(e).data?.type === 'result');
 
-    return parsed as ClaudeResult;
+    return ClaudeResultSchema.safeParse(entry ?? entries[0]).data ?? {};
 }
 
 function formatIntegerWithCommas(value: number): string {

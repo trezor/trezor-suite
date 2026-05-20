@@ -16,25 +16,7 @@ import { dirname, join } from 'node:path';
 import { error, log } from '../logger';
 import { publishTask } from './publish';
 import { logAgentResult, reportTokenUsage } from './reportTokenUsage';
-
-interface Validation {
-    platform: 'web' | 'desktop';
-    group: string;
-    spec: string;
-}
-
-interface FixTask {
-    id: string;
-    branch: string;
-    root_cause: string;
-    fix_scope: 'TEST_CODE' | 'LOCATOR_ADD' | 'PRODUCT_BUG' | 'INFRA';
-    confidence: 'HIGH' | 'MEDIUM' | 'LOW';
-    validations: Validation[];
-}
-
-interface Report {
-    fix_tasks: FixTask[];
-}
+import { type FixTask, ReportSchema } from './schemas';
 
 const AUTOMATABLE = new Set<FixTask['fix_scope']>(['TEST_CODE', 'LOCATOR_ADD']);
 
@@ -61,9 +43,9 @@ function setupWorktree(root: string, task: FixTask, worktree: string): void {
         // branch doesn't exist yet on first run
     }
 
-    execFileSync('git', ['worktree', 'add', worktree, '-b', task.branch, 'develop']);
+    execFileSync('git', ['worktree', 'add', worktree, '-b', task.branch, 'origin/develop']);
     symlinkSync(join(root, 'node_modules'), join(worktree, 'node_modules'));
-    // disable default git hooks
+    // use default git hooks instead of personal custom ones
     execFileSync('git', ['-C', worktree, 'config', 'core.hooksPath', join(worktree, '.husky')]);
 
     const envFile = join(root, 'suite/e2e/.env');
@@ -156,7 +138,7 @@ function main(): void {
     const reportDir = join(botDir, 'reports');
 
     const reportPath = process.argv[2] ?? latestReport(reportDir);
-    const report: Report = JSON.parse(readFileSync(reportPath, 'utf-8'));
+    const report = ReportSchema.parse(JSON.parse(readFileSync(reportPath, 'utf-8')));
 
     const tasks = report.fix_tasks.filter(isAutomatable);
     log(`${tasks.length} automatable task(s) in ${reportPath}\n`);

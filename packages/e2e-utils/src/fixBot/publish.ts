@@ -3,14 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { log } from '../logger';
-
-interface FixResult {
-    result: 'pass' | 'partial' | 'fail';
-    passed: string[];
-    failed: string[];
-    iterations: number;
-    pr_title: string;
-}
+import { type FixResult, FixResultSchema } from './schemas';
 
 export interface PublishOptions {
     worktree: string;
@@ -46,8 +39,8 @@ export function publishTask({
         return;
     }
 
-    const { result, passed, failed, iterations, pr_title }: FixResult = JSON.parse(
-        readFileSync(resultFile, 'utf-8'),
+    const { result, passed, failed, iterations, pr_title } = FixResultSchema.parse(
+        JSON.parse(readFileSync(resultFile, 'utf-8')),
     );
 
     log(
@@ -73,7 +66,7 @@ export function publishTask({
 }
 
 // Entry point when called directly by GHA matrix jobs:
-// tsx publish.ts <worktree> <branch> <title> [base]
+// tsx publish.ts <worktree> <branch> [base]
 const isMain = /publish\.[jt]s$/.test(process.argv[1] ?? '');
 if (isMain) {
     const [worktree, branch, title, base] = process.argv.slice(2);

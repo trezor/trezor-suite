@@ -15565,6 +15565,7 @@ __metadata:
     express: "npm:^5.2.1"
     tsx: "npm:^4.21.0"
     ws: "npm:^8.20.0"
+    zod: "npm:4.3.6"
   languageName: unknown
   linkType: soft
 
