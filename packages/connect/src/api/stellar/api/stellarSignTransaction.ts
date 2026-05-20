@@ -1,7 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/StellarSignTransaction.js
 
+import stellar from '@trezor/coins-stellar/runtime';
 import { StellarSignTransaction as StellarSignTransactionSchema } from '@trezor/connect-common';
-import type { MethodPermission, PROTO, StellarTransaction } from '@trezor/connect-common';
+import type { MethodPermission, StellarOperation } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
@@ -15,12 +16,7 @@ import {
 } from '../../../utils/paymentRequest';
 import * as helper from '../stellarSignTx';
 
-type Params = {
-    path: number[];
-    networkPassphrase: string;
-    transaction: StellarTransaction;
-    payment_req?: PROTO.PaymentRequest;
-};
+type Params = { path: number[] } & StellarSignTransactionSchema;
 
 const StellarSignTransactionFeatures = Object.freeze({
     manageBuyOffer: ['1.10.4', '2.4.3'],
@@ -37,12 +33,11 @@ export default class StellarSignTransaction extends AbstractMethod<
         Assert(StellarSignTransactionSchema, payload);
 
         const path = validatePath(payload.path, 3);
-        // incoming data should be in stellar-sdk format
-        const { transaction, networkPassphrase, payment_req } = payload;
-        const params = {
+        const { payment_req } = payload;
+
+        const params: Params = {
+            ...payload,
             path,
-            networkPassphrase,
-            transaction,
             payment_req: payment_req
                 ? encodePaymentRequestAmount(payment_req, PAYMENT_REQUEST_AMOUNT_BYTES.DEFAULT)
                 : undefined,
@@ -62,12 +57,15 @@ export default class StellarSignTransaction extends AbstractMethod<
         return 'Sign Stellar transaction';
     }
 
-    _isFeatureSupported(feature: keyof typeof StellarSignTransactionFeatures) {
+    private _isFeatureSupported(feature: keyof typeof StellarSignTransactionFeatures) {
         return this.getDevice().atLeast(StellarSignTransactionFeatures[feature]);
     }
 
-    _ensureFeatureIsSupported(feature: keyof typeof StellarSignTransactionFeatures) {
-        if (!this._isFeatureSupported(feature)) {
+    private _ensureFirmwareSupportsOperation(
+        feature: keyof typeof StellarSignTransactionFeatures,
+        operations: StellarOperation[] = [],
+    ) {
+        if (operations.find(o => o.type === feature) && !this._isFeatureSupported(feature)) {
             throw ERRORS.TypedError(
                 'Method_InvalidParameter',
                 `Feature ${feature} not supported by device firmware`,
@@ -75,25 +73,28 @@ export default class StellarSignTransaction extends AbstractMethod<
         }
     }
 
-    _ensureFirmwareSupportsParams() {
-        const { params } = this;
-        if (params.transaction.operations?.find(o => o.type === 'manageBuyOffer')) {
-            this._ensureFeatureIsSupported('manageBuyOffer');
-        }
+    private async parseFromXdr(xdrBase64: string, testnet: boolean) {
+        const { parseTransactionFromXDR, transformTransaction } = await stellar();
 
-        if (params.transaction.operations?.find(o => o.type === 'pathPaymentStrictSend')) {
-            this._ensureFeatureIsSupported('pathPaymentStrictSend');
-        }
+        const nativeTx = parseTransactionFromXDR(xdrBase64, testnet);
+
+        return [transformTransaction(nativeTx), nativeTx.networkPassphrase] as const;
     }
 
     async run() {
-        this._ensureFirmwareSupportsParams();
+        const [transaction, networkPassphrase] =
+            'xdrBase64' in this.params
+                ? await this.parseFromXdr(this.params.xdrBase64, this.params.testnet)
+                : [this.params.transaction, this.params.networkPassphrase];
+
+        this._ensureFirmwareSupportsOperation('manageBuyOffer', transaction.operations);
+        this._ensureFirmwareSupportsOperation('pathPaymentStrictSend', transaction.operations);
 
         const response = await helper.stellarSignTx(
             this.getDevice().getCommands().typedCall,
             this.params.path,
-            this.params.networkPassphrase,
-            this.params.transaction,
+            networkPassphrase,
+            transaction,
             this.params.payment_req,
         );
 

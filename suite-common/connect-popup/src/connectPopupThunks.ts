@@ -29,9 +29,11 @@ import { postCallHooks, preCallHooks } from './methodHooks';
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
 
+type DistributiveOmit<T, K extends keyof T> = T extends T ? Omit<T, K> : never;
+
 type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
     method: M;
-    payload: Omit<CallMethodParams<M>, 'method'>;
+    payload: DistributiveOmit<CallMethodParams<M>, 'method'>;
     source: ConnectCallSource;
 };
 
