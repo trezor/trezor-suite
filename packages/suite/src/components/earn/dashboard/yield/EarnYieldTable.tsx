@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { EarnAnchor, goto, useAnchor } from '@suite/router';
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
@@ -12,6 +13,7 @@ import { OutlineHighlight } from '@trezor/product-components';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { EarnYieldClaimRewardsBanner } from './EarnYieldClaimRewardsBanner';
 import { EarnYieldClaimSelectAccountModal } from './EarnYieldClaimSelectAccountModal';
@@ -26,6 +28,7 @@ import { getEarnDashboardBadgeState } from '../utils/earnDashboardBadgeUtils';
 export const EarnYieldTable = () => {
     const { anchorRef, shouldHighlight } = useAnchor(EarnAnchor.Yield);
     const dispatch = useDispatch();
+    const analytics = useAnalytics();
     const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
     const claimMessageSystem = useMessageSystemYield('claim');
 
