@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { type YieldFlowType, stablecoinYieldActions } from '@suite-common/wallet-core';
-import { useAlert } from '@suite-native/alerts';
-import { useTranslate } from '@suite-native/intl';
+
+import { useShowYieldAlert } from './useShowYieldAlert';
 
 const TRANSACTION_FAILED_ERROR = 'TR_EARN_YIELD_ERROR_TRANSACTION_FAILED';
 
@@ -21,20 +21,18 @@ export const useShowYieldTransactionFailureAlert = ({
     isEnabled,
 }: UseShowYieldTransactionFailureAlertParams) => {
     const dispatch = useDispatch();
-    const { showAlert } = useAlert();
-    const { translate } = useTranslate();
+    const showYieldAlert = useShowYieldAlert();
 
     useEffect(() => {
         if (!isEnabled || !flowKey || error !== TRANSACTION_FAILED_ERROR) {
             return;
         }
 
-        showAlert({
-            title: error,
-            primaryButtonTitle: translate('generic.buttons.close'),
-            primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
+        showYieldAlert({
+            title: 'earn.yieldDepositFlowScreen.alerts.transactionFailed.title',
+            description: 'earn.yieldDepositFlowScreen.alerts.transactionFailed.description',
             onPressPrimaryButton: () =>
                 dispatch(stablecoinYieldActions.clearError({ flowType, flowKey })),
         });
-    }, [dispatch, error, flowKey, flowType, isEnabled, showAlert, translate]);
+    }, [dispatch, error, flowKey, flowType, isEnabled, showYieldAlert]);
 };

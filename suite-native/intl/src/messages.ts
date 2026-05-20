@@ -2712,6 +2712,31 @@ export const messages = {
                 insufficientBalance: "You don't have enough {tokenSymbol} balance.",
                 tooManyDecimals: 'Too many decimals.',
             },
+            alerts: {
+                approvalUnavailable: {
+                    title: 'Approval unavailable',
+                    description: 'Approval could not be prepared. Check the amount and try again.',
+                },
+                approvalReviewUnavailable: {
+                    title: 'Approval review unavailable',
+                    description:
+                        'Approval review could not be prepared. Check the selected fee and try again.',
+                },
+                depositUnavailable: {
+                    title: 'Deposit unavailable',
+                    description: 'Deposit could not be prepared. Check the amount and try again.',
+                },
+                approvalResetNotSupported: {
+                    title: 'Approval reset not supported',
+                    description:
+                        'This deposit needs an approval reset first. Revoke is not supported on mobile yet.',
+                },
+                transactionFailed: {
+                    title: 'Transaction failed',
+                    description:
+                        'The transaction failed on the network. Check the details and try again.',
+                },
+            },
         },
         yieldDepositApprovalReviewScreen: {
             title: 'Review with Trezor',

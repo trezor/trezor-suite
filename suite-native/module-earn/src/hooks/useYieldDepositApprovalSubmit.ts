@@ -19,7 +19,7 @@ import {
 } from '@suite-native/navigation';
 
 import { type ResolvedYieldFlowData } from './useResolvedYieldFlowData';
-import { useWorkInProgressAlert } from './useWorkInProgressAlert';
+import { useShowYieldAlert } from './useShowYieldAlert';
 import { type YieldApprovalLimitType } from '../types';
 import { prepareYieldApprovalReviewTransactionThunk } from '../yieldApprovalThunks';
 import { isYieldApprovalAllowanceEnough } from '../yieldApprovalUtils';
@@ -55,7 +55,7 @@ export const useYieldDepositApprovalSubmit = ({
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
     const store = useStore<StablecoinYieldRootState>();
-    const showWorkInProgressAlert = useWorkInProgressAlert();
+    const showYieldAlert = useShowYieldAlert();
     const [isCheckingApproval, setIsCheckingApproval] = useState(false);
 
     const checkIsAllowanceEnough = useCallback(
@@ -103,11 +103,6 @@ export const useYieldDepositApprovalSubmit = ({
             }
 
             const sessionParams = { flowType: 'deposit' as const, flowKey };
-            const showDepositWorkInProgress = (title?: string) => {
-                // TODO: Replace with correct handling flow once deposit is implemented.
-                showWorkInProgressAlert(title);
-                dispatch(stablecoinYieldActions.resetSession(sessionParams));
-            };
 
             setIsCheckingApproval(true);
 
@@ -136,7 +131,11 @@ export const useYieldDepositApprovalSubmit = ({
                 );
 
                 if (!isFulfilled(response)) {
-                    showDepositWorkInProgress();
+                    showYieldAlert({
+                        title: 'earn.yieldDepositFlowScreen.alerts.approvalUnavailable.title',
+                        description:
+                            'earn.yieldDepositFlowScreen.alerts.approvalUnavailable.description',
+                    });
 
                     return;
                 }
@@ -144,8 +143,11 @@ export const useYieldDepositApprovalSubmit = ({
                 const session = selectStablecoinYieldSession(store.getState(), 'deposit', flowKey);
 
                 if (session.error) {
-                    // TODO: Show a dedicated approval error
-                    showDepositWorkInProgress();
+                    showYieldAlert({
+                        title: 'earn.yieldDepositFlowScreen.alerts.approvalUnavailable.title',
+                        description:
+                            'earn.yieldDepositFlowScreen.alerts.approvalUnavailable.description',
+                    });
 
                     return;
                 }
@@ -169,8 +171,11 @@ export const useYieldDepositApprovalSubmit = ({
                 );
 
                 if (!isFulfilled(reviewTransactionResponse)) {
-                    // TODO: Show a dedicated error
-                    showDepositWorkInProgress();
+                    showYieldAlert({
+                        title: 'earn.yieldDepositFlowScreen.alerts.approvalReviewUnavailable.title',
+                        description:
+                            'earn.yieldDepositFlowScreen.alerts.approvalReviewUnavailable.description',
+                    });
 
                     return;
                 }
@@ -193,7 +198,7 @@ export const useYieldDepositApprovalSubmit = ({
             isCheckingApproval,
             navigation,
             routeParams,
-            showWorkInProgressAlert,
+            showYieldAlert,
             store,
         ],
     );

@@ -31,9 +31,6 @@
         },
         { "path": "../../suite-common/staking" },
         {
-            "path": "../../suite-common/tx-simulation"
-        },
-        {
             "path": "../../suite-common/validators"
         },
         {
