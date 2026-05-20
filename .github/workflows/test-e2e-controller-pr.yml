@@ -136,7 +136,7 @@ jobs:
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
 
       - name: Update PR description with LLM test selection
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           github-token: ${{ steps.trezor-bot-token.outputs.token }}
           script: |
