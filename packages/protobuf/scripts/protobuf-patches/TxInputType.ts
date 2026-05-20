@@ -30,7 +30,7 @@ export type TxInputType =
           script_type?: InternalInputScriptType;
       })
     | (CommonTxInputType & {
-          address_n?: typeof undefined;
+          address_n?: never;
           script_type: 'EXTERNAL';
           script_pubkey: string;
       });

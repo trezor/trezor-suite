@@ -74,8 +74,8 @@ export interface CoinSelectSuccess {
 
 export interface CoinSelectFailure {
     fee: number;
-    inputs?: typeof undefined;
-    outputs?: typeof undefined;
+    inputs?: never;
+    outputs?: never;
 }
 
 export type CoinSelectResult = CoinSelectSuccess | CoinSelectFailure;
