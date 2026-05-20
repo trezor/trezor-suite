@@ -109,6 +109,15 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
 
     const handleTxClick = useCallback(
         (txid: string) => {
+            analytics.report({
+                type: events.yieldInteractionEvent.name,
+                payload: {
+                    element: 'pending-tx-open',
+                    value: 'claim',
+                    networkSymbol: account.symbol,
+                },
+            });
+
             dispatch(
                 openModal({
                     type: 'transaction-detail',
@@ -120,7 +129,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                 }),
             );
         },
-        [account, dispatch],
+        [account, analytics, dispatch],
     );
 
     if (claimSession.step === 'complete' && accountRewards) {
