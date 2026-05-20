@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
 
+import { type DexApprovalType } from 'invity-api';
+
 import { events } from '@suite/analytics';
 import { KNOWN_VAULTS } from '@suite-common/suite-constants';
 import { parseCryptoId, toTokenCryptoId } from '@suite-common/trading';
@@ -84,7 +86,11 @@ export const YieldApproveModal = ({
         setApprovalTxid(null);
     }, [approvalTxid, onSuccess, setApprovalTxid]);
 
-    const handleOnApproveConfirm = () => {
+    const handleOnApproveConfirm = (approvalType: DexApprovalType) => {
+        // Approve flow exposes only INFINITE/MINIMAL choice; the other DexApprovalType
+        // values (ZERO is revoke, PRESET is unused here) can't be selected by the user.
+        if (approvalType !== 'INFINITE' && approvalType !== 'MINIMAL') return;
+
         analytics.report({
             type: events.yieldDepositEvent.name,
             payload: {
@@ -92,6 +98,7 @@ export const YieldApproveModal = ({
                 action: 'continue',
                 networkSymbol: account.symbol,
                 vaultId,
+                approvalType,
             },
         });
     };
