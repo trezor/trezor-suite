@@ -231,7 +231,9 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             // TODO: Remove this filter when Cardano send is implemented (#15068)
             // Currently filtering out Cardano accounts and tokens from trading until Cardano send is supported
             const filteredAccounts = accounts.filter(account => {
-                if (!getNetwork(account.symbol).tradeCryptoId) return false;
+                if (!getNetwork(account.symbol).tradeCryptoId) {
+                    return false;
+                }
                 const networkType = getNetworkType(account.symbol);
 
                 return networkType !== 'cardano' || isCardanoSendEnabled;
