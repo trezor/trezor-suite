@@ -89,6 +89,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                 action: 'continue',
                 type: 'claim',
                 networkSymbol: account.symbol,
+                rewardCount: rewards.length,
             },
         });
 

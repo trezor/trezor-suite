@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { events } from '@suite/analytics';
-import { Translation, useTranslation } from '@suite/intl';
+import { Translation } from '@suite/intl';
 import { splitYieldPendingTransaction } from '@suite-common/wallet-core';
 import { Banner, Column, Text } from '@trezor/components';
 
@@ -15,7 +15,6 @@ import { YieldFlowCompleteWithdraw } from '../common/YieldFlowCompleteWithdraw';
 
 export const YieldWithdrawForm = () => {
     const analytics = useAnalytics();
-    const { translationString } = useTranslation();
 
     const {
         vault,
@@ -44,46 +43,6 @@ export const YieldWithdrawForm = () => {
         pendingTransaction,
         'withdraw',
     );
-
-    // trigger success analytics event
-    useEffect(() => {
-        if (flow.currentStep === 'complete') {
-            analytics.report({
-                type: events.yieldWithdrawEvent.name,
-                payload: {
-                    type: 'success',
-                    action: 'continue',
-                    networkSymbol: token.networkSymbol,
-                    contractAddress: token.contractAddress ?? undefined,
-                    vaultId: vault.id,
-                },
-            });
-        }
-    }, [flow.currentStep, analytics, token.networkSymbol, token.contractAddress, vault.id]);
-
-    // trigger error analytics event
-    useEffect(() => {
-        if (errorMessage) {
-            analytics.report({
-                type: events.yieldWithdrawEvent.name,
-                payload: {
-                    type: 'error',
-                    action: 'continue',
-                    networkSymbol: token.networkSymbol,
-                    contractAddress: token.contractAddress ?? undefined,
-                    vaultId: vault.id,
-                    errorMessage: translationString(errorMessage),
-                },
-            });
-        }
-    }, [
-        analytics,
-        errorMessage,
-        token.networkSymbol,
-        token.contractAddress,
-        vault.id,
-        translationString,
-    ]);
 
     const handleOnWithdraw = () => {
         analytics.report({

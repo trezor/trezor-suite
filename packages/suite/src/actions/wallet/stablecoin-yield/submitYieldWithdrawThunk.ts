@@ -80,6 +80,17 @@ export const submitYieldWithdrawThunk = createThunk(
             });
 
             if (!result) {
+                asTypedDesktopAnalytics(extra.services.analytics).report({
+                    type: events.yieldWithdrawEvent.name,
+                    payload: {
+                        type: 'error',
+                        action: 'continue',
+                        networkSymbol: account.symbol,
+                        vaultId: flowData.vault.id,
+                        errorMessage: 'submit-failed',
+                    },
+                });
+
                 return;
             }
 
@@ -105,6 +116,16 @@ export const submitYieldWithdrawThunk = createThunk(
             );
         } catch (error) {
             console.error(error);
+            asTypedDesktopAnalytics(extra.services.analytics).report({
+                type: events.yieldWithdrawEvent.name,
+                payload: {
+                    type: 'error',
+                    action: 'continue',
+                    networkSymbol: flowData.account.symbol,
+                    vaultId: flowData.vault.id,
+                    errorMessage: 'submit-failed',
+                },
+            });
             setYieldGenericError({ dispatch, flowType, flowKey });
         } finally {
             dispatch(stablecoinYieldActions.finishSubmittingAction({ flowType, flowKey }));

@@ -5,9 +5,10 @@ import { EventType } from '../constants';
 
 type Attributes = {
     action: AttributeDef<EarnModalAction>;
-    type: AttributeDef<'withdraw' | 'success' | 'error'>;
+    type: AttributeDef<'withdraw' | 'success' | 'error' | 'leftPending'>;
     networkSymbol?: AttributeDef<string>;
     vaultId?: AttributeDef<string>;
+    durationMs?: AttributeDef<number>;
     errorMessage?: AttributeDef<string>;
 };
 
@@ -21,13 +22,21 @@ export const yieldWithdrawEvent: EventDef<Attributes, EventType.YieldWithdraw> =
             changelog: [{ version: '26.5.0', notes: 'added' }],
         },
         type: {
-            changelog: [{ version: '26.5.0', notes: 'added' }],
+            changelog: [
+                { version: '26.5.0', notes: 'added' },
+                { version: '26.5.2', notes: 'added `leftPending` value' },
+            ],
         },
         networkSymbol: {
             changelog: [{ version: '26.5.0', notes: 'added' }],
         },
         vaultId: {
             description: 'Internal vault identifier (vault.id), unique per Morpho vault',
+            changelog: [{ version: '26.5.2', notes: 'added' }],
+        },
+        durationMs: {
+            description:
+                'Milliseconds between submission (pending tx appearing in state) and resolution (success / error / leftPending)',
             changelog: [{ version: '26.5.2', notes: 'added' }],
         },
         errorMessage: {
