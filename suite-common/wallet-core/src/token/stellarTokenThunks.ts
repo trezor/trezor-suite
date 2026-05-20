@@ -69,23 +69,22 @@ const manageTrustline = async (
         issuer,
     };
 
-    const { buildAddTrustlineTransaction, buildRemoveTrustlineTransaction, transformTransaction } =
-        await stellar();
+    const { buildAddTrustlineTransaction, buildRemoveTrustlineTransaction } = await stellar();
 
     // Build the appropriate trustline transaction
     const misc = account.misc as { stellarSequence: string };
     const transactionBuilder =
         operation === 'activate' ? buildAddTrustlineTransaction : buildRemoveTrustlineTransaction;
 
+    const testnet = isTestnet(account.symbol);
     const transaction = transactionBuilder({
         descriptor: account.descriptor,
         sequence: misc.stellarSequence,
         fee: feePerUnit,
         asset,
-        isTestnet: isTestnet(account.symbol),
+        isTestnet: testnet,
     });
-
-    const transformed = transformTransaction(transaction);
+    const xdrBase64 = transaction.toXDR();
 
     const response = await TrezorConnect.stellarSignTransaction({
         device: {
@@ -95,8 +94,8 @@ const manageTrustline = async (
             useEmptyPassphrase: device.useEmptyPassphrase,
         },
         path: account.path,
-        transaction: transformed,
-        networkPassphrase: transaction.networkPassphrase,
+        xdrBase64,
+        testnet,
     });
 
     if (response.success) {

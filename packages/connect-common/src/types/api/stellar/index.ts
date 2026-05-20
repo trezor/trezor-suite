@@ -139,7 +139,7 @@ export const StellarAllowTrustOperation = Type.Object({
     trustor: Type.String(), // Proto: "trusted_account"
     assetCode: Type.String(), // Proto: "asset_code"
     assetType: PROTO.EnumStellarAssetType, // Proto: "asset_type"
-    authorize: Type.Optional(Type.Union([Type.Boolean(), Type.Undefined()])), // Proto: "is_authorized" > parse to number
+    authorize: Type.Optional(Type.Number()), // Proto: "is_authorized" > parse to number
 });
 
 export type StellarAccountMergeOperation = Static<typeof StellarAccountMergeOperation>;
@@ -223,12 +223,22 @@ export const StellarTransaction = Type.Object({
 });
 
 export type StellarSignTransaction = Static<typeof StellarSignTransaction>;
-export const StellarSignTransaction = Type.Object({
-    path: DerivationPath,
-    networkPassphrase: Type.String(),
-    transaction: StellarTransaction,
-    payment_req: Type.Optional(PROTO.PaymentRequest),
-});
+export const StellarSignTransaction = Type.Intersect([
+    Type.Object({
+        path: DerivationPath,
+        payment_req: Type.Optional(PROTO.PaymentRequest),
+    }),
+    Type.Union([
+        Type.Object({
+            networkPassphrase: Type.String(),
+            transaction: StellarTransaction,
+        }),
+        Type.Object({
+            xdrBase64: Type.String(),
+            testnet: Type.Boolean(),
+        }),
+    ]),
+]);
 
 export type StellarSignedTx = Static<typeof StellarSignedTx>;
 export const StellarSignedTx = Type.Object({
