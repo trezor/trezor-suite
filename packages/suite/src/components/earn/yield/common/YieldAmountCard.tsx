@@ -1,5 +1,5 @@
-import { type ReactNode, useMemo } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { type ReactNode, useEffect, useMemo } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import type { TranslationKey } from '@suite/intl';
@@ -51,6 +51,7 @@ export const YieldAmountCard = ({
     const {
         control,
         formState: { errors },
+        trigger,
     } = useFormContext<YieldFlowFormValues>();
 
     const rules = useMemo(
@@ -60,6 +61,14 @@ export const YieldAmountCard = ({
                 : undefined,
         [translationString, decimals],
     );
+
+    const amountInput = useWatch({ control, name: 'amountInput' });
+
+    useEffect(() => {
+        if (amountInput) {
+            trigger('amountInput');
+        }
+    }, [amountInput, trigger]);
 
     return (
         <Card paddingType="none">

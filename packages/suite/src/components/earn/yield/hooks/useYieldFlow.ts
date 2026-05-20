@@ -331,6 +331,7 @@ export const useYieldFlow = ({
 
         methodsRef.current.setValue('withdrawInputUnit', nextUnit);
         methodsRef.current.setValue('amountInput', '');
+        methodsRef.current.clearErrors('amountInput');
     }, [flowType, methodsRef, receiptToken, token]);
 
     const submitApprove = useCallback(() => {
