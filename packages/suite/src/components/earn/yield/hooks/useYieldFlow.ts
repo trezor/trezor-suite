@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { type UseFormReturn, useForm } from 'react-hook-form';
 
+import { events } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
@@ -33,6 +34,7 @@ import {
     submitYieldWithdrawThunk,
 } from 'src/actions/wallet/stablecoin-yield';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { useResolvedYieldFlowData } from './useResolvedYieldFlowData';
 import { useYieldPendingTransactionTracking } from './useYieldPendingTransactionTracking';
@@ -116,6 +118,7 @@ export const useYieldFlow = ({
     flowType,
 }: UseYieldFlowProps): UseYieldFlowResult => {
     const dispatch = useDispatch();
+    const analytics = useAnalytics();
     const { device } = useDevice();
     const methods = useForm<YieldFlowFormValues>({
         mode: 'onChange',
@@ -135,6 +138,7 @@ export const useYieldFlow = ({
     const allowanceFlowDataRef = useCurrentRef({ account, vault, token, receiptToken });
 
     const session = useSelector(state => selectStablecoinYieldSession(state, flowType, flowKey));
+    const sessionRef = useCurrentRef(session);
 
     const withdrawInputUnit = methods.watch('withdrawInputUnit');
     const isSharesInput = flowType === 'withdraw' && withdrawInputUnit === 'shares';
@@ -288,6 +292,19 @@ export const useYieldFlow = ({
 
     const openPendingTransaction = useCallback(
         (txid: string) => {
+            const pendingTxType = sessionRef.current.action.pendingTransaction?.type;
+            if (pendingTxType) {
+                analytics.report({
+                    type: events.yieldInteractionEvent.name,
+                    payload: {
+                        element: 'pending-tx-open',
+                        value: pendingTxType,
+                        networkSymbol: account.symbol,
+                        vaultId: vault?.id,
+                    },
+                });
+            }
+
             dispatch(
                 openModal({
                     type: 'transaction-detail',
@@ -299,7 +316,7 @@ export const useYieldFlow = ({
                 }),
             );
         },
-        [account, dispatch],
+        [account, analytics, dispatch, vault?.id, sessionRef],
     );
 
     const enterModifyApproval = useCallback(() => {
