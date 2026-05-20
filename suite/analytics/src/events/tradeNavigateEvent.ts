@@ -10,6 +10,7 @@ type Attributes = {
         | 'dashboard/assets'
         | 'dashboard/empty-wallet'
         | 'dashboard/staking-dashboard'
+        | 'earn-dashboard'
         | 'account/header'
         | 'account/tokens'
         | 'account/tradebox'
@@ -36,6 +37,7 @@ export const tradeNavigateEvent: EventDef<Attributes, EventType.TradeNavigate> =
             changelog: [
                 { version: '25.5.2', notes: 'added' },
                 { version: '26.3.0', notes: 'added `dashboard/empty-wallet` value' },
+                { version: '26.5.2', notes: 'added `earn-dashboard` value' },
             ],
         },
         networkSymbol: {
