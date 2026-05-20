@@ -1,3 +1,4 @@
+// POC
 import type { AnalyticsSharedEvents, EventInstance } from '@suite-common/analytics';
 
 import { type EventType } from './constants';
