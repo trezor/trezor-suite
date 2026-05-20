@@ -84,7 +84,7 @@ export const YieldApproveModal = ({
 
     const handleOnApproveConfirm = () => {
         analytics.report({
-            type: events.yieldSupplyEvent.name,
+            type: events.yieldDepositEvent.name,
             payload: {
                 type: 'approve-modal',
                 action: 'continue',
@@ -96,7 +96,7 @@ export const YieldApproveModal = ({
 
     const handleOnApproveCancel = () => {
         analytics.report({
-            type: events.yieldSupplyEvent.name,
+            type: events.yieldDepositEvent.name,
             payload: {
                 type: 'approve-modal',
                 action: 'cancel',
@@ -110,7 +110,7 @@ export const YieldApproveModal = ({
 
     const handleOnRevokeConfirm = () => {
         analytics.report({
-            type: events.yieldSupplyEvent.name,
+            type: events.yieldDepositEvent.name,
             payload: {
                 type: 'revoke-modal',
                 action: 'continue',
@@ -122,7 +122,7 @@ export const YieldApproveModal = ({
 
     const handleOnRevokeCancel = () => {
         analytics.report({
-            type: events.yieldSupplyEvent.name,
+            type: events.yieldDepositEvent.name,
             payload: {
                 type: 'revoke-modal',
                 action: 'cancel',

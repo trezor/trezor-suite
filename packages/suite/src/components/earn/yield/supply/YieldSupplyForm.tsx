@@ -65,7 +65,7 @@ export const YieldSupplyForm = () => {
     useEffect(() => {
         if (flow.currentStep === 'complete') {
             analytics.report({
-                type: events.yieldSupplyEvent.name,
+                type: events.yieldDepositEvent.name,
                 payload: {
                     type: 'success',
                     action: 'continue',
@@ -80,7 +80,7 @@ export const YieldSupplyForm = () => {
     useEffect(() => {
         if (errorMessage) {
             analytics.report({
-                type: events.yieldSupplyEvent.name,
+                type: events.yieldDepositEvent.name,
                 payload: {
                     type: 'error',
                     action: 'continue',
@@ -94,7 +94,7 @@ export const YieldSupplyForm = () => {
 
     const handleOnApprovalSubmit = () => {
         analytics.report({
-            type: events.yieldSupplyEvent.name,
+            type: events.yieldDepositEvent.name,
             payload: {
                 type: approvalAction === 'revoke' ? 'revoke' : 'approve',
                 action: 'continue',
@@ -108,7 +108,7 @@ export const YieldSupplyForm = () => {
 
     const handleOnRevoke = () => {
         analytics.report({
-            type: events.yieldSupplyEvent.name,
+            type: events.yieldDepositEvent.name,
             payload: {
                 type: 'revoke',
                 action: 'continue',
@@ -122,9 +122,9 @@ export const YieldSupplyForm = () => {
 
     const handleOnModify = () => {
         analytics.report({
-            type: events.yieldSupplyEvent.name,
+            type: events.yieldDepositEvent.name,
             payload: {
-                type: 'modify',
+                type: 'modify-allowance',
                 action: 'continue',
                 networkSymbol: token.networkSymbol,
                 contractAddress: token.contractAddress ?? undefined,
@@ -136,9 +136,9 @@ export const YieldSupplyForm = () => {
 
     const handleOnSupply = () => {
         analytics.report({
-            type: events.yieldSupplyEvent.name,
+            type: events.yieldDepositEvent.name,
             payload: {
-                type: 'supply',
+                type: 'deposit',
                 action: 'continue',
                 networkSymbol: token.networkSymbol,
                 contractAddress: token.contractAddress ?? undefined,
@@ -260,7 +260,7 @@ export const YieldSupplyForm = () => {
                                                         isApprovalInsufficient={
                                                             isApprovalInsufficient
                                                         }
-                                                        onModifyApproval={enterModifyApproval}
+                                                        onModifyApproval={handleOnModify}
                                                     />
                                                 ) : undefined
                                             }
