@@ -64,7 +64,7 @@ const onFieldChange = (state: MethodState, _field: Field<any>, value: any) => {
 const onAddBatch = (state: MethodState, _field: Field<any>, item: any) => {
     const newState = JSON.parse(JSON.stringify(state));
     const field = findField(newState, _field);
-    if (!field || field.type !== 'array') return state;
+    if (field?.type !== 'array') return state;
     field.items = [...field.items, item];
     prepareBundle(field);
 
@@ -74,12 +74,12 @@ const onAddBatch = (state: MethodState, _field: Field<any>, item: any) => {
 // Remove batch
 const onRemoveBatch = (state: MethodState, _field: Field<any>, _batch: any) => {
     const field = findField(state, _field);
-    if (!field || field.type !== 'array') return state;
+    if (field?.type !== 'array') return state;
     const items = field?.items?.filter(batch => batch !== _batch);
 
     const newState = JSON.parse(JSON.stringify(state));
     const newField = findField(newState, field);
-    if (!newField || newField.type !== 'array') return state;
+    if (newField?.type !== 'array') return state;
 
     newField.items = items;
     prepareBundle(newField);
@@ -91,7 +91,7 @@ const onRemoveBatch = (state: MethodState, _field: Field<any>, _batch: any) => {
 const onSetUnion = (state: MethodState, _field: Field<any>, current: any) => {
     const newState = JSON.parse(JSON.stringify(state));
     const field = findField(newState, _field);
-    if (!field || field.type !== 'union') return state;
+    if (field?.type !== 'union') return state;
     field.current = current;
     prepareBundle(field);
 
