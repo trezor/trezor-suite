@@ -10,10 +10,6 @@ type Attributes = {
         | 'withdraw-unit-toggle'
         | 'deposit-max'
         | 'withdraw-max'
-        | 'pending-tx-open'
-        | 'show-more-accounts'
-        | 'insufficient-funds-banner'
-        | 'feedback-submit'
     >;
     value?: AttributeDef<string>;
     networkSymbol?: AttributeDef<string>;
@@ -33,7 +29,7 @@ export const yieldInteractionEvent: EventDef<Attributes, EventType.YieldInteract
         },
         value: {
             description:
-                'Optional sub-identifier — for `in-a-nutshell-process-tab`: `deposit` | `withdraw` | `claim`; for `withdraw-unit-toggle`: the unit being switched to (`asset` = underlying deposit token, `shares` = vault receipt token); for `withdraw-max`: the current unit (`asset` | `shares`); for `pending-tx-open`: the pending tx type (`approve` | `revoke` | `revoke-only` | `deposit` | `withdraw` | `claim`); for `show-more-accounts`: the direction (`expand` | `collapse`); for `feedback-submit`: rating `1`..`5`; omitted for `deposit-max` and `insufficient-funds-banner`',
+                'Optional sub-identifier — for `in-a-nutshell-process-tab`: `deposit` | `withdraw` | `claim`; for `withdraw-unit-toggle`: the unit being switched to (`asset` = underlying deposit token, `shares` = vault receipt token); for `withdraw-max`: the current unit (`asset` | `shares`); omitted for `deposit-max`',
             changelog: [{ version: '26.5.2', notes: 'added' }],
         },
         networkSymbol: {

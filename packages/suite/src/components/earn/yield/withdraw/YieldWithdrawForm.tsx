@@ -164,7 +164,7 @@ export const YieldWithdrawForm = () => {
                                       }
                                     : undefined
                             }
-                            onMaxClick={() => setAmountInput(maxAmount)}
+                            onMaxClick={handleMaxClick}
                             onSubmit={handleOnWithdraw}
                             onPendingTxClick={openPendingTransaction}
                         />
