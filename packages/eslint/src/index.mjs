@@ -2,7 +2,6 @@ import jsxA11y from 'eslint-plugin-jsx-a11y';
 import playwright from 'eslint-plugin-playwright';
 import globals from 'globals';
 
-import { chaiFriendlyConfig } from './chaiFriendlyConfig.mjs';
 import { globalNoExtraneousDependenciesDevDependencies, importConfig } from './importConfig.mjs';
 import { javascriptConfig } from './javascriptConfig.mjs';
 import { javascriptNodejsConfig } from './javascriptNodejsConfig.mjs';
@@ -56,7 +55,6 @@ export const eslint = [
     ...importConfig,
     ...jestConfig,
     ...localRulesConfig,
-    ...chaiFriendlyConfig,
 
     jsxA11y.flatConfigs.recommended,
 
