@@ -18,6 +18,7 @@ export const YieldWithdrawForm = () => {
     const { translationString } = useTranslation();
 
     const {
+        vault,
         token,
         receiptToken,
         maxAmount,
@@ -54,10 +55,11 @@ export const YieldWithdrawForm = () => {
                     action: 'continue',
                     networkSymbol: token.networkSymbol,
                     contractAddress: token.contractAddress ?? undefined,
+                    vaultId: vault.id,
                 },
             });
         }
-    }, [flow.currentStep, analytics, token.networkSymbol, token.contractAddress]);
+    }, [flow.currentStep, analytics, token.networkSymbol, token.contractAddress, vault.id]);
 
     // trigger error analytics event
     useEffect(() => {
@@ -69,11 +71,19 @@ export const YieldWithdrawForm = () => {
                     action: 'continue',
                     networkSymbol: token.networkSymbol,
                     contractAddress: token.contractAddress ?? undefined,
+                    vaultId: vault.id,
                     errorMessage: translationString(errorMessage),
                 },
             });
         }
-    }, [analytics, errorMessage, token.networkSymbol, token.contractAddress, translationString]);
+    }, [
+        analytics,
+        errorMessage,
+        token.networkSymbol,
+        token.contractAddress,
+        vault.id,
+        translationString,
+    ]);
 
     const handleOnWithdraw = () => {
         analytics.report({
@@ -82,7 +92,7 @@ export const YieldWithdrawForm = () => {
                 type: 'withdraw',
                 action: 'continue',
                 networkSymbol: token.networkSymbol,
-                contractAddress: token.contractAddress ?? undefined,
+                vaultId: vault.id,
             },
         });
 
@@ -98,6 +108,7 @@ export const YieldWithdrawForm = () => {
                             token: withdrawInputUnit === 'shares' ? receiptToken : token,
                             amount: completedAmount,
                         }}
+                        vaultId={vault.id}
                     />
                 ) : (
                     <>

@@ -60,6 +60,7 @@ export const YieldPageHeader = ({
                 })(),
                 to: 'earn-dashboard',
                 networkSymbol: account?.symbol,
+                vaultId: routeParams?.yieldId,
             },
         });
 
