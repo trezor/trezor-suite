@@ -8,6 +8,7 @@ import { Button, Card, Column, Divider, Icon, IconCircle, Row, Text } from '@tre
 import { FeedbackCard } from '@trezor/product-components';
 
 import { useDispatch } from 'src/hooks/suite';
+import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 type YieldFlowCompleteProps = {
@@ -30,6 +31,7 @@ export const YieldFlowComplete = ({
     const dispatch = useDispatch();
     const analytics = useAnalytics();
     const { translationString } = useTranslation();
+    const { isBelowMobile } = useLayoutSize();
 
     const handleBackToOverview = () => {
         analytics.report({
@@ -71,7 +73,7 @@ export const YieldFlowComplete = ({
 
     return (
         <Column gap={16}>
-            <IconCircle name="check" intent="brand" size={96} />
+            <IconCircle name="check" intent="brand" size={isBelowMobile ? 64 : 96} />
 
             <Column gap={4}>
                 <Text typographyStyle="headline-md">{heading}</Text>

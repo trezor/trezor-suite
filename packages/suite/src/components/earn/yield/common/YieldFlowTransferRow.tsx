@@ -2,6 +2,8 @@ import { Translation, type TranslationId } from '@suite/intl';
 import { type YieldFlowCompleteValue } from '@suite-common/wallet-core';
 import { Column, Icon, Row, Text } from '@trezor/components';
 
+import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
+
 import { YieldTokenValue } from './YieldTokenValue';
 
 type YieldFlowTransferRowProps = {
@@ -16,12 +18,10 @@ export const YieldFlowTransferRow = ({
     outputLabelId,
     input,
     output,
-}: YieldFlowTransferRowProps) => (
-    <Row
-        justifyContent="space-between"
-        alignItems="center"
-        padding={{ vertical: 16, horizontal: 20 }}
-    >
+}: YieldFlowTransferRowProps) => {
+    const { isBelowTablet } = useLayoutSize();
+
+    const inputColumn = (
         <Column gap={8}>
             <Text typographyStyle="body-md">
                 <Translation id={inputLabelId} />
@@ -34,8 +34,10 @@ export const YieldFlowTransferRow = ({
                 amount={input.amount}
             />
         </Column>
-        <Icon name="arrowRight" size={20} intent="neutral" priority="secondary" />
-        <Column gap={8} alignItems="flex-end">
+    );
+
+    const outputColumn = (
+        <Column gap={8} alignItems={isBelowTablet ? 'flex-start' : 'flex-end'}>
             <Text typographyStyle="body-md">
                 <Translation id={outputLabelId} />
             </Text>
@@ -47,5 +49,27 @@ export const YieldFlowTransferRow = ({
                 amount={output.amount}
             />
         </Column>
-    </Row>
-);
+    );
+
+    if (isBelowTablet) {
+        return (
+            <Column gap={12} padding={{ vertical: 16, horizontal: 20 }}>
+                {inputColumn}
+                <Icon name="arrowDown" size={20} intent="neutral" priority="secondary" />
+                {outputColumn}
+            </Column>
+        );
+    }
+
+    return (
+        <Row
+            justifyContent="space-between"
+            alignItems="center"
+            padding={{ vertical: 16, horizontal: 20 }}
+        >
+            {inputColumn}
+            <Icon name="arrowRight" size={20} intent="neutral" priority="secondary" />
+            {outputColumn}
+        </Row>
+    );
+};
