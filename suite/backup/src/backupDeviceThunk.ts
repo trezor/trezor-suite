@@ -5,9 +5,8 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect from '@trezor/connect';
 
 import { backupActions } from './backupReducer';
+import { actionPrefix } from './constants';
 import type { BackupDeviceParams } from './types';
-
-const actionPrefix = '@suite/backup';
 
 export const backupDeviceThunk = createThunk(
     `${actionPrefix}/backupDeviceThunk`,
