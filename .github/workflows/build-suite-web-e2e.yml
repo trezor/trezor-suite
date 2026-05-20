@@ -54,7 +54,6 @@ jobs:
       - name: Install dependencies
         shell: bash
         run: |
-          echo -e "\nenableScripts: false" >> .yarnrc.yml
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
           sfw --silent yarn workspaces focus @trezor/suite-web @trezor/suite-data @trezor/suite-build
 

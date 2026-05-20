@@ -194,7 +194,6 @@ jobs:
           mode: firewall-free
       - name: Install dependencies
         run: |
-          echo -e "\nenableScripts: false" >> .yarnrc.yml
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
           sfw --silent yarn install --immutable # focus install is not used here to make sure that all global patches are applied for the release.
 

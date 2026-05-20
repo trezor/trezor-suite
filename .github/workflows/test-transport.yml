@@ -46,7 +46,6 @@ jobs:
           mode: firewall-free
       - name: Install dependencies
         run: |
-          echo -e "\nenableScripts: false" >> .yarnrc.yml
           sfw --silent yarn workspaces focus @trezor/transport-test
 
       - name: Setup containers
@@ -92,7 +91,6 @@ jobs:
       - name: Install dependencies
         shell: bash
         run: |
-          echo -e "\nenableScripts: false" >> .yarnrc.yml
           sfw --silent yarn workspaces focus @trezor/transport -A
 
       - name: Build transport tester

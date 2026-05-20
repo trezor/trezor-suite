@@ -39,7 +39,6 @@ jobs:
           mode: firewall-free
       - name: Install Yarn dependencies
         run: |
-          echo -e "\nenableScripts: false" >> .yarnrc.yml
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
           sfw --silent yarn install
 
