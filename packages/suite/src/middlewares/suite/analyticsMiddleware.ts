@@ -2,7 +2,12 @@ import { isAnyOf } from '@reduxjs/toolkit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { setFlag } from '@suite/flags';
-import { anchorChange, routerLocationChange, selectRouterUrl } from '@suite/router';
+import {
+    anchorChange,
+    routerLocationChange,
+    selectRouteName,
+    selectRouterUrl,
+} from '@suite/router';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
 import { firmwareUpdate } from '@suite-common/firmware';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
@@ -55,6 +60,7 @@ import { hasVisibleTokens } from 'src/utils/wallet/tokenUtils';
 const analyticsMiddleware = createMiddlewareWithExtraDeps(
     (action: Action, { extra, next, dispatch, getState }) => {
         const prevRouterUrl = selectRouterUrl(getState());
+        const prevRouteName = selectRouteName(getState());
         // NOTE: pass action on, keep the result
         const result = next(action);
 
@@ -235,6 +241,13 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                             anchor: redactTransactionIdFromAnchor(action.payload.anchor),
                         },
                     });
+
+                    if (selectRouteName(state) === 'suite-earn' && prevRouteName !== 'suite-earn') {
+                        asTypedDesktopAnalytics(analytics).report({
+                            type: events.yieldEarnEntryEvent.name,
+                            payload: { from: prevRouteName ?? 'unknown' },
+                        });
+                    }
                 }
                 break;
 
