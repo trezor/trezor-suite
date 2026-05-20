@@ -11,6 +11,7 @@
         "scripts/**/*.ts"
     ],
     "references": [
+        { "path": "../../suite-common/address" },
         {
             "path": "../../suite-common/analytics"
         },

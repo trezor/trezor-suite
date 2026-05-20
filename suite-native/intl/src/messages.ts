@@ -2199,7 +2199,7 @@ export const messages = {
             recipients: {
                 title: 'Recipient & amount',
                 addressLabel: 'Recipient address',
-                address: {
+                autocorrect: {
                     convertedToLowercase: 'The address was converted to lowercase.',
                     addedBitcoincashPrefix: 'The “bitcoincash:” prefix was added to the address.',
                 },

@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { goto, selectRouteName } from '@suite/router';
+import { isBech32AddressUppercase } from '@suite-common/address';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -10,7 +11,6 @@ import {
     getNetworkDisplaySymbolName,
 } from '@suite-common/wallet-config';
 import { selectDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
-import { isBech32AddressUppercase } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';

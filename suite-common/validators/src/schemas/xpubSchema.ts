@@ -1,5 +1,6 @@
+import { isAddressValid } from '@suite-common/address';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { isAddressBasedNetwork, isAddressValid } from '@suite-common/wallet-utils';
+import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { isNotNullOrUndefined } from '@trezor/utils';
 
 import { yup } from '../config';

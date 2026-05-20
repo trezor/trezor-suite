@@ -4,13 +4,14 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { useFocusEffect } from '@react-navigation/native';
 
+import { isAddressValid } from '@suite-common/address';
 import {
     type XpubFormContext,
     type XpubFormValues,
     xpubFormValidationSchema,
 } from '@suite-common/validators';
 import { getNetworkType } from '@suite-common/wallet-config';
-import { isAddressBasedNetwork, isAddressValid } from '@suite-common/wallet-utils';
+import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { SelectableNetworkItem } from '@suite-native/accounts';
 import { type Alert, useAlert } from '@suite-native/alerts';
 import { Button, Card, TextDivider, VStack, useBottomSheetModal } from '@suite-native/atoms';
