@@ -1,5 +1,6 @@
 import { YieldClaim, YieldClaimPageHeader } from 'src/components/earn';
 import { useEarnRouteAccount } from 'src/components/earn/utils/useEarnRouteAccount';
+import { AccountNotExists } from 'src/components/wallet/WalletLayout/AccountException/AccountNotExists';
 import { useLayout } from 'src/hooks/suite';
 
 export const EarnClaim = () => {
@@ -7,5 +8,9 @@ export const EarnClaim = () => {
 
     useLayout('Earn', <YieldClaimPageHeader account={account} />);
 
-    return account ? <YieldClaim account={account} /> : null;
+    if (!account) {
+        return <AccountNotExists />;
+    }
+
+    return <YieldClaim account={account} />;
 };

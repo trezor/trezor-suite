@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { events } from '@suite/analytics';
-import { Translation } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type EarnParams, goto } from '@suite/router';
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
@@ -21,11 +21,17 @@ import { useAnalytics } from 'src/support/useAnalytics';
 
 interface YieldPageHeaderProps {
     analyticsStep: Extract<EarnAnalyticsStep, 'yield-supply' | 'yield-withdraw'>;
+    fallbackTitleId: TranslationKey;
     account?: Account;
     routeParams?: EarnParams;
 }
 
-export const YieldPageHeader = ({ analyticsStep, account, routeParams }: YieldPageHeaderProps) => {
+export const YieldPageHeader = ({
+    analyticsStep,
+    fallbackTitleId,
+    account,
+    routeParams,
+}: YieldPageHeaderProps) => {
     const dispatch = useDispatch();
     const analytics = useAnalytics();
     const { data: yieldOpportunities, isSuccess } = useAllYieldOpportunities();
@@ -93,7 +99,7 @@ export const YieldPageHeader = ({ analyticsStep, account, routeParams }: YieldPa
                     data-testid="@account-subpage/back"
                 />
 
-                {vaultName ? (
+                {account && vaultName ? (
                     <Row alignItems="center" gap={12} overflow="hidden">
                         {networkSymbol && (
                             <AssetLogo
@@ -109,21 +115,19 @@ export const YieldPageHeader = ({ analyticsStep, account, routeParams }: YieldPa
                             <Text typographyStyle="body-md-strong" ellipsisLineCount={1}>
                                 {vaultName}
                             </Text>
-                            {account && (
-                                <AccountLabel
-                                    account={account}
-                                    showAccountTypeBadge
-                                    accountTypeBadgeSize="small"
-                                    intent="neutral"
-                                    priority="secondary"
-                                    typographyStyle="body-sm"
-                                />
-                            )}
+                            <AccountLabel
+                                account={account}
+                                showAccountTypeBadge
+                                accountTypeBadgeSize="small"
+                                intent="neutral"
+                                priority="secondary"
+                                typographyStyle="body-sm"
+                            />
                         </Column>
                     </Row>
                 ) : (
                     <Text typographyStyle="body-md-strong">
-                        <Translation id="TR_EARN" />
+                        <Translation id={fallbackTitleId} />
                     </Text>
                 )}
 

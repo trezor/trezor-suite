@@ -70,6 +70,14 @@ export const messages = defineMessages({
         defaultMessage: "Account doesn't exist",
         id: 'TR_ACCOUNT_EXCEPTION_NOT_EXIST',
     },
+    TR_EARN_YIELD_VAULT_NOT_EXIST: {
+        defaultMessage: "Vault doesn't exist",
+        id: 'TR_EARN_YIELD_VAULT_NOT_EXIST',
+    },
+    TR_EARN_YIELD_TOKEN_NOT_EXIST: {
+        defaultMessage: "Token doesn't exist",
+        id: 'TR_EARN_YIELD_TOKEN_NOT_EXIST',
+    },
     TR_ACCOUNT_OUT_OF_SYNC: {
         defaultMessage: 'Account sync in progress.',
         id: 'TR_ACCOUNT_OUT_OF_SYNC',

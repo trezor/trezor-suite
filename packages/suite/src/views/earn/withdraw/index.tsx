@@ -3,11 +3,14 @@ import { YieldWithdraw } from 'src/components/earn';
 import { useEarnLayout } from '../useEarnLayout';
 
 export const EarnWithdraw = () => {
-    const { account, routeParams } = useEarnLayout({ analyticsStep: 'yield-withdraw' });
+    const result = useEarnLayout({
+        type: 'withdraw',
+        fallbackTitleId: 'TR_EARN_YIELD_WITHDRAW',
+    });
 
-    if (!account || !routeParams) {
-        return null;
+    if (!result.isValid) {
+        return result.fallback;
     }
 
-    return <YieldWithdraw account={account} routeParams={routeParams} />;
+    return <YieldWithdraw account={result.account} routeParams={result.routeParams} />;
 };

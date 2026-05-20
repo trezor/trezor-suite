@@ -16,7 +16,7 @@ type YieldRewardsListProps = {
 export const YieldRewardsList = ({ accountRewards, isLoading }: YieldRewardsListProps) => {
     const { BaseCurrencyAmountFormatter, CryptoAmountFormatter } = useFormatters();
 
-    if (isLoading || !accountRewards) {
+    if (isLoading) {
         return (
             <Row justifyContent="center">
                 <Spinner size={24} />
@@ -24,7 +24,7 @@ export const YieldRewardsList = ({ accountRewards, isLoading }: YieldRewardsList
         );
     }
 
-    if (accountRewards.rewards.length === 0) {
+    if (!accountRewards || accountRewards.rewards.length === 0) {
         return (
             <Text intent="neutral" priority="secondary">
                 <Translation id="TR_EARN_REWARDS_ARE_EMPTY" />

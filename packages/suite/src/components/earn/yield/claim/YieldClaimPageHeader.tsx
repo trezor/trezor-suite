@@ -57,7 +57,7 @@ export const YieldClaimPageHeader = ({ account }: YieldClaimPageHeaderProps) => 
                     </Row>
                 ) : (
                     <BasicName>
-                        <Translation id="TR_EARN" />
+                        <Translation id="TR_EARN_CLAIM_REWARDS" />
                     </BasicName>
                 )}
             </Row>
