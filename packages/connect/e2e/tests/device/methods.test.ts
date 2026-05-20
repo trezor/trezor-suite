@@ -125,7 +125,7 @@ describe(`TrezorConnect methods`, () => {
                         // @ts-expect-error, string + params union
                         const result = await TrezorConnect[testCase.method](t.params);
                         let expected = t.result
-                            ? { success: true, payload: t.result }
+                            ? { success: true, payload: t.result, error: undefined }
                             : { success: false };
 
                         // find legacy result
@@ -134,13 +134,13 @@ describe(`TrezorConnect methods`, () => {
                             legacyResults.forEach(r => {
                                 if (skipTest(r.rules)) {
                                     expected = r.payload
-                                        ? { success: true, payload: r.payload }
+                                        ? { success: true, payload: r.payload, error: undefined }
                                         : { success: false };
                                 }
                             });
                         }
 
-                        expect(result).toMatchObject(expected);
+                        expect({ error: undefined, ...result }).toMatchObject(expected);
 
                         const { deviceScreen } = t;
                         // Skip the screen assertion when the matrix expects failure
