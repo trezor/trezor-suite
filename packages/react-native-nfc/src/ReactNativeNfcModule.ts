@@ -19,6 +19,7 @@ type NfcEvents = {
 
 declare class ReactNativeNfcModuleDeclaration extends NativeModule<NfcEvents> {
     getLaunchNdefRecords: () => NdefRecord[];
+    startScanSession: () => Promise<void>;
 }
 
 export const ReactNativeNfcModule =

@@ -1,7 +1,7 @@
 {
     "name": "@trezor/react-native-nfc",
     "version": "1.0.0",
-    "description": "React Native NFC intent reader for Android",
+    "description": "React Native NFC reader for Android and iOS",
     "main": "src/index",
     "scripts": {
         "type-check": "yarn g:tsc --build tsconfig.json",

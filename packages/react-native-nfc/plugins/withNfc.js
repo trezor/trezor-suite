@@ -1,5 +1,10 @@
 /* eslint-disable require-await */
-const { AndroidConfig, withAndroidManifest } = require('expo/config-plugins');
+const {
+    AndroidConfig,
+    withAndroidManifest,
+    withEntitlementsPlist,
+    withInfoPlist,
+} = require('expo/config-plugins');
 
 const { getMainApplicationOrThrow } = AndroidConfig.Manifest;
 
@@ -46,9 +51,32 @@ async function setNfcConfigAsync(_config, androidManifest) {
     return androidManifest;
 }
 
-module.exports = config =>
+const withNfcAndroid = config =>
     withAndroidManifest(config, async config2 => {
         config2.modResults = await setNfcConfigAsync(config2, config2.modResults);
 
         return config2;
     });
+
+const withNfcIosEntitlements = config =>
+    withEntitlementsPlist(config, mod => {
+        mod.modResults['com.apple.developer.nfc.readersession.formats'] = ['NDEF'];
+
+        return mod;
+    });
+
+const withNfcIosInfoPlist = config =>
+    withInfoPlist(config, mod => {
+        mod.modResults.NFCReaderUsageDescription =
+            '$(PRODUCT_NAME) needs NFC access to read Trezor backup cards.';
+
+        return mod;
+    });
+
+module.exports = config => {
+    config = withNfcAndroid(config);
+    config = withNfcIosEntitlements(config);
+    config = withNfcIosInfoPlist(config);
+
+    return config;
+};

@@ -58,6 +58,9 @@ class ReactNativeNfcModule : Module() {
             return@Function extractNdefRecords(activity.intent)
         }
 
+        // No-op on Android — foreground dispatch handles NFC scanning automatically.
+        AsyncFunction("startScanSession") { }
+
         OnNewIntent { intent ->
             Log.d(LOG_TAG, "OnNewIntent: action=${intent.action}")
             val records = extractNdefRecords(intent)
