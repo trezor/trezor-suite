@@ -416,8 +416,7 @@ const bootstrapIframe = (): Promise<void> => {
 
                 let channel: PopupChannel;
                 try {
-                    // const worker = await getUnpartitionedSharedWorker(channelName);
-                    const worker = await getSharedWorker(channelName);
+                    const worker = await getUnpartitionedSharedWorker(channelName);
                     channel = connectToChannel(worker, channelName);
                 } catch (error) {
                     sendHandshakeError(error, ownerOrigin);
