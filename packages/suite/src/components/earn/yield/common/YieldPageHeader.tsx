@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { events } from '@suite/analytics';
-import { Translation, type TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type EarnParams, goto } from '@suite/router';
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
@@ -17,6 +17,7 @@ import { AssetLogo } from '@trezor/product-components';
 import { AccountLabel } from 'src/components/suite';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useDispatch } from 'src/hooks/suite';
+import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 interface YieldPageHeaderProps {
@@ -34,6 +35,8 @@ export const YieldPageHeader = ({
 }: YieldPageHeaderProps) => {
     const dispatch = useDispatch();
     const analytics = useAnalytics();
+    const { translationString } = useTranslation();
+    const { isBelowMobile } = useLayoutSize();
     const { data: yieldOpportunities, isSuccess } = useAllYieldOpportunities();
     const vault = useMemo(
         () =>
@@ -88,7 +91,7 @@ export const YieldPageHeader = ({
     };
 
     return (
-        <PageHeader>
+        <PageHeader expandable>
             <Row width="100%" gap={16} alignItems="center">
                 <IconButton
                     icon="caretLeft"
@@ -132,14 +135,26 @@ export const YieldPageHeader = ({
                 )}
 
                 <Box margin={{ left: 'auto' }}>
-                    <Button
-                        intent="neutral"
-                        priority="secondary"
-                        onClick={onHowItWorksClick}
-                        isDisabled={!account || !routeParams}
-                    >
-                        <Translation id="TR_EARN_HOW_IT_WORKS" />
-                    </Button>
+                    {isBelowMobile ? (
+                        <IconButton
+                            icon="info"
+                            intent="neutral"
+                            priority="secondary"
+                            size="large"
+                            aria-label={translationString('TR_EARN_HOW_IT_WORKS')}
+                            onClick={onHowItWorksClick}
+                            isDisabled={!account || !routeParams}
+                        />
+                    ) : (
+                        <Button
+                            intent="neutral"
+                            priority="secondary"
+                            onClick={onHowItWorksClick}
+                            isDisabled={!account || !routeParams}
+                        >
+                            <Translation id="TR_EARN_HOW_IT_WORKS" />
+                        </Button>
+                    )}
                 </Box>
             </Row>
         </PageHeader>

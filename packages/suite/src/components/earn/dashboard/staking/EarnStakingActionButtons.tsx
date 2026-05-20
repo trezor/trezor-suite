@@ -10,7 +10,7 @@ type EarnStakingActionButtonsProps = {
     isStakingDisabled: boolean | undefined;
     stakingMessageContent: ReactNode;
     onBuy: (event: MouseEvent<HTMLButtonElement>) => void;
-    onStake: () => void;
+    onStake: (event: MouseEvent<HTMLButtonElement>) => void;
 };
 
 export const EarnStakingActionButtons = ({
