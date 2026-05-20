@@ -42,7 +42,7 @@ For each run, use `currents-get-run-details` with the `runId`. Collect all spec 
 with at least one failure **or at least one pending test**. Note each `instanceId` and spec
 file path.
 
-> Pending tests are executed fully and carry the same error messages and artifacts as a failed test. Treat them identically to failed tests.
+> Currents labels failed quarantined tests as pending. Pending tests are executed fully and carry the same error messages and artifacts as a failed test. Treat them identically to failed tests.
 
 > `currents-get-run-details` returns instance-level pass/fail/skip counts — enough to identify
 > which instances need investigation. It does **not** contain per-test error messages or artifact

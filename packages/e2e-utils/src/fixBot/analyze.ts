@@ -1,6 +1,6 @@
 import { config as loadEnv } from 'dotenv';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { closeSync, mkdirSync, openSync, readFileSync, unlinkSync } from 'node:fs';
+import { closeSync, existsSync, mkdirSync, openSync, readFileSync, unlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -66,12 +66,22 @@ function main(): void {
     }
 
     const date = new Date().toISOString().slice(0, 10);
-    log('');
-    log(`Report saved to ${reportDir}/${date}.md`);
-    log(`Fix tasks saved to ${reportDir}/${date}.json`);
-    log('');
+    const reportMd = join(reportDir, `${date}.md`);
+    const reportJson = join(reportDir, `${date}.json`);
 
     reportTokenUsage(claudeOutput, join(reportDir, 'token_usage.txt'), 'analysis');
+
+    const missing = [reportMd, reportJson].filter(f => !existsSync(f));
+
+    if (missing.length > 0) {
+        missing.forEach(f => error(`Expected output not found: ${f}`));
+        process.exit(1);
+    }
+
+    log('');
+    log(`Report saved to ${reportMd}`);
+    log(`Fix tasks saved to ${reportJson}`);
+    log('');
 
     process.exit(result.status ?? 0);
 }

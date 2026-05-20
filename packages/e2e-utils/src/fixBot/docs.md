@@ -30,15 +30,15 @@ The GitHub Actions workflow IS the orchestrator. No separate orchestration progr
 After completing its work, the fix agent writes two files to the **worktree root** (never committed):
 
 - **`fix-result.json`** — machine-readable result for the caller:
-  ```json
-  {
-    "task_id": "fix-001",
-    "result": "pass | partial | fail",
-    "iterations": 2,
-    "passed": ["web/T3W1/suite/e2e/tests/wallet/send.ts"],
-    "failed": []
-  }
-  ```
+    ```json
+    {
+        "task_id": "fix-001",
+        "result": "pass | partial | fail",
+        "iterations": 2,
+        "passed": ["web/T3W1/suite/e2e/tests/wallet/send.ts"],
+        "failed": []
+    }
+    ```
 - **`pr-description.md`** — ready-to-post PR body, passed directly to `gh pr create --body-file`
 
 These files are **not committed** — the caller (fix.sh locally, matrix job in GHA) reads them from the filesystem immediately after the agent exits, on the same machine. No artifact upload or cross-job file transfer needed.
@@ -57,22 +57,22 @@ Extends the existing `AGENT.md`. The existing Steps 1–6 stay as-is. The cluste
 
 ### Fix Scope Classification
 
-| Value | Meaning | Automatable |
-| --- | --- | --- |
-| `TEST_CODE` | Only test files need to change | ✅ |
-| `LOCATOR_ADD` | Add/modify `data-testid` in product component + update test | ✅ |
-| `PRODUCT_BUG` | Actual product logic needs fixing | ❌ human required |
-| `INFRA` | CI/environment issue | ❌ human required |
+| Value         | Meaning                                                     | Automatable       |
+| ------------- | ----------------------------------------------------------- | ----------------- |
+| `TEST_CODE`   | Only test files need to change                              | ✅                |
+| `LOCATOR_ADD` | Add/modify `data-testid` in product component + update test | ✅                |
+| `PRODUCT_BUG` | Actual product logic needs fixing                           | ❌ human required |
+| `INFRA`       | CI/environment issue                                        | ❌ human required |
 
 The only allowed product change is adding or modifying `data-testid` attributes. No product logic changes.
 
 ### Confidence → Iteration Budget
 
-| Confidence | Max iterations |
-| --- | --- |
-| `HIGH` | 3 |
-| `MEDIUM` | 2 |
-| `LOW` | 1 |
+| Confidence              | Max iterations    |
+| ----------------------- | ----------------- |
+| `HIGH`                  | 3                 |
+| `MEDIUM`                | 2                 |
+| `LOW`                   | 1                 |
 | `PRODUCT_BUG` / `INFRA` | 0 — not attempted |
 
 `{
@@ -121,11 +121,10 @@ One Claude Code invocation per fix task. Receives a single fix task entry from `
 ### Loop
 
 ```
-Setup environment (dev server / build electorn app / emulator)
+Setup environment (dev server / build electron app / emulator)
 Pre-flight run: playwright test <spec> for each validation
   → confirms failure is real
   → produces fresh local trace + screenshots
-??? /plan
 Fix agent reads trace from disk when it needs visual context
 Loop:
   modify code
@@ -147,15 +146,15 @@ Fix constraints
 
 ### Per iteration
 
-Every iteration commits locally. First iteration is a regular commit, subsequent ones are `--fixup`. 
+Every iteration commits locally. First iteration is a regular commit, subsequent ones are `--fixup`.
 
 - First commit: generic message, e.g. `test(e2e): fix send-button locator`
 - Subsequent iterations: `git commit --fixup HEAD` (no custom message, auto-generated)
 
-| Result | Action |
-| --- | --- |
-| All pass | Push branch, create PR ✅ |
-| Some pass | Push branch, create PR ⚠️ |
+| Result    | Action                                           |
+| --------- | ------------------------------------------------ |
+| All pass  | Push branch, create PR ✅                        |
+| Some pass | Push branch, create PR ⚠️                        |
 | Zero pass | Written summary in job log — no branch pushed ❌ |
 
 ### Git strategy

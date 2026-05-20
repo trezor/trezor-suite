@@ -1,4 +1,4 @@
-// TODO: This will ditched and replaced by packages/e2e-utils/src/tokenUsage.ts
+// TODO: This will removed and replaced by packages/e2e-utils/src/tokenUsage.ts
 // when implementation gets to GHA stage
 import { appendFileSync } from 'node:fs';
 
