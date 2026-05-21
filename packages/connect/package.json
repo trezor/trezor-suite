@@ -90,6 +90,7 @@
         "@scure/bip39": "^1.5.1",
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
+        "@trezor/coins-cardano": "workspace:*",
         "@trezor/coins-solana": "workspace:*",
         "@trezor/coins-stellar": "workspace:*",
         "@trezor/connect-common": "workspace:*",

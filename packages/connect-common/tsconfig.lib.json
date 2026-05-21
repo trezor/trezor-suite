@@ -14,6 +14,7 @@
         { "path": "../utils" },
         { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
+        { "path": "../../coins/coins-cardano" },
         { "path": "../device-authenticity" },
         { "path": "../transport-common" },
         { "path": "../utxo-lib" }

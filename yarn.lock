@@ -15493,7 +15493,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/coins-cardano@workspace:coins/coins-cardano":
+"@trezor/coins-cardano@workspace:*, @trezor/coins-cardano@workspace:coins/coins-cardano":
   version: 0.0.0-use.local
   resolution: "@trezor/coins-cardano@workspace:coins/coins-cardano"
   dependencies:
@@ -15601,6 +15601,7 @@ __metadata:
     "@fivebinaries/coin-selection": "npm:3.0.0"
     "@trezor/blockchain-link": "workspace:^"
     "@trezor/blockchain-link-types": "workspace:^"
+    "@trezor/coins-cardano": "workspace:*"
     "@trezor/device-authenticity": "workspace:^"
     "@trezor/device-utils": "workspace:*"
     "@trezor/protobuf": "workspace:*"
@@ -15807,6 +15808,7 @@ __metadata:
     "@scure/bip39": "npm:^1.5.1"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/coins-cardano": "workspace:*"
     "@trezor/coins-solana": "workspace:*"
     "@trezor/coins-stellar": "workspace:*"
     "@trezor/connect-common": "workspace:*"
