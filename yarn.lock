@@ -15598,7 +15598,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
   dependencies:
-    "@fivebinaries/coin-selection": "npm:3.0.0"
     "@trezor/blockchain-link": "workspace:^"
     "@trezor/blockchain-link-types": "workspace:^"
     "@trezor/coins-cardano": "workspace:*"
@@ -15802,7 +15801,6 @@ __metadata:
     "@bufbuild/protobuf": "npm:^2.11.0"
     "@ethereumjs/common": "npm:^10.1.1"
     "@ethereumjs/tx": "npm:^10.1.1"
-    "@fivebinaries/coin-selection": "npm:3.0.0"
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
     "@scure/bip39": "npm:^1.5.1"
