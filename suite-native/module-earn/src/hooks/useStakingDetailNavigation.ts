@@ -18,6 +18,7 @@ export const useStakingDetailNavigation = () => {
 
     const navigateToStakingDetail = useCallback(
         ({ accountKey, symbol }: { accountKey: AccountKey; symbol: NetworkSymbol }) => {
+            // Temporarily Ethereum-only until the Solana StakingManagement dashboard is merged.
             if (isSupportedEthStakingNetworkSymbol(symbol)) {
                 navigation.navigate(RootStackRoutes.StakingManagement, { accountKey });
             } else {

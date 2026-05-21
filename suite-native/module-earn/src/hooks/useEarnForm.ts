@@ -43,6 +43,10 @@ export const useEarnForm = (accountKey: AccountKey) => {
     const stakeFormState = useMemo(() => {
         if (!account || !isValid || !amountValue) return undefined;
 
+        if (account.networkType === 'solana') {
+            return buildEarnComposeFormState(account.descriptor, amountValue, '');
+        }
+
         return buildEarnComposeFormState(
             getEthereumStakingAddressByType(account.symbol, 'stake'),
             amountValue,

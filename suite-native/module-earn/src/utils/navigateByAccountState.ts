@@ -3,6 +3,7 @@ import {
     formatNetworkAmount,
     getAccountTotalStakingBalance,
     getStakingLimitsByNetworkSymbol,
+    isSupportedEthStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import {
     type RootStackParamList,
@@ -19,7 +20,12 @@ type StakingNavigateFn = StackNavigationProps<
 export const navigateByAccountState = (account: Account, navigate: StakingNavigateFn) => {
     const stakedBalance = getAccountTotalStakingBalance(account);
 
-    if (stakedBalance && stakedBalance !== '0') {
+    // Temporarily Ethereum-only until the Solana StakingManagement dashboard is merged.
+    if (
+        isSupportedEthStakingNetworkSymbol(account.symbol) &&
+        stakedBalance &&
+        stakedBalance !== '0'
+    ) {
         navigate(RootStackRoutes.StakingManagement, {
             accountKey: account.key,
         });

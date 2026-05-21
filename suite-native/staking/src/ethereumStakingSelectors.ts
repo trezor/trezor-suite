@@ -128,7 +128,15 @@ export const selectUnstakingPeriodInDaysBySymbol = (
     return getUnstakingPeriodInDays(symbol ? getNetworkType(symbol) : undefined, validatorsQueue);
 };
 
-export const selectEntryPeriodInDaysBySymbol = (state: NativeStakingRootState) => {
+export const selectEntryPeriodInDaysBySymbol = (
+    state: NativeStakingRootState,
+    symbol?: NetworkSymbol,
+) => {
+    // Solana has no validator queue; entry period is one epoch, same as unstaking
+    if (symbol && getNetworkType(symbol) === 'solana') {
+        return getUnstakingPeriodInDays('solana');
+    }
+
     const validatorsQueue = selectEthValidatorsQueue(state);
 
     if (

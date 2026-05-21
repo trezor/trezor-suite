@@ -8,7 +8,6 @@ import { selectIsDeviceInViewOnlyMode } from '@suite-common/device';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { useAccountAlerts } from '@suite-native/accounts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { useBottomSheetModal } from '@suite-native/atoms';
@@ -22,6 +21,7 @@ import {
 import { useEarnPortfolioTrackerGuard } from '../components/EarnPortfolioTrackerGuard';
 import { type StakingEarnItem } from '../types';
 import { useStakingNavigateAnalytics } from './useStakingNavigateAnalytics';
+import { isStakeFlowSupportedSymbol } from '../utils';
 import { navigateByAccountState } from '../utils/navigateByAccountState';
 
 export const useStakingPromoNavigation = () => {
@@ -132,7 +132,7 @@ export const useStakingPromoNavigation = () => {
 
     const handleStakingPromoPress = useCallback(
         (item: StakingEarnItem) => {
-            if (!isSupportedEthStakingNetworkSymbol(item.symbol)) {
+            if (!isStakeFlowSupportedSymbol(item.symbol)) {
                 openInfoModal();
 
                 return;
