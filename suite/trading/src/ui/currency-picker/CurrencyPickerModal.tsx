@@ -1,7 +1,9 @@
 import { Translation, useTranslation } from '@suite/intl';
+import { getFiatCurrencyFlag } from '@suite-common/flags';
 import {
     CardList,
     Column,
+    Flag,
     IconCircle,
     Input,
     Modal,
@@ -18,6 +20,8 @@ type CurrencyPickerModalProps = ModalProps & {
     onCurrencySelect: (currency: CurrencyPickerOption) => void;
     options: CurrencyPickerOption[];
 };
+
+type FiatCurrencyFlagInput = Parameters<typeof getFiatCurrencyFlag>[0];
 
 export const CurrencyPickerModal = ({
     onCurrencySelect,
@@ -44,25 +48,41 @@ export const CurrencyPickerModal = ({
 
                 {filteredData.length > 0 && (
                     <CardList>
-                        {filteredData.map(option => (
-                            <CardList.Item
-                                key={option.value}
-                                onClick={() => handleCurrencySelect(option)}
-                                data-testid={`@trading/form/currency-picker/option/${option.value}`}
-                            >
-                                <Row gap={16}>
-                                    <Column>
-                                        <IconCircle name="coin" size={32} intent="neutral" />
-                                    </Column>
-                                    <Column>
-                                        <Text typographyStyle="body-md">{option.label}</Text>
-                                        <Text typographyStyle="body-sm" color="contentSecondary">
-                                            {option.shortLabel}
-                                        </Text>
-                                    </Column>
-                                </Row>
-                            </CardList.Item>
-                        ))}
+                        {filteredData.map(option => {
+                            const flag = getFiatCurrencyFlag(option.value as FiatCurrencyFlagInput);
+
+                            return (
+                                <CardList.Item
+                                    key={option.value}
+                                    paddingType="medium"
+                                    onClick={() => handleCurrencySelect(option)}
+                                    data-testid={`@trading/form/currency-picker/option/${option.value}`}
+                                >
+                                    <Row gap={16}>
+                                        <Column>
+                                            {flag ? (
+                                                <Flag country={flag} size={32} />
+                                            ) : (
+                                                <IconCircle
+                                                    name="coin"
+                                                    size={32}
+                                                    intent="neutral"
+                                                />
+                                            )}
+                                        </Column>
+                                        <Column>
+                                            <Text typographyStyle="body-md">{option.label}</Text>
+                                            <Text
+                                                typographyStyle="body-sm"
+                                                color="contentSecondary"
+                                            >
+                                                {option.shortLabel}
+                                            </Text>
+                                        </Column>
+                                    </Row>
+                                </CardList.Item>
+                            );
+                        })}
                     </CardList>
                 )}
                 {!filteredData.length && (
