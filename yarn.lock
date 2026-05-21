@@ -15429,7 +15429,6 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    xrpl: "npm:4.6.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -15459,7 +15458,6 @@ __metadata:
     tiny-worker: "npm:^2.3.0"
     viem: "npm:^2.48.1"
     webpack: "npm:5.106.2"
-    xrpl: "npm:4.6.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown

@@ -33,8 +33,7 @@
         "@trezor/coins-stellar": "workspace:*",
         "@trezor/coins-xrpl": "workspace:*",
         "@trezor/env-utils": "workspace:*",
-        "@trezor/utils": "workspace:*",
-        "xrpl": "4.6.0"
+        "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
         "@trezor/blockchain-link-types": "workspace:*",
