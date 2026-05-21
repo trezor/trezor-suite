@@ -68,7 +68,7 @@ export const Footer = ({ isFormMountedRecently }: FooterProps) => {
             <AnimatedBox
                 entering={isFormMountedRecently ? undefined : FadeInDown}
                 exiting={FadeOutDown}
-                layout={isFormMountedRecently ? undefined : LinearTransition}
+                layout={LinearTransition}
             >
                 <VStack alignItems="center">
                     <FooterProviderContent provider={providerInfo} />
