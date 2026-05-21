@@ -52,6 +52,13 @@ const suiteInternalPatterns = {
         '@suite-common/* and @suite-native/* packages are private to the suite apps and must not be imported by other workspace packages.',
 };
 
+export const restrictedImportsPatterns = [
+    buildArtifactPatterns,
+    suiteInternalPatterns,
+    coinsPackagePatterns,
+    ...connectDeepImportPatterns,
+];
+
 /** @type {import('typescript-eslint').ConfigArray} */
 export const typescriptConfig = [
     ...tseslint.configs.recommended,
@@ -110,12 +117,7 @@ export const typescriptConfig = [
                 'error',
                 {
                     paths: [{ name: '.' }, { name: '..' }, { name: '../..' }],
-                    patterns: [
-                        buildArtifactPatterns,
-                        suiteInternalPatterns,
-                        coinsPackagePatterns,
-                        ...connectDeepImportPatterns,
-                    ],
+                    patterns: restrictedImportsPatterns,
                 },
             ],
         },
