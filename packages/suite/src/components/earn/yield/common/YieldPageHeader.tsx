@@ -126,7 +126,10 @@ export const YieldPageHeader = ({
                             />
                         )}
                         <Column gap={2} overflow="hidden">
-                            <Text typographyStyle="body-md-strong" ellipsisLineCount={1}>
+                            <Text
+                                typographyStyle="body-md-strong"
+                                ellipsisLineCount={isBelowMobile ? 0 : 1}
+                            >
                                 {vaultName}
                             </Text>
                             <AccountLabel

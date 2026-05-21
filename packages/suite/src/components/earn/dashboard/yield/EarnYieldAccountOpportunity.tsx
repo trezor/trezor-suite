@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { events } from '@suite/analytics';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
@@ -18,6 +18,8 @@ import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, Row, Table } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
+import { selectIsConnectionModalOpen } from 'src/actions/device/deviceSelectors';
+import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
@@ -46,8 +48,46 @@ export const EarnYieldAccountOpportunity = ({
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();
     const [isFirmwareModalOpen, setIsFirmwareModalOpen] = useState(false);
+    const [isAwaitingConnectionForFwUpdate, setIsAwaitingConnectionForFwUpdate] = useState(false);
     const selectedDevice = useSelector(selectSelectedDevice);
+    const isConnectionModalOpen = useSelector(selectIsConnectionModalOpen);
     const isFirmwareOutdated = !isStablecoinYieldSupported(selectedDevice);
+
+    useEffect(() => {
+        if (isAwaitingConnectionForFwUpdate && !isConnectionModalOpen) {
+            setIsAwaitingConnectionForFwUpdate(false);
+            if (selectedDevice?.connected) {
+                setIsFirmwareModalOpen(false);
+                dispatch(goto({ routeName: 'firmware-index', params: { cancelable: true } }));
+            }
+        }
+    }, [
+        isAwaitingConnectionForFwUpdate,
+        isConnectionModalOpen,
+        selectedDevice?.connected,
+        dispatch,
+    ]);
+
+    const handleFirmwareModalClose = () => {
+        setIsFirmwareModalOpen(false);
+        setIsAwaitingConnectionForFwUpdate(false);
+    };
+
+    const handleFirmwareUpdate = () => {
+        if (!selectedDevice?.connected) {
+            if (selectedDevice?.descriptor?.apiType === 'bluetooth') {
+                dispatch(setConnectionMode('bluetooth'));
+            }
+            setIsAwaitingConnectionForFwUpdate(true);
+            dispatch(setConnectionModal(true));
+
+            return;
+        }
+
+        setIsFirmwareModalOpen(false);
+        dispatch(goto({ routeName: 'firmware-index', params: { cancelable: true } }));
+    };
+
     const vaultContractAddress = getYieldVaultContractAddress(opportunity.vault);
     const depositMessageSystem = useMessageSystemYield('deposit', { vaultContractAddress });
     const withdrawMessageSystem = useMessageSystemYield('withdraw', { vaultContractAddress });
@@ -269,7 +309,8 @@ export const EarnYieldAccountOpportunity = ({
 
     const firmwareModal = isFirmwareModalOpen && (
         <FirmwareUpgradeNeededModal
-            onClose={() => setIsFirmwareModalOpen(false)}
+            onClose={handleFirmwareModalClose}
+            onUpdate={handleFirmwareUpdate}
             featureName={translationString('TR_EARN_STABLECOIN_YIELD_TITLE')}
         />
     );
