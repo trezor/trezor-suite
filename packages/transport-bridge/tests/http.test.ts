@@ -129,7 +129,7 @@ describe('http', () => {
             return { trezordNode, url };
         };
 
-        it('POST / getInfo with protocolMessage flag enabled', async () => {
+        it('POST / getInfo', async () => {
             const { trezordNode, url } = await setupTrezordNode();
             const response = await bridgeApiCall({
                 url,
@@ -140,23 +140,6 @@ describe('http', () => {
             }
             expect(response.payload).toMatchObject({
                 version: trezordNode.version,
-                protocolMessages: true,
-            });
-            await trezordNode.stop();
-        });
-
-        it('POST / getInfo with protocolMessage flag disabled', async () => {
-            const { trezordNode, url } = await setupTrezordNode({ protocolMessages: false });
-            const response = await bridgeApiCall({
-                url,
-                method: 'POST',
-            });
-            if (!response.success) {
-                throw new Error(response.error.code + ' ' + response.error.message);
-            }
-            expect(response.payload).toMatchObject({
-                version: trezordNode.version,
-                protocolMessages: false,
             });
             await trezordNode.stop();
         });
@@ -494,7 +477,6 @@ describe('http', () => {
             }
             expect(response.payload).toMatchObject({
                 version: trezordNode.version,
-                protocolMessages: true,
             });
             await trezordNode.stop();
         });

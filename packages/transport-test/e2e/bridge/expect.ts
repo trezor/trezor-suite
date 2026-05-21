@@ -2,21 +2,19 @@ import { DEVICE_TYPE } from '@trezor/transport-common';
 
 import { env } from './controller';
 
-const { USE_HW, USE_NODE_BRIDGE } = env;
+const { USE_HW } = env;
 
-const debug = USE_NODE_BRIDGE ? undefined : USE_HW ? false : true;
-const debugSession = USE_NODE_BRIDGE ? undefined : null;
+const debug = undefined;
+const debugSession = undefined;
 
-const path = USE_NODE_BRIDGE ? expect.any(String) : '1';
+const path = expect.any(String);
 const product = USE_HW ? 21441 : 0;
 const vendor = USE_HW ? 4617 : 0;
-const id = USE_NODE_BRIDGE ? expect.any(String) : undefined;
+const id = expect.any(String);
 const apiType = 'usb' as const;
-const type = USE_NODE_BRIDGE ? expect.toBeOneOf(Object.values(DEVICE_TYPE)) : undefined;
-const model = USE_NODE_BRIDGE && USE_HW ? expect.any(Number) : undefined;
-const sessionOwner = USE_NODE_BRIDGE
-    ? expect.toBeOneOf([expect.any(String), undefined])
-    : undefined;
+const type = expect.toBeOneOf(Object.values(DEVICE_TYPE));
+const model = USE_HW ? expect.any(Number) : undefined;
+const sessionOwner = expect.toBeOneOf([expect.any(String), undefined]);
 
 /**
  * internal path has variable length
@@ -39,9 +37,4 @@ export const descriptor = {
     sessionOwner,
 };
 
-export const errorCase1 =
-    !USE_NODE_BRIDGE && !USE_HW
-        ? 'unexpected error'
-        : USE_HW
-          ? 'device disconnected during action'
-          : 'Network request failed';
+export const errorCase1 = USE_HW ? 'device disconnected during action' : 'Network request failed';

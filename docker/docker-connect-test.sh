@@ -6,17 +6,16 @@
 set -euo pipefail
 
 # Running standalone instance of trezor-user-env
-# docker run -it -e SDL_VIDEODRIVER="dummy" -p "9001:9001" -p "21326:21326" -p "21325:21326"  ghcr.io/trezor/trezor-user-env:latest
+# docker run -it -e SDL_VIDEODRIVER="dummy" -p "9001:9001" -p "21328:21328" ghcr.io/trezor/trezor-user-env:latest
 
 # Tweaking trezor-user-env locally
-# docker run -it -e SDL_VIDEODRIVER="dummy" -p "9001:9001" -p "21326:21326" -p "21325:21326" ghcr.io/trezor/trezor-user-env:latest nix-shell
+# docker run -it -e SDL_VIDEODRIVER="dummy" -p "9001:9001" -p "21328:21328" ghcr.io/trezor/trezor-user-env:latest nix-shell
 # do your changes using `vi` and run:
 # [nix-shell:/trezor-user-env]# ./run.sh
 
 # Ports
 # 9001  - websocket server, communication test case > user-env (setup etc...)
-# 21326 - trezord proxy. because of trezord CORS check
-# 21325 - original trezord port redirected to trezor-user-env proxy
+# 21328 - node-bridge http port
 
 ENVIRONMENT=$1
 

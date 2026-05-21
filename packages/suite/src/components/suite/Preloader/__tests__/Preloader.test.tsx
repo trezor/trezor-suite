@@ -76,7 +76,6 @@ const createTransportInfo = (transportInfo: Partial<TransportInfo>): TransportIn
     type: 'NodeUsbTransport',
     apiType: 'usb',
     version: '',
-    outdated: false,
     ...transportInfo,
 });
 

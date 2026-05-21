@@ -65,16 +65,10 @@ const validateSessionParams: ParamsValidatorHandler<{
 };
 
 const validateProtocolMessageBody =
-    (
-        withData: boolean,
-        protocolMessages: boolean,
-    ): RequestHandler<string, ReturnType<typeof validateProtocolMessage>> =>
+    (withData: boolean): RequestHandler<string, ReturnType<typeof validateProtocolMessage>> =>
     (request, response, next) => {
         try {
             const body = validateProtocolMessage(request.body, withData);
-            if (!protocolMessages && body.protocol) {
-                throw new Error('BridgeProtocolMessage support is disabled');
-            }
 
             return next({ ...request, body }, response);
         } catch (error) {
@@ -83,7 +77,6 @@ const validateProtocolMessageBody =
         }
     };
 
-const COMPATIBILITY_PORT = 21325;
 const ADDRESS = new URL('http://127.0.0.1');
 
 export class TrezordNode {
@@ -106,21 +99,18 @@ export class TrezordNode {
     core: ReturnType<typeof createCore>;
     logger: Log;
     assetPrefix: string;
-    protocolMessages: boolean;
     throttler = new Throttler(500);
 
     constructor({
         api,
         assetPrefix = '',
         logger,
-        protocolMessages,
         bundledVersion,
         port = 21328,
     }: {
         api: 'usb' | 'udp' | AbstractApi;
         assetPrefix?: string;
         logger: Log;
-        protocolMessages?: boolean;
         bundledVersion?: string;
         port?: number;
     }) {
@@ -133,7 +123,6 @@ export class TrezordNode {
         this.core = createCore(api, this.logger);
 
         this.assetPrefix = assetPrefix;
-        this.protocolMessages = protocolMessages ?? true;
         this.requestedPort = port;
     }
 
@@ -226,7 +215,6 @@ export class TrezordNode {
             res,
             str({
                 version: this.version,
-                protocolMessages: this.protocolMessages,
                 githash: 'not provided',
             }),
         );
@@ -244,25 +232,18 @@ export class TrezordNode {
         });
 
         this.logger.info('Starting Trezor Bridge HTTP server');
-        // for compatibility reasons, we start two servers sharing the same request handlers and state.
-        // compatibility case 1:
-        //   user still has the old bridge client (targeting port 21325), but he already runs the latest suite-desktop version. We need to make sure that bridge is still available on port 21325 -> we need 2 servers
-        // compatibility case 2:
-        //   user has the latest bridge client (checking all the possible ports), but he runs the old suite-desktop version. This is easy and does not require us to start 2 servers, bridge client will fallback to the old port.
 
-        const primaryApp = new HttpServer({
+        const app = new HttpServer({
             ports: [this.requestedPort],
             logger: this.logger,
             address: ADDRESS.hostname,
         });
 
-        const compatibilityApp = new HttpServer({
-            ports: [COMPATIBILITY_PORT],
-            logger: this.logger,
-            address: ADDRESS.hostname,
-        });
-
-        const bindHandlers = (app: HttpServer<any>) => {
+        // TODO: inline bindHandlers into start(). The wrapper made sense when two
+        // servers (21328 + 21325) shared the same handler set; with a single HTTP
+        // server it adds an indirection with no readers. Kept as a wrapper here
+        // only to minimise the review diff for the 21325 compatibility-port drop.
+        const bindHandlers = () => {
             app.use([
                 (req, res, next, context) => {
                     // directly navigating to status page of bridge in browser. when request is not issued by js, there is no origin header
@@ -442,7 +423,7 @@ export class TrezordNode {
             app.post('/call/:session', [
                 validateSessionParams,
                 parseBodyText,
-                validateProtocolMessageBody(true, this.protocolMessages),
+                validateProtocolMessageBody(true),
                 (req, res) => {
                     const { session } = req.params;
                     const signal = this.createAbortSignal(res, session);
@@ -475,7 +456,7 @@ export class TrezordNode {
             app.post('/read/:session', [
                 validateSessionParams,
                 parseBodyText,
-                validateProtocolMessageBody(false, this.protocolMessages),
+                validateProtocolMessageBody(false),
                 (req, res) => {
                     const { session } = req.params;
                     const signal = this.createAbortSignal(res, session);
@@ -508,7 +489,7 @@ export class TrezordNode {
             app.post('/post/:session', [
                 validateSessionParams,
                 parseBodyText,
-                validateProtocolMessageBody(true, this.protocolMessages),
+                validateProtocolMessageBody(true),
                 (req, res) => {
                     const { session } = req.params;
                     const signal = this.createAbortSignal(res, session);
@@ -609,33 +590,15 @@ export class TrezordNode {
             app.post('/configure', [this.handleInfo.bind(this)]);
         };
 
-        // start both at once
-        const compatibilityAppRes =
-            this.requestedPort === COMPATIBILITY_PORT // Don't even try to start compatibilityApp when the primaryApp requests the same port
-                ? Promise.resolve({ success: false } as const)
-                : compatibilityApp.start();
+        const appRes = await app.start();
 
-        const primaryAppRes = await primaryApp.start();
-
-        // if primary succeeds -> resolve
-        if (primaryAppRes.success) {
-            bindHandlers(primaryApp);
-            this.server.push(primaryApp);
-            this.port = primaryAppRes.payload.port;
+        if (!appRes.success) {
+            throw new Error(appRes.error);
         }
 
-        return compatibilityAppRes.then(res => {
-            if (res.success) {
-                bindHandlers(compatibilityApp);
-                this.server.push(compatibilityApp);
-
-                if (!this.port) {
-                    this.port = res.payload.port;
-                }
-            } else if (!primaryAppRes.success) {
-                throw new Error(primaryAppRes.error); // -> neither compatibility, nor primary app started -> only this case means reject
-            }
-        });
+        bindHandlers();
+        this.server.push(app);
+        this.port = appRes.payload.port;
     }
 
     public stop() {

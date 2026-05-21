@@ -22,8 +22,7 @@ const defaultOptions: Options = {
 const defaultTransportsOption: TransportInfo = {
     type: 'BridgeTransport',
     apiType: 'usb',
-    version: '2.0.33',
-    outdated: false,
+    version: '3.0.0',
 };
 type GetConnectAcquiredDevice = (...args: Parameters<typeof mockConnectDevice>) => AcquiredDevice;
 const getConnectAcquiredDevice = mockConnectDevice as GetConnectAcquiredDevice;

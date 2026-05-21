@@ -15,10 +15,8 @@ const getDescriptor = (descriptor: Partial<Descriptor>): Descriptor => {
         ...descriptor,
     };
 
-    if (env.USE_NODE_BRIDGE && d.session && !d.sessionOwner) {
+    if (d.session && !d.sessionOwner) {
         d.sessionOwner = 'app A';
-    } else if (!env.USE_NODE_BRIDGE) {
-        d.sessionOwner = undefined;
     }
 
     return d;
@@ -178,7 +176,7 @@ describe('bridge', () => {
     });
 
     // todo: udp not implemented correctly yet in new bridge
-    if (!env.USE_NODE_BRIDGE || env.USE_HW) {
+    if (env.USE_HW) {
         test('client 1 (acquire - read), client 2 (acquire - send - read)', async () => {
             await enumerateAndListen();
 
@@ -215,28 +213,19 @@ describe('bridge', () => {
             // send ping
             await bridge2.send({ session: session2.payload, name: 'GetFeatures', data: {} });
 
-            // on old bridge, it appears to hang here time to time.
             return Promise.race([
                 bridge2.receive({ session: session2.payload }),
                 wait(5000).then(() => {
                     throw new Error('hanged on receive');
                 }),
-            ])
-                .then(receive2Res => {
-                    expect(receive2Res).toMatchObject({
-                        success: true,
-                        payload: {
-                            type: 'Features',
-                        },
-                    });
-                })
-                .catch(err => {
-                    if (env.USE_NODE_BRIDGE) {
-                        throw err;
-                    }
-
-                    console.log('failed using old bridge');
+            ]).then(receive2Res => {
+                expect(receive2Res).toMatchObject({
+                    success: true,
+                    payload: {
+                        type: 'Features',
+                    },
                 });
+            });
         });
     }
 

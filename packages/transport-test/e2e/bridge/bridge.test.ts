@@ -138,7 +138,7 @@ describe('bridge', () => {
     });
 
     // todo: udp not implemented correctly yet in new bridge
-    if (!env.USE_NODE_BRIDGE || env.USE_HW) {
+    if (env.USE_HW) {
         test(`send(RebootToBootloader) - send(Cancel) - receive`, async () => {
             // special case - a procedure on device is initiated by SEND method.
             await bridge.send({ session, name: 'RebootToBootloader', data: {} });
@@ -201,7 +201,7 @@ describe('bridge', () => {
     });
 
     // todo: udp not implemented correctly yet in new bridge
-    if (!env.USE_NODE_BRIDGE || env.USE_HW) {
+    if (env.USE_HW) {
         test(`concurrent receive - other call in progress`, async () => {
             await bridge.send({ session, name: 'GetFeatures', data: {} });
 
@@ -278,7 +278,7 @@ describe('bridge', () => {
     });
 
     // todo: udp not implemented correctly yet in new bridge
-    if (!env.USE_NODE_BRIDGE || env.USE_HW) {
+    if (env.USE_HW) {
         test('acquire (wrong session) and concurrent call. what has priority in error handling?', async () => {
             const results = await Promise.all([
                 // send a session which is wrong
@@ -320,7 +320,7 @@ describe('bridge', () => {
     });
 
     // todo: udp not implemented correctly yet in new bridge
-    if (!env.USE_NODE_BRIDGE || env.USE_HW) {
+    if (env.USE_HW) {
         test('send and enumerate, receive and enumerate', async () => {
             const results = await Promise.all([
                 bridge.send({ session, name: 'GetFeatures', data: {} }),
