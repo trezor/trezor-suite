@@ -15493,6 +15493,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/coins-cardano@workspace:coins/coins-cardano":
+  version: 0.0.0-use.local
+  resolution: "@trezor/coins-cardano@workspace:coins/coins-cardano"
+  dependencies:
+    "@fivebinaries/coin-selection": "npm:3.0.0"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/coins-solana@workspace:*, @trezor/coins-solana@workspace:coins/coins-solana":
   version: 0.0.0-use.local
   resolution: "@trezor/coins-solana@workspace:coins/coins-solana"
