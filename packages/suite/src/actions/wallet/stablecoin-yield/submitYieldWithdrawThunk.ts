@@ -1,3 +1,4 @@
+import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { openDeferredModal } from '@suite/modal';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin/src/tx-simulation';
 import { createThunk } from '@suite-common/redux-utils';
@@ -24,7 +25,7 @@ export const submitYieldWithdrawThunk = createThunk(
     `${STABLECOIN_YIELD_PREFIX}/thunk/submitWithdraw`,
     async (
         { flowKey, flowData, amount, withdrawInputUnit = 'asset' }: SubmitYieldWithdrawPayload,
-        { dispatch, getState },
+        { dispatch, getState, extra },
     ) => {
         const flowType = 'withdraw' as const;
 
@@ -56,6 +57,16 @@ export const submitYieldWithdrawThunk = createThunk(
                     } satisfies StablecoinYieldTxSimulationParams,
                 }),
             );
+
+            asTypedDesktopAnalytics(extra.services.analytics).report({
+                type: events.yieldWithdrawEvent.name,
+                payload: {
+                    type: 'simulation-modal',
+                    action: userAcceptedTxSimulation?.value === false ? 'cancel' : 'continue',
+                    networkSymbol: account.symbol,
+                    vaultId: flowData.vault.id,
+                },
+            });
 
             if (userAcceptedTxSimulation?.value === false) {
                 return;

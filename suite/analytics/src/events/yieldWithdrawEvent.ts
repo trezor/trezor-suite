@@ -5,7 +5,14 @@ import { EventType } from '../constants';
 
 type Attributes = {
     action: AttributeDef<EarnModalAction>;
-    type: AttributeDef<'withdraw' | 'success' | 'error' | 'leftPending'>;
+    type: AttributeDef<
+        | 'withdraw'
+        | 'simulation-modal'
+        | 'success'
+        | 'error'
+        | 'leftPending'
+        | 'firmware-upgrade-needed-modal'
+    >;
     networkSymbol?: AttributeDef<string>;
     vaultId?: AttributeDef<string>;
     durationMs?: AttributeDef<number>;
@@ -24,7 +31,10 @@ export const yieldWithdrawEvent: EventDef<Attributes, EventType.YieldWithdraw> =
         type: {
             changelog: [
                 { version: '26.5.0', notes: 'added' },
-                { version: '26.5.2', notes: 'added `leftPending` value' },
+                {
+                    version: '26.5.2',
+                    notes: 'added `leftPending`, `simulation-modal`, `firmware-upgrade-needed-modal` values',
+                },
             ],
         },
         networkSymbol: {

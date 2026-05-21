@@ -128,6 +128,15 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
         }
 
         if (isFirmwareOutdated) {
+            analytics.report({
+                type: events.yieldDepositEvent.name,
+                payload: {
+                    action: 'continue',
+                    type: 'firmware-upgrade-needed-modal',
+                    networkSymbol: opportunity.account.symbol,
+                    vaultId: opportunity.vault.id,
+                },
+            });
             setIsFirmwareModalOpen(true);
 
             return;
@@ -165,6 +174,15 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
         }
 
         if (isFirmwareOutdated) {
+            analytics.report({
+                type: events.yieldDepositEvent.name,
+                payload: {
+                    action: 'continue',
+                    type: 'firmware-upgrade-needed-modal',
+                    networkSymbol: opportunity.account.symbol,
+                    vaultId: opportunity.vault.id,
+                },
+            });
             setIsFirmwareModalOpen(true);
 
             return;
@@ -199,6 +217,15 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
         }
 
         if (isFirmwareOutdated) {
+            analytics.report({
+                type: events.yieldWithdrawEvent.name,
+                payload: {
+                    action: 'continue',
+                    type: 'firmware-upgrade-needed-modal',
+                    networkSymbol: opportunity.account.symbol,
+                    vaultId: opportunity.vault.id,
+                },
+            });
             setIsFirmwareModalOpen(true);
 
             return;
