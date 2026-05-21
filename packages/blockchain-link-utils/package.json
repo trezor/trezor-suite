@@ -31,6 +31,7 @@
         "@noble/hashes": "^2.0.1",
         "@trezor/coins-solana": "workspace:*",
         "@trezor/coins-stellar": "workspace:*",
+        "@trezor/coins-xrpl": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "xrpl": "4.6.0"
