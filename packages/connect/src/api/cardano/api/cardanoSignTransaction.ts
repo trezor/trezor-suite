@@ -2,8 +2,7 @@
 
 // allow for...of statements
 
-import { trezorUtils } from '@fivebinaries/coin-selection';
-
+import cardano from '@trezor/coins-cardano/runtime';
 import {
     type CardanoAuxiliaryDataSupplement,
     CardanoSignTransactionExtended,
@@ -441,6 +440,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
             );
         }
 
+        const { trezorUtils } = await cardano();
         const serializedTx = trezorUtils.signTransaction(unsignedTx.body, witnesses, { testnet });
 
         return {

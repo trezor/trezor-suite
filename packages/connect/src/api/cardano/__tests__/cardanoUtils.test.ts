@@ -1,5 +1,5 @@
 import * as fixtures from '../__fixtures__/cardanoUtils';
-import { composeTxPlan, getTtl, prepareCertificates, transformUtxos } from '../cardanoUtils';
+import { getTtl, prepareCertificates, transformUtxos } from '../cardanoUtils';
 
 describe('cardano utils', () => {
     let dateSpy: any;
@@ -9,29 +9,6 @@ describe('cardano utils', () => {
 
     afterAll(() => {
         dateSpy.mockRestore();
-    });
-
-    it('composeTxPlan', () => {
-        expect(() =>
-            composeTxPlan(
-                'descriptor',
-                [],
-                [],
-                [
-                    {
-                        type: 0,
-                    },
-                    {
-                        path: 'path',
-                        pool: 'abc',
-                        type: 2,
-                    },
-                ],
-                [{ amount: '10', stakeAddress: 'stkAddr' }],
-                'addr',
-                true,
-            ),
-        ).toThrow('UTxO balance insufficient'); // TODO add real test
     });
 
     fixtures.transformUtxos.forEach(f => {

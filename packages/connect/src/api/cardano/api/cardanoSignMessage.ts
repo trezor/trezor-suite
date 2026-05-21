@@ -1,3 +1,4 @@
+import cardano from '@trezor/coins-cardano/runtime';
 import { CARDANO, type MethodPermission } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import {
@@ -15,7 +16,7 @@ import { hasHexPrefix, isHexString } from '../../../utils/formatUtils';
 import { validatePath } from '../../../utils/pathUtils';
 import { addressParametersToProto } from '../cardanoAddressParameters';
 import type { Path } from '../cardanoInputs';
-import { createCose, hexStringByteLength } from '../cardanoUtils';
+import { hexStringByteLength } from '../cardanoUtils';
 
 export type CardanoSignMessageParams = {
     path: Path;
@@ -98,6 +99,8 @@ export default class CardanoSignMessage extends AbstractMethod<
             );
         }
         const { signature, address, pub_key } = response.message;
+
+        const { createCose } = await cardano();
 
         return {
             signature,
