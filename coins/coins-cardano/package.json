@@ -44,5 +44,8 @@
         "type-check": "yarn g:tsc --build tsconfig.json",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib"
     },
-    "dependencies": {}
+    "dependencies": {
+        "@fivebinaries/coin-selection": "3.0.0",
+        "cbor": "^10.0.12"
+    }
 }
