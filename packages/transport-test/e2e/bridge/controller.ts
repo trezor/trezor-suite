@@ -14,7 +14,6 @@ import { Log, scheduleAction } from '@trezor/utils';
 
 export const env = {
     USE_HW: process.env.USE_HW === 'true',
-    USE_NODE_BRIDGE: process.env.USE_NODE_BRIDGE === 'true',
 };
 
 console.log('env', env);
@@ -34,8 +33,6 @@ class Controller extends TrezorUserEnvLinkClass {
 
     private originalApi: {
         connect: typeof TrezorUserEnvLinkClass.prototype.connect;
-        startBridge: typeof TrezorUserEnvLinkClass.prototype.startBridge;
-        stopBridge: typeof TrezorUserEnvLinkClass.prototype.stopBridge;
         startEmu: typeof TrezorUserEnvLinkClass.prototype.startEmu;
         stopEmu: typeof TrezorUserEnvLinkClass.prototype.stopEmu;
     };
@@ -49,46 +46,34 @@ class Controller extends TrezorUserEnvLinkClass {
 
         this.originalApi = {
             connect: super.connect.bind(this),
-            startBridge: super.startBridge.bind(this),
-            stopBridge: super.stopBridge.bind(this),
             startEmu: super.startEmu.bind(this),
             stopEmu: super.stopEmu.bind(this),
         };
 
         this.connect = !env.USE_HW ? this.originalApi.connect : () => Promise.resolve(null);
 
-        this.startBridge =
-            !env.USE_HW && !env.USE_NODE_BRIDGE
-                ? () => this.originalApi.startBridge('2.0.33')
-                : env.USE_NODE_BRIDGE
-                  ? async () => {
-                        this.nodeBridge = new TrezordNode({
-                            api: !env.USE_HW ? 'udp' : 'usb',
-                            logger: new Log('test-bridge', false),
-                        });
+        this.startBridge = async () => {
+            this.nodeBridge = new TrezordNode({
+                api: env.USE_HW ? 'usb' : 'udp',
+                logger: new Log('test-bridge', false),
+            });
 
-                        await this.nodeBridge.start();
+            await this.nodeBridge.start();
 
-                        // todo: this shouldn't be here, nodeBridge should be started when start resolves
-                        await this.waitForBridgeIsRunning(true);
+            // todo: this shouldn't be here, nodeBridge should be started when start resolves
+            await this.waitForBridgeIsRunning(true);
 
-                        return null;
-                    }
-                  : () => this.waitForBridgeIsRunning(true);
+            return null;
+        };
 
-        this.stopBridge =
-            !env.USE_HW && !env.USE_NODE_BRIDGE
-                ? this.originalApi.stopBridge
-                : env.USE_NODE_BRIDGE
-                  ? async () => {
-                        await this.nodeBridge?.stop();
+        this.stopBridge = async () => {
+            await this.nodeBridge?.stop();
 
-                        // todo: this shouldn't be here, nodeBridge should be stopped when stop resolves
-                        await this.waitForBridgeIsRunning(false);
+            // todo: this shouldn't be here, nodeBridge should be stopped when stop resolves
+            await this.waitForBridgeIsRunning(false);
 
-                        return null;
-                    }
-                  : () => this.waitForBridgeIsRunning(false);
+            return null;
+        };
 
         this.startEmu = !env.USE_HW
             ? this.originalApi.startEmu
@@ -123,9 +108,7 @@ class Controller extends TrezorUserEnvLinkClass {
     };
 
     private waitForBridgeIsRunning = (expected: boolean) => {
-        this.logger.log(
-            `${env.USE_HW && !env.USE_NODE_BRIDGE ? '[MANUAL ACTION REQUIRED] ' : ''} waiting for bridge ${expected ? 'start' : 'stop'}`,
-        );
+        this.logger.log(`waiting for bridge ${expected ? 'start' : 'stop'}`);
 
         const client = new BridgeTransport({ id: 'test' });
 

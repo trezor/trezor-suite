@@ -54,11 +54,8 @@ jobs:
           docker compose -f ./docker/docker-compose.transport-test-ci.yml pull
           docker compose -f ./docker/docker-compose.transport-test-ci.yml up -d
 
-      - name: Run E2E tests (old-bridge:emu)
-        run: yarn workspace @trezor/transport-test test:e2e:old-bridge:emu
-
-      - name: Run E2E tests (new-bridge:emu)
-        run: yarn workspace @trezor/transport-test test:e2e:new-bridge:emu
+      - name: Run E2E tests (bridge:emu)
+        run: yarn workspace @trezor/transport-test test:e2e:bridge:emu
 
   extract-branch:
     if: github.repository == 'trezor/trezor-suite'

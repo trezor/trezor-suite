@@ -22,10 +22,9 @@ import { spacingsPx } from '@trezor/theme';
 import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 import { useLocalNetworkAccessPermission } from 'src/hooks/suite/useLocalNetworkAccessPermission';
-import { selectTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 import { MessageSystemBanner } from '../MessageSystemBanner';
-import { BridgeDeprecated } from './BridgeDeprecatedBanner';
+import { BridgeDeprecated, useLegacyBridgeDetection } from './BridgeDeprecatedBanner';
 import { CardanoOutdatedStakingBanner } from './CardanoOutdatedStakingBanner';
 import { FailedBackup } from './FailedBackupBanner';
 import { FirmwareAuthenticityCheckBanner } from './FirmwareAuthenticityCheckBanner';
@@ -51,7 +50,7 @@ type SuiteBannersProps = {
 };
 
 export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
-    const bridge = useSelector(selectTransportOfType('BridgeTransport'));
+    const legacyBridgeDetected = useLegacyBridgeDetection();
     const device = useSelector(selectSelectedDevice);
     const isOnline = useSelector(state => state.suite.online);
     const bannerMessage = useSelector(selectBannerMessage);
@@ -116,7 +115,7 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     ) {
         banner = <LocalNetworkAccessPermission />;
         priority = 40;
-    } else if (bridge?.outdated) {
+    } else if (legacyBridgeDetected) {
         banner = <BridgeDeprecated />;
         priority = 30;
     } else if (accounts.some(account => isCardanoStakedWithFiveBinaries(account))) {

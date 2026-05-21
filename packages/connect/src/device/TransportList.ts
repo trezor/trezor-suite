@@ -21,20 +21,13 @@ const getOrCreateTransport = (
     transportType: ConnectSettingsTransport,
     params: Params,
 ) => {
-    if (transportType === 'BridgeTransport') {
-        // Temporary handling of BridgeTransport which translates to two instances listening on ports 21328/21325
-        const existing = transports.filter(t => t.name === transportType);
-
-        return existing.length
-            ? existing
-            : [new BridgeTransport({ ...params, port: 21328 }), new BridgeTransport(params)];
-    }
-
     if (typeof transportType === 'string') {
         const existing = tryGetTransport(transports, transportType);
         if (existing) return existing;
 
         switch (transportType) {
+            case 'BridgeTransport':
+                return new BridgeTransport(params);
             case 'WebUsbTransport':
                 return new WebUsbTransport(params);
             case 'NodeUsbTransport':

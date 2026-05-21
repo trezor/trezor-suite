@@ -2,7 +2,6 @@ import {
     PROTOCOL_MALFORMED,
     type ThpState,
     type TransportProtocol,
-    bridge as protocolBridge,
     v1 as protocolV1,
 } from '@trezor/protocol';
 import {
@@ -30,7 +29,7 @@ import * as bridgeApiResult from '../utils/bridgeApiResult';
 import { type BridgeProtocolMessage, createProtocolMessage } from '../utils/bridgeProtocolMessage';
 
 const DEFAULT_URL = 'http://127.0.0.1';
-const DEFAULT_PORT = 21325;
+const DEFAULT_PORT = 21328;
 
 type BridgeEndpoint =
     | '/'
@@ -64,7 +63,6 @@ type IncompleteRequestOptions = {
 type BridgeConstructorParameters = AbstractTransportParams & { port?: number };
 
 export class BridgeTransport extends AbstractTransport {
-    private useProtocolMessages: boolean = false;
     private useAbortEndpoint: boolean = false;
     /**
      * url of trezord server.
@@ -95,11 +93,6 @@ export class BridgeTransport extends AbstractTransport {
                 }
 
                 this.version = response.payload.version;
-
-                if (!this.version.startsWith('3')) {
-                    this.isOutdated = true;
-                }
-                this.useProtocolMessages = !!response.payload.protocolMessages;
                 this.useAbortEndpoint = versionUtils.isNewerOrEqual(this.version, '3.2.1');
 
                 this.stopped = false;
@@ -189,20 +182,11 @@ export class BridgeTransport extends AbstractTransport {
     }
 
     private getProtocol(customProtocol?: TransportProtocol) {
-        if (!this.useProtocolMessages) {
-            // custom protocols not supported by legacy bridge
-            return protocolBridge;
-        }
-
         return customProtocol || protocolV1;
     }
 
     private getRequestBody(body: Buffer, protocol: TransportProtocol, thpState?: ThpState) {
-        return createProtocolMessage(
-            body,
-            this.useProtocolMessages ? protocol : undefined,
-            thpState?.serialize(),
-        );
+        return createProtocolMessage(body, protocol, thpState?.serialize());
     }
 
     // in some setups abort signal is resolved on the client-side but never resolves on the server-size (like android OkHttp request)

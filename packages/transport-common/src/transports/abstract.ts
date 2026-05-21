@@ -108,10 +108,6 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
         | 'NativeBluetoothTransport'; // implementation in @trezor/transport-native-bluetooth
 
     /**
-     * transports with "external element" such as bridge can be outdated.
-     */
-    public isOutdated = false;
-    /**
      * transports with "external element" such as bridge can have version.
      */
     public version = '';

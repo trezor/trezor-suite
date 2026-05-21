@@ -14,7 +14,5 @@ export const GITHUB_ROADMAP_URL: Url = 'https://github.com/orgs/trezor/projects/
 export const GITHUB_FW_COMMIT_URL: Url = 'https://github.com/trezor/trezor-firmware/commit/';
 export const GITHUB_FW_BINARIES_URL: Url =
     'https://github.com/trezor/webwallet-data/tree/master/firmware';
-export const GITHUB_BRIDGE_CHANGELOG_URL: Url =
-    'https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md';
 export const GITHUB_MCP_DOCS_URL: Url =
     `${GITHUB_REPO_URL}/blob/develop/docs/packages/suite-desktop/mcp.md` as const;

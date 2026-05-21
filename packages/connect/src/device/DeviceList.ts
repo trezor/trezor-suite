@@ -63,7 +63,6 @@ const getTransportInfo = (transport: Transport) => ({
     apiType: transport.apiType,
     type: transport.name,
     version: transport.version,
-    outdated: transport.isOutdated,
 });
 
 interface DeviceListEvents {

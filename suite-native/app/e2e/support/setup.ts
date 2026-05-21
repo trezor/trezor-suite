@@ -91,7 +91,7 @@ const isDebugTestBuild = async () => {
 const waitForBridgeReady = async ({ retries = 20, intervalMs = 500 } = {}) => {
     for (let i = 0; i < retries; i++) {
         try {
-            const response = await fetch('http://127.0.0.1:21325/', { method: 'POST' });
+            const response = await fetch('http://127.0.0.1:21328/', { method: 'POST' });
             if (response.ok) return;
         } catch {
             // bridge not ready yet
@@ -104,7 +104,7 @@ const waitForBridgeReady = async ({ retries = 20, intervalMs = 500 } = {}) => {
 const waitForDeviceEnumerated = async ({ retries = 60, intervalMs = 1000 } = {}) => {
     for (let i = 0; i < retries; i++) {
         try {
-            const response = await fetch('http://127.0.0.1:21325/enumerate', { method: 'POST' });
+            const response = await fetch('http://127.0.0.1:21328/enumerate', { method: 'POST' });
             const devices = await response.json();
             if (Array.isArray(devices) && devices.length > 0) return;
         } catch {

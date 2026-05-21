@@ -13,7 +13,6 @@ export interface TransportInfo {
     apiType: Transport['apiType'];
     type: Transport['name'];
     version: string;
-    outdated: boolean;
 }
 
 export interface TransportError {

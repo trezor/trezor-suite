@@ -5,7 +5,6 @@ export type SuiteSwitch =
     | 'enable-updater'
     | 'disable-updater'
     | 'updater-url'
-    | 'bridge-legacy'
     | 'bridge-test'
     | 'bridge-daemon'
     | 'bridge-daemon-show-ui'
