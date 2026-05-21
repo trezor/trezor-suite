@@ -4,7 +4,10 @@ import { useNavigation } from '@react-navigation/native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
+import {
+    isSupportedEthStakingNetworkSymbol,
+    isSupportedSolStakingNetworkSymbol,
+} from '@suite-common/wallet-utils';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -18,7 +21,10 @@ export const useStakingDetailNavigation = () => {
 
     const navigateToStakingDetail = useCallback(
         ({ accountKey, symbol }: { accountKey: AccountKey; symbol: NetworkSymbol }) => {
-            if (isSupportedEthStakingNetworkSymbol(symbol)) {
+            if (
+                isSupportedEthStakingNetworkSymbol(symbol) ||
+                isSupportedSolStakingNetworkSymbol(symbol)
+            ) {
                 navigation.navigate(RootStackRoutes.StakingManagement, { accountKey });
             } else {
                 navigation.navigate(RootStackRoutes.StakingDetail, { accountKey });

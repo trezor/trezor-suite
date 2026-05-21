@@ -1262,7 +1262,7 @@
     "earn.stakingInsufficientBalance.getButton": "Get more {displaySymbol}",
     "earn.earnConsentsScreen.title": "Before you continue",
     "earn.earnConsentsScreen.entryPeriodCard.title": "Entry period",
-    "earn.earnConsentsScreen.entryPeriodCard.firstItem": "The entry period can currently take up to 72 days.",
+    "earn.earnConsentsScreen.entryPeriodCard.firstItem": "The entry period can currently take up to {entryPeriodInDays} days.",
     "earn.earnConsentsScreen.entryPeriodCard.secondItem": "You can not cancel your stake during this period.",
     "earn.earnConsentsScreen.delegatingCard.title": "Delegate to Everstake",
     "earn.earnConsentsScreen.delegatingCard.firstItem": "Everstake maintains and protects your staked {displaySymbol} with their smart contracts, infrastructure, and technology.",
