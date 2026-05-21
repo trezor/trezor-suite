@@ -11,12 +11,12 @@ Use command `yarn generate-package @scope/newPackageName`. For example using nam
 
 | Scope         | Folder        | Description                                   | Imports from              |
 | ------------- | ------------- | --------------------------------------------- | ------------------------- |
-| @trezor\*     | /packages     | public packages used by Suite & third parties | No other scope!           |
+| @trezor       | /packages     | public packages used by Suite & third parties | No other scope!           |
 | @suite-common | /suite-common | code shared between @suite and @suite native  | @trezor                   |
 | @suite-native | /suite-native | mobile Suite                                  | @trezor and @suite-common |
 | @suite        | /suite        | desktop & web Suite                           | @trezor and @suite-common |
 
-\* TODO: @trezor was originally the only scope in the monorepo and some packages (including desktop entry point!) should be in the @suite scope instead
+> **Exception:** @trezor was originally the only scope in the monorepo and some packages (including the desktop entry point!) should be in the @suite scope instead. While refactoring these packages out of @trezor into @suite, @trezor packages may temporarily import from @suite to delegate to the new, correctly-scoped package.
 
 ## Packages size
 
