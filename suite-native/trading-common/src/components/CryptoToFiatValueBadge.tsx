@@ -3,7 +3,7 @@ import type { CryptoId } from 'invity-api';
 import { useFormatters } from '@suite-common/formatters';
 import { Text, type TextProps } from '@suite-native/atoms';
 
-import { useTradingFiatValues } from '../../hooks/general/useTradingFiatValues';
+import { useTradingFiatValues } from '../hooks/useTradingFiatValues';
 
 export type CryptoToFiatValueBadgeProps = {
     amount: string | undefined;

@@ -51,7 +51,6 @@
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
-        { "path": "../clipboard" },
         { "path": "../confirm-on-trezor" },
         { "path": "../device" },
         { "path": "../device-authorization" },
@@ -76,8 +75,10 @@
         { "path": "../trading-analytics" },
         { "path": "../trading-atoms" },
         { "path": "../trading-browser-auth" },
+        { "path": "../trading-common" },
         { "path": "../trading-consts" },
         { "path": "../trading-debug" },
+        { "path": "../trading-history" },
         { "path": "../trading-residence" },
         { "path": "../trading-state" },
         { "path": "../transaction-management" },
@@ -102,8 +103,6 @@
         {
             "path": "../../suite-common/test-utils"
         },
-        { "path": "../bluetooth" },
-        { "path": "../settings" },
         { "path": "../test-utils" },
         { "path": "../test-utils-store" },
         { "path": "../trading-fixtures" },

@@ -11,12 +11,38 @@ import {
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
-    renderWithTradingProvider,
-} from '../../../../__tests__/tradingTestUtils';
+    renderWithTradingHistoryProvider,
+} from '../../../__tests__/tradingHistoryTestUtils';
 import {
     TradeDetailTransactionInfo,
     type TradeDetailTransactionInfoProps,
 } from '../TradeDetailTransactionInfo';
+
+jest.mock('@suite-native/trading-state', () => {
+    const actual = jest.requireActual('@suite-native/trading-state');
+
+    return {
+        ...actual,
+        // selectAccountLabelWithNetworkFallback uses parseAccountKey internally which splits
+        // the account key by '-' and fails for mockWalletAccount descriptors containing hyphens
+        // (e.g. 'eth1-normal-eth-1@2:3'). Override with a direct key lookup + real network fallback.
+        selectAccountLabelWithNetworkFallback: (state: any, accountKey: any, cryptoId: any) => {
+            if (accountKey) {
+                const account = state?.wallet?.accounts?.find((a: any) => a.key === accountKey);
+
+                if (account?.accountLabel) return account.accountLabel;
+            }
+
+            // Delegate to real implementation for network name / unknown fallback,
+            // with accounts cleared so it skips the broken account-lookup path.
+            return actual.selectAccountLabelWithNetworkFallback(
+                { ...state, wallet: { ...state?.wallet, accounts: [] } },
+                undefined,
+                cryptoId,
+            );
+        },
+    };
+});
 
 const getOverrides = (
     trades: TradingTransaction[],
@@ -43,7 +69,7 @@ describe('TradeDetailTransactionInfo', () => {
         orderId: TradeDetailTransactionInfoProps['orderId'],
         overrides = getOverrides([]),
     ) =>
-        renderWithTradingProvider(<TradeDetailTransactionInfo orderId={orderId} />, {
+        renderWithTradingHistoryProvider(<TradeDetailTransactionInfo orderId={orderId} />, {
             overrides,
         });
 

@@ -3,6 +3,7 @@ import type { CryptoId } from 'invity-api';
 import type { WalletSettings } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { act } from '@suite-native/test-utils-store';
+import { useTradingFiatValues } from '@suite-native/trading-common';
 import {
     btcAsset,
     createMockRate,
@@ -17,7 +18,6 @@ import {
     type TradingTestPreloadedState,
     renderHookWithTradingProvider,
 } from '../../../__tests__/tradingTestUtils';
-import { useTradingFiatValues } from '../useTradingFiatValues';
 
 jest.mock('@suite-common/fiat-services', () => ({
     ...jest.requireActual('@suite-common/fiat-services'),

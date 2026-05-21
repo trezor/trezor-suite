@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { type TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
 import { BottomSheetModal, useBottomSheetModal } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
+import { Footer, getTradeTitle } from '@suite-native/trading-common';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TradeDetailFooter } from './TradeDetailFooter';
@@ -11,8 +12,6 @@ import { TradeDetailHeader } from './TradeDetailHeader';
 import { TradeDetailInfo } from './TradeDetailInfo';
 import { TradeDetailProviderCard } from './TradeDetailProviderCard';
 import { TradeDetailTransactionInfo } from './TradeDetailTransactionInfo';
-import { getTradeTitle } from '../../../utils/general/utils';
-import { Footer } from '../../general/Footer';
 
 type TradeDetailSheetProps = {
     orderId?: string;

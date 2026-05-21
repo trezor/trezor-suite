@@ -7,11 +7,11 @@ import { type AccountsRootState } from '@suite-common/wallet-core';
 import { Card } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { type CombinedLabelingState } from '@suite-native/labeling';
+import { useChangeStringsExtractor } from '@suite-native/trading-common';
 import { selectAccountLabelWithNetworkFallback } from '@suite-native/trading-state';
 
 import { TradeDetailAmountStack } from './TradeDetailAmountStack';
 import { TradeDetailInfoRow } from './TradeDetailInfoRow';
-import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
 
 export type TradeDetailTransactionInfoProps = {
     orderId: string;

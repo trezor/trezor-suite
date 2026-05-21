@@ -8,6 +8,7 @@ import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { RootStackRoutes, Screen } from '@suite-native/navigation';
+import { Footer } from '@suite-native/trading-common';
 import { TradingEnvironmentWarning } from '@suite-native/trading-debug';
 import {
     selectActiveTradingType,
@@ -15,7 +16,6 @@ import {
     selectTradeToBeOpened,
 } from '@suite-native/trading-state';
 
-import { Footer } from '../components/general/Footer';
 import { Header } from '../components/general/Header/Header';
 import { HistoryButton, type NavigationProps } from '../components/general/HistoryButton';
 import { LegalGatewayContextMessage } from '../components/general/LegalGatewayContextMessage';
