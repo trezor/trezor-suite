@@ -1,5 +1,6 @@
 import { fromWei, hexToNumberString, numberToHex } from 'web3-utils';
 
+import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { Calldata, asEvmAddress } from '@suite-common/calldata';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -176,7 +177,10 @@ type ClaimMerkleRewardsParams = {
 
 export const claimMerkleRewardsThunk = createThunk(
     `${STABLECOIN_YIELD_PREFIX}/thunk/claimMerkleRewards`,
-    async ({ account, flowKey, rewards }: ClaimMerkleRewardsParams, { dispatch, getState }) => {
+    async (
+        { account, flowKey, rewards }: ClaimMerkleRewardsParams,
+        { dispatch, getState, extra },
+    ) => {
         const device = selectSelectedDevice(getState());
         const addressDisplayType = selectAddressDisplayType(getState());
 
@@ -259,6 +263,16 @@ export const claimMerkleRewardsThunk = createThunk(
                     } satisfies StablecoinYieldTxSimulationParams,
                 }),
             );
+
+            asTypedDesktopAnalytics(extra.services.analytics).report({
+                type: events.yieldClaimEvent.name,
+                payload: {
+                    type: 'simulation-modal',
+                    action: userAcceptedTxSimulation?.value === false ? 'cancel' : 'continue',
+                    networkSymbol: account.symbol,
+                    rewardCount: rewards.length,
+                },
+            });
 
             if (userAcceptedTxSimulation?.value === false) {
                 return;
