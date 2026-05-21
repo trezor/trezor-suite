@@ -8,6 +8,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowDisplayToken,
     selectAddressDisplayType,
+    selectIsMevProtectionEnabled,
     stablecoinYieldActions,
     synchronizeSentTransactionThunk,
 } from '@suite-common/wallet-core';
@@ -23,6 +24,7 @@ import {
     asAmountUnit,
     getAccountIdentity,
     getContractAddressForNetworkSymbol,
+    getMevProtectedTxData,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type EthereumSignTransaction, type TokenInfo } from '@trezor/connect';
@@ -284,8 +286,13 @@ export const sendYieldTransaction = async ({
             return;
         }
 
+        const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
         const pushResponse = await TrezorConnect.pushTransaction({
-            tx: signingResponse.payload.serializedTx,
+            tx: getMevProtectedTxData(
+                account.symbol,
+                signingResponse.payload.serializedTx,
+                isMevProtectionEnabled,
+            ),
             coin: account.symbol,
             identity: getAccountIdentity(account),
         });

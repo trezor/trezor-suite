@@ -16,6 +16,7 @@ import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constan
 import {
     STABLECOIN_YIELD_PREFIX,
     selectAddressDisplayType,
+    selectIsMevProtectionEnabled,
     stablecoinYieldActions,
     synchronizeSentTransactionThunk,
 } from '@suite-common/wallet-core';
@@ -27,7 +28,7 @@ import {
     type FormState,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-import { getAccountIdentity, sanitizeHex } from '@suite-common/wallet-utils';
+import { getAccountIdentity, getMevProtectedTxData, sanitizeHex } from '@suite-common/wallet-utils';
 import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
@@ -335,8 +336,13 @@ export const claimMerkleRewardsThunk = createThunk(
                     return null;
                 }
 
+                const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
                 const pushResponse = await TrezorConnect.pushTransaction({
-                    tx: signingResponse.payload.serializedTx,
+                    tx: getMevProtectedTxData(
+                        account.symbol,
+                        signingResponse.payload.serializedTx,
+                        isMevProtectionEnabled,
+                    ),
                     coin: account.symbol,
                     identity: getAccountIdentity(account),
                 });
