@@ -51,7 +51,7 @@ const HistoryButtonMemoized = memo(({ isFormMountedRecently }: HistoryButtonProp
         <AnimatedBox
             entering={isFormMountedRecently ? undefined : FadeInDown}
             exiting={FadeOutDown}
-            layout={isFormMountedRecently ? undefined : LinearTransition}
+            layout={LinearTransition}
         >
             <Pressable onPress={handleOnPress} testID={TRADE_HISTORY_BUTTON_TEST_ID}>
                 <HStack style={applyStyle(buttonStyle)}>
