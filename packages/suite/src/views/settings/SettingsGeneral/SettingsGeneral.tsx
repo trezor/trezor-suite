@@ -2,6 +2,7 @@ import { selectIsSettingsDesktopAppPromoBannerShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectIsLegacyLabelingVisible, selectSelectedProviderForLabels } from '@suite/metadata';
 import { selectHasExperimentalFeature } from '@suite/settings';
+import { selectTorState } from '@suite/tor';
 import { Context } from '@suite-common/message-system';
 import { selectIsMevProtectionSettingsVisible } from '@suite-common/mev';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -16,7 +17,6 @@ import { SettingsSection } from '@trezor/product-components';
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { TorStatus } from 'src/types/suite';
 
 import { AddressDisplay } from './AddressDisplay';
@@ -54,7 +54,7 @@ export const SettingsGeneral = () => {
     );
 
     const { isTorEnabled } = useSelector(selectTorState);
-    const torStatus = useSelector(state => state.suite.torStatus);
+    const torStatus = useSelector(state => state.tor.torStatus);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const desktopUpdate = useSelector(state => state.desktopUpdate);
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);

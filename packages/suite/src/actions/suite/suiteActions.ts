@@ -5,6 +5,7 @@ import type { TranslationKey } from '@suite/intl';
 import { openDeferredModal } from '@suite/modal';
 import { selectRouterUrl } from '@suite/router';
 import { suiteSettingsActions } from '@suite/settings';
+import { type TorBootstrap, TorStatus, isOnionUrl, selectTorState, torActions } from '@suite/tor';
 import { type deviceActions } from '@suite-common/device';
 import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -12,10 +13,7 @@ import { getCustomBackends } from '@suite-common/wallet-utils';
 import { type HandshakeElectron, desktopApi } from '@trezor/suite-desktop-api';
 
 import { type EvmSettings } from 'src/reducers/suite/suiteReducer';
-import { selectTorState } from 'src/selectors/suite/suiteSelectors';
-import type { Dispatch, GetState, TorBootstrap } from 'src/types/suite';
-import { TorStatus } from 'src/types/suite';
-import { isOnionUrl } from 'src/utils/suite/tor';
+import type { Dispatch, GetState } from 'src/types/suite';
 
 import { SUITE } from './constants';
 
@@ -32,8 +30,6 @@ export type SuiteAction =
     | { type: typeof SUITE.ERROR; error: string }
     | { type: typeof SUITE.DESKTOP_HANDSHAKE; payload: HandshakeElectron }
     | { type: typeof SUITE.ONLINE_STATUS; payload: boolean }
-    | { type: typeof SUITE.TOR_STATUS; payload: TorStatus }
-    | { type: typeof SUITE.TOR_BOOTSTRAP; payload: TorBootstrap | null }
     | {
           type: typeof SUITE.SET_RECENTLY_CONNECTED_DEVICE;
           payload: string | null;
@@ -91,16 +87,7 @@ export const updateOnlineStatus = (payload: boolean): SuiteAction => ({
     payload,
 });
 
-/**
- * Triggered by `@suite/tor-status`
- * Set `tor` status in suite reducer
- * @param {boolean} payload
- * @returns {Action}
- */
-export const updateTorStatus = (payload: TorStatus): SuiteAction => ({
-    type: SUITE.TOR_STATUS,
-    payload,
-});
+export const updateTorStatus = (payload: TorStatus) => torActions.setTorStatus(payload);
 
 export const toggleTor =
     (shouldEnable: boolean, modal: string | undefined) =>
@@ -120,10 +107,7 @@ export const toggleTor =
 
         if (shouldEnable && torBootstrap) {
             // Reset Tor Bootstrap before starting it.
-            dispatch({
-                type: SUITE.TOR_BOOTSTRAP,
-                payload: null,
-            });
+            dispatch(torActions.setTorBootstrap(null));
         }
 
         if (shouldEnable) {
@@ -167,10 +151,7 @@ export const setTorBootstrap =
             isSlow: previousTorBootstrap ? previousTorBootstrap.isSlow : false,
         };
 
-        dispatch({
-            type: SUITE.TOR_BOOTSTRAP,
-            payload,
-        });
+        dispatch(torActions.setTorBootstrap(payload));
     };
 
 export const setTorBootstrapSlow =
@@ -197,10 +178,7 @@ export const setTorBootstrapSlow =
             isSlow,
         };
 
-        dispatch({
-            type: SUITE.TOR_BOOTSTRAP,
-            payload,
-        });
+        dispatch(torActions.setTorBootstrap(payload));
     };
 
 export const hideCoinjoinReceiveWarning = () => (dispatch: Dispatch) =>

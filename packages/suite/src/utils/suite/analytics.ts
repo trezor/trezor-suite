@@ -8,6 +8,7 @@ import {
     selectLanguage,
     selectTheme,
 } from '@suite/settings';
+import { getIsTorEnabled } from '@suite/tor';
 import {
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
@@ -35,8 +36,6 @@ import {
 } from '@trezor/env-utils';
 
 import { type AppState } from 'src/types/suite';
-
-import { getIsTorEnabled } from './tor';
 
 const resolveLabelingType = (
     state: AppState,
@@ -80,7 +79,7 @@ export const getSuiteReadyPayload = async (state: AppState): Promise<SuiteReadyP
         screenWidth: getScreenWidth(),
         screenHeight: getScreenHeight(),
         platformLanguages: getPlatformLanguages().join(','),
-        tor: getIsTorEnabled(state.suite.torStatus),
+        tor: getIsTorEnabled(state.tor.torStatus),
         labeling: resolveLabelingType(state),
         rememberedStandardWallets: selectRememberedStandardWalletsCount(state),
         rememberedHiddenWallets: selectRememberedHiddenWalletsCount(state),

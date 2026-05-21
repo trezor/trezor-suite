@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { type CryptoId } from 'invity-api';
 
+import { selectTorState } from '@suite/tor';
 import {
     TRADING_DEFAULT_PAYMENT_METHOD,
     type TradingCountryCode,
@@ -18,7 +19,6 @@ import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { type AccountKey, type FormState, type Output } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { type TradingSellFormDefaultValuesProps } from 'src/types/trading/tradingForm';
 import { resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
 

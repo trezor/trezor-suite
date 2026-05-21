@@ -1,11 +1,11 @@
 import { Translation, type TranslationKey } from '@suite/intl';
 import { SettingsAnchor, goto } from '@suite/router';
+import { selectTorState } from '@suite/tor';
 import { type TradingType } from '@suite-common/trading';
 import { Banner, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 
 interface TradingUtilsTorWarningProps {
     tradingType: TradingType;

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Translation } from '@suite/intl';
 import { selectModalType } from '@suite/modal';
 import { selectHasExperimentalFeature } from '@suite/settings';
+import { selectTorState } from '@suite/tor';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     Badge,
@@ -22,7 +23,6 @@ import { useBackendsForm } from 'src/hooks/settings/backends';
 import { useExplorerForm } from 'src/hooks/settings/useExplorerForm';
 import { useGapLimitForm } from 'src/hooks/settings/useGapLimitForm';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 
 import { BackendUrls } from './BackendUrls/BackendUrls';
 import { BackendTypeSelect } from './CustomBackends/BackendTypeSelect';

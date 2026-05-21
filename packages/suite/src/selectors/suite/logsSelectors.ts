@@ -15,6 +15,7 @@ import {
     selectTheme,
     selectTorOnionLinks,
 } from '@suite/settings';
+import { type TorRootState, selectTorState } from '@suite/tor';
 import {
     type LogsApplicationInfoRootState,
     REDACTED_REPLACEMENT,
@@ -22,10 +23,11 @@ import {
 } from '@suite-common/logger';
 import { type DeviceState } from '@trezor/connect';
 
-import { selectIsSuiteOnline, selectSuiteTransports, selectTorState } from './suiteSelectors';
+import { selectIsSuiteOnline, selectSuiteTransports } from './suiteSelectors';
 import { type SuiteRootState } from '../../reducers/suite/suiteReducer';
 
 export type SuiteLogsApplicationInfoRootState = SuiteRootState &
+    TorRootState &
     MetadataRootState &
     DesktopUpdateRootState &
     LogsApplicationInfoRootState;

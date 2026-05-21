@@ -5,15 +5,12 @@ import { captureException } from '@sentry/electron/main';
 import { session } from 'electron';
 import path from 'path';
 
+import { TorStatus } from '@suite/tor';
 import TrezorConnect from '@trezor/connect';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { getFreePort } from '@trezor/node-utils';
 import { type BootstrapEvent } from '@trezor/request-manager';
-import {
-    type BootstrapTorEvent,
-    type HandshakeTorModule,
-    TorStatus,
-} from '@trezor/suite-desktop-api';
+import { type BootstrapTorEvent, type HandshakeTorModule } from '@trezor/suite-desktop-api';
 
 import { hasSwitch } from '../libs/process-switches';
 import { TorExternalProcess } from '../libs/processes/TorExternalProcess';

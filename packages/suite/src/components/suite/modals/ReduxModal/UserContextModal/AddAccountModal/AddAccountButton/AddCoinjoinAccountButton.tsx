@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { openDeferredModal, openModal, selectModalType } from '@suite/modal';
+import { selectTorState } from '@suite/tor';
 import { selectSelectedDevice } from '@suite-common/device';
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
 import { isDevEnv } from '@suite-common/suite-utils';
@@ -13,7 +14,6 @@ import { resolveAfter } from '@trezor/utils';
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { createCoinjoinAccount } from 'src/actions/wallet/coinjoinAccountActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { type Account } from 'src/types/wallet';
 
 import { AddButton } from './AddButton';

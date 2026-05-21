@@ -4,10 +4,8 @@
     "references": [
         { "path": "../intl" },
         { "path": "../settings" },
+        { "path": "../tor" },
         { "path": "../../packages/components" },
-        {
-            "path": "../../packages/suite-desktop-api"
-        },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" }
     ]

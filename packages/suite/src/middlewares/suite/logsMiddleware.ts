@@ -5,6 +5,7 @@ import { METADATA } from '@suite/metadata';
 import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { routerLocationChange } from '@suite/router';
 import { suiteSettingsActions } from '@suite/settings';
+import { torActions } from '@suite/tor';
 import { addLog } from '@suite-common/logger';
 import { WALLET_SETTINGS } from '@suite-common/wallet-core';
 import { redactUserPathFromString } from '@trezor/utils';
@@ -80,7 +81,7 @@ const log =
                 break;
             case desktopUpdateActions.allowPrerelease.type:
             case desktopUpdateActions.setAutomaticUpdates.type:
-            case SUITE.TOR_STATUS:
+            case torActions.setTorStatus.type:
             case SUITE.ONLINE_STATUS:
                 api.dispatch(
                     addLog({

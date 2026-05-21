@@ -5,11 +5,11 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { TRANSPORT, type TransportInfo } from '@trezor/connect';
 
 import { STORAGE, SUITE } from 'src/actions/suite/constants';
-import { type Action, type TorBootstrap, TorStatus } from 'src/types/suite';
+import { type Action } from 'src/types/suite';
 
-export interface SuiteRootState {
+export type SuiteRootState = {
     suite: SuiteState;
-}
+};
 
 type SuiteLifecycle =
     | { status: 'initial' }
@@ -38,10 +38,8 @@ export interface TransportState {
     error?: string;
 }
 
-export interface SuiteState {
+export type SuiteState = {
     online: boolean;
-    torStatus: TorStatus;
-    torBootstrap: TorBootstrap | null;
     lifecycle: SuiteLifecycle;
     transport?: TransportState;
     evmSettings: EvmSettings;
@@ -50,12 +48,10 @@ export interface SuiteState {
     recentlyConnectedDeviceRef: string | null; // TODO use type DeviceRef from suite-types; currently WIP in https://github.com/trezor/trezor-suite/pull/20955
     recentlyDisconnectedDevice: string | null;
     seenDisconnectNotificationForDeviceIds: string[];
-}
+};
 
 const initialState: SuiteState = {
     online: true,
-    torStatus: TorStatus.Disabled,
-    torBootstrap: null,
     lifecycle: { status: 'initial' },
     evmSettings: {
         confirmExplanationModalClosed: {},
@@ -167,14 +163,6 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
             }
             case SUITE.ONLINE_STATUS:
                 draft.online = action.payload;
-                break;
-
-            case SUITE.TOR_STATUS:
-                draft.torStatus = action.payload;
-                break;
-
-            case SUITE.TOR_BOOTSTRAP:
-                draft.torBootstrap = action.payload;
                 break;
 
             // no default

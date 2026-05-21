@@ -5,7 +5,7 @@ import { selectNewlyConnectedDeviceThunk } from '@suite-common/wallet-core';
 import { DEVICE, type Device, TRANSPORT } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { type AppState, TorStatus } from 'src/types/suite';
+import { type AppState } from 'src/types/suite';
 
 import * as suiteActions from '../suiteActions';
 
@@ -74,21 +74,6 @@ const reducerActions = [
             },
             {
                 online: false,
-            },
-        ],
-    },
-    {
-        description: `updateTorStatus (true/false)`,
-        actions: [
-            suiteActions.updateTorStatus(TorStatus.Enabled),
-            suiteActions.updateTorStatus(TorStatus.Disabled),
-        ],
-        result: [
-            {
-                torStatus: TorStatus.Enabled,
-            },
-            {
-                torStatus: TorStatus.Disabled,
             },
         ],
     },

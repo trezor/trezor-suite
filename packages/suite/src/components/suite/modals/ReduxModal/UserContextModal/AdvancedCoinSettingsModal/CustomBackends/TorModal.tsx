@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
+import { getIsTorLoading } from '@suite/tor';
 import { H3, Modal, Paragraph } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { getIsTorLoading } from 'src/utils/suite/tor';
 
 export type TorResult = 'use-defaults' | 'enable-tor';
 
@@ -12,7 +12,7 @@ type TorModalProps = {
 };
 
 export const TorModal = ({ onResult }: TorModalProps) => {
-    const isTorLoading = useSelector(state => getIsTorLoading(state.suite.torStatus));
+    const isTorLoading = useSelector(state => getIsTorLoading(state.tor.torStatus));
 
     return (
         <Modal

@@ -10,6 +10,7 @@
         {
             "path": "../../suite-common/platform-encryption"
         },
+        { "path": "../../suite/tor" },
         { "path": "../type-utils" }
     ]
 }

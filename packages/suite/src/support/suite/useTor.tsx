@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { getIsTorDomain, selectTorState } from '@suite/tor';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getLocationHostname, isDesktop, isWeb } from '@trezor/env-utils';
 import { type BootstrapTorEvent, type TorStatusEvent, desktopApi } from '@trezor/suite-desktop-api';
@@ -10,9 +11,7 @@ import {
     updateTorStatus,
 } from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { TorStatus } from 'src/types/suite';
-import { getIsTorDomain } from 'src/utils/suite/tor';
 
 export const useTor = () => {
     const { torBootstrap, isTorEnabling } = useSelector(selectTorState);

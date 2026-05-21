@@ -3,31 +3,10 @@ import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device
 import { type TransportInfo } from '@trezor/connect';
 
 import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
-import {
-    type AppState,
-    type PrerequisiteType,
-    TorStatus,
-    type TrezorDevice,
-} from 'src/types/suite';
+import { type AppState, type PrerequisiteType, type TrezorDevice } from 'src/types/suite';
 import { getPrerequisiteName, isPrerequisiteGloballyExcluded } from 'src/utils/suite/prerequisites';
-import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 
 export const selectIsSuiteOnline = (state: SuiteRootState) => state.suite.online;
-
-export const selectTorState = (state: SuiteRootState) => {
-    const { torStatus, torBootstrap } = state.suite;
-
-    return {
-        torStatus,
-        isTorEnabled: getIsTorEnabled(torStatus),
-        isTorLoading: getIsTorLoading(torStatus),
-        isTorError: torStatus === TorStatus.Error,
-        isTorDisabling: torStatus === TorStatus.Disabling,
-        isTorDisabled: torStatus === TorStatus.Disabled,
-        isTorEnabling: torStatus === TorStatus.Enabling,
-        torBootstrap,
-    };
-};
 
 export const selectSuiteTransports = (state: SuiteRootState) =>
     state.suite.transport?.transports.map(({ type, version }) => ({ type, version }));

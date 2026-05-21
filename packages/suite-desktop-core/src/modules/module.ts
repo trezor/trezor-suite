@@ -1,6 +1,7 @@
+import type { TorStatus } from '@suite/tor';
 import type { DeviceEvent, FirmwareStoreEvent, LocalFirmwares } from '@trezor/connect';
 import { type InterceptedEvent } from '@trezor/request-manager';
-import type { HandshakeClient, TorStatus } from '@trezor/suite-desktop-api';
+import type { HandshakeClient } from '@trezor/suite-desktop-api';
 import { TypedEmitter } from '@trezor/utils';
 
 import { type MainWindowProxy } from '../libs/main-window-proxy';

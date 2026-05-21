@@ -2,6 +2,7 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { locksReducer } from '@suite/locks';
 import { routerReducer } from '@suite/router';
+import { torReducer } from '@suite/tor';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import '@suite-common/test-utils/src/globalOverrides';
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
     messageSystem,
     router: routerReducer,
     suite: suiteReducer,
+    tor: torReducer,
     wallet: combineReducers({
         accounts: accountsReducer,
         coinjoin: coinjoinReducer,
@@ -38,7 +40,7 @@ const rootReducer = combineReducers({
 
 type State = ReturnType<typeof rootReducer>;
 
-const initStore = ({ device, router, suite, wallet }: Partial<State> = {}) => {
+const initStore = ({ device, router, suite, tor, wallet }: Partial<State> = {}) => {
     const preloadedState: State = rootReducer(undefined, { type: 'init' });
 
     if (device) {
@@ -56,6 +58,13 @@ const initStore = ({ device, router, suite, wallet }: Partial<State> = {}) => {
         preloadedState.suite = {
             ...preloadedState.suite,
             ...suite,
+        };
+    }
+
+    if (tor) {
+        preloadedState.tor = {
+            ...preloadedState.tor,
+            ...tor,
         };
     }
 
