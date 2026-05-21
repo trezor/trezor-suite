@@ -69,7 +69,6 @@
         "tslib": "^2.6.2"
     },
     "devDependencies": {
-        "@fivebinaries/coin-selection": "3.0.0",
         "@trezor/blockchain-link": "workspace:^",
         "@trezor/blockchain-link-types": "workspace:^",
         "@trezor/coins-cardano": "workspace:*",
