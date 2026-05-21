@@ -15664,6 +15664,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/coins-xrpl@workspace:coins/coins-xrpl":
+  version: 0.0.0-use.local
+  resolution: "@trezor/coins-xrpl@workspace:coins/coins-xrpl"
+  dependencies:
+    xrpl: "npm:4.6.0"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/components@workspace:*, @trezor/components@workspace:^, @trezor/components@workspace:packages/components":
   version: 0.0.0-use.local
   resolution: "@trezor/components@workspace:packages/components"
