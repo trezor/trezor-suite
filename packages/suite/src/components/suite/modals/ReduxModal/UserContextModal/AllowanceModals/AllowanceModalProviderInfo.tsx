@@ -1,7 +1,6 @@
-import { type ProviderMetadata } from 'invity-api';
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { invityAPI } from '@suite-common/trading';
 import { Box, Column, Row, Text } from '@trezor/components';
 import { borders } from '@trezor/theme';
@@ -9,8 +8,15 @@ import { exhaustive } from '@trezor/type-utils';
 
 export type ProviderLogoSourceType = 'invity-api-path' | 'url';
 
+export type AllowanceModalProvider = {
+    name?: string;
+    companyName?: string;
+    logo?: string;
+    label?: TranslationKey;
+};
+
 interface AllowanceModalProviderInfoProps {
-    provider: ProviderMetadata;
+    provider: AllowanceModalProvider;
     spender: string;
     logoSourceType?: ProviderLogoSourceType;
 }
@@ -51,7 +57,7 @@ export const AllowanceModalProviderInfo = ({
         <Box padding={12} borderWidth={borders.widths.large} borderRadius={borders.radii.sm}>
             <Column gap={12}>
                 <Text>
-                    <Translation id="TR_EXCHANGE_APPROVAL_PROVIDER" />
+                    <Translation id={provider.label ?? 'TR_EXCHANGE_APPROVAL_PROVIDER'} />
                 </Text>
                 <Row gap={8}>
                     {providerLogoSource && <ProviderLogo src={providerLogoSource} alt="" />}

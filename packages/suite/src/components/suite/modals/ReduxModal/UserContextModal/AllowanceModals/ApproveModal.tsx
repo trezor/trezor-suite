@@ -1,6 +1,6 @@
 import { FormProvider } from 'react-hook-form';
 
-import { type CryptoId, type DexApprovalType, type ProviderMetadata } from 'invity-api';
+import { type CryptoId, type DexApprovalType } from 'invity-api';
 
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
@@ -16,6 +16,7 @@ import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useAllowanceModal } from 'src/hooks/wallet/allowance';
 
 import {
+    type AllowanceModalProvider,
     AllowanceModalProviderInfo,
     type ProviderLogoSourceType,
 } from './AllowanceModalProviderInfo';
@@ -25,7 +26,7 @@ interface ApproveModalProps {
     amount: string;
     cryptoId: CryptoId;
     account: Account;
-    provider: ProviderMetadata;
+    provider: AllowanceModalProvider;
     spender: string;
     logoSourceType?: ProviderLogoSourceType;
     onSelectApprovalType?: (type: DexApprovalType) => void;

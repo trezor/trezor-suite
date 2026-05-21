@@ -52,7 +52,7 @@ export const YieldApproveModal = ({
             contractAddress: parsedContract,
             size: 80,
         }),
-        isActive: true,
+        label: 'TR_EARN_YIELD_VAULT' as const,
     };
 
     useEffect(() => {
