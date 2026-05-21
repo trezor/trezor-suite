@@ -1,6 +1,6 @@
 import { FormProvider } from 'react-hook-form';
 
-import { type CryptoId, type ProviderMetadata } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
@@ -18,6 +18,7 @@ import { useAllowanceModal } from 'src/hooks/wallet/allowance';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 
 import {
+    type AllowanceModalProvider,
     AllowanceModalProviderInfo,
     type ProviderLogoSourceType,
 } from './AllowanceModalProviderInfo';
@@ -25,7 +26,7 @@ import {
 interface RevokeModalProps {
     cryptoId: CryptoId;
     account: Account;
-    provider: ProviderMetadata;
+    provider: AllowanceModalProvider;
     spender: string;
     logoSourceType?: ProviderLogoSourceType;
     preapprovedAmount?: string;
