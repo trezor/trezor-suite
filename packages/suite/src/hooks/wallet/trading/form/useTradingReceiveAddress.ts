@@ -249,8 +249,8 @@ export const useTradingReceiveAddress = ({
                 ? accounts.find(account => account.key === sendAccountKey)
                 : undefined;
 
-        const matchingAccount = suiteReceiveAccounts?.find(account =>
-            sendAccount?.symbol === account.symbol ? account.key === sendAccount.key : true,
+        const matchingAccount = suiteReceiveAccounts?.find(
+            account => sendAccount?.symbol !== account.symbol || account.key === sendAccount.key,
         );
 
         if (matchingAccount) {

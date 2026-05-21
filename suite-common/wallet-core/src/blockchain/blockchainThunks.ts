@@ -326,7 +326,7 @@ export const onBlockchainNotificationThunk = createThunk(
         if (tx.type === 'recv' && !tx.blockHeight) {
             const accountDevice = findAccountDevice(account, selectDevices(getState()));
 
-            const token = tx.tokens?.length ? tx.tokens[0] : undefined;
+            const token = tx.tokens?.[0];
             const areSatoshisUsed = getAreSatoshisUsed(
                 selectBitcoinAmountUnit(getState()),
                 account,

@@ -134,38 +134,23 @@ const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
         action || ({ type: 'foo' } as any),
     ),
     wallet: {
-        accounts: accountsReducer(
-            prevState?.wallet ? prevState.wallet.accounts : undefined,
-            action || ({ type: 'foo' } as any),
-        ),
-        coinjoin: coinjoinReducer(
-            prevState?.wallet ? prevState.wallet.coinjoin : undefined,
-            action || ({ type: 'foo' } as any),
-        ),
+        accounts: accountsReducer(prevState?.wallet?.accounts, action || ({ type: 'foo' } as any)),
+        coinjoin: coinjoinReducer(prevState?.wallet?.coinjoin, action || ({ type: 'foo' } as any)),
         settings: walletSettingsReducer(
-            prevState?.wallet ? prevState.wallet.settings : undefined,
+            prevState?.wallet?.settings,
             action || ({ type: 'foo' } as any),
         ),
         discovery: discoveryReducer(
-            prevState?.wallet ? prevState.wallet.discovery : undefined,
+            prevState?.wallet?.discovery,
             action || ({ type: 'foo' } as any),
         ),
-        send: sendFormReducer(
-            prevState?.wallet ? prevState.wallet.send : undefined,
-            action || ({ type: 'foo' } as any),
-        ),
+        send: sendFormReducer(prevState?.wallet?.send, action || ({ type: 'foo' } as any)),
         transactions: transactionsReducer(
-            prevState?.wallet ? prevState.wallet.transactions : undefined,
+            prevState?.wallet?.transactions,
             action || ({ type: 'foo' } as any),
         ),
-        fiat: fiatRatesReducer(
-            prevState?.wallet ? prevState.wallet.fiat : undefined,
-            action || ({ type: 'foo' } as any),
-        ),
-        graph: graphReducer(
-            prevState?.wallet ? prevState.wallet.graph : undefined,
-            action || ({ type: 'foo' } as any),
-        ),
+        fiat: fiatRatesReducer(prevState?.wallet?.fiat, action || ({ type: 'foo' } as any)),
+        graph: graphReducer(prevState?.wallet?.graph, action || ({ type: 'foo' } as any)),
         formDrafts: {},
     },
 });

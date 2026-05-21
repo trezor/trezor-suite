@@ -720,8 +720,8 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
         return {
             networkType,
             misc: {
-                sequence: misc?.sequence ? misc.sequence : 0,
-                reserve: misc?.reserve ? misc.reserve : '0',
+                sequence: misc?.sequence ?? 0,
+                reserve: misc?.reserve ?? '0',
             },
             marker: accountInfo.marker,
             stellarCursor: undefined,
@@ -734,7 +734,7 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
             networkType,
             misc: {
                 ...misc,
-                nonce: misc?.nonce ? misc.nonce : '0',
+                nonce: misc?.nonce ?? '0',
             },
             marker: undefined,
             stellarCursor: undefined,
@@ -747,11 +747,11 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
             networkType,
             misc: {
                 staking: {
-                    rewards: misc?.staking ? misc.staking.rewards : '0',
-                    isActive: misc?.staking ? misc.staking.isActive : false,
-                    address: misc?.staking ? misc.staking.address : '',
-                    poolId: misc?.staking ? misc.staking.poolId : null,
-                    drep: misc?.staking ? misc.staking.drep : null,
+                    rewards: misc?.staking?.rewards ?? '0',
+                    isActive: misc?.staking?.isActive ?? false,
+                    address: misc?.staking?.address ?? '',
+                    poolId: misc?.staking?.poolId ?? null,
+                    drep: misc?.staking?.drep ?? null,
                 },
             },
             marker: undefined,
