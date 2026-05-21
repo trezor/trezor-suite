@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { events } from '@suite/analytics';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
@@ -18,6 +18,8 @@ import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { Button, Column, Icon, Paragraph, Row, Table, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
+import { selectIsConnectionModalOpen } from 'src/actions/device/deviceSelectors';
+import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
@@ -40,17 +42,52 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
     const { translationString } = useTranslation();
     const [isFirmwareModalOpen, setIsFirmwareModalOpen] = useState(false);
     const selectedDevice = useSelector(selectSelectedDevice);
+    const isConnectionModalOpen = useSelector(selectIsConnectionModalOpen);
+    const isAwaitingConnectionForFwUpdateRef = useRef(false);
+    const wasConnectionModalOpenRef = useRef(isConnectionModalOpen);
     const isFirmwareOutdated = !isStablecoinYieldSupported(selectedDevice);
+
+    useEffect(() => {
+        const wasOpen = wasConnectionModalOpenRef.current;
+        wasConnectionModalOpenRef.current = isConnectionModalOpen;
+
+        if (!isAwaitingConnectionForFwUpdateRef.current) {
+            return;
+        }
+        if (wasOpen && !isConnectionModalOpen) {
+            isAwaitingConnectionForFwUpdateRef.current = false;
+            if (selectedDevice?.connected) {
+                setIsFirmwareModalOpen(false);
+                dispatch(goto({ routeName: 'firmware-index', params: { cancelable: true } }));
+            }
+        }
+    }, [isConnectionModalOpen, selectedDevice?.connected, dispatch]);
+
+    const handleFirmwareUpdate = () => {
+        if (!selectedDevice?.connected) {
+            if (selectedDevice?.descriptor?.apiType === 'bluetooth') {
+                dispatch(setConnectionMode('bluetooth'));
+            }
+            isAwaitingConnectionForFwUpdateRef.current = true;
+            dispatch(setConnectionModal(true));
+
+            return;
+        }
+
+        setIsFirmwareModalOpen(false);
+        dispatch(goto({ routeName: 'firmware-index', params: { cancelable: true } }));
+    };
+
     const vaultContractAddress = getYieldVaultContractAddress(opportunity.vault);
     const depositMessageSystem = useMessageSystemYield('deposit', { vaultContractAddress });
     const withdrawMessageSystem = useMessageSystemYield('withdraw', { vaultContractAddress });
 
-    const hasSuppliedBalance = opportunity.hasVaultPosition;
-    const hasDisplayableSuppliedAmount = new BigNumber(opportunity.suppliedAmount).gt(0);
+    const hasDepositedBalance = opportunity.hasVaultPosition;
+    const hasDisplayableDepositedAmount = new BigNumber(opportunity.suppliedAmount).gt(0);
     const hasAdditionalDepositAmount = new BigNumber(opportunity.additionalSupplyAmount).gt(0);
     const { hasRewardsData } = opportunity;
     const hasApy = opportunity.apyPercentage !== null && opportunity.apyPercentage > 0;
-    const yearlyRewards = hasDisplayableSuppliedAmount
+    const yearlyRewards = hasDisplayableDepositedAmount
         ? new BigNumber(opportunity.suppliedAmount)
               .times(opportunity.vault.rewardRate.total)
               .toString()
@@ -62,14 +99,14 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
               .toString()
         : '0';
     const hasPotentialRewards = new BigNumber(potentialRewards).gt(0);
-    const hasMaximumDeposited = hasSuppliedBalance && !hasAdditionalDepositAmount;
+    const hasMaximumDeposited = hasDepositedBalance && !hasAdditionalDepositAmount;
     const shouldSpanRewardsCells = !hasApy && !hasPotentialRewards && !hasMaximumDeposited;
-    const formattedSuppliedAmount = CryptoAmountFormatter.format(opportunity.suppliedAmount, {
+    const formattedDepositedAmount = CryptoAmountFormatter.format(opportunity.suppliedAmount, {
         symbol: opportunity.suppliedSymbol,
         withSymbol: false,
         isBalance: true,
     });
-    const formattedAdditionalSupplyAmount = CryptoAmountFormatter.format(
+    const formattedAdditionalDepositAmount = CryptoAmountFormatter.format(
         opportunity.additionalSupplyAmount,
         {
             symbol: opportunity.suppliedSymbol,
@@ -111,7 +148,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
         );
     };
 
-    const openYieldSupplyFlow = () => {
+    const openYieldDepositFlow = () => {
         if (!opportunity.account) {
             return;
         }
@@ -148,7 +185,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
         );
     };
 
-    const navigateToYieldSupply = () => {
+    const navigateToYieldDeposit = () => {
         if (!opportunity.account) {
             return;
         }
@@ -218,7 +255,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
 
     const isDepositDisabled = depositMessageSystem.isDisabled;
     const isWithdrawDisabled = withdrawMessageSystem.isDisabled;
-    const isSupplyNowDisabled = !opportunity.vault.status.enter || isDepositDisabled;
+    const isDepositNowDisabled = !opportunity.vault.status.enter || isDepositDisabled;
     const isDepositMoreDisabled =
         !opportunity.vault.status.enter || !hasAdditionalDepositAmount || isDepositDisabled;
 
@@ -227,6 +264,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
             {isFirmwareModalOpen && (
                 <FirmwareUpgradeNeededModal
                     onClose={() => setIsFirmwareModalOpen(false)}
+                    onUpdate={handleFirmwareUpdate}
                     featureName={translationString('TR_EARN_STABLECOIN_YIELD_TITLE')}
                 />
             )}
@@ -265,7 +303,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                                         apy={opportunity.apyPercentage}
                                     />
 
-                                    {hasDisplayableSuppliedAmount && (
+                                    {hasDisplayableDepositedAmount && (
                                         <Paragraph
                                             typographyStyle="body-sm"
                                             intent="neutral"
@@ -275,7 +313,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                                                 <Translation
                                                     id="TR_EARN_YIELD_DASHBOARD_SUPPLIED"
                                                     values={{
-                                                        amount: formattedSuppliedAmount,
+                                                        amount: formattedDepositedAmount,
                                                         displaySymbol: opportunity.suppliedSymbol,
                                                     }}
                                                 />
@@ -324,7 +362,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                                                     <Translation
                                                         id="TR_EARN_STAKING_DASHBOARD_IF_YOU_ADD"
                                                         values={{
-                                                            amount: formattedAdditionalSupplyAmount,
+                                                            amount: formattedAdditionalDepositAmount,
                                                             displaySymbol:
                                                                 opportunity.suppliedSymbol,
                                                         }}
@@ -343,14 +381,14 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
 
                 <Table.Cell align="end">
                     <Row justifyContent="flex-end" gap={8}>
-                        {hasSuppliedBalance && (
+                        {hasDepositedBalance && (
                             <>
                                 <Tooltip content={depositMessageSystem.content}>
                                     <Button
                                         size="small"
                                         isDisabled={isDepositMoreDisabled}
                                         iconLeft={isDepositDisabled ? 'info' : undefined}
-                                        onClick={navigateToYieldSupply}
+                                        onClick={navigateToYieldDeposit}
                                     >
                                         <Translation id="TR_EARN_YIELD_DASHBOARD_SUPPLY_MORE" />
                                     </Button>
@@ -370,20 +408,20 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                             </>
                         )}
 
-                        {!hasSuppliedBalance && hasAdditionalDepositAmount && (
+                        {!hasDepositedBalance && hasAdditionalDepositAmount && (
                             <Tooltip content={depositMessageSystem.content}>
                                 <Button
                                     size="small"
-                                    isDisabled={isSupplyNowDisabled}
+                                    isDisabled={isDepositNowDisabled}
                                     iconLeft={isDepositDisabled ? 'info' : undefined}
-                                    onClick={openYieldSupplyFlow}
+                                    onClick={openYieldDepositFlow}
                                 >
                                     <Translation id="TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW" />
                                 </Button>
                             </Tooltip>
                         )}
 
-                        {!hasSuppliedBalance && !hasAdditionalDepositAmount && (
+                        {!hasDepositedBalance && !hasAdditionalDepositAmount && (
                             <Button
                                 size="small"
                                 intent="neutral"
