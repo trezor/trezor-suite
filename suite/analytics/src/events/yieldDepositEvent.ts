@@ -14,9 +14,11 @@ type Attributes = {
         | 'revoke-success'
         | 'modify-allowance'
         | 'deposit'
+        | 'simulation-modal'
         | 'success'
         | 'error'
         | 'leftPending'
+        | 'firmware-upgrade-needed-modal'
     >;
     networkSymbol?: AttributeDef<string>;
     vaultId?: AttributeDef<string>;
@@ -42,7 +44,7 @@ export const yieldDepositEvent: EventDef<Attributes, EventType.YieldDeposit> = {
                 { version: '26.5.0', notes: 'added' },
                 {
                     version: '26.5.2',
-                    notes: 'added `approve-success`, `revoke-success`, `leftPending` values',
+                    notes: 'added `approve-success`, `revoke-success`, `leftPending`, `simulation-modal`, `firmware-upgrade-needed-modal` values',
                 },
             ],
         },

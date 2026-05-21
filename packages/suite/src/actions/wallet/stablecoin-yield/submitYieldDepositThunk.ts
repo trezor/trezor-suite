@@ -1,3 +1,4 @@
+import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { openDeferredModal } from '@suite/modal';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin/src/tx-simulation';
 import { createThunk } from '@suite-common/redux-utils';
@@ -25,7 +26,10 @@ type SubmitYieldDepositPayload = {
 
 export const submitYieldDepositThunk = createThunk(
     `${STABLECOIN_YIELD_PREFIX}/thunk/submitDeposit`,
-    async ({ flowKey, flowData, amount }: SubmitYieldDepositPayload, { dispatch, getState }) => {
+    async (
+        { flowKey, flowData, amount }: SubmitYieldDepositPayload,
+        { dispatch, getState, extra },
+    ) => {
         const flowType = 'deposit' as const;
 
         try {
@@ -106,6 +110,16 @@ export const submitYieldDepositThunk = createThunk(
                     } satisfies StablecoinYieldTxSimulationParams,
                 }),
             );
+
+            asTypedDesktopAnalytics(extra.services.analytics).report({
+                type: events.yieldDepositEvent.name,
+                payload: {
+                    type: 'simulation-modal',
+                    action: userAcceptedTxSimulation?.value === false ? 'cancel' : 'continue',
+                    networkSymbol: flowData.account.symbol,
+                    vaultId: flowData.vault.id,
+                },
+            });
 
             if (userAcceptedTxSimulation?.value === false) {
                 return;
