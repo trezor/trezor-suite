@@ -72,6 +72,7 @@
         "@fivebinaries/coin-selection": "3.0.0",
         "@trezor/blockchain-link": "workspace:^",
         "@trezor/blockchain-link-types": "workspace:^",
+        "@trezor/coins-cardano": "workspace:*",
         "@trezor/device-authenticity": "workspace:^",
         "@trezor/transport-common": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
