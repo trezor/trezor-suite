@@ -2,23 +2,21 @@ import { createThunk } from '@suite-common/redux-utils';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 
+import { STAKE_NATIVE_MODULE_PREFIX } from './constants';
 import { signEthereumStakingTransactionNativeThunk } from './stakeFormEthereumNativeThunks';
-import {
-    type EthereumStakingType,
-    type SignEthereumStakingRejectValue,
-} from './stakeFormEthereumNativeTypes';
+import { signSolanaStakingTransactionNativeThunk } from './stakeFormSolanaNativeThunks';
+import { type SignStakeNativeRejectValue, type StakeNativeType } from './stakeNativeTypes';
 
-const STAKE_NATIVE_MODULE_PREFIX = '@suite-native/staking';
 const LOG_PREFIX = 'signStakeTransactionNativeThunk';
 
 export const signStakeTransactionNativeThunk = createThunk<
     { txid: string },
     {
         accountKey: AccountKey;
-        stakeType: EthereumStakingType;
+        stakeType: StakeNativeType;
         precomposedTransaction: PrecomposedTransactionFinal;
     },
-    { rejectValue: SignEthereumStakingRejectValue }
+    { rejectValue: SignStakeNativeRejectValue }
 >(`${STAKE_NATIVE_MODULE_PREFIX}/${LOG_PREFIX}`, async (args, thunkApi) => {
     const { accountKey } = args;
     const account = selectAccountByKey(thunkApi.getState() as AccountsRootState, accountKey);
@@ -36,6 +34,16 @@ export const signStakeTransactionNativeThunk = createThunk<
         const action = await thunkApi.dispatch(signEthereumStakingTransactionNativeThunk(args));
 
         if (signEthereumStakingTransactionNativeThunk.fulfilled.match(action)) {
+            return action.payload;
+        }
+
+        return thunkApi.rejectWithValue(action.payload);
+    }
+
+    if (account.networkType === 'solana') {
+        const action = await thunkApi.dispatch(signSolanaStakingTransactionNativeThunk(args));
+
+        if (signSolanaStakingTransactionNativeThunk.fulfilled.match(action)) {
             return action.payload;
         }
 

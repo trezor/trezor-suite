@@ -1,19 +1,12 @@
-import {
-    type PushTransactionError,
-    type SignTransactionError,
-    type SignTransactionTimeoutError,
-} from '@suite-common/wallet-core';
-import { type Account, type StakeFormState, type StakeType } from '@suite-common/wallet-types';
+import { type Account, type StakeFormState } from '@suite-common/wallet-types';
 import { type FeeLevel } from '@trezor/connect';
 
-export type SignEthereumStakingRejectValue =
-    | SignTransactionError
-    | SignTransactionTimeoutError
-    | PushTransactionError
-    | undefined;
+import { type SignStakeNativeRejectValue, type StakeNativeType } from './stakeNativeTypes';
+
+export type SignEthereumStakingRejectValue = SignStakeNativeRejectValue;
 
 export type EthereumAccount = Account & { networkType: 'ethereum' };
-export type EthereumStakingType = Extract<StakeType, 'stake' | 'unstake' | 'claim'>;
+export type EthereumStakingType = StakeNativeType;
 
 export type EthereumStakingVariant = {
     stakeType: EthereumStakingType;

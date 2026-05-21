@@ -22,6 +22,7 @@ import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
+import { STAKE_NATIVE_MODULE_PREFIX } from './constants';
 import {
     type EthereumAccount,
     type EthereumStakingType,
@@ -32,7 +33,6 @@ import {
 } from './stakeFormEthereumNativeTypes';
 import { ethToWei } from './utils';
 
-const STAKE_NATIVE_MODULE_PREFIX = '@suite-native/staking';
 const LOG_PREFIX = 'signEthereumStakingTransactionNativeThunk';
 
 const failed = (message: string, detail?: string): Failure => {
