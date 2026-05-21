@@ -1,4 +1,4 @@
-import { eslint } from '@trezor/eslint';
+import { eslint, restrictedImportsPatterns } from '@trezor/eslint';
 
 export default [
     ...eslint,
@@ -22,15 +22,7 @@ export default [
                 'error',
                 {
                     paths: [{ name: '.' }, { name: '..' }, { name: '../..' }],
-                    patterns: [
-                        '@trezor/*/lib',
-                        '@trezor/*/lib/**',
-                        '@trezor/*/libDev',
-                        '@trezor/*/libDev/**',
-                        '@suite-common/**',
-                        '@suite-native/**',
-                        '**/exports',
-                    ],
+                    patterns: [...restrictedImportsPatterns, { group: ['**/exports'] }],
                 },
             ],
         },

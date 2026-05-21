@@ -9,12 +9,12 @@ import { javascriptNodejsConfig } from './javascriptNodejsConfig.mjs';
 import { jestConfig } from './jestConfig.mjs';
 import { localRulesConfig } from './localRulesConfig.mjs';
 import { reactConfig } from './reactConfig.mjs';
-import { typescriptConfig } from './typescriptConfig.mjs';
+import { restrictedImportsPatterns, typescriptConfig } from './typescriptConfig.mjs';
 /**
  * @typedef {import('eslint').Linter.Config} Config
  */
 
-export { globalNoExtraneousDependenciesDevDependencies };
+export { globalNoExtraneousDependenciesDevDependencies, restrictedImportsPatterns };
 
 /** @type {Config[]} */
 export const eslint = [
