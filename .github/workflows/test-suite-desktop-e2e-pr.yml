@@ -23,43 +23,103 @@ on:
       - ".github/workflows/release*"
       - ".github/workflows/template*"
       - "**.md"
-  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
-  check-previous-runs:
+  determine-strategy:
+    name: Determine test strategy
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
     outputs:
-      skip_tests: ${{ steps.check-previous-runs.outputs.skip_tests }}
+      strategy: ${{ steps.determine.outputs.strategy }}
+      spec-list: ${{ steps.determine.outputs.spec-list }}
     steps:
-      - name: Checkout
+      - name: Checkout PR head
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-      - name: Generate GitHub App token
-        id: trezor-bot-token
-        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3
         with:
-          client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
-          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
-      - name: Check previous runs
-        id: check-previous-runs
-        uses: "./.github/actions/check-previous-test-runs"
-        with:
-          github_token: ${{ steps.trezor-bot-token.outputs.token }}
-          pr_branch: ${{ github.head_ref }}
-          pr_created: ${{ github.event.pull_request.created_at }}
-          repo: ${{ github.repository }}
-          workflow_name: ${{ github.workflow }}
-          run_attempt: ${{ github.run_attempt }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+      - name: Determine test strategy
+        id: determine
+        uses: ./.github/actions/determine-test-strategy
 
   build-app:
     needs:
-      - check-previous-runs
-    if: github.repository == 'trezor/trezor-suite' && needs.check-previous-runs.outputs.skip_tests != 'true'
+      - determine-strategy
+    if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/build-suite-desktop-e2e.yml
+
+  run-llm-analysis:
+    name: LLM test analysis
+    needs:
+      - determine-strategy
+    if: github.repository == 'trezor/trezor-suite' && needs.determine-strategy.outputs.strategy == 'analyze'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      spec-list: ${{ steps.llm-select.outputs.spec-list }}
+    steps:
+      # SECURITY: check out the trusted develop branch so that only reviewed code
+      # runs with secrets. The PR head is fetched separately purely for computing
+      # the diff; its code is never installed or executed.
+      - name: Checkout repository (trusted develop ref)
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          ref: develop
+          fetch-depth: 0
+      - name: Fetch PR head for diff
+        run: git fetch origin pull/${{ github.event.pull_request.number }}/head:pr-head
+      - name: Check PR size
+        id: check-size
+        uses: ./.github/actions/check-pr-size
+        with:
+          changed-files: ${{ github.event.pull_request.changed_files }}
+          additions: ${{ github.event.pull_request.additions }}
+          deletions: ${{ github.event.pull_request.deletions }}
+      - name: Run LLM test selector
+        id: llm-select
+        if: steps.check-size.outputs.is_small_pr == 'true'
+        uses: ./.github/actions/llm-test-selector
+        with:
+          claude-api-key: ${{ secrets.E2E_CLAUDE_API_KEY }}
+      - name: Post LLM analysis to PR description
+        if: steps.check-size.outputs.is_small_pr == 'true'
+        uses: ./.github/actions/post-llm-analysis
+        with:
+          trezor-bot-app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          trezor-bot-private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
+  resolve-spec-list:
+    name: Resolve spec list
+    needs:
+      - determine-strategy
+      - run-llm-analysis
+    if: always() && github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    outputs:
+      spec-list: ${{ steps.resolve.outputs.spec-list }}
+    steps:
+      - name: Resolve final spec list
+        id: resolve
+        shell: bash
+        run: |
+          STRATEGY="${{ needs.determine-strategy.outputs.strategy }}"
+          DIRECT_SPEC="${{ needs.determine-strategy.outputs.spec-list }}"
+          LLM_SPEC="${{ needs.run-llm-analysis.outputs.spec-list }}"
+
+          if [[ "$STRATEGY" == "specific-tests" ]]; then
+            echo "Using direct spec list from strategy determination: $DIRECT_SPEC"
+            echo "spec-list=$DIRECT_SPEC" >> "$GITHUB_OUTPUT"
+          elif [[ "$STRATEGY" == "analyze" ]] && [[ -n "$LLM_SPEC" ]]; then
+            echo "Using LLM-recommended spec list: $LLM_SPEC"
+            echo "spec-list=$LLM_SPEC" >> "$GITHUB_OUTPUT"
+          else
+            echo "Running all tests (strategy=$STRATEGY, LLM spec empty or PR too large)."
+            echo "spec-list=" >> "$GITHUB_OUTPUT"
+          fi
 
   post-currents-pr-info:
     if: github.repository == 'trezor/trezor-suite' && github.event_name == 'pull_request'
@@ -99,7 +159,7 @@ jobs:
     if: github.repository == 'trezor/trezor-suite'
     needs:
       - build-app
-      - check-previous-runs
+      - resolve-spec-list
     strategy:
       fail-fast: false
       matrix:
@@ -113,6 +173,7 @@ jobs:
       fail-fast: "7"
       currents-project-id: "4ytF0E"
       download-artifact-name: "desktop-app-build-e2e"
+      spec-list: ${{ needs.resolve-spec-list.outputs.spec-list }}
     secrets:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
       e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
