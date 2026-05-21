@@ -154,7 +154,11 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
     (builder, extra) => {
         builder
             .addCase(blockchainActions.synced, (state, action) => {
-                state[action.payload.symbol].syncTimeout = action.payload.timeout;
+                const { symbol, timeout, time } = action.payload;
+                state[symbol].syncTimeout = timeout;
+                if (typeof time === 'number') {
+                    state[symbol].lastSyncMs = time;
+                }
             })
             .addCase(blockchainActions.setBackend, (state, action) => {
                 const { symbol, type } = action.payload;

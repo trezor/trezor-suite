@@ -15,7 +15,9 @@ const connected = createAction(
 
 const synced = createAction(
     `${BLOCKCHAIN_MODULE_PREFIX}/synced`,
-    (payload: { symbol: NetworkSymbol; timeout?: TimerId }) => ({
+    // `time` is the wall-clock timestamp of the completed sync (Date.now()), used by
+    // onBlockMinedThunk to throttle block-mined-triggered fan-out. Optional for back-compat.
+    (payload: { symbol: NetworkSymbol; timeout?: TimerId; time?: number }) => ({
         payload,
     }),
 );

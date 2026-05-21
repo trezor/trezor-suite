@@ -345,6 +345,23 @@ export const onBlock = analyzeTransactions
             },
             result: [blockchainActions.synced.type],
         },
+        {
+            // Throttle path: when lastSyncMs is recent, onBlockMinedThunk must short-circuit
+            // before dispatching anything (no getAccountInfo, no synced action).
+            description: 'Throttled: recent lastSyncMs suppresses block-triggered sync',
+            connect: {
+                history: { total: 0 },
+            },
+            block: BLOCK,
+            state: {
+                accounts: [DEFAULT_ACCOUNT],
+                blockchain: {
+                    // Future timestamp keeps the throttle window engaged for the entire test run.
+                    btc: { lastSyncMs: Date.now() + 60_000 },
+                },
+            },
+            result: undefined,
+        },
     ] as any);
 
 const seedBackends = (coins: string[]): DeepPartial<BlockchainState> =>

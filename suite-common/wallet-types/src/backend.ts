@@ -36,6 +36,12 @@ export interface Blockchain extends ConnectionStatus {
     blockHeight: number;
     version: string;
     syncTimeout?: TimerId;
+    /**
+     * Timestamp (Date.now()) of the most recent completed account sync for this network.
+     * Used to throttle block-mined-triggered fan-out so fast-block chains (e.g. ETH ~12s)
+     * don't refetch every account on every new block.
+     */
+    lastSyncMs?: number;
     backends: BackendSettings;
     identityConnections?: {
         [identity: string]: ConnectionStatus;

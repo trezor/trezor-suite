@@ -40,6 +40,13 @@ import { selectBitcoinAmountUnit } from '../settings/walletSettingsReducer';
 
 export const DEFAULT_ACCOUNT_SYNC_INTERVAL = 60 * 1000; // 1 minute
 
+// Throttle window for block-mined-triggered account sync. Without it, fast-block chains
+// (e.g. Ethereum ~12s) refetch every account on every new block, dwarfing the periodic
+// 60s sync. blockHeight is updated by the BLOCK reducer matcher independently of this
+// thunk, so chain-tip UI and confirmation counts stay current at block cadence; only the
+// getAccountInfo fan-out is delayed by the throttle.
+export const BLOCK_TRIGGERED_SYNC_THROTTLE_MS = 30 * 1000;
+
 const CUSTOM_ACCOUNT_SYNC_INTERVALS: Partial<Record<NetworkSymbol, number>> = {
     bsc: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
     pol: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
@@ -264,7 +271,16 @@ export const syncAccountsWithBlockchainThunk = createThunk(
             getAccountSyncInterval(symbol),
         );
 
-        dispatch(blockchainActions.synced({ symbol, timeout }));
+        dispatch(
+            blockchainActions.synced({
+                symbol,
+                timeout,
+                // Only record time when an actual refetch ran — keeps the block-mined throttle
+                // accurate (don't suppress block-triggered sync just because window-hidden sync
+                // bailed out).
+                ...(shouldSync ? { time: Date.now() } : {}),
+            }),
+        );
     },
 );
 
@@ -285,7 +301,7 @@ export const onBlockchainConnectThunk = createThunk(
 
 export const onBlockMinedThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/onBlockMinedThunk`,
-    (block: BlockchainBlock, { dispatch }) => {
+    (block: BlockchainBlock, { dispatch, getState }) => {
         const symbol = block.coin.shortcut.toLowerCase();
         const network = getNetworkOptional(symbol);
 
@@ -297,6 +313,16 @@ export const onBlockMinedThunk = createThunk(
         // Accounts are updated via account subscription or also by the timer in syncAccountsWithBlockchainThunk.
         // Solana - new block every ~333ms, EVMs 0.3s-3s
         if (network?.networkType === 'solana' || externalBackendTypeNetworks.includes(symbol)) {
+            return;
+        }
+
+        // Throttle the block-mined-triggered sync. Without this, ETH (~12s blocks) and ADA (~20s)
+        // refetch every account on every block — the periodic 60s timer is constantly reset and
+        // never actually fires as background sync. blockHeight is updated by the reducer's BLOCK
+        // matcher independently, so chain-tip and confirmation-count UI stay current.
+        const blockchain = selectBlockchainState(getState());
+        const lastSyncMs = blockchain[symbol]?.lastSyncMs ?? 0;
+        if (Date.now() - lastSyncMs < BLOCK_TRIGGERED_SYNC_THROTTLE_MS) {
             return;
         }
 
