@@ -84,7 +84,6 @@
         "@bufbuild/protobuf": "^2.11.0",
         "@ethereumjs/common": "^10.1.1",
         "@ethereumjs/tx": "^10.1.1",
-        "@fivebinaries/coin-selection": "3.0.0",
         "@noble/hashes": "^2.0.1",
         "@scure/base": "^2.0.0",
         "@scure/bip39": "^1.5.1",
@@ -107,7 +106,6 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
-        "cbor": "^10.0.12",
         "cross-fetch": "^4.1.0",
         "jws": "^4.0.1",
         "viem": "^2.48.1"
