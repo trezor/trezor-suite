@@ -52,7 +52,7 @@ function rewardsOutOfSync(account: Account, rewards: SolRewardsHistory['rewards'
 interface UseSolanaRewardsProps {
     limit: number;
     offset: number;
-    onTotalCount: (totalCount: number) => void;
+    onTotalCount?: (totalCount: number) => void;
 
     /**
      * Triggered when the rewards history is out of sync with the current active epoch. I.e. the API returns stale data and there's an error to investigate.
@@ -73,7 +73,7 @@ export function useSolanaRewardsHistory(
                 params: { limit, offset },
             });
 
-            onTotalCount(totalCount);
+            onTotalCount?.(totalCount);
 
             const outOfSync = rewardsOutOfSync(account, rewards);
 
