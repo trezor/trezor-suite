@@ -12,9 +12,9 @@ import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { ProviderLogo } from '@suite-native/trading-atoms';
+import { useChangeStringsExtractor } from '@suite-native/trading-common';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
 import { TradeStatusBadge } from '../TradeStatusBadge';
 
 export type TradeHistoryListItemProps = {

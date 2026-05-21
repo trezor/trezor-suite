@@ -9,9 +9,9 @@ import {
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { ProviderLogo } from '@suite-native/trading-atoms';
+import { PaymentMethodTranslation } from '@suite-native/trading-common';
 
 import { TradeDetailInfoRow } from './TradeDetailInfoRow';
-import { PaymentMethodTranslation } from '../../general/PaymentMethodTranslation';
 
 type TradeDetailInfoProps = {
     orderId: string;

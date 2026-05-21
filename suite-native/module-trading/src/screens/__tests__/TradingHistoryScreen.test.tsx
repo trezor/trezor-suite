@@ -7,9 +7,9 @@ import { accounts, getBuyTrade } from '@suite-native/trading-fixtures';
 import {
     type PreloadedStatePartial,
     type TradingTestPreloadedState,
-    renderWithTradingProvider,
-} from '../../__tests__/tradingTestUtils';
-import { TradingHistoryScreen } from '../TradingHistoryScreen';
+    renderWithTradingHistoryProvider,
+} from '../../__tests__/tradingHistoryTestUtils';
+import { TradingHistory } from '../TradingHistory';
 
 const mockShowSheet = jest.fn();
 
@@ -61,7 +61,7 @@ describe('TradingHistoryScreen', () => {
     let unmount: (() => void) | undefined;
 
     const renderScreen = () => {
-        const result = renderWithTradingProvider(<TradingHistoryScreen />, { overrides });
+        const result = renderWithTradingHistoryProvider(<TradingHistoryScreen />, { overrides });
 
         ({ unmount } = result);
 

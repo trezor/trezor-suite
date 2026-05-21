@@ -1,9 +1,9 @@
 import { type TradingTransaction } from '@suite-common/trading';
 import { type TxKeyPath, getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { type TradeStatusStep } from '@suite-native/trading-common';
 import { getBuyTrade, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
-import { type TradeStatusStep } from '../../../../utils/general/utils';
 import { TradeDetailAlert } from '../TradeDetailAlert';
 
 const mockOpenBrowser = jest.fn();

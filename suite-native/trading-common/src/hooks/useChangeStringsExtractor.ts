@@ -6,7 +6,7 @@ import { type NetworkSymbol, getNetworkDecimals } from '@suite-common/wallet-con
 import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
-import { type TradeOperationData, getTradeOperationData } from '../../utils/general/utils';
+import { type TradeOperationData, getTradeOperationData } from '../utils/utils';
 
 const TOKEN_DECIMALS_LENGTH = 16;
 

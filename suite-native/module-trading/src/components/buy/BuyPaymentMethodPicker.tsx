@@ -8,12 +8,12 @@ import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { OverviewRow, OverviewValueSkeleton } from '@suite-native/trading-atoms';
+import { PaymentMethodTranslation } from '@suite-native/trading-common';
 import { selectBuyBestQuotesForAvailablePaymentMethods } from '@suite-native/trading-state';
 
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useSheetControls } from '../../hooks/general/useSheetControls';
 import { PaymentMethodSheet } from '../general/PaymentMethodSheet/PaymentMethodSheet';
-import { PaymentMethodTranslation } from '../general/PaymentMethodTranslation';
 
 const PAYMENT_METHOD_PICKER_TEST_ID = '@trading/buy/payment-method-picker';
 

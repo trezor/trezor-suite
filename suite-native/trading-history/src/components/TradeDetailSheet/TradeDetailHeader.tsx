@@ -7,9 +7,9 @@ import {
 } from '@suite-common/trading';
 import { VStack } from '@suite-native/atoms';
 import { IconWithSpinner } from '@suite-native/trading-atoms';
+import { type TradeStatusStep, getTradeStatusStep } from '@suite-native/trading-common';
 
 import { TradeDetailAlert } from './TradeDetailAlert';
-import { type TradeStatusStep, getTradeStatusStep } from '../../../utils/general/utils';
 import { TradeStatusBadge } from '../TradeStatusBadge';
 
 type TradeDetailHeaderProps = {

@@ -1,6 +1,6 @@
 # Module trading
 
-This module provide whole trading experience for users.
+This module provides the core trading experience for users.
 
 It includes the following screens:
 
@@ -13,7 +13,15 @@ It includes the following screens:
 
 ### @suite-native/module-trading
 
-Main module that provides most of the trading features.
+Main module providing buy, sell, and exchange flows.
+
+### @suite-native/trading-history
+
+Provides the trade history screen and all history-related components (trade list, trade detail sheet).
+
+### @suite-native/trading-common
+
+Shared trading utilities used by both `module-trading` and `trading-history` components.
 
 ### @suite-native/trading-state
 
@@ -23,7 +31,7 @@ Provides state management for trading features.
 
 Provides residence selection. Residence selection should be displayed on iOS only.
 
-This module provide onboarding screens and settings screen for residence selection.
+This module provides onboarding screens and settings screen for residence selection.
 
 ### @suite-native/transaction-management
 
@@ -54,6 +62,8 @@ graph TD
     trading-residence["@suite-native/trading-residence"]
     trading-state["@suite-native/trading-state"]
     subgraph trading-internal["Trading internal modules"]
+        trading-history["@suite-native/trading-history"]
+        trading-common["@suite-native/trading-common"]
         trading-atoms["@suite-native/trading-atoms"]
         trading-analytics["@suite-native/trading-analytics"]
         trading-browser-auth["@suite-native/trading-browser-auth"]
@@ -85,11 +95,19 @@ graph TD
     module-trading -.-> trading-fixtures
     module-trading --> trading-atoms
     module-trading --> trading-analytics
-    module-trading --> trading-browser-auth
     module-trading --> trading-debug
+    module-trading --> trading-browser-auth
+    module-trading --> trading-common
+    module-trading --> trading-history
     module-trading --> trading-state
     module-trading --> transaction-management
     module-trading --> trading-residence
+    trading-history --> trading-browser-auth
+    trading-history --> trading-common
+    trading-history --> trading-atoms
+    trading-history --> trading-state
+    trading-common --> trading-atoms
+    trading-common --> trading-state
     trading-browser-auth --> trading-analytics
     trading-browser-auth --> trading-atoms
     trading-browser-auth --> trading-debug

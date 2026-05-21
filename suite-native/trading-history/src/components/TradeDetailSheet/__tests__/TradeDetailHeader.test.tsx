@@ -6,7 +6,7 @@ import {
     getSellTrade,
 } from '@suite-native/trading-fixtures';
 
-import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
+import { renderWithTradingHistoryProvider } from '../../../__tests__/tradingHistoryTestUtils';
 import { TradeDetailHeader } from '../TradeDetailHeader';
 
 const createOverrides = (trades: TradingTransaction[]) => ({
@@ -24,7 +24,7 @@ describe('TradeDetailHeader', () => {
     });
 
     const renderHeader = (orderId: string, trades: TradingTransaction[] = []) =>
-        renderWithTradingProvider(
+        renderWithTradingHistoryProvider(
             <TradeDetailHeader orderId={orderId} onOpenedBrowser={jest.fn()} />,
             { overrides: createOverrides(trades) },
         );

@@ -13259,8 +13259,6 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
-    "@suite-native/bluetooth": "workspace:*"
-    "@suite-native/clipboard": "workspace:*"
     "@suite-native/confirm-on-trezor": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-authorization": "workspace:*"
@@ -13278,7 +13276,6 @@ __metadata:
     "@suite-native/message-system": "workspace:*"
     "@suite-native/module-stellar-token-management": "workspace:*"
     "@suite-native/navigation": "workspace:*"
-    "@suite-native/settings": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
     "@suite-native/toasts": "workspace:*"
@@ -13286,9 +13283,11 @@ __metadata:
     "@suite-native/trading-analytics": "workspace:*"
     "@suite-native/trading-atoms": "workspace:*"
     "@suite-native/trading-browser-auth": "workspace:*"
+    "@suite-native/trading-common": "workspace:*"
     "@suite-native/trading-consts": "workspace:*"
     "@suite-native/trading-debug": "workspace:*"
     "@suite-native/trading-fixtures": "workspace:*"
+    "@suite-native/trading-history": "workspace:*"
     "@suite-native/trading-residence": "workspace:*"
     "@suite-native/trading-state": "workspace:*"
     "@suite-native/trading-types": "workspace:*"
@@ -13983,6 +13982,36 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/trading-common@workspace:*, @suite-native/trading-common@workspace:suite-native/trading-common":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/trading-common@workspace:suite-native/trading-common"
+  dependencies:
+    "@gorhom/bottom-sheet": "npm:5.2.8"
+    "@suite-common/formatters": "workspace:*"
+    "@suite-common/trading": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/icons": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/link": "workspace:*"
+    "@suite-native/test-utils": "workspace:*"
+    "@suite-native/test-utils-store": "workspace:*"
+    "@suite-native/trading-fixtures": "workspace:*"
+    "@suite-native/trading-state": "workspace:*"
+    "@suite-native/trading-types": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/urls": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    "@types/invity-api": "npm:^1.1.15"
+    react: "npm:19.2.4"
+    react-native: "npm:0.83.2"
+    react-native-reanimated: "npm:~4.2.1"
+    react-redux: "npm:9.2.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/trading-consts@workspace:*, @suite-native/trading-consts@workspace:suite-native/trading-consts":
   version: 0.0.0-use.local
   resolution: "@suite-native/trading-consts@workspace:suite-native/trading-consts"
@@ -14030,6 +14059,44 @@ __metadata:
     "@trezor/device-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/invity-api": "npm:^1.1.15"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/trading-history@workspace:*, @suite-native/trading-history@workspace:suite-native/trading-history":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/trading-history@workspace:suite-native/trading-history"
+  dependencies:
+    "@shopify/flash-list": "npm:2.3.0"
+    "@suite-common/device": "workspace:*"
+    "@suite-common/formatters": "workspace:*"
+    "@suite-common/message-system": "workspace:*"
+    "@suite-common/suite-sync": "workspace:*"
+    "@suite-common/trading": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/clipboard": "workspace:*"
+    "@suite-native/device": "workspace:*"
+    "@suite-native/feature-flags": "workspace:*"
+    "@suite-native/icons": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/labeling": "workspace:*"
+    "@suite-native/link": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@suite-native/test-utils": "workspace:*"
+    "@suite-native/test-utils-store": "workspace:*"
+    "@suite-native/trading-atoms": "workspace:*"
+    "@suite-native/trading-browser-auth": "workspace:*"
+    "@suite-native/trading-common": "workspace:*"
+    "@suite-native/trading-fixtures": "workspace:*"
+    "@suite-native/trading-state": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@types/invity-api": "npm:^1.1.15"
+    react: "npm:19.2.4"
+    react-native: "npm:0.83.2"
+    react-native-safe-area-context: "npm:5.6.2"
+    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 
