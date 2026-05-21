@@ -1,4 +1,4 @@
-import { type CryptoId, type DexApprovalType, type ProviderMetadata } from 'invity-api';
+import { type CryptoId, type DexApprovalType } from 'invity-api';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
@@ -13,13 +13,15 @@ import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { useSelector } from 'src/hooks/suite';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 
+import { type AllowanceModalProvider } from './AllowanceModalProviderInfo';
+
 interface ApproveModalTypeSelectorProps {
     approvalType: DexApprovalType;
     isLoading: boolean;
     data: string;
     cryptoId: CryptoId;
     onSelect: (type: DexApprovalType) => void;
-    provider: ProviderMetadata;
+    provider: AllowanceModalProvider;
     token: TokenInfo;
     displayAmount: AmountSubunit;
 }
