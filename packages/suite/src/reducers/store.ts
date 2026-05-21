@@ -17,6 +17,7 @@ import { type HistoryDep } from '@suite/router';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { geolocationReducer } from '@suite-common/geolocation';
 import { addLog } from '@suite-common/logger';
+import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import {
     type ExtraDependencies,
     castExtraStore,
@@ -127,7 +128,7 @@ type RootReducerShape = typeof rootReducer;
 export type PreloadedState = Partial<AppState>;
 type InferredAction = Parameters<RootReducerShape>[1];
 
-export type SuiteStoreDeps = HistoryDep;
+export type SuiteStoreDeps = HistoryDep & PlatformEncryptionDep;
 
 export const initStore = (
     deps: SuiteStoreDeps,
@@ -155,6 +156,7 @@ export const initStore = (
             getState: api.getState,
             dispatch: api.dispatch,
             history: deps.history,
+            platformEncryption: deps.platformEncryption,
         }),
     });
 

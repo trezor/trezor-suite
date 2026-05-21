@@ -6,6 +6,9 @@
     },
     "include": ["."],
     "references": [
+        {
+            "path": "../../suite/platform-encryption-webauthn"
+        },
         { "path": "../../suite/router" },
         { "path": "../connect" },
         { "path": "../suite" },

@@ -11,6 +11,9 @@
         { "path": "../../suite/flags" },
         { "path": "../../suite/github" },
         { "path": "../../suite/intl" },
+        {
+            "path": "../../suite/platform-encryption-electron"
+        },
         { "path": "../../suite/router" },
         { "path": "../../suite/sentry" },
         { "path": "../components" },
