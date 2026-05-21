@@ -1,7 +1,6 @@
-import type { types } from '@fivebinaries/coin-selection';
-import { coinSelection } from '@fivebinaries/coin-selection';
 import * as cbor from 'cbor';
 
+import type { types } from '@trezor/coins-cardano/types';
 import type { AccountUtxo, CardanoCertificate } from '@trezor/connect-common';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
@@ -101,7 +100,7 @@ export const getTtl = (testnet: boolean) => {
     return currentSlot + CARDANO_DEFAULT_TTL_OFFSET;
 };
 
-export const composeTxPlan = (
+export const getCoinSelectionParams = (
     descriptor: string,
     utxo: AccountUtxo[],
     outputs: types.UserOutput[],
@@ -109,20 +108,15 @@ export const composeTxPlan = (
     withdrawals: types.Withdrawal[],
     changeAddress: string,
     isTestnet: boolean,
-    options?: types.Options,
-) =>
-    coinSelection(
-        {
-            utxos: transformUtxos(utxo),
-            outputs,
-            changeAddress,
-            certificates: prepareCertificates(certificates),
-            withdrawals,
-            accountPubKey: descriptor,
-            ttl: getTtl(isTestnet),
-        },
-        options,
-    );
+) => ({
+    utxos: transformUtxos(utxo),
+    outputs,
+    changeAddress,
+    certificates: prepareCertificates(certificates),
+    withdrawals,
+    accountPubKey: descriptor,
+    ttl: getTtl(isTestnet),
+});
 
 export const hexStringByteLength = (s: string) => s.length / 2;
 

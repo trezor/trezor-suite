@@ -1,6 +1,5 @@
-import type { trezorUtils, types } from '@fivebinaries/coin-selection';
-
 import type { Utxo as AccountUtxo } from '@trezor/blockchain-link-types';
+import type { CardanoAddressParameters, types } from '@trezor/coins-cardano/types';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
@@ -68,7 +67,7 @@ export type CardanoComposeTransactionParams = {
     certificates?: CardanoCertificate[];
     withdrawals?: types.Withdrawal[];
     changeAddress: { address: string; path: string };
-    addressParameters: Parameters<(typeof trezorUtils)['transformToTrezorOutputs']>[1];
+    addressParameters: CardanoAddressParameters;
     testnet?: boolean;
 };
 
