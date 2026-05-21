@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 
-import { withScope } from '@sentry/core';
-
-import { EARN_API_BASE_URL } from '@suite-common/earn-staking-api/src/constants';
-import { useSolanaRewardsHistory } from '@suite-common/earn-staking-api/src/staking';
+import {
+    useSolStakingRewardsWarning,
+    useSolanaRewardsHistory,
+} from '@suite-common/earn-staking-api/src/staking';
 import {
     selectAccountIsStakingActive,
     selectHasRunningDiscovery,
@@ -53,21 +53,20 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
     const rewardsQueryResult = useSolanaRewardsHistory(account, {
         limit: pagination.pageSize,
         offset: pagination.offset,
-        onTotalCount: pagination.setTotalCount,
-        onOutOfSync() {
-            withScope(scope => {
-                scope.setTag('error.code', 'solana_rewards_history_out_of_sync');
-                scope.setTag('error.source', EARN_API_BASE_URL);
-                scope.setTag('error.network', account.networkType);
-                scope.setTag('error.service', 'rewards_history');
-                scope.captureException(
-                    new Error(
-                        'Solana rewards history is out of sync with the current active epoch. Everstake API might return stale data.',
-                    ),
-                );
-            });
-        },
     });
+
+    const { shouldShowWarning } = useSolStakingRewardsWarning(account, {
+        limit: pagination.pageSize,
+    });
+
+    const { setTotalCount } = pagination;
+    const rewardsTotalCount = rewardsQueryResult.data?.totalCount;
+
+    useEffect(() => {
+        if (rewardsTotalCount !== undefined) {
+            setTotalCount(rewardsTotalCount);
+        }
+    }, [rewardsTotalCount, setTotalCount]);
 
     const pagintionRef = useCurrentRef(pagination);
 
@@ -99,10 +98,7 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
                             <DashboardSection>
                                 <Column alignItems="normal" gap={spacings.sm}>
                                     {isDiscoveryRunning && <DiscoveryWarning />}
-                                    {rewardsQueryResult.isSuccess &&
-                                        rewardsQueryResult.data.notAvailableYet && (
-                                            <StakingRewardsWarning />
-                                        )}
+                                    {shouldShowWarning && <StakingRewardsWarning />}
 
                                     <Grid
                                         columns={isBelowLaptop || !canClaim ? 1 : 2}

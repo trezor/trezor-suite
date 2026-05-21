@@ -2,6 +2,7 @@ import { commonQueryKeys, keepPreviousData, useQuery } from '@suite-common/react
 import { type Account } from '@suite-common/wallet-types';
 
 import { type SolRewardsHistory } from '../../api/types';
+import { reportSolanaRewardsOutOfSync } from '../reportSolanaRewardsOutOfSync';
 import { getSolanaRewardsHistory } from '../services';
 
 const isInt = (value: unknown): value is number => Number.isInteger(value);
@@ -52,17 +53,11 @@ function rewardsOutOfSync(account: Account, rewards: SolRewardsHistory['rewards'
 interface UseSolanaRewardsProps {
     limit: number;
     offset: number;
-    onTotalCount?: (totalCount: number) => void;
-
-    /**
-     * Triggered when the rewards history is out of sync with the current active epoch. I.e. the API returns stale data and there's an error to investigate.
-     */
-    onOutOfSync?: () => void;
 }
 
 export function useSolanaRewardsHistory(
     account: Account,
-    { limit, offset, onTotalCount, onOutOfSync }: UseSolanaRewardsProps,
+    { limit, offset }: UseSolanaRewardsProps,
 ) {
     return useQuery({
         enabled: account.symbol === 'sol',
@@ -73,15 +68,15 @@ export function useSolanaRewardsHistory(
                 params: { limit, offset },
             });
 
-            onTotalCount?.(totalCount);
+            const notAvailableYet = offset === 0 && rewardsNotAvailableYet(account, rewards);
+            const outOfSync = offset === 0 && rewardsOutOfSync(account, rewards);
 
-            const outOfSync = rewardsOutOfSync(account, rewards);
-
-            if (outOfSync) onOutOfSync?.();
+            if (outOfSync) reportSolanaRewardsOutOfSync(account);
 
             return {
                 rewards,
-                notAvailableYet: rewardsNotAvailableYet(account, rewards),
+                totalCount,
+                notAvailableYet,
                 outOfSync,
             };
         },
