@@ -15,6 +15,7 @@
         "api:update": "yarn api:generate && yarn lint:js --fix && yarn format"
     },
     "dependencies": {
+        "@sentry/core": "10.50.0",
         "@suite-common/http-client": "workspace:*",
         "@suite-common/react-query": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
