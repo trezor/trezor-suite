@@ -24,10 +24,7 @@ export const CardanoOutdatedStakingBanner = () => {
             icon
             intent="warning"
             rightContent={
-                <Banner.Button
-                    onClick={() => dispatch(goto({ routeName: 'suite-earn' }))}
-                    data-testid="@notification/bridge-deprecated/button"
-                >
+                <Banner.Button onClick={() => dispatch(goto({ routeName: 'suite-earn' }))}>
                     <Translation id="TR_STAKING_MODAL_OUTDATED_BUTTON" />
                 </Banner.Button>
             }
