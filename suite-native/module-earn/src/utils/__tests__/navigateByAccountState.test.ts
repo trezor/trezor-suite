@@ -56,6 +56,24 @@ describe('navigateByAccountState', () => {
         });
     });
 
+    it('does not navigate Solana to StakingManagement even with a staked balance (no dashboard)', () => {
+        const account = createMockAccount({ symbol: 'sol', networkType: 'solana' });
+        mockGetAccountTotalStakingBalance.mockReturnValue('1000000000');
+        mockGetStakingLimitsByNetworkSymbol.mockReturnValue(mockLimits);
+        mockFormatNetworkAmount.mockReturnValue('1.0');
+
+        navigateByAccountState(account, mockNavigate);
+
+        expect(mockNavigate).not.toHaveBeenCalledWith(
+            RootStackRoutes.StakingManagement,
+            expect.anything(),
+        );
+        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.HowStakeWorksScreen, {
+            symbol: 'sol',
+            accountKey: account.key,
+        });
+    });
+
     it('navigates to HowStakeWorksScreen when account has sufficient balance but no stake', () => {
         const account = createMockAccount();
         mockGetAccountTotalStakingBalance.mockReturnValue('0');
