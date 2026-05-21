@@ -30,6 +30,7 @@ jobs:
         uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
         with:
           mode: firewall-free
+          job-summary: errors
       - run: sfw --silent yarn install --immutable
       - run: yarn workspace @suite/intl translations:list-unused
 
@@ -62,6 +63,7 @@ jobs:
         uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
         with:
           mode: firewall-free
+          job-summary: errors
       - run: sfw --silent yarn install --immutable
       - run: ./scripts/circular-dependencies/check-circular-dependencies.sh
 
@@ -83,6 +85,7 @@ jobs:
         uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
         with:
           mode: firewall-free
+          job-summary: errors
       - run: sfw --silent yarn install --immutable
       - run: yarn message-system-sign-config
       - name: Unit Tests - Suite, Connect, Common
@@ -122,6 +125,7 @@ jobs:
         uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
         with:
           mode: firewall-free
+          job-summary: errors
       - run: sfw --silent yarn install --immutable
       - run: yarn generate-package @trezor/meow-package
       - run: rm -rf packages/meow-package
@@ -141,5 +145,6 @@ jobs:
         uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
         with:
           mode: firewall-free
+          job-summary: errors
       - run: sfw --silent yarn install --immutable
       - run: yarn tsx ./packages/components/scripts/test-img-paths-exist.ts
