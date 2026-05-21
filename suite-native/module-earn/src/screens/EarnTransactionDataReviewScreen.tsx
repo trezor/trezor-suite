@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { CommonActions, useFocusEffect } from '@react-navigation/native';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type TransactionsRootState,
@@ -11,7 +10,6 @@ import {
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { Button, Card, LottieAnimation, Text, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
@@ -40,11 +38,9 @@ import { useStakingDetailNavigation } from '../hooks/useStakingDetailNavigation'
 
 const navigateToStakedTransactionAction = ({
     accountKey,
-    symbol,
     txid,
 }: {
     accountKey: AccountKey;
-    symbol: NetworkSymbol;
     txid: string;
 }) =>
     CommonActions.reset({
@@ -55,9 +51,7 @@ const navigateToStakedTransactionAction = ({
                 params: { screen: AppTabsRoutes.EarnStack },
             },
             {
-                name: isSupportedEthStakingNetworkSymbol(symbol)
-                    ? RootStackRoutes.StakingManagement
-                    : RootStackRoutes.StakingDetail,
+                name: RootStackRoutes.StakingManagement,
                 params: { accountKey },
             },
             {
@@ -107,7 +101,8 @@ export const EarnTransactionDataReviewScreen = ({
 
     useFocusEffect(
         useCallback(() => {
-            if (isAddressConfirmed && account) {
+            // Solana address outputs would redirect mid-sign; skip until the success card.
+            if (isAddressConfirmed && account && account.networkType !== 'solana') {
                 navigateToStakingDetail({ accountKey, symbol: account.symbol });
             }
         }, [account, accountKey, isAddressConfirmed, navigateToStakingDetail]),
@@ -126,11 +121,8 @@ export const EarnTransactionDataReviewScreen = ({
     }, [closeSheet, showSignSuccessMessage]);
 
     const handleViewTransaction = useCallback(() => {
-        if (!account) return;
-        navigation.dispatch(
-            navigateToStakedTransactionAction({ accountKey, symbol: account.symbol, txid }),
-        );
-    }, [account, accountKey, navigation, txid]);
+        navigation.dispatch(navigateToStakedTransactionAction({ accountKey, txid }));
+    }, [accountKey, navigation, txid]);
 
     return (
         <ConfirmOnTrezorWrapper

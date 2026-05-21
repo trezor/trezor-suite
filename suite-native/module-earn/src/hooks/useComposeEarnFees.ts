@@ -21,6 +21,7 @@ import {
     type FormState,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
+import { composeSolanaStakingTransactionFeeLevelsNativeThunk } from '@suite-native/staking';
 import {
     type NativeSendRootState,
     type UpdateSelectedFeeLevelThunkParams,
@@ -137,13 +138,26 @@ export const useComposeEarnFees = ({
                 maxPriorityFeePerGas: maxPriorityFeePerGas ?? formState.maxPriorityFeePerGas,
             };
 
-            const response = await dispatch(
-                composeSendFormTransactionFeeLevelsThunk({
-                    formState: mergedFormState,
-                    composeContext: { account, feeInfo, network: getNetwork(account.symbol) },
-                }),
-            );
-            if (!isFulfilled(response)) return;
+            const response =
+                account.networkType === 'solana'
+                    ? await dispatch(
+                          composeSolanaStakingTransactionFeeLevelsNativeThunk({
+                              accountKey,
+                              stakeType: formDraftPrefix,
+                              amount: mergedFormState.outputs?.[0]?.amount ?? '',
+                          }),
+                      )
+                    : await dispatch(
+                          composeSendFormTransactionFeeLevelsThunk({
+                              formState: mergedFormState,
+                              composeContext: {
+                                  account,
+                                  feeInfo,
+                                  network: getNetwork(account.symbol),
+                              },
+                          }),
+                      );
+            if (!isFulfilled(response) || !response.payload) return;
 
             dispatch(transactionManagementActions.storeFeeLevels({ feeLevels: response.payload }));
 
@@ -156,7 +170,7 @@ export const useComposeEarnFees = ({
         } finally {
             setIsComposingFeeLevels(false);
         }
-    }, [dispatch, formState, account, feeInfo, saveDraft]);
+    }, [dispatch, formState, account, feeInfo, saveDraft, accountKey, formDraftPrefix]);
 
     useEffect(() => {
         setIsComposingFeeLevels(!!formState && !!account && !!feeInfo);
