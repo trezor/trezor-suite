@@ -140,6 +140,8 @@ export const submitYieldDepositThunk = createThunk(
                 selectedFee,
             });
 
+            userAcceptedTxSimulation?.resolve();
+
             if (!result) {
                 asTypedDesktopAnalytics(extra.services.analytics).report({
                     type: events.yieldDepositEvent.name,

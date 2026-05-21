@@ -40,7 +40,8 @@ export function useGetMerkleRewards<Address extends string>(
                     params: {
                         chainId: entry.chainId,
                         claimableOnly: true,
-                        reloadChainId: meta?.bypassCache ? entry.chainId : entry.reloadChainId,
+                        // Force fresh data by default. This will be improved later, but for now it seems that Merkle sends obsolete data (reloadChainId).
+                        reloadChainId: meta?.bypassCache === false ? undefined : entry.chainId,
                     },
                     signal,
                 }),

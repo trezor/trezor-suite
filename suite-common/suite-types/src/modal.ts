@@ -225,6 +225,11 @@ export type UserContextPayload =
               | {
                     value: true;
                     selectedFee: EvmSelectedFee | null;
+                    /**
+                     * Send a signal from the thunk to the modal that the related business logic has finished.
+                     * Used for tracking the loading state of the confirm button in the modal.
+                     */
+                    resolve: () => void;
                 }
               | {
                     value: false;
