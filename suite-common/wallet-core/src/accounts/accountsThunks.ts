@@ -185,7 +185,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
             const devices = selectDevices(getState());
             const accountDevice = findAccountDevice(account, devices);
             analyze.newTransactions.forEach(tx => {
-                const token = tx.tokens?.length ? tx.tokens[0] : undefined;
+                const token = tx.tokens?.[0];
 
                 const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
                 const areSatoshisUsed = getAreSatoshisUsed(bitcoinAmountUnit, account);

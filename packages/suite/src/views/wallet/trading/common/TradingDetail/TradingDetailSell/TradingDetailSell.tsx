@@ -52,7 +52,7 @@ export const TradingDetailSell = () => {
     const composedTransaction = useSelector(selectTradingComposedTransactionInfo);
 
     const exchange = trade?.data?.exchange;
-    const provider = info?.providerInfos && exchange ? info.providerInfos[exchange] : undefined;
+    const provider = exchange ? info?.providerInfos?.[exchange] : undefined;
 
     const country = trade?.data?.country;
 

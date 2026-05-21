@@ -138,8 +138,7 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
     const isIncreasingAllowanceSupported = tokenSupportsIncreasingAllowance(contractAddress);
 
     const providers = getProvidersInfoProps(context);
-    const provider =
-        selectedQuote?.exchange && providers ? providers[selectedQuote.exchange] : undefined;
+    const provider = selectedQuote?.exchange ? providers?.[selectedQuote.exchange] : undefined;
 
     return (
         <Modal

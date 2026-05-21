@@ -209,8 +209,7 @@ export const ApproveModal = ({
     };
 
     const providers = getProvidersInfoProps(context);
-    const provider =
-        selectedQuote?.exchange && providers ? providers[selectedQuote.exchange] : undefined;
+    const provider = selectedQuote?.exchange ? providers?.[selectedQuote.exchange] : undefined;
 
     return (
         <Modal
