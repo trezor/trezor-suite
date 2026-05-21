@@ -6,10 +6,14 @@
             "path": "../../suite-common/formatters"
         },
         {
+            "path": "../../suite-common/platform-encryption"
+        },
+        {
             "path": "../../suite-common/test-utils"
         },
         { "path": "../intl" },
         { "path": "../router" },
-        { "path": "../../packages/suite" }
+        { "path": "../../packages/suite" },
+        { "path": "../../packages/type-utils" }
     ]
 }

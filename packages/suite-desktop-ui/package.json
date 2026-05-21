@@ -19,6 +19,7 @@
         "@suite/flags": "workspace:*",
         "@suite/github": "workspace:*",
         "@suite/intl": "workspace:*",
+        "@suite/platform-encryption-electron": "workspace:*",
         "@suite/router": "workspace:*",
         "@suite/sentry": "workspace:*",
         "@trezor/components": "workspace:*",

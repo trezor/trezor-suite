@@ -180,12 +180,6 @@
         {
             "path": "../../suite/onboarding-components"
         },
-        {
-            "path": "../../suite/platform-encryption-electron"
-        },
-        {
-            "path": "../../suite/platform-encryption-webauthn"
-        },
         { "path": "../../suite/recovery" },
         { "path": "../../suite/router" },
         { "path": "../../suite/settings" },
