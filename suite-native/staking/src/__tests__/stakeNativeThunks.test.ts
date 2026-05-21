@@ -24,11 +24,45 @@ jest.mock('@trezor/connect', () => ({
             success: true,
             payload: { serializedTx: '0xsignedtx' },
         }),
+        solanaSignTransaction: jest.fn().mockResolvedValue({
+            success: true,
+            payload: { signature: 'ed25519signature' },
+        }),
+        blockchainEstimateFee: jest.fn().mockResolvedValue({
+            success: true,
+            payload: { levels: [{ feePerUnit: '100000', feeLimit: '200000', feePerTx: '5000' }] },
+        }),
         pushTransaction: jest.fn().mockResolvedValue({
             success: true,
             payload: { txid: '0xpushedtxid' },
         }),
     },
+}));
+
+const solanaTxShim = {
+    serializeMessage: jest.fn().mockReturnValue('solanaMessage'),
+    serialize: jest.fn().mockReturnValue('0xsolanasignedtx'),
+    addSignature: jest.fn(),
+};
+
+jest.mock('@trezor/coins-solana/runtime', () => ({
+    __esModule: true,
+    default: () =>
+        Promise.resolve({
+            selectSolanaConnection: jest.fn().mockReturnValue({}),
+            selectSolanaValidator: jest.fn().mockReturnValue('validatorAddress'),
+            prepareStakeSolTx: jest.fn().mockResolvedValue({
+                success: true,
+                txShim: solanaTxShim,
+                solanaTxMeta: {
+                    deviceAmountLamports: '1000000000',
+                    feeLamports: '5000',
+                    rentLamports: '2282880',
+                    feeIncludingRentLamports: '2287880',
+                },
+            }),
+            address: (value: string) => value,
+        }),
 }));
 
 jest.mock('@suite-native/device-mutex', () => ({
@@ -59,15 +93,19 @@ const solAccount: Account = {
     networkType: 'solana',
     key: SOL_ACCOUNT_KEY,
     deviceState: STATIC_SESSION_ID,
+    descriptor: 'SoLDeScRiPtoR1111111111111111111111111111111',
+    path: "m/44'/501'/0'/0'",
     visible: true,
 } as unknown as Account;
 
 const buildStore = ({
     accounts = [ethAccount],
     formDrafts = {},
+    blockchain = {},
 }: {
     accounts?: Account[];
     formDrafts?: Record<string, FormState>;
+    blockchain?: Record<string, unknown>;
 } = {}) =>
     configureMockStore({
         reducer: combineReducers({
@@ -88,6 +126,7 @@ const buildStore = ({
                     fetchStatusDetail: {},
                 }),
                 formDrafts: () => formDrafts,
+                blockchain: () => blockchain,
                 send: prepareSendFormReducer(extraDependenciesCommonMock),
                 settings: () => ({ mevProtection: false }),
             }),
@@ -129,7 +168,27 @@ const buildEthStakeFormDraft = (): FormState =>
         feeLimit: '',
     }) as FormState;
 
+const buildSolanaPrecomposedTransaction = (): PrecomposedTransactionFinal =>
+    ({
+        type: 'final',
+        feeLimit: '200000',
+        feePerByte: '100000',
+        fee: '2287880',
+        totalSpent: '1002287880',
+        outputs: [
+            {
+                address: solAccount.descriptor,
+                amount: '1',
+                script_type: 'PAYTOADDRESS',
+            },
+        ],
+        bytes: 0,
+        inputs: [],
+        outputsPermutation: [0],
+    }) as unknown as PrecomposedTransactionFinal;
+
 const ethereumSignTransactionMock = TrezorConnect.ethereumSignTransaction as jest.Mock;
+const solanaSignTransactionMock = TrezorConnect.solanaSignTransaction as jest.Mock;
 const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
 
 const dispatchDispatcher = async (
@@ -144,10 +203,16 @@ const dispatchDispatcher = async (
 
 beforeEach(() => {
     ethereumSignTransactionMock.mockClear();
+    solanaSignTransactionMock.mockClear();
+    solanaTxShim.addSignature.mockClear();
     pushTransactionMock.mockClear();
     ethereumSignTransactionMock.mockResolvedValue({
         success: true,
         payload: { serializedTx: '0xsignedtx' },
+    });
+    solanaSignTransactionMock.mockResolvedValue({
+        success: true,
+        payload: { signature: 'ed25519signature' },
     });
     pushTransactionMock.mockResolvedValue({
         success: true,
@@ -173,23 +238,44 @@ describe('signStakeTransactionNativeThunk', () => {
         expect(ethereumSignTransactionMock).toHaveBeenCalledTimes(1);
     });
 
-    it('rejects for unsupported networkType (solana — not yet implemented)', async () => {
-        const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-        const store = buildStore({ accounts: [solAccount] });
+    it('routes solana accounts to the solana staking thunk', async () => {
+        const store = buildStore({
+            accounts: [solAccount],
+            blockchain: { sol: { url: 'http://localhost:8899' } },
+        });
 
         const result = await dispatchDispatcher(store, {
             accountKey: SOL_ACCOUNT_KEY,
             stakeType: 'stake',
-            precomposedTransaction: buildPrecomposedTransaction(),
+            precomposedTransaction: buildSolanaPrecomposedTransaction(),
+        });
+
+        expect(result).toEqual({ ok: true, txid: '0xpushedtxid' });
+        expect(solanaSignTransactionMock).toHaveBeenCalledTimes(1);
+        expect(ethereumSignTransactionMock).not.toHaveBeenCalled();
+    });
+
+    it('rejects solana unstake/claim (out of scope on mobile)', async () => {
+        const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        const store = buildStore({
+            accounts: [solAccount],
+            blockchain: { sol: { url: 'http://localhost:8899' } },
+        });
+
+        const result = await dispatchDispatcher(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'unstake',
+            precomposedTransaction: buildSolanaPrecomposedTransaction(),
         });
 
         expect(result).toEqual({
             ok: false,
             error: {
                 error: 'sign-transaction-failed',
-                message: 'Staking is not supported for network type: solana',
+                message: 'Solana unstake is not supported on mobile.',
             },
         });
+        expect(solanaSignTransactionMock).not.toHaveBeenCalled();
         errorSpy.mockRestore();
     });
 

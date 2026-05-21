@@ -20,7 +20,7 @@ import { getFormDraftKey } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
 import { signEthereumStakingTransactionNativeThunk } from '../stakeFormEthereumNativeThunks';
-import { type EthereumStakingType } from '../stakeFormEthereumNativeTypes';
+import { type StakeNativeType } from '../stakeNativeTypes';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
@@ -85,19 +85,19 @@ const buildPrecomposedTransaction = (
         ...overrides,
     }) as PrecomposedTransactionFinal;
 
-const buildCalldataForKind = (kind: EthereumStakingType): string => {
+const buildCalldataForKind = (kind: StakeNativeType): string => {
     if (kind === 'stake') return buildStakeData();
     if (kind === 'unstake') return buildUnstakeData('1500000000000000000', UNSTAKE_INTERCHANGES);
 
     return buildClaimWithdrawRequestData();
 };
 
-const buildComposeFormDraft = (kind: EthereumStakingType, ethAmount: string): FormState =>
+const buildComposeFormDraft = (kind: StakeNativeType, amount: string): FormState =>
     ({
         outputs: [
             {
                 address: kind === 'claim' ? ACCOUNTING_ADDRESS : POOL_ADDRESS,
-                amount: kind === 'stake' ? ethAmount : '0',
+                amount: kind === 'stake' ? amount : '0',
                 type: 'payment',
                 token: null,
                 fiat: '',
@@ -123,7 +123,7 @@ const buildStore = ({
 } = {}) =>
     configureMockStore({
         reducer: combineReducers({
-            device: () => ({
+            device: (): { selectedDevice: TrezorDevice } => ({
                 selectedDevice: {
                     path: 'device-id:1',
                     instance: 1,

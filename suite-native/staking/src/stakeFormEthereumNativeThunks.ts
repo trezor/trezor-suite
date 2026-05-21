@@ -22,17 +22,16 @@ import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
+import { STAKE_NATIVE_MODULE_PREFIX } from './constants';
 import {
     type EthereumAccount,
-    type EthereumStakingType,
     type EthereumStakingVariant,
     type Failure,
     type PreparedEthereumStakingContext,
-    type SignEthereumStakingRejectValue,
 } from './stakeFormEthereumNativeTypes';
+import { type SignStakeNativeRejectValue, type StakeNativeType } from './stakeNativeTypes';
 import { ethToWei } from './utils';
 
-const STAKE_NATIVE_MODULE_PREFIX = '@suite-native/staking';
 const LOG_PREFIX = 'signEthereumStakingTransactionNativeThunk';
 
 const failed = (message: string, detail?: string): Failure => {
@@ -45,7 +44,7 @@ const buildEthereumStakingSignFormState = (
     feeLevel: FeeLevel,
     gasLimit: string,
     calldata: string,
-    stakeType: EthereumStakingType,
+    stakeType: StakeNativeType,
 ): StakeFormState => ({
     outputs: [],
     feePerUnit: feeLevel.feePerUnit,
@@ -68,7 +67,7 @@ const buildEthereumStakingSignFormState = (
 // Reads the variant the form already produced at compose time and converts it to the sign-time wei value. This avoids re-encoding the calldata in the thunk.
 const readVariantFromComposeDraft = (
     state: Parameters<typeof selectFormDraft>[0],
-    stakeType: EthereumStakingType,
+    stakeType: StakeNativeType,
     accountKey: AccountKey,
 ): EthereumStakingVariant | null => {
     const draft = selectFormDraft<FormState>(state, getFormDraftKey(stakeType, accountKey));
@@ -94,7 +93,7 @@ const prepareEthereumStakingContext = (
     state: Parameters<typeof selectAccountByKey>[0] & Parameters<typeof selectFormDraft>[0],
     args: {
         accountKey: AccountKey;
-        stakeType: EthereumStakingType;
+        stakeType: StakeNativeType;
         precomposedTransaction: PrecomposedTransactionFinal;
     },
 ): { ok: true; context: PreparedEthereumStakingContext } | Failure => {
@@ -173,10 +172,10 @@ export const signEthereumStakingTransactionNativeThunk = createThunk<
     { txid: string },
     {
         accountKey: AccountKey;
-        stakeType: EthereumStakingType;
+        stakeType: StakeNativeType;
         precomposedTransaction: PrecomposedTransactionFinal;
     },
-    { rejectValue: SignEthereumStakingRejectValue }
+    { rejectValue: SignStakeNativeRejectValue }
 >(
     `${STAKE_NATIVE_MODULE_PREFIX}/${LOG_PREFIX}`,
     async ({ accountKey, stakeType, precomposedTransaction }, thunkApi) => {
