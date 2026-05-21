@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { type CryptoId } from 'invity-api';
 
+import { selectTorState } from '@suite/tor';
 import {
     TRADING_DEFAULT_PAYMENT_METHOD,
     type TradingBuyInfoSelector,
@@ -18,7 +19,6 @@ import {
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { type TradingBuyFormDefaultValuesProps } from 'src/types/trading/tradingForm';
 
 export const useTradingBuyFormDefaultValues = (

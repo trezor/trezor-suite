@@ -2,6 +2,7 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
+import { TorStatus, torActions, torReducer } from '@suite/tor';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import { prepareWalletSettingsReducer } from '@suite-common/wallet-core';
@@ -42,6 +43,7 @@ const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
 
 const rootReducer = combineReducers({
     suite: createReducer({}, () => ({})),
+    tor: torReducer,
     locks: locksReducer,
     device: createReducer(
         { devices: [fixtures.DEVICE], selectedDevice: fixtures.DEVICE },
@@ -353,7 +355,7 @@ describe('coinjoinClientActions', () => {
         expect(cli.client.emit).toHaveBeenCalledTimes(1);
 
         // restore session after previous action, and set phase to critical again
-        // NOTE: dispatching { type: '@suite/tor-status', payload: 'Enabled' } requires a lot more fixtures
+        // NOTE: dispatching torActions.setTorStatus('Enabled') requires a lot more fixtures
         const restoreSession = () => {
             store.dispatch({
                 type: '@coinjoin/session-restore',
@@ -366,7 +368,7 @@ describe('coinjoinClientActions', () => {
         };
 
         restoreSession();
-        store.dispatch({ type: '@suite/tor-status', payload: 'Disabled' });
+        store.dispatch(torActions.setTorStatus(TorStatus.Disabled));
         expect(cli.client.emit).toHaveBeenCalledTimes(2);
 
         restoreSession();

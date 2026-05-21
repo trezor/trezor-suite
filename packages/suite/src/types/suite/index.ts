@@ -12,6 +12,7 @@ import type { recoveryActions } from '@suite/recovery';
 import { type Route, type RouterAction } from '@suite/router';
 import { type suiteSettingsActions } from '@suite/settings';
 import { type suiteSyncSlice } from '@suite/suite-sync';
+import { type torActions } from '@suite/tor';
 import { type analyticsActions } from '@suite-common/analytics-redux';
 import { type bluetoothActions } from '@suite-common/bluetooth';
 import { type deviceActions } from '@suite-common/device';
@@ -128,6 +129,7 @@ type SuiteSettingsAction = ReturnType<
 >;
 type RecoveryAction = ReturnType<(typeof recoveryActions)[keyof typeof recoveryActions]>;
 type BackupAction = ReturnType<(typeof backupActions)[keyof typeof backupActions]>;
+type TorAction = ReturnType<(typeof torActions)[keyof typeof torActions]>;
 type DesktopUpdateAction = ReturnType<
     (typeof desktopUpdateActions)[keyof typeof desktopUpdateActions]
 >;
@@ -168,6 +170,7 @@ export type Action =
     | SuiteSyncActionDesktop
     | SuiteSyncQuotaManagerAction
     | ThpAction
+    | TorAction
     | TransactionAction
     | PhishingAction
     | TrezorConnectEvents
@@ -195,13 +198,8 @@ export type ForegroundAppProps = {
 
 export type ToastNotificationVariant = 'success' | 'info' | 'warning' | 'error' | 'transparent';
 
-export { TorStatus } from '@trezor/suite-desktop-api/src/enums';
-
-export interface TorBootstrap {
-    current: number;
-    total: number;
-    isSlow?: boolean;
-}
+export { TorStatus } from '@suite/tor';
+export type { TorBootstrap } from '@suite/tor';
 
 export enum DisplayMode {
     CHUNKS = 1,

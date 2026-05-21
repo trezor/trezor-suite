@@ -3,6 +3,7 @@ import type { MiddlewareAPI } from 'redux';
 
 import { lockDevice, selectIsDeviceOrUiLocked } from '@suite/locks';
 import { routerLocationChange, selectRouteName, selectSettingsBackRoute } from '@suite/router';
+import { selectTorState, torActions } from '@suite/tor';
 import {
     Feature,
     messageSystemActions,
@@ -38,7 +39,6 @@ import {
     selectIsAccountWithSessionInCriticalPhaseByAccountKey,
     selectIsAnySessionInCriticalPhase,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { CoinjoinService } from 'src/services/coinjoin';
 import type { Action, AppState, Dispatch } from 'src/types/suite';
 import { type CoinjoinConfig } from 'src/types/wallet/coinjoin';
@@ -171,7 +171,7 @@ export const coinjoinMiddleware =
 
         // Pause/restore coinjoin session based on Tor status.
         // Continuing coinjoin would be a privacy risk.
-        if (action.type === SUITE.TOR_STATUS) {
+        if (action.type === torActions.setTorStatus.type) {
             if (['Disabling', 'Disabled', 'Error'].includes(action.payload)) {
                 if (selectIsAnySessionInCriticalPhase(api.getState())) {
                     api.dispatch(

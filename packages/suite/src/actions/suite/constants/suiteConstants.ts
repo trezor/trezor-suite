@@ -9,8 +9,6 @@ export const SET_RECENTLY_DISCONNECTED_DEVICE = '@suite/set-recently-disconnecte
 export const ADD_DEVICE_ID_TO_SEEN_DISCONNECT_NOTIFICATION =
     '@suite/add-device-id-to-seen-disconnect-notification';
 export const ONLINE_STATUS = '@suite/online-status';
-export const TOR_STATUS = '@suite/tor-status';
-export const TOR_BOOTSTRAP = '@suite/tor-bootstrap';
 export const SET_SEND_FORM_PREFILL = '@suite/set-send-form-prefill';
 export const SET_TRANSACTION_HISTORY_PREFILL = '@suite/set-transaction-history-prefill';
 export const SET_DEFAULT_WALLET_LOADING = '@suite/set-default-wallet-loading';

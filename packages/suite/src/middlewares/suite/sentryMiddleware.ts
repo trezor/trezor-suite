@@ -5,6 +5,7 @@ import { METADATA } from '@suite/metadata';
 import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { routerLocationChange, selectRouterUrl } from '@suite/router';
 import { suiteSettingsActions } from '@suite/settings';
+import { torActions } from '@suite/tor';
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { deviceActions } from '@suite-common/device';
 import {
@@ -61,7 +62,7 @@ const breadcrumbActions = new Set<Action['type']>([
     accountsActions.updateSelectedAccount.type,
     routerLocationChange.type,
     desktopUpdateActions.allowPrerelease.type,
-    SUITE.TOR_STATUS,
+    torActions.setTorStatus.type,
     SUITE.ONLINE_STATUS,
     deviceActions.addButtonRequest.type,
     deviceActions.removeButtonRequests.type,
@@ -112,7 +113,7 @@ const sentryMiddleware =
             case routerLocationChange.type:
                 setSentryTag('routerURL', selectRouterUrl(state));
                 break;
-            case SUITE.TOR_STATUS:
+            case torActions.setTorStatus.type:
                 setSentryTag('torStatus', action.payload);
                 break;
             case TRANSPORT.START: {

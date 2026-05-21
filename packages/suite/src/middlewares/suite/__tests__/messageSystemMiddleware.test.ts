@@ -1,5 +1,6 @@
 import { type Reducer, combineReducers } from '@reduxjs/toolkit';
 
+import { torReducer } from '@suite/tor';
 import { prepareDeviceReducer } from '@suite-common/device';
 import { geolocationReducer } from '@suite-common/geolocation';
 import { messageSystemActions, prepareMessageSystemReducer } from '@suite-common/message-system';
@@ -71,6 +72,7 @@ const reducer = combineReducers({
     wallet: WalletReducers,
     messageSystem: messageSystemReducer,
     suite: suiteReducer,
+    tor: torReducer,
     device: deviceReducer,
     geolocation: geolocationReducer,
 });

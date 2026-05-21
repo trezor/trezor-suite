@@ -1,6 +1,6 @@
 import { parseHostname } from '@trezor/utils';
 
-import { TorStatus } from 'src/types/suite';
+import { TorStatus } from './torSlice';
 
 export const getIsTorDomain = (domain: string) => domain.endsWith('.onion');
 

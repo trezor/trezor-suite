@@ -1,12 +1,12 @@
 import type { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
 
+import { selectTorState } from '@suite/tor';
 import type { TradingType } from '@suite-common/trading';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import {
     getCryptoQuoteAmountProps,
     getSelectedCryptoId,

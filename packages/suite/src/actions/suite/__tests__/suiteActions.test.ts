@@ -3,6 +3,7 @@
 import { flagsInitialState, prepareFlagsReducer } from '@suite/flags';
 import { modalReducer } from '@suite/modal';
 import { routerReducer } from '@suite/router';
+import { torReducer } from '@suite/tor';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
@@ -74,6 +75,7 @@ const getInitialState = (
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
     },
+    tor: torReducer(undefined, { type: 'foo' } as any),
     flags: flagsInitialState,
     device: {
         ...deviceReducer(undefined, { type: 'foo' } as any),

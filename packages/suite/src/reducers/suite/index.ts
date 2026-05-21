@@ -7,6 +7,7 @@ import { metadataReducer } from '@suite/metadata';
 import { modalReducer as modal } from '@suite/modal';
 import { routerReducer } from '@suite/router';
 import { prepareSuiteSettingsReducer } from '@suite/settings';
+import { torReducer } from '@suite/tor';
 import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
 import { logsSlice } from '@suite-common/logger';
@@ -33,6 +34,7 @@ const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
 
 export default {
     suite,
+    tor: torReducer,
     suiteSettings,
     flags,
     locks: locksReducer,

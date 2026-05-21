@@ -13,8 +13,8 @@
     "dependencies": {
         "@suite/intl": "workspace:*",
         "@suite/settings": "workspace:*",
+        "@suite/tor": "workspace:*",
         "@trezor/components": "workspace:*",
-        "@trezor/suite-desktop-api": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.2.4",

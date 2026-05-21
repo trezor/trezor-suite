@@ -20,5 +20,3 @@ export type {
     TorStatusEvent,
     HandshakeTorModule,
 } from './messages';
-
-export { TorStatus } from './enums';

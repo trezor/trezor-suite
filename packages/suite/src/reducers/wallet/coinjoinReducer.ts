@@ -1,6 +1,7 @@
 import { produce } from 'immer';
 
 import { type LocksRootState, selectIsDeviceOrUiLocked } from '@suite/locks';
+import { type TorRootState, selectTorState } from '@suite/tor';
 import { type DeviceRootState, selectDeviceStatus } from '@suite-common/device';
 import {
     Feature,
@@ -22,7 +23,6 @@ import { BigNumber } from '@trezor/utils';
 import { STORAGE } from 'src/actions/suite/constants';
 import { COINJOIN } from 'src/actions/wallet/constants';
 import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
-import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import {
     CLIENT_STATUS_FALLBACK,
     DEFAULT_TARGET_ANONYMITY,
@@ -73,6 +73,7 @@ export type CoinjoinRootState = {
 } & AccountsRootState &
     SelectedAccountRootState &
     SuiteRootState &
+    TorRootState &
     MessageSystemRootState &
     LocksRootState;
 

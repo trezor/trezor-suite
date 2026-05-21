@@ -1,4 +1,5 @@
 import { type RouterState, routerLocationChange } from '@suite/router';
+import { TorStatus, torActions } from '@suite/tor';
 import { accountsActions } from '@suite-common/wallet-core';
 import { type AccountKey, type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { type AnonymitySet } from '@trezor/blockchain-link';
@@ -63,9 +64,11 @@ const DEFAULT_STATE = {
         devices: [DEVICE_A, DEVICE_B],
         selectedDevice: DEVICE_A,
     },
-    suite: {
+    suite: {} as SuiteState,
+    tor: {
         torStatus: 'Enabled',
-    } as SuiteState,
+        torBootstrap: null,
+    },
     wallet: {
         accounts: [ACCOUNT_A, ACCOUNT_B],
         coinjoin: {
@@ -162,10 +165,7 @@ export const fixtures = [
     {
         description: 'interrupt all coinjoin sessions when Tor is disabled',
         state: DEFAULT_STATE,
-        action: {
-            type: SUITE.TOR_STATUS,
-            payload: 'Disabled',
-        },
+        action: torActions.setTorStatus(TorStatus.Disabled),
         expectedActions: PAUSE_ALL_INTERRUPTED_SESSIONS_ACTIONS,
     },
     {
@@ -175,10 +175,7 @@ export const fixtures = [
         connect: {
             success: true,
         },
-        action: {
-            type: SUITE.TOR_STATUS,
-            payload: 'Enabled',
-        },
+        action: torActions.setTorStatus(TorStatus.Enabled),
         expectedActions: RESTORE_SESSION_B_ACTIONS,
     },
     {
