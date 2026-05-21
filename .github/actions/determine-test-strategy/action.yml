@@ -2,8 +2,8 @@ name: "Determine E2E Test Strategy"
 description: >
   Classifies PR changes into one of three strategies:
   specific-tests (only e2e test files changed),
-  run-everything (e2e framework or mixed changes),
-  or analyze (non-e2e code changed → LLM analysis needed).
+  run-everything (e2e framework, mixed, or CI-only changes),
+  or analyze (production code changed → LLM analysis needed).
 outputs:
   strategy:
     description: "specific-tests | run-everything | analyze"
@@ -20,8 +20,9 @@ runs:
       run: |
         set -euo pipefail
 
-        # Use the PR base ref SHA from GitHub context — the current HEAD of the base
-        # branch, used as the diff base for this PR. Fetching just that one commit is enough;
+        # Use the PR base SHA from GitHub context — the exact commit on develop where
+        # this branch diverged. Fetching just that one commit is enough for the diff;
+        # no merge-base computation or deep history needed.
         BASE_SHA="${{ github.event.pull_request.base.sha }}"
         git fetch origin "$BASE_SHA" --depth=1
 
@@ -36,8 +37,17 @@ runs:
           exit 0
         fi
 
+        # If all changes are in .github/ (workflows/actions), no analysis needed
+        NON_CI=$(echo "$CHANGED" | grep -v '^\.github/' || true)
+        if [[ -z "$NON_CI" ]]; then
+          echo "Only CI workflow/action files changed — running everything, skipping analysis."
+          echo "strategy=run-everything" >> "$GITHUB_OUTPUT"
+          echo "spec-list=" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
         # Check if any file is outside suite/e2e/ entirely (production code)
-        OUTSIDE_E2E=$(echo "$CHANGED" | grep -v '^suite/e2e/' || true)
+        OUTSIDE_E2E=$(echo "$NON_CI" | grep -v '^suite/e2e/' || true)
         if [[ -n "$OUTSIDE_E2E" ]]; then
           echo "Production code changed — proceeding to LLM analysis."
           echo "strategy=analyze" >> "$GITHUB_OUTPUT"
@@ -45,8 +55,8 @@ runs:
           exit 0
         fi
 
-        # All files are under suite/e2e/ — check if any are outside tests/
-        OUTSIDE_TESTS=$(echo "$CHANGED" | grep '^suite/e2e/' | grep -v '^suite/e2e/tests/' || true)
+        # All non-CI files are under suite/e2e/ — check if any are outside tests/
+        OUTSIDE_TESTS=$(echo "$NON_CI" | grep '^suite/e2e/' | grep -v '^suite/e2e/tests/' || true)
         if [[ -n "$OUTSIDE_TESTS" ]]; then
           echo "E2E framework files changed — running everything."
           echo "strategy=run-everything" >> "$GITHUB_OUTPUT"
@@ -55,7 +65,7 @@ runs:
         fi
 
         # All changed files are under suite/e2e/tests/ — run only those
-        TEST_FILES=$(echo "$CHANGED" | grep '^suite/e2e/tests/' | tr '\n' ',' | sed 's/,$//')
+        TEST_FILES=$(echo "$NON_CI" | grep '^suite/e2e/tests/' | tr '\n' ',' | sed 's/,$//')
         echo "Only test files changed. Running: $TEST_FILES"
         echo "strategy=specific-tests" >> "$GITHUB_OUTPUT"
         echo "spec-list=$TEST_FILES" >> "$GITHUB_OUTPUT"
