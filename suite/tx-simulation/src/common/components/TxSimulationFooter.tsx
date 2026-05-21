@@ -5,12 +5,14 @@ interface TxSimulationFooterProps {
     onConfirm: () => void;
     onCancel: () => void;
     isConfirmDisabled: boolean;
+    isConfirmLoading?: boolean;
 }
 
 export function TxSimulationFooter({
     onConfirm,
     onCancel,
     isConfirmDisabled,
+    isConfirmLoading,
 }: TxSimulationFooterProps) {
     return (
         <>
@@ -18,6 +20,7 @@ export function TxSimulationFooter({
                 onClick={onConfirm}
                 data-testid="@tx-simulation-modal/confirm-button"
                 isDisabled={isConfirmDisabled}
+                isLoading={isConfirmLoading}
             >
                 <Translation id="TR_CONFIRM" />
             </Modal.Button>

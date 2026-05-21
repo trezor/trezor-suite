@@ -58,6 +58,8 @@ export function EarnYieldTxSimulationModalInner({
         accountBalance: account.availableBalance,
     });
 
+    const [confirming, setConfirming] = useState<boolean>(false);
+
     const simulation = useTxSimulation(action, {
         onSuccess(result) {
             if (isTxSimulationResultWithMethods(TX_METHODS_WITH_FEES, result)) {
@@ -87,13 +89,22 @@ export function EarnYieldTxSimulationModalInner({
     }
 
     function confirm() {
+        setConfirming(true);
+
         const selectedFee = areTxSimulationMethods(TX_METHODS_WITH_FEES, action)
             ? getSelectedFee()
             : null;
 
-        decision.resolve({
-            value: true,
-            selectedFee,
+        const confirmingPromise = new Promise<void>(resolve => {
+            decision.resolve({
+                value: true,
+                selectedFee,
+                resolve,
+            });
+        });
+
+        confirmingPromise.finally(() => {
+            setConfirming(false);
         });
     }
 
@@ -114,6 +125,7 @@ export function EarnYieldTxSimulationModalInner({
                         onConfirm={confirm}
                         onCancel={cancel}
                         isConfirmDisabled={isConfirmDisabled}
+                        isConfirmLoading={confirming}
                     />
                 }
                 // Disable shadow bottom to make `Fees` component fully visible

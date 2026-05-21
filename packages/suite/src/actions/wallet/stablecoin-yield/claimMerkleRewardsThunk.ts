@@ -328,6 +328,8 @@ export const claimMerkleRewardsThunk = createThunk(
                     chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
                 });
 
+                userAcceptedTxSimulation?.resolve();
+
                 if (!signingResponse.success) {
                     dispatch(closeModal());
                     throw new Error(signingResponse.error.message);
