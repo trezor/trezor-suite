@@ -56,7 +56,7 @@ perl -0777 -pi -e 's{/\*.*?\*/}{}gs; s/^\s*\n//mg' src/definitions/*.js
 
 # generated source JS is inside a package with "type": "module", so relative JS imports
 # need explicit extensions for strict ESM resolution in bundlers
-perl -pi -e "s{from '(\\./[^']+_pb)';}{from '\$1.js';}g" src/definitions/*.js
+perl -pi -e 's{from (["'"'"'])(\.\/[^"'"'"']+)\1;}{from $1$2.js$1;}g' src/definitions/*.js
 
 yarn workspace @trezor/protobuf g:eslint --fix src/definitions/*
 yarn workspace @trezor/protobuf g:prettier --write src/definitions/*
