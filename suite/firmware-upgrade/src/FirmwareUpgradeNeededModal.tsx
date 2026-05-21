@@ -8,16 +8,23 @@ import { Card, Modal, Paragraph } from '@trezor/components';
 type FirmwareUpgradeNeededModalProps = {
     onClose: () => void;
     featureName: string;
+    onUpdate?: () => void;
 };
 
 export const FirmwareUpgradeNeededModal = ({
     onClose,
     featureName,
+    onUpdate,
 }: FirmwareUpgradeNeededModalProps) => {
     const dispatch = useDispatch();
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
 
     const onClick = () => {
+        if (onUpdate) {
+            onUpdate();
+
+            return;
+        }
         // Update will disconnect device in the process and our Firmware Update
         // flow won't allow us to navigate back. So we just redirect the user
         // and close the modal.
