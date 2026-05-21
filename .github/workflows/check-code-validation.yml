@@ -28,6 +28,7 @@ jobs:
         uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
         with:
           mode: firewall-free
+          job-summary: errors
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
@@ -173,6 +174,7 @@ jobs:
         uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
         with:
           mode: firewall-free
+          job-summary: errors
       - name: Yarn Dedupe check
         run: sfw --silent yarn dedupe --check
       - name: Check dependency domain lists
