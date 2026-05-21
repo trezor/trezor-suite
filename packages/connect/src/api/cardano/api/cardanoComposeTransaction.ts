@@ -1,5 +1,4 @@
-import { CoinSelectionError, trezorUtils } from '@fivebinaries/coin-selection';
-
+import cardano from '@trezor/coins-cardano/runtime';
 import { type MethodPermission } from '@trezor/connect-common';
 import {
     type CardanoComposeTransactionParams,
@@ -10,7 +9,7 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { composeTxPlan } from '../cardanoUtils';
+import { getCoinSelectionParams } from '../cardanoUtils';
 
 export default class CardanoComposeTransaction extends AbstractMethod<
     'cardanoComposeTransaction',
@@ -34,7 +33,7 @@ export default class CardanoComposeTransaction extends AbstractMethod<
         return 'Compose Cardano transaction';
     }
 
-    run() {
+    async run() {
         const {
             feeLevels = [{}],
             account,
@@ -46,16 +45,20 @@ export default class CardanoComposeTransaction extends AbstractMethod<
             testnet,
         } = this.params;
 
+        const { trezorUtils, asCoinSelectionError, coinSelection } = await cardano();
+
         const result = feeLevels.map<PrecomposedTransactionCardano>(({ feePerUnit }) => {
             try {
-                const txPlan = composeTxPlan(
-                    account.descriptor,
-                    account.utxo,
-                    outputs,
-                    certificates,
-                    withdrawals,
-                    changeAddress.address,
-                    !!testnet,
+                const txPlan = coinSelection(
+                    getCoinSelectionParams(
+                        account.descriptor,
+                        account.utxo,
+                        outputs,
+                        certificates,
+                        withdrawals,
+                        changeAddress.address,
+                        !!testnet,
+                    ),
                     { feeParams: feePerUnit ? { a: feePerUnit } : undefined },
                 );
 
@@ -86,13 +89,10 @@ export default class CardanoComposeTransaction extends AbstractMethod<
                           }),
                 };
             } catch (error) {
-                if (
-                    error instanceof CoinSelectionError &&
-                    error.code === 'UTXO_BALANCE_INSUFFICIENT'
-                ) {
+                if (asCoinSelectionError(error)?.code === 'UTXO_BALANCE_INSUFFICIENT') {
                     return { type: 'error', error: 'UTXO_BALANCE_INSUFFICIENT' };
                 }
-                if (error instanceof CoinSelectionError && error.code === 'UTXO_VALUE_TOO_SMALL') {
+                if (asCoinSelectionError(error)?.code === 'UTXO_VALUE_TOO_SMALL') {
                     return { type: 'error', error: 'UTXO_VALUE_TOO_SMALL' };
                 }
 
@@ -101,6 +101,6 @@ export default class CardanoComposeTransaction extends AbstractMethod<
             }
         });
 
-        return Promise.resolve(result);
+        return result;
     }
 }
