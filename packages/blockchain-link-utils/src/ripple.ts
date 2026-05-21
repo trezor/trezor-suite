@@ -1,6 +1,5 @@
-import type { AccountTxTransaction, ServerInfoResponse } from 'xrpl';
-
 import type { ServerInfo, Transaction } from '@trezor/blockchain-link-types';
+import type { AccountTxTransaction, ServerInfoResponse } from '@trezor/coins-xrpl/types';
 
 export const transformServerInfo = (payload: ServerInfoResponse): Omit<ServerInfo, 'url'> => ({
     name: 'Ripple',
