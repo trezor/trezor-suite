@@ -16,6 +16,7 @@ const SIGN_TX_ROUTES = [
     'wallet-trading-sell-confirm',
     'earn-deposit',
     'earn-withdraw',
+    'earn-claim',
 ] as const;
 
 const SIGN_TX_CONNECT_METHODS = [
@@ -28,9 +29,13 @@ const getAccountForButtonRequest = (state: AppState) => {
     const { account } = state.wallet.selectedAccount;
     if (account) return account;
 
-    const { accountKey } = state.wallet.stablecoinYield.txReview;
+    const yieldAccountKey = state.wallet.stablecoinYield.txReview.accountKey;
+    if (yieldAccountKey) return selectAccountByKey(state, yieldAccountKey);
 
-    return selectAccountByKey(state, accountKey);
+    const sendAccountKey = state.wallet.send.accountKey;
+    if (sendAccountKey) return selectAccountByKey(state, sendAccountKey);
+
+    return undefined;
 };
 
 const shouldRemapToSignTx = (
