@@ -61,6 +61,13 @@ export const DerivationPath = Type.Union([Type.String(), Type.Array(Type.Number(
     $id: 'DerivationPath',
 });
 
+// Marker fragment intersected into payloads of methods that require explicit
+// opt-in via `__experimental: true`.
+export type ExperimentalMethod = Static<typeof ExperimentalMethod>;
+export const ExperimentalMethod = Type.Object({
+    __experimental: Type.Literal(true),
+});
+
 // replace type `T` address_n field type `A` with address_n type `R`
 type ProtoWithExtendedAddressN<T, A, R> = Omit<Extract<T, { address_n: A }>, 'address_n'> & {
     address_n: R;

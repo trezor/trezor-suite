@@ -18,6 +18,7 @@ export * from './api/solana';
 export * from './api/stellar';
 export * from './api/tezos';
 export * from './api/tron';
+export * from './api/nostr';
 
 // types used in @trezor/suite. if you need a type, reexport it from ./api/<method>
 export type {
