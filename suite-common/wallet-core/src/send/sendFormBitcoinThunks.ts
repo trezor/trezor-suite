@@ -135,12 +135,14 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
         const response = await TrezorConnect.composeTransaction(params);
 
         if (!response.success) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'sign-tx-error',
-                    error: response.error.message,
-                }),
-            );
+            if (response.error.code !== 'Method_InvalidParameter') {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'sign-tx-error',
+                        error: response.error.message,
+                    }),
+                );
+            }
 
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',
