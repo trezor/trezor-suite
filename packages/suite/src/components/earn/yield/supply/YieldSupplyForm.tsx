@@ -46,6 +46,7 @@ export const YieldSupplyForm = () => {
         handleApproveModalCancel,
         handleApproveSuccessTxid,
         openPendingTransaction,
+        retryInitAllowance,
         flow,
     } = useYieldSupplyContext();
 
@@ -127,6 +128,19 @@ export const YieldSupplyForm = () => {
         setAmountInput(maxAmount);
     };
 
+    const handleRetryAllowance = () => {
+        analytics.report({
+            type: events.yieldInteractionEvent.name,
+            payload: {
+                element: 'allowance-retry',
+                networkSymbol: token.networkSymbol,
+                vaultId: vault.id,
+            },
+        });
+
+        retryInitAllowance();
+    };
+
     return (
         <>
             <Column width="100%" alignItems="center">
@@ -155,6 +169,21 @@ export const YieldSupplyForm = () => {
                                 <Banner
                                     intent="warning"
                                     description={<Translation id={errorMessage} />}
+                                />
+                            )}
+
+                            {allowanceStatus === 'error' && (
+                                <Banner
+                                    icon
+                                    intent="warning"
+                                    description={
+                                        <Translation id="TR_EARN_YIELD_ALLOWANCE_FETCH_FAILED" />
+                                    }
+                                    rightContent={
+                                        <Banner.Button onClick={handleRetryAllowance}>
+                                            <Translation id="TR_RETRY" />
+                                        </Banner.Button>
+                                    }
                                 />
                             )}
 

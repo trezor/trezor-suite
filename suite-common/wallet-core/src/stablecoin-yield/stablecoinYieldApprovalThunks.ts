@@ -336,8 +336,9 @@ export const initYieldAllowanceThunk = createThunk<void, InitYieldAllowancePaylo
             if (amount !== '0') {
                 dispatch(stablecoinYieldActions.skipApprovalStep({ flowType, flowKey }));
             }
-        } catch {
+        } catch (error) {
             dispatch(stablecoinYieldActions.setAllowanceError({ flowType, flowKey }));
+            throw error;
         } finally {
             dispatch(stablecoinYieldActions.finishInitializingAllowance({ flowType, flowKey }));
         }

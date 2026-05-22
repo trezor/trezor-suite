@@ -9588,6 +9588,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_APPROVED_AMOUNT',
         defaultMessage: 'Approved amount',
     },
+    TR_EARN_YIELD_ALLOWANCE_FETCH_FAILED: {
+        id: 'TR_EARN_YIELD_ALLOWANCE_FETCH_FAILED',
+        defaultMessage: 'Failed to fetch approved amount.',
+    },
     TR_EARN_YIELD_SUPPLY_COMPLETE: {
         id: 'TR_EARN_YIELD_SUPPLY_COMPLETE',
         defaultMessage: 'Deposit complete',

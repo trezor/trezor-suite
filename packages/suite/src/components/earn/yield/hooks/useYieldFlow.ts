@@ -98,6 +98,7 @@ export type UseYieldFlowResult = {
     handleApproveModalCancel: () => Promise<void>;
     handleApproveSuccessTxid: (txid: string) => void;
     openPendingTransaction: (txid: string) => void;
+    retryInitAllowance: () => void;
     methods: UseFormReturn<YieldFlowFormValues>;
     flow: UseYieldFlowStepsResult;
 };
@@ -190,8 +191,8 @@ export const useYieldFlow = ({
         [flowKey],
     );
 
-    useEffect(() => {
-        if (flowType !== 'deposit' || allowanceStatus !== 'idle') {
+    const runInitAllowance = useCallback(() => {
+        if (flowType !== 'deposit') {
             return;
         }
 
@@ -210,25 +211,31 @@ export const useYieldFlow = ({
         );
 
         initAllowancePromiseRef.current = promise;
-        void promise.finally(() => {
-            if (initAllowancePromiseRef.current === promise) {
-                initAllowancePromiseRef.current = null;
-            }
-        });
-    }, [
-        account.descriptor,
-        account.key,
-        account.symbol,
-        allowanceFlowDataRef,
-        allowanceStatus,
-        dispatch,
-        flowKey,
-        flowType,
-        receiptToken?.contractAddress,
-        token?.contractAddress,
-        token?.decimals,
-        vault?.id,
-    ]);
+        void promise
+            .unwrap()
+            .catch(() => {
+                analytics.report({
+                    type: events.yieldInteractionEvent.name,
+                    payload: {
+                        element: 'allowance-error-banner',
+                        networkSymbol: token.networkSymbol,
+                        vaultId: vault.id,
+                    },
+                });
+            })
+            .finally(() => {
+                if (initAllowancePromiseRef.current === promise) {
+                    initAllowancePromiseRef.current = null;
+                }
+            });
+    }, [allowanceFlowDataRef, analytics, dispatch, flowKey, flowType]);
+
+    useEffect(() => {
+        if (allowanceStatus !== 'idle') {
+            return;
+        }
+        runInitAllowance();
+    }, [allowanceStatus, runInitAllowance]);
 
     useYieldPendingTransactionTracking({
         account,
@@ -588,6 +595,7 @@ export const useYieldFlow = ({
         handleApproveModalCancel,
         handleApproveSuccessTxid,
         openPendingTransaction,
+        retryInitAllowance: runInitAllowance,
         methods,
         flow,
     };
