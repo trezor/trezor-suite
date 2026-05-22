@@ -244,6 +244,17 @@ const startBootstrapHandshake = (
     const promise = new Promise<void>((resolve, reject) => {
         let attempt = 0;
         let timer: ReturnType<typeof setTimeout>;
+        // currentCleanup tracks the active attempt so a single abort listener can cancel it.
+        let currentCleanup: (() => void) | undefined;
+
+        abortController.signal.addEventListener(
+            'abort',
+            () => {
+                currentCleanup?.();
+                reject(BootstrapError.HANDSHAKE_TIMEOUT);
+            },
+            { once: true },
+        );
 
         const tryOnce = () => {
             attempt++;
@@ -270,10 +281,7 @@ const startBootstrapHandshake = (
                 broadcast.removeEventListener('message', onHandshakeConfirm);
             };
 
-            abortController.signal.addEventListener('abort', () => {
-                cleanup();
-                reject(BootstrapError.HANDSHAKE_TIMEOUT);
-            });
+            currentCleanup = cleanup;
 
             broadcast.addEventListener('message', onHandshakeConfirm);
 
