@@ -13,7 +13,6 @@ import TrezorConnect from '@trezor/connect';
 import { isUrlWithQuery } from '@trezor/utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 export type BackendOption = BackendType | 'default';
 

@@ -6,6 +6,7 @@ import { locksInitialState } from '@suite/locks';
 import { type RouterState } from '@suite/router';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { initialSuiteSyncDesktopState } from '@suite/suite-sync';
+import { TorStatus } from '@suite/tor';
 import { type FirmwareUpdateState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type MetadataState } from '@suite-common/metadata-types';
@@ -22,6 +23,10 @@ import type WalletReducers from 'src/reducers/wallet';
 
 export const initialAppState: AppState = {
     suite: suiteInitialState,
+    tor: {
+        torStatus: TorStatus.Disabled,
+        torBootstrap: null,
+    },
     suiteSettings: suiteSettingsInitialState,
     flags: flagsInitialState,
     locks: locksInitialState,

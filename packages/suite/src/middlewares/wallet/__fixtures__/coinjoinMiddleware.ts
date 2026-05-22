@@ -66,7 +66,7 @@ const DEFAULT_STATE = {
     },
     suite: {} as SuiteState,
     tor: {
-        torStatus: 'Enabled',
+        torStatus: TorStatus.Enabled,
         torBootstrap: null,
     },
     wallet: {
