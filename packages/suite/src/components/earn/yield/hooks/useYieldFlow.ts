@@ -7,6 +7,7 @@ import { type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type EarnParams } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { type YieldDto } from '@suite-common/earn-stablecoin-api';
 import {
     type YieldActionFlowType,
     type YieldAllowanceStatus,
@@ -49,6 +50,7 @@ import {
 type UseYieldFlowProps = {
     account: Account;
     routeParams: EarnParams;
+    vault: YieldDto;
     flowType: YieldActionFlowType;
 };
 
@@ -60,7 +62,7 @@ type UseYieldFlowStepsResult = {
 
 export type UseYieldFlowResult = {
     account: Account;
-    vault: ReturnType<typeof useResolvedYieldFlowData>['vault'];
+    vault: YieldDto;
     token: YieldFlowToken | null;
     receiptToken: YieldFlowDisplayToken | null;
     apy: number | null;
@@ -110,12 +112,13 @@ export type YieldFlowContextValues = Omit<
 > & {
     token: YieldFlowToken;
     receiptToken: YieldFlowDisplayToken;
-    vault: NonNullable<UseYieldFlowResult['vault']>;
+    vault: YieldDto;
 };
 
 export const useYieldFlow = ({
     account,
     routeParams,
+    vault,
     flowType,
 }: UseYieldFlowProps): UseYieldFlowResult => {
     const dispatch = useDispatch();
@@ -131,12 +134,18 @@ export const useYieldFlow = ({
     const methodsRef = useCurrentRef(methods);
     const initAllowancePromiseRef = useRef<{ abort: () => void } | null>(null);
 
-    const { vault, token, receiptToken, apy, suppliedAmount, suppliedSharesAmount, flowKey } =
+    const { token, receiptToken, apy, suppliedAmount, suppliedSharesAmount, flowKey } =
         useResolvedYieldFlowData({
             account,
             routeParams,
+            vault,
         });
-    const allowanceFlowDataRef = useCurrentRef({ account, vault, token, receiptToken });
+    const allowanceFlowDataRef = useCurrentRef({
+        account,
+        vault,
+        token,
+        receiptToken,
+    });
 
     const session = useSelector(state => selectStablecoinYieldSession(state, flowType, flowKey));
     const sessionRef = useCurrentRef(session);
@@ -196,9 +205,9 @@ export const useYieldFlow = ({
             return;
         }
 
-        const { account, vault, token, receiptToken } = allowanceFlowDataRef.current;
+        const { account, vault: currentVault, token, receiptToken } = allowanceFlowDataRef.current;
 
-        if (!token || !receiptToken || !vault) {
+        if (!token || !receiptToken || !currentVault) {
             return;
         }
 
@@ -206,7 +215,7 @@ export const useYieldFlow = ({
             initYieldAllowanceThunk({
                 flowKey,
                 flowType,
-                flowData: { account, vault, token, receiptToken },
+                flowData: { account, vault: currentVault, token, receiptToken },
             }),
         );
 
@@ -219,7 +228,7 @@ export const useYieldFlow = ({
                     payload: {
                         element: 'allowance-error-banner',
                         networkSymbol: token.networkSymbol,
-                        vaultId: vault.id,
+                        vaultId: currentVault.id,
                     },
                 });
             })
@@ -307,7 +316,7 @@ export const useYieldFlow = ({
                         element: 'pending-tx-open',
                         value: pendingTxType,
                         networkSymbol: account.symbol,
-                        vaultId: vault?.id,
+                        vaultId: vault.id,
                     },
                 });
             }
@@ -323,7 +332,7 @@ export const useYieldFlow = ({
                 }),
             );
         },
-        [account, analytics, dispatch, vault?.id, sessionRef],
+        [account, analytics, dispatch, vault.id, sessionRef],
     );
 
     const enterModifyApproval = useCallback(() => {
@@ -366,7 +375,7 @@ export const useYieldFlow = ({
             return;
         }
 
-        if (!token || !receiptToken || !vault) {
+        if (!token || !receiptToken) {
             dispatch(
                 stablecoinYieldActions.setError({
                     flowType,
@@ -408,7 +417,7 @@ export const useYieldFlow = ({
             return;
         }
 
-        if (!token || !receiptToken || !vault) {
+        if (!token || !receiptToken) {
             dispatch(
                 stablecoinYieldActions.setError({
                     flowType,
@@ -473,7 +482,7 @@ export const useYieldFlow = ({
             return;
         }
 
-        if (!token || !receiptToken || !vault) {
+        if (!token || !receiptToken) {
             dispatch(
                 stablecoinYieldActions.setError({
                     flowType,

@@ -1,11 +1,9 @@
-import { useMemo } from 'react';
-
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type EarnParams, goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
+import { type YieldDto } from '@suite-common/earn-stablecoin-api';
 import {
     type EarnAnalyticsStep,
     EarnFlow,
@@ -25,6 +23,8 @@ interface YieldPageHeaderProps {
     fallbackTitleId: TranslationKey;
     account?: Account;
     routeParams?: EarnParams;
+    vault?: YieldDto;
+    isInvalid?: boolean;
 }
 
 export const YieldPageHeader = ({
@@ -32,19 +32,13 @@ export const YieldPageHeader = ({
     fallbackTitleId,
     account,
     routeParams,
+    vault,
+    isInvalid,
 }: YieldPageHeaderProps) => {
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();
-    const { data: yieldOpportunities, isSuccess } = useAllYieldOpportunities();
-    const vault = useMemo(
-        () =>
-            routeParams?.yieldId && isSuccess
-                ? yieldOpportunities.find(opportunity => opportunity.id === routeParams.yieldId)
-                : undefined,
-        [routeParams?.yieldId, isSuccess, yieldOpportunities],
-    );
     const vaultName = vault?.outputToken?.name;
     const networkSymbol = account?.symbol;
 
@@ -114,7 +108,7 @@ export const YieldPageHeader = ({
                     tooltip={{ content: <Translation id="TR_BACK" /> }}
                 />
 
-                {account && vaultName ? (
+                {!isInvalid && account && vaultName ? (
                     <Row alignItems="center" gap={12} overflow="hidden">
                         {networkSymbol && (
                             <AssetLogo
@@ -144,9 +138,14 @@ export const YieldPageHeader = ({
                         </Column>
                     </Row>
                 ) : (
-                    <Text typographyStyle="body-md-strong">
-                        <Translation id={fallbackTitleId} />
-                    </Text>
+                    <Row alignItems="center" gap={12}>
+                        {routeParams?.symbol && (
+                            <AssetLogo symbol={routeParams.symbol} size={32} isBordered={false} />
+                        )}
+                        <Text typographyStyle="body-md-strong">
+                            <Translation id={fallbackTitleId} />
+                        </Text>
+                    </Row>
                 )}
 
                 <Box margin={{ left: 'auto' }}>

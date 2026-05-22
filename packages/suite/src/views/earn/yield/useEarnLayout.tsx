@@ -1,17 +1,18 @@
-import { type ReactNode, useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { type TranslationKey } from '@suite/intl';
 import { type EarnParams, goto } from '@suite/router';
-import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
+import { type YieldDto, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import { type EarnAnalyticsStep } from '@suite-common/suite-types/src/staking';
+import { getNetworkByYieldXyzId } from '@suite-common/wallet-config';
 import { type YieldActionFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 
-import { TokenNotExists, VaultLoading, VaultNotExists, YieldPageHeader } from 'src/components/earn';
+import { YieldPageHeader } from 'src/components/earn';
 import { useEarnRouteAccount } from 'src/components/earn/utils/useEarnRouteAccount';
-import { AccountNotExists } from 'src/components/wallet/WalletLayout/AccountException/AccountNotExists';
 import { useDispatch, useLayout } from 'src/hooks/suite';
+import { type EarnLayoutState } from 'src/types/earn/earnLayout';
 
 type EarnYieldAnalyticsStep = Extract<EarnAnalyticsStep, 'yield-supply' | 'yield-withdraw'>;
 
@@ -20,9 +21,23 @@ type UseEarnLayoutParams = {
     fallbackTitleId: TranslationKey;
 };
 
-type UseEarnLayoutResult =
-    | { isValid: true; account: Account; routeParams: EarnParams }
-    | { isValid: false; fallback: ReactNode };
+type GetEarnLayoutResultParams = {
+    account?: Account;
+    routeParams?: EarnParams;
+    vault?: YieldDto;
+    isYieldOpportunitiesLoading: boolean;
+    isYieldOpportunitiesSuccess: boolean;
+    isYieldOpportunitiesError: boolean;
+};
+
+type VaultValidationParams = {
+    account: Account;
+    vault?: YieldDto;
+};
+
+type VaultTokenValidationParams = VaultValidationParams & {
+    routeParams: EarnParams;
+};
 
 const getAnalyticsStep = (type: YieldActionFlowType): EarnYieldAnalyticsStep => {
     switch (type) {
@@ -33,10 +48,79 @@ const getAnalyticsStep = (type: YieldActionFlowType): EarnYieldAnalyticsStep => 
     }
 };
 
-export const useEarnLayout = ({
-    type,
-    fallbackTitleId,
-}: UseEarnLayoutParams): UseEarnLayoutResult => {
+const isVaultNetworkMismatch = ({ account, vault }: VaultValidationParams): boolean => {
+    if (!vault) {
+        return false;
+    }
+
+    const vaultNetwork = getNetworkByYieldXyzId(vault.network);
+
+    return vaultNetwork?.symbol !== account.symbol;
+};
+
+const isVaultTokenMismatch = ({
+    account,
+    routeParams,
+    vault,
+}: VaultTokenValidationParams): boolean => {
+    if (!vault?.token.address) {
+        return false;
+    }
+
+    if (!routeParams.contractAddress) {
+        return true;
+    }
+
+    return (
+        getContractAddressForNetworkSymbol(account.symbol, vault.token.address) !==
+        getContractAddressForNetworkSymbol(account.symbol, routeParams.contractAddress)
+    );
+};
+
+const getEarnLayoutResult = ({
+    account,
+    routeParams,
+    vault,
+    isYieldOpportunitiesLoading,
+    isYieldOpportunitiesSuccess,
+    isYieldOpportunitiesError,
+}: GetEarnLayoutResultParams): EarnLayoutState => {
+    if (!routeParams) {
+        return { status: 'invalid', reason: 'missing-route-params' };
+    }
+
+    if (!account) {
+        return { status: 'invalid', reason: 'missing-account' };
+    }
+
+    if (isYieldOpportunitiesLoading) {
+        return { status: 'loading' };
+    }
+
+    if (isYieldOpportunitiesError) {
+        return { status: 'invalid', reason: 'yield-opportunities-error' };
+    }
+
+    if (!isYieldOpportunitiesSuccess) {
+        return { status: 'loading' };
+    }
+
+    if (!vault) {
+        return { status: 'invalid', reason: 'missing-vault' };
+    }
+
+    if (isVaultNetworkMismatch({ account, vault })) {
+        return { status: 'invalid', reason: 'network-mismatch' };
+    }
+
+    if (isVaultTokenMismatch({ account, routeParams, vault })) {
+        return { status: 'invalid', reason: 'token-mismatch' };
+    }
+
+    return { status: 'valid', account, routeParams, vault };
+};
+
+export const useEarnLayout = ({ type, fallbackTitleId }: UseEarnLayoutParams): EarnLayoutState => {
     const analyticsStep = getAnalyticsStep(type);
     const dispatch = useDispatch();
     const { account, routeParams } = useEarnRouteAccount();
@@ -44,6 +128,7 @@ export const useEarnLayout = ({
         yieldOpportunities,
         isLoading: isYieldOpportunitiesLoading,
         isSuccess: isYieldOpportunitiesSuccess,
+        isError: isYieldOpportunitiesError,
     } = useAllYieldOpportunities();
 
     useEffect(() => {
@@ -52,45 +137,31 @@ export const useEarnLayout = ({
         }
     }, [dispatch, routeParams]);
 
+    const vault =
+        isYieldOpportunitiesSuccess && routeParams
+            ? yieldOpportunities.find(opportunity => opportunity.id === routeParams.yieldId)
+            : undefined;
+
+    const layoutState = getEarnLayoutResult({
+        account,
+        routeParams,
+        vault,
+        isYieldOpportunitiesLoading,
+        isYieldOpportunitiesSuccess,
+        isYieldOpportunitiesError,
+    });
+
     useLayout(
         'Earn',
         <YieldPageHeader
             analyticsStep={analyticsStep}
             fallbackTitleId={fallbackTitleId}
-            account={account}
+            account={layoutState.status === 'valid' ? layoutState.account : account}
             routeParams={routeParams}
+            vault={layoutState.status === 'valid' ? layoutState.vault : undefined}
+            isInvalid={layoutState.status !== 'valid'}
         />,
     );
 
-    if (!routeParams) {
-        return { isValid: false, fallback: null };
-    }
-
-    if (!account) {
-        return { isValid: false, fallback: <AccountNotExists /> };
-    }
-
-    if (isYieldOpportunitiesLoading) {
-        return { isValid: false, fallback: <VaultLoading /> };
-    }
-
-    const vault = isYieldOpportunitiesSuccess
-        ? yieldOpportunities.find(opportunity => opportunity.id === routeParams.yieldId)
-        : undefined;
-
-    if (isYieldOpportunitiesSuccess && !vault) {
-        return { isValid: false, fallback: <VaultNotExists /> };
-    }
-
-    if (vault?.token.address && routeParams.contractAddress) {
-        const isTokenMismatch =
-            getContractAddressForNetworkSymbol(account.symbol, vault.token.address) !==
-            getContractAddressForNetworkSymbol(account.symbol, routeParams.contractAddress);
-
-        if (isTokenMismatch) {
-            return { isValid: false, fallback: <TokenNotExists /> };
-        }
-    }
-
-    return { isValid: true, account, routeParams };
+    return layoutState;
 };

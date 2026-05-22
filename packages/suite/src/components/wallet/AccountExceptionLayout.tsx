@@ -34,7 +34,7 @@ export const AccountExceptionLayout = (props: AccountExceptionLayoutProps) => (
                     margin={{ top: spacings.xxl, bottom: spacings.xl }}
                 />
             )}
-            <H2>{props.title}</H2>
+            <H2 align="center">{props.title}</H2>
             <Paragraph
                 intent="neutral"
                 priority="secondary"

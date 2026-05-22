@@ -1,11 +1,7 @@
 import { useMemo } from 'react';
 
 import { type EarnParams } from '@suite/router';
-import {
-    type TokenDto,
-    type YieldDto,
-    useAllYieldOpportunities,
-} from '@suite-common/earn-stablecoin-api';
+import { type TokenDto, type YieldDto } from '@suite-common/earn-stablecoin-api';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowDisplayToken,
@@ -50,7 +46,6 @@ const getMatchedAccountToken = ({
 
 type UseResolvedYieldFlowDataResult = {
     account: Account;
-    vault: YieldDto | null;
     token: YieldFlowToken | null;
     receiptToken: YieldFlowDisplayToken | null;
     apy: number | null;
@@ -62,16 +57,15 @@ type UseResolvedYieldFlowDataResult = {
 type UseResolvedYieldFlowDataProps = {
     account: Account;
     routeParams: EarnParams;
+    vault: YieldDto;
 };
 
 export const useResolvedYieldFlowData = ({
     account,
     routeParams,
+    vault,
 }: UseResolvedYieldFlowDataProps): UseResolvedYieldFlowDataResult => {
-    const { yieldOpportunities } = useAllYieldOpportunities();
-
-    const vault = yieldOpportunities.find(opportunity => opportunity.id === routeParams.yieldId);
-    const resolvedContractAddress = routeParams.contractAddress ?? vault?.token.address;
+    const resolvedContractAddress = routeParams.contractAddress ?? vault.token.address;
 
     const matchedToken = useMemo(() => {
         if (resolvedContractAddress) {
@@ -90,27 +84,21 @@ export const useResolvedYieldFlowData = ({
 
         return getMatchedAccountToken({
             account,
-            token: vault?.token,
+            token: vault.token,
         });
-    }, [account, resolvedContractAddress, vault?.token]);
+    }, [account, resolvedContractAddress, vault.token]);
 
     const matchedOutputToken = useMemo(
         () =>
-            vault
-                ? getMatchedAccountToken({
-                      account,
-                      token: vault.outputToken,
-                  })
-                : undefined,
+            getMatchedAccountToken({
+                account,
+                token: vault.outputToken,
+            }),
         [account, vault],
     );
 
-    const token = useMemo<YieldFlowToken | null>(() => {
-        if (!vault) {
-            return null;
-        }
-
-        return {
+    const token = useMemo<YieldFlowToken | null>(
+        () => ({
             networkSymbol: account.symbol,
             symbol:
                 matchedToken?.symbol ??
@@ -120,11 +108,12 @@ export const useResolvedYieldFlowData = ({
             contractAddress: resolvedContractAddress ?? null,
             coingeckoId: vault.token.coinGeckoId,
             balance: matchedToken?.balance ?? '0',
-        };
-    }, [account, matchedToken, resolvedContractAddress, vault]);
+        }),
+        [account, matchedToken, resolvedContractAddress, vault],
+    );
 
     const receiptToken = useMemo<YieldFlowDisplayToken | null>(() => {
-        if (!vault || !token) {
+        if (!token) {
             return null;
         }
 
@@ -137,15 +126,13 @@ export const useResolvedYieldFlowData = ({
         };
     }, [account, token, vault]);
 
-    const suppliedAmount = vault
-        ? getConvertedOutputTokenBalanceToInputTokenAmount({
-              networkSymbol: account.symbol,
-              token: vault.token,
-              outputToken: vault.outputToken,
-              outputTokenBalance: matchedOutputToken?.balance,
-              pricePerShareState: vault.state?.pricePerShareState,
-          })
-        : '0';
+    const suppliedAmount = getConvertedOutputTokenBalanceToInputTokenAmount({
+        networkSymbol: account.symbol,
+        token: vault.token,
+        outputToken: vault.outputToken,
+        outputTokenBalance: matchedOutputToken?.balance,
+        pricePerShareState: vault.state?.pricePerShareState,
+    });
 
     const suppliedSharesAmount = matchedOutputToken?.balance ?? '0';
 
@@ -155,11 +142,10 @@ export const useResolvedYieldFlowData = ({
         yieldId: routeParams.yieldId,
     });
 
-    const apy = vault?.rewardRate?.total != null ? getApyPercent(vault.rewardRate.total) : null;
+    const apy = vault.rewardRate.total != null ? getApyPercent(vault.rewardRate.total) : null;
 
     return {
         account,
-        vault: vault ?? null,
         token,
         receiptToken,
         apy,

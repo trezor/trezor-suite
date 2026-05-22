@@ -12,9 +12,7 @@ export { UnstakeModal } from './modals/UnstakeModal/UnstakeModal';
 export { EarnDashboard } from './dashboard/EarnDashboard';
 
 export { YieldPageHeader } from './yield/common/YieldPageHeader';
-export { VaultNotExists } from './yield/common/VaultNotExists';
-export { VaultLoading } from './yield/common/VaultLoading';
-export { TokenNotExists } from './yield/common/TokenNotExists';
+export { EarnException } from './yield/common/EarnException';
 
 export { YieldClaim } from './yield/claim/YieldClaim';
 export { YieldClaimPageHeader } from './yield/claim/YieldClaimPageHeader';
