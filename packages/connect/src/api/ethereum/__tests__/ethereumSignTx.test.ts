@@ -1,6 +1,4 @@
-import { Mainnet, createCustomCommon } from '@ethereumjs/common';
-import { createTxFromRLP } from '@ethereumjs/tx';
-import { keccak256, toHex } from 'web3-utils';
+import { keccak256, recoverTransactionAddress } from 'viem';
 
 import * as fixtures from '../__fixtures__/ethereumSignTx';
 import { serializeEthereumTx } from '../ethereumSignTx';
@@ -8,28 +6,21 @@ import { serializeEthereumTx } from '../ethereumSignTx';
 describe('helpers/ethereumSignTx', () => {
     describe('serializeEthereumTx', () => {
         fixtures.serializeEthereumTx.forEach(f => {
-            it(f.description, () => {
+            it(f.description, async () => {
                 const isLegacy = f.type === undefined || f.type === 0;
                 const serialized = serializeEthereumTx(f.tx, f.signature, isLegacy);
 
                 // Verify signature hash
-                const hash = toHex(
-                    keccak256(Uint8Array.from(Buffer.from(serialized.slice(2), 'hex'))),
-                );
+                const hash = keccak256(serialized);
                 expect(hash).toEqual(f.result);
 
-                // Verify by parsing the serialized tx
-                const tx = createTxFromRLP(Buffer.from(serialized.slice(2), 'hex'), {
-                    common: createCustomCommon(
-                        { chainId: f.tx.chainId, defaultHardfork: f.defaultHardfork },
-                        Mainnet,
-                    ),
+                // Verify by parsing sender address from serialized transaction
+                const senderAddress = await recoverTransactionAddress({
+                    serializedTransaction: serialized,
                 });
-                const hash2 = Buffer.from(tx.hash()).toString('hex');
-                expect(`0x${hash2}`).toEqual(f.result);
 
                 // Compare sender address (based on signature)
-                expect(tx.getSenderAddress().toString()).toEqual(f.from);
+                expect(senderAddress.toLowerCase()).toEqual(f.from);
             });
         });
     });

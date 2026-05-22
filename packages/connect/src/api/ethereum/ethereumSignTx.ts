@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
-import type { Common } from '@ethereumjs/common';
-import { Hardfork, Mainnet, createCustomCommon } from '@ethereumjs/common';
-import type { FeeMarketEIP1559TxData, LegacyTxData } from '@ethereumjs/tx';
-import { createTx } from '@ethereumjs/tx';
+import { serializeTransaction } from 'viem';
 
 import type {
     EthereumAccessList,
@@ -16,7 +13,7 @@ import type { MessagesSchema } from '@trezor/protobuf';
 
 import { getEthereumDefinitions } from './ethereumDefinitions';
 import type { TypedCall } from '../../device/DeviceCommands';
-import { addHexPrefix, deepTransform } from '../../utils/formatUtils';
+import { addHexPrefix } from '../../utils/formatUtils';
 
 const splitString = (str?: string, len?: number): [string, string] => {
     if (str == null) {
@@ -104,56 +101,43 @@ function handleTxFlowResponse(
     return processTxRequest(typedCall, response.message, data, chain_id);
 }
 
-const deepHexPrefix = deepTransform(addHexPrefix);
+const ifNotUndefined = <T, U>(value: T | undefined, convert: (value: T) => U): U | undefined =>
+    value === undefined ? undefined : convert(value);
 
-export const getCommonForChain = (chainId: number): Common => {
-    // @ethereumjs/tx doesn't support ETC (chain 61) by default
-    // see: https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/examples/custom-chain-id-tx.ts
-    if (chainId === 61) {
-        return createCustomCommon(
-            {
-                chainId: 61,
-                // last hardfork shared with Ethereum
-                defaultHardfork: Hardfork.Petersburg,
-            },
-            Mainnet,
-        );
-    }
-
-    return createCustomCommon({ chainId }, Mainnet);
-};
+const toBigInt = (value: string) => BigInt(addHexPrefix(value));
 
 export const serializeEthereumTx = (
     tx: EthereumTransactionEIP1559 | EthereumTransaction,
     signature: { v: `0x${string}`; r: `0x${string}`; s: `0x${string}` },
     isLegacy: boolean,
-) => {
-    const txData = deepHexPrefix({
-        ...tx,
-        ...signature,
-        to: tx.to || undefined,
-        type: isLegacy ? 0 : 2, // 0 for legacy, 2 for EIP-1559
-        ...(isLegacy
-            ? {
-                  gasPrice: tx.gasPrice,
-                  maxFeePerGas: undefined,
-                  maxPriorityFeePerGas: undefined,
-              }
-            : {
-                  gasPrice: undefined,
-                  maxFeePerGas: tx.maxFeePerGas,
-                  maxPriorityFeePerGas: tx.maxPriorityFeePerGas,
-              }),
-    }) satisfies LegacyTxData | FeeMarketEIP1559TxData;
-
-    const txOptions = {
-        common: getCommonForChain(tx.chainId),
-    };
-
-    const ethTx = createTx(txData, txOptions);
-
-    return `0x${Buffer.from(ethTx.serialize()).toString('hex')}`;
-};
+) =>
+    serializeTransaction(
+        {
+            value: toBigInt(tx.value),
+            nonce: Number(addHexPrefix(tx.nonce)),
+            data: ifNotUndefined(tx.data, addHexPrefix),
+            to: ifNotUndefined(tx.to || undefined, addHexPrefix), // empty ("") address must be omitted completely
+            gas: ifNotUndefined(tx.gasLimit, toBigInt),
+            chainId: tx.chainId,
+            ...(isLegacy
+                ? {
+                      type: 'legacy',
+                      gasPrice: ifNotUndefined(tx.gasPrice, toBigInt),
+                  }
+                : {
+                      type: 'eip1559',
+                      maxFeePerGas: ifNotUndefined(tx.maxFeePerGas, toBigInt),
+                      maxPriorityFeePerGas: ifNotUndefined(tx.maxPriorityFeePerGas, toBigInt),
+                      accessList: ('accessList' in tx ? tx.accessList : undefined)?.map(
+                          ({ address, storageKeys }) => ({
+                              address: addHexPrefix(address),
+                              storageKeys: storageKeys.map(addHexPrefix),
+                          }),
+                      ),
+                  }),
+        },
+        { ...signature, v: toBigInt(signature.v) },
+    );
 
 const stripLeadingZeroes = (str: string) => {
     while (/^00/.test(str)) {
