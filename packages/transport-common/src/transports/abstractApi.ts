@@ -12,7 +12,7 @@ import { SessionsBackground } from '../sessions/background';
 import { SessionsClient } from '../sessions/client';
 import { type SessionsBackgroundInterface } from '../sessions/types';
 import { callThpMessage, parseThpMessage, receiveThpMessage, sendThpMessage } from '../thp';
-import { type Session } from '../types';
+import { type Descriptor, type DescriptorApiLevel, type Session } from '../types';
 import { receiveAndParse } from '../utils/receive';
 import { error, success } from '../utils/result';
 import { buildMessage, createChunks, sendChunks } from '../utils/send';
@@ -31,6 +31,24 @@ export abstract class AbstractApiTransport extends AbstractTransport {
     protected sessionsBackground: SessionsBackgroundInterface;
 
     protected api: AbstractApi;
+
+    private readonly onTransportInterfaceChange = (descriptors: DescriptorApiLevel[]) => {
+        this.logger?.debug('new descriptors from api', descriptors);
+        // we signal this to sessions background
+        this.sessionsClient.enumerateDone({
+            descriptors,
+        });
+    };
+
+    private readonly onSessionsDescriptors = (descriptors: Descriptor[]) => {
+        this.logger?.debug('new descriptors from background', descriptors);
+        // we propagate new descriptors to higher levels
+        this.handleDescriptorsChange(descriptors);
+    };
+
+    private readonly onSessionsReleaseRequest = (descriptor: Descriptor) => {
+        this.deviceEvents.emit(descriptor.path, { type: TRANSPORT.DEVICE_REQUEST_RELEASE });
+    };
 
     constructor({ api, ...rest }: ConstructorParams) {
         super(rest);
@@ -66,23 +84,12 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         this.listening = true;
 
         // 1. transport api reports descriptors change
-        this.api.on('transport-interface-change', descriptors => {
-            this.logger?.debug('new descriptors from api', descriptors);
-            // 2. we signal this to sessions background
-            this.sessionsClient.enumerateDone({
-                descriptors,
-            });
-        });
-        // 3. based on 2.sessions background distributes information about descriptors change to all clients
-        this.sessionsClient.on('descriptors', descriptors => {
-            this.logger?.debug('new descriptors from background', descriptors);
-            // 4. we propagate new descriptors to higher levels
-            this.handleDescriptorsChange(descriptors);
-        });
-
-        this.sessionsClient.on('releaseRequest', descriptor => {
-            this.deviceEvents.emit(descriptor.path, { type: TRANSPORT.DEVICE_REQUEST_RELEASE });
-        });
+        // 2. we signal this to sessions background (in onTransportInterfaceChange)
+        this.api.on('transport-interface-change', this.onTransportInterfaceChange);
+        // 3. based on 2. sessions background distributes information about descriptors change to all clients
+        // 4. we propagate new descriptors to higher levels (in onSessionsDescriptors)
+        this.sessionsClient.on('descriptors', this.onSessionsDescriptors);
+        this.sessionsClient.on('releaseRequest', this.onSessionsReleaseRequest);
 
         return success(undefined);
     }
@@ -463,6 +470,12 @@ export abstract class AbstractApiTransport extends AbstractTransport {
     }
 
     stop() {
+        // Remove listeners added by listen() before they can accumulate on repeated stop/listen cycles.
+        // sessionsClient itself is not disposed (see comment below), but the listeners registered by
+        // this transport must be removed by reference to avoid touching any other subscribers.
+        this.api.off('transport-interface-change', this.onTransportInterfaceChange);
+        this.sessionsClient.off('descriptors', this.onSessionsDescriptors);
+        this.sessionsClient.off('releaseRequest', this.onSessionsReleaseRequest);
         if (!this.stopped) {
             this.api.once('transport-interface-change', () => {
                 this.logger?.debug('device connected after transport stopped, goodbye...');

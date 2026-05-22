@@ -333,43 +333,29 @@ describe('Usb', () => {
             });
         });
 
-        // CURRENTLY LEAKS — see PR #27978 for the fix.
-        //
-        // AbstractApiTransport.listen() registers three event handlers (one on the api emitter,
-        // two on the sessionsClient) but stop() does not remove them. Every listen()/stop()
-        // cycle therefore adds one fresh closure per event to the same emitters, which is
-        // exactly the kind of accumulation that trips Node's MaxListenersExceededWarning trap
-        // around the 11th cycle.
-        //
-        // This test pins the current broken behavior so the leak is visible in CI and the
-        // assertions auto-flip the moment the fix lands. When updating: each call to stop()
-        // must leave the targeted listener counts at 0 (api may keep a single one-shot
-        // 'transport-interface-change' listener registered by stop() itself, so assert
-        // listenerCount('transport-interface-change') <= 1).
-        it('listen()/stop() leaks listeners on api and sessionsClient (TODO: fix in #27978)', async () => {
+        // Previously this test pinned the leak (see #27981): `AbstractApiTransport.stop()`
+        // did not remove the listeners registered by `listen()` on `api` and `sessionsClient`.
+        // The fix in this PR now removes them on stop. Test asserts the fixed behavior across
+        // 15 cycles.
+        it('listen()/stop() does not leak listeners across repeated cycles', async () => {
             const { transport, testUsbApi } = await initTest();
-            const { sessionsClient } = transport as any;
+            const sessionsClient = (transport as any).sessionsClient;
 
-            transport.listen();
-            // listen() registers one handler on the api and one each on the sessionsClient
-            expect(testUsbApi.listenerCount('transport-interface-change')).toBe(1);
-            expect(sessionsClient.listenerCount('descriptors')).toBe(1);
-            expect(sessionsClient.listenerCount('releaseRequest')).toBe(1);
+            for (let i = 0; i < 15; i++) {
+                transport.listen();
+                expect(testUsbApi.listenerCount('transport-interface-change')).toBeLessThanOrEqual(
+                    2,
+                );
+                expect(sessionsClient.listenerCount('descriptors')).toBe(1);
+                expect(sessionsClient.listenerCount('releaseRequest')).toBe(1);
 
-            transport.stop();
-
-            // TODO(#27978): after the fix lands, expected counts are:
-            //   testUsbApi.listenerCount('transport-interface-change')  <= 1   (only the
-            //       one-shot 'goodbye' listener registered inside stop() may remain)
-            //   sessionsClient.listenerCount('descriptors')             === 0
-            //   sessionsClient.listenerCount('releaseRequest')          === 0
-            //
-            // Current broken behavior:
-            //   - api keeps the listener added in listen() AND gains the one-shot from stop()
-            //   - sessionsClient keeps both listeners added in listen()
-            expect(testUsbApi.listenerCount('transport-interface-change')).toBe(2);
-            expect(sessionsClient.listenerCount('descriptors')).toBe(1);
-            expect(sessionsClient.listenerCount('releaseRequest')).toBe(1);
+                transport.stop();
+                expect(testUsbApi.listenerCount('transport-interface-change')).toBeLessThanOrEqual(
+                    1,
+                );
+                expect(sessionsClient.listenerCount('descriptors')).toBe(0);
+                expect(sessionsClient.listenerCount('releaseRequest')).toBe(0);
+            }
         });
 
         it('call - with use abort', async () => {
