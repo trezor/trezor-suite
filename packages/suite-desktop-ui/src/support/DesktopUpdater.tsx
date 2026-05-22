@@ -54,30 +54,40 @@ export const DesktopUpdater = () => {
             dispatch(desktopUpdateActions.setAutomaticUpdates({ isEnabled })),
         );
 
-        if (!desktopUpdate.enabled) {
-            return;
+        let checkForUpdatesInterval: ReturnType<typeof setInterval> | undefined;
+
+        if (desktopUpdate.enabled) {
+            desktopApi.on('update/checking', () => dispatch(desktopUpdateActions.checking()));
+            desktopApi.on('update/available', params => dispatch(availableThunk(params)));
+            desktopApi.on('update/not-available', params => dispatch(notAvailableThunk(params)));
+            desktopApi.on('update/downloaded', params => dispatch(readyThunk(params)));
+            desktopApi.on('update/downloading', params =>
+                dispatch(desktopUpdateActions.downloading(params)),
+            );
+            desktopApi.on('update/error', () => dispatch(errorThunk()));
+
+            // Initial check for updates
+            desktopApi.checkForUpdates({ isManual: false });
+            // Check for updates every hour
+            checkForUpdatesInterval = setInterval(
+                () => {
+                    desktopApi.checkForUpdates({ isManual: false });
+                },
+                60 * 60 * 1000,
+            );
         }
 
-        desktopApi.on('update/checking', () => dispatch(desktopUpdateActions.checking()));
-        desktopApi.on('update/available', params => dispatch(availableThunk(params)));
-        desktopApi.on('update/not-available', params => dispatch(notAvailableThunk(params)));
-        desktopApi.on('update/downloaded', params => dispatch(readyThunk(params)));
-        desktopApi.on('update/downloading', params =>
-            dispatch(desktopUpdateActions.downloading(params)),
-        );
-        desktopApi.on('update/error', () => dispatch(errorThunk()));
-
-        // Initial check for updates
-        desktopApi.checkForUpdates({ isManual: false });
-        // Check for updates every hour
-        const checkForUpdatesInterval = setInterval(
-            () => {
-                desktopApi.checkForUpdates({ isManual: false });
-            },
-            60 * 60 * 1000,
-        );
-
-        return () => clearInterval(checkForUpdatesInterval);
+        return () => {
+            clearInterval(checkForUpdatesInterval);
+            desktopApi.removeAllListeners('update/allow-prerelease');
+            desktopApi.removeAllListeners('update/set-automatic-update-enabled');
+            desktopApi.removeAllListeners('update/checking');
+            desktopApi.removeAllListeners('update/available');
+            desktopApi.removeAllListeners('update/not-available');
+            desktopApi.removeAllListeners('update/downloaded');
+            desktopApi.removeAllListeners('update/downloading');
+            desktopApi.removeAllListeners('update/error');
+        };
     }, [desktopUpdate.enabled, dispatch]);
 
     const hideWindow = useCallback(() => {
