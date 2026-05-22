@@ -20,6 +20,7 @@ import { isNotUndefined, isUUID, versionUtils } from '@trezor/utils';
 import { DEFAULT_FIRMWARE_RANGE, getFirmwareRange } from '../api/common/paramsValidator';
 import type { Device } from '../device/Device';
 import type { UiPromiseCreator } from '../events/ui-promise';
+import { isDebugFirmware } from '../utils/firmwareUtils';
 
 export { DEFAULT_FIRMWARE_RANGE };
 
@@ -217,6 +218,8 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         const firmwareRange = getFirmwareRange(
             [this.name, ...this.requiredFirmwareCapabilities],
             this.requiredFirmwareCoins.filter(isNotUndefined),
+            DEFAULT_FIRMWARE_RANGE,
+            isDebugFirmware(device.features),
         );
         const range = firmwareRange[device.features.internal_model];
 

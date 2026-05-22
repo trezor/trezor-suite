@@ -3,6 +3,7 @@ import { DeviceModelInternal, getFirmwareOrBootloaderVersionArray } from '@trezo
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { isArrayMember, versionUtils } from '@trezor/utils';
 
+import { isDebugFirmware } from './firmwareUtils';
 import { config } from '../data/config';
 
 const DEFAULT_CAPABILITIES_T1: PROTO.Capability[] = [
@@ -122,8 +123,10 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
         });
 
     // 4. check if firmware version is in range of capabilities in "config.supportedFirmware"
+    const isDebug = isDebugFirmware(features);
     config.supportedFirmware.forEach(s => {
         if (!s.capabilities) return;
+        if (s.firmwareType && (s.firmwareType === 'debug') !== isDebug) return;
         const min = s.min ? (s.min as Record<DeviceModelInternal, string | undefined>)[key] : null;
         const max = s.max ? s.max[key] : null;
         if (min && (min === '0' || versionUtils.isNewer(min, fw))) {
