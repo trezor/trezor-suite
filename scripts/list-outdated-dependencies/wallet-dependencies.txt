@@ -1,5 +1,3 @@
-@ethereumjs/common
-@ethereumjs/tx
 @exodus/patch-broken-hermes-typed-arrays
 @fivebinaries/coin-selection
 @hookform/resolvers
