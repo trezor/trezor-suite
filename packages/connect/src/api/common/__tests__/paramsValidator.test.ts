@@ -52,10 +52,10 @@ describe('helpers/paramsValidator', () => {
                     Object.assign(config, f.config);
                 }
 
-                const [method, coinInfo, defaultRange] = f.params;
+                const [method, coinInfo, defaultRange, isDebug] = f.params;
                 expect(
                     // @ts-expect-error
-                    getFirmwareRange([method], coinInfo ? [coinInfo] : [], defaultRange),
+                    getFirmwareRange([method], coinInfo ? [coinInfo] : [], defaultRange, isDebug),
                 ).toEqual(f.result);
             });
         });
