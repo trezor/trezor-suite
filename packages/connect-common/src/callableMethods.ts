@@ -8,6 +8,7 @@ import type {
     TrezorConnectEthereum,
     TrezorConnectEvolu,
     TrezorConnectMonero,
+    TrezorConnectNostr,
     TrezorConnectRipple,
     TrezorConnectSolana,
     TrezorConnectStellar,
@@ -31,6 +32,7 @@ type ConnectCallableMethodGroups = {
     tezos: readonly (keyof TrezorConnectTezos)[];
     tron: readonly (keyof TrezorConnectTron)[];
     evolu: readonly (keyof TrezorConnectEvolu)[];
+    nostr: readonly (keyof TrezorConnectNostr)[];
 };
 
 const connectCallableMethodGroups = {
@@ -132,6 +134,7 @@ const connectCallableMethodGroups = {
     tezos: ['tezosGetAddress', 'tezosGetPublicKey', 'tezosSignTransaction'],
     tron: ['tronGetAddress', 'tronSignTransaction', 'tronComposeTransaction'],
     evolu: ['evoluGetNode', 'evoluSignRegistrationRequest', 'evoluGetDelegatedIdentityKey'],
+    nostr: ['nostrGetPublicKey', 'nostrSignEvent'],
 } as const satisfies ConnectCallableMethodGroups;
 
 type ConnectCallableMethod =
