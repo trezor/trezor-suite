@@ -36,9 +36,12 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
                 if (params.id === message.data.id) {
                     resolve(message.data);
                     background.port.removeEventListener('message', onmessage);
+                    const idx = this.portListeners.indexOf(onmessage);
+                    if (idx !== -1) this.portListeners.splice(idx, 1);
                 }
             };
 
+            this.portListeners.push(onmessage);
             background.port.addEventListener('message', onmessage);
 
             background.port.onmessageerror = message => {
@@ -46,6 +49,8 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
                 console.error('background-browser onmessageerror,', message);
 
                 background.port.removeEventListener('message', onmessage);
+                const idx = this.portListeners.indexOf(onmessage);
+                if (idx !== -1) this.portListeners.splice(idx, 1);
             };
             background.port.postMessage(params);
         });
