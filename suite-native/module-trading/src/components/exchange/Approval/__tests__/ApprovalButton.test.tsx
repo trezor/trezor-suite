@@ -15,6 +15,15 @@ jest.mock('@react-navigation/native', () => ({
     }),
 }));
 
+const mockAnalyticsReport = jest.fn();
+jest.mock('@suite-native/trading-analytics', () => ({
+    ...jest.requireActual('@suite-native/trading-analytics'),
+    useExchangeAnalyticsStepReport:
+        (action: unknown) =>
+        (...args: unknown[]) =>
+            mockAnalyticsReport(action, ...args),
+}));
+
 describe('ApprovalButton', () => {
     let store: TestStore;
 
@@ -66,6 +75,14 @@ describe('ApprovalButton', () => {
         });
     });
 
+    it('should report to analytics on press', async () => {
+        const { getByText } = renderApprovalButton({ isReady: true });
+
+        await userEvent.press(getByText('Continue'));
+
+        expect(mockAnalyticsReport).toHaveBeenCalledWith('approval-preview', 'continue');
+    });
+
     it('should navigate to TradingExchangeOutputsReview on press for flowType revoke', async () => {
         const { getByText } = renderApprovalButton({ isReady: true, flowType: 'revoke' });
 
@@ -77,6 +94,14 @@ describe('ApprovalButton', () => {
             orderId: 'c2de24a5-b923-42af-b70e-44bda8fa41dd',
             flowType: 'revoke',
         });
+    });
+
+    it('should report to analytics on press for flowType revoke', async () => {
+        const { getByText } = renderApprovalButton({ isReady: true, flowType: 'revoke' });
+
+        await userEvent.press(getByText('Continue'));
+
+        expect(mockAnalyticsReport).toHaveBeenCalledWith('revoke-preview', 'continue');
     });
 
     it('should render nothing when no selected quote is provided', () => {
