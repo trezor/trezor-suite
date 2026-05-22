@@ -142,6 +142,26 @@ const runTestCase = async (device: Device) => {
                 allowDebugKeys: true,
             });
             break;
+        case 'nostr-get-public-key':
+            result = await TrezorConnect.nostrGetPublicKey({
+                device,
+                __experimental: true,
+                path: "m/44'/1237'/0'/0/0",
+                ...params,
+            });
+            break;
+        case 'nostr-sign-event':
+            result = await TrezorConnect.nostrSignEvent({
+                device,
+                __experimental: true,
+                path: "m/44'/1237'/0'/0/0",
+                created_at: Math.floor(Date.now() / 1000),
+                kind: 1,
+                tags: [],
+                content: 'Hello from @trezor/connect-cli',
+                ...params,
+            });
+            break;
         default:
             result = await TrezorConnect.getAddress({ device, path: "m/44'/0'/0'/0/0", ...params });
     }
