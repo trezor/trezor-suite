@@ -198,3 +198,4 @@ export const initStore = (
         services: castedStore.extra.services,
     };
 };
+
