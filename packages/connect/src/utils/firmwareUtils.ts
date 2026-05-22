@@ -111,6 +111,13 @@ export const getFirmwareMode = (features: Features) => {
     return 'normal';
 };
 
+// Vendor headers used by officially signed Trezor firmware.
+// Anything else (emulator, locally-signed debug builds, etc.) is considered a debug build.
+const PRODUCTION_FIRMWARE_VENDORS = new Set(['Trezor', 'Trezor Bitcoin-only']);
+
+export const isDebugFirmware = (features: Features) =>
+    !PRODUCTION_FIRMWARE_VENDORS.has(features.fw_vendor ?? '');
+
 export const getFirmwareType = (features: Features) => {
     let type = FirmwareType.Universal;
     // Vendor headers have been changed in 2.6.3.

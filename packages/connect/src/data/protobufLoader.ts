@@ -13,6 +13,7 @@ import * as ethereumProto from '@trezor/protobuf/src/definitions/messages-ethere
 import * as evoluProto from '@trezor/protobuf/src/definitions/messages-evolu_pb';
 import * as managementProto from '@trezor/protobuf/src/definitions/messages-management_pb';
 import * as moneroProto from '@trezor/protobuf/src/definitions/messages-monero_pb';
+import * as nostrProto from '@trezor/protobuf/src/definitions/messages-nostr_pb';
 import * as rippleProto from '@trezor/protobuf/src/definitions/messages-ripple_pb';
 import * as solanaProto from '@trezor/protobuf/src/definitions/messages-solana_pb';
 import * as stellarProto from '@trezor/protobuf/src/definitions/messages-stellar_pb';
@@ -39,6 +40,7 @@ export const loadProtobufModules = () => {
         evoluProto,
         managementProto,
         moneroProto,
+        nostrProto,
         rippleProto,
         solanaProto,
         stellarProto,

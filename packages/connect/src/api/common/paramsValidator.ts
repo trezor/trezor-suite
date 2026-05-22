@@ -162,6 +162,9 @@ const filterByMethods = (methodsOrCapabilities: MethodOrCapability[]) => {
         ensureArray(rule.capabilities).some(methodSet.has.bind(methodSet));
 };
 
+export const filterByFirmwareType = (isDebug: boolean) => (rule: FirmwareRule) =>
+    !rule.firmwareType || (rule.firmwareType === 'debug') === isDebug;
+
 const getCoinRules = (coins: CoinInfo[], currentRange: FirmwareRange): FirmwareRange[] =>
     coins.map(({ support = typedObjectTransformValues(DEFAULT_FIRMWARE_RANGE, () => false) }) => ({
         ...currentRange,
@@ -175,10 +178,12 @@ const getConfigRules = (
     methodsOrCapabilities: MethodOrCapability[],
     coins: CoinInfo[],
     currentRange: FirmwareRange,
+    isDebug: boolean,
 ): FirmwareRange[] =>
     config.supportedFirmware
         .filter(filterByCoins(coins))
         .filter(filterByMethods(methodsOrCapabilities))
+        .filter(filterByFirmwareType(isDebug))
         .map(({ min, max }) =>
             typedObjectTransformValues(currentRange, (value, key) => ({
                 min: min?.[key] ?? value.min,
@@ -190,7 +195,8 @@ export const getFirmwareRange = (
     methodsOrCapabilities: MethodOrCapability[],
     coins: CoinInfo[],
     currentRange = DEFAULT_FIRMWARE_RANGE,
+    isDebug = false,
 ) =>
     getCoinRules(coins, currentRange)
-        .concat(getConfigRules(methodsOrCapabilities, coins, currentRange))
+        .concat(getConfigRules(methodsOrCapabilities, coins, currentRange, isDebug))
         .reduce(intersectRange, currentRange);
