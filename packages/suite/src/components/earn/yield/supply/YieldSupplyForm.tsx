@@ -350,6 +350,7 @@ export const YieldSupplyForm = () => {
                     vaultId={vault.id}
                     onCancel={handleApproveModalCancel}
                     onSuccess={handleApproveSuccessTxid}
+                    preapprovedAmount={allowanceAmount}
                 />
             )}
         </>

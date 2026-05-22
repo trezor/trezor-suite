@@ -15,12 +15,19 @@ export type CardListItemProps = Omit<GhostContainerProps, 'borderRadius' | 'padd
     paddingType?: CardListItemPaddingType;
 };
 
-export const CardListItem = ({ children, paddingType = 'normal', ...rest }: CardListItemProps) => (
+export const CardListItem = ({
+    children,
+    paddingType = 'normal',
+    onClick,
+    ...rest
+}: CardListItemProps) => (
     <GhostContainer
         as="div"
         borderRadius={0}
         padding={paddingMap[paddingType]}
-        backgroundColorOnInteraction={rest.onClick ? 'elementFillElevatedHovered' : undefined}
+        backgroundColorOnInteraction={onClick ? 'elementFillElevatedHovered' : undefined}
+        onClick={onClick}
+        isDisabled={!onClick}
         {...rest}
     >
         <Row justifyContent="space-between" gap={12} overflow="hidden">
