@@ -97,6 +97,8 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
     private port: number | undefined;
     private address: string;
     private sockets: Record<number, net.Socket> = {};
+    private onConnection?: (socket: net.Socket) => void;
+    private onError?: (e: Error) => void;
 
     constructor({
         logger,
@@ -180,7 +182,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
               }
         >(resolve => {
             let nextSocketId = 0;
-            this.server.on('connection', socket => {
+            this.onConnection = socket => {
                 // Add a newly connected socket
                 const socketId = nextSocketId++;
                 this.sockets[socketId] = socket;
@@ -188,9 +190,10 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                 socket.on('close', () => {
                     delete this.sockets[socketId];
                 });
-            });
+            };
+            this.server.on('connection', this.onConnection);
 
-            this.server.on('error', async e => {
+            this.onError = async e => {
                 this.server.close();
                 // @ts-expect-error - type is missing
                 const errorCode: string = e.code;
@@ -222,7 +225,8 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                     error: 'other error',
                     message: `Start error code: ${errorCode}`,
                 };
-            });
+            };
+            this.server.on('error', this.onError);
 
             this.server.listen(port, this.address, undefined, () => {
                 this.logger.info('Server started, listening on port: ', port);
@@ -241,6 +245,14 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
     public stop() {
         // note that this method only stops listening but keeps existing connections open and thus port blocked
         this.emitter.removeAllListeners();
+        if (this.onConnection) {
+            this.server.off('connection', this.onConnection);
+            this.onConnection = undefined;
+        }
+        if (this.onError) {
+            this.server.off('error', this.onError);
+            this.onError = undefined;
+        }
 
         return new Promise<void>(resolve => {
             this.emitter.emit('server/closing');

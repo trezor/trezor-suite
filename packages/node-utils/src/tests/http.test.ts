@@ -513,40 +513,59 @@ describe('HttpServer', () => {
         await server.stop();
     });
 
-    // CURRENTLY LEAKS — see PR #27978 for the fix.
-    //
-    // HttpServer.start() registers 'connection' and 'error' listeners on the underlying
-    // http.Server instance. HttpServer.stop() calls removeAllListeners() on the
-    // TypedEmitter wrapper (this.emitter) but does not touch listeners on the underlying
-    // http.Server itself. Because the same http.Server is reused across start/stop cycles
-    // (created once in the constructor), every cycle accumulates one fresh listener per
-    // event. On the multi-port retry path each accumulated 'error' listener triggers a
-    // parallel stop().then(start()) chain — a quadratic blow-up in flight.
-    //
-    // When the fix lands, stop() must call this.server.removeAllListeners('connection')
-    // and ('error') so each cycle nets zero accumulation.
-    test('stop() leaks connection/error listeners on the underlying http.Server (TODO: fix in #27978)', async () => {
+    // Previously this test pinned the leak (see #27981): `HttpServer.stop()` did not
+    // remove the 'connection'/'error' listeners that `start()` attached to the underlying
+    // `http.Server`, only the TypedEmitter wrapper ones. The fix removes them surgically
+    // (`server.off(event, handler)`) so Node's built-in `connectionListener` — attached
+    // once by `http.createServer` and responsible for HTTP parsing — is preserved across
+    // start/stop cycles. Two cycles cover both halves: cleanup after stop() and
+    // non-accumulation across the next start().
+    test('repeated start()/stop() does not leak connection/error listeners on the underlying http.Server', async () => {
         const underlyingServer = (server as any).server;
-
-        // Node's http.Server keeps one built-in 'connection' listener by default; start()
-        // adds one more, error starts at 0 and start() adds one.
         const connectionBaseline = underlyingServer.listenerCount('connection');
-        const errorBaseline = underlyingServer.listenerCount('error');
 
         await server.start();
         expect(underlyingServer.listenerCount('connection')).toBe(connectionBaseline + 1);
-        expect(underlyingServer.listenerCount('error')).toBe(errorBaseline + 1);
+        expect(underlyingServer.listenerCount('error')).toBe(1);
 
         await server.stop();
+        expect(underlyingServer.listenerCount('connection')).toBe(connectionBaseline);
+        expect(underlyingServer.listenerCount('error')).toBe(0);
 
-        // TODO(#27978): after the fix lands, the assertions below must be:
-        //   listenerCount('connection') === 0   (PR removes all 'connection' listeners,
-        //       including the built-in baseline)
-        //   listenerCount('error')      === 0
-        //
-        // Current broken behavior: stop() leaves both listeners attached to the underlying server.
+        await server.start();
         expect(underlyingServer.listenerCount('connection')).toBe(connectionBaseline + 1);
-        expect(underlyingServer.listenerCount('error')).toBe(errorBaseline + 1);
+        expect(underlyingServer.listenerCount('error')).toBe(1);
+
+        await server.stop();
+        expect(underlyingServer.listenerCount('connection')).toBe(connectionBaseline);
+        expect(underlyingServer.listenerCount('error')).toBe(0);
+    });
+
+    // Regression for an earlier iteration of the fix that called
+    // `this.server.removeAllListeners('connection')` in stop(). That wiped out Node's
+    // built-in `connectionListener` (the one `http.createServer` attaches), so the next
+    // start() accepted TCP connections without ever parsing them as HTTP and clients
+    // got `socket hang up`. The surgical `.off(event, storedHandler)` cleanup leaves
+    // Node's parser listener intact across cycles.
+    test('HTTP requests still work after a stop()/start() cycle', async () => {
+        server.get('/ping', [
+            (_request, response) => {
+                response.end('pong');
+            },
+        ]);
+
+        await server.start();
+        const firstAddr = server.getServerAddress();
+        const firstRes = await fetch(`http://${firstAddr.address}:${firstAddr.port}/ping`);
+        expect(firstRes.status).toBe(200);
+        expect(await firstRes.text()).toBe('pong');
+
+        await server.stop();
+        await server.start();
+        const secondAddr = server.getServerAddress();
+        const secondRes = await fetch(`http://${secondAddr.address}:${secondAddr.port}/ping`);
+        expect(secondRes.status).toBe(200);
+        expect(await secondRes.text()).toBe('pong');
     });
 
     test('port negotiation - even when started using random port, the resulting port is stored for future use', async () => {
