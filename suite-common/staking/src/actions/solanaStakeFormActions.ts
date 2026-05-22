@@ -187,7 +187,7 @@ export const composeSolanaStakingTransaction = async ({
     userAgent,
 }: ComposeSolanaStakingTransactionParams): Promise<PrecomposedLevels | undefined> => {
     const { account, feeInfo } = composeContext;
-    const { amount } = formValues.outputs[0];
+    const amount = formValues.outputs[0]?.amount;
     const { stakeType } = formValues;
 
     if (!amount || amount === '0') return undefined;
