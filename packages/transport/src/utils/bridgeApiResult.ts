@@ -24,10 +24,9 @@ export function info(res: UnknownPayload) {
     if (typeof version !== 'string') {
         return error({ code: ERRORS.WRONG_RESULT_TYPE });
     }
-    const configured = !!res.configured;
     const protocolMessages = !!res.protocolMessages;
 
-    return success({ version, configured, protocolMessages });
+    return success({ version, protocolMessages });
 }
 
 export function devices(res: UnknownPayload) {
