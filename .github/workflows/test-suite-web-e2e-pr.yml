@@ -222,7 +222,12 @@ jobs:
           project_name: "web"
 
   run-e2e-suite-web-tests:
-    if: github.repository == 'trezor/trezor-suite'
+    if: |
+      always() &&
+      github.repository == 'trezor/trezor-suite' &&
+      needs.build-web.result == 'success' &&
+      needs.build-connect.result == 'success' &&
+      needs.resolve-spec-list.result == 'success'
     needs:
       - build-web
       - build-connect

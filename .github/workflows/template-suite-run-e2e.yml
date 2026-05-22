@@ -228,11 +228,15 @@ jobs:
 
           # Build spec filter args if a spec list was provided
           SPEC_ARGS=""
+          PASS_WITH_NO_TESTS=""
           if [[ -n "${{ inputs.spec-list }}" ]]; then
             # Strip suite/e2e/ prefix (pwc-p CWD is suite/e2e/ via yarn workspace)
             # then convert comma-separated list to space-separated positional args
             SPEC_ARGS=$(echo "${{ inputs.spec-list }}" | tr ',' '\n' | sed 's|^suite/e2e/||' | tr '\n' ' ')
             echo "Running focused spec list: $SPEC_ARGS"
+            # A focused spec list may not match every Playwright project's grep filter,
+            # so allow projects that find zero tests to exit cleanly instead of failing.
+            PASS_WITH_NO_TESTS="--pass-with-no-tests"
           fi
 
           # Start services
@@ -246,6 +250,7 @@ jobs:
             $COVERAGE_OPT \
             --forbid-only \
             $REPORTER_OPT \
+            $PASS_WITH_NO_TESTS \
             $SPEC_ARGS
 
       - name: Extract and Upload Logs

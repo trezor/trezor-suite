@@ -157,7 +157,11 @@ jobs:
           project_name: "desktop"
 
   run-e2e-suite-desktop-tests:
-    if: github.repository == 'trezor/trezor-suite'
+    if: |
+      always() &&
+      github.repository == 'trezor/trezor-suite' &&
+      needs.build-app.result == 'success' &&
+      needs.resolve-spec-list.result == 'success'
     needs:
       - build-app
       - resolve-spec-list
