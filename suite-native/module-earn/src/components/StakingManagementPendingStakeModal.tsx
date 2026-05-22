@@ -1,5 +1,11 @@
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
-import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
+import { useStakingEntryPeriodEstimateInDays } from '@suite-common/staking';
+import {
+    selectAccountByKey,
+    selectAccountNetworkSymbol,
+    selectAccountStakeTransactions,
+    useAccountsSelector,
+} from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
     BottomSheetModal,
@@ -24,7 +30,6 @@ import {
     StakingDetailModalStep,
     StakingManagementModalStepIndicator,
 } from './StakingManagementModalStepIndicator';
-import { useStakingEntryPeriodEstimateInDays } from '../hooks/useStakingEntryPeriodEstimateInDays';
 
 type StakingManagementPendingStakeModalProps = {
     ref: BottomSheetModalRef;
@@ -51,6 +56,12 @@ export const StakingManagementPendingStakeModal = ({
 }: StakingManagementPendingStakeModalProps) => {
     const { applyStyle } = useNativeStyles();
     const symbol = useAccountsSelector(state => selectAccountNetworkSymbol(state, accountKey));
+    const account = useSelector((state: NativeStakingRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
+    const stakeTxs = useSelector((state: NativeStakingRootState) =>
+        selectAccountStakeTransactions(state, accountKey),
+    );
     const isStakeConfirming = useSelector((state: NativeStakingRootState) =>
         selectIsStakeConfirmingByAccountKey(state, accountKey),
     );
@@ -61,7 +72,7 @@ export const StakingManagementPendingStakeModal = ({
         useSelector((state: NativeStakingRootState) =>
             selectTotalStakePendingByAccountKey(state, accountKey),
         ) ?? '0';
-    const entryPeriodEstimateInDays = useStakingEntryPeriodEstimateInDays(accountKey);
+    const entryPeriodEstimateInDays = useStakingEntryPeriodEstimateInDays({ account, stakeTxs });
 
     const currentStep: StakingDetailModalStep = (() => {
         if (isStakeConfirming) return StakingDetailModalStep.TransactionConfirmed;
