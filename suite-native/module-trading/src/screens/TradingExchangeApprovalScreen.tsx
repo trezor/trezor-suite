@@ -31,7 +31,7 @@ type TradingExchangeApprovalScreenProps = StackProps<
     RootStackRoutes.TradingExchangeApproval
 >;
 
-export const TradingExchangeApprovalScreen = ({
+const TradingExchangeApprovalScreenContent = ({
     route: { params },
     navigation,
 }: TradingExchangeApprovalScreenProps) => {
@@ -139,58 +139,58 @@ export const TradingExchangeApprovalScreen = ({
     }
 
     return (
-        <TradingDeviceConnectionGuard>
-            <Screen
-                header={
-                    <DynamicScreenHeader
+        <Screen
+            header={
+                <DynamicScreenHeader
+                    title={
+                        <Translation
+                            id="moduleTrading.tradingExchangeApprovalScreen.approveTitle"
+                            values={{ symbol: coinSymbol }}
+                        />
+                    }
+                    subtitle={
+                        <Translation
+                            id="moduleTrading.tradingExchangeApprovalScreen.approveSubtitle"
+                            values={{ symbol: coinSymbol }}
+                        />
+                    }
+                    closeActionType="back"
+                />
+            }
+            footer={
+                <ApprovalButton isReady={isApprovalReady} isDisabled={!!error} flowType="approve" />
+            }
+        >
+            <VStack spacing="sp12">
+                {!!shouldIncreaseLimit && (
+                    <InlineAlertBox
+                        variant="info"
                         title={
-                            <Translation
-                                id="moduleTrading.tradingExchangeApprovalScreen.approveTitle"
-                                values={{ symbol: coinSymbol }}
-                            />
+                            <Translation id="moduleTrading.tradingExchangeApprovalScreen.lowLimitInfoAlert" />
                         }
-                        subtitle={
-                            <Translation
-                                id="moduleTrading.tradingExchangeApprovalScreen.approveSubtitle"
-                                values={{ symbol: coinSymbol }}
-                            />
+                    />
+                )}
+
+                {!!isRevoked && (
+                    <InlineAlertBox
+                        variant="success"
+                        title={
+                            <Translation id="moduleTrading.tradingExchangeApprovalScreen.revokeSuccessAlert" />
                         }
-                        closeActionType="back"
                     />
-                }
-                footer={
-                    <ApprovalButton
-                        isReady={isApprovalReady}
-                        isDisabled={!!error}
-                        flowType="approve"
-                    />
-                }
-            >
-                <VStack spacing="sp12">
-                    {!!shouldIncreaseLimit && (
-                        <InlineAlertBox
-                            variant="info"
-                            title={
-                                <Translation id="moduleTrading.tradingExchangeApprovalScreen.lowLimitInfoAlert" />
-                            }
-                        />
-                    )}
+                )}
 
-                    {!!isRevoked && (
-                        <InlineAlertBox
-                            variant="success"
-                            title={
-                                <Translation id="moduleTrading.tradingExchangeApprovalScreen.revokeSuccessAlert" />
-                            }
-                        />
-                    )}
-
-                    <ExchangeApprovalDetails
-                        exchange={quote.exchange}
-                        onApprovalTypeChange={onApprovalTypeChange}
-                    />
-                </VStack>
-            </Screen>
-        </TradingDeviceConnectionGuard>
+                <ExchangeApprovalDetails
+                    exchange={quote.exchange}
+                    onApprovalTypeChange={onApprovalTypeChange}
+                />
+            </VStack>
+        </Screen>
     );
 };
+
+export const TradingExchangeApprovalScreen = (props: TradingExchangeApprovalScreenProps) => (
+    <TradingDeviceConnectionGuard>
+        <TradingExchangeApprovalScreenContent {...props} />
+    </TradingDeviceConnectionGuard>
+);
