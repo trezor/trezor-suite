@@ -17,6 +17,10 @@ import {
 export class BrowserSessionsBackground implements SessionsBackgroundInterface {
     private readonly background;
     private readonly portListeners: Array<(e: MessageEvent<any>) => void> = [];
+    private readonly listenerMap = new Map<
+        string,
+        Map<(...args: any[]) => void, (e: MessageEvent<any>) => void>
+    >();
 
     constructor(sessionsBackgroundUrl: string) {
         this.background = new SharedWorker(sessionsBackgroundUrl, {
@@ -73,8 +77,26 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
                 }
             }
         };
+        let eventMap = this.listenerMap.get(event);
+        if (!eventMap) {
+            eventMap = new Map();
+            this.listenerMap.set(event, eventMap);
+        }
+        eventMap.set(listener, wrappedListener);
         this.portListeners.push(wrappedListener);
         this.background.port.addEventListener('message', wrappedListener);
+    }
+
+    off(event: 'descriptors', listener: (descriptors: Descriptor[]) => void): void;
+    off(event: 'releaseRequest', listener: (descriptor: Descriptor) => void): void;
+    off(event: 'descriptors' | 'releaseRequest', listener: (...args: any[]) => void): void {
+        const wrappedListener = this.listenerMap.get(event)?.get(listener);
+        if (wrappedListener) {
+            this.background.port.removeEventListener('message', wrappedListener);
+            const idx = this.portListeners.indexOf(wrappedListener);
+            if (idx !== -1) this.portListeners.splice(idx, 1);
+            this.listenerMap.get(event)!.delete(listener);
+        }
     }
 
     dispose() {
@@ -82,5 +104,6 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
             this.background.port.removeEventListener('message', listener);
         }
         this.portListeners.length = 0;
+        this.listenerMap.clear();
     }
 }
