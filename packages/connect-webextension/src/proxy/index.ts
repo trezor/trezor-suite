@@ -18,6 +18,7 @@ import {
 
 const eventEmitter = new ConnectEmitter();
 let _channel: any;
+let _reconnect: (() => void) | undefined;
 
 const dispose = () => {
     eventEmitter.removeAllListeners();
@@ -49,23 +50,26 @@ const init = (settings: ConnectDynamicSettings): Promise<void> => {
                 peer: '@trezor/connect-service-worker-proxy',
             },
         });
+        _channel.port.onMessage.addListener((message: { type: string }) => {
+            if (message.type === WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM) {
+                // @ts-expect-error
+                eventEmitter.emit(WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM, message);
+            }
+        });
     }
-
-    _channel.port.onMessage.addListener((message: { type: string }) => {
-        if (message.type === WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM) {
-            // @ts-expect-error
-            eventEmitter.emit(WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM, message);
-        }
-    });
 
     const reconnect = () => {
         // By connecting again we keep the service worker active.
         cancel();
         _channel = null;
+        _reconnect = undefined;
         init(settings);
     };
 
-    _channel.port.onDisconnect.removeListener(reconnect);
+    if (_reconnect) {
+        _channel.port.onDisconnect.removeListener(_reconnect);
+    }
+    _reconnect = reconnect;
     _channel.port.onDisconnect.addListener(reconnect);
 
     return _channel.init().then(() =>
