@@ -16,6 +16,7 @@ export const allowedCardListFrameProps = [
     'position',
     'flex',
     'zIndex',
+    'borderRadius',
 ] as const satisfies FramePropsKeys[];
 export type AllowedCardListFrameProps = Pick<
     FrameProps,

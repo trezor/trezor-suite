@@ -22,3 +22,27 @@ export const tokenSupportsIncreasingAllowance = (contractAddress?: string): bool
         address => address.toLowerCase() === normalizedContractAddress,
     );
 };
+
+type ShouldShowRevokeAllowanceBannerParams = {
+    followedByApproval?: boolean;
+    preapprovedAmount?: string;
+    approveAmount?: string;
+    tokenContractAddress?: string;
+};
+
+export const shouldShowRevokeAllowanceBanner = ({
+    followedByApproval,
+    preapprovedAmount,
+    approveAmount,
+    tokenContractAddress,
+}: ShouldShowRevokeAllowanceBannerParams): boolean => {
+    if (!followedByApproval || !preapprovedAmount || preapprovedAmount === '0' || !approveAmount) {
+        return false;
+    }
+
+    if (tokenSupportsIncreasingAllowance(tokenContractAddress)) {
+        return false;
+    }
+
+    return new BigNumber(approveAmount).gt(preapprovedAmount);
+};

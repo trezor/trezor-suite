@@ -5,6 +5,7 @@ import { type CryptoId } from 'invity-api';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Calldata } from '@suite-common/calldata';
 import { useServices } from '@suite-common/dependency-injection';
+import { invityAPI } from '@suite-common/trading';
 
 import { RevokeModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/RevokeModal';
 import { useAllowanceContext } from 'src/hooks/wallet/allowance';
@@ -71,22 +72,33 @@ export const TradingRevokeModal = ({ cryptoId }: TradingRevokeModalProps) => {
         const spender = approvalData?.spender ?? null;
 
         const preapprovedAmount = context.selectedQuote?.preapprovedStringAmount;
+        const approveAmount = context.selectedQuote?.sendStringAmount;
 
-        return provider && spender ? { provider, spender, preapprovedAmount } : null;
+        return provider && spender ? { provider, spender, preapprovedAmount, approveAmount } : null;
     }, [context]);
 
-    const { provider, spender, preapprovedAmount } =
+    const { provider, spender, preapprovedAmount, approveAmount } =
         useModalLastValidParams(revokeParams, state.isRevokeModalOpen) ?? {};
 
     if (!state.isRevokeModalOpen || !provider || !spender) return null;
+
+    const providerLogo = provider.logo ? invityAPI.getProviderLogoUrl(provider.logo) : undefined;
 
     return (
         <RevokeModal
             cryptoId={cryptoId}
             account={context.account}
-            provider={provider}
+            provider={{
+                ...provider,
+                logo: providerLogo,
+                label: 'TR_TRADING_PROVIDER',
+            }}
             spender={spender}
             preapprovedAmount={preapprovedAmount}
+            approveAmount={approveAmount}
+            followedByApproval
+            heading="TR_APPROVAL_REVOKE_TOKEN_SPENDING"
+            description="TR_EXCHANGE_APPROVAL_REVOKE_TOKEN_SPENDING_DESCRIPTION"
             onConfirm={onConfirm}
             onCancel={handleCancel}
         />

@@ -89,6 +89,14 @@ export const messages = defineMessages({
         defaultMessage: 'Vault',
         id: 'TR_EARN_YIELD_VAULT',
     },
+    TR_EARN_YIELD_APPROVE_TOKEN_SPENDING_DESCRIPTION: {
+        defaultMessage: 'Approve provider to spend your {displaySymbol} to deposit.',
+        id: 'TR_EARN_YIELD_APPROVE_TOKEN_SPENDING_DESCRIPTION',
+    },
+    TR_EARN_YIELD_REVOKE_TOKEN_SPENDING_DESCRIPTION: {
+        defaultMessage: 'Revoke provider to spend your {displaySymbol} to deposit.',
+        id: 'TR_EARN_YIELD_REVOKE_TOKEN_SPENDING_DESCRIPTION',
+    },
     TR_ACCOUNT_OUT_OF_SYNC: {
         defaultMessage: 'Account sync in progress.',
         id: 'TR_ACCOUNT_OUT_OF_SYNC',
@@ -459,14 +467,45 @@ export const messages = defineMessages({
         defaultMessage: 'Swap complete',
         id: 'TR_EXCHANGE_COMPLETE',
     },
-    TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING: {
-        defaultMessage: 'Set {displaySymbol} spending',
-        id: 'TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING',
+    TR_APPROVAL_APPROVE_TOKEN_SPENDING: {
+        defaultMessage: 'Approve {displaySymbol} spending',
+        id: 'TR_APPROVAL_APPROVE_TOKEN_SPENDING',
     },
-    TR_EXCHANGE_APPROVAL_REVOKE_TOKEN_SPENDING: {
+    TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING_DESCRIPTION: {
+        defaultMessage: 'Approve provider to spend your {displaySymbol} to swap.',
+        id: 'TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING_DESCRIPTION',
+    },
+    TR_APPROVAL_REVOKE_TOKEN_SPENDING: {
         defaultMessage: 'Revoke {displaySymbol} spending',
-        id: 'TR_EXCHANGE_APPROVAL_REVOKE_TOKEN_SPENDING',
+        id: 'TR_APPROVAL_REVOKE_TOKEN_SPENDING',
     },
+    TR_EXCHANGE_APPROVAL_REVOKE_TOKEN_SPENDING_DESCRIPTION: {
+        defaultMessage: 'Revoke provider to spend your {displaySymbol} to swap.',
+        id: 'TR_EXCHANGE_APPROVAL_REVOKE_TOKEN_SPENDING_DESCRIPTION',
+    },
+    TR_APPROVAL_LIMIT: {
+        defaultMessage: 'Limit',
+        id: 'TR_APPROVAL_LIMIT',
+    },
+    TR_APPROVAL_NEW_LIMIT: {
+        defaultMessage: 'New limit',
+        id: 'TR_APPROVAL_NEW_LIMIT',
+    },
+    TR_APPROVAL_MODAL_APPROVE_BANNER: {
+        defaultMessage:
+            "You've approved this token, but the limit is too low. Increase it to continue.",
+        id: 'TR_APPROVAL_MODAL_APPROVE_BANNER',
+    },
+    TR_APPROVAL_CURRENT_LIMIT: {
+        defaultMessage: 'Current limit',
+        id: 'TR_APPROVAL_CURRENT_LIMIT',
+    },
+    TR_APPROVAL_MODAL_REVOKE_BANNER: {
+        defaultMessage:
+            'The spending limit too low. Revoke the current spending limit and approve a higher amount.',
+        id: 'TR_APPROVAL_MODAL_REVOKE_BANNER',
+    },
+
     TR_EXCHANGE_APPROVAL_FORM_APPROVE_BUTTON: {
         defaultMessage: 'Set & approve spending',
         id: 'TR_EXCHANGE_APPROVAL_FORM_APPROVE_BUTTON',
@@ -488,11 +527,6 @@ export const messages = defineMessages({
             'The approved amount is too low. To increase it, first revoke the current approval, then set a higher limit.',
         id: 'TR_EXCHANGE_APPROVAL_FORM_REVOKE_BANNER',
     },
-    TR_EXCHANGE_APPROVAL_MODAL_REVOKE_BANNER: {
-        defaultMessage:
-            "{displaySymbol} doesn't support increasing limits. You need to revoke the current approval before setting a higher one.",
-        id: 'TR_EXCHANGE_APPROVAL_MODAL_REVOKE_BANNER',
-    },
     TR_EXCHANGE_APPROVAL_FORM_CONFIRMING_APPROVAL: {
         defaultMessage: 'Confirming approval...',
         id: 'TR_EXCHANGE_APPROVAL_FORM_CONFIRMING_APPROVAL',
@@ -505,26 +539,18 @@ export const messages = defineMessages({
         defaultMessage: 'Transaction ID:',
         id: 'TR_EXCHANGE_APPROVAL_FORM_TRANSACTION_ID',
     },
-    TR_EXCHANGE_APPROVAL_CURRENT_LIMIT: {
-        defaultMessage: 'Current limit',
-        id: 'TR_EXCHANGE_APPROVAL_CURRENT_LIMIT',
-    },
-    TR_EXCHANGE_APPROVAL_NEW_LIMIT: {
-        defaultMessage: 'New limit',
-        id: 'TR_EXCHANGE_APPROVAL_NEW_LIMIT',
-    },
-    TR_EXCHANGE_APPROVAL_VALUE_MINIMAL: {
+    TR_APPROVAL_VALUE_MINIMAL: {
         defaultMessage: '{value} {send}',
-        id: 'TR_EXCHANGE_APPROVAL_VALUE_MINIMAL',
+        id: 'TR_APPROVAL_VALUE_MINIMAL',
     },
     TR_APPROVAL_VALUE_MINIMAL_INFO: {
         defaultMessage:
             'Approve this amount for the provider. Valid until fully used or revoked. Then a new approval and network fee will be required.',
         id: 'TR_APPROVAL_VALUE_MINIMAL_INFO',
     },
-    TR_EXCHANGE_APPROVAL_VALUE_INFINITE: {
+    TR_APPROVAL_VALUE_INFINITE: {
         defaultMessage: 'Unlimited',
-        id: 'TR_EXCHANGE_APPROVAL_VALUE_INFINITE',
+        id: 'TR_APPROVAL_VALUE_INFINITE',
     },
     TR_APPROVAL_VALUE_INFINITE_INFO: {
         defaultMessage:
@@ -535,9 +561,9 @@ export const messages = defineMessages({
         defaultMessage: 'If the provider is compromised, all your {send} may be taken.',
         id: 'TR_APPROVAL_VALUE_INFINITE_WARNING',
     },
-    TR_EXCHANGE_APPROVAL_DATA: {
+    TR_APPROVAL_DATA: {
         defaultMessage: 'Approval transaction data',
-        id: 'TR_EXCHANGE_APPROVAL_DATA',
+        id: 'TR_APPROVAL_DATA',
     },
     TR_EXCHANGE_APPROVAL_PROVIDER: {
         defaultMessage: 'Provider',

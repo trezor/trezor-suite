@@ -5,6 +5,7 @@ import { type CryptoId, type DexApprovalType } from 'invity-api';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Calldata } from '@suite-common/calldata';
 import { useServices } from '@suite-common/dependency-injection';
+import { invityAPI } from '@suite-common/trading';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { ApproveModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/ApproveModal';
@@ -93,22 +94,34 @@ export const TradingApproveModal = ({ amount, cryptoId }: TradingApproveModalPro
 
         const approvalData = Calldata.evm.erc20.approve.decode(selectedQuote?.dexTx?.data);
         const spender = approvalData?.spender ?? null;
+        const preapprovedAmount = selectedQuote?.preapprovedStringAmount;
 
-        return provider && spender ? { provider, spender } : null;
+        return provider && spender ? { provider, spender, preapprovedAmount } : null;
     }, [selectedQuote, contextRef]);
 
-    const { provider, spender } =
+    const { provider, spender, preapprovedAmount } =
         useModalLastValidParams(approveParams, state.isApproveModalOpen) ?? {};
 
-    if (!state.isApproveModalOpen || !provider || !spender) return null;
+    if (!state.isApproveModalOpen || !provider || !spender) {
+        return null;
+    }
+
+    const providerLogo = provider.logo ? invityAPI.getProviderLogoUrl(provider.logo) : undefined;
 
     return (
         <ApproveModal
             amount={amount}
             cryptoId={cryptoId}
             account={context.account}
-            provider={provider}
+            provider={{
+                ...provider,
+                logo: providerLogo,
+                label: 'TR_TRADING_PROVIDER',
+            }}
             spender={spender}
+            preapprovedAmount={preapprovedAmount}
+            heading="TR_APPROVAL_APPROVE_TOKEN_SPENDING"
+            description="TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING_DESCRIPTION"
             onSelectApprovalType={onSelectApprovalType}
             onConfirm={onConfirm}
             onCancel={handleCancel}

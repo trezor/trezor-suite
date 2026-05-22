@@ -153,7 +153,10 @@ export const YieldApproveModal = ({
                 account={account}
                 provider={provider}
                 spender={spender}
-                logoSourceType="url"
+                showSpender
+                preapprovedAmount={preapprovedAmount}
+                heading="TR_APPROVAL_APPROVE_TOKEN_SPENDING"
+                description="TR_EARN_YIELD_APPROVE_TOKEN_SPENDING_DESCRIPTION"
                 onCancel={handleOnApproveCancel}
                 onConfirm={handleOnApproveConfirm}
             />
@@ -167,8 +170,12 @@ export const YieldApproveModal = ({
                 account={account}
                 provider={provider}
                 spender={spender}
-                logoSourceType="url"
+                showSpender
                 preapprovedAmount={preapprovedAmount}
+                approveAmount={amount}
+                followedByApproval={txType === 'revoke'}
+                heading="TR_APPROVAL_REVOKE_TOKEN_SPENDING"
+                description="TR_EARN_YIELD_REVOKE_TOKEN_SPENDING_DESCRIPTION"
                 onCancel={handleOnRevokeCancel}
                 onConfirm={handleOnRevokeConfirm}
             />
