@@ -10,3 +10,4 @@ export {
     type TradingAnalyticReportCallback,
     useTradingAnalyticReportCallback,
 } from './hooks/useTradingAnalyticReportCallback';
+export { useExchangeAnalyticsStepReport } from './hooks/useExchangeAnalyticsStepReport';
