@@ -3288,49 +3288,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/common@npm:^10.1.1":
-  version: 10.1.1
-  resolution: "@ethereumjs/common@npm:10.1.1"
-  dependencies:
-    "@ethereumjs/util": "npm:^10.1.1"
-    eventemitter3: "npm:^5.0.1"
-  checksum: 10/c47aeed4e839fb7cd85944d570c31722bd20d8a0a1f4ddde2f2501e69f12ba563dda69e0d5c079590fe81e53889e34ccf46caa90956fa9563577f1359c7bc76b
-  languageName: node
-  linkType: hard
-
-"@ethereumjs/rlp@npm:^10.1.1":
-  version: 10.1.1
-  resolution: "@ethereumjs/rlp@npm:10.1.1"
-  bin:
-    rlp: bin/rlp.cjs
-  checksum: 10/6f713406e2cc32edb21096d03653e0391bab624cd3a1e518f15afc117d7aa9f5de56154b224b7c2628066289d72ac2d7c236f17aee4e28e6f5427cc32ab57b28
-  languageName: node
-  linkType: hard
-
-"@ethereumjs/tx@npm:^10.1.1":
-  version: 10.1.1
-  resolution: "@ethereumjs/tx@npm:10.1.1"
-  dependencies:
-    "@ethereumjs/common": "npm:^10.1.1"
-    "@ethereumjs/rlp": "npm:^10.1.1"
-    "@ethereumjs/util": "npm:^10.1.1"
-    "@noble/curves": "npm:^2.0.1"
-    "@noble/hashes": "npm:^2.0.1"
-  checksum: 10/f6ecb73068c6291844c66b33d0f3417f174839c32a40996a40454dd69b8676ae20df429f3d33cbce3b4f31eebdf6ef7b4e85836da4c085e87e32fa5e72a1a48c
-  languageName: node
-  linkType: hard
-
-"@ethereumjs/util@npm:^10.1.1":
-  version: 10.1.1
-  resolution: "@ethereumjs/util@npm:10.1.1"
-  dependencies:
-    "@ethereumjs/rlp": "npm:^10.1.1"
-    "@noble/curves": "npm:^2.0.1"
-    "@noble/hashes": "npm:^2.0.1"
-  checksum: 10/5ab48a85d52371126d1b29ec8304ae1fac8f61de9fc8becabbf2166fee9a2d168dfb85d7acd7190e02c5bef61f09afcd7552f1d38aea6bba33395fb49cf3f531
-  languageName: node
-  linkType: hard
-
 "@evolu/common@npm:8.0.0-next.5":
   version: 8.0.0-next.5
   resolution: "@evolu/common@npm:8.0.0-next.5"
@@ -15941,8 +15898,6 @@ __metadata:
   dependencies:
     "@babel/preset-typescript": "npm:^7.29.7"
     "@bufbuild/protobuf": "npm:^2.11.0"
-    "@ethereumjs/common": "npm:^10.1.1"
-    "@ethereumjs/tx": "npm:^10.1.1"
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
     "@scure/bip39": "npm:^1.5.1"
@@ -15984,7 +15939,6 @@ __metadata:
     vite-plugin-wasm: "npm:^3.6.0"
     vitest: "npm:^4.1.4"
     vm-browserify: "npm:^1.1.2"
-    web3-utils: "npm:^4.3.3"
     ws: "npm:^8.20.0"
   peerDependencies:
     tslib: ^2.6.2
