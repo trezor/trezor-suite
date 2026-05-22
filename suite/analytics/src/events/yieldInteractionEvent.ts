@@ -14,6 +14,8 @@ type Attributes = {
         | 'show-more-accounts'
         | 'feedback-submit'
         | 'insufficient-funds-banner'
+        | 'allowance-error-banner'
+        | 'allowance-retry'
     >;
     value?: AttributeDef<string>;
     networkSymbol?: AttributeDef<string>;
