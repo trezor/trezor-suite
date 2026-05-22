@@ -1,5 +1,6 @@
 import { YieldSupply } from 'src/components/earn';
 
+import { EarnLayoutFallback } from '../../EarnLayoutFallback';
 import { useEarnLayout } from '../useEarnLayout';
 
 export const EarnDeposit = () => {
@@ -8,9 +9,15 @@ export const EarnDeposit = () => {
         fallbackTitleId: 'TR_EARN_YIELD_SUPPLY',
     });
 
-    if (!result.isValid) {
-        return result.fallback;
+    if (result.status !== 'valid') {
+        return <EarnLayoutFallback layoutState={result} />;
     }
 
-    return <YieldSupply account={result.account} routeParams={result.routeParams} />;
+    return (
+        <YieldSupply
+            account={result.account}
+            routeParams={result.routeParams}
+            vault={result.vault}
+        />
+    );
 };

@@ -78,6 +78,14 @@ export const messages = defineMessages({
         defaultMessage: "Token doesn't exist",
         id: 'TR_EARN_YIELD_TOKEN_NOT_EXIST',
     },
+    TR_EARN_YIELD_NETWORK_NOT_SUPPORTED: {
+        defaultMessage: "This account's network doesn't support stablecoin yield.",
+        id: 'TR_EARN_YIELD_NETWORK_NOT_SUPPORTED',
+    },
+    TR_EARN_YIELD_OPPORTUNITIES_ERROR: {
+        defaultMessage: 'Unable to load stablecoin yield opportunities.',
+        id: 'TR_EARN_YIELD_OPPORTUNITIES_ERROR',
+    },
     TR_EARN_YIELD_VAULT: {
         defaultMessage: 'Vault',
         id: 'TR_EARN_YIELD_VAULT',

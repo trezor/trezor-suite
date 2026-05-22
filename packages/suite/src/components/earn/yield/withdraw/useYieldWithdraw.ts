@@ -1,4 +1,5 @@
 import { type EarnParams } from '@suite/router';
+import { type YieldDto } from '@suite-common/earn-stablecoin-api';
 import {
     type YieldFlowCompleteValue,
     getConvertedOutputTokenBalanceToInputTokenAmount,
@@ -10,6 +11,7 @@ import { type YieldFlowContextValues, useYieldFlow } from '../hooks/useYieldFlow
 type UseYieldWithdrawProps = {
     account: Account;
     routeParams: EarnParams;
+    vault: YieldDto;
 };
 
 export type YieldWithdrawContextValues = YieldFlowContextValues & {
@@ -20,11 +22,17 @@ export type YieldWithdrawContextValues = YieldFlowContextValues & {
 export const useYieldWithdraw = ({
     account,
     routeParams,
+    vault,
 }: UseYieldWithdrawProps): YieldWithdrawContextValues | null => {
-    const flowResult = useYieldFlow({ account, routeParams, flowType: 'withdraw' });
-    const { vault, token, receiptToken } = flowResult;
+    const flowResult = useYieldFlow({
+        account,
+        routeParams,
+        vault,
+        flowType: 'withdraw',
+    });
+    const { token, receiptToken } = flowResult;
 
-    if (!token || !receiptToken || !vault) {
+    if (!token || !receiptToken) {
         return null;
     }
 
