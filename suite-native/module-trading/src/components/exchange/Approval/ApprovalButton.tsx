@@ -13,6 +13,7 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -36,6 +37,9 @@ export const ApprovalButton = ({ isReady, isDisabled, flowType }: ApprovalButton
     const quote = useSelector(selectTradingExchangeSelectedQuote);
     const fromAccount = useSelector(selectExchangeSelectedSendAccount);
     const { applyStyle } = useNativeStyles();
+    const reportToAnalytics = useExchangeAnalyticsStepReport(
+        flowType === 'approve' ? 'approval-preview' : 'revoke-preview',
+    );
 
     if (!quote || !isReady) {
         return null;
@@ -50,6 +54,7 @@ export const ApprovalButton = ({ isReady, isDisabled, flowType }: ApprovalButton
 
             return;
         }
+        reportToAnalytics('continue');
         navigation.navigate(RootStackRoutes.TradingExchangeOutputsReview, {
             accountKey: fromAccount.key,
             tokenContract,
