@@ -45,6 +45,8 @@ const Protocol = () => {
 
         if (isDesktop()) {
             desktopApi.on('protocol/open', handleProtocolRequest);
+
+            return () => desktopApi.removeAllListeners('protocol/open');
         }
     }, [handleProtocolRequest]);
 
