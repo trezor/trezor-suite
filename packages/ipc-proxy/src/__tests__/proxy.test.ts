@@ -189,4 +189,51 @@ describe('proxy', () => {
 
         expect(ipcMain.eventNames().length).toEqual(0);
     });
+
+    // CURRENTLY LEAKS — see PR #27978 for the fix.
+    //
+    // ipcMain.handle() registers invoke handlers under per-instance prefixes
+    // (`<prefix>/invoke`). The unregister() function returned by createIpcProxyHandler
+    // currently iterates ipcMain.eventNames() and removes 'on' listeners, then calls
+    // removeHandler() for the channel-level `<channel>/create` only. Per-instance
+    // `<prefix>/invoke` handlers leak — they're not on eventNames() and the handler does
+    // not track instance prefixes.
+    //
+    // Note: the existing 'unregister proxy handler' test above passes because
+    // mockedElectron's removeHandler() is a no-op and the test only asserts on
+    // eventNames() (which lists 'on' channels, not 'invoke' handlers). This test instead
+    // spies on ipcMain.removeHandler to observe call patterns directly.
+    //
+    // When the fix lands, unregister() must track instance prefixes and call
+    // removeHandler(`${prefix}/invoke`) for each, plus removeHandler(`${channel}/create`).
+    it('unregister does not call removeHandler for per-instance invoke prefixes (TODO: fix in #27978)', async () => {
+        exposeInMainWorld(
+            ...exposeIpcProxy(ipcRenderer, ['LeakApi'], { proxyName: 'leakIpcProxy' }),
+        );
+
+        const api = new TestApi();
+        const unregister = createIpcProxyHandler<TestApi>(ipcMain, 'LeakApi', {
+            onCreateInstance: () => ({
+                onRequest: (method, params) => (api[method] as any)(...params),
+            }),
+        });
+
+        // Two instances → two `<prefix>/invoke` handlers registered via ipcMain.handle()
+        await createIpcProxy<TestApi>('LeakApi', { proxyName: 'leakIpcProxy' });
+        await createIpcProxy<TestApi>('LeakApi', { proxyName: 'leakIpcProxy' });
+
+        const removeHandlerSpy = jest.spyOn(ipcMain, 'removeHandler');
+        unregister();
+
+        // TODO(#27978): after the fix lands, removeHandler must be called 3 times:
+        //   once with 'LeakApi/create' (already done today)
+        //   plus once with each '<prefix>/invoke' (currently missing)
+        //
+        // Current broken behavior: only 'LeakApi/create' is cleaned up.
+        expect(removeHandlerSpy).toHaveBeenCalledTimes(1);
+        expect(removeHandlerSpy).toHaveBeenCalledWith('LeakApi/create');
+        expect(removeHandlerSpy).not.toHaveBeenCalledWith(expect.stringMatching(/\/invoke$/));
+
+        removeHandlerSpy.mockRestore();
+    });
 });
