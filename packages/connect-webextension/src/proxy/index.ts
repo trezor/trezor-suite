@@ -18,8 +18,11 @@ import {
 
 const eventEmitter = new ConnectEmitter();
 let _channel: any;
+let disposePortListeners: (() => void) | undefined;
 
 const dispose = () => {
+    disposePortListeners?.();
+    disposePortListeners = undefined;
     eventEmitter.removeAllListeners();
 
     return Promise.resolve(undefined);
@@ -51,12 +54,16 @@ const init = (settings: ConnectDynamicSettings): Promise<void> => {
         });
     }
 
-    _channel.port.onMessage.addListener((message: { type: string }) => {
+    // Drop any port listeners from a previous init() before attaching new ones.
+    // Without this, every reconnect leaks an onMessage listener on the channel port.
+    disposePortListeners?.();
+
+    const onPortMessage = (message: { type: string }) => {
         if (message.type === WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM) {
             // @ts-expect-error
             eventEmitter.emit(WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM, message);
         }
-    });
+    };
 
     const reconnect = () => {
         // By connecting again we keep the service worker active.
@@ -65,8 +72,14 @@ const init = (settings: ConnectDynamicSettings): Promise<void> => {
         init(settings);
     };
 
-    _channel.port.onDisconnect.removeListener(reconnect);
-    _channel.port.onDisconnect.addListener(reconnect);
+    const { port } = _channel;
+    port.onMessage.addListener(onPortMessage);
+    port.onDisconnect.addListener(reconnect);
+
+    disposePortListeners = () => {
+        port.onMessage.removeListener(onPortMessage);
+        port.onDisconnect.removeListener(reconnect);
+    };
 
     return _channel.init().then(() =>
         _channel.postMessage(
