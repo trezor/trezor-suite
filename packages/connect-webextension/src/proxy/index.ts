@@ -12,8 +12,14 @@ import {
 } from '@trezor/connect-common/src/utils/cancelParams';
 
 let _channel: any;
+let disposePortListeners: (() => void) | undefined;
 
-const dispose = () => Promise.resolve(undefined);
+const dispose = () => {
+    disposePortListeners?.();
+    disposePortListeners = undefined;
+
+    return Promise.resolve(undefined);
+};
 
 const cancel = (params?: CancelParams) => {
     if (_channel) {
@@ -34,6 +40,10 @@ const init = (settings: ConnectDynamicSettings): Promise<void> => {
         });
     }
 
+    // Drop any port listeners from a previous init() before attaching new ones.
+    // Without this, every reconnect leaks an onDisconnect listener on the channel port.
+    disposePortListeners?.();
+
     const reconnect = () => {
         // By connecting again we keep the service worker active.
         cancel();
@@ -41,8 +51,12 @@ const init = (settings: ConnectDynamicSettings): Promise<void> => {
         init(settings);
     };
 
-    _channel.port.onDisconnect.removeListener(reconnect);
-    _channel.port.onDisconnect.addListener(reconnect);
+    const { port } = _channel;
+    port.onDisconnect.addListener(reconnect);
+
+    disposePortListeners = () => {
+        port.onDisconnect.removeListener(reconnect);
+    };
 
     return _channel.init().then(() =>
         _channel.postMessage(
