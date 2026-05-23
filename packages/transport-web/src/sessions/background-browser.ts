@@ -5,6 +5,7 @@ import {
     type SessionsBackground,
     type SessionsBackgroundInterface,
 } from '@trezor/transport-common';
+import { addEventListener } from '@trezor/utils';
 
 /**
  * creating BrowserSessionsBackground initiates sessions-background for browser based environments and provides:
@@ -16,6 +17,7 @@ import {
  */
 export class BrowserSessionsBackground implements SessionsBackgroundInterface {
     private readonly background;
+    private readonly listenerDisposers: Array<() => void> = [];
 
     constructor(sessionsBackgroundUrl: string) {
         this.background = new SharedWorker(sessionsBackgroundUrl, {
@@ -31,20 +33,22 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
         const { background } = this;
 
         return new Promise(resolve => {
-            const onmessage = (message: MessageEvent<any>) => {
-                if (params.id === message.data.id) {
-                    resolve(message.data);
-                    background.port.removeEventListener('message', onmessage);
-                }
-            };
-
-            background.port.addEventListener('message', onmessage);
+            const dispose = addEventListener(
+                background.port,
+                'message',
+                (message: MessageEvent<any>) => {
+                    if (params.id === message.data.id) {
+                        resolve(message.data);
+                        dispose();
+                    }
+                },
+            );
 
             background.port.onmessageerror = message => {
                 // not sure under what circumstances this error occurs. let's observe it during testing
                 console.error('background-browser onmessageerror,', message);
 
-                background.port.removeEventListener('message', onmessage);
+                dispose();
             };
             background.port.postMessage(params);
         });
@@ -53,7 +57,8 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
     on(event: 'descriptors', listener: (descriptors: Descriptor[]) => void): void;
     on(event: 'releaseRequest', listener: (descriptor: Descriptor) => void): void;
     on(event: 'descriptors' | 'releaseRequest', listener: (descriptors: any) => void): void {
-        this.background.port.addEventListener(
+        const dispose = addEventListener(
+            this.background.port,
             'message',
             (
                 e: MessageEvent<
@@ -70,9 +75,12 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
                 }
             },
         );
+        this.listenerDisposers.push(dispose);
     }
 
     dispose() {
-        /* is it needed? */
+        while (this.listenerDisposers.length) {
+            this.listenerDisposers.pop()?.();
+        }
     }
 }
