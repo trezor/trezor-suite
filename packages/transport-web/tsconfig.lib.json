@@ -8,6 +8,7 @@
     },
     "references": [
         { "path": "../transport-common" },
+        { "path": "../utils" },
         { "path": "../eslint" }
     ]
 }

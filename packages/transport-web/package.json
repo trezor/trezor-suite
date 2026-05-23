@@ -44,7 +44,8 @@
         "@types/sharedworker": "^0.0.223"
     },
     "dependencies": {
-        "@trezor/transport-common": "workspace:*"
+        "@trezor/transport-common": "workspace:*",
+        "@trezor/utils": "workspace:*"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
