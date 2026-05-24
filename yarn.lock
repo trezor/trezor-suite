@@ -10393,7 +10393,9 @@ __metadata:
   resolution: "@suite-common/ark@workspace:suite-common/ark"
   dependencies:
     "@arkade-os/sdk": "npm:0.4.26"
+    "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/ark-fake-signer": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/type-utils": "workspace:*"
   languageName: unknown

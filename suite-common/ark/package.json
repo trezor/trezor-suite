@@ -13,7 +13,9 @@
     },
     "dependencies": {
         "@arkade-os/sdk": "0.4.26",
+        "@reduxjs/toolkit": "2.11.2",
         "@suite-common/ark-fake-signer": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
         "@trezor/type-utils": "workspace:*"
     },
     "devDependencies": {
