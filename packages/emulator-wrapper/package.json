@@ -1,0 +1,21 @@
+{
+    "name": "@trezor/emulator-wrapper",
+    "version": "1.0.0",
+    "main": "src/index",
+    "license": "See LICENSE.md in repo root",
+    "private": true,
+    "sideEffects": false,
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:e2e": "tsx ./e2e/api.test.ts",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@trezor/trezor-user-env-link": "workspace:*"
+    },
+    "devDependencies": {
+        "tsx": "^4.21.0"
+    }
+}

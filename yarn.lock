@@ -15871,6 +15871,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/emulator-wrapper@workspace:packages/emulator-wrapper":
+  version: 0.0.0-use.local
+  resolution: "@trezor/emulator-wrapper@workspace:packages/emulator-wrapper"
+  dependencies:
+    "@trezor/trezor-user-env-link": "workspace:*"
+    tsx: "npm:^4.21.0"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/env-utils@workspace:*, @trezor/env-utils@workspace:packages/env-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/env-utils@workspace:packages/env-utils"
