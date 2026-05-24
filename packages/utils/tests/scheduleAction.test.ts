@@ -226,6 +226,51 @@ describe('scheduleAction', () => {
         expect(checkListeners()).toBeUndefined();
     });
 
+    it('rejectWhenAborted does not double-reject when both signal and clear abort', async () => {
+        // The double-reject is invisible to Promise consumers (reject is idempotent), so
+        // asserting on the rejection value alone passes for both broken and fixed code.
+        // Instead observe the direct mechanical cause — onAbort leaving its own listener
+        // attached on the user signal — in the synchronous window between ac.abort() and
+        // scheduleAction's finally block aborting its internal clear signal (which would
+        // otherwise incidentally remove the leaked listener, calling reject() a second
+        // time on the way).
+        const ac = new AbortController();
+        const abortListeners = new Set<EventListenerOrEventListenerObject>();
+        const origAdd = ac.signal.addEventListener.bind(ac.signal);
+        const origRemove = ac.signal.removeEventListener.bind(ac.signal);
+        (ac.signal as any).addEventListener = (type: string, fn: any, opts?: any) => {
+            if (type === 'abort') abortListeners.add(fn);
+            origAdd(type as any, fn, opts);
+        };
+        (ac.signal as any).removeEventListener = (type: string, fn: any, opts?: any) => {
+            if (type === 'abort') abortListeners.delete(fn);
+            origRemove(type as any, fn, opts);
+        };
+
+        const action = (signal?: AbortSignal) =>
+            new Promise((_resolve, reject) => {
+                signal?.addEventListener('abort', () => reject(new Error('action-abort')));
+            });
+
+        // Explicit graceful: false so a future flip of the default doesn't silently bypass
+        // rejectWhenAborted (which is only on the non-graceful branch in scheduleAction).
+        const promise = scheduleAction(action, { signal: ac.signal, graceful: false });
+        // Eager handler so a failing synchronous assertion below cannot leave `promise` as
+        // an unhandled rejection (which would crash the jest worker before the assertion
+        // failure is reported).
+        promise.catch(() => {});
+        expect(abortListeners.size).toBe(1);
+
+        ac.abort();
+        // Fixed code removes onAbort before calling reject(). Broken code leaves it
+        // attached, which is exactly what allows onClear (still attached on the internal
+        // clear signal) to call reject() again once scheduleAction's finally block runs
+        // clearAborter.abort().
+        expect(abortListeners.size).toBe(0);
+
+        await expect(promise).rejects.toThrow(ERR_SIGNAL);
+    });
+
     it("don't abort after success", async () => {
         let signal: AbortSignal | undefined;
         const action = (sig?: AbortSignal) => {
