@@ -2,7 +2,7 @@ const { testPathIgnorePatterns, ...baseConfig } = require('../../jest.config.bas
 
 module.exports = {
     ...baseConfig,
-    testEnvironment: 'node',
+    testEnvironment: '../../JestCustomEnv.js',
     collectCoverage: true,
     setupFiles: ['<rootDir>/setupJest.ts'],
     testPathIgnorePatterns: [...testPathIgnorePatterns, 'e2e'],
