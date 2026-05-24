@@ -12,7 +12,9 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@suite-common/ark-fake-signer": "workspace:*"
+        "@arkade-os/sdk": "0.4.26",
+        "@suite-common/ark-fake-signer": "workspace:*",
+        "@trezor/type-utils": "workspace:*"
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*"
