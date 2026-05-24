@@ -156,6 +156,40 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@arkade-os/sdk@npm:0.4.26":
+  version: 0.4.26
+  resolution: "@arkade-os/sdk@npm:0.4.26"
+  dependencies:
+    "@bitcoinerlab/descriptors-scure": "npm:3.1.7"
+    "@marcbachmann/cel-js": "npm:7.3.1"
+    "@noble/curves": "npm:2.0.1"
+    "@noble/secp256k1": "npm:3.0.0"
+    "@scure/base": "npm:2.0.0"
+    "@scure/bip39": "npm:2.0.1"
+    "@scure/btc-signer": "npm:2.0.1"
+    bip68: "npm:1.0.4"
+    ws-electrumx-client: "npm:1.0.5"
+  peerDependencies:
+    "@react-native-async-storage/async-storage": ">=1.0.0"
+    expo: ">=54.0.0"
+    expo-background-task: ~1.0.10 || >=55.0.0
+    expo-sqlite: ~16.0.10 || >=55.0.0
+    expo-task-manager: ~14.0.9 || >=55.0.0
+  peerDependenciesMeta:
+    "@react-native-async-storage/async-storage":
+      optional: true
+    expo:
+      optional: true
+    expo-background-task:
+      optional: true
+    expo-sqlite:
+      optional: true
+    expo-task-manager:
+      optional: true
+  checksum: 10/08beea910cef86fa133ee8a40498b6b8bdb65d3e1c262a2f92d1d82634c3d1ecad8ee615fbb540265bb22f3ff83c9237437d81204df6aa8236bf5817051ab5e8
+  languageName: node
+  linkType: hard
+
 "@babel/cli@npm:7.28.6":
   version: 7.28.6
   resolution: "@babel/cli@npm:7.28.6"
@@ -1795,6 +1829,75 @@ __metadata:
   version: 0.2.3
   resolution: "@bcoe/v8-coverage@npm:0.2.3"
   checksum: 10/1a1f0e356a3bb30b5f1ced6f79c413e6ebacf130421f15fac5fcd8be5ddf98aedb4404d7f5624e3285b700e041f9ef938321f3ca4d359d5b716f96afa120d88d
+  languageName: node
+  linkType: hard
+
+"@bitcoinerlab/descriptors-core@npm:3.1.7":
+  version: 3.1.7
+  resolution: "@bitcoinerlab/descriptors-core@npm:3.1.7"
+  dependencies:
+    "@bitcoinerlab/miniscript": "npm:^2.0.0"
+    lodash.memoize: "npm:^4.1.2"
+    uint8array-tools: "npm:^0.0.9"
+    varuint-bitcoin: "npm:^2.0.0"
+  peerDependencies:
+    "@ledgerhq/ledger-bitcoin": ^0.3.1
+    "@noble/curves": ^2.0.1
+    "@noble/hashes": ^2.0.1
+    "@scure/base": ^2.0.0
+    "@scure/bip32": ^2.0.1
+    "@scure/btc-signer": ^2.0.1
+    bip32: ^5.0.1
+    bitcoinjs-lib: ^7.0.1
+    ecpair: ^3.0.1
+  peerDependenciesMeta:
+    "@ledgerhq/ledger-bitcoin":
+      optional: true
+    "@noble/curves":
+      optional: true
+    "@noble/hashes":
+      optional: true
+    "@scure/base":
+      optional: true
+    "@scure/bip32":
+      optional: true
+    "@scure/btc-signer":
+      optional: true
+    bip32:
+      optional: true
+    bitcoinjs-lib:
+      optional: true
+    ecpair:
+      optional: true
+  checksum: 10/72384dec1b37dd8332e0a7ef8fb76d8c7bd9fb0639a7c972ac1f3ab2baa937c6e71b99044ace2a0aee76226805d44e5dd18cc13a01ef032bb9ec9af52ee9baba
+  languageName: node
+  linkType: hard
+
+"@bitcoinerlab/descriptors-scure@npm:3.1.7":
+  version: 3.1.7
+  resolution: "@bitcoinerlab/descriptors-scure@npm:3.1.7"
+  dependencies:
+    "@bitcoinerlab/descriptors-core": "npm:3.1.7"
+    "@noble/curves": "npm:^2.0.1"
+    "@noble/hashes": "npm:^2.0.1"
+    "@scure/base": "npm:^2.0.0"
+    "@scure/bip32": "npm:^2.0.1"
+    "@scure/btc-signer": "npm:^2.0.1"
+  peerDependencies:
+    "@ledgerhq/ledger-bitcoin": ^0.3.1
+  peerDependenciesMeta:
+    "@ledgerhq/ledger-bitcoin":
+      optional: true
+  checksum: 10/7bb8f4f97b1e0f35bdac99396cb585aa406c49fb570d00c93483dccd4399b6d94327cd3580db6bde4bd167e2e883887121e451e214f7abc5bad28f75c318bcc9
+  languageName: node
+  linkType: hard
+
+"@bitcoinerlab/miniscript@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@bitcoinerlab/miniscript@npm:2.0.0"
+  dependencies:
+    bip68: "npm:^1.0.4"
+  checksum: 10/71b4d0e7c339225c71cbb65ef35a094dd65c4de5ab4d923160df657d4542c68a507cb2f4e4fc55db2c320dfddbf6595c1e3c24e854d3b838c8f13847e99f4c42
   languageName: node
   linkType: hard
 
@@ -5374,6 +5477,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@marcbachmann/cel-js@npm:7.3.1":
+  version: 7.3.1
+  resolution: "@marcbachmann/cel-js@npm:7.3.1"
+  bin:
+    cel-evaluate: bin/cel-evaluate.js
+  checksum: 10/b131f80b4261e607825e695f09a9dced053a0439715a2ee85748fa02e353b77adbc6a3987e1237567f22eee401e2e4714be79a039e38bc0decca42e8f63cf445
+  languageName: node
+  linkType: hard
+
 "@marijn/find-cluster-break@npm:^1.0.0":
   version: 1.0.2
   resolution: "@marijn/find-cluster-break@npm:1.0.2"
@@ -5792,7 +5904,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/curves@npm:^2.0.1, @noble/curves@npm:~2.2.0":
+"@noble/curves@npm:2.0.1, @noble/curves@npm:~2.0.0":
+  version: 2.0.1
+  resolution: "@noble/curves@npm:2.0.1"
+  dependencies:
+    "@noble/hashes": "npm:2.0.1"
+  checksum: 10/e826af523f40a671601a6d07f98df16c3afe1cbd0349c3ba4d7b31f6dba7dc743822719f260bd291716b6b42b8dc327f94a76b4852359aa85f79df461eb22bfc
+  languageName: node
+  linkType: hard
+
+"@noble/curves@npm:2.2.0, @noble/curves@npm:^2.0.1, @noble/curves@npm:~2.2.0":
   version: 2.2.0
   resolution: "@noble/curves@npm:2.2.0"
   dependencies:
@@ -5822,7 +5943,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:2.0.1":
+"@noble/hashes@npm:2.0.1, @noble/hashes@npm:~2.0.0":
   version: 2.0.1
   resolution: "@noble/hashes@npm:2.0.1"
   checksum: 10/f4d00e7564eb4ff4e6d16be151dd0e404aede35f91e4372b0a8a6ec888379c1dd1e02c721b480af8e7853bea9637185b5cb9533970c5b77d60c254ead0cfd8f7
@@ -5844,6 +5965,13 @@ __metadata:
     "@noble/curves": "npm:~2.2.0"
     "@noble/hashes": "npm:~2.2.0"
   checksum: 10/befe191f3a648082938e45b837fbec42f55b3f57e3bfb9efcbcf1227f633013abaa57d0a1c449e0c0fe0d5bd066bed8d433e462d3c5f019cbb3b31bfa0770fbc
+  languageName: node
+  linkType: hard
+
+"@noble/secp256k1@npm:3.0.0":
+  version: 3.0.0
+  resolution: "@noble/secp256k1@npm:3.0.0"
+  checksum: 10/8f3f90ca9cad5e4fc0d85613dee508fa9e4590ea7275e3b44ca52e164b316e88a03b9520c11882b8133c8bd4c8024f2135bee44060e84e180f281b85aad0b933
   languageName: node
   linkType: hard
 
@@ -8369,10 +8497,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/base@npm:2.0.0, @scure/base@npm:^2.0.0":
+"@scure/base@npm:2.0.0, @scure/base@npm:^2.0.0, @scure/base@npm:~2.0.0":
   version: 2.0.0
   resolution: "@scure/base@npm:2.0.0"
   checksum: 10/8fb86024f22e9c532d513b8df8a672252e58bd5695920ce646162287f0accd38e89cab58722a738b3d247b5dcf7760362ae2d82d502be7e62a555f5d98f8a110
+  languageName: node
+  linkType: hard
+
+"@scure/base@npm:2.2.0, @scure/base@npm:~2.2.0":
+  version: 2.2.0
+  resolution: "@scure/base@npm:2.2.0"
+  checksum: 10/b52ec9cd54bad77e22f881b6924ccab692dc1c6dd10287d1787bf263e9f1e560d6d2bda906538fb9a39615d61a1b5c2f53f57a511667fd10e93b9cdaa6fb5d2a
   languageName: node
   linkType: hard
 
@@ -8405,6 +8540,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@scure/bip32@npm:^2.0.1":
+  version: 2.2.0
+  resolution: "@scure/bip32@npm:2.2.0"
+  dependencies:
+    "@noble/curves": "npm:2.2.0"
+    "@noble/hashes": "npm:2.2.0"
+    "@scure/base": "npm:2.2.0"
+  checksum: 10/595875bdfdd153621a35d71b73bb77e1406b5d659bbd20fc4db3fed697d72d39a62c8a6b2bb9816ce4e50199200252008ae203cd637f3acf1e0821180755cd3d
+  languageName: node
+  linkType: hard
+
 "@scure/bip39@npm:1.3.0":
   version: 1.3.0
   resolution: "@scure/bip39@npm:1.3.0"
@@ -8425,13 +8571,37 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/bip39@npm:^2.0.1":
+"@scure/bip39@npm:2.0.1, @scure/bip39@npm:^2.0.1":
   version: 2.0.1
   resolution: "@scure/bip39@npm:2.0.1"
   dependencies:
     "@noble/hashes": "npm:2.0.1"
     "@scure/base": "npm:2.0.0"
   checksum: 10/d05271c3a339447802e87c921b3630d5477ce1e137340bb31692c2936dea382f2f73ecb60100e22a96632d70b67d32f7e10b7f36e7395c879f7ff0efadcd1ad0
+  languageName: node
+  linkType: hard
+
+"@scure/btc-signer@npm:2.0.1":
+  version: 2.0.1
+  resolution: "@scure/btc-signer@npm:2.0.1"
+  dependencies:
+    "@noble/curves": "npm:~2.0.0"
+    "@noble/hashes": "npm:~2.0.0"
+    "@scure/base": "npm:~2.0.0"
+    micro-packed: "npm:~0.8.0"
+  checksum: 10/495113016b5e008981cf1f164f8952d433aa13e5c5c8ef323bdd5bbf72abb03c1e9b7f59d2db480725f938bcb77111d1f1a54495ae12a3e0c2ee3c925424253a
+  languageName: node
+  linkType: hard
+
+"@scure/btc-signer@npm:^2.0.1":
+  version: 2.2.0
+  resolution: "@scure/btc-signer@npm:2.2.0"
+  dependencies:
+    "@noble/curves": "npm:~2.2.0"
+    "@noble/hashes": "npm:~2.2.0"
+    "@scure/base": "npm:~2.2.0"
+    micro-packed: "npm:~0.9.0"
+  checksum: 10/4ed252fae2f345ac86fc74c8b1aa43ed4a9b1792b06aaddbd7d2a2aed7fbbc0d7d9f165c10c78e8a2ddbf0743f846aa747e8f83f33878d13868606264985515f
   languageName: node
   linkType: hard
 
@@ -10203,6 +10373,27 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     react: "npm:19.2.4"
+  languageName: unknown
+  linkType: soft
+
+"@suite-common/ark-fake-signer@workspace:*, @suite-common/ark-fake-signer@workspace:suite-common/ark-fake-signer":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/ark-fake-signer@workspace:suite-common/ark-fake-signer"
+  dependencies:
+    "@arkade-os/sdk": "npm:0.4.26"
+    "@evolu/common": "npm:8.0.0-next.5"
+    "@suite-common/suite-sync-storage": "workspace:*"
+    "@trezor/eslint": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite-common/ark@workspace:suite-common/ark":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/ark@workspace:suite-common/ark"
+  dependencies:
+    "@suite-common/ark-fake-signer": "workspace:*"
+    "@trezor/eslint": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -20529,6 +20720,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bip68@npm:1.0.4, bip68@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "bip68@npm:1.0.4"
+  checksum: 10/0955c87f73cb7ae627558c476ce885af635bbbb43f9d12dc54f3b6adb4e2b47a451215ff50d5e25628fa889b10a88cd59dd1fd5a31d900eaeaf262456b87e5da
+  languageName: node
+  linkType: hard
+
 "bitcoin-ops@npm:^1.3.0, bitcoin-ops@npm:^1.4.1":
   version: 1.4.1
   resolution: "bitcoin-ops@npm:1.4.1"
@@ -30727,6 +30925,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"isomorphic-ws@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "isomorphic-ws@npm:5.0.0"
+  peerDependencies:
+    ws: "*"
+  checksum: 10/e20eb2aee09ba96247465fda40c6d22c1153394c0144fa34fe6609f341af4c8c564f60ea3ba762335a7a9c306809349f9b863c8beedf2beea09b299834ad5398
+  languageName: node
+  linkType: hard
+
 "isows@npm:1.0.7":
   version: 1.0.7
   resolution: "isows@npm:1.0.7"
@@ -34544,6 +34751,24 @@ __metadata:
   bin:
     metro: src/cli.js
   checksum: 10/9986b40bca503d97c270e3821bd2786d51de1f8f4759d5fec9b8454ea8f46f6d5769324ad2c05df0faef9379831f17e1a1f7f07e81e7821610521e5d47d1c5e1
+  languageName: node
+  linkType: hard
+
+"micro-packed@npm:~0.8.0":
+  version: 0.8.0
+  resolution: "micro-packed@npm:0.8.0"
+  dependencies:
+    "@scure/base": "npm:2.0.0"
+  checksum: 10/94bc96387be56d95ca758fcaddbeacdd8095344c3cc51b813637587f4b013853088f046d9a2e81354d583f384ec44c35aa008683aa13397d700ddf7b70aff77e
+  languageName: node
+  linkType: hard
+
+"micro-packed@npm:~0.9.0":
+  version: 0.9.0
+  resolution: "micro-packed@npm:0.9.0"
+  dependencies:
+    "@scure/base": "npm:~2.2.0"
+  checksum: 10/d0b7018ad2e9832de7b0b81d6585b129631607478fe91576fbbb55ff21321585223248cc10f6bc231fb95a24fa18483d0819d8fc11ac4c1996883c2c323be0da
   languageName: node
   linkType: hard
 
@@ -44914,6 +45139,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"uint8array-tools@npm:^0.0.9":
+  version: 0.0.9
+  resolution: "uint8array-tools@npm:0.0.9"
+  checksum: 10/ea924e6d574f8c24d94400f0635eeffbeb0190fd2e4b781bb8e43b089c799a3d8c11c9b75d7c68524bc7e18f7ffc3d942f122ecf729746ba51612a8463848943
+  languageName: node
+  linkType: hard
+
 "uint8arrays@npm:3.1.1, uint8arrays@npm:^3.0.0":
   version: 3.1.1
   resolution: "uint8arrays@npm:3.1.1"
@@ -45817,7 +46049,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"varuint-bitcoin@npm:2.0.0":
+"varuint-bitcoin@npm:2.0.0, varuint-bitcoin@npm:^2.0.0":
   version: 2.0.0
   resolution: "varuint-bitcoin@npm:2.0.0"
   dependencies:
@@ -46971,6 +47203,16 @@ __metadata:
     imurmurhash: "npm:^0.1.4"
     signal-exit: "npm:^4.0.1"
   checksum: 10/ca8f12cc4de17756a3f35087c1985c45b5be1ac399b9dc33000ab8cdbacb210ce3adde5bc1a90acfa729fe5326d250cf4f91ef57143b25bcf342a267391f8754
+  languageName: node
+  linkType: hard
+
+"ws-electrumx-client@npm:1.0.5":
+  version: 1.0.5
+  resolution: "ws-electrumx-client@npm:1.0.5"
+  dependencies:
+    isomorphic-ws: "npm:^5.0.0"
+    ws: "npm:^8.12.1"
+  checksum: 10/d48623365fd0f555b600743d35889ae425caac0889eb2e35ba125cf534cce20f9e8578c4768f063b898795e036c85561ef39027c4bc856719d01ceca17de73cf
   languageName: node
   linkType: hard
 
