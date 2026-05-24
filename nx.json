@@ -46,7 +46,10 @@
                 "^production",
                 "default",
                 "{workspaceRoot}/jest.config.base.js",
-                "{workspaceRoot}/jest.config.native.js"
+                "{workspaceRoot}/jest.config.base.swc.js",
+                "{workspaceRoot}/jest.config.native.js",
+                "{workspaceRoot}/jest.config.swc-transform.js",
+                "{workspaceRoot}/JestCustomEnv.js"
             ],
             "cache": true
         },
