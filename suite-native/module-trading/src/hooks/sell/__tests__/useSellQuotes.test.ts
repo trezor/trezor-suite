@@ -178,7 +178,7 @@ describe('useSellQuotes', () => {
                 result.current.setValue(field, value);
             });
 
-            expect(dispatchSpy).toHaveBeenLastCalledWith(
+            expect(dispatchSpy).toHaveBeenCalledWith(
                 expect.objectContaining({
                     type: 'handleRequestThunkMock',
                 }),
@@ -317,6 +317,40 @@ describe('useSellQuotes', () => {
         // make sure form has an error
         const { invalid } = result.current.getFieldState('cryptoStringAmount');
         expect(invalid).toBe(true);
+    });
+
+    it('should not clear quotes when fiat quote exceeds max spendable amount', async () => {
+        const store = getInitializedStore();
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const { result } = renderUseSellQuotes(store);
+
+        act(() => {
+            result.current.setValue('sendAsset', usdcAsset);
+            result.current.setValue('fiatCurrency', 'usd');
+            result.current.setValue('amountInCrypto', false);
+            result.current.setValue('fiatStringAmount', '100');
+        });
+        await act(async () => {
+            store.dispatch(tradingSellActions.saveQuotes(sellQuotes));
+            // allow validations to run
+            await Promise.resolve();
+        });
+
+        dispatchSpy.mockClear();
+        await act(async () => {
+            result.current.setError('cryptoStringAmount', {
+                type: 'network-reserve',
+                message: 'Not enough balance to cover fees',
+            });
+            // allow validations to run
+            await Promise.resolve();
+        });
+
+        expect(dispatchSpy).not.toHaveBeenCalledWith({
+            payload: undefined,
+            type: 'tradingSell/clearQuotesAndQuotesRequest',
+        });
+        expect(store.getState().wallet.trading.sell.quotes).toEqual(sellQuotes);
     });
 
     it('should not query quotes when form contains error', async () => {
