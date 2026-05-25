@@ -23,11 +23,15 @@ for (const [filePath, fileResult] of Object.entries(report.files)) {
 }
 const total = Object.values(report.files).reduce((s, f) => s + f.mutants.length, 0);
 const killed = total - buckets.NoCoverage.length - buckets.Survived.length - buckets.Timeout.length;
-console.log(`Mutation status: ${killed} killed, ${buckets.Survived.length} survived, ` +
-            `${buckets.NoCoverage.length} no-coverage, ${buckets.Timeout.length} timeout`);
+console.log(
+    `Mutation status: ${killed} killed, ${buckets.Survived.length} survived, ` +
+        `${buckets.NoCoverage.length} no-coverage, ${buckets.Timeout.length} timeout`,
+);
 console.log(`\n=== Priority 1: NoCoverage (write ANY test touching this code) — top 20 ===`);
 for (const m of buckets.NoCoverage.slice(0, 20))
     console.log(`  ${m.file}:${m.line}:${m.col}  [${m.mutator}]  → ${m.replacement}`);
-console.log(`\n=== Priority 2: Survived (existing tests pass — strengthen assertions) — top 20 ===`);
+console.log(
+    `\n=== Priority 2: Survived (existing tests pass — strengthen assertions) — top 20 ===`,
+);
 for (const m of buckets.Survived.slice(0, 20))
     console.log(`  ${m.file}:${m.line}:${m.col}  [${m.mutator}]  → ${m.replacement}`);

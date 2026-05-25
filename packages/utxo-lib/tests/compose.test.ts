@@ -87,6 +87,8 @@ describe('composeTx request validation errors', () => {
         const tx = composeTx({
             utxos: [
                 {
+                    vout: 0,
+                    txid: '0000000000000000000000000000000000000000000000000000000000000000',
                     coinbase: false,
                     own: true,
                     confirmations: 100,
@@ -123,6 +125,8 @@ describe('composeTx request validation errors', () => {
         const tx = composeTx({
             utxos: [
                 {
+                    vout: 0,
+                    txid: '0000000000000000000000000000000000000000000000000000000000000000',
                     coinbase: false,
                     own: true,
                     confirmations: 100,
@@ -159,6 +163,8 @@ describe('composeTx request validation errors', () => {
         const tx = composeTx({
             utxos: [
                 {
+                    vout: 0,
+                    txid: '0000000000000000000000000000000000000000000000000000000000000000',
                     coinbase: false,
                     own: true,
                     confirmations: 100,

@@ -371,7 +371,7 @@ describe('p2tr lazy output getter with explicit hash=undefined', () => {
 
 describe('embed lazy output getter when a.data is cleared after construction', () => {
     it('returns undefined when a.data is mutated to undefined post-construction', () => {
-        const a = { data: [Buffer.from('hello')] };
+        const a: { data: Buffer[] } = { data: [Buffer.from('hello')] };
         const p = PAYMENTS.embed(a);
         a.data = undefined as unknown as Buffer[];
         expect(p.output).toBeUndefined();
@@ -380,7 +380,9 @@ describe('embed lazy output getter when a.data is cleared after construction', (
 
 describe('embed lazy data getter when a.output is cleared after construction', () => {
     it('returns undefined when a.output is mutated to undefined post-construction', () => {
-        const a = { output: Buffer.from([0x6a, 0x05, 0x68, 0x65, 0x6c, 0x6c, 0x6f]) };
+        const a: { output: Buffer } = {
+            output: Buffer.from([0x6a, 0x05, 0x68, 0x65, 0x6c, 0x6c, 0x6f]),
+        };
         const p = PAYMENTS.embed(a);
         a.output = undefined as unknown as Buffer;
         expect(p.data).toBeUndefined();
