@@ -66,11 +66,11 @@ touch /tmp/preflight-marker
 ```
 
 Exit code 0 = already passing — note it, exclude from fix loop.
-Non-zero = failing — proceed to fix.
+Non-zero = failing — read the trace before deciding anything further (see below).
 
 **If all validations already pass:** write the status block (Step 4) and stop.
 
-### Finding traces after any test run
+### Reading traces after pre-flight and any test run
 
 ```bash
 find suite/e2e/test-results -name 'trace.zip' -newer /tmp/preflight-marker
@@ -84,6 +84,14 @@ ls /tmp/trace-preflight/resources/page@*.jpeg | sort | tail -10
 ```
 
 Read each screenshot with the Read tool and describe what you see.
+
+### Check the failure matches the diagnosis
+
+After reading the trace: if the test fails due to an infrastructure or environment error
+(emulator crash, transport failure, bridge error, process startup issue) rather than the
+test assertion described in `diagnosis` — retry once. If the retry shows the same
+infrastructure or environment error, write the result files (Step 4) with `result: "fail"` and
+`iterations: 0`, and stop. Do not enter the fix loop.
 
 ---
 

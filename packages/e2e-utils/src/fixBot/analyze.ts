@@ -39,6 +39,7 @@ function main(): void {
         join(root, 'node_modules/.bin/claude'),
         [
             '--print',
+            '--verbose',
             '--output-format',
             'json',
             '--settings',

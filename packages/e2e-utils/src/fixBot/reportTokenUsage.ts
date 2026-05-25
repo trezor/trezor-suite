@@ -5,15 +5,21 @@ import { appendFileSync } from 'node:fs';
 import { type ClaudeResult, ClaudeResultSchema } from './schemas';
 
 function parseClaudeOutput(raw: string): ClaudeResult {
-    const parsed: unknown = JSON.parse(raw.trim());
-    const entries = Array.isArray(parsed) ? parsed : [parsed];
-    const entry = entries.find(e => ClaudeResultSchema.safeParse(e).data?.type === 'result');
+    const unsafeParsed: unknown = JSON.parse(raw.trim());
+    const entries = Array.isArray(unsafeParsed) ? unsafeParsed : [unsafeParsed];
+    const resultEntry = entries
+        .map(entry => ClaudeResultSchema.safeParse(entry))
+        .find(parsed => parsed.success && parsed.data.type === 'result');
 
-    return ClaudeResultSchema.safeParse(entry ?? entries[0]).data ?? {};
+    if (!resultEntry?.success) {
+        throw new Error('No result entry found in Claude output');
+    }
+
+    return resultEntry.data;
 }
 
 function formatIntegerWithCommas(value: number): string {
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return new Intl.NumberFormat('en-US').format(value);
 }
 
 function formatTimestamp(date: Date): string {
@@ -51,7 +57,11 @@ export function reportTokenUsage(rawOutput: string, logFilePath: string, agentNa
     try {
         result = parseClaudeOutput(rawOutput);
     } catch {
-        // malformed — fall through with empty result (zeroed/blank line)
+        process.stderr.write(
+            `[${agentName}] agent output unparsable (${rawOutput.length} bytes)\n`,
+        );
+
+        return;
     }
 
     const timestamp = formatTimestamp(new Date());
@@ -60,22 +70,24 @@ export function reportTokenUsage(rawOutput: string, logFilePath: string, agentNa
     const turnsField = result.num_turns != null ? String(result.num_turns).padStart(3) : 'N/A';
 
     const formatTokenCount = (tokenCount: number | undefined) =>
-        formatIntegerWithCommas(tokenCount ?? 0).padStart(9);
+        tokenCount != null ? formatIntegerWithCommas(tokenCount).padStart(9) : 'N/A'.padStart(9);
 
     const inputTokens = formatTokenCount(result.usage?.input_tokens);
     const outputTokens = formatTokenCount(result.usage?.output_tokens);
     const cacheWriteTokens = formatTokenCount(result.usage?.cache_creation_input_tokens);
     const cacheReadTokens = formatTokenCount(result.usage?.cache_read_input_tokens);
 
+    const COST_FIELD_WIDTH = 9; // '$' + 8-char number
     const costField =
         result.total_cost_usd != null
             ? `$${result.total_cost_usd.toFixed(4).padStart(8)}`
-            : '         ';
+            : 'N/A'.padStart(COST_FIELD_WIDTH);
 
+    const DURATION_FIELD_WIDTH = 6; // 5-char number + 's'
     const durationField =
         result.duration_ms != null
             ? `${String(Math.round(result.duration_ms / 1000)).padStart(5)}s`
-            : '      ';
+            : 'N/A'.padStart(DURATION_FIELD_WIDTH);
 
     const line = `${timestamp}  ${paddedAgentName}  turns=${turnsField}  in=${inputTokens}  out=${outputTokens}  cache_w=${cacheWriteTokens}  cache_r=${cacheReadTokens}  ${costField}  ${durationField}`;
 

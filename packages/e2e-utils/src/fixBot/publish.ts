@@ -6,7 +6,7 @@ import { log } from '../logger';
 import { type FixResult, FixResultSchema } from './schemas';
 
 export interface PublishOptions {
-    worktree: string;
+    worktreePath: string;
     branch: string;
     base?: string;
     remote?: string;
@@ -18,16 +18,16 @@ const ICONS: Record<FixResult['result'], string> = {
     fail: '❌',
 };
 
-export function publishTask({
-    worktree,
+export function publishPR({
+    worktreePath,
     branch,
     base = 'develop',
     remote = 'origin',
 }: PublishOptions): void {
-    const resultFile = join(worktree, 'fix-result.json');
+    const resultFile = join(worktreePath, 'fix-result.json');
 
-    if (!existsSync(worktree)) {
-        log(`Result: ❌  worktree not found: ${worktree}`);
+    if (!existsSync(worktreePath)) {
+        log(`Result: ❌  worktree not found: ${worktreePath}`);
 
         return;
     }
@@ -54,25 +54,25 @@ export function publishTask({
     }
 
     log(`  → Pushing ${branch} to ${remote}...`);
-    execFileSync('git', ['-C', worktree, 'push', remote, branch], { stdio: 'inherit' });
+    execFileSync('git', ['-C', worktreePath, 'push', remote, branch], { stdio: 'inherit' });
 
-    const descFile = join(worktree, 'pr-description.md');
+    const prDescriptionFile = join(worktreePath, 'pr-description.md');
     const prArgs = ['pr', 'create', '--title', pr_title, '--head', branch, '--base', base];
 
-    if (existsSync(descFile)) prArgs.push('--body-file', descFile);
+    if (existsSync(prDescriptionFile)) prArgs.push('--body-file', prDescriptionFile);
 
     const prUrl = execFileSync('gh', prArgs, { encoding: 'utf-8' }).trim();
     log(`PR: ${prUrl}`);
 }
 
 // Entry point when called directly by GHA matrix jobs:
-// tsx publish.ts <worktree> <branch> [base]
+// tsx publish.ts <worktreePath> <branch> [base]
 const isMain = /publish\.[jt]s$/.test(process.argv[1] ?? '');
 if (isMain) {
-    const [worktree, branch, title, base] = process.argv.slice(2);
-    if (!worktree || !branch || !title) {
-        process.stderr.write('Usage: tsx publish.ts <worktree> <branch> <title> [base]\n');
+    const [worktreePath, branch, base] = process.argv.slice(2);
+    if (!worktreePath || !branch) {
+        process.stderr.write('Usage: tsx publish.ts <worktreePath> <branch> [base]\n');
         process.exit(1);
     }
-    publishTask({ worktree, branch, base });
+    publishPR({ worktreePath, branch, base });
 }

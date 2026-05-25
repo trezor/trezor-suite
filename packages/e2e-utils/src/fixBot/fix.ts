@@ -14,7 +14,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 
 import { error, log } from '../logger';
-import { publishTask } from './publish';
+import { publishPR } from './publish';
 import { logAgentResult, reportTokenUsage } from './reportTokenUsage';
 import { type FixTask, ReportSchema } from './schemas';
 
@@ -33,54 +33,78 @@ function latestReport(reportDir: string): string {
     return join(reportDir, files[files.length - 1]);
 }
 
-function setupWorktree(root: string, task: FixTask, worktree: string): void {
-    if (existsSync(worktree)) {
-        execFileSync('git', ['worktree', 'remove', worktree, '--force']);
+function setupWorktree(root: string, task: FixTask, worktreePath: string): void {
+    if (existsSync(worktreePath)) {
+        execFileSync('git', ['worktree', 'remove', worktreePath, '--force']);
     }
     try {
-        execFileSync('git', ['branch', '-D', task.branch]);
+        execFileSync('git', ['branch', '-D', '--', task.branch]);
     } catch {
         // branch doesn't exist yet on first run
     }
 
-    execFileSync('git', ['worktree', 'add', worktree, '-b', task.branch, 'origin/develop']);
-    symlinkSync(join(root, 'node_modules'), join(worktree, 'node_modules'));
+    execFileSync('git', ['worktree', 'add', worktreePath, '-b', task.branch, 'origin/develop']);
+    symlinkSync(join(root, 'node_modules'), join(worktreePath, 'node_modules'));
+
+    execFileSync('git', [
+        '-C',
+        worktreePath,
+        'submodule',
+        'update',
+        '--init',
+        'submodules/trezor-common',
+    ]);
     // use default git hooks instead of personal custom ones
-    execFileSync('git', ['-C', worktree, 'config', 'core.hooksPath', join(worktree, '.husky')]);
+    execFileSync('git', [
+        '-C',
+        worktreePath,
+        'config',
+        'core.hooksPath',
+        join(worktreePath, '.husky'),
+    ]);
 
     const envFile = join(root, 'suite/e2e/.env');
     if (existsSync(envFile)) {
-        cpSync(envFile, join(worktree, 'suite/e2e/.env'));
+        cpSync(envFile, join(worktreePath, 'suite/e2e/.env'));
     }
 
     for (const dir of ['packages/suite-desktop/dist', 'packages/suite-desktop/build'] as const) {
         const src = join(root, dir);
         if (existsSync(src)) {
-            mkdirSync(join(worktree, dirname(dir)), { recursive: true });
-            symlinkSync(src, join(worktree, dir));
+            mkdirSync(join(worktreePath, dirname(dir)), { recursive: true });
+            symlinkSync(src, join(worktreePath, dir));
         }
     }
 }
 
 function runAgent(
     root: string,
-    botDir: string,
+    fixAgentDir: string,
     reportDir: string,
     task: FixTask,
-    worktree: string,
+    worktreePath: string,
 ): void {
-    const prompt = `${readFileSync(join(botDir, 'FIX_AGENT.md'), 'utf-8')}\n\n---\n\n## Fix Task\n\n\`\`\`json\n${JSON.stringify(task, null, 2)}\n\`\`\`\n`;
+    const prompt = `${readFileSync(join(fixAgentDir, 'FIX_AGENT.md'), 'utf-8')}\n\n---\n\n## Fix Task\n\n\`\`\`json\n${JSON.stringify(task, null, 2)}\n\`\`\`\n`;
 
+    // Write stdout to a temp file to avoid spawnSync's in-memory buffer limit (ENOBUFS).
     const tmpFile = join(tmpdir(), `claude-fix-${task.id}-${Date.now()}.json`);
     const stdoutFd = openSync(tmpFile, 'w');
 
     const env = { ...process.env };
+    // Prevents an internal Claude Code setting from accidentally being inherited by the subprocess and breaking it
     delete env['MCP_CONNECTION_NONBLOCKING'];
 
     const result = spawnSync(
         join(root, 'node_modules/.bin/claude'),
-        ['--print', '--output-format', 'json', '--settings', join(botDir, 'settings.json')],
-        { input: prompt, cwd: worktree, env, stdio: ['pipe', stdoutFd, 'inherit'] },
+        [
+            '--print',
+            '--verbose',
+            '--output-format',
+            'json',
+            '--settings',
+            join(fixAgentDir, 'settings.json'),
+        ],
+        { input: prompt, cwd: worktreePath, env, stdio: ['pipe', stdoutFd, 'inherit'] },
     );
 
     closeSync(stdoutFd);
@@ -97,21 +121,9 @@ function runAgent(
     }
 }
 
-function commitCount(worktree: string): number {
-    try {
-        return parseInt(
-            execFileSync('git', ['-C', worktree, 'rev-list', '--count', 'origin/develop..HEAD'], {
-                encoding: 'utf-8',
-            }).trim(),
-            10,
-        );
-    } catch {
-        return -1;
-    }
-}
-
-function runTask(root: string, botDir: string, reportDir: string, task: FixTask): void {
-    const worktree = join(tmpdir(), task.branch.replaceAll('/', '-'));
+function runTask(root: string, fixAgentDir: string, reportDir: string, task: FixTask): void {
+    const sanitizedWorktreeName = task.branch.replaceAll('/', '-').replace(/[^a-zA-Z0-9_-]/g, '_');
+    const worktreePath = join(tmpdir(), sanitizedWorktreeName);
 
     const webCount = task.validations.filter(v => v.platform === 'web').length;
     const desktopCount = task.validations.filter(v => v.platform === 'desktop').length;
@@ -121,21 +133,21 @@ function runTask(root: string, botDir: string, reportDir: string, task: FixTask)
     log(`Branch:  ${task.branch}`);
     log(`Web:     ${webCount}  Desktop: ${desktopCount}`);
 
-    setupWorktree(root, task, worktree);
+    setupWorktree(root, task, worktreePath);
     log('Worktree ready.\n');
 
-    runAgent(root, botDir, reportDir, task, worktree);
-    log(`Agent done. Commits on branch: ${commitCount(worktree)}`);
+    runAgent(root, fixAgentDir, reportDir, task, worktreePath);
+    log(`Agent done. Processing results.`);
 
-    publishTask({ worktree, branch: task.branch });
+    publishPR({ worktreePath, branch: task.branch });
 }
 
 function main(): void {
     const root = execFileSync('git', ['rev-parse', '--show-toplevel'], {
         encoding: 'utf-8',
     }).trim();
-    const botDir = join(root, 'packages/e2e-utils/src/fixBot');
-    const reportDir = join(botDir, 'reports');
+    const fixAgentDir = join(root, 'packages/e2e-utils/src/fixBot');
+    const reportDir = join(fixAgentDir, 'reports');
 
     const reportPath = process.argv[2] ?? latestReport(reportDir);
     const report = ReportSchema.parse(JSON.parse(readFileSync(reportPath, 'utf-8')));
@@ -145,7 +157,7 @@ function main(): void {
 
     for (const task of tasks) {
         try {
-            runTask(root, botDir, reportDir, task);
+            runTask(root, fixAgentDir, reportDir, task);
         } catch (err) {
             error(`Task ${task.id} failed: ${err}`);
         }

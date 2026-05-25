@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const ValidationSchema = z.object({
+export const TestToValidateSchema = z.object({
     platform: z.enum(['web', 'desktop']),
     group: z.string(),
     spec: z.string(),
@@ -14,7 +14,7 @@ export const FixTaskSchema = z.object({
     confidence: z.enum(['HIGH', 'MEDIUM', 'LOW']),
     fix_description: z.string(),
     diagnosis: z.string(),
-    validations: z.array(ValidationSchema),
+    validations: z.array(TestToValidateSchema),
 });
 
 export const ReportSchema = z.object({
@@ -22,10 +22,11 @@ export const ReportSchema = z.object({
 });
 
 export const FixResultSchema = z.object({
+    task_id: z.string(),
     result: z.enum(['pass', 'partial', 'fail']),
     passed: z.array(z.string()),
     failed: z.array(z.string()),
-    iterations: z.number(),
+    iterations: z.number().int().nonnegative(),
     pr_title: z.string(),
 });
 
