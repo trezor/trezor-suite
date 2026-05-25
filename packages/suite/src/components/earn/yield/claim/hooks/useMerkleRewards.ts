@@ -1,9 +1,8 @@
 import { useCallback, useMemo } from 'react';
 
 import {
-    ChainAddressKey,
     type MerkleRewardsByChainAndAddress,
-    getMerkleRewards,
+    getMerklUsersRewards,
     useGetMerkleRewards,
 } from '@suite-common/earn-stablecoin-api';
 import { commonQueryKeys, useQuery, useQueryClient } from '@suite-common/react-query';
@@ -15,7 +14,7 @@ import {
 } from '@suite-common/wallet-core';
 import {
     type Account,
-    type BaseCurrencyAmount,
+    type AccountWithNetworkType,
     type RatesByKey,
     type TickerId,
     type Timestamp,
@@ -38,21 +37,8 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { useMerkleRewardsQueryEntries } from './useMerkleRewardsQueryEntries';
 
-export type MerkleRewardWithFiat =
-    MerkleRewardsByChainAndAddress[keyof MerkleRewardsByChainAndAddress][number] & {
-        claimable: BaseCurrencyAmount;
-        fiat: {
-            amount: BaseCurrencyAmount | null;
-            claimed: BaseCurrencyAmount | null;
-            pending: BaseCurrencyAmount | null;
-            claimable: BaseCurrencyAmount | null;
-        };
-    };
-
-export type MerkleRewardsWithFiatRecord = Record<string, MerkleRewardWithFiat[]>;
-
 function extendMerkleRewardsWithFiat(
-    rewardsByChainAndAddress: MerkleRewardsByChainAndAddress = {},
+    rewards: MerkleRewardsByChainAndAddress = [],
     baseCurrency: BaseCurrencyCode,
     currentFiatRates: RatesByKey | undefined,
 ) {
@@ -79,86 +65,71 @@ function extendMerkleRewardsWithFiat(
     };
 
     const missingRateTickers: TickerId[] = [];
-    const rewardsWithFiat = Object.fromEntries(
-        Object.entries(rewardsByChainAndAddress)
-            .map(([key, rewards]) => {
-                const { chainId } = ChainAddressKey.parse(key);
-                const network = getNetworkByEvmChainId(chainId);
+    const rewardsWithFiat = rewards
+        .map(({ chainId, rewards, ...rest }) => {
+            const network = getNetworkByEvmChainId(chainId);
 
-                const rewardsWithFiat = rewards
-                    .map(reward => {
-                        const claimableBN = new BigNumber(reward.amount)
-                            .minus(reward.claimed)
-                            .minus(reward.pending);
+            const rewardsWithFiat = rewards
+                .map(reward => {
+                    const claimable = asBaseCurrencyAmount(new BigNumber(reward.claimable));
 
-                        if (!claimableBN.gt(0)) {
-                            return null;
-                        }
-
-                        const claimable = asBaseCurrencyAmount(claimableBN);
-
-                        if (!network) {
-                            return {
-                                ...reward,
-                                claimable,
-                                fiat: {
-                                    amount: null,
-                                    claimed: null,
-                                    pending: null,
-                                    claimable: null,
-                                },
-                            };
-                        }
-
-                        const tokenAddress = getContractAddressForNetworkSymbol(
-                            network.symbol,
-                            reward.token.address,
-                        );
-                        const fiatRateKey = getFiatRateKey(
-                            network.symbol,
-                            baseCurrency,
-                            toTokenAddress(tokenAddress),
-                        );
-                        const rate = currentFiatRates?.[fiatRateKey]?.rate;
-                        const ticker = getTickerFromFiatRateKey(fiatRateKey);
-
-                        if (rate === undefined && ticker) {
-                            missingRateTickers.push(ticker);
-                        }
-
+                    if (!network) {
                         return {
                             ...reward,
                             claimable,
                             fiat: {
-                                amount: toFiatFromSubunits(
-                                    reward.amount,
-                                    reward.token.decimals,
-                                    rate,
-                                ),
-                                claimed: toFiatFromSubunits(
-                                    reward.claimed,
-                                    reward.token.decimals,
-                                    rate,
-                                ),
-                                pending: toFiatFromSubunits(
-                                    reward.pending,
-                                    reward.token.decimals,
-                                    rate,
-                                ),
-                                claimable: toFiatFromSubunits(
-                                    claimable,
-                                    reward.token.decimals,
-                                    rate,
-                                ),
+                                amount: null,
+                                claimed: null,
+                                pending: null,
+                                claimable: null,
                             },
                         };
-                    })
-                    .filter((reward): reward is NonNullable<typeof reward> => Boolean(reward));
+                    }
 
-                return [key, rewardsWithFiat] as const;
-            })
-            .filter(([, rewards]) => rewards.length > 0),
-    );
+                    const tokenAddress = getContractAddressForNetworkSymbol(
+                        network.symbol,
+                        reward.token.address,
+                    );
+                    const fiatRateKey = getFiatRateKey(
+                        network.symbol,
+                        baseCurrency,
+                        toTokenAddress(tokenAddress),
+                    );
+                    const rate = currentFiatRates?.[fiatRateKey]?.rate;
+                    const ticker = getTickerFromFiatRateKey(fiatRateKey);
+
+                    if (rate === undefined && ticker) {
+                        missingRateTickers.push(ticker);
+                    }
+
+                    return {
+                        ...reward,
+                        claimable,
+                        fiat: {
+                            amount: toFiatFromSubunits(reward.amount, reward.token.decimals, rate),
+                            claimed: toFiatFromSubunits(
+                                reward.claimed,
+                                reward.token.decimals,
+                                rate,
+                            ),
+                            pending: toFiatFromSubunits(
+                                reward.pending,
+                                reward.token.decimals,
+                                rate,
+                            ),
+                            claimable: toFiatFromSubunits(claimable, reward.token.decimals, rate),
+                        },
+                    };
+                })
+                .filter((reward): reward is NonNullable<typeof reward> => Boolean(reward));
+
+            return {
+                ...rest,
+                chainId,
+                rewards: rewardsWithFiat,
+            };
+        })
+        .filter(chainRewards => chainRewards.rewards.length > 0);
 
     return {
         rewardsWithFiat,
@@ -193,9 +164,8 @@ export function useMerkleRewards(accounts: YieldRewardsAccounts) {
 
     const accountsRewards = useMemo(
         () =>
-            Object.entries(rewardsWithFiat)
-                .map(([key, rewards]) => {
-                    const { chainId, address } = ChainAddressKey.parse(key);
+            rewardsWithFiat
+                .map(({ chainId, rewards, address }) => {
                     const totalClaimableFiatAmount = rewards.reduce(
                         (total, reward) => total.plus(reward.fiat.claimable ?? '0'),
                         new BigNumber(0),
@@ -203,7 +173,7 @@ export function useMerkleRewards(accounts: YieldRewardsAccounts) {
 
                     const network = getNetworkByEvmChainId(chainId);
                     const rewardAccount = resolvedAccounts.find(
-                        account =>
+                        (account): account is AccountWithNetworkType<'ethereum'> =>
                             account.networkType === 'ethereum' &&
                             account.symbol === network?.symbol &&
                             account.descriptor.toLowerCase() === address.toLowerCase(),
@@ -242,19 +212,14 @@ export function useMerkleRewards(accounts: YieldRewardsAccounts) {
     });
 
     const totalRewardsToClaim = useMemo(() => {
-        const result = Object.values(rewardsWithFiat).reduce(
-            (result, rewards) =>
-                result.plus(
-                    rewards.reduce(
-                        (acc, reward) => acc.plus(reward.fiat.claimable ?? '0'),
-                        new BigNumber(0),
-                    ),
-                ),
+        const result = accountsRewards.reduce(
+            (result, { totalClaimableFiatAmount }) =>
+                result.plus(new BigNumber(totalClaimableFiatAmount)),
             new BigNumber(0),
         );
 
         return asBaseCurrencyAmount(new BigNumber(result.toFixed(2)));
-    }, [rewardsWithFiat]);
+    }, [accountsRewards]);
 
     const accountsRewardsRef = useFreshRef(accountsRewards);
     const merkleRewardsQueryEntriesRef = useFreshRef(merkleRewardsQueryEntries);
@@ -276,11 +241,12 @@ export function useMerkleRewards(accounts: YieldRewardsAccounts) {
         // Refetch until it returns no rewards (i.e. the claim was finalized by Merkle)
         while (accountsRewardsRef.current.length > 0 && attempts > 0 && !signal.aborted) {
             // Do direct API calls to avoid manipulating with React Query cache (because once the the endpoint returns empty rewards, the component would rerender with empty rewards state instead of successfull one)
-            const rewards = await getMerkleRewards({
-                queryEntries: merkleRewardsQueryEntriesRef.current,
+            const rewards = await getMerklUsersRewards({
+                body: merkleRewardsQueryEntriesRef.current,
+                signal,
             });
 
-            if (Object.keys(rewards).length === 0) {
+            if (rewards.length === 0) {
                 break;
             }
 
