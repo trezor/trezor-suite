@@ -12,7 +12,7 @@ import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectSelectedAccount } from '@suite/account';
 
 interface UnhideTokenModalProps {
     address: string;

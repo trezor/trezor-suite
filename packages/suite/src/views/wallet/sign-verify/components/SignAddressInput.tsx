@@ -2,13 +2,13 @@ import { components } from 'react-select';
 
 import styled from 'styled-components';
 
+import { type State as RevealedAddresses } from '@suite/receive';
 import { Select, type SelectProps } from '@trezor/components';
 
 import {
     type AddressItem,
     useSignAddressOptions,
 } from 'src/hooks/wallet/sign-verify/useSignAddressOptions';
-import type { State as RevealedAddresses } from 'src/reducers/wallet/receiveReducer';
 import type { Account } from 'src/types/wallet';
 
 import { HiddenAddressRow } from './HiddenAddressRow';

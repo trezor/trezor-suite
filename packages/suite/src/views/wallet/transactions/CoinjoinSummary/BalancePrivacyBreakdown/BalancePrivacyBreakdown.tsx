@@ -9,7 +9,7 @@ import {
     selectCurrentCoinjoinBalanceBreakdown,
     selectCurrentCoinjoinSession,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectSelectedAccount } from '@suite/account';
 
 import { CryptoAmountWithHeader } from './CryptoAmountWithHeader';
 

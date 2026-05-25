@@ -4,7 +4,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { type Account } from '@suite-common/wallet-types';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectSelectedAccount } from '@suite/account';
 
 export const useGoToWithAnalytics = (account?: Account) => {
     const { analytics } = useServices<DesktopAnalyticsDep>();

@@ -9,7 +9,7 @@ import TrezorConnect, { type TokenInfo } from '@trezor/connect';
 
 import { addToken } from 'src/actions/wallet/tokenActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectSelectedAccount } from '@suite/account';
 import { type Account } from 'src/types/wallet';
 
 type AddTokenModalProps = {

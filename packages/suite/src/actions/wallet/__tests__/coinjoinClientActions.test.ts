@@ -14,7 +14,7 @@ import { promiseAllSequence } from '@trezor/utils';
 import { coinjoinMiddleware } from 'src/middlewares/wallet/coinjoinMiddleware';
 import { accountsReducer } from 'src/reducers/wallet';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
-import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
+import { selectedAccountReducer } from '@suite/account';
 import { CoinjoinService } from 'src/services/coinjoin/coinjoinService';
 import { db } from 'src/storage';
 import { extraDependencies } from 'src/support/extraDependencies';

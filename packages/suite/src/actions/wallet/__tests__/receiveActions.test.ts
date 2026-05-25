@@ -1,4 +1,5 @@
 import { modalReducer } from '@suite/modal';
+import { dispose, openAddressModal, receiveReducer, showAddressThunk } from '@suite/receive';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { prepareDeviceReducer } from '@suite-common/device';
@@ -8,9 +9,7 @@ import { testMocks } from '@suite-common/test-utils';
 import type { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 
-import * as receiveActions from 'src/actions/wallet/receiveActions';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import receiveReducer from 'src/reducers/wallet/receiveReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
 
@@ -164,21 +163,21 @@ describe('ReceiveActions', () => {
         const VERIFIED = [{ path: 'a', address: 'b', isVerified: true }];
         const UNVERIFIED = [{ path: 'a', address: 'b', isVerified: false }];
 
-        await store.dispatch(receiveActions.openAddressModal({ addressPath: 'a', value: 'b' }));
+        await store.dispatch(openAddressModal({ addressPath: 'a', value: 'b' }));
         expect(store.getState().wallet.receive).toEqual(UNVERIFIED);
 
-        await store.dispatch(receiveActions.showAddress('a', 'b'));
+        await store.dispatch(showAddressThunk({ path: 'a', address: 'b' }));
         expect(store.getState().wallet.receive).toEqual(VERIFIED);
 
-        await store.dispatch(receiveActions.openAddressModal({ addressPath: 'a', value: 'b' }));
+        await store.dispatch(openAddressModal({ addressPath: 'a', value: 'b' }));
         expect(store.getState().wallet.receive).toEqual(UNVERIFIED);
 
         // add second
-        await store.dispatch(receiveActions.openAddressModal({ addressPath: 'c', value: 'd' }));
+        await store.dispatch(openAddressModal({ addressPath: 'c', value: 'd' }));
         expect(store.getState().wallet.receive.length).toEqual(2);
 
         // clear
-        await store.dispatch(receiveActions.dispose());
+        await store.dispatch(dispose());
         expect(store.getState().wallet.receive.length).toEqual(0);
     });
 });

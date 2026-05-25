@@ -7,7 +7,7 @@ import { configureMockStore, initPreloadedState, testMocks } from '@suite-common
 
 import { accountsReducer } from 'src/reducers/wallet';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
-import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
+import { selectedAccountReducer } from '@suite/account';
 import { CoinjoinService } from 'src/services/coinjoin/coinjoinService';
 import { extraDependencies } from 'src/support/extraDependencies';
 

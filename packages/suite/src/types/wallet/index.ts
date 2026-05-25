@@ -17,11 +17,11 @@ import {
     type stablecoinYieldActions,
     type stakeActions,
 } from '@suite-common/wallet-core';
+import { type ReceiveAction } from '@suite/receive';
 
 import { type CoinjoinAccountAction } from 'src/actions/wallet/coinjoinAccountActions';
 import { type CoinjoinClientAction } from 'src/actions/wallet/coinjoinClientActions';
 import { type GraphAction } from 'src/actions/wallet/graphActions';
-import { type ReceiveAction } from 'src/actions/wallet/receiveActions';
 import { type SignVerifyAction } from 'src/actions/wallet/signVerifyActions';
 import { type accountSearchActions } from 'src/reducers/wallet/accountSearchReducer';
 

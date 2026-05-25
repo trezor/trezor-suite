@@ -9,7 +9,7 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Badge, Row } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectSelectedAccount } from '@suite/account';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
 const getTranslationId = (instantStakeType: StakeType) => {

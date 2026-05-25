@@ -5,14 +5,16 @@ import {
     MODAL_PRESERVE,
     MODAL_REMOVE_PRESERVE,
 } from '@suite/modal';
+import {
+    openAddressModal,
+    showAddressAction,
+    showAddressThunk,
+    showUnverifiedAddressAction,
+} from '@suite/receive';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
-
-import * as receiveActions from 'src/actions/wallet/receiveActions';
-
-import { RECEIVE } from '../constants';
 
 const PATH = "m/49'/0'/0'/0/0";
 const ADDRESS = 'AddRe5s';
@@ -22,24 +24,20 @@ export default [
         description: 'Show unverified address',
         initialState: undefined,
         mocks: {},
-        action: () => receiveActions.openAddressModal({ addressPath: PATH, value: ADDRESS }),
+        action: () => openAddressModal({ addressPath: PATH, value: ADDRESS }),
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL_OPEN_USER_CONTEXT },
-                {
-                    type: RECEIVE.SHOW_UNVERIFIED_ADDRESS,
-                    path: PATH,
-                    address: ADDRESS,
-                },
+                showUnverifiedAddressAction(PATH, ADDRESS),
             ],
         },
     },
     {
         description: 'Show address success (bitcoin)',
         mocks: {},
-        action: () => receiveActions.showAddress(PATH, ADDRESS),
+        action: () => showAddressThunk({ path: PATH, address: ADDRESS }),
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
@@ -52,7 +50,7 @@ export default [
                 { type: confirmAddressOnDeviceThunk.fulfilled.type, payload: { success: true } },
                 { type: MODAL_REMOVE_PRESERVE },
                 { type: MODAL_OPEN_USER_CONTEXT },
-                { type: RECEIVE.SHOW_ADDRESS, path: PATH, address: ADDRESS },
+                showAddressAction(PATH, ADDRESS),
             ],
         },
     },
@@ -73,7 +71,7 @@ export default [
             },
         },
         mocks: {},
-        action: () => receiveActions.showAddress(PATH, ADDRESS),
+        action: () => showAddressThunk({ path: PATH, address: ADDRESS }),
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
@@ -86,7 +84,7 @@ export default [
                 { type: confirmAddressOnDeviceThunk.fulfilled.type, payload: { success: true } },
                 { type: MODAL_REMOVE_PRESERVE },
                 { type: MODAL_OPEN_USER_CONTEXT },
-                { type: RECEIVE.SHOW_ADDRESS, path: PATH, address: ADDRESS },
+                showAddressAction(PATH, ADDRESS),
             ],
         },
     },
@@ -107,7 +105,7 @@ export default [
             },
         },
         mocks: {},
-        action: () => receiveActions.showAddress(PATH, ADDRESS),
+        action: () => showAddressThunk({ path: PATH, address: ADDRESS }),
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
@@ -120,7 +118,7 @@ export default [
                 { type: confirmAddressOnDeviceThunk.fulfilled.type, payload: { success: true } },
                 { type: MODAL_REMOVE_PRESERVE },
                 { type: MODAL_OPEN_USER_CONTEXT },
-                { type: RECEIVE.SHOW_ADDRESS, path: PATH, address: ADDRESS },
+                showAddressAction(PATH, ADDRESS),
             ],
         },
     },
@@ -140,7 +138,7 @@ export default [
             },
         },
         mocks: {},
-        action: () => receiveActions.showAddress(PATH, ADDRESS),
+        action: () => showAddressThunk({ path: PATH, address: ADDRESS }),
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
@@ -171,7 +169,7 @@ export default [
             },
         },
         mocks: {},
-        action: () => receiveActions.showAddress(PATH, ADDRESS),
+        action: () => showAddressThunk({ path: PATH, address: ADDRESS }),
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
@@ -188,7 +186,7 @@ export default [
         mocks: {
             getAddress: { success: false, error: { message: 'Runtime error' } },
         },
-        action: () => receiveActions.showAddress(PATH, ADDRESS),
+        action: () => showAddressThunk({ path: PATH, address: ADDRESS }),
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
@@ -217,7 +215,7 @@ export default [
                 error: { message: 'Runtime error', code: 'Method_PermissionsNotGranted' },
             },
         },
-        action: () => receiveActions.showAddress(PATH, ADDRESS),
+        action: () => showAddressThunk({ path: PATH, address: ADDRESS }),
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },

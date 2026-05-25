@@ -4,6 +4,7 @@ import { Address } from '@suite/address';
 import { ReadMoreLink } from '@suite/external-links';
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
+import { showAddressThunk } from '@suite/receive';
 import {
     selectIsLegacyLabelingVisible,
     selectLabelingDataForSelectedAccount,
@@ -25,7 +26,6 @@ import {
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { showAddress } from 'src/actions/wallet/receiveActions';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
 import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
 import { type AppState } from 'src/types/suite';
@@ -130,7 +130,12 @@ export const FreshAddress = ({
 
     const handleAddressReveal = () => {
         if (firstFreshAddress)
-            dispatch(showAddress(firstFreshAddress.path, firstFreshAddress.address));
+            dispatch(
+                showAddressThunk({
+                    path: firstFreshAddress.path,
+                    address: firstFreshAddress.address,
+                }),
+            );
     };
 
     const buttonTooltipContent = () => {

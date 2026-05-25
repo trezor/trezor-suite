@@ -7,7 +7,7 @@ import { Paragraph } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectSelectedAccount } from '@suite/account';
 
 import { PayoutCard } from './PayoutCard';
 

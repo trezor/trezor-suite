@@ -8,7 +8,7 @@ import { spacings } from '@trezor/theme';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectSelectedAccount } from '@suite/account';
 import { UNECONOMICAL_COINJOIN_THRESHOLD } from 'src/services/coinjoin';
 
 export const UnecoCoinjoinModal = () => {

@@ -10,7 +10,7 @@ import { Banner } from '@trezor/components';
 import { type InternalTransfer } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectSelectedAccount } from '@suite/account';
 
 const getSubheadingTranslationId = (stakeType: StakeType) => {
     if (stakeType === 'stake') return 'TR_EARN_INSTANTLY_STAKED';

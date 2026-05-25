@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { openAddressModal, showAddress } from 'src/actions/wallet/receiveActions';
+import { openAddressModal, showAddressThunk } from '@suite/receive';
 
 import { ConfirmUnverifiedModal } from './ConfirmUnverifiedModal';
 
@@ -13,7 +13,10 @@ export const ConfirmUnverifiedAddressModal = ({
     addressPath,
     value,
 }: ConfirmUnverifiedAddressModalProps) => {
-    const verifyProcess = useCallback(() => showAddress(addressPath, value), [addressPath, value]);
+    const verifyProcess = useCallback(
+        () => showAddressThunk({ path: addressPath, address: value }),
+        [addressPath, value],
+    );
     const showUnverifiedAddress = () => openAddressModal({ addressPath, value });
 
     return (

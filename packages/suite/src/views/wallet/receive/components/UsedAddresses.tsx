@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Address } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
+import { showAddressThunk } from '@suite/receive';
 import {
     selectIsLegacyLabelingVisible,
     selectLabelingDataForSelectedAccount,
@@ -18,7 +19,6 @@ import { Button, Card, Column, Row, Table, Text } from '@trezor/components';
 import { type AccountAddress } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
-import { showAddress } from 'src/actions/wallet/receiveActions';
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
@@ -187,7 +187,14 @@ export const UsedAddresses = ({
                                             ? addressLabels[addr.address]
                                             : undefined),
                                 }}
-                                onClick={() => dispatch(showAddress(addr.path, addr.address))}
+                                onClick={() =>
+                                    dispatch(
+                                        showAddressThunk({
+                                            path: addr.path,
+                                            address: addr.address,
+                                        }),
+                                    )
+                                }
                             />
                         ))}
                     </Table.Body>

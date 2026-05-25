@@ -56,7 +56,7 @@ import {
     transformCoinjoinStatus,
 } from 'src/utils/wallet/coinjoinUtils';
 
-import { type SelectedAccountRootState, selectSelectedAccount } from './selectedAccountReducer';
+import { type SelectedAccountRootState, selectSelectedAccount } from '@suite/account';
 
 export interface CoinjoinState {
     accounts: CoinjoinAccount[];

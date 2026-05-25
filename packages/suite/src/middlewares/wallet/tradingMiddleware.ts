@@ -14,7 +14,7 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 
-import { selectFullSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectFullSelectedAccount } from '@suite/account';
 import { type Action, type AppState, type Dispatch } from 'src/types/suite';
 
 export const tradingMiddleware =

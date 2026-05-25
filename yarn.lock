@@ -14225,6 +14225,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/account@workspace:*, @suite/account@workspace:suite/account":
+  version: 0.0.0-use.local
+  resolution: "@suite/account@workspace:suite/account"
+  dependencies:
+    "@suite-common/connect-popup": "workspace:*"
+    "@suite-common/trading": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    redux: "npm:^5.0.1"
+  languageName: unknown
+  linkType: soft
+
 "@suite/address@workspace:*, @suite/address@workspace:suite/address":
   version: 0.0.0-use.local
   resolution: "@suite/address@workspace:suite/address"
@@ -14616,6 +14628,25 @@ __metadata:
   dependencies:
     "@suite-common/platform-encryption": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite/receive@workspace:*, @suite/receive@workspace:suite/receive":
+  version: 0.0.0-use.local
+  resolution: "@suite/receive@workspace:suite/receive"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.11.2"
+    "@suite-common/device": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/toast-notifications": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite/account": "workspace:*"
+    "@suite/analytics": "workspace:*"
+    "@suite/modal": "workspace:*"
+    immer: "npm:^10.1.1"
+    redux: "npm:^5.0.1"
   languageName: unknown
   linkType: soft
 
@@ -16332,6 +16363,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-common/walletconnect": "workspace:*"
+    "@suite/account": "workspace:*"
     "@suite/address": "workspace:*"
     "@suite/analytics": "workspace:*"
     "@suite/backup": "workspace:*"
@@ -16352,6 +16384,7 @@ __metadata:
     "@suite/modal": "workspace:*"
     "@suite/nfc": "workspace:*"
     "@suite/onboarding-components": "workspace:*"
+    "@suite/receive": "workspace:*"
     "@suite/recovery": "workspace:*"
     "@suite/router": "workspace:*"
     "@suite/settings": "workspace:*"
@@ -29862,6 +29895,13 @@ __metadata:
   version: 11.0.0
   resolution: "immer@npm:11.0.0"
   checksum: 10/d79824edac56741986d80f091fcec00330e7fa4406a82f9e6bb30997c2674c468afe5196750456fc592c7e40cf903d968e04f8035efc9f26c073b5ed2b52462f
+  languageName: node
+  linkType: hard
+
+"immer@npm:^10.1.1":
+  version: 10.2.0
+  resolution: "immer@npm:10.2.0"
+  checksum: 10/d73e218c8f8ffbb39f9290dfafa478b94af73403dcf26b5672eef35233bb30f09ffe231f8a78a6c9cb442968510edd89e851776ec90a5ddfa82cee6db6b35137
   languageName: node
   linkType: hard
 

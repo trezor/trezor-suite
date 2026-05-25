@@ -1,9 +1,8 @@
 import { useMemo } from 'react';
 
 import { type ExtendedMessageDescriptor, useTranslation } from '@suite/intl';
+import { type State as RevealedAddresses } from '@suite/receive';
 import { getStakingPath } from '@suite-common/wallet-utils';
-
-import type { State as RevealedAddresses } from 'src/reducers/wallet/receiveReducer';
 import type { Account } from 'src/types/wallet';
 
 export type AddressItem = {

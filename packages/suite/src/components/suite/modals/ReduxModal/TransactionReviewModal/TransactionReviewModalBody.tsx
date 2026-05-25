@@ -15,7 +15,7 @@ import TrezorConnect from '@trezor/connect';
 import { type Deferred } from '@trezor/utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectAccountIncludingChosenInTrading } from '@suite/account';
 import { redactRouterUrl } from 'src/utils/suite/analytics';
 
 import { TransactionReviewModalBodyInner } from './TransactionReviewModalBodyInner';

@@ -7,7 +7,7 @@ import { spacingsPx } from '@trezor/theme';
 
 import { PoweredByBadge, getStakingHelpCenterLink } from 'src/components/earn';
 import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectSelectedAccount } from '@suite/account';
 
 const Wrapper = styled.div`
     display: flex;

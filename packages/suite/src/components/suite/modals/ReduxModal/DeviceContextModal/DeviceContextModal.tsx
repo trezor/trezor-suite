@@ -6,7 +6,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import TrezorConnect, { UI_REQUEST } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectSelectedAccount } from '@suite/account';
 
 import { ConfirmActionModal } from './ConfirmActionModal';
 import { ConfirmFingerprintModal } from './ConfirmFingerprintModal';

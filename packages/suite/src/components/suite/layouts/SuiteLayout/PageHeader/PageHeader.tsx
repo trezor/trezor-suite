@@ -15,7 +15,7 @@ import { spacingsPx, zIndices } from '@trezor/theme';
 
 import { HEADER_HEIGHT } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccountKey } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectSelectedAccountKey } from '@suite/account';
 
 import { GlobalSendReceive } from './GlobalSendReceive/GlobalSendReceive';
 import { HeaderActions } from './HeaderActions';

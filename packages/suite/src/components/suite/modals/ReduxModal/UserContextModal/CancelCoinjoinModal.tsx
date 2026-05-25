@@ -5,7 +5,7 @@ import { spacings } from '@trezor/theme';
 import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectSelectedAccount } from '@suite/account';
 
 type CancelCoinjoinModalProps = {
     onClose: () => void;

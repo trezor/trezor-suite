@@ -20,7 +20,7 @@ import {
     selectRegisteredUtxosByAccountKey,
     selectTargetAnonymityByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { selectFullSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectFullSelectedAccount } from '@suite/account';
 import { selectIsSuiteOnline } from 'src/selectors/suite/suiteSelectors';
 
 import { Options } from './Options/Options';
