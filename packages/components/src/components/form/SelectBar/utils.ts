@@ -1,4 +1,4 @@
-import { type TypographyStyle, spacings } from '@trezor/theme';
+import { type TypographyStyle } from '@trezor/theme';
 
 import { type SelectBarSize } from './types';
 import { type Padding } from '../../../utils/frameProps';
@@ -19,12 +19,12 @@ export const mapSizeToTypographyStyle = (
 export const mapSizeToPadding = (size: SelectBarSize): Padding => {
     const paddingMap: Record<SelectBarSize, Padding> = {
         large: {
-            vertical: spacings.xs,
-            horizontal: spacings.xl,
+            vertical: 8,
+            horizontal: 24,
         },
         small: {
-            vertical: spacings.xxs,
-            horizontal: spacings.lg,
+            vertical: 4,
+            horizontal: 16,
         },
     };
 

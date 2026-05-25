@@ -36,6 +36,7 @@ const Options = styled.div<{ $elevation: Elevation }>`
     background: ${mapElevationToBackground};
     border-radius: ${borders.radii.lg};
     flex: 1;
+    min-width: 0;
 `;
 
 const Puck = styled.div<{
@@ -72,6 +73,9 @@ const Puck = styled.div<{
 
 const Option = styled.div<{ $isSelected: boolean; $isDisabled: boolean }>`
     position: relative;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
     transition: color 0.175s;
 
     &:hover {
@@ -204,7 +208,7 @@ export const SelectBar = <V extends ValueTypes>({
                         tabIndex={0}
                         onKeyDown={handleKeyboardNav}
                     />
-                    <Grid columns={isVertical ? 1 : options.length} gap={GAP}>
+                    <Grid columns={isVertical ? 1 : options.length} gap={GAP} forceEqualColumns>
                         {options.map(option => {
                             const isSelected =
                                 selectedOptionIn !== undefined
@@ -222,6 +226,8 @@ export const SelectBar = <V extends ValueTypes>({
                                     textWrap="nowrap"
                                     as="div"
                                     cursor={isDisabled ? 'not-allowed' : 'pointer'}
+                                    minWidth={0}
+                                    overflow="hidden"
                                 >
                                     <Option
                                         onClick={handleOptionClick(option)}
@@ -232,9 +238,20 @@ export const SelectBar = <V extends ValueTypes>({
                                     >
                                         <Column
                                             padding={mapSizeToPadding(size)}
-                                            alignItems="center"
+                                            alignItems="stretch"
+                                            width="100%"
+                                            minWidth={0}
                                         >
-                                            {option.label}
+                                            <Text
+                                                as="div"
+                                                align="center"
+                                                width="100%"
+                                                maxWidth="100%"
+                                                minWidth={0}
+                                                ellipsisLineCount={1}
+                                            >
+                                                {option.label}
+                                            </Text>
                                             <Box height={0} overflow="hidden" aria-hidden>
                                                 <Text typographyStyle="body-md-strong">
                                                     {option.label}
