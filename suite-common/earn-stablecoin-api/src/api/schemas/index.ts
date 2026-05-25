@@ -1582,40 +1582,116 @@ export const exitYieldResponse = zod
 /**
  * @summary List claimable Merkl rewards for a user (per chain)
  */
-export const getMerkleUserRewardsPathAddressRegExp = new RegExp('^0x[a-fA-F0-9]{40}$');
+export const getMerklUserRewardsPathAddressRegExp = new RegExp('^0x[a-fA-F0-9]{40}$');
 
-export const getMerkleUserRewardsParams = zod.object({
-    address: zod.string().regex(getMerkleUserRewardsPathAddressRegExp),
+export const getMerklUserRewardsParams = zod.object({
+    address: zod.string().regex(getMerklUserRewardsPathAddressRegExp),
 });
 
-export const getMerkleUserRewardsQueryParams = zod.object({
-    chainId: zod.union([zod.number().nullable(), zod.string(), zod.null()]).optional(),
+export const getMerklUserRewardsQueryParams = zod.object({
+    chainId: zod
+        .union([zod.number().nullable(), zod.array(zod.number()).min(1), zod.string(), zod.null()])
+        .optional(),
     claimableOnly: zod.boolean().nullish(),
-    reloadChainId: zod.union([zod.number().nullable(), zod.string(), zod.null()]).optional(),
+    reloadChainId: zod
+        .union([zod.number().nullable(), zod.array(zod.number()).min(1), zod.string(), zod.null()])
+        .optional(),
 });
 
-export const getMerkleUserRewardsResponseItem = zod.object({
+export const getMerklUserRewardsResponseRewardsItemAmountRegExp = new RegExp('^\\d+$');
+export const getMerklUserRewardsResponseRewardsItemClaimedRegExp = new RegExp('^\\d+$');
+export const getMerklUserRewardsResponseRewardsItemPendingRegExp = new RegExp('^\\d+$');
+
+export const getMerklUserRewardsResponseItem = zod.object({
     chain: zod.object({
         id: zod.number().min(1).describe('EVM chain id'),
         name: zod.string().describe('Human-readable chain name'),
     }),
     rewards: zod.array(
         zod.object({
-            root: zod.string().describe('Merkle root committing this reward distribution'),
-            amount: zod.string().describe('Total reward amount accrued (smallest denomination)'),
-            claimed: zod.string().describe('Amount already claimed (smallest denomination)'),
-            pending: zod.string().describe('Pending reward amount (smallest denomination)'),
+            root: zod.string().describe('Merkl root committing this reward distribution'),
+            amount: zod
+                .string()
+                .regex(getMerklUserRewardsResponseRewardsItemAmountRegExp)
+                .describe('Total reward amount accrued (smallest denomination)'),
+            claimed: zod
+                .string()
+                .regex(getMerklUserRewardsResponseRewardsItemClaimedRegExp)
+                .describe('Amount already claimed (smallest denomination)'),
+            pending: zod
+                .string()
+                .regex(getMerklUserRewardsResponseRewardsItemPendingRegExp)
+                .describe('Pending reward amount (smallest denomination)'),
             token: zod.object({
                 address: zod.string().describe('ERC-20 token contract address'),
                 chainId: zod.number().describe('EVM chain id this token lives on'),
                 symbol: zod.string().describe('Token symbol (e.g. USDC)'),
                 decimals: zod.number().describe('Token decimals'),
             }),
-            proofs: zod.array(zod.string()).describe('Merkle proof nodes for claiming'),
+            proofs: zod.array(zod.string()).describe('Merkl proof nodes for claiming'),
         }),
     ),
 });
-export const getMerkleUserRewardsResponse = zod.array(getMerkleUserRewardsResponseItem);
+export const getMerklUserRewardsResponse = zod.array(getMerklUserRewardsResponseItem);
+
+/**
+ * @summary List claimable Merkl rewards for multiple users across chains
+ */
+export const getMerklUsersRewardsBodyAddressRegExp = new RegExp('^0x[a-fA-F0-9]{40}$');
+
+export const getMerklUsersRewardsBodyItem = zod.object({
+    address: zod.string().regex(getMerklUsersRewardsBodyAddressRegExp),
+    chainId: zod.number().min(1),
+    reloadChainId: zod.number().optional(),
+});
+export const getMerklUsersRewardsBody = zod.array(getMerklUsersRewardsBodyItem);
+
+export const getMerklUsersRewardsResponseRewardsItemOneAmountRegExp = new RegExp('^\\d+$');
+export const getMerklUsersRewardsResponseRewardsItemOneClaimedRegExp = new RegExp('^\\d+$');
+export const getMerklUsersRewardsResponseRewardsItemOnePendingRegExp = new RegExp('^\\d+$');
+
+export const getMerklUsersRewardsResponseItem = zod.object({
+    chainId: zod.number(),
+    address: zod.string().min(1),
+    rewards: zod.array(
+        zod
+            .object({
+                root: zod.string().describe('Merkl root committing this reward distribution'),
+                amount: zod
+                    .string()
+                    .regex(getMerklUsersRewardsResponseRewardsItemOneAmountRegExp)
+                    .describe('Total reward amount accrued (smallest denomination)'),
+                claimed: zod
+                    .string()
+                    .regex(getMerklUsersRewardsResponseRewardsItemOneClaimedRegExp)
+                    .describe('Amount already claimed (smallest denomination)'),
+                pending: zod
+                    .string()
+                    .regex(getMerklUsersRewardsResponseRewardsItemOnePendingRegExp)
+                    .describe('Pending reward amount (smallest denomination)'),
+                token: zod.object({
+                    address: zod.string().describe('ERC-20 token contract address'),
+                    chainId: zod.number().describe('EVM chain id this token lives on'),
+                    symbol: zod.string().describe('Token symbol (e.g. USDC)'),
+                    decimals: zod.number().describe('Token decimals'),
+                }),
+                proofs: zod.array(zod.string()).describe('Merkl proof nodes for claiming'),
+            })
+            .and(
+                zod.object({
+                    claimable: zod
+                        .string()
+                        .describe(
+                            'Amount currently available to be claimed (claimable = amount - claimed - pending).',
+                        ),
+                }),
+            ),
+    ),
+    totalClaimable: zod
+        .string()
+        .describe('Total claimable amount across all rewards (sum of claimable)'),
+});
+export const getMerklUsersRewardsResponse = zod.array(getMerklUsersRewardsResponseItem);
 
 /**
  * @summary List allow-listed yield vaults per network

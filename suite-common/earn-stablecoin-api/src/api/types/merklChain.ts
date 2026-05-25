@@ -5,7 +5,7 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export type MerkleChain = {
+export type MerklChain = {
     /**
      * EVM chain id
      * @minimum 1
