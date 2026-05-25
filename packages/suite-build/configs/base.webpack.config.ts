@@ -16,6 +16,7 @@ import {
     isTanstackReactQueryDevTools,
     project,
     sentryAuthToken,
+    transportBrowserPing,
 } from '../utils/env';
 import { getRevision } from '../utils/git';
 import { getPathForProject } from '../utils/path';
@@ -203,6 +204,7 @@ const config: webpack.Configuration = {
             'process.env.TANSTACK_REACT_QUERY_DEV_TOOLS': JSON.stringify(
                 isTanstackReactQueryDevTools,
             ),
+            'process.env.TRANSPORT_BROWSER_PING': JSON.stringify(transportBrowserPing),
             __SENTRY_DEBUG__: isDev,
             __SENTRY_TRACING__: false, // needs to be removed when we introduce performance monitoring in trezor-suite
         }),

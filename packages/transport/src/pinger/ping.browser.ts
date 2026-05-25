@@ -12,6 +12,7 @@ const init = async () => {
 
     await new Promise<void>((resolve, reject) => {
         setTimeout(() => reject(new Error('worker_timeout')), 5000);
+
         worker.onmessage = message => {
             if (message?.data?.payload?.success) {
                 resolve();
@@ -46,6 +47,20 @@ const init = async () => {
     return { post };
 };
 
-const lazy = createLazy(init);
+type InitResult = Awaited<ReturnType<typeof init>>;
 
-export const ping = (url: string) => lazy.getOrInit().then(({ post }) => post(url));
+let lazy: ReturnType<typeof createLazy<InitResult, any[]>>;
+
+export const ping = async (url: string) => {
+    if (String(process.env.TRANSPORT_BROWSER_PING) === 'false') {
+        return false;
+    }
+
+    if (!lazy) {
+        lazy = createLazy(init);
+    }
+
+    const { post } = await lazy.getOrInit();
+
+    return post(url);
+};
