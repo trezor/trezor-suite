@@ -7,13 +7,15 @@ import { getIsDeviceRemembered } from '@suite-common/suite-utils';
 import { Banner } from '@trezor/components';
 import { isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { SettingsSection } from '@trezor/product-components';
+import { breakpoints } from '@trezor/theme';
 
 import { setConnectionModal } from 'src/actions/device/deviceSlice';
 import { DeviceBanner } from 'src/components/settings/DeviceBanner';
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
-import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectHasActiveTransport } from 'src/selectors/suite/suiteSelectors';
+import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 import type { TrezorDevice } from 'src/types/suite';
 import { getHowToGetFromBootloaderInstructionsMap } from 'src/utils/device/bootloader';
 
@@ -55,7 +57,7 @@ const deviceSettingsUnavailable = (device?: TrezorDevice) => {
 
 export const SettingsDevice = () => {
     const dispatch = useDispatch();
-    const { isBelowLaptop } = useLayoutSize();
+    const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.tablet);
     const { device, isLocked } = useDevice();
     const noTransportAvailable = !useSelector(selectHasActiveTransport);
     const deviceUnavailable = !device?.features;
@@ -138,7 +140,7 @@ export const SettingsDevice = () => {
 
             {isNormalMode && (
                 <SettingsSection
-                    isBelowLaptop={isBelowLaptop}
+                    hasVerticalLayout={hasContentBelowTabletWidth}
                     title={<Translation id="TR_BACKUP" />}
                     icon="newspaper"
                 >
@@ -155,7 +157,7 @@ export const SettingsDevice = () => {
             )}
 
             <SettingsSection
-                isBelowLaptop={isBelowLaptop}
+                hasVerticalLayout={hasContentBelowTabletWidth}
                 title={<Translation id="TR_PASSPHRASE" />}
                 icon="password"
             >
@@ -163,7 +165,7 @@ export const SettingsDevice = () => {
             </SettingsSection>
 
             <SettingsSection
-                isBelowLaptop={isBelowLaptop}
+                hasVerticalLayout={hasContentBelowTabletWidth}
                 title={<Translation id="TR_FIRMWARE" />}
                 icon="puzzlePiece"
             >
@@ -176,7 +178,7 @@ export const SettingsDevice = () => {
 
             {isSecuritySectionVisible && (
                 <SettingsSection
-                    isBelowLaptop={isBelowLaptop}
+                    hasVerticalLayout={hasContentBelowTabletWidth}
                     title={<Translation id="TR_DEVICE_SECURITY" />}
                     icon="shieldCheck"
                 >
@@ -195,7 +197,7 @@ export const SettingsDevice = () => {
 
             {isNormalMode && (
                 <SettingsSection
-                    isBelowLaptop={isBelowLaptop}
+                    hasVerticalLayout={hasContentBelowTabletWidth}
                     title={<Translation id="TR_PERSONALIZATION" />}
                     icon="palette"
                 >
@@ -209,7 +211,7 @@ export const SettingsDevice = () => {
             )}
 
             <SettingsSection
-                isBelowLaptop={isBelowLaptop}
+                hasVerticalLayout={hasContentBelowTabletWidth}
                 title={<Translation id="TR_DEVICE_CONNECTION" />}
                 icon="plugs"
             >
@@ -218,7 +220,7 @@ export const SettingsDevice = () => {
             </SettingsSection>
 
             <SettingsSection
-                isBelowLaptop={isBelowLaptop}
+                hasVerticalLayout={hasContentBelowTabletWidth}
                 title={<Translation id="TR_ADVANCED" />}
                 icon="ghost"
             >

@@ -16,14 +16,15 @@ import {
 import { Button, Column, Tooltip, motionEasing } from '@trezor/components';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { SectionItem, SettingsSection } from '@trezor/product-components';
-import { spacingsPx } from '@trezor/theme';
+import { breakpoints, spacingsPx } from '@trezor/theme';
 
 import { DeviceBanner } from 'src/components/settings/DeviceBanner';
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { CoinGroup } from 'src/components/suite';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDiscovery, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 import { isCoinjoinSupportedSymbol } from 'src/utils/wallet/coinjoinUtils';
 
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
@@ -74,7 +75,7 @@ const getDiscoveryButtonAnimationConfig = (isConfirmed: boolean): MotionProps =>
 });
 
 export const SettingsCoins = () => {
-    const { isBelowLaptop } = useLayoutSize();
+    const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.tablet);
     const { firmwareTypeBannerClosed } = useSelector(selectFlags);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const { showUnsupportedCoins, supportedMainnets, unsupportedMainnets, supportedTestnets } =
@@ -130,7 +131,7 @@ export const SettingsCoins = () => {
             </Column>
 
             <SettingsSection
-                isBelowLaptop={isBelowLaptop}
+                hasVerticalLayout={hasContentBelowTabletWidth}
                 title={<Translation id="TR_COINS" />}
                 icon="coin"
             >
@@ -152,7 +153,7 @@ export const SettingsCoins = () => {
 
             {useTestnetNetworks && (
                 <SettingsSection
-                    isBelowLaptop={isBelowLaptop}
+                    hasVerticalLayout={hasContentBelowTabletWidth}
                     tooltipText={<Translation id="TR_TESTNET_COINS_DESCRIPTION" />}
                     title={<Translation id="TR_TESTNET_COINS" />}
                     icon="coin"
@@ -176,7 +177,7 @@ export const SettingsCoins = () => {
 
             {showUnsupportedCoins && (
                 <SettingsSection
-                    isBelowLaptop={isBelowLaptop}
+                    hasVerticalLayout={hasContentBelowTabletWidth}
                     tooltipText={<Translation id="TR_UNSUPPORTED_COINS_DESCRIPTION" />}
                     title={<Translation id="TR_UNSUPPORTED_COINS" />}
                     icon="coin"

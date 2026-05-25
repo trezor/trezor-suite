@@ -4,16 +4,16 @@ import { useServices } from '@suite-common/dependency-injection';
 import { type PlatformEncryptionDep, asEncryptedHex } from '@suite-common/platform-encryption';
 import { Button, ButtonGroup, Column, Textarea } from '@trezor/components';
 import { SectionItem, SettingsSection } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
+import { breakpoints, spacings } from '@trezor/theme';
 import { type Branded } from '@trezor/type-utils';
 
-import { useLayoutSize } from 'src/hooks/suite';
+import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 type Value = string & Branded<'Value'>;
 const asValue = (value: string) => value as Value;
 
 export const PlatformEncryption = () => {
-    const { isBelowLaptop } = useLayoutSize();
+    const isBelowLaptop = useIsContentBelowBreakpoint(breakpoints.laptop);
     const [plaintext, setPlaintext] = useState(asValue(''));
     const [ciphertext, setCiphertext] = useState(asEncryptedHex<Value>(''));
 
@@ -40,7 +40,7 @@ export const PlatformEncryption = () => {
     };
 
     return (
-        <SettingsSection isBelowLaptop={isBelowLaptop} title="Platform Encryption">
+        <SettingsSection hasVerticalLayout={isBelowLaptop} title="Platform Encryption">
             <SectionItem>
                 <Column gap={spacings.md} flex="1">
                     <Textarea
