@@ -15,7 +15,9 @@ import { useToast } from '@suite-native/toasts';
 const DEFAULT_CUSTOM_URL = '';
 
 const urlSchema = yup.object({
-    analyticsUrl: yup.string().url('Please enter a valid URL'),
+    analyticsUrl: yup
+        .string()
+        .test('url', 'Please enter a valid URL', value => !value || URL.canParse(value)),
 });
 
 type FormValues = yup.InferType<typeof urlSchema>;
