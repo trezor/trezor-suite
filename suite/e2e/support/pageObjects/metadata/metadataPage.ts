@@ -24,6 +24,10 @@ export class MetadataPage {
     readonly suiteSyncBannerButton: Locator;
     readonly metadataProviderButton = (provider: MetadataProvider) =>
         this.page.getByTestId(`@modal/metadata-provider/${provider}-button`);
+    readonly legacyNotification: Locator;
+    readonly closeLegacyNotificationButton: Locator;
+    readonly suiteSyncNotification: Locator;
+    readonly closeSuiteSyncNotificationButton: Locator;
 
     constructor(
         private readonly page: Page,
@@ -40,6 +44,14 @@ export class MetadataPage {
         this.copyAddressButton = page.getByTestId('@metadata/copy-address-button');
         this.suiteSyncBanner = page.getByTestId('@notification/suite-sync-keys');
         this.suiteSyncBannerButton = page.getByTestId('@notification/suite-sync-keys/button');
+        this.legacyNotification = this.page.getByTestId('@notification/legacy-labeling-upgrade');
+        this.closeLegacyNotificationButton = this.page.getByTestId(
+            '@notification/legacy-labeling-upgrade/close-button',
+        );
+        this.suiteSyncNotification = this.page.getByTestId('@notification/feedback-banner');
+        this.closeSuiteSyncNotificationButton = this.page.getByTestId(
+            '@notification/feedback-banner/close-button',
+        );
     }
 
     @step()
@@ -83,6 +95,13 @@ export class MetadataPage {
             this.settingsPage.metadataSelectInputOption('legacy'),
         );
         await this.passThroughInitMetadata(provider);
+        await this.closeLegacyUpgradeNotification();
+    }
+
+    @step()
+    async closeLegacyUpgradeNotification() {
+        await expect(this.legacyNotification).toBeVisible();
+        await this.closeLegacyNotificationButton.click();
     }
 
     @step()

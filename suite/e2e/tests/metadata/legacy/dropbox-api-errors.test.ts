@@ -36,6 +36,7 @@ test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
             );
 
             await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
+            await metadataPage.closeLegacyUpgradeNotification();
 
             await walletPage.openAccount();
 
@@ -163,6 +164,7 @@ test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
             );
 
             await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
+            await metadataPage.closeLegacyUpgradeNotification();
 
             await walletPage.openAccount();
             // just enter some label, this indicates that app did not crash
