@@ -18,6 +18,7 @@ import {
 import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Account } from '@suite-common/wallet-types';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
 import { cloneObject, throwError } from '@trezor/utils';
 
@@ -381,15 +382,16 @@ export const addAccountMetadata =
 
         if (payload.type === 'outputLabel') {
             if (typeof payload.value !== 'string' || payload.value.length === 0) {
-                if (!nextMetadata.outputLabels[payload.txid]) {
+                const outputLabelsForTxid = nextMetadata.outputLabels[payload.txid];
+                if (!outputLabelsForTxid) {
                     // If we try to delete already deleted label it's ok.
                     // No problem happened. ¯\_ (ツ)_/¯
 
                     return Promise.resolve({ success: true as const });
                 }
 
-                delete nextMetadata.outputLabels[payload.txid][payload.outputIndex];
-                if (Object.keys(nextMetadata.outputLabels[payload.txid]).length === 0) {
+                delete outputLabelsForTxid[payload.outputIndex];
+                if (Object.keys(outputLabelsForTxid).length === 0) {
                     delete nextMetadata.outputLabels[payload.txid];
                 }
             } else {
@@ -397,7 +399,10 @@ export const addAccountMetadata =
                     nextMetadata.outputLabels[payload.txid] = {};
                 }
 
-                nextMetadata.outputLabels[payload.txid][payload.outputIndex] = payload.value;
+                const txidLabels = nextMetadata.outputLabels[payload.txid];
+                if (txidLabels) {
+                    txidLabels[payload.outputIndex] = payload.value;
+                }
 
                 // 2.0.0
                 // metadata.outputLabels[payload.txid][payload.outputIndex] = {
@@ -484,8 +489,8 @@ export const setDeviceMetadataKey =
                 });
             }
 
-            const [stateAddress] = device.state.staticSessionId.split('@'); // address@device_id:instance
-            const metaKey = metadataUtils.deriveMetadataKey(result.payload.value, stateAddress);
+            const { walletDescriptor } = parseDeviceStaticSessionId(device.state.staticSessionId);
+            const metaKey = metadataUtils.deriveMetadataKey(result.payload.value, walletDescriptor);
             const fileName = metadataUtils.deriveFilenameForLabeling(metaKey, encryptionVersion);
             const aesKey = metadataUtils.deriveAesKey(metaKey);
 

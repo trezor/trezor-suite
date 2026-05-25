@@ -87,7 +87,9 @@ function validateAndParseUtxos(
     const result: CoinSelectInput[] = [];
     for (let i = 0; i < utxos.length; i++) {
         try {
-            const csInput = transformInput(i, utxos[i], txType);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const utxo: ComposeInput = utxos[i];
+            const csInput = transformInput(i, utxo, txType);
             csInput.weight = inputWeight(csInput);
             result.push(csInput);
         } catch (error) {
@@ -158,7 +160,8 @@ function validateAndParseOutputs(
     let sendMaxOutputIndex = -1;
     const result: CoinSelectOutput[] = [];
     for (let i = 0; i < outputs.length; i++) {
-        const output = outputs[i];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const output: ComposeOutput = outputs[i];
         if (output.type === 'send-max-noaddress' || output.type === 'send-max') {
             if (sendMaxOutputIndex >= 0) {
                 return incorrectOutputError(i, 'Multiple send-max');

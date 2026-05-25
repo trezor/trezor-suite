@@ -147,17 +147,28 @@ describe(composeCancelTransactionThunk.name, () => {
             )
             .unwrap();
 
+        const { calls } = composeTransactionMock.mock;
         // First call
-        const first = composeTransactionMock.mock.calls[0][0]; // First call, first argument
-        expect(first.feeLevels[0].feePerUnit).toBe('1');
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstCall: (typeof calls)[number] = calls[0];
+        const [first] = firstCall;
+        const { feeLevels: firstFeeLevels } = first;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstFeeLevel: (typeof firstFeeLevels)[number] = firstFeeLevels[0];
+        expect(firstFeeLevel.feePerUnit).toBe('1');
         expect(first.baseFee).toBe(undefined);
 
         // Second call
-        const second = composeTransactionMock.mock.calls[1][0]; // Second call, first argument
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const secondCall: (typeof calls)[number] = calls[1];
+        const [second] = secondCall;
 
         // This is the most important assertion. This is the fee, that satisfies the condition set by BIP-125
         // with the new size of the transaction of 110 bytes.
-        expect(second.feeLevels[0].feePerUnit).toBe('13.81818181818181818182'); // = (1410 + 110 * 1) / 110
+        const { feeLevels: secondFeeLevels } = second;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const secondFeeLevel: (typeof secondFeeLevels)[number] = secondFeeLevels[0];
+        expect(secondFeeLevel.feePerUnit).toBe('13.81818181818181818182'); // = (1410 + 110 * 1) / 110
         expect(second.baseFee).toBe(1410); // This is the sum of fees for chained transactions
         expect(second.outputs).toStrictEqual([
             {
@@ -176,8 +187,11 @@ describe(composeCancelTransactionThunk.name, () => {
             .dispatch(composeCancelTransactionThunk({ tx: transactionWithNoChange, account }))
             .unwrap();
 
+        const { calls } = composeTransactionMock.mock;
         // Second call
-        const second = composeTransactionMock.mock.calls[1][0]; // Second call, first argument
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const secondCall: (typeof calls)[number] = calls[1];
+        const [second] = secondCall;
 
         expect(second.outputs).toStrictEqual([
             {

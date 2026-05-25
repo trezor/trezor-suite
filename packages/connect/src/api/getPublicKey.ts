@@ -85,12 +85,19 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
     }
 
     get confirmation() {
+        if (this.params.length > 1) {
+            return {
+                view: 'export-xpub' as const,
+                label: 'Export multiple public keys',
+            };
+        }
+        const { params } = this;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const first: (typeof params)[number] = params[0];
+
         return {
             view: 'export-xpub' as const,
-            label:
-                this.params.length > 1
-                    ? 'Export multiple public keys'
-                    : getPublicKeyLabel(this.params[0].proto.address_n, this.params[0].coinInfo),
+            label: getPublicKeyLabel(first.proto.address_n, first.coinInfo),
         };
     }
 
@@ -98,7 +105,10 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
         const responses: MethodReturnType<typeof this.name> = [];
         const cmd = this.getDevice().getCommands();
         for (let i = 0; i < this.params.length; i++) {
-            const { coinInfo, unlockPath, proto } = this.params[i];
+            const { params } = this;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const batch: (typeof params)[number] = params[i];
+            const { coinInfo, unlockPath, proto } = batch;
             // if coinInfo is not provided, use fallback (see above in init method)
             const coinInfoFallback = coinInfo ?? getBitcoinNetwork('btc')!;
             const response = await cmd.getHDNode(proto, { coinInfo: coinInfoFallback, unlockPath });
@@ -116,6 +126,9 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
             }
         }
 
-        return this.hasBundle ? responses : responses[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const first: (typeof responses)[number] = responses[0];
+
+        return this.hasBundle ? responses : first;
     }
 }

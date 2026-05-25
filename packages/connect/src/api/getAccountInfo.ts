@@ -112,10 +112,13 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
     }
 
     get confirmation() {
-        if (this.params.length === 1 && !this.params[0].path && !this.params[0].descriptor) {
+        const { params } = this;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstParam: (typeof params)[number] = params[0];
+        if (this.params.length === 1 && !firstParam.path && !firstParam.descriptor) {
             return {
                 view: 'export-account-info' as const,
-                label: `Export info for ${this.params[0].coinInfo.label} account of your selection`,
+                label: `Export info for ${firstParam.coinInfo.label} account of your selection`,
                 customConfirmButton: {
                     label: 'Proceed to account selection',
                     className: 'not-empty-css',
@@ -132,13 +135,16 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                         values: [],
                     };
                 }
-                keys[b.coinInfo.label].values.push(b.descriptor || b.address_n);
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const entry: (typeof keys)[string] = keys[b.coinInfo.label];
+                entry.values.push(b.descriptor || b.address_n);
             });
 
             // prepare html for popup
             const str: string[] = [];
             Object.keys(keys).forEach((k, _i, _a) => {
-                const details = keys[k];
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const details: (typeof keys)[string] = keys[k];
                 details.values.forEach(acc => {
                     // if (i === 0) str += this.params.length > 1 ? ': ' : ' ';
                     // if (i > 0) str += ', ';
@@ -161,8 +167,11 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
 
     async run(context: MethodContext) {
         // address_n and descriptor are not set. use discovery
-        if (this.params.length === 1 && !this.params[0].path && !this.params[0].descriptor) {
-            return this.discover(this.params[0], context);
+        const { params } = this;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstRequest: (typeof params)[number] = params[0];
+        if (this.params.length === 1 && !firstRequest.path && !firstRequest.descriptor) {
+            return this.discover(firstRequest, context);
         }
 
         const responses: MethodReturnType<typeof this.name> = [];
@@ -181,7 +190,9 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         };
 
         for (let i = 0; i < this.params.length; i++) {
-            const request = this.params[i];
+            const allParams = this.params;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const request: (typeof allParams)[number] = allParams[i];
             const { address_n } = request;
             let { descriptor } = request;
             let legacyXpub: string | undefined;
@@ -202,6 +213,11 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                         legacyXpub = accountDescriptor.legacyXpub;
                         descriptorChecksum = accountDescriptor.descriptorChecksum;
                         rootFingerprint = accountDescriptor.rootFingerprint;
+                        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                        const accountIndex: number = address_n[2];
+                        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                        const purposeIndex: number = address_n[0];
+
                         // outputDescriptorBip380 is provided by firmware >= 2.6.5.
                         // For older firmware, build it from the available data (bitcoin only).
                         outputDescriptorBip380 =
@@ -209,8 +225,8 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                             (request.coinInfo.type === 'bitcoin' && legacyXpub
                                 ? buildOutputDescriptor({
                                       coin: request.coinInfo.name,
-                                      account: fromHardened(address_n[2]),
-                                      purpose: fromHardened(address_n[0]),
+                                      account: fromHardened(accountIndex),
+                                      purpose: fromHardened(purposeIndex),
                                       scriptType: getScriptType(address_n),
                                       xpub: legacyXpub,
                                       rootFingerprint,
@@ -343,7 +359,9 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         );
 
         const uiResp = await dfd.promise;
-        const account = accounts[uiResp.payload];
+        const indexPayload = uiResp.payload;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const account: (typeof accounts)[number] = accounts[indexPayload];
 
         return this.fetchAccountInfo(account, request, blockchain);
     }
@@ -407,7 +425,10 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         const uiResp = await dfd.promise;
         discovery.stop();
 
-        const account = discovery.accounts[uiResp.payload];
+        const { accounts } = discovery;
+        const payloadIndex = uiResp.payload;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const account: (typeof accounts)[number] = accounts[payloadIndex];
 
         if (!discovery.completed) {
             await resolveAfter(501); // temporary solution, TODO: immediately resolve will cause "device call in progress"

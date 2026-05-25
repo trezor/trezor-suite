@@ -27,7 +27,10 @@ export class Log {
     }
 
     setColors(colors: Record<string, string>) {
-        this.css = typeof window !== 'undefined' && colors[this.prefix] ? colors[this.prefix] : '';
+        const { prefix } = this;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const prefixColor: string = colors[prefix];
+        this.css = typeof window !== 'undefined' && prefixColor ? prefixColor : '';
     }
 
     addMessage(

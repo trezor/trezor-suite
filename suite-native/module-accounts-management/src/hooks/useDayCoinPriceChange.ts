@@ -53,9 +53,14 @@ export const useDayCoinPriceChange = (
 
             if (!timestampedFiatRates) return;
 
-            const [weekAgo, today] = timestampedFiatRates.tickers;
-            setWeekAgoValue(weekAgo.rates[fiatCurrencyCode] ?? null);
-            const currentRate = today.rates[fiatCurrencyCode];
+            const { tickers } = timestampedFiatRates;
+            // @ts-expect-error: noUncheckedIndexedAccess
+            const weekAgo: TimestampedFiatRate = tickers[0];
+            // @ts-expect-error: noUncheckedIndexedAccess
+            const today: TimestampedFiatRate = tickers[1];
+
+            setWeekAgoValue(weekAgo?.rates[fiatCurrencyCode] ?? null);
+            const currentRate = today?.rates[fiatCurrencyCode];
             setCurrentValue(
                 currentRate !== undefined ? asBaseCurrencyAmount(new BigNumber(currentRate)) : null,
             );

@@ -46,7 +46,9 @@ export const validateSerialNumbers = (resultsToValidate: ResultsToValidate): Res
     if (!allHaveSerialNumber) return failAllResults(resultsToValidate);
 
     // Check that all serial numbers are equal
-    const first = availableResults[0].serialNumber!;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstAvailableResult: AuthenticationResult | undefined = availableResults[0];
+    const first = firstAvailableResult.serialNumber!;
     const allEqual = availableResults.every(({ serialNumber }) => serialNumber === first);
     if (!allEqual) return failAllResults(resultsToValidate);
 

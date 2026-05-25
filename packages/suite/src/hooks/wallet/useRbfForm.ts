@@ -67,7 +67,7 @@ const getBitcoinFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParamsBitcoin
     };
 };
 
-const getEthereumFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParamsEthereum) => {
+const getEthereumFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParamsEthereum): FeeInfo => {
     // use maxFeePerGas as fallback in case backend does not return eip1559 fees
     const currentGasPrice = new BigNumber(rbfParams.gasPrice || rbfParams.maxFeePerGas);
     const feeInfo = getConvertedOrDefaultFeeInfo({
@@ -81,7 +81,22 @@ const getEthereumFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParamsEthere
         const currentMaxFee = new BigNumber(rbfParams.maxFeePerGas);
         const currentMaxPriorityFee = new BigNumber(rbfParams.maxPriorityFeePerGas);
 
-        const highLevel = feeInfo.levels.find(level => level.label === 'high') || feeInfo.levels[0];
+        const { levels: feeLevelsForEip1559 } = feeInfo;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const fallbackLevel: (typeof feeLevelsForEip1559)[number] = feeLevelsForEip1559[0];
+        const highLevel =
+            feeLevelsForEip1559.find(level => level.label === 'high') || fallbackLevel;
+        const highMaxFeePerGas = highLevel.maxFeePerGas;
+        const highMaxPriorityFeePerGas = highLevel.maxPriorityFeePerGas;
+        const newMaxFeePerGas = BigNumber.maximum(currentMaxFee, highMaxFeePerGas ?? 0)
+            .multipliedBy(ETH_SPEED_UP_TX_MULTIPLIER)
+            .toString();
+        const newMaxPriorityFeePerGas = BigNumber.maximum(
+            currentMaxPriorityFee,
+            highMaxPriorityFeePerGas ?? 0,
+        )
+            .multipliedBy(ETH_SPEED_UP_TX_MULTIPLIER)
+            .toString();
 
         return {
             ...feeInfo,
@@ -89,21 +104,17 @@ const getEthereumFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParamsEthere
                 {
                     ...highLevel,
                     label: 'normal' as const,
-                    maxFeePerGas: BigNumber.maximum(currentMaxFee, highLevel.maxFeePerGas ?? 0)
-                        .multipliedBy(ETH_SPEED_UP_TX_MULTIPLIER)
-                        .toString(),
-                    maxPriorityFeePerGas: BigNumber.maximum(
-                        currentMaxPriorityFee,
-                        highLevel.maxPriorityFeePerGas ?? 0,
-                    )
-                        .multipliedBy(ETH_SPEED_UP_TX_MULTIPLIER)
-                        .toString(),
+                    maxFeePerGas: newMaxFeePerGas,
+                    maxPriorityFeePerGas: newMaxPriorityFeePerGas,
                 },
             ],
         };
     }
 
-    const minFeeFromNetwork = new BigNumber(feeInfo.levels[0].feePerUnit);
+    const { levels: feeLevels } = feeInfo;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstLevel: (typeof feeLevels)[number] = feeLevels[0];
+    const minFeeFromNetwork = new BigNumber(firstLevel.feePerUnit);
     const fee = BigNumber.maximum(minFeeFromNetwork, currentGasPrice.plus(feeInfo.minFee));
 
     // increase FeeLevel only if it's lower than predefined

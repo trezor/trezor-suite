@@ -7,7 +7,9 @@ type Req = MessageTypes.GetTransaction;
 type Res = ResponseTypes.GetTransaction;
 
 const getTransaction: Api<Req, Res> = async ({ client }, payload) => {
-    const [tx] = await getTransactions(client, [{ tx_hash: payload, height: -1 }]);
+    const txs = await getTransactions(client, [{ tx_hash: payload, height: -1 }]);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const tx: (typeof txs)[number] = txs[0];
 
     return transformTransaction(tx);
 };

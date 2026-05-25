@@ -59,15 +59,15 @@ export const CoinProtocolRenderer = ({
             if (networkSymbol) {
                 dispatch(fillSendForm(true));
 
-                if (networkAccounts.length === 1) {
-                    const account = networkAccounts[0];
+                const firstAccount = networkAccounts[0];
+                if (networkAccounts.length === 1 && firstAccount) {
                     dispatch(
                         goto({
                             routeName: 'wallet-send',
                             params: {
-                                symbol: account.symbol,
-                                accountIndex: account.index,
-                                accountType: account.accountType,
+                                symbol: firstAccount.symbol,
+                                accountIndex: firstAccount.index,
+                                accountType: firstAccount.accountType,
                             },
                         }),
                     );

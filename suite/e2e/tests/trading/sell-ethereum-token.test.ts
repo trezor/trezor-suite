@@ -11,9 +11,9 @@ import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
-const fiatAmount = sellQuotesEthereumToken[0].fiatStringAmount;
-const cryptoAmount = sellQuotesEthereumToken[0].cryptoStringAmount;
-const provider = getCompanyNameFromList(sellQuotesEthereumToken[0].exchange, 'sellList');
+const fiatAmount = sellQuotesEthereumToken[0]?.fiatStringAmount ?? '';
+const cryptoAmount = sellQuotesEthereumToken[0]?.cryptoStringAmount ?? '';
+const provider = getCompanyNameFromList(sellQuotesEthereumToken[0]?.exchange ?? '', 'sellList');
 const providerAddress = sellWatchEthereum.destinationAddress;
 const formattedCryptoAmount = `${cryptoAmount} USDC`;
 const formattedFiatAmount = `€${fiatAmount}`;

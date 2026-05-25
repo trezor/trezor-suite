@@ -40,7 +40,9 @@ export const getQuoteRequestData = ({
         formValues;
     const decimals = getNetworkDecimalsWithFallback(network.symbol);
 
-    const unformattedOutputAmount = outputs[0].amount ?? '';
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstOutput: (typeof outputs)[number] = outputs[0];
+    const unformattedOutputAmount = firstOutput.amount ?? '';
     const sendStringAmount =
         unformattedOutputAmount && shouldSendInSats
             ? convertAmountSubunitsToUnits(unformattedOutputAmount, decimals)

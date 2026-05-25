@@ -10,7 +10,9 @@ function renameAllExportsToCamelCase(implementation: string): string {
     const re = /export const ([A-Z][a-zA-Z0-9_]*) =/g;
     let match;
     while ((match = re.exec(implementation)) !== null) {
-        pascalCaseNames.push(match[1]);
+        // @ts-expect-error: noUncheckedIndexedAccess
+        const secondMatch: string = match[1];
+        pascalCaseNames.push(secondMatch);
     }
 
     let result = implementation;

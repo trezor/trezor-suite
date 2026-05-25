@@ -83,7 +83,11 @@ describe('ReviewOutputHexData', () => {
         const value = '0xcafe';
         const { getAllByRole } = renderHexData(value);
 
-        await userEvent.longPress(getAllByRole('button')[0]);
+        const button = getAllByRole('button')?.[0];
+        if (!button) {
+            throw new Error('Button not found');
+        }
+        await userEvent.longPress(button);
 
         expect(mockCopyToClipboard).toHaveBeenCalledWith(value);
     });

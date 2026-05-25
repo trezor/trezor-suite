@@ -60,7 +60,12 @@ const getArray = (field: FieldWithBundle<any>, props: Props) => (
     <ArrayWrapper
         key={field.name}
         field={field}
-        onAdd={() => props.actions.onBatchAdd(field, field.batch[0].fields)}
+        onAdd={() => {
+            const { batch } = field;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const firstBatch: (typeof batch)[number] = batch[0];
+            props.actions.onBatchAdd(field, firstBatch.fields);
+        }}
     >
         {field.items?.map((batch, index) => {
             const key = `${field.name}-${index}`;

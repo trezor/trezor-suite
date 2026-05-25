@@ -20,8 +20,11 @@ export type SellPreviewViewProps = {
 export const SellPreviewView = memo(({ quote, txnErrorString }: SellPreviewViewProps) => {
     const formStep = useSelector(selectTradingSellFormStep);
 
+    const quoteBankAccounts = quote?.bankAccounts;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstBankAccount: NonNullable<typeof quoteBankAccounts>[number] = quoteBankAccounts?.[0];
     const [selectedBankAccountIban, setSelectedBankAccountIban] = useState(
-        quote?.bankAccounts?.[0].bankAccount,
+        firstBankAccount?.bankAccount,
     );
 
     const isTxnError = !!txnErrorString;

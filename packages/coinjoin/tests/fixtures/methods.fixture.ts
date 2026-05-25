@@ -220,6 +220,22 @@ export const BLOCK_0 = {
     txs: [TX0],
 };
 
+export const BLOCK_7 = {
+    height: 7,
+    hash: '01d37c4490e9ddaf6b5c886eaa215b8d0b658c93ea42cfd871b226f606672c0b',
+    filter: '02020f2a9a0ac0', // receive 1 in, change 1 in, receive 1 out
+    previousBlockHash: '5021a2185f27ad04d45f1b53c873b2231311aea99e0f1d7a6252167540b9db4c',
+    txs: [TX4],
+};
+
+export const BLOCK_8 = {
+    height: 8,
+    hash: '36d01c975372c363d94f0e9e22e8a61a6a52e3408c98920ef1587b024ec487e3',
+    filter: '023e09f4f752a0', // receive 1 out
+    previousBlockHash: '01d37c4490e9ddaf6b5c886eaa215b8d0b658c93ea42cfd871b226f606672c0b',
+    txs: [TX5],
+};
+
 export const BLOCKS = [
     BLOCK_0,
     {
@@ -257,20 +273,8 @@ export const BLOCKS = [
         previousBlockHash: '2c2c65aad93eebe235955e170913fd6558453dd999a4ded6249bbdc9d54da1f7',
         txs: [TX3],
     },
-    {
-        height: 7,
-        hash: '01d37c4490e9ddaf6b5c886eaa215b8d0b658c93ea42cfd871b226f606672c0b',
-        filter: '02020f2a9a0ac0', // receive 1 in, change 1 in, receive 1 out
-        previousBlockHash: '5021a2185f27ad04d45f1b53c873b2231311aea99e0f1d7a6252167540b9db4c',
-        txs: [TX4],
-    },
-    {
-        height: 8,
-        hash: '36d01c975372c363d94f0e9e22e8a61a6a52e3408c98920ef1587b024ec487e3',
-        filter: '023e09f4f752a0', // receive 1 out
-        previousBlockHash: '01d37c4490e9ddaf6b5c886eaa215b8d0b658c93ea42cfd871b226f606672c0b',
-        txs: [TX5],
-    },
+    BLOCK_7,
+    BLOCK_8,
 ];
 
 export const TX_4_PENDING = {
@@ -985,7 +989,7 @@ const {
     addresses: {
         unused,
         used: [used1, used2],
-        change: [{ balance, sent, received, transfers, ...change1 }, ...change],
+        change: [firstChange, ...change],
     },
     history: {
         transactions: [, , pending, ...transactions],
@@ -993,6 +997,9 @@ const {
     utxo: [utxo],
     ...rest
 } = SEGWIT_XPUB_RESULT;
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const { balance, sent, received, transfers, ...change1 }: NonNullable<typeof firstChange> =
+    firstChange;
 
 export const SEGWIT_XPUB_RESULT_HALF = {
     ...rest,

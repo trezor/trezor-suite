@@ -11,7 +11,8 @@ function convertbits(
     const ret: number[] = [];
     const maxv = (1 << tobits) - 1;
     for (let p = 0; p < data.length; ++p) {
-        const value = data[p];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const value: number = data[p];
         if (value < 0 || value >> frombits !== 0) {
             return null;
         }
@@ -49,15 +50,18 @@ export function decode(hrp: string, addr: string, m = false): Bech32Decoded | nu
     } catch {
         return null;
     }
-    if (dec?.prefix !== hrp || dec.words.length < 1 || dec.words[0] > 16) {
+    const words = dec?.words;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstWord: number = words[0];
+    if (dec?.prefix !== hrp || words.length < 1 || firstWord > 16) {
         return null;
     }
-    const res = convertbits(dec.words.slice(1), 5, 8, false);
+    const res = convertbits(words.slice(1), 5, 8, false);
     if (res === null || res.length < 2 || res.length > 40) {
         return null;
     }
 
-    return { version: dec.words[0], program: res };
+    return { version: firstWord, program: res };
 }
 
 export function encode(

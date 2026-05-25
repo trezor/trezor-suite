@@ -318,7 +318,10 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
                 });
             }
 
-            feeLevel = estimatedFee.payload.levels[0];
+            const { levels: estimatedFeeLevels } = estimatedFee.payload;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const firstLevel: (typeof estimatedFeeLevels)[number] = estimatedFeeLevels[0];
+            feeLevel = firstLevel;
         } else {
             const availableBandwidth = Math.max(
                 account.misc?.tronResources?.availableStakedBandwidth ?? 0,
@@ -333,8 +336,11 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
             };
         }
 
+        const { outputs: composeTronOutputs } = formState;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstComposeOutput: (typeof composeTronOutputs)[number] = composeTronOutputs[0];
         const isNewAccount =
-            !tokenInfo && (await isNewTronAccount(formState.outputs[0].address, account));
+            !tokenInfo && (await isNewTronAccount(firstComposeOutput.address, account));
 
         const tx = calculate(
             account.availableBalance,
@@ -395,7 +401,9 @@ export const signTronSendFormTransactionThunk = createThunk<
 
         const { blockHash, blockHeight } = blockchainInfo.payload;
         const { token } = precomposedTransaction;
-        const output = formState.outputs[0];
+        const { outputs: signTronOutputs } = formState;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const output: (typeof signTronOutputs)[number] = signTronOutputs[0];
 
         const network = getNetwork(selectedAccount.symbol);
         const amountInSubunits = unitsToSubunits({

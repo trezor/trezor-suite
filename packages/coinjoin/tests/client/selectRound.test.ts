@@ -500,7 +500,10 @@ describe('selectRound', () => {
         expect(spy).toHaveBeenCalledTimes(9);
 
         ['AA', 'AB', 'AC', 'CA'].forEach((outpoint, index) => {
-            expect(result!.inputs[index].outpoint).toEqual(outpoint);
+            const { inputs } = result!;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const input: (typeof result)['inputs'][number] = inputs[index];
+            expect(input.outpoint).toEqual(outpoint);
         });
 
         expect(result).toMatchObject({

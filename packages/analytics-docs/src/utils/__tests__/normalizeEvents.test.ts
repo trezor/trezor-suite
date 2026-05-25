@@ -20,9 +20,9 @@ describe('normalizeEvents', () => {
 
         const eventDoc = normalizeEvents(input)[input[0].name];
 
-        expect(eventDoc.changelog.entries.map(e => e.version)).toEqual(['1.0.0']);
-        expect(eventDoc.changelog.addedInVersion).toBe('1.0.0');
-        expect(eventDoc.changelog.lastUpdatedInVersion).toBe('2.0.0');
+        expect(eventDoc?.changelog.entries.map(e => e.version)).toEqual(['1.0.0']);
+        expect(eventDoc?.changelog.addedInVersion).toBe('1.0.0');
+        expect(eventDoc?.changelog.lastUpdatedInVersion).toBe('2.0.0');
     });
 
     it('does not affect addedInVersion with attribute unknown versions ("?")', () => {
@@ -44,8 +44,8 @@ describe('normalizeEvents', () => {
 
         const eventDoc = normalizeEvents(input)[input[0].name];
 
-        expect(eventDoc.changelog.entries.map(e => e.version)).toEqual(['1.0.0']);
-        expect(eventDoc.changelog.addedInVersion).toBe('1.0.0');
-        expect(eventDoc.changelog.lastUpdatedInVersion).toBeUndefined();
+        expect(eventDoc?.changelog.entries.map(e => e.version)).toEqual(['1.0.0']);
+        expect(eventDoc?.changelog.addedInVersion).toBe('1.0.0');
+        expect(eventDoc?.changelog.lastUpdatedInVersion).toBeUndefined();
     });
 });

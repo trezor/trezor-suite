@@ -26,7 +26,11 @@ const fetchLatestLedger = async (api: Horizon.Server) => {
         throw new CustomError('worker_invalid_horizon_response');
     }
 
-    return latestLedgerInfo.records[0];
+    const { records } = latestLedgerInfo;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const record: (typeof records)[number] = records[0];
+
+    return record;
 };
 
 const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet: boolean) => {

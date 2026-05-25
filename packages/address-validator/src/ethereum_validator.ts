@@ -7,9 +7,13 @@ function verifyChecksum(address: string): boolean {
     const addressHash = cryptoUtils.keccak256(stripped.toLowerCase());
 
     for (let i = 0; i < 40; i++) {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const hashChar: string = addressHash[i];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const strippedChar: string = stripped[i];
         if (
-            (parseInt(addressHash[i], 16) > 7 && stripped[i].toUpperCase() !== stripped[i]) ||
-            (parseInt(addressHash[i], 16) <= 7 && stripped[i].toLowerCase() !== stripped[i])
+            (parseInt(hashChar, 16) > 7 && strippedChar.toUpperCase() !== strippedChar) ||
+            (parseInt(hashChar, 16) <= 7 && strippedChar.toLowerCase() !== strippedChar)
         ) {
             return false;
         }

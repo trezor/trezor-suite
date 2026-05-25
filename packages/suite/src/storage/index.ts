@@ -22,7 +22,7 @@ const MIGRATIONS = Object.values(migrations)
     .sort((a, b) => a.threshold - b.threshold);
 
 const LATEST_MIGRATION_VERSION = MIGRATIONS.length
-    ? MIGRATIONS[MIGRATIONS.length - 1].threshold
+    ? (MIGRATIONS[MIGRATIONS.length - 1]?.threshold ?? 0)
     : 0;
 
 const runMigrations = async (

@@ -64,15 +64,23 @@ export function getResult<
         return total;
     }, BigInt(result.fee));
 
-    const max =
-        sendMaxOutputIndex >= 0 ? result.outputs[sendMaxOutputIndex].value.toString() : undefined;
+    const { outputs } = result;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const sendMaxOutput: (typeof outputs)[number] = outputs[sendMaxOutputIndex];
+    const max = sendMaxOutputIndex >= 0 ? sendMaxOutput.value.toString() : undefined;
     const bytes = transactionBytes(result.inputs, result.outputs);
     const feePerByte = result.fee / bytes;
 
     const { complete, incomplete } = splitByCompleteness(request.outputs);
 
     if (incomplete.length > 0) {
-        const inputs = result.inputs.map(input => request.utxos[input.i]);
+        const inputs = result.inputs.map(input => {
+            const { utxos } = request;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const utxo: Input = utxos[input.i];
+
+            return utxo;
+        });
 
         return {
             type: 'nonfinal',

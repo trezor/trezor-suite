@@ -59,7 +59,9 @@ export const sendChunks = async <T, E extends string>(
     apiWrite: (chunk: Buffer) => AsyncResultWithTypedError<T, E>,
 ) => {
     for (let i = 0; i < chunks.length; i++) {
-        const result = await apiWrite(chunks[i]);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const chunk: Buffer = chunks[i];
+        const result = await apiWrite(chunk);
         if (!result.success) {
             return result;
         }

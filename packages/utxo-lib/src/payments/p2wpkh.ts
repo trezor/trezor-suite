@@ -134,16 +134,21 @@ export function p2wpkh(a: Payment, opts?: PaymentOpts): Payment {
 
         if (a.witness) {
             if (a.witness.length !== 2) throw new TypeError('Witness is invalid');
-            if (!bscript.isCanonicalScriptSignature(a.witness[0]))
+            const { witness } = a;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const witnessSig: Buffer = witness[0];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const witnessPubkey: Buffer = witness[1];
+            if (!bscript.isCanonicalScriptSignature(witnessSig))
                 throw new TypeError('Witness has invalid signature');
-            if (!ecc.isPoint(a.witness[1]) || a.witness[1].length !== 33)
+            if (!ecc.isPoint(witnessPubkey) || witnessPubkey.length !== 33)
                 throw new TypeError('Witness has invalid pubkey');
 
-            if (a.signature && !a.signature.equals(a.witness[0]))
+            if (a.signature && !a.signature.equals(witnessSig))
                 throw new TypeError('Signature mismatch');
-            if (a.pubkey && !a.pubkey.equals(a.witness[1])) throw new TypeError('Pubkey mismatch');
+            if (a.pubkey && !a.pubkey.equals(witnessPubkey)) throw new TypeError('Pubkey mismatch');
 
-            const pkh = bcrypto.hash160(a.witness[1]);
+            const pkh = bcrypto.hash160(witnessPubkey);
             if (hash.length > 0 && !hash.equals(pkh)) throw new TypeError('Hash mismatch');
         }
     }

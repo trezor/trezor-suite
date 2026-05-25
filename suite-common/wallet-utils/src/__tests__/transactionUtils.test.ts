@@ -39,7 +39,9 @@ describe('transaction utils', () => {
     describe('isPending', () => {
         Object.keys(fixtures.isPending).forEach(f => {
             it(f, () => {
-                const transaction = fixtures.isPending[f];
+                const { isPending: pendingFixtures } = fixtures;
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const transaction: (typeof pendingFixtures)[string] = pendingFixtures[f];
                 const { blockHeight } = transaction;
                 expect(isPending(transaction)).toEqual(!blockHeight || blockHeight < 0);
             });
@@ -198,7 +200,21 @@ describe('transaction utils', () => {
 
     describe('groupJointTransactions', () => {
         it('groups joint transactions', () => {
-            const [j1, r2, j3, j4, s5, s6, j7, f8, j9, j10, j11] = (
+            type Tx = ReturnType<typeof getWalletTransaction>;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const [j1, r2, j3, j4, s5, s6, j7, f8, j9, j10, j11]: [
+                Tx,
+                Tx,
+                Tx,
+                Tx,
+                Tx,
+                Tx,
+                Tx,
+                Tx,
+                Tx,
+                Tx,
+                Tx,
+            ] = (
                 [
                     'joint',
                     'recv',

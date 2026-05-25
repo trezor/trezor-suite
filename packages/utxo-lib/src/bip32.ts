@@ -339,7 +339,7 @@ class BIP32 implements BIP32Interface {
         let counter = 0;
         // if first try is lowR, skip the loop
         // for second try and on, add extra entropy counting up
-        while (sig[0] > 0x7f) {
+        while ((sig[0] as number) > 0x7f) {
             counter++;
             extraData.writeUIntLE(counter, 0, 6);
             sig = ecc.signWithEntropy(hash, this.privateKey, extraData);

@@ -12,10 +12,10 @@ import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
-const fiatAmount = localizeNumber(sellQuotesSolana[0].fiatStringAmount, 'en-US', 2, 2);
-const cryptoAmount = sellQuotesSolana[0].cryptoStringAmount;
-const provider = getCompanyNameFromList(sellQuotesSolana[0].exchange, 'sellList');
-const selectedPaymentMethod = sellQuotesSolana[0].paymentMethod;
+const fiatAmount = localizeNumber(sellQuotesSolana[0]?.fiatStringAmount ?? '', 'en-US', 2, 2);
+const cryptoAmount = sellQuotesSolana[0]?.cryptoStringAmount ?? '';
+const provider = getCompanyNameFromList(sellQuotesSolana[0]?.exchange ?? '', 'sellList');
+const selectedPaymentMethod = sellQuotesSolana[0]?.paymentMethod ?? '';
 const comparedSellQuotes = [
     ...new Map(
         sellQuotesSolana
@@ -154,7 +154,7 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
         await test.step('Select second offer from modal and check correct values are sent in trade request', async () => {
             const sellTradePromise = page.waitForRequest(invityEndpoint.sellTrade);
             await tradingPage.quotes.selectQuoteByProvider(
-                getCompanyNameFromList(secondComparedOfferQuote.exchange, 'sellList'),
+                getCompanyNameFromList(secondComparedOfferQuote?.exchange ?? '', 'sellList'),
             );
             await tradingPage.sellBestOfferButton.click();
             await expect.soft(sellTradePromise).toHavePayload(

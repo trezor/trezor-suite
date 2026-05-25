@@ -278,7 +278,9 @@ describe('getNonce thunk', () => {
 
             // Check if the action is in pending state
             const actions = store.getActions();
-            expect(actions[0].type).toBe(getNonce.pending.type);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const firstAction: (typeof actions)[number] = actions[0];
+            expect(firstAction.type).toBe(getNonce.pending.type);
 
             const result = await promise;
             expect(result.type).toBe(getNonce.fulfilled.type);

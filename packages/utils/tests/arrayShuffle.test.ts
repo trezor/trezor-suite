@@ -16,15 +16,22 @@ describe(arrayShuffle.name, () => {
         for (let sample = 0; sample < SAMPLES; ++sample) {
             const shuffled = arrayShuffle(KEYS, { randomInt: getWeakRandomInt });
             for (let i = 0; i < shuffled.length; ++i) {
-                samples[shuffled[i]][i]++;
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const key: string = shuffled[i];
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const counts: number[] = samples[key];
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                counts[i]++;
             }
         }
 
-        KEYS.forEach(key =>
-            samples[key].forEach(count => {
+        KEYS.forEach(key => {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const keyCounts: number[] = samples[key];
+            keyCounts.forEach(count => {
                 expect(count).toBeGreaterThanOrEqual(LOWER_BOUND);
                 expect(count).toBeLessThanOrEqual(UPPER_BOUND);
-            }),
-        );
+            });
+        });
     });
 });

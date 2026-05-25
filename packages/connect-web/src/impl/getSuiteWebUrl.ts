@@ -22,7 +22,7 @@ export const extractBranch = (href: string): string | undefined => {
     }
 
     const match = pathname.match(/\/connect\/(.+)/);
-    if (!match) return undefined;
+    if (!match?.[1]) return undefined;
 
     return (
         match[1]

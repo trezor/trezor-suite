@@ -207,7 +207,7 @@ export const StakeInputs = () => {
                 }}
                 fiatValue={
                     <BaseCurrencyValue
-                        amount={amount}
+                        amount={amount ?? ''}
                         symbol={account.symbol}
                         showApproximationIndicator
                     >

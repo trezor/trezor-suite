@@ -26,7 +26,10 @@ const createSummaryRow = ({
         return null;
     }
 
-    const [firstItem] = activeItems;
+    const firstItem = activeItems[0];
+    if (!firstItem) {
+        return null;
+    }
 
     return {
         type: firstItem.type,

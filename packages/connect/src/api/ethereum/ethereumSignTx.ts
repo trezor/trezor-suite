@@ -18,7 +18,7 @@ import { getEthereumDefinitions } from './ethereumDefinitions';
 import type { TypedCall } from '../../device/DeviceCommands';
 import { addHexPrefix, deepTransform } from '../../utils/formatUtils';
 
-const splitString = (str?: string, len?: number) => {
+const splitString = (str?: string, len?: number): [string, string] => {
     if (str == null) {
         return ['', ''];
     }

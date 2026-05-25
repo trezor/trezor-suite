@@ -1,7 +1,11 @@
 import React from 'react';
 
 import { type TradingTransaction } from '@suite-common/trading';
-import { bankAccounts, eth1NormalAccount } from '@suite-native/trading-fixtures';
+import {
+    bankAccounts,
+    eth1NormalAccount,
+    verifiedBankAccount,
+} from '@suite-native/trading-fixtures';
 
 import {
     type PreloadedStatePartial,
@@ -89,7 +93,7 @@ describe('SellBankAccountPicker', () => {
             const { queryByTestId } = renderPicker(
                 {
                     orderId: undefined,
-                    selectedBankAccountIban: bankAccounts[0].bankAccount,
+                    selectedBankAccountIban: verifiedBankAccount.bankAccount,
                     onBankAccountSelect: mockOnBankAccountSelect,
                 },
                 {

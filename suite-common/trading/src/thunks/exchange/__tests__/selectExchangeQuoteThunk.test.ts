@@ -25,6 +25,7 @@ describe('selectExchangeQuoteThunk', () => {
 
     const getDataMocks = () => {
         const quote = MIN_MAX_QUOTES_OK[0];
+        if (!quote) throw new Error('Missing test fixture');
         const quoteExchange = quote.exchange as string;
         const send = quote.send as CryptoId;
         const receive = quote.receive as CryptoId;

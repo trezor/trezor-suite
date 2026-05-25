@@ -4,6 +4,7 @@ import { Form } from '@suite-native/forms';
 import { act, userEvent } from '@suite-native/test-utils-store';
 import { exchangeQuotes, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
+import { getIndexOrThrow } from '@trezor/utils';
 
 import {
     type PreloadedStatePartial,
@@ -128,7 +129,7 @@ describe('ExchangeRateAndProviderPicker', () => {
             const { getByText, getAllByText } = renderExchangeRateAndProviderPicker(withQuotes);
 
             await userEvent.press(getByText('Provider'));
-            await userEvent.press(getAllByText('Mercuryo')[1]);
+            await userEvent.press(getIndexOrThrow(getAllByText('Mercuryo'), 1));
 
             expect(reportMock).toHaveBeenCalledTimes(1);
             expect(reportMock).not.toHaveBeenCalledWith({

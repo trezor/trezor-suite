@@ -29,10 +29,15 @@ const groupByDateAndScript = (records: UsageRecord[]) => {
     for (const r of records) {
         const date = toDateStr(r.timestamp);
         byDate[date] ??= {};
-        byDate[date][r.script] ??= { input: 0, output: 0, cost: 0 };
-        byDate[date][r.script].input += r.input_tokens ?? 0;
-        byDate[date][r.script].output += r.output_tokens ?? 0;
-        byDate[date][r.script].cost += estimateCost(r);
+        const byScript = byDate[date];
+
+        byScript[r.script] ??= { input: 0, output: 0, cost: 0 };
+        // @ts-expect-error: noUncheckedIndexedAccess
+        const entry: { input: number; output: number; cost: number } = byScript[r.script];
+
+        entry.input += r.input_tokens ?? 0;
+        entry.output += r.output_tokens ?? 0;
+        entry.cost += estimateCost(r);
     }
 
     return byDate;

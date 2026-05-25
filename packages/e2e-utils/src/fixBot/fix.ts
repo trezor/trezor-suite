@@ -30,7 +30,11 @@ function latestReport(reportDir: string): string {
         .sort();
     if (!files.length) throw new Error(`No report files in ${reportDir}`);
 
-    return join(reportDir, files[files.length - 1]);
+    const fileIndex = files.length - 1;
+    // @ts-expect-error: noUncheckedIndexedAccess
+    const fileName: string = files[fileIndex];
+
+    return join(reportDir, fileName);
 }
 
 function setupWorktree(root: string, task: FixTask, worktreePath: string): void {

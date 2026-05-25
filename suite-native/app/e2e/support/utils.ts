@@ -40,7 +40,7 @@ function pruneToAppStack(invocationStack: string): string {
     for (const l of lines) {
         const m = l.match(/\s+at (?:.+ \()?(.*?):\d+:\d+\)?/);
         if (!m) continue;
-        const file = path.normalize(m[1]);
+        const file = path.normalize(m[1] ?? '');
         if (
             file.includes('node:') ||
             file.includes(`${path.sep}node_modules${path.sep}`) ||

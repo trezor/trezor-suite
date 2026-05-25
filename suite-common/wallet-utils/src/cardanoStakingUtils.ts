@@ -107,7 +107,9 @@ export const selectBestCardanoPool = (pools?: AdaPools['pools']) => {
     }
 
     // pick the last one (lowest saturation)
-    const fallback = pools[pools.length - 1];
+    const fallbackIndex = pools.length - 1;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const fallback: (typeof pools)[number] = pools[fallbackIndex];
 
     return {
         hex: poolBech32ToHex(fallback.id),

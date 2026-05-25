@@ -82,7 +82,16 @@ export const sortByBIP44AddressIndex = <T extends { path: string }>(
         return prev;
     }, {});
 
-    return addresses.slice().sort((a, b) => lookup[a.path] - lookup[b.path]);
+    return addresses.slice().sort((a, b) => {
+        const { path: aPath } = a;
+        const { path: bPath } = b;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const aIndex: number = lookup[aPath];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const bIndex: number = lookup[bPath];
+
+        return aIndex - bIndex;
+    });
 };
 
 export const parseBIP44Path = (path: string) => {

@@ -9,12 +9,15 @@ import { BufferSchema, Point, Type, assertType, isNumber } from '../types/valida
 
 const { OPS } = bscript;
 
-const OP_INT_BASE = OPS.OP_RESERVED; // OP_1 - 1
-
 function stacksEqual(a: Buffer[], b: Buffer[]): boolean {
     if (a.length !== b.length) return false;
 
-    return a.every((x, i) => x.equals(b[i]));
+    return a.every((x, i) => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const bItem: Buffer = b[i];
+
+        return x.equals(bItem);
+    });
 }
 
 // input: OP_0 [signatures ...]
@@ -59,8 +62,12 @@ export function p2ms(a: Payment, opts?: PaymentOpts): Payment {
         if (decoded) return;
         decoded = true;
         chunks = bscript.decompile(output) as Stack;
-        o.m = (chunks[0] as number) - OP_INT_BASE;
-        o.n = (chunks[chunks.length - 2] as number) - OP_INT_BASE;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstChunk: number = chunks[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const nChunk: number = chunks[chunks.length - 2];
+        o.m = (firstChunk as number) - OPS.OP_RESERVED;
+        o.n = (nChunk as number) - OPS.OP_RESERVED;
         o.pubkeys = chunks.slice(1, -2) as Buffer[];
     }
 
@@ -71,9 +78,9 @@ export function p2ms(a: Payment, opts?: PaymentOpts): Payment {
 
         return bscript.compile(
             ([] as Stack).concat(
-                OP_INT_BASE + a.m,
+                OPS.OP_RESERVED + a.m,
                 a.pubkeys,
-                OP_INT_BASE + o.n,
+                OPS.OP_RESERVED + o.n,
                 OPS.OP_CHECKMULTISIG,
             ),
         );

@@ -66,7 +66,7 @@ const localizedNumber = ({
     });
 
     const [_, unformattedDecimalsPart] = value.split('.');
-    const wasResultRounded = unformattedDecimalsPart?.length > maxDisplayedDecimals;
+    const wasResultRounded = (unformattedDecimalsPart?.length ?? 0) > maxDisplayedDecimals;
 
     return { formattedValue, wasResultRounded };
 };

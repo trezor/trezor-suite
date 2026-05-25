@@ -6,7 +6,8 @@ import { getReleaseInfo } from '../firmwareInfo';
 
 const { getDeviceFeatures, releasesT2T1 } = global.JestMocks;
 
-const [latestT2T1] = releasesT2T1;
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const [latestT2T1]: [FirmwareRelease] = releasesT2T1;
 
 const fixtures = [
     {

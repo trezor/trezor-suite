@@ -107,7 +107,11 @@ export const getTxStakeNameByDataHex = (dataHex: string | undefined): StakeType 
     if (!dataHex) return null;
     const signature = getSignatureByEthereumDataHex(dataHex);
 
-    return isStakeTypeTx(signature) ? signatureToStakeTypeMap[signature] : null;
+    if (!isStakeTypeTx(signature)) return null;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const stakeType: StakeType = signatureToStakeTypeMap[signature];
+
+    return stakeType;
 };
 
 export const getUnstakeAmountByEthereumDataHex = (dataHex?: string) => {

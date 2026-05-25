@@ -7,7 +7,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type StepStatus = 'done' | 'active' | 'pending';
 
-type EarnModalStep = {
+export type EarnModalStep = {
     id: string;
     label: ReactNode;
 };

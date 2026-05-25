@@ -12,7 +12,7 @@ import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { EarnModalStepIndicator } from './EarnModalStepIndicator';
+import { type EarnModalStep, EarnModalStepIndicator } from './EarnModalStepIndicator';
 
 const stepCardStyle = prepareNativeStyle(utils => ({
     width: '100%',
@@ -42,7 +42,7 @@ const steps = [
         id: 'complete',
         label: <Translation id="earn.yieldDepositFlowScreen.depositCompleteStepTitle" />,
     },
-];
+] as const satisfies EarnModalStep[];
 
 type YieldDepositStepIndex = 0 | 1 | 2;
 

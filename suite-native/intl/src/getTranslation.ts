@@ -1,6 +1,6 @@
 import { createIntl, createIntlCache } from 'react-intl';
 
-import { unique } from '@trezor/utils';
+import { getIndexOrThrow, unique } from '@trezor/utils';
 
 import { messages } from './messages';
 import { type TxKeyPath } from './types';
@@ -62,17 +62,21 @@ export const getTranslation = (
     // Throw an error if translation expects a value that was not provided.
     const placeholderRegex = /\{(\w+)(?:,\s*\w+[^}]*)?}/g;
     const matches = template.matchAll(placeholderRegex);
-    const placeholders = unique(Array.from(matches, m => m[1]));
+    const uniquePlaceholders = unique(
+        Array.from(matches, m => m[1]).filter((p): p is string => p !== undefined),
+    );
 
-    if (placeholders.length > 0) {
+    if (uniquePlaceholders.length > 0) {
         const providedKeys = values ? Object.keys(values) : [];
-        const missingValues = placeholders.filter(
+        const missingValues = uniquePlaceholders.filter(
             placeholder => !providedKeys.includes(placeholder),
         );
 
         if (missingValues.length > 0) {
+            // length > 0 above guarantees [0] is defined
+            const firstMissing = getIndexOrThrow(missingValues, 0);
             throw new Error(
-                `Translation "${translationId}" expects value "${missingValues[0]}" but it was not provided. ` +
+                `Translation "${translationId}" expects value "${firstMissing}" but it was not provided. ` +
                     `Translation text: "${template}"`,
             );
         }

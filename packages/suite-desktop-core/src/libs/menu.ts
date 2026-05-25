@@ -16,78 +16,77 @@ type MenuItem = Omit<MenuItemConstructorOptions, 'submenu'> & {
 
 // for those wondering why is this a function, it is because otherwise app.name used in the template has incorrect value @trezor/suite-desktop instead of "Trezor Suite"
 export const buildMainMenu = (mainWindowProxy: MainWindowProxy) => {
-    const mainMenuTemplate: MenuItem[] = [
-        // { role: 'appMenu' }
-        // "App menu" for macOS conditionally added below
-        // { role: 'fileMenu' }
-        {
-            label: 'File',
-            submenu: [
-                { label: 'Restart', click: restartApp },
-                isMac ? { role: 'close' } : { role: 'quit' },
-            ],
-        },
-        // { role: 'editMenu' }
-        {
-            label: 'Edit',
-            submenu: [
-                { role: 'undo' },
-                { role: 'redo' },
-                { type: 'separator' },
-                { role: 'cut' },
-                { role: 'copy' },
-                { role: 'paste' },
-                {
-                    label: 'Find',
-                    accelerator: 'CmdOrCtrl+F',
-                    click: () => {
-                        mainWindowProxy.getInstance()?.webContents.send('find:show');
-                    },
+    // { role: 'fileMenu' }
+    const fileMenu: MenuItem = {
+        label: 'File',
+        submenu: [
+            { label: 'Restart', click: restartApp },
+            isMac ? { role: 'close' } : { role: 'quit' },
+        ],
+    };
+    // { role: 'editMenu' }
+    const editMenu: MenuItem = {
+        label: 'Edit',
+        submenu: [
+            { role: 'undo' },
+            { role: 'redo' },
+            { type: 'separator' },
+            { role: 'cut' },
+            { role: 'copy' },
+            { role: 'paste' },
+            {
+                label: 'Find',
+                accelerator: 'CmdOrCtrl+F',
+                click: () => {
+                    mainWindowProxy.getInstance()?.webContents.send('find:show');
                 },
-                // extended below
-            ],
-        },
-        // { role: 'viewMenu' }
-        {
-            label: 'View',
-            submenu: [
-                { role: 'reload' },
-                { role: 'forceReload' },
-                { role: 'toggleDevTools' },
-                { type: 'separator' },
-                { role: 'resetZoom' },
-                { role: 'zoomIn' },
-                { role: 'zoomOut' },
-                { type: 'separator' },
-                { role: 'togglefullscreen' },
-            ],
-        },
-        // { role: 'windowMenu' }
-        {
-            role: 'windowMenu',
-            label: 'Window',
-            submenu: [{ role: 'minimize' }, { role: 'zoom' }],
+            },
             // extended below
-        },
-        {
-            role: 'help',
-            submenu: [
-                {
-                    label: 'Learn More',
-                    click: () => shell.openExternal('https://trezor.io/'),
-                },
-            ],
-        },
-    ];
+        ],
+    };
+    // { role: 'viewMenu' }
+    const viewMenu: MenuItem = {
+        label: 'View',
+        submenu: [
+            { role: 'reload' },
+            { role: 'forceReload' },
+            { role: 'toggleDevTools' },
+            { type: 'separator' },
+            { role: 'resetZoom' },
+            { role: 'zoomIn' },
+            { role: 'zoomOut' },
+            { type: 'separator' },
+            { role: 'togglefullscreen' },
+        ],
+    };
+    // { role: 'windowMenu' }
+    const windowMenu: MenuItem = {
+        role: 'windowMenu',
+        label: 'Window',
+        submenu: [{ role: 'minimize' }, { role: 'zoom' }],
+        // extended below
+    };
+    const helpMenu: MenuItem = {
+        role: 'help',
+        submenu: [
+            {
+                label: 'Learn More',
+                click: () => shell.openExternal('https://trezor.io/'),
+            },
+        ],
+    };
+
+    // { role: 'appMenu' } — macOS "App menu" conditionally prepended below
+    const mainMenuTemplate: MenuItem[] = [fileMenu, editMenu, viewMenu, windowMenu, helpMenu];
 
     if (!isDevEnv) {
         // remove toggleDevTools from "View"
-        mainMenuTemplate[2].submenu.splice(2, 1);
+        viewMenu.submenu.splice(2, 1);
     }
 
     if (isMac) {
         // Extend "Edit"
-        mainMenuTemplate[1].submenu.push(
+        editMenu.submenu.push(
             { role: 'pasteAndMatchStyle' },
             { role: 'delete' },
             { role: 'selectAll' },
@@ -98,7 +97,7 @@ export const buildMainMenu = (mainWindowProxy: MainWindowProxy) => {
             },
         );
         // Extend "Window"
-        mainMenuTemplate[3].submenu.push(
+        windowMenu.submenu.push(
             { role: 'togglefullscreen' },
             { type: 'separator' },
             { role: 'front' },
@@ -122,13 +121,9 @@ export const buildMainMenu = (mainWindowProxy: MainWindowProxy) => {
         });
     } else {
         // Extend "Edit"
-        mainMenuTemplate[1].submenu.push(
-            { role: 'delete' },
-            { type: 'separator' },
-            { role: 'selectAll' },
-        );
+        editMenu.submenu.push({ role: 'delete' }, { type: 'separator' }, { role: 'selectAll' });
         // Extend "Window"
-        mainMenuTemplate[3].submenu.push({ role: 'close' });
+        windowMenu.submenu.push({ role: 'close' });
     }
 
     return Menu.buildFromTemplate(mainMenuTemplate);

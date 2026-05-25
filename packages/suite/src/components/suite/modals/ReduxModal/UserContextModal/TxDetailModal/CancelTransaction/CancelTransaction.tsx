@@ -38,7 +38,7 @@ export const CancelTransaction = ({ tx, selectedAccount }: CancelTransactionProp
     const feePerByte = new BigNumber(composedCancelTx.feePerByte);
     const fee = formatNetworkAmount(composedCancelTx.fee, tx.symbol);
 
-    const formattedOutputAmount = formatNetworkAmount(output.amount.toString(), tx.symbol);
+    const formattedOutputAmount = formatNetworkAmount(output?.amount.toString() ?? '', tx.symbol);
 
     return (
         <Card

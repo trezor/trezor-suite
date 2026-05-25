@@ -101,7 +101,9 @@ export const transformTransaction = (
         return baseTx;
     }
 
-    const rawOp = parsedTx.operations[0];
+    const { operations } = parsedTx;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const rawOp: (typeof operations)[number] = operations[0];
     const opSource = rawOp.source || rawTx.source_account;
     const fromAddress = extractBaseAddress(opSource);
 
@@ -389,7 +391,10 @@ export const computeSorobanAssetContractId = (classicAssetContract: string): str
         throw new Error('Invalid Stellar asset contract format.');
     }
 
-    const [assetCode, issuer] = contractParts;
+    // @ts-expect-error: noUncheckedIndexedAccess
+    const assetCode: string = contractParts[0];
+    // @ts-expect-error: noUncheckedIndexedAccess
+    const issuer: string = contractParts[1];
 
     if (!isValidAssetCode(assetCode) || !isValidAddress(issuer)) {
         throw new Error('Invalid Stellar asset contract format.');

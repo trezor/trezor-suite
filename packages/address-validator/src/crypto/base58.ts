@@ -17,17 +17,28 @@ export const decode = (string: string): number[] => {
 
     const bytes = [0];
     for (let i = 0; i < string.length; ++i) {
-        const c = string[i];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const c: string = string[i];
         if (!(c in ALPHABET_MAP)) throw new Error('Non-base58 character');
 
-        for (let j = 0; j < bytes.length; ++j) bytes[j] *= BASE;
-        bytes[0] += ALPHABET_MAP[c];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const charValue: number = ALPHABET_MAP[c];
+        for (let j = 0; j < bytes.length; ++j) {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const byteValue: number = bytes[j];
+            bytes[j] = byteValue * BASE;
+        }
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstByte: number = bytes[0];
+        bytes[0] = firstByte + charValue;
 
         let carry = 0;
         for (let j = 0; j < bytes.length; ++j) {
-            bytes[j] += carry;
-            carry = bytes[j] >> 8;
-            bytes[j] &= 0xff;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const byteValue: number = bytes[j];
+            const updated = byteValue + carry;
+            carry = updated >> 8;
+            bytes[j] = updated & 0xff;
         }
 
         while (carry) {

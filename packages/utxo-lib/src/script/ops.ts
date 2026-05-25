@@ -23,7 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-const OPS: Record<string, number> = {
+const OPS = {
     OP_FALSE: 0,
     OP_0: 0,
     OP_PUSHDATA1: 76,
@@ -161,11 +161,11 @@ const OPS: Record<string, number> = {
     OP_SSTXCHANGE: 0xbd,
     OP_SSGEN: 0xbb,
     OP_SSRTX: 0xbc,
-};
+} as const satisfies Record<string, number>;
 
 const REVERSE_OPS: string[] = [];
-Object.keys(OPS).forEach(code => {
-    REVERSE_OPS[OPS[code]] = code;
+Object.entries(OPS).forEach(([key, opCode]) => {
+    REVERSE_OPS[opCode] = key;
 });
 
 export { OPS, REVERSE_OPS };

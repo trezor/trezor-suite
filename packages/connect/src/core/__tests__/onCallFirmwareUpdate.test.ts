@@ -84,7 +84,9 @@ const transportApiMock = (fixtures: ResponseFixture[]) => {
         read: () => {
             const index = fixtures.findIndex(f => f.id === request);
             if (index >= 0) {
-                const { data } = fixtures[index];
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const fixture: ResponseFixture = fixtures[index];
+                const { data } = fixture;
                 fixtures.splice(index, 1);
 
                 return response(data);
@@ -227,7 +229,13 @@ const setupTest = () => {
     const context = {
         deviceList,
         postMessage,
-        selectDevice: () => deviceList.getAllDevices()[0],
+        selectDevice: () => {
+            const devices = deviceList.getAllDevices();
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const device: (typeof devices)[number] = devices[0];
+
+            return device;
+        },
         registerEvents: () => {},
         log: new Log('Test', false),
         abortSignal: new AbortController().signal,
@@ -271,10 +279,10 @@ describe('onCallFirmwareUpdate', () => {
                     // }
                 }
 
-                const version = /.*-(.*)?.bin$/
-                    .exec(url)?.[1]
-                    .split('.')
-                    .map(i => Number(i));
+                const match = /.*-(.*)?.bin$/.exec(url);
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const versionStr: string = match?.[1];
+                const version = versionStr.split('.').map(i => Number(i));
 
                 return httpRequestMock(version);
             });

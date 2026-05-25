@@ -95,7 +95,9 @@ describe('Notifications Actions', () => {
         expect(selectNotifications(store.getState())[0]).toHaveProperty('seen', false);
         expect(selectNotifications(store.getState())[1]).toHaveProperty('seen', false);
 
-        const notificationsToResetUnseen = [selectNotifications(store.getState())[0]];
+        const firstNotification = selectNotifications(store.getState())[0];
+        if (!firstNotification) throw new Error('Expected notification');
+        const notificationsToResetUnseen = [firstNotification];
         store.dispatch(notificationsActions.resetUnseen(notificationsToResetUnseen));
 
         expect(selectNotifications(store.getState())[0]).toHaveProperty('seen', true);
@@ -105,21 +107,33 @@ describe('Notifications Actions', () => {
     it('remove specific notification', () => {
         const store = initStore({ preloadedState: { notifications: mockedNotifications } });
 
-        store.dispatch(notificationsActions.remove(mockedNotifications[0]));
+        const firstMocked = mockedNotifications[0];
+        if (!firstMocked) throw new Error('Expected notification');
+        store.dispatch(notificationsActions.remove(firstMocked));
+
+        const secondMocked = mockedNotifications[1];
+        const thirdMocked = mockedNotifications[2];
+        if (!secondMocked || !thirdMocked) throw new Error('Expected notifications');
 
         expect(selectNotifications(store.getState())).toHaveLength(2);
-        expect(selectNotifications(store.getState())[0]).toMatchObject(mockedNotifications[1]);
-        expect(selectNotifications(store.getState())[1]).toMatchObject(mockedNotifications[2]);
+        expect(selectNotifications(store.getState())[0]).toMatchObject(secondMocked);
+        expect(selectNotifications(store.getState())[1]).toMatchObject(thirdMocked);
     });
 
     it('remove multiple specific notifications', () => {
         const store = initStore({ preloadedState: { notifications: mockedNotifications } });
 
-        const notificationsToRemove = [mockedNotifications[0], mockedNotifications[1]];
+        const firstToRemove = mockedNotifications[0];
+        const secondToRemove = mockedNotifications[1];
+        const thirdMocked = mockedNotifications[2];
+        if (!firstToRemove || !secondToRemove || !thirdMocked)
+            throw new Error('Expected notifications');
+
+        const notificationsToRemove = [firstToRemove, secondToRemove];
         store.dispatch(notificationsActions.remove(notificationsToRemove));
 
         expect(selectNotifications(store.getState())).toHaveLength(1);
-        expect(selectNotifications(store.getState())[0]).toMatchObject(mockedNotifications[2]);
+        expect(selectNotifications(store.getState())[0]).toMatchObject(thirdMocked);
     });
 
     it('removeTransactionEvents', async () => {

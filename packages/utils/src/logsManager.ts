@@ -20,11 +20,14 @@ export class LogsManager {
     }
 
     setLogWriter(logWriterFactory: () => LogWriter | undefined) {
-        Object.keys(this.logs).forEach(key => {
+        const { logs } = this;
+        Object.keys(logs).forEach(key => {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const log: Log = logs[key];
             this.writer = logWriterFactory();
             if (this.writer) {
-                this.logs[key].setWriter(this.writer);
-                const { messages } = this.logs[key];
+                log.setWriter(this.writer);
+                const { messages } = log;
                 // If there are any messages in the log when init, add them to the writer.
                 messages.forEach(message => {
                     this.writer?.add(message);
@@ -34,21 +37,30 @@ export class LogsManager {
     }
 
     enableLog(enabled?: boolean) {
-        Object.keys(this.logs).forEach(key => {
-            this.logs[key].enabled = !!enabled;
+        const { logs } = this;
+        Object.keys(logs).forEach(key => {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const log: Log = logs[key];
+            log.enabled = !!enabled;
         });
     }
 
     enableLogByPrefix(prefix: string, enabled: boolean) {
         if (this.logs[prefix]) {
-            this.logs[prefix].enabled = enabled;
+            const { logs } = this;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const log: Log = logs[prefix];
+            log.enabled = enabled;
         }
     }
 
     getLog() {
         let logs: LogMessage[] = [];
-        Object.keys(this.logs).forEach(key => {
-            logs = logs.concat(this.logs[key].messages);
+        const ownLogs = this.logs;
+        Object.keys(ownLogs).forEach(key => {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const log: Log = ownLogs[key];
+            logs = logs.concat(log.messages);
         });
         logs.sort((a, b) => a.timestamp - b.timestamp);
 

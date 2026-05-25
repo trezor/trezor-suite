@@ -3,6 +3,7 @@ import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from '
 import styled from 'styled-components';
 
 import { type TimerId } from '@trezor/type-utils';
+import { getIndexOrThrow } from '@trezor/utils';
 
 import {
     type FrameProps,
@@ -153,11 +154,13 @@ export function VirtualizedListComponent<T extends BaseItemProps>({
             let newStartIndex = 0;
 
             for (let i = 0; i < itemHeights.length; i++) {
-                if (offset + itemHeights[i] >= scrollTop) {
+                // index is provably valid by loop bound
+                const height = getIndexOrThrow(itemHeights, i);
+                if (offset + height >= scrollTop) {
                     newStartIndex = i;
                     break;
                 }
-                offset += itemHeights[i];
+                offset += height;
             }
 
             newStartIndex = Math.max(0, newStartIndex - beforeAfterBufferCount);
@@ -170,7 +173,9 @@ export function VirtualizedListComponent<T extends BaseItemProps>({
                 newEndIndex < items.length &&
                 visibleHeight < containerHeight + beforeAfterBufferCount * estimatedItemHeight
             ) {
-                visibleHeight += itemHeights[newEndIndex];
+                // newEndIndex is provably valid (parallel arrays: items.length === itemHeights.length)
+                const height = getIndexOrThrow(itemHeights, newEndIndex);
+                visibleHeight += height;
                 newEndIndex++;
             }
             newEndIndex = Math.min(items.length, newEndIndex + beforeAfterBufferCount);

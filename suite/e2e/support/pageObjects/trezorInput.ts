@@ -38,8 +38,8 @@ export class TrezorInput {
                     await this.inputWord(state.recovery_fake_word);
                 });
             } else {
-                await test.step(`Inputting word ${arrayMnemonic[position]} at position ${position}`, async () => {
-                    await this.inputWord(arrayMnemonic[position]);
+                await test.step(`Inputting word ${arrayMnemonic[position] ?? ''} at position ${position}`, async () => {
+                    await this.inputWord(arrayMnemonic[position] ?? '');
                 });
             }
         }

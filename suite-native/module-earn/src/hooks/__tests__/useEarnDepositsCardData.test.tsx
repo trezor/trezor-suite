@@ -157,7 +157,7 @@ describe('useEarnDepositsCardData', () => {
             accountKey: 'eth-account',
             balance: '1',
         });
-        expect(result.current.stakingRow?.activeItems[0].fiatAmount.toString()).toBe('2000');
+        expect(result.current.stakingRow?.activeItems[0]?.fiatAmount.toString()).toBe('2000');
 
         expect(result.current.stablecoinYieldRow).toMatchObject({
             type: 'stablecoin-yield',
@@ -175,7 +175,7 @@ describe('useEarnDepositsCardData', () => {
             balance: '400',
             apy: 4,
         });
-        expect(result.current.stablecoinYieldRow?.activeItems[0].fiatAmount.toString()).toBe('0');
+        expect(result.current.stablecoinYieldRow?.activeItems[0]?.fiatAmount.toString()).toBe('0');
     });
 
     it('uses generic titles when there are multiple active positions of the same type', () => {
@@ -235,9 +235,9 @@ describe('useEarnDepositsCardData', () => {
         expect(result.current.shouldShowCard).toBe(true);
         expect(result.current.totalDepositedFiatAmount.toString()).toBe('2000');
         expect(result.current.stakingRow?.activeItems).toHaveLength(1);
-        expect(result.current.stakingRow?.activeItems[0].id).toBe('eth-1');
+        expect(result.current.stakingRow?.activeItems[0]?.id).toBe('eth-1');
         expect(result.current.stablecoinYieldRow?.activeItems).toHaveLength(1);
-        expect(result.current.stablecoinYieldRow?.activeItems[0].id).toBe('steakhouse-usdc');
+        expect(result.current.stablecoinYieldRow?.activeItems[0]?.id).toBe('steakhouse-usdc');
     });
 
     it('hides the card when there are no active positions', () => {

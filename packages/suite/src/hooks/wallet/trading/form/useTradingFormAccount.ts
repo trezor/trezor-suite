@@ -90,8 +90,12 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
     );
 
     const pickFallbackAccount = useCallback(
-        (accounts: Account[]) =>
-            accounts.find(acc => isAccountEligibleForTrade(acc)) ?? accounts[0],
+        (accounts: Account[]) => {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const first: Account = accounts[0];
+
+            return accounts.find(acc => isAccountEligibleForTrade(acc)) ?? first;
+        },
         [isAccountEligibleForTrade],
     );
 

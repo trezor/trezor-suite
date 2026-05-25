@@ -62,14 +62,32 @@ export const b32decode = (s: string): Uint8Array => {
     for (let j = 0; j < s.length / 8; j++) {
         const v = [0, 0, 0, 0, 0, 0, 0, 0];
         for (let i = 0; i < 8; ++i) {
-            v[i] = alphabet.indexOf(s[j * 8 + i]);
+            const sIndex = j * 8 + i;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const sChar: string = s[sIndex];
+            v[i] = alphabet.indexOf(sChar);
         }
-        const i = 0;
-        b[j * 5 + 0] = (v[i + 0] << 3) | (v[i + 1] >> 2);
-        b[j * 5 + 1] = ((v[i + 1] & 0x3) << 6) | (v[i + 2] << 1) | (v[i + 3] >> 4);
-        b[j * 5 + 2] = ((v[i + 3] & 0xf) << 4) | (v[i + 4] >> 1);
-        b[j * 5 + 3] = ((v[i + 4] & 0x1) << 7) | (v[i + 5] << 2) | (v[i + 6] >> 3);
-        b[j * 5 + 4] = ((v[i + 6] & 0x7) << 5) | v[i + 7];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const v0: number = v[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const v1: number = v[1];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const v2: number = v[2];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const v3: number = v[3];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const v4: number = v[4];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const v5: number = v[5];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const v6: number = v[6];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const v7: number = v[7];
+        b[j * 5 + 0] = (v0 << 3) | (v1 >> 2);
+        b[j * 5 + 1] = ((v1 & 0x3) << 6) | (v2 << 1) | (v3 >> 4);
+        b[j * 5 + 2] = ((v3 & 0xf) << 4) | (v4 >> 1);
+        b[j * 5 + 3] = ((v4 & 0x1) << 7) | (v5 << 2) | (v6 >> 3);
+        b[j * 5 + 4] = ((v6 & 0x7) << 5) | v7;
     }
 
     return b;

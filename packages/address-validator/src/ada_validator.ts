@@ -54,11 +54,13 @@ function isValidBech32Address(
         return false;
     }
 
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstWord: number = dec?.words[0];
     if (
         dec === null ||
         dec.prefix !== hrp ||
         dec.words.length < 1 ||
-        (dec.words[0] > 16 && network !== 'stake')
+        (firstWord > 16 && network !== 'stake')
     ) {
         return false;
     }

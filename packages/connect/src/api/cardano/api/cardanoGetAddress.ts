@@ -71,9 +71,15 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
 
     get info() {
         if (this.params.length === 1) {
-            return `Export Cardano address for account #${
-                fromHardened(this.params[0].proto.address_parameters.address_n[2]) + 1
-            }`;
+            const { params } = this;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const first: (typeof params)[number] = params[0];
+
+            const addressN = first.proto.address_parameters.address_n;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const accountIndex: number = addressN[2];
+
+            return `Export Cardano address for account #${fromHardened(accountIndex) + 1}`;
         }
 
         return 'Export multiple Cardano addresses';
@@ -81,12 +87,14 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
 
     getButtonRequestData(code: string) {
         if (code === 'ButtonRequest_Address') {
+            const { params } = this;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const current: (typeof params)[number] = params[this.progress];
+
             return {
                 type: 'address' as const,
-                serializedPath: getSerializedPath(
-                    this.params[this.progress].proto.address_parameters.address_n,
-                ),
-                address: this.params[this.progress].address || 'not-set',
+                serializedPath: getSerializedPath(current.proto.address_parameters.address_n),
+                address: current.address || 'not-set',
             };
         }
     }
@@ -111,7 +119,9 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
         const responses: MethodReturnType<typeof this.name> = [];
 
         for (let i = 0; i < this.params.length; i++) {
-            const batch = this.params[i];
+            const { params } = this;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const batch: (typeof params)[number] = params[i];
 
             batch.proto.address_parameters = modifyAddressParametersForBackwardsCompatibility(
                 batch.proto.address_parameters,
@@ -161,6 +171,9 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
             this.progress++;
         }
 
-        return this.hasBundle ? responses : responses[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const first: (typeof responses)[number] = responses[0];
+
+        return this.hasBundle ? responses : first;
     }
 }

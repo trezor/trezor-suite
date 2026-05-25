@@ -17,7 +17,9 @@ const processTxRequest = async (
     index: number,
 ): Promise<PROTO.StellarSignedTx> => {
     const lastOp = index + 1 >= operations.length;
-    const { type, ...op } = operations[index];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const operation: (typeof operations)[number] = operations[index];
+    const { type, ...op } = operation;
 
     if (lastOp) {
         const response = await typedCall(type, 'StellarSignedTx', op);

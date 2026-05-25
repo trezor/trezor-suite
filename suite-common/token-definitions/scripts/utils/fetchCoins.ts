@@ -181,6 +181,9 @@ const verifyStellarToml = async (
  */
 const getStellarHomeDomain = async (contractAddress: string): Promise<string | undefined> => {
     const [code, issuer] = contractAddress.split('-');
+    if (!code || !issuer) {
+        return undefined;
+    }
 
     const homeDomain = await fetchStellarHomeDomain(issuer);
     if (!homeDomain) {

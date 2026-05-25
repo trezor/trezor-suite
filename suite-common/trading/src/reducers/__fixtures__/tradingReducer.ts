@@ -4,6 +4,8 @@ import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { accounts } from './account';
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const firstAccount: (typeof accounts)[number] = accounts[0];
 import { buyThunks } from '../../thunks/buy';
 import { exchangeThunks } from '../../thunks/exchange';
 import {
@@ -156,19 +158,19 @@ export const tradingFixtures = [
         actions: [
             {
                 type: tradingActions.setModalAccountKey.type,
-                payload: accounts[0].key,
+                payload: firstAccount.key,
             },
         ],
         result: {
             ...initialState,
-            modalAccountKey: accounts[0].key,
+            modalAccountKey: firstAccount.key,
         },
     },
     {
         description: 'should clear modal account',
         initialState: {
             ...initialState,
-            modalAccountKey: accounts[0].key,
+            modalAccountKey: firstAccount.key,
         },
         actions: [
             {

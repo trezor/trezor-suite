@@ -259,7 +259,16 @@ describe('account utils', () => {
 
     it('sortByBIP44AddressIndex', () => {
         const path = 'm/1234';
-        const [a, b, c, d, e, f] = ['a', 'b', 'c', 'd', 'e', 'f'].map((address, i) => ({
+        type Entry = { address: string; path: string };
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const [a, b, c, d, e, f]: [Entry, Entry, Entry, Entry, Entry, Entry] = [
+            'a',
+            'b',
+            'c',
+            'd',
+            'e',
+            'f',
+        ].map((address, i) => ({
             address,
             path: `${path}/${i}`,
         }));

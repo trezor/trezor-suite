@@ -155,7 +155,12 @@ export const scheduleAction = async <T>(
     const clearAborter = new AbortController();
     const clear = clearAborter.signal;
     const getParams = isArray(attempts)
-        ? (attempt: number) => attempts[attempt]
+        ? (attempt: number) => {
+              // @ts-expect-error: indexing with noUncheckedIndexedAccess
+              const attemptParams: (typeof attempts)[number] = attempts[attempt];
+
+              return attemptParams;
+          }
         : () => ({ timeout, gap });
     const errorDeadline = new ScheduleActionDeadlineError();
     const errorTimeout = new ScheduleActionTimeoutError();

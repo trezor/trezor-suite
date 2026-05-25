@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
+import { getIndexOrThrow } from '@trezor/utils';
+
 import {
     arrayBufferToBuffer,
     decrypt,
@@ -98,7 +100,8 @@ describe('metadata', () => {
             const ab = new ArrayBuffer(buf.length);
             const view = new Uint8Array(ab);
             for (let i = 0; i < buf.length; ++i) {
-                view[i] = buf[i];
+                // index is provably valid by loop bound
+                view[i] = getIndexOrThrow(buf, i);
             }
 
             return ab;

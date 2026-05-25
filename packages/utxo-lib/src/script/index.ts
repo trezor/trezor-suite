@@ -20,8 +20,6 @@ import {
     isNumber,
 } from '../types/validation';
 
-const OP_INT_BASE = OPS.OP_RESERVED; // OP_1 - 1
-
 function isOPInt(value: number) {
     return (
         isNumber(value) &&
@@ -42,8 +40,10 @@ export function isPushOnly(value: Stack) {
 function asMinimalOP(buffer: Buffer) {
     if (buffer.length === 0) return OPS.OP_0;
     if (buffer.length !== 1) return;
-    if (buffer[0] >= 1 && buffer[0] <= 16) return OP_INT_BASE + buffer[0];
-    if (buffer[0] === 0x81) return OPS.OP_1NEGATE;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const byte0: number = buffer[0];
+    if (byte0 >= 1 && byte0 <= 16) return OPS.OP_RESERVED + byte0;
+    if (byte0 === 0x81) return OPS.OP_1NEGATE;
 }
 
 export function compile(chunks: Buffer | Stack) {
@@ -108,7 +108,8 @@ export function decompile(buffer: Buffer | Stack) {
     let i = 0;
 
     while (i < buffer.length) {
-        const opcode = buffer[i];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const opcode: number = buffer[i];
 
         // data chunk
         if (opcode > OPS.OP_0 && opcode <= OPS.OP_PUSHDATA4) {
@@ -169,7 +170,9 @@ export function fromASM(asm: string) {
     return compile(
         asm.split(' ').map(chunkStr => {
             // opcode?
-            if (OPS[chunkStr] !== undefined) return OPS[chunkStr];
+            const typedChunkStr = chunkStr as keyof typeof OPS | undefined;
+            const opValue = typedChunkStr ? OPS[typedChunkStr] : undefined;
+            if (opValue !== undefined) return opValue;
             assertType(HexSchema, chunkStr);
 
             // data!
@@ -186,7 +189,7 @@ export function toStack(chunks0: Buffer | Stack) {
         if (isBuffer(op)) return op;
         if (op === OPS.OP_0) return Buffer.allocUnsafe(0);
 
-        return scriptNumber.encode(op - OP_INT_BASE);
+        return scriptNumber.encode(op - OPS.OP_RESERVED);
     });
 }
 
@@ -203,7 +206,9 @@ export function isDefinedHashType(hashType: number) {
 
 export function isCanonicalScriptSignature(buffer: Buffer) {
     if (!isBuffer(buffer)) return false;
-    if (!isDefinedHashType(buffer[buffer.length - 1])) return false;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const lastByte: number = buffer[buffer.length - 1];
+    if (!isDefinedHashType(lastByte)) return false;
 
     try {
         DER.toSig(buffer.subarray(0, -1));

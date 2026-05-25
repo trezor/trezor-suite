@@ -145,15 +145,22 @@ export const groupJointTransactions = (transactions: WalletAccountTransaction[])
             const last = prev.pop();
             if (!last) return [[tx]];
 
-            return tx.type === 'joint' && last[0].type === 'joint'
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const lastFirst: (typeof last)[number] = last[0];
+
+            return tx.type === 'joint' && lastFirst.type === 'joint'
                 ? [...prev, [...last, tx]]
                 : [...prev, last, [tx]];
         }, [])
-        .map(txs =>
-            txs.length > 1
-                ? ({ type: 'joint-batch', rounds: txs } as const)
-                : ({ type: 'single-tx', tx: txs[0] } as const),
-        );
+        .map(txs => {
+            if (txs.length > 1) {
+                return { type: 'joint-batch', rounds: txs } as const;
+            }
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const onlyTx: (typeof txs)[number] = txs[0];
+
+            return { type: 'single-tx', tx: onlyTx } as const;
+        });
 
 export const formatCardanoWithdrawal = (tx: WalletAccountTransaction) =>
     tx.cardanoSpecific?.withdrawal
@@ -344,7 +351,9 @@ export const findTransactions = (
     transactions: { [key: AccountKey]: WalletAccountTransaction[] },
 ) =>
     typedObjectKeys(transactions).flatMap(key => {
-        const tx = findTransaction(txid, transactions[key]);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const txList: WalletAccountTransaction[] = transactions[key];
+        const tx = findTransaction(txid, txList);
         if (!tx) return [];
 
         return [{ key, tx }];
@@ -360,8 +369,10 @@ export const findChainedTransactions = (
     typedObjectKeys(transactions).forEach(accountKey => {
         const ownTxs = result.own.map(tx => tx.txid);
         const othersTxs = result.others.map(tx => tx.txid);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const accountTxs: WalletAccountTransaction[] = transactions[accountKey];
         // check if any pending transaction is using the utxo/vin with requested txid
-        const txs = transactions[accountKey].filter(tx => {
+        const txs = accountTxs.filter(tx => {
             if (!isPending(tx) || !tx.details.vin.find(i => i.txid === txid)) {
                 return false;
             }
@@ -473,7 +484,8 @@ export const analyzeTransactions = (
             const len = knownSorted.length;
             // use simple for loop to have possibility to `break`
             for (index; index < len; index++) {
-                const kTx = knownSorted[index];
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const kTx: (typeof knownSorted)[number] = knownSorted[index];
                 // known tx is pending, it will be removed
                 // move sliceIndex, set firstKnownIndex
                 if (isPending(kTx)) {
@@ -553,13 +565,22 @@ export const isNftTokenTransfer = <T extends Pick<TokenTransfer, 'standard'>>(tr
 export const isNftMultitokenTransfer = (transfer: TokenTransfer) =>
     !!transfer.multiTokenValues && transfer.multiTokenValues.length > 0;
 
-export const getNftTokenId = (transfer: TokenTransfer) =>
+export const getNftTokenId = (transfer: TokenTransfer) => {
+    if (
+        !transfer.standard ||
+        !NFT_MULTITOKEN_STANDARDS.has(transfer.standard) ||
+        !transfer.multiTokenValues?.length
+    ) {
+        return transfer.amount;
+    }
+
+    const { multiTokenValues } = transfer;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstValue: (typeof multiTokenValues)[number] = multiTokenValues[0];
+
     // use 0 index, haven't found an example where multiTokenValues.length > 1
-    transfer.standard &&
-    NFT_MULTITOKEN_STANDARDS.has(transfer.standard) &&
-    transfer.multiTokenValues?.length
-        ? transfer.multiTokenValues[0].id
-        : transfer.amount;
+    return firstValue.id;
+};
 
 export const isSwapTransaction = (transaction: WalletAccountTransaction) => {
     const { tokens, internalTransfers, targets, cardanoSpecific } = transaction;
@@ -710,12 +731,18 @@ const getEthereumRbfParams = (
 
     const txSignature = getEvmTransactionTextSignature(transactionData);
 
-    const toAddress = vout[0].addresses![0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstVout: (typeof vout)[number] = vout[0];
+    const firstVoutAddresses = firstVout.addresses!;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const toAddress: string = firstVoutAddresses[0];
 
     let output;
     switch (txSignature) {
         case 'transfer': {
-            const token = tx.tokens[0];
+            const { tokens } = tx;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const token: (typeof tokens)[number] = tokens[0];
 
             output = {
                 address: token.to,
@@ -756,8 +783,8 @@ const getEthereumRbfParams = (
             } else {
                 output = {
                     address: toAddress,
-                    amount: vout[0].value!,
-                    formattedAmount: formatNetworkAmount(vout[0].value!, account.symbol),
+                    amount: vout[0]!.value!,
+                    formattedAmount: formatNetworkAmount(vout[0]!.value!, account.symbol),
                 };
             }
         }
@@ -796,11 +823,14 @@ const getBitcoinRbfParams = (
     let changeAddress: AccountAddress | undefined;
     const outputs: RbfTransactionParamsBitcoin['outputs'] = [];
     vout.forEach(output => {
+        const outputAddresses = output.addresses!;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstAddress: string = outputAddresses[0];
         if (!output.isAddress) {
             // TODO: this should be done in @trezor/connect, blockchain-link or even blockbook
             // blockbook sends output.hex as scriptPubKey with additional prefix where: 6a - OP_RETURN and XX - data len. this field should be parsed by @trezor/utxo-lib
             // blockbook sends ascii data in output.address[0] field in format: "OP_RETURN (ASCII-VALUE)". as a workaround we are extracting ascii data from here
-            const dataAscii = output.addresses![0].match(/^OP_RETURN \((.*)\)/)?.pop(); // strip ASCII data from brackets
+            const dataAscii = firstAddress.match(/^OP_RETURN \((.*)\)/)?.pop(); // strip ASCII data from brackets
             if (dataAscii) {
                 outputs.push({
                     type: 'opreturn',
@@ -812,7 +842,7 @@ const getBitcoinRbfParams = (
             const changeOutput = changeAddresses.find(a => output.addresses?.includes(a.address));
             outputs.push({
                 type: changeOutput ? 'change' : 'payment',
-                address: output.addresses![0],
+                address: firstAddress,
                 amount: output.value!,
                 formattedAmount: formatNetworkAmount(output.value!, account.symbol),
             });
@@ -896,10 +926,13 @@ export const enhanceTransaction = (
 });
 
 export const getTxHeaderSymbol = (transaction: WalletAccountTransaction) => {
-    const isSingleTokenTransaction = transaction.tokens.length === 1;
+    const { tokens } = transaction;
+    const isSingleTokenTransaction = tokens.length === 1;
 
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstToken: (typeof tokens)[number] = tokens[0];
     // if there's exactly one token, use its symbol; otherwise, use the main network symbol
-    const symbol = isSingleTokenTransaction ? transaction.tokens[0].symbol : transaction.symbol;
+    const symbol = isSingleTokenTransaction ? firstToken.symbol : transaction.symbol;
 
     return symbol;
 };

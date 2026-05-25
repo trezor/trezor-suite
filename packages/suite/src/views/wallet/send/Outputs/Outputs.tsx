@@ -92,11 +92,11 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                                     ) : (
                                         <Column gap={spacings.md}>
                                             <Address
-                                                output={outputs[index]}
+                                                output={output}
                                                 outputId={index}
                                                 outputsCount={outputs.length}
                                             />
-                                            <Amount output={outputs[index]} outputId={index} />
+                                            <Amount output={output} outputId={index} />
                                             {outputs.length === 1 && isSendingTokens && (
                                                 <CardanoMinAmountInfo />
                                             )}

@@ -52,12 +52,20 @@ export const sortTxsFromLatest = (transactions: Transaction[]) => {
     const txs = transactions.slice().sort((a, b) => adjustHeight(b) - adjustHeight(a));
     let from = 0;
     while (from < txs.length - 1) {
-        const fromHeight = adjustHeight(txs[from]);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const fromTx: Transaction = txs[from];
+        const fromHeight = adjustHeight(fromTx);
         let to = from + 1;
-        if (fromHeight === adjustHeight(txs[to])) {
-            do {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const toTx: Transaction = txs[to];
+        if (fromHeight === adjustHeight(toTx)) {
+            to++;
+            while (to < txs.length) {
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const nextTx: Transaction = txs[to];
+                if (fromHeight !== adjustHeight(nextTx)) break;
                 to++;
-            } while (to < txs.length && fromHeight === adjustHeight(txs[to]));
+            }
             const toposorted = topologicalSort(txs.slice(from, to), (a, b) =>
                 a.details.vin.some(({ txid }) => txid === b.txid),
             );

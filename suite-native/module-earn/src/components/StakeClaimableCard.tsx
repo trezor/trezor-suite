@@ -46,9 +46,9 @@ export const StakeClaimableCard = ({ accountKey }: StakeClaimableCardProps) => {
 
     const symbol = useAccountsSelector(state => selectAccountNetworkSymbol(state, accountKey));
 
-    const claimableAmount = useNativeStakingSelector(state =>
-        selectClaimableAmountByAccountKey(state, accountKey),
-    );
+    const claimableAmount =
+        useNativeStakingSelector(state => selectClaimableAmountByAccountKey(state, accountKey)) ??
+        '0';
 
     const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(symbol);
 

@@ -14,11 +14,13 @@ export const migrateTransactionsBnbToBsc = (
     for (const oldKey in oldTransactions) {
         const oldTxns = oldTransactions[oldKey];
 
-        const newKey = oldKey.replace('-bnb-', '-bsc-');
-        newTransactions[newKey] = oldTxns.map(oldTxn => ({
-            ...oldTxn,
-            symbol: oldTxn.symbol.replace('bnb', 'bsc'),
-        }));
+        if (oldTxns) {
+            const newKey = oldKey.replace('-bnb-', '-bsc-');
+            newTransactions[newKey] = oldTxns.map(oldTxn => ({
+                ...oldTxn,
+                symbol: oldTxn.symbol.replace('bnb', 'bsc'),
+            }));
+        }
     }
 
     return newTransactions;

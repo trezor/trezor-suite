@@ -12,7 +12,12 @@ export class ChainAddressKey {
     }
 
     static parse(key: string) {
-        const [chainId, address] = key.split(ChainAddressKey.delimiter);
+        const parsed = key.split(ChainAddressKey.delimiter);
+
+        // @ts-expect-error: noUncheckedIndexedAccess
+        const chainId: string = parsed[0];
+        // @ts-expect-error: noUncheckedIndexedAccess
+        const address: string = parsed[1];
 
         return {
             chainId: Number(chainId),
@@ -53,7 +58,9 @@ export async function getMerkleRewards({ queryEntries, signal, meta }: GetMerkle
     const usersRewardsByChainAndAddress = usersChainRewards.reduce<
         Record<string, MerkleClaimableReward[]>
     >((result, chainsRewards, index) => {
-        const { address, chainId } = queryEntries[index];
+        // @ts-expect-error: noUncheckedIndexedAccess
+        const entry: MerkleRewardsParams<string> = queryEntries[index];
+        const { address, chainId } = entry;
         const key = ChainAddressKey.compose(chainId, address);
 
         result[key] = chainsRewards.flatMap(chainRewards => chainRewards.rewards);

@@ -31,20 +31,25 @@ export const TradingFormOfferOTC = () => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const { amountInCrypto } = context.getValues();
 
-    const fiatInput = isTradingBuyContext(context)
-        ? context.getValues().fiatInput
-        : context.getValues().outputs[0].fiat;
-
-    let fiatCurrency = isTradingBuyContext(context)
-        ? context.getValues().currencySelect.value
-        : context.getValues().outputs[0].currency.value;
+    let fiatInput;
+    let fiatCurrency;
+    let cryptoAmount;
+    if (isTradingBuyContext(context)) {
+        const buyValues = context.getValues();
+        fiatInput = buyValues.fiatInput;
+        fiatCurrency = buyValues.currencySelect.value;
+        cryptoAmount = buyValues.cryptoInput;
+    } else {
+        const { outputs } = context.getValues();
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstOutput: (typeof outputs)[number] = outputs[0];
+        fiatInput = firstOutput.fiat;
+        fiatCurrency = firstOutput.currency.value;
+        cryptoAmount = firstOutput.amount;
+    }
     if (amountInCrypto) {
         fiatCurrency = baseCurrencyCode;
     }
-
-    const cryptoAmount = isTradingBuyContext(context)
-        ? context.getValues().cryptoInput
-        : context.getValues().outputs[0].amount;
 
     let cryptoCurrency;
     if (isTradingBuyContext(context)) {
@@ -75,7 +80,7 @@ export const TradingFormOfferOTC = () => {
         return null;
     }
 
-    const minFiatLimit = otcData.minFiatLimits[fiatCurrency.toLowerCase() as FiatCurrencyCode];
+    const minFiatLimit = otcData.minFiatLimits[fiatCurrency?.toLowerCase() as FiatCurrencyCode];
     if (!minFiatLimit || Number(fiatAmount) < Number(minFiatLimit)) {
         return null;
     }

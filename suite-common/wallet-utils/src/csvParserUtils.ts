@@ -25,7 +25,10 @@ const detectDelimiter = (text: string, delimiters: string[]) => {
             }
         });
 
-    return delimiters[index];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const result: string = delimiters[index];
+
+    return result;
 };
 
 const parseLine = (line: string, delimiter: string, columns: string[]) => {

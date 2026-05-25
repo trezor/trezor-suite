@@ -3,7 +3,9 @@ export const reverseBuffer = (src: Buffer): Buffer => {
     const buffer = Buffer.alloc(src.length);
     let j = buffer.length - 1;
     for (let i = 0; i < buffer.length / 2; i++) {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
         buffer[i] = src[j];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
         buffer[j] = src[i];
         j--;
     }

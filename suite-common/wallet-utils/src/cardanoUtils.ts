@@ -163,7 +163,10 @@ export const isPoolOverSaturated = (pool: StakePool, additionalStake?: string) =
 export const getStakePoolForDelegation = (trezorPools: PoolsResponse, accountBalance: string) => {
     let pool = trezorPools.next;
     if (isPoolOverSaturated(pool, accountBalance)) {
-        pool = trezorPools.pools[0];
+        const { pools } = trezorPools;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstPool: (typeof pools)[number] = pools[0];
+        pool = firstPool;
     }
 
     return pool;
@@ -190,9 +193,11 @@ export const formatMaxOutputAmount = (
         return formatNetworkAmount(maxAmount, account.symbol);
     }
 
+    const { assets } = maxOutput;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstAsset: (typeof assets)[number] = assets[0];
     // output with a token, format using token decimals
-    const tokenDecimals =
-        account.tokens?.find(t => t.contract === maxOutput.assets[0].unit)?.decimals ?? 0;
+    const tokenDecimals = account.tokens?.find(t => t.contract === firstAsset.unit)?.decimals ?? 0;
 
     return convertAmountSubunitsToUnits(maxAmount, tokenDecimals);
 };

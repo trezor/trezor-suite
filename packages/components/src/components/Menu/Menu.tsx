@@ -120,7 +120,7 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
 
                     const focusedItem = visibleItems[focusedItemIndex];
 
-                    if (focusedItem.closeOnClick !== false) onClose?.();
+                    if (focusedItem?.closeOnClick !== false) onClose?.();
                     focusedItem?.onClick?.();
                 }
             };
@@ -152,7 +152,7 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
                     do {
                         indexCandidate = getNextIndex(indexCandidate, direction);
                     } while (
-                        visibleItems[indexCandidate].isDisabled &&
+                        visibleItems[indexCandidate]?.isDisabled &&
                         indexCandidate !== focusedItemIndex
                     );
 

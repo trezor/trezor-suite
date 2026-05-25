@@ -4,6 +4,7 @@ import * as crypto from 'crypto';
 
 import { type DataType, type MetadataProvider } from '@suite-common/metadata-types';
 import { type StaticSessionId } from '@trezor/connect';
+import { getIndexOrThrow } from '@trezor/utils';
 
 const base58check = createBase58check(sha256);
 
@@ -82,7 +83,8 @@ export const arrayBufferToBuffer = (ab: ArrayBuffer) => {
     const buffer = Buffer.alloc(ab.byteLength);
     const view = new Uint8Array(ab);
     for (let i = 0; i < buffer.length; ++i) {
-        buffer[i] = view[i];
+        // index is provably valid by loop bound
+        buffer[i] = getIndexOrThrow(view, i);
     }
 
     return buffer;

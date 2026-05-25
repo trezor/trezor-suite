@@ -19,7 +19,9 @@ export class MiscFeeLevels {
 
     async load(blockchain: Blockchain, request: Parameters<typeof blockchain.estimateFee>[0]) {
         try {
-            const [response] = await blockchain.estimateFee(request);
+            const estimateResult = await blockchain.estimateFee(request);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const response: (typeof estimateResult)[number] = estimateResult[0];
 
             // validate `feePerUnit` from the backend
             // should be lower than `coinInfo.maxFee` and higher than `coinInfo.minFee`
@@ -33,8 +35,11 @@ export class MiscFeeLevels {
             ).toString();
 
             // misc coins should have only one FeeLevel (normal)
+            const { levels } = this;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const currentLevel: (typeof levels)[number] = levels[0];
             this.levels[0] = {
-                ...this.levels[0],
+                ...currentLevel,
                 ...response,
                 feePerUnit,
             };

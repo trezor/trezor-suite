@@ -84,8 +84,11 @@ describe('outputRegistration', () => {
 
             expect(response.length).toBe(f.result.length);
             response.forEach((r, i) => {
-                expect(r.outputs.length).toBe(f.result[i].outputs.length);
-                expect(r).toMatchObject(f.result[i]);
+                const { result } = f;
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const expected: (typeof result)[number] = result[i];
+                expect(r.outputs.length).toBe(expected.outputs.length);
+                expect(r).toMatchObject(expected);
             });
             expect(availableVsize).toEqual(f.availableVsize);
             expect(spy).toHaveBeenCalledTimes(f.credentialIssuanceCalls);

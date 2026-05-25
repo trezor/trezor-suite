@@ -38,7 +38,9 @@ type NetworkType = 'bitcoin' | 'ethereum' | 'ripple' | 'cardano' | 'solana';
 
 type XpubVersion = keyof typeof BIP32_PAYMENT_TYPES;
 
-const getPaymentTypeFromXpub = (xpub: string) => {
+type PaymentType = (typeof BIP32_PAYMENT_TYPES)[keyof typeof BIP32_PAYMENT_TYPES] | 'p2tr';
+
+const getPaymentTypeFromXpub = (xpub: string): PaymentType => {
     if (xpub.startsWith('tr(')) return 'p2tr';
 
     const xpubVersion = Buffer.from(base58.decode(xpub)).readUInt32BE();
@@ -54,12 +56,12 @@ export type Account = {
     networkType: NetworkType;
 };
 
-const paymentTypeToAccountType: Record<string, AccountType> = {
+const paymentTypeToAccountType = {
     p2wpkh: 'normal',
     p2pkh: 'legacy',
     p2sh: 'segwit',
     p2tr: 'taproot',
-};
+} as const satisfies Record<PaymentType, AccountType>;
 
 /**
  * Fixes account type based on payment type. Necessary for accounts created in suite-native version < 24.1.1 which were configuring wrong account type.

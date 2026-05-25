@@ -10,7 +10,10 @@ function renameAllExportsToCamelCase(implementation: string): string {
     const re = /export const ([A-Z][a-zA-Z0-9_]*) =/g;
     let match;
     while ((match = re.exec(implementation)) !== null) {
-        pascalCaseNames.push(match[1]);
+        const name = match[1];
+        if (name) {
+            pascalCaseNames.push(name);
+        }
     }
 
     let result = implementation;

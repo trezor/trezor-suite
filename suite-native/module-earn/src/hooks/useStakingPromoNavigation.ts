@@ -155,9 +155,10 @@ export const useStakingPromoNavigation = () => {
                 return;
             }
 
-            if (accountsForSymbol.length === 1) {
-                reportStakingNavigate(accountsForSymbol[0]);
-                navigateByAccountState(accountsForSymbol[0], navigation.navigate);
+            const singleAccount = accountsForSymbol[0];
+            if (accountsForSymbol.length === 1 && singleAccount) {
+                reportStakingNavigate(singleAccount);
+                navigateByAccountState(singleAccount, navigation.navigate);
 
                 return;
             }

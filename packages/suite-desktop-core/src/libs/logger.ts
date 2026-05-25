@@ -199,7 +199,7 @@ export class Logger implements ILogger {
         const params = {
             dt: date.toISOString(),
             ts: (+date).toString(),
-            tt: date.toISOString().split('.')[0].replace(/:/g, '-'),
+            tt: (date.toISOString().split('.')[0] ?? '').replace(/:/g, '-'),
             ...strings,
         };
 
@@ -252,8 +252,8 @@ export class Logger implements ILogger {
         this.log('debug', topic, message);
     }
 
-    public get level() {
-        return logLevels[this.logLevel];
+    public get level(): LogLevel {
+        return logLevels[this.logLevel] ?? 'mute';
     }
 
     public set level(level: LogLevel) {

@@ -175,10 +175,11 @@ describe('getTradingPaymentMethods', () => {
 
     it('should keep first quote amount for duplicate payment method', () => {
         const applePayMethod = paymentMethods.find(method => method.value === 'applePay');
+        const { MIN_MAX_QUOTES_OK } = BUY_FIXTURE;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const minMaxQuote: (typeof MIN_MAX_QUOTES_OK)[number] = MIN_MAX_QUOTES_OK[1];
 
-        expect(applePayMethod?.receiveAmount).toBe(
-            BUY_FIXTURE.MIN_MAX_QUOTES_OK[1].receiveStringAmount,
-        );
+        expect(applePayMethod?.receiveAmount).toBe(minMaxQuote.receiveStringAmount);
     });
 });
 

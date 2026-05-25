@@ -8,6 +8,7 @@ import { type TranslationKey, messages } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
 import { isAddressValid } from '@suite-common/wallet-utils';
 import { Model } from '@trezor/trezor-user-env-link';
+import { getIndexOrThrow } from '@trezor/utils';
 
 import { formatAddress, formatEvmAddress, isEqualWithOmit, normalizeWhitespace } from '../common';
 import { DeviceFixture } from '../device';
@@ -282,7 +283,7 @@ export const expect = baseExpect.extend({
                     timeout: options?.timeout,
                 });
                 for (let i = 0; i < expected.length; i++) {
-                    await baseExpect(locator.nth(i)).toHaveValue(expected[i], {
+                    await baseExpect(locator.nth(i)).toHaveValue(getIndexOrThrow(expected, i), {
                         timeout: options?.timeout,
                     });
                 }

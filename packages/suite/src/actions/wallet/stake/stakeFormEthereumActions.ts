@@ -63,7 +63,7 @@ export const composeTransaction =
         const { account, feeInfo } = formState;
         if (!account || !feeInfo) return;
 
-        const { amount } = formValues.outputs[0];
+        const amount = formValues.outputs[0]?.amount;
 
         if (!amount || amount === '0') return;
 
@@ -136,11 +136,13 @@ export const signTransaction =
         const { stakeType } = formValues;
         let txData;
         if (stakeType === 'stake') {
+            const amount = formValues.outputs[0]?.amount ?? '0';
+
             txData = await prepareStakeEthTx({
                 symbol: account.symbol,
                 from: account.descriptor,
                 identity,
-                amount: formValues.outputs[0].amount,
+                amount,
                 gasPrice: transactionInfo.feePerByte,
                 feeLimit: transactionInfo.feeLimit,
                 maxFeePerGas: transactionInfo.maxFeePerGas,
@@ -150,11 +152,13 @@ export const signTransaction =
             });
         }
         if (stakeType === 'unstake') {
+            const amount = formValues.outputs[0]?.amount ?? '0';
+
             txData = await prepareUnstakeEthTx({
                 symbol: account.symbol,
                 from: account.descriptor,
                 identity,
-                amount: formValues.outputs[0].amount,
+                amount,
                 gasPrice: transactionInfo.feePerByte,
                 feeLimit: transactionInfo.feeLimit,
                 maxFeePerGas: transactionInfo.maxFeePerGas,

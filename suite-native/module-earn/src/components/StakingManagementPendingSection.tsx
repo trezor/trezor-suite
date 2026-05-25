@@ -25,12 +25,14 @@ type StakingManagementPendingSectionProps = {
 export const StakingManagementPendingSection = ({
     accountKey,
 }: StakingManagementPendingSectionProps) => {
-    const claimableAmount = useSelector((state: NativeStakingRootState) =>
-        selectClaimableAmountByAccountKey(state, accountKey),
-    );
-    const unstakingBalance = useSelector((state: NativeStakingRootState) =>
-        selectUnstakingBalanceByAccountKey(state, accountKey),
-    );
+    const claimableAmount =
+        useSelector((state: NativeStakingRootState) =>
+            selectClaimableAmountByAccountKey(state, accountKey),
+        ) ?? '0';
+    const unstakingBalance =
+        useSelector((state: NativeStakingRootState) =>
+            selectUnstakingBalanceByAccountKey(state, accountKey),
+        ) ?? '0';
     const totalStakePending =
         useSelector((state: NativeStakingRootState) =>
             selectTotalStakePendingByAccountKey(state, accountKey),

@@ -7,7 +7,9 @@ import { getAccountInfo, getAccountInfoParams } from './discovery';
 import { getAnonymityScores } from '../../src/client/analyzeTransactions';
 import { getCoinjoinNetwork } from '../../src/utils/settingsUtils';
 
-const [network, descriptor] = process.argv.slice(2);
+const argvSlice = process.argv.slice(2);
+const network = argvSlice[0] ?? '';
+const descriptor = argvSlice[1] ?? '';
 
 const CACHE_DIR = `${__dirname}/.cache`;
 const CACHE_ACCOUNT_INFO = `${CACHE_DIR}/accountInfo.json`;

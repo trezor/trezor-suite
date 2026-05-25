@@ -83,7 +83,9 @@ describe('bootstrap (popup mode)', () => {
     it('creates BroadcastChannel and redirects on successful handshake', async () => {
         const promise = bootstrap();
 
-        const bc = MockBroadcastChannel.instances[0];
+        const { instances } = MockBroadcastChannel;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const bc: MockBroadcastChannel = instances[0];
         expect(bc).toBeDefined();
         expect(bc.name).toBe('@trezor/connect-popup/abc123');
 
@@ -276,7 +278,10 @@ describe('bootstrap (iframe mode)', () => {
 
         await jest.advanceTimersByTimeAsync(0);
 
-        expect(errorSpy.mock.calls[0].join(' ')).toMatch('handshake-timeout');
+        const { calls } = errorSpy.mock;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstCall: unknown[] = calls[0];
+        expect(firstCall.join(' ')).toMatch('handshake-timeout');
         expect(fakeBc.close).toHaveBeenCalled();
 
         errorSpy.mockRestore();

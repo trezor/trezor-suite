@@ -80,7 +80,7 @@ const TabsApp = (props: Partial<TabsProps>) => {
 
     return (
         <Column gap={spacings.md}>
-            <TabsComponent activeItemId={items[selectedTab].id} {...props}>
+            <TabsComponent activeItemId={items[selectedTab]?.id ?? ''} {...props}>
                 {items.map(item => (
                     <TabsComponent.Item key={item.id} {...item}>
                         {item.title}

@@ -143,11 +143,12 @@ export const transformTokenInfo = (
             address: tokenAccount.pubkey,
             standard: tokenProgramsInfo[program].tokenStandard,
         };
-        if (acc[token.contract] != null) {
-            acc[token.contract].balance = new BigNumber(acc[token.contract].balance || '0')
+        const existing = acc[token.contract];
+        if (existing != null) {
+            existing.balance = new BigNumber(existing.balance || '0')
                 .plus(token.balance || '0')
                 .toString();
-            acc[token.contract].accounts!.push({
+            existing.accounts?.push({
                 publicKey: token.address,
                 balance: token.balance || '0',
             });
@@ -421,8 +422,12 @@ export const getDetails = (
         )
         .filter(({ address }) => !(txType === 'self' && address === accountAddress));
 
+    const { signatures } = transaction.transaction;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const txSignature: string = signatures[0];
+
     const getVin = ({ address, amount }: { address: string; amount?: BigNumber }, i: number) => ({
-        txid: transaction.transaction.signatures[0].toString(),
+        txid: txSignature.toString(),
         version: transaction.version?.toString(),
         isAddress: true,
         isAccountOwned: address === accountAddress,
@@ -736,9 +741,13 @@ export const transformTransaction = (
 
     const details = getDetails(tx, nativeEffects, accountAddress, type);
 
+    const { signatures } = tx.transaction;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const txid: string = signatures[0];
+
     return {
         type: txType,
-        txid: tx.transaction.signatures[0].toString(),
+        txid: txid.toString(),
         blockTime: tx.blockTime == null ? undefined : Number(tx.blockTime),
         blockHeight: tx.slot == null ? undefined : Number(tx.slot),
         amount,
