@@ -9,7 +9,7 @@ type SettingsSectionProps = {
     className?: string;
     children?: ReactNode;
     tooltipText?: ReactNode;
-    isBelowLaptop?: boolean;
+    hasVerticalLayout?: boolean;
 };
 
 export const SettingsSection = ({
@@ -17,14 +17,14 @@ export const SettingsSection = ({
     icon,
     children,
     tooltipText,
-    isBelowLaptop,
+    hasVerticalLayout,
 }: SettingsSectionProps) => {
-    const width = isBelowLaptop ? '100%' : 250;
+    const width = hasVerticalLayout ? '100%' : 250;
 
     return (
         <InfoItem
             ellipsisLineCount={0}
-            direction={isBelowLaptop ? 'column' : 'row'}
+            direction={hasVerticalLayout ? 'column' : 'row'}
             labelWidth={width}
             iconName={icon}
             label={

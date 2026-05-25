@@ -14,8 +14,7 @@ import {
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { Button, ButtonGroup, Checkbox, Code, Column, Input, Text } from '@trezor/components';
 import { ActionColumn, SectionItem, SettingsSection, TextColumn } from '@trezor/product-components';
-import { type BreakpointFlags } from '@trezor/theme';
-import { spacings } from '@trezor/theme';
+import { type BreakpointFlags, spacings } from '@trezor/theme';
 
 import { WipeSuiteSyncLabels, type WipeSuiteSyncLabelsOnError } from './WipeSuiteSyncLabels';
 
@@ -65,7 +64,7 @@ export const SuiteSyncSettings = ({ onError }: SuiteSyncSettingsProps) => {
     if (!isSuiteSyncFeatureEnabled) return null;
 
     return (
-        <SettingsSection title="Suite Sync" isBelowLaptop={isBelowLaptop}>
+        <SettingsSection title="Suite Sync" hasVerticalLayout={isBelowLaptop}>
             <SectionItem>
                 <TextColumn title="Relay URL" />
                 <ActionColumn>

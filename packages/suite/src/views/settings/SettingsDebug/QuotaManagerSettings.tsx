@@ -14,15 +14,16 @@ import {
 } from '@suite-common/suite-sync-quota-manager';
 import { Button, ButtonGroup, Checkbox, Code, Column, Input, Text } from '@trezor/components';
 import { ActionColumn, SectionItem, SettingsSection, TextColumn } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
+import { breakpoints, spacings } from '@trezor/theme';
 
-import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 const LOCAL_QUOTA_MANAGER_URL = 'http://127.0.0.1:4001/';
 
 export const QuotaManagerSettings = () => {
     const dispatch = useDispatch();
-    const { isBelowLaptop } = useLayoutSize();
+    const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.laptop);
     const quotaManagerBaseUrl = useSelector(selectQuotaManagerBaseUrl);
     const registeredDevices = useSelector(selectRegisteredDevices);
     const ownersAllowance = useSelector(selectOwnersAllowance);
@@ -60,7 +61,7 @@ export const QuotaManagerSettings = () => {
         );
 
     return (
-        <SettingsSection isBelowLaptop={isBelowLaptop} title="Quota Manager">
+        <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Quota Manager">
             <SectionItem>
                 <TextColumn title="Quota Manager URL" />
                 <ActionColumn>

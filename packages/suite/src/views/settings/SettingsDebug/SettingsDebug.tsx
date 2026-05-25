@@ -7,10 +7,12 @@ import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-typ
 import { type StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { SettingsSection } from '@trezor/product-components';
+import { breakpoints } from '@trezor/theme';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
-import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 import { AnalyticsLogging } from './AnalyticsLogging';
 import { Backends } from './Backends';
@@ -46,7 +48,7 @@ import { WipeData } from './WipeData';
 
 export const SettingsDebug = () => {
     const dispatch = useDispatch();
-    const { isBelowLaptop } = useLayoutSize();
+    const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.laptop);
     const flags = useSelector(selectFlags);
 
     const handleWipeSuiteSyncLabelsError = ({
@@ -67,25 +69,25 @@ export const SettingsDebug = () => {
         <SettingsLayout>
             <ContextMessage context={Context.getSettings('debug')} />
 
-            <SettingsSection isBelowLaptop={isBelowLaptop} title="Debug">
+            <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Debug">
                 <GithubIssue />
                 {isDesktop() && <WipeData />}
                 <TriggerHighlight />
                 <TriggerToast />
             </SettingsSection>
-            <SettingsSection isBelowLaptop={isBelowLaptop} title="Analytics">
+            <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Analytics">
                 <AnalyticsLogging />
             </SettingsSection>
-            <SettingsSection isBelowLaptop={isBelowLaptop} title="Trade">
+            <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Trade">
                 <TradeApi />
             </SettingsSection>
-            <SettingsSection isBelowLaptop={isBelowLaptop} title="OAuth">
+            <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="OAuth">
                 <OAuthApi />
             </SettingsSection>
-            <SettingsSection isBelowLaptop={isBelowLaptop} title="Coinjoin">
+            <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Coinjoin">
                 <CoinjoinApi />
             </SettingsSection>
-            <SettingsSection isBelowLaptop={isBelowLaptop} title="Device">
+            <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Device">
                 <DeviceAuthenticity />
                 <Devkit />
                 <CheckFirmwareAuthenticity />
@@ -93,52 +95,67 @@ export const SettingsDebug = () => {
                 <N4w1Backup />
                 <PingDevice />
             </SettingsSection>
-            <SettingsSection isBelowLaptop={isBelowLaptop} title="Testing">
+            <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Testing">
                 <ThrowTestingError />
             </SettingsSection>
             {isDesktop() && (
-                <SettingsSection isBelowLaptop={isBelowLaptop} title="Transport backends">
+                <SettingsSection
+                    hasVerticalLayout={hasContentBelowTabletWidth}
+                    title="Transport backends"
+                >
                     <TransportBackends />
                 </SettingsSection>
             )}
-            <SettingsSection isBelowLaptop={isBelowLaptop} title="Transport clients">
+            <SettingsSection
+                hasVerticalLayout={hasContentBelowTabletWidth}
+                title="Transport clients"
+            >
                 <Transport />
             </SettingsSection>
             {isDesktop() && (
-                <SettingsSection isBelowLaptop={isBelowLaptop} title="Tor">
+                <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Tor">
                     <Tor />
                 </SettingsSection>
             )}
-            <SettingsSection isBelowLaptop={isBelowLaptop} title="Backends">
+            <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Backends">
                 <Backends />
             </SettingsSection>
-            <SettingsSection isBelowLaptop={isBelowLaptop} title="Flags JSON">
+            <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Flags JSON">
                 <PreField>{JSON.stringify(flags)}</PreField>
             </SettingsSection>
-            <SettingsSection isBelowLaptop={isBelowLaptop} title="Metadata">
+            <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Metadata">
                 <Metadata />
             </SettingsSection>
-            <SettingsSection isBelowLaptop={isBelowLaptop} title="Message system info">
+            <SettingsSection
+                hasVerticalLayout={hasContentBelowTabletWidth}
+                title="Message system info"
+            >
                 <MessageSystemConfigSourceSelect />
                 <MessageSystemDebug />
             </SettingsSection>
             {isDesktop() && (
                 <SettingsSection
-                    isBelowLaptop={isBelowLaptop}
+                    hasVerticalLayout={hasContentBelowTabletWidth}
                     title={<Translation id="TR_BLUETOOTH" />}
                 >
                     <ShowBluetoothDebugInfo />
                     <ForgetAllDevicesButton />
                 </SettingsSection>
             )}
-            <SettingsSection isBelowLaptop={isBelowLaptop} title="Trezor Host Protocol">
+            <SettingsSection
+                hasVerticalLayout={hasContentBelowTabletWidth}
+                title="Trezor Host Protocol"
+            >
                 <ResetThpCredentials />
             </SettingsSection>
-            <SettingsSection isBelowLaptop={isBelowLaptop} title="TrezorConnect">
+            <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="TrezorConnect">
                 <TrezorConnectLogs />
                 {isDesktop() && <ConnectPopup />}
             </SettingsSection>
-            <SettingsSection isBelowLaptop={isBelowLaptop} title="Firmware channel">
+            <SettingsSection
+                hasVerticalLayout={hasContentBelowTabletWidth}
+                title="Firmware channel"
+            >
                 <FirmwareUpdateEnvironmentSelect />
             </SettingsSection>
             <SuiteSyncSettings onError={handleWipeSuiteSyncLabelsError} />
