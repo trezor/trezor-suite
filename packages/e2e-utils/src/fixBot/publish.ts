@@ -54,7 +54,7 @@ export function publishPR({
     }
 
     log(`  → Pushing ${branch} to ${remote}...`);
-    execFileSync('git', ['-C', worktreePath, 'push', remote, branch], { stdio: 'inherit' });
+    execFileSync('git', ['-C', worktreePath, 'push', '--', remote, branch], { stdio: 'inherit' });
 
     const prDescriptionFile = join(worktreePath, 'pr-description.md');
     const prArgs = ['pr', 'create', '--title', pr_title, '--head', branch, '--base', base];

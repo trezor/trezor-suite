@@ -44,7 +44,6 @@ For `LOCATOR_ADD` fixes that modify a product component, remove them and rebuild
 desktop tests:
 
 ```bash
-rm packages/suite-desktop/dist packages/suite-desktop/build
 TEST_BUILD=true yarn workspace @trezor/suite-desktop build:ui
 yarn workspace @trezor/suite-desktop build:app
 ```
