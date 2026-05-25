@@ -14,8 +14,6 @@ export const POPUP = {
     // Event emitted from PopupManager at the end of popup closing process.
     // Sent from popup thru window.opener to an iframe because message channel between popup and iframe is no longer available
     CLOSED: 'popup-closed',
-    // Message called from inline element in popup.html (window.closeWindow), this is used only with webextensions to properly handle popup close event
-    CLOSE_WINDOW: 'window.close',
 } as const;
 
 export interface PopupInit {
@@ -43,14 +41,6 @@ export interface PopupClosedMessage {
     payload: { error: any } | null;
 }
 
-export interface PopupCloseWindow {
-    type: typeof POPUP.CLOSE_WINDOW;
-    // TODO: This field could be dropped entirely (no construction sites read it),
-    // but the same applies to other payload-less events in this file, so it's
-    // out of scope for this PR.
-    payload?: never;
-}
-
 export type PopupEvent =
     | {
           type: typeof POPUP.CORE_LOADED;
@@ -58,7 +48,6 @@ export type PopupEvent =
       }
     | PopupInit
     | PopupHandshake
-    | PopupCloseWindow
     | PopupClosedMessage;
 
 export type PopupEventMessage = PopupEvent & { event: typeof UI_EVENT };
