@@ -17,8 +17,10 @@ import {
     GuideCategory,
     SupportFeedbackSelection,
 } from 'src/components/guide';
+import { MIN_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { GUIDE_ANIMATION_DURATION_MS, useGuide } from 'src/hooks/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 const getGuideContent = (activeView: ActiveView) => {
     switch (activeView) {
@@ -43,10 +45,14 @@ export const GuideRouter = () => {
     const activeView = useSelector(state => state.guide.view);
     const storedWidth = useSelector(state => state.guide.width);
     const { isGuideOpen, closeGuide, isGuideOnTop } = useGuide();
+    const { contentWidth } = useResponsiveContext();
     const dispatch = useDispatch();
 
     const [width, setWidth] = useState(storedWidth);
     const [isResizing, setIsResizing] = useState(false);
+    const [maxResizableGuideWidth, setMaxResizableGuideWidth] = useState<number>(
+        variables.LAYOUT_SIZE.GUIDE_PANEL_MAX_WIDTH,
+    );
 
     // if guide is open, do not animate guide opening if transitioning between onboarding, welcome and suite layout
     const isFirstRender = useOnce(isGuideOpen, false);
@@ -89,9 +95,26 @@ export const GuideRouter = () => {
                 width={width}
                 forcedWidth={width}
                 minWidth={variables.LAYOUT_SIZE.GUIDE_PANEL_MIN_WIDTH}
-                maxWidth={variables.LAYOUT_SIZE.GUIDE_PANEL_MAX_WIDTH}
-                onResizeStart={() => setIsResizing(true)}
-                onResizeStop={() => setIsResizing(false)}
+                maxWidth={maxResizableGuideWidth}
+                onResizeStart={() => {
+                    setIsResizing(true);
+                    // Cap growth so contentWidth can't shrink below MIN_CONTENT_WIDTH.
+                    // Captured at gesture start to stay stable despite ResizeObserver debounce lag.
+                    const limit =
+                        contentWidth != null
+                            ? width + contentWidth - MIN_CONTENT_WIDTH
+                            : variables.LAYOUT_SIZE.GUIDE_PANEL_MAX_WIDTH;
+                    setMaxResizableGuideWidth(
+                        Math.min(
+                            variables.LAYOUT_SIZE.GUIDE_PANEL_MAX_WIDTH,
+                            Math.max(width, limit),
+                        ),
+                    );
+                }}
+                onResizeStop={() => {
+                    setIsResizing(false);
+                    setMaxResizableGuideWidth(variables.LAYOUT_SIZE.GUIDE_PANEL_MAX_WIDTH);
+                }}
                 onWidthResizeMove={handleResizeMove}
                 onWidthResizeEnd={handleResizeEnd}
             >
