@@ -14,10 +14,7 @@ import {
     type EvmSelectedFee,
     type YieldFormMetadata,
 } from '@suite-common/wallet-types';
-import {
-    getAccountIdentity,
-    getMevProtectedTxData,
-} from '@suite-common/wallet-utils';
+import { getAccountIdentity, getMevProtectedTxData } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
 import type { AppState, Dispatch } from 'src/types/suite';
