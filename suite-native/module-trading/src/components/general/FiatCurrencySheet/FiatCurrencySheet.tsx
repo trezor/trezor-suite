@@ -2,6 +2,7 @@ import { memo, useCallback } from 'react';
 
 import type { FiatCurrencyCode } from 'invity-api';
 
+import { Divider } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { BottomSheetSectionList, SearchableSheetHeader } from '@suite-native/trading-atoms';
 import { type FiatCurrencyItem } from '@suite-native/trading-types';
@@ -19,6 +20,7 @@ export type FiatCurrencySheetProps = {
 };
 
 const keyExtractor = (item: FiatCurrencyItem) => item.value;
+const ItemSeparator = () => <Divider />;
 
 export const FiatCurrencySheet = memo(
     ({
@@ -32,7 +34,6 @@ export const FiatCurrencySheet = memo(
             useFiatCurrencyFilteredData(supportedFiatCurrencies);
         const { translate } = useTranslate();
 
-        // we need to keep stable callback reference, otherwise header will be re-mounted on every keystroke
         const renderHandle = useCallback(
             () => (
                 <SearchableSheetHeader
@@ -73,6 +74,7 @@ export const FiatCurrencySheet = memo(
                 data={filteredData}
                 keyExtractor={keyExtractor}
                 flashListKey={flashListKey}
+                ItemSeparatorComponent={ItemSeparator}
                 noSingletonSectionHeader
             />
         );
