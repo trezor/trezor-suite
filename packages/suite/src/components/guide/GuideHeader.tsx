@@ -89,7 +89,7 @@ export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) =>
                         <Paragraph
                             typographyStyle="body-sm-strong"
                             align="center"
-                            ellipsisLineCount={1}
+                            ellipsisLineCount={2}
                             margin={{ horizontal: 8 }}
                             data-testid="@guide/label"
                             width="100%"

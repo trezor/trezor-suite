@@ -5,16 +5,25 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { Button, Modal } from '@trezor/components';
-import { zIndices } from '@trezor/theme';
+import { borders, zIndices } from '@trezor/theme';
 
 const ThumbnailImage = styled.img`
     max-width: 100%;
     cursor: zoom-in;
+    border: solid 2px ${({ theme }) => theme.elementBorderField};
+    border-radius: ${borders.radii.xxs};
+    transition: all 0.2s ease;
+    padding: 4px;
+
+    &:hover {
+        border-color: ${({ theme }) => theme.elementBorderFieldHovered};
+    }
 `;
 
 const FullSizeImage = styled.img`
     max-width: 100%;
     max-height: 100%;
+    border-radius: ${borders.radii.xxs};
     cursor: zoom-out;
 `;
 

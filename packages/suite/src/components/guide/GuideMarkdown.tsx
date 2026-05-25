@@ -6,11 +6,7 @@ import { Markdown } from '@trezor/components';
 import { useGuideOpenNode } from 'src/hooks/guide';
 
 import { GuideHint } from './GuideHint';
-<<<<<<< HEAD
-=======
 import { GuideImage } from './GuideImage';
-import { TrezorLink } from '../suite';
->>>>>>> 4ca14fa1f1 (feat(suite): Add modal for opening images from guide)
 
 interface GuideMarkdownProps {
     markdown: string | undefined;
