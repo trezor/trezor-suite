@@ -75,7 +75,7 @@ const TooltipLabel = ({
 
 interface FreshAddressProps {
     account: AppState['wallet']['selectedAccount']['account'];
-    addresses: AppState['wallet']['receive'];
+    alreadyUsedAddresses: AppState['wallet']['receive'];
     disabled: boolean;
     locked: boolean;
     pendingAddresses: string[];
@@ -84,7 +84,7 @@ interface FreshAddressProps {
 
 export const FreshAddress = ({
     account,
-    addresses,
+    alreadyUsedAddresses,
     disabled,
     pendingAddresses,
     locked,
@@ -110,9 +110,14 @@ export const FreshAddress = ({
 
     const firstFreshAddress = useMemo(() => {
         if (account) {
-            return getFirstFreshAddress(account, addresses, pendingAddresses, isAccountUtxoBased);
+            return getFirstFreshAddress(
+                account,
+                alreadyUsedAddresses,
+                pendingAddresses,
+                isAccountUtxoBased,
+            );
         }
-    }, [account, addresses, pendingAddresses, isAccountUtxoBased]);
+    }, [account, alreadyUsedAddresses, pendingAddresses, isAccountUtxoBased]);
 
     if (!account) return null;
 
