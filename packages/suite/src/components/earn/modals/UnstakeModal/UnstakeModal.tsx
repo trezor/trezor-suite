@@ -56,7 +56,7 @@ export const UnstakeModal = ({ onCancel, account }: UnstakeModalProps) => {
                 onCancel={onCancelClick}
                 bottomContent={<UnstakeButton />}
             >
-                <Grid columns={isBelowTablet ? 1 : 2} gap={32}>
+                <Grid columns={isBelowTablet ? 1 : 2} gap={32} forceEqualColumns>
                     <UnstakeForm />
                     <Column gap={20}>
                         <CollapsibleBox

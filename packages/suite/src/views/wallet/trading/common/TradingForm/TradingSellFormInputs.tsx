@@ -108,7 +108,7 @@ export const TradingSellFormInputs = () => {
                             cryptoCurrencyLabel={sendCryptoSelect?.id}
                         />
                         {amountInCrypto && (
-                            <Row justifyContent="space-between" alignItems="flex-start">
+                            <Row justifyContent="space-between" alignItems="center" gap={8}>
                                 <TradingFractionButtons />
                                 <TradingBalance
                                     balance={outputAmount}

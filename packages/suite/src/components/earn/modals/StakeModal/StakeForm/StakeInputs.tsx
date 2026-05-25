@@ -217,6 +217,7 @@ export const StakeInputs = () => {
                                     typographyStyle="body-xs"
                                     intent="neutral"
                                     priority="secondary"
+                                    overflowWrap="anywhere"
                                 >
                                     {value}
                                 </Text>

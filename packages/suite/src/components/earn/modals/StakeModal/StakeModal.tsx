@@ -61,7 +61,7 @@ export const StakeModal = ({ onCancel, account, flow }: StakeModalProps) => {
                 onCancel={onCancelClick}
                 bottomContent={<StakeButton flow={flow} />}
             >
-                <Grid columns={isBelowTablet ? 1 : 2} gap={32}>
+                <Grid columns={isBelowTablet ? 1 : 2} gap={32} forceEqualColumns>
                     <StakeForm flow={flow} />
                     <StakeInfoCards account={account} flow={flow} />
                 </Grid>
