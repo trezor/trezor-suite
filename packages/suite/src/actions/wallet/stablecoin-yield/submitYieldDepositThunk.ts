@@ -1,6 +1,6 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { openDeferredModal } from '@suite/modal';
-import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin';
+import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin/src/tx-simulation';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {

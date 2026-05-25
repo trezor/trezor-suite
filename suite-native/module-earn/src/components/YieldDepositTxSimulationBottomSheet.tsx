@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { composeStablecoinYieldTxSimulationAction } from '@suite-common/earn-stablecoin';
+import { composeStablecoinYieldTxSimulationAction } from '@suite-common/earn-stablecoin/src/tx-simulation';
 import { type Account } from '@suite-common/wallet-types';
 import {
     BottomSheetModal,

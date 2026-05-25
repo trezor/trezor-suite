@@ -1,6 +1,6 @@
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
-import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
+import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin/src/signing';
 import {
     type YieldFlowDisplayToken,
     selectAddressDisplayType,
