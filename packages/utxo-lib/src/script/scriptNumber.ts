@@ -5,8 +5,12 @@ export function decode(buffer: Buffer, maxLength = 4, minimal = true) {
     if (length === 0) return 0;
     if (length > maxLength) throw new TypeError('Script number overflow');
     if (minimal) {
-        if ((buffer[length - 1] & 0x7f) === 0) {
-            if (length <= 1 || (buffer[length - 2] & 0x80) === 0)
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const lastByte: number = buffer[length - 1];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const prevByte: number = buffer[length - 2];
+        if ((lastByte & 0x7f) === 0) {
+            if (length <= 1 || (prevByte & 0x80) === 0)
                 throw new Error('Non-minimally encoded script number');
         }
     }
@@ -25,10 +29,14 @@ export function decode(buffer: Buffer, maxLength = 4, minimal = true) {
 
     // 32-bit / 24-bit / 16-bit / 8-bit
     for (let i = 0; i < length; ++i) {
-        result |= buffer[i] << (8 * i);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const byte: number = buffer[i];
+        result |= byte << (8 * i);
     }
 
-    if (buffer[length - 1] & 0x80) return -(result & ~(0x80 << (8 * (length - 1))));
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const lastByte2: number = buffer[length - 1];
+    if (lastByte2 & 0x80) return -(result & ~(0x80 << (8 * (length - 1))));
 
     return result;
 }
@@ -54,10 +62,12 @@ export function encode(number: number) {
         value >>= 8;
     }
 
-    if (buffer[size - 1] & 0x80) {
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const lastByteEnc: number = buffer[size - 1];
+    if (lastByteEnc & 0x80) {
         buffer.writeUInt8(negative ? 0x80 : 0x00, size - 1);
     } else if (negative) {
-        buffer[size - 1] |= 0x80;
+        buffer[size - 1] = lastByteEnc | 0x80;
     }
 
     return buffer;

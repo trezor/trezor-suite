@@ -129,7 +129,9 @@ describe('Suite Actions', () => {
             const store = initStore(state);
             f.actions.forEach((action: any, i: number) => {
                 store.dispatch(action);
-                expect(store.getState().suite).toMatchObject(f.result[i]);
+                const result = f.result[i];
+                if (!result) throw new Error(`Missing expected result at index ${i}`);
+                expect(store.getState().suite).toMatchObject(result);
             });
         });
     });
@@ -181,7 +183,9 @@ describe('Suite Actions', () => {
             const actions = filterThunkActionTypes(store.getActions());
             expect(actions.length).toEqual(f.result.length);
             actions.forEach((a, i) => {
-                expect(a.payload.device).toMatchObject(f.result[i]);
+                const result = f.result[i];
+                if (!result) throw new Error(`Missing expected result at index ${i}`);
+                expect(a.payload.device).toMatchObject(result);
             });
         });
     });

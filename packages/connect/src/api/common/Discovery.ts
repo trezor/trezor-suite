@@ -111,7 +111,9 @@ export class Discovery extends TypedEmitter<Events> {
         const limit = 10; // TODO: move to options
         this.interrupted = false;
         while (!this.completed && !this.interrupted) {
-            const accountType = this.types[this.typeIndex];
+            const { types } = this;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const accountType: (typeof types)[number] = types[this.typeIndex];
             const label = `Account #${this.index + 1}`;
             const overTheLimit = this.index >= limit;
 

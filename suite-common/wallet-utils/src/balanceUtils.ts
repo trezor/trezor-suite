@@ -22,8 +22,12 @@ export const formatCoinBalance = (value: string, locale: Locale = 'en-US') => {
     const hasDecimals = parts.length > 1;
 
     if (hasDecimals) {
-        const integerPartLength = parts[0].length || 1;
-        const fractionalPartLength = parts[1].length;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const integerPart: string = parts[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const fractionalPart: string = parts[1];
+        const integerPartLength = integerPart.length || 1;
+        const fractionalPartLength = fractionalPart.length;
         const fixCount = Math.max(MAX_NUMBERS - integerPartLength, 0); // don't go lower than 0
         const isTruncated = fractionalPartLength > fixCount;
         // fix to max visible numbers with decimals

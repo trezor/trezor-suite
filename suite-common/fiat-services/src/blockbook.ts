@@ -63,7 +63,12 @@ const getMultiTickers = async (
         rates && {
             ts: new Date().getTime(),
             symbol: ticker,
-            tickers: rates.map((rate, i) => ({ ...rate, ts: timestamps[i] })),
+            tickers: rates.map((rate, i) => {
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const ts: (typeof timestamps)[number] = timestamps[i];
+
+                return { ...rate, ts };
+            }),
         }
     );
 };

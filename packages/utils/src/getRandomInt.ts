@@ -51,6 +51,7 @@ export const getRandomInt = (min: number, max: number) => {
     let randomValue: number;
     do {
         globalThis.crypto.getRandomValues(array);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
         randomValue = array[0];
     } while (randomValue >= maxRange);
 

@@ -48,9 +48,14 @@ Blake256.padding = Buffer.from([
 
 Blake256.prototype._length_carry = function (arr: number[]) {
     for (let j = 0; j < arr.length; ++j) {
-        if (arr[j] < 0x0100000000) break;
-        arr[j] -= 0x0100000000;
-        arr[j + 1] += 1;
+        const j1 = j + 1;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const current: number = arr[j];
+        if (current < 0x0100000000) break;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const next: number = arr[j1];
+        arr[j] = current - 0x0100000000;
+        arr[j1] = next + 1;
     }
 };
 
@@ -67,7 +72,9 @@ Blake256.prototype.update = function (
     while (this._blockOffset + data.length - offset >= block.length) {
         for (let i = this._blockOffset; i < block.length; ) block[i++] = data[offset++];
 
-        this._length[0] += block.length * 8;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const len0: number = this._length[0];
+        this._length[0] = len0 + block.length * 8;
         this._length_carry(this._length);
 
         this._compress();
@@ -97,15 +104,47 @@ function g(
     e: number,
 ) {
     const { sigma, u256 } = Blake256;
+    const e1 = e + 1;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const sigmaRow: number[] = sigma[i];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const sigmaE: number = sigmaRow[e];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const sigmaEPlus: number = sigmaRow[e1];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const mSE: number = m[sigmaE];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const mSEPlus: number = m[sigmaEPlus];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const uSE: number = u256[sigmaE];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const uSEPlus: number = u256[sigmaEPlus];
 
-    v[a] = (v[a] + ((m[sigma[i][e]] ^ u256[sigma[i][e + 1]]) >>> 0) + v[b]) >>> 0;
-    v[d] = rot(v[d] ^ v[a], 16);
-    v[c] = (v[c] + v[d]) >>> 0;
-    v[b] = rot(v[b] ^ v[c], 12);
-    v[a] = (v[a] + ((m[sigma[i][e + 1]] ^ u256[sigma[i][e]]) >>> 0) + v[b]) >>> 0;
-    v[d] = rot(v[d] ^ v[a], 8);
-    v[c] = (v[c] + v[d]) >>> 0;
-    v[b] = rot(v[b] ^ v[c], 7);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    let va: number = v[a];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    let vb: number = v[b];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    let vc: number = v[c];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    let vd: number = v[d];
+
+    va = (va + ((mSE ^ uSEPlus) >>> 0) + vb) >>> 0;
+    v[a] = va;
+    vd = rot(vd ^ va, 16);
+    v[d] = vd;
+    vc = (vc + vd) >>> 0;
+    v[c] = vc;
+    vb = rot(vb ^ vc, 12);
+    v[b] = vb;
+    va = (va + ((mSEPlus ^ uSE) >>> 0) + vb) >>> 0;
+    v[a] = va;
+    vd = rot(vd ^ va, 8);
+    v[d] = vd;
+    vc = (vc + vd) >>> 0;
+    v[c] = vc;
+    vb = rot(vb ^ vc, 7);
+    v[b] = vb;
 }
 
 function Blake256(this: Blake256Context) {
@@ -133,15 +172,39 @@ Blake256.prototype._compress = function (this: Blake256Context) {
     let i;
 
     for (i = 0; i < 16; ++i) m[i] = this._block.readUInt32BE(i * 4);
-    for (i = 0; i < 8; ++i) v[i] = this._h[i] >>> 0;
-    for (i = 8; i < 12; ++i) v[i] = (this._s[i - 8] ^ u256[i - 8]) >>> 0;
-    for (i = 12; i < 16; ++i) v[i] = u256[i - 8];
+    for (i = 0; i < 8; ++i) {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const hi: number = this._h[i];
+        v[i] = hi >>> 0;
+    }
+    for (i = 8; i < 12; ++i) {
+        const sIndex = i - 8;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const si: number = this._s[sIndex];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const ui: number = u256[sIndex];
+        v[i] = (si ^ ui) >>> 0;
+    }
+    for (i = 12; i < 16; ++i) {
+        const sIndex = i - 8;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const ui: number = u256[sIndex];
+        v[i] = ui;
+    }
 
     if (!this._nullt) {
-        v[12] = (v[12] ^ this._length[0]) >>> 0;
-        v[13] = (v[13] ^ this._length[0]) >>> 0;
-        v[14] = (v[14] ^ this._length[1]) >>> 0;
-        v[15] = (v[15] ^ this._length[1]) >>> 0;
+        const v12: number = v[12];
+        const v13: number = v[13];
+        const v14: number = v[14];
+        const v15: number = v[15];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const len0: number = this._length[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const len1: number = this._length[1];
+        v[12] = (v12 ^ len0) >>> 0;
+        v[13] = (v13 ^ len0) >>> 0;
+        v[14] = (v14 ^ len1) >>> 0;
+        v[15] = (v15 ^ len1) >>> 0;
     }
 
     for (i = 0; i < 14; ++i) {
@@ -157,13 +220,30 @@ Blake256.prototype._compress = function (this: Blake256Context) {
         g(v, m, i, 3, 4, 9, 14, 14);
     }
 
-    for (i = 0; i < 16; ++i) this._h[i % 8] = (this._h[i % 8] ^ v[i]) >>> 0;
-    for (i = 0; i < 8; ++i) this._h[i] = (this._h[i] ^ this._s[i % 4]) >>> 0;
+    for (i = 0; i < 16; ++i) {
+        const hIndex = i % 8;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const hVal: number = this._h[hIndex];
+        const vi: number = v[i];
+        this._h[hIndex] = (hVal ^ vi) >>> 0;
+    }
+    for (i = 0; i < 8; ++i) {
+        const sIndex = i % 4;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const hVal: number = this._h[i];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const sVal: number = this._s[sIndex];
+        this._h[i] = (hVal ^ sVal) >>> 0;
+    }
 };
 
 Blake256.prototype._padding = function (this: Blake256Context & { update(data: Buffer): void }) {
-    let lo = this._length[0] + this._blockOffset * 8;
-    let hi = this._length[1];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const len0Initial: number = this._length[0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const len1Initial: number = this._length[1];
+    let lo = len0Initial + this._blockOffset * 8;
+    let hi = len1Initial;
     if (lo >= 0x0100000000) {
         lo -= 0x0100000000;
         hi += 1;
@@ -174,26 +254,35 @@ Blake256.prototype._padding = function (this: Blake256Context & { update(data: B
     msglen.writeUInt32BE(lo, 4);
 
     if (this._blockOffset === 55) {
-        this._length[0] -= 8;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const len0: number = this._length[0];
+        this._length[0] = len0 - 8;
         this.update(this._oo);
     } else {
         if (this._blockOffset < 55) {
             if (this._blockOffset === 0) this._nullt = true;
-            this._length[0] -= (55 - this._blockOffset) * 8;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const len0: number = this._length[0];
+            this._length[0] = len0 - (55 - this._blockOffset) * 8;
             this.update(Blake256.padding.slice(0, 55 - this._blockOffset));
         } else {
-            this._length[0] -= (64 - this._blockOffset) * 8;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const len0: number = this._length[0];
+            this._length[0] = len0 - (64 - this._blockOffset) * 8;
             this.update(Blake256.padding.slice(0, 64 - this._blockOffset));
-            this._length[0] -= 55 * 8;
+            const len0After: number = this._length[0];
+            this._length[0] = len0After - 55 * 8;
             this.update(Blake256.padding.slice(1, 1 + 55));
             this._nullt = true;
         }
 
         this.update(this._zo);
-        this._length[0] -= 8;
+        const len0: number = this._length[0];
+        this._length[0] = len0 - 8;
     }
 
-    this._length[0] -= 64;
+    const len0Final: number = this._length[0];
+    this._length[0] = len0Final - 64;
     this.update(msglen);
 };
 
@@ -204,7 +293,11 @@ Blake256.prototype.digest = function (
     this._padding();
 
     const buffer = Buffer.alloc(32);
-    for (let i = 0; i < 8; ++i) buffer.writeUInt32BE(this._h[i], i * 4);
+    for (let i = 0; i < 8; ++i) {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const hVal: number = this._h[i];
+        buffer.writeUInt32BE(hVal, i * 4);
+    }
 
     return buffer.toString(encoding);
 };

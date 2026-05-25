@@ -18,7 +18,9 @@ export class TorIdentities {
         timeout?: number,
         protocol?: 'http' | 'https',
     ): SocksProxyAgent {
-        const [user, password] = identity.split(':');
+        const identityParts = identity.split(':');
+        const user = identityParts[0] ?? '';
+        const password = identityParts[1] ?? '';
 
         if (password && this.passwords[user] !== password) {
             if (this.identities[user]) {
@@ -39,7 +41,7 @@ export class TorIdentities {
             });
         }
 
-        const agent = this.identities[user];
+        const agent: SocksProxyAgent = this.identities[user];
 
         // @sentry/node (used in suite-desktop) is wrapping each outgoing request
         // and requires protocol to be explicitly set to https while using TOR + https/wss address combination
@@ -50,7 +52,10 @@ export class TorIdentities {
 
     public removeIdentity(user: string) {
         // looks like destroy does nothing, but just in case
-        this.identities[user].destroy();
+        const { identities } = this;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const identity: SocksProxyAgent = identities[user];
+        identity.destroy();
         delete this.identities[user];
         delete this.passwords[user];
     }

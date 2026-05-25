@@ -161,7 +161,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                         </Card>
 
                         {merkleRewardsQuery.isSuccess &&
-                            accountRewards?.rewards.length > 0 &&
+                            (accountRewards?.rewards?.length ?? 0) > 0 &&
                             !claimSession.action.pendingTransaction && (
                                 <Banner
                                     intent="warning"

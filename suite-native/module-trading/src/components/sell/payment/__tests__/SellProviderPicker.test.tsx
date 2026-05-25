@@ -9,6 +9,7 @@ import {
 } from '@suite-native/test-utils-store';
 import { banxaCreditCardSellQuote, sellQuotes } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
+import { getIndexOrThrow } from '@trezor/utils';
 
 import {
     type PreloadedStatePartial,
@@ -129,8 +130,8 @@ describe('SellProviderPicker', () => {
             it('should not fire analytics event when same provider is selected', () => {
                 const { getAllByText } = renderSellProviderPicker(withQuotes);
 
-                fireEvent.press(getAllByText('Banxa')[0]);
-                fireEvent.press(getAllByText('Banxa')[1]);
+                fireEvent.press(getIndexOrThrow(getAllByText('Banxa'), 0));
+                fireEvent.press(getIndexOrThrow(getAllByText('Banxa'), 1));
 
                 expect(reportMock).toHaveBeenCalledTimes(1);
                 expect(reportMock).toHaveBeenCalledWith({

@@ -80,7 +80,10 @@ describe('useCountryFilteredData', () => {
     describe('sorting', () => {
         it('should sort by name when no filter is applied', () => {
             const { result } = renderUseCountryFilteredData();
-            expect(result.current.filteredData[0].name).toBe('Åland Islands');
+            const { filteredData } = result.current;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const firstItem: (typeof filteredData)[number] = filteredData[0];
+            expect(firstItem.name).toBe('Åland Islands');
         });
 
         it('should place exact match on name before other results', () => {

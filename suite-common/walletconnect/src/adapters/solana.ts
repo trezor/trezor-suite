@@ -58,7 +58,10 @@ const solanaSignTransaction = createThunk<
             throw new Error('Failed to estimate fee. ' + estimatedFee.error.message);
         }
         // Get from argument or use decoded from estimate fee
-        feePayer = feePayer || estimatedFee.payload.levels[0].feePayer;
+        const { levels } = estimatedFee.payload;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstLevel: (typeof levels)[number] = levels[0];
+        feePayer = feePayer || firstLevel.feePayer;
         const account = accounts.find(
             a => a.networkType === 'solana' && a.visible && a.descriptor === feePayer,
         );

@@ -64,7 +64,7 @@ const ReducedAmount = ({ composedLevels, setMaxOutputId, account, selectedFee }:
             <Icon name="arrowRight" />
             <AmountItem
                 labelTranslationKey="TR_RBF_NEW_AMOUNT"
-                amount={precomposedTx.outputs[setMaxOutputId].amount.toString()}
+                amount={precomposedTx.outputs[setMaxOutputId]?.amount.toString() ?? '0'}
                 symbol={account.symbol}
                 shouldSendInSats={true} // precomposedTx.outputs is always in Sats
             />

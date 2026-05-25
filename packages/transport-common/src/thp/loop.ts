@@ -70,12 +70,14 @@ export const thpLoop = async ({
                     return sendResult;
                 }
 
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const firstChunk: Buffer = chunks[0];
                 if (!sendOnly) {
-                    const expectedResponses = protocolThp.getExpectedResponses(chunks[0]);
+                    const expectedResponses = protocolThp.getExpectedResponses(firstChunk);
                     thpState.setExpectedResponses(expectedResponses);
                 }
 
-                const isAckExpected = !skipAck && protocolThp.isAckExpected(chunks[0]);
+                const isAckExpected = !skipAck && protocolThp.isAckExpected(firstChunk);
                 if (isAckExpected) {
                     phase = ThpLoopState.READ_ACK;
                 } else if (sendOnly) {

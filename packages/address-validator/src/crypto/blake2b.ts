@@ -25,77 +25,142 @@ type Blake2bOutputEncoding = 'binary' | 'hex';
 // Sets v[a,a+1] += v[b,b+1]
 // v should be a Uint32Array
 function ADD64AA(v: Uint32Array, a: number, b: number) {
-    const o0 = v[a] + v[b];
-    let o1 = v[a + 1] + v[b + 1];
+    const a1 = a + 1;
+    const b1 = b + 1;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const va: number = v[a];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const vb: number = v[b];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const vaPlus: number = v[a1];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const vbPlus: number = v[b1];
+    const o0 = va + vb;
+    let o1 = vaPlus + vbPlus;
     if (o0 >= 0x100000000) {
         o1++;
     }
     v[a] = o0;
-    v[a + 1] = o1;
+    v[a1] = o1;
 }
 
 // 64-bit unsigned addition
 // Sets v[a,a+1] += b
 // b0 is the low 32 bits of b, b1 represents the high 32 bits
 function ADD64AC(v: Uint32Array, a: number, b0: number, b1: number) {
-    let o0 = v[a] + b0;
+    const a1 = a + 1;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const va: number = v[a];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const vaPlus: number = v[a1];
+    let o0 = va + b0;
     if (b0 < 0) {
         o0 += 0x100000000;
     }
-    let o1 = v[a + 1] + b1;
+    let o1 = vaPlus + b1;
     if (o0 >= 0x100000000) {
         o1++;
     }
     v[a] = o0;
-    v[a + 1] = o1;
+    v[a1] = o1;
 }
 
 // Little-endian byte access
 function B2B_GET32(arr: Uint8Array, i: number) {
-    return arr[i] ^ (arr[i + 1] << 8) ^ (arr[i + 2] << 16) ^ (arr[i + 3] << 24);
+    const i1 = i + 1;
+    const i2 = i + 2;
+    const i3 = i + 3;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const a0: number = arr[i];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const a1: number = arr[i1];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const a2: number = arr[i2];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const a3: number = arr[i3];
+
+    return a0 ^ (a1 << 8) ^ (a2 << 16) ^ (a3 << 24);
 }
 
 // G Mixing function
 // The ROTRs are inlined for speed
 function B2B_G(a: number, b: number, c: number, d: number, ix: number, iy: number) {
-    const x0 = m[ix];
-    const x1 = m[ix + 1];
-    const y0 = m[iy];
-    const y1 = m[iy + 1];
+    const a1 = a + 1;
+    const b1 = b + 1;
+    const c1 = c + 1;
+    const d1 = d + 1;
+    const ix1 = ix + 1;
+    const iy1 = iy + 1;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const x0: number = m[ix];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const x1: number = m[ix1];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const y0: number = m[iy];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const y1: number = m[iy1];
 
     ADD64AA(v, a, b); // v[a,a+1] += v[b,b+1] ... in JS we must store a uint64 as two uint32s
     ADD64AC(v, a, x0, x1); // v[a, a+1] += x ... x0 is the low 32 bits of x, x1 is the high 32 bits
 
     // v[d,d+1] = (v[d,d+1] xor v[a,a+1]) rotated to the right by 32 bits
-    let xor0 = v[d] ^ v[a];
-    let xor1 = v[d + 1] ^ v[a + 1];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const vd1: number = v[d];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const va1: number = v[a];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const vd1plus: number = v[d1];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const va1plus: number = v[a1];
+    let xor0 = vd1 ^ va1;
+    let xor1 = vd1plus ^ va1plus;
     v[d] = xor1;
-    v[d + 1] = xor0;
+    v[d1] = xor0;
 
     ADD64AA(v, c, d);
 
     // v[b,b+1] = (v[b,b+1] xor v[c,c+1]) rotated right by 24 bits
-    xor0 = v[b] ^ v[c];
-    xor1 = v[b + 1] ^ v[c + 1];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const vb2: number = v[b];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const vc2: number = v[c];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const vb2plus: number = v[b1];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const vc2plus: number = v[c1];
+    xor0 = vb2 ^ vc2;
+    xor1 = vb2plus ^ vc2plus;
     v[b] = (xor0 >>> 24) ^ (xor1 << 8);
-    v[b + 1] = (xor1 >>> 24) ^ (xor0 << 8);
+    v[b1] = (xor1 >>> 24) ^ (xor0 << 8);
 
     ADD64AA(v, a, b);
     ADD64AC(v, a, y0, y1);
 
     // v[d,d+1] = (v[d,d+1] xor v[a,a+1]) rotated right by 16 bits
-    xor0 = v[d] ^ v[a];
-    xor1 = v[d + 1] ^ v[a + 1];
+    const vd3: number = v[d];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const va3: number = v[a];
+    const vd3plus: number = v[d1];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const va3plus: number = v[a1];
+    xor0 = vd3 ^ va3;
+    xor1 = vd3plus ^ va3plus;
     v[d] = (xor0 >>> 16) ^ (xor1 << 16);
-    v[d + 1] = (xor1 >>> 16) ^ (xor0 << 16);
+    v[d1] = (xor1 >>> 16) ^ (xor0 << 16);
 
     ADD64AA(v, c, d);
 
     // v[b,b+1] = (v[b,b+1] xor v[c,c+1]) rotated right by 63 bits
-    xor0 = v[b] ^ v[c];
-    xor1 = v[b + 1] ^ v[c + 1];
+    const vb4: number = v[b];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const vc4: number = v[c];
+    const vb4plus: number = v[b1];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const vc4plus: number = v[c1];
+    xor0 = vb4 ^ vc4;
+    xor1 = vb4plus ^ vc4plus;
     v[b] = (xor1 >>> 31) ^ (xor0 << 1);
-    v[b + 1] = (xor0 >>> 31) ^ (xor1 << 1);
+    v[b1] = (xor0 >>> 31) ^ (xor1 << 1);
 }
 
 // Initialization Vector
@@ -112,7 +177,7 @@ const SIGMA8 = [
     11, 7, 14, 12, 1, 3, 9, 5, 0, 15, 4, 8, 6, 2, 10, 6, 15, 14, 9, 11, 3, 0, 8, 12, 2, 13, 7, 1, 4,
     10, 5, 10, 2, 8, 4, 7, 6, 1, 5, 15, 11, 9, 14, 3, 12, 13, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
     11, 12, 13, 14, 15, 14, 10, 4, 8, 9, 15, 13, 6, 1, 12, 0, 2, 11, 7, 5, 3,
-];
+] as const;
 
 // These are offsets into a uint64 buffer.
 // Multiply them all by 2 to make them offsets into a uint32 buffer,
@@ -133,19 +198,32 @@ function blake2bCompress(ctx: Blake2bContext, last: boolean) {
 
     // init work variables
     for (i = 0; i < 16; i++) {
-        v[i] = ctx.h[i];
-        v[i + 16] = BLAKE2B_IV32[i];
+        const i16 = i + 16;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const ctxH: number = ctx.h[i];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const iv: number = BLAKE2B_IV32[i];
+        v[i] = ctxH;
+        v[i16] = iv;
     }
 
     // low 64 bits of offset
-    v[24] = v[24] ^ ctx.t;
-    v[25] = v[25] ^ (ctx.t / 0x100000000);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const v24: number = v[24];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const v25: number = v[25];
+    v[24] = v24 ^ ctx.t;
+    v[25] = v25 ^ (ctx.t / 0x100000000);
     // high 64 bits not supported, offset may not be higher than 2**53-1
 
     // last block flag set ?
     if (last) {
-        v[28] = ~v[28];
-        v[29] = ~v[29];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const v28: number = v[28];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const v29: number = v[29];
+        v[28] = ~v28;
+        v[29] = ~v29;
     }
 
     // get little-endian words
@@ -155,18 +233,73 @@ function blake2bCompress(ctx: Blake2bContext, last: boolean) {
 
     // twelve rounds of mixing
     for (i = 0; i < 12; i++) {
-        B2B_G(0, 8, 16, 24, SIGMA82[i * 16 + 0], SIGMA82[i * 16 + 1]);
-        B2B_G(2, 10, 18, 26, SIGMA82[i * 16 + 2], SIGMA82[i * 16 + 3]);
-        B2B_G(4, 12, 20, 28, SIGMA82[i * 16 + 4], SIGMA82[i * 16 + 5]);
-        B2B_G(6, 14, 22, 30, SIGMA82[i * 16 + 6], SIGMA82[i * 16 + 7]);
-        B2B_G(0, 10, 20, 30, SIGMA82[i * 16 + 8], SIGMA82[i * 16 + 9]);
-        B2B_G(2, 12, 22, 24, SIGMA82[i * 16 + 10], SIGMA82[i * 16 + 11]);
-        B2B_G(4, 14, 16, 26, SIGMA82[i * 16 + 12], SIGMA82[i * 16 + 13]);
-        B2B_G(6, 8, 18, 28, SIGMA82[i * 16 + 14], SIGMA82[i * 16 + 15]);
+        const base = i * 16;
+        const idx1 = base + 1;
+        const idx2 = base + 2;
+        const idx3 = base + 3;
+        const idx4 = base + 4;
+        const idx5 = base + 5;
+        const idx6 = base + 6;
+        const idx7 = base + 7;
+        const idx8 = base + 8;
+        const idx9 = base + 9;
+        const idx10 = base + 10;
+        const idx11 = base + 11;
+        const idx12 = base + 12;
+        const idx13 = base + 13;
+        const idx14 = base + 14;
+        const idx15 = base + 15;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const s0: number = SIGMA82[base];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const s1: number = SIGMA82[idx1];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const s2: number = SIGMA82[idx2];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const s3: number = SIGMA82[idx3];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const s4: number = SIGMA82[idx4];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const s5: number = SIGMA82[idx5];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const s6: number = SIGMA82[idx6];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const s7: number = SIGMA82[idx7];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const s8: number = SIGMA82[idx8];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const s9: number = SIGMA82[idx9];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const s10: number = SIGMA82[idx10];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const s11: number = SIGMA82[idx11];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const s12: number = SIGMA82[idx12];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const s13: number = SIGMA82[idx13];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const s14: number = SIGMA82[idx14];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const s15: number = SIGMA82[idx15];
+        B2B_G(0, 8, 16, 24, s0, s1);
+        B2B_G(2, 10, 18, 26, s2, s3);
+        B2B_G(4, 12, 20, 28, s4, s5);
+        B2B_G(6, 14, 22, 30, s6, s7);
+        B2B_G(0, 10, 20, 30, s8, s9);
+        B2B_G(2, 12, 22, 24, s10, s11);
+        B2B_G(4, 14, 16, 26, s12, s13);
+        B2B_G(6, 8, 18, 28, s14, s15);
     }
 
     for (i = 0; i < 16; i++) {
-        ctx.h[i] = ctx.h[i] ^ v[i] ^ v[i + 16];
+        const i16 = i + 16;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const ctxH: number = ctx.h[i];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const vi: number = v[i];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const vi16: number = v[i16];
+        ctx.h[i] = ctxH ^ vi ^ vi16;
     }
 }
 
@@ -268,7 +401,9 @@ function Blake2b(
 
     // initialize hash state
     for (let i = 0; i < 16; i++) {
-        this.h[i] = BLAKE2B_IV32[i] ^ B2B_GET32(parameter_block, i * 4);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const iv: number = BLAKE2B_IV32[i];
+        this.h[i] = iv ^ B2B_GET32(parameter_block, i * 4);
     }
 
     // key the hash, if applicable
@@ -308,7 +443,9 @@ function blake2bUpdate(ctx: Blake2bContext, input: Uint8Array) {
             blake2bCompress(ctx, false); // compress (not last)
             ctx.c = 0; // counter to zero
         }
-        ctx.b[ctx.c++] = input[i];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const inputByte: number = input[i];
+        ctx.b[ctx.c++] = inputByte;
     }
 }
 
@@ -324,7 +461,10 @@ function blake2bFinal(ctx: Blake2bContext, out: Uint8Array) {
     blake2bCompress(ctx, true); // final block flag = 1
 
     for (let i = 0; i < ctx.outlen; i++) {
-        out[i] = ctx.h[i >> 2] >> (8 * (i & 3));
+        const hIndex = i >> 2;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const hVal: number = ctx.h[hIndex];
+        out[i] = hVal >> (8 * (i & 3));
     }
 
     return out;
@@ -332,7 +472,11 @@ function blake2bFinal(ctx: Blake2bContext, out: Uint8Array) {
 
 function hexSlice(buf: Uint8Array) {
     let str = '';
-    for (let i = 0; i < buf.length; i++) str += toHex(buf[i]);
+    for (let i = 0; i < buf.length; i++) {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const byte: number = buf[i];
+        str += toHex(byte);
+    }
 
     return str;
 }

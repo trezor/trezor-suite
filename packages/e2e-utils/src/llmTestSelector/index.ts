@@ -574,14 +574,19 @@ const main = async () => {
     let headRef = 'HEAD';
 
     for (let i = 0; i < args.length; i++) {
-        if ((args[i] === '--api-key' || args[i] === '-k') && args[i + 1]) {
-            apiKey = args[++i];
-        } else if (args[i] === '--coverage-map' && args[i + 1]) {
-            indexFile = args[++i];
-        } else if (args[i] === '--llm-analysis' && args[i + 1]) {
-            llmAnalysisFile = args[++i];
-        } else if (args[i] === '--head-ref' && args[i + 1]) {
-            headRef = args[++i];
+        const nextArg = args[i + 1];
+        if ((args[i] === '--api-key' || args[i] === '-k') && nextArg) {
+            apiKey = nextArg;
+            i++;
+        } else if (args[i] === '--coverage-map' && nextArg) {
+            indexFile = nextArg;
+            i++;
+        } else if (args[i] === '--llm-analysis' && nextArg) {
+            llmAnalysisFile = nextArg;
+            i++;
+        } else if (args[i] === '--head-ref' && nextArg) {
+            headRef = nextArg;
+            i++;
         }
     }
 

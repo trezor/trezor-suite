@@ -584,10 +584,10 @@ describe('commonSelectors', () => {
             );
 
             expect(result.length).toBe(1);
-            expect(result[0].data.length).toBe(2); // Account + 2 tokens with positive balance
-            expect(result[0].data[0].symbol).toBe('eth'); // Account asset
-            expect(result[0].data[1].contract).toBe('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'); // USDC
-            expect(result[0].data[1].isEnabled).toBe(true);
+            expect(result[0]?.data.length).toBe(2); // Account + 2 tokens with positive balance
+            expect(result[0]?.data[0]?.symbol).toBe('eth'); // Account asset
+            expect(result[0]?.data[1]?.contract).toBe('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'); // USDC
+            expect(result[0]?.data[1]?.isEnabled).toBe(true);
         });
 
         it('should handle accounts with zero balance but tokens with positive balance', () => {
@@ -641,8 +641,8 @@ describe('commonSelectors', () => {
             );
 
             expect(result.length).toBe(1);
-            expect(result[0].data.length).toBe(1); // Only token, no account asset
-            expect(result[0].data[0].contract).toBe('0x4444444444444444444444444444444444444444');
+            expect(result[0]?.data.length).toBe(1); // Only token, no account asset
+            expect(result[0]?.data[0]?.contract).toBe('0x4444444444444444444444444444444444444444');
         });
 
         it('should filter out sections with no assets', () => {
@@ -739,8 +739,8 @@ describe('commonSelectors', () => {
             );
 
             expect(result.length).toBe(1);
-            expect(result[0].data.length).toBe(1); // Only account asset, no tokens
-            expect(result[0].data[0].symbol).toBe('eth');
+            expect(result[0]?.data.length).toBe(1); // Only account asset, no tokens
+            expect(result[0]?.data[0]?.symbol).toBe('eth');
         });
 
         it('should return empty array for buy trading type', () => {
@@ -813,7 +813,7 @@ describe('commonSelectors', () => {
                     data: expect.any(Array),
                 }),
             );
-            expect(result[0].data[0].symbol).toBe('btc');
+            expect(result[0]?.data[0]?.symbol).toBe('btc');
         });
 
         it('should use network display symbol name for account asset name', () => {
@@ -832,9 +832,9 @@ describe('commonSelectors', () => {
                 'exchange',
             );
 
-            const accountAsset = result[3].data[0];
-            expect(accountAsset.symbol).toBe('base');
-            expect(accountAsset.name).toBe('Base Ethereum');
+            const accountAsset = result[3]?.data[0];
+            expect(accountAsset?.symbol).toBe('base');
+            expect(accountAsset?.name).toBe('Base Ethereum');
         });
 
         it('should filter out Cardano accounts when IsCardanoSendEnabled feature flag is disabled', () => {
@@ -873,7 +873,7 @@ describe('commonSelectors', () => {
             );
 
             expect(result.length).toBe(1);
-            expect(result[0].sectionData.symbol).toBe('btc');
+            expect(result[0]?.sectionData.symbol).toBe('btc');
         });
 
         it('should filter out accounts whose network has no tradeCryptoId', () => {
@@ -915,7 +915,7 @@ describe('commonSelectors', () => {
             );
 
             expect(result.length).toBe(1);
-            expect(result[0].sectionData.symbol).toBe('btc');
+            expect(result[0]?.sectionData.symbol).toBe('btc');
         });
 
         it('should include Cardano accounts when IsCardanoSendEnabled feature flag is enabled', () => {
@@ -1010,9 +1010,9 @@ describe('commonSelectors', () => {
             );
 
             expect(result.length).toBe(1);
-            expect(result[0].data.length).toBe(2); // Account + 2 tokens with positive balance
-            expect(result[0].data[1].contract).toBe('0xA0B86991C6218B36C1D19D4A2E9EB0CE3606EB48'); // USDC
-            expect(result[0].data[1].isEnabled).toBe(true);
+            expect(result[0]?.data.length).toBe(2); // Account + 2 tokens with positive balance
+            expect(result[0]?.data[1]?.contract).toBe('0xA0B86991C6218B36C1D19D4A2E9EB0CE3606EB48'); // USDC
+            expect(result[0]?.data[1]?.isEnabled).toBe(true);
         });
     });
 
@@ -1092,7 +1092,7 @@ describe('commonSelectors', () => {
             );
 
             expect(result.length).toBe(1);
-            expect(result[0].data).toEqual([
+            expect(result[0]?.data).toEqual([
                 expect.objectContaining({ name: 'Ethereum', isEnabled: true }),
                 expect.objectContaining({ name: 'USDC', isEnabled: true }),
                 {
@@ -1157,7 +1157,7 @@ describe('commonSelectors', () => {
             );
 
             expect(result.length).toBe(1);
-            expect(result[0].data).toEqual([
+            expect(result[0]?.data).toEqual([
                 expect.objectContaining({ name: 'Ethereum', isEnabled: true }),
                 expect.objectContaining({ name: 'USDC', isEnabled: true }),
             ]);
@@ -1226,8 +1226,8 @@ describe('commonSelectors', () => {
             const result = selectTradesToWatchByAccount(state);
 
             expect(result.tradesToWatch).toHaveLength(2);
-            expect(result.tradesToWatch[0].data.status).toBe('SUBMITTED');
-            expect(result.tradesToWatch[1].data.status).toBe('CONVERTING');
+            expect(result.tradesToWatch[0]?.data.status).toBe('SUBMITTED');
+            expect(result.tradesToWatch[1]?.data.status).toBe('CONVERTING');
         });
 
         it('should group trades by account correctly', () => {
@@ -1244,10 +1244,10 @@ describe('commonSelectors', () => {
             const result = selectTradesToWatchByAccount(state);
 
             expect(result.tradesByAccount).toHaveLength(2);
-            expect(result.tradesByAccount[0].account.key).toBe('btc1');
-            expect(result.tradesByAccount[0].trades).toHaveLength(1);
-            expect(result.tradesByAccount[1].account.key).toBe('eth1');
-            expect(result.tradesByAccount[1].trades).toHaveLength(1);
+            expect(result.tradesByAccount[0]?.account.key).toBe('btc1');
+            expect(result.tradesByAccount[0]?.trades).toHaveLength(1);
+            expect(result.tradesByAccount[1]?.account.key).toBe('eth1');
+            expect(result.tradesByAccount[1]?.trades).toHaveLength(1);
         });
 
         it('should handle trades with undefined status', () => {
@@ -1264,7 +1264,7 @@ describe('commonSelectors', () => {
             const result = selectTradesToWatchByAccount(state);
 
             expect(result.tradesToWatch).toHaveLength(1);
-            expect(result.tradesToWatch[0].data.status).toBe('CONVERTING');
+            expect(result.tradesToWatch[0]?.data.status).toBe('CONVERTING');
         });
 
         it('should handle trades without account keys', () => {

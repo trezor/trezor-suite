@@ -19,7 +19,9 @@ export const useActiveTradingTypeReaction = () => {
         if (tradingType && enabledTradingTypes.includes(tradingType)) {
             activeTradingType = tradingType;
         } else if (enabledTradingTypes.length > 0) {
-            activeTradingType = enabledTradingTypes[0];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const first: TradingType = enabledTradingTypes[0];
+            activeTradingType = first;
         }
 
         dispatch(tradingActions.setActiveTradingType(activeTradingType));

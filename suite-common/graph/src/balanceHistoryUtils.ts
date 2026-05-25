@@ -171,18 +171,20 @@ export const getAccountHistoryMovementItemETH = ({
         ) {
             if (tx.details.vout.length > 0) {
                 const bchainVout = tx.details.vout[0];
-                const value = new BigNumber(bchainVout.value || '0');
+                if (bchainVout) {
+                    const value = new BigNumber(bchainVout.value || '0');
 
-                if (bchainVout.addresses && bchainVout.addresses.length > 0) {
-                    const txAddrDesc = bchainVout.addresses[0];
+                    if (bchainVout.addresses && bchainVout.addresses.length > 0) {
+                        const txAddrDesc = bchainVout.addresses[0];
 
-                    if (tx.descriptor === txAddrDesc) {
-                        // Check if address is in selfAddrDesc
-                        bh.received = bh.received.plus(value);
-                    }
+                        if (tx.descriptor === txAddrDesc) {
+                            // Check if address is in selfAddrDesc
+                            bh.received = bh.received.plus(value);
+                        }
 
-                    if (tx.descriptor === txAddrDesc) {
-                        countSentToSelf = true;
+                        if (tx.descriptor === txAddrDesc) {
+                            countSentToSelf = true;
+                        }
                     }
                 }
             }

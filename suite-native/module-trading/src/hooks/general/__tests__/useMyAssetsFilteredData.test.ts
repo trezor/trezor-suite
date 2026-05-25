@@ -81,8 +81,8 @@ describe('useMyAssetsFilteredData', () => {
         });
 
         expect(result.current.filteredSections).toHaveLength(1);
-        expect(result.current.filteredSections[0].data).toHaveLength(1);
-        expect(result.current.filteredSections[0].data[0]).toBe(btcAsset);
+        expect(result.current.filteredSections[0]?.data).toHaveLength(1);
+        expect(result.current.filteredSections[0]?.data[0]).toBe(btcAsset);
     });
 
     it('should filter assets by text search on name', () => {
@@ -93,8 +93,8 @@ describe('useMyAssetsFilteredData', () => {
         });
 
         expect(result.current.filteredSections).toHaveLength(1);
-        expect(result.current.filteredSections[0].data).toHaveLength(1);
-        expect(result.current.filteredSections[0].data[0]).toBe(btcAsset);
+        expect(result.current.filteredSections[0]?.data).toHaveLength(1);
+        expect(result.current.filteredSections[0]?.data[0]).toBe(btcAsset);
     });
 
     it('should filter assets by text search on symbol', () => {
@@ -106,7 +106,7 @@ describe('useMyAssetsFilteredData', () => {
 
         // ethAsset.symbol = 'eth', usdcAsset.symbol = 'eth'
         expect(result.current.filteredSections).toHaveLength(1);
-        expect(result.current.filteredSections[0].data).toHaveLength(2);
+        expect(result.current.filteredSections[0]?.data).toHaveLength(2);
     });
 
     it('should filter assets by text search on tokenSymbol', () => {
@@ -117,8 +117,8 @@ describe('useMyAssetsFilteredData', () => {
         });
 
         expect(result.current.filteredSections).toHaveLength(1);
-        expect(result.current.filteredSections[0].data).toHaveLength(1);
-        expect(result.current.filteredSections[0].data[0]).toBe(usdcAsset);
+        expect(result.current.filteredSections[0]?.data).toHaveLength(1);
+        expect(result.current.filteredSections[0]?.data[0]).toBe(usdcAsset);
     });
 
     it('should filter assets by text search on cryptoId', () => {
@@ -129,8 +129,8 @@ describe('useMyAssetsFilteredData', () => {
         });
 
         expect(result.current.filteredSections).toHaveLength(1);
-        expect(result.current.filteredSections[0].data).toHaveLength(1);
-        expect(result.current.filteredSections[0].data[0]).toBe(usdcAsset);
+        expect(result.current.filteredSections[0]?.data).toHaveLength(1);
+        expect(result.current.filteredSections[0]?.data[0]).toBe(usdcAsset);
     });
 
     it('should be case-insensitive', () => {
@@ -141,7 +141,7 @@ describe('useMyAssetsFilteredData', () => {
         });
 
         expect(result.current.filteredSections).toHaveLength(1);
-        expect(result.current.filteredSections[0].data[0]).toBe(btcAsset);
+        expect(result.current.filteredSections[0]?.data[0]).toBe(btcAsset);
     });
 
     it('should remove sections with no matching assets', () => {
@@ -163,8 +163,8 @@ describe('useMyAssetsFilteredData', () => {
 
         // Only usdcAsset in ethSection matches "USD"; disabled row should be hidden
         expect(result.current.filteredSections).toHaveLength(1);
-        const ethSectionData = result.current.filteredSections[0].data;
-        expect(ethSectionData.every(item => item.isEnabled)).toBe(true);
+        const ethSectionData = result.current.filteredSections[0]?.data;
+        expect(ethSectionData?.every(item => item.isEnabled)).toBe(true);
     });
 
     it('should hide disabled rows when network filter is active', () => {
@@ -174,15 +174,15 @@ describe('useMyAssetsFilteredData', () => {
             result.current.setFilterSymbol('eth' as NetworkSymbol);
         });
 
-        const ethSectionData = result.current.filteredSections[0].data;
-        expect(ethSectionData.every(item => item.isEnabled)).toBe(true);
+        const ethSectionData = result.current.filteredSections[0]?.data;
+        expect(ethSectionData?.every(item => item.isEnabled)).toBe(true);
     });
 
     it('should show disabled rows when no filter is active', () => {
         const { result } = renderFilter();
 
-        const ethSectionData = result.current.filteredSections[1].data;
-        expect(ethSectionData.some(item => !item.isEnabled)).toBe(true);
+        const ethSectionData = result.current.filteredSections[1]?.data;
+        expect(ethSectionData?.some(item => !item.isEnabled)).toBe(true);
     });
 
     it('should combine network symbol filter with text search', () => {
@@ -194,8 +194,8 @@ describe('useMyAssetsFilteredData', () => {
         });
 
         expect(result.current.filteredSections).toHaveLength(1);
-        expect(result.current.filteredSections[0].data).toHaveLength(1);
-        expect(result.current.filteredSections[0].data[0]).toBe(usdcAsset);
+        expect(result.current.filteredSections[0]?.data).toHaveLength(1);
+        expect(result.current.filteredSections[0]?.data[0]).toBe(usdcAsset);
     });
 
     it('should return correct availableNetworks from all enabled assets', () => {
@@ -237,7 +237,7 @@ describe('useMyAssetsFilteredData', () => {
                 result.current.setFilterValue('eth');
             });
 
-            const { data } = result.current.filteredSections[0];
+            const { data } = result.current.filteredSections[0]!;
             expect(data[0]).toBe(ethAsset);
             expect(data[1]).toBe(ethNameServiceAsset);
         });
@@ -251,7 +251,7 @@ describe('useMyAssetsFilteredData', () => {
                 result.current.setFilterValue('ethereum');
             });
 
-            const { data } = result.current.filteredSections[0];
+            const { data } = result.current.filteredSections[0]!;
             expect(data[0]).toBe(ethAsset);
         });
 
@@ -284,7 +284,7 @@ describe('useMyAssetsFilteredData', () => {
                 result.current.setFilterValue('ether');
             });
 
-            const { data } = result.current.filteredSections[0];
+            const { data } = result.current.filteredSections[0]!;
             // ethAsset: name='Ethereum' startsWith 'ether' → weight 2
             // nameIncludesAsset: name='Wrapped Ether' includes 'ether' → weight 4
             expect(data[0]).toBe(ethAsset);
@@ -319,7 +319,7 @@ describe('useMyAssetsFilteredData', () => {
                 result.current.setFilterValue('itc');
             });
 
-            const { data } = result.current.filteredSections[0];
+            const { data } = result.current.filteredSections[0]!;
             // itcTokenAsset: tokenSymbol='itcx' startsWith 'itc' → weight 3
             // btcAsset: name='Bitcoin' includes 'itc' → weight 4
             expect(data[0]).toBe(itcTokenAsset);
@@ -334,7 +334,7 @@ describe('useMyAssetsFilteredData', () => {
                 result.current.setFilterValue('e');
             });
 
-            const { data } = result.current.filteredSections[0];
+            const { data } = result.current.filteredSections[0]!;
             expect(data[0]).toBe(ethNameServiceAsset);
             expect(data[1]).toBe(ethAsset);
         });

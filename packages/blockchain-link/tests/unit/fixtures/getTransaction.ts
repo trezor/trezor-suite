@@ -76,10 +76,14 @@ const blockfrostFixture = {
     pool_retire_count: 0,
 };
 
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const firstOutputAmount: (typeof blockfrostFixture.output_amount)[number] =
+    blockfrostFixture.output_amount[0];
+
 const blockfrostTx = {
     type: 'unknown',
     txid: 'deadbeef',
-    amount: blockfrostFixture.output_amount[0].quantity,
+    amount: firstOutputAmount.quantity,
     blockHash: blockfrostFixture.block,
     blockHeight: blockfrostFixture.block_height,
     fee: blockfrostFixture.fees,

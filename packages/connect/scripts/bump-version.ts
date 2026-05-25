@@ -12,7 +12,7 @@ if (args.length !== 1) {
     throw new Error('semver arg is missing');
 }
 
-const [semver] = args;
+const semver = args[0] ?? '';
 
 const allowedSemvers = ['patch', 'prepatch', 'minor', 'preminor', 'prerelease'];
 if (!allowedSemvers.includes(semver)) {

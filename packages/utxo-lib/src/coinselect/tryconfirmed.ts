@@ -6,7 +6,8 @@ function filterUtxos(utxos: CoinSelectInput[], minConfOwn: number, minConfOther:
     const unusable: CoinSelectInput[] = [];
 
     for (let i = 0; i < utxos.length; i++) {
-        const utxo = utxos[i];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const utxo: CoinSelectInput = utxos[i];
 
         const isUsed = utxo.own
             ? utxo.confirmations >= minConfOwn
@@ -61,7 +62,8 @@ export function tryConfirmed(
         let usable: CoinSelectInput[] = [];
 
         for (i = 0; i < trials.length; i++) {
-            const trial = trials[i];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const trial: (typeof trials)[number] = trials[i];
 
             // since the restrictions are always loosening, we can just filter the unusable so far
             const filterResult = filterUtxos(unusable, trial.own, trial.other);

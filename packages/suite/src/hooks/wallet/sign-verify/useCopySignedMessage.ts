@@ -39,7 +39,7 @@ export const useCopySignedMessage = <T extends SignedMessageData>(
 
         return format(
             { message, address, signature },
-            (network?.name || '').split('(')[0].toUpperCase(),
+            (network?.name || '').split('(')[0]?.toUpperCase() ?? '',
         );
     };
 

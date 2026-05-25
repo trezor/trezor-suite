@@ -1,4 +1,4 @@
-import type { TrezorConnect } from '../../..';
+import type { PrecomposedResult, TrezorConnect } from '../../..';
 import { asDeviceUniquePath } from '../../..';
 
 export const getAddress = async (api: TrezorConnect) => {
@@ -524,7 +524,9 @@ export const composeTransaction = async (api: TrezorConnect) => {
     });
 
     if (precompose.success) {
-        const tx = precompose.payload[0];
+        const { payload } = precompose;
+        // @ts-expect-error noUncheckedIndexedAccess: test fixture always has one element
+        const tx: PrecomposedResult = payload[0];
         if (tx.type === 'error') {
             tx.error.toLowerCase();
         }

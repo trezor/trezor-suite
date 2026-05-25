@@ -349,8 +349,14 @@ export const selectTransactionsWithMissingRates = (
     const transactions = selectTransactions(state);
     const historicFiatRates = selectHistoricFiatRates(state);
 
+    const accountTransactions: WalletAccountTransaction[] =
+        accountKey && transactions[accountKey] ? transactions[accountKey] : [];
+    const scopedTransactions: Record<string, WalletAccountTransaction[]> = accountKey
+        ? { [accountKey]: accountTransactions }
+        : transactions;
+
     return pipe(
-        accountKey ? { [accountKey]: transactions[accountKey] } : transactions,
+        scopedTransactions,
         D.mapWithKey((key, txs) => ({
             account: selectAccountByKey(state, key as AccountKey),
             txs: txs.filter(tx => {

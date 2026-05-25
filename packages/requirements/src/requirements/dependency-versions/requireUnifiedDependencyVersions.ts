@@ -147,7 +147,7 @@ const pickCanonicalVersion = (occurrences: VersionOccurrence[]): string => {
         return semver.rcompare(stripRangePrefix(a[0]), stripRangePrefix(b[0]), { loose: true });
     });
 
-    return sorted[0][0];
+    return sorted[0]?.[0] ?? '';
 };
 
 /**

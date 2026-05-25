@@ -35,13 +35,13 @@ export const useConfirmOnTrezorSheet = ({ controlRef }: Props) => {
     const [containerHeight, setContainerHeight] = useState(SCREEN_HEIGHT);
     const [headerHeight, setHeaderHeight] = useState(params?.prevHeaderHeight ?? 0);
 
-    const snapPoints = useMemo(() => {
+    const snapPoints: [number, number, number] = useMemo(() => {
         const totalHeaderHeight = headerHeight + inset.top;
 
         return [containerHeight * 0.8, totalHeaderHeight, 0];
     }, [containerHeight, headerHeight, inset.top]);
 
-    const translateY = useSharedValue(snapPoints[defaultIndex]);
+    const translateY = useSharedValue(snapPoints[defaultIndex] ?? 0);
     const prevTranslationY = useSharedValue(0);
 
     const [isFullscreen, setIsFullscreen] = useState(!params?.initialSnapIndex);
@@ -51,7 +51,8 @@ export const useConfirmOnTrezorSheet = ({ controlRef }: Props) => {
     const snapToIndex = useCallback(
         (index: number) => {
             'worklet';
-            const targetY = snapPoints[index];
+            // @ts-expect-error: noUncheckedIndexedAccess
+            const targetY: number = snapPoints[index];
             translateY.set(
                 withSpring(targetY, {
                     damping: 20,

@@ -126,7 +126,9 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
                 // no default
             }
 
-            const feeLabel = predefinedLevels[index].label;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
+            const feeLabel = predefinedLevel.label;
             resultLevels[feeLabel] = tx;
         });
 

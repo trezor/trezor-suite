@@ -1,18 +1,22 @@
 import type { BankAccount } from 'invity-api';
 
+export const verifiedBankAccount: BankAccount = {
+    bankAccount: 'CZ6508000000192000145399',
+    bic: 'GIBACZPX',
+    holder: 'John Doe',
+    verified: true,
+};
+
+export const unverifiedBankAccount: BankAccount = {
+    bankAccount: 'CZ6508000000192000145400',
+    bic: 'GIBACZPX',
+    holder: 'Jane Smith',
+    verified: false,
+};
+
 export const bankAccounts: BankAccount[] = [
-    {
-        bankAccount: 'CZ6508000000192000145399',
-        bic: 'GIBACZPX',
-        holder: 'John Doe',
-        verified: true,
-    },
-    {
-        bankAccount: 'CZ6508000000192000145400',
-        bic: 'GIBACZPX',
-        holder: 'Jane Smith',
-        verified: false,
-    },
+    verifiedBankAccount,
+    unverifiedBankAccount,
     {
         bankAccount: 'CZ6508000000192000145401',
         bic: 'GIBACZPX',
@@ -20,6 +24,3 @@ export const bankAccounts: BankAccount[] = [
         verified: true,
     },
 ];
-
-export const verifiedBankAccount: BankAccount = bankAccounts[0];
-export const unverifiedBankAccount: BankAccount = bankAccounts[1];

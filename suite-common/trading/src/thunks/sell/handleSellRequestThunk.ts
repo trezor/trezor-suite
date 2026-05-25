@@ -46,13 +46,15 @@ const getQuoteRequestData = ({
     const { outputs, countrySelect, sendCryptoSelect, amountInCrypto } = formValues;
     const decimals = getNetworkDecimalsWithFallback(network.symbol);
 
-    const fiatStringAmount = outputs[0].fiat;
-    const unformattedOutputAmount = outputs[0].amount;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstOutput: (typeof outputs)[number] = outputs[0];
+    const fiatStringAmount = firstOutput.fiat;
+    const unformattedOutputAmount = firstOutput.amount;
     const cryptoStringAmount =
         unformattedOutputAmount && shouldSendInSats
             ? convertAmountSubunitsToUnits(unformattedOutputAmount, decimals)
             : unformattedOutputAmount;
-    const currencySelect = outputs[0].currency;
+    const currencySelect = firstOutput.currency;
 
     if (
         (!fiatStringAmount && (!cryptoStringAmount || Number(cryptoStringAmount) === 0)) ||

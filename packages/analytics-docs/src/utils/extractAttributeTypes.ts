@@ -111,7 +111,10 @@ const stripUndefinedFromUnion = (t: Type): Type => {
     if (!t.isUnion()) return t;
     const nonUndef = t.getUnionTypes().filter(u => !u.isUndefined());
 
-    return nonUndef.length === 1 ? nonUndef[0] : t;
+    // @ts-expect-error noUncheckedIndexedAccess
+    const firstNoUndefed: Type = nonUndef[0];
+
+    return nonUndef.length === 1 ? firstNoUndefed : t;
 };
 
 /** Gets the inner value type from an attribute type (handles optional and generic types like EventDef<T>). */
@@ -186,10 +189,13 @@ const getEventDefTypeArgs = (
         if (Node.isIdentifier(typeName) && typeName.getText() === 'EventDef') {
             const typeArgs = typeRef.getTypeArguments();
             if (typeArgs.length >= 1) {
-                return {
-                    attributesType: typeArgs[0].getType(),
-                    nameType: typeArgs[1]?.getType(),
-                };
+                const firstArg = typeArgs[0];
+                if (firstArg) {
+                    return {
+                        attributesType: firstArg.getType(),
+                        nameType: typeArgs[1]?.getType(),
+                    };
+                }
             }
         }
     }
@@ -199,7 +205,10 @@ const getEventDefTypeArgs = (
     const args = t.getAliasTypeArguments();
     if (args.length < 1) return undefined;
 
-    return { attributesType: args[0], nameType: args[1] };
+    const firstArg = args[0];
+    if (!firstArg) return undefined;
+
+    return { attributesType: firstArg, nameType: args[1] };
 };
 
 /** Key used for events whose attributes type is a single Record/index type (no named properties). */

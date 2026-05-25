@@ -17,7 +17,11 @@ describe('scheduleAction', () => {
 
         let [a, r] = [0, 0];
         while (a < addings.length && r < removals.length) {
-            if (addings[a] < removals[r]) a++;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const adding: number = addings[a];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const removal: number = removals[r];
+            if (adding < removal) a++;
             else r++;
             if (a - r > MAX_LISTENERS) return `More than ${MAX_LISTENERS} simultaneous listeners`;
             if (r > a) return `More listeners removed than added (shouldn't happen)`;
@@ -290,9 +294,16 @@ describe('scheduleAction', () => {
 
         expect(times.length).toEqual(TIMEOUTS.length + 1);
         for (let i = 0; i < TIMEOUTS.length; i++) {
-            const diff = times[i + 1] - times[i];
-            expect(diff).toBeGreaterThanOrEqual(TIMEOUTS[i] - MARGIN);
-            expect(diff).toBeLessThanOrEqual(TIMEOUTS[i] + MARGIN);
+            const nextIndex = i + 1;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const nextTime: number = times[nextIndex];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const currentTime: number = times[i];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const expectedTimeout: number = TIMEOUTS[i];
+            const diff = nextTime - currentTime;
+            expect(diff).toBeGreaterThanOrEqual(expectedTimeout - MARGIN);
+            expect(diff).toBeLessThanOrEqual(expectedTimeout + MARGIN);
         }
         expect(checkListeners()).toBeUndefined();
     });

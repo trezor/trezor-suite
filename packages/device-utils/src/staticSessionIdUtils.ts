@@ -26,15 +26,31 @@ export const isStaticSessionId = (input: unknown): input is StaticSessionId => {
     if (typeof input !== 'string') return false;
     const at = input.split('@');
     if (at.length !== 2) return false;
-    const colon = at[1].split(':');
+    // @ts-expect-error - noUncheckedIndexAccess: at[1] is guaranteed to be a string after length check
+    const atSecond: string = at[1];
+    const colon = atSecond.split(':');
     if (colon.length !== 2) return false;
+    // @ts-expect-error - noUncheckedIndexAccess: at[0] is guaranteed to be a string after length check
+    const atFirst: string = at[0];
+    // @ts-expect-error - noUncheckedIndexAccess: colon[0] is guaranteed to be a string after length check
+    const colonFirst: string = colon[0];
+    // @ts-expect-error - noUncheckedIndexAccess: colon[1] is guaranteed to be a string after length check
+    const colonSecond: string = colon[1];
 
-    return at[0].length > 0 && colon[0].length > 0 && isNonNegativeIntegerString(colon[1]);
+    return atFirst.length > 0 && colonFirst.length > 0 && isNonNegativeIntegerString(colonSecond);
 };
 
 export const parseStaticSessionId = (input: StaticSessionId): ParsedStaticSessionId => {
-    const [firstTestnetAddress, rest] = input.split('@');
-    const [deviceId, instanceStr] = rest.split(':');
+    const [firstTestnetAddressRaw, restRaw] = input.split('@');
+    // @ts-expect-error - noUncheckedIndexAccess: split('@') on a validated StaticSessionId always yields two parts
+    const firstTestnetAddress: string = firstTestnetAddressRaw;
+    // @ts-expect-error - noUncheckedIndexAccess: split('@') on a validated StaticSessionId always yields two parts
+    const rest: string = restRaw;
+    const [deviceIdRaw, instanceStrRaw] = rest.split(':');
+    // @ts-expect-error - noUncheckedIndexAccess: split(':') on a validated StaticSessionId rest always yields two parts
+    const deviceId: string = deviceIdRaw;
+    // @ts-expect-error - noUncheckedIndexAccess: split(':') on a validated StaticSessionId rest always yields two parts
+    const instanceStr: string = instanceStrRaw;
 
     return {
         firstTestnetAddress,

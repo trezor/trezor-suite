@@ -142,8 +142,22 @@ export const getTransactions = async (
     const getSpent = (txid: string, n: number) => !unspentOutputs[txid]?.includes(n);
     */
     const getSpent = () => false;
-    const getTx = (txid: string) => origTxs[txid] || prevTxs[txid];
-    const getVout = (txid: string, vout: number) => getTx(txid).vout[vout];
+    const getTx = (txid: string) => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const origTx: (typeof origTxs)[string] = origTxs[txid];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const prevTx: (typeof prevTxs)[string] = prevTxs[txid];
+
+        return origTx || prevTx;
+    };
+    const getVout = (txid: string, vout: number) => {
+        const tx = getTx(txid);
+        const txVouts = tx.vout;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const v: (typeof txVouts)[number] = txVouts[vout];
+
+        return v;
+    };
 
     const currentHeight = client.getInfo()?.block?.height || 0;
 

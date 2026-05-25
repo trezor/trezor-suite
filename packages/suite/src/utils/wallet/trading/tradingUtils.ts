@@ -89,7 +89,11 @@ export const getComposeAddressPlaceholder = async (
             }
 
             // as a fallback, use the change address of current account
-            return account.addresses?.change[0].address;
+            const change = account.addresses?.change;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const firstChange: NonNullable<typeof change>[number] = change?.[0];
+
+            return firstChange.address;
         }
         case 'ethereum':
             // ethereum address is not used as it breaks calculating fee logic;

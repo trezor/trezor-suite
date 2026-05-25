@@ -36,7 +36,9 @@ export const AccountName = ({ selectedAccount }: AccountNameProps) => {
 
         const observer = new IntersectionObserver(
             ([entry]) => {
-                setIsScrolled(!entry.isIntersecting);
+                if (entry) {
+                    setIsScrolled(!entry.isIntersecting);
+                }
             },
             {
                 root: null,

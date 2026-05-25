@@ -52,9 +52,9 @@ describe('useSectionDataFilter', () => {
         });
 
         expect(result.current.filteredSections).toHaveLength(1);
-        expect(result.current.filteredSections[0].key).toBe('section_a');
-        expect(result.current.filteredSections[0].data).toHaveLength(1);
-        expect(result.current.filteredSections[0].data[0].name).toBe('Apple');
+        expect(result.current.filteredSections[0]?.key).toBe('section_a');
+        expect(result.current.filteredSections[0]?.data).toHaveLength(1);
+        expect(result.current.filteredSections[0]?.data[0]?.name).toBe('Apple');
     });
 
     it('should keep items from multiple sections when both have matches', () => {
@@ -74,7 +74,7 @@ describe('useSectionDataFilter', () => {
             result.current.setFilterValue('Apple');
         });
 
-        expect(result.current.filteredSections[0].label).toBe('Section A');
+        expect(result.current.filteredSections[0]?.label).toBe('Section A');
     });
 
     it('should remove sections with no matching items', () => {
@@ -85,7 +85,7 @@ describe('useSectionDataFilter', () => {
         });
 
         expect(result.current.filteredSections).toHaveLength(1);
-        expect(result.current.filteredSections[0].key).toBe('section_b');
+        expect(result.current.filteredSections[0]?.key).toBe('section_b');
     });
 
     it('should return empty array when no items match', () => {
@@ -130,7 +130,7 @@ describe('useSectionDataFilter', () => {
                 result.current.setFilterValue('a');
             });
 
-            expect(result.current.filteredSections[0].data.map(i => i.name)).toEqual([
+            expect(result.current.filteredSections[0]?.data.map(i => i.name)).toEqual([
                 'Avocado',
                 'Apple',
             ]);

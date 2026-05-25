@@ -141,7 +141,8 @@ export class BackendWebsocketServerMock extends WebSocketServer {
             // find nearest fixture with requested method
             const fixtureIndex = fixtures.findIndex(f => f?.method === method);
             if (fixtureIndex >= 0) {
-                const fixture = fixtures[fixtureIndex];
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const fixture: Fixture = fixtures[fixtureIndex];
                 if (typeof fixture.response === 'function') {
                     data = await fixture.response(request);
                 } else {

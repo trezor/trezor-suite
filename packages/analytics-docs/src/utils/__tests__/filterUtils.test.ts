@@ -119,9 +119,9 @@ describe('getVersionsWithEvents', () => {
         const versionsWithEvents = getVersionsWithEvents([eventA]);
 
         expect(versionsWithEvents.map(v => v.version)).toEqual(['2.0.0', '1.1.0', '1.0.0']);
-        expect(versionsWithEvents[0].events).toEqual([eventA]);
-        expect(versionsWithEvents[1].events).toEqual([eventA]);
-        expect(versionsWithEvents[2].events).toEqual([eventA]);
+        expect(versionsWithEvents[0]?.events).toEqual([eventA]);
+        expect(versionsWithEvents[1]?.events).toEqual([eventA]);
+        expect(versionsWithEvents[2]?.events).toEqual([eventA]);
     });
 
     it('deduplicates events for the same version', () => {
@@ -141,7 +141,7 @@ describe('getVersionsWithEvents', () => {
         const versionsWithEvents = getVersionsWithEvents([eventA]);
 
         expect(versionsWithEvents).toHaveLength(1);
-        expect(versionsWithEvents[0].version).toBe('1.0.0');
-        expect(versionsWithEvents[0].events).toEqual([eventA]);
+        expect(versionsWithEvents[0]?.version).toBe('1.0.0');
+        expect(versionsWithEvents[0]?.events).toEqual([eventA]);
     });
 });

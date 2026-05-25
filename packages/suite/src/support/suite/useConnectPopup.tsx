@@ -77,7 +77,8 @@ export const useConnectPopup = (
     useEffect(() => {
         if (!popupLink || incomingMessages.length === 0) return;
 
-        const message = incomingMessages[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const message: (typeof incomingMessages)[number] = incomingMessages[0];
         onMessagesConsumed();
 
         const processMessage = async (event: ConnectPopupMessage) => {

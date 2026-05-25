@@ -65,7 +65,9 @@ describe('useYieldAccountsVisibility', () => {
             );
 
             expect(result.current.displayedYieldAccountOpportunities).toHaveLength(1);
-            expect(result.current.displayedYieldAccountOpportunities[0].account?.key).toBe('eth-0');
+            expect(result.current.displayedYieldAccountOpportunities[0]?.account?.key).toBe(
+                'eth-0',
+            );
             expect(result.current.hasHiddenYieldAccountOpportunities).toBe(true);
         });
 
@@ -132,7 +134,9 @@ describe('useYieldAccountsVisibility', () => {
             );
 
             expect(result.current.displayedYieldAccountOpportunities).toHaveLength(1);
-            expect(result.current.displayedYieldAccountOpportunities[0].account?.key).toBe('eth-0');
+            expect(result.current.displayedYieldAccountOpportunities[0]?.account?.key).toBe(
+                'eth-0',
+            );
         });
 
         it('should prefer normal accountType over ledger when balances are equal but non-zero', () => {
@@ -168,7 +172,7 @@ describe('useYieldAccountsVisibility', () => {
             );
 
             expect(result.current.displayedYieldAccountOpportunities).toHaveLength(1);
-            expect(result.current.displayedYieldAccountOpportunities[0].account?.key).toBe(
+            expect(result.current.displayedYieldAccountOpportunities[0]?.account?.key).toBe(
                 'base-normal-3',
             );
         });
@@ -199,7 +203,7 @@ describe('useYieldAccountsVisibility', () => {
             );
 
             expect(result.current.displayedYieldAccountOpportunities).toHaveLength(1);
-            expect(result.current.displayedYieldAccountOpportunities[0].account?.key).toBe(
+            expect(result.current.displayedYieldAccountOpportunities[0]?.account?.key).toBe(
                 'base-normal-5',
             );
         });
@@ -224,7 +228,9 @@ describe('useYieldAccountsVisibility', () => {
             );
 
             expect(result.current.displayedYieldAccountOpportunities).toHaveLength(1);
-            expect(result.current.displayedYieldAccountOpportunities[0].account?.key).toBe('eth-2');
+            expect(result.current.displayedYieldAccountOpportunities[0]?.account?.key).toBe(
+                'eth-2',
+            );
         });
     });
 });

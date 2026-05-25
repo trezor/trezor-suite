@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { Translation, type TranslationKey } from '@suite/intl';
 import { selectAdapterStatus } from '@suite-common/bluetooth';
+import { type BluetoothAdapterStatus } from '@suite-common/bluetooth/src/types';
 import { Banner, Modal, Paragraph } from '@trezor/components';
 
 import { openSystemSettingsThunk } from 'src/actions/bluetooth/openSystemSettingsThunk';
@@ -39,7 +40,7 @@ export const BluetoothAdapterStatusModal = ({ onCancel }: BluetoothAdapterStatus
         openBluetoothSettings('bluetooth-permissions');
     };
 
-    const statuses: Record<string, AdapterIssueSolution> = {
+    const statuses: Partial<Record<BluetoothAdapterStatus, AdapterIssueSolution>> = {
         disabled: {
             title: 'TR_BLUETOOTH_TURNED_OFF',
             description: 'TR_BLUETOOTH_TURNED_OFF_TEXT',
@@ -61,6 +62,8 @@ export const BluetoothAdapterStatusModal = ({ onCancel }: BluetoothAdapterStatus
     };
 
     const status = statuses[bluetoothAdapterStatus];
+
+    if (!status) return null;
 
     return (
         <Modal

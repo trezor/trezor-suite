@@ -4,6 +4,7 @@ import { setFlag } from '@suite/flags';
 import { suiteSettingsActions } from '@suite/settings';
 import type { BackupType } from '@suite-common/suite-types';
 import { Model } from '@trezor/trezor-user-env-link';
+import { getIndexOrThrow } from '@trezor/utils';
 
 import { step } from '../../common';
 import { AnalyticsSection } from '../analyticsSection';
@@ -104,7 +105,8 @@ export class OnboardingPage {
         const code = await this.device.getTHPPairingCode();
 
         for (let i = 0; i < code.length; i++) {
-            await this.pairingInputAtIndex(i).fill(code[i]);
+            // index is provably valid by loop bound
+            await this.pairingInputAtIndex(i).fill(getIndexOrThrow(code, i));
         }
     }
 

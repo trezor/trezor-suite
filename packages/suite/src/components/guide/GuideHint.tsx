@@ -33,7 +33,7 @@ export const GuideHint = ({ children }: BlockquoteHTMLAttributes<HTMLQuoteElemen
     if (message?.[0]) {
         // Copy the array and mutate the first element so that it does not affect the original array nested in the children prop
         updatedMessage = [...message];
-        updatedMessage[0] = updatedMessage[0].replace(REGEX, '');
+        updatedMessage[0] = updatedMessage[0]?.replace(REGEX, '') ?? '';
     } else {
         // If the object does not have the expected format, log an error but display the component anyway.
         console.error('Unexpected intent of Guide hint.');

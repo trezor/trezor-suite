@@ -67,9 +67,14 @@ export abstract class AbstractMiscGetAddress<
             return `Export multiple ${coinName} addresses`;
         }
         if (showAccountInInfo) {
-            return `Export ${coinName} address for account #${
-                fromHardened(this.params[0].proto.address_n[2]) + 1
-            }`;
+            const { params } = this;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const firstParam: (typeof params)[number] = params[0];
+            const { address_n } = firstParam.proto;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const accountIndex: number = address_n[2];
+
+            return `Export ${coinName} address for account #${fromHardened(accountIndex) + 1}`;
         }
 
         return `Export ${coinName} address`;
@@ -77,10 +82,14 @@ export abstract class AbstractMiscGetAddress<
 
     getButtonRequestData(code: string) {
         if (code === 'ButtonRequest_Address') {
+            const { params, progress } = this;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const currentParam: (typeof params)[number] = params[progress];
+
             return {
                 type: 'address' as const,
-                serializedPath: getSerializedPath(this.params[this.progress].proto.address_n),
-                address: this.params[this.progress].address || 'not-set',
+                serializedPath: getSerializedPath(currentParam.proto.address_n),
+                address: currentParam.address || 'not-set',
             };
         }
     }
@@ -93,11 +102,16 @@ export abstract class AbstractMiscGetAddress<
             };
         }
 
+        const { params } = this;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstParam: (typeof params)[number] = params[0];
+        const { address_n } = firstParam.proto;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const accountIndex: number = address_n[2];
+
         return {
             view: 'export-address' as const,
-            label: `Export ${coinName} address for account #${
-                fromHardened(this.params[0].proto.address_n[2]) + 1
-            }`,
+            label: `Export ${coinName} address for account #${fromHardened(accountIndex) + 1}`,
         };
     }
 
@@ -113,8 +127,10 @@ export abstract class AbstractMiscGetAddress<
             mac?: string;
         }[] = [];
 
-        for (let i = 0; i < this.params.length; i++) {
-            const batch = this.params[i];
+        const { params } = this;
+        for (let i = 0; i < params.length; i++) {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const batch: (typeof params)[number] = params[i];
             if (batch.proto.show_display) {
                 const silent = await this._call({
                     ...batch,
@@ -140,7 +156,7 @@ export abstract class AbstractMiscGetAddress<
             if (this.hasBundle) {
                 sendCoreMessage(
                     createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
-                        total: this.params.length,
+                        total: params.length,
                         progress: i,
                         response,
                     }),

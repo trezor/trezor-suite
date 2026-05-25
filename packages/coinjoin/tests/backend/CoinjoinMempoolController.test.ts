@@ -98,10 +98,14 @@ describe('CoinjoinMempoolController', () => {
     it('Replace-by-fee', async () => {
         const outpointCollision = { txid: 'foo', vout: 3 };
         const a1 = TX1;
-        a1.vin[0] = { ...a1.vin[0], ...outpointCollision };
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const a1Vin0: (typeof a1.vin)[number] = a1.vin[0];
+        a1.vin[0] = { ...a1Vin0, ...outpointCollision };
         const b = TX2;
         const a2 = TX4;
-        a2.vin[1] = { ...a2.vin[1], ...outpointCollision };
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const a2Vin1: (typeof a2.vin)[number] = a2.vin[1];
+        a2.vin[1] = { ...a2Vin1, ...outpointCollision };
 
         client.setMempoolTxs([a1]);
         await mempool.start();

@@ -78,7 +78,7 @@ describe('TradingReceiveAccountsPickerScreen', () => {
 
         const { getByText } = renderScreen(overridesWithAccounts(accounts));
 
-        expect(getByText(accounts[0].accountLabel!)).toBeTruthy();
+        expect(getByText(accounts[0]?.accountLabel ?? '')).toBeTruthy();
     });
 
     it('should render account list with accounts for exchange', () => {
@@ -86,7 +86,7 @@ describe('TradingReceiveAccountsPickerScreen', () => {
 
         const { getByText } = renderScreen(overridesWithAccounts(accounts));
 
-        expect(getByText(accounts[0].accountLabel!)).toBeTruthy();
+        expect(getByText(accounts[0]?.accountLabel ?? '')).toBeTruthy();
     });
 
     it('should render empty state when no account exist', () => {

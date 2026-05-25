@@ -100,7 +100,8 @@ export class TransactionComposer {
         });
 
         if (!atLeastOneValid) {
-            const lastLevel = levels[levels.length - 1];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const lastLevel: (typeof levels)[number] = levels[levels.length - 1];
             let lastFee = new BigNumber(lastLevel.feePerUnit);
             while (lastFee.gt(this.coinInfo.minFee) && this.composed.custom === undefined) {
                 lastFee = lastFee.minus(1);
@@ -161,9 +162,10 @@ export class TransactionComposer {
         const { addresses } = account;
         if (!addresses) return { type: 'error', error: 'ADDRESSES-NOT-SET' };
         // find not used change address or fallback to the last in the list
-        const changeAddress =
-            addresses.change.find(a => !a.transfers) ||
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const lastChange: (typeof addresses.change)[number] =
             addresses.change[addresses.change.length - 1];
+        const changeAddress = addresses.change.find(a => !a.transfers) || lastChange;
         // const inputAmounts = coinInfo.segwit || coinInfo.forkid !== null || coinInfo.network.consensusBranchId !== null;
 
         return composeTx({

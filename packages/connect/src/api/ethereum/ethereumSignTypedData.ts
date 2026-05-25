@@ -6,6 +6,7 @@ import type { TypedDataDomain } from 'viem';
 import type { EthereumSignTypedDataTypes } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import { getIndexOrThrow } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { messageToHex } from '../../utils/formatUtils';
@@ -27,7 +28,8 @@ export function parseArrayType(arrayTypeName: string) {
             `typename ${arrayTypeName} could not be parsed as an EIP-712 array`,
         );
     }
-    const [_, entryTypeName, arraySize] = arrayMatch;
+    const entryTypeName = arrayMatch[1] ?? '';
+    const arraySize = arrayMatch[2] ?? '';
 
     return {
         entryTypeName,
@@ -108,7 +110,8 @@ export function encodeData(typeName: string, data: any) {
     }
     const numberMatch = paramTypeNumber.exec(typeName);
     if (numberMatch) {
-        const [_, intType, bits] = numberMatch;
+        const intType = numberMatch[1] ?? '';
+        const bits = numberMatch[2] ?? '';
         const bytes = Math.ceil(parseInt(bits, 10) / 8);
 
         return intToHex(data, bytes, intType === 'int');
@@ -143,7 +146,8 @@ export function getFieldType(
 ): PROTO.EthereumFieldType {
     const arrayMatch = paramTypeArray.exec(typeName);
     if (arrayMatch) {
-        const [_, arrayItemTypeName, arraySize] = arrayMatch;
+        const arrayItemTypeName = arrayMatch[1] ?? '';
+        const arraySize = arrayMatch[2] ?? '';
         const entryType = getFieldType(arrayItemTypeName, types);
 
         return {
@@ -155,7 +159,8 @@ export function getFieldType(
 
     const numberMatch = paramTypeNumber.exec(typeName);
     if (numberMatch) {
-        const [_, type, bits] = numberMatch;
+        const type = numberMatch[1] ?? '';
+        const bits = numberMatch[2] ?? '';
 
         return {
             data_type: type === 'uint' ? PROTO.EthereumDataType.UINT : PROTO.EthereumDataType.INT,
@@ -165,7 +170,7 @@ export function getFieldType(
 
     const bytesMatch = paramTypeBytes.exec(typeName);
     if (bytesMatch) {
-        const [_, size] = bytesMatch;
+        const size = bytesMatch[1] ?? '';
 
         return {
             data_type: PROTO.EthereumDataType.BYTES,
@@ -181,9 +186,12 @@ export function getFieldType(
     }
 
     if (typeName in types) {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const typeDef: (typeof types)[string] = types[typeName];
+
         return {
             data_type: PROTO.EthereumDataType.STRUCT,
-            size: types[typeName].length,
+            size: typeDef.length,
             struct_name: typeName,
         };
     }
@@ -215,7 +223,7 @@ const arrayBufferToHex = (buf: ArrayBuffer) => {
     const bytes = new Uint8Array(buf);
     let hex = '0x';
     for (let i = 0; i < bytes.length; i += 1) {
-        hex += bytes[i].toString(16).padStart(2, '0');
+        hex += getIndexOrThrow(bytes, i).toString(16).padStart(2, '0');
     }
 
     return hex;

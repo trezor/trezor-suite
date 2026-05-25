@@ -52,8 +52,12 @@ const requestPrevTxInfo = ({
                 `requestPrevTxInfo: Requested unknown TXINPUT: ${tx_hash}`,
             );
 
+        const { inputs } = tx;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const prevInput: (typeof inputs)[number] = inputs[details.request_index];
+
         return typedCall('TxAckPrevInput', 'TxRequest', {
-            tx: { input: tx.inputs[details.request_index] },
+            tx: { input: prevInput },
         });
     }
     if (request_type === 'TXOUTPUT') {
@@ -64,8 +68,12 @@ const requestPrevTxInfo = ({
                 `requestPrevTxInfo: Requested unknown TXOUTPUT: ${tx_hash}`,
             );
 
+        const { bin_outputs } = tx;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const prevOutput: (typeof bin_outputs)[number] = bin_outputs[details.request_index];
+
         return typedCall('TxAckPrevOutput', 'TxRequest', {
-            tx: { output: tx.bin_outputs[details.request_index] },
+            tx: { output: prevOutput },
         });
     }
     if (request_type === 'TXORIGINPUT') {
@@ -76,8 +84,12 @@ const requestPrevTxInfo = ({
                 `requestPrevTxInfo: Requested unknown TXORIGINPUT: ${tx_hash}`,
             );
 
+        const { inputs } = tx;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const origInput: (typeof inputs)[number] = inputs[details.request_index];
+
         return typedCall('TxAckInput', 'TxRequest', {
-            tx: { input: tx.inputs[details.request_index] },
+            tx: { input: origInput },
         });
     }
     if (request_type === 'TXORIGOUTPUT') {
@@ -88,8 +100,12 @@ const requestPrevTxInfo = ({
                 `requestPrevTxInfo: Requested unknown TXORIGOUTPUT: ${tx_hash}`,
             );
 
+        const { outputs } = tx;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const origOutput: (typeof outputs)[number] = outputs[details.request_index];
+
         return typedCall('TxAckOutput', 'TxRequest', {
-            tx: { output: tx.outputs[details.request_index] },
+            tx: { output: origOutput },
         });
     }
     if (request_type === 'TXEXTRADATA') {
@@ -139,13 +155,19 @@ const requestSignedTxInfo = ({
     paymentRequests,
 }: SignTxHelperProps) => {
     if (request_type === 'TXINPUT') {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const input: (typeof inputs)[number] = inputs[details.request_index];
+
         return typedCall('TxAckInput', 'TxRequest', {
-            tx: { input: inputs[details.request_index] },
+            tx: { input },
         });
     }
     if (request_type === 'TXOUTPUT') {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const output: (typeof outputs)[number] = outputs[details.request_index];
+
         return typedCall('TxAckOutput', 'TxRequest', {
-            tx: { output: outputs[details.request_index] },
+            tx: { output },
         });
     }
     if (request_type === 'TXPAYMENTREQ') {

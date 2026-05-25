@@ -90,6 +90,9 @@ export const WalletConnectSessionPopupScreen = () => {
     const noNetworksActivated = !pendingProposal?.networks.some(
         network => network.status === 'active',
     );
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstAccount: (typeof accounts)[number] = accounts[0];
+    const accountToShow = selectedDefaultAccount ?? firstAccount;
     const [ignoreWarning, setIgnoreWarning] = useState(false);
     const isDisabled =
         !pendingProposal ||
@@ -199,10 +202,7 @@ export const WalletConnectSessionPopupScreen = () => {
                             <Translation id="moduleConnectPopup.walletConnect.selectedAccount" />
                         </Text>
                         <Card noPadding>
-                            <AccountsListItem
-                                account={selectedDefaultAccount || accounts[0]}
-                                onPress={openModal}
-                            />
+                            <AccountsListItem account={accountToShow} onPress={openModal} />
 
                             <BottomSheetModal
                                 ref={bottomSheetRef}

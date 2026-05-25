@@ -119,17 +119,28 @@ export const getSolStakingAccountsInfo = (account: Account) => {
         return [status, balance];
     });
 
-    const balances: Record<StakeStateType, string> = balanceResults.reduce(
-        (acc, [status, balance]) => ({ ...acc, [status]: balance }),
-        {},
-    );
+    const balances: Record<StakeStateType, string> = balanceResults.reduce((acc, entry) => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const status: StakeStateType = entry[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const balance: string = entry[1];
+
+        return { ...acc, [status]: balance };
+    }, {});
+
+    const deactivatedIndex = StakeState.Deactivated;
+    const stakeIndex = StakeState.Active;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const deactivatedBalance: string = balances[deactivatedIndex];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const activeBalance: string = balances[stakeIndex];
 
     return {
         solStakedBalance: balances[StakeState.Active],
         solClaimableBalance: balances[StakeState.Deactivated],
         solPendingStakeBalance: balances[StakeState.Activating],
         solPendingUnstakeBalance: balances[StakeState.Deactivating],
-        canClaimSol: new BigNumber(balances[StakeState.Deactivated]).gt(0),
-        canUnstakeSol: new BigNumber(balances[StakeState.Active]).gt(0),
+        canClaimSol: new BigNumber(deactivatedBalance).gt(0),
+        canUnstakeSol: new BigNumber(activeBalance).gt(0),
     };
 };

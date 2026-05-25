@@ -16,8 +16,10 @@ export const useConciergeProviders = () => {
         [otcData, country.value],
     );
 
+    // @ts-expect-error: noUncheckedIndexedAccess
+    const defaultProvider: OtcProviderType = providers?.[0];
     const selectedProvider =
-        providers.find(provider => provider.url === providerUrl) ?? providers?.[0];
+        providers.find(provider => provider.url === providerUrl) ?? defaultProvider;
 
     const setSelectedProvider = useCallback(
         (provider: OtcProviderType) => {

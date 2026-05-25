@@ -9,7 +9,7 @@ import {
     getInitializedTradingStateWithQuotes,
 } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
-import { mergeDeepObject } from '@trezor/utils';
+import { getIndexOrThrow, mergeDeepObject } from '@trezor/utils';
 
 import {
     type PreloadedStatePartial,
@@ -163,7 +163,7 @@ describe('BuyProviderPicker', () => {
                 const { getByText, getAllByText } = renderTradingProviderPicker(withQuotes);
 
                 fireEvent.press(getByText('Provider'));
-                fireEvent.press(getAllByText('Cexdirect')[1]);
+                fireEvent.press(getIndexOrThrow(getAllByText('Cexdirect'), 1));
 
                 expect(reportMock).toHaveBeenCalledTimes(1);
                 expect(reportMock).toHaveBeenCalledWith({

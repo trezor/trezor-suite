@@ -9,7 +9,7 @@ import {
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { getBtcAccount, getEthAccount } from '@suite-native/trading-fixtures';
 import { type MyAsset } from '@suite-native/trading-types';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, getIndexOrThrow } from '@trezor/utils';
 
 import { MyAssetListItem, type MyAssetListItemProps } from '../MyAssetListItem';
 
@@ -98,7 +98,7 @@ describe('MyAssetListItem', () => {
         const onPress = jest.fn();
         const { getAllByText } = renderComponent({ asset: mockBtcAsset, onPress });
 
-        fireEvent.press(getAllByText('Bitcoin')[0]);
+        fireEvent.press(getIndexOrThrow(getAllByText('Bitcoin'), 0));
 
         expect(onPress).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -191,7 +191,7 @@ describe('MyAssetListItem', () => {
                 onPress,
             });
 
-            fireEvent.press(getAllByText('Bitcoin')[0]);
+            fireEvent.press(getIndexOrThrow(getAllByText('Bitcoin'), 0));
 
             expect(onPress).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -213,7 +213,7 @@ describe('MyAssetListItem', () => {
                 onPress,
             });
 
-            fireEvent.press(getAllByText('Bitcoin')[0]);
+            fireEvent.press(getIndexOrThrow(getAllByText('Bitcoin'), 0));
 
             expect(onPress).not.toHaveBeenCalled();
         });
@@ -226,7 +226,7 @@ describe('MyAssetListItem', () => {
                 onPress,
             });
 
-            fireEvent.press(getAllByText('Bitcoin')[0]);
+            fireEvent.press(getIndexOrThrow(getAllByText('Bitcoin'), 0));
 
             expect(onPress).not.toHaveBeenCalled();
         });
@@ -257,7 +257,7 @@ describe('MyAssetListItem', () => {
                 preloadedStateWithoutCoinInfo as any,
             );
 
-            fireEvent.press(getAllByText('Bitcoin')[0]);
+            fireEvent.press(getIndexOrThrow(getAllByText('Bitcoin'), 0));
 
             expect(onPress).not.toHaveBeenCalled();
         });
@@ -274,7 +274,7 @@ describe('MyAssetListItem', () => {
                 onPress,
             });
 
-            fireEvent.press(getAllByText('Bitcoin')[0]);
+            fireEvent.press(getIndexOrThrow(getAllByText('Bitcoin'), 0));
 
             expect(onPress).not.toHaveBeenCalled();
         });

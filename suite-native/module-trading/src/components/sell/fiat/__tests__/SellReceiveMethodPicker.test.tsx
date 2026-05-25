@@ -10,6 +10,7 @@ import {
 } from '@suite-native/test-utils-store';
 import { banxaBankTransferSellQuote, sellQuotes } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
+import { getIndexOrThrow } from '@trezor/utils';
 
 import {
     type PreloadedStatePartial,
@@ -136,8 +137,8 @@ describe('SellReceiveMethodPicker', () => {
             it('should not fire analytics event when same receive method is selected', () => {
                 const { getAllByText } = renderSellReceiveMethodPicker(withQuotes);
 
-                fireEvent.press(getAllByText('Bank Transfer')[0]);
-                fireEvent.press(getAllByText('Bank Transfer')[1]);
+                fireEvent.press(getIndexOrThrow(getAllByText('Bank Transfer'), 0));
+                fireEvent.press(getIndexOrThrow(getAllByText('Bank Transfer'), 1));
 
                 expect(reportMock).toHaveBeenCalledTimes(0);
             });

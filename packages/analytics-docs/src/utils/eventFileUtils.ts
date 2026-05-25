@@ -130,6 +130,10 @@ export const getUsageExampleSnippet = (platform: string, eventName: string): str
     const baseName = eventNameToFileBaseName(eventName);
     const imports = PLATFORM_USAGE_IMPORTS[platform] ?? PLATFORM_USAGE_IMPORTS.shared;
 
+    if (!imports) {
+        return '';
+    }
+
     return `import { events } from '${imports.events}';
 import { useServices } from '${imports.services}';
 import { ${imports.analyticsDepSelector} } from '${imports.analyticsImport}';

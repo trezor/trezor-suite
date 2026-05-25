@@ -294,8 +294,8 @@ export const connectPopupDeeplinkThunk = createThunk<void, { url: string }>(
                     type: 'deeplink',
                     origin: `${callbackUrl.protocol}//${callbackUrl.host}`,
                     manifest: {
-                        appName: queryParams.appName,
-                        appIcon: queryParams.appIcon,
+                        appName: queryParams.appName ?? '',
+                        appIcon: queryParams.appIcon ?? '',
                     },
                 },
                 method: method as CallMethodKeys,
@@ -342,7 +342,7 @@ export const connectPopupVerifyAddressThunk = createThunk<void, { index: number 
                     state: device.state,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                 },
-                ...call.addresses[index].validatePayload,
+                ...call.addresses?.[index]?.validatePayload,
                 showOnTrezor: true,
                 chunked: false,
             });

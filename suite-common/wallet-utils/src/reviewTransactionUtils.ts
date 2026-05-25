@@ -142,11 +142,15 @@ const constructOldFlow = ({
 
         // add decrease output confirmation step between txid and fee
         if (typeof decreaseOutputId === 'number') {
+            const { outputs: precomposedOutputs } = precomposedTx;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const decreasedOutput: (typeof precomposedOutputs)[number] =
+                precomposedOutputs[decreaseOutputId];
             outputs.splice(1, 0, {
                 type: 'reduce-output',
-                label: precomposedTx.outputs[decreaseOutputId].address!,
+                label: decreasedOutput.address!,
                 value: precomposedTx.feeDifference,
-                value2: precomposedTx.outputs[decreaseOutputId].amount.toString(),
+                value2: decreasedOutput.amount.toString(),
             });
         }
     } else if (isCardano) {
@@ -384,11 +388,15 @@ const constructNewFlow = ({
 
         // add decrease output confirmation step between txid and fee
         if (typeof decreaseOutputId === 'number') {
+            const { outputs: precomposedOutputs } = precomposedTx;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const decreasedOutput: (typeof precomposedOutputs)[number] =
+                precomposedOutputs[decreaseOutputId];
             outputs.splice(1, 0, {
                 type: 'reduce-output',
-                label: precomposedTx.outputs[decreaseOutputId].address!,
+                label: decreasedOutput.address!,
                 value: precomposedTx.feeDifference,
-                value2: precomposedTx.outputs[decreaseOutputId].amount.toString(),
+                value2: decreasedOutput.amount.toString(),
             });
         }
     } else if (isCardano) {

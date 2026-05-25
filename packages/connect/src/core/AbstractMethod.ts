@@ -182,11 +182,13 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         params: { address?: string; proto: { show_display?: boolean } }[],
         useEventListener: boolean | undefined,
     ) {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstParam: (typeof params)[number] = params[0];
         const notUseUi =
             useEventListener &&
             params.length === 1 &&
-            typeof params[0].address === 'string' &&
-            params[0].proto.show_display;
+            typeof firstParam.address === 'string' &&
+            firstParam.proto.show_display;
 
         return !notUseUi;
     }

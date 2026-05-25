@@ -20,7 +20,7 @@ export const ThemeSwitch = () => {
     const { preference, setPreference } = useTheme();
 
     const currentIndex = CYCLE.indexOf(preference);
-    const nextPreference = CYCLE[(currentIndex + 1) % CYCLE.length];
+    const nextPreference = CYCLE[(currentIndex + 1) % CYCLE.length] ?? 'system';
     const tooltipContent = `Switch to ${PREFERENCE_TOOLTIP[nextPreference]}`;
 
     return (

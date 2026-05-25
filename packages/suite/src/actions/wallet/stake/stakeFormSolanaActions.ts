@@ -115,11 +115,15 @@ const getTransactionData = async (
     );
     const validator = selectSolanaValidator(account.symbol);
 
+    const { outputs } = formValues;
+    // @ts-expect-error: noUncheckedIndexedAccess
+    const { amount } = outputs[0];
+
     let txData;
     if (stakeType === 'stake') {
         txData = await prepareStakeSolTx({
             from: account.descriptor,
-            amount: formValues.outputs[0].amount,
+            amount,
             connection,
             validator,
             estimatedFee,
@@ -129,7 +133,7 @@ const getTransactionData = async (
     if (stakeType === 'unstake') {
         txData = await prepareUnstakeSolTx({
             from: account.descriptor,
-            amount: formValues.outputs[0].amount,
+            amount,
             connection,
             validator,
             estimatedFee,
@@ -211,7 +215,7 @@ export const composeTransaction =
         const { account } = selectedAccount;
         const txData = await getTransactionData(formValues, selectedAccount, blockchain);
 
-        const { amount } = formValues.outputs[0];
+        const amount = formValues.outputs[0]?.amount;
 
         if (!amount || amount === '0') return;
 

@@ -69,6 +69,9 @@ const AccountTypeSelectComponent = ({
     const options = accountTypes.map(buildAccountTypeOption);
     // the default, 'normal' account type is expected to be the first one
     const defaultAccountType = accountTypes[0];
+
+    if (!defaultAccountType) return null;
+
     const value = buildAccountTypeOption(selectedAccountType ?? defaultAccountType);
 
     const bip43PathToDescribe = selectedAccountType?.bip43Path ?? defaultAccountType.bip43Path;

@@ -283,11 +283,13 @@ describe('confirmBuyTradeThunk', () => {
         expect(mocktriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
         expect(mockProcessResponseData).toHaveBeenCalledTimes(1);
         expect(trades.length).toEqual(1);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const minMaxQuote: (typeof MIN_MAX_QUOTES_OK)[number] = MIN_MAX_QUOTES_OK[1];
         expect(trades[0]).toEqual({
             tradeType: 'buy',
             date: dateString,
-            data: MIN_MAX_QUOTES_OK[1],
-            key: MIN_MAX_QUOTES_OK[1].paymentId,
+            data: minMaxQuote,
+            key: minMaxQuote.paymentId,
             receiveAccountKey: 'xxx',
             selectedAccountKey: 'yyy',
         });

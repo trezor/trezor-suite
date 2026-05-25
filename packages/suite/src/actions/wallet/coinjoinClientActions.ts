@@ -442,7 +442,7 @@ export const onCoinjoinRoundChanged =
                 dispatch(
                     openModal({
                         type: 'critical-coinjoin-phase',
-                        relatedAccountKey: coinjoinAccountsWithSession[0].key, // since all accounts share the round, any key can be used,
+                        relatedAccountKey: coinjoinAccountsWithSession[0]?.key ?? '', // since all accounts share the round, any key can be used,
                     }),
                 );
             }
@@ -481,7 +481,7 @@ const getOwnershipProof =
         const groupParamsByDevice = Object.keys(groupUtxosByAccount).flatMap(key => {
             const coinjoinAccount = coinjoin.accounts.find(r => r.key === key);
             const realAccount = accounts.find(a => a.key === key);
-            const utxos = groupUtxosByAccount[key];
+            const utxos = groupUtxosByAccount[key] ?? [];
             if (!coinjoinAccount || !realAccount) {
                 response.inputs.push(...coinjoinResponseError(utxos, 'Account not found'));
 
@@ -510,7 +510,7 @@ const getOwnershipProof =
 
             // TODO: double check if requested utxo exists in account?
 
-            const bundle = groupUtxosByAccount[key].map(utxo => ({
+            const bundle = (groupUtxosByAccount[key] ?? []).map(utxo => ({
                 path: utxo.path,
                 coin: realAccount.symbol,
                 commitmentData: request.commitmentData,
@@ -527,9 +527,10 @@ const getOwnershipProof =
                 const proof = await TrezorConnect.getOwnershipProof({ device, bundle });
                 if (proof.success) {
                     proof.payload.forEach((p, i) => {
-                        if (!utxos[i]) return; // double check if data from Trezor corresponds with request
+                        const utxo = utxos[i];
+                        if (!utxo) return; // double check if data from Trezor corresponds with request
                         response.inputs.push({
-                            outpoint: utxos[i].outpoint,
+                            outpoint: utxo.outpoint,
                             ownershipProof: p.ownership_proof,
                         });
                     });
@@ -598,7 +599,7 @@ const signCoinjoinTx =
         const groupParamsByDevice = Object.keys(groupUtxosByAccount).flatMap(key => {
             const coinjoinAccount = coinjoin.accounts.find(r => r.key === key);
             const realAccount = accounts.find(a => a.key === key);
-            const utxos = groupUtxosByAccount[key];
+            const utxos = groupUtxosByAccount[key] ?? [];
             if (!coinjoinAccount || !realAccount) {
                 response.inputs.push(...coinjoinResponseError(utxos, 'Account not found'));
 
@@ -665,10 +666,12 @@ const signCoinjoinTx =
                         if (signTx.success) {
                             let utxoIndex = 0;
                             tx.inputs.forEach((input, index) => {
-                                if (input.script_type !== 'EXTERNAL') {
+                                const utxo = utxos[utxoIndex];
+                                const signature = signTx.payload.signatures[index];
+                                if (input.script_type !== 'EXTERNAL' && utxo && signature) {
                                     response.inputs.push({
-                                        outpoint: utxos[utxoIndex].outpoint,
-                                        signature: signTx.payload.signatures[index],
+                                        outpoint: utxo.outpoint,
+                                        signature,
                                         index,
                                     });
                                     utxoIndex++;
@@ -774,8 +777,7 @@ export const initCoinjoinService =
                     .addresses!.change.filter(a => a.transfers > 0)
                     .map(a => a.address);
 
-                return Object.keys(account.prison!).flatMap(id => {
-                    const inmate = account.prison![id];
+                return Object.entries(account.prison ?? {}).flatMap(([id, inmate]) => {
                     // clear outdated info with Infinity sentence
                     if (inmate.sentenceEnd === Infinity) {
                         // utxos which are no longer in account (spent utxos)

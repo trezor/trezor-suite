@@ -144,17 +144,26 @@ export const getStakingDataForNetwork = (
                 solStakedBalance,
                 solPendingStakeBalance,
                 solPendingUnstakeBalance,
-            } = getSolStakingAccountsInfo(account) ?? {};
+            } = getSolStakingAccountsInfo(account);
+
+            //@ts-expect-error: indexing with noUncheckedIndexedAccess
+            const stakedBalance: string = solStakedBalance;
+            //@ts-expect-error: indexing with noUncheckedIndexedAccess
+            const claimableBalance: string = solClaimableBalance;
+            //@ts-expect-error: indexing with noUncheckedIndexedAccess
+            const pendingStakeBalance: string = solPendingStakeBalance;
+            //@ts-expect-error: indexing with noUncheckedIndexedAccess
+            const pendingUnstakeBalance: string = solPendingUnstakeBalance;
 
             return {
-                autocompoundBalance: solStakedBalance,
-                claimableAmount: solClaimableBalance,
-                depositedBalance: solStakedBalance,
+                autocompoundBalance: stakedBalance,
+                claimableAmount: claimableBalance,
+                depositedBalance: stakedBalance,
                 pendingBalance: '',
                 pendingDepositedBalance: '',
-                totalPendingStakeBalance: solPendingStakeBalance,
+                totalPendingStakeBalance: pendingStakeBalance,
                 restakedReward: '',
-                withdrawTotalAmount: solPendingUnstakeBalance,
+                withdrawTotalAmount: pendingUnstakeBalance,
                 canClaim: canClaimSol,
             };
         }
@@ -220,7 +229,11 @@ export const getOutputTxAmount = (composedLevels?: PrecomposedLevels) => {
     const precomposedTx = composedLevels['normal'];
     if (precomposedTx?.type !== 'final') return null;
 
-    return precomposedTx.outputs[0].amount;
+    const { outputs } = precomposedTx;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstOutput: (typeof outputs)[number] = outputs[0];
+
+    return firstOutput.amount;
 };
 
 export const calculateRewards = (amount: string, apyPercent: number | null, days = 365) => {

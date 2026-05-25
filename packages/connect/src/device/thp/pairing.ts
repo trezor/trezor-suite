@@ -280,7 +280,9 @@ export const thpPairing = async (device: IDevice) => {
     }
 
     // use first pairing method from the list
-    const [selected_pairing_method] = thpState.handshakeCredentials.pairingMethods;
+    const { pairingMethods } = thpState.handshakeCredentials;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const selected_pairing_method: (typeof pairingMethods)[number] = pairingMethods[0];
     thpState.setPairingMethod(selected_pairing_method);
 
     // State HP0

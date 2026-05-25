@@ -90,7 +90,7 @@ export const getVideoPath = (videoFolder: string): string | false => {
         );
     }
 
-    return path.join(videoFolder, videoFilenames[0]);
+    return path.join(videoFolder, videoFilenames[0] ?? '');
 };
 
 export const findLatestVersionForModel = (model: Model): string => {
@@ -134,7 +134,7 @@ export const countDecimalPlaces = (value: string | number) => {
         throw new Error('Value is not a valid number string');
     }
 
-    return value.toString().split('.')[1].length || 0;
+    return value.toString().split('.')[1]?.length ?? 0;
 };
 
 export const getBigNumberFromBalance = async (locator: Locator) => {

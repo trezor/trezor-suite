@@ -60,7 +60,8 @@ export const isChanged = (prev?: any, current?: any, filter?: { [k: string]: str
 
         // 8. observe every key recursive
         for (let i = 0; i < currentKeys.length; i++) {
-            const key = currentKeys[i];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const key: string = currentKeys[i];
 
             if (
                 filter &&
@@ -70,8 +71,11 @@ export const isChanged = (prev?: any, current?: any, filter?: { [k: string]: str
             ) {
                 const prevFiltered = {};
                 const currentFiltered = {};
-                for (let i2 = 0; i2 < filter[key].length; i2++) {
-                    const field = filter[key][i2];
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const filterFields: string[] = filter[key];
+                for (let i2 = 0; i2 < filterFields.length; i2++) {
+                    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                    const field: string = filterFields[i2];
                     // @ts-expect-error
                     prevFiltered[field] = prev[key][field];
                     // @ts-expect-error

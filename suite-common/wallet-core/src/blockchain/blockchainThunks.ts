@@ -319,7 +319,8 @@ export const onBlockchainNotificationThunk = createThunk(
             return;
         }
 
-        const account = accounts[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const account: (typeof accounts)[number] = accounts[0];
 
         // ripple worker sends two notifications for the same tx (pending + confirmed/rejected)
         // dispatch only recv notifications

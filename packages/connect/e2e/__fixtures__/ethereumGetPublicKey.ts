@@ -22,10 +22,10 @@ const generatedTests = commonFixtures.tests.flatMap(({ parameters, result }) => 
 const [firstTest] = generatedTests;
 const firstShowOnTrezor = {
     ...firstTest,
-    description: `${firstTest.description} (showOnTrezor)`,
-    params: { ...firstTest.params, showOnTrezor: true },
+    description: `${firstTest?.description} (showOnTrezor)`,
+    params: { ...firstTest?.params, showOnTrezor: true },
     // Assert a stable prefix that fits inside the smallest-screen capture.
-    deviceScreen: firstTest.result.publicKey.slice(0, 40),
+    deviceScreen: firstTest?.result.publicKey.slice(0, 40),
     // T1B1 emulator's getScreenContent returns a placeholder; old FW renders xpub.
     deviceScreenSkip: ['1', '<2.7.0'],
 };

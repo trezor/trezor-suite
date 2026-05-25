@@ -153,14 +153,15 @@ export const composeStakingTransaction = (
         ),
     );
     response.forEach((tx, index) => {
-        const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
+        const level = predefinedLevels[index];
+        if (!level) return;
+        const feeLabel = level.label as FeeLevel['label'];
         wrappedResponse[feeLabel] = tx;
     });
 
     // format max (calculate sends it as satoshi)
     // update errorMessage values (symbol)
-    Object.keys(wrappedResponse).forEach(key => {
-        const tx = wrappedResponse[key];
+    Object.entries(wrappedResponse).forEach(([_key, tx]) => {
         if (tx.type !== 'error') {
             tx.max = tx.max ? convertAmountSubunitsToUnits(tx.max, decimals) : undefined;
             tx.estimatedFeeLimit = customFeeLimit ?? tx.estimatedFeeLimit;

@@ -191,12 +191,15 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                 message: 'Token accounts not found.',
             });
 
-        if (formState.setMaxOutputId !== undefined && !formState.outputs[0].amount) {
+        const { outputs: composeOutputsList } = formState;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstOutput: (typeof composeOutputsList)[number] = composeOutputsList[0];
+        if (formState.setMaxOutputId !== undefined && !firstOutput.amount) {
             if (tokenInfo?.balance) {
-                formState.outputs[0].amount = tokenInfo.balance;
+                firstOutput.amount = tokenInfo.balance;
             } else {
                 // minimal amount for purpose of fee estimation, at least to cover rent + 1 lamport
-                formState.outputs[0].amount = convertAmountSubunitsToUnits(
+                firstOutput.amount = convertAmountSubunitsToUnits(
                     (account.misc?.rent ?? 0) + 1,
                     decimals,
                 );
@@ -209,8 +212,8 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
         // The real transaction is constructed in `signTransaction`, this one is used solely for fee estimation and is never submitted.
         const transaction = await TrezorConnect.solanaComposeTransaction({
             fromAddress: account.descriptor,
-            toAddress: formState.outputs[0].address,
-            amount: formState.outputs[0].amount,
+            toAddress: firstOutput.address,
+            amount: firstOutput.amount,
             token: tokenInfo
                 ? {
                       mint: tokenInfo.contract,
@@ -254,7 +257,9 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
         let fetchedFeeLimit: string | undefined;
         if (estimatedFee.success) {
             // We access the array directly like this because the fee response from the solana worker always returns an array of size 1
-            const feeLevel = estimatedFee.payload.levels[0];
+            const { levels: estimatedFeeLevels } = estimatedFee.payload;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const feeLevel: (typeof estimatedFeeLevels)[number] = estimatedFeeLevels[0];
             fetchedFee = feeLevel.feePerTx;
             fetchedFeePerUnit = feeLevel.feePerUnit;
             fetchedFeeLimit = feeLevel.feeLimit;
@@ -290,14 +295,17 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             ),
         );
         response.forEach((tx, index) => {
-            const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
+            const feeLabel = predefinedLevel.label as FeeLevel['label'];
             resultLevels[feeLabel] = tx;
         });
 
         // format max (calculate sends it as lamports)
         // update errorMessage values (symbol)
         Object.keys(resultLevels).forEach(key => {
-            const tx = resultLevels[key];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const tx: (typeof resultLevels)[string] = resultLevels[key];
             if (tx.type !== 'error') {
                 tx.max = tx.max ? convertAmountSubunitsToUnits(tx.max, decimals) : undefined;
             }
@@ -356,10 +364,13 @@ export const signSolanaSendFormTransactionThunk = createThunk<
                 message: 'Missing token accounts.',
             });
 
+        const { outputs: signOutputs } = formState;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstSignOutput: (typeof signOutputs)[number] = signOutputs[0];
         const transaction = await TrezorConnect.solanaComposeTransaction({
             fromAddress: selectedAccount.descriptor,
-            toAddress: formState.outputs[0].address,
-            amount: formState.outputs[0].amount,
+            toAddress: firstSignOutput.address,
+            amount: firstSignOutput.amount,
             token: token
                 ? {
                       mint: token.contract,

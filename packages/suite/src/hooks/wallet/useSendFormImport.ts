@@ -56,7 +56,12 @@ export const useSendFormImport = ({
             return;
         }
 
-        const currencies = result.map(it => it.currency.toLowerCase());
+        const currencies = result.map(it => {
+            // @ts-expect-error: noUncheckedIndexedAccess
+            const { currency }: { currency: string } = it;
+
+            return currency.toLowerCase();
+        });
         const uniqueCurrencies = unique(currencies);
 
         for (const currency of uniqueCurrencies) {
@@ -101,7 +106,9 @@ export const useSendFormImport = ({
             }
 
             // sanitize csv data
-            const itemCurrency = item.currency.toLowerCase() as BaseCurrencyCode;
+            // @ts-expect-error: noUncheckedIndexedAccess
+            const { currency }: { currency: string } = item;
+            const itemCurrency = currency.toLowerCase() as BaseCurrencyCode;
 
             // currency is specified in csv
             if (itemCurrency) {
@@ -175,7 +182,10 @@ export const useSendFormImport = ({
 
         // only one output allowed for ETH and XRP
         // TODO: create queue of transactions to sign to allow multiple outputs for ETH/XRP (overkill?)
-        return network.networkType === 'bitcoin' ? outputs : [outputs[0]];
+        // @ts-expect-error: noUncheckedIndexedAccess
+        const firstOutput: Output = outputs[0];
+
+        return network.networkType === 'bitcoin' ? outputs : [firstOutput];
     };
 
     // successful importTransaction resets the form

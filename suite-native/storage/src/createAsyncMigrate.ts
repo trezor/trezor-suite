@@ -47,9 +47,12 @@ export const createAsyncMigrate =
 
             // Run migrations sequentially.
             for (const versionKey of migrationKeys) {
-                migratedState = (await migrations[versionKey](
-                    migratedState,
-                )) as MigratedState<TReducerInitialState>;
+                const migration = migrations[versionKey];
+                if (migration) {
+                    migratedState = (await migration(
+                        migratedState,
+                    )) as MigratedState<TReducerInitialState>;
+                }
             }
 
             return Promise.resolve(migratedState);

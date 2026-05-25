@@ -182,7 +182,10 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
 
         return feeLevels.map(level => {
             composer.composeCustomFee(level.feePerUnit);
-            const tx = { ...composer.composed.custom }; // needs to spread otherwise flow has a problem with ComposeResult vs PrecomposedTransaction (max could be undefined)
+            const { composed } = composer;
+            // @ts-expect-error: noUncheckedIndexedAccess
+            const composedCustom: ComposeResult = composed['custom'];
+            const tx = { ...composedCustom }; // needs to spread otherwise flow has a problem with ComposeResult vs PrecomposedTransaction (max could be undefined)
             if (tx.type === 'final') {
                 return {
                     ...tx,
@@ -270,7 +273,9 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         );
 
         const uiResp = await dfd.promise;
-        const account = accounts[uiResp.payload];
+        const accountIndex = uiResp.payload;
+        // @ts-expect-error: noUncheckedIndexedAccess
+        const account: (typeof accounts)[number] = accounts[accountIndex];
         this.params.coinInfo = fixCoinInfoNetwork(this.params.coinInfo, account.address_n);
         const utxo = await blockchain.getAccountUtxo(account.descriptor);
 
@@ -299,7 +304,10 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
                 ),
             );
             const uiResp = await dfd.promise;
-            const account = discovery.accounts[uiResp.payload];
+            const { accounts } = discovery;
+            const accountIndex = uiResp.payload;
+            // @ts-expect-error: noUncheckedIndexedAccess
+            const account: (typeof accounts)[number] = accounts[accountIndex];
             const utxo = await blockchain.getAccountUtxo(account.descriptor);
 
             return { account, utxo };
@@ -369,7 +377,10 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             await resolveAfter(501); // temporary solution, TODO: immediately resolve will cause "device call in progress"
         }
 
-        const account = discovery.accounts[uiResp.payload];
+        const { accounts } = discovery;
+        const accountIndex = uiResp.payload;
+        // @ts-expect-error: noUncheckedIndexedAccess
+        const account: (typeof accounts)[number] = accounts[accountIndex];
         this.params.coinInfo = fixCoinInfoNetwork(this.params.coinInfo, account.address_n);
         const utxo = await blockchain.getAccountUtxo(account.descriptor);
 
@@ -444,8 +455,14 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
                 // wait for user action
                 return this._selectFeeUiResponse(composer, context);
 
-            case 'send':
-                return this._sign(composer.composed[resp.payload.value], context.sendCoreMessage);
+            case 'send': {
+                const { composed } = composer;
+                const composedKey = resp.payload.value;
+                // @ts-expect-error: noUncheckedIndexedAccess
+                const tx: ComposeResult = composed[composedKey];
+
+                return this._sign(tx, context.sendCoreMessage);
+            }
 
             default:
                 return 'change-account';

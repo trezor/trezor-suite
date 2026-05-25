@@ -13,6 +13,7 @@ export const arrayShuffle = <T>(
     for (let i = shuffled.length - 1; i > 0; i--) {
         const j = randomInt(0, i + 1);
 
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
 

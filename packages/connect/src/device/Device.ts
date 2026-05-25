@@ -922,8 +922,12 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     atLeast(versions: string[] | string) {
         const version = this.getVersion();
         if (!this.features || !version) return false;
-        const modelVersion =
-            typeof versions === 'string' ? versions : versions[this.features.major_version - 1];
+        if (typeof versions === 'string') {
+            return versionUtils.isNewerOrEqual(version, versions);
+        }
+        const modelVersionIndex = this.features.major_version - 1;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const modelVersion: string = versions[modelVersionIndex];
 
         return versionUtils.isNewerOrEqual(version, modelVersion);
     }

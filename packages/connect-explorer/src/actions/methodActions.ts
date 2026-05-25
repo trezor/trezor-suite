@@ -100,7 +100,10 @@ export const onCodeChange = (value: string) => (dispatch: Dispatch, getState: Ge
                 // ensure the array has the correct number of items
                 if (value) {
                     for (let i = field.items.length; i < value.length; i++) {
-                        dispatch(onBatchAdd(field, field.batch[0].fields));
+                        const { batch } = field;
+                        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                        const firstBatch: (typeof batch)[number] = batch[0];
+                        dispatch(onBatchAdd(field, firstBatch.fields));
                     }
                     for (let i = field.items.length; i > value.length; i--) {
                         dispatch(onBatchRemove(field, field.items[i - 1]));

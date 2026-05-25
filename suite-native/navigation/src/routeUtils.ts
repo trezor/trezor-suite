@@ -17,7 +17,9 @@ export type AppNavigationState = NavigationState<AppTabsParamList>;
 export const getActiveRouteName = (state: AppNavigationState): string | undefined => {
     if (!state?.routes || state.index == null) return undefined;
 
-    const route = state.routes[state.index];
+    const { routes, index } = state;
+    // @ts-expect-error: noUncheckedIndexedAccess
+    const route: (typeof routes)[number] = routes[index];
 
     if (route.state) return getActiveRouteName(route.state as AppNavigationState);
 

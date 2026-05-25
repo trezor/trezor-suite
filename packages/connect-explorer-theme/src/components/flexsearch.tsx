@@ -103,12 +103,14 @@ const loadIndexesImpl = async (basePath: string, locale: string): Promise<void> 
             });
 
             for (let i = 0; i < paragraphs.length; i++) {
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const paragraph: string = paragraphs[i];
                 sectionIndex.add({
                     id: `${url}_${i}`,
                     url,
                     title,
                     pageId: `page_${pageId}`,
-                    content: paragraphs[i],
+                    content: paragraph,
                 });
             }
 
@@ -148,7 +150,8 @@ export function Flexsearch({ className }: { className?: string }): ReactElement 
 
     const doSearch = (searchString: string) => {
         if (!searchString) return;
-        const [pageIndex, sectionIndex] = indexes[locale];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const [pageIndex, sectionIndex]: [PageIndex, SectionIndex] = indexes[locale];
 
         // Show the results for the top 5 pages
         const pageResults =
@@ -161,7 +164,8 @@ export function Flexsearch({ className }: { className?: string }): ReactElement 
         const pageTitleMatches: Record<number, number> = {};
 
         for (let i = 0; i < pageResults.length; i++) {
-            const result = pageResults[i];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const result: (typeof pageResults)[number] = pageResults[i];
             pageTitleMatches[i] = 0;
 
             // Show the top 5 results for each page
@@ -176,10 +180,12 @@ export function Flexsearch({ className }: { className?: string }): ReactElement 
             const occurred: Record<string, boolean> = {};
 
             for (let j = 0; j < sectionResults.length; j++) {
-                const { doc } = sectionResults[j];
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const sectionResult: (typeof sectionResults)[number] = sectionResults[j];
+                const { doc } = sectionResult;
                 const isMatchingTitle = doc.display !== undefined;
                 if (isMatchingTitle) {
-                    pageTitleMatches[i]++;
+                    pageTitleMatches[i] = (pageTitleMatches[i] ?? 0) + 1;
                 }
                 const { url, title } = doc;
                 const content = doc.display || doc.content;
@@ -223,8 +229,10 @@ export function Flexsearch({ className }: { className?: string }): ReactElement 
                     if (a._page_rk === b._page_rk) {
                         return a._section_rk - b._section_rk;
                     }
-                    if (pageTitleMatches[a._page_rk] !== pageTitleMatches[b._page_rk]) {
-                        return pageTitleMatches[b._page_rk] - pageTitleMatches[a._page_rk];
+                    const aMatches = pageTitleMatches[a._page_rk] ?? 0;
+                    const bMatches = pageTitleMatches[b._page_rk] ?? 0;
+                    if (aMatches !== bMatches) {
+                        return bMatches - aMatches;
                     }
 
                     return a._page_rk - b._page_rk;

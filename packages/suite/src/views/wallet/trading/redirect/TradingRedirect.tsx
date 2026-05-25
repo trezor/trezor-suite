@@ -39,9 +39,12 @@ export const TradingRedirect = () => {
 
     useEffect(() => {
         // get rid of parameters appended by some partners to url which we pass to them
-        const params = router?.hash?.replace(/^#/, '').split('?')[0].split('/');
+        const hashPart = router?.hash?.replace(/^#/, '').split('?')[0];
+        const params = hashPart?.split('/');
         if (!params) return;
 
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const indexParam: string = params[3];
         const redirectCommonParams = {
             routeType: params[0] as
                 | 'detail'
@@ -51,43 +54,62 @@ export const TradingRedirect = () => {
                 | 'exchange-offers',
             symbol: params[1] as Account['symbol'],
             accountType: params[2] as Account['accountType'],
-            index: parseInt(params[3], 10),
+            index: parseInt(indexParam, 10),
         };
 
         dispatch(updateFeeInfoThunk({ networkSymbol: redirectCommonParams.symbol }));
 
         if (redirectCommonParams.routeType === 'offers') {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const country: string = params[5];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const fiatCurrency: string = params[6];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const amount: string = params[7];
             redirectToBuyOffers({
                 ...redirectCommonParams,
                 wantCrypto: params[4] === 'qc',
-                fiatCurrency: params[6],
-                amount: params[7],
+                fiatCurrency,
+                amount,
                 receiveCurrency: params[8] as CryptoId,
-                country: params[5],
+                country,
                 paymentMethod: params[9] as BuyCryptoPaymentMethod,
             });
         }
 
         if (redirectCommonParams.routeType === 'detail') {
-            redirectToBuyDetail({ ...redirectCommonParams, transactionId: params[4] });
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const transactionId: string = params[4];
+            redirectToBuyDetail({
+                ...redirectCommonParams,
+                transactionId,
+            });
         }
 
         if (redirectCommonParams.routeType === 'sell-offers') {
             let feeIndex = 10;
             let orderId: string | undefined;
-            if (params[4].startsWith('p-')) {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const sellOffersFlag: string = params[4];
+            if (sellOffersFlag.startsWith('p-')) {
                 feeIndex = 11;
-                params[4] = params[4].substring(2);
+                params[4] = sellOffersFlag.substring(2);
 
                 orderId = params[10];
             }
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const country: string = params[5];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const fiatCurrency: string = params[6];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const amount: string = params[7];
             redirectToSellOffers({
                 ...redirectCommonParams,
                 amountInCrypto: params[4] === 'qc',
-                fiatCurrency: params[6],
-                amount: params[7],
+                fiatCurrency,
+                amount,
                 cryptoCurrency: params[8] as CryptoId,
-                country: params[5],
+                country,
                 paymentMethod: params[9] as SellCryptoPaymentMethod,
                 orderId,
                 selectedFee: params[feeIndex] as FeeLevel['label'],
@@ -100,12 +122,16 @@ export const TradingRedirect = () => {
 
         if (redirectCommonParams.routeType === 'exchange-offers') {
             const feeIndex = 8;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const amount: string = params[6];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const orderId: string = params[7];
             redirectToExchangeOffers({
                 ...redirectCommonParams,
                 send: params[4] as CryptoId,
                 receive: params[5] as CryptoId,
-                amount: params[6],
-                orderId: params[7],
+                amount,
+                orderId,
                 selectedFee: params[feeIndex] as FeeLevel['label'],
                 feePerByte: params[feeIndex + 1],
                 maxFeePerGas: params[feeIndex + 2],

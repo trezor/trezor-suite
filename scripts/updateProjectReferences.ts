@@ -56,11 +56,9 @@ import { getWorkspacesList } from './utils/getWorkspacesList';
     const workspaces = getWorkspacesList();
 
     // NOTE: Workspace keys must be sorted due to file systems being a part of the equation...
-    Object.keys(workspaces)
-        .sort()
-        .forEach(async workspaceName => {
-            const workspace = workspaces[workspaceName];
-
+    Object.entries(workspaces)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .forEach(async ([_workspaceName, workspace]) => {
             if (workspace.location === '.') {
                 // Skip root workspace
                 return;

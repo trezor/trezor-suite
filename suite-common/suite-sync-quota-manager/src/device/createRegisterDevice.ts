@@ -82,12 +82,17 @@ export const createRegisterDevice =
             return err(DeviceError(registrationRequestResult.error.message));
         }
 
+        const { certificate_chain } = registrationRequestResult.payload;
+        // @ts-expect-error: noUncheckedIndexedAccess
+        const deviceCert: (typeof certificate_chain)[number] = certificate_chain[0];
+        // @ts-expect-error: noUncheckedIndexedAccess
+        const caCert: (typeof certificate_chain)[number] = certificate_chain[1];
         const registerDeviceResult = await deps.registerDeviceFetch({
             deviceId: device.id,
             size: DEFAULT_DEVICE_SIZE_QUOTA,
             certificateChain: {
-                deviceCert: registrationRequestResult.payload.certificate_chain[0],
-                caCert: registrationRequestResult.payload.certificate_chain[1],
+                deviceCert,
+                caCert,
             },
             challenge: sessionChallenge.payload.challenge,
             proof: registrationRequestResult.payload.signature,

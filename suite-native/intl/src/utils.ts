@@ -42,11 +42,13 @@ export const unflatten = (obj: Record<string, any>) => {
 export const findClosestOfficiallySupportedLanguageLocale = (
     locale: string,
 ): SupportedLocaleCode => {
-    const [language, _region] = locale.split('-');
+    const [language] = locale.split('-');
 
-    const matchingOfficialLanguageLocale = Object.entries(LANGUAGES).find(
-        ([key, { type }]) => type === 'official' && key.startsWith(language),
-    )?.[0] as SupportedLocaleCode | undefined;
+    const matchingOfficialLanguageLocale = language
+        ? (Object.entries(LANGUAGES).find(
+              ([key, { type }]) => type === 'official' && key.startsWith(language),
+          )?.[0] as SupportedLocaleCode | undefined)
+        : undefined;
 
     return matchingOfficialLanguageLocale ?? DEFAULT_LOCALE;
 };
@@ -57,14 +59,16 @@ export const deleteNestedTranslationKey = (obj: Record<string, any>, path: strin
     const parents: Array<{ node: Record<string, any>; key: string }> = [];
 
     for (let i = 0; i < keys.length - 1; i++) {
-        const nextNode = currentNode[keys[i]];
-        parents.push({ node: currentNode, key: keys[i] });
+        const key = keys[i];
+        if (key === undefined) return;
+        const nextNode = currentNode[key];
+        parents.push({ node: currentNode, key });
         currentNode = nextNode;
         if (!currentNode) return;
     }
 
     const lastKey = keys[keys.length - 1];
-    if (!(lastKey in currentNode)) return;
+    if (lastKey === undefined || !(lastKey in currentNode)) return;
 
     delete currentNode[lastKey];
 
@@ -72,8 +76,9 @@ export const deleteNestedTranslationKey = (obj: Record<string, any>, path: strin
         return;
     }
 
-    while (parents.length) {
-        const { node, key } = parents.pop()!;
+    let parent = parents.pop();
+    while (parent) {
+        const { node, key } = parent;
         delete node[key];
 
         if (Object.keys(node).length > 0) {
@@ -81,5 +86,6 @@ export const deleteNestedTranslationKey = (obj: Record<string, any>, path: strin
         }
 
         currentNode = node;
+        parent = parents.pop();
     }
 };

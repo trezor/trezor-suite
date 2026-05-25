@@ -9,7 +9,10 @@ const normalizers: Record<string, (value: unknown) => unknown> = {
 const normalize = (value: unknown, type: string): unknown => {
     const arrayMatch = type.match(/^(.+?)\[/);
     if (arrayMatch && Array.isArray(value)) {
-        return value.map(item => normalize(item, arrayMatch[1]));
+        // @ts-expect-error: noUncheckedIndexedAccess
+        const secondMatch: string = arrayMatch[1];
+
+        return value.map(item => normalize(item, secondMatch));
     }
 
     return normalizers[type]?.(value) ?? value;
@@ -20,7 +23,8 @@ export const createEvmDecoder = <const T extends Abi>(abi: T): Decoder<T> => {
     if (functions.length === 0) throw new Error('No function in ABI');
     if (functions.length > 1) throw new Error('ABI must contain exactly one function');
 
-    const fn = functions[0];
+    // @ts-expect-error: noUncheckedIndexedAccess
+    const fn: AbiFunction = functions[0];
 
     const paramNames = fn.inputs.map(input => {
         if (!input.name) {
@@ -37,9 +41,13 @@ export const createEvmDecoder = <const T extends Abi>(abi: T): Decoder<T> => {
         ) as `0x${string}`;
         try {
             const { args } = decodeFunctionData({ abi, data: normalized });
-            const values = (args as readonly unknown[]).map((v, i) =>
-                normalize(v, fn.inputs[i].type),
-            );
+            const values = (args as readonly unknown[]).map((v, i) => {
+                const { inputs } = fn;
+                // @ts-expect-error: noUncheckedIndexedAccess
+                const inputIndexed: AbiFunction['inputs'][number] = inputs[i];
+
+                return normalize(v, inputIndexed.type);
+            });
 
             return Object.fromEntries(
                 paramNames.map((name, i) => [name, values[i]]),

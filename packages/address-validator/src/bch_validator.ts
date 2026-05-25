@@ -28,10 +28,14 @@ function cashAddrPolymod(values: number[]): bigint {
     let checksum = BigInt(1);
     for (let i = 0; i < values.length; ++i) {
         const high = checksum >> BigInt(35);
-        checksum = ((checksum & BigInt('0x07ffffffff')) << BigInt(5)) ^ BigInt(values[i]);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const value: number = values[i];
+        checksum = ((checksum & BigInt('0x07ffffffff')) << BigInt(5)) ^ BigInt(value);
         for (let j = 0; j < 5; ++j) {
             if ((high >> BigInt(j)) & BigInt(1)) {
-                checksum ^= CASHADDR_GENERATOR[j];
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const gen: bigint = CASHADDR_GENERATOR[j];
+                checksum ^= gen;
             }
         }
     }
@@ -54,7 +58,9 @@ function hrpExpand(prefix: string): number[] {
 function verifyChecksum(prefix: string, payload: string): boolean {
     const data = hrpExpand(prefix);
     for (let i = 0; i < payload.length; ++i) {
-        const v = CASHADDR_CHARSET.indexOf(payload[i]);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const char: string = payload[i];
+        const v = CASHADDR_CHARSET.indexOf(char);
         if (v === -1) return false;
         data.push(v);
     }

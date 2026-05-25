@@ -68,11 +68,10 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     };
 
     const handleBackClick = () => {
-        dispatch(
-            recoveryActions.setStatus(
-                statesInProgressBar[statesInProgressBar.indexOf(recovery.status) - 1],
-            ),
-        );
+        const previousIndex = statesInProgressBar.indexOf(recovery.status) - 1;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const previousState: SeedInputStatus = statesInProgressBar[previousIndex];
+        dispatch(recoveryActions.setStatus(previousState));
     };
 
     if (!isDeviceAcquired(device) || !deviceModelInternal) {

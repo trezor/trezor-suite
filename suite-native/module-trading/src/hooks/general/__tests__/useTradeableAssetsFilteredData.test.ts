@@ -45,7 +45,7 @@ describe('useTradeableAssetsFilteredData', () => {
         });
 
         expect(result.current.filteredData).toHaveLength(1);
-        expect(result.current.filteredData[0].networkId).toBe('bitcoin');
+        expect(result.current.filteredData[0]?.networkId).toBe('bitcoin');
     });
 
     it('should filter assets by network name', () => {
@@ -56,7 +56,7 @@ describe('useTradeableAssetsFilteredData', () => {
         });
 
         expect(result.current.filteredData).toHaveLength(1);
-        expect(result.current.filteredData[0].networkId).toBe('binance-smart-chain');
+        expect(result.current.filteredData[0]?.networkId).toBe('binance-smart-chain');
     });
 
     it('should filter assets by name', () => {
@@ -65,7 +65,7 @@ describe('useTradeableAssetsFilteredData', () => {
             result.current.setFilterValue('rock');
         });
         expect(result.current.filteredData).toHaveLength(1);
-        expect(result.current.filteredData[0].name).toBe('Rocket Pool ETH');
+        expect(result.current.filteredData[0]?.name).toBe('Rocket Pool ETH');
     });
 
     it('should filter assets by contract address', () => {
@@ -74,7 +74,7 @@ describe('useTradeableAssetsFilteredData', () => {
             result.current.setFilterValue('0xa0b');
         });
         expect(result.current.filteredData).toHaveLength(1);
-        expect(result.current.filteredData[0].contractAddress).toBeTruthy();
+        expect(result.current.filteredData[0]?.contractAddress).toBeTruthy();
     });
 
     it('should filter assets by filter symbol', () => {
@@ -85,7 +85,7 @@ describe('useTradeableAssetsFilteredData', () => {
         });
 
         expect(result.current.filteredData).toHaveLength(1);
-        expect(result.current.filteredData[0].networkId).toBe('bitcoin');
+        expect(result.current.filteredData[0]?.networkId).toBe('bitcoin');
     });
 
     it('should combine network symbol filter with search query', () => {
@@ -95,7 +95,7 @@ describe('useTradeableAssetsFilteredData', () => {
             result.current.setFilterValue('usd');
         });
         expect(result.current.filteredData).toHaveLength(1);
-        expect(result.current.filteredData[0].name).toBe('USDC');
+        expect(result.current.filteredData[0]?.name).toBe('USDC');
     });
 
     it('should handle case-insensitive search', () => {

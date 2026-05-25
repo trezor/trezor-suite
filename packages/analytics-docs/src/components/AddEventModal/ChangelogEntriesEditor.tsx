@@ -31,7 +31,7 @@ export const ChangelogEntriesEditor = ({
                     value={entry.version}
                     onChange={e => {
                         const next = [...entries];
-                        next[idx] = { ...next[idx], version: e.target.value };
+                        next[idx] = { ...entry, version: e.target.value };
                         onChange(next);
                     }}
                     placeholder="`26.2.0` or `?`"
@@ -43,7 +43,7 @@ export const ChangelogEntriesEditor = ({
                     value={entry.notes}
                     onChange={e => {
                         const next = [...entries];
-                        next[idx] = { ...next[idx], notes: e.target.value };
+                        next[idx] = { ...entry, notes: e.target.value };
                         onChange(next);
                     }}
                     placeholder="Example: added"

@@ -3,7 +3,7 @@ import { getCryptoId } from '@suite-common/trading';
 import { invityEndpoint, swapQuotesTetherStellar } from '../../fixtures/invity';
 import { expect, test } from '../../support/fixtures';
 
-const sendAmount = swapQuotesTetherStellar[0].sendStringAmount!;
+const sendAmount = swapQuotesTetherStellar[0]?.sendStringAmount ?? '';
 
 test.describe(
     'Trading - Swap token to disabled network asset',

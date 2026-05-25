@@ -112,8 +112,12 @@ const compareByteArray = (left: Buffer, right: Buffer) => {
 
     const min = Math.min(left.length, right.length);
     for (let i = 0; i < min; i++) {
-        if (left[i] < right[i]) return -1;
-        if (left[i] > right[i]) return 1;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const leftByte: number = left[i];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const rightByte: number = right[i];
+        if (leftByte < rightByte) return -1;
+        if (leftByte > rightByte) return 1;
     }
 
     return left.length - right.length;

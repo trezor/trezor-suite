@@ -60,11 +60,17 @@ export const composeAllowanceTransactionThunk = createThunk<
             },
         });
 
-        const estimatedGasLimit = estimatedFee.success
-            ? new BigNumber(
-                  estimatedFee.payload.levels[0].feeLimit || ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
-              )
-            : new BigNumber(ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT);
+        let estimatedGasLimit: BigNumber;
+        if (estimatedFee.success) {
+            const { levels } = estimatedFee.payload;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const firstLevel: (typeof levels)[number] = levels[0];
+            estimatedGasLimit = new BigNumber(
+                firstLevel.feeLimit || ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
+            );
+        } else {
+            estimatedGasLimit = new BigNumber(ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT);
+        }
 
         const adjustedGasLimit = estimatedGasLimit
             .multipliedBy(ETHEREUM_ADJUST_GAS_LIMIT)

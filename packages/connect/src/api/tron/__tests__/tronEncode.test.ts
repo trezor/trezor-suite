@@ -43,6 +43,9 @@ describe('tron/encodeBroadcastTransaction', () => {
         const decoded = decodeBroadcastTransaction(result);
         expect(bytesToHex(decoded.rawData)).toBe(rawDataHex);
         expect(decoded.signature).toHaveLength(1);
-        expect(bytesToHex(decoded.signature[0])).toBe(TRX_TRANSFER.signature);
+        const { signature } = decoded;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstSignature: (typeof signature)[number] = signature[0];
+        expect(bytesToHex(firstSignature)).toBe(TRX_TRANSFER.signature);
     });
 });

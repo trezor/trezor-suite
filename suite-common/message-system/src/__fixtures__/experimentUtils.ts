@@ -17,5 +17,5 @@ export const experimentTest = {
             variant: 'B',
             percentage: 80,
         },
-    ],
+    ] satisfies [{ variant: string; percentage: number }, { variant: string; percentage: number }],
 };

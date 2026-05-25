@@ -53,7 +53,7 @@ describe('createDeferredManager', () => {
     it('generateId — uses provided function instead of counter', async () => {
         const ids = ['uuid-a', 'uuid-b', 'uuid-c'];
         let callCount = 0;
-        const generateId = () => ids[callCount++];
+        const generateId = () => ids[callCount++] as string;
 
         const manager = createDeferredManager({ generateId });
 

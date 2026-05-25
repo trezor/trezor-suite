@@ -12,14 +12,18 @@ const FILTERS: MockBlockFilter[] = mockFilterSequence(
     COINJOIN_BACKEND_SETTINGS.baseBlockHash,
 );
 
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const filterBeforeReorg: MockBlockFilter = FILTERS[FILTER_MIDDLE - 1];
 const REORG_FILTER: MockBlockFilter = {
     blockHeight: 9,
     blockHash: 'nope',
     filter: 'nope',
-    prevHash: FILTERS[FILTER_MIDDLE - 1].blockHash,
+    prevHash: filterBeforeReorg.blockHash,
     filterParams: { key: 'nope' },
 };
 
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const filterAt5: MockBlockFilter = FILTERS[5];
 const REORG_FILTERS = FILTERS.slice(0, FILTER_MIDDLE).concat(REORG_FILTER);
 
 const FIXTURES = [
@@ -36,8 +40,8 @@ const FIXTURES = [
             batchSize: 5,
             checkpoints: [
                 {
-                    blockHash: FILTERS[FILTER_MIDDLE - 1].blockHash,
-                    blockHeight: FILTERS[FILTER_MIDDLE - 1].blockHeight,
+                    blockHash: filterBeforeReorg.blockHash,
+                    blockHeight: filterBeforeReorg.blockHeight,
                 },
             ],
         },
@@ -101,7 +105,7 @@ describe('CoinjoinFilterController', () => {
 
             for await (const b of controller.getFilterIterator({
                 ...params,
-                checkpoints: [REORG_FILTER, FILTERS[5]],
+                checkpoints: [REORG_FILTER, filterAt5],
             })) {
                 received.push(b);
             }

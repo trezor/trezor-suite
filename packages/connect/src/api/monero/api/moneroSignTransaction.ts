@@ -200,10 +200,13 @@ export default class MoneroSignTransactionMethod extends AbstractMethod<
 
         // Step 2: SetInput - Process each UTXO
         for (let i = 0; i < this.params.inputs.length; i++) {
+            const { inputs } = this.params;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const input: (typeof inputs)[number] = inputs[i];
             const setInputResponse = await this.getDevice()
                 .getCommands()
                 .typedCall('MoneroTransactionSetInputRequest', 'MoneroTransactionSetInputAck', {
-                    src_entr: this.params.inputs[i],
+                    src_entr: input,
                 });
 
             // Store for later steps
@@ -214,14 +217,16 @@ export default class MoneroSignTransactionMethod extends AbstractMethod<
                 pseudo_out_hmac: setInputResponse.message.pseudo_out_hmac,
                 pseudo_out_alpha: setInputResponse.message.pseudo_out_alpha,
                 spend_key: setInputResponse.message.spend_key,
-                src_entr: this.params.inputs[i],
+                src_entr: input,
                 orig_idx: i,
             });
         }
 
         // Step 3: InputVini - Submit all inputs in order
         for (let i = 0; i < this.state.vinis.length; i++) {
-            const viniData = this.state.vinis[i];
+            const { vinis } = this.state;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const viniData: (typeof vinis)[number] = vinis[i];
             await this.getDevice()
                 .getCommands()
                 .typedCall('MoneroTransactionInputViniRequest', 'MoneroTransactionInputViniAck', {
@@ -246,11 +251,16 @@ export default class MoneroSignTransactionMethod extends AbstractMethod<
         // Step 5: SetOutput - Process each output and capture response data
         const outputs = this.params.tsx_data.outputs || [];
         for (let i = 0; i < outputs.length; i++) {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const output: (typeof outputs)[number] = outputs[i];
+            const { hmacs } = this.state;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const hmac: string = hmacs[i];
             const setOutputResponse = await this.getDevice()
                 .getCommands()
                 .typedCall('MoneroTransactionSetOutputRequest', 'MoneroTransactionSetOutputAck', {
-                    dst_entr: outputs[i],
-                    dst_entr_hmac: this.state.hmacs[i],
+                    dst_entr: output,
+                    dst_entr_hmac: hmac,
                 });
 
             if (setOutputResponse.message.out_pk) {
@@ -278,7 +288,9 @@ export default class MoneroSignTransactionMethod extends AbstractMethod<
 
         // Step 7: SignInput - Generate CLSAG signatures for each input
         for (let i = 0; i < this.state.vinis.length; i++) {
-            const viniData = this.state.vinis[i];
+            const { vinis } = this.state;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const viniData: (typeof vinis)[number] = vinis[i];
             const signResponse = await this.getDevice()
                 .getCommands()
                 .typedCall('MoneroTransactionSignInputRequest', 'MoneroTransactionSignInputAck', {

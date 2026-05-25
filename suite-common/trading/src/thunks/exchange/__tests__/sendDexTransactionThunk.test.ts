@@ -35,6 +35,7 @@ describe('sendDexTransactionThunk', () => {
 
     const getQuote = () => {
         const quoteNotTyped = MIN_MAX_QUOTES_OK[0];
+        if (!quoteNotTyped) throw new Error('Missing test fixture');
         const quote = {
             ...quoteNotTyped,
             send: quoteNotTyped.send as CryptoId,
@@ -188,7 +189,9 @@ describe('sendDexTransactionThunk', () => {
             }),
         );
 
-        const confirmTradeThunkArgs = confirmExchangeTradeThunkSpy.mock.calls[0][0];
+        const { calls } = confirmExchangeTradeThunkSpy.mock;
+        const firstCall: (typeof calls)[number] = calls[0];
+        const [confirmTradeThunkArgs] = firstCall;
 
         expect(result.meta.requestStatus).toEqual('fulfilled');
         expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(1);
@@ -236,7 +239,9 @@ describe('sendDexTransactionThunk', () => {
             }),
         );
 
-        const confirmTradeThunkArgs = confirmExchangeTradeThunkSpy.mock.calls[0][0];
+        const { calls } = confirmExchangeTradeThunkSpy.mock;
+        const firstCall: (typeof calls)[number] = calls[0];
+        const [confirmTradeThunkArgs] = firstCall;
         const { trade } = confirmTradeThunkArgs;
 
         expect(result.meta.requestStatus).toEqual('fulfilled');

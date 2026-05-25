@@ -199,7 +199,9 @@ describe('BuyPaymentMethodPicker', () => {
                 });
 
                 fireEvent.press(getByText('Payment method'));
-                fireEvent.press(getAllByText(creditCardPaymentMethodTranslation)[1]);
+                const creditCardOption = getAllByText(creditCardPaymentMethodTranslation)[1];
+                if (!creditCardOption) throw new Error('Credit Card option [1] not found');
+                fireEvent.press(creditCardOption);
 
                 expect(reportMock).toHaveBeenCalledTimes(0);
             });

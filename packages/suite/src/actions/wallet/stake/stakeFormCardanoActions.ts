@@ -260,19 +260,22 @@ export const composeTransaction =
             txPlan?.totalSpent,
         );
 
+        const firstOutput = formValues.outputs[0];
+        if (!firstOutput) return;
+
         const outputExtended = {
-            ...formValues.outputs[0],
+            ...firstOutput,
             amount: amountAda,
         };
 
-        const formValuesExtended = {
+        const formValuesExtended: StakeFormState = {
             ...formValues,
             cryptoInput: amountAda,
             outputs: [outputExtended],
         };
 
         const estimatedFee =
-            txData?.txPlan.type === 'final'
+            txData?.txPlan?.type === 'final'
                 ? {
                       success: true,
                       payload: {

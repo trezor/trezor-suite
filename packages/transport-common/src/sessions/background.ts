@@ -149,9 +149,12 @@ export class SessionsBackground
                 this.pathInternalPathPublicMap[d.path] = PathPublic(`${(this.lastPathId += 1)}`);
             }
             if (!this.descriptors[d.path]) {
+                const { pathInternalPathPublicMap } = this;
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const publicPath: PathPublic = pathInternalPathPublicMap[d.path];
                 this.descriptors[d.path] = {
                     ...d,
-                    path: this.pathInternalPathPublicMap[d.path],
+                    path: publicPath,
                     session: null,
                     apiType: d.apiType,
                 };
@@ -229,8 +232,11 @@ export class SessionsBackground
     }
 
     private releaseDone(payload: ReleaseDoneRequest) {
-        this.descriptors[payload.path].session = null;
-        this.descriptors[payload.path].sessionOwner = undefined;
+        const { descriptors } = this;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const descriptor: Descriptor = descriptors[payload.path];
+        descriptor.session = null;
+        descriptor.sessionOwner = undefined;
 
         this.clearLock();
 
@@ -274,7 +280,7 @@ export class SessionsBackground
     private clearLock() {
         const lock = this.locksQueue[0];
         if (lock) {
-            this.locksQueue[0].dfd.resolve(undefined);
+            lock.dfd.resolve(undefined);
             this.locksQueue.shift();
             clearTimeout(this.locksTimeoutQueue[0]);
             this.locksTimeoutQueue.shift();

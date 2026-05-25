@@ -45,8 +45,10 @@ export const useCoinjoinSessionPhase = (accountKey: AccountKey) => {
         const { isExpired, currentTimestamp } = checkExpiration(lastChangeTimestamp);
 
         if (isExpired && sessionPhaseQueue) {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const firstPhase: SessionPhase = sessionPhaseQueue[0];
             setPhaseIndex(0);
-            setSessionPhase(sessionPhaseQueue[0]);
+            setSessionPhase(firstPhase);
             setLastChangeTimestamp(currentTimestamp);
         } else {
             /**

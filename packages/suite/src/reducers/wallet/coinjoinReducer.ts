@@ -682,7 +682,8 @@ export const selectRegisteredUtxosByAccountKey = createMemoizedSelector(
         const { prison, session, transactionCandidates } = coinjoinAccount;
 
         return Object.keys(prison).reduce<typeof prison>((result, key) => {
-            const inmate = prison[key];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const inmate: (typeof prison)[string] = prison[key];
             // select **only** inmates with assigned roundId (signed in current round or promised to future blaming round)
             if (
                 inmate.roundId &&

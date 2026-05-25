@@ -165,9 +165,9 @@ describe('steps', () => {
 
         it('should throw on improper use (no more step exists)', () => {
             const createSteps = getStepsForPath(STEP.PATH_CREATE);
-            expect(() => findPrevStep(createSteps[0].id, createSteps)).toThrow(
-                'no prev step exists',
-            );
+            const firstStep = createSteps[0];
+            if (!firstStep) throw new Error('Expected createSteps[0] to exist');
+            expect(() => findPrevStep(firstStep.id, createSteps)).toThrow('no prev step exists');
         });
     });
 

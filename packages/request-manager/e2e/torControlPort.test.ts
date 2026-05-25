@@ -78,12 +78,16 @@ describe.skip('TorControlPort', () => {
                             isProperlyAuthenticated = providedAuthSignature === authSignature;
                             sock.write('250 OK');
                             break;
-                        case !!authchallengeRequest:
-                            clientNonce = authchallengeRequest ? authchallengeRequest[1] : '';
+                        case !!authchallengeRequest: {
+                            const nonce = authchallengeRequest
+                                ? (authchallengeRequest[1] ?? '')
+                                : '';
+                            clientNonce = nonce;
                             sock.write(
                                 `250 AUTHCHALLENGE SERVERHASH=${serverHash} SERVERNONCE=${serverNonce}`,
                             );
                             break;
+                        }
                         default:
                     }
                 });

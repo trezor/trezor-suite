@@ -223,9 +223,12 @@ export const recomposeAndSignTxThunk = createThunk<
             the formState (displayed in the UI) and for the payment requests to
             ensure that the payment requests are created with the correct amount.
         */
-        const isTradedWholeBalance = precomposedToSign.outputs.length === 1; // sending whole balance
+        const { outputs: precomposedOutputs } = precomposedToSign;
+        const isTradedWholeBalance = precomposedOutputs.length === 1; // sending whole balance
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstPrecomposedOutput: (typeof precomposedOutputs)[number] = precomposedOutputs[0];
         const sendAmount = isTradedWholeBalance
-            ? precomposedToSign.outputs[0].amount.toString()
+            ? firstPrecomposedOutput.amount.toString()
             : undefined;
         const formattedMaxAmount = sendAmount
             ? subunitsToUnits({

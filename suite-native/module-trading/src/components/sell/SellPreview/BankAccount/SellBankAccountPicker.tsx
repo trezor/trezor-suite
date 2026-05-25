@@ -59,6 +59,11 @@ export const SellBankAccountPicker = ({
     }
 
     const { bankAccounts } = trade.data;
+    const firstBankAccount = bankAccounts[0];
+
+    if (!firstBankAccount) {
+        return null;
+    }
 
     const handleBankAccountSelect = (bankAccount: BankAccount) => {
         onBankAccountSelect(bankAccount);
@@ -68,7 +73,7 @@ export const SellBankAccountPicker = ({
     return (
         <>
             <MemoizedSellBankAccountPicker
-                bankAccount={bankAccounts[0]}
+                bankAccount={firstBankAccount}
                 onPress={openModal}
                 hasCaret={bankAccounts.length > 1}
             />

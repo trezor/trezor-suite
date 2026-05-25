@@ -1,6 +1,6 @@
 import { type BezierDefinition, type MotionProps } from 'framer-motion';
 
-export const motionAnimation: Record<string, MotionProps> = {
+export const motionAnimation = {
     expand: {
         variants: {
             initial: {
@@ -17,14 +17,14 @@ export const motionAnimation: Record<string, MotionProps> = {
         exit: 'initial',
         transition: { duration: 0.24, ease: 'easeInOut' },
     },
-};
+} as const satisfies Record<string, MotionProps>;
 
 // TODO: move to theme package and review. exit is sometimes better than enter for exit animations IMO
-export const motionEasing: Record<string, BezierDefinition> = {
+export const motionEasing = {
     transition: [0.65, 0, 0.35, 1],
     enter: [0.33, 1, 0.68, 1],
     exit: [0.32, 0, 0.67, 0],
-};
+} as const satisfies Record<string, BezierDefinition>;
 
 type EaringType = keyof typeof motionEasing;
 

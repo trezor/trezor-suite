@@ -674,11 +674,21 @@ describe('tradingSelectors', () => {
             const result = selectDeviceTradingTradesOrderedByDate(state);
 
             expect(result).toHaveLength(5);
-            expect(result[0].data.orderId).toBe('orderId4');
-            expect(result[1].data.orderId).toBe('orderId3');
-            expect(result[2].data.orderId).toBe('orderId2');
-            expect(result[3].data.orderId).toBe('orderId1');
-            expect(result[4].data.orderId).toBe('orderId5');
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const item0: (typeof result)[number] = result[0];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const item1: (typeof result)[number] = result[1];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const item2: (typeof result)[number] = result[2];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const item3: (typeof result)[number] = result[3];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const item4: (typeof result)[number] = result[4];
+            expect(item0.data.orderId).toBe('orderId4');
+            expect(item1.data.orderId).toBe('orderId3');
+            expect(item2.data.orderId).toBe('orderId2');
+            expect(item3.data.orderId).toBe('orderId1');
+            expect(item4.data.orderId).toBe('orderId5');
         });
 
         it('should be stable', () => {

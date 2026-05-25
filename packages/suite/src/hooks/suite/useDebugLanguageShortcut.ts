@@ -35,7 +35,7 @@ export const useDebugLanguageShortcut = () => {
                 if (isLanguageAutodetect) {
                     dispatch(suiteSettingsActions.setAutodetect({ language: false }));
                 }
-                dispatch(suiteSettingsActions.setLanguage(languages[nextIndex].value || 'en'));
+                dispatch(suiteSettingsActions.setLanguage(languages[nextIndex]?.value ?? 'en-US'));
             }
 
             if (event.ctrlKey && event.key === KEYBOARD_CODE.FUNCTION_KEY_SEVEN) {
@@ -43,7 +43,7 @@ export const useDebugLanguageShortcut = () => {
                 if (isLanguageAutodetect) {
                     dispatch(suiteSettingsActions.setAutodetect({ language: false }));
                 }
-                dispatch(suiteSettingsActions.setLanguage(languages[nextIndex].value));
+                dispatch(suiteSettingsActions.setLanguage(languages[nextIndex]?.value ?? 'en-US'));
             }
 
             const isToggleTranslationKeys =
