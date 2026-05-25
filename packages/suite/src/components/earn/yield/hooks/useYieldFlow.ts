@@ -241,7 +241,7 @@ export const useYieldFlow = ({
         account,
         flowType,
         flowKey,
-        vaultId: vault?.id,
+        vault,
     });
 
     // Sync form value on step transitions driven by Redux (e.g. completeApproval, enterModifyMode from thunk)

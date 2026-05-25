@@ -17,6 +17,7 @@ type Attributes = {
     vaultId?: AttributeDef<string>;
     durationMs?: AttributeDef<number>;
     errorMessage?: AttributeDef<string>;
+    apyBreakdown?: AttributeDef<string>;
 };
 
 export const yieldWithdrawEvent: EventDef<Attributes, EventType.YieldWithdraw> = {
@@ -51,6 +52,11 @@ export const yieldWithdrawEvent: EventDef<Attributes, EventType.YieldWithdraw> =
         },
         errorMessage: {
             changelog: [{ version: '26.5.0', notes: 'added' }],
+        },
+        apyBreakdown: {
+            description:
+                'Per-component breakdown of the displayed APY as a single comma-separated string in `SYMBOL,APY,SYMBOL,APY,…` order, sorted alphabetically by symbol. APYs are decimal percentages (e.g. `USDT,3.45,MORPHO,0.5` means 3.45% paid in USDT plus 0.5% paid in MORPHO). Each reward component is emitted independently; if two components share a token symbol they appear twice in the string. Reported on `type=withdraw` (click to submit) and `type=success` (withdraw confirmed).',
+            changelog: [{ version: '26.5.2', notes: 'added' }],
         },
     },
 };

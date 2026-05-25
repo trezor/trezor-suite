@@ -1,5 +1,7 @@
+import { type RewardDto } from '@suite-common/earn-stablecoin-api';
 import { tokenSupportsIncreasingAllowance } from '@suite-common/trading';
 import { YIELD_FLOW_STEPS, type YieldFlowStepId } from '@suite-common/wallet-core';
+import { getApyPercent } from '@suite-common/wallet-utils';
 import type { BulletListItemState } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
@@ -71,6 +73,27 @@ export const getYieldModifyAmountInput = ({
         ? maxAmount
         : nextAmount;
 };
+
+/**
+ * Encodes per-component APY contributions as a single comma-separated string:
+ * `SYMBOL_A,APY_A,SYMBOL_B,APY_B,…` sorted alphabetically by symbol. Each
+ * component is emitted as-is — symbols repeating across components are not
+ * merged. Returns an empty string when there are no usable components.
+ */
+export const getApyBreakdown = (components: RewardDto[] | undefined): string =>
+    (components ?? [])
+        .map(component => {
+            if (!Number.isFinite(component.rate)) return null;
+            const symbol = component.token?.symbol;
+            if (!symbol) return null;
+            const componentApy = getApyPercent(component.rate);
+
+            return componentApy != null ? ([symbol, componentApy] as const) : null;
+        })
+        .filter((pair): pair is readonly [string, number] => pair !== null)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .flatMap(([symbol, componentApy]) => [symbol, String(componentApy)])
+        .join(',');
 
 export const getBulletListItemStates = (
     currentStep: YieldFlowStepId,
