@@ -13,7 +13,7 @@ import {
     buildUserFeedbackData,
     sendFeedbackAction,
 } from '@suite-common/feedback';
-import { Button, CollapsibleBox, Select, Textarea } from '@trezor/components';
+import { Box, Button, CollapsibleBox, Select, Textarea } from '@trezor/components';
 import { EmojiRatingSelector } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
 
@@ -180,7 +180,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
                     </>
                 )}
                 {type === 'SUGGESTION' && (
-                    <>
+                    <Box margin={{ bottom: 12 }}>
                         <Headline>
                             <Translation id="TR_GUIDE_FEEDBACK_RATING_HEADLINE" />
                         </Headline>
@@ -189,7 +189,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
                             onChange={setRating}
                             data-testid="@guide/feedback/suggestion"
                         />
-                    </>
+                    </Box>
                 )}
                 {type === 'BUG' && (
                     <Headline>

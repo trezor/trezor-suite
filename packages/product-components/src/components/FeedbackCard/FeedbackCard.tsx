@@ -62,7 +62,11 @@ export const FeedbackCard = ({
 
                 <EmojiRatingSelector value={rating} onChange={setRating} />
 
-                {description && <Paragraph typographyStyle="body-sm">{description}</Paragraph>}
+                {description && (
+                    <Paragraph margin={{ top: 12 }} typographyStyle="body-sm">
+                        {description}
+                    </Paragraph>
+                )}
 
                 <Textarea
                     rows={3}

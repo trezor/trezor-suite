@@ -39,13 +39,13 @@ const SectionButton = styled.button<{ $hasBackground?: boolean }>`
     align-items: center;
     padding: 13px;
     background: ${({ $hasBackground, theme }) =>
-        $hasBackground ? theme.surfaceFillRaised : 'none'};
+        $hasBackground ? theme.elementFillElevated : 'none'};
     border: 0;
 
     transition: background ${transitions.speed.normal} ${transitions.type};
 
     &:hover {
-        background: ${({ theme }) => theme.legacyBackgroundTertiaryPressedOnElevation1};
+        background: ${({ theme }) => theme.elementFillElevatedHovered};
     }
 `;
 
@@ -179,7 +179,7 @@ export const SupportFeedbackSelection = () => {
                             <Label>
                                 <LabelHeadline>
                                     <Translation id="TR_GUIDE_SUPPORT" />
-                                    <Icon size={20} name="arrowUpRight" />
+                                    <Icon size={20} name="arrowLineUpRight" />
                                 </LabelHeadline>
                             </Label>
                         </SectionButton>
@@ -193,7 +193,7 @@ export const SupportFeedbackSelection = () => {
                         <Label>
                             <LabelHeadline>
                                 <Translation id="TR_GUIDE_FORUM" />
-                                <Icon size={20} name="arrowUpRight" />
+                                <Icon size={20} name="arrowLineUpRight" />
                             </LabelHeadline>
                             <Paragraph
                                 typographyStyle="body-sm"

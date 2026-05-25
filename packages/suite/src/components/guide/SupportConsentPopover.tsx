@@ -50,7 +50,7 @@ export const SupportConsentPopover = ({ children }: SupportConsentPopoverProps) 
                             </Paragraph>
                         </Column>
                         <Button
-                            iconRight="arrowUpRight"
+                            iconRight="arrowLineUpRight"
                             onClick={() => window.open(supportChatUrl, '_blank')}
                             width="100%"
                         >
