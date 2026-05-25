@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { selectAccountIncludingChosenInTrading } from '@suite/account';
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { preserveModalOnTxTimeout } from '@suite/modal';
 import { selectRouterUrl } from '@suite/router';
@@ -15,7 +16,6 @@ import TrezorConnect from '@trezor/connect';
 import { type Deferred } from '@trezor/utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectAccountIncludingChosenInTrading } from '@suite/account';
 import { redactRouterUrl } from 'src/utils/suite/analytics';
 
 import { TransactionReviewModalBodyInner } from './TransactionReviewModalBodyInner';

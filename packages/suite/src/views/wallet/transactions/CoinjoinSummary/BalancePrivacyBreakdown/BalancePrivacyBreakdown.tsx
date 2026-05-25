@@ -1,5 +1,6 @@
 import styled, { useTheme } from 'styled-components';
 
+import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { isZero } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
@@ -9,7 +10,6 @@ import {
     selectCurrentCoinjoinBalanceBreakdown,
     selectCurrentCoinjoinSession,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { selectSelectedAccount } from '@suite/account';
 
 import { CryptoAmountWithHeader } from './CryptoAmountWithHeader';
 

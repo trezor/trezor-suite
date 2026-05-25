@@ -3,11 +3,11 @@ import { useState } from 'react';
 import { Address } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
-import { showAddressThunk } from '@suite/receive';
 import {
     selectIsLegacyLabelingVisible,
     selectLabelingDataForSelectedAccount,
 } from '@suite/metadata';
+import { showAddressThunk } from '@suite/receive';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';

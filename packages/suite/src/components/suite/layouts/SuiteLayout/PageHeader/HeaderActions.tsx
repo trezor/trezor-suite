@@ -1,3 +1,4 @@
+import { selectFullSelectedAccount } from '@suite/account';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { selectRouterParams } from '@suite/router';
@@ -8,7 +9,6 @@ import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavi
 import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
 import { TradeActions } from 'src/components/suite/layouts/SuiteLayout/PageHeader/TradeActions';
 import { useSelector } from 'src/hooks/suite';
-import { selectFullSelectedAccount } from '@suite/account';
 import { type WalletParams } from 'src/types/wallet';
 
 import { HeaderDropdown } from './HeaderDropdown';

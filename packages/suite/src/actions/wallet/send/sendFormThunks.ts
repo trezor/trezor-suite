@@ -1,6 +1,7 @@
 import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
+import { selectIsSelectedAccountLoaded, selectSelectedAccountKey } from '@suite/account';
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { processLegacyMetadataIntoSuiteSyncThunk } from '@suite/labeling';
 import { metadataLabelingActions, selectMetadata } from '@suite/metadata';
@@ -30,8 +31,6 @@ import {
 import { isCardanoTx, isRbfBumpFeeTransaction } from '@suite-common/wallet-utils';
 import { type PROTO, type StaticSessionId } from '@trezor/connect';
 import { getSynchronize } from '@trezor/utils';
-
-import { selectIsSelectedAccountLoaded, selectSelectedAccountKey } from '@suite/account';
 
 import { RBF_ERROR_ALREADY_MINED } from './replaceByFeeErrorThunk';
 import { MODULE_PREFIX } from './sendThunksConsts';

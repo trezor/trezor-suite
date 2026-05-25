@@ -1,3 +1,4 @@
+import { selectSelectedAccount } from '@suite/account';
 import { selectDeviceUnavailableCapabilities } from '@suite-common/device';
 import { selectAddressDisplayType } from '@suite-common/wallet-core';
 import {
@@ -6,7 +7,6 @@ import {
     type StakeType,
 } from '@suite-common/wallet-types';
 
-import { selectSelectedAccount } from '@suite/account';
 import { DisplayMode } from 'src/types/suite';
 
 import { useSelector } from './useSelector';

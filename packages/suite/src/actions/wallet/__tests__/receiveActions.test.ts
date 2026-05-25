@@ -1,5 +1,5 @@
 import { modalReducer } from '@suite/modal';
-import { dispose, openAddressModal, receiveReducer, showAddressThunk } from '@suite/receive';
+import { openAddressModal, receiveActions, receiveReducer, showAddressThunk } from '@suite/receive';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { prepareDeviceReducer } from '@suite-common/device';
@@ -177,7 +177,7 @@ describe('ReceiveActions', () => {
         expect(store.getState().wallet.receive.length).toEqual(2);
 
         // clear
-        await store.dispatch(dispose());
+        await store.dispatch(receiveActions.receiveDispose());
         expect(store.getState().wallet.receive.length).toEqual(0);
     });
 });

@@ -1,5 +1,6 @@
 import { produce } from 'immer';
 
+import { type SelectedAccountRootState, selectSelectedAccount } from '@suite/account';
 import { type LocksRootState, selectIsDeviceOrUiLocked } from '@suite/locks';
 import { type TorRootState, selectTorState } from '@suite/tor';
 import { type DeviceRootState, selectDeviceStatus } from '@suite-common/device';
@@ -55,8 +56,6 @@ import {
     getSkipRounds,
     transformCoinjoinStatus,
 } from 'src/utils/wallet/coinjoinUtils';
-
-import { type SelectedAccountRootState, selectSelectedAccount } from '@suite/account';
 
 export interface CoinjoinState {
     accounts: CoinjoinAccount[];

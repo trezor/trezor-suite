@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useFormatters } from '@suite-common/formatters';
@@ -33,7 +34,6 @@ import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-import { selectSelectedAccount } from '@suite/account';
 
 import { DiscoveryWarning } from './DiscoveryWarning';
 

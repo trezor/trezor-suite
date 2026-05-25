@@ -9,5 +9,5 @@ export {
     selectedAccountReducer,
     type SelectedAccountRootState,
     type SelectedAccountRootStateWithTrading,
-    type State,
+    type SelectedAccountState,
 } from './selectedAccountReducer';

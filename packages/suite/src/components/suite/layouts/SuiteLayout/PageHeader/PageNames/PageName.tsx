@@ -1,3 +1,4 @@
+import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import {
     type SuiteRouterHistoryDep,
@@ -9,7 +10,6 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceAccountForNetworkSymbolAndAccountTypeWithIndex } from '@suite-common/wallet-core';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from '@suite/account';
 
 import { AccountName } from './AccountName/AccountName';
 import { AccountSubpageName } from './AccountName/AccountSubpageName';

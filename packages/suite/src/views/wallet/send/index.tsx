@@ -3,6 +3,7 @@ import { FormProvider } from 'react-hook-form';
 
 import styled from 'styled-components';
 
+import { selectFullSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { selectIsMetadataProviderConnected } from '@suite/metadata';
 import { selectRouteName } from '@suite/router';
@@ -20,7 +21,6 @@ import {
     selectRegisteredUtxosByAccountKey,
     selectTargetAnonymityByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { selectFullSelectedAccount } from '@suite/account';
 import { selectIsSuiteOnline } from 'src/selectors/suite/suiteSelectors';
 
 import { Options } from './Options/Options';

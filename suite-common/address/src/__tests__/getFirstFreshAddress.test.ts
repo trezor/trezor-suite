@@ -49,7 +49,10 @@ describe(getFirstFreshAddress.name, () => {
             ),
         ).toEqual({
             address: 'tb1q-second',
+            balance: '0',
             path: "m/84'/1'/0'/0/2",
+            received: '0',
+            sent: '0',
             transfers: 0,
         });
     });

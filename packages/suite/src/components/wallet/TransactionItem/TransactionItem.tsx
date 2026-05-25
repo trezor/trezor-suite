@@ -2,6 +2,7 @@ import { memo, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { AccountTransactionBaseAnchor, useAnchor } from '@suite/router';
@@ -19,7 +20,6 @@ import { HELP_CENTER_REPLACE_BY_FEE_ETHEREUM } from '@trezor/urls';
 
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from '@suite/account';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { TransactionHeading } from './TransactionHeading';

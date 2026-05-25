@@ -1,5 +1,4 @@
-import { type AnyAction } from 'redux';
-import { type ThunkDispatch } from 'redux-thunk';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import { type SelectedAccountRootState, selectSelectedAccount } from '@suite/account';
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
@@ -16,13 +15,13 @@ import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { openAddressModal } from './openAddressModal';
 
-type ReceiveThunkRootState = DeviceRootState & WalletSettingsRootState & SelectedAccountRootState;
-type Dispatch = ThunkDispatch<ReceiveThunkRootState, ExtraDependencies, AnyAction>;
-type GetState = () => ReceiveThunkRootState;
-
 export const showAddressThunk =
     ({ path, address }: { path: string; address: string }) =>
-    async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
+    async (
+        dispatch: Dispatch,
+        getState: () => DeviceRootState & WalletSettingsRootState & SelectedAccountRootState,
+        extra: ExtraDependencies,
+    ) => {
         const device = selectSelectedDevice(getState());
         const account = selectSelectedAccount(getState());
 
@@ -34,8 +33,9 @@ export const showAddressThunk =
         };
 
         const addressDisplayType = selectAddressDisplayType(getState());
-        const shouldChunkAddress = addressDisplayType === AddressDisplayOptions.CHUNKED;
+        const chunkify = addressDisplayType === AddressDisplayOptions.CHUNKED;
 
+        // Show warning when device is not connected.
         if (!device.connected || !device.available) {
             dispatch(
                 openModal({
@@ -66,16 +66,14 @@ export const showAddressThunk =
         });
 
         const response = await dispatch(
-            confirmAddressOnDeviceThunk({
-                accountKey: account.key,
-                addressPath: path,
-                chunkify: shouldChunkAddress,
-            }),
+            confirmAddressOnDeviceThunk({ accountKey: account.key, addressPath: path, chunkify }),
         ).unwrap();
 
+        // After confirming address on the modal, it does not have to be persistent anymore.
         dispatch(removePreserveModal());
 
         if (response.success) {
+            // Show second part of the confirm address modal.
             dispatch(openAddressModal({ ...modalPayload, isConfirmed: true }));
 
             asTypedDesktopAnalytics(extra.services.analytics).report({
@@ -84,6 +82,7 @@ export const showAddressThunk =
             });
         } else {
             dispatch(closeModal());
+            // Special case: device no-backup permissions not granted.
             if (response.error.code === 'Method_PermissionsNotGranted') return;
 
             dispatch(

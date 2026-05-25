@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { selectSelectedAccount } from '@suite/account';
 import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import {
@@ -12,7 +13,6 @@ import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
-import { selectSelectedAccount } from '@suite/account';
 
 interface UnhideTokenModalProps {
     address: string;

@@ -1,3 +1,4 @@
+import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -5,7 +6,6 @@ import { convertTaprootXpub } from '@trezor/utils';
 
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from '@suite/account';
 
 import {
     ConfirmValueModal,

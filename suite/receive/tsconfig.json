@@ -2,9 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../account" },
-        { "path": "../analytics" },
-        { "path": "../modal" },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/redux-utils"
@@ -20,6 +17,9 @@
         },
         {
             "path": "../../suite-common/wallet-types"
-        }
+        },
+        { "path": "../account" },
+        { "path": "../analytics" },
+        { "path": "../modal" }
     ]
 }
