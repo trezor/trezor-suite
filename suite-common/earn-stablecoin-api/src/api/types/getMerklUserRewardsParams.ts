@@ -5,11 +5,11 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export type GetMerkleUserRewardsParams = {
-    chainId?: number | null | string;
+export type GetMerklUserRewardsParams = {
+    chainId?: number | null | number[] | string;
     /**
      * @nullable
      */
     claimableOnly?: boolean | null;
-    reloadChainId?: number | null | string;
+    reloadChainId?: number | null | number[] | string;
 };

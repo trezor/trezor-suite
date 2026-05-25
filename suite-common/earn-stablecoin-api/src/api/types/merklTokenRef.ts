@@ -5,7 +5,7 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export type MerkleTokenRef = {
+export type MerklTokenRef = {
     /** ERC-20 token contract address */
     address: string;
     /** EVM chain id this token lives on */
