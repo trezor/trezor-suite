@@ -93,6 +93,7 @@ export type TradingFormContext = Partial<TradingAmountLimitProps> & {
     sendSymbol: string | undefined;
     balance: string | undefined;
     networkReserve?: string;
+    maxSpendableAmount?: string;
 };
 
 export type ProviderConfirmationStatus =

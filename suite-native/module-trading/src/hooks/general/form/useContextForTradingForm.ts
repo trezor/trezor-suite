@@ -8,15 +8,17 @@ import {
     type WalletSettingsRootState,
     selectIsNetworkReserveEnabled,
 } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { getNetworkReserve } from '@suite-common/wallet-utils';
 import { useTranslate } from '@suite-native/intl';
 import { type TradingFormContext } from '@suite-native/trading-types';
 
 import { useConvertFormValueToBaseUnit } from '../useConvertFormValueToBaseUnit';
+import { useMaxSpendableAmount } from './useMaxSpendableAmount';
 
 export const useContextForTradingForm = (limits: TradingAmountLimitProps | undefined) => {
     const { translate } = useTranslate();
+
     const { BaseCurrencyAmountFormatter, CryptoAmountFormatter } = useFormatters();
     const { convertNumberToBaseUnit } = useConvertFormValueToBaseUnit();
 
@@ -27,6 +29,12 @@ export const useContextForTradingForm = (limits: TradingAmountLimitProps | undef
     const [balance, setBalance] = useState<string | undefined>(undefined);
     const [sendSymbol, setSendSymbol] = useState<string | undefined>(undefined);
     const [contractAddress, setContractAddress] = useState<TokenAddress | undefined>(undefined);
+    const [accountKey, setAccountKey] = useState<AccountKey | undefined>(undefined);
+
+    const { maxSpendableAmount } = useMaxSpendableAmount({
+        accountKey,
+        tokenContract: contractAddress,
+    });
 
     const networkReserve = sendSymbol
         ? getNetworkReserve({
@@ -46,6 +54,7 @@ export const useContextForTradingForm = (limits: TradingAmountLimitProps | undef
             CryptoAmountFormatter,
             convertNumberToBaseUnit,
             networkReserve,
+            maxSpendableAmount,
         }),
         [
             limits,
@@ -56,6 +65,7 @@ export const useContextForTradingForm = (limits: TradingAmountLimitProps | undef
             CryptoAmountFormatter,
             convertNumberToBaseUnit,
             networkReserve,
+            maxSpendableAmount,
         ],
     );
 
@@ -64,5 +74,6 @@ export const useContextForTradingForm = (limits: TradingAmountLimitProps | undef
         setBalance,
         setSendSymbol,
         setContractAddress,
+        setAccountKey,
     };
 };
