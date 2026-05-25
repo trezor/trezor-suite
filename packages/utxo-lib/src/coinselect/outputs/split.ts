@@ -1,5 +1,3 @@
-import BN from 'bn.js';
-
 import {
     type CoinSelectInput,
     type CoinSelectOptions,
@@ -32,26 +30,29 @@ export function split(
 
     const inAccum = sumOrNaN(utxos);
     const outAccum = sumOrNaN(outputs, true);
-    if (!inAccum) return { fee };
+    if (inAccum === undefined) return { fee };
 
-    const remaining = inAccum.sub(outAccum).sub(new BN(fee));
-    if (remaining.lt(ZERO)) return { fee };
+    const remaining = inAccum - outAccum - BigInt(fee);
+    if (remaining < ZERO) return { fee };
 
-    const unspecified = outputs.reduce((a, x) => a + (!bignumberOrNaN(x.value) ? 1 : 0), 0);
+    const unspecified = outputs.reduce(
+        (a, x) => a + (bignumberOrNaN(x.value) === undefined ? 1 : 0),
+        0,
+    );
 
-    if (remaining.isZero() || unspecified === 0) {
+    if (remaining === ZERO || unspecified === 0) {
         return finalize(utxos, outputs, feeRate, options);
     }
 
-    const splitValue = remaining.div(new BN(unspecified));
+    const splitValue = remaining / BigInt(unspecified);
     const dustAmount = getDustAmount(feeRate, options);
 
     // ensure every output is either user defined, or over the threshold
-    if (unspecified && splitValue.lt(new BN(dustAmount))) return { fee };
+    if (unspecified && splitValue < BigInt(dustAmount)) return { fee };
 
     // assign splitValue to outputs not user defined
     const outputsSplit = outputs.map(output => {
-        if (output.value) return output;
+        if (output.value !== undefined) return output;
 
         return {
             ...output,

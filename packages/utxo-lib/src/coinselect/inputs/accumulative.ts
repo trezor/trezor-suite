@@ -1,5 +1,3 @@
-import BN from 'bn.js';
-
 import { type CoinSelectAlgorithm, type CoinSelectInput, type CoinSelectResult } from '../../types';
 import {
     ZERO,
@@ -30,7 +28,7 @@ export const accumulative: CoinSelectAlgorithm = (
         if (u.required) {
             requiredUtxos.push(u);
             const utxoValue = bignumberOrNaN(u.value, true); // use forgiving (0)
-            inAccum = inAccum.add(utxoValue);
+            inAccum = inAccum + utxoValue;
             inputs.push(u);
         } else {
             utxos.push(u);
@@ -53,21 +51,21 @@ export const accumulative: CoinSelectAlgorithm = (
         const utxoValue = bignumberOrNaN(utxo.value);
 
         // skip detrimental input
-        if (!utxoValue || utxoValue.lt(new BN(utxoFee))) {
+        if (utxoValue === undefined || utxoValue < BigInt(utxoFee)) {
             if (i === utxos.length - 1) {
                 const fee = getFee([...inputs, utxo], outputs, feeRate, options);
 
                 return { fee };
             }
         } else {
-            inAccum = inAccum.add(utxoValue);
+            inAccum = inAccum + utxoValue;
             inputs.push(utxo);
 
             const fee = getFee(inputs, outputs, feeRate, options);
-            const outAccumWithFee = outAccum ? outAccum.add(new BN(fee)) : ZERO;
+            const outAccumWithFee = outAccum !== undefined ? outAccum + BigInt(fee) : ZERO;
 
             // go again?
-            if (inAccum.gte(outAccumWithFee)) {
+            if (inAccum >= outAccumWithFee) {
                 return finalize(inputs, outputs, feeRate, options);
             }
         }

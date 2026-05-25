@@ -1,5 +1,3 @@
-import BN from 'bn.js';
-
 import { type CoinSelectAlgorithm, type CoinSelectInput, type CoinSelectResult } from '../../types';
 import {
     OUTPUT_SCRIPT_LENGTH,
@@ -19,14 +17,14 @@ const MAX_TRIES = 1000000;
 function calculateEffectiveValues(utxos: CoinSelectInput[], feeRate: number) {
     return utxos.map(utxo => {
         const value = bignumberOrNaN(utxo.value);
-        if (!value) {
+        if (value === undefined) {
             return {
                 utxo,
                 effectiveValue: ZERO,
             };
         }
         const effectiveFee = getFeeForBytes(feeRate, inputBytes(utxo));
-        const effectiveValue = value.sub(new BN(effectiveFee));
+        const effectiveValue = value - BigInt(effectiveFee);
 
         return {
             utxo,
@@ -39,8 +37,8 @@ function calculateEffectiveValues(utxos: CoinSelectInput[], feeRate: number) {
 // Inclusion branch first (Largest First Exploration), then exclusion branch
 function search(
     effectiveUtxos: ReturnType<typeof calculateEffectiveValues>,
-    target: BN,
-    costRange: BN,
+    target: bigint,
+    costRange: bigint,
 ) {
     if (effectiveUtxos.length === 0) {
         return null;
@@ -54,7 +52,7 @@ function search(
     let done = false;
     let backtrack = false;
 
-    let remaining = effectiveUtxos.reduce((a, x) => x.effectiveValue.add(a), ZERO);
+    let remaining = effectiveUtxos.reduce((a, x) => x.effectiveValue + a, ZERO);
 
     let depth = 0;
     while (!done) {
@@ -63,16 +61,16 @@ function search(
             return null;
         }
 
-        if (selectedAccum.gt(costRange)) {
+        if (selectedAccum > costRange) {
             // Selected value is out of range, go back and try other branch
             backtrack = true;
-        } else if (selectedAccum.gte(target)) {
+        } else if (selectedAccum >= target) {
             // Selected value is within range
             done = true;
         } else if (depth >= effectiveUtxos.length) {
             // Reached a leaf node, no solution here
             backtrack = true;
-        } else if (selectedAccum.add(remaining).lt(target)) {
+        } else if (selectedAccum + remaining < target) {
             // Cannot possibly reach target with amount remaining
             if (depth === 0) {
                 // At the first utxo, no possible selections, so exit
@@ -82,10 +80,10 @@ function search(
         } else {
             // Continue down this branch
             // Remove this utxo from the remaining utxo amount
-            remaining = remaining.sub(effectiveUtxos[depth].effectiveValue);
+            remaining = remaining - effectiveUtxos[depth].effectiveValue;
             // Inclusion branch first (Largest First Exploration)
             selected[depth] = true;
-            selectedAccum = selectedAccum.add(effectiveUtxos[depth].effectiveValue);
+            selectedAccum = selectedAccum + effectiveUtxos[depth].effectiveValue;
             depth++;
         }
 
@@ -96,7 +94,7 @@ function search(
 
             // Walk backwards to find the first utxo which has not has its second branch traversed
             while (!selected[depth]) {
-                remaining = remaining.add(effectiveUtxos[depth].effectiveValue);
+                remaining = remaining + effectiveUtxos[depth].effectiveValue;
 
                 // Step back one
                 depth--;
@@ -110,7 +108,7 @@ function search(
 
             // Now traverse the second branch of the utxo we have arrived at.
             selected[depth] = false;
-            selectedAccum = selectedAccum.sub(effectiveUtxos[depth].effectiveValue);
+            selectedAccum = selectedAccum - effectiveUtxos[depth].effectiveValue;
             depth++;
         }
         tries--;
@@ -152,19 +150,19 @@ export const branchAndBound: CoinSelectAlgorithm = (
     const outputsBytes = transactionBytes([], outputs);
     const outputsFee = getFeeForBytes(feeRate, outputsBytes);
     const outputsTotalValue = sumOrNaN(outputs);
-    if (!outputsTotalValue) return { fee: 0 };
+    if (outputsTotalValue === undefined) return { fee: 0 };
 
     // target = total amount that needs to be covered (all outputs + fee)
-    const target = outputsTotalValue.add(new BN(outputsFee));
-    const targetRange = target.add(new BN(costOfChange));
+    const target = outputsTotalValue + BigInt(outputsFee);
+    const targetRange = target + BigInt(costOfChange);
 
     // use only effective utxos which:
     // - value is greater than its cost (effectiveValue > 0)
     // - value is lower or equal than target range (will not produce change output)
     const effectiveUtxos = calculateEffectiveValues(utxos, feeRate)
-        .filter(({ effectiveValue }) => effectiveValue.gt(ZERO) && effectiveValue.lte(targetRange))
+        .filter(({ effectiveValue }) => effectiveValue > ZERO && effectiveValue <= targetRange)
         .sort((a, b) => {
-            const subtract = b.effectiveValue.sub(a.effectiveValue).toNumber();
+            const subtract = Number(b.effectiveValue - a.effectiveValue);
             if (subtract !== 0) {
                 return subtract;
             }
@@ -174,10 +172,10 @@ export const branchAndBound: CoinSelectAlgorithm = (
 
     // check if sum of all effective utxos is greater than target (if transaction is even possible with remaining subset)
     const utxosTotalEffectiveValue = effectiveUtxos.reduce(
-        (total, { effectiveValue }) => total.add(effectiveValue),
+        (total, { effectiveValue }) => total + effectiveValue,
         ZERO,
     );
-    if (utxosTotalEffectiveValue.lt(target)) {
+    if (utxosTotalEffectiveValue < target) {
         return { fee: 0 };
     }
 

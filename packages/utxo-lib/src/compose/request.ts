@@ -56,7 +56,7 @@ function transformInput(
     }
 
     const value = bignumberOrNaN(utxo.amount);
-    if (!value) {
+    if (value === undefined) {
         throw new Error('Invalid amount');
     }
 
@@ -106,13 +106,13 @@ function transformOutput(
     const script = { length: OUTPUT_SCRIPT_LENGTH[txType] };
     if (output.type === 'payment') {
         return {
-            value: bignumberOrNaN(output.amount) || throwError('Invalid amount'),
+            value: bignumberOrNaN(output.amount) ?? throwError('Invalid amount'),
             script: toOutputScript(output.address, network),
         };
     }
     if (output.type === 'payment-noaddress') {
         return {
-            value: bignumberOrNaN(output.amount) || throwError('Invalid amount'),
+            value: bignumberOrNaN(output.amount) ?? throwError('Invalid amount'),
             script,
         };
     }

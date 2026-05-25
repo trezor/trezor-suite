@@ -7,12 +7,15 @@ function inputComparator(a: ComposeInput, b: ComposeInput) {
 }
 
 function outputComparator(a: CoinSelectOutputFinal, b: CoinSelectOutputFinal) {
-    return (
-        a.value.cmp(b.value) ||
-        (Buffer.isBuffer(a.script) && Buffer.isBuffer(b.script)
-            ? a.script.compare(b.script)
-            : a.script.length - b.script.length)
-    );
+    if (a.value < b.value) {
+        return -1;
+    } else if (a.value > b.value) {
+        return 1;
+    }
+
+    return Buffer.isBuffer(a.script) && Buffer.isBuffer(b.script)
+        ? a.script.compare(b.script)
+        : a.script.length - b.script.length;
 }
 
 export const bip69SortingStrategy: SortingStrategy = ({ result, request, convertedInputs }) => {

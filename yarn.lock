@@ -16689,8 +16689,6 @@ __metadata:
     "@sinclair/typebox": "npm:^0.34.49"
     "@trezor/eslint": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/bn.js": "npm:^5.2.0"
-    bn.js: "npm:5.2.3"
     cashaddrjs: "npm:0.4.4"
     int64-buffer: "npm:^1.1.0"
     minimaldata: "npm:^1.0.2"
@@ -16856,15 +16854,6 @@ __metadata:
   dependencies:
     "@babel/types": "npm:^7.28.2"
   checksum: 10/371c5e1b40399ef17570e630b2943617b84fafde2860a56f0ebc113d8edb1d0534ade0175af89eda1ae35160903c33057ed42457e165d4aa287fedab2c82abcf
-  languageName: node
-  linkType: hard
-
-"@types/bn.js@npm:^5.2.0":
-  version: 5.2.0
-  resolution: "@types/bn.js@npm:5.2.0"
-  dependencies:
-    "@types/node": "npm:*"
-  checksum: 10/06c93841f74e4a5e5b81b74427d56303b223c9af36389b4cd3c562bda93f43c425c7e241aee1b0b881dde57238dc2e07f21d30d412b206a7dae4435af4c054e8
   languageName: node
   linkType: hard
 

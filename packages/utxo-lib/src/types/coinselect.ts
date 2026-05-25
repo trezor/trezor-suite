@@ -1,5 +1,3 @@
-import type BN from 'bn.js';
-
 import { type TransactionInputOutputSortingStrategy } from './compose';
 
 export type CoinSelectPaymentType = 'p2pkh' | 'p2sh' | 'p2tr' | 'p2wpkh' | 'p2wsh';
@@ -33,7 +31,7 @@ export interface CoinSelectInput {
     type: CoinSelectPaymentType;
     i: number;
     script: { length: number };
-    value: BN;
+    value: bigint;
     confirmations: number;
     coinbase?: boolean;
     required?: boolean;
@@ -43,13 +41,13 @@ export interface CoinSelectInput {
 
 export interface CoinSelectOutput {
     script: { length: number };
-    value?: BN;
+    value?: bigint;
     weight?: number;
 }
 
 export interface CoinSelectOutputFinal {
     script: { length: number };
-    value: BN;
+    value: bigint;
 }
 
 export interface CoinSelectRequest extends CoinSelectOptions {
