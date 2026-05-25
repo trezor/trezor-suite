@@ -12,6 +12,7 @@
     },
     "include": [".", "e2e", "**/*.json"],
     "references": [
+        { "path": "../../suite-common/address" },
         {
             "path": "../../suite-common/analytics"
         },

@@ -1,5 +1,6 @@
 import { A, pipe } from '@mobily/ts-belt';
 
+import { getFirstFreshAddress } from '@suite-common/address';
 import {
     type DeviceRootState,
     selectDeviceStaticSessionId,
@@ -46,7 +47,6 @@ import {
     getAccountFiatBalance,
     getAccountTotalStakingBalance,
     getFiatRateKey,
-    getFirstFreshAddress,
     isCardanoStakingActive,
     isErc4626,
     isStakingSymbol,
