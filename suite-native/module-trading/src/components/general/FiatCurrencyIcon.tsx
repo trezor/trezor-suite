@@ -24,6 +24,7 @@ export const FiatCurrencyIcon = ({ size, value }: FiatCurrencyIconProps) => {
         <Icon
             name="coin"
             size={fiatIconSizes[size]}
+            color="contentSecondary"
             testID="@trading/fiat-currency-icon-fallback"
         />
     );
