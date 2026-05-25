@@ -10,6 +10,7 @@ import { type TransientProps } from '../../../utils/transientProps';
 import { Box } from '../../Box/Box';
 import { Icon, type IconName } from '../../Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
+import { Tooltip, TooltipProps } from '../../Tooltip/Tooltip';
 import {
     type ButtonIntent,
     type ButtonPriority,
@@ -56,6 +57,7 @@ export type IconButtonProps = CommonButtonProps &
     AllowedIconButtonFrameProps & {
         size?: ButtonSize;
         icon: IconName;
+        tooltip: Partial<TooltipProps>;
         'data-testid'?: string;
         'aria-label'?: string;
     };
@@ -66,6 +68,7 @@ export const IconButton = ({
     icon,
     size = 'medium',
     isFloating = false,
+    tooltip,
     ...props
 }: IconButtonProps) => {
     const frameProps = pickAndPrepareFrameProps(props, allowedIconButtonFrameProps);
@@ -90,15 +93,17 @@ export const IconButton = ({
             {...frameProps}
         >
             <Box padding={mapSizeToPadding(size)}>
-                {props.isLoading ? (
-                    <Spinner
-                        isDisabled={true}
-                        size={mapSizeToIconSize(size)}
-                        data-testid={`${dataTestId}/spinner`}
-                    />
-                ) : (
-                    <Icon name={icon} {...iconProps} />
-                )}
+                <Tooltip {...tooltip}>
+                    {props.isLoading ? (
+                        <Spinner
+                            isDisabled={true}
+                            size={mapSizeToIconSize(size)}
+                            data-testid={`${dataTestId}/spinner`}
+                        />
+                    ) : (
+                        <Icon name={icon} {...iconProps} />
+                    )}
+                </Tooltip>
             </Box>
         </Container>
     );
