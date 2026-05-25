@@ -1,0 +1,50 @@
+name: "LLM Test Selector"
+description: >
+  Runs the LLM-based test selector against the PR diff.
+  SECURITY: The calling job must check out the trusted develop branch and
+  fetch the PR head as 'pr-head' before invoking this action.
+  Only code from the trusted checkout is installed and executed.
+inputs:
+  claude-api-key:
+    description: "Anthropic API key for the LLM test selector"
+    required: true
+outputs:
+  spec-list:
+    description: "Comma-separated list of recommended test file paths (repo-root-relative)"
+    value: ${{ steps.parse.outputs.spec-list }}
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+      with:
+        node-version-file: ".nvmrc"
+        cache: yarn
+
+    - name: Cache node_modules
+      uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+      with:
+        path: node_modules
+        key: node_modules-${{ hashFiles('yarn.lock') }}
+        restore-keys: node_modules-
+
+    - name: Install dependencies
+      shell: bash
+      run: yarn workspaces focus @trezor/e2e-utils
+
+    - name: Run LLM test selector
+      shell: bash
+      env:
+        CLAUDE_API_KEY: ${{ inputs.claude-api-key }}
+      run: |
+        yarn workspace @trezor/e2e-utils select-tests-llm --head-ref pr-head > llm-selection.json
+        echo "LLM test selector output:"
+        cat llm-selection.json
+
+    - name: Parse spec list from LLM output
+      id: parse
+      shell: bash
+      run: |
+        SPEC_LIST=$(jq -r '[.recommendations[].test] | join(",")' llm-selection.json)
+        echo "spec-list=$SPEC_LIST" >> "$GITHUB_OUTPUT"
+        echo "Spec list: $SPEC_LIST"

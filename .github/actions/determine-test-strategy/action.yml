@@ -1,0 +1,61 @@
+name: "Determine E2E Test Strategy"
+description: >
+  Classifies PR changes into one of three strategies:
+  specific-tests (only e2e test files changed),
+  run-everything (e2e framework or mixed changes),
+  or analyze (non-e2e code changed → LLM analysis needed).
+outputs:
+  strategy:
+    description: "specific-tests | run-everything | analyze"
+    value: ${{ steps.classify.outputs.strategy }}
+  spec-list:
+    description: "Comma-separated list of test file paths (only set when strategy=specific-tests)"
+    value: ${{ steps.classify.outputs.spec-list }}
+runs:
+  using: "composite"
+  steps:
+    - name: Classify changed files
+      id: classify
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        # Use the PR base ref SHA from GitHub context — the current HEAD of the base
+        # branch, used as the diff base for this PR. Fetching just that one commit is enough;
+        BASE_SHA="${{ github.event.pull_request.base.sha }}"
+        git fetch origin "$BASE_SHA" --depth=1
+
+        CHANGED=$(git diff "$BASE_SHA" HEAD --name-only)
+        echo "Changed files:"
+        echo "$CHANGED"
+
+        if [[ -z "$CHANGED" ]]; then
+          echo "No changed files detected. Running everything."
+          echo "strategy=run-everything" >> "$GITHUB_OUTPUT"
+          echo "spec-list=" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        # Check if any file is outside suite/e2e/ entirely (production code)
+        OUTSIDE_E2E=$(echo "$CHANGED" | grep -v '^suite/e2e/' || true)
+        if [[ -n "$OUTSIDE_E2E" ]]; then
+          echo "Production code changed — proceeding to LLM analysis."
+          echo "strategy=analyze" >> "$GITHUB_OUTPUT"
+          echo "spec-list=" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        # All files are under suite/e2e/ — check if any are outside tests/
+        OUTSIDE_TESTS=$(echo "$CHANGED" | grep '^suite/e2e/' | grep -v '^suite/e2e/tests/' || true)
+        if [[ -n "$OUTSIDE_TESTS" ]]; then
+          echo "E2E framework files changed — running everything."
+          echo "strategy=run-everything" >> "$GITHUB_OUTPUT"
+          echo "spec-list=" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        # All changed files are under suite/e2e/tests/ — run only those
+        TEST_FILES=$(echo "$CHANGED" | grep '^suite/e2e/tests/' | tr '\n' ',' | sed 's/,$//')
+        echo "Only test files changed. Running: $TEST_FILES"
+        echo "strategy=specific-tests" >> "$GITHUB_OUTPUT"
+        echo "spec-list=$TEST_FILES" >> "$GITHUB_OUTPUT"
