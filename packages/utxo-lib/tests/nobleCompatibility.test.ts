@@ -73,6 +73,30 @@ describe('noble compatibility', () => {
         expect(ecc.verify(messageHash, publicKey!, Buffer.alloc(64, 0))).toEqual(false);
     });
 
+    it('pointAddScalar throws "Expected Tweak" for non-32-byte tweak (exercises isValidScalar length guard via assertTweak)', () => {
+        const pointOne = ecc.pointFromScalar(privateOne)!;
+        expect(() => ecc.pointAddScalar(pointOne, Buffer.alloc(31, 1))).toThrow('Expected Tweak');
+    });
+
+    it('sign throws "Expected Hash" for non-32-byte hash (exercises assertHash length guard)', () => {
+        expect(() => ecc.sign(Buffer.alloc(31, 1), privateOne)).toThrow('Expected Hash');
+    });
+
+    it('verify throws "Expected Signature" for non-64-byte signature (exercises assertSignature length guard)', () => {
+        const messageHash = Buffer.alloc(32, 2);
+        const publicKey = ecc.pointFromScalar(privateOne)!;
+        expect(() => ecc.verify(messageHash, publicKey, Buffer.alloc(63, 0))).toThrow(
+            'Expected Signature',
+        );
+    });
+
+    it('signWithEntropy throws "Expected Extra Data (32 bytes)" for non-32-byte entropy (exercises assertExtraEntropy length guard)', () => {
+        const messageHash = Buffer.alloc(32, 2);
+        expect(() => ecc.signWithEntropy(messageHash, privateOne, Buffer.alloc(31, 9))).toThrow(
+            'Expected Extra Data (32 bytes)',
+        );
+    });
+
     it('signWithEntropy is deterministic for fixed entropy', () => {
         const messageHash = Buffer.alloc(32, 7);
         const extraEntropy = Buffer.alloc(32, 9);
