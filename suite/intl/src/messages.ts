@@ -87,7 +87,7 @@ export const messages = defineMessages({
     },
     TR_ACCOUNT_IMPORTED_ANNOUNCEMENT: {
         defaultMessage:
-            'A watch-only account is a public address you’ve imported into your wallet, allowing the wallet to watch for outputs but not spend them.',
+            "A watch-only account is a public address you've imported into your wallet, allowing the wallet to watch for outputs but not spend them.",
         id: 'TR_ACCOUNT_IMPORTED_ANNOUNCEMENT',
     },
     TR_ANY_TREZOR: {
@@ -132,7 +132,7 @@ export const messages = defineMessages({
     },
     TR_RECONNECT_DEVICE_DESCRIPTION: {
         defaultMessage:
-            'If closing tabs and refreshing this page didn’t help, try reconnecting your Trezor.',
+            "If closing tabs and refreshing this page didn't help, try reconnecting your Trezor.",
         id: 'TR_RECONNECT_DEVICE_DESCRIPTION',
     },
     TR_RECONNECT_DEVICE_DESCRIPTION_DESKTOP: {
@@ -177,7 +177,7 @@ export const messages = defineMessages({
         id: 'TR_ADD_WALLET',
     },
     TR_PASSPHRASE_WALLET_NEEDS_ENABLED_NETWORK: {
-        defaultMessage: 'Activate at least one coin before adding a passphrase wallet.',
+        defaultMessage: 'Activate at least one asset before adding a Passphrase wallet.',
         id: 'TR_PASSPHRASE_WALLET_NEEDS_ENABLED_NETWORK',
     },
     TR_RECIPIENT_ADDRESS: {
@@ -236,12 +236,12 @@ export const messages = defineMessages({
     TR_EXCHANGE_FIXED_OFFERS_INFO: {
         id: 'TR_EXCHANGE_FIXED_OFFERS_INFO',
         defaultMessage:
-            'Fixed-rate offers guarantee a set amount at the end of the exchange, but they’re usually less favorable, giving you less crypto for your money.',
+            "Fixed-rate offers guarantee a set amount at the end of the exchange, but they're usually less favorable, giving you less crypto for your money.",
     },
     TR_EXCHANGE_FLOAT_OFFERS_INFO: {
         id: 'TR_EXCHANGE_FLOAT_OFFERS_INFO',
         defaultMessage:
-            'Floating-rate offers may result in slight changes to the final amount due to market fluctuations, but they’re typically higher, so you could receive more crypto.',
+            "Floating-rate offers may result in slight changes to the final amount due to market fluctuations, but they're typically higher, so you could receive more crypto.",
     },
     TR_EXCHANGE_FEES_INFO: {
         id: 'TR_EXCHANGE_FEES_INFO',
@@ -679,7 +679,7 @@ export const messages = defineMessages({
         id: 'TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_DEX',
     },
     TR_TRADING_EXCHANGE_SIGN_BANNER_TITLE: {
-        defaultMessage: 'You’re swapping with {provider}',
+        defaultMessage: "You're swapping with {provider}",
         id: 'TR_TRADING_EXCHANGE_SIGN_BANNER_TITLE',
     },
     TR_TRADING_EXCHANGE_SIGN_BANNER_POINT_1: {
@@ -741,7 +741,7 @@ export const messages = defineMessages({
         id: 'TR_SELL_SEND_FROM',
     },
     TR_SELL_SEND_TO: {
-        defaultMessage: 'Send to {providerName}’s address',
+        defaultMessage: "Send to {providerName}'s address",
         id: 'TR_SELL_SEND_TO',
     },
     TR_SELL_CONFIRM_ON_TREZOR_SEND: {
@@ -820,12 +820,12 @@ export const messages = defineMessages({
     TR_TRADING_TERMS: {
         id: 'TR_TRADING_TERMS',
         defaultMessage:
-            'This service is provided by <comp>{provider}</comp> and governed by their Terms & Conditions. Trezor isn’t involved.',
+            "This service is provided by <comp>{provider}</comp> and governed by their Terms & Conditions. Trezor isn't involved.",
     },
     TR_TRADING_TERMS_NO_PROVIDER: {
         id: 'TR_TRADING_TERMS_NO_PROVIDER',
         defaultMessage:
-            'This service is provided by the provider and governed by their Terms & Conditions. Trezor isn’t involved.',
+            "This service is provided by the provider and governed by their Terms & Conditions. Trezor isn't involved.",
     },
     TR_BUY_MODAL_SECURITY_HEADER: {
         defaultMessage: 'Security first with your Trezor',
@@ -850,12 +850,12 @@ export const messages = defineMessages({
     },
     TR_STAKING_VALIDATION_ERROR_NOT_ENOUGH_FOR_FEES_CRYPTO: {
         defaultMessage:
-            'Your balance meets the minimum requirement, but it’s not enough to cover network fees. You’re short by {missingAmount}.',
+            "Your balance meets the minimum requirement, but it's not enough to cover network fees. You're short by {missingAmount}.",
         id: 'TR_STAKING_VALIDATION_ERROR_NOT_ENOUGH_FOR_FEES_CRYPTO',
     },
     TR_STAKING_VALIDATION_ERROR_NOT_ENOUGH_FOR_FEES_FIAT: {
         defaultMessage:
-            'Your balance meets the minimum requirement, but it’s not enough to cover network fees. You’re short by {missingAmount} {currency}.',
+            "Your balance meets the minimum requirement, but it's not enough to cover network fees. You're short by {missingAmount} {currency}.",
         id: 'TR_STAKING_VALIDATION_ERROR_NOT_ENOUGH_FOR_FEES_FIAT',
     },
     TR_BUY_STATUS_PENDING_GO_TO_GATEWAY: {
@@ -895,11 +895,11 @@ export const messages = defineMessages({
         id: 'TR_TRADE_ID',
     },
     TR_TRADING_PROCESSING_STATUS: {
-        defaultMessage: '<link>Check your order status</link> on the {providerName}’s website.',
+        defaultMessage: "<link>Check your order status</link> on the {providerName}'s website.",
         id: 'TR_TRADING_PROCESSING_STATUS',
     },
     TR_TRADING_PROCESSING_SUPPORT: {
-        defaultMessage: 'Need help? Reach out to <link>{providerName}’s support</link>.',
+        defaultMessage: "Need help? Reach out to <link>{providerName}'s support</link>.",
         id: 'TR_TRADING_PROCESSING_SUPPORT',
     },
     TR_BUY_COMPLETE: {
@@ -1124,7 +1124,7 @@ export const messages = defineMessages({
         id: 'TR_HOW_TRADING_PRIVACY_KYC',
     },
     TR_HOW_TRADING_PRIVACY_KYC_SUBTEXT: {
-        defaultMessage: 'It’s shared only with the provider if you complete your trade.',
+        defaultMessage: "It's shared only with the provider if you complete your trade.",
         id: 'TR_HOW_TRADING_PRIVACY_KYC_SUBTEXT',
     },
     TR_HOW_TRADING_TERMS_OF_USE: {
@@ -1314,7 +1314,7 @@ export const messages = defineMessages({
         id: 'TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TITLE',
     },
     TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TEXT: {
-        defaultMessage: 'We couldn’t find an account that matches this asset.',
+        defaultMessage: "We couldn't find an account that matches this asset.",
         id: 'TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TEXT',
     },
     TR_TRADING_RECEIVE_ADDRESS_NOT_FOUND_TITLE: {
@@ -1525,7 +1525,7 @@ export const messages = defineMessages({
     },
     TR_BACKUP_FINISHED_TEXT: {
         defaultMessage:
-            'Your Trezor is nearly ready. Just make sure your wallet backup is written down and stored safely—without it, your funds can’t be recovered.',
+            "Your Trezor is nearly ready. Just make sure your wallet backup is written down and stored safely—without it, your funds can't be recovered.",
         description: 'Text that appears after backup is finished',
         id: 'TR_BACKUP_FINISHED_TEXT',
     },
@@ -1540,7 +1540,7 @@ export const messages = defineMessages({
     },
     TR_BACKUP_SUBHEADING_1: {
         defaultMessage:
-            "A wallet backup is a series of randomly generated words created by your Trezor. It’s important to write down your wallet backup and keep it safe, as it's the only way to recover and access your assets.",
+            "A wallet backup is a series of randomly generated words created by your Trezor. It's important to write down your wallet backup and keep it safe, as it's the only way to recover and access your assets.",
         description: 'Explanation what recovery seed is',
         id: 'TR_BACKUP_SUBHEADING_1',
     },
@@ -1581,12 +1581,12 @@ export const messages = defineMessages({
         id: 'TR_MULTI_SHARE_BACKUP_IN_PROGRESS',
     },
     TR_MULTI_SHARE_BACKUP_IN_PROGRESS_HEADING: {
-        defaultMessage: 'Welcome back! Let’s pick up where you left off.',
+        defaultMessage: "Welcome back! Let's pick up where you left off.",
         id: 'TR_MULTI_SHARE_BACKUP_IN_PROGRESS_HEADING',
     },
     TR_MULTI_SHARE_BACKUP_IN_PROGRESS_DESCRIPTION: {
         defaultMessage:
-            'It’s necessary to finish generating your Multi-share Backup shares before continuing. Follow the instructions on your Trezor’s screen. ',
+            "It's necessary to finish generating your Multi-share Backup shares before continuing. Follow the instructions on your Trezor's screen.",
         id: 'TR_MULTI_SHARE_BACKUP_IN_PROGRESS_DESCRIPTION',
     },
     TR_CREATE_MULTI_SHARE_BACKUP: {
@@ -1721,7 +1721,7 @@ export const messages = defineMessages({
         id: 'TR_CREATE_SHARES_CARD_1',
     },
     TR_CREATE_SHARES_CARD_2: {
-        defaultMessage: 'Don’t take pictures or make digital copies of your wallet backup',
+        defaultMessage: "Don't take pictures or make digital copies of your wallet backup",
         id: 'TR_CREATE_SHARES_CARD_2',
     },
     TR_CREATE_SHARES_CARD_3: {
@@ -2059,7 +2059,7 @@ export const messages = defineMessages({
         id: 'TR_NEEDS_ATTENTION_UNACQUIRED_THP_REQUIRED',
     },
     TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT: {
-        defaultMessage: 'We can’t connect to your Trezor',
+        defaultMessage: "We can't connect to your Trezor",
         id: 'TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT',
     },
     TR_NEEDS_ATTENTION_CONNECT_USB_OR_BLUETOOTH: {
@@ -2129,7 +2129,7 @@ export const messages = defineMessages({
     },
     TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION: {
         defaultMessage:
-            'Install custom firmware at your own risk—this will erase your device’s memory and could render it unusable. Proceed only if you’re absolutely sure.',
+            "Install custom firmware at your own risk—this will erase your device's memory and could render it unusable. Proceed only if you're absolutely sure.",
         id: 'TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION',
     },
     TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL: {
@@ -2145,7 +2145,8 @@ export const messages = defineMessages({
         id: 'TR_DEVICE_SETTINGS_DISPLAY_ROTATION',
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS: {
-        defaultMessage: 'Recommended dimensions: {width}×{height} px.',
+        defaultMessage:
+            "Change your Trezor's wallpaper. Recommended dimensions: {width}×{height} px.",
         id: 'TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS',
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_BW: {
@@ -2250,7 +2251,7 @@ export const messages = defineMessages({
         id: 'TR_DEVICE_SETTINGS_HAPTIC_FEEDBACK_TITLE',
     },
     TR_DEVICE_SETTINGS_BRIGHTNESS_DESC: {
-        defaultMessage: 'Adjust your Trezor’s screen brightness.',
+        defaultMessage: "Adjust your Trezor's screen brightness.",
         id: 'TR_DEVICE_SETTINGS_BRIGHTNESS_DESC',
     },
     TR_DEVICE_SETTINGS_BRIGHTNESS_TITLE: {
@@ -2613,7 +2614,8 @@ export const messages = defineMessages({
     },
     TR_DUST_PHISHING_THRESHOLD_DESCRIPTION: {
         id: 'TR_DUST_PHISHING_THRESHOLD_DESCRIPTION',
-        defaultMessage: 'Transactions below this amount are marked as suspicious and hidden.',
+        defaultMessage:
+            'Set a dust phishing threshold to mark transactions below this amount as suspicious and hide them.',
     },
     TR_DUST_PHISHING_ERROR_NUMBER: {
         id: 'TR_DUST_PHISHING_ERROR_NUMBER',
@@ -3089,18 +3091,18 @@ export const messages = defineMessages({
     TR_BIO_AUTH_NOT_AVAILABLE_TOOLTIP_CONTENT: {
         id: 'TR_BIO_AUTH_NOT_AVAILABLE_TOOLTIP_CONTENT',
         defaultMessage:
-            'Biometrics isn’t currently available. Try restarting your computer, or open Trezor Suite on another device. If that doesn’t help, reinstall the app and reconnect your Trezor.',
+            "Biometrics isn't currently available. Try restarting your computer, or open Trezor Suite on another device. If that doesn't help, reinstall the app and reconnect your Trezor.",
     },
     TR_RECOVERY_TYPES_DESCRIPTION: {
         defaultMessage:
-            'Both methods are secure. Select advanced recovery if you prefer entering your wallet backup on your Trezor’s screen.',
+            "Both methods are secure. Select advanced recovery if you prefer entering your wallet backup on your Trezor's screen.",
         description:
             'There are two methods of recovery for T1B1. This is a short explanation text.',
         id: 'TR_RECOVERY_TYPES_DESCRIPTION',
     },
     TR_RECOVERY_TYPES_DESCRIPTION_24_T1B1_ONLY: {
         defaultMessage:
-            'Standard recovery is secure and efficient. Select advanced recovery if you prefer entering your wallet backup on your Trezor’s screen. <a>Learn more</a>',
+            "Standard recovery is secure and efficient. Select advanced recovery if you prefer entering your wallet backup on your Trezor's screen. <a>Learn more</a>",
         description:
             'The updated recovery types description for T1B1 with standard or advanced recovery for 24 words backup. It is a short explanation text.',
         id: 'TR_RECOVERY_TYPES_DESCRIPTION_24_T1B1_ONLY',
@@ -3178,7 +3180,7 @@ export const messages = defineMessages({
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_DISCONNECTED',
     },
     TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_DISCONNECTED: {
-        defaultMessage: 'Connect & unlock your Trezor to change settings',
+        defaultMessage: 'Connect & unlock your Trezor to change settings.',
         id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_DISCONNECTED',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_UNAVAILABLE: {
@@ -3190,7 +3192,7 @@ export const messages = defineMessages({
         id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_UNAVAILABLE',
     },
     TR_SETTINGS_COINS_BANNER_DESCRIPTION_REMEMBERED_DISCONNECTED: {
-        defaultMessage: 'Connect & unlock your Trezor to change settings',
+        defaultMessage: 'Connect & unlock your Trezor to change settings.',
         id: 'TR_SETTINGS_COINS_BANNER_DESCRIPTION_REMEMBERED_DISCONNECTED',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER: {
@@ -3198,7 +3200,7 @@ export const messages = defineMessages({
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED: {
-        defaultMessage: 'Connect & unlock your Trezor to change settings',
+        defaultMessage: 'Connect & unlock your Trezor to change settings.',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED',
     },
     TR_SETTINGS_COINS_REGULAR_FIRMWARE_SUGGESTION: {
@@ -3323,7 +3325,7 @@ export const messages = defineMessages({
     TR_THP_SETTINGS_AUTO_CONNECT_DESCRIPTION: {
         id: 'TR_THP_SETTINGS_AUTO_CONNECT_DESCRIPTION',
         defaultMessage:
-            'Trezor will connect automatically, so you don’t need to approve each connection.',
+            "Trezor will connect automatically, so you don't need to approve each connection.",
     },
     TR_THP_AUTO_CONNECT_INFO_MODAL_HEADER: {
         id: 'TR_THP_AUTO_CONNECT_INFO_MODAL_HEADER',
@@ -3692,7 +3694,7 @@ export const messages = defineMessages({
     },
     TR_PIN_MISMATCH_HEADING: {
         id: 'TR_PIN_MISMATCH_HEADING',
-        defaultMessage: "The PINs you’ve entered don't match",
+        defaultMessage: "The PINs you've entered don't match",
     },
     TR_DEBUG_SETTINGS: {
         id: 'TR_DEBUG_SETTINGS',
@@ -3776,7 +3778,7 @@ export const messages = defineMessages({
     TR_ACCOUNT_TYPE_CARDANO_LEGACY_BANNER: {
         id: 'TR_ACCOUNT_TYPE_CARDANO_LEGACY_BANNER',
         defaultMessage:
-            'Legacy Cardano account detected—migrate to a default account, as legacy accounts won’t be automatically discovered in future.',
+            "Legacy Cardano account detected—migrate to a default account, as legacy accounts won't be automatically discovered in future.",
     },
     TR_ACCOUNT_TYPE_XRP_DESC: {
         id: 'TR_ACCOUNT_TYPE_XRP_DESC',
@@ -3786,7 +3788,7 @@ export const messages = defineMessages({
     TR_ACCOUNT_TYPE_STELLAR_DESC: {
         id: 'TR_ACCOUNT_TYPE_STELLAR_DESC',
         defaultMessage:
-            'Stellar is a decentralized, public blockchain that gives developers the tools to create experiences that are more like cash than crypto. The network is faster, cheaper, and far more energy-efficient than most blockchain-based systems. It’s designed so Stellar’s ecosystem can make a real-world, lasting impact.',
+            "Stellar is a decentralized, public blockchain that gives developers the tools to create experiences that are more like cash than crypto. The network is faster, cheaper, and far more energy-efficient than most blockchain-based systems. It's designed so Stellar's ecosystem can make a real-world, lasting impact.",
     },
     TR_ACCOUNT_DETAILS_XPUB_HEADER: {
         id: 'TR_ACCOUNT_DETAILS_XPUB_HEADER',
@@ -3973,11 +3975,11 @@ export const messages = defineMessages({
     },
     TOAST_TX_REVOKED: {
         id: 'TOAST_TX_REVOKED',
-        defaultMessage: 'Revoke transaction was broadcast',
+        defaultMessage: 'Revoke transaction has been broadcast',
     },
     TOAST_TX_APPROVED: {
         id: 'TOAST_TX_APPROVED',
-        defaultMessage: 'Approve transaction was broadcast',
+        defaultMessage: 'Approval transaction has been broadcast',
     },
     TOAST_TX_SENT: {
         id: 'TOAST_TX_SENT',
@@ -3985,7 +3987,8 @@ export const messages = defineMessages({
     },
     TOAST_TX_EXCHANGE_BROADCASTED: {
         id: 'TOAST_TX_EXCHANGE_BROADCASTED',
-        defaultMessage: 'Swap transaction from {sendAccount} to {receiveAccount} was broadcast',
+        defaultMessage:
+            'Swap transaction from {sendAccount} to {receiveAccount} has been broadcast',
     },
     TOAST_RAW_TX_SENT: {
         id: 'TOAST_RAW_TX_SENT',
@@ -4447,7 +4450,7 @@ export const messages = defineMessages({
     TR_DRY_RUN_CHECK_ITEM_TITLE: {
         id: 'TR_DRY_RUN_CHECK_ITEM_TITLE',
         defaultMessage:
-            'I understand this is a simulated check. It won’t affect my Trezor or funds.',
+            "I understand this is a simulated check. It won't affect my Trezor or funds.",
     },
     TR_DRY_RUN_CHECK_ITEM_DESCRIPTION: {
         id: 'TR_DRY_RUN_CHECK_ITEM_DESCRIPTION',
@@ -4506,11 +4509,11 @@ export const messages = defineMessages({
     TR_TOKEN_DEACTIVATION_DESCRIPTION: {
         id: 'TR_TOKEN_DEACTIVATION_DESCRIPTION',
         defaultMessage:
-            'After deactivation, you can’t receive, send, or trade this token until you activate it again. The 0.5 XLM reserve will be returned to your available balance.',
+            "After deactivation, you can't receive, send, or trade this token until you activate it again. The 0.5 XLM reserve will be returned to your available balance.",
     },
     TR_CANT_DEACTIVATE_TOKEN_WITH_BALANCE: {
         id: 'TR_CANT_DEACTIVATE_TOKEN_WITH_BALANCE',
-        defaultMessage: 'Tokens with a balance can’t be deactivated.',
+        defaultMessage: "Tokens with a balance can't be deactivated.",
     },
     TR_DEACTIVATE_TOKEN_BALANCE_WARNING: {
         id: 'TR_DEACTIVATE_TOKEN_BALANCE_WARNING',
@@ -4774,7 +4777,7 @@ export const messages = defineMessages({
     },
     TR_DASHBOARD_DISCOVERY_ERROR_PARTIAL_DESC: {
         defaultMessage:
-            'Your assets couldn’t be loaded. If using a VPN, disable it and try again. {details}',
+            "Your assets couldn't be loaded. If using a VPN, disable it and try again. {details}",
         id: 'TR_DASHBOARD_DISCOVERY_ERROR_PARTIAL_DESC',
     },
     TR_PIN: {
@@ -4914,7 +4917,7 @@ export const messages = defineMessages({
     TR_WALLET_CREATED_NOT_SECURED_DESCRIPTION: {
         id: 'TR_WALLET_CREATED_NOT_SECURED_DESCRIPTION',
         defaultMessage:
-            'If your Trezor is lost, damaged, or stolen, you won’t be able to regain access to your assets without a wallet backup. Finish setting up your Trezor, then create a wallet backup in device settings.',
+            "If your Trezor is lost, damaged, or stolen, you won't be able to regain access to your assets without a wallet backup. Finish setting up your Trezor, then create a wallet backup in device settings.",
     },
     TR_CONTINUE_TO_PIN: {
         id: 'TR_CONTINUE_TO_PIN',
@@ -4997,7 +5000,7 @@ export const messages = defineMessages({
     TR_SWITCH_FIRMWARE_NO_BACKUP: {
         id: 'TR_SWITCH_FIRMWARE_NO_BACKUP',
         defaultMessage:
-            'You may lose access to your coins on this wallet without a wallet backup. If you’re confident that this wallet is empty, proceed, but do so at your own risk.',
+            "You may lose access to your coins on this wallet without a wallet backup. If you're confident that this wallet is empty, proceed, but do so at your own risk.",
     },
     TR_SWITCH_FIRMWARE_NO_BACKUP_2: {
         id: 'TR_SWITCH_FIRMWARE_NO_BACKUP_2',
@@ -5159,7 +5162,7 @@ export const messages = defineMessages({
     TR_BACKUP_SEED_IS_ULTIMATE: {
         id: 'TR_BACKUP_SEED_IS_ULTIMATE',
         defaultMessage:
-            "If you ever need to restore your wallet to access your funds, it's necessary to have your wallet backup with you. Don’t lose or misplace it. Once it's gone, it's gone. No one can help you recover it, not even Trezor Support. Be responsible and ensure that you store your wallet backup securely, treating it as if your life depends on it.",
+            "If you ever need to restore your wallet to access your funds, it's necessary to have your wallet backup with you. Don't lose or misplace it. Once it's gone, it's gone. No one can help you recover it, not even Trezor Support. Be responsible and ensure that you store your wallet backup securely, treating it as if your life depends on it.",
     },
     TR_FIRMWARE_IS_POTENTIALLY_RISKY: {
         id: 'TR_FIRMWARE_IS_POTENTIALLY_RISKY',
@@ -5289,7 +5292,7 @@ export const messages = defineMessages({
     TR_ONBOARDING_BACKUP_SHAMIR_WARNING: {
         id: 'TR_ONBOARDING_BACKUP_SHAMIR_WARNING',
         defaultMessage:
-            "This backup type allows for <strong>future upgrades</strong> but includes 20 words, which <strong>won't fit</strong> on the 12-word paper card packaged with your device. <strong>Write them in numbered order on durable paper and don’t store them digitally.</strong>",
+            "This backup type allows for <strong>future upgrades</strong> but includes 20 words, which <strong>won't fit</strong> on the 12-word paper card packaged with your Trezor. <strong>Write them in numbered order on durable paper and don't store them digitally.</strong>",
     },
     TR_ONBOARDING_CANNOT_SELECT_SEED_TYPE: {
         id: 'TR_ONBOARDING_CANNOT_SELECT_SEED_TYPE',
@@ -5361,7 +5364,7 @@ export const messages = defineMessages({
     TR_EXPERIMENTAL_FEATURES_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_FEATURES_DESCRIPTION',
         defaultMessage:
-            'These features are in testing, may be unstable, and might not have long-term support.',
+            'Turn on experimental features that are in testing, may be unstable, and might not have long-term support.',
     },
     TR_EXPERIMENTAL_FEATURES_WARNING_IF_ENABLED: {
         id: 'TR_EXPERIMENTAL_FEATURES_WARNING_IF_ENABLED',
@@ -5542,7 +5545,7 @@ export const messages = defineMessages({
     TR_EXPERIMENTAL_GAP_LIMIT_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_GAP_LIMIT_DESCRIPTION',
         defaultMessage:
-            'When recovering or scanning your wallet, Trezor looks through addresses one at a time and stops after finding 20 consecutive unused ones. Increase the limit to scan further if transactions are missing.',
+            'Allow your Trezor to scan wallet addresses beyond the default 20 unused addresses during recovery if transactions are missing.',
     },
     TR_EXPERIMENTAL_MCP_SERVER: {
         id: 'TR_EXPERIMENTAL_MCP_SERVER',
@@ -5576,7 +5579,7 @@ export const messages = defineMessages({
     TR_MCP_REGENERATE_TOKEN_DESCRIPTION: {
         id: 'TR_MCP_REGENERATE_TOKEN_DESCRIPTION',
         defaultMessage:
-            'This will invalidate your current token. All connected MCP clients will be disconnected, and you’ll need to update them with the new token.',
+            "This will invalidate your current token. All connected MCP clients will be disconnected, and you'll need to update them with the new token.",
     },
     TR_EXPERIMENTAL_SLIP24: {
         id: 'TR_EXPERIMENTAL_SLIP24',
@@ -5584,7 +5587,8 @@ export const messages = defineMessages({
     },
     TR_EXPERIMENTAL_SLIP24_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_SLIP24_DESCRIPTION',
-        defaultMessage: 'Trezor payment request format',
+        defaultMessage:
+            'View transaction details on your Trezor in a human-readable format before confirming.',
     },
     TR_EARLY_ACCESS: {
         id: 'TR_EARLY_ACCESS',
@@ -5623,7 +5627,7 @@ export const messages = defineMessages({
     TR_EARLY_ACCESS_ENABLE_CONFIRM_TITLE: {
         id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM_TITLE',
         defaultMessage:
-            'Get early access to the latest product features before they’re released publicly.',
+            "Get early access to the latest product features before they're released publicly.",
     },
     TR_EARLY_ACCESS_ENABLE_CONFIRM_DESCRIPTION: {
         id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM_DESCRIPTION',
@@ -5692,7 +5696,7 @@ export const messages = defineMessages({
     LOG_INCLUDE_BALANCE_DESCRIPTION: {
         id: 'LOG_INCLUDE_BALANCE_DESCRIPTION',
         defaultMessage:
-            'Enabling this option adds sensitive info—like balances, transaction IDs, device labels, device ID, and public addresses—to the application log. If your issue isn’t related, you can safely keep it off.',
+            "Enabling this option adds sensitive info—like balances, transaction IDs, device labels, device ID, and public addresses—to the application log. If your issue isn't related, you can safely keep it off.",
     },
     LOG_DESCRIPTION: {
         id: 'LOG_DESCRIPTION',
@@ -5754,7 +5758,7 @@ export const messages = defineMessages({
     TR_NFC_BACKUP_THRESHOLD_DESCRIPTION: {
         id: 'TR_NFC_BACKUP_THRESHOLD_DESCRIPTION',
         defaultMessage:
-            'Any 2 of your 3 tags are enough to recover your wallet. It doesn’t matter which ones you use.',
+            "Any 2 of your 3 tags are enough to recover your wallet. It doesn't matter which ones you use.",
     },
     TR_NFC_BACKUP_CONTINUE_WITH_NFC: {
         id: 'TR_NFC_BACKUP_CONTINUE_WITH_NFC',
@@ -5774,7 +5778,7 @@ export const messages = defineMessages({
     },
     TR_NFC_BACKUP_NO_TAGS_HEADING: {
         id: 'TR_NFC_BACKUP_NO_TAGS_HEADING',
-        defaultMessage: 'Don’t have wallet backup tags?',
+        defaultMessage: "Don't have wallet backup tags?",
     },
     TR_NFC_BACKUP_NO_TAGS_DESCRIPTION: {
         id: 'TR_NFC_BACKUP_NO_TAGS_DESCRIPTION',
@@ -5787,7 +5791,7 @@ export const messages = defineMessages({
     TR_NFC_BACKUP_FINISH_AND_ORDER_DESCRIPTION: {
         id: 'TR_NFC_BACKUP_FINISH_AND_ORDER_DESCRIPTION',
         defaultMessage:
-            'Finish setting up your Trezor. You’ll then be redirected to the Trezor Store to order wallet backup tags. Once they arrive, create your wallet backup.',
+            "Finish setting up your Trezor. You'll then be redirected to the Trezor Store to order wallet backup tags. Once they arrive, create your wallet backup.",
     },
     TR_NFC_BACKUP_ALTERNATIVE_BADGE: {
         id: 'TR_NFC_BACKUP_ALTERNATIVE_BADGE',
@@ -6041,7 +6045,7 @@ export const messages = defineMessages({
     },
     TR_ADDED_BITCOINCASH_PREFIX: {
         defaultMessage:
-            'We’ve added the prefix bitcoincash: to match the correct format.\nConfirm that this is a valid Bitcoin Cash (BCH) address.',
+            "We've added the prefix bitcoincash: to match the correct format.\nConfirm that this is a valid Bitcoin Cash (BCH) address.",
         id: 'TR_ADDED_BITCOINCASH_PREFIX',
     },
     TR_CONVERT_TO_CHECKSUM_ADDRESS: {
@@ -6223,7 +6227,7 @@ export const messages = defineMessages({
     },
     DESTINATION_TAG_BANNER_RECEIVE: {
         defaultMessage:
-            'Trezor doesn’t require a memo or destination tag to receive {displaySymbol}. Enter any value in the memo/destination tag field to complete your transfer. <a>Learn more</a>',
+            "Trezor doesn't require a memo or destination tag to receive {displaySymbol}. Enter any value in the memo/destination tag field to complete your transfer. <a>Learn more</a>",
         id: 'DESTINATION_TAG_BANNER_RECEIVE',
     },
     DESTINATION_TAG_NOT_SET: {
@@ -7035,7 +7039,7 @@ export const messages = defineMessages({
     },
     TR_UPDATE_MODAL_WHATS_NEW: {
         id: 'TR_UPDATE_MODAL_WHATS_NEW',
-        defaultMessage: 'What’s new',
+        defaultMessage: "What's new",
     },
     TR_UPDATE_MODAL_YOUR_VERSION: {
         id: 'TR_UPDATE_MODAL_YOUR_VERSION',
@@ -7182,7 +7186,7 @@ export const messages = defineMessages({
     TR_COLOR_SCHEME_DESCRIPTION: {
         id: 'TR_COLOR_SCHEME_DESCRIPTION',
         defaultMessage:
-            'Select light mode, dark mode, or follow your system’s appearance settings.',
+            "Select light mode, dark mode, or follow your system's appearance settings.",
     },
     TR_COLOR_SCHEME_DARK: {
         id: 'TR_COLOR_SCHEME_DARK',
@@ -7328,7 +7332,7 @@ export const messages = defineMessages({
     TR_CANCEL_TX_FAILED_ALREADY_MINED_DESCRIPTION: {
         id: 'TR_CANCEL_TX_FAILED_ALREADY_MINED_DESCRIPTION',
         defaultMessage:
-            "The transaction couldn’t be canceled as it's just been confirmed on the network.",
+            "The transaction couldn't be canceled as it's just been confirmed on the network.",
     },
     TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED: {
         id: 'TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED',
@@ -7337,7 +7341,7 @@ export const messages = defineMessages({
     TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED_DESCRIPTION: {
         id: 'TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED_DESCRIPTION',
         defaultMessage:
-            "The transaction couldn’t be replaced as it's just been confirmed on the network.",
+            "The transaction couldn't be replaced as it's just been confirmed on the network.",
     },
     TR_BUMP_FEE_SUBTEXT: {
         id: 'TR_BUMP_FEE_SUBTEXT',
@@ -7883,7 +7887,7 @@ export const messages = defineMessages({
     },
     TR_DEVICE_COMPROMISED_INVARIABILITY_CHECK_FAILED_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_INVARIABILITY_CHECK_FAILED_TEXT',
-        defaultMessage: 'Your Trezor’s model or color appears to have been manipulated.',
+        defaultMessage: "Your Trezor's model or color appears to have been manipulated.",
     },
     TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT',
@@ -7912,7 +7916,7 @@ export const messages = defineMessages({
     TR_DEVICE_COMPROMISED_TEXT_SOFT: {
         id: 'TR_DEVICE_COMPROMISED_TEXT_SOFT',
         defaultMessage:
-            'Your Trezor’s security is our top priority. Before using it, reach out to Trezor Support—they’ll guide you through what to do next.',
+            "Your Trezor's security is our top priority. Before using it, reach out to Trezor Support—they'll guide you through what to do next.",
     },
     TR_AVOID_USING_DEVICE: {
         id: 'TR_AVOID_USING_DEVICE',
@@ -7948,7 +7952,7 @@ export const messages = defineMessages({
     },
     TR_LETS_CHECK_YOUR_DEVICE: {
         id: 'TR_LETS_CHECK_YOUR_DEVICE',
-        defaultMessage: 'Let’s check your device',
+        defaultMessage: "Let's check your device",
     },
     TR_CHECKING_YOUR_DEVICE: {
         id: 'TR_CHECKING_YOUR_DEVICE',
@@ -7971,7 +7975,7 @@ export const messages = defineMessages({
     TR_DEVICE_AUTHENTICITY_ITEM_3: {
         id: 'TR_DEVICE_AUTHENTICITY_ITEM_3',
         defaultMessage:
-            'Once your device has passed this check and been verified, you’re ready to Trezor with confidence.',
+            "Once your device has passed this check and been verified, you're ready to Trezor with confidence.",
     },
     TR_START_CHECK: {
         id: 'TR_START_CHECK',
@@ -7992,7 +7996,7 @@ export const messages = defineMessages({
     TR_CHECK_DEVICE_ORIGIN_DESCRIPTION: {
         id: 'TR_CHECK_DEVICE_ORIGIN_DESCRIPTION',
         defaultMessage:
-            'Verify your Trezor device to ensure its security and confirm the chip’s authenticity.',
+            "Verify your Trezor device to ensure its security and confirm the chip's authenticity.",
     },
     TR_CHECK_ORIGIN: {
         id: 'TR_CHECK_ORIGIN',
@@ -8009,7 +8013,7 @@ export const messages = defineMessages({
     TR_DEVICE_AUTHENTICITY_OPT_OUT_DESCRIPTION: {
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_DESCRIPTION',
         defaultMessage:
-            'Device authenticity check is a vital security feature that keeps you safe from potentially using a fake or compromised device. We don’t recommend turning it off.',
+            "Device authenticity check is a vital security feature that keeps you safe from potentially using a fake or compromised device. We don't recommend turning it off.",
     },
     TR_DEVICE_AUTHENTICITY_OPT_OUT_DESCRIPTION_DISABLED: {
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_DESCRIPTION_DISABLED',
@@ -8030,7 +8034,7 @@ export const messages = defineMessages({
     },
     TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_CHECKBOX_TITLE: {
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_CHECKBOX_TITLE',
-        defaultMessage: 'I’ve read and understood the above.',
+        defaultMessage: "I've read and understood the above.",
     },
     TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_1: {
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_1',
@@ -8040,7 +8044,7 @@ export const messages = defineMessages({
     TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_2: {
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_2',
         defaultMessage:
-            'Don’t turn off this feature unless your device has successfully passed the device authenticity check before. Using an unverified device may lead to the loss of your funds.',
+            "Don't turn off this feature unless your device has successfully passed the device authenticity check before. Using an unverified device may lead to the loss of your funds.",
     },
     TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_3: {
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_3',
@@ -8063,7 +8067,7 @@ export const messages = defineMessages({
     TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION_DISABLED: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION_DISABLED',
         defaultMessage:
-            'Ensure that your firmware is legitimate. Compromised firmware won’t be able to communicate with Trezor Suite.',
+            "Ensure that your firmware is legitimate. Compromised firmware won't be able to communicate with Trezor Suite.",
     },
     TR_DEVICE_FIRMWARE_REVISION_CHECK_BUTTON: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_BUTTON',
@@ -8156,7 +8160,7 @@ export const messages = defineMessages({
     },
     TR_STILL_DONT_SEE_YOUR_TREZOR: {
         id: 'TR_STILL_DONT_SEE_YOUR_TREZOR',
-        defaultMessage: 'Don’t see your Trezor?',
+        defaultMessage: "Don't see your Trezor?",
     },
     TR_TREZOR_NEEDS_TO_BE_IN_PAIRING_MODE: {
         id: 'TR_TREZOR_NEEDS_TO_BE_IN_PAIRING_MODE',
@@ -8242,7 +8246,7 @@ export const messages = defineMessages({
     TR_ONBOARDING_CLICK_TO_CONFIRM: {
         id: 'TR_ONBOARDING_CLICK_TO_CONFIRM',
         defaultMessage:
-            'Click to confirm you’ve carefully read and understood the instructions in each box below.',
+            "Click to confirm you've carefully read and understood the instructions in each box below.",
     },
     TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_DESCRIPTION: {
         id: 'TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_DESCRIPTION',
@@ -8458,7 +8462,7 @@ export const messages = defineMessages({
     TR_STAKE_NOT_ENOUGH_FUNDS_WARNING: {
         id: 'TR_STAKE_NOT_ENOUGH_FUNDS_WARNING',
         defaultMessage:
-            'You don’t have enough {networkDisplaySymbol} to cover the registration deposit and network fee.',
+            "You don't have enough {networkDisplaySymbol} to cover the registration deposit and network fee.",
     },
     TR_ERROR_CARDANO_DELEGATE: {
         id: 'TR_ERROR_CARDANO_DELEGATE',
@@ -8584,7 +8588,7 @@ export const messages = defineMessages({
     TR_COINJOIN_SETUP: {
         id: 'TR_COINJOIN_SETUP',
         description: 'Heading in coin join settings',
-        defaultMessage: 'Your coins will be mixed with other peoples’ to achieve privacy.',
+        defaultMessage: "Your coins will be mixed with other peoples' to achieve privacy.",
     },
     TR_COINJOIN_SETUP_HEADING: {
         id: 'TR_COINJOIN_SETUP_HEADING',
@@ -8634,7 +8638,7 @@ export const messages = defineMessages({
     TR_SERVICE_FEE_NOTE: {
         id: 'TR_SERVICE_FEE_NOTE',
         description: 'Note in coinjoin strategy settings',
-        defaultMessage: 'Note: You’re also paying a mining fee',
+        defaultMessage: "Note: You're also paying a mining fee",
     },
     TR_MINING_FEE_NOTE: {
         id: 'TR_MINING_FEE_NOTE',
@@ -8927,7 +8931,7 @@ export const messages = defineMessages({
         id: 'TR_LOADING_FACT_1',
         description: '140 symbols max',
         defaultMessage:
-            'The Trezor Model One was the world’s first hardware wallet, released on July 29, 2014. The follow-up Trezor Model T launched in 2018.',
+            "The Trezor Model One was the world's first hardware wallet, released on July 29, 2014. The follow-up Trezor Model T launched in 2018.",
     },
     TR_LOADING_FACT_2: {
         id: 'TR_LOADING_FACT_2',
@@ -9242,7 +9246,7 @@ export const messages = defineMessages({
     },
     TR_COINJOIN_STEP_3_DESCRIPTION: {
         id: 'TR_COINJOIN_STEP_3_DESCRIPTION',
-        defaultMessage: 'Your coins will be mixed with other peoples’ to achieve privacy',
+        defaultMessage: "Your coins will be mixed with other peoples' to achieve privacy",
     },
     TR_COINJOIN_CEX_WARNING: {
         id: 'TR_COINJOIN_CEX_WARNING',
@@ -9293,7 +9297,7 @@ export const messages = defineMessages({
     },
     TR_MARKED_AS_RECOGNIZED_BANNER: {
         id: 'TR_MARKED_AS_RECOGNIZED_BANNER',
-        defaultMessage: 'You’ve confirmed this transaction is safe.',
+        defaultMessage: "You've confirmed this transaction is safe.",
     },
     TR_HIDE_TRANSACTION_TOOLTIP: {
         id: 'TR_HIDE_TRANSACTION_TOOLTIP',
@@ -9466,7 +9470,7 @@ export const messages = defineMessages({
     },
     TR_SEND_ADDRESS_CONFIRMATION_ITEM_2_HEADING: {
         id: 'TR_SEND_ADDRESS_CONFIRMATION_ITEM_2_HEADING',
-        defaultMessage: 'Compare the original address with what’s on your Trezor.',
+        defaultMessage: "Compare the original address with what's on your Trezor.",
     },
     TR_SEND_ADDRESS_CONFIRMATION_ITEM_3_HEADING: {
         id: 'TR_SEND_ADDRESS_CONFIRMATION_ITEM_3_HEADING',
@@ -9483,11 +9487,11 @@ export const messages = defineMessages({
     },
     TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_HEADING: {
         id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_HEADING',
-        defaultMessage: 'Copy or scan the address',
+        defaultMessage: 'Copy or scan address',
     },
     TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_DESCRIPTION: {
         id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_DESCRIPTION',
-        defaultMessage: 'Copy from Trezor Suite or scan the QR code on your Trezor device.',
+        defaultMessage: 'Copy from Trezor Suite or scan the QR code on your Trezor.',
     },
     TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_HEADING: {
         id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_HEADING',
@@ -9496,7 +9500,7 @@ export const messages = defineMessages({
     TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_DESCRIPTION: {
         id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_DESCRIPTION',
         defaultMessage:
-            'Paste it into the exchange, wallet, or platform where you’ll use it, but wait before submitting.',
+            "Paste it into the exchange, wallet, or platform where you'll use it, but wait before submitting.",
     },
     TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING: {
         id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING',
@@ -9505,7 +9509,7 @@ export const messages = defineMessages({
     TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_DESCRIPTION: {
         id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_DESCRIPTION',
         defaultMessage:
-            'Check that the pasted address matches the one on your Trezor’s screen. Only then can you safely confirm and use it to receive funds.',
+            'Check that the pasted address matches the one on your Trezor. Only then can you safely confirm and use it to receive funds.',
     },
     TR_DISCOVERY_NEW_COINS: {
         id: 'TR_DISCOVERY_NEW_COINS',
@@ -9933,7 +9937,7 @@ export const messages = defineMessages({
     TR_STAKING_NEW_PROVIDER_TEXT: {
         id: 'TR_STAKING_NEW_PROVIDER_TEXT',
         defaultMessage:
-            'Update to our new provider, Everstake, and earn ~{apy}% APY. Your {displaySymbol} with our previous provider is safe, and your rewards stay intact, though rates aren’t guaranteed.',
+            "Update to our new provider, Everstake, and earn ~{apy}% APY. Your {displaySymbol} with our previous provider is safe, and your rewards stay intact, though rates aren't guaranteed.",
     },
     TR_STAKING_NEW_PROVIDER_OUTDATED_TEXT: {
         id: 'TR_STAKING_NEW_PROVIDER_OUTDATED_TEXT',
@@ -9990,7 +9994,7 @@ export const messages = defineMessages({
     TR_STAKING_CARD_TEXT_EMPTY: {
         id: 'TR_STAKING_CARD_TEXT_EMPTY',
         defaultMessage:
-            'Stake your full balance and start earning rewards. Temporarily locking your {displaySymbol} earns you rewards while boosting the network’s security.',
+            "Stake your full balance and start earning rewards. Temporarily locking your {displaySymbol} earns you rewards while boosting the network's security.",
     },
     TR_STAKING_CARD_TEXT_EMPTY_FUNDS_STAY: {
         id: 'TR_STAKING_CARD_TEXT_EMPTY_FUNDS_STAY',
@@ -10150,12 +10154,12 @@ export const messages = defineMessages({
     TR_EARN_YIELD_NUTSHELL_VAULT_TOKENS: {
         id: 'TR_EARN_YIELD_NUTSHELL_VAULT_TOKENS',
         defaultMessage:
-            'Deposit {supplySymbol} to receive {vaultSymbol} tokens. These tokens represent your vault position.',
+            'When you deposit {supplySymbol}, you receive {vaultSymbol} representing your vault position.',
     },
     TR_EARN_YIELD_NUTSHELL_CLAIM_REWARDS: {
         id: 'TR_EARN_YIELD_NUTSHELL_CLAIM_REWARDS',
         defaultMessage:
-            'You’ll earn {rewardsSymbol} tokens as rewards. These may be temporary and need to be claimed separately.',
+            "You'll earn {rewardsSymbol} as rewards. They may only be offered for a limited time, but once earned, you can claim them in the Earn tab.",
     },
     TR_EARN_YIELD_APPROVE_SPENDING_TRANSACTION: {
         id: 'TR_EARN_YIELD_APPROVE_SPENDING_TRANSACTION',
@@ -10171,15 +10175,15 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_RECEIVE_IN_ACCOUNT: {
         id: 'TR_EARN_YIELD_RECEIVE_IN_ACCOUNT',
-        defaultMessage: 'Receive {supplySymbol} in account',
+        defaultMessage: 'Receive {supplySymbol} in your account',
     },
     TR_EARN_STAKING_PROCESS: {
         id: 'TR_EARN_STAKING_PROCESS',
-        defaultMessage: 'Staking process',
+        defaultMessage: 'Stake',
     },
     TR_EARN_SUPPLYING_PROCESS: {
         id: 'TR_EARN_SUPPLYING_PROCESS',
-        defaultMessage: 'Deposit process',
+        defaultMessage: 'Deposit',
     },
     TR_EARN_SUPPLY_TOKEN: {
         id: 'TR_EARN_SUPPLY_TOKEN',
@@ -10203,7 +10207,7 @@ export const messages = defineMessages({
     TR_EARN_CONSENT_PROTOCOL_TERMS_AND_DISCLAIMER: {
         id: 'TR_EARN_CONSENT_PROTOCOL_TERMS_AND_DISCLAIMER',
         defaultMessage:
-            'By using the {providerName} protocol in this app, you agree to Trezor’s <tos>Terms of Use</tos> and acknowledge <disclaimer>{providerName}’s Disclaimer</disclaimer>.',
+            "By using the {providerName} protocol in this app, you agree to Trezor's <tos>Terms of Use</tos> and acknowledge <disclaimer>{providerName}'s Disclaimer</disclaimer>.",
     },
     TR_EARN_PROVIDER_UPDATE: {
         id: 'TR_EARN_PROVIDER_UPDATE',
@@ -10211,11 +10215,11 @@ export const messages = defineMessages({
     },
     TR_EARN_UNSTAKING_PROCESS: {
         id: 'TR_EARN_UNSTAKING_PROCESS',
-        defaultMessage: 'Unstaking process',
+        defaultMessage: 'Unstake',
     },
     TR_EARN_WITHDRAWING_PROCESS: {
         id: 'TR_EARN_WITHDRAWING_PROCESS',
-        defaultMessage: 'Withdrawing process',
+        defaultMessage: 'Withdraw',
     },
     TR_EARN_SIGN_STAKING_TRANSACTION: {
         id: 'TR_EARN_SIGN_STAKING_TRANSACTION',
@@ -10276,7 +10280,7 @@ export const messages = defineMessages({
     TR_EARN_STAKED_AMOUNT_LOCKED: {
         id: 'TR_EARN_STAKED_AMOUNT_LOCKED',
         defaultMessage:
-            'The staked amount of {networkDisplaySymbol} is locked and can’t be swapped or sent.',
+            "The staked amount of {networkDisplaySymbol} is locked and can't be swapped or sent.",
     },
     TR_EARN_ETH_UNSTAKING_TAKES: {
         id: 'TR_EARN_ETH_UNSTAKING_TAKES',
@@ -10306,7 +10310,7 @@ export const messages = defineMessages({
     TR_SOL_FEE_DESC: {
         id: 'TR_SOL_FEE_DESC',
         defaultMessage:
-            'Network fees are payments made to validators for processing transactions. Paying a higher fee can speed up confirmation times. {br}Rent is a charge for storing data on the blockchain. The cost is based on the size of the account’s storage.',
+            "Network fees are payments made to validators for processing transactions. Paying a higher fee can speed up confirmation times. {br}Rent is a charge for storing data on the blockchain. The cost is based on the size of the account's storage.",
     },
     TR_STELLAR_FEE_DESC: {
         id: 'TR_STELLAR_FEE_DESC',
@@ -10338,12 +10342,12 @@ export const messages = defineMessages({
     TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL: {
         id: 'TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL',
         defaultMessage:
-            'We’ve left {amount} {networkDisplaySymbol} in your account so you can pay for withdrawal fees.',
+            "We've left {amount} {networkDisplaySymbol} in your account so you can pay for withdrawal fees.",
     },
     TR_STAKE_LEFT_SMALL_AMOUNT_FOR_WITHDRAWAL: {
         id: 'TR_STAKE_LEFT_SMALL_AMOUNT_FOR_WITHDRAWAL',
         defaultMessage:
-            'We’ve left a small amount of {networkDisplaySymbol} in your account so you can pay for withdrawal fees.',
+            "We've left a small amount of {networkDisplaySymbol} in your account so you can pay for withdrawal fees.",
     },
     TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS: {
         id: 'TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS',
@@ -10371,7 +10375,7 @@ export const messages = defineMessages({
     TR_STAKE_ETH_WILL_BE_BLOCKED: {
         id: 'TR_STAKE_ETH_WILL_BE_BLOCKED',
         defaultMessage:
-            'Your {networkDisplaySymbol} will be blocked during this period, and you can’t cancel the process.',
+            "Your {networkDisplaySymbol} will be blocked during this period, and you can't cancel the process.",
     },
     TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD: {
         id: 'TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD',
@@ -10495,7 +10499,7 @@ export const messages = defineMessages({
     },
     TR_STAKE_CHANGE_DELEGATE_DISABLED_TOOLTIP: {
         id: 'TR_STAKE_CHANGE_DELEGATE_DISABLED_TOOLTIP',
-        defaultMessage: 'You can’t select your current delegate. Select another.',
+        defaultMessage: "You can't select your current delegate. Select another.",
     },
     TR_STAKE_PROVIDER_UNKNOWN: {
         id: 'TR_STAKE_PROVIDER_UNKNOWN',
@@ -10605,15 +10609,15 @@ export const messages = defineMessages({
     },
     TOAST_TX_YIELD_SUPPLY: {
         id: 'TOAST_TX_YIELD_SUPPLY',
-        defaultMessage: 'Deposit broadcasted from {account}',
+        defaultMessage: 'Deposit transaction from {account} has been broadcast',
     },
     TOAST_TX_YIELD_WITHDRAW: {
         id: 'TOAST_TX_YIELD_WITHDRAW',
-        defaultMessage: 'Withdrawal broadcasted from {account}',
+        defaultMessage: 'Withdrawal transaction from {account} has been broadcast',
     },
     TOAST_TX_YIELD_CLAIM: {
         id: 'TOAST_TX_YIELD_CLAIM',
-        defaultMessage: 'Claim broadcasted from {account}',
+        defaultMessage: 'Claim transaction from {account} has been broadcast',
     },
     TOAST_SUCCESSFUL_CLAIM: {
         id: 'TOAST_SUCCESSFUL_CLAIM',
@@ -10723,7 +10727,7 @@ export const messages = defineMessages({
     TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DESCRIPTION: {
         id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DESCRIPTION',
         defaultMessage:
-            'Your assets and transactions won’t be visible until you reconnect your Trezor.',
+            "Your assets and transactions won't be visible until you reconnect your Trezor.",
     },
     TR_SWITCH_DEVICE_EJECT_CONFIRMATION_PRIMARY_BUTTON: {
         id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_PRIMARY_BUTTON',
@@ -11025,7 +11029,7 @@ export const messages = defineMessages({
     },
     TR_DONE_REMOVING_TREZOR_FROM_SETTINGS: {
         id: 'TR_DONE_REMOVING_TREZOR_FROM_SETTINGS',
-        defaultMessage: 'I’ve removed it',
+        defaultMessage: "I've removed it",
     },
     TR_SCAN_TREZORS_NEARBY: {
         id: 'TR_SCAN_TREZORS_NEARBY',
@@ -11068,7 +11072,7 @@ export const messages = defineMessages({
     TR_BLUETOOTH_VERSION_NOT_COMPATIBLE_LINE2: {
         id: 'TR_BLUETOOTH_VERSION_NOT_COMPATIBLE_LINE2',
         defaultMessage:
-            'Your computer’s Bluetooth version doesn’t support Trezor Suite. Use a cable or an adapter that supports Bluetooth 5.0 or higher.',
+            "Your computer's Bluetooth version doesn't support Trezor Suite. Use a cable or an adapter that supports Bluetooth 5.0 or higher.",
     },
     TR_BLUETOOTH_TURNED_OFF: {
         id: 'TR_BLUETOOTH_TURNED_OFF',
@@ -11102,7 +11106,7 @@ export const messages = defineMessages({
     TR_BLUETOOTH_REQUIRE_MANUAL_PAIRING_TEXT: {
         id: 'TR_BLUETOOTH_REQUIRE_MANUAL_PAIRING_TEXT',
         defaultMessage:
-            'Your system doesn’t support automatic pairing in Trezor Suite. To connect, open your Bluetooth settings and pair your Trezor device manually.',
+            "Your system doesn't support automatic pairing in Trezor Suite. To connect, open your Bluetooth settings and pair your Trezor device manually.",
     },
     TR_DONE: {
         id: 'TR_DONE',
@@ -11317,7 +11321,8 @@ export const messages = defineMessages({
     },
     TR_WALLETCONNECT_REQUIRED_NETWORKS_NOT_ACTIVATED: {
         id: 'TR_WALLETCONNECT_REQUIRED_NETWORKS_NOT_ACTIVATED',
-        defaultMessage: 'Some required assets are inactive. Activate them to use all app features.',
+        defaultMessage:
+            'Some required networks are inactive. Activate them to use all app features.',
     },
     TR_WALLETCONNECT_NO_NETWORKS_ACTIVATED: {
         id: 'TR_WALLETCONNECT_NO_NETWORKS_ACTIVATED',
@@ -11428,11 +11433,11 @@ export const messages = defineMessages({
     },
     TR_SECURE_SYNC_LABELS_CANNOT_BE_MIGRATED: {
         id: 'TR_SECURE_SYNC_LABELS_CANNOT_BE_MIGRATED',
-        defaultMessage: 'Labels created with Suite Sync can’t be migrated.',
+        defaultMessage: "Labels created with Suite Sync can't be migrated.",
     },
     TR_LEGACY_LABELS_CANNOT_BE_SYNCED_TO_MOBILE: {
         id: 'TR_LEGACY_LABELS_CANNOT_BE_SYNCED_TO_MOBILE',
-        defaultMessage: 'Legacy labeling doesn’t sync labels to mobile devices.',
+        defaultMessage: "Legacy labeling doesn't sync labels to mobile devices.",
     },
     TR_SWITCH_ACCOUNT: {
         id: 'TR_SWITCH_ACCOUNT',
@@ -11494,7 +11499,7 @@ export const messages = defineMessages({
     },
     TR_NETWORK_RESERVE_BANNER: {
         id: 'TR_NETWORK_RESERVE_BANNER',
-        defaultMessage: 'We’ve reserved {amount} {displaySymbol} to cover any extra network fees.',
+        defaultMessage: "We've reserved {amount} {displaySymbol} to cover any extra network fees.",
     },
     TR_NETWORK_RESERVE_MANAGE: {
         defaultMessage: 'Manage',
@@ -11507,7 +11512,7 @@ export const messages = defineMessages({
     },
     TR_FEEDBACK_CARD_DESCRIPTION: {
         id: 'TR_FEEDBACK_CARD_DESCRIPTION',
-        defaultMessage: 'Tell us what’s working and what’s not—we read every reply.',
+        defaultMessage: "Tell us what's working and what's not—we read every reply.",
     },
     TR_FEEDBACK_CARD_SEND: {
         id: 'TR_FEEDBACK_CARD_SEND',
@@ -11594,7 +11599,7 @@ export const messages = defineMessages({
     TR_DYK_ITEM_2: {
         id: 'TR_DYK_ITEM_2',
         defaultMessage:
-            'In 2014, Trezor introduced the world’s first hardware wallet, the Trezor Model One.',
+            "In 2014, Trezor introduced the world's first hardware wallet, the Trezor Model One.",
     },
     TR_DYK_ITEM_3: {
         id: 'TR_DYK_ITEM_3',
@@ -11609,11 +11614,11 @@ export const messages = defineMessages({
     TR_DYK_ITEM_5: {
         id: 'TR_DYK_ITEM_5',
         defaultMessage:
-            'Trezor’s hardware and firmware are completely open-source, giving you full transparency and control.',
+            "Trezor's hardware and firmware are completely open-source, giving you full transparency and control.",
     },
     TR_DYK_ITEM_6: {
         id: 'TR_DYK_ITEM_6',
-        defaultMessage: 'Trezor’s initial prototypes were created on Raspberry Pi boards.',
+        defaultMessage: "Trezor's initial prototypes were created on Raspberry Pi boards.",
     },
     TR_DYK_ITEM_7: {
         id: 'TR_DYK_ITEM_7',
@@ -11768,11 +11773,11 @@ export const messages = defineMessages({
     },
     TR_FEATURE_FEEDBACK_CARD_DESCRIPTION: {
         id: 'TR_FEATURE_FEEDBACK_CARD_DESCRIPTION',
-        defaultMessage: 'Tell us what’s working and what’s not—we read every reply.',
+        defaultMessage: "Tell us what's working and what's not—we read every reply.",
     },
     TR_FEATURE_FEEDBACK_MODAL_DESCRIPTION: {
         id: 'TR_FEATURE_FEEDBACK_MODAL_DESCRIPTION',
-        defaultMessage: 'Tell us what’s working and what’s not—we read every reply.',
+        defaultMessage: "Tell us what's working and what's not—we read every reply.",
     },
     TR_FEATURE_FEEDBACK_MODAL_SUBMIT: {
         id: 'TR_FEATURE_FEEDBACK_MODAL_SUBMIT',
