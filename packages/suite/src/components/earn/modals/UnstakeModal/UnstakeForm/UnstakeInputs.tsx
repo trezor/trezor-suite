@@ -152,6 +152,7 @@ export const UnstakeInputs = () => {
                                     typographyStyle="body-xs"
                                     intent="neutral"
                                     priority="secondary"
+                                    overflowWrap="anywhere"
                                 >
                                     {value}
                                 </Text>

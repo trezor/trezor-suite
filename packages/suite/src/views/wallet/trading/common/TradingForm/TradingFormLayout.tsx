@@ -32,7 +32,9 @@ export const TradingFormLayout = ({ children }: TradingFormLayoutProps) => {
             <form onSubmit={e => e.preventDefault()}>
                 <ReceiveAddressModalControlsProvider>
                     <ContentFlex gap={16} breakpoint={breakpoints.tablet} alignItems="stretch">
-                        <Box flex="2">{children}</Box>
+                        <Box flex="2" minWidth={0}>
+                            {children}
+                        </Box>
                         <Card flex="1">
                             <TradingFormOffer />
                         </Card>
