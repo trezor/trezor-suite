@@ -135,6 +135,12 @@ const runTestCase = async (device: Device) => {
                 // button_protection: true,
             });
             break;
+        case 'authenticate-device':
+            result = await TrezorConnect.authenticateDevice({
+                device,
+                allowDebugKeys: true,
+            });
+            break;
         default:
             result = await TrezorConnect.getAddress({ device, path: "m/44'/0'/0'/0/0", ...params });
     }
