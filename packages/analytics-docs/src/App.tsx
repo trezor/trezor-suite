@@ -13,7 +13,6 @@ import {
     ResizableBox,
     Row,
     Spinner,
-    Tooltip,
     useMediaQuery,
     variables,
 } from '@trezor/components';
@@ -271,63 +270,58 @@ export const App = ({ theme }: AppProps) => {
                                     {(isFiltering || isSidebarLoading) && <Spinner size={20} />}
                                 </Row>
                                 <Row gap={8} alignItems="center">
-                                    <Tooltip isActive={isMobile} content="Add event">
-                                        {isMobile ? (
-                                            <IconButton icon="plus" {...addButtonProps} />
-                                        ) : (
-                                            <Button iconLeft="plus" {...addButtonProps}>
-                                                Add event
-                                            </Button>
-                                        )}
-                                    </Tooltip>
+                                    {isMobile ? (
+                                        <IconButton
+                                            tooltip={{ content: 'Add event' }}
+                                            icon="plus"
+                                            {...addButtonProps}
+                                        />
+                                    ) : (
+                                        <Button iconLeft="plus" {...addButtonProps}>
+                                            Add event
+                                        </Button>
+                                    )}
                                     <ThemeSwitch />
                                     <ButtonGroup intent="neutral" priority="secondary" size="small">
-                                        <Tooltip
-                                            content={
-                                                isLiveLogOpen
+                                        <IconButton
+                                            tooltip={{
+                                                content: isLiveLogOpen
                                                     ? 'Hide live log'
-                                                    : 'Show live analytics log'
-                                            }
-                                        >
-                                            <IconButton
-                                                icon="broadcast"
-                                                onClick={() => {
-                                                    startTransition(() => {
-                                                        const next = !isLiveLogOpen;
-                                                        setIsLiveLogOpen(next);
-                                                        if (next) setIsSidebarOpen(false);
-                                                    });
-                                                }}
-                                                intent={isLiveLogOpen ? 'brand' : 'neutral'}
-                                                priority={isLiveLogOpen ? 'primary' : 'secondary'}
-                                            />
-                                        </Tooltip>
-                                        <Tooltip
-                                            content={
-                                                isSidebarOpen
+                                                    : 'Show live analytics log',
+                                            }}
+                                            icon="broadcast"
+                                            onClick={() => {
+                                                startTransition(() => {
+                                                    const next = !isLiveLogOpen;
+                                                    setIsLiveLogOpen(next);
+                                                    if (next) setIsSidebarOpen(false);
+                                                });
+                                            }}
+                                            intent={isLiveLogOpen ? 'brand' : 'neutral'}
+                                            priority={isLiveLogOpen ? 'primary' : 'secondary'}
+                                        />
+
+                                        <IconButton
+                                            tooltip={{
+                                                content: isSidebarOpen
                                                     ? 'Hide changelog'
-                                                    : 'Show versions by changelog'
-                                            }
-                                        >
-                                            <IconButton
-                                                icon="clockCounterClockwise"
-                                                onClick={() => {
-                                                    setIsSidebarLoading(true);
-                                                    if (isSidebarOpen) {
-                                                        startTransition(() =>
-                                                            setIsSidebarOpen(false),
-                                                        );
-                                                    } else {
-                                                        startTransition(() => {
-                                                            setIsLiveLogOpen(false);
-                                                            setIsSidebarOpen(true);
-                                                        });
-                                                    }
-                                                }}
-                                                intent={isSidebarOpen ? 'brand' : 'neutral'}
-                                                priority={isSidebarOpen ? 'primary' : 'secondary'}
-                                            />
-                                        </Tooltip>
+                                                    : 'Show versions by changelog',
+                                            }}
+                                            icon="clockCounterClockwise"
+                                            onClick={() => {
+                                                setIsSidebarLoading(true);
+                                                if (isSidebarOpen) {
+                                                    startTransition(() => setIsSidebarOpen(false));
+                                                } else {
+                                                    startTransition(() => {
+                                                        setIsLiveLogOpen(false);
+                                                        setIsSidebarOpen(true);
+                                                    });
+                                                }
+                                            }}
+                                            intent={isSidebarOpen ? 'brand' : 'neutral'}
+                                            priority={isSidebarOpen ? 'primary' : 'secondary'}
+                                        />
                                     </ButtonGroup>
                                 </Row>
                             </Row>
