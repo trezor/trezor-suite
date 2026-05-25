@@ -130,13 +130,17 @@ type UseYieldPendingTransactionTrackingProps = {
     flowType: YieldFlowType;
     flowKey: string;
     vaultId?: string;
+    waitForMerkleToResolveClaim?: () => Promise<unknown>;
 };
+
+const stablePlaceholderPromise = () => Promise.resolve();
 
 export const useYieldPendingTransactionTracking = ({
     account,
     flowType,
     flowKey,
     vaultId,
+    waitForMerkleToResolveClaim = stablePlaceholderPromise,
 }: UseYieldPendingTransactionTrackingProps) => {
     const dispatch = useDispatch();
     const { analytics } = useServices<DesktopAnalyticsDep>();
@@ -242,13 +246,32 @@ export const useYieldPendingTransactionTracking = ({
         }
 
         if (pendingTransaction.type === flowType) {
-            dispatch(
-                stablecoinYieldActions.completeAction({
-                    flowType,
-                    flowKey,
-                    amount: pendingTransaction.amount,
-                }),
-            );
+            const completeAction = () => {
+                dispatch(
+                    stablecoinYieldActions.completeAction({
+                        flowType: 'claim',
+                        flowKey,
+                        amount: pendingTransaction.amount,
+                    }),
+                );
+            };
+
+            if (flowType !== 'claim') {
+                completeAction();
+
+                return;
+            }
+
+            analytics.report({
+                type: events.yieldClaimEvent.name,
+                payload: {
+                    action: 'continue',
+                    type: 'success',
+                    networkSymbol: account.symbol,
+                },
+            });
+
+            waitForMerkleToResolveClaim().then(completeAction);
 
             return;
         }
@@ -263,6 +286,7 @@ export const useYieldPendingTransactionTracking = ({
         analytics,
         account.symbol,
         vaultId,
+        waitForMerkleToResolveClaim,
     ]);
 
     // Emit `leftPending` if the component unmounts while a tx is still unresolved.
