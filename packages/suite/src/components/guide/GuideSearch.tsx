@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
@@ -51,6 +51,7 @@ type GuideSearchProps = {
 
 export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => {
     const [query, setQuery] = useState('');
+    const inputRef = useRef<HTMLInputElement | null>(null);
 
     const { translationString } = useTranslation();
     const { searchResult, loading } = useGuideSearch(query, pageRoot);
@@ -71,10 +72,20 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
                     loading ? (
                         <Spinner size={24} isDisabled={true} />
                     ) : (
-                        <Icon name="magnifyingGlass" size={24} />
+                        <Icon
+                            name="magnifyingGlass"
+                            size={20}
+                            intent="neutral"
+                            priority="secondary"
+                            onClick={() => {
+                                inputRef?.current?.select();
+                            }}
+                            cursor="pointer"
+                        />
                     )
                 }
                 data-testid="@guide/search"
+                innerRef={inputRef}
             />
 
             {searchResult.length ? (

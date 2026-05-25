@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { type Rating, ratingOptions } from '@suite-common/feedback';
 import { Row, useElevation } from '@trezor/components';
-import { type Elevation, borders, mapElevationToBorder } from '@trezor/theme';
+import { type Elevation, borders } from '@trezor/theme';
 
 const Item = styled.button<{ $selected?: boolean; $elevation: Elevation }>`
     width: 40px;
@@ -14,19 +14,14 @@ const Item = styled.button<{ $selected?: boolean; $elevation: Elevation }>`
     cursor: pointer;
     font-size: 22px;
     padding: 0;
-    border: ${borders.widths.small} solid
-        ${({ $selected, theme, $elevation }) =>
-            $selected
-                ? theme.legacyBackgroundPrimaryDefault
-                : mapElevationToBorder({
-                      theme,
-                      $elevation,
-                  })};
 
+    border: none;
     background: ${({ $selected, theme }) =>
-        $selected
-            ? theme.legacyBackgroundPrimaryDefault
-            : theme.legacyBackgroundNeutralSubtleOnElevation0};
+        $selected ? theme.elementFillElevatedPressed : 'transparent'};
+
+    &:hover {
+        background: ${({ theme }) => theme.elementFillElevatedHovered};
+    }
 `;
 
 export type EmojiRatingSelectorProps = {

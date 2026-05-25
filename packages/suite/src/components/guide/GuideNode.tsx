@@ -20,7 +20,7 @@ const NodeButton = styled.button`
     border-radius: ${borders.radii.xs};
     border: 0;
     width: 100%;
-    background: ${({ theme }) => theme.surfaceFillRaised};
+    background: ${({ theme }) => theme.elementFillElevated};
     padding: 10px;
     cursor: pointer;
     line-height: 1.57;
@@ -28,7 +28,7 @@ const NodeButton = styled.button`
 
     &:hover,
     &:focus {
-        background: ${({ theme }) => theme.legacyBackgroundTertiaryPressedOnElevation1};
+        background: ${({ theme }) => theme.elementFillElevatedHovered};
     }
 `;
 
