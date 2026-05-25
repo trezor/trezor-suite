@@ -41,7 +41,7 @@ export default class BlockchainDisconnect extends AbstractMethod<'blockchainDisc
     }
 
     get requiredPermissions(): MethodPermission[] {
-        return [];
+        return ['internal'];
     }
 
     get info() {

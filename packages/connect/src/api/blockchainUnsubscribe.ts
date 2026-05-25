@@ -54,7 +54,7 @@ export default class BlockchainUnsubscribe extends AbstractMethod<'blockchainUns
     }
 
     get requiredPermissions(): MethodPermission[] {
-        return [];
+        return ['internal'];
     }
 
     async run({ sendCoreMessage }: MethodContext) {

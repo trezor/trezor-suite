@@ -27,6 +27,7 @@ const permissionTranslationKeysMap = {
     write: 'moduleConnectPopup.permissions.write',
     management: 'moduleConnectPopup.permissions.management',
     push_tx: 'moduleConnectPopup.permissions.push_tx',
+    internal: 'moduleConnectPopup.permissions.internal',
 } as const satisfies Record<MethodPermission, TxKeyPath>;
 
 export const PermissionConfirmation = () => {
