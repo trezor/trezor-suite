@@ -1,13 +1,12 @@
 import { useCallback, useMemo } from 'react';
 
-import { useQuery } from '@tanstack/react-query';
-
 import {
     ChainAddressKey,
     type MerkleRewardsByChainAndAddress,
+    getMerkleRewards,
     useGetMerkleRewards,
 } from '@suite-common/earn-stablecoin-api';
-import { commonQueryKeys, useQueryClient } from '@suite-common/react-query';
+import { commonQueryKeys, useQuery, useQueryClient } from '@suite-common/react-query';
 import { getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
@@ -32,7 +31,8 @@ import {
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { BigNumber } from '@trezor/utils';
+import { useFreshRef } from '@trezor/react-utils';
+import { BigNumber, delay } from '@trezor/utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -182,24 +182,7 @@ export function useMerkleRewards(accounts: YieldRewardsAccounts) {
     }, [accounts]);
     const merkleRewardsQueryEntries = useMerkleRewardsQueryEntries(resolvedAccounts);
     const merkleRewardsQuery = useGetMerkleRewards(merkleRewardsQueryEntries);
-
     const queryClient = useQueryClient();
-    const refetchBypassingCache = useCallback(async () => {
-        const queryKey = commonQueryKeys.merkleRewards();
-        queryClient.setQueryDefaults(queryKey, {
-            meta: { bypassCache: true },
-        });
-        try {
-            await queryClient.refetchQueries(
-                { queryKey, exact: false },
-                { cancelRefetch: true, throwOnError: true },
-            );
-        } finally {
-            queryClient.setQueryDefaults(queryKey, {
-                meta: { bypassCache: false },
-            });
-        }
-    }, [queryClient]);
 
     const baseCurrency = useSelector(selectBaseCurrency);
     const currentFiatRates = useSelector(selectCurrentFiatRates);
@@ -273,10 +256,54 @@ export function useMerkleRewards(accounts: YieldRewardsAccounts) {
         return asBaseCurrencyAmount(new BigNumber(result.toFixed(2)));
     }, [rewardsWithFiat]);
 
+    const accountsRewardsRef = useFreshRef(accountsRewards);
+    const merkleRewardsQueryEntriesRef = useFreshRef(merkleRewardsQueryEntries);
+    /**
+     * - Force Merkle to return fresh rewards after claiming has completed and the tx is confirmed on-chain.
+     * - It resolves once Merkle return empty rewards = actually finished processing the claim.
+     */
+    const waitForMerkleToResolveClaim = useCallback(async () => {
+        let attempts = 30;
+
+        await queryClient.invalidateQueries({
+            queryKey: commonQueryKeys.merkleRewards(merkleRewardsQueryEntriesRef.current),
+            type: 'inactive',
+        });
+
+        const abortController = new AbortController();
+        const { signal } = abortController;
+
+        // Refetch until it returns no rewards (i.e. the claim was finalized by Merkle)
+        while (accountsRewardsRef.current.length > 0 && attempts > 0 && !signal.aborted) {
+            // Do direct API calls to avoid manipulating with React Query cache (because once the the endpoint returns empty rewards, the component would rerender with empty rewards state instead of successfull one)
+            const rewards = await getMerkleRewards({
+                queryEntries: merkleRewardsQueryEntriesRef.current,
+            });
+
+            if (Object.keys(rewards).length === 0) {
+                break;
+            }
+
+            await delay(2000, signal);
+            attempts--;
+        }
+
+        await queryClient.invalidateQueries({
+            queryKey: commonQueryKeys.merkleRewards(merkleRewardsQueryEntriesRef.current),
+            type: 'inactive',
+        });
+
+        return () => {
+            if (attempts > 0 && !signal.aborted) {
+                abortController.abort();
+            }
+        };
+    }, [accountsRewardsRef, merkleRewardsQueryEntriesRef, queryClient]);
+
     return {
         merkleRewardsQuery: {
             ...merkleRewardsQuery,
-            refetchBypassingCache,
+            waitForMerkleToResolveClaim,
             data: {
                 accountsRewards,
                 totalRewardsToClaim: {

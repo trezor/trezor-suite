@@ -70,3 +70,4 @@ export * from './isInt';
 export * from './number';
 export * from './sanitizeFilename';
 export * from './isSafeObjectKey';
+export * from './delay';

@@ -6,7 +6,6 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
-import { commonQueryKeys, useQueryClient } from '@suite-common/react-query';
 import {
     selectStablecoinYieldSession,
     selectStablecoinYieldTxReview,
@@ -52,7 +51,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     const { merkleRewardsQuery, missingRateTickersQuery } = useMerkleRewards(account);
     const accountRewards: YieldAccountRewards | undefined =
         merkleRewardsQuery.data?.accountsRewards[0];
-    const isRewardsLoading = merkleRewardsQuery.isLoading || missingRateTickersQuery.isFetching;
+    const isRewardsLoading = merkleRewardsQuery.isLoading || missingRateTickersQuery.isLoading;
 
     useEffect(() => {
         dispatch(stablecoinYieldActions.initSession({ flowType: 'claim', flowKey }));
@@ -66,9 +65,8 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
         account,
         flowType: 'claim',
         flowKey,
+        waitForMerkleToResolveClaim: merkleRewardsQuery.waitForMerkleToResolveClaim,
     });
-
-    const queryClient = useQueryClient();
 
     const handleClaim = async () => {
         if (!accountRewards) return;
@@ -96,12 +94,6 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
 
         try {
             await dispatch(claimMerkleRewardsThunk({ account, flowKey, rewards })).unwrap();
-
-            await merkleRewardsQuery.refetchBypassingCache();
-            await queryClient.invalidateQueries({
-                queryKey: commonQueryKeys.yieldOpportunities(),
-                exact: false,
-            });
         } catch {
             // cancelled or rejected — isClaiming resets via Redux (discardTransaction in finally)
         }
@@ -186,7 +178,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                             isDisabled={
                                 isRewardsLoading || !accountRewards?.rewards.length || isClaiming
                             }
-                            isLoading={isClaimSubmitting}
+                            isLoading={isClaimSubmitting || merkleRewardsQuery.isLoading}
                             onClick={handleClaim}
                         >
                             <Translation id="TR_EARN_YIELD_CLAIM" />
