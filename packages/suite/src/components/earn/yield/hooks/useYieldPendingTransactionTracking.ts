@@ -249,7 +249,7 @@ export const useYieldPendingTransactionTracking = ({
             const completeAction = () => {
                 dispatch(
                     stablecoinYieldActions.completeAction({
-                        flowType: 'claim',
+                        flowType,
                         flowKey,
                         amount: pendingTransaction.amount,
                     }),
