@@ -67,7 +67,7 @@ export const HeaderBreadcrumb = () => {
     const grandParentNode = parentNodes.pop();
 
     return (
-        <Row gap={4}>
+        <Row gap={4} maxWidth="calc(100% - 36px - 8px)" flexWrap="wrap">
             <TextButton
                 onClick={() => {
                     if (grandParentNode) {

@@ -28,12 +28,9 @@ export const SCREEN_QUERY = {
 } as const;
 
 export const LAYOUT_SIZE = {
-    /** Default guide panel width including border (px) */
     GUIDE_PANEL_DEFAULT_WIDTH: 350,
-    /** Minimum guide panel width including border (px) */
-    GUIDE_PANEL_MIN_WIDTH: 320,
-    /** Maximum guide panel width including border (px) */
-    GUIDE_PANEL_MAX_WIDTH: 450,
+    GUIDE_PANEL_MIN_WIDTH: 300,
+    GUIDE_PANEL_MAX_WIDTH: 500,
 } as const;
 
 export const ICONS = Object.keys(icons).sort();

@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { IconButton, useElevation } from '@trezor/components';
+import { IconButton, Paragraph, useElevation } from '@trezor/components';
 import { type Elevation, mapElevationToBorder, typography, zIndices } from '@trezor/theme';
 
 import { close } from 'src/actions/suite/guideActions';
@@ -45,14 +45,6 @@ const HeaderWrapper = styled.div<{
 const MainLabel = styled.div`
     ${typography['headline-sm']};
     flex: 1;
-`;
-
-const Label = styled.div`
-    ${typography['body-sm-strong']}
-    text-align: center;
-    color: ${({ theme }) => theme.contentPrimary};
-    padding: 0 15px;
-    width: 100%;
 `;
 
 interface GuideHeaderProps {
@@ -98,7 +90,18 @@ export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) =>
                         data-testid="@guide/button-back"
                     />
 
-                    {label && <Label data-testid="@guide/label">{label}</Label>}
+                    {label && (
+                        <Paragraph
+                            typographyStyle="body-sm-strong"
+                            align="center"
+                            ellipsisLineCount={1}
+                            margin={{ horizontal: 8 }}
+                            data-testid="@guide/label"
+                            width="100%"
+                        >
+                            {label}
+                        </Paragraph>
+                    )}
                 </>
             )}
             {!useBreadcrumb && !back && label && <MainLabel>{label}</MainLabel>}
