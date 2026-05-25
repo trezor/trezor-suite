@@ -9,7 +9,7 @@ type Attributes = {
         | 'earn-dashboard'
         | 'account-defi-tokens'
         | 'deposit-in-a-nutshell-modal'
-        | 'deposit-morpho-modal'
+        | 'deposit-legal-modal'
         | 'claim-select-account-modal'
         | 'deposit-form'
         | 'withdraw-form'
@@ -21,7 +21,7 @@ type Attributes = {
         | 'withdraw-form'
         | 'claim-form'
         | 'deposit-in-a-nutshell-modal'
-        | 'deposit-morpho-modal'
+        | 'deposit-legal-modal'
         | 'claim-select-account-modal'
     >;
     networkSymbol?: AttributeDef<string>;

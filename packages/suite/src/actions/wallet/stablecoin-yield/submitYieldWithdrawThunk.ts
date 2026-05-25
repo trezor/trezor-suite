@@ -61,7 +61,7 @@ export const submitYieldWithdrawThunk = createThunk(
             asTypedDesktopAnalytics(extra.services.analytics).report({
                 type: events.yieldWithdrawEvent.name,
                 payload: {
-                    type: 'simulation-modal',
+                    type: 'tx-simulation-modal',
                     action: userAcceptedTxSimulation?.value === false ? 'cancel' : 'continue',
                     networkSymbol: account.symbol,
                     vaultId: flowData.vault.id,

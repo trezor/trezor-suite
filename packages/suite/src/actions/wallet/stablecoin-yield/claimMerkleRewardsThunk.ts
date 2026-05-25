@@ -267,7 +267,7 @@ export const claimMerkleRewardsThunk = createThunk(
             asTypedDesktopAnalytics(extra.services.analytics).report({
                 type: events.yieldClaimEvent.name,
                 payload: {
-                    type: 'simulation-modal',
+                    type: 'tx-simulation-modal',
                     action: userAcceptedTxSimulation?.value === false ? 'cancel' : 'continue',
                     networkSymbol: account.symbol,
                     rewardCount: rewards.length,
