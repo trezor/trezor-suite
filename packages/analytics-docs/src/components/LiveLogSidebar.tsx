@@ -20,7 +20,6 @@ import {
     TOOLTIP_DELAY_LONG,
     Table,
     Text,
-    Tooltip,
     variables,
 } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
@@ -156,18 +155,20 @@ const LiveLogEventItem = ({
                         </Row>
                     </Column>
                     {hasPayload && (
-                        <Tooltip content="Find event" delayShow={TOOLTIP_DELAY_LONG}>
-                            <IconButton
-                                icon="magnifyingGlass"
-                                size="small"
-                                intent="neutral"
-                                priority="secondary"
-                                onClick={e => {
-                                    onEventClick(event.type);
-                                    e.stopPropagation();
-                                }}
-                            />
-                        </Tooltip>
+                        <IconButton
+                            icon="magnifyingGlass"
+                            size="small"
+                            intent="neutral"
+                            priority="secondary"
+                            onClick={e => {
+                                onEventClick(event.type);
+                                e.stopPropagation();
+                            }}
+                            tooltip={{
+                                content: 'Find event',
+                                delayShow: TOOLTIP_DELAY_LONG,
+                            }}
+                        />
                     )}
                 </Row>
                 <EventPayload
@@ -277,33 +278,31 @@ export const LiveLogSidebar = ({ onEventClick, filterQuery }: LiveLogSidebarProp
                             <H3 margin={{ bottom: 0 }}>Live log</H3>
                             <Row gap={8}>
                                 {events.length > 0 && (
-                                    <Tooltip content="Clear log">
-                                        <IconButton
-                                            size="small"
-                                            priority="secondary"
-                                            intent="critical"
-                                            onClick={async () => {
-                                                await clear();
-                                                seenEventIdsRef.current.clear();
-                                                for (const timeoutId of timeoutsRef.current.values()) {
-                                                    window.clearTimeout(timeoutId);
-                                                }
-                                                timeoutsRef.current.clear();
-                                                setNewEventIds({});
-                                            }}
-                                            icon="prohibit"
-                                        />
-                                    </Tooltip>
-                                )}
-                                <Tooltip content="Settings">
                                     <IconButton
-                                        icon="gear"
                                         size="small"
-                                        intent="neutral"
                                         priority="secondary"
-                                        onClick={() => setIsSettingsOpen(true)}
+                                        intent="critical"
+                                        onClick={async () => {
+                                            await clear();
+                                            seenEventIdsRef.current.clear();
+                                            for (const timeoutId of timeoutsRef.current.values()) {
+                                                window.clearTimeout(timeoutId);
+                                            }
+                                            timeoutsRef.current.clear();
+                                            setNewEventIds({});
+                                        }}
+                                        icon="prohibit"
+                                        tooltip={{ content: 'Clear log' }}
                                     />
-                                </Tooltip>
+                                )}
+                                <IconButton
+                                    icon="gear"
+                                    size="small"
+                                    intent="neutral"
+                                    priority="secondary"
+                                    onClick={() => setIsSettingsOpen(true)}
+                                    tooltip={{ content: 'Settings' }}
+                                />
                             </Row>
                         </Row>
                         <Box margin={{ bottom: 8 }}>

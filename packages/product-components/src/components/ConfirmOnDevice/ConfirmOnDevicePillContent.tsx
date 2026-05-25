@@ -99,6 +99,7 @@ export const ConfirmOnDevicePillContent = ({
                     intent="neutral"
                     priority="secondary"
                     size="small"
+                    tooltip={{ isActive: false }}
                 />
             )}
         </Row>

@@ -60,6 +60,7 @@ export type ToastProps = {
     actions?: ToastAction[];
     dataTestId?: string;
     dismissible?: boolean;
+    dismissTooltip?: ReactNode;
     onDismiss?: () => void;
 };
 
@@ -70,6 +71,7 @@ export const Toast = ({
     actions,
     dismissible = true,
     dataTestId,
+    dismissTooltip,
     onDismiss,
 }: ToastProps) => {
     const dataTestBase = `@toast/${dataTestId ?? intent}`;
@@ -124,6 +126,7 @@ export const Toast = ({
                         onClick={onDismiss}
                         data-testid={`${dataTestBase}/close`}
                         aria-label="Close toast"
+                        tooltip={dismissTooltip ? { content: dismissTooltip } : { isActive: false }}
                     />
                 )}
             </Row>

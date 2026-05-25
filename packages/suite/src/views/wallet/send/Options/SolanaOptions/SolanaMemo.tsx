@@ -46,6 +46,7 @@ export const SolanaMemo = ({ close }: SolanaMemoProps) => {
                         icon="x"
                         size="small"
                         onClick={handleClose}
+                        tooltip={{ content: <Translation id="TR_CLOSE" /> }}
                     />
                 </Row>
                 <Textarea

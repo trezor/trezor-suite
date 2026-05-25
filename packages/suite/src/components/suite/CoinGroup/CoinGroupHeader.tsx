@@ -35,6 +35,13 @@ export const CoinGroupHeader = ({
                     intent="neutral"
                     priority="secondary"
                     margin={{ left: 'auto' }}
+                    tooltip={{
+                        content: settingsMode ? (
+                            <Translation id="TR_CLOSE" />
+                        ) : (
+                            <Translation id="TR_SETTINGS" />
+                        ),
+                    }}
                 />
             )}
         </Row>

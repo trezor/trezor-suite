@@ -7,6 +7,7 @@ import {
     useState,
 } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Collapsible, Column, H3, IconButton, Row, Text } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
 
@@ -72,6 +73,17 @@ export const DashboardSection = forwardRef(
                                                     icon={collapsed ? 'caretDown' : 'caretUp'}
                                                     intent="neutral"
                                                     priority="secondary"
+                                                    tooltip={{
+                                                        content: (
+                                                            <Translation
+                                                                id={
+                                                                    collapsed
+                                                                        ? 'TR_EXPAND'
+                                                                        : 'TR_COLLAPSE'
+                                                                }
+                                                            />
+                                                        ),
+                                                    }}
                                                 />
                                             </Collapsible.Toggle>
                                         )}

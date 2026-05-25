@@ -30,6 +30,7 @@ export const HeaderActionButton = ({
                 size={size}
                 isDisabled={isDisabled}
                 priority={priority}
+                tooltip={{ content: children }}
             />
         </ConditionalRender>
         <ConditionalRender container="content" minWidth={breakpoints.mobile}>

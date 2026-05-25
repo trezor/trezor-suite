@@ -28,6 +28,7 @@ export const IconButton: StoryObj<IconButtonProps> = {
         isLoading: false,
         isInverse: false,
         isFloating: false,
+        tooltip: { content: 'Address book' },
         ...getFramePropsStory(allowedIconButtonFrameProps).args,
     },
     argTypes: {

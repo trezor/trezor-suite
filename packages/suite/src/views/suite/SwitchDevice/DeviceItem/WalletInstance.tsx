@@ -206,34 +206,33 @@ export const WalletInstance = ({
                                 )}
                             </Text>
                             <Collapsible.Toggle>
-                                <Tooltip
-                                    delayShow={TOOLTIP_DELAY_LONG}
-                                    content={
-                                        <Translation
-                                            id={
-                                                isEjecting
-                                                    ? 'TR_CANCEL'
-                                                    : 'TR_SWITCH_DEVICE_EJECT_TOOLTIP'
-                                            }
-                                        />
+                                <IconButton
+                                    data-testid={
+                                        isEjecting
+                                            ? `@switch-device/cancelEject`
+                                            : `${dataTestBase}/eject-button`
                                     }
-                                >
-                                    <IconButton
-                                        data-testid={
-                                            isEjecting
-                                                ? `@switch-device/cancelEject`
-                                                : `${dataTestBase}/eject-button`
-                                        }
-                                        icon={isEjecting ? 'x' : 'eject'}
-                                        size="small"
-                                        intent="neutral"
-                                        priority="secondary"
-                                        onClick={e => {
-                                            e.stopPropagation();
-                                            setIsEjecting(prev => !prev);
-                                        }}
-                                    />
-                                </Tooltip>
+                                    icon={isEjecting ? 'x' : 'eject'}
+                                    size="small"
+                                    intent="neutral"
+                                    priority="secondary"
+                                    onClick={e => {
+                                        e.stopPropagation();
+                                        setIsEjecting(prev => !prev);
+                                    }}
+                                    tooltip={{
+                                        delayShow: TOOLTIP_DELAY_LONG,
+                                        content: (
+                                            <Translation
+                                                id={
+                                                    isEjecting
+                                                        ? 'TR_CANCEL'
+                                                        : 'TR_SWITCH_DEVICE_EJECT_TOOLTIP'
+                                                }
+                                            />
+                                        ),
+                                    }}
+                                />
                             </Collapsible.Toggle>
                         </Row>
 

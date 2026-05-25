@@ -136,7 +136,12 @@ export const MessageSystemManagerToolbar = ({
                     }
                     zIndex={zIndices.tooltip}
                 >
-                    <IconButton icon="question" intent="neutral" priority="secondary" />
+                    <IconButton
+                        icon="question"
+                        intent="neutral"
+                        priority="secondary"
+                        tooltip={{ content: 'Manual' }}
+                    />
                 </Popover>
             </Row>
         </Row>

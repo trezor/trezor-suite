@@ -47,6 +47,7 @@ export const ToastNotificationView = ({
             dataTestId={notification.type}
             actions={mapNotificationActionsToToastActions(action, translationString)}
             onDismiss={handleDismiss}
+            dismissTooltip={<Translation id="TR_DISMISS" />}
         />
     );
 };

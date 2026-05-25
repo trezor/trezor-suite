@@ -166,6 +166,9 @@ export const TransactionReviewSummary = ({
                                 intent="neutral"
                                 priority="secondary"
                                 icon="info"
+                                tooltip={{
+                                    content: <Translation id="TR_TRANSACTION_DETAILS" />,
+                                }}
                             />
                         </Box>
                     )}

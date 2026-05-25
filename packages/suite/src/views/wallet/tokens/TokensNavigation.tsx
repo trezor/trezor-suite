@@ -183,6 +183,7 @@ export const TokensNavigation = ({
                         intent="neutral"
                         priority="secondary"
                         onClick={handleAddToken}
+                        tooltip={{ content: <Translation id="TR_ADD_TOKEN_SUBMIT" /> }}
                     />
                 )}
             </Row>

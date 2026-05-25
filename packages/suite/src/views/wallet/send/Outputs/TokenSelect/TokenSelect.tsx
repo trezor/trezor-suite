@@ -206,7 +206,12 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                         </Column>
                     </Row>
                     {!hasNoStandardTokens && (
-                        <IconButton icon="caretDown" intent="neutral" priority="secondary" />
+                        <IconButton
+                            icon="caretDown"
+                            intent="neutral"
+                            priority="secondary"
+                            tooltip={{ isActive: false }}
+                        />
                     )}
                 </Row>
 

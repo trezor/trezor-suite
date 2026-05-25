@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { mapSizeToPadding } from './utils';
 import {
     type FrameProps,
     type FramePropsKeys,
@@ -9,8 +10,8 @@ import {
 import { type TransientProps } from '../../../utils/transientProps';
 import { Box } from '../../Box/Box';
 import { Icon, type IconName } from '../../Icon/Icon';
+import { Tooltip, type UnmanagedTooltipProps } from '../../Tooltip/Tooltip';
 import { Spinner } from '../../loaders/Spinner/Spinner';
-import { Tooltip, TooltipProps } from '../../Tooltip/Tooltip';
 import {
     type ButtonIntent,
     type ButtonPriority,
@@ -25,7 +26,6 @@ import {
     mapSizeToIconSize,
     pickButtonProps,
 } from '../utils';
-import { mapSizeToPadding } from './utils';
 
 export const allowedIconButtonFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 export type AllowedIconButtonFrameProps = Pick<
@@ -57,7 +57,7 @@ export type IconButtonProps = CommonButtonProps &
     AllowedIconButtonFrameProps & {
         size?: ButtonSize;
         icon: IconName;
-        tooltip: Partial<TooltipProps>;
+        tooltip: Partial<UnmanagedTooltipProps>;
         'data-testid'?: string;
         'aria-label'?: string;
     };
@@ -92,8 +92,8 @@ export const IconButton = ({
             {...buttonProps}
             {...frameProps}
         >
-            <Box padding={mapSizeToPadding(size)}>
-                <Tooltip {...tooltip}>
+            <Tooltip {...(tooltip as UnmanagedTooltipProps)}>
+                <Box padding={mapSizeToPadding(size)}>
                     {props.isLoading ? (
                         <Spinner
                             isDisabled={true}
@@ -103,8 +103,8 @@ export const IconButton = ({
                     ) : (
                         <Icon name={icon} {...iconProps} />
                     )}
-                </Tooltip>
-            </Box>
+                </Box>
+            </Tooltip>
         </Container>
     );
 };

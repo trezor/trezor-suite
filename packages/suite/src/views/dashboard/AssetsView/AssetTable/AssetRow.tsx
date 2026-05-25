@@ -207,7 +207,12 @@ export const AssetRow = memo(
                                     <Translation id="TR_BUY_BUY" />
                                 </AssetActionButton>
                             )}
-                            <IconButton icon="arrowRight" intent="neutral" priority="secondary" />
+                            <IconButton
+                                icon="arrowRight"
+                                intent="neutral"
+                                priority="secondary"
+                                tooltip={{ isActive: false }}
+                            />
                         </Row>
                     </Table.Cell>
                 </Table.Row>

@@ -75,6 +75,7 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
                     icon="x"
                     size="small"
                     onClick={() => removeOpReturn(outputId)}
+                    tooltip={{ content: <Translation id="TR_REMOVE" /> }}
                 />
             </Row>
             <Flex direction={isBelowTablet ? 'column' : 'row'} gap={16} alignItems="center">

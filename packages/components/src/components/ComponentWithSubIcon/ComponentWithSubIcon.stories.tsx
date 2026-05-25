@@ -26,6 +26,7 @@ export const ComponentWithSubIcon: StoryObj<ComponentWithSubIconProps> = {
                 size="large"
                 intent="neutral"
                 priority="secondary"
+                tooltip={{ content: 'Air traffic control' }}
             />
         ),
         iconPadding: 2,

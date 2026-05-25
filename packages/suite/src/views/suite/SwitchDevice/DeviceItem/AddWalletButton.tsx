@@ -94,6 +94,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                         onClick={() => {
                             setIsPassphraseExpanded(false);
                         }}
+                        tooltip={{ content: <Translation id="TR_CLOSE" /> }}
                     />
                 </Row>
                 <Column gap={8}>

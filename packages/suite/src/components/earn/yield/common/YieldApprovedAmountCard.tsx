@@ -47,6 +47,7 @@ export const YieldApprovedAmountCard = ({
                         intent="neutral"
                         priority="secondary"
                         onClick={onRevoke}
+                        tooltip={{ content: <Translation id="TR_REVOKE_DATA_TITLE" /> }}
                     />
                 )}
             </Row>

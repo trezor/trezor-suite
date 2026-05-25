@@ -152,6 +152,7 @@ export const PinMatrix = ({
                                     onClick={() => onPinAdd(value)}
                                     isDisabled={isDisabled}
                                     data-testid={`@pin/input/${value}`}
+                                    tooltip={{ isActive: false }}
                                 />
                             ))
                         }

@@ -75,6 +75,7 @@ export const TronNote = ({ close }: TronNoteProps) => {
                         icon="x"
                         size="small"
                         onClick={handleClose}
+                        tooltip={{ content: <Translation id="TR_CLOSE" /> }}
                     />
                 </Row>
 

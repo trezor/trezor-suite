@@ -114,6 +114,7 @@ export const Locktime = ({ close }: LocktimeProps) => {
                         priority="secondary"
                         size="small"
                         onClick={close}
+                        tooltip={{ content: <Translation id="TR_CLOSE" /> }}
                     />
                 </Row>
                 {locktimeOption == 'block' ? (
