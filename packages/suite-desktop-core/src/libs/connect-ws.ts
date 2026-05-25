@@ -148,10 +148,12 @@ export const exposeConnectWs = ({
             } else if (message.type === POPUP.CLOSED) {
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
                     error: message.payload?.error,
+                    callId: message.payload?.callId,
                 });
             } else if (message.type === CORE_CALL_CANCEL) {
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
                     error: message.payload?.reason,
+                    callId: message.payload?.callId,
                 });
             } else if (message.type === CORE_CALL) {
                 if (!processOnPort) {
