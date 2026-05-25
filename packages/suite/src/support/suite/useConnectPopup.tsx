@@ -32,8 +32,8 @@ export type ConnectPopupMessage =
           version: string;
       }
     | { type: typeof CORE_CALL; id: string; payload: { method: string; [key: string]: unknown } }
-    | { type: typeof POPUP.CLOSED; payload?: { error?: string } | null }
-    | { type: typeof CORE_CALL_CANCEL; payload?: { reason?: string } | null };
+    | { type: typeof POPUP.CLOSED; payload?: { error?: string; callId?: string } | null }
+    | { type: typeof CORE_CALL_CANCEL; payload?: { reason?: string; callId?: string } | null };
 
 /** Outgoing message shape. */
 export type ConnectPopupOutgoingMessage = Record<string, unknown> & { type: string };
@@ -122,9 +122,19 @@ export const useConnectPopup = (
 
                 setResponseSent(true);
             } else if (event.type === POPUP.CLOSED) {
-                dispatch(connectPopupCancelThunk({ error: event.payload?.error }));
+                dispatch(
+                    connectPopupCancelThunk({
+                        error: event.payload?.error,
+                        callId: event.payload?.callId,
+                    }),
+                );
             } else if (event.type === CORE_CALL_CANCEL) {
-                dispatch(connectPopupCancelThunk({ error: event.payload?.reason }));
+                dispatch(
+                    connectPopupCancelThunk({
+                        error: event.payload?.reason,
+                        callId: event.payload?.callId,
+                    }),
+                );
             }
         };
 

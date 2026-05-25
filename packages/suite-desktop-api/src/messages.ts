@@ -159,6 +159,7 @@ export type ConnectPopupCall = {
 
 export type ConnectPopupCancel = {
     error?: string;
+    callId?: string;
 };
 
 export type ConnectPopupResponse = {
