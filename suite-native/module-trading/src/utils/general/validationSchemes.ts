@@ -119,7 +119,7 @@ export const sendCryptoAmountValidationSchema = yup
         });
     })
     .test('send-crypto-balance', (value, testContext) => {
-        const { balance, translate, convertNumberToBaseUnit, sendSymbol, networkReserve } =
+        const { balance, translate, convertNumberToBaseUnit, sendSymbol, maxSpendableAmount } =
             getAmountLimitContext(testContext);
 
         if (sendSymbol === undefined) {
@@ -132,16 +132,16 @@ export const sendCryptoAmountValidationSchema = yup
             return true;
         }
 
-        // Calculate available balance considering network reserve
-        const availableBalance = networkReserve
-            ? new BigNumber(balance).minus(networkReserve).toString()
-            : balance;
+        const maxAvailableAmount = maxSpendableAmount ?? balance;
 
-        if (convertedValue <= parseFloat(availableBalance)) {
-            return true;
+        if (convertedValue > parseFloat(balance)) {
+            return testContext.createError({
+                type: 'insufficient-balance',
+                message: translate('moduleTrading.validators.insufficientBalance'),
+            });
         }
 
-        if (networkReserve && convertedValue <= parseFloat(balance)) {
+        if (convertedValue > parseFloat(maxAvailableAmount)) {
             return testContext.createError({
                 type: 'network-reserve',
                 message: translate('moduleTrading.validators.networkReserve', {
@@ -150,8 +150,5 @@ export const sendCryptoAmountValidationSchema = yup
             });
         }
 
-        return testContext.createError({
-            type: 'insufficient-balance',
-            message: translate('moduleTrading.validators.insufficientBalance'),
-        });
+        return true;
     });

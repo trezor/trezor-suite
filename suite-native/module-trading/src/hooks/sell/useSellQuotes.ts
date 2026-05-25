@@ -46,6 +46,12 @@ const defaultState: ShouldFetchSellQuotesRef = {
     accountDescriptor: undefined,
 } as const;
 
+const quoteDerivedCryptoErrorTypes = ['insufficient-balance', 'network-reserve'] as const;
+
+const isQuoteDerivedCryptoError = (fieldName: string, type: unknown) =>
+    fieldName === 'cryptoStringAmount' &&
+    quoteDerivedCryptoErrorTypes.some(errorType => errorType === type);
+
 const useShouldFetchSellQuotes = ({ watch, control }: SellFormType): ShouldFetchSellQuotes => {
     const prevState = useRef<ShouldFetchSellQuotesRef>(defaultState);
 
@@ -54,9 +60,12 @@ const useShouldFetchSellQuotes = ({ watch, control }: SellFormType): ShouldFetch
     const { isValid, errors } = useFormState({ control });
 
     if (!isValid) {
+        const errorEntries = Object.entries(errors);
         const errorCausedByQuote =
             !amountInCrypto &&
-            Object.values(errors).every(({ type }) => type === 'insufficient-balance');
+            errorEntries.every(([fieldName, { type }]) =>
+                isQuoteDerivedCryptoError(fieldName, type),
+            );
 
         if (!errorCausedByQuote) {
             prevState.current = defaultState;
