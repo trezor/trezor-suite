@@ -11,6 +11,10 @@ import { getCoinInfo } from '../data/coinInfo';
 
 type Params = {
     coinInfo: CoinInfo;
+    blockchainLink?: {
+        type: string;
+        url: string[];
+    };
 };
 
 export default class BlockchainSetCustomBackend extends AbstractMethod<
@@ -31,9 +35,11 @@ export default class BlockchainSetCustomBackend extends AbstractMethod<
             throw ERRORS.TypedError('Method_UnknownCoin');
         }
 
+        const { blockchainLink } = payload;
+
         setCustomBackend(coinInfo, payload.blockchainLink);
 
-        const params = { coinInfo };
+        const params = { coinInfo, blockchainLink };
 
         super(message, params);
         this.useDevice = false;
@@ -49,6 +55,8 @@ export default class BlockchainSetCustomBackend extends AbstractMethod<
     }
 
     async run() {
+        setCustomBackend(this.params.coinInfo, this.params.blockchainLink);
+
         await reconnectAllBackends(this.params.coinInfo);
 
         return true;
