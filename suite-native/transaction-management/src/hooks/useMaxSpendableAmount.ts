@@ -3,14 +3,17 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { type AccountKey, type FormState, type TokenAddress } from '@suite-common/wallet-types';
 import { type TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
-import { calculateFeeLevelsMaxAmountThunk } from '@suite-native/transaction-management';
+import { useDebounce } from '@trezor/react-utils';
+
+import { calculateFeeLevelsMaxAmountThunk } from '../thunks';
 
 type UseMaxSpendableAmountProps = {
     accountKey?: AccountKey;
     tokenContract?: TokenAddress;
+    formState?: FormState;
 };
 
-const buildFormState = ({ tokenContract }: { tokenContract?: TokenAddress }): FormState => ({
+const buildDefaultFormState = ({ tokenContract }: { tokenContract?: TokenAddress }): FormState => ({
     outputs: [
         {
             type: 'payment',
@@ -34,8 +37,11 @@ const buildFormState = ({ tokenContract }: { tokenContract?: TokenAddress }): Fo
 export const useMaxSpendableAmount = ({
     accountKey,
     tokenContract,
+    formState,
 }: UseMaxSpendableAmountProps) => {
     const dispatch = useDispatch();
+    const debounce = useDebounce();
+
     const [maxSpendableAmount, setMaxSpendableAmount] = useState<string | undefined>(undefined);
 
     const tokenBalance = useSelector((state: TokensRootState) =>
@@ -59,18 +65,22 @@ export const useMaxSpendableAmount = ({
 
         const calculateMaxAmount = async () => {
             try {
-                const { normal, economy } = await dispatch(
-                    calculateFeeLevelsMaxAmountThunk(
-                        {
-                            formState: buildFormState({ tokenContract }),
-                            accountKey,
-                        },
-                        { signal: controller.signal },
-                    ),
-                ).unwrap();
+                const { normal, economy, low, high } = await debounce(
+                    async () =>
+                        await dispatch(
+                            calculateFeeLevelsMaxAmountThunk(
+                                {
+                                    formState:
+                                        formState ?? buildDefaultFormState({ tokenContract }),
+                                    accountKey,
+                                },
+                                { signal: controller.signal },
+                            ),
+                        ).unwrap(),
+                );
 
                 if (!controller.signal.aborted) {
-                    setMaxSpendableAmount(normal ?? economy);
+                    setMaxSpendableAmount(high ?? normal ?? low ?? economy);
                 }
             } catch {
                 if (controller.signal.aborted) return;
@@ -82,7 +92,7 @@ export const useMaxSpendableAmount = ({
         return () => {
             controller.abort();
         };
-    }, [dispatch, accountKey, tokenContract, tokenBalance]);
+    }, [dispatch, accountKey, tokenContract, formState, tokenBalance, debounce]);
 
     return { maxSpendableAmount };
 };
