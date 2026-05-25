@@ -21,8 +21,6 @@
         "@suite/account": "workspace:*",
         "@suite/analytics": "workspace:*",
         "@suite/modal": "workspace:*",
-        "immer": "^10.1.1",
-        "redux": "^5.0.1",
-        "redux-thunk": "^3.1.0"
+        "redux": "^5.0.1"
     }
 }

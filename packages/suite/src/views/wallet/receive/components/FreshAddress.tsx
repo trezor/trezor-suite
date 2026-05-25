@@ -4,11 +4,11 @@ import { Address } from '@suite/address';
 import { ReadMoreLink } from '@suite/external-links';
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
-import { showAddressThunk } from '@suite/receive';
 import {
     selectIsLegacyLabelingVisible,
     selectLabelingDataForSelectedAccount,
 } from '@suite/metadata';
+import { showAddressThunk } from '@suite/receive';
 import { getFirstFreshAddress } from '@suite-common/address';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import { getNetwork } from '@suite-common/wallet-config';

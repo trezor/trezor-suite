@@ -1,3 +1,4 @@
+import { selectSelectedAccount } from '@suite/account';
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectRouterParams } from '@suite/router';
@@ -9,7 +10,6 @@ import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { type NavigationItem, SubpageNavigation } from 'src/components/suite/layouts/SuiteLayout';
 import { useGoToWithAnalytics } from 'src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
 import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from '@suite/account';
 import { type WalletParams } from 'src/types/wallet';
 
 export const AccountNavigation = () => {

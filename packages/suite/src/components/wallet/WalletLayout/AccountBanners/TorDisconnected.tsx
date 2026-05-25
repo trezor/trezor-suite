@@ -1,3 +1,4 @@
+import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { selectModalType } from '@suite/modal';
 import { selectTorState } from '@suite/tor';
@@ -5,7 +6,6 @@ import { Banner } from '@trezor/components';
 
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from '@suite/account';
 
 export const TorDisconnected = () => {
     const account = useSelector(selectSelectedAccount);

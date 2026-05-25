@@ -2,12 +2,12 @@ import { useMemo } from 'react';
 
 import styled from 'styled-components';
 
+import { selectSelectedAccount } from '@suite/account';
 import { LearnMoreButton } from '@suite/external-links';
 import { spacingsPx } from '@trezor/theme';
 
 import { PoweredByBadge, getStakingHelpCenterLink } from 'src/components/earn';
 import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from '@suite/account';
 
 const Wrapper = styled.div`
     display: flex;

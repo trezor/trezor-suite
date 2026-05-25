@@ -1,5 +1,6 @@
 import { type MiddlewareAPI } from 'redux';
 
+import { selectFullSelectedAccount } from '@suite/account';
 import { routerLocationChange } from '@suite/router';
 import {
     invityAPI,
@@ -14,7 +15,6 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 
-import { selectFullSelectedAccount } from '@suite/account';
 import { type Action, type AppState, type Dispatch } from 'src/types/suite';
 
 export const tradingMiddleware =

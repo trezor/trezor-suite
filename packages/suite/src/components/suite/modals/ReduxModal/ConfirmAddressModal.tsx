@@ -1,17 +1,18 @@
 import { useCallback } from 'react';
 
+import { selectAccountIncludingChosenInTrading } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { showAddressThunk } from '@suite/receive';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config/src/utils';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
+
 import {
     ConfirmValueModal,
     type ConfirmValueModalProps,
 } from 'src/components/suite/modals/ReduxModal/ConfirmValueModal/ConfirmValueModal';
 import { useSelector } from 'src/hooks/suite';
-import { selectAccountIncludingChosenInTrading } from '@suite/account';
 
 import { ConnectAddressConfirmation } from './UserContextModal/ConnectAddressConfirmation';
 

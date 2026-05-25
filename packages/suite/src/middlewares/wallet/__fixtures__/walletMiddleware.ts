@@ -1,3 +1,4 @@
+import { type SelectedAccountState } from '@suite/account';
 import { type RouterState } from '@suite/router';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -15,8 +16,6 @@ import {
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
-
-import { type State as SelectedAccountState } from '@suite/account';
 
 export const blockchainSubscription: Array<{
     description: string;

@@ -1,10 +1,10 @@
 import { useEffect, useReducer } from 'react';
 
+import { selectSelectedAccount } from '@suite/account';
 import { type TranslationKey } from '@suite/intl';
 import { type ScanProgressInfo } from '@trezor/coinjoin';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectSelectedAccount } from '@suite/account';
 import { CoinjoinService } from 'src/services/coinjoin';
 import {
     getAccountProgressHandle,

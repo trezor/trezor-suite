@@ -1,3 +1,4 @@
+import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -5,7 +6,6 @@ import { spacings } from '@trezor/theme';
 import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectSelectedAccount } from '@suite/account';
 
 type CancelCoinjoinModalProps = {
     onClose: () => void;

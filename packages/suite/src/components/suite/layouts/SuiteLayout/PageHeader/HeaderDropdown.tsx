@@ -1,5 +1,6 @@
 import { type JSX } from 'react';
 
+import { selectSelectedAccount } from '@suite/account';
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
@@ -10,7 +11,6 @@ import { breakpoints } from '@trezor/theme';
 
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from '@suite/account';
 import { useConditionalRender } from 'src/support/suite/ConditionalRender';
 
 import { useGoToWithAnalytics } from './useGoToWithAnalytics';

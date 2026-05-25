@@ -1,10 +1,10 @@
+import { selectFullSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { type NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Column, Icon, InfoSegments, Row, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectFullSelectedAccount } from '@suite/account';
 
 import { type IODetailsType } from './IODetailsType';
 import { IOItem } from './IOItem';

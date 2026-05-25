@@ -1,3 +1,4 @@
+import { selectFullSelectedAccount } from '@suite/account';
 import { goto } from '@suite/router';
 import {
     cancelSignSendFormTransactionThunk,
@@ -20,7 +21,6 @@ import {
     signTransaction,
 } from 'src/actions/wallet/stakeActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectFullSelectedAccount } from '@suite/account';
 
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 import { TransactionReviewModalExchange } from './TransactionReviewModalExchange';

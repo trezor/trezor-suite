@@ -1,15 +1,11 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev"
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
             "path": "../../suite-common/connect-popup"
         },
-        {
-            "path": "../../suite-common/trading"
-        },
+        { "path": "../../suite-common/trading" },
         {
             "path": "../../suite-common/wallet-core"
         },

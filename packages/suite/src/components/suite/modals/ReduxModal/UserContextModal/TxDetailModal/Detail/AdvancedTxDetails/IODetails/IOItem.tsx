@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 
+import { selectFullSelectedAccount } from '@suite/account';
 import { Address } from '@suite/address';
 import { useExternalLink } from '@suite/external-links';
 import { type NetworkSymbolExtended, isNetworkSymbol } from '@suite-common/wallet-config';
@@ -12,7 +13,6 @@ import { Column, Link, Row, Text } from '@trezor/components';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { UtxoAnonymity } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectFullSelectedAccount } from '@suite/account';
 
 const OP_RETURN_REGEX = /^OP_RETURN \(([^)]+)\)/;
 

@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
+import { selectSelectedAccountKey } from '@suite/account';
 import {
     type SuiteRouterHistoryDep,
     isAccountTabRoute,
@@ -15,7 +16,6 @@ import { spacingsPx, zIndices } from '@trezor/theme';
 
 import { HEADER_HEIGHT } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccountKey } from '@suite/account';
 
 import { GlobalSendReceive } from './GlobalSendReceive/GlobalSendReceive';
 import { HeaderActions } from './HeaderActions';

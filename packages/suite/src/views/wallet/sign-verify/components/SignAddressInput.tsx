@@ -2,7 +2,7 @@ import { components } from 'react-select';
 
 import styled from 'styled-components';
 
-import { type State as RevealedAddresses } from '@suite/receive';
+import { type ReceiveState as RevealedAddresses } from '@suite/receive';
 import { Select, type SelectProps } from '@trezor/components';
 
 import {

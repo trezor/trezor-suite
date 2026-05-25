@@ -1,5 +1,6 @@
 import { type ChangeEvent, useCallback, useEffect, useState } from 'react';
 
+import { selectSelectedAccount } from '@suite/account';
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
@@ -9,7 +10,6 @@ import TrezorConnect, { type TokenInfo } from '@trezor/connect';
 
 import { addToken } from 'src/actions/wallet/tokenActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from '@suite/account';
 import { type Account } from 'src/types/wallet';
 
 type AddTokenModalProps = {

@@ -5,12 +5,7 @@ import {
     MODAL_PRESERVE,
     MODAL_REMOVE_PRESERVE,
 } from '@suite/modal';
-import {
-    openAddressModal,
-    showAddressAction,
-    showAddressThunk,
-    showUnverifiedAddressAction,
-} from '@suite/receive';
+import { openAddressModal, receiveActions, showAddressThunk } from '@suite/receive';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -30,7 +25,7 @@ export default [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL_OPEN_USER_CONTEXT },
-                showUnverifiedAddressAction(PATH, ADDRESS),
+                receiveActions.showUnverifiedAddress(PATH, ADDRESS),
             ],
         },
     },
@@ -50,7 +45,7 @@ export default [
                 { type: confirmAddressOnDeviceThunk.fulfilled.type, payload: { success: true } },
                 { type: MODAL_REMOVE_PRESERVE },
                 { type: MODAL_OPEN_USER_CONTEXT },
-                showAddressAction(PATH, ADDRESS),
+                receiveActions.showAddress(PATH, ADDRESS),
             ],
         },
     },
@@ -84,7 +79,7 @@ export default [
                 { type: confirmAddressOnDeviceThunk.fulfilled.type, payload: { success: true } },
                 { type: MODAL_REMOVE_PRESERVE },
                 { type: MODAL_OPEN_USER_CONTEXT },
-                showAddressAction(PATH, ADDRESS),
+                receiveActions.showAddress(PATH, ADDRESS),
             ],
         },
     },
@@ -118,7 +113,7 @@ export default [
                 { type: confirmAddressOnDeviceThunk.fulfilled.type, payload: { success: true } },
                 { type: MODAL_REMOVE_PRESERVE },
                 { type: MODAL_OPEN_USER_CONTEXT },
-                showAddressAction(PATH, ADDRESS),
+                receiveActions.showAddress(PATH, ADDRESS),
             ],
         },
     },
