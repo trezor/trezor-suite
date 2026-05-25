@@ -1,0 +1,121 @@
+name: "Post LLM Analysis to PR"
+description: >
+  Reads llm-selection.json from the workspace and overwrites the
+  LLM test recommendation section in the PR description.
+inputs:
+  selection-file:
+    description: "Path to the llm-selection.json file"
+    required: false
+    default: "llm-selection.json"
+  trezor-bot-app-id:
+    description: "Trezor Bot GitHub App ID"
+    required: true
+  trezor-bot-private-key:
+    description: "Trezor Bot GitHub App private key"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Generate GitHub App token
+      id: trezor-bot-token
+      uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3
+      with:
+        app-id: ${{ inputs.trezor-bot-app-id }}
+        private-key: ${{ inputs.trezor-bot-private-key }}
+
+    - name: Update PR description with LLM test selection
+      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+      with:
+        github-token: ${{ steps.trezor-bot-token.outputs.token }}
+        script: |
+          const fs = require('fs');
+          const selectionFile = '${{ inputs.selection-file }}';
+          const result = JSON.parse(fs.readFileSync(selectionFile, 'utf8'));
+
+          const priorityEmoji = { high: '🔴', medium: '🟡', low: '🟢' };
+          const priorityOrder = ['high', 'medium', 'low'];
+
+          const START_MARKER = '<!-- LLM-TEST-SELECTOR:START -->';
+          const END_MARKER   = '<!-- LLM-TEST-SELECTOR:END -->';
+          const HEADING_START = '<!-- LLM-TEST-SELECTOR:HEADING:START -->';
+          const HEADING_END   = '<!-- LLM-TEST-SELECTOR:HEADING:END -->';
+          const headingBlock  = `${HEADING_START}\n## 🤖 LLM Test Recommendations\n${HEADING_END}`;
+
+          const lines = [];
+
+          lines.push(`**Summary:** ${result.summary}`);
+          lines.push('');
+
+          if (result.changed_files && result.changed_files.length > 0) {
+            lines.push(`<details><summary><b>Changed files (${result.changed_files.length})</b></summary>`);
+            lines.push('');
+            result.changed_files.forEach(f => lines.push(`- \`${f}\``));
+            lines.push('');
+            lines.push('</details>');
+            lines.push('');
+          }
+
+          if (result.recommendations && result.recommendations.length > 0) {
+            lines.push(`**Recommended tests (${result.recommendations.length})**`);
+            lines.push('');
+            for (const priority of priorityOrder) {
+              const recs = result.recommendations.filter(r => r.priority === priority);
+              if (recs.length === 0) continue;
+              const label = priority.charAt(0).toUpperCase() + priority.slice(1);
+              lines.push(`<details><summary>${priorityEmoji[priority]} <b>${label} priority (${recs.length})</b></summary>`);
+              lines.push('');
+              for (const rec of recs) {
+                lines.push(`- \`${rec.test}\` — ${rec.reasoning}`);
+              }
+              lines.push('');
+              lines.push('</details>');
+              lines.push('');
+            }
+          } else {
+            lines.push('_No test recommendations found._');
+            lines.push('');
+          }
+
+          if (result.uncovered_changes && result.uncovered_changes.length > 0) {
+            lines.push(`⚠️ **Changes with no test coverage (${result.uncovered_changes.length})**`);
+            result.uncovered_changes.forEach(f => lines.push(`- \`${f}\``));
+            lines.push('');
+          }
+
+          lines.push(`_Updated: ${new Date().toISOString()}_`);
+
+          const newSection = START_MARKER + '\n' + lines.join('\n') + '\n' + END_MARKER;
+
+          const pr = await github.rest.pulls.get({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number,
+          });
+
+          let body = pr.data.body || '';
+
+          // Ensure the heading block exists (written only once).
+          if (!body.includes(HEADING_START)) {
+            const sep = body.endsWith('\n\n') ? '' : body.endsWith('\n') ? '\n' : '\n\n';
+            body = body + sep + headingBlock;
+          }
+
+          // Update the section in-place or insert it right after the heading block.
+          let newBody;
+          if (body.includes(START_MARKER) && body.includes(END_MARKER)) {
+            const before = body.slice(0, body.indexOf(START_MARKER));
+            const after  = body.slice(body.indexOf(END_MARKER) + END_MARKER.length);
+            newBody = before + newSection + after;
+          } else {
+            const insertAt = body.indexOf(HEADING_END) + HEADING_END.length;
+            newBody = body.slice(0, insertAt) + '\n\n' + newSection + body.slice(insertAt);
+          }
+
+          await github.rest.pulls.update({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number,
+            body: newBody,
+          });
+
+          console.log('PR description updated with LLM test recommendations.');
