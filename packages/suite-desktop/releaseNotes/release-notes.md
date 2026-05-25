@@ -1,5 +1,6 @@
 ### 🚀 New features
 
+- Added a new stablecoin yield feature under the Earn tab giving users the ability to earn on their stablecoin balances.
 - Legacy labeling can now be migrated to Suite Sync.
 - WalletConnect now warns when account balances are insufficient before confirming transactions.
 - Trading offers can now be compared side by side.
