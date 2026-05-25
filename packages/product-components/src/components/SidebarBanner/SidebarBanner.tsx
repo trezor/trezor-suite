@@ -103,6 +103,7 @@ export const SidebarBanner = ({
                             intent="neutral"
                             priority="secondary"
                             type="button"
+                            data-testid={`${dataTestId}/close-button`}
                             onClick={onClose}
                             size="small"
                         >
