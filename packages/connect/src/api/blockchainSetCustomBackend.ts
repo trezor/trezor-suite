@@ -41,7 +41,7 @@ export default class BlockchainSetCustomBackend extends AbstractMethod<
     }
 
     get requiredPermissions(): MethodPermission[] {
-        return [];
+        return ['internal'];
     }
 
     get info() {

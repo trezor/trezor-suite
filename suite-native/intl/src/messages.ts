@@ -594,6 +594,7 @@ export const messages = {
             write: 'Permit transaction and data signing on Trezor',
             management: 'Change device settings',
             push_tx: 'Broadcast transactions to the blockchain',
+            internal: 'Internal use only',
         },
         simulation: {
             reviewTransaction: 'Review transaction',

@@ -57,6 +57,7 @@ export const connectPopupCallThunkInner = createThunk<
             const methodInfoPayload = methodInfo.payload as MethodInfo;
             if (
                 methodInfoPayload.requiredPermissions.includes('management') ||
+                methodInfoPayload.requiredPermissions.includes('internal') ||
                 (methodInfoPayload.requiredPermissions.includes('push_tx') &&
                     source.type === 'deeplink')
             ) {

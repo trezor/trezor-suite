@@ -9,7 +9,7 @@ import type { PrecomposeResultFinal } from './api/composeTransaction';
  * permissions by category and asks the user to grant access to a host (e.g.
  * read public data, sign a transaction, manage the device, push to network).
  */
-export type MethodPermission = 'read' | 'write' | 'management' | 'push_tx';
+export type MethodPermission = 'read' | 'write' | 'management' | 'push_tx' | 'internal';
 
 /**
  * Static and runtime metadata describing a `@trezor/connect` method call.

@@ -54,7 +54,7 @@ export default class BlockchainSubscribe extends AbstractMethod<'blockchainSubsc
     }
 
     get requiredPermissions(): MethodPermission[] {
-        return [];
+        return ['internal'];
     }
 
     async run({ sendCoreMessage }: MethodContext) {
