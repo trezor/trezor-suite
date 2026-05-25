@@ -154,14 +154,14 @@ export const TradingSellFormInputs = () => {
                         />
                     )}
                 </TradingFormSection>
+            </TradingFormCard>
+            <TradingFormCard>
                 <TradingFormFees
                     feeInfo={feeInfo}
                     account={account}
                     composedLevels={composedLevels}
                     changeFeeLevel={changeFeeLevel}
                 />
-            </TradingFormCard>
-            <TradingFormCard>
                 {!!quotes.length && (
                     <TradingFormInputPaymentMethod label="TR_TRADING_RECEIVE_METHOD" />
                 )}
@@ -173,6 +173,7 @@ export const TradingSellFormInputs = () => {
                         country={selectedCountry}
                     />
                 )}
+
                 <TradingSelectedOfferProvider />
             </TradingFormCard>
         </Column>
