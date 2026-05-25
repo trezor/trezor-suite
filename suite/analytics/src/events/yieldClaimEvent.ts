@@ -5,7 +5,7 @@ import { EventType } from '../constants';
 
 type Attributes = {
     action: AttributeDef<EarnModalAction>;
-    type: AttributeDef<'claim' | 'simulation-modal' | 'success' | 'error' | 'leftPending'>;
+    type: AttributeDef<'claim' | 'tx-simulation-modal' | 'success' | 'error' | 'leftPending'>;
     networkSymbol?: AttributeDef<string>;
     durationMs?: AttributeDef<number>;
     rewardCount?: AttributeDef<number>;
@@ -26,7 +26,7 @@ export const yieldClaimEvent: EventDef<Attributes, EventType.YieldClaim> = {
                 { version: '26.5.0', notes: 'added' },
                 {
                     version: '26.5.2',
-                    notes: 'added `leftPending`, `simulation-modal` values',
+                    notes: 'added `leftPending`, `tx-simulation-modal` values',
                 },
             ],
         },

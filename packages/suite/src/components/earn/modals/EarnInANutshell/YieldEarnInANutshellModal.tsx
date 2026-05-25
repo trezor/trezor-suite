@@ -113,7 +113,7 @@ export const YieldEarnInANutshellModal = ({
             payload: {
                 action: 'continue',
                 from: 'deposit-in-a-nutshell-modal',
-                to: 'deposit-morpho-modal',
+                to: 'deposit-legal-modal',
                 networkSymbol: account.symbol,
                 vaultId: vault?.id,
             },
