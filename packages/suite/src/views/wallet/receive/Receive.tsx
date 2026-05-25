@@ -16,7 +16,7 @@ import { UsedAddresses } from './components/UsedAddresses';
 export const Receive = () => {
     const isCoinjoinReceiveWarningHidden = useSelector(selectIsCoinjoinReceiveWarningHidden);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const receive = useSelector(state => state.wallet.receive);
+    const alreadyUsedAddresses = useSelector(state => state.wallet.receive);
     const device = useSelector(selectSelectedDevice);
 
     const { account } = selectedAccount;
@@ -45,7 +45,7 @@ export const Receive = () => {
                 <WalletSubpageHeading title="TR_NAV_RECEIVE" />
                 <FreshAddress
                     account={account}
-                    addresses={receive}
+                    alreadyUsedAddresses={alreadyUsedAddresses}
                     disabled={disabled}
                     locked={isDeviceLocked}
                     pendingAddresses={pendingAddresses}
@@ -54,7 +54,7 @@ export const Receive = () => {
                 {account && (
                     <UsedAddresses
                         account={account}
-                        addresses={receive}
+                        addresses={alreadyUsedAddresses}
                         locked={isDeviceLocked}
                         pendingAddresses={pendingAddresses}
                     />
