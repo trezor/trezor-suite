@@ -10315,11 +10315,6 @@ __metadata:
     "@types/react": "npm:19.2.14"
     react: "npm:19.2.4"
     react-redux: "npm:9.2.0"
-  peerDependencies:
-    "@trezor/suite-desktop-api": "workspace:*"
-  peerDependenciesMeta:
-    "@trezor/suite-desktop-api":
-      optional: true
   languageName: unknown
   linkType: soft
 
