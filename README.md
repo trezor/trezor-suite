@@ -57,6 +57,7 @@ Local `.env` setup (optional):
 
 - Rename `env.local.example` to `.env.local` in the repo root.
 - Set `TANSTACK_REACT_QUERY_DEV_TOOLS=true` to enable TanStack React Query Devtools on localhost.
+- Set `TRANSPORT_BROWSER_PING=false` to disable transport period ping.
 
 ## **Trezor Suite Mobile** @suite-native/app
 
