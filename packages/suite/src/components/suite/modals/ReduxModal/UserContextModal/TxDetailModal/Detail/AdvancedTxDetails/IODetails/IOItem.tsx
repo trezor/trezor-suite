@@ -12,7 +12,7 @@ import { Column, Link, Row, Text } from '@trezor/components';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { UtxoAnonymity } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectFullSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectFullSelectedAccount } from '@suite/account';
 
 const OP_RETURN_REGEX = /^OP_RETURN \(([^)]+)\)/;
 

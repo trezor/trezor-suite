@@ -1,4 +1,4 @@
-import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
+import { selectedAccountReducer } from '@suite/account';
 import { configureStore } from 'src/support/tests/configureStore';
 
 import fixtures from '../__fixtures__/selectedAccountActions';

@@ -6,7 +6,7 @@ import {
     type StakeType,
 } from '@suite-common/wallet-types';
 
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectSelectedAccount } from '@suite/account';
 import { DisplayMode } from 'src/types/suite';
 
 import { useSelector } from './useSelector';

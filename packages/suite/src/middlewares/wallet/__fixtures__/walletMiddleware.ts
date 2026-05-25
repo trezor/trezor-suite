@@ -16,7 +16,7 @@ import {
 } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 
-import { type State as SelectedAccountState } from 'src/reducers/wallet/selectedAccountReducer';
+import { type State as SelectedAccountState } from '@suite/account';
 
 export const blockchainSubscription: Array<{
     description: string;

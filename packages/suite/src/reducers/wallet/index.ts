@@ -1,5 +1,7 @@
 import { combineReducers } from 'redux';
 
+import { selectedAccountReducer } from '@suite/account';
+import { receiveReducer } from '@suite/receive';
 import { prepareTradingReducer } from '@suite-common/trading';
 import {
     feesReducer,
@@ -22,8 +24,6 @@ import accountSearchReducer from './accountSearchReducer';
 import { coinjoinReducer } from './coinjoinReducer';
 import formDraftReducer from './formDraftReducer';
 import graphReducer from './graphReducer';
-import receiveReducer from './receiveReducer';
-import selectedAccountReducer from './selectedAccountReducer';
 
 export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 export const phishingReducer = preparePhishingReducer(extraDependencies);

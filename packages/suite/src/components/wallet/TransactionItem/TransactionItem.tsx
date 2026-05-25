@@ -19,7 +19,7 @@ import { HELP_CENTER_REPLACE_BY_FEE_ETHEREUM } from '@trezor/urls';
 
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectSelectedAccount } from '@suite/account';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { TransactionHeading } from './TransactionHeading';

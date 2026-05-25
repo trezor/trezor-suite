@@ -7,6 +7,7 @@ import { useExternalLink } from '@suite/external-links';
 import { selectIsCopyAddressModalShown, selectIsUnhideTokenModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { showAddressThunk } from '@suite/receive';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -48,7 +49,6 @@ import {
 
 import { SUITE } from 'src/actions/suite/constants';
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
-import { showAddress } from 'src/actions/wallet/receiveActions';
 import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { selectIsDeviceCompromised } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
@@ -252,7 +252,7 @@ const TokenRowBasicActions = ({
         if (network.networkType === 'cardano') {
             goToWithAnalytics({ routeName: 'wallet-receive', preserveParams: true });
         } else {
-            dispatch(showAddress(path, unusedAddress));
+            dispatch(showAddressThunk({ path, address: unusedAddress }));
         }
     };
 

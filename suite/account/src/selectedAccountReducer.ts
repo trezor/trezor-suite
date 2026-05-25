@@ -1,3 +1,5 @@
+import { type UnknownAction } from 'redux';
+
 import { type ConnectPopupState } from '@suite-common/connect-popup';
 import { type TradingState } from '@suite-common/trading';
 import {
@@ -8,8 +10,6 @@ import {
     selectAccountByKey,
 } from '@suite-common/wallet-core';
 import type { SelectedAccountStatus } from '@suite-common/wallet-types';
-
-import type { Action } from 'src/types/suite';
 
 export type State = SelectedAccountStatus;
 
@@ -32,7 +32,10 @@ export const initialState: State = {
     status: 'none',
 };
 
-const selectedAccountReducer = (state: State = initialState, action: Action): State => {
+export const selectedAccountReducer = (
+    state: State = initialState,
+    action: UnknownAction,
+): State => {
     if (accountsActions.updateSelectedAccount.match(action)) return action.payload;
     if (accountsActions.disposeAccount.match(action)) return initialState;
 
@@ -54,11 +57,6 @@ export const selectSelectedAccountStatus = (state: SelectedAccountRootState) =>
 export const selectIsSelectedAccountLoaded = (state: SelectedAccountRootState) =>
     state.wallet.selectedAccount.status === 'loaded';
 
-/**
- * Mainly used for common modals, also used in the Trading section.
- * @returns account from stablecoin yield tx review if set, then send state if set, then trading if set,
- * otherwise account from the store
- */
 export const selectAccountIncludingChosenInTrading = (
     state: SelectedAccountRootStateWithTrading,
 ) => {
@@ -82,9 +80,5 @@ export const selectAccountIncludingChosenInTrading = (
         return selectAccountByKey(state, activeCall.selectedAccountKey) ?? undefined;
     }
 
-    const selectedAccount = selectSelectedAccount(state);
-
-    return selectedAccount;
+    return selectSelectedAccount(state);
 };
-
-export default selectedAccountReducer;

@@ -154,6 +154,7 @@
         {
             "path": "../../suite-common/walletconnect"
         },
+        { "path": "../../suite/account" },
         { "path": "../../suite/address" },
         { "path": "../../suite/analytics" },
         { "path": "../../suite/backup" },
@@ -184,6 +185,7 @@
         {
             "path": "../../suite/onboarding-components"
         },
+        { "path": "../../suite/receive" },
         { "path": "../../suite/recovery" },
         { "path": "../../suite/router" },
         { "path": "../../suite/settings" },

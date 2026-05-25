@@ -20,7 +20,7 @@ import {
     signTransaction,
 } from 'src/actions/wallet/stakeActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectFullSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectFullSelectedAccount } from '@suite/account';
 
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 import { TransactionReviewModalExchange } from './TransactionReviewModalExchange';

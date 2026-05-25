@@ -13,7 +13,7 @@ import { spacings } from '@trezor/theme';
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectSelectedAccount } from '@suite/account';
 
 export const ClaimCard = () => {
     const { analytics } = useServices<DesktopAnalyticsDep>();

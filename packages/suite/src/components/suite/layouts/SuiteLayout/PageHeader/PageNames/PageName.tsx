@@ -9,7 +9,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceAccountForNetworkSymbolAndAccountTypeWithIndex } from '@suite-common/wallet-core';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectSelectedAccount } from '@suite/account';
 
 import { AccountName } from './AccountName/AccountName';
 import { AccountSubpageName } from './AccountName/AccountSubpageName';

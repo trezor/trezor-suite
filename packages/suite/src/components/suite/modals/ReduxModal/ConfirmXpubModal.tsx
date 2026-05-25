@@ -5,7 +5,7 @@ import { convertTaprootXpub } from '@trezor/utils';
 
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectSelectedAccount } from '@suite/account';
 
 import {
     ConfirmValueModal,

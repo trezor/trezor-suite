@@ -28,7 +28,7 @@ import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useComposedLevelsPlaceholder } from 'src/hooks/wallet/form/useComposedLevelsPlaceholder';
 import { useFees } from 'src/hooks/wallet/form/useFees';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectSelectedAccount } from '@suite/account';
 
 type StellarManageTokenModalProps =
     | {

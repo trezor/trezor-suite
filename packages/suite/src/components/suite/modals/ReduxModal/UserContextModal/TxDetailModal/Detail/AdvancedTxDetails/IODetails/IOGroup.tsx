@@ -4,7 +4,7 @@ import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Column, Icon, InfoSegments, Row, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectFullSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectFullSelectedAccount } from '@suite/account';
 
 import { type IODetailsType } from './IODetailsType';
 import { IOItem } from './IOItem';

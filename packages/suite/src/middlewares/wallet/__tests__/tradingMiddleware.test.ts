@@ -26,7 +26,7 @@ import { tradingMiddlewareFixtures } from 'src/middlewares/wallet/__fixtures__/t
 import { tradingMiddleware } from 'src/middlewares/wallet/tradingMiddleware';
 import suiteReducer, { type SuiteState } from 'src/reducers/suite/suiteReducer';
 import { accounts } from 'src/reducers/wallet/__fixtures__/transactionConstants';
-import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
+import { selectedAccountReducer } from '@suite/account';
 jest.mock('@suite-common/trading', () => {
     const originalModule = jest.requireActual('@suite-common/trading');
 

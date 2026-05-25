@@ -31,10 +31,7 @@ import { isCardanoTx, isRbfBumpFeeTransaction } from '@suite-common/wallet-utils
 import { type PROTO, type StaticSessionId } from '@trezor/connect';
 import { getSynchronize } from '@trezor/utils';
 
-import {
-    selectIsSelectedAccountLoaded,
-    selectSelectedAccountKey,
-} from 'src/reducers/wallet/selectedAccountReducer';
+import { selectIsSelectedAccountLoaded, selectSelectedAccountKey } from '@suite/account';
 
 import { RBF_ERROR_ALREADY_MINED } from './replaceByFeeErrorThunk';
 import { MODULE_PREFIX } from './sendThunksConsts';
