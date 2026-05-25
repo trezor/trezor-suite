@@ -41,6 +41,7 @@ export const OutOfQuotaBanner = () => {
                         intent="info"
                         priority="secondary"
                         onClick={handleDismiss}
+                        tooltip={{ content: <Translation id="TR_DISMISS" /> }}
                     />
                 </>
             }

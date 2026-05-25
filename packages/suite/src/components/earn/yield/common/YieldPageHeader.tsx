@@ -111,6 +111,7 @@ export const YieldPageHeader = ({
                     size="large"
                     onClick={onBackClick}
                     data-testid="@account-subpage/back"
+                    tooltip={{ content: <Translation id="TR_BACK" /> }}
                 />
 
                 {account && vaultName ? (
@@ -158,6 +159,7 @@ export const YieldPageHeader = ({
                             aria-label={translationString('TR_EARN_HOW_IT_WORKS')}
                             onClick={onHowItWorksClick}
                             isDisabled={!account || !routeParams}
+                            tooltip={{ content: <Translation id="TR_EARN_HOW_IT_WORKS" /> }}
                         />
                     ) : (
                         <Button

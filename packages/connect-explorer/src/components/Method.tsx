@@ -294,6 +294,7 @@ export const Method = () => {
                                     intent="neutral"
                                     priority="secondary"
                                     onClick={() => actions.onCancelCall()}
+                                    tooltip={{ isActive: false }}
                                 />
                             )}
                         </Row>
@@ -320,6 +321,7 @@ export const Method = () => {
                                         priority="secondary"
                                         data-testid="@cancel-button"
                                         onClick={() => actions.onCancelCall()}
+                                        tooltip={{ isActive: false }}
                                     />
                                 )}
                             </Row>

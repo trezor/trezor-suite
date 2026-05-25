@@ -45,7 +45,6 @@ import {
     InfoItem,
     Link,
     Row,
-    Tooltip,
 } from '@trezor/components';
 
 import { SUITE } from 'src/actions/suite/constants';
@@ -451,24 +450,21 @@ const TokenRowBasicActions = ({
             />
 
             {type !== 'defi' && !isBelowTablet && (
-                <Tooltip
-                    content={
-                        canSwapToken ? (
+                <IconButton
+                    isDisabled={!canSwapToken}
+                    key="swap"
+                    intent="neutral"
+                    priority="secondary"
+                    icon="repeat"
+                    onClick={onSwapButtonClick}
+                    tooltip={{
+                        content: canSwapToken ? (
                             <Translation id="TR_TRADING_SWAP" />
                         ) : (
                             <Translation id="TR_TRADING_SWAP_UNAVAILABLE" />
-                        )
-                    }
-                >
-                    <IconButton
-                        isDisabled={!canSwapToken}
-                        key="swap"
-                        intent="neutral"
-                        priority="secondary"
-                        icon="repeat"
-                        onClick={onSwapButtonClick}
-                    />
-                </Tooltip>
+                        ),
+                    }}
+                />
             )}
 
             {!isBelowTablet &&
@@ -501,57 +497,55 @@ const TokenRowBasicActions = ({
                     <>
                         {type === 'defi' ? (
                             <ButtonGroup intent="neutral" priority="secondary">
-                                <Tooltip
-                                    content={<Translation id="TR_DEFI_NO_VAULT_TOOLTIP" />}
-                                    isActive={isSupplyButtonDisabled}
-                                >
-                                    <IconButton
-                                        icon="plus"
-                                        isDisabled={isSupplyButtonDisabled}
-                                        onClick={navigateToYieldSupply}
-                                    />
-                                </Tooltip>
+                                <IconButton
+                                    icon="plus"
+                                    isDisabled={isSupplyButtonDisabled}
+                                    onClick={navigateToYieldSupply}
+                                    tooltip={{
+                                        content: <Translation id="TR_DEFI_NO_VAULT_TOOLTIP" />,
+                                        isActive: isSupplyButtonDisabled,
+                                    }}
+                                />
 
-                                <Tooltip
-                                    content={<Translation id="TR_DEFI_NO_VAULT_TOOLTIP" />}
-                                    isActive={isWithdrawButtonDisabled}
-                                >
-                                    <IconButton
-                                        icon="minus"
-                                        isDisabled={isWithdrawButtonDisabled}
-                                        onClick={navigateToYieldWithdraw}
-                                    />
-                                </Tooltip>
+                                <IconButton
+                                    icon="minus"
+                                    isDisabled={isWithdrawButtonDisabled}
+                                    onClick={navigateToYieldWithdraw}
+                                    tooltip={{
+                                        content: <Translation id="TR_DEFI_NO_VAULT_TOOLTIP" />,
+                                        isActive: isWithdrawButtonDisabled,
+                                    }}
+                                />
                             </ButtonGroup>
                         ) : (
                             <ButtonGroup intent="neutral" priority="secondary">
-                                <Tooltip
-                                    content={
-                                        <Translation
-                                            id={
-                                                isDeviceCompromised
-                                                    ? 'TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED'
-                                                    : 'TR_NAV_RECEIVE'
-                                            }
-                                        />
-                                    }
-                                >
-                                    <IconButton
-                                        key="token-receive"
-                                        icon="arrowDown"
-                                        isDisabled={!canReceiveToken}
-                                        onClick={onReceiveButtonClick}
-                                    />
-                                </Tooltip>
+                                <IconButton
+                                    key="token-receive"
+                                    icon="arrowDown"
+                                    isDisabled={!canReceiveToken}
+                                    onClick={onReceiveButtonClick}
+                                    tooltip={{
+                                        content: (
+                                            <Translation
+                                                id={
+                                                    isDeviceCompromised
+                                                        ? 'TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED'
+                                                        : 'TR_NAV_RECEIVE'
+                                                }
+                                            />
+                                        ),
+                                    }}
+                                />
 
-                                <Tooltip content={<Translation id="TR_NAV_SEND" />}>
-                                    <IconButton
-                                        isDisabled={token.balance === '0'}
-                                        key="token-send"
-                                        icon="arrowUp"
-                                        onClick={onSendButtonClick}
-                                    />
-                                </Tooltip>
+                                <IconButton
+                                    isDisabled={token.balance === '0'}
+                                    key="token-send"
+                                    icon="arrowUp"
+                                    onClick={onSendButtonClick}
+                                    tooltip={{
+                                        content: <Translation id="TR_NAV_SEND" />,
+                                    }}
+                                />
                             </ButtonGroup>
                         )}
                     </>

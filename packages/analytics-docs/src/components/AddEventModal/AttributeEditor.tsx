@@ -108,19 +108,18 @@ export const AttributeEditor = ({
                     </Checkbox>
                     {canRemove && (
                         <Row flex="1" justifyContent="flex-end">
-                            <Tooltip
-                                content="Delete attribute"
-                                appendTo={document.body}
-                                zIndex={zIndices.windowControls}
-                            >
-                                <IconButton
-                                    icon="trash"
-                                    size="small"
-                                    intent="critical"
-                                    priority="secondary"
-                                    onClick={onRemove}
-                                />
-                            </Tooltip>
+                            <IconButton
+                                icon="trash"
+                                size="small"
+                                intent="critical"
+                                priority="secondary"
+                                onClick={onRemove}
+                                tooltip={{
+                                    content: 'Delete attribute',
+                                    appendTo: document.body,
+                                    zIndex: zIndices.windowControls,
+                                }}
+                            />
                         </Row>
                     )}
                 </Row>

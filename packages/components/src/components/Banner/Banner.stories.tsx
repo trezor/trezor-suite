@@ -43,14 +43,24 @@ export const Banner: StoryObj<typeof meta> = {
                 combinedButtons: (
                     <Row gap={10}>
                         <BannerComponent.Button>Button</BannerComponent.Button>
-                        <BannerComponent.IconButton icon="x" priority="secondary" />
+                        <BannerComponent.IconButton
+                            icon="x"
+                            priority="secondary"
+                            tooltip={{ content: 'Dismiss' }}
+                        />
                     </Row>
                 ),
-                iconButton: <BannerComponent.IconButton icon="x" />,
+                iconButton: (
+                    <BannerComponent.IconButton icon="x" tooltip={{ content: 'Dismiss' }} />
+                ),
                 iconButtons: (
                     <Row gap={10}>
-                        <BannerComponent.IconButton icon="x" />
-                        <BannerComponent.IconButton icon="asterisk" priority="secondary" />
+                        <BannerComponent.IconButton icon="x" tooltip={{ content: 'Dismiss' }} />
+                        <BannerComponent.IconButton
+                            icon="asterisk"
+                            priority="secondary"
+                            tooltip={{ content: 'Details' }}
+                        />
                     </Row>
                 ),
             },

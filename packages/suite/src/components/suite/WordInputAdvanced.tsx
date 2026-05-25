@@ -137,6 +137,7 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
                                 intent="neutral"
                                 priority="secondary"
                                 size="large"
+                                tooltip={{ isActive: false }}
                             />
                         ))}
                     </Grid>

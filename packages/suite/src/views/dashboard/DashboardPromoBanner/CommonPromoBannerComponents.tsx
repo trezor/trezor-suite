@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import { type FlagsState, setFlag } from '@suite/flags';
+import { Translation } from '@suite/intl';
 import { IconButton } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
 
@@ -28,6 +29,7 @@ export const CloseButton = ({ onClose, isInverse = false }: CloseButtonProps) =>
             priority="secondary"
             onClick={onClose}
             isInverse={isInverse}
+            tooltip={{ content: <Translation id="TR_CLOSE" /> }}
         />
     </CloseButtonContainer>
 );

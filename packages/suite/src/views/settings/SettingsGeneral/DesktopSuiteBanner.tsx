@@ -91,6 +91,7 @@ export const DesktopSuiteBanner = () => {
                                 intent="neutral"
                                 priority="secondary"
                                 isInverse
+                                tooltip={{ content: <Translation id="TR_CLOSE" /> }}
                             />
                         </Box>
 

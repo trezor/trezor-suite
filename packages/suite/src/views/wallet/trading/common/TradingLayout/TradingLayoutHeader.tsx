@@ -44,6 +44,7 @@ const TradingPageHeader = ({ fallbackTitle }: TradingPageHeaderProps) => {
                     size="large"
                     onClick={goToRoute(getBackRoute(currentRouteName, activeSection))}
                     data-testid="@account-subpage/back"
+                    tooltip={{ content: <Translation id="TR_BACK" /> }}
                 />
                 <BasicName>
                     <Translation id={fallbackTitle} />

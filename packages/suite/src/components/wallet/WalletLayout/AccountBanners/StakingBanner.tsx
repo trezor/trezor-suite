@@ -172,6 +172,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
                         priority="secondary"
                         icon="x"
                         onClick={closeBanner}
+                        tooltip={{ content: <Translation id="TR_DISMISS" /> }}
                     />
                 </>
             }

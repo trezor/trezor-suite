@@ -3,6 +3,7 @@ import { type JSX, useContext } from 'react';
 import styled, { css } from 'styled-components';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { H3, IconButton, Paragraph, useElevation } from '@trezor/components';
 import { type Elevation, mapElevationToBorder, zIndices } from '@trezor/theme';
@@ -83,6 +84,7 @@ export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) =>
                         intent="neutral"
                         priority="secondary"
                         data-testid="@guide/button-back"
+                        tooltip={{ content: <Translation id="TR_BACK" /> }}
                     />
 
                     {label && (
@@ -113,6 +115,7 @@ export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) =>
                 priority="secondary"
                 onClick={handleClose}
                 data-testid="@guide/button-close"
+                tooltip={{ content: <Translation id="TR_CLOSE" /> }}
             />
         </HeaderWrapper>
     );

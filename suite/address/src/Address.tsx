@@ -128,6 +128,7 @@ export const Address = ({
                                 dispatch(copyAddressToClipboard(value));
                             }
                         }}
+                        tooltip={{ isActive: false }}
                     />
                 </Row>
             }

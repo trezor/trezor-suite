@@ -57,6 +57,8 @@ type ModalProps = AllowedFrameProps & {
     bottomContent?: ReactNode;
     onBackClick?: () => void;
     onCancel?: () => void;
+    backButtonTooltip?: ReactNode;
+    closeButtonTooltip?: ReactNode;
     isBackdropCancelable?: boolean;
     alignment?: ModalAlignment;
     width?: ModalWidth;
@@ -76,6 +78,8 @@ const InnerModalBase = ({
     iconName,
     onBackClick,
     onCancel,
+    backButtonTooltip,
+    closeButtonTooltip,
     isBackdropCancelable,
     height,
     maxHeight = '85vh',
@@ -114,6 +118,11 @@ const InnerModalBase = ({
                                         icon="caretLeft"
                                         data-testid="@modal/back-button"
                                         onClick={onBackClick}
+                                        tooltip={
+                                            backButtonTooltip
+                                                ? { content: backButtonTooltip }
+                                                : { isActive: false }
+                                        }
                                     />
                                 )}
 
@@ -143,6 +152,11 @@ const InnerModalBase = ({
                                         data-testid="@modal/close-button"
                                         onClick={onCancel}
                                         margin={{ left: 'auto' }}
+                                        tooltip={
+                                            closeButtonTooltip
+                                                ? { content: closeButtonTooltip }
+                                                : { isActive: false }
+                                        }
                                     />
                                 )}
                             </ElevationUp>

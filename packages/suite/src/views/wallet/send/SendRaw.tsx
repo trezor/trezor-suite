@@ -92,7 +92,13 @@ export const SendRaw = ({ account }: SendRawProps) => {
                     </Tooltip>
                 </H3>
 
-                <IconButton intent="neutral" priority="secondary" icon="x" onClick={cancel} />
+                <IconButton
+                    intent="neutral"
+                    priority="secondary"
+                    icon="x"
+                    onClick={cancel}
+                    tooltip={{ content: <Translation id="TR_CLOSE" /> }}
+                />
             </Row>
 
             <Textarea

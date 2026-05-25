@@ -43,6 +43,7 @@ export const YieldClaimPageHeader = ({ account }: YieldClaimPageHeaderProps) => 
                     size="large"
                     onClick={onBackClick}
                     data-testid="@account-subpage/back"
+                    tooltip={{ content: <Translation id="TR_BACK" /> }}
                 />
                 {account ? (
                     <Row gap={12} alignItems="center" flex="1" overflow="hidden">

@@ -557,6 +557,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                                 // compose by first Output
                                 composeTransaction();
                             }}
+                            tooltip={{ content: <Translation id="TR_REMOVE" /> }}
                         />
                     )}
                 </Row>

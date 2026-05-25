@@ -56,6 +56,7 @@ export const ChangelogEntriesEditor = ({
                     onClick={() => onChange(entries.filter((_, i) => i !== idx))}
                     aria-label="Remove entry"
                     priority="secondary"
+                    tooltip={{ content: 'Remove entry' }}
                 />
             </Row>
         ))}

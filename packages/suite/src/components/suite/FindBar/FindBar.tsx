@@ -13,7 +13,6 @@ import {
     Paragraph,
     Row,
     TOOLTIP_DELAY_LONG,
-    Tooltip,
 } from '@trezor/components';
 import { borders, zIndices } from '@trezor/theme';
 
@@ -119,31 +118,34 @@ export const FindBarForm = ({ setIsVisible }: FindBarFormProps) => {
                     />
                     <Row gap={8} justifyContent="flex-end">
                         <ButtonGroup intent="neutral" priority="secondary" size="small">
-                            <Tooltip
-                                content={<Translation id="TR_FIND_PREV" />}
-                                delayShow={TOOLTIP_DELAY_LONG}
-                            >
-                                <IconButton icon="arrowUp" onClick={prev} />
-                            </Tooltip>
-                            <Tooltip
-                                content={<Translation id="TR_FIND_NEXT" />}
-                                delayShow={TOOLTIP_DELAY_LONG}
-                            >
-                                <IconButton icon="arrowDown" onClick={next} />
-                            </Tooltip>
-                        </ButtonGroup>
-                        <Tooltip
-                            content={<Translation id="TR_FIND_CLOSE" />}
-                            delayShow={TOOLTIP_DELAY_LONG}
-                        >
                             <IconButton
-                                icon="x"
-                                size="small"
-                                intent="neutral"
-                                priority="secondary"
-                                onClick={handleCloseFindBar}
+                                icon="arrowUp"
+                                onClick={prev}
+                                tooltip={{
+                                    content: <Translation id="TR_FIND_PREV" />,
+                                    delayShow: TOOLTIP_DELAY_LONG,
+                                }}
                             />
-                        </Tooltip>
+                            <IconButton
+                                icon="arrowDown"
+                                onClick={next}
+                                tooltip={{
+                                    content: <Translation id="TR_FIND_NEXT" />,
+                                    delayShow: TOOLTIP_DELAY_LONG,
+                                }}
+                            />
+                        </ButtonGroup>
+                        <IconButton
+                            icon="x"
+                            size="small"
+                            intent="neutral"
+                            priority="secondary"
+                            onClick={handleCloseFindBar}
+                            tooltip={{
+                                content: <Translation id="TR_FIND_CLOSE" />,
+                                delayShow: TOOLTIP_DELAY_LONG,
+                            }}
+                        />
                     </Row>
                 </Row>
             </Wrapper>

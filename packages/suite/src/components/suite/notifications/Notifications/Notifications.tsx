@@ -47,7 +47,13 @@ export const Notifications = (props: NotificationsProps) => {
                     </Tabs.Item>
                 </Tabs>
                 {props.onCancel && (
-                    <IconButton intent="neutral" priority="secondary" icon="x" onClick={onCancel} />
+                    <IconButton
+                        intent="neutral"
+                        priority="secondary"
+                        icon="x"
+                        onClick={onCancel}
+                        tooltip={{ content: <Translation id="TR_CLOSE" /> }}
+                    />
                 )}
             </Row>
             <Divider margin={{ top: 0, bottom: spacings.md }} />

@@ -1,4 +1,4 @@
-import { IconButton, Tooltip } from '@trezor/components';
+import { IconButton } from '@trezor/components';
 
 import { type ThemePreference, useTheme } from '../contexts/ThemeContext';
 
@@ -24,15 +24,14 @@ export const ThemeSwitch = () => {
     const tooltipContent = `Switch to ${PREFERENCE_TOOLTIP[nextPreference]}`;
 
     return (
-        <Tooltip content={tooltipContent}>
-            <IconButton
-                icon={PREFERENCE_ICON[preference]}
-                size="small"
-                intent="neutral"
-                priority="secondary"
-                onClick={() => setPreference(nextPreference)}
-                aria-label={tooltipContent}
-            />
-        </Tooltip>
+        <IconButton
+            icon={PREFERENCE_ICON[preference]}
+            size="small"
+            intent="neutral"
+            priority="secondary"
+            onClick={() => setPreference(nextPreference)}
+            aria-label={tooltipContent}
+            tooltip={{ content: tooltipContent }}
+        />
     );
 };

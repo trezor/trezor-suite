@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { getTorUrlIfAvailable } from '@suite/external-links';
+import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectLanguage, selectTorOnionLinks } from '@suite/settings';
 import { selectTorState } from '@suite/tor';
@@ -79,6 +80,7 @@ export const ContextMessage = ({ context }: ContextMessageProps) => {
                             onClick={dismissalConfig.onClick}
                             priority="secondary"
                             data-testid={dismissalConfig['data-testid']}
+                            tooltip={{ content: <Translation id="TR_DISMISS" /> }}
                         />
                     )}
                 </>

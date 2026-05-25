@@ -6827,6 +6827,22 @@ export const messages = defineMessages({
         defaultMessage:
             "All token and staking amounts are included in your portfolio balance, but aren't currently supported in graph view.",
     },
+    TR_GRAPH_SHOW: {
+        id: 'TR_GRAPH_SHOW',
+        defaultMessage: 'Show graph',
+    },
+    TR_GRAPH_HIDE: {
+        id: 'TR_GRAPH_HIDE',
+        defaultMessage: 'Hide graph',
+    },
+    TR_EXPAND: {
+        id: 'TR_EXPAND',
+        defaultMessage: 'Expand',
+    },
+    TR_COLLAPSE: {
+        id: 'TR_COLLAPSE',
+        defaultMessage: 'Collapse',
+    },
     METADATA_PROVIDER_NOT_FOUND_ERROR: {
         id: 'METADATA_PROVIDER_NOT_FOUND_ERROR',
         defaultMessage: 'Failed to find metadata in cloud provider.',

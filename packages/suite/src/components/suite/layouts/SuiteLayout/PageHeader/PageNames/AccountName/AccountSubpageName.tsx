@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { goto, selectSettingsBackRoute } from '@suite/router';
 import { type Account } from '@suite-common/wallet-types';
 import { IconButton, Row } from '@trezor/components';
@@ -26,6 +27,7 @@ export const AccountSubpageName = ({ selectedAccount }: AccountSubpageNameProps)
                 size="large"
                 onClick={handleBackClick}
                 data-testid="@account-subpage/back"
+                tooltip={{ content: <Translation id="TR_BACK" /> }}
             />
             <AccountDetails selectedAccount={selectedAccount} isBalanceShown />
         </Row>

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { messageSystemActions, resolveMessageContent } from '@suite-common/message-system';
 import { type Message } from '@suite-common/suite-types';
@@ -45,6 +46,7 @@ export const MessageSystemBanner = ({ message, margin, width }: MessageSystemBan
                             onClick={dismissalConfig.onClick}
                             priority="secondary"
                             data-testid={dismissalConfig['data-testid']}
+                            tooltip={{ content: <Translation id="TR_DISMISS" /> }}
                         />
                     )}
                 </>

@@ -96,6 +96,7 @@ export const EthereumData = ({ close }: EthereumDataProps) => {
                         size="small"
                         data-testid="send/close-ethereum-data"
                         onClick={handleClose}
+                        tooltip={{ content: <Translation id="TR_CLOSE" /> }}
                     />
                 </Row>
                 <Row gap={16}>

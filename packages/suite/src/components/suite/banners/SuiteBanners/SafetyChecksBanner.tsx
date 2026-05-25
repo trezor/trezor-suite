@@ -37,6 +37,7 @@ export const SafetyChecksBanner = ({ onDismiss }: SafetyChecksBannerProps) => {
                             icon="x"
                             onClick={onDismiss}
                             data-testid="@banner/safety-checks/dismiss"
+                            tooltip={{ content: <Translation id="TR_DISMISS" /> }}
                         />
                     )}
                 </>

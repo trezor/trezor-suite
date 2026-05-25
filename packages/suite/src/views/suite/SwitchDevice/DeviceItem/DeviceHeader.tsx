@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
-import { IconButton, Row, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
+import { IconButton, Row, TOOLTIP_DELAY_LONG } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
@@ -45,6 +45,7 @@ export const DeviceHeader = ({
                     intent="neutral"
                     priority="secondary"
                     data-testid="@switch-device/back-button"
+                    tooltip={{ content: <Translation id="TR_BACK" /> }}
                 />
             )}
 
@@ -58,15 +59,17 @@ export const DeviceHeader = ({
 
             <Row gap={spacings.xxs} margin={{ left: 'auto' }}>
                 {isDefaultCancelVisible && (
-                    <Tooltip delayShow={TOOLTIP_DELAY_LONG} content={<Translation id="TR_CLOSE" />}>
-                        <IconButton
-                            icon="x"
-                            intent="neutral"
-                            priority="secondary"
-                            onClick={() => onCancel()}
-                            data-testid="@switch-device/close-button"
-                        />
-                    </Tooltip>
+                    <IconButton
+                        icon="x"
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={() => onCancel()}
+                        data-testid="@switch-device/close-button"
+                        tooltip={{
+                            delayShow: TOOLTIP_DELAY_LONG,
+                            content: <Translation id="TR_CLOSE" />,
+                        }}
+                    />
                 )}
                 {actions}
             </Row>

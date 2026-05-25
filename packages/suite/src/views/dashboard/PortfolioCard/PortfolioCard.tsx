@@ -2,6 +2,7 @@ import { memo, useMemo } from 'react';
 
 import { useDevice } from '@suite/device';
 import { selectFlags, setFlag } from '@suite/flags';
+import { Translation } from '@suite/intl';
 import { networksCollection } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
@@ -144,6 +145,11 @@ export const PortfolioCard = memo(() => {
                     }),
                 )
             }
+            tooltip={{
+                content: (
+                    <Translation id={dashboardGraphHidden ? 'TR_GRAPH_SHOW' : 'TR_GRAPH_HIDE'} />
+                ),
+            }}
         />
     ) : null;
 

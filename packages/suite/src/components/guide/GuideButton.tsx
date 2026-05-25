@@ -3,7 +3,7 @@ import { FreeFocusInside } from 'react-focus-lock';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { IconButton, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
+import { IconButton, TOOLTIP_DELAY_LONG } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
@@ -27,20 +27,19 @@ export const GuideButton = () => {
     return (
         <FreeFocusInside>
             <Wrapper $isGuideOpen={isGuideOpen}>
-                <Tooltip
-                    content={<Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />}
-                    placement="top"
-                    delayShow={TOOLTIP_DELAY_LONG}
-                >
-                    <IconButton
-                        data-testid="@guide/button-open"
-                        onClick={openGuide}
-                        icon="lifebuoy"
-                        intent="neutral"
-                        priority="secondary"
-                        size="large"
-                    />
-                </Tooltip>
+                <IconButton
+                    data-testid="@guide/button-open"
+                    onClick={openGuide}
+                    icon="lifebuoy"
+                    intent="neutral"
+                    priority="secondary"
+                    size="large"
+                    tooltip={{
+                        content: <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />,
+                        placement: 'top',
+                        delayShow: TOOLTIP_DELAY_LONG,
+                    }}
+                />
             </Wrapper>
         </FreeFocusInside>
     );
