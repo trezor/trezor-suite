@@ -14,7 +14,7 @@ type Attributes = {
         | 'revoke-success'
         | 'modify-allowance'
         | 'deposit'
-        | 'simulation-modal'
+        | 'tx-simulation-modal'
         | 'success'
         | 'error'
         | 'leftPending'
@@ -44,7 +44,7 @@ export const yieldDepositEvent: EventDef<Attributes, EventType.YieldDeposit> = {
                 { version: '26.5.0', notes: 'added' },
                 {
                     version: '26.5.2',
-                    notes: 'added `approve-success`, `revoke-success`, `leftPending`, `simulation-modal`, `firmware-upgrade-needed-modal` values',
+                    notes: 'added `approve-success`, `revoke-success`, `leftPending`, `tx-simulation-modal`, `firmware-upgrade-needed-modal` values',
                 },
             ],
         },

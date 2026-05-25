@@ -114,7 +114,7 @@ export const submitYieldDepositThunk = createThunk(
             asTypedDesktopAnalytics(extra.services.analytics).report({
                 type: events.yieldDepositEvent.name,
                 payload: {
-                    type: 'simulation-modal',
+                    type: 'tx-simulation-modal',
                     action: userAcceptedTxSimulation?.value === false ? 'cancel' : 'continue',
                     networkSymbol: flowData.account.symbol,
                     vaultId: flowData.vault.id,

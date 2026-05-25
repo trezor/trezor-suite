@@ -7,7 +7,7 @@ type Attributes = {
     action: AttributeDef<EarnModalAction>;
     type: AttributeDef<
         | 'withdraw'
-        | 'simulation-modal'
+        | 'tx-simulation-modal'
         | 'success'
         | 'error'
         | 'leftPending'
@@ -33,7 +33,7 @@ export const yieldWithdrawEvent: EventDef<Attributes, EventType.YieldWithdraw> =
                 { version: '26.5.0', notes: 'added' },
                 {
                     version: '26.5.2',
-                    notes: 'added `leftPending`, `simulation-modal`, `firmware-upgrade-needed-modal` values',
+                    notes: 'added `leftPending`, `tx-simulation-modal`, `firmware-upgrade-needed-modal` values',
                 },
             ],
         },

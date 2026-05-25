@@ -72,7 +72,7 @@ export const YieldEarnProviderConsentModal = ({
             type: events.yieldNavigateEvent.name,
             payload: {
                 action: 'continue',
-                from: 'deposit-morpho-modal',
+                from: 'deposit-legal-modal',
                 to: 'deposit-form',
                 networkSymbol: account.symbol,
                 vaultId: yieldContext?.id,
@@ -87,8 +87,8 @@ export const YieldEarnProviderConsentModal = ({
             type: events.yieldNavigateEvent.name,
             payload: {
                 action: 'cancel',
-                from: 'deposit-morpho-modal',
-                to: 'deposit-morpho-modal',
+                from: 'deposit-legal-modal',
+                to: 'deposit-legal-modal',
                 networkSymbol: account.symbol,
                 vaultId: yieldContext?.id,
             },
