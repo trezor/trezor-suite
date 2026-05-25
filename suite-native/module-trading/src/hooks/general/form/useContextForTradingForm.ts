@@ -12,9 +12,9 @@ import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { getNetworkReserve } from '@suite-common/wallet-utils';
 import { useTranslate } from '@suite-native/intl';
 import { type TradingFormContext } from '@suite-native/trading-types';
+import { useMaxSpendableAmount } from '@suite-native/transaction-management';
 
 import { useConvertFormValueToBaseUnit } from '../useConvertFormValueToBaseUnit';
-import { useMaxSpendableAmount } from './useMaxSpendableAmount';
 
 export const useContextForTradingForm = (limits: TradingAmountLimitProps | undefined) => {
     const { translate } = useTranslate();

@@ -1,9 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { Keyboard } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
-import { useDispatch, useSelector } from 'react-redux';
-
-import { isFulfilled } from '@reduxjs/toolkit';
+import { useSelector } from 'react-redux';
 
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -18,9 +16,7 @@ import { HStack, Switch, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
-import { type TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
-import { calculateFeeLevelsMaxAmountThunk } from '@suite-native/transaction-management';
-import { useDebounce } from '@trezor/react-utils';
+import { useMaxSpendableAmount } from '@suite-native/transaction-management';
 import { BigNumber } from '@trezor/utils';
 
 import { useUtxoSelection } from '../hooks/useUtxoSelection';
@@ -34,8 +30,6 @@ type SendMaxSwitchProps = {
 };
 
 export const SendMaxSwitch = ({ outputIndex, accountKey, tokenContract }: SendMaxSwitchProps) => {
-    const dispatch = useDispatch();
-    const debounce = useDebounce();
     const { selectedUtxos } = useUtxoSelection(accountKey);
 
     const symbol = useSelector((state: AccountsRootState) =>
@@ -50,44 +44,34 @@ export const SendMaxSwitch = ({ outputIndex, accountKey, tokenContract }: SendMa
         isInSats: isBtcAmountInSats,
     });
 
-    const tokenBalance = useSelector((state: TokensRootState) =>
-        selectAccountTokenBalance(state, accountKey, tokenContract),
-    );
-
-    const [maxAmountValue, setMaxAmountValue] = useState<string | null>();
-
     const converters = useCryptoFiatConverters({ symbol, tokenContract });
     const { setValue, watch } = useFormContext<SendOutputsFormValues>();
 
-    const formValues = watch();
+    const [outputs, setMaxOutputId] = watch(['outputs', 'setMaxOutputId']);
 
-    const isMainnetSendMaxAvailable = !tokenContract && formValues.outputs.length === 1;
+    const formState = useMemo(
+        () =>
+            constructFormDraft({
+                formValues: {
+                    outputs,
+                    setMaxOutputId,
+                },
+                selectedUtxos,
+            }),
+        [selectedUtxos, outputs, setMaxOutputId],
+    );
+
+    const isMainnetSendMaxAvailable = !tokenContract && outputs.length === 1;
     const isSendMaxAvailable = tokenContract || isMainnetSendMaxAvailable;
 
-    const isSendMaxEnabled = formValues.setMaxOutputId === outputIndex;
+    const isSendMaxEnabled = setMaxOutputId === outputIndex;
 
-    const calculateFeeLevelsMaxAmount = useCallback(async () => {
-        const response = await debounce(() =>
-            dispatch(
-                calculateFeeLevelsMaxAmountThunk({
-                    formState: constructFormDraft({ formValues, selectedUtxos }),
-                    accountKey,
-                }),
-            ),
-        );
-
-        if (isFulfilled(response)) {
-            const { payload } = response;
-            const value = payload.normal ?? payload.low; // If not enough balance for normal fee level, use low.
-            setMaxAmountValue(value);
-        }
-    }, [dispatch, accountKey, debounce, formValues, selectedUtxos]);
-
-    useEffect(() => {
-        if (tokenBalance) setMaxAmountValue(tokenBalance);
-        else if (isMainnetSendMaxAvailable) calculateFeeLevelsMaxAmount();
-        else setMaxAmountValue(undefined);
-    }, [isMainnetSendMaxAvailable, calculateFeeLevelsMaxAmount, tokenBalance]);
+    const { maxSpendableAmount: maxAmountValue } = useMaxSpendableAmount({
+        accountKey,
+        tokenContract,
+        formState,
+    });
+    const isSendMaxVisible = isSendMaxAvailable && !!maxAmountValue;
 
     const enableSendMax = () => {
         if (!maxAmountValue) return;
@@ -123,8 +107,7 @@ export const SendMaxSwitch = ({ outputIndex, accountKey, tokenContract }: SendMa
     };
 
     return (
-        isSendMaxAvailable &&
-        maxAmountValue && (
+        isSendMaxVisible && (
             <Animated.View entering={FadeIn}>
                 <HStack alignItems="center" spacing="sp8">
                     <Text variant="body-sm">
