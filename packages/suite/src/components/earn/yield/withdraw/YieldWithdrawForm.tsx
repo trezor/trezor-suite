@@ -12,6 +12,7 @@ import { useYieldWithdrawContext } from './useYieldWithdrawContext';
 import { YieldActionStep } from '../common/YieldActionStep';
 import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
 import { YieldFlowCompleteWithdraw } from '../common/YieldFlowCompleteWithdraw';
+import { getApyBreakdown } from '../yieldFlowUtils';
 
 export const YieldWithdrawForm = () => {
     const { analytics } = useServices<DesktopAnalyticsDep>();
@@ -45,6 +46,7 @@ export const YieldWithdrawForm = () => {
     );
 
     const handleOnWithdraw = () => {
+        const apyBreakdown = getApyBreakdown(vault.rewardRate?.components);
         analytics.report({
             type: events.yieldWithdrawEvent.name,
             payload: {
@@ -52,6 +54,7 @@ export const YieldWithdrawForm = () => {
                 action: 'continue',
                 networkSymbol: token.networkSymbol,
                 vaultId: vault.id,
+                ...(apyBreakdown && { apyBreakdown }),
             },
         });
 
