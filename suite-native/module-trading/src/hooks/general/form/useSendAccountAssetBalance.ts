@@ -8,7 +8,7 @@ import {
     type TransactionsRootState,
     selectAccountFormattedBalance,
 } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import type { UseFormReturn } from '@suite-native/forms';
 import { selectAccountTokenBalance } from '@suite-native/tokens';
 import {
@@ -23,6 +23,7 @@ export const useSendAccountAssetBalance = (
     setBalance: (balance: string | undefined) => unknown,
     setSendSymbol: (currency: string | undefined) => unknown,
     setContractAddress: (contractAddress: TokenAddress | undefined) => unknown,
+    setAccountKey: (accountKey: AccountKey | undefined) => void,
 ) => {
     const { watch } = form as UseFormReturn<ExchangeFormValues | SellFormValues>;
     const [sendAccount, sendAsset] = watch(['sendAccount', 'sendAsset']);
@@ -54,5 +55,13 @@ export const useSendAccountAssetBalance = (
     useEffect(() => {
         setSendSymbol(sendAccount?.symbol);
         setContractAddress(sendAsset?.contractAddress);
-    }, [setSendSymbol, setContractAddress, sendAsset?.contractAddress, sendAccount?.symbol]);
+        setAccountKey(accountKey);
+    }, [
+        setSendSymbol,
+        setContractAddress,
+        setAccountKey,
+        sendAsset?.contractAddress,
+        sendAccount?.symbol,
+        accountKey,
+    ]);
 };

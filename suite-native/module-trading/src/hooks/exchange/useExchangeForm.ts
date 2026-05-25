@@ -249,7 +249,7 @@ const useValidations = (
 
 export const useExchangeForm = () => {
     const limits = useSelector(selectExchangeAmountLimits);
-    const { context, setBalance, setSendSymbol, setContractAddress } =
+    const { context, setBalance, setSendSymbol, setContractAddress, setAccountKey } =
         useContextForTradingForm(limits);
 
     const form = useForm<ExchangeFormValues>({
@@ -264,7 +264,7 @@ export const useExchangeForm = () => {
     useReceiveAccountChangeEffect(setValue, selectExchangeSelectedReceiveAccount);
     useAmountAndCurrencyFieldsChangeEffect(form);
     useDexQuoteApprovalInfoChangeEffect(form);
-    useSendAccountAssetBalance(form, setBalance, setSendSymbol, setContractAddress);
+    useSendAccountAssetBalance(form, setBalance, setSendSymbol, setContractAddress, setAccountKey);
     useValidations(form, limits);
     useProviderMetadataChangeEffect(watch, 'exchange');
 
