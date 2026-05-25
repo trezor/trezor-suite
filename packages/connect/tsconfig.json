@@ -27,6 +27,7 @@
         { "path": "../type-utils" },
         { "path": "../utils" },
         { "path": "../utxo-lib" },
+        { "path": "../emulator-wrapper" },
         { "path": "../eslint" },
         { "path": "../trezor-user-env-link" }
     ]

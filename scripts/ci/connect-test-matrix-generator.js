@@ -29,6 +29,11 @@ const groups = {
         includeFilter:
             'applySettings,applyFlags,getFeatures,getFirmwareHash,changeLanguage,loadDevice,telemetryGet',
     },
+    firmwareUpdate: {
+        name: 'firmware-update',
+        pattern: 'firmwareUpdate',
+        includeFilter: '',
+    },
     btcSign: {
         name: 'btc-sign',
         pattern: 'methods',
