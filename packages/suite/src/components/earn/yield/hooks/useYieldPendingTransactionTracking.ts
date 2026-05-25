@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 
 import { type AnalyticsDesktopEvents, type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { type YieldDto } from '@suite-common/earn-stablecoin-api';
 import {
     type YieldFlowType,
     type YieldPendingTransactionState,
@@ -17,6 +18,8 @@ import { type Analytics } from '@trezor/analytics-uploader';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
+
+import { getApyBreakdown } from '../yieldFlowUtils';
 
 const DEFAULT_PENDING_TX_POLL_INTERVAL_MS = 3_000;
 const MIN_PENDING_TX_POLL_INTERVAL_MS = 2_000;
@@ -59,7 +62,7 @@ const getResolutionEventType = (
 
 type ReportContext = {
     networkSymbol: string;
-    vaultId?: string;
+    vault?: YieldDto | null;
     durationMs?: number;
 };
 
@@ -82,14 +85,21 @@ const reportResolution = (
     const errorMessage = outcome === 'error' ? { errorMessage: 'on-chain-failure' } : {};
 
     if (resolution.type === 'deposit') {
+        // Only the deposit-success path (not approve-success / revoke-success / error / leftPending) carries APY context.
+        const isDepositSuccess = outcome === 'success' && resolution.successType === 'success';
+        const apyBreakdown = isDepositSuccess
+            ? getApyBreakdown(context.vault?.rewardRate?.components)
+            : '';
+
         analytics.report({
             type: events.yieldDepositEvent.name,
             payload: {
                 action: 'continue',
                 type: resolveReportedType(outcome, resolution.successType),
                 networkSymbol: context.networkSymbol,
-                vaultId: context.vaultId,
+                vaultId: context.vault?.id,
                 durationMs: context.durationMs,
+                ...(apyBreakdown && { apyBreakdown }),
                 ...errorMessage,
             },
         });
@@ -98,14 +108,18 @@ const reportResolution = (
     }
 
     if (resolution.type === 'withdraw') {
+        const apyBreakdown =
+            outcome === 'success' ? getApyBreakdown(context.vault?.rewardRate?.components) : '';
+
         analytics.report({
             type: events.yieldWithdrawEvent.name,
             payload: {
                 action: 'continue',
                 type: resolveReportedType(outcome, resolution.successType),
                 networkSymbol: context.networkSymbol,
-                vaultId: context.vaultId,
+                vaultId: context.vault?.id,
                 durationMs: context.durationMs,
+                ...(apyBreakdown && { apyBreakdown }),
                 ...errorMessage,
             },
         });
@@ -129,8 +143,8 @@ type UseYieldPendingTransactionTrackingProps = {
     account: Account;
     flowType: YieldFlowType;
     flowKey: string;
-    vaultId?: string;
     waitForMerkleToResolveClaim?: () => Promise<unknown>;
+    vault?: YieldDto | null;
 };
 
 const stablePlaceholderPromise = () => Promise.resolve();
@@ -139,8 +153,8 @@ export const useYieldPendingTransactionTracking = ({
     account,
     flowType,
     flowKey,
-    vaultId,
     waitForMerkleToResolveClaim = stablePlaceholderPromise,
+    vault,
 }: UseYieldPendingTransactionTrackingProps) => {
     const dispatch = useDispatch();
     const { analytics } = useServices<DesktopAnalyticsDep>();
@@ -174,7 +188,7 @@ export const useYieldPendingTransactionTracking = ({
         isCurrentlyPending,
         pendingTransaction,
         flowType,
-        vaultId,
+        vault,
         networkSymbol: account.symbol,
     });
 
@@ -205,7 +219,7 @@ export const useYieldPendingTransactionTracking = ({
             : undefined;
         const context: ReportContext = {
             networkSymbol: account.symbol,
-            vaultId,
+            vault,
             durationMs,
         };
 
@@ -285,7 +299,7 @@ export const useYieldPendingTransactionTracking = ({
         trackedPendingTransaction,
         analytics,
         account.symbol,
-        vaultId,
+        vault,
         waitForMerkleToResolveClaim,
     ]);
 
@@ -307,7 +321,7 @@ export const useYieldPendingTransactionTracking = ({
 
             reportResolution(analytics, resolution, 'leftPending', {
                 networkSymbol: snapshot.networkSymbol,
-                vaultId: snapshot.vaultId,
+                vault: snapshot.vault,
                 durationMs,
             });
         },
