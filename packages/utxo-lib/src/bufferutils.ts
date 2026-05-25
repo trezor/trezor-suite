@@ -5,7 +5,6 @@
 // - added `BufferWritter` "writeInt64", "writeUInt16" methods.
 // - `BufferWritter.writeUInt64` is accepting string or number.
 
-import BN from 'bn.js';
 import { Int64LE } from 'int64-buffer';
 import * as varuint from 'varuint-bitcoin';
 
@@ -41,11 +40,10 @@ export function readUInt64LEasString(buffer: Buffer, offset: number) {
     } catch {
         const aUint = buffer.readUInt32LE(offset);
         const bUint = buffer.readUInt32LE(offset + 4);
-        const m = new BN(0x100000000);
-        const a = new BN(aUint);
-        const b = new BN(bUint).mul(m);
+        const a = BigInt(aUint);
+        const b = BigInt(bUint) * 0x100000000n;
 
-        return a.add(b).toString();
+        return (a + b).toString();
     }
 }
 

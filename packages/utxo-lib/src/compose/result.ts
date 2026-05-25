@@ -1,5 +1,3 @@
-import BN from 'bn.js';
-
 import { createTransaction } from './transaction';
 import { transactionBytes } from '../coinselect/coinselectUtils';
 import {
@@ -60,11 +58,11 @@ export function getResult<
 
     const totalSpent = result.outputs.reduce((total, output, index) => {
         if (request.outputs[index]) {
-            return total.add(output.value);
+            return total + output.value;
         }
 
         return total;
-    }, new BN(result.fee));
+    }, BigInt(result.fee));
 
     const max =
         sendMaxOutputIndex >= 0 ? result.outputs[sendMaxOutputIndex].value.toString() : undefined;
