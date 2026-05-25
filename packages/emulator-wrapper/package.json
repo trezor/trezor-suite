@@ -8,12 +8,15 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "record:firmware-update": "tsx ./scripts/record-firmware-update.ts",
         "test:e2e": "tsx ./e2e/api.test.ts",
         "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@trezor/trezor-user-env-link": "workspace:*"
+        "@trezor/transport-common": "workspace:*",
+        "@trezor/trezor-user-env-link": "workspace:*",
+        "usb": "^2.17.0"
     },
     "devDependencies": {
         "tsx": "^4.21.0"

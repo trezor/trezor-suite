@@ -1,9 +1,20 @@
 import dgram from 'node:dgram';
 
+import { FirmwareInterceptor } from './firmwareInterceptor';
+import type { RecordingFixture } from './recordedFrame';
+
 export interface ProxyEndpointConfig {
     listenPort: number;
     targetHost: string;
     targetPort: number;
+}
+
+export interface FirmwareUpdateInterceptConfig {
+    fixture: RecordingFixture;
+}
+
+export interface InterceptConfig {
+    firmwareUpdate?: FirmwareUpdateInterceptConfig;
 }
 
 export interface EmulatorWrapperConfig {
@@ -11,6 +22,7 @@ export interface EmulatorWrapperConfig {
     debug?: ProxyEndpointConfig;
     listenHost?: string;
     logger?: (message: string) => void;
+    intercept?: InterceptConfig;
 }
 
 export interface ResolvedEndpoint {
@@ -56,13 +68,22 @@ export class EmulatorWrapper {
     private readonly listenHost: string;
     private readonly log: (message: string) => void;
     private readonly endpointConfigs: ProxyEndpointConfig[];
+    private readonly mainEndpointConfig: ProxyEndpointConfig;
     private endpoints: EndpointRuntime[] = [];
     private running = false;
+    private firmwareInterceptor: FirmwareInterceptor | null;
 
     constructor(config: EmulatorWrapperConfig) {
         this.listenHost = config.listenHost ?? DEFAULT_LISTEN_HOST;
         this.log = config.logger ?? (() => {});
+        this.mainEndpointConfig = config.main;
         this.endpointConfigs = [config.main, ...(config.debug ? [config.debug] : [])];
+        this.firmwareInterceptor = config.intercept?.firmwareUpdate
+            ? new FirmwareInterceptor({
+                  fixture: config.intercept.firmwareUpdate.fixture,
+                  logger: this.log,
+              })
+            : null;
     }
 
     async start() {
@@ -111,8 +132,23 @@ export class EmulatorWrapper {
             actualListenPort: config.listenPort,
         };
 
+        const isMainEndpoint = config === this.mainEndpointConfig;
         listenSocket.on('message', (message, info) => {
             runtime.lastClient = { address: info.address, port: info.port };
+            if (isMainEndpoint && this.firmwareInterceptor) {
+                const result = this.firmwareInterceptor.handleClientChunk(Buffer.from(message));
+                if (result.handled) {
+                    for (const reply of result.replyChunks) {
+                        listenSocket.send(reply, info.port, info.address, err => {
+                            if (err) {
+                                this.log(`wrapper intercept reply error: ${err.message}`);
+                            }
+                        });
+                    }
+
+                    return;
+                }
+            }
             this.log(
                 `wrapper :${config.listenPort} <- ${info.address}:${info.port} (${message.length}B) -> ${config.targetHost}:${config.targetPort}`,
             );
@@ -154,6 +190,16 @@ export class EmulatorWrapper {
             config.listenPort,
             this.listenHost,
         );
+
+        const BUFFER_SIZE = 4 * 1024 * 1024;
+        try {
+            listenSocket.setRecvBufferSize(BUFFER_SIZE);
+            listenSocket.setSendBufferSize(BUFFER_SIZE);
+            upstreamSocket.setRecvBufferSize(BUFFER_SIZE);
+            upstreamSocket.setSendBufferSize(BUFFER_SIZE);
+        } catch (e) {
+            this.log(`wrapper buffer resize warning: ${(e as Error).message}`);
+        }
 
         return runtime;
     }
