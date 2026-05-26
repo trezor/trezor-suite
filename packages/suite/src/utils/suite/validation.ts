@@ -142,7 +142,7 @@ export const validateFiatLimits =
         translationString: TranslationFunction,
         { amountLimits, localCurrency, formatter, decimals, rate }: ValidateFiatLimitsOptions,
     ) =>
-    (value: string) => {
+    (value: string, formValues?: { setMaxOutputId?: number }) => {
         if (value && amountLimits) {
             const currency = amountLimits.currency.toLowerCase();
             const cryptoAmount = fromBaseCurrencyToCryptoUnit({ fiatAmount: value, rate })?.toFixed(
@@ -168,6 +168,9 @@ export const validateFiatLimits =
                     }),
                 });
             }
+
+            // crypto field is source-of-truth in Max mode (fiat round-trip is lossy at the boundary)
+            if (formValues?.setMaxOutputId !== undefined) return;
 
             if (amountLimits.maxFiat && new BigNumber(value).gt(amountLimits.maxFiat)) {
                 if (
