@@ -1,4 +1,3 @@
-@bitcoinerlab/secp256k1
 @ethereumjs/common
 @ethereumjs/tx
 @exodus/patch-broken-hermes-typed-arrays
