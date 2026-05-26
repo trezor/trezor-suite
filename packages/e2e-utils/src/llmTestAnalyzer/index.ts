@@ -46,6 +46,28 @@ ${testSource}
 
 const hashContent = (content: string): string => createHash('sha256').update(content).digest('hex');
 
+/**
+ * Returns the git root containing `fromDir`, or falls back to `process.cwd()` when git is
+ * unavailable or `fromDir` is outside a git worktree. Using `fromDir` (derived from the test
+ * input path) rather than `process.cwd()` keeps the tool working when invoked from outside the
+ * worktree.
+ */
+const getGitRoot = (fromDir: string): string => {
+    const result = spawnSync('git', ['-C', fromDir, 'rev-parse', '--show-toplevel'], {
+        encoding: 'utf8',
+        stdio: ['pipe', 'pipe', 'pipe'],
+    });
+    if (result.error || result.status !== 0) {
+        log(
+            `Could not determine git root from ${fromDir} (${result.error?.message ?? result.stderr.trim()}); falling back to process.cwd()`,
+        );
+
+        return process.cwd();
+    }
+
+    return result.stdout.trim();
+};
+
 const requiredKeys: (keyof ClaudeAnalysis)[] = [
     'behaviors',
     'entry_points',
@@ -359,11 +381,12 @@ const main = async () => {
     }
 
     if (buildCache) {
+        const gitRoot = getGitRoot(path.dirname(testFiles[0]));
         const cache = readCache(cacheFile);
         let failed = 0;
         for (const testFile of testFiles) {
             try {
-                const relPath = path.relative(process.cwd(), testFile);
+                const relPath = path.relative(gitRoot, testFile);
                 const testSource = fs.readFileSync(testFile, 'utf8');
                 const currentHash = hashContent(testSource);
                 const cached = cache[relPath];
@@ -387,10 +410,14 @@ const main = async () => {
             output(JSON.stringify(analysis, null, 2));
         } else {
             const results: Record<string, TestAnalysis> = {};
+            const gitRoot = getGitRoot(path.dirname(testFiles[0]));
             let failed = 0;
             for (const testFile of testFiles) {
                 try {
-                    results[testFile] = await analyzeTestFile(testFile, apiKey);
+                    results[path.relative(gitRoot, testFile)] = await analyzeTestFile(
+                        testFile,
+                        apiKey,
+                    );
                 } catch (err) {
                     error(
                         `Failed to analyze ${testFile}:`,
