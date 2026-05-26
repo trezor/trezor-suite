@@ -108,7 +108,7 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
                 {!hasBitcoinOnlyFirmware(device) && (
                     <ConditionalRender container="content" minWidth={breakpoints.tablet}>
                         <HeaderActionButton
-                            icon="arrowsLeftRight"
+                            icon="repeat"
                             onClick={onSwapClick}
                             data-testid="@wallet/menu/wallet-trading-exchange"
                             intent="neutral"

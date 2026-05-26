@@ -116,7 +116,7 @@ export const HeaderDropdown = ({
                 });
             },
             title: <Translation id="TR_TRADING_SWAP" />,
-            icon: 'arrowsLeftRight',
+            icon: 'repeat',
             isHidden: isSwapVisible || isTradingDisabled,
         },
     ];

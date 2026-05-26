@@ -18,6 +18,11 @@ type NavigationItem = {
 
 const navigationItems: NavigationItem[] = [
     {
+        id: 'wallet-trading-exchange',
+        icon: 'repeat',
+        translationId: 'TR_TRADING_SWAP',
+    },
+    {
         id: 'wallet-trading-buy',
         icon: 'plus',
         translationId: 'TR_NAV_BUY',
@@ -26,11 +31,6 @@ const navigationItems: NavigationItem[] = [
         id: 'wallet-trading-sell',
         icon: 'minus',
         translationId: 'TR_NAV_SELL',
-    },
-    {
-        id: 'wallet-trading-exchange',
-        icon: 'arrowsLeftRight',
-        translationId: 'TR_TRADING_SWAP',
     },
     {
         id: 'wallet-trading-concierge',

@@ -372,7 +372,7 @@ const TokenRowBasicActions = ({
                     {
                         label: <Translation id="TR_TRADING_SWAP" />,
                         'data-testid': '@trading/tokens/swap-button',
-                        icon: 'arrowsLeftRight',
+                        icon: 'repeat',
                         onClick: onSwapButtonClick,
                         isHidden: type === 'defi' ? false : !isBelowTablet,
                         isDisabled: !canSwapToken,
@@ -465,7 +465,7 @@ const TokenRowBasicActions = ({
                         key="swap"
                         intent="neutral"
                         priority="secondary"
-                        icon="arrowsLeftRight"
+                        icon="repeat"
                         onClick={onSwapButtonClick}
                     />
                 </Tooltip>
