@@ -22,6 +22,21 @@ class CustomEnvironment extends NodeEnvironment {
                 throw warning;
             }
         });
+
+        // console.error trap: a real console.error during a test is almost always either an
+        // expected error path that the test forgot to assert on, or a missing mock that hides
+        // a real production issue. Tests that legitimately want to silence the error must
+        // jest.spyOn(console, 'error').mockImplementation(...) — the spy replaces this wrap.
+        const originalError = this.global.console.error;
+        this.global.console.error = (...args) => {
+            originalError.apply(this.global.console, args);
+            throw new Error(
+                `Unexpected console.error during test. If this is expected, mock it with ` +
+                    `jest.spyOn(console, 'error').mockImplementation(() => {}). Args: ${args
+                        .map(a => (a instanceof Error ? a.message : String(a)))
+                        .join(' ')}`,
+            );
+        };
     }
 
     async teardown() {
