@@ -342,11 +342,7 @@ const setDeviceState = (
     if (!device.features) return;
 
     const affectedDevice = draft.devices.filter(
-        d =>
-            d.features &&
-            d.connected &&
-            d.instance === device.instance &&
-            (d.id === device.id || (d.path.length > 0 && d.path === device.path)),
+        d => d.features && d.connected && d.instance === device.instance && d.id === device.id,
     );
 
     if (affectedDevice.length > 1) {
@@ -354,6 +350,8 @@ const setDeviceState = (
 
         return;
     }
+
+    if (affectedDevice.length === 0) return;
 
     affectedDevice[0].state = state;
     affectedDevice[0].useEmptyPassphrase = useEmptyPassphrase;

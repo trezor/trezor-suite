@@ -3,7 +3,7 @@ import {
     deviceActions,
     deviceReducerInitialState,
 } from '@suite-common/device';
-import { type TrezorDevice } from '@suite-common/suite-types';
+import { type AcquiredDevice, type TrezorDevice } from '@suite-common/suite-types';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { DEVICE } from '@trezor/connect';
 import { type DeepPartial } from '@trezor/type-utils';
@@ -1114,6 +1114,46 @@ const remember: Fixture<ReturnType<typeof deviceActions.setRememberDevice>>[] = 
     },
 ];
 
+const setDeviceState: Fixture<ReturnType<typeof deviceActions.setDeviceState>>[] = [
+    {
+        description:
+            'does not assign state to a device that only matches by path when device IDs differ',
+        // Regression: setDeviceState used path as a fallback match when device.id didn't match.
+        // A stale dispatch for Device A (path '1') would incorrectly set state on Device B
+        // (different ID, same path '1') if Device A had already disconnected.
+        initialState: {
+            ...deviceReducerInitialState,
+            devices: [
+                // Device A: remembered but disconnected, path cleared to ''
+                mockSuiteDevice(
+                    { connected: false, available: false, path: '', remember: true },
+                    { device_id: 'old-device-id' },
+                ),
+                // Device B: connected via the same physical path as Device A was
+                mockSuiteDevice({ connected: true, available: true, path: '1' }),
+            ],
+        },
+        actions: [
+            // Stale setDeviceState for Device A (id='old-device-id', path='1') dispatched
+            // after Device A disconnected and Device B connected on path '1'.
+            deviceActions.setDeviceState({
+                device: mockSuiteDevice(
+                    { connected: true, path: '1' },
+                    { device_id: 'old-device-id' },
+                ) as AcquiredDevice,
+                state: { staticSessionId: '1stTestnet@old-device-id:0' },
+                useEmptyPassphrase: true,
+            }),
+        ],
+        result: [
+            // Device A: still no state (it's disconnected, nothing should match)
+            { connected: false, features: { device_id: 'old-device-id' }, state: undefined },
+            // Device B: must not receive Device A's state via the path fallback
+            { connected: true, features: { device_id: 'device-id' }, state: undefined },
+        ],
+    },
+];
+
 export default {
     connect,
     disconnect,
@@ -1121,4 +1161,5 @@ export default {
     selectDevice,
     forget,
     remember,
+    setDeviceState,
 };
