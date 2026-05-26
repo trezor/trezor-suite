@@ -73,7 +73,9 @@ export type TradingExchangeStep =
     | 'sign-and-send'
     | 'webview'
     | 'approval-preview'
-    | 'revoke-preview';
+    | 'revoke-preview'
+    | 'approval-confirming'
+    | 'revoke-confirming';
 
 export type TradingSellAction = 'continue' | 'cancel' | 'retry' | 'visit';
 export type TradingSellStep =
