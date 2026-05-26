@@ -368,7 +368,9 @@ export const CardanoSignMessageInit = Type.Object(
 );
 
 export type CardanoSignTxFinished = Static<typeof CardanoSignTxFinished>;
-export const CardanoSignTxFinished = Type.Object({}, { $id: 'CardanoSignTxFinished' });
+export const CardanoSignTxFinished = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'CardanoSignTxFinished',
+});
 
 export type CardanoSignTxInit = Static<typeof CardanoSignTxInit>;
 export const CardanoSignTxInit = Type.Object(
@@ -463,7 +465,9 @@ export const CardanoTxCollateralInput = Type.Object(
 );
 
 export type CardanoTxHostAck = Static<typeof CardanoTxHostAck>;
-export const CardanoTxHostAck = Type.Object({}, { $id: 'CardanoTxHostAck' });
+export const CardanoTxHostAck = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'CardanoTxHostAck',
+});
 
 export type CardanoTxInlineDatumChunk = Static<typeof CardanoTxInlineDatumChunk>;
 export const CardanoTxInlineDatumChunk = Type.Object(
@@ -483,7 +487,9 @@ export const CardanoTxInput = Type.Object(
 );
 
 export type CardanoTxItemAck = Static<typeof CardanoTxItemAck>;
-export const CardanoTxItemAck = Type.Object({}, { $id: 'CardanoTxItemAck' });
+export const CardanoTxItemAck = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'CardanoTxItemAck',
+});
 
 export type CardanoTxMint = Static<typeof CardanoTxMint>;
 export const CardanoTxMint = Type.Object(

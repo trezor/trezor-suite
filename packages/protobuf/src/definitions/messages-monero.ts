@@ -114,7 +114,9 @@ export const MoneroGetWatchKey = Type.Object(
 );
 
 export type MoneroKeyImageExportInitAck = Static<typeof MoneroKeyImageExportInitAck>;
-export const MoneroKeyImageExportInitAck = Type.Object({}, { $id: 'MoneroKeyImageExportInitAck' });
+export const MoneroKeyImageExportInitAck = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'MoneroKeyImageExportInitAck',
+});
 
 export type MoneroSubAddressIndicesList = Static<typeof MoneroSubAddressIndicesList>;
 export const MoneroSubAddressIndicesList = Type.Object(
@@ -146,10 +148,9 @@ export const MoneroKeyImageSyncFinalAck = Type.Object(
 );
 
 export type MoneroKeyImageSyncFinalRequest = Static<typeof MoneroKeyImageSyncFinalRequest>;
-export const MoneroKeyImageSyncFinalRequest = Type.Object(
-    {},
-    { $id: 'MoneroKeyImageSyncFinalRequest' },
-);
+export const MoneroKeyImageSyncFinalRequest = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'MoneroKeyImageSyncFinalRequest',
+});
 
 export type MoneroKeyImageSyncStepAck = Static<typeof MoneroKeyImageSyncStepAck>;
 export const MoneroKeyImageSyncStepAck = Type.Object(
@@ -181,16 +182,19 @@ export const MoneroKeyImageSyncStepRequest = Type.Object(
 );
 
 export type MoneroLiveRefreshFinalAck = Static<typeof MoneroLiveRefreshFinalAck>;
-export const MoneroLiveRefreshFinalAck = Type.Object({}, { $id: 'MoneroLiveRefreshFinalAck' });
+export const MoneroLiveRefreshFinalAck = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'MoneroLiveRefreshFinalAck',
+});
 
 export type MoneroLiveRefreshFinalRequest = Static<typeof MoneroLiveRefreshFinalRequest>;
-export const MoneroLiveRefreshFinalRequest = Type.Object(
-    {},
-    { $id: 'MoneroLiveRefreshFinalRequest' },
-);
+export const MoneroLiveRefreshFinalRequest = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'MoneroLiveRefreshFinalRequest',
+});
 
 export type MoneroLiveRefreshStartAck = Static<typeof MoneroLiveRefreshStartAck>;
-export const MoneroLiveRefreshStartAck = Type.Object({}, { $id: 'MoneroLiveRefreshStartAck' });
+export const MoneroLiveRefreshStartAck = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'MoneroLiveRefreshStartAck',
+});
 
 export type MoneroLiveRefreshStartRequest = Static<typeof MoneroLiveRefreshStartRequest>;
 export const MoneroLiveRefreshStartRequest = Type.Object(
@@ -286,10 +290,9 @@ export const MoneroTransactionAllInputsSetAck = Type.Object(
 export type MoneroTransactionAllInputsSetRequest = Static<
     typeof MoneroTransactionAllInputsSetRequest
 >;
-export const MoneroTransactionAllInputsSetRequest = Type.Object(
-    {},
-    { $id: 'MoneroTransactionAllInputsSetRequest' },
-);
+export const MoneroTransactionAllInputsSetRequest = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'MoneroTransactionAllInputsSetRequest',
+});
 
 export type MoneroTransactionAllOutSetAck = Static<typeof MoneroTransactionAllOutSetAck>;
 export const MoneroTransactionAllOutSetAck = Type.Object(
@@ -358,10 +361,9 @@ export const MoneroTransactionFinalAck = Type.Object(
 );
 
 export type MoneroTransactionFinalRequest = Static<typeof MoneroTransactionFinalRequest>;
-export const MoneroTransactionFinalRequest = Type.Object(
-    {},
-    { $id: 'MoneroTransactionFinalRequest' },
-);
+export const MoneroTransactionFinalRequest = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'MoneroTransactionFinalRequest',
+});
 
 export type MoneroTransactionInitAck = Static<typeof MoneroTransactionInitAck>;
 export const MoneroTransactionInitAck = Type.Object(
@@ -384,10 +386,9 @@ export const MoneroTransactionInitRequest = Type.Object(
 );
 
 export type MoneroTransactionInputViniAck = Static<typeof MoneroTransactionInputViniAck>;
-export const MoneroTransactionInputViniAck = Type.Object(
-    {},
-    { $id: 'MoneroTransactionInputViniAck' },
-);
+export const MoneroTransactionInputViniAck = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'MoneroTransactionInputViniAck',
+});
 
 export type MoneroTransactionSourceEntry = Static<typeof MoneroTransactionSourceEntry>;
 export const MoneroTransactionSourceEntry = Type.Object(

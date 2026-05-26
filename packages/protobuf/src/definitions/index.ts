@@ -108,6 +108,8 @@ import {
 } from './messages-eos';
 import {
     EthereumAddress,
+    EthereumDefinitionAck,
+    EthereumDefinitionRequest,
     EthereumGetAddress,
     EthereumGetPublicKey,
     EthereumMessageSignature,
@@ -143,6 +145,8 @@ import {
     ApplySettings,
     AuthenticateDevice,
     AuthenticityProof,
+    AuthenticityProofChunk,
+    AuthenticityProofSizes,
     BackupDevice,
     Cancel,
     CancelAuthorization,
@@ -160,6 +164,7 @@ import {
     EntropyRequest,
     Features,
     FirmwareHash,
+    GetAuthenticityProofChunk,
     GetEntropy,
     GetFeatures,
     GetFirmwareHash,
@@ -426,6 +431,9 @@ export const MessageType = Type.Object(
         FirmwareHash,
         AuthenticateDevice,
         AuthenticityProof,
+        AuthenticityProofSizes,
+        GetAuthenticityProofChunk,
+        AuthenticityProofChunk,
         WipeDevice,
         LoadDevice,
         ResetDevice,
@@ -479,6 +487,8 @@ export const MessageType = Type.Object(
         EthereumSignTxEIP1559,
         EthereumTxRequest,
         EthereumTxAck,
+        EthereumDefinitionRequest,
+        EthereumDefinitionAck,
         EthereumSignMessage,
         EthereumMessageSignature,
         EthereumVerifyMessage,
@@ -670,7 +680,8 @@ export type WireInMessage =
     | 'Cancel'
     | 'GetEntropy'
     | 'GetFirmwareHash'
-    | 'AuthenticityProof'
+    | 'AuthenticateDevice'
+    | 'GetAuthenticityProofChunk'
     | 'WipeDevice'
     | 'LoadDevice'
     | 'ResetDevice'
@@ -698,6 +709,7 @@ export type WireInMessage =
     | 'EthereumSignTx'
     | 'EthereumSignTxEIP1559'
     | 'EthereumTxAck'
+    | 'EthereumDefinitionAck'
     | 'EthereumSignMessage'
     | 'EthereumVerifyMessage'
     | 'EthereumSignTypedHash'
@@ -788,7 +800,9 @@ export type WireOutMessage =
     | 'DataChunkRequest'
     | 'Entropy'
     | 'FirmwareHash'
-    | 'AuthenticateDevice'
+    | 'AuthenticityProof'
+    | 'AuthenticityProofSizes'
+    | 'AuthenticityProofChunk'
     | 'EntropyRequest'
     | 'EntropyCheckReady'
     | 'WordRequest'
@@ -803,6 +817,7 @@ export type WireOutMessage =
     | 'EthereumPublicKey'
     | 'EthereumAddress'
     | 'EthereumTxRequest'
+    | 'EthereumDefinitionRequest'
     | 'EthereumMessageSignature'
     | 'EthereumTypedDataSignature'
     | 'EthereumTypedDataStructRequest'

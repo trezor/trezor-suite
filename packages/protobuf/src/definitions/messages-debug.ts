@@ -57,7 +57,9 @@ export const DebugLinkGcInfo = Type.Object(
 );
 
 export type DebugLinkGetGcInfo = Static<typeof DebugLinkGetGcInfo>;
-export const DebugLinkGetGcInfo = Type.Object({}, { $id: 'DebugLinkGetGcInfo' });
+export const DebugLinkGetGcInfo = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'DebugLinkGetGcInfo',
+});
 
 export type DebugLinkGetPairingInfo = Static<typeof DebugLinkGetPairingInfo>;
 export const DebugLinkGetPairingInfo = Type.Object(
@@ -70,7 +72,9 @@ export const DebugLinkGetPairingInfo = Type.Object(
 );
 
 export type DebugLinkN4W1Connected = Static<typeof DebugLinkN4W1Connected>;
-export const DebugLinkN4W1Connected = Type.Object({}, { $id: 'DebugLinkN4W1Connected' });
+export const DebugLinkN4W1Connected = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'DebugLinkN4W1Connected',
+});
 
 export type DebugLinkN4W1Read = Static<typeof DebugLinkN4W1Read>;
 export const DebugLinkN4W1Read = Type.Object(
@@ -98,7 +102,9 @@ export const DebugLinkN4W1Write = Type.Object(
 );
 
 export type DebugLinkOptigaSetSecMax = Static<typeof DebugLinkOptigaSetSecMax>;
-export const DebugLinkOptigaSetSecMax = Type.Object({}, { $id: 'DebugLinkOptigaSetSecMax' });
+export const DebugLinkOptigaSetSecMax = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'DebugLinkOptigaSetSecMax',
+});
 
 export type DebugLinkPairingInfo = Static<typeof DebugLinkPairingInfo>;
 export const DebugLinkPairingInfo = Type.Object(
@@ -113,7 +119,9 @@ export const DebugLinkPairingInfo = Type.Object(
 );
 
 export type DebugLinkResetDebugEvents = Static<typeof DebugLinkResetDebugEvents>;
-export const DebugLinkResetDebugEvents = Type.Object({}, { $id: 'DebugLinkResetDebugEvents' });
+export const DebugLinkResetDebugEvents = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'DebugLinkResetDebugEvents',
+});
 
 export type DebugLinkSetBatteryState = Static<typeof DebugLinkSetBatteryState>;
 export const DebugLinkSetBatteryState = Type.Object(

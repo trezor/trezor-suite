@@ -79,7 +79,7 @@ export const PinMatrixRequestType = Type.KeyOfEnum(Enum_PinMatrixRequestType, {
 });
 
 export type ButtonAck = Static<typeof ButtonAck>;
-export const ButtonAck = Type.Object({}, { $id: 'ButtonAck' });
+export const ButtonAck = Type.Record(Type.Never(), Type.Never(), { $id: 'ButtonAck' });
 
 export type ButtonRequest = Static<typeof ButtonRequest>;
 export const ButtonRequest = Type.Object(
@@ -104,10 +104,9 @@ export const CoinPurchaseMemo = Type.Object(
 );
 
 export type Deprecated_PassphraseStateAck = Static<typeof Deprecated_PassphraseStateAck>;
-export const Deprecated_PassphraseStateAck = Type.Object(
-    {},
-    { $id: 'Deprecated_PassphraseStateAck' },
-);
+export const Deprecated_PassphraseStateAck = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'Deprecated_PassphraseStateAck',
+});
 
 export type Deprecated_PassphraseStateRequest = Static<typeof Deprecated_PassphraseStateRequest>;
 export const Deprecated_PassphraseStateRequest = Type.Object(

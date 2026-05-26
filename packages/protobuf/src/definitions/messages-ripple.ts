@@ -5,6 +5,14 @@ import { type Static, Type } from '@trezor/schema-utils';
 
 import { PaymentRequest } from './messages-common';
 
+export type RippleAccountDelete = Static<typeof RippleAccountDelete>;
+export const RippleAccountDelete = Type.Object(
+    {
+        destination: Type.String(),
+    },
+    { $id: 'RippleAccountDelete' },
+);
+
 export type RippleAddress = Static<typeof RippleAddress>;
 export const RippleAddress = Type.Object(
     {
@@ -51,9 +59,10 @@ export const RippleSignTx = Type.Object(
         flags: Type.Optional(Type.Number()),
         sequence: Type.Number(),
         last_ledger_sequence: Type.Optional(Type.Number()),
-        payment: RipplePayment,
+        payment: Type.Optional(RipplePayment),
         chunkify: Type.Optional(Type.Boolean()),
         payment_req: Type.Optional(PaymentRequest),
+        account_delete: Type.Optional(RippleAccountDelete),
     },
     { $id: 'RippleSignTx' },
 );

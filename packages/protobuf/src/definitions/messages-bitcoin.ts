@@ -339,7 +339,7 @@ export const TxInputType = Type.Union(
         Type.Intersect([
             CommonTxInputType,
             Type.Object({
-                address_n: Type.Optional(Type.Undefined()),
+                address_n: Type.Optional(Type.Never()),
                 script_type: Type.Literal('EXTERNAL'),
                 script_pubkey: Type.String(),
             }),
@@ -373,7 +373,7 @@ export const TxOutputType = Type.Union(
     [
         Type.Object({
             address: Type.String(),
-            address_n: Type.Optional(Type.Undefined()),
+            address_n: Type.Optional(Type.Never()),
             script_type: Type.Optional(Type.Literal('PAYTOADDRESS')),
             amount: Type.Uint(),
             multisig: Type.Optional(MultisigRedeemScriptType),
@@ -382,7 +382,7 @@ export const TxOutputType = Type.Union(
             payment_req_index: Type.Optional(Type.Number()),
         }),
         Type.Object({
-            address: Type.Optional(Type.Undefined()),
+            address: Type.Optional(Type.Never()),
             address_n: Type.Array(Type.Number()),
             script_type: Type.Optional(ChangeOutputScriptType),
             amount: Type.Uint(),
@@ -392,8 +392,8 @@ export const TxOutputType = Type.Union(
             payment_req_index: Type.Optional(Type.Number()),
         }),
         Type.Object({
-            address: Type.Optional(Type.Undefined()),
-            address_n: Type.Optional(Type.Undefined()),
+            address: Type.Optional(Type.Never()),
+            address_n: Type.Optional(Type.Never()),
             amount: Type.Union([Type.Literal('0'), Type.Literal(0)]),
             op_return_data: Type.String(),
             script_type: Type.Literal('PAYTOOPRETURN'),

@@ -29,8 +29,27 @@ export const EthereumDefinitions = Type.Object(
     {
         encoded_network: Type.Optional(Type.ArrayBuffer()),
         encoded_token: Type.Optional(Type.ArrayBuffer()),
+        encoded_display_format: Type.Optional(Type.String()),
     },
     { $id: 'EthereumDefinitions' },
+);
+
+export type EthereumDefinitionAck = Static<typeof EthereumDefinitionAck>;
+export const EthereumDefinitionAck = Type.Object(
+    {
+        definitions: Type.Optional(EthereumDefinitions),
+    },
+    { $id: 'EthereumDefinitionAck' },
+);
+
+export type EthereumDefinitionRequest = Static<typeof EthereumDefinitionRequest>;
+export const EthereumDefinitionRequest = Type.Object(
+    {
+        chain_id: Type.Number(),
+        token_address: Type.String(),
+        func_sig: Type.Optional(Type.String()),
+    },
+    { $id: 'EthereumDefinitionRequest' },
 );
 
 export type EthereumGetAddress = Static<typeof EthereumGetAddress>;
@@ -98,6 +117,7 @@ export const EthereumSignTx = Type.Object(
         definitions: Type.Optional(EthereumDefinitions),
         chunkify: Type.Optional(Type.Boolean()),
         payment_req: Type.Optional(PaymentRequest),
+        supports_definition_request: Type.Optional(Type.Boolean()),
     },
     { $id: 'EthereumSignTx' },
 );
@@ -119,6 +139,7 @@ export const EthereumSignTxEIP1559 = Type.Object(
         definitions: Type.Optional(EthereumDefinitions),
         chunkify: Type.Optional(Type.Boolean()),
         payment_req: Type.Optional(PaymentRequest),
+        supports_definition_request: Type.Optional(Type.Boolean()),
     },
     { $id: 'EthereumSignTxEIP1559' },
 );

@@ -268,4 +268,6 @@ export const StellarSignTx = Type.Object(
 );
 
 export type StellarTxOpRequest = Static<typeof StellarTxOpRequest>;
-export const StellarTxOpRequest = Type.Object({}, { $id: 'StellarTxOpRequest' });
+export const StellarTxOpRequest = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'StellarTxOpRequest',
+});
