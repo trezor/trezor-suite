@@ -1,13 +1,9 @@
-import { A, F, G, pipe } from '@mobily/ts-belt';
+import { A, G, pipe } from '@mobily/ts-belt';
 
 import { calculateAssetsPercentage } from '@suite-common/assets';
 import type { DeviceRootState } from '@suite-common/device';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
-import {
-    type TokenDefinitionsRootState,
-    getSimpleCoinDefinitionsByNetwork,
-    selectTokenDefinitions,
-} from '@suite-common/token-definitions';
+import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -17,14 +13,9 @@ import {
     selectCurrentFiatRates,
     selectDeviceAccounts,
     selectVisibleDeviceAccounts,
-    selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getAccountFiatBalance, isStakingSymbol } from '@suite-common/wallet-utils';
-import {
-    getAccountListSections,
-    sortAccountsByNetworksAndAccountTypes,
-} from '@suite-native/accounts';
 import {
     type NativeStakingRootState,
     getAccountCryptoBalanceWithStaking,
@@ -78,30 +69,6 @@ export const selectDeviceNetworksWithAssets = createMemoizedSelector(
                 return aOrder - bOrder;
             }),
         ),
-);
-
-export const selectBottomSheetDeviceNetworkItems = createMemoizedSelector(
-    [
-        selectVisibleDeviceAccountsByNetworkSymbol,
-        selectTokenDefinitions,
-        (_state, symbol: NetworkSymbol | null) => symbol,
-    ],
-    (accounts, tokenDefinitions, symbol) => {
-        if (G.isNull(symbol)) return [];
-
-        return pipe(
-            accounts,
-            sortAccountsByNetworksAndAccountTypes,
-            A.map(account =>
-                getAccountListSections(
-                    account,
-                    getSimpleCoinDefinitionsByNetwork(tokenDefinitions, symbol),
-                ),
-            ),
-            A.flat,
-            F.toMutable,
-        );
-    },
 );
 
 const selectDeviceAssetsWithBalances = createMemoizedSelector(

@@ -51,7 +51,6 @@
         { "path": "../labeling" },
         { "path": "../navigation" },
         { "path": "../staking" },
-        { "path": "../toasts" },
         { "path": "../tokens" },
         { "path": "../../packages/connect" },
         {

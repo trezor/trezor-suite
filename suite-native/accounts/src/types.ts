@@ -11,20 +11,12 @@ export type OnSelectAccount = (params: {
     account: Account;
     // if clicked item is staking item
     isStaking?: boolean;
-    // if account has staking
-    hasStaking?: boolean;
     tokenAddress?: TokenAddress;
     tokenSymbol?: TokenSymbol;
     hasAnyKnownTokens: boolean;
 }) => void;
 
-export type AccountSelectBottomSheetSection = (
-    | {
-          type: 'sectionTitle';
-          account: Account;
-          hasAnyKnownTokens: boolean;
-          fiatBalance?: string;
-      }
+export type AccountListSection = (
     | {
           type: 'account';
           account: Account;

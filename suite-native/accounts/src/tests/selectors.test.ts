@@ -314,8 +314,8 @@ describe('getAccountListSections', () => {
 
         const sections = getAccountListSections(mockAccount, mockTokenDefinitions);
 
-        // Should have section title, account section, and two token sections (for Token1 and Token3)
-        expect(sections).toHaveLength(4);
+        // Should have account section and two token sections (for Token1 and Token3)
+        expect(sections).toHaveLength(3);
 
         // Verify token sections only include tokens with positive balance
         const tokenSections = sections.filter(section => section.type === 'token');
@@ -333,10 +333,9 @@ describe('getAccountListSections', () => {
 
         const sections = getAccountListSections(accountWithoutTokens, mockTokenDefinitions);
 
-        // Should only have section title and account section
-        expect(sections).toHaveLength(2);
-        expect(sections[0]?.type).toBe('sectionTitle');
-        expect(sections[1]?.type).toBe('account');
+        // Should only have account section
+        expect(sections).toHaveLength(1);
+        expect(sections[0]?.type).toBe('account');
     });
 
     it('should handle account with only zero balance tokens', () => {
@@ -364,10 +363,9 @@ describe('getAccountListSections', () => {
 
         const sections = getAccountListSections(accountWithZeroBalanceTokens, mockTokenDefinitions);
 
-        // Should only have section title and account section
-        expect(sections).toHaveLength(2);
-        expect(sections[0]?.type).toBe('sectionTitle');
-        expect(sections[1]?.type).toBe('account');
+        // Should only have account section
+        expect(sections).toHaveLength(1);
+        expect(sections[0]?.type).toBe('account');
     });
 
     it('should handle account with staking balance', () => {
@@ -375,12 +373,11 @@ describe('getAccountListSections', () => {
 
         const sections = getAccountListSections(mockAccount, mockTokenDefinitions);
 
-        // Should have section title, account section, staking section, and two token sections
-        expect(sections).toHaveLength(5);
-        expect(sections[0]?.type).toBe('sectionTitle');
-        expect(sections[1]?.type).toBe('account');
-        expect(sections[2]?.type).toBe('staking');
+        // Should have account section, staking section, and two token sections
+        expect(sections).toHaveLength(4);
+        expect(sections[0]?.type).toBe('account');
+        expect(sections[1]?.type).toBe('staking');
+        expect(sections[2]?.type).toBe('token');
         expect(sections[3]?.type).toBe('token');
-        expect(sections[4]?.type).toBe('token');
     });
 });

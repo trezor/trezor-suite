@@ -10,7 +10,7 @@ import {
     AccountsListTokenItem,
     type NativeAccountsRootState,
     type OnSelectAccount,
-    selectActiveTokensTabSections,
+    selectAccountListSectionsWithZeroBalanceGroup,
 } from '@suite-native/accounts';
 import { useStakingDetailNavigation } from '@suite-native/module-earn';
 
@@ -23,7 +23,7 @@ type ActiveTokensTabProps = {
     isStakingDisplayed: boolean;
 };
 
-type SectionItem = ReturnType<typeof selectActiveTokensTabSections>[number];
+type SectionItem = ReturnType<typeof selectAccountListSectionsWithZeroBalanceGroup>[number];
 type ActiveTokenListItem = SectionItem & { isLast: boolean };
 
 const getItemKey = (item: ActiveTokenListItem): string => {
@@ -47,7 +47,7 @@ export const ActiveTokensTab = ({
     const { navigateToStakingDetail } = useStakingDetailNavigation();
 
     const activeTokensSections = useSelector((state: NativeAccountsRootState) =>
-        selectActiveTokensTabSections(state, accountKey),
+        selectAccountListSectionsWithZeroBalanceGroup(state, accountKey),
     );
 
     const handleSelectAccount: OnSelectAccount = useCallback(
