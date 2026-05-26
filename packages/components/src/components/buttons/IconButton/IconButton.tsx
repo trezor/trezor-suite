@@ -54,11 +54,15 @@ const Container = styled.button<ButtonContainerProps>`
     ${withFrameProps}
 `;
 
+export type IconButtonTooltipProps = Omit<UnmanagedTooltipProps, 'children' | 'content'> & {
+    content?: UnmanagedTooltipProps['content'];
+};
+
 export type IconButtonProps = CommonButtonProps &
     AllowedIconButtonFrameProps & {
         size?: ButtonSize;
         icon: IconName;
-        tooltip: Partial<UnmanagedTooltipProps>;
+        tooltip: IconButtonTooltipProps;
         'data-testid'?: string;
         'aria-label'?: string;
     };
@@ -93,7 +97,7 @@ export const IconButton = ({
             {...buttonProps}
             {...frameProps}
         >
-            <Tooltip delayShow={TOOLTIP_DELAY_NORMAL} {...(tooltip as UnmanagedTooltipProps)}>
+            <Tooltip delayShow={TOOLTIP_DELAY_NORMAL} content={null} {...tooltip}>
                 <Box padding={mapSizeToPadding(size)}>
                     {props.isLoading ? (
                         <Spinner
