@@ -1083,7 +1083,7 @@ export const messages = defineMessages({
         id: 'TR_TRADING_SUBDIVISION_REQUIRED_FOR_OFFERS',
     },
     TR_TRADING_OFFER_LOOKING: {
-        defaultMessage: 'Searching for your best offer',
+        defaultMessage: 'Searching for your best offer...',
         id: 'TR_TRADING_OFFER_LOOKING',
     },
     TR_TRADING_FEES_INCLUDED: {
@@ -3489,7 +3489,7 @@ export const messages = defineMessages({
         id: 'TR_TX_FEE',
     },
     TR_TX_FEE_COUNT: {
-        defaultMessage: '{count, plural, =0 {Fee} =1 {Fee} other {{count}x Fee}}',
+        defaultMessage: '{count, plural, =0 {Fee} =1 {Fee} other {{count}× Fees}}',
         id: 'TR_TX_FEE_COUNT',
     },
     TR_TX_FEE_INCLUDING_RENT: {
@@ -3649,7 +3649,7 @@ export const messages = defineMessages({
         id: 'TR_YOUR_NEW_VERSION',
     },
     TR_YOUR_NEW_VERSION_IS_DOWNLOADING: {
-        defaultMessage: 'Version {version} is downloading.',
+        defaultMessage: 'Version {version} is downloading...',
         id: 'TR_YOUR_NEW_VERSION_IS_DOWNLOADING',
     },
     TR_YOUR_NEW_VERSION_IS_READY: {
@@ -3698,7 +3698,7 @@ export const messages = defineMessages({
     },
     TR_PIN_MISMATCH_HEADING: {
         id: 'TR_PIN_MISMATCH_HEADING',
-        defaultMessage: "The PINs you've entered don't match",
+        defaultMessage: "The PINs you have entered don't match",
     },
     TR_DEBUG_SETTINGS: {
         id: 'TR_DEBUG_SETTINGS',
@@ -4970,7 +4970,7 @@ export const messages = defineMessages({
     },
     TR_DOWNLOADING: {
         id: 'TR_DOWNLOADING',
-        defaultMessage: 'Downloading',
+        defaultMessage: 'Downloading...',
         description: 'Indicating that app is downloading data from external source',
     },
     TR_VERIFYING_SIGNATURE: {
@@ -6498,7 +6498,7 @@ export const messages = defineMessages({
     },
     TR_LOADING_TRANSACTION_DETAILS: {
         id: 'TR_LOADING_TRANSACTION_DETAILS',
-        defaultMessage: 'Loading transaction details',
+        defaultMessage: 'Loading transaction details...',
         description: 'Tooltip over a spinner icon in Coin control section',
     },
     TR_AMOUNT_TOO_SMALL_FOR_COINJOIN: {
@@ -8907,7 +8907,7 @@ export const messages = defineMessages({
     },
     TR_LOADING_FUNDS: {
         id: 'TR_LOADING_FUNDS',
-        defaultMessage: 'Loading Funds...',
+        defaultMessage: 'Loading assets...',
     },
     TR_LOADING_ACCOUNTS: {
         id: 'TR_LOADING_ACCOUNTS',
@@ -9659,7 +9659,7 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_ALLOWANCE_FETCH_FAILED: {
         id: 'TR_EARN_YIELD_ALLOWANCE_FETCH_FAILED',
-        defaultMessage: 'Failed to fetch approved amount.',
+        defaultMessage: 'Failed to fetch the approved amount.',
     },
     TR_EARN_YIELD_SUPPLY_COMPLETE: {
         id: 'TR_EARN_YIELD_SUPPLY_COMPLETE',
@@ -9769,7 +9769,7 @@ export const messages = defineMessages({
     TR_EARN_YIELD_LOAD_ERROR_DESCRIPTION: {
         id: 'TR_EARN_YIELD_LOAD_ERROR_DESCRIPTION',
         defaultMessage:
-            'This may be due to a network or connectivity issue. Check your connection or try again later.',
+            'This may be due to a network or connectivity issue. Check your connection and try again.',
     },
     TR_EARN_YIELD_ERROR_TRANSACTION_FAILED: {
         id: 'TR_EARN_YIELD_ERROR_TRANSACTION_FAILED',
@@ -10163,11 +10163,11 @@ export const messages = defineMessages({
     TR_EARN_YIELD_NUTSHELL_CLAIM_REWARDS: {
         id: 'TR_EARN_YIELD_NUTSHELL_CLAIM_REWARDS',
         defaultMessage:
-            'You’ll earn {rewardsSymbol} as rewards. They may only be offered for a limited time, but once earned, you can claim them in the Earn tab.',
+            "You'll earn {rewardsSymbol} as rewards. They may only be offered for a limited time, but once earned, you can claim them in the Earn tab.",
     },
     TR_EARN_YIELD_APPROVE_SPENDING_TRANSACTION: {
         id: 'TR_EARN_YIELD_APPROVE_SPENDING_TRANSACTION',
-        defaultMessage: 'Set {supplySymbol} spending limit',
+        defaultMessage: 'Approve spending transaction',
     },
     TR_EARN_SIGN_SUPPLYING_TRANSACTION: {
         id: 'TR_EARN_SIGN_SUPPLYING_TRANSACTION',
@@ -10195,7 +10195,7 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK: {
         id: 'TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK',
-        defaultMessage: 'Earns rewards with each confirmed block',
+        defaultMessage: 'Earn rewards with each confirmed block',
     },
     TR_EARN_YIELD_RECEIVE_IN_ACCOUNT: {
         id: 'TR_EARN_YIELD_RECEIVE_IN_ACCOUNT',
