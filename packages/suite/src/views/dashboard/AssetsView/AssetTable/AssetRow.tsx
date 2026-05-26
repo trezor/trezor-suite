@@ -23,13 +23,13 @@ import {
 import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
+import { AssetActionButton } from '../AssetActionButton';
 import { AssetCoinLogo } from '../AssetCoinLogo';
 import { AssetCoinName } from '../AssetCoinName';
+import { handleTokensAndStakingData } from '../assetsViewUtils';
 import { AssetStakingRow } from './AssetStakingRow';
 import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
 import { AssetTokenRow } from './AssetTokenRow';
-import { AssetActionButton } from '../AssetActionButton';
-import { handleTokensAndStakingData } from '../assetsViewUtils';
 
 export interface AssetTableRowProps {
     network: Network;
@@ -211,7 +211,7 @@ export const AssetRow = memo(
                                 icon="arrowRight"
                                 intent="neutral"
                                 priority="secondary"
-                                tooltip={{ isActive: false }}
+                                tooltip={{ content: <Translation id="TR_SHOW_MORE" /> }}
                             />
                         </Row>
                     </Table.Cell>
