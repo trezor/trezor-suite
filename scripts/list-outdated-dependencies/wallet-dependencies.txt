@@ -49,7 +49,6 @@ reselect
 toml
 varuint-bitcoin
 wif
-web3-utils
 worker-loader
 xrpl
 yup
