@@ -15,7 +15,7 @@ import { TradingExchangeMinimumReceivedInfoItem } from 'src/views/wallet/trading
 import { TradingExchangeRateInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingExchangeRateInfoItem';
 import { TradingExchangeSlippageInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingExchangeSlippageInfoItem';
 import { TradingInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoItem';
-import { TradingUtilsKyc } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsKyc';
+import { TradingUtilsProviderKyc } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsProviderKyc';
 import { formatCryptoAmountAsAmount } from 'src/views/wallet/trading/common/formatCryptoAmountAsAmount';
 
 type TradingDetailExchangeSidebarProps = {
@@ -104,7 +104,7 @@ export const TradingDetailExchangeSidebar = ({
 
                     {!trade.isDex && <TradingExchangeRateInfoItem rateType={rateType} />}
                 </Column>
-                <TradingUtilsKyc exchange={trade.exchange} providers={providers} />
+                <TradingUtilsProviderKyc exchange={trade.exchange} providers={providers} />
             </Column>
         </Card>
     );

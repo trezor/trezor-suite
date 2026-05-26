@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { Banner, Icon, Row, Text, Tooltip } from '@trezor/components';
+import { exhaustive } from '@trezor/type-utils';
 
 import {
     KYC_DEX,
@@ -11,49 +12,40 @@ import {
     KYC_REQUIRED,
     KYC_YES_REFUND,
 } from 'src/constants/wallet/trading/kyc';
-import { type TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
 
 const TooltipText = styled.span`
     text-decoration: underline dotted;
 `;
 
-interface TradingUtilsProviderProps {
-    exchange?: string;
-    providers?: TradingExchangeProvidersInfoProps;
+interface TradingUtilsKycProps {
+    kycType?: ExchangeKYCType;
     isForComparator?: boolean;
-    isDex?: boolean;
 }
 
-const getKycPolicy = (kycPolicyType: ExchangeKYCType | undefined) => {
-    if (kycPolicyType === KYC_REQUIRED) {
-        return <Translation id="TR_TRADING_KYC_REQUIRED" />;
-    }
-
-    if (kycPolicyType === KYC_NO_REFUND) {
-        return <Translation id="TR_TRADING_KYC_NO_REFUND" />;
-    }
-
-    if (kycPolicyType === KYC_YES_REFUND) {
-        return <Translation id="TR_TRADING_KYC_YES_REFUND" />;
-    }
-
-    if (kycPolicyType === KYC_NO_KYC) {
-        return <Translation id="TR_TRADING_KYC_NO_KYC" />;
+const getKycPolicyTranslation = (kycType: ExchangeKYCType) => {
+    switch (kycType) {
+        case KYC_REQUIRED:
+            return <Translation id="TR_TRADING_KYC_REQUIRED" />;
+        case KYC_NO_REFUND:
+            return <Translation id="TR_TRADING_KYC_NO_REFUND" />;
+        case KYC_YES_REFUND:
+            return <Translation id="TR_TRADING_KYC_YES_REFUND" />;
+        case KYC_NO_KYC:
+            return <Translation id="TR_TRADING_KYC_NO_KYC" />;
+        case KYC_DEX:
+            return null;
+        default:
+            return exhaustive(kycType);
     }
 };
 
-export const TradingUtilsKyc = ({
-    exchange,
-    providers,
-    isForComparator,
-    isDex,
-}: TradingUtilsProviderProps) => {
-    const provider = providers && exchange ? providers[exchange] : null;
-    const kycPolicyType = provider?.kycPolicyType;
-    const kycPolicyTranslation = getKycPolicy(kycPolicyType);
+export const TradingUtilsKyc = ({ kycType, isForComparator }: TradingUtilsKycProps) => {
+    if (!kycType) {
+        return null;
+    }
 
     if (isForComparator) {
-        if (isDex) {
+        if (kycType === KYC_DEX) {
             return (
                 <Row alignItems="center" gap={4}>
                     <Icon
@@ -69,13 +61,16 @@ export const TradingUtilsKyc = ({
             );
         }
 
-        if (!kycPolicyType || !kycPolicyTranslation) {
+        const kycPolicyTranslation = getKycPolicyTranslation(kycType);
+
+        if (!kycPolicyTranslation) {
             return null;
         }
 
-        const kycTitle = [KYC_NO_KYC, KYC_DEX].includes(kycPolicyType)
-            ? 'TR_TRADING_KYC_POLICY_NEVER_REQUIRED'
-            : 'TR_TRADING_KYC_POLICY';
+        const kycTitle =
+            kycType === KYC_NO_KYC
+                ? 'TR_TRADING_KYC_POLICY_NEVER_REQUIRED'
+                : 'TR_TRADING_KYC_POLICY';
 
         return (
             <Tooltip content={kycPolicyTranslation} placement="bottom">
@@ -91,9 +86,11 @@ export const TradingUtilsKyc = ({
         );
     }
 
-    if (!kycPolicyType || !kycPolicyTranslation) {
+    const kycPolicyTranslation = getKycPolicyTranslation(kycType);
+
+    if (!kycPolicyTranslation) {
         return null;
     }
 
-    return <Banner icon description={kycPolicyTranslation} />;
+    return <Banner intent="neutral" icon="identificationCard" description={kycPolicyTranslation} />;
 };

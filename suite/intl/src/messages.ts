@@ -1127,6 +1127,18 @@ export const messages = defineMessages({
         id: 'TR_TRADING_SELL',
         defaultMessage: 'Sell',
     },
+    TR_TRADING_BUY_VIA: {
+        id: 'TR_TRADING_BUY_VIA',
+        defaultMessage: 'Buy via {providerName}',
+    },
+    TR_TRADING_SELL_VIA: {
+        id: 'TR_TRADING_SELL_VIA',
+        defaultMessage: 'Sell via {providerName}',
+    },
+    TR_TRADING_KYC_REQUIRED_WARNING: {
+        id: 'TR_TRADING_KYC_REQUIRED_WARNING',
+        defaultMessage: 'Identity verification will be required.',
+    },
     TR_TRADING_RATE: {
         id: 'TR_TRADING_RATE',
         defaultMessage: 'Rate',

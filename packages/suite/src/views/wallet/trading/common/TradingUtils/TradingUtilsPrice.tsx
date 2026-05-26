@@ -23,7 +23,7 @@ import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
 import { TradingFiatAmount } from 'src/views/wallet/trading/common/TradingFiatAmount';
 
-import { TradingUtilsKyc } from './TradingUtilsKyc';
+import { TradingUtilsProviderKyc } from './TradingUtilsProviderKyc';
 
 const PriceValue = styled.div`
     ${typography['headline-sm']}
@@ -157,7 +157,7 @@ export const TradingUtilsPrice = ({
                         </PriceValue>
                         {exchangeComparatorProps && (
                             <Row margin={{ top: spacings.xs }}>
-                                <TradingUtilsKyc
+                                <TradingUtilsProviderKyc
                                     exchange={exchangeComparatorProps.exchange}
                                     providers={exchangeComparatorProps.providers}
                                     isForComparator

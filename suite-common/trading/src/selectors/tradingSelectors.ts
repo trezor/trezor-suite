@@ -316,6 +316,12 @@ export const selectTradingProviderKycPolicy = (
     return undefined;
 };
 
+export const selectTradingProviderCompanyName = (
+    state: TradingRootState,
+    name: string | undefined,
+    type: TradingType,
+) => selectTradingProviderByNameAndTradeType(state, name, type)?.companyName ?? name;
+
 export const selectTradingBuyQuotesRequest = (state: TradingRootState) =>
     state.wallet.trading.buy.quotesRequest;
 

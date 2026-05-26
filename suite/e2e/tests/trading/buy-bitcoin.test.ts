@@ -1,12 +1,19 @@
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
-import { buyQuotesBTC, buyTradeBTC, invityEndpoint, invityRequest } from '../../fixtures/invity';
+import {
+    buyQuotesBTC,
+    buyTradeBTC,
+    getCompanyNameFromList,
+    invityEndpoint,
+    invityRequest,
+} from '../../fixtures/invity';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
 const fiatAmount = buyQuotesBTC[0].fiatStringAmount;
 const bestBuyProvider = capitalizeFirstLetter(buyQuotesBTC[0].exchange);
+const bestBuyProviderCompanyName = getCompanyNameFromList(buyQuotesBTC[0].exchange, 'buyList');
 const bestBuyCryptoAmount = `${buyQuotesBTC[0].receiveStringAmount} BTC`;
 const formattedFiatAmount = `CZK ${localizeNumber(fiatAmount, 'en-US', 2)}`;
 const { receiveAddress } = buyTradeBTC.trade;
@@ -57,6 +64,14 @@ test.describe('Trading - Buy BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =
                     await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'btc');
                 },
             });
+        });
+
+        await test.step('Confirm button shows provider name and KYC warning is visible', async () => {
+            await expect(tradingPage.buyBestOfferButton).toHaveTranslation('TR_TRADING_BUY_VIA', {
+                values: { providerName: bestBuyProviderCompanyName },
+            });
+            await expect(tradingPage.buyBestOfferButton.locator('svg')).toBeVisible();
+            await expect(tradingPage.kycWarning).toBeVisible();
         });
 
         await page.clock.install();

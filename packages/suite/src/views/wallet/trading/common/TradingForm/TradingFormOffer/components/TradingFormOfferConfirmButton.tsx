@@ -1,5 +1,5 @@
 import { Translation, type TranslationKey } from '@suite/intl';
-import { Button } from '@trezor/components';
+import { Button, type IconName } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
@@ -9,6 +9,8 @@ interface TradingFormOfferConfirmButtonProps {
     isDisabled: boolean;
     isLoading: boolean;
     translationId: TranslationKey;
+    translationValues?: Record<string, string>;
+    iconRight?: IconName;
     testId: string;
 }
 
@@ -17,6 +19,8 @@ export const TradingFormOfferConfirmButton = ({
     isDisabled,
     isLoading,
     translationId,
+    translationValues,
+    iconRight,
     testId,
 }: TradingFormOfferConfirmButtonProps) => {
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint(breakpoints.tablet);
@@ -32,8 +36,9 @@ export const TradingFormOfferConfirmButton = ({
             data-testid={testId}
             minWidth={160}
             width={isContentBelowBreakpoint ? undefined : '100%'}
+            iconRight={iconRight}
         >
-            <Translation id={translationId} />
+            <Translation id={translationId} values={translationValues} />
         </Button>
     );
 };
