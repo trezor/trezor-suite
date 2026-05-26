@@ -29,6 +29,7 @@ import {
     getMevProtectedTxData,
     getPendingAccount,
     hasNetworkFeatures,
+    isAllowanceUnlimited,
     isCardanoTx,
     isEvmApprovalTxByTextSignature,
     isEvmYieldTxByTextSignature,
@@ -364,11 +365,11 @@ export const pushSendFormTransactionThunk = createThunk<
 
             if (evmApprovalData && token) {
                 const amountString = evmApprovalData.amount.toString();
-                const isInfiniteApproval = isMaxAllowance(amountString);
                 const amount = subunitsToUnits({
                     value: asAmountSubunit(new BigNumber(amountString)),
                     decimals: token.decimals,
                 }).toString();
+                const isInfiniteApproval = isAllowanceUnlimited(amount, token.decimals);
 
                 dispatch(
                     notificationsActions.addToast({
@@ -539,7 +540,7 @@ export const signTransactionThunk = createThunk<
     ) => {
         const device = selectSelectedDevice(getState());
 
-        if (!device || !precomposedTransaction || precomposedTransaction.type !== 'final')
+        if (!device || precomposedTransaction?.type !== 'final')
             return rejectWithValue({
                 error: 'sign-transaction-failed',
                 message: 'Invalid input data.',

@@ -74,7 +74,6 @@ const CardContainer = styled.div<CardContainerProps>`
     display: flex;
     flex-direction: column;
     border-radius: ${borders.radii.md};
-    overflow: hidden;
     cursor: ${({ $isClickable }) => ($isClickable ? 'pointer' : 'default')};
     overflow: ${({ $overflow }) => ($overflow ? $overflow : 'hidden')};
     height: 100%;
