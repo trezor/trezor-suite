@@ -9,14 +9,12 @@ import {
     type TradingTransaction,
     selectDeviceTradingTradesOrderedByDate,
 } from '@suite-common/trading';
-import { Translation } from '@suite-native/intl';
-import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { useBottomSheetControls } from '@suite-native/trading-atoms';
 import { selectTradeToBeOpened, tradingActions } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { TradeDetailSheet } from '../components/TradeDetailSheet/TradeDetailSheet';
-import { TradeHistoryListItem } from '../components/TradeHistoryListItem/TradeHistoryListItem';
+import { TradeDetailSheet } from './TradeDetailSheet/TradeDetailSheet';
+import { TradeHistoryListItem } from './TradeHistoryListItem/TradeHistoryListItem';
 
 const contentContainerStyle = prepareNativeStyle<{
     insetBottom: number;
@@ -26,7 +24,7 @@ const contentContainerStyle = prepareNativeStyle<{
 
 const keyExtractor = (item: TradingTransaction) => `${item.key ?? ''}`;
 
-export const TradingHistoryScreen = () => {
+export const TradingHistory = () => {
     const { applyStyle } = useNativeStyles();
     const dispatch = useDispatch();
     const { bottom: insetBottom } = useSafeAreaInsets();
@@ -62,14 +60,7 @@ export const TradingHistoryScreen = () => {
     );
 
     return (
-        <Screen
-            header={
-                <ScreenHeader
-                    title={<Translation id="moduleTrading.tradeHistory.list.title" />}
-                    closeActionType="back"
-                />
-            }
-        >
+        <>
             <FlashList
                 contentContainerStyle={applyStyle(contentContainerStyle, {
                     insetBottom,
@@ -83,6 +74,6 @@ export const TradingHistoryScreen = () => {
                 orderId={detailOrderId}
                 onDismiss={hideSheet}
             />
-        </Screen>
+        </>
     );
 };
