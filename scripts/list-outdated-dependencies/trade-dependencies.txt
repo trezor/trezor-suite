@@ -60,7 +60,6 @@ react
 react-dom
 react-error-boundary
 react-native
-react-native-get-random-values
 react-native-launch-arguments
 react-native-performance
 react-native-permissions
