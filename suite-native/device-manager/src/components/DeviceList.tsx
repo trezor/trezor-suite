@@ -48,16 +48,9 @@ export const DeviceList = ({ onSelectDevice }: DeviceListProps) => {
             exiting={FadeOutUp.duration(ANIMATION_DURATION)}
         >
             <Box>
-                {notSelectedInstancelessDevices.map(
-                    d =>
-                        d.state && (
-                            <DeviceItem
-                                key={d.state.staticSessionId}
-                                deviceState={d.state}
-                                onPress={() => onSelectDevice(d)}
-                            />
-                        ),
-                )}
+                {notSelectedInstancelessDevices.map(d => (
+                    <DeviceItem key={d.id ?? d.path} device={d} onPress={() => onSelectDevice(d)} />
+                ))}
             </Box>
         </AnimatedBox>
     );

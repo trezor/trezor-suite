@@ -3,7 +3,6 @@ import React from 'react';
 import {
     type DeviceRootState,
     PORTFOLIO_TRACKER_DEVICE_ID,
-    selectDeviceByState,
     selectDeviceLabelOrNameById,
     selectSelectedDevice,
 } from '@suite-common/device';
@@ -27,7 +26,7 @@ const DEVICE_SWITCHER_ITEM_CONTENT_HEIGHT_LARGE = 56;
 export type DeviceItemContentVariant = 'simple' | 'walletDetail';
 
 export type DeviceItemContentProps = {
-    deviceState?: TrezorDevice['state'];
+    device?: TrezorDevice;
     headerTextVariant?: NativeTypographyStyle;
     variant?: DeviceItemContentVariant;
     isCompact?: boolean;
@@ -53,7 +52,7 @@ export const itemStyle = prepareNativeStyle<{ isCompact: boolean }>((utils, { is
 
 export const DeviceItemContent = React.memo(
     ({
-        deviceState,
+        device,
         headerTextVariant = 'body-md',
         variant = 'simple',
         isCompact = true,
@@ -62,9 +61,8 @@ export const DeviceItemContent = React.memo(
         const { translate } = useTranslate();
         const { applyStyle } = useNativeStyles();
 
-        const device = useSelectorDeepComparison((state: DeviceRootState) => {
-            // select only what is needed to avoid unnecessary rerenders
-            const d = selectDeviceByState(state, deviceState) ?? selectSelectedDevice(state);
+        const deviceItem = useSelectorDeepComparison((state: DeviceRootState) => {
+            const d = device ?? selectSelectedDevice(state);
 
             if (!d) return null;
 
@@ -77,26 +75,27 @@ export const DeviceItemContent = React.memo(
                 walletNumber: d.walletNumber,
                 isDeviceInBootloaderMode: !state && selectShouldFactoryResetBeVisible(state),
                 useEmptyPassphrase: d.useEmptyPassphrase,
+                staticSessionId: d.state?.staticSessionId,
             };
         });
 
-        const isPortfolioTrackerDevice = device?.id === PORTFOLIO_TRACKER_DEVICE_ID;
+        const isPortfolioTrackerDevice = deviceItem?.id === PORTFOLIO_TRACKER_DEVICE_ID;
 
         const deviceHeader =
-            (isPortfolioTrackerDevice ? device?.name : device?.label) ??
+            (isPortfolioTrackerDevice ? deviceItem?.name : deviceItem?.label) ??
             translate('deviceManager.defaultHeader');
 
         // todo: only makes sense device is already authorized (has state)
-        const fallbackLabel = device?.useEmptyPassphrase ? (
+        const fallbackLabel = deviceItem?.useEmptyPassphrase ? (
             <Translation id="deviceManager.wallet.standard" />
         ) : (
             <Translation
                 id="deviceManager.wallet.defaultPassphrase"
-                values={{ index: device?.walletNumber }}
+                values={{ index: deviceItem?.walletNumber }}
             />
         );
 
-        if (!device) {
+        if (!deviceItem) {
             return null;
         }
 
@@ -108,29 +107,29 @@ export const DeviceItemContent = React.memo(
                         : DEVICE_SWITCHER_ITEM_CONTENT_HEIGHT_LARGE,
                 })}
             >
-                <DeviceItemIcon deviceId={device.id} deviceModel={device.model} />
+                <DeviceItemIcon deviceId={deviceItem.id} deviceModel={deviceItem.model} />
                 <Box style={applyStyle(itemStyle, { isCompact })}>
                     {variant === 'simple' ? (
                         <SimpleDeviceItemContent
-                            isConnected={device.isConnected}
+                            isConnected={deviceItem.isConnected}
                             headerTextVariant={headerTextVariant}
                             header={deviceHeader}
-                            isDeviceInBootloader={device.isDeviceInBootloaderMode}
+                            isDeviceInBootloader={deviceItem.isDeviceInBootloaderMode}
                             isPortfolioTrackerDevice={isPortfolioTrackerDevice}
                             isSubHeaderForceHidden={isSubHeaderForceHidden}
                         />
                     ) : (
                         <WalletDetailDeviceItemContent
                             headerTextVariant={headerTextVariant}
-                            isConnected={device.isConnected}
+                            isConnected={deviceItem.isConnected}
                             header={deviceHeader}
                             subHeader={
                                 <WalletLabel
-                                    deviceStaticSessionId={deviceState?.staticSessionId}
+                                    deviceStaticSessionId={deviceItem.staticSessionId}
                                     fallbackLabel={fallbackLabel}
                                 />
                             }
-                            isDeviceInBootloader={device.isDeviceInBootloaderMode}
+                            isDeviceInBootloader={deviceItem.isDeviceInBootloaderMode}
                             isPortfolioTrackerDevice={isPortfolioTrackerDevice}
                         />
                     )}
