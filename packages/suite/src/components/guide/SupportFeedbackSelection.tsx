@@ -6,7 +6,7 @@ import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { isDevEnv } from '@suite-common/suite-utils';
-import { Icon, Image, Paragraph } from '@trezor/components';
+import { Icon, Paragraph } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { borders, transitions, typography } from '@trezor/theme';
@@ -134,7 +134,7 @@ export const SupportFeedbackSelection = () => {
                         $hasBackground
                         data-testid="@guide/feedback/bug"
                     >
-                        <Image image="RECOVERY_2x" width="48px" height="48px" />
+                        <Icon name="lifebuoy" size={40} />
                         <Label>
                             <LabelHeadline>
                                 <Translation id="TR_BUG" />
@@ -153,7 +153,7 @@ export const SupportFeedbackSelection = () => {
                         $hasBackground
                         data-testid="@guide/feedback/suggestion"
                     >
-                        <Image image="UNDERSTAND_2x" width="48px" height="48px" />
+                        <Icon name="megaphone" size={40} />
                         <Label>
                             <LabelHeadline>
                                 <Translation id="TR_SUGGESTION" />

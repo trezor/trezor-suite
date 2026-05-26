@@ -21,8 +21,6 @@ export const IMAGES = {
     MORPHO_LOGO: 'morpho-logo.svg',
     NFC_TAG: 'nfc-tag.png',
     PLAY_STORE: 'play-store.svg',
-    RECOVERY_2x: 'recovery@2x.png',
-    STROKE_BORDER: 'stroke-border.svg',
     TOUCH: 'touch.webp',
     TRADING_SUCCESS: 'trading-success.svg',
     TRADING_WAITING: 'trading-waiting.svg',
@@ -71,7 +69,4 @@ export const IMAGES = {
     TREZOR_UNKNOWN_2x: 'trezor-unknown@2x.webp',
     TREZOR_UNKNOWN_LARGE: 'trezor-unknown.webp',
     TREZOR_UNKNOWN_LARGE_2x: 'trezor-unknown@2x.webp',
-    UNDERSTAND_2x: 'understand@2x.png',
-    UNI_ERROR: 'uni-error.svg',
-    UNI_WARNING: 'uni-warning.svg',
 } as const;
