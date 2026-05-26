@@ -8,7 +8,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { DeviceItemContent } from './DeviceItemContent';
 
 type DeviceItemProps = {
-    deviceState: NonNullable<TrezorDevice['state']>;
+    device: TrezorDevice;
     onPress: () => void;
 };
 
@@ -19,13 +19,13 @@ const deviceItemWrapperStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp16,
 }));
 
-export const DeviceItem = ({ deviceState, onPress }: DeviceItemProps) => {
+export const DeviceItem = ({ device, onPress }: DeviceItemProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
         <Pressable onPress={onPress}>
             <HStack style={applyStyle(deviceItemWrapperStyle)}>
-                <DeviceItemContent deviceState={deviceState} />
+                <DeviceItemContent device={device} />
                 <Icon name="caretRight" color="contentPrimary" size="mediumLarge" />
             </HStack>
         </Pressable>
