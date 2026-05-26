@@ -94,6 +94,10 @@ export const ConnectPermissions = () => {
                         <Dropdown
                             data-testid={`@settings/connect-apps/${index}/dropdown`}
                             placement={{ position: 'bottom', alignment: 'end' }}
+                            tooltip={{
+                                content: <Translation id="TR_SHOW_MORE" />,
+                                placement: 'left',
+                            }}
                             items={[
                                 ...(isDebugModeActive
                                     ? [

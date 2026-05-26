@@ -130,6 +130,7 @@ export const HeaderDropdown = ({
                     placement={{ position: 'bottom', alignment: 'start' }}
                     isDisabled={isDisabled}
                     data-testid="@wallet/menu/extra-dropdown"
+                    tooltip={{ content: <Translation id="TR_SHOW_MORE" />, placement: 'left' }}
                     items={visibleAdditionalActions.map<DropdownMenuItemProps>(item => ({
                         key: item.id,
                         onClick: isDisabled ? undefined : item.callback,

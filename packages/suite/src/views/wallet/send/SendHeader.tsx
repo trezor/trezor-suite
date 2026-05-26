@@ -117,6 +117,7 @@ export const SendHeader = () => {
                 <Dropdown
                     placement={{ position: 'bottom', alignment: 'start' }}
                     data-testid="@send/header-dropdown"
+                    tooltip={{ content: <Translation id="TR_SHOW_MORE" />, placement: 'left' }}
                     items={options}
                 />
             </WalletSubpageHeading>
