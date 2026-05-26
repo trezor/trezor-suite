@@ -44,15 +44,15 @@ export const preloadFeeInfoThunk = createThunk(
                 const feeInfo: FeeInfo = {
                     blockHeight: 0,
                     ...payload,
-                    levels: sortLevels(
-                        payload.levels
-                            // hack to hide "low" fee option
-                            // (we do not want to change the connect API as it is a potentially breaking change)
-                            .filter(level => level.label !== 'low'),
-                    ).map(level => ({
-                        ...level,
-                        label: level.label || 'normal',
-                    })),
+                    levels: payload.levels
+                        // hack to hide "low" fee option
+                        // (we do not want to change the connect API as it is a potentially breaking change)
+                        .filter(level => level.label !== 'low')
+                        .sort(sortLevels)
+                        .map(level => ({
+                            ...level,
+                            label: level.label || 'normal',
+                        })),
                 };
                 partial[network.symbol] = {
                     status: 'preloaded',

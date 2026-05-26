@@ -89,17 +89,17 @@ export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
         tokens: [],
     };
     const feeInfo = {
-        levels: sortLevels(
-            fees
-                .filter(level => level.fee != '0')
-                .filter(level => level.name !== 'low') // this option is hidden in Suite
-                .map(level => ({
-                    // level.name is just a string instead of enum
-                    label: level.name as any,
-                    feePerUnit: level.feePerByte!,
-                    blocks: level.blocks!,
-                })),
-        ),
+        levels: fees
+            .filter(level => level.fee != '0')
+            .filter(level => level.name !== 'low') // this option is hidden in Suite
+            .map(level => ({
+                // level.name is just a string instead of enum
+                label: level.name as any,
+                feePerUnit: level.feePerByte!,
+                blocks: level.blocks!,
+            }))
+            .sort(sortLevels),
+
         minFee,
         maxFee,
         minPriorityFee: -1,
