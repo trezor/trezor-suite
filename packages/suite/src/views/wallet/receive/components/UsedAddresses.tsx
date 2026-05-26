@@ -7,7 +7,7 @@ import {
     selectIsLegacyLabelingVisible,
     selectLabelingDataForSelectedAccount,
 } from '@suite/metadata';
-import { showAddressThunk } from '@suite/receive';
+import { showAddressThunk, useReceiveDisabled } from '@suite/receive';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
@@ -21,7 +21,6 @@ import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
 import { type AppState } from 'src/types/suite';
 
 const DEFAULT_LIMIT = 10;

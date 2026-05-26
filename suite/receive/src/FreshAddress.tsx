@@ -1,5 +1,10 @@
 import { useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { type AnyAction } from 'redux';
+import { type ThunkDispatch } from 'redux-thunk';
+
+import { type SelectedAccountRootState } from '@suite/account';
 import { Address } from '@suite/address';
 import { ReadMoreLink } from '@suite/external-links';
 import { Translation, useTranslation } from '@suite/intl';
@@ -8,11 +13,17 @@ import {
     selectIsLegacyLabelingVisible,
     selectLabelingDataForSelectedAccount,
 } from '@suite/metadata';
-import { showAddressThunk } from '@suite/receive';
 import { getFirstFreshAddress } from '@suite-common/address';
+import { type DeviceRootState } from '@suite-common/device';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import { getNetwork } from '@suite-common/wallet-config';
-import { type AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type WalletSettingsRootState,
+    selectIsAccountUtxoBased,
+} from '@suite-common/wallet-core';
+import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
 import {
     Banner,
     Button,
@@ -26,9 +37,8 @@ import {
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { useDispatch, useSelector } from 'src/hooks/suite/';
-import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
-import { type AppState } from 'src/types/suite';
+import { showAddressThunk } from './showAddressThunk';
+import { useReceiveDisabled } from './useReceiveDisabled';
 
 const TooltipLabel = ({
     symbol,
@@ -73,14 +83,26 @@ const TooltipLabel = ({
     return addressLabel;
 };
 
-interface FreshAddressProps {
-    account: AppState['wallet']['selectedAccount']['account'];
-    alreadyUsedAddresses: AppState['wallet']['receive'];
+export interface FreshAddressProps {
+    account: Account;
+    alreadyUsedAddresses: ReceiveInfo[];
     disabled: boolean;
     locked: boolean;
     pendingAddresses: string[];
     isDeviceConnected: boolean;
 }
+
+type FreshAddressRootState = AccountsRootState &
+    Parameters<typeof selectIsLegacyLabelingVisible>[0] &
+    Parameters<typeof selectLabelingDataForSelectedAccount>[0] &
+    Parameters<typeof selectIsSuiteSyncEnabled>[0] &
+    Parameters<typeof selectSuiteSyncAddressLabels>[0];
+
+type FreshAddressDispatch = ThunkDispatch<
+    DeviceRootState & WalletSettingsRootState & SelectedAccountRootState,
+    ExtraDependencies,
+    AnyAction
+>;
 
 export const FreshAddress = ({
     account,
@@ -90,36 +112,38 @@ export const FreshAddress = ({
     locked,
     isDeviceConnected,
 }: FreshAddressProps) => {
-    const isAccountUtxoBased = useSelector((state: AccountsRootState) =>
-        selectIsAccountUtxoBased(state, account?.key ?? null),
+    const isAccountUtxoBased = useSelector((state: FreshAddressRootState) =>
+        selectIsAccountUtxoBased(state, account.key),
     );
 
-    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
-    const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
+    const isLegacyLabelingVisible = useSelector((state: FreshAddressRootState) =>
+        selectIsLegacyLabelingVisible(state),
+    );
+    const { addressLabels } = useSelector((state: FreshAddressRootState) =>
+        selectLabelingDataForSelectedAccount(state),
+    );
 
-    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
-    const suiteSyncAddressLabels = useSelector(state =>
-        account && isSuiteSyncEnabled
-            ? selectSuiteSyncAddressLabels(state, account.deviceState)
-            : [],
+    const isSuiteSyncEnabled = useSelector((state: FreshAddressRootState) =>
+        selectIsSuiteSyncEnabled(state),
+    );
+    const suiteSyncAddressLabels = useSelector((state: FreshAddressRootState) =>
+        isSuiteSyncEnabled ? selectSuiteSyncAddressLabels(state, account.deviceState) : [],
     );
 
     const { isReceiveDisabled, receiveDisabledTooltipContent } = useReceiveDisabled();
     const { translationString } = useTranslation();
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<FreshAddressDispatch>();
 
-    const firstFreshAddress = useMemo(() => {
-        if (account) {
-            return getFirstFreshAddress(
+    const firstFreshAddress = useMemo(
+        () =>
+            getFirstFreshAddress(
                 account,
                 alreadyUsedAddresses,
                 pendingAddresses,
                 isAccountUtxoBased,
-            );
-        }
-    }, [account, alreadyUsedAddresses, pendingAddresses, isAccountUtxoBased]);
-
-    if (!account) return null;
+            ),
+        [account, alreadyUsedAddresses, pendingAddresses, isAccountUtxoBased],
+    );
 
     // On coinjoin account, disallow to reveal more than the first receive address until it is used,
     // because discovery of coinjoin account relies on assumption that user uses his first address first.
@@ -129,13 +153,14 @@ export const FreshAddress = ({
         firstFreshAddress?.address !== account.addresses?.unused[0]?.address;
 
     const handleAddressReveal = () => {
-        if (firstFreshAddress)
+        if (firstFreshAddress) {
             dispatch(
                 showAddressThunk({
                     path: firstFreshAddress.path,
                     address: firstFreshAddress.address,
                 }),
             );
+        }
     };
 
     const buttonTooltipContent = () => {
