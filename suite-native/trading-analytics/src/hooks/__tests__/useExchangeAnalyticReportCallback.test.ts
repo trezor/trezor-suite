@@ -32,16 +32,22 @@ describe('useExchangeAnalyticReportCallback', () => {
         mergePreloadedState({ wallet: getWalletState({ tradeType: 'exchange' }) }, overrides);
 
     const renderUseExchangeAnalyticReportCallback = ({
-        candidateQuote,
+        candidateQuote: initialCandidateQuote,
         preloadedState = createPreloadedState(),
     }: {
         candidateQuote?: Parameters<typeof useExchangeAnalyticReportCallback>[0];
         preloadedState?: ExchangeAnalyticsPreloadedState;
     } = {}) =>
-        renderHookWithStoreProvider(() => useExchangeAnalyticReportCallback(candidateQuote), {
-            preloadedState,
-            services,
-        });
+        renderHookWithStoreProvider(
+            ({ candidateQuote }) => useExchangeAnalyticReportCallback(candidateQuote),
+            {
+                preloadedState,
+                services,
+                initialProps: {
+                    candidateQuote: initialCandidateQuote,
+                },
+            },
+        );
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -129,5 +135,16 @@ describe('useExchangeAnalyticReportCallback', () => {
                 action: 'continue',
             },
         });
+    });
+
+    it('should be stable even when quote changes', () => {
+        const { result, rerender } = renderUseExchangeAnalyticReportCallback({
+            candidateQuote: mercuryoFixedWorstQuote,
+        });
+        const firstCallback = result.current;
+
+        rerender({ candidateQuote: invityDexQuote });
+
+        expect(result.current).toBe(firstCallback);
     });
 });
