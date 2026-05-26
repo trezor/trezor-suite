@@ -87,6 +87,15 @@ jest.mock('@suite-common/trading', () => ({
     useAllowanceTxTracking: jest.fn(),
 }));
 
+const mockAnalyticsReport = jest.fn();
+jest.mock('@suite-native/trading-analytics', () => ({
+    ...jest.requireActual('@suite-native/trading-analytics'),
+    useExchangeAnalyticsStepReport:
+        (action: unknown) =>
+        (...args: unknown[]) =>
+            mockAnalyticsReport(action, ...args),
+}));
+
 const mockUseAllowanceTxTracking = useAllowanceTxTracking as jest.Mock;
 
 describe('TradingConfirmingScreen', () => {
@@ -278,7 +287,9 @@ describe('TradingConfirmingScreen', () => {
 
         const [, listener] =
             mockAddListener.mock.calls.find(([event]) => event === 'beforeRemove') ?? [];
-        listener?.({ data: { action: { type: 'GO_BACK' } } });
+        act(() => {
+            listener?.({ data: { action: { type: 'GO_BACK' } } });
+        });
 
         expect(selectTradingExchangeSelectedQuote(store.getState())).toBeUndefined();
     });
@@ -288,8 +299,58 @@ describe('TradingConfirmingScreen', () => {
 
         const [, listener] =
             mockAddListener.mock.calls.find(([event]) => event === 'beforeRemove') ?? [];
-        listener?.({ data: { action: { type: 'POP', payload: { count: 3 } } } });
+        act(() => {
+            listener?.({ data: { action: { type: 'POP', payload: { count: 3 } } } });
+        });
 
         expect(selectTradingExchangeSelectedQuote(store.getState())).toEqual(testQuote);
+    });
+
+    describe('analytics', () => {
+        it('should report approval-confirming visit ', () => {
+            renderScreen();
+
+            expect(mockAnalyticsReport).toHaveBeenCalledWith('approval-confirming', 'visit');
+            expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
+        });
+
+        it('should report approval-confirming cancel on back navigation', () => {
+            store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
+            renderScreen();
+
+            // Simulate the beforeRemove event with a GO_BACK action (back button / swipe back).
+            const [, listener] =
+                mockAddListener.mock.calls.find(([event]) => event === 'beforeRemove') ?? [];
+
+            act(() => {
+                listener?.({ data: { action: { type: 'GO_BACK' } } });
+            });
+
+            expect(mockAnalyticsReport).toHaveBeenCalledWith('approval-confirming', 'cancel');
+            // TODO 27903 effect is fired twice, because quote changes. Fix here and on the other screens as well.
+            //expect(mockAnalyticsReport).toHaveBeenCalledTimes(2);
+        });
+
+        it('should report revoke-confirming visit for revoke', () => {
+            renderScreen({ flowType: 'revoke' });
+
+            expect(mockAnalyticsReport).toHaveBeenCalledWith('revoke-confirming', 'visit');
+            expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
+        });
+
+        it('should report continue when on navigation to next screen', async () => {
+            mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
+            mockConfirmApproval.mockResolvedValue({ ...testQuote, status: 'APPROVAL_PENDING' });
+
+            renderScreen({ flowType: 'approve' });
+
+            await act(async () => {
+                await Promise.resolve();
+            });
+
+            expect(mockAnalyticsReport).toHaveBeenCalledWith('approval-confirming', 'continue');
+            // TODO 27903
+            //expect(mockAnalyticsReport).toHaveBeenCalledTimes(2);
+        });
     });
 });
