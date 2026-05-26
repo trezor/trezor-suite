@@ -1,0 +1,16 @@
+name: "[Test] Nightly Suite Fix Agent"
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  hello-world:
+    runs-on: ubuntu-latest
+    if: github.repository == 'trezor/trezor-suite'
+    timeout-minutes: 5
+    steps:
+      - run: echo "Hello, fix bot!"
