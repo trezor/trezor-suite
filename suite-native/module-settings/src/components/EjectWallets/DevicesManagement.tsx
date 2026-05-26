@@ -30,7 +30,7 @@ export const DevicesManagement = () => {
                             )}
                             <Box>
                                 <Text variant="body-md-strong" color="contentPrimary">
-                                    {firstDevice.features.label || firstDevice.name}
+                                    {firstDevice.features?.label ?? firstDevice.name}
                                 </Text>
                                 <HStack alignItems="center" spacing="sp8">
                                     <ConnectionDot isConnected={firstDevice.connected} />

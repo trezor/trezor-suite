@@ -560,9 +560,9 @@ export const selectNumberOfDeviceInstances = createMemoizedSelector(
 );
 
 export const selectInstacelessUnselectedDevices = createMemoizedSelector(
-    [selectSelectedDevice, selectDevices],
-    (device, allDevices) =>
-        pipe(getSortedDevicesWithoutInstances(allDevices, device?.id), returnStableArrayIfEmpty),
+    [selectDeviceId, selectDevices],
+    (deviceId, allDevices) =>
+        pipe(getSortedDevicesWithoutInstances(allDevices, deviceId), returnStableArrayIfEmpty),
 );
 
 export const selectHasBitcoinOnlyFirmware = createMemoizedSelector([selectSelectedDevice], device =>

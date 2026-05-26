@@ -8,6 +8,7 @@ import {
     getChangelogUrl,
     getCheckBackupUrl,
     getDeviceInstances,
+    getDeviceInstancesGroupedByDeviceId,
     getFirmwareDowngradeUrl,
     getFirstDeviceInstance,
     getIsDeviceConnectedViaBluetooth,
@@ -19,6 +20,7 @@ import {
     getPhysicalDeviceCount,
     getPhysicalDeviceUniqueIds,
     getSelectedDevice,
+    getSortedDevicesWithoutInstances,
     getStatus,
     isDeviceWithButtonOnlyNoTouchscreen,
     isSelectedDevice,
@@ -126,6 +128,24 @@ describe(getDeviceInstances.name, () => {
         it(f.description, () => {
             const sort = getDeviceInstances(f.selected as any, f.devices as any, f.excluded);
             expect(sort).toEqual(f.result);
+        });
+    });
+});
+
+describe(getDeviceInstancesGroupedByDeviceId.name, () => {
+    fixtures.getDeviceInstancesGroupedByDeviceId.forEach(f => {
+        it(f.description, () => {
+            expect(getDeviceInstancesGroupedByDeviceId(f.devices as any)).toEqual(f.result);
+        });
+    });
+});
+
+describe(getSortedDevicesWithoutInstances.name, () => {
+    fixtures.getSortedDevicesWithoutInstances.forEach(f => {
+        it(f.description, () => {
+            expect(getSortedDevicesWithoutInstances(f.devices as any, f.excludedDeviceId)).toEqual(
+                f.result,
+            );
         });
     });
 });
