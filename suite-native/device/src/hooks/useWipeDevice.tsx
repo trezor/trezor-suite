@@ -8,7 +8,7 @@ import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { wipeDeviceThunk } from '@suite-common/wallet-core';
-import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import {
@@ -25,7 +25,7 @@ type NavigationProps = StackNavigationProps<
 
 export const useWipeDevice = () => {
     const dispatch = useDispatch();
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const navigation = useNavigation<NavigationProps>();
 
     const device = useSelector(selectSelectedDevice);

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { UpdateState } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
@@ -86,7 +86,7 @@ const LabelHeadline = styled.strong`
 `;
 
 export const SupportFeedbackSelection = () => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const desktopUpdate = useSelector(state => state.desktopUpdate);
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();

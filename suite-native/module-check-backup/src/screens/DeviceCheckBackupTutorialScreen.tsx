@@ -4,7 +4,7 @@ import { useSharedValue } from 'react-native-reanimated';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Screen } from '@suite-native/navigation';
 import {
     SwipeableWalkthrough,
@@ -21,7 +21,7 @@ const WALLET_BACKUP_TUTORIAL_STEPS_COUNT = 2;
 export const DeviceCheckBackupTutorialScreen = () => {
     const handleExitButtonPress = useHandleCheckBackupExitButtonPress();
     const currentStepIndex = useSharedValue(0);
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
 
     useFocusEffect(
         useCallback(() => {

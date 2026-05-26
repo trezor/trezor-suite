@@ -7,8 +7,8 @@ import { useServices } from '@suite-common/dependency-injection';
 import {
     type DemoAccountQuestionnaireQuestion,
     type DemoAccountQuestionnaireQuestionOption,
-    type NativeAnalyticsDep,
     events,
+    selectNativeAnalyticsDep,
 } from '@suite-native/analytics';
 import { Button, HStack, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
 import { type IconName } from '@suite-native/icons';
@@ -42,7 +42,7 @@ export const DemoAccountQuestionnaireScreenContent = ({
     answerOptions,
     nextRoute,
 }: DemoAccountQuestionnaireScreenContentProps) => {
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const navigation =
         useNavigation<
             StackNavigationProps<

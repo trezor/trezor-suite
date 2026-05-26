@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation, useTranslation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
@@ -60,7 +60,7 @@ const useLanguageOptions = () => {
 };
 
 export const Language = () => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const language = useSelector(selectLanguage);
     const autodetectLanguage = useSelector(selectAutodetectLanguage);
     const dispatch = useDispatch();

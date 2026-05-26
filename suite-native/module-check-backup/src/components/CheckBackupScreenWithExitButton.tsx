@@ -4,7 +4,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { useAlert } from '@suite-native/alerts';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
 import {
     type DeviceCheckBackupStackParamList,
@@ -32,7 +32,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 export const useHandleCheckBackupExitButtonPress = () => {
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const navigation = useNavigation<NavigationProps>();
     const route = useRoute();
 

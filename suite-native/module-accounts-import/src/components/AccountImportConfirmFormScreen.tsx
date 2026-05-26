@@ -17,7 +17,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { type AccountFormValues, useAccountLabelForm } from '@suite-native/accounts';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Box, Button, Text } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -52,7 +52,7 @@ export const AccountImportConfirmFormScreen = ({
     accountInfo,
 }: AccountImportConfirmFormScreenProps) => {
     const dispatch = useDispatch();
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const navigation = useNavigation<NavigationProp>();
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const showImportError = useShowImportError(symbol, navigation);

@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { runDiscoveryThunk, startDiscoveryThunk } from '@suite-common/wallet-core';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -25,7 +25,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const AddHiddenWalletButton = () => {
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const dispatch = useDispatch();
 
     const navigation = useNavigation<NavigationProp>();

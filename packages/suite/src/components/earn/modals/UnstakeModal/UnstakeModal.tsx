@@ -1,4 +1,4 @@
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
@@ -19,7 +19,7 @@ type UnstakeModalProps = {
 };
 
 export const UnstakeModal = ({ onCancel, account }: UnstakeModalProps) => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const withdrawalContextValues = useWithdrawalForm({ account });
     const { isBelowTablet } = useLayoutSize();
 

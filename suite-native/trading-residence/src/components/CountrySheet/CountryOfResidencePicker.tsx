@@ -5,8 +5,8 @@ import { getCountryFlag } from '@suite-common/flags';
 import {
     type AnalyticsNativeEvents,
     type CountryChangeContext,
-    type NativeAnalyticsDep,
     events,
+    selectNativeAnalyticsDep,
 } from '@suite-native/analytics';
 import { Flag, HStack, Text } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
@@ -42,7 +42,7 @@ export const CountryOfResidencePicker = ({
     noBottomBorder = true,
 }: CountryOfResidencePickerProps) => {
     const { translate } = useTranslate();
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const { isSheetVisible, hideSheet, showSheet } = useBottomSheetControls();
 
     const { watch, setValue } = useFormContext<TradingLocationFormValues>();

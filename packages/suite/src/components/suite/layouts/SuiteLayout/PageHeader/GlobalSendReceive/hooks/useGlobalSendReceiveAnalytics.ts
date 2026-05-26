@@ -3,13 +3,13 @@ import { useCallback } from 'react';
 import {
     type DashboardReceiveModalOptionsEventOption,
     type DashboardSendModalOptionsEventOption,
-    type DesktopAnalyticsDep,
     events,
+    selectDesktopAnalyticsDep,
 } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 
 export const useGlobalSendReceiveAnalytics = () => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const reportSend = useCallback(
         (option: DashboardSendModalOptionsEventOption, filledSearch: boolean) => {
             analytics.report({

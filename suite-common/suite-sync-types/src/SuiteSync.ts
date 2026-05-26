@@ -26,3 +26,7 @@ export type SuiteSync = ChangeRelayUrlDep &
     };
 
 export type SuiteSyncDep = { suiteSync: SuiteSync };
+
+export const selectSuiteSyncDep = (services: any): SuiteSyncDep => ({
+    suiteSync: services.suiteSync,
+});

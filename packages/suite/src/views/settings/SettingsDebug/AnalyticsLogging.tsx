@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import {
     analyticsActions,
     selectCustomAnalyticsUrl,
@@ -18,7 +18,7 @@ export const AnalyticsLogging = () => {
     const loggerEnabled = useSelector(selectLoggerEnabled);
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
     const dispatch = useDispatch();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const [inputValue, setInputValue] = useState(customAnalyticsUrl ?? '');
 

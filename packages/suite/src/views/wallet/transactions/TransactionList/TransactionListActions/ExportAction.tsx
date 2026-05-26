@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
 import { useServices } from '@suite-common/dependency-injection';
@@ -24,7 +24,7 @@ export interface ExportActionProps {
 export const ExportAction = ({ account, searchQuery }: ExportActionProps) => {
     const [isExportRunning, setIsExportRunning] = useState(false);
     const dispatch = useDispatch();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { translationString } = useTranslation();
 
     const getAccountTitle = useCallback(() => {

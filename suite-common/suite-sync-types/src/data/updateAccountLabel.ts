@@ -16,3 +16,7 @@ export type UpdateAccountLabel = (
 ) => Promise<Result<void, EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError>>;
 
 export type UpdateAccountLabelDep = { updateAccountLabel: UpdateAccountLabel };
+
+export const selectUpdateAccountLabelDep = (services: any): UpdateAccountLabelDep => ({
+    updateAccountLabel: services.suiteSync.labeling.updateAccountLabel,
+});

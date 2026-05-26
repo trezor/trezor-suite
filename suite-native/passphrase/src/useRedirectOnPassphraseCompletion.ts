@@ -10,7 +10,7 @@ import {
     cancelDiscoveryThunk,
     selectDiscoveryByDevicePath,
 } from '@suite-common/wallet-core';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
 
 import {
@@ -25,7 +25,7 @@ export const useRedirectOnPassphraseCompletion = () => {
     const passphraseDiscoveryCompleted = useSelector(selectPassphraseDiscoveryCompleted);
     const hasPassphraseError = useSelector(selectHasPassphraseError);
     const hasVerificationCancelledError = useSelector(selectHasVerificationCancelledError);
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const dispatch = useDispatch();
     const store = useStore();
     const navigateToInitialScreen = useNavigateToInitialScreen();

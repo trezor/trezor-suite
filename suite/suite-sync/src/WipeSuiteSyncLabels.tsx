@@ -6,7 +6,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import {
     type EnsureWalletSuiteSyncOnErrors,
-    type SuiteSyncDep,
+    selectDangerouslyWipeAllLabelsFromWalletDep,
 } from '@suite-common/suite-sync-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Button } from '@trezor/components';
@@ -35,7 +35,10 @@ type WipeSuiteSyncLabelsStep = 'wipingLoading' | 'areYouSure' | 'confirmDeletion
 export const WipeSuiteSyncLabels = ({ onError }: WipeSuiteSyncLabelsProps) => {
     const [step, setStep] = useState<WipeSuiteSyncLabelsStep>('start');
     const [wipeConfirmationCountdown, setWipeConfirmationCountdown] = useState(0);
-    const { suiteSync } = useServices<SuiteSyncDep>();
+
+    const { dangerouslyWipeAllLabelsFromWallet } = useServices(
+        selectDangerouslyWipeAllLabelsFromWalletDep,
+    );
 
     const wipeConfirmationTimeoutRef = useRef<TimerId | null>(null);
     const wipeConfirmationIntervalRef = useRef<TimerId | null>(null);
@@ -117,7 +120,7 @@ export const WipeSuiteSyncLabels = ({ onError }: WipeSuiteSyncLabelsProps) => {
                     const { walletDescriptor } = parseDeviceStaticSessionId(
                         selectedDeviceStaticSessionId,
                     );
-                    const result = await suiteSync.dangerouslyWipeAllLabelsFromWallet({
+                    const result = await dangerouslyWipeAllLabelsFromWallet({
                         walletDescriptor,
                     });
 

@@ -1,6 +1,6 @@
 import { type MouseEventHandler } from 'react';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
@@ -14,7 +14,7 @@ import { useStore } from 'src/hooks/suite/useStore';
 
 export const DeviceNoFirmware = () => {
     const dispatch = useDispatch();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { getState } = useStore();
 
     const handleClick: MouseEventHandler = e => {

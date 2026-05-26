@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { type SuiteSyncDataRootState, selectSuiteSyncOutputLabel } from '@suite-common/suite-sync';
-import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
+import { selectUpdateOutputLabelDep } from '@suite-common/suite-sync-types';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { isTokenTargetId } from '@suite-common/wallet-core';
 import { type AccountDescriptor, type TxTargetId } from '@suite-common/wallet-types';
@@ -32,7 +32,9 @@ export const TransactionOutputLabelEditable = ({
 }: TransactionOutputLabelEditableProps) => {
     const dispatch = useDispatch();
     const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
-    const { suiteSync } = useServices<SuiteSyncDep>();
+
+    const { updateOutputLabel } = useServices(selectUpdateOutputLabelDep);
+
     const { handleSuiteSyncError } = useSuiteSyncErrorHandler();
     const isTokenTxTargetId = isTokenTargetId(txTargetId);
 
@@ -46,7 +48,7 @@ export const TransactionOutputLabelEditable = ({
     }
 
     const onSubmit = async (value: string) => {
-        const result = await suiteSync.labeling.updateOutputLabel({
+        const result = await updateOutputLabel({
             deviceStaticSessionId,
             txId,
             txTargetId,

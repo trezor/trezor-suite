@@ -1,4 +1,4 @@
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
@@ -22,7 +22,7 @@ export const EarnYieldClaimRewardsBanner = ({
     claimDisabledTooltip,
     onClaim,
 }: EarnYieldClaimRewardsBannerProps) => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { BaseCurrencyAmountFormatter } = useFormatters();
 
     const handleOnClaim = () => {

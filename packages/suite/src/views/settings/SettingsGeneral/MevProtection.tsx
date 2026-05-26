@@ -1,6 +1,6 @@
 import { FormattedList } from 'react-intl';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
@@ -12,7 +12,7 @@ import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-component
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const MevProtection = () => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
 

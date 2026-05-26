@@ -1,4 +1,4 @@
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, Column, GhostContainer, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
@@ -51,7 +51,7 @@ export const AccountItem = ({
     isFiatLoading,
     onClick,
 }: AccountItemProps) => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { accountType, index, symbol } = account;
 
     const goToWithAnalytics = useGoToWithAnalytics(account);

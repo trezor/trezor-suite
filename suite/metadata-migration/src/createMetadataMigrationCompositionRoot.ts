@@ -25,6 +25,10 @@ export type MetadataMigrationDep = {
     migrateLegacyLabelsToSuiteSync: MigrateLegacyLabelsToSuiteSync;
 };
 
+export const selectMetadataMigrationDep = (services: any): MetadataMigrationDep => ({
+    migrateLegacyLabelsToSuiteSync: services.migrateLegacyLabelsToSuiteSync,
+});
+
 type CreateMetadataMigrationCompositionRootDeps = {
     getAccountsByDeviceState: GetAccountsByDeviceState;
     getLegacyWalletLabels: GetLegacyWalletLabels;

@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { changeCoinVisibility } from '@suite-common/wallet-core';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
     AnimatedBox,
     AnimatedInlineAlertBox,
@@ -43,7 +43,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const CoinEnablingInitScreen = () => {
     const dispatch = useDispatch();
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const navigation = useNavigation<NavigationProps>();
     useInterceptNativeNavigation();
 

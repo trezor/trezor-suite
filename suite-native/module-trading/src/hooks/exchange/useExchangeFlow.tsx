@@ -10,7 +10,7 @@ import {
     exchangeThunks,
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
     type ExchangeFlowType,
     type RootStackParamList,
@@ -49,7 +49,7 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
             >
         >();
     const dispatch = useDispatch();
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const quote = useSelector(selectTradingExchangeSelectedQuote);
 
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);

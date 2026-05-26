@@ -9,7 +9,10 @@ import {
     type WithSuiteSyncAndDeviceState,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
-import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
+import {
+    selectEnsureWalletSuiteSyncOnDep,
+    selectTurnOnSuiteSyncDep,
+} from '@suite-common/suite-sync-types';
 import { useAlert } from '@suite-native/alerts';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
@@ -26,7 +29,12 @@ import { suiteSyncErrorMessageMap } from './suiteSyncErrorMessages';
 
 export const useTurnOnSuiteSyncGuard = () => {
     const { showAlert } = useAlert();
-    const { suiteSync } = useServices<SuiteSyncDep>();
+
+    const { ensureWalletSuiteSyncOn, turnOnSuiteSync } = useServices(
+        selectEnsureWalletSuiteSyncOnDep,
+        selectTurnOnSuiteSyncDep,
+    );
+
     const { showToast } = useToast();
     const { translate } = useTranslate();
     const navigation =
@@ -66,10 +74,10 @@ export const useTurnOnSuiteSyncGuard = () => {
         });
     };
 
-    const turnOnSuiteSync = async (onSuccess: () => void) => {
+    const handleTurnOnSuiteSync = async (onSuccess: () => void) => {
         if (!deviceStaticSessionId) return;
 
-        const result = await suiteSync.turnOnSuiteSync({
+        const result = await turnOnSuiteSync({
             deviceStaticSessionId,
         });
 
@@ -113,7 +121,7 @@ export const useTurnOnSuiteSyncGuard = () => {
                 title: <Translation id="suiteSync.enableAlert.title" />,
                 description: <Translation id="suiteSync.enableAlert.description" />,
                 primaryButtonTitle: <Translation id="suiteSync.enableAlert.cta" />,
-                onPressPrimaryButton: () => turnOnSuiteSync(onSuccess),
+                onPressPrimaryButton: () => handleTurnOnSuiteSync(onSuccess),
                 secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
             });
         }
@@ -129,7 +137,7 @@ export const useTurnOnSuiteSyncGuard = () => {
                 break;
             case 'keys-needed':
                 if (deviceStaticSessionId) {
-                    const result = await suiteSync.ensureWalletSuiteSyncOn({
+                    const result = await ensureWalletSuiteSyncOn({
                         deviceStaticSessionId,
                         isWriteMode: false,
                     });

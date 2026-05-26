@@ -1,4 +1,4 @@
-export type { SuiteSync, SuiteSyncDep } from './SuiteSync';
+export { type SuiteSync, type SuiteSyncDep, selectSuiteSyncDep } from './SuiteSync';
 
 export type {
     SuiteSyncStorageRepositoryDep,
@@ -12,10 +12,22 @@ export type {
     EnsureSuiteSyncKeysDep,
     EnsureSuiteSyncKeysResult,
 } from './ensureSuiteSyncKeys';
-export type { TurnOffSuiteSyncDep, TurnOffSuiteSync } from './turnOffSuiteSync';
-export type { TurnOnSuiteSyncDep, TurnOnSuiteSync } from './turnOnSuiteSync';
+export {
+    type TurnOffSuiteSyncDep,
+    type TurnOffSuiteSync,
+    selectTurnOffSuiteSyncDep,
+} from './turnOffSuiteSync';
+export {
+    type TurnOnSuiteSyncDep,
+    type TurnOnSuiteSync,
+    selectTurnOnSuiteSyncDep,
+} from './turnOnSuiteSync';
 export type { SuiteSyncUnavailableOnDeviceErrorType } from './ensureSuiteSyncKeys';
-export type { ChangeRelayUrl, ChangeRelayUrlDep } from './relay/changeRelayUrl';
+export {
+    type ChangeRelayUrl,
+    type ChangeRelayUrlDep,
+    selectChangeRelayUrlDep,
+} from './relay/changeRelayUrl';
 
 export type {
     EnsureSuiteSyncOwnerDep,
@@ -28,24 +40,28 @@ export type {
     SubscriptionStorage,
     SubscriptionStorageParams,
 } from './storage/subscriptionStorage';
-export type {
-    DangerouslyWipeAllLabelsFromWallet,
-    DangerouslyWipeAllLabelsFromWalletDep,
-    DangerouslyWipeAllLabelsFromWalletParams,
+export {
+    type DangerouslyWipeAllLabelsFromWallet,
+    type DangerouslyWipeAllLabelsFromWalletDep,
+    type DangerouslyWipeAllLabelsFromWalletParams,
+    selectDangerouslyWipeAllLabelsFromWalletDep,
 } from './data/dangerouslyWipeAllLabelsFromWallet';
-export type {
-    TurnOffSuiteSyncForWallet,
-    TurnOffSuiteSyncForWalletDep,
+export {
+    type TurnOffSuiteSyncForWallet,
+    type TurnOffSuiteSyncForWalletDep,
+    selectTurnOffSuiteSyncForWalletDep,
 } from './storage/turnOffSuiteSyncForWallet';
-export type {
-    EnsureWalletSuiteSyncOnAsync,
-    EnsureWalletSuiteSyncOnAsyncDep,
-    EnsureWalletSuiteSyncOn,
-    EnsureWalletSuiteSyncOnErrors,
-    EnsureWalletSuiteSyncOnDep,
-    EnsureWalletSuiteSyncOnParams,
-    SuiteSyncFirmwareUpgradeNeededDeviceErrorType,
-    SuiteSyncUserFacingErrorType,
+export {
+    type EnsureWalletSuiteSyncOnAsync,
+    type EnsureWalletSuiteSyncOnAsyncDep,
+    type EnsureWalletSuiteSyncOn,
+    type EnsureWalletSuiteSyncOnErrors,
+    type EnsureWalletSuiteSyncOnDep,
+    type EnsureWalletSuiteSyncOnParams,
+    type SuiteSyncFirmwareUpgradeNeededDeviceErrorType,
+    type SuiteSyncUserFacingErrorType,
+    selectEnsureWalletSuiteSyncOnAsyncDep,
+    selectEnsureWalletSuiteSyncOnDep,
 } from './storage/ensureWalletSuiteSyncOn';
 
 export type {
@@ -57,25 +73,29 @@ export type {
 } from './data/ensureSubscribedStorage';
 
 // Labeling
-export type {
-    UpdateAccountLabel,
-    UpdateAccountLabelDep,
-    UpdateAccountLabelParams,
+export {
+    type UpdateAccountLabel,
+    type UpdateAccountLabelDep,
+    type UpdateAccountLabelParams,
+    selectUpdateAccountLabelDep,
 } from './data/updateAccountLabel';
-export type {
-    UpdateAddressLabel,
-    UpdateAddressLabelDep,
-    UpdateAddressLabelParams,
+export {
+    type UpdateAddressLabel,
+    type UpdateAddressLabelDep,
+    type UpdateAddressLabelParams,
+    selectUpdateAddressLabelDep,
 } from './data/updateAddressLabel';
-export type {
-    UpdateOutputLabelDep,
-    UpdateOutputLabel,
-    UpdateOutputLabelParams,
+export {
+    type UpdateOutputLabelDep,
+    type UpdateOutputLabel,
+    type UpdateOutputLabelParams,
+    selectUpdateOutputLabelDep,
 } from './data/updateOutputLabel';
-export type {
-    UpdateWalletLabel,
-    UpdateWalletLabelDep,
-    UpdateWalletLabelParams,
+export {
+    type UpdateWalletLabel,
+    type UpdateWalletLabelDep,
+    type UpdateWalletLabelParams,
+    selectUpdateWalletLabelDep,
 } from './data/updateWalletLabel';
 
 export type {

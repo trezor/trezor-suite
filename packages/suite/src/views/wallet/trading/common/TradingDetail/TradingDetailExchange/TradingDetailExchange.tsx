@@ -4,7 +4,7 @@ import { usePrevious } from 'react-use';
 import { type ExchangeTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
@@ -55,7 +55,7 @@ const getTradeStatusStep = (tradeStatus: ExchangeTradeStatus) => {
 };
 
 export const TradingDetailExchange = () => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const accounts = useSelector(selectAccounts);
     const { trade, info } = useTradingDetailContext<TradingExchangeType>();
     const dispatch = useDispatch();

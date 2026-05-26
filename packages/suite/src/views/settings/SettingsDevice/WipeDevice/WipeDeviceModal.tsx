@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
@@ -19,7 +19,7 @@ type WipeDeviceModalProps = {
 };
 
 export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const [isLoading, setIsLoading] = useState(false);
     const [isConfirmed, setIsConfirmed] = useState(false);
 

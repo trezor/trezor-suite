@@ -4,7 +4,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import type { BuyTrade, BuyTradeResponse } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import {
@@ -61,7 +61,7 @@ import { useTradingReceiveAddress } from './useTradingReceiveAddress';
 export const useTradingBuyForm = ({
     pageType = 'form',
 }: UseTradingFormCommonProps = {}): TradingBuyFormContextProps => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const type = 'buy';
     const isFormPage = pageType === 'form';
     const dispatch = useDispatch();

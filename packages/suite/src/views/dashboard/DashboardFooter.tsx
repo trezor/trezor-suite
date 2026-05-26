@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import {
@@ -68,7 +68,7 @@ const StoreBadgeWithQr = ({
 }: StoreBadgeWithQrProps) => {
     const { isBelowTablet } = useLayoutSize();
     const [isTooltipOpen, setIsTooltipOpen] = useState(false);
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     return (
         <Tooltip
@@ -152,7 +152,7 @@ const MobileAppPromo = ({ hasRightMargin }: { hasRightMargin: boolean }) => {
 };
 
 const ReferralButton = () => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const hasAtLeastOneRememberedWallet = useSelector(
         state =>
             selectRememberedStandardWalletsCount(state) > 0 ||
@@ -179,7 +179,7 @@ const ReferralButton = () => {
 };
 
 export const DashboardFooter = () => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { isBelowTablet } = useLayoutSize();
     const { contentWidth } = useResponsiveContext();
 

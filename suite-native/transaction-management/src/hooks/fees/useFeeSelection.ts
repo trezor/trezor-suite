@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { type AccountKey, type FeeLevelLabel, type TokenAddress } from '@suite-common/wallet-types';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 
 import { type UpdateSelectedFeeLevelThunkParams } from '../../types';
 
@@ -28,7 +28,7 @@ export const useFeeSelection = ({
     formDraftKey,
 }: UseFeeSelectionParams) => {
     const dispatch = useDispatch();
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const handleFeeLevelChange = useCallback(
         (
             feeLevel: FeeLevelLabel,

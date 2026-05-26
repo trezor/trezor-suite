@@ -7,7 +7,7 @@ import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { useServices } from '@suite-common/dependency-injection';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
     type RootStackParamList,
     type RootStackRoutes,
@@ -47,7 +47,7 @@ export const useHandleOnUnstakeTransactionReview = ({
         selectAccountNetworkSymbol(state, accountKey),
     );
 
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
 
     const handleOnUnstakeTransactionReview = useCallback(async () => {
         if (!precomposedTransaction) return;

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import {
@@ -79,7 +79,7 @@ const ActionButton = ({
 }: ActionButtonProps) => {
     const connectingDevicesIds = useSelector(selectConnectingDevices);
     const { onConnect } = useConnectionGlobalModalContext();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const isSuiteTryingToConnectToDevice = connectingDevicesIds.includes(device.id);
     const connectionStatus = connectionStatusMap[device.connectionStatus.type];
     const isClickable = connectionStatus?.component === 'button';

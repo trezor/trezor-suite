@@ -3,8 +3,8 @@ import { useCallback, useState } from 'react';
 import { useServices } from '@suite-common/dependency-injection';
 import {
     type AnalyticsSendFlowStep,
-    type NativeAnalyticsDep,
     events,
+    selectNativeAnalyticsDep,
 } from '@suite-native/analytics';
 import { isNotNullOrUndefined } from '@trezor/utils';
 
@@ -34,7 +34,7 @@ export const useReportSendFlowExitToAnalytics = () => {
     const [furthestSendStep, setFurthestSendStep] = useState<AnalyticsRelevantSendRoute | null>(
         null,
     );
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const reportSendFlowExitToAnalytics = useCallback(
         (nextScreenRoute?: string) => {
             // The user is still inside of the send flow.

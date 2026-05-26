@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
@@ -46,7 +46,7 @@ interface AmountProps {
 
 export const Amount = ({ output, outputId }: AmountProps) => {
     const { translationString } = useTranslation();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const {
         account,
         network,

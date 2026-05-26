@@ -1,6 +1,6 @@
 import { type ComponentProps, type JSX } from 'react';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
@@ -140,7 +140,7 @@ export const PortfolioCardException = ({
     failed,
 }: PortfolioCardExceptionProps) => {
     const dispatch = useDispatch();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     switch (exception.type) {
         case 'discovery-empty':

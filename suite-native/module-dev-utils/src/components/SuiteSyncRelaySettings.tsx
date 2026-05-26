@@ -7,7 +7,7 @@ import {
     selectSuiteSyncRelayUrl,
     updateSuiteSyncDebugEnabled,
 } from '@suite-common/suite-sync';
-import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
+import { selectChangeRelayUrlDep } from '@suite-common/suite-sync-types';
 import { yup } from '@suite-common/validators';
 import { Button, Card, CheckBox, HStack, Text, VStack } from '@suite-native/atoms';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
@@ -18,7 +18,9 @@ const DEFAULT_CUSTOM_RELAY_URL = '';
 export const SuiteSyncRelaySettings = () => {
     const suiteSyncRelayUrl = useSelector(selectSuiteSyncRelayUrl);
     const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
-    const { suiteSync } = useServices<SuiteSyncDep>();
+
+    const { changeRelayUrl } = useServices(selectChangeRelayUrlDep);
+
     const { showToast } = useToast();
     const dispatch = useDispatch();
 
@@ -32,7 +34,7 @@ export const SuiteSyncRelaySettings = () => {
     });
 
     const onSubmit = form.handleSubmit(async values => {
-        await suiteSync.changeRelayUrl({ relayUrl: values.suiteSyncRelayUrl });
+        await changeRelayUrl({ relayUrl: values.suiteSyncRelayUrl });
         showToast({
             message: 'Suite Sync relay URL updated',
             intent: 'brand',
@@ -48,7 +50,7 @@ export const SuiteSyncRelaySettings = () => {
     };
 
     const handleResetToDefault = async () => {
-        await suiteSync.changeRelayUrl({ relayUrl: DEFAULT_SUITE_SYNC_RELAY_URL });
+        await changeRelayUrl({ relayUrl: DEFAULT_SUITE_SYNC_RELAY_URL });
         form.reset({ suiteSyncRelayUrl: DEFAULT_SUITE_SYNC_RELAY_URL });
         showToast({
             message: 'Suite Sync relay URL reset to default',

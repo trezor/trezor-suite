@@ -1,4 +1,4 @@
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { Button, Column } from '@trezor/components';
@@ -8,7 +8,7 @@ import { useDispatch } from 'src/hooks/suite';
 
 export const DeviceConnect = () => {
     const dispatch = useDispatch();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const handleConnect = () => {
         dispatch(toggleConnectionModal());

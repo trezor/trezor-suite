@@ -11,7 +11,7 @@ import {
     selectHasDeviceSuiteSyncError,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
-import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
+import { selectEnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types';
 import { Banner } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/connect';
 
@@ -89,7 +89,8 @@ const SuiteSyncBannerContent = ({
 
 export const SuiteSyncBanner = ({ deviceStaticSessionId }: SuiteSyncBannerProps) => {
     const dispatch = useDispatch();
-    const { suiteSync } = useServices<SuiteSyncDep>();
+
+    const { ensureWalletSuiteSyncOn } = useServices(selectEnsureWalletSuiteSyncOnDep);
 
     const hasSuiteSyncError = useSelector((state: WithSuiteSyncAndDeviceState) =>
         selectHasDeviceSuiteSyncError(state, deviceStaticSessionId),
@@ -111,7 +112,7 @@ export const SuiteSyncBanner = ({ deviceStaticSessionId }: SuiteSyncBannerProps)
 
     const handlers: Record<SuiteSyncBannerInteraction, () => void | Promise<void>> = {
         'keys-needed': async () => {
-            const result = await suiteSync.ensureWalletSuiteSyncOn({
+            const result = await ensureWalletSuiteSyncOn({
                 deviceStaticSessionId,
                 isWriteMode: false,
             });

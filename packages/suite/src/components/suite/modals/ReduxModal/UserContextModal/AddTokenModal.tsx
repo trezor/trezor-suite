@@ -1,7 +1,7 @@
 import { type ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { isAddressValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
@@ -24,7 +24,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
     const account = useSelector(selectSelectedAccount);
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const loadTokenInfo = useCallback(
         async (acc: Account, contractAddress: string) => {

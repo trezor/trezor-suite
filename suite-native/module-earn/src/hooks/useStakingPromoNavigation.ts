@@ -10,7 +10,7 @@ import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { useAccountAlerts } from '@suite-native/accounts';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { useBottomSheetModal } from '@suite-native/atoms';
 import {
     AddCoinAccountStackRoutes,
@@ -33,7 +33,7 @@ export const useStakingPromoNavigation = () => {
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const { showViewOnlyAddAccountAlert } = useAccountAlerts();
     const { isPortfolioTrackerDevice, openPortfolioTrackerSheet } = useEarnPortfolioTrackerGuard();
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
 
     const reportStakingNavigate = useStakingNavigateAnalytics();
 

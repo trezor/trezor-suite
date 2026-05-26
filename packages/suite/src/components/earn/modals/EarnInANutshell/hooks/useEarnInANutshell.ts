@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDto, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
@@ -47,7 +47,7 @@ export const useEarnInANutshell = ({
     );
 
     const dispatch = useDispatch();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const handleAction = () => {
         onCancel();

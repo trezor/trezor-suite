@@ -1,14 +1,14 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { selectIsTronEnabled, toggleIsTronEnabled } from '@suite-native/settings';
 
 export const ToggleTronCard = () => {
     const dispatch = useDispatch();
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const isTronEnabled = useSelector(selectIsTronEnabled);
 
     const handleToggleTron = (value: boolean) => {

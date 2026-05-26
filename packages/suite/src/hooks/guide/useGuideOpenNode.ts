@@ -1,4 +1,4 @@
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 
 import { openNode } from 'src/actions/suite/guideActions';
@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getNodeById } from 'src/utils/suite/guide';
 
 export const useGuideOpenNode = () => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { isGuideOpen, openGuide } = useGuide();
 
     const indexNode = useSelector(state => state.guide.indexNode);

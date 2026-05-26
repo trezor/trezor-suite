@@ -9,7 +9,7 @@ import {
     selectAccountNetworkSymbol,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { type ActiveView, AnimatedDoubleInput, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -30,7 +30,7 @@ type AmountInputProps = {
 type RouteProps = StackProps<SendStackParamList, SendStackRoutes.SendOutputs>['route'];
 
 export const AmountInputs = ({ index }: AmountInputProps) => {
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const route = useRoute<RouteProps>();
     const { accountKey, tokenContract } = route.params;
 

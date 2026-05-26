@@ -1,7 +1,11 @@
 import { type JSX, useCallback, useEffect } from 'react';
 
-import { AppUpdateEventStatus, asTypedDesktopAnalytics, events } from '@suite/analytics';
-import { type DesktopAnalyticsDep } from '@suite/analytics';
+import {
+    AppUpdateEventStatus,
+    asTypedDesktopAnalytics,
+    events,
+    selectDesktopAnalyticsDep,
+} from '@suite/analytics';
 import {
     UpdateState,
     availableThunk,
@@ -39,7 +43,7 @@ const alwaysOpenStates = [
 export const DesktopUpdater = () => {
     const dispatch = useDispatch();
     const desktopUpdate = useSelector(selectDesktopUpdate);
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const desktopUpdateState = desktopUpdate.state;
 
     useEffect(() => {

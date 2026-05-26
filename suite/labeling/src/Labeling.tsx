@@ -24,7 +24,7 @@ import {
     type WithSuiteSyncAndDeviceState,
     selectIsSuiteSyncEnabled,
 } from '@suite-common/suite-sync';
-import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
+import { selectEnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types';
 import { type DiscoveryRootState, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { type StaticSessionId } from '@trezor/connect';
 import { EditableText, type EditableTextProps } from '@trezor/product-components';
@@ -55,7 +55,7 @@ export const Labeling = ({
     ...rest
 }: LabelingProps) => {
     const dispatch = useDispatch();
-    const { suiteSync } = useServices<SuiteSyncDep>();
+    const { ensureWalletSuiteSyncOn } = useServices(selectEnsureWalletSuiteSyncOnDep);
     const [showEnableSuiteSyncModal, setShowEnableSuiteSyncModal] = useState(false);
     const suiteSyncTurnOnEditResolveRef = useRef<((value: boolean) => void) | null>(null);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
@@ -92,7 +92,7 @@ export const Labeling = ({
             if (suiteSyncInteraction !== null && suiteSyncInteraction !== 'unsupported') {
                 // Keys needed is not handled by the same modal, because it in DeviceInteraction context
                 if (suiteSyncInteraction === 'keys-needed') {
-                    const result = await suiteSync.ensureWalletSuiteSyncOn({
+                    const result = await ensureWalletSuiteSyncOn({
                         deviceStaticSessionId,
                         isWriteMode: false,
                     });
@@ -133,7 +133,7 @@ export const Labeling = ({
         isLegacyLabelingEnabled,
         isSuiteSyncEnabled,
         legacyMetadataState.initiating,
-        suiteSync,
+        ensureWalletSuiteSyncOn,
         suiteSyncInteraction,
     ]);
 

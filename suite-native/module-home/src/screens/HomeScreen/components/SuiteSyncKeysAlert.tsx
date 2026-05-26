@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceStaticSessionId, selectIsDeviceConnected } from '@suite-common/device';
-import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
+import { selectEnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types';
 import { AnimatedFullAlertBox } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -26,7 +26,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const SuiteSyncKeysAlert = () => {
-    const { suiteSync } = useServices<SuiteSyncDep>();
+    const { ensureWalletSuiteSyncOn } = useServices(selectEnsureWalletSuiteSyncOnDep);
 
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const shouldDisplaySuiteSyncAlert = useSelector(selectShouldDisplaySuiteSyncAlert);
@@ -43,7 +43,7 @@ export const SuiteSyncKeysAlert = () => {
                 screen: AuthorizeDeviceStackRoutes.DeviceConnectionGuard,
             });
         } else {
-            const result = await suiteSync.ensureWalletSuiteSyncOn({
+            const result = await ensureWalletSuiteSyncOn({
                 deviceStaticSessionId,
                 isWriteMode: false,
             });
@@ -52,7 +52,13 @@ export const SuiteSyncKeysAlert = () => {
                 handleSuiteSyncError(result.error);
             }
         }
-    }, [deviceStaticSessionId, handleSuiteSyncError, isDeviceConnected, navigation, suiteSync]);
+    }, [
+        deviceStaticSessionId,
+        ensureWalletSuiteSyncOn,
+        handleSuiteSyncError,
+        isDeviceConnected,
+        navigation,
+    ]);
 
     if (!shouldDisplaySuiteSyncAlert) return null;
 
