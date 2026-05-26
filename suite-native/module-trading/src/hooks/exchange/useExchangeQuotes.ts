@@ -16,8 +16,8 @@ import {
 import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import {
     type AnalyticsNativeEvents,
-    type NativeAnalyticsDep,
     events,
+    selectNativeAnalyticsDep,
 } from '@suite-native/analytics';
 import { useFormState } from '@suite-native/forms';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
@@ -129,7 +129,7 @@ const useExchangeQuotesThunk = (
     quotesPromiseRef: RefObject<AbortablePromise | undefined>,
     debounce: ReturnType<typeof useDebounce>,
 ) => {
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const dispatch = useDispatch();
     const asset = getValues('sendAsset');
     const symbol = getSymbolFromTradeableAsset(asset);

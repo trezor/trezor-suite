@@ -1,4 +1,4 @@
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
@@ -45,7 +45,7 @@ export const EarnStakingAccountRow = ({
 }) => {
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { isBelowMobile } = useLayoutSize();
     const apy = useSelector(state => selectPoolStatsApy(state, { account }));
     const displaySymbol = getDisplaySymbol(account.symbol);

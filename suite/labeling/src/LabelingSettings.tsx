@@ -2,7 +2,7 @@ import { type ReactNode, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { type OptionProps } from 'react-select';
 
-import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
@@ -20,7 +20,10 @@ import {
     selectIsSuiteSyncEnabled,
     selectIsSuiteSyncFeatureAvailable,
 } from '@suite-common/suite-sync';
-import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
+import {
+    selectTurnOffSuiteSyncDep,
+    selectTurnOnSuiteSyncDep,
+} from '@suite-common/suite-sync-types';
 import { Box, LoadingContent, Tooltip } from '@trezor/components';
 // eslint-disable-next-line local-rules/no-package-deep-imports
 import { Option as SelectOption } from '@trezor/components/src/components/form/Select/customComponents';
@@ -80,7 +83,13 @@ const LabelingOption = ({
 
 export const LabelingSettings = () => {
     const { translationString } = useTranslation();
-    const { suiteSync, analytics } = useServices<SuiteSyncDep & DesktopAnalyticsDep>();
+
+    const { analytics, turnOffSuiteSync, turnOnSuiteSync } = useServices(
+        selectDesktopAnalyticsDep,
+        selectTurnOffSuiteSyncDep,
+        selectTurnOnSuiteSyncDep,
+    );
+
     const dispatch = useDispatch();
     const [legacyModalWarningVisible, setLegacyModalWarningVisible] = useState(false);
     const { device } = useDevice();
@@ -105,7 +114,7 @@ export const LabelingSettings = () => {
     })).filter(option => option.value !== 'suite-sync' || showSuiteSync);
 
     const handleLegacyOptionSelect = async () => {
-        await suiteSync.turnOffSuiteSync();
+        await turnOffSuiteSync();
         if (legacyMetadataState.enabled === false) {
             dispatch(metadataLabelingActions.init(true));
         }
@@ -127,11 +136,11 @@ export const LabelingSettings = () => {
                     dispatch(metadataThunks.disableMetadata());
                 }
 
-                await suiteSync.turnOffSuiteSync();
+                await turnOffSuiteSync();
                 break;
 
             case 'suite-sync': {
-                const result = await suiteSync.turnOnSuiteSync({ deviceStaticSessionId });
+                const result = await turnOnSuiteSync({ deviceStaticSessionId });
                 if (!result.success && deviceStaticSessionId !== undefined) {
                     suiteSyncErrorHandler({ deviceStaticSessionId, dispatch, error: result.error });
                 }

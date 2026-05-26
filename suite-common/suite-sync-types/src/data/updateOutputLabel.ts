@@ -20,3 +20,7 @@ export type UpdateOutputLabel = (
 ) => Promise<Result<void, EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError>>;
 
 export type UpdateOutputLabelDep = { updateOutputLabel: UpdateOutputLabel };
+
+export const selectUpdateOutputLabelDep = (services: any): UpdateOutputLabelDep => ({
+    updateOutputLabel: services.suiteSync.labeling.updateOutputLabel,
+});

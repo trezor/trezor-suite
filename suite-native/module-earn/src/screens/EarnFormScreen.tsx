@@ -6,7 +6,7 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 import { useServices } from '@suite-common/dependency-injection';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { AccountDetailsCard } from '@suite-native/accounts';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { type ActiveView, Box } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import {
@@ -33,7 +33,7 @@ export const EarnFormScreen = () => {
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const currencyRef = useRef<'crypto' | 'fiat' | undefined>(undefined);
     const handleCurrencyChange = useCallback((activeView: ActiveView) => {
         currencyRef.current = activeView === 'primary' ? 'crypto' : 'fiat';

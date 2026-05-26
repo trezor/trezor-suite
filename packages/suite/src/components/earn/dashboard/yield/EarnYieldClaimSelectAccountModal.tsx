@@ -1,5 +1,5 @@
 import { Address } from '@suite/address';
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectIsDebugModeActive } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
@@ -25,7 +25,7 @@ export const EarnYieldClaimSelectAccountModal = ({
     onSelect,
     onClose,
 }: EarnYieldClaimSelectAccountModalProps) => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const baseCurrency = useSelector(selectBaseCurrency);

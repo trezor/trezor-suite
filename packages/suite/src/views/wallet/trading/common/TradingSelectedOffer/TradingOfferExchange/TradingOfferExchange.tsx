@@ -1,6 +1,6 @@
 import { type CryptoId } from 'invity-api';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import {
@@ -31,7 +31,7 @@ export const TradingOfferExchange = ({
     quoteAmounts,
 }: TradingOfferExchangeProps) => {
     const { handleClick, disabled } = useAsyncClickHandler();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const formStep = useSelector(selectTradingExchangeFormStep);
     const receiveAccountKey = useSelector(selectTradingExchangeReceiveAccountKey);
     const receiveAccount = useSelector(

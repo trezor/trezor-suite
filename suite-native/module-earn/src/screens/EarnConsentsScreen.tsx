@@ -5,7 +5,7 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 
 import { useServices } from '@suite-common/dependency-injection';
 import { getNetwork } from '@suite-common/wallet-config';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -50,7 +50,7 @@ export const EarnConsentsScreen = () => {
     const { accountKey, amount, account } = route.params;
     const networkSymbol = account.symbol;
 
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const registerNavigateBackAnalytics = useNavigateBackAnalytics({
         type: events.stakingStakeEvent.name,
         payload: {

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useServices } from '@suite-common/dependency-injection';
 import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled, setNetworkReserve } from '@suite-common/wallet-core';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -14,7 +14,7 @@ export const ToggleNetworkReserveCheckCard = () => {
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
 
     const dispatch = useDispatch();
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const openLink = useOpenLink();
 
     const supportedNetworks = networksCollection

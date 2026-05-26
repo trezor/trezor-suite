@@ -19,3 +19,7 @@ export type UpdateAddressLabel = (
 ) => Promise<Result<void, EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError>>;
 
 export type UpdateAddressLabelDep = { updateAddressLabel: UpdateAddressLabel };
+
+export const selectUpdateAddressLabelDep = (services: any): UpdateAddressLabelDep => ({
+    updateAddressLabel: services.suiteSync.labeling.updateAddressLabel,
+});

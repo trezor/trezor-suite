@@ -1,7 +1,7 @@
 import { type JSX } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
@@ -34,7 +34,7 @@ export const HeaderDropdown = ({
     isTradingDisabled,
     showSignAndVerify,
 }: HeaderDropdownProps) => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();
     const goToWithAnalytics = useGoToWithAnalytics();
     const account = useSelector(selectSelectedAccount);

@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { type GuideNode as GuideNodeType } from '@suite-common/suite-types';
@@ -68,7 +68,7 @@ type GuideNodeProps = {
 export const GuideNode = ({ node, description }: GuideNodeProps) => {
     const language = useSelector(selectLanguage);
     const dispatch = useDispatch();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const navigateToNode = () => {
         dispatch(openNode(node));

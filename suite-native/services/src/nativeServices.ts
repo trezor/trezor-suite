@@ -7,4 +7,8 @@ export type MMKVStorageDep = {
     getMMKVStorage: () => Promise<MMKV>;
 };
 
+export const selectMMKVStorageDep = (services: any): MMKVStorageDep => ({
+    getMMKVStorage: services.getMMKVStorage,
+});
+
 export type NativeServices = CommonServices & NativeAnalyticsDep & MMKVStorageDep;

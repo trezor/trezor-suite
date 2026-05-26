@@ -6,6 +6,10 @@ export type DesktopAnalyticsDep = {
     analytics: Analytics<AnalyticsDesktopEvents>;
 };
 
+export const selectDesktopAnalyticsDep = (services: any): DesktopAnalyticsDep => ({
+    analytics: services.analytics,
+});
+
 export const createAnalytics = (): Analytics<AnalyticsDesktopEvents> =>
     new QueuedAnalytics<AnalyticsDesktopEvents>({
         version: process.env.VERSION!,

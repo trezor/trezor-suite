@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { type SuiteSyncDataRootState, selectSuiteSyncAddressLabel } from '@suite-common/suite-sync';
-import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
+import { selectUpdateAddressLabelDep } from '@suite-common/suite-sync-types';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountDescriptor } from '@suite-common/wallet-types';
 import { featureUsed } from '@suite-native/feature-feedback';
@@ -31,7 +31,9 @@ export const AddressLabelEditable = ({
 }: AddressLabelEditableProps) => {
     const dispatch = useDispatch();
     const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
-    const { suiteSync } = useServices<SuiteSyncDep>();
+
+    const { updateAddressLabel } = useServices(selectUpdateAddressLabelDep);
+
     const { handleSuiteSyncError } = useSuiteSyncErrorHandler();
 
     const label = useSelector((state: SuiteSyncDataRootState) =>
@@ -39,7 +41,7 @@ export const AddressLabelEditable = ({
     );
 
     const onSubmit = async (newLabel: string) => {
-        const result = await suiteSync.labeling.updateAddressLabel({
+        const result = await updateAddressLabel({
             deviceStaticSessionId,
             address,
             label: newLabel,

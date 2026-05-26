@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { type DexApprovalType, type ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectIsDebugModeActive } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
@@ -59,7 +59,7 @@ export const ApproveModal = ({
     onCancel,
 }: ApproveModalProps) => {
     const dispatch = useDispatch();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const context = useTradingFormContext<TradingExchangeType>();
     const {
         form: {

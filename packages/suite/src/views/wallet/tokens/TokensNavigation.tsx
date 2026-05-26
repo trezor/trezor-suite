@@ -1,6 +1,6 @@
 import { type Dispatch, type SetStateAction, useEffect } from 'react';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type Route, goto, selectRouteName } from '@suite/router';
@@ -95,7 +95,7 @@ export const TokensNavigation = ({
 }: TokensNavigationProps) => {
     const { account } = selectedAccount;
     const routeName = useSelector(selectRouteName);
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const tokenDefinitions = useSelector(state =>
         isNft
             ? selectNftDefinitions(state, selectedAccount.account.symbol)

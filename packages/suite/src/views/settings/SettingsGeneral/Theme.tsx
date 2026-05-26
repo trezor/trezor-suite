@@ -1,4 +1,4 @@
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import {
@@ -56,7 +56,7 @@ const useThemeOptions = () => {
 };
 
 export const Theme = () => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const theme = useSelector(selectThemeSettings);
     const autodetectTheme = useSelector(selectAutodetectTheme);
     const dispatch = useDispatch();

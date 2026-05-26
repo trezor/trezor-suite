@@ -1,4 +1,8 @@
-export { createAnalytics, type DesktopAnalyticsDep } from './createAnalytics';
+export {
+    createAnalytics,
+    type DesktopAnalyticsDep,
+    selectDesktopAnalyticsDep,
+} from './createAnalytics';
 export {
     type OnboardingAnalytics,
     type AppUpdateEvent,

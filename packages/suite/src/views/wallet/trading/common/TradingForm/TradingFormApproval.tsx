@@ -1,7 +1,7 @@
 import styled, { type DefaultTheme } from 'styled-components';
 
 import { Address } from '@suite/address';
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
@@ -36,7 +36,7 @@ const TextButton = styled.div<{ $disabled: boolean }>`
 export const TradingFormApproval = () => {
     const context = useTradingFormContext<TradingExchangeType>();
     const dispatch = useDispatch();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const { tx, state: allowanceState } = useAllowanceContext();
 

@@ -1,4 +1,4 @@
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
@@ -16,7 +16,7 @@ export const GlobalSendReceiveButtons = ({
     intent,
     priority,
 }: GlobalSendReceiveButtonsProps) => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     return (
         <ButtonGroup intent={intent} priority={priority}>

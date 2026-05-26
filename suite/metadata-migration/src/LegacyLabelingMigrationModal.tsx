@@ -18,7 +18,7 @@ import { type AnyAction, type ExtraDependencies } from '@suite-common/redux-util
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type StaticSessionId } from '@trezor/connect';
 
-import { type MetadataMigrationDep } from './createMetadataMigrationCompositionRoot';
+import { selectMetadataMigrationDep } from './createMetadataMigrationCompositionRoot';
 import type { MigrationError } from './legacyLabelsMigration';
 import { isMigratableDevice } from './migrationUtils';
 
@@ -39,7 +39,7 @@ export const LegacyLabelingMigrationModal = ({
     onSuiteSyncError,
 }: LegacyLabelingMigrationModalProps) => {
     const dispatch = useDispatch<MetadataDispatch>();
-    const { migrateLegacyLabelsToSuiteSync } = useServices<MetadataMigrationDep>();
+    const { migrateLegacyLabelsToSuiteSync } = useServices(selectMetadataMigrationDep);
     const selectedProvider = useSelector(selectSelectedProviderForLabels);
     const selectedDevice = useSelector(selectSelectedDevice);
     const [providerLoading, setProviderLoading] = useState<MetadataProviderType | null>(null);

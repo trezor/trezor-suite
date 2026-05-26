@@ -10,7 +10,7 @@ import {
     selectIsDeviceBackupRequired,
     selectIsDeviceProtectedByPin,
 } from '@suite-common/device';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 
 import { onboardingAnalyticsAtom } from '../../atoms';
 
@@ -19,7 +19,7 @@ export const useReportOnboardingSuccessAnalytics = () => {
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
     const isDeviceProtectedByPin = useSelector(selectIsDeviceProtectedByPin);
     const onboardingAnalytics = useAtomValue(onboardingAnalyticsAtom);
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
 
     return useCallback(() => {
         analytics.report({

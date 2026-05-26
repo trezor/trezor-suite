@@ -1,4 +1,4 @@
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { splitYieldPendingTransaction } from '@suite-common/wallet-core';
@@ -15,7 +15,7 @@ import { YieldFlowCompleteSupply } from '../common/YieldFlowCompleteSupply';
 import { getApyBreakdown } from '../yieldFlowUtils';
 
 export const YieldSupplyForm = () => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const {
         account,

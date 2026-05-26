@@ -1,6 +1,6 @@
 import { type MouseEventHandler } from 'react';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { deviceActions } from '@suite-common/device';
@@ -17,7 +17,7 @@ type EjectConfirmationProps = {
 };
 
 export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirmationProps) => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();
 
     const handleEject = () => {

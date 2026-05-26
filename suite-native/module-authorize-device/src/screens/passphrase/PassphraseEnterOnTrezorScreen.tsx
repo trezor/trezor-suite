@@ -1,5 +1,5 @@
 import { useServices } from '@suite-common/dependency-injection';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { AuthorizeDeviceStackRoutes, useNavigateToInitialScreen } from '@suite-native/navigation';
@@ -13,7 +13,7 @@ import { useHandleNavigateToInitialScreenOnIdle } from '../../hooks/useHandleNav
 
 export const PassphraseEnterOnTrezorScreen = () => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
 
     useHandleNavigateToInitialScreenOnIdle();
 

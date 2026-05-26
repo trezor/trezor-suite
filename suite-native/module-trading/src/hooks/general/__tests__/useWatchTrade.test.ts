@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { type TestStore } from '@suite-native/test-utils-store';
 import { getBuyTrade } from '@suite-native/trading-fixtures';
 
@@ -34,7 +34,7 @@ const useWatchTradeWithReportSpy = (props: {
     orderId?: string;
     isInProgress?: boolean;
 }) => {
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const spyRef = React.useRef<ReportSpy | null>(null);
 
     if (!spyRef.current) {

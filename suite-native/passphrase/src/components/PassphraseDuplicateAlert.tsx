@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useServices } from '@suite-common/dependency-injection';
 import { switchToDuplicatedWallet } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
 import {
     AppTabsRoutes,
@@ -26,7 +26,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 export const PassphraseDuplicateAlert = ({ children }: { children: React.ReactNode }) => {
     const dispatch = useDispatch();
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const { translate } = useTranslate();
 
     const navigation = useNavigation<NavigationProp>();

@@ -1,6 +1,6 @@
 import type { Locale } from 'date-fns';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
@@ -33,7 +33,7 @@ export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
     const locale = useLocales();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const autoLockDelay = device?.features?.auto_lock_delay_ms;
 
     if (typeof autoLockDelay !== 'number') {

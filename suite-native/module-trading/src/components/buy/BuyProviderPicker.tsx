@@ -10,7 +10,7 @@ import {
     selectTradingBuyProviders,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { OverviewRow, OverviewValueSkeleton, ProviderLogo } from '@suite-native/trading-atoms';
@@ -66,7 +66,7 @@ export const BuyProviderPicker = () => {
     const form = useBuyFormContext();
     const providers = useSelector(selectTradingBuyProviders);
     const isLoading = useSelector(selectTradingBuyIsLoading);
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
         useSheetControls(form, 'quote');
     const { paymentMethod } = selectedValue ?? {};

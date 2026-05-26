@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectIsDebugModeActive } from '@suite/settings';
 import { events } from '@suite-common/analytics';
@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getPermissionText } from 'src/views/settings/SettingsConnectedApps/ConnectPermissions';
 
 export const ConnectPermissionsModal = () => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const [isRemembered, setIsRemembered] = useState(false);
     const [isSilentMode, setIsSilentMode] = useState(false);
     const dispatch = useDispatch();

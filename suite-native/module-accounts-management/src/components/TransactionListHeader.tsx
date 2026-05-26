@@ -14,7 +14,7 @@ import {
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
@@ -88,7 +88,7 @@ const TransactionListHeaderContent = ({
 
 export const TransactionListHeader = memo(
     ({ accountKey, tokenContract }: TransactionListHeaderProps) => {
-        const { analytics } = useServices<NativeAnalyticsDep>();
+        const { analytics } = useServices(selectNativeAnalyticsDep);
         const navigation = useNavigation<NavigationProp>();
 
         const account = useSelector((state: AccountsRootState) =>

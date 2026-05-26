@@ -3,7 +3,7 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import type { BankAccount, CryptoId, SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { type TranslationKey, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectHasExperimentalFeature } from '@suite/settings';
@@ -66,7 +66,7 @@ import { useTradingFormAccount } from './useTradingFormAccount';
 export const useTradingSellForm = ({
     pageType = 'form',
 }: UseTradingFormCommonProps = {}): TradingSellFormContextProps => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const type = 'sell';
     const isFormPage = pageType === 'form';
     const dispatch = useDispatch();

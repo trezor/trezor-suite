@@ -12,7 +12,7 @@ import {
     selectTradingCoinInfoByCryptoId,
     tradingBuyActions,
 } from '@suite-common/trading';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -38,7 +38,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const useBuyFlow = (form: BuyFormType) => {
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const dispatch = useDispatch();
     const isLoading = useSelector(selectTradingBuyIsLoading);
     const [asset, candidateQuote, receiveAccount] = form.watch([

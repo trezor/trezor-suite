@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
@@ -37,7 +37,7 @@ export const ConfirmStakeModal = ({
     onCancel,
     flow,
 }: ConfirmStakeModalProps) => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();
     const [hasAgreed, setHasAgreed] = useState(false);
     const validatorsQueue = useSelector(selectEthValidatorsQueue);

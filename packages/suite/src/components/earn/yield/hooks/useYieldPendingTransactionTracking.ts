@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-import { type AnalyticsDesktopEvents, type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { type AnalyticsDesktopEvents, events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDto } from '@suite-common/earn-stablecoin-api';
 import {
@@ -157,7 +157,7 @@ export const useYieldPendingTransactionTracking = ({
     vault,
 }: UseYieldPendingTransactionTrackingProps) => {
     const dispatch = useDispatch();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const pendingTransaction = useSelector(
         state => selectStablecoinYieldSession(state, flowType, flowKey).action.pendingTransaction,
     );

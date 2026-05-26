@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 
 import { type CryptoId, type DexApprovalType } from 'invity-api';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Calldata } from '@suite-common/calldata';
 import { useServices } from '@suite-common/dependency-injection';
 import { useCurrentRef } from '@trezor/react-utils';
@@ -25,7 +25,7 @@ interface TradingApproveModalProps {
 export const TradingApproveModal = ({ amount, cryptoId }: TradingApproveModalProps) => {
     const { state } = useAllowanceContext();
     const context = useTradingFormContext();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const getCryptoInfo = useTradingExchangeCryptoAndProviderInfo();
 
     const contextRef = useCurrentRef(context);

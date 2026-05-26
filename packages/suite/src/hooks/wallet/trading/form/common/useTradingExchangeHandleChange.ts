@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingExchangeFormProps,
@@ -38,7 +38,7 @@ export const useTradingExchangeHandleChange = ({
     setIsScheduledQuotesRefresh = noop,
 }: TradingExchangeUseHandleChangeProps) => {
     const dispatch = useDispatch();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const previousPromise = useRef<PromiseType>(null);
 
     const handleChange = useCallback(async () => {

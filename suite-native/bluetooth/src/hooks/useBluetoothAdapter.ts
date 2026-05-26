@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { events } from '@suite-common/analytics';
 import { bluetoothActions, parseManufacturerData } from '@suite-common/bluetooth';
 import { useServices } from '@suite-common/dependency-injection';
-import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 import { asBluetoothDeviceId } from '@trezor/connect';
@@ -32,7 +32,7 @@ const toBluetoothDevice = (device: TransportBluetoothDevice) => ({
 });
 
 export const useBluetoothAdapter = () => {
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const dispatch = useDispatch();
     const { showToast } = useToast();
     const { translate } = useTranslate();

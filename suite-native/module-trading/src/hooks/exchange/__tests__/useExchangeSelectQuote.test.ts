@@ -3,7 +3,7 @@ import React from 'react';
 import { useServices } from '@suite-common/dependency-injection';
 import { tradingExchangeActions, tradingSettingsActions } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     btcAsset,
@@ -47,7 +47,7 @@ jest.mock('@react-navigation/native', () => ({
 type ReportSpy = jest.SpyInstance;
 
 const useExchangeSelectQuoteWithReportSpy = (exchangeForm: ExchangeFormType) => {
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
 
     const spyRef = React.useRef<ReportSpy | null>(null);
     if (!spyRef.current) {

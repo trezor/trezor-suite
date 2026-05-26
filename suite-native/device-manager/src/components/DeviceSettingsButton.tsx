@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -23,7 +23,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const DeviceSettingsButton = () => {
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const navigation = useNavigation<NavigationProp>();
     const { setIsDeviceManagerVisible } = useDeviceManager();
     const selectedDevice = useSelector(selectSelectedDevice);

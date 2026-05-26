@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
     type BluetoothDevice,
     BluetoothDeviceList,
@@ -31,7 +31,7 @@ type NavigationProps = StackNavigationProps<
 export const ConnectBluetoothDeviceScreen = () => {
     const { connectBluetoothDevice } = useBluetoothDevice();
     const navigation = useNavigation<NavigationProps>();
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
 
     // Once a device is connected, it's added to known devices and thus disappears from the list
     // before the transition to the next screen finishes. This ensures it doesn't feel glitchy.

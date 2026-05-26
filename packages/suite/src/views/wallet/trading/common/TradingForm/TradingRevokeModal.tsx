@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 
 import { type CryptoId } from 'invity-api';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Calldata } from '@suite-common/calldata';
 import { useServices } from '@suite-common/dependency-injection';
 
@@ -23,7 +23,7 @@ interface TradingRevokeModalProps {
 export const TradingRevokeModal = ({ cryptoId }: TradingRevokeModalProps) => {
     const { state } = useAllowanceContext();
     const context = useTradingFormContext();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const getCryptoInfo = useTradingExchangeCryptoAndProviderInfo();
 
     const handleCancel = useCallback(async () => {

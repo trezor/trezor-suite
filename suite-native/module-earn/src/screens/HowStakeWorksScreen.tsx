@@ -12,7 +12,7 @@ import {
     selectDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { calculateRewards } from '@suite-common/wallet-utils';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Button, InlineAlertBox, TimelineDetailsCard, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -52,7 +52,7 @@ export const HowStakeWorksScreen = () => {
 
     const resolvedAccountKey = accountKey || accounts[0]?.key;
 
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const registerNavigateBackAnalytics = useNavigateBackAnalytics({
         type: events.stakingStakeEvent.name,
         payload: {

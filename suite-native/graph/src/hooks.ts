@@ -23,7 +23,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 
 import { timeSwitchItems } from './components/TimeSwitch';
 import { selectPortfolioGraphAccountItems } from './selectors';
@@ -42,7 +42,7 @@ const useWatchTimeframeChangeForAnalytics = (
     symbol?: NetworkSymbol,
 ) => {
     const isFirstRender = useRef(true);
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     useEffect(() => {
         if (isFirstRender.current) {
             // Do not report default value on first render.

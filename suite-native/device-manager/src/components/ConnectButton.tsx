@@ -5,7 +5,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { AnimatedBox, Box, Button } from '@suite-native/atoms';
 import { useConnectDeviceHandler } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
@@ -30,7 +30,7 @@ const buttonSurfaceStyle = prepareNativeStyle(utils => ({
 export const ConnectButton = ({ onSelectDevice }: ConnectButtonProps) => {
     const { setIsDeviceManagerVisible } = useDeviceManager();
     const { applyStyle } = useNativeStyles();
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
     const device = useSelector(selectSelectedDevice);
 

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { FormProvider } from 'react-hook-form';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
@@ -31,7 +31,7 @@ type EarnClaimModalProps = {
 export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(account.symbol);
 
     const {

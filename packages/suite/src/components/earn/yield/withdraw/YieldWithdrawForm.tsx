@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { splitYieldPendingTransaction } from '@suite-common/wallet-core';
@@ -15,7 +15,7 @@ import { YieldFlowCompleteWithdraw } from '../common/YieldFlowCompleteWithdraw';
 import { getApyBreakdown } from '../yieldFlowUtils';
 
 export const YieldWithdrawForm = () => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const {
         vault,

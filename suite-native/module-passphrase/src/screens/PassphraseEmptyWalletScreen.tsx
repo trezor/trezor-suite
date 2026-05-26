@@ -7,7 +7,7 @@ import {
     runDiscoveryThunk,
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
     Box,
     Button,
@@ -31,7 +31,7 @@ const cardStyle = prepareNativeStyle(utils => ({
 export const PassphraseEmptyWalletScreen = () => {
     const { applyStyle } = useNativeStyles();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const dispatch = useDispatch();
 
     const device = useSelector(selectSelectedDevice);

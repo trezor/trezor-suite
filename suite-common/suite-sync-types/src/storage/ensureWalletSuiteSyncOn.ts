@@ -37,11 +37,21 @@ export type EnsureWalletSuiteSyncOn = (
 
 export type EnsureWalletSuiteSyncOnDep = { ensureWalletSuiteSyncOn: EnsureWalletSuiteSyncOn };
 
+export const selectEnsureWalletSuiteSyncOnDep = (services: any): EnsureWalletSuiteSyncOnDep => ({
+    ensureWalletSuiteSyncOn: services.suiteSync.ensureWalletSuiteSyncOn,
+});
+
 export type EnsureWalletSuiteSyncOnAsync = (params: EnsureWalletSuiteSyncOnParams) => Promise<void>;
 
 export type EnsureWalletSuiteSyncOnAsyncDep = {
     ensureWalletSuiteSyncOnAsync: EnsureWalletSuiteSyncOnAsync;
 };
+
+export const selectEnsureWalletSuiteSyncOnAsyncDep = (
+    services: any,
+): EnsureWalletSuiteSyncOnAsyncDep => ({
+    ensureWalletSuiteSyncOnAsync: services.suiteSync.ensureWalletSuiteSyncOnAsync,
+});
 
 export type SuiteSyncUserFacingErrorType =
     | 'SuiteSyncUnavailableOnDeviceError'

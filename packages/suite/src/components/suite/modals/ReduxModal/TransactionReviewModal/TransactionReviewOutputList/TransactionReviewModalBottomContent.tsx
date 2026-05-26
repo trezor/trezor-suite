@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-    type DesktopAnalyticsDep,
     type TransactionCreatedEventAction,
     events,
+    selectDesktopAnalyticsDep,
 } from '@suite/analytics';
 import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
@@ -63,7 +63,7 @@ export const TransactionReviewModalBottomContent = ({
     precomposedForm,
     outputs,
 }: TransactionReviewModalBottomContentProps) => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();
     const connectPopupCall = useSelector(selectConnectPopupCall);
     const { precomposedTx, serializedTx } = txInfoState;

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { type TradingTransaction } from '@suite-common/trading';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { renderHook, renderHookWithBasicProvider } from '@suite-native/test-utils';
 import { getBuyTrade, getExchangeTrade } from '@suite-native/trading-fixtures';
 
@@ -12,7 +12,7 @@ type Props = { trades: TradingTransaction[] };
 type ReportSpy = jest.SpyInstance;
 
 const useHookWithReportSpy = (trades: TradingTransaction[]) => {
-    const { analytics } = useServices<NativeAnalyticsDep>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
 
     const spyRef = React.useRef<ReportSpy | null>(null);
 

@@ -2,7 +2,7 @@ import { type JSX, useContext } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { H3, IconButton, Paragraph, useElevation } from '@trezor/components';
@@ -50,7 +50,7 @@ interface GuideHeaderProps {
 }
 
 export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { elevation } = useElevation();
     const dispatch = useDispatch();
     const isScrolled = useContext(ContentScrolledContext);

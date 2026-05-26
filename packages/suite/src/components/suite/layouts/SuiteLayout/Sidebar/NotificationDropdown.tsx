@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Box, Menu, Popover, type PopoverRef } from '@trezor/components';
@@ -22,7 +22,7 @@ const StyledNavigationItem = styled(NavigationItem)`
 `;
 
 export const NotificationDropdown = (props: NavigationItemProps) => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const [isOpen, setIsOpen] = useState(false);
     const { isBelowLaptop } = useLayoutSize();
     const popoverRef = useRef<PopoverRef>(null);

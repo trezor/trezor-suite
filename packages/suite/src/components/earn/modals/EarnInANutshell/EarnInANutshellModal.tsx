@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import {
     type EarnAnalyticsStep,
@@ -47,7 +47,7 @@ export const EarnInANutshellModal = ({
     yieldContext,
     onCancel,
 }: EarnInANutshellModalProps) => {
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     useEffect(() => {
         switch (flow) {

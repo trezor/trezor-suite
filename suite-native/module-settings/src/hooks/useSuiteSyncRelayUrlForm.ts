@@ -9,7 +9,7 @@ import {
     createChangeSuiteSyncServerSchema,
     selectSuiteSyncCustomRelayUrl,
 } from '@suite-common/suite-sync';
-import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
+import { selectChangeRelayUrlDep } from '@suite-common/suite-sync-types';
 import { type SelectItemType } from '@suite-native/atoms';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
@@ -18,7 +18,9 @@ import { useToast } from '@suite-native/toasts';
 export const useSuiteSyncRelayUrlForm = () => {
     const { translate } = useTranslate();
     const customRelayUrl = useSelector(selectSuiteSyncCustomRelayUrl);
-    const { suiteSync } = useServices<SuiteSyncDep>();
+
+    const { changeRelayUrl } = useServices(selectChangeRelayUrlDep);
+
     const { showToast } = useToast();
 
     const serverTypes = useMemo<SelectItemType<SuiteSyncServerTypeSelectValue>[]>(
@@ -64,7 +66,7 @@ export const useSuiteSyncRelayUrlForm = () => {
                     ? null
                     : values.customRelayUrl;
 
-            await suiteSync.changeRelayUrl({ relayUrl });
+            await changeRelayUrl({ relayUrl });
             showToast({
                 intent: 'brand',
                 message: translate('moduleSettings.items.features.suiteSync.relayUrl.saved'),

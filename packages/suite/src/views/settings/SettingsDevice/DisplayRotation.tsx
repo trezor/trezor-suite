@@ -1,6 +1,6 @@
 import { type JSX } from 'react';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
@@ -60,7 +60,7 @@ interface DisplayRotationProps {
 export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const isSupported =
         device?.features !== undefined &&
         DEVICES_SUPPORTING_ROTATION.includes(device.features.internal_model);

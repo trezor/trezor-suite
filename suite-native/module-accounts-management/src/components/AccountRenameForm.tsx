@@ -3,7 +3,7 @@ import { useWatch } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
+import { selectUpdateAccountLabelDep } from '@suite-common/suite-sync-types';
 import {
     type AccountsRootState,
     accountsActions,
@@ -31,7 +31,9 @@ type AccountRenameFormProps = {
 export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormProps) => {
     const { translate } = useTranslate();
     const dispatch = useDispatch();
-    const { suiteSync } = useServices<SuiteSyncDep>();
+
+    const { updateAccountLabel } = useServices(selectUpdateAccountLabelDep);
+
     const { handleSuiteSyncError } = useSuiteSyncErrorHandler();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -73,7 +75,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
         if (isLabellingAllowed) {
             if (!account.deviceState) return;
 
-            const result = await suiteSync.labeling.updateAccountLabel({
+            const result = await updateAccountLabel({
                 deviceStaticSessionId: account.deviceState,
                 accountKey,
                 label: formValues.accountLabel,

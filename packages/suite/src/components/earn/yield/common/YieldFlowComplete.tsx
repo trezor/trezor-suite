@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
@@ -29,7 +29,7 @@ export const YieldFlowComplete = ({
     children,
 }: YieldFlowCompleteProps) => {
     const dispatch = useDispatch();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();
 

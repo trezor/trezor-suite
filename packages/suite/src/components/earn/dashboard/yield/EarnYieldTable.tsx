@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { EarnAnchor, goto, useAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
@@ -31,7 +31,7 @@ export const EarnYieldTable = () => {
     const { isBelowLaptop } = useLayoutSize();
     const isCardLayout = isBelowLaptop;
     const dispatch = useDispatch();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
     const claimMessageSystem = useMessageSystemYield('claim');
 

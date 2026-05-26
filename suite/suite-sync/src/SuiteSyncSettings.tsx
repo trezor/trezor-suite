@@ -11,7 +11,7 @@ import {
     selectSuiteSyncRelayUrl,
     updateSuiteSyncDebugEnabled,
 } from '@suite-common/suite-sync';
-import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
+import { selectChangeRelayUrlDep } from '@suite-common/suite-sync-types';
 import { Button, ButtonGroup, Checkbox, Code, Column, Input, Text } from '@trezor/components';
 import { ActionColumn, SectionItem, SettingsSection, TextColumn } from '@trezor/product-components';
 import { type BreakpointFlags, spacings } from '@trezor/theme';
@@ -28,7 +28,8 @@ type SuiteSyncSettingsProps = {
 
 export const SuiteSyncSettings = ({ onError }: SuiteSyncSettingsProps) => {
     const [isRelayUrlLoading, setIsRelayUrlLoading] = useState(false);
-    const { suiteSync } = useServices<SuiteSyncDep>();
+
+    const { changeRelayUrl } = useServices(selectChangeRelayUrlDep);
 
     const dispatch = useDispatch();
     const isBelowLaptop = useSelector(selectIsBelowLaptop);
@@ -48,7 +49,7 @@ export const SuiteSyncSettings = ({ onError }: SuiteSyncSettingsProps) => {
 
         setRelayUrl(url);
 
-        await suiteSync.changeRelayUrl({ relayUrl: url });
+        await changeRelayUrl({ relayUrl: url });
 
         // Fake it, to make some UI interaction for the user
         setTimeout(() => {

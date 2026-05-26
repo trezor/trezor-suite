@@ -1,4 +1,4 @@
-import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
@@ -38,7 +38,7 @@ export const useEarnProviderConsentActions = ({
     yieldContext,
 }: UseEarnProviderConsentActionsProps) => {
     const dispatch = useDispatch();
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
 
     const report = (action: EarnModalAction) => {

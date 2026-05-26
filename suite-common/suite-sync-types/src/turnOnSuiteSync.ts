@@ -18,3 +18,7 @@ export type TurnOnSuiteSync = (
 ) => Promise<Result<void, EnsureWalletSuiteSyncOnErrors>>;
 
 export type TurnOnSuiteSyncDep = { turnOnSuiteSync: TurnOnSuiteSync };
+
+export const selectTurnOnSuiteSyncDep = (services: any): TurnOnSuiteSyncDep => ({
+    turnOnSuiteSync: services.suiteSync.turnOnSuiteSync,
+});

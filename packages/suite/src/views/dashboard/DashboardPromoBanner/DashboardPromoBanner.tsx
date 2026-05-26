@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import {
     selectIsStablecoinYieldDashboardPromoBannerShown,
     selectIsTEXDashboardPromoBannerShown,
@@ -23,7 +23,7 @@ import { type DashboardBannerTypeWithNull, isDashboardBannerType } from './dashb
 
 export const DashboardPromoBanner = () => {
     const [isVisible, setIsVisible] = useState(true);
-    const { analytics } = useServices<DesktopAnalyticsDep>();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const isDiscoveryEmpty = discoveryStatus?.type === 'discovery-empty';
     const shouldShowTEXDashboardPromoBanner = useSelector(selectIsTEXDashboardPromoBannerShown);
