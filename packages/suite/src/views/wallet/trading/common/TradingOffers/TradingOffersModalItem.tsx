@@ -14,8 +14,8 @@ import {
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 
 import { useTradingOfferRate } from './useTradingOfferRate';
-import { TradingUtilsKyc } from '../TradingUtils/TradingUtilsKyc';
 import { TradingUtilsProvider } from '../TradingUtils/TradingUtilsProvider';
+import { TradingUtilsProviderKyc } from '../TradingUtils/TradingUtilsProviderKyc';
 
 type TradingOffersModalItemProps = {
     quote: TradingTradeType;
@@ -64,13 +64,15 @@ export const TradingOffersModalItem = ({ quote, onSelect }: TradingOffersModalIt
                 <Row justifyContent="space-between" alignItems="center" width="100%">
                     <ProviderWrapper>
                         <TradingUtilsProvider providers={providers} exchange={exchange} />
-                        {exchangeComparatorProps && (
-                            <TradingUtilsKyc
+                        {exchangeComparatorProps ? (
+                            <TradingUtilsProviderKyc
                                 exchange={exchange}
                                 providers={exchangeComparatorProps.providers}
                                 isForComparator
                                 isDex={exchangeComparatorProps.isDex}
                             />
+                        ) : (
+                            <TradingUtilsProviderKyc isForComparator isBuySell />
                         )}
                     </ProviderWrapper>
 

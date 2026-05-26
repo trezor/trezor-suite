@@ -53,6 +53,14 @@ test.describe('Trading - Sell BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
             await tradingPage.fees.expectBitcoinFeeCalculated();
         });
 
+        await test.step('Confirm button shows provider name and KYC warning is visible', async () => {
+            await expect(tradingPage.sellBestOfferButton).toHaveTranslation('TR_TRADING_SELL_VIA', {
+                values: { providerName: provider },
+            });
+            await expect(tradingPage.sellBestOfferButton.locator('svg')).toBeVisible();
+            await expect(tradingPage.kycWarning).toBeVisible();
+        });
+
         await test.step('Confirm sell', async () => {
             const tradeRequestPromise = page.waitForRequest(invityEndpoint.sellTrade);
             await tradingPage.sellBestOfferButton.click();

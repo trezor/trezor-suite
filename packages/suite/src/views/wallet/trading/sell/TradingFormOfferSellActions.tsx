@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { getTradingFirstOutput } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingFormOfferConfirmButton } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
+import { TradingFormOfferKYCWarning } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferKYCWarning';
 import { TradingFormOfferOTC } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferOTC';
 import { useTradingFormOfferCommon } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/hooks/useTradingFormOfferCommon';
 
@@ -36,8 +37,7 @@ export const TradingFormOfferSellActions = () => {
         areSatsUsed,
     });
 
-    const { quote, isConfirmButtonLoading, confirmButtonTranslationId, isBaseButtonDisabled } =
-        useTradingFormOfferCommon<'sell'>();
+    const { quote, confirmButtonData, isBaseButtonDisabled } = useTradingFormOfferCommon<'sell'>();
 
     const isButtonDisabled =
         isBaseButtonDisabled ||
@@ -62,12 +62,13 @@ export const TradingFormOfferSellActions = () => {
     return (
         <>
             <TradingFormOfferConfirmButton
+                {...confirmButtonData}
                 onClick={onSelectQuote}
                 isDisabled={isButtonDisabled}
-                isLoading={isConfirmButtonLoading}
-                translationId={confirmButtonTranslationId}
                 testId="@trading/form/sell-button"
             />
+
+            {quote && <TradingFormOfferKYCWarning />}
 
             <TradingFormOfferOTC />
         </>

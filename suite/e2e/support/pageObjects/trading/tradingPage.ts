@@ -34,6 +34,7 @@ export class TradingPage {
     readonly buyBestOfferButton: Locator;
     readonly sellBestOfferButton: Locator;
     readonly swapBestOfferButton: Locator;
+    readonly kycWarning: Locator;
     readonly proceedToPayButton: Locator;
     readonly backToAccountButton = (type: 'Buy' | 'Sell' | 'Swap') =>
         this.page.getByRole('button', { name: `Make another ${type}` });
@@ -74,6 +75,7 @@ export class TradingPage {
         this.buyBestOfferButton = this.page.getByTestId('@trading/form/buy-button');
         this.sellBestOfferButton = this.page.getByTestId('@trading/form/sell-button');
         this.swapBestOfferButton = this.page.getByTestId('@trading/form/exchange-button');
+        this.kycWarning = this.page.getByTestId('@trading/form/kyc-warning');
         this.proceedToPayButton = this.page.getByRole('button', { name: 'Proceed to pay' });
 
         // Swap

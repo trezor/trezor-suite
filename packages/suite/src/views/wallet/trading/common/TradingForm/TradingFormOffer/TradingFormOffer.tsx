@@ -35,7 +35,7 @@ export const TradingFormOffer = () => {
     } = useTradingFormOfferCommon();
 
     return (
-        <Column gap={20}>
+        <Column gap={12}>
             <TradingFormOfferAmount
                 amount={receiveAmount}
                 sendAmount={sendAmount}
