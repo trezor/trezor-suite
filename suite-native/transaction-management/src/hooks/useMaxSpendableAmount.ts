@@ -11,6 +11,7 @@ type UseMaxSpendableAmountProps = {
     accountKey?: AccountKey;
     tokenContract?: TokenAddress;
     formState?: FormState;
+    enabled?: boolean;
 };
 
 const buildDefaultFormState = ({ tokenContract }: { tokenContract?: TokenAddress }): FormState => ({
@@ -38,6 +39,7 @@ export const useMaxSpendableAmount = ({
     accountKey,
     tokenContract,
     formState,
+    enabled = true,
 }: UseMaxSpendableAmountProps) => {
     const dispatch = useDispatch();
     const debounce = useDebounce();
@@ -49,7 +51,7 @@ export const useMaxSpendableAmount = ({
     );
 
     useEffect(() => {
-        if (!accountKey) {
+        if (!accountKey || !enabled) {
             setMaxSpendableAmount(undefined);
 
             return;
@@ -84,6 +86,7 @@ export const useMaxSpendableAmount = ({
                 }
             } catch {
                 if (controller.signal.aborted) return;
+                setMaxSpendableAmount(undefined);
             }
         };
 
@@ -92,7 +95,7 @@ export const useMaxSpendableAmount = ({
         return () => {
             controller.abort();
         };
-    }, [dispatch, accountKey, tokenContract, formState, tokenBalance, debounce]);
+    }, [dispatch, accountKey, tokenContract, formState, tokenBalance, debounce, enabled]);
 
     return { maxSpendableAmount };
 };

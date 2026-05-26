@@ -143,6 +143,7 @@ describe('useMaxSpendableAmount', () => {
     it('should skip native asset calculation when calculation is disabled', () => {
         const { result } = renderUseMaxSpendableAmount({
             accountKey: btcAccountKey,
+            enabled: false,
         });
 
         expect(result.current.maxSpendableAmount).toBeUndefined();
