@@ -106,10 +106,10 @@ export const ThpDeviceProperties = Type.Object(
 );
 
 export type ThpEndRequest = Static<typeof ThpEndRequest>;
-export const ThpEndRequest = Type.Object({}, { $id: 'ThpEndRequest' });
+export const ThpEndRequest = Type.Record(Type.Never(), Type.Never(), { $id: 'ThpEndRequest' });
 
 export type ThpEndResponse = Static<typeof ThpEndResponse>;
-export const ThpEndResponse = Type.Object({}, { $id: 'ThpEndResponse' });
+export const ThpEndResponse = Type.Record(Type.Never(), Type.Never(), { $id: 'ThpEndResponse' });
 
 export type ThpHandshakeCompletionReqNoisePayload = Static<
     typeof ThpHandshakeCompletionReqNoisePayload
@@ -138,10 +138,9 @@ export const ThpNfcTagTrezor = Type.Object(
 );
 
 export type ThpPairingPreparationsFinished = Static<typeof ThpPairingPreparationsFinished>;
-export const ThpPairingPreparationsFinished = Type.Object(
-    {},
-    { $id: 'ThpPairingPreparationsFinished' },
-);
+export const ThpPairingPreparationsFinished = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'ThpPairingPreparationsFinished',
+});
 
 export type ThpPairingRequest = Static<typeof ThpPairingRequest>;
 export const ThpPairingRequest = Type.Object(
@@ -153,7 +152,9 @@ export const ThpPairingRequest = Type.Object(
 );
 
 export type ThpPairingRequestApproved = Static<typeof ThpPairingRequestApproved>;
-export const ThpPairingRequestApproved = Type.Object({}, { $id: 'ThpPairingRequestApproved' });
+export const ThpPairingRequestApproved = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'ThpPairingRequestApproved',
+});
 
 export type ThpQrCodeSecret = Static<typeof ThpQrCodeSecret>;
 export const ThpQrCodeSecret = Type.Object(

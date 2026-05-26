@@ -15,4 +15,4 @@ export const Telemetry = Type.Object(
 );
 
 export type TelemetryGet = Static<typeof TelemetryGet>;
-export const TelemetryGet = Type.Object({}, { $id: 'TelemetryGet' });
+export const TelemetryGet = Type.Record(Type.Never(), Type.Never(), { $id: 'TelemetryGet' });

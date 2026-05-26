@@ -318,4 +318,5 @@ export const SKIP = [
     // currently not used, needs patching
     'EthereumABIValueInfo',
     'EthereumABITupleInfo',
+    'EthereumDisplayFormatInfo',
 ];

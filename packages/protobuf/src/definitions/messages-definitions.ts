@@ -7,10 +7,82 @@ export enum DefinitionType {
     ETHEREUM_NETWORK = 0,
     ETHEREUM_TOKEN = 1,
     SOLANA_TOKEN = 2,
+    ETHEREUM_DISPLAY_FORMAT = 3,
 }
 
 export type EnumDefinitionType = Static<typeof EnumDefinitionType>;
 export const EnumDefinitionType = Type.Enum(DefinitionType);
+
+export enum EthereumABIType {
+    ABI_ADDRESS = 0,
+    ABI_UINT256 = 1,
+    ABI_UINT248 = 2,
+    ABI_UINT160 = 3,
+    ABI_UINT128 = 4,
+    ABI_UINT120 = 5,
+    ABI_UINT112 = 6,
+    ABI_UINT96 = 7,
+    ABI_UINT72 = 8,
+    ABI_UINT64 = 9,
+    ABI_UINT48 = 10,
+    ABI_UINT40 = 11,
+    ABI_UINT32 = 12,
+    ABI_UINT24 = 13,
+    ABI_UINT16 = 14,
+    ABI_UINT8 = 15,
+    ABI_BOOL = 16,
+    ABI_BYTES32 = 17,
+    ABI_BYTES = 20,
+    ABI_STRING = 21,
+}
+
+export type EnumEthereumABIType = Static<typeof EnumEthereumABIType>;
+export const EnumEthereumABIType = Type.Enum(EthereumABIType);
+
+export enum EthereumERC7730ContainerPath {
+    FROM = 1,
+    VALUE = 2,
+    TO = 3,
+}
+
+export type EnumEthereumERC7730ContainerPath = Static<typeof EnumEthereumERC7730ContainerPath>;
+export const EnumEthereumERC7730ContainerPath = Type.Enum(EthereumERC7730ContainerPath);
+
+export enum EthereumERC7730FieldFormatterType {
+    FORMATTER_ADDRESS_NAME = 0,
+    FORMATTER_AMOUNT = 1,
+    FORMATTER_TOKEN_AMOUNT = 2,
+    FORMATTER_UNIT = 3,
+}
+
+export type EnumEthereumERC7730FieldFormatterType = Static<
+    typeof EnumEthereumERC7730FieldFormatterType
+>;
+export const EnumEthereumERC7730FieldFormatterType = Type.Enum(EthereumERC7730FieldFormatterType);
+
+export type EthereumERC7730Path = Static<typeof EthereumERC7730Path>;
+export const EthereumERC7730Path = Type.Object(
+    {
+        path: Type.Array(Type.Number()),
+        container_path: Type.Optional(EnumEthereumERC7730ContainerPath),
+    },
+    { $id: 'EthereumERC7730Path' },
+);
+
+export type EthereumERC7730FieldInfo = Static<typeof EthereumERC7730FieldInfo>;
+export const EthereumERC7730FieldInfo = Type.Object(
+    {
+        path: EthereumERC7730Path,
+        label: Type.String(),
+        formatter: EnumEthereumERC7730FieldFormatterType,
+        token_path: Type.Optional(EthereumERC7730Path),
+        threshold: Type.Optional(Type.String()),
+        decimals: Type.Optional(Type.Number()),
+        base: Type.Optional(Type.String()),
+        prefix: Type.Optional(Type.Boolean()),
+    },
+    { $id: 'EthereumERC7730FieldInfo' },
+);
 
 export type EthereumNetworkInfo = Static<typeof EthereumNetworkInfo>;
 export const EthereumNetworkInfo = Type.Object(

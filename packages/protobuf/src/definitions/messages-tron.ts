@@ -33,7 +33,9 @@ export const TronAddress = Type.Object(
 );
 
 export type TronContractRequest = Static<typeof TronContractRequest>;
-export const TronContractRequest = Type.Object({}, { $id: 'TronContractRequest' });
+export const TronContractRequest = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'TronContractRequest',
+});
 
 export type TronFreezeBalanceV2Contract = Static<typeof TronFreezeBalanceV2Contract>;
 export const TronFreezeBalanceV2Contract = Type.Object(

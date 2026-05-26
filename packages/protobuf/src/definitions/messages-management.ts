@@ -3,6 +3,15 @@
 // DO NOT EDIT
 import { type Static, Type } from '@trezor/schema-utils';
 
+export enum AuthenticityProofType {
+    OPTIGA = 0,
+    TROPIC = 1,
+    MCU = 2,
+}
+
+export type EnumAuthenticityProofType = Static<typeof EnumAuthenticityProofType>;
+export const EnumAuthenticityProofType = Type.Enum(AuthenticityProofType);
+
 export enum Enum_BackupAvailability {
     NotAvailable = 0,
     Required = 1,
@@ -74,6 +83,7 @@ export enum Enum_Capability {
     Capability_NFC = 23,
     Capability_Tron = 24,
     Capability_N4W1 = 25,
+    Capability_TouchWakeup = 26,
 }
 
 export type EnumEnum_Capability = Static<typeof EnumEnum_Capability>;
@@ -218,6 +228,7 @@ export type AuthenticateDevice = Static<typeof AuthenticateDevice>;
 export const AuthenticateDevice = Type.Object(
     {
         challenge: Type.String(),
+        stream: Type.Optional(Type.Boolean()),
     },
     { $id: 'AuthenticateDevice' },
 );
@@ -233,6 +244,27 @@ export const AuthenticityProof = Type.Object(
         mcu_signature: Type.Optional(Type.String()),
     },
     { $id: 'AuthenticityProof' },
+);
+
+export type AuthenticityProofChunk = Static<typeof AuthenticityProofChunk>;
+export const AuthenticityProofChunk = Type.Object(
+    {
+        chunk: Type.String(),
+    },
+    { $id: 'AuthenticityProofChunk' },
+);
+
+export type AuthenticityProofSizes = Static<typeof AuthenticityProofSizes>;
+export const AuthenticityProofSizes = Type.Object(
+    {
+        optiga_certificates: Type.Array(Type.Number()),
+        optiga_signature: Type.Number(),
+        tropic_certificates: Type.Array(Type.Number()),
+        tropic_signature: Type.Optional(Type.Number()),
+        mcu_certificates: Type.Array(Type.Number()),
+        mcu_signature: Type.Optional(Type.Number()),
+    },
+    { $id: 'AuthenticityProofSizes' },
 );
 
 export type Slip39Group = Static<typeof Slip39Group>;
@@ -255,10 +287,12 @@ export const BackupDevice = Type.Object(
 );
 
 export type Cancel = Static<typeof Cancel>;
-export const Cancel = Type.Object({}, { $id: 'Cancel' });
+export const Cancel = Type.Record(Type.Never(), Type.Never(), { $id: 'Cancel' });
 
 export type CancelAuthorization = Static<typeof CancelAuthorization>;
-export const CancelAuthorization = Type.Object({}, { $id: 'CancelAuthorization' });
+export const CancelAuthorization = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'CancelAuthorization',
+});
 
 export type ChangeLanguage = Static<typeof ChangeLanguage>;
 export const ChangeLanguage = Type.Object(
@@ -303,10 +337,10 @@ export const DataChunkRequest = Type.Object(
 );
 
 export type DoPreauthorized = Static<typeof DoPreauthorized>;
-export const DoPreauthorized = Type.Object({}, { $id: 'DoPreauthorized' });
+export const DoPreauthorized = Type.Record(Type.Never(), Type.Never(), { $id: 'DoPreauthorized' });
 
 export type EndSession = Static<typeof EndSession>;
-export const EndSession = Type.Object({}, { $id: 'EndSession' });
+export const EndSession = Type.Record(Type.Never(), Type.Never(), { $id: 'EndSession' });
 
 export type Entropy = Static<typeof Entropy>;
 export const Entropy = Type.Object(
@@ -333,7 +367,9 @@ export const EntropyCheckContinue = Type.Object(
 );
 
 export type EntropyCheckReady = Static<typeof EntropyCheckReady>;
-export const EntropyCheckReady = Type.Object({}, { $id: 'EntropyCheckReady' });
+export const EntropyCheckReady = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'EntropyCheckReady',
+});
 
 export type EntropyRequest = Static<typeof EntropyRequest>;
 export const EntropyRequest = Type.Object(
@@ -407,6 +443,7 @@ export const Features = Type.Object(
         led: Type.Optional(Type.Boolean()),
         usb_connected: Type.Optional(Type.Boolean()),
         wireless_connected: Type.Optional(Type.Boolean()),
+        tap_to_wake: Type.Optional(Type.Boolean()),
     },
     { $id: 'Features' },
 );
@@ -419,6 +456,17 @@ export const FirmwareHash = Type.Object(
     { $id: 'FirmwareHash' },
 );
 
+export type GetAuthenticityProofChunk = Static<typeof GetAuthenticityProofChunk>;
+export const GetAuthenticityProofChunk = Type.Object(
+    {
+        proof_type: Type.Optional(EnumAuthenticityProofType),
+        index: Type.Optional(Type.Number()),
+        offset: Type.Number(),
+        size: Type.Number(),
+    },
+    { $id: 'GetAuthenticityProofChunk' },
+);
+
 export type GetEntropy = Static<typeof GetEntropy>;
 export const GetEntropy = Type.Object(
     {
@@ -428,7 +476,7 @@ export const GetEntropy = Type.Object(
 );
 
 export type GetFeatures = Static<typeof GetFeatures>;
-export const GetFeatures = Type.Object({}, { $id: 'GetFeatures' });
+export const GetFeatures = Type.Record(Type.Never(), Type.Never(), { $id: 'GetFeatures' });
 
 export type GetFirmwareHash = Static<typeof GetFirmwareHash>;
 export const GetFirmwareHash = Type.Object(
@@ -439,13 +487,15 @@ export const GetFirmwareHash = Type.Object(
 );
 
 export type GetNextU2FCounter = Static<typeof GetNextU2FCounter>;
-export const GetNextU2FCounter = Type.Object({}, { $id: 'GetNextU2FCounter' });
+export const GetNextU2FCounter = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'GetNextU2FCounter',
+});
 
 export type GetNonce = Static<typeof GetNonce>;
-export const GetNonce = Type.Object({}, { $id: 'GetNonce' });
+export const GetNonce = Type.Record(Type.Never(), Type.Never(), { $id: 'GetNonce' });
 
 export type GetSerialNumber = Static<typeof GetSerialNumber>;
-export const GetSerialNumber = Type.Object({}, { $id: 'GetSerialNumber' });
+export const GetSerialNumber = Type.Record(Type.Never(), Type.Never(), { $id: 'GetSerialNumber' });
 
 export type Initialize = Static<typeof Initialize>;
 export const Initialize = Type.Object(
@@ -475,7 +525,7 @@ export const LoadDevice = Type.Object(
 );
 
 export type LockDevice = Static<typeof LockDevice>;
-export const LockDevice = Type.Object({}, { $id: 'LockDevice' });
+export const LockDevice = Type.Record(Type.Never(), Type.Never(), { $id: 'LockDevice' });
 
 export type NextU2FCounter = Static<typeof NextU2FCounter>;
 export const NextU2FCounter = Type.Object(
@@ -503,7 +553,9 @@ export const Ping = Type.Object(
 );
 
 export type PreauthorizedRequest = Static<typeof PreauthorizedRequest>;
-export const PreauthorizedRequest = Type.Object({}, { $id: 'PreauthorizedRequest' });
+export const PreauthorizedRequest = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'PreauthorizedRequest',
+});
 
 export type RebootToBootloader = Static<typeof RebootToBootloader>;
 export const RebootToBootloader = Type.Object(
@@ -590,10 +642,14 @@ export const SetU2FCounter = Type.Object(
 );
 
 export type ShowDeviceTutorial = Static<typeof ShowDeviceTutorial>;
-export const ShowDeviceTutorial = Type.Object({}, { $id: 'ShowDeviceTutorial' });
+export const ShowDeviceTutorial = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'ShowDeviceTutorial',
+});
 
 export type UnlockBootloader = Static<typeof UnlockBootloader>;
-export const UnlockBootloader = Type.Object({}, { $id: 'UnlockBootloader' });
+export const UnlockBootloader = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'UnlockBootloader',
+});
 
 export type UnlockedPathRequest = Static<typeof UnlockedPathRequest>;
 export const UnlockedPathRequest = Type.Object(
@@ -613,7 +669,7 @@ export const UnlockPath = Type.Object(
 );
 
 export type WipeDevice = Static<typeof WipeDevice>;
-export const WipeDevice = Type.Object({}, { $id: 'WipeDevice' });
+export const WipeDevice = Type.Record(Type.Never(), Type.Never(), { $id: 'WipeDevice' });
 
 export type WordAck = Static<typeof WordAck>;
 export const WordAck = Type.Object(
