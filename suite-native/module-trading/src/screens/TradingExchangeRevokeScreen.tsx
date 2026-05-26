@@ -19,6 +19,7 @@ import {
     ScreenHeader,
     type StackProps,
 } from '@suite-native/navigation';
+import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
 
 import { ApprovalButton } from '../components/exchange/Approval/ApprovalButton';
 import { ExchangeRevokeDetails } from '../components/exchange/Approval/ExchangeRevokeDetails';
@@ -31,12 +32,13 @@ type TradingExchangeRevokeScreenProps = StackProps<
     RootStackRoutes.TradingExchangeRevoke
 >;
 
-export const TradingExchangeRevokeScreen = ({
+const TradingExchangeRevokeScreenContent = ({
     route: { params },
     navigation,
 }: TradingExchangeRevokeScreenProps) => {
     const { shouldIncreaseLimit } = params;
     const dispatch = useDispatch();
+    const reportToAnalytics = useExchangeAnalyticsStepReport('revoke-preview');
 
     const quote = useSelector(selectTradingExchangeSelectedQuote);
 
@@ -98,10 +100,12 @@ export const TradingExchangeRevokeScreen = ({
             }
         });
 
+        reportToAnalytics('visit');
+
         return () => {
             isActive = false;
         };
-    }, [quote, isReady, dispatch, confirmApproval]);
+    }, [quote, isReady, dispatch, confirmApproval, reportToAnalytics]);
 
     useEffect(() => {
         // Clear the selected quote only when the user navigates backward (back button / swipe back).
@@ -117,11 +121,12 @@ export const TradingExchangeRevokeScreen = ({
 
             if (isSingleBackPress) {
                 dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
+                reportToAnalytics('cancel');
             }
         });
 
         return unsubscribe;
-    }, [dispatch, navigation]);
+    }, [dispatch, navigation, reportToAnalytics]);
 
     if (!quote) {
         return (
@@ -137,48 +142,52 @@ export const TradingExchangeRevokeScreen = ({
     }
 
     return (
-        <TradingDeviceConnectionGuard>
-            <Screen
-                header={
-                    <DynamicScreenHeader
-                        title={
+        <Screen
+            header={
+                <DynamicScreenHeader
+                    title={
+                        <Translation
+                            id="moduleTrading.tradingExchangeRevokeScreen.revokeTitle"
+                            values={{ symbol: coinSymbol }}
+                        />
+                    }
+                    subtitle={
+                        shouldIncreaseLimit ? undefined : (
                             <Translation
-                                id="moduleTrading.tradingExchangeRevokeScreen.revokeTitle"
+                                id="moduleTrading.tradingExchangeRevokeScreen.revokeSubtitle"
                                 values={{ symbol: coinSymbol }}
                             />
+                        )
+                    }
+                    closeActionType="back"
+                />
+            }
+            footer={
+                <ApprovalButton
+                    isReady={isRevokeReady}
+                    isDisabled={!!error}
+                    flowType={shouldIncreaseLimit ? 'revoke-and-approve' : 'revoke'}
+                />
+            }
+        >
+            <VStack spacing="sp12">
+                {!!shouldIncreaseLimit && (
+                    <InlineAlertBox
+                        variant="info"
+                        title={
+                            <Translation id="moduleTrading.tradingExchangeRevokeScreen.lowLimitInfoAlert" />
                         }
-                        subtitle={
-                            shouldIncreaseLimit ? undefined : (
-                                <Translation
-                                    id="moduleTrading.tradingExchangeRevokeScreen.revokeSubtitle"
-                                    values={{ symbol: coinSymbol }}
-                                />
-                            )
-                        }
-                        closeActionType="back"
                     />
-                }
-                footer={
-                    <ApprovalButton
-                        isReady={isRevokeReady}
-                        isDisabled={!!error}
-                        flowType={shouldIncreaseLimit ? 'revoke-and-approve' : 'revoke'}
-                    />
-                }
-            >
-                <VStack spacing="sp12">
-                    {!!shouldIncreaseLimit && (
-                        <InlineAlertBox
-                            variant="info"
-                            title={
-                                <Translation id="moduleTrading.tradingExchangeRevokeScreen.lowLimitInfoAlert" />
-                            }
-                        />
-                    )}
+                )}
 
-                    <ExchangeRevokeDetails exchange={quote.exchange} />
-                </VStack>
-            </Screen>
-        </TradingDeviceConnectionGuard>
+                <ExchangeRevokeDetails exchange={quote.exchange} />
+            </VStack>
+        </Screen>
     );
 };
+
+export const TradingExchangeRevokeScreen = (props: TradingExchangeRevokeScreenProps) => (
+    <TradingDeviceConnectionGuard>
+        <TradingExchangeRevokeScreenContent {...props} />
+    </TradingDeviceConnectionGuard>
+);
