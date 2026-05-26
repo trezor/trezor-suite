@@ -33,10 +33,6 @@ export const DEFAULT_FEE_INFO: FeeInfo = {
 export const feesInitialState: FeesState = {};
 
 export const feesReducer = createReducer<FeesState>(feesInitialState, builder => {
-    builder.addCase(feesActions.updateFee, (state, { payload: { symbol, data } }) => {
-        const defaultStatus = 'loaded'; // in case the object doesn't exist yet (shouldn't happen)
-        state[symbol] = { status: defaultStatus, ...state[symbol], data };
-    });
     builder.addCase(feesActions.updateMultipleFees, (state, { payload }) => ({
         ...state,
         ...payload,
