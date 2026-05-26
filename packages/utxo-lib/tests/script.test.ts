@@ -100,6 +100,33 @@ describe('script', () => {
         });
     });
 
+    describe('compile (Buffer passthrough)', () => {
+        it('returns the same Buffer unchanged when given a Buffer input', () => {
+            const buf = Buffer.from('51', 'hex');
+            expect(bscript.compile(buf)).toBe(buf);
+        });
+    });
+
+    describe('toStack (non-push-only rejection)', () => {
+        it('throws "Expected push-only script" for a script containing OP_CHECKSIG', () => {
+            const script = Buffer.from([bscript.OPS.OP_CHECKSIG]);
+            expect(() => bscript.toStack(script)).toThrow('Expected push-only script');
+        });
+    });
+
+    describe('compile (non-array, non-buffer rejection)', () => {
+        it('throws "Expected Array" when called with a non-Buffer non-Array input', () => {
+            expect(() => bscript.compile({} as unknown as Buffer)).toThrow('Expected Array');
+        });
+    });
+
+    describe('decompile (truncated pushdata header)', () => {
+        it('returns [] when buffer contains OP_PUSHDATA1 alone (pushdata.decode returns null)', () => {
+            const truncated = Buffer.from([bscript.OPS.OP_PUSHDATA1]);
+            expect(bscript.decompile(truncated)).toEqual([]);
+        });
+    });
+
     describe('decompile', () => {
         fixtures.valid.forEach(f => {
             it(`decompiles ${f.asm}`, () => {
