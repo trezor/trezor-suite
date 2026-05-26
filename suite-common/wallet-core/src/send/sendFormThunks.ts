@@ -33,6 +33,7 @@ import {
     isEvmApprovalTxByTextSignature,
     isEvmYieldTxByTextSignature,
     isExchangeTradingForm,
+    isMaxAllowance,
     subunitsToUnits,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
@@ -539,7 +540,7 @@ export const signTransactionThunk = createThunk<
     ) => {
         const device = selectSelectedDevice(getState());
 
-        if (!device || !precomposedTransaction || precomposedTransaction.type !== 'final')
+        if (!device || precomposedTransaction?.type !== 'final')
             return rejectWithValue({
                 error: 'sign-transaction-failed',
                 message: 'Invalid input data.',
