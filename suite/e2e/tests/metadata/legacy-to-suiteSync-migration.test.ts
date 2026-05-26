@@ -10,8 +10,9 @@ const expectedAccount = mnemonic12Fixtures.buildExpectedAccount({ label: localLa
 test.describe('Labeling migration', { tag: ['@T3W1', '@T3T1', '@desktopOnly'] }, () => {
     test.use({ wipeEvoluRelay: true });
 
-    test.beforeEach(async ({ onboardingPage, metadataPage }) => {
+    test.beforeEach(async ({ onboardingPage, settingsPage, metadataPage }) => {
         await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
         await metadataPage.enableLegacyLabeling(MetadataProvider.LOCAL);
     });
 
@@ -44,11 +45,12 @@ test.describe('Labeling migration', { tag: ['@T3W1', '@T3T1', '@desktopOnly'] },
 
         await test.step('Switch to Suite Sync labeling and confirm legacy label is migrated', async () => {
             await metadataPage.enableSuiteSync();
-            await settingsPage.navigateTo('debug');
-            await settingsPage.debugTab.suiteSyncDebugToggle.click();
             await settingsPage.navigateTo('application');
             await metadataPage.migrateLabelsButton.click();
             await metadataPage.migrateFromLocalFileButton.click();
+            await expect(page.getByTestId('@toast/legacy-labeling-migration-success')).toBeVisible({
+                timeout: 30000,
+            });
             await expect(
                 walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
             ).toHaveText(localLabel);
