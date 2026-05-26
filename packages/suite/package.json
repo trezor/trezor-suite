@@ -173,8 +173,7 @@
         "redux-logger": "^3.0.6",
         "redux-thunk": "^3.1.0",
         "semver": "^7.7.1",
-        "styled-components": "^6.3.9",
-        "web3-utils": "^4.3.3"
+        "styled-components": "^6.3.9"
     },
     "devDependencies": {
         "@testing-library/react": "^16.3.2",
