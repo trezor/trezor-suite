@@ -531,6 +531,58 @@ const getDeviceInstances = [
     },
 ];
 
+const getDeviceInstancesGroupedByDeviceId = [
+    { description: 'No devices', devices: [], result: [] },
+    {
+        description: 'Two acquired devices',
+        devices: [d({ id: '1', inst: 2 }), d({ id: '1', inst: 1 })],
+        result: [[d({ id: '1', inst: 1 }), d({ id: '1', inst: 2 })]],
+    },
+    {
+        description: 'One unacquired device, one acquired device',
+        devices: [d({ path: 'a' }), d({ id: '1', inst: 1 })],
+        result: [[d({ path: 'a' })], [d({ id: '1', inst: 1 })]],
+    },
+    {
+        description: 'Two unacquired devices, three acquired devices',
+        devices: [
+            d({ path: 'a' }),
+            d({ id: '1', inst: 2 }),
+            d({ path: 'b' }),
+            d({ id: '2', inst: 1 }),
+            d({ id: '1', inst: 1 }),
+        ],
+        result: [
+            [d({ path: 'a' })],
+            [d({ id: '1', inst: 1 }), d({ id: '1', inst: 2 })],
+            [d({ path: 'b' })],
+            [d({ id: '2', inst: 1 })],
+        ],
+    },
+];
+
+const getSortedDevicesWithoutInstances = [
+    { description: 'No devices', devices: [], excludedDeviceId: null, result: [] },
+    {
+        description: 'One unacquired device, one acquired device',
+        devices: [d({ path: 'a' }), d({ id: '1', inst: 1 })],
+        excludedDeviceId: null,
+        result: [d({ id: '1', inst: 1 }), d({ path: 'a' })],
+    },
+    {
+        description: 'Two unacquired devices, three acquired devices',
+        devices: [
+            d({ path: 'a' }),
+            d({ id: '1', inst: 2 }),
+            d({ path: 'b' }),
+            d({ id: '2', inst: 1 }),
+            d({ id: '1', inst: 1 }),
+        ],
+        excludedDeviceId: '2',
+        result: [d({ path: 'b' }), d({ id: '1', inst: 1 }), d({ path: 'a' })],
+    },
+];
+
 const getChangelogUrl = [
     {
         description: 'Revision set, core firmware',
@@ -632,6 +684,8 @@ export default {
     sortByTimestamp,
     getFirstDeviceInstance,
     getDeviceInstances,
+    getDeviceInstancesGroupedByDeviceId,
+    getSortedDevicesWithoutInstances,
     isDeviceRemembered,
     getChangelogUrl,
     getCheckBackupUrl,
