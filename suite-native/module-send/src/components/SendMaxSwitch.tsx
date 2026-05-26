@@ -70,6 +70,7 @@ export const SendMaxSwitch = ({ outputIndex, accountKey, tokenContract }: SendMa
         accountKey,
         tokenContract,
         formState,
+        enabled: !!isSendMaxAvailable,
     });
     const isSendMaxVisible = isSendMaxAvailable && !!maxAmountValue;
 
