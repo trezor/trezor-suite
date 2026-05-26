@@ -7,7 +7,8 @@ import { openApp, preparePreloadedReduxState } from '../support/setup';
 
 const preloadedState = preparePreloadedReduxState(onboardingCompletedState);
 
-describe('Import LTC account. [@noDevice]', () => {
+// Skipped due to Android emulator crashes
+describe.skip('Import LTC account. [@noDevice]', () => {
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await onTabBar.navigateToMyAssets();
