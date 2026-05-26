@@ -11,6 +11,16 @@ class CustomEnvironment extends NodeEnvironment {
                     'MaxListenersExceededWarning detected. If you need more, use events.setMaxListeners(desiredNumber)',
                 );
             }
+
+            // TimeoutNegativeWarning / TimeoutOverflowWarning fire from setTimeout when ms is
+            // negative or > 2^31-1. Almost always a date-arithmetic bug (e.g. `deadline - now`
+            // where deadline is in the past). Near-zero false-positive surface.
+            if (
+                warning.name === 'TimeoutNegativeWarning' ||
+                warning.name === 'TimeoutOverflowWarning'
+            ) {
+                throw warning;
+            }
         });
     }
 
