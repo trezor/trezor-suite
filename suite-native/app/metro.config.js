@@ -74,10 +74,6 @@ const config = {
                 '@evolu/react-native/polyfills': `${rootNodeModulesPath}/@evolu/react-native/dist/src/Polyfills.js`,
                 uuid: `${rootNodeModulesPath}/uuid/dist/index.js`,
 
-                // tiny-secp256k1 used by @trezor/utxo-lib is terribly slow because WASM is not supported.
-                // @bitcoinerlab/secp256k1 is approximately 5× faster but requires additional tweaking.
-                'tiny-secp256k1': './secp256k1Shim.js',
-
                 // web3-validator package is by default trying to use non-existing minified index file. This fixes that.
                 // Can be removed once web3-validator fixup PR is merged: https://github.com/web3/web3.js/pull/7016.
                 'web3-validator': `${rootNodeModulesPath}/web3-validator/lib/commonjs/index.js`,

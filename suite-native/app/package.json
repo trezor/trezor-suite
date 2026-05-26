@@ -25,7 +25,6 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@bitcoinerlab/secp256k1": "1.2.0",
         "@evolu/common": "8.0.0-next.5",
         "@evolu/react-native": "15.0.0-next.2",
         "@exodus/patch-broken-hermes-typed-arrays": "^1.0.0-alpha.1",
