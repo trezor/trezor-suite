@@ -332,6 +332,7 @@ export const rules = {
                 'firmware',
                 'guide',
                 'menu',
+                'onboarding',
                 'passphrase',
                 'promo',
                 'receive',

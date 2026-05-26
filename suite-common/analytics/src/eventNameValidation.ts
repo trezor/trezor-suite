@@ -12,6 +12,7 @@ export const ANALYTICS_ALLOWED_DOMAINS = [
     'firmware',
     'guide',
     'menu',
+    'onboarding',
     'passphrase',
     'promo',
     'receive',
