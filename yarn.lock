@@ -11602,7 +11602,6 @@ __metadata:
     react-native-ble-plx: "npm:3.5.1"
     react-native-edge-to-edge: "npm:1.7.0"
     react-native-gesture-handler: "npm:2.31.1"
-    react-native-get-random-values: "npm:^2.0.0"
     react-native-keyboard-controller: "npm:1.20.7"
     react-native-launch-arguments: "npm:^4.1.1"
     react-native-mmkv: "npm:~4.3.0"
@@ -27220,13 +27219,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-base64-decode@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "fast-base64-decode@npm:1.0.0"
-  checksum: 10/4c59eb1775a7f132333f296c5082476fdcc8f58d023c42ed6d378d2e2da4c328c7a71562f271181a725dd17cdaa8f2805346cc330cdbad3b8e4b9751508bd0a3
-  languageName: node
-  linkType: hard
-
 "fast-content-type-parse@npm:^2.0.0":
   version: 2.0.1
   resolution: "fast-content-type-parse@npm:2.0.1"
@@ -39871,17 +39863,6 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10/0f02d989fddae1a59f3595b8039da04e8332206e0e8f7e05548b1ab2e57b6efa1b37d634ac8e5cc85b1844363a78f2f1400ace26164319b2140e994b0e779ea3
-  languageName: node
-  linkType: hard
-
-"react-native-get-random-values@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "react-native-get-random-values@npm:2.0.0"
-  dependencies:
-    fast-base64-decode: "npm:^1.0.0"
-  peerDependencies:
-    react-native: ">=0.81"
-  checksum: 10/f55218ac9710f9d329f0cfb1d8dce9765b4d06fdd2b9f966ed0476298f8373875679caf68b44f4e3b363abe81d1cb6f4c47b45f58b87eae63bd54776beeded46
   languageName: node
   linkType: hard
 
