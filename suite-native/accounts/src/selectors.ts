@@ -57,7 +57,7 @@ import { type CombinedLabelingState, selectIsLabellingAllowed } from '@suite-nat
 import { isNetworkWithTokens, selectAccountTokenInfo } from '@suite-native/tokens';
 import { type StaticSessionId } from '@trezor/connect';
 
-import { type AccountSelectBottomSheetSection, type GroupedByTypeAccounts } from './types';
+import { type AccountListSection, type GroupedByTypeAccounts } from './types';
 import {
     filterAccountsByLabelAndNetworkNames,
     filterAccountsByNetworkSymbols,
@@ -238,7 +238,7 @@ export const getAccountListSections = (
     fiatRates?: RatesByKey,
     localCurrency?: ReturnType<typeof selectBaseCurrency>,
 ) => {
-    const sections: AccountSelectBottomSheetSection[] = [];
+    const sections: AccountListSection[] = [];
     const isNetworkSupportingTokens = isNetworkWithTokens(account.symbol);
 
     const hiddenSet = new Set(hiddenContracts.map(c => c.toLowerCase()));
@@ -273,13 +273,6 @@ export const getAccountListSections = (
     const hasStakingBalance = stakingBalance !== '0' || isCardanoStakingActive(account);
     const hasStaking = isStakingSymbol(account.symbol) && hasStakingBalance;
 
-    if (isNetworkSupportingTokens) {
-        sections.push({
-            type: 'sectionTitle',
-            account,
-            hasAnyKnownTokens,
-        });
-    }
     sections.push({
         type: 'account',
         account,
@@ -337,7 +330,7 @@ export const getAccountListSections = (
     return sections;
 };
 
-const EMPTY_ARRAY: AccountSelectBottomSheetSection[] = [];
+const EMPTY_ARRAY: AccountListSection[] = [];
 
 export const selectAccountListSectionsWithZeroBalanceGroup = createMemoizedSelector(
     [selectAccountByKey, selectTokenDefinitions, selectCurrentFiatRates, selectBaseCurrency],
@@ -362,13 +355,8 @@ export const selectAccountListSectionsWithZeroBalanceGroup = createMemoizedSelec
     },
 );
 
-export const selectActiveTokensTabSections = createMemoizedSelector(
-    [selectAccountListSectionsWithZeroBalanceGroup],
-    sections => sections.filter(item => item.type !== 'sectionTitle'),
-);
-
 export const selectActiveAndDefiTokensCount = createMemoizedSelector(
-    [selectActiveTokensTabSections, selectAccountDefiTokensCount],
+    [selectAccountListSectionsWithZeroBalanceGroup, selectAccountDefiTokensCount],
     (sections, defiCount) => sections.filter(item => item.type === 'token').length + defiCount,
 );
 

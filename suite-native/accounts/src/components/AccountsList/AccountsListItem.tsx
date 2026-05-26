@@ -89,9 +89,8 @@ export const AccountsListItem = ({
         onPress?.({
             account,
             hasAnyKnownTokens: accountHasKnownTokensWithBalance,
-            hasStaking: accountHasStaking,
         });
-    }, [account, accountHasKnownTokensWithBalance, accountHasStaking, onPress]);
+    }, [account, accountHasKnownTokensWithBalance, onPress]);
 
     const icon = useMemo(
         () =>

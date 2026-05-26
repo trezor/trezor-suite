@@ -1,5 +1,4 @@
 export * from './components/AddAccountsButton';
-
 export * from './components/AccountLabel';
 export * from './components/AccountTypeBadge';
 export * from './components/AccountsList/AccountsList';
