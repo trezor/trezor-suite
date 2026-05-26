@@ -157,6 +157,9 @@
         { "path": "../../suite/account" },
         { "path": "../../suite/address" },
         { "path": "../../suite/analytics" },
+        {
+            "path": "../../suite/authenticity-checks"
+        },
         { "path": "../../suite/backup" },
         { "path": "../../suite/desktop-update" },
         { "path": "../../suite/device" },

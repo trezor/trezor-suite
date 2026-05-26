@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { selectIsDeviceCompromised } from '@suite/authenticity-checks';
 import { useDevice } from '@suite/device';
 import { useExternalLink } from '@suite/external-links';
 import { selectIsCopyAddressModalShown, selectIsUnhideTokenModalShown } from '@suite/flags';
@@ -51,7 +52,6 @@ import { SUITE } from 'src/actions/suite/constants';
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
 import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
-import { selectIsDeviceCompromised } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 import type { TokensTableType } from './types';

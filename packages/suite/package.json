@@ -81,6 +81,7 @@
         "@suite/account": "workspace:*",
         "@suite/address": "workspace:*",
         "@suite/analytics": "workspace:*",
+        "@suite/authenticity-checks": "workspace:*",
         "@suite/backup": "workspace:*",
         "@suite/desktop-update": "workspace:*",
         "@suite/device": "workspace:*",

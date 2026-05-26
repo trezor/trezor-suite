@@ -1,9 +1,9 @@
+import { selectIsDeviceCompromised } from '@suite/authenticity-checks';
 import { Translation, type TranslationId } from '@suite/intl';
 import { Card, Column, H3, IconCircle, type IconName, List, Paragraph } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemTrading } from 'src/hooks/suite/useMessageSystemTrading';
-import { selectIsDeviceCompromised } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
 
 import { TradingFooter } from '../common';
 import { TradingConciergeForm } from './TradingConciergeForm';
