@@ -155,8 +155,13 @@ export const ConnectAddressConfirmation = () => {
                                     justifyContent="space-between"
                                     gap={spacings.sm}
                                 >
-                                    <Row gap={spacings.sm} alignItems="center" flex="1">
-                                        <Paragraph overflowWrap="break-word">
+                                    <Row
+                                        gap={spacings.sm}
+                                        alignItems="center"
+                                        flex="1"
+                                        minWidth={0}
+                                    >
+                                        <Paragraph overflowWrap="anywhere">
                                             {address.address}
                                         </Paragraph>
                                         {address.validated === 'valid' && (
