@@ -3,7 +3,6 @@
     "ignores": [
         "// Runtime deps for electron-main process. They must be in package.json, since electron-builder is hardwired for it.",
         "openpgp",
-        "usb",
-        "blake-hash"
+        "usb"
     ]
 }
