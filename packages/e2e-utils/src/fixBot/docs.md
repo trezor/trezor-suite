@@ -36,7 +36,8 @@ After completing its work, the fix agent writes two files to the **worktree root
         "result": "pass | partial | fail",
         "iterations": 2,
         "passed": ["web/T3W1/suite/e2e/tests/wallet/send.ts"],
-        "failed": []
+        "failed": [],
+        "pr_title": "Nightly fix 26-05-19 - send-button locator"
     }
     ```
 - **`pr-description.md`** — ready-to-post PR body, passed directly to `gh pr create --body-file`
@@ -60,7 +61,7 @@ Extends the existing `AGENT.md`. The existing Steps 1–6 stay as-is. The cluste
 | Value         | Meaning                                                     | Automatable       |
 | ------------- | ----------------------------------------------------------- | ----------------- |
 | `TEST_CODE`   | Only test files need to change                              | ✅                |
-| `LOCATOR_ADD` | Add/modify `data-testid` in product component + update test | ✅                |
+| `LOCATOR_ADD` | Add/modify `data-testid` in product component + update test | ✅                |
 | `PRODUCT_BUG` | Actual product logic needs fixing                           | ❌ human required |
 | `INFRA`       | CI/environment issue                                        | ❌ human required |
 
@@ -136,7 +137,7 @@ Loop:
 
 Fix constraints
 
-- May only change test files and `data-testid` attributes in product components
+- May only change test files and `data-testid` attributes in product components
 - Must run ALL validations listed in the fix task
 - A fix task is "done" when every validation passes or the iteration budget is exhausted
 
@@ -148,8 +149,8 @@ Fix constraints
 
 Every iteration commits locally. First iteration is a regular commit, subsequent ones are `--fixup`.
 
-- First commit: generic message, e.g. `test(e2e): fix send-button locator`
-- Subsequent iterations: `git commit --fixup HEAD` (no custom message, auto-generated)
+- First commit: generic message, e.g. `test(e2e): fix send-button locator` — save its SHA
+- Subsequent iterations: `git commit --fixup <SHA of the iteration-1 commit>` (no custom message, auto-generated)
 
 | Result    | Action                                           |
 | --------- | ------------------------------------------------ |
@@ -159,14 +160,9 @@ Every iteration commits locally. First iteration is a regular commit, subsequent
 
 ### Git strategy
 
-- One branch per fix task, name prepared by the analysis agent and included in `report.json` as `branch`: `fix/nightly-YYYY-MM-DD-<root-cause-slug>`
+- One branch and worktree per fix task, name prepared by the analysis agent and included in `report.json` as `branch`: `fix/nightly-YYYY-MM-DD-<root-cause-slug>`
 - PRs are created only when ≥1 validation passes
 
-### PR description structure
+### PR description
 
-## Nightly Fix — 2026-04-23
-
-✅ Fixed (3 tasks — 8 tests)
-⚠️ Partially fixed (1 task — 2/3 tests passing, see attempt log)
-❌ Failed to fix (1 task — see attempt log)
-🚫 Human required (2 tasks — PRODUCT_BUG, INFRA)
+The fix agent writes a per-task `pr-description.md` covering: root cause, fix applied, a validation status table (✅/❌ per platform/group/spec), the commit log, and any prompt gaps encountered. See `FIX_AGENT.md` Step 4 for the authoritative structure.
