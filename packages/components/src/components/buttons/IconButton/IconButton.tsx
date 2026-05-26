@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 
-import { mapSizeToPadding } from './utils';
 import {
     type FrameProps,
     type FramePropsKeys,
@@ -11,6 +10,7 @@ import { type TransientProps } from '../../../utils/transientProps';
 import { Box } from '../../Box/Box';
 import { Icon, type IconName } from '../../Icon/Icon';
 import { Tooltip, type UnmanagedTooltipProps } from '../../Tooltip/Tooltip';
+import { TOOLTIP_DELAY_NORMAL } from '../../Tooltip/TooltipDelay';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import {
     type ButtonIntent,
@@ -26,6 +26,7 @@ import {
     mapSizeToIconSize,
     pickButtonProps,
 } from '../utils';
+import { mapSizeToPadding } from './utils';
 
 export const allowedIconButtonFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 export type AllowedIconButtonFrameProps = Pick<
@@ -92,7 +93,7 @@ export const IconButton = ({
             {...buttonProps}
             {...frameProps}
         >
-            <Tooltip {...(tooltip as UnmanagedTooltipProps)}>
+            <Tooltip delayShow={TOOLTIP_DELAY_NORMAL} {...(tooltip as UnmanagedTooltipProps)}>
                 <Box padding={mapSizeToPadding(size)}>
                     {props.isLoading ? (
                         <Spinner
