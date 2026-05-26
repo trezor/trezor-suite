@@ -7,11 +7,7 @@ import { Button, Input, Modal } from '@trezor/components';
 
 import { useDispatch } from 'src/hooks/suite';
 
-interface WalletConnectButtonProps {
-    handleOpened: () => void;
-}
-
-export const WalletConnectButton = ({ handleOpened }: WalletConnectButtonProps) => {
+export const WalletConnectButton = () => {
     const dispatch = useDispatch();
     const [connectionUrl, setConnectionUrl] = useState('');
     const [modalOpened, setModalOpened] = useState(false);
@@ -34,10 +30,7 @@ export const WalletConnectButton = ({ handleOpened }: WalletConnectButtonProps) 
         setLoading(false);
         setModalOpened(false);
     };
-    const handleOpen = () => {
-        setModalOpened(true);
-        handleOpened();
-    };
+    const handleOpen = () => setModalOpened(true);
     const onCancel = () => setModalOpened(false);
 
     return (
