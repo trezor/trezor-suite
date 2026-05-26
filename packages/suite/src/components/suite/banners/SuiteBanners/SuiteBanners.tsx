@@ -3,6 +3,10 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import {
+    selectFirmwareHashCheckErrorIfEnabled,
+    selectFirmwareRevisionCheckErrorIfEnabled,
+} from '@suite/authenticity-checks';
+import {
     selectDeviceStaticSessionId,
     selectIsDeviceBackupRequired,
     selectIsDeviceBackupUnfinished,
@@ -18,10 +22,6 @@ import { spacingsPx } from '@trezor/theme';
 import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 import { useLocalNetworkAccessPermission } from 'src/hooks/suite/useLocalNetworkAccessPermission';
-import {
-    selectFirmwareHashCheckErrorIfEnabled,
-    selectFirmwareRevisionCheckErrorIfEnabled,
-} from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
 import { selectTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 import { MessageSystemBanner } from '../MessageSystemBanner';

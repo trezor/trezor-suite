@@ -1,3 +1,10 @@
+import {
+    selectFirmwareHashCheckErrorIfEnabled,
+    selectFirmwareRevisionCheckErrorIfEnabled,
+    selectIsDeviceIdCheckEnabledAndFailed,
+    selectIsDeviceInvariabilityEnabledAndFailed,
+    selectIsEntropyCheckEnabledAndFailed,
+} from '@suite/authenticity-checks';
 import { type TranslationKey } from '@suite/intl';
 import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/device';
 import { type SkippedHashCheckError } from '@suite-common/firmware-authenticity';
@@ -5,13 +12,6 @@ import { Card } from '@trezor/components';
 import { type FirmwareHashCheckError } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
-import {
-    selectFirmwareHashCheckErrorIfEnabled,
-    selectFirmwareRevisionCheckErrorIfEnabled,
-    selectIsDeviceIdCheckEnabledAndFailed,
-    selectIsDeviceInvariabilityEnabledAndFailed,
-    selectIsEntropyCheckEnabledAndFailed,
-} from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
 
 import { SecurityCheckFail } from './SecurityCheckFail';
 import { hardFailureChecklistItems, softFailureChecklistItems } from './checklistItems';

@@ -1,3 +1,7 @@
+import {
+    selectFirmwareHashCheckErrorIfEnabled,
+    selectFirmwareRevisionCheckErrorIfEnabled,
+} from '@suite/authenticity-checks';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/device';
 import {
@@ -9,10 +13,6 @@ import { type FirmwareHashCheckError, type FirmwareRevisionCheckError } from '@t
 import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL } from '@trezor/urls';
 
 import { useSelector } from 'src/hooks/suite';
-import {
-    selectFirmwareHashCheckErrorIfEnabled,
-    selectFirmwareRevisionCheckErrorIfEnabled,
-} from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
 
 const revisionCheckMessages: Record<
     Exclude<FirmwareRevisionCheckError, SkippedRevisionCheckError>,

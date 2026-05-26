@@ -14275,6 +14275,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/authenticity-checks@workspace:*, @suite/authenticity-checks@workspace:suite/authenticity-checks":
+  version: 0.0.0-use.local
+  resolution: "@suite/authenticity-checks@workspace:suite/authenticity-checks"
+  dependencies:
+    "@suite-common/device": "workspace:*"
+    "@suite-common/firmware-authenticity": "workspace:*"
+    "@suite-common/message-system": "workspace:*"
+    "@suite/settings": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite/backup@workspace:*, @suite/backup@workspace:suite/backup":
   version: 0.0.0-use.local
   resolution: "@suite/backup@workspace:suite/backup"
@@ -16365,6 +16376,7 @@ __metadata:
     "@suite/account": "workspace:*"
     "@suite/address": "workspace:*"
     "@suite/analytics": "workspace:*"
+    "@suite/authenticity-checks": "workspace:*"
     "@suite/backup": "workspace:*"
     "@suite/desktop-update": "workspace:*"
     "@suite/device": "workspace:*"
