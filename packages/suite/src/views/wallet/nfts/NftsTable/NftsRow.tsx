@@ -91,6 +91,10 @@ const NftsRow = ({
                     <Row gap={8}>
                         <Dropdown
                             placement={{ position: 'bottom', alignment: 'start' }}
+                            tooltip={{
+                                content: <Translation id="TR_SHOW_MORE" />,
+                                placement: 'left',
+                            }}
                             content={
                                 <Card paddingType="small">
                                     <Column gap={16}>

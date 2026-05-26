@@ -9,7 +9,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { type ExportFileType } from '@suite-common/wallet-types';
 import { getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
-import { Dropdown, Note, Tooltip } from '@trezor/components';
+import { Dropdown, Note } from '@trezor/components';
 
 import { exportTransactionsThunk } from 'src/actions/wallet/exportTransactionsActions';
 import { useDispatch } from 'src/hooks/suite';
@@ -99,36 +99,35 @@ export const ExportAction = ({ account, searchQuery }: ExportActionProps) => {
     const exportTypes = ['csv', 'pdf', 'json'] as const;
 
     return (
-        <Tooltip content={<Translation id="TR_EXPORT_TO_FILE" />}>
-            <Dropdown
-                placement={{ position: 'bottom', alignment: 'start' }}
-                content={
-                    searchQuery ? (
-                        <Note iconName="checks">
-                            <Translation
-                                id={
-                                    searchQuery
-                                        ? 'TR_EXPORT_SEARCH_FILTER_ACTIVE'
-                                        : 'TR_EXPORT_SEARCH_FILTER_INACTIVE'
-                                }
-                            />
-                        </Note>
-                    ) : (
-                        <Note iconName="info" priority="secondary">
-                            <Translation id="TR_EXPORT_SEARCH_FILTER_INACTIVE" />
-                        </Note>
-                    )
-                }
-                items={exportTypes.map(type => ({
-                    label: <Translation id="TR_EXPORT_AS" values={{ as: `.${type}` }} />,
-                    onClick: () => runExport(type),
-                    'data-testid': `${dataTest}/${type}`,
-                }))}
-                minWidth={240}
-                iconName="fileArrowDown"
-                isLoading={isExportRunning}
-                data-testid={`${dataTest}/dropdown`}
-            />
-        </Tooltip>
+        <Dropdown
+            placement={{ position: 'bottom', alignment: 'start' }}
+            content={
+                searchQuery ? (
+                    <Note iconName="checks">
+                        <Translation
+                            id={
+                                searchQuery
+                                    ? 'TR_EXPORT_SEARCH_FILTER_ACTIVE'
+                                    : 'TR_EXPORT_SEARCH_FILTER_INACTIVE'
+                            }
+                        />
+                    </Note>
+                ) : (
+                    <Note iconName="info" priority="secondary">
+                        <Translation id="TR_EXPORT_SEARCH_FILTER_INACTIVE" />
+                    </Note>
+                )
+            }
+            items={exportTypes.map(type => ({
+                label: <Translation id="TR_EXPORT_AS" values={{ as: `.${type}` }} />,
+                onClick: () => runExport(type),
+                'data-testid': `${dataTest}/${type}`,
+            }))}
+            minWidth={240}
+            iconName="fileArrowDown"
+            isLoading={isExportRunning}
+            data-testid={`${dataTest}/dropdown`}
+            tooltip={{ content: <Translation id="TR_EXPORT_TO_FILE" />, placement: 'left' }}
+        />
     );
 };

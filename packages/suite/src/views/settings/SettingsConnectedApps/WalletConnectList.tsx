@@ -74,6 +74,10 @@ export const WalletConnectList = () => {
 
                         <Dropdown
                             placement={{ position: 'bottom', alignment: 'end' }}
+                            tooltip={{
+                                content: <Translation id="TR_SHOW_MORE" />,
+                                placement: 'left',
+                            }}
                             items={[
                                 {
                                     icon: 'xCircle',
