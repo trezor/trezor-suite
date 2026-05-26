@@ -1,19 +1,19 @@
 import { type FC, type PropsWithChildren, type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectIsFirmwareAuthenticityCheckEnabledAndHardFailed } from '@suite/authenticity-checks';
+import {
+    type AuthenticityChecksRootState,
+    selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
+} from '@suite/authenticity-checks';
 import { Translation } from '@suite/intl';
-import { type DeviceRootState, selectIsDeviceBackupUnfinished } from '@suite-common/device';
+import { selectIsDeviceBackupUnfinished } from '@suite-common/device';
 import { Tooltip } from '@trezor/components';
 
-type ReceiveDisabledRootState = DeviceRootState &
-    Parameters<typeof selectIsFirmwareAuthenticityCheckEnabledAndHardFailed>[0];
-
 export const useReceiveDisabled = () => {
-    const isAuthenticityCheckFailed = useSelector((state: ReceiveDisabledRootState) =>
+    const isAuthenticityCheckFailed = useSelector((state: AuthenticityChecksRootState) =>
         selectIsFirmwareAuthenticityCheckEnabledAndHardFailed(state),
     );
-    const isDeviceBackupUnfinished = useSelector((state: ReceiveDisabledRootState) =>
+    const isDeviceBackupUnfinished = useSelector((state: AuthenticityChecksRootState) =>
         selectIsDeviceBackupUnfinished(state),
     );
 

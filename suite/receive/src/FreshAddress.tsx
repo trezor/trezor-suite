@@ -1,28 +1,27 @@
 import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { type AnyAction } from 'redux';
-import { type ThunkDispatch } from 'redux-thunk';
-
 import { type SelectedAccountRootState } from '@suite/account';
 import { Address } from '@suite/address';
 import { ReadMoreLink } from '@suite/external-links';
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import {
+    type MetadataRootState,
     selectIsLegacyLabelingVisible,
     selectLabelingDataForSelectedAccount,
 } from '@suite/metadata';
 import { getFirstFreshAddress } from '@suite-common/address';
-import { type DeviceRootState } from '@suite-common/device';
-import { type ExtraDependencies } from '@suite-common/redux-utils';
-import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
-import { getNetwork } from '@suite-common/wallet-config';
+import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
-    type AccountsRootState,
-    type WalletSettingsRootState,
-    selectIsAccountUtxoBased,
-} from '@suite-common/wallet-core';
+    type SuiteSyncDataRootState,
+    type WithSuiteSyncAndDeviceState,
+    type WithSuiteSyncState,
+    selectIsSuiteSyncEnabled,
+    selectSuiteSyncAddressLabels,
+} from '@suite-common/suite-sync';
+import { getNetwork } from '@suite-common/wallet-config';
+import { type AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
 import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
 import {
     Banner,
@@ -92,18 +91,6 @@ export interface FreshAddressProps {
     isDeviceConnected: boolean;
 }
 
-type FreshAddressRootState = AccountsRootState &
-    Parameters<typeof selectIsLegacyLabelingVisible>[0] &
-    Parameters<typeof selectLabelingDataForSelectedAccount>[0] &
-    Parameters<typeof selectIsSuiteSyncEnabled>[0] &
-    Parameters<typeof selectSuiteSyncAddressLabels>[0];
-
-type FreshAddressDispatch = ThunkDispatch<
-    DeviceRootState & WalletSettingsRootState & SelectedAccountRootState,
-    ExtraDependencies,
-    AnyAction
->;
-
 export const FreshAddress = ({
     account,
     alreadyUsedAddresses,
@@ -112,27 +99,31 @@ export const FreshAddress = ({
     locked,
     isDeviceConnected,
 }: FreshAddressProps) => {
-    const isAccountUtxoBased = useSelector((state: FreshAddressRootState) =>
+    const isAccountUtxoBased = useSelector((state: AccountsRootState) =>
         selectIsAccountUtxoBased(state, account.key),
     );
 
-    const isLegacyLabelingVisible = useSelector((state: FreshAddressRootState) =>
-        selectIsLegacyLabelingVisible(state),
+    const isLegacyLabelingVisible = useSelector(
+        (state: MetadataRootState & WithSuiteSyncState & MessageSystemRootState) =>
+            selectIsLegacyLabelingVisible(state),
     );
-    const { addressLabels } = useSelector((state: FreshAddressRootState) =>
+
+    const { addressLabels } = useSelector((state: MetadataRootState & SelectedAccountRootState) =>
         selectLabelingDataForSelectedAccount(state),
     );
 
-    const isSuiteSyncEnabled = useSelector((state: FreshAddressRootState) =>
-        selectIsSuiteSyncEnabled(state),
+    const isSuiteSyncEnabled = useSelector(
+        (state: WithSuiteSyncAndDeviceState & MessageSystemRootState) =>
+            selectIsSuiteSyncEnabled(state),
     );
-    const suiteSyncAddressLabels = useSelector((state: FreshAddressRootState) =>
+
+    const suiteSyncAddressLabels = useSelector((state: SuiteSyncDataRootState) =>
         isSuiteSyncEnabled ? selectSuiteSyncAddressLabels(state, account.deviceState) : [],
     );
 
     const { isReceiveDisabled, receiveDisabledTooltipContent } = useReceiveDisabled();
     const { translationString } = useTranslation();
-    const dispatch = useDispatch<FreshAddressDispatch>();
+    const dispatch = useDispatch();
 
     const firstFreshAddress = useMemo(
         () =>
