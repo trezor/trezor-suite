@@ -1,4 +1,4 @@
-export { TradingHistoryScreen } from './screens/TradingHistoryScreen';
+export { TradingHistory } from './components/TradingHistory';
 export { TradeStatusBadge, getBadgeIconName, getBadgeVariant } from './components/TradeStatusBadge';
 export { TradeDetailHeader } from './components/TradeDetailSheet/TradeDetailHeader';
 export {
