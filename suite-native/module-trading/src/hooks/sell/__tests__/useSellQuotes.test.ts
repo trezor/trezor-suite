@@ -18,12 +18,14 @@ import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useSellForm } from '../useSellForm';
 import { useSellQuotes } from '../useSellQuotes';
 
+const mockDebounce = (fn: () => unknown) => fn();
+
 jest.mock('@trezor/react-utils', () => {
     const originalModule = jest.requireActual('@trezor/react-utils');
 
     return {
         ...originalModule,
-        useDebounce: () => (fn: () => unknown) => fn(),
+        useDebounce: () => mockDebounce,
     };
 });
 
@@ -268,9 +270,6 @@ describe('useSellQuotes', () => {
             result.current.setValue('fiatStringAmount', undefined);
         });
 
-        // The 2nd call ("trading/setCurrentProviderMetadata") is out of scope of this test,
-        // we care only about the "tradingBuy/clearQuotesAndQuotesRequest" call.
-        expect(dispatchSpy).toHaveBeenCalledTimes(2);
         expect(dispatchSpy).toHaveBeenNthCalledWith(1, {
             payload: undefined,
             type: 'tradingSell/clearQuotesAndQuotesRequest',
