@@ -5,7 +5,7 @@ Your fix task is embedded at the bottom of this prompt. Read it before doing any
 
 ## Context
 
-- **Working directory:** the repo root (a git worktree already on the fix branch — do not switch branches)
+- **Working directory:** the repo root (already checked out on the fix branch — do not switch branches)
 - **Test location:** `suite/e2e/tests/`
 - **Web playwright config:** `suite/e2e/playwright-config/playwright-web.config.ts`
 - **Desktop playwright config:** `suite/e2e/playwright-config/playwright-desktop.config.ts`
@@ -29,6 +29,17 @@ Allowed changes depend on the fix task's `fix_scope`:
 - `LOCATOR_ADD` — files inside `suite/e2e/` AND `data-testid` attributes in product source files. No other product code changes.
 
 ## Environment
+
+**Web build:** `packages/suite-web/build` is pre-built and served as a static bundle via vite
+preview on `http://localhost:8000`. There is no hot reload — for `LOCATOR_ADD` fixes that modify
+a product component, kill the server, rebuild, and restart before running web tests:
+
+```bash
+pkill -f "vite preview" || true
+yarn workspace @trezor/suite-web build
+nohup yarn workspace @trezor/suite-web preview > /tmp/web-preview.log 2>&1 &
+curl -sf --retry 30 --retry-delay 2 --retry-connrefused --max-time 5 http://localhost:8000 -o /dev/null
+```
 
 **Desktop build:** `packages/suite-desktop/dist` and `packages/suite-desktop/build` are present.
 For `LOCATOR_ADD` fixes that modify a product component, remove them and rebuild before running

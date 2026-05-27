@@ -17,8 +17,18 @@ export const FixTaskSchema = z.object({
     validations: z.array(TestToValidateSchema),
 });
 
+export const SkippedTaskSchema = z.object({
+    root_cause: z.string(),
+    reason: z.string(),
+    affected_tests: z.array(z.string()),
+});
+
 export const ReportSchema = z.object({
+    run_date: z.string(),
+    web_run_id: z.string().nullable(),
+    desktop_run_id: z.string().nullable(),
     fix_tasks: z.array(FixTaskSchema),
+    skipped: z.array(SkippedTaskSchema),
 });
 
 export const FixResultSchema = z.object({
@@ -48,6 +58,7 @@ export const ClaudeResultSchema = z.object({
 });
 
 export type FixTask = z.infer<typeof FixTaskSchema>;
+export type SkippedTask = z.infer<typeof SkippedTaskSchema>;
 export type Report = z.infer<typeof ReportSchema>;
 export type FixResult = z.infer<typeof FixResultSchema>;
 export type ClaudeResult = z.infer<typeof ClaudeResultSchema>;

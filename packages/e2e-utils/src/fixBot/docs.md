@@ -122,7 +122,7 @@ One Claude Code invocation per fix task. Receives a single fix task entry from `
 ### Loop
 
 ```
-Setup environment (dev server / build electron app / emulator)
+Setup environment (web preview server (pre-built static) / build electron app / emulator)
 Pre-flight run: playwright test <spec> for each validation
   → confirms failure is real
   → produces fresh local trace + screenshots

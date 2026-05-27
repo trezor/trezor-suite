@@ -1,4 +1,3 @@
-import { config as loadEnv } from 'dotenv';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { closeSync, existsSync, mkdirSync, openSync, readFileSync, unlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -12,12 +11,8 @@ function main(): void {
         encoding: 'utf-8',
     }).trim();
 
-    loadEnv({ path: join(root, 'packages/e2e-utils/.env') });
-
     if (!process.env.CURRENTS_API_KEY) {
-        error('CURRENTS_API_KEY is not set.');
-        error('Add it to packages/e2e-utils/.env:');
-        error('  CURRENTS_API_KEY=your_key_here');
+        error('CURRENTS_API_KEY is not set. It must be provided via the workflow environment.');
         process.exit(1);
     }
 
