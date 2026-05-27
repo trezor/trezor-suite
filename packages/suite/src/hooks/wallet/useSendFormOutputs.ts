@@ -1,7 +1,11 @@
 import { useCallback, useEffect } from 'react';
 import { type UseFormReturn, type useFieldArray } from 'react-hook-form';
 
-import { DEFAULT_OPRETURN, DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
+import {
+    DEFAULT_NAME_OP_OUTPUT,
+    DEFAULT_OPRETURN,
+    DEFAULT_PAYMENT,
+} from '@suite-common/wallet-constants';
 import { type FormState } from '@suite-common/wallet-types';
 
 import { type SendContextValues, type UseSendFormState } from 'src/types/wallet/sendForm';
@@ -95,6 +99,49 @@ export const useSendFormOutputs = ({
         composeRequest('outputs.0.amount');
     };
 
+    // Namecoin name-operation output. Parallels addOpReturn/removeOpReturn.
+    // The composer (NameOp.tsx) drives all three sub-modes; this hook just
+    // appends/removes the underlying form entry.
+    const addNameOp = () => {
+        const values = getValues();
+        const outputsDirty = values.outputs.some(
+            output => output.address.length > 0 || output.amount.length > 0,
+        );
+        if (outputsDirty) {
+            outputsFieldArray.append({ ...DEFAULT_NAME_OP_OUTPUT });
+        } else {
+            reset(
+                {
+                    ...values,
+                    outputs: [DEFAULT_NAME_OP_OUTPUT],
+                },
+                { keepErrors: true },
+            );
+        }
+    };
+
+    const removeNameOp = (index: number) => {
+        const values = getValues();
+        if (values.outputs.length > 1) {
+            removeOutput(index);
+        } else {
+            clearErrors('outputs.0');
+            reset(
+                {
+                    ...values,
+                    outputs: [
+                        {
+                            ...DEFAULT_PAYMENT,
+                            currency: localCurrencyOption,
+                        },
+                    ],
+                },
+                { keepErrors: true },
+            );
+        }
+        composeRequest('outputs.0.amount');
+    };
+
     // each Output has additional uncontrolled values that need to be present in FormState
     // they need to be registered without any HTMLElement as a "custom" field
     const { fields } = outputsFieldArray;
@@ -111,5 +158,7 @@ export const useSendFormOutputs = ({
         removeOutput,
         addOpReturn,
         removeOpReturn,
+        addNameOp,
+        removeNameOp,
     };
 };
