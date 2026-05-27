@@ -7,6 +7,8 @@ import { Translation } from '@suite-native/intl';
 import { isNetworkWithTokens } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { NetworkBackendsButton } from './NetworkBackendsButton';
+
 type NetworkSymbolSwitchItemProps = {
     symbol: NetworkSymbol;
     isEnabled: boolean;
@@ -45,6 +47,7 @@ export const NetworkSymbolSwitchItem = ({
     onToggle,
 }: NetworkSymbolSwitchItemProps) => {
     const { applyStyle } = useNativeStyles();
+
     const { name } = getNetwork(symbol);
 
     return (
@@ -59,9 +62,9 @@ export const NetworkSymbolSwitchItem = ({
                         <CryptoIcon symbol={symbol} />
                     </View>
                     <HStack
-                        justifyContent="space-between"
-                        spacing="sp12"
                         flex={1}
+                        spacing="sp12"
+                        justifyContent="space-between"
                         alignItems="center"
                     >
                         <VStack spacing={0}>
@@ -72,8 +75,10 @@ export const NetworkSymbolSwitchItem = ({
                                 </Text>
                             )}
                         </VStack>
-
-                        <Switch onChange={onToggle} isChecked={isEnabled} />
+                        <HStack spacing="sp16" alignItems="center">
+                            {symbol === 'btc' && <NetworkBackendsButton symbol={symbol} />}
+                            <Switch onChange={onToggle} isChecked={isEnabled} />
+                        </HStack>
                     </HStack>
                 </HStack>
             </PressableOpacity>
