@@ -11,6 +11,9 @@
             "path": "../../suite-common/redux-utils"
         },
         {
+            "path": "../../suite-common/suite-types"
+        },
+        {
             "path": "../../suite-common/toast-notifications"
         },
         { "path": "../analytics" },
@@ -23,9 +26,6 @@
             "path": "../../packages/product-components"
         },
         { "path": "../../packages/urls" },
-        {
-            "path": "../../suite-common/suite-types"
-        },
         {
             "path": "../../suite-common/test-utils"
         },
