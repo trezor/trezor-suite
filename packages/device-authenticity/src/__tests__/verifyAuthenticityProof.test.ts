@@ -8,7 +8,10 @@ import {
     T3W1_ROOT_PUB_KEY_TROPIC,
     defaultOptigaProps,
 } from '../../mocks/mockDeviceAuthenticityData';
-import { verifyAuthenticityProofFixtures } from '../__fixtures__/verifyAuthenticityProof';
+import {
+    matchRootPubKeyToCertificateFixtures,
+    verifyAuthenticityProofFixtures,
+} from '../__fixtures__/verifyAuthenticityProof';
 import { getRootPubKeys } from '../utils';
 import {
     matchRootPubKeyToCertificate,
@@ -50,6 +53,18 @@ describe(verifyAuthenticityProof.name, () => {
 
         expect(verify.valid).toBe(true);
     });
+
+    it('fails with INVALID_DEVICE_CERTIFICATE when CA cert validity is in the future', async () => {
+        jest.useFakeTimers({ now: new Date('2022-01-01') });
+        const result = await verifyAuthenticityProof(defaultOptigaProps);
+        jest.useRealTimers();
+
+        expect(result).toEqual({
+            valid: false,
+            error: 'INVALID_DEVICE_CERTIFICATE',
+            errorDetails: expect.stringContaining("can't be in the future"),
+        });
+    });
 });
 
 describe(matchRootPubKeyToCertificate.name, () => {
@@ -73,7 +88,7 @@ describe(matchRootPubKeyToCertificate.name, () => {
         ).resolves.toBe(undefined);
     });
 
-    verifyAuthenticityProofFixtures.forEach(({ description, params, result }) => {
+    matchRootPubKeyToCertificateFixtures.forEach(({ description, params, result }) => {
         it(description, async () => {
             const { config, deviceModel, allowDebugKeys, certificates } = params;
             const allRootPubKeys = getRootPubKeys({ config, deviceModel, allowDebugKeys });
