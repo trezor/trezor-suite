@@ -5,7 +5,7 @@ Your fix task is embedded at the bottom of this prompt. Read it before doing any
 
 ## Context
 
-- **Working directory:** the repo root (a git worktree already on the fix branch — do not switch branches)
+- **Working directory:** the repo root (already checked out on the fix branch — do not switch branches)
 - **Test location:** `suite/e2e/tests/`
 - **Web playwright config:** `suite/e2e/playwright-config/playwright-web.config.ts`
 - **Desktop playwright config:** `suite/e2e/playwright-config/playwright-desktop.config.ts`
@@ -29,6 +29,17 @@ Allowed changes depend on the fix task's `fix_scope`:
 - `LOCATOR_ADD` — files inside `suite/e2e/` AND `data-testid` attributes in product source files. No other product code changes.
 
 ## Environment
+
+**Web build:** `packages/suite-web/build` is pre-built and served as a static bundle via vite
+preview on `http://localhost:8000`. There is no hot reload — for `LOCATOR_ADD` fixes that modify
+a product component, kill the server, rebuild, and restart before running web tests:
+
+```bash
+pkill -f "vite preview" || true
+yarn workspace @trezor/suite-web build
+nohup yarn workspace @trezor/suite-web preview > /tmp/web-preview.log 2>&1 &
+curl -sf --retry 30 --retry-delay 2 --retry-connrefused --max-time 5 http://localhost:8000 -o /dev/null
+```
 
 **Desktop build:** `packages/suite-desktop/dist` and `packages/suite-desktop/build` are present.
 For `LOCATOR_ADD` fixes that modify a product component, remove them and rebuild before running
@@ -65,10 +76,10 @@ touch /tmp/preflight-marker
   <spec-without-suite-e2e-prefix>)
 ```
 
-Exit code 0 = already passing — record as passed in the final status.
+Exit code 0 = already passing in pre-flight.
 Non-zero = failing — read the trace before deciding anything further (see below).
 
-**If all validations already pass:** write the status block (Step 4) and stop.
+**If all validations already pass in pre-flight:** write the status block (Step 4) with `result: "not_duplicated"` and stop — do not enter the fix loop.
 
 ### Reading traces after pre-flight and any test run
 
@@ -154,7 +165,7 @@ Write two files to the repo root (current directory) using the Write tool.
 ```json
 {
   "task_id": "<id from fix task>",
-  "result": "<pass | partial | fail>",
+  "result": "<pass | partial | fail | not_duplicated>",
   "iterations": <number of fix iterations performed, 0 if none needed>,
   "passed": ["<platform>/<group>/<spec>"],
   "failed": ["<platform>/<group>/<spec>"],
@@ -163,9 +174,10 @@ Write two files to the repo root (current directory) using the Write tool.
 ```
 
 `pr_title` must be the full PR title including the `Nightly fix <YY-MM-DD> - ` prefix. Base it on the fix you just made.
-`pass` — all validations pass.
+`pass` — all validations pass after fixes.
 `partial` — at least one passes, at least one fails.
-`fail` — zero validations pass.
+`fail` — zero validations pass after fixes.
+`not_duplicated` — all validations already passed in pre-flight; failure could not be reproduced.
 
 List every validation exactly once in either `passed` or `failed`.
 Use `<platform>/<group>/<spec>` format with the `spec` value as-is (repo-root-relative path).

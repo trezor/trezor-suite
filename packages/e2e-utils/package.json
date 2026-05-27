@@ -16,7 +16,8 @@
         "select-tests-llm": "tsx ./src/llmTestSelector/index.ts",
         "generate-usage-dashboard": "tsx ./src/llmUsageDashboard/index.ts",
         "fix-bot:analyze": "tsx src/fixBot/analyze.ts",
-        "fix-bot:fix": "tsx src/fixBot/fix.ts"
+        "fix-bot:fix": "tsx src/fixBot/fix.ts",
+        "fix-bot:publish": "tsx src/fixBot/publish.ts"
     },
     "dependencies": {
         "@anthropic-ai/sdk": "^0.39.0",

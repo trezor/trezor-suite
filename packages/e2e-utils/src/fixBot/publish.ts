@@ -5,32 +5,28 @@ import { join } from 'node:path';
 import { log } from '../logger';
 import { type FixResult, FixResultSchema } from './schemas';
 
-export interface PublishOptions {
-    worktreePath: string;
-    branch: string;
-    base?: string;
-    remote?: string;
-}
+const BASE_BRANCH = 'develop';
+const GIT_REMOTE = 'origin';
 
 const ICONS: Record<FixResult['result'], string> = {
     pass: '✅',
     partial: '⚠️',
     fail: '❌',
+    not_duplicated: '🔵',
 };
 
-export function publishPR({
-    worktreePath,
-    branch,
-    base = 'develop',
-    remote = 'origin',
-}: PublishOptions): void {
-    const resultFile = join(worktreePath, 'fix-result.json');
+function publishPR(): void {
+    const branch = process.env.BRANCH;
 
-    if (!existsSync(worktreePath)) {
-        log(`Result: ❌  worktree not found: ${worktreePath}`);
-
-        return;
+    if (!branch) {
+        log('BRANCH env var is required');
+        process.exit(1);
     }
+
+    const root = execFileSync('git', ['rev-parse', '--show-toplevel'], {
+        encoding: 'utf-8',
+    }).trim();
+    const resultFile = join(root, 'fix-result.json');
 
     if (!existsSync(resultFile)) {
         log(`Result: ❌  fix-result.json missing — agent did not complete`);
@@ -53,26 +49,25 @@ export function publishPR({
         return;
     }
 
-    log(`  → Pushing ${branch} to ${remote}...`);
-    execFileSync('git', ['-C', worktreePath, 'push', '--', remote, branch], { stdio: 'inherit' });
+    if (result === 'not_duplicated') {
+        log('  → No branch pushed (failure not reproduced in pre-flight).');
 
-    const prDescriptionFile = join(worktreePath, 'pr-description.md');
-    const prArgs = ['pr', 'create', '--title', pr_title, '--head', branch, '--base', base];
+        return;
+    }
+
+    log(`  → Pushing ${branch} to ${GIT_REMOTE}...`);
+    // TODO: add --force-with-lease to handle retries when branch was already pushed in a previous run
+    execFileSync('git', ['push', '--', GIT_REMOTE, branch], { stdio: 'inherit' });
+
+    const prDescriptionFile = join(root, 'pr-description.md');
+    const prArgs = ['pr', 'create', '--title', pr_title, '--head', branch, '--base', BASE_BRANCH];
 
     if (existsSync(prDescriptionFile)) prArgs.push('--body-file', prDescriptionFile);
 
+    // TODO: if 'gh pr create' errors because a PR for this branch already exists, catch it
+    // and print the existing PR URL instead (e.g. via `gh pr list --head <branch> --json url`)
     const prUrl = execFileSync('gh', prArgs, { encoding: 'utf-8' }).trim();
     log(`PR: ${prUrl}`);
 }
 
-// Entry point when called directly by GHA matrix jobs:
-// tsx publish.ts <worktreePath> <branch> [base]
-const isMain = /publish\.[jt]s$/.test(process.argv[1] ?? '');
-if (isMain) {
-    const [worktreePath, branch, base] = process.argv.slice(2);
-    if (!worktreePath || !branch) {
-        process.stderr.write('Usage: tsx publish.ts <worktreePath> <branch> [base]\n');
-        process.exit(1);
-    }
-    publishPR({ worktreePath, branch, base });
-}
+publishPR();
