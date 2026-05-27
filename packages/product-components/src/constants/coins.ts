@@ -5,7 +5,6 @@ export type LegacyNetworkSymbol =
     | 'xtz'
     | 'dash'
     | 'dgb'
-    | 'nmc'
     | 'vtc'
     | 'btg'
     | 'xmr'
