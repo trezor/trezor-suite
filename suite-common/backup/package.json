@@ -1,5 +1,5 @@
 {
-    "name": "@suite/recovery",
+    "name": "@suite-common/backup",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -12,13 +12,10 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.12.0",
-        "@suite-common/backup": "workspace:*",
-        "@suite-common/device": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
-        "@suite-common/test-utils": "workspace:*",
-        "@suite/analytics": "workspace:*",
-        "@trezor/connect": "workspace:*",
-        "@trezor/device-utils": "workspace:*"
+        "@trezor/connect": "workspace:*"
+    },
+    "devDependencies": {
+        "@suite-common/device": "workspace:*"
     }
 }
