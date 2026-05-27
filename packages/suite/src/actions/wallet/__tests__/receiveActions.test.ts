@@ -97,7 +97,7 @@ const getInitialState = (state: Partial<InitialState> | undefined) => ({
         ...state?.suiteSettings,
     },
     wallet: {
-        receive: receiveReducer([], { type: 'foo' } as any),
+        receive: receiveReducer(undefined, { type: 'foo' } as any),
         selectedAccount: {
             account: {
                 key: 'selected-account-key',
@@ -164,20 +164,20 @@ describe('ReceiveActions', () => {
         const UNVERIFIED = [{ path: 'a', address: 'b', isVerified: false }];
 
         await store.dispatch(openAddressModal({ addressPath: 'a', value: 'b' }));
-        expect(store.getState().wallet.receive).toEqual(UNVERIFIED);
+        expect(store.getState().wallet.receive.revealedAddresses).toEqual(UNVERIFIED);
 
         await store.dispatch(showAddressThunk({ path: 'a', address: 'b' }));
-        expect(store.getState().wallet.receive).toEqual(VERIFIED);
+        expect(store.getState().wallet.receive.revealedAddresses).toEqual(VERIFIED);
 
         await store.dispatch(openAddressModal({ addressPath: 'a', value: 'b' }));
-        expect(store.getState().wallet.receive).toEqual(UNVERIFIED);
+        expect(store.getState().wallet.receive.revealedAddresses).toEqual(UNVERIFIED);
 
         // add second
         await store.dispatch(openAddressModal({ addressPath: 'c', value: 'd' }));
-        expect(store.getState().wallet.receive.length).toEqual(2);
+        expect(store.getState().wallet.receive.revealedAddresses.length).toEqual(2);
 
         // clear
         await store.dispatch(receiveActions.receiveDispose());
-        expect(store.getState().wallet.receive.length).toEqual(0);
+        expect(store.getState().wallet.receive.revealedAddresses.length).toEqual(0);
     });
 });

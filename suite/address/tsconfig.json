@@ -7,7 +7,16 @@
             "path": "../../suite-common/formatters"
         },
         {
+            "path": "../../suite-common/message-system"
+        },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
             "path": "../../suite-common/suite-constants"
+        },
+        {
+            "path": "../../suite-common/suite-sync"
         },
         {
             "path": "../../suite-common/toast-notifications"
@@ -18,8 +27,11 @@
         {
             "path": "../../suite-common/wallet-types"
         },
+        { "path": "../account" },
+        { "path": "../metadata" },
         { "path": "../modal" },
         { "path": "../../packages/components" },
+        { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/dom-utils" },
         { "path": "../../packages/theme" }

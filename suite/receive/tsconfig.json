@@ -5,13 +5,7 @@
         { "path": "../../suite-common/address" },
         { "path": "../../suite-common/device" },
         {
-            "path": "../../suite-common/message-system"
-        },
-        {
             "path": "../../suite-common/redux-utils"
-        },
-        {
-            "path": "../../suite-common/suite-sync"
         },
         {
             "path": "../../suite-common/suite-types"
@@ -35,7 +29,6 @@
         { "path": "../external-links" },
         { "path": "../intl" },
         { "path": "../labeling" },
-        { "path": "../metadata" },
         { "path": "../modal" },
         { "path": "../../packages/components" },
         { "path": "../../packages/theme" }

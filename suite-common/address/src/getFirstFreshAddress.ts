@@ -1,6 +1,6 @@
 import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
 
-export const getFirstFreshAddress = (
+export const getFreshAddresses = (
     account: Account,
     alreadyUsedAddresses: ReceiveInfo[], // marked as already uses by the user (confirmed, labeled)
     pendingAddresses: string[], // addresses with pending transaction
@@ -17,15 +17,29 @@ export const getFirstFreshAddress = (
           ];
 
     if (!utxoBasedAccount) {
-        return unused[0];
+        return unused;
     }
 
-    const unrevealed = unused.filter(
+    return unused.filter(
         address =>
             !alreadyUsedAddresses.find(receiveAddress => receiveAddress.path === address.path) &&
             !pendingAddresses.includes(address.address),
     );
+};
 
-    // NOTE: unrevealed[0] can be undefined (limit exceeded)
-    return unrevealed[0];
+export const getFirstFreshAddress = (
+    account: Account,
+    alreadyUsedAddresses: ReceiveInfo[], // marked as already uses by the user (confirmed, labeled)
+    pendingAddresses: string[], // addresses with pending transaction
+    utxoBasedAccount: boolean,
+) => {
+    const freshAddresses = getFreshAddresses(
+        account,
+        alreadyUsedAddresses,
+        pendingAddresses,
+        utxoBasedAccount,
+    );
+
+    // NOTE: freshAddresses[0] can be undefined (limit exceeded)
+    return freshAddresses[0];
 };

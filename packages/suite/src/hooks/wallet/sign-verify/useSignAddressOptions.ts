@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { type ExtendedMessageDescriptor, useTranslation } from '@suite/intl';
-import { type ReceiveState as RevealedAddresses } from '@suite/receive';
+import { type ReceiveInfo } from '@suite-common/wallet-types';
 import { getStakingPath } from '@suite-common/wallet-utils';
 
 import type { Account } from 'src/types/wallet';
@@ -13,7 +13,7 @@ export type AddressItem = {
 
 export const useSignAddressOptions = (
     account: Account | undefined,
-    revealedAddresses: RevealedAddresses,
+    revealedAddresses: ReceiveInfo[],
 ) => {
     const reduceAddresses = (
         addresses: { address: string; path: string }[],

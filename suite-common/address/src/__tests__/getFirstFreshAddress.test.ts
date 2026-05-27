@@ -1,9 +1,72 @@
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { getFirstFreshAddress } from '../getFirstFreshAddress';
+import { getFirstFreshAddress, getFreshAddresses } from '../getFirstFreshAddress';
 
 describe(getFirstFreshAddress.name, () => {
+    it('returns all unrevealed unused addresses for utxo-based accounts in order', () => {
+        const account = mockWalletAccount({
+            symbol: 'test',
+            path: "m/84'/1'/0'",
+            descriptor: asAccountDescriptor('descriptor-test'),
+            history: { total: 13, tokens: 0, unconfirmed: 0 },
+            addresses: {
+                used: [],
+                unused: [
+                    {
+                        address: 'tb1q-first',
+                        path: "m/84'/1'/0'/0/1",
+                        balance: '0',
+                        sent: '0',
+                        received: '0',
+                        transfers: 0,
+                    },
+                    {
+                        address: 'tb1q-second',
+                        path: "m/84'/1'/0'/0/2",
+                        balance: '0',
+                        sent: '0',
+                        received: '0',
+                        transfers: 0,
+                    },
+                    {
+                        address: 'tb1q-third',
+                        path: "m/84'/1'/0'/0/3",
+                        balance: '0',
+                        sent: '0',
+                        received: '0',
+                        transfers: 0,
+                    },
+                ],
+                change: [],
+            },
+        });
+
+        expect(
+            getFreshAddresses(
+                account,
+                [
+                    {
+                        path: "m/84'/1'/0'/0/1",
+                        address: 'tb1q-first',
+                        isVerified: true,
+                    },
+                ],
+                ['tb1q-third'],
+                true,
+            ),
+        ).toEqual([
+            {
+                address: 'tb1q-second',
+                balance: '0',
+                path: "m/84'/1'/0'/0/2",
+                received: '0',
+                sent: '0',
+                transfers: 0,
+            },
+        ]);
+    });
+
     it('returns the first unrevealed unused address for utxo-based accounts', () => {
         const account = mockWalletAccount({
             symbol: 'test',

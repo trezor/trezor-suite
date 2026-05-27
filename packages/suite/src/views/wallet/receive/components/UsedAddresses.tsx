@@ -1,13 +1,19 @@
 import { useState } from 'react';
 
-import { Address } from '@suite/address';
+import { Address, selectLabeledUnusedAddresses } from '@suite/address';
+import type { SelectLabeledUnusedAddressesState } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import {
     selectIsLegacyLabelingVisible,
     selectLabelingDataForSelectedAccount,
 } from '@suite/metadata';
-import { showAddressThunk, useReceiveDisabled } from '@suite/receive';
+import {
+    selectCurrentFreshAddress,
+    selectReceiveRevealedAddresses,
+    showAddressThunk,
+    useReceiveDisabled,
+} from '@suite/receive';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
@@ -21,7 +27,6 @@ import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { type AppState } from 'src/types/suite';
 
 const DEFAULT_LIMIT = 10;
 
@@ -96,22 +101,21 @@ const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }
 
 interface UsedAddressesProps {
     account: Account;
-    addresses: AppState['wallet']['receive'];
     locked: boolean;
     pendingAddresses: string[];
 }
 
-export const UsedAddresses = ({
-    account,
-    addresses,
-    pendingAddresses,
-    locked,
-}: UsedAddressesProps) => {
+export const UsedAddresses = ({ account, pendingAddresses, locked }: UsedAddressesProps) => {
     const [limit, setLimit] = useState(DEFAULT_LIMIT);
     const dispatch = useDispatch();
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
     const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
+    const currentFreshAddress = useSelector(selectCurrentFreshAddress);
+    const revealedAddresses = useSelector(selectReceiveRevealedAddresses);
+    const labeledUnusedAddresses = useSelector((state: SelectLabeledUnusedAddressesState) =>
+        selectLabeledUnusedAddresses(state, account),
+    );
     const suiteSyncAddressLabels = useSelector(state =>
         isSuiteSyncEnabled
             ? selectSuiteSyncAddressLabels(state, account.deviceState)
@@ -126,14 +130,16 @@ export const UsedAddresses = ({
     }
 
     const { used, unused } = account.addresses;
-    // find revealed addresses in `unused` list
+    // find addresses from `unused` list that should be shown together with used ones
     const revealed = unused.reduce(
         (result, addr) => {
-            const r = addresses.find(u => u.path === addr.path);
-            const p = pendingAddresses.includes(addr.address);
-            const f = r || p;
+            const revealed = revealedAddresses.find(u => u.path === addr.path);
+            const pending = pendingAddresses.includes(addr.address);
+            const labeled = labeledUnusedAddresses.find(u => u.path === addr.path);
+            const isCurrentFreshAddress = currentFreshAddress?.path === addr.path;
+            const isUsed = (revealed || pending || labeled) && !isCurrentFreshAddress;
 
-            return f ? result.concat(addr) : result;
+            return isUsed ? result.concat(addr) : result;
         },
         [] as typeof unused,
     );

@@ -2,7 +2,7 @@ import { components } from 'react-select';
 
 import styled from 'styled-components';
 
-import { type ReceiveState as RevealedAddresses } from '@suite/receive';
+import { type ReceiveInfo } from '@suite-common/wallet-types';
 import { Select, type SelectProps } from '@trezor/components';
 
 import {
@@ -50,7 +50,7 @@ const optionToAddress = (option: AddressItem | null) =>
 
 type SignAddressInputProps = {
     account?: Account;
-    revealedAddresses: RevealedAddresses;
+    revealedAddresses: ReceiveInfo[];
 } & SelectProps;
 
 export const SignAddressInput = ({

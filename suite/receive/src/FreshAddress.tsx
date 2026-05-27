@@ -1,28 +1,15 @@
-import { useMemo } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { type SelectedAccountRootState } from '@suite/account';
-import { Address } from '@suite/address';
+import { Address, selectAddressLabel, selectLabeledUnusedAddresses } from '@suite/address';
+import type { SelectAddressLabelState, SelectLabeledUnusedAddressesState } from '@suite/address';
 import { ReadMoreLink } from '@suite/external-links';
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
-import {
-    type MetadataRootState,
-    selectIsLegacyLabelingVisible,
-    selectLabelingDataForSelectedAccount,
-} from '@suite/metadata';
 import { getFirstFreshAddress } from '@suite-common/address';
-import { type MessageSystemRootState } from '@suite-common/message-system';
-import {
-    type SuiteSyncDataRootState,
-    type WithSuiteSyncAndDeviceState,
-    type WithSuiteSyncState,
-    selectIsSuiteSyncEnabled,
-    selectSuiteSyncAddressLabels,
-} from '@suite-common/suite-sync';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
-import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     Banner,
     Button,
@@ -36,6 +23,11 @@ import {
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import {
+    receiveActions,
+    selectCurrentFreshAddress,
+    selectReceiveRevealedAddresses,
+} from './receiveReducer';
 import { showAddressThunk } from './showAddressThunk';
 import { useReceiveDisabled } from './useReceiveDisabled';
 
@@ -84,7 +76,6 @@ const TooltipLabel = ({
 
 export interface FreshAddressProps {
     account: Account;
-    alreadyUsedAddresses: ReceiveInfo[];
     disabled: boolean;
     locked: boolean;
     pendingAddresses: string[];
@@ -93,47 +84,56 @@ export interface FreshAddressProps {
 
 export const FreshAddress = ({
     account,
-    alreadyUsedAddresses,
     disabled,
     pendingAddresses,
     locked,
     isDeviceConnected,
 }: FreshAddressProps) => {
+    const dispatch = useDispatch();
+
     const isAccountUtxoBased = useSelector((state: AccountsRootState) =>
         selectIsAccountUtxoBased(state, account.key),
     );
-
-    const isLegacyLabelingVisible = useSelector(
-        (state: MetadataRootState & WithSuiteSyncState & MessageSystemRootState) =>
-            selectIsLegacyLabelingVisible(state),
-    );
-
-    const { addressLabels } = useSelector((state: MetadataRootState & SelectedAccountRootState) =>
-        selectLabelingDataForSelectedAccount(state),
-    );
-
-    const isSuiteSyncEnabled = useSelector(
-        (state: WithSuiteSyncAndDeviceState & MessageSystemRootState) =>
-            selectIsSuiteSyncEnabled(state),
-    );
-
-    const suiteSyncAddressLabels = useSelector((state: SuiteSyncDataRootState) =>
-        isSuiteSyncEnabled ? selectSuiteSyncAddressLabels(state, account.deviceState) : [],
-    );
+    const revealedAddresses = useSelector(selectReceiveRevealedAddresses);
+    const currentFreshAddress = useSelector(selectCurrentFreshAddress);
 
     const { isReceiveDisabled, receiveDisabledTooltipContent } = useReceiveDisabled();
     const { translationString } = useTranslation();
-    const dispatch = useDispatch();
 
-    const firstFreshAddress = useMemo(
-        () =>
-            getFirstFreshAddress(
-                account,
-                alreadyUsedAddresses,
-                pendingAddresses,
-                isAccountUtxoBased,
-            ),
-        [account, alreadyUsedAddresses, pendingAddresses, isAccountUtxoBased],
+    const labeledAddresses = useSelector((state: SelectLabeledUnusedAddressesState) =>
+        selectLabeledUnusedAddresses(state, account),
+    );
+
+    useEffect(() => {
+        if (currentFreshAddress !== undefined) {
+            return;
+        }
+
+        const firstFreshAddress = getFirstFreshAddress(
+            account,
+            labeledAddresses.concat(revealedAddresses),
+            pendingAddresses,
+            isAccountUtxoBased,
+        );
+
+        dispatch(receiveActions.setCurrentFreshAddress(firstFreshAddress));
+    }, [
+        account,
+        revealedAddresses,
+        currentFreshAddress,
+        dispatch,
+        isAccountUtxoBased,
+        labeledAddresses,
+        pendingAddresses,
+    ]);
+
+    const currentFreshAddressLabel = useSelector((state: SelectAddressLabelState) =>
+        currentFreshAddress?.address
+            ? selectAddressLabel(state, {
+                  address: currentFreshAddress?.address,
+                  deviceStaticId: account.deviceState,
+              })
+            : undefined,
     );
 
     // On coinjoin account, disallow to reveal more than the first receive address until it is used,
@@ -141,24 +141,24 @@ export const FreshAddress = ({
     const coinjoinDisallowReveal =
         account.accountType === 'coinjoin' &&
         !account.addresses?.used.length &&
-        firstFreshAddress?.address !== account.addresses?.unused[0]?.address;
+        currentFreshAddress?.address !== account.addresses?.unused[0]?.address;
 
     const handleAddressReveal = () => {
-        if (firstFreshAddress) {
+        if (currentFreshAddress) {
             dispatch(
                 showAddressThunk({
-                    path: firstFreshAddress.path,
-                    address: firstFreshAddress.address,
+                    path: currentFreshAddress.path,
+                    address: currentFreshAddress.address,
                 }),
             );
         }
     };
 
-    const buttonTooltipContent = () => {
+    const revealButtonTooltipContent = () => {
         if (coinjoinDisallowReveal) {
             return <Translation id="RECEIVE_ADDRESS_COINJOIN_DISALLOW" />;
         }
-        if (!firstFreshAddress) {
+        if (!currentFreshAddress) {
             return <Translation id="RECEIVE_ADDRESS_LIMIT_REACHED" />;
         }
         if (receiveDisabledTooltipContent !== null) {
@@ -172,15 +172,15 @@ export const FreshAddress = ({
         'data-testid': '@wallet/receive/reveal-address-button',
         onClick: handleAddressReveal,
         isDisabled:
-            disabled || locked || coinjoinDisallowReveal || !firstFreshAddress || isReceiveDisabled,
+            disabled ||
+            locked ||
+            coinjoinDisallowReveal ||
+            !currentFreshAddress ||
+            isReceiveDisabled,
         isLoading: locked,
         minWidth: 220,
         size: 'large',
     };
-    const firstFreshAddressLabel = firstFreshAddress?.address
-        ? (suiteSyncAddressLabels.find(it => it.address === firstFreshAddress.address)?.label ??
-          (isLegacyLabelingVisible ? addressLabels[firstFreshAddress.address] : undefined))
-        : undefined;
 
     return (
         <Card>
@@ -196,31 +196,31 @@ export const FreshAddress = ({
                     flex="1"
                 >
                     <Text typographyStyle="headline-md">
-                        {firstFreshAddress?.address ? (
+                        {currentFreshAddress?.address ? (
                             <Labeling
                                 payload={{
                                     type: 'addressLabel',
                                     entityKey: account.key,
-                                    defaultValue: firstFreshAddress.address,
+                                    defaultValue: currentFreshAddress?.address,
                                     networkSymbol: account.symbol,
                                     accountDescriptor: account.descriptor,
-                                    value: firstFreshAddressLabel,
+                                    value: currentFreshAddressLabel,
                                 }}
                                 deviceStaticSessionId={account.deviceState}
                                 displayValue={
-                                    <Address value={firstFreshAddress.address} isTruncated />
+                                    <Address value={currentFreshAddress.address} isTruncated />
                                 }
                                 placeholder={translationString('TR_LABELING_ADDRESS_LABEL')}
                                 minHeight={28}
                             >
-                                {firstFreshAddressLabel}
+                                {currentFreshAddressLabel}
                             </Labeling>
                         ) : (
                             <Translation id="RECEIVE_ADDRESS_UNAVAILABLE" />
                         )}
                     </Text>
                 </InfoItem>
-                <Tooltip content={buttonTooltipContent()}>
+                <Tooltip content={revealButtonTooltipContent()}>
                     {isDeviceConnected ? (
                         <Button {...buttonRevealAddressProps}>
                             <Translation id="RECEIVE_ADDRESS_REVEAL" />
