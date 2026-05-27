@@ -126,7 +126,7 @@ export const isPrerequisiteGloballyExcluded = ({
 }: IsPrerequisiteExcluded): boolean => {
     if (prerequisite === null) return true;
 
-    if (router.app === 'earn') {
+    if (router.app === 'earn' || router.app === 'earn-yield') {
         return true;
     }
 

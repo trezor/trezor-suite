@@ -14,9 +14,9 @@ const SIGN_TX_ROUTES = [
     'wallet-index',
     'wallet-trading-exchange-confirm',
     'wallet-trading-sell-confirm',
-    'earn-deposit',
-    'earn-withdraw',
-    'earn-claim',
+    'earn-yield-deposit',
+    'earn-yield-withdraw',
+    'earn-yield-claim',
 ] as const;
 
 const SIGN_TX_CONNECT_METHODS = [

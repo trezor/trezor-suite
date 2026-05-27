@@ -18,7 +18,7 @@ export const yieldEarnEntryEvent: EventDef<Attributes, EventType.YieldEarnEntry>
     attributes: {
         from: {
             description:
-                'Previous route name (e.g. `suite-index`, `earn-deposit`, `wallet-tokens-defi`). `unknown` if the user landed via initial load / direct route / refresh.',
+                'Previous route name (e.g. `suite-index`, `earn-yield-deposit`, `wallet-tokens-defi`). `unknown` if the user landed via initial load / direct route / refresh.',
             changelog: [{ version: '26.5.2', notes: 'added' }],
         },
     },

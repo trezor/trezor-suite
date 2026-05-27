@@ -128,7 +128,7 @@ export const EarnYieldTable = () => {
     const handleClaimableAccountSelect = ({ account }: YieldAccountRewards) => {
         dispatch(
             goto({
-                routeName: 'earn-claim',
+                routeName: 'earn-yield-claim',
                 params: {
                     symbol: account.symbol,
                     accountIndex: account.index,
