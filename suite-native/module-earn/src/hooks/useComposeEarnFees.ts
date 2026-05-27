@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useIsFocused } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
@@ -83,6 +84,7 @@ export const useComposeEarnFees = ({
 }: UseComposeEarnFeesParams) => {
     const dispatch = useDispatch();
     const debounce = useDebounce();
+    const isFocused = useIsFocused();
     const {
         draft: formDraft,
         formDraftKey,
@@ -110,6 +112,9 @@ export const useComposeEarnFees = ({
         selectedFee,
         isLoading: areFeesLoading || isComposingFeeLevels,
     });
+
+    const effectiveFeeLevel = selectedFeeLevel ?? feeLevels.normal;
+    const isPrecomposeError = !isComposingFeeLevels && effectiveFeeLevel?.type === 'error';
 
     const composeFeeLevels = useCallback(async () => {
         if (!formState || !account || !feeInfo) {
@@ -173,14 +178,16 @@ export const useComposeEarnFees = ({
     }, [dispatch, formState, account, feeInfo, saveDraft, accountKey, formDraftPrefix]);
 
     useEffect(() => {
+        if (!isFocused) return;
         setIsComposingFeeLevels(!!formState && !!account && !!feeInfo);
         debounce(composeFeeLevels);
-    }, [account, debounce, composeFeeLevels, feeInfo, formState]);
+    }, [isFocused, account, debounce, composeFeeLevels, feeInfo, formState]);
 
     return {
         formDraft,
         formDraftKey,
         isFeeUnavailable: formState !== undefined && !isComposingFeeLevels && isFeeUnavailable,
+        isPrecomposeError,
         updateFeeLevelThunk: updateEarnSelectedFeeLevelThunk,
     };
 };

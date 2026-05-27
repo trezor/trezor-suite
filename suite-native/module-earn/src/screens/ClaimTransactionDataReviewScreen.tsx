@@ -11,7 +11,6 @@ import {
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { Button, Card, LottieAnimation, Text, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
@@ -35,6 +34,7 @@ import {
 } from '@suite-native/transaction-management';
 
 import { ClaimTransactionDataReviewStepList } from '../components/ClaimTransactionDataReviewStepList';
+import { getEarnPostSignParentRoute } from '../utils';
 
 const navigateToClaimedTransactionAction = ({
     accountKey,
@@ -52,12 +52,7 @@ const navigateToClaimedTransactionAction = ({
                 name: RootStackRoutes.AppTabs,
                 params: { screen: AppTabsRoutes.EarnStack },
             },
-            {
-                name: isSupportedEthStakingNetworkSymbol(symbol)
-                    ? RootStackRoutes.StakingManagement
-                    : RootStackRoutes.StakingDetail,
-                params: { accountKey },
-            },
+            getEarnPostSignParentRoute(symbol, accountKey),
             {
                 name: RootStackRoutes.TransactionDetailStack,
                 params: {

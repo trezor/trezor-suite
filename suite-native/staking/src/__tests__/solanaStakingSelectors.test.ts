@@ -69,6 +69,31 @@ const solAccountWithActivatingStaking: Account = {
     },
 } as unknown as Account;
 
+const solAccountWithActiveAndDeactivatingStaking: Account = {
+    symbol: 'sol',
+    accountLabel: 'SOL Account #5',
+    deviceState: staticStateString,
+    addresses: undefined,
+    key: 'sol5',
+    visible: true,
+    networkType: 'solana',
+    misc: {
+        solStakingAccounts: [
+            {
+                status: 'active',
+                stake: BigInt('1000000000'),
+                rentExemptReserve: BigInt('10'),
+            },
+            {
+                status: 'deactivating',
+                stake: BigInt('2000000000'),
+                rentExemptReserve: BigInt('20'),
+            },
+        ],
+        solEpoch: 5,
+    },
+} as unknown as Account;
+
 const solAccountWithDeactivatedStaking: Account = {
     symbol: 'sol',
     accountLabel: 'SOL Account #4',
@@ -398,6 +423,21 @@ describe('selectors', () => {
                     'non-existent-key' as AccountKey, // Todo: create properly via `createAccountKey()`
                 ),
             ).toEqual('0');
+        });
+
+        it('should exclude deactivating stake from the staked balance', () => {
+            const testState = getTestState({
+                accounts: [solAccountWithActiveAndDeactivatingStaking],
+            });
+
+            expect(
+                selectSolanaStakedBalanceByAccountKey(
+                    {
+                        ...testState,
+                    },
+                    'sol5' as AccountKey, // Todo: create properly via `createAccountKey()`
+                ),
+            ).toEqual('1');
         });
     });
 

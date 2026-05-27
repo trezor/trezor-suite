@@ -71,13 +71,11 @@ export const selectSolanaStakedBalanceByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
-    if (!stakingInfo) {
+    if (!stakingInfo?.solStakedBalance) {
         return '0';
     }
 
-    return new BigNumber(stakingInfo.solStakedBalance ?? '0')
-        .plus(stakingInfo.solPendingUnstakeBalance ?? '0')
-        .toString();
+    return stakingInfo.solStakedBalance;
 };
 
 export const selectExpectedRewardsForEpoch = (

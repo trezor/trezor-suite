@@ -54,6 +54,16 @@ jest.mock('@trezor/coins-solana/runtime', () => ({
                     feeIncludingRentLamports: '2287880',
                 },
             }),
+            prepareUnstakeSolTx: jest.fn().mockResolvedValue({
+                success: true,
+                txShim: solanaTxShim,
+                solanaTxMeta: {
+                    deviceAmountLamports: '1000000000',
+                    feeLamports: '5000',
+                    rentLamports: '2282880',
+                    feeIncludingRentLamports: '2287880',
+                },
+            }),
             address: (value: string) => value,
         }),
 }));
@@ -200,7 +210,7 @@ describe('composeSolanaStakingTransactionFeeLevelsNativeThunk', () => {
         expect(levels.normal.solanaTxMeta.feeIncludingRentLamports).toBe('2287880');
     });
 
-    it('rejects unstake (out of scope on mobile)', async () => {
+    it('composes an unstake the same way as stake', async () => {
         const store = buildStore();
 
         const result = await dispatchCompose(store, {
@@ -209,11 +219,26 @@ describe('composeSolanaStakingTransactionFeeLevelsNativeThunk', () => {
             amount: '1',
         });
 
+        expect(result.ok).toBe(true);
+        const levels = (result as { payload: Record<string, any> }).payload;
+        expect(levels.normal.type).toBe('final');
+        expect(levels.normal.solanaTxMeta.feeIncludingRentLamports).toBe('2287880');
+    });
+
+    it('rejects claim (out of scope on mobile)', async () => {
+        const store = buildStore();
+
+        const result = await dispatchCompose(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'claim',
+            amount: '1',
+        });
+
         expect(result).toEqual({
             ok: false,
             error: {
                 error: 'not-implemented',
-                message: 'Solana unstake is not supported on mobile.',
+                message: 'Solana claim is not supported on mobile.',
             },
         });
     });

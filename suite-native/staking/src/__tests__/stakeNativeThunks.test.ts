@@ -61,6 +61,16 @@ jest.mock('@trezor/coins-solana/runtime', () => ({
                     feeIncludingRentLamports: '2287880',
                 },
             }),
+            prepareUnstakeSolTx: jest.fn().mockResolvedValue({
+                success: true,
+                txShim: solanaTxShim,
+                solanaTxMeta: {
+                    deviceAmountLamports: '1000000000',
+                    feeLamports: '5000',
+                    rentLamports: '2282880',
+                    feeIncludingRentLamports: '2287880',
+                },
+            }),
             address: (value: string) => value,
         }),
 }));
@@ -255,8 +265,7 @@ describe('signStakeTransactionNativeThunk', () => {
         expect(ethereumSignTransactionMock).not.toHaveBeenCalled();
     });
 
-    it('rejects solana unstake/claim (out of scope on mobile)', async () => {
-        const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    it('routes solana unstake to the solana staking thunk', async () => {
         const store = buildStore({
             accounts: [solAccount],
             blockchain: { sol: { url: 'http://localhost:8899' } },
@@ -268,11 +277,51 @@ describe('signStakeTransactionNativeThunk', () => {
             precomposedTransaction: buildSolanaPrecomposedTransaction(),
         });
 
+        expect(result).toEqual({ ok: true, txid: '0xpushedtxid' });
+        expect(solanaSignTransactionMock).toHaveBeenCalledTimes(1);
+        expect(ethereumSignTransactionMock).not.toHaveBeenCalled();
+    });
+
+    it('rejects solana claim (out of scope on mobile)', async () => {
+        const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        const store = buildStore({
+            accounts: [solAccount],
+            blockchain: { sol: { url: 'http://localhost:8899' } },
+        });
+
+        const result = await dispatchDispatcher(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'claim',
+            precomposedTransaction: buildSolanaPrecomposedTransaction(),
+        });
+
+        expect(result.ok).toBe(false);
+        expect(solanaSignTransactionMock).not.toHaveBeenCalled();
+        expect(ethereumSignTransactionMock).not.toHaveBeenCalled();
+        errorSpy.mockRestore();
+    });
+
+    it('rejects for unsupported networkType (cardano)', async () => {
+        const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        const cardanoAccount = {
+            ...solAccount,
+            symbol: 'ada',
+            networkType: 'cardano',
+            key: 'ada1' as AccountKey,
+        } as unknown as Account;
+        const store = buildStore({ accounts: [cardanoAccount] });
+
+        const result = await dispatchDispatcher(store, {
+            accountKey: 'ada1' as AccountKey,
+            stakeType: 'stake',
+            precomposedTransaction: buildPrecomposedTransaction(),
+        });
+
         expect(result).toEqual({
             ok: false,
             error: {
                 error: 'sign-transaction-failed',
-                message: 'Solana unstake is not supported on mobile.',
+                message: 'Staking is not supported for network type: cardano',
             },
         });
         expect(solanaSignTransactionMock).not.toHaveBeenCalled();

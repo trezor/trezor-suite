@@ -54,6 +54,11 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
     const unstakeFormState = useMemo(() => {
         if (!account || !isValid || !amountValue) return undefined;
 
+        if (account.networkType === 'solana') {
+            // Solana compose uses output amount (not calldata); pass the real amount, not '0'.
+            return buildEarnComposeFormState(account.descriptor, amountValue, '');
+        }
+
         const amountWei = ethToWei(amountValue);
         if (!isPositiveBalance(amountWei)) return undefined;
 
@@ -64,11 +69,12 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
         );
     }, [account, isValid, amountValue]);
 
-    const { formDraft, formDraftKey, isFeeUnavailable, updateFeeLevelThunk } = useComposeEarnFees({
-        accountKey,
-        formState: unstakeFormState,
-        formDraftPrefix: 'unstake',
-    });
+    const { formDraft, formDraftKey, isFeeUnavailable, isPrecomposeError, updateFeeLevelThunk } =
+        useComposeEarnFees({
+            accountKey,
+            formState: unstakeFormState,
+            formDraftPrefix: 'unstake',
+        });
 
     const approximatedInstantEthAmount = useApproximateInstantUnstakeAmount(
         accountKey,
@@ -95,6 +101,7 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
         formDraft,
         formDraftKey,
         isFeeUnavailable,
+        isPrecomposeError,
         updateFeeLevelThunk,
         approximatedInstantEthAmount,
     };

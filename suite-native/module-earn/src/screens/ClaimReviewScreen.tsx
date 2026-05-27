@@ -13,6 +13,7 @@ import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet
 import {
     asAmountSubunit,
     getStakingLimitsByNetworkSymbol,
+    isSupportedEthStakingNetworkSymbol,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
 import { AccountDetailsCard } from '@suite-native/accounts';
@@ -74,11 +75,12 @@ export const ClaimReviewScreen = () => {
         [symbol],
     );
 
-    const { formDraft, formDraftKey, isFeeUnavailable, updateFeeLevelThunk } = useComposeEarnFees({
-        accountKey,
-        formState: claimFormState,
-        formDraftPrefix: 'claim',
-    });
+    const { formDraft, formDraftKey, isFeeUnavailable, isPrecomposeError, updateFeeLevelThunk } =
+        useComposeEarnFees({
+            accountKey,
+            formState: claimFormState,
+            formDraftPrefix: 'claim',
+        });
 
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const registerNavigateBackAnalytics = useNavigateBackAnalytics({
@@ -122,7 +124,12 @@ export const ClaimReviewScreen = () => {
                 <Box paddingHorizontal="sp16" paddingBottom="sp16">
                     <Button
                         onPress={handleReviewAndSign}
-                        isDisabled={isInsufficientFeeBalance || isFeeUnavailable}
+                        isDisabled={
+                            isInsufficientFeeBalance ||
+                            isFeeUnavailable ||
+                            isPrecomposeError ||
+                            !isSupportedEthStakingNetworkSymbol(symbol)
+                        }
                     >
                         <Translation id="earn.claimReviewScreen.reviewAndSignButton" />
                     </Button>

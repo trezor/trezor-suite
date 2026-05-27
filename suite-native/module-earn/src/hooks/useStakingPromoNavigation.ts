@@ -8,6 +8,7 @@ import { selectIsDeviceInViewOnlyMode } from '@suite-common/device';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { useAccountAlerts } from '@suite-native/accounts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { useBottomSheetModal } from '@suite-native/atoms';
@@ -132,6 +133,13 @@ export const useStakingPromoNavigation = () => {
 
     const handleStakingPromoPress = useCallback(
         (item: StakingEarnItem) => {
+            // Temperary solution for SOL, while waiting for the Solana StakingManagement dashboard to be merged.
+            if (isSupportedSolStakingNetworkSymbol(item.symbol)) {
+                openInfoModal();
+
+                return;
+            }
+
             if (!isStakeFlowSupportedSymbol(item.symbol)) {
                 openInfoModal();
 
