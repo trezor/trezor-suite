@@ -6092,6 +6092,58 @@ export const messages = defineMessages({
         id: 'OP_RETURN_HEX',
         defaultMessage: 'Hexadecimal',
     },
+    NAME_OP_ADD: {
+        id: 'NAME_OP_ADD',
+        defaultMessage: 'Add name operation',
+    },
+    NAME_OP_TOOLTIP: {
+        id: 'NAME_OP_TOOLTIP',
+        defaultMessage:
+            'Attach a Namecoin name operation (name_new, name_firstupdate or name_update) to this transaction. See the Namecoin docs at https://www.namecoin.org/ for details.',
+    },
+    NAME_OP_KIND_NEW: {
+        id: 'NAME_OP_KIND_NEW',
+        defaultMessage: 'Reserve a new name',
+    },
+    NAME_OP_KIND_FIRSTUPDATE: {
+        id: 'NAME_OP_KIND_FIRSTUPDATE',
+        defaultMessage: 'Claim and set value',
+    },
+    NAME_OP_KIND_UPDATE: {
+        id: 'NAME_OP_KIND_UPDATE',
+        defaultMessage: 'Update existing name',
+    },
+    NAME_OP_NAME_LABEL: {
+        id: 'NAME_OP_NAME_LABEL',
+        defaultMessage: 'Name (e.g. d/example)',
+    },
+    NAME_OP_VALUE_LABEL: {
+        id: 'NAME_OP_VALUE_LABEL',
+        defaultMessage: 'Value (JSON or text)',
+    },
+    NAME_OP_COMMITMENT_LABEL: {
+        id: 'NAME_OP_COMMITMENT_LABEL',
+        defaultMessage: 'Commitment (hex, 20 bytes)',
+    },
+    NAME_OP_RAND_LABEL: {
+        id: 'NAME_OP_RAND_LABEL',
+        defaultMessage: 'Random nonce (hex, 20 bytes)',
+    },
+    NAME_OP_NEW_WARNING: {
+        id: 'NAME_OP_NEW_WARNING',
+        defaultMessage:
+            'Save the random nonce shown below. You will need it to claim the name in a later name_firstupdate transaction; losing it means losing the reservation.',
+    },
+    NAME_OP_FIRSTUPDATE_NO_SAVED: {
+        id: 'NAME_OP_FIRSTUPDATE_NO_SAVED',
+        defaultMessage:
+            'No saved name_new commitments found on this device. You must enter the name and the original random nonce manually.',
+    },
+    NAME_OP_REQUIRES_FIRMWARE: {
+        id: 'NAME_OP_REQUIRES_FIRMWARE',
+        defaultMessage:
+            'Namecoin name operations require Trezor firmware that supports PAYTONAMECOINOP. See the firmware release notes for the supported version.',
+    },
     RBF: {
         id: 'RBF',
         defaultMessage: 'RBF',
