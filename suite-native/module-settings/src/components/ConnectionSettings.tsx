@@ -6,7 +6,7 @@ import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import {
     Box,
     Card,
-    CardDivider,
+    Divider,
     HStack,
     PressableOpacity,
     RoundedIcon,
@@ -52,8 +52,7 @@ export const ConnectionSettings = () => {
                     borderColor={null}
                     noShadow
                 />
-
-                <CardDivider />
+                <Divider />
                 <Box paddingHorizontal="sp16" paddingVertical="sp12">
                     <WalletConnectPairBottomSheet ref={bottomSheetRef} onClose={closeModal} />
                     <PressableOpacity onPress={openModal} testID="@settings/wallet-connect-add">
