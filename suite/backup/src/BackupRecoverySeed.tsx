@@ -1,19 +1,21 @@
-import { useDevice } from '@suite/device';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
+
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor, goto } from '@suite/router';
+import { selectSelectedDevice } from '@suite-common/device';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_RECOVERY_SEED_URL } from '@trezor/urls';
-
-import { useDispatch } from 'src/hooks/suite';
 
 interface BackupRecoverySeedProps {
     isDeviceLocked: boolean;
 }
 
 export const BackupRecoverySeed = ({ isDeviceLocked }: BackupRecoverySeedProps) => {
-    const dispatch = useDispatch();
-    const { device } = useDevice();
+    const dispatch = useDispatch<ThunkDispatch<any, any, UnknownAction>>();
+    const device = useSelector(selectSelectedDevice);
 
     const needsBackup = device?.features?.backup_availability === 'Required';
 
