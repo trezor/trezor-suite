@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { Button, Icon, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
+import { Icon, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 
 import { useDiscovery, useDispatch } from 'src/hooks/suite';
 import { type TrezorDevice } from 'src/types/suite';
@@ -15,10 +15,9 @@ const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunn
 
 type AddAccountButtonProps = {
     device: TrezorDevice | undefined;
-    isIconOnly?: boolean;
 };
 
-export const AddAccountButton = ({ device, isIconOnly }: AddAccountButtonProps) => {
+export const AddAccountButton = ({ device }: AddAccountButtonProps) => {
     const { isDiscoveryRunning } = useDiscovery();
     const dispatch = useDispatch();
 
@@ -40,7 +39,7 @@ export const AddAccountButton = ({ device, isIconOnly }: AddAccountButtonProps) 
         );
     };
 
-    const ButtonComponent = isIconOnly ? (
+    const ButtonComponent = (
         <Tooltip isActive={!tooltipMessage} content={<Translation id="TR_ADD_ACCOUNT" />}>
             <Icon
                 onClick={device ? handleOnClick : undefined}
@@ -52,18 +51,6 @@ export const AddAccountButton = ({ device, isIconOnly }: AddAccountButtonProps) 
                 data-testid={dataTestId}
             />
         </Tooltip>
-    ) : (
-        <Button
-            onClick={device ? handleOnClick : undefined}
-            iconLeft="plus"
-            isDisabled={addAccountDisabled}
-            intent="neutral"
-            priority="secondary"
-            width="100%"
-            data-testid={dataTestId}
-        >
-            <Translation id="TR_ADD_ACCOUNT" />
-        </Button>
     );
 
     return (
@@ -74,7 +61,6 @@ export const AddAccountButton = ({ device, isIconOnly }: AddAccountButtonProps) 
             placement="bottom"
             cursor="not-allowed"
             delayShow={TOOLTIP_DELAY_NORMAL}
-            width={isIconOnly ? undefined : '100%'}
         >
             {ButtonComponent}
         </Tooltip>
