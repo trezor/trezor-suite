@@ -4,8 +4,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect from '@trezor/connect';
 
-import { backupActions } from './backupReducer';
-import { actionPrefix } from './constants';
+import { actionPrefix, backupActions } from './backupReducer';
 import type { BackupDeviceParams } from './types';
 
 export const backupDeviceThunk = createThunk(

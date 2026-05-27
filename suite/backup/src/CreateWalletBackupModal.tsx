@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { createAdditionalBackupThunk } from '@suite/backup';
+import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import {
     AdditionalBackupDisclaimer,
@@ -8,14 +9,14 @@ import {
     AdditionalBackupSuccess,
 } from '@suite/nfc';
 import { isAdditionalShamirBackupInProgress } from '@suite/recovery';
+import { selectIsN4w1BackupEnabled } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { Modal } from '@trezor/components';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { PROTO } from '@trezor/connect';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
+import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
-
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 
 type CreateWalletBackupModalProps = {
     onCancel: () => void;
@@ -23,18 +24,12 @@ type CreateWalletBackupModalProps = {
 
 type Step = 'disclaimer' | 'how-it-works' | 'verify-ownership' | 'backup' | 'done';
 
-const getStepIndex = (step: Step) => {
-    if (step === 'disclaimer') return 0;
-
-    // Steps shown on the "Step X of 2" counter
-    if (step === 'how-it-works' || step === 'verify-ownership') return 1;
-
-    return 2;
-};
-
 export const CreateWalletBackupModal = ({ onCancel }: CreateWalletBackupModalProps) => {
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
+    const isN4w1BackupEnabled = useSelector(selectIsN4w1BackupEnabled);
+
+    const backupMethod = isN4w1BackupEnabled ? PROTO.BackupMethod.N4W1 : PROTO.BackupMethod.Display;
 
     const isInBackupMode =
         device?.features !== undefined && isAdditionalShamirBackupInProgress(device.features);
@@ -51,30 +46,48 @@ export const CreateWalletBackupModal = ({ onCancel }: CreateWalletBackupModalPro
         onCancel();
     };
 
-    const startVerification = async () => {
+    const startBackupFlow = async () => {
         setStep('verify-ownership');
 
-        const result = await dispatch(
-            createAdditionalBackupThunk({
-                devicePath: device.path,
-                onVerificationComplete: () => setStep('backup'),
-            }),
-        ).unwrap();
+        const verifyResult = await TrezorConnect.recoveryDevice({
+            type: 'UnlockRepeatedBackup',
+            input_method: PROTO.RecoveryDeviceInputMethod.Matrix,
+            enforce_wordlist: true,
+            device: { path: device.path },
+        });
 
-        if (result.success) {
-            setStep('done');
-        } else {
+        if (!verifyResult.success) {
+            dispatch(notificationsActions.addToast({ type: 'backup-failed' }));
             onCancel();
+
+            return;
         }
+
+        setStep('backup');
+
+        const backupResult = await TrezorConnect.backupDevice({
+            backup_method: backupMethod,
+            device: { path: device.path },
+        });
+
+        if (!backupResult.success) {
+            dispatch(notificationsActions.addToast({ type: 'backup-failed' }));
+            onCancel();
+
+            return;
+        }
+
+        setStep('done');
     };
 
     const isDeviceStep = step === 'verify-ownership' || step === 'backup';
-    const stepIndex = getStepIndex(step);
 
-    const getStepConfig = () => {
+    const getContent = () => {
         switch (step) {
             case 'disclaimer':
                 return {
+                    heading: <Translation id="TR_CREATE_ADDITIONAL_BACKUP" />,
+                    onCancel,
                     children: (
                         <AdditionalBackupDisclaimer
                             isChecked={isChecked}
@@ -100,17 +113,16 @@ export const CreateWalletBackupModal = ({ onCancel }: CreateWalletBackupModalPro
 
             case 'how-it-works':
                 return {
+                    heading: <Translation id="TR_CREATE_ADDITIONAL_BACKUP" />,
+                    onCancel,
                     description: (
-                        <Translation
-                            id="TR_STEP_OF_TOTAL"
-                            values={{ index: stepIndex, total: 2 }}
-                        />
+                        <Translation id="TR_STEP_OF_TOTAL" values={{ index: 1, total: 2 }} />
                     ),
                     children: <AdditionalBackupSteps step="verify-ownership" />,
                     bottomContent: (
                         <>
                             <Modal.Button
-                                onClick={startVerification}
+                                onClick={startBackupFlow}
                                 data-testid="@additional-backup/enter-backup-button"
                             >
                                 <Translation id="TR_ENTER_EXISTING_BACKUP" />
@@ -124,31 +136,28 @@ export const CreateWalletBackupModal = ({ onCancel }: CreateWalletBackupModalPro
 
             case 'verify-ownership':
                 return {
+                    heading: <Translation id="TR_CREATE_ADDITIONAL_BACKUP" />,
+                    onCancel: undefined,
                     description: (
-                        <Translation
-                            id="TR_STEP_OF_TOTAL"
-                            values={{ index: stepIndex, total: 2 }}
-                        />
+                        <Translation id="TR_STEP_OF_TOTAL" values={{ index: 1, total: 2 }} />
                     ),
                     children: <AdditionalBackupSteps step="verify-ownership" />,
-                    onCancel: undefined,
                 };
 
             case 'backup':
                 return {
+                    heading: <Translation id="TR_CREATE_ADDITIONAL_BACKUP" />,
+                    onCancel: closeWithCancelOnDevice,
                     description: (
-                        <Translation
-                            id="TR_STEP_OF_TOTAL"
-                            values={{ index: stepIndex, total: 2 }}
-                        />
+                        <Translation id="TR_STEP_OF_TOTAL" values={{ index: 2, total: 2 }} />
                     ),
                     children: <AdditionalBackupSteps step="backup" />,
-                    onCancel: closeWithCancelOnDevice,
                 };
 
             case 'done':
                 return {
                     heading: undefined,
+                    onCancel,
                     children: <AdditionalBackupSuccess />,
                     bottomContent: (
                         <Modal.Button
@@ -160,7 +169,7 @@ export const CreateWalletBackupModal = ({ onCancel }: CreateWalletBackupModalPro
                     ),
                 };
             default:
-                return step satisfies never;
+                return exhaustive(step);
         }
     };
 
@@ -173,13 +182,7 @@ export const CreateWalletBackupModal = ({ onCancel }: CreateWalletBackupModalPro
                     deviceUnitColor={device?.features?.unit_color}
                 />
             )}
-            <Modal.ModalBase
-                onCancel={onCancel}
-                heading={
-                    step !== 'done' ? <Translation id="TR_CREATE_ADDITIONAL_BACKUP" /> : undefined
-                }
-                {...getStepConfig()}
-            />
+            <Modal.ModalBase {...getContent()} />
         </Modal.Backdrop>
     );
 };

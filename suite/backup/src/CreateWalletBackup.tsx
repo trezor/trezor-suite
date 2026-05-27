@@ -1,20 +1,18 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 import styled from 'styled-components';
 
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectIsN4w1BackupEnabled } from '@suite/settings';
+import { hasSlip39Backup, isBackupComplete } from '@suite-common/backup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 
-import { hasNonWordlistBackup, isBackupComplete } from './backupUtils';
-
 const DisabledWrapper = styled.div<{ $isDisabled: boolean }>`
-    opacity: ${({ $isDisabled }) => ($isDisabled ? 0.5 : 1)};
+    ${({ $isDisabled }) => $isDisabled && 'opacity: 0.5;'}
 `;
 
 type CreateWalletBackupProps = {
@@ -23,12 +21,12 @@ type CreateWalletBackupProps = {
 
 export const CreateWalletBackup = ({ isDeviceLocked }: CreateWalletBackupProps) => {
     const device = useSelector(selectSelectedDevice);
-    const dispatch = useDispatch<ThunkDispatch<any, any, UnknownAction>>();
+    const dispatch = useDispatch();
     const isN4w1BackupEnabled = useSelector(selectIsN4w1BackupEnabled);
 
     const features = device?.features;
     const isBackupDone = features !== undefined && isBackupComplete(features);
-    const canExtendBackup = features !== undefined && hasNonWordlistBackup(features);
+    const canExtendBackup = features !== undefined && hasSlip39Backup(features);
 
     if (!isN4w1BackupEnabled || !canExtendBackup) {
         return null;

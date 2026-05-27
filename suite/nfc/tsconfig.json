@@ -5,7 +5,6 @@
         { "path": "../intl" },
         { "path": "../onboarding-components" },
         { "path": "../../packages/components" },
-        { "path": "../../packages/theme" },
-        { "path": "../../packages/type-utils" }
+        { "path": "../../packages/theme" }
     ]
 }

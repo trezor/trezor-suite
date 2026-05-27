@@ -1,5 +1,3 @@
-export { hasNonWordlistBackup, isBackupComplete } from '@suite-common/backup';
-
 import { type ConfirmKey } from './types';
 
 /**
