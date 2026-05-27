@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useEffectEvent, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -46,9 +46,12 @@ export const useTradingOutputsReviewScreenControls = ({
     const { confirmOnTrezorRef, closeSheet } = useConfirmOnTrezorController();
     const showOutputsReviewErrorAlert = useTradingOutputsReviewErrorAlert(accountKey);
 
-    useEffect(() => {
+    const reportVisit = useEffectEvent(() => {
         reportToAnalytics('sign-and-send', 'visit');
-    }, [reportToAnalytics]);
+    });
+    useEffect(() => {
+        reportVisit();
+    }, []);
 
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
 
