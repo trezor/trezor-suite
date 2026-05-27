@@ -1,3 +1,4 @@
+import { CreateWalletBackup } from '@suite/backup';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { isRecoveryInProgress } from '@suite/recovery';
@@ -27,7 +28,6 @@ import { Brightness } from './Brightness';
 import { ChangeLanguage } from './ChangeLanguage';
 import { ChangePin } from './ChangePin';
 import { CheckRecoverySeed } from './CheckRecoverySeed';
-import { CreateWalletBackup } from './CreateWalletBackup';
 import { CustomFirmware } from './CustomFirmware';
 import { DeviceAuthenticityOptOut } from './DeviceAuthenticityOptOut';
 import { DeviceLabel } from './DeviceLabel';
