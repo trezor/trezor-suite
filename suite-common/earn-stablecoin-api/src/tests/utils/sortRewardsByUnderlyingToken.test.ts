@@ -1,4 +1,5 @@
-import { type RewardDto, type TokenDto } from '../../api/types';
+import { type RewardDto, type TokenDto } from '@suite-common/earn-stablecoin-defs';
+
 import { sortRewardsByUnderlyingToken } from '../../utils/sortRewardsByUnderlyingToken';
 
 const USDC: TokenDto = {

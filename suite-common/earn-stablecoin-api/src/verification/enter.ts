@@ -1,4 +1,10 @@
 import { Verifier } from '@suite-common/calldata';
+import {
+    type EnterYield200,
+    type TransactionDto,
+    TransactionDtoStatus,
+    TransactionDtoType,
+} from '@suite-common/earn-stablecoin-defs';
 import { type EvmHexString, evmHexString } from '@suite-common/schemas/src/evm';
 import { BigNumber } from '@trezor/utils';
 
@@ -9,12 +15,6 @@ import {
     aggregateStatuses,
     toStatus,
 } from './shared';
-import {
-    type EnterYield200,
-    type TransactionDto,
-    TransactionDtoStatus,
-    TransactionDtoType,
-} from '../api/types';
 
 type VerifyEnterTransactionsParams = {
     address: string;

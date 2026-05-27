@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { type YieldAccountRewards } from '@suite-common/earn-stablecoin-api';
 import { useFormatters } from '@suite-common/formatters';
 import { asBaseCurrencyAmount, toTokenSymbol } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
@@ -7,7 +8,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { YieldFlowComplete } from './YieldFlowComplete';
 import { YieldRewardItem } from './YieldRewardItem';
-import { type YieldAccountRewards } from '../claim/hooks';
 
 type YieldFlowCompleteClaimProps = {
     accountRewards: YieldAccountRewards;

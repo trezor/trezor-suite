@@ -1,8 +1,8 @@
+import { type YieldDto } from '@suite-common/earn-stablecoin-defs';
 import { commonQueryKeys, useQuery } from '@suite-common/react-query';
 
 import { YIELD_OPPORTUNITIES_DEFAULT_LIMIT, queriesStaleTime } from '../config';
 import { useGetYieldOpportunities } from './useGetYieldOpportunities';
-import { type YieldDto } from '../api/types';
 
 type UseAllYieldOpportunitiesProps = {
     limit?: number;

@@ -12,7 +12,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@suite-common/earn-stablecoin-api": "workspace:*",
+        "@suite-common/earn-stablecoin-defs": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",
         "@trezor/coins-solana": "workspace:*",
         "@trezor/device-utils": "workspace:*",

@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 
+import { type MerklUsersRewardsRequestBodyItem } from '@suite-common/earn-stablecoin-defs';
 import { commonQueryKeys, useQuery, useQueryClient } from '@suite-common/react-query';
 import { useFreshRef } from '@trezor/react-utils';
 import { delay } from '@trezor/utils';
 
-import { type MerklUsersRewardsRequestBodyItem } from '../../api/types';
 import { queriesStaleTime } from '../../config';
 import { getMerklUsersRewards } from '../../services';
 

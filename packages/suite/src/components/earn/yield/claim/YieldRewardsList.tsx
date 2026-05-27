@@ -1,11 +1,11 @@
 import { Translation } from '@suite/intl';
+import { type YieldAccountRewards } from '@suite-common/earn-stablecoin-api';
 import { useFormatters } from '@suite-common/formatters';
 import { asBaseCurrencyAmount, toTokenSymbol } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, Row, Spinner, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { type YieldAccountRewards } from './hooks/useMerkleRewards';
 import { YieldRewardItem } from '../common/YieldRewardItem';
 
 type YieldRewardsListProps = {

@@ -1,4 +1,5 @@
-import { type ExitYield200, TransactionDtoType } from '../../api/types';
+import { type ExitYield200, TransactionDtoType } from '@suite-common/earn-stablecoin-defs';
+
 import { verifyExitTransactions } from '../../verification/exit';
 
 const VAULT_ADDRESS = '0xe4db1c5a1b709ce4d2ada6985d9d506e58f73829';

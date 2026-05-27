@@ -1,6 +1,6 @@
+import { type ActionDto, type ActionRequestDto } from '@suite-common/earn-stablecoin-defs';
 import { desktopMutationKeys, useMutation } from '@suite-common/react-query';
 
-import { type ActionDto, type ActionRequestDto } from '../api/types';
 import { exitYield } from '../services';
 import { verifyExitTransactions } from '../verification/exit';
 import { type VerificationStatus } from '../verification/shared';

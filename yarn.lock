@@ -10399,18 +10399,29 @@ __metadata:
   resolution: "@suite-common/earn-stablecoin-api@workspace:suite-common/earn-stablecoin-api"
   dependencies:
     "@suite-common/calldata": "workspace:^"
+    "@suite-common/earn-stablecoin-defs": "workspace:^"
     "@suite-common/http-client": "workspace:^"
     "@suite-common/react-query": "workspace:^"
     "@suite-common/schemas": "workspace:^"
     "@suite-common/wallet-config": "workspace:^"
     "@suite-common/wallet-types": "workspace:^"
+    "@suite-common/wallet-utils": "workspace:^"
     "@trezor/blockchain-link-types": "workspace:^"
     "@trezor/env-utils": "workspace:*"
     "@trezor/react-utils": "workspace:^"
     "@trezor/utils": "workspace:^"
+    react: "npm:19.2.4"
+    zod: "npm:4.3.6"
+  languageName: unknown
+  linkType: soft
+
+"@suite-common/earn-stablecoin-defs@workspace:*, @suite-common/earn-stablecoin-defs@workspace:^, @suite-common/earn-stablecoin-defs@workspace:suite-common/earn-stablecoin-defs":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/earn-stablecoin-defs@workspace:suite-common/earn-stablecoin-defs"
+  dependencies:
+    "@trezor/env-utils": "workspace:*"
     orval: "npm:8.8.0"
     prettier: "npm:^3.8.3"
-    react: "npm:19.2.4"
     zod: "npm:4.3.6"
   languageName: unknown
   linkType: soft
@@ -11123,7 +11134,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-config@workspace:suite-common/wallet-config"
   dependencies:
-    "@suite-common/earn-stablecoin-api": "workspace:*"
+    "@suite-common/earn-stablecoin-defs": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@trezor/coins-solana": "workspace:*"
     "@trezor/device-utils": "workspace:*"
@@ -11203,7 +11214,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/wallet-utils@workspace:*, @suite-common/wallet-utils@workspace:suite-common/wallet-utils":
+"@suite-common/wallet-utils@workspace:*, @suite-common/wallet-utils@workspace:^, @suite-common/wallet-utils@workspace:suite-common/wallet-utils":
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-utils@workspace:suite-common/wallet-utils"
   dependencies:
