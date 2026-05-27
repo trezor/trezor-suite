@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol, getNetworkDecimals } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
 import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -61,10 +62,10 @@ export const EarnTransactionDataReviewStepList = ({
         }
     };
 
-    const networkDecimals = getNetworkDecimals(accountSymbol) ?? 18;
-    const amountInWei = new BigNumber(amount)
-        .times(new BigNumber(10).pow(networkDecimals))
-        .toFixed(0);
+    const amountInBaseUnits = unitsToSubunits({
+        value: asAmountUnit(new BigNumber(amount)),
+        symbol: accountSymbol,
+    }).toString();
 
     return (
         <View>
@@ -77,7 +78,7 @@ export const EarnTransactionDataReviewStepList = ({
 
                 <EarnSummaryOutputItem
                     accountKey={accountKey}
-                    amount={amountInWei}
+                    amount={amountInBaseUnits}
                     fee={summaryOutput?.fee ?? '0'}
                     outputState={summaryOutput?.state}
                     onLayout={event => handleReadListItemHeight(event, 1)}

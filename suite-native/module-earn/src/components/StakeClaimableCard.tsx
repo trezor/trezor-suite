@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { isPositiveBalance } from '@suite-common/wallet-utils';
+import { isPositiveBalance, isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { Box, Card, InlineAlertBox, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
@@ -59,7 +59,11 @@ export const StakeClaimableCard = ({ accountKey }: StakeClaimableCardProps) => {
         navigation.navigate(RootStackRoutes.ClaimReview, { accountKey, symbol });
     }, [accountKey, navigation, symbol, isClaimingDisabled]);
 
-    if (!symbol || !isPositiveBalance(claimableAmount)) {
+    if (
+        !symbol ||
+        !isPositiveBalance(claimableAmount) ||
+        !isSupportedEthStakingNetworkSymbol(symbol)
+    ) {
         return null;
     }
 

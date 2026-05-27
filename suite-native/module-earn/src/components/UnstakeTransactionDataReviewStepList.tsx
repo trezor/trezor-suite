@@ -5,10 +5,10 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
 import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
-import { ethToWei } from '@suite-native/staking';
 import {
     LIST_VERTICAL_SPACING,
     SlidingFooterOverlay,
@@ -17,6 +17,7 @@ import {
     selectReviewSummaryOutput,
     useActiveStepOffset,
 } from '@suite-native/transaction-management';
+import { BigNumber } from '@trezor/utils';
 
 import { EarnSummaryOutputItem } from './EarnSummaryOutputItem';
 import { UnstakeOutputItem } from './UnstakeOutputItem';
@@ -59,6 +60,10 @@ export const UnstakeTransactionDataReviewStepList = ({
         onTransactionSubmitted,
     });
 
+    if (!accountSymbol) {
+        return null;
+    }
+
     const areAllStepsDone = stepIndex === NUMBER_OF_STEPS - 1 || isTransactionReviewInProgress;
 
     const handleNextStep = () => {
@@ -69,27 +74,27 @@ export const UnstakeTransactionDataReviewStepList = ({
         }
     };
 
-    const amountInWei = ethToWei(amount);
+    const amountInBaseUnits = unitsToSubunits({
+        value: asAmountUnit(new BigNumber(amount)),
+        symbol: accountSymbol,
+    }).toString();
 
     return (
         <View>
             <VStack spacing={LIST_VERTICAL_SPACING}>
-                {!!accountSymbol && (
-                    <>
-                        <UnstakeOutputItem
-                            symbol={accountSymbol}
-                            outputState={stepIndex > 0 ? 'success' : 'active'}
-                            onLayout={event => handleReadListItemHeight(event, 0)}
-                        />
-                        <EarnSummaryOutputItem
-                            accountKey={accountKey}
-                            amount={amountInWei}
-                            fee={summaryOutput?.fee ?? selectedPrecomposed?.fee ?? '0'}
-                            outputState={summaryOutput?.state}
-                            onLayout={event => handleReadListItemHeight(event, 1)}
-                        />
-                    </>
-                )}
+                <UnstakeOutputItem
+                    symbol={accountSymbol}
+                    outputState={stepIndex > 0 ? 'success' : 'active'}
+                    onLayout={event => handleReadListItemHeight(event, 0)}
+                />
+
+                <EarnSummaryOutputItem
+                    accountKey={accountKey}
+                    amount={amountInBaseUnits}
+                    fee={summaryOutput?.fee ?? selectedPrecomposed?.fee ?? '0'}
+                    outputState={summaryOutput?.state}
+                    onLayout={event => handleReadListItemHeight(event, 1)}
+                />
             </VStack>
             {!areAllStepsDone && (
                 <SlidingFooterOverlay activeStepOffset={activeStepBottomOffset}>

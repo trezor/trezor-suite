@@ -11,6 +11,7 @@ export {
     signSolanaStakingTransactionNativeThunk,
 } from './stakeFormSolanaNativeThunks';
 export type * from './types';
+export type * from './stakeFormSolanaNativeTypes';
 export * from './hooks/useSelector';
 
 export {

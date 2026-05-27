@@ -1,14 +1,29 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type FormState } from '@suite-common/wallet-types';
+import { type AccountKey, type FormState } from '@suite-common/wallet-types';
 import {
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
+import { RootStackRoutes } from '@suite-native/navigation';
 
 import { USER_CANCELLED_ERROR_CODES } from './constants';
 
 export const isStakeFlowSupportedSymbol = (symbol: NetworkSymbol): boolean =>
     isSupportedEthStakingNetworkSymbol(symbol) || isSupportedSolStakingNetworkSymbol(symbol);
+
+export const getEarnPostSignParentRoute = (symbol: NetworkSymbol, accountKey: AccountKey) => {
+    if (isStakeFlowSupportedSymbol(symbol)) {
+        return {
+            name: RootStackRoutes.StakingManagement,
+            params: { accountKey },
+        } as const;
+    }
+
+    return {
+        name: RootStackRoutes.StakingDetail,
+        params: { accountKey },
+    } as const;
+};
 
 export const buildEarnComposeFormState = (
     contractAddress: string,

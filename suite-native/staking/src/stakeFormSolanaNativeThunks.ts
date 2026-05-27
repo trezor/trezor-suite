@@ -67,9 +67,8 @@ const buildSolanaStakeFormState = (
     stakeType,
 });
 
-// Resolves the Solana staking account (mainnet + devnet) and the backend URL needed to
-// build the transaction. Solana unstake/claim are intentionally out of scope for the
-// mobile flow.
+// Resolves the Solana staking account (mainnet + devnet) and the backend URL needed to  build the transaction.
+// Solana stake and unstake are supported on mobile
 const resolveSolanaStakingContext = (
     state: Parameters<typeof selectAccountByKey>[0] &
         Parameters<typeof selectNetworkBlockchainInfo>[0],
@@ -96,7 +95,7 @@ const resolveSolanaStakingContext = (
         };
     }
 
-    if (stakeType !== 'stake') {
+    if (stakeType === 'claim') {
         return {
             success: false,
             error: 'not-implemented',

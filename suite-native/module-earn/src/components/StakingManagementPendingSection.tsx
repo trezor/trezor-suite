@@ -1,5 +1,6 @@
+import { selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { isPositiveBalance } from '@suite-common/wallet-utils';
+import { isPositiveBalance, isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -43,6 +44,9 @@ export const StakingManagementPendingSection = ({
     const canClaim = useSelector((state: NativeStakingRootState) =>
         selectCanClaimByAccountKey(state, accountKey),
     );
+    const symbol = useSelector((state: NativeStakingRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
+    );
 
     const {
         bottomSheetRef: unstakingModalRef,
@@ -55,7 +59,11 @@ export const StakingManagementPendingSection = ({
         closeModal: closePendingStakeModal,
     } = useBottomSheetModal();
 
-    const isClaim = isPositiveBalance(claimableAmount) && canClaim;
+    const isClaim =
+        isPositiveBalance(claimableAmount) &&
+        canClaim &&
+        !!symbol &&
+        isSupportedEthStakingNetworkSymbol(symbol);
     const hasPendingUnstaking =
         isPositiveBalance(unstakingBalance) && !new BigNumber(unstakingBalance).eq(claimableAmount);
     const hasPendingDeposit = isPositiveBalance(totalStakePending);

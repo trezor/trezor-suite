@@ -13,6 +13,7 @@ import {
     getUnstakingPeriodInDays,
     isStakingSymbol,
 } from '@suite-common/wallet-utils';
+import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
 import { exhaustive } from '@trezor/type-utils';
 
 import {
@@ -22,11 +23,11 @@ import {
     selectVisibleDeviceCardanoAccountsWithStakingByNetworkSymbol,
 } from './cardanoStakingSelectors';
 import {
-    selectEntryPeriodInDaysBySymbol,
     selectEntryPeriodRemainingInDaysByAccountKey,
     selectEthereumAccountHasStaking,
     selectEthereumCanClaimByAccountKey,
     selectEthereumClaimableAmountByAccountKey,
+    selectEthereumEntryPeriodInDays,
     selectEthereumIsStakeConfirmingByAccountKey,
     selectEthereumIsStakePendingByAccountKey,
     selectEthereumRewardsBalanceByAccountKey,
@@ -344,8 +345,26 @@ export const selectUnstakingPeriodInDaysByAccountKey = (
     return getUnstakingPeriodInDays(account.networkType, validatorsQueueData);
 };
 
-export {
-    selectEntryPeriodInDaysBySymbol,
-    selectEntryPeriodRemainingInDaysByAccountKey,
-    selectUnstakingPeriodInDaysBySymbol,
+export const selectEntryPeriodInDaysBySymbol = (
+    state: NativeStakingRootState,
+    symbol: NetworkSymbol | undefined,
+) => {
+    if (!symbol || !isStakingSymbol(symbol)) {
+        return undefined;
+    }
+
+    switch (symbol) {
+        case 'eth':
+        case 'thod':
+            return selectEthereumEntryPeriodInDays(state);
+        case 'dsol':
+        case 'sol':
+            return SOLANA_EPOCH_DAYS;
+        case 'ada':
+            return undefined;
+        default:
+            return exhaustive(symbol);
+    }
 };
+
+export { selectEntryPeriodRemainingInDaysByAccountKey, selectUnstakingPeriodInDaysBySymbol };
