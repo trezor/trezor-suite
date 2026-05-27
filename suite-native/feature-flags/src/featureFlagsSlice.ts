@@ -7,10 +7,6 @@ export const FeatureFlag = {
     AreExperimentalOnlyNetworksEnabled: 'areExperimentalOnlyNetworksEnabled',
     IsCardanoSendEnabled: 'isCardanoSendEnabled',
     IsDebugKeysAllowed: 'isDebugKeysAllowed',
-    IsTradingBuyEnabled: 'isTradingBuyEnabled',
-    IsTradingExchangeEnabled: 'isTradingExchangeEnabled',
-    IsTradingSellEnabled: 'isTradingSellEnabled',
-    IsTradingConciergeEnabled: 'isTradingConciergeEnabled',
     IsTradingResidenceCheckEnabled: 'isTradingResidenceCheckEnabled',
     IsTradingDebugEnabled: 'isTradingDebugEnabled',
     IsStablecoinYieldEnabled: 'isStablecoinYieldEnabled',
@@ -33,13 +29,6 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsCardanoSendEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_CARDANO_SEND_ENABLED === 'true',
     [FeatureFlag.IsDebugKeysAllowed]: process.env.EXPO_PUBLIC_FF_IS_DEBUG_KEYS_ALLOWED === 'true',
-    [FeatureFlag.IsTradingBuyEnabled]: process.env.EXPO_PUBLIC_FF_IS_TRADING_BUY_ENABLED === 'true',
-    [FeatureFlag.IsTradingExchangeEnabled]:
-        process.env.EXPO_PUBLIC_FF_IS_TRADING_SWAP_ENABLED === 'true',
-    [FeatureFlag.IsTradingSellEnabled]:
-        process.env.EXPO_PUBLIC_FF_IS_TRADING_SELL_ENABLED === 'true',
-    [FeatureFlag.IsTradingConciergeEnabled]:
-        process.env.EXPO_PUBLIC_FF_IS_TRADING_CONCIERGE_ENABLED === 'true',
     [FeatureFlag.IsTradingResidenceCheckEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_TRADING_RESIDENCE_CHECK_ENABLED === 'true' ||
         (isIOs() && process.env.EXPO_PUBLIC_FF_IS_TRADING_RESIDENCE_CHECK_ENABLED !== 'false'),
@@ -54,10 +43,6 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.AreDebugOnlyNetworksEnabled,
     FeatureFlag.AreExperimentalOnlyNetworksEnabled,
     FeatureFlag.IsCardanoSendEnabled,
-    FeatureFlag.IsTradingBuyEnabled,
-    FeatureFlag.IsTradingExchangeEnabled,
-    FeatureFlag.IsTradingSellEnabled,
-    FeatureFlag.IsTradingConciergeEnabled,
     FeatureFlag.IsTradingResidenceCheckEnabled,
     FeatureFlag.IsTradingDebugEnabled,
     FeatureFlag.IsStablecoinYieldEnabled,

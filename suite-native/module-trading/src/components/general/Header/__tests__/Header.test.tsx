@@ -61,13 +61,6 @@ describe('Header', () => {
     ])('should display Buy, Swap and Sell tabs regardless of enabled flags (%o)', config => {
         const { renderer } = renderHeader({
             ...getFFOverrides(),
-            featureFlags: {
-                ...featureFlagsInitialState,
-                [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
-                [FeatureFlag.IsTradingBuyEnabled]: config.buy,
-                [FeatureFlag.IsTradingExchangeEnabled]: config.exchange,
-                [FeatureFlag.IsTradingSellEnabled]: config.sell,
-            },
             messageSystem: mockMessageSystemStateWithFeatureFlags({
                 'trading.buy': config.buy,
                 'trading.exchange': config.exchange,

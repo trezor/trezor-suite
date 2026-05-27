@@ -93,24 +93,17 @@ export const selectTradingEnvironment = (state: TradingRootState) =>
     state.wallet.trading.tradingEnvironment;
 
 export const selectIsTradingBuyEnabled = (state: MessageSystemRootState & FeatureFlagsRootState) =>
-    selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingBuyEnabled) ||
     selectIsFeatureEnabled(state, Feature.trading.buy, true);
-
 export const selectIsTradingExchangeEnabled = (
     state: MessageSystemRootState & FeatureFlagsRootState,
-) =>
-    selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingExchangeEnabled) ||
-    selectIsFeatureEnabled(state, Feature.trading.exchange, true);
+) => selectIsFeatureEnabled(state, Feature.trading.exchange, true);
 
 export const selectIsTradingSellEnabled = (state: MessageSystemRootState & FeatureFlagsRootState) =>
-    selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingSellEnabled) ||
     selectIsFeatureEnabled(state, Feature.trading.sell, true);
 
 export const selectIsTradingConciergeEnabled = (
     state: MessageSystemRootState & FeatureFlagsRootState,
-) =>
-    selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingConciergeEnabled) ||
-    selectIsFeatureEnabled(state, Feature.trading.concierge, true);
+) => selectIsFeatureEnabled(state, Feature.trading.concierge, true);
 
 export const selectIsTradingEnabled = (
     state: MessageSystemRootState & FeatureFlagsRootState & TradingRootState,
