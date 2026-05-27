@@ -2,39 +2,60 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { type ReceiveInfo } from '@suite-common/wallet-types';
 
-export type ReceiveState = ReceiveInfo[];
+export type CurrentFreshAddress = {
+    path: string;
+    address: string;
+};
+
+export type ReceiveState = {
+    revealedAddresses: ReceiveInfo[];
+    currentFreshAddress?: CurrentFreshAddress;
+};
+
+export type ReceiveRootState = {
+    wallet: {
+        receive: ReceiveState;
+    };
+};
 
 type ReceiveActionPayload = {
     path: string;
     address: string;
 };
 
-const receiveInitialState: ReceiveState = [];
+const receiveInitialState: ReceiveState = {
+    revealedAddresses: [],
+    currentFreshAddress: undefined,
+};
 
 const markAddressVerified = (draft: ReceiveState, path: string, address: string) => {
-    const receiveInfo = draft.find(receive => receive.address === address);
+    const receiveInfo = draft.revealedAddresses.find(receive => receive.address === address);
     if (receiveInfo) {
         receiveInfo.isVerified = true;
     } else {
-        draft.unshift({
+        draft.revealedAddresses.unshift({
             path,
             address,
             isVerified: true,
         });
     }
+
+    draft.currentFreshAddress = undefined;
 };
 
 const markAddressUnverified = (draft: ReceiveState, path: string, address: string) => {
-    const receiveInfo = draft.find(receive => receive.address === address);
+    const receiveInfo = draft.revealedAddresses.find(receive => receive.address === address);
     if (receiveInfo) {
         receiveInfo.isVerified = false;
     } else {
-        draft.unshift({
+        draft.revealedAddresses.unshift({
             path,
             address,
             isVerified: false,
         });
     }
+
+    draft.currentFreshAddress = undefined;
 };
 
 export const receiveSlice = createSlice({
@@ -54,8 +75,17 @@ export const receiveSlice = createSlice({
             },
             prepare: (path: string, address: string) => ({ payload: { path, address } }),
         },
+        setCurrentFreshAddress: (state, action: PayloadAction<CurrentFreshAddress | undefined>) => {
+            state.currentFreshAddress = action.payload;
+        },
     },
 });
+
+export const selectReceiveRevealedAddresses = (state: ReceiveRootState) =>
+    state.wallet.receive.revealedAddresses;
+
+export const selectCurrentFreshAddress = (state: ReceiveRootState) =>
+    state.wallet.receive.currentFreshAddress;
 
 export const receiveActions = receiveSlice.actions;
 export const receiveReducer = receiveSlice.reducer;

@@ -3,6 +3,7 @@ import { type FieldError } from 'react-hook-form';
 
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import { selectReceiveRevealedAddresses } from '@suite/receive';
 import {
     Button,
     Card,
@@ -38,7 +39,7 @@ const SignVerify = () => {
     const [isCompleted, setIsCompleted] = useState(false);
 
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const revealedAddresses = useSelector(state => state.wallet.receive);
+    const revealedAddresses = useSelector(selectReceiveRevealedAddresses);
     const dispatch = useDispatch();
 
     const isSignPage = page === 'sign';
