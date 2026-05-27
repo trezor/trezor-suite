@@ -14,14 +14,14 @@ import { BigNumber } from '@trezor/utils';
 
 import { type YieldApprovalLimitType } from './types';
 
-type BuildYieldApprovalFormStateParams = {
+type BuildYieldAllowanceFormStateParams = {
     approvalModalState: YieldApproveModalState;
     data: string;
     precomposedTransaction: PrecomposedTransactionFinal;
     selectedFee: FeeLevelLabel;
 };
 
-type YieldApprovalFeeState = {
+type YieldAllowanceFeeState = {
     customFee:
         | {
               feeLimit: string;
@@ -50,12 +50,12 @@ type IsYieldApprovalAllowanceEnoughParams = IsYieldApprovalAllowanceUnlimitedPar
     amount: string | undefined;
 };
 
-export const buildYieldApprovalFormState = ({
+export const buildYieldAllowanceFormState = ({
     approvalModalState,
     data,
     precomposedTransaction,
     selectedFee,
-}: BuildYieldApprovalFormStateParams): FormState => ({
+}: BuildYieldAllowanceFormStateParams): FormState => ({
     outputs: [
         {
             type: 'payment',
@@ -81,9 +81,9 @@ export const buildYieldApprovalFormState = ({
 export const getYieldApprovalType = (approvalLimitType: YieldApprovalLimitType) =>
     approvalLimitType === 'unlimited' ? 'INFINITE' : 'MINIMAL';
 
-export const getYieldApprovalFeeState = (
+export const getYieldAllowanceFeeState = (
     formDraft: FormState | null | undefined,
-): YieldApprovalFeeState => {
+): YieldAllowanceFeeState => {
     const selectedFee: FeeLevelLabel =
         formDraft?.selectedFee === 'custom' && (!formDraft.feeLimit || !formDraft.feePerUnit)
             ? 'normal'
