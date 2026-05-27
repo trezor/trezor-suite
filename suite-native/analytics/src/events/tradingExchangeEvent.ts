@@ -27,11 +27,17 @@ export const tradingExchangeEvent: EventDef<Attributes, EventType.TradingExchang
 
     attributes: {
         action: {
-            changelog: [{ version: '25.10.1', notes: 'added' }],
-            description: 'Action type: `continue` | `cancel` | `retry` | `visit`',
+            changelog: [
+                { version: '25.10.1', notes: 'added' },
+                { version: '26.6.1', notes: 'modified' },
+            ],
+            description: 'Action type: `continue` | `cancel` | `retry` | `visit` | `value_change`',
         },
         step: {
-            changelog: [{ version: '25.10.1', notes: 'added' }],
+            changelog: [
+                { version: '25.10.1', notes: 'added' },
+                { version: '26.6.1', notes: 'modified' },
+            ],
             description: 'Current step in the exchange flow',
         },
         sendCryptoLabel: {
