@@ -15,20 +15,6 @@ type NetworkSymbolSwitchItemProps = {
     onToggle: (isEnabled: boolean) => void;
 };
 
-const cardStyle = prepareNativeStyle<{ isEnabled: boolean }>((utils, { isEnabled }) => ({
-    padding: 0,
-    extend: [
-        {
-            condition: !isEnabled,
-            style: {
-                borderColor: utils.colors.borderNeutral,
-                backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation0,
-                shadowColor: 'transparent',
-            },
-        },
-    ],
-}));
-
 const wrapperStyle = prepareNativeStyle(utils => ({
     paddingVertical: 6,
     paddingHorizontal: 14,
@@ -51,7 +37,7 @@ export const NetworkSymbolSwitchItem = ({
     const { name } = getNetwork(symbol);
 
     return (
-        <Card style={applyStyle(cardStyle, { isEnabled })}>
+        <Card noPadding>
             <PressableOpacity
                 onPress={() => onToggle(!isEnabled)}
                 accessibilityRole="togglebutton"
