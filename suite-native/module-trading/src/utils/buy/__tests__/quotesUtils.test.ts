@@ -1,5 +1,6 @@
 import type { BuyTrade, CryptoId } from 'invity-api';
 
+import { deviceInitialState } from '@suite-common/device';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
@@ -19,7 +20,10 @@ describe('quotesUtils', () => {
 
     const renderUseTradingBuyForm = () =>
         renderHookWithStoreProvider(() => useBuyForm(), {
-            preloadedState: { wallet: { trading: getInitializedTradingState() } },
+            preloadedState: {
+                device: deviceInitialState,
+                wallet: { trading: getInitializedTradingState() },
+            },
         });
 
     beforeEach(() => {

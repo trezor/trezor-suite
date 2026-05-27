@@ -10,6 +10,9 @@ export const btc1NormalAccount = mockWalletAccount({
     deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accountType: 'normal',
     descriptor: asAccountDescriptor('btc1-normal'),
+    balance: '1000000',
+    availableBalance: '1000000',
+    formattedBalance: '0.01',
     addresses: {
         used: [
             {
@@ -83,6 +86,16 @@ export const eth1NormalAccount = mockWalletAccount({
 
     accountType: 'normal',
     descriptor: asAccountDescriptor('eth1-normal'),
+    tokens: [
+        {
+            standard: 'ERC20',
+            name: 'USDC',
+            contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            symbol: 'usdc',
+            decimals: 6,
+            balance: '1',
+        },
+    ],
     visible: true,
 });
 

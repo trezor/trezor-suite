@@ -3,7 +3,12 @@ import type { CryptoId } from 'invity-api';
 import { type TradingBuyState } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { tradingInitialState } from '@suite-native/trading-consts';
-import { buyQuotes, mercuryoApplePayBuyQuote } from '@suite-native/trading-fixtures';
+import {
+    btc1NormalAccount,
+    buyQuotes,
+    eth1NormalAccount,
+    mercuryoApplePayBuyQuote,
+} from '@suite-native/trading-fixtures';
 
 import { buyActions, buyReducer } from '../buySlice';
 
@@ -106,6 +111,41 @@ describe('buySlice', () => {
             const state = buyReducer(prevState, buyActions.assetChanged());
 
             expect(state.quotesRequest).toBeUndefined();
+        });
+    });
+
+    describe('assetTokenChanged', () => {
+        it('should clear amount limits and quotes request data without clearing receive account info', () => {
+            const tradingAccountKey = btc1NormalAccount.key;
+            const receiveAccountKey = eth1NormalAccount.key;
+            const receiveAddress = 'bc1qxyz';
+            const prevState: TradingBuyState = {
+                ...tradingInitialState.buy,
+                amountLimits: {
+                    currency: 'CZK',
+                    minFiat: '100',
+                    maxCrypto: '0.01',
+                    maxFiat: '1000',
+                    minCrypto: '0.0001',
+                },
+                quotesRequest: {
+                    wantCrypto: true,
+                    receiveCurrency: 'btc' as CryptoId,
+                    fiatCurrency: 'czk',
+                    country: 'CZ',
+                },
+                tradingAccountKey,
+                receiveAccountKey,
+                receiveAddress,
+            };
+
+            const state = buyReducer(prevState, buyActions.assetTokenChanged());
+
+            expect(state.amountLimits).toBeUndefined();
+            expect(state.quotesRequest).toBeUndefined();
+            expect(state.tradingAccountKey).toBe(tradingAccountKey);
+            expect(state.receiveAccountKey).toBe(receiveAccountKey);
+            expect(state.receiveAddress).toBe(receiveAddress);
         });
     });
 

@@ -1,3 +1,4 @@
+import { deviceInitialState } from '@suite-common/device';
 import { Form } from '@suite-native/forms';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
@@ -9,7 +10,10 @@ import { BuyAlert } from '../BuyAlert';
 
 describe('BuyAlert', () => {
     let form: BuyFormType;
-    const preloadedState = { wallet: getWalletState({ tradeType: 'buy' }) };
+    const preloadedState = {
+        device: deviceInitialState,
+        wallet: getWalletState({ tradeType: 'buy' }),
+    };
 
     const renderFormHook = () =>
         renderHookWithStoreProvider(() => useBuyForm(), {
