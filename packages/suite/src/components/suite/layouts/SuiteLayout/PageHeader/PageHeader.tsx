@@ -4,10 +4,10 @@ import styled, { css } from 'styled-components';
 
 import { selectSelectedAccountKey } from '@suite/account';
 import {
-    type SuiteRouterHistoryDep,
     isAccountTabRoute,
     resolveEffectiveBackgroundRouteName,
     selectRoute,
+    selectSuiteRouterHistoryDep,
 } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectAccounts } from '@suite-common/wallet-core';
@@ -67,7 +67,7 @@ interface PageHeaderProps {
 export const PageHeader = ({ children, expandable }: PageHeaderProps) => {
     const selectedAccountKey = useSelector(selectSelectedAccountKey);
     const route = useSelector(selectRoute);
-    const { suiteRouterHistory } = useServices<SuiteRouterHistoryDep>();
+    const { suiteRouterHistory } = useServices(selectSuiteRouterHistoryDep);
     const effectiveRouteName = resolveEffectiveBackgroundRouteName(
         route,
         suiteRouterHistory.getLocation(),

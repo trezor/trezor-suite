@@ -20,6 +20,10 @@ export type SuiteRouterHistoryDep = {
     suiteRouterHistory: SuiteRouterHistory;
 };
 
+export const selectSuiteRouterHistoryDep = (services: any): SuiteRouterHistoryDep => ({
+    suiteRouterHistory: services.suiteRouterHistory,
+});
+
 export type SuiteRouterHistoryDeps = {
     history: History;
 };

@@ -6,4 +6,4 @@ export type {
     EncryptionError,
 } from './platformEncryption';
 export { asEncryptedHex, EncryptionUnavailable, DecryptionFailed } from './platformEncryption';
-export type { PlatformEncryptionDep } from './platformEncryption';
+export { selectPlatformEncryptionDep, type PlatformEncryptionDep } from './platformEncryption';

@@ -29,6 +29,10 @@ export type DecryptionError = EncryptionUnavailable | DecryptionFailed;
 
 export type PlatformEncryptionDep = { platformEncryption: PlatformEncryption };
 
+export const selectPlatformEncryptionDep = (services: any): PlatformEncryptionDep => ({
+    platformEncryption: services.platformEncryption,
+});
+
 export interface PlatformEncryption {
     encrypt: <T extends EncryptableBranded>(params: {
         value: T;

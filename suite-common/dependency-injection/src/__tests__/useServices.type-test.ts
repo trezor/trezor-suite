@@ -8,10 +8,15 @@ const selectADep = (services: any): ADep => ({ a: services.a });
 const selectBDep = (services: any): BDep => ({ b: services.b });
 
 const _selectedServices: ADep & BDep = useServices(selectADep, selectBDep);
-const _allServices: BDep = useServices<BDep>();
 
-// @ts-expect-error useServices requires an explicit generic type argument.
+// @ts-expect-error useServices requires at least one selector.
 useServices();
 
+// @ts-expect-error useServices infers its return type from selectors.
+useServices<BDep>();
+
+// @ts-expect-error useServices returns type as narrow as the supplied selectors
+const _mismatchedService: ADep = useServices(selectBDep);
+
 void _selectedServices;
-void _allServices;
+void _mismatchedService;

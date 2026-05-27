@@ -5,7 +5,7 @@ import { Translation } from '@suite/intl';
 import { selectIsMetadataEnabled } from '@suite/metadata';
 import { suiteSyncErrorHandler } from '@suite/suite-sync';
 import { shouldDisplayExportBip329Labels } from '@suite-common/bip329';
-import { type Bip329Dep, type Bip329Label, bip329LabelSchema } from '@suite-common/bip329-types';
+import { type Bip329Label, bip329LabelSchema, selectBip329Dep } from '@suite-common/bip329-types';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -39,7 +39,7 @@ export const Bip329Labels = ({ account, isLoading }: Bip329LabelsProps) => {
     const isMetadataEnabled = useSelector(selectIsMetadataEnabled);
 
     const dispatch = useDispatch();
-    const { bip329 } = useServices<Bip329Dep>();
+    const { bip329 } = useServices(selectBip329Dep);
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
 
