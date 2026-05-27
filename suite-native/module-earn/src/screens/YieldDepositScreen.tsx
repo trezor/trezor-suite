@@ -6,6 +6,7 @@ import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-na
 import { useFormatters } from '@suite-common/formatters';
 import { getNetwork, getNetworkType } from '@suite-common/wallet-config';
 import {
+    getYieldApprovalAction,
     initYieldAllowanceThunk,
     splitYieldPendingTransaction,
     stablecoinYieldActions,
@@ -36,10 +37,7 @@ import { useYieldDepositForm } from '../hooks/useYieldDepositForm';
 import { useYieldDepositSubmit } from '../hooks/useYieldDepositSubmit';
 import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTransactionTracking';
 import { useYieldSession } from '../hooks/useYieldSession';
-import {
-    isYieldApprovalAllowanceEnough,
-    isYieldApprovalAllowanceUnlimited,
-} from '../yieldApprovalUtils';
+import { isYieldApprovalAllowanceUnlimited } from '../yieldApprovalUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDeposit>;
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldDeposit>;
@@ -112,14 +110,15 @@ export const YieldDepositScreen = () => {
         formState: { isValid },
     } = form;
 
-    const isApprovalIncreaseRequired =
-        !!amountValue &&
-        isAllowanceLoaded &&
-        !isYieldApprovalAllowanceEnough({
-            amount: amountValue,
-            session,
-            token,
-        });
+    const approvalAction = getYieldApprovalAction({
+        liveAmount: amountValue ?? '',
+        allowanceAmount,
+        isModifyMode: true,
+        isRevokeRequired: session?.approval.isRevokeRequired ?? false,
+        tokenContractAddress: token?.contractAddress,
+    });
+    const isApprovalActionRequired =
+        !!amountValue && isAllowanceLoaded && approvalAction !== 'continue';
 
     const isSubmitDisabled =
         isDepositPending ||
@@ -137,7 +136,7 @@ export const YieldDepositScreen = () => {
             isDepositSessionReady &&
             isAllowanceLoaded &&
             isValid &&
-            !isApprovalIncreaseRequired &&
+            !isApprovalActionRequired &&
             !isDepositPending,
     });
     const { explorerUrl, openInBlockchain } = useTransactionDetails({
@@ -252,15 +251,15 @@ export const YieldDepositScreen = () => {
             return;
         }
 
-        if (isApprovalIncreaseRequired) {
+        if (isApprovalActionRequired) {
             handleEditApproval();
 
             return;
         }
 
         void handleSubmitDeposit();
-    }, [handleEditApproval, handleSubmitDeposit, isApprovalIncreaseRequired, isDepositPending]);
-    const footerTranslationId = isApprovalIncreaseRequired
+    }, [handleEditApproval, handleSubmitDeposit, isApprovalActionRequired, isDepositPending]);
+    const footerTranslationId = isApprovalActionRequired
         ? 'earn.yieldDepositFlowScreen.increaseApprovalLimit'
         : undefined;
 
@@ -338,7 +337,7 @@ export const YieldDepositScreen = () => {
                         </Form>
                     </Box>
 
-                    {isValid && !!amountValue && !isApprovalIncreaseRequired && (
+                    {isValid && !!amountValue && !isApprovalActionRequired && (
                         <Box paddingHorizontal="sp16">
                             <FeeSummaryCard
                                 fee={depositFee.feePreview?.fee ?? null}

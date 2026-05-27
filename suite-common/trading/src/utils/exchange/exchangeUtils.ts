@@ -1,11 +1,14 @@
 import type { CryptoId, ExchangeTrade, ExchangeTradeStatus } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
+import { tokenSupportsIncreasingAllowance } from '@suite-common/wallet-utils';
 
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '../../constants';
 import { type ExchangeInfo } from '../../reducers/exchangeReducer';
 import { type TradingExchangeAmountLimitProps } from '../../types';
 import { cryptoIdToNetwork, parseCryptoId } from '../../utils';
+
+export { tokenSupportsIncreasingAllowance };
 
 type GetAmountLimitsProps = {
     quotes: ExchangeTrade[];
@@ -99,16 +102,6 @@ export const getStatusMessage = (status: ExchangeTradeStatus) => {
         default:
             return 'TR_EXCHANGE_STATUS_CONFIRMING';
     }
-};
-
-export const tokenSupportsIncreasingAllowance = (contractAddress?: string): boolean => {
-    const ethereumUsdtContractAddress = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
-
-    if (!contractAddress) {
-        return false;
-    }
-
-    return contractAddress.trim().toLowerCase() !== ethereumUsdtContractAddress.toLowerCase();
 };
 
 export type ApprovalStatus =
