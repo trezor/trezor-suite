@@ -1,8 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
@@ -14,7 +12,7 @@ import {
 } from '@suite-common/trading';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
-import { Column, FractionButton, Row } from '@trezor/components';
+import { Column, Row } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -27,6 +25,7 @@ import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/T
 
 import { TradingFormCard } from './TradingFormCard';
 import { TradingFormFees } from './TradingFormFees';
+import { TradingFractionButtons } from './TradingFractionButtons';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker';
 import { TradingFormInputCountrySubdivision } from './TradingFormInput/TradingFormInputCountry/TradingFormInputCountrySubdivision';
@@ -36,11 +35,9 @@ import {
 } from './TradingFormInput/TradingFormInputSellAsset/TradingFormInputSellAsset';
 import { TradingFormSection } from './TradingFormSection';
 import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
-import { generateFractionButtons } from './tradingFormInputsUtils';
 
 export const TradingSellFormInputs = () => {
     const context = useTradingFormContext<TradingSellType>();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const {
         feeInfo,
@@ -112,29 +109,7 @@ export const TradingSellFormInputs = () => {
                         />
                         {amountInCrypto && (
                             <Row justifyContent="space-between" alignItems="flex-start">
-                                <Row gap={8} data-testid="@trading/form/fraction-buttons">
-                                    {generateFractionButtons(helpers).map(button => {
-                                        const { percentValue, ...buttonProps } = button;
-
-                                        return (
-                                            <FractionButton
-                                                key={buttonProps.id}
-                                                {...buttonProps}
-                                                onClick={() => {
-                                                    analytics.report({
-                                                        type: events.appFormPercentButtonsEvent
-                                                            .name,
-                                                        payload: {
-                                                            type: 'sell',
-                                                            value: percentValue,
-                                                        },
-                                                    });
-                                                    button.onClick();
-                                                }}
-                                            />
-                                        );
-                                    })}
-                                </Row>
+                                <TradingFractionButtons />
                                 <TradingBalance
                                     balance={outputAmount}
                                     displaySymbol={sendCryptoSelect?.id}

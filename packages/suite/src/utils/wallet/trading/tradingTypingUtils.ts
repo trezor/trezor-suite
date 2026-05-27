@@ -37,6 +37,11 @@ export const isTradingExchangeContext = (
     context: TradingFormMapProps[keyof TradingFormMapProps],
 ): context is TradingFormMapProps[TradingExchangeType] => context.type === 'exchange';
 
+export const isTradingExchangeOrSellContext = (
+    context: TradingFormMapProps[keyof TradingFormMapProps],
+): context is TradingFormMapProps[TradingExchangeType] | TradingFormMapProps[TradingSellType] =>
+    isTradingExchangeContext(context) || isTradingSellContext(context);
+
 export const getCryptoQuoteAmountProps = (
     quoteInput: TradingTradeType | undefined,
     context: TradingFormContextValues<TradingType>,

@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { memo, useCallback } from 'react';
 
 import { type ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
@@ -29,7 +29,7 @@ const ProviderWrapper = styled.div`
     justify-content: center;
 `;
 
-export const TradingOffersModalItem = ({ quote, onSelect }: TradingOffersModalItemProps) => {
+const TradingOffersModalItemInner = ({ quote, onSelect }: TradingOffersModalItemProps) => {
     const context = useTradingFormContext();
     const providers = getProvidersInfoProps(context);
     const {
@@ -85,3 +85,5 @@ export const TradingOffersModalItem = ({ quote, onSelect }: TradingOffersModalIt
         </CardList.Item>
     );
 };
+
+export const TradingOffersModalItem = memo(TradingOffersModalItemInner);
