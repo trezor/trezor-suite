@@ -28,8 +28,6 @@ function getChecksum(hashFunction: HashFunction, payload: string): string {
             return cryptoUtils.blake256Checksum(payload);
         case 'keccak256':
             return cryptoUtils.keccak256Checksum(payload);
-        case 'groestl512x2':
-            return cryptoUtils.groestl512x2(payload);
         case 'sha256':
             return cryptoUtils.sha256Checksum(payload);
     }

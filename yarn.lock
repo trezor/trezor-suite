@@ -15252,7 +15252,6 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     cbor: "npm:^10.0.12"
     crc: "npm:^3.8.0"
-    groestl-hash-js: "npm:1.0.0"
     jssha: "npm:2.3.1"
   peerDependencies:
     tslib: ^2.6.2
@@ -28748,13 +28747,6 @@ __metadata:
     section-matter: "npm:^1.0.0"
     strip-bom-string: "npm:^1.0.0"
   checksum: 10/9a8f146a7a918d2524d5d60e0b4d45729f5bca54aa41247f971d9e4bc984943fda58159435763d463ec2abc8a0e238e807bd9b05e3a48f4a613a325c9dd5ad0c
-  languageName: node
-  linkType: hard
-
-"groestl-hash-js@npm:1.0.0":
-  version: 1.0.0
-  resolution: "groestl-hash-js@npm:1.0.0"
-  checksum: 10/ef5598adb70863cc7bca6137e464ae1743b38e03f63210a0c58e4ee2518a25e44e55f80d236708c810fcec0bffdba6d4c8623086eb35a83bf78bc7d0d8e84a9d
   languageName: node
   linkType: hard
 

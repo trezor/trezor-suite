@@ -2,12 +2,7 @@ import type { addressType } from './crypto/utils';
 
 type AddressType = (typeof addressType)[keyof typeof addressType];
 
-export type HashFunction =
-    | 'sha256'
-    | 'blake256'
-    | 'blake256keccak256'
-    | 'keccak256'
-    | 'groestl512x2';
+export type HashFunction = 'sha256' | 'blake256' | 'blake256keccak256' | 'keccak256';
 
 export type NetworkEnvironment =
     | 'prod'

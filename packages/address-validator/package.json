@@ -31,7 +31,6 @@
         "@scure/base": "^2.0.0",
         "cbor": "^10.0.12",
         "crc": "^3.8.0",
-        "groestl-hash-js": "1.0.0",
         "jssha": "2.3.1"
     },
     "devDependencies": {
