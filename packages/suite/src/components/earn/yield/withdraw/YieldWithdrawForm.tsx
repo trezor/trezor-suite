@@ -22,7 +22,6 @@ export const YieldWithdrawForm = () => {
         token,
         receiptToken,
         maxAmount,
-        completedAmount,
         errorMessage,
         pendingTransaction,
         isAmountEmpty,
@@ -33,6 +32,8 @@ export const YieldWithdrawForm = () => {
         otherUnitTokenSymbol,
         canToggleWithdrawUnit,
         withdrawInputUnit,
+        completedInput,
+        completedOutput,
         setAmountInput,
         toggleWithdrawInputUnit,
         submitAction,
@@ -117,10 +118,8 @@ export const YieldWithdrawForm = () => {
             <Column gap={24} width="100%" maxWidth={500}>
                 {flow.currentStep === 'complete' ? (
                     <YieldFlowCompleteWithdraw
-                        value={{
-                            token: withdrawInputUnit === 'shares' ? receiptToken : token,
-                            amount: completedAmount,
-                        }}
+                        input={completedInput}
+                        output={completedOutput}
                         vaultId={vault.id}
                     />
                 ) : (
