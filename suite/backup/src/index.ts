@@ -4,5 +4,8 @@ export * from './backupSelectors';
 export * from './backupDeviceThunk';
 export * from './createAdditionalBackupThunk';
 export * from './backupUtils';
+export * from './BackupFailed';
+export * from './BackupRecoverySeed';
 export * from './CreateWalletBackup';
+export * from './MultiShareBackup';
 export type * from './types';
