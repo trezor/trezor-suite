@@ -34,13 +34,8 @@ export const ServicesProvider = ({ services, children }: ServicesProviderProps) 
 
 ServicesProvider.displayName = 'ServicesProvider';
 
-export const selectServices = (services: Services, ...selectors: ServiceSelector<any>[]) => {
-    if (selectors.length === 0) {
-        return services;
-    }
-
-    return Object.assign({}, ...selectors.map(selector => selector(services)));
-};
+export const selectServices = (services: Services, ...selectors: ServiceSelector<any>[]) =>
+    Object.assign({}, ...selectors.map(selector => selector(services)));
 
 export function useServices<
     const TSelectors extends readonly [ServiceSelector<any>, ...ServiceSelector<any>[]],

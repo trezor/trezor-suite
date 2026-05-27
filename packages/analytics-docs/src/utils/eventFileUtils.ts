@@ -92,25 +92,34 @@ export const getEventsIndexExportSnippet = (eventName: string): string => {
 
 const PLATFORM_USAGE_IMPORTS: Record<
     string,
-    { events: string; services: string; analyticsImport: string; analyticsDep: string }
+    {
+        events: string;
+        services: string;
+        analyticsImport: string;
+        analyticsDep: string;
+        analyticsDepSelector: string;
+    }
 > = {
     desktop: {
         events: '@suite/analytics',
         services: '@suite-common/dependency-injection',
         analyticsImport: '@suite/analytics',
         analyticsDep: 'DesktopAnalyticsDep',
+        analyticsDepSelector: 'selectDesktopAnalyticsDep',
     },
     mobile: {
         events: '@suite-native/analytics',
         services: '@suite-common/dependency-injection',
         analyticsImport: '@suite-native/analytics',
         analyticsDep: 'NativeAnalyticsDep',
+        analyticsDepSelector: 'selectNativeAnalyticsDep',
     },
     shared: {
         events: '@suite/analytics',
         services: '@suite-common/dependency-injection',
         analyticsImport: '@suite/analytics',
         analyticsDep: 'DesktopAnalyticsDep',
+        analyticsDepSelector: 'selectDesktopAnalyticsDep',
     },
 };
 
@@ -123,10 +132,10 @@ export const getUsageExampleSnippet = (platform: string, eventName: string): str
 
     return `import { events } from '${imports.events}';
 import { useServices } from '${imports.services}';
-    import { select${imports.analyticsDep.replace('Dep', '')}Dep } from '${imports.analyticsImport}';
+import { ${imports.analyticsDepSelector} } from '${imports.analyticsImport}';
 
 // inside component:
-    const { analytics } = useServices(select${imports.analyticsDep.replace('Dep', '')}Dep);
+const { analytics } = useServices(${imports.analyticsDepSelector});
 analytics.report({
     type: events.${baseName}.name,
     payload: {
