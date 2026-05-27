@@ -1,7 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
-
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor, goto } from '@suite/router';
@@ -14,7 +12,7 @@ interface BackupRecoverySeedProps {
 }
 
 export const BackupRecoverySeed = ({ isDeviceLocked }: BackupRecoverySeedProps) => {
-    const dispatch = useDispatch<ThunkDispatch<any, any, UnknownAction>>();
+    const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
 
     const needsBackup = device?.features?.backup_availability === 'Required';

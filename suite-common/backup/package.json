@@ -13,5 +13,8 @@
     },
     "dependencies": {
         "@trezor/connect": "workspace:*"
+    },
+    "devDependencies": {
+        "@suite-common/suite-types": "workspace:*"
     }
 }
