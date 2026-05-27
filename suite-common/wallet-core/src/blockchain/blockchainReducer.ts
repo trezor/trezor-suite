@@ -154,10 +154,11 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
     (builder, extra) => {
         builder
             .addCase(blockchainActions.synced, (state, action) => {
-                const { symbol, timeout, time } = action.payload;
+                const { symbol, timeout, shouldSync } = action.payload;
                 state[symbol].syncTimeout = timeout;
-                if (typeof time === 'number') {
-                    state[symbol].lastSyncMs = time;
+                if (shouldSync) {
+                    // Stamp completion time for the block-mined sync throttle (onBlockMinedThunk).
+                    state[symbol].lastSyncMs = Date.now();
                 }
             })
             .addCase(blockchainActions.setBackend, (state, action) => {

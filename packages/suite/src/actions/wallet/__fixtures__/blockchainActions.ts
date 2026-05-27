@@ -356,8 +356,9 @@ export const onBlock = analyzeTransactions
             state: {
                 accounts: [DEFAULT_ACCOUNT],
                 blockchain: {
-                    // Future timestamp keeps the throttle window engaged for the entire test run.
-                    btc: { lastSyncMs: Date.now() + 60_000 },
+                    // Fixed far-future timestamp keeps the throttle window engaged deterministically
+                    // (independent of wall clock / fake timers). 4_102_444_800_000 ≈ year 2100.
+                    btc: { lastSyncMs: 4_102_444_800_000 },
                 },
             },
             result: undefined,

@@ -15,9 +15,10 @@ const connected = createAction(
 
 const synced = createAction(
     `${BLOCKCHAIN_MODULE_PREFIX}/synced`,
-    // `time` is the wall-clock timestamp of the completed sync (Date.now()), used by
-    // onBlockMinedThunk to throttle block-mined-triggered fan-out. Optional for back-compat.
-    (payload: { symbol: NetworkSymbol; timeout?: TimerId; time?: number }) => ({
+    // `shouldSync` signals that an actual account refetch ran (app window visible). When true,
+    // the reducer stamps the completion time used by onBlockMinedThunk to throttle
+    // block-mined-triggered fan-out — the caller doesn't deal with timestamps.
+    (payload: { symbol: NetworkSymbol; timeout?: TimerId; shouldSync?: boolean }) => ({
         payload,
     }),
 );
