@@ -9,18 +9,15 @@ import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
-import { BitcoinBackendsCard } from '../components/BitcoinBackendsCard';
 import { DustPhishingThresholdCard } from '../components/DustPhishingThresholdCard';
 import { ToggleAddressDisplayCard } from '../components/ToggleAddressDisplayCard';
 import { ToggleDeviceAuthenticityCheckCard } from '../components/ToggleDeviceAuthenticityCheckCard';
 import { ToggleFirmwareAuthenticityCheckCard } from '../components/ToggleFirmwareAuthenticityCheckCard';
 import { ToggleMevProtectionCard } from '../components/ToggleMevProtectionCard';
 import { ToggleNetworkReserveCheckCard } from '../components/ToggleNetworkReserveCheckCard';
-import { selectIsBitcoinBackendsConfigVisible } from '../selectors';
 
 export const SettingsAdvancedScreen = () => {
     const isMevProtectionSettingsVisible = useSelector(selectIsMevProtectionSettingsVisible);
-    const isBitcoinBackendsConfigVisible = useSelector(selectIsBitcoinBackendsConfigVisible);
     const isNetworkReserveSettingsVisible = useSelector(selectIsNetworkReserveSettingsVisible);
     const isDustPhishingThresholdSettingsVisible = useSelector(
         selectIsDustPhishingThresholdSettingsVisible,
@@ -33,7 +30,6 @@ export const SettingsAdvancedScreen = () => {
             }
         >
             <VStack spacing="sp16">
-                {isBitcoinBackendsConfigVisible && <BitcoinBackendsCard />}
                 <ToggleAddressDisplayCard />
                 {isMevProtectionSettingsVisible && <ToggleMevProtectionCard />}
                 {isDustPhishingThresholdSettingsVisible && <DustPhishingThresholdCard />}
