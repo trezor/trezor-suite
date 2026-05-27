@@ -510,19 +510,23 @@ export const messages = defineMessages({
         defaultMessage: '{value} {send}',
         id: 'TR_EXCHANGE_APPROVAL_VALUE_MINIMAL',
     },
-    TR_EXCHANGE_APPROVAL_VALUE_MINIMAL_INFO: {
+    TR_APPROVAL_VALUE_MINIMAL_INFO: {
         defaultMessage:
-            "Approve only the amount needed for this swap. This helps reduce risk, but you'll need to approve again (and pay a fee) for future swaps.",
-        id: 'TR_EXCHANGE_APPROVAL_VALUE_MINIMAL_INFO',
+            'Approve this amount for the provider. Valid until fully used or revoked. Then a new approval and network fee will be required.',
+        id: 'TR_APPROVAL_VALUE_MINIMAL_INFO',
     },
     TR_EXCHANGE_APPROVAL_VALUE_INFINITE: {
         defaultMessage: 'Unlimited',
         id: 'TR_EXCHANGE_APPROVAL_VALUE_INFINITE',
     },
-    TR_EXCHANGE_APPROVAL_VALUE_INFINITE_INFO: {
+    TR_APPROVAL_VALUE_INFINITE_INFO: {
         defaultMessage:
-            'Approve unlimited {send} to skip future approval requests and reduce fees. Only use this option if you trust {provider}, as it will have access to all your {send}.',
-        id: 'TR_EXCHANGE_APPROVAL_VALUE_INFINITE_INFO',
+            'Approve once and avoid future network fees. This provider can spend any amount until you revoke the approval.',
+        id: 'TR_APPROVAL_VALUE_INFINITE_INFO',
+    },
+    TR_APPROVAL_VALUE_INFINITE_WARNING: {
+        defaultMessage: 'If the provider is compromised, all your {send} may be taken.',
+        id: 'TR_APPROVAL_VALUE_INFINITE_WARNING',
     },
     TR_EXCHANGE_APPROVAL_DATA: {
         defaultMessage: 'Approval transaction data',

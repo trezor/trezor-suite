@@ -6,7 +6,16 @@ import { selectIsDebugModeActive } from '@suite/settings';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type AmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
-import { Box, CollapsibleBox, Column, Paragraph, RadioCard, Row, Text } from '@trezor/components';
+import {
+    Banner,
+    Box,
+    CollapsibleBox,
+    Column,
+    Paragraph,
+    RadioCard,
+    Row,
+    Text,
+} from '@trezor/components';
 import { borders } from '@trezor/theme';
 
 import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
@@ -71,11 +80,19 @@ export const ApproveModalTypeSelector = ({
                         intent="neutral"
                         priority="secondary"
                     >
-                        <Translation
-                            id="TR_EXCHANGE_APPROVAL_VALUE_INFINITE_INFO"
-                            values={translationValues}
-                        />
+                        <Translation id="TR_APPROVAL_VALUE_INFINITE_INFO" />
                     </Paragraph>
+                    <Banner
+                        intent="warning"
+                        icon
+                        margin={{ top: 8 }}
+                        description={
+                            <Translation
+                                id="TR_APPROVAL_VALUE_INFINITE_WARNING"
+                                values={translationValues}
+                            />
+                        }
+                    />
                 </RadioCard>
                 <RadioCard
                     isActive={approvalType === 'MINIMAL'}
@@ -97,10 +114,7 @@ export const ApproveModalTypeSelector = ({
                         intent="neutral"
                         priority="secondary"
                     >
-                        <Translation
-                            id="TR_EXCHANGE_APPROVAL_VALUE_MINIMAL_INFO"
-                            values={translationValues}
-                        />
+                        <Translation id="TR_APPROVAL_VALUE_MINIMAL_INFO" />
                     </Paragraph>
                 </RadioCard>
                 {isDebug ? (
