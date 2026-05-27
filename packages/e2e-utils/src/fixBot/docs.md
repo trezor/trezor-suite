@@ -21,6 +21,9 @@ GitHub Actions: fix-tests.yml
   matrix: one job per fix task (parallel)
     each job: Fix Agent loop → writes fix-result.json + pr-description.md → push branch + gh pr create
   final job: Slack notification (reads GHA job outputs, no filesystem access needed)
+
+GHA: .github/workflows/test-suite-nightly-fix-agent.yml
+Folder: packages/e2e-utils/src/fixBot
 ```
 
 The GitHub Actions workflow IS the orchestrator. No separate orchestration program needed.

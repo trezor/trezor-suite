@@ -59,10 +59,8 @@ function main(): void {
         error(`Failed to run claude: ${result.error.message}`);
         process.exit(1);
     }
-
-    const date = new Date().toISOString().slice(0, 10);
-    const reportMd = join(reportDir, `${date}.md`);
-    const reportJson = join(reportDir, `${date}.json`);
+    const reportMd = join(reportDir, 'report.md');
+    const reportJson = join(reportDir, 'report.json');
 
     reportTokenUsage(claudeOutput, join(reportDir, 'token_usage.txt'), 'analysis');
     logAgentResult(claudeOutput, 'analysis');
