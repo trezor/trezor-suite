@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useWatch } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import {
@@ -26,9 +27,9 @@ export const TradingFormInputCountrySubdivision = ({
 }: TradingFormInputCountrySubdivisionProps) => {
     const { translationString } = useTranslation();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { watch, defaultSubdivision } = useTradingFormContext<TradingTradeBuySellType>();
+    const { defaultSubdivision } = useTradingFormContext<TradingTradeBuySellType>();
 
-    const subdivisionValue = watch()[TRADING_FORM_COUNTRY_SUBDIVISION_SELECT];
+    const subdivisionValue = useWatch({ name: TRADING_FORM_COUNTRY_SUBDIVISION_SELECT });
 
     const subdivisionLabel = useMemo(() => {
         const resolvedLabel = subdivisionValue?.label ?? defaultSubdivision?.label;

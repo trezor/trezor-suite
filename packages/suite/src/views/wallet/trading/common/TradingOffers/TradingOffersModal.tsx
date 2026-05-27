@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { Translation } from '@suite/intl';
 import { type TradingTradeType } from '@suite-common/trading';
 import { Box, Modal } from '@trezor/components';
@@ -22,10 +24,13 @@ export const TradingOffersModal = ({ onClose, onSelect }: TradingOffersModalProp
         ? [...new Map(context.quotes.map(quote => [quote.exchange, quote])).values()]
         : [];
 
-    const handleSelect = (quote: TradingTradeType) => {
-        onSelect(quote);
-        onClose();
-    };
+    const handleSelect = useCallback(
+        (quote: TradingTradeType) => {
+            onSelect(quote);
+            onClose();
+        },
+        [onSelect, onClose],
+    );
 
     return (
         <Modal

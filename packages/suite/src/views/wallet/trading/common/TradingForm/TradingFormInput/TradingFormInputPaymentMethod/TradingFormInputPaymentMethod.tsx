@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { ReactNode } from 'react';
+import { useWatch } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { PaymentMethodIcon } from '@suite/trading';
@@ -63,10 +64,9 @@ export const TradingFormInputPaymentMethod = ({
         form: {
             state: { isFormLoading },
         },
-        watch,
     } = useTradingFormContext<TradingTradeBuySellType>();
 
-    const paymentMethod = watch()[TRADING_FORM_PAYMENT_METHOD_SELECT];
+    const paymentMethod = useWatch({ name: TRADING_FORM_PAYMENT_METHOD_SELECT });
     const hasPaymentMethods = paymentMethods.length > 0;
 
     const selectedOption = hasPaymentMethods
