@@ -16,6 +16,7 @@ export default class BackupDevice extends AbstractMethod<'backupDevice', PROTO.B
         const params = {
             group_threshold: payload.group_threshold,
             groups: payload.groups,
+            backup_method: payload.backup_method,
         };
 
         super(message, params);
