@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/backup" },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/redux-utils"
@@ -10,8 +11,15 @@
             "path": "../../suite-common/toast-notifications"
         },
         { "path": "../analytics" },
+        { "path": "../external-links" },
+        { "path": "../intl" },
         { "path": "../router" },
+        { "path": "../settings" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/product-components"
+        },
+        { "path": "../../packages/urls" },
         {
             "path": "../../suite-common/suite-types"
         },
