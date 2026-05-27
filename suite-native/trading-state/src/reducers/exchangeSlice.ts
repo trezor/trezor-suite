@@ -32,6 +32,10 @@ const exchangeSlice = createSlice({
             state.receiveAccountKey = undefined;
             state.receiveAddress = undefined;
         },
+        receiveTokenChanged: state => {
+            state.amountLimits = undefined;
+            state.quotesRequest = undefined;
+        },
     },
 });
 

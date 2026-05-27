@@ -5,12 +5,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { BuyCryptoPaymentMethod, BuyTrade, CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { type TradingAmountLimitProps, selectTradingBuyQuotesRequest } from '@suite-common/trading';
+import {
+    type TradingAmountLimitProps,
+    cryptoIdToSymbol,
+    selectTradingBuyQuotesRequest,
+} from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { useForm } from '@suite-native/forms';
+import { useForm, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '@suite-native/trading-consts';
@@ -29,6 +33,7 @@ import { useContextForTradingForm } from '../general/form/useContextForTradingFo
 import { useCountryChangeEffect } from '../general/form/useCountryChangeEffect';
 import { useProviderMetadataChangeEffect } from '../general/form/useProviderMetadataChangeEffect';
 import { useReceiveAccountChangeEffect } from '../general/form/useReceiveAccountChangeEffect';
+import { useReceiveAccountPreselectionEffect } from '../general/form/useReceiveAccountPreselectionEffect';
 
 const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: BuyFormType) => {
     const dispatch = useDispatch();
@@ -75,6 +80,9 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
 
                     case 'asset': {
                         if (asset?.cryptoId !== prevCryptoId.current) {
+                            const prevSymbol = cryptoIdToSymbol(prevCryptoId.current);
+                            const symbol = cryptoIdToSymbol(asset?.cryptoId);
+
                             analytics.report({
                                 type: events.tradingParameterChangedEvent.name,
                                 payload: {
@@ -84,7 +92,11 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
                             });
                             prevCryptoId.current = asset?.cryptoId as CryptoId | undefined;
                             setValue('cryptoValue', undefined, { shouldValidate: true });
-                            dispatch(buyActions.assetChanged());
+                            dispatch(
+                                prevSymbol === symbol
+                                    ? buyActions.assetTokenChanged()
+                                    : buyActions.assetChanged(),
+                            );
                         }
                         break;
                     }
@@ -224,10 +236,16 @@ export const useBuyForm = (): BuyFormType => {
         validation: buyFormValidationSchema,
         context,
     });
-    const { setValue, watch } = form;
+    const { control, setValue, watch } = form;
+    const asset = useWatch({ control, name: 'asset' });
 
     useAmountAndCurrencyFieldsChangeEffect(form);
     useReceiveAccountChangeEffect(setValue, selectBuySelectedReceiveAccount);
+    useReceiveAccountPreselectionEffect({
+        receiveAsset: asset,
+        selectReceiveAccount: selectBuySelectedReceiveAccount,
+        tradingType: 'buy',
+    });
     useBuyQuotesChangeEffect(form);
     useBuyQuoteChangeEffect(form);
     useValidations(form, limits);
