@@ -291,6 +291,7 @@ const reportUsageTotals = (apiKey: string | undefined) => {
 const main = async () => {
     const args = process.argv.slice(2);
     const buildCache = args.includes('--buildCache');
+    const force = args.includes('--force');
     const positionalArgs = args.filter(a => !a.startsWith('--'));
 
     const excludePatterns: string[] = [];
@@ -329,6 +330,7 @@ const main = async () => {
                 'Options:',
                 '  --buildCache        Build/update the analysis cache file instead of printing.',
                 '                      Skips files whose sha256 hash has not changed since last run.',
+                '  --force             Re-analyze all files even if their sha256 hash matches the cache.',
                 `  --cache-file <path> Path to the cache file. Default: ${DEFAULT_CACHE_FILE}`,
                 '  --exclude <pattern> Glob pattern for files to exclude. Can be repeated.',
                 '                      Example: --exclude "**/manual/**"',
@@ -390,7 +392,7 @@ const main = async () => {
                 const testSource = fs.readFileSync(testFile, 'utf8');
                 const currentHash = hashContent(testSource);
                 const cached = cache[relPath];
-                if (cached?.sha256 === currentHash) {
+                if (!force && cached?.sha256 === currentHash) {
                     log(`Cache up-to-date, skipping ${relPath}`);
                     continue;
                 }
