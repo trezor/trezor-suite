@@ -60,5 +60,6 @@ export function useServices(...selectors: ServiceSelector<any>[]) {
         throw new Error('useServices must be used within a ServicesProvider');
     }
 
-    return selectServices(services, ...selectors);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return React.useMemo(() => selectServices(services, ...selectors), [services, ...selectors]);
 }
