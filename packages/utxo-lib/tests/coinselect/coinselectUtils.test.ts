@@ -1,4 +1,11 @@
-import { bignumberOrNaN, getDustAmount, getFee } from '../../src/coinselect/coinselectUtils';
+import {
+    bignumberOrNaN,
+    getDustAmount,
+    getFee,
+    getFeePolicy,
+    sumOrNaN,
+} from '../../src/coinselect/coinselectUtils';
+import { zcash as zcashNetwork } from '../../src/networks';
 
 describe('coinselectUtils', () => {
     it('bignumberOrNaN', () => {
@@ -36,6 +43,19 @@ describe('coinselectUtils', () => {
         expect(
             getFee([], [{ script: { length: 181 } }], 1, { baseFee: 1000, floorBaseFee: true }),
         ).toEqual(1000);
+    });
+
+    it('getFeePolicy returns "zcash" for the zcash network', () => {
+        expect(getFeePolicy(zcashNetwork)).toEqual('zcash');
+    });
+
+    it('sumOrNaN short-circuits subsequent items once accumulator becomes undefined', () => {
+        expect(sumOrNaN([{}, { value: 10n }])).toBeUndefined();
+    });
+
+    it('getDogeFee with no dustThreshold option uses 0 default and adds no dust surcharge', () => {
+        // bytes = ceil(224/4) = 56, defaultFee = ceil(1.33 * 56) = 75
+        expect(getFee([], [{ script: { length: 37 } }], 1.33, { feePolicy: 'doge' })).toEqual(75);
     });
 
     it('getDogeFee', () => {
