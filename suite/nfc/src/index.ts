@@ -1,8 +1,8 @@
-export { AdditionalBackupDisclaimer } from './additional-backup/AdditionalBackupDisclaimer';
-export { AdditionalBackupSteps } from './additional-backup/AdditionalBackupSteps';
-export { AdditionalBackupSuccess } from './additional-backup/AdditionalBackupSuccess';
-export { BackupAlternativeCard } from './components/BackupAlternativeCard';
-export { CreateNfcBackup } from './create-backup/CreateNfcBackup';
-export { NfcTag } from './components/NfcTag';
-export { NoNfcTags } from './create-backup/NoNfcTags';
-export { SelectBackupType } from './create-backup/SelectBackupType';
+export { AdditionalBackupDisclaimer } from './additional/AdditionalBackupDisclaimer';
+export { AdditionalBackupSteps } from './additional/AdditionalBackupSteps';
+export { AdditionalBackupSuccess } from './additional/AdditionalBackupSuccess';
+export { BackupAlternativeCard } from './create/BackupAlternativeCard';
+export { CreateNfcBackup } from './create/CreateNfcBackup';
+export { NfcTag } from './tags/NfcTag';
+export { NoNfcTags } from './tags/NoNfcTags';
+export { SelectBackupType } from './create/SelectBackupType';
