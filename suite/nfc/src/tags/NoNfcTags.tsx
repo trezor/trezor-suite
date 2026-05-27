@@ -2,7 +2,7 @@ import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { Row } from '@trezor/components';
 
-import { BackupAlternativeCard } from '../create-backup/BackupAlternativeCard';
+import { BackupAlternativeCard } from '../create/BackupAlternativeCard';
 
 interface NoNfcTagsProps {
     onFinishSetup: () => void;
