@@ -1,5 +1,3 @@
-import * as cbor from 'cbor';
-
 import { CARDANO, type MethodPermission } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import {
@@ -17,7 +15,7 @@ import { hasHexPrefix, isHexString } from '../../../utils/formatUtils';
 import { validatePath } from '../../../utils/pathUtils';
 import { addressParametersToProto } from '../cardanoAddressParameters';
 import type { Path } from '../cardanoInputs';
-import { hexStringByteLength } from '../cardanoUtils';
+import { createCose, hexStringByteLength } from '../cardanoUtils';
 
 export type CardanoSignMessageParams = {
     path: Path;
@@ -102,7 +100,7 @@ export default class CardanoSignMessage extends AbstractMethod<
             payload: this.params.payload,
             headers: this._createHeaders(address),
             pubKey: pub_key,
-            ...this._createCose(this.params.payload, signature, address, pub_key),
+            ...createCose(this.params.payload, signature, address, pub_key),
         };
     }
 
@@ -116,33 +114,6 @@ export default class CardanoSignMessage extends AbstractMethod<
                 hashed: false,
                 version: CardanoSignMessage.VERSION,
             },
-        };
-    }
-
-    _createCose(payload: string, signature: string, address: string, pubKey: string) {
-        const coseSignature = cbor.encode([
-            Buffer.from(
-                cbor.encode(
-                    new Map()
-                        .set(1, -8) // alg: EdDSA
-                        .set('address', Buffer.from(address, 'hex')),
-                ),
-            ),
-            new Map().set('hashed', false),
-            Buffer.from(payload, 'hex'),
-            Buffer.from(signature, 'hex'),
-        ]);
-        const coseKey = cbor.encode(
-            new Map()
-                .set(1, 1) // kty: OKP
-                .set(3, -8) // alg: EdDSA
-                .set(-1, 6) // crv: Ed25519
-                .set(-2, Buffer.from(pubKey, 'hex')),
-        );
-
-        return {
-            coseSignature: Buffer.from(coseSignature).toString('hex'),
-            coseKey: Buffer.from(coseKey).toString('hex'),
         };
     }
 
