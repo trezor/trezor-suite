@@ -10,8 +10,6 @@
         {
             "path": "../../packages/connect-common"
         },
-        {
-            "path": "../../packages/utils"
-        }
+        { "path": "../../packages/utils" }
     ]
 }

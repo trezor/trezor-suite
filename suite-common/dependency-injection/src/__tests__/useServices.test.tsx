@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import React, { type PropsWithChildren } from 'react';
 
 import { renderHook } from '@testing-library/react';
