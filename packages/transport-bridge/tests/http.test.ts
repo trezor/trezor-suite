@@ -477,6 +477,8 @@ describe('http', () => {
             }
             expect(response.payload).toMatchObject({
                 version: trezordNode.version,
+                // legacy field used by released Suite clients to choose wire format; see http.ts
+                protocolMessages: true,
             });
             await trezordNode.stop();
         });
