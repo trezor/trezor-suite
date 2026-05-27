@@ -15,6 +15,7 @@ import {
 } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    Banner,
     Box,
     CollapsibleBox,
     Column,
@@ -25,7 +26,7 @@ import {
     Text,
 } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
-import { borders, spacings } from '@trezor/theme';
+import { borders } from '@trezor/theme';
 
 import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { AccountLabeling } from 'src/components/suite/labeling';
@@ -250,7 +251,7 @@ export const ApproveModal = ({
                 </>
             }
             description={
-                <Row margin={{ top: spacings.xs }} gap={spacings.xxs}>
+                <Row margin={{ top: 8 }} gap={4}>
                     <CoinLogo size={20} symbol={account.symbol} />
                     <AccountLabeling
                         account={account}
@@ -262,17 +263,17 @@ export const ApproveModal = ({
             // Disable shadow bottom to make `Fees` component fully visible
             shadowBottom={false}
         >
-            <Column gap={spacings.sm}>
+            <Column gap={12}>
                 <Box
-                    padding={spacings.sm}
+                    padding={12}
                     borderWidth={borders.widths.large}
                     borderRadius={borders.radii.sm}
                 >
-                    <Column gap={spacings.sm}>
+                    <Column gap={12}>
                         <Text>
                             <Translation id="TR_EXCHANGE_APPROVAL_PROVIDER" />
                         </Text>
-                        <Row gap={spacings.xs}>
+                        <Row gap={8}>
                             {provider?.logo && (
                                 <Icon src={invityAPI.getProviderLogoUrl(provider.logo)} alt="" />
                             )}
@@ -292,10 +293,10 @@ export const ApproveModal = ({
 
                 <Box
                     borderWidth={borders.widths.large}
-                    padding={spacings.sm}
+                    padding={12}
                     borderRadius={borders.radii.sm}
                 >
-                    <Column gap={spacings.sm}>
+                    <Column gap={12}>
                         <Text>
                             <Translation id="TR_EXCHANGE_APPROVAL_SET_LIMIT" />
                         </Text>
@@ -308,23 +309,31 @@ export const ApproveModal = ({
                                 <TradingCoinLogo
                                     cryptoId={selectedQuote.send}
                                     size={20}
-                                    margin={{ right: spacings.xxs }}
+                                    margin={{ right: 4 }}
                                 />
                                 <Text>
                                     <Translation id="TR_EXCHANGE_APPROVAL_VALUE_INFINITE" />
                                 </Text>
                             </Row>
                             <Paragraph
-                                margin={{ top: spacings.xxs }}
+                                margin={{ top: 4 }}
                                 typographyStyle="body-sm"
                                 intent="neutral"
                                 priority="secondary"
                             >
-                                <Translation
-                                    id="TR_EXCHANGE_APPROVAL_VALUE_INFINITE_INFO"
-                                    values={translationValues}
-                                />
+                                <Translation id="TR_APPROVAL_VALUE_INFINITE_INFO" />
                             </Paragraph>
+                            <Banner
+                                intent="warning"
+                                icon
+                                margin={{ top: 8 }}
+                                description={
+                                    <Translation
+                                        id="TR_APPROVAL_VALUE_INFINITE_WARNING"
+                                        values={translationValues}
+                                    />
+                                }
+                            />
                         </RadioCard>
                         <RadioCard
                             isActive={approvalType === 'MINIMAL'}
@@ -335,7 +344,7 @@ export const ApproveModal = ({
                                 <TradingCoinLogo
                                     cryptoId={selectedQuote.send}
                                     size={20}
-                                    margin={{ right: spacings.xxs }}
+                                    margin={{ right: 4 }}
                                 />
                                 <Text>
                                     <Translation
@@ -345,15 +354,12 @@ export const ApproveModal = ({
                                 </Text>
                             </Row>
                             <Paragraph
-                                margin={{ top: spacings.xxs }}
+                                margin={{ top: 4 }}
                                 typographyStyle="body-sm"
                                 intent="neutral"
                                 priority="secondary"
                             >
-                                <Translation
-                                    id="TR_EXCHANGE_APPROVAL_VALUE_MINIMAL_INFO"
-                                    values={translationValues}
-                                />
+                                <Translation id="TR_APPROVAL_VALUE_MINIMAL_INFO" />
                             </Paragraph>
                         </RadioCard>
                         {isDebug && dexTx.data ? (
@@ -371,7 +377,7 @@ export const ApproveModal = ({
                 </Box>
 
                 <Box
-                    padding={spacings.sm}
+                    padding={12}
                     borderWidth={borders.widths.large}
                     borderRadius={borders.radii.sm}
                 >
