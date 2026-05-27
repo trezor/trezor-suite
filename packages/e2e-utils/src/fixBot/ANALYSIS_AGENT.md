@@ -100,7 +100,7 @@ instance. Read the full file and any page objects, fixtures, or helpers it uses.
 
 ## Step 6 — Produce the diagnosis report
 
-Write the report to `packages/e2e-utils/src/fixBot/reports/<YYYY-MM-DD>.md`.
+Write the report to `packages/e2e-utils/src/fixBot/reports/report.md`.
 
 Open with:
 
@@ -176,10 +176,7 @@ Tasks with `fix_scope` of `PRODUCT_BUG` or `INFRA` go into `skipped` instead of 
 
 ## Step 8 — Write report.json
 
-Write the following JSON structure to the reports directory alongside `report.md`.
-The file must be named `<YYYY-MM-DD>.json` using today's date (same date as the `.md` file).
-
-The reports directory path is: `packages/e2e-utils/src/fixBot/reports/`
+Write the following JSON structure to `packages/e2e-utils/src/fixBot/reports/report.json`.
 
 ```json
 {

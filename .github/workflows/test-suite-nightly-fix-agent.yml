@@ -11,27 +11,67 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.run_id }}
   cancel-in-progress: false
 
-env:
-  # Hardcoded report for controlled testing. Will be replaced with the output of the analyze job.
-  REPORT_PATH: packages/e2e-utils/src/fixBot/2026-05-20.json
 jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    if: github.repository == 'trezor/trezor-suite'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Cache node_modules
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: node_modules-
+
+      - name: Install dependencies
+        run: yarn workspaces focus @trezor/e2e-utils
+
+      - name: Run analysis agent
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.E2E_CLAUDE_API_KEY }}
+          CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
+        run: yarn workspace @trezor/e2e-utils fix-bot:analyze
+
+      - name: Upload report
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: fix-agent-report
+          path: packages/e2e-utils/src/fixBot/reports/
+          if-no-files-found: error
+
   prepare-matrix:
+    needs: [analyze]
     runs-on: ubuntu-latest
     if: github.repository == 'trezor/trezor-suite'
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+      has-tasks: ${{ steps.set-matrix.outputs.has-tasks }}
     steps:
-      - name: Checkout report
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - name: Download report
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
-          sparse-checkout: ${{ env.REPORT_PATH }}
-          sparse-checkout-cone-mode: false
+          name: fix-agent-report
+          path: report-download/
 
       - name: Build matrix from report
         id: set-matrix
         run: |
-          MATRIX=$(jq -c '[.fix_tasks[].id]' "$REPORT_PATH")
+          REPORT_FILE=report-download/report.json
+          MATRIX=$(jq -c '[.fix_tasks[].id]' "$REPORT_FILE")
+          HAS_TASKS=$(jq -r 'if (.fix_tasks | length) > 0 then "true" else "false" end' "$REPORT_FILE")
           echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+          echo "has-tasks=$HAS_TASKS" >> $GITHUB_OUTPUT
 
   build-desktop:
     if: github.repository == 'trezor/trezor-suite'
@@ -85,7 +125,7 @@ jobs:
   fix:
     needs: [prepare-matrix, build-desktop, build-web]
     runs-on: ubuntu-24.04
-    if: github.repository == 'trezor/trezor-suite'
+    if: github.repository == 'trezor/trezor-suite' && needs.prepare-matrix.outputs.has-tasks == 'true'
     timeout-minutes: 120
     strategy:
       fail-fast: false
@@ -144,6 +184,15 @@ jobs:
       - name: Start web preview server
         run: nohup yarn workspace @trezor/suite-web preview > /tmp/web-preview.log 2>&1 &
 
+      - name: Download report
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: fix-agent-report
+          path: report-download/
+
+      - name: Set REPORT_PATH
+        run: echo "REPORT_PATH=report-download/report.json" >> $GITHUB_ENV
+
       - name: Pull Docker images
         run: docker compose pull --quiet
 
@@ -153,8 +202,8 @@ jobs:
         # This needs to be discussed with Tali
       - name: Configure git identity
         run: |
-          git config --global user.email "nightly-fix-bot@trezor.io"
-          git config --global user.name "Nightly Fix Bot"
+          git config --global user.email "nightly-fix-agent@trezor.io"
+          git config --global user.name "Nightly Fix Agent"
 
       - name: Checkout fix branch
         run: |
