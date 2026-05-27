@@ -2,6 +2,8 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import type { ConfirmKey } from './types';
 
+export const actionPrefix = '@suite/backup';
+
 export interface BackupState {
     userConfirmed: ConfirmKey[];
     inProgress: boolean;

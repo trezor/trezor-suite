@@ -1,5 +1,6 @@
 import { type FunctionComponent } from 'react';
 
+import { CreateWalletBackupModal } from '@suite/backup';
 import { closeModalApp } from '@suite/router';
 
 import { useDispatch } from 'src/hooks/suite';
@@ -14,7 +15,6 @@ import { BridgeRequested } from 'src/views/suite/bridge-requested';
 import { UdevRules } from 'src/views/suite/udev';
 import { Version } from 'src/views/suite/version';
 
-import { CreateWalletBackupModal } from '../ReduxModal/UserContextModal/CreateWalletBackupModal/CreateWalletBackupModal';
 import { MultiShareBackupModal } from '../ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupModal';
 
 // would not work if defined directly in the switch

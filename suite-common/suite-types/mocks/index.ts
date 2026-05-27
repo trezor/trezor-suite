@@ -1,5 +1,6 @@
 export {
     mockConnectDevice,
+    mockDeviceFeatures,
     mockSuiteDevice,
     mockGetFirmwareReleaseConfigInfo,
 } from './mockSuiteDevice';
