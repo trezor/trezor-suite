@@ -13,22 +13,22 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             default: Earn,
         })),
     ),
-    'earn-deposit': lazy(() =>
-        import(/* webpackChunkName: "earn" */ 'src/views/earn/deposit/index').then(
+    'earn-yield-deposit': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/yield/deposit/index').then(
             ({ EarnDeposit }) => ({
                 default: EarnDeposit,
             }),
         ),
     ),
-    'earn-withdraw': lazy(() =>
-        import(/* webpackChunkName: "earn" */ 'src/views/earn/withdraw/index').then(
+    'earn-yield-withdraw': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/yield/withdraw/index').then(
             ({ EarnWithdraw }) => ({
                 default: EarnWithdraw,
             }),
         ),
     ),
-    'earn-claim': lazy(() =>
-        import(/* webpackChunkName: "earn" */ 'src/views/earn/claim/index').then(
+    'earn-yield-claim': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/yield/claim/index').then(
             ({ EarnClaim }) => ({
                 default: EarnClaim,
             }),

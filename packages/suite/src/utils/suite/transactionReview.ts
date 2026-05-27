@@ -76,7 +76,7 @@ export const getTransactionReviewModalActionTranslation = ({
     }
 
     if (
-        (routeName === 'earn-deposit' || routeName === 'earn-withdraw') &&
+        (routeName === 'earn-yield-deposit' || routeName === 'earn-yield-withdraw') &&
         (txSignature === 'approve' || txSignature === 'revoke')
     ) {
         return {
@@ -96,18 +96,18 @@ export const getTransactionReviewModalActionTranslation = ({
         return { id: 'TR_CONFIRMING_TX' };
     }
 
-    if (routeName === 'earn-deposit') {
+    if (routeName === 'earn-yield-deposit') {
         return { id: 'TR_EARN_YIELD_SUPPLY' };
     }
 
-    if (routeName === 'earn-withdraw') {
+    if (routeName === 'earn-yield-withdraw') {
         const yieldType =
             'yieldMetadata' in precomposedForm ? precomposedForm.yieldMetadata?.type : undefined;
 
         return { id: yieldType === 'redeem' ? 'TR_EARN_YIELD_REDEEM' : 'TR_EARN_YIELD_WITHDRAW' };
     }
 
-    if (routeName === 'earn-claim') {
+    if (routeName === 'earn-yield-claim') {
         return { id: source === 'heading' ? 'TR_EARN_CLAIM_REWARDS' : 'TR_EARN_YIELD_CLAIM' };
     }
 

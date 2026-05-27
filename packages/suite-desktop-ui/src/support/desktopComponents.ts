@@ -5,9 +5,9 @@ import { type PageName } from '@suite/router';
 import { ConnectPopup } from 'src/views/connect-popup';
 import { Dashboard } from 'src/views/dashboard';
 import { Earn } from 'src/views/earn';
-import { EarnClaim } from 'src/views/earn/claim';
-import { EarnDeposit } from 'src/views/earn/deposit';
-import { EarnWithdraw } from 'src/views/earn/withdraw';
+import { EarnClaim } from 'src/views/earn/yield/claim';
+import { EarnDeposit } from 'src/views/earn/yield/deposit';
+import { EarnWithdraw } from 'src/views/earn/yield/withdraw';
 import PasswordManagerView from 'src/views/password-manager';
 import { SettingsCoins } from 'src/views/settings/SettingsCoins/SettingsCoins';
 import { SettingsConnectedApps } from 'src/views/settings/SettingsConnectedApps/SettingsConnectedApps';
@@ -40,9 +40,9 @@ import { Transactions } from 'src/views/wallet/transactions/Transactions';
 export const desktopComponents: Record<PageName, ComponentType> = {
     'suite-index': Dashboard,
     'suite-earn': Earn,
-    'earn-deposit': EarnDeposit,
-    'earn-withdraw': EarnWithdraw,
-    'earn-claim': EarnClaim,
+    'earn-yield-deposit': EarnDeposit,
+    'earn-yield-withdraw': EarnWithdraw,
+    'earn-yield-claim': EarnClaim,
     'suite-connect-popup': ConnectPopup,
     'notifications-index': Notification,
 

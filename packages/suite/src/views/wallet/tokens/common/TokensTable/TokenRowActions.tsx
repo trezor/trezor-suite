@@ -147,7 +147,7 @@ const TokenRowBasicActions = ({
 
         dispatch(
             goto({
-                routeName: 'earn-deposit',
+                routeName: 'earn-yield-deposit',
                 params: getEarnRouteParams({
                     account,
                     yieldId,
@@ -176,7 +176,7 @@ const TokenRowBasicActions = ({
 
         dispatch(
             goto({
-                routeName: 'earn-withdraw',
+                routeName: 'earn-yield-withdraw',
                 params: getEarnRouteParams({
                     account,
                     yieldId,

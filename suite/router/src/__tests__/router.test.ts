@@ -44,29 +44,29 @@ describe('router', () => {
             expect(test('unknown-route')).toEqual('/');
             expect(test('wallet-index')).toEqual('/accounts');
             expect(
-                test('earn-deposit', {
+                test('earn-yield-deposit', {
                     symbol: 'eth',
                     accountIndex: 0,
                     accountType: 'normal',
                     yieldId: 'vault-1',
                     contractAddress: '0xabc',
                 }),
-            ).toEqual('/earn/deposit#/eth/0/normal/vault-1/0xabc');
+            ).toEqual('/earn/yield/deposit#/eth/0/normal/vault-1/0xabc');
             expect(
-                test('earn-withdraw', {
+                test('earn-yield-withdraw', {
                     symbol: 'eth',
                     accountIndex: 0,
                     accountType: 'normal',
                     yieldId: 'vault-1',
                 }),
-            ).toEqual('/earn/withdraw#/eth/0/normal/vault-1');
+            ).toEqual('/earn/yield/withdraw#/eth/0/normal/vault-1');
             expect(
-                test('earn-claim', {
+                test('earn-yield-claim', {
                     symbol: 'eth',
                     accountIndex: 0,
                     accountType: 'normal',
                 }),
-            ).toEqual('/earn/claim#/eth/0/normal');
+            ).toEqual('/earn/yield/claim#/eth/0/normal');
             // tests below with intentionally mixed # params
             expect(
                 test('wallet-index', {
@@ -194,11 +194,11 @@ describe('router', () => {
 
             expect(
                 getAppWithParams({
-                    pathname: '/earn/deposit',
+                    pathname: '/earn/yield/deposit',
                     hash: '#/eth/0/normal/vault-1/0xabc',
                 }),
             ).toEqual({
-                app: 'earn',
+                app: 'earn-yield',
                 params: {
                     symbol: 'eth',
                     accountIndex: 0,
@@ -206,16 +206,16 @@ describe('router', () => {
                     yieldId: 'vault-1',
                     contractAddress: '0xabc',
                 },
-                route: getRoute('earn-deposit'),
+                route: getRoute('earn-yield-deposit'),
             });
 
             expect(
                 getAppWithParams({
-                    pathname: '/earn/withdraw',
+                    pathname: '/earn/yield/withdraw',
                     hash: '#/eth/0/normal/vault-1',
                 }),
             ).toEqual({
-                app: 'earn',
+                app: 'earn-yield',
                 params: {
                     symbol: 'eth',
                     accountIndex: 0,
@@ -223,33 +223,33 @@ describe('router', () => {
                     yieldId: 'vault-1',
                     contractAddress: undefined,
                 },
-                route: getRoute('earn-withdraw'),
+                route: getRoute('earn-yield-withdraw'),
             });
 
             expect(
                 getAppWithParams({
-                    pathname: '/earn/deposit',
+                    pathname: '/earn/yield/deposit',
                     hash: '#/eth/0/normal',
                 }),
             ).toEqual({
-                app: 'earn',
+                app: 'earn-yield',
                 params: undefined,
-                route: getRoute('earn-deposit'),
+                route: getRoute('earn-yield-deposit'),
             });
 
             expect(
                 getAppWithParams({
-                    pathname: '/earn/claim',
+                    pathname: '/earn/yield/claim',
                     hash: '#/eth/0/normal',
                 }),
             ).toEqual({
-                app: 'earn',
+                app: 'earn-yield',
                 params: {
                     symbol: 'eth',
                     accountIndex: 0,
                     accountType: 'normal',
                 },
-                route: getRoute('earn-claim'),
+                route: getRoute('earn-yield-claim'),
             });
         });
     });
