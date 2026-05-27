@@ -164,7 +164,13 @@ const SECTIONS = {
         '/accounts/coinmarket/concierge',
         '/accounts/coinmarket/transactions',
     ],
-    earn: ['/earn', '/earn/yield/deposit', '/earn/yield/withdraw', '/earn/yield/claim'],
+    earn: [
+        '/earn',
+        '/earn/yield/deposit',
+        '/earn/yield/withdraw',
+        '/earn/yield/claim',
+        '/earn/staking/tron',
+    ],
 } as const satisfies Record<string, string[]>;
 
 const allPaths = routes
