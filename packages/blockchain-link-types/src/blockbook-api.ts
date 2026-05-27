@@ -24,6 +24,40 @@ export interface TronChainExtraData {
     votes?: TronVoteExtra[];
     note?: string;
 }
+export interface TronVote {
+    /** Super Representative address in base58check format. */
+    address: string;
+    /** Voting power allocated to this SR, in TRX (NOT Sun). 1 vote = 1 TRX of frozen stake. */
+    voteCount: string;
+}
+export interface TronUnstakingBatch {
+    /** Amount being unstaked, in Sun. */
+    amount: string;
+    /** Unix timestamp in seconds. Blockbook divides Tron's millisecond value by 1000. */
+    expireTime: number;
+}
+export interface TronStakingInfo {
+    /** Total frozen TRX, in Sun. Equals stakedBalanceBandwidth + stakedBalanceEnergy. */
+    stakedBalance: string;
+    /** TRX frozen for the ENERGY resource, in Sun. */
+    stakedBalanceEnergy: string;
+    /** TRX frozen for the BANDWIDTH resource, in Sun. */
+    stakedBalanceBandwidth: string;
+    /** Pending unstake batches — the 14-day unfreeze queue introduced by Stake 2.0. */
+    unstakingBatches: TronUnstakingBatch[];
+    /** Total voting power, in TRX (NOT Sun). Equals stakedBalance / 1e6. */
+    totalVotingPower: string;
+    /** Voting power not yet allocated to any SR, in TRX. Equals totalVotingPower - sum(votes[].voteCount). */
+    availableVotingPower: string;
+    /** Current vote allocations to Super Representatives. */
+    votes: TronVote[];
+    /** Unclaimed voting reward, in Sun. */
+    unclaimedReward: string;
+    /** TRX delegated to other accounts for the ENERGY resource, in Sun. */
+    delegatedBalanceEnergy: string;
+    /** TRX delegated to other accounts for the BANDWIDTH resource, in Sun. */
+    delegatedBalanceBandwidth: string;
+}
 export interface TronAccountExtraData {
     availableStakedBandwidth: number;
     totalStakedBandwidth: number;
@@ -31,6 +65,7 @@ export interface TronAccountExtraData {
     totalFreeBandwidth: number;
     availableEnergy: number;
     totalEnergy: number;
+    stakingInfo?: TronStakingInfo;
 }
 export interface APIError {
     /** Human-readable error message describing the issue. */
