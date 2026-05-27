@@ -1,3 +1,4 @@
+import { deviceInitialState } from '@suite-common/device';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
@@ -11,6 +12,7 @@ import { ExchangeAlert } from '../ExchangeAlert';
 describe('ExchangeAlert', () => {
     let form: ExchangeFormType;
     const preloadedState = {
+        device: deviceInitialState,
         featureFlags: {
             ...featureFlagsInitialState,
             [FeatureFlag.IsTradingResidenceCheckEnabled]: false,

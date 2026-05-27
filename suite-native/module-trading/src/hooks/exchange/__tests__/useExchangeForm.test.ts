@@ -5,19 +5,27 @@ import {
     selectTradingProviderMetadata,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
-import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
+    type TestStore,
+    act,
+    renderHookWithStoreProvider,
+    waitFor,
+} from '@suite-native/test-utils-store';
+import {
+    accounts,
+    btc1NormalAccount,
     btcAsset,
     cexdirectFloatingQuote,
+    eth1NormalAccount,
+    eth2legacyAccount,
     exchangeCexdirect,
     exchangeQuotes,
-    getBtcAccount,
     invityDexQuote,
     mercuryoFixedBestQuote,
     mercuryoFixedWorstQuote,
     usdcAsset,
+    usdtAsset,
 } from '@suite-native/trading-fixtures';
 import { exchangeActions } from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
@@ -48,7 +56,10 @@ const createPrefetchDexQuoteApprovalThunkMock = (
     return () => result;
 };
 
-const btc1AccountKey = 'btc-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
+const btc1AccountKey = btc1NormalAccount.key;
+const eth1AccountKey = eth1NormalAccount.key;
+const eth2AccountKey = eth2legacyAccount.key;
+const accountDeviceState = btc1NormalAccount.deviceState;
 
 describe('useExchangeForm', () => {
     let store: TestStore;
@@ -60,7 +71,15 @@ describe('useExchangeForm', () => {
         createTradingLightStore({
             tradeType: 'exchange',
             overrides: {
+                device: {
+                    selectedDevice: {
+                        state: {
+                            staticSessionId: accountDeviceState,
+                        },
+                    },
+                },
                 wallet: {
+                    accounts,
                     settings: {
                         bitcoinAmountUnit,
                     },
@@ -286,16 +305,8 @@ describe('useExchangeForm', () => {
             renderUseExchangeForm();
 
             await act(async () => {
-                store.dispatch(
-                    tradingExchangeActions.setTradingAccountKey(
-                        'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
-                    ),
-                );
-                store.dispatch(
-                    tradingExchangeActions.setReceiveAccountKey(
-                        'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
-                    ),
-                );
+                store.dispatch(tradingExchangeActions.setTradingAccountKey(eth1AccountKey));
+                store.dispatch(tradingExchangeActions.setReceiveAccountKey(eth1AccountKey));
                 store.dispatch(tradingExchangeActions.saveQuotes([dexQuoteWithDexTx]));
                 await Promise.resolve();
             });
@@ -312,16 +323,8 @@ describe('useExchangeForm', () => {
             renderUseExchangeForm();
 
             await act(async () => {
-                store.dispatch(
-                    tradingExchangeActions.setTradingAccountKey(
-                        'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
-                    ),
-                );
-                store.dispatch(
-                    tradingExchangeActions.setReceiveAccountKey(
-                        'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
-                    ),
-                );
+                store.dispatch(tradingExchangeActions.setTradingAccountKey(eth1AccountKey));
+                store.dispatch(tradingExchangeActions.setReceiveAccountKey(eth1AccountKey));
                 store.dispatch(tradingExchangeActions.saveQuotes([dexQuoteWithDexTx]));
                 await Promise.resolve();
                 store.dispatch(
@@ -348,7 +351,7 @@ describe('useExchangeForm', () => {
                 store.dispatch(tradingExchangeActions.setTradingAccountKey(btc1AccountKey));
             });
 
-            expect(result.current.getValues('sendAccount')).toEqual(getBtcAccount(btc1AccountKey));
+            expect(result.current.getValues('sendAccount')).toEqual(btc1NormalAccount);
         });
     });
 
@@ -422,9 +425,93 @@ describe('useExchangeForm', () => {
 
             expect(result.current.getValues('receiveAccount')).toEqual(
                 expect.objectContaining({
-                    account: getBtcAccount(btc1AccountKey),
+                    account: btc1NormalAccount,
                 }),
             );
+        });
+
+        it('should preselect receiveAccount when receiveAsset is selected', async () => {
+            const { result } = renderUseExchangeForm();
+
+            act(() => {
+                result.current.setValue('receiveAsset', btcAsset);
+            });
+
+            await waitFor(() => {
+                expect(result.current.getValues('receiveAccount')).toEqual(
+                    expect.objectContaining({
+                        account: btc1NormalAccount,
+                    }),
+                );
+            });
+        });
+
+        it('should preselect receiveAccount for the new receiveAsset after receiveAsset changes', async () => {
+            const { result } = renderUseExchangeForm();
+
+            act(() => {
+                result.current.setValue('receiveAsset', btcAsset);
+            });
+
+            await waitFor(() => {
+                expect(result.current.getValues('receiveAccount')).toEqual(
+                    expect.objectContaining({
+                        account: btc1NormalAccount,
+                    }),
+                );
+            });
+
+            act(() => {
+                result.current.setValue('receiveAsset', usdcAsset);
+            });
+
+            await waitFor(() => {
+                expect(result.current.getValues('receiveAccount')).toEqual(
+                    expect.objectContaining({
+                        account: eth1NormalAccount,
+                    }),
+                );
+            });
+        });
+
+        it('should keep selected receiveAccount when receiveAsset changes within the same network', async () => {
+            const { result } = renderUseExchangeForm();
+
+            act(() => {
+                result.current.setValue('receiveAsset', usdcAsset);
+            });
+
+            await waitFor(() => {
+                expect(result.current.getValues('receiveAccount')).toEqual(
+                    expect.objectContaining({
+                        account: eth1NormalAccount,
+                    }),
+                );
+            });
+
+            act(() => {
+                store.dispatch(tradingExchangeActions.setReceiveAccountKey(eth2AccountKey));
+            });
+
+            await waitFor(() => {
+                expect(result.current.getValues('receiveAccount')).toEqual(
+                    expect.objectContaining({
+                        account: eth2legacyAccount,
+                    }),
+                );
+            });
+
+            act(() => {
+                result.current.setValue('receiveAsset', usdtAsset);
+            });
+
+            await waitFor(() => {
+                expect(result.current.getValues('receiveAccount')).toEqual(
+                    expect.objectContaining({
+                        account: eth2legacyAccount,
+                    }),
+                );
+            });
         });
     });
 
@@ -454,6 +541,24 @@ describe('useExchangeForm', () => {
             });
 
             expect(dispatchSpy).toHaveBeenCalledWith(exchangeActions.receiveAssetChanged());
+        });
+
+        it('should dispatch receiveTokenChanged action when receiveAsset changes within the same network', () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const { result } = renderUseExchangeForm();
+
+            act(() => {
+                result.current.setValue('receiveAsset', usdcAsset);
+            });
+
+            dispatchSpy.mockClear();
+
+            act(() => {
+                result.current.setValue('receiveAsset', usdtAsset);
+            });
+
+            expect(dispatchSpy).toHaveBeenCalledWith(exchangeActions.receiveTokenChanged());
+            expect(dispatchSpy).not.toHaveBeenCalledWith(exchangeActions.receiveAssetChanged());
         });
     });
 
@@ -539,11 +644,7 @@ describe('useExchangeForm', () => {
             const { result } = renderUseExchangeForm();
 
             act(() => {
-                store.dispatch(
-                    tradingExchangeActions.setTradingAccountKey(
-                        'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
-                    ),
-                );
+                store.dispatch(tradingExchangeActions.setTradingAccountKey(eth1AccountKey));
                 result.current.setValue('sendAsset', usdcAsset);
                 result.current.setValue('sendCryptoAmount', amount);
             });

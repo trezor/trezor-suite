@@ -1,3 +1,4 @@
+import { deviceInitialState } from '@suite-common/device';
 import { Form } from '@suite-native/forms';
 import {
     act,
@@ -15,7 +16,10 @@ import {
 
 describe('BuyReceiveAccountCryptoBalance', () => {
     let buyForm: BuyFormType;
-    const preloadedState = { wallet: getWalletState({ tradeType: 'buy' }) };
+    const preloadedState = {
+        device: deviceInitialState,
+        wallet: getWalletState({ tradeType: 'buy' }),
+    };
 
     const renderBuyForm = () => {
         const { result } = renderHookWithStoreProvider(() => useBuyForm(), {

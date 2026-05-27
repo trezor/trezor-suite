@@ -1,3 +1,4 @@
+import { deviceInitialState } from '@suite-common/device';
 import { type useListDataFilter } from '@suite-common/trading';
 import { Form } from '@suite-native/forms';
 import {
@@ -26,7 +27,10 @@ describe('BuyFiatCurrencyPicker', () => {
     });
 
     const renderFiatCurrencyPicker = () => {
-        const preloadedState = { wallet: { trading: getInitializedTradingState() } };
+        const preloadedState = {
+            device: deviceInitialState,
+            wallet: { trading: getInitializedTradingState() },
+        };
         const { result } = renderHookWithStoreProvider(() => useBuyForm(), {
             preloadedState,
         });

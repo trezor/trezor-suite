@@ -1,5 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { deviceInitialState } from '@suite-common/device';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { Form } from '@suite-native/forms';
@@ -25,6 +26,7 @@ describe('useFocusedValueWatch', () => {
     let store: TestStore;
 
     const reducer = {
+        device: createStaticReducer(deviceInitialState),
         locale: localeReducer,
         wallet: combineReducers({
             settings: createStaticReducer(initialWalletSettingsState),
@@ -34,6 +36,7 @@ describe('useFocusedValueWatch', () => {
     } as const;
 
     const preloadedState = {
+        device: deviceInitialState,
         wallet: {
             trading: getWalletState({ tradeType: 'buy' }).trading,
         },

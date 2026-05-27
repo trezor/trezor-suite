@@ -4,24 +4,28 @@ import { type EnhancedStore } from '@reduxjs/toolkit';
 import type { BuyTrade, CryptoId } from 'invity-api';
 
 import { selectTradingProviderMetadata, tradingBuyActions } from '@suite-common/trading';
-import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { Form, useField } from '@suite-native/forms';
 import {
     type TestStore,
     act,
     renderHook,
     renderHookWithStoreProvider,
+    waitFor,
 } from '@suite-native/test-utils-store';
 import {
+    btc1NormalAccount,
+    btc2legacyAccount,
     btcAsset,
     buyMercuryo,
     buyQuotes,
     cexdirectCreditCardBuyQuote,
-    getBtcAccount,
+    eth1NormalAccount,
+    eth2legacyAccount,
     getInitializedTradingState,
     mercuryoApplePayBuyQuote,
     mercuryoCreditCardBuyQuote,
     usdcAsset,
+    usdtAsset,
 } from '@suite-native/trading-fixtures';
 import { buyActions, selectTradingResidenceCountry } from '@suite-native/trading-state';
 import { type BuyFormType, type TradeableAsset } from '@suite-native/trading-types';
@@ -39,9 +43,11 @@ jest.mock('@trezor/react-utils', () => {
     };
 });
 
-const btc1AccountKey = 'btc-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
-const btc2AccountKey = 'btc-account-2' as AccountKey; // Todo: create properly via `createAccountKey()`
-const btc3AccountKey = 'btc-account-3' as AccountKey; // Todo: create properly via `createAccountKey()`
+const btc1AccountKey = btc1NormalAccount.key;
+const btc2AccountKey = btc2legacyAccount.key;
+const eth1AccountKey = eth1NormalAccount.key;
+const eth2AccountKey = eth2legacyAccount.key;
+const accountDeviceState = btc1NormalAccount.deviceState;
 
 describe('useBuyForm', () => {
     const renderUseTradingBuyForm = (store: TestStore) =>
@@ -53,6 +59,13 @@ describe('useBuyForm', () => {
 
         return createTradingLightStore({
             overrides: {
+                device: {
+                    selectedDevice: {
+                        state: {
+                            staticSessionId: accountDeviceState,
+                        },
+                    },
+                },
                 wallet: {
                     trading: tradingState,
                     settings: {
@@ -61,12 +74,10 @@ describe('useBuyForm', () => {
                             : PROTO.AmountUnit.BITCOIN,
                     },
                     accounts: [
-                        getBtcAccount(btc1AccountKey),
-                        getBtcAccount(btc2AccountKey),
-                        {
-                            ...getBtcAccount(btc3AccountKey),
-                            descriptor: asAccountDescriptor(''),
-                        },
+                        btc1NormalAccount,
+                        btc2legacyAccount,
+                        eth1NormalAccount,
+                        eth2legacyAccount,
                     ],
                 },
             },
@@ -107,6 +118,23 @@ describe('useBuyForm', () => {
         });
     });
 
+    it('should preselect receiveAccount when asset is selected', async () => {
+        const store = getInitializedStore();
+        const { result } = renderUseTradingBuyForm(store);
+
+        act(() => {
+            result.current.setValue('asset', btcAsset);
+        });
+
+        await waitFor(() => {
+            expect(result.current.getValues('receiveAccount')).toEqual(
+                expect.objectContaining({
+                    account: expect.objectContaining({ key: btc1AccountKey }),
+                }),
+            );
+        });
+    });
+
     it('should dispatch tradingBuy/assetChanged on asset change', () => {
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
@@ -116,8 +144,62 @@ describe('useBuyForm', () => {
         act(() => {
             result.current.setValue('asset', usdcAsset);
         });
-        expect(dispatchSpy).toHaveBeenCalledTimes(1);
         expect(dispatchSpy).toHaveBeenCalledWith(buyActions.assetChanged());
+    });
+
+    it('should dispatch tradingBuy/assetTokenChanged when asset changes within the same network', () => {
+        const store = getInitializedStore();
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const { result } = renderUseTradingBuyForm(store);
+
+        act(() => {
+            result.current.setValue('asset', usdcAsset);
+        });
+
+        dispatchSpy.mockClear();
+
+        act(() => {
+            result.current.setValue('asset', usdtAsset);
+        });
+
+        expect(dispatchSpy).toHaveBeenCalledWith(buyActions.assetTokenChanged());
+        expect(dispatchSpy).not.toHaveBeenCalledWith(buyActions.assetChanged());
+    });
+
+    it('should keep selected receiveAccount when asset changes within the same network', async () => {
+        const store = getInitializedStore();
+        const { result } = renderUseTradingBuyForm(store);
+
+        act(() => {
+            result.current.setValue('asset', usdcAsset);
+        });
+
+        await waitFor(() => {
+            expect(result.current.getValues('receiveAccount')).toEqual({
+                account: expect.objectContaining({ key: eth1AccountKey }),
+            });
+        });
+
+        act(() => {
+            store.dispatch(tradingBuyActions.setTradingAccountKey(eth2AccountKey));
+            store.dispatch(tradingBuyActions.setReceiveAccountKey(eth2AccountKey));
+        });
+
+        await waitFor(() => {
+            expect(result.current.getValues('receiveAccount')).toEqual({
+                account: expect.objectContaining({ key: eth2AccountKey }),
+            });
+        });
+
+        act(() => {
+            result.current.setValue('asset', usdtAsset);
+        });
+
+        await waitFor(() => {
+            expect(result.current.getValues('receiveAccount')).toEqual({
+                account: expect.objectContaining({ key: eth2AccountKey }),
+            });
+        });
     });
 
     it('should not clear selected account when asset is set to undefined', () => {

@@ -1,3 +1,4 @@
+import { deviceInitialState } from '@suite-common/device';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import {
@@ -17,6 +18,7 @@ import {
 describe('ExchangeReceiveAccountCryptoBalance', () => {
     let exchangeForm: ExchangeFormType;
     const preloadedState = {
+        device: deviceInitialState,
         featureFlags: {
             ...featureFlagsInitialState,
             [FeatureFlag.IsTradingResidenceCheckEnabled]: false,

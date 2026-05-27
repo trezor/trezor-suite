@@ -3,7 +3,11 @@ import type { CryptoId } from 'invity-api';
 import { type TradingExchangeState } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { tradingInitialState } from '@suite-native/trading-consts';
-import { exchangeQuotes, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
+import {
+    eth1NormalAccount,
+    exchangeQuotes,
+    mercuryoFixedWorstQuote,
+} from '@suite-native/trading-fixtures';
 
 import { exchangeActions, exchangeReducer } from '../exchangeSlice';
 
@@ -114,6 +118,34 @@ describe('exchangeSlice', () => {
             expect(state.quotesRequest).toBeUndefined();
             expect(state.receiveAccountKey).toBeUndefined();
             expect(state.receiveAddress).toBeUndefined();
+        });
+    });
+
+    describe('receiveTokenChanged', () => {
+        it('should clear amount limits and quotes request data without clearing receive account info', () => {
+            const receiveAccountKey = eth1NormalAccount.key;
+            const receiveAddress = 'bc1qxyz';
+            const prevState: TradingExchangeState = {
+                ...tradingInitialState.exchange,
+                amountLimits: {
+                    currency: 'BTC',
+                    minCrypto: '0.001',
+                    maxCrypto: '10',
+                },
+                quotesRequest: {
+                    send: 'bitcoin' as CryptoId,
+                    receive: 'ethereum' as CryptoId,
+                },
+                receiveAccountKey,
+                receiveAddress,
+            };
+
+            const state = exchangeReducer(prevState, exchangeActions.receiveTokenChanged());
+
+            expect(state.amountLimits).toBeUndefined();
+            expect(state.quotesRequest).toBeUndefined();
+            expect(state.receiveAccountKey).toBe(receiveAccountKey);
+            expect(state.receiveAddress).toBe(receiveAddress);
         });
     });
 });
