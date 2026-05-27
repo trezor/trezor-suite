@@ -100,7 +100,7 @@ export const YieldDepositScreen = () => {
     const isActionSubmitting = session?.action.isSubmitting ?? false;
     const isApprovedAmountUnlimited = isYieldApprovalAllowanceUnlimited({ session, token });
     const isAllowanceLoaded = allowanceStatus === 'loaded';
-    const isDepositSessionReady = session?.step === 'action' && !!depositAmount;
+    const isDepositSessionReady = session?.step === 'action';
     const shouldRefreshAllowance = resolutionStatus === 'resolved' && allowanceStatus === 'idle';
     const depositForm = useYieldDepositForm({
         defaultAmount: depositAmount,
@@ -113,6 +113,7 @@ export const YieldDepositScreen = () => {
     } = form;
 
     const isApprovalIncreaseRequired =
+        !!amountValue &&
         isAllowanceLoaded &&
         !isYieldApprovalAllowanceEnough({
             amount: amountValue,
@@ -197,9 +198,15 @@ export const YieldDepositScreen = () => {
             return;
         }
 
-        dispatch(stablecoinYieldActions.enterModifyMode({ flowType: 'deposit', flowKey }));
-        navigation.goBack();
-    }, [dispatch, flowKey, isDepositPending, navigation]);
+        dispatch(
+            stablecoinYieldActions.enterModifyMode({
+                flowType: 'deposit',
+                flowKey,
+                amount: amountValue || undefined,
+            }),
+        );
+        navigation.navigate(YieldStackRoutes.YieldDepositApproval, route.params);
+    }, [amountValue, dispatch, flowKey, isDepositPending, navigation, route.params]);
     const handleActionReady = useCallback(
         (preparedAction: PreparedYieldDepositAction) => {
             setSimulationPreparedAction(preparedAction);
@@ -288,7 +295,6 @@ export const YieldDepositScreen = () => {
             header={
                 <YieldDepositFlowScreenHeader
                     account={account}
-                    closeAction={handleEditApproval}
                     onInfoPress={openInfoBottomSheet}
                     tokenContract={route.params.tokenContract}
                     vaultName={vault.metadata.name}
@@ -332,7 +338,7 @@ export const YieldDepositScreen = () => {
                         </Form>
                     </Box>
 
-                    {!isApprovalIncreaseRequired && (
+                    {isValid && !!amountValue && !isApprovalIncreaseRequired && (
                         <Box paddingHorizontal="sp16">
                             <FeeSummaryCard
                                 fee={depositFee.feePreview?.fee ?? null}

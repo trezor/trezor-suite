@@ -308,13 +308,17 @@ export const stablecoinYieldSlice = createSlice({
                 session.approval.isInitializingAllowance = false;
             });
         },
-        enterModifyMode(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
+        enterModifyMode(
+            state,
+            action: PayloadAction<StablecoinYieldSessionActionPayload & { amount?: string }>,
+        ) {
             withSession(state, action.payload, session => {
                 session.approval.isModifyMode = true;
                 session.approval.modalState = null;
                 session.action.pendingTransaction = null;
                 session.action.review = null;
                 session.error = null;
+                session.action.amount = action.payload.amount ?? session.action.amount;
                 session.step = 'approve';
             });
         },
