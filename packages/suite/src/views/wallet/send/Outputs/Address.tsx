@@ -112,15 +112,8 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
     const [isExternalAddressCheckWarningDismissed, setIsExternalAddressCheckWarningDismissed] =
         useState(false);
-    const isExternalAddressCheckEnabled = [
-        'eth',
-        'tsep',
-        'thod',
-        'sol',
-        'dsol',
-        'trx',
-        'ttrx',
-    ].includes(symbol);
+
+    const isExternalAddressCheckEnabled = ['ethereum', 'solana', 'tron'].includes(networkType);
 
     useEffect(() => {
         setIsExternalAddressCheckWarningDismissed(false);

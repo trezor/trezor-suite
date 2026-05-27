@@ -61,7 +61,8 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
 
         const shouldCheckContractAddress =
             (wasTokenAlertDisplayed || !shouldShowTokenAlert) &&
-            ['eth', 'tsep', 'thod', 'trx', 'ttrx'].includes(symbol) &&
+            // Solana uses different address validation logic than Ethereum and Tron
+            (networkType === 'ethereum' || networkType === 'tron') &&
             !wasContractAlertDisplayed;
 
         if (shouldShowTokenAlert) {
