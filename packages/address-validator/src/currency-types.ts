@@ -2,6 +2,13 @@ import type { addressType } from './crypto/utils';
 
 type AddressType = (typeof addressType)[keyof typeof addressType];
 
+export type HashFunction =
+    | 'sha256'
+    | 'blake256'
+    | 'blake256keccak256'
+    | 'keccak256'
+    | 'groestl512x2';
+
 export type NetworkEnvironment =
     | 'prod'
     | 'testnet'
@@ -33,6 +40,6 @@ export interface Currency {
     iAddressTypes?: Record<string, (string | number)[]>;
     subAddressTypes?: Record<string, (string | number)[]>;
     expectedLength?: number;
-    hashFunction?: string;
+    hashFunction?: HashFunction;
     regex?: RegExp;
 }

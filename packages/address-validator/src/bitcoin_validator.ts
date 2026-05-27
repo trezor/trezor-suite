@@ -2,7 +2,7 @@ import * as base58 from './crypto/base58';
 import * as bech32 from './crypto/bech32';
 import * as cryptoUtils from './crypto/utils';
 import { addressType } from './crypto/utils';
-import type { Currency, NetworkEnvironment } from './currency-types';
+import type { Currency, HashFunction, NetworkEnvironment } from './currency-types';
 
 const DEFAULT_NETWORK: NetworkEnvironment = 'prod';
 
@@ -15,7 +15,7 @@ function getDecoded(address: string): number[] | null {
     }
 }
 
-function getChecksum(hashFunction: string | undefined, payload: string): string {
+function getChecksum(hashFunction: HashFunction, payload: string): string {
     // Each currency may implement different hashing algorithm
     switch (hashFunction) {
         // blake then keccak hash chain
@@ -31,7 +31,6 @@ function getChecksum(hashFunction: string | undefined, payload: string): string 
         case 'groestl512x2':
             return cryptoUtils.groestl512x2(payload);
         case 'sha256':
-        default:
             return cryptoUtils.sha256Checksum(payload);
     }
 }
@@ -40,7 +39,7 @@ function getAddressTypeHex(address: string, currency: any): string | null {
     currency = currency || {};
     // should be 25 bytes per btc address spec and 26 decred
     const expectedLength = currency.expectedLength || 25;
-    const hashFunction = currency.hashFunction || 'sha256';
+    const hashFunction: HashFunction = currency.hashFunction || 'sha256';
     const decoded = getDecoded(address);
     if (decoded) {
         const { length } = decoded;
