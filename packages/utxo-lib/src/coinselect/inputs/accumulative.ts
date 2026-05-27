@@ -1,11 +1,11 @@
 import { type CoinSelectAlgorithm, type CoinSelectInput, type CoinSelectResult } from '../../types';
 import {
     ZERO,
-    bignumberOrNaN,
     finalize,
     getFee,
     getFeeForBytes,
     inputBytes,
+    parseBigInt,
     sumOrNaN,
 } from '../coinselectUtils';
 
@@ -27,7 +27,7 @@ export const accumulative: CoinSelectAlgorithm = (
     utxos0.forEach(u => {
         if (u.required) {
             requiredUtxos.push(u);
-            const utxoValue = bignumberOrNaN(u.value, true); // use forgiving (0)
+            const utxoValue = parseBigInt(u.value, true); // use forgiving (0)
             inAccum = inAccum + utxoValue;
             inputs.push(u);
         } else {
@@ -48,7 +48,7 @@ export const accumulative: CoinSelectAlgorithm = (
         const utxo = utxos[i];
         const utxoBytes = inputBytes(utxo);
         const utxoFee = getFeeForBytes(feeRate, utxoBytes);
-        const utxoValue = bignumberOrNaN(utxo.value);
+        const utxoValue = parseBigInt(utxo.value);
 
         // skip detrimental input
         if (utxoValue === undefined || utxoValue < BigInt(utxoFee)) {

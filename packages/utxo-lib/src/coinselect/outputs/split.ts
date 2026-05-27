@@ -7,11 +7,11 @@ import {
 import {
     MINIMAL_COINBASE_CONFIRMATIONS,
     ZERO,
-    bignumberOrNaN,
     filterCoinbase,
     finalize,
     getDustAmount,
     getFee,
+    parseBigInt,
     sumOrNaN,
 } from '../coinselectUtils';
 
@@ -36,7 +36,7 @@ export function split(
     if (remaining < ZERO) return { fee };
 
     const unspecified = outputs.reduce(
-        (a, x) => a + (bignumberOrNaN(x.value) === undefined ? 1 : 0),
+        (a, x) => a + (parseBigInt(x.value) === undefined ? 1 : 0),
         0,
     );
 

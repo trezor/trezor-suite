@@ -2,12 +2,12 @@ import { type CoinSelectAlgorithm, type CoinSelectInput, type CoinSelectResult }
 import {
     OUTPUT_SCRIPT_LENGTH,
     ZERO,
-    bignumberOrNaN,
     finalize,
     getDustAmount,
     getFeeForBytes,
     inputBytes,
     outputBytes,
+    parseBigInt,
     sumOrNaN,
     transactionBytes,
 } from '../coinselectUtils';
@@ -16,7 +16,7 @@ const MAX_TRIES = 1000000;
 
 function calculateEffectiveValues(utxos: CoinSelectInput[], feeRate: number) {
     return utxos.map(utxo => {
-        const value = bignumberOrNaN(utxo.value);
+        const value = parseBigInt(utxo.value);
         if (value === undefined) {
             return {
                 utxo,
