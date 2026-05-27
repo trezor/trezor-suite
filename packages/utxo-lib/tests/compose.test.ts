@@ -2,9 +2,11 @@ import { getRandomInt } from '@trezor/utils';
 
 import { verifyTxBytes } from './compose.utils';
 import { composeTx } from '../src/compose';
-import * as NETWORKS from '../src/networks';
 import { composeTxFixture } from './__fixtures__/compose';
 import { fixturesCrossCheck } from './__fixtures__/compose.crosscheck';
+import { getErrorResult } from '../src/compose/result';
+import { bip69SortingStrategy } from '../src/compose/sorting/bip69SortingStrategy';
+import * as NETWORKS from '../src/networks';
 
 jest.mock('@trezor/utils', () => ({
     ...jest.requireActual('@trezor/utils'),
@@ -40,6 +42,149 @@ describe(composeTx.name, () => {
                 verifyTxBytes(tx, f.request.txType, network);
             }
         });
+    });
+});
+
+describe('composeTx request validation errors', () => {
+    it('returns MISSING-UTXOS when utxos array is empty', () => {
+        const tx = composeTx({
+            utxos: [],
+            outputs: [{ type: 'send-max-noaddress' }],
+            feeRate: 10,
+            network: NETWORKS.bitcoin,
+            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            dustThreshold: 546,
+            sortingStrategy: 'bip69',
+        });
+
+        expect(tx).toEqual({ type: 'error', error: 'MISSING-UTXOS' });
+    });
+
+    it('returns INCORRECT-OUTPUT when changeAddress.address is not a valid Bitcoin address', () => {
+        const tx = composeTx({
+            utxos: [
+                {
+                    vout: 0,
+                    txid: '0000000000000000000000000000000000000000000000000000000000000000',
+                    coinbase: false,
+                    own: true,
+                    confirmations: 100,
+                    amount: '50000',
+                },
+            ],
+            outputs: [{ type: 'send-max-noaddress' }],
+            feeRate: 10,
+            network: NETWORKS.bitcoin,
+            changeAddress: { address: 'not-a-valid-address' },
+            dustThreshold: 546,
+            sortingStrategy: 'bip69',
+        });
+
+        expect(tx).toEqual({
+            type: 'error',
+            error: 'INCORRECT-OUTPUT',
+            message: 'not-a-valid-address has no matching Script',
+        });
+    });
+
+    it('returns INCORRECT-OUTPUT when a payment output has an unparseable amount', () => {
+        const tx = composeTx({
+            utxos: [
+                {
+                    vout: 0,
+                    txid: '0000000000000000000000000000000000000000000000000000000000000000',
+                    coinbase: false,
+                    own: true,
+                    confirmations: 100,
+                    amount: '50000',
+                },
+            ],
+            outputs: [
+                {
+                    type: 'payment',
+                    address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+                    amount: 'not-a-number',
+                },
+            ],
+            feeRate: 10,
+            network: NETWORKS.bitcoin,
+            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            dustThreshold: 546,
+            sortingStrategy: 'bip69',
+        });
+
+        expect(tx).toEqual({
+            type: 'error',
+            error: 'INCORRECT-OUTPUT',
+            message: 'Invalid amount at index 0',
+        });
+    });
+
+    it('returns the validateAndParseRequest error result directly (does not enter coinselect)', () => {
+        const tx = composeTx({
+            utxos: [
+                {
+                    vout: 0,
+                    txid: '0000000000000000000000000000000000000000000000000000000000000000',
+                    coinbase: false,
+                    own: true,
+                    confirmations: 100,
+                    amount: '50000',
+                },
+            ],
+            outputs: [{ type: 'send-max-noaddress' }],
+            feeRate: 0,
+            network: NETWORKS.bitcoin,
+            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            dustThreshold: 546,
+            sortingStrategy: 'bip69',
+        });
+
+        expect(tx).toEqual({ type: 'error', error: 'INCORRECT-FEE-RATE' });
+    });
+});
+
+describe('getErrorResult', () => {
+    it('maps a thrown Error whose message matches a COMPOSE_ERROR_TYPES entry to the typed error object (no message field)', () => {
+        expect(getErrorResult(new Error('NOT-ENOUGH-FUNDS'))).toEqual({
+            type: 'error',
+            error: 'NOT-ENOUGH-FUNDS',
+        });
+    });
+
+    it('stringifies a non-Error thrown value and routes unknown messages to the COINSELECT branch with a message field', () => {
+        expect(getErrorResult('unexpected failure')).toEqual({
+            type: 'error',
+            error: 'COINSELECT',
+            message: 'unexpected failure',
+        });
+    });
+});
+
+describe('bip69SortingStrategy', () => {
+    it('falls back to script.length comparison when at least one output script is not a Buffer', () => {
+        const value = 1000n;
+        const result = {
+            inputs: [],
+            outputs: [
+                { value, script: Buffer.alloc(34, 0xff) }, // idx 0 — Buffer, length 34
+                { value, script: { length: 22 } }, // idx 1 — non-Buffer, length 22 (shorter)
+            ],
+            fee: 0,
+        };
+        const request = {
+            outputs: [{ type: 'payment', address: 'addr-a', amount: '1000' }],
+            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+        };
+
+        const composed = bip69SortingStrategy({
+            result: result as any,
+            request: request as any,
+            convertedInputs: [],
+        });
+
+        // idx 1 (non-Buffer, length 22) sorts before idx 0 (Buffer, length 34) by length.
+        expect(composed.outputsPermutation).toEqual([1, 0]);
     });
 });
 
