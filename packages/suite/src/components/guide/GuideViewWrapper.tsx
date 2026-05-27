@@ -3,10 +3,11 @@ import { type ReactNode, type UIEventHandler, createContext, useCallback, useSta
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
-import { type Elevation, mapElevationToBackground } from '@trezor/theme';
+import { type Elevation, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
 const Wrapper = styled.div<{ $elevation: Elevation }>`
     background: ${mapElevationToBackground};
+    border-left: 1px solid ${mapElevationToBorder};
     display: flex;
     height: 100%;
     flex-direction: column;
