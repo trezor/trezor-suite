@@ -20,12 +20,28 @@ import {
 import { EARN_MODULE_PREFIX } from './constants';
 import { type YieldApprovalLimitType } from './types';
 import {
-    buildYieldApprovalFormState,
+    buildYieldAllowanceFormState,
+    getYieldAllowanceFeeState,
     getYieldApprovalAllowanceAmount,
-    getYieldApprovalFeeState,
 } from './yieldApprovalUtils';
 
-export const getYieldApprovalFormDraftKey = (flowKey: string) => `yield-approval/${flowKey}`;
+export type YieldAllowanceFormDraftTransactionType = 'approve' | 'revoke';
+
+const yieldAllowanceFormDraftPrefixes: Record<YieldAllowanceFormDraftTransactionType, string> = {
+    approve: 'yield-approval',
+    revoke: 'yield-revoke',
+};
+
+export const getYieldAllowanceFormDraftKey = (
+    flowKey: string,
+    transactionType: YieldAllowanceFormDraftTransactionType,
+) => `${yieldAllowanceFormDraftPrefixes[transactionType]}/${flowKey}`;
+
+export const getYieldApprovalFormDraftKey = (flowKey: string) =>
+    getYieldAllowanceFormDraftKey(flowKey, 'approve');
+
+export const getYieldRevokeFormDraftKey = (flowKey: string) =>
+    getYieldAllowanceFormDraftKey(flowKey, 'revoke');
 
 export const prepareYieldApprovalReviewTransactionThunk = createThunk(
     `${EARN_MODULE_PREFIX}/prepareYieldApprovalReviewTransactionThunk`,
@@ -57,7 +73,7 @@ export const prepareYieldApprovalReviewTransactionThunk = createThunk(
             return rejectWithValue('Approval review transaction is not ready.');
         }
 
-        const { selectedFee } = getYieldApprovalFeeState(formDraft);
+        const { selectedFee } = getYieldAllowanceFeeState(formDraft);
         const selectedFeeTransaction = selectFeeLevels(getState())[selectedFee];
 
         if (!isFinalPrecomposedTransaction(selectedFeeTransaction)) {
@@ -75,7 +91,7 @@ export const prepareYieldApprovalReviewTransactionThunk = createThunk(
             amount: allowanceAmount,
             spender: approval.modalState.spender,
         });
-        const formState = buildYieldApprovalFormState({
+        const formState = buildYieldAllowanceFormState({
             approvalModalState: approval.modalState,
             data,
             precomposedTransaction: selectedFeeTransaction,
@@ -92,8 +108,8 @@ export const prepareYieldApprovalReviewTransactionThunk = createThunk(
     },
 );
 
-export const updateYieldApprovalSelectedFeeLevelThunk = createThunk(
-    `${EARN_MODULE_PREFIX}/updateYieldApprovalSelectedFeeLevelThunk`,
+export const updateYieldAllowanceSelectedFeeLevelThunk = createThunk(
+    `${EARN_MODULE_PREFIX}/updateYieldAllowanceSelectedFeeLevelThunk`,
     (
         {
             feeLevelLabel,
