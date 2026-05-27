@@ -79,6 +79,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
                     key: '1',
                     onClick: handleNavigateToBuyPage,
                     iconLeft: 'currencyCircleDollar',
+                    size: 'medium',
                     children: isTokensNetwork ? (
                         <Translation id="TR_BUY" />
                     ) : (
@@ -93,6 +94,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
                     key: '2',
                     onClick: handleNavigateToReceivePage,
                     iconLeft: 'arrowDown',
+                    size: 'medium',
                     children: isTokensNetwork ? (
                         <Translation id="TR_RECEIVE" />
                     ) : (

@@ -53,7 +53,7 @@ export const EmptyWallet = () => {
             <Paragraph
                 intent="neutral"
                 priority="secondary"
-                typographyStyle="body-sm"
+                typographyStyle="body-md"
                 maxWidth={500}
                 align="center"
             >
@@ -81,7 +81,7 @@ export const EmptyWallet = () => {
                 <Button
                     intent="brand"
                     iconLeft="currencyCircleDollar"
-                    size="large"
+                    size="medium"
                     onClick={handleBuy}
                     data-testid="@dashboard/empty-wallet/buy"
                 >
@@ -90,7 +90,7 @@ export const EmptyWallet = () => {
                 <Button
                     intent="brand"
                     iconLeft="arrowDown"
-                    size="large"
+                    size="medium"
                     onClick={handleReceive}
                     data-testid="@dashboard/empty-wallet/receive"
                 >

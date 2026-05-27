@@ -22,13 +22,9 @@ export const AccountItemSkeleton = () => {
     }
 
     return (
-        <Row
-            gap={spacings.md}
-            margin={{ left: spacings.xs }}
-            data-testid="@account-menu/account-item-skeleton"
-        >
-            <SkeletonCircle size="24px" />
-            <Column alignItems="flex-start" gap={spacings.xs}>
+        <Row gap={spacings.md} margin={8} data-testid="@account-menu/account-item-skeleton">
+            <SkeletonCircle size="24px" animate={shouldAnimate} />
+            <Column alignItems="flex-start" gap={2}>
                 <SkeletonRectangle width="140px" animate={shouldAnimate} />
                 <SkeletonRectangle animate={shouldAnimate} />
             </Column>
