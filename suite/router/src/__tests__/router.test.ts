@@ -251,6 +251,21 @@ describe('router', () => {
                 },
                 route: getRoute('earn-yield-claim'),
             });
+
+            expect(
+                getAppWithParams({
+                    pathname: '/earn/staking/tron',
+                    hash: '#/trx/0/normal',
+                }),
+            ).toEqual({
+                app: 'earn-staking',
+                params: {
+                    symbol: 'trx',
+                    accountIndex: 0,
+                    accountType: 'normal',
+                },
+                route: getRoute('earn-staking-tron'),
+            });
         });
     });
 });

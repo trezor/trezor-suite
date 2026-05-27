@@ -57,6 +57,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                                   'earn-yield-deposit',
                                   'earn-yield-withdraw',
                                   'earn-yield-claim',
+                                  'earn-staking-tron',
                               ],
                           } as NavigationItemProps,
                       ]

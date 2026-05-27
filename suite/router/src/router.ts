@@ -129,6 +129,16 @@ const validateEarnYieldParams = (route: Route, hash: HashString) => {
     });
 };
 
+const validateEarnStakingParams = (hash: HashString) => {
+    const [symbol, index, rawAccountType] = parseHash(hash);
+
+    return validateAccountRouteParams({
+        symbol,
+        index,
+        rawAccountType,
+    });
+};
+
 const parseParamValue = <T>(value: string, defaultValue?: T) => {
     if (value === 'true') return true;
     if (value === 'false') return false;
@@ -185,6 +195,8 @@ const getAppParams = (route: Route, hash: HashString = '') => {
             return undefined;
         case 'earn-yield':
             return validateEarnYieldParams(route, hash);
+        case 'earn-staking':
+            return validateEarnStakingParams(hash);
         case 'wallet':
             return validateWalletParams(hash);
         default:
