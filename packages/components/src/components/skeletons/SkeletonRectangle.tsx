@@ -3,23 +3,19 @@ import styled, { css } from 'styled-components';
 import { type Elevation, borders, mapElevationToBackground } from '@trezor/theme';
 
 import { type SkeletonBaseProps } from './types';
-import { getValue, shimmerEffect } from './utils';
+import { type AllowedFrameProps, allowedSkeletonFrameProps, shimmerEffect } from './utils';
+import { pickAndPrepareFrameProps, withFrameProps } from '../../utils/frameProps';
 import { type TransientProps } from '../../utils/transientProps';
 import { useElevation } from '../ElevationContext/ElevationContext';
 
-export type SkeletonRectangleProps = SkeletonBaseProps & {
-    width?: string | number;
-    height?: string | number;
-    borderRadius?: string | number;
-};
+export type SkeletonRectangleProps = SkeletonBaseProps & AllowedFrameProps;
 
 const StyledSkeletonRectangle = styled.div<
-    TransientProps<SkeletonRectangleProps> & { $elevation: Elevation }
+    TransientProps<SkeletonRectangleProps> & {
+        $elevation: Elevation;
+    } & TransientProps<AllowedFrameProps>
 >`
-    width: ${({ $width }) => getValue($width) ?? '80px'};
-    height: ${({ $height }) => getValue($height) ?? '20px'};
     background: ${({ $background, ...props }) => $background ?? mapElevationToBackground(props)};
-    border-radius: ${({ $borderRadius }) => getValue($borderRadius) ?? borders.radii.xs};
     background-size: 200%;
 
     ${props =>
@@ -27,19 +23,29 @@ const StyledSkeletonRectangle = styled.div<
         css<{ $elevation: Elevation }>`
             ${shimmerEffect}
         `}
+
+    ${withFrameProps}
 `;
 
-export const SkeletonRectangle = (props: SkeletonRectangleProps) => {
+export const SkeletonRectangle = ({ animate, background, ...rest }: SkeletonRectangleProps) => {
     const { elevation } = useElevation();
+
+    const frameProps = pickAndPrepareFrameProps(
+        {
+            width: 80,
+            height: 20,
+            borderRadius: borders.radii.xs,
+            ...rest,
+        },
+        allowedSkeletonFrameProps,
+    );
 
     return (
         <StyledSkeletonRectangle
             $elevation={elevation}
-            $borderRadius={props.borderRadius}
-            $width={props.width}
-            $height={props.height}
-            $animate={props.animate}
-            $background={props.background}
+            $animate={animate}
+            $background={background}
+            {...frameProps}
         />
     );
 };

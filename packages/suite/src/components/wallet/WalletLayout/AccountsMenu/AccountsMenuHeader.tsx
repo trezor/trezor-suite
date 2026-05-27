@@ -55,7 +55,12 @@ export const AccountsMenuHeader = () => {
                 <ExpandedSidebarOnly>
                     <Row gap={12} padding={{ right: !isEmpty ? 10 : 0 }}>
                         {isDiscoveryRunning ? (
-                            <SkeletonRectangle animate width="100%" height={20} />
+                            <SkeletonRectangle
+                                animate
+                                width="100%"
+                                height={20}
+                                margin={{ left: 4 }}
+                            />
                         ) : (
                             <>
                                 {!isEmpty && <AccountSearchBox />}

@@ -32,8 +32,8 @@ export const AssetRowSkeleton = ({ isAnimating }: AssetRowSkeletonProps) => {
             </Table.Cell>
             <Table.Cell colSpan={2}>
                 <Row gap={16}>
-                    <SkeletonRectangle animate={animate} width={58} height={38} borderRadius={19} />
-                    <SkeletonRectangle animate={animate} width={38} height={38} borderRadius={25} />
+                    <SkeletonRectangle animate={animate} width={58} height={38} borderRadius={20} />
+                    <SkeletonRectangle animate={animate} width={38} height={38} borderRadius={24} />
                 </Row>
             </Table.Cell>
         </Table.Row>
