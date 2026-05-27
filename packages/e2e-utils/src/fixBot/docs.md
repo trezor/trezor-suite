@@ -33,7 +33,7 @@ After completing its work, the fix agent writes two files to the **worktree root
     ```json
     {
         "task_id": "fix-001",
-        "result": "pass | partial | fail",
+        "result": "pass | partial | fail | not_duplicated",
         "iterations": 2,
         "passed": ["web/T3W1/suite/e2e/tests/wallet/send.ts"],
         "failed": [],
@@ -122,7 +122,7 @@ One Claude Code invocation per fix task. Receives a single fix task entry from `
 ### Loop
 
 ```
-Setup environment (dev server / build electron app / emulator)
+Setup environment (web preview server (pre-built static) / build electron app / emulator)
 Pre-flight run: playwright test <spec> for each validation
   → confirms failure is real
   → produces fresh local trace + screenshots
@@ -152,11 +152,12 @@ Every iteration commits locally. First iteration is a regular commit, subsequent
 - First commit: generic message, e.g. `test(e2e): fix send-button locator` — save its SHA
 - Subsequent iterations: `git commit --fixup <SHA of the iteration-1 commit>` (no custom message, auto-generated)
 
-| Result    | Action                                           |
-| --------- | ------------------------------------------------ |
-| All pass  | Push branch, create PR ✅                        |
-| Some pass | Push branch, create PR ⚠️                        |
-| Zero pass | Written summary in job log — no branch pushed ❌ |
+| Result         | Action                                           |
+| -------------- | ------------------------------------------------ |
+| All pass       | Push branch, create PR ✅                        |
+| Some pass      | Push branch, create PR ⚠️                        |
+| Zero pass      | Written summary in job log — no branch pushed ❌ |
+| Not duplicated | Written summary in job log — no branch pushed 🔵 |
 
 ### Git strategy
 

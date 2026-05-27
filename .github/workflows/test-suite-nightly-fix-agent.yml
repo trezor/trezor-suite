@@ -3,14 +3,185 @@ name: "[Test] Nightly Suite Fix Agent"
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pull-requests: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.run_id }}
   cancel-in-progress: false
 
+env:
+  # Hardcoded report for controlled testing. Will be replaced with the output of the analyze job.
+  REPORT_PATH: packages/e2e-utils/src/fixBot/2026-05-20.json
 jobs:
-  hello-world:
+  prepare-matrix:
     runs-on: ubuntu-latest
     if: github.repository == 'trezor/trezor-suite'
-    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - run: echo "Hello, fix bot!"
+      - name: Checkout report
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          sparse-checkout: ${{ env.REPORT_PATH }}
+          sparse-checkout-cone-mode: false
+
+      - name: Build matrix from report
+        id: set-matrix
+        run: |
+          MATRIX=$(jq -c '[.fix_tasks[].id]' "$REPORT_PATH")
+          echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+
+  build-desktop:
+    if: github.repository == 'trezor/trezor-suite'
+    uses: ./.github/workflows/build-suite-desktop-e2e.yml
+
+  build-web:
+    runs-on: ubuntu-24.04
+    if: github.repository == 'trezor/trezor-suite'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          submodules: true
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Cache node_modules
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: node_modules-
+
+      - name: Install dependencies
+        run: yarn workspaces focus @trezor/suite-web @trezor/suite-data @trezor/suite-build
+
+      - name: Build message system config
+        run: yarn message-system-sign-config 1>/dev/null
+
+      - name: Build suite-data lib
+        run: yarn workspace @trezor/suite-data build:lib
+
+      - name: Build suite-web
+        run: yarn workspace @trezor/suite-web build
+
+      - name: Compress web build
+        run: tar -czf web-build.tar.gz -C packages/suite-web build
+
+      - name: Upload web build artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: web-app-build-e2e
+          path: web-build.tar.gz
+          retention-days: 7
+
+  fix:
+    needs: [prepare-matrix, build-desktop, build-web]
+    runs-on: ubuntu-24.04
+    if: github.repository == 'trezor/trezor-suite'
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        task-id: ${{ fromJSON(needs.prepare-matrix.outputs.matrix) }}
+    env:
+      COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          submodules: true
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Cache node_modules
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: node_modules-
+
+      - name: Install dependencies
+        run: yarn workspaces focus @trezor/suite-e2e @trezor/e2e-utils @trezor/suite-web
+
+      - name: Install Playwright browsers
+        run: yarn workspace @trezor/suite-e2e exec playwright install chromium --with-deps
+
+      - name: Build message system config
+        run: yarn message-system-sign-config 1>/dev/null
+
+      - name: Download desktop artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: desktop-app-build-e2e
+          path: artifact-download
+
+      - name: Extract desktop artifact
+        run: tar -xzf artifact-download/app-build.tar.gz -C packages/suite-desktop
+
+      - name: Download web artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: web-app-build-e2e
+          path: artifact-download
+
+      - name: Extract web artifact
+        run: tar -xzf artifact-download/web-build.tar.gz -C packages/suite-web
+
+      - name: Start web preview server
+        run: nohup yarn workspace @trezor/suite-web preview > /tmp/web-preview.log 2>&1 &
+
+      - name: Pull Docker images
+        run: docker compose pull --quiet
+
+      - name: Start Docker services
+        run: docker compose up -d
+
+        # This needs to be discussed with Tali
+      - name: Configure git identity
+        run: |
+          git config --global user.email "nightly-fix-bot@trezor.io"
+          git config --global user.name "Nightly Fix Bot"
+
+      - name: Checkout fix branch
+        run: |
+          BRANCH=$(jq -r --arg id "${{ matrix.task-id }}" '.fix_tasks[] | select(.id == $id) | .branch' "$REPORT_PATH")
+          git checkout -b "$BRANCH"
+          echo "BRANCH=$BRANCH" >> $GITHUB_ENV
+
+      - name: Wait for web preview server
+        timeout-minutes: 2
+        run: curl -sf --retry 30 --retry-delay 2 --retry-connrefused --max-time 5 http://localhost:8000 -o /dev/null
+
+      - name: Run fix agent
+        id: run-fix-agent
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.E2E_CLAUDE_API_KEY }}
+          PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
+          TASK_ID: ${{ matrix.task-id }}
+          TEST_TIMEOUT_OVERRIDE: 180000
+          REPORT_PATH: ${{ github.workspace }}/${{ env.REPORT_PATH }}
+        run: yarn workspace @trezor/e2e-utils fix-bot:fix
+
+      - name: Publish PR
+        if: ${{ !cancelled() && steps.run-fix-agent.outcome != 'skipped' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: yarn workspace @trezor/e2e-utils fix-bot:publish
+
+      - name: Docker Compose Down
+        if: always()
+        run: docker compose down
