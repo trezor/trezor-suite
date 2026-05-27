@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useEffectEvent, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNetInfo } from '@react-native-community/netinfo';
@@ -52,9 +52,12 @@ const TradingExchangePreviewScreenContent = ({
     const hasRequestedTradeConfirmation = useRef(false);
 
     const reportToAnalytics = useExchangeAnalyticsStepReport('transaction-preview');
-    useEffect(() => {
+    const reportVisit = useEffectEvent(() => {
         reportToAnalytics('visit');
-    }, [reportToAnalytics]);
+    });
+    useEffect(() => {
+        reportVisit();
+    }, []);
 
     useSubscribeForSolanaBlockUpdates(fromAccount ?? null);
 

@@ -327,8 +327,7 @@ describe('TradingConfirmingScreen', () => {
             });
 
             expect(mockAnalyticsReport).toHaveBeenCalledWith('approval-confirming', 'cancel');
-            // TODO 27903 effect is fired twice, because quote changes. Fix here and on the other screens as well.
-            //expect(mockAnalyticsReport).toHaveBeenCalledTimes(2);
+            expect(mockAnalyticsReport).toHaveBeenCalledTimes(2);
         });
 
         it('should report revoke-confirming visit for revoke', () => {
@@ -349,8 +348,7 @@ describe('TradingConfirmingScreen', () => {
             });
 
             expect(mockAnalyticsReport).toHaveBeenCalledWith('approval-confirming', 'continue');
-            // TODO 27903
-            //expect(mockAnalyticsReport).toHaveBeenCalledTimes(2);
+            expect(mockAnalyticsReport).toHaveBeenCalledTimes(2);
         });
     });
 });

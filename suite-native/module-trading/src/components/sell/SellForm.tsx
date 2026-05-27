@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useEffectEvent } from 'react';
 import { FadeIn, FadeInDown, LinearTransition } from 'react-native-reanimated';
 
 import { AnimatedBox, VStack } from '@suite-native/atoms';
@@ -84,9 +84,12 @@ export const SellForm = ({ shouldAnimateEntering }: SellFormProps) => {
 
     useSellQuotes(sellForm);
 
-    useEffect(() => {
+    const reportVisit = useEffectEvent(() => {
         reportToAnalytics('sell-form', 'visit');
-    }, [reportToAnalytics]);
+    });
+    useEffect(() => {
+        reportVisit();
+    }, []);
 
     return (
         <SellFormMemoized

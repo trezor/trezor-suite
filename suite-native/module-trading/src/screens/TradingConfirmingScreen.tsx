@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useEffectEvent, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
@@ -59,9 +59,13 @@ export const TradingConfirmingScreen = ({
         setApprovalTxid,
     } = useAllowanceTxTracking({ accountKey });
 
-    useEffect(() => {
+    const reportVisit = useEffectEvent(() => {
         reportToAnalytics('visit');
-    }, [reportToAnalytics]);
+    });
+    useEffect(() => {
+        reportVisit();
+    }, []);
+
     useEffect(() => {
         if (approvalSendTxHash) {
             setApprovalTxid(approvalSendTxHash);

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useEffectEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -37,9 +37,12 @@ const TradingSellPreviewScreenContent = () => {
     const isFinalized = isFinalStatus('sell', currentQuote?.status);
 
     const reportToAnalytics = useSellAnalyticReportCallback();
-    useEffect(() => {
+    const reportVisit = useEffectEvent(() => {
         reportToAnalytics('transaction-preview', 'visit');
-    }, [reportToAnalytics]);
+    });
+    useEffect(() => {
+        reportVisit();
+    }, []);
 
     useWatchTrade({
         accountKey: trade?.sendAccountKey,
