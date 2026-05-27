@@ -215,6 +215,12 @@ export class TrezordNode {
             res,
             str({
                 version: this.version,
+                // Kept for compatibility with released Suite versions whose BridgeTransport
+                // toggles wire format based on this flag. Missing / falsy makes those clients
+                // fall back to the legacy raw-hex bridge mode, which our /call /post /read
+                // handlers still accept but which we are working to retire — see #23794.
+                // Always true: this server always understands the v1 / v2 envelope.
+                protocolMessages: true,
                 githash: 'not provided',
             }),
         );
