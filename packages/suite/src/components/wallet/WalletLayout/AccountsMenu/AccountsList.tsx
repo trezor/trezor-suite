@@ -205,11 +205,11 @@ export const AccountsList = ({
 
     if (isSidebarCollapsed) return <AccountsMenuNotice />;
 
+    if (!searchString) return null;
+
     return (
         <AccountsMenuNotice>
-            <Translation
-                id={!searchString ? 'TR_ACCOUNT_NO_ACCOUNTS' : 'TR_ACCOUNT_SEARCH_NO_RESULTS'}
-            />
+            <Translation id="TR_ACCOUNT_SEARCH_NO_RESULTS" />
         </AccountsMenuNotice>
     );
 };
