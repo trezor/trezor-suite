@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-05-21T12:00:00+00:00",
-    "sequence": 139,
+    "timestamp": "2026-05-27T00:00:00+00:00",
+    "sequence": 140,
     "actions": [
         {
             "conditions": [
@@ -1628,18 +1628,18 @@
                 }
             ],
             "message": {
-                "id": "8bb03b3f-ff8c-45a0-9bf7-02b17ceaa0fe",
+                "id": "4daf1d02-4315-4d89-b99d-b7fec8dc8fb0",
                 "priority": 1,
                 "dismissible": false,
                 "variant": "info",
                 "category": "feature",
                 "content": {
-                    "en": "New earn opportunities coming soon.",
-                    "es": "Pronto llegarán nuevas oportunidades para ganar.",
-                    "cs": "Nové možnosti výdělku již brzy.",
-                    "de": "Neue Möglichkeiten zum Verdienen kommen bald.",
-                    "fr": "De nouvelles opportunités de rendement arrivent bientôt.",
-                    "pt": "Novas oportunidades para ganhar em breve."
+                    "en": "Update Trezor Suite to access new earning opportunities.",
+                    "es": "Actualiza Trezor Suite para acceder a nuevas oportunidades de ganancias.",
+                    "cs": "Aktualizujte Trezor Suite pro přístup k novým příležitostem k výdělku.",
+                    "de": "Aktualisieren Sie Trezor Suite, um neue Verdienstmöglichkeiten zu nutzen.",
+                    "fr": "Mettez à jour Trezor Suite pour accéder à de nouvelles opportunités de gain.",
+                    "pt": "Atualize o Trezor Suite para acessar novas oportunidades de ganho."
                 },
                 "feature": [
                     {
