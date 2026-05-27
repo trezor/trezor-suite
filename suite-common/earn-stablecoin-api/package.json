@@ -9,23 +9,17 @@
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint './**/*.{ts,mjs}'",
         "type-check": "yarn g:tsc --build",
-        "format": "prettier --write \"**/*.{ts,yaml}\"",
-        "orval": "orval --config ./orval.config.ts",
-        "api:generate": "yarn orval",
-        "api:update": "yarn api:generate && yarn lint:js --fix && yarn format",
         "test:unit": "yarn g:jest"
-    },
-    "devDependencies": {
-        "orval": "8.8.0",
-        "prettier": "^3.8.3"
     },
     "dependencies": {
         "@suite-common/calldata": "workspace:^",
+        "@suite-common/earn-stablecoin-defs": "workspace:^",
         "@suite-common/http-client": "workspace:^",
         "@suite-common/react-query": "workspace:^",
         "@suite-common/schemas": "workspace:^",
         "@suite-common/wallet-config": "workspace:^",
         "@suite-common/wallet-types": "workspace:^",
+        "@suite-common/wallet-utils": "workspace:^",
         "@trezor/blockchain-link-types": "workspace:^",
         "@trezor/env-utils": "workspace:*",
         "@trezor/react-utils": "workspace:^",

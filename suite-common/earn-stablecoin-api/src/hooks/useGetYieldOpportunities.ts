@@ -1,6 +1,10 @@
+import {
+    type GetYieldsParams,
+    type GetYieldsSort,
+    type YieldsResponse,
+} from '@suite-common/earn-stablecoin-defs';
 import { type MutationOptions, desktopMutationKeys, useMutation } from '@suite-common/react-query';
 
-import { type GetYieldsParams, type GetYieldsSort, type YieldsResponse } from '../api/types';
 import { getYields } from '../services';
 
 interface GetYieldOpportunitiesVariables {

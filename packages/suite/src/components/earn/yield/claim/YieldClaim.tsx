@@ -5,6 +5,7 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { type YieldAccountRewards } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
 import {
     selectStablecoinYieldSession,
@@ -21,7 +22,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 
 import { YieldRewardsList } from './YieldRewardsList';
-import { type YieldAccountRewards, useMerkleRewards } from './hooks';
+import { useMerkleRewards } from './hooks';
 import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 import { YieldFlowCompleteClaim } from '../common/YieldFlowCompleteClaim';
 import { YieldPendingTransaction } from '../common/YieldPendingTransaction';

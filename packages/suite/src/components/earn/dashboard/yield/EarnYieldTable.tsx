@@ -4,7 +4,10 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { EarnAnchor, goto, useAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
+import {
+    type YieldAccountRewards,
+    useAllYieldOpportunities,
+} from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
 import { NORMAL_ACCOUNT_TYPE } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
@@ -21,7 +24,7 @@ import { EarnYieldClaimSelectAccountModal } from './EarnYieldClaimSelectAccountM
 import { EarnYieldTableBody } from './EarnYieldTableBody';
 import { useYieldAccountsVisibility } from './hooks/useYieldAccountsVisibility';
 import { useYieldTableData } from './hooks/useYieldTableData';
-import { type YieldAccountRewards, useMerkleRewards } from '../../yield/claim/hooks';
+import { useMerkleRewards } from '../../yield/claim/hooks';
 import { EarnDashboardSection } from '../common/EarnDashboardSection';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
 import { getEarnDashboardBadgeState } from '../utils/earnDashboardBadgeUtils';

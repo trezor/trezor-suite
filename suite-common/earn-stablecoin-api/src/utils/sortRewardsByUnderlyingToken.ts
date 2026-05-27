@@ -1,4 +1,4 @@
-import { type RewardDto, type TokenDto } from '../api/types';
+import { type RewardDto, type TokenDto } from '@suite-common/earn-stablecoin-defs';
 
 const isSameToken = (a: TokenDto, b: TokenDto) => {
     if (a.address && b.address) {

@@ -1,4 +1,5 @@
-import { type EnterYield200, TransactionDtoType } from '../../api/types';
+import { type EnterYield200, TransactionDtoType } from '@suite-common/earn-stablecoin-defs';
+
 import { verifyEnterTransactions } from '../../verification/enter';
 
 const VAULT_ADDRESS = '0xe4db1c5a1b709ce4d2ada6985d9d506e58f73829';

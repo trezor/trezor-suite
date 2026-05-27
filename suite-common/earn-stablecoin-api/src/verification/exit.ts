@@ -1,4 +1,9 @@
 import { Verifier } from '@suite-common/calldata';
+import {
+    type ExitYield200,
+    type TransactionDto,
+    TransactionDtoType,
+} from '@suite-common/earn-stablecoin-defs';
 import { type EvmHexString, evmHexString } from '@suite-common/schemas/src/evm';
 
 import { parseUnsignedEvmTransaction } from './schema';
@@ -8,7 +13,6 @@ import {
     aggregateStatuses,
     toStatus,
 } from './shared';
-import { type ExitYield200, type TransactionDto, TransactionDtoType } from '../api/types';
 
 type VerifyExitTransactionsParams = {
     address: string;
