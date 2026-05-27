@@ -48,9 +48,9 @@ export const formatAddress = (address: string) => splitStringEveryNCharacters(ad
 
 const REGEXP_ADDRESS_CHUNKS = /((?:\S+\s){3}\S+)\s/g;
 const EVM_ADDRESS_PREFIX = '0x';
-const DEVICE_RENDERED_EVM_INDENT = '  ';
+export const DEVICE_RENDERED_EVM_INDENT = '  ';
 
-const formatEvmAddress = (address: string) => {
+export const formatEvmAddress = (address: string) => {
     if (!address.startsWith(EVM_ADDRESS_PREFIX)) {
         return formatAddress(address);
     }

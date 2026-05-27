@@ -63,12 +63,12 @@ test.describe('Send Eth', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
             await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: 'Send' },
-                    body: [transformAddress(sendAddress)],
+                    body: [transformAddress(sendAddress, 'evmTetragrams')],
                     actions: { right_button: 'Continue' },
                 },
                 T3T1: {
                     header: { title: 'Address', subtitle: 'Recipient' },
-                    body: [transformAddress(sendAddress)],
+                    body: [transformAddress(sendAddress, 'evmTetragrams')],
                 },
             });
         });

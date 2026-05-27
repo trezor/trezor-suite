@@ -1,6 +1,7 @@
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
+import { DEVICE_RENDERED_EVM_INDENT } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
@@ -17,26 +18,38 @@ test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
         await page.getByTestId('@settings/experimental-features/tron-view-only-checkbox').click();
     });
 
-    const testCases: Array<{ coin: NetworkSymbol; category: TestCategory; addressFormat: RegExp }> =
-        [
-            {
-                coin: 'btc',
-                category: TestCategory.BTC,
-                addressFormat: /^(bc1[a-z0-9]{39,59}|[13][a-km-zA-HJ-NP-Z1-9]{25,34})$/,
-            },
-            { coin: 'eth', category: TestCategory.ETH, addressFormat: /^0x[a-fA-F0-9]{40}$/ },
-            {
-                coin: 'sol',
-                category: TestCategory.Solana,
-                addressFormat: /^[1-9A-HJ-NP-Za-km-z]{32,44}$/,
-            },
-            {
-                coin: 'trx',
-                category: TestCategory.Coins,
-                addressFormat: /^T[1-9A-HJ-NP-Za-km-z]{33}$/,
-            },
-        ];
-    testCases.forEach(({ coin, category, addressFormat }) => {
+    const testCases: Array<{
+        coin: NetworkSymbol;
+        category: TestCategory;
+        addressFormat: RegExp;
+        deviceDisplayPrefix: string;
+    }> = [
+        {
+            coin: 'btc',
+            category: TestCategory.BTC,
+            addressFormat: /^(bc1[a-z0-9]{39,59}|[13][a-km-zA-HJ-NP-Z1-9]{25,34})$/,
+            deviceDisplayPrefix: '',
+        },
+        {
+            coin: 'eth',
+            category: TestCategory.ETH,
+            addressFormat: /^ {2}0x[a-fA-F0-9]{40}$/,
+            deviceDisplayPrefix: DEVICE_RENDERED_EVM_INDENT,
+        },
+        {
+            coin: 'sol',
+            category: TestCategory.Solana,
+            addressFormat: /^[1-9A-HJ-NP-Za-km-z]{32,44}$/,
+            deviceDisplayPrefix: '',
+        },
+        {
+            coin: 'trx',
+            category: TestCategory.Coins,
+            addressFormat: /^T[1-9A-HJ-NP-Za-km-z]{33}$/,
+            deviceDisplayPrefix: '',
+        },
+    ];
+    testCases.forEach(({ coin, category, addressFormat, deviceDisplayPrefix }) => {
         test(
             `Receive a ${coin.toUpperCase()} transaction`,
             {
@@ -71,7 +84,7 @@ test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
                 const clipboardText = await page.evaluate(
                     () => (window as any).__clipboardCapture as string,
                 );
-                expect.soft(clipboardText).toEqual(address);
+                expect.soft(address).toEqual(`${deviceDisplayPrefix}${clipboardText}`);
                 expect.soft(address).toMatch(addressFormat);
             },
         );
