@@ -1,28 +1,15 @@
+import { useDispatch, useSelector } from 'react-redux';
+
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectIsN4w1BackupEnabled } from '@suite/settings';
-import { hasExtendableShamirBackup } from '@suite-common/backup';
+import { doesSupportMultiShare } from '@suite-common/backup';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { type TrezorDevice } from '@suite-common/suite-types';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
-
-import { useDispatch, useSelector } from 'src/hooks/suite';
-
-const doesSupportMultiShare = (device: TrezorDevice | undefined): boolean => {
-    if (device?.features === undefined) {
-        return false;
-    }
-
-    if (!device.features.capabilities?.includes('Capability_Shamir')) {
-        return false;
-    }
-
-    return hasExtendableShamirBackup(device.features);
-};
 
 export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
@@ -33,7 +20,14 @@ export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }
     // "NotAvailable" means, that backup has been already done and thus is not available.
     const isBackupDone = device?.features?.backup_availability === 'NotAvailable';
 
-    if (isN4w1BackupEnabled || !doesSupportMultiShare(device) || !isBackupDone) {
+    // When N4W1 backup is enabled, multi-share backup is replaced by the NFC-based
+    // additional backup flow (CreateWalletBackup), which uses a different backup method.
+    if (
+        isN4w1BackupEnabled ||
+        !device?.features ||
+        !doesSupportMultiShare(device.features) ||
+        !isBackupDone
+    ) {
         return;
     }
 
