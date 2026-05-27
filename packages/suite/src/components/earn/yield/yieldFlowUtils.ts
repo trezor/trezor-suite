@@ -1,9 +1,10 @@
 import { type RewardDto } from '@suite-common/earn-stablecoin-api';
-import { tokenSupportsIncreasingAllowance } from '@suite-common/trading';
 import { YIELD_FLOW_STEPS, type YieldFlowStepId } from '@suite-common/wallet-core';
 import { getApyPercent } from '@suite-common/wallet-utils';
 import type { BulletListItemState } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
+
+export { getYieldApprovalAction, type YieldApprovalAction } from '@suite-common/wallet-core';
 
 interface AmountComparisonParams {
     amount?: string;
@@ -16,51 +17,8 @@ interface YieldModifyAmountInputParams {
     maxAmount: string;
 }
 
-type GetYieldApprovalActionParams = {
-    liveAmount: string;
-    allowanceAmount?: string | null;
-    isModifyMode: boolean;
-    isRevokeRequired: boolean;
-    tokenContractAddress?: string | null;
-};
-
-export type YieldApprovalAction = 'approve' | 'continue' | 'increase' | 'revoke';
-
 export const isAmountGreaterThan = ({ amount, threshold }: AmountComparisonParams): boolean =>
     !!amount && !!threshold && new BigNumber(amount).gt(threshold);
-
-export const getYieldApprovalAction = ({
-    liveAmount,
-    allowanceAmount,
-    isModifyMode,
-    isRevokeRequired,
-    tokenContractAddress,
-}: GetYieldApprovalActionParams): YieldApprovalAction => {
-    if (!isModifyMode) {
-        return 'approve';
-    }
-
-    const allowanceAmountValue = new BigNumber(allowanceAmount || '0');
-    const liveAmountValue = new BigNumber(liveAmount || '0');
-    const hasAllowanceAmount = !!allowanceAmount && !allowanceAmountValue.isZero();
-    const isIncreasing = hasAllowanceAmount && liveAmountValue.gt(allowanceAmountValue);
-    const needsZeroApprovalReset =
-        !!tokenContractAddress && !tokenSupportsIncreasingAllowance(tokenContractAddress);
-
-    if (isRevokeRequired || (isIncreasing && needsZeroApprovalReset)) {
-        return 'revoke';
-    }
-
-    if (isIncreasing) {
-        return 'increase';
-    }
-
-    if (hasAllowanceAmount) {
-        return 'continue';
-    }
-
-    return 'approve';
-};
 
 export const getYieldModifyAmountInput = ({
     liveAmount,
