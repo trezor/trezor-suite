@@ -1,4 +1,3 @@
-import groestl from 'groestl-hash-js';
 import jsSHA from 'jssha';
 
 import * as base32Module from './base32';
@@ -139,12 +138,6 @@ export function keccak256Checksum(payload: string | Buffer | Uint8Array): string
 
 export function blake2b256(hexString: string): string {
     return new (Blake2B as any)(32).update(Buffer.from(hexString, 'hex'), 32).digest('hex');
-}
-
-export function groestl512x2(hexString: string): string {
-    const result = groestl.groestl_2(Buffer.from(hexString, 'hex'), 1, 0).substr(0, 8);
-
-    return result;
 }
 
 export function bigNumberToBuffer(bignumber: number | string, size?: number): Buffer {
