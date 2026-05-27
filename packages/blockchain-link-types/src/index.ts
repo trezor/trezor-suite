@@ -29,7 +29,13 @@ export type {
     Transaction as BlockbookTransaction,
 } from './blockbook';
 
-export type { TronAccountExtraData, Eip1559Fees } from './blockbook-api';
+export type {
+    TronAccountExtraData,
+    TronStakingInfo,
+    TronUnstakingBatch,
+    TronVote,
+    Eip1559Fees,
+} from './blockbook-api';
 
 export type {
     BlockHeader as ElectrumBlockHeader,
