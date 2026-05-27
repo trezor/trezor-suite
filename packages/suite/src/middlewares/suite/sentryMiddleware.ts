@@ -128,10 +128,11 @@ const sentryMiddleware =
                 const { result } = action.payload;
                 if (!result) return;
 
-                const reportToSentry = (error: string) => {
+                const reportToSentry = (error: string, errorDetails?: string) => {
                     withSentryScope(scope => {
                         scope.setLevel('error');
                         scope.setTag('deviceAuthenticityError', error);
+                        scope.setExtra('errorDetails', errorDetails);
                         captureSentryMessage(
                             `Device authenticity invalid! ${JSON.stringify(result, null, 2)}`,
                             scope,
@@ -145,13 +146,16 @@ const sentryMiddleware =
                 }
                 // report errors from either one of the secure elements (or both)
                 if ('optigaResult' in result && result.optigaResult.error) {
-                    reportToSentry(result.optigaResult.error);
+                    const { error, errorDetails } = result.optigaResult;
+                    reportToSentry(error, errorDetails);
                 }
                 if ('tropicResult' in result && result.tropicResult?.error) {
-                    reportToSentry(result.tropicResult.error);
+                    const { error, errorDetails } = result.tropicResult;
+                    reportToSentry(error, errorDetails);
                 }
                 if ('mcuResult' in result && result.mcuResult?.error) {
-                    reportToSentry(result.mcuResult.error);
+                    const { error, errorDetails } = result.mcuResult;
+                    reportToSentry(error, errorDetails);
                 }
                 break;
             }
