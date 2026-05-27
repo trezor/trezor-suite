@@ -1,6 +1,4 @@
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
-import { FeatureFlag } from '@suite-native/feature-flags';
-import { screen } from '@suite-native/test-utils-store';
 
 import {
     type PreloadedStatePartial,
@@ -50,19 +48,7 @@ jest.mock('../../components/concierge/ConciergeAlert', () => ({
     ConciergeAlert: () => null,
 }));
 
-const overridesWithEnabledBuy: PreloadedStatePartial<TradingTestPreloadedState> = {
-    featureFlags: createTradingFeatureFlags({
-        [FeatureFlag.IsTradingBuyEnabled]: true,
-    }),
-};
-
 const overridesWithDisabledTrading: PreloadedStatePartial<TradingTestPreloadedState> = {
-    featureFlags: createTradingFeatureFlags({
-        [FeatureFlag.IsTradingBuyEnabled]: false,
-        [FeatureFlag.IsTradingExchangeEnabled]: false,
-        [FeatureFlag.IsTradingSellEnabled]: false,
-        [FeatureFlag.IsTradingConciergeEnabled]: false,
-    }),
     messageSystem: mockMessageSystemStateWithFeatureFlags({
         'trading.buy': false,
         'trading.exchange': false,
@@ -96,8 +82,10 @@ describe('TradingScreen', () => {
     });
 
     it('should render Buy form by default', () => {
-        renderTradingScreen(overridesWithEnabledBuy);
+        const { getByText } = renderTradingScreen({
+            featureFlags: createTradingFeatureFlags({}),
+        });
 
-        expect(screen.getByText('You pay')).toBeOnTheScreen();
+        expect(getByText('You pay')).toBeOnTheScreen();
     });
 });

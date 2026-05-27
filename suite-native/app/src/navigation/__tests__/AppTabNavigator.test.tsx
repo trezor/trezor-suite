@@ -50,10 +50,6 @@ describe('AppTabNavigator', () => {
     it('should not render Trade tab when all trading flags are disabled', () => {
         const { queryByText } = renderTabs({
             featureFlags: {
-                [FeatureFlag.IsTradingBuyEnabled]: false,
-                [FeatureFlag.IsTradingExchangeEnabled]: false,
-                [FeatureFlag.IsTradingSellEnabled]: false,
-                [FeatureFlag.IsTradingConciergeEnabled]: false,
                 [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
             },
             messageSystem: mockMessageSystemStateWithFeatureFlags({
@@ -70,9 +66,14 @@ describe('AppTabNavigator', () => {
     it('should render Trade tab when at least one trading flag is enabled', () => {
         const { getByText, getByTestId } = renderTabs({
             featureFlags: {
-                [FeatureFlag.IsTradingBuyEnabled]: true,
                 [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
             },
+            messageSystem: mockMessageSystemStateWithFeatureFlags({
+                'trading.buy': false,
+                'trading.exchange': true,
+                'trading.sell': false,
+                'trading.concierge': false,
+            }),
         });
 
         fireEvent.press(getByText('Trade'));

@@ -1,4 +1,4 @@
-import { FeatureFlag } from '@suite-native/feature-flags';
+import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 
 import {
     createTradingFeatureFlags,
@@ -18,12 +18,27 @@ describe('TradingStackNavigator', () => {
     it('should render', () => {
         const { getByTestId } = renderWithTradingProvider(<TradingStackNavigator />, {
             overrides: {
-                featureFlags: createTradingFeatureFlags({
-                    [FeatureFlag.IsTradingBuyEnabled]: true,
-                }),
+                featureFlags: createTradingFeatureFlags({}),
+                messageSystem: mockMessageSystemStateWithFeatureFlags({}),
             },
         });
 
         expect(getByTestId('@screen/Trading')).toBeTruthy();
+    });
+
+    it('should not render when all feature flags are disabled', () => {
+        const { queryByTestId } = renderWithTradingProvider(<TradingStackNavigator />, {
+            overrides: {
+                featureFlags: createTradingFeatureFlags({}),
+                messageSystem: mockMessageSystemStateWithFeatureFlags({
+                    'trading.buy': false,
+                    'trading.exchange': false,
+                    'trading.sell': false,
+                    'trading.concierge': false,
+                }),
+            },
+        });
+
+        expect(queryByTestId('@screen/Trading')).toBeFalsy();
     });
 });
