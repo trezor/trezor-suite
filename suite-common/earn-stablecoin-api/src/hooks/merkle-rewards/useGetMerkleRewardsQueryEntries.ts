@@ -1,7 +1,5 @@
 import { useMemo } from 'react';
 
-import { selectIsDebugModeActive } from '@suite/settings';
-import { ChainAddressKey } from '@suite-common/earn-stablecoin-api';
 import {
     type NetworkSymbol,
     getNetwork,
@@ -10,7 +8,22 @@ import {
 import { type Account, type AccountWithNetworkType } from '@suite-common/wallet-types';
 import { unique } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
+class ChainAddressKey {
+    static readonly delimiter = ':';
+
+    static compose(chainId: number, address: string) {
+        return `${chainId}${ChainAddressKey.delimiter}${address}` as const;
+    }
+
+    static parse(key: string) {
+        const [chainId, address] = key.split(ChainAddressKey.delimiter);
+
+        return {
+            chainId: Number(chainId),
+            address,
+        } as const;
+    }
+}
 
 /**
  * Account with nonce 1 sent only 1 tx (when user supplies, first tx is approval)
@@ -42,9 +55,7 @@ function getMerkleRewardsQueryEntries(sources: MerkleRewardsSource[]) {
     });
 }
 
-export function useMerkleRewardsQueryEntries(accounts: Account[]) {
-    const isDebugMode = useSelector(selectIsDebugModeActive);
-
+export function useGetMerkleRewardsQueryEntries(accounts: Account[], isDebugMode?: boolean) {
     return useMemo(() => {
         const accountsRewardSources = accounts
             .filter(

@@ -10402,10 +10402,15 @@ __metadata:
     "@suite-common/http-client": "workspace:^"
     "@suite-common/react-query": "workspace:^"
     "@suite-common/schemas": "workspace:^"
+    "@suite-common/wallet-config": "workspace:^"
+    "@suite-common/wallet-types": "workspace:^"
+    "@trezor/blockchain-link-types": "workspace:^"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/react-utils": "workspace:^"
     "@trezor/utils": "workspace:^"
     orval: "npm:8.8.0"
     prettier: "npm:^3.8.3"
+    react: "npm:19.2.4"
     zod: "npm:4.3.6"
   languageName: unknown
   linkType: soft
@@ -15948,7 +15953,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/react-utils@workspace:*, @trezor/react-utils@workspace:packages/react-utils":
+"@trezor/react-utils@workspace:*, @trezor/react-utils@workspace:^, @trezor/react-utils@workspace:packages/react-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/react-utils@workspace:packages/react-utils"
   dependencies:
