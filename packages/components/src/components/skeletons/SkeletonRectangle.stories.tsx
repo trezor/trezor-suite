@@ -15,6 +15,8 @@ import {
     SkeletonRectangle as SkeletonRectangleComponent,
     type SkeletonRectangleProps,
 } from './SkeletonRectangle';
+import { allowedSkeletonFrameProps } from './utils';
+import { getFramePropsStory } from '../../utils/frameProps';
 import { ElevationContext, ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
 
 const UiBox = styled.div<{ $elevation: Elevation }>`
@@ -61,9 +63,13 @@ export const SkeletonRectangle: StoryObj<SkeletonRectangleProps> = {
         </ElevationContext>
     ),
     args: {
-        width: 120,
-        height: 20,
-        borderRadius: 4,
         animate: true,
+        ...getFramePropsStory(allowedSkeletonFrameProps).args,
+    },
+    argTypes: {
+        animate: {
+            type: 'boolean',
+        },
+        ...getFramePropsStory(allowedSkeletonFrameProps).argTypes,
     },
 };

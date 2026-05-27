@@ -20,7 +20,7 @@ const SkeletonWrapper = styled.div`
 `;
 
 const SkeletonBar = (props: ComponentProps<typeof SkeletonRectangle>) => (
-    <SkeletonRectangle borderRadius="4px 4px 0px 0px" {...props} />
+    <SkeletonRectangle borderRadius={2} {...props} />
 );
 
 interface GraphSkeletonProps {

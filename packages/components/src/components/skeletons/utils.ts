@@ -3,6 +3,15 @@ import { css, keyframes } from 'styled-components';
 import { type Elevation, mapElevationToBackground } from '@trezor/theme';
 
 import { mapElevationToSkeletonForeground } from './colors';
+import { type FrameProps, type FramePropsKeys } from '../../utils/frameProps';
+
+export const allowedSkeletonFrameProps = [
+    'margin',
+    'width',
+    'height',
+    'borderRadius',
+] as const satisfies FramePropsKeys[];
+export type AllowedFrameProps = Pick<FrameProps, (typeof allowedSkeletonFrameProps)[number]>;
 
 const SHINE = keyframes`
     from {
