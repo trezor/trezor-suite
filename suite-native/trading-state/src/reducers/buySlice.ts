@@ -29,6 +29,10 @@ const buySlice = createSlice({
             state.amountLimits = undefined;
             state.quotesRequest = undefined;
         },
+        assetTokenChanged: state => {
+            state.amountLimits = undefined;
+            state.quotesRequest = undefined;
+        },
         fiatCurrencyChanged: state => {
             state.amountLimits = undefined;
             state.quotesRequest = undefined;
