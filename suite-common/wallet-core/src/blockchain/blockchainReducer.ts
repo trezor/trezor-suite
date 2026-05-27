@@ -234,6 +234,11 @@ export const selectBlockchainBackendType = createMemoizedSelector(
     blockchain => blockchain.backends.selected,
 );
 
+export const selectIsCustomBackendConfigured = createMemoizedSelector(
+    [selectBlockchainBackendType],
+    backendType => !!backendType,
+);
+
 export const selectGapLimit = (state: BlockchainRootState, symbol: NetworkSymbol) =>
     state.wallet.blockchain[symbol]?.backends.gapLimit;
 
