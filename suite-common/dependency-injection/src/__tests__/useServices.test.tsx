@@ -5,23 +5,26 @@ import { renderHook } from '@testing-library/react';
 
 import { ServicesProvider, useServices } from '../useServices';
 
-const services = {
+type ADep = { a: () => void };
+type BDep = { b: () => void };
+
+const appServices: ADep & BDep = {
     a: jest.fn(),
     b: jest.fn(),
 };
 
-const selectADep = (currentServices: any) => ({
-    analytics: currentServices.analytics,
+const selectADep = (services: any): ADep => ({
+    a: services.a,
 });
 
-const selectBDep = (currentServices: any) => ({
-    turnOffSuiteSync: currentServices.suiteSync.turnOffSuiteSync,
+const selectBDep = (services: any): BDep => ({
+    b: services.b,
 });
 
 describe(useServices.name, () => {
     it('returns the same selected services reference across rerenders', () => {
         const wrapper = ({ children }: PropsWithChildren) => (
-            <ServicesProvider services={services}>{children}</ServicesProvider>
+            <ServicesProvider services={appServices}>{children}</ServicesProvider>
         );
 
         const { result, rerender } = renderHook(() => useServices(selectADep, selectBDep), {

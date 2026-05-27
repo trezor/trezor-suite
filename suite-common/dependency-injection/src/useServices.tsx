@@ -34,9 +34,6 @@ export const ServicesProvider = ({ services, children }: ServicesProviderProps) 
 
 ServicesProvider.displayName = 'ServicesProvider';
 
-type MissingUseServicesGenericError =
-    'useServices<TServices>() requires an explicit service type argument';
-
 export const selectServices = (services: Services, ...selectors: ServiceSelector<any>[]) => {
     if (selectors.length === 0) {
         return services;
@@ -44,10 +41,6 @@ export const selectServices = (services: Services, ...selectors: ServiceSelector
 
     return Object.assign({}, ...selectors.map(selector => selector(services)));
 };
-
-export function useServices<TServices = never>(
-    ...args: [TServices] extends [never] ? [MissingUseServicesGenericError] : []
-): TServices;
 
 export function useServices<
     const TSelectors extends readonly [ServiceSelector<any>, ...ServiceSelector<any>[]],

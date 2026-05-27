@@ -99,6 +99,8 @@ export type SuiteServices = CommonServices &
     MetadataMigrationDep &
     SuiteRouterHistoryDep;
 
+export const selectSuiteServices = (services: any): SuiteServices => services;
+
 export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteServices => {
     const { ensureDelegatedIdentityKey } = delegatedIdentityKeyCompositionRoot({
         dispatch: deps.dispatch,

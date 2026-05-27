@@ -123,10 +123,10 @@ export const getUsageExampleSnippet = (platform: string, eventName: string): str
 
     return `import { events } from '${imports.events}';
 import { useServices } from '${imports.services}';
-import { type ${imports.analyticsDep} } from '${imports.analyticsImport}';
+    import { select${imports.analyticsDep.replace('Dep', '')}Dep } from '${imports.analyticsImport}';
 
 // inside component:
-const { analytics } = useServices<${imports.analyticsDep}>();
+    const { analytics } = useServices(select${imports.analyticsDep.replace('Dep', '')}Dep);
 analytics.report({
     type: events.${baseName}.name,
     payload: {

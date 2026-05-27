@@ -2,10 +2,10 @@ import { type ComponentType, createElement, memo } from 'react';
 
 import {
     type PageName,
-    type SuiteRouterHistoryDep,
     resolveEffectiveBackgroundRouteName,
     selectRoute,
     selectRouteName,
+    selectSuiteRouterHistoryDep,
     suiteRoutes,
 } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
@@ -19,7 +19,7 @@ type AppRouterProps = {
 export const AppRouter = memo(({ components }: AppRouterProps) => {
     const routeName = useSelector(selectRouteName);
     const route = useSelector(selectRoute);
-    const { suiteRouterHistory } = useServices<SuiteRouterHistoryDep>();
+    const { suiteRouterHistory } = useServices(selectSuiteRouterHistoryDep);
 
     const resolvedRouteName =
         resolveEffectiveBackgroundRouteName(route, suiteRouterHistory.getLocation()) ?? routeName;

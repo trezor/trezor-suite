@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { type PlatformEncryptionDep, asEncryptedHex } from '@suite-common/platform-encryption';
+import { asEncryptedHex, selectPlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { Button, ButtonGroup, Column, Textarea } from '@trezor/components';
 import { SectionItem, SettingsSection } from '@trezor/product-components';
 import { breakpoints, spacings } from '@trezor/theme';
@@ -17,7 +17,7 @@ export const PlatformEncryption = () => {
     const [plaintext, setPlaintext] = useState(asValue(''));
     const [ciphertext, setCiphertext] = useState(asEncryptedHex<Value>(''));
 
-    const { platformEncryption } = useServices<PlatformEncryptionDep>();
+    const { platformEncryption } = useServices(selectPlatformEncryptionDep);
 
     const encrypt = async () => {
         const result = await platformEncryption.encrypt({ value: plaintext });

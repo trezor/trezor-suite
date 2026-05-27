@@ -3,10 +3,10 @@ import { useEffect } from 'react';
 import { Action } from 'history';
 
 import {
-    type SuiteRouterHistoryDep,
     onLocationChange,
     selectCanNavigate,
     selectRouterLoaded,
+    selectSuiteRouterHistoryDep,
 } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 
@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 export const RouterHandler = () => {
     const dispatch = useDispatch();
     const routerLoaded = useSelector(selectRouterLoaded);
-    const { suiteRouterHistory } = useServices<SuiteRouterHistoryDep>();
+    const { suiteRouterHistory } = useServices(selectSuiteRouterHistoryDep);
     const canGoBack = useSelector(selectCanNavigate);
 
     useEffect(() => {
