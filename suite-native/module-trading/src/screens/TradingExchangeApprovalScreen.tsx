@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import type { ExchangeTrade } from 'invity-api';
+import type { DexApprovalType, ExchangeTrade } from 'invity-api';
 
 import {
     type TradingRootState,
@@ -130,6 +130,11 @@ const TradingExchangeApprovalScreenContent = ({
         return unsubscribe;
     }, [dispatch, navigation, reportToAnalytics]);
 
+    const onApprovalTypeChangeWithAnalytics = (approvalType: DexApprovalType) => {
+        onApprovalTypeChange(approvalType);
+        reportToAnalytics(`value_change`);
+    };
+
     if (!quote) {
         return (
             <Screen header={<ScreenHeader closeActionType="back" />}>
@@ -187,7 +192,7 @@ const TradingExchangeApprovalScreenContent = ({
 
                 <ExchangeApprovalDetails
                     exchange={quote.exchange}
-                    onApprovalTypeChange={onApprovalTypeChange}
+                    onApprovalTypeChange={onApprovalTypeChangeWithAnalytics}
                 />
             </VStack>
         </Screen>
