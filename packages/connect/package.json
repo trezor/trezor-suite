@@ -112,6 +112,8 @@
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.28.5",
+        "@cardano-foundation/cardano-verify-datasignature": "^1.0.11",
+        "@emurgo/cardano-message-signing-nodejs": "^1.1.0",
         "@trezor/eslint": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/jws": "^3.2.11",

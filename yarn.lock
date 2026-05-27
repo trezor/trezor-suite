@@ -1981,6 +1981,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cardano-foundation/cardano-verify-datasignature@npm:^1.0.11":
+  version: 1.0.11
+  resolution: "@cardano-foundation/cardano-verify-datasignature@npm:1.0.11"
+  dependencies:
+    "@stricahq/bip32ed25519": "npm:^1.0.4"
+    "@stricahq/cbors": "npm:^1.0.2"
+    "@stricahq/cip08": "npm:^1.0.4"
+    "@stricahq/typhonjs": "npm:^1.2.8"
+    blakejs: "npm:^1.2.1"
+  checksum: 10/1042a17203edcb191239f3a1402c7ca3f7527994aa88294a02af777caa52de8da7ea2246f381aaccbaed84dae704032d0fd90ea0500dbe2a21c8e0179805ff95
+  languageName: node
+  linkType: hard
+
 "@codemirror/autocomplete@npm:^6.0.0, @codemirror/autocomplete@npm:^6.16.2":
   version: 6.18.0
   resolution: "@codemirror/autocomplete@npm:6.18.0"
@@ -2755,6 +2768,13 @@ __metadata:
   version: 0.4.0
   resolution: "@emotion/weak-memoize@npm:0.4.0"
   checksum: 10/db5da0e89bd752c78b6bd65a1e56231f0abebe2f71c0bd8fc47dff96408f7065b02e214080f99924f6a3bfe7ee15afc48dad999d76df86b39b16e513f7a94f52
+  languageName: node
+  linkType: hard
+
+"@emurgo/cardano-message-signing-nodejs@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@emurgo/cardano-message-signing-nodejs@npm:1.1.0"
+  checksum: 10/c7ebd1e2c06759485cdf16ab52e50cd68bd38a8e552dd988f26fbb1fc3d1401a2634e85d2a38f84b8fec5dffeb1885a278a0bb40dcd4eff89024718e51117e70
   languageName: node
   linkType: hard
 
@@ -10177,6 +10197,67 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@stricahq/bip32ed25519@npm:^1.0.3, @stricahq/bip32ed25519@npm:^1.0.4":
+  version: 1.1.2
+  resolution: "@stricahq/bip32ed25519@npm:1.1.2"
+  dependencies:
+    blakejs: "npm:^1.1.1"
+    bn.js: "npm:^5.2.0"
+    buffer: "npm:^6.0.3"
+    elliptic: "npm:6.6.1"
+    hash.js: "npm:^1.1.7"
+    pbkdf2: "npm:^3.1.2"
+  checksum: 10/09c9f6677515dd4a3d6751fc71691479f214e34b814e4fa0931d50dd078ee96bd9e483cb910487f50aca3cea386a3da59f955fca17e9e0b2ad720bea896a04e1
+  languageName: node
+  linkType: hard
+
+"@stricahq/cbors@npm:1.0.2":
+  version: 1.0.2
+  resolution: "@stricahq/cbors@npm:1.0.2"
+  dependencies:
+    bignumber.js: "npm:^9.0.2"
+    buffer: "npm:^6.0.3"
+  checksum: 10/aeaaf5f34e7ac7870a33514fb682e7ed2da68a18da2cea8de2cdad4a57f2f85e1da85150887bb50c67749b460b96833ff0a3620048f61e8413e7347411dc3703
+  languageName: node
+  linkType: hard
+
+"@stricahq/cbors@npm:^1.0.0, @stricahq/cbors@npm:^1.0.2":
+  version: 1.0.4
+  resolution: "@stricahq/cbors@npm:1.0.4"
+  dependencies:
+    bignumber.js: "npm:^9.0.2"
+    buffer: "npm:^6.0.3"
+  checksum: 10/018f507c7e22ed7baafe41c45493aac112c869cde03512bee93f0782a03bb6c97c4a77561f17766cfcf61dd1859d1478a132c83729cbc63841d94adcd5be6e6f
+  languageName: node
+  linkType: hard
+
+"@stricahq/cip08@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "@stricahq/cip08@npm:1.0.4"
+  dependencies:
+    "@stricahq/bip32ed25519": "npm:^1.0.3"
+    "@stricahq/cbors": "npm:^1.0.0"
+    blakejs: "npm:^1.1.1"
+    buffer: "npm:^6.0.3"
+  checksum: 10/5ed12d64765cb20bc2cada3575dbdd28030ec0e008d83672e60b60008be2f9d513b61e010e8bfa3fc1df30415665d34584f902a5448843b5e9b5279bfaaf822f
+  languageName: node
+  linkType: hard
+
+"@stricahq/typhonjs@npm:^1.2.8":
+  version: 1.2.8
+  resolution: "@stricahq/typhonjs@npm:1.2.8"
+  dependencies:
+    "@stricahq/cbors": "npm:1.0.2"
+    bech32: "npm:^2.0.0"
+    bignumber.js: "npm:^9.0.1"
+    blakejs: "npm:^1.2.1"
+    bs58: "npm:^5.0.0"
+    buffer: "npm:^6.0.3"
+    lodash: "npm:^4.17.21"
+  checksum: 10/282bfff1b4a4d2e9dfc2114537b44a250794d49dc957ffaf7083f35d372958dba86eb87fc5091bae15d95c0dfbfa2abb8b13bd7b4986f1576b8e2bd48678e0c2
+  languageName: node
+  linkType: hard
+
 "@suite-common/address@workspace:*, @suite-common/address@workspace:suite-common/address":
   version: 0.0.0-use.local
   resolution: "@suite-common/address@workspace:suite-common/address"
@@ -15696,6 +15777,8 @@ __metadata:
   dependencies:
     "@babel/preset-typescript": "npm:^7.28.5"
     "@bufbuild/protobuf": "npm:^2.11.0"
+    "@cardano-foundation/cardano-verify-datasignature": "npm:^1.0.11"
+    "@emurgo/cardano-message-signing-nodejs": "npm:^1.1.0"
     "@ethereumjs/common": "npm:^10.1.1"
     "@ethereumjs/tx": "npm:^10.1.1"
     "@fivebinaries/coin-selection": "npm:3.0.0"
@@ -20496,6 +20579,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"base-x@npm:^4.0.0":
+  version: 4.0.1
+  resolution: "base-x@npm:4.0.1"
+  checksum: 10/c9061e576f7376b2bc6b69eca131254bb16ebe1445b535a3f0d68f27524e724965b6c191dffd255bf80f9bdf5eb9d1c8d0320903e83116f2c3e09f81b5ecb6a2
+  languageName: node
+  linkType: hard
+
 "base-x@npm:^5.0.0":
   version: 5.0.1
   resolution: "base-x@npm:5.0.1"
@@ -20550,6 +20640,13 @@ __metadata:
     loady: "npm:~0.0.5"
     node-gyp: "npm:latest"
   checksum: 10/5dcd3726b5bb767aac749ad7fe773a0e3f8aa226db04c260ac2a3b659d007708c9195844c7d5e2718b7ec82a089076183c0a870cd203546e1fbf2dd951975557
+  languageName: node
+  linkType: hard
+
+"bech32@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "bech32@npm:2.0.0"
+  checksum: 10/fa15acb270b59aa496734a01f9155677b478987b773bf701f465858bf1606c6a970085babd43d71ce61895f1baa594cb41a2cd1394bd2c6698f03cc2d811300e
   languageName: node
   linkType: hard
 
@@ -20608,7 +20705,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bignumber.js@npm:^9.0.0, bignumber.js@npm:^9.3.1":
+"bignumber.js@npm:^9.0.0, bignumber.js@npm:^9.0.1, bignumber.js@npm:^9.0.2, bignumber.js@npm:^9.3.1":
   version: 9.3.1
   resolution: "bignumber.js@npm:9.3.1"
   checksum: 10/1be0372bf0d6d29d0a49b9e6a9cefbd54dad9918232ad21fcd4ec39030260773abf0c76af960c6b3b98d3115a3a71e61c6a111812d1395040a039cfa178e0245
@@ -20649,7 +20746,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"blakejs@npm:1.2.1":
+"blakejs@npm:1.2.1, blakejs@npm:^1.1.1, blakejs@npm:^1.2.1":
   version: 1.2.1
   resolution: "blakejs@npm:1.2.1"
   checksum: 10/0638b1bd058b21892633929c43005aa6a4cc4b2ac5b338a146c3c076622f1b360795bd7a4d1f077c9b01863ed2df0c1504a81c5b520d164179120434847e6cd7
@@ -20928,6 +21025,15 @@ __metadata:
   dependencies:
     fast-json-stable-stringify: "npm:2.x"
   checksum: 10/e6d3ff82698bb3f20ce64fb85355c5716a3cf267f3977abe93bf9c32a2e46186b253f48a028ae5b96ab42bacd2c826766d9ae8cf6892f9b944656be9113cf212
+  languageName: node
+  linkType: hard
+
+"bs58@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "bs58@npm:5.0.0"
+  dependencies:
+    base-x: "npm:^4.0.0"
+  checksum: 10/2475cb0684e07077521aac718e604a13e0f891d58cff923d437a2f7e9e28703ab39fce9f84c7c703ab369815a675f11e3bd394d38643bfe8969fbe42e6833d45
   languageName: node
   linkType: hard
 
@@ -28895,7 +29001,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hash.js@npm:^1.0.0, hash.js@npm:^1.0.3":
+"hash.js@npm:^1.0.0, hash.js@npm:^1.0.3, hash.js@npm:^1.1.7":
   version: 1.1.7
   resolution: "hash.js@npm:1.1.7"
   dependencies:
