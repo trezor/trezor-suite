@@ -1,36 +1,36 @@
 import {
-    bignumberOrNaN,
     getDustAmount,
     getFee,
     getFeePolicy,
+    parseBigInt,
     sumOrNaN,
 } from '../../src/coinselect/coinselectUtils';
 import { zcash as zcashNetwork } from '../../src/networks';
 
 describe('coinselectUtils', () => {
-    it('bignumberOrNaN', () => {
-        expect(bignumberOrNaN('1')).not.toBeUndefined();
-        expect(bignumberOrNaN('1.1')).toBeUndefined();
-        expect(bignumberOrNaN('-1')).toBeUndefined();
-        expect(bignumberOrNaN('')).toBeUndefined();
-        expect(bignumberOrNaN('deadbeef')).toBeUndefined();
-        expect(bignumberOrNaN('0x dead beef')).toBeUndefined();
-        expect(bignumberOrNaN('1.1')).toBeUndefined();
-        expect(bignumberOrNaN()).toBeUndefined();
+    it('parseBigInt', () => {
+        expect(parseBigInt('1')).not.toBeUndefined();
+        expect(parseBigInt('1.1')).toBeUndefined();
+        expect(parseBigInt('-1')).toBeUndefined();
+        expect(parseBigInt('')).toBeUndefined();
+        expect(parseBigInt('deadbeef')).toBeUndefined();
+        expect(parseBigInt('0x dead beef')).toBeUndefined();
+        expect(parseBigInt('1.1')).toBeUndefined();
+        expect(parseBigInt()).toBeUndefined();
         // @ts-expect-error invalid arg
-        expect(bignumberOrNaN(1)).toBeUndefined();
+        expect(parseBigInt(1)).toBeUndefined();
         // @ts-expect-error invalid arg
-        expect(bignumberOrNaN(-1, true)).not.toBeUndefined();
+        expect(parseBigInt(-1, true)).not.toBeUndefined();
         // @ts-expect-error invalid arg
-        expect(bignumberOrNaN(Infinity)).toBeUndefined();
+        expect(parseBigInt(Infinity)).toBeUndefined();
         // @ts-expect-error invalid arg
-        expect(bignumberOrNaN(NaN)).toBeUndefined();
+        expect(parseBigInt(NaN)).toBeUndefined();
         // @ts-expect-error invalid arg
-        expect(bignumberOrNaN(1.1)).toBeUndefined();
+        expect(parseBigInt(1.1)).toBeUndefined();
         // @ts-expect-error invalid arg
-        expect(bignumberOrNaN(-1)).toBeUndefined();
+        expect(parseBigInt(-1)).toBeUndefined();
         // @ts-expect-error invalid arg
-        expect(bignumberOrNaN({})).toBeUndefined();
+        expect(parseBigInt({})).toBeUndefined();
     });
 
     it('getBaseFee', () => {

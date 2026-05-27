@@ -133,12 +133,12 @@ export function getDustAmount(
     return Math.max(dustThreshold || 0, getFeeForBytes(dustRelayFeeRate, inputSize));
 }
 
-export function bignumberOrNaN(v?: bigint | string): bigint | undefined;
-export function bignumberOrNaN<F extends boolean>(
+export function parseBigInt(v?: bigint | string): bigint | undefined;
+export function parseBigInt<F extends boolean>(
     v?: bigint | string,
     forgiving?: F,
 ): F extends true ? bigint : bigint | undefined;
-export function bignumberOrNaN(v?: bigint | string, forgiving = false) {
+export function parseBigInt(v?: bigint | string, forgiving = false) {
     if (typeof v === 'bigint') return v;
     const defaultValue = forgiving ? ZERO : undefined;
     if (!v || typeof v !== 'string' || !/^\d+$/.test(v)) return defaultValue;
@@ -158,7 +158,7 @@ export function sumOrNaN<F extends boolean>(
 export function sumOrNaN(range: { value?: bigint }[], forgiving = false) {
     return range.reduce((a: bigint | undefined, x) => {
         if (a === undefined) return a;
-        const value = bignumberOrNaN(x.value);
+        const value = parseBigInt(x.value);
         if (value === undefined) return forgiving ? a : undefined;
 
         return value + a;
