@@ -80,8 +80,15 @@ export type BaseCurrencyOption = { value: BaseCurrencyCode | ''; label: string }
 export type TxTargetId = string | Branded<'TxTargetId'>;
 export const asTxTargetId = (value: string) => value as TxTargetId;
 
+// Namecoin name-operation kinds. Mirrors the firmware-side `NameOpKind`
+// enum proposed in trezor/trezor-firmware#7010:
+//   name_new          -- reserve a name by committing to its hash
+//   name_firstupdate  -- reveal and claim the name (12+ blocks after name_new)
+//   name_update       -- update the value of an already-owned name
+export type NameOpKind = 'name_new' | 'name_firstupdate' | 'name_update';
+
 export type Output = {
-    type: 'payment' | 'opreturn';
+    type: 'payment' | 'opreturn' | 'name-op';
     address: string;
     amount: string;
     fiat: string;
@@ -90,6 +97,18 @@ export type Output = {
     token: string | null;
     dataHex?: string; // bitcoin opreturn/ethereum data
     dataAscii?: string; // bitcoin opreturn/ethereum data
+    // Namecoin name-operation fields (only set when type === 'name-op').
+    // The on-the-wire shape matches `NamecoinOp` in messages-bitcoin.proto.
+    nameOpKind?: NameOpKind;
+    // ASCII name, e.g. 'd/example'. Used by name_firstupdate and name_update.
+    nameOpName?: string;
+    // ASCII or hex JSON value. Used by name_firstupdate and name_update.
+    nameOpValue?: string;
+    // 20-byte commitment hash, hex-encoded. Used by name_new.
+    nameOpCommitmentHash?: string;
+    // 20-byte random nonce, hex-encoded. Generated for name_new, retained for
+    // the subsequent name_firstupdate so the wallet can prove the commitment.
+    nameOpRand?: string;
 };
 
 export interface FeeInfo {
@@ -126,6 +145,9 @@ export type EthTransactionData = {
     payment_req?: PROTO.PaymentRequest;
 };
 
+// TODO(name-op): once `@trezor/connect`'s ComposeOutput is regenerated to
+// include the `name-op` variant (depends on the proto regen tied to
+// trezor/trezor-firmware#7010), extend this exclusion with `{ type: 'name-op' }`.
 export type ExternalOutput = Exclude<ComposeOutput, { type: 'opreturn' } | { address_n: number[] }>;
 
 type ComposeError = {
