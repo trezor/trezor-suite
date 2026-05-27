@@ -3,6 +3,7 @@ import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectIsN4w1BackupEnabled } from '@suite/settings';
+import { hasExtendableShamirBackup } from '@suite-common/backup';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -20,14 +21,7 @@ const doesSupportMultiShare = (device: TrezorDevice | undefined): boolean => {
         return false;
     }
 
-    return (
-        device.features.backup_type !== null &&
-        [
-            'Slip39_Single_Extendable',
-            'Slip39_Basic_Extendable',
-            'Slip39_Advanced_Extendable',
-        ].includes(device.features.backup_type)
-    );
+    return hasExtendableShamirBackup(device.features);
 };
 
 export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }) => {
