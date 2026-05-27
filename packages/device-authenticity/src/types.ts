@@ -30,6 +30,7 @@ export type VerifyAuthenticityProofResult =
           caPubKey?: string;
           rootPubKey: string;
           error?: never;
+          errorDetails?: never;
           serialNumber?: string;
       }
     | {
@@ -46,6 +47,7 @@ export type VerifyAuthenticityProofResult =
               | 'RESPONSE_PAYLOAD_MISSING'
               | 'RESPONSE_MALFORMED'
               | 'SERIAL_NUMBER_MISMATCH';
+          errorDetails?: string;
       };
 
 export type ResultsToValidate = {
