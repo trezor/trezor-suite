@@ -1,4 +1,4 @@
-import { type NetworkDtoId } from '@suite-common/earn-stablecoin-api';
+import { type NetworkDtoId } from '@suite-common/earn-stablecoin-api/src/api';
 import { exhaustive } from '@trezor/type-utils';
 
 import { networks } from './networksConfig';

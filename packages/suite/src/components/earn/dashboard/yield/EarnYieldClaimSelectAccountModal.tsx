@@ -3,6 +3,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectIsDebugModeActive } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
+import { type YieldAccountsRewards } from '@suite-common/earn-stablecoin-api';
 import { useFormatters } from '@suite-common/formatters';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { CardList, Column, Modal, Row, Text, Tooltip } from '@trezor/components';
@@ -12,11 +13,9 @@ import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { useSelector } from 'src/hooks/suite';
 
-import { type YieldAccountRewards, type YieldAccountsRewards } from '../../yield/claim/hooks';
-
 type EarnYieldClaimSelectAccountModalProps = {
     accountsRewards: YieldAccountsRewards;
-    onSelect: (account: YieldAccountRewards) => void;
+    onSelect: (account: YieldAccountsRewards[number]) => void;
     onClose: () => void;
 };
 
@@ -30,7 +29,7 @@ export const EarnYieldClaimSelectAccountModal = ({
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const baseCurrency = useSelector(selectBaseCurrency);
 
-    const handleOnSelect = (account: YieldAccountRewards) => {
+    const handleOnSelect = (account: YieldAccountsRewards[number]) => {
         analytics.report({
             type: events.yieldNavigateEvent.name,
             payload: {

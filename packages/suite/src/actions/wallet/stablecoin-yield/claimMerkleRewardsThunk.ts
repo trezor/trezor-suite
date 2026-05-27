@@ -5,6 +5,7 @@ import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { Calldata, asEvmAddress } from '@suite-common/calldata';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin/src/tx-simulation';
+import { type YieldAccountsRewards } from '@suite-common/earn-stablecoin-api';
 import { createThunk } from '@suite-common/redux-utils';
 import { type EvmFeeHex, type EvmHexString, parseEvmFeeHex } from '@suite-common/schemas/src/evm';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -32,8 +33,6 @@ import {
 import { getAccountIdentity, getMevProtectedTxData, sanitizeHex } from '@suite-common/wallet-utils';
 import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
-
-import type { YieldAccountsRewards } from 'src/components/earn/yield/claim/hooks';
 
 type BuildClaimReviewStateParams = {
     data: EvmHexString;

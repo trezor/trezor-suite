@@ -33,7 +33,10 @@ const publishableTrezorPackages = [
     '@suite-common/schemas',
 ];
 
-const packagesWithSectionEntryPoints = ['@suite-common/earn-stablecoin'];
+const packagesWithSectionEntryPoints = [
+    '@suite-common/earn-stablecoin',
+    '@suite-common/earn-stablecoin-api',
+];
 
 /** @type {Config[]} */
 export const localRulesConfig = [
