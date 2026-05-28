@@ -250,8 +250,6 @@ export interface TradingExchangeFormProps extends FormState {
     [constants.TRADING_EXCHANGE_COMPARATOR_KYC_FILTER]: TradingExchangeKycFilter;
     [constants.TRADING_EXCHANGE_COMPARATOR_RATE_FILTER]: TradingExchangeRateFilter;
     [constants.TRADING_EXCHANGE_FROM_ADDRESS]?: string | undefined;
-    [constants.TRADING_EXCHANGE_RECEIVE_ADDRESS]?: string | undefined;
-    [constants.TRADING_EXCHANGE_EXTRA_FIELD]?: string | undefined;
     [constants.TRADING_FORM_PROVIDER_SELECT]?: string;
 }
 

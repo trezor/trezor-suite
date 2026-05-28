@@ -66,6 +66,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     composedLevels,
     composedTransactionInfo,
     setShowReserveBanner,
+    receiveAddress,
 }: TradingUseFormActionsProps<T>): TradingUseFormActionsReturnProps => {
     const dispatch = useDispatch();
     const { symbol } = account;
@@ -358,9 +359,14 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         }
     }, [previousValues, values, handleChange, handleSubmit, isNotFormPage, pageType, type]);
 
-    // call change handler on every change of receive address
-    // effect only for exchange form
+    // Trigger a quotes refetch when the receive identity changes. `receiveAddress`
+    // is no longer mirrored onto the outer form (single source of truth lives in
+    // useTradingReceiveAddress) so we track it separately here.
+    const previousReceiveAddress = useRef<string | undefined>(receiveAddress);
     useEffect(() => {
+        const receiveAddressChanged = isChanged(receiveAddress, previousReceiveAddress.current);
+        previousReceiveAddress.current = receiveAddress;
+
         if (type !== 'exchange' || pageType === 'confirm' || pageType === 'retry') return;
 
         const formValues = values as TradingExchangeFormProps | null;
@@ -369,11 +375,6 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         const receiveCryptoChanged = isChanged(
             formValues?.receiveCryptoSelect,
             prevFormValues?.receiveCryptoSelect,
-        );
-
-        const receiveAddressChanged = isChanged(
-            formValues?.receiveAddress,
-            prevFormValues?.receiveAddress,
         );
 
         if (receiveCryptoChanged || receiveAddressChanged) {
@@ -385,7 +386,16 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
 
             previousValues.current = values;
         }
-    }, [values, previousValues, handleChange, handleSubmit, dispatch, pageType, type]);
+    }, [
+        values,
+        receiveAddress,
+        previousValues,
+        handleChange,
+        handleSubmit,
+        dispatch,
+        pageType,
+        type,
+    ]);
 
     return {
         isBalanceZero,
