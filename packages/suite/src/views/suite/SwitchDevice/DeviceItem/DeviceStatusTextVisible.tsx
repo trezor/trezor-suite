@@ -1,10 +1,8 @@
 import React from 'react';
 
 import { Translation } from '@suite/intl';
-import { selectIsLegacyLabelingVisible, selectLabelingDataForWallet } from '@suite/metadata';
-import { selectIsSuiteSyncEnabled, selectSuiteSyncWalletLabel } from '@suite-common/suite-sync';
+import { selectWalletLabel } from '@suite/wallet';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
 
 import { useWalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
@@ -22,29 +20,16 @@ export const DeviceStatusTextVisible = ({
     forceConnectionInfo,
 }: DeviceStatusTextVisibleProps) => {
     const { connected } = device;
-    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
-    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
-    const { walletLabel: legacyWalletLabel } = useSelector(state =>
-        selectLabelingDataForWallet(state, device.state),
+    const walletLabel = useSelector(state =>
+        selectWalletLabel(state, {
+            deviceStaticId: device.state?.staticSessionId ?? null,
+        }),
     );
 
     const { defaultAccountLabelString } = useWalletLabeling();
 
     const defaultWalletLabel =
         device !== undefined ? defaultAccountLabelString({ device }) : undefined;
-
-    const suiteSyncWalletLabel = useSelector(state => {
-        if (!device?.state?.staticSessionId) return null;
-
-        const { walletDescriptor } = parseDeviceStaticSessionId(device.state.staticSessionId);
-
-        return selectSuiteSyncWalletLabel(state, walletDescriptor);
-    });
-
-    const walletLabel =
-        (isSuiteSyncEnabled ? suiteSyncWalletLabel : null) ??
-        (isLegacyLabelingVisible ? legacyWalletLabel : null) ??
-        null;
 
     const isWalletLabelEmpty = walletLabel === null || walletLabel.trim() === '';
     const walletText = isWalletLabelEmpty ? defaultWalletLabel : walletLabel;

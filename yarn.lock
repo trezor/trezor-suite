@@ -14942,6 +14942,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/wallet@workspace:*, @suite/wallet@workspace:suite/wallet":
+  version: 0.0.0-use.local
+  resolution: "@suite/wallet@workspace:suite/wallet"
+  dependencies:
+    "@suite-common/message-system": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-sync": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite/metadata": "workspace:*"
+    "@trezor/connect": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@swc/core-darwin-arm64@npm:1.15.30":
   version: 1.15.30
   resolution: "@swc/core-darwin-arm64@npm:1.15.30"
@@ -16490,6 +16503,7 @@ __metadata:
     "@suite/tor": "workspace:*"
     "@suite/trading": "workspace:*"
     "@suite/tx-simulation": "workspace:^"
+    "@suite/wallet": "workspace:*"
     "@tanstack/react-query": "npm:5.99.0"
     "@testing-library/jest-dom": "npm:6.9.1"
     "@testing-library/react": "npm:^16.3.2"
