@@ -117,6 +117,7 @@ export const GuideRouter = () => {
                 }}
                 onWidthResizeMove={handleResizeMove}
                 onWidthResizeEnd={handleResizeEnd}
+                zIndex={zIndices.guide}
             >
                 <Box
                     height="100vh"
