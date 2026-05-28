@@ -1413,11 +1413,6 @@ export const messages = {
         experimental: {
             title: 'Experimental features',
             subtitle: 'For experienced users only. Use at your own risk.',
-            tronViewOnly: {
-                title: 'Tron (Beta)',
-                description:
-                    'Enable the Tron Network with the latest firmware to check your balance, send and receive TRX and tokens, view charts and transaction history, and use WalletConnect. Full support, including freezing and voting, is coming soon.',
-            },
             testnets: {
                 title: 'Testnet coins & features',
                 description: 'Test networks carry no real value and are used only for testing.',

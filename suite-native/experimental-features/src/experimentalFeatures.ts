@@ -16,9 +16,6 @@ export const FEEDBACK_FEATURE_CONFIGS: Record<ExperimentalFeature, { titleKey: T
     'suite-sync': {
         titleKey: 'moduleSettings.advanced.experimentalFeatures.suiteSync.title',
     },
-    'tron-view-only': {
-        titleKey: 'moduleSettings.experimental.tronViewOnly.title',
-    },
     'testnet-networks': {
         titleKey: 'moduleSettings.experimental.testnets.title',
     },
