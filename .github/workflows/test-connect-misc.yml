@@ -76,6 +76,7 @@ jobs:
         with:
           mode: firewall-free
           job-summary: errors
+          firewall-version: 1.11.0
       - name: Install dependencies
         run: sfw yarn install
 
@@ -111,5 +112,6 @@ jobs:
         with:
           mode: firewall-free
           job-summary: errors
+          firewall-version: 1.11.0
       - run: sfw yarn install --immutable
       - run: yarn workspace @trezor/protobuf update:protobuf

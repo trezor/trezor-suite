@@ -55,6 +55,7 @@ jobs:
         with:
           mode: firewall-free
           job-summary: errors
+          firewall-version: 1.11.0
       - name: Install Yarn dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
@@ -130,6 +131,7 @@ jobs:
         with:
           mode: firewall-free
           job-summary: errors
+          firewall-version: 1.11.0
       - name: Install Yarn dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml

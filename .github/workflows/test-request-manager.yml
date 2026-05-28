@@ -35,5 +35,6 @@ jobs:
         with:
           mode: firewall-free
           job-summary: errors
+          firewall-version: 1.11.0
       - run: sfw yarn install --immutable
       - run: yarn workspace @trezor/request-manager test:all

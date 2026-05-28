@@ -51,6 +51,7 @@ jobs:
         with:
           mode: firewall-free
           job-summary: errors
+          firewall-version: 1.11.0
       - name: Install PW Dependencies
         shell: bash
         run: |
