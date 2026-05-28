@@ -3,7 +3,7 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { isDetoxTestBuild } from '@suite-native/config';
 import { DEVICE } from '@trezor/connect';
 
-export type ExperimentalFeature = 'suite-sync' | 'tron-view-only' | 'testnet-networks';
+export type ExperimentalFeature = 'suite-sync' | 'testnet-networks';
 
 export interface AppSettingsState {
     isOnboardingFinished: boolean;
@@ -14,7 +14,6 @@ export interface AppSettingsState {
     areTestnetsEnabled: boolean;
     shouldShowAutoEjectAlert: boolean;
     hasAutoEjectAlertBeenDisplayed: boolean;
-    isTronEnabled: boolean;
 }
 
 export type SettingsSliceRootState = {
@@ -32,7 +31,6 @@ export const appSettingsInitialState: AppSettingsState = {
     areTestnetsEnabled: isDetoxTestBuild(),
     shouldShowAutoEjectAlert: false,
     hasAutoEjectAlertBeenDisplayed: false,
-    isTronEnabled: false,
 };
 
 export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
@@ -43,7 +41,6 @@ export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
     'areDeviceMetaChecksEnabled',
     'areTestnetsEnabled',
     'hasAutoEjectAlertBeenDisplayed',
-    'isTronEnabled',
 ];
 
 export const appSettingsSlice = createSlice({
@@ -70,9 +67,6 @@ export const appSettingsSlice = createSlice({
         setHasAutoEjectAlertBeenDisplayed: (state, { payload }: PayloadAction<boolean>) => {
             state.hasAutoEjectAlertBeenDisplayed = payload;
         },
-        toggleIsTronEnabled: state => {
-            state.isTronEnabled = !state.isTronEnabled;
-        },
     },
     extraReducers: builder => {
         builder.addCase(DEVICE.CONNECT, state => {
@@ -94,9 +88,6 @@ export const selectAreTestnetsEnabled = (state: SettingsSliceRootState) =>
 
 export const selectHasAutoEjectAlertBeenDisplayed = (state: SettingsSliceRootState) =>
     state.appSettings.hasAutoEjectAlertBeenDisplayed;
-
-export const selectIsTronEnabled = (state: SettingsSliceRootState) =>
-    state.appSettings.isTronEnabled;
 
 export const selectIsFirmwareRevisionCheckEnabled = (state: SettingsSliceRootState) =>
     state.appSettings.isFirmwareRevisionCheckEnabled;
@@ -121,6 +112,5 @@ export const {
     toggleAreTestnetsEnabled,
     setShouldShowAutoEjectAlert,
     setHasAutoEjectAlertBeenDisplayed,
-    toggleIsTronEnabled,
 } = appSettingsSlice.actions;
 export const appSettingsReducer = appSettingsSlice.reducer;
