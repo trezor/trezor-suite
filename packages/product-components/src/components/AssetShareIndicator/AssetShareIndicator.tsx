@@ -105,13 +105,12 @@ const ProgressCircle = ({ symbol, size, percentageShare, index = 0 }: ProgressCi
 
 export const AssetShareIndicator = ({
     symbol,
-    className,
     size = 32,
     percentageShare,
     index,
     ...rest
 }: AssetShareIndicatorProps) => (
-    <Container className={className}>
+    <Container>
         <CoinLogo symbol={symbol} size={size} {...rest} />
         <ProgressCircle
             symbol={symbol}

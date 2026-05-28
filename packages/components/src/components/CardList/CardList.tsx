@@ -38,7 +38,6 @@ export type CardListProps = AllowedCardListFrameProps &
         | 'footer'
         | 'label'
         | 'onClick'
-        | 'className'
         | 'tabIndex'
         | 'variant'
         | 'fillType'

@@ -9,14 +9,12 @@ import { DeviceAnimation } from '../DeviceAnimation/DeviceAnimation';
 export type RotateDeviceImageProps = AllowedAnimationPrimitiveFrameProps & {
     deviceModel?: DeviceModelInternal;
     deviceColor?: number;
-    className?: string;
     loop?: boolean;
 };
 
 export const RotateDeviceImage = ({
     deviceModel,
     deviceColor,
-    className,
     loop,
     ...rest
 }: RotateDeviceImageProps) => {
@@ -31,7 +29,6 @@ export const RotateDeviceImage = ({
     return (
         <DeviceAnimation
             loop={loop}
-            className={className}
             type="ROTATE"
             deviceModelInternal={
                 deviceModel === DeviceModelInternal.T2B1 ? DeviceModelInternal.T3B1 : deviceModel

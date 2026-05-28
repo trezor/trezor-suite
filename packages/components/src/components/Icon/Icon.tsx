@@ -104,7 +104,6 @@ export type IconProps = AllowedFrameProps & {
     name: IconName;
     size?: IconSize;
     onClick?: (e: any) => void;
-    className?: string;
     'data-testid'?: string;
 } & ExclusiveColorOrIntent;
 
@@ -116,7 +115,6 @@ export const Icon = ({
     isDisabled = false,
     color,
     onClick,
-    className,
     'data-testid': dataTest,
     cursor,
     ...rest
@@ -151,7 +149,6 @@ export const Icon = ({
             $color={color}
             data-testid={dataTest}
             onClick={onClick && !isDisabled ? handleClick : undefined}
-            className={className}
             {...frameProps}
             $cursor={cursor ?? (onClick && !isDisabled ? 'pointer' : undefined)}
         >

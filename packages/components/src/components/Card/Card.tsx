@@ -82,7 +82,6 @@ export type CardProps = AccessibilityProps &
         onMouseLeave?: HTMLAttributes<HTMLDivElement>['onMouseLeave'];
         onClick?: HTMLAttributes<HTMLDivElement>['onClick'];
         children?: ReactNode;
-        className?: string;
         variant?: CardVariant;
         'data-testid'?: string;
     };

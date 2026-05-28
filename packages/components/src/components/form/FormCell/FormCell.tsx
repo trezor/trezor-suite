@@ -33,7 +33,6 @@ const formCellProps = [
     'bottomTextIconName',
     'hasError',
     'isDisabled',
-    'className',
     ...allowedFormCellFrameProps,
 ] as const satisfies (keyof FormCellProps)[];
 
@@ -59,7 +58,6 @@ export type FormCellProps = AllowedFrameProps & {
     hasError?: boolean;
     isDisabled?: boolean;
     children: ReactNode;
-    className?: string;
     'data-testid'?: string;
 };
 
@@ -73,7 +71,6 @@ export const FormCell = ({
     bottomTextIconName,
     hasError,
     isDisabled,
-    className,
     'data-testid': dataTestId,
     ...rest
 }: FormCellProps) => {
@@ -83,7 +80,6 @@ export const FormCell = ({
     return (
         <Wrapper
             {...frameProps}
-            className={className}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >

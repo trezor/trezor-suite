@@ -5,7 +5,6 @@ import { Card, Column, type IconName, InfoItem, Tooltip } from '@trezor/componen
 type SettingsSectionProps = {
     title: ReactNode;
     icon?: IconName;
-    className?: string;
     children?: ReactNode;
     tooltipText?: ReactNode;
     hasVerticalLayout?: boolean;

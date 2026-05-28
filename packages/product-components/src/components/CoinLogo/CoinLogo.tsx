@@ -18,7 +18,6 @@ const DEFAULT_SIZE = 32;
 export interface CoinLogoProps extends ImgHTMLAttributes<HTMLImageElement> {
     symbol: NetworkSymbol | LegacyNetworkSymbol;
     type?: CoinLogoType;
-    className?: string;
     size?: number;
     index?: number;
 }
@@ -45,7 +44,6 @@ const SvgContainer = styled.div<{ $size: number }>`
 export const CoinLogo = ({
     symbol,
     type = 'token',
-    className,
     size = DEFAULT_SIZE,
     ...rest
 }: CoinLogoProps) => {
@@ -57,7 +55,7 @@ export const CoinLogo = ({
     } else if (type === 'network') {
         if (isNetworkIconSymbol(symbol)) {
             return (
-                <SvgWrapper className={className} $size={size} {...rest}>
+                <SvgWrapper $size={size} {...rest}>
                     <NetworkIcon networkSymbol={symbol} size={size} />
                 </SvgWrapper>
             );
@@ -71,7 +69,7 @@ export const CoinLogo = ({
     }
 
     return (
-        <SvgWrapper className={className} $size={size} {...rest}>
+        <SvgWrapper $size={size} {...rest}>
             <SvgContainer $size={size}>
                 <ReactSVG
                     src={symbolSrc ?? COINS[symbol]}

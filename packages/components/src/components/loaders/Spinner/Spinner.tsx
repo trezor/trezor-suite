@@ -40,7 +40,6 @@ export type SpinnerProps = AllowedFrameProps & {
     isDisabled?: boolean;
     variant?: SpinnerVariant;
     hasStartAnimation?: boolean;
-    className?: string;
     'data-testid'?: string;
 };
 

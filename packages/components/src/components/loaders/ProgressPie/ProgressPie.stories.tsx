@@ -20,7 +20,6 @@ export const ProgressPie: StoryObj<ProgressPieProps> = {
     },
     argTypes: {
         backgroundColor: { control: 'color' },
-        className: { control: false },
         children: { control: false },
         color: { control: 'color' },
         ...getFramePropsStory(allowedProgressPieFrameProps).argTypes,

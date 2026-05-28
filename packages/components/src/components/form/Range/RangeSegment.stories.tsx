@@ -78,9 +78,6 @@ export const RangeSegment: StoryObj<typeof meta> = {
         step: {
             control: { type: 'text' },
         },
-        className: {
-            control: false,
-        },
         onChange: {
             control: false,
         },

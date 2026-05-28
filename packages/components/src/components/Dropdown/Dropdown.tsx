@@ -18,7 +18,6 @@ export type DropdownProps = Omit<MenuProps, 'onClose'> &
         iconSize?: ButtonSize;
         isLoading?: boolean;
         iconName?: IconName;
-        className?: string;
         tooltip?: IconButtonProps['tooltip'];
         'data-testid'?: string;
     };
