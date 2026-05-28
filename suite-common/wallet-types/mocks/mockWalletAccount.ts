@@ -85,6 +85,10 @@ const networkTypeMap: Record<NetworkSymbol, NetworkSpecificDefault> = {
     eth: networkSpecificDefaultEthereum,
     etc: networkSpecificDefaultEthereum,
 
+    // Testnet Eth
+    tsep: networkSpecificDefaultEthereum,
+    thod: networkSpecificDefaultEthereum,
+
     // Solana
     sol: networkSpecificDefaultSolana,
     dsol: networkSpecificDefaultSolana,
@@ -104,8 +108,6 @@ const networkTypeMap: Record<NetworkSymbol, NetworkSpecificDefault> = {
     avax: networkSpecificDefaultBitcoin,
     trx: networkSpecificDefaultBitcoin,
     ttrx: networkSpecificDefaultBitcoin,
-    tsep: networkSpecificDefaultBitcoin,
-    thod: networkSpecificDefaultBitcoin,
     txrp: networkSpecificDefaultBitcoin,
     txlm: networkSpecificDefaultBitcoin,
 };

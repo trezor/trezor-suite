@@ -25,6 +25,8 @@ const accountsList: Account[] = [
         empty: true,
         visible: false,
     }),
+    mockWalletAccount({ symbol: 'tsep', accountType: 'normal' }),
+    mockWalletAccount({ symbol: 'tsep', accountType: 'legacy' }),
 ];
 
 type RunFilterReceiveAccountsTestParams = {
@@ -124,5 +126,25 @@ describe('filter receive accounts', () => {
         ];
 
         expect(runFilterReceiveAccouns({ symbol: 'sol' })).toEqual(filteredAccounts);
+    });
+
+    it('returns both normal and legacy for sepolia', () => {
+        const filteredAccounts = [
+            mockWalletAccount({ symbol: 'tsep', accountType: 'normal' }),
+            mockWalletAccount({ symbol: 'tsep', accountType: 'legacy' }),
+        ];
+
+        expect(runFilterReceiveAccouns({ symbol: 'tsep' })).toEqual(filteredAccounts);
+    });
+
+    it('returns non-debug + excludes testnet accounts when debug mode is off', () => {
+        const filteredAccounts = [
+            mockWalletAccount({ symbol: 'tsep', accountType: 'normal' }),
+            mockWalletAccount({ symbol: 'tsep', accountType: 'legacy' }),
+        ];
+
+        expect(runFilterReceiveAccouns({ isDebug: false })).toEqual(
+            expect.not.arrayContaining(filteredAccounts),
+        );
     });
 });
