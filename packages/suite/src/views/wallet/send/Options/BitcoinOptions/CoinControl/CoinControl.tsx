@@ -219,7 +219,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                             <Translation id="TR_PRIVATE_DESCRIPTION" values={{ targetAnonymity }} />
                         }
                         icon="shieldCheck"
-                        iconColor="contentBrand"
+                        iconIntent="brand"
                         utxos={spendableUtxosOnPage}
                     />
                 )}
@@ -234,7 +234,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                             />
                         }
                         icon="shieldWarning"
-                        iconColor="contentWarning"
+                        iconIntent="warning"
                         utxos={lowAnonymityUtxosOnPage}
                     />
                 )}
@@ -249,7 +249,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                         heading={<Translation id="TR_DUST" />}
                         description={<Translation id="TR_DUST_DESCRIPTION" />}
                         icon="info"
-                        iconColor="contentSecondary"
+                        iconIntent="neutral"
                         utxos={dustUtxosOnPage}
                     />
                 )}
