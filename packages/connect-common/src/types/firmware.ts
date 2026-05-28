@@ -27,6 +27,7 @@ export type FirmwareCapability =
     | 'tutorial'
     | 'tropicDeviceAuthentication'
     | 'mcuDeviceAuthentication'
+    | 'authenticityProofChunk'
     | 'getFirmwareHash'
     | 'chunkify'
     | 'entropyCheck'
