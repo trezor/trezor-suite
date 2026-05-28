@@ -1,5 +1,3 @@
-import { fromWei, toWei } from 'web3-utils';
-
 import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -26,6 +24,8 @@ import {
     calculateTotalGasCost,
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
+    fromGwei,
+    fromWei,
     getAccountIdentity,
     getApprovalComposeOutput,
     getCryptoMaxAmountWithReserve,
@@ -64,7 +64,7 @@ export const calculate = (
     let max: string | undefined;
 
     const totalGasCostInWei = calculateTotalGasCost(
-        toWei(feeLevel.maxFeePerGas || feeLevel.feePerUnit, 'gwei'),
+        fromGwei(feeLevel.maxFeePerGas || feeLevel.feePerUnit).toWei(),
         feeLevel.feeLimit,
     );
 
@@ -122,7 +122,7 @@ export const calculate = (
                 errorMessage: {
                     id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
                     values: {
-                        feeAmount: fromWei(totalGasCostInWei, 'ether').toString(),
+                        feeAmount: fromWei(totalGasCostInWei).toEther(),
                     },
                 },
             } as const;

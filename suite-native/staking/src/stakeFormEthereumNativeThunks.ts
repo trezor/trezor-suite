@@ -14,7 +14,7 @@ import {
     type PrecomposedTransactionFinal,
     type StakeFormState,
 } from '@suite-common/wallet-types';
-import { getFormDraftKey } from '@suite-common/wallet-utils';
+import { fromEther, getFormDraftKey } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
@@ -27,7 +27,6 @@ import {
     type PreparedEthereumStakingContext,
 } from './stakeFormEthereumNativeTypes';
 import { type SignStakeNativeRejectValue, type StakeNativeType } from './stakeNativeTypes';
-import { ethToWei } from './utils';
 
 const LOG_PREFIX = 'signEthereumStakingTransactionNativeThunk';
 
@@ -82,7 +81,7 @@ const readVariantFromComposeDraft = (
         stakeType,
         calldata,
         contractAddress,
-        value: stakeType === 'stake' ? ethToWei(composeAmount) : '0',
+        value: stakeType === 'stake' ? fromEther(composeAmount).toWei() : '0',
     };
 };
 

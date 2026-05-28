@@ -1,5 +1,3 @@
-import { fromWei, hexToNumberString } from 'web3-utils';
-
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -12,6 +10,8 @@ import {
     supportedNetworkSymbols,
 } from '@suite-common/wallet-types';
 import { BigNumber, isArrayMember } from '@trezor/utils';
+
+import { fromHex, fromWei } from './ethConverter';
 
 export const getEverstakePool = (account?: Account) => {
     if (account?.networkType !== 'ethereum') {
@@ -30,17 +30,16 @@ export const getAccountEverstakeStakingPool = (
 
     return {
         ...pool,
-        autocompoundBalance: fromWei(pool.autocompoundBalance, 'ether'),
-        claimableAmount: fromWei(pool.claimableAmount, 'ether'),
-        depositedBalance: fromWei(pool.depositedBalance, 'ether'),
-        pendingBalance: fromWei(pool.pendingBalance, 'ether'),
-        pendingDepositedBalance: fromWei(pool.pendingDepositedBalance, 'ether'),
-        restakedReward: fromWei(pool.restakedReward, 'ether'),
-        withdrawTotalAmount: fromWei(pool.withdrawTotalAmount, 'ether'),
+        autocompoundBalance: fromWei(pool.autocompoundBalance).toEther(),
+        claimableAmount: fromWei(pool.claimableAmount).toEther(),
+        depositedBalance: fromWei(pool.depositedBalance).toEther(),
+        pendingBalance: fromWei(pool.pendingBalance).toEther(),
+        pendingDepositedBalance: fromWei(pool.pendingDepositedBalance).toEther(),
+        restakedReward: fromWei(pool.restakedReward).toEther(),
+        withdrawTotalAmount: fromWei(pool.withdrawTotalAmount).toEther(),
         totalPendingStakeBalance: fromWei(
             new BigNumber(pool.pendingBalance).plus(pool.pendingDepositedBalance).toString(),
-            'ether',
-        ),
+        ).toEther(),
         canClaim:
             new BigNumber(pool.claimableAmount).gt(0) &&
             new BigNumber(pool.withdrawTotalAmount).eq(pool.claimableAmount),
@@ -125,7 +124,7 @@ export const getUnstakeAmountByEthereumDataHex = (dataHex?: string) => {
 
     const dataBuffer = Buffer.from(data, 'hex');
 
-    return hexToNumberString(`0x${dataBuffer.subarray(4, 36).toString('hex')}`);
+    return fromHex(`0x${dataBuffer.subarray(4, 36).toString('hex')}`).toIntegerString();
 };
 
 export const isStakeForm = (form: FormState | StakeFormState): form is StakeFormState =>
