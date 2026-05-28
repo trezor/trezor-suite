@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Walks a built `lib/` (or `libESM/`) tree, finds @trezor/* imports that aren't in the
+// Walks a built `lib/` tree, finds @trezor/* imports that aren't in the
 // package's own prod+peer dependency closure (= devDep leaks the consumer can't resolve),
 // bundles each leaked package's type declarations into its own `_vendor_<pkg>.d.ts`
 // next to the entry, and rewrites every .d.ts in the tree to redirect those imports to

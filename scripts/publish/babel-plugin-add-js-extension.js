@@ -5,9 +5,9 @@ import path from 'node:path';
 const isRelativeImport = src => src.startsWith('.') && !path.extname(src);
 const isRelativeJsImport = src => src.startsWith('.') && path.extname(src) === '.js';
 
-// Match @trezor package imports to libESM without extension: "@trezor/utils/libESM/bigNumber"
-const trezorLibESMPattern = /^@trezor\/[^/]+\/libESM\/[^.]+$/;
-const isTrezorLibESMImport = src => trezorLibESMPattern.test(src);
+// Match @trezor package imports to lib without extension: "@trezor/utils/lib/bigNumber"
+const trezorLibPattern = /^@trezor\/[^/]+\/lib\/[^.]+$/;
+const isTrezorLibImport = src => trezorLibPattern.test(src);
 
 // External CJS packages that need .js extension for Node ESM compatibility
 // These packages don't have proper "exports" in their package.json
@@ -23,7 +23,7 @@ const externalJsonImports = [];
  * For Node.js ESM compatibility:
  * - File imports: ./utils/helper → ./utils/helper.mjs
  * - Directory imports: ./constants → ./constants/index.mjs
- * - @trezor package imports: @trezor/utils/libESM/bigNumber → @trezor/utils/libESM/bigNumber.mjs
+ * - @trezor package imports: @trezor/utils/lib/bigNumber → @trezor/utils/lib/bigNumber.mjs
  * - External CJS subpaths: some-package/subpath → some-package/subpath.js
  */
 const addEsmExtensionPlugin = ({ types }) => {
@@ -43,25 +43,25 @@ const addEsmExtensionPlugin = ({ types }) => {
             return;
         }
 
-        // Handle @trezor package imports to libESM
-        if (isTrezorLibESMImport(src)) {
-            const match = src.match(/^@trezor\/([^/]+)\/libESM\/(.+)$/);
+        // Handle @trezor package imports to lib
+        if (isTrezorLibImport(src)) {
+            const match = src.match(/^@trezor\/([^/]+)\/lib\/(.+)$/);
             const [, packageName, subpath] = match;
 
-            // Find packages/ root from the current file's absolute path by locating the libESM/ segment.
-            // e.g., /packages/connect/libESM/device/thp/pairing.js → /packages/
-            const libESMIndex = state.filename.indexOf(`${path.sep}libESM${path.sep}`);
-            const packageDir = state.filename.substring(0, libESMIndex);
+            // Find packages/ root from the current file's absolute path by locating the lib/ segment.
+            // e.g., /packages/connect/lib/device/thp/pairing.js → /packages/
+            const libIndex = state.filename.indexOf(`${path.sep}lib${path.sep}`);
+            const packageDir = state.filename.substring(0, libIndex);
             const packagesRoot = path.dirname(packageDir);
-            // Check src/ instead of libESM/ — src/ is always present in the repo regardless of
-            // build order, whereas libESM/ may not exist yet in CI when this package is compiled.
+            // Check src/ instead of lib/ — src/ is always present in the repo regardless of
+            // build order, whereas lib/ may not exist yet in CI when this package is compiled.
             const resolvedSrcPath = path.join(packagesRoot, packageName, 'src', subpath);
 
             const isDirectory =
                 fs.existsSync(resolvedSrcPath) && fs.statSync(resolvedSrcPath).isDirectory();
 
-            // e.g., @trezor/protocol/libESM/protocol-tpn -> @trezor/protocol/libESM/protocol-tpn/index.js
-            // e.g., @trezor/protocol/libESM/bigNumber -> @trezor/protocol/libESM/bigNumber.js
+            // e.g., @trezor/protocol/lib/protocol-tpn -> @trezor/protocol/lib/protocol-tpn/index.js
+            // e.g., @trezor/protocol/lib/bigNumber -> @trezor/protocol/lib/bigNumber.js
             if (isDirectory) {
                 nodePath.node.source = types.stringLiteral(src + '/index.mjs');
             } else {

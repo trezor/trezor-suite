@@ -91,7 +91,7 @@ import TrezorConnect from '@trezor/connect';
 import TrezorConnectWeb from '@trezor/connect-web';
 
 // Exercise subpath-imported types from devDependencies inlined into d.ts.
-// If any inline `import("@trezor/*/libESM/...")` target is not resolvable
+// If any inline `import("@trezor/*/lib/...")` target is not resolvable
 // (e.g. due to a missing exports-map entry in the producer package),
 // tsc --noEmit would fail here, signalling a regression that the runtime
 // smoke tests below cannot detect.

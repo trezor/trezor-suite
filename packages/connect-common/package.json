@@ -19,38 +19,38 @@
     "description": "Collection of assets and utils used by trezor-connect library.",
     "main": "./src/index.ts",
     "files": [
-        "libESM/",
+        "lib/",
         "CHANGELOG.md"
     ],
     "publishConfig": {
-        "main": "./libESM/index.mjs",
-        "types": "./libESM/index.d.mts",
+        "main": "./lib/index.mjs",
+        "types": "./lib/index.d.mts",
         "exports": {
             ".": {
-                "types": "./libESM/index.d.mts",
-                "default": "./libESM/index.mjs"
+                "types": "./lib/index.d.mts",
+                "default": "./lib/index.mjs"
             },
-            "./libESM/*": "./libESM/*",
-            "./libESM/constants": {
-                "types": "./libESM/constants/index.d.mts",
-                "default": "./libESM/constants/index.mjs"
+            "./lib/*": "./lib/*",
+            "./lib/constants": {
+                "types": "./lib/constants/index.d.mts",
+                "default": "./lib/constants/index.mjs"
             },
-            "./libESM/data": {
-                "types": "./libESM/data/index.d.mts",
-                "default": "./libESM/data/index.mjs"
+            "./lib/data": {
+                "types": "./lib/data/index.d.mts",
+                "default": "./lib/data/index.mjs"
             },
-            "./libESM/events": {
-                "types": "./libESM/events/index.d.mts",
-                "default": "./libESM/events/index.mjs"
+            "./lib/events": {
+                "types": "./lib/events/index.d.mts",
+                "default": "./lib/events/index.mjs"
             },
-            "./libESM/types": {
-                "types": "./libESM/types/index.d.mts",
-                "default": "./libESM/types/index.mjs"
+            "./lib/types": {
+                "types": "./lib/types/index.d.mts",
+                "default": "./lib/types/index.mjs"
             }
         }
     },
     "scripts": {
-        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM && DTS_OUT_DIR=libESM yarn build:dts:inline",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib && DTS_OUT_DIR=lib yarn build:dts:inline",
         "build:dts:inline": "node ../../scripts/inline-devdep-types.mjs",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "test:unit": "yarn g:jest",

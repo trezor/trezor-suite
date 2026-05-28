@@ -1,18 +1,11 @@
 import tseslint from 'typescript-eslint';
 
 // Deny importing from build artifact directories — consumers should resolve
-// through the package root, not from `lib/`, `libDev/`, or `libESM/`.
+// through the package root, not from `lib/` or `libDev/`.
 const buildArtifactPatterns = {
-    group: [
-        '@trezor/*/lib',
-        '@trezor/*/lib/**',
-        '@trezor/*/libDev',
-        '@trezor/*/libDev/**',
-        '@trezor/*/libESM',
-        '@trezor/*/libESM/**',
-    ],
+    group: ['@trezor/*/lib', '@trezor/*/lib/**', '@trezor/*/libDev', '@trezor/*/libDev/**'],
     message:
-        'Import from the package root instead. Deep paths into "lib/", "libDev/" or "libESM/" target build artifacts that may not exist or may diverge from the workspace source.',
+        'Import from the package root instead. Deep paths into "lib/" or "libDev/" target build artifacts that may not exist or may diverge from the workspace source.',
 };
 
 const coinsPackagePatterns = {

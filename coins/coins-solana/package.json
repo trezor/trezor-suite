@@ -12,29 +12,29 @@
         ".": "./src/index.ts"
     },
     "publishConfig": {
-        "main": "./libESM/index.mjs",
-        "types": "./libESM/index.d.mts",
+        "main": "./lib/index.mjs",
+        "types": "./lib/index.d.mts",
         "exports": {
             "./constants": {
-                "types": "./libESM/constants/index.d.mts",
-                "default": "./libESM/constants/index.mjs"
+                "types": "./lib/constants/index.d.mts",
+                "default": "./lib/constants/index.mjs"
             },
             "./runtime": {
-                "types": "./libESM/runtime/index.d.mts",
-                "default": "./libESM/runtime/index.mjs"
+                "types": "./lib/runtime/index.d.mts",
+                "default": "./lib/runtime/index.mjs"
             },
             "./types": {
-                "types": "./libESM/types/index.d.mts",
-                "default": "./libESM/types/index.mjs"
+                "types": "./lib/types/index.d.mts",
+                "default": "./lib/types/index.mjs"
             },
             ".": {
-                "types": "./libESM/index.d.mts",
-                "default": "./libESM/index.mjs"
+                "types": "./lib/index.d.mts",
+                "default": "./lib/index.mjs"
             }
         }
     },
     "files": [
-        "libESM/",
+        "lib/",
         "CHANGELOG.md"
     ],
     "scripts": {
@@ -42,7 +42,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest --passWithNoTests",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM"
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib"
     },
     "dependencies": {
         "@solana-program/compute-budget": "^0.8.0",

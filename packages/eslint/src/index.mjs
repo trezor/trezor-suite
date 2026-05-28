@@ -22,7 +22,6 @@ export const eslint = [
             '**/.nx/*',
             '**/lib/*',
             '**/libDev/*',
-            '**/libESM/*',
             '**/dist/*',
             '**/coverage/*',
             '**/build/*',

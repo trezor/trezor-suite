@@ -18,32 +18,32 @@
     "sideEffects": false,
     "type": "module",
     "publishConfig": {
-        "main": "./libESM/index.mjs",
-        "types": "./libESM/index.d.mts",
+        "main": "./lib/index.mjs",
+        "types": "./lib/index.d.mts",
         "exports": {
             ".": {
-                "types": "./libESM/index.d.mts",
-                "default": "./libESM/index.mjs"
+                "types": "./lib/index.d.mts",
+                "default": "./lib/index.mjs"
             },
-            "./libESM/*": "./libESM/*",
-            "./libESM/thp": {
-                "types": "./libESM/thp/index.d.mts",
-                "default": "./libESM/thp/index.mjs"
+            "./lib/*": "./lib/*",
+            "./lib/thp": {
+                "types": "./lib/thp/index.d.mts",
+                "default": "./lib/thp/index.mjs"
             },
-            "./libESM/types": {
-                "types": "./libESM/types/index.d.mts",
-                "default": "./libESM/types/index.mjs"
+            "./lib/types": {
+                "types": "./lib/types/index.d.mts",
+                "default": "./lib/types/index.mjs"
             }
         }
     },
     "files": [
-        "libESM/",
+        "lib/",
         "CHANGELOG.md"
     ],
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
         "test:unit": "jest",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },

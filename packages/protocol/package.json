@@ -13,37 +13,37 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "publishConfig": {
-        "main": "./libESM/index.mjs",
-        "types": "./libESM/index.d.mts",
+        "main": "./lib/index.mjs",
+        "types": "./lib/index.d.mts",
         "exports": {
             ".": {
-                "types": "./libESM/index.d.mts",
-                "default": "./libESM/index.mjs"
+                "types": "./lib/index.d.mts",
+                "default": "./lib/index.mjs"
             },
-            "./libESM/*": "./libESM/*",
-            "./libESM/protocol-thp": {
-                "types": "./libESM/protocol-thp/index.d.mts",
-                "default": "./libESM/protocol-thp/index.mjs"
+            "./lib/*": "./lib/*",
+            "./lib/protocol-thp": {
+                "types": "./lib/protocol-thp/index.d.mts",
+                "default": "./lib/protocol-thp/index.mjs"
             },
-            "./libESM/protocol-thp/messages": {
-                "types": "./libESM/protocol-thp/messages/index.d.mts",
-                "default": "./libESM/protocol-thp/messages/index.mjs"
+            "./lib/protocol-thp/messages": {
+                "types": "./lib/protocol-thp/messages/index.d.mts",
+                "default": "./lib/protocol-thp/messages/index.mjs"
             },
-            "./libESM/protocol-tpn": {
-                "types": "./libESM/protocol-tpn/index.d.mts",
-                "default": "./libESM/protocol-tpn/index.mjs"
+            "./lib/protocol-tpn": {
+                "types": "./lib/protocol-tpn/index.d.mts",
+                "default": "./lib/protocol-tpn/index.mjs"
             }
         }
     },
     "files": [
-        "libESM/",
+        "lib/",
         "CHANGELOG.md"
     ],
     "scripts": {
         "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "peerDependencies": {

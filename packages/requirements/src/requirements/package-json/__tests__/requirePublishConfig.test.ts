@@ -10,34 +10,16 @@ const createTempWorkspace = (): string => mkdtempSync(join(tmpdir(), 'publish-co
 const validPublicPackageJson = {
     name: '@trezor/example',
     main: 'src/index.ts',
-    publishConfig: {
-        main: './lib/index.js',
-        types: './lib/index.d.ts',
-        exports: {
-            '.': {
-                import: { types: './libESM/index.d.mts', default: './libESM/index.mjs' },
-                require: { types: './lib/index.d.ts', default: './lib/index.js' },
-            },
-            './lib/*': { types: './lib/*.d.ts', default: './lib/*.js' },
-            './libESM/*': './libESM/*',
-        },
-    },
-    files: ['lib/', 'libESM/', 'CHANGELOG.md'],
-};
-
-const validEsmOnlyPackageJson = {
-    name: '@trezor/example-esm',
-    main: 'src/index.ts',
     type: 'module',
     publishConfig: {
-        main: './libESM/index.mjs',
-        types: './libESM/index.d.mts',
+        main: './lib/index.mjs',
+        types: './lib/index.d.mts',
         exports: {
-            '.': { types: './libESM/index.d.mts', default: './libESM/index.mjs' },
-            './libESM/*': './libESM/*',
+            '.': { types: './lib/index.d.mts', default: './lib/index.mjs' },
+            './lib/*': './lib/*',
         },
     },
-    files: ['libESM/', 'CHANGELOG.md'],
+    files: ['lib/', 'CHANGELOG.md'],
 };
 
 describe(requirePublishConfig.name, () => {
@@ -74,7 +56,7 @@ describe(requirePublishConfig.name, () => {
         it('applies to packages with publishConfig but no exports', () => {
             writeFileSync(
                 join(workspaceDir, 'package.json'),
-                JSON.stringify({ publishConfig: { main: './lib/index.js' } }),
+                JSON.stringify({ publishConfig: { main: './lib/index.mjs' } }),
             );
 
             expect(requirePublishConfig.applies?.(context)).toBe(true);
@@ -130,6 +112,23 @@ describe(requirePublishConfig.name, () => {
             expect(errors).toContain('@trezor/example: Missing "publishConfig.main" field');
         });
 
+        it('reports invalid publishConfig.main', async () => {
+            const pkg = {
+                ...validPublicPackageJson,
+                publishConfig: {
+                    ...validPublicPackageJson.publishConfig,
+                    main: './lib/index.js',
+                },
+            };
+            writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(pkg));
+
+            const errors = await requirePublishConfig.verify(context);
+
+            expect(errors).toContain(
+                '@trezor/example: Invalid "publishConfig.main": expected "./lib/index.mjs", got "./lib/index.js"',
+            );
+        });
+
         it('reports missing publishConfig.types', async () => {
             const pkg = {
                 ...validPublicPackageJson,
@@ -145,99 +144,74 @@ describe(requirePublishConfig.name, () => {
             expect(errors).toContain('@trezor/example: Missing "publishConfig.types" field');
         });
 
-        it('accepts ESM-only package without lib/ in files array', async () => {
-            writeFileSync(
-                join(workspaceDir, 'package.json'),
-                JSON.stringify(validEsmOnlyPackageJson),
-            );
-
-            const errors = await requirePublishConfig.verify(context);
-
-            expect(errors.filter(e => e.includes('"files"'))).toEqual([]);
-        });
-
-        it('reports missing libESM/ in files array', async () => {
+        it('reports invalid publishConfig.types', async () => {
             const pkg = {
                 ...validPublicPackageJson,
-                files: ['lib/', 'CHANGELOG.md'],
-            };
-            writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(pkg));
-
-            const errors = await requirePublishConfig.verify(context);
-
-            expect(errors).toContain('@trezor/example: "files" must include "libESM/"');
-        });
-
-        it('accepts "lib" (without trailing slash) in files array', async () => {
-            const pkg = {
-                ...validPublicPackageJson,
-                files: ['lib', 'libESM'],
-            };
-            writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(pkg));
-
-            const errors = await requirePublishConfig.verify(context);
-
-            expect(errors.filter(e => e.includes('"files"'))).toEqual([]);
-        });
-    });
-
-    describe('verify - ESM-only package', () => {
-        it('passes for a valid ESM-only package', async () => {
-            writeFileSync(
-                join(workspaceDir, 'package.json'),
-                JSON.stringify(validEsmOnlyPackageJson),
-            );
-
-            const errors = await requirePublishConfig.verify(context);
-
-            expect(errors).toEqual([]);
-        });
-
-        it('reports invalid "." export shape for ESM-only package', async () => {
-            const pkg = {
-                ...validEsmOnlyPackageJson,
                 publishConfig: {
-                    ...validEsmOnlyPackageJson.publishConfig,
-                    exports: {
-                        '.': { import: './libESM/index.mjs' },
-                        './libESM/*': './libESM/*',
-                    },
+                    ...validPublicPackageJson.publishConfig,
+                    types: './lib/index.d.ts',
                 },
             };
             writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(pkg));
 
             const errors = await requirePublishConfig.verify(context);
 
-            expect(errors).toContain('@trezor/example: Invalid publishConfig.exports["."]');
+            expect(errors).toContain(
+                '@trezor/example: Invalid "publishConfig.types": expected "./lib/index.d.mts", got "./lib/index.d.ts"',
+            );
         });
 
-        it('reports missing top-level "type" for ESM-only package', async () => {
-            const { type: _, ...withoutType } = validEsmOnlyPackageJson;
+        it('reports missing lib/ in files array', async () => {
+            const pkg = {
+                ...validPublicPackageJson,
+                files: ['CHANGELOG.md'],
+            };
+            writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(pkg));
+
+            const errors = await requirePublishConfig.verify(context);
+
+            expect(errors).toContain('@trezor/example: "files" must include "lib/"');
+        });
+
+        it('accepts "lib" without trailing slash in files array', async () => {
+            const pkg = {
+                ...validPublicPackageJson,
+                files: ['lib'],
+            };
+            writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(pkg));
+
+            const errors = await requirePublishConfig.verify(context);
+
+            expect(errors.filter(e => e.includes('"files"'))).toEqual([]);
+        });
+
+        it('reports missing top-level "type"', async () => {
+            const { type: _, ...withoutType } = validPublicPackageJson;
             writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(withoutType));
 
             const errors = await requirePublishConfig.verify(context);
 
             expect(errors).toContain(
-                '@trezor/example: ESM-only package must declare top-level "type": "module" (got undefined)',
+                '@trezor/example: ESM package must declare top-level "type": "module" (got undefined)',
             );
         });
 
-        it('reports invalid top-level "type" for ESM-only package', async () => {
-            const pkg = { ...validEsmOnlyPackageJson, type: 'commonjs' };
+        it('reports invalid top-level "type"', async () => {
+            const pkg = { ...validPublicPackageJson, type: 'commonjs' };
             writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(pkg));
 
             const errors = await requirePublishConfig.verify(context);
 
             expect(errors).toContain(
-                '@trezor/example: ESM-only package must declare top-level "type": "module" (got "commonjs")',
+                '@trezor/example: ESM package must declare top-level "type": "module" (got "commonjs")',
             );
         });
 
         it('rejects redundant publishConfig.type', async () => {
             const pkg = {
-                ...validEsmOnlyPackageJson,
+                ...validPublicPackageJson,
                 publishConfig: {
-                    ...validEsmOnlyPackageJson.publishConfig,
+                    ...validPublicPackageJson.publishConfig,
                     type: 'module',
                 },
             };
@@ -249,71 +223,31 @@ describe(requirePublishConfig.name, () => {
                 '@trezor/example: Redundant "publishConfig.type" field — declare "type" at the top level instead',
             );
         });
-
-        it('does not require ./lib/* counterpart for ./libESM/* in ESM-only packages', async () => {
-            writeFileSync(
-                join(workspaceDir, 'package.json'),
-                JSON.stringify(validEsmOnlyPackageJson),
-            );
-
-            const errors = await requirePublishConfig.verify(context);
-
-            expect(errors.filter(e => e.includes('counterpart'))).toEqual([]);
-        });
-
-        it('rejects ./lib/* export key in ESM-only package', async () => {
-            const pkg = {
-                ...validEsmOnlyPackageJson,
-                publishConfig: {
-                    ...validEsmOnlyPackageJson.publishConfig,
-                    exports: {
-                        ...validEsmOnlyPackageJson.publishConfig.exports,
-                        './lib/*': { types: './lib/*.d.ts', default: './lib/*.js' },
-                    },
-                },
-            };
-            writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(pkg));
-
-            const errors = await requirePublishConfig.verify(context);
-
-            expect(errors).toContain(
-                '@trezor/example: Disallowed CJS export key "./lib/*" in ESM-only package',
-            );
-        });
-
-        it('rejects explicit ./lib/<subpath> export key in ESM-only package', async () => {
-            const pkg = {
-                ...validEsmOnlyPackageJson,
-                publishConfig: {
-                    ...validEsmOnlyPackageJson.publishConfig,
-                    exports: {
-                        ...validEsmOnlyPackageJson.publishConfig.exports,
-                        './lib/constants': {
-                            types: './lib/constants/index.d.ts',
-                            default: './lib/constants/index.js',
-                        },
-                    },
-                },
-            };
-            writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(pkg));
-
-            const errors = await requirePublishConfig.verify(context);
-
-            expect(errors).toContain(
-                '@trezor/example: Disallowed CJS export key "./lib/constants" in ESM-only package',
-            );
-        });
     });
 
     describe('verify - exports shape', () => {
+        it('reports missing publishConfig.exports field', async () => {
+            const pkg = {
+                ...validPublicPackageJson,
+                publishConfig: {
+                    main: './lib/index.mjs',
+                    types: './lib/index.d.mts',
+                },
+            };
+            writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(pkg));
+
+            const errors = await requirePublishConfig.verify(context);
+
+            expect(errors).toContain('@trezor/example: Missing publishConfig.exports field');
+        });
+
         it('reports missing "." entry in publishConfig.exports', async () => {
             const pkg = {
                 ...validPublicPackageJson,
                 publishConfig: {
                     ...validPublicPackageJson.publishConfig,
                     exports: {
-                        './lib/*': { default: './lib/*.js', types: './lib/*.d.ts' },
-                        './libESM/*': { default: './libESM/*.mjs', types: './libESM/*.d.mts' },
+                        './lib/*': './lib/*',
                     },
                 },
             };
@@ -330,9 +264,8 @@ describe(requirePublishConfig.name, () => {
                 publishConfig: {
                     ...validPublicPackageJson.publishConfig,
                     exports: {
-                        '.': { import: './libESM/index.mjs', require: './lib/index.js' },
-                        './lib/*': { default: './lib/*.js', types: './lib/*.d.ts' },
-                        './libESM/*': { default: './libESM/*.mjs', types: './libESM/*.d.mts' },
+                        '.': { types: './lib/index.d.ts', default: './lib/index.js' },
+                        './lib/*': './lib/*',
                     },
                 },
             };
@@ -343,27 +276,7 @@ describe(requirePublishConfig.name, () => {
             expect(errors).toContain('@trezor/example: Invalid publishConfig.exports["."]');
         });
 
-        it('reports missing lib counterpart for libESM entry', async () => {
-            const pkg = {
-                ...validPublicPackageJson,
-                publishConfig: {
-                    ...validPublicPackageJson.publishConfig,
-                    exports: {
-                        '.': validPublicPackageJson.publishConfig.exports['.'],
-                        './libESM/*': './libESM/*',
-                    },
-                },
-            };
-            writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(pkg));
-
-            const errors = await requirePublishConfig.verify(context);
-
-            expect(errors).toContain(
-                '@trezor/example: Missing counterpart "./lib/*" for "./libESM/*"',
-            );
-        });
-
-        it('reports missing libESM counterpart for lib entry', async () => {
+        it('reports invalid ./lib/* export shape when it uses the old CJS object config', async () => {
             const pkg = {
                 ...validPublicPackageJson,
                 publishConfig: {
@@ -378,46 +291,19 @@ describe(requirePublishConfig.name, () => {
 
             const errors = await requirePublishConfig.verify(context);
 
-            expect(errors).toContain(
-                '@trezor/example: Missing counterpart "./libESM/*" for "./lib/*"',
-            );
+            expect(errors).toContain('@trezor/example: Invalid publishConfig.exports["./lib/*"]');
         });
 
-        it('accepts passthrough string format for libESM wildcards', async () => {
+        it('accepts explicit sub-path overrides', async () => {
             const pkg = {
                 ...validPublicPackageJson,
                 publishConfig: {
                     ...validPublicPackageJson.publishConfig,
                     exports: {
-                        '.': validPublicPackageJson.publishConfig.exports['.'],
-                        './lib/*': { types: './lib/*.d.ts', default: './lib/*.js' },
-                        './libESM/*': './libESM/*',
-                    },
-                },
-            };
-            writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(pkg));
-
-            const errors = await requirePublishConfig.verify(context);
-
-            expect(errors).toEqual([]);
-        });
-
-        it('accepts explicit sub-path overrides without requiring counterparts for those', async () => {
-            const pkg = {
-                ...validPublicPackageJson,
-                publishConfig: {
-                    ...validPublicPackageJson.publishConfig,
-                    exports: {
-                        '.': validPublicPackageJson.publishConfig.exports['.'],
-                        './lib/*': { types: './lib/*.d.ts', default: './lib/*.js' },
-                        './libESM/*': './libESM/*',
+                        ...validPublicPackageJson.publishConfig.exports,
                         './lib/events': {
-                            types: './lib/events/index.d.ts',
-                            default: './lib/events/index.js',
-                        },
-                        './libESM/events': {
-                            types: './libESM/events/index.d.mts',
-                            default: './libESM/events/index.mjs',
+                            types: './lib/events/index.d.mts',
+                            default: './lib/events/index.mjs',
                         },
                     },
                 },
@@ -429,7 +315,7 @@ describe(requirePublishConfig.name, () => {
             expect(errors).toEqual([]);
         });
 
-        it('reports invalid or missing publishConfig.exports when it is not an object', async () => {
+        it('reports invalid publishConfig.exports when it is not an object', async () => {
             const pkg = {
                 ...validPublicPackageJson,
                 publishConfig: {
@@ -441,7 +327,7 @@ describe(requirePublishConfig.name, () => {
 
             const errors = await requirePublishConfig.verify(context);
 
-            expect(errors).toContain('@trezor/example: Missing publishConfig.exports["."]');
+            expect(errors).toContain('@trezor/example: Invalid publishConfig.exports field');
         });
 
         it('reports wrong key order in shape-checked entry as invalid shape', async () => {
@@ -451,14 +337,10 @@ describe(requirePublishConfig.name, () => {
                     ...validPublicPackageJson.publishConfig,
                     exports: {
                         '.': {
-                            import: {
-                                default: './libESM/index.mjs',
-                                types: './libESM/index.d.mts',
-                            },
-                            require: { types: './lib/index.d.ts', default: './lib/index.js' },
+                            default: './lib/index.mjs',
+                            types: './lib/index.d.mts',
                         },
-                        './lib/*': { types: './lib/*.d.ts', default: './lib/*.js' },
-                        './libESM/*': './libESM/*',
+                        './lib/*': './lib/*',
                     },
                 },
             };
@@ -475,16 +357,10 @@ describe(requirePublishConfig.name, () => {
                 publishConfig: {
                     ...validPublicPackageJson.publishConfig,
                     exports: {
-                        '.': validPublicPackageJson.publishConfig.exports['.'],
-                        './lib/*': { types: './lib/*.d.ts', default: './lib/*.js' },
-                        './libESM/*': './libESM/*',
+                        ...validPublicPackageJson.publishConfig.exports,
                         './lib/events': {
-                            default: './lib/events/index.js',
-                            types: './lib/events/index.d.ts',
-                        },
-                        './libESM/events': {
-                            types: './libESM/events/index.d.mts',
-                            default: './libESM/events/index.mjs',
+                            default: './lib/events/index.mjs',
+                            types: './lib/events/index.d.mts',
                         },
                     },
                 },
@@ -495,9 +371,6 @@ describe(requirePublishConfig.name, () => {
 
             expect(errors).toContain(
                 '@trezor/example: In publishConfig.exports["./lib/events"]: "types" must come before "default"',
-            );
-            expect(errors).not.toContain(
-                '@trezor/example: In publishConfig.exports["./libESM/events"]: "types" must come before "default"',
             );
         });
     });

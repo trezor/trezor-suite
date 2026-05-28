@@ -18,7 +18,7 @@ import {
 //
 // How the redirect works: `packages/transport/package.json` declares a
 // `browser` field that maps `./src/transports/nodeusb` to this file (and the
-// `publishConfig.browser` field does the same for the published `./libESM/`
+// `publishConfig.browser` field does the same for the published `./lib/`
 // output). Webpack, Vite, esbuild, and other bundlers honor this field, so
 // browser targets swap in this no-op and `usb` never enters the dependency
 // graph.

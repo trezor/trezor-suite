@@ -27,33 +27,33 @@
         "./src/transports/udp": "./src/transports/udp.native.ts"
     },
     "publishConfig": {
-        "main": "./libESM/index.mjs",
-        "types": "./libESM/index.d.mts",
+        "main": "./lib/index.mjs",
+        "types": "./lib/index.d.mts",
         "exports": {
             ".": {
-                "types": "./libESM/index.d.mts",
-                "default": "./libESM/index.mjs"
+                "types": "./lib/index.d.mts",
+                "default": "./lib/index.mjs"
             },
-            "./libESM/*": "./libESM/*"
+            "./lib/*": "./lib/*"
         },
         "browser": {
-            "./libESM/pinger/ping": "./libESM/pinger/ping.browser.mjs",
-            "./libESM/transports/nodeusb": "./libESM/transports/nodeusb.browser.mjs",
-            "./libESM/transports/udp": "./libESM/transports/udp.browser.mjs"
+            "./lib/pinger/ping": "./lib/pinger/ping.browser.mjs",
+            "./lib/transports/nodeusb": "./lib/transports/nodeusb.browser.mjs",
+            "./lib/transports/udp": "./lib/transports/udp.browser.mjs"
         },
         "react-native": {
-            "./libESM/transports/nodeusb": "./libESM/transports/nodeusb.native.mjs",
-            "./libESM/transports/udp": "./libESM/transports/udp.native.mjs"
+            "./lib/transports/nodeusb": "./lib/transports/nodeusb.native.mjs",
+            "./lib/transports/udp": "./lib/transports/udp.native.mjs"
         }
     },
     "files": [
-        "libESM/",
+        "lib/",
         "CHANGELOG.md"
     ],
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
         "publish:lib": "./scripts/publish-lib.sh",
         "test:unit": "jest",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"

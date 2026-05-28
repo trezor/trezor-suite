@@ -9,8 +9,8 @@ set -euxo pipefail
 #   <directory>     The path to the directory containing files to modify.
 #
 # Example:
-#   To replace imports in the ./libESM directory using the ESM module type:
-#     bash replace-imports.sh ./libESM
+#   To replace imports in the ./lib directory using the ESM module type:
+#     bash replace-imports.sh ./lib
 
 if [ "$#" -ne 1 ]; then
     echo "Error, needs 1 argument. Usage: $0 <directory>"
@@ -19,7 +19,6 @@ fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BABEL_CONFIG="$SCRIPT_DIR/babel.config.json"
-LIB_DIR="libESM"
 
 # Transform .js files using Babel
 yarn run -T babel "$1" --out-dir "$1" --extensions ".js" --config-file "$BABEL_CONFIG"
@@ -34,10 +33,10 @@ OS="$(uname)"
 # Execute the appropriate command based on the OS:
 if [[ "$OS" == "Darwin" ]]; then
     # macOS command with -i '' for in-place editing without backup and -E for extended regex.
-    find "$1" -name "*.d.ts" -type f -exec sed -i '' "s|@trezor/\([^/]*\)/src|@trezor/\1/${LIB_DIR}|g" {} +
+    find "$1" -name "*.d.ts" -type f -exec sed -i '' "s|@trezor/\([^/]*\)/src|@trezor/\1/lib|g" {} +
 else
     # Linux command with -i and -E for in-place editing without backup (GNU sed syntax) and extended regex.
-    find "$1" -name "*.d.ts" -type f -exec sed -i "s|@trezor/\([^/]*\)/src|@trezor/\1/${LIB_DIR}|g" {} +
+    find "$1" -name "*.d.ts" -type f -exec sed -i "s|@trezor/\([^/]*\)/src|@trezor/\1/lib|g" {} +
 fi
 
 # Rename all ESM js files to mjs.
