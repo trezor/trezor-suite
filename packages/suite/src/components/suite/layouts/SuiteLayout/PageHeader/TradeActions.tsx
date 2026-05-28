@@ -2,11 +2,9 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto, selectIsAccountTabPage, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectSelectedDevice } from '@suite-common/device';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
-import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { breakpoints } from '@trezor/theme';
 
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
@@ -22,7 +20,6 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();
     const account = selectedAccount?.account;
-    const device = useSelector(selectSelectedDevice);
     const isAccountTabPage = useSelector(selectIsAccountTabPage);
     const currentRouteName = useSelector(selectRouteName);
 
@@ -66,28 +63,6 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
         });
     };
 
-    const onSwapClick = () => {
-        if (account) {
-            dispatch(
-                tradingActions.setTradingFromPrefilledAccount(
-                    getTradingPrefilledFromAccountData(account),
-                ),
-            );
-        }
-
-        goToWithAnalytics({ routeName: 'wallet-trading-exchange', preserveParams: false });
-
-        analytics.report({
-            type: events.tradeNavigateEvent.name,
-            payload: {
-                action: 'navigate',
-                type: 'exchange',
-                from: account ? 'account/header' : 'dashboard/header',
-                networkSymbol: account?.symbol,
-            },
-        });
-    };
-
     const isAccountLoading = selectedAccount ? selectedAccount.status === 'loading' : false;
 
     return (
@@ -105,20 +80,6 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
                         <Translation id="TR_TRADING_BUY_AND_SELL" />
                     </HeaderActionButton>
                 </ConditionalRender>
-                {!hasBitcoinOnlyFirmware(device) && (
-                    <ConditionalRender container="content" minWidth={breakpoints.tablet}>
-                        <HeaderActionButton
-                            icon="repeat"
-                            onClick={onSwapClick}
-                            data-testid="@wallet/menu/wallet-trading-exchange"
-                            intent="neutral"
-                            priority="secondary"
-                            isDisabled={isAccountLoading}
-                        >
-                            <Translation id="TR_TRADING_SWAP" />
-                        </HeaderActionButton>
-                    </ConditionalRender>
-                )}
             </AppNavigationTooltip>
         </Row>
     );

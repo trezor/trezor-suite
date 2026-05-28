@@ -43,10 +43,6 @@ export const HeaderDropdown = ({
         container: 'content',
         minWidth: breakpoints.laptop,
     });
-    const isSwapVisible = useConditionalRender({
-        container: 'content',
-        minWidth: breakpoints.tablet,
-    });
 
     const additionalActions: ActionItem[] = [
         ...(showSignAndVerify
@@ -91,33 +87,6 @@ export const HeaderDropdown = ({
             title: <Translation id="TR_TRADING_BUY_AND_SELL" />,
             icon: 'currencyCircleDollar',
             isHidden: isBuyVisible || isTradingDisabled,
-        },
-        {
-            id: 'wallet-swap',
-            callback: () => {
-                if (account) {
-                    dispatch(
-                        tradingActions.setTradingFromPrefilledAccount(
-                            getTradingPrefilledFromAccountData(account),
-                        ),
-                    );
-                }
-
-                goToWithAnalytics({ routeName: 'wallet-trading-exchange', preserveParams: false });
-
-                analytics.report({
-                    type: events.tradeNavigateEvent.name,
-                    payload: {
-                        action: 'navigate',
-                        type: 'exchange',
-                        from: account ? 'account/header' : 'dashboard/header',
-                        networkSymbol: account?.symbol,
-                    },
-                });
-            },
-            title: <Translation id="TR_TRADING_SWAP" />,
-            icon: 'repeat',
-            isHidden: isSwapVisible || isTradingDisabled,
         },
     ];
 
