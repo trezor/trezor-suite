@@ -21,25 +21,25 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "publishConfig": {
-        "main": "./libESM/index.mjs",
-        "types": "./libESM/index.d.mts",
+        "main": "./lib/index.mjs",
+        "types": "./lib/index.d.mts",
         "exports": {
             ".": {
-                "types": "./libESM/index.d.mts",
-                "default": "./libESM/index.mjs"
+                "types": "./lib/index.d.mts",
+                "default": "./lib/index.mjs"
             },
-            "./libESM/impl/*": "./libESM/impl/*"
+            "./lib/impl/*": "./lib/impl/*"
         }
     },
     "files": [
-        "libESM/",
+        "lib/",
         "CHANGELOG.md"
     ],
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM && DTS_OUT_DIR=libESM yarn build:dts:inline",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib && DTS_OUT_DIR=lib yarn build:dts:inline",
         "build:dts:inline": "node ../../scripts/inline-devdep-types.mjs",
         "test:e2e": "yarn playwright install && yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"

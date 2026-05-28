@@ -22,21 +22,21 @@
     ],
     "main": "./src/index.ts",
     "files": [
-        "libESM/",
+        "lib/",
         "CHANGELOG.md"
     ],
     "publishConfig": {
-        "main": "./libESM/index.mjs",
-        "types": "./libESM/index.d.mts",
+        "main": "./lib/index.mjs",
+        "types": "./lib/index.d.mts",
         "exports": {
             ".": {
-                "types": "./libESM/index.d.mts",
-                "default": "./libESM/index.mjs"
+                "types": "./lib/index.d.mts",
+                "default": "./lib/index.mjs"
             },
-            "./libESM/*": "./libESM/*",
-            "./libESM/compose": {
-                "types": "./libESM/compose/index.d.mts",
-                "default": "./libESM/compose/index.mjs"
+            "./lib/*": "./lib/*",
+            "./lib/compose": {
+                "types": "./lib/compose/index.d.mts",
+                "default": "./lib/compose/index.mjs"
             }
         }
     },
@@ -44,7 +44,7 @@
         "depcheck": "yarn g:depcheck",
         "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {

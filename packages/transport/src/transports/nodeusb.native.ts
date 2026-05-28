@@ -19,7 +19,7 @@ import {
 // How the redirect works: `packages/transport/package.json` declares a
 // `react-native` field that maps `./src/transports/nodeusb` to this file
 // (and the `publishConfig.react-native` field does the same for the
-// published `./libESM/` output). Metro honors this field, so RN targets
+// published `./lib/` output). Metro honors this field, so RN targets
 // swap in this no-op and `usb` never enters the dependency graph.
 //
 // Runtime behavior: every method is a no-op (`empty` / `emptySync`) and the

@@ -20,18 +20,18 @@
     ],
     "sideEffects": false,
     "publishConfig": {
-        "main": "./libESM/index.mjs",
-        "types": "./libESM/index.d.mts",
+        "main": "./lib/index.mjs",
+        "types": "./lib/index.d.mts",
         "exports": {
             ".": {
-                "types": "./libESM/index.d.mts",
-                "default": "./libESM/index.mjs"
+                "types": "./lib/index.d.mts",
+                "default": "./lib/index.mjs"
             }
         }
     },
     "main": "src/index.ts",
     "files": [
-        "libESM/",
+        "lib/",
         "CHANGELOG.md"
     ],
     "peerDependencies": {
@@ -39,7 +39,7 @@
     },
     "scripts": {
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     }
