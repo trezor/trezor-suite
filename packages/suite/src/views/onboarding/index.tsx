@@ -1,11 +1,14 @@
 import { useEffect, useMemo } from 'react';
 
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectThpStep } from '@suite-common/thp';
 import { exhaustive } from '@trezor/type-utils';
 
 import { OnboardingLayout } from 'src/components/onboarding/OnboardingLayout';
+import { getOnboardingStepIndex } from 'src/config/onboarding/steps';
 import * as STEP from 'src/constants/onboarding/steps';
 import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { UnexpectedState } from 'src/views/onboarding/UnexpectedState';
@@ -21,6 +24,7 @@ import { SecurityStep } from 'src/views/onboarding/steps/SecurityStep';
 
 export const Onboarding = () => {
     const dispatch = useDispatch();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const { activeStepId, goToNextStep } = useOnboarding();
     const device = useSelector(selectSelectedDevice);
@@ -34,6 +38,19 @@ export const Onboarding = () => {
             dispatch(goto({ routeName: 'suite-index' }));
         }
     }, [device, thpStep, activeStepId, dispatch]);
+
+    // Fires once per step entry. activeStepId is the dep, so it does not fire on
+    // re-render and re-fires on re-entry (e.g. user navigates back and forward).
+    useEffect(() => {
+        analytics.report({
+            type: events.onboardingStepViewedEvent.name,
+            payload: {
+                stepName: activeStepId,
+                stepIndex: getOnboardingStepIndex(activeStepId),
+                platform: 'desktop',
+            },
+        });
+    }, [activeStepId, analytics]);
 
     const StepComponent = useMemo(() => {
         switch (activeStepId) {
