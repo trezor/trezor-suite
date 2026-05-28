@@ -1,7 +1,6 @@
 import type { Log } from '@trezor/logger';
 import {
     type TransportProtocol,
-    bridge as protocolBridge,
     thp as protocolThp,
     v1 as protocolV1,
     v2 as protocolV2,
@@ -94,17 +93,8 @@ export const createCore = (apiArg: 'legacy' | 'nusb' | 'udp' | AbstractApi, logg
         protocol: TransportProtocol;
     }) => {
         logger?.debug(`core: writeUtil protocol ${protocol.name}`);
-        const buffer = Buffer.from(data, 'hex');
-        let encodedMessage;
-        let chunkHeader;
-        if (protocol.name === 'bridge') {
-            const { messageType, payload } = protocolBridge.decode(buffer);
-            encodedMessage = protocolV1.encode(payload, { messageType });
-            [, chunkHeader] = protocolV1.getHeaders(encodedMessage);
-        } else {
-            encodedMessage = buffer;
-            [, chunkHeader] = protocol.getHeaders(encodedMessage);
-        }
+        const encodedMessage = Buffer.from(data, 'hex');
+        const [, chunkHeader] = protocol.getHeaders(encodedMessage);
 
         const chunks = createChunks(encodedMessage, chunkHeader, api.chunkSize);
         const apiWrite = (chunk: Buffer) => api.write(path, chunk, { signal });
@@ -124,8 +114,7 @@ export const createCore = (apiArg: 'legacy' | 'nusb' | 'udp' | AbstractApi, logg
     }) => {
         logger?.debug(`core: readUtil protocol ${protocol.name}`);
         try {
-            const receiveProtocol = protocol.name === 'bridge' ? protocolV1 : protocol;
-            const res = await receiveUtil(() => api.read(path, { signal }), receiveProtocol);
+            const res = await receiveUtil(() => api.read(path, { signal }), protocol);
             if (!res.success) return res;
             const { messageType, payload } = res.payload;
             logger?.debug(
@@ -216,11 +205,7 @@ export const createCore = (apiArg: 'legacy' | 'nusb' | 'udp' | AbstractApi, logg
             return protocolV1;
         }
 
-        if (protocolName === 'v2') {
-            return protocolV2;
-        }
-
-        return protocolBridge;
+        return protocolV2;
     };
 
     const createProtocolMessageResponse = (

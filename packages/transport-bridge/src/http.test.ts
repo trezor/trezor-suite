@@ -162,20 +162,6 @@ describe('http', () => {
             });
             expect(res.success).toBe(false);
 
-            // protocol bridge, json response without magic header
-            res = await bridgeApiCall({
-                url: `${url}call/1`,
-                method: 'POST',
-                body: JSON.stringify({ protocol: 'bridge', data: GET_FEATURES }),
-            });
-            if (!res.success) {
-                throw new Error(res.error.code + ' ' + res.error.message);
-            }
-            expect(res.payload).toEqual({
-                protocol: 'bridge',
-                data: FEATURES,
-            });
-
             // protocol v1, json response with magic header
             res = await bridgeApiCall({
                 url: `${url}call/1`,
@@ -246,20 +232,6 @@ describe('http', () => {
                 body: 'not a hex',
             });
             expect(res.success).toBe(false);
-
-            // protocol bridge, json response without magic header
-            res = await bridgeApiCall({
-                url: `${url}post/1`,
-                method: 'POST',
-                body: JSON.stringify({ protocol: 'bridge', data: GET_FEATURES }),
-            });
-            if (!res.success) {
-                throw new Error(res.error.code + ' ' + res.error.message);
-            }
-            expect(res.payload).toEqual({
-                protocol: 'bridge',
-                data: '',
-            });
 
             // protocol v1, json response with magic header
             res = await bridgeApiCall({
@@ -342,20 +314,6 @@ describe('http', () => {
                 method: 'POST',
             });
             expect(res.success).toBe(false);
-
-            // protocol bridge, json response without magic header
-            res = await bridgeApiCall({
-                url: `${url}read/1`,
-                method: 'POST',
-                body: JSON.stringify({ protocol: 'bridge' }),
-            });
-            if (!res.success) {
-                throw new Error(res.error.code + ' ' + res.error.message);
-            }
-            expect(res.payload).toEqual({
-                protocol: 'bridge',
-                data: FEATURES,
-            });
 
             // protocol v1, json response with magic header
             res = await bridgeApiCall({

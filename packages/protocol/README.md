@@ -2,15 +2,6 @@
 
 Library for decoding and encoding messages from/to Trezor
 
-## protocol-bridge
-
-Message format:
-
-```
-| 2 bytes               | 4 bytes              | `len` bytes              |
-| protobuf_message_type | protobuf_message_len | protobuf_message_payload |
-```
-
 ## protocol-v1
 
 Message format:
