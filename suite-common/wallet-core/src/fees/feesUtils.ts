@@ -31,7 +31,7 @@ type GetEip1559AvailabilityProps = {
     feeLevel: FeeLevel;
     device?: TrezorDevice;
 };
-export const getEip1559Availability = ({ symbol, feeLevel, device }: GetEip1559AvailabilityProps) =>
+const getEip1559Availability = ({ symbol, feeLevel, device }: GetEip1559AvailabilityProps) =>
     getNetwork(symbol).features.includes('eip1559') &&
     isEip1559(feeLevel) &&
     !device?.unavailableCapabilities?.['eip1559'];
