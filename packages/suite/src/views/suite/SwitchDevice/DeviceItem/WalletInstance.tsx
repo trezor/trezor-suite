@@ -2,9 +2,9 @@ import { useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
-import { selectIsLegacyLabelingVisible, selectLabelingDataForWallet } from '@suite/metadata';
+import { selectIsLegacyLabelingVisible } from '@suite/metadata';
 import { SuiteSyncWalletDebug } from '@suite/suite-sync';
-import { selectIsSuiteSyncEnabled, selectSuiteSyncWalletLabel } from '@suite-common/suite-sync';
+import { selectWalletLabel } from '@suite/wallet';
 import {
     getAccountsByDeviceState,
     selectAllAccountsToList,
@@ -12,7 +12,7 @@ import {
     selectCurrentFiatRates,
     selectDeviceThunk,
 } from '@suite-common/wallet-core';
-import { getAllAccounts, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
+import { getAllAccounts } from '@suite-common/wallet-utils';
 import {
     Box,
     Card,
@@ -26,7 +26,6 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
-import { type StaticSessionId } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
@@ -47,33 +46,6 @@ type WalletInstanceProps = {
     onCancel?: ForegroundAppProps['onCancel'];
 };
 
-const selectCombinedWalletLabel =
-    ({ deviceStaticSessionId }: { deviceStaticSessionId: StaticSessionId | null }) =>
-    (state: AppState): string | null => {
-        if (!deviceStaticSessionId) return null;
-
-        const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(state);
-
-        if (isSuiteSyncEnabled) {
-            const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
-
-            return selectSuiteSyncWalletLabel(state, walletDescriptor);
-        }
-
-        const isLegacyLabelingVisible = selectIsLegacyLabelingVisible(state);
-
-        if (isLegacyLabelingVisible) {
-            const legacyLabel = selectLabelingDataForWallet(
-                state,
-                deviceStaticSessionId,
-            ).walletLabel;
-
-            return legacyLabel === undefined || legacyLabel.trim() === '' ? null : legacyLabel;
-        }
-
-        return null;
-    };
-
 export const WalletInstance = ({
     instance,
     isSelected,
@@ -90,17 +62,17 @@ export const WalletInstance = ({
     const dispatch = useDispatch();
     const store = useStore();
     const { translationString } = useTranslation();
-
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
+
     const { defaultAccountLabelString } = useWalletLabeling();
 
     const deviceAccounts = getAllAccounts(instance.state, accounts);
 
     const walletBalance = useTotalFiatBalance(deviceAccounts, baseCurrencyCode, currentFiatRates);
 
-    const walletLabel = useSelector(
-        selectCombinedWalletLabel({
-            deviceStaticSessionId: instance?.state?.staticSessionId ?? null,
+    const walletLabel = useSelector((state: AppState) =>
+        selectWalletLabel(state, {
+            deviceStaticId: instance?.state?.staticSessionId ?? null,
         }),
     );
 
@@ -124,8 +96,8 @@ export const WalletInstance = ({
 
             // NOTE: to determine which account is the first one, we need to filter out empty accounts
             // that are currently displayed in the UI
-            const unfilteredUIAccounGroups = selectAllAccountsToList(store.getState());
-            const currentFirstAccount = unfilteredUIAccounGroups[0];
+            const unfilteredUIAccountGroups = selectAllAccountsToList(store.getState());
+            const currentFirstAccount = unfilteredUIAccountGroups[0];
             // NOTE: attempt to determine, if the currently selected account
             // has a corresponding account in the next wallet accounts
             // if not, enforce switching URL to dashboard

@@ -1,0 +1,20 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/message-system"
+        },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/suite-sync"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        { "path": "../metadata" },
+        { "path": "../../packages/connect" }
+    ]
+}

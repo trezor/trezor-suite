@@ -111,6 +111,7 @@
         "@suite/tor": "workspace:*",
         "@suite/trading": "workspace:*",
         "@suite/tx-simulation": "workspace:^",
+        "@suite/wallet": "workspace:*",
         "@tanstack/react-query": "5.99.0",
         "@testing-library/jest-dom": "6.9.1",
         "@trezor/address-validator": "workspace:*",

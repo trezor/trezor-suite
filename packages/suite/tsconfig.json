@@ -199,6 +199,7 @@
         { "path": "../../suite/tor" },
         { "path": "../../suite/trading" },
         { "path": "../../suite/tx-simulation" },
+        { "path": "../../suite/wallet" },
         { "path": "../address-validator" },
         { "path": "../analytics-uploader" },
         { "path": "../asset-utils" },
