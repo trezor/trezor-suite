@@ -40,7 +40,10 @@ export const Calldata = {
             },
         },
         distributor: {
-            claim: { encode: buildClaim },
+            claim: {
+                encode: buildClaim,
+                decode: createEvmDecoder(EVM_ABI.distributor.claim),
+            },
         },
         everstake: {
             stake: { encode: buildStake },

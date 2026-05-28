@@ -63,16 +63,12 @@ export const signYieldActionReviewThunk = createThunk<
         let transactionReview: ReturnType<typeof buildStablecoinYieldTransactionReview>;
 
         try {
-            const vaultName = flowData.vault.outputToken?.name ?? flowData.vault.metadata.name;
-
             transactionReview = buildStablecoinYieldTransactionReview({
                 amount: review.amount,
-                flowType,
                 selectedFee: null,
                 symbol: flowData.account.symbol,
                 token: flowData.token,
                 unsignedTransaction: review.unsignedTransaction,
-                vaultName,
             });
         } catch (error) {
             const message =

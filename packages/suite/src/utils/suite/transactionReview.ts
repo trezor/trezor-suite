@@ -101,10 +101,9 @@ export const getTransactionReviewModalActionTranslation = ({
     }
 
     if (routeName === 'earn-yield-withdraw') {
-        const yieldType =
-            'yieldMetadata' in precomposedForm ? precomposedForm.yieldMetadata?.type : undefined;
-
-        return { id: yieldType === 'redeem' ? 'TR_EARN_YIELD_REDEEM' : 'TR_EARN_YIELD_WITHDRAW' };
+        return {
+            id: txSignature === 'redeem' ? 'TR_EARN_YIELD_REDEEM' : 'TR_EARN_YIELD_WITHDRAW',
+        };
     }
 
     if (routeName === 'earn-yield-claim') {

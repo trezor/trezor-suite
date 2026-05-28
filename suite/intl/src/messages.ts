@@ -9339,6 +9339,10 @@ export const messages = defineMessages({
         id: 'TR_TOTAL_INCLUDING_FEE',
         defaultMessage: 'Total including fee',
     },
+    TR_REWARD_TOKENS: {
+        id: 'TR_REWARD_TOKENS',
+        defaultMessage: 'Reward tokens',
+    },
     TR_INCLUDING_FEE: {
         id: 'TR_INCLUDING_FEE',
         defaultMessage: 'Including fee',
@@ -9790,6 +9794,10 @@ export const messages = defineMessages({
     TR_EARN_YIELD_REVIEW_REDEEM_AMOUNT: {
         id: 'TR_EARN_YIELD_REVIEW_REDEEM_AMOUNT',
         defaultMessage: 'Redeem amount',
+    },
+    TR_EARN_YIELD_REVIEW_CLAIM_TITLE: {
+        id: 'TR_EARN_YIELD_REVIEW_CLAIM_TITLE',
+        defaultMessage: 'Claim rewards from',
     },
     TR_EARN_DASHBOARD_ACTIVE: {
         id: 'TR_EARN_DASHBOARD_ACTIVE',

@@ -1,6 +1,7 @@
 import type { TokenInfo } from '@trezor/connect';
 
 import { type FormStateTradingCryptoCurrency, type FormStateTradingFiatCurrency } from './sendForm';
+import type { YieldClaimReward } from './stablecoinYield';
 
 export type ReviewOutput =
     | {
@@ -56,6 +57,16 @@ export type ReviewOutput =
           token?: undefined;
           send: FormStateTradingCryptoCurrency;
           receive: FormStateTradingCryptoCurrency | FormStateTradingFiatCurrency;
+      }
+    | {
+          type: 'rewards';
+          rewards: YieldClaimReward[];
+          value?: undefined;
+          value2?: undefined;
+          label?: undefined;
+          token?: undefined;
+          send?: undefined;
+          receive?: undefined;
       };
 
 export type ReviewOutputType = ReviewOutput['type'];

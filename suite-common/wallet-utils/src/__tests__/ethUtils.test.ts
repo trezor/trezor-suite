@@ -1,4 +1,4 @@
-import { Calldata } from '@suite-common/calldata';
+import { Calldata, asEvmAddress } from '@suite-common/calldata';
 import { UINT256_MAX } from '@suite-common/suite-constants';
 import { BigNumber } from '@trezor/utils';
 
@@ -11,6 +11,8 @@ import {
     sanitizeHex,
     strip,
 } from '../ethUtils';
+
+const VALID_CLAIM_ADDRESS = asEvmAddress('0x1111111111111111111111111111111111111111');
 
 describe('eth utils', () => {
     it('padLeftEven', () => {
@@ -143,6 +145,24 @@ describe('eth utils', () => {
                 '000000000000000000000000742D35CC6634C0532925A3B8D40E592E43A73654' +
                 '00000000000000000000000000000000000000000000000000000000000003E8';
             expect(getEvmTransactionTextSignature(upperNoPrefix)).toBe('transfer');
+        });
+
+        it('returns "claim" for valid distributor claim call', () => {
+            const claimData = Calldata.evm.distributor.claim.encode(
+                {
+                    users: [VALID_CLAIM_ADDRESS],
+                    tokens: [VALID_CLAIM_ADDRESS],
+                    amounts: [new BigNumber(1)],
+                    proofs: [[]],
+                },
+                { sender: VALID_CLAIM_ADDRESS },
+            ).data;
+
+            expect(getEvmTransactionTextSignature(claimData ?? undefined)).toBe('claim');
+        });
+
+        it('returns "unknown" for selector-only claim (too short)', () => {
+            expect(getEvmTransactionTextSignature('0x71ee95c0')).toBe('unknown');
         });
     });
 

@@ -52,6 +52,8 @@ export const getEvmTransactionTextSignature = (data?: string): EvmTransactionPur
     if (Calldata.evm.erc4626.withdraw.decode(data)) return 'withdraw';
     if (Calldata.evm.erc4626.redeem.decode(data)) return 'redeem';
 
+    if (Calldata.evm.distributor.claim.decode(data)) return 'claim';
+
     return 'unknown';
 };
 

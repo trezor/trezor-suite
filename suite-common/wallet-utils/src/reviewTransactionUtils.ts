@@ -3,7 +3,7 @@ import { fromWei, toWei } from 'web3-utils';
 import { Calldata } from '@suite-common/calldata';
 import { EVM_SPENDER_LABELS, KNOWN_VAULTS } from '@suite-common/suite-constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { networks } from '@suite-common/wallet-config';
+import { EARN_YIELD_CLAIM_PROVIDER, networks } from '@suite-common/wallet-config';
 import {
     type Account,
     type FormState,
@@ -12,6 +12,7 @@ import {
     type ReviewOutputState,
     type StakeFormState,
     type StakeType,
+    type YieldClaimReward,
 } from '@suite-common/wallet-types';
 import type { CardanoOutput } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
@@ -19,7 +20,10 @@ import { versionUtils } from '@trezor/utils';
 
 import { datetimeToLocktime } from './bitcoinUtils';
 import { getShortFingerprint, isCardanoTx } from './cardanoUtils';
-import { isApprovalFlowSupported as isApprovalSupported } from './deviceUtils';
+import {
+    isApprovalFlowSupported as isApprovalSupported,
+    isEvmClearSigningSupported as isEvmClearSigningSupportedByDevice,
+} from './deviceUtils';
 import {
     getEvmTransactionTextSignature,
     isEvmApprovalTx,
@@ -108,6 +112,8 @@ type ConstructOutputsParams = {
     decreaseOutputId: number | undefined;
     account: Account;
     precomposedForm: FormState | StakeFormState;
+    vaultName?: string;
+    availableRewards?: YieldClaimReward[];
 };
 
 const constructOldFlow = ({
@@ -121,6 +127,8 @@ const constructOldFlow = ({
     const isCardano = isCardanoTx(account, precomposedTx);
     const isStellar = account.networkType === 'stellar';
     const { networkType } = account;
+    const evmTxType = getEvmTransactionTextSignature(precomposedForm.transactionData);
+    const isYieldOperation = isEvmYieldTxByTextSignature(evmTxType);
 
     const hasDestinationTag = 'destinationTag' in precomposedForm;
 
@@ -239,10 +247,7 @@ const constructOldFlow = ({
 
     if (networkType === 'tron' && precomposedForm.destinationTag) {
         outputs.push({ type: 'note', value: precomposedForm.destinationTag });
-    } else if (
-        precomposedForm.transactionData &&
-        (!precomposedTx.token || precomposedForm.yieldMetadata)
-    ) {
+    } else if (precomposedForm.transactionData && (!precomposedTx.token || isYieldOperation)) {
         outputs.push({ type: 'data', value: precomposedForm.transactionData });
     }
 
@@ -262,11 +267,7 @@ const constructOldFlow = ({
                 value: precomposedForm.destinationTag,
             });
         }
-    } else if (
-        (!isBumpFeeRbf || !precomposedTx.useNativeRbf) &&
-        !stakeType &&
-        !precomposedForm.yieldMetadata
-    ) {
+    } else if ((!isBumpFeeRbf || !precomposedTx.useNativeRbf) && !stakeType && !isYieldOperation) {
         outputs.push({ type: 'fee', value: precomposedTx.fee });
     }
 
@@ -278,13 +279,17 @@ const constructNewFlow = ({
     decreaseOutputId,
     account,
     precomposedForm,
+    vaultName,
+    availableRewards,
     isApprovalFlowSupported,
+    isEvmClearSigningSupported,
     isUpdatedEthereumSendFlow,
     isUpdatedStellarSendFlow,
 }: ConstructOutputsParams & {
     isUpdatedEthereumSendFlow: boolean;
     isUpdatedStellarSendFlow: boolean;
     isApprovalFlowSupported: boolean;
+    isEvmClearSigningSupported: boolean;
 }): ReviewOutput[] => {
     const outputs: ReviewOutput[] = [];
 
@@ -302,19 +307,30 @@ const constructNewFlow = ({
     const trading = precomposedForm?.trading;
 
     const evmTxType = getEvmTransactionTextSignature(precomposedForm.transactionData);
-    const isYieldOp = !!precomposedForm.yieldMetadata || isEvmYieldTxByTextSignature(evmTxType);
+    const isClaimOp = evmTxType === 'claim';
+    const isYieldOp = isEvmYieldTxByTextSignature(evmTxType);
+    const isEvmClaimClearSign = isUpdatedEthereumSendFlow && isEvmClearSigningSupported;
+
+    if (isClaimOp && isEvmClaimClearSign) {
+        outputs.push(
+            { type: 'data', value: EARN_YIELD_CLAIM_PROVIDER },
+            { type: 'rewards', rewards: availableRewards ?? [] },
+        );
+
+        return outputs;
+    }
 
     if (isYieldOp && isUpdatedEthereumSendFlow) {
         const fallbackAddress = precomposedTx.outputs.find(
             o => 'address' in o && typeof o.address === 'string',
         )?.address;
-        const vaultName =
-            precomposedForm.yieldMetadata?.vaultName ??
+        const resolvedVaultName =
+            vaultName ??
             (typeof fallbackAddress === 'string'
                 ? (KNOWN_VAULTS[fallbackAddress.toLowerCase()] ?? fallbackAddress)
                 : '');
 
-        outputs.push({ type: 'data', value: '' }, { type: 'address', value: vaultName });
+        outputs.push({ type: 'data', value: '' }, { type: 'address', value: resolvedVaultName });
 
         precomposedTx.outputs.forEach(o => {
             if ('address' in o && typeof o.address === 'string') {
@@ -359,9 +375,8 @@ const constructNewFlow = ({
     } else if (
         (precomposedForm.transactionData && !precomposedTx.token && !isEvmApproval) ||
         (precomposedForm.transactionData && isEvmApproval && !isApprovalFlowSupported) ||
-        (precomposedForm.transactionData &&
-            precomposedForm.yieldMetadata &&
-            !isUpdatedEthereumSendFlow)
+        (precomposedForm.transactionData && isYieldOp && !isUpdatedEthereumSendFlow) ||
+        (precomposedForm.transactionData && isClaimOp && !isEvmClaimClearSign)
     ) {
         outputs.push({ type: 'data', value: precomposedForm.transactionData });
     }
@@ -570,6 +585,7 @@ export const constructTransactionReviewOutputs = ({
     return constructNewFlow({
         isUpdatedEthereumSendFlow,
         isApprovalFlowSupported: isApprovalSupported(device),
+        isEvmClearSigningSupported: isEvmClearSigningSupportedByDevice(device),
         isUpdatedStellarSendFlow,
         ...params,
     });
@@ -577,10 +593,12 @@ export const constructTransactionReviewOutputs = ({
 
 export const constructTransactionReviewOutputsOptional = ({
     account,
+    availableRewards,
     decreaseOutputId,
     device,
     precomposedForm,
     precomposedTx,
+    vaultName,
 }: Partial<ConstructTransactionReviewOutputsProps>): ReviewOutput[] => {
     if (
         account === undefined ||
@@ -593,9 +611,11 @@ export const constructTransactionReviewOutputsOptional = ({
 
     return constructTransactionReviewOutputs({
         account,
+        availableRewards,
         decreaseOutputId,
         device,
         precomposedForm,
         precomposedTx,
+        vaultName,
     });
 };

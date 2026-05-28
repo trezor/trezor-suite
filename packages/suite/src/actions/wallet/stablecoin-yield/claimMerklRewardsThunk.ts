@@ -29,26 +29,32 @@ import {
     AddressDisplayOptions,
     type FormState,
     type PrecomposedTransactionFinal,
+    type YieldClaimReward,
 } from '@suite-common/wallet-types';
 import { getAccountIdentity, getMevProtectedTxData, sanitizeHex } from '@suite-common/wallet-utils';
 import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
+type ClaimMerklReward = YieldAccountsRewards[number]['rewards'][number];
+
 type BuildClaimReviewStateParams = {
     data: EvmHexString;
     contractAddress: EvmHexString;
     fee: EvmFeeHex;
+    rewards: ClaimMerklReward[];
 };
 
 type BuildClaimReviewStateResult = {
     formState: FormState;
     precomposedTransaction: PrecomposedTransactionFinal;
+    availableRewards: YieldClaimReward[];
 };
 
 const buildClaimReviewState = ({
     data,
     contractAddress,
     fee,
+    rewards,
 }: BuildClaimReviewStateParams): BuildClaimReviewStateResult => {
     const feePriceWei = new BigNumber(
         hexToNumberString(fee.type === 'eip1559' ? fee.maxFeePerGas : fee.gasPrice),
@@ -96,13 +102,17 @@ const buildClaimReviewState = ({
         selectedUtxos: [],
     };
 
+    const availableRewards = rewards.map(reward => ({
+        tokenAddress: reward.token.address,
+        tokenSymbol: reward.token.symbol,
+    }));
+
     const precomposedTransaction: PrecomposedTransactionFinal = {
         type: 'final',
         bytes: 0,
         inputs: [],
         outputs: [{ address: contractAddress, amount: '0' }],
         outputsPermutation: [0],
-
         totalSpent: feeWei,
         fee: feeWei,
         feePerByte: feePerUnitGwei,
@@ -111,7 +121,7 @@ const buildClaimReviewState = ({
         maxPriorityFeePerGas: eip1559Fields.maxPriorityFeePerGasGwei,
     };
 
-    return { formState, precomposedTransaction };
+    return { formState, precomposedTransaction, availableRewards };
 };
 
 interface GetEstimatedClaimFeeParams {
@@ -171,7 +181,7 @@ async function getEstimatedFee({
 type ClaimMerklRewardsParams = {
     account: Account;
     flowKey: string;
-    rewards: YieldAccountsRewards[number]['rewards'];
+    rewards: ClaimMerklReward[];
 };
 
 export const claimMerklRewardsThunk = createThunk(
@@ -283,16 +293,18 @@ export const claimMerklRewardsThunk = createThunk(
                 throw new Error('Fee information is missing for the transaction.');
             }
 
-            const { formState, precomposedTransaction } = buildClaimReviewState({
+            const { formState, precomposedTransaction, availableRewards } = buildClaimReviewState({
                 data: unsignedClaimTx.data,
                 contractAddress: unsignedClaimTx.to,
                 fee: parsedSelectedFee,
+                rewards,
             });
 
             dispatch(
                 stablecoinYieldActions.storePrecomposedTransaction({
                     precomposedTx: precomposedTransaction,
                     precomposedForm: formState,
+                    availableRewards,
                     accountKey: account.key,
                 }),
             );

@@ -95,6 +95,18 @@ describe('ReviewOutputItem', () => {
         );
     });
 
+    it('should not render output card for type "rewards"', () => {
+        const { queryByTestId } = renderReviewOutputItem({
+            reviewOutput: {
+                type: 'rewards',
+                rewards: [],
+                state: 'active',
+            } as StatefulReviewOutput,
+        });
+
+        expect(queryByTestId('review-output-card/title')).toBeNull();
+    });
+
     it('should render value for type "destination-tag" and value set', () => {
         const { getByTestId } = renderReviewOutputItem({
             reviewOutput: {
