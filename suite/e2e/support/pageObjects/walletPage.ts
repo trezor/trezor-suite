@@ -22,6 +22,7 @@ export class WalletPage {
     readonly stakeAddress: Locator;
     readonly walletExtraDropDown: Locator;
     readonly openTradingGlobalButton: Locator;
+    readonly openSellGlobalButton: Locator;
     readonly openSwapSidebarButton: Locator;
     readonly tradingDropdownBuyButton: Locator;
     readonly balanceOfAccount = (params: WalletParams) =>
@@ -85,6 +86,7 @@ export class WalletPage {
         this.stakeAddress = this.page.getByTestId('@cardano/staking/address');
         this.walletExtraDropDown = this.page.getByTestId('@wallet/menu/extra-dropdown');
         this.openTradingGlobalButton = this.page.getByTestId('@wallet/menu/wallet-trading-buy');
+        this.openSellGlobalButton = this.page.getByTestId('@wallet/menu/wallet-trading-sell');
         this.openSwapSidebarButton = this.page.getByTestId('@suite/menu/wallet-trading-exchange');
         this.tradingDropdownBuyButton = this.page
             .getByRole('list')
