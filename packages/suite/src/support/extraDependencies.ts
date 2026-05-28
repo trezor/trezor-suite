@@ -5,6 +5,7 @@ import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
 import type { FlagsState } from '@suite/flags';
 import { lockDevice } from '@suite/locks';
 import {
+    type MetadataRootState,
     metadataActions,
     metadataLabelingActions,
     selectLabelingDataForAccount,
@@ -41,6 +42,7 @@ import {
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
+    type SuiteSyncCompositionRootState,
     selectAllLabelsForAccount,
     selectIsSuiteSyncEnabled,
     selectSuiteSyncWalletLabel,
@@ -88,7 +90,7 @@ const connectInitSettings: ConnectInitSettings = {
 };
 
 export type StoreAPIDep = {
-    getState: () => any;
+    getState: () => SuiteSyncCompositionRootState & MetadataRootState;
     dispatch: (_: any) => any;
 };
 
