@@ -1,5 +1,5 @@
 /* eslint-disable import/no-default-export */
-import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Freeze } from 'react-freeze';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
@@ -8,13 +8,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import * as Sentry from '@sentry/react-native';
-import { Stack, useNavigationContainerRef } from 'expo-router';
+import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { FormatterProvider } from '@suite-common/formatters';
 import { ReactNativeQueryProvider } from '@suite-common/react-query/src/components/ReactNativeQueryProvider';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { applicationInit } from '@suite-native/app-init';
 import { useIsBiometricsOverlayVisible } from '@suite-native/biometrics';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
@@ -23,14 +21,12 @@ import { useFormattersConfig } from '@suite-native/formatters-config';
 import { IntlProvider } from '@suite-native/intl';
 import { KillswitchMessageScreen } from '@suite-native/message-system';
 import {
-    IsNavigationReadyContext,
+    ExpoRouterNavigationBridge,
     NavigationThemeProvider,
     RootStackRoutes,
     stackNavigationOptionsConfig,
-    useNavigationDevTools,
-    useReportSendFlowExitToAnalytics,
 } from '@suite-native/navigation';
-import { addSentryBreadcrumb, initSentry, setSentryTag } from '@suite-native/sentry';
+import { initSentry } from '@suite-native/sentry';
 import { StoreProvider, selectIsAppReady } from '@suite-native/state';
 
 import { BannersRenderer } from '../BannersRenderer';
@@ -58,88 +54,6 @@ disableRTL();
 SplashScreen.preventAutoHideAsync();
 
 configureNetInfo();
-
-const ExpoRouterNavigationBridge = ({ children }: { children: ReactNode }) => {
-    const [isNavigationReady, setIsNavigationReady] = useState(false);
-    const routeNameRef = useRef<string | undefined>(undefined);
-    const navigationRef = useNavigationContainerRef();
-    const { analytics } = useServices<NativeAnalyticsDep>();
-    const reportSendFlowExitToAnalytics = useReportSendFlowExitToAnalytics();
-
-    useNavigationDevTools({ ref: navigationRef });
-
-    const handleNavigationReady = useCallback(() => {
-        if (!navigationRef.isReady()) return;
-
-        routeNameRef.current = navigationRef.getCurrentRoute()?.name;
-        setIsNavigationReady(true);
-    }, [navigationRef]);
-
-    const handleNavigationStateChange = useCallback(() => {
-        if (!navigationRef.isReady()) return;
-
-        setIsNavigationReady(true);
-
-        const previousRouteName = routeNameRef.current;
-        const currentRouteName = navigationRef.getCurrentRoute()?.name;
-
-        if (!currentRouteName) return;
-
-        if (!previousRouteName) {
-            routeNameRef.current = currentRouteName;
-
-            return;
-        }
-
-        reportSendFlowExitToAnalytics(currentRouteName);
-
-        if (previousRouteName !== currentRouteName) {
-            routeNameRef.current = currentRouteName;
-
-            analytics.report({
-                type: events.screenChangeEvent.name,
-                payload: {
-                    previousScreen: previousRouteName,
-                    currentScreen: currentRouteName,
-                },
-            });
-
-            addSentryBreadcrumb({
-                category: events.screenChangeEvent.name,
-                message: 'screen changed',
-                level: 'info',
-                data: {
-                    previousScreen: previousRouteName,
-                    currentScreen: currentRouteName,
-                },
-            });
-
-            setSentryTag('route', currentRouteName);
-        }
-    }, [analytics, navigationRef, reportSendFlowExitToAnalytics]);
-
-    useEffect(() => {
-        handleNavigationReady();
-        handleNavigationStateChange();
-
-        const unsubscribeReadyListener = navigationRef.addListener('ready', handleNavigationReady);
-        const unsubscribeStateListener = navigationRef.addListener(
-            'state',
-            handleNavigationStateChange,
-        );
-
-        return () => {
-            unsubscribeReadyListener();
-            unsubscribeStateListener();
-        };
-    }, [handleNavigationReady, handleNavigationStateChange, navigationRef]);
-
-    return (
-        <IsNavigationReadyContext.Provider value={isNavigationReady}>
-            {children}
-        </IsNavigationReadyContext.Provider>
-    );
-};
 
 const RootStack = () => {
     const isStorybookEnabled = isDevelopOrDebugEnv();
