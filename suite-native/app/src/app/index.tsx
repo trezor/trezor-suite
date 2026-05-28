@@ -1,7 +1,7 @@
 /* eslint-disable import/no-default-export */
 import { useSelector } from 'react-redux';
 
-import { type Href, Redirect } from 'expo-router';
+import { Redirect } from 'expo-router';
 
 import { AppTabsRoutes, RootStackRoutes } from '@suite-native/navigation';
 import { selectIsAppReady } from '@suite-native/state';
@@ -14,12 +14,11 @@ const RootIndexRedirect = () => {
 
     if (!isAppReady) return null;
 
-    const initialHref =
-        initialRouteName === RootStackRoutes.AppTabs
-            ? `/${RootStackRoutes.AppTabs}/${AppTabsRoutes.HomeStack}`
-            : `/${initialRouteName}`;
+    if (initialRouteName === RootStackRoutes.AppTabs) {
+        return <Redirect href={`/${RootStackRoutes.AppTabs}/${AppTabsRoutes.HomeStack}`} />;
+    }
 
-    return <Redirect href={initialHref as Href} />;
+    return <Redirect href={`/${initialRouteName}`} />;
 };
 
 export default RootIndexRedirect;

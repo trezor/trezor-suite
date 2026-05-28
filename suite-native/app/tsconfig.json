@@ -116,5 +116,9 @@
         },
         { "path": "../../packages/eslint" }
     ],
-    "include": [".", "**/*.json"]
+    "include": [
+        ".",
+        "**/*.json",
+        ".expo/types/**/*.ts"
+    ]
 }

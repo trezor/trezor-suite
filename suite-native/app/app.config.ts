@@ -203,6 +203,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         ...config,
         name,
         scheme: 'trezorsuite',
+        experiments: {
+            typedRoutes: true,
+        },
         slug: appSlugs[buildType],
         owner: appOwners[buildType],
         version: suiteNativeVersion,
