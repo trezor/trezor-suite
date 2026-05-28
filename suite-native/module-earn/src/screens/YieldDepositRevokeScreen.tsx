@@ -109,10 +109,10 @@ export const YieldDepositRevokeScreen = () => {
                     amountLabel={<Translation id="earn.yieldDepositFlowScreen.approvedAmount" />}
                     amountTokenContract={tokenContract}
                     amountTokenSymbol={pendingModal.amountTokenSymbol}
-                    fee={pendingModal.transaction.fee}
+                    fee={pendingModal.fee}
                     isExploreDisabled={pendingModal.isExploreDisabled}
                     onExplorePress={pendingModal.onExplorePress}
-                    submittedAt={new Date(pendingModal.transaction.submittedAt ?? 0)}
+                    submittedAt={pendingModal.submittedAt}
                     title={<Translation id="earn.yieldDepositRevokeScreen.pendingTitle" />}
                     vaultName={vault.metadata.name}
                     vaultTokenContract={tokenContract}
