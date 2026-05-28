@@ -14,6 +14,7 @@ import {
     notImplementedThunk,
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
+import { type SuiteSyncCompositionRootState } from '@suite-common/suite-sync';
 import { analytics } from '@suite-native/analytics';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
@@ -49,7 +50,7 @@ const bip329: Bip329 = {
 };
 
 type NativeAppDeps = {
-    getState: () => any;
+    getState: () => SuiteSyncCompositionRootState;
     dispatch: any;
 } & EnsureEncryptionKeyDep &
     MMKVStorageDep;
