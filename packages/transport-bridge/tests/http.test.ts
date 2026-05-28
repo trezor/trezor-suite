@@ -148,17 +148,13 @@ describe('http', () => {
             const { trezordNode, url } = await setupTrezordNode();
 
             let res;
-            // no protocol, legacy way
+            // raw body without a protocol envelope is rejected (legacy hex format dropped)
             res = await bridgeApiCall({
                 url: `${url}call/1`,
                 method: 'POST',
                 body: GET_FEATURES,
             });
-            if (!res.success) {
-                throw new Error(res.error.code + ' ' + res.error.message);
-            }
-            expect(res.payload).toBe(FEATURES);
-            // invalid legacy message (not a hex)
+            expect(res.success).toBe(false);
             res = await bridgeApiCall({
                 url: `${url}call/1`,
                 method: 'POST',
@@ -237,17 +233,13 @@ describe('http', () => {
             const { trezordNode, url } = await setupTrezordNode();
 
             let res;
-            // no protocol, legacy way
+            // raw body without a protocol envelope is rejected (legacy hex format dropped)
             res = await bridgeApiCall({
                 url: `${url}post/1`,
                 method: 'POST',
                 body: GET_FEATURES,
             });
-            if (!res.success) {
-                throw new Error(res.error.code + ' ' + res.error.message);
-            }
-            expect(res.payload).toBe('');
-            // invalid legacy message (not a hex)
+            expect(res.success).toBe(false);
             res = await bridgeApiCall({
                 url: `${url}post/1`,
                 method: 'POST',
@@ -344,15 +336,12 @@ describe('http', () => {
             const { trezordNode, url } = await setupTrezordNode();
 
             let res;
-            // no protocol, legacy way
+            // raw body without a protocol envelope is rejected (legacy hex format dropped)
             res = await bridgeApiCall({
                 url: `${url}read/1`,
                 method: 'POST',
             });
-            if (!res.success) {
-                throw new Error(res.error.code + ' ' + res.error.message);
-            }
-            expect(res.payload).toBe(FEATURES);
+            expect(res.success).toBe(false);
 
             // protocol bridge, json response without magic header
             res = await bridgeApiCall({
@@ -590,7 +579,7 @@ describe('http', () => {
             const callPromise = bridgeApiCall({
                 url: url + 'call/1',
                 method: 'POST',
-                body: '000000000000',
+                body: JSON.stringify({ protocol: 'v1', data: '3f2323' + '000000000000' }),
                 signal: abortController.signal,
             });
 

@@ -2,28 +2,17 @@ import type { ThpChannelState, TransportProtocol } from '@trezor/protocol';
 
 export type BridgeProtocolMessage = {
     data: string;
-    protocol?: TransportProtocol['name'];
+    protocol: TransportProtocol['name'];
     thpState?: ThpChannelState;
 };
 
 // validate expected body:
-// - string with hex (legacy bridge /call and /read results)
-// - empty string (legacy bridge /write result, withMessage == false)
 // - json string (protocol message)
 // - parsed json string (parsed protocol message)
 export function validateProtocolMessage(body: unknown, withData = true): BridgeProtocolMessage {
     const isHex = (s: string) => /^[0-9A-Fa-f]+$/g.test(s); // TODO: trezor/utils accepts 0x prefix (eth)
     const isValidProtocol = (s: any): s is BridgeProtocolMessage['protocol'] =>
         s === 'v1' || s === 'v2' || s === 'bridge';
-
-    // Legacy bridge results
-    if (typeof body === 'string') {
-        if ((withData && isHex(body)) || (!withData && !body.length)) {
-            return {
-                data: body,
-            };
-        }
-    }
 
     let json: Record<string, any> | undefined | null;
     if (typeof body === 'object') {
@@ -58,7 +47,7 @@ export function validateProtocolMessage(body: unknown, withData = true): BridgeP
 
 export function createProtocolMessage(
     body: unknown,
-    protocol?: TransportProtocol | TransportProtocol['name'],
+    protocol: TransportProtocol | TransportProtocol['name'],
     thpState?: ThpChannelState,
 ) {
     let data;
@@ -70,11 +59,6 @@ export function createProtocolMessage(
     }
     if (typeof data !== 'string') {
         data = '';
-    }
-
-    // Legacy bridge message
-    if (!protocol) {
-        return data;
     }
 
     return JSON.stringify({
