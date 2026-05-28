@@ -42,6 +42,7 @@ jobs:
         with:
           mode: firewall-free
           job-summary: errors
+          firewall-version: 1.11.0
       - name: Build and sign ${{ github.event.inputs.environment }} token-definitions
         if: ${{ github.event.inputs.environment == 'develop-definitions' && github.ref == 'refs/heads/develop' }}
         run: |

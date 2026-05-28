@@ -61,6 +61,7 @@ jobs:
         with:
           mode: firewall-free
           job-summary: errors
+          firewall-version: 1.11.0
       - name: Install dependencies
         run: sfw yarn install
 
@@ -91,8 +92,7 @@ jobs:
 
   deploy-npm-connect-dependencies:
     name: Deploy NPM ${{ needs.identify-release-packages.outputs.deploymentType }} ${{ matrix.package }}
-    needs:
-      [extract-version, sanity-check-version-match, identify-release-packages]
+    needs: [extract-version, sanity-check-version-match, identify-release-packages]
     environment: production-connect
     runs-on: ubuntu-latest
     strategy:
@@ -133,8 +133,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package:
-          ["connect", "connect-web", "connect-webextension", "connect-mobile"]
+        package: ["connect", "connect-web", "connect-webextension", "connect-mobile"]
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:

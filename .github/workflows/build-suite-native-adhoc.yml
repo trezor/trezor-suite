@@ -43,6 +43,7 @@ jobs:
         with:
           mode: firewall-free
           job-summary: errors
+          firewall-version: 1.11.0
       - name: Install libs
         run: |
           sfw yarn workspaces focus @suite-native/app

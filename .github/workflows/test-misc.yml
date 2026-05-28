@@ -31,6 +31,7 @@ jobs:
         with:
           mode: firewall-free
           job-summary: errors
+          firewall-version: 1.11.0
       - run: sfw yarn install --immutable
       - run: yarn workspace @suite/intl translations:list-unused
 
@@ -64,6 +65,7 @@ jobs:
         with:
           mode: firewall-free
           job-summary: errors
+          firewall-version: 1.11.0
       - run: sfw yarn install --immutable
       - run: ./scripts/circular-dependencies/check-circular-dependencies.sh
 
@@ -86,6 +88,7 @@ jobs:
         with:
           mode: firewall-free
           job-summary: errors
+          firewall-version: 1.11.0
       - run: sfw yarn install --immutable
       - run: yarn message-system-sign-config
       - name: Unit Tests - Suite, Connect, Common
@@ -126,6 +129,7 @@ jobs:
         with:
           mode: firewall-free
           job-summary: errors
+          firewall-version: 1.11.0
       - run: sfw yarn install --immutable
       - run: yarn generate-package @trezor/meow-package
       - run: rm -rf packages/meow-package
@@ -146,5 +150,6 @@ jobs:
         with:
           mode: firewall-free
           job-summary: errors
+          firewall-version: 1.11.0
       - run: sfw yarn install --immutable
       - run: yarn tsx ./packages/components/scripts/test-img-paths-exist.ts

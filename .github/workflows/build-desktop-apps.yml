@@ -46,6 +46,7 @@ jobs:
         with:
           mode: firewall-free
           job-summary: errors
+          firewall-version: 1.11.0
       - name: Install deps and build libs
         run: |
           sfw yarn install --immutable
@@ -98,6 +99,7 @@ jobs:
         with:
           mode: firewall-free
           job-summary: errors
+          firewall-version: 1.11.0
       - name: Install deps and build libs
         run: |
           sfw yarn install --immutable
@@ -158,6 +160,7 @@ jobs:
         with:
           mode: firewall-free
           job-summary: errors
+          firewall-version: 1.11.0
       - name: Install deps and build libs
         run: |
           sfw yarn install --immutable
