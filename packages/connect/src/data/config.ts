@@ -248,5 +248,17 @@ export const config: Config = {
             min: { T1B1: '0', T2T1: '0', T2B1: '0', T3B1: '0', T3T1: '0', T3W1: '2.11.0' },
             comment: ['Supported since 2.11.0, only on T3W1'],
         },
+        {
+            capabilities: ['evmClearSigning'],
+            min: {
+                T1B1: '0',
+                T2T1: '2.12.1',
+                T2B1: '2.12.1',
+                T3B1: '2.12.1',
+                T3T1: '2.12.1',
+                T3W1: '2.12.1',
+            },
+            comment: ['Ethereum clear signing for known contracts/function selectors since 2.12.1'],
+        },
     ],
 };
