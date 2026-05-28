@@ -2,5 +2,8 @@
     "extends": "../../tsconfig.libESM.json",
     "compilerOptions": { "outDir": "./libESM" },
     "include": ["./src"],
-    "references": [{ "path": "../../packages/type-utils" }, { "path": "../../packages/utils" }]
+    "references": [
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/utils" }
+    ]
 }

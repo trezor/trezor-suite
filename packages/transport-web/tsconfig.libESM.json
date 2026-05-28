@@ -6,5 +6,8 @@
         "lib": ["DOM", "ES2023"],
         "types": []
     },
-    "references": [{ "path": "../transport-common" }, { "path": "../eslint" }]
+    "references": [
+        { "path": "../transport-common" },
+        { "path": "../eslint" }
+    ]
 }
