@@ -4,13 +4,11 @@ import { goto, selectIsAccountTabPage, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { type SelectedAccountStatus } from '@suite-common/wallet-types';
-import { Row } from '@trezor/components';
-import { breakpoints } from '@trezor/theme';
+import { ButtonGroup, Row } from '@trezor/components';
 
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { ConditionalRender } from 'src/support/suite/ConditionalRender';
 
 interface TradeActionsProps {
     selectedAccount?: SelectedAccountStatus;
@@ -41,7 +39,9 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
         dispatch(goto(payload));
     };
 
-    const onBuyAndSellClick = () => {
+    const navigateToTrading = (type: 'buy' | 'sell') => {
+        const routeName = `wallet-trading-${type}` as const;
+
         if (account) {
             dispatch(
                 tradingActions.setTradingFromPrefilledAccount(
@@ -50,13 +50,13 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
             );
         }
 
-        goToWithAnalytics({ routeName: 'wallet-trading-buy' });
+        goToWithAnalytics({ routeName, preserveParams: false });
 
         analytics.report({
             type: events.tradeNavigateEvent.name,
             payload: {
                 action: 'navigate',
-                type: 'buy/sell',
+                type,
                 from: account ? 'account/header' : 'dashboard/header',
                 networkSymbol: account?.symbol,
             },
@@ -68,18 +68,22 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
     return (
         <Row gap={12}>
             <AppNavigationTooltip>
-                <ConditionalRender container="content" minWidth={breakpoints.laptop}>
+                <ButtonGroup intent="neutral" priority="secondary" isDisabled={isAccountLoading}>
                     <HeaderActionButton
-                        icon="currencyCircleDollar"
-                        onClick={onBuyAndSellClick}
+                        icon="plus"
+                        onClick={() => navigateToTrading('buy')}
                         data-testid="@wallet/menu/wallet-trading-buy"
-                        intent="neutral"
-                        priority="secondary"
-                        isDisabled={isAccountLoading}
                     >
-                        <Translation id="TR_TRADING_BUY_AND_SELL" />
+                        <Translation id="TR_NAV_BUY" />
                     </HeaderActionButton>
-                </ConditionalRender>
+                    <HeaderActionButton
+                        icon="minus"
+                        onClick={() => navigateToTrading('sell')}
+                        data-testid="@wallet/menu/wallet-trading-sell"
+                    >
+                        <Translation id="TR_NAV_SELL" />
+                    </HeaderActionButton>
+                </ButtonGroup>
             </AppNavigationTooltip>
         </Row>
     );

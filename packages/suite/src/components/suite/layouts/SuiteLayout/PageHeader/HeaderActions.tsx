@@ -27,11 +27,7 @@ export const HeaderActions = () => {
 
     return (
         <Row gap={12} alignItems="center">
-            <HeaderDropdown
-                isDisabled={isAccountLoading}
-                isTradingDisabled={!isTradingAvailable}
-                showSignAndVerify
-            />
+            <HeaderDropdown isDisabled={isAccountLoading} showSignAndVerify />
 
             {isTradingAvailable && <TradeActions selectedAccount={selectedAccount} />}
 
