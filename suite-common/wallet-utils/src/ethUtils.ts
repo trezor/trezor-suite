@@ -1,5 +1,3 @@
-import { fromWei } from 'web3-utils';
-
 import { Calldata } from '@suite-common/calldata';
 import { UINT256_MAX } from '@suite-common/suite-constants';
 import { type EvmTransactionPurpose } from '@suite-common/wallet-types';
@@ -34,11 +32,6 @@ export const strip = (str: string): string => {
 
     return padLeftEven(str);
 };
-
-export const evmHexToBigNumber = (hex: `0x${string}`) => new BigNumber(strip(hex) || '0', 16);
-
-export const evmHexWeiToGwei = (hex: `0x${string}`) =>
-    fromWei(evmHexToBigNumber(hex).toFixed(0), 'gwei');
 
 export const getEvmTransactionTextSignature = (data?: string): EvmTransactionPurpose => {
     if (!data) return '';
