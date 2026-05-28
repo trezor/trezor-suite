@@ -4,6 +4,7 @@ import {
     type UnknownAction,
     createListenerMiddleware,
 } from '@reduxjs/toolkit';
+import { router } from 'expo-router';
 
 import { deviceActions, selectDevices } from '@suite-common/device';
 import {
@@ -24,7 +25,7 @@ import {
     checkIsActiveRouteAnyOf,
     checkIsDeviceOnboardingFocused,
     checkIsHomeStackFocused,
-    navigationContainerRef,
+    resetNavigationRoot,
 } from '@suite-native/navigation';
 import { type DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
@@ -52,7 +53,6 @@ const handleDeviceConnectNavigation = ({
     isDeviceSetupSupported: boolean;
     wasDeviceOnboardingCancelled: boolean;
 }) => {
-    if (!navigationContainerRef.isReady()) return;
     if (!isDeviceInitialized) {
         // If device setup is not supported, we don't want to navigate anywhere
         // We handle it separately in `useDetectDeviceError` hook. Ideally, the alert would be triggered here (it would need to be in redux though).
@@ -63,7 +63,7 @@ const handleDeviceConnectNavigation = ({
             // No need to navigate if we are already on home screen (preventing sliding to new screen)
             if (checkIsHomeStackFocused()) return;
 
-            navigationContainerRef.reset({
+            resetNavigationRoot({
                 index: 0,
                 routes: [
                     {
@@ -79,7 +79,7 @@ const handleDeviceConnectNavigation = ({
         } else {
             // If THP confirmation screen was shown, we want to prevent swiping/navigating back to
             // that THP confirmation screen. Swiping/navigating back shall lead to the Home screen.
-            navigationContainerRef.reset({
+            resetNavigationRoot({
                 index: 1,
                 routes: [
                     {
@@ -106,9 +106,9 @@ const handleDeviceConnectNavigation = ({
 
     if (isAnyNetworkEnabled || hasDeviceBitcoinOnlyFirmware) {
         // Bitcoin is enabled and coin enabling finished with btc-only FW in discoverMiddleware.
-        navigationContainerRef.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-            screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
-        });
+        router.navigate(
+            `/${RootStackRoutes.AuthorizeDeviceStack}/${AuthorizeDeviceStackRoutes.ConnectingDevice}`,
+        );
     }
 };
 
@@ -121,8 +121,6 @@ deviceConnectionMiddleware.startListening({
             getOriginalState,
         }: ListenerEffectAPI<NativeDeviceRootState, Dispatch<UnknownAction>>,
     ) => {
-        if (!navigationContainerRef.isReady()) return;
-
         if (!deviceActions.connectDevice.match(action)) {
             throw new Error('This listener only handles connectDevice action');
         }
@@ -141,8 +139,9 @@ deviceConnectionMiddleware.startListening({
         if (failedCheck) {
             // When the compromised modal is closed on first connection and no coins would be selected, we will need to redirect user
             // to coin enabling so he can continue to the app with running discovery.
-            navigationContainerRef.navigate(RootStackRoutes.DeviceCompromisedModal, {
-                failedCheck,
+            router.navigate({
+                pathname: `/${RootStackRoutes.DeviceCompromisedModal}`,
+                params: { failedCheck },
             });
 
             return;
@@ -177,8 +176,6 @@ deviceConnectionMiddleware.startListening({
 deviceConnectionMiddleware.startListening({
     predicate: action => deviceActions.deviceDisconnect.match(action),
     effect: (action: UnknownAction, { getState }) => {
-        if (!navigationContainerRef.isReady()) return;
-
         if (!deviceActions.deviceDisconnect.match(action)) {
             throw new Error('This listener only handles deviceDisconnect action');
         }
@@ -195,13 +192,13 @@ deviceConnectionMiddleware.startListening({
             return;
 
         if (checkIsDeviceOnboardingFocused()) {
-            navigationContainerRef.navigate(RootStackRoutes.DeviceOnboardingStack, {
-                screen: DeviceOnboardingStackRoutes.DeviceDisconnected,
-                params: { wasDeviceConnectedViaBluetooth },
+            router.navigate({
+                pathname: `/${RootStackRoutes.DeviceOnboardingStack}/${DeviceOnboardingStackRoutes.DeviceDisconnected}`,
+                params: { wasDeviceConnectedViaBluetooth: String(wasDeviceConnectedViaBluetooth) },
             });
         } else {
             if (!checkIsHomeStackFocused()) {
-                navigationContainerRef.reset({
+                resetNavigationRoot({
                     index: 0,
                     routes: [
                         {
@@ -220,8 +217,6 @@ deviceConnectionMiddleware.startListening({
 deviceConnectionMiddleware.startListening({
     predicate: isThpPairingUIRequestButtonAction,
     effect: (_, { getState }) => {
-        if (!navigationContainerRef.isReady()) return;
-
         if (
             selectIsFirmwareInstallationRunning(getState()) ||
             checkIsActiveRouteAnyOf([
@@ -239,8 +234,8 @@ deviceConnectionMiddleware.startListening({
         }
 
         // Nothing can be accomplished before a THP connection is established.
-        navigationContainerRef.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-            screen: AuthorizeDeviceStackRoutes.ThpConfirmation,
-        });
+        router.navigate(
+            `/${RootStackRoutes.AuthorizeDeviceStack}/${AuthorizeDeviceStackRoutes.ThpConfirmation}`,
+        );
     },
 });

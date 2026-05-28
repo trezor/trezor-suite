@@ -2,6 +2,8 @@ export type * from './navigators';
 export * from './routes';
 export type * from './types';
 export * from './config';
+export * from './currentRoute';
+export * from './imperativeReset';
 export * from './hooks/useInterceptNativeNavigation';
 export * from './hooks/useNavigateToInitialScreen';
 export * from './hooks/useLastRouteName';

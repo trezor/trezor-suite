@@ -188,7 +188,8 @@ export type OnboardingStackParamList = {
 
 export type DeviceOnboardingStackParamList = {
     [DeviceOnboardingStackRoutes.DeviceDisconnected]: {
-        wasDeviceConnectedViaBluetooth: boolean;
+        // Stringified at the expo-router URL boundary; consumer parses with === 'true'.
+        wasDeviceConnectedViaBluetooth: string;
     };
     [DeviceOnboardingStackRoutes.UninitializedDeviceLanding]: {
         deviceModel: DeviceModelInternal;

@@ -4,164 +4,13 @@ import {
     DarkTheme,
     DefaultTheme,
     type NavigationContainerRefWithCurrent,
-    type NavigationState,
-    type PartialState,
-    type Route,
     ThemeProvider,
-    createNavigationContainerRef,
 } from '@react-navigation/native';
 import { useReactNavigationDevTools } from '@rozenite/react-navigation-plugin';
 
 import { useNativeStyles } from '@trezor/styles-native';
 
-import { type RootStackParamList } from '../navigators';
-
 export const IsNavigationReadyContext = createContext(false);
-
-const fallbackNavigationContainerRef = createNavigationContainerRef<RootStackParamList>();
-let activeNavigationContainerRef: NavigationContainerRefWithCurrent<RootStackParamList> =
-    fallbackNavigationContainerRef;
-
-type NavigationRoute = Route<string> & {
-    state?: NavigationState | PartialState<NavigationState>;
-};
-
-type NavigationStateLike = NavigationState | PartialState<NavigationState>;
-
-const EXPO_ROUTER_ROOT_ROUTE_NAME = '__root';
-
-const getActiveNavigationContainerRef = () => activeNavigationContainerRef;
-
-const getUntypedActiveNavigationContainerRef = () =>
-    getActiveNavigationContainerRef() as unknown as {
-        navigate: (routeName: string, params?: object) => void;
-        reset: (state: object) => void;
-    };
-
-const getRouteState = (route?: NavigationRoute) => route?.state;
-
-const isExpoRouterRootState = (state: NavigationStateLike): boolean =>
-    state.routeNames?.includes(EXPO_ROUTER_ROOT_ROUTE_NAME) === true &&
-    state.routes.some(route => route.name === EXPO_ROUTER_ROOT_ROUTE_NAME);
-
-const unwrapExpoRouterRootState = (state: NavigationStateLike): NavigationStateLike => {
-    if (!isExpoRouterRootState(state)) return state;
-
-    const activeRoute = state.routes[state.index ?? 0] as NavigationRoute | undefined;
-    const nestedState =
-        activeRoute?.name === EXPO_ROUTER_ROOT_ROUTE_NAME
-            ? getRouteState(activeRoute)
-            : getRouteState(
-                  state.routes.find(route => route.name === EXPO_ROUTER_ROOT_ROUTE_NAME) as
-                      | NavigationRoute
-                      | undefined,
-              );
-
-    return nestedState ?? state;
-};
-
-const getRawNavigationState = () => {
-    const activeRef = getActiveNavigationContainerRef();
-
-    return activeRef.getRootState() ?? activeRef.getState();
-};
-
-const getNavigationState = () => unwrapExpoRouterRootState(getRawNavigationState());
-
-const getCurrentRouteFromState = (state: NavigationStateLike): NavigationRoute | undefined => {
-    const route = state.routes[state.index ?? 0] as NavigationRoute | undefined;
-    const routeState = getRouteState(route);
-
-    return routeState ? getCurrentRouteFromState(routeState) : route;
-};
-
-const getCurrentRoute = () => getCurrentRouteFromState(getNavigationState());
-
-const shouldWrapActionForExpoRouter = () => isExpoRouterRootState(getRawNavigationState());
-
-// Keep one stable exported object while letting Expo Router provide the actual root ref.
-export const navigationContainerRef = new Proxy(fallbackNavigationContainerRef, {
-    get: (_target, property) => {
-        const activeRef = getActiveNavigationContainerRef() as unknown as Record<
-            PropertyKey,
-            unknown
-        >;
-
-        if (property === 'getState' || property === 'getRootState') {
-            return getNavigationState;
-        }
-
-        if (property === 'getCurrentRoute') {
-            return getCurrentRoute;
-        }
-
-        if (property === 'navigate') {
-            return (routeName: string, params?: object) => {
-                if (shouldWrapActionForExpoRouter()) {
-                    return getUntypedActiveNavigationContainerRef().navigate(
-                        EXPO_ROUTER_ROOT_ROUTE_NAME,
-                        {
-                            screen: routeName,
-                            params,
-                        },
-                    );
-                }
-
-                return getUntypedActiveNavigationContainerRef().navigate(routeName, params);
-            };
-        }
-
-        if (property === 'reset') {
-            return (state: NavigationStateLike) => {
-                if (shouldWrapActionForExpoRouter()) {
-                    return getUntypedActiveNavigationContainerRef().reset({
-                        index: 0,
-                        routes: [
-                            {
-                                name: EXPO_ROUTER_ROOT_ROUTE_NAME,
-                                state,
-                            },
-                        ],
-                    });
-                }
-
-                return getUntypedActiveNavigationContainerRef().reset(state);
-            };
-        }
-
-        const value = activeRef[property];
-
-        if (typeof value === 'function') {
-            return value.bind(activeRef);
-        }
-
-        return value;
-    },
-    set: (_target, property, value) => {
-        const activeRef = getActiveNavigationContainerRef() as unknown as Record<
-            PropertyKey,
-            unknown
-        >;
-        activeRef[property] = value;
-
-        return true;
-    },
-}) as NavigationContainerRefWithCurrent<RootStackParamList>;
-
-export const bindNavigationContainerRef = (
-    navigationRef: NavigationContainerRefWithCurrent<ReactNavigation.RootParamList>,
-) => {
-    const typedNavigationRef =
-        navigationRef as unknown as NavigationContainerRefWithCurrent<RootStackParamList>;
-
-    activeNavigationContainerRef = typedNavigationRef;
-
-    return () => {
-        if (activeNavigationContainerRef === typedNavigationRef) {
-            activeNavigationContainerRef = fallbackNavigationContainerRef;
-        }
-    };
-};
 
 export const useNavigationDevTools = ({
     ref,
@@ -182,19 +31,13 @@ const useNavigationTheme = () => {
         if (isDarkTheme) {
             return {
                 ...DarkTheme,
-                colors: {
-                    ...DarkTheme.colors,
-                    background: colors.surfaceFillPage,
-                },
+                colors: { ...DarkTheme.colors, background: colors.surfaceFillPage },
             };
         }
 
         return {
             ...DefaultTheme,
-            colors: {
-                ...DefaultTheme.colors,
-                background: colors.surfaceFillPage,
-            },
+            colors: { ...DefaultTheme.colors, background: colors.surfaceFillPage },
         };
     }, [colors, isDarkColor]);
 };

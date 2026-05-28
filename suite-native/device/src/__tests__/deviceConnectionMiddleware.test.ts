@@ -1,11 +1,12 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
+import { router } from 'expo-router';
 
 import { configureMockStore } from '@suite-common/test-utils';
 import {
     checkIsActiveRouteAnyOf,
     checkIsDeviceOnboardingFocused,
     checkIsHomeStackFocused,
-    navigationContainerRef,
+    resetNavigationRoot,
 } from '@suite-native/navigation';
 
 import {
@@ -23,21 +24,28 @@ import {
 } from './deviceConnectionFixtures';
 import { deviceConnectionMiddleware } from '../middlewares/deviceConnectionMiddleware';
 
+jest.mock('expo-router', () => ({
+    router: {
+        navigate: jest.fn(),
+    },
+}));
+
 jest.mock('@suite-native/navigation', () => {
     const navigation = jest.requireActual('@suite-native/navigation');
 
     return {
         ...navigation,
-        navigationContainerRef: {
-            navigate: jest.fn(),
-            reset: jest.fn(),
-            isReady: jest.fn().mockReturnValue(true),
-        },
+        resetNavigationRoot: jest.fn(),
         checkIsActiveRouteAnyOf: jest.fn().mockReturnValue(false),
         checkIsDeviceOnboardingFocused: jest.fn().mockReturnValue(false),
         checkIsHomeStackFocused: jest.fn().mockReturnValue(false),
     };
 });
+
+const mockedRouter = router as jest.Mocked<typeof router>;
+const mockedResetNavigationRoot = resetNavigationRoot as jest.MockedFunction<
+    typeof resetNavigationRoot
+>;
 
 const createMockStoreAndDispatch = (initialState: any, action: UnknownAction) => {
     const mockStore = configureMockStore({
@@ -59,7 +67,7 @@ describe('deviceConnectionMiddleware', () => {
             it.each(thpPairingBlockedFixtures)('$description', ({ action, initialState }) => {
                 createMockStoreAndDispatch(initialState, action);
 
-                expect(navigationContainerRef.navigate).not.toHaveBeenCalled();
+                expect(mockedRouter.navigate).not.toHaveBeenCalled();
             });
         });
 
@@ -69,11 +77,8 @@ describe('deviceConnectionMiddleware', () => {
                 ({ action, expectedNavigation, initialState }) => {
                     createMockStoreAndDispatch(initialState, action);
 
-                    expect(navigationContainerRef.navigate).toHaveBeenCalledWith(
-                        expectedNavigation.route,
-                        expectedNavigation.params,
-                    );
-                    expect(navigationContainerRef.navigate).toHaveBeenCalledTimes(1);
+                    expect(mockedRouter.navigate).toHaveBeenCalledWith(expectedNavigation);
+                    expect(mockedRouter.navigate).toHaveBeenCalledTimes(1);
                 },
             );
         });
@@ -84,8 +89,8 @@ describe('deviceConnectionMiddleware', () => {
             it.each(deviceDisconnectBlockedFixtures)('$description', ({ action, initialState }) => {
                 createMockStoreAndDispatch(initialState, action);
 
-                expect(navigationContainerRef.reset).not.toHaveBeenCalled();
-                expect(navigationContainerRef.navigate).not.toHaveBeenCalled();
+                expect(mockedResetNavigationRoot).not.toHaveBeenCalled();
+                expect(mockedRouter.navigate).not.toHaveBeenCalled();
             });
         });
 
@@ -97,11 +102,8 @@ describe('deviceConnectionMiddleware', () => {
 
                     createMockStoreAndDispatch(initialState, action);
 
-                    expect(navigationContainerRef.navigate).toHaveBeenCalledWith(
-                        expectedNavigation.route,
-                        expectedNavigation.params,
-                    );
-                    expect(navigationContainerRef.navigate).toHaveBeenCalledTimes(1);
+                    expect(mockedRouter.navigate).toHaveBeenCalledWith(expectedNavigation);
+                    expect(mockedRouter.navigate).toHaveBeenCalledTimes(1);
                 },
             );
         });
@@ -115,8 +117,8 @@ describe('deviceConnectionMiddleware', () => {
 
                     createMockStoreAndDispatch(initialState, action);
 
-                    expect(navigationContainerRef.reset).toHaveBeenCalledWith(expectedReset);
-                    expect(navigationContainerRef.reset).toHaveBeenCalledTimes(1);
+                    expect(mockedResetNavigationRoot).toHaveBeenCalledWith(expectedReset);
+                    expect(mockedResetNavigationRoot).toHaveBeenCalledTimes(1);
                 },
             );
         });
@@ -128,8 +130,8 @@ describe('deviceConnectionMiddleware', () => {
 
                 createMockStoreAndDispatch(initialState, action);
 
-                expect(navigationContainerRef.reset).not.toHaveBeenCalled();
-                expect(navigationContainerRef.navigate).not.toHaveBeenCalled();
+                expect(mockedResetNavigationRoot).not.toHaveBeenCalled();
+                expect(mockedRouter.navigate).not.toHaveBeenCalled();
             });
         });
 
@@ -142,8 +144,8 @@ describe('deviceConnectionMiddleware', () => {
 
                     createMockStoreAndDispatch(initialState, action);
 
-                    expect(navigationContainerRef.reset).toHaveBeenCalledWith(expectedReset);
-                    expect(navigationContainerRef.reset).toHaveBeenCalledTimes(1);
+                    expect(mockedResetNavigationRoot).toHaveBeenCalledWith(expectedReset);
+                    expect(mockedResetNavigationRoot).toHaveBeenCalledTimes(1);
                 },
             );
         });
@@ -166,8 +168,8 @@ describe('deviceConnectionMiddleware', () => {
 
                     createMockStoreAndDispatch(initialState, action);
 
-                    expect(navigationContainerRef.navigate).not.toHaveBeenCalled();
-                    expect(navigationContainerRef.reset).not.toHaveBeenCalled();
+                    expect(mockedRouter.navigate).not.toHaveBeenCalled();
+                    expect(mockedResetNavigationRoot).not.toHaveBeenCalled();
                 },
             );
         });
@@ -178,11 +180,8 @@ describe('deviceConnectionMiddleware', () => {
                 ({ action, expectedNavigation, initialState }) => {
                     createMockStoreAndDispatch(initialState, action);
 
-                    expect(navigationContainerRef.navigate).toHaveBeenCalledWith(
-                        expectedNavigation.route,
-                        expectedNavigation.params,
-                    );
-                    expect(navigationContainerRef.navigate).toHaveBeenCalledTimes(1);
+                    expect(mockedRouter.navigate).toHaveBeenCalledWith(expectedNavigation);
+                    expect(mockedRouter.navigate).toHaveBeenCalledTimes(1);
                 },
             );
         });
@@ -197,8 +196,8 @@ describe('deviceConnectionMiddleware', () => {
 
                     createMockStoreAndDispatch(initialState, action);
 
-                    expect(navigationContainerRef.reset).toHaveBeenCalledWith(expectedReset);
-                    expect(navigationContainerRef.reset).toHaveBeenCalledTimes(1);
+                    expect(mockedResetNavigationRoot).toHaveBeenCalledWith(expectedReset);
+                    expect(mockedResetNavigationRoot).toHaveBeenCalledTimes(1);
                 },
             );
         });
@@ -209,11 +208,8 @@ describe('deviceConnectionMiddleware', () => {
                 ({ action, expectedNavigation, initialState }) => {
                     createMockStoreAndDispatch(initialState, action);
 
-                    expect(navigationContainerRef.navigate).toHaveBeenCalledWith(
-                        expectedNavigation.route,
-                        expectedNavigation.params,
-                    );
-                    expect(navigationContainerRef.navigate).toHaveBeenCalledTimes(1);
+                    expect(mockedRouter.navigate).toHaveBeenCalledWith(expectedNavigation);
+                    expect(mockedRouter.navigate).toHaveBeenCalledTimes(1);
                 },
             );
         });

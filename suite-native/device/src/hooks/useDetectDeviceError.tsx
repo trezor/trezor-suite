@@ -28,7 +28,7 @@ import {
     type RootStackParamList,
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
-    navigationContainerRef,
+    resetNavigationRoot,
 } from '@suite-native/navigation';
 import { captureSentryException } from '@suite-native/sentry';
 import { selectIsOnboardingFinished, selectShouldShowAutoEjectAlert } from '@suite-native/settings';
@@ -243,10 +243,9 @@ export const useDetectDeviceError = () => {
             shouldFactoryResetBeVisible &&
             !isFirmwareInstallationRunning &&
             !wasDeviceEjectedByUser &&
-            isOnboardingFinished &&
-            navigationContainerRef.isReady()
+            isOnboardingFinished
         ) {
-            navigationContainerRef.reset({
+            resetNavigationRoot({
                 index: 0,
                 routes: [{ name: RootStackRoutes.BootloaderMode }],
             });

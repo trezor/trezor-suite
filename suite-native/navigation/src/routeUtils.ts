@@ -1,6 +1,6 @@
 import type { NavigationState } from '@react-navigation/routers';
 
-import { navigationContainerRef } from './components/NavigationContainerWithAnalytics';
+import { getCurrentRouteName } from './currentRoute';
 import { type AppTabsParamList } from './navigators';
 import {
     AppTabsRoutes,
@@ -13,6 +13,7 @@ export type AppNavigationState = NavigationState<AppTabsParamList>;
 
 /**
  * Recursively get the most specific active route name from the hierarchy of navigation states.
+ * Used by useNavigationRouteMatch to walk the local navigator's state passed via useNavigation().
  */
 export const getActiveRouteName = (state: AppNavigationState): string | undefined => {
     if (!state?.routes || state.index == null) return undefined;
@@ -32,14 +33,8 @@ export const checkIsRouteAnyOf = (routeList: string[], route?: string): boolean 
     return routeList.includes(route);
 };
 
-export const checkIsActiveRouteAnyOf = (routeList: string[]): boolean => {
-    if (!navigationContainerRef.isReady()) return false;
-
-    return checkIsRouteAnyOf(
-        routeList,
-        getActiveRouteName(navigationContainerRef.getState() as AppNavigationState),
-    );
-};
+export const checkIsActiveRouteAnyOf = (routeList: string[]): boolean =>
+    checkIsRouteAnyOf(routeList, getCurrentRouteName());
 
 export const checkIsDeviceOnboardingFocused = () => {
     const DEVICE_ONBOARDING_ROUTES = [

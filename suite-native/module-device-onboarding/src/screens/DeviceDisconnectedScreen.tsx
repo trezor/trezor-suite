@@ -29,7 +29,7 @@ export const DeviceDisconnectedScreen = ({
     DeviceOnboardingStackRoutes.DeviceDisconnected,
     RootStackParamList
 >) => {
-    const { wasDeviceConnectedViaBluetooth } = route.params;
+    const wasDeviceConnectedViaBluetooth = route.params.wasDeviceConnectedViaBluetooth === 'true';
 
     const dispatch = useDispatch();
     const { showAlert } = useAlert();

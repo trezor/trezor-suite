@@ -203,6 +203,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         ...config,
         name,
         scheme: 'trezorsuite',
+        // TODO: typedRoutes only narrows `Href` inside the `suite-native/app` package
+        // (where `.expo/types/router.d.ts` is loaded by tsconfig). Calls from other
+        // workspace packages (e.g. `suite-native/device` middleware) fall back to a wide
+        // `string | HrefObject` and lose the safety. Fix by shipping a hand-maintained
+        // `declare module 'expo-router'` augmentation from `@suite-native/navigation`.
         experiments: {
             typedRoutes: true,
         },

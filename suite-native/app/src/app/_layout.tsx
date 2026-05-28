@@ -26,7 +26,6 @@ import {
     IsNavigationReadyContext,
     NavigationThemeProvider,
     RootStackRoutes,
-    bindNavigationContainerRef,
     stackNavigationOptionsConfig,
     useNavigationDevTools,
     useReportSendFlowExitToAnalytics,
@@ -68,8 +67,6 @@ const ExpoRouterNavigationBridge = ({ children }: { children: ReactNode }) => {
     const reportSendFlowExitToAnalytics = useReportSendFlowExitToAnalytics();
 
     useNavigationDevTools({ ref: navigationRef });
-
-    useEffect(() => bindNavigationContainerRef(navigationRef), [navigationRef]);
 
     const handleNavigationReady = useCallback(() => {
         if (!navigationRef.isReady()) return;
