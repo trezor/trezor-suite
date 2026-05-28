@@ -237,6 +237,7 @@ export const useTradingExchangeForm = ({
         formValues: values,
         network,
         shouldSendInSats,
+        receiveAccountKey: tradingReceiveAddress.selectedAccount?.key,
         composeRequestCallback: () => {
             composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
         },

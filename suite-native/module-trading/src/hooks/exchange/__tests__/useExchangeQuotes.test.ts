@@ -423,6 +423,7 @@ describe('useExchangeQuotes', () => {
                     receiveCryptoSelect: { id: 'bitcoin' as CryptoId },
                     fromAddress: ethAccount.descriptor,
                     receiveAddress: 'btc-receive-address',
+                    receiveAccountKey: btcAccount.key,
                 } satisfies MinimalExchangeFormProps,
                 network: expect.objectContaining({ tradeCryptoId: 'ethereum' }),
                 composeRequestCallback: expect.anything(),

@@ -33,6 +33,7 @@ export const tradingExchangeFormToTradingExchangeFormProps = (
         outputs: [{ amount: sendCryptoAmount }],
         fromAddress: getFromAddress(sendAccount),
         receiveAddress: getReceiveAccountAddressText(receiveAccount),
+        receiveAccountKey: receiveAccount?.account.key,
     };
 };
 
