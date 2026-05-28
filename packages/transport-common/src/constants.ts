@@ -38,7 +38,6 @@ export const TRANSPORT = {
     TREZOR_PUSH_NOTIFICATION: 'trezor-push-notification',
     BATTERY_LEVEL: 'battery-level',
     /* messages */
-    DISABLE_WEBUSB: 'transport-disable_webusb',
     REQUEST_DEVICE: 'transport-request_device',
     GET_INFO: 'transport-get_info',
     SET_TRANSPORTS: 'transport-set_transports',

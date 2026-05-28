@@ -30,6 +30,5 @@ export const blacklist: ConnectWebKey[] = [
     'getAccountInfo',
     // WebUSB methods from Connect web
     'requestWebUSBDevice',
-    'disableWebUSB',
     'bleUnpair',
 ];

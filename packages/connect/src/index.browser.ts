@@ -20,10 +20,6 @@ class CoreInModuleWeb extends CoreInModule {
         return Promise.resolve();
     }
 
-    disableWebUSB() {
-        this.handleCoreMessage({ type: TRANSPORT.DISABLE_WEBUSB });
-    }
-
     async requestWebUSBDevice() {
         try {
             await window.navigator.usb.requestDevice({ filters: config.webusb });
@@ -48,7 +44,6 @@ const TrezorConnect = factory(
         dispose: impl.dispose.bind(impl),
     },
     {
-        disableWebUSB: impl.disableWebUSB.bind(impl),
         requestWebUSBDevice: impl.requestWebUSBDevice.bind(impl),
     },
 );

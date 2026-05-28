@@ -30,11 +30,6 @@ export interface TransportSetTransports {
     payload: Pick<ConnectSettings, 'transports'>;
 }
 
-export interface TransportDisableWebUSB {
-    type: typeof TRANSPORT.DISABLE_WEBUSB;
-    payload?: undefined;
-}
-
 export interface TransportRequestWebUSBDevice {
     type: typeof TRANSPORT.REQUEST_DEVICE;
     payload?: undefined;

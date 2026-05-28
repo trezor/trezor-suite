@@ -831,17 +831,6 @@ export class Core extends EventEmitter {
                 );
                 break;
 
-            case TRANSPORT.DISABLE_WEBUSB: {
-                const settings = settingsStore.get();
-                const transports = settings.transports?.filter(t => t !== 'WebUsbTransport');
-                if (transports && !transports.includes('BridgeTransport')) {
-                    transports.unshift('BridgeTransport');
-                }
-                settings.transports = transports;
-
-                resetTransports(this.getCoreContext());
-                break;
-            }
             case TRANSPORT.SET_TRANSPORTS:
                 settingsStore.update({ transports: message.payload.transports });
                 resetTransports(this.getCoreContext());
