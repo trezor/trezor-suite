@@ -5,7 +5,6 @@ import type { CoreCallCancelMessage, CoreCallMessage, MethodResponseMessage } fr
 import type { DeviceEventMessage } from './device';
 import type { PopupClosedMessage, PopupEventMessage } from './popup';
 import type {
-    TransportDisableWebUSB,
     TransportEventMessage,
     TransportGetInfo,
     TransportRequestWebUSBDevice,
@@ -20,7 +19,6 @@ export const CORE_EVENT = 'CORE_EVENT';
 export type CoreRequestMessage =
     | PopupClosedMessage
     | CoreCallCancelMessage
-    | TransportDisableWebUSB
     | TransportSetTransports
     | TransportRequestWebUSBDevice
     | TransportGetInfo
