@@ -25,8 +25,8 @@ const earnStack = enhanceTabOption({
 
 const tradeStack = enhanceTabOption({
     routeName: AppTabsRoutes.TradeStack,
-    iconName: 'arrowsLeftRight',
-    focusedIconName: 'arrowsLeftRight',
+    iconName: 'repeat',
+    focusedIconName: 'repeat',
 });
 
 const settings = enhanceTabOption({

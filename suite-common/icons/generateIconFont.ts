@@ -195,6 +195,7 @@ const usedIcons = [
     'money',
     'user',
     'arrowFatLinesRight',
+    'repeat',
 ] as const satisfies AllAvailableIcons[];
 
 const tempAssetsDir = path.join(__dirname, 'assetsTemp');

@@ -142,11 +142,11 @@ export const selectEnabledTradingTypes = createFeatureFlagsMemoizedSelector(
     ) => {
         const enabledTypes: TradingTypeWithConcierge[] = [];
 
-        if (isTradingBuyEnabled) {
-            enabledTypes.push('buy');
-        }
         if (isTradingExchangeEnabled) {
             enabledTypes.push('exchange');
+        }
+        if (isTradingBuyEnabled) {
+            enabledTypes.push('buy');
         }
         if (isTradingSellEnabled) {
             enabledTypes.push('sell');
