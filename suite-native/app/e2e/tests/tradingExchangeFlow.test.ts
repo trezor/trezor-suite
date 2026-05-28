@@ -30,7 +30,6 @@ describe('Trade Exchange [@androidOnly]', () => {
         beforeEach(async () => {
             await openApp({ args: { preloadedState: preloadedStateWithoutTrezor } });
             await onTabBar.navigateToTrade();
-            await tradingExchangeActions.tapTradingSectionHeaderTab();
         });
 
         it('should display info card', async () => {
@@ -100,7 +99,7 @@ describe('Trade Exchange [@androidOnly]', () => {
 
         it('Basic exchange USDC to USDT', async () => {
             await tradingExchangeActions.selectSendAsset('USDC');
-            await tradingExchangeActions.selectReceiveAsset('USDT', 'Ethereum');
+            await tradingExchangeActions.selectReceiveAsset('USDT', 'Ethereum', 'Tether');
             await tradingExchangeActions.selectReceiveAccount('Ethereum #1');
             await tradingExchangeActions.setSendCryptoAmount('10');
 
