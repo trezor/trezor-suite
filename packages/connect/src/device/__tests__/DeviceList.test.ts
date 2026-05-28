@@ -82,16 +82,16 @@ describe('DeviceList', () => {
                 // @ts-expect-error
                 transports: ['FooBarTransport'],
             }),
-        ).rejects.toThrow('unexpected type: FooBarTransport');
+        ).rejects.toThrow('init({ transports }) entry is not a Transport instance or class');
     });
 
-    it('.init() throws error on unknown transport (class)', async () => {
+    it('.init() throws error on unknown transport (non-Transport object)', async () => {
         await expect(() =>
             list.init({
                 // @ts-expect-error
-                transports: [{}, () => {}, [], String, 1, 'meow-non-existent'],
+                transports: [{}],
             }),
-        ).rejects.toThrow('DeviceList.init: transports[] of unexpected type');
+        ).rejects.toThrow('init({ transports }) entry is not a valid Transport instance');
     });
 
     it('.init() accepts transports in form of transport class', async () => {

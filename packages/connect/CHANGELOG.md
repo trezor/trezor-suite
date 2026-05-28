@@ -39,6 +39,10 @@ Breaking changes:
 Breaking changes:
 
 - `cardanoGetPublicKey`: the `publicKey` field is now the raw 32-byte public key in hex (consistent with other coins). The Cardano extended public key previously returned in `publicKey` is now exposed via the new explicit `xpub` field. Update consumers to read `xpub` (or `displayablePublicKey`) for the extended key.
+- `ConnectSettings.transports` no longer accepts string identifiers (`'BridgeTransport'`, `'WebUsbTransport'`, `'NodeUsbTransport'`, `'UdpTransport'`). Entries must be `Transport` instances or `Transport` classes (pure dependency injection). The implicit `BridgeTransport` fallback inside `TransportList` has been removed; per-environment defaults are now applied at the Suite entry point (`[BridgeTransport, WebUsbTransport]` on web, `[BridgeTransport]` on node) when callers pass no transports. This lets non-Node bundlers stop pulling Node-only transports (`usb`/`dgram`). Migration:
+    - **Node** consumers: `init({ transports: ['BridgeTransport'] })` → `import { BridgeTransport } from '@trezor/transport'; init({ transports: [BridgeTransport] })`.
+    - **Web / React Native** consumers: the `@trezor/transport` barrel is Node-only — it re-exports `NodeUsbTransport`/`UdpTransport`, which statically import `usb`/`dgram` and break non-Node bundlers. Deep-import the specific transport instead to keep Node modules out of the bundle: `import { BridgeTransport } from '@trezor/transport/libESM/transports/bridge'`. For WebUSB use `import { WebUsbTransport } from '@trezor/transport-web'` (separate, browser-only package).
+    - Same change applies to `updateConnectSettings({ transports })`.
 
 Deprecations:
 

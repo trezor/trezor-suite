@@ -1,5 +1,5 @@
 import { type ConnectSettingsTransport, type UiRequestThpPairing } from '@trezor/connect';
-import { NodeUsbTransport, UdpTransport } from '@trezor/transport';
+import { BridgeTransport, NodeUsbTransport, UdpTransport } from '@trezor/transport';
 import { BluetoothTransport, TrezorBluetooth } from '@trezor/transport-bluetooth';
 
 import { args } from './args';
@@ -145,10 +145,10 @@ export const getTransport = async (): Promise<ConnectSettingsTransport> => {
             logger: getLogger(),
         });
     } else if (transportName === 'bridge') {
-        return 'BridgeTransport';
+        return BridgeTransport;
     } else if (transportName === 'udp') {
-        return 'UdpTransport';
+        return UdpTransport;
     }
 
-    return 'NodeUsbTransport';
+    return NodeUsbTransport;
 };

@@ -36,7 +36,7 @@ import { initCoreState } from '../core';
 export abstract class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsPublic> {
     public readonly eventEmitter = new ConnectEmitter();
 
-    private settings;
+    protected settings;
     private coreManager;
     private log: Logger;
     private messagePromises;

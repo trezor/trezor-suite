@@ -3,7 +3,7 @@ import type { DeviceModelInternal } from '@trezor/device-utils';
 import type { ThpCredentials, ThpPairingMethod } from '@trezor/protocol';
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
-import type { Transport } from '@trezor/transport-common';
+import type { AbstractTransportParams, Transport } from '@trezor/transport-common';
 import type { PartialRecord } from '@trezor/type-utils';
 import type { Logger } from '@trezor/utils';
 
@@ -24,11 +24,6 @@ export type Proxy = BlockchainSettings['proxy'];
 
 export type LocalFirmwares = { firmwareDir: string; firmwareList: string[] };
 
-// omit transports which are not implemented in @trezor/connect
-type KnownTransport = Exclude<
-    Transport['name'],
-    'NativeUsbTransport' | 'BluetoothTransport' | 'NativeBluetoothTransport'
->;
 export type ThpSettings = {
     hostName?: string; // displayed on Trezor during pairing process.
     appName?: string; // displayed on Trezor during pairing process. fallbacks to Manifest['appName']
@@ -36,10 +31,13 @@ export type ThpSettings = {
     pairingMethods: ThpPairingMethod[] | (keyof typeof ThpPairingMethod)[]; // pairing methods supported by the host
 };
 
-export type ConnectSettingsTransport =
-    | KnownTransport
-    | Transport
-    | (new (...args: any[]) => Transport);
+// A transport class — constructed by @trezor/connect with the connect-supplied
+// AbstractTransportParams (logger, id, …). Hosts pass a class when they want
+// connect to manage the lifecycle; they pass a pre-built Transport instance
+// when they need full control over construction parameters.
+export type TransportClass = new (params: AbstractTransportParams) => Transport;
+
+export type ConnectSettingsTransport = Transport | TransportClass;
 
 export type CreateLogger = (prefix: string) => Logger;
 

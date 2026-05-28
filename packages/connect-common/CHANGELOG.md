@@ -1,3 +1,9 @@
+# 10.0.0-alpha.1
+
+Breaking changes:
+
+- `ConnectSettingsTransport` redefined as `Transport | TransportClass` (pure dependency injection). String identifiers (`'BridgeTransport'`, `'WebUsbTransport'`, `'NodeUsbTransport'`, `'UdpTransport'`) are no longer accepted. The legacy `KnownTransport` string-literal type has been removed. See `@trezor/connect` CHANGELOG for caller-side migration.
+
 # 0.5.0
 
 - chore: remove tada from suite (2e60907d0c)

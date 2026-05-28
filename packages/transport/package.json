@@ -18,13 +18,7 @@
     "main": "./src/index.ts",
     "sideEffects": false,
     "browser": {
-        "./src/pinger/ping": "./src/pinger/ping.browser.ts",
-        "./src/transports/nodeusb": "./src/transports/nodeusb.browser.ts",
-        "./src/transports/udp": "./src/transports/udp.browser.ts"
-    },
-    "react-native": {
-        "./src/transports/nodeusb": "./src/transports/nodeusb.native.ts",
-        "./src/transports/udp": "./src/transports/udp.native.ts"
+        "./src/pinger/ping": "./src/pinger/ping.browser.ts"
     },
     "publishConfig": {
         "main": "./lib/index.mjs",
@@ -37,13 +31,7 @@
             "./lib/*": "./lib/*"
         },
         "browser": {
-            "./lib/pinger/ping": "./lib/pinger/ping.browser.mjs",
-            "./lib/transports/nodeusb": "./lib/transports/nodeusb.browser.mjs",
-            "./lib/transports/udp": "./lib/transports/udp.browser.mjs"
-        },
-        "react-native": {
-            "./lib/transports/nodeusb": "./lib/transports/nodeusb.native.mjs",
-            "./lib/transports/udp": "./lib/transports/udp.native.mjs"
+            "./lib/pinger/ping": "./lib/pinger/ping.browser.mjs"
         }
     },
     "files": [
