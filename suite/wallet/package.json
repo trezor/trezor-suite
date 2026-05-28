@@ -14,8 +14,12 @@
         "@suite-common/message-system": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
+        "@suite/intl": "workspace:*",
         "@suite/metadata": "workspace:*",
-        "@trezor/connect": "workspace:*"
+        "@trezor/connect": "workspace:*",
+        "react": "19.2.4",
+        "react-redux": "9.2.0"
     }
 }

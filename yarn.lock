@@ -14949,9 +14949,13 @@ __metadata:
     "@suite-common/message-system": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
+    "@suite/intl": "workspace:*"
     "@suite/metadata": "workspace:*"
     "@trezor/connect": "workspace:*"
+    react: "npm:19.2.4"
+    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 

@@ -4,7 +4,7 @@ import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import { selectIsLegacyLabelingVisible } from '@suite/metadata';
 import { SuiteSyncWalletDebug } from '@suite/suite-sync';
-import { selectWalletLabel } from '@suite/wallet';
+import { selectWalletLabel, useGetDefaultWalletLabel } from '@suite/wallet';
 import {
     getAccountsByDeviceState,
     selectAllAccountsToList,
@@ -30,7 +30,6 @@ import { spacings } from '@trezor/theme';
 
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
 import { WalletLabeling } from 'src/components/suite';
-import { useWalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useStore } from 'src/hooks/suite/useStore';
@@ -63,8 +62,7 @@ export const WalletInstance = ({
     const store = useStore();
     const { translationString } = useTranslation();
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
-
-    const { defaultAccountLabelString } = useWalletLabeling();
+    const defaultWalletLabel = useGetDefaultWalletLabel({ device: instance });
 
     const deviceAccounts = getAllAccounts(instance.state, accounts);
 
@@ -77,8 +75,6 @@ export const WalletInstance = ({
     );
 
     const dataTestBase = `@switch-device/wallet-on-index/${index}`;
-
-    const defaultWalletLabel = defaultAccountLabelString({ device: instance });
 
     const stopPropagation = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
         e.stopPropagation();
