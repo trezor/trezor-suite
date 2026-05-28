@@ -1,9 +1,8 @@
-import { type ReactNode, createContext, useMemo, useRef, useState } from 'react';
+import { type ReactNode, createContext, useMemo } from 'react';
 
 import {
     DarkTheme,
     DefaultTheme,
-    NavigationContainer,
     type NavigationContainerRefWithCurrent,
     type NavigationState,
     type PartialState,
@@ -13,12 +12,8 @@ import {
 } from '@react-navigation/native';
 import { useReactNavigationDevTools } from '@rozenite/react-navigation-plugin';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { addSentryBreadcrumb, setSentryTag } from '@suite-native/sentry';
 import { useNativeStyles } from '@trezor/styles-native';
 
-import { useReportSendFlowExitToAnalytics } from '../hooks/useReportSendFlowExitToAnalytics';
 import { type RootStackParamList } from '../navigators';
 
 export const IsNavigationReadyContext = createContext(false);
@@ -208,71 +203,4 @@ export const NavigationThemeProvider = ({ children }: { children: ReactNode }) =
     const themeColors = useNavigationTheme();
 
     return <ThemeProvider value={themeColors}>{children}</ThemeProvider>;
-};
-
-export const NavigationContainerWithAnalytics = ({ children }: { children: ReactNode }) => {
-    const [isNavigationReady, setIsNavigationReady] = useState(false);
-    const routeNameRef = useRef<string | undefined>(undefined);
-    const { analytics } = useServices(selectNativeAnalyticsDep);
-    const reportSendFlowExitToAnalytics = useReportSendFlowExitToAnalytics();
-
-    // Enable React Navigation DevTools in development
-    useNavigationDevTools({ ref: fallbackNavigationContainerRef });
-
-    const themeColors = useNavigationTheme();
-
-    const handleNavigationReady = () => {
-        routeNameRef.current = fallbackNavigationContainerRef.getCurrentRoute()?.name;
-        if (!isNavigationReady) setIsNavigationReady(true);
-    };
-
-    const handleStateChange = () => {
-        if (!fallbackNavigationContainerRef.isReady()) return;
-
-        const previousRouteName = routeNameRef.current;
-        const currentRouteName = fallbackNavigationContainerRef.getCurrentRoute()?.name;
-
-        // If the user abandons the send flow, this function reports from which step.
-        reportSendFlowExitToAnalytics(currentRouteName);
-
-        if (previousRouteName !== currentRouteName) {
-            // Save the current route name for later comparison
-            routeNameRef.current = currentRouteName;
-
-            if (!currentRouteName || !previousRouteName) return;
-
-            analytics.report({
-                type: events.screenChangeEvent.name,
-                payload: {
-                    previousScreen: previousRouteName,
-                    currentScreen: currentRouteName,
-                },
-            });
-
-            addSentryBreadcrumb({
-                category: events.screenChangeEvent.name,
-                message: 'screen changed',
-                level: 'info',
-                data: {
-                    previousScreen: previousRouteName,
-                    currentScreen: currentRouteName,
-                },
-            });
-
-            setSentryTag('route', currentRouteName);
-        }
-    };
-
-    return (
-        <IsNavigationReadyContext.Provider value={isNavigationReady}>
-            <NavigationContainer
-                ref={fallbackNavigationContainerRef}
-                onReady={handleNavigationReady}
-                onStateChange={handleStateChange}
-                theme={themeColors}
-            >
-                {children}
-            </NavigationContainer>
-        </IsNavigationReadyContext.Provider>
-    );
 };

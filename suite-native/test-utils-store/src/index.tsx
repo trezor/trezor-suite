@@ -1,5 +1,6 @@
 export * from '@testing-library/react-native';
 
+export * from './StoreProviderForExpoRouterTests';
 export * from './StoreProviderForTests';
 export * from './renderWithStore';
 export { createLightStore, type PreloadedStatePartial } from './createLightStore';

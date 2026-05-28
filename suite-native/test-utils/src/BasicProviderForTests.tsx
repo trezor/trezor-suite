@@ -16,6 +16,8 @@ type ProviderProps = {
     children: ReactNode;
     formattersConfig?: FormatterProviderConfig;
     services?: Record<string, unknown>;
+    // expo-router supplies its own NavigationContainer; nesting another one triggers a linking conflict.
+    omitNavigationContainer?: boolean;
 };
 
 const renderer = createRenderer();
@@ -28,23 +30,36 @@ const DEFAULT_FORMATTERS_CONFIG: FormatterProviderConfig = {
     is24HourFormat: true,
 };
 
-export const BasicProviderForTests = ({ children, formattersConfig, services }: ProviderProps) => (
-    <SafeAreaProvider>
-        <IntlProviderForTests>
-            <StylesProvider theme={theme} renderer={renderer}>
-                <NavigationContainer>
-                    <ServicesProvider
-                        services={{
-                            ...extraDependenciesNativeMock.services,
-                            ...services,
-                        }}
-                    >
-                        <FormatterProvider config={formattersConfig ?? DEFAULT_FORMATTERS_CONFIG}>
-                            <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
-                        </FormatterProvider>
-                    </ServicesProvider>
-                </NavigationContainer>
-            </StylesProvider>
-        </IntlProviderForTests>
-    </SafeAreaProvider>
-);
+export const BasicProviderForTests = ({
+    children,
+    formattersConfig,
+    services,
+    omitNavigationContainer,
+}: ProviderProps) => {
+    const inner = (
+        <ServicesProvider
+            services={{
+                ...extraDependenciesNativeMock.services,
+                ...services,
+            }}
+        >
+            <FormatterProvider config={formattersConfig ?? DEFAULT_FORMATTERS_CONFIG}>
+                <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
+            </FormatterProvider>
+        </ServicesProvider>
+    );
+
+    return (
+        <SafeAreaProvider>
+            <IntlProviderForTests>
+                <StylesProvider theme={theme} renderer={renderer}>
+                    {omitNavigationContainer ? (
+                        inner
+                    ) : (
+                        <NavigationContainer>{inner}</NavigationContainer>
+                    )}
+                </StylesProvider>
+            </IntlProviderForTests>
+        </SafeAreaProvider>
+    );
+};
