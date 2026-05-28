@@ -72,9 +72,9 @@ test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             // SWAP
-            await test.step('Swap from Global header', async () => {
+            await test.step('Swap from sidebar', async () => {
                 await dashboardPage.navigateTo();
-                await walletPage.openSwapGlobalButton.click();
+                await walletPage.openSwapSidebarButton.click();
                 await tradingPage.verifySwapFormOpened(/Bitcoin|Ethereum|Litecoin/);
             });
 
