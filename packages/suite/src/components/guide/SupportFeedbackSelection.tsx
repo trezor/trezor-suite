@@ -62,11 +62,6 @@ const DetailItem = styled.div`
     align-items: center;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledIcon = styled(Icon)`
-    padding: 0 6px;
-`;
-
 const Label = styled.div`
     padding: 0 0 0 5px;
     text-align: left;
@@ -212,7 +207,13 @@ export const SupportFeedbackSelection = () => {
                         :&nbsp;
                         {!isDevEnv && appUpToDate ? (
                             <>
-                                <StyledIcon name="check" size={10} />
+                                <Icon
+                                    size={12}
+                                    margin={{ horizontal: 4 }}
+                                    name="check"
+                                    intent="neutral"
+                                    priority="secondary"
+                                />
                                 <Translation id="TR_UP_TO_DATE" />
                             </>
                         ) : (
@@ -227,7 +228,13 @@ export const SupportFeedbackSelection = () => {
                         :&nbsp;
                         {firmwareUpToDate ? (
                             <>
-                                <StyledIcon name="check" size={10} />
+                                <Icon
+                                    size={12}
+                                    margin={{ horizontal: 4 }}
+                                    name="check"
+                                    intent="neutral"
+                                    priority="secondary"
+                                />
                                 <Translation id="TR_UP_TO_DATE" />
                             </>
                         ) : (
