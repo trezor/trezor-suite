@@ -1,21 +1,16 @@
 import { useCallback } from 'react';
 
-import { useNavigation } from '@react-navigation/native';
+import { type Href, useRouter } from 'expo-router';
 
-import {
-    type RootStackParamList,
-    RootStackRoutes,
-    type SettingsStackRoutes,
-    type StackNavigationProps,
-} from '@suite-native/navigation';
+import { type SettingsStackRoutes } from '@suite-native/navigation';
 
 export const useSettingsNavigateTo = () => {
-    const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
+    const router = useRouter();
 
     return useCallback(
         (routeName: SettingsStackRoutes): void => {
-            navigation.navigate(RootStackRoutes.SettingsScreenStack, { screen: routeName });
+            router.push(`/SettingsScreenStack/${routeName}` as Href);
         },
-        [navigation],
+        [router],
     );
 };

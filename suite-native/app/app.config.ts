@@ -112,6 +112,7 @@ const getPlugins = (): ExpoPlugins => {
                 imageWidth: '200',
             },
         ],
+        'expo-router',
         [
             'expo-camera',
             {
