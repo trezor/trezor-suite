@@ -12,8 +12,12 @@
             "path": "../../suite-common/suite-sync"
         },
         {
+            "path": "../../suite-common/suite-types"
+        },
+        {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../intl" },
         { "path": "../metadata" },
         { "path": "../../packages/connect" }
     ]

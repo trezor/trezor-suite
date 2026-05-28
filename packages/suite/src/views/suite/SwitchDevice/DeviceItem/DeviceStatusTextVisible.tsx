@@ -1,12 +1,9 @@
 import React from 'react';
 
 import { Translation } from '@suite/intl';
-import { selectWalletLabel } from '@suite/wallet';
+import { useGetWalletLabel } from '@suite/wallet';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
-
-import { useWalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
-import { useSelector } from 'src/hooks/suite';
 
 import { DeviceConnectionText } from './DeviceConnectionText';
 
@@ -20,19 +17,7 @@ export const DeviceStatusTextVisible = ({
     forceConnectionInfo,
 }: DeviceStatusTextVisibleProps) => {
     const { connected } = device;
-    const walletLabel = useSelector(state =>
-        selectWalletLabel(state, {
-            deviceStaticId: device.state?.staticSessionId ?? null,
-        }),
-    );
-
-    const { defaultAccountLabelString } = useWalletLabeling();
-
-    const defaultWalletLabel =
-        device !== undefined ? defaultAccountLabelString({ device }) : undefined;
-
-    const isWalletLabelEmpty = walletLabel === null || walletLabel.trim() === '';
-    const walletText = isWalletLabelEmpty ? defaultWalletLabel : walletLabel;
+    const walletText = useGetWalletLabel({ device });
 
     return (
         <DeviceConnectionText
