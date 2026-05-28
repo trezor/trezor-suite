@@ -34,7 +34,8 @@ import { useCompose } from './form/useCompose';
 import { useFees } from './form/useFees';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 
-const MIN_FEE_RATE_PER_VB = 1; // minimum fee rate in sat/vB, introduced because nodes lowered min relay tx fee, but not incremental fee
+// Conservative minimum fee rate floor in sat/vB. Bitcoin Core has officially lowered both the min relay tx fee and the incremental relay fee, but actual minimums depend on individual node configurations.
+const MIN_FEE_RATE_PER_VB = 0.2;
 
 export type UseRbfProps = {
     account: Account;
