@@ -4,8 +4,13 @@ import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataMock';
 
-const localLabel = 'local label';
+const localLabel = 'local account label';
 const expectedAccount = mnemonic12Fixtures.buildExpectedAccount({ label: localLabel });
+const expectedOutput = mnemonic12Fixtures.buildExpectedOutput({
+    txId: 'aa545d95cf07892e1ae70b40e856b9b476f703e2e20647d0985830fd7b734393',
+    outputIndex: '0',
+    label: 'local output label',
+});
 
 test.describe('Labeling migration', { tag: ['@T3W1', '@T3T1', '@desktopOnly'] }, () => {
     test.use({ wipeEvoluRelay: true });
@@ -43,6 +48,21 @@ test.describe('Labeling migration', { tag: ['@T3W1', '@T3T1', '@desktopOnly'] },
             await metadataPage.account.successIconIsVisible(AccountLabelId.BitcoinDefault1);
         });
 
+        await test.step('Change output label', async () => {
+            await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+            await metadataPage.output.changeLabel({
+                outputId: expectedOutput.txId,
+                txNumber: Number(expectedOutput.outputIndex),
+                label: expectedOutput.label,
+            });
+            await expect(
+                metadataPage.output.outputLabel(
+                    expectedOutput.txId,
+                    Number(expectedOutput.outputIndex),
+                ),
+            ).toHaveText(expectedOutput.label);
+        });
+
         await test.step('Switch to Suite Sync labeling and confirm legacy label is migrated', async () => {
             await metadataPage.enableSuiteSync();
             await settingsPage.navigateTo('application');
@@ -51,14 +71,28 @@ test.describe('Labeling migration', { tag: ['@T3W1', '@T3T1', '@desktopOnly'] },
             await expect(page.getByTestId('@toast/legacy-labeling-migration-success')).toBeVisible({
                 timeout: 30000,
             });
+
             await expect(
                 walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
             ).toHaveText(localLabel);
         });
 
+        await test.step('Verify output label is synced', async () => {
+            await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+            await expect
+                .soft(
+                    metadataPage.output.outputLabel(
+                        expectedOutput.txId,
+                        Number(expectedOutput.outputIndex),
+                    ),
+                )
+                .toHaveText(expectedOutput.label);
+        });
+
         await test.step('Verify data are sync to Relay', async () => {
             await evoluClient.init({ ownerSecret: mnemonic12Fixtures.ownerSecret });
             await evoluClient.expectInTable('account', [expectedAccount], { softExpect: true });
+            await evoluClient.expectInTable('output', [expectedOutput], { softExpect: true });
         });
     });
 });
