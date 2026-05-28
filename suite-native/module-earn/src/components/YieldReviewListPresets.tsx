@@ -3,10 +3,11 @@ import { type ReactNode } from 'react';
 import { type AccountKey, toTokenSymbol } from '@suite-common/wallet-types';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter } from '@suite-native/formatters';
+import { Icon } from '@suite-native/icons';
 import { type TxKeyPath } from '@suite-native/intl';
 import { ReviewOutputItemValues } from '@suite-native/transaction-management';
 
-export type YieldReviewListVariant = 'approval' | 'deposit';
+export type YieldReviewListVariant = 'approval' | 'deposit' | 'revoke';
 
 type YieldReviewListCommonProps = {
     accountKey: AccountKey;
@@ -26,7 +27,16 @@ type YieldDepositReviewListProps = YieldReviewListCommonProps & {
     variant: 'deposit';
 };
 
-export type YieldReviewListProps = (YieldApprovalReviewListProps | YieldDepositReviewListProps) & {
+type YieldRevokeReviewListProps = YieldReviewListCommonProps & {
+    isAmountUnlimited: boolean;
+    variant: 'revoke';
+};
+
+export type YieldReviewListProps = (
+    | YieldApprovalReviewListProps
+    | YieldDepositReviewListProps
+    | YieldRevokeReviewListProps
+) & {
     isFooterVisible?: boolean;
     isSubmitDisabled?: boolean;
     isSubmitLoading?: boolean;
@@ -44,18 +54,23 @@ type DetailRowProps = {
     value: ReactNode;
 };
 
-type CreateYieldReviewCardsParams = YieldApprovalReviewListProps | YieldDepositReviewListProps;
+type CreateYieldReviewCardsParams =
+    | YieldApprovalReviewListProps
+    | YieldDepositReviewListProps
+    | YieldRevokeReviewListProps;
 
 type Translate = (id: TxKeyPath) => string;
 
 const cardTitleTranslationIds = {
     approval: 'earn.yieldReview.approvalCard.title',
     deposit: 'earn.yieldReview.depositCard.title',
+    revoke: 'earn.yieldReview.revokeCard.title',
 } satisfies Record<YieldReviewListVariant, TxKeyPath>;
 
 const detailsTitleTranslationIds = {
     approval: 'earn.yieldReview.approvalDetailsCard.title',
     deposit: 'earn.yieldReview.transactionDetailsCard.title',
+    revoke: 'earn.yieldReview.revokeDetailsCard.title',
 } satisfies Record<YieldReviewListVariant, TxKeyPath>;
 
 const DetailRow = ({ label, value }: DetailRowProps) => (
@@ -68,66 +83,87 @@ const DetailRow = ({ label, value }: DetailRowProps) => (
 export const getYieldReviewCards = (
     { accountKey, amount, fee, tokenSymbol, ...variantProps }: CreateYieldReviewCardsParams,
     translate: Translate,
-): YieldReviewCard[] => [
-    {
-        content: (
-            <CryptoAmountFormatter
-                value={amount}
-                symbol={toTokenSymbol(tokenSymbol)}
-                isDiscreetText={false}
-            />
-        ),
-        key: 'amount',
-        title: translate(cardTitleTranslationIds[variantProps.variant]),
-    },
-    ...(variantProps.variant === 'deposit' &&
-    variantProps.receiveAmount &&
-    variantProps.receiveTokenSymbol
-        ? [
-              {
-                  content: (
-                      <CryptoAmountFormatter
-                          value={variantProps.receiveAmount}
-                          symbol={toTokenSymbol(variantProps.receiveTokenSymbol)}
-                          isDiscreetText={false}
-                      />
-                  ),
-                  key: 'receive-amount',
-                  title: translate('earn.yieldReview.receiveCard.title'),
-              },
-          ]
-        : []),
-    {
-        content: (
-            <VStack spacing="sp16">
-                <DetailRow
-                    label={translate('transactionManagement.review.outputs.summary.amount')}
-                    value={
-                        <CryptoAmountFormatter
-                            value={amount}
-                            symbol={toTokenSymbol(tokenSymbol)}
-                            isDiscreetText={false}
+): YieldReviewCard[] => {
+    const tokenSymbolValue = toTokenSymbol(tokenSymbol);
+    const getFormattedAmountValue = (value: string, isStrong = false) => (
+        <CryptoAmountFormatter
+            value={value}
+            symbol={tokenSymbolValue}
+            isDiscreetText={false}
+            variant={isStrong ? 'body-sm-strong' : undefined}
+            color={isStrong ? 'contentPrimary' : undefined}
+        />
+    );
+    const getAmountValue = () => getFormattedAmountValue(amount);
+    const getRevokeAllowanceValue = () =>
+        variantProps.variant === 'revoke' && variantProps.isAmountUnlimited ? (
+            <Text variant="body-sm-strong">
+                {translate('earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.title')}
+                {` ${tokenSymbol}`}
+            </Text>
+        ) : (
+            getFormattedAmountValue(amount, true)
+        );
+    const getRevokeLimitValue = () => (
+        <HStack alignItems="center">
+            {getRevokeAllowanceValue()}
+            <Icon name="arrowRight" size="medium" color="contentSecondary" />
+            {getFormattedAmountValue('0', true)}
+        </HStack>
+    );
+    const amountLabel =
+        variantProps.variant === 'revoke'
+            ? 'earn.yieldReview.revokeDetailsCard.limit'
+            : 'transactionManagement.review.outputs.summary.amount';
+    const getPrimaryAmountValue = () =>
+        variantProps.variant === 'revoke' ? getRevokeLimitValue() : getAmountValue();
+
+    return [
+        {
+            content: getPrimaryAmountValue(),
+            key: 'amount',
+            title: translate(cardTitleTranslationIds[variantProps.variant]),
+        },
+        ...(variantProps.variant === 'deposit' &&
+        variantProps.receiveAmount &&
+        variantProps.receiveTokenSymbol
+            ? [
+                  {
+                      content: (
+                          <CryptoAmountFormatter
+                              value={variantProps.receiveAmount}
+                              symbol={toTokenSymbol(variantProps.receiveTokenSymbol)}
+                              isDiscreetText={false}
+                          />
+                      ),
+                      key: 'receive-amount',
+                      title: translate('earn.yieldReview.receiveCard.title'),
+                  },
+              ]
+            : []),
+        {
+            content: (
+                <VStack spacing="sp16">
+                    <DetailRow label={translate(amountLabel)} value={getPrimaryAmountValue()} />
+                    {variantProps.variant === 'approval' && (
+                        <DetailRow
+                            label={translate('earn.yieldReview.approvalDetailsCard.approvalLimit')}
+                            value={
+                                <Text variant="body-sm" color="contentSecondary">
+                                    {variantProps.approvalLimit}
+                                </Text>
+                            }
                         />
-                    }
-                />
-                {variantProps.variant === 'approval' && (
-                    <DetailRow
-                        label={translate('earn.yieldReview.approvalDetailsCard.approvalLimit')}
-                        value={
-                            <Text variant="body-sm" color="contentSecondary">
-                                {variantProps.approvalLimit}
-                            </Text>
-                        }
+                    )}
+                    <ReviewOutputItemValues
+                        accountKey={accountKey}
+                        value={fee}
+                        translationKey="transactionManagement.review.outputs.summary.maxFee"
                     />
-                )}
-                <ReviewOutputItemValues
-                    accountKey={accountKey}
-                    value={fee}
-                    translationKey="transactionManagement.review.outputs.summary.maxFee"
-                />
-            </VStack>
-        ),
-        key: 'details',
-        title: translate(detailsTitleTranslationIds[variantProps.variant]),
-    },
-];
+                </VStack>
+            ),
+            key: 'details',
+            title: translate(detailsTitleTranslationIds[variantProps.variant]),
+        },
+    ];
+};

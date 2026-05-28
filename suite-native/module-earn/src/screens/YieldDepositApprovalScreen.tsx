@@ -4,8 +4,9 @@ import { useDispatch } from 'react-redux';
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
 import { getNetwork } from '@suite-common/wallet-config';
-import { initYieldAllowanceThunk, splitYieldPendingTransaction } from '@suite-common/wallet-core';
-import { Box, useBottomSheetModal } from '@suite-native/atoms';
+import { splitYieldPendingTransaction, stablecoinYieldActions } from '@suite-common/wallet-core';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
+import { Box, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -13,19 +14,24 @@ import {
     type StackNavigationProps,
     type YieldStackParamList,
     YieldStackRoutes,
+    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { FeeSelector, useTransactionDetails } from '@suite-native/transaction-management';
 
-import { ApproveDepositForm } from '../components/ApproveDepositForm';
+import { YieldDepositAmountInputCard } from '../components/YieldDepositAmountInputCard';
 import { YieldDepositApprovalLimitBottomSheet } from '../components/YieldDepositApprovalLimitBottomSheet';
+import { YieldDepositApprovedAmountCard } from '../components/YieldDepositApprovedAmountCard';
 import { YieldDepositFlowFooter } from '../components/YieldDepositFlowFooter';
 import { YieldDepositFlowScreenHeader } from '../components/YieldDepositFlowScreenHeader';
 import { YieldDepositInfoBottomSheet } from '../components/YieldDepositInfoBottomSheet';
+import { YieldDepositStepCard } from '../components/YieldDepositStepCard';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
+import { useRefreshYieldDepositAllowanceOnIdle } from '../hooks/useRefreshYieldDepositAllowanceOnIdle';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransactionFailureAlert';
 import { useYieldApprovalFees } from '../hooks/useYieldApprovalFees';
 import { useYieldApprovalLimit } from '../hooks/useYieldApprovalLimit';
+import { useYieldApprovedAmountDisplay } from '../hooks/useYieldApprovedAmountDisplay';
 import { useYieldDepositApprovalSubmit } from '../hooks/useYieldDepositApprovalSubmit';
 import { useYieldDepositForm } from '../hooks/useYieldDepositForm';
 import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTransactionTracking';
@@ -43,6 +49,7 @@ export const YieldDepositApprovalScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const dispatch = useDispatch();
     const isFocused = useIsFocused();
+    const navigateToInitialScreen = useNavigateToInitialScreen();
     const {
         bottomSheetRef: infoBottomSheetRef,
         closeModal: closeInfoBottomSheet,
@@ -58,6 +65,7 @@ export const YieldDepositApprovalScreen = () => {
         closeModal: closePendingBottomSheet,
         openModal: openPendingBottomSheet,
     } = useBottomSheetModal();
+    const resolvedFlowData = useResolvedYieldFlowData(route.params);
     const {
         account,
         flowData,
@@ -68,7 +76,7 @@ export const YieldDepositApprovalScreen = () => {
         vault,
         vaultTokenName,
         resolutionStatus,
-    } = useResolvedYieldFlowData(route.params);
+    } = resolvedFlowData;
     const session = useYieldSession({
         flowKey,
         flowType: 'deposit',
@@ -79,6 +87,7 @@ export const YieldDepositApprovalScreen = () => {
     const { approvalLimitTitle, approvalLimitType, setApprovalLimitType } =
         useYieldApprovalLimit(defaultApprovalLimitType);
     const sessionStep = session?.step;
+    const allowanceAmount = session?.approval.allowanceAmount;
     const allowanceStatus = session?.approval.allowanceStatus;
     const pendingTransaction = session?.action.pendingTransaction ?? null;
     const { approvalPendingTransaction } = splitYieldPendingTransaction(
@@ -87,6 +96,12 @@ export const YieldDepositApprovalScreen = () => {
     );
 
     const isApprovalPending = !!approvalPendingTransaction;
+    const { formattedApprovedAmount, hasApprovedAmount } = useYieldApprovedAmountDisplay({
+        allowanceAmount,
+        isApprovedAmountUnlimited: isAllowanceAmountUnlimited,
+        tokenSymbol,
+    });
+    const shouldShowApprovedAmountCard = allowanceStatus === 'loaded' && hasApprovedAmount;
 
     const depositForm = useYieldDepositForm({
         defaultAmount: session?.approval.isModifyMode ? session.action.amount : undefined,
@@ -100,8 +115,7 @@ export const YieldDepositApprovalScreen = () => {
     const {
         formDraft: approvalFeeFormDraft,
         formDraftKey: approvalFeeFormDraftKey,
-        isComposingApprovalFee,
-        isFeeUnavailable,
+        isAllowanceFeeReady,
         selectedFee: selectedApprovalFee,
         updateFeeLevelThunk: updateApprovalFeeLevelThunk,
     } = useYieldApprovalFees({
@@ -118,17 +132,14 @@ export const YieldDepositApprovalScreen = () => {
         flowKey,
         routeParams: route.params,
     });
-    const isApprovalFeeReady = approvalFeeFormDraft !== undefined;
     const isApprovalSessionReady = sessionStep === 'approve';
-    const shouldRefreshAllowance = resolutionStatus === 'resolved' && allowanceStatus === 'idle';
-    const isSubmitDisabled =
-        isApprovalPending ||
-        !isValid ||
-        !isApprovalFeeReady ||
-        isComposingApprovalFee ||
-        isCheckingApproval ||
-        isFeeUnavailable ||
-        !isApprovalSessionReady;
+    const canSubmitApproval =
+        isValid &&
+        isAllowanceFeeReady &&
+        isApprovalSessionReady &&
+        !isApprovalPending &&
+        !isCheckingApproval;
+    const isSubmitDisabled = !canSubmitApproval;
     const pendingModalData = isApprovalPending ? approvalPendingTransaction : null;
     const isPendingModalVisible = !!pendingModalData;
     const { explorerUrl, openInBlockchain } = useTransactionDetails({
@@ -143,23 +154,49 @@ export const YieldDepositApprovalScreen = () => {
         isEnabled: isFocused,
     });
 
-    useEffect(() => {
-        if (shouldRefreshAllowance) {
-            void dispatch(
-                initYieldAllowanceThunk({
-                    flowData,
-                    flowKey,
-                    flowType: 'deposit',
-                    // Mobile approval screen needs allowance without auto-skipping to deposit.
-                    shouldSkipApprovalStep: false,
-                }),
-            );
-        }
-    }, [dispatch, flowData, flowKey, shouldRefreshAllowance]);
+    useRefreshYieldDepositAllowanceOnIdle({
+        allowanceStatus,
+        resolvedFlowData,
+    });
 
     const handleApprovalConfirmed = useCallback(() => {
         navigation.navigate(YieldStackRoutes.YieldDeposit, route.params);
     }, [navigation, route.params]);
+    const handleCloseApproval = useCallback(() => {
+        const isApprovalRemovedByPopToTop = navigation.getState().routes.length > 1;
+
+        navigateToInitialScreen();
+
+        if (!isApprovalRemovedByPopToTop || !flowKey || isApprovalPending) {
+            return;
+        }
+
+        dispatch(stablecoinYieldActions.disposeSession({ flowType: 'deposit', flowKey }));
+    }, [dispatch, flowKey, isApprovalPending, navigateToInitialScreen, navigation]);
+
+    const handleNavigateToRevoke = useCallback(() => {
+        if (!flowKey || isApprovalPending) {
+            return;
+        }
+
+        const amount =
+            amountValue !== undefined && isPositiveBalance(amountValue) ? amountValue : undefined;
+
+        if (amount) {
+            dispatch(
+                stablecoinYieldActions.enterModifyMode({
+                    flowType: 'deposit',
+                    flowKey,
+                    amount,
+                }),
+            );
+        }
+
+        navigation.navigate(YieldStackRoutes.YieldDepositRevoke, {
+            ...route.params,
+            amount,
+        });
+    }, [amountValue, dispatch, flowKey, isApprovalPending, navigation, route.params]);
 
     useYieldPendingTransactionTracking({
         account,
@@ -189,7 +226,7 @@ export const YieldDepositApprovalScreen = () => {
     }, [closePendingBottomSheet, isFocused, isPendingModalVisible, openPendingBottomSheet]);
 
     const handleSubmit = form.handleSubmit(async ({ amount }) => {
-        if (!isApprovalFeeReady || isComposingApprovalFee || !isApprovalSessionReady) {
+        if (!canSubmitApproval) {
             return;
         }
 
@@ -216,6 +253,7 @@ export const YieldDepositApprovalScreen = () => {
             header={
                 <YieldDepositFlowScreenHeader
                     account={account}
+                    closeAction={handleCloseApproval}
                     onInfoPress={openInfoBottomSheet}
                     tokenContract={route.params.tokenContract}
                     vaultName={vault.metadata.name}
@@ -234,11 +272,36 @@ export const YieldDepositApprovalScreen = () => {
         >
             <Box pointerEvents={isApprovalPending ? 'none' : 'auto'}>
                 <Form form={form}>
-                    {/* TODO: Allow changing unlimited approval once revoke is supported on mobile. */}
-                    <ApproveDepositForm
-                        approvalLimitTitle={approvalLimitTitle}
-                        balance={token.balance}
-                        feeSelector={
+                    <VStack spacing="sp16">
+                        <YieldDepositStepCard currentStepIndex={0} />
+
+                        {shouldShowApprovedAmountCard && (
+                            <Box paddingHorizontal="sp16">
+                                <YieldDepositApprovedAmountCard
+                                    actionType="revoke"
+                                    approvedAmount={formattedApprovedAmount}
+                                    isApprovedAmountUnlimited={isAllowanceAmountUnlimited}
+                                    networkSymbol={account.symbol}
+                                    onActionPress={handleNavigateToRevoke}
+                                    tokenContract={route.params.tokenContract}
+                                />
+                            </Box>
+                        )}
+
+                        <Box paddingHorizontal="sp16">
+                            <YieldDepositAmountInputCard
+                                approvalLimitTitle={approvalLimitTitle}
+                                balance={token.balance}
+                                isApprovalLimitDisabled={isAllowanceAmountUnlimited}
+                                isMaxSelected={isMaxSelected}
+                                onAmountChange={handleAmountChange}
+                                onApprovalLimitPress={openApprovalLimitBottomSheet}
+                                onMaxChange={handleMaxChange}
+                                tokenSymbol={tokenSymbol}
+                            />
+                        </Box>
+
+                        <Box paddingHorizontal="sp16">
                             <FeeSelector
                                 accountKey={account.key}
                                 tokenContract={route.params.tokenContract}
@@ -248,14 +311,8 @@ export const YieldDepositApprovalScreen = () => {
                                 formDraft={approvalFeeFormDraft}
                                 formDraftKey={approvalFeeFormDraftKey}
                             />
-                        }
-                        isApprovalLimitDisabled={isAllowanceAmountUnlimited}
-                        isMaxSelected={isMaxSelected}
-                        onAmountChange={handleAmountChange}
-                        onApprovalLimitPress={openApprovalLimitBottomSheet}
-                        onMaxChange={handleMaxChange}
-                        tokenSymbol={tokenSymbol}
-                    />
+                        </Box>
+                    </VStack>
                 </Form>
             </Box>
             {pendingModalData && (

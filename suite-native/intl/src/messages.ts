@@ -2711,6 +2711,7 @@ export const messages = {
             approvedAmount: 'Approved amount',
             approvalLimit: 'Approval limit',
             increaseApprovalLimit: 'Increase approval limit',
+            revokeApproval: 'Revoke approval',
             perDeposit: 'Per deposit',
             estimatedRewardsLabel: 'Estimated yearly rewards',
             approvalLimitSheet: {
@@ -2741,14 +2742,18 @@ export const messages = {
                     description:
                         'Approval review could not be prepared. Check the selected fee and try again.',
                 },
+                revokeReviewUnavailable: {
+                    title: 'Revoke review unavailable',
+                    description:
+                        'Revoke review could not be prepared. Check the selected fee and try again.',
+                },
+                revokeUnavailable: {
+                    title: 'Revoke unavailable',
+                    description: 'Revoke could not be prepared. Check the approval and try again.',
+                },
                 depositUnavailable: {
                     title: 'Deposit unavailable',
                     description: 'Deposit could not be prepared. Check the amount and try again.',
-                },
-                approvalResetNotSupported: {
-                    title: 'Approval reset not supported',
-                    description:
-                        'This deposit needs an approval reset first. Revoke is not supported on mobile yet.',
                 },
                 transactionFailed: {
                     title: 'Transaction failed',
@@ -2757,9 +2762,23 @@ export const messages = {
                 },
             },
         },
+        yieldDepositRevokeScreen: {
+            title: 'Revoke {tokenSymbol} spending',
+            subtitle: 'Revoke provider to spend your {tokenSymbol}.',
+            lowLimitInfoAlert:
+                'The spending limit too low. Revoke the current spending limit and approve a higher amount.',
+            account: 'Account',
+            provider: 'Provider',
+            limit: 'Limit',
+            pendingTitle: 'Confirming revoke',
+        },
         yieldDepositApprovalReviewScreen: {
             title: 'Review with Trezor',
             successMessage: "You're all set.",
+        },
+        yieldDepositRevokeReviewScreen: {
+            title: 'Review with Trezor',
+            successMessage: 'Revoke transaction signed.',
         },
         yieldDepositReviewScreen: {
             title: 'Review with Trezor',
@@ -2785,6 +2804,9 @@ export const messages = {
             depositCard: {
                 title: 'Deposit',
             },
+            revokeCard: {
+                title: 'Revoke',
+            },
             receiveCard: {
                 title: 'Receive',
             },
@@ -2794,6 +2816,10 @@ export const messages = {
             },
             transactionDetailsCard: {
                 title: 'Transaction details',
+            },
+            revokeDetailsCard: {
+                title: 'Revoke details',
+                limit: 'Limit',
             },
             alerts: {
                 primaryButton: 'Go to homepage',
@@ -2805,6 +2831,18 @@ export const messages = {
                     },
                     pendingTransactionConflict: {
                         title: 'Approval was not submitted',
+                        description:
+                            'There is already a pending transaction for this account. Wait for it to finish before trying again.',
+                    },
+                },
+                revoke: {
+                    pushTransactionFailed: {
+                        title: 'Revoke was not submitted',
+                        description:
+                            'The revoke transaction was signed but could not be submitted to the network.',
+                    },
+                    pendingTransactionConflict: {
+                        title: 'Revoke was not submitted',
                         description:
                             'There is already a pending transaction for this account. Wait for it to finish before trying again.',
                     },

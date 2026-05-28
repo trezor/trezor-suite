@@ -89,6 +89,8 @@ export const useYieldAllowanceFees = ({
         selectedFee,
         isLoading: isComposingAllowanceFee,
     });
+    const isAllowanceFeeReady =
+        formDraft !== undefined && !isComposingAllowanceFee && !isFeeUnavailable;
 
     const composeAllowanceFeeParams = useMemo((): ComposeAllowanceFeeParams | null => {
         if (!isEnabled || !flowData || !formDraftKey || !feeInfo || !transaction) {
@@ -177,8 +179,8 @@ export const useYieldAllowanceFees = ({
     return {
         formDraft,
         formDraftKey,
+        isAllowanceFeeReady,
         isComposingAllowanceFee,
-        isComposingApprovalFee: isComposingAllowanceFee,
         isFeeUnavailable,
         selectedFee,
         updateFeeLevelThunk: updateYieldAllowanceSelectedFeeLevelThunk,

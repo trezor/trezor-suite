@@ -13,7 +13,13 @@ import {
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
-type ReviewFormType = 'stake' | 'unstake' | 'claim' | 'yield-approval' | 'yield-deposit';
+type ReviewFormType =
+    | 'stake'
+    | 'unstake'
+    | 'claim'
+    | 'yield-approval'
+    | 'yield-deposit'
+    | 'yield-revoke';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     AppTabsParamList,
@@ -108,6 +114,18 @@ const translationKeys = {
         pendingConflict: {
             title: 'earn.yieldReview.alerts.deposit.pendingTransactionConflict.title',
             description: 'earn.yieldReview.alerts.deposit.pendingTransactionConflict.description',
+            primaryButton: 'earn.yieldReview.alerts.primaryButton',
+        },
+    },
+    'yield-revoke': {
+        pushFailed: {
+            title: 'earn.yieldReview.alerts.revoke.pushTransactionFailed.title',
+            description: 'earn.yieldReview.alerts.revoke.pushTransactionFailed.description',
+            primaryButton: 'earn.yieldReview.alerts.primaryButton',
+        },
+        pendingConflict: {
+            title: 'earn.yieldReview.alerts.revoke.pendingTransactionConflict.title',
+            description: 'earn.yieldReview.alerts.revoke.pendingTransactionConflict.description',
             primaryButton: 'earn.yieldReview.alerts.primaryButton',
         },
     },
