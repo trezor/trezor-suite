@@ -168,7 +168,7 @@ describe(composeCancelTransactionThunk.name, () => {
         const { feeLevels: secondFeeLevels } = second;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const secondFeeLevel: (typeof secondFeeLevels)[number] = secondFeeLevels[0];
-        expect(secondFeeLevel.feePerUnit).toBe('13.81818181818181818182'); // = (1410 + 110 * 1) / 110
+        expect(secondFeeLevel.feePerUnit).toBe('13.01818181818181818182'); // = (1410 + 110 * 0.2) / 110
         expect(second.baseFee).toBe(1410); // This is the sum of fees for chained transactions
         expect(second.outputs).toStrictEqual([
             {
