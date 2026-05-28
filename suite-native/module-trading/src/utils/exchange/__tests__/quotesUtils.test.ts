@@ -155,6 +155,7 @@ describe('quotesUtils', () => {
                 receiveCryptoSelect: { id: 'bitcoin' as CryptoId },
                 outputs: [{ amount: '1' }],
                 receiveAddress: 'btc-receive-addr',
+                receiveAccountKey: btc1NormalAccount.key,
             } satisfies MinimalExchangeFormProps);
         });
 
@@ -174,6 +175,7 @@ describe('quotesUtils', () => {
                 sendCryptoSelect: { id: 'ethereum' as CryptoId },
                 receiveCryptoSelect: { id: 'bitcoin' as CryptoId },
                 outputs: [{ amount: '1' }],
+                receiveAccountKey: btc1NormalAccount.key,
             } satisfies MinimalExchangeFormProps);
         });
 
@@ -194,6 +196,7 @@ describe('quotesUtils', () => {
                 receiveCryptoSelect: { id: 'ethereum' as CryptoId },
                 outputs: [{ amount: '1' }],
                 receiveAddress: eth1NormalAccount.descriptor,
+                receiveAccountKey: eth1NormalAccount.key,
             } satisfies MinimalExchangeFormProps);
         });
 

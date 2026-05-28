@@ -9,6 +9,7 @@ import {
     useTradingRefetchScheduler,
 } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { noop } from '@trezor/utils';
 
 import { useDispatch } from 'src/hooks/suite';
@@ -17,6 +18,7 @@ type TradingExchangeUseHandleChangeProps = {
     formValues: TradingExchangeFormProps;
     network: Network;
     shouldSendInSats: boolean | undefined;
+    receiveAccountKey?: AccountKey;
 
     composeRequestCallback: () => void;
     setIsScheduledQuotesRefresh?: (value: boolean) => void;
@@ -34,6 +36,7 @@ export const useTradingExchangeHandleChange = ({
     formValues,
     network,
     shouldSendInSats,
+    receiveAccountKey,
     composeRequestCallback,
     setIsScheduledQuotesRefresh = noop,
 }: TradingExchangeUseHandleChangeProps) => {
@@ -48,7 +51,7 @@ export const useTradingExchangeHandleChange = ({
 
         const promise = dispatch(
             exchangeThunks.handleRequestThunk({
-                formValues,
+                formValues: { ...formValues, receiveAccountKey },
                 network,
                 shouldSendInSats,
                 composeRequestCallback,
@@ -75,6 +78,7 @@ export const useTradingExchangeHandleChange = ({
     }, [
         dispatch,
         formValues,
+        receiveAccountKey,
         network,
         shouldSendInSats,
         composeRequestCallback,

@@ -262,6 +262,7 @@ export type MinimalExchangeFormProps = {
     setMaxOutputId?: number;
     receiveAddress?: string;
     fromAddress?: string;
+    receiveAccountKey?: AccountKey;
 };
 
 export type TradingExchangeStepType = 'RECEIVING_ADDRESS' | 'SEND_TRANSACTION' | 'SIGN_DATA';
