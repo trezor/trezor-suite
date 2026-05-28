@@ -15,11 +15,7 @@ import { type FeeLevel } from '@trezor/connect';
 import { feesActions } from './feesActions';
 import { updateFeeInfoThunk } from './feesThunks';
 
-export type FeesRootState = {
-    wallet: {
-        fees: FeesState;
-    };
-};
+export type FeesRootState = { wallet: { fees: FeesState } };
 
 export const DEFAULT_FEE_INFO: FeeInfo = {
     blockHeight: 0,
