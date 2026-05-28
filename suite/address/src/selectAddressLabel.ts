@@ -42,15 +42,11 @@ export const selectAddressLabel = createMemoizedSelector(
         isSuiteSyncEnabled,
         suiteSyncAddressLabels,
         address,
-    ) => {
-        const suiteSyncAddressLabel = suiteSyncAddressLabels.find(
-            item => item.address === address,
-        )?.label;
-
+    ): string | null => {
         if (isSuiteSyncEnabled) {
-            return suiteSyncAddressLabel ?? undefined;
+            return suiteSyncAddressLabels.find(item => item.address === address)?.label ?? null;
         }
 
-        return isLegacyLabelingVisible ? addressLabels[address] : undefined;
+        return isLegacyLabelingVisible ? (addressLabels[address] ?? null) : null;
     },
 );

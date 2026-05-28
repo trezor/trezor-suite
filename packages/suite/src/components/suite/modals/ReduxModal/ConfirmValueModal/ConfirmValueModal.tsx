@@ -1,20 +1,15 @@
 import { type ReactNode, useEffect, useState } from 'react';
 
-import { Address } from '@suite/address';
+import { Address, selectAddressLabel } from '@suite/address';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
-import {
-    selectIsLegacyLabelingVisible,
-    selectIsMetadataEnabled,
-    selectLabelingDataForSelectedAccount,
-} from '@suite/metadata';
+import { selectIsMetadataEnabled } from '@suite/metadata';
 import { MODAL_CONTEXT_USER } from '@suite/modal';
 import { selectDesktopSuiteSyncInteraction } from '@suite/suite-sync';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
-import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
@@ -75,24 +70,24 @@ export const ConfirmValueModal = ({
     const { device } = useDevice();
     const modalContext = useSelector(state => state.modal.context);
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
-    const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
     const isMetadataEnabled = useSelector(selectIsMetadataEnabled);
     const dispatch = useDispatch();
     const { openNodeById } = useGuideOpenNode();
     const { translationString } = useTranslation();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
 
-    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
-    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
-
-    const suiteSyncAddressLabels = useSelector(state =>
-        account && isSuiteSyncEnabled
-            ? selectSuiteSyncAddressLabels(state, account.deviceState)
-            : undefined,
-    );
     const suiteSyncInteraction = useSelector(state =>
         account
             ? selectDesktopSuiteSyncInteraction(state, account.deviceState, isMetadataEnabled)
+            : null,
+    );
+
+    const addressLabel = useSelector(state =>
+        account && isAddress
+            ? selectAddressLabel(state, {
+                  address: value,
+                  deviceStaticId: account.deviceState,
+              })
             : null,
     );
 
@@ -127,10 +122,6 @@ export const ConfirmValueModal = ({
             dispatch(validateOnDevice());
         }
     }, [canConfirmOnDevice, dispatch, isConfirmed, modalContext, validateOnDevice]);
-
-    const addressLabel =
-        suiteSyncAddressLabels?.find(it => it.address === value)?.label ??
-        (isLegacyLabelingVisible ? addressLabels[value] : undefined);
 
     return (
         <Modal.Backdrop onClick={onCancel}>
@@ -226,7 +217,7 @@ export const ConfirmValueModal = ({
                                             defaultValue: value,
                                             networkSymbol: account.symbol,
                                             accountDescriptor: account.descriptor,
-                                            value: addressLabel,
+                                            value: addressLabel ?? undefined,
                                         }}
                                         maxWidth={290}
                                     >

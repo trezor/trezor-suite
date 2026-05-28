@@ -1,11 +1,7 @@
-import { Address } from '@suite/address';
+import { Address, selectAddressLabelsForAccount } from '@suite/address';
 import { Translation } from '@suite/intl';
-import { selectIsLegacyLabelingVisible } from '@suite/metadata';
-import { type AccountLabels } from '@suite-common/metadata-types';
-import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
-import { type SuiteSyncAddress } from '@suite-common/suite-sync-storage';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { AccountKey } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
 import { type ArrayElement } from '@trezor/type-utils';
 
@@ -17,7 +13,7 @@ type TargetAddressLabelProps = {
     symbol: NetworkSymbol;
     target: ArrayElement<WalletAccountTransaction['targets']>;
     type: WalletAccountTransaction['type'];
-    accountMetadata?: AccountLabels;
+    accountKey: AccountKey;
     deviceStaticSessionId: StaticSessionId;
 };
 
@@ -25,17 +21,16 @@ export const TargetAddressLabel = ({
     symbol,
     target,
     type,
-    accountMetadata,
+    accountKey,
     deviceStaticSessionId,
 }: TargetAddressLabelProps) => {
     const isLocalTarget = (type === 'sent' || type === 'self') && target.isAccountTarget;
-    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
-    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
-
-    const suiteSyncAddressLabels = useSelector(state =>
-        isSuiteSyncEnabled
-            ? selectSuiteSyncAddressLabels(state, deviceStaticSessionId)
-            : returnStableArrayIfEmpty<SuiteSyncAddress>(),
+    const addressLabels = useSelector(state =>
+        selectAddressLabelsForAccount(state, {
+            addresses: target.addresses ?? [],
+            accountKey,
+            deviceStaticId: deviceStaticSessionId,
+        }),
     );
 
     if (isLocalTarget) {
@@ -45,10 +40,6 @@ export const TargetAddressLabel = ({
     return (
         <span data-testid="@wallet/transaction/target-address">
             {target.addresses?.map((a, i) => {
-                const addressLabel =
-                    suiteSyncAddressLabels.find(it => it.address === a)?.label ??
-                    (isLegacyLabelingVisible ? accountMetadata?.addressLabels[a] : undefined);
-
                 if (a.startsWith('OP_RETURN ')) {
                     return <span key={i}>{a}</span>;
                 }
@@ -59,7 +50,7 @@ export const TargetAddressLabel = ({
                     // Using index as a key is safe as the array doesn't change (no filter/reordering, pushing new items)
                     <AddressLabeling key={i} address={a} symbol={symbol} />
                 ) : (
-                    <span key={i}>{addressLabel ?? <Address value={a} isTruncated />}</span>
+                    <span key={i}>{addressLabels[a] ?? <Address value={a} isTruncated />}</span>
                 );
             })}
         </span>
