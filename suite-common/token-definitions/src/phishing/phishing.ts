@@ -14,6 +14,7 @@ import { PhishingTransactionValidator } from './validator';
 type NetworkPhishingValidators = Map<NetworkType, PhishingTransactionValidator>;
 
 const PHISHING_VALIDATORS: NetworkPhishingValidators = new Map([
+    ['bitcoin', new PhishingTransactionValidator().addDetector(detectors.dustValue)],
     [
         'ethereum',
         new PhishingTransactionValidator()
