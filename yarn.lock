@@ -14235,9 +14235,16 @@ __metadata:
   resolution: "@suite/account@workspace:suite/account"
   dependencies:
     "@suite-common/connect-popup": "workspace:*"
+    "@suite-common/message-system": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-sync": "workspace:*"
     "@suite-common/trading": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite/metadata": "workspace:*"
+    "@trezor/connect": "workspace:*"
     redux: "npm:^5.0.1"
   languageName: unknown
   linkType: soft

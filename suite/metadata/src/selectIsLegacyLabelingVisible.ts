@@ -3,7 +3,7 @@ import { type WithSuiteSyncState, selectIsSuiteSyncEnabled } from '@suite-common
 
 import { type MetadataRootState, selectIsMetadataEnabled } from './metadataReducer';
 
-type LegacyLabelingVisibleRootState = MetadataRootState &
+export type LegacyLabelingVisibleRootState = MetadataRootState &
     WithSuiteSyncState &
     MessageSystemRootState;
 
