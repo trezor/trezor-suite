@@ -132,6 +132,7 @@ module.exports = {
         icon: 'build/static/images/desktop/512x512.png',
         artifactName: 'Trezor-Suite-${version}-win-${arch}.${ext}',
         target: ['nsis'],
+        signExts: ['.exe', '.dll'],
         signtoolOptions: {
             publisherName: ['SatoshiLabs, s.r.o.', 'Trezor Company s.r.o.'],
             // TODO #14482: when Electron-main is migrated to ESM, and we declare whole suite-desktop package as ESM, rename .mjs files to .js
