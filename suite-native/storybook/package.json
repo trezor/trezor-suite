@@ -15,7 +15,6 @@
     },
     "dependencies": {
         "@gorhom/bottom-sheet": "5.2.8",
-        "@lottiefiles/dotlottie-react": "^0.17.14",
         "@react-native-community/datetimepicker": "^8.6.0",
         "@react-native-community/slider": "^5.1.2",
         "@shopify/react-native-skia": "2.5.1",
@@ -28,7 +27,6 @@
         "@trezor/eslint": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "babel-plugin-react-native-web": "^0.21.2",
         "react": "19.2.4",
         "react-dom": "19.2.4",
         "react-intl": "^8.1.3",
