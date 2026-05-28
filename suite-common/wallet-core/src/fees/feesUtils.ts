@@ -42,6 +42,11 @@ export const getNewFeeInfo = async ({
     device,
 }: GetNewFeeInfoProps): Promise<BlockchainEstimatedFeeLevel | undefined> => {
     const { symbol } = network;
+
+    if (network.networkType === 'tron') {
+        return;
+    }
+
     if (network.networkType === 'ethereum') {
         const result = await TrezorConnect.blockchainEstimateFee({
             coin: symbol,
