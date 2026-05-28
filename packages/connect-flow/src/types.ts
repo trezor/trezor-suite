@@ -111,4 +111,10 @@ export type GetAddressSubProcess = AnySubProcess<AddressResult>;
 export interface ConnectService {
     createWallet(options: CreateWalletOptions): Process<WalletSubProcess>;
     getAddress(options: GetAddressOptions): Process<GetAddressSubProcess>;
+    /**
+     * Look up a currently-running process by its `callId`. Returns `null`
+     * if no process with that id is registered (it never started, or it
+     * has already completed/errored/cancelled and removed itself).
+     */
+    getProcess(options: { processId: string }): Process<AnySubProcess<unknown>> | null;
 }

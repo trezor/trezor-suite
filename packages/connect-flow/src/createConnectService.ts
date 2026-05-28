@@ -101,7 +101,7 @@ interface FlowContext<TResult> {
 
 const buildProcess = <TResult>(
     trezorConnect: TrezorConnectLike,
-    activeRef: { current: Process<AnySubProcess<unknown>> | null },
+    registry: Map<string, Process<AnySubProcess<unknown>>>,
     context: FlowContext<TResult>,
 ): Process<AnySubProcess<TResult>> => {
     const callId = nextCallId();
@@ -111,7 +111,6 @@ const buildProcess = <TResult>(
 
     const channel = new EventChannel<AnySubProcess<TResult>>();
     let listener: UiEventListener | null = null;
-    const selfRef: { proc: Process<AnySubProcess<TResult>> | null } = { proc: null };
 
     let resolveResult: (value: TResult) => void = () => {};
     let rejectResult: (error: Error) => void = () => {};
@@ -127,12 +126,9 @@ const buildProcess = <TResult>(
             listener = null;
         }
         channel.close();
-        if (
-            selfRef.proc &&
-            activeRef.current === (selfRef.proc as Process<AnySubProcess<unknown>>)
-        ) {
-            activeRef.current = null;
-        }
+        // Process self-removes from the registry on finish (complete / error /
+        // cancel / iterator finally). getProcess(callId) returns null from now on.
+        registry.delete(callId);
     };
 
     const cancelFn = () => {
@@ -225,7 +221,7 @@ const buildProcess = <TResult>(
             return resultPromise;
         },
     };
-    selfRef.proc = proc;
+    registry.set(callId, proc as Process<AnySubProcess<unknown>>);
 
     return proc;
 };
@@ -234,30 +230,27 @@ export const createConnectService = (deps: {
     trezorConnect: TrezorConnectLike;
 }): ConnectService => {
     const { trezorConnect } = deps;
-    const activeRef: { current: Process<AnySubProcess<unknown>> | null } = { current: null };
+    // Active processes keyed by their callId. A process inserts itself when
+    // built and removes itself in cleanup() (complete / error / cancel).
+    const registry = new Map<string, Process<AnySubProcess<unknown>>>();
 
     const guard = <TResult>(
         create: () => Process<AnySubProcess<TResult>>,
     ): Process<AnySubProcess<TResult>> => {
-        if (activeRef.current) {
+        if (registry.size > 0) {
             throw new Error(
                 'connectService is already running a process; await or cancel it before starting another',
             );
         }
-        const proc = create();
-        activeRef.current = proc as Process<AnySubProcess<unknown>>;
 
-        return proc;
+        return create();
     };
 
     return {
-        getProcess: ({ processId }: { processId: string }) => null,
-        getInState: (options: { processId: string; timeout?: number }) =>
-            // TODO: implement
-            Promise.resolve(null),
+        getProcess: ({ processId }) => registry.get(processId) ?? null,
         createWallet: (options: CreateWalletOptions): Process<WalletSubProcess> =>
             guard<WalletResult>(() =>
-                buildProcess<WalletResult>(trezorConnect, activeRef, {
+                buildProcess<WalletResult>(trezorConnect, registry, {
                     invoke: async callId => {
                         const result = await trezorConnect.getDeviceState({
                             device: { path: options.devicePath },
@@ -276,7 +269,7 @@ export const createConnectService = (deps: {
 
         getAddress: (options: GetAddressOptions): Process<GetAddressSubProcess> =>
             guard<AddressResult>(() =>
-                buildProcess<AddressResult>(trezorConnect, activeRef, {
+                buildProcess<AddressResult>(trezorConnect, registry, {
                     invoke: callId =>
                         trezorConnect.getAddress({
                             ...(options.devicePath ? { device: { path: options.devicePath } } : {}),
