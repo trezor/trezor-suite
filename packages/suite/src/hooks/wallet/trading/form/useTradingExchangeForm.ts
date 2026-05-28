@@ -237,6 +237,7 @@ export const useTradingExchangeForm = ({
         formValues: values,
         network,
         shouldSendInSats,
+        receiveAddress: tradingReceiveAddress.receiveAddress,
         receiveAccountKey: tradingReceiveAddress.selectedAccount?.key,
         composeRequestCallback: () => {
             composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
@@ -260,6 +261,7 @@ export const useTradingExchangeForm = ({
         composedLevels,
         composedTransactionInfo,
         setShowReserveBanner,
+        receiveAddress: tradingReceiveAddress.receiveAddress,
     });
 
     const selectQuote = async (quote: ExchangeTrade) => {
@@ -620,14 +622,6 @@ export const useTradingExchangeForm = ({
 
         fetchFeesAndComposeRef.current();
     }, [transactionData, outputAddress, ethereumAdjustGasLimit, pageType, fetchFeesAndComposeRef]);
-
-    useEffect(() => {
-        setValueRef.current('receiveAddress', receiveAddress);
-    }, [receiveAddress, setValueRef]);
-
-    useEffect(() => {
-        setValueRef.current('extraField', extraField);
-    }, [extraField, setValueRef]);
 
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));

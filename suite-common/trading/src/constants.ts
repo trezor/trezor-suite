@@ -45,8 +45,6 @@ export const TRADING_FORM_PROVIDER_SELECT = 'provider';
 export const TRADING_FORM_AMOUNT_IN_CRYPTO = 'amountInCrypto';
 
 export const TRADING_EXCHANGE_FROM_ADDRESS = 'fromAddress';
-export const TRADING_EXCHANGE_RECEIVE_ADDRESS = 'receiveAddress';
-export const TRADING_EXCHANGE_EXTRA_FIELD = 'extraField';
 
 export const TRADING_BUY_RECEIVE_ADDRESS = 'receiveAddress';
 

@@ -18,6 +18,10 @@ type TradingExchangeUseHandleChangeProps = {
     formValues: TradingExchangeFormProps;
     network: Network;
     shouldSendInSats: boolean | undefined;
+    // receiveAddress and receiveAccountKey are read from useTradingReceiveAddress
+    // directly rather than mirrored onto the outer form. Makes the receive identity
+    // a single source of truth and closes the stale-address race exposed by #28143.
+    receiveAddress?: string;
     receiveAccountKey?: AccountKey;
 
     composeRequestCallback: () => void;
@@ -36,6 +40,7 @@ export const useTradingExchangeHandleChange = ({
     formValues,
     network,
     shouldSendInSats,
+    receiveAddress,
     receiveAccountKey,
     composeRequestCallback,
     setIsScheduledQuotesRefresh = noop,
@@ -51,7 +56,11 @@ export const useTradingExchangeHandleChange = ({
 
         const promise = dispatch(
             exchangeThunks.handleRequestThunk({
-                formValues: { ...formValues, receiveAccountKey },
+                formValues: {
+                    ...formValues,
+                    receiveAddress,
+                    receiveAccountKey,
+                },
                 network,
                 shouldSendInSats,
                 composeRequestCallback,
@@ -78,6 +87,7 @@ export const useTradingExchangeHandleChange = ({
     }, [
         dispatch,
         formValues,
+        receiveAddress,
         receiveAccountKey,
         network,
         shouldSendInSats,
