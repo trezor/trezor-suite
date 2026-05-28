@@ -6,6 +6,7 @@ import {
     checkIsActiveRouteAnyOf,
     checkIsDeviceOnboardingFocused,
     checkIsHomeStackFocused,
+    navigateNested,
     resetNavigationRoot,
 } from '@suite-native/navigation';
 
@@ -35,6 +36,7 @@ jest.mock('@suite-native/navigation', () => {
 
     return {
         ...navigation,
+        navigateNested: jest.fn(),
         resetNavigationRoot: jest.fn(),
         checkIsActiveRouteAnyOf: jest.fn().mockReturnValue(false),
         checkIsDeviceOnboardingFocused: jest.fn().mockReturnValue(false),
@@ -43,6 +45,7 @@ jest.mock('@suite-native/navigation', () => {
 });
 
 const mockedRouter = router as jest.Mocked<typeof router>;
+const mockedNavigateNested = navigateNested as jest.MockedFunction<typeof navigateNested>;
 const mockedResetNavigationRoot = resetNavigationRoot as jest.MockedFunction<
     typeof resetNavigationRoot
 >;
@@ -67,6 +70,7 @@ describe('deviceConnectionMiddleware', () => {
             it.each(thpPairingBlockedFixtures)('$description', ({ action, initialState }) => {
                 createMockStoreAndDispatch(initialState, action);
 
+                expect(mockedNavigateNested).not.toHaveBeenCalled();
                 expect(mockedRouter.navigate).not.toHaveBeenCalled();
             });
         });
@@ -74,11 +78,14 @@ describe('deviceConnectionMiddleware', () => {
         describe('when navigation should proceed', () => {
             it.each(thpPairingNavigationFixtures)(
                 '$description',
-                ({ action, expectedNavigation, initialState }) => {
+                ({ action, expectedNestedNavigate, initialState }) => {
                     createMockStoreAndDispatch(initialState, action);
 
-                    expect(mockedRouter.navigate).toHaveBeenCalledWith(expectedNavigation);
-                    expect(mockedRouter.navigate).toHaveBeenCalledTimes(1);
+                    expect(mockedNavigateNested).toHaveBeenCalledWith(
+                        expectedNestedNavigate!.route,
+                        expectedNestedNavigate!.nestedScreen,
+                    );
+                    expect(mockedNavigateNested).toHaveBeenCalledTimes(1);
                 },
             );
         });
@@ -90,6 +97,7 @@ describe('deviceConnectionMiddleware', () => {
                 createMockStoreAndDispatch(initialState, action);
 
                 expect(mockedResetNavigationRoot).not.toHaveBeenCalled();
+                expect(mockedNavigateNested).not.toHaveBeenCalled();
                 expect(mockedRouter.navigate).not.toHaveBeenCalled();
             });
         });
@@ -97,13 +105,16 @@ describe('deviceConnectionMiddleware', () => {
         describe('when device disconnects during onboarding', () => {
             it.each(deviceDisconnectDuringOnboardingFixtures)(
                 '$description',
-                ({ action, expectedNavigation, initialState }) => {
+                ({ action, expectedNestedNavigate, initialState }) => {
                     jest.mocked(checkIsDeviceOnboardingFocused).mockReturnValue(true);
 
                     createMockStoreAndDispatch(initialState, action);
 
-                    expect(mockedRouter.navigate).toHaveBeenCalledWith(expectedNavigation);
-                    expect(mockedRouter.navigate).toHaveBeenCalledTimes(1);
+                    expect(mockedNavigateNested).toHaveBeenCalledWith(
+                        expectedNestedNavigate!.route,
+                        expectedNestedNavigate!.nestedScreen,
+                    );
+                    expect(mockedNavigateNested).toHaveBeenCalledTimes(1);
                 },
             );
         });
@@ -131,6 +142,7 @@ describe('deviceConnectionMiddleware', () => {
                 createMockStoreAndDispatch(initialState, action);
 
                 expect(mockedResetNavigationRoot).not.toHaveBeenCalled();
+                expect(mockedNavigateNested).not.toHaveBeenCalled();
                 expect(mockedRouter.navigate).not.toHaveBeenCalled();
             });
         });
@@ -168,6 +180,7 @@ describe('deviceConnectionMiddleware', () => {
 
                     createMockStoreAndDispatch(initialState, action);
 
+                    expect(mockedNavigateNested).not.toHaveBeenCalled();
                     expect(mockedRouter.navigate).not.toHaveBeenCalled();
                     expect(mockedResetNavigationRoot).not.toHaveBeenCalled();
                 },
@@ -205,11 +218,14 @@ describe('deviceConnectionMiddleware', () => {
         describe('when device is initialized', () => {
             it.each(deviceConnectAuthorizedFixtures)(
                 '$description',
-                ({ action, expectedNavigation, initialState }) => {
+                ({ action, expectedNestedNavigate, initialState }) => {
                     createMockStoreAndDispatch(initialState, action);
 
-                    expect(mockedRouter.navigate).toHaveBeenCalledWith(expectedNavigation);
-                    expect(mockedRouter.navigate).toHaveBeenCalledTimes(1);
+                    expect(mockedNavigateNested).toHaveBeenCalledWith(
+                        expectedNestedNavigate!.route,
+                        expectedNestedNavigate!.nestedScreen,
+                    );
+                    expect(mockedNavigateNested).toHaveBeenCalledTimes(1);
                 },
             );
         });

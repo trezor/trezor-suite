@@ -70,16 +70,23 @@ type ResetNavigationTarget = {
     routes: ResetNavigationRoute[];
 };
 
-// Shape passed to expo-router's `router.navigate(...)` — either a plain pathname string,
-// or `{ pathname, params }` when there are query-string params. Mirrors the migrated
-// middleware call sites; assertions in the test compare with this directly.
-type ExpectedRouterCall = string | { pathname: string; params: Record<string, string> };
+// Shape passed to expo-router's `router.navigate(...)` for top-level file-based routes
+// (e.g. DeviceCompromisedModal).
+type ExpectedRouterCall = string | { pathname: string; params: Record<string, unknown> };
+
+// Shape passed to `navigateNested(route, nestedScreen)` for inner screens of nested
+// react-navigation stacks (AuthorizeDeviceStack, DeviceOnboardingStack, …).
+type ExpectedNestedNavigate = {
+    route: string;
+    nestedScreen: { screen: string; params?: Record<string, unknown> };
+};
 
 type NavigationFixture = {
     description: string;
     initialState: RootState;
     action: UnknownAction;
-    expectedNavigation: ExpectedRouterCall;
+    expectedNavigation?: ExpectedRouterCall;
+    expectedNestedNavigate?: ExpectedNestedNavigate;
 };
 
 type ResetNavigationFixture = {
@@ -179,13 +186,19 @@ export const thpPairingNavigationFixtures: NavigationFixture[] = [
         description: 'navigates to ThpConfirmation on thp_pairing_request',
         initialState: buildInitialState(),
         action: { type: UI_REQUEST.REQUEST_BUTTON, payload: { name: 'thp_pairing_request' } },
-        expectedNavigation: `/${RootStackRoutes.AuthorizeDeviceStack}/${AuthorizeDeviceStackRoutes.ThpConfirmation}`,
+        expectedNestedNavigate: {
+            route: RootStackRoutes.AuthorizeDeviceStack,
+            nestedScreen: { screen: AuthorizeDeviceStackRoutes.ThpConfirmation },
+        },
     },
     {
         description: 'navigates to ThpConfirmation on thp_connection_request',
         initialState: buildInitialState(),
         action: { type: UI_REQUEST.REQUEST_BUTTON, payload: { name: 'thp_connection_request' } },
-        expectedNavigation: `/${RootStackRoutes.AuthorizeDeviceStack}/${AuthorizeDeviceStackRoutes.ThpConfirmation}`,
+        expectedNestedNavigate: {
+            route: RootStackRoutes.AuthorizeDeviceStack,
+            nestedScreen: { screen: AuthorizeDeviceStackRoutes.ThpConfirmation },
+        },
     },
 ];
 
@@ -226,9 +239,12 @@ export const deviceDisconnectDuringOnboardingFixtures: NavigationFixture[] = [
         description: 'navigates to DeviceDisconnected screen (USB connection)',
         initialState: buildInitialState(),
         action: { type: deviceActions.deviceDisconnect.type, payload: mockSuiteDevice() },
-        expectedNavigation: {
-            pathname: `/${RootStackRoutes.DeviceOnboardingStack}/${DeviceOnboardingStackRoutes.DeviceDisconnected}`,
-            params: { wasDeviceConnectedViaBluetooth: 'false' },
+        expectedNestedNavigate: {
+            route: RootStackRoutes.DeviceOnboardingStack,
+            nestedScreen: {
+                screen: DeviceOnboardingStackRoutes.DeviceDisconnected,
+                params: { wasDeviceConnectedViaBluetooth: false },
+            },
         },
     },
     {
@@ -238,9 +254,12 @@ export const deviceDisconnectDuringOnboardingFixtures: NavigationFixture[] = [
             type: deviceActions.deviceDisconnect.type,
             payload: { ...mockSuiteDevice(), descriptor: { apiType: 'bluetooth' } },
         },
-        expectedNavigation: {
-            pathname: `/${RootStackRoutes.DeviceOnboardingStack}/${DeviceOnboardingStackRoutes.DeviceDisconnected}`,
-            params: { wasDeviceConnectedViaBluetooth: 'true' },
+        expectedNestedNavigate: {
+            route: RootStackRoutes.DeviceOnboardingStack,
+            nestedScreen: {
+                screen: DeviceOnboardingStackRoutes.DeviceDisconnected,
+                params: { wasDeviceConnectedViaBluetooth: true },
+            },
         },
     },
 ];
@@ -433,7 +452,10 @@ export const deviceConnectAuthorizedFixtures: NavigationFixture[] = [
             type: deviceActions.connectDevice.type,
             payload: { device: mockSuiteDevice() },
         },
-        expectedNavigation: `/${RootStackRoutes.AuthorizeDeviceStack}/${AuthorizeDeviceStackRoutes.ConnectingDevice}`,
+        expectedNestedNavigate: {
+            route: RootStackRoutes.AuthorizeDeviceStack,
+            nestedScreen: { screen: AuthorizeDeviceStackRoutes.ConnectingDevice },
+        },
     },
     {
         description: 'Skips coin enabling for bitcoin only FW and goes to connecting screen',
@@ -451,6 +473,9 @@ export const deviceConnectAuthorizedFixtures: NavigationFixture[] = [
                 },
             },
         },
-        expectedNavigation: `/${RootStackRoutes.AuthorizeDeviceStack}/${AuthorizeDeviceStackRoutes.ConnectingDevice}`,
+        expectedNestedNavigate: {
+            route: RootStackRoutes.AuthorizeDeviceStack,
+            nestedScreen: { screen: AuthorizeDeviceStackRoutes.ConnectingDevice },
+        },
     },
 ];

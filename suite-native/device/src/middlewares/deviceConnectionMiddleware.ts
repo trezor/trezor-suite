@@ -25,6 +25,7 @@ import {
     checkIsActiveRouteAnyOf,
     checkIsDeviceOnboardingFocused,
     checkIsHomeStackFocused,
+    navigateNested,
     resetNavigationRoot,
 } from '@suite-native/navigation';
 import { type DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
@@ -106,9 +107,9 @@ const handleDeviceConnectNavigation = ({
 
     if (isAnyNetworkEnabled || hasDeviceBitcoinOnlyFirmware) {
         // Bitcoin is enabled and coin enabling finished with btc-only FW in discoverMiddleware.
-        router.navigate(
-            `/${RootStackRoutes.AuthorizeDeviceStack}/${AuthorizeDeviceStackRoutes.ConnectingDevice}`,
-        );
+        navigateNested(RootStackRoutes.AuthorizeDeviceStack, {
+            screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
+        });
     }
 };
 
@@ -192,9 +193,9 @@ deviceConnectionMiddleware.startListening({
             return;
 
         if (checkIsDeviceOnboardingFocused()) {
-            router.navigate({
-                pathname: `/${RootStackRoutes.DeviceOnboardingStack}/${DeviceOnboardingStackRoutes.DeviceDisconnected}`,
-                params: { wasDeviceConnectedViaBluetooth: String(wasDeviceConnectedViaBluetooth) },
+            navigateNested(RootStackRoutes.DeviceOnboardingStack, {
+                screen: DeviceOnboardingStackRoutes.DeviceDisconnected,
+                params: { wasDeviceConnectedViaBluetooth },
             });
         } else {
             if (!checkIsHomeStackFocused()) {
@@ -234,8 +235,8 @@ deviceConnectionMiddleware.startListening({
         }
 
         // Nothing can be accomplished before a THP connection is established.
-        router.navigate(
-            `/${RootStackRoutes.AuthorizeDeviceStack}/${AuthorizeDeviceStackRoutes.ThpConfirmation}`,
-        );
+        navigateNested(RootStackRoutes.AuthorizeDeviceStack, {
+            screen: AuthorizeDeviceStackRoutes.ThpConfirmation,
+        });
     },
 });

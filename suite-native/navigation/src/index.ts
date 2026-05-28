@@ -3,6 +3,7 @@ export * from './routes';
 export type * from './types';
 export * from './config';
 export * from './currentRoute';
+export * from './imperativeNavigate';
 export * from './imperativeReset';
 export * from './hooks/useInterceptNativeNavigation';
 export * from './hooks/useNavigateToInitialScreen';
