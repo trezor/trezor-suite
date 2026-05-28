@@ -16,6 +16,7 @@ import {
     type EvmTransactionPurpose,
     type ReviewOutput,
     type StakeType,
+    type YieldClaimReward,
 } from '@suite-common/wallet-types';
 import {
     type EvmApprovalPurpose,
@@ -142,6 +143,13 @@ const getTranslationValues = (
         return yieldStrings[evmTxType];
     }
 
+    if (evmTxType === 'claim') {
+        return {
+            value: 'TR_EARN_YIELD_REVIEW_CLAIM_TITLE',
+            label: 'TR_EARN_YIELD_REVIEW_CLAIM_TITLE',
+        };
+    }
+
     return null;
 };
 
@@ -237,6 +245,8 @@ const getOutputTitle = (
             return <Translation id="TR_MY_ASSETS" />;
         case 'fee-limit':
             return <Translation id="TR_SUMMARY" />;
+        case 'rewards':
+            return <Translation id="TR_REWARD_TOKENS" />;
         default:
             return exhaustive(type);
     }
@@ -253,6 +263,7 @@ interface GetOutputLinesParams {
     device?: TrezorDevice;
     token?: ReviewOutput['token'];
     nativeToken?: TokenInfo;
+    rewards?: YieldClaimReward[];
     translationString: TranslationFunction;
     locale: Locale;
 }
@@ -268,6 +279,7 @@ const getOutputLines = ({
     device,
     token,
     nativeToken,
+    rewards,
     translationString,
     locale,
 }: GetOutputLinesParams): OutputElementLine[] => {
@@ -360,6 +372,16 @@ const getOutputLines = ({
                         },
                     ];
                 }
+            }
+
+            if (evmTxType === 'claim' && type === 'data') {
+                return [
+                    {
+                        id: 'data',
+                        type: 'default',
+                        value,
+                    },
+                ];
             }
 
             const translation = translationValues?.value;
@@ -510,6 +532,12 @@ const getOutputLines = ({
                     value: `${localizeNumber(value, locale)} SUN`,
                 },
             ];
+        case 'rewards':
+            return (rewards ?? []).map(reward => ({
+                id: `reward-${reward.tokenAddress}`,
+                value: reward.tokenSymbol || reward.tokenAddress,
+                type: 'default' as const,
+            }));
         default:
             return exhaustive(type);
     }
@@ -525,22 +553,24 @@ export type TransactionReviewOutputProps = {
     nativeToken?: TokenInfo;
 } & ReviewOutput;
 
-export const TransactionReviewOutput = ({
-    type,
-    state,
-    label,
-    value,
-    value2,
-    send,
-    receive,
-    token,
-    account,
-    stakeType,
-    isRbf,
-    isTrading,
-    evmTxType,
-    nativeToken,
-}: TransactionReviewOutputProps) => {
+export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => {
+    const {
+        type,
+        state,
+        label,
+        value,
+        value2,
+        send,
+        receive,
+        token,
+        account,
+        stakeType,
+        isRbf,
+        isTrading,
+        evmTxType,
+        nativeToken,
+    } = props;
+    const rewards = type === 'rewards' ? props.rewards : undefined;
     const { networkType, symbol } = account;
     const accounts = useSelector(selectAccounts);
     const device = useSelector(selectSelectedDevice);
@@ -555,7 +585,7 @@ export const TransactionReviewOutput = ({
     const outputTitle = getOutputTitle(
         type,
         networkType,
-        value,
+        value ?? '',
         isRbf,
         stakeType,
         evmTxType,
@@ -565,13 +595,14 @@ export const TransactionReviewOutput = ({
     const outputLines = getOutputLines({
         type,
         account,
-        value,
+        value: value ?? '',
         value2,
         label,
         stakeType,
         evmTxType,
         device,
         token,
+        rewards,
         translationString,
         nativeToken,
         locale,

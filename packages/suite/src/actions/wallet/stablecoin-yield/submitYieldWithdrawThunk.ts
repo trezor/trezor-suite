@@ -76,14 +76,12 @@ export const submitYieldWithdrawThunk = createThunk(
             const vaultName = flowData.vault.outputToken?.name ?? flowData.vault.metadata.name;
             const isSharesInput = withdrawInputUnit === 'shares';
             const reviewToken = isSharesInput ? flowData.receiptToken : flowData.token;
-            const reviewFlowType = isSharesInput ? 'redeem' : 'withdraw';
 
             const result = await sendYieldTransaction({
                 account,
                 amount,
                 token: reviewToken,
                 unsignedTransaction,
-                flowType: reviewFlowType,
                 vaultName,
                 dispatch,
                 getState,

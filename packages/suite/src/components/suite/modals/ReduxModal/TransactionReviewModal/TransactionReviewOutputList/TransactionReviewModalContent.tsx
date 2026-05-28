@@ -9,6 +9,7 @@ import {
     type Account,
     type FormState,
     type GeneralPrecomposedTransactionFinal,
+    type YieldClaimReward,
 } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputsOptional,
@@ -18,7 +19,6 @@ import {
     isRbfTransaction,
 } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -31,6 +31,8 @@ type TransactionReviewModalContentProps = {
     account: Account;
     precomposedTx: GeneralPrecomposedTransactionFinal;
     precomposedForm: FormState;
+    vaultName?: string;
+    availableRewards?: YieldClaimReward[];
     isSending: boolean;
     onTryAgain: (cancel: boolean) => void;
     reviewStep: number;
@@ -47,6 +49,8 @@ export const TransactionReviewModalContent = ({
     serializedTx,
     reviewStep,
     precomposedForm,
+    vaultName,
+    availableRewards,
     onTryAgain,
     isSending,
     hasTxReviewExpired,
@@ -78,12 +82,22 @@ export const TransactionReviewModalContent = ({
         () =>
             constructTransactionReviewOutputsOptional({
                 account,
+                availableRewards,
                 decreaseOutputId,
                 device,
                 precomposedForm,
                 precomposedTx,
+                vaultName,
             }),
-        [account, decreaseOutputId, device, precomposedForm, precomposedTx],
+        [
+            account,
+            availableRewards,
+            decreaseOutputId,
+            device,
+            precomposedForm,
+            precomposedTx,
+            vaultName,
+        ],
     );
 
     const stakeType = getStakeType(precomposedForm, outputs);
@@ -111,7 +125,7 @@ export const TransactionReviewModalContent = ({
     }
 
     return (
-        <Column gap={spacings.md}>
+        <Column gap={16}>
             <TransactionReviewOutputList
                 account={account}
                 precomposedTx={precomposedTx}

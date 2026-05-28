@@ -9,9 +9,11 @@ import {
     type StakeType,
 } from '@suite-common/wallet-types';
 import {
+    getEvmTransactionTextSignature,
     getIsUpdatedEthereumSendFlow,
     getIsUpdatedSendFlow,
     isEvmApprovalTx,
+    isEvmYieldTxByTextSignature,
     isTestnet,
 } from '@suite-common/wallet-utils';
 import type { TokenInfo } from '@trezor/blockchain-link-types';
@@ -50,6 +52,8 @@ const getLines = ({
     const isEthereum = networkType === 'ethereum';
     const isSolana = networkType === 'solana';
     const showAmountWithoutFee = isEthereum || isSolana;
+    const evmTxType = getEvmTransactionTextSignature(precomposedForm.transactionData);
+    const isYieldOrClaimOperation = isEvmYieldTxByTextSignature(evmTxType) || evmTxType === 'claim';
 
     const feeLabelId = ((network: NetworkType) => {
         switch (network) {
@@ -101,7 +105,7 @@ const getLines = ({
         const isFeeOnly =
             isUnknownStakingValue ||
             (isEvmApprovalTx(precomposedForm.transactionData) && isApprovalFlowSupported(device)) ||
-            !!precomposedForm.yieldMetadata;
+            isYieldOrClaimOperation;
 
         return isFeeOnly ? [feeLine] : [amountLine, feeLine];
     }
@@ -133,7 +137,7 @@ const getLines = ({
         type: 'amount',
     };
 
-    if (precomposedForm.yieldMetadata) {
+    if (isYieldOrClaimOperation) {
         return [
             totalLine,
             {

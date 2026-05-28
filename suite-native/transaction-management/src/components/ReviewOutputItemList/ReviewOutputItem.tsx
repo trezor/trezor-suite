@@ -117,6 +117,10 @@ export const ReviewOutputItem = ({
     tokenContract,
     flowType,
 }: ReviewOutputItemProps) => {
+    if (reviewOutput.type === 'rewards') {
+        return null;
+    }
+
     const { state, type, value, value2, token } = reviewOutput;
 
     const tradedSend = reviewOutput.type === 'traded_assets' ? reviewOutput.send : undefined;

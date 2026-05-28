@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import type { DeviceRootState } from '@suite-common/device';
-import { selectSelectedDevice } from '@suite-common/device';
 import { selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
 import type {
     FormState,
@@ -16,8 +15,8 @@ import type {
 import {
     findAccountsByAddress,
     getEvmTransactionTextSignature,
-    getIsUpdatedEthereumSendFlow,
     isEvmApprovalTx,
+    isEvmYieldTxByTextSignature,
 } from '@suite-common/wallet-utils';
 import { Column, H4 } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
@@ -81,11 +80,7 @@ export const TransactionReviewOutputList = ({
     const outputRefs = useRef<(HTMLDivElement | null)[]>([]);
     const totalOutputRef = useRef<HTMLDivElement | null>(null);
     const accounts = useSelector(state => state.wallet.accounts);
-    const device = useSelector(selectSelectedDevice);
     const { networkType, symbol } = account;
-    const isUpdatedEthereumSendFlow = device
-        ? getIsUpdatedEthereumSendFlow(device, networkType)
-        : false;
     const isMultirecipient = outputs.filter(({ type }) => type === 'address').length > 1;
     const isFirstOutputAddress = outputs[0]?.type === 'address';
 
@@ -107,6 +102,10 @@ export const TransactionReviewOutputList = ({
     const isStaking = stakeType;
 
     const isApprovalTx = isEvmApprovalTx(precomposedForm.transactionData);
+
+    const evmTxType = getEvmTransactionTextSignature(precomposedForm.transactionData);
+
+    const isYieldOperation = isEvmYieldTxByTextSignature(evmTxType) || evmTxType === 'claim';
 
     const isInternalTransfer =
         isFirstOutputAddress &&
@@ -138,6 +137,7 @@ export const TransactionReviewOutputList = ({
         !isApprovalTx &&
         !isTrading &&
         !isInternalTransfer &&
+        !isYieldOperation &&
         !signedTx
     ) {
         return (
@@ -182,13 +182,7 @@ export const TransactionReviewOutputList = ({
                                 isRbf={isRbfAction}
                                 isTrading={!!isTrading}
                                 stakeType={stakeType}
-                                evmTxType={
-                                    isUpdatedEthereumSendFlow && precomposedForm.yieldMetadata
-                                        ? precomposedForm.yieldMetadata.type
-                                        : getEvmTransactionTextSignature(
-                                              precomposedForm.transactionData,
-                                          )
-                                }
+                                evmTxType={evmTxType}
                                 nativeToken={nativeToken}
                             />
                         </Column>

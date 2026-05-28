@@ -5,7 +5,6 @@ import {
     type EvmSelectedFee,
     type FormState,
     type PrecomposedTransactionFinal,
-    type YieldFormMetadata,
 } from '@suite-common/wallet-types';
 import {
     asAmountUnit,
@@ -32,9 +31,7 @@ type BuildStablecoinYieldReviewTokenParams = {
 
 type BuildStablecoinYieldReviewStateParams = BuildStablecoinYieldReviewTokenParams & {
     amount: string;
-    flowType: YieldFormMetadata['type'];
     tx: StablecoinYieldParsedTransactionForSigning;
-    vaultName: string;
 };
 
 type BuildStablecoinYieldReviewStateResult = {
@@ -127,8 +124,6 @@ export const buildStablecoinYieldReviewState = ({
     amount,
     token,
     symbol,
-    flowType,
-    vaultName,
 }: BuildStablecoinYieldReviewStateParams): BuildStablecoinYieldReviewStateResult => {
     const gasPriceHex = tx.maxFeePerGas ?? tx.gasPrice ?? ('0x0' as `0x${string}`);
     const gasLimit = evmHexToBigNumber(tx.gasLimit);
@@ -172,7 +167,6 @@ export const buildStablecoinYieldReviewState = ({
         isCoinControlEnabled: false,
         hasCoinControlBeenOpened: false,
         selectedUtxos: [],
-        yieldMetadata: { type: flowType, vaultName },
     };
 
     const precomposedTransaction: PrecomposedTransactionFinal = {

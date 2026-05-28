@@ -18,6 +18,7 @@ import {
     type GeneralPrecomposedTransactionFinal,
     type ReviewOutput,
     type StakeType,
+    type YieldClaimReward,
 } from '@suite-common/wallet-types';
 import {
     getStakeType,
@@ -80,6 +81,8 @@ export type TransactionReviewModalBodyInnerProps = {
     tryAgainSignTx: () => void;
     cancelSignTx: () => void;
     precomposedForm: FormState;
+    vaultName?: string;
+    availableRewards?: YieldClaimReward[];
     precomposedTx: GeneralPrecomposedTransactionFinal;
     isSending: boolean;
     setIsSending: (value: boolean) => void;
@@ -98,6 +101,8 @@ export const TransactionReviewModalBodyInner = ({
     isRbfConfirmedError,
     cancelSignTx,
     precomposedForm,
+    vaultName,
+    availableRewards,
     isSending,
     setIsSending,
     hasTxReviewExpired,
@@ -294,6 +299,8 @@ export const TransactionReviewModalBodyInner = ({
                     account={account}
                     precomposedTx={precomposedTx}
                     precomposedForm={precomposedForm}
+                    vaultName={vaultName}
+                    availableRewards={availableRewards}
                     serializedTx={serializedTx}
                     isSending={isSending}
                     reviewStep={reviewStep}

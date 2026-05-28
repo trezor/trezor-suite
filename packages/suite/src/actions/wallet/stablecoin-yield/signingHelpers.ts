@@ -12,7 +12,6 @@ import {
     type Account,
     AddressDisplayOptions,
     type EvmSelectedFee,
-    type YieldFormMetadata,
 } from '@suite-common/wallet-types';
 import { getAccountIdentity, getMevProtectedTxData } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
@@ -24,7 +23,6 @@ export type SendYieldTransactionParams = {
     amount: string;
     token: YieldFlowDisplayToken;
     unsignedTransaction: string;
-    flowType: YieldFormMetadata['type'];
     vaultName: string;
     dispatch: Dispatch;
     getState: () => AppState;
@@ -36,7 +34,6 @@ export const sendYieldTransaction = async ({
     amount,
     token,
     unsignedTransaction,
-    flowType,
     vaultName,
     dispatch,
     getState,
@@ -59,8 +56,6 @@ export const sendYieldTransaction = async ({
         amount,
         token,
         symbol: account.symbol,
-        flowType,
-        vaultName,
     });
 
     const { transactionForSigning, formState, precomposedTransaction } = transactionReview;
@@ -69,6 +64,7 @@ export const sendYieldTransaction = async ({
         stablecoinYieldActions.storePrecomposedTransaction({
             precomposedTx: precomposedTransaction,
             precomposedForm: formState,
+            vaultName,
             accountKey: account.key,
         }),
     );

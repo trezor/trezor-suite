@@ -6,6 +6,7 @@ import { preserveModalOnTxTimeout } from '@suite/modal';
 import { selectRouterUrl } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { selectStablecoinYieldTxReview } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputsOptional,
@@ -43,6 +44,11 @@ export const TransactionReviewModalBody = ({
     const dispatch = useDispatch();
     const account = useSelector(selectAccountIncludingChosenInTrading);
     const device = useSelector(selectSelectedDevice);
+    const yieldTxReview = useSelector(selectStablecoinYieldTxReview);
+
+    const isYield = Boolean(yieldTxReview.precomposedTx);
+    const vaultName = isYield ? yieldTxReview.vaultName : undefined;
+    const availableRewards = isYield ? yieldTxReview.availableRewards : undefined;
     const [isSending, setIsSending] = useState(false);
     const { precomposedTx, serializedTx } = txInfoState;
     const [hasTxReviewExpired, setHasTxReviewExpired] = useState(false);
@@ -100,8 +106,10 @@ export const TransactionReviewModalBody = ({
         account,
         decreaseOutputId,
         device,
+        availableRewards,
         precomposedForm,
         precomposedTx,
+        vaultName,
     });
 
     const handleTryAgain = useCallback(
@@ -142,6 +150,8 @@ export const TransactionReviewModalBody = ({
             tryAgainSignTx={tryAgainSignTx}
             cancelSignTx={cancelSignTx}
             precomposedForm={precomposedForm}
+            vaultName={vaultName}
+            availableRewards={availableRewards}
             precomposedTx={precomposedTx}
             isSending={isSending}
             setIsSending={setIsSending}

@@ -133,7 +133,6 @@ export const submitYieldDepositThunk = createThunk(
                 amount,
                 token: flowData.token,
                 unsignedTransaction: actionTransaction.unsignedTransaction,
-                flowType,
                 vaultName,
                 dispatch,
                 getState,
