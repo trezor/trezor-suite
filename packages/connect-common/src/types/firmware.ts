@@ -34,7 +34,8 @@ export type FirmwareCapability =
     | 'slip24'
     | 'evolu'
     | 'monero'
-    | 'telemetry';
+    | 'telemetry'
+    | 'evmClearSigning';
 
 type RuleSelector = RequireAtLeastOne<{
     coin: Lowercase<string>[];

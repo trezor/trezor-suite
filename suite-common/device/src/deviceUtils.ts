@@ -37,6 +37,9 @@ export const shouldDeviceBeRemembered = ({
 export const isApprovalFlowSupported = (device: TrezorDevice | undefined) =>
     !device?.unavailableCapabilities?.['evmApproval'];
 
+export const isEvmClearSigningSupported = (device: TrezorDevice | undefined) =>
+    !device?.unavailableCapabilities?.['evmClearSigning'];
+
 export const isStablecoinYieldSupported = (device: TrezorDevice | undefined) => {
     if (device?.features?.internal_model === DeviceModelInternal.T1B1) {
         return true;
