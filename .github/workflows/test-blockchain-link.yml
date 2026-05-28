@@ -39,7 +39,7 @@ jobs:
           mode: firewall-free
           job-summary: errors
       - name: Install dependencies
-        run: sfw --silent yarn --immutable
+        run: sfw yarn --immutable
 
       - name: Build dependencies
         run: yarn build:libs

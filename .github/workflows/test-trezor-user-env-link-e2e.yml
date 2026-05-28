@@ -40,7 +40,7 @@ jobs:
       - name: Install dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          sfw --silent yarn workspaces focus @trezor/trezor-user-env-link
+          sfw yarn workspaces focus @trezor/trezor-user-env-link
 
       - name: Run e2e tests
         run: |

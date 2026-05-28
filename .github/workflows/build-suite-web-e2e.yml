@@ -56,7 +56,7 @@ jobs:
         shell: bash
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          sfw --silent yarn workspaces focus @trezor/suite-web @trezor/suite-data @trezor/suite-build
+          sfw yarn workspaces focus @trezor/suite-web @trezor/suite-data @trezor/suite-build
 
       - name: Build Suite Web
         shell: bash

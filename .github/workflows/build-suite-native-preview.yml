@@ -55,7 +55,7 @@ jobs:
           job-summary: errors
       - name: Install libs
         run: |
-          sfw --silent yarn workspaces focus @suite-native/app
+          sfw yarn workspaces focus @suite-native/app
 
       - name: Check runtimeVersion builds
         run: |

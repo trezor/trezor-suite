@@ -43,7 +43,7 @@ jobs:
           mode: firewall-free
           job-summary: errors
       - name: Install dependencies
-        run: sfw --silent yarn install
+        run: sfw yarn install
 
       - name: Set source branch
         run: echo "SOURCE_BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV

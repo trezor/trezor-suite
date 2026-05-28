@@ -41,7 +41,7 @@ jobs:
           IS_CODESIGN_BUILD: ${{ env.RELEASE_ENV == 'production' && 'true' || 'false' }}
           JWS_PRIVATE_KEY_ENV: ${{ secrets.JWS_PRIVATE_KEY_ENV }}
         run: |
-          sfw --silent yarn install
+          sfw yarn install
           yarn message-system-sign-config
 
       - name: Upload ${{ env.RELEASE_ENV }}  message-system config file

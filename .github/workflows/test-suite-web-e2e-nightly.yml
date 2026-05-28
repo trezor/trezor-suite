@@ -114,7 +114,7 @@ jobs:
           mode: firewall-free
           job-summary: errors
       - name: Install dependencies
-        run: sfw --silent yarn workspaces focus @trezor/e2e-utils
+        run: sfw yarn workspaces focus @trezor/e2e-utils
 
       - name: Download per-test coverage map artifacts
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8

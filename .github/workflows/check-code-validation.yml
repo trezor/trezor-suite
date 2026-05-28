@@ -42,7 +42,7 @@ jobs:
       # We can skip the build for all dependencies, even for those whitelisted, because this process is used only to validate the yarn.lock file and populate the cache.
       - name: Install deps
         run: |
-          sfw --silent yarn --immutable --mode=skip-build
+          sfw yarn --immutable --mode=skip-build
 
   type-check:
     name: Type Checking
@@ -176,7 +176,7 @@ jobs:
           mode: firewall-free
           job-summary: errors
       - name: Yarn Dedupe check
-        run: sfw --silent yarn dedupe --check
+        run: sfw yarn dedupe --check
       - name: Check dependency domain lists
         run: ./scripts/ci/list-missing-dependencies.sh
       - name: Verify Workspace Resolutions

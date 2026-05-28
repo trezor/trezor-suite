@@ -37,4 +37,4 @@ runs:
 
     - name: Install dependencies using Yarn
       shell: bash
-      run: sfw --silent yarn --immutable
+      run: sfw yarn --immutable

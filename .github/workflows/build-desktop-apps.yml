@@ -48,7 +48,7 @@ jobs:
           job-summary: errors
       - name: Install deps and build libs
         run: |
-          sfw --silent yarn install --immutable
+          sfw yarn install --immutable
           yarn message-system-sign-config
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/transport-bridge build:lib
@@ -100,7 +100,7 @@ jobs:
           job-summary: errors
       - name: Install deps and build libs
         run: |
-          sfw --silent yarn install --immutable
+          sfw yarn install --immutable
           yarn message-system-sign-config
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/transport-bridge build:lib
@@ -160,7 +160,7 @@ jobs:
           job-summary: errors
       - name: Install deps and build libs
         run: |
-          sfw --silent yarn install --immutable
+          sfw yarn install --immutable
           yarn message-system-sign-config
 
       - name: Build libs

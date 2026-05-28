@@ -47,7 +47,7 @@ jobs:
           job-summary: errors
       - name: Install dependencies
         run: |
-          sfw --silent yarn workspaces focus @trezor/transport-test
+          sfw yarn workspaces focus @trezor/transport-test
 
       - name: Setup containers
         run: |
@@ -90,7 +90,7 @@ jobs:
       - name: Install dependencies
         shell: bash
         run: |
-          sfw --silent yarn workspaces focus @trezor/transport -A
+          sfw yarn workspaces focus @trezor/transport -A
 
       - name: Build transport tester
         run: |

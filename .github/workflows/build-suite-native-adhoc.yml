@@ -45,7 +45,7 @@ jobs:
           job-summary: errors
       - name: Install libs
         run: |
-          sfw --silent yarn workspaces focus @suite-native/app
+          sfw yarn workspaces focus @suite-native/app
       - name: Trigger adhoc build Android
         working-directory: suite-native/app
         if: ${{ github.event.inputs.PLATFORM == 'android' || github.event.inputs.PLATFORM == 'all' }}

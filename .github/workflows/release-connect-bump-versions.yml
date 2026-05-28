@@ -49,7 +49,7 @@ jobs:
           mode: firewall-free
           job-summary: errors
       - name: Install dependencies
-        run: sfw --silent yarn install
+        run: sfw yarn install
 
       # The script connect-bump-versions.ts needs to build packages so dependencies are required.
       - name: Build dependencies
