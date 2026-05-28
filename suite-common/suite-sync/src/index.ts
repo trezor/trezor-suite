@@ -12,7 +12,11 @@ export {
 export type { WithSuiteSyncAndDeviceState, WithSuiteSyncState } from './suiteSyncSelectors';
 export type { SuiteSyncInteraction } from './suiteSyncTypes';
 export { createSuiteSyncCompositionRoot } from './createSuiteSyncCompositionRoot';
-export type { SuiteSyncAnalytics, SuiteSyncAnalyticsDep } from './createSuiteSyncCompositionRoot';
+export type {
+    SuiteSyncAnalytics,
+    SuiteSyncAnalyticsDep,
+    SuiteSyncCompositionRootState,
+} from './createSuiteSyncCompositionRoot';
 export {
     suiteSyncSlice,
     suiteSyncReducer,

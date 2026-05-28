@@ -8,6 +8,7 @@ import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import {
     type SuiteSyncAnalyticsDep,
     type SuiteSyncAsyncErrorHandlerDep,
+    type SuiteSyncCompositionRootState,
     createSuiteSyncCompositionRoot,
 } from '@suite-common/suite-sync';
 import {
@@ -21,7 +22,7 @@ import { type SuiteSync } from '@suite-common/suite-sync-types';
 import { type TrezorConnect } from '@trezor/connect';
 
 type SuiteSyncNativeCompositionRootDeps = {
-    getState: () => any;
+    getState: () => SuiteSyncCompositionRootState;
     dispatch: Dispatch;
     trezorConnect: TrezorConnect;
 } & SuiteSyncAnalyticsDep &

@@ -7,6 +7,7 @@ import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-iden
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import {
     type SuiteSyncAsyncErrorHandlerDep,
+    type SuiteSyncCompositionRootState,
     createSuiteSyncCompositionRoot,
 } from '@suite-common/suite-sync';
 import {
@@ -23,7 +24,7 @@ import { createOnSharedWorkerUnsupported } from './createOnSharedWorkerUnsupport
 import { createTurnOnDesktopSuiteSync } from './turnOnDesktopSuiteSync';
 
 type SuiteSyncDesktopCompositionRootDeps = {
-    getState: () => any;
+    getState: () => SuiteSyncCompositionRootState;
     dispatch: Dispatch;
     trezorConnect: TrezorConnect;
 } & PlatformEncryptionDep &

@@ -77,12 +77,14 @@ export type SubscribeSuiteSyncInternalErrorHandlerDep = {
     subscribeError: SubscribeSuiteSyncInternalErrorHandler;
 };
 
+export type SuiteSyncCompositionRootState = WithSuiteSyncAndDeviceState &
+    WithSuiteSyncQuotaManagerState &
+    MessageSystemRootState &
+    AccountsRootState &
+    SuiteSyncDataRootState;
+
 type CreateSuiteSyncCompositionRootDeps = {
-    getState: () => WithSuiteSyncAndDeviceState &
-        WithSuiteSyncQuotaManagerState &
-        MessageSystemRootState &
-        AccountsRootState &
-        SuiteSyncDataRootState;
+    getState: () => SuiteSyncCompositionRootState;
     dispatch: Dispatch;
     subscribeError: SubscribeSuiteSyncInternalErrorHandler;
     trezorConnect: Pick<typeof TrezorConnect, 'evoluGetNode' | 'evoluSignRegistrationRequest'>;
