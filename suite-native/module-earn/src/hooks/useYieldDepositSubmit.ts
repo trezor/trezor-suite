@@ -13,7 +13,6 @@ import { buildYieldDepositFeePreview } from '../yieldDepositFeeUtils';
 type UseYieldDepositSubmitParams = Pick<ResolvedYieldFlowData, 'flowData' | 'flowKey'> & {
     amount: string | undefined;
     onActionReady: (preparedAction: PreparedYieldDepositAction) => void;
-    onApprovalRequired: () => void;
     preparedAction: PreparedYieldDepositAction | null;
 };
 
@@ -22,7 +21,6 @@ export const useYieldDepositSubmit = ({
     flowData,
     flowKey,
     onActionReady,
-    onApprovalRequired,
     preparedAction,
 }: UseYieldDepositSubmitParams) => {
     const dispatch = useDispatch();
@@ -78,29 +76,7 @@ export const useYieldDepositSubmit = ({
 
             return;
         }
-
-        if (response.payload.type === 'revoke-required') {
-            // TODO: Better handling, revoke is not supported on mobile.
-            showYieldAlert({
-                title: 'earn.yieldDepositFlowScreen.alerts.approvalResetNotSupported.title',
-                description:
-                    'earn.yieldDepositFlowScreen.alerts.approvalResetNotSupported.description',
-            });
-
-            return;
-        }
-
-        onApprovalRequired();
-    }, [
-        amount,
-        dispatch,
-        flowData,
-        flowKey,
-        onActionReady,
-        onApprovalRequired,
-        preparedAction,
-        showYieldAlert,
-    ]);
+    }, [amount, dispatch, flowData, flowKey, onActionReady, preparedAction, showYieldAlert]);
 
     return { handleSubmitDeposit };
 };

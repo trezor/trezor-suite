@@ -6,6 +6,7 @@ import { isFulfilled } from '@reduxjs/toolkit';
 
 import {
     type StablecoinYieldRootState,
+    getYieldApprovalAction,
     initYieldAllowanceThunk,
     selectStablecoinYieldSession,
     stablecoinYieldActions,
@@ -21,8 +22,7 @@ import {
 import { type ResolvedYieldFlowData } from './useResolvedYieldFlowData';
 import { useShowYieldAlert } from './useShowYieldAlert';
 import { type YieldApprovalLimitType } from '../types';
-import { prepareYieldApprovalReviewTransactionThunk } from '../yieldApprovalThunks';
-import { isYieldApprovalAllowanceEnough } from '../yieldApprovalUtils';
+import { prepareYieldAllowanceReviewTransactionThunk } from '../yieldApprovalThunks';
 
 type NavigationProps = StackNavigationProps<
     YieldStackParamList,
@@ -32,18 +32,6 @@ type NavigationProps = StackNavigationProps<
 type UseYieldDepositApprovalSubmitParams = Pick<ResolvedYieldFlowData, 'flowData' | 'flowKey'> & {
     approvalLimitType: YieldApprovalLimitType;
     routeParams: YieldFlowParams;
-};
-
-type YieldDepositSessionParams = {
-    flowType: 'deposit';
-    flowKey: string;
-};
-
-type CheckIsAllowanceEnoughParams = {
-    amount: string;
-    resolvedFlowData: NonNullable<ResolvedYieldFlowData['flowData']>;
-    resolvedFlowKey: string;
-    sessionParams: YieldDepositSessionParams;
 };
 
 export const useYieldDepositApprovalSubmit = ({
@@ -58,44 +46,6 @@ export const useYieldDepositApprovalSubmit = ({
     const showYieldAlert = useShowYieldAlert();
     const [isCheckingApproval, setIsCheckingApproval] = useState(false);
 
-    const checkIsAllowanceEnough = useCallback(
-        async ({
-            amount,
-            resolvedFlowData,
-            resolvedFlowKey,
-            sessionParams,
-        }: CheckIsAllowanceEnoughParams) => {
-            let sessionWithAllowance = selectStablecoinYieldSession(
-                store.getState(),
-                'deposit',
-                resolvedFlowKey,
-            );
-
-            if (sessionWithAllowance.approval.allowanceStatus !== 'loaded') {
-                await dispatch(
-                    initYieldAllowanceThunk({
-                        ...sessionParams,
-                        flowData: resolvedFlowData,
-                        shouldSkipApprovalStep: false,
-                    }),
-                );
-
-                sessionWithAllowance = selectStablecoinYieldSession(
-                    store.getState(),
-                    'deposit',
-                    resolvedFlowKey,
-                );
-            }
-
-            return isYieldApprovalAllowanceEnough({
-                amount,
-                session: sessionWithAllowance,
-                token: resolvedFlowData.token,
-            });
-        },
-        [dispatch, store],
-    );
-
     const handleSubmitApproval = useCallback(
         async (amount: string) => {
             if (isCheckingApproval || !flowData || !flowKey) {
@@ -107,17 +57,51 @@ export const useYieldDepositApprovalSubmit = ({
             setIsCheckingApproval(true);
 
             try {
-                const isAllowanceEnough = await checkIsAllowanceEnough({
-                    amount,
-                    resolvedFlowData: flowData,
-                    resolvedFlowKey: flowKey,
-                    sessionParams,
+                let sessionWithAllowance = selectStablecoinYieldSession(
+                    store.getState(),
+                    'deposit',
+                    flowKey,
+                );
+
+                if (sessionWithAllowance.approval.allowanceStatus !== 'loaded') {
+                    await dispatch(
+                        initYieldAllowanceThunk({
+                            ...sessionParams,
+                            flowData,
+                            shouldSkipApprovalStep: false,
+                        }),
+                    );
+
+                    sessionWithAllowance = selectStablecoinYieldSession(
+                        store.getState(),
+                        'deposit',
+                        flowKey,
+                    );
+                }
+
+                const approvalAction = getYieldApprovalAction({
+                    liveAmount: amount,
+                    allowanceAmount: sessionWithAllowance.approval.allowanceAmount,
+                    isModifyMode: true,
+                    isRevokeRequired: sessionWithAllowance.approval.isRevokeRequired,
+                    tokenContractAddress: flowData.token.contractAddress,
                 });
 
-                if (isAllowanceEnough) {
+                if (approvalAction === 'continue') {
                     dispatch(stablecoinYieldActions.clearError(sessionParams));
                     dispatch(stablecoinYieldActions.completeApproval({ ...sessionParams, amount }));
                     navigation.navigate(YieldStackRoutes.YieldDeposit, routeParams);
+
+                    return;
+                }
+
+                if (approvalAction === 'revoke') {
+                    dispatch(stablecoinYieldActions.enterModifyMode({ ...sessionParams, amount }));
+                    navigation.navigate(YieldStackRoutes.YieldDepositRevoke, {
+                        ...routeParams,
+                        amount,
+                        shouldShowLowLimitWarning: true,
+                    });
 
                     return;
                 }
@@ -161,11 +145,12 @@ export const useYieldDepositApprovalSubmit = ({
                 }
 
                 const reviewTransactionResponse = await dispatch(
-                    prepareYieldApprovalReviewTransactionThunk({
+                    prepareYieldAllowanceReviewTransactionThunk({
                         amount,
                         approvalLimitType,
                         flowData,
                         flowKey,
+                        transactionType: 'approve',
                         tokenContract: routeParams.tokenContract,
                     }),
                 );
@@ -191,7 +176,6 @@ export const useYieldDepositApprovalSubmit = ({
         },
         [
             approvalLimitType,
-            checkIsAllowanceEnough,
             dispatch,
             flowData,
             flowKey,

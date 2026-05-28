@@ -30,12 +30,16 @@ import { useYieldApprovalReviewNavigation } from './useYieldApprovalReviewNaviga
 import { useYieldApprovalReviewTransaction } from './useYieldApprovalReviewTransaction';
 import { type YieldApprovalLimitType } from '../types';
 import { handleEarnReviewError } from '../utils';
-import { getYieldApprovalFormDraftKey } from '../yieldApprovalThunks';
+import {
+    type YieldAllowanceFormDraftTransactionType,
+    getYieldAllowanceFormDraftKey,
+} from '../yieldApprovalThunks';
 
 type UseYieldApprovalReviewParams = {
-    approvalLimitType: YieldApprovalLimitType;
+    approvalLimitType?: YieldApprovalLimitType;
     flowData: YieldFlowResolvedData;
     flowKey: string;
+    transactionType: YieldAllowanceFormDraftTransactionType;
 };
 
 type UseYieldApprovalReviewResult = {
@@ -51,7 +55,7 @@ type UseYieldApprovalReviewResult = {
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     YieldStackParamList,
-    YieldStackRoutes.YieldDepositApprovalReview,
+    YieldStackRoutes.YieldDepositApprovalReview | YieldStackRoutes.YieldDepositRevokeReview,
     RootStackParamList
 >;
 
@@ -59,13 +63,18 @@ export const useYieldApprovalReview = ({
     approvalLimitType,
     flowData,
     flowKey,
+    transactionType,
 }: UseYieldApprovalReviewParams): UseYieldApprovalReviewResult => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
     const showDeviceDisconnectedAlert = useShowDeviceDisconnectedDuringEarnReviewAlert();
+    const reviewAlertType = transactionType === 'revoke' ? 'yield-revoke' : 'yield-approval';
     const { showPendingTransactionConflictAlert, showPushTransactionFailedAlert } =
-        useShowPushTransactionFailedDuringReviewAlert('yield-approval');
-    const formDraftKey = useMemo(() => getYieldApprovalFormDraftKey(flowKey), [flowKey]);
+        useShowPushTransactionFailedDuringReviewAlert(reviewAlertType);
+    const formDraftKey = useMemo(
+        () => getYieldAllowanceFormDraftKey(flowKey, transactionType),
+        [flowKey, transactionType],
+    );
     const [isSigningApproval, setIsSigningApproval] = useState(false);
     const [isSendingApproval, setIsSendingApproval] = useState(false);
 
@@ -191,7 +200,8 @@ export const useYieldApprovalReview = ({
                 txid,
                 fee: reviewTransaction?.precomposedTransaction.fee,
                 submittedAt,
-                isAmountUnlimited: approvalLimitType === 'unlimited',
+                isAmountUnlimited:
+                    transactionType === 'approve' && approvalLimitType === 'unlimited',
             }),
         );
         dispatch(formDraftActions.removeDraft({ key: formDraftKey }));
@@ -212,6 +222,7 @@ export const useYieldApprovalReview = ({
         showDeviceDisconnectedAlert,
         showPendingTransactionConflictAlert,
         showPushTransactionFailedAlert,
+        transactionType,
     ]);
 
     return {

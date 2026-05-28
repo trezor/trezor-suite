@@ -13,6 +13,7 @@ import { YieldDepositApprovalScreen } from '../screens/YieldDepositApprovalScree
 import { YieldDepositApprovalTransactionDataReviewScreen } from '../screens/YieldDepositApprovalTransactionDataReviewScreen';
 import { YieldDepositCompleteScreen } from '../screens/YieldDepositCompleteScreen';
 import { YieldDepositReviewScreen } from '../screens/YieldDepositReviewScreen';
+import { YieldDepositRevokeScreen } from '../screens/YieldDepositRevokeScreen';
 import { YieldDepositScreen } from '../screens/YieldDepositScreen';
 
 const YieldStack = createNativeStackNavigator<YieldStackParamList>();
@@ -46,8 +47,18 @@ export const YieldStackNavigator = () => {
                 component={YieldDepositScreen}
             />
             <YieldStack.Screen
+                options={{ title: YieldStackRoutes.YieldDepositRevoke }}
+                name={YieldStackRoutes.YieldDepositRevoke}
+                component={YieldDepositRevokeScreen}
+            />
+            <YieldStack.Screen
                 options={{ title: YieldStackRoutes.YieldDepositApprovalReview }}
                 name={YieldStackRoutes.YieldDepositApprovalReview}
+                component={YieldDepositApprovalTransactionDataReviewScreen}
+            />
+            <YieldStack.Screen
+                options={{ title: YieldStackRoutes.YieldDepositRevokeReview }}
+                name={YieldStackRoutes.YieldDepositRevokeReview}
                 component={YieldDepositApprovalTransactionDataReviewScreen}
             />
             <YieldStack.Screen
