@@ -363,9 +363,14 @@ describe('createConnectService.createWallet', () => {
                     seen.push(`error:${error.message}`);
                     break;
                 }
+                case SUBPROCESS_TYPE.REQUEST_CONFIRMATION: {
+                    seen.push('confirmation');
+                    break;
+                }
                 default: {
-                    const _exhaustive: never = subprocess;
-                    void _exhaustive;
+                    // Remaining UiNotificationSubProcess events — observation
+                    // only, just record the discriminant for completeness.
+                    seen.push(`notification:${subprocess.type}`);
                 }
             }
         }

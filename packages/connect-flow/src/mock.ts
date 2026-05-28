@@ -10,9 +10,20 @@ import type {
     UiResponseEvent,
 } from './trezorConnectLike';
 
+// Test helper input — structurally compatible with the real UI event shape but
+// loosened so tests can pass plain `device: { path: 'p1' }` without the
+// `DeviceUniquePath` brand cast. Internally we hand it off to listeners as
+// the strict UiEventMessage | PopupEventMessage they expect.
+type MockEmitEvent = {
+    type: string;
+    payload?: any;
+    requestId?: string;
+    callId?: string;
+};
+
 export interface TrezorConnectMock extends TrezorConnectLike {
     /** Emit a UI event to all listeners. Test helper. */
-    emit: (event: UiEventMessage | PopupEventMessage) => void;
+    emit: (event: MockEmitEvent) => void;
     resolveGetDeviceState: (payload: { state: string }) => void;
     rejectGetDeviceState: (error: string) => void;
     resolveGetAddress: (payload: GetAddressResult) => void;
@@ -60,7 +71,7 @@ export const createTrezorConnectMock = (): TrezorConnectMock => {
             });
         },
         emit: event => {
-            listeners.forEach(l => l(event));
+            listeners.forEach(l => l(event as UiEventMessage | PopupEventMessage));
         },
         resolveGetDeviceState: payload => {
             if (!pendingDeviceState) throw new Error('No pending getDeviceState call');

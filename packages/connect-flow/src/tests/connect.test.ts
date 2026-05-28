@@ -55,7 +55,7 @@ describe('createConnect', () => {
         const p1 = iter.next();
         mock.emit({
             type: 'ui-request_pin',
-            payload: { device: { path: 'p1' }, type: 'Current' },
+            payload: { device: { path: 'p1' }, type: 'PinMatrixRequestType_Current' },
             callId: proc.id,
             requestId: 'req-1',
         });
@@ -114,7 +114,7 @@ describe('createConnect', () => {
         const pending = iter.next();
         mock.emit({
             type: 'ui-request_pin',
-            payload: { device: { path: 'p1' }, type: 'Current' },
+            payload: { device: { path: 'p1' }, type: 'PinMatrixRequestType_Current' },
             callId: 'some-other-call',
             requestId: 'noise',
         });

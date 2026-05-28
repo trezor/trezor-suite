@@ -61,6 +61,11 @@ const mapEventToSubProcess = <TResult>(
                     });
                 },
             };
+        case UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE:
+            return {
+                ...base,
+                type: SUBPROCESS_TYPE.REQUEST_PASSPHRASE_ON_DEVICE,
+            };
         case UI_REQUEST.REQUEST_PIN:
             return {
                 ...base,
@@ -72,6 +77,12 @@ const mapEventToSubProcess = <TResult>(
                         requestId: event.requestId,
                     });
                 },
+            };
+        case UI_REQUEST.REQUEST_BUTTON:
+            return {
+                ...base,
+                type: SUBPROCESS_TYPE.REQUEST_BUTTON,
+                code: event.payload.code,
             };
         case UI_REQUEST.REQUEST_CONFIRMATION:
             return {
