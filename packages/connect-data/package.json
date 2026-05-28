@@ -37,7 +37,7 @@
         }
     },
     "scripts": {
-        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "validate-releases.json": "./scripts/check-all-firmware-revisions.sh",
         "depcheck": "yarn g:depcheck",

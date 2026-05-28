@@ -20,7 +20,7 @@
         "CHANGELOG.md"
     ],
     "scripts": {
-        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "test:unit": "yarn g:jest",

@@ -36,7 +36,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "devDependencies": {
