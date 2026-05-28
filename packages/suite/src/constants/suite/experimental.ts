@@ -89,10 +89,6 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
         },
         isDisabled: () => experimentalNetworks.length === 0,
     },
-    'tron-view-only': {
-        title: { id: 'TR_EXPERIMENTAL_TRON_VIEW_ONLY' },
-        description: { id: 'TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION' },
-    },
     'mcp-server': {
         title: { id: 'TR_EXPERIMENTAL_MCP_SERVER' },
         description: { id: 'TR_EXPERIMENTAL_MCP_SERVER_DESCRIPTION' },

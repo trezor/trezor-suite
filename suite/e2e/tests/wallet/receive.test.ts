@@ -11,11 +11,8 @@ test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
             permissions: ['clipboard-read', 'clipboard-write'],
         },
     });
-    test.beforeEach(async ({ onboardingPage, settingsPage, page }) => {
+    test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.navigateTo('application');
-        await settingsPage.experimentalFeaturesSwitch.click();
-        await page.getByTestId('@settings/experimental-features/tron-view-only-checkbox').click();
     });
 
     const testCases: Array<{

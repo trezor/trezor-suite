@@ -5477,15 +5477,6 @@ export const messages = defineMessages({
         id: 'TR_TRON_TX_UNDELEGATE_RESOURCE',
         defaultMessage: 'Undelegate resource',
     },
-    TR_EXPERIMENTAL_TRON_VIEW_ONLY: {
-        id: 'TR_EXPERIMENTAL_TRON_VIEW_ONLY',
-        defaultMessage: 'Tron (Beta)',
-    },
-    TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION: {
-        id: 'TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION',
-        defaultMessage:
-            'Enable the Tron Network with the latest firmware to check your balance, send and receive TRX and tokens, view charts and transaction history, and use WalletConnect. Full support, including freezing and voting, is coming soon.',
-    },
     TR_EXPERIMENTAL_GAP_LIMIT: {
         id: 'TR_EXPERIMENTAL_GAP_LIMIT',
         defaultMessage: 'Gap limit',

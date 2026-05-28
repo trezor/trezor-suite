@@ -11,7 +11,6 @@ export type ExperimentalFeature =
     | 'nft-section'
     | 'slip24'
     | 'experimental-networks'
-    | 'tron-view-only'
     | 'mcp-server'
     | 'gap-limit';
 
@@ -27,7 +26,6 @@ export const experimentalFeatureSet: ReadonlySet<ExperimentalFeature> =
         'nft-section',
         'slip24',
         'experimental-networks',
-        'tron-view-only',
     ]);
 
 /**
@@ -40,7 +38,6 @@ export const translatedExperimentalFeatures: ExperimentalFeatureTranslation = {
     'password-manager': 'TR_EXPERIMENTAL_PASSWORD_MANAGER',
     'testnet-networks': 'TR_EXPERIMENTAL_TESTNET_NETWORKS',
     slip24: 'TR_EXPERIMENTAL_SLIP24',
-    'tron-view-only': 'TR_EXPERIMENTAL_TRON_VIEW_ONLY',
     'mcp-server': 'TR_EXPERIMENTAL_MCP_SERVER',
     'gap-limit': 'TR_EXPERIMENTAL_GAP_LIMIT',
 };
