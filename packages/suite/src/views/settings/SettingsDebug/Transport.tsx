@@ -13,6 +13,7 @@ import { type ArrayElement } from '@trezor/type-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectActiveTransports } from 'src/selectors/suite/suiteSelectors';
+import { getConnectSettingsTransports } from 'src/support/debugTransports';
 
 type Transport = ArrayElement<NonNullable<DebugModeOptions['transports']>>;
 
@@ -85,7 +86,9 @@ export const Transport = () => {
                                         transports: nextTransports,
                                     }),
                                 );
-                                TrezorConnect.updateConnectSettings({ transports: nextTransports });
+                                TrezorConnect.updateConnectSettings({
+                                    transports: getConnectSettingsTransports(nextTransports),
+                                });
                             }}
                         />
                     </ActionColumn>

@@ -23,8 +23,11 @@ import { type NativeServices } from '@suite-native/services';
 import type { EnsureEncryptionKeyDep, MMKVStorageDep } from '@suite-native/storage';
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native/suite-sync';
 import { selectTradingEnvironment } from '@suite-native/trading-state';
-import TrezorConnect from '@trezor/connect';
-import { BridgeTransport } from '@trezor/transport';
+import TrezorConnect, { type ConnectSettings } from '@trezor/connect';
+// Deep import bypasses the `@trezor/transport` barrel so Metro does not
+// resolve sibling node-only modules (`UdpTransport`/`dgram`,
+// `NodeUsbTransport`/`usb`).
+import { BridgeTransport } from '@trezor/transport/src/transports/bridge';
 import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';
 import { ok } from '@trezor/type-utils';
@@ -39,7 +42,7 @@ const transportsPerDeviceType = {
         android: [NativeUsbTransport, NativeBluetoothTransport],
     }),
     emulator: [bridgeTransport],
-} as const;
+};
 
 const transports = transportsPerDeviceType[deviceType];
 
@@ -98,6 +101,12 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
             },
         },
         connectInitHooks: { deviceEvent: {}, uiEvent: {} },
+        // Native's `selectDebugSettings` already returns real Transport
+        // instances/classes (see `transportsPerDeviceType` above), so the
+        // mapper is identity. Web's mapper lives in `packages/suite` to keep
+        // `@trezor/transport-web` out of the Metro bundle.
+        mapDebugTransports: (debugTransports: readonly unknown[] | undefined) =>
+            debugTransports as ConnectSettings['transports'],
         migrateSuiteSyncLabelsForRbfTransaction:
             createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
                 dispatch: deps.dispatch,

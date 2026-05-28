@@ -6,18 +6,28 @@ import { type OAuthServerEnvironment } from '@suite-common/metadata-types';
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
 import type { InvityServerEnvironment } from '@suite-common/trading';
-import { type ConnectSettings } from '@trezor/connect';
 import { isWeb } from '@trezor/env-utils';
 import { type SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
 import { SIDEBAR_WIDTH_NUMERIC } from './suiteConstants';
+
+// Legacy string identifiers used by the debug transport switcher UI. They
+// travel renderer→main as JSON (Transport classes don't serialize over IPC)
+// and are mapped to DI references in suite-desktop-core's IPC handler before
+// reaching @trezor/connect's TransportList. NOT part of @trezor/connect's
+// public type surface — strings are a suite-desktop implementation detail.
+export type DebugTransport =
+    | 'BridgeTransport'
+    | 'NodeUsbTransport'
+    | 'UdpTransport'
+    | 'WebUsbTransport';
 
 export interface DebugModeOptions {
     invityServerEnvironment?: InvityServerEnvironment;
     earnYieldWorkerBaseUrl?: EarnYieldWorkerBaseUrl;
     oauthServerEnvironment?: OAuthServerEnvironment;
     showDebugMenu: boolean;
-    transports: Extract<NonNullable<ConnectSettings['transports']>[number], string>[];
+    transports: DebugTransport[];
     isUnlockedBootloaderAllowed: boolean;
     showConnectLogs: boolean;
     isN4w1BackupEnabled: boolean;

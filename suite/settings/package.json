@@ -21,7 +21,6 @@
         "@suite-common/test-utils": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite/experimental": "workspace:*",
-        "@trezor/connect": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/suite-desktop-api": "workspace:*"
     }

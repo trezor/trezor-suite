@@ -86,6 +86,8 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
             ),
         connectInitSettings,
         connectInitHooks: { deviceEvent: {}, uiEvent: {} },
+        mapDebugTransports: (debugTransports: readonly unknown[] | undefined) =>
+            debugTransports as ReturnType<ExtraDependencies['services']['mapDebugTransports']>,
         migrateSuiteSyncLabelsForRbfTransaction: () => Promise.resolve([[], []]),
     },
     selectors: {

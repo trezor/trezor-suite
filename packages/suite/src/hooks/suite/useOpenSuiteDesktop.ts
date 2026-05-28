@@ -1,4 +1,4 @@
-import TrezorConnect, { type UpdateConnectSettings } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { useWindowFocus } from '@trezor/react-utils';
 import { SUITE_BRIDGE_DEEPLINK, SUITE_URL } from '@trezor/urls';
 
@@ -7,6 +7,7 @@ import {
     selectActiveTransports,
     selectHasTransportOfType,
 } from 'src/selectors/suite/suiteSelectors';
+import { getConnectSettingsTransports } from 'src/support/debugTransports';
 
 export const useOpenSuiteDesktop = () => {
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
@@ -27,11 +28,11 @@ export const useOpenSuiteDesktop = () => {
                 const filtered = activeTransports
                     .filter(t => t.type !== 'WebUsbTransport')
                     .map(t => t.type);
-                const transports = (
+                const transports = getConnectSettingsTransports(
                     filtered.includes('BridgeTransport')
                         ? filtered
-                        : ['BridgeTransport', ...filtered]
-                ) as UpdateConnectSettings['transports'];
+                        : ['BridgeTransport', ...filtered],
+                );
                 TrezorConnect.updateConnectSettings({ transports });
             }
             if (!windowFocused.current) return;
