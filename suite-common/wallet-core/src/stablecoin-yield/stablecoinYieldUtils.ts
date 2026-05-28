@@ -1,11 +1,11 @@
-import { numberToHex, toWei } from 'web3-utils';
-
 import { Calldata, type EvmAddress } from '@suite-common/calldata';
 import { type YieldDto } from '@suite-common/earn-stablecoin-api';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey, type EvmSelectedFee } from '@suite-common/wallet-types';
 import {
     asAmountUnit,
+    fromGwei,
+    fromIntegerString,
     getContractAddressForNetworkSymbol,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
@@ -184,22 +184,22 @@ export const buildYieldDepositCalldata = ({
     return builderResult.data;
 };
 
-export const buildEvmFeeFields = ({ feeLevel, gasLimit }: BuildEvmFeeFieldsParams) => {
+const buildEvmFeeFields = ({ feeLevel, gasLimit }: BuildEvmFeeFieldsParams) => {
     const commonFields = {
-        gasLimit: numberToHex(gasLimit),
+        gasLimit: fromIntegerString(gasLimit).toHex(),
     };
 
     if (feeLevel.maxFeePerGas && feeLevel.maxPriorityFeePerGas) {
         return {
             ...commonFields,
-            maxFeePerGas: numberToHex(toWei(feeLevel.maxFeePerGas, 'gwei')),
-            maxPriorityFeePerGas: numberToHex(toWei(feeLevel.maxPriorityFeePerGas, 'gwei')),
+            maxFeePerGas: fromGwei(feeLevel.maxFeePerGas).toWei('hex'),
+            maxPriorityFeePerGas: fromGwei(feeLevel.maxPriorityFeePerGas).toWei('hex'),
         };
     }
 
     return {
         ...commonFields,
-        gasPrice: numberToHex(toWei(feeLevel.feePerUnit, 'gwei')),
+        gasPrice: fromGwei(feeLevel.feePerUnit).toWei('hex'),
     };
 };
 
@@ -213,7 +213,7 @@ export const buildEvmSelectedFee = ({
         return {
             type: 'eip1559',
             ...feeFields,
-            baseFeePerGas: numberToHex(toWei(feeLevel.baseFeePerGas ?? '0', 'gwei')),
+            baseFeePerGas: fromGwei(feeLevel.baseFeePerGas ?? '0').toWei('hex'),
         };
     }
 

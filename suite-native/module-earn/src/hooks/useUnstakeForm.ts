@@ -6,12 +6,15 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { UNSTAKE_INTERCHANGES } from '@suite-common/wallet-constants';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { getStakingLimitsByNetworkSymbol, isPositiveBalance } from '@suite-common/wallet-utils';
+import {
+    fromEther,
+    getStakingLimitsByNetworkSymbol,
+    isPositiveBalance,
+} from '@suite-common/wallet-utils';
 import { useForm, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import {
     type NativeStakingRootState,
-    ethToWei,
     selectStakedBalanceByAccountKey,
 } from '@suite-native/staking';
 import { BigNumber } from '@trezor/utils';
@@ -59,7 +62,7 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
             return buildEarnComposeFormState(account.descriptor, amountValue, '');
         }
 
-        const amountWei = ethToWei(amountValue);
+        const amountWei = fromEther(amountValue).toWei();
         if (!isPositiveBalance(amountWei)) return undefined;
 
         return buildEarnComposeFormState(
