@@ -11,7 +11,7 @@ const NETWORK_FEE_OVERRIDES: Record<
 > = {
     bitcoin: {
         minFeePerUnit: {
-            normal: '1',
+            normal: '0.2',
             high: '2',
         },
     },
