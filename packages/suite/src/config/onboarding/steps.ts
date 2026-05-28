@@ -112,3 +112,11 @@ export const stepCategories: StepCategory[] = [
         ],
     },
 ];
+
+// 1-based encounter order on the happy path, derived from stepCategories above.
+// Sent as `stepIndex` in the onboarding/step-viewed analytics event so consumers
+// can sort steps without depending on names.
+const onboardingStepOrder = stepCategories.flatMap(category => category.steps.map(step => step.id));
+
+export const getOnboardingStepIndex = (id: Step['id']): number =>
+    onboardingStepOrder.indexOf(id) + 1;

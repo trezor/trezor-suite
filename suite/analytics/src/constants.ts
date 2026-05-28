@@ -53,6 +53,7 @@ export enum EventType {
     MenuGuide = 'menu/guide',
     MenuNotificationsToggle = 'menu/notifications/toggle',
     MenuToggleDiscreet = 'menu/toggle-discreet',
+    OnboardingStepViewed = 'onboarding/step-viewed',
     PromoDashboardBanner = 'promo/dashboard-banner',
     PromoDesktop = 'promo/desktop',
     PromoMobile = 'promo/mobile',
