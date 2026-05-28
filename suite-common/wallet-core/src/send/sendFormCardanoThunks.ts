@@ -1,6 +1,7 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
+    AddressDisplayOptions,
     type PrecomposedLevelsCardano,
     type PrecomposedTransactionCardano,
 } from '@suite-common/wallet-types';
@@ -23,6 +24,7 @@ import {
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
+import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
 
 export const composeCardanoTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevelsCardano,
@@ -151,7 +153,7 @@ export const signCardanoSendFormTransactionThunk = createThunk<
     `${SEND_MODULE_PREFIX}/signCardanoSendFormTransactionThunk`,
     async (
         { precomposedTransaction, selectedAccount, device, paymentRequests },
-        { rejectWithValue },
+        { getState, rejectWithValue },
     ) => {
         const { symbol, accountType } = selectedAccount;
 
@@ -162,6 +164,7 @@ export const signCardanoSendFormTransactionThunk = createThunk<
             });
 
         const payment_req = paymentRequests?.[0];
+        const addressDisplayType = selectAddressDisplayType(getState());
 
         // todo: add chunkify once we allow it for Cardano
         const response = await TrezorConnect.cardanoSignTransaction({
@@ -183,6 +186,7 @@ export const signCardanoSendFormTransactionThunk = createThunk<
             ttl: precomposedTransaction.ttl?.toString(),
             derivationType: getDerivationType(accountType),
             payment_req,
+            chunkify: addressDisplayType == AddressDisplayOptions.CHUNKED,
         });
 
         if (!response.success) {
