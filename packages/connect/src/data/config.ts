@@ -150,7 +150,7 @@ export const config: Config = {
             },
         },
         {
-            capabilities: ['mcuDeviceAuthentication'],
+            capabilities: ['mcuDeviceAuthentication', 'authenticityProofChunk'],
             min: {
                 // devices that don't support 'authenticateDevice' don't have to be listed here
                 T2B1: '0',
