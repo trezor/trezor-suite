@@ -26,14 +26,10 @@ const Subheader = styled.div`
     }
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const DiscoveryProgress = styled(ProgressBar)`
+const DiscoveryProgressWrapper = styled.div`
+    width: 100%;
     max-width: 440px;
     margin: 18px 0 28px;
-
-    ${ProgressBar.Value} {
-        transition: width 30s cubic-bezier(0.3, 1, 0.3, 1);
-    }
 `;
 
 const FactHeading = styled.div`
@@ -44,8 +40,7 @@ const FactHeading = styled.div`
     text-transform: uppercase;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledLottieAnimation = styled(LottieAnimation)`
+const LottieWrapper = styled.div`
     margin: -32px -8px -32px -20px;
 
     path {
@@ -73,15 +68,19 @@ export const CoinjoinAccountDiscoveryProgress = () => {
                     <Translation id="TR_LOADING_FUNDS" />
                 </H3>
                 <Subheader>
-                    <StyledLottieAnimation
-                        type={stage === 'block' ? 'BLOCK' : 'MEMPOOL'}
-                        size={64}
-                        loop
-                    />
+                    <LottieWrapper>
+                        <LottieAnimation
+                            type={stage === 'block' ? 'BLOCK' : 'MEMPOOL'}
+                            size={64}
+                            loop
+                        />
+                    </LottieWrapper>
                     {messageId && <Translation id={messageId} values={messageValues} />}
                 </Subheader>
 
-                <DiscoveryProgress max={1.01} value={progress} />
+                <DiscoveryProgressWrapper>
+                    <ProgressBar max={1.01} value={progress} />
+                </DiscoveryProgressWrapper>
 
                 <FactHeading>
                     <Icon

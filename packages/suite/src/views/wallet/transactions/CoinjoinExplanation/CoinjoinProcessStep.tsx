@@ -3,8 +3,15 @@ import { type ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { H3, IconCircle, type IconName, Paragraph, variables } from '@trezor/components';
-import { typography } from '@trezor/theme';
+import {
+    H3,
+    IconCircle,
+    type IconName,
+    Paragraph,
+    useMediaQuery,
+    variables,
+} from '@trezor/components';
+import { belowBreakpoint, breakpoints, spacings } from '@trezor/theme';
 
 const Image = styled.div`
     margin: -8px;
@@ -16,31 +23,22 @@ const Image = styled.div`
     }
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StepNumber = styled(Paragraph)`
-    margin: 24px 0 6px;
-    color: ${({ theme }) => theme.contentSecondary};
-
+const StepNumberSlot = styled.div`
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         grid-column: 2;
         grid-row: 1;
     }
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StepTitle = styled(H3)`
-    margin-bottom: 20px;
-
+const StepTitleSlot = styled.div`
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         align-self: center;
-        ${typography['body-md-strong']}
         grid-column: 2;
         grid-row: 1;
     }
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StepDescription = styled(Paragraph)`
+const StepDescriptionSlot = styled.div`
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         grid-column: 2;
         grid-row: 2;
@@ -101,17 +99,37 @@ export const CoinjoinProcessStep = ({
     iconName,
     title,
     description,
-}: CoinjoinProcessStepProps) => (
-    <Container>
-        <Image>
-            <IconCircle name={iconName} size={96} />
-        </Image>
-        <StepNumber typographyStyle="body-sm">
-            <Translation id="TR_STEP" values={{ number }} />
-        </StepNumber>
-        <StepTitle>{title}</StepTitle>
-        <StepDescription typographyStyle="body-md" intent="neutral" priority="secondary">
-            {description}
-        </StepDescription>
-    </Container>
-);
+}: CoinjoinProcessStepProps) => {
+    const isBelowLaptop = useMediaQuery(belowBreakpoint(breakpoints.laptop));
+
+    return (
+        <Container>
+            <Image>
+                <IconCircle name={iconName} size={96} />
+            </Image>
+            <StepNumberSlot>
+                <Paragraph
+                    typographyStyle="body-sm"
+                    intent="neutral"
+                    priority="secondary"
+                    margin={{ top: spacings.xl, bottom: 6 }}
+                >
+                    <Translation id="TR_STEP" values={{ number }} />
+                </Paragraph>
+            </StepNumberSlot>
+            <StepTitleSlot>
+                <H3
+                    typographyStyle={isBelowLaptop ? 'body-md-strong' : 'headline-sm'}
+                    margin={{ bottom: spacings.lg }}
+                >
+                    {title}
+                </H3>
+            </StepTitleSlot>
+            <StepDescriptionSlot>
+                <Paragraph typographyStyle="body-md" intent="neutral" priority="secondary">
+                    {description}
+                </Paragraph>
+            </StepDescriptionSlot>
+        </Container>
+    );
+};

@@ -1,12 +1,17 @@
 import { type ReactNode } from 'react';
 
-import { transparentize } from 'polished';
 import styled from 'styled-components';
 
 import { selectAccountTransactions } from '@suite-common/wallet-core';
-import { Column, Icon, type IconName, Paragraph } from '@trezor/components';
+import {
+    Column,
+    IconCircle,
+    type IconCircleIntent,
+    type IconName,
+    Paragraph,
+} from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
-import { type Color, typography } from '@trezor/theme';
+import { negativeSpacings, typography } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
@@ -21,20 +26,11 @@ const Header = styled.header`
     margin: 6px 0 12px;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledIcon = styled(Icon)<{ $backgroundColor?: Color }>`
-    background: ${({ $backgroundColor, theme }) =>
-        $backgroundColor && transparentize(0.9, theme[$backgroundColor])};
-    border-radius: 50%;
-    margin-left: -8px;
-    padding: 20px;
-`;
-
 interface UtxoSelectionListProps {
     description: ReactNode;
     heading: ReactNode;
     icon: IconName;
-    iconColor?: Color;
+    iconIntent?: IconCircleIntent;
     utxos: AccountUtxo[];
     withHeader: boolean;
 }
@@ -43,7 +39,7 @@ export const UtxoSelectionList = ({
     description,
     heading,
     icon,
-    iconColor,
+    iconIntent = 'neutral',
     utxos,
     withHeader,
 }: UtxoSelectionListProps) => {
@@ -55,11 +51,11 @@ export const UtxoSelectionList = ({
         <Column>
             {withHeader && (
                 <Header>
-                    <StyledIcon
+                    <IconCircle
                         name={icon}
-                        size={20}
-                        color={iconColor}
-                        $backgroundColor={iconColor}
+                        size={64}
+                        intent={iconIntent}
+                        margin={{ left: negativeSpacings.xs }}
                     />
                     <div>
                         <Paragraph typographyStyle="body-md" margin={{ bottom: 4 }}>

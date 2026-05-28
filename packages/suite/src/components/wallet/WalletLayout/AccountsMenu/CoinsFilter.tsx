@@ -10,20 +10,16 @@ import { useAccountSearch } from 'src/hooks/suite';
 
 import { useAvailableNetworkSymbols } from './useAvailableNetworkSymbols';
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledCoinLogo = styled(CoinLogo)<{ $isSelected?: boolean; $coinFilter?: string }>`
+const CoinLogoWrapper = styled.div<{ $isSelected?: boolean }>`
     display: block;
     border-radius: ${borders.radii.xxs};
-    opacity: ${({ $isSelected, $coinFilter }) =>
-        $coinFilter === undefined || $isSelected ? 1 : 0.5};
-
+    opacity: ${({ $isSelected }) => ($isSelected ? 1 : 0.5)};
     transition: outline 0.2s;
     filter: ${({ $isSelected }) => !$isSelected && 'grayscale(100%)'};
     cursor: pointer;
 
     &:hover {
-        opacity: ${({ $isSelected, $coinFilter }) =>
-            $coinFilter !== undefined && !$isSelected ? 0.7 : 1};
+        opacity: ${({ $isSelected }) => ($isSelected ? 1 : 0.7)};
     }
 `;
 
@@ -36,10 +32,13 @@ const Container = styled.div`
     margin: ${spacingsPx.xxs} ${spacingsPx.xs} ${spacingsPx.xs} 48px;
     z-index: 2;
 
-    &:hover {
-        ${StyledCoinLogo} {
-            filter: none;
-        }
+    &[data-empty-filter='true'] ${CoinLogoWrapper} {
+        opacity: 1;
+        filter: none;
+    }
+
+    &:hover ${CoinLogoWrapper} {
+        filter: none;
     }
 `;
 
@@ -65,8 +64,11 @@ export const CoinsFilter = () => {
         },
     };
 
+    const isFilterEmpty = coinFilter.length === 0;
+
     return (
         <Container
+            data-empty-filter={isFilterEmpty}
             onClick={() => {
                 setCoinFilter([]);
             }}
@@ -83,19 +85,21 @@ export const CoinsFilter = () => {
                             delayShow={TOOLTIP_DELAY_NORMAL}
                         >
                             <motion.div key={networkSymbol} {...coinAnimcationConfig} layout>
-                                <StyledCoinLogo
-                                    data-testid={`@account-menu/filter/${networkSymbol}`}
-                                    symbol={networkSymbol}
-                                    type="network"
-                                    size={16}
+                                <CoinLogoWrapper
                                     data-test-activated={isSelected}
-                                    $isSelected={isSelected || coinFilter.length === 0}
-                                    $coinFilter={networkSymbol}
+                                    $isSelected={isSelected}
                                     onClick={e => {
                                         e.stopPropagation();
                                         toggleCoinFilter(networkSymbol);
                                     }}
-                                />
+                                >
+                                    <CoinLogo
+                                        data-testid={`@account-menu/filter/${networkSymbol}`}
+                                        symbol={networkSymbol}
+                                        type="network"
+                                        size={16}
+                                    />
+                                </CoinLogoWrapper>
                             </motion.div>
                         </Tooltip>
                     );
