@@ -68,11 +68,11 @@ jobs:
         with:
           mode: firewall-free
           job-summary: errors
-      - run: sfw --silent yarn workspaces focus @trezor/connect
+      - run: sfw yarn workspaces focus @trezor/connect
       - if: ${{ inputs.testEnv == 'web' }}
         run: |
-          sfw --silent yarn workspaces focus @trezor/connect-web
-          sfw --silent yarn && yarn build:libs
+          sfw yarn workspaces focus @trezor/connect-web
+          sfw yarn && yarn build:libs
       - name: Install Playwright chromium
         if: ${{ inputs.testEnv == 'web' }}
         run: yarn workspace @trezor/connect-web exec playwright install --with-deps chromium

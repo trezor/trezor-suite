@@ -58,7 +58,7 @@ jobs:
       - name: Install Yarn dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          sfw --silent yarn install
+          sfw yarn install
 
       - name: Use latest stable Xcode
         uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1
@@ -133,7 +133,7 @@ jobs:
       - name: Install Yarn dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          sfw --silent yarn install
+          sfw yarn install
 
       # Detox runtime may indirectly import the built config, and that would crash if message-system is not built
       - name: Sign message system config

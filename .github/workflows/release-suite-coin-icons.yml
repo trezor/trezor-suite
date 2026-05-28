@@ -34,7 +34,7 @@ jobs:
           job-summary: errors
       - name: Download crypto icons
         run: |
-          sfw --silent yarn install
+          sfw yarn install
           cd suite-common/icons
           yarn download-crypto-icons
 

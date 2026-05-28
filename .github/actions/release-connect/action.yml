@@ -72,7 +72,7 @@ runs:
     - name: Install dependencies
       shell: bash
       run: |
-        sfw --silent yarn install --immutable # focus install is not used here to make sure that all global patches are applied for the release.
+        sfw yarn install --immutable # focus install is not used here to make sure that all global patches are applied for the release.
 
     - name: Build connect-explorer-theme
       shell: bash

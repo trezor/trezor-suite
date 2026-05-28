@@ -52,7 +52,7 @@ jobs:
       - name: Install Yarn dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          sfw --silent yarn install
+          sfw yarn install
 
       - name: Build storybook
         working-directory: ./suite-native/storybook

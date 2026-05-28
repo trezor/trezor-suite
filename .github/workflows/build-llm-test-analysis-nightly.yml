@@ -56,7 +56,7 @@ jobs:
           job-summary: errors
       - name: Install dependencies
         shell: bash
-        run: sfw --silent yarn workspaces focus @trezor/e2e-utils
+        run: sfw yarn workspaces focus @trezor/e2e-utils
 
       - name: Delete existing LLM analysis cache from S3 (no_cache)
         if: ${{ inputs.no_cache }}

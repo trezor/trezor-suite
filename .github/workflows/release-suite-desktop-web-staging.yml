@@ -69,7 +69,7 @@ jobs:
           job-summary: errors
       - name: Install deps and build libs
         run: |
-          sfw --silent yarn install --immutable
+          sfw yarn install --immutable
           yarn message-system-sign-config
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/transport-bridge build:lib
@@ -197,7 +197,7 @@ jobs:
       - name: Install dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          sfw --silent yarn install --immutable # focus install is not used here to make sure that all global patches are applied for the release.
+          sfw yarn install --immutable # focus install is not used here to make sure that all global patches are applied for the release.
 
       - name: Build suite-web
         env:
@@ -254,7 +254,7 @@ jobs:
           job-summary: errors
       - name: Install deps and build libs
         run: |
-          sfw --silent yarn install --immutable
+          sfw yarn install --immutable
           yarn message-system-sign-config
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/transport-bridge build:lib

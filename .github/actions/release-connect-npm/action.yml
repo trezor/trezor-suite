@@ -64,7 +64,7 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      run: sfw --silent yarn install --immutable
+      run: sfw yarn install --immutable
 
     - name: Check version
       shell: bash
