@@ -38,7 +38,7 @@
     ],
     "types": "src/index.ts",
     "scripts": {
-        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm && DTS_OUT_DIR=libESM yarn build:dts:inline",
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM && DTS_OUT_DIR=libESM yarn build:dts:inline",
         "build:dts:inline": "node ../../scripts/inline-devdep-types.mjs",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
