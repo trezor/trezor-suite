@@ -19,6 +19,12 @@ const useTabsData = () => {
     return useMemo(() => {
         const tabs = [
             {
+                key: 'exchange',
+                label: translate('moduleTrading.tradingScreen.tabs.exchange'),
+                icon: 'repeat',
+                testID: '@trading/exchange/header-tab',
+            },
+            {
                 key: 'buy',
                 label: translate('moduleTrading.tradingScreen.tabs.buy'),
                 icon: 'plus',
@@ -29,12 +35,6 @@ const useTabsData = () => {
                 label: translate('moduleTrading.tradingScreen.tabs.sell'),
                 icon: 'minus',
                 testID: '@trading/sell/header-tab',
-            },
-            {
-                key: 'exchange',
-                label: translate('moduleTrading.tradingScreen.tabs.exchange'),
-                icon: 'arrowsLeftRight',
-                testID: '@trading/exchange/header-tab',
             },
             {
                 key: 'concierge',

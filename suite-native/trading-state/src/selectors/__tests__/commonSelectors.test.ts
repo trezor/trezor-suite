@@ -354,11 +354,11 @@ describe('commonSelectors', () => {
         it.each([
             [
                 { buy: true, exchange: true, sell: true, concierge: true },
-                ['buy', 'exchange', 'sell', 'concierge'],
+                ['exchange', 'buy', 'sell', 'concierge'],
             ],
             [
-                { buy: false, exchange: true, sell: true, concierge: true },
-                ['exchange', 'sell', 'concierge'],
+                { buy: true, exchange: false, sell: true, concierge: true },
+                ['buy', 'sell', 'concierge'],
             ],
             [{ buy: false, exchange: false, sell: false, concierge: false }, []],
         ])(
