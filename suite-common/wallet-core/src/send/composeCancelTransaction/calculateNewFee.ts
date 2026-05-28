@@ -3,13 +3,11 @@ import { calculateChainedTransactionsFeeForRbf } from '@suite-common/wallet-util
 import { BigNumber } from '@trezor/utils';
 
 /**
- * The current default value for the minRelayTxFee in Bitcoin Core is 1000 satoshi/kB (= 1 sat/B).
- * A node operator may specify a different value via the startup parameter.
- *
- * @see https://github.com/bitcoin/bitcoin/blob/97153a702600430bdaf6af4f6f4eb8593e32819f/src/validation.h#L63
- * @see https://bitcoin.stackexchange.com/questions/48235/what-is-the-minrelaytxfee
+ * Default minimum relay fee in sat/vB used for BIP-125 RBF replacement transactions.
+ * Bitcoin Core has officially lowered both the min relay tx fee and the incremental relay fee defaults,
+ * but actual minimums depend on each node's configuration, so we keep a conservative floor.
  */
-const BIP_125_DEFAULT_RELAY_FEE = 1;
+const DEFAULT_RELAY_FEE_PER_VB = 0.2;
 
 type CancelTransactionProps = {
     newTransactionSize: number;
@@ -22,7 +20,7 @@ export const calculateNewFee = ({
     newTransactionSize,
     chainedTxs,
     originalFee,
-    relayFee = BIP_125_DEFAULT_RELAY_FEE,
+    relayFee = DEFAULT_RELAY_FEE_PER_VB,
 }: CancelTransactionProps) => {
     /**
      * Rules:
