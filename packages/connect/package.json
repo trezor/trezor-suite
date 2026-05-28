@@ -33,43 +33,43 @@
         "./src/workers/workers": "./src/workers/workers.native.ts"
     },
     "publishConfig": {
-        "main": "./libESM/index.mjs",
-        "types": "./libESM/index.d.mts",
+        "main": "./lib/index.mjs",
+        "types": "./lib/index.d.mts",
         "exports": {
             ".": {
-                "types": "./libESM/index.d.mts",
-                "default": "./libESM/index.mjs"
+                "types": "./lib/index.d.mts",
+                "default": "./lib/index.mjs"
             },
-            "./libESM/*": "./libESM/*"
+            "./lib/*": "./lib/*"
         },
         "browser": {
-            "./libESM/index.mjs": "./libESM/index.browser.mjs",
-            "./libESM/utils/assets.mjs": "./libESM/utils/assets.browser.mjs",
-            "./libESM/workers/workers.mjs": "./libESM/workers/workers.browser.mjs",
-            "./libESM/data/*": "./libESM/data/*",
-            "./libESM/exports.mjs": "./libESM/exports.mjs",
-            "./libESM/impl/*": "./libESM/impl/*",
-            "./libESM/utils/*": "./libESM/utils/*"
+            "./lib/index.mjs": "./lib/index.browser.mjs",
+            "./lib/utils/assets.mjs": "./lib/utils/assets.browser.mjs",
+            "./lib/workers/workers.mjs": "./lib/workers/workers.browser.mjs",
+            "./lib/data/*": "./lib/data/*",
+            "./lib/exports.mjs": "./lib/exports.mjs",
+            "./lib/impl/*": "./lib/impl/*",
+            "./lib/utils/*": "./lib/utils/*"
         },
         "react-native": {
-            "./libESM/index.mjs": "./libESM/index.mjs",
-            "./libESM/utils/assets.mjs": "./libESM/utils/assets.native.mjs",
-            "./libESM/workers/workers.mjs": "./libESM/workers/workers.native.mjs",
-            "./libESM/data/*": "./libESM/data/*",
-            "./libESM/exports.mjs": "./libESM/exports.mjs",
-            "./libESM/impl/*": "./libESM/impl/*",
-            "./libESM/utils/*": "./libESM/utils/*"
+            "./lib/index.mjs": "./lib/index.mjs",
+            "./lib/utils/assets.mjs": "./lib/utils/assets.native.mjs",
+            "./lib/workers/workers.mjs": "./lib/workers/workers.native.mjs",
+            "./lib/data/*": "./lib/data/*",
+            "./lib/exports.mjs": "./lib/exports.mjs",
+            "./lib/impl/*": "./lib/impl/*",
+            "./lib/utils/*": "./lib/utils/*"
         }
     },
     "files": [
-        "libESM/",
+        "lib/",
         "CHANGELOG.md"
     ],
     "scripts": {
         "test:unit": "jest --version && jest",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
         "version:prerelease": "yarn g:tsx scripts/bump-version.ts prerelease",
         "version:patch": "yarn g:tsx scripts/bump-version.ts patch",
         "version:prepatch": "yarn g:tsx scripts/bump-version.ts prepatch",

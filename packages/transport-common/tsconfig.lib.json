@@ -1,9 +1,9 @@
 {
-    "extends": "../../tsconfig.libESM.json",
+    "extends": "../../tsconfig.lib.json",
     "include": ["./src"],
     "compilerOptions": {
         "lib": ["ES2023"],
-        "outDir": "./libESM",
+        "outDir": "./lib",
         "types": ["node"]
     },
     "references": [

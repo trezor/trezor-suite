@@ -1,7 +1,7 @@
 {
-    "extends": "../../tsconfig.libESM.json",
+    "extends": "../../tsconfig.lib.json",
     "include": ["./src"],
-    "compilerOptions": { "outDir": "./libESM" },
+    "compilerOptions": { "outDir": "./lib" },
     "references": [
         { "path": "../utils" },
         { "path": "../utxo-lib" },
