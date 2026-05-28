@@ -2,9 +2,8 @@ import { useSelector } from 'react-redux';
 
 import { selectIsDeviceConnected } from '@suite-common/device';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { Text, VStack } from '@suite-native/atoms';
+import { VStack } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
-import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 
@@ -67,12 +66,6 @@ export const DiscoveryCoinsFilter = ({
                     onToggle={isEnabled => handleToggle(symbol, isEnabled)}
                 />
             ))}
-            <VStack paddingVertical="sp8" alignItems="center">
-                <Icon name="question" color="contentSecondary" size="large" />
-                <Text color="contentSecondary" textAlign="center">
-                    <Translation id="moduleSettings.coinEnabling.bottomNote" />
-                </Text>
-            </VStack>
         </VStack>
     );
 };
