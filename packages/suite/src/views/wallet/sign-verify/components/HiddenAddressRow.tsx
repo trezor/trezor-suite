@@ -6,14 +6,9 @@ import type { AddressItem } from 'src/hooks/wallet/sign-verify/useSignAddressOpt
 type HiddenAddressRowProps = {
     item: AddressItem;
     isElevated?: boolean;
-    className?: string;
 };
 
-export const HiddenAddressRow = ({
-    item,
-    isElevated = false,
-    className,
-}: HiddenAddressRowProps) => {
+export const HiddenAddressRow = ({ item, isElevated = false }: HiddenAddressRowProps) => {
     const { parentElevation } = useElevation();
 
     const currentElevation = isElevated ? nextElevation[parentElevation] : parentElevation;
@@ -21,18 +16,16 @@ export const HiddenAddressRow = ({
     const pathParts = item.value.split('/');
 
     return (
-        <Row
-            className={`${className} react-select__single-value`}
-            gap={spacings.xxs}
-            cursor="pointer"
-        >
-            <Box minWidth={36}>
-                <Text isDisabled>/{pathParts[pathParts.length - 1]}</Text>
-            </Box>
-            <Box position={{ type: 'relative' }} cursor="pointer" userSelect="none">
-                <GradientOverlay forcedElevation={currentElevation} hiddenFrom="160px" />
-                {item.label}
-            </Box>
-        </Row>
+        <div className="react-select__single-value">
+            <Row gap={spacings.xxs} cursor="pointer">
+                <Box minWidth={36}>
+                    <Text isDisabled>/{pathParts[pathParts.length - 1]}</Text>
+                </Box>
+                <Box position={{ type: 'relative' }} cursor="pointer" userSelect="none">
+                    <GradientOverlay forcedElevation={currentElevation} hiddenFrom="160px" />
+                    {item.label}
+                </Box>
+            </Row>
+        </div>
     );
 };

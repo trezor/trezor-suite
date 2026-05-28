@@ -47,7 +47,6 @@ export type ProgressPieProps = AllowedFrameProps & {
     color?: string;
     backgroundColor?: string;
     children?: ReactNode;
-    className?: string;
 };
 
 export const ProgressPie = ({
@@ -55,7 +54,6 @@ export const ProgressPie = ({
     children,
     valueInPercents,
     backgroundColor,
-    className,
     color,
     ...rest
 }: ProgressPieProps) => {
@@ -68,7 +66,6 @@ export const ProgressPie = ({
             $valueInPercents={valueInPercents}
             $backgroundColor={backgroundColor}
             $color={color}
-            className={className}
             $elevation={elevation}
             {...frameProps}
         >

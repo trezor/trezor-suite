@@ -145,7 +145,6 @@ export type FlexProps = AllowedFrameProps &
         isReversed?: boolean;
         hasDivider?: boolean;
         dividerColor?: Color;
-        className?: string;
         'data-testid'?: string;
         as?: string;
         ref?: React.RefObject<HTMLElement | null>;
@@ -164,7 +163,6 @@ export const Flex = ({
     flexWrap = 'nowrap',
     order,
     isReversed = false,
-    className,
     'data-testid': dataTestId,
     as = 'div',
     hasDivider = false,
@@ -181,7 +179,6 @@ export const Flex = ({
 
     return (
         <Container
-            className={className}
             data-testid={dataTestId}
             {...makePropsTransient({
                 rowGap,

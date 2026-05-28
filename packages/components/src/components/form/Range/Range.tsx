@@ -326,7 +326,6 @@ const SegmentsComponent = ({
 );
 
 export interface RangeProps {
-    className?: string;
     disabled?: boolean;
     fill?: boolean;
     labels?: Segment[];
@@ -342,7 +341,6 @@ export interface RangeProps {
 }
 
 export const Range = ({
-    className,
     disabled = false,
     fill = false,
     labels,
@@ -360,7 +358,7 @@ export const Range = ({
     );
 
     return (
-        <StyledRange className={className} $fill={fill}>
+        <StyledRange $fill={fill}>
             <Input
                 {...props}
                 type="range"

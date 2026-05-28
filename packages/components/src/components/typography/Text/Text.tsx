@@ -135,7 +135,6 @@ const StyledText = styled.span<StyledTextProps>`
 
 export type TextProps = Pick<HTMLProps<HTMLElement>, 'onCopy' | 'onClick'> & {
     children: ReactNode;
-    className?: string;
     isMonospaced?: boolean;
     isHighlighted?: boolean;
     isTabular?: boolean;
@@ -152,7 +151,6 @@ export const Text = ({
     isDisabled = false,
     color,
     children,
-    className,
     as = 'span',
     'data-testid': dataTest,
     onClick,
@@ -172,7 +170,6 @@ export const Text = ({
             $priority={priority}
             $isDisabled={isDisabled}
             $color={color}
-            className={className}
             as={as}
             onClick={onClick}
             onCopy={onCopy}

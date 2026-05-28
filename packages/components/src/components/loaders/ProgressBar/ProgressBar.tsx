@@ -28,10 +28,6 @@ export type ProgressBarProps = {
     backgroundColor?: CSSColor;
     foregroundColor?: CSSColor;
     'data-testid'?: string;
-    /**
-     *  @deprecated Legacy prop - do not add non-standard properties
-     */
-    className?: string;
 };
 
 export const ProgressBar = ({
@@ -39,17 +35,12 @@ export const ProgressBar = ({
     value,
     backgroundColor,
     foregroundColor,
-    className,
     'data-testid': dataTestId,
 }: ProgressBarProps) => {
     const theme = useTheme();
 
     return (
-        <Wrapper
-            $color={backgroundColor || theme.elementFillNeutralBold}
-            data-testid={dataTestId}
-            className={className}
-        >
+        <Wrapper $color={backgroundColor || theme.elementFillNeutralBold} data-testid={dataTestId}>
             <Value $max={max} $value={value} $color={foregroundColor || theme.contentBrand} />
         </Wrapper>
     );

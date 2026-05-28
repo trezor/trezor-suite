@@ -27,7 +27,6 @@ type Base = AllowedAnimationPrimitiveFrameProps & {
     shape?: Shape;
     onEnded?: () => void;
     autoPlay?: boolean;
-    className?: string;
     onVideoMouseOver?: MouseEventHandler<HTMLVideoElement>;
 };
 

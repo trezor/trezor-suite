@@ -32,9 +32,6 @@ const argTypes: Partial<ArgTypes<SpinnerProps>> | undefined = {
         },
         options: spinnerSizes,
     },
-    className: {
-        control: false,
-    },
     isDisabled: {
         control: {
             type: 'boolean',

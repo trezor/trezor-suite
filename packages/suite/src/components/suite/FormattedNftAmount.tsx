@@ -18,7 +18,6 @@ export interface FormattedNftAmountProps {
     transfer: TokenTransfer;
     signValue?: SignValue;
     signGrayscale?: boolean;
-    className?: string;
     isWithLink?: boolean;
     alignMultitoken?: 'flex-end' | 'flex-start';
     linkTypographyStyle?: TypographyStyle;
@@ -28,7 +27,6 @@ export const FormattedNftAmount = ({
     transfer,
     signValue,
     signGrayscale,
-    className,
     isWithLink,
     alignMultitoken = 'flex-end',
     linkTypographyStyle,
@@ -92,7 +90,7 @@ export const FormattedNftAmount = ({
     }
 
     return (
-        <Row className={className}>
+        <Row>
             {signValue ? <Sign value={signValue} grayscale={signGrayscale} /> : null}
             <Box margin={{ right: spacings.xxs }}>
                 <Translation id="TR_TOKEN_ID_COLON" />
