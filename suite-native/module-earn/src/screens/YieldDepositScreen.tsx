@@ -13,6 +13,7 @@ import {
     type StackNavigationProps,
     type YieldStackParamList,
     YieldStackRoutes,
+    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { FeeSummaryCard } from '@suite-native/transaction-management';
 import { BigNumber } from '@trezor/utils';
@@ -45,6 +46,7 @@ export const YieldDepositScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const dispatch = useDispatch();
     const isFocused = useIsFocused();
+    const navigateToInitialScreen = useNavigateToInitialScreen();
 
     const {
         bottomSheetRef: infoBottomSheetRef,
@@ -225,6 +227,15 @@ export const YieldDepositScreen = () => {
         closeInfoBottomSheet();
         reopenPendingBottomSheet();
     }, [closeInfoBottomSheet, reopenPendingBottomSheet]);
+    const handleCloseDeposit = useCallback(() => {
+        navigateToInitialScreen();
+
+        if (!flowKey || session?.action.pendingTransaction) {
+            return;
+        }
+
+        dispatch(stablecoinYieldActions.disposeSession({ flowType: 'deposit', flowKey }));
+    }, [dispatch, flowKey, navigateToInitialScreen, session?.action.pendingTransaction]);
 
     if (resolutionStatus !== 'resolved' || !isDepositSessionReady) {
         return null;
@@ -239,6 +250,7 @@ export const YieldDepositScreen = () => {
             header={
                 <YieldDepositFlowScreenHeader
                     account={account}
+                    closeAction={handleCloseDeposit}
                     onInfoPress={openInfoBottomSheet}
                     tokenContract={route.params.tokenContract}
                     vaultName={vault.metadata.name}
