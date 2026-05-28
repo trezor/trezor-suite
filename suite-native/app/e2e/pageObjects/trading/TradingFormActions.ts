@@ -148,7 +148,7 @@ export abstract class TradingFormActions extends TradingActions {
         await searchReceiveCryptoInput.tap();
         await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
         const searchForStr = searchString ?? asset;
-        await searchReceiveCryptoInput.replaceText(searchForStr.slice(0, -1));
+        await searchReceiveCryptoInput.replaceText(searchForStr);
 
         if (network) {
             const networkFilterTab = element(

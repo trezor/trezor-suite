@@ -16,11 +16,12 @@ describe('Trade Buy [@noDevice]', () => {
         await openApp({ args: { preloadedState } });
         await onHome.assertIsPortfolioGraphVisible();
         await onTabBar.navigateToTrade();
+        await tradingBuyActions.tapTradingSectionHeaderTab();
         await tradingBuyActions.waitForTradeDataToLoad();
     }, 240_000);
 
     it('Basic buy for 100 PLN flow', async () => {
-        await tradingBuyActions.selectReceiveAsset('BTC');
+        await tradingBuyActions.selectReceiveAsset('BTC', undefined, 'Bitcoin');
         await tradingBuyActions.selectBtcReceiveAccount('BTC SegWit', "m/84'/0'/0'/0/0");
         await tradingBuyActions.selectFiatCurrency('PLN');
         await tradingBuyActions.selectCountry('Polan', 'Poland', 'POL');
