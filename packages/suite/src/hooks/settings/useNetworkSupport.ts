@@ -13,14 +13,12 @@ export const useNetworkSupport = () => {
     const useExperimentalNetworks = useSelector(
         selectHasExperimentalFeature('experimental-networks'),
     );
-    const useTronViewOnly = useSelector(selectHasExperimentalFeature('tron-view-only'));
     const useTestnetNetworks = useSelector(selectHasExperimentalFeature('testnet-networks'));
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
 
     const mainnets = getMainnets({
         debug: isDebug,
         useExperimentalNetworks,
-        includeTron: useTronViewOnly,
     });
     const testnets = getTestnets({ debug: isDebug, useExperimentalNetworks, useTestnetNetworks });
 
