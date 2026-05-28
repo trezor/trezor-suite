@@ -1,10 +1,9 @@
 import styled from 'styled-components';
-import { fromWei } from 'web3-utils';
 
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { type Network } from '@suite-common/wallet-config';
-import { getFeeRate, getTxIcon, isEip1559, isPending } from '@suite-common/wallet-utils';
+import { fromWei, getFeeRate, getTxIcon, isEip1559, isPending } from '@suite-common/wallet-utils';
 import {
     Card,
     Divider,
@@ -203,7 +202,7 @@ export const BasicTxDetails = ({
                         <Item label={<Translation id="TR_GAS_PRICE" />} iconName="gasPump">
                             {isConfirmed || !isEip1559(tx.ethereumSpecific) ? (
                                 <FeeRate
-                                    feeRate={fromWei(tx.ethereumSpecific?.gasPrice || 0, 'gwei')}
+                                    feeRate={fromWei(tx.ethereumSpecific?.gasPrice || '0').toGwei()}
                                     networkType="ethereum"
                                     preserveDecimals
                                 />
@@ -221,8 +220,7 @@ export const BasicTxDetails = ({
                                     <FeeRate
                                         feeRate={fromWei(
                                             tx.ethereumSpecific?.maxFeePerGas ?? '0',
-                                            'gwei',
-                                        )}
+                                        ).toGwei()}
                                         networkType="ethereum"
                                         preserveDecimals
                                     />
@@ -236,8 +234,7 @@ export const BasicTxDetails = ({
                                         <FeeRate
                                             feeRate={fromWei(
                                                 tx.ethereumSpecific.baseFeePerGas || '0',
-                                                'gwei',
-                                            )}
+                                            ).toGwei()}
                                             networkType="ethereum"
                                             preserveDecimals
                                         />
@@ -253,8 +250,7 @@ export const BasicTxDetails = ({
                                     <FeeRate
                                         feeRate={fromWei(
                                             tx.ethereumSpecific?.maxPriorityFeePerGas ?? '0',
-                                            'gwei',
-                                        )}
+                                        ).toGwei()}
                                         networkType="ethereum"
                                         preserveDecimals
                                     />

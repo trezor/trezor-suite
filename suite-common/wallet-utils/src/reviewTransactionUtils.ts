@@ -1,5 +1,3 @@
-import { fromWei, toWei } from 'web3-utils';
-
 import { Calldata } from '@suite-common/calldata';
 import { EVM_SPENDER_LABELS, KNOWN_VAULTS } from '@suite-common/suite-constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -24,6 +22,7 @@ import {
     isApprovalFlowSupported as isApprovalSupported,
     isEvmClearSigningSupported as isEvmClearSigningSupportedByDevice,
 } from './deviceUtils';
+import { fromGwei, fromWei } from './ethConverter';
 import {
     getEvmTransactionTextSignature,
     isEvmApprovalTx,
@@ -518,8 +517,8 @@ const constructNewFlow = ({
 
     if (networkType === 'ethereum' && !isUpdatedEthereumSendFlow) {
         // device shows ether, precomposedTx.feePerByte is in gwei
-        const wei = toWei(precomposedTx.feePerByte, 'gwei'); // from gwei to wei
-        const ether = fromWei(wei, 'ether'); // from wei to ether
+        const wei = fromGwei(precomposedTx.feePerByte).toWei(); // from gwei to wei
+        const ether = fromWei(wei).toEther(); // from wei to ether
 
         outputs.push({
             type: 'gas',

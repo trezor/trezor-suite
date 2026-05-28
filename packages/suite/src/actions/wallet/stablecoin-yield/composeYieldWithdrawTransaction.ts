@@ -1,5 +1,3 @@
-import { numberToHex, toWei } from 'web3-utils';
-
 import { Calldata, asEvmAddress } from '@suite-common/calldata';
 import { getYieldVault } from '@suite-common/earn-stablecoin-api';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -14,6 +12,8 @@ import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send
 import { type Account } from '@suite-common/wallet-types';
 import {
     asAmountUnit,
+    fromGwei,
+    fromIntegerString,
     getAccountIdentity,
     getConvertedOrDefaultFeeInfo,
     unitsToSubunits,
@@ -137,7 +137,7 @@ export const composeYieldWithdrawTransaction = async ({
         value: '0x0',
         nonce: Number(nonce),
         chainId: network.chainId,
-        gasLimit: numberToHex(gasLimit),
+        gasLimit: fromIntegerString(gasLimit).toHex(),
     };
 
     const unsignedTx =
@@ -145,14 +145,12 @@ export const composeYieldWithdrawTransaction = async ({
             ? {
                   ...commonFields,
                   type: 2,
-                  maxFeePerGas: numberToHex(toWei(normalLevel.maxFeePerGas, 'gwei')),
-                  maxPriorityFeePerGas: numberToHex(
-                      toWei(normalLevel.maxPriorityFeePerGas, 'gwei'),
-                  ),
+                  maxFeePerGas: fromGwei(normalLevel.maxFeePerGas).toWei('hex'),
+                  maxPriorityFeePerGas: fromGwei(normalLevel.maxPriorityFeePerGas).toWei('hex'),
               }
             : {
                   ...commonFields,
-                  gasPrice: numberToHex(toWei(normalLevel.feePerUnit, 'gwei')),
+                  gasPrice: fromGwei(normalLevel.feePerUnit).toWei('hex'),
               };
 
     return JSON.stringify(unsignedTx);

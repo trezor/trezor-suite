@@ -8,8 +8,7 @@ import {
 } from '@suite-common/wallet-types';
 import {
     asAmountUnit,
-    evmHexToBigNumber,
-    evmHexWeiToGwei,
+    fromHex,
     getContractAddressForNetworkSymbol,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
@@ -126,10 +125,10 @@ export const buildStablecoinYieldReviewState = ({
     symbol,
 }: BuildStablecoinYieldReviewStateParams): BuildStablecoinYieldReviewStateResult => {
     const gasPriceHex = tx.maxFeePerGas ?? tx.gasPrice ?? ('0x0' as `0x${string}`);
-    const gasLimit = evmHexToBigNumber(tx.gasLimit);
-    const gasPrice = evmHexToBigNumber(gasPriceHex);
-    const feePerUnit = evmHexWeiToGwei(gasPriceHex);
-    const fee = gasLimit.multipliedBy(gasPrice);
+    const gasLimit = fromHex(tx.gasLimit);
+    const gasPrice = fromHex(gasPriceHex);
+    const feePerUnit = fromHex(gasPriceHex).asWei().toGwei();
+    const fee = gasLimit.toBigNumber().multipliedBy(gasPrice.toBigNumber());
     const reviewToken = buildStablecoinYieldReviewToken({ token, symbol });
     const amountSubunits = unitsToSubunits({
         value: asAmountUnit(new BigNumber(amount)),
@@ -141,8 +140,8 @@ export const buildStablecoinYieldReviewState = ({
     > =
         tx.maxFeePerGas && tx.maxPriorityFeePerGas
             ? {
-                  maxFeePerGas: evmHexWeiToGwei(tx.maxFeePerGas),
-                  maxPriorityFeePerGas: evmHexWeiToGwei(tx.maxPriorityFeePerGas),
+                  maxFeePerGas: fromHex(tx.maxFeePerGas).asWei().toGwei(),
+                  maxPriorityFeePerGas: fromHex(tx.maxPriorityFeePerGas).asWei().toGwei(),
               }
             : {};
 
@@ -160,7 +159,7 @@ export const buildStablecoinYieldReviewState = ({
         ],
         selectedFee: 'custom',
         feePerUnit,
-        feeLimit: gasLimit.toFixed(0),
+        feeLimit: gasLimit.toIntegerString(),
         ...eip1559ReviewFields,
         options: ['broadcast', 'transactionData'],
         transactionData: tx.data,
@@ -173,7 +172,7 @@ export const buildStablecoinYieldReviewState = ({
         type: 'final',
         fee: fee.toFixed(0),
         feePerByte: feePerUnit,
-        feeLimit: gasLimit.toFixed(0),
+        feeLimit: gasLimit.toIntegerString(),
         totalSpent: reviewToken ? amountSubunits.toFixed(0) : amountSubunits.plus(fee).toFixed(0),
         bytes: 0,
         inputs: [],
