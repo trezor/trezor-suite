@@ -175,7 +175,7 @@ export const TransactionTarget = ({
                 return (
                     <TargetAddressLabel
                         symbol={transaction.symbol}
-                        accountMetadata={accountMetadata}
+                        accountKey={accountKey}
                         target={payload}
                         type={transaction.type}
                         deviceStaticSessionId={transaction.deviceState}
@@ -194,7 +194,7 @@ export const TransactionTarget = ({
             default:
                 return exhaustive(type);
         }
-    }, [type, transaction, payload, accountMetadata]);
+    }, [accountKey, type, transaction, payload]);
 
     const outputLabel =
         suiteSyncOutputLabels.find(it => it.txId === transaction.txid && it.txTargetId === targetId)
