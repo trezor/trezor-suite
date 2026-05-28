@@ -3,13 +3,11 @@ import { useEffect, useMemo, useRef } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import styled from 'styled-components';
 
+import { selectAccountLabel } from '@suite/account';
 import { useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
-import { selectIsLegacyLabelingVisible, selectLabelingDataForAccount } from '@suite/metadata';
-import { selectIsSuiteSyncEnabled, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Column, H2, Row, Text, motionEasing } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 
@@ -33,26 +31,18 @@ type AccountDetailsProps = {
 export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetailsProps) => {
     const hasMountedRef = useRef(false);
     const controls = useAnimation();
-
-    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
-    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
-
-    const selectedAccountLegacyLabels = useSelector(state =>
-        selectLabelingDataForAccount(state, selectedAccount.key),
-    );
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
 
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
     const { translationString } = useTranslation();
-    const { walletDescriptor } = parseDeviceStaticSessionId(selectedAccount.deviceState);
 
-    const suiteSyncAccountLabel = useSelector(state =>
-        selectSuiteSyncAccountLabel(
-            state,
-            walletDescriptor,
-            selectedAccount.descriptor,
-            selectedAccount.symbol,
-        ),
+    const accountLabel = useSelector(state =>
+        selectAccountLabel(state, {
+            accountDescriptor: selectedAccount.descriptor,
+            accountKey: selectedAccount.key,
+            deviceStaticId: selectedAccount.deviceState,
+            networkSymbol: selectedAccount.symbol,
+        }),
     );
 
     const { symbol, key, path, index, accountType, formattedBalance, deviceState, networkType } =
@@ -61,10 +51,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
 
     const defaultLabel = getDefaultAccountLabel({ accountType, symbol, index });
 
-    const label =
-        (isSuiteSyncEnabled ? suiteSyncAccountLabel : null) ||
-        (isLegacyLabelingVisible ? selectedAccountLegacyLabels.accountLabel : null) ||
-        defaultLabel;
+    const label = accountLabel || defaultLabel;
 
     const getTypographyStyle = () => {
         if (isBalanceShown) {
@@ -135,7 +122,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                 <CoinLogo size={36} symbol={symbol} type="token" />
                 <Column
                     overflow="hidden"
-                    // To accomodate the labeling component
+                    // To accommodate the labeling component
                     padding={8}
                 >
                     <H2 typographyStyle={getTypographyStyle()}>{accountNameElement}</H2>

@@ -11,3 +11,4 @@ export {
     type SelectedAccountRootStateWithTrading,
     type SelectedAccountState,
 } from './selectedAccountReducer';
+export { selectAccountLabel, type SelectAccountLabelState } from './selectAccountLabel';

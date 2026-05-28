@@ -1,7 +1,5 @@
-import { selectIsLegacyLabelingVisible, selectLabelingDataForAccount } from '@suite/metadata';
-import { selectIsSuiteSyncEnabled, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
+import { selectAccountLabel } from '@suite/account';
 import { type Account } from '@suite-common/wallet-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { type BadgeSize, type FlexProps, Row, Text, type TextProps } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
 
@@ -33,21 +31,17 @@ export const AccountLabel = ({
     rowProps,
 }: AccountLabelProps) => {
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
-    const { walletDescriptor } = parseDeviceStaticSessionId(account.deviceState);
-    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
-    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
-
-    const suiteSyncAccountLabel = useSelector(state =>
-        selectSuiteSyncAccountLabel(state, walletDescriptor, account.descriptor, account.symbol),
+    const accountLabel = useSelector(state =>
+        selectAccountLabel(state, {
+            accountDescriptor: account.descriptor,
+            accountKey: account.key,
+            deviceStaticId: account.deviceState,
+            networkSymbol: account.symbol,
+        }),
     );
 
-    const accountMetadata = useSelector(state => selectLabelingDataForAccount(state, account.key));
-
     const { symbol, accountType, index, path, networkType } = account;
-    const accountLabel =
-        (isSuiteSyncEnabled ? suiteSyncAccountLabel : null) ||
-        (isLegacyLabelingVisible ? accountMetadata.accountLabel : null) ||
-        getDefaultAccountLabel({ accountType, symbol, index });
+    const label = accountLabel || getDefaultAccountLabel({ accountType, symbol, index });
 
     return (
         <Row gap={12} overflow="hidden" maxWidth="100%" {...rowProps}>
@@ -58,7 +52,7 @@ export const AccountLabel = ({
                 typographyStyle={typographyStyle}
                 ellipsisLineCount={1}
             >
-                {accountLabel}
+                {label}
             </Text>
             {showAccountTypeBadge && (
                 <AccountTypeBadge
