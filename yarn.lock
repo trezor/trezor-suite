@@ -5326,24 +5326,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lottiefiles/dotlottie-react@npm:^0.17.14":
-  version: 0.17.14
-  resolution: "@lottiefiles/dotlottie-react@npm:0.17.14"
-  dependencies:
-    "@lottiefiles/dotlottie-web": "npm:0.62.0"
-  peerDependencies:
-    react: ^17 || ^18 || ^19
-  checksum: 10/2b8db478c0b671a66e8b195752ad97c0e3200e9721114f4a108e35b31730ca2844e41304b6d3e9b43769f5404cd6b16324f8ac4405bd422b0e027bd8e269c201
-  languageName: node
-  linkType: hard
-
-"@lottiefiles/dotlottie-web@npm:0.62.0":
-  version: 0.62.0
-  resolution: "@lottiefiles/dotlottie-web@npm:0.62.0"
-  checksum: 10/570297d62934ed3d0cf6b6cc984f7ee300713c5ddf83df34a63376f53bb2071b62ca174e938d801e64eac1a95d609f64b24030cf266409299d5e36bd4155df05
-  languageName: node
-  linkType: hard
-
 "@malept/cross-spawn-promise@npm:^2.0.0":
   version: 2.0.0
   resolution: "@malept/cross-spawn-promise@npm:2.0.0"
@@ -13717,7 +13699,6 @@ __metadata:
   resolution: "@suite-native/storybook@workspace:suite-native/storybook"
   dependencies:
     "@gorhom/bottom-sheet": "npm:5.2.8"
-    "@lottiefiles/dotlottie-react": "npm:^0.17.14"
     "@react-native-community/datetimepicker": "npm:^8.6.0"
     "@react-native-community/slider": "npm:^5.1.2"
     "@shopify/react-native-skia": "npm:2.5.1"
@@ -13730,7 +13711,6 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
-    babel-plugin-react-native-web: "npm:^0.21.2"
     react: "npm:19.2.4"
     react-dom: "npm:19.2.4"
     react-intl: "npm:^8.1.3"
@@ -20404,7 +20384,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-react-native-web@npm:^0.21.2, babel-plugin-react-native-web@npm:~0.21.0":
+"babel-plugin-react-native-web@npm:~0.21.0":
   version: 0.21.2
   resolution: "babel-plugin-react-native-web@npm:0.21.2"
   checksum: 10/511fe25e4fc76ac68e6edd3177676251c65e96b3e516805c21d4106bf998439dba5a96f80981a3dda39d2c09b95dc9dd62852fc465b433b2831657f8fd376eaf
