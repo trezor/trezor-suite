@@ -29,6 +29,8 @@ test.describe('Labeling migration', { tag: ['@T3W1', '@T3T1', '@desktopOnly'] },
         page,
         walletPage,
         metadataPage,
+        device,
+        devicePrompt,
         evoluClient,
         settingsPage,
     }) => {
@@ -84,6 +86,8 @@ test.describe('Labeling migration', { tag: ['@T3W1', '@T3T1', '@desktopOnly'] },
             await settingsPage.navigateTo('application');
             await metadataPage.migrateLabelsButton.click();
             await metadataPage.migrateFromLocalFileButton.click();
+            await devicePrompt.confirmOnDevicePromptIsShown({ timeout: 30_000 });
+            await device.pressYes();
             await expect(
                 page.getByTestId('@toast/legacy-labeling-migration-success'),
             ).toHaveTranslation('TR_LABELING_MIGRATION_SUCCESS', {
