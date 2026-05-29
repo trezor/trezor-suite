@@ -15,13 +15,13 @@ export const assetsSyncEvent: EventDef<Attributes, EventType.AssetsSync> = {
     descriptionTrigger: 'User confirms synchronization of a cryptocurrency asset or token in the app to update holdings',
     changelog: [
         { version: '23.4.1', notes: 'added' },
-        { version: '24.3.1', notes: '"tokenAddresses" attribute added' },
+        { version: '24.3.1', notes: '`tokenAddresses` attribute added' },
     ],
 
     attributes: {
         assetSymbol: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The network symbol of the asset being synchronized (e.g., "btc", "eth", "xrp")',
+            description: 'The network symbol of the asset being synchronized (e.g., `btc`, `eth`, `xrp`)',
         },
         tokenSymbols: {
             changelog: [

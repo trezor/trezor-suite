@@ -14,7 +14,7 @@ export const accountsActionsEvent: EventDef<Attributes, EventType.AccountsAction
 
     attributes: {
         action: {
-            description: 'The type of action performed: "rename" to rename account, "duplicate" to duplicate account, "remove" to delete account, etc.',
+            description: 'The type of action performed: `rename` to rename account, `duplicate` to duplicate account, `remove` to delete account, etc.',
             changelog: [{ version: '23.12.0', notes: 'added' }],
         },
         symbol: {

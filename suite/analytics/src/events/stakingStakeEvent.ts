@@ -33,19 +33,19 @@ export const stakingStakeEvent: EventDef<Attributes, EventType.StakingStake> = {
                     notes: 'action values changed to `continue` | `cancel` | `close`',
                 },
             ],
-            description: 'User action in the staking flow: "continue" to proceed, "cancel" to abort, "close" to exit the modal',
+            description: 'User action in the staking flow: `continue` to proceed, `cancel` to abort, `close` to exit the modal',
         },
         step: {
             changelog: [{ version: '25.4.0', notes: 'added' }],
-            description: 'Current step in the staking flow: "staking-dashboard", "stake-in-a-nutshell-modal", "funds-maintained-modal", "stake-form-modal", or "entry-period-stake-modal"',
+            description: 'Current step in the staking flow: `staking-dashboard`, `stake-in-a-nutshell-modal`, `funds-maintained-modal`, `stake-form-modal`, or `entry-period-stake-modal`',
         },
         networkSymbol: {
             changelog: [{ version: '25.4.0', notes: 'added' }],
-            description: 'The blockchain network symbol for staking (e.g., "eth", "ada", "sol")',
+            description: 'The blockchain network symbol for staking (e.g., `eth`, `ada`, `sol`)',
         },
         currency: {
             changelog: [{ version: '25.4.0', notes: 'added' }],
-            description: 'The display currency format: "crypto" for cryptocurrency amounts, "fiat" for fiat currency conversion',
+            description: 'The display currency format: `crypto` for cryptocurrency amounts, `fiat` for fiat currency conversion',
         },
     },
 };

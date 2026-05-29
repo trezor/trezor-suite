@@ -47,15 +47,15 @@ export const suiteReadyEvent: EventDef<Attributes, EventType.SuiteReady> = {
     attributes: {
         language: {
             changelog: [{ version: '1.0.0', notes: 'added' }],
-            description: 'Available Suite languages e.g. "en"',
+            description: 'Available Suite languages e.g. `en`',
         },
         enabledNetworks: {
             changelog: [{ version: '1.0.0', notes: 'added' }],
-            description: 'Available suite coins e.g. "btc,ltc,doge"',
+            description: 'Available suite coins e.g. `btc,ltc,doge`',
         },
         localCurrency: {
             changelog: [{ version: '1.0.0', notes: 'added' }],
-            description: 'Available suite currencies e.g. "usd"',
+            description: 'Available suite currencies e.g. `usd`',
         },
         discreetMode: {
             description: 'Whether discreet mode is enabled (hides sensitive information like amounts)',
@@ -71,7 +71,7 @@ export const suiteReadyEvent: EventDef<Attributes, EventType.SuiteReady> = {
         },
         platformLanguages: {
             changelog: [{ version: '1.9.0', notes: 'added' }],
-            description: "Array of user's languages in browser/os",
+            description: `Array of user's languages in browser/os`,
         },
         tor: {
             description: 'Whether Tor network support is enabled',
@@ -123,11 +123,11 @@ export const suiteReadyEvent: EventDef<Attributes, EventType.SuiteReady> = {
         },
         earlyAccessProgram: {
             changelog: [{ version: '1.15.0', notes: 'added' }],
-            description: 'boolean - true only on Desktop app with Early Access Program active',
+            description: 'boolean - `true` only on Desktop app with Early Access Program active',
         },
         customBackends: {
             changelog: [{ version: '1.17.0', notes: 'added' }],
-            description: 'Available suite coins e.g. "btc,ltc,doge"',
+            description: 'Available suite coins e.g. `btc,ltc,doge`',
         },
         autodetectLanguage: {
             description: 'Whether automatic language detection from system settings is enabled',
@@ -139,11 +139,11 @@ export const suiteReadyEvent: EventDef<Attributes, EventType.SuiteReady> = {
         },
         labeling: {
             changelog: [{ version: '1.21.0', notes: 'added' }],
-            description: "'dropbox' | 'google' | 'fileSystem' | 'sdCard' | ''",
+            description: `'dropbox' | 'google' | 'fileSystem' | 'sdCard' | ''`,
         },
         bitcoinUnit: {
             changelog: [{ version: '1.21.0', notes: 'added' }],
-            description: "'BTC' | 'μBTC' | 'mBTC' | 'sat'",
+            description: `'BTC' | 'μBTC' | 'mBTC' | 'sat'`,
         },
         experimentalFeatures: {
             changelog: [{ version: '24.8.0', notes: 'added' }],

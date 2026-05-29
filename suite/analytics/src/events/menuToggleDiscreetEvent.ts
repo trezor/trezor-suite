@@ -14,7 +14,7 @@ export const menuToggleDiscreetEvent: EventDef<Attributes, EventType.MenuToggleD
     attributes: {
         value: {
             changelog: [{ version: '1.0.0', notes: 'added' }],
-            description: 'true if discreet mode is enabled, false if disabled',
+            description: '`true` if discreet mode is enabled, `false` if disabled',
         },
     },
 };

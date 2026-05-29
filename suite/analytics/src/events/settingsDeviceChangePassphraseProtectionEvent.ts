@@ -16,7 +16,7 @@ export const settingsDeviceChangePassphraseProtectionEvent: EventDef<
 
     attributes: {
         use_passphrase: {
-            description: 'Whether passphrase protection is enabled (true) or disabled (false)',
+            description: 'Whether passphrase protection is enabled (`true`) or disabled (`false`)',
             changelog: [{ version: '1.0.0', notes: 'added' }],
         },
     },

@@ -16,15 +16,15 @@ export const sendQrScanEvent: EventDef<Attributes, EventType.SendQrScan> = {
     attributes: {
         scheme: {
             changelog: [{ version: '25.12.0', notes: 'added' }],
-            description: 'The URI scheme detected in the QR code (e.g., "bitcoin:", "ethereum:", "solana:")',
+            description: 'The URI scheme detected in the QR code (e.g., `bitcoin:`, `ethereum:`, `solana:`)',
         },
         isAmountPresent: {
             changelog: [{ version: '25.12.0', notes: 'added' }],
-            description: 'Whether the QR code contained an amount value (true) or only address information (false)',
+            description: 'Whether the QR code contained an amount value (`true`) or only address information (`false`)',
         },
         networkSymbol: {
             changelog: [{ version: '25.12.0', notes: 'added' }],
-            description: "Blockchain network symbol for the scanned QR code (e.g. 'btc', 'eth', 'sol')",
+            description: `Blockchain network symbol for the scanned QR code (e.g. 'btc', 'eth', 'sol')`,
         },
     },
 };

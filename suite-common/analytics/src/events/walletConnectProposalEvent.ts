@@ -19,7 +19,7 @@ export const walletConnectProposalEvent: EventDef<Attributes, EventType.WalletCo
         },
         validation: {
             changelog: [{ version: '25.5.0', notes: 'added' }],
-            description: 'The validation status of the DApp: "VALID" if verified, "INVALID" if verification failed, "UNKNOWN" if not yet verified',
+            description: 'The validation status of the DApp: `VALID` if verified, `INVALID` if verification failed, `UNKNOWN` if not yet verified',
         },
         networks: {
             changelog: [{ version: '25.5.0', notes: 'added' }],

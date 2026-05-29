@@ -24,7 +24,7 @@ export const routerLocationChangeEvent: EventDef<Attributes, EventType.RouterLoc
         },
         anchor: {
             changelog: [{ version: '1.3.0', notes: 'added' }],
-            description: 'The anchor/hash fragment of the URL if present (e.g., "#settings" for deep-linking to a section)',
+            description: 'The anchor/hash fragment of the URL if present (e.g., `#settings` for deep-linking to a section)',
         },
     },
 };

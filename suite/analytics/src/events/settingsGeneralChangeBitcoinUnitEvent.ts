@@ -17,7 +17,7 @@ export const settingsGeneralChangeBitcoinUnitEvent: EventDef<
     attributes: {
         unit: {
             changelog: [{ version: '1.21.0', notes: 'added' }],
-            description: 'The selected Bitcoin unit: "BTC" for Bitcoin, "mBTC" for millibitcoin, "sat" for satoshis, "tBTC" for testnet bitcoin',
+            description: 'The selected Bitcoin unit: `BTC` for Bitcoin, `sat` for satoshis',
         },
     },
 };

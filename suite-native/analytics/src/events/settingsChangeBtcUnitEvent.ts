@@ -9,13 +9,13 @@ type Attributes = {
 
 export const settingsChangeBtcUnitEvent: EventDef<Attributes, EventType.SettingsChangeBtcUnit> = {
     name: EventType.SettingsChangeBtcUnit,
-    descriptionTrigger: 'User changes the Bitcoin display unit (BTC, mBTC, sats) in mobile app settings',
+    descriptionTrigger: 'User changes the Bitcoin display unit (BTC, sats) in mobile app settings',
     changelog: [{ version: '23.4.1', notes: 'added' }],
 
     attributes: {
         bitcoinUnit: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The selected Bitcoin unit abbreviation: "BTC" (full Bitcoin), "mBTC" (millibitcoin), or "sat" (satoshis)',
+            description: 'The selected Bitcoin unit abbreviation: `BTC` (full Bitcoin) or `sat` (satoshis)',
         },
     },
 };

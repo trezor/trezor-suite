@@ -33,7 +33,7 @@ export const settingsCoinsBackendEvent: EventDef<Attributes, EventType.SettingsC
     attributes: {
         symbol: {
             changelog: [{ version: '1.17.0', notes: 'added' }],
-            description: 'The blockchain network symbol for which the backend is being configured (e.g., "btc", "eth", "ltc")',
+            description: 'The blockchain network symbol for which the backend is being configured (e.g., `btc`, `eth`, `ltc`)',
         },
         type: {
             changelog: [{ version: '1.17.0', notes: 'added' }],

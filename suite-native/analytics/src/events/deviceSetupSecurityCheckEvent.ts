@@ -23,7 +23,7 @@ export const deviceSetupSecurityCheckEvent: EventDef<
     attributes: {
         location: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'The type of security concern: "deviceLooksDifferent" (device appearance), "firmwareAlreadyInstalled" (firmware present), "untrustedReseller" (seller concern), "securitySeal" (seal issue), or "packaging" (packaging concern)',
+            description: 'The type of security concern: `deviceLooksDifferent` (device appearance), `firmwareAlreadyInstalled` (firmware present), `untrustedReseller` (seller concern), `securitySeal` (seal issue), or `packaging` (packaging concern)',
         },
     },
 };

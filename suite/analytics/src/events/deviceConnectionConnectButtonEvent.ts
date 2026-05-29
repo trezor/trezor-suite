@@ -16,7 +16,7 @@ export const deviceConnectionConnectButtonEvent: EventDef<
 
     attributes: {
         option: {
-            description: 'The location from where the connect button was clicked: "dashboard" for main dashboard, "dropdown" for dropdown menu',
+            description: 'The location from where the connect button was clicked: `dashboard` for main dashboard, `dropdown` for dropdown menu',
             changelog: [{ version: '25.12.1', notes: 'added' }],
         },
     },

@@ -22,11 +22,11 @@ export const assetDetailTimeframeChangeEvent: EventDef<
     attributes: {
         timeframe: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The selected timeframe for the asset detail graph (e.g., "1D" for 1 day, "7D" for 7 days, "1M" for 1 month, "1Y" for 1 year, "ALL" for all time)',
+            description: 'The selected timeframe for the asset detail graph (e.g., `1d` for 1 day, `1w` for 1 week, `1m` for 1 month, `6m` for 6 months, `1y` for 1 year, `all` for all time)',
         },
         assetSymbol: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The network symbol of the asset being viewed (e.g., "btc", "eth", "ada")',
+            description: 'The network symbol of the asset being viewed (e.g., `btc`, `eth`, `ada`)',
         },
         tokenSymbol: {
             changelog: [{ version: '23.4.1', notes: 'added' }],

@@ -14,7 +14,7 @@ export const settingsChangeThemeEvent: EventDef<Attributes, EventType.SettingsCh
     attributes: {
         theme: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The name of the selected theme (e.g., "light", "dark", "auto")',
+            description: 'The name of the selected theme (e.g., `standard`, `dark`, `system`)',
         },
     },
 };

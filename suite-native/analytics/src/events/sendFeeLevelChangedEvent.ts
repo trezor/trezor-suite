@@ -14,7 +14,7 @@ export const sendFeeLevelChangedEvent: EventDef<Attributes, EventType.SendFeeLev
     attributes: {
         value: {
             changelog: [{ version: '24.10.1', notes: 'added' }],
-            description: 'The selected fee level (e.g., "slow", "normal", "fast", "custom")',
+            description: 'The selected fee level (e.g., `economy`, `normal`, `high`, `custom`)',
         },
     },
 };

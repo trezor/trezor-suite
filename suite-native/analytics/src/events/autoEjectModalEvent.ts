@@ -15,7 +15,7 @@ export const autoEjectModalEvent: EventDef<Attributes, EventType.AutoEjectModal>
     attributes: {
         value: {
             changelog: [{ version: '25.8.1', notes: 'added' }],
-            description: 'User choice: "enable" to automatically eject device on disconnect, "skip" to disable auto-eject',
+            description: 'User choice: `enable` to automatically eject device on disconnect, `skip` to disable auto-eject',
         },
     },
 };

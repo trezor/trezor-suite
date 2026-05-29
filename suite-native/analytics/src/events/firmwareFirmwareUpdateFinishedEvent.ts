@@ -34,14 +34,14 @@ export const firmwareFirmwareUpdateFinishedEvent: EventDef<
         },
         fromFwVersion: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'Firmware version before update, or "none" if not applicable',
+            description: 'Firmware version before update, or `none` if not applicable',
         },
         toFwVersion: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
             description: 'Target firmware version (e.g., 1.2.3)',
         },
         fromFwType: {
-            description: 'The firmware type before update (e.g., official, beta, or "none")',
+            description: 'The firmware type before update (e.g., official, beta, or `none`)',
             changelog: [{ version: '25.5.1', notes: 'added' }],
         },
         toFwType: {

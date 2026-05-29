@@ -16,7 +16,7 @@ export const settingsGeneralNetworkReserveEvent: EventDef<
 
     attributes: {
         value: {
-            description: 'Whether network reserve is enabled (true) or disabled (false)',
+            description: 'Whether network reserve is enabled (`true`) or disabled (`false`)',
             changelog: [{ version: '1.0.0', notes: 'added' }],
         },
     },

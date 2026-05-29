@@ -16,7 +16,7 @@ export const settingsGeneralAutoEjectEvent: EventDef<
 
     attributes: {
         value: {
-            description: 'Whether auto-eject is enabled (true) or disabled (false)',
+            description: 'Whether auto-eject is enabled (`true`) or disabled (`false`)',
             changelog: [{ version: '25.7.1', notes: 'added' }],
         },
     },

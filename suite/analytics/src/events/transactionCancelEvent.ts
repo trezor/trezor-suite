@@ -15,11 +15,11 @@ export const transactionCancelEvent: EventDef<Attributes, EventType.TransactionC
     attributes: {
         txType: {
             changelog: [{ version: '25.4.0', notes: 'added' }],
-            description: 'Type of transaction being cancelled: "trade" for trading transactions, "stake" for staking transactions',
+            description: 'Type of transaction being cancelled: `trade` for trading transactions, `stake` for staking transactions',
         },
         networkSymbol: {
             changelog: [{ version: '25.4.0', notes: 'added' }],
-            description: 'The blockchain network symbol of the transaction being cancelled (e.g., "btc", "eth")',
+            description: 'The blockchain network symbol of the transaction being cancelled (e.g., `btc`, `eth`)',
         },
     },
 };

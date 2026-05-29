@@ -15,7 +15,7 @@ export const settingsChangeCurrencyEvent: EventDef<Attributes, EventType.Setting
     attributes: {
         localCurrency: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The ISO 4217 fiat currency code selected (e.g., "USD", "EUR", "GBP")',
+            description: 'The ISO 4217 fiat currency code selected (e.g., `USD`, `EUR`, `GBP`)',
         },
     },
 };

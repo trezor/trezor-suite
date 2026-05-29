@@ -14,11 +14,11 @@ export const promoDashboardBannerEvent: EventDef<Attributes, EventType.PromoDash
 
     attributes: {
         action: {
-            description: 'The user action: "cta" when clicking the call-to-action link, "close" when dismissing the banner',
+            description: 'The user action: `cta` when clicking the call-to-action link, `close` when dismissing the banner',
             changelog: [{ version: '25.8.0', notes: 'added' }],
         },
         bannerType: {
-            description: 'Type or identifier of the promotional banner (e.g., "tex", "ts7") - only selected strings are allowed',
+            description: 'Type or identifier of the promotional banner (e.g., `tex`, `ts7`)',
             changelog: [{ version: '25.8.0', notes: 'added' }],
         },
     },

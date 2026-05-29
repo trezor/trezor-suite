@@ -14,11 +14,11 @@ export const settingsCoinsEvent: EventDef<Attributes, EventType.SettingsCoins> =
 
     attributes: {
         symbol: {
-            description: 'The blockchain network or cryptocurrency symbol being toggled (e.g., "btc", "eth", "doge")',
+            description: 'The blockchain network or cryptocurrency symbol being toggled (e.g., `btc`, `eth`, `doge`)',
             changelog: [{ version: '1.19.0', notes: 'added' }],
         },
         value: {
-            description: 'Whether the coin is enabled (true) or disabled (false)',
+            description: 'Whether the coin is enabled (`true`) or disabled (`false`)',
             changelog: [{ version: '1.19.0', notes: 'added' }],
         },
     },

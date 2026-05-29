@@ -17,11 +17,11 @@ export const settingsChangeCoinBackendEvent: EventDef<
     changelog: [{ version: '26.2.1', notes: 'added' }],
     attributes: {
         symbol: {
-            description: 'The cryptocurrency network symbol for which the backend is configured (e.g., "btc", "eth")',
+            description: 'The cryptocurrency network symbol for which the backend is configured (e.g., `btc`, `eth`)',
             changelog: [{ version: '26.2.1', notes: 'added' }],
         },
         type: {
-            description: 'The backend type being configured: "default" for standard backend, or a custom backend type identifier',
+            description: 'The backend type being configured: `default` for standard backend, or a custom backend type identifier',
             changelog: [{ version: '26.2.1', notes: 'added' }],
         },
     },

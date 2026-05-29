@@ -22,23 +22,23 @@ export const appUpdateEvent: EventDef<Attributes, EventType.AppUpdate> = {
     attributes: {
         toVersion: {
             changelog: [{ version: '1.17.0', notes: 'added' }],
-            description: 'The target version the application is updating to (e.g., "24.10.1")',
+            description: 'The target version the application is updating to (e.g., `24.10.1`)',
         },
         status: {
             changelog: [{ version: '1.17.0', notes: 'added' }],
-            description: 'The current status of the update process (e.g., "checking", "downloading", "installing", "completed", "error")',
+            description: 'The current status of the update process (e.g., `checking`, `downloading`, `installing`, `completed`, `error`)',
         },
         isPrerelease: {
             changelog: [{ version: '1.17.0', notes: 'added' }],
-            description: 'Whether the update is to a pre-release/beta version: true for pre-release, false for stable release',
+            description: 'Whether the update is to a pre-release/beta version: `true` for pre-release, `false` for stable release',
         },
         earlyAccessProgram: {
             changelog: [{ version: '1.17.0', notes: 'added' }],
-            description: 'Whether the user is enrolled in the early access program for beta releases: true if enrolled, false if not',
+            description: 'Whether the user is enrolled in the early access program for beta releases: `true` if enrolled, `false` if not',
         },
         isAutoUpdated: {
             changelog: [{ version: '25.1.0', notes: 'added' }],
-            description: 'Whether the update was performed automatically without user intervention: true for automatic updates, false for manual updates',
+            description: 'Whether the update was performed automatically without user intervention: `true` for automatic updates, `false` for manual updates',
         },
     },
 };

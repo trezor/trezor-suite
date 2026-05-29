@@ -22,11 +22,11 @@ export const settingsGeneralChangeThemeEvent: EventDef<
 
     attributes: {
         theme: {
-            description: 'The selected theme: "light" for light mode, "dark" for dark mode, "debug" for debug theme',
+            description: 'The selected theme: `light` for light mode, `dark` for dark mode, `debug` for debug theme',
             changelog: [{ version: '1.17.0', notes: 'added' }],
         },
         platformTheme: {
-            description: 'The operating system theme: "light" for light mode or "dark" for dark mode',
+            description: 'The operating system theme: `light` for light mode or `dark` for dark mode',
             changelog: [{ version: '1.17.0', notes: 'added' }],
         },
         previousTheme: {
@@ -34,7 +34,7 @@ export const settingsGeneralChangeThemeEvent: EventDef<
             changelog: [{ version: '1.17.0', notes: 'added' }],
         },
         autodetectTheme: {
-            description: 'Whether auto-detection of system theme is enabled (true) or manual theme selection is used (false)',
+            description: 'Whether auto-detection of system theme is enabled (`true`) or manual theme selection is used (`false`)',
             changelog: [{ version: '1.17.0', notes: 'added' }],
         },
         previousAutodetectTheme: {

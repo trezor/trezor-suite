@@ -38,7 +38,7 @@ export const tradeExchangeEvent: EventDef<Attributes, EventType.TradeExchange> =
     attributes: {
         action: {
             changelog: [{ version: '25.5.2', notes: 'added' }],
-            description: 'The user action in the exchange flow: "continue" to proceed, "cancel" to exit',
+            description: 'The user action in the exchange flow: `continue` to proceed, `cancel` to exit',
         },
         step: {
             description: 'The current step in the exchange flow: `exchange-form`, `receive-address`, `create-approval`, `already-approved`, or `confirm-and-send`',
@@ -69,7 +69,7 @@ export const tradeExchangeEvent: EventDef<Attributes, EventType.TradeExchange> =
         },
         receiveCryptoContractAddress: {
             changelog: [{ version: '25.5.2', notes: 'added' }],
-            description: 'contract address of the ‘From’ crypto (if it is a token)',
+            description: 'contract address of the ‘To’ crypto (if it is a token)',
         },
         exchangeName: {
             changelog: [{ version: '25.5.2', notes: 'added' }],

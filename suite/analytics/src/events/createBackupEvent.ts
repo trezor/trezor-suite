@@ -20,7 +20,7 @@ export const createBackupEvent: EventDef<Attributes, EventType.CreateBackup> = {
 
     attributes: {
         status: {
-            description: 'The backup operation result: "finished" when backup completed successfully, "error" when backup failed',
+            description: 'The backup operation result: `finished` when backup completed successfully, `error` when backup failed',
             changelog: [{ version: '1.17.0', notes: 'added' }],
         },
         error: {

@@ -17,7 +17,7 @@ export const settingsGeneralMevProtectionEvent: EventDef<
     attributes: {
         value: {
             changelog: [{ version: '25.10.0', notes: 'added' }],
-            description: 'Whether MEV protection is enabled (true) or disabled (false)',
+            description: 'Whether MEV protection is enabled (`true`) or disabled (`false`)',
         },
     },
 };

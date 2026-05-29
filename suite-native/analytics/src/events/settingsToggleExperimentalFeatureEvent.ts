@@ -19,11 +19,11 @@ export const settingsToggleExperimentalFeatureEvent: EventDef<
     attributes: {
         feature: {
             changelog: [{ version: '26.4.1', notes: 'added' }],
-            description: 'The identifier of the experimental feature being toggled (e.g., "new-ui", "advanced-trading", "beta-functionality")',
+            description: 'The identifier of the experimental feature being toggled',
         },
         value: {
             changelog: [{ version: '26.4.1', notes: 'added' }],
-            description: 'true if the experimental feature was enabled (user opted into beta functionality), false if disabled (sticking to stable features)',
+            description: '`true` if the experimental feature was enabled (user opted into beta functionality), `false` if disabled (sticking to stable features)',
         },
     },
 };

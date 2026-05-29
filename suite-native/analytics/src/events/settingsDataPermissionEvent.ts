@@ -14,7 +14,7 @@ export const settingsDataPermissionEvent: EventDef<Attributes, EventType.Setting
     attributes: {
         analyticsPermission: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'true if analytics data collection is permitted, false if analytics collection is disabled',
+            description: '`true` if analytics data collection is permitted, `false` if analytics collection is disabled',
         },
     },
 };

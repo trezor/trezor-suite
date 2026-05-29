@@ -30,7 +30,7 @@ export const sendTransactionDispatchedEvent: EventDef<
     changelog: [{ version: '24.10.1', notes: 'added' }],
     attributes: {
         symbol: {
-            description: 'The blockchain network symbol for the transaction (e.g., "btc", "eth", "matic")',
+            description: 'The blockchain network symbol for the transaction (e.g., `btc`, `eth`, `ada`)',
             changelog: [{ version: '24.10.1', notes: 'added' }],
         },
         outputsCount: {
@@ -38,7 +38,7 @@ export const sendTransactionDispatchedEvent: EventDef<
             changelog: [{ version: '24.10.1', notes: 'added' }],
         },
         selectedFee: {
-            description: 'The fee level chosen for the transaction (e.g., "slow", "normal", "fast")',
+            description: 'The fee level chosen for the transaction (e.g., `economy`, `normal`, `high`, `custom`)',
             changelog: [{ version: '24.10.1', notes: 'added' }],
         },
         wasAppLeftDuringReview: {

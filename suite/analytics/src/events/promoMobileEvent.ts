@@ -13,7 +13,7 @@ export const promoMobileEvent: EventDef<Attributes, EventType.PromoMobile> = {
 
     attributes: {
         platform: {
-            description: 'The mobile platform: "ios" for Apple iOS or "android" for Android device',
+            description: 'The mobile platform: `ios` for Apple iOS or `android` for Android device',
             changelog: [{ version: '23.6.0', notes: 'added' }],
         },
     },

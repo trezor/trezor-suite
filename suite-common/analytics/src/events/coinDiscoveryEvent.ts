@@ -36,7 +36,7 @@ export const coinDiscoveryEvent: EventDef<Attributes, EventType.CoinDiscovery> =
                 { version: '26.3.1', notes: 'added on desktop' },
                 { version: '26.2.2', notes: 'added on mobile' },
             ],
-            description: 'The blockchain network symbol discovered (e.g., "btc", "eth", "sol")',
+            description: 'The blockchain network symbol discovered (e.g., `btc`, `eth`, `sol`)',
         },
         numberOfAccounts: {
             changelog: [
@@ -64,7 +64,7 @@ export const coinDiscoveryEvent: EventDef<Attributes, EventType.CoinDiscovery> =
                 { version: '26.3.1', notes: 'added on desktop' },
                 { version: '26.2.2', notes: 'added on mobile' },
             ],
-            description: 'Symbols/tickers of detected tokens (e.g., "USDC", "DAI", "USDT")',
+            description: 'Symbols/tickers of detected tokens (e.g., `USDC`, `DAI`, `USDT`)',
         },
         numberOfStakedAccounts: {
             changelog: [
@@ -78,7 +78,7 @@ export const coinDiscoveryEvent: EventDef<Attributes, EventType.CoinDiscovery> =
                 { version: '26.4.1', notes: 'added on desktop' },
                 { version: '26.4.1', notes: 'added on mobile' },
             ],
-            description: 'List of staking service providers detected for this coin (e.g., "lido", "rocketpool")',
+            description: 'List of staking service providers detected for this coin (e.g., `lido`, `rocketpool`)',
         },
     },
 };

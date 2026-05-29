@@ -15,7 +15,7 @@ export const tradingCompareOffersEvent: EventDef<Attributes, EventType.TradingCo
     attributes: {
         type: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'Type of trade: "buy" for purchase, "sell" for selling cryptocurrency, "exchange" for swapping',
+            description: 'Type of trade: `buy` for purchase, `sell` for selling cryptocurrency, `exchange` for swapping',
         },
     },
 };

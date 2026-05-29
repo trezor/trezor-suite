@@ -15,8 +15,8 @@ export const settingsNetworkReserveToggleEvent: EventDef<
     changelog: [{ version: '26.2.1', notes: 'Added' }],
     attributes: {
         enabled: {
-            changelog: [{ version: '26.2.1', notes: 'Boolean values for new value: true / false' }],
-            description: 'true if network reserve protection is enabled (prevents spending the last coins needed for network fees), false if disabled (allows spending all funds)',
+            changelog: [{ version: '26.2.1', notes: 'Boolean values for new value: `true` / `false`' }],
+            description: '`true` if network reserve protection is enabled (prevents spending the last coins needed for network fees), `false` if disabled (allows spending all funds)',
         },
     },
 };

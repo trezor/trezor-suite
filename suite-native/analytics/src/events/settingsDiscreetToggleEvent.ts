@@ -14,7 +14,7 @@ export const settingsDiscreetToggleEvent: EventDef<Attributes, EventType.Setting
     attributes: {
         discreetMode: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'true if discreet mode is enabled (hiding sensitive data), false if disabled (showing data normally)',
+            description: '`true` if discreet mode is enabled (hiding sensitive data), `false` if disabled (showing data normally)',
         },
     },
 };

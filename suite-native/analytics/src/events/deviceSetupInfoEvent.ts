@@ -15,7 +15,7 @@ export const deviceSetupInfoEvent: EventDef<Attributes, EventType.DeviceSetupInf
     attributes: {
         location: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'The topic of the info link clicked: "untrustedReseller" for information about reseller concerns, "securitySeal" for security seal information',
+            description: 'The topic of the info link clicked: `untrustedReseller` for information about reseller concerns, `securitySeal` for security seal information',
         },
     },
 };

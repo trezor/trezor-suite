@@ -15,7 +15,7 @@ export const menuNotificationsToggleEvent: EventDef<Attributes, EventType.MenuNo
         attributes: {
             value: {
                 changelog: [{ version: '1.9.0', notes: 'added' }],
-                description: 'true if notifications are enabled, false if disabled',
+                description: '`true` if notifications are enabled, `false` if disabled',
             },
         },
     };

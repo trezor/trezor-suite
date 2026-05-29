@@ -26,7 +26,7 @@ export const deviceConnectEvent: EventDef<Attributes, EventType.DeviceConnect> =
     attributes: {
         mode: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'The device mode: "normal" for regular operation, "bootloader" for firmware updates, null if unknown',
+            description: 'The device mode: `normal` for regular operation, `bootloader` for firmware updates, null if unknown',
         },
         firmwareVersion: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
@@ -34,7 +34,7 @@ export const deviceConnectEvent: EventDef<Attributes, EventType.DeviceConnect> =
         },
         pinProtection: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'Whether PIN protection is enabled on the device: true if enabled, false if disabled, null if unknown',
+            description: 'Whether PIN protection is enabled on the device: `true` if enabled, `false` if disabled, null if unknown',
         },
         deviceModel: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
@@ -54,7 +54,7 @@ export const deviceConnectEvent: EventDef<Attributes, EventType.DeviceConnect> =
         },
         connectionType: {
             changelog: [{ version: '25.10.1', notes: 'added' }],
-            description: 'The connection type used: "cable" for USB/wired connection, "bluetooth" for wireless connection',
+            description: 'The connection type used: `cable` for USB/wired connection, `bluetooth` for wireless connection',
         },
     },
 };

@@ -33,7 +33,7 @@ export const settingsGeneralLabelingProviderEvent: EventDef<
     attributes: {
         provider: {
             changelog: [{ version: '1.21.0', notes: 'added' }],
-            description: 'The selected labeling provider: "dropbox" for Dropbox, "google" for Google Drive, "fileSystem" for local file system, "evolu" for Evolu, "legacy" for legacy provider, "missing-provider" when labeling is enabled but no provider is configured, or empty string when provider is not selected',
+            description: 'The selected labeling provider: `dropbox` for Dropbox, `google` for Google Drive, `fileSystem` for local file system, `evolu` for Evolu, `legacy` for legacy provider, `missing-provider` when labeling is enabled but no provider is configured, or empty string when provider is not selected',
         },
     },
 };

@@ -15,11 +15,11 @@ export const guideHeaderNavigationEvent: EventDef<Attributes, EventType.GuideHea
     attributes: {
         type: {
             changelog: [{ version: '1.11.0', notes: 'added' }],
-            description: 'Type of navigation action: "back" to go to previous page, "close" to exit guide, "category" to navigate to a category',
+            description: 'Type of navigation action: `back` to go to previous page, `close` to exit guide, `category` to navigate to a category',
         },
         id: {
             changelog: [{ version: '1.11.0', notes: 'added' }],
-            description: 'Identifier of the category or page being navigated to (optional, only present for "category" type)',
+            description: 'Identifier of the category or page being navigated to (optional, only present for `category` type)',
         },
     },
 };

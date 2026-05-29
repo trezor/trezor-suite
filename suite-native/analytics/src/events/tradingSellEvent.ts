@@ -22,7 +22,7 @@ export const tradingSellEvent: EventDef<Attributes, EventType.TradingSell> = {
     attributes: {
         action: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'User action: "continue" to proceed through the flow, "cancel" to exit',
+            description: 'User action: `continue` to proceed through the flow, `cancel` to exit',
         },
         step: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
@@ -30,11 +30,11 @@ export const tradingSellEvent: EventDef<Attributes, EventType.TradingSell> = {
         },
         cryptoLabel: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'Display label of the cryptocurrency being sold (e.g., "BTC", "ETH", "USDC")',
+            description: 'Display label of the cryptocurrency being sold (e.g., `BTC`, `ETH`, `SOL`)',
         },
         cryptoNetworkSymbol: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'The blockchain network symbol (e.g., "btc", "eth", "matic")',
+            description: 'The blockchain network symbol (e.g., `btc`, `eth`, `ada`)',
         },
         cryptoContractAddress: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
@@ -42,7 +42,7 @@ export const tradingSellEvent: EventDef<Attributes, EventType.TradingSell> = {
         },
         receiveMethod: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'The method for receiving funds from the sale (e.g., "bankTransfer", "paypal")',
+            description: 'The method for receiving funds from the sale (e.g., `bankTransfer`, `paypal`)',
         },
         countryOfResidence: {
             changelog: [{ version: '25.5.1', notes: 'added' }],

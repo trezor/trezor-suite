@@ -21,7 +21,7 @@ export const accountsTransactionsExportEvent: EventDef<
             changelog: [{ version: '1.23.0', notes: 'added' }],
         },
         format: {
-            description: 'The export format selected: "pdf" for PDF document, "csv" for CSV spreadsheet, "json" for JSON data',
+            description: 'The export format selected: `pdf` for PDF document, `csv` for CSV spreadsheet, `json` for JSON data',
             changelog: [{ version: '1.23.0', notes: 'added' }],
         },
     },

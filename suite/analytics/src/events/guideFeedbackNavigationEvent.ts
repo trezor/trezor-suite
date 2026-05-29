@@ -14,7 +14,7 @@ export const guideFeedbackNavigationEvent: EventDef<Attributes, EventType.GuideF
 
         attributes: {
             type: {
-                description: 'The feedback page type: "overview" for main feedback page, "bug" for bug report form, "suggestion" for feature suggestion form',
+                description: 'The feedback page type: `overview` for main feedback page, `bug` for bug report form, `suggestion` for feature suggestion form',
                 changelog: [{ version: '1.11.0', notes: 'added' }],
             },
         },

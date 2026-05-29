@@ -14,7 +14,7 @@ export const coinEnablingInitStateEvent: EventDef<Attributes, EventType.CoinEnab
     changelog: [{ version: '24.9.1', notes: 'added' }],
     attributes: {
         enabledNetworks: {
-            description: 'List of blockchain network symbols that are enabled during initial setup (e.g., "btc", "eth", "matic")',
+            description: 'List of blockchain network symbols that are enabled during initial setup (e.g., `btc`, `eth`, `ada`)',
             changelog: [{ version: '24.9.1', notes: 'added' }],
         },
     },

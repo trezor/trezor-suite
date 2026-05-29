@@ -14,7 +14,7 @@ export const sendConfirmedOnDeviceEvent: EventDef<Attributes, EventType.SendConf
 
     attributes: {
         assetSymbol: {
-            description: 'The blockchain network symbol for the transaction being confirmed (e.g., "btc", "eth")',
+            description: 'The blockchain network symbol for the transaction being confirmed (e.g., `btc`, `eth`)',
             changelog: [{ version: '25.5.0', notes: 'added' }],
         },
     },

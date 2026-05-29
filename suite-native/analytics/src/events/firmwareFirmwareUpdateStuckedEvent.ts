@@ -22,7 +22,7 @@ export const firmwareFirmwareUpdateStuckedEvent: EventDef<
     EventType.FirmwareFirmwareUpdateStucked
 > = {
     name: EventType.FirmwareFirmwareUpdateStucked,
-    descriptionTrigger: 'User encounters a stuck firmware update and clicks the "Stucked" button to view recovery instructions or troubleshooting help',
+    descriptionTrigger: 'User encounters a stuck firmware update and clicks the `Stucked` button to view recovery instructions or troubleshooting help',
     changelog: [{ version: '25.1.2', notes: 'Added' }],
     attributes: {
         model: {
@@ -43,15 +43,15 @@ export const firmwareFirmwareUpdateStuckedEvent: EventDef<
         },
         fromFwType: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'The firmware type before update (e.g., "official", "beta", or "none")',
+            description: 'The firmware type before update (e.g., `official`, `beta`, or `none`)',
         },
         toFwType: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'The target firmware type (e.g., "official", "beta")',
+            description: 'The target firmware type (e.g., `official`, `beta`)',
         },
         location: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'Where the firmware update was initiated: "settings", "onboarding", or null',
+            description: 'Where the firmware update was initiated: `settings`, `onboarding`, or null',
         },
         duration: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
@@ -59,7 +59,7 @@ export const firmwareFirmwareUpdateStuckedEvent: EventDef<
         },
         stuckedType: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'The specific stuck state: "uploading" if stuck during upload, "installing" if stuck during installation, "restarting" if stuck during restart',
+            description: 'The specific stuck state: `uploading` if stuck during upload, `installing` if stuck during installation, `restarting` if stuck during restart',
         },
     },
 };

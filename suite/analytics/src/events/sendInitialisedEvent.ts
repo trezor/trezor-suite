@@ -14,7 +14,7 @@ export const sendInitialisedEvent: EventDef<Attributes, EventType.SendInitialise
 
     attributes: {
         assetSymbol: {
-            description: 'The blockchain network symbol for the transaction being sent (e.g., "btc", "eth")',
+            description: 'The blockchain network symbol for the transaction being sent (e.g., `btc`, `eth`)',
             changelog: [{ version: '25.5.0', notes: 'added' }],
         },
     },
