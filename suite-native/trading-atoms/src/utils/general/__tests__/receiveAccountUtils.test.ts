@@ -87,9 +87,10 @@ describe('receiveAccountUtils', () => {
         });
 
         it('should throw when address is specified for account without addresses', () => {
-            expect(() =>
-                getReceiveAccountFromAccountAndAddressString(getEthAccount(), 'ANYADDRESS'),
-            ).toThrow('Account has no addresses');
+            const ethAccount = getEthAccount();
+            expect(getReceiveAccountFromAccountAndAddressString(ethAccount, 'ANYADDRESS')).toEqual({
+                account: ethAccount,
+            });
         });
     });
 });
