@@ -10,6 +10,7 @@
         "type-check": "yarn g:tsc --build",
         "dev": "yarn g:tsx watch ./src/index.ts",
         "start": "node ./lib/index.js",
+        "build": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {

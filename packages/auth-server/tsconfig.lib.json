@@ -1,0 +1,10 @@
+{
+    "extends": "../../tsconfig.lib.json",
+    "include": ["./src"],
+    "compilerOptions": {
+        "outDir": "./lib",
+        "module": "commonjs",
+        "moduleResolution": "node"
+    },
+    "references": []
+}
