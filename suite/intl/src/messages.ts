@@ -6207,17 +6207,17 @@ export const messages = defineMessages({
         id: 'TIME_BOUNDS_IS_NOT_SET',
         defaultMessage: 'No restriction',
     },
-    DATA_ETH: {
-        id: 'DATA_ETH',
+    DATA: {
+        id: 'DATA',
         defaultMessage: 'Data',
     },
-    DATA_ETH_ADD: {
-        id: 'DATA_ETH_ADD',
+    DATA_ADD: {
+        id: 'DATA_ADD',
         defaultMessage: 'Add data',
     },
-    DATA_ETH_ADD_TOOLTIP: {
-        id: 'DATA_ETH_ADD_TOOLTIP',
-        defaultMessage: 'Transaction data for Ethereum transaction.',
+    DATA_ADD_TOOLTIP: {
+        id: 'DATA_ADD_TOOLTIP',
+        defaultMessage: 'Attach custom calldata for a contract call.',
     },
     DATA_NOT_SET: {
         defaultMessage: 'Data not set',

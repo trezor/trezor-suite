@@ -220,7 +220,7 @@ const getOutputTitle = (
         case 'note':
             return <Translation id="TR_TRON_NOTE" />;
         case 'data':
-            return <Translation id={translation ? translation.label : 'DATA_ETH'} />;
+            return <Translation id={translation ? translation.label : 'DATA'} />;
         case 'opreturn':
             return <Translation id="OP_RETURN" />;
         case 'timebounds':
