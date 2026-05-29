@@ -1,5 +1,7 @@
 import { store } from 'expo-router/build/global-state/router-store';
 
+import { EXPO_ROUTER_ROOT_ROUTE_NAME } from './expoRouterInternal';
+
 /*
 expo-router's URL-based router only knows about file-based routes. Nested react-navigation
 stacks (AuthorizeDeviceStack, DeviceOnboardingStack, …) have inner screens that aren't
@@ -15,8 +17,6 @@ isolates the same translation in one place.
 
 Will become unnecessary when the affected nested stacks are migrated to file-based routes.
  */
-const EXPO_ROUTER_ROOT_ROUTE_NAME = '__root';
-
 export const navigateNested = (
     route: string,
     nestedScreen: { screen: string; params?: object },
