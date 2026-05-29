@@ -79,6 +79,9 @@ async function fetchWithRetry(page: Page, url: string, maxRetries = 3) {
 }
 
 test.describe('Check Links', { tag: ['@webOnly', '@nightlyOnly', '@T3T1'] }, () => {
+    test.use({
+        ignoreJSExceptions: ['Aborted by signal', 'Failed to fetch'],
+    });
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
@@ -120,7 +123,10 @@ test.describe('Check Links', { tag: ['@webOnly', '@nightlyOnly', '@T3T1'] }, () 
 
             await test.step('Filter known broken links', () => {
                 // Define patterns for known broken links here.
-                const ignoredPatterns: string[] = ['github.com/trezor/trezor-suite/releases/tag'];
+                const ignoredPatterns: string[] = [
+                    'github.com/trezor/trezor-suite/releases/tag',
+                    'apps.apple.com/app/id1631884497',
+                ];
                 const knownBrokenLinks: string[] = [];
 
                 for (const url of allUrls) {

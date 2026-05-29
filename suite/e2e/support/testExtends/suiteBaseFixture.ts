@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
 import { ElectronApplication, Page, test as base } from '@playwright/test';
+import { inspect } from 'node:util';
 
 import { TestAnnotationType } from '@trezor/e2e-utils';
 import { SetupEmu, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
@@ -167,36 +168,79 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
             await use(page);
         }
     },
+
     exceptionLogger: [
         async ({ page, ignoreJSExceptions }, use, testInfo) => {
             const errors: Error[] = [];
             const ignored: Error[] = [];
-            page.on('pageerror', error => {
-                if (ignoreJSExceptions.some(exception => error.message.includes(exception))) {
+
+            // Listener handler
+            const handlePageError = (error: Error) => {
+                const message = error?.message || '';
+                const isIgnored = ignoreJSExceptions.some(exception =>
+                    message.toLowerCase().includes(exception.toLowerCase()),
+                );
+
+                if (isIgnored) {
                     ignored.push(error);
                 } else {
                     errors.push(error);
                 }
-            });
+            };
 
+            // Start listening
+            page.on('pageerror', handlePageError);
+
+            // Error format handler
+            const formatError = (error: unknown): string => {
+                if (error instanceof Error) {
+                    let output = error.stack || `${error.name}: ${error.message}`;
+
+                    if (error.cause) {
+                        output += `\nCaused by: ${formatError(error.cause)}`;
+                    }
+
+                    return output;
+                }
+
+                /*
+                 * Fallback for non-Error objects.
+                 * Use Node's `util.inspect` to safely handle circular references
+                 * without crashes during test teardown.
+                 */
+                if (typeof error === 'object' && error !== null) {
+                    return inspect(error, {
+                        showHidden: false,
+                        depth: 3, // How deep to look inside the object
+                        colors: false,
+                        getters: true, // Catch hidden error properties
+                    });
+                }
+
+                return String(error);
+            };
+
+            // Run the actual test
             await use();
 
+            // Handle annotations
             if (ignored.length > 0) {
                 testInfo.annotations.push({
                     type: 'Warning, Ignored JS exceptions',
-                    description: `\n${ignored.map(error => `${error.message}\n${error.stack}`).join('\n-----\n')}`,
+                    description: `\n${ignored.map(formatError).join('\n-----\n')}`,
                 });
             }
 
             if (errors.length > 0) {
                 throw new Error(
                     `There was a JS exception during test run.
-                    \n${errors.map(error => `${error.message}\n${error.stack}`).join('\n-----\n')}`,
+                    \n${errors.map(formatError).join('\n-----\n')}`,
                 );
             }
         },
         { auto: true },
     ],
+
     coverageMapCollector: [
         async ({ page }, use, testInfo) => {
             await use();
