@@ -19,7 +19,7 @@ import { HiddenPlaceholder } from './HiddenPlaceholder';
 import { QuestionTooltip } from './QuestionTooltip';
 import { TrendTicker } from './Ticker/TrendTicker';
 import { PriceTicker } from './Ticker/PriceTicker';
-import { AccountLabeling, AddressLabeling, WalletLabeling, useGetWalletLabel } from './labeling';
+import { AccountLabeling, AddressLabeling, WalletLabeling } from './labeling';
 import { FormattedCryptoAmount } from './FormattedCryptoAmount';
 import { FormattedNftAmount } from './FormattedNftAmount';
 import { Sign } from './Sign';
@@ -62,7 +62,6 @@ export {
     AccountLabeling,
     AddressLabeling,
     WalletLabeling,
-    useGetWalletLabel,
     QuestionTooltip,
     FormattedCryptoAmount,
     FormattedNftAmount,

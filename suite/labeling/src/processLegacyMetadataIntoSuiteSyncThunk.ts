@@ -6,11 +6,11 @@ import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-typ
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
-import { type Result, exhaustive } from '@trezor/type-utils';
+import { type Result, type Without, exhaustive } from '@trezor/type-utils';
 
 type ProcessMetadataMessageThunkParams = {
     deviceStaticSessionId: StaticSessionId;
-    payload: MetadataAddPayload;
+    payload: Without<MetadataAddPayload, 'value'>; // dropping value, as a process of decoupling from legacy labeling
     value: string | undefined;
 };
 

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { useGetWalletLabel } from '@suite/wallet';
+import { useWalletLabel } from '@suite/wallet';
 
 import { type TrezorDevice } from 'src/types/suite';
 
@@ -14,7 +14,7 @@ const Container = styled.span`
 `;
 
 export const WalletLabeling = ({ device, shouldUseDeviceLabel }: WalletLabellingProps) => {
-    const label = useGetWalletLabel({ device, shouldUseDeviceLabel });
+    const { label } = useWalletLabel({ device, shouldUseDeviceLabel });
 
     return <Container>{label}</Container>;
 };

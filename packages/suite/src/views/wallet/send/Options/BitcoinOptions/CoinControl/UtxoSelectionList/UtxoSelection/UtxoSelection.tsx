@@ -160,7 +160,6 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                     defaultValue: utxo.address,
                                     accountDescriptor: account.descriptor,
                                     networkSymbol: account.symbol,
-                                    value: addressLabel ?? undefined,
                                 }}
                                 displayValue={<Address value={utxo.address} isTruncated />}
                                 placeholder={translationString('TR_LABELING_ADDRESS_LABEL')}
@@ -255,7 +254,6 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                     txid: utxo.txid,
                                     outputIndex: `${utxo.vout}`,
                                     defaultValue: `${utxo.txid}-${utxo.vout}`,
-                                    value: outputLabel,
                                     networkSymbol: account.symbol,
                                     accountDescriptor: account.descriptor,
                                 }}

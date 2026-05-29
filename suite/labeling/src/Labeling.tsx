@@ -28,12 +28,13 @@ import { selectEnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types
 import { type DiscoveryRootState, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { type StaticSessionId } from '@trezor/connect';
 import { EditableText, type EditableTextProps } from '@trezor/product-components';
+import { type Without } from '@trezor/type-utils';
 
 import { processLegacyMetadataIntoSuiteSyncThunk } from './processLegacyMetadataIntoSuiteSyncThunk';
 import { selectIsLabelActionEnabled } from './selectIsLabelActionEnabled';
 
 export type LabelingProps = {
-    payload: MetadataAddPayload;
+    payload: Without<MetadataAddPayload, 'value'>; // dropping value, as a process of decoupling from legacy labeling
     deviceStaticSessionId: StaticSessionId;
     children?: ReactNode;
     isDisabled?: boolean;

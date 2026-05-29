@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Translation } from '@suite/intl';
-import { useGetWalletLabel } from '@suite/wallet';
+import { useWalletLabel } from '@suite/wallet';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
 
@@ -17,7 +17,7 @@ export const DeviceStatusTextVisible = ({
     forceConnectionInfo,
 }: DeviceStatusTextVisibleProps) => {
     const { connected } = device;
-    const walletText = useGetWalletLabel({ device });
+    const { label } = useWalletLabel({ device });
 
     return (
         <DeviceConnectionText
@@ -27,10 +27,8 @@ export const DeviceStatusTextVisible = ({
             data-testid={connected ? '@deviceStatus-connected' : '@deviceStatus-disconnected'}
             data-testid-alt="@deviceStatus"
         >
-            {walletText && !forceConnectionInfo ? (
-                <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
-                    {walletText}
-                </TruncateWithTooltip>
+            {label && !forceConnectionInfo ? (
+                <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>{label}</TruncateWithTooltip>
             ) : (
                 <Translation id={connected ? 'TR_CONNECTED' : 'TR_DISCONNECTED'} />
             )}
