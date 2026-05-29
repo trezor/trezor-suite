@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
 import { getNetwork } from '@suite-common/wallet-config';
-import { stablecoinYieldActions } from '@suite-common/wallet-core';
+import { getYieldApprovalAction, stablecoinYieldActions } from '@suite-common/wallet-core';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { Box, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
@@ -113,6 +113,16 @@ export const YieldDepositApprovalScreen = () => {
     const {
         formState: { isValid },
     } = form;
+    const footerApprovalAction =
+        allowanceStatus === 'loaded'
+            ? getYieldApprovalAction({
+                  liveAmount: amountValue ?? '',
+                  allowanceAmount,
+                  isModifyMode: hasApprovedAmount,
+                  isRevokeRequired: session?.approval.isRevokeRequired ?? false,
+                  tokenContractAddress: token?.contractAddress,
+              })
+            : undefined;
     const {
         formDraft: approvalFeeFormDraft,
         formDraftKey: approvalFeeFormDraftKey,
@@ -244,6 +254,7 @@ export const YieldDepositApprovalScreen = () => {
             footer={
                 <YieldDepositFlowFooter
                     amountValue={amountValue}
+                    approvalAction={footerApprovalAction}
                     apy={apy}
                     isDisabled={isSubmitDisabled}
                     isLoading={isCheckingApproval}
