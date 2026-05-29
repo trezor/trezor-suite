@@ -108,7 +108,7 @@ jobs:
     uses: ./.github/workflows/template-suite-run-e2e.yml
     with:
       target: "desktop"
-      pw-config: "./playwright-config/playwright-desktop-pr.config.ts"
+      pw-config: ${{ needs.resolve-spec-list.outputs.spec-list != '' && './playwright-config/playwright-desktop-pr-all.config.ts' || './playwright-config/playwright-desktop-pr.config.ts' }}
       workspace-dependencies: "@trezor/suite-desktop"
       test-group: ${{ matrix.TEST_GROUP }}
       fail-fast: "7"
@@ -304,7 +304,7 @@ jobs:
     uses: ./.github/workflows/template-suite-run-e2e.yml
     with:
       target: "web"
-      pw-config: "./playwright-config/playwright-web-pr.config.ts"
+      pw-config: ${{ needs.resolve-spec-list.outputs.spec-list != '' && './playwright-config/playwright-web-pr-all.config.ts' || './playwright-config/playwright-web-pr.config.ts' }}
       test-group: ${{ matrix.TEST_GROUP }}
       fail-fast: "7"
       currents-project-id: "Og0NOQ"
