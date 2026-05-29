@@ -26,7 +26,7 @@ export const walletConnectSessionRequestEvent: EventDef<
         },
         method: {
             changelog: [{ version: '25.5.0', notes: 'added' }],
-            description: 'The WalletConnect RPC method name being requested (e.g., "eth_sign", "eth_sendTransaction")',
+            description: 'The WalletConnect RPC method name being requested (e.g., `eth_sign`, `eth_sendTransaction`)',
         },
     },
 };

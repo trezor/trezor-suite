@@ -17,7 +17,7 @@ export const deviceSettingsAuthenticityCheckEvent: EventDef<
     attributes: {
         result: {
             changelog: [{ version: '24.12.1', notes: 'added' }],
-            description: 'The result of the authenticity check: "succeeded" if device is authentic, "failed" if check failed, "error" if an error occurred during the check',
+            description: 'The result of the authenticity check: `succeeded` if device is authentic, `failed` if check failed, `error` if an error occurred during the check',
         },
     },
 };

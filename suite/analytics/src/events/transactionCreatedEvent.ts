@@ -61,7 +61,7 @@ export const transactionCreatedEvent: EventDef<Attributes, EventType.Transaction
         },
         broadcast: {
             changelog: [{ version: '1.9.0', notes: 'added' }],
-            description: 'Whether the transaction is broadcast directly to the network (true) or saved for later broadcast (false)',
+            description: 'Whether the transaction is broadcast directly to the network (`true`) or saved for later broadcast (`false`)',
         },
         bitcoinLocktime: {
             changelog: [{ version: '1.9.0', notes: 'added' }],
@@ -81,7 +81,7 @@ export const transactionCreatedEvent: EventDef<Attributes, EventType.Transaction
         },
         selectedFee: {
             changelog: [{ version: '1.9.0', notes: 'added' }],
-            description: 'The selected fee level for the transaction (e.g., "slow", "normal", "fast")',
+            description: 'The selected fee level for the transaction (e.g., `slow`, `normal`, `fast`)',
         },
         isCoinControlEnabled: {
             changelog: [{ version: '1.9.0', notes: 'added' }],
@@ -93,7 +93,7 @@ export const transactionCreatedEvent: EventDef<Attributes, EventType.Transaction
         },
         txType: {
             changelog: [{ version: '25.4.0', notes: 'added' }],
-            description: 'The type of transaction: "trade" for trading flows, "stake" for staking-related transactions',
+            description: 'The type of transaction: `trade` for trading flows, `stake` for staking-related transactions',
         },
     },
 };

@@ -28,11 +28,11 @@ export const demoAccountQuestionnaireQuestionEvent: EventDef<
     attributes: {
         option: {
             changelog: [{ version: '25.12.1', notes: 'added' }],
-            description: 'The selected option: "considering" (thinking about buying), "ad" (saw advertisement), "friend" (recommended by friend), "none" (no specific reason), "explore" (browsing app), "transaction" (want to make transaction), "hardwareWallet" (interested in hardware wallet)',
+            description: 'The selected option: `considering` (thinking about buying), `ad` (saw advertisement), `friend` (recommended by friend), `none` (no specific reason), `explore` (browsing app), `transaction` (want to make transaction), `hardwareWallet` (interested in hardware wallet)',
         },
         question: {
             changelog: [{ version: '25.12.1', notes: 'added' }],
-            description: 'The question type: "reason" (why interested in Trezor), "suiteAction" (what they want to do in Suite)',
+            description: 'The question type: `reason` (why interested in Trezor), `suiteAction` (what they want to do in Suite)',
         },
     },
 };

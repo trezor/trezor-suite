@@ -17,15 +17,15 @@ export const stakingClaimEvent: EventDef<Attributes, EventType.StakingClaim> = {
     attributes: {
         action: {
             changelog: [{ version: '26.4.1', notes: 'added' }],
-            description: 'User action: "continue" to proceed, "cancel" to abort, "close" to exit the dialog',
+            description: 'User action: `continue` to proceed, `cancel` to abort, `close` to exit the dialog',
         },
         step: {
             changelog: [{ version: '26.4.1', notes: 'added' }],
-            description: 'Current step in the claim flow: "staking-dashboard" from the dashboard, "claim-form-modal" in the claim form dialog',
+            description: 'Current step in the claim flow: `staking-dashboard` from the dashboard, `claim-form-modal` in the claim form dialog',
         },
         networkSymbol: {
             changelog: [{ version: '26.4.1', notes: 'added' }],
-            description: 'The blockchain network symbol for which rewards are being claimed (e.g., "eth", "sol")',
+            description: 'The blockchain network symbol for which rewards are being claimed (e.g., `eth`, `sol`)',
         },
     },
 };

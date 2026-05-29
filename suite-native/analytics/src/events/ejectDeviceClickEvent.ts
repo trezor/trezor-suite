@@ -14,7 +14,7 @@ export const ejectDeviceClickEvent: EventDef<Attributes, EventType.EjectDeviceCl
     changelog: [{ version: '23.11.1', notes: 'added' }],
     attributes: {
         origin: {
-            description: 'Where the eject action was triggered: "deviceManager" from the device manager interface, "deviceNotReadyModal" from the device not ready modal',
+            description: 'Where the eject action was triggered: `deviceManager` from the device manager interface, `deviceNotReadyModal` from the device not ready modal',
             changelog: [{ version: '23.11.1', notes: 'added' }],
         },
     },

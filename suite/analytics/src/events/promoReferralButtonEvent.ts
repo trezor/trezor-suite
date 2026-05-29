@@ -13,7 +13,7 @@ export const promoReferralButtonEvent: EventDef<Attributes, EventType.PromoRefer
 
     attributes: {
         hasAtLeastOneRememberedWallet: {
-            description: 'Whether the user has at least one wallet saved/remembered (true) or no wallets are remembered (false)',
+            description: 'Whether the user has at least one wallet saved/remembered (`true`) or no wallets are remembered (`false`)',
             changelog: [{ version: '25.9.0', notes: 'added' }],
         },
     },

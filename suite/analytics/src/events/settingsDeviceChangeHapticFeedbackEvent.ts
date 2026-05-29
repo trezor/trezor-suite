@@ -16,7 +16,7 @@ export const settingsDeviceChangeHapticFeedbackEvent: EventDef<
 
     attributes: {
         value: {
-            description: 'Whether haptic feedback is enabled (true) or disabled (false)',
+            description: 'Whether haptic feedback is enabled (`true`) or disabled (`false`)',
             changelog: [{ version: '24.6.1', notes: 'added' }],
         },
     },

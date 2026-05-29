@@ -16,15 +16,15 @@ export const stakingNavigateEvent: EventDef<Attributes, EventType.StakingNavigat
     attributes: {
         action: {
             changelog: [{ version: '26.4.1', notes: 'added' }],
-            description: 'User action: "navigate" when proceeding to staking, "cancel" when dismissing the flow',
+            description: 'User action: `navigate` when proceeding to staking, `cancel` when dismissing the flow',
         },
         from: {
             changelog: [{ version: '26.4.1', notes: 'added' }],
-            description: 'The staking dashboard state from which navigation occurred (e.g., "staking-inactive", "staking-active", "insufficient-funds")',
+            description: 'The staking dashboard state from which navigation occurred (e.g., `staking-inactive`, `staking-active`, `insufficient-funds`)',
         },
         networkSymbol: {
             changelog: [{ version: '26.4.1', notes: 'added' }],
-            description: 'The blockchain network symbol for staking (e.g., "eth", "ada", "sol")',
+            description: 'The blockchain network symbol for staking (e.g., `eth`, `ada`, `sol`)',
         },
     },
 };

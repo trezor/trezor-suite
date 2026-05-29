@@ -22,11 +22,11 @@ export const appUriHandlerEvent: EventDef<Attributes, EventType.AppUriHandler> =
     attributes: {
         isAmountPresent: {
             changelog: [{ version: '23.2.1', notes: 'added' }],
-            description: 'Whether the URI includes an amount parameter (true) or not (false)',
+            description: 'Whether the URI includes an amount parameter (`true`) or not (`false`)',
         },
         scheme: {
             changelog: [{ version: '23.2.1', notes: 'added' }],
-            description: 'The URI scheme or protocol used to launch the app (e.g., "bitcoin:", "ethereum:", "solana:")',
+            description: 'The URI scheme or protocol used to launch the app (e.g., `bitcoin:`, `ethereum:`, `solana:`)',
         },
     },
 };

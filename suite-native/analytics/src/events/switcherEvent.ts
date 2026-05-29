@@ -20,7 +20,7 @@ export const switcherEvent: EventDef<Attributes, EventType.Switcher> = {
     attributes: {
         action: {
             changelog: [{ version: '23.11.1', notes: 'added' }],
-            description: '"deviceItem" when selecting a device, "portfolioTracker" to access portfolio overview, "connectDeviceButton" to connect a new device, "deviceSettings" to open device configuration',
+            description: '`deviceItem` when selecting a device, `portfolioTracker` to access portfolio overview, `connectDeviceButton` to connect a new device, `deviceSettings` to open device configuration',
         },
     },
 };

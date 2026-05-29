@@ -18,7 +18,7 @@ export const transactionDetailEvent: EventDef<Attributes, EventType.TransactionD
     attributes: {
         assetSymbol: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The blockchain network symbol of the transaction (e.g., "btc", "eth")',
+            description: 'The blockchain network symbol of the transaction (e.g., `btc`, `eth`)',
         },
         tokenSymbol: {
             changelog: [{ version: '23.4.1', notes: 'added' }],

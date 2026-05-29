@@ -13,7 +13,7 @@ export const guideFeedbackSubmitEvent: EventDef<Attributes, EventType.GuideFeedb
 
     attributes: {
         type: {
-            description: 'The feedback type: "bug" for bug report or "suggestion" for feature suggestion',
+            description: 'The feedback type: `bug` for bug report or `suggestion` for feature suggestion',
             changelog: [{ version: '1.11.0', notes: 'added' }],
         },
     },

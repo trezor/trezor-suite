@@ -17,7 +17,7 @@ export const createReceiveAddressConfirmOnTrezorEvent: EventDef<
 
     attributes: {
         assetSymbol: {
-            description: 'The blockchain network symbol for the receiving address being confirmed on device (e.g., "btc", "eth")',
+            description: 'The blockchain network symbol for the receiving address being confirmed on device (e.g., `btc`, `eth`)',
             changelog: [{ version: '25.4.1', notes: 'added' }],
         },
     },

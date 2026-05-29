@@ -16,7 +16,7 @@ export const deviceSettingsCheckBackupFinishedEvent: EventDef<
     attributes: {
         success: {
             changelog: [{ version: '25.8.1', notes: 'added' }],
-            description: 'true if all seed words were entered correctly and backup verification passed, false if there was a mismatch or verification failed',
+            description: '`true` if all seed words were entered correctly and backup verification passed, `false` if there was a mismatch or verification failed',
         },
     },
 };

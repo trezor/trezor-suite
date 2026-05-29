@@ -20,11 +20,11 @@ export const transportTypeEvent: EventDef<Attributes, EventType.TransportType> =
 
     attributes: {
         type: {
-            description: 'The device transport type: "WebUsbPlugin" for WebUSB, "bridge" for Trezor Bridge transport',
+            description: 'The device transport type: `WebUsbPlugin` for WebUSB, `bridge` for Trezor Bridge transport',
             changelog: [{ version: '1.0.0', notes: 'added' }],
         },
         version: {
-            description: 'The transport/bridge server version in format (e.g., "2.0.30" for bridge)',
+            description: 'The transport/bridge server version in format (e.g., `2.0.30` for bridge)',
             changelog: [{ version: '1.0.0', notes: 'added' }],
         },
     },

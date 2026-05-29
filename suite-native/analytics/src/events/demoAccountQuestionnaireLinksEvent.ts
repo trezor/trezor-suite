@@ -22,7 +22,7 @@ export const demoAccountQuestionnaireLinksEvent: EventDef<
     attributes: {
         option: {
             changelog: [{ version: '25.12.1', notes: 'added' }],
-            description: 'The selected link: "hardwareWallet" for hardware wallet info, "trezorSecurity" for security info, "TS7" for TS7 info, "dashboard" for return to dashboard',
+            description: 'The selected link: `hardwareWallet` for hardware wallet info, `trezorSecurity` for security info, `TS7` for TS7 info, `dashboard` for return to dashboard',
         },
     },
 };

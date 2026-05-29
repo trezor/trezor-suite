@@ -42,11 +42,11 @@ export const tradingExchangeEvent: EventDef<Attributes, EventType.TradingExchang
         },
         sendCryptoLabel: {
             changelog: [{ version: '25.10.1', notes: 'added' }],
-            description: 'Display label of the cryptocurrency being sent in the exchange (e.g., "BTC", "ETH", "USDC")',
+            description: 'Display label of the cryptocurrency being sent in the exchange (e.g., `BTC`, `ETH`, `SOL`)',
         },
         sendCryptoNetworkSymbol: {
             changelog: [{ version: '25.10.1', notes: 'added' }],
-            description: 'The blockchain network symbol of the cryptocurrency being sent (e.g., "btc", "eth", "matic")',
+            description: 'The blockchain network symbol of the cryptocurrency being sent (e.g., `btc`, `eth`, `ada`)',
         },
         sendCryptoContractAddress: {
             changelog: [{ version: '25.10.1', notes: 'added' }],
@@ -54,11 +54,11 @@ export const tradingExchangeEvent: EventDef<Attributes, EventType.TradingExchang
         },
         receiveCryptoLabel: {
             changelog: [{ version: '25.10.1', notes: 'added' }],
-            description: 'Display label of the cryptocurrency being received in the exchange (e.g., "BTC", "ETH", "USDC")',
+            description: 'Display label of the cryptocurrency being received in the exchange (e.g., `BTC`, `ETH`, `SOL`)',
         },
         receiveCryptoNetworkSymbol: {
             changelog: [{ version: '25.10.1', notes: 'added' }],
-            description: 'The blockchain network symbol of the cryptocurrency being received (e.g., "btc", "eth", "matic")',
+            description: 'The blockchain network symbol of the cryptocurrency being received (e.g., `btc`, `eth`, `ada`)',
         },
         receiveCryptoContractAddress: {
             changelog: [{ version: '25.10.1', notes: 'added' }],
@@ -66,27 +66,27 @@ export const tradingExchangeEvent: EventDef<Attributes, EventType.TradingExchang
         },
         exchangeName: {
             changelog: [{ version: '25.10.1', notes: 'added' }],
-            description: 'Name of the exchange platform handling the swap transaction (e.g., "changelly", "invity")',
+            description: 'Name of the exchange platform handling the swap transaction (e.g., `changelly`, `invity`)',
         },
         exchangeType: {
             changelog: [{ version: '25.10.1', notes: 'added' }],
-            description: 'Exchange type: "CEX" for centralized exchange, "DEX" for decentralized exchange',
+            description: 'Exchange type: `CEX` for centralized exchange, `DEX` for decentralized exchange',
         },
         accountType: {
             changelog: [{ version: '25.10.1', notes: 'added' }],
-            description: 'Type of account used for the exchange (e.g., "standard", "hidden", "watch-only")',
+            description: 'Type of account used for the exchange (e.g., `standard`, `hidden`, `watch-only`)',
         },
         approvalType: {
             changelog: [{ version: '25.10.1', notes: 'added' }],
-            description: 'Type of approval required for the exchange (e.g., "none", "token-approval", "permit")',
+            description: 'Type of approval required for the exchange (e.g., `none`, `token-approval`, `permit`)',
         },
         slippage: {
             changelog: [{ version: '25.10.1', notes: 'added' }],
-            description: 'Slippage tolerance percentage for the exchange rate (e.g., "0.5", "1.0", "2.0")',
+            description: 'Slippage tolerance percentage for the exchange rate (e.g., `0.5`, `1.0`, `2.0`)',
         },
         rateType: {
             changelog: [{ version: '25.10.1', notes: 'added' }],
-            description: 'Rate type: "fixed" for guaranteed rate, "floating" for market rate that may change',
+            description: 'Rate type: `fixed` for guaranteed rate, `floating` for market rate that may change',
         },
     },
 };

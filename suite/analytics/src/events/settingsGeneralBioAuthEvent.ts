@@ -14,7 +14,7 @@ export const settingsGeneralBioAuthEvent: EventDef<Attributes, EventType.Setting
     attributes: {
         value: {
             changelog: [{ version: '25.9.0', notes: 'added' }],
-            description: 'Whether biometric authentication is enabled (true) or disabled (false)',
+            description: 'Whether biometric authentication is enabled (`true`) or disabled (`false`)',
         },
     },
 };

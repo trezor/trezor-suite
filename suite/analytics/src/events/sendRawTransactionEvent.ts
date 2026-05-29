@@ -13,7 +13,7 @@ export const sendRawTransactionEvent: EventDef<Attributes, EventType.SendRawTran
 
     attributes: {
         networkSymbol: {
-            description: 'The blockchain network symbol where the raw transaction is being sent (e.g., "eth", "etc")',
+            description: 'The blockchain network symbol where the raw transaction is being sent (e.g., `eth`, `etc`)',
             changelog: [{ version: '1.0.0', notes: 'added' }],
         },
     },

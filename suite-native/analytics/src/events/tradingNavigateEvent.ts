@@ -40,7 +40,7 @@ export const tradingNavigateEvent: EventDef<Attributes, EventType.TradingNavigat
         },
         networkSymbol: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'The blockchain network symbol for the trading operation (e.g., "btc", "eth", "matic")',
+            description: 'The blockchain network symbol for the trading operation (e.g., `btc`, `eth`, `ada`)',
         },
         contractAddress: {
             changelog: [{ version: '25.5.1', notes: 'added' }],

@@ -18,7 +18,7 @@ export const createReceiveAddressShowAddressEvent: EventDef<
 
     attributes: {
         assetSymbol: {
-            description: 'The blockchain network symbol for the receiving address (e.g., "btc", "eth")',
+            description: 'The blockchain network symbol for the receiving address (e.g., `btc`, `eth`)',
             changelog: [{ version: '25.4.1', notes: 'added' }],
         },
         type: {

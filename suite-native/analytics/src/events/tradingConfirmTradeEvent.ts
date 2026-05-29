@@ -15,7 +15,7 @@ export const tradingConfirmTradeEvent: EventDef<Attributes, EventType.TradingCon
     attributes: {
         type: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'Type of trade: "buy" for purchase, "sell" for selling cryptocurrency, "exchange" for swapping',
+            description: 'Type of trade: `buy` for purchase, `sell` for selling cryptocurrency, `exchange` for swapping',
         },
     },
 };

@@ -19,11 +19,11 @@ export const receiveFlowEnteredEvent: EventDef<Attributes, EventType.ReceiveFlow
     changelog: [{ version: '26.2.2', notes: 'added' }],
     attributes: {
         location: {
-            description: 'Where the receive flow was initiated from: "dashboard" from the main dashboard, "accountDetail" from an account detail page',
+            description: 'Where the receive flow was initiated from: `dashboard` from the main dashboard, `accountDetail` from an account detail page',
             changelog: [{ version: '26.2.2', notes: 'added' }],
         },
         assetSymbol: {
-            description: 'The blockchain network symbol for which the user is generating a receive address (e.g., "btc", "eth", "matic")',
+            description: 'The blockchain network symbol for which the user is generating a receive address (e.g., `btc`, `eth`, `ada`)',
             changelog: [{ version: '26.2.2', notes: 'added' }],
         },
         tokenSymbol: {

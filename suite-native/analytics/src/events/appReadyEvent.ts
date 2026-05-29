@@ -130,7 +130,7 @@ export const appReadyEvent: EventDef<Attributes, EventType.AppReady> = {
         },
         labeling: {
             changelog: [{ version: '26.3.1', notes: 'added' }],
-            description: "The labeling method: 'suite-sync' or 'off'",
+            description: 'The labeling method: `suite-sync` or `off`',
         },
     },
 };

@@ -20,7 +20,7 @@ export const dashboardActivateAssetsModalEvent: EventDef<
     attributes: {
         source: {
             changelog: [{ version: '26.3.0', notes: 'added' }],
-            description: 'Where the modal was opened from: "empty-wallet" from the empty wallet CTA button (Get started), "my-assets" from the My Assets section (Add networks)',
+            description: 'Where the modal was opened from: `empty-wallet` from the empty wallet CTA button (Get started), `my-assets` from the My Assets section (Add networks)',
         },
     },
 };

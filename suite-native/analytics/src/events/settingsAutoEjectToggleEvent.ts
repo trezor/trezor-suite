@@ -15,9 +15,9 @@ export const settingsAutoEjectToggleEvent: EventDef<Attributes, EventType.Settin
         attributes: {
             enabled: {
                 changelog: [
-                    { version: '25.8.1', notes: 'Boolean values for new value: true / false' },
+                    { version: '25.8.1', notes: 'Boolean values for new value: `true` / `false`' },
                 ],
-                description: 'true if auto-eject is enabled (device will be ejected after transaction), false if auto-eject is disabled (device stays connected)',
+                description: '`true` if auto-eject is enabled (device will be ejected after transaction), `false` if auto-eject is disabled (device stays connected)',
             },
         },
     };

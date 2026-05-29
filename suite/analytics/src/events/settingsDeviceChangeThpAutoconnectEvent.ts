@@ -20,7 +20,7 @@ export const settingsDeviceChangeThpAutoconnectEvent: EventDef<
 
     attributes: {
         action: {
-            description: 'The action taken: "enable-autoconnect" to enable automatic device connection via THP, "disable-autoconnect" to disable it',
+            description: 'The action taken: `enable-autoconnect` to enable automatic device connection via THP, `disable-autoconnect` to disable it',
             changelog: [{ version: '25.7.1', notes: 'added' }],
         },
     },

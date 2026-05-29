@@ -16,7 +16,7 @@ export const settingsGeneralChangeFiatEvent: EventDef<
 
     attributes: {
         fiat: {
-            description: 'The selected fiat currency code (e.g., "USD" for US Dollar, "EUR" for Euro, "CZK" for Czech Koruna)',
+            description: 'The selected fiat currency code (e.g., `usd` for US Dollar, `eur` for Euro, `czk` for Czech Koruna)',
             changelog: [{ version: '1.0.0', notes: 'added' }],
         },
     },

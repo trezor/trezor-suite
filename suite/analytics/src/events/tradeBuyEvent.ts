@@ -24,7 +24,7 @@ export const tradeBuyEvent: EventDef<Attributes, EventType.TradeBuy> = {
     attributes: {
         action: {
             changelog: [{ version: '25.5.0', notes: 'added' }],
-            description: 'The user action taken in the buy flow: "continue" to proceed through the flow, "cancel" to exit the flow',
+            description: 'The user action taken in the buy flow: `continue` to proceed through the flow, `cancel` to exit the flow',
         },
         step: {
             description: 'The current step in the buy flow: `buy-form`',
@@ -46,7 +46,7 @@ export const tradeBuyEvent: EventDef<Attributes, EventType.TradeBuy> = {
             changelog: [{ version: '25.5.0', notes: 'added' }],
         },
         paymentMethod: {
-            description: "payment method, e.g. `creditCard` or 'bankTransfer'",
+            description: 'payment method, e.g. `creditCard` or `bankTransfer`',
             changelog: [{ version: '25.5.0', notes: 'added' }],
         },
         countryOfResidence: {

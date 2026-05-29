@@ -34,7 +34,7 @@ export const deviceConnectEvent: EventDef<Attributes, EventType.DeviceConnect> =
 
     attributes: {
         mode: {
-            description: 'The device mode: "normal" for regular operation, "bootloader" for firmware update mode, "initialize" for initial setup, "seedless" for seedless operation',
+            description: 'The device mode: `normal` for regular operation, `bootloader` for firmware update mode, `initialize` for initial setup, `seedless` for seedless operation',
             changelog: [{ version: '1.0.0', notes: 'added' }],
         },
         firmware: {
@@ -50,11 +50,11 @@ export const deviceConnectEvent: EventDef<Attributes, EventType.DeviceConnect> =
             changelog: [{ version: '1.18.0', notes: 'added' }],
         },
         pin_protection: {
-            description: 'Whether PIN protection is enabled on the device: true if enabled, false if disabled, null if unknown',
+            description: 'Whether PIN protection is enabled on the device: `true` if enabled, `false` if disabled, null if unknown',
             changelog: [{ version: '1.0.0', notes: 'added' }],
         },
         passphrase_protection: {
-            description: 'Whether passphrase protection is enabled on the device: true if enabled, false if disabled, null if unknown',
+            description: 'Whether passphrase protection is enabled on the device: `true` if enabled, `false` if disabled, null if unknown',
             changelog: [{ version: '1.0.0', notes: 'added' }],
         },
         totalInstances: {
@@ -108,7 +108,7 @@ Possible backup types:
             description: 'Device language, string (`en-US`)',
         },
         model: {
-            description: 'The device model identifier (e.g., "T1B1" for Trezor One, "T2T1" for Trezor Model T, "T2B1" for Trezor Model R)',
+            description: 'The device model identifier (e.g., `T1B1` for Trezor One, `T2T1` for Trezor Model T, `T2B1` for Trezor Model R)',
             changelog: [
                 { version: '1.9.0', notes: 'added' },
                 {
@@ -130,7 +130,7 @@ Possible backup types:
             changelog: [{ version: '24.8.1', notes: 'added' }],
         },
         connectionType: {
-            description: 'How the device is connected: "cable" for USB connection, "bluetooth" for wireless connection',
+            description: 'How the device is connected: `cable` for USB connection, `bluetooth` for wireless connection',
             changelog: [{ version: '25.10.1', notes: 'added' }],
         },
     },

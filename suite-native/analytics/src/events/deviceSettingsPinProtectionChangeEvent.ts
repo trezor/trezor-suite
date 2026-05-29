@@ -18,7 +18,7 @@ export const deviceSettingsPinProtectionChangeEvent: EventDef<
     attributes: {
         action: {
             changelog: [{ version: '24.11.1', notes: 'added' }],
-            description: 'The PIN protection action: "enable" to turn on PIN protection, "change" to modify existing PIN, "disable" to remove PIN protection',
+            description: 'The PIN protection action: `enable` to turn on PIN protection, `change` to modify existing PIN, `disable` to remove PIN protection',
         },
     },
 };

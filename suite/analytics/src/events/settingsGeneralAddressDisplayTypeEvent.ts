@@ -19,7 +19,7 @@ export const settingsGeneralAddressDisplayTypeEvent: EventDef<
     attributes: {
         addressDisplayType: {
             changelog: [{ version: '25.10.0', notes: 'added' }],
-            description: 'The selected address display format: "original" for full address display, "chunked" for space-separated address segments for easier reading',
+            description: 'The selected address display format: `original` for full address display, `chunked` for space-separated address segments for easier reading',
         },
     },
 };

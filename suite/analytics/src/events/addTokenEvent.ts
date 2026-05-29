@@ -16,7 +16,7 @@ export const addTokenEvent: EventDef<Attributes, EventType.AddToken> = {
 
     attributes: {
         networkSymbol: {
-            description: 'The blockchain network symbol where the token is being added (typically "eth" for Ethereum)',
+            description: 'The blockchain network symbol where the token is being added (typically `eth` for Ethereum)',
             changelog: [{ version: '1.6.0', notes: 'added' }],
         },
         addedNth: {

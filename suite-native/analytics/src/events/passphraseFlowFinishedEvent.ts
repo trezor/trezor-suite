@@ -13,7 +13,7 @@ export const passphraseFlowFinishedEvent: EventDef<Attributes, EventType.Passphr
     attributes: {
         isEmptyWallet: {
             changelog: [{ version: '24.7.2', notes: 'added' }],
-            description: 'true if the newly created passphrase wallet has no accounts yet (first-time setup), false if accounts already exist within the wallet (reusing existing passphrase)',
+            description: '`true` if the newly created passphrase wallet has no accounts yet (first-time setup), `false` if accounts already exist within the wallet (reusing existing passphrase)',
         },
     },
 };

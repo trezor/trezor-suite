@@ -13,7 +13,7 @@ export const settingsTorOnionLinksEvent: EventDef<Attributes, EventType.Settings
 
     attributes: {
         value: {
-            description: 'Whether opening trezor.io links as .onion links is enabled (true) or disabled (false)',
+            description: 'Whether opening trezor.io links as .onion links is enabled (`true`) or disabled (`false`)',
             changelog: [{ version: '1.1.0', notes: 'added' }],
         },
     },

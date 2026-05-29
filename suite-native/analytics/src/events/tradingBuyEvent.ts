@@ -24,19 +24,19 @@ export const tradingBuyEvent: EventDef<Attributes, EventType.TradingBuy> = {
     attributes: {
         action: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'User action: "continue" to proceed through the flow, "cancel" to exit',
+            description: 'User action: `continue` to proceed through the flow, `cancel` to exit',
         },
         step: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'Current step in the buy flow: "buy-form" for initial form, "account-selection" for choosing account to buy to',
+            description: 'Current step in the buy flow: `buy-form` for initial form, `account-selection` for choosing account to buy to',
         },
         cryptoLabel: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'Display label of the cryptocurrency being purchased (e.g., "BTC", "ETH", "USDC")',
+            description: 'Display label of the cryptocurrency being purchased (e.g., `BTC`, `ETH`, `SOL`)',
         },
         cryptoNetworkSymbol: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'The blockchain network symbol (e.g., "btc", "eth", "matic")',
+            description: 'The blockchain network symbol (e.g., `btc`, `eth`, `ada`)',
         },
         cryptoContractAddress: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
@@ -44,15 +44,15 @@ export const tradingBuyEvent: EventDef<Attributes, EventType.TradingBuy> = {
         },
         paymentMethod: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'Payment method selected for the purchase (e.g., "creditCard", "bankTransfer")',
+            description: 'Payment method selected for the purchase (e.g., `creditCard`, `bankTransfer`)',
         },
         countryOfResidence: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'Country code of the buyer\'s residence (e.g., "US", "CZ", "DE")',
+            description: 'Country code of the buyer\'s residence (e.g., `US`, `CZ`, `DE`)',
         },
         exchangeName: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'Name of the exchange/provider processing the buy order (e.g., "moonpay", "invity")',
+            description: 'Name of the exchange/provider processing the buy order (e.g., `moonpay`, `invity`)',
         },
     },
 };

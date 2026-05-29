@@ -34,11 +34,11 @@ export const tradeApprovalEvent: EventDef<Attributes, EventType.TradeApproval> =
 
     attributes: {
         type: {
-            description: 'The type of approval interaction: "approve-modal" for token approval, "exchange-form" for exchange form action, "revoke-modal" for token revocation',
+            description: 'The type of approval interaction: `approve-modal` for token approval, `exchange-form` for exchange form action, `revoke-modal` for token revocation',
             changelog: [{ version: '25.9.0', notes: 'added' }],
         },
         action: {
-            description: 'The user action performed: "continue" to proceed, "cancel" to abort, "refresh" to refresh, "swap" to execute swap, "limit-exact"/"limit-unlimited" for limit orders, "revoke" to revoke, "approve" to approve',
+            description: 'The user action performed: `continue` to proceed, `cancel` to abort, `refresh` to refresh, `swap` to execute swap, `limit-exact`/`limit-unlimited` for limit orders, `revoke` to revoke, `approve` to approve',
             changelog: [{ version: '25.9.0', notes: 'added' }],
         },
         sendCryptoLabel: {
@@ -46,7 +46,7 @@ export const tradeApprovalEvent: EventDef<Attributes, EventType.TradeApproval> =
             changelog: [{ version: '25.9.0', notes: 'added' }],
         },
         sendCryptoNetworkSymbol: {
-            description: 'The blockchain network symbol for the sent cryptocurrency (e.g., "eth", "bsc", "polygon")',
+            description: 'The blockchain network symbol for the sent cryptocurrency (e.g., `eth`, `bsc`, `polygon`)',
             changelog: [{ version: '25.9.0', notes: 'added' }],
         },
         sendCryptoContractAddress: {
@@ -58,7 +58,7 @@ export const tradeApprovalEvent: EventDef<Attributes, EventType.TradeApproval> =
             changelog: [{ version: '25.9.0', notes: 'added' }],
         },
         receiveCryptoNetworkSymbol: {
-            description: 'The blockchain network symbol for the received cryptocurrency (e.g., "eth", "bsc", "polygon")',
+            description: 'The blockchain network symbol for the received cryptocurrency (e.g., `eth`, `bsc`, `polygon`)',
             changelog: [{ version: '25.9.0', notes: 'added' }],
         },
         receiveCryptoContractAddress: {

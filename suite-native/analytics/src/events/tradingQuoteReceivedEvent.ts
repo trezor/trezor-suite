@@ -15,7 +15,7 @@ export const tradingQuoteReceivedEvent: EventDef<Attributes, EventType.TradingQu
     attributes: {
         type: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'Type of trading operation: "buy" for purchasing cryptocurrency, "sell" for selling cryptocurrency, "exchange" for swapping between cryptocurrencies',
+            description: 'Type of trading operation: `buy` for purchasing cryptocurrency, `sell` for selling cryptocurrency, `exchange` for swapping between cryptocurrencies',
         },
     },
 };

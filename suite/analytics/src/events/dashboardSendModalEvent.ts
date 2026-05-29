@@ -16,7 +16,7 @@ export const dashboardSendModalEvent: EventDef<Attributes, EventType.DashboardSe
     attributes: {
         source: {
             changelog: [{ version: '26.3.0', notes: 'added' }],
-            description: 'Where the send modal was opened from: "page-header" from the main page header button',
+            description: 'Where the send modal was opened from: `page-header` from the main page header button',
         },
     },
 };
