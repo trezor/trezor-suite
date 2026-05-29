@@ -1241,12 +1241,8 @@ export const messages = {
         },
         networks: {
             title: 'Coins',
-            subtitle: {
-                configurable:
-                    'Enable coins to buy or receive assets. Disable unused coins to improve loading speed.',
-                bitcoinOnly:
-                    'This device is running Bitcoin-only firmware. No extra configuration is available.',
-            },
+            subtitle:
+                'Enable coins to buy or receive assets. Disable unused coins to improve loading speed.',
         },
         coinEnabling: {
             bottomNote:
