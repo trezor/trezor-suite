@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { selectIsDeviceConnected } from '@suite-common/device';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { VStack } from '@suite-native/atoms';
+import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
@@ -10,14 +11,11 @@ import { useToast } from '@suite-native/toasts';
 import { NetworkSymbolSwitchItem } from './NetworkSymbolSwitchItem';
 
 type DiscoveryCoinsFilterProps = {
-    networkSymbols: NetworkSymbol[];
     onDisablingLastCoin?: () => void;
 };
 
-export const DiscoveryCoinsFilter = ({
-    networkSymbols,
-    onDisablingLastCoin,
-}: DiscoveryCoinsFilterProps) => {
+export const DiscoveryCoinsFilter = ({ onDisablingLastCoin }: DiscoveryCoinsFilterProps) => {
+    const networkSymbols = useSelector(selectDiscoveryNetworkSymbols);
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const { showToast } = useToast();
 

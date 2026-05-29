@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Animated, { LinearTransition, SlideInDown, SlideOutDown } from 'react-native-reanimated';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -15,7 +15,6 @@ import {
     ScreenFooterGradient,
     VStack,
 } from '@suite-native/atoms';
-import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -46,8 +45,6 @@ export const CoinEnablingInitScreen = () => {
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const navigation = useNavigation<NavigationProps>();
     useInterceptNativeNavigation();
-
-    const networkSymbols = useSelector(selectDiscoveryNetworkSymbols);
 
     const [isAlertDismissed, setIsAlertDismissed] = useState(false);
 
@@ -109,7 +106,7 @@ export const CoinEnablingInitScreen = () => {
                 )}
                 <AnimatedBox layout={LinearTransition}>
                     <Form form={form}>
-                        <DiscoveryCoinsFilter networkSymbols={networkSymbols} />
+                        <DiscoveryCoinsFilter />
                     </Form>
                 </AnimatedBox>
             </VStack>
