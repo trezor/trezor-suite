@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { TrafficLightOffset } from '@suite/macos';
 import {
     CALL_SOURCE_WALLETCONNECT,
     connectPopupActions,
@@ -13,7 +14,6 @@ import { borders, spacings } from '@trezor/theme';
 import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-import { TrafficLightOffset } from './TrafficLightOffset';
 import { SuiteBanners } from './banners';
 
 export const ConnectBarWrapper = styled.div`

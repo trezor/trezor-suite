@@ -14545,6 +14545,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/macos@workspace:*, @suite/macos@workspace:suite/macos":
+  version: 0.0.0-use.local
+  resolution: "@suite/macos@workspace:suite/macos"
+  dependencies:
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/theme": "workspace:*"
+    react: "npm:19.2.4"
+    styled-components: "npm:^6.3.9"
+  languageName: unknown
+  linkType: soft
+
 "@suite/metadata-migration@workspace:*, @suite/metadata-migration@workspace:suite/metadata-migration":
   version: 0.0.0-use.local
   resolution: "@suite/metadata-migration@workspace:suite/metadata-migration"
@@ -16440,6 +16451,7 @@ __metadata:
     "@suite/intl": "workspace:*"
     "@suite/labeling": "workspace:*"
     "@suite/locks": "workspace:*"
+    "@suite/macos": "workspace:*"
     "@suite/metadata": "workspace:*"
     "@suite/metadata-migration": "workspace:*"
     "@suite/modal": "workspace:*"

@@ -3,11 +3,11 @@ import { useEvent } from 'react-use';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import { TrafficLightOffset } from '@suite/macos';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { Column, Modal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { TrafficLightOffset } from 'src/components/suite/TrafficLightOffset';
 import { useSelector } from 'src/hooks/suite/useSelector';
 
 type SwitchDeviceModalProps = {

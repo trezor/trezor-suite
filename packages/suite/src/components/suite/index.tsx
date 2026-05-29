@@ -40,7 +40,7 @@ import { CountdownTimer } from './CountdownTimer';
 import { QrCode } from './QrCode';
 import { CoinBalance } from './CoinBalance';
 import { Preloader } from './Preloader/Preloader';
-import { TrafficLightDraggableWindowHeader } from './TrafficLightOffset';
+import { TrafficLightDraggableWindowHeader } from '@suite/macos';
 import { PinMatrix } from './PinMatrix/PinMatrix';
 import { StakingFeature } from './StakingFeature';
 import { StakeAmountWrapper } from './StakeAmountWrapper';
