@@ -6,10 +6,8 @@ import { useServices } from '@suite-common/dependency-injection';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { addSentryBreadcrumb, setSentryTag } from '@suite-native/sentry';
 
-import {
-    IsNavigationReadyContext,
-    useNavigationDevTools,
-} from './NavigationContainerWithAnalytics';
+import { IsNavigationReadyContext } from '../IsNavigationReadyContext';
+import { useNavigationDevTools } from '../hooks/useNavigationDevTools';
 import { useReportSendFlowExitToAnalytics } from '../hooks/useReportSendFlowExitToAnalytics';
 
 /*
