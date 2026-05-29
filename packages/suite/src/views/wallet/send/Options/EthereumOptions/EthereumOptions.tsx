@@ -1,11 +1,12 @@
 import { Translation } from '@suite/intl';
+import { formInputsMaxLength } from '@suite-common/validators';
 import { type FormOptions } from '@suite-common/wallet-types';
 import { Button, Column, Row, Tooltip } from '@trezor/components';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 
-import { EthereumData } from './EthereumData';
 import { OnOffSwitcher } from '../OnOffSwitcher';
+import { TransactionData } from '../shared/TransactionData';
 
 export const EthereumOptions = () => {
     const { getDefaultValue, toggleOption, composeTransaction } = useSendFormContext();
@@ -26,7 +27,7 @@ export const EthereumOptions = () => {
         <Column gap={16}>
             <Row gap={8}>
                 {!dataEnabled && !tokenValue && (
-                    <Tooltip content={<Translation id="DATA_ETH_ADD_TOOLTIP" />} cursor="pointer">
+                    <Tooltip content={<Translation id="DATA_ADD_TOOLTIP" />} cursor="pointer">
                         <Button
                             intent="neutral"
                             priority="secondary"
@@ -34,7 +35,7 @@ export const EthereumOptions = () => {
                             data-testid="send/open-ethereum-data"
                             onClick={toggleData}
                         >
-                            <Translation id="DATA_ETH_ADD" />
+                            <Translation id="DATA_ADD" />
                         </Button>
                     </Tooltip>
                 )}
@@ -54,7 +55,9 @@ export const EthereumOptions = () => {
                 </Tooltip>
             </Row>
 
-            {dataEnabled && <EthereumData close={toggleData} />}
+            {dataEnabled && (
+                <TransactionData maxBytes={formInputsMaxLength.ethData} close={toggleData} />
+            )}
         </Column>
     );
 };

@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { formInputsMaxLength } from '@suite-common/validators';
 import { isHexValid } from '@suite-common/wallet-utils';
 import { Card, Column, H4, IconButton, Row, Textarea } from '@trezor/components';
 
@@ -10,11 +9,12 @@ import { useSendFormContext } from 'src/hooks/wallet';
 const inputHexName = 'transactionData';
 const inputAmountName = 'outputs.0.amount';
 
-type EthereumDataProps = {
+type TransactionDataProps = {
+    maxBytes: number;
     close: () => void;
 };
 
-export const EthereumData = ({ close }: EthereumDataProps) => {
+export const TransactionData = ({ maxBytes, close }: TransactionDataProps) => {
     const {
         register,
         formState: { errors },
@@ -28,6 +28,7 @@ export const EthereumData = ({ close }: EthereumDataProps) => {
 
     const [hexValue, amount] = watch([inputHexName, inputAmountName]);
 
+    const maxHexChars = maxBytes * 2;
     const hexError = errors.transactionData;
 
     const handleClose = () => {
@@ -53,14 +54,12 @@ export const EthereumData = ({ close }: EthereumDataProps) => {
             if (value && !isHexValid(value, '0x')) {
                 return translationString('DATA_NOT_VALID_HEX');
             }
-            if (value && value.length > formInputsMaxLength.ethData * 2) {
+            if (value && value.length > maxHexChars) {
                 return translationString('DATA_HEX_TOO_BIG');
             }
         },
     });
 
-    // Trigger amount validation after data is set. This removes the validation message if amount is 0.
-    // A transaction with 0 amount is valid as long as it has data - this type of transaction can be used to interact with contract.
     useEffect(() => {
         if (amount === '0' && hexValue) {
             trigger(inputAmountName);
@@ -72,14 +71,14 @@ export const EthereumData = ({ close }: EthereumDataProps) => {
             <Column gap={12}>
                 <Row justifyContent="space-between">
                     <H4 typographyStyle="body-md">
-                        <Translation id="DATA_ETH" />
+                        <Translation id="DATA" />
                     </H4>
                     <IconButton
                         intent="neutral"
                         priority="secondary"
                         icon="x"
                         size="small"
-                        data-testid="send/close-ethereum-data"
+                        data-testid="send/close-transaction-data"
                         onClick={handleClose}
                         tooltip={{ content: <Translation id="TR_CLOSE" /> }}
                     />
@@ -88,13 +87,13 @@ export const EthereumData = ({ close }: EthereumDataProps) => {
                     hasError={!!hexError}
                     data-testid={inputHexName}
                     defaultValue={hexValue}
-                    maxLength={formInputsMaxLength.ethData * 2}
+                    maxLength={maxHexChars}
                     bottomText={hexError?.message || null}
                     innerRef={hexRef}
                     {...hexField}
                     characterCount={{
                         current: hexValue?.length,
-                        max: formInputsMaxLength.ethData * 2,
+                        max: maxHexChars,
                     }}
                 />
             </Column>
