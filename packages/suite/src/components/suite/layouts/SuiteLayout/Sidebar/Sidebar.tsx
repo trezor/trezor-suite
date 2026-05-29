@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { selectShouldDisplayDeviceCompromised } from '@suite/authenticity-checks';
+import { TrafficLightOffset } from '@suite/macos';
 import { suiteSettingsActions } from '@suite/settings';
 import { selectDevicesCount, selectSelectedDevice } from '@suite-common/device';
 import { Box, ElevationUp, Icon, ResizableBox, useElevation } from '@trezor/components';
@@ -16,7 +17,6 @@ import {
     zIndices,
 } from '@trezor/theme';
 
-import { TrafficLightOffset } from 'src/components/suite/TrafficLightOffset';
 import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
 import { MIN_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { useDispatch, useSelector } from 'src/hooks/suite';

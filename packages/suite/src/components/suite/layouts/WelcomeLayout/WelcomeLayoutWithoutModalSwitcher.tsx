@@ -3,6 +3,7 @@ import { type ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { TrafficLightOffset } from '@suite/macos';
 import { selectThemeSettings } from '@suite/settings';
 import {
     Column,
@@ -20,7 +21,6 @@ import { GuideButton, GuideRouter } from 'src/components/guide';
 import { SuiteBanners } from 'src/components/suite/banners';
 import { useSelector } from 'src/hooks/suite';
 
-import { TrafficLightOffset } from '../../TrafficLightOffset';
 import { ContentContainer } from '../ContentContainer';
 import { PageHeader } from '../SuiteLayout';
 import { DebugLegend } from '../SuiteLayout/DebugLegend';
