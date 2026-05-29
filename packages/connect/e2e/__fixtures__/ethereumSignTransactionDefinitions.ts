@@ -23,7 +23,7 @@ export default {
                 },
             },
             result: {},
-            deviceScreen: 'Send0.01WETHMinimumtoReceive0USDTUniswapfee0.3%',
+            deviceScreen: /"body":"UniswapV3Router".*"body":"Swap".*0\.01WETH.*0USDT.*0\.3%/,
             deviceScreenSkip: ['1', '<2.12.1'],
         },
     ],
