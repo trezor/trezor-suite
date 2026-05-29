@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
 import { useServices } from '@suite-common/dependency-injection';
 import {
     deviceActions,
@@ -23,11 +21,8 @@ import { Translation } from '@suite-native/intl';
 import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import {
     AuthorizeDeviceStackRoutes,
-    type HomeStackParamList,
-    type HomeStackRoutes,
-    type RootStackParamList,
     RootStackRoutes,
-    type StackToStackCompositeNavigationProps,
+    navigateNested,
     resetNavigationRoot,
 } from '@suite-native/navigation';
 import { captureSentryException } from '@suite-native/sentry';
@@ -44,19 +39,12 @@ import {
     selectShouldFactoryResetBeVisible,
 } from '../selectors';
 
-type NavigationProps = StackToStackCompositeNavigationProps<
-    HomeStackParamList,
-    HomeStackRoutes.Home,
-    RootStackParamList
->;
-
 export const useDetectDeviceError = () => {
     const [wasDeviceEjectedByUser, setWasDeviceEjectedByUser] = useState(false);
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const dispatch = useDispatch();
     const { hideAlert, showAlert } = useAlert();
     const openLink = useOpenLink();
-    const navigation = useNavigation<NavigationProps>();
 
     const selectedDevice = useSelector(selectSelectedDevice);
     const isUnacquiredDevice = useSelector(selectIsUnacquiredDevice);
@@ -254,7 +242,6 @@ export const useDetectDeviceError = () => {
         shouldFactoryResetBeVisible,
         isFirmwareInstallationRunning,
         isOnboardingFinished,
-        navigation,
         wasDeviceEjectedByUser,
     ]);
 
@@ -273,7 +260,7 @@ export const useDetectDeviceError = () => {
                 ),
                 onPressPrimaryButton: () => {
                     handleDisconnect();
-                    navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+                    navigateNested(RootStackRoutes.AuthorizeDeviceStack, {
                         screen: AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
                     });
                 },
@@ -290,7 +277,6 @@ export const useDetectDeviceError = () => {
         handleDisconnect,
         isOnboardingFinished,
         isUnacquiredDevice,
-        navigation,
         openLink,
         showAlert,
     ]);
