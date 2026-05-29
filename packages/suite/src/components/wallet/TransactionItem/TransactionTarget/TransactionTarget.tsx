@@ -28,12 +28,8 @@ import {
 import { Icon } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
-import {
-    AddressLabeling,
-    BaseCurrencyValue,
-    FormattedCryptoAmount,
-    Sign,
-} from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount, Sign } from 'src/components/suite';
+import { AccountLabelForOwnAddress } from 'src/components/suite/labeling/AddressLabeling';
 import { useSelector } from 'src/hooks/suite';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
@@ -190,7 +186,9 @@ export const TransactionTarget = ({
                     />
                 );
             case 'internal':
-                return <AddressLabeling address={payload.to} symbol={transaction.symbol} />;
+                return (
+                    <AccountLabelForOwnAddress address={payload.to} symbol={transaction.symbol} />
+                );
             default:
                 return exhaustive(type);
         }

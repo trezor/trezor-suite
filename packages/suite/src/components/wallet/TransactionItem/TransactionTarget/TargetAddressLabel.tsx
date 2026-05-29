@@ -5,7 +5,7 @@ import type { AccountKey } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
 import { type ArrayElement } from '@trezor/type-utils';
 
-import { AddressLabeling } from 'src/components/suite';
+import { AccountLabelForOwnAddress } from 'src/components/suite/labeling/AddressLabeling';
 import { useSelector } from 'src/hooks/suite';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
@@ -48,7 +48,7 @@ export const TargetAddressLabel = ({
                 // or it may show address metadata label added from receive tab e.g "My address for illegal things"
                 return type === 'sent' ? (
                     // Using index as a key is safe as the array doesn't change (no filter/reordering, pushing new items)
-                    <AddressLabeling key={i} address={a} symbol={symbol} />
+                    <AccountLabelForOwnAddress key={i} address={a} symbol={symbol} />
                 ) : (
                     <span key={i}>{addressLabels[a] ?? <Address value={a} isTruncated />}</span>
                 );
