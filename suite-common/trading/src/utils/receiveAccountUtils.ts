@@ -1,4 +1,4 @@
-import { type NetworkSymbol, isAccountBasedNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 
 import { getUnusedAddressFromAccount } from '../utils';
@@ -23,26 +23,20 @@ export const getReceiveAccountPreselection = ({
         return null;
     }
 
-    const isAccountBased = isAccountBasedNetwork(receiveAssetNetworkSymbol);
-
     if (sendAccount?.symbol === receiveAssetNetworkSymbol) {
+        const { address } = getUnusedAddressFromAccount(sendAccount);
+
         return {
             accountKey: sendAccount.key,
-            address: isAccountBased ? undefined : getUnusedAddressFromAccount(sendAccount).address,
-        };
-    }
-
-    if (!isAccountBased) {
-        const account = accounts[0];
-        const { address } = getUnusedAddressFromAccount(account);
-
-        return {
-            accountKey: account.key,
             address,
         };
     }
 
+    const account = accounts[0];
+    const { address } = getUnusedAddressFromAccount(account);
+
     return {
-        accountKey: accounts[0].key,
+        accountKey: account.key,
+        address,
     };
 };

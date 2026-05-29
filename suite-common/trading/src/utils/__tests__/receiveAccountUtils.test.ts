@@ -50,6 +50,7 @@ describe('getReceiveAccountPreselection', () => {
             }),
         ).toEqual({
             accountKey: sendAccount.key,
+            address: sendAccount.descriptor,
         });
     });
 
@@ -62,17 +63,6 @@ describe('getReceiveAccountPreselection', () => {
         ).toEqual({
             accountKey: btcAccount.key,
             address: btcUnusedAddress,
-        });
-    });
-
-    it('returns the first account key for account-based networks', () => {
-        expect(
-            getReceiveAccountPreselection({
-                receiveAssetNetworkSymbol: 'eth',
-                accounts: [ethAccount],
-            }),
-        ).toEqual({
-            accountKey: ethAccount.key,
         });
     });
 });
