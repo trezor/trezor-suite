@@ -41,10 +41,10 @@ export const useReceiveAccountPreselectionEffect = ({
 }: UseReceiveAccountPreselectionEffectProps) => {
     const dispatch = useDispatch();
 
-    const receiveSymbol = getSymbolFromTradeableAsset(receiveAsset);
+    const receiveAssetNetworkSymbol = getSymbolFromTradeableAsset(receiveAsset);
 
     const accounts = useSelector((state: CombinedSelectorsRootState) =>
-        selectVisibleDeviceAccountsByNetworkSymbolSorted(state, receiveSymbol ?? null),
+        selectVisibleDeviceAccountsByNetworkSymbolSorted(state, receiveAssetNetworkSymbol ?? null),
     );
     const selectedReceiveAccount = useSelector(selectReceiveAccount);
     const selectedSendAccount = useSelector((state: TradingRootState & AccountsRootState) =>
@@ -52,12 +52,12 @@ export const useReceiveAccountPreselectionEffect = ({
     );
 
     useEffect(() => {
-        if (!receiveSymbol || accounts.length === 0 || !!selectedReceiveAccount) {
+        if (!receiveAssetNetworkSymbol || accounts.length === 0 || !!selectedReceiveAccount) {
             return;
         }
 
         const preselectedAccount = getReceiveAccountPreselection({
-            symbol: receiveSymbol,
+            receiveAssetNetworkSymbol,
             accounts,
             sendAccount: selectedSendAccount,
         });
@@ -81,7 +81,7 @@ export const useReceiveAccountPreselectionEffect = ({
     }, [
         accounts,
         dispatch,
-        receiveSymbol,
+        receiveAssetNetworkSymbol,
         selectedReceiveAccount,
         tradingType,
         selectedSendAccount,
