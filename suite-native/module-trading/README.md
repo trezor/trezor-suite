@@ -23,6 +23,10 @@ Provides the trade history screen and all history-related components (trade list
 
 Shared trading utilities used by both `module-trading` and `trading-history` components.
 
+### @suite-native/trading-provider-utils
+
+Shared provider-aware UI components (`Footer`, `HowTradingWorksSheet`, `KycPolicyWarning`) used by both `module-trading` and `trading-history`.
+
 ### @suite-native/trading-state
 
 Provides state management for trading features.
@@ -64,6 +68,7 @@ graph TD
     subgraph trading-internal["Trading internal modules"]
         trading-history["@suite-native/trading-history"]
         trading-common["@suite-native/trading-common"]
+        trading-provider-utils["@suite-native/trading-provider-utils"]
         trading-atoms["@suite-native/trading-atoms"]
         trading-analytics["@suite-native/trading-analytics"]
         trading-browser-auth["@suite-native/trading-browser-auth"]
@@ -98,19 +103,23 @@ graph TD
     module-trading --> trading-debug
     module-trading --> trading-browser-auth
     module-trading --> trading-common
+    module-trading --> trading-provider-utils
     module-trading --> trading-history
     module-trading --> trading-state
     module-trading --> transaction-management
     module-trading --> trading-residence
     trading-history --> trading-browser-auth
     trading-history --> trading-common
+    trading-history --> trading-provider-utils
     trading-history --> trading-atoms
     trading-history --> trading-state
-    trading-common --> trading-atoms
-    trading-common --> trading-state
+    trading-common -.-> trading-types
+    trading-provider-utils -.-> trading-fixtures
+    trading-provider-utils -.-> trading-types
+    trading-provider-utils --> trading-state
     trading-browser-auth --> trading-analytics
-    trading-browser-auth --> trading-atoms
     trading-browser-auth --> trading-debug
+    trading-browser-auth --> trading-atoms
     trading-browser-auth --> trading-state
     trading-analytics --> trading-atoms
     trading-residence --> trading-state
@@ -129,7 +138,7 @@ graph TD
     trading-fixtures --> trading-consts
     trading-consts -.-> trading-types
 
-    classDef outer fill: #333
+    classDef outer fill: #6c757d, color: #fff, stroke: #495057
     classDef trading-root fill: #c61, stroke: #333, stroke-width: 2px
     classDef trading-group fill: #555, stroke: #333, color: #ddd
     class app,module-dev-utils,module-onboarding,module-settings,state outer

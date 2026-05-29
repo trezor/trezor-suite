@@ -8,8 +8,8 @@ import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { RootStackRoutes, Screen } from '@suite-native/navigation';
-import { Footer } from '@suite-native/trading-common';
 import { TradingEnvironmentWarning } from '@suite-native/trading-debug';
+import { Footer } from '@suite-native/trading-provider-utils';
 import {
     selectActiveTradingType,
     selectIsTradingEnabled,

@@ -70,6 +70,7 @@
         "@suite-native/trading-consts": "workspace:*",
         "@suite-native/trading-debug": "workspace:*",
         "@suite-native/trading-history": "workspace:*",
+        "@suite-native/trading-provider-utils": "workspace:*",
         "@suite-native/trading-residence": "workspace:*",
         "@suite-native/trading-state": "workspace:*",
         "@suite-native/transaction-management": "workspace:*",

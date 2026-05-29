@@ -1,15 +1,11 @@
 import { Linking } from 'react-native';
 
 import { getTranslation } from '@suite-native/intl';
-import { userEvent } from '@suite-native/test-utils-store';
-import { Footer } from '@suite-native/trading-common';
-import { exchangeCexdirect } from '@suite-native/trading-fixtures';
+import { renderWithStoreProvider, userEvent } from '@suite-native/test-utils-store';
+import { exchangeCexdirect, getWalletState } from '@suite-native/trading-fixtures';
+import type { TradingState } from '@suite-native/trading-types';
 
-import {
-    type PreloadedStatePartial,
-    type TradingTestPreloadedState,
-    renderWithTradingProvider,
-} from '../../../__tests__/tradingTestUtils';
+import { Footer } from '../Footer';
 
 const mockOpenModal = jest.fn();
 const mockCloseModal = jest.fn();
@@ -26,8 +22,20 @@ jest.mock('@suite-native/atoms', () => ({
 describe('Footer', () => {
     const mockOpenLink = jest.spyOn(Linking, 'openURL');
 
-    const renderFooter = (overrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
-        renderWithTradingProvider(<Footer />, { overrides });
+    const renderFooter = (overrides: Partial<TradingState>) => {
+        const walletState = getWalletState();
+        const preloadedState = {
+            wallet: {
+                ...walletState,
+                trading: {
+                    ...walletState.trading,
+                    ...overrides,
+                },
+            },
+        };
+
+        return renderWithStoreProvider(<Footer />, { preloadedState });
+    };
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -49,21 +57,13 @@ describe('Footer', () => {
     });
 
     it('should render nothing when isAmountInputActive is true', () => {
-        const { toJSON } = renderFooter({
-            wallet: { trading: { isAmountInputActive: true } },
-        });
+        const { toJSON } = renderFooter({ isAmountInputActive: true });
 
         expect(toJSON()).toBeNull();
     });
 
     it("should render provider's Terms & Conditions link when quote and provider infos are provided", async () => {
-        const { getByText } = renderFooter({
-            wallet: {
-                trading: {
-                    currentProviderMetadata: exchangeCexdirect,
-                },
-            },
-        });
+        const { getByText } = renderFooter({ currentProviderMetadata: exchangeCexdirect });
 
         expect(getByText(/Cexdirect/)).toBeOnTheScreen();
         await userEvent.press(getByText('Terms apply'));

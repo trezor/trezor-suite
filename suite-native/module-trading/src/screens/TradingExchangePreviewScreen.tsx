@@ -20,7 +20,7 @@ import {
     type StackProps,
 } from '@suite-native/navigation';
 import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
-import { Footer } from '@suite-native/trading-common';
+import { Footer } from '@suite-native/trading-provider-utils';
 import {
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
