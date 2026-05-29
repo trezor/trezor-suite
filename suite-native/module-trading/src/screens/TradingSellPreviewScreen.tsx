@@ -13,7 +13,7 @@ import {
     ProviderConfirmationStatusInfo,
     ProviderStatusDevButtons,
 } from '@suite-native/trading-browser-auth';
-import { Footer } from '@suite-native/trading-common';
+import { Footer } from '@suite-native/trading-provider-utils';
 
 import { LastErrorMessage } from '../components/general/Error/LastErrorMessage';
 import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';

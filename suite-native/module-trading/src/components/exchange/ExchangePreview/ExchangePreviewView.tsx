@@ -11,13 +11,13 @@ import {
 } from '@suite-common/trading';
 import { AnimatedVStack, InlineAlertBox, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { KycPolicyWarning, hasKycPolicyWarning } from '@suite-native/trading-provider-utils';
 
 import { ExchangeEIP712Info } from './ExchangeEIP712Info';
 import { ExchangeFeePickerCard } from './ExchangeFeePickerCard';
 import { ExchangeFiatDeviationWarning } from './ExchangeFiatDeviationWarning';
 import { ExchangeFromAccountTradePreviewCard } from './ExchangeFromAccountTradePreviewCard';
 import { ExchangeToAccountTradePreviewCard } from './ExchangeToAccountTradePreviewCard';
-import { getKycPolicyWarningTranslation } from '../../../utils/general/kycUtils';
 import { LastErrorMessage } from '../../general/Error/LastErrorMessage';
 
 export type ExchangePreviewViewProps = {
@@ -36,8 +36,6 @@ export const ExchangePreviewView = memo(
 
         const isTxnError = !!txnErrorString;
         const hasEIP712SignData = hasEip712SignData(quote);
-
-        const kycWarning = getKycPolicyWarningTranslation(kycPolicy);
 
         return (
             <VStack spacing="sp20" paddingVertical="sp20">
@@ -64,10 +62,10 @@ export const ExchangePreviewView = memo(
                     ) : (
                         <ExchangeFeePickerCard quote={quote} isTxnError={isTxnError} />
                     )}
-                    {kycWarning && (
+                    {hasKycPolicyWarning(kycPolicy) && (
                         <InlineAlertBox
                             iconName="identificationCard"
-                            title={kycWarning}
+                            title={<KycPolicyWarning kycPolicyType={kycPolicy} />}
                             accessibilityHint={translate('generic.warning')}
                         />
                     )}

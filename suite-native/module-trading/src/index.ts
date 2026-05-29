@@ -1,5 +1,5 @@
 export * from './navigation/TradingStackNavigator';
-export { TradingHistoryScreen } from '@suite-native/trading-history';
+export { TradingHistoryScreen } from './screens/TradingHistoryScreen';
 export * from './screens/TradingConfirmingScreen';
 export * from './screens/TradingExchangeApprovalScreen';
 export * from './screens/TradingExchangePreviewScreen';

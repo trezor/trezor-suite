@@ -1,3 +1,5 @@
+import { type ReactNode } from 'react';
+
 import {
     type TradingProviderInfo,
     type TradingTradeType,
@@ -5,9 +7,9 @@ import {
     isSellFiatTrade,
 } from '@suite-common/trading';
 import { Translation } from '@suite-native/intl';
+import { KycPolicyWarning, hasKycPolicyWarning } from '@suite-native/trading-provider-utils';
 
 import { InfoLineItem } from './InfoLineItem';
-import { getKycPolicyWarningTranslation } from '../../../utils/general/kycUtils';
 
 export type ProviderListItemInfoProps<T extends TradingTradeType> = {
     quote: T;
@@ -20,7 +22,7 @@ export const ProviderListItemInfo = <T extends TradingTradeType>({
 }: ProviderListItemInfoProps<T>) => {
     let isDex = false;
     let isAnonymous = false;
-    let kycWarning;
+    let kycWarning: ReactNode = null;
 
     if ('kycPolicyType' in provider) {
         const kycPolicy = provider.kycPolicyType;
@@ -28,7 +30,9 @@ export const ProviderListItemInfo = <T extends TradingTradeType>({
         isDex = kycPolicy === 'DEX';
 
         isAnonymous = kycPolicy === 'noKYC' || isDex;
-        kycWarning = getKycPolicyWarningTranslation(kycPolicy);
+        if (hasKycPolicyWarning(kycPolicy)) {
+            kycWarning = <KycPolicyWarning kycPolicyType={kycPolicy} />;
+        }
     } else if (isBuyTrade(quote) || isSellFiatTrade(quote)) {
         kycWarning = <Translation id="moduleTrading.providerListItem.kycRequired" />;
     }

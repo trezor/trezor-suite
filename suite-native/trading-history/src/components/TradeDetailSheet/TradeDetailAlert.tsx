@@ -8,10 +8,10 @@ import {
     selectTradingTradeByOrderId,
 } from '@suite-common/trading';
 import { FullAlertBox } from '@suite-native/atoms';
-import { type IconName } from '@suite-native/icons';
+import type { IconName } from '@suite-native/icons';
 import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
-import { type TradeStatusStep } from '@suite-native/trading-common';
+import type { TradeStatusStep } from '@suite-native/trading-common';
 import { exhaustive } from '@trezor/type-utils';
 
 type AlertConfig = {

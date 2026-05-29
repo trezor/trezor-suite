@@ -19,10 +19,10 @@
         { "path": "../intl" },
         { "path": "../labeling" },
         { "path": "../link" },
-        { "path": "../navigation" },
         { "path": "../trading-atoms" },
         { "path": "../trading-browser-auth" },
         { "path": "../trading-common" },
+        { "path": "../trading-provider-utils" },
         { "path": "../trading-state" },
         {
             "path": "../../packages/styles-native"
