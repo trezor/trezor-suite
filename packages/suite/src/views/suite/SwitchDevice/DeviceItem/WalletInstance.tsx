@@ -4,7 +4,7 @@ import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import { selectIsLegacyLabelingVisible } from '@suite/metadata';
 import { SuiteSyncWalletDebug } from '@suite/suite-sync';
-import { selectWalletLabel, useGetDefaultWalletLabel } from '@suite/wallet';
+import { useWalletLabel } from '@suite/wallet';
 import {
     getAccountsByDeviceState,
     selectAllAccountsToList,
@@ -34,7 +34,7 @@ import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useStore } from 'src/hooks/suite/useStore';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
-import { type AcquiredDevice, type AppState, type ForegroundAppProps } from 'src/types/suite';
+import { type AcquiredDevice, type ForegroundAppProps } from 'src/types/suite';
 
 import { EjectConfirmation } from './EjectConfirmation';
 
@@ -62,17 +62,11 @@ export const WalletInstance = ({
     const store = useStore();
     const { translationString } = useTranslation();
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
-    const defaultWalletLabel = useGetDefaultWalletLabel({ device: instance });
+    const { defaultLabel, label } = useWalletLabel({ device: instance });
 
     const deviceAccounts = getAllAccounts(instance.state, accounts);
 
     const walletBalance = useTotalFiatBalance(deviceAccounts, baseCurrencyCode, currentFiatRates);
-
-    const walletLabel = useSelector((state: AppState) =>
-        selectWalletLabel(state, {
-            deviceStaticId: instance?.state?.staticSessionId ?? null,
-        }),
-    );
 
     const dataTestBase = `@switch-device/wallet-on-index/${index}`;
 
@@ -150,16 +144,15 @@ export const WalletInstance = ({
                                             )}
                                             maxWidth={290}
                                             deviceStaticSessionId={instance.state.staticSessionId}
-                                            defaultValue={defaultWalletLabel}
+                                            defaultValue={defaultLabel}
                                             payload={{
                                                 type: 'walletLabel',
                                                 entityKey: instance.state.staticSessionId,
                                                 defaultValue: instance.state.staticSessionId,
-                                                value: walletLabel ?? undefined,
                                             }}
                                             leftAddon={passphraseIcon}
                                         >
-                                            {walletLabel ?? defaultWalletLabel}
+                                            {label}
                                         </Labeling>
                                         <SuiteSyncWalletDebug
                                             device={instance}

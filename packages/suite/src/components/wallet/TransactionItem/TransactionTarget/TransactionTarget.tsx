@@ -217,7 +217,6 @@ export const TransactionTarget = ({
                         txid: transaction.txid,
                         outputIndex: `${targetId}`,
                         defaultValue: defaultMetadataValue,
-                        value: outputLabel,
                         networkSymbol: transaction.symbol,
                         accountDescriptor: transaction.descriptor,
                     }}

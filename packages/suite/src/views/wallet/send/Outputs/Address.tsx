@@ -512,7 +512,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                                     txid: 'will-be-replaced',
                                     outputIndex: `${outputId}`,
                                     defaultValue: `${outputId}`,
-                                    value: label,
                                     networkSymbol: symbol,
                                     accountDescriptor: descriptor,
                                 }}

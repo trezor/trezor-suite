@@ -217,7 +217,6 @@ export const ConfirmValueModal = ({
                                             defaultValue: value,
                                             networkSymbol: account.symbol,
                                             accountDescriptor: account.descriptor,
-                                            value: addressLabel ?? undefined,
                                         }}
                                         maxWidth={290}
                                     >

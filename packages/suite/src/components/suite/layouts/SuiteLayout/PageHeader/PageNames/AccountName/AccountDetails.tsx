@@ -71,7 +71,6 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                     type: 'accountLabel',
                     entityKey: key,
                     defaultValue: path,
-                    value: label,
                 }}
                 deviceStaticSessionId={deviceState}
                 defaultValue={defaultLabel}

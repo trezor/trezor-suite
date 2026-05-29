@@ -204,7 +204,6 @@ export const FreshAddress = ({
                                     defaultValue: currentFreshAddress?.address,
                                     networkSymbol: account.symbol,
                                     accountDescriptor: account.descriptor,
-                                    value: currentFreshAddressLabel ?? undefined,
                                 }}
                                 deviceStaticSessionId={account.deviceState}
                                 displayValue={
