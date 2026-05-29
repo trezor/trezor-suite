@@ -4,7 +4,6 @@
  * Trezor Earn Staking API
  * OpenAPI spec version: 0.1.0
  */
+import type { TrxStatsItem } from './trxStatsItem';
 
-export type StakingBatchParams = {
-    networks?: ('eth' | 'sol' | 'ada' | 'trx')[] | string;
-};
+export type TrxStats = TrxStatsItem[];
