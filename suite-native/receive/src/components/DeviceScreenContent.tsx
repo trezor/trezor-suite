@@ -10,6 +10,7 @@ import {
 } from '@shopify/react-native-skia';
 
 import { selectDeviceModel } from '@suite-common/device';
+import { clearAddressPrefix } from '@suite-common/formatters';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -112,10 +113,10 @@ export const DeviceScreenContent = ({
 
     if (!deviceModel) return null;
 
-    const bchPrefixRemovedAddress = address.replace('bitcoincash:', '');
+    const clearedAddress = clearAddressPrefix(address);
 
     const addressLines = parseAddressToDeviceLines({
-        address: bchPrefixRemovedAddress,
+        address: clearedAddress,
         deviceModel,
         isPaginationEnabled,
         activePage,
