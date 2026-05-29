@@ -525,12 +525,16 @@ export const restoreOrigOutputsOrder = (
 export const getDefaultValues = (
     currency: Output['currency'],
     networkType?: NetworkType,
-): FormState => ({
-    ...DEFAULT_VALUES,
-    options: networkType === 'solana' ? ['broadcast'] : ['broadcast', 'destinationTag'],
-    outputs: [{ ...DEFAULT_PAYMENT, currency }],
-    selectedUtxos: [],
-});
+): FormState => {
+    const isDestinationTagEnabledByDefault = networkType === 'ripple' || networkType === 'stellar';
+
+    return {
+        ...DEFAULT_VALUES,
+        options: isDestinationTagEnabledByDefault ? ['broadcast', 'destinationTag'] : ['broadcast'],
+        outputs: [{ ...DEFAULT_PAYMENT, currency }],
+        selectedUtxos: [],
+    };
+};
 
 type BuildCurrencyOptionParams = {
     currency: BaseCurrencyCode | '' | undefined;
