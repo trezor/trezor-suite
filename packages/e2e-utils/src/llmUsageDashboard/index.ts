@@ -6,18 +6,6 @@ import type { UsageRecord } from '../tokenUsage';
 const escapeHtml = (s: string) =>
     s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-const PRICE_INPUT_PER_MTOK = 15;
-const PRICE_OUTPUT_PER_MTOK = 75;
-
-const estimateCost = (r: UsageRecord): number => {
-    if (r.input_tokens == null || r.output_tokens == null) return 0;
-
-    return (
-        (r.input_tokens / 1_000_000) * PRICE_INPUT_PER_MTOK +
-        (r.output_tokens / 1_000_000) * PRICE_OUTPUT_PER_MTOK
-    );
-};
-
 const toDateStr = (ts: string) => ts.slice(0, 10); // YYYY-MM-DD
 
 const groupByDateAndScript = (records: UsageRecord[]) => {
@@ -37,7 +25,7 @@ const groupByDateAndScript = (records: UsageRecord[]) => {
 
         entry.input += r.input_tokens ?? 0;
         entry.output += r.output_tokens ?? 0;
-        entry.cost += estimateCost(r);
+        entry.cost += r.total_cost_usd ?? 0;
     }
 
     return byDate;
@@ -89,7 +77,7 @@ const generateHtml = (records: UsageRecord[]): string => {
 
     const tableRows = recentRuns
         .map(r => {
-            const cost = estimateCost(r).toFixed(4);
+            const cost = r.total_cost_usd ? `$${r.total_cost_usd.toFixed(4)}` : 'n/a';
             const input = r.input_tokens != null ? `${(r.input_tokens / 1000).toFixed(1)}k` : 'n/a';
             const output =
                 r.output_tokens != null ? `${(r.output_tokens / 1000).toFixed(1)}k` : 'n/a';
@@ -112,7 +100,7 @@ const generateHtml = (records: UsageRecord[]): string => {
     const costData = JSON.stringify({ labels: dates, datasets: costDatasets });
 
     const totalRecords = records.length;
-    const totalCost = records.reduce((sum, r) => sum + estimateCost(r), 0).toFixed(4);
+    const totalCost = records.reduce((sum, r) => sum + (r.total_cost_usd ?? 0), 0);
     const totalInput = records.reduce((sum, r) => sum + (r.input_tokens ?? 0), 0);
     const totalOutput = records.reduce((sum, r) => sum + (r.output_tokens ?? 0), 0);
 
@@ -147,7 +135,7 @@ const generateHtml = (records: UsageRecord[]): string => {
 </head>
 <body>
   <h1>LLM Token Usage Dashboard</h1>
-  <p class="subtitle">Generated ${new Date().toISOString().slice(0, 19)} UTC &nbsp;·&nbsp; Prices: $${PRICE_INPUT_PER_MTOK}/MTok input, $${PRICE_OUTPUT_PER_MTOK}/MTok output (claude-opus-4-6)</p>
+  <p class="subtitle">Generated ${new Date().toISOString().slice(0, 19)} UTC</p>
 
   <div class="stats">
     <div class="stat"><div class="stat-label">Total runs</div><div class="stat-value">${totalRecords}</div></div>

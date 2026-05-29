@@ -6,6 +6,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  id-token: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.run_id }}
@@ -37,11 +38,32 @@ jobs:
       - name: Install dependencies
         run: yarn workspaces focus @trezor/e2e-utils
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6
+        with:
+          role-to-assume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
+          aws-region: "eu-central-1"
+
       - name: Run analysis agent
         env:
           ANTHROPIC_API_KEY: ${{ secrets.E2E_CLAUDE_API_KEY }}
           CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
         run: yarn workspace @trezor/e2e-utils fix-bot:analyze
+
+      - name: Store token usage record to S3
+        if: always()
+        run: |
+          if [ -f /tmp/llm-token-usage.json ]; then
+            aws s3api put-object \
+              --bucket dev.suite.sldev.cz \
+              --key "coverage/e2e/llm-usage/runs/${{ github.run_id }}_AnalyzerAgent.json" \
+              --body /tmp/llm-token-usage.json \
+              --content-type application/json \
+              --cache-control "no-cache, max-age=0"
+            echo "Token usage record stored."
+          else
+            echo "No token usage file found, skipping."
+          fi
 
       - name: Upload report
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
@@ -157,6 +179,12 @@ jobs:
       - name: Install dependencies
         run: yarn workspaces focus @trezor/suite-e2e @trezor/e2e-utils @trezor/suite-web
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6
+        with:
+          role-to-assume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
+          aws-region: "eu-central-1"
+
       - name: Install Playwright browsers
         run: yarn workspace @trezor/suite-e2e exec playwright install chromium --with-deps
 
@@ -190,9 +218,6 @@ jobs:
           name: fix-agent-report
           path: report-download/
 
-      - name: Set REPORT_PATH
-        run: echo "REPORT_PATH=report-download/report.json" >> $GITHUB_ENV
-
       - name: Pull Docker images
         run: docker compose pull --quiet
 
@@ -207,7 +232,7 @@ jobs:
 
       - name: Checkout fix branch
         run: |
-          BRANCH=$(jq -r --arg id "${{ matrix.task-id }}" '.fix_tasks[] | select(.id == $id) | .branch' "$REPORT_PATH")
+          BRANCH=$(jq -r --arg id "${{ matrix.task-id }}" '.fix_tasks[] | select(.id == $id) | .branch' "report-download/report.json")
           git checkout -b "$BRANCH"
           echo "BRANCH=$BRANCH" >> $GITHUB_ENV
 
@@ -221,9 +246,25 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.E2E_CLAUDE_API_KEY }}
           PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
           TASK_ID: ${{ matrix.task-id }}
-          TEST_TIMEOUT_OVERRIDE: 180000
-          REPORT_PATH: ${{ github.workspace }}/${{ env.REPORT_PATH }}
+          AGENT_GITHUB_ACTION: true
+          REPORT_PATH: ${{ github.workspace }}/report-download/report.json
         run: yarn workspace @trezor/e2e-utils fix-bot:fix
+
+      - name: Store token usage record to S3
+        if: always()
+        run: |
+          if [ -f /tmp/llm-token-usage.json ]; then
+            SAFE_TASK_ID=$(echo "${{ matrix.task-id }}" | tr -cs 'a-zA-Z0-9_-' '_')
+            aws s3api put-object \
+              --bucket dev.suite.sldev.cz \
+              --key "coverage/e2e/llm-usage/runs/${{ github.run_id }}_FixAgent_${SAFE_TASK_ID}.json" \
+              --body /tmp/llm-token-usage.json \
+              --content-type application/json \
+              --cache-control "no-cache, max-age=0"
+            echo "Token usage record stored."
+          else
+            echo "No token usage file found, skipping."
+          fi
 
       - name: Publish PR
         if: ${{ !cancelled() && steps.run-fix-agent.outcome != 'skipped' }}
@@ -234,3 +275,8 @@ jobs:
       - name: Docker Compose Down
         if: always()
         run: docker compose down
+
+  aggregate:
+    needs: [analyze, fix]
+    if: always() && github.repository == 'trezor/trezor-suite' && needs.analyze.result != 'cancelled'
+    uses: ./.github/workflows/aggregate-llm-usage.yml
