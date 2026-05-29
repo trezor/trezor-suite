@@ -2,9 +2,11 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { closeSync, existsSync, mkdirSync, openSync, readFileSync, unlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { prettifyError } from 'zod';
 
 import { error, log } from '../logger';
-import { logAgentResult, reportTokenUsage } from './reportTokenUsage';
+import { processAgentOutput } from './reportTokenUsage';
+import { ReportSchema } from './schemas';
 
 function main(): void {
     const root = execFileSync('git', ['rev-parse', '--show-toplevel'], {
@@ -62,13 +64,20 @@ function main(): void {
     const reportMd = join(reportDir, 'report.md');
     const reportJson = join(reportDir, 'report.json');
 
-    reportTokenUsage(claudeOutput, join(reportDir, 'token_usage.txt'), 'analysis');
-    logAgentResult(claudeOutput, 'analysis');
+    const { model } = JSON.parse(readFileSync(join(botDir, 'settings.json'), 'utf-8'));
+    processAgentOutput(claudeOutput, 'nightlyAnalyzer', model);
 
     const missing = [reportMd, reportJson].filter(f => !existsSync(f));
 
     if (missing.length > 0) {
         missing.forEach(f => error(`Expected output not found: ${f}`));
+        process.exit(1);
+    }
+
+    const unsafeParse = JSON.parse(readFileSync(reportJson, 'utf-8'));
+    const report = ReportSchema.safeParse(unsafeParse);
+    if (!report.success) {
+        error(`report.json failed schema validation: ${prettifyError(report.error)}`);
         process.exit(1);
     }
 

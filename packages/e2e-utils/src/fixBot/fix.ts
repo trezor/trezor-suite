@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import { error, log } from '../logger';
-import { logAgentResult, reportTokenUsage } from './reportTokenUsage';
+import { processAgentOutput } from './reportTokenUsage';
 import { ReportSchema } from './schemas';
 
 function main(): void {
@@ -25,7 +25,6 @@ function main(): void {
         encoding: 'utf-8',
     }).trim();
     const fixAgentDir = join(root, 'packages/e2e-utils/src/fixBot');
-    const reportDir = join(fixAgentDir, 'reports');
 
     const report = ReportSchema.parse(JSON.parse(readFileSync(reportPath, 'utf-8')));
     const task = report.fix_tasks.find(t => t.id === taskId);
@@ -71,8 +70,8 @@ function main(): void {
     const output = readFileSync(tmpFile, 'utf-8');
     unlinkSync(tmpFile);
 
-    reportTokenUsage(output, join(reportDir, 'token_usage.txt'), `fix:${task.id}`);
-    logAgentResult(output, `fix:${task.id}`);
+    const { model } = JSON.parse(readFileSync(join(fixAgentDir, 'settings.json'), 'utf-8'));
+    processAgentOutput(output, 'nightlyFixer', model);
 
     if (result.error) throw result.error;
     if (result.status !== 0 || result.signal) {

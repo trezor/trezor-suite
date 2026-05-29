@@ -100,25 +100,7 @@ jobs:
             echo "No token usage file found, skipping."
           fi
 
-      - name: Aggregate usage records and generate dashboard
-        if: always()
-        run: |
-          mkdir -p /tmp/llm-usage-runs
-          aws s3 sync s3://dev.suite.sldev.cz/coverage/e2e/llm-usage/runs/ /tmp/llm-usage-runs/ || true
-
-          # Merge all run records into one JSON array (handle empty dir gracefully)
-          shopt -s nullglob
-          files=(/tmp/llm-usage-runs/*.json)
-          if [ ${#files[@]} -gt 0 ]; then
-            jq -s '.' "${files[@]}" > /tmp/llm-usage-aggregated.json
-          else
-            echo '[]' > /tmp/llm-usage-aggregated.json
-          fi
-
-          # Generate HTML dashboard
-          yarn workspace @trezor/e2e-utils generate-usage-dashboard /tmp/llm-usage-aggregated.json /tmp/llm-usage-dashboard.html
-
-          # Upload both to S3
-          aws s3api put-object --bucket dev.suite.sldev.cz --key coverage/e2e/llm-usage/aggregated.json --body /tmp/llm-usage-aggregated.json --content-type application/json --cache-control "no-cache, max-age=0"
-          aws s3api put-object --bucket dev.suite.sldev.cz --key coverage/e2e/llm-usage/dashboard.html --body /tmp/llm-usage-dashboard.html --content-type text/html --cache-control "no-cache, max-age=0"
-          echo "Dashboard available at: https://dev.suite.sldev.cz/coverage/e2e/llm-usage/dashboard.html"
+  aggregate:
+    needs: [build-llm-test-analysis]
+    if: always() && github.repository == 'trezor/trezor-suite' && needs.build-llm-test-analysis.result != 'cancelled'
+    uses: ./.github/workflows/build-llm-usage-dashboard.yml
