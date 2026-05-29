@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@suite-common/connect-popup": "workspace:*",
+        "@suite/intl": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
@@ -21,7 +22,12 @@
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@suite/metadata": "workspace:*",
+        "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "react": "19.2.4",
         "redux": "^5.0.1"
+    },
+    "devDependencies": {
+        "@types/react": "19.2.14"
     }
 }

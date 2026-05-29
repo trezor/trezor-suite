@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { AccountTypeBadge } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
@@ -16,7 +17,6 @@ import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { AccountLabel } from 'src/components/suite/AccountLabel';
-import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 import { useSelector } from 'src/hooks/suite';
 
 interface WalletConnectSwitchAccountModalProps {

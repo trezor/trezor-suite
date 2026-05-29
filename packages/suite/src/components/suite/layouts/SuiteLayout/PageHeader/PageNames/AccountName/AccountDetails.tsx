@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import styled from 'styled-components';
 
-import { selectAccountLabel } from '@suite/account';
+import { AccountTypeBadge, selectAccountLabel } from '@suite/account';
 import { useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
@@ -11,7 +11,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { Column, H2, Row, Text, motionEasing } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 
-import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 import { AmountUnitSwitchWrapper } from 'src/components/suite/AmountUnitSwitchWrapper';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';

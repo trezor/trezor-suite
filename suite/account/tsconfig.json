@@ -27,7 +27,9 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../intl" },
         { "path": "../metadata" },
+        { "path": "../../packages/components" },
         { "path": "../../packages/connect" }
     ]
 }
