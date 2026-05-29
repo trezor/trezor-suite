@@ -1,1 +1,1 @@
-export * from './useMerkleRewards';
+export * from './useMerklRewards';

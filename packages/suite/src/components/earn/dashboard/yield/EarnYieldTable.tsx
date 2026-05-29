@@ -24,7 +24,7 @@ import { EarnYieldClaimSelectAccountModal } from './EarnYieldClaimSelectAccountM
 import { EarnYieldTableBody } from './EarnYieldTableBody';
 import { useYieldAccountsVisibility } from './hooks/useYieldAccountsVisibility';
 import { useYieldTableData } from './hooks/useYieldTableData';
-import { useMerkleRewards } from '../../yield/claim/hooks';
+import { useMerklRewards } from '../../yield/claim/hooks';
 import { EarnDashboardSection } from '../common/EarnDashboardSection';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
 import { getEarnDashboardBadgeState } from '../utils/earnDashboardBadgeUtils';
@@ -73,11 +73,11 @@ export const EarnYieldTable = () => {
         toggleIsExpanded,
     } = useYieldAccountsVisibility({ yieldAccountOpportunities });
 
-    const { merkleRewardsQuery } = useMerkleRewards(yieldAccounts);
-    const { accountsRewards } = merkleRewardsQuery.data;
+    const { merklRewardsQuery } = useMerklRewards(yieldAccounts);
+    const { accountsRewards } = merklRewardsQuery.data;
     const isClaimDisabled =
         claimMessageSystem.isDisabled ||
-        !merkleRewardsQuery.isSuccess ||
+        !merklRewardsQuery.isSuccess ||
         accountsRewards.length === 0;
 
     const badge = getEarnDashboardBadgeState({
@@ -90,7 +90,7 @@ export const EarnYieldTable = () => {
     const hasClaimBanner = accountsRewards.length > 0;
     const availableVaultCount = availableVaults?.length ?? 0;
     const isReadyToReport =
-        !isYieldOpportunitiesLoading && !isYieldOpportunitiesError && merkleRewardsQuery.isSuccess;
+        !isYieldOpportunitiesLoading && !isYieldOpportunitiesError && merklRewardsQuery.isSuccess;
 
     useEffect(() => {
         if (!isReadyToReport || hasFiredReadyEventRef.current) {
@@ -158,9 +158,9 @@ export const EarnYieldTable = () => {
                         {(isYieldActive || accountsRewards.length > 0) && (
                             <>
                                 <EarnYieldClaimRewardsBanner
-                                    value={merkleRewardsQuery.data.totalRewardsToClaim.value}
-                                    currency={merkleRewardsQuery.data.totalRewardsToClaim.currency}
-                                    isValueLoading={merkleRewardsQuery.isLoading}
+                                    value={merklRewardsQuery.data.totalRewardsToClaim.value}
+                                    currency={merklRewardsQuery.data.totalRewardsToClaim.currency}
+                                    isValueLoading={merklRewardsQuery.isLoading}
                                     isClaimDisabled={isClaimDisabled}
                                     claimDisabledTooltip={
                                         claimMessageSystem.isDisabled

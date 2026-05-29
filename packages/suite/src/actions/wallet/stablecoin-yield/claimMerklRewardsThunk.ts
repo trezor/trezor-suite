@@ -168,16 +168,16 @@ async function getEstimatedFee({
     };
 }
 
-type ClaimMerkleRewardsParams = {
+type ClaimMerklRewardsParams = {
     account: Account;
     flowKey: string;
     rewards: YieldAccountsRewards[number]['rewards'];
 };
 
-export const claimMerkleRewardsThunk = createThunk(
-    `${STABLECOIN_YIELD_PREFIX}/thunk/claimMerkleRewards`,
+export const claimMerklRewardsThunk = createThunk(
+    `${STABLECOIN_YIELD_PREFIX}/thunk/claimMerklRewards`,
     async (
-        { account, flowKey, rewards }: ClaimMerkleRewardsParams,
+        { account, flowKey, rewards }: ClaimMerklRewardsParams,
         { dispatch, getState, extra },
     ) => {
         const device = selectSelectedDevice(getState());

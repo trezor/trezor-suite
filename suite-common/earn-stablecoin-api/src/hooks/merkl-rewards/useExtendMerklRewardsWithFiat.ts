@@ -18,10 +18,10 @@ import {
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
-import { type MerkleChainsRewards } from './useGetMerkleRewards';
+import { type MerklChainsRewards } from './useGetMerklRewards';
 
-function extendMerkleRewardsWithFiat(
-    chainsRewards: MerkleChainsRewards = [],
+function extendMerklRewardsWithFiat(
+    chainsRewards: MerklChainsRewards = [],
     baseCurrency: BaseCurrencyCode,
     currentFiatRates: RatesByKey | undefined,
 ) {
@@ -110,23 +110,23 @@ function extendMerkleRewardsWithFiat(
     };
 }
 
-interface UseExtendMerkleRewardsWithFiatProps {
-    chainsRewards?: MerkleChainsRewards;
+interface UseExtendMerklRewardsWithFiatProps {
+    chainsRewards?: MerklChainsRewards;
     baseCurrency: BaseCurrencyCode;
     currentFiatRates: RatesByKey | undefined;
 }
 
-export function useExtendMerkleRewardsWithFiat({
+export function useExtendMerklRewardsWithFiat({
     chainsRewards,
     baseCurrency,
     currentFiatRates,
-}: UseExtendMerkleRewardsWithFiatProps) {
+}: UseExtendMerklRewardsWithFiatProps) {
     return useMemo(
-        () => extendMerkleRewardsWithFiat(chainsRewards, baseCurrency, currentFiatRates),
+        () => extendMerklRewardsWithFiat(chainsRewards, baseCurrency, currentFiatRates),
         [chainsRewards, baseCurrency, currentFiatRates],
     );
 }
 
 export type ChainRewardsWithFiat = ReturnType<
-    typeof extendMerkleRewardsWithFiat
+    typeof extendMerklRewardsWithFiat
 >['chainsRewardsWithFiat'][number];

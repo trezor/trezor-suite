@@ -1,4 +1,4 @@
 export * from './cancelSignYieldTx';
-export * from './claimMerkleRewardsThunk';
+export * from './claimMerklRewardsThunk';
 export * from './submitYieldDepositThunk';
 export * from './submitYieldWithdrawThunk';

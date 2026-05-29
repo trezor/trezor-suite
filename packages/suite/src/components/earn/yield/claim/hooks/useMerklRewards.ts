@@ -2,9 +2,9 @@ import { useMemo } from 'react';
 
 import { selectIsDebugModeActive } from '@suite/settings';
 import {
-    useExtendMerkleRewardsWithFiat,
-    useGetMerkleRewards,
-    useGetMerkleRewardsQueryEntries,
+    useExtendMerklRewardsWithFiat,
+    useGetMerklRewards,
+    useGetMerklRewardsQueryEntries,
     usePairRewardsWithAccounts,
     useTotalClaimableRewardsAmountOfAccounts,
 } from '@suite-common/earn-stablecoin-api';
@@ -21,10 +21,10 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 type YieldRewardsAccounts = (Account | undefined) | (Account | undefined)[];
 
 /**
- * - Fetches Merkle rewards from provided chain/address query entries.
- * - Extends Merkle rewards with fiat rates (and fetches missing rate tickers).
+ * - Fetches Merkl rewards from provided chain/address query entries.
+ * - Extends Merkl rewards with fiat rates (and fetches missing rate tickers).
  */
-export function useMerkleRewards(accounts: YieldRewardsAccounts) {
+export function useMerklRewards(accounts: YieldRewardsAccounts) {
     const dispatch = useDispatch();
 
     const resolvedAccounts = useMemo<Account[]>(() => {
@@ -33,16 +33,13 @@ export function useMerkleRewards(accounts: YieldRewardsAccounts) {
         return maybeAccounts.filter((account): account is Account => Boolean(account));
     }, [accounts]);
     const isDebugMode = useSelector(selectIsDebugModeActive);
-    const merkleRewardsQueryEntries = useGetMerkleRewardsQueryEntries(
-        resolvedAccounts,
-        isDebugMode,
-    );
-    const merkleRewardsQuery = useGetMerkleRewards(merkleRewardsQueryEntries);
+    const merklRewardsQueryEntries = useGetMerklRewardsQueryEntries(resolvedAccounts, isDebugMode);
+    const merklRewardsQuery = useGetMerklRewards(merklRewardsQueryEntries);
 
     const baseCurrency = useSelector(selectBaseCurrency);
     const currentFiatRates = useSelector(selectCurrentFiatRates);
-    const { chainsRewardsWithFiat, missingRateTickers } = useExtendMerkleRewardsWithFiat({
-        chainsRewards: merkleRewardsQuery.data,
+    const { chainsRewardsWithFiat, missingRateTickers } = useExtendMerklRewardsWithFiat({
+        chainsRewards: merklRewardsQuery.data,
         baseCurrency,
         currentFiatRates,
     });
@@ -69,8 +66,8 @@ export function useMerkleRewards(accounts: YieldRewardsAccounts) {
     const totalRewardsToClaim = useTotalClaimableRewardsAmountOfAccounts(accountsRewards);
 
     return {
-        merkleRewardsQuery: {
-            ...merkleRewardsQuery,
+        merklRewardsQuery: {
+            ...merklRewardsQuery,
             data: {
                 accountsRewards,
                 totalRewardsToClaim: {
