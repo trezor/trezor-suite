@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { AccountLabel } from '@suite/account';
 import { Translation } from '@suite/intl';
 import type { DeviceRootState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -19,7 +20,6 @@ import TrezorConnect from '@trezor/connect';
 import { CoinLogo, ConfirmOnDevicePill } from '@trezor/product-components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { useSelector } from 'src/hooks/suite';

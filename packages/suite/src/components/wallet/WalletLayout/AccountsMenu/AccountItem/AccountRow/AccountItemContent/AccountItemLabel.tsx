@@ -1,9 +1,9 @@
+import { AccountLabel } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
 import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 import { Column, Text } from '@trezor/components';
 
-import { AccountLabel } from 'src/components/suite';
 import { type AccountItemType } from 'src/types/wallet';
 
 type AccountItemLabelProps = {

@@ -1,12 +1,11 @@
 import { useMemo } from 'react';
 
+import { AccountLabel } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
-
-import { AccountLabel } from 'src/components/suite/AccountLabel';
 
 import { ItemClickableContainer } from '../ItemClickableContainer';
 

@@ -1,10 +1,11 @@
 import { type ReactNode } from 'react';
 
+import { AccountLabel } from '@suite/account';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Text } from '@trezor/components';
 
-import { AccountLabel, FormattedCryptoAmount } from 'src/components/suite';
+import { FormattedCryptoAmount } from 'src/components/suite';
 
 import { type EarnTokenBalance } from './types';
 

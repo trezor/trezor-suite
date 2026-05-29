@@ -1,9 +1,11 @@
 import { useMemo } from 'react';
 
+import { getDefaultAccountLabel } from '@suite/account';
+import { useTranslation } from '@suite/intl';
 import { selectAccountLabelsLegacy } from '@suite/metadata';
 import { accountSearchFn, isTokenMatchesSearch } from '@suite-common/wallet-utils';
 
-import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { type AccountWithTokensOption } from '../types';
 import { calculateExpandableTokensHeight } from '../utils';
@@ -12,7 +14,7 @@ export function useFilterAccountsWithTokens(
     accountsWithTokens: AccountWithTokensOption[],
     search: string,
 ) {
-    const { getDefaultAccountLabel } = useDefaultAccountLabel();
+    const { translationString } = useTranslation();
     const accountLegacyLabels = useSelector(selectAccountLabelsLegacy);
 
     return useMemo(
@@ -25,13 +27,13 @@ export function useFilterAccountsWithTokens(
 
                     switch (item.type) {
                         case 'account': {
-                            const { accountType, symbol, index, key } = item.account;
+                            const { key } = item.account;
 
                             const accountLabel =
                                 item.account.label ??
                                 (Object.prototype.hasOwnProperty.call(accountLegacyLabels, key)
                                     ? accountLegacyLabels[key]
-                                    : getDefaultAccountLabel({ accountType, symbol, index })) ??
+                                    : getDefaultAccountLabel(translationString, item.account)) ??
                                 '';
 
                             return accountSearchFn(item.account, search, {
@@ -67,6 +69,6 @@ export function useFilterAccountsWithTokens(
 
                     return item;
                 }),
-        [accountLegacyLabels, accountsWithTokens, getDefaultAccountLabel, search],
+        [accountLegacyLabels, accountsWithTokens, search, translationString],
     );
 }

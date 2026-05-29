@@ -29,7 +29,7 @@ import { Icon } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { BaseCurrencyValue, FormattedCryptoAmount, Sign } from 'src/components/suite';
-import { AccountLabelForOwnAddress } from 'src/components/suite/labeling/AddressLabeling';
+import { AccountLabelForOwnAddress } from 'src/components/suite/labeling/AccountLabelForOwnAddress';
 import { useSelector } from 'src/hooks/suite';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 

@@ -1,8 +1,8 @@
 import { type ReactNode, useMemo } from 'react';
 
+import { AccountLabel } from '@suite/account';
 import { type Account } from '@suite-common/wallet-types';
 
-import { AccountLabel } from '../../AccountLabel';
 import { ASSET_ROW_GROUP_LABEL_HEIGHT, ASSET_ROW_HEIGHTS_BY_SIZE } from '../constants';
 import { type AccountWithTokensOption, type AssetGroupSpaceSize } from '../types';
 

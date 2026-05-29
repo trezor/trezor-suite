@@ -12,4 +12,7 @@ export {
     type SelectedAccountState,
 } from './selectedAccountReducer';
 export { AccountTypeBadge } from './AccountTypeBadge';
-export { selectAccountLabel, type SelectAccountLabelState } from './selectAccountLabel';
+export { AccountLabel } from './labels/AccountLabel';
+export { getDefaultAccountLabel } from './labels/getDefaultAccountLabel';
+export { selectAccountLabel, type SelectAccountLabelState } from './labels/selectAccountLabel';
+export { useAccountLabel } from './labels/useAccountLabel';

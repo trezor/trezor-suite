@@ -1,11 +1,11 @@
-import { AccountTypeBadge, selectAccountLabel } from '@suite/account';
 import { type Account } from '@suite-common/wallet-types';
 import { type BadgeSize, type FlexProps, Row, Text, type TextProps } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
 
-import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
+import { AccountTypeBadge } from '../AccountTypeBadge';
+import { useAccountLabel } from './useAccountLabel';
 
-interface AccountLabelProps {
+type AccountLabelProps = {
     showAccountTypeBadge?: boolean;
     accountTypeBadgeSize?: BadgeSize;
     // Defensive programming to prevent passing 'accountLabel' by mistake.
@@ -16,7 +16,7 @@ interface AccountLabelProps {
     isDisabled?: TextProps['isDisabled'];
     typographyStyle?: TypographyStyle;
     rowProps?: Omit<FlexProps, 'children'>;
-}
+};
 
 export const AccountLabel = ({
     showAccountTypeBadge,
@@ -28,18 +28,9 @@ export const AccountLabel = ({
     isDisabled,
     rowProps,
 }: AccountLabelProps) => {
-    const { getDefaultAccountLabel } = useDefaultAccountLabel();
-    const accountLabel = useSelector(state =>
-        selectAccountLabel(state, {
-            accountDescriptor: account.descriptor,
-            accountKey: account.key,
-            deviceStaticId: account.deviceState,
-            networkSymbol: account.symbol,
-        }),
-    );
+    const { label } = useAccountLabel({ account });
 
-    const { symbol, accountType, index, path, networkType } = account;
-    const label = accountLabel || getDefaultAccountLabel({ accountType, symbol, index });
+    const { accountType, path, networkType } = account;
 
     return (
         <Row gap={12} overflow="hidden" maxWidth="100%" {...rowProps}>

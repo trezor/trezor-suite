@@ -12,11 +12,6 @@ import {
     tradingGetRoundedFiatAmount,
 } from 'src/utils/wallet/trading/tradingUtils';
 
-jest.mock('src/hooks/suite/useDefaultAccountLabel', () => ({
-    ...jest.requireActual('src/hooks/suite/useDefaultAccountLabel'),
-    useDefaultAccountLabel: jest.fn(),
-}));
-
 describe('trading utils', () => {
     it('getCountryLabelParts', () => {
         expect(getCountryLabelParts('🇨🇿 Czech Republic')).toStrictEqual({

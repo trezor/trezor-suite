@@ -1,11 +1,10 @@
 import { type ReactNode } from 'react';
 
+import { AccountLabel } from '@suite/account';
 import { type Account } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
-
-import { AccountLabel } from 'src/components/suite/AccountLabel';
 
 interface TxSimulationHeaderProps {
     account: Account | null;
