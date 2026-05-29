@@ -5,18 +5,16 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Account } from '@suite-common/wallet-types';
 import { sanitizeFilename } from '@trezor/utils';
 
-import { type GetDefaultAccountLabelParams } from '../../hooks/suite/useDefaultAccountLabel';
-
 export const exportMetadataToBip329File = createThunk<
     void,
     {
-        getDefaultAccountLabel: (params: GetDefaultAccountLabelParams) => string;
         account: Account;
+        defaultAccountLabel: string;
     },
     void
 >(
     METADATA.EXPORT_METADATA_TO_BIP329_FILE,
-    ({ account, getDefaultAccountLabel }, { dispatch, extra: { services } }) => {
+    ({ account, defaultAccountLabel }, { dispatch, extra: { services } }) => {
         const showExportErrorToast = () => {
             dispatch(
                 notificationsActions.addToast({
@@ -31,14 +29,7 @@ export const exportMetadataToBip329File = createThunk<
                 account,
             });
 
-            const safeLabel = sanitizeFilename(
-                accountLabel ??
-                    getDefaultAccountLabel({
-                        accountType: account.accountType,
-                        symbol: account.symbol,
-                        index: account.index,
-                    }),
-            );
+            const safeLabel = sanitizeFilename(accountLabel ?? defaultAccountLabel);
 
             const jsonlString = labelsToExport.map(obj => JSON.stringify(obj)).join('\n');
             const blob = new Blob([jsonlString], { type: 'application/jsonl' });

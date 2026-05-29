@@ -1,3 +1,4 @@
+import { AccountLabel } from '@suite/account';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
@@ -13,7 +14,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { Box, Button, Column, IconButton, Row, Text } from '@trezor/components';
 import { AssetLogo } from '@trezor/product-components';
 
-import { AccountLabel } from 'src/components/suite';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useDispatch } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';

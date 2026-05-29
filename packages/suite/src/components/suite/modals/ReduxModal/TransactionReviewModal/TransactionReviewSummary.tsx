@@ -1,3 +1,4 @@
+import { AccountLabel } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { selectIsDebugModeActive } from '@suite/settings';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
@@ -22,7 +23,6 @@ import { CoinLogo, FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
-import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { useLocales } from 'src/hooks/suite';

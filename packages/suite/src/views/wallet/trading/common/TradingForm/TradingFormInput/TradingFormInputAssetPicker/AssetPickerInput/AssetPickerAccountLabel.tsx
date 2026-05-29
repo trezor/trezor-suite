@@ -1,7 +1,7 @@
+import { AccountLabel } from '@suite/account';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 
-import { AccountLabel } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 
 interface AssetPickerAccountLabelProps {

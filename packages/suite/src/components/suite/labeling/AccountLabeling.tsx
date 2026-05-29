@@ -1,9 +1,9 @@
+import { AccountLabel } from '@suite/account';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { isSelectedDevice } from '@suite-common/suite-utils';
 import { findAccountDevice } from '@suite-common/wallet-utils';
 import { type BadgeProps, type FlexProps } from '@trezor/components';
 
-import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { useSelector } from 'src/hooks/suite';
 import { type Account as WalletAccount } from 'src/types/wallet';
 

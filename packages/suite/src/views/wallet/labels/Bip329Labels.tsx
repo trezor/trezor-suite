@@ -1,5 +1,6 @@
 import { type ReactElement } from 'react';
 
+import { useAccountLabel } from '@suite/account';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { selectIsMetadataEnabled } from '@suite/metadata';
@@ -26,7 +27,7 @@ import {
 import { HELP_CENTER_BIP329_URL } from '@trezor/urls';
 
 import { exportMetadataToBip329File } from 'src/actions/labels/exportMetadataToBip329File';
-import { useDefaultAccountLabel, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 type Bip329LabelsProps = {
@@ -40,7 +41,7 @@ export const Bip329Labels = ({ account, isLoading }: Bip329LabelsProps) => {
 
     const dispatch = useDispatch();
     const { bip329 } = useServices(selectBip329Dep);
-    const { getDefaultAccountLabel } = useDefaultAccountLabel();
+    const { defaultLabel } = useAccountLabel({ account });
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
 
     const canImportBip329Labels = isSuiteSyncEnabled;
@@ -56,7 +57,7 @@ export const Bip329Labels = ({ account, isLoading }: Bip329LabelsProps) => {
     }
 
     const handleExportBip329 = () =>
-        dispatch(exportMetadataToBip329File({ getDefaultAccountLabel, account }));
+        dispatch(exportMetadataToBip329File({ account, defaultAccountLabel: defaultLabel }));
 
     const handleImportBip329 = async (bip329Labels: Bip329Label[]) => {
         const result = await bip329.import({

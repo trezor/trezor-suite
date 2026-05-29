@@ -1,4 +1,5 @@
-import { Translation } from '@suite/intl';
+import { getDefaultAccountLabel } from '@suite/account';
+import { Translation, useTranslation } from '@suite/intl';
 import { selectAccountLabelsLegacy } from '@suite/metadata';
 import { type RouteParams, selectRouterParams } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -12,7 +13,7 @@ import { spacings } from '@trezor/theme';
 
 import { CollapsedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
-import { useAccountSearch, useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
+import { useAccountSearch, useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 import { type AccountItemType } from 'src/types/wallet';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
@@ -97,7 +98,7 @@ export const AccountsList = ({
         ),
     );
 
-    const { getDefaultAccountLabel } = useDefaultAccountLabel();
+    const { translationString } = useTranslation();
     const { isSidebarCollapsed } = useResponsiveContext();
     const { coinFilter, searchString } = useAccountSearch();
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
@@ -110,13 +111,13 @@ export const AccountsList = ({
     const filteredAccounts =
         searchString || coinFilter
             ? accounts.filter(account => {
-                  const { key, accountType, symbol, index } = account;
+                  const { key } = account;
 
                   const accountLabel =
                       account.label ??
                       (Object.prototype.hasOwnProperty.call(accountLegacyLabels, key)
                           ? accountLegacyLabels[key]
-                          : getDefaultAccountLabel({ accountType, symbol, index })) ??
+                          : getDefaultAccountLabel(translationString, account)) ??
                       '';
 
                   return accountSearchFn(account, searchString, {

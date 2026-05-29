@@ -1,3 +1,4 @@
+import { AccountLabel } from '@suite/account';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
@@ -6,7 +7,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { IconButton, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 
-import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { BasicName } from 'src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';
 import { useDispatch } from 'src/hooks/suite';
