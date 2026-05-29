@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
+import { AccountTypeBadge } from '@suite/account';
 import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation, type TranslationKey } from '@suite/intl';
@@ -13,7 +14,6 @@ import { typography } from '@trezor/theme';
 import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL, type Url } from '@trezor/urls';
 
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
-import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 import { AccountTypeDescription } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AccountTypeSelect/AccountTypeDescription';
 import { WalletLayout } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';

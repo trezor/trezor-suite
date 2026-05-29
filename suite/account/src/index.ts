@@ -11,4 +11,5 @@ export {
     type SelectedAccountRootStateWithTrading,
     type SelectedAccountState,
 } from './selectedAccountReducer';
+export { AccountTypeBadge } from './AccountTypeBadge';
 export { selectAccountLabel, type SelectAccountLabelState } from './selectAccountLabel';

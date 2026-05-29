@@ -1,11 +1,9 @@
-import { selectAccountLabel } from '@suite/account';
+import { AccountTypeBadge, selectAccountLabel } from '@suite/account';
 import { type Account } from '@suite-common/wallet-types';
 import { type BadgeSize, type FlexProps, Row, Text, type TextProps } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
 
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
-
-import { AccountTypeBadge } from './AccountTypeBadge';
 
 interface AccountLabelProps {
     showAccountTypeBadge?: boolean;
