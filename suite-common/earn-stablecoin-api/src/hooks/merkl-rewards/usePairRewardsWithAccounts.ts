@@ -8,7 +8,7 @@ import {
 } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
-import { type ChainRewardsWithFiat } from './useExtendMerkleRewardsWithFiat';
+import { type ChainRewardsWithFiat } from './useExtendMerklRewardsWithFiat';
 
 interface UsePairRewardsWithAccountsProps {
     accounts: Account[];

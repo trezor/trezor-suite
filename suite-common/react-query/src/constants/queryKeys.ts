@@ -13,7 +13,7 @@ export const commonQueryKeys = {
     solanaRewards: (...args: any[]) => ['solana-rewards', ...args],
     solanaRewardsTotal: (address: string) => ['solana-rewards-total', address],
     yieldOpportunities: (...args: any[]) => ['yield-opportunities', ...args],
-    merkleRewards: (...args: any[]) => ['merkle-rewards', ...args],
+    merklRewards: (...args: any[]) => ['merkl-rewards', ...args],
     missingRateTickers: (...args: any[]) => ['missing-rate-tickers', ...args],
 } as const satisfies Record<string, AllowedQueryKey>;
 

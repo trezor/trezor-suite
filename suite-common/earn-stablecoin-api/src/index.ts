@@ -5,7 +5,7 @@ export * from './hooks/useAllYieldOpportunities';
 export * from './hooks/useGetYieldOpportunities';
 export * from './hooks/useEnterYieldOpportunity';
 export * from './hooks/useExitYieldOpportunity';
-export * from './hooks/merkle-rewards';
+export * from './hooks/merkl-rewards';
 export * from './utils/sortRewardsByUnderlyingToken';
 
 // TODO: remove this once content of the @suite-common/earn-stablecoin-api has been moved to @suite-common/earn-stablecoin and it isn't dependency of @suite-common/wallet-config anymore

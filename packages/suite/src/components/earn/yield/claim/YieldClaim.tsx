@@ -16,13 +16,13 @@ import { type Account } from '@suite-common/wallet-types';
 import { Banner, Button, Card, Column, Text } from '@trezor/components';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
-import { claimMerkleRewardsThunk } from 'src/actions/wallet/stablecoin-yield';
+import { claimMerklRewardsThunk } from 'src/actions/wallet/stablecoin-yield';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 
 import { YieldRewardsList } from './YieldRewardsList';
-import { useMerkleRewards } from './hooks';
+import { useMerklRewards } from './hooks';
 import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 import { YieldFlowCompleteClaim } from '../common/YieldFlowCompleteClaim';
 import { YieldPendingTransaction } from '../common/YieldPendingTransaction';
@@ -49,10 +49,10 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     const isClaiming = isClaimSubmitting || !!claimSession.action.pendingTransaction;
     const isDeviceConnected = !!device?.connected && device.available;
 
-    const { merkleRewardsQuery, missingRateTickersQuery } = useMerkleRewards(account);
+    const { merklRewardsQuery, missingRateTickersQuery } = useMerklRewards(account);
     const accountRewards: YieldAccountRewards | undefined =
-        merkleRewardsQuery.data?.accountsRewards[0];
-    const isRewardsLoading = merkleRewardsQuery.isLoading || missingRateTickersQuery.isLoading;
+        merklRewardsQuery.data?.accountsRewards[0];
+    const isRewardsLoading = merklRewardsQuery.isLoading || missingRateTickersQuery.isLoading;
 
     useEffect(() => {
         dispatch(stablecoinYieldActions.initSession({ flowType: 'claim', flowKey }));
@@ -66,7 +66,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
         account,
         flowType: 'claim',
         flowKey,
-        waitForMerkleToResolveClaim: merkleRewardsQuery.waitForMerkleToResolveClaim,
+        waitForMerklToResolveClaim: merklRewardsQuery.waitForMerklToResolveClaim,
     });
 
     const handleClaim = async () => {
@@ -94,7 +94,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
         });
 
         try {
-            await dispatch(claimMerkleRewardsThunk({ account, flowKey, rewards })).unwrap();
+            await dispatch(claimMerklRewardsThunk({ account, flowKey, rewards })).unwrap();
         } catch {
             // cancelled or rejected — isClaiming resets via Redux (discardTransaction in finally)
         }
@@ -161,7 +161,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                             </Column>
                         </Card>
 
-                        {merkleRewardsQuery.isSuccess &&
+                        {merklRewardsQuery.isSuccess &&
                             (accountRewards?.rewards?.length ?? 0) > 0 &&
                             !claimSession.action.pendingTransaction && (
                                 <Banner
@@ -179,7 +179,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                             isDisabled={
                                 isRewardsLoading || !accountRewards?.rewards.length || isClaiming
                             }
-                            isLoading={isClaimSubmitting || merkleRewardsQuery.isLoading}
+                            isLoading={isClaimSubmitting || merklRewardsQuery.isLoading}
                             onClick={handleClaim}
                         >
                             <Translation id="TR_EARN_YIELD_CLAIM" />

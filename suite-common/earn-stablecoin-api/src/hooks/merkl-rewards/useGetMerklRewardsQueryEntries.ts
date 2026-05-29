@@ -15,8 +15,12 @@ class ChainAddressKey {
         return `${chainId}${ChainAddressKey.delimiter}${address}` as const;
     }
 
-    static parse(key: string) {
+    static parse(key: `${number}:${string}`) {
         const [chainId, address] = key.split(ChainAddressKey.delimiter);
+
+        if (!chainId || !address) {
+            return null;
+        }
 
         return {
             chainId: Number(chainId),
@@ -32,13 +36,13 @@ function isEmptyEvmAccount(account: AccountWithNetworkType<'ethereum'>) {
     return Number(account?.misc?.nonce ?? 0) <= 1;
 }
 
-export type MerkleRewardsSource = {
+export type MerklRewardsSource = {
     symbol: NetworkSymbol;
     address: string;
 };
 
-function getMerkleRewardsQueryEntries(sources: MerkleRewardsSource[]) {
-    const candidatesForMerkleRewards = sources.flatMap(source => {
+function getMerklRewardsQueryEntries(sources: MerklRewardsSource[]) {
+    const candidatesForMerklRewards = sources.flatMap(source => {
         const network = getNetwork(source.symbol);
 
         if (!network?.chainId) {
@@ -48,14 +52,20 @@ function getMerkleRewardsQueryEntries(sources: MerkleRewardsSource[]) {
         return [ChainAddressKey.compose(network.chainId, source.address)];
     });
 
-    return unique(candidatesForMerkleRewards).map(candidate => {
-        const { chainId, address } = ChainAddressKey.parse(candidate);
+    return unique(candidatesForMerklRewards)
+        .map(candidate => {
+            const parsed = ChainAddressKey.parse(candidate);
 
-        return { chainId: Number(chainId), address };
-    });
+            if (!parsed) return null;
+
+            const { chainId, address } = parsed;
+
+            return { chainId: Number(chainId), address };
+        })
+        .filter((queryEntry): queryEntry is NonNullable<typeof queryEntry> => Boolean(queryEntry));
 }
 
-export function useGetMerkleRewardsQueryEntries(accounts: Account[], isDebugMode?: boolean) {
+export function useGetMerklRewardsQueryEntries(accounts: Account[], isDebugMode?: boolean) {
     return useMemo(() => {
         const accountsRewardSources = accounts
             .filter(
@@ -69,6 +79,6 @@ export function useGetMerkleRewardsQueryEntries(accounts: Account[], isDebugMode
                 address: account.descriptor,
             }));
 
-        return getMerkleRewardsQueryEntries(accountsRewardSources);
+        return getMerklRewardsQueryEntries(accountsRewardSources);
     }, [accounts, isDebugMode]);
 }

@@ -143,7 +143,7 @@ type UseYieldPendingTransactionTrackingProps = {
     account: Account;
     flowType: YieldFlowType;
     flowKey: string;
-    waitForMerkleToResolveClaim?: () => Promise<unknown>;
+    waitForMerklToResolveClaim?: () => Promise<unknown>;
     vault?: YieldDto | null;
 };
 
@@ -153,7 +153,7 @@ export const useYieldPendingTransactionTracking = ({
     account,
     flowType,
     flowKey,
-    waitForMerkleToResolveClaim = stablePlaceholderPromise,
+    waitForMerklToResolveClaim = stablePlaceholderPromise,
     vault,
 }: UseYieldPendingTransactionTrackingProps) => {
     const dispatch = useDispatch();
@@ -285,7 +285,7 @@ export const useYieldPendingTransactionTracking = ({
                 },
             });
 
-            waitForMerkleToResolveClaim().then(completeAction);
+            waitForMerklToResolveClaim().then(completeAction);
 
             return;
         }
@@ -300,7 +300,7 @@ export const useYieldPendingTransactionTracking = ({
         analytics,
         account.symbol,
         vault,
-        waitForMerkleToResolveClaim,
+        waitForMerklToResolveClaim,
     ]);
 
     // Emit `leftPending` if the component unmounts while a tx is still unresolved.
