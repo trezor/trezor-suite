@@ -40,7 +40,7 @@ import {
 } from '@trezor/urls';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
-import { AddressLabeling } from 'src/components/suite';
+import { AccountLabelForOwnAddress } from 'src/components/suite/labeling/AddressLabeling';
 import { InputError } from 'src/components/wallet';
 import { type InputErrorProps } from 'src/components/wallet/InputError';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -427,7 +427,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
     // Required for the correct functionality of bottom text in the input.
     const addressLabelComponent = (
-        <AddressLabeling address={addressValue} knownOnly symbol={symbol} />
+        <AccountLabelForOwnAddress address={addressValue} knownOnly symbol={symbol} />
     );
     const isAddressWithLabel = !!addressLabelComponent.type({
         symbol,

@@ -12,7 +12,7 @@ type AddressLabelingProps = {
     knownOnly?: boolean;
 };
 
-export const AddressLabeling = ({ symbol, address, knownOnly }: AddressLabelingProps) => {
+export const AccountLabelForOwnAddress = ({ symbol, address, knownOnly }: AddressLabelingProps) => {
     const accounts = useSelector(state => state.wallet.accounts);
 
     if (!address || !symbol) {

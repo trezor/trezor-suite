@@ -3,7 +3,7 @@ import { Translation } from '@suite/intl';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { type ArrayElement } from '@trezor/type-utils';
 
-import { AddressLabeling } from 'src/components/suite';
+import { AccountLabelForOwnAddress } from 'src/components/suite/labeling/AddressLabeling';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
 interface TokenTransferAddressLabelProps {
@@ -21,7 +21,7 @@ export const TokenTransferAddressLabel = ({
         return <Translation id="TR_SENT_TO_SELF" />;
     }
     if (type === 'sent') {
-        return <AddressLabeling address={transfer.to} symbol={symbol} />;
+        return <AccountLabelForOwnAddress address={transfer.to} symbol={symbol} />;
     }
 
     return <Address value={transfer.to} isTruncated />;
